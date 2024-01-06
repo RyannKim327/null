@@ -1,41 +1,27 @@
-function fibonacci(limit) {
-  var fib = [0, 1];
-  for (var i = 2; i < limit; i++) {
-    fib[i] = fib[i - 1] + fib[i - 2];
+function quickSort(arr) {
+  // Base case: An array of 0 or 1 elements is already sorted
+  if (arr.length <= 1) {
+    return arr;
   }
-  return fib;
-}
-function fibonacciSearch(arr, target) {
-  var fibArray = fibonacci(arr.length);
-  var offset = -1;
-  
-  var i = fibArray.length - 1;
-  
-  while (i > 1) {
-    var index = Math.min(offset + fibArray[i - 2], arr.length - 1);
-  
-    if (arr[index] < target) {
-      i--;
-      offset = index;
-    } else if (arr[index] > target) {
-      i -= 2;
-    } else {
-      return index;
+
+  // Choose a pivot element (can be random or middle)
+  const pivot = arr[Math.floor(arr.length / 2)];
+
+  // Partition the array into two sub-arrays
+  const left = [];
+  const right = [];
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] < pivot) {
+      left.push(arr[i]);
+    } else if (arr[i] > pivot) {
+      right.push(arr[i]);
     }
   }
-  
-  if (fibArray[1] === target && arr[offset + 1] === target) {
-    return offset + 1;
-  }
-  
-  return -1;
-}
-var arr = [1, 3, 5, 7, 9, 11, 13];
-var target = 7;
 
-var index = fibonacciSearch(arr, target);
-if (index !== -1) {
-  console.log("Element", target, "found at index", index);
-} else {
-  console.log("Element", target, "not found in the array");
+  // Recursively sort the sub-arrays and join them with the pivot
+  return [...quickSort(left), pivot, ...quickSort(right)];
 }
+
+// Usage example
+const array = [5, 3, 8, 4, 2, 1, 9, 6, 7];
+console.log(quickSort(array)); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
