@@ -1,10 +1,71 @@
-function factorial(n) {
-  // Base case
-  if (n === 0) {
-    return 1;
+class TreeNode {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+class BinaryTree {
+  constructor() {
+    this.root = null;
   }
 
-  // Recursive case
-  return n * factorial(n - 1);
+  insert(value) {
+    const newNode = new TreeNode(value);
+
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
+
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  searchNode(node, value) {
+    if (node === null) {
+      return false;
+    }
+
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else if (value > node.value) {
+      return this.searchNode(node.right, value);
+    } else {
+      return true;
+    }
+  }
 }
-console.log(factorial(5));  // Output: 120
+const tree = new BinaryTree();
+
+tree.insert(8);
+tree.insert(3);
+tree.insert(10);
+tree.insert(1);
+tree.insert(6);
+tree.insert(14);
+tree.insert(4);
+tree.insert(7);
+tree.insert(13);
+
+console.log(tree.search(6)); // Output: true
+console.log(tree.search(12)); // Output: false
