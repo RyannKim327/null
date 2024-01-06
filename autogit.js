@@ -1,71 +1,67 @@
-class TreeNode {
+class Node {
   constructor(value) {
     this.value = value;
-    this.left = null;
-    this.right = null;
+    this.next = null;
   }
 }
 
-class BinaryTree {
+class Queue {
   constructor() {
-    this.root = null;
+    this.head = null;
+    this.tail = null;
+    this.size = 0;
   }
 
-  insert(value) {
-    const newNode = new TreeNode(value);
+  isEmpty() {
+    return this.size === 0;
+  }
 
-    if (this.root === null) {
-      this.root = newNode;
+  enqueue(value) {
+    const newNode = new Node(value);
+    if (this.isEmpty()) {
+      this.head = newNode;
+      this.tail = newNode;
     } else {
-      this.insertNode(this.root, newNode);
+      this.tail.next = newNode;
+      this.tail = newNode;
     }
+    this.size++;
   }
 
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
-
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
+  dequeue() {
+    if (this.isEmpty()) {
+      return null;
     }
 
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else if (value > node.value) {
-      return this.searchNode(node.right, value);
-    } else {
-      return true;
+    const removedNode = this.head;
+    this.head = this.head.next;
+
+    if (this.head === null) {
+      this.tail = null;
     }
+
+    this.size--;
+    return removedNode.value;
   }
 }
-const tree = new BinaryTree();
+const queue = new Queue();
 
-tree.insert(8);
-tree.insert(3);
-tree.insert(10);
-tree.insert(1);
-tree.insert(6);
-tree.insert(14);
-tree.insert(4);
-tree.insert(7);
-tree.insert(13);
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
 
-console.log(tree.search(6)); // Output: true
-console.log(tree.search(12)); // Output: false
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.dequeue()); // Output: 2
+
+console.log(queue.isEmpty()); // Output: false
+
+queue.enqueue(4);
+queue.enqueue(5);
+
+console.log(queue.dequeue()); // Output: 3
+console.log(queue.dequeue()); // Output: 4
+
+console.log(queue.isEmpty()); // Output: false
+
+console.log(queue.dequeue()); // Output: 5
+console.log(queue.isEmpty()); // Output: true
