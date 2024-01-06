@@ -1,21 +1,28 @@
-function bubbleSort(arr) {
-  // Outer loop for iterating through the array
-  for (let i = 0; i < arr.length - 1; i++) {
-    // Inner loop for comparing adjacent elements
-    for (let j = 0; j < arr.length - i - 1; j++) {
-      // Swap elements if the current element is greater than the next element
-      if (arr[j] > arr[j + 1]) {
-        let temp = arr[j];
-        arr[j] = arr[j + 1];
-        arr[j + 1] = temp;
-      }
-    }
+// Fetch data from an API using JavaScript
+
+// Function to fetch data from API
+async function fetchData() {
+  const apiUrl = 'https://api.example.com/data'; // replace with your API endpoint
+
+  try {
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+    
+    return data;
+  } catch (error) {
+    console.log('Error:', error);
   }
-  
-  return arr;
 }
 
-// Example usage:
-let myArray = [5, 3, 8, 4, 2];
-console.log("Before sorting:", myArray);
-console.log("After sorting:", bubbleSort(myArray));
+// Display the fetched data
+async function displayData() {
+  const data = await fetchData();
+  
+  // Example: Display each item's title property in the console
+  data.forEach(item => {
+    console.log(item.title);
+  });
+}
+
+// Call the displayData function
+displayData();
