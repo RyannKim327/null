@@ -1,65 +1,49 @@
-function binarySearch(arr, target, start = 0, end = arr.length - 1) {
-  // ...
+function merge(leftArr, rightArr) {
+  let resultArr = [];
+  let leftIndex = 0;
+  let rightIndex = 0;
+
+  // Merge the arrays until one of them is exhausted
+  while (leftIndex < leftArr.length && rightIndex < rightArr.length) {
+    if (leftArr[leftIndex] < rightArr[rightIndex]) {
+      resultArr.push(leftArr[leftIndex]);
+      leftIndex++;
+    } else {
+      resultArr.push(rightArr[rightIndex]);
+      rightIndex++;
+    }
+  }
+
+  // Append the remaining elements (if any) of leftArr
+  while (leftIndex < leftArr.length) {
+    resultArr.push(leftArr[leftIndex]);
+    leftIndex++;
+  }
+
+  // Append the remaining elements (if any) of rightArr
+  while (rightIndex < rightArr.length) {
+    resultArr.push(rightArr[rightIndex]);
+    rightIndex++;
+  }
+
+  return resultArr;
 }
-function binarySearch(arr, target, start = 0, end = arr.length - 1) {
-  if (start > end) {
-    return -1;
+function mergeSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
   }
-  // ...
+
+  // Split the array into two halves
+  const mid = Math.floor(arr.length / 2);
+  const leftArr = arr.slice(0, mid);
+  const rightArr = arr.slice(mid);
+
+  // Recursively sort the two halves
+  const sortedLeftArr = mergeSort(leftArr);
+  const sortedRightArr = mergeSort(rightArr);
+
+  // Merge the sorted halves using the merge function
+  return merge(sortedLeftArr, sortedRightArr);
 }
-function binarySearch(arr, target, start = 0, end = arr.length - 1) {
-  if (start > end) {
-    return -1;
-  }
-
-  const mid = Math.floor((start + end) / 2);
-
-  // ...
-}
-function binarySearch(arr, target, start = 0, end = arr.length - 1) {
-  if (start > end) {
-    return -1;
-  }
-
-  const mid = Math.floor((start + end) / 2);
-
-  if (arr[mid] === target) {
-    return mid;
-  }
-
-  // ...
-}
-function binarySearch(arr, target, start = 0, end = arr.length - 1) {
-  if (start > end) {
-    return -1;
-  }
-
-  const mid = Math.floor((start + end) / 2);
-
-  if (arr[mid] === target) {
-    return mid;
-  } else if (arr[mid] > target) {
-    return binarySearch(arr, target, start, mid - 1);
-  }
-
-  // ...
-}
-function binarySearch(arr, target, start = 0, end = arr.length - 1) {
-  if (start > end) {
-    return -1;
-  }
-
-  const mid = Math.floor((start + end) / 2);
-
-  if (arr[mid] === target) {
-    return mid;
-  } else if (arr[mid] > target) {
-    return binarySearch(arr, target, start, mid - 1);
-  } else {
-    return binarySearch(arr, target, mid + 1, end);
-  }
-}
-const arr = [2, 4, 6, 8, 10, 12, 14, 16];
-const target = 10;
-const index = binarySearch(arr, target);
-console.log(index); // Output: 4
+const arr = [5, 3, 8, 4, 2, 1, 9, 7, 6];
+console.log(mergeSort(arr));
