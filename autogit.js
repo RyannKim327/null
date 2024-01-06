@@ -1,35 +1,44 @@
-function findMajorityElement(arr) {
-  let candidate = null;
-  let count = 0;
-
-  // Boyer–Moore Majority Vote Algorithm
-  for (let i = 0; i < arr.length; i++) {
-    if (count === 0) {
-      candidate = arr[i];
-      count = 1;
-    } else if (candidate === arr[i]) {
-      count++;
-    } else {
-      count--;
-    }
-  }
-
-  // Verify if the candidate is the majority element
-  count = 0;
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] === candidate) {
-      count++;
-    }
-  }
-
-  if (count > arr.length / 2) {
-    return candidate;
-  } else {
-    return "No majority element found.";
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.neighbors = [];
   }
 }
+function breadthFirstSearch(startNode) {
+  const queue = [];
+  const visited = new Set();
+}
+  queue.push(startNode);
+  visited.add(startNode);
+  while (queue.length > 0) {
+    // Dequeue the node from the front of the queue
+    const currentNode = queue.shift();
 
-// Example usage
-const array = [2, 2, 1, 1, 1, 2, 2];
-const majorityElement = findMajorityElement(array);
-console.log(majorityElement); // Output: 2
+    // Process the current node (e.g., print its value or perform some operation)
+    console.log(currentNode.value);
+
+    // Traverse through each neighbor of the current node
+    for (const neighbor of currentNode.neighbors) {
+      // Check if the neighbor has not been visited
+      if (!visited.has(neighbor)) {
+        // Enqueue the neighbor onto the queue and mark it as visited
+        queue.push(neighbor);
+        visited.add(neighbor);
+      }
+    }
+  }
+// Create nodes
+const nodeA = new Node("A");
+const nodeB = new Node("B");
+const nodeC = new Node("C");
+const nodeD = new Node("D");
+const nodeE = new Node("E");
+
+// Connect nodes
+nodeA.neighbors.push(nodeB, nodeC);
+nodeB.neighbors.push(nodeD, nodeE);
+nodeC.neighbors.push(nodeD);
+nodeE.neighbors.push(nodeB);
+
+// Perform breadth-first search starting from nodeA
+breadthFirstSearch(nodeA);
