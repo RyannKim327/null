@@ -1,6 +1,6 @@
 const fs = require("fs")
 const { exec } = require("child_process")
-const date = require("./utils/date")
+const date = require("./date")
 const axios = require("axios")
 let commits = 250
 let _commitments = 1
