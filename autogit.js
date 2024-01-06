@@ -1,116 +1,44 @@
 class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
+// Function to perform depth-limited search
+function depthLimitedSearch(node, targetValue, depth) {
+  if (node === null || depth === 0) {
+    return null; // Node not found within depth limit
   }
 
-  // Method to add a node at the end of the linked list
-  append(data) {
-    const newNode = new Node(data);
-
-    if (this.head === null) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next !== null) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
+  if (node.value === targetValue) {
+    return node; // Node found
   }
 
-  // Method to insert a node at a given position
-  insertAt(data, position) {
-    const newNode = new Node(data);
-
-    if (position === 0) {
-      newNode.next = this.head;
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      let previous = null;
-      let count = 0;
-
-      while (count < position && current !== null) {
-        previous = current;
-        current = current.next;
-        count++;
-      }
-
-      previous.next = newNode;
-      newNode.next = current;
-    }
+  // Recursively search the left and right subtrees
+  const leftResult = depthLimitedSearch(node.left, targetValue, depth - 1);
+  if (leftResult) {
+    return leftResult; // Node found in the left subtree
   }
 
-  // Method to remove a node at a given position
-  removeAt(position) {
-    if (this.head === null) {
-      return;
-    }
-
-    let current = this.head;
-    let previous = null;
-    let count = 0;
-
-    if (position === 0) {
-      this.head = current.next;
-    } else {
-      while (count < position && current !== null) {
-        previous = current;
-        current = current.next;
-        count++;
-      }
-      previous.next = current.next;
-    }
+  const rightResult = depthLimitedSearch(node.right, targetValue, depth - 1);
+  if (rightResult) {
+    return rightResult; // Node found in the right subtree
   }
 
-  // Method to get the length of the linked list
-  getLength() {
-    let count = 0;
-    let current = this.head;
-
-    while (current !== null) {
-      count++;
-      current = current.next;
-    }
-
-    return count;
-  }
-
-  // Method to print the linked list
-  print() {
-    let current = this.head;
-    let result = '';
-
-    while (current !== null) {
-      result += current.data + ' -> ';
-      current = current.next;
-    }
-
-    result += 'null';
-
-    console.log(result);
-  }
+  return null; // Node not found
 }
 
-// Usage example:
-const linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
-linkedList.append(4);
-linkedList.print(); // Output: 1 -> 2 -> 3 -> 4 -> null
+// Constructing a binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
 
-linkedList.insertAt(5, 2);
-linkedList.print(); // Output: 1 -> 2 -> 5 -> 3 -> 4 -> null
-
-linkedList.removeAt(3);
-linkedList.print(); // Output: 1 -> 2 -> 5 -> 4 -> null
-
-console.log(linkedList.getLength()); // Output: 4
+// Perform depth-limited search with a depth limit of 2
+const targetNode = depthLimitedSearch(root, 5, 2);
+console.log(targetNode ? `Node ${targetNode.value} found` : "Node not found");
