@@ -1,22 +1,30 @@
-function radixSort(arr) {
-  const maxNumber = Math.max(...arr);
-  const maxDigits = String(maxNumber).length;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
 
-  for (let digit = 0; digit < maxDigits; digit++) {
-    const buckets = Array.from({ length: 10 }, () => []);
-
-    for (let number of arr) {
-      const digitValue = Math.floor((number / Math.pow(10, digit)) % 10);
-      buckets[digitValue].push(number);
-    }
-
-    arr = [].concat(...buckets);
+function findMaxDepth(node) {
+  if (node === null) {
+    return 0;
   }
 
-  return arr;
+  const leftDepth = findMaxDepth(node.left);
+  const rightDepth = findMaxDepth(node.right);
+
+  // Return the maximum depth between the left and right subtrees, plus 1 for the root node
+  return Math.max(leftDepth, rightDepth) + 1;
 }
 
 // Example usage:
-const numbers = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedNumbers = radixSort(numbers);
-console.log(sortedNumbers);
+
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+const maxDepth = findMaxDepth(root);
+console.log("Maximum depth:", maxDepth);
