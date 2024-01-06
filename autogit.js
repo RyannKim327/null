@@ -1,13 +1,10 @@
-function isAscending(arr) {
-  for (let i = 0; i < arr.length - 1; i++) {
-    if (arr[i] > arr[i + 1]) {
-      return false;
-    }
-  }
-  return true;
-}
-const arr1 = [1, 2, 3, 4, 5];
-console.log(isAscending(arr1));  // Output: true
-
-const arr2 = [5, 4, 3, 2, 1];
-console.log(isAscending(arr2));  // Output: false
+fetch('https://api.example.com/data')
+  .then(response => response.json())
+  .then(data => {
+    // Here, you can work with the received data
+    console.log(data);
+  })
+  .catch(error => {
+    // Handle any errors that occurred during the request
+    console.error(error);
+  });
