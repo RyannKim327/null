@@ -1,37 +1,18 @@
-function topologicalSort(graph) {
-  const visited = new Set();
-  const sorted = [];
+function getRandomNumber(min, max) {
+  // Generate a random decimal between 0 and 1
+  const randomDecimal = Math.random();
+  
+  // Scale the decimal to the desired range
+  const randomInRange = randomDecimal * (max - min + 1) + min;
 
-  function visit(node) {
-    visited.add(node);
+  // Truncate the decimal to get an integer value
+  const randomInteger = Math.floor(randomInRange);
 
-    const neighbors = graph[node] || []; // Get the neighbors of the current node
-
-    for (const neighbor of neighbors) {
-      if (!visited.has(neighbor)) {
-        visit(neighbor);
-      }
-    }
-
-    sorted.unshift(node); // Push the node to the sorted array
-  }
-
-  for (const node in graph) {
-    if (!visited.has(node)) {
-      visit(node);
-    }
-  }
-
-  return sorted;
+  return randomInteger;
 }
-const graph = {
-  A: ['B', 'C'],
-  B: ['D', 'E'],
-  C: ['F'],
-  D: [],
-  E: ['F'],
-  F: []
-};
 
-const sorted = topologicalSort(graph);
-console.log(sorted); // Output: [ 'A', 'C', 'F', 'B', 'E', 'D' ]
+// Usage example
+const min = 1;
+const max = 10;
+const randomNumber = getRandomNumber(min, max);
+console.log(randomNumber);
