@@ -1,34 +1,23 @@
-function longestCommonSubstring(str1, str2) {
-  let maxLength = 0; // length of longest common substring
-  let endIndex = 0; // ending index of longest common substring in str1
+function quicksort(arr) {
+  if (arr.length <= 1) {
+    return arr;
+  }
 
-  // Create a matrix to store the lengths of common substrings
-  const matrix = Array(str1.length + 1).fill(0).map(() => Array(str2.length + 1).fill(0));
+  var pivot = arr[Math.floor(arr.length / 2)];
+  var left = [];
+  var right = [];
 
-  // Iterate over each character of the strings
-  for (let i = 1; i <= str1.length; i++) {
-    for (let j = 1; j <= str2.length; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        matrix[i][j] = matrix[i - 1][j - 1] + 1; // increment the length of common substring
-        if (matrix[i][j] > maxLength) {
-          maxLength = matrix[i][j];
-          endIndex = i - 1;
-        }
-      } else {
-        matrix[i][j] = 0; // no common substring, so reset the length to zero
-      }
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i] < pivot) {
+      left.push(arr[i]);
+    } else if (arr[i] > pivot) {
+      right.push(arr[i]);
     }
   }
 
-  // Extract the longest common substring from str1 using endIndex and maxLength
-  const longestSubstring = str1.substr(endIndex - maxLength + 1, maxLength);
-
-  return longestSubstring;
+  return quicksort(left).concat([pivot], quicksort(right));
 }
+var array = [6, 2, 9, 5, 1, 7];
+var sortedArray = quicksort(array);
 
-// Example usage
-const string1 = "JavaScript is awesome!";
-const string2 = "I love JavaScript.";
-
-const commonSubstring = longestCommonSubstring(string1, string2);
-console.log(commonSubstring); // Output: " JavaScript "
+console.log(sortedArray); // [1, 2, 5, 6, 7, 9]
