@@ -1,18 +1,91 @@
-function isSortedAscending(arr) {
-  for (let i = 0; i < arr.length - 1; i++) {
-    if (arr[i] > arr[i + 1]) {
-      return false;
-    }
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
-  return true;
 }
 
-// Usage example:
-const arr1 = [1, 2, 3, 4, 5];
-console.log(isSortedAscending(arr1)); // true
+class BinarySearchTree {
+  constructor() {
+    this.root = null;
+  }
 
-const arr2 = [5, 4, 3, 2, 1];
-console.log(isSortedAscending(arr2)); // false
+  // Insert a value into the tree
+  insert(value) {
+    const newNode = new Node(value);
 
-const arr3 = [1, 5, 2, 4, 3];
-console.log(isSortedAscending(arr3)); // false
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
+
+  // Helper method to insert a node recursively
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  // Search for a value in the tree
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  // Helper method to search for a value recursively
+  searchNode(node, value) {
+    if (node === null) {
+      return false;
+    }
+
+    if (value === node.value) {
+      return true;
+    } else if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else {
+      return this.searchNode(node.right, value);
+    }
+  }
+
+  // Helper method to traverse the tree in-order
+  inOrderTraversal(node, visit) {
+    if (node !== null) {
+      this.inOrderTraversal(node.left, visit);
+      visit(node.value);
+      this.inOrderTraversal(node.right, visit);
+    }
+  }
+
+  // Get all values in the tree in-order
+  getValuesInOrder() {
+    const values = [];
+    this.inOrderTraversal(this.root, value => values.push(value));
+    return values;
+  }
+}
+const bst = new BinarySearchTree();
+
+bst.insert(5);
+bst.insert(3);
+bst.insert(7);
+bst.insert(2);
+bst.insert(4);
+bst.insert(6);
+bst.insert(8);
+
+console.log(bst.search(6));  // Output: true
+console.log(bst.search(9));  // Output: false
+
+console.log(bst.getValuesInOrder());  // Output: [2, 3, 4, 5, 6, 7, 8]
