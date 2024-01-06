@@ -1,76 +1,16 @@
-class TrieNode {
-  constructor() {
-    this.children = new Map(); // Map of character to TrieNode
-    this.isEndOfWord = false;
-  }
+function areAnagrams(str1, str2) {
+  // Convert strings to lowercase and remove non-alphabetic characters
+  str1 = str1.toLowerCase().replace(/[^a-z0-9]/g, "");
+  str2 = str2.toLowerCase().replace(/[^a-z0-9]/g, "");
+
+  // Sort the strings alphabetically
+  str1 = str1.split("").sort().join("");
+  str2 = str2.split("").sort().join("");
+
+  // Compare the sorted strings
+  return str1 === str2;
 }
 
-class Trie {
-  constructor() {
-    this.root = new TrieNode();
-  }
-
-  // Insert a word into the trie
-  insert(word) {
-    let currentNode = this.root;
-    
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-      
-      // Check if the current char exists as a child node
-      if (!currentNode.children.has(char)) {
-        currentNode.children.set(char, new TrieNode());
-      }
-
-      currentNode = currentNode.children.get(char);
-    }
-    
-    // Mark the end of the word
-    currentNode.isEndOfWord = true;
-  }
-
-  // Search for a word in the trie
-  search(word) {
-    let currentNode = this.root;
-
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-
-      if (!currentNode.children.has(char)) {
-        return false; // Word not found
-      }
-
-      currentNode = currentNode.children.get(char);
-    }
-
-    return currentNode.isEndOfWord;
-  }
-
-  // Check if a word prefix exists in the trie
-  startsWith(prefix) {
-    let currentNode = this.root;
-
-    for (let i = 0; i < prefix.length; i++) {
-      const char = prefix[i];
-
-      if (!currentNode.children.has(char)) {
-        return false; // Prefix not found
-      }
-
-      currentNode = currentNode.children.get(char);
-    }
-
-    return true;
-  }
-}
-
-// Usage:
-const trie = new Trie();
-trie.insert("apple");
-trie.insert("app");
-console.log(trie.search("apple")); // true
-console.log(trie.search("app")); // true
-console.log(trie.search("ap")); // false
-console.log(trie.startsWith("app")); // true
-console.log(trie.startsWith("ap")); // true
-console.log(trie.startsWith("b")); // false
+// Example usage
+console.log(areAnagrams("listen", "silent"));  // true
+console.log(areAnagrams("hello", "world"));   // false
