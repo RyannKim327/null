@@ -1,10 +1,28 @@
-function calculateTriangleArea(base, height) {
-  var area = (base * height) / 2;
-  return area;
+function reverseString(str) {
+  return str.split('').reverse().join('');
 }
 
-// Example usage
-var base = 5;
-var height = 8;
-var triangleArea = calculateTriangleArea(base, height);
-console.log("The area of the triangle is: " + triangleArea);
+const originalString = 'Hello World!';
+const reversedString = reverseString(originalString);
+
+console.log(reversedString);  // Outputs: "!dlroW olleH"
+function reverseString(str) {
+  let reversed = '';
+  for (let i = str.length - 1; i >= 0; i--) {
+    reversed += str[i];
+  }
+  return reversed;
+}
+
+const originalString = 'Hello World!';
+const reversedString = reverseString(originalString);
+
+console.log(reversedString);  // Outputs: "!dlroW olleH"
+function reverseString(str) {
+  return str.split('').reduce((reversed, char) => char + reversed, '');
+}
+
+const originalString = 'Hello World!';
+const reversedString = reverseString(originalString);
+
+console.log(reversedString);  // Outputs: "!dlroW olleH"
