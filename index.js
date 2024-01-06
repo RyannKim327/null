@@ -150,13 +150,8 @@ let run = async () => {
 		}
 		
 		
-		// exec("git config --global user.name \"RyannKim327\"", (e) => {console.error(e)})
-		// exec("git config --global user.email \"rksesgundo123@gmail.com\"", (e) => {console.error(e)})
-		// if(result == ""){
-			fs.writeFileSync("Auto git.txt", mm2[Math.floor(Math.random() * mm2.length)], "utf-8")
-		// }else{
-			fs.writeFileSync("autogit.js", result, "utf-8")
-		// }
+		fs.writeFileSync("Auto git.txt", mm2[Math.floor(Math.random() * mm2.length)], "utf-8")
+		fs.writeFileSync("autogit.js", result, "utf-8")
 		setTimeout(() => {
 			console.log(`-----${_commitments}-----`)
 			console.log("Git add")
@@ -168,8 +163,8 @@ let run = async () => {
 						if(e) console.error(e)
 						setTimeout(() => {
 							console.log("Git push")
-							// exec(`git push`, (e) => {
-							//	if(e) console.error(e)
+							exec(`git push`, (e) => {
+								if(e) console.error(e)
 								console.log("Close")
 								setTimeout(() => {
 									_commitments++
@@ -181,7 +176,7 @@ let run = async () => {
 										process.exit(0)
 									}
 								}, 2000)
-							// })
+							})
 						}, 2000)
 					})
 				}, 1000)
