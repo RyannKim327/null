@@ -1,25 +1,18 @@
-function isPrime(number) {
-  // Check if number is less than 2
-  if (number < 2) {
-    return false;
+function calculateMean(numbers) {
+  if (numbers.length === 0) {
+    return 0;
   }
 
-  // Loop from 2 to the square root of the number
-  for (let i = 2; i <= Math.sqrt(number); i++) {
-    // If the number is divisible by any value in the loop, it is not prime
-    if (number % i === 0) {
-      return false;
-    }
+  var sum = 0;
+  for (var i = 0; i < numbers.length; i++) {
+    sum += numbers[i];
   }
 
-  // The number is prime if it is not divisible by any value in the loop
-  return true;
+  var mean = sum / numbers.length;
+  return mean;
 }
 
 // Example usage
-const number = 13;
-if (isPrime(number)) {
-  console.log(number + " is a prime number.");
-} else {
-  console.log(number + " is not a prime number.");
-}
+var numbers = [1, 2, 3, 4, 5];
+var mean = calculateMean(numbers);
+console.log(mean); // Output: 3
