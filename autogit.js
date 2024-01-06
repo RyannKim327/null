@@ -1,44 +1,25 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function isPrime(number) {
+  // Check if number is less than 2
+  if (number < 2) {
+    return false;
   }
+
+  // Loop from 2 to the square root of the number
+  for (let i = 2; i <= Math.sqrt(number); i++) {
+    // If the number is divisible by any value in the loop, it is not prime
+    if (number % i === 0) {
+      return false;
+    }
+  }
+
+  // The number is prime if it is not divisible by any value in the loop
+  return true;
 }
 
-// Function to perform depth-limited search
-function depthLimitedSearch(node, targetValue, depth) {
-  if (node === null || depth === 0) {
-    return null; // Node not found within depth limit
-  }
-
-  if (node.value === targetValue) {
-    return node; // Node found
-  }
-
-  // Recursively search the left and right subtrees
-  const leftResult = depthLimitedSearch(node.left, targetValue, depth - 1);
-  if (leftResult) {
-    return leftResult; // Node found in the left subtree
-  }
-
-  const rightResult = depthLimitedSearch(node.right, targetValue, depth - 1);
-  if (rightResult) {
-    return rightResult; // Node found in the right subtree
-  }
-
-  return null; // Node not found
+// Example usage
+const number = 13;
+if (isPrime(number)) {
+  console.log(number + " is a prime number.");
+} else {
+  console.log(number + " is not a prime number.");
 }
-
-// Constructing a binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
-
-// Perform depth-limited search with a depth limit of 2
-const targetNode = depthLimitedSearch(root, 5, 2);
-console.log(targetNode ? `Node ${targetNode.value} found` : "Node not found");
