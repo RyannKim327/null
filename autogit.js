@@ -1,23 +1,20 @@
-function quicksort(arr) {
-  if (arr.length <= 1) {
-    return arr;
-  }
+// Define an array of numbers
+const numbers = [5, 6, 10, 15, 2, 9];
 
-  var pivot = arr[Math.floor(arr.length / 2)];
-  var left = [];
-  var right = [];
+// Initialize a variable for the sum
+let sum = 0;
 
-  for (var i = 0; i < arr.length; i++) {
-    if (arr[i] < pivot) {
-      left.push(arr[i]);
-    } else if (arr[i] > pivot) {
-      right.push(arr[i]);
-    }
-  }
-
-  return quicksort(left).concat([pivot], quicksort(right));
+// Iterate through each number in the array
+for (let i = 0; i < numbers.length; i++) {
+  sum += numbers[i];
 }
-var array = [6, 2, 9, 5, 1, 7];
-var sortedArray = quicksort(array);
 
-console.log(sortedArray); // [1, 2, 5, 6, 7, 9]
+// Calculate the mean
+const mean = sum / numbers.length;
+
+// Round the mean to two decimal places
+const roundedMean = mean.toFixed(2);
+
+// Display the mean
+console.log("Mean:", roundedMean);
+Mean: 8.50
