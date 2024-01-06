@@ -1,63 +1,54 @@
-class Graph {
+class Stack {
   constructor() {
-    this.adjacencyList = new Map();
+    this.stack = [];
   }
 
-  // Add a vertex/node to the graph
-  addVertex(vertex) {
-    if (!this.adjacencyList.has(vertex)) {
-      this.adjacencyList.set(vertex, []);
+  // Push an element onto the top of the stack
+  push(element) {
+    this.stack.push(element);
+  }
+
+  // Remove and return the top element from the stack
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
     }
+    return this.stack.pop();
   }
 
-  // Add an edge/connection between two vertices/nodes
-  addEdge(vertex1, vertex2) {
-    if (this.adjacencyList.has(vertex1) && this.adjacencyList.has(vertex2)) {
-      const connections1 = this.adjacencyList.get(vertex1);
-      const connections2 = this.adjacencyList.get(vertex2);
-      connections1.push(vertex2);
-      connections2.push(vertex1);
+  // Return the top element in the stack without removing it
+  peek() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
     }
+    return this.stack[this.stack.length - 1];
   }
 
-  // Depth-First Search algorithm
-  dfs(startVertex) {
-    const visited = new Set();
-    this._dfsRecursive(startVertex, visited);
+  // Check if the stack is empty
+  isEmpty() {
+    return this.stack.length === 0;
   }
 
-  _dfsRecursive(vertex, visited) {
-    visited.add(vertex);
-    console.log(vertex);
+  // Return the size of the stack
+  size() {
+    return this.stack.length;
+  }
 
-    const connections = this.adjacencyList.get(vertex);
-    for (const connection of connections) {
-      if (!visited.has(connection)) {
-        this._dfsRecursive(connection, visited);
-      }
-    }
+  // Print the stack elements
+  printStack() {
+    console.log([...this.stack].reverse().join(', '));
   }
 }
 
 // Example usage:
-const graph = new Graph();
+const stack = new Stack();
+stack.push(10);
+stack.push(20);
+stack.push(30);
+stack.printStack(); // 30, 20, 10
 
-// Create the nodes/vertices
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
-graph.addVertex('F');
-
-// Create the connections/edges
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('C', 'E');
-graph.addEdge('D', 'E');
-graph.addEdge('D', 'F');
-graph.addEdge('E', 'F');
-
-// Perform depth-first search starting from vertex 'A'
-graph.dfs('A');
+console.log(stack.pop()); // 30
+console.log(stack.peek()); // 20
+console.log(stack.size()); // 2
+console.log(stack.isEmpty()); // false
+stack.printStack(); // 20, 10
