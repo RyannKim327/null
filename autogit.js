@@ -1,16 +1,20 @@
-function areAnagrams(str1, str2) {
-  // Convert strings to lowercase and remove non-alphabetic characters
-  str1 = str1.toLowerCase().replace(/[^a-z0-9]/g, "");
-  str2 = str2.toLowerCase().replace(/[^a-z0-9]/g, "");
+function findSecondLargest(array) {
+  let largest = -Infinity;
+  let secondLargest = -Infinity;
 
-  // Sort the strings alphabetically
-  str1 = str1.split("").sort().join("");
-  str2 = str2.split("").sort().join("");
+  for (let i = 0; i < array.length; i++) {
+    if (array[i] > largest) {
+      secondLargest = largest;
+      largest = array[i];
+    } else if (array[i] > secondLargest && array[i] < largest) {
+      secondLargest = array[i];
+    }
+  }
 
-  // Compare the sorted strings
-  return str1 === str2;
+  return secondLargest;
 }
 
-// Example usage
-console.log(areAnagrams("listen", "silent"));  // true
-console.log(areAnagrams("hello", "world"));   // false
+// Example usage:
+const arr = [5, 10, 2, 8, 15];
+const secondLargest = findSecondLargest(arr);
+console.log(secondLargest); // Output: 10
