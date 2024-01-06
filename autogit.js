@@ -1,30 +1,22 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+function isAnagram(str1, str2) {
+  // Convert strings to lowercase and remove non-alphanumeric characters
+  str1 = str1.toLowerCase().replace(/[\W_]/g, '');
+  str2 = str2.toLowerCase().replace(/[\W_]/g, '');
+
+  // Sort the characters of both strings
+  const sortedStr1 = str1.split('').sort().join('');
+  const sortedStr2 = str2.split('').sort().join('');
+
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
 
-function findMaxDepth(node) {
-  if (node === null) {
-    return 0;
-  }
+// Example usage
+const string1 = "listen";
+const string2 = "silent";
 
-  const leftDepth = findMaxDepth(node.left);
-  const rightDepth = findMaxDepth(node.right);
-
-  // Return the maximum depth between the left and right subtrees, plus 1 for the root node
-  return Math.max(leftDepth, rightDepth) + 1;
+if (isAnagram(string1, string2)) {
+  console.log("The strings are anagrams.");
+} else {
+  console.log("The strings are not anagrams.");
 }
-
-// Example usage:
-
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-const maxDepth = findMaxDepth(root);
-console.log("Maximum depth:", maxDepth);
