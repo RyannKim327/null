@@ -1,4 +1,10 @@
-let string = "Hello World";
-let lowercaseString = string.toLowerCase();
+let str1 = "Hello";
+let str2 = "World";
 
-console.log(lowercaseString); // Output: "hello world"
+let result = str1 + " " + str2;
+console.log(result); // Output: "Hello World"
+let str1 = "Hello";
+let str2 = "World";
+
+let result = str1.concat(" ", str2);
+console.log(result); // Output: "Hello World"
