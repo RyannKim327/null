@@ -1,44 +1,34 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.neighbors = [];
-  }
-}
-function breadthFirstSearch(startNode) {
-  const queue = [];
-  const visited = new Set();
-}
-  queue.push(startNode);
-  visited.add(startNode);
-  while (queue.length > 0) {
-    // Dequeue the node from the front of the queue
-    const currentNode = queue.shift();
+function longestCommonSubstring(str1, str2) {
+  let maxLength = 0; // length of longest common substring
+  let endIndex = 0; // ending index of longest common substring in str1
 
-    // Process the current node (e.g., print its value or perform some operation)
-    console.log(currentNode.value);
+  // Create a matrix to store the lengths of common substrings
+  const matrix = Array(str1.length + 1).fill(0).map(() => Array(str2.length + 1).fill(0));
 
-    // Traverse through each neighbor of the current node
-    for (const neighbor of currentNode.neighbors) {
-      // Check if the neighbor has not been visited
-      if (!visited.has(neighbor)) {
-        // Enqueue the neighbor onto the queue and mark it as visited
-        queue.push(neighbor);
-        visited.add(neighbor);
+  // Iterate over each character of the strings
+  for (let i = 1; i <= str1.length; i++) {
+    for (let j = 1; j <= str2.length; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        matrix[i][j] = matrix[i - 1][j - 1] + 1; // increment the length of common substring
+        if (matrix[i][j] > maxLength) {
+          maxLength = matrix[i][j];
+          endIndex = i - 1;
+        }
+      } else {
+        matrix[i][j] = 0; // no common substring, so reset the length to zero
       }
     }
   }
-// Create nodes
-const nodeA = new Node("A");
-const nodeB = new Node("B");
-const nodeC = new Node("C");
-const nodeD = new Node("D");
-const nodeE = new Node("E");
 
-// Connect nodes
-nodeA.neighbors.push(nodeB, nodeC);
-nodeB.neighbors.push(nodeD, nodeE);
-nodeC.neighbors.push(nodeD);
-nodeE.neighbors.push(nodeB);
+  // Extract the longest common substring from str1 using endIndex and maxLength
+  const longestSubstring = str1.substr(endIndex - maxLength + 1, maxLength);
 
-// Perform breadth-first search starting from nodeA
-breadthFirstSearch(nodeA);
+  return longestSubstring;
+}
+
+// Example usage
+const string1 = "JavaScript is awesome!";
+const string2 = "I love JavaScript.";
+
+const commonSubstring = longestCommonSubstring(string1, string2);
+console.log(commonSubstring); // Output: " JavaScript "
