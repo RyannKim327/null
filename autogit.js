@@ -1,6 +1,13 @@
-let str = 'Hello   World!   ';
+function isAscending(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false;
+    }
+  }
+  return true;
+}
+const arr1 = [1, 2, 3, 4, 5];
+console.log(isAscending(arr1));  // Output: true
 
-// Remove all spaces
-let strWithoutSpaces = str.replace(/ /g, '');
-
-console.log(strWithoutSpaces); // Output: "HelloWorld!"
+const arr2 = [5, 4, 3, 2, 1];
+console.log(isAscending(arr2));  // Output: false
