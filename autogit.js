@@ -1,27 +1,54 @@
-function quickSort(arr) {
-  // Base case: An array of 0 or 1 elements is already sorted
-  if (arr.length <= 1) {
-    return arr;
+class Graph {
+  constructor() {
+    this.vertices = [];
+    this.adjList = new Map();
   }
 
-  // Choose a pivot element (can be random or middle)
-  const pivot = arr[Math.floor(arr.length / 2)];
+  addVertex(vertex) {
+    this.vertices.push(vertex);
+    this.adjList.set(vertex, []);
+  }
 
-  // Partition the array into two sub-arrays
-  const left = [];
-  const right = [];
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] < pivot) {
-      left.push(arr[i]);
-    } else if (arr[i] > pivot) {
-      right.push(arr[i]);
+  addEdge(v, w) {
+    this.adjList.get(v).push(w);
+    this.adjList.get(w).push(v);
+  }
+}
+function breadthFirstSearch(graph, startVertex) {
+  const visited = new Map();
+  const queue = [];
+
+  visited.set(startVertex, true);
+  queue.push(startVertex);
+
+  while (queue.length > 0) {
+    const vertex = queue.shift();
+    const neighbors = graph.adjList.get(vertex);
+
+    console.log(vertex); // Do something with the visited vertex, e.g., print it
+
+    for (const neighbor of neighbors) {
+      if (!visited.get(neighbor)) {
+        visited.set(neighbor, true);
+        queue.push(neighbor);
+      }
     }
   }
-
-  // Recursively sort the sub-arrays and join them with the pivot
-  return [...quickSort(left), pivot, ...quickSort(right)];
 }
+const graph = new Graph();
 
-// Usage example
-const array = [5, 3, 8, 4, 2, 1, 9, 6, 7];
-console.log(quickSort(array)); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+// Add vertices
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addVertex('E');
+graph.addVertex('F');
+
+// Add edges
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('B', 'E');
+graph.addEdge('C', 'F');
+breadthFirstSearch(graph, 'A');
