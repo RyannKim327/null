@@ -1,28 +1,116 @@
 class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+  constructor(data) {
+    this.data = data;
+    this.next = null;
   }
 }
 
-function countLeafNodes(root) {
-  if (root === null) {
-    return 0;
-  } else if (root.left === null && root.right === null) {
-    return 1;
-  } else {
-    return countLeafNodes(root.left) + countLeafNodes(root.right);
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+
+  // Method to add a node at the end of the linked list
+  append(data) {
+    const newNode = new Node(data);
+
+    if (this.head === null) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next !== null) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
+
+  // Method to insert a node at a given position
+  insertAt(data, position) {
+    const newNode = new Node(data);
+
+    if (position === 0) {
+      newNode.next = this.head;
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      let previous = null;
+      let count = 0;
+
+      while (count < position && current !== null) {
+        previous = current;
+        current = current.next;
+        count++;
+      }
+
+      previous.next = newNode;
+      newNode.next = current;
+    }
+  }
+
+  // Method to remove a node at a given position
+  removeAt(position) {
+    if (this.head === null) {
+      return;
+    }
+
+    let current = this.head;
+    let previous = null;
+    let count = 0;
+
+    if (position === 0) {
+      this.head = current.next;
+    } else {
+      while (count < position && current !== null) {
+        previous = current;
+        current = current.next;
+        count++;
+      }
+      previous.next = current.next;
+    }
+  }
+
+  // Method to get the length of the linked list
+  getLength() {
+    let count = 0;
+    let current = this.head;
+
+    while (current !== null) {
+      count++;
+      current = current.next;
+    }
+
+    return count;
+  }
+
+  // Method to print the linked list
+  print() {
+    let current = this.head;
+    let result = '';
+
+    while (current !== null) {
+      result += current.data + ' -> ';
+      current = current.next;
+    }
+
+    result += 'null';
+
+    console.log(result);
   }
 }
 
-// Example usage
-const tree = new Node(1);
-tree.left = new Node(2);
-tree.right = new Node(3);
-tree.left.left = new Node(4);
-tree.left.right = new Node(5);
-tree.right.left = new Node(6);
+// Usage example:
+const linkedList = new LinkedList();
+linkedList.append(1);
+linkedList.append(2);
+linkedList.append(3);
+linkedList.append(4);
+linkedList.print(); // Output: 1 -> 2 -> 3 -> 4 -> null
 
-const leafCount = countLeafNodes(tree);
-console.log(leafCount); // Output: 3
+linkedList.insertAt(5, 2);
+linkedList.print(); // Output: 1 -> 2 -> 5 -> 3 -> 4 -> null
+
+linkedList.removeAt(3);
+linkedList.print(); // Output: 1 -> 2 -> 5 -> 4 -> null
+
+console.log(linkedList.getLength()); // Output: 4
