@@ -1,20 +1,30 @@
-function insertionSort(arr) {
-  for (let i = 1; i < arr.length; i++) {
-    let key = arr[i];
-    let j = i - 1;
-    
-    // Move elements of `arr[0..i-1]`, that are greater than `key`, to one position ahead of their current position
-    while (j >= 0 && arr[j] > key) {
-      arr[j + 1] = arr[j];
-      j--;
-    }
-    
-    arr[j + 1] = key;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
-  
-  return arr;
 }
 
-// Example usage:
-let array = [5, 2, 6, 1, 3, 9];
-console.log(insertionSort(array)); // Output: [1, 2, 3, 5, 6, 9]
+function maxDepth(root) {
+  // Empty tree has a depth of 0
+  if (root === null) {
+    return 0;
+  }
+
+  // Recursively calculate the depth of the left and right subtrees
+  const leftDepth = maxDepth(root.left);
+  const rightDepth = maxDepth(root.right);
+
+  // Return the maximum depth plus one
+  return Math.max(leftDepth, rightDepth) + 1;
+}
+
+// Test the code
+const root = new Node(3);
+root.left = new Node(9);
+root.right = new Node(20);
+root.right.left = new Node(15);
+root.right.right = new Node(7);
+
+console.log(maxDepth(root)); // Output: 3 (from root to leaf node '7')
