@@ -1,54 +1,26 @@
-class Node {
-  constructor(value, parent = null) {
-    this.value = value;
-    this.children = [];
-    this.parent = parent;
+// Import required libraries
+const fetch = require('node-fetch');
+
+// Define the AsyncTask class
+class AsyncTask {
+  constructor(URL) {
+    this.URL = URL;
   }
 
-  addChild(value) {
-    const child = new Node(value, this);
-    this.children.push(child);
-    return child;
-  }
-}
-function breadthLimitedSearch(root, target, limit) {
-  const queue = [{ node: root, depth: 0 }];
+  async connect() {
+    try {
+      // Make a GET request to the Android backend
+      const response = await fetch(this.URL);
+      const data = await response.json();
 
-  while (queue.length > 0) {
-    const { node, depth } = queue.shift();
-
-    if (node.value === target) {
-      return node;
-    }
-
-    if (depth < limit) {
-      for (const child of node.children) {
-        queue.push({ node: child, depth: depth + 1 });
-      }
+      // Process the response here...
+      console.log(data);
+    } catch (error) {
+      console.log('An error occurred:', error);
     }
   }
-
-  return null; // Target not found within the specified limit
 }
-// Sample search space:
-//        A
-//      / | \
-//     B  C  D
-//    / \   / \
-//   E   F G   H
 
-const root = new Node('A');
-const nodeB = root.addChild('B');
-const nodeC = root.addChild('C');
-const nodeD = root.addChild('D');
-const nodeE = nodeB.addChild('E');
-const nodeF = nodeB.addChild('F');
-const nodeG = nodeD.addChild('G');
-const nodeH = nodeD.addChild('H');
-const targetNode = breadthLimitedSearch(root, 'G', 2);
-
-if (targetNode) {
-  console.log('Target found:', targetNode.value);
-} else {
-  console.log('Target not found within the limit');
-}
+// Create an instance of the AsyncTask and connect to the Android backend
+const asyncTask = new AsyncTask('http://your-android-backend.com/api');
+asyncTask.connect();
