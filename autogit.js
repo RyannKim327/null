@@ -1,20 +1,33 @@
-function isPrime(number) {
-  // 1 and numbers less than 1 are not prime
-  if (number <= 1) {
-    return false;
+function mergeSort(array) {
+  if (array.length <= 1) {
+    return array;
   }
 
-  // Check for divisibility starting from 2 up to the square root of the number
-  for (let i = 2; i <= Math.sqrt(number); i++) {
-    if (number % i === 0) {
-      return false;
+  const middle = Math.floor(array.length / 2);
+  const leftHalf = array.slice(0, middle);
+  const rightHalf = array.slice(middle);
+
+  return merge(mergeSort(leftHalf), mergeSort(rightHalf));
+}
+
+function merge(left, right) {
+  let result = [];
+  let leftIndex = 0;
+  let rightIndex = 0;
+
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] < right[rightIndex]) {
+      result.push(left[leftIndex]);
+      leftIndex++;
+    } else {
+      result.push(right[rightIndex]);
+      rightIndex++;
     }
   }
 
-  // Number is prime
-  return true;
+  return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
 }
-const number = 17;
-const isNumberPrime = isPrime(number);
-console.log(`Is ${number} a prime number? ${isNumberPrime}`);
-Is 17 a prime number? true
+const array = [4, 7, 2, 1, 9, 5];
+const sortedArray = mergeSort(array);
+console.log(sortedArray);
+// Output: [1, 2, 4, 5, 7, 9]
