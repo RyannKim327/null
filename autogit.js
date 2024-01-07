@@ -1,26 +1,25 @@
-// Import required libraries
-const fetch = require('node-fetch');
+const androidUrl = "https://example.com/android-api-endpoint";
 
-// Define the AsyncTask class
-class AsyncTask {
-  constructor(URL) {
-    this.URL = URL;
-  }
+async function connectToAndroid() {
+  try {
+    const response = await fetch(androidUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ data: "Hello, Android!" }),
+    });
 
-  async connect() {
-    try {
-      // Make a GET request to the Android backend
-      const response = await fetch(this.URL);
-      const data = await response.json();
-
-      // Process the response here...
-      console.log(data);
-    } catch (error) {
-      console.log('An error occurred:', error);
+    if (!response.ok) {
+      throw new Error("Failed to connect to Android device");
     }
+
+    const result = await response.json();
+    console.log(result);
+    // Do something with the result here
+  } catch (error) {
+    console.error("Error connecting to Android device:", error);
   }
 }
 
-// Create an instance of the AsyncTask and connect to the Android backend
-const asyncTask = new AsyncTask('http://your-android-backend.com/api');
-asyncTask.connect();
+connectToAndroid();
