@@ -1,14 +1,12 @@
 function isPalindrome(str) {
-  // Remove all non-alphanumeric characters and convert to lowercase
-  let formattedStr = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+  var length = str.length;
+  var middle = Math.floor(length / 2);
 
-  // Reverse the string
-  let reversedStr = formattedStr.split('').reverse().join('');
+  for (var i = 0; i < middle; i++) {
+    if (str[i] !== str[length - 1 - i]) {
+      return false;
+    }
+  }
 
-  // Compare the original string with the reversed string
-  return formattedStr === reversedStr;
+  return true;
 }
-
-// Example usage
-let string = "A man, a plan, a canal, Panama!";
-console.log(isPalindrome(string));  // Output: true
