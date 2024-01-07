@@ -1,3 +1,4 @@
+// Binary Tree Node Definition
 class Node {
   constructor(value) {
     this.value = value;
@@ -6,45 +7,43 @@ class Node {
   }
 }
 
-// Function to calculate the height of a binary tree
-function height(node) {
-  if (node === null)
+// Helper function to calculate tree height
+function getHeight(node) {
+  if (node === null) {
     return 0;
-  else {
-    let leftHeight = height(node.left);
-    let rightHeight = height(node.right);
-    return Math.max(leftHeight, rightHeight) + 1;
   }
+  return 1 + Math.max(getHeight(node.left), getHeight(node.right));
 }
 
-// Function to calculate the diameter of a binary tree
-function diameter(root) {
-  if (root === null)
+// Main function to calculate the diameter of binary tree
+function getDiameter(root) {
+  if (root === null) {
     return 0;
+  }
 
-  // Get the height of the left and right subtrees
-  let leftHeight = height(root.left);
-  let rightHeight = height(root.right);
+  // Calculate the height of the left and right subtrees
+  const leftHeight = getHeight(root.left);
+  const rightHeight = getHeight(root.right);
 
-  // Get the diameter of the left and right subtrees
-  let leftDiameter = diameter(root.left);
-  let rightDiameter = diameter(root.right);
+  // Calculate the diameter recursively
+  const leftDiameter = getDiameter(root.left);
+  const rightDiameter = getDiameter(root.right);
 
-  // Return the maximum of:
-  // 1. Diameter of the left subtree
-  // 2. Diameter of the right subtree
-  // 3. Length of the longest path that passes through the root
+  // Return the maximum diameter
   return Math.max(leftHeight + rightHeight + 1, Math.max(leftDiameter, rightDiameter));
 }
 
-// Create a binary tree
-let root = new Node(1);
+// Create a sample binary tree
+const root = new Node(1);
 root.left = new Node(2);
 root.right = new Node(3);
 root.left.left = new Node(4);
 root.left.right = new Node(5);
 root.right.left = new Node(6);
+root.right.right = new Node(7);
+root.right.left.right = new Node(8);
+root.right.right.left = new Node(9);
 
 // Calculate the diameter of the binary tree
-let treeDiameter = diameter(root);
-console.log("Diameter of the binary tree:", treeDiameter);
+const diameter = getDiameter(root);
+console.log("Diameter of the binary tree is: " + diameter);
