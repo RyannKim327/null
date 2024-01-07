@@ -1,57 +1,51 @@
-function heapSort(arr) {
-  // Build max heap
-  buildMaxHeap(arr);
-
-  // Extract the root element (largest) from the heap one by one
-  for (let i = arr.length - 1; i > 0; i--) {
-    // Move current root to the end (swapping)
-    swap(arr, 0, i);
-
-    // Max heapify the reduced heap
-    maxHeapify(arr, 0, i);
-  }
-
-  return arr;
-}
-
-function buildMaxHeap(arr) {
-  const n = arr.length;
-
-  // Start from the first non-leaf node and max heapify all nodes
-  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-    maxHeapify(arr, i, n);
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
-
-function maxHeapify(arr, i, size) {
-  const left = 2 * i + 1;
-  const right = 2 * i + 2;
-  let largest = i;
-
-  // Find the largest element among root, left child, and right child
-  if (left < size && arr[left] > arr[largest]) {
-    largest = left;
+class BinaryTree {
+  constructor() {
+    this.root = null;
   }
 
-  if (right < size && arr[right] > arr[largest]) {
-    largest = right;
+  insert(value) {
+    const newNode = new Node(value);
+
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
   }
 
-  // If the largest element is not the root, swap them
-  if (largest !== i) {
-    swap(arr, i, largest);
-
-    // Recursively max heapify the affected sub-tree
-    maxHeapify(arr, largest, size);
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
   }
 }
-
-function swap(arr, i, j) {
-  const temp = arr[i];
-  arr[i] = arr[j];
-  arr[j] = temp;
-}
-
-// Example usage:
-const array = [12, 11, 13, 5, 6, 7];
-console.log(heapSort(array)); // [5, 6, 7, 11, 12, 13]
+const tree = new BinaryTree();
+tree.insert(5);
+tree.insert(3);
+tree.insert(8);
+tree.insert(1);
+tree.insert(4);
+tree.insert(7);
+tree.insert(9);
+       5
+     /   \
+    3     8
+   / \   / \
+  1   4 7   9
