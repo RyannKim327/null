@@ -1,35 +1,38 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+function interpolationSearch(arr, target) {
+  // implementation goes here
 }
-
-function findSum(root) {
-  if (root === null) {
-    return 0;  // Base case: empty tree has sum 0
-  } else {
-    // Recursively find the sum of left and right subtrees
-    const leftSum = findSum(root.left);
-    const rightSum = findSum(root.right);
-
-    // Return the sum of current node value and sums of left and right subtrees
-    return root.value + leftSum + rightSum;
-  }
+let left = 0;
+let right = arr.length - 1;
+while (left <= right && target >= arr[left] && target <= arr[right]) {
+  // implementation goes here
 }
+let pos = left + Math.floor((target - arr[left]) * (right - left) / (arr[right] - arr[left]));
+if (arr[pos] === target) {
+  return pos;
+}
+if (arr[pos] < target) {
+  left = pos + 1;
+} else {
+  right = pos - 1;
+}
+return -1;
+function interpolationSearch(arr, target) {
+  let left = 0;
+  let right = arr.length - 1;
 
-// Example usage:
-const tree = new Node(1);
-tree.left = new Node(2);
-tree.right = new Node(3);
-tree.left.left = new Node(4);
-tree.left.right = new Node(5);
+  while (left <= right && target >= arr[left] && target <= arr[right]) {
+    let pos = left + Math.floor((target - arr[left]) * (right - left) / (arr[right] - arr[left]));
 
-const sum = findSum(tree);
-console.log('Sum of all nodes:', sum); // Output: 15
-      1
-     / \
-    2   3
-   / \
-  4   5
+    if (arr[pos] === target) {
+      return pos;
+    }
+
+    if (arr[pos] < target) {
+      left = pos + 1;
+    } else {
+      right = pos - 1;
+    }
+  }
+
+  return -1;
+}
