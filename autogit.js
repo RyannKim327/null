@@ -1,136 +1,88 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-    this.parent = null;
-    this.color = "black"; // Red nodes are represented by color "red" and black nodes by color "black"
-  }
+function fibonacciSearch(arr, x, n) {
+  // ...
 }
-class RedBlackTree {
-  constructor() {
-    this.root = null;
+function fibonacciSearch(arr, x, n) {
+  // Calculate Fibonacci numbers
+  let fib = [0, 1];
+  let fibM2 = fib[0];
+  let fibM1 = fib[1];
+  let fibM = fibM2 + fibM1;
+  while (fibM < n) {
+    fibM2 = fibM1;
+    fibM1 = fibM;
+    fibM = fibM2 + fibM1;
+    fib.push(fibM);
   }
-
-  // Helper method to perform left rotation
-  rotateLeft(node) {
-    const rightChild = node.right;
-    node.right = rightChild.left;
-
-    if (rightChild.left !== null)
-      rightChild.left.parent = node;
-
-    rightChild.parent = node.parent;
-
-    if (node.parent === null)
-      this.root = rightChild;
-    else if (node === node.parent.left)
-      node.parent.left = rightChild;
-    else
-      node.parent.right = rightChild;
-
-    rightChild.left = node;
-    node.parent = rightChild;
-  }
-
-  // Helper method to perform right rotation
-  rotateRight(node) {
-    const leftChild = node.left;
-    node.left = leftChild.right;
-
-    if (leftChild.right !== null)
-      leftChild.right.parent = node;
-
-    leftChild.parent = node.parent;
-
-    if (node.parent === null)
-      this.root = leftChild;
-    else if (node === node.parent.right)
-      node.parent.right = leftChild;
-    else
-      node.parent.left = leftChild;
-
-    leftChild.right = node;
-    node.parent = leftChild;
-  }
-
-  // Helper method to fix violations after insertion
-  fixViolation(node) {
-    while (node !== this.root && node.parent.color === "red") {
-      if (node.parent === node.parent.parent.left) {
-        const uncle = node.parent.parent.right;
-        if (uncle !== null && uncle.color === "red") {
-          node.parent.color = "black";
-          uncle.color = "black";
-          node.parent.parent.color = "red";
-          node = node.parent.parent;
-        } else {
-          if (node === node.parent.right) {
-            node = node.parent;
-            this.rotateLeft(node);
-          }
-          node.parent.color = "black";
-          node.parent.parent.color = "red";
-          this.rotateRight(node.parent.parent);
-        }
-      } else {
-        const uncle = node.parent.parent.left;
-        if (uncle !== null && uncle.color === "red") {
-          node.parent.color = "black";
-          uncle.color = "black";
-          node.parent.parent.color = "red";
-          node = node.parent.parent;
-        } else {
-          if (node === node.parent.left) {
-            node = node.parent;
-            this.rotateRight(node);
-          }
-          node.parent.color = "black";
-          node.parent.parent.color = "red";
-          this.rotateLeft(node.parent.parent);
-        }
-      }
-    }
-    this.root.color = "black";
-  }
-
-  // Insert a value into the tree
-  insert(value) {
-    const node = new Node(value);
-    let temp = null;
-    let current = this.root;
-
-    while (current !== null) {
-      temp = current;
-      if (value < current.value)
-        current = current.left;
-      else
-        current = current.right;
-    }
-
-    node.parent = temp;
-
-    if (temp === null)
-      this.root = node;
-    else if (value < temp.value)
-      temp.left = node;
-    else
-      temp.right = node;
-
-    this.fixViolation(node);
-  }
+  
+  // ...
 }
-const tree = new RedBlackTree();
-tree.insert(7);
-tree.insert(3);
-tree.insert(18);
-tree.insert(10);
-tree.insert(22);
-tree.insert(8);
-tree.insert(11);
-tree.insert(26);
-tree.insert(2);
-tree.insert(6);
-tree.insert(13);
+function fibonacciSearch(arr, x, n) {
+  // Calculate Fibonacci numbers
+  let fib = [0, 1];
+  let fibM2 = fib[0];
+  let fibM1 = fib[1];
+  let fibM = fibM2 + fibM1;
+  while (fibM < n) {
+    fibM2 = fibM1;
+    fibM1 = fibM;
+    fibM = fibM2 + fibM1;
+    fib.push(fibM);
+  }
 
-console.log(tree);
+  // Initialize variables
+  let offset = 0;
+  let i = fib.length - 1;
+
+  // ...
+}
+function fibonacciSearch(arr, x, n) {
+  // Calculate Fibonacci numbers
+  let fib = [0, 1];
+  let fibM2 = fib[0];
+  let fibM1 = fib[1];
+  let fibM = fibM2 + fibM1;
+  while (fibM < n) {
+    fibM2 = fibM1;
+    fibM1 = fibM;
+    fibM = fibM2 + fibM1;
+    fib.push(fibM);
+  }
+
+  // Initialize variables
+  let offset = 0;
+  let i = fib.length - 1;
+
+  // Perform search
+  while (i > 1) {
+    // Check if fib[i-2] is a valid index
+    let index = Math.min(offset + fib[i - 2], n - 1);
+
+    // If x is greater than the element at index, move the range to the right
+    if (arr[index] < x) {
+      i--;
+      offset = index;
+    }
+    // If x is smaller than the element at index, move the range to the left
+    else if (arr[index] > x) {
+      i -= 2;
+    }
+    // If x is found, return the index
+    else {
+      return index;
+    }
+  }
+
+  // If x is present at the last position
+  if (arr[offset + 1] === x) {
+    return offset + 1;
+  }
+
+  // If element is not found, return -1
+  return -1;
+}
+// Example usage
+let arr = [1, 3, 5, 7, 9, 11, 13];
+let x = 9;
+let n = arr.length;
+let result = fibonacciSearch(arr, x, n);
+console.log("Element found at index:", result);
