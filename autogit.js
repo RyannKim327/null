@@ -1,26 +1,32 @@
-function findFirstNonRepeatingChar(str) {
-  // Create an empty object to store character frequencies
-  const charFreq = {};
-
-  // Loop through each character in the string and count its frequency
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    charFreq[char] = charFreq[char] + 1 || 1;
-  }
-
-  // Loop through the string again and find the first character with a frequency of 1
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    if (charFreq[char] === 1) {
-      return char;
-    }
-  }
-
-  // If no non-repeating character is found, return null
-  return null;
+function ListNode(val) {
+  this.val = val;
+  this.next = null;
 }
 
-// Example usage
-const str = "aabbccddee";
-const firstNonRepeatingChar = findFirstNonRepeatingChar(str);
-console.log(firstNonRepeatingChar);
+function isLinkedListPalindrome(head) {
+  let slow = head;
+  let fast = head;
+  const stack = [];
+
+  // Find the middle of the linked list
+  while (fast && fast.next) {
+    stack.push(slow.val);
+    slow = slow.next;
+    fast = fast.next.next;
+  }
+
+  if (fast) {
+    // The linked list is odd in length, skip the middle node
+    slow = slow.next;
+  }
+
+  // Traverse the remaining nodes and compare with stack values
+  while (slow) {
+    if (slow.val !== stack.pop()) {
+      return false;
+    }
+    slow = slow.next;
+  }
+
+  return true;
+}
