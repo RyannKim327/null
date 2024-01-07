@@ -1,19 +1,26 @@
-function isLinkedListPalindrome(head) {
-  let current = head;
-  let values = [];
+function shellSort(arr) {
+  const len = arr.length;
+  let gap = Math.floor(len / 2);
 
-  // Traverse the linked list and store the values in an array
-  while (current) {
-    values.push(current.value);
-    current = current.next;
-  }
-
-  // Compare the array elements from both ends
-  while (values.length > 1) {
-    if (values.shift() !== values.pop()) {
-      return false;
+  while (gap > 0) {
+    for (let i = gap; i < len; i++) {
+        const temp = arr[i];
+        let j = i;
+      
+        while (j >= gap && arr[j - gap] > temp) {
+            arr[j] = arr[j - gap];
+            j -= gap;
+        }
+      
+        arr[j] = temp;
     }
+    
+    gap = Math.floor(gap / 2);
   }
-
-  return true;
+  
+  return arr;
 }
+
+// Example usage:
+const array = [8, 3, 1, 5, 2];
+console.log(shellSort(array)); // Output: [1, 2, 3, 5, 8]
