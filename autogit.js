@@ -1,33 +1,34 @@
-function mergeSort(array) {
-  if (array.length <= 1) {
-    return array;
-  }
+function isPalindrome(str) {
+  let leftPtr = 0;
+  let rightPtr = str.length - 1;
 
-  const middle = Math.floor(array.length / 2);
-  const leftHalf = array.slice(0, middle);
-  const rightHalf = array.slice(middle);
-
-  return merge(mergeSort(leftHalf), mergeSort(rightHalf));
-}
-
-function merge(left, right) {
-  let result = [];
-  let leftIndex = 0;
-  let rightIndex = 0;
-
-  while (leftIndex < left.length && rightIndex < right.length) {
-    if (left[leftIndex] < right[rightIndex]) {
-      result.push(left[leftIndex]);
-      leftIndex++;
-    } else {
-      result.push(right[rightIndex]);
-      rightIndex++;
+  while (leftPtr < rightPtr) {
+    // Ignore non-alphanumeric characters
+    while (!isAlphanumeric(str.charAt(leftPtr))) {
+      leftPtr++;
     }
+    while (!isAlphanumeric(str.charAt(rightPtr))) {
+      rightPtr--;
+    }
+
+    const leftChar = str.charAt(leftPtr).toLowerCase();
+    const rightChar = str.charAt(rightPtr).toLowerCase();
+
+    if (leftChar !== rightChar) {
+      return false;
+    }
+
+    leftPtr++;
+    rightPtr--;
   }
 
-  return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+  return true;
 }
-const array = [4, 7, 2, 1, 9, 5];
-const sortedArray = mergeSort(array);
-console.log(sortedArray);
-// Output: [1, 2, 4, 5, 7, 9]
+
+function isAlphanumeric(char) {
+  return /[a-zA-Z0-9]/.test(char);
+}
+
+// Example usage:
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // Output: true
+console.log(isPalindrome("race a car")); // Output: false
