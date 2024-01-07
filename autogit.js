@@ -1,11 +1,12 @@
-function getLinkedListLength(head) {
-  let length = 0;
-  let current = head;
-  
-  while (current !== null) {
-    length++;
-    current = current.next;
-  }
-  
-  return length;
-}
+var str = "  Hello,  World!  ";
+var result = str.replace(/\s/g, "");
+console.log(result); // Output: "Hello,World!"
+var str = "  Hello,  World!  ";
+var result = str.trim();
+console.log(result); // Output: "Hello,  World!"
+var str = "  Hello,  World!  ";
+var result = str.trim().replace(/\s+/g, "");
+console.log(result); // Output: "Hello,World!"
+var str = "  Hello,  World!  ";
+var result = str.split(" ").join("");
+console.log(result); // Output: "Hello,World!"
