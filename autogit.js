@@ -1,47 +1,37 @@
-class Node {
-  constructor(data, next = null) {
-    this.data = data;
-    this.next = next;
-  }
-}
+function boyerMooreHorspool(text, pattern) {
+  const table = createBadCharTable(pattern);
+  const patternLength = pattern.length;
+  const textLength = text.length;
+  let shift = 0;
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+  while (shift <= textLength - patternLength) {
+    let j = patternLength - 1;
 
-  // Method to add a node to the end of the list
-  add(data) {
-    const newNode = new Node(data);
-
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
-
-  // Method to find the length of the list
-  length() {
-    let count = 0;
-    let current = this.head;
-
-    while (current) {
-      count++;
-      current = current.next;
+    while (j >= 0 && pattern[j] === text[shift + j]) {
+      j--;
     }
 
-    return count;
+    if (j === -1) {
+      return shift;
+    }
+
+    shift += table[text[shift + patternLength - 1]] || patternLength;
   }
+
+  return -1;
 }
 
-// Example usage
-const list = new LinkedList();
-list.add(1);
-list.add(2);
-list.add(3);
-console.log(list.length()); // Output: 3
+function createBadCharTable(pattern) {
+  const table = {};
+
+  for (let i = 0; i < pattern.length - 1; i++) {
+    table[pattern[i]] = pattern.length - 1 - i;
+  }
+
+  return table;
+}
+const text = "Lorem ipsum dolor sit amet";
+const pattern = "ipsum";
+
+const result = boyerMooreHorspool(text, pattern);
+console.log(result); // Output: 6 (index where the pattern starts)
