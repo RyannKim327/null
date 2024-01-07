@@ -1,45 +1,79 @@
-function calculateHash(str) {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash += str.charCodeAt(i);
+class Node {
+  constructor(state, gScore, hScore, parent) {
+    this.state = state;
+    this.gScore = gScore;
+    this.hScore = hScore;
+    this.fScore = gScore + hScore;
+    this.parent = parent;
   }
-  return hash;
 }
-function rabinKarpSearch(pattern, text) {
-  const patternHash = calculateHash(pattern);
-  const patternLen = pattern.length;
-  const textLen = text.length;
+function heuristic(node, goal) {
+  // Calculate the heuristic value (e.g., Manhattan distance, Euclidean distance, etc.)
+  // based on the current node's state and the goal state
+  // Return the heuristic value
+}
+function aStar(start, goal) {
+  const openSet = [];
+  const closedSet = new Set();
 
-  // Calculate the initial hash of the first substring of the text
-  let textHash = calculateHash(text.substring(0, patternLen));
+  // Create a start node and add it to the open set
+  const startNode = new Node(start, 0, heuristic(start, goal), null);
+  openSet.push(startNode);
 
-  // Iterate through each substring of text of length equal to the pattern length
-  for (let i = 0; i <= textLen - patternLen; i++) {
-    // Check if the current substring's hash matches the pattern's hash
-    if (textHash === patternHash) {
-      let found = true;
-      // Compare each character of the substring with the pattern
-      for (let j = 0; j < patternLen; j++) {
-        if (text[i + j] !== pattern[j]) {
-          found = false;
-          break;
-        }
+  while (openSet.length > 0) {
+    // Find the node with the lowest fScore in the open set (minHeap can be used for performance improvement)
+    const current = openSet.sort((a, b) => a.fScore - b.fScore)[0];
+    
+    // Goal state found
+    if (current.state === goal) {
+      // Generate the path from start node to goal node
+      let path = [];
+      let node = current;
+      while (node != null) {
+        path.push(node.state);
+        node = node.parent;
       }
-      // If the substring matches the pattern, return the starting index
-      if (found) {
-        return i;
+      path.reverse();
+      return path;
+    }
+
+    // Remove current node from open set and add it to closed set
+    openSet.splice(openSet.indexOf(current), 1);
+    closedSet.add(current.state);
+
+    // Generate neighbors of the current node
+    const neighbors = generateNeighbors(current.state);
+
+    for (const neighborState of neighbors) {
+      // Ignore the neighbor if it is already in the closed set
+      if (closedSet.has(neighborState)) {
+        continue;
+      }
+
+      // Calculate the gScore for this neighbor
+      const gScore = current.gScore + distance(current.state, neighborState);
+
+      // Check if the neighbor is already in the open set or not
+      let neighborNode = openSet.find((node) => node.state === neighborState);
+
+      if (!neighborNode) {
+        // Create a new node for the neighbor and add it to the open set
+        neighborNode = new Node(
+          neighborState,
+          gScore,
+          heuristic(neighborState, goal),
+          current
+        );
+        openSet.push(neighborNode);
+      } else if (gScore < neighborNode.gScore) {
+        // Update the gScore and fScore of the neighbor node
+        neighborNode.gScore = gScore;
+        neighborNode.fScore = gScore + neighborNode.hScore;
+        neighborNode.parent = current;
       }
     }
-    // Calculate the hash of the next substring using a rolling hash technique
-    textHash -= text.charCodeAt(i);
-    textHash += text.charCodeAt(i + patternLen);
   }
 
-  // Pattern not found, return -1
-  return -1;
+  // No path found
+  return null;
 }
-const pattern = "ABC";
-const text = "ABCDABCEABC";
-const result = rabinKarpSearch(pattern, text);
-console.log(`Pattern found at index: ${result}`);
-Pattern found at index: 0
