@@ -1,16 +1,16 @@
-function isAnagram(str1, str2) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  const cleanStr1 = str1.replace(/[^\w]/g, "").toLowerCase();
-  const cleanStr2 = str2.replace(/[^\w]/g, "").toLowerCase();
-
-  // Split the string into an array, sort it, and join back into a string
-  const sortedStr1 = cleanStr1.split("").sort().join("");
-  const sortedStr2 = cleanStr2.split("").sort().join("");
-
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+function quicksort(array) {
+    if (array.length <= 1) {
+        return array; // base case: array is already sorted
+    } else {
+        const pivot = array[Math.floor(Math.random() * array.length)]; // choose a random pivot
+        const less = array.filter(value => value < pivot); // elements less than pivot
+        const equal = array.filter(value => value === pivot); // elements equal to pivot
+        const greater = array.filter(value => value > pivot); // elements greater than pivot
+        return [...quicksort(less), ...equal, ...quicksort(greater)]; // merge the sorted sub-arrays
+    }
 }
 
 // Example usage:
-console.log(isAnagram("listen", "silent")); // true
-console.log(isAnagram("hello", "world")); // false
+const unsortedArray = [5, 3, 1, 6, 4, 2];
+const sortedArray = quicksort(unsortedArray);
+console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 6]
