@@ -1,20 +1,24 @@
-function insertionSort(array) {
-  for (let i = 1; i < array.length; i++) {
-    const currentValue = array[i];
-    let j = i - 1;
-    
-    while (j >= 0 && array[j] > currentValue) {
-      array[j + 1] = array[j];
-      j--;
-    }
-    
-    array[j + 1] = currentValue;
-  }
+function shellSort(array) {
+  let gap = Math.floor(array.length / 2);
   
+  while (gap > 0) {
+    for (let i = gap; i < array.length; i++) {
+      let temp = array[i];
+      let j = i;
+
+      while (j >= gap && array[j - gap] > temp) {
+        array[j] = array[j - gap];
+        j -= gap;
+      }
+
+      array[j] = temp;
+    }
+
+    gap = Math.floor(gap / 2);
+  }
+
   return array;
 }
-
-// Example usage:
-const unsortedArray = [5, 2, 4, 6, 1, 3];
-const sortedArray = insertionSort(unsortedArray);
+const unsortedArray = [9, 5, 1, 8, 3, 7, 6, 2, 4];
+const sortedArray = shellSort(unsortedArray);
 console.log(sortedArray);
