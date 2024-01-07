@@ -1,47 +1,11 @@
-// Node class to represent a tree node
-class Node {
-  constructor(value, children = []) {
-    this.value = value;
-    this.children = children;
-  }
-}
-
-// Iterative depth-limited search algorithm
-function depthLimitedSearch(root, target, maxDepth) {
-  let stack = [{ node: root, depth: 0 }];
-
-  while (stack.length > 0) {
-    let { node, depth } = stack.pop();
-
-    if (node.value === target) {
-      return node;
-    }
-
-    if (depth < maxDepth) {
-      for (let i = node.children.length - 1; i >= 0; i--) {
-        stack.push({ node: node.children[i], depth: depth + 1 });
-      }
-    }
-  }
-
-  return null;
+function decimalToBinary(decimal) {
+  return decimal.toString(2);
 }
 
 // Example usage
-let tree = new Node(1, [
-  new Node(2, [
-    new Node(4),
-    new Node(5),
-  ]),
-  new Node(3, [
-    new Node(6),
-    new Node(7),
-  ]),
-]);
-
-let result = depthLimitedSearch(tree, 6, 2);
-if (result) {
-  console.log("Node found:", result);
-} else {
-  console.log("Node not found.");
-}
+console.log(decimalToBinary(10)); // Output: 1010
+console.log(decimalToBinary(23)); // Output: 10111
+console.log(decimalToBinary(57)); // Output: 111001
+const binaryString = decimalToBinary(10); // "1010"
+const binaryNumber = parseInt(binaryString, 2);
+console.log(binaryNumber); // Output: 10
