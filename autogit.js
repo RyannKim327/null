@@ -1,54 +1,18 @@
-class Node {
-  constructor(value, next = null) {
-    this.value = value;
-    this.next = next;
-  }
-}
+function largestPrimeFactor(number) {
+  let num = number;
+  let largestPrime = 2;
 
-function reverseLinkedList(head) {
-  let current = head;
-  let previous = null;
-
-  while (current) {
-    let nextNode = current.next;
-    current.next = previous;
-    previous = current;
-    current = nextNode;
+  while (num > 1) {
+    if (num % largestPrime === 0) {
+      num /= largestPrime;
+    } else {
+      largestPrime++;
+    }
   }
 
-  return previous;
-}
-// Create the linked list: 1 -> 2 -> 3 -> 4 -> 5
-const node5 = new Node(5);
-const node4 = new Node(4, node5);
-const node3 = new Node(3, node4);
-const node2 = new Node(2, node3);
-const node1 = new Node(1, node2);
-
-console.log("Original linked list:");
-let current = node1;
-while (current) {
-  console.log(current.value);
-  current = current.next;
+  return largestPrime;
 }
 
-const reversedHead = reverseLinkedList(node1);
-
-console.log("Reversed linked list:");
-current = reversedHead;
-while (current) {
-  console.log(current.value);
-  current = current.next;
-}
-Original linked list:
-1
-2
-3
-4
-5
-Reversed linked list:
-5
-4
-3
-2
-1
+// Example usage:
+console.log(largestPrimeFactor(13195)); // Output: 29 (largest prime factor of 13195)
+console.log(largestPrimeFactor(600851475143)); // Output: 6857 (largest prime factor of 600851475143)
