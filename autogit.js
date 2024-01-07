@@ -1,20 +1,19 @@
-function areAnagrams(string1, string2) {
-  // Remove whitespace and convert to lowercase
-  string1 = string1.replace(/\s/g, '').toLowerCase();
-  string2 = string2.replace(/\s/g, '').toLowerCase();
-
-  // Convert strings to sorted arrays of characters
-  const sorted1 = string1.split('').sort();
-  const sorted2 = string2.split('').sort();
-
-  // Compare sorted arrays
-  return sorted1.join('') === sorted2.join('');
+function factorialRecursive(n) {
+  if (n === 0) {
+    return 1;
+  }
+  return n * factorialRecursive(n - 1);
 }
-const string1 = 'listen';
-const string2 = 'silent';
 
-if (areAnagrams(string1, string2)) {
-  console.log('The strings are anagrams.');
-} else {
-  console.log('The strings are not anagrams.');
+// Example usage:
+console.log(factorialRecursive(5)); // 120
+function factorialIterative(n) {
+  let factorial = 1;
+  for (let i = 1; i <= n; i++) {
+    factorial *= i;
+  }
+  return factorial;
 }
+
+// Example usage:
+console.log(factorialIterative(5)); // 120
