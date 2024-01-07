@@ -1,21 +1,22 @@
-function binarySearchRecursive(arr, target, low = 0, high = arr.length - 1) {
-  if (low > high) {
-    return -1;  // Base case: target not found
+function depthLimitedSearchIterative(root, targetValue, depthLimit) {
+  const stack = [{ node: root, depth: 0 }];
+
+  while (stack.length > 0) {
+    const { node, depth } = stack.pop();
+
+    // Check if the current node matches the target value
+    if (node.value === targetValue) {
+      return node;
+    }
+
+    // Check if the current depth exceeds the depth limit
+    if (depth < depthLimit) {
+      // Add all child nodes to the stack
+      node.children.forEach(child => {
+        stack.push({ node: child, depth: depth + 1 });
+      });
+    }
   }
 
-  const mid = Math.floor((low + high) / 2);
-
-  if (arr[mid] === target) {
-    return mid;  // Base case: target found
-  } else if (arr[mid] > target) {
-    return binarySearchRecursive(arr, target, low, mid - 1);  // Search the left half
-  } else {
-    return binarySearchRecursive(arr, target, mid + 1, high);  // Search the right half
-  }
+  return null; // Return null if the target value is not found within the depth limit
 }
-
-// Example usage:
-const numbers = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
-const targetNumber = 13;
-const index = binarySearchRecursive(numbers, targetNumber);
-console.log(index);  // Output: 6
