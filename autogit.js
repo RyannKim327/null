@@ -1,44 +1,42 @@
-// Node structure for the binary tree
 class Node {
-  constructor(value) {
+  constructor(value, next = null) {
     this.value = value;
-    this.left = null;
-    this.right = null;
+    this.next = next;
   }
 }
 
-// Function to calculate the height of a binary tree
-function getHeight(node) {
-  if (node == null) return 0;
-  return 1 + Math.max(getHeight(node.left), getHeight(node.right));
+function isPalindrome(head) {
+  let values = [];
+
+  while (head) {
+    values.push(head.value);
+    head = head.next;
+  }
+
+  let start = 0;
+  let end = values.length - 1;
+
+  while (start < end) {
+    if (values[start] !== values[end]) {
+      return false;
+    }
+    start++;
+    end--;
+  }
+  
+  return true;
 }
 
-// Function to calculate the diameter of a binary tree
-function getDiameter(node) {
-  if (node == null) return 0;
+// Example usage:
+const node1 = new Node('a');
+const node2 = new Node('b');
+const node3 = new Node('c');
+const node4 = new Node('b');
+const node5 = new Node('a');
 
-  // Get the heights of the left and right subtrees
-  const leftHeight = getHeight(node.left);
-  const rightHeight = getHeight(node.right);
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node5;
 
-  // Get the diameters of the left and right subtrees recursively
-  const leftDiameter = getDiameter(node.left);
-  const rightDiameter = getDiameter(node.right);
-
-  // Return the maximum of:
-  // 1. Diameter of the current node's subtree (through the root)
-  // 2. Diameter of the left subtree
-  // 3. Diameter of the right subtree
-  return Math.max(leftHeight + rightHeight + 1, Math.max(leftDiameter, rightDiameter));
-}
-// Create the binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-// Calculate the diameter
-const diameter = getDiameter(root);
-console.log("Diameter of the binary tree:", diameter);
-Diameter of the binary tree: 4
+console.log(isPalindrome(node1)); // Output: true
