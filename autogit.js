@@ -1,34 +1,120 @@
-function longestCommonSubstring(str1, str2) {
-  const m = str1.length;
-  const n = str2.length;
-  let maxLength = 0;
-  let endIndex = 0;
+function Graph() {
+  this.vertices = {};
+}
 
-  // Create a 2D table to store the lengths of common substrings
-  const table = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+Graph.prototype.addVertex = function (vertex) {
+  this.vertices[vertex] = {};
+};
 
-  // Fill the table based on the LCS algorithm
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        table[i][j] = table[i - 1][j - 1] + 1;
-        if (table[i][j] > maxLength) {
-          maxLength = table[i][j];
-          endIndex = i - 1;
+Graph.prototype.addEdge = function (vertex1, vertex2, weight) {
+  this.vertices[vertex1][vertex2] = weight;
+  this.vertices[vertex2][vertex1] = weight;
+};
+
+// Example usage:
+// const graph = new Graph();
+// graph.addVertex("A");
+// graph.addVertex("B");
+// graph.addEdge("A", "B", 5);
+function dijkstra(graph, startVertex, targetVertex) {
+  const distances = {};
+  const visited = {};
+  const previous = {};
+  const queue = new PriorityQueue();
+
+  // Initialize distances, visited, and previous
+  for (let vertex in graph.vertices) {
+    distances[vertex] = vertex === startVertex ? 0 : Infinity;
+    visited[vertex] = false;
+    previous[vertex] = null;
+    queue.enqueue(vertex, distances[vertex]);
+  }
+
+  // Process vertices until target vertex is reached
+  while (!queue.isEmpty()) {
+    const currVertex = queue.dequeue().element;
+
+    if (currVertex === targetVertex) {
+      // Backtrack to find the shortest path
+      const path = [];
+      let vertex = targetVertex;
+
+      while (vertex !== null) {
+        path.unshift(vertex);
+        vertex = previous[vertex];
+      }
+
+      return { path, distance: distances[targetVertex] };
+    }
+
+    if (!visited[currVertex]) {
+      visited[currVertex] = true;
+
+      for (let neighbor in graph.vertices[currVertex]) {
+        const distance = graph.vertices[currVertex][neighbor];
+        const totalDistance = distances[currVertex] + distance;
+
+        if (totalDistance < distances[neighbor]) {
+          distances[neighbor] = totalDistance;
+          previous[neighbor] = currVertex;
+          queue.enqueue(neighbor, totalDistance);
         }
-      } else {
-        table[i][j] = 0;
       }
     }
   }
 
-  // Extract the longest common substring by its endIndex and maxLength
-  const longestSubstring = str1.substr(endIndex - maxLength + 1, maxLength);
-  return longestSubstring;
+  return { path: null, distance: Infinity }; // No path found
+}
+function PriorityQueue() {
+  this.items = [];
 }
 
-// Example usage:
-const str1 = "abcdxyze";
-const str2 = "xyzabcde";
-const longestSubstring = longestCommonSubstring(str1, str2);
-console.log(longestSubstring); // Output: "abc"
+function QueueElement(element, priority) {
+  this.element = element;
+  this.priority = priority;
+}
+
+PriorityQueue.prototype.enqueue = function (element, priority) {
+  const queueElement = new QueueElement(element, priority);
+  let added = false;
+
+  for (let i = 0; i < this.items.length; i++) {
+    if (queueElement.priority < this.items[i].priority) {
+      this.items.splice(i, 0, queueElement);
+      added = true;
+      break;
+    }
+  }
+
+  if (!added) {
+    this.items.push(queueElement);
+  }
+};
+
+PriorityQueue.prototype.dequeue = function () {
+  if (this.isEmpty()) {
+    return null;
+  }
+
+  return this.items.shift();
+};
+
+PriorityQueue.prototype.isEmpty = function () {
+  return this.items.length === 0;
+};
+const graph = new Graph();
+graph.addVertex("A");
+graph.addVertex("B");
+graph.addVertex("C");
+graph.addVertex("D");
+graph.addEdge("A", "B", 5);
+graph.addEdge("B", "C", 2);
+graph.addEdge("C", "D", 3);
+graph.addEdge("A", "D", 9);
+
+const start = "A";
+const target = "D";
+
+const result = dijkstra(graph, start, target);
+console.log(result.path); // Output: [ 'A', 'B', 'C', 'D' ]
+console.log(result.distance); // Output: 10
