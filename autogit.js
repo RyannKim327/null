@@ -1,41 +1,45 @@
-class TreeNode {
-  constructor(val, left = null, right = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
+function calculateHash(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash += str.charCodeAt(i);
   }
+  return hash;
 }
+function rabinKarpSearch(pattern, text) {
+  const patternHash = calculateHash(pattern);
+  const patternLen = pattern.length;
+  const textLen = text.length;
 
-function findMaxDepth(root) {
-  if (!root) {
-    return 0;
-  }
-  
-  const stack = [{ node: root, depth: 1 }];
-  let maxDepth = 0;
-  
-  while (stack.length > 0) {
-    const { node, depth } = stack.pop();
-    maxDepth = Math.max(maxDepth, depth);
-    
-    if (node.left) {
-      stack.push({ node: node.left, depth: depth + 1 });
+  // Calculate the initial hash of the first substring of the text
+  let textHash = calculateHash(text.substring(0, patternLen));
+
+  // Iterate through each substring of text of length equal to the pattern length
+  for (let i = 0; i <= textLen - patternLen; i++) {
+    // Check if the current substring's hash matches the pattern's hash
+    if (textHash === patternHash) {
+      let found = true;
+      // Compare each character of the substring with the pattern
+      for (let j = 0; j < patternLen; j++) {
+        if (text[i + j] !== pattern[j]) {
+          found = false;
+          break;
+        }
+      }
+      // If the substring matches the pattern, return the starting index
+      if (found) {
+        return i;
+      }
     }
-    
-    if (node.right) {
-      stack.push({ node: node.right, depth: depth + 1 });
-    }
+    // Calculate the hash of the next substring using a rolling hash technique
+    textHash -= text.charCodeAt(i);
+    textHash += text.charCodeAt(i + patternLen);
   }
-  
-  return maxDepth;
+
+  // Pattern not found, return -1
+  return -1;
 }
-
-// Example usage:
-const tree = new TreeNode(1);
-tree.left = new TreeNode(2);
-tree.right = new TreeNode(3);
-tree.left.left = new TreeNode(4);
-tree.left.right = new TreeNode(5);
-tree.right.right = new TreeNode(6);
-
-console.log(findMaxDepth(tree)); // Output: 3
+const pattern = "ABC";
+const text = "ABCDABCEABC";
+const result = rabinKarpSearch(pattern, text);
+console.log(`Pattern found at index: ${result}`);
+Pattern found at index: 0
