@@ -1,33 +1,39 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function generateInitialSolutions(seed, beamWidth) {
+  let solutions = [];
+  for (let i = 0; i < beamWidth; i++) {
+    // Generate a new initial candidate solution
+    let candidate = /* your code to generate a candidate */;
+    solutions.push({ path: [candidate], score: 0 });
   }
+  return solutions;
 }
-
-function countLeafNodes(root) {
-  if (root === null) {
-    return 0;
+function expandSolutions(solutions, beamWidth) {
+  let expandedSolutions = [];
+  for (let i = 0; i < solutions.length; i++) {
+    let currentSolution = solutions[i];
+    // Expand the current solution to get more candidate solutions
+    let candidateSolutions = /* your code to expand the current solution */;
+    for (let j = 0; j < candidateSolutions.length; j++) {
+      let candidate = candidateSolutions[j];
+      let path = currentSolution.path.slice();
+      path.push(candidate);
+      let score = currentSolution.score + /* your code to calculate the score */;
+      expandedSolutions.push({ path, score });
+    }
   }
-  if (root.left === null && root.right === null) {
-    return 1;
-  }
-  
-  const leftCount = countLeafNodes(root.left);
-  const rightCount = countLeafNodes(root.right);
-  
-  return leftCount + rightCount;
+  return expandedSolutions.sort((a, b) => b.score - a.score).slice(0, beamWidth);
 }
-// Create a binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
+function beamSearch(seed, beamWidth, maxIterations) {
+  let solutions = generateInitialSolutions(seed, beamWidth);
+  for (let i = 0; i < maxIterations; i++) {
+    solutions = expandSolutions(solutions, beamWidth);
+  }
+  return solutions[0].path; // Return the best path found
+}
+const seed = /* your initial seed */;
+const beamWidth = /* your desired beam width */;
+const maxIterations = /* your desired maximum number of iterations */;
 
-// Count the leaf nodes
-const leafNodeCount = countLeafNodes(root);
-console.log("Number of leaf nodes:", leafNodeCount); // Output: Number of leaf nodes: 4
+const bestPath = beamSearch(seed, beamWidth, maxIterations);
+
+console.log("Best Path:", bestPath);
