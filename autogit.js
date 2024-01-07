@@ -1,21 +1,29 @@
-function interpolationSearch(arr, value, startIdx = 0, endIdx = arr.length - 1) {
-  if (startIdx > endIdx || value < arr[startIdx] || value > arr[endIdx]) {
-    return -1;
-  }
-
-  const range = arr[endIdx] - arr[startIdx];
-  const pos = startIdx + Math.floor(((value - arr[startIdx]) / range) * (endIdx - startIdx));
-
-  if (arr[pos] === value) {
-    return pos;
-  } else if (arr[pos] > value) {
-    return interpolationSearch(arr, value, startIdx, pos - 1);
-  } else {
-    return interpolationSearch(arr, value, pos + 1, endIdx);
+class ListNode {
+  constructor(val, next = null) {
+    this.val = val;
+    this.next = next;
   }
 }
 
+function findMiddleElement(head) {
+  let slow = head;
+  let fast = head;
+
+  // Move slow pointer by 1 and fast pointer by 2.
+  // When the fast pointer reaches the end, the slow pointer will be at the middle.
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
+  }
+
+  return slow.val;
+}
+
 // Example usage:
-const arr = [1, 3, 5, 7, 9, 11];
-const index = interpolationSearch(arr, 5);
-console.log(index); // Output: 2
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+console.log(findMiddleElement(head)); // Output: 3
