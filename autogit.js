@@ -1,23 +1,34 @@
-// Function to fetch weather info using API
-async function fetchWeatherInfo(location) {
-  const apiKey = 'YOUR_API_KEY'; // Replace with your OpenWeatherMap API key
-  const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}`;
+function countingSort(arr, radix, divisor) {
+  const n = arr.length;
+  const output = new Array(n).fill(0);
+  const count = new Array(10).fill(0);
 
-  try {
-    const response = await fetch(apiUrl);
-    const data = await response.json();
+  for (let i = 0; i < n; i++) {
+    count[Math.floor(arr[i] / divisor) % radix]++;
+  }
 
-    // Extract relevant information from the API response
-    const weather = data.weather[0].main;
-    const temperature = data.main.temp;
+  for (let i = 1; i < 10; i++) {
+    count[i] += count[i - 1];
+  }
 
-    console.log(`Weather in ${location}: ${weather}`);
-    console.log(`Temperature: ${temperature}°C`);
-  } catch (error) {
-    console.log('An error occurred while fetching weather data:', error.message);
+  for (let i = n - 1; i >= 0; i--) {
+    output[count[Math.floor(arr[i] / divisor) % radix] - 1] = arr[i];
+    count[Math.floor(arr[i] / divisor) % radix]--;
+  }
+
+  for (let i = 0; i < n; i++) {
+    arr[i] = output[i];
   }
 }
+function radixSort(arr) {
+  const max = Math.max(...arr);
 
-// Call the fetchWeatherInfo function with a location
-const location = 'London'; // Replace with your desired location
-fetchWeatherInfo(location);
+  for (let divisor = 1; Math.floor(max / divisor) > 0; divisor *= 10) {
+    countingSort(arr, 10, divisor);
+  }
+
+  return arr;
+}
+const array = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArray = radixSort(array);
+console.log(sortedArray); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
