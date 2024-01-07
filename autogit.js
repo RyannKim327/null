@@ -1,33 +1,55 @@
-function binarySearchRecursive(arr, target, left, right) {
-  // Base case: If the left index becomes greater than the right index, target is not found
-  if (left > right) {
-    return -1;
+function findKthSmallest(arr, k) {
+  // Sort the array in ascending order
+  const sortedArr = arr.slice().sort((a, b) => a - b);
+
+  // Return the kth smallest element
+  return sortedArr[k - 1];
+}
+
+// Example usage
+const array = [4, 2, 9, 6, 5, 1];
+const k = 3;
+const result = findKthSmallest(array, k);
+console.log(result);  // Output: 4
+function partition(arr, left, right) {
+  const pivot = arr[right];
+  let i = left;
+
+  for (let j = left; j < right; j++) {
+    if (arr[j] <= pivot) {
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+      i++;
+    }
   }
 
-  // Calculate the middle index using integer division
-  const mid = Math.floor((left + right) / 2);
+  [arr[i], arr[right]] = [arr[right], arr[i]];
+  return i;
+}
 
-  // Base case: If the element at the middle index is equal to the target, return the middle index
-  if (arr[mid] === target) {
-    return mid;
-  }
-  
-  // Recursive case: If the element at the middle index is greater than the target,
-  // search the left half of the array
-  if (arr[mid] > target) {
-    return binarySearchRecursive(arr, target, left, mid - 1);
-  }
-  
-  // Recursive case: If the element at the middle index is less than the target,
-  // search the right half of the array
-  if (arr[mid] < target) {
-    return binarySearchRecursive(arr, target, mid + 1, right);
+function quickSelect(arr, left, right, k) {
+  if (left === right) return arr[left];
+
+  const pivotIndex = partition(arr, left, right);
+
+  if (k === pivotIndex) {
+    return arr[pivotIndex];
+  } else if (k < pivotIndex) {
+    return quickSelect(arr, left, pivotIndex - 1, k);
+  } else {
+    return quickSelect(arr, pivotIndex + 1, right, k);
   }
 }
-const arr = [2, 4, 7, 9, 11, 13, 15, 17];
-const target = 9;
-const left = 0;
-const right = arr.length - 1;
 
-const index = binarySearchRecursive(arr, target, left, right);
-console.log("Target found at index:", index);
+function findKthSmallest(arr, k) {
+  if (k < 1 || k > arr.length) {
+    throw new Error('Invalid input');
+  }
+
+  return quickSelect(arr, 0, arr.length - 1, k - 1);
+}
+
+// Example usage
+const array = [4, 2, 9, 6, 5, 1];
+const k = 3;
+const result = findKthSmallest(array, k);
+console.log(result);  // Output: 4
