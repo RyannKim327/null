@@ -1,29 +1,15 @@
-function bubbleSort(array) {
-  const length = array.length;
+// Importing Axios library
+const axios = require('axios');
 
-  for (let i = 0; i < length; i++) {
-    let swapped = false;
-
-    for (let j = 0; j < length - i - 1; j++) {
-      if (array[j] > array[j + 1]) {
-        // Swapping elements
-        let temp = array[j];
-        array[j] = array[j + 1];
-        array[j + 1] = temp;
-        swapped = true;
-      }
-    }
-
-    if (!swapped) {
-      // Array is already sorted, no need to continue
-      break;
-    }
+// Function to make GET request using Axios
+const fetchData = async (url) => {
+  try {
+    const response = await axios.get(url);
+    console.log('Response:', response.data);
+  } catch (error) {
+    console.error('Error:', error.message);
   }
+};
 
-  return array;
-}
-
-// Example usage
-const unsortedArray = [5, 3, 8, 4, 2];
-const sortedArray = bubbleSort(unsortedArray);
-console.log(sortedArray); // Output: [2, 3, 4, 5, 8]
+// Usage example
+fetchData('https://jsonplaceholder.typicode.com/posts/1');
