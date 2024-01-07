@@ -1,20 +1,20 @@
-const str = "Hello, World!";
-const reversed = str.split('').reverse().join('');
-console.log(reversed);
-const str = "Hello, World!";
-let reversed = '';
-for (let i = str.length - 1; i >= 0; i--) {
-  reversed += str[i];
-}
-console.log(reversed);
-function reverseString(str) {
-  if (str === '') {
-    return '';
-  } else {
-    return reverseString(str.substr(1)) + str.charAt(0);
+function insertionSort(array) {
+  for (let i = 1; i < array.length; i++) {
+    const currentValue = array[i];
+    let j = i - 1;
+    
+    while (j >= 0 && array[j] > currentValue) {
+      array[j + 1] = array[j];
+      j--;
+    }
+    
+    array[j + 1] = currentValue;
   }
+  
+  return array;
 }
 
-const str = "Hello, World!";
-const reversed = reverseString(str);
-console.log(reversed);
+// Example usage:
+const unsortedArray = [5, 2, 4, 6, 1, 3];
+const sortedArray = insertionSort(unsortedArray);
+console.log(sortedArray);
