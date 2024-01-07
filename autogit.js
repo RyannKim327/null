@@ -1,9 +1,19 @@
-let str = "42";
-let num = parseInt(str);
+function bubbleSort(arr) {
+  var len = arr.length;
+  for (var i = 0; i < len; i++) {
+    for (var j = 0; j < len - 1; j++) {
+      if (arr[j] > arr[j + 1]) {
+        // Swap elements
+        var temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
+      }
+    }
+  }
+  return arr;
+}
 
-console.log(num); // Output: 42
-console.log(typeof num); // Output: number
-let binaryStr = "1010";
-let decimalNum = parseInt(binaryStr, 2);
-
-console.log(decimalNum); // Output: 10
+// Example usage:
+var numbers = [5, 3, 8, 4, 2];
+console.log("Before sorting:", numbers);
+console.log("After sorting:", bubbleSort(numbers));
