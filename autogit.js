@@ -1,57 +1,109 @@
-function dijkstra(graph, source) {
-  const distances = {};
-  const visited = {};
-  const queue = [];
-
-  // Initialize distances and visited array
-  for (let node in graph) {
-    distances[node] = Infinity;
-    visited[node] = false;
+class SkipListNode {
+  constructor(value, level) {
+    this.value = value;
+    this.forward = new Array(level + 1);
+  }
+}
+class SkipList {
+  constructor() {
+    this.MAX_LEVEL = 16; // adjust this value according to your needs
+    this.level = 0;
+    this.header = new SkipListNode(null, this.MAX_LEVEL);
   }
 
-  // Distance from the source to itself is 0
-  distances[source] = 0;
+  insert(value) {
+    const update = new Array(this.MAX_LEVEL + 1);
+    let node = this.header;
 
-  // Add the source node to the queue
-  queue.push(source);
+    for (let i = this.level; i >= 0; i--) {
+      while (node.forward[i] !== undefined && node.forward[i].value < value) {
+        node = node.forward[i];
+      }
+      update[i] = node;
+    }
 
-  while (queue.length > 0) {
-    // Find the node with the minimum distance
-    let currentNode = queue.shift();
+    // Generate a random level for the new node
+    const randomLevel = this.randomLevel();
 
-    // If the node has already been visited, skip it
-    if (visited[currentNode]) continue;
+    // If randomLevel is greater than current level, update the update array
+    if (randomLevel > this.level) {
+      for (let i = this.level + 1; i <= randomLevel; i++) {
+        update[i] = this.header;
+      }
+      this.level = randomLevel;
+    }
 
-    // Mark the node as visited
-    visited[currentNode] = true;
+    const newNode = new SkipListNode(value, randomLevel);
 
-    // Update distances to neighbors
-    for (let neighbor in graph[currentNode]) {
-      let distance = graph[currentNode][neighbor];
-      let totalDistance = distances[currentNode] + distance;
+    // Insert the new node at each level in the update array
+    for (let i = 0; i <= randomLevel; i++) {
+      newNode.forward[i] = update[i].forward[i];
+      update[i].forward[i] = newNode;
+    }
+  }
 
-      if (totalDistance < distances[neighbor]) {
-        distances[neighbor] = totalDistance;
+  search(value) {
+    let node = this.header;
 
-        // Add neighbor to the queue
-        queue.push(neighbor);
+    for (let i = this.level; i >= 0; i--) {
+      while (node.forward[i] !== undefined && node.forward[i].value < value) {
+        node = node.forward[i];
+      }
+    }
+
+    node = node.forward[0];
+
+    if (node !== undefined && node.value === value) {
+      return node;
+    }
+
+    return null;
+  }
+
+  delete(value) {
+    const update = new Array(this.MAX_LEVEL + 1);
+    let node = this.header;
+
+    for (let i = this.level; i >= 0; i--) {
+      while (node.forward[i] !== undefined && node.forward[i].value < value) {
+        node = node.forward[i];
+      }
+      update[i] = node;
+    }
+
+    node = node.forward[0];
+
+    if (node !== undefined && node.value === value) {
+      for (let i = 0; i <= this.level; i++) {
+        if (update[i].forward[i] !== node) {
+          break;
+        }
+        update[i].forward[i] = node.forward[i];
+      }
+
+      // Remove any extra levels
+      while (this.level > 0 && this.header.forward[this.level] === undefined) {
+        this.level--;
       }
     }
   }
 
-  return distances;
+  randomLevel() {
+    let level = 0;
+    while (Math.random() < 0.5 && level < this.MAX_LEVEL) {
+      level++;
+    }
+    return level;
+  }
 }
+const skipList = new SkipList();
 
-// Example usage
-const graph = {
-  A: { B: 5, C: 2 },
-  B: { D: 4, E: 2 },
-  C: { B: 8, E: 7 },
-  D: { C: 6, E: 3 },
-  E: { D: 1 }
-};
+skipList.insert(5);
+skipList.insert(10);
+skipList.insert(2);
 
-const sourceNode = "A";
-const distances = dijkstra(graph, sourceNode);
+console.log(skipList.search(10)); // Output: SkipListNode { value: 10, forward: [ 2, 10 ] }
 
-console.log(distances);
+skipList.delete(10);
+
+console.log(skipList.search(10)); // Output: null
