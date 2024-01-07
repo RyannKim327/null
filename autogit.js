@@ -1,7 +1,11 @@
-function getRandomNumber(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+function reverseWords(string) {
+    var wordsArray = string.split(' ');  // Step 1
+    var reversedArray = wordsArray.reverse();  // Step 2
+    var reversedString = reversedArray.join(' ');  // Step 3
+    return reversedString;
 }
 
-// Example usage:
-var randomNumber = getRandomNumber(1, 100);
-console.log(randomNumber); // Output a random number between 1 and 100 (inclusive)
+// Example usage
+var originalString = "Hello, world!";
+var reversedString = reverseWords(originalString);
+console.log(reversedString);  // Output: "world! Hello,"
