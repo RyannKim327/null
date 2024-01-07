@@ -1,137 +1,46 @@
-class RedBlackTreeNode {
-  constructor(value, color) {
-    this.value = value;
-    this.color = color;
-    this.left = null;
-    this.right = null;
-    this.parent = null;
+// Definition of a linked list node
+class ListNode {
+  constructor(val) {
+    this.val = val;
+    this.next = null;
   }
 }
-class RedBlackTree {
-  constructor() {
-    this.root = null;
+
+// Function to find the length of a linked list
+const getLinkedListLength = (head) => {
+  let length = 0;
+  let current = head;
+  while (current) {
+    length++;
+    current = current.next;
   }
-  
-  // Insert a node into the tree
-  insert(value) {
-    const newNode = new RedBlackTreeNode(value, "red");
-    
-    if (this.root === null) {
-      this.root = newNode;
-      this.root.color = "black";
-    } else {
-      this.insertNode(this.root, newNode);
-      this.fixViolation(newNode);
+  return length;
+};
+
+// Function to find the intersection of two linked lists
+const getIntersectionNode = (headA, headB) => {
+  const lengthA = getLinkedListLength(headA);
+  const lengthB = getLinkedListLength(headB);
+
+  let p1 = headA;
+  let p2 = headB;
+
+  // Move the longer list's pointer ahead by the difference in lengths
+  if (lengthA > lengthB) {
+    for (let i = 0; i < lengthA - lengthB; i++) {
+      p1 = p1.next;
+    }
+  } else if (lengthB > lengthA) {
+    for (let i = 0; i < lengthB - lengthA; i++) {
+      p2 = p2.next;
     }
   }
 
-  insertNode(root, newNode) {
-    if (newNode.value < root.value) {
-      if (root.left === null) {
-        root.left = newNode;
-        newNode.parent = root;
-      } else {
-        this.insertNode(root.left, newNode);
-      }
-    } else {
-      if (root.right === null) {
-        root.right = newNode;
-        newNode.parent = root;
-      } else {
-        this.insertNode(root.right, newNode);
-      }
-    }
+  // Traverse both lists until they meet or reach the end
+  while (p1 !== p2) {
+    p1 = p1.next;
+    p2 = p2.next;
   }
-  
-  fixViolation(node) {
-    while (node.parent !== null && node.parent.color === "red") {
-      if (node.parent === node.parent.parent.left) {
-        const uncle = node.parent.parent.right;
-        
-        if (uncle !== null && uncle.color === "red") {
-          node.parent.color = "black";
-          uncle.color = "black";
-          node.parent.parent.color = "red";
-          node = node.parent.parent;
-        } else {
-          if (node === node.parent.right) {
-            node = node.parent;
-            this.rotateLeft(node);
-          }
-          
-          node.parent.color = "black";
-          node.parent.parent.color = "red";
-          this.rotateRight(node.parent.parent);
-        }
-      } else {
-        const uncle = node.parent.parent.left;
-        
-        if (uncle !== null && uncle.color === "red") {
-          node.parent.color = "black";
-          uncle.color = "black";
-          node.parent.parent.color = "red";
-          node = node.parent.parent;
-        } else {
-          if (node === node.parent.left) {
-            node = node.parent;
-            this.rotateRight(node);
-          }
-          
-          node.parent.color = "black";
-          node.parent.parent.color = "red";
-          this.rotateLeft(node.parent.parent);
-        }
-      }
-    }
-    
-    this.root.color = "black";
-  }
-  
-  rotateLeft(node) {
-    const newRoot = node.right;
-    node.right = newRoot.left;
-    
-    if (newRoot.left !== null) {
-      newRoot.left.parent = node;
-    }
-    
-    newRoot.parent = node.parent;
-    
-    if (node.parent === null) {
-      this.root = newRoot;
-    } else if (node === node.parent.left) {
-      node.parent.left = newRoot;
-    } else {
-      node.parent.right = newRoot;
-    }
-    
-    newRoot.left = node;
-    node.parent = newRoot;
-  }
-  
-  rotateRight(node) {
-    const newRoot = node.left;
-    node.left = newRoot.right;
-    
-    if (newRoot.right !== null) {
-      newRoot.right.parent = node;
-    }
-    
-    newRoot.parent = node.parent;
-    
-    if (node.parent === null) {
-      this.root = newRoot;
-    } else if (node === node.parent.right) {
-      node.parent.right = newRoot;
-    } else {
-      node.parent.left = newRoot;
-    }
-    
-    newRoot.right = node;
-    node.parent = newRoot;
-  }
-}
-const tree = new RedBlackTree();
-tree.insert(10);
-tree.insert(20);
-tree.insert(30);
+
+  return p1; // Return the intersecting node or null if there is no intersection
+};
