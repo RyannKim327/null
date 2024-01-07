@@ -1,26 +1,52 @@
-function findFirstNonRepeatingChar(str) {
-  // Create an empty object to store character frequencies
-  const charCount = {};
+function mergeSortIterative(array) {
+  let workArray = array.slice();
+  let chunkSize = 1;
 
-  // Iterate through each character in the string and count its occurrence
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    charCount[char] = (charCount[char] || 0) + 1;
-  }
+  while (chunkSize < array.length) {
+    let i = 0;
 
-  // Find the first non-repeating character
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    if (charCount[char] === 1) {
-      return char;
+    while (i < array.length) {
+      mergeChunks(workArray, i, chunkSize);
+      i += chunkSize * 2;
     }
+
+    chunkSize *= 2;
   }
 
-  // If no non-repeating character is found, return null
-  return null;
+  return workArray;
 }
 
-// Example usage
-const input = "abacabad";
-const firstNonRepeatingChar = findFirstNonRepeatingChar(input);
-console.log(firstNonRepeatingChar); // Output: "c"
+function mergeChunks(array, start, size) {
+  const left = array.slice(start, start + size);
+  const right = array.slice(start + size, start + size * 2);
+  let leftIndex = 0;
+  let rightIndex = 0;
+  let mergedIndex = start;
+
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] <= right[rightIndex]) {
+      array[mergedIndex] = left[leftIndex];
+      leftIndex++;
+    } else {
+      array[mergedIndex] = right[rightIndex];
+      rightIndex++;
+    }
+    mergedIndex++;
+  }
+
+  while (leftIndex < left.length) {
+    array[mergedIndex] = left[leftIndex];
+    leftIndex++;
+    mergedIndex++;
+  }
+
+  while (rightIndex < right.length) {
+    array[mergedIndex] = right[rightIndex];
+    rightIndex++;
+    mergedIndex++;
+  }
+}
+
+// Example usage:
+const arr = [8, 5, 2, 9, 5, 6, 3];
+console.log(mergeSortIterative(arr)); // Output: [2, 3, 5, 5, 6, 8, 9]
