@@ -1,17 +1,40 @@
-function getRandomNumber(min, max) {
-  // Calculate the range
-  const range = max - min;
+function mergeSort(array) {
+  // Base case: Return if array length is less than or equal to 1
+  if (array.length <= 1) {
+    return array;
+  }
 
-  // Generate a random number between 0 and 1
-  const random = Math.random();
+  // Divide the array into two halves
+  const middle = Math.floor(array.length / 2);
+  const left = array.slice(0, middle);
+  const right = array.slice(middle);
 
-  // Scale the random number to the desired range and round it off
-  const randomNumber = Math.floor(random * range) + min;
+  // Recursive call to mergeSort for both halves
+  const sortedLeft = mergeSort(left);
+  const sortedRight = mergeSort(right);
 
-  // Return the generated random number
-  return randomNumber;
+  // Merge the sorted halves
+  return merge(sortedLeft, sortedRight);
 }
 
-// Example usage: Generate a random number between 1 and 10
-const randomNumber = getRandomNumber(1, 10);
-console.log(randomNumber);
+function merge(left, right) {
+  let merged = [];
+
+  // Compare the first elements of the left and right halves,
+  // and push the smaller element into the merged array
+  while (left.length && right.length) {
+    if (left[0] < right[0]) {
+      merged.push(left.shift());
+    } else {
+      merged.push(right.shift());
+    }
+  }
+
+  // Concatenate the remaining elements of the non-empty half
+  return merged.concat(left, right);
+}
+
+// Example usage:
+const unsortedArray = [5, 2, 6, 1, 3, 9];
+const sortedArray = mergeSort(unsortedArray);
+console.log(sortedArray);  // Output: [1, 2, 3, 5, 6, 9]
