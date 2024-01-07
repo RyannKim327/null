@@ -1,56 +1,25 @@
-class HashTable {
-  constructor(size = 10) {
-    this.size = size;
-    this.buckets = new Array(size);
+function findFirstRepeatedChar(str) {
+  const charSet = new Set();
+  
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    
+    if (charSet.has(char)) {
+      return char; // First repeated character found
+    }
+    
+    charSet.add(char); // Add character to the set
   }
+  
+  return null; // No repeated character found
 }
-HashTable.prototype.hash = function (key) {
-  let hash = 0;
-  for (let i = 0; i < key.length; i++) {
-    hash += key.charCodeAt(i);
-  }
-  return hash % this.size;
-};
-HashTable.prototype.set = function (key, value) {
-  const index = this.hash(key);
-  if (!this.buckets[index]) {
-    this.buckets[index] = [];
-  }
-  this.buckets[index].push([key, value]);
-};
-HashTable.prototype.get = function (key) {
-  const index = this.hash(key);
-  if (!this.buckets[index]) {
-    return undefined;
-  }
-  for (let i = 0; i < this.buckets[index].length; i++) {
-    if (this.buckets[index][i][0] === key) {
-      return this.buckets[index][i][1];
-    }
-  }
-  return undefined;
-};
-HashTable.prototype.remove = function (key) {
-  const index = this.hash(key);
-  if (!this.buckets[index]) {
-    return undefined;
-  }
-  for (let i = 0; i < this.buckets[index].length; i++) {
-    if (this.buckets[index][i][0] === key) {
-      const value = this.buckets[index][i][1];
-      this.buckets[index].splice(i, 1);
-      return value;
-    }
-  }
-  return undefined;
-};
-const hashTable = new HashTable();
 
-hashTable.set('key1', 'value1');
-hashTable.set('key2', 'value2');
+// Usage example
+const input = "hello world";
+const repeatedChar = findFirstRepeatedChar(input);
 
-console.log(hashTable.get('key1')); // Output: value1
-console.log(hashTable.get('key2')); // Output: value2
-
-hashTable.remove('key1');
-console.log(hashTable.get('key1')); // Output: undefined
+if (repeatedChar) {
+  console.log(`The first repeated character in "${input}" is "${repeatedChar}".`);
+} else {
+  console.log(`There are no repeated characters in "${input}".`);
+}
