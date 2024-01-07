@@ -1,41 +1,47 @@
-const graph = {
-  A: [{ node: 'B', weight: -1 }, { node: 'C', weight: 4 }],
-  B: [{ node: 'C', weight: 3 }, { node: 'D', weight: 2 }, { node: 'E', weight: 2 }],
-  C: [],
-  D: [{ node: 'B', weight: 1 }, { node: 'C', weight: 5 }],
-  E: [{ node: 'D', weight: -3 }]
-};
-function bellmanFord(graph, source) {
-  // Step 1: Initialization
-  const distances = {};
-  const vertices = Object.keys(graph);
+function buildPatternTable(pattern) {
+  const table = Array(pattern.length).fill(0);
+  let prefixIndex = 0;
+  let suffixIndex = 1;
 
-  for (let vertex of vertices) {
-    distances[vertex] = vertex === source ? 0 : Infinity;
-  }
-
-  // Step 2: Relax edges repeatedly
-  for (let i = 0; i < vertices.length - 1; i++) {
-    for (let vertex of vertices) {
-      for (let { node, weight } of graph[vertex]) {
-        if (distances[vertex] + weight < distances[node]) {
-          distances[node] = distances[vertex] + weight;
-        }
-      }
+  while (suffixIndex < pattern.length) {
+    if (pattern[prefixIndex] === pattern[suffixIndex]) {
+      table[suffixIndex] = prefixIndex + 1;
+      prefixIndex++;
+      suffixIndex++;
+    } else if (prefixIndex === 0) {
+      table[suffixIndex] = 0;
+      suffixIndex++;
+    } else {
+      prefixIndex = table[prefixIndex - 1];
     }
   }
 
-  // Step 3: Check for negative cycles
-  for (let vertex of vertices) {
-    for (let { node, weight } of graph[vertex]) {
-      if (distances[vertex] + weight < distances[node]) {
-        throw new Error('Graph contains a negative-weight cycle');
-      }
-    }
-  }
-
-  return distances;
+  return table;
 }
-const source = 'A';
-const shortestDistances = bellmanFord(graph, source);
-console.log(shortestDistances);
+
+function stringMatch(text, pattern) {
+  const patternTable = buildPatternTable(pattern);
+
+  let textIndex = 0;
+  let patternIndex = 0;
+
+  while (textIndex < text.length) {
+    if (pattern[patternIndex] === text[textIndex]) {
+      if (patternIndex === pattern.length - 1) {
+        return true; // Match found
+      }
+      patternIndex++;
+      textIndex++;
+    } else if (patternIndex > 0) {
+      patternIndex = patternTable[patternIndex - 1];
+    } else {
+      textIndex++;
+    }
+  }
+
+  return false; // No match found
+}
+const text = "Hello, World!";
+const pattern = "World";
+
+console.log(stringMatch(text, pattern)); // Output: true
