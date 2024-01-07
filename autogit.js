@@ -1,52 +1,63 @@
-const graph = {
-  vertices: [],
-  edges: []
-};
-const distance = {};
-const predecessor = {};
-function bellmanFord(source) {
-  // Step 1: Initialize the distance and predecessor arrays
-  for (let vertex of graph.vertices) {
-    distance[vertex] = Infinity;
-    predecessor[vertex] = null;
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
   }
-  distance[source] = 0;
-
-  // Step 2: Relax each edge repeatedly
-  for (let i = 1; i < graph.vertices.length; i++) {
-    for (let { source, destination, weight } of graph.edges) {
-      if (distance[source] !== Infinity && distance[source] + weight < distance[destination]) {
-        distance[destination] = distance[source] + weight;
-        predecessor[destination] = source;
-      }
-    }
-  }
-
-  // Step 3: Check for negative weight cycles
-  for (let { source, destination, weight } of graph.edges) {
-    if (distance[source] + weight < distance[destination]) {
-      throw new Error("Graph contains negative weight cycle");
-    }
-  }
-
-  // Step 4: Return the distance and predecessor arrays
-  return { distance, predecessor };
 }
-// Define the graph
-graph.vertices = ["A", "B", "C", "D", "E"];
-graph.edges = [
-  { source: "A", destination: "B", weight: 4 },
-  { source: "A", destination: "C", weight: 2 },
-  { source: "B", destination: "C", weight: 3 },
-  { source: "B", destination: "D", weight: 2 },
-  { source: "B", destination: "E", weight: 3 },
-  { source: "D", destination: "B", weight: 1 },
-  { source: "D", destination: "C", weight: 5 },
-  { source: "E", destination: "D", weight: 1 }
-];
 
-// Run the Bellman-Ford algorithm
-const sourceVertex = "A";
-const result = bellmanFord(sourceVertex);
-console.log("Distance from source vertex:", result.distance);
-console.log("Predecessor vertices:", result.predecessor);
+class Queue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.size = 0;
+  }
+
+  enqueue(data) {
+    const newNode = new Node(data);
+
+    if (this.head === null) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+
+    this.size++;
+  }
+
+  dequeue() {
+    if (this.head === null) {
+      return null; // No elements in the queue
+    }
+
+    const removedNode = this.head;
+
+    if (this.head === this.tail) {
+      this.tail = null;
+    }
+
+    this.head = this.head.next;
+    this.size--;
+
+    return removedNode.data;
+  }
+
+  isEmpty() {
+    return this.size === 0;
+  }
+
+  getSize() {
+    return this.size;
+  }
+}
+const queue = new Queue();
+queue.enqueue('A');
+queue.enqueue('B');
+queue.enqueue('C');
+
+console.log(queue.dequeue()); // Output: A
+console.log(queue.dequeue()); // Output: B
+
+console.log(queue.getSize()); // Output: 1
+console.log(queue.isEmpty()); // Output: false
