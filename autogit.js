@@ -1,17 +1,59 @@
-function findLargestPrimeFactor(number) {
-  let largestPrime = 0;
-
-  // Starting from the smallest prime, which is 2
-  for (let i = 2; i <= number; i++) {
-    while (number % i === 0) {
-      // Divide the number by the current loop variable
-      number /= i;
-      largestPrime = i;
-    }
+class Stack {
+  constructor() {
+    this.items = [];
   }
 
-  return largestPrime;
+  // Add element to the top of the stack
+  push(element) {
+    this.items.push(element);
+  }
+
+  // Remove and return the top element from the stack
+  pop() {
+    if (this.isEmpty()) {
+      return null;
+    }
+    return this.items.pop();
+  }
+
+  // Return the top element of the stack without removing it
+  peek() {
+    if (this.isEmpty()) {
+      return null;
+    }
+    return this.items[this.items.length - 1];
+  }
+
+  // Check if the stack is empty
+  isEmpty() {
+    return this.items.length === 0;
+  }
+
+  // Return the size of the stack
+  size() {
+    return this.items.length;
+  }
+
+  // Clear the stack
+  clear() {
+    this.items = [];
+  }
 }
 
-// Usage example
-console.log(findLargestPrimeFactor(13195));  // Output: 29
+// Usage
+const stack = new Stack();
+stack.push(1);
+stack.push(2);
+stack.push(3);
+
+console.log(stack.peek()); // Output: 3
+
+console.log(stack.pop()); // Output: 3
+console.log(stack.pop()); // Output: 2
+
+console.log(stack.size()); // Output: 1
+
+console.log(stack.isEmpty()); // Output: false
+
+stack.clear();
+console.log(stack.isEmpty()); // Output: true
