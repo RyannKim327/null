@@ -1,27 +1,25 @@
-function quicksort(arr) {
-  if (arr.length <= 1) {
-    return arr;
+class ListNode {
+  constructor(val, next = null) {
+    this.val = val;
+    this.next = next;
   }
-  
-  const pivot = arr[Math.floor(arr.length / 2)];
-  const less = [];
-  const equal = [];
-  const greater = [];
-  
-  for (const element of arr) {
-    if (element < pivot) {
-      less.push(element);
-    } else if (element === pivot) {
-      equal.push(element);
-    } else {
-      greater.push(element);
-    }
-  }
-  
-  return quicksort(less).concat(equal, quicksort(greater));
 }
 
-// Usage example:
-const unsortedArray = [43, 21, 1, 9, 23, 5];
-const sortedArray = quicksort(unsortedArray);
-console.log(sortedArray);
+function findMiddleElement(head) {
+  let slow = head;
+  let fast = head;
+
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
+  }
+
+  return slow;
+}
+const list = new ListNode(1);
+list.next = new ListNode(2);
+list.next.next = new ListNode(3);
+list.next.next.next = new ListNode(4);
+list.next.next.next.next = new ListNode(5);
+
+console.log(findMiddleElement(list).val); // Output: 3
