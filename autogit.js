@@ -1,19 +1,18 @@
-function factorialRecursive(n) {
-  if (n === 0) {
-    return 1;
+function findMedianSortedArrays(nums1, nums2) {
+  const mergedArray = nums1.concat(nums2);
+  mergedArray.sort((a, b) => a - b);
+
+  const length = mergedArray.length;
+  const middle = Math.floor(length / 2);
+
+  if (length % 2 === 0) {
+    return (mergedArray[middle - 1] + mergedArray[middle]) / 2;
+  } else {
+    return mergedArray[middle];
   }
-  return n * factorialRecursive(n - 1);
 }
 
 // Example usage:
-console.log(factorialRecursive(5)); // 120
-function factorialIterative(n) {
-  let factorial = 1;
-  for (let i = 1; i <= n; i++) {
-    factorial *= i;
-  }
-  return factorial;
-}
-
-// Example usage:
-console.log(factorialIterative(5)); // 120
+const nums1 = [1, 3];
+const nums2 = [2, 4];
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.5
