@@ -1,59 +1,26 @@
-class Stack {
-  constructor() {
-    this.items = [];
-  }
+// Make a GET request to the Random User API
+fetch("https://randomuser.me/api/")
+  .then(response => response.json())
+  .then(data => {
+    // Access the user information from the API response
+    const user = data.results[0];
 
-  // Add element to the top of the stack
-  push(element) {
-    this.items.push(element);
-  }
+    // Display the user information on the webpage
+    const container = document.getElementById("user-container");
 
-  // Remove and return the top element from the stack
-  pop() {
-    if (this.isEmpty()) {
-      return null;
-    }
-    return this.items.pop();
-  }
+    const name = document.createElement("h2");
+    name.textContent = `${user.name.title} ${user.name.first} ${user.name.last}`;
 
-  // Return the top element of the stack without removing it
-  peek() {
-    if (this.isEmpty()) {
-      return null;
-    }
-    return this.items[this.items.length - 1];
-  }
+    const email = document.createElement("p");
+    email.textContent = `Email: ${user.email}`;
 
-  // Check if the stack is empty
-  isEmpty() {
-    return this.items.length === 0;
-  }
+    const picture = document.createElement("img");
+    picture.setAttribute("src", user.picture.large);
 
-  // Return the size of the stack
-  size() {
-    return this.items.length;
-  }
-
-  // Clear the stack
-  clear() {
-    this.items = [];
-  }
-}
-
-// Usage
-const stack = new Stack();
-stack.push(1);
-stack.push(2);
-stack.push(3);
-
-console.log(stack.peek()); // Output: 3
-
-console.log(stack.pop()); // Output: 3
-console.log(stack.pop()); // Output: 2
-
-console.log(stack.size()); // Output: 1
-
-console.log(stack.isEmpty()); // Output: false
-
-stack.clear();
-console.log(stack.isEmpty()); // Output: true
+    container.appendChild(picture);
+    container.appendChild(name);
+    container.appendChild(email);
+  })
+  .catch(error => {
+    console.log("An error occurred:", error);
+  });
