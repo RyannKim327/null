@@ -1,29 +1,42 @@
-function binarySearchRecursive(array, target, start, end) {
-  // Base case: If the start index is greater than the end index, the target is not found
-  if (start > end) {
-    return -1;
+function buildPrefixTable(pattern) {
+  const table = new Array(pattern.length);
+  let i = 0;
+  let j = -1;
+  table[i] = j;
+  
+  while (i < pattern.length) {
+    while (j >= 0 && pattern.charAt(i) !== pattern.charAt(j)) {
+      j = table[j];
+    }
+    i++;
+    j++;
+    table[i] = j;
   }
-
-  // Find the middle index
-  const mid = Math.floor((start + end) / 2);
-
-  // If the middle element is the target, return its index
-  if (array[mid] === target) {
-    return mid;
-  }
-
-  // If the target is less than the middle element, search the left half of the array
-  if (target < array[mid]) {
-    return binarySearchRecursive(array, target, start, mid - 1);
-  }
-
-  // If the target is greater than the middle element, search the right half of the array
-  if (target > array[mid]) {
-    return binarySearchRecursive(array, target, mid + 1, end);
-  }
+  return table;
 }
-const array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const target = 6;
+function stringMatch(text, pattern) {
+  const prefixTable = buildPrefixTable(pattern);
+  let i = 0;
+  let j = 0;
+  
+  while (i < text.length) {
+    if (text.charAt(i) === pattern.charAt(j)) {
+      i++;
+      j++;
+      
+      if (j === pattern.length) {
+        return i - j; // Match found, return the starting index
+      }
+    } else if (j > 0) {
+      j = prefixTable[j];
+    } else {
+      i++;
+    }
+  }
+  
+  return -1; // No match found
+}
+const text = "Lorem ipsum dolor sit amet";
+const pattern = "ipsum";
 
-const result = binarySearchRecursive(array, target, 0, array.length - 1);
-console.log(result); // Output: 5
+console.log(stringMatch(text, pattern)); // Output: 6
