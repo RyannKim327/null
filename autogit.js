@@ -1,79 +1,112 @@
 class Node {
-  constructor(state, gScore, hScore, parent) {
-    this.state = state;
-    this.gScore = gScore;
-    this.hScore = hScore;
-    this.fScore = gScore + hScore;
-    this.parent = parent;
+  constructor(value, level) {
+    this.value = value;
+    this.next = Array(level + 1).fill(null);
   }
 }
-function heuristic(node, goal) {
-  // Calculate the heuristic value (e.g., Manhattan distance, Euclidean distance, etc.)
-  // based on the current node's state and the goal state
-  // Return the heuristic value
-}
-function aStar(start, goal) {
-  const openSet = [];
-  const closedSet = new Set();
 
-  // Create a start node and add it to the open set
-  const startNode = new Node(start, 0, heuristic(start, goal), null);
-  openSet.push(startNode);
+class SkipList {
+  constructor() {
+    this.head = new Node(-Infinity, 0);
+    this.level = 0;
+  }
 
-  while (openSet.length > 0) {
-    // Find the node with the lowest fScore in the open set (minHeap can be used for performance improvement)
-    const current = openSet.sort((a, b) => a.fScore - b.fScore)[0];
-    
-    // Goal state found
-    if (current.state === goal) {
-      // Generate the path from start node to goal node
-      let path = [];
-      let node = current;
-      while (node != null) {
-        path.push(node.state);
-        node = node.parent;
+  randomLevel() {
+    let level = 0;
+    while (Math.random() < 0.5 && level < this.level + 1) {
+      level++;
+    }
+    return level;
+  }
+
+  insert(value) {
+    const update = Array(this.level + 1).fill(null);
+    let current = this.head;
+
+    for (let i = this.level; i >= 0; i--) {
+      while (current.next[i] !== null && current.next[i].value < value) {
+        current = current.next[i];
       }
-      path.reverse();
-      return path;
+      update[i] = current;
     }
 
-    // Remove current node from open set and add it to closed set
-    openSet.splice(openSet.indexOf(current), 1);
-    closedSet.add(current.state);
+    const newNode = new Node(value, this.randomLevel());
+    if (newNode.next.length > this.level) {
+      this.level = newNode.next.length - 1;
+      update.push(this.head);
+    }
 
-    // Generate neighbors of the current node
-    const neighbors = generateNeighbors(current.state);
-
-    for (const neighborState of neighbors) {
-      // Ignore the neighbor if it is already in the closed set
-      if (closedSet.has(neighborState)) {
-        continue;
-      }
-
-      // Calculate the gScore for this neighbor
-      const gScore = current.gScore + distance(current.state, neighborState);
-
-      // Check if the neighbor is already in the open set or not
-      let neighborNode = openSet.find((node) => node.state === neighborState);
-
-      if (!neighborNode) {
-        // Create a new node for the neighbor and add it to the open set
-        neighborNode = new Node(
-          neighborState,
-          gScore,
-          heuristic(neighborState, goal),
-          current
-        );
-        openSet.push(neighborNode);
-      } else if (gScore < neighborNode.gScore) {
-        // Update the gScore and fScore of the neighbor node
-        neighborNode.gScore = gScore;
-        neighborNode.fScore = gScore + neighborNode.hScore;
-        neighborNode.parent = current;
-      }
+    for (let i = 0; i < newNode.next.length; i++) {
+      newNode.next[i] = update[i].next[i];
+      update[i].next[i] = newNode;
     }
   }
 
-  // No path found
-  return null;
+  search(value) {
+    let current = this.head;
+
+    for (let i = this.level; i >= 0; i--) {
+      while (current.next[i] !== null && current.next[i].value < value) {
+        current = current.next[i];
+      }
+    }
+
+    if (
+      current.next[0] !== null &&
+      current.next[0].value === value
+    ) {
+      return current.next[0];
+    }
+
+    return null;
+  }
+
+  delete(value) {
+    const update = Array(this.level + 1).fill(null);
+    let current = this.head;
+
+    for (let i = this.level; i >= 0; i--) {
+      while (current.next[i] !== null && current.next[i].value < value) {
+        current = current.next[i];
+      }
+      update[i] = current;
+    }
+
+    current = current.next[0];
+
+    if (current !== null && current.value === value) {
+      for (let i = 0; i < current.next.length; i++) {
+        update[i].next[i] = current.next[i];
+      }
+
+      while (this.level > 0 && this.head.next[this.level] === null) {
+        this.level--;
+      }
+
+      return current;
+    }
+
+    return null;
+  }
+
+  print() {
+    let current = this.head.next[0];
+    let output = '';
+    while (current !== null) {
+      output += current.value + ' -> ';
+      current = current.next[0];
+    }
+    console.log(output);
+  }
 }
+
+// Example usage
+const skipList = new SkipList();
+skipList.insert(3);
+skipList.insert(7);
+skipList.insert(5);
+skipList.insert(10);
+skipList.print(); // Output: 3 -> 5 -> 7 -> 10 ->
+console.log(skipList.search(7)); // Output: Node { value: 7, next: [...] }
+skipList.delete(7);
+skipList.print(); // Output: 3 -> 5 -> 10 ->
