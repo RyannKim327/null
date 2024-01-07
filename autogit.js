@@ -1,56 +1,41 @@
-// Define a class to represent a graph node
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.children = [];
+function radixSort(arr) {
+  // Find the maximum number in the array
+  const maxNum = Math.max(...arr);
+  
+  // Iterate through each digit position
+  for (let exp = 1; maxNum / exp > 0; exp *= 10) {
+    // Use counting sort to sort the elements based on current digit position
+    countingSort(arr, exp);
   }
-
-  addChild(node) {
-    this.children.push(node);
+  
+  return arr;
+}
+function countingSort(arr, exp) {
+  const count = new Array(10).fill(0); // Create an empty array to store the count of each digit
+  const output = new Array(arr.length); // Create an array to store the sorted elements
+  
+  // Store the count of each element
+  for (let i = 0; i < arr.length; i++) {
+    const digit = Math.floor(arr[i] / exp) % 10;
+    count[digit]++;
+  }
+  
+  // Update the count array to store the actual position of each digit in the output array
+  for (let i = 1; i < count.length; i++) {
+    count[i] += count[i - 1];
+  }
+  
+  // Build the output array in sorted order
+  for (let i = arr.length - 1; i >= 0; i--) {
+    const digit = Math.floor(arr[i] / exp) % 10;
+    output[count[digit] - 1] = arr[i];
+    count[digit]--;
+  }
+  
+  // Copy the sorted elements back to the original array
+  for (let i = 0; i < arr.length; i++) {
+    arr[i] = output[i];
   }
 }
-
-// Implement the depth-first search algorithm
-function depthFirstSearch(root, target) {
-  // Base case: If the current node is null or matches the target, return the node
-  if (root === null || root.value === target) {
-    return root;
-  }
-
-  // Iterate through each child of the current node
-  for (let child of root.children) {
-    // Call the depthFirstSearch function recursively on each child
-    const result = depthFirstSearch(child, target);
-
-    // If the target is found in any of the recursive calls, return the result
-    if (result !== null) {
-      return result;
-    }
-  }
-
-  // If the target is not found, return null
-  return null;
-}
-
-// Usage example:
-// Create a sample graph
-const nodeA = new Node("A");
-const nodeB = new Node("B");
-const nodeC = new Node("C");
-const nodeD = new Node("D");
-const nodeE = new Node("E");
-const nodeF = new Node("F");
-
-nodeA.addChild(nodeB);
-nodeA.addChild(nodeC);
-nodeB.addChild(nodeD);
-nodeB.addChild(nodeE);
-nodeC.addChild(nodeF);
-
-// Call the depthFirstSearch function to search for a target value
-const targetNode = depthFirstSearch(nodeA, "E");
-if (targetNode !== null) {
-  console.log("Target node found: ", targetNode.value);
-} else {
-  console.log("Target node not found");
-}
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+console.log(radixSort(arr)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
