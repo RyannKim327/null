@@ -1,7 +1,18 @@
-function getRandomNumber(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+const cron = require('node-cron');
 
-// Example usage
-var randomNumber = getRandomNumber(1, 100);
-console.log(randomNumber);  // Outputs a random number between 1 and 100
+// Define the cron schedule
+const cronSchedule = '*/5 * * * *'; // Executes every 5 minutes
+
+// Define the cron task to be executed
+const cronTask = () => {
+  // Your task logic goes here
+  console.log('Cron task executed!');
+};
+
+// Schedule the cron task
+cron.schedule(cronSchedule, cronTask);
+
+// Keep the script running
+setInterval(() => {
+  console.log('Script is still running...');
+}, 60000);
