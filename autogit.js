@@ -1,31 +1,46 @@
-function countingSort(arr) {
-  // Find the maximum element in the array
-  let max = Math.max(...arr);
+function beamSearch(inputSeq, beamWidth, maxSteps, scoreFunction) {
+  // Create initial beam with the input sequence as the only candidate
+  let beam = [{ sequence: inputSeq, score: 0 }];
 
-  // Create a count array with a size equal to the maximum element + 1
-  let count = new Array(max + 1).fill(0);
+  // Repeat for the maximum number of steps
+  for (let step = 0; step < maxSteps; step++) {
+    let nextBeam = [];
 
-  // Count the occurrences of each element in the original array
-  for (let i = 0; i < arr.length; i++) {
-    count[arr[i]]++;
+    // Expand each candidate sequence in the current beam
+    for (let i = 0; i < beam.length; i++) {
+      let { sequence, score } = beam[i];
+
+      // Generate possible next tokens for the current sequence
+      let nextTokens = generateNextTokens(sequence);
+
+      // Score and keep the top-k next sequences based on the score function
+      let scoredNextSequences = nextTokens.map((token) => {
+        let nextSequence = sequence.concat([token]);
+        let nextScore = scoreFunction(nextSequence);
+        return { sequence: nextSequence, score: score + nextScore };
+      });
+
+      // Sort the scored sequences and keep only the top beamWidth candidates
+      scoredNextSequences.sort((a, b) => b.score - a.score);
+      scoredNextSequences = scoredNextSequences.slice(0, beamWidth);
+
+      // Add the top candidates to the next beam
+      nextBeam = nextBeam.concat(scoredNextSequences);
+    }
+
+    // Sort the candidates in the next beam and keep only the top beamWidth candidates
+    nextBeam.sort((a, b) => b.score - a.score);
+    beam = nextBeam.slice(0, beamWidth);
   }
 
-  // Modify the count array to store the actual position of each element in the sorted array
-  for (let i = 1; i <= max; i++) {
-    count[i] += count[i - 1];
-  }
-
-  // Create a sorted array using the count array
-  let sorted = new Array(arr.length);
-  for (let i = arr.length - 1; i >= 0; i--) {
-    sorted[count[arr[i]] - 1] = arr[i];
-    count[arr[i]]--;
-  }
-
-  return sorted;
+  // Return the highest-scoring sequence in the final beam
+  return beam[0].sequence;
 }
-
-// Example usage:
-let arr = [4, 2, 2, 8, 3, 3, 1];
-let sortedArr = countingSort(arr);
-console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
+function generateNextTokens(sequence) {
+  // Generate and return possible next tokens based on the given sequence
+  // For example, you can use a language model or pre-defined rules.
+}
+function scoreFunction(sequence) {
+  // Calculate and return the score for the given sequence
+  // For example, you can use a language model score or custom rules.
+}
