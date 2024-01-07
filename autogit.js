@@ -1,65 +1,109 @@
-function burrowsWheelerTransform(input) {
-  // Create all rotations of the input string
-  const rotations = [];
-  const length = input.length;
-  for (let i = 0; i < length; i++) {
-    rotations.push(input);
-    input = input.slice(1) + input[0];
+class TrieNode {
+  constructor() {
+    this.children = {}; // object to store children nodes
+    this.isEndOfWord = false; // flag to mark end of a word
   }
-
-  // Sort the rotations lexicographically
-  rotations.sort();
-
-  // Extract the last character of each rotation
-  let transformedString = '';
-  for (let i = 0; i < length; i++) {
-    transformedString += rotations[i][length - 1];
+}
+class Trie {
+  constructor() {
+    this.root = new TrieNode(); // create the root node
   }
-
-  // Find the index of the original input string in the sorted rotations
-  const originalIndex = rotations.indexOf(input);
   
-  // Return the transformed string and the original index
-  return { transformedString, originalIndex };
-}
-
-function inverseBurrowsWheelerTransform(input, originalIndex) {
-  const length = input.length;
-
-  // Create a matrix to store the transformed string in each iteration
-  const matrix = [];
-  for (let i = 0; i < length; i++) {
-    matrix[i] = new Array(length);
-  }
-
-  // Fill the matrix with the transformed string
-  for (let i = 0; i < length; i++) {
-    for (let j = 0; j < length; j++) {
-      matrix[j][i] = input[j];
+  // Function to insert a word into the trie
+  insert(word) {
+    let curr = this.root;
+    
+    // iterate through each character of the word
+    for (let i = 0; i < word.length; i++) {
+      const ch = word[i];
+      
+      // create a new node if the character doesn't exist
+      if (!curr.children[ch]) {
+        curr.children[ch] = new TrieNode();
+      }
+      
+      // move to the next node
+      curr = curr.children[ch];
     }
-    input = sortString(input);
+    
+    // mark the end of word
+    curr.isEndOfWord = true;
   }
-
-  // Sort the matrix lexicographically
-  matrix.sort();
-
-  // Extract the original input string from the matrix
-  let originalString = '';
-  for (let i = 0; i < length; i++) {
-    originalString += matrix[i][originalIndex];
+  
+  // Function to search for a word in the trie
+  search(word) {
+    let curr = this.root;
+    
+    // iterate through each character of the word
+    for (let i = 0; i < word.length; i++) {
+      const ch = word[i];
+      
+      // return false if character not found
+      if (!curr.children[ch]) {
+        return false;
+      }
+      
+      // move to the next node
+      curr = curr.children[ch];
+    }
+    
+    // return true if the word is found and marked as the end
+    return curr.isEndOfWord;
   }
-
-  return originalString;
+  
+  // Function to check if the trie is empty
+  isEmpty() {
+    return Object.keys(this.root.children).length === 0;
+  }
+  
+  // Function to delete a word from the trie
+  delete(word, node = this.root, index = 0) {
+    // Base case: trie is empty
+    if (this.isEmpty()) {
+      return;
+    }
+    
+    // Base case: end of word
+    if (index === word.length) {
+      if (!node.isEndOfWord) {
+        return;
+      }
+      
+      node.isEndOfWord = false;
+      
+      // delete the node if it has no children
+      if (Object.keys(node.children).length === 0) {
+        delete node;
+      }
+      
+      return;
+    }
+    
+    const ch = word[index];
+    const nextNode = node.children[ch];
+    
+    // recursive call to delete the next node
+    this.delete(word, nextNode, index + 1);
+    
+    // delete the current node if it has no children and is not marked as end
+    if (!nextNode.isEndOfWord && Object.keys(nextNode.children).length === 0) {
+      delete node.children[ch];
+    }
+  }
 }
+// Create a trie
+const trie = new Trie();
 
-function sortString(input) {
-  // Sorts a string
-  return input.split('').sort().join('');
-}
-const input = 'banana';
-const bwtResult = burrowsWheelerTransform(input);
-console.log('Transformed string:', bwtResult.transformedString);
-console.log('Original index:', bwtResult.originalIndex);
+// Insert words
+trie.insert("apple");
+trie.insert("banana");
+trie.insert("cherry");
 
-const inverseResult = inverseBurrowsWheelerTransform(bwtResult.transformedString, bwtResult.originalIndex);
-console.log('Inverse transform:', inverseResult);
+// Search for words
+console.log(trie.search("apple")); // Output: true
+console.log(trie.search("banana")); // Output: true
+console.log(trie.search("orange")); // Output: false
+
+// Delete a word
+trie.delete("banana");
+console.log(trie.search("banana")); // Output: false
