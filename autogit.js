@@ -1,25 +1,31 @@
-function shellSort(array) {
-  let gap = Math.floor(array.length / 2);
-
-  while (gap > 0) {
-    for (let i = gap; i < array.length; i++) {
-      const temp = array[i];
-      let j = i;
-
-      while (j >= gap && array[j - gap] > temp) {
-        array[j] = array[j - gap];
-        j -= gap;
-      }
-
-      array[j] = temp;
-    }
-
-    gap = Math.floor(gap / 2);
-  }
-
-  return array;
+function findCommonElements(arr1, arr2) {
+  return arr1.filter(element => arr2.includes(element));
 }
 
-// Example usage:
-const arr = [9, 5, 1, 3, 8, 4, 2, 7, 6];
-console.log(shellSort(arr)); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7];
+
+console.log(findCommonElements(array1, array2)); // Output: [4, 5]
+function findCommonElements(arr1, arr2) {
+  const commonElements = [];
+  arr1.forEach(element => {
+    if (arr2.includes(element)) {
+      commonElements.push(element);
+    }
+  });
+  return commonElements;
+}
+
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7];
+
+console.log(findCommonElements(array1, array2)); // Output: [4, 5]
+function findCommonElements(arr1, arr2) {
+  const set2 = new Set(arr2);
+  return arr1.filter(element => set2.has(element));
+}
+
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7];
+
+console.log(findCommonElements(array1, array2)); // Output: [4, 5]
