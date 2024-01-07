@@ -1,59 +1,20 @@
-// Define the Graph class
-class Graph {
-  constructor() {
-    this.adjacencyList = new Map();
-  }
+const cron = require('node-cron');
 
-  // Add a vertex to the graph
-  addVertex(vertex) {
-    this.adjacencyList.set(vertex, []);
-  }
+// Define your cron job function
+const myTask = () => {
+  console.log('This is a scheduled task that runs every minute');
+};
 
-  // Add an edge between two vertices
-  addEdge(v1, v2) {
-    this.adjacencyList.get(v1).push(v2);
-    this.adjacencyList.get(v2).push(v1);
-  }
+// Schedule a cron job to run every minute
+cron.schedule('* * * * *', myTask);
 
-  // Get the neighbors of a vertex
-  getNeighbors(vertex) {
-    return this.adjacencyList.get(vertex);
-  }
-}
+// You can also schedule cron jobs using more complex schedules
+// For example, a job that runs every day at 8:30 AM
+cron.schedule('30 8 * * *', () => {
+  console.log('This is a job that runs every day at 8:30 AM');
+});
 
-// Perform breadth-first search traversal
-function breadthFirstSearch(graph, start) {
-  const visited = new Set();
-  const queue = [];
-
-  visited.add(start);
-  queue.push(start);
-
-  while (queue.length > 0) {
-    const currentVertex = queue.shift();
-    console.log(currentVertex);
-
-    const neighbors = graph.getNeighbors(currentVertex);
-    for (let neighbor of neighbors) {
-      if (!visited.has(neighbor)) {
-        visited.add(neighbor);
-        queue.push(neighbor);
-      }
-    }
-  }
-}
-
-// Example usage
-const graph = new Graph();
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
-
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('C', 'E');
-
-breadthFirstSearch(graph, 'A');
+// A job that runs every Monday at 9:00 PM
+cron.schedule('0 21 * * 1', () => {
+  console.log('This is a job that runs every Monday at 9:00 PM');
+});
