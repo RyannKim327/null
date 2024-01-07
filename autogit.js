@@ -1,32 +1,46 @@
-function quicksort(arr) {
-    // Base case
-    if (arr.length <= 1) {
-        return arr;
-    }
-    
-    // Choose a pivot element
-    const pivot = arr[Math.floor(arr.length / 2)];
-    
-    // Partition the array
-    const less = [];
-    const equal = [];
-    const greater = [];
-    
-    for (let element of arr) {
-        if (element < pivot) {
-            less.push(element);
-        } else if (element > pivot) {
-            greater.push(element);
-        } else {
-            equal.push(element);
-        }
-    }
-    
-    // Recursively sort the sub-arrays
-    return [...quicksort(less), ...equal, ...quicksort(greater)];
+class Node {
+  constructor(value, children = []) {
+    this.value = value;
+    this.children = children;
+  }
 }
 
-// Example usage
-const unsortedArray = [9, 4, 2, 7, 5, 3, 1, 6, 8];
-const sortedArray = quicksort(unsortedArray);
-console.log(sortedArray);
+function depthLimitedSearch(root, target, depthLimit) {
+  const stack = [];
+  stack.push({ node: root, depth: 0 });
+
+  while (stack.length > 0) {
+    const { node, depth } = stack.pop();
+
+    if (node.value === target) {
+      return node;
+    }
+
+    if (depth < depthLimit) {
+      for (let i = node.children.length - 1; i >= 0; i--) {
+        stack.push({ node: node.children[i], depth: depth + 1 });
+      }
+    }
+  }
+
+  return null; // Target not found within depth limit
+}
+
+// Example usage:
+
+// Create a tree
+const tree = new Node(1, [
+  new Node(2, [
+    new Node(4),
+    new Node(5),
+  ]),
+  new Node(3, [
+    new Node(6),
+    new Node(7),
+  ]),
+]);
+
+// Perform depth-limited search
+const targetNode = depthLimitedSearch(tree, 6, 2);
+
+console.log(targetNode);  // Output: Node { value: 6, children: [] }
