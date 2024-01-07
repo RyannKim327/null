@@ -1,61 +1,33 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.neighbors = [];
-  }
+function connectAsyncTask() {
+  const url = 'http://your-android-device-ip:port'; // Replace with your Android device IP address and port
   
-  addNeighbor(neighbor) {
-    this.neighbors.push(neighbor);
-  }
-}
-function breadthFirstSearch(startNode, target) {
-  let queue = []; // Create an empty queue to store nodes to visit
-  let visited = new Set(); // Create a Set to store visited nodes
-  
-  queue.push(startNode); // Enqueue the starting node
-  
-  while (queue.length > 0) {
-    const currentNode = queue.shift(); // Dequeue the first node
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
     
-    // Check if the current node is the target
-    if (currentNode.value === target) {
-      return currentNode;
-    }
-    
-    // Add neighbors to the queue if they haven't been visited
-    currentNode.neighbors.forEach(neighbor => {
-      if (!visited.has(neighbor)) {
-        queue.push(neighbor);
-        visited.add(neighbor);
+    xhr.onload = function () {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve(xhr.responseText);
+      } else {
+        reject(xhr.statusText);
       }
-    });
-  }
-  
-  return null; // Target not found
+    };
+
+    xhr.onerror = function () {
+      reject(xhr.statusText);
+    };
+
+    xhr.send();
+  });
 }
-// Create nodes
-const nodeA = new Node('A');
-const nodeB = new Node('B');
-const nodeC = new Node('C');
-const nodeD = new Node('D');
-const nodeE = new Node('E');
-const nodeF = new Node('F');
-const nodeG = new Node('G');
 
-// Set up neighbors
-nodeA.addNeighbor(nodeB);
-nodeA.addNeighbor(nodeC);
-nodeB.addNeighbor(nodeD);
-nodeB.addNeighbor(nodeE);
-nodeC.addNeighbor(nodeF);
-nodeE.addNeighbor(nodeG);
-
-// Run BFS
-const targetNode = breadthFirstSearch(nodeA, 'G');
-
-// Check if targetNode was found
-if (targetNode) {
-  console.log(`Target found: ${targetNode.value}`);
-} else {
-  console.log('Target not found');
-}
+// Example usage of the connectAsyncTask function
+connectAsyncTask()
+  .then(response => {
+    console.log('Connection successful:', response);
+    // Do something with the response from the Android device
+  })
+  .catch(error => {
+    console.error('Connection failed:', error);
+    // Handle the error if the connection fails
+  });
