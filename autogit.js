@@ -1,38 +1,42 @@
-function interpolationSearch(arr, target) {
-  // implementation goes here
-}
-let left = 0;
-let right = arr.length - 1;
-while (left <= right && target >= arr[left] && target <= arr[right]) {
-  // implementation goes here
-}
-let pos = left + Math.floor((target - arr[left]) * (right - left) / (arr[right] - arr[left]));
-if (arr[pos] === target) {
-  return pos;
-}
-if (arr[pos] < target) {
-  left = pos + 1;
-} else {
-  right = pos - 1;
-}
-return -1;
-function interpolationSearch(arr, target) {
-  let left = 0;
-  let right = arr.length - 1;
+function rabinKarpSearch(pattern, text) {
+  const patternLength = pattern.length;
+  const textLength = text.length;
 
-  while (left <= right && target >= arr[left] && target <= arr[right]) {
-    let pos = left + Math.floor((target - arr[left]) * (right - left) / (arr[right] - arr[left]));
+  const prime = 101; // A prime number for the rolling hash function
+  const primePower = Math.pow(prime, patternLength - 1);
 
-    if (arr[pos] === target) {
-      return pos;
+  function calculateHash(str) {
+    let hash = 0;
+    for (let i = 0; i < patternLength; i++) {
+      hash += str.charCodeAt(i) * Math.pow(prime, i);
     }
-
-    if (arr[pos] < target) {
-      left = pos + 1;
-    } else {
-      right = pos - 1;
-    }
+    return hash;
   }
 
-  return -1;
+  function recalculateHash(hash, droppedChar, addedChar) {
+    hash = (hash - droppedChar) / prime;
+    hash += addedChar * primePower;
+    return hash;
+  }
+
+  const patternHash = calculateHash(pattern);
+  let textHash = calculateHash(text.slice(0, patternLength));
+
+  for (let i = 0; i <= textLength - patternLength; i++) {
+    if (patternHash === textHash && text.slice(i, i + patternLength) === pattern) {
+      return i; // match found at position i
+    }
+
+    const droppedChar = text.charCodeAt(i);
+    const addedChar = text.charCodeAt(i + patternLength);
+    textHash = recalculateHash(textHash, droppedChar, addedChar);
+  }
+
+  return -1; // no match found
 }
+
+// Example usage
+const text = 'ABABDABACDABABCABAB';
+const pattern = 'ABABCABAB';
+const matchIndex = rabinKarpSearch(pattern, text);
+console.log(`Match found at index ${matchIndex}`);
