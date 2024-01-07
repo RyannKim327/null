@@ -1,14 +1,49 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  str = str.replace(/[\W_]/g, '').toLowerCase();
-
-  // Reverse the string
-  let reversedStr = str.split('').reverse().join('');
-
-  // Compare the original string with the reversed string
-  return str === reversedStr;
+class ListNode {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
+class Queue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+  }
+}
+enqueue(value) {
+  const newNode = new ListNode(value);
 
-// Example usage
-console.log(isPalindrome("racecar")); // true
-console.log(isPalindrome("Hello")); // false
+  if (!this.head) {
+    // If the queue is empty, set the new node as both head and tail
+    this.head = newNode;
+    this.tail = newNode;
+  } else {
+    // Otherwise, add the new node to the tail and update the tail
+    this.tail.next = newNode;
+    this.tail = newNode;
+  }
+}
+dequeue() {
+  if (!this.head) {
+    // If the queue is empty, return null
+    return null;
+  }
+
+  const removedNode = this.head;
+  this.head = this.head.next;
+
+  if (!this.head) {
+    // If the queue becomes empty, update the tail to null
+    this.tail = null;
+  }
+
+  return removedNode.value;
+}
+const queue = new Queue();
+
+queue.enqueue(10);
+queue.enqueue(20);
+queue.enqueue(30);
+
+console.log(queue.dequeue()); // Output: 10
+console.log(queue.dequeue()); // Output: 20
