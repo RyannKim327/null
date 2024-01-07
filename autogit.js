@@ -1,46 +1,34 @@
-class Node {
-  constructor(value, children = []) {
-    this.value = value;
-    this.children = children;
-  }
-}
+function findMajorityElement(arr) {
+  let candidate;
+  let count = 0;
 
-function depthLimitedSearch(root, target, depthLimit) {
-  const stack = [];
-  stack.push({ node: root, depth: 0 });
-
-  while (stack.length > 0) {
-    const { node, depth } = stack.pop();
-
-    if (node.value === target) {
-      return node;
-    }
-
-    if (depth < depthLimit) {
-      for (let i = node.children.length - 1; i >= 0; i--) {
-        stack.push({ node: node.children[i], depth: depth + 1 });
-      }
+  for (let i = 0; i < arr.length; i++) {
+    if (count === 0) {
+      candidate = arr[i];
+      count = 1;
+    } else if (candidate === arr[i]) {
+      count++;
+    } else {
+      count--;
     }
   }
 
-  return null; // Target not found within depth limit
+  // Verify if the candidate is actually the majority element
+  count = 0;
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === candidate) {
+      count++;
+    }
+  }
+
+  if (count > arr.length / 2) {
+    return candidate;
+  } else {
+    return -1; // No majority element
+  }
 }
 
-// Example usage:
-
-// Create a tree
-const tree = new Node(1, [
-  new Node(2, [
-    new Node(4),
-    new Node(5),
-  ]),
-  new Node(3, [
-    new Node(6),
-    new Node(7),
-  ]),
-]);
-
-// Perform depth-limited search
-const targetNode = depthLimitedSearch(tree, 6, 2);
-
-console.log(targetNode);  // Output: Node { value: 6, children: [] }
+// Example usage
+const array = [2, 2, 3, 4, 2, 2, 5];
+const majorityElement = findMajorityElement(array);
+console.log(majorityElement);
