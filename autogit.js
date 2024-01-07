@@ -1,29 +1,56 @@
-function binarySearchRecursive(arr, start, end, target, compare = defaultCompare) {
-  if (start > end) {
-    return -1; // Target not found
-  }
-
-  const mid = Math.floor((start + end) / 2);
-
-  if (compare(target, arr[mid]) === 0) {
-    return mid; // Target found at the middle index
-  } else if (compare(target, arr[mid]) < 0) {
-    return binarySearchRecursive(arr, start, mid - 1, target, compare); // Search in the left half
-  } else {
-    return binarySearchRecursive(arr, mid + 1, end, target, compare); // Search in the right half
+class Node {
+  constructor() {
+    this.children = {};
+    this.suffixLink = null;
   }
 }
-
-// Default comparison function for primitive values
-function defaultCompare(a, b) {
-  return a < b ? -1 : a > b ? 1 : 0;
+class SuffixTree {
+  constructor() {
+    this.root = new Node();
+    this.inputString = "";
+  }
+  
+  // Build the suffix tree from an input string
+  build(inputString) {
+    this.inputString = inputString;
+    for (let i = 0; i < inputString.length; i++) {
+      this._addSuffix(i);
+    }
+  }
+  
+  // Add a suffix to the tree starting at a given position
+  _addSuffix(position) {
+    let currentNode = this.root;
+    for (let i = position; i < this.inputString.length; i++) {
+      const currentChar = this.inputString[i];
+      
+      if (!currentNode.children[currentChar]) {
+        currentNode.children[currentChar] = new Node();
+      }
+      
+      currentNode = currentNode.children[currentChar];
+    }
+  }
+  
+  // Search for a substring in the suffix tree
+  search(substring) {
+    let currentNode = this.root;
+    for (let i = 0; i < substring.length; i++) {
+      const currentChar = substring[i];
+      
+      if (!currentNode.children[currentChar]) {
+        return false; // Substring not found
+      }
+      
+      currentNode = currentNode.children[currentChar];
+    }
+    
+    return true; // Substring found
+  }
 }
-const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const target = 6;
-const index = binarySearchRecursive(sortedArray, 0, sortedArray.length - 1, target);
+const tree = new SuffixTree();
+tree.build("banana");
 
-if (index !== -1) {
-  console.log("Target found at index", index);
-} else {
-  console.log("Target not found");
-}
+console.log(tree.search("an")); // Output: true
+console.log(tree.search("na")); // Output: true
+console.log(tree.search("apple")); // Output: false
