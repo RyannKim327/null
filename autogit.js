@@ -1,20 +1,28 @@
-function insertionSort(arr) {
-  for (let i = 1; i < arr.length; i++) {
-    let current = arr[i];
-    let j = i - 1;
-    
-    while (j >= 0 && arr[j] > current) {
-      arr[j + 1] = arr[j];
-      j--;
-    }
-    
-    arr[j + 1] = current;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+function findMaxDepth(node) {
+  if (node === null) {
+    return 0;
   }
   
-  return arr;
+  const leftDepth = findMaxDepth(node.left);
+  const rightDepth = findMaxDepth(node.right);
+  
+  return Math.max(leftDepth, rightDepth) + 1;
 }
 
 // Example usage:
-const array = [6, 5, 3, 1, 8, 7, 2, 4];
-console.log("Before sorting:", array);
-console.log("After sorting:", insertionSort(array));
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+const maxDepth = findMaxDepth(root);
+console.log(maxDepth); // Output: 3
