@@ -1,7 +1,12 @@
-function decimalToBinary(decimal) {
-  return decimal.toString(2);
+function isValidEmail(email) {
+  // Regular expression pattern
+  var pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+  // Test the email against the pattern
+  return pattern.test(email);
 }
+var email = "test@example.com";
+console.log(isValidEmail(email)); // Output: true
 
-// Example usage
-console.log(decimalToBinary(10)); // Output: "1010"
-console.log(decimalToBinary(27)); // Output: "11011"
+email = "invalid_email";
+console.log(isValidEmail(email)); // Output: false
