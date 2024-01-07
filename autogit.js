@@ -1,26 +1,110 @@
-// Make a GET request to the Random User API
-fetch("https://randomuser.me/api/")
-  .then(response => response.json())
-  .then(data => {
-    // Access the user information from the API response
-    const user = data.results[0];
+// Node class representing a node in the binary tree
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
 
-    // Display the user information on the webpage
-    const container = document.getElementById("user-container");
+// BinaryTree class representing the binary tree
+class BinaryTree {
+  constructor() {
+    this.root = null;
+  }
 
-    const name = document.createElement("h2");
-    name.textContent = `${user.name.title} ${user.name.first} ${user.name.last}`;
+  // Method to insert a new value into the binary tree
+  insert(value) {
+    const newNode = new Node(value);
 
-    const email = document.createElement("p");
-    email.textContent = `Email: ${user.email}`;
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
 
-    const picture = document.createElement("img");
-    picture.setAttribute("src", user.picture.large);
+  // Helper method to insert a node recursively
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
 
-    container.appendChild(picture);
-    container.appendChild(name);
-    container.appendChild(email);
-  })
-  .catch(error => {
-    console.log("An error occurred:", error);
-  });
+  // Method to check if the binary tree is empty
+  isEmpty() {
+    return this.root === null;
+  }
+
+  // Method to perform an in-order traversal of the binary tree
+  inOrderTraversal(callback) {
+    this.inOrderTraversalNode(this.root, callback);
+  }
+
+  // Helper method to perform in-order traversal recursively
+  inOrderTraversalNode(node, callback) {
+    if (node !== null) {
+      this.inOrderTraversalNode(node.left, callback);
+      callback(node.value);
+      this.inOrderTraversalNode(node.right, callback);
+    }
+  }
+
+  // Method to perform a pre-order traversal of the binary tree
+  preOrderTraversal(callback) {
+    this.preOrderTraversalNode(this.root, callback);
+  }
+
+  // Helper method to perform pre-order traversal recursively
+  preOrderTraversalNode(node, callback) {
+    if (node !== null) {
+      callback(node.value);
+      this.preOrderTraversalNode(node.left, callback);
+      this.preOrderTraversalNode(node.right, callback);
+    }
+  }
+
+  // Method to perform a post-order traversal of the binary tree
+  postOrderTraversal(callback) {
+    this.postOrderTraversalNode(this.root, callback);
+  }
+
+  // Helper method to perform post-order traversal recursively
+  postOrderTraversalNode(node, callback) {
+    if (node !== null) {
+      this.postOrderTraversalNode(node.left, callback);
+      this.postOrderTraversalNode(node.right, callback);
+      callback(node.value);
+    }
+  }
+}
+// Create a new instance of BinaryTree
+const tree = new BinaryTree();
+
+// Insert values into the binary tree
+tree.insert(50);
+tree.insert(30);
+tree.insert(20);
+tree.insert(40);
+tree.insert(70);
+tree.insert(60);
+tree.insert(80);
+
+// Perform in-order traversal
+tree.inOrderTraversal(value => console.log(value)); // Output: 20, 30, 40, 50, 60, 70, 80
+
+// Perform pre-order traversal
+tree.preOrderTraversal(value => console.log(value)); // Output: 50, 30, 20, 40, 70, 60, 80
+
+// Perform post-order traversal
+tree.postOrderTraversal(value => console.log(value)); // Output: 20, 40, 30, 60, 80, 70, 50
