@@ -1,31 +1,20 @@
-function findCommonElements(arr1, arr2) {
-  return arr1.filter(element => arr2.includes(element));
-}
+function isPrime(number) {
+  // 1 and numbers less than 1 are not prime
+  if (number <= 1) {
+    return false;
+  }
 
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7];
-
-console.log(findCommonElements(array1, array2)); // Output: [4, 5]
-function findCommonElements(arr1, arr2) {
-  const commonElements = [];
-  arr1.forEach(element => {
-    if (arr2.includes(element)) {
-      commonElements.push(element);
+  // Check for divisibility starting from 2 up to the square root of the number
+  for (let i = 2; i <= Math.sqrt(number); i++) {
+    if (number % i === 0) {
+      return false;
     }
-  });
-  return commonElements;
+  }
+
+  // Number is prime
+  return true;
 }
-
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7];
-
-console.log(findCommonElements(array1, array2)); // Output: [4, 5]
-function findCommonElements(arr1, arr2) {
-  const set2 = new Set(arr2);
-  return arr1.filter(element => set2.has(element));
-}
-
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7];
-
-console.log(findCommonElements(array1, array2)); // Output: [4, 5]
+const number = 17;
+const isNumberPrime = isPrime(number);
+console.log(`Is ${number} a prime number? ${isNumberPrime}`);
+Is 17 a prime number? true
