@@ -1,36 +1,13 @@
-function boyerMooreHorspool(text, pattern) {
-  const shiftTable = {};
-  const patternLength = pattern.length;
-
-  // Fill shiftTable with default shift values
-  for (let i = 0; i < patternLength - 1; i++) {
-    shiftTable[pattern[i]] = patternLength - i - 1;
-  }
-
-  const lastChar = pattern[patternLength - 1];
-
-  let textIndex = 0;
-  while (textIndex <= text.length - patternLength) {
-    let patternIndex = patternLength - 1;
-
-    while (patternIndex >= 0 && pattern[patternIndex] === text[textIndex + patternIndex]) {
-      patternIndex--;
-    }
-
-    if (patternIndex === -1) {
-      return textIndex; // Match found
-    }
-
-    const shift = shiftTable[text[textIndex + patternLength - 1]] || patternLength;
-
-    textIndex += shift;
-  }
-
-  return -1; // Pattern not found
-}
-
-// Example usage:
-const text = "ABAAABCD";
-const pattern = "ABC";
-const index = boyerMooreHorspool(text, pattern);
-console.log(index); // Output: 4
+const arr = [1, 2, 3, 3, 4, 5, 5];
+const uniqueArr = Array.from(new Set(arr));
+console.log(uniqueArr); // [1, 2, 3, 4, 5]
+const arr = [1, 2, 3, 3, 4, 5, 5];
+const uniqueArr = arr.filter((value, index, self) => {
+  return self.indexOf(value) === index;
+});
+console.log(uniqueArr); // [1, 2, 3, 4, 5]
+const arr = [1, 2, 3, 3, 4, 5, 5];
+const uniqueArr = arr.reduce((unique, item) => {
+  return unique.includes(item) ? unique : [...unique, item];
+}, []);
+console.log(uniqueArr); // [1, 2, 3, 4, 5]
