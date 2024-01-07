@@ -1,22 +1,22 @@
-function bubbleSort(arr) {
-  var len = arr.length;
-  var swapped;
-  
-  do {
-    swapped = false;
-    for (var i = 0; i < len - 1; i++) {
-      if (arr[i] > arr[i + 1]) {
-        // Swap elements
-        var temp = arr[i];
-        arr[i] = arr[i + 1];
-        arr[i + 1] = temp;
-        swapped = true;
+function depthLimitedSearch(root, target, depthLimit) {
+  const stack = [{ node: root, depth: 0 }];
+
+  while (stack.length > 0) {
+    const { node, depth } = stack.pop();
+
+    if (node.value === target) {
+      return node; // Found the target
+    }
+
+    // Check if depth limit exceeded
+    if (depth < depthLimit) {
+      // Push child nodes to the stack in reverse order
+      // to maintain the same order in next iterations
+      for (let child of node.children.reverse()) {
+        stack.push({ node: child, depth: depth + 1 });
       }
     }
-  } while (swapped);
+  }
 
-  return arr;
+  return null; // Target not found within depth limit
 }
-var numbers = [5, 3, 8, 4, 2];
-var sortedNumbers = bubbleSort(numbers);
-console.log(sortedNumbers); // Output: [2, 3, 4, 5, 8]
