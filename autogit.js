@@ -1,49 +1,25 @@
-class ListNode {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+function longestCommonPrefix(strings) {
+  if (strings.length === 0) {
+    return '';
   }
+  
+  let prefix = strings[0];
+  
+  for (let i = 1; i < strings.length; i++) {
+    for (let j = 0; j < prefix.length; j++) {
+      if (prefix[j] !== strings[i][j]) {
+        prefix = prefix.slice(0, j);
+        break;
+      }
+    }
+    
+    if (prefix === '') {
+      break;
+    }
+  }
+  
+  return prefix;
 }
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-  }
-}
-enqueue(value) {
-  const newNode = new ListNode(value);
-
-  if (!this.head) {
-    // If the queue is empty, set the new node as both head and tail
-    this.head = newNode;
-    this.tail = newNode;
-  } else {
-    // Otherwise, add the new node to the tail and update the tail
-    this.tail.next = newNode;
-    this.tail = newNode;
-  }
-}
-dequeue() {
-  if (!this.head) {
-    // If the queue is empty, return null
-    return null;
-  }
-
-  const removedNode = this.head;
-  this.head = this.head.next;
-
-  if (!this.head) {
-    // If the queue becomes empty, update the tail to null
-    this.tail = null;
-  }
-
-  return removedNode.value;
-}
-const queue = new Queue();
-
-queue.enqueue(10);
-queue.enqueue(20);
-queue.enqueue(30);
-
-console.log(queue.dequeue()); // Output: 10
-console.log(queue.dequeue()); // Output: 20
+const strings = ['flower', 'flow', 'flight'];
+const commonPrefix = longestCommonPrefix(strings);
+console.log(commonPrefix);  // Output: 'fl'
