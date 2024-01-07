@@ -1,27 +1,17 @@
-function isAnagram(str1, str2) {
-  // Remove any non-alphanumeric characters and convert to lowercase
-  const cleanStr1 = str1.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
-  const cleanStr2 = str2.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+function insertionSort(arr) {
+  for (let i = 1; i < arr.length; i++) {
+    let key = arr[i];
+    let j = i - 1;
 
-  // Check if the cleaned strings have the same length
-  if (cleanStr1.length !== cleanStr2.length) {
-    return false;
-  }
-
-  // Convert the strings to arrays and sort them
-  const sortedStr1 = cleanStr1.split("").sort();
-  const sortedStr2 = cleanStr2.split("").sort();
-
-  // Compare the sorted arrays
-  for (let i = 0; i < sortedStr1.length; i++) {
-    if (sortedStr1[i] !== sortedStr2[i]) {
-      return false;
+    while (j >= 0 && arr[j] > key) {
+      arr[j + 1] = arr[j];
+      j = j - 1;
     }
+
+    arr[j + 1] = key;
   }
 
-  return true;
+  return arr;
 }
-
-// Example usage
-console.log(isAnagram("listen", "silent")); // true
-console.log(isAnagram("hello", "world")); // false
+let arr = [5, 2, 4, 6, 1, 3];
+console.log(insertionSort(arr)); // Output: [1, 2, 3, 4, 5, 6]
