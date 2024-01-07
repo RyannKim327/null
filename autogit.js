@@ -1,24 +1,8 @@
-function selectionSort(array) {
-  const length = array.length;
+const str = "Hello, world!";
+const substring = "lo";
 
-  for (let i = 0; i < length - 1; i++) {
-    let minIndex = i;
-
-    for (let j = i + 1; j < length; j++) {
-      if (array[j] < array[minIndex]) {
-        minIndex = j;
-      }
-    }
-
-    if (minIndex !== i) {
-      const temp = array[i];
-      array[i] = array[minIndex];
-      array[minIndex] = temp;
-    }
-  }
-  
-  return array;
+if (str.includes(substring)) {
+  console.log("Substring found!");
+} else {
+  console.log("Substring not found!");
 }
-const unsortedArray = [5, 3, 8, 2, 1, 4];
-const sortedArray = selectionSort(unsortedArray);
-console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 8]
