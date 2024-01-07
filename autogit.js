@@ -1,18 +1,10 @@
-function findFirstRepeatedCharacter(str) {
-  const charCount = {};
+function validateEmail(email) {
+  // Regular expression pattern for email validation
+  var pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    if (charCount[char]) {
-      return char;
-    }
-    charCount[char] = true;
-  }
-
-  return null;
+  // Return true if the email matches the pattern, false otherwise
+  return pattern.test(email);
 }
-
-// Example usage:
-const str = "abca";
-const repeatedChar = findFirstRepeatedCharacter(str);
-console.log(repeatedChar); // Output: "a"
+console.log(validateEmail("test@example.com")); // Output: true
+console.log(validateEmail("invalid_email")); // Output: false
+console.log(validateEmail("another@test")); // Output: false
