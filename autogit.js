@@ -1,43 +1,47 @@
-function shellSort(array) {
-  // TODO: Implement shell sort algorithm
-}
-let gap = 1;
-while (gap < array.length / 3) {
-  gap = gap * 3 + 1;
-}
-while (gap > 0) {
-  for (let i = gap; i < array.length; i++) {
-    let temp = array[i];
-    let j = i;
-    while (j >= gap && array[j - gap] > temp) {
-      array[j] = array[j - gap];
-      j -= gap;
-    }
-    array[j] = temp;
+class Node {
+  constructor(data, next = null) {
+    this.data = data;
+    this.next = next;
   }
-  gap = Math.floor((gap - 1) / 3);
 }
-return array;
-function shellSort(array) {
-  let gap = 1;
-  while (gap < array.length / 3) {
-    gap = gap * 3 + 1;
+
+class LinkedList {
+  constructor() {
+    this.head = null;
   }
 
-  while (gap > 0) {
-    for (let i = gap; i < array.length; i++) {
-      let temp = array[i];
-      let j = i;
-      while (j >= gap && array[j - gap] > temp) {
-        array[j] = array[j - gap];
-        j -= gap;
+  // Method to add a node to the end of the list
+  add(data) {
+    const newNode = new Node(data);
+
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
       }
-      array[j] = temp;
+      current.next = newNode;
     }
-    gap = Math.floor((gap - 1) / 3);
   }
 
-  return array;
+  // Method to find the length of the list
+  length() {
+    let count = 0;
+    let current = this.head;
+
+    while (current) {
+      count++;
+      current = current.next;
+    }
+
+    return count;
+  }
 }
-let array = [9, 5, 1, 3, 8, 4, 2, 7, 6];
-console.log(shellSort(array)); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+// Example usage
+const list = new LinkedList();
+list.add(1);
+list.add(2);
+list.add(3);
+console.log(list.length()); // Output: 3
