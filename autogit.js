@@ -1,56 +1,29 @@
 class Node {
-  constructor() {
-    this.children = {};
-    this.suffixLink = null;
-  }
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
 }
-class SuffixTree {
-  constructor() {
-    this.root = new Node();
-    this.inputString = "";
-  }
-  
-  // Build the suffix tree from an input string
-  build(inputString) {
-    this.inputString = inputString;
-    for (let i = 0; i < inputString.length; i++) {
-      this._addSuffix(i);
-    }
-  }
-  
-  // Add a suffix to the tree starting at a given position
-  _addSuffix(position) {
-    let currentNode = this.root;
-    for (let i = position; i < this.inputString.length; i++) {
-      const currentChar = this.inputString[i];
-      
-      if (!currentNode.children[currentChar]) {
-        currentNode.children[currentChar] = new Node();
-      }
-      
-      currentNode = currentNode.children[currentChar];
-    }
-  }
-  
-  // Search for a substring in the suffix tree
-  search(substring) {
-    let currentNode = this.root;
-    for (let i = 0; i < substring.length; i++) {
-      const currentChar = substring[i];
-      
-      if (!currentNode.children[currentChar]) {
-        return false; // Substring not found
-      }
-      
-      currentNode = currentNode.children[currentChar];
-    }
-    
-    return true; // Substring found
-  }
-}
-const tree = new SuffixTree();
-tree.build("banana");
 
-console.log(tree.search("an")); // Output: true
-console.log(tree.search("na")); // Output: true
-console.log(tree.search("apple")); // Output: false
+function sumBinaryTree(root) {
+    if (root === null) {
+        return 0;
+    }
+
+    // Recursively calculate the sum of the left and right subtrees
+    const leftSum = sumBinaryTree(root.left);
+    const rightSum = sumBinaryTree(root.right);
+
+    // Return the sum of the current node's value and the sums of its subtrees
+    return root.value + leftSum + rightSum;
+}
+
+// Example usage:
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+console.log(sumBinaryTree(root));  // Output: 15 (1 + 2 + 3 + 4 + 5)
