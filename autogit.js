@@ -1,16 +1,35 @@
-function isSortedAscending(arr) {
-  for (let i = 0; i < arr.length - 1; i++) {
-    if (arr[i] > arr[i + 1]) {
-      return false;
-    }
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
-  return true;
 }
-const array1 = [1, 2, 3, 4, 5];
-console.log(isSortedAscending(array1)); // Output: true
 
-const array2 = [5, 4, 3, 2, 1];
-console.log(isSortedAscending(array2)); // Output: false
+function findSum(root) {
+  if (root === null) {
+    return 0;  // Base case: empty tree has sum 0
+  } else {
+    // Recursively find the sum of left and right subtrees
+    const leftSum = findSum(root.left);
+    const rightSum = findSum(root.right);
 
-const array3 = [1, 3, 2, 4, 5];
-console.log(isSortedAscending(array3)); // Output: false
+    // Return the sum of current node value and sums of left and right subtrees
+    return root.value + leftSum + rightSum;
+  }
+}
+
+// Example usage:
+const tree = new Node(1);
+tree.left = new Node(2);
+tree.right = new Node(3);
+tree.left.left = new Node(4);
+tree.left.right = new Node(5);
+
+const sum = findSum(tree);
+console.log('Sum of all nodes:', sum); // Output: 15
+      1
+     / \
+    2   3
+   / \
+  4   5
