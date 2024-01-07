@@ -1,22 +1,25 @@
-function selectionSort(array) {
-  var minIndex, temp;
+const cron = require('node-cron');
 
-  for (var i = 0; i < array.length - 1; i++) {
-    minIndex = i;
+// Schedule a cron job to run every minute
+cron.schedule('* * * * *', () => {
+  // Your code logic here
+  console.log('This cron job runs every minute');
+});
 
-    for (var j = i + 1; j < array.length; j++) {
-      if (array[j] < array[minIndex]) {
-        minIndex = j;
-      }
-    }
+// Schedule a cron job to run every day at 12:00 PM
+cron.schedule('0 12 * * *', () => {
+  // Your code logic here
+  console.log('This cron job runs every day at 12:00 PM');
+});
 
-    temp = array[i];
-    array[i] = array[minIndex];
-    array[minIndex] = temp;
-  }
+// Schedule a cron job to run every Monday at 8:00 AM
+cron.schedule('0 8 * * 1', () => {
+  // Your code logic here
+  console.log('This cron job runs every Monday at 8:00 AM');
+});
 
-  return array;
-}
-var numbers = [4, 2, 7, 1, 3];
-var sortedNumbers = selectionSort(numbers);
-console.log(sortedNumbers); // Output: [1, 2, 3, 4, 7]
+// Schedule a cron job to run every first day of the month at 10:00 PM
+cron.schedule('0 22 1 * *', () => {
+  // Your code logic here
+  console.log('This cron job runs every first day of the month at 10:00 PM');
+});
