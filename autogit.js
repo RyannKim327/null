@@ -1,63 +1,57 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
+function dijkstra(graph, source) {
+  const distances = {};
+  const visited = {};
+  const queue = [];
+
+  // Initialize distances and visited array
+  for (let node in graph) {
+    distances[node] = Infinity;
+    visited[node] = false;
   }
+
+  // Distance from the source to itself is 0
+  distances[source] = 0;
+
+  // Add the source node to the queue
+  queue.push(source);
+
+  while (queue.length > 0) {
+    // Find the node with the minimum distance
+    let currentNode = queue.shift();
+
+    // If the node has already been visited, skip it
+    if (visited[currentNode]) continue;
+
+    // Mark the node as visited
+    visited[currentNode] = true;
+
+    // Update distances to neighbors
+    for (let neighbor in graph[currentNode]) {
+      let distance = graph[currentNode][neighbor];
+      let totalDistance = distances[currentNode] + distance;
+
+      if (totalDistance < distances[neighbor]) {
+        distances[neighbor] = totalDistance;
+
+        // Add neighbor to the queue
+        queue.push(neighbor);
+      }
+    }
+  }
+
+  return distances;
 }
 
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-    this.size = 0;
-  }
+// Example usage
+const graph = {
+  A: { B: 5, C: 2 },
+  B: { D: 4, E: 2 },
+  C: { B: 8, E: 7 },
+  D: { C: 6, E: 3 },
+  E: { D: 1 }
+};
 
-  enqueue(data) {
-    const newNode = new Node(data);
+const sourceNode = "A";
+const distances = dijkstra(graph, sourceNode);
 
-    if (this.head === null) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
-    }
-
-    this.size++;
-  }
-
-  dequeue() {
-    if (this.head === null) {
-      return null; // No elements in the queue
-    }
-
-    const removedNode = this.head;
-
-    if (this.head === this.tail) {
-      this.tail = null;
-    }
-
-    this.head = this.head.next;
-    this.size--;
-
-    return removedNode.data;
-  }
-
-  isEmpty() {
-    return this.size === 0;
-  }
-
-  getSize() {
-    return this.size;
-  }
-}
-const queue = new Queue();
-queue.enqueue('A');
-queue.enqueue('B');
-queue.enqueue('C');
-
-console.log(queue.dequeue()); // Output: A
-console.log(queue.dequeue()); // Output: B
-
-console.log(queue.getSize()); // Output: 1
-console.log(queue.isEmpty()); // Output: false
+console.log(distances);
