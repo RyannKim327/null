@@ -1,63 +1,86 @@
-class Queue {
-  constructor() {
-    this.items = [];
-  }
-
-  enqueue(element) {
-    this.items.push(element);
-  }
-
-  dequeue() {
-    if (this.isEmpty()) {
-      return null;
-    }
-    return this.items.shift();
-  }
-
-  isEmpty() {
-    return this.items.length === 0;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
-function breadthFirstSearch(startNode, graph) {
-  // Create a visited array to keep track of visited nodes
-  const visited = [];
-  
-  // Create a queue and enqueue the start node
-  const queue = new Queue();
-  queue.enqueue(startNode);
-  
-  // Mark the start node as visited
-  visited[startNode] = true;
-  
-  // Iterate through the queue until it's empty
-  while (!queue.isEmpty()) {
-    // Dequeue a vertex/node from the queue
-    const currentNode = queue.dequeue();
+
+class BinarySearchTree {
+  constructor() {
+    this.root = null;
+  }
+
+  insert(value) {
+    const newNode = new Node(value);
     
-    // Process the current node
-    console.log(currentNode);
-    
-    // Get all adjacent nodes of the current node
-    const adjacentNodes = graph[currentNode];
-    
-    // Iterate through each adjacent node
-    for (let i = 0; i < adjacentNodes.length; i++) {
-      const adjacentNode = adjacentNodes[i];
-      
-      // If the adjacent node hasn't been visited, mark it as visited and enqueue it
-      if (!visited[adjacentNode]) {
-        visited[adjacentNode] = true;
-        queue.enqueue(adjacentNode);
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
+
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
       }
     }
   }
+
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  searchNode(node, value) {
+    if (node === null) {
+      return false;
+    }
+
+    if (value === node.value) {
+      return true;
+    }
+
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else {
+      return this.searchNode(node.right, value);
+    }
+  }
+
+  inOrderTraversal() {
+    this.inOrderTraversalNode(this.root);
+  }
+
+  inOrderTraversalNode(node) {
+    if (node !== null) {
+      this.inOrderTraversalNode(node.left);
+      console.log(node.value);
+      this.inOrderTraversalNode(node.right);
+    }
+  }
 }
-const graph = {
-  A: ['B', 'C'],
-  B: ['D', 'E'],
-  C: ['F'],
-  D: [],
-  E: ['F'],
-  F: []
-};
-breadthFirstSearch('A', graph);
+
+// Usage:
+const bst = new BinarySearchTree();
+bst.insert(50);
+bst.insert(30);
+bst.insert(70);
+bst.insert(20);
+bst.insert(40);
+bst.insert(60);
+bst.insert(80);
+
+console.log(bst.search(60)); // true
+console.log(bst.search(90)); // false
+
+bst.inOrderTraversal();
