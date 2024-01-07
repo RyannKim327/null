@@ -1,18 +1,22 @@
-function countOccurrences(str, word) {
-  // Create a regular expression dynamically using the word and the 'g' flag for global search.
-  const regex = new RegExp(word, 'gi');
+function quickSort(arr) {
+  if (arr.length <= 1) return arr;
   
-  // Use the 'match()' method with the regex pattern to find all occurrences.
-  const matches = str.match(regex); 
-  
-  // Return the number of occurrences.
-  return matches ? matches.length : 0;
+  const pivot = arr[arr.length - 1];
+  const left = [];
+  const right = [];
+
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] < pivot) {
+      left.push(arr[i]);
+    } else {
+      right.push(arr[i]);
+    }
+  }
+
+  return [...quickSort(left), pivot, ...quickSort(right)];
 }
 
-// Example usage
-const text = 'This is an example sentence. Example is a word that is repeated.';
-
-const wordToFind = 'example';
-const occurrences = countOccurrences(text, wordToFind);
-
-console.log(`The word "${wordToFind}" occurs ${occurrences} times in the given text.`);
+// Example usage:
+const array = [5, 8, 2, 1, 6, 3, 9, 4, 7];
+const sortedArray = quickSort(array);
+console.log(sortedArray);
