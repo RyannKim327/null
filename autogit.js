@@ -1,57 +1,142 @@
-class ListNode {
-  constructor(val = 0, next = null) {
-    this.val = val;
-    this.next = next;
+class Node {
+  constructor(value, level) {
+    this.value = value;
+    this.level = level;
+    this.forward = new Array(level + 1);
   }
 }
-
-function isLinkedListPalindrome(head) {
-  if (head === null || head.next === null) {
-    return true; // An empty list or a list with a single node is considered a palindrome
+class SkipList {
+  constructor() {
+    this.head = new Node(-Infinity, 0);
+    this.maxLevel = 0;
   }
 
-  let slow = head;
-  let fast = head;
-
-  // Traverse the list until the end or node after the end
-  while (fast.next !== null && fast.next.next !== null) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
-
-  // Reverse the second half of the list
-  let prev = null;
-  let curr = slow.next;
-  let next = null;
-
-  while (curr !== null) {
-    next = curr.next;
-    curr.next = prev;
-    prev = curr;
-    curr = next;
-  }
-
-  // Reset the pointers for comparison
-  fast = head;
-  slow.next = prev;
-  slow = slow.next;
-
-  // Compare the values of first half and reversed second half
-  while (slow !== null) {
-    if (fast.val !== slow.val) {
-      return false;
+  // Generate a random level for a new node
+  randomLevel() {
+    let level = 0;
+    while (Math.random() < 0.5 && level < this.maxLevel + 1) {
+      level++;
     }
-    fast = fast.next;
-    slow = slow.next;
+    return level;
   }
 
-  return true;
-}
-// Sample linked list: 1 -> 2 -> 3 -> 2 -> 1
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(2);
-head.next.next.next.next = new ListNode(1);
+  // Insert a value into the skip list
+  insert(value) {
+    const update = new Array(this.maxLevel + 1);
+    let node = this.head;
 
-console.log(isLinkedListPalindrome(head)); // Output: true
+    // Find the right position to insert the new node
+    for (let i = this.maxLevel; i >= 0; i--) {
+      while (node.forward[i] && node.forward[i].value < value) {
+        node = node.forward[i];
+      }
+      update[i] = node;
+    }
+
+    node = node.forward[0];
+
+    // If the value already exists, update its level
+    if (node && node.value === value) {
+      node.level = this.randomLevel();
+    } else {
+      // Generate a new level for the new node
+      const level = this.randomLevel();
+
+      // If the new level is higher than the current max level, update the update array
+      if (level > this.maxLevel) {
+        for (let i = this.maxLevel + 1; i <= level; i++) {
+          update[i] = this.head;
+        }
+        this.maxLevel = level;
+      }
+
+      // Create the new node and update the forward references
+      const newNode = new Node(value, level);
+      for (let i = 0; i <= level; i++) {
+        newNode.forward[i] = update[i].forward[i];
+        update[i].forward[i] = newNode;
+      }
+    }
+  }
+
+  // Search for a value in the skip list
+  search(value) {
+    let node = this.head;
+
+    for (let i = this.maxLevel; i >= 0; i--) {
+      while (node.forward[i] && node.forward[i].value < value) {
+        node = node.forward[i];
+      }
+    }
+
+    node = node.forward[0];
+
+    if (node && node.value === value) {
+      return node;
+    }
+
+    return null;
+  }
+
+  // Remove a value from the skip list
+  remove(value) {
+    const update = new Array(this.maxLevel + 1);
+    let node = this.head;
+
+    // Find the node to remove
+    for (let i = this.maxLevel; i >= 0; i--) {
+      while (node.forward[i] && node.forward[i].value < value) {
+        node = node.forward[i];
+      }
+      update[i] = node;
+    }
+
+    node = node.forward[0];
+
+    // If the value is found, remove it and update the forward references
+    if (node && node.value === value) {
+      for (let i = 0; i <= this.maxLevel; i++) {
+        if (update[i].forward[i] !== node) {
+          break;
+        }
+        update[i].forward[i] = node.forward[i];
+      }
+
+      // Update the max level if necessary
+      while (this.maxLevel > 0 && this.head.forward[this.maxLevel] === null) {
+        this.maxLevel--;
+      }
+    }
+  }
+
+  // Print the skip list for visualization
+  print() {
+    for (let i = this.maxLevel; i >= 0; i--) {
+      let output = `Level ${i}: `;
+      let node = this.head.forward[i];
+      while (node) {
+        output += `${node.value} `;
+        node = node.forward[i];
+      }
+      console.log(output);
+    }
+  }
+}
+const skipList = new SkipList();
+
+// Insert elements
+skipList.insert(5);
+skipList.insert(1);
+skipList.insert(10);
+skipList.insert(3);
+skipList.insert(7);
+
+// Search for an element
+console.log(skipList.search(3)); // Node { value: 3, level: 1, forward: [ Node ] }
+
+// Remove an element
+skipList.remove(3);
+console.log(skipList.search(3)); // null
+
+// Print the skip list
+skipList.print();
