@@ -1,25 +1,56 @@
-function binarySearchRecursive(arr, target, start, end) {
-  if (start > end) {
-    // Base case: element not found
-    return -1;
+// Define a class to represent a graph node
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.children = [];
   }
 
-  // Calculate the middle index
-  const mid = Math.floor((start + end) / 2);
-
-  if (arr[mid] === target) {
-    // Base case: element found at middle index
-    return mid;
-  } else if (arr[mid] < target) {
-    // Recursive case: search in the right half of the array
-    return binarySearchRecursive(arr, target, mid + 1, end);
-  } else {
-    // Recursive case: search in the left half of the array
-    return binarySearchRecursive(arr, target, start, mid - 1);
+  addChild(node) {
+    this.children.push(node);
   }
 }
 
-// Example usage:
-const arr = [1, 3, 5, 7, 9, 11, 13];
-console.log(binarySearchRecursive(arr, 7, 0, arr.length - 1)); // Output: 3
-console.log(binarySearchRecursive(arr, 10, 0, arr.length - 1)); // Output: -1 (not found)
+// Implement the depth-first search algorithm
+function depthFirstSearch(root, target) {
+  // Base case: If the current node is null or matches the target, return the node
+  if (root === null || root.value === target) {
+    return root;
+  }
+
+  // Iterate through each child of the current node
+  for (let child of root.children) {
+    // Call the depthFirstSearch function recursively on each child
+    const result = depthFirstSearch(child, target);
+
+    // If the target is found in any of the recursive calls, return the result
+    if (result !== null) {
+      return result;
+    }
+  }
+
+  // If the target is not found, return null
+  return null;
+}
+
+// Usage example:
+// Create a sample graph
+const nodeA = new Node("A");
+const nodeB = new Node("B");
+const nodeC = new Node("C");
+const nodeD = new Node("D");
+const nodeE = new Node("E");
+const nodeF = new Node("F");
+
+nodeA.addChild(nodeB);
+nodeA.addChild(nodeC);
+nodeB.addChild(nodeD);
+nodeB.addChild(nodeE);
+nodeC.addChild(nodeF);
+
+// Call the depthFirstSearch function to search for a target value
+const targetNode = depthFirstSearch(nodeA, "E");
+if (targetNode !== null) {
+  console.log("Target node found: ", targetNode.value);
+} else {
+  console.log("Target node not found");
+}
