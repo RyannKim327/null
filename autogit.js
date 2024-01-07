@@ -1,16 +1,24 @@
-function isAnagram(str1, str2) {
-  // Remove any non-word characters and convert to lowercase
-  const cleanStr1 = str1.replace(/[^\w]/g, '').toLowerCase();
-  const cleanStr2 = str2.replace(/[^\w]/g, '').toLowerCase();
-
-  // Sort the characters of the strings
-  const sortedStr1 = cleanStr1.split('').sort().join('');
-  const sortedStr2 = cleanStr2.split('').sort().join('');
-
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+function bubbleSort(arr) {
+  var len = arr.length;
+  var swapped;
+  
+  do {
+    swapped = false;
+    
+    for (var i = 0; i < len - 1; i++) {
+      if (arr[i] > arr[i + 1]) {
+        var temp = arr[i];
+        arr[i] = arr[i + 1];
+        arr[i + 1] = temp;
+        swapped = true;
+      }
+    }
+  } while (swapped);
+  
+  return arr;
 }
 
-// Example usage:
-console.log(isAnagram('listen', 'silent')); // Output: true
-console.log(isAnagram('hello', 'world')); // Output: false
+// Example usage
+var array = [5, 3, 8, 4, 2];
+console.log("Original array: ", array);
+console.log("Sorted array: ", bubbleSort(array));
