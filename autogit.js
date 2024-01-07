@@ -1,34 +1,41 @@
-function topologicalSort(graph) {
-  const visited = new Set(); // to keep track of visited nodes
-  const sorted = []; // to store the sorted order
-
-  function visit(node) {
-    if (visited.has(node)) {
-      return; // If the node is already visited, return
-    }
-
-    visited.add(node); // Mark the node as visited
-
-    // Visit each neighbor of the node
-    for (const neighbor of graph[node]) {
-      visit(neighbor);
-    }
-
-    sorted.unshift(node); // Add the visited node to the beginning of the sorted array
-  }
-
-  // Iterate over each node in the graph and visit it
-  for (const node in graph) {
-    visit(node);
-  }
-
-  return sorted; // Return the sorted order
-}
 const graph = {
-  A: ['B', 'C'],
-  B: ['D'],
+  A: [{ node: 'B', weight: -1 }, { node: 'C', weight: 4 }],
+  B: [{ node: 'C', weight: 3 }, { node: 'D', weight: 2 }, { node: 'E', weight: 2 }],
   C: [],
-  D: []
+  D: [{ node: 'B', weight: 1 }, { node: 'C', weight: 5 }],
+  E: [{ node: 'D', weight: -3 }]
 };
-const sortedOrder = topologicalSort(graph);
-console.log(sortedOrder);
+function bellmanFord(graph, source) {
+  // Step 1: Initialization
+  const distances = {};
+  const vertices = Object.keys(graph);
+
+  for (let vertex of vertices) {
+    distances[vertex] = vertex === source ? 0 : Infinity;
+  }
+
+  // Step 2: Relax edges repeatedly
+  for (let i = 0; i < vertices.length - 1; i++) {
+    for (let vertex of vertices) {
+      for (let { node, weight } of graph[vertex]) {
+        if (distances[vertex] + weight < distances[node]) {
+          distances[node] = distances[vertex] + weight;
+        }
+      }
+    }
+  }
+
+  // Step 3: Check for negative cycles
+  for (let vertex of vertices) {
+    for (let { node, weight } of graph[vertex]) {
+      if (distances[vertex] + weight < distances[node]) {
+        throw new Error('Graph contains a negative-weight cycle');
+      }
+    }
+  }
+
+  return distances;
+}
+const source = 'A';
+const shortestDistances = bellmanFord(graph, source);
+console.log(shortestDistances);
