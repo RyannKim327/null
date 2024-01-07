@@ -1,12 +1,12 @@
-function factorial(n) {
-  if (n === 0) {
-    // Base case: 0! = 1
-    return 1;
-  } else {
-    // Recursive case: n! = n * (n-1)!
-    return n * factorial(n - 1);
+const axios = require('axios');
+
+async function fetchData() {
+  try {
+    const response = await axios.get('https://jsonplaceholder.typicode.com/posts');
+    console.log(response.data);
+  } catch (error) {
+    console.log(error.message);
   }
 }
 
-// Example usage
-console.log(factorial(5)); // Output: 120
+fetchData();
