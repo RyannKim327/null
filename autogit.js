@@ -1,61 +1,43 @@
-function computeLPSArray(pattern) {
-  const lps = [0];
-  let len = 0;
-  let i = 1;
-  
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[len]) {
-      len++;
-      lps[i] = len;
-      i++;
-    } else {
-      if (len !== 0) {
-        len = lps[len - 1];
-      } else {
-        lps[i] = 0;
-        i++;
-      }
-    }
+class Node {
+  constructor(value, children = []) {
+    this.value = value;
+    this.children = children;
   }
-  
-  return lps;
 }
-function KMPSearch(text, pattern) {
-  const n = text.length;
-  const m = pattern.length;
-  const lps = computeLPSArray(pattern);
 
-  let i = 0;
-  let j = 0;
-  const indices = [];
+// Iterative Depth-Limited Search algorithm
+function depthLimitedSearchIterative(root, target, depthLimit) {
+  if (root === null) return null;
 
-  while (i < n) {
-    if (pattern[j] === text[i]) {
-      i++;
-      j++;
+  const stack = [{ node: root, depth: 0 }];
+
+  while (stack.length > 0) {
+    const { node, depth } = stack.pop();
+
+    if (node.value === target) {
+      return node;
     }
 
-    if (j === m) {
-      indices.push(i - j);
-      j = lps[j - 1];
-    } else if (i < n && pattern[j] !== text[i]) {
-      if (j !== 0) {
-        j = lps[j - 1];
-      } else {
-        i++;
+    if (depth < depthLimit) {
+      for (let i = node.children.length - 1; i >= 0; i--) {
+        stack.push({ node: node.children[i], depth: depth + 1 });
       }
     }
   }
 
-  return indices;
+  return null;
 }
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
 
-const indices = KMPSearch(text, pattern);
+// Usage example
+const tree = new Node(1, [
+  new Node(2, [new Node(4)]),
+  new Node(3, [new Node(5), new Node(6)])
+]);
 
-if (indices.length > 0) {
-  console.log("Pattern found at index/es: " + indices.join(", "));
+const targetNode = depthLimitedSearchIterative(tree, 5, 3);
+
+if (targetNode !== null) {
+  console.log('Node found:', targetNode.value);
 } else {
-  console.log("Pattern not found");
+  console.log('Node not found');
 }
