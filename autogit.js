@@ -1,29 +1,7 @@
-class ListNode {
-  constructor(val, next = null) {
-    this.val = val;
-    this.next = next;
-  }
-}
-
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
-
-  // Move slow pointer by 1 and fast pointer by 2.
-  // When the fast pointer reaches the end, the slow pointer will be at the middle.
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
-
-  return slow.val;
+function getRandomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 // Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-console.log(findMiddleElement(head)); // Output: 3
+var randomNumber = getRandomNumber(1, 100);
+console.log(randomNumber); // Output a random number between 1 and 100 (inclusive)
