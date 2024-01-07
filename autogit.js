@@ -1,43 +1,43 @@
-function bidirectionalSearch(startNode, targetNode) {
-  const forwardPath = [startNode];
-  const backwardPath = [targetNode];
-  const forwardVisited = new Set([startNode]);
-  const backwardVisited = new Set([targetNode]);
-  const forwardQueue = [startNode];
-  const backwardQueue = [targetNode];
-
-  while (forwardQueue.length && backwardQueue.length) {
-    const currentForwardNode = forwardQueue.shift();
-    if (backwardVisited.has(currentForwardNode)) {
-      return forwardPath.concat(backwardPath.reverse());
+function shellSort(array) {
+  // TODO: Implement shell sort algorithm
+}
+let gap = 1;
+while (gap < array.length / 3) {
+  gap = gap * 3 + 1;
+}
+while (gap > 0) {
+  for (let i = gap; i < array.length; i++) {
+    let temp = array[i];
+    let j = i;
+    while (j >= gap && array[j - gap] > temp) {
+      array[j] = array[j - gap];
+      j -= gap;
     }
-    generateNeighboringNodes(currentForwardNode).forEach((neighbor) => {
-      if (!forwardVisited.has(neighbor)) {
-        forwardVisited.add(neighbor);
-        forwardQueue.push(neighbor);
-        forwardPath.push(neighbor);
-      }
-    });
-
-    const currentBackwardNode = backwardQueue.shift();
-    if (forwardVisited.has(currentBackwardNode)) {
-      return forwardPath.concat(backwardPath.reverse());
-    }
-    generateNeighboringNodes(currentBackwardNode).forEach((neighbor) => {
-      if (!backwardVisited.has(neighbor)) {
-        backwardVisited.add(neighbor);
-        backwardQueue.push(neighbor);
-        backwardPath.push(neighbor);
-      }
-    });
+    array[j] = temp;
+  }
+  gap = Math.floor((gap - 1) / 3);
+}
+return array;
+function shellSort(array) {
+  let gap = 1;
+  while (gap < array.length / 3) {
+    gap = gap * 3 + 1;
   }
 
-  return null; // No path found
-}
+  while (gap > 0) {
+    for (let i = gap; i < array.length; i++) {
+      let temp = array[i];
+      let j = i;
+      while (j >= gap && array[j - gap] > temp) {
+        array[j] = array[j - gap];
+        j -= gap;
+      }
+      array[j] = temp;
+    }
+    gap = Math.floor((gap - 1) / 3);
+  }
 
-// Helper function to generate neighboring nodes
-function generateNeighboringNodes(node) {
-  // Implement your own logic to generate the neighboring nodes
-  // based on the specific problem or graph structure
-  // Return an array of neighboring nodes
+  return array;
 }
+let array = [9, 5, 1, 3, 8, 4, 2, 7, 6];
+console.log(shellSort(array)); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
