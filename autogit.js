@@ -1,48 +1,28 @@
-function buildPrefixTable(pattern) {
-  const table = [0];
-  let prefixLen = 0;
+const graph = [[1, 2], [3], [3], []];
+function dfs(vertex, visited, stack, graph) {
+  visited[vertex] = true;
 
-  for (let i = 1; i < pattern.length; i++) {
-    while (prefixLen > 0 && pattern[i] !== pattern[prefixLen]) {
-      prefixLen = table[prefixLen - 1];
-    }
-
-    if (pattern[i] === pattern[prefixLen]) {
-      prefixLen++;
-    }
-
-    table[i] = prefixLen;
-  }
-
-  return table;
-}
-function findPattern(text, pattern) {
-  const prefixTable = buildPrefixTable(pattern);
-  let textIndex = 0;
-  let patternIndex = 0;
-
-  while (textIndex < text.length) {
-    if (text[textIndex] === pattern[patternIndex]) {
-      if (patternIndex === pattern.length - 1) {
-        return textIndex - patternIndex;
-      }
-      patternIndex++;
-      textIndex++;
-    } else if (patternIndex > 0) {
-      patternIndex = prefixTable[patternIndex - 1];
-    } else {
-      textIndex++;
+  for (const adj of graph[vertex]) {
+    if (!visited[adj]) {
+      dfs(adj, visited, stack, graph);
     }
   }
 
-  return -1; // Pattern not found
+  stack.push(vertex);
 }
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const index = findPattern(text, pattern);
+function topologicalSort(graph) {
+  const numVertices = graph.length;
+  const visited = new Array(numVertices).fill(false);
+  const stack = [];
 
-if (index !== -1) {
-  console.log(`Pattern found at index ${index}`);
-} else {
-  console.log("Pattern not found");
+  for (let vertex = 0; vertex < numVertices; vertex++) {
+    if (!visited[vertex]) {
+      dfs(vertex, visited, stack, graph);
+    }
+  }
+
+  return stack.reverse();
 }
+const graph = [[1, 2], [3], [3], []];
+const sortedOrder = topologicalSort(graph);
+console.log(sortedOrder); // [0, 1, 2, 3]
