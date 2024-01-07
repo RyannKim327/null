@@ -1,45 +1,20 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
+function insertionSort(array) {
+  for (let i = 1; i < array.length; i++) {
+    let currentValue = array[i];
+    let j = i - 1;
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-
-  addNode(value) {
-    const newNode = new Node(value);
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
-
-  getLength() {
-    let current = this.head;
-    let length = 0;
-
-    while (current) {
-      length++;
-      current = current.next;
+    while (j >= 0 && array[j] > currentValue) {
+      array[j + 1] = array[j];
+      j--;
     }
 
-    return length;
+    array[j + 1] = currentValue;
   }
+
+  return array;
 }
 
-// Example usage:
-const linkedList = new LinkedList();
-linkedList.addNode(1);
-linkedList.addNode(2);
-linkedList.addNode(3);
-
-console.log(linkedList.getLength());  // Output: 3
+// Usage example:
+const unsortedArray = [5, 3, 1, 4, 2];
+const sortedArray = insertionSort(unsortedArray);
+console.log(sortedArray);
