@@ -1,81 +1,54 @@
+// Binary tree node class
 class Node {
-  constructor(value) {
-    this.value = value;
+  constructor(data) {
+    this.data = data;
     this.left = null;
     this.right = null;
   }
 }
 
-class BinarySearchTree {
-  constructor() {
-    this.root = null;
+// Calculate the diameter of a binary tree
+function calculateDiameter(root) {
+  // Check if the tree is empty
+  if (root === null) {
+    return 0;
   }
 
-  insert(value) {
-    const newNode = new Node(value);
+  // Get the height of the left and right subtrees
+  const leftHeight = height(root.left);
+  const rightHeight = height(root.right);
 
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
+  // Get the diameter of the left and right subtrees
+  const leftDiameter = calculateDiameter(root.left);
+  const rightDiameter = calculateDiameter(root.right);
 
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
-
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
-    }
-
-    if (value === node.value) {
-      return true;
-    } else if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else {
-      return this.searchNode(node.right, value);
-    }
-  }
-
-  // Other methods like remove, findMin, findMax, etc. can be added
-
-  // Helper method to print the tree in order
-  inOrderTraversal(node) {
-    if (node !== null) {
-      this.inOrderTraversal(node.left);
-      console.log(node.value);
-      this.inOrderTraversal(node.right);
-    }
-  }
+  // Return the maximum of the following:
+  // 1) Diameter of the left subtree
+  // 2) Diameter of the right subtree
+  // 3) Longest path between two leaves that passes through the root (left height + right height + 1)
+  return Math.max(leftHeight + rightHeight + 1, Math.max(leftDiameter, rightDiameter));
 }
-const bst = new BinarySearchTree();
-bst.insert(50);
-bst.insert(30);
-bst.insert(70);
-bst.insert(20);
-bst.insert(40);
-bst.insert(60);
-bst.insert(80);
 
-console.log(bst.search(40)); // Output: true
-console.log(bst.search(90)); // Output: false
+// Calculate the height of a binary tree
+function height(node) {
+  // Base case: empty tree has height 0
+  if (node === null) {
+    return 0;
+  }
 
-bst.inOrderTraversal(bst.root); // Output: 20, 30, 40, 50, 60, 70, 80
+  // Recursively compute the height of the left and right subtrees
+  const leftHeight = height(node.left);
+  const rightHeight = height(node.right);
+
+  // Return the maximum height plus 1
+  return Math.max(leftHeight, rightHeight) + 1;
+}
+
+// Example usage:
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+console.log("Diameter of the binary tree is: " + calculateDiameter(root));
