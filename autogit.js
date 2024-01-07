@@ -1,40 +1,45 @@
-class ListNode {
-  constructor(val) {
-    this.val = val;
-    this.next = null;
+function heapSort(arr) {
+  const len = arr.length;
+
+  // Build max heap
+  for (let i = Math.floor(len / 2) - 1; i >= 0; i--) {
+    heapify(arr, len, i);
+  }
+
+  // Heap sort
+  for (let i = len - 1; i >= 0; i--) {
+    // Swap current root with end of the heap
+    [arr[0], arr[i]] = [arr[i], arr[0]];
+
+    // Heapify reduced heap
+    heapify(arr, i, 0);
+  }
+
+  return arr;
+}
+
+function heapify(arr, n, i) {
+  let largest = i;
+  const left = 2 * i + 1;
+  const right = 2 * i + 2;
+
+  if (left < n && arr[left] > arr[largest]) {
+    largest = left;
+  }
+
+  if (right < n && arr[right] > arr[largest]) {
+    largest = right;
+  }
+
+  if (largest !== i) {
+    // Swap parent with the larger child
+    [arr[i], arr[largest]] = [arr[largest], arr[i]];
+
+    // Recursively heapify the affected sub-tree
+    heapify(arr, n, largest);
   }
 }
 
-function hasCycle(head) {
-  let slow = head; // slow pointer
-  let fast = head; // fast pointer
-  
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
-    
-    // If slow and fast pointers meet, there is a cycle
-    if (slow === fast) {
-      return true;
-    }
-  }
-  
-  // No cycle found
-  return false;
-}
-// Create the linked list nodes
-const node1 = new ListNode(1);
-const node2 = new ListNode(2);
-const node3 = new ListNode(3);
-const node4 = new ListNode(4);
-const node5 = new ListNode(5);
-
-// Create a cycle by connecting the last node to the second node
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node5;
-node5.next = node2; // cycle
-
-// Check if the linked list contains a cycle
-console.log(hasCycle(node1)); // Output: true
+// Example usage:
+const array = [6, 5, 3, 1, 8, 7, 2, 4];
+console.log(heapSort(array)); // Output: [1, 2, 3, 4, 5, 6, 7, 8]
