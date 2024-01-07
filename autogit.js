@@ -1,24 +1,29 @@
-function findFirstRepeatedChar(str) {
-  // Initialize an empty object to store characters
-  const charCount = {};
+function bubbleSort(array) {
+  const length = array.length;
 
-  // Loop through each character in the string
-  for (let char of str) {
-    // If the current character is already present in the object, it is a repetition
-    if (charCount[char]) {
-      return char; // Return the repeated character
+  for (let i = 0; i < length; i++) {
+    let swapped = false;
+
+    for (let j = 0; j < length - i - 1; j++) {
+      if (array[j] > array[j + 1]) {
+        // Swapping elements
+        let temp = array[j];
+        array[j] = array[j + 1];
+        array[j + 1] = temp;
+        swapped = true;
+      }
     }
 
-    // Otherwise, add the character to the object
-    charCount[char] = true;
+    if (!swapped) {
+      // Array is already sorted, no need to continue
+      break;
+    }
   }
 
-  // If no repeated character is found, return null or any other appropriate value
-  return null;
+  return array;
 }
 
-// Example usage:
-const input = "javascript";
-const repeatedChar = findFirstRepeatedChar(input);
-console.log("First repeated character:", repeatedChar);
-First repeated character: a
+// Example usage
+const unsortedArray = [5, 3, 8, 4, 2];
+const sortedArray = bubbleSort(unsortedArray);
+console.log(sortedArray); // Output: [2, 3, 4, 5, 8]
