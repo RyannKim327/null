@@ -1,26 +1,20 @@
-function shellSort(arr) {
-  const len = arr.length;
-  let gap = Math.floor(len / 2);
+function getRandomNumber(min, max) {
+  // Generate random number between 0 and 1
+  var random = Math.random();
 
-  while (gap > 0) {
-    for (let i = gap; i < len; i++) {
-        const temp = arr[i];
-        let j = i;
-      
-        while (j >= gap && arr[j - gap] > temp) {
-            arr[j] = arr[j - gap];
-            j -= gap;
-        }
-      
-        arr[j] = temp;
-    }
-    
-    gap = Math.floor(gap / 2);
-  }
-  
-  return arr;
+  // Scale the number to the given range
+  var range = max - min;
+  var scaled = random * range;
+
+  // Shift the number to the range's minimum value
+  var shifted = scaled + min;
+
+  // Round down to the nearest integer (Optional)
+  var result = Math.floor(shifted);
+
+  return result;
 }
 
-// Example usage:
-const array = [8, 3, 1, 5, 2];
-console.log(shellSort(array)); // Output: [1, 2, 3, 5, 8]
+// Example usage: Generate a random number between 1 and 10
+var randomNumber = getRandomNumber(1, 10);
+console.log(randomNumber);
