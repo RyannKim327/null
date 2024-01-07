@@ -1,29 +1,13 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+function bubbleSort(array) {
+  let swapped;
+  do {
+    swapped = false;
+    for (let i = 0; i < array.length - 1; i++) {
+      if (array[i] > array[i + 1]) {
+        [array[i], array[i + 1]] = [array[i + 1], array[i]];
+        swapped = true;
+      }
+    }
+  } while (swapped);
+  return array;
 }
-const node1 = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
-
-node1.next = node2;
-node2.next = node3;
-
-const head = node1;
-const tail = node3;
-function reverseLinkedList(head) {
-  let previous = null;
-  let current = head;
-
-  while (current !== null) {
-    const next = current.next;
-    current.next = previous;
-    previous = current;
-    current = next;
-  }
-
-  return previous;
-}
-const reversedHead = reverseLinkedList(head);
