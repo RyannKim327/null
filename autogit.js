@@ -1,47 +1,46 @@
-function rabinKarpSearch(source, pattern) {
-  const prime = 31; // Prime number for hashing
-  const sourceLength = source.length;
-  const patternLength = pattern.length;
-  const maxPower = Math.pow(prime, patternLength - 1);
-
-  // Calculate the hash value of the pattern
-  let patternHash = 0;
-  for (let i = 0; i < patternLength; i++) {
-    patternHash = patternHash * prime + pattern.charCodeAt(i);
+// Node class representing each state in the search tree
+class Node {
+  constructor(value, children) {
+    this.value = value; // The state value
+    this.children = children; // An array of child nodes
   }
-
-  // Calculate the hash value of the initial substring in the source string
-  let sourceHash = 0;
-  for (let i = 0; i < patternLength; i++) {
-    sourceHash = sourceHash * prime + source.charCodeAt(i);
-  }
-
-  // Iterate over the source string
-  for (let i = 0; i <= sourceLength - patternLength; i++) {
-    // Handle hash collisions
-    if (patternHash === sourceHash) {
-      let found = true;
-      for (let j = 0; j < patternLength; j++) {
-        if (source[i + j] !== pattern[j]) {
-          found = false;
-          break;
-        }
-      }
-      if (found) {
-        return i; // Match found
-      }
-    }
-
-    // Slide the window and update the hash value
-    sourceHash = (sourceHash - source.charCodeAt(i) * maxPower) * prime + source.charCodeAt(i + patternLength);
-  }
-
-  return -1; // No match found
 }
 
-// Usage example
-const sourceString = 'Lorem ipsum dolor sit amet';
-const patternString = 'ipsum';
-const result = rabinKarpSearch(sourceString, patternString);
+// Implementing depth-limited search algorithm
+function depthLimitedSearch(node, target, depth) {
+  if (node.value === target) {
+    return node; // Target found, return the node
+  }
 
-console.log(result); // Output: 6
+  if (depth === 0) {
+    return null; // Reached the depth limit, return null
+  }
+
+  for (let childNode of node.children) {
+    const result = depthLimitedSearch(childNode, target, depth - 1);
+    if (result) {
+      return result; // Target found in one of the child nodes, return the node
+    }
+  }
+
+  return null; // Target not found
+}
+
+// Testing the algorithm
+const tree = new Node(1, [
+  new Node(2, [
+    new Node(4, []),
+    new Node(5, []),
+  ]),
+  new Node(3, [
+    new Node(6, []),
+    new Node(7, []),
+  ]),
+]);
+
+const targetNode = depthLimitedSearch(tree, 6, 2);
+if (targetNode) {
+  console.log('Target found!');
+} else {
+  console.log('Target not found.');
+}
