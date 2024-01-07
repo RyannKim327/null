@@ -1,37 +1,103 @@
-function longestCommonSubstring(str1, str2) {
-  // Initialize a 2D array to store the lengths of common substrings
-  const matrix = Array(str1.length + 1)
-    .fill(0)
-    .map(() => Array(str2.length + 1).fill(0));
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
+}
 
-  // Variables to track the longest common substring length and ending position
-  let longestLength = 0;
-  let endIndex = 0;
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
 
-  // Iterate over each character of the first string
-  for (let i = 1; i <= str1.length; i++) {
-    // Iterate over each character of the second string
-    for (let j = 1; j <= str2.length; j++) {
-      // If characters match, increment the length of the common substring
-      if (str1[i - 1] === str2[j - 1]) {
-        matrix[i][j] = matrix[i - 1][j - 1] + 1;
+  // Insert a new node at the end of the list
+  append(data) {
+    const newNode = new Node(data);
 
-        // Update the longest length and ending position if necessary
-        if (matrix[i][j] > longestLength) {
-          longestLength = matrix[i][j];
-          endIndex = i - 1;
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let currentNode = this.head;
+      while (currentNode.next) {
+        currentNode = currentNode.next;
+      }
+      currentNode.next = newNode;
+    }
+  }
+
+  // Insert a new node at the beginning of the list
+  prepend(data) {
+    const newNode = new Node(data);
+    newNode.next = this.head;
+    this.head = newNode;
+  }
+
+  // Insert a new node after a given node
+  insertAfter(data, previousNodeData) {
+    const newNode = new Node(data);
+    let currentNode = this.head;
+
+    while (currentNode) {
+      if (currentNode.data === previousNodeData) {
+        newNode.next = currentNode.next;
+        currentNode.next = newNode;
+        break;
+      }
+      currentNode = currentNode.next;
+    }
+  }
+
+  // Remove a node from the list
+  remove(data) {
+    if (this.head && this.head.data === data) {
+      this.head = this.head.next;
+    } else {
+      let currentNode = this.head;
+
+      while (currentNode.next) {
+        if (currentNode.next.data === data) {
+          currentNode.next = currentNode.next.next;
+          break;
         }
+        currentNode = currentNode.next;
       }
     }
   }
 
-  // Extract the longest common substring using the ending position and length
-  const longestSubstring = str1.substr(endIndex - longestLength + 1, longestLength);
-  return longestSubstring;
+  // Print the linked list
+  print() {
+    let currentNode = this.head;
+    let listString = '';
+
+    while (currentNode) {
+      listString += `${currentNode.data} -> `;
+      currentNode = currentNode.next;
+    }
+
+    listString += 'null';
+    console.log(listString);
+  }
 }
 
-// Example usage
-const str1 = "abcdefg";
-const str2 = "xyzabcde";
-const longestSubstring = longestCommonSubstring(str1, str2);
-console.log(longestSubstring); // Output: "abc"
+// Create a new linked list
+const linkedList = new LinkedList();
+
+// Append nodes to the list
+linkedList.append(1);
+linkedList.append(2);
+linkedList.append(3);
+
+// Prepend node to the list
+linkedList.prepend(0);
+
+// Insert node after a given node
+linkedList.insertAfter(1.5, 1);
+
+// Print the list: 0 -> 1 -> 1.5 -> 2 -> 3 -> null
+linkedList.print();
+
+// Remove a node from the list
+linkedList.remove(1.5);
+
+// Print the list: 0 -> 1 -> 2 -> 3 -> null
+linkedList.print();
