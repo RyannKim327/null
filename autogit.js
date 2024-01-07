@@ -1,75 +1,44 @@
-function biDirectionalSearch(graph, startNode, goalNode) {
-  // Forward search variables
-  const forwardQueue = [startNode];
-  const forwardVisited = new Set();
-  forwardVisited.add(startNode);
-
-  // Backward search variables
-  const backwardQueue = [goalNode];
-  const backwardVisited = new Set();
-  backwardVisited.add(goalNode);
-
-  while (forwardQueue.length > 0 && backwardQueue.length > 0) {
-    const commonNode = getCommonNode(forwardQueue, forwardVisited, backwardVisited);
-    if (commonNode) {
-      // Found a common node, path from startNode to goalNode exists
-      return getPath(startNode, goalNode, commonNode);
-    }
-
-    expandForward(forwardQueue, forwardVisited, graph);
-    expandBackward(backwardQueue, backwardVisited, graph);
-  }
-
-  // No path exists from startNode to goalNode
-  return null;
-}
-
-function expandForward(queue, visited, graph) {
-  const currentNode = queue.shift();
-
-  // Process currentNode
-  // ...
-
-  // Enqueue unvisited neighbors
-  for (const neighbor of graph[currentNode]) {
-    if (!visited.has(neighbor)) {
-      visited.add(neighbor);
-      queue.push(neighbor);
+let index = 0;
+let stack = [];
+let discovered = [];
+let lowLink = [];
+let visited = [];
+let adjacencyList = []; // Assuming this is your graph representation, where adjacencyList[u] returns an array of neighbors of vertex u.
+let result = [];
+function tarjanAlgorithm() {
+  for (let i = 0; i < adjacencyList.length; i++) {
+    if (!discovered[i]) {
+      tarjanDFS(i);
     }
   }
 }
 
-function expandBackward(queue, visited, graph) {
-  const currentNode = queue.shift();
+function tarjanDFS(v) {
+  discovered[v] = index;
+  lowLink[v] = index;
+  index++;
+  stack.push(v);
+  visited[v] = true;
 
-  // Process currentNode
-  // ...
-
-  // Enqueue unvisited neighbors
-  for (const neighbor of graph[currentNode]) {
-    if (!visited.has(neighbor)) {
-      visited.add(neighbor);
-      queue.push(neighbor);
+  for (let i = 0; i < adjacencyList[v].length; i++) {
+    let neighbor = adjacencyList[v][i];
+    if (!discovered[neighbor]) {
+      tarjanDFS(neighbor);
+      lowLink[v] = Math.min(lowLink[v], lowLink[neighbor]);
+    } else if (visited[neighbor]) {
+      lowLink[v] = Math.min(lowLink[v], discovered[neighbor]);
     }
   }
-}
 
-function getCommonNode(forwardQueue, forwardVisited, backwardVisited) {
-  for (const node of forwardQueue) {
-    if (backwardVisited.has(node)) {
-      return node;
-    }
+  if (lowLink[v] === discovered[v]) {
+    let component = [];
+    let w;
+    do {
+      w = stack.pop();
+      visited[w] = false;
+      component.push(w);
+    } while (w !== v);
+    result.push(component);
   }
-  return null;
 }
-
-function getPath(startNode, goalNode, commonNode) {
-  // Generate path from startNode to commonNode
-  const path1 = bfs(startNode, commonNode, graph);
-
-  // Generate path from commonNode to goalNode
-  const path2 = bfs(goalNode, commonNode, graph);
-
-  // Combine the two paths
-  return path1.concat(path2.reverse());
-}
+tarjanAlgorithm();
