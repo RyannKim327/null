@@ -1,13 +1,14 @@
-const arr = [3, 9, 2, 7, 5];
+function removeVowels(str) {
+  // Use regular expression to match all vowels (case-insensitive) in the string
+  let vowelsPattern = /[aeiou]/gi;
 
-const max = Math.max(...arr);
-console.log(max); // Output: 9
-const arr = [3, 9, 2, 7, 5];
+  // Replace all vowel matches with an empty string
+  let result = str.replace(vowelsPattern, '');
 
-let max = arr[0];
-for (let i = 1; i < arr.length; i++) {
-  if (arr[i] > max) {
-    max = arr[i];
-  }
+  return result;
 }
-console.log(max); // Output: 9
+
+// Example usage
+let input = 'Hello, World!';
+let output = removeVowels(input);
+console.log(output); // Output: Hll, Wrld!
