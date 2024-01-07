@@ -1,20 +1,41 @@
-const cron = require('node-cron');
+function boyerMooreHorspool(text, pattern) {
+  const badMatchTable = {};
 
-// Define your cron job function
-const myTask = () => {
-  console.log('This is a scheduled task that runs every minute');
-};
+  function initializeBadMatchTable() {
+    for (let i = 0; i < pattern.length - 1; i++) {
+      badMatchTable[pattern[i]] = pattern.length - 1 - i;
+    }
+  }
 
-// Schedule a cron job to run every minute
-cron.schedule('* * * * *', myTask);
+  initializeBadMatchTable();
 
-// You can also schedule cron jobs using more complex schedules
-// For example, a job that runs every day at 8:30 AM
-cron.schedule('30 8 * * *', () => {
-  console.log('This is a job that runs every day at 8:30 AM');
-});
+  let textIndex = 0;
+  let patternIndex = 0;
 
-// A job that runs every Monday at 9:00 PM
-cron.schedule('0 21 * * 1', () => {
-  console.log('This is a job that runs every Monday at 9:00 PM');
-});
+  while (textIndex <= text.length - pattern.length) {
+    patternIndex = pattern.length - 1;
+
+    while (
+      patternIndex >= 0 &&
+      pattern[patternIndex] === text[textIndex + patternIndex]
+    ) {
+      patternIndex--;
+    }
+
+    if (patternIndex === -1) {
+      return textIndex; // Match found
+    }
+
+    const badMatchShift = badMatchTable[text[textIndex + pattern.length - 1]];
+    textIndex += badMatchShift || pattern.length;
+  }
+
+  return -1; // No match found
+}
+
+// Example usage:
+const text = "Lorem ipsum dolor sit amet consectetur adipiscing elit";
+const pattern = "amet";
+
+const matchIndex = boyerMooreHorspool(text, pattern);
+console.log(matchIndex); // Output: 22 (index of the word "amet")
