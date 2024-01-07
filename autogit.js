@@ -1,25 +1,20 @@
-function findFirstRepeatedChar(str) {
-  const charSet = new Set();
-  
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    
-    if (charSet.has(char)) {
-      return char; // First repeated character found
+function findSecondLargest(array) {
+  let largest = -Infinity;
+  let secondLargest = -Infinity;
+
+  for (let i = 0; i < array.length; i++) {
+    if (array[i] > largest) {
+      secondLargest = largest;
+      largest = array[i];
+    } else if (array[i] > secondLargest && array[i] !== largest) {
+      secondLargest = array[i];
     }
-    
-    charSet.add(char); // Add character to the set
   }
-  
-  return null; // No repeated character found
+
+  return secondLargest;
 }
 
-// Usage example
-const input = "hello world";
-const repeatedChar = findFirstRepeatedChar(input);
-
-if (repeatedChar) {
-  console.log(`The first repeated character in "${input}" is "${repeatedChar}".`);
-} else {
-  console.log(`There are no repeated characters in "${input}".`);
-}
+// Example usage
+const array = [5, 8, 2, 10, 3];
+const secondLargest = findSecondLargest(array);
+console.log(secondLargest); // Output: 8
