@@ -1,19 +1,23 @@
-function findFirstRepeatedChar(str) {
-  let charMap = {};
+function shellSort(arr) {
+  var gap = Math.floor(arr.length / 2);
 
-  for (let char of str) {
-    if (charMap[char]) {
-      // Found a repeated character
-      return char;
+  while (gap > 0) {
+    for (var i = gap; i < arr.length; i++) {
+      var temp = arr[i];
+      var j = i;
+
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
+      }
+      arr[j] = temp;
     }
-    charMap[char] = true;
+    gap = Math.floor(gap / 2);
   }
 
-  // No repeated character found
-  return null;
+  return arr;
 }
 
-// Example usage
-const inputString = "Hello World";
-const repeatedChar = findFirstRepeatedChar(inputString);
-console.log(repeatedChar); // Output: l
+// Example usage:
+var array = [8, 4, 1, 9, 3, 5];
+console.log(shellSort(array)); // Output: [1, 3, 4, 5, 8, 9]
