@@ -1,17 +1,48 @@
-function countOccurrences(str, word) {
-  const regex = new RegExp("\\b" + word + "\\b", "gi");
-  const matches = str.match(regex);
+function buildPrefixTable(pattern) {
+  const table = [0];
+  let prefixLen = 0;
 
-  if (matches) {
-    return matches.length;
+  for (let i = 1; i < pattern.length; i++) {
+    while (prefixLen > 0 && pattern[i] !== pattern[prefixLen]) {
+      prefixLen = table[prefixLen - 1];
+    }
+
+    if (pattern[i] === pattern[prefixLen]) {
+      prefixLen++;
+    }
+
+    table[i] = prefixLen;
   }
 
-  return 0;
+  return table;
 }
+function findPattern(text, pattern) {
+  const prefixTable = buildPrefixTable(pattern);
+  let textIndex = 0;
+  let patternIndex = 0;
 
-// Example usage
-const text = "I have a cat. My cat's name is Whiskers. The cat is very cute.";
-const wordToCount = "cat";
+  while (textIndex < text.length) {
+    if (text[textIndex] === pattern[patternIndex]) {
+      if (patternIndex === pattern.length - 1) {
+        return textIndex - patternIndex;
+      }
+      patternIndex++;
+      textIndex++;
+    } else if (patternIndex > 0) {
+      patternIndex = prefixTable[patternIndex - 1];
+    } else {
+      textIndex++;
+    }
+  }
 
-const occurrenceCount = countOccurrences(text, wordToCount);
-console.log(`The word "${wordToCount}" occurs ${occurrenceCount} times.`);
+  return -1; // Pattern not found
+}
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const index = findPattern(text, pattern);
+
+if (index !== -1) {
+  console.log(`Pattern found at index ${index}`);
+} else {
+  console.log("Pattern not found");
+}
