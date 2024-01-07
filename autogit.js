@@ -1,45 +1,26 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+function isPalindrome(str) {
+  // Convert the string to lowercase and remove non-alphanumeric characters
+  str = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+  // Define the pointers
+  let left = 0;
+  let right = str.length - 1;
+
+  // Move the pointers towards each other until they meet in the middle
+  while (left < right) {
+    // If the characters don't match, it's not a palindrome
+    if (str.charAt(left) !== str.charAt(right)) {
+      return false;
+    }
+    // Move the pointers
+    left++;
+    right--;
   }
+
+  // If the loop completes without returning false, it's a palindrome
+  return true;
 }
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-  }
-}
-enqueue(value) {
-  const newNode = new Node(value);
-  if (this.head === null) {
-    this.head = newNode;
-    this.tail = newNode;
-  } else {
-    this.tail.next = newNode;
-    this.tail = newNode;
-  }
-}
-dequeue() {
-  if (this.head === null) {
-    return null;
-  }
-  const value = this.head.value;
-  this.head = this.head.next;
-  if (this.head === null) {
-    this.tail = null;
-  }
-  return value;
-}
-isEmpty() {
-  return this.head === null && this.tail === null;
-}
-const queue = new Queue();
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
-console.log(queue.dequeue()); // Output: 1
-console.log(queue.dequeue()); // Output: 2
-console.log(queue.isEmpty()); // Output: false
-console.log(queue.dequeue()); // Output: 3
-console.log(queue.isEmpty()); // Output: true
+
+// Example usage
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
