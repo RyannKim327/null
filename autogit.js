@@ -1,4 +1,8 @@
-let numbers = [4, 2, 9, 1, 7];
-numbers.sort((a, b) => a - b);
+const mainString = 'This is a sample string';
+const substring = 'sample';
 
-console.log(numbers); // Output: [1, 2, 4, 7, 9]
+if (mainString.includes(substring)) {
+  console.log('Substring found!');
+} else {
+  console.log('Substring not found.');
+}
