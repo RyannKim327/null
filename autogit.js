@@ -1,61 +1,33 @@
-class Node {
-  constructor(start, end) {
-    this.start = start;
-    this.end = end;
-    this.children = {};
+function binarySearchRecursive(arr, target, left, right) {
+  // Base case: If the left index becomes greater than the right index, target is not found
+  if (left > right) {
+    return -1;
+  }
+
+  // Calculate the middle index using integer division
+  const mid = Math.floor((left + right) / 2);
+
+  // Base case: If the element at the middle index is equal to the target, return the middle index
+  if (arr[mid] === target) {
+    return mid;
+  }
+  
+  // Recursive case: If the element at the middle index is greater than the target,
+  // search the left half of the array
+  if (arr[mid] > target) {
+    return binarySearchRecursive(arr, target, left, mid - 1);
+  }
+  
+  // Recursive case: If the element at the middle index is less than the target,
+  // search the right half of the array
+  if (arr[mid] < target) {
+    return binarySearchRecursive(arr, target, mid + 1, right);
   }
 }
-class SuffixTree {
-  constructor(text) {
-    this.text = text;
-    this.root = new Node(-1, -1);
-    this.build();
-  }
+const arr = [2, 4, 7, 9, 11, 13, 15, 17];
+const target = 9;
+const left = 0;
+const right = arr.length - 1;
 
-  // Add your methods for finding substrings, searching, etc. here
-}
-SuffixTree.prototype.build = function () {
-  const root = this.root;
-  const text = this.text;
-
-  for (let i = 0; i < text.length; i++) {
-    let current = root;
-    for (let j = i; j < text.length; j++) {
-      const char = text[j];
-      if (!current.children[char]) {
-        current.children[char] = new Node(j, text.length - 1);
-        break;
-      }
-      const child = current.children[char];
-      const k = this.commonPrefix(text, child.start, child.end, i, j);
-      if (k === child.end) {
-        current = child;
-      } else {
-        const newInternal = new Node(child.start, k);
-        const newLeaf = new Node(j, text.length - 1);
-        child.start = k + 1;
-        child.end = child.start + (child.end - child.start);
-        newInternal.children[text[child.start]] = child;
-        newInternal.children[text[newLeaf.start]] = newLeaf;
-        current.children[char] = newInternal;
-        break;
-      }
-    }
-  }
-};
-SuffixTree.prototype.commonPrefix = function (text, start1, end1, start2, end2) {
-  let k = 0;
-  while (start1 + k <= end1 && start2 + k <= end2 && text[start1 + k] === text[start2 + k]) {
-    k++;
-  }
-  return start1 + k - 1;
-};
-SuffixTree.prototype.search = function (pattern) {
-  // Implement the search logic here
-};
-
-SuffixTree.prototype.getLongestRepeatedSubstring = function () {
-  // Implement finding the longest repeated substring logic here
-};
-
-// Add more methods as needed
+const index = binarySearchRecursive(arr, target, left, right);
+console.log("Target found at index:", index);
