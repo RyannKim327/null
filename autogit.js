@@ -1,18 +1,35 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+function topologicalSort(graph) {
+  const visited = new Set();
+  const stack = [];
+
+  function dfs(node) {
+    visited.add(node);
+    
+    for (const neighbor of graph[node]) {
+      if (!visited.has(neighbor)) {
+        dfs(neighbor);
+      }
+    }
+
+    stack.unshift(node);
   }
-}
 
-function getIntersection(head1, head2) {
-  let p1 = head1;
-  let p2 = head2;
-
-  while (p1 !== p2) {
-    p1 = p1 === null ? head2 : p1.next;
-    p2 = p2 === null ? head1 : p2.next;
+  for (const node in graph) {
+    if (!visited.has(node)) {
+      dfs(node);
+    }
   }
 
-  return p1; // or p2, both will point to the intersection (if exists)
+  return stack;
 }
+const graph = {
+  'A': ['B', 'C'],
+  'B': ['D'],
+  'C': ['D', 'E'],
+  'D': ['F'],
+  'E': [],
+  'F': ['G'],
+  'G': []
+};
+const sortedNodes = topologicalSort(graph);
+console.log(sortedNodes);
