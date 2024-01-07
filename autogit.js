@@ -1,37 +1,52 @@
-function boyerMooreHorspool(text, pattern) {
-  const table = createBadCharTable(pattern);
-  const patternLength = pattern.length;
-  const textLength = text.length;
-  let shift = 0;
+const graph = {
+  vertices: [],
+  edges: []
+};
+const distance = {};
+const predecessor = {};
+function bellmanFord(source) {
+  // Step 1: Initialize the distance and predecessor arrays
+  for (let vertex of graph.vertices) {
+    distance[vertex] = Infinity;
+    predecessor[vertex] = null;
+  }
+  distance[source] = 0;
 
-  while (shift <= textLength - patternLength) {
-    let j = patternLength - 1;
-
-    while (j >= 0 && pattern[j] === text[shift + j]) {
-      j--;
+  // Step 2: Relax each edge repeatedly
+  for (let i = 1; i < graph.vertices.length; i++) {
+    for (let { source, destination, weight } of graph.edges) {
+      if (distance[source] !== Infinity && distance[source] + weight < distance[destination]) {
+        distance[destination] = distance[source] + weight;
+        predecessor[destination] = source;
+      }
     }
-
-    if (j === -1) {
-      return shift;
-    }
-
-    shift += table[text[shift + patternLength - 1]] || patternLength;
   }
 
-  return -1;
-}
-
-function createBadCharTable(pattern) {
-  const table = {};
-
-  for (let i = 0; i < pattern.length - 1; i++) {
-    table[pattern[i]] = pattern.length - 1 - i;
+  // Step 3: Check for negative weight cycles
+  for (let { source, destination, weight } of graph.edges) {
+    if (distance[source] + weight < distance[destination]) {
+      throw new Error("Graph contains negative weight cycle");
+    }
   }
 
-  return table;
+  // Step 4: Return the distance and predecessor arrays
+  return { distance, predecessor };
 }
-const text = "Lorem ipsum dolor sit amet";
-const pattern = "ipsum";
+// Define the graph
+graph.vertices = ["A", "B", "C", "D", "E"];
+graph.edges = [
+  { source: "A", destination: "B", weight: 4 },
+  { source: "A", destination: "C", weight: 2 },
+  { source: "B", destination: "C", weight: 3 },
+  { source: "B", destination: "D", weight: 2 },
+  { source: "B", destination: "E", weight: 3 },
+  { source: "D", destination: "B", weight: 1 },
+  { source: "D", destination: "C", weight: 5 },
+  { source: "E", destination: "D", weight: 1 }
+];
 
-const result = boyerMooreHorspool(text, pattern);
-console.log(result); // Output: 6 (index where the pattern starts)
+// Run the Bellman-Ford algorithm
+const sourceVertex = "A";
+const result = bellmanFord(sourceVertex);
+console.log("Distance from source vertex:", result.distance);
+console.log("Predecessor vertices:", result.predecessor);
