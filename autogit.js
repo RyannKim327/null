@@ -1,46 +1,36 @@
-// Node class representing each state in the search tree
-class Node {
-  constructor(value, children) {
-    this.value = value; // The state value
-    this.children = children; // An array of child nodes
+// Define the binary tree node structure
+class TreeNode {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
 
-// Implementing depth-limited search algorithm
-function depthLimitedSearch(node, target, depth) {
-  if (node.value === target) {
-    return node; // Target found, return the node
+// Function to count the number of leaf nodes in a binary tree
+function countLeafNodes(root) {
+  if (root === null) {
+    return 0; // Base case: empty tree
   }
-
-  if (depth === 0) {
-    return null; // Reached the depth limit, return null
+  
+  if (root.left === null && root.right === null) {
+    return 1; // Base case: leaf node
   }
-
-  for (let childNode of node.children) {
-    const result = depthLimitedSearch(childNode, target, depth - 1);
-    if (result) {
-      return result; // Target found in one of the child nodes, return the node
-    }
-  }
-
-  return null; // Target not found
+  
+  // Recursive case: sum the leaf nodes in the left and right subtrees
+  return countLeafNodes(root.left) + countLeafNodes(root.right);
 }
 
-// Testing the algorithm
-const tree = new Node(1, [
-  new Node(2, [
-    new Node(4, []),
-    new Node(5, []),
-  ]),
-  new Node(3, [
-    new Node(6, []),
-    new Node(7, []),
-  ]),
-]);
+// Example usage
+// Create a binary tree
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+root.right.left = new TreeNode(6);
+root.right.right = new TreeNode(7);
 
-const targetNode = depthLimitedSearch(tree, 6, 2);
-if (targetNode) {
-  console.log('Target found!');
-} else {
-  console.log('Target not found.');
-}
+// Count the number of leaf nodes
+const leafNodeCount = countLeafNodes(root);
+console.log("Number of leaf nodes:", leafNodeCount);
