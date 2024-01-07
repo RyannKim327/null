@@ -1,19 +1,13 @@
-function findSecondLargest(arr) {
-  let max = -Infinity;
-  let secondMax = -Infinity;
-
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] > max) {
-      secondMax = max;
-      max = arr[i];
-    } else if (arr[i] > secondMax && arr[i] !== max) {
-      secondMax = arr[i];
+function isSortedAscending(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false;
     }
   }
-
-  return secondMax;
+  return true;
 }
+const array1 = [1, 2, 3, 4, 5];
+console.log(isSortedAscending(array1));  // Output: true
 
-// Usage example
-const array = [10, 5, 7, 2, 9, 1];
-console.log(findSecondLargest(array)); // Output: 9
+const array2 = [5, 4, 3, 2, 1];
+console.log(isSortedAscending(array2));  // Output: false
