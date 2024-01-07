@@ -1,39 +1,55 @@
-function findLongestCommonSubstring(str1, str2) {
-  let longestSubstring = '';
+class Node {
+  constructor(value, children = []) {
+    this.value = value;
+    this.children = children;
+  }
+}
 
-  for (let i = 0; i < str1.length; i++) {
-    for (let j = i + 1; j <= str1.length; j++) {
-      let substring = str1.slice(i, j);
+function depthLimitedSearch(root, target, depthLimit) {
+  let stack = [{ node: root, depth: 0 }];
 
-      if (str2.includes(substring) && substring.length > longestSubstring.length) {
-        longestSubstring = substring;
-      }
+  while (stack.length > 0) {
+    let { node, depth } = stack.pop();
+
+    // Check if the current node matches the target
+    if (node.value === target) {
+      return node;
+    }
+
+    // Check if the depth limit has been reached
+    if (depth >= depthLimit) {
+      continue;
+    }
+
+    // Add children of the current node to the stack
+    for (let child of node.children) {
+      stack.push({ node: child, depth: depth + 1 });
     }
   }
 
-  return longestSubstring;
+  return null; // Target not found within depth limit
 }
-function findLongestCommonSubstring(str1, str2) {
-  let maxLength = 0; // length of the longest common substring
-  let endIndex = 0; // end index of the longest common substring in str1
-  const matrix = Array.from({ length: str1.length + 1 }, () =>
-    Array.from({ length: str2.length + 1 }, () => 0)
-  );
 
-  for (let i = 1; i <= str1.length; i++) {
-    for (let j = 1; j <= str2.length; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        matrix[i][j] = matrix[i - 1][j - 1] + 1;
+// Example usage:
+// Create a tree:        A
+//                     / \
+//                    B   C
+//                   / \   \
+//                  D   E   F
+//                 / \
+//                G   H
+let tree = new Node('A', [
+  new Node('B', [
+    new Node('D', [
+      new Node('G'),
+      new Node('H'),
+    ]),
+    new Node('E'),
+  ]),
+  new Node('C', [
+    new Node('F'),
+  ]),
+]);
 
-        if (matrix[i][j] > maxLength) {
-          maxLength = matrix[i][j];
-          endIndex = i - 1;
-        }
-      } else {
-        matrix[i][j] = 0;
-      }
-    }
-  }
-
-  return str1.slice(endIndex - maxLength + 1, endIndex + 1);
-}
+let targetNode = depthLimitedSearch(tree, 'D', 2);
+console.log(targetNode);  // Node { value: 'D', children: [...] }
