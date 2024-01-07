@@ -1,62 +1,27 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+class TreeNode {
+  constructor(val) {
+    this.val = val;
+    this.left = this.right = null;
   }
 }
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-    this.size = 0;
+
+function maxDepth(root) {
+  if (root === null) {
+    return 0; // Base case: an empty tree has depth 0
   }
 
-  enqueue(value) {
-    const node = new Node(value);
-    if (!this.head) {
-      this.head = node;
-      this.tail = node;
-    } else {
-      this.tail.next = node;
-      this.tail = node;
-    }
-    this.size++;
-  }
+  const leftDepth = maxDepth(root.left); // Recursively compute the depth of the left subtree
+  const rightDepth = maxDepth(root.right); // Recursively compute the depth of the right subtree
 
-  dequeue() {
-    if (!this.head) {
-      return null;
-    }
-    const value = this.head.value;
-    this.head = this.head.next;
-    if (!this.head) {
-      this.tail = null;
-    }
-    this.size--;
-    return value;
-  }
-
-  peek() {
-    return this.head ? this.head.value : null;
-  }
-
-  getSize() {
-    return this.size;
-  }
-
-  isEmpty() {
-    return this.size === 0;
-  }
+  return Math.max(leftDepth, rightDepth) + 1; // Return the maximum depth of the two subtrees plus 1 (for current level)
 }
-const queue = new Queue();
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
+// Create a binary tree
+const root = new TreeNode(3);
+root.left = new TreeNode(9);
+root.right = new TreeNode(20);
+root.right.left = new TreeNode(15);
+root.right.right = new TreeNode(7);
 
-console.log("Peek:", queue.peek()); // Output: 1
-
-console.log("Dequeue:", queue.dequeue()); // Output: 1
-
-console.log("Size:", queue.getSize()); // Output: 2
-
-console.log("IsEmpty:", queue.isEmpty()); // Output: false
+// Find the maximum depth
+const depth = maxDepth(root);
+console.log(depth); // Output: 3
