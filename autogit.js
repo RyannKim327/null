@@ -1,24 +1,17 @@
-function shellSort(array) {
-  let gap = Math.floor(array.length / 2);
-  
-  while (gap > 0) {
-    for (let i = gap; i < array.length; i++) {
-      let temp = array[i];
-      let j = i;
+function getRandomNumber(min, max) {
+  // Calculate the range
+  const range = max - min;
 
-      while (j >= gap && array[j - gap] > temp) {
-        array[j] = array[j - gap];
-        j -= gap;
-      }
+  // Generate a random number between 0 and 1
+  const random = Math.random();
 
-      array[j] = temp;
-    }
+  // Scale the random number to the desired range and round it off
+  const randomNumber = Math.floor(random * range) + min;
 
-    gap = Math.floor(gap / 2);
-  }
-
-  return array;
+  // Return the generated random number
+  return randomNumber;
 }
-const unsortedArray = [9, 5, 1, 8, 3, 7, 6, 2, 4];
-const sortedArray = shellSort(unsortedArray);
-console.log(sortedArray);
+
+// Example usage: Generate a random number between 1 and 10
+const randomNumber = getRandomNumber(1, 10);
+console.log(randomNumber);
