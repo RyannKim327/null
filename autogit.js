@@ -1,30 +1,97 @@
 class Node {
   constructor(value) {
     this.value = value;
-    this.left = null;
-    this.right = null;
+    this.next = null;
   }
 }
 
-function maxDepth(root) {
-  // Empty tree has a depth of 0
-  if (root === null) {
-    return 0;
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
   }
 
-  // Recursively calculate the depth of the left and right subtrees
-  const leftDepth = maxDepth(root.left);
-  const rightDepth = maxDepth(root.right);
+  isEmpty() {
+    return this.head === null;
+  }
 
-  // Return the maximum depth plus one
-  return Math.max(leftDepth, rightDepth) + 1;
+  append(value) {
+    const newNode = new Node(value);
+
+    if (this.isEmpty()) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+  }
+
+  prepend(value) {
+    const newNode = new Node(value);
+
+    if (this.isEmpty()) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      newNode.next = this.head;
+      this.head = newNode;
+    }
+  }
+
+  delete(value) {
+    if (this.isEmpty()) {
+      return;
+    }
+
+    if (this.head.value === value) {
+      this.head = this.head.next;
+
+      if (this.head === null) {
+        this.tail = null;
+      }
+      return;
+    }
+
+    let currentNode = this.head;
+    while (currentNode.next !== null && currentNode.next.value !== value) {
+      currentNode = currentNode.next;
+    }
+
+    if (currentNode.next !== null) {
+      currentNode.next = currentNode.next.next;
+
+      if (currentNode.next === null) {
+        this.tail = currentNode;
+      }
+    }
+  }
+
+  toArray() {
+    const array = [];
+    let currentNode = this.head;
+
+    while (currentNode !== null) {
+      array.push(currentNode.value);
+      currentNode = currentNode.next;
+    }
+
+    return array;
+  }
+
+  toString() {
+    return this.toArray().join(" -> ");
+  }
 }
+const linkedList = new LinkedList();
+linkedList.append(3);
+linkedList.prepend(2);
+linkedList.append(4);
+linkedList.prepend(1);
 
-// Test the code
-const root = new Node(3);
-root.left = new Node(9);
-root.right = new Node(20);
-root.right.left = new Node(15);
-root.right.right = new Node(7);
+console.log(linkedList.toArray()); // Output: [1, 2, 3, 4]
+console.log(linkedList.toString()); // Output: 1 -> 2 -> 3 -> 4
 
-console.log(maxDepth(root)); // Output: 3 (from root to leaf node '7')
+linkedList.delete(3);
+console.log(linkedList.toArray()); // Output: [1, 2, 4]
+console.log(linkedList.toString()); // Output: 1 -> 2 -> 4
