@@ -1,25 +1,43 @@
-const cron = require('node-cron');
+function mergeArrays(arr1, arr2) {
+  let merged = [];
+  let i = 0, j = 0;
 
-// Schedule a cron job to run every minute
-cron.schedule('* * * * *', () => {
-  // Your code logic here
-  console.log('This cron job runs every minute');
-});
+  while (i < arr1.length && j < arr2.length) {
+    if (arr1[i] <= arr2[j]) {
+      merged.push(arr1[i]);
+      i++;
+    } else {
+      merged.push(arr2[j]);
+      j++;
+    }
+  }
 
-// Schedule a cron job to run every day at 12:00 PM
-cron.schedule('0 12 * * *', () => {
-  // Your code logic here
-  console.log('This cron job runs every day at 12:00 PM');
-});
+  while (i < arr1.length) {
+    merged.push(arr1[i]);
+    i++;
+  }
 
-// Schedule a cron job to run every Monday at 8:00 AM
-cron.schedule('0 8 * * 1', () => {
-  // Your code logic here
-  console.log('This cron job runs every Monday at 8:00 AM');
-});
+  while (j < arr2.length) {
+    merged.push(arr2[j]);
+    j++;
+  }
 
-// Schedule a cron job to run every first day of the month at 10:00 PM
-cron.schedule('0 22 1 * *', () => {
-  // Your code logic here
-  console.log('This cron job runs every first day of the month at 10:00 PM');
-});
+  return merged;
+}
+function findMedian(nums) {
+  const n = nums.length;
+  if (n % 2 === 0) {
+    const mid = n / 2;
+    return (nums[mid - 1] + nums[mid]) / 2;
+  } else {
+    return nums[Math.floor(n / 2)];
+  }
+}
+function findMedianSortedArrays(nums1, nums2) {
+  const merged = mergeArrays(nums1, nums2);
+  return findMedian(merged);
+}
+const nums1 = [1, 3];
+const nums2 = [2, 4];
+const median = findMedianSortedArrays(nums1, nums2);
+console.log(median); // Output: 2.5
