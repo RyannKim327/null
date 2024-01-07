@@ -1,10 +1,16 @@
-function validateEmail(email) {
-  const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return pattern.test(email);
+function isSortedAscending(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    // Compare the current element with the next element
+    if (arr[i] > arr[i + 1]) {
+      return false; // Array is not sorted in ascending order
+    }
+  }
+  return true; // Array is sorted in ascending order
 }
-const email = "example@example.com";
-if (validateEmail(email)) {
-  console.log("Email is valid");
-} else {
-  console.log("Email is invalid");
-}
+
+// Example usage:
+const array1 = [1, 2, 3, 4, 5];
+console.log(isSortedAscending(array1)); // Output: true
+
+const array2 = [5, 3, 2, 1, 4];
+console.log(isSortedAscending(array2)); // Output: false
