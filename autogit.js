@@ -1,16 +1,24 @@
-function factorial(n) {
-  // Base case: factorial of 0 or 1 is 1
-  if (n === 0 || n === 1) {
-    return 1;
-  } else {
-    // Recursive case: multiply n with factorial of (n-1)
-    return n * factorial(n - 1);
+function selectionSort(array) {
+  const length = array.length;
+
+  for (let i = 0; i < length - 1; i++) {
+    let minIndex = i;
+
+    for (let j = i + 1; j < length; j++) {
+      if (array[j] < array[minIndex]) {
+        minIndex = j;
+      }
+    }
+
+    if (minIndex !== i) {
+      const temp = array[i];
+      array[i] = array[minIndex];
+      array[minIndex] = temp;
+    }
   }
+  
+  return array;
 }
-
-// Example usage
-const num = 5;
-const result = factorial(num);
-
-console.log(`Factorial of ${num} is ${result}`);
-Factorial of 5 is 120
+const unsortedArray = [5, 3, 8, 2, 1, 4];
+const sortedArray = selectionSort(unsortedArray);
+console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 8]
