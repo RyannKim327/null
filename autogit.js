@@ -1,13 +1,33 @@
-const arr = [1, 2, 3, 3, 4, 5, 5];
-const uniqueArr = Array.from(new Set(arr));
-console.log(uniqueArr); // [1, 2, 3, 4, 5]
-const arr = [1, 2, 3, 3, 4, 5, 5];
-const uniqueArr = arr.filter((value, index, self) => {
-  return self.indexOf(value) === index;
-});
-console.log(uniqueArr); // [1, 2, 3, 4, 5]
-const arr = [1, 2, 3, 3, 4, 5, 5];
-const uniqueArr = arr.reduce((unique, item) => {
-  return unique.includes(item) ? unique : [...unique, item];
-}, []);
-console.log(uniqueArr); // [1, 2, 3, 4, 5]
+function breadthLimitedSearch(initialState, depthLimit) {
+  let queue = [[initialState, 0]];
+
+  while (queue.length > 0) {
+    const [state, depth] = queue.shift();
+
+    if (depth > depthLimit) {
+      continue;
+    }
+
+    if (isGoalState(state)) {
+      return state;
+    }
+
+    const successors = generateSuccessors(state);
+    for (const successor of successors) {
+      queue.push([successor, depth + 1]);
+    }
+  }
+
+  return null; // No goal state found within the given depth limit
+}
+
+// Helper functions for demonstration purposes
+function isGoalState(state) {
+  // Implement your goal state check logic here
+  return false;
+}
+
+function generateSuccessors(state) {
+  // Implement your successor generation logic here
+  return [];
+}
