@@ -1,12 +1,12 @@
-function getStringLength(str) {
-  let count = 0;
-  for (let i = 0; i < str.length; i++) {
-    count++;
+function calculateMean(numbers) {
+  let sum = 0;
+  for (let i = 0; i < numbers.length; i++) {
+    sum += numbers[i];
   }
-  return count;
+  return sum / numbers.length;
 }
 
 // Example usage
-const myString = 'Hello, World!';
-const length = getStringLength(myString);
-console.log(length); // Output: 13
+const numbers = [1, 2, 3, 4, 5];
+const mean = calculateMean(numbers);
+console.log(mean); // Outputs: 3
