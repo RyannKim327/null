@@ -1,43 +1,12 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
+function factorial(n) {
+  if (n === 0) {
+    // Base case: 0! = 1
+    return 1;
+  } else {
+    // Recursive case: n! = n * (n-1)!
+    return n * factorial(n - 1);
   }
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-
-  addNode(data) {
-    const newNode = new Node(data);
-
-    if (this.head === null) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next !== null) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
-
-  getLength() {
-    let count = 0;
-    let current = this.head;
-    while (current !== null) {
-      count++;
-      current = current.next;
-    }
-    return count;
-  }
-}
-
-// Example usage:
-const linkedList = new LinkedList();
-linkedList.addNode(5);
-linkedList.addNode(10);
-linkedList.addNode(15);
-console.log(linkedList.getLength()); // Output: 3
+// Example usage
+console.log(factorial(5)); // Output: 120
