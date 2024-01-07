@@ -1,4 +1,4 @@
-var string1 = "Hello";
-var string2 = "World";
-var result = string1 + " " + string2;
-console.log(result); // Output: "Hello World"
+let str = "Hello World";
+let lowercaseStr = str.toLowerCase();
+
+console.log(lowercaseStr); // Output: "hello world"
