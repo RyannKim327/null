@@ -1,70 +1,50 @@
-class TreeNode {
+class Node {
   constructor(value) {
     this.value = value;
     this.left = null;
     this.right = null;
   }
 }
-class BinaryTree {
-  constructor() {
-    this.root = null;
+
+// Function to calculate the height of a binary tree
+function height(node) {
+  if (node === null)
+    return 0;
+  else {
+    let leftHeight = height(node.left);
+    let rightHeight = height(node.right);
+    return Math.max(leftHeight, rightHeight) + 1;
   }
-
-  insert(value) {
-    const newNode = new TreeNode(value);
-
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
-
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
-
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
-    }
-
-    if (value === node.value) {
-      return true;
-    }
-
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else {
-      return this.searchNode(node.right, value);
-    }
-  }
-
-  // Additional methods (e.g., deleteNode, traverse, etc.) can be added here
 }
-const tree = new BinaryTree();
 
-tree.insert(5);
-tree.insert(3);
-tree.insert(7);
-tree.insert(2);
-tree.insert(4);
+// Function to calculate the diameter of a binary tree
+function diameter(root) {
+  if (root === null)
+    return 0;
 
-console.log(tree.search(4)); // Output: true
-console.log(tree.search(6)); // Output: false
+  // Get the height of the left and right subtrees
+  let leftHeight = height(root.left);
+  let rightHeight = height(root.right);
+
+  // Get the diameter of the left and right subtrees
+  let leftDiameter = diameter(root.left);
+  let rightDiameter = diameter(root.right);
+
+  // Return the maximum of:
+  // 1. Diameter of the left subtree
+  // 2. Diameter of the right subtree
+  // 3. Length of the longest path that passes through the root
+  return Math.max(leftHeight + rightHeight + 1, Math.max(leftDiameter, rightDiameter));
+}
+
+// Create a binary tree
+let root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+
+// Calculate the diameter of the binary tree
+let treeDiameter = diameter(root);
+console.log("Diameter of the binary tree:", treeDiameter);
