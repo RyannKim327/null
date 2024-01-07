@@ -1,11 +1,25 @@
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
+function findFirstNonRepeatingCharacter(str) {
+  const charCount = {};
 
-  while (fast !== null && fast.next !== null) {
-    slow = slow.next;
-    fast = fast.next.next;
+  // Step 1: Update character count
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
   }
 
-  return slow.value;
+  // Step 2: Find first non-repeating character
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    if (charCount[char] === 1) {
+      return char;
+    }
+  }
+
+  // Step 3: No non-repeating character found
+  return null;
 }
+
+// Example usage:
+const str = "abracadabra";
+const firstNonRepeatingChar = findFirstNonRepeatingCharacter(str);
+console.log(firstNonRepeatingChar); // Output: "b"
