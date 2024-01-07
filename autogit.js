@@ -1,25 +1,25 @@
-function longestCommonPrefix(strings) {
-  if (strings.length === 0) {
-    return '';
+function binarySearchRecursive(arr, target, start, end) {
+  if (start > end) {
+    // Base case: element not found
+    return -1;
   }
-  
-  let prefix = strings[0];
-  
-  for (let i = 1; i < strings.length; i++) {
-    for (let j = 0; j < prefix.length; j++) {
-      if (prefix[j] !== strings[i][j]) {
-        prefix = prefix.slice(0, j);
-        break;
-      }
-    }
-    
-    if (prefix === '') {
-      break;
-    }
+
+  // Calculate the middle index
+  const mid = Math.floor((start + end) / 2);
+
+  if (arr[mid] === target) {
+    // Base case: element found at middle index
+    return mid;
+  } else if (arr[mid] < target) {
+    // Recursive case: search in the right half of the array
+    return binarySearchRecursive(arr, target, mid + 1, end);
+  } else {
+    // Recursive case: search in the left half of the array
+    return binarySearchRecursive(arr, target, start, mid - 1);
   }
-  
-  return prefix;
 }
-const strings = ['flower', 'flow', 'flight'];
-const commonPrefix = longestCommonPrefix(strings);
-console.log(commonPrefix);  // Output: 'fl'
+
+// Example usage:
+const arr = [1, 3, 5, 7, 9, 11, 13];
+console.log(binarySearchRecursive(arr, 7, 0, arr.length - 1)); // Output: 3
+console.log(binarySearchRecursive(arr, 10, 0, arr.length - 1)); // Output: -1 (not found)
