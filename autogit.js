@@ -1,39 +1,32 @@
-function findLCS(str1, str2) {
-  const m = str1.length;
-  const n = str2.length;
-
-  const dp = Array.from(Array(m + 1), () => Array(n + 1).fill(0));
-
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-      } else {
-        dp[i][j] = Math.max(dp[i][j - 1], dp[i - 1][j]);
-      }
-    }
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
-
-  // Reconstruct the LCS
-  let lcs = "";
-  let i = m, j = n;
-  while (i > 0 && j > 0) {
-    if (str1[i - 1] === str2[j - 1]) {
-      lcs = str1[i - 1] + lcs;
-      i--;
-      j--;
-    } else if (dp[i - 1][j] > dp[i][j - 1]) {
-      i--;
-    } else {
-      j--;
-    }
-  }
-
-  return lcs;
 }
 
-// Example usage:
-const str1 = "ABCDGH";
-const str2 = "AEDFHR";
-const lcs = findLCS(str1, str2);
-console.log(lcs); // Output: "ADH"
+function calculateSum(root) {
+  if (root === null) {
+    return 0;
+  }
+
+  // Recursively calculate sum of left and right subtrees
+  const leftSum = calculateSum(root.left);
+  const rightSum = calculateSum(root.right);
+
+  // Return the sum of current node value, left subtree sum, and right subtree sum
+  return root.value + leftSum + rightSum;
+}
+
+// Example usage
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
+
+const sum = calculateSum(root);
+console.log("Sum of all nodes:", sum);
