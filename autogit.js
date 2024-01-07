@@ -1,13 +1,32 @@
-function calculateFactorial(n) {
-  // Base case: if n is 0 or 1, return 1
-  if (n === 0 || n === 1) {
+class TreeNode {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+function countLeafNodes(root) {
+  if (root === null) {
+    return 0;
+  }
+
+  if (root.left === null && root.right === null) {
     return 1;
   }
-  
-  // Recursive case: calculate factorial of n-1 and multiply it with n
-  return n * calculateFactorial(n - 1);
+
+  return countLeafNodes(root.left) + countLeafNodes(root.right);
 }
 
 // Example usage:
-console.log(calculateFactorial(5)); // Output: 120
-console.log(calculateFactorial(6)); // Output: 720
+// Create binary tree nodes
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+root.right.left = new TreeNode(6);
+root.right.right = new TreeNode(7);
+
+const leafNodeCount = countLeafNodes(root);
+console.log("Number of leaf nodes:", leafNodeCount);
