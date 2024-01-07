@@ -1,15 +1,18 @@
-const CronJob = require('cron').CronJob;
-
-// Define the task to be performed
-function performTask() {
-  console.log('Performing the scheduled task...');
-  // Add your task code here
+function findMedianSortedArrays(nums1, nums2) {
+  const mergedArray = nums1.concat(nums2).sort((a, b) => a - b);
+  const length = mergedArray.length;
+  
+  if (length % 2 !== 0) {
+    return mergedArray[Math.floor(length / 2)];
+  } else {
+    const midIndex1 = length / 2 - 1;
+    const midIndex2 = length / 2;
+    return (mergedArray[midIndex1] + mergedArray[midIndex2]) / 2;
+  }
 }
 
-// Create a cron job that executes the task every 5 minutes
-const job = new CronJob('*/5 * * * *', performTask);
-
-// Start the cron job
-job.start();
-
-console.log('Cron job started. Task will run every 5 minutes.');
+// Example Usage:
+const nums1 = [1, 3, 5];
+const nums2 = [2, 4, 6];
+const median = findMedianSortedArrays(nums1, nums2);
+console.log(median); // Output: 3.5
