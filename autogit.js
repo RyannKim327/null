@@ -1,43 +1,21 @@
-function mergeArrays(arr1, arr2) {
-  let merged = [];
-  let i = 0, j = 0;
-
-  while (i < arr1.length && j < arr2.length) {
-    if (arr1[i] <= arr2[j]) {
-      merged.push(arr1[i]);
-      i++;
-    } else {
-      merged.push(arr2[j]);
-      j++;
-    }
+function interpolationSearch(arr, value, startIdx = 0, endIdx = arr.length - 1) {
+  if (startIdx > endIdx || value < arr[startIdx] || value > arr[endIdx]) {
+    return -1;
   }
 
-  while (i < arr1.length) {
-    merged.push(arr1[i]);
-    i++;
-  }
+  const range = arr[endIdx] - arr[startIdx];
+  const pos = startIdx + Math.floor(((value - arr[startIdx]) / range) * (endIdx - startIdx));
 
-  while (j < arr2.length) {
-    merged.push(arr2[j]);
-    j++;
-  }
-
-  return merged;
-}
-function findMedian(nums) {
-  const n = nums.length;
-  if (n % 2 === 0) {
-    const mid = n / 2;
-    return (nums[mid - 1] + nums[mid]) / 2;
+  if (arr[pos] === value) {
+    return pos;
+  } else if (arr[pos] > value) {
+    return interpolationSearch(arr, value, startIdx, pos - 1);
   } else {
-    return nums[Math.floor(n / 2)];
+    return interpolationSearch(arr, value, pos + 1, endIdx);
   }
 }
-function findMedianSortedArrays(nums1, nums2) {
-  const merged = mergeArrays(nums1, nums2);
-  return findMedian(merged);
-}
-const nums1 = [1, 3];
-const nums2 = [2, 4];
-const median = findMedianSortedArrays(nums1, nums2);
-console.log(median); // Output: 2.5
+
+// Example usage:
+const arr = [1, 3, 5, 7, 9, 11];
+const index = interpolationSearch(arr, 5);
+console.log(index); // Output: 2
