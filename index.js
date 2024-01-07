@@ -4,7 +4,7 @@ const date = require("./date")
 const axios = require("axios")
 let commits = Math.floor(Math.random() * 5) * 100
 let _commitments = 1
-
+console.log(`You send git ${commits}`)
 let run = async () => {
 	const time = date("Asia/Manila")
 	const m = `${time.getMonth() + 1}-${time.getDate()}-${time.getFullYear()} ${time.getHours()}:${time.getMinutes()}`

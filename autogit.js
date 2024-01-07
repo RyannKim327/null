@@ -1,51 +1,29 @@
-// Find the maximum number in the input array
-function getMax(arr) {
-  let max = 0;
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] > max) {
-      max = arr[i];
-    }
-  }
-  return max;
-}
-
-// Perform counting sort based on a specific digit
-function countingSort(arr, exp) {
-  const n = arr.length;
-  const output = new Array(n).fill(0);
-  const count = new Array(10).fill(0);
-
-  for (let i = 0; i < n; i++) {
-    const digit = Math.floor(arr[i] / exp) % 10;
-    count[digit]++;
+function binarySearchRecursive(arr, start, end, target, compare = defaultCompare) {
+  if (start > end) {
+    return -1; // Target not found
   }
 
-  for (let i = 1; i < 10; i++) {
-    count[i] += count[i - 1];
-  }
+  const mid = Math.floor((start + end) / 2);
 
-  for (let i = n - 1; i >= 0; i--) {
-    const digit = Math.floor(arr[i] / exp) % 10;
-    output[count[digit] - 1] = arr[i];
-    count[digit]--;
-  }
-
-  for (let i = 0; i < n; i++) {
-    arr[i] = output[i];
+  if (compare(target, arr[mid]) === 0) {
+    return mid; // Target found at the middle index
+  } else if (compare(target, arr[mid]) < 0) {
+    return binarySearchRecursive(arr, start, mid - 1, target, compare); // Search in the left half
+  } else {
+    return binarySearchRecursive(arr, mid + 1, end, target, compare); // Search in the right half
   }
 }
 
-// Radix sort implementation
-function radixSort(arr) {
-  const max = getMax(arr);
-
-  for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
-    countingSort(arr, exp);
-  }
-
-  return arr;
+// Default comparison function for primitive values
+function defaultCompare(a, b) {
+  return a < b ? -1 : a > b ? 1 : 0;
 }
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const target = 6;
+const index = binarySearchRecursive(sortedArray, 0, sortedArray.length - 1, target);
 
-// Example usage
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log(radixSort(arr)); // [2, 24, 45, 66, 75, 90, 170, 802]
+if (index !== -1) {
+  console.log("Target found at index", index);
+} else {
+  console.log("Target not found");
+}
