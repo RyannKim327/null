@@ -1,35 +1,43 @@
 class Node {
   constructor(data) {
     this.data = data;
-    this.left = null;
-    this.right = null;
+    this.next = null;
   }
 }
 
-function countLeafNodes(root) {
-  // Base case: an empty tree or a leaf node
-  if (root === null) {
-    return 0;
+class LinkedList {
+  constructor() {
+    this.head = null;
   }
-  
-  // Check if it's a leaf node
-  if (root.left === null && root.right === null) {
-    return 1;
+
+  addNode(data) {
+    const newNode = new Node(data);
+
+    if (this.head === null) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next !== null) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
   }
-  
-  // Recursively count the leaf nodes in the left and right subtrees
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
+
+  getLength() {
+    let count = 0;
+    let current = this.head;
+    while (current !== null) {
+      count++;
+      current = current.next;
+    }
+    return count;
+  }
 }
 
-// Example usage
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
-root.right.right.left = new Node(8);
-
-const leafNodeCount = countLeafNodes(root);
-console.log(`Number of leaf nodes: ${leafNodeCount}`);
+// Example usage:
+const linkedList = new LinkedList();
+linkedList.addNode(5);
+linkedList.addNode(10);
+linkedList.addNode(15);
+console.log(linkedList.getLength()); // Output: 3
