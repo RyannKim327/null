@@ -1,12 +1,17 @@
-const axios = require('axios');
+function calculateMean(numbers) {
+  let sum = 0;
+  let count = 0;
 
-// Make a GET request to a specific API endpoint
-axios.get('https://jsonplaceholder.typicode.com/posts/1')
-  .then(response => {
-    // Handle the successful response
-    console.log('Response:', response.data);
-  })
-  .catch(error => {
-    // Handle any errors that occurred during the request
-    console.error('Error:', error);
-  });
+  for (let i = 0; i < numbers.length; i++) {
+    sum += numbers[i];
+    count++;
+  }
+
+  const mean = sum / count;
+  return mean;
+}
+
+// Example usage:
+const numbers = [5, 10, 15, 20];
+const mean = calculateMean(numbers);
+console.log("Mean:", mean);
