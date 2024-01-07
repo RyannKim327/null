@@ -1,47 +1,39 @@
-function buildPatternTable(pattern) {
-  const table = Array(pattern.length).fill(0);
-  let prefixIndex = 0;
-  let suffixIndex = 1;
+function findLongestCommonSubstring(str1, str2) {
+  let longestSubstring = '';
 
-  while (suffixIndex < pattern.length) {
-    if (pattern[prefixIndex] === pattern[suffixIndex]) {
-      table[suffixIndex] = prefixIndex + 1;
-      prefixIndex++;
-      suffixIndex++;
-    } else if (prefixIndex === 0) {
-      table[suffixIndex] = 0;
-      suffixIndex++;
-    } else {
-      prefixIndex = table[prefixIndex - 1];
-    }
-  }
+  for (let i = 0; i < str1.length; i++) {
+    for (let j = i + 1; j <= str1.length; j++) {
+      let substring = str1.slice(i, j);
 
-  return table;
-}
-
-function stringMatch(text, pattern) {
-  const patternTable = buildPatternTable(pattern);
-
-  let textIndex = 0;
-  let patternIndex = 0;
-
-  while (textIndex < text.length) {
-    if (pattern[patternIndex] === text[textIndex]) {
-      if (patternIndex === pattern.length - 1) {
-        return true; // Match found
+      if (str2.includes(substring) && substring.length > longestSubstring.length) {
+        longestSubstring = substring;
       }
-      patternIndex++;
-      textIndex++;
-    } else if (patternIndex > 0) {
-      patternIndex = patternTable[patternIndex - 1];
-    } else {
-      textIndex++;
     }
   }
 
-  return false; // No match found
+  return longestSubstring;
 }
-const text = "Hello, World!";
-const pattern = "World";
+function findLongestCommonSubstring(str1, str2) {
+  let maxLength = 0; // length of the longest common substring
+  let endIndex = 0; // end index of the longest common substring in str1
+  const matrix = Array.from({ length: str1.length + 1 }, () =>
+    Array.from({ length: str2.length + 1 }, () => 0)
+  );
 
-console.log(stringMatch(text, pattern)); // Output: true
+  for (let i = 1; i <= str1.length; i++) {
+    for (let j = 1; j <= str2.length; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        matrix[i][j] = matrix[i - 1][j - 1] + 1;
+
+        if (matrix[i][j] > maxLength) {
+          maxLength = matrix[i][j];
+          endIndex = i - 1;
+        }
+      } else {
+        matrix[i][j] = 0;
+      }
+    }
+  }
+
+  return str1.slice(endIndex - maxLength + 1, endIndex + 1);
+}
