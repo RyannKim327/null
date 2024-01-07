@@ -1,51 +1,29 @@
-function radixSort(arr) {
-  // ...
-}
-function getMax(arr) {
-  let max = 0;
-  for (let num of arr) {
-    if (num > max) {
-      max = num;
-    }
+function binarySearchRecursive(array, target, start, end) {
+  // Base case: If the start index is greater than the end index, the target is not found
+  if (start > end) {
+    return -1;
   }
-  return max;
-}
-function radixSort(arr) {
-  const max = getMax(arr);
-  for (let exp = 1; max / exp > 0; exp *= 10) {
-    // ...
+
+  // Find the middle index
+  const mid = Math.floor((start + end) / 2);
+
+  // If the middle element is the target, return its index
+  if (array[mid] === target) {
+    return mid;
   }
-}
-function radixSort(arr) {
-  const max = getMax(arr);
-  for (let exp = 1; max / exp > 0; exp *= 10) {
-    const buckets = Array.from({ length: 10 }, () => []);
-    // ...
+
+  // If the target is less than the middle element, search the left half of the array
+  if (target < array[mid]) {
+    return binarySearchRecursive(array, target, start, mid - 1);
   }
-}
-function radixSort(arr) {
-  const max = getMax(arr);
-  for (let exp = 1; max / exp > 0; exp *= 10) {
-    const buckets = Array.from({ length: 10 }, () => []);
-    for (let num of arr) {
-      const digit = Math.floor((num / exp) % 10);
-      buckets[digit].push(num);
-    }
-    // ...
+
+  // If the target is greater than the middle element, search the right half of the array
+  if (target > array[mid]) {
+    return binarySearchRecursive(array, target, mid + 1, end);
   }
 }
-function radixSort(arr) {
-  const max = getMax(arr);
-  for (let exp = 1; max / exp > 0; exp *= 10) {
-    const buckets = Array.from({ length: 10 }, () => []);
-    for (let num of arr) {
-      const digit = Math.floor((num / exp) % 10);
-      buckets[digit].push(num);
-    }
-    arr = [].concat(...buckets);
-  }
-  return arr;
-}
-const input = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedArray = radixSort(input);
-console.log(sortedArray);  // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+const array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const target = 6;
+
+const result = binarySearchRecursive(array, target, 0, array.length - 1);
+console.log(result); // Output: 5
