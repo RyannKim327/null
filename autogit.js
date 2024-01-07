@@ -1,26 +1,20 @@
-function interpolationSearch(arr, target, low, high) {
-  if (low <= high) {
-    const range = arr[high] - arr[low];
-    const pos = low + Math.floor((target - arr[low]) * (high - low) / range);
+function longestCommonPrefix(strings) {
+   if (strings.length === 0) return '';
+   if (strings.length === 1) return strings[0];
 
-    if (arr[pos] === target) {
-      return pos;
-    }
+   let prefix = strings[0];
 
-    if (arr[pos] < target) {
-      return interpolationSearch(arr, target, pos + 1, high);
-    }
+   for (let i = 0; i < prefix.length; i++) {
+      for (let j = 1; j < strings.length; j++) {
+         if (i >= strings[j].length || strings[j][i] !== prefix[i]) {
+            return prefix;
+         }
+      }
+      prefix += strings[0][i];
+   }
 
-    if (arr[pos] > target) {
-      return interpolationSearch(arr, target, low, pos - 1);
-    }
-  }
-
-  return -1;
+   return prefix;
 }
-
-// Example usage:
-const sortedArray = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
-const targetElement = 11;
-const result = interpolationSearch(sortedArray, targetElement, 0, sortedArray.length - 1);
-console.log(result); // Output: 5 (index of the target element in the array)
+const strings = ['apple', 'ape', 'apricot'];
+const commonPrefix = longestCommonPrefix(strings);
+console.log(commonPrefix); // Output: 'ap'
