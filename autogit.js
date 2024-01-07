@@ -1,16 +1,14 @@
-function calculateMean(numbers) {
-  var sum = 0;
-  var count = numbers.length;
-
-  for (var i = 0; i < count; i++) {
-    sum += numbers[i];
-  }
-
-  var mean = sum / count;
-  return mean;
+function isPalindrome(str) {
+  // Remove any non-alphanumeric characters and convert to lowercase
+  const cleanedStr = str.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
+  
+  // Compare the cleaned string with its reversed version
+  const reversedStr = cleanedStr.split('').reverse().join('');
+  
+  // Check if the cleaned string and its reversed version are the same
+  return cleanedStr === reversedStr;
 }
 
 // Example usage
-var numbers = [2, 4, 6, 8, 10];
-var mean = calculateMean(numbers);
-console.log("Mean:", mean);
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
+console.log(isPalindrome("hello world")); // false
