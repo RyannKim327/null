@@ -1,12 +1,10 @@
-function getStringLength(str) {
-  let count = 0;
-  for (let i = 0; str[i] !== undefined; i++) {
-    count++;
-  }
-  return count;
+function validateEmail(email) {
+  const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return pattern.test(email);
 }
-
-// Usage
-const string = "Hello, World!";
-const length = getStringLength(string);
-console.log(length); // Output: 13
+const email = "example@example.com";
+if (validateEmail(email)) {
+  console.log("Email is valid");
+} else {
+  console.log("Email is invalid");
+}
