@@ -1,23 +1,16 @@
-function selectionSort(arr) {
-  const len = arr.length;
-  
-  for (let i = 0; i < len - 1; i++) {
-    let minIndex = i;
-    
-    for (let j = i + 1; j < len; j++) {
-      if (arr[j] < arr[minIndex]) {
-        minIndex = j;
-      }
-    }
-    
-    if (minIndex !== i) {
-      [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
-    }
+function factorial(n) {
+  // Base case: factorial of 0 or 1 is 1
+  if (n === 0 || n === 1) {
+    return 1;
+  } else {
+    // Recursive case: multiply n with factorial of (n-1)
+    return n * factorial(n - 1);
   }
-  
-  return arr;
 }
 
-// Example usage:
-const arr = [4, 5, 1, 3, 2];
-console.log(selectionSort(arr)); // Output: [1, 2, 3, 4, 5]
+// Example usage
+const num = 5;
+const result = factorial(num);
+
+console.log(`Factorial of ${num} is ${result}`);
+Factorial of 5 is 120
