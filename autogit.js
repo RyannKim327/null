@@ -1,76 +1,27 @@
-class DirectedGraph {
-  constructor() {
-    this.graph = {};
+function factorialRecursive(n) {
+  // Base case: factorial of 0 or 1 is 1
+  if (n === 0 || n === 1) {
+    return 1;
   }
-
-  addVertex(vertex) {
-    if (!this.graph[vertex]) {
-      this.graph[vertex] = [];
-    }
-  }
-
-  addEdge(from, to) {
-    if (!this.graph[from] || !this.graph[to]) {
-      throw new Error("Invalid vertex");
-    }
-    this.graph[from].push(to);
-  }
+  
+  // Recursive case: multiply the number by factorial of (n-1)
+  return n * factorialRecursive(n - 1);
 }
-function tarjanSCC(graph) {
-  let index = 0;
-  let stack = [];
-  let indices = {};
-  let lowLinks = {};
-  let onStack = {};
-  let result = [];
 
-  function strongConnect(vertex) {
-    indices[vertex] = index;
-    lowLinks[vertex] = index;
-    index++;
-    stack.push(vertex);
-    onStack[vertex] = true;
-
-    const neighbors = graph[vertex];
-    neighbors.forEach((neighbor) => {
-      if (indices[neighbor] === undefined) {
-        strongConnect(neighbor);
-        lowLinks[vertex] = Math.min(lowLinks[vertex], lowLinks[neighbor]);
-      } else if (onStack[neighbor]) {
-        lowLinks[vertex] = Math.min(lowLinks[vertex], indices[neighbor]);
-      }
-    });
-
-    if (indices[vertex] === lowLinks[vertex]) {
-      let component = [];
-      let curr;
-      do {
-        curr = stack.pop();
-        onStack[curr] = false;
-        component.push(curr);
-      } while (curr !== vertex);
-      result.push(component);
-    }
+const number = 5;
+const factorial = factorialRecursive(number);
+console.log(`Factorial of ${number} is ${factorial}`);
+function factorialIterative(n) {
+  let result = 1;
+  
+  // Multiply the numbers from 1 to n
+  for (let i = 1; i <= n; i++) {
+    result *= i;
   }
-
-  const vertices = Object.keys(graph);
-  vertices.forEach((vertex) => {
-    if (indices[vertex] === undefined) {
-      strongConnect(vertex);
-    }
-  });
-
+  
   return result;
 }
-const graph = new DirectedGraph();
-graph.addVertex("A");
-graph.addVertex("B");
-graph.addVertex("C");
-graph.addVertex("D");
-graph.addEdge("A", "B");
-graph.addEdge("B", "C");
-graph.addEdge("C", "A");
-graph.addEdge("C", "D");
 
-const scc = tarjanSCC(graph.graph);
-console.log(scc); // Outputs: [ [ 'C', 'B', 'A' ], [ 'D' ] ]
+const number = 5;
+const factorial = factorialIterative(number);
+console.log(`Factorial of ${number} is ${factorial}`);
