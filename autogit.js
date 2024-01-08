@@ -1,44 +1,54 @@
-function longestCommonSubsequence(str1, str2) {
-  const m = str1.length;
-  const n = str2.length;
+function mergeSortIterative(array) {
+  const arrayLength = array.length;
+  let subarraySize = 1;
 
-  // Create a matrix to store the lengths of the common subsequences
-  const matrix = [];
-  for (let i = 0; i <= m; i++) {
-    matrix[i] = new Array(n + 1).fill(0);
-  }
+  while (subarraySize < arrayLength) {
+    let left = 0;
 
-  // Fill the matrix by comparing characters of both strings
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        matrix[i][j] = matrix[i - 1][j - 1] + 1;
-      } else {
-        matrix[i][j] = Math.max(matrix[i - 1][j], matrix[i][j - 1]);
-      }
+    while (left + subarraySize < arrayLength) {
+      const middle = left + subarraySize - 1;
+      const right = Math.min(left + subarraySize * 2 - 1, arrayLength - 1);
+
+      merge(array, left, middle, right);
+
+      left += subarraySize * 2;
     }
+
+    subarraySize *= 2;
   }
 
-  // Trace back the matrix to find the longest common subsequence
-  let i = m, j = n;
-  const lcs = [];
-  while (i > 0 && j > 0) {
-    if (str1[i - 1] === str2[j - 1]) {
-      lcs.unshift(str1[i - 1]);
-      i--;
-      j--;
-    } else if (matrix[i - 1][j] > matrix[i][j - 1]) {
-      i--;
-    } else {
-      j--;
-    }
-  }
-
-  return lcs.join('');
+  return array;
 }
 
-// Example usage:
-const str1 = 'ABCDGH';
-const str2 = 'AEDFHR';
-const result = longestCommonSubsequence(str1, str2);
-console.log(result); // Output: ADH
+function merge(array, left, middle, right) {
+  const leftArray = array.slice(left, middle + 1);
+  const rightArray = array.slice(middle + 1, right + 1);
+  let i = 0;
+  let j = 0;
+  let k = left;
+
+  while (i < leftArray.length && j < rightArray.length) {
+    if (leftArray[i] <= rightArray[j]) {
+      array[k] = leftArray[i];
+      i++;
+    } else {
+      array[k] = rightArray[j];
+      j++;
+    }
+    k++;
+  }
+
+  while (i < leftArray.length) {
+    array[k] = leftArray[i];
+    i++;
+    k++;
+  }
+
+  while (j < rightArray.length) {
+    array[k] = rightArray[j];
+    j++;
+    k++;
+  }
+}
+const arr = [9, 5, 1, 3, 6, 2, 8, 4, 7];
+console.log(mergeSortIterative(arr)); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
