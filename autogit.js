@@ -1,76 +1,157 @@
-function Graph() {
-  this.nodes = [];
-  this.edges = {};
-}
-Graph.prototype.addNode = function (node) {
-  this.nodes.push(node);
-  this.edges[node] = {};
-};
-Graph.prototype.addEdge = function (node1, node2, weight) {
-  this.edges[node1][node2] = weight;
-  this.edges[node2][node1] = weight; // If the graph is undirected
-};
-const graph = new Graph();
-const nodes = ['A', 'B', 'C', 'D', 'E']; // Example nodes
-nodes.forEach((node) => graph.addNode(node)); // Add nodes to the graph
-graph.addEdge('A', 'B', 4); // Add edges and weights
-graph.addEdge('A', 'C', 2);
-// ... add more edges as needed
-
-const distances = {};
-nodes.forEach((node) => (distances[node] = Infinity));
-distances['A'] = 0;
-
-const visited = new Set();
-function dijkstra(graph, distances, visited) {
-  while (visited.size < graph.nodes.length) {
-    let currentNode = null;
-    let minDistance = Infinity;
-
-    // Find the node with the smallest distance
-    graph.nodes.forEach((node) => {
-      if (!visited.has(node) && distances[node] < minDistance) {
-        minDistance = distances[node];
-        currentNode = node;
-      }
-    });
-
-    // Mark the current node as visited
-    visited.add(currentNode);
-
-    // Update distances of adjacent nodes
-    for (let neighbor in graph.edges[currentNode]) {
-      let distance = graph.edges[currentNode][neighbor];
-      let totalDistance = distances[currentNode] + distance;
-
-      if (totalDistance < distances[neighbor]) {
-        distances[neighbor] = totalDistance;
-      }
-    }
+class Node {
+  constructor(value, next = null) {
+    this.value = value;
+    this.next = next;
   }
 }
 
-dijkstra(graph, distances, visited);
-function getShortestPath(graph, distances, source, destination) {
-  const path = [destination];
-  let current = destination;
-
-  while (current !== source) {
-    for (let neighbor in graph.edges[current]) {
-      if (distances[current] === distances[neighbor] + graph.edges[current][neighbor]) {
-        path.unshift(neighbor);
-        current = neighbor;
-        break;
-      }
-    }
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.size = 0;
   }
 
-  return path;
+  // Add an element to the list
+  add(value) {
+    const newNode = new Node(value);
+
+    // If the list is empty, make the new node the head
+    if (this.head === null) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+
+      // Traverse to the last node
+      while (current.next !== null) {
+        current = current.next;
+      }
+
+      // Append the new node
+      current.next = newNode;
+    }
+
+    this.size++;
+  }
+
+  // Insert an element at a specific index
+  insertAt(value, index) {
+    if (index < 0 || index > this.size) {
+      return false;
+    }
+
+    const newNode = new Node(value);
+
+    if (index === 0) {
+      newNode.next = this.head;
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      let prev = null;
+      let currentIndex = 0;
+
+      // Traverse to the specified index
+      while (currentIndex < index) {
+        prev = current;
+        current = current.next;
+        currentIndex++;
+      }
+
+      // Insert the new node at the specified index
+      newNode.next = current;
+      prev.next = newNode;
+    }
+
+    this.size++;
+    return true;
+  }
+
+  // Remove an element at a specific index
+  removeAt(index) {
+    if (index < 0 || index >= this.size) {
+      return null;
+    }
+
+    let current = this.head;
+
+    if (index === 0) {
+      this.head = current.next;
+    } else {
+      let prev = null;
+      let currentIndex = 0;
+
+      // Traverse to the specified index
+      while (currentIndex < index) {
+        prev = current;
+        current = current.next;
+        currentIndex++;
+      }
+
+      // Remove the node at the specified index
+      prev.next = current.next;
+    }
+
+    this.size--;
+    return current.value;
+  }
+
+  // Get the element at a specific index
+  getAt(index) {
+    if (index < 0 || index >= this.size) {
+      return null;
+    }
+
+    let current = this.head;
+    let currentIndex = 0;
+
+    // Traverse to the specified index
+    while (currentIndex < index) {
+      current = current.next;
+      currentIndex++;
+    }
+
+    return current.value;
+  }
+
+  // Check if the list is empty
+  isEmpty() {
+    return this.size === 0;
+  }
+
+  // Get the size of the list
+  getSize() {
+    return this.size;
+  }
+
+  // Print the linked list
+  print() {
+    let current = this.head;
+    let list = '';
+
+    while (current !== null) {
+      list += current.value + ' -> ';
+      current = current.next;
+    }
+
+    list += 'null';
+    console.log(list);
+  }
 }
 
-const source = 'A';
-const destination = 'E';
+// Example usage
+const list = new LinkedList();
+list.add(10);
+list.add(20);
+list.add(30);
+list.print(); // Output: 10 -> 20 -> 30 -> null
 
-const shortestPath = getShortestPath(graph, distances, source, destination);
-console.log('Shortest path:', shortestPath);
-console.log('Shortest distance:', distances[destination]);
+list.insertAt(25, 2);
+list.print(); // Output: 10 -> 20 -> 25 -> 30 -> null
+
+list.removeAt(1);
+list.print(); // Output: 10 -> 25 -> 30 -> null
+
+console.log(list.getAt(2)); // Output: 30
+
+console.log(list.isEmpty()); // Output: false
+
+console.log(list.getSize()); // Output: 3
