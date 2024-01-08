@@ -1,29 +1,34 @@
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
-
-function findMaxDepth(root) {
-  if (root === null) {
-    return 0;
+function mergeSort(array) {
+  if (array.length <= 1) {
+    return array; // Base case: already sorted
   }
 
-  const leftDepth = findMaxDepth(root.left);
-  const rightDepth = findMaxDepth(root.right);
+  const middle = Math.floor(array.length / 2);
+  const left = array.slice(0, middle); // Split array into two halves
+  const right = array.slice(middle);
 
-  return Math.max(leftDepth, rightDepth) + 1;
+  return merge(mergeSort(left), mergeSort(right)); // Recursively merge subarrays
 }
+function merge(left, right) {
+  const result = [];
 
-// Create a sample binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-root.right.left = new TreeNode(6);
+  let leftIndex = 0;
+  let rightIndex = 0;
 
-const maxDepth = findMaxDepth(root);
-console.log('Max Depth:', maxDepth);
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] < right[rightIndex]) {
+      result.push(left[leftIndex]);
+      leftIndex++;
+    } else {
+      result.push(right[rightIndex]);
+      rightIndex++;
+    }
+  }
+
+  // Concatenate remaining elements from either left or right
+  return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+}
+const arr = [8, 4, 2, 9, 3, 1, 5, 7, 6];
+const sortedArray = mergeSort(arr);
+console.log(sortedArray);
+[1, 2, 3, 4, 5, 6, 7, 8, 9]
