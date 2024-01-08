@@ -1,16 +1,13 @@
-function findMedianSortedArrays(nums1, nums2) {
-  const combined = nums1.concat(nums2).sort((a, b) => a - b);
-  const length = combined.length;
-  const mid1 = (length - 1) / 2;
-  const mid2 = length / 2;
+// Prompt the user for input
+let name = prompt('Enter your name:');
 
-  if (length % 2 === 0) {
-    return (combined[mid1] + combined[mid2]) / 2;
-  } else {
-    return combined[mid1];
-  }
-}
-const arr1 = [1, 3, 5];
-const arr2 = [2, 4, 6];
-const median = findMedianSortedArrays(arr1, arr2);
-console.log(median);  // Output: 3.5
+// Display a message using the user's input
+console.log('Hello, ' + name + '!');
+
+// Perform some calculations
+let num1 = Number(prompt('Enter the first number:'));
+let num2 = Number(prompt('Enter the second number:'));
+let sum = num1 + num2;
+
+// Display the result
+console.log('The sum of ' + num1 + ' and ' + num2 + ' is ' + sum + '.');
