@@ -1,19 +1,8 @@
-function reverseStringWords(str) {
-  // Step 1: Split the string into an array of words
-  const wordsArray = str.split(" ");
-
-  // Step 2: Reverse the array
-  wordsArray.reverse();
-
-  // Step 3: Join the reversed array into a string
-  const reversedString = wordsArray.join(" ");
-
-  return reversedString;
+function decimalToBinary(decimalNumber) {
+  return decimalNumber.toString(2);
 }
 
 // Example usage
-const originalString = "Hello world, how are you?";
-const reversedString = reverseStringWords(originalString);
-
-console.log(reversedString);
-// Output: "you? are how world, Hello"
+const decimal = 10;
+const binary = decimalToBinary(decimal);
+console.log(`Binary representation of ${decimal} is ${binary}`);
