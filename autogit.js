@@ -1,12 +1,9 @@
-let str = "  Remove   whitespace  ";
+const axios = require('axios');
 
-// Using regular expression to remove whitespace
-let newStr = str.replace(/\s/g, "");
-
-console.log(newStr); // Output: "Removewhitespace"
-let str = "  Remove   whitespace  ";
-
-// Using trim() method to remove leading and trailing whitespace
-let newStr = str.trim();
-
-console.log(newStr); // Output: "Remove   whitespace"
+axios.get('https://jsonplaceholder.typicode.com/posts/1')
+  .then(response => {
+    console.log(response.data);
+  })
+  .catch(error => {
+    console.error(error);
+  });
