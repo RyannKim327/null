@@ -1,10 +1,15 @@
-function calculateTriangleArea(base, height) {
-  var area = (base * height) / 2;
-  return area;
-}
+const numbers = [1, 4, 2, 8, 5];
+const max = Math.max(...numbers);
 
-// Example usage:
-var base = 5;
-var height = 7;
-var area = calculateTriangleArea(base, height);
-console.log("The area of the triangle is: " + area);
+console.log(max); // Output: 8
+const products = [
+  { name: "Shoes", price: 50 },
+  { name: "Hat", price: 20 },
+  { name: "T-shirt", price: 30 }
+];
+
+const maxPrice = products.reduce((max, product) => {
+  return product.price > max ? product.price : max;
+}, 0);
+
+console.log(maxPrice); // Output: 50
