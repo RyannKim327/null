@@ -1,75 +1,76 @@
-function ShortestPath(graph, start, end) {
-  const distances = {}; // Stores the shortest distances from start to each node
-  const visited = []; // Array to track visited nodes
-  const previous = {}; // Stores the previous node for each node
+function Graph() {
+  this.nodes = [];
+  this.edges = {};
+}
+Graph.prototype.addNode = function (node) {
+  this.nodes.push(node);
+  this.edges[node] = {};
+};
+Graph.prototype.addEdge = function (node1, node2, weight) {
+  this.edges[node1][node2] = weight;
+  this.edges[node2][node1] = weight; // If the graph is undirected
+};
+const graph = new Graph();
+const nodes = ['A', 'B', 'C', 'D', 'E']; // Example nodes
+nodes.forEach((node) => graph.addNode(node)); // Add nodes to the graph
+graph.addEdge('A', 'B', 4); // Add edges and weights
+graph.addEdge('A', 'C', 2);
+// ... add more edges as needed
 
-  // Helper function to initialize the distances with infinity
-  const initializeDistances = (nodes) => {
-    for (let node of nodes) {
-      distances[node] = Infinity;
+const distances = {};
+nodes.forEach((node) => (distances[node] = Infinity));
+distances['A'] = 0;
+
+const visited = new Set();
+function dijkstra(graph, distances, visited) {
+  while (visited.size < graph.nodes.length) {
+    let currentNode = null;
+    let minDistance = Infinity;
+
+    // Find the node with the smallest distance
+    graph.nodes.forEach((node) => {
+      if (!visited.has(node) && distances[node] < minDistance) {
+        minDistance = distances[node];
+        currentNode = node;
+      }
+    });
+
+    // Mark the current node as visited
+    visited.add(currentNode);
+
+    // Update distances of adjacent nodes
+    for (let neighbor in graph.edges[currentNode]) {
+      let distance = graph.edges[currentNode][neighbor];
+      let totalDistance = distances[currentNode] + distance;
+
+      if (totalDistance < distances[neighbor]) {
+        distances[neighbor] = totalDistance;
+      }
     }
-  };
+  }
+}
 
-  // Helper function to reconstruct the path from start to end
-  const reconstructPath = () => {
-    const path = [end];
-    let current = previous[end];
-    while (current !== start) {
-      path.unshift(current);
-      current = previous[current];
-    }
-    path.unshift(start);
-    return path;
-  };
+dijkstra(graph, distances, visited);
+function getShortestPath(graph, distances, source, destination) {
+  const path = [destination];
+  let current = destination;
 
-  // Initialize distances with infinity for all nodes except start
-  initializeDistances(Object.keys(graph));
-  distances[start] = 0;
-
-  // Priority queue implementation using an array-based min-heap
-  const queue = [start];
-
-  while (queue.length) {
-    // Extract the node with the minimum distance
-    const current = queue.shift();
-
-    // Stop if we reach the end node
-    if (current === end) break;
-
-    // Check if the node has been visited
-    if (!visited.includes(current)) {
-      visited.push(current);
-
-      // Process neighbors
-      for (let neighbor in graph[current]) {
-        // Calculate tentative distance
-        const distance = distances[current] + graph[current][neighbor];
-
-        if (distance < distances[neighbor]) {
-          // Update shortest distance and previous node
-          distances[neighbor] = distance;
-          previous[neighbor] = current;
-          queue.push(neighbor);
-          // Reorder the queue based on updated distances
-          queue.sort((a, b) => distances[a] - distances[b]);
-        }
+  while (current !== source) {
+    for (let neighbor in graph.edges[current]) {
+      if (distances[current] === distances[neighbor] + graph.edges[current][neighbor]) {
+        path.unshift(neighbor);
+        current = neighbor;
+        break;
       }
     }
   }
 
-  // Reconstruct the shortest path
-  const path = reconstructPath();
   return path;
 }
 
-// Example usage:
-const graph = {
-  A: { B: 5, C: 2 },
-  B: { D: 4, E: 2 },
-  C: { B: 8, E: 7 },
-  D: { E: 6, F: 3 },
-  E: { F: 1 },
-  F: {},
-};
+const source = 'A';
+const destination = 'E';
 
-console.log(ShortestPath(graph, 'A', 'F')); // Output: [ 'A', 'C', 'E', 'F' ]
+const shortestPath = getShortestPath(graph, distances, source, destination);
+console.log('Shortest path:', shortestPath);
+console.log('Shortest distance:', distances[destination]);
