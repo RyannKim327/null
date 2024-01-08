@@ -1,53 +1,54 @@
-function rabinKarp(text, pattern) {
-  const textLength = text.length;
-  const patternLength = pattern.length;
-
-  if (patternLength > textLength) {
-    return -1; // Pattern is longer than the text
+function mergeSort(array) {
+  // Base case: if the array is empty or has only one element, it is already sorted
+  if (array.length <= 1) {
+    return array;
   }
 
-  const prime = 101; // A prime number to reduce collisions
+  // Split the array into two halves
+  const middle = Math.floor(array.length / 2);
+  const leftHalf = array.slice(0, middle);
+  const rightHalf = array.slice(middle);
 
-  // Hash function
-  function hash(str) {
-    let hashValue = 0;
-    for (let i = 0; i < str.length; i++) {
-      hashValue += str.charCodeAt(i) * Math.pow(prime, i);
-    }
-    return hashValue;
-  }
+  // Recursively sort the two halves
+  const sortedLeftHalf = mergeSort(leftHalf);
+  const sortedRightHalf = mergeSort(rightHalf);
 
-  // Calculate pattern and initial text hash
-  const patternHash = hash(pattern);
-  let textHash = hash(text.substring(0, patternLength));
-
-  // Iterate through the text
-  for (let i = 0; i <= textLength - patternLength; i++) {
-    // Check if the hash values match
-    if (patternHash === textHash) {
-      let found = true;
-      // Check character by character
-      for (let j = 0; j < patternLength; j++) {
-        if (text[i + j] !== pattern[j]) {
-          found = false;
-          break;
-        }
-      }
-      if (found) {
-        return i; // Match found at index i
-      }
-    }
-    // Calculate the hash for the next window in the text
-    textHash =
-      (textHash - text.charCodeAt(i) + text.charCodeAt(i + patternLength)) *
-      prime;
-  }
-
-  return -1; // Pattern not found in the text
+  // Merge the two sorted halves
+  return merge(sortedLeftHalf, sortedRightHalf);
 }
 
-// Test the function
-const text = "ABABCABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const result = rabinKarp(text, pattern);
-console.log("Pattern found at index:", result);
+function merge(left, right) {
+  let result = [];
+  let leftIndex = 0;
+  let rightIndex = 0;
+
+  // Compare elements from the two arrays and add the smaller one to the result
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] < right[rightIndex]) {
+      result.push(left[leftIndex]);
+      leftIndex++;
+    } else {
+      result.push(right[rightIndex]);
+      rightIndex++;
+    }
+  }
+
+  // Add the remaining elements from the left array
+  while (leftIndex < left.length) {
+    result.push(left[leftIndex]);
+    leftIndex++;
+  }
+
+  // Add the remaining elements from the right array
+  while (rightIndex < right.length) {
+    result.push(right[rightIndex]);
+    rightIndex++;
+  }
+
+  return result;
+}
+
+// Example usage:
+const array = [9, 4, 7, 2, 1, 5, 6, 8, 3];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
