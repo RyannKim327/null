@@ -1,8 +1,14 @@
-function decimalToBinary(decimalNumber) {
-  return decimalNumber.toString(2);
+function findSecondLargest(arr) {
+  // Sort the array in descending order
+  arr.sort(function(a, b) {
+    return b - a;
+  });
+
+  // Return the element at index 1
+  return arr[1];
 }
 
 // Example usage
-const decimal = 10;
-const binary = decimalToBinary(decimal);
-console.log(`Binary representation of ${decimal} is ${binary}`);
+var myArray = [1, 5, 3, 7, 2, 9];
+var secondLargest = findSecondLargest(myArray);
+console.log(secondLargest); // Output: 7
