@@ -1,29 +1,55 @@
-// Define the URL of the AsyncTask in Android
-const AsyncTaskUrl = 'http://your-domain.com/your-async-task-endpoint';
+function fibonacciSearch(arr, x, n) {
+  let fibMM2 = 0; 
+  let fibMM1 = 1;
+  // rest of the code goes here
+}
+while (fibMM1 < n) {
+  let temp = fibMM2;
+  fibMM2 = fibMM1;
+  fibMM1 = temp + fibMM1;
+}
+let offset = 0;
+while (fibMM2 > 1) {
+  let i = Math.min(offset + fibMM2, n - 1);
 
-// Define the data to send to the AsyncTask
-const data = {
-  key1: 'value1',
-  key2: 'value2',
-};
+  if (arr[i] < x) {
+    fibMM2 = fibMM1;
+    fibMM1 = fibMM2 - fibMM1;
+    offset = i;
+  } else if (arr[i] > x) {
+    fibMM2 = fibMM2 - fibMM1;
+    fibMM1 = fibMM1 - fibMM2;
+  } else {
+    return i;
+  }
+}
+return -1;
+function fibonacciSearch(arr, x, n) {
+  let fibMM2 = 0;
+  let fibMM1 = 1;
 
-// Define the options for the fetch request
-const options = {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify(data),
-};
+  while (fibMM1 < n) {
+    let temp = fibMM2;
+    fibMM2 = fibMM1;
+    fibMM1 = temp + fibMM1;
+  }
 
-// Send the async request
-fetch(AsyncTaskUrl, options)
-  .then(response => response.json())
-  .then(result => {
-    // Handle the result returned by the AsyncTask
-    console.log(result);
-  })
-  .catch(error => {
-    // Handle any errors that occurred during the request
-    console.error(error);
-  });
+  let offset = 0;
+
+  while (fibMM2 > 1) {
+    let i = Math.min(offset + fibMM2, n - 1);
+
+    if (arr[i] < x) {
+      fibMM2 = fibMM1;
+      fibMM1 = fibMM2 - fibMM1;
+      offset = i;
+    } else if (arr[i] > x) {
+      fibMM2 = fibMM2 - fibMM1;
+      fibMM1 = fibMM1 - fibMM2;
+    } else {
+      return i;
+    }
+  }
+
+  return -1;
+}
