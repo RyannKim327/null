@@ -1,19 +1,27 @@
-function hasCycle(head) {
-  if (head === null || head.next === null) {
-    return false;
+function boyerMooreHorspool(text, pattern) {
+  let skipTable = {};
+
+  for (let i = 0; i < pattern.length - 1; i++) {
+    skipTable[pattern[i]] = pattern.length - 1 - i;
   }
 
-  let slow = head;
-  let fast = head.next;
+  let n = text.length;
+  let m = pattern.length;
+  let i = 0;
 
-  while (slow !== fast) {
-    if (fast === null || fast.next === null) {
-      return false;
+  while (i <= n - m) {
+    if (pattern === text.slice(i, i + m)) {
+      return i;
+    } else {
+      i += skipTable[text[i + m - 1]] || m;
     }
-
-    slow = slow.next;
-    fast = fast.next.next;
   }
 
-  return true;
+  return -1;
 }
+
+// Example usage:
+let text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+let pattern = "ipsum";
+
+console.log(boyerMooreHorspool(text, pattern)); // Output: 6
