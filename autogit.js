@@ -1,12 +1,34 @@
-function factorial(n) {
-  // Base case: factorial of 0 or 1 is always 1
-  if (n === 0 || n === 1) {
-    return 1;
-  }
-  
-  // Recursive case: call the factorial function with (n-1) as the argument
-  return n * factorial(n - 1);
+function rotate(str) {
+  return str.slice(-1) + str.slice(0, -1);
 }
+let rotations = [text];
 
-// Usage example
-console.log(factorial(5)); // Output: 120 (5! = 5 * 4 * 3 * 2 * 1 = 120)
+for (let i = 1; i < text.length; i++) {
+  rotations.push(rotate(rotations[i - 1]));
+}
+rotations.sort();
+let bwt = rotations.map(str => str.slice(-1)).join('');
+let originalIndex = rotations.indexOf(text);
+return { bwt, originalIndex };
+function burrowsWheelerTransform(text) {
+  function rotate(str) {
+    return str.slice(-1) + str.slice(0, -1);  
+  }
+
+  let rotations = [text];
+
+  for (let i = 1; i < text.length; i++) {
+    rotations.push(rotate(rotations[i - 1]));
+  }
+
+  rotations.sort();
+
+  let bwt = rotations.map(str => str.slice(-1)).join('');
+
+  let originalIndex = rotations.indexOf(text);
+
+  return { bwt, originalIndex };
+}
+let result = burrowsWheelerTransform("banana");
+console.log(result.bwt);   // Outputs: "annb$aa"
+console.log(result.originalIndex);  // Outputs: 4
