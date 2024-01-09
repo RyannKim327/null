@@ -1,13 +1,12 @@
-// Fetch data from an API
-fetch("https://api.example.com/data")
-  .then(response => response.json())
-  .then(data => {
-    // Use the fetched data
-    console.log(data);
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  var cleanStr = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+  
+  // Compare the string with its reverse
+  return cleanStr === cleanStr.split('').reverse().join('');
+}
 
-    // Perform additional operations here
-    // ...
-  })
-  .catch(error => {
-    console.log("An error occurred:", error);
-  });
+// Example usage
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race car")); // true
+console.log(isPalindrome("hello world")); // false
