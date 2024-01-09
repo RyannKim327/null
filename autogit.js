@@ -1,40 +1,72 @@
-// Function to get the digit at a particular position
-function getDigit(num, pos) {
-  return Math.floor(Math.abs(num) / Math.pow(10, pos)) % 10;
-}
-
-// Function to count the number of digits in a given number
-function digitCount(num) {
-  if (num === 0) return 1;
-  return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
-
-// Function to find the maximum number of digits in a given array
-function mostDigits(arr) {
-  let maxDigits = 0;
-  for (let i = 0; i < arr.length; i++) {
-    maxDigits = Math.max(maxDigits, digitCount(arr[i]));
+class Graph {
+  constructor() {
+    this.adjacencyList = new Map();
   }
-  return maxDigits;
-}
 
-// Radix Sort implementation
-function radixSort(arr) {
-  const maxDigits = mostDigits(arr);
-  for (let k = 0; k < maxDigits; k++) {
-    const digitBuckets = Array.from({ length: 10 }, () => []);
-
-    for (let i = 0; i < arr.length; i++) {
-      const digit = getDigit(arr[i], k);
-      digitBuckets[digit].push(arr[i]);
+  addVertex(vertex) {
+    if (!this.adjacencyList.has(vertex)) {
+      this.adjacencyList.set(vertex, []);
     }
-
-    arr = [].concat(...digitBuckets);
   }
 
-  return arr;
-}
+  addEdge(vertex1, vertex2) {
+    if (this.adjacencyList.has(vertex1) && this.adjacencyList.has(vertex2)) {
+      const connections1 = this.adjacencyList.get(vertex1);
+      const connections2 = this.adjacencyList.get(vertex2);
 
-// Example usage:
-const array = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log(radixSort(array));  // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+      if (!connections1.includes(vertex2)) {
+        connections1.push(vertex2);
+      }
+
+      if (!connections2.includes(vertex1)) {
+        connections2.push(vertex1);
+      }
+    }
+  }
+
+  getNeighbors(vertex) {
+    if (this.adjacencyList.has(vertex)) {
+      return this.adjacencyList.get(vertex);
+    }
+    return [];
+  }
+}
+function bfs(graph, startVertex) {
+  const visited = new Set();
+  const queue = [];
+
+  visited.add(startVertex);
+  queue.push(startVertex);
+
+  while (queue.length > 0) {
+    const vertex = queue.shift();
+    // Process the vertex, e.g., print it to console
+    console.log(vertex);
+
+    const neighbors = graph.getNeighbors(vertex);
+    for (const neighbor of neighbors) {
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.push(neighbor);
+      }
+    }
+  }
+}
+const graph = new Graph();
+
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addVertex('E');
+graph.addVertex('F');
+
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('C', 'E');
+graph.addEdge('D', 'E');
+graph.addEdge('D', 'F');
+graph.addEdge('E', 'F');
+
+bfs(graph, 'A');
