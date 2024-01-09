@@ -1,23 +1,14 @@
-function longestCommonPrefix(strings) {
-    if (strings.length === 0) {
-        return "";
+function isSortedAscending(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false;
     }
-    
-    let prefix = strings[0];
-
-    for (let i = 1; i < strings.length; i++) {
-        while (strings[i].indexOf(prefix) !== 0) {
-            prefix = prefix.slice(0, prefix.length - 1);
-            
-            if (prefix === "") {
-                return "";
-            }
-        }
-    }
-    
-    return prefix;
+  }
+  return true;
 }
 
-// Example usage:
-const strings = ["flower", "flow", "flight"];
-console.log(longestCommonPrefix(strings));  // Output: "fl"
+// Example usages:
+console.log(isSortedAscending([1, 2, 3, 4, 5]));  // true
+console.log(isSortedAscending([1, 2, 4, 3, 5]));  // false
+console.log(isSortedAscending([5, 4, 3, 2, 1]));  // false
+console.log(isSortedAscending([]));               // true (an empty array is considered sorted)
