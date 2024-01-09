@@ -1,21 +1,46 @@
-function selectionSort(array) {
-  // Implementation goes here
-}
-function selectionSort(array) {
-  for (let i = 0; i < array.length - 1; i++) {
-    // Find the minimum element in the remaining unsorted array
-    let minIndex = i;
-    for (let j = i + 1; j < array.length; j++) {
-      if (array[j] < array[minIndex]) {
-        minIndex = j;
-      }
-    }
-    // Swap the minimum element with the first element in the unsorted portion of the array
-    let temp = array[i];
-    array[i] = array[minIndex];
-    array[minIndex] = temp;
+// Node class represents a particular node in the graph
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.adjacentNodes = [];
+    this.visited = false;
   }
-  return array;
+  
+  addAdjacentNode(node) {
+    this.adjacentNodes.push(node);
+  }
 }
-let arr = [64, 25, 12, 22, 11];
-console.log(selectionSort(arr)); // Output: [11, 12, 22, 25, 64]
+
+// DFS algorithm implementation
+function depthFirstSearch(node) {
+  if (!node) {
+    return;
+  }
+  
+  node.visited = true;
+  console.log(node.value);
+  
+  for (let adjacentNode of node.adjacentNodes) {
+    if (!adjacentNode.visited) {
+      depthFirstSearch(adjacentNode);
+    }
+  }
+}
+
+// Example usage
+// Create nodes
+const nodeA = new Node("A");
+const nodeB = new Node("B");
+const nodeC = new Node("C");
+const nodeD = new Node("D");
+const nodeE = new Node("E");
+
+// Build the graph
+nodeA.addAdjacentNode(nodeB);
+nodeA.addAdjacentNode(nodeC);
+nodeB.addAdjacentNode(nodeD);
+nodeD.addAdjacentNode(nodeE);
+nodeE.addAdjacentNode(nodeB);
+
+// Call DFS starting from nodeA
+depthFirstSearch(nodeA);
