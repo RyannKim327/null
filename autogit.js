@@ -1,20 +1,15 @@
-function isAnagram(str1, str2) {
-  // Clean the strings and convert them to lowercase
-  str1 = str1.replace(/[^\w]/g, "").toLowerCase();
-  str2 = str2.replace(/[^\w]/g, "").toLowerCase();
+function binarySearch(arr, target, start = 0) {
+  if (arr.length === 0 || start >= arr.length) {
+    return -1;
+  }
 
-  // Sort the characters in the strings
-  const sortedStr1 = str1.split("").sort().join("");
-  const sortedStr2 = str2.split("").sort().join("");
+  const mid = Math.floor((start + arr.length) / 2);
 
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
-}
-const string1 = "listen";
-const string2 = "silent";
-
-if (isAnagram(string1, string2)) {
-  console.log("The strings are anagrams!");
-} else {
-  console.log("The strings are not anagrams.");
+  if (arr[mid] === target) {
+    return mid;
+  } else if (target < arr[mid]) {
+    return binarySearch(arr, target, start, mid - 1);
+  } else {
+    return binarySearch(arr, target, mid + 1);
+  }
 }
