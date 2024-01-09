@@ -1,32 +1,19 @@
-class Node {
-  constructor(value, left = null, right = null) {
-    this.value = value;
-    this.left = left;
-    this.right = right;
+function isPrime(num) {
+  // 1 and numbers less than 1 are not prime
+  if (num <= 1) {
+    return false;
   }
-}
 
-function findSum(root) {
-  if (root === null) {
-    return 0;
+  // Check if num is divisible by any number from 2 to the square root of num
+  for (let i = 2; i <= Math.sqrt(num); i++) {
+    if (num % i === 0) {
+      return false;
+    }
   }
-  
-  // Recursively calculate sum of left and right subtrees
-  const leftSum = findSum(root.left);
-  const rightSum = findSum(root.right);
-  
-  // Add the current node's value with the sums of its subtrees
-  return root.value + leftSum + rightSum;
+
+  // None of the numbers divided evenly, so num is prime
+  return true;
 }
-
-// Example usage
-const tree = new Node(1);
-tree.left = new Node(2);
-tree.right = new Node(3);
-tree.left.left = new Node(4);
-tree.left.right = new Node(5);
-tree.right.left = new Node(6);
-tree.right.right = new Node(7);
-
-const sum = findSum(tree);
-console.log("Sum of all nodes:", sum); // Output: 28
+console.log(isPrime(13)); // Output: true
+console.log(isPrime(25)); // Output: false
+console.log(isPrime(1)); // Output: false
