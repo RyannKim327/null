@@ -1,12 +1,10 @@
-function getStringLength(str) {
-  let length = 0;
-  for (let i = 0; i < str.length; i++) {
-    length++;
-  }
-  return length;
+function validateEmail(email) {
+    const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return pattern.test(email);
 }
-
-// Usage
-const myString = "Hello, World!";
-const length = getStringLength(myString);
-console.log(length); // Output: 13
+const email = "example@example.com";
+if (validateEmail(email)) {
+    console.log("Email is valid");
+} else {
+    console.log("Email is not valid");
+}
