@@ -1,47 +1,48 @@
-function boyerMooreHorspoolSearch(text, pattern) {
-  const patternLength = pattern.length;
-  const textLength = text.length;
-  
-  if (patternLength === 0) return [];
+function bellmanFord(graph, source) {
+  // Step 1: Define the graph
+  const vertices = Object.keys(graph);
+  const numVertices = vertices.length;
 
-  const shiftTable = createShiftTable(pattern);
+  // Step 2: Initialize the distance and predecessor arrays
+  const distance = {};
+  const predecessor = {};
+  vertices.forEach((vertex) => {
+    distance[vertex] = Infinity;
+    predecessor[vertex] = null;
+  });
+  distance[source] = 0;
 
-  const matches = [];
-  let skip;
-  let i = 0;
-  
-  while (i <= textLength - patternLength) {
-    skip = 0;
-    
-    for (let j = patternLength - 1; j >= 0; j--) {
-      if (pattern[j] !== text[i + j]) {
-        skip = shiftTable[text.charCodeAt(i + patternLength - 1)];
-        break;
+  // Step 3: Relax the edges
+  for (let i = 1; i < numVertices - 1; i++) {
+    for (let j = 0; j < numVertices; j++) {
+      const u = vertices[j];
+      const neighbors = graph[u];
+      neighbors.forEach((neighbor) => {
+        const v = neighbor[0];
+        const weight = neighbor[1];
+        const newDistance = distance[u] + weight;
+        if (newDistance < distance[v]) {
+          distance[v] = newDistance;
+          predecessor[v] = u;
+        }
+      });
+    }
+  }
+
+  // Step 4: Check for negative cycles
+  for (let j = 0; j < numVertices; j++) {
+    const u = vertices[j];
+    const neighbors = graph[u];
+    neighbors.forEach((neighbor) => {
+      const v = neighbor[0];
+      const weight = neighbor[1];
+      const newDistance = distance[u] + weight;
+      if (newDistance < distance[v]) {
+        throw new Error("Graph contains a negative-weight cycle");
       }
-    }
-    
-    if (skip === 0) {
-      matches.push(i);
-      skip = shiftTable[text.charCodeAt(i + patternLength)];
-    }
-    
-    i += skip;
-  }
-  
-  return matches;
-}
-function createShiftTable(pattern) {
-  const shiftTable = {};
-
-  for (let i = 0; i < pattern.length - 1; i++) {
-    shiftTable[pattern.charCodeAt(i)] = pattern.length - i - 1;
+    });
   }
 
-  return shiftTable;
+  // Step 5: Retrieve the shortest path
+  return { distance, predecessor };
 }
-const text = "Hello, world! This is a test.";
-const pattern = "world";
-
-const matches = boyerMooreHorspoolSearch(text, pattern);
-
-console.log("Matches found at positions:", matches);
