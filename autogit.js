@@ -1,22 +1,56 @@
-function areAnagrams(str1, str2) {
-  // Remove non-alphabet characters and convert to lowercase
-  str1 = str1.replace(/[^A-Za-z]/g, '').toLowerCase();
-  str2 = str2.replace(/[^A-Za-z]/g, '').toLowerCase();
-
-  // Convert strings to sorted arrays and join back into strings
-  const sortedStr1 = str1.split('').sort().join('');
-  const sortedStr2 = str2.split('').sort().join('');
-
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+class TrieNode {
+  constructor() {
+    this.value = null;
+    this.children = new Map();
+  }
 }
-
-// Example usage
-const string1 = 'listen';
-const string2 = 'silent';
-
-if (areAnagrams(string1, string2)) {
-  console.log(`${string1} and ${string2} are anagrams.`);
-} else {
-  console.log(`${string1} and ${string2} are not anagrams.`);
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
+  }
 }
+Trie.prototype.insert = function (word) {
+  let node = this.root;
+  
+  for (let i = 0; i < word.length; i++) {
+    const char = word[i];
+    
+    if (!node.children.has(char)) {
+      node.children.set(char, new TrieNode());
+    }
+    
+    node = node.children.get(char);
+  }
+  
+  node.value = word; // Mark the last node with the word value
+};
+Trie.prototype.search = function (word) {
+  let node = this.root;
+  
+  for (let i = 0; i < word.length; i++) {
+    const char = word[i];
+    
+    if (!node.children.has(char)) {
+      return false; // Word doesn't exist
+    }
+    
+    node = node.children.get(char);
+  }
+  
+  return node.value === word; // Return true if the node represents the complete word
+};
+Trie.prototype.startsWith = function (prefix) {
+  let node = this.root;
+  
+  for (let i = 0; i < prefix.length; i++) {
+    const char = prefix[i];
+    
+    if (!node.children.has(char)) {
+      return false; // Prefix doesn't exist
+    }
+    
+    node = node.children.get(char);
+  }
+  
+  return true; // Prefix exists
+};
