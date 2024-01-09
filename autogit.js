@@ -1,22 +1,54 @@
-const graph = [
-  [1, 2],    // Node 0 is connected to nodes 1 and 2
-  [0, 3, 4], // Node 1 is connected to nodes 0, 3, and 4
-  [0],       // Node 2 is connected to node 0
-  [1],       // Node 3 is connected to node 1
-  [1]        // Node 4 is connected to node 1
-];
-function dfs(graph, node, visited) {
-  visited[node] = true; // Mark the current node as visited
-  console.log("Visiting node:", node);
-
-  // Recursively visit all unvisited neighbors
-  for (let neighbor of graph[node]) {
-    if (!visited[neighbor]) {
-      dfs(graph, neighbor, visited);
-    }
+class TrieNode {
+  constructor() {
+    this.children = {};
+    this.isWord = false;
   }
 }
-const startNode = 0; // Start from node 0
-const visited = new Array(graph.length).fill(false); // Mark all nodes as unvisited
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
+  }
 
-dfs(graph, startNode, visited);
+  insert(word) {
+    let node = this.root;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      if (!node.children[char]) {
+        node.children[char] = new TrieNode();
+      }
+      node = node.children[char];
+    }
+    node.isWord = true;
+  }
+
+  search(word) {
+    let node = this.root;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      if (!node.children[char]) {
+        return false;
+      }
+      node = node.children[char];
+    }
+    return node.isWord;
+  }
+
+  startsWith(prefix) {
+    let node = this.root;
+    for (let i = 0; i < prefix.length; i++) {
+      const char = prefix[i];
+      if (!node.children[char]) {
+        return false;
+      }
+      node = node.children[char];
+    }
+    return true;
+  }
+}
+const trie = new Trie();
+trie.insert("apple");
+console.log(trie.search("apple"));   // Output: true
+console.log(trie.search("app"));     // Output: false
+console.log(trie.startsWith("app")); // Output: true
+trie.insert("dog");
+console.log(trie.search("dog"));     // Output: true
