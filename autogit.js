@@ -1,16 +1,23 @@
-// Sample array
-let arr = [1, 2, 3, 4, 5];
+function findLongestCommonPrefix(strings) {
+  if (strings.length === 0) {
+    return "";
+  }
 
-// Element to remove
-let elementToRemove = 3;
-
-// Finding index of the element
-let index = arr.indexOf(elementToRemove);
-
-// Checking if the element exists in the array
-if (index !== -1) {
-  // Removing the element using splice()
-  arr.splice(index, 1);
+  let prefix = strings[0];
+  
+  for (let i = 1; i < strings.length; i++) {
+    let j = 0;
+    while (j < prefix.length && j < strings[i].length && prefix[j] === strings[i][j]) {
+      j++;
+    }
+    prefix = prefix.substring(0, j);
+    if (prefix === "") {
+      return "";
+    }
+  }
+  
+  return prefix;
 }
-
-console.log(arr); // Output: [1, 2, 4, 5]
+const strings = ["flower", "flow", "flight"];
+const longestCommonPrefix = findLongestCommonPrefix(strings);
+console.log(longestCommonPrefix); // Output: "fl"
