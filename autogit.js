@@ -1,21 +1,33 @@
-function isPrime(num) {
-  // Check if the number is less than 2
-  if (num < 2) {
-    return false;
-  }
+function findMaxSubarray(arr) {
+  let maxSum = 0; // The maximum sum found so far
+  let currentSum = 0; // The sum of the current subarray
+  let startIndex = 0; // Start index of the maximum sum subarray
+  let endIndex = 0; // End index of the maximum sum subarray
 
-  // Check if the number is divisible by any number from 2 to the square root of the number
-  for (let i = 2; i <= Math.sqrt(num); i++) {
-    if (num % i === 0) {
-      return false;
+  for (let i = 0; i < arr.length; i++) {
+    currentSum += arr[i];
+
+    if (currentSum < 0) {
+      // If current sum becomes negative, reset it to zero
+      currentSum = 0;
+      startIndex = i + 1; // Move the start index to the next element
+    }
+
+    if (currentSum > maxSum) {
+      // If current sum is greater than the maximum sum found so far
+      maxSum = currentSum;
+      endIndex = i; // Update the end index of the subarray
     }
   }
 
-  // The number is only divisible by 1 and itself, so it is prime
-  return true;
+  // Extract the maximum sum subarray
+  const maxSubarray = arr.slice(startIndex, endIndex + 1);
+
+  return { maxSum, maxSubarray };
 }
 
-// Example usage
-console.log(isPrime(11)); // true
-console.log(isPrime(15)); // false
-console.log(isPrime(23)); // true
+// Example usage:
+const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const result = findMaxSubarray(arr);
+console.log('Maximum sum:', result.maxSum);
+console.log('Maximum sum subarray:', result.maxSubarray);
