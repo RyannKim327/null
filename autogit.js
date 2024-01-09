@@ -1,56 +1,26 @@
-function prefixTable(pattern) {
-  const table = [0];
-  let prefixLen = 0;
-  let i = 1;
-  
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[prefixLen]) {
-      prefixLen++;
-      table[i] = prefixLen;
-      i++;
-    } else {
-      if (prefixLen !== 0) {
-        prefixLen = table[prefixLen - 1];
-      } else {
-        table[i] = 0;
-        i++;
-      }
-    }
-  }
-  
-  return table;
-}
-function KMPSearch(pattern, text) {
-  const result = [];
-  const M = pattern.length;
-  const N = text.length;
-  const table = prefixTable(pattern);
-  
-  let i = 0;
-  let j = 0;
-  
-  while (i < N) {
-    if (pattern[j] === text[i]) {
-      i++;
-      j++;
-    }
-    
-    if (j === M) {
-      result.push(i - j);
-      j = table[j - 1];
-    } else if (i < N && pattern[j] !== text[i]) {
-      if (j !== 0) {
-        j = table[j - 1];
-      } else {
-        i++;
-      }
-    }
-  }
-  
-  return result;
-}
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
+function shellSort(arr) {
+  const len = arr.length;
+  let gap = Math.floor(len / 2);
 
-const indices = KMPSearch(pattern, text);
-console.log(indices); // Output: [10]
+  while (gap > 0) {
+    for (let i = gap; i < len; i++) {
+      const temp = arr[i];
+      let j = i;
+
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
+      }
+
+      arr[j] = temp;
+    }
+
+    gap = Math.floor(gap / 2);
+  }
+
+  return arr;
+}
+
+// Example usage:
+const array = [7, 2, 4, 1, 5, 3];
+console.log(shellSort(array)); // Output: [1, 2, 3, 4, 5, 7]
