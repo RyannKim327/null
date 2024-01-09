@@ -1,25 +1,26 @@
-async function connectToApi() {
-  try {
-    const url = 'https://api.example.com/data'; // Replace with your API endpoint
+function shellSort(arr) {
+  // Step 2: Generate a sequence of increment values
+  let gaps = [701, 301, 132, 57, 23, 10, 4, 1];
 
-    const response = await fetch(url);
-    const data = await response.json();
+  // Step 3: Start with the largest gap and reduce it in each iteration
+  for (let gap of gaps) {
+    // Step 4: Perform insertion sort on each gap
+    for (let i = gap; i < arr.length; i++) {
+      let temp = arr[i];
+      let j = i;
 
-    // Process the data received from the API
-    console.log(data);
-
-    // You can also update the UI with the received data
-    updateUI(data);
-  } catch (error) {
-    // Handle any errors that occurred during the API request
-    console.error('Error:', error);
+      // Step 5: Insert the element into the correct position
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
+      }
+      arr[j] = temp;
+    }
   }
-}
 
-function updateUI(data) {
-  // Update the user interface with the received data
-  // Example: document.getElementById('data').textContent = data;
+  // Step 6: Return the sorted array
+  return arr;
 }
-
-// Call the connectToApi() function to initiate the API request
-connectToApi();
+let arr = [7, 2, 6, 9, 3, 1];
+let sortedArr = shellSort(arr);
+console.log(sortedArr); // Output: [1, 2, 3, 6, 7, 9]
