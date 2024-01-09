@@ -1,61 +1,21 @@
-class HashTable {
-  constructor(size) {
-    this.size = size;
-    this.table = new Array(size);
-  }
+function findMedianSortedArrays(nums1, nums2) {
+  // Concatenate both arrays and sort them
+  const combinedArray = [...nums1, ...nums2].sort((a, b) => a - b);
 
-  // Hash function to convert a key into an index position
-  hash(key) {
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) {
-      hash += key.charCodeAt(i);
-    }
-    return hash % this.size;
-  }
+  const length = combinedArray.length;
+  const middleIndex = Math.floor(length / 2);
 
-  // Insert a key-value pair into the hash table
-  insert(key, value) {
-    const index = this.hash(key);
-    if (!this.table[index]) {
-      this.table[index] = [];
-    }
-    this.table[index].push({ key, value });
-  }
-
-  // Retrieve a value from the hash table given a key
-  get(key) {
-    const index = this.hash(key);
-    if (!this.table[index]) {
-      return undefined;
-    }
-    for (const pair of this.table[index]) {
-      if (pair.key === key) {
-        return pair.value;
-      }
-    }
-    return undefined;
-  }
-
-  // Remove a key-value pair from the hash table
-  remove(key) {
-    const index = this.hash(key);
-    if (!this.table[index]) {
-      return;
-    }
-    for (let i = 0; i < this.table[index].length; i++) {
-      if (this.table[index][i].key === key) {
-        this.table[index].splice(i, 1);
-        break;
-      }
-    }
+  if (length % 2 === 0) {
+    // Even number of elements, calculate average of two middle elements
+    return (combinedArray[middleIndex - 1] + combinedArray[middleIndex]) / 2.0;
+  } else {
+    // Odd number of elements, return middle element
+    return combinedArray[middleIndex];
   }
 }
 
-// Usage example:
-const myHashTable = new HashTable(10);
-myHashTable.insert('name', 'John');
-myHashTable.insert('age', 30);
-console.log(myHashTable.get('name')); // Output: John
-console.log(myHashTable.get('age')); // Output: 30
-myHashTable.remove('age');
-console.log(myHashTable.get('age')); // Output: undefined
+// Example usage:
+const nums1 = [1, 3];
+const nums2 = [2, 4, 5];
+
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 3
