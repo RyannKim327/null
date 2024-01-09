@@ -1,47 +1,33 @@
-function buildBadCharShift(pattern) {
-  const table = {};
-  const { length } = pattern;
+function countingSort(arr) {
+  // Find the maximum element in the array
+  let max = Math.max(...arr);
 
-  for (let i = 0; i < length - 1; i++) {
-    table[pattern[i]] = length - 1 - i;
+  // Create a count array to store the count of each element
+  let count = new Array(max + 1).fill(0);
+
+  // Store the count of each element in the count array
+  for (let i = 0; i < arr.length; i++) {
+    count[arr[i]]++;
   }
 
-  return table;
-}
-function searchBoyerMooreHorspool(text, pattern) {
-  const { length: textSize } = text;
-  const { length: patternSize } = pattern;
-  const badCharShift = buildBadCharShift(pattern);
-  let offset = 0;
-
-  while (offset <= textSize - patternSize) {
-    let mismatch = false;
-
-    for (let i = patternSize - 1; i >= 0; i--) {
-      const current = text[offset + i];
-
-      if (pattern[i] !== current) {
-        const badCharOffset = badCharShift[current] || patternSize;
-        offset += badCharOffset;
-        mismatch = true;
-        break;
-      }
-    }
-
-    if (!mismatch) {
-      return offset;
-    }
+  // Modify the count array so that each element stores the sum of previous counts
+  for (let i = 1; i <= max; i++) {
+    count[i] += count[i - 1];
   }
 
-  return -1; // Pattern not found
-}
-const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
-const pattern = "ipsum";
+  // Create a sorted array to store the sorted elements
+  let sorted = new Array(arr.length);
 
-const result = searchBoyerMooreHorspool(text, pattern);
+  // Build the sorted array
+  for (let i = 0; i < arr.length; i++) {
+    sorted[count[arr[i]] - 1] = arr[i];
+    count[arr[i]]--;
+  }
 
-if (result !== -1) {
-  console.log(`Pattern found at index ${result}.`);
-} else {
-  console.log("Pattern not found.");
+  return sorted;
 }
+
+// Example usage:
+let arr = [4, 2, 10, 8, 3];
+let sortedArr = countingSort(arr);
+console.log(sortedArr); // Output: [2, 3, 4, 8, 10]
