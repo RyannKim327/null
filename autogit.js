@@ -1,46 +1,55 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
-}
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-  }
-}
-enqueue(data) {
-  const newNode = new Node(data);
-  if (!this.head) {
-    this.head = newNode;
-    this.tail = newNode;
-  } else {
-    this.tail.next = newNode;
-    this.tail = newNode;
-  }
-}
-dequeue() {
-  if (!this.head) {
-    return null;
-  }
-  const removedNode = this.head;
-  this.head = this.head.next;
-  if (!this.head) {
-    this.tail = null;
-  }
-  return removedNode.data;
-}
-isEmpty() {
-  return this.head === null && this.tail === null;
-}
-const queue = new Queue();
-queue.enqueue(10);
-queue.enqueue(20);
-queue.enqueue(30);
+function boyerMooreSearch(text, pattern) {
+  const badChar = {}; // Bad character table
+  const patternLength = pattern.length;
+  const textLength = text.length;
 
-console.log(queue.dequeue()); // Output: 10
-console.log(queue.isEmpty()); // Output: false
-console.log(queue.dequeue()); // Output: 20
-console.log(queue.dequeue()); // Output: 30
-console.log(queue.isEmpty()); // Output: true
+  // Preprocessing the pattern
+  function preprocessPattern() {
+    for (let i = 0; i < patternLength; i++) {
+      badChar[pattern[i]] = i;
+    }
+  }
+
+  // Calculate the maximum shift
+  function calculateMaxShift(shift1, shift2) {
+    return Math.max(shift1, shift2);
+  }
+
+  // Search function
+  function search() {
+    let textIndex = patternLength - 1; // Text index
+    let patternIndex = patternLength - 1; // Pattern index
+
+    while (textIndex < textLength) {
+      if (pattern[patternIndex] === text[textIndex]) {
+        if (patternIndex === 0) {
+          // Match found
+          return textIndex;
+        }
+        patternIndex--;
+        textIndex--;
+      } else {
+        // Calculate the shift
+        const badCharShift = badChar[text[textIndex]] || patternLength;
+        const goodSuffixShift = patternLength - patternIndex;
+        const shift = calculateMaxShift(badCharShift, goodSuffixShift);
+        
+        textIndex += shift;
+        patternIndex = patternLength - 1;
+      }
+    }
+
+    // No match found
+    return -1;
+  }
+
+  preprocessPattern();
+  return search();
+}
+
+// Example usage:
+const text = "This is a test text";
+const pattern = "test";
+const result = boyerMooreSearch(text, pattern);
+
+console.log("Pattern found at index:", result);
