@@ -1,11 +1,9 @@
-function getStringLength(str) {
-  let count = 0;
-  for (let i = 0; str[i] !== undefined; i++) {
-    count++;
-  }
-  return count;
-}
-
-const myString = "Hello, World!";
-const stringLength = getStringLength(myString);
-console.log(stringLength); // Outputs: 13
+let str = "  Hello,  World!  ";
+let result = str.replace(/\s/g, "");
+console.log(result);
+let str = "  Hello,  World!  ";
+let result = str.split(" ").join("");
+console.log(result);
+let str = "  Hello,  World!  ";
+let result = str.trim();
+console.log(result);
