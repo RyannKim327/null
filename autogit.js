@@ -1,75 +1,47 @@
-function rabinKarp(text, pattern) {
-  // implementation goes here
+function getKthSmallestElement(arr, k) {
+  arr.sort((a, b) => a - b);
+  return arr[k - 1];
 }
-function rabinKarp(text, pattern) {
-  if (text.length === 0 || pattern.length === 0) {
-    return -1;
-  }
-  // Rest of the implementation follows
-}
-function hash(str) {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash += str.charCodeAt(i);
-  }
-  return hash;
-}
-
-function rabinKarp(text, pattern) {
-  if (text.length === 0 || pattern.length === 0) {
-    return -1;
+function quickselect(arr, left, right, k) {
+  if (left === right) {
+    return arr[left];
   }
 
-  const patternHash = hash(pattern);
-  // Rest of the implementation follows
-}
-function rabinKarp(text, pattern) {
-  if (text.length === 0 || pattern.length === 0) {
-    return -1;
+  const pivotIndex = partition(arr, left, right);
+  
+  if (pivotIndex === k - 1) {
+    return arr[pivotIndex];
+  } else if (pivotIndex < k - 1) {
+    return quickselect(arr, pivotIndex + 1, right, k);
+  } else {
+    return quickselect(arr, left, pivotIndex - 1, k);
   }
-
-  const patternHash = hash(pattern);
-
-  let textHash = hash(text.substr(0, pattern.length));
-  // Rest of the implementation follows
 }
-function rabinKarp(text, pattern) {
-  if (text.length === 0 || pattern.length === 0) {
-    return -1;
-  }
 
-  const patternHash = hash(pattern);
+function partition(arr, left, right) {
+  const pivot = arr[Math.floor((left + right) / 2)];
+  let i = left;
+  let j = right;
 
-  let textHash = hash(text.substr(0, pattern.length));
-
-  for (let i = 0; i <= text.length - pattern.length; i++) {
-    if (textHash === patternHash && text.substr(i, pattern.length) === pattern) {
-      return i;
+  while (i <= j) {
+    while (arr[i] < pivot) {
+      i++;
     }
 
-    textHash -= text.charCodeAt(i);
-    textHash += text.charCodeAt(i + pattern.length);
-  }
-
-  return -1;
-}
-function rabinKarp(text, pattern) {
-  if (text.length === 0 || pattern.length === 0) {
-    return -1;
-  }
-
-  const patternHash = hash(pattern);
-
-  let textHash = hash(text.substr(0, pattern.length));
-
-  for (let i = 0; i <= text.length - pattern.length; i++) {
-    if (textHash === patternHash && text.substr(i, pattern.length) === pattern) {
-      return i;
+    while (arr[j] > pivot) {
+      j--;
     }
 
-    textHash -= text.charCodeAt(i);
-    textHash += text.charCodeAt(i + pattern.length);
+    if (i <= j) {
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+      i++;
+      j--;
+    }
   }
 
-  return -1;
+  return i;
+}
+
+function getKthSmallestElement(arr, k) {
+  return quickselect(arr, 0, arr.length - 1, k);
 }
