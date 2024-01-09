@@ -1,15 +1,12 @@
-function hasCycle(head) {
-  let slow = head;
-  let fast = head;
+const string = "Hello, World!";
+const substring = "World";
 
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
+console.log(string.includes(substring)); // Output: true
+const string = "Hello, World!";
+const substring = "World";
 
-    if (slow === fast) {
-      return true; // Found a cycle
-    }
-  }
+console.log(string.indexOf(substring) !== -1); // Output: true
+const string = "Hello, World!";
+const substring = /World/;
 
-  return false; // No cycle found
-}
+console.log(substring.test(string)); // Output: true
