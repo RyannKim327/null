@@ -1,36 +1,43 @@
-function findMajorityElement(arr) {
-  let count = 0;
-  let majorityElement = null;
+function bfs(graph, start, target) {
+  // Step 3
+  const queue = [];
+  const visited = new Set();
 
-  for (let i = 0; i < arr.length; i++) {
-    if (count === 0) {
-      majorityElement = arr[i];
-      count = 1;
-    } else {
-      if (arr[i] === majorityElement) {
-        count++;
-      } else {
-        count--;
+  // Step 4
+  queue.push(start);
+  visited.add(start);
+
+  // Step 5
+  while (queue.length > 0) {
+    // Step 6
+    const node = queue.shift();
+    if (node === target) {
+      return true;
+    }
+
+    // Step 7
+    const neighbors = graph[node];
+    for (let i = 0; i < neighbors.length; i++) {
+      const neighbor = neighbors[i];
+      if (!visited.has(neighbor)) {
+        queue.push(neighbor);
+        visited.add(neighbor);
       }
     }
   }
 
-  // Check if the majority element is indeed a majority
-  count = 0;
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] === majorityElement) {
-      count++;
-    }
-  }
-
-  if (count > arr.length / 2) {
-    return majorityElement;
-  } else {
-    return null; // No majority element found
-  }
+  // Step 9
+  return false;
 }
 
-// Example usage:
-const array = [2, 4, 4, 2, 4, 4, 4];
-const majorityElement = findMajorityElement(array);
-console.log(majorityElement);  // Output: 4
+// Example usage
+const graph = {
+  A: ['B', 'C'],
+  B: ['D'],
+  C: ['E'],
+  D: [],
+  E: []
+};
+
+console.log(bfs(graph, 'A', 'E')); // Output: true
+console.log(bfs(graph, 'A', 'F')); // Output: false
