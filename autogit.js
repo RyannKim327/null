@@ -1,9 +1,8 @@
-function factorial(n) {
-  if (n === 0 || n === 1) {
-    return 1;
-  }
-  return n * factorial(n - 1);
+function calculateTriangleArea(base, height) {
+  var area = (base * height) / 2;
+  return area;
 }
 
-// Example usage
-console.log(factorial(5)); // Output: 120
+// Example usage:
+var triangleArea = calculateTriangleArea(5, 8);
+console.log("The area of the triangle is: " + triangleArea);
