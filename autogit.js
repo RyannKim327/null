@@ -1,5 +1,4 @@
-let str = "10";
-let num = parseInt(str);
+let str = "  Hello,   World!  ";
+let trimmedStr = str.replace(/\s/g, "");
 
-console.log(num); // Output: 10
-console.log(typeof num); // Output: "number"
+console.log(trimmedStr); // Output: "Hello,World!"
