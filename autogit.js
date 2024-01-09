@@ -1,21 +1,26 @@
-function binarySearchRecursive(arr, target, start, end) {
-  if (start > end) {
-    return -1;
-  }
-
-  let mid = Math.floor((start + end) / 2);
-
-  if (arr[mid] === target) {
-    return mid;
-  } else if (arr[mid] > target) {
-    return binarySearchRecursive(arr, target, start, mid - 1);
-  } else {
-    return binarySearchRecursive(arr, target, mid + 1, end);
-  }
+function Node(value, children) {
+  this.value = value;
+  this.children = children || [];
 }
 
-// Example usage:
-const sortedArray = [1, 3, 5, 7, 9, 11, 13, 15];
-const target = 9;
-const result = binarySearchRecursive(sortedArray, target, 0, sortedArray.length - 1);
-console.log(result); // Output: 4
+function depthLimitedSearchIterative(root, target, depthLimit) {
+  let stack = [];
+  
+  stack.push({ node: root, depth: 0 });
+
+  while (stack.length > 0) {
+    const { node, depth } = stack.pop();
+    
+    if (node.value === target) {
+      return node; // Found the target
+    }
+    
+    if (depth < depthLimit) {
+      for (let child of node.children) {
+        stack.push({ node: child, depth: depth + 1 });
+      }
+    }
+  }
+  
+  return null; // Target not found within the depth limit
+}
