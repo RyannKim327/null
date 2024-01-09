@@ -1,14 +1,7 @@
-let str = "Hello World";
-let stringWithoutSpaces = str.split(" ").join("");
-console.log(stringWithoutSpaces); // Output: HelloWorld
-let str = "Hello World";
-let stringWithoutSpaces = str.replace(/\s/g, "");
-console.log(stringWithoutSpaces); // Output: HelloWorld
-let str = "Hello World";
-let stringWithoutSpaces = "";
-for (let i = 0; i < str.length; i++) {
-  if (str[i] !== " ") {
-    stringWithoutSpaces += str[i];
-  }
+function getRandomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-console.log(stringWithoutSpaces); // Output: HelloWorld
+
+// Usage: Generating a random number between 1 and 10
+var randomNumber = getRandomNumber(1, 10);
+console.log(randomNumber);
