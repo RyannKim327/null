@@ -1,21 +1,18 @@
-function selectionSort(arr) {
-  const len = arr.length;
-
-  for (let i = 0; i < len - 1; i++) {
-    let minIndex = i;
-    for (let j = i + 1; j < len; j++) {
-      if (arr[j] < arr[minIndex]) {
-        minIndex = j;
-      }
-    }
-    if (minIndex !== i) {
-      let temp = arr[i];
-      arr[i] = arr[minIndex];
-      arr[minIndex] = temp;
-    }
+function calculateMean(numbers) {
+  if (numbers.length === 0) {
+    return 0;
   }
 
-  return arr;
+  var sum = 0;
+  for (var i = 0; i < numbers.length; i++) {
+    sum += numbers[i];
+  }
+
+  var mean = sum / numbers.length;
+  return mean;
 }
-const unsortedArray = [64, 25, 12, 22, 11];
-console.log(selectionSort(unsortedArray));
+
+// Example usage
+var numbers = [1, 2, 3, 4, 5];
+var mean = calculateMean(numbers);
+console.log(mean);
