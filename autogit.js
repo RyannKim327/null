@@ -1,44 +1,63 @@
-function mergeSort(arr) {
-  if (arr.length <= 1) {
-    return arr;
-  }
+function tarjan(graph) {
+  let index = 0; // Index counter
+  let stack = []; // Stack to store visited nodes
+  let ids = new Map(); // Map to store the index of each node
+  let lowLink = new Map(); // Map to store the low link value of each node
+  let onStack = new Set(); // Set to check if a node is on the stack
+  let components = []; // Array to store strongly connected components
 
-  const aux = Array.from(arr);
-  const n = arr.length;
+  // Recursive function to perform the depth-first search
+  function dfs(node) {
+    ids.set(node, index);
+    lowLink.set(node, index);
+    index++;
+    stack.push(node);
+    onStack.add(node);
 
-  for (let size = 1; size < n; size *= 2) {
-    for (let lo = 0; lo < n - size; lo += size * 2) {
-      const mid = lo + size - 1;
-      const hi = Math.min(lo + size * 2 - 1, n - 1);
-      merge(arr, aux, lo, mid, hi);
+    // Iterate through the neighbors of the current node
+    for (let neighbor of graph[node]) {
+      // If the neighbor has not been visited, perform dfs on it
+      if (!ids.has(neighbor)) {
+        dfs(neighbor);
+        lowLink.set(node, Math.min(lowLink.get(node), lowLink.get(neighbor)));
+      }
+      // If the neighbor is on the stack, update the low link value
+      else if (onStack.has(neighbor)) {
+        lowLink.set(node, Math.min(lowLink.get(node), ids.get(neighbor)));
+      }
+    }
+
+    // If the node is a root node, pop the stack and form a strongly connected component
+    if (ids.get(node) === lowLink.get(node)) {
+      let component = [];
+      let curr = null;
+      do {
+        curr = stack.pop();
+        onStack.delete(curr);
+        component.push(curr);
+      } while (curr !== node);
+      components.push(component);
     }
   }
 
-  return arr;
-}
-
-function merge(arr, aux, lo, mid, hi) {
-  for (let k = lo; k <= hi; k++) {
-    aux[k] = arr[k];
-  }
-
-  let i = lo;
-  let j = mid + 1;
-
-  for (let k = lo; k <= hi; k++) {
-    if (i > mid) {
-      arr[k] = aux[j++];
-    } else if (j > hi) {
-      arr[k] = aux[i++];
-    } else if (aux[j] < aux[i]) {
-      arr[k] = aux[j++];
-    } else {
-      arr[k] = aux[i++];
+  // Iterate through all nodes in the graph
+  for (let node of Object.keys(graph)) {
+    if (!ids.has(node)) {
+      dfs(node);
     }
   }
-}
 
-// Example usage
-const arr = [5, 3, 8, 4, 2, 1];
-const sortedArr = mergeSort(arr);
-console.log(sortedArr);  // [1, 2, 3, 4, 5, 8]
+  return components;
+}
+let graph = {
+  'A': ['B'],
+  'B': ['C', 'E', 'F'],
+  'C': ['D', 'G'],
+  'D': ['C', 'H'],
+  'E': ['A', 'F'],
+  'F': ['G'],
+  'G': ['F'],
+  'H': ['D', 'G']
+};
+let components = tarjan(graph);
+console.log(components);
