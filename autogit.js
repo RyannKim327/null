@@ -1,21 +1,13 @@
-function findSecondLargest(arr) {
-  let largest = -Infinity;
-  let secondLargest = -Infinity;
+// Fetch data from an API
+fetch("https://api.example.com/data")
+  .then(response => response.json())
+  .then(data => {
+    // Use the fetched data
+    console.log(data);
 
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] > largest) {
-      secondLargest = largest;
-      largest = arr[i];
-    } else if (arr[i] > secondLargest && arr[i] !== largest) {
-      secondLargest = arr[i];
-    }
-  }
-
-  return secondLargest;
-}
-
-// Example usage
-const arr = [5, 2, 8, 9, 1, 7];
-const secondLargest = findSecondLargest(arr);
-console.log('Second Largest:', secondLargest);
-Second Largest: 8
+    // Perform additional operations here
+    // ...
+  })
+  .catch(error => {
+    console.log("An error occurred:", error);
+  });
