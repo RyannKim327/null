@@ -1,53 +1,32 @@
-function buildPrefixTable(pattern) {
-  const prefixTable = Array(pattern.length).fill(0);
-  let len = 0;
-  let i = 1;
-  
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[len]) {
-      len++;
-      prefixTable[i] = len;
-      i++;
-    } else {
-      if (len !== 0) {
-        len = prefixTable[len - 1];
-      } else {
-        prefixTable[i] = 0;
-        i++;
+// Declare an asynchronous task
+async function connectToServer() {
+  try {
+    // Create the request object
+    const url = "https://example.com/api";
+    const options = {
+      headers: {
+        // Add any required headers here
       }
-    }
-  }
-  
-  return prefixTable;
-}
-function stringMatch(pattern, text) {
-  const prefixTable = buildPrefixTable(pattern);
-  const matches = [];
-  let i = 0;
-  let j = 0;
-  
-  while (i < text.length) {
-    if (pattern[j] === text[i]) {
-      i++;
-      j++;
+    };
+
+    // Make the HTTP request using Fetch API
+    const response = await fetch(url, options);
+    
+    // Check the response status
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
     }
     
-    if (j === pattern.length) {
-      matches.push(i - j);
-      j = prefixTable[j - 1];
-    } else if (i < text.length && pattern[j] !== text[i]) {
-      if (j !== 0) {
-        j = prefixTable[j - 1];
-      } else {
-        i++;
-      }
-    }
-  }
-  
-  return matches;
-}
-const pattern = "abc";
-const text = "ababcabcababc";
+    // Parse the response as JSON
+    const data = await response.json();
 
-const matches = stringMatch(pattern, text);
-console.log(matches); // Output: [2, 5, 10]
+    // Do further processing with the response data
+    console.log(data);
+
+  } catch (error) {
+    console.error("Error: ", error);
+  }
+}
+
+// Execute the asynchronous task
+connectToServer();
