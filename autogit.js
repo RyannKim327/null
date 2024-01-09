@@ -1,30 +1,18 @@
-function findFirstNonRepeatingCharacter(string) {
-  // Create an empty object to store character counts
-  const charCount = {};
+function reverseWords(str) {
+  // Step 1: Split the string into an array of words
+  var words = str.split(' ');
 
-  // Iterate over each character in the string
-  for (let i = 0; i < string.length; i++) {
-    const char = string[i];
+  // Step 2: Reverse the order of the array elements
+  words = words.reverse();
 
-    // Increment the count of the current character in the charCount object
-    charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
-  }
+  // Step 3: Join the reversed array back into a string
+  var reversedStr = words.join(' ');
 
-  // Iterate over each character in the string again
-  for (let i = 0; i < string.length; i++) {
-    const char = string[i];
-
-    // If the count of the current character is 1, it is the first non-repeating character
-    if (charCount[char] === 1) {
-      return char;
-    }
-  }
-
-  // If no non-repeating character is found, return null
-  return null;
+  return reversedStr;
 }
 
-// Example usage
-const inputString = "abracadabra";
-const firstNonRepeatingChar = findFirstNonRepeatingCharacter(inputString);
-console.log(firstNonRepeatingChar); // Output: "b"
+// Example usage:
+var originalStr = "Hello world!";
+var reversedStr = reverseWords(originalStr);
+
+console.log(reversedStr);  // Output: "world! Hello"
