@@ -1,15 +1,39 @@
-function isPalindrome(str) {
-  // Remove all non-alphanumeric characters and convert to lowercase
-  str = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+function longestIncreasingSubsequence(arr) {
+  const n = arr.length;
+  const lis = Array(n).fill(1);
 
-  // Reverse the string
-  var reverseStr = str.split('').reverse().join('');
+  for (let i = 1; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      if (arr[i] > arr[j] && lis[i] < lis[j] + 1) {
+        lis[i] = lis[j] + 1;
+      }
+    }
+  }
 
-  // Compare the original string with the reversed string
-  return str === reverseStr;
+  let maxLength = 0;
+  let endIndex = 0;
+
+  for (let i = 0; i < n; i++) {
+    if (maxLength < lis[i]) {
+      maxLength = lis[i];
+      endIndex = i;
+    }
+  }
+
+  const longestSubsequence = [];
+  
+  let currentLength = maxLength;
+  for (let i = endIndex; i >= 0; i--) {
+    if (lis[i] === currentLength) {
+      longestSubsequence.unshift(arr[i]);
+      currentLength--;
+    }
+  }
+
+  return longestSubsequence;
 }
 
-// Test the function
-console.log(isPalindrome("racecar")); // true
-console.log(isPalindrome("Hello")); // false
-console.log(isPalindrome("A man, a plan, a canal, Panama!")); // true
+// Example usage:
+const array = [3, 10, 2, 1, 20];
+const result = longestIncreasingSubsequence(array);
+console.log(result); // Output: [3, 10, 20]
