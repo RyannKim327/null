@@ -1,74 +1,46 @@
-// Define a class for the tree node
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function mergeSort(array) {
+  // Base case: if the array is empty or has only one element, return the array
+  if (array.length <= 1) {
+    return array;
   }
+  
+  // Split the array into two halves
+  const middle = Math.floor(array.length / 2);
+  const leftHalf = array.slice(0, middle);
+  const rightHalf = array.slice(middle);
+  
+  // Recursive call to mergeSort to sort the two halves
+  const leftSorted = mergeSort(leftHalf);
+  const rightSorted = mergeSort(rightHalf);
+  
+  // Merge the sorted halves
+  return merge(leftSorted, rightSorted);
 }
 
-// Define a class for the binary search tree
-class BinarySearchTree {
-  constructor() {
-    this.root = null;
-  }
-
-  // Method to insert a new value into the tree
-  insert(value) {
-    const newNode = new Node(value);
-
-    if (this.root === null) {
-      this.root = newNode;
+function merge(left, right) {
+  let result = [];
+  
+  // Compare the elements of the left and right arrays and merge them in sorted order
+  while (left.length && right.length) {
+    if (left[0] <= right[0]) {
+      result.push(left.shift());
     } else {
-      this.insertNode(this.root, newNode);
+      result.push(right.shift());
     }
   }
-
-  // Helper method to insert a node recursively
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
+  
+  // Append any remaining elements from the left and right arrays
+  while (left.length) {
+    result.push(left.shift());
   }
-
-  // Method to search for a value in the tree
-  search(value) {
-    return this.searchNode(this.root, value);
+  while (right.length) {
+    result.push(right.shift());
   }
-
-  // Helper method to search for a value recursively
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
-    }
-
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else if (value > node.value) {
-      return this.searchNode(node.right, value);
-    } else {
-      return true;
-    }
-  }
+  
+  return result;
 }
 
-// Example usage:
-const bst = new BinarySearchTree();
-bst.insert(8);
-bst.insert(3);
-bst.insert(10);
-bst.insert(1);
-bst.insert(6);
-
-console.log(bst.search(6)); // Output: true
-console.log(bst.search(12)); // Output: false
+// Example usage
+const unsortedArray = [10, 2, 8, 5, 3, 9, 6, 1, 4, 7];
+const sortedArray = mergeSort(unsortedArray);
+console.log(sortedArray);
