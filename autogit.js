@@ -1,17 +1,18 @@
-function reverseStringWords(str) {
-  // Split the string into an array of words
-  const words = str.split(" ");
-  
-  // Reverse the array
-  const reversedWords = words.reverse();
-  
-  // Join the reversed array elements into a string
-  const reversedString = reversedWords.join(" ");
-  
-  return reversedString;
+function isAnagram(string1, string2) {
+  // Remove non-alphabetic characters and convert to lowercase
+  string1 = string1.replace(/[^a-zA-Z]/g, '').toLowerCase();
+  string2 = string2.replace(/[^a-zA-Z]/g, '').toLowerCase();
+
+  // Convert strings to character arrays and sort them
+  const sortedString1 = string1.split('').sort().join('');
+  const sortedString2 = string2.split('').sort().join('');
+
+  // Compare the sorted arrays
+  return sortedString1 === sortedString2;
 }
 
-// Example usage
-const originalString = "Hello World!";
-const reversedString = reverseStringWords(originalString);
-console.log(reversedString); // Output: "World! Hello"
+// Example usage:
+const string1 = 'listen';
+const string2 = 'silent';
+
+console.log(isAnagram(string1, string2)); // Output: true
