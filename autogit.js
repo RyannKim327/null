@@ -1,12 +1,8 @@
-function findStringLength(str) {
-  var count = 0;
-  for (var i = 0; str[i] !== undefined; i++) {
-    count++;
-  }
-  return count;
-}
-
-// Example usage:
-var myString = "Hello, world!";
-var length = findStringLength(myString);
-console.log("Length:", length);
+var string1 = "Hello";
+var string2 = "World";
+var result = string1 + " " + string2;
+console.log(result);  // Output: "Hello World"
+var string1 = "Hello";
+var string2 = "World";
+var result = string1.concat(" ", string2);
+console.log(result);  // Output: "Hello World"
