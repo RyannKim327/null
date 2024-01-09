@@ -1,69 +1,47 @@
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
-class BinaryTree {
-  constructor() {
-    this.root = null;
+function fibonacciSearch(arr, x) {
+  let fibMMm2 = 0;
+  let fibMMm1 = 1;
+  let fibM = fibMMm2 + fibMMm1;
+
+  while (fibM < arr.length) {
+    fibMMm2 = fibMMm1;
+    fibMMm1 = fibM;
+    fibM = fibMMm2 + fibMMm1;
   }
 
-  // Method to insert a value into the tree
-  insert(value) {
-    const newNode = new TreeNode(value);
+  let offset = -1;
 
-    if (!this.root) {
-      this.root = newNode;
+  while (fibM > 1) {
+    // Check if fibMMm2 is still a valid location within the array
+    const i = Math.min(offset + fibMMm2, arr.length - 1);
+
+    if (arr[i] < x) {
+      // If x is greater than the value at index i, move the Fibonacci sequence two steps down
+      fibM = fibMMm1;
+      fibMMm1 = fibMMm2;
+      fibMMm2 = fibM - fibMMm1;
+      offset = i;
+    } else if (arr[i] > x) {
+      // If x is smaller than the value at index i, move the Fibonacci sequence one step down
+      fibM = fibMMm2;
+      fibMMm1 = fibMMm1 - fibMMm2;
+      fibMMm2 = fibM - fibMMm1;
     } else {
-      this.insertNode(this.root, newNode);
+      // Found the element at index i
+      return i;
     }
   }
 
-  // Helper method to recursively insert a value in the tree
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
+  // If x is equal to the last element in the array, return its index
+  if (fibMMm1 && arr[offset + 1] == x) {
+    return offset + 1;
   }
 
-  // Method to perform a depth-first traversal (in-order)
-  inOrderTraversal(callback) {
-    this.inOrderTraversalNode(this.root, callback);
-  }
-
-  // Helper method to recursively perform in-order traversal
-  inOrderTraversalNode(node, callback) {
-    if (node) {
-      this.inOrderTraversalNode(node.left, callback);
-      callback(node.value);
-      this.inOrderTraversalNode(node.right, callback);
-    }
-  }
+  // Element not found in array
+  return -1;
 }
-const tree = new BinaryTree();
+const arr = [1, 3, 5, 7, 9, 11, 13, 15];
+const x = 11;
+const result = fibonacciSearch(arr, x);
 
-tree.insert(10);
-tree.insert(7);
-tree.insert(15);
-tree.insert(5);
-tree.insert(8);
-
-// Perform in-order traversal and log each value
-tree.inOrderTraversal((value) => console.log(value));
-5
-7
-8
-10
-15
+console.log(result); // Output: 5 (index of element 11 in the array)
