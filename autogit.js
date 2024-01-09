@@ -1,62 +1,25 @@
-class Graph {
-  constructor(vertices) {
-    this.V = vertices;
-    this.edges = [];
-  }
+function findFirstRepeatedCharacter(str) {
+    // Create an empty object to store the frequency of characters
+    const charFrequency = {};
 
-  addEdge(source, destination, weight) {
-    this.edges.push({ source, destination, weight });
-  }
-}
-function initialize(graph, source) {
-  const distance = [];
-  const predecessor = [];
+    // Iterate over each character in the string
+    for (let i = 0; i < str.length; i++) {
+        const char = str[i];
 
-  for (let i = 0; i < graph.V; i++) {
-    distance[i] = Infinity;
-    predecessor[i] = null;
-  }
+        // If the character is already in the charFrequency object, we have found the first repeated character
+        if (charFrequency[char]) {
+            return char;
+        }
 
-  distance[source] = 0;
-
-  return { distance, predecessor };
-}
-function bellmanFord(graph, source) {
-  const { distance, predecessor } = initialize(graph, source);
-
-  // Relax all edges V - 1 times
-  for (let i = 0; i < graph.V - 1; i++) {
-    for (const { source, destination, weight } of graph.edges) {
-      if (distance[source] + weight < distance[destination]) {
-        distance[destination] = distance[source] + weight;
-        predecessor[destination] = source;
-      }
+        // Otherwise, update the frequency of the character in the charFrequency object
+        charFrequency[char] = true;
     }
-  }
 
-  // Check for negative-weight cycles
-  for (const { source, destination, weight } of graph.edges) {
-    if (distance[source] + weight < distance[destination]) {
-      throw new Error("Graph contains a negative-weight cycle");
-    }
-  }
-
-  return { distance, predecessor };
+    // If no repeated character is found, return null or any other desired value
+    return null;
 }
-const graph = new Graph(5);
-graph.addEdge(0, 1, -1);
-graph.addEdge(0, 2, 4);
-graph.addEdge(1, 2, 3);
-graph.addEdge(1, 3, 2);
-graph.addEdge(1, 4, 2);
-graph.addEdge(3, 2, 5);
-graph.addEdge(3, 1, 1);
-graph.addEdge(4, 3, -3);
 
-const source = 0;
-const { distance, predecessor } = bellmanFord(graph, source);
-
-console.log('Vertex\tDistance\tPredecessor');
-for (let i = 0; i < graph.V; i++) {
-  console.log(`${i}\t${distance[i]}\t\t${predecessor[i]}`);
-}
+// Example usage:
+const inputString = "hello world!";
+const firstRepeatedChar = findFirstRepeatedCharacter(inputString);
+console.log(firstRepeatedChar);  // Output: "l"
