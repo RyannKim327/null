@@ -1,11 +1,21 @@
-// Make a GET request to an API endpoint
+function findSecondLargest(array) {
+  let largest = -Infinity;
+  let secondLargest = -Infinity;
 
-fetch("https://api.example.com/data")
-  .then((response) => response.json())
-  .then((data) => {
-    // Use the data returned by the API
-    console.log(data);
-  })
-  .catch((error) => {
-    console.log("Error:", error);
-  });
+  for (let i = 0; i < array.length; i++) {
+    const num = array[i];
+    if (num > largest) {
+      secondLargest = largest;
+      largest = num;
+    } else if (num > secondLargest && num < largest) {
+      secondLargest = num;
+    }
+  }
+
+  return secondLargest;
+}
+
+// Example usage:
+const arr = [5, 2, 8, 9, 1];
+const secondLargest = findSecondLargest(arr);
+console.log(secondLargest); // Output: 8
