@@ -1,39 +1,41 @@
-function longestIncreasingSubsequence(arr) {
-  const n = arr.length;
-  const lis = Array(n).fill(1);
+function longestCommonSubstring(str1, str2) {
+  const len1 = str1.length;
+  const len2 = str2.length;
 
-  for (let i = 1; i < n; i++) {
-    for (let j = 0; j < i; j++) {
-      if (arr[i] > arr[j] && lis[i] < lis[j] + 1) {
-        lis[i] = lis[j] + 1;
+  // Create a matrix to store the lengths of common substrings
+  const matrix = Array(len1 + 1)
+    .fill(0)
+    .map(() => Array(len2 + 1).fill(0));
+
+  let maxLength = 0; // Length of the longest common substring
+  let endIndex = 0; // Index where the longest common substring ends in str1
+
+  // Fill the matrix
+  for (let i = 1; i <= len1; i++) {
+    for (let j = 1; j <= len2; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        matrix[i][j] = matrix[i - 1][j - 1] + 1;
+
+        // Check if the current length is longer than maxLength
+        if (matrix[i][j] > maxLength) {
+          maxLength = matrix[i][j];
+          endIndex = i - 1;
+        }
       }
     }
   }
 
-  let maxLength = 0;
-  let endIndex = 0;
+  // Extract the longest common substring from str1
+  const longestSubstring = str1.substring(
+    endIndex - maxLength + 1,
+    endIndex + 1
+  );
 
-  for (let i = 0; i < n; i++) {
-    if (maxLength < lis[i]) {
-      maxLength = lis[i];
-      endIndex = i;
-    }
-  }
-
-  const longestSubsequence = [];
-  
-  let currentLength = maxLength;
-  for (let i = endIndex; i >= 0; i--) {
-    if (lis[i] === currentLength) {
-      longestSubsequence.unshift(arr[i]);
-      currentLength--;
-    }
-  }
-
-  return longestSubsequence;
+  return longestSubstring;
 }
 
-// Example usage:
-const array = [3, 10, 2, 1, 20];
-const result = longestIncreasingSubsequence(array);
-console.log(result); // Output: [3, 10, 20]
+// Example usage
+const str1 = "javascript";
+const str2 = "code";
+const result = longestCommonSubstring(str1, str2);
+console.log(result); // Output: "e"
