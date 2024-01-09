@@ -1,24 +1,24 @@
-function findFirstNonRepeatingChar(str) {
-  const charCount = {}; // Object to store character counts
-
-  // Count the occurrences of each character in the string
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    charCount[char] = (charCount[char] || 0) + 1;
+const array = [1, 2, 3, 3, 4, 5, 5];
+const uniqueArray = [...new Set(array)];
+console.log(uniqueArray); // [1, 2, 3, 4, 5]
+const array = [1, 2, 3, 3, 4, 5, 5];
+const uniqueArray = array.filter((value, index, self) => {
+  return self.indexOf(value) === index;
+});
+console.log(uniqueArray); // [1, 2, 3, 4, 5]
+const array = [1, 2, 3, 3, 4, 5, 5];
+const uniqueArray = array.reduce((accumulator, value) => {
+  if (!accumulator.includes(value)) {
+    accumulator.push(value);
   }
-
-  // Find the first non-repeating character
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    if (charCount[char] === 1) {
-      return char;
-    }
+  return accumulator;
+}, []);
+console.log(uniqueArray); // [1, 2, 3, 4, 5]
+const array = [1, 2, 3, 3, 4, 5, 5];
+const uniqueArray = [];
+for (let i = 0; i < array.length; i++) {
+  if (uniqueArray.indexOf(array[i]) === -1) {
+    uniqueArray.push(array[i]);
   }
-
-  return null; // Return null if there are no non-repeating characters
 }
-
-// Example usage:
-const str = "abacabad";
-const firstNonRepeatingChar = findFirstNonRepeatingChar(str);
-console.log(firstNonRepeatingChar); // Output: "c"
+console.log(uniqueArray); // [1, 2, 3, 4, 5]
