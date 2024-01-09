@@ -1,33 +1,26 @@
-function findCommonElements(array1, array2) {
-  const commonElements = [];
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
 
-  for (let i = 0; i < array1.length; i++) {
-    if (array2.includes(array1[i])) {
-      commonElements.push(array1[i]);
-    }
+function findMiddleElement(head) {
+  let slowPointer = head;
+  let fastPointer = head;
+
+  while (fastPointer !== null && fastPointer.next !== null) {
+    slowPointer = slowPointer.next;
+    fastPointer = fastPointer.next.next;
   }
 
-  return commonElements;
+  return slowPointer.value;
 }
+// Example usage
+const head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
 
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
-function findCommonElements(array1, array2) {
-  return array1.filter(element => array2.includes(element));
-}
-
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
-function findCommonElements(array1, array2) {
-  const set = new Set(array1);
-  return array2.filter(element => set.has(element));
-}
-
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
+console.log(findMiddleElement(head)); // Output: 3
