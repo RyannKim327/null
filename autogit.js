@@ -1,57 +1,70 @@
-function dijkstra(graph, startNode) {
-  // Step 1: Initialization
-  let distances = {};
-  let visited = {};
-  let previous = {};
-  for (let node in graph) {
-    distances[node] = Infinity;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
-  distances[startNode] = 0;
+}
+class BinarySearchTree {
+  constructor() {
+    this.root = null;
+  }
+}
+class BinarySearchTree {
+  // ...
 
-  // Step 2: Main loop
-  while (Object.keys(visited).length < Object.keys(graph).length) {
-    let currentNode = null;
-    for (let node in graph) {
-      if (!visited[node] && (currentNode === null || distances[node] < distances[currentNode])) {
-        currentNode = node;
+  insert(value) {
+    const newNode = new Node(value);
+
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
+
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
       }
     }
-    
-    // Step 3: Update distances
-    for (let neighbor in graph[currentNode]) {
-      let distance = distances[currentNode] + graph[currentNode][neighbor];
-      if (distance < distances[neighbor]) {
-        distances[neighbor] = distance;
-        previous[neighbor] = currentNode;
-      }
+  }
+}
+class BinarySearchTree {
+  // ...
+
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  searchNode(node, value) {
+    if (node === null || node.value === value) {
+      return node;
     }
-    
-    visited[currentNode] = true;
-  }
-  
-  return { distances, previous };
-}
-// Example graph
-let graph = {
-  A: { B: 5, C: 2 },
-  B: { A: 5, C: 1, D: 3 },
-  C: { A: 2, B: 1, D: 2 },
-  D: { B: 3, C: 2 },
-};
 
-// Call dijkstra function
-let startNode = 'A';
-let result = dijkstra(graph, startNode);
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    }
 
-// Print shortest distances and paths
-for (let node in result.distances) {
-  console.log(`Shortest distance from ${startNode} to ${node}: ${result.distances[node]}`);
-  let path = [];
-  let currentNode = node;
-  while (currentNode !== startNode) {
-    path.unshift(currentNode);
-    currentNode = result.previous[currentNode];
+    return this.searchNode(node.right, value);
   }
-  path.unshift(startNode);
-  console.log(`Shortest path: ${path.join(' -> ')}`);
 }
+const tree = new BinarySearchTree();
+
+tree.insert(8);
+tree.insert(3);
+tree.insert(10);
+tree.insert(1);
+tree.insert(6);
+
+console.log(tree.search(6)); // Output: Node { value: 6, left: null, right: null }
+console.log(tree.search(12)); // Output: null
