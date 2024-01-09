@@ -1,45 +1,36 @@
-function longestCommonSubsequence(str1, str2) {
-    const m = str1.length;
-    const n = str2.length;
-    
-    // Create a 2D array to store the LCS lengths
-    const dp = Array(m + 1)
-        .fill(0)
-        .map(() => Array(n + 1).fill(0));
-  
-    // Fill the dp array
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) { // Characters match
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-            } else { // Characters don't match
-                dp[i][j] = Math.max(dp[i][j - 1], dp[i - 1][j]);
-            }
-        }
+function quicksort(arr) {
+  // Base case: if the array is empty or contains only one element,
+  // it is already sorted.
+  if (arr.length <= 1) {
+    return arr;
+  }
+
+  // Choose a pivot element from the array. We'll use the last element as the pivot.
+  const pivot = arr[arr.length - 1];
+
+  // Create two empty arrays to store elements smaller and greater than the pivot.
+  const left = [];
+  const right = [];
+
+  // Iterate over all elements (except the pivot) in the array.
+  for (let i = 0; i < arr.length - 1; i++) {
+    // If the current element is smaller than the pivot, place it in the `left` array.
+    if (arr[i] < pivot) {
+      left.push(arr[i]);
     }
-  
-    // Reconstruct the LCS from the dp array
-    let i = m;
-    let j = n;
-    const lcs = [];
-  
-    while (i > 0 && j > 0) {
-        if (str1[i - 1] === str2[j - 1]) {
-            lcs.unshift(str1[i - 1]);
-            i--;
-            j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--;
-        } else {
-            j--;
-        }
+    // If the current element is greater than or equal to the pivot,
+    // place it in the `right` array.
+    else {
+      right.push(arr[i]);
     }
-  
-    return lcs.join('');
+  }
+
+  // Recursively sort and concatenate the `left` and `right` arrays,
+  // with the pivot in-between.
+  return [...quicksort(left), pivot, ...quicksort(right)];
 }
 
 // Example usage:
-const str1 = "AGGTAB";
-const str2 = "GXTXAYB";
-const lcs = longestCommonSubsequence(str1, str2);
-console.log(lcs); // Output: "GTAB"
+const array = [7, -2, 4, 1, 6, 5, 0, -4, 2];
+const sortedArray = quicksort(array);
+console.log(sortedArray);
