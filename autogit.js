@@ -3,36 +3,142 @@ class Node {
     this.value = value;
     this.left = null;
     this.right = null;
+    this.height = 1;
   }
 }
-
-function countLeafNodes(root) {
-  // Base case: if the root is null, return 0
-  if (root === null) {
+class AVLTree {
+  constructor() {
+    this.root = null;
+  }
+}
+getHeight(node) {
+  if (node === null) {
     return 0;
   }
-  
-  // If the root has no children (leaf node), return 1
-  if (root.left === null && root.right === null) {
-    return 1;
-  }
+  return node.height;
+}
+updateHeight(node) {
+  node.height = Math.max(this.getHeight(node.left), this.getHeight(node.right)) + 1;
+}
+getBalanceFactor(node) {
+  return this.getHeight(node.left) - this.getHeight(node.right);
+}
+leftRotate(node) {
+  const newRoot = node.right;
+  node.right = newRoot.left;
+  newRoot.left = node;
 
-  // Recursively count the leaf nodes in the left and right subtrees
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
+  this.updateHeight(node);
+  this.updateHeight(newRoot);
+
+  return newRoot;
 }
 
-// Example usage:
+rightRotate(node) {
+  const newRoot = node.left;
+  node.left = newRoot.right;
+  newRoot.right = node;
 
-// Create the binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
-root.right.right.right = new Node(8);
+  this.updateHeight(node);
+  this.updateHeight(newRoot);
 
-// Count the leaf nodes
-const leafNodeCount = countLeafNodes(root);
-console.log('Number of leaf nodes:', leafNodeCount);
+  return newRoot;
+}
+
+leftRightRotate(node) {
+  node.left = this.leftRotate(node.left);
+  return this.rightRotate(node);
+}
+
+rightLeftRotate(node) {
+  node.right = this.rightRotate(node.right);
+  return this.leftRotate(node);
+}
+insert(value) {
+  this.root = this.insertNode(this.root, value);
+}
+
+insertNode(node, value) {
+  if (node === null) {
+    return new Node(value);
+  }
+
+  if (value < node.value) {
+    node.left = this.insertNode(node.left, value);
+  } else {
+    node.right = this.insertNode(node.right, value);
+  }
+
+  this.updateHeight(node);
+  const balanceFactor = this.getBalanceFactor(node);
+
+  if (balanceFactor > 1) {
+    if (value < node.left.value) {
+      return this.rightRotate(node);
+    } else {
+      return this.leftRightRotate(node);
+    }
+  }
+
+  if (balanceFactor < -1) {
+    if (value > node.right.value) {
+      return this.leftRotate(node);
+    } else {
+      return this.rightLeftRotate(node);
+    }
+  }
+
+  return node;
+}
+delete(value) {
+  this.root = this.deleteNode(this.root, value);
+}
+
+deleteNode(node, value) {
+  if (node === null) {
+    return null;
+  }
+
+  if (value < node.value) {
+    node.left = this.deleteNode(node.left, value);
+  } else if (value > node.value) {
+    node.right = this.deleteNode(node.right, value);
+  } else {
+    if (node.left === null || node.right === null) {
+      return node.left || node.right;
+    } else {
+      const minValue = this.findMinValue(node.right);
+      node.value = minValue;
+      node.right = this.deleteNode(node.right, minValue);
+    }
+  }
+
+  this.updateHeight(node);
+  const balanceFactor = this.getBalanceFactor(node);
+
+  if (balanceFactor > 1) {
+    if (this.getBalanceFactor(node.left) >= 0) {
+      return this.rightRotate(node);
+    } else {
+      return this.leftRightRotate(node);
+    }
+  }
+
+  if (balanceFactor < -1) {
+    if (this.getBalanceFactor(node.right) <= 0) {
+      return this.leftRotate(node);
+    } else {
+      return this.rightLeftRotate(node);
+    }
+  }
+
+  return node;
+}
+
+findMinValue(node) {
+  let current = node;
+  while (current.left !== null) {
+    current = current.left;
+  }
+  return current.value;
+}
