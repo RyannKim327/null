@@ -1,21 +1,28 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  const alphanumericStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+function largestPrimeFactor(number) {
+    let largestFactor = 1;
 
-  // Compare characters from start and end
-  let start = 0;
-  let end = alphanumericStr.length - 1;
-  while (start < end) {
-    if (alphanumericStr[start] !== alphanumericStr[end]) {
-      return false; // characters don't match
+    // Check if the number is divisible by 2
+    while (number % 2 === 0) {
+        largestFactor = 2;
+        number /= 2;
     }
-    start++;
-    end--;
-  }
-  return true; // all characters matched
+
+    // Check for odd prime factors starting from 3
+    for (let i = 3; i <= Math.sqrt(number); i += 2) {
+        while (number % i === 0) {
+            largestFactor = i;
+            number /= i;
+        }
+    }
+
+    // If the remaining number is greater than 2, it is also a prime factor
+    if (number > 2) {
+        largestFactor = number;
+    }
+
+    return largestFactor;
 }
 
-// Example usage:
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
-console.log(isPalindrome("race car")); // true
-console.log(isPalindrome("hello")); // false
+const number = 123456789;
+const largestFactor = largestPrimeFactor(number);
+console.log("Largest prime factor of", number, "is", largestFactor);
