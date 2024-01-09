@@ -1,16 +1,38 @@
-function isPrime(number) {
-  if (number <= 1) {
-    return false;
+function topologicalSort(graph) {
+  const sorted = [];
+  const visited = new Set();
+
+  function dfs(node) {
+    visited.add(node);
+
+    const neighbors = graph[node] || [];
+    for (const neighbor of neighbors) {
+      if (!visited.has(neighbor)) {
+        dfs(neighbor);
+      }
+    }
+
+    sorted.unshift(node);
   }
-  
-  for (let i = 2; i <= Math.sqrt(number); i++) {
-    if (number % i === 0) {
-      return false;
+
+  for (const node in graph) {
+    if (!visited.has(node)) {
+      dfs(node);
     }
   }
-  
-  return true;
+
+  return sorted;
 }
-// Example usage
-console.log(isPrime(7));  // Output: true
-console.log(isPrime(10)); // Output: false
+const graph = {
+  A: ["C", "D"],
+  B: ["D", "E"],
+  C: ["F"],
+  D: ["F", "G"],
+  E: ["G"],
+  F: ["H"],
+  G: ["H"],
+  H: []
+};
+
+const sorted = topologicalSort(graph);
+console.log(sorted); // Output: ['B', 'E', 'A', 'D', 'G', 'C', 'F', 'H']
