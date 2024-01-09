@@ -1,17 +1,29 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters
-  str = str.replace(/[^a-zA-Z0-9]/g, '');
-
-  // Convert to lowercase
-  str = str.toLowerCase();
-
-  // Create the reverse string
-  var reverseStr = str.split('').reverse().join('');
-
-  // Compare the original string with the reversed string
-  return str === reverseStr;
+function findKthSmallestElement(arr, k) {
+  arr.sort((a, b) => a - b);
+  return arr[k - 1];
 }
 
-// Example usage
-var input = 'A man, a plan, a canal, Panama!';
-console.log(isPalindrome(input)); // Output: true
+const array = [4, 2, 8, 1, 5];
+const k = 2;
+const kthSmallest = findKthSmallestElement(array, k); // Returns 2
+console.log(kthSmallest);
+const PriorityQueue = require('js-priority-queue');
+
+function findKthSmallestElement(arr, k) {
+  const priorityQueue = new PriorityQueue({ comparator: (a, b) => a - b });
+
+  for (const num of arr) {
+    priorityQueue.queue(num);
+  }
+
+  for (let i = 1; i < k; i++) {
+    priorityQueue.dequeue();
+  }
+
+  return priorityQueue.dequeue();
+}
+
+const array = [4, 2, 8, 1, 5];
+const k = 2;
+const kthSmallest = findKthSmallestElement(array, k); // Returns 2
+console.log(kthSmallest);
