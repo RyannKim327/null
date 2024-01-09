@@ -1,59 +1,26 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+function removeDuplicates(arr) {
+  return Array.from(new Set(arr));
 }
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
 
-  append(value) {
-    const newNode = new Node(value);
-
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
-
-  isPalindrome() {
-    let slow = this.head;
-    let fast = this.head;
-    let stack = [];
-
-    while (fast && fast.next) {
-      stack.push(slow.value);
-      slow = slow.next;
-      fast = fast.next.next;
-    }
-
-    // If the linked list has an odd number of elements,
-    // skip the middle node
-    if (fast) {
-      slow = slow.next;
-    }
-
-    while (slow) {
-      if (stack.pop() !== slow.value) {
-        return false;
-      }
-      slow = slow.next;
-    }
-
-    return true;
-  }
+const originalArray = [1, 2, 2, 3, 4, 4, 5];
+const newArray = removeDuplicates(originalArray);
+console.log(newArray); // [1, 2, 3, 4, 5]
+function removeDuplicates(arr) {
+  return arr.filter((value, index, self) => self.indexOf(value) === index);
 }
-const linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
-linkedList.append(2);
-linkedList.append(1);
-console.log(linkedList.isPalindrome()); // Output: true
+
+const originalArray = ["apple", "banana", "grape", "banana", "orange", "apple"];
+const newArray = removeDuplicates(originalArray);
+console.log(newArray); // ["apple", "banana", "grape", "orange"]
+function removeDuplicates(arr) {
+  return arr.reduce((uniqueArr, value) => {
+    if (!uniqueArr.includes(value)) {
+      uniqueArr.push(value);
+    }
+    return uniqueArr;
+  }, []);
+}
+
+const originalArray = [5, 6, 7, 8, 7, 6, 9];
+const newArray = removeDuplicates(originalArray);
+console.log(newArray); // [5, 6, 7, 8, 9]
