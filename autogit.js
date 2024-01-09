@@ -1,50 +1,61 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.children = [];
+class HashTable {
+  constructor(size) {
+    this.size = size;
+    this.table = new Array(size);
   }
 
-  addChild(node) {
-    this.children.push(node);
-  }
-}
-
-function breadthFirstSearch(root, target) {
-  if (!root) return null;
-
-  const queue = [root];
-  const visited = new Set();
-
-  while (queue.length > 0) {
-    const current = queue.shift();
-    if (current.value === target) {
-      return current;
+  // Hash function to convert a key into an index position
+  hash(key) {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash += key.charCodeAt(i);
     }
+    return hash % this.size;
+  }
 
-    visited.add(current);
+  // Insert a key-value pair into the hash table
+  insert(key, value) {
+    const index = this.hash(key);
+    if (!this.table[index]) {
+      this.table[index] = [];
+    }
+    this.table[index].push({ key, value });
+  }
 
-    for (const child of current.children) {
-      if (!visited.has(child)) {
-        queue.push(child);
+  // Retrieve a value from the hash table given a key
+  get(key) {
+    const index = this.hash(key);
+    if (!this.table[index]) {
+      return undefined;
+    }
+    for (const pair of this.table[index]) {
+      if (pair.key === key) {
+        return pair.value;
+      }
+    }
+    return undefined;
+  }
+
+  // Remove a key-value pair from the hash table
+  remove(key) {
+    const index = this.hash(key);
+    if (!this.table[index]) {
+      return;
+    }
+    for (let i = 0; i < this.table[index].length; i++) {
+      if (this.table[index][i].key === key) {
+        this.table[index].splice(i, 1);
+        break;
       }
     }
   }
-
-  return null;
 }
 
 // Usage example:
-const a = new Node('A');
-const b = new Node('B');
-const c = new Node('C');
-const d = new Node('D');
-const e = new Node('E');
-const f = new Node('F');
-
-a.addChild(b);
-a.addChild(c);
-b.addChild(d);
-b.addChild(e);
-c.addChild(f);
-
-console.log(breadthFirstSearch(a, 'F')); // Output: Node { value: 'F', children: [] }
+const myHashTable = new HashTable(10);
+myHashTable.insert('name', 'John');
+myHashTable.insert('age', 30);
+console.log(myHashTable.get('name')); // Output: John
+console.log(myHashTable.get('age')); // Output: 30
+myHashTable.remove('age');
+console.log(myHashTable.get('age')); // Output: undefined
