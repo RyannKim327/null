@@ -1,27 +1,61 @@
-function countOccurrences(string, word) {
-  const regex = new RegExp('\\b' + word + '\\b', 'gi');
-  const matches = string.match(regex);
-  return matches ? matches.length : 0;
+class Queue {
+  constructor() {
+    this.items = [];
+  }
+
+  enqueue(item) {
+    this.items.push(item);
+  }
+
+  dequeue() {
+    if (this.isEmpty()) {
+      return null;
+    }
+    return this.items.shift();
+  }
+
+  isEmpty() {
+    return this.items.length === 0;
+  }
 }
 
-// Example usage:
-const text = 'How much wood would a woodchuck chuck if a woodchuck could chuck wood?';
-const wordToCount = 'wood';
-const occurrences = countOccurrences(text, wordToCount);
-console.log(occurrences); // Output: 2
-function countOccurrences(string, word) {
-  const words = string.split(' ');
-  let count = 0;
-  for (let i = 0; i < words.length; i++) {
-    if (words[i] === word) {
-      count++;
+function breadthFirstSearch(graph, startNode, targetNode) {
+  const queue = new Queue();
+  const visited = new Set();
+
+  queue.enqueue(startNode);
+  visited.add(startNode);
+
+  while (!queue.isEmpty()) {
+    const currentNode = queue.dequeue();
+
+    if (currentNode === targetNode) {
+      return currentNode; // or perform any desired action
+    }
+
+    const neighbors = graph[currentNode];
+    for (let neighbor of neighbors) {
+      if (!visited.has(neighbor)) {
+        queue.enqueue(neighbor);
+        visited.add(neighbor);
+      }
     }
   }
-  return count;
+
+  return null; // targetNode not found
 }
 
 // Example usage:
-const text = 'How much wood would a woodchuck chuck if a woodchuck could chuck wood?';
-const wordToCount = 'wood';
-const occurrences = countOccurrences(text, wordToCount);
-console.log(occurrences); // Output: 2
+const graph = {
+  A: ["B", "C"],
+  B: ["A", "D"],
+  C: ["A", "E"],
+  D: ["B", "E"],
+  E: ["C", "D"],
+};
+
+const startNode = "A";
+const targetNode = "E";
+
+const result = breadthFirstSearch(graph, startNode, targetNode);
+console.log(result); // Output: E
