@@ -1,18 +1,19 @@
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
+// Original array
+const array = [1, 2, 3, 4, 5];
 
-let index = array.indexOf(elementToRemove);
-if (index !== -1) {
-  array.splice(index, 1);
-}
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
+// Reverse the order using the reverse() method
+array.reverse();
 
-array = array.filter(element => element !== elementToRemove);
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
+// Output the reversed array
+console.log(array); // [5, 4, 3, 2, 1]
+// Original array
+const array = [1, 2, 3, 4, 5];
 
-let index = array.indexOf(elementToRemove);
-if (index !== -1) {
-  array = array.slice(0, index).concat(array.slice(index + 1));
-}
+// Create a new reversed array without modifying the original array
+const reversedArray = array.slice().reverse();
+
+// Output the reversed array
+console.log(reversedArray); // [5, 4, 3, 2, 1]
+
+// Output the original array (not modified)
+console.log(array); // [1, 2, 3, 4, 5]
