@@ -1,47 +1,41 @@
-// Node class representing a state in your search problem
-class Node {
-  constructor(value, children) {
-    this.value = value;
-    this.children = children;
-  }
-}
-
-// Iterative depth-limited search algorithm
-function depthLimitedSearch(root, goal, depthLimit) {
-  let stack = [];
-  stack.push({ node: root, depth: 0 });
-
-  while (stack.length > 0) {
-    // Pop the top node from the stack
-    let { node, depth } = stack.pop();
-
-    // Check if the current node matches the goal
-    if (node.value === goal) {
-      return node;
-    }
-
-    // Check if depth limit is reached
-    if (depth < depthLimit) {
-      // Push children nodes onto the stack
-      if (node.children) {
-        for (let i = node.children.length - 1; i >= 0; i--) {
-          stack.push({ node: node.children[i], depth: depth + 1 });
-        }
-      }
-    }
+function fibonacciSearch(arr, target) {
+  // Step 2: Create Fibonacci numbers array
+  const fibNums = [0, 1];
+  while (fibNums[fibNums.length - 1] < arr.length) {
+    fibNums.push(fibNums[fibNums.length - 1] + fibNums[fibNums.length - 2]);
   }
 
-  return null; // Return null if goal not found within depth limit
+  // Step 3: Find the smallest Fibonacci number greater than or equal to array length
+  let fibIndex = fibNums.length - 1;
+  while (fibNums[fibIndex] > arr.length) {
+    fibIndex--;
+  }
+
+  // Step 4: Initialize offset and prevOffset
+  let offset = 0;
+  let prevOffset = 0;
+
+  // Step 5: Fibonnaci search
+  while (offset < arr.length) {
+    if (arr[offset] === target) {
+      return offset; // Found target value
+    } else if (arr[offset] > target) {
+      offset -= prevOffset;
+      let temp = prevOffset;
+      prevOffset = fibNums[fibIndex - 1];
+      fibIndex -= 2;
+      offset += prevOffset;
+    } else {
+      prevOffset = fibNums[fibIndex - 1];
+      fibIndex--;
+      offset += prevOffset;
+    }
+  }
+
+  // Step 6: Target value not found
+  return -1;
 }
-
-// Example usage
-let nodeG = new Node('G');
-let nodeF = new Node('F');
-let nodeE = new Node('E', [nodeG]);
-let nodeD = new Node('D');
-let nodeC = new Node('C', [nodeF]);
-let nodeB = new Node('B', [nodeD, nodeE]);
-let nodeA = new Node('A', [nodeB, nodeC]);
-
-let result = depthLimitedSearch(nodeA, 'G', 2);
-console.log(result); // Output: Node { value: 'G', children: undefined }
+const arr = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
+const target = 17;
+const result = fibonacciSearch(arr, target);
+console.log(result); // Output: 6 (index of the target value in the array)
