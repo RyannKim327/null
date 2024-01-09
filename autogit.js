@@ -1,50 +1,22 @@
-class Node {
-  constructor(data, next = null) {
-    this.data = data;
-    this.next = next;
-  }
-}
+function isAnagram(str1, str2) {
+  // Convert strings to lowercase and remove non-alphabetic characters
+  const cleanStr1 = str1.toLowerCase().replace(/[^a-z]/g, '');
+  const cleanStr2 = str2.toLowerCase().replace(/[^a-z]/g, '');
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+  // Sort the characters of both strings
+  const sortedStr1 = cleanStr1.split('').sort().join('');
+  const sortedStr2 = cleanStr2.split('').sort().join('');
 
-  // Adds a new node at the end of the linked list
-  append(data) {
-    const newNode = new Node(data);
-
-    if (!this.head) {
-      this.head = newNode;
-      return;
-    }
-
-    let current = this.head;
-    while (current.next) {
-      current = current.next;
-    }
-
-    current.next = newNode;
-  }
-
-  // Returns the length of the linked list
-  getLength() {
-    let count = 0;
-    let current = this.head;
-
-    while (current) {
-      count++;
-      current = current.next;
-    }
-
-    return count;
-  }
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
 
 // Example usage
-const list = new LinkedList();
-list.append(10);
-list.append(20);
-list.append(30);
+const string1 = "listen";
+const string2 = "silent";
 
-console.log(list.getLength());  // Output: 3
+if (isAnagram(string1, string2)) {
+  console.log("The strings are anagrams.");
+} else {
+  console.log("The strings are not anagrams.");
+}
