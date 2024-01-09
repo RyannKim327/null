@@ -1,26 +1,26 @@
-function findMedianSortedArrays(nums1, nums2) {
-  // Concatenate the two arrays into a single sorted array
-  const combinedArray = [...nums1, ...nums2].sort((a, b) => a - b);
-
-  // Determine the length of the combined array
-  const length = combinedArray.length;
-
-  // Find the middle index of the combined array
-  const middleIndex = Math.floor(length / 2);
-
-  // Calculate the median based on the length of the combined array
-  if (length % 2 === 0) {
-    // Even length, so median is the average of the middle two elements
-    return (combinedArray[middleIndex - 1] + combinedArray[middleIndex]) / 2;
-  } else {
-    // Odd length, so median is the middle element
-    return combinedArray[middleIndex];
+function selectionSort(arr) {
+  const n = arr.length;
+  
+  for (let i = 0; i < n; i++) {
+    let minIndex = i;
+    
+    for (let j = i + 1; j < n; j++) {
+      if (arr[j] < arr[minIndex]) {
+        minIndex = j;
+      }
+    }
+    
+    if (minIndex !== i) {
+      let temp = arr[i];
+      arr[i] = arr[minIndex];
+      arr[minIndex] = temp;
+    }
   }
+  
+  return arr;
 }
 
-// Example usage
-const nums1 = [1, 3, 5];
-const nums2 = [2, 4, 6];
-
-const median = findMedianSortedArrays(nums1, nums2);
-console.log(median); // Output: 3.5
+// Testing the selectionSort function
+const inputArray = [12, 45, 23, -5, 0, 6, 17, 8];
+const sortedArray = selectionSort(inputArray);
+console.log(sortedArray);
