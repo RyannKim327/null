@@ -1,61 +1,42 @@
-class Queue {
-  constructor() {
-    this.items = [];
+function generateFibonacci(n) {
+  let fib = [0, 1];
+  for (let i = 2; i <= n; i++) {
+    fib[i] = fib[i - 1] + fib[i - 2];
   }
-
-  enqueue(item) {
-    this.items.push(item);
-  }
-
-  dequeue() {
-    if (this.isEmpty()) {
-      return null;
-    }
-    return this.items.shift();
-  }
-
-  isEmpty() {
-    return this.items.length === 0;
-  }
+  return fib;
 }
+function fibonacciSearch(arr, searchElement) {
+  let fib = generateFibonacci(arr.length);
+  let offset = -1;
+  let currentFib = fib[arr.length - 1]; // Largest Fibonacci number less than or equal to array length
+  let prevFib = fib[arr.length - 2]; // Second largest Fibonacci number less than or equal to array length
 
-function breadthFirstSearch(graph, startNode, targetNode) {
-  const queue = new Queue();
-  const visited = new Set();
+  while (currentFib > 1) {
+    let i = Math.min(offset + prevFib, arr.length - 1);
 
-  queue.enqueue(startNode);
-  visited.add(startNode);
-
-  while (!queue.isEmpty()) {
-    const currentNode = queue.dequeue();
-
-    if (currentNode === targetNode) {
-      return currentNode; // or perform any desired action
-    }
-
-    const neighbors = graph[currentNode];
-    for (let neighbor of neighbors) {
-      if (!visited.has(neighbor)) {
-        queue.enqueue(neighbor);
-        visited.add(neighbor);
-      }
+    if (arr[i] < searchElement) {
+      currentFib = fib[fib.findIndex((val) => val === prevFib)];
+      prevFib = fib[fib.findIndex((val) => val === prevFib) - 1];
+      offset = i;
+    } else if (arr[i] > searchElement) {
+      currentFib = prevFib;
+      prevFib = fib[fib.findIndex((val) => val === prevFib) - 1];
+    } else {
+      return i;
     }
   }
-
-  return null; // targetNode not found
+  if (prevFib === 1 && arr[offset + 1] === searchElement) {
+    return offset + 1;
+  }
+  return -1;
 }
+let arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
+let searchElement = 16;
+let index = fibonacciSearch(arr, searchElement);
 
-// Example usage:
-const graph = {
-  A: ["B", "C"],
-  B: ["A", "D"],
-  C: ["A", "E"],
-  D: ["B", "E"],
-  E: ["C", "D"],
-};
+console.log("Array:", arr);
+console.log(`"${searchElement}" is found at index`, index);
 
-const startNode = "A";
-const targetNode = "E";
-
-const result = breadthFirstSearch(graph, startNode, targetNode);
-console.log(result); // Output: E
+// Output:
+// Array: [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]
+// "16" is found at index 4
