@@ -1,52 +1,81 @@
-let index = 0; // Global index counter
-const stack = []; // Stack to keep track of visited nodes in current SCC
-const onStack = new Set(); // Set to keep track of which nodes are currently on the stack
-const indices = new Map(); // Map to store the index of each node
-const lowLinks = new Map(); // Map to store the low-link values of nodes
-const result = []; // Array to store the final SCCs
-function tarjan(node, adjacencyList) {
-  indices.set(node, index);
-  lowLinks.set(node, index);
-  index++;
-  stack.push(node);
-  onStack.add(node);
+function buildBadCharTable(pattern) {
+  const table = {};
 
-  // Explore adjacent nodes
-  for (const neighbor of adjacencyList[node]) {
-    if (!indices.has(neighbor)) {
-      tarjan(neighbor, adjacencyList);
-      lowLinks.set(node, Math.min(lowLinks.get(node), lowLinks.get(neighbor)));
-    } else if (onStack.has(neighbor)) {
-      lowLinks.set(node, Math.min(lowLinks.get(node), indices.get(neighbor)));
+  for (let i = 0; i < pattern.length; i++) {
+    table[pattern[i]] = pattern.length - 1 - i;
+  }
+
+  return table;
+}
+function buildGoodSuffixTable(pattern) {
+  const table = [];
+  const prefix = suffixArray(pattern);
+
+  for (let i = 0; i < pattern.length; i++) {
+    table[i] = pattern.length;
+  }
+
+  let j = 0;
+  for (let i = pattern.length - 1; i >= 0; i--) {
+    if (prefix[i] === i + 1) {
+      for (; j < pattern.length - 1 - i; j++) {
+        if (table[j] === pattern.length) {
+          table[j] = pattern.length - 1 - i;
+        }
+      }
     }
   }
 
-  // Check if a strongly connected component has been found
-  if (lowLinks.get(node) === indices.get(node)) {
-    const component = [];
-    let member;
-    do {
-      member = stack.pop();
-      onStack.delete(member);
-      component.push(member);
-    } while (member !== node);
-    result.push(component);
+  for (let i = 0; i < pattern.length - 1; i++) {
+    table[pattern.length - 1 - prefix[i]] = pattern.length - 1 - i;
   }
+
+  return table;
 }
-const adjacencyList = new Map();
-// Fill adjacencyList with your graph's edges
-adjacencyList.set(0, [1]);
-adjacencyList.set(1, [2, 4]);
-adjacencyList.set(2, [3]);
-adjacencyList.set(3, [0]);
-adjacencyList.set(4, [2, 5]);
-adjacencyList.set(5, [6]);
-adjacencyList.set(6, [4, 7]);
-adjacencyList.set(7, [8]);
-adjacencyList.set(8, []);
-for (const node of adjacencyList.keys()) {
-  if (!indices.has(node)) {
-    tarjan(node, adjacencyList);
+
+function suffixArray(pattern) {
+  const suffix = [];
+  suffix[pattern.length - 1] = pattern.length;
+
+  for (let i = pattern.length - 2; i >= 0; i--) {
+    let j = i;
+
+    while (j >= 0 && pattern[j] === pattern[pattern.length - 1 - i + j]) {
+      j--;
+    }
+
+    suffix[i] = i - j;
   }
+
+  return suffix;
 }
-console.log(result);
+function boyerMoore(text, pattern) {
+  const positions = [];
+  const badCharTable = buildBadCharTable(pattern);
+  const goodSuffixTable = buildGoodSuffixTable(pattern);
+
+  let i = pattern.length - 1;
+
+  while (i < text.length) {
+    let j = pattern.length - 1;
+
+    while (j >= 0 && text[i] === pattern[j]) {
+      i--;
+      j--;
+    }
+
+    if (j === -1) {
+      positions.push(i + 1);
+      i += pattern.length * 2 - 1;
+    } else {
+      i += Math.max(badCharTable[text[i]] || 0, goodSuffixTable[j]);
+    }
+  }
+
+  return positions;
+}
+const text = "ABAAABCD";
+const pattern = "ABC";
+const positions = boyerMoore(text, pattern);
+
+console.log("Pattern found at positions:", positions);  // Output: [5]
