@@ -1,6 +1,17 @@
-const str = "Hello, world!";
+const cron = require('node-cron');
 
-console.log(str.includes("Hello"));   // true
-console.log(str.includes("hello"));   // false
-console.log(str.includes("world"));   // true
-console.log(str.includes("foo"));     // false
+// Function to be executed
+const task = () => {
+  console.log('Task executed!');
+};
+
+// Schedule the task to run every minute
+cron.schedule('* * * * *', task);
+
+// Output a message when the script starts
+console.log('Script started.');
+
+// Keep the script running
+setInterval(() => {
+  console.log('Script running...');
+}, 1000);
