@@ -1,10 +1,17 @@
-const cron = require('cron');
+function insertionSort(arr) {
+  for (let i = 1; i < arr.length; i++) {
+    let current = arr[i];
+    let j = i - 1;
 
-// Create a cron job that runs every minute
-const job = new cron.CronJob('* * * * *', () => {
-  // The code to be executed
-  console.log('This job runs every minute');
-});
+    while (j >= 0 && arr[j] > current) {
+      arr[j + 1] = arr[j];
+      j--;
+    }
 
-// Start the cron job
-job.start();
+    arr[j + 1] = current;
+  }
+
+  return arr;
+}
+let numbers = [5, 2, 4, 6, 1, 3];
+console.log(insertionSort(numbers)); // Output: [1, 2, 3, 4, 5, 6]
