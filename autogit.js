@@ -1,32 +1,20 @@
-function mergeSort(arr) {
-  if (arr.length <= 1) {
-    return arr;
-  }
+function getIntersection(list1, list2) {
+  let ptr1 = list1.head;
+  let ptr2 = list2.head;
 
-  // Split the array into two halves
-  let mid = Math.floor(arr.length / 2);
-  let left = arr.slice(0, mid);
-  let right = arr.slice(mid);
-
-  return merge(mergeSort(left), mergeSort(right));
-}
-
-function merge(left, right) {
-  let sortedArr = [];
-
-  while (left.length && right.length) {
-    if (left[0] < right[0]) {
-      sortedArr.push(left.shift());
+  while (ptr1 !== ptr2) {
+    if (ptr1 === null) {
+      ptr1 = list2.head;
     } else {
-      sortedArr.push(right.shift());
+      ptr1 = ptr1.next;
+    }
+
+    if (ptr2 === null) {
+      ptr2 = list1.head;
+    } else {
+      ptr2 = ptr2.next;
     }
   }
 
-  // Concatenate the remaining elements of left and right arrays (if any)
-  return sortedArr.concat(left.slice().concat(right.slice()));
+  return ptr1; // or ptr2, since they are equal
 }
-
-// Test the mergeSort function
-let arr = [5, 4, 3, 2, 1];
-let sortedArr = mergeSort(arr);
-console.log(sortedArr); // Output: [1, 2, 3, 4, 5]
