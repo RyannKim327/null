@@ -1,5 +1,22 @@
-const numbers = [5, 3, 10, 1, 2, 8];
-numbers.sort((a, b) => a - b);
+function areAnagrams(str1, str2) {
+  // Remove spaces and convert to lowercase
+  str1 = str1.replace(/\s/g, '').toLowerCase();
+  str2 = str2.replace(/\s/g, '').toLowerCase();
 
-console.log(numbers);
-[1, 2, 3, 5, 8, 10]
+  // Sort the strings
+  const sortedStr1 = str1.split('').sort().join('');
+  const sortedStr2 = str2.split('').sort().join('');
+
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
+}
+
+// Example usage:
+const string1 = 'listen';
+const string2 = 'silent';
+
+if (areAnagrams(string1, string2)) {
+  console.log('The strings are anagrams.');
+} else {
+  console.log('The strings are not anagrams.');
+}
