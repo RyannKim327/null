@@ -1,26 +1,17 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters
+  str = str.replace(/[^a-zA-Z0-9]/g, '');
+
+  // Convert to lowercase
+  str = str.toLowerCase();
+
+  // Create the reverse string
+  var reverseStr = str.split('').reverse().join('');
+
+  // Compare the original string with the reversed string
+  return str === reverseStr;
 }
 
-function findMiddleElement(head) {
-  let slowPointer = head;
-  let fastPointer = head;
-
-  while (fastPointer !== null && fastPointer.next !== null) {
-    slowPointer = slowPointer.next;
-    fastPointer = fastPointer.next.next;
-  }
-
-  return slowPointer.value;
-}
 // Example usage
-const head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-console.log(findMiddleElement(head)); // Output: 3
+var input = 'A man, a plan, a canal, Panama!';
+console.log(isPalindrome(input)); // Output: true
