@@ -1,15 +1,14 @@
-function maxSubarraySum(arr) {
-  let maxSum = arr[0];
-  let currentSum = arr[0];
-  
-  for (let i = 1; i < arr.length; i++) {
-    currentSum = Math.max(arr[i], currentSum + arr[i]);
-    maxSum = Math.max(maxSum, currentSum);
-  }
+function getRandomNumber(min, max) {
+  // Generate a random decimal between 0 and 1
+  const randomDecimal = Math.random();
 
-  return maxSum;
+  // Map the decimal to the range between min and max
+  const randomNumber = randomDecimal * (max - min + 1) + min;
+
+  // Return the integer value of the random number
+  return Math.floor(randomNumber);
 }
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const maxSum = maxSubarraySum(array);
 
-console.log(maxSum); // Output: 6 (subarray: [4, -1, 2, 1])
+// Example usage: Generate a random number between 1 and 100
+const randomNum = getRandomNumber(1, 100);
+console.log(randomNum);
