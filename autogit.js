@@ -1,13 +1,18 @@
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
+function findMedianSortedArrays(nums1, nums2) {
+  const mergedArray = nums1.concat(nums2);
+  mergedArray.sort((a, b) => a - b);
 
-const commonElements = array1.filter((element) => array2.includes(element));
+  const length = mergedArray.length;
+  const mid = Math.floor(length / 2);
 
-console.log(commonElements); // Output: [4, 5]
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
+  if (length % 2 === 1) {
+    return mergedArray[mid];
+  } else {
+    return (mergedArray[mid - 1] + mergedArray[mid]) / 2;
+  }
+}
 
-const set1 = new Set(array1);
-const commonElements = array2.filter((element) => set1.has(element));
-
-console.log(commonElements); // Output: [4, 5]
+// Test case
+const nums1 = [1, 3];
+const nums2 = [2, 4];
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.5
