@@ -1,16 +1,23 @@
-// Define the API endpoint URL
-const apiUrl = 'https://api.example.com/data';
-
-// Function to fetch data from the API
-async function fetchData() {
-  try {
-    const response = await fetch(apiUrl); // Make a network request to the API
-    const data = await response.json(); // Parse the JSON response
-    console.log(data); // Display the fetched data
-  } catch (error) {
-    console.log('Error fetching data:', error);
-  }
+function largestPrimeFactor(number) {
+    let factor = 2;
+    let largestFactor = 1;
+    
+    while (factor * factor <= number) {
+        if (number % factor === 0) { // If factor divides the number
+            largestFactor = factor; // Update largestFactor
+            number = number / factor; // Divide the number by factor
+        } else {
+            factor++; // Increment factor
+        }
+    }
+    
+    if (number > largestFactor) {
+        largestFactor = number; // Remaining number is the largest prime factor
+    }
+    
+    return largestFactor;
 }
 
-// Call the fetchData function to fetch data from the API
-fetchData();
+// Example usage:
+console.log(largestPrimeFactor(13195)); // Output: 29
+console.log(largestPrimeFactor(600851475143)); // Output: 6857
