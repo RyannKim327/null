@@ -1,19 +1,21 @@
-function isPrime(num) {
-  // 1 and numbers less than 1 are not prime
-  if (num <= 1) {
-    return false;
-  }
+function insertionSort(arr) {
+  const len = arr.length;
 
-  // Check if num is divisible by any number from 2 to the square root of num
-  for (let i = 2; i <= Math.sqrt(num); i++) {
-    if (num % i === 0) {
-      return false;
+  for (let i = 1; i < len; i++) {
+    let current = arr[i];
+    let j = i - 1;
+
+    while (j >= 0 && arr[j] > current) {
+      arr[j + 1] = arr[j];
+      j--;
     }
+
+    arr[j + 1] = current;
   }
 
-  // None of the numbers divided evenly, so num is prime
-  return true;
+  return arr;
 }
-console.log(isPrime(13)); // Output: true
-console.log(isPrime(25)); // Output: false
-console.log(isPrime(1)); // Output: false
+
+// Example usage:
+const array = [5, 3, 1, 4, 2];
+console.log(insertionSort(array)); // Output: [1, 2, 3, 4, 5]
