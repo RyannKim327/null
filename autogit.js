@@ -1,43 +1,11 @@
-function bfs(graph, start, target) {
-  // Step 3
-  const queue = [];
-  const visited = new Set();
-
-  // Step 4
-  queue.push(start);
-  visited.add(start);
-
-  // Step 5
-  while (queue.length > 0) {
-    // Step 6
-    const node = queue.shift();
-    if (node === target) {
-      return true;
-    }
-
-    // Step 7
-    const neighbors = graph[node];
-    for (let i = 0; i < neighbors.length; i++) {
-      const neighbor = neighbors[i];
-      if (!visited.has(neighbor)) {
-        queue.push(neighbor);
-        visited.add(neighbor);
-      }
-    }
+function factorial(n) {
+  if (n === 0) {
+    return 1;
+  } else {
+    return n * factorial(n - 1);
   }
-
-  // Step 9
-  return false;
 }
 
 // Example usage
-const graph = {
-  A: ['B', 'C'],
-  B: ['D'],
-  C: ['E'],
-  D: [],
-  E: []
-};
-
-console.log(bfs(graph, 'A', 'E')); // Output: true
-console.log(bfs(graph, 'A', 'F')); // Output: false
+console.log(factorial(5)); // Output: 120
+console.log(factorial(0)); // Output: 1
