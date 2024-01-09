@@ -1,14 +1,7 @@
-const str = "Hello, World!";
-const reversedStr = str.split('').reverse().join('');
-console.log(reversedStr);  // Output: "!dlroW ,olleH"
-function reverseString(str) {
-  let reversed = '';
-  for (let i = str.length - 1; i >= 0; i--) {
-    reversed += str[i];
-  }
-  return reversed;
-}
+// Sample array of integers
+const numbers = [4, 2, 7, 1, 9, 3];
 
-const str = "Hello, World!";
-const reversedStr = reverseString(str);
-console.log(reversedStr);  // Output: "!dlroW ,olleH"
+// Sorting the array in ascending order
+numbers.sort((a, b) => a - b);
+
+console.log(numbers); // Output: [1, 2, 3, 4, 7, 9]
