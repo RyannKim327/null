@@ -1,51 +1,21 @@
-function beamSearch(initialState, k, generateSuccessors, scoreFunction) {
-  // Initialization
-  let beam = [initialState];
-  
-  // Beam expansion loop
-  while (beam[0] && beam[0].score !== Infinity) {
-    let newBeam = [];
+function findMedianSortedArrays(nums1, nums2) {
+  // Merge the two sorted arrays
+  const mergedArray = nums1.concat(nums2).sort((a, b) => a - b);
 
-    // Generate successors for each state in the current beam
-    for (let state of beam) {
-      let successors = generateSuccessors(state);
+  const length = mergedArray.length;
+  const middleIndex = Math.floor(length / 2);
 
-      // Calculate score for each successor state
-      for (let successor of successors) {
-        successor.score = scoreFunction(successor);
-      }
-
-      // Sort successors based on score
-      successors.sort((a, b) => b.score - a.score);
-
-      // Add top k successors to the new beam
-      newBeam.push(...successors.slice(0, k));
-    }
-    
-    // Sort new beam based on score
-    newBeam.sort((a, b) => b.score - a.score);
-
-    // Keep only the top k states from the new beam
-    beam = newBeam.slice(0, k);
+  // Check if the length is odd
+  if (length % 2 === 1) {
+    return mergedArray[middleIndex];
+  } else {
+    // Calculate the average of the middle two elements
+    return (mergedArray[middleIndex - 1] + mergedArray[middleIndex]) / 2;
   }
-
-  // Return the states in the final beam
-  return beam;
-}
-// Example problem-specific functions
-function generateSuccessors(state) {
-  // Generate and return array of successor states based on the current state
-  // ...
 }
 
-function scoreFunction(state) {
-  // Calculate and return a numerical score for the state
-  // ...
-}
-
-// Usage
-const initialState = { /* Initial state object */ };
-const beamWidth = 3;
-const result = beamSearch(initialState, beamWidth, generateSuccessors, scoreFunction);
-
-console.log(result);
+// Example usage
+const nums1 = [1, 3];
+const nums2 = [2, 4];
+const median = findMedianSortedArrays(nums1, nums2);
+console.log(median); // Output: 2.5
