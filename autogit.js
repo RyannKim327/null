@@ -1,50 +1,19 @@
-class Stack {
-  constructor() {
-    this.stack = [];
-  }
-  
-  push(element) {
-    this.stack.push(element);
-  }
-  
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack Underflow";
-    }
-    return this.stack.pop();
-  }
-  
-  isEmpty() {
-    return this.stack.length === 0;
-  }
-  
-  peek() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
-    }
-    return this.stack[this.stack.length - 1];
-  }
-  
-  size() {
-    return this.stack.length;
-  }
-  
-  printStack() {
-    console.log(this.stack);
-  }
-}
+let array = [1, 2, 3, 3, 4, 4, 5];
+let uniqueArray = [...new Set(array)];
 
-// Testing the stack implementation
-const stack = new Stack();
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+let array = [1, 2, 3, 3, 4, 4, 5];
+let uniqueArray = array.filter((value, index) => {
+  return array.indexOf(value) === index;
+});
 
-stack.push(5);
-stack.push(10);
-stack.push(15);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+let array = [1, 2, 3, 3, 4, 4, 5];
+let uniqueArray = array.reduce((accumulator, value) => {
+  if (!accumulator.includes(value)) {
+    accumulator.push(value);
+  }
+  return accumulator;
+}, []);
 
-stack.printStack(); // Output: [5, 10, 15]
-
-console.log(stack.pop()); // Output: 15
-
-console.log(stack.peek()); // Output: 10
-
-console.log(stack.size()); // Output: 2
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
