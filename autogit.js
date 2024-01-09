@@ -1,45 +1,23 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+function binarySearch(arr, target, left = 0, right = arr.length - 1) {
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+    if (arr[mid] === target) {
+      return mid;
+    } else if (target < arr[mid]) {
+      right = mid - 1;
+    } else {
+      left = mid + 1;
+    }
   }
+  return -1;
 }
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-  }
+const arr = [2, 4, 6, 8, 10, 12, 14, 16];
+const target = 10;
+
+const index = binarySearch(arr, target);
+
+if (index !== -1) {
+  console.log(`Element ${target} found at index ${index}`);
+} else {
+  console.log(`Element ${target} not found in the array`);
 }
-enqueue(value) {
-  const newNode = new Node(value);
-
-  if (!this.head) {
-    this.head = newNode;
-    this.tail = newNode;
-  } else {
-    this.tail.next = newNode;
-    this.tail = newNode;
-  }
-}
-dequeue() {
-  if (!this.head) {
-    return null;
-  }
-
-  const value = this.head.value;
-  this.head = this.head.next;
-
-  if (!this.head) {
-    this.tail = null;
-  }
-
-  return value;
-}
-const queue = new Queue();
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
-
-console.log(queue.dequeue()); // Output: 1
-console.log(queue.dequeue()); // Output: 2
-console.log(queue.dequeue()); // Output: 3
