@@ -1,45 +1,91 @@
-function mergeSort(array) {
-  // Base case: an array of one or no elements is already sorted
-  if (array.length <= 1) {
-    return array;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
-
-  // Divide the array into two halves
-  const middleIndex = Math.floor(array.length / 2);
-  const leftHalf = array.slice(0, middleIndex);
-  const rightHalf = array.slice(middleIndex);
-
-  // Recursively sort the left and right halves
-  const sortedLeftHalf = mergeSort(leftHalf);
-  const sortedRightHalf = mergeSort(rightHalf);
-
-  // Merge the sorted halves
-  return merge(sortedLeftHalf, sortedRightHalf);
+}
+class Queue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+  }
+}
+enqueue(value) {
+  const newNode = new Node(value);
+  if (this.head === null) {
+    this.head = newNode;
+    this.tail = newNode;
+  } else {
+    this.tail.next = newNode;
+    this.tail = newNode;
+  }
+}
+dequeue() {
+  if (this.head === null) {
+    return null;
+  }
+  const dequeuedValue = this.head.value;
+  this.head = this.head.next;
+  if (this.head === null) {
+    this.tail = null;
+  }
+  return dequeuedValue;
+}
+isEmpty() {
+  return this.head === null;
+}
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-function merge(leftHalf, rightHalf) {
-  let resultArray = [];
-  let leftIndex = 0;
-  let rightIndex = 0;
+class Queue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+  }
 
-  // Compare the elements from both halves and add the smaller element to the result
-  while (leftIndex < leftHalf.length && rightIndex < rightHalf.length) {
-    if (leftHalf[leftIndex] < rightHalf[rightIndex]) {
-      resultArray.push(leftHalf[leftIndex]);
-      leftIndex++;
+  enqueue(value) {
+    const newNode = new Node(value);
+    if (this.head === null) {
+      this.head = newNode;
+      this.tail = newNode;
     } else {
-      resultArray.push(rightHalf[rightIndex]);
-      rightIndex++;
+      this.tail.next = newNode;
+      this.tail = newNode;
     }
   }
 
-  // Concatenate the remaining elements from the left or right half
-  return resultArray.concat(leftHalf.slice(leftIndex)).concat(rightHalf.slice(rightIndex));
+  dequeue() {
+    if (this.head === null) {
+      return null;
+    }
+    const dequeuedValue = this.head.value;
+    this.head = this.head.next;
+    if (this.head === null) {
+      this.tail = null;
+    }
+    return dequeuedValue;
+  }
+
+  isEmpty() {
+    return this.head === null;
+  }
 }
 
 // Example usage:
-const unsortedArray = [9, 5, 3, 1, 6, 8, 2, 4, 7];
-console.log("Unsorted array:", unsortedArray);
+const queue = new Queue();
+console.log(queue.isEmpty()); // true
 
-const sortedArray = mergeSort(unsortedArray);
-console.log("Sorted array:", sortedArray);
+queue.enqueue(10);
+queue.enqueue(20);
+queue.enqueue(30);
+console.log(queue.isEmpty()); // false
+
+console.log(queue.dequeue()); // 10
+console.log(queue.dequeue()); // 20
+console.log(queue.dequeue()); // 30
+console.log(queue.dequeue()); // null
+console.log(queue.isEmpty()); // true
