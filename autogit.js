@@ -1,46 +1,32 @@
-function mergeSort(arr) {
-  const n = arr.length;
-  
-  // Iteratively merge subarrays of size 1, 2, 4, 8, ...
-  for(let size = 1; size < n; size *= 2) {
-    for(let left = 0; left < n - size; left += 2 * size) {
-      const mid = left + size - 1;
-      const right = Math.min(left + 2 * size - 1, n - 1);
-      merge(arr, left, mid, right);
+function findCommonElements(arr1, arr2) {
+  const commonElements = [];
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr2.includes(arr1[i])) {
+      commonElements.push(arr1[i]);
     }
   }
-  return arr;
+  return commonElements;
 }
 
-// Helper function to merge two sorted arrays
-function merge(arr, left, mid, right) {
-  const start1 = left;
-  const start2 = mid + 1;
-  
-  let merged = [];
-  while (start1 <= mid && start2 <= right) {
-    if (arr[start1] <= arr[start2]) {
-      merged.push(arr[start1]);
-      start1++;
-    } else {
-      merged.push(arr[start2]);
-      start2++;
-    }
-  }
-
-  while (start1 <= mid) {
-    merged.push(arr[start1]);
-    start1++;
-  }
-  
-  while (start2 <= right) {
-    merged.push(arr[start2]);
-    start2++;
-  }
-
-  for (let i = left; i <= right; i++) {
-    arr[i] = merged[i - left];
-  }
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
+function findCommonElements(arr1, arr2) {
+  return arr1.filter((element) => arr2.includes(element));
 }
-const arr = [5, 2, 9, 1, 7, 6, 3];
-console.log(mergeSort(arr)); // Output: [1, 2, 3, 5, 6, 7, 9]
+
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
+function findCommonElements(arr1, arr2) {
+  const set1 = new Set(arr1);
+  const commonElements = new Set(arr2.filter((element) => set1.has(element)));
+  return Array.from(commonElements);
+}
+
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
