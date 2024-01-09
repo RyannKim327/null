@@ -1,21 +1,28 @@
-function burrowsWheelerTransform(input) {
-  // Create an array to store the rotations
-  const rotations = [];
+function depthLimitedSearchIterative(root, target, depthLimit) {
+  // Create a stack to store nodes
+  const stack = [{ node: root, depth: 0 }];
 
-  // Generate all rotations of the input string
-  for (let i = 0; i < input.length; i++) {
-    rotations.push(input.slice(i) + input.slice(0, i));
+  while (stack.length > 0) {
+    // Pop the top node from the stack
+    const current = stack.pop();
+    const { node, depth } = current;
+
+    // Check if the current node is the target
+    if (node === target) {
+      console.log('Target found!');
+      return true;
+    }
+
+    // Check if the depth limit is reached
+    if (depth < depthLimit) {
+      // Push the child nodes onto the stack in reverse order
+      const children = getChildren(node); // Implement this function to get children of a node
+      for (let i = children.length - 1; i >= 0; i--) {
+        stack.push({ node: children[i], depth: depth + 1 });
+      }
+    }
   }
 
-  // Sort the rotations lexicographically
-  rotations.sort();
-
-  // Extract the last character of each rotation
-  const transformed = rotations.map(rotation => rotation.charAt(rotation.length - 1));
-
-  // Return the transformed string
-  return transformed.join('');
+  console.log('Target not found within the depth limit.');
+  return false;
 }
-const inputString = 'banana';
-const transformedString = burrowsWheelerTransform(inputString);
-console.log(transformedString);
