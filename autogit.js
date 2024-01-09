@@ -1,14 +1,29 @@
-function factorial(num) {
-  if (num === 0 || num === 1)
-    return 1;
+function findMaxSubarray(arr) {
+  let maxSum = arr[0];
+  let currentSum = arr[0];
+  let startIndex = 0;
+  let endIndex = 0;
+  let tempStartIndex = 0;
 
-  let result = 1;
-  for (let i = 2; i <= num; i++) {
-    result *= i;
+  for (let i = 1; i < arr.length; i++) {
+    if (currentSum + arr[i] < arr[i]) {
+      currentSum = arr[i];
+      tempStartIndex = i;
+    } else {
+      currentSum += arr[i];
+    }
+
+    if (currentSum > maxSum) {
+      maxSum = currentSum;
+      startIndex = tempStartIndex;
+      endIndex = i;
+    }
   }
 
-  return result;
+  return arr.slice(startIndex, endIndex + 1);
 }
 
 // Example usage:
-console.log(factorial(5));  // Output: 120
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const maxSubarray = findMaxSubarray(array);
+console.log(maxSubarray); // Output: [4, -1, 2, 1]
