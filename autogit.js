@@ -1,14 +1,21 @@
-function countOccurrences(str, char) {
-  let count = 0;
-  for (let i = 0; i < str.length; i++) {
-    if (str[i] === char) {
-      count++;
+function bubbleSort(array) {
+  let swapped;
+  
+  do {
+    swapped = false;
+  
+    for (let i = 0; i < array.length - 1; i++) {
+      if (array[i] > array[i + 1]) {
+        // Swap elements
+        let temp = array[i];
+        array[i] = array[i + 1];
+        array[i + 1] = temp;
+        swapped = true;
+      }
     }
-  }
-  return count;
+  } while (swapped);
+  
+  return array;
 }
-let str = "Hello, World!";
-let char = "l";
-let occurrences = countOccurrences(str, char);
-console.log(`Number of occurrences of "${char}" in "${str}": ${occurrences}`);
-// Output: Number of occurrences of "l" in "Hello, World!": 3
+const array = [5, 2, 8, 12, 1, 6];
+console.log(bubbleSort(array));
