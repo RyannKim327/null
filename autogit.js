@@ -1,22 +1,19 @@
-function areAnagrams(str1, str2) {
-  // Remove spaces and convert to lowercase
-  str1 = str1.replace(/\s/g, '').toLowerCase();
-  str2 = str2.replace(/\s/g, '').toLowerCase();
-
-  // Sort the strings
-  const sortedStr1 = str1.split('').sort().join('');
-  const sortedStr2 = str2.split('').sort().join('');
-
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+function bubbleSort(array) {
+  const length = array.length;
+  for (let i = 0; i < length; i++) {
+    for (let j = 0; j < length - 1; j++) {
+      if (array[j] > array[j + 1]) {
+        // Swap elements
+        const temp = array[j];
+        array[j] = array[j + 1];
+        array[j + 1] = temp;
+      }
+    }
+  }
+  return array;
 }
 
-// Example usage:
-const string1 = 'listen';
-const string2 = 'silent';
-
-if (areAnagrams(string1, string2)) {
-  console.log('The strings are anagrams.');
-} else {
-  console.log('The strings are not anagrams.');
-}
+// Usage example
+const unsortedArray = [5, 3, 8, 4, 2];
+const sortedArray = bubbleSort(unsortedArray);
+console.log(sortedArray); // Output: [2, 3, 4, 5, 8]
