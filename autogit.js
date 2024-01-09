@@ -1,22 +1,9 @@
-const cron = require('node-cron');
-
-// Function to execute at scheduled intervals
-function doSomething() {
-  console.log('Task executed');
-  // Add your code here to perform the required task
+function factorial(n) {
+  if (n === 0 || n === 1) {
+    return 1;
+  }
+  return n * factorial(n - 1);
 }
 
-// Cron schedule
-const cronSchedule = '*/5 * * * *'; // Executes every 5 minutes
-
-// Define the cron job
-const cronJob = cron.schedule(cronSchedule, doSomething);
-
-// Start the cron job
-cronJob.start();
-
-// Stop the cron job after 1 hour
-setTimeout(() => {
-  cronJob.stop();
-  console.log('Cron job stopped');
-}, 3600000); // 1 hour in milliseconds
+// Example usage
+console.log(factorial(5)); // Output: 120
