@@ -1,23 +1,32 @@
-let pos = low + Math.floor((target - arr[low]) * (high - low) / (arr[high] - arr[low]));
-function interpolationSearch(arr, target, low, high) {
-    if (low > high || target < arr[low] || target > arr[high]) {
-        return -1;
-    }
+function mergeSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
+  }
 
-    let pos = low + Math.floor((target - arr[low]) * (high - low) / (arr[high] - arr[low]));
+  // Split the array into two halves
+  let mid = Math.floor(arr.length / 2);
+  let left = arr.slice(0, mid);
+  let right = arr.slice(mid);
 
-    if (arr[pos] === target) {
-        return pos;
-    }
-
-    if (target < arr[pos]) {
-        return interpolationSearch(arr, target, low, pos - 1);
-    }
-
-    return interpolationSearch(arr, target, pos + 1, high);
+  return merge(mergeSort(left), mergeSort(right));
 }
-let arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-let target = 12;
-let index = interpolationSearch(arr, target, 0, arr.length - 1);
 
-console.log("Target value found at index:", index);
+function merge(left, right) {
+  let sortedArr = [];
+
+  while (left.length && right.length) {
+    if (left[0] < right[0]) {
+      sortedArr.push(left.shift());
+    } else {
+      sortedArr.push(right.shift());
+    }
+  }
+
+  // Concatenate the remaining elements of left and right arrays (if any)
+  return sortedArr.concat(left.slice().concat(right.slice()));
+}
+
+// Test the mergeSort function
+let arr = [5, 4, 3, 2, 1];
+let sortedArr = mergeSort(arr);
+console.log(sortedArr); // Output: [1, 2, 3, 4, 5]
