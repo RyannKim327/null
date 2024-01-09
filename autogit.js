@@ -1,11 +1,5 @@
-function isPalindrome(str) {
-  // remove non-alphanumeric characters and convert to lowercase
-  str = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+var str1 = "Hello";
+var str2 = "World";
+var result = str1 + " " + str2;
 
-  // check if the string is the same when reversed
-  return str === str.split('').reverse().join('');
-}
-
-// example usage
-console.log(isPalindrome('racecar')); // true
-console.log(isPalindrome('hello')); // false
+console.log(result); // Output: "Hello World"
