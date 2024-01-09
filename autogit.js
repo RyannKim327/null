@@ -1,53 +1,50 @@
-class Graph {
-  constructor() {
-    this.adjList = new Map();
-  }
-
-  addVertex(vertex) {
-    this.adjList.set(vertex, []);
-  }
-
-  addEdge(vertex1, vertex2) {
-    this.adjList.get(vertex1).push(vertex2);
-    this.adjList.get(vertex2).push(vertex1);
-  }
-
-  bfs(startingNode) {
-    const visited = new Set();
-    const queue = [];
-  
-    visited.add(startingNode);
-    queue.push(startingNode);
-
-    while (queue.length !== 0) {
-      const currentNode = queue.shift();
-      const neighbors = this.adjList.get(currentNode);
-
-      console.log(currentNode);
-
-      for (const neighbor of neighbors) {
-        if (!visited.has(neighbor)) {
-          visited.add(neighbor);
-          queue.push(neighbor);
-        }
-      }
-    }
+class Node {
+  constructor(data, next = null) {
+    this.data = data;
+    this.next = next;
   }
 }
 
-// Usage example:
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
 
-const graph = new Graph();
+  // Adds a new node at the end of the linked list
+  append(data) {
+    const newNode = new Node(data);
 
-graph.addVertex("A");
-graph.addVertex("B");
-graph.addVertex("C");
-graph.addVertex("D");
-graph.addVertex("E");
+    if (!this.head) {
+      this.head = newNode;
+      return;
+    }
 
-graph.addEdge("A", "B");
-graph.addEdge("A", "C");
-graph.addEdge("B", "D");
-graph.addEdge("D", "E");
+    let current = this.head;
+    while (current.next) {
+      current = current.next;
+    }
 
-graph.bfs("A");
+    current.next = newNode;
+  }
+
+  // Returns the length of the linked list
+  getLength() {
+    let count = 0;
+    let current = this.head;
+
+    while (current) {
+      count++;
+      current = current.next;
+    }
+
+    return count;
+  }
+}
+
+// Example usage
+const list = new LinkedList();
+list.append(10);
+list.append(20);
+list.append(30);
+
+console.log(list.getLength());  // Output: 3
