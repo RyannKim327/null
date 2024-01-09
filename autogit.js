@@ -1,17 +1,8 @@
-function reverseWords(str) {
-    // Step 1: Split string into an array of words
-    const wordsArray = str.split(' ');
-
-    // Step 2: Reverse the order of the array
-    const reversedArray = wordsArray.reverse();
-
-    // Step 3: Join the reversed array back into a string
-    const reversedString = reversedArray.join(' ');
-
-    return reversedString;
-}
-
-// Example usage
-const originalString = "Hello, how are you?";
-const reversedString = reverseWords(originalString);
-console.log(reversedString); // Output: "you? are how Hello,"
+var string1 = "Hello";
+var string2 = "World";
+var result = string1 + " " + string2;
+console.log(result); // Output: Hello World
+var string1 = "Hello";
+var string2 = "World";
+var result = string1.concat(" ", string2);
+console.log(result); // Output: Hello World
