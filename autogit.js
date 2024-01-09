@@ -1,60 +1,45 @@
-class Stack {
-  constructor() {
-    this.stack = [];
+function mergeSort(array) {
+  // Base case: an array of one or no elements is already sorted
+  if (array.length <= 1) {
+    return array;
   }
 
-  // Add an element to the top of the stack
-  push(item) {
-    this.stack.push(item);
-  }
+  // Divide the array into two halves
+  const middleIndex = Math.floor(array.length / 2);
+  const leftHalf = array.slice(0, middleIndex);
+  const rightHalf = array.slice(middleIndex);
 
-  // Remove and return the top element from the stack
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
-    }
-    return this.stack.pop();
-  }
+  // Recursively sort the left and right halves
+  const sortedLeftHalf = mergeSort(leftHalf);
+  const sortedRightHalf = mergeSort(rightHalf);
 
-  // Get the top element of the stack
-  peek() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
-    }
-    return this.stack[this.stack.length - 1];
-  }
-
-  // Check if the stack is empty
-  isEmpty() {
-    return this.stack.length === 0;
-  }
-
-  // Get the size of the stack
-  size() {
-    return this.stack.length;
-  }
-
-  // Clear the entire stack
-  clear() {
-    this.stack = [];
-  }
+  // Merge the sorted halves
+  return merge(sortedLeftHalf, sortedRightHalf);
 }
 
-// Usage:
-const stack = new Stack();
+function merge(leftHalf, rightHalf) {
+  let resultArray = [];
+  let leftIndex = 0;
+  let rightIndex = 0;
 
-stack.push(1); // Add an element to the top of the stack
-stack.push(2);
-stack.push(3);
+  // Compare the elements from both halves and add the smaller element to the result
+  while (leftIndex < leftHalf.length && rightIndex < rightHalf.length) {
+    if (leftHalf[leftIndex] < rightHalf[rightIndex]) {
+      resultArray.push(leftHalf[leftIndex]);
+      leftIndex++;
+    } else {
+      resultArray.push(rightHalf[rightIndex]);
+      rightIndex++;
+    }
+  }
 
-console.log(stack.size()); // 3
+  // Concatenate the remaining elements from the left or right half
+  return resultArray.concat(leftHalf.slice(leftIndex)).concat(rightHalf.slice(rightIndex));
+}
 
-console.log(stack.pop()); // 3 (last-in, first-out)
-console.log(stack.pop()); // 2
+// Example usage:
+const unsortedArray = [9, 5, 3, 1, 6, 8, 2, 4, 7];
+console.log("Unsorted array:", unsortedArray);
 
-console.log(stack.peek()); // 1 (top element)
-
-console.log(stack.isEmpty()); // false
-
-stack.clear(); // Clear the stack
-console.log(stack.isEmpty()); // true
+const sortedArray = mergeSort(unsortedArray);
+console.log("Sorted array:", sortedArray);
