@@ -1,43 +1,19 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
+function reverseLinkedList(head) {
+  if (!head || !head.next) {
+    // Empty list or only one node
+    return head;
   }
-}
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-  
-  append(data) {
-    const newNode = new Node(data);
-    if (!this.head) {
-      this.head = newNode;
-      return;
-    }
-    let current = this.head;
-    while (current.next) {
-      current = current.next;
-    }
-    current.next = newNode;
-  }
-  
-  getLength() {
-    let current = this.head;
-    let count = 0;
-    while (current) {
-      count++;
-      current = current.next;
-    }
-    return count;
-  }
-}
+  let current = head;
+  let previous = null;
+  let next = null;
 
-// Example usage
-const list = new LinkedList();
-list.append(10);
-list.append(20);
-list.append(30);
-list.append(40);
-console.log(list.getLength()); // Output: 4
+  while (current) {
+    next = current.next;
+    current.next = previous;
+    previous = current;
+    current = next;
+  }
+
+  return previous;
+}
