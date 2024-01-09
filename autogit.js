@@ -1,38 +1,20 @@
-function findMajorityElement(arr) {
-  let candidate;
-  let count = 0;
+function areAnagrams(str1, str2) {
+  // Remove non-alphabetic characters and convert to lowercase
+  str1 = str1.toLowerCase().replace(/[^a-z]/g, '');
+  str2 = str2.toLowerCase().replace(/[^a-z]/g, '');
 
-  // Step 1: Find a potential candidate for the majority element
-  for (let num of arr) {
-    // If the count is 0, set the current number as the candidate
-    if (count === 0) {
-      candidate = num;
-    }
+  // Convert strings to sorted arrays of characters
+  const arr1 = str1.split('').sort();
+  const arr2 = str2.split('').sort();
 
-    // If the current number is the same as the candidate, increment the count
-    if (num === candidate) {
-      count++;
-    } else {
-      // If the current number is different from the candidate, decrement the count
-      count--;
-    }
-  }
+  // Join sorted arrays back into strings and compare
+  const sortedStr1 = arr1.join('');
+  const sortedStr2 = arr2.join('');
 
-  // Step 2: Verify if the candidate is the majority element
-  count = 0;
-
-  for (let num of arr) {
-    if (num === candidate) {
-      count++;
-    }
-  }
-
-  if (count > arr.length / 2) {
-    return candidate;
-  } else {
-    return "No majority element found.";
-  }
+  return sortedStr1 === sortedStr2;
 }
-let array = [1, 2, 3, 2, 2, 2, 5, 4, 2];
-let majorityElement = findMajorityElement(array);
-console.log(majorityElement);
+
+// Example usage
+const string1 = "listen";
+const string2 = "silent";
+console.log(areAnagrams(string1, string2)); // Output: true
