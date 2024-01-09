@@ -1,36 +1,24 @@
-function findMajorityElement(nums) {
-  let count = 0;
-  let candidate = null;
+function breadthLimitedSearch(root, target, limit) {
+  const queue = [root];
+  const visited = new Set();
 
-  for (let num of nums) {
-    if (count === 0) {
-      candidate = num;
+  while (queue.length > 0) {
+    const node = queue.shift();
+
+    if (node.value === target) {
+      return node; // or return whatever information you need
     }
 
-    count += (num === candidate) ? 1 : -1;
-  }
+    if (visited.has(node)) {
+      continue;
+    }
 
-  // Verifying if the candidate is the majority element
-  count = 0;
-  for (let num of nums) {
-    if (num === candidate) {
-      count++;
+    visited.add(node);
+
+    if (node.depth < limit) {
+      queue.push(...node.children.filter(child => !visited.has(child)));
     }
   }
 
-  if (count > Math.floor(nums.length / 2)) {
-    return candidate;
-  }
-
-  return null; // No majority element found
-}
-
-// Example usage
-const nums = [1, 3, 3, 1, 3, 4, 2, 2, 2];
-const majorityElement = findMajorityElement(nums);
-
-if (majorityElement !== null) {
-  console.log(`The majority element is ${majorityElement}`);
-} else {
-  console.log("No majority element found");
+  return null;
 }
