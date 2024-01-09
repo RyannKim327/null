@@ -1,61 +1,53 @@
-class ListNode {
-  constructor(val, next = null) {
-    this.val = val;
-    this.next = next;
+function mergeSort(arr) {
+  // Base case: if the array is empty or contains only one element, it is already sorted
+  if (arr.length <= 1) {
+    return arr;
   }
+  
+  // Split the array into two halves
+  const mid = Math.floor(arr.length / 2);
+  const leftHalf = arr.slice(0, mid);
+  const rightHalf = arr.slice(mid);
+  
+  // Recursively sort the two halves
+  const sortedLeft = mergeSort(leftHalf);
+  const sortedRight = mergeSort(rightHalf);
+  
+  // Merge the sorted halves
+  return merge(sortedLeft, sortedRight);
 }
 
-function isPalindrome(head) {
-  // Edge case: if head is null or only one node
-  if (!head || !head.next) {
-    return true;
-  }
-
-  let slow = head;
-  let fast = head;
-  let prev = null;
-
-  // Move the fast pointer twice as fast as the slow pointer
-  while (fast && fast.next) {
-    fast = fast.next.next;
-
-    // Reverse the first half of the list using the three-pointer technique
-    const temp = slow.next;
-    slow.next = prev;
-    prev = slow;
-    slow = temp;
-  }
-
-  // If the linked list has an odd number of nodes, skip the middle node
-  if (fast !== null) {
-    slow = slow.next;
-  }
-
-  // Compare the reversed first half with the second half of the list
-  while (slow) {
-    if (slow.val !== prev.val) {
-      return false;
+function merge(left, right) {
+  let mergedArr = [];
+  let leftIndex = 0;
+  let rightIndex = 0;
+  
+  // Compare elements from both arrays and push the smaller element to the result array
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] < right[rightIndex]) {
+      mergedArr.push(left[leftIndex]);
+      leftIndex++;
+    } else {
+      mergedArr.push(right[rightIndex]);
+      rightIndex++;
     }
-    slow = slow.next;
-    prev = prev.next;
   }
-
-  return true;
+  
+  // Push any remaining elements from the left and right arrays
+  while (leftIndex < left.length) {
+    mergedArr.push(left[leftIndex]);
+    leftIndex++;
+  }
+  
+  while (rightIndex < right.length) {
+    mergedArr.push(right[rightIndex]);
+    rightIndex++;
+  }
+  
+  return mergedArr;
 }
 
 // Example usage:
-const list1 = new ListNode(1);
-list1.next = new ListNode(2);
-list1.next.next = new ListNode(3);
-list1.next.next.next = new ListNode(2);
-list1.next.next.next.next = new ListNode(1);
-
-console.log(isPalindrome(list1)); // Output: true
-
-const list2 = new ListNode(1);
-list2.next = new ListNode(2);
-list2.next.next = new ListNode(3);
-list2.next.next.next = new ListNode(4);
-list2.next.next.next.next = new ListNode(5);
-
-console.log(isPalindrome(list2)); // Output: false
+const arr = [5, 3, 8, 4, 2, 1, 6, 7];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr); // Output: [1, 2, 3, 4, 5, 6, 7, 8]
