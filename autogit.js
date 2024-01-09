@@ -1,21 +1,53 @@
-function binarySearch(arr, target, start = 0, end = arr.length - 1) {
-  // ...
+class HashTable {
+  constructor() {
+    this.table = {};
+  }
+
+  // Other methods will be added here
 }
-  // ...
-  if (start > end) {
-    return -1;
+HashTable.prototype.hash = function(key) {
+  if (typeof key !== 'string') {
+    throw new Error('Key must be a string');
   }
-  // ...
-  const middle = Math.floor((start + end) / 2);
-  // ...
-  if (arr[middle] === target) {
-    return middle;
-  } else if (arr[middle] > target) {
-    return binarySearch(arr, target, start, middle - 1);
-  } else {
-    return binarySearch(arr, target, middle + 1, end);
+  let hash = 0;
+  for (let i = 0; i < key.length; i++) {
+    hash += key.charCodeAt(i);
   }
-const arr = [1, 3, 5, 7, 9];
-const target = 7;
-const index = binarySearch(arr, target);
-console.log(index);
+  return hash % 37; // Modulo to keep the index within the size of the underlying data structure
+};
+HashTable.prototype.add = function(key, value) {
+  const index = this.hash(key);
+  if (!this.table[index]) {
+    this.table[index] = {};
+  }
+  this.table[index][key] = value;
+};
+
+HashTable.prototype.get = function(key) {
+  const index = this.hash(key);
+  if (this.table[index] && this.table[index][key] !== undefined) {
+    return this.table[index][key];
+  }
+  return null;
+};
+
+HashTable.prototype.remove = function(key) {
+  const index = this.hash(key);
+  if (this.table[index] && this.table[index][key] !== undefined) {
+    delete this.table[index][key];
+    // Optionally, you can also delete the empty index
+    if (Object.keys(this.table[index]).length === 0) {
+      delete this.table[index];
+    }
+    return true;
+  }
+  return false;
+};
+const hashTable = new HashTable();
+hashTable.add('apple', 'A fruit');
+hashTable.add('banana', 'A yellow fruit');
+console.log(hashTable.get('apple')); // Output: A fruit
+console.log(hashTable.get('banana')); // Output: A yellow fruit
+console.log(hashTable.get('orange')); // Output: null
+hashTable.remove('banana');
+console.log(hashTable.get('banana')); // Output: null
