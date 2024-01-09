@@ -1,24 +1,48 @@
-function breadthLimitedSearch(root, target, limit) {
-  const queue = [root];
-  const visited = new Set();
-
-  while (queue.length > 0) {
-    const node = queue.shift();
-
-    if (node.value === target) {
-      return node; // or return whatever information you need
-    }
-
-    if (visited.has(node)) {
-      continue;
-    }
-
-    visited.add(node);
-
-    if (node.depth < limit) {
-      queue.push(...node.children.filter(child => !visited.has(child)));
-    }
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
-
-  return null;
 }
+
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+  
+  append(value) {
+    const newNode = new Node(value);
+    
+    if (!this.head) {
+      this.head = newNode;
+      return;
+    }
+    
+    let current = this.head;
+    while (current.next) {
+      current = current.next;
+    }
+    
+    current.next = newNode;
+  }
+  
+  getLength() {
+    let count = 0;
+    let current = this.head;
+    
+    while (current) {
+      count++;
+      current = current.next;
+    }
+    
+    return count;
+  }
+}
+
+// Example usage
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+
+console.log(list.getLength());  // Output: 3
