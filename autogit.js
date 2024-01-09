@@ -1,52 +1,53 @@
-class Graph {
-  constructor() {
-    this.adjList = new Map();
-  }
-
-  addNode(node) {
-    this.adjList.set(node, []);
-  }
-
-  addEdge(node1, node2) {
-    this.adjList.get(node1).push(node2);
-    this.adjList.get(node2).push(node1);
-  }
-
-  getNeighbors(node) {
-    return this.adjList.get(node);
+class ListNode {
+  constructor(val = 0, next = null) {
+    this.val = val;
+    this.next = next;
   }
 }
-function dfs(graph, startNode) {
-  let visited = new Set();
 
-  function dfsVisit(node) {
-    visited.add(node);
-    console.log(node); // Perform any required operations
+function isPalindrome(head) {
+  if (!head || !head.next) {
+    // An empty list or a single node is considered a palindrome.
+    return true;
+  }
 
-    let neighbors = graph.getNeighbors(node);
-    for (let neighbor of neighbors) {
-      if (!visited.has(neighbor)) {
-        dfsVisit(neighbor);
-      }
+  let slow = head;
+  let fast = head;
+  
+  // Move fast two times faster than slow.
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
+  }
+  
+  // Reverse the second half of the list.
+  let prev = null;
+  let curr = slow;
+  while (curr) {
+    let next = curr.next;
+    curr.next = prev;
+    prev = curr;
+    curr = next;
+  }
+  
+  // Reset the fast pointer to the head.
+  fast = head;
+  
+  // Compare elements in the first half with the reversed second half.
+  while (prev) {
+    if (fast.val !== prev.val) {
+      return false;
     }
+    fast = fast.next;
+    prev = prev.next;
   }
-
-  dfsVisit(startNode);
+  
+  return true;
 }
-let graph = new Graph();
 
-// Add nodes
-graph.addNode(1);
-graph.addNode(2);
-graph.addNode(3);
-graph.addNode(4);
-graph.addNode(5);
+// Example usage:
+const list1 = new ListNode(1, new ListNode(2, new ListNode(2, new ListNode(1))));
+console.log(isPalindrome(list1)); // Output: true
 
-// Add edges
-graph.addEdge(1, 2);
-graph.addEdge(1, 3);
-graph.addEdge(2, 4);
-graph.addEdge(3, 4);
-graph.addEdge(4, 5);
-
-dfs(graph, 1); // Start the depth-first search from node 1
+const list2 = new ListNode(1, new ListNode(2, new ListNode(3)));
+console.log(isPalindrome(list2)); // Output: false
