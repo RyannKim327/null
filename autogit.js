@@ -1,72 +1,59 @@
-class PriorityQueue {
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
+}
+
+class LinkedList {
   constructor() {
-    this.heap = [];
+    this.head = null;
   }
 
-  // other methods will be implemented here
-}
-enqueue(element) {
-  this.heap.push(element);
-  this.bubbleUp();
-}
+  addNode(data) {
+    const newNode = new Node(data);
 
-bubbleUp() {
-  let index = this.heap.length - 1;
-  const element = this.heap[index];
-
-  while (index > 0) {
-    const parentIndex = Math.floor((index - 1) / 2);
-    const parent = this.heap[parentIndex];
-
-    if (element >= parent) break;
-
-    this.heap[parentIndex] = element;
-    this.heap[index] = parent;
-    index = parentIndex;
-  }
-}
-dequeue() {
-  const min = this.heap[0];
-  const last = this.heap.pop();
-
-  if (this.heap.length > 0) {
-    this.heap[0] = last;
-    this.sinkDown(0);
-  }
-
-  return min;
-}
-
-sinkDown(index) {
-  const length = this.heap.length;
-  const element = this.heap[index];
-
-  while (true) {
-    const leftChildIndex = 2 * index + 1;
-    const rightChildIndex = 2 * index + 2;
-    let smallestChildIndex = index;
-    let smallestChild = element;
-
-    if (leftChildIndex < length) {
-      const leftChild = this.heap[leftChildIndex];
-      if (leftChild < smallestChild) {
-        smallestChildIndex = leftChildIndex;
-        smallestChild = leftChild;
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let currentNode = this.head;
+      while (currentNode.next) {
+        currentNode = currentNode.next;
       }
+      currentNode.next = newNode;
+    }
+  }
+
+  findNthNodeFromEnd(n) {
+    if (!this.head || n <= 0) {
+      return null;
     }
 
-    if (rightChildIndex < length) {
-      const rightChild = this.heap[rightChildIndex];
-      if (rightChild < smallestChild) {
-        smallestChildIndex = rightChildIndex;
-        smallestChild = rightChild;
+    let slow = this.head;
+    let fast = this.head;
+
+    for (let i = 0; i < n; i++) {
+      if (fast === null) {
+        return null; // if n is greater than the length of the list
       }
+      fast = fast.next;
     }
 
-    if (smallestChildIndex === index) break;
+    while (fast !== null) {
+      slow = slow.next;
+      fast = fast.next;
+    }
 
-    this.heap[index] = smallestChild;
-    this.heap[smallestChildIndex] = element;
-    index = smallestChildIndex;
+    return slow.data;
   }
 }
+
+// Example usage:
+const linkedList = new LinkedList();
+linkedList.addNode(1);
+linkedList.addNode(2);
+linkedList.addNode(3);
+linkedList.addNode(4);
+linkedList.addNode(5);
+
+console.log(linkedList.findNthNodeFromEnd(2)); // Output: 4
