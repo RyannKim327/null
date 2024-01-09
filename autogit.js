@@ -1,20 +1,16 @@
-function getIntersection(list1, list2) {
-  let ptr1 = list1.head;
-  let ptr2 = list2.head;
+function isPalindrome(str) {
+  // Remove any non-alphanumeric characters and convert to lowercase
+  var cleanStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-  while (ptr1 !== ptr2) {
-    if (ptr1 === null) {
-      ptr1 = list2.head;
-    } else {
-      ptr1 = ptr1.next;
-    }
+  // Reverse the string
+  var reversedStr = cleanStr.split('').reverse().join('');
 
-    if (ptr2 === null) {
-      ptr2 = list1.head;
-    } else {
-      ptr2 = ptr2.next;
-    }
-  }
-
-  return ptr1; // or ptr2, since they are equal
+  // Compare the original string with the reversed string
+  return cleanStr === reversedStr;
 }
+
+// Test cases
+console.log(isPalindrome("level"));     // true
+console.log(isPalindrome("A man, a plan, a canal: Panama"));  // true
+console.log(isPalindrome("hello"));     // false
+console.log(isPalindrome("12321"));     // true
