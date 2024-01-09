@@ -1,23 +1,47 @@
-function bubbleSort(arr) {
-  var len = arr.length;
-  var swapped;
-  
-  do {
-    swapped = false;
-    
-    for (var i = 0; i < len - 1; i++) {
-      if (arr[i] > arr[i + 1]) {
-        var temp = arr[i];
-        arr[i] = arr[i + 1];
-        arr[i + 1] = temp;
-        swapped = true;
-      }
-    }
-  } while (swapped);
-  
-  return arr;
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
 }
 
-// Example usage
-var numbers = [10, 5, 8, 2, 1];
-console.log(bubbleSort(numbers));
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+
+  addNode(data) {
+    const newNode = new Node(data);
+
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next !== null) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
+
+  getLength() {
+    let length = 0;
+    let current = this.head;
+
+    while (current !== null) {
+      length++;
+      current = current.next;
+    }
+
+    return length;
+  }
+}
+
+// Example usage:
+const myList = new LinkedList();
+myList.addNode(10);
+myList.addNode(20);
+myList.addNode(30);
+myList.addNode(40);
+
+console.log(myList.getLength()); // Output: 4
