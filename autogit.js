@@ -1,39 +1,19 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+const cron = require('cron');
+
+// A function to be executed as a task
+function myTask() {
+  console.log('Task running at: ', new Date());
+  // Your task code here...
 }
 
-function findNthFromEnd(head, n) {
-  let slow = head;
-  let fast = head;
+// Schedule the task to run every 5 minutes
+const cronJob = new cron.CronJob('*/5 * * * *', myTask);
 
-  // Move the fast pointer n nodes ahead
-  for (let i = 0; i < n; i++) {
-    if (fast === null) {
-      // The linked list has fewer than n nodes
-      return null;
-    }
-    fast = fast.next;
-  }
+// Start the cron job
+cronJob.start();
 
-  // Move the slow and fast pointers together until fast reaches the end
-  while (fast !== null) {
-    slow = slow.next;
-    fast = fast.next;
-  }
-
-  // At this point, slow is pointing to the nth node from the end
-  return slow;
-}
-
-// Example usage:
-const head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-const nthFromEnd = findNthFromEnd(head, 2);
-console.log(nthFromEnd.value); // Output: 4
+// Stop the cron job after 1 hour (for demonstration purpose)
+setTimeout(() => {
+  cronJob.stop();
+  console.log('Cron job stopped.');
+}, 60 * 60 * 1000); // 1 hour
