@@ -1,19 +1,19 @@
-const cron = require('cron');
+function findSecondLargest(array) {
+  let max = -Infinity;
+  let secondMax = -Infinity;
 
-// A function to be executed as a task
-function myTask() {
-  console.log('Task running at: ', new Date());
-  // Your task code here...
+  for (let i = 0; i < array.length; i++) {
+    if (array[i] > max) {
+      secondMax = max;
+      max = array[i];
+    } else if (array[i] > secondMax && array[i] < max) {
+      secondMax = array[i];
+    }
+  }
+
+  return secondMax;
 }
 
-// Schedule the task to run every 5 minutes
-const cronJob = new cron.CronJob('*/5 * * * *', myTask);
-
-// Start the cron job
-cronJob.start();
-
-// Stop the cron job after 1 hour (for demonstration purpose)
-setTimeout(() => {
-  cronJob.stop();
-  console.log('Cron job stopped.');
-}, 60 * 60 * 1000); // 1 hour
+const array = [5, 2, 10, 7, 3, 8];
+const secondLargest = findSecondLargest(array);
+console.log(secondLargest); // Output: 8
