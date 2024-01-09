@@ -1,12 +1,44 @@
-// Prompt the user for input
-var userInput = prompt("Enter a number: ");
+function buildBadCharTable(pattern) {
+  const table = {};
+  const lastIndex = pattern.length - 1;
 
-// Convert the user input to a number
-var number = parseInt(userInput);
+  for (let i = 0; i < lastIndex; i++) {
+    table[pattern[i]] = lastIndex - i;
+  }
 
-// Check if the number is even or odd
-if (number % 2 === 0) {
-  console.log(number + " is an even number.");
+  return table;
+}
+function boyerMooreHorspool(text, pattern) {
+  const badCharTable = buildBadCharTable(pattern);
+  const patternLength = pattern.length;
+  const textLength = text.length;
+  let i = 0;
+
+  while (i <= textLength - patternLength) {
+    let j = patternLength - 1;
+
+    while (j >= 0 && pattern[j] === text[i + j]) {
+      j--;
+    }
+
+    if (j === -1) {
+      // Pattern found at index i
+      return i;
+    } else {
+      // Skip based on the bad character table
+      i += badCharTable[text[i + j]] || patternLength;
+    }
+  }
+
+  // Pattern not found
+  return -1;
+}
+const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit';
+const pattern = 'ipsum';
+
+const index = boyerMooreHorspool(text, pattern);
+if (index !== -1) {
+  console.log(`Pattern found at index ${index}`);
 } else {
-  console.log(number + " is an odd number.");
+  console.log('Pattern not found');
 }
