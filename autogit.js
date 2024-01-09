@@ -1,6 +1,12 @@
-let array = [1, 2, 3, 4, 5];
-array.reverse();
-console.log(array); // Output: [5, 4, 3, 2, 1]
-let array = [1, 2, 3, 4, 5];
-let reversedArray = array.slice().reverse();
-console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
+function getStringLength(str) {
+  let count = 0;
+  while (str[count] !== undefined) {
+    count++;
+  }
+  return count;
+}
+
+// Example usage
+const myString = "Hello, world!";
+const length = getStringLength(myString);
+console.log(length); // Output: 13
