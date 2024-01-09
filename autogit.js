@@ -1,16 +1,16 @@
-function areAnagrams(str1, str2) {
-  // Remove non-alphabetic characters and spaces
-  str1 = str1.replace(/[^a-z]/gi, '').toLowerCase();
-  str2 = str2.replace(/[^a-z]/gi, '').toLowerCase();
+// Define the API endpoint URL
+const apiUrl = 'https://api.example.com/data';
 
-  // Sort the characters alphabetically
-  str1 = str1.split('').sort().join('');
-  str2 = str2.split('').sort().join('');
-
-  // Compare the sorted strings
-  return str1 === str2;
+// Function to fetch data from the API
+async function fetchData() {
+  try {
+    const response = await fetch(apiUrl); // Make a network request to the API
+    const data = await response.json(); // Parse the JSON response
+    console.log(data); // Display the fetched data
+  } catch (error) {
+    console.log('Error fetching data:', error);
+  }
 }
 
-// Example usage
-console.log(areAnagrams('restful', 'fluster')); // Output: true
-console.log(areAnagrams('hello', 'world'));     // Output: false
+// Call the fetchData function to fetch data from the API
+fetchData();
