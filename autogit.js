@@ -1,15 +1,15 @@
-function countOccurrences(str, char) {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str.charAt(i) === char) {
-            count++;
-        }
+function hasCycle(head) {
+  let slow = head;
+  let fast = head;
+
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
+
+    if (slow === fast) {
+      return true; // Found a cycle
     }
-    return count;
+  }
+
+  return false; // No cycle found
 }
-
-const string = "Hello, world!";
-const character = "o";
-const occurrences = countOccurrences(string, character);
-
-console.log(`The character "${character}" occurs ${occurrences} times in the string.`);
