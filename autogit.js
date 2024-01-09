@@ -1,61 +1,60 @@
-function shellSort(array) {
-  // ...
-}
-function shellSort(array) {
-  let gap = Math.floor(array.length / 2);
-  // ...
-}
-function shellSort(array) {
-  let gap = Math.floor(array.length / 2);
-
-  while (gap > 0) {
-    // Shell sort algorithm steps
-    // ...
-    gap = Math.floor(gap / 2);
+class Stack {
+  constructor() {
+    this.stack = [];
   }
-}
-function shellSort(array) {
-  let gap = Math.floor(array.length / 2);
 
-  while (gap > 0) {
-    for (let i = gap; i < array.length; i++) {
-      let j = i;
+  // Add an element to the top of the stack
+  push(item) {
+    this.stack.push(item);
+  }
 
-      while (j >= gap && array[j - gap] > array[j]) {
-        // Swap elements
-        let temp = array[j];
-        array[j] = array[j - gap];
-        array[j - gap] = temp;
-
-        j -= gap;
-      }
+  // Remove and return the top element from the stack
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
     }
-
-    gap = Math.floor(gap / 2);
+    return this.stack.pop();
   }
-}
-function shellSort(array) {
-  let gap = Math.floor(array.length / 2);
 
-  while (gap > 0) {
-    for (let i = gap; i < array.length; i++) {
-      let j = i;
-
-      while (j >= gap && array[j - gap] > array[j]) {
-        // Swap elements
-        let temp = array[j];
-        array[j] = array[j - gap];
-        array[j - gap] = temp;
-
-        j -= gap;
-      }
+  // Get the top element of the stack
+  peek() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
     }
-
-    gap = Math.floor(gap / 2);
+    return this.stack[this.stack.length - 1];
   }
 
-  return array;
+  // Check if the stack is empty
+  isEmpty() {
+    return this.stack.length === 0;
+  }
+
+  // Get the size of the stack
+  size() {
+    return this.stack.length;
+  }
+
+  // Clear the entire stack
+  clear() {
+    this.stack = [];
+  }
 }
-let array = [8, 4, 1, 6, 10, 2];
-let sortedArray = shellSort(array);
-console.log(sortedArray); // Output: [1, 2, 4, 6, 8, 10]
+
+// Usage:
+const stack = new Stack();
+
+stack.push(1); // Add an element to the top of the stack
+stack.push(2);
+stack.push(3);
+
+console.log(stack.size()); // 3
+
+console.log(stack.pop()); // 3 (last-in, first-out)
+console.log(stack.pop()); // 2
+
+console.log(stack.peek()); // 1 (top element)
+
+console.log(stack.isEmpty()); // false
+
+stack.clear(); // Clear the stack
+console.log(stack.isEmpty()); // true
