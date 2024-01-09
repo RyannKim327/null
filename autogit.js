@@ -1,48 +1,27 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+function countOccurrences(string, word) {
+  const regex = new RegExp('\\b' + word + '\\b', 'gi');
+  const matches = string.match(regex);
+  return matches ? matches.length : 0;
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-  
-  append(value) {
-    const newNode = new Node(value);
-    
-    if (!this.head) {
-      this.head = newNode;
-      return;
-    }
-    
-    let current = this.head;
-    while (current.next) {
-      current = current.next;
-    }
-    
-    current.next = newNode;
-  }
-  
-  getLength() {
-    let count = 0;
-    let current = this.head;
-    
-    while (current) {
+// Example usage:
+const text = 'How much wood would a woodchuck chuck if a woodchuck could chuck wood?';
+const wordToCount = 'wood';
+const occurrences = countOccurrences(text, wordToCount);
+console.log(occurrences); // Output: 2
+function countOccurrences(string, word) {
+  const words = string.split(' ');
+  let count = 0;
+  for (let i = 0; i < words.length; i++) {
+    if (words[i] === word) {
       count++;
-      current = current.next;
     }
-    
-    return count;
   }
+  return count;
 }
 
-// Example usage
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-
-console.log(list.getLength());  // Output: 3
+// Example usage:
+const text = 'How much wood would a woodchuck chuck if a woodchuck could chuck wood?';
+const wordToCount = 'wood';
+const occurrences = countOccurrences(text, wordToCount);
+console.log(occurrences); // Output: 2
