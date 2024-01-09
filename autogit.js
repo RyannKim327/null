@@ -1,53 +1,24 @@
-class HashTable {
-  constructor() {
-    this.table = {};
-  }
+function findMedianSortedArrays(nums1, nums2) {
+  const merged = nums1.concat(nums2).sort((a, b) => a - b);
+  const length = merged.length;
+  const middleIndex = Math.floor(length / 2);
 
-  // Other methods will be added here
+  if (length % 2 === 1) {
+    return merged[middleIndex];
+  } else {
+    return average(merged[middleIndex - 1], merged[middleIndex]);
+  }
 }
-HashTable.prototype.hash = function(key) {
-  if (typeof key !== 'string') {
-    throw new Error('Key must be a string');
-  }
-  let hash = 0;
-  for (let i = 0; i < key.length; i++) {
-    hash += key.charCodeAt(i);
-  }
-  return hash % 37; // Modulo to keep the index within the size of the underlying data structure
-};
-HashTable.prototype.add = function(key, value) {
-  const index = this.hash(key);
-  if (!this.table[index]) {
-    this.table[index] = {};
-  }
-  this.table[index][key] = value;
-};
 
-HashTable.prototype.get = function(key) {
-  const index = this.hash(key);
-  if (this.table[index] && this.table[index][key] !== undefined) {
-    return this.table[index][key];
-  }
-  return null;
-};
+function average(a, b) {
+  return (a + b) / 2;
+}
 
-HashTable.prototype.remove = function(key) {
-  const index = this.hash(key);
-  if (this.table[index] && this.table[index][key] !== undefined) {
-    delete this.table[index][key];
-    // Optionally, you can also delete the empty index
-    if (Object.keys(this.table[index]).length === 0) {
-      delete this.table[index];
-    }
-    return true;
-  }
-  return false;
-};
-const hashTable = new HashTable();
-hashTable.add('apple', 'A fruit');
-hashTable.add('banana', 'A yellow fruit');
-console.log(hashTable.get('apple')); // Output: A fruit
-console.log(hashTable.get('banana')); // Output: A yellow fruit
-console.log(hashTable.get('orange')); // Output: null
-hashTable.remove('banana');
-console.log(hashTable.get('banana')); // Output: null
+// Test the function
+const nums1 = [1, 3];
+const nums2 = [2];
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2
+
+const nums3 = [1, 2];
+const nums4 = [3, 4];
+console.log(findMedianSortedArrays(nums3, nums4)); // Output: 2.5
