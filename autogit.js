@@ -1,19 +1,8 @@
-function factorialLoop(n) {
-  let result = 1;
-  for (let i = 2; i <= n; i++) {
-    result *= i;
-  }
-  return result;
-}
+const str = 'Hello, world!';
+const substring = 'world';
 
-// Example usage
-console.log(factorialLoop(5)); // Output: 120
-function factorialRecursion(n) {
-  if (n === 0) {
-    return 1;
-  }
-  return n * factorialRecursion(n - 1);
+if (str.includes(substring)) {
+  console.log('Substring found!');
+} else {
+  console.log('Substring not found!');
 }
-
-// Example usage
-console.log(factorialRecursion(5)); // Output: 120
