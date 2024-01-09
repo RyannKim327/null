@@ -1,25 +1,16 @@
-const string = 'Hello, World!';
-const reversedString = string.split('').reverse().join('');
-console.log(reversedString);
-function reverseString(str) {
-  let reversedString = '';
-  for (let i = str.length - 1; i >= 0; i--) {
-    reversedString += str[i];
-  }
-  return reversedString;
+// Sample array
+let arr = [1, 2, 3, 4, 5];
+
+// Element to remove
+let elementToRemove = 3;
+
+// Finding index of the element
+let index = arr.indexOf(elementToRemove);
+
+// Checking if the element exists in the array
+if (index !== -1) {
+  // Removing the element using splice()
+  arr.splice(index, 1);
 }
 
-const string = 'Hello, World!';
-const reversedString = reverseString(string);
-console.log(reversedString);
-function reverseString(str) {
-  if (str === '') {
-    return '';
-  } else {
-    return reverseString(str.substr(1)) + str.charAt(0);
-  }
-}
-
-const string = 'Hello, World!';
-const reversedString = reverseString(string);
-console.log(reversedString);
+console.log(arr); // Output: [1, 2, 4, 5]
