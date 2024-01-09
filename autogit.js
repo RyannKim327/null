@@ -1,18 +1,44 @@
-function calculateMean(numbers) {
-  if (numbers.length === 0) {
-    return 0;
+function mergeSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
   }
 
-  var sum = 0;
-  for (var i = 0; i < numbers.length; i++) {
-    sum += numbers[i];
+  const aux = Array.from(arr);
+  const n = arr.length;
+
+  for (let size = 1; size < n; size *= 2) {
+    for (let lo = 0; lo < n - size; lo += size * 2) {
+      const mid = lo + size - 1;
+      const hi = Math.min(lo + size * 2 - 1, n - 1);
+      merge(arr, aux, lo, mid, hi);
+    }
   }
 
-  var mean = sum / numbers.length;
-  return mean;
+  return arr;
+}
+
+function merge(arr, aux, lo, mid, hi) {
+  for (let k = lo; k <= hi; k++) {
+    aux[k] = arr[k];
+  }
+
+  let i = lo;
+  let j = mid + 1;
+
+  for (let k = lo; k <= hi; k++) {
+    if (i > mid) {
+      arr[k] = aux[j++];
+    } else if (j > hi) {
+      arr[k] = aux[i++];
+    } else if (aux[j] < aux[i]) {
+      arr[k] = aux[j++];
+    } else {
+      arr[k] = aux[i++];
+    }
+  }
 }
 
 // Example usage
-var numbers = [1, 2, 3, 4, 5];
-var mean = calculateMean(numbers);
-console.log(mean);
+const arr = [5, 3, 8, 4, 2, 1];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr);  // [1, 2, 3, 4, 5, 8]
