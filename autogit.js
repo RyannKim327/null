@@ -1,28 +1,43 @@
-function largestPrimeFactor(number) {
-    let largestFactor = 1;
+function mergeSort(arr) {
+  if (arr.length <= 1) {
+    return arr; // returns the array if it has only one element or is empty
+  }
 
-    // Check if the number is divisible by 2
-    while (number % 2 === 0) {
-        largestFactor = 2;
-        number /= 2;
-    }
+  const midIndex = Math.floor(arr.length / 2);
+  const leftArr = arr.slice(0, midIndex);
+  const rightArr = arr.slice(midIndex);
 
-    // Check for odd prime factors starting from 3
-    for (let i = 3; i <= Math.sqrt(number); i += 2) {
-        while (number % i === 0) {
-            largestFactor = i;
-            number /= i;
-        }
-    }
+  const sortedLeftArr = mergeSort(leftArr);
+  const sortedRightArr = mergeSort(rightArr);
 
-    // If the remaining number is greater than 2, it is also a prime factor
-    if (number > 2) {
-        largestFactor = number;
-    }
-
-    return largestFactor;
+  return merge(sortedLeftArr, sortedRightArr);
 }
 
-const number = 123456789;
-const largestFactor = largestPrimeFactor(number);
-console.log("Largest prime factor of", number, "is", largestFactor);
+function merge(leftArr, rightArr) {
+  const sortedArr = [];
+
+  while (leftArr.length && rightArr.length) {
+    if (leftArr[0] <= rightArr[0]) {
+      sortedArr.push(leftArr.shift());
+    } else {
+      sortedArr.push(rightArr.shift());
+    }
+  }
+
+  // If any elements are remaining in the left array, add them to the sorted array
+  while (leftArr.length) {
+    sortedArr.push(leftArr.shift());
+  }
+
+  // If any elements are remaining in the right array, add them to the sorted array
+  while (rightArr.length) {
+    sortedArr.push(rightArr.shift());
+  }
+
+  return sortedArr;
+}
+
+// Example usage:
+const arr = [5, 2, 9, 1, 7, 6, 4, 3, 8];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr);
