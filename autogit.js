@@ -1,36 +1,20 @@
-function quicksort(arr) {
-  // Base case: if the array is empty or contains only one element,
-  // it is already sorted.
-  if (arr.length <= 1) {
-    return arr;
-  }
-
-  // Choose a pivot element from the array. We'll use the last element as the pivot.
-  const pivot = arr[arr.length - 1];
-
-  // Create two empty arrays to store elements smaller and greater than the pivot.
-  const left = [];
-  const right = [];
-
-  // Iterate over all elements (except the pivot) in the array.
-  for (let i = 0; i < arr.length - 1; i++) {
-    // If the current element is smaller than the pivot, place it in the `left` array.
-    if (arr[i] < pivot) {
-      left.push(arr[i]);
+function binarySearchRecursive(arr, target, low, high) {
+    if (low > high) {
+        return -1;
     }
-    // If the current element is greater than or equal to the pivot,
-    // place it in the `right` array.
-    else {
-      right.push(arr[i]);
-    }
-  }
 
-  // Recursively sort and concatenate the `left` and `right` arrays,
-  // with the pivot in-between.
-  return [...quicksort(left), pivot, ...quicksort(right)];
+    let mid = Math.floor((low + high) / 2);
+    
+    if (arr[mid] === target) {
+        return mid;
+    } else if (arr[mid] > target) {
+        return binarySearchRecursive(arr, target, low, mid - 1);
+    } else {
+        return binarySearchRecursive(arr, target, mid + 1, high);
+    }
 }
+let array = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+let target = 6;
 
-// Example usage:
-const array = [7, -2, 4, 1, 6, 5, 0, -4, 2];
-const sortedArray = quicksort(array);
-console.log(sortedArray);
+let result = binarySearchRecursive(array, target, 0, array.length - 1);
+console.log(result); // Output: 5 (index of the target element in the array)
