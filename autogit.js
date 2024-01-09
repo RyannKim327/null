@@ -1,44 +1,22 @@
-function Node(value, children) {
-  this.value = value;
-  this.children = children;
-}
-
-function depthLimitedSearch(root, targetValue, depthLimit) {
-  // Create an empty stack and push the root node onto it
-  const stack = [];
-  stack.push({ node: root, depth: 0 });
-
-  while (stack.length > 0) {
-    // Pop the top node from the stack
-    const { node, depth } = stack.pop();
-
-    // Check if the current node matches the target value
-    if (node.value === targetValue) {
-      return node;
-    }
-
-    // Check if the depth limit has been reached
-    if (depth === depthLimit) {
-      continue;
-    }
-
-    // Push the children of the current node onto the stack
-    if (node.children) {
-      for (let i = node.children.length - 1; i >= 0; i--) {
-        stack.push({ node: node.children[i], depth: depth + 1 });
-      }
-    }
+function binarySearchRecursive(arr, value, start = 0, end = arr.length - 1) {
+  if (start > end) {
+    return -1; // value not found
   }
 
-  // Target value not found within depth limit
-  return null;
+  let mid = Math.floor((start + end) / 2);
+
+  if (arr[mid] === value) {
+    return mid; // value found
+  }
+
+  if (arr[mid] > value) {
+    return binarySearchRecursive(arr, value, start, mid - 1);
+  } else {
+    return binarySearchRecursive(arr, value, mid + 1, end);
+  }
 }
 
-// Example usage
-const tree = new Node(1, [
-  new Node(2, [new Node(4), new Node(5)]),
-  new Node(3, [new Node(6), new Node(7)])
-]);
-
-const result = depthLimitedSearch(tree, 6, 2);
-console.log(result); // Node { value: 6, children: [] }
+// Example usage:
+let sortedArray = [1, 3, 5, 7, 9, 11, 13];
+console.log(binarySearchRecursive(sortedArray, 7)); // Output: 3
+console.log(binarySearchRecursive(sortedArray, 4)); // Output: -1 (not found)
