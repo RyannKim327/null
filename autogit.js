@@ -1,47 +1,22 @@
-function buildHeap(arr, n, i) {
-  let largest = i; // Initialize largest as the root
-  let left = 2 * i + 1; // Left child index
-  let right = 2 * i + 2; // Right child index
+function areAnagrams(str1, str2) {
+  // Remove non-alphabet characters and convert to lowercase
+  str1 = str1.replace(/[^A-Za-z]/g, '').toLowerCase();
+  str2 = str2.replace(/[^A-Za-z]/g, '').toLowerCase();
 
-  // If the left child is larger than the root
-  if (left < n && arr[left] > arr[largest])
-    largest = left;
+  // Convert strings to sorted arrays and join back into strings
+  const sortedStr1 = str1.split('').sort().join('');
+  const sortedStr2 = str2.split('').sort().join('');
 
-  // If the right child is larger than the current largest
-  if (right < n && arr[right] > arr[largest])
-    largest = right;
-
-  // If the largest is not the root
-  if (largest !== i) {
-    // Swap the root with the largest element
-    let temp = arr[i];
-    arr[i] = arr[largest];
-    arr[largest] = temp;
-
-    // Recursively heapify the affected sub-tree
-    buildHeap(arr, n, largest);
-  }
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
-function heapSort(arr) {
-  const n = arr.length;
 
-  // Build a max-heap (rearrange the array)
-  for (let i = Math.floor(n / 2) - 1; i >= 0; i--)
-    buildHeap(arr, n, i);
+// Example usage
+const string1 = 'listen';
+const string2 = 'silent';
 
-  // Extract elements from the heap one by one
-  for (let i = n - 1; i > 0; i--) {
-    // Move current root to the end
-    let temp = arr[0];
-    arr[0] = arr[i];
-    arr[i] = temp;
-
-    // Call max heapify on the reduced heap
-    buildHeap(arr, i, 0);
-  }
-
-  return arr;
+if (areAnagrams(string1, string2)) {
+  console.log(`${string1} and ${string2} are anagrams.`);
+} else {
+  console.log(`${string1} and ${string2} are not anagrams.`);
 }
-const array = [4, 10, 3, 5, 1];
-const sortedArray = heapSort(array);
-console.log(sortedArray); // Outputs: [1, 3, 4, 5, 10]
