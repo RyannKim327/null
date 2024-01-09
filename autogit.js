@@ -1,33 +1,21 @@
-function countingSort(arr) {
-  // Find the maximum element in the array
-  let max = Math.max(...arr);
+function beamSearch(beamSize, initialState, getNextStates, scoreFunction, terminationCondition) {
+  let beam = [initialState];
 
-  // Create a count array with a size equal to max+1 and initialize all elements with 0
-  let count = Array(max + 1).fill(0);
+  while (!terminationCondition()) {
+    let nextBeam = [];
 
-  // Increment the count of each element in arr by 1
-  for (let i = 0; i < arr.length; i++) {
-    count[arr[i]]++;
+    for (let state of beam) {
+      let nextStates = getNextStates(state);
+
+      for (let nextState of nextStates) {
+        nextState.score = scoreFunction(nextState);
+        nextBeam.push(nextState);
+      }
+    }
+
+    nextBeam.sort((a, b) => b.score - a.score);
+    beam = nextBeam.slice(0, beamSize);
   }
 
-  // Modify the count array such that each element at index i stores the sum of elements up to i
-  for (let i = 1; i <= max; i++) {
-    count[i] += count[i - 1];
-  }
-
-  // Create a result array with the same length as the input array
-  let result = new Array(arr.length);
-
-  // Build the result array by placing each element from the input array to its correct position in the result array
-  for (let i = 0; i < arr.length; i++) {
-    result[count[arr[i]] - 1] = arr[i];
-    count[arr[i]]--;
-  }
-
-  return result;
+  return beam[0];
 }
-
-// Usage example:
-let arr = [4, 2, 10, 8, 3];
-let sortedArray = countingSort(arr);
-console.log(sortedArray); // Output: [2, 3, 4, 8, 10]
