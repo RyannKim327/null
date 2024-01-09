@@ -1,34 +1,53 @@
-function longestCommonSubstring(str1, str2) {
-  // Create a matrix to store lengths of longest common suffixes of substrings
-  const matrix = Array(str1.length + 1)
-    .fill(0)
-    .map(() => Array(str2.length + 1).fill(0));
-
-  let maxLength = 0; // Length of longest common substring
-  let endIndex = 0; // Index of the last character of longest common substring
-
-  // Fill the matrix and update max length and ending index
-  for (let i = 1; i <= str1.length; i++) {
-    for (let j = 1; j <= str2.length; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        matrix[i][j] = matrix[i - 1][j - 1] + 1;
-        if (matrix[i][j] > maxLength) {
-          maxLength = matrix[i][j];
-          endIndex = i - 1;
-        }
-      } else {
-        matrix[i][j] = 0;
-      }
-    }
+class Node {
+  constructor(value, next = null) {
+    this.value = value;
+    this.next = next;
   }
-
-  // Extract the longest common substring using the ending index
-  const longestSubstring = str1.substring(endIndex - maxLength + 1, endIndex + 1);
-  return longestSubstring;
 }
 
-// Example usage
-const str1 = "javascript";
-const str2 = "substring";
-const longestSubStr = longestCommonSubstring(str1, str2);
-console.log(longestSubStr); // Output: "string"
+function reverseLinkedList(head) {
+  let prev = null;
+  let current = head;
+
+  while (current !== null) {
+    const next = current.next;
+    current.next = prev;
+    prev = current;
+    current = next;
+  }
+
+  return prev; // new head of the reversed list
+}
+// Create a linked list: 1 -> 2 -> 3 -> 4 -> 5
+const head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
+
+console.log('Original Linked List:');
+let temp = head;
+while (temp !== null) {
+  console.log(temp.value);
+  temp = temp.next;
+}
+
+const reversedHead = reverseLinkedList(head);
+console.log('Reversed Linked List:');
+temp = reversedHead;
+while (temp !== null) {
+  console.log(temp.value);
+  temp = temp.next;
+}
+Original Linked List:
+1
+2
+3
+4
+5
+Reversed Linked List:
+5
+4
+3
+2
+1
