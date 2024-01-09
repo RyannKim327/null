@@ -1,52 +1,76 @@
-function stringMatchingKMP(text, pattern) {
-  const prefix = [];
-  prefix[0] = 0;
-  let i = 1, j = 0;
-  
-  // Calculate the prefix function
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[j]) {
-      prefix[i] = j + 1;
-      i++;
-      j++;
-    } else {
-      if (j !== 0) {
-        j = prefix[j - 1];
-      } else {
-        prefix[i] = 0;
-        i++;
-      }
-    }
+function getLength(head) {
+  let length = 0;
+  let current = head;
+
+  while (current) {
+    length++;
+    current = current.next;
   }
-  
-  const matches = [];
-  i = 0;
-  j = 0;
-  
-  // Match the pattern against the text
-  while (i < text.length) {
-    if (text[i] === pattern[j]) {
-      i++;
-      j++;
-      
-      if (j === pattern.length) {
-        matches.push(i - j);
-        j = prefix[j - 1];
-      }
-    } else {
-      if (j !== 0) {
-        j = prefix[j - 1];
-      } else {
-        i++;
-      }
-    }
+
+  return length;
+}
+function advancePointer(head, steps) {
+  let current = head;
+
+  while (steps > 0 && current) {
+    current = current.next;
+    steps--;
   }
-  
-  return matches;
+
+  return current;
+}
+function getIntersectionNode(headA, headB) {
+  // Get the lengths of both lists
+  const lengthA = getLength(headA);
+  const lengthB = getLength(headB);
+
+  // Calculate the difference in lengths
+  let diff = Math.abs(lengthA - lengthB);
+
+  // Advance the pointer of the longer list by the difference
+  if (lengthA > lengthB) {
+    headA = advancePointer(headA, diff);
+  } else {
+    headB = advancePointer(headB, diff);
+  }
+
+  // Move both pointers until they meet at the intersection
+  while (headA && headB) {
+    if (headA === headB) {
+      return headA;
+    }
+
+    headA = headA.next;
+    headB = headB.next;
+  }
+
+  // No intersection found
+  return null;
+}
+// Define the structure for a linked list node
+class ListNode {
+  constructor(data) {
+    this.val = data;
+    this.next = null;
+  }
 }
 
-// Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const matches = stringMatchingKMP(text, pattern);
-console.log(matches); // Output: [10]
+// Create the first linked list
+const listA = new ListNode(3);
+listA.next = new ListNode(7);
+listA.next.next = new ListNode(8);
+listA.next.next.next = new ListNode(10);
+
+// Create the second linked list
+const listB = new ListNode(99);
+listB.next = new ListNode(1);
+listB.next.next = listA.next.next;
+
+// Find the intersection point
+const intersection = getIntersectionNode(listA, listB);
+
+if (intersection) {
+  console.log(`Intersection found at node with value: ${intersection.val}`);
+} else {
+  console.log('No intersection found');
+}
