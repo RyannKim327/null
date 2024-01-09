@@ -1,59 +1,12 @@
-class SkipListNode {
-  constructor(value, level) {
-    this.value = value;
-    this.next = new Array(level + 1);
-    this.level = level;
-  }
+function countOccurrences(string, word) {
+  const regex = new RegExp(word, 'gi');
+  const matches = string.match(regex);
+  return matches ? matches.length : 0;
 }
-class SkipList {
-  constructor() {
-    this.head = new SkipListNode(null, 0);
-    this.level = 0;
-  }
-  // implement the operations like insert, delete, search, etc.
-}
-class SkipList {
-  // ...
 
-  insert(value) {
-    const update = new Array(this.level + 1);
-    let currentNode = this.head;
-  
-    for (let i = this.level; i >= 0; i--) {
-      while (
-        currentNode.next[i] !== undefined &&
-        currentNode.next[i].value < value
-      ) {
-        currentNode = currentNode.next[i];
-      }
-      update[i] = currentNode;
-    }
-  
-    currentNode = currentNode.next[0];
-  
-    if (currentNode === undefined || currentNode.value !== value) {
-      const newNode = new SkipListNode(value, this.randomLevel());
-  
-      if (newNode.level > this.level) {
-        for (let i = this.level + 1; i <= newNode.level; i++) {
-          update[i] = this.head;
-        }
-  
-        this.level = newNode.level;
-      }
-  
-      for (let i = 0; i <= newNode.level; i++) {
-        newNode.next[i] = update[i].next[i];
-        update[i].next[i] = newNode;
-      }
-    }
-  }
+const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed nibh ultricies, tincidunt ipsum id, interdum justo. Duis non blandit ipsum. Sed accumsan consectetur ipsum, a semper arcu laoreet et.';
 
-  randomLevel() {
-    let level = 0;
-    while (Math.random() < 0.5 && level < 32) {
-      level++;
-    }
-    return level;
-  }
-}
+const wordToCount = 'ipsum';
+const occurrences = countOccurrences(text, wordToCount);
+
+console.log(`The word "${wordToCount}" appears ${occurrences} times in the given string.`);
