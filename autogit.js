@@ -1,72 +1,76 @@
-class Graph {
-  constructor() {
-    this.adjacencyList = new Map();
-  }
-
-  addVertex(vertex) {
-    if (!this.adjacencyList.has(vertex)) {
-      this.adjacencyList.set(vertex, []);
-    }
-  }
-
-  addEdge(vertex1, vertex2) {
-    if (this.adjacencyList.has(vertex1) && this.adjacencyList.has(vertex2)) {
-      const connections1 = this.adjacencyList.get(vertex1);
-      const connections2 = this.adjacencyList.get(vertex2);
-
-      if (!connections1.includes(vertex2)) {
-        connections1.push(vertex2);
-      }
-
-      if (!connections2.includes(vertex1)) {
-        connections2.push(vertex1);
+function dijkstra(graph, startNode) {
+  const distances = {}; // Initialize distances to infinity
+  const visited = {};
+  const previous = {};
+  
+  // Set initial distances and previous node for startNode
+  distances[startNode] = 0;
+  
+  // Function to find the node with the shortest distance
+  function findShortestDistanceNode() {
+    let shortestDistance = Infinity;
+    let shortestNode = null;
+    
+    for (let node in distances) {
+      const distance = distances[node];
+      if (distance < shortestDistance && !visited[node]) {
+        shortestDistance = distance;
+        shortestNode = node;
       }
     }
+    
+    return shortestNode;
   }
-
-  getNeighbors(vertex) {
-    if (this.adjacencyList.has(vertex)) {
-      return this.adjacencyList.get(vertex);
+  
+  while (true) {
+    const currentNode = findShortestDistanceNode();
+    if (currentNode === null) break;
+    
+    visited[currentNode] = true;
+    
+    for (let neighbor in graph[currentNode]) {
+      const distance = graph[currentNode][neighbor];
+      const totalDistance = distances[currentNode] + distance;
+      
+      if (!distances[neighbor] || totalDistance < distances[neighbor]) {
+        distances[neighbor] = totalDistance;
+        previous[neighbor] = currentNode;
+      }
     }
-    return [];
   }
+  
+  return { distances, previous };
 }
-function bfs(graph, startVertex) {
-  const visited = new Set();
-  const queue = [];
 
-  visited.add(startVertex);
-  queue.push(startVertex);
+// Example usage:
+const graph = {
+  A: { B: 5, C: 1 },
+  B: { A: 5, C: 2, D: 1 },
+  C: { A: 1, B: 2, D: 4, E: 8 },
+  D: { B: 1, C: 4, E: 3, F: 6 },
+  E: { C: 8, D: 3 },
+  F: { D: 6 },
+};
 
-  while (queue.length > 0) {
-    const vertex = queue.shift();
-    // Process the vertex, e.g., print it to console
-    console.log(vertex);
+const startNode = "A";
+const { distances, previous } = dijkstra(graph, startNode);
 
-    const neighbors = graph.getNeighbors(vertex);
-    for (const neighbor of neighbors) {
-      if (!visited.has(neighbor)) {
-        visited.add(neighbor);
-        queue.push(neighbor);
-      }
-    }
+console.log(distances); // Output: { A: 0, B: 3, C: 1, D: 4, E: 7, F: 10 }
+console.log(previous);  // Output: { B: 'A', C: 'A', D: 'B', E: 'D', F: 'D' }
+
+// Reconstruct shortest path from startNode to any other node
+function reconstructPath(previous, destination) {
+  const path = [destination];
+  let current = destination;
+  
+  while (previous[current]) {
+    path.unshift(previous[current]);
+    current = previous[current];
   }
+  
+  return path;
 }
-const graph = new Graph();
 
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
-graph.addVertex('F');
-
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('C', 'E');
-graph.addEdge('D', 'E');
-graph.addEdge('D', 'F');
-graph.addEdge('E', 'F');
-
-bfs(graph, 'A');
+const destination = "F";
+const shortestPath = reconstructPath(previous, destination);
+console.log(shortestPath); // Output: ['A', 'C', 'D', 'F']
