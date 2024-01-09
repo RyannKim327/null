@@ -1,41 +1,39 @@
-function findLCS(str1, str2) {
-  const m = str1.length;
-  const n = str2.length;
+function fibonacciSearch(array, searchElement, length) {
+  let fibNMinus2 = 0;
+  let fibNMinus1 = 1;
 
-  // Create a 2D matrix with (m+1) rows and (n+1) columns
-  const matrix = Array.from(Array(m + 1), () => Array(n + 1).fill(0));
-
-  // Build the matrix using bottom-up dynamic programming approach
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        matrix[i][j] = matrix[i - 1][j - 1] + 1;
-      } else {
-        matrix[i][j] = Math.max(matrix[i - 1][j], matrix[i][j - 1]);
-      }
-    }
+  while (fibNMinus1 < length) {
+    let fibonacciNumber = fibNMinus2 + fibNMinus1;
+    fibNMinus2 = fibNMinus1;
+    fibNMinus1 = fibonacciNumber;
   }
 
-  // Reconstruct the longest common subsequence
-  let lcs = "";
-  let i = m, j = n;
-  while (i > 0 && j > 0) {
-    if (str1[i - 1] === str2[j - 1]) {
-      lcs = str1[i - 1] + lcs;
-      i--;
-      j--;
-    } else if (matrix[i - 1][j] > matrix[i][j - 1]) {
-      i--;
+  let offset = -1;
+
+  while (fibNMinus2 > 1) {
+    let position = Math.min(offset + fibNMinus2, length - 1);
+
+    if (array[position] === searchElement) {
+      return position;
+    } else if (array[position] < searchElement) {
+      fibNMinus2 = fibNMinus1;
+      fibNMinus1 -= fibNMinus2;
+      offset = position;
     } else {
-      j--;
+      fibNMinus1 -= fibNMinus2;
+      fibNMinus2 -= fibNMinus1;
     }
   }
 
-  return lcs;
-}
+  if (fibNMinus1 === 1 && array[offset + 1] === searchElement) {
+    return offset + 1;
+  }
 
-// Example usage:
-const str1 = "ABCDGH";
-const str2 = "AEDFHR";
-const lcs = findLCS(str1, str2);
-console.log(lcs);  // Output: "ADH"
+  return -1;
+}
+const array = [1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
+const searchElement = 13;
+const length = array.length;
+
+const result = fibonacciSearch(array, searchElement, length);
+console.log(result);  // Output: 5
