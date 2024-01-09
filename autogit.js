@@ -1,35 +1,45 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+class Stack {
+  constructor() {
+    this.stack = []; // Array to store stack elements
+  }
+
+  push(item) {
+    this.stack.push(item); // Add element to the end of the array
+  }
+
+  pop() {
+    if (this.isEmpty()) {
+      return null; // Return null if stack is empty
+    }
+    return this.stack.pop(); // Remove and return the last element of the array
+  }
+
+  peek() {
+    if (this.isEmpty()) {
+      return null; // Return null if stack is empty
+    }
+    return this.stack[this.stack.length - 1]; // Return the last element of the array without removing
+  }
+
+  isEmpty() {
+    return this.stack.length === 0; // Check if the stack is empty
+  }
+
+  size() {
+    return this.stack.length; // Return the size of the stack
   }
 }
 
-function countLeafNodes(root) {
-  if (root === null) {
-    return 0;
-  }
+// Usage:
+const stack = new Stack();
+stack.push(5);
+stack.push(10);
+stack.push(15);
 
-  if (root.left === null && root.right === null) {
-    return 1; // Found a leaf node
-  }
+console.log(stack.size()); // Output: 3
+console.log(stack.peek()); // Output: 15
 
-  let leftCount = countLeafNodes(root.left);
-  let rightCount = countLeafNodes(root.right);
+console.log(stack.pop()); // Output: 15
+console.log(stack.pop()); // Output: 10
 
-  return leftCount + rightCount;
-}
-
-// Example usage
-// Create a binary tree
-let root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
-
-let leafCount = countLeafNodes(root);
-console.log(leafCount); // Output: 4
+console.log(stack.size()); // Output: 1
