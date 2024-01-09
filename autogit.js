@@ -1,45 +1,30 @@
-class Stack {
-  constructor() {
-    this.stack = []; // Array to store stack elements
-  }
+function findLongestIncreasingSubsequence(arr) {
+  const n = arr.length;
+  const dp = new Array(n).fill(1);
+  let maxLength = 1;
 
-  push(item) {
-    this.stack.push(item); // Add element to the end of the array
-  }
-
-  pop() {
-    if (this.isEmpty()) {
-      return null; // Return null if stack is empty
+  for (let i = 1; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      if (arr[i] > arr[j]) {
+        dp[i] = Math.max(dp[i], dp[j] + 1);
+        maxLength = Math.max(maxLength, dp[i]);
+      }
     }
-    return this.stack.pop(); // Remove and return the last element of the array
   }
 
-  peek() {
-    if (this.isEmpty()) {
-      return null; // Return null if stack is empty
+  const result = [];
+  let lastIndex = -1;
+  for (let i = n - 1; i >= 0; i--) {
+    if (dp[i] === maxLength && (lastIndex === -1 || arr[i] < arr[lastIndex])) {
+      result.unshift(arr[i]);
+      maxLength--;
+      lastIndex = i;
     }
-    return this.stack[this.stack.length - 1]; // Return the last element of the array without removing
   }
-
-  isEmpty() {
-    return this.stack.length === 0; // Check if the stack is empty
-  }
-
-  size() {
-    return this.stack.length; // Return the size of the stack
-  }
+  return result;
 }
 
-// Usage:
-const stack = new Stack();
-stack.push(5);
-stack.push(10);
-stack.push(15);
-
-console.log(stack.size()); // Output: 3
-console.log(stack.peek()); // Output: 15
-
-console.log(stack.pop()); // Output: 15
-console.log(stack.pop()); // Output: 10
-
-console.log(stack.size()); // Output: 1
+// Example usage
+const arr = [3, 10, 2, 1, 20];
+const longestIncreasingSubsequence = findLongestIncreasingSubsequence(arr);
+console.log(longestIncreasingSubsequence); // Output: [3, 10, 20]
