@@ -1,5 +1,22 @@
-// Prompt the user for input
-var userInput = prompt("Enter something:");
-
-// Display the user input
-console.log("You entered: " + userInput);
+function selectionSort(arr) {
+  // Implementation goes here
+}
+function selectionSort(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    let minIndex = i;
+    for (let j = i + 1; j < arr.length; j++) {
+      if (arr[j] < arr[minIndex]) {
+        minIndex = j;
+      }
+    }
+    if (minIndex !== i) {
+      // Swap the elements
+      let temp = arr[i];
+      arr[i] = arr[minIndex];
+      arr[minIndex] = temp;
+    }
+  }
+  return arr;
+}
+let arr = [64, 25, 12, 22, 11];
+console.log(selectionSort(arr));  // Output: [11, 12, 22, 25, 64]
