@@ -1,7 +1,19 @@
-function getRandomNumber(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+function isPalindrome(str) {
+  // Remove any non-alphanumeric characters and convert to lowercase
+  const cleanedStr = str.replace(/[\W_]/g, '').toLowerCase();
+  
+  // Reverse the cleaned string
+  const reversedStr = cleanedStr.split('').reverse().join('');
+  
+  // Compare the cleaned string with the reversed string
+  return cleanedStr === reversedStr;
 }
 
-// Usage: Generating a random number between 1 and 10
-var randomNumber = getRandomNumber(1, 10);
-console.log(randomNumber);
+// Example usage
+const word = "racecar";
+const result = isPalindrome(word);
+console.log(result); // Output: true
+
+const phrase = "A man, a plan, a canal: Panama";
+const result2 = isPalindrome(phrase);
+console.log(result2); // Output: true
