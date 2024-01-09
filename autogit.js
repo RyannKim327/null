@@ -1,23 +1,17 @@
-function findLongestCommonPrefix(strings) {
-  if (strings.length === 0) {
-    return "";
-  }
-
-  let prefix = strings[0];
+function reverseStringWords(str) {
+  // Split the string into an array of words
+  const words = str.split(" ");
   
-  for (let i = 1; i < strings.length; i++) {
-    let j = 0;
-    while (j < prefix.length && j < strings[i].length && prefix[j] === strings[i][j]) {
-      j++;
-    }
-    prefix = prefix.substring(0, j);
-    if (prefix === "") {
-      return "";
-    }
-  }
+  // Reverse the array
+  const reversedWords = words.reverse();
   
-  return prefix;
+  // Join the reversed array elements into a string
+  const reversedString = reversedWords.join(" ");
+  
+  return reversedString;
 }
-const strings = ["flower", "flow", "flight"];
-const longestCommonPrefix = findLongestCommonPrefix(strings);
-console.log(longestCommonPrefix); // Output: "fl"
+
+// Example usage
+const originalString = "Hello World!";
+const reversedString = reverseStringWords(originalString);
+console.log(reversedString); // Output: "World! Hello"
