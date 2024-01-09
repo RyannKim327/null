@@ -1,17 +1,10 @@
-function isAnagram(str1, str2) {
-  // Remove non-alphabetic characters and convert to lowercase
-  str1 = str1.replace(/[^A-Za-z]/g, '').toLowerCase();
-  str2 = str2.replace(/[^A-Za-z]/g, '').toLowerCase();
-
-  // Sort the strings
-  const sortedStr1 = str1.split('').sort().join('');
-  const sortedStr2 = str2.split('').sort().join('');
-
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+function factorial(n) {
+  if (n === 0 || n === 1) {
+    return 1;
+  } else {
+    return n * factorial(n - 1);
+  }
 }
 
 // Example usage
-const string1 = "Listen";
-const string2 = "Silent";
-console.log(isAnagram(string1, string2));  // Output: true
+console.log(factorial(5)); // Output: 120
