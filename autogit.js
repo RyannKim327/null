@@ -1,22 +1,110 @@
-function binarySearchRecursive(arr, value, start = 0, end = arr.length - 1) {
-  if (start > end) {
-    return -1; // value not found
-  }
-
-  let mid = Math.floor((start + end) / 2);
-
-  if (arr[mid] === value) {
-    return mid; // value found
-  }
-
-  if (arr[mid] > value) {
-    return binarySearchRecursive(arr, value, start, mid - 1);
-  } else {
-    return binarySearchRecursive(arr, value, mid + 1, end);
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.left = null;
+    this.right = null;
   }
 }
 
-// Example usage:
-let sortedArray = [1, 3, 5, 7, 9, 11, 13];
-console.log(binarySearchRecursive(sortedArray, 7)); // Output: 3
-console.log(binarySearchRecursive(sortedArray, 4)); // Output: -1 (not found)
+class BinaryTree {
+  constructor() {
+    this.root = null;
+  }
+
+  insert(data) {
+    const newNode = new Node(data);
+
+    if (!this.root) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
+
+  insertNode(node, newNode) {
+    if (newNode.data < node.data) {
+      if (!node.left) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (!node.right) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  search(node, data) {
+    if (!node || node.data === data) {
+      return node;
+    }
+
+    if (data < node.data) {
+      return this.search(node.left, data);
+    } 
+
+    return this.search(node.right, data);
+  }
+
+  remove(data) {
+    this.root = this.removeNode(this.root, data);
+  }
+
+  removeNode(node, key) {
+    if (!node) {
+      return null;
+    }
+
+    if (key < node.data) {
+      node.left = this.removeNode(node.left, key);
+      return node;
+    } else if (key > node.data) {
+      node.right = this.removeNode(node.right, key);
+      return node;
+    } else {
+      if (!node.left && !node.right) {
+        return null;
+      }
+
+      if (!node.left) {
+        return node.right;
+      }
+
+      if (!node.right) {
+        return node.left;
+      }
+
+      const minValue = this.findMinValue(node.right);
+      node.data = minValue;
+      node.right = this.removeNode(node.right, minValue);
+
+      return node;
+    }
+  }
+  
+  findMinValue(node) {
+    if (node.left === null) {
+      return node.data;
+    }
+
+    return this.findMinValue(node.left);
+  }
+}
+const tree = new BinaryTree();
+tree.insert(8);
+tree.insert(3);
+tree.insert(10);
+tree.insert(1);
+tree.insert(6);
+tree.insert(14);
+tree.insert(4);
+tree.insert(7);
+tree.insert(13);
+
+console.log(tree.search(tree.root, 6)); // Node { data: 6, left: ..., right: ... }
+
+tree.remove(6);
+console.log(tree.search(tree.root, 6)); // null
