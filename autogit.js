@@ -1,42 +1,33 @@
-// Helper function to perform the heapify operation
-function heapify(arr, n, i) {
-    let largest = i;
-    const left = 2 * i + 1;
-    const right = 2 * i + 2;
+function shellSort(arr) {
+  const len = arr.length;
+  let gap = 1;
 
-    if (left < n && arr[left] > arr[largest])
-        largest = left;
+  // Generating the gap sequence
+  while (gap < len / 3) {
+    gap = gap * 3 + 1;
+  }
 
-    if (right < n && arr[right] > arr[largest])
-        largest = right;
+  while (gap > 0) {
+    for (let i = gap; i < len; i++) {
+      const temp = arr[i];
+      let j = i;
 
-    if (largest !== i) {
-        [arr[i], arr[largest]] = [arr[largest], arr[i]];
-        heapify(arr, n, largest);
+      // Shifting elements that are greater than temp
+      while (j > gap - 1 && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
+      }
+
+      arr[j] = temp;
     }
-}
 
-// Main function to perform heap sort
-function heapSort(arr) {
-    const n = arr.length;
+    // Decrease the gap for the next iteration
+    gap = Math.floor(gap / 3);
+  }
 
-    // Build a max heap
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--)
-        heapify(arr, n, i);
-
-    // Extract elements from the heap one by one
-    for (let i = n - 1; i > 0; i--) {
-        // Move the current root to the end
-        [arr[0], arr[i]] = [arr[i], arr[0]];
-
-        // Heapify the reduced heap
-        heapify(arr, i, 0);
-    }
+  return arr;
 }
 
 // Example usage:
-const array = [4, 10, 3, 5, 1];
-console.log("Original Array:", array);
-
-heapSort(array);
-console.log("Sorted Array:", array);
+const array = [8, 4, 1, 6, 4, 2, 9, 0, 3, 7, 5];
+console.log(shellSort(array)); // Output: [0, 1, 2, 3, 4, 4, 5, 6, 7, 8, 9]
