@@ -1,12 +1,24 @@
-function countOccurrences(string, word) {
-  const regex = new RegExp(word, 'gi');
-  const matches = string.match(regex);
-  return matches ? matches.length : 0;
+function sanitizeString(str) {
+  return str.toLowerCase().replace(/[^a-z\d]/g, '');
 }
+function sortString(str) {
+  return str.split('').sort().join('');
+}
+function isAnagram(str1, str2) {
+  const sanitizedStr1 = sanitizeString(str1);
+  const sanitizedStr2 = sanitizeString(str2);
 
-const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed nibh ultricies, tincidunt ipsum id, interdum justo. Duis non blandit ipsum. Sed accumsan consectetur ipsum, a semper arcu laoreet et.';
+  const sortedStr1 = sortString(sanitizedStr1);
+  const sortedStr2 = sortString(sanitizedStr2);
 
-const wordToCount = 'ipsum';
-const occurrences = countOccurrences(text, wordToCount);
+  return sortedStr1 === sortedStr2;
+}
+const string1 = 'listen';
+const string2 = 'silent';
 
-console.log(`The word "${wordToCount}" appears ${occurrences} times in the given string.`);
+if (isAnagram(string1, string2)) {
+  console.log(string1 + ' and ' + string2 + ' are anagrams.');
+} else {
+  console.log(string1 + ' and ' + string2 + ' are not anagrams.');
+}
+listen and silent are anagrams.
