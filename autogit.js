@@ -1,33 +1,20 @@
-function shellSort(arr) {
-  const len = arr.length;
-  let gap = 1;
-
-  // Generating the gap sequence
-  while (gap < len / 3) {
-    gap = gap * 3 + 1;
+function binarySearch(arr, target, start = 0, end = arr.length - 1) {
+  if (start > end) {
+    return -1;
   }
 
-  while (gap > 0) {
-    for (let i = gap; i < len; i++) {
-      const temp = arr[i];
-      let j = i;
+  const mid = Math.floor((start + end) / 2);
 
-      // Shifting elements that are greater than temp
-      while (j > gap - 1 && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
-      }
-
-      arr[j] = temp;
-    }
-
-    // Decrease the gap for the next iteration
-    gap = Math.floor(gap / 3);
+  if (arr[mid] === target) {
+    return mid;
+  } else if (target < arr[mid]) {
+    return binarySearch(arr, target, start, mid - 1);
+  } else {
+    return binarySearch(arr, target, mid + 1, end);
   }
-
-  return arr;
 }
+const array = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
+const target = 23;
 
-// Example usage:
-const array = [8, 4, 1, 6, 4, 2, 9, 0, 3, 7, 5];
-console.log(shellSort(array)); // Output: [0, 1, 2, 3, 4, 4, 5, 6, 7, 8, 9]
+const index = binarySearch(array, target);
+console.log(`Element ${target} found at index ${index}`);
