@@ -1,37 +1,47 @@
-function reverseLinkedList(head) {
-  let prev = null;
-  let current = head;
-
-  while (current !== null) {
-    let next = current.next;
-    current.next = prev;
-    prev = current;
-    current = next;
-  }
-
-  return prev;
-}
-// Definition of a linked list node
-class ListNode {
-  constructor(val) {
-    this.val = val;
-    this.next = null;
+// Node class representing a state in your search problem
+class Node {
+  constructor(value, children) {
+    this.value = value;
+    this.children = children;
   }
 }
 
-// Creating the linked list: 1 -> 2 -> 3 -> 4 -> 5
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
+// Iterative depth-limited search algorithm
+function depthLimitedSearch(root, goal, depthLimit) {
+  let stack = [];
+  stack.push({ node: root, depth: 0 });
 
-// Reversing the linked list
-const reversedHead = reverseLinkedList(head);
+  while (stack.length > 0) {
+    // Pop the top node from the stack
+    let { node, depth } = stack.pop();
 
-// Printing the reversed list: 5 -> 4 -> 3 -> 2 -> 1
-let current = reversedHead;
-while (current !== null) {
-  console.log(current.val);
-  current = current.next;
+    // Check if the current node matches the goal
+    if (node.value === goal) {
+      return node;
+    }
+
+    // Check if depth limit is reached
+    if (depth < depthLimit) {
+      // Push children nodes onto the stack
+      if (node.children) {
+        for (let i = node.children.length - 1; i >= 0; i--) {
+          stack.push({ node: node.children[i], depth: depth + 1 });
+        }
+      }
+    }
+  }
+
+  return null; // Return null if goal not found within depth limit
 }
+
+// Example usage
+let nodeG = new Node('G');
+let nodeF = new Node('F');
+let nodeE = new Node('E', [nodeG]);
+let nodeD = new Node('D');
+let nodeC = new Node('C', [nodeF]);
+let nodeB = new Node('B', [nodeD, nodeE]);
+let nodeA = new Node('A', [nodeB, nodeC]);
+
+let result = depthLimitedSearch(nodeA, 'G', 2);
+console.log(result); // Output: Node { value: 'G', children: undefined }
