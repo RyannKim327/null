@@ -1,24 +1,23 @@
-function findFirstNonRepeatingCharacter(inputString) {
-  const charCount = {};
+function longestCommonPrefix(strs) {
+  let prefix = "";
 
-  for (let char of inputString.split('')) {
-    if (charCount[char]) {
-      charCount[char]++;
-    } else {
-      charCount[char] = 1;
-    }
+  if (strs.length === 0) {
+    return prefix;
   }
 
-  for (let char of inputString.split('')) {
-    if (charCount[char] === 1) {
-      return char;
+  for (let i = 0; i < strs[0].length; i++) {
+    const char = strs[0][i];
+
+    for (let j = 1; j < strs.length; j++) {
+      if (i >= strs[j].length || strs[j][i] !== char) {
+        return prefix;
+      }
     }
+
+    prefix += char;
   }
 
-  return null;
+  return prefix;
 }
-
-// Example usage
-const string = 'aabbcdeff';
-const firstNonRepeatingChar = findFirstNonRepeatingCharacter(string);
-console.log(firstNonRepeatingChar); // Output: 'c'
+const strings = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(strings)); // Output: "fl"
