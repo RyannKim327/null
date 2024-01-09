@@ -1,55 +1,28 @@
-function boyerMooreSearch(text, pattern) {
-  const badChar = {}; // Bad character table
-  const patternLength = pattern.length;
-  const textLength = text.length;
+function dfs(graph, startNode, visited = []) {
+  // Mark the current node as visited
+  visited.push(startNode);
 
-  // Preprocessing the pattern
-  function preprocessPattern() {
-    for (let i = 0; i < patternLength; i++) {
-      badChar[pattern[i]] = i;
+  // Iterate over the neighbors of the current node
+  for (const neighbor of graph[startNode]) {
+    // If the neighbor hasn't been visited, recursively call dfs
+    if (!visited.includes(neighbor)) {
+      dfs(graph, neighbor, visited);
     }
   }
 
-  // Calculate the maximum shift
-  function calculateMaxShift(shift1, shift2) {
-    return Math.max(shift1, shift2);
-  }
-
-  // Search function
-  function search() {
-    let textIndex = patternLength - 1; // Text index
-    let patternIndex = patternLength - 1; // Pattern index
-
-    while (textIndex < textLength) {
-      if (pattern[patternIndex] === text[textIndex]) {
-        if (patternIndex === 0) {
-          // Match found
-          return textIndex;
-        }
-        patternIndex--;
-        textIndex--;
-      } else {
-        // Calculate the shift
-        const badCharShift = badChar[text[textIndex]] || patternLength;
-        const goodSuffixShift = patternLength - patternIndex;
-        const shift = calculateMaxShift(badCharShift, goodSuffixShift);
-        
-        textIndex += shift;
-        patternIndex = patternLength - 1;
-      }
-    }
-
-    // No match found
-    return -1;
-  }
-
-  preprocessPattern();
-  return search();
+  // Return the visited nodes
+  return visited;
 }
 
-// Example usage:
-const text = "This is a test text";
-const pattern = "test";
-const result = boyerMooreSearch(text, pattern);
+// Example graph representation using an adjacency list
+const graph = {
+  A: ['B', 'C'],
+  B: ['A', 'D', 'E'],
+  C: ['A', 'F'],
+  D: ['B'],
+  E: ['B', 'F'],
+  F: ['C', 'E'],
+};
 
-console.log("Pattern found at index:", result);
+// Test the algorithm
+console.log(dfs(graph, 'A')); // Output: ["A", "B", "D", "E", "F", "C"]
