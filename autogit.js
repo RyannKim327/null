@@ -1,54 +1,32 @@
-class TrieNode {
-  constructor() {
-    this.children = {};
-    this.isWord = false;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
-class Trie {
-  constructor() {
-    this.root = new TrieNode();
-  }
 
-  insert(word) {
-    let node = this.root;
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-      if (!node.children[char]) {
-        node.children[char] = new TrieNode();
-      }
-      node = node.children[char];
-    }
-    node.isWord = true;
+function findSum(root) {
+  // Base case: if the root is null, return 0
+  if (root === null) {
+    return 0;
   }
-
-  search(word) {
-    let node = this.root;
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-      if (!node.children[char]) {
-        return false;
-      }
-      node = node.children[char];
-    }
-    return node.isWord;
-  }
-
-  startsWith(prefix) {
-    let node = this.root;
-    for (let i = 0; i < prefix.length; i++) {
-      const char = prefix[i];
-      if (!node.children[char]) {
-        return false;
-      }
-      node = node.children[char];
-    }
-    return true;
-  }
+  
+  // Recursively calculate the sum of left and right subtrees
+  const leftSum = findSum(root.left);
+  const rightSum = findSum(root.right);
+  
+  // Add the value of the current node to the sums of subtrees
+  const sum = leftSum + rightSum + root.value;
+  
+  return sum;
 }
-const trie = new Trie();
-trie.insert("apple");
-console.log(trie.search("apple"));   // Output: true
-console.log(trie.search("app"));     // Output: false
-console.log(trie.startsWith("app")); // Output: true
-trie.insert("dog");
-console.log(trie.search("dog"));     // Output: true
+
+// Test the function
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+console.log(findSum(root)); // Output: 15
