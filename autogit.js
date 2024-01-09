@@ -1,13 +1,35 @@
-function isAnagram(str1, str2) {
-  str1 = str1.toLowerCase().replace(/[^a-z0-9]/g, '');
-  str2 = str2.toLowerCase().replace(/[^a-z0-9]/g, '');
+function beamSearch(startNode, beamWidth, maxDepth) {
+  let beam = [startNode];
+  let nextBeam = [];
+  let depth = 0;
 
-  const arr1 = str1.split('').sort();
-  const arr2 = str2.split('').sort();
+  while (depth < maxDepth && beam.length > 0) {
+    depth++;
+    nextBeam = [];
 
-  return arr1.join('') === arr2.join('');
+    for (const node of beam) {
+      const childNodes = expandNode(node);
+
+      for (const childNode of childNodes) {
+        nextBeam.push(childNode);
+      }
+    }
+
+    // Sort nextBeam based on scoring function to keep only the top beamWidth nodes
+    nextBeam.sort((a, b) => evaluateNode(b) - evaluateNode(a));
+    beam = nextBeam.slice(0, beamWidth);
+  }
+
+  return beam[0];
 }
 
-// Testing the function
-console.log(isAnagram('listen', 'silent'));  // true
-console.log(isAnagram('hello', 'world'));    // false
+// Example helper functions
+function expandNode(node) {
+  // Generate child nodes for the given node
+  // ...
+}
+
+function evaluateNode(node) {
+  // Evaluate the given node based on some scoring criterion
+  // ...
+}
