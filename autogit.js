@@ -1,22 +1,32 @@
-let str = "Hello World";
-let reversedStr = str.split('').reverse().join('');
-console.log(reversedStr); // Output: "dlroW olleH"
-let str = "Hello World";
-let reversedStr = "";
-for (let i = str.length - 1; i >= 0; i--) {
-  reversedStr += str[i];
-}
-console.log(reversedStr); // Output: "dlroW olleH"
-let str = "Hello World";
-let reversedStr = [...str].reverse().join('');
-console.log(reversedStr); // Output: "dlroW olleH"
 function reverseString(str) {
-  if (str === "")
-    return "";
-  else
-    return reverseString(str.substr(1)) + str.charAt(0);
+  var reversed = '';
+  for (var i = str.length - 1; i >= 0; i--) {
+    reversed += str.charAt(i);
+  }
+  return reversed;
 }
 
-let str = "Hello World";
-let reversedStr = reverseString(str);
-console.log(reversedStr); // Output: "dlroW olleH"
+var originalString = 'Hello, World!';
+var reversedString = reverseString(originalString);
+
+console.log(reversedString); // Outputs: '!dlroW ,olleH'
+function reverseString(str) {
+  var reversedArray = str.split('').reverse();
+  var reversedString = reversedArray.join('');
+  return reversedString;
+}
+
+var originalString = 'Hello, World!';
+var reversedString = reverseString(originalString);
+
+console.log(reversedString); // Outputs: '!dlroW ,olleH'
+function reverseString(str) {
+  var reversedArray = [...str].reverse();
+  var reversedString = reversedArray.join('');
+  return reversedString;
+}
+
+var originalString = 'Hello, World!';
+var reversedString = reverseString(originalString);
+
+console.log(reversedString); // Outputs: '!dlroW ,olleH'
