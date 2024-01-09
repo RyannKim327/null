@@ -1,32 +1,50 @@
-// Define the binary tree node
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function heapSort(arr) {
+  const n = arr.length;
+
+  // Build a max heap
+  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+    heapify(arr, n, i);
+  }
+
+  // Extract elements from the heap one by one
+  for (let i = n - 1; i >= 0; i--) {
+    // Move current root to the end
+    [arr[0], arr[i]] = [arr[i], arr[0]];
+
+    // Heapify the reduced heap
+    heapify(arr, i, 0);
+  }
+
+  return arr;
+}
+
+// To heapify a subtree rooted with node i which is an index in arr[].
+// n is the size of the heap
+function heapify(arr, n, i) {
+  let largest = i; // Initialize largest as root
+  const left = 2 * i + 1; // Left child
+  const right = 2 * i + 2; // Right child
+
+  // If left child is larger than root
+  if (left < n && arr[left] > arr[largest]) {
+    largest = left;
+  }
+
+  // If right child is larger than largest so far
+  if (right < n && arr[right] > arr[largest]) {
+    largest = right;
+  }
+
+  // If largest is not root
+  if (largest !== i) {
+    [arr[i], arr[largest]] = [arr[largest], arr[i]];
+
+    // Recursively heapify the affected sub-tree
+    heapify(arr, n, largest);
   }
 }
 
-// Function to calculate the sum of all nodes
-function findSum(root) {
-  if (root === null) {
-    return 0;
-  } else {
-    return (
-      root.value +
-      findSum(root.left) +
-      findSum(root.right)
-    );
-  }
-}
-
-// Create a sample binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-// Find the sum of all nodes
-const sum = findSum(root);
-console.log('Sum of nodes:', sum);
+// Usage example
+const arr = [12, 11, 13, 5, 6, 7];
+console.log("Original array:", arr);
+console.log("Sorted array:", heapSort(arr));
