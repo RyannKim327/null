@@ -1,15 +1,50 @@
-function isPalindrome(str) {
-  // Removing spaces and converting to lowercase
-  str = str.replace(/\s/g, '').toLowerCase();
-
-  // Reversing the string
-  const reversedStr = str.split('').reverse().join('');
-
-  // Comparing the reversed string with the original
-  return str === reversedStr;
+class Stack {
+  constructor() {
+    this.stack = [];
+  }
+  
+  push(element) {
+    this.stack.push(element);
+  }
+  
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack Underflow";
+    }
+    return this.stack.pop();
+  }
+  
+  isEmpty() {
+    return this.stack.length === 0;
+  }
+  
+  peek() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
+    }
+    return this.stack[this.stack.length - 1];
+  }
+  
+  size() {
+    return this.stack.length;
+  }
+  
+  printStack() {
+    console.log(this.stack);
+  }
 }
 
-// Testing the function
-console.log(isPalindrome("level"));         // true
-console.log(isPalindrome("Racecar"));       // true
-console.log(isPalindrome("hello world"));   // false
+// Testing the stack implementation
+const stack = new Stack();
+
+stack.push(5);
+stack.push(10);
+stack.push(15);
+
+stack.printStack(); // Output: [5, 10, 15]
+
+console.log(stack.pop()); // Output: 15
+
+console.log(stack.peek()); // Output: 10
+
+console.log(stack.size()); // Output: 2
