@@ -1,19 +1,11 @@
-function reverseWords(str) {
-    // Step 1: Split the string into an array of words
-    let words = str.split(' ');
-
-    // Step 2: Reverse the order of the array elements
-    words.reverse();
-
-    // Step 3: Join the array elements back into a string
-    let reversedStr = words.join(' ');
-
-    return reversedStr;
+function calculateTriangleArea(base, height) {
+  var area = (base * height) / 2;
+  return area;
 }
 
 // Example usage
-let input = 'Hello world! This is a test.';
-let reversed = reverseWords(input);
+var triangleBase = 5;
+var triangleHeight = 8;
+var triangleArea = calculateTriangleArea(triangleBase, triangleHeight);
 
-console.log(reversed);
-// Output: 'test. a is This world! Hello'
+console.log("The area of the triangle is: " + triangleArea);
