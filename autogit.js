@@ -1,38 +1,46 @@
-function heapify(arr, heapSize, rootIndex) {
-  let largest = rootIndex;
-  const leftChildIndex = 2 * rootIndex + 1;
-  const rightChildIndex = 2 * rootIndex + 2;
+function mergeSort(arr) {
+  const n = arr.length;
   
-  if (leftChildIndex < heapSize && arr[leftChildIndex] > arr[largest]) {
-    largest = leftChildIndex;
+  // Iteratively merge subarrays of size 1, 2, 4, 8, ...
+  for(let size = 1; size < n; size *= 2) {
+    for(let left = 0; left < n - size; left += 2 * size) {
+      const mid = left + size - 1;
+      const right = Math.min(left + 2 * size - 1, n - 1);
+      merge(arr, left, mid, right);
+    }
   }
-  
-  if (rightChildIndex < heapSize && arr[rightChildIndex] > arr[largest]) {
-    largest = rightChildIndex;
-  }
-  
-  if (largest !== rootIndex) {
-    [arr[rootIndex], arr[largest]] = [arr[largest], arr[rootIndex]];
-    heapify(arr, heapSize, largest);
-  }
-}
-
-function heapSort(arr) {
-  const len = arr.length;
-  
-  for (let i = Math.floor(len / 2) - 1; i >= 0; i--) {
-    heapify(arr, len, i);
-  }
-  
-  for (let i = len - 1; i >= 0; i--) {
-    [arr[0], arr[i]] = [arr[i], arr[0]];
-    heapify(arr, i, 0);
-  }
-  
   return arr;
 }
 
-// Example usage:
-const myArray = [6, 5, 3, 1, 8, 7, 2, 4];
-const sortedArray = heapSort(myArray);
-console.log(sortedArray);
+// Helper function to merge two sorted arrays
+function merge(arr, left, mid, right) {
+  const start1 = left;
+  const start2 = mid + 1;
+  
+  let merged = [];
+  while (start1 <= mid && start2 <= right) {
+    if (arr[start1] <= arr[start2]) {
+      merged.push(arr[start1]);
+      start1++;
+    } else {
+      merged.push(arr[start2]);
+      start2++;
+    }
+  }
+
+  while (start1 <= mid) {
+    merged.push(arr[start1]);
+    start1++;
+  }
+  
+  while (start2 <= right) {
+    merged.push(arr[start2]);
+    start2++;
+  }
+
+  for (let i = left; i <= right; i++) {
+    arr[i] = merged[i - left];
+  }
+}
+const arr = [5, 2, 9, 1, 7, 6, 3];
+console.log(mergeSort(arr)); // Output: [1, 2, 3, 5, 6, 7, 9]
