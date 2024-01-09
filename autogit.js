@@ -1,41 +1,77 @@
-function fibonacciSearch(arr, target) {
-  // Step 2: Create Fibonacci numbers array
-  const fibNums = [0, 1];
-  while (fibNums[fibNums.length - 1] < arr.length) {
-    fibNums.push(fibNums[fibNums.length - 1] + fibNums[fibNums.length - 2]);
+function fibonacciSearch(arr, x) {
+  // ...
+}
+let fibMMm2 = 0; // (m-2)'th Fibonacci number
+let fibMMm1 = 1; // (m-1)'th Fibonacci number
+let fibM = fibMMm2 + fibMMm1; // mth Fibonacci number
+while (fibM < arr.length) {
+  fibMMm2 = fibMMm1;
+  fibMMm1 = fibM;
+  fibM = fibMMm2 + fibMMm1;
+}
+let offset = -1; // Offset from the first element
+let current = fibMMm2; // Current index
+while (fibM > 1) {
+  // Check if fibMMm2 is a valid position
+  const i = Math.min(offset + fibMMm2, arr.length - 1);
+
+  if (arr[i] < x) {
+    // If x is greater, move the index to the right
+    fibM = fibMMm1;
+    fibMMm1 = fibMMm2;
+    fibMMm2 = fibM - fibMMm1;
+    offset = i;
+  } else if (arr[i] > x) {
+    // If x is smaller, move the index to the left
+    fibM = fibMMm2;
+    fibMMm1 = fibMMm1 - fibMMm2;
+    fibMMm2 = fibM - fibMMm1;
+  } else {
+    // Element found
+    return i;
+  }
+}
+if (fibMMm1 === 1 && arr[offset + 1] == x) {
+  return offset + 1;
+}
+return -1;
+function fibonacciSearch(arr, x) {
+  let fibMMm2 = 0; // (m-2)'th Fibonacci number
+  let fibMMm1 = 1; // (m-1)'th Fibonacci number
+  let fibM = fibMMm2 + fibMMm1; // mth Fibonacci number
+  while (fibM < arr.length) {
+    fibMMm2 = fibMMm1;
+    fibMMm1 = fibM;
+    fibM = fibMMm2 + fibMMm1;
   }
 
-  // Step 3: Find the smallest Fibonacci number greater than or equal to array length
-  let fibIndex = fibNums.length - 1;
-  while (fibNums[fibIndex] > arr.length) {
-    fibIndex--;
-  }
+  let offset = -1; // Offset from the first element
+  let current = fibMMm2; // Current index
 
-  // Step 4: Initialize offset and prevOffset
-  let offset = 0;
-  let prevOffset = 0;
+  while (fibM > 1) {
+    const i = Math.min(offset + fibMMm2, arr.length - 1);
 
-  // Step 5: Fibonnaci search
-  while (offset < arr.length) {
-    if (arr[offset] === target) {
-      return offset; // Found target value
-    } else if (arr[offset] > target) {
-      offset -= prevOffset;
-      let temp = prevOffset;
-      prevOffset = fibNums[fibIndex - 1];
-      fibIndex -= 2;
-      offset += prevOffset;
+    if (arr[i] < x) {
+      fibM = fibMMm1;
+      fibMMm1 = fibMMm2;
+      fibMMm2 = fibM - fibMMm1;
+      offset = i;
+    } else if (arr[i] > x) {
+      fibM = fibMMm2;
+      fibMMm1 = fibMMm1 - fibMMm2;
+      fibMMm2 = fibM - fibMMm1;
     } else {
-      prevOffset = fibNums[fibIndex - 1];
-      fibIndex--;
-      offset += prevOffset;
+      return i;
     }
   }
 
-  // Step 6: Target value not found
+  if (fibMMm1 === 1 && arr[offset + 1] == x) {
+    return offset + 1;
+  }
+
   return -1;
 }
-const arr = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
-const target = 17;
-const result = fibonacciSearch(arr, target);
-console.log(result); // Output: 6 (index of the target value in the array)
+const arr = [2, 3, 5, 8, 13, 21, 34, 55, 89];
+const x = 13;
+const index = fibonacciSearch(arr, x);
+console.log(`Element ${x} found at index ${index}`);
