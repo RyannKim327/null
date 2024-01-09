@@ -1,47 +1,46 @@
 class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+  constructor(data) {
+    this.data = data;
+    this.next = null;
   }
 }
-
-function calculateHeight(node) {
-  if (node == null) return 0;
-  
-  const leftHeight = calculateHeight(node.left);
-  const rightHeight = calculateHeight(node.right);
-  
-  return Math.max(leftHeight, rightHeight) + 1;
-}
-
-function calculateDiameter(root) {
-  if (root == null) return 0;
-  
-  const queue = [root];
-  let maxDiameter = 0;
-  
-  while (queue.length > 0) {
-    const current = queue.shift();
-    
-    const leftHeight = calculateHeight(current.left);
-    const rightHeight = calculateHeight(current.right);
-    
-    const currentDiameter = leftHeight + rightHeight;
-    maxDiameter = Math.max(maxDiameter, currentDiameter);
-    
-    if (current.left) queue.push(current.left);
-    if (current.right) queue.push(current.right);
+class Queue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
   }
-  
-  return maxDiameter;
 }
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
+enqueue(data) {
+  const newNode = new Node(data);
+  if (!this.head) {
+    this.head = newNode;
+    this.tail = newNode;
+  } else {
+    this.tail.next = newNode;
+    this.tail = newNode;
+  }
+}
+dequeue() {
+  if (!this.head) {
+    return null;
+  }
+  const removedNode = this.head;
+  this.head = this.head.next;
+  if (!this.head) {
+    this.tail = null;
+  }
+  return removedNode.data;
+}
+isEmpty() {
+  return this.head === null && this.tail === null;
+}
+const queue = new Queue();
+queue.enqueue(10);
+queue.enqueue(20);
+queue.enqueue(30);
 
-console.log(calculateDiameter(root));  // Output: 5
+console.log(queue.dequeue()); // Output: 10
+console.log(queue.isEmpty()); // Output: false
+console.log(queue.dequeue()); // Output: 20
+console.log(queue.dequeue()); // Output: 30
+console.log(queue.isEmpty()); // Output: true
