@@ -1,47 +1,89 @@
-function getKthSmallestElement(arr, k) {
-  arr.sort((a, b) => a - b);
-  return arr[k - 1];
-}
-function quickselect(arr, left, right, k) {
-  if (left === right) {
-    return arr[left];
-  }
-
-  const pivotIndex = partition(arr, left, right);
-  
-  if (pivotIndex === k - 1) {
-    return arr[pivotIndex];
-  } else if (pivotIndex < k - 1) {
-    return quickselect(arr, pivotIndex + 1, right, k);
-  } else {
-    return quickselect(arr, left, pivotIndex - 1, k);
+// Define the Node class representing a node in the list
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
 }
 
-function partition(arr, left, right) {
-  const pivot = arr[Math.floor((left + right) / 2)];
-  let i = left;
-  let j = right;
-
-  while (i <= j) {
-    while (arr[i] < pivot) {
-      i++;
-    }
-
-    while (arr[j] > pivot) {
-      j--;
-    }
-
-    if (i <= j) {
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-      i++;
-      j--;
-    }
+// Define the LinkedList class
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.size = 0;
   }
 
-  return i;
+  isEmpty() {
+    return this.size === 0;
+  }
+
+  add(value) {
+    const newNode = new Node(value);
+    if (this.isEmpty()) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+    this.size++;
+  }
+
+  remove() {
+    if (this.isEmpty()) {
+      return null;
+    }
+    const removedNode = this.head;
+    if (this.size === 1) {
+      this.head = null;
+      this.tail = null;
+    } else {
+      this.head = this.head.next;
+    }
+    this.size--;
+    return removedNode.value;
+  }
 }
 
-function getKthSmallestElement(arr, k) {
-  return quickselect(arr, 0, arr.length - 1, k);
+// Define the Queue class
+class Queue {
+  constructor() {
+    this.linkedList = new LinkedList();
+  }
+
+  enqueue(value) {
+    this.linkedList.add(value);
+  }
+
+  dequeue() {
+    return this.linkedList.remove();
+  }
+
+  isEmpty() {
+    return this.linkedList.isEmpty();
+  }
+
+  size() {
+    return this.linkedList.size;
+  }
 }
+
+// Usage example
+const queue = new Queue();
+
+queue.enqueue(5);
+queue.enqueue(10);
+queue.enqueue(15);
+
+console.log(queue.size()); // Output: 3
+
+console.log(queue.dequeue()); // Output: 5
+
+console.log(queue.isEmpty()); // Output: false
+
+console.log(queue.dequeue()); // Output: 10
+
+console.log(queue.dequeue()); // Output: 15
+
+console.log(queue.isEmpty()); // Output: true
