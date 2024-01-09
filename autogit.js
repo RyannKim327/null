@@ -1,35 +1,18 @@
-function topologicalSort(graph) {
-  const visited = new Set();
-  const sorted = [];
-
-  function dfs(node) {
-    visited.add(node);
-
-    graph[node].forEach(neighbor => {
-      if (!visited.has(neighbor)) {
-        dfs(neighbor);
-      }
-    });
-
-    sorted.push(node);
-  }
-
-  Object.keys(graph).forEach(node => {
-    if (!visited.has(node)) {
-      dfs(node);
+function hasCycle(head) {
+    if (!head || !head.next) {
+        return false; // Empty list or single node, no cycle
     }
-  });
-
-  return sorted.reverse();
+    
+    let slow = head;
+    let fast = head.next;
+    
+    while (slow !== fast) {
+        if (!fast || !fast.next) {
+            return false; // Reached end of list, no cycle
+        }
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+    
+    return true; // Cycle detected
 }
-
-// Example usage:
-const dependencies = {
-  A: ["D"],
-  B: ["D"],
-  C: ["A", "B"],
-  D: [],
-  E: ["D"],
-};
-
-console.log(topologicalSort(dependencies));
