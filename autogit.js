@@ -4,23 +4,36 @@ class Node {
     this.next = null;
   }
 }
-const head = new Node(1);
-const second = new Node(2);
-const third = new Node(3);
 
-head.next = second;
-second.next = third;
-function reverseLinkedList(head) {
-  let prev = null;
-  let current = head;
+function findNthFromEnd(head, n) {
+  let slow = head;
+  let fast = head;
 
-  while (current) {
-    const next = current.next;
-    current.next = prev;
-    prev = current;
-    current = next;
+  // Move the fast pointer n nodes ahead
+  for (let i = 0; i < n; i++) {
+    if (fast === null) {
+      // The linked list has fewer than n nodes
+      return null;
+    }
+    fast = fast.next;
   }
 
-  return prev;
+  // Move the slow and fast pointers together until fast reaches the end
+  while (fast !== null) {
+    slow = slow.next;
+    fast = fast.next;
+  }
+
+  // At this point, slow is pointing to the nth node from the end
+  return slow;
 }
-head = reverseLinkedList(head);
+
+// Example usage:
+const head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
+
+const nthFromEnd = findNthFromEnd(head, 2);
+console.log(nthFromEnd.value); // Output: 4
