@@ -1,32 +1,78 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
+class TrieNode {
+  constructor() {
+    this.character = '';
+    this.isEndOfWord = false;
+    this.children = {};
   }
 }
-
-function findMiddleElement(head) {
-  if (head === null) {
-    return null; // Empty list
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
   }
-
-  let slow = head; // Slow pointer
-  let fast = head; // Fast pointer
-
-  while (fast !== null && fast.next !== null) {
-    slow = slow.next; // Move slow pointer by one node
-    fast = fast.next.next; // Move fast pointer by two nodes
+  
+  // Method to insert a word into the trie
+  insert(word) {
+    let current = this.root;
+    
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      
+      if (!current.children[char]) {
+        current.children[char] = new TrieNode();
+        current.children[char].character = char;
+      }
+      
+      current = current.children[char];
+    }
+    
+    current.isEndOfWord = true;
   }
-
-  return slow.data;
+  
+  // Method to search for a word in the trie
+  search(word) {
+    let current = this.root;
+    
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      
+      if (!current.children[char]) {
+        return false;
+      }
+      
+      current = current.children[char];
+    }
+    
+    return current.isEndOfWord;
+  }
+  
+  // Method to check if a word prefix exists in the trie
+  startsWith(prefix) {
+    let current = this.root;
+    
+    for (let i = 0; i < prefix.length; i++) {
+      const char = prefix[i];
+      
+      if (!current.children[char]) {
+        return false;
+      }
+      
+      current = current.children[char];
+    }
+    
+    return true;
+  }
 }
+const trie = new Trie();
+trie.insert("hello");
+trie.insert("world");
+trie.insert("hey");
 
-// Example usage:
-const list = new Node(1);
-list.next = new Node(2);
-list.next.next = new Node(3);
-list.next.next.next = new Node(4);
-list.next.next.next.next = new Node(5);
+// Test searching for words
+console.log(trie.search("hello"));  // true
+console.log(trie.search("world"));  // true
+console.log(trie.search("he"));     // false
 
-const middle = findMiddleElement(list);
-console.log(middle); // Output: 3
+// Test checking prefixes
+console.log(trie.startsWith("hel"));   // true
+console.log(trie.startsWith("wo"));    // false
+console.log(trie.startsWith("hey"));   // true
