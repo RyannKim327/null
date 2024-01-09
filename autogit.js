@@ -1,53 +1,50 @@
-class ListNode {
-  constructor(val = 0, next = null) {
-    this.val = val;
-    this.next = next;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.children = [];
+  }
+
+  addChild(node) {
+    this.children.push(node);
   }
 }
 
-function isPalindrome(head) {
-  if (!head || !head.next) {
-    // An empty list or a single node is considered a palindrome.
-    return true;
-  }
+function breadthFirstSearch(root, target) {
+  if (!root) return null;
 
-  let slow = head;
-  let fast = head;
-  
-  // Move fast two times faster than slow.
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
-  
-  // Reverse the second half of the list.
-  let prev = null;
-  let curr = slow;
-  while (curr) {
-    let next = curr.next;
-    curr.next = prev;
-    prev = curr;
-    curr = next;
-  }
-  
-  // Reset the fast pointer to the head.
-  fast = head;
-  
-  // Compare elements in the first half with the reversed second half.
-  while (prev) {
-    if (fast.val !== prev.val) {
-      return false;
+  const queue = [root];
+  const visited = new Set();
+
+  while (queue.length > 0) {
+    const current = queue.shift();
+    if (current.value === target) {
+      return current;
     }
-    fast = fast.next;
-    prev = prev.next;
+
+    visited.add(current);
+
+    for (const child of current.children) {
+      if (!visited.has(child)) {
+        queue.push(child);
+      }
+    }
   }
-  
-  return true;
+
+  return null;
 }
 
-// Example usage:
-const list1 = new ListNode(1, new ListNode(2, new ListNode(2, new ListNode(1))));
-console.log(isPalindrome(list1)); // Output: true
+// Usage example:
+const a = new Node('A');
+const b = new Node('B');
+const c = new Node('C');
+const d = new Node('D');
+const e = new Node('E');
+const f = new Node('F');
 
-const list2 = new ListNode(1, new ListNode(2, new ListNode(3)));
-console.log(isPalindrome(list2)); // Output: false
+a.addChild(b);
+a.addChild(c);
+b.addChild(d);
+b.addChild(e);
+c.addChild(f);
+
+console.log(breadthFirstSearch(a, 'F')); // Output: Node { value: 'F', children: [] }
