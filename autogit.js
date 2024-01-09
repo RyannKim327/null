@@ -1,17 +1,12 @@
-function generateRandomNumber(min, max) {
-  // Calculate the random number within the range
-  var randomNumber = Math.random() * (max - min) + min;
-
-  // Round the number to an integer
-  randomNumber = Math.floor(randomNumber);
-
-  // Return the generated random number
-  return randomNumber;
+function getStringLength(str) {
+  let count = 0;
+  for (let i = 0; str[i] !== undefined; i++) {
+    count++;
+  }
+  return count;
 }
 
-// Usage example
-var min = 1; // Minimum value (inclusive)
-var max = 100; // Maximum value (inclusive)
-
-var randomNumber = generateRandomNumber(min, max);
-console.log(randomNumber);
+// Example usage
+const testString = "Hello, World!";
+const length = getStringLength(testString);
+console.log(length); // Output: 13
