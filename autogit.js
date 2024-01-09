@@ -1,65 +1,15 @@
-class Node {
-  constructor(value, next = null) {
-    this.value = value;
-    this.next = next;
-  }
+let str = "Hello, World!";
+let reversedStr = str.split('').reverse().join('');
+console.log(reversedStr);
+// Output: "!dlroW ,olleH"
+let str = "Hello, World!";
+let reversedStr = '';
+for (let i = str.length - 1; i >= 0; i--) {
+  reversedStr += str[i];
 }
-function findNthFromEnd(head, n) {
-  /* Implementation goes here */
-}
-function findNthFromEnd(head, n) {
-  let fast = head;
-  let slow = head;
-}
-function findNthFromEnd(head, n) {
-  let fast = head;
-  let slow = head;
-
-  // Move fast pointer n nodes ahead
-  for (let i = 0; i < n; i++) {
-    if (fast === null) {
-      return null; // If n is greater than the length of the list, return null
-    }
-    fast = fast.next;
-  }
-}
-function findNthFromEnd(head, n) {
-  let fast = head;
-  let slow = head;
-
-  // Move fast pointer n nodes ahead
-  for (let i = 0; i < n; i++) {
-    if (fast === null) {
-      return null; // If n is greater than the length of the list, return null
-    }
-    fast = fast.next;
-  }
-
-  // Move both pointers together until fast reaches the end
-  while (fast !== null) {
-    fast = fast.next;
-    slow = slow.next;
-  }
-
-  return slow;
-}
-function findNthFromEnd(head, n) {
-  let fast = head;
-  let slow = head;
-
-  // Move fast pointer n nodes ahead
-  for (let i = 0; i < n; i++) {
-    if (fast === null) {
-      return null; // If n is greater than the length of the list, return null
-    }
-    fast = fast.next;
-  }
-
-  // Move both pointers together until fast reaches the end
-  while (fast !== null) {
-    fast = fast.next;
-    slow = slow.next;
-  }
-
-  return slow;
-}
+console.log(reversedStr);
+// Output: "!dlroW ,olleH"
+let str = "Hello, World!";
+let reversedStr = str.split('').reduce((reversed, char) => char + reversed, '');
+console.log(reversedStr);
+// Output: "!dlroW ,olleH"
