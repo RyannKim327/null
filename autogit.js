@@ -1,4 +1,11 @@
-let myArray = [1, 2, 3, 4, 5];
-myArray.reverse();
+// Make a GET request to an API endpoint
 
-console.log(myArray); // Output: [5, 4, 3, 2, 1]
+fetch("https://api.example.com/data")
+  .then((response) => response.json())
+  .then((data) => {
+    // Use the data returned by the API
+    console.log(data);
+  })
+  .catch((error) => {
+    console.log("Error:", error);
+  });
