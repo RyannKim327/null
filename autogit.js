@@ -1,23 +1,16 @@
-function bubbleSort(arr) {
-  var len = arr.length;
-  var sorted;
-
-  do {
-    sorted = false;
-
-    for (var i = 0; i < len - 1; i++) {
-      if (arr[i] > arr[i + 1]) {
-        var temp = arr[i];
-        arr[i] = arr[i + 1];
-        arr[i + 1] = temp;
-        sorted = true;
-      }
+function isPrime(number) {
+  if (number <= 1) {
+    return false;
+  }
+  
+  for (let i = 2; i <= Math.sqrt(number); i++) {
+    if (number % i === 0) {
+      return false;
     }
-  } while (sorted);
-
-  return arr;
+  }
+  
+  return true;
 }
-
-// Usage example:
-var numbers = [8, 2, 5, 3, 9];
-console.log(bubbleSort(numbers)); // Output: [2, 3, 5, 8, 9]
+// Example usage
+console.log(isPrime(7));  // Output: true
+console.log(isPrime(10)); // Output: false
