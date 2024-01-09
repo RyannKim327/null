@@ -1,18 +1,27 @@
-function isAnagram(str1, str2) {
-  // Convert both strings to lowercase and remove non-alphabetic characters
-  str1 = str1.toLowerCase().replace(/[^a-z]/g, '');
-  str2 = str2.toLowerCase().replace(/[^a-z]/g, '');
+const graph = {
+  A: ["B", "C"],
+  B: ["A", "D"],
+  C: ["A", "D"],
+  D: ["B", "C", "E"],
+  E: ["D"]
+};
+const queue = [];
+function breadthFirstSearch(graph, startNode) {
+  const visited = new Set(); // to keep track of visited nodes
+  queue.push(startNode);
 
-  // Convert strings to arrays and sort them
-  const arr1 = str1.split('').sort();
-  const arr2 = str2.split('').sort();
+  while (queue.length > 0) {
+    const node = queue.shift(); // dequeue the first node
 
-  // Compare sorted arrays
-  return JSON.stringify(arr1) === JSON.stringify(arr2);
+    if (!visited.has(node)) {
+      console.log(node);
+      visited.add(node);
+
+      const neighbors = graph[node];
+      for (let neighbor of neighbors) {
+        queue.push(neighbor); // enqueue the neighbors
+      }
+    }
+  }
 }
-
-// Example usage
-const string1 = 'listen';
-const string2 = 'silent';
-
-console.log(isAnagram(string1, string2)); // Output: true
+breadthFirstSearch(graph, "A");
