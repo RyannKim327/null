@@ -1,8 +1,11 @@
-const str = "Hello, world!";
-const substring = "world";
-
-if (str.includes(substring)) {
-  console.log("Substring found!");
-} else {
-  console.log("Substring not found.");
+function calculateMean(numbers) {
+  var sum = 0;
+  for (var i = 0; i < numbers.length; i++) {
+    sum += numbers[i];
+  }
+  var mean = sum / numbers.length;
+  return mean;
 }
+var numbers = [1, 2, 3, 4, 5];
+var mean = calculateMean(numbers);
+console.log(mean); // Output: 3
