@@ -1,14 +1,47 @@
-function isPalindrome(str) {
-  // Remove any non-alphanumeric characters and convert to lowercase
-  var simplifiedStr = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+function boyerMooreHorspoolSearch(text, pattern) {
+  const patternLength = pattern.length;
+  const textLength = text.length;
   
-  // Reverse the simplified string
-  var reversedStr = simplifiedStr.split('').reverse().join('');
-  
-  // Check if the simplified string and the reversed string are the same
-  return simplifiedStr === reversedStr;
-}
+  if (patternLength === 0) return [];
 
-// Example usage:
-var str = "A man, a plan, a canal, Panama!";
-console.log(isPalindrome(str)); // Output: true
+  const shiftTable = createShiftTable(pattern);
+
+  const matches = [];
+  let skip;
+  let i = 0;
+  
+  while (i <= textLength - patternLength) {
+    skip = 0;
+    
+    for (let j = patternLength - 1; j >= 0; j--) {
+      if (pattern[j] !== text[i + j]) {
+        skip = shiftTable[text.charCodeAt(i + patternLength - 1)];
+        break;
+      }
+    }
+    
+    if (skip === 0) {
+      matches.push(i);
+      skip = shiftTable[text.charCodeAt(i + patternLength)];
+    }
+    
+    i += skip;
+  }
+  
+  return matches;
+}
+function createShiftTable(pattern) {
+  const shiftTable = {};
+
+  for (let i = 0; i < pattern.length - 1; i++) {
+    shiftTable[pattern.charCodeAt(i)] = pattern.length - i - 1;
+  }
+
+  return shiftTable;
+}
+const text = "Hello, world! This is a test.";
+const pattern = "world";
+
+const matches = boyerMooreHorspoolSearch(text, pattern);
+
+console.log("Matches found at positions:", matches);
