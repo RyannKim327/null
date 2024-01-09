@@ -1,6 +1,4 @@
-let str = "42";
-let intValue = parseInt(str);
-console.log(intValue); // Output: 42
-let str = "42";
-let intValue = Number(str);
-console.log(intValue); // Output: 42
+let arr = [1, 2, 3, 4, 5];
+arr.reverse();
+
+console.log(arr); // Output: [5, 4, 3, 2, 1]
