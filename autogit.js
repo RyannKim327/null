@@ -1,13 +1,38 @@
-function areAnagrams(str1, str2) {
-  const sortedStr1 = str1.toLowerCase().replace(/[^a-z]/g, '').split('').sort().join('');
-  const sortedStr2 = str2.toLowerCase().replace(/[^a-z]/g, '').split('').sort().join('');
-  return sortedStr1 === sortedStr2;
+function interpolationSearch(arr, x, start = 0, end = arr.length - 1) {
+  // ...
 }
-const string1 = 'listen';
-const string2 = 'silent';
+  if (start <= end && x >= arr[start] && x <= arr[end]) {
+    // ...
+  } else {
+    return -1; // Not found
+  }
+  const pos = start + Math.floor((x - arr[start]) * (end - start) / (arr[end] - arr[start]));
+  if (arr[pos] === x) {
+    return pos; // Found
+  }
+  if (arr[pos] > x) {
+    return interpolationSearch(arr, x, start, pos - 1);
+  }
+  if (arr[pos] < x) {
+    return interpolationSearch(arr, x, pos + 1, end);
+  }
+  return -1; // Not found
+function interpolationSearch(arr, x, start = 0, end = arr.length - 1) {
+  if (start <= end && x >= arr[start] && x <= arr[end]) {
+    const pos = start + Math.floor((x - arr[start]) * (end - start) / (arr[end] - arr[start]));
 
-if (areAnagrams(string1, string2)) {
-  console.log('The strings are anagrams');
-} else {
-  console.log('The strings are not anagrams');
+    if (arr[pos] === x) {
+      return pos; // Found
+    }
+
+    if (arr[pos] > x) {
+      return interpolationSearch(arr, x, start, pos - 1);
+    }
+
+    if (arr[pos] < x) {
+      return interpolationSearch(arr, x, pos + 1, end);
+    }
+  }
+
+  return -1; // Not found
 }
