@@ -1,18 +1,46 @@
-function reverseWords(str) {
-  // Step 1: Split the string into an array of words
-  var words = str.split(' ');
-
-  // Step 2: Reverse the order of the array elements
-  words = words.reverse();
-
-  // Step 3: Join the reversed array back into a string
-  var reversedStr = words.join(' ');
-
-  return reversedStr;
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
 }
 
-// Example usage:
-var originalStr = "Hello world!";
-var reversedStr = reverseWords(originalStr);
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
 
-console.log(reversedStr);  // Output: "world! Hello"
+  addNode(data) {
+    const newNode = new Node(data);
+
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
+
+  getLength() {
+    let current = this.head;
+    let count = 0;
+
+    while (current) {
+      count++;
+      current = current.next;
+    }
+
+    return count;
+  }
+}
+
+// Usage
+const linkedList = new LinkedList();
+linkedList.addNode(1);
+linkedList.addNode(2);
+linkedList.addNode(3);
+
+console.log(linkedList.getLength()); // Output: 3
