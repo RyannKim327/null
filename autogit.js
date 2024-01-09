@@ -1,17 +1,43 @@
-function insertionSort(array) {
-    for (let i = 1; i < array.length; i++) {
-        let key = array[i];
-        let j = i - 1;
-
-        while (j >= 0 && array[j] > key) {
-            array[j + 1] = array[j];
-            j--;
-        }
-
-        array[j + 1] = key;
-    }
-
-    return array;
+// Node class representing a node in the binary tree
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
-let arr = [5, 2, 4, 6, 1, 3];
-console.log(insertionSort(arr));  // Output: [1, 2, 3, 4, 5, 6]
+
+// Function to calculate the height of a binary tree
+function height(node) {
+  if (node === null) {
+    return 0;
+  }
+  
+  // Recursively calculate the height of the left and right subtrees
+  const leftHeight = height(node.left);
+  const rightHeight = height(node.right);
+  
+  // Return the maximum height plus 1
+  return Math.max(leftHeight, rightHeight) + 1;
+}
+
+// Function to calculate the diameter of a binary tree
+function diameter(node) {
+  if (node === null) {
+    return 0;
+  }
+  
+  // Calculate the height of the left and right subtrees
+  const leftHeight = height(node.left);
+  const rightHeight = height(node.right);
+  
+  // Calculate the diameter of the left and right subtrees
+  const leftDiameter = diameter(node.left);
+  const rightDiameter = diameter(node.right);
+  
+  // Return the maximum of the following:
+  // - Diameter of the left subtree
+  // - Diameter of the right subtree
+  // - Maximum number of nodes between any two leaf nodes passing through the root
+  return Math.max(leftDiameter, rightDiameter, leftHeight + rightHeight + 1);
+}
