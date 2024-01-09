@@ -1,26 +1,39 @@
-function shellSort(arr) {
-  const len = arr.length;
-  let gap = Math.floor(len / 2);
+function fibonacciSearch(arr, value, n) {
+  let fib1 = 0;
+  let fib2 = 1;
+  let fibM = fib1 + fib2;
 
-  while (gap > 0) {
-    for (let i = gap; i < len; i++) {
-      const temp = arr[i];
-      let j = i;
-
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
-      }
-
-      arr[j] = temp;
-    }
-
-    gap = Math.floor(gap / 2);
+  while (fibM < n) {
+    fib1 = fib2;
+    fib2 = fibM;
+    fibM = fib1 + fib2;
   }
 
-  return arr;
-}
+  let offset = 0;
+  let i = -1;
 
-// Example usage:
-const array = [7, 2, 4, 1, 5, 3];
-console.log(shellSort(array)); // Output: [1, 2, 3, 4, 5, 7]
+  while (fibM > 1) {
+    const index = Math.min(offset + fib1, n - 1);
+
+    if (arr[index] < value) {
+      fibM = fib2;
+      fib2 = fib1;
+      fib1 = fibM - fib2;
+      offset = index;
+    } else if (arr[index] > value) {
+      fibM = fib1;
+      fib2 -= fib1;
+      fib1 = fibM - fib2;
+    } else {
+      return index;
+    }
+  }
+  
+  return -1;
+}
+const arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
+const value = 23;
+const n = arr.length;
+
+const index = fibonacciSearch(arr, value, n);
+console.log(`Element ${value} is found at index ${index}`);
