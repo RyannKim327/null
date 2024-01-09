@@ -1,91 +1,25 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-  }
-}
-enqueue(value) {
-  const newNode = new Node(value);
-  if (this.head === null) {
-    this.head = newNode;
-    this.tail = newNode;
-  } else {
-    this.tail.next = newNode;
-    this.tail = newNode;
-  }
-}
-dequeue() {
-  if (this.head === null) {
-    return null;
-  }
-  const dequeuedValue = this.head.value;
-  this.head = this.head.next;
-  if (this.head === null) {
-    this.tail = null;
-  }
-  return dequeuedValue;
-}
-isEmpty() {
-  return this.head === null;
-}
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
+function longestCommonPrefix(strings) {
+  // Check for empty input or single string
+  if (strings.length === 0 || strings.length === 1) {
+    return strings[0] || '';
   }
 
-  enqueue(value) {
-    const newNode = new Node(value);
-    if (this.head === null) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
+  let prefix = '';
+
+  for (let i = 0; i < strings[0].length; i++) {
+    const char = strings[0][i];
+
+    for (let j = 1; j < strings.length; j++) {
+      if (strings[j][i] !== char) {
+        return prefix;
+      }
     }
+
+    prefix += char;
   }
 
-  dequeue() {
-    if (this.head === null) {
-      return null;
-    }
-    const dequeuedValue = this.head.value;
-    this.head = this.head.next;
-    if (this.head === null) {
-      this.tail = null;
-    }
-    return dequeuedValue;
-  }
-
-  isEmpty() {
-    return this.head === null;
-  }
+  return prefix;
 }
-
-// Example usage:
-const queue = new Queue();
-console.log(queue.isEmpty()); // true
-
-queue.enqueue(10);
-queue.enqueue(20);
-queue.enqueue(30);
-console.log(queue.isEmpty()); // false
-
-console.log(queue.dequeue()); // 10
-console.log(queue.dequeue()); // 20
-console.log(queue.dequeue()); // 30
-console.log(queue.dequeue()); // null
-console.log(queue.isEmpty()); // true
+const strings = ['flower', 'flow', 'flight'];
+const commonPrefix = longestCommonPrefix(strings);
+console.log(commonPrefix);  // Output: 'fl'
