@@ -1,9 +1,20 @@
-const numbers = [5, 1, 3, 2, 4];
+function factorialRecursive(num) {
+  if (num === 0) {
+    return 1;
+  } else {
+    return num * factorialRecursive(num - 1);
+  }
+}
 
-// Sorting the array in ascending order
-numbers.sort((a, b) => a - b);
-console.log(numbers); // Output: [1, 2, 3, 4, 5]
+// Example usage
+console.log(factorialRecursive(5)); // Output: 120
+function factorialLoop(num) {
+  let result = 1;
+  for (let i = 2; i <= num; i++) {
+    result *= i;
+  }
+  return result;
+}
 
-// Sorting the array in descending order
-numbers.sort((a, b) => b - a);
-console.log(numbers); // Output: [5, 4, 3, 2, 1]
+// Example usage
+console.log(factorialLoop(5)); // Output: 120
