@@ -1,15 +1,27 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  var alphanumeric = str.replace(/[^0-9a-z]/gi, "").toLowerCase();
-  
-  // Create the reversed string
-  var reversed = alphanumeric.split("").reverse().join("");
-  
-  // Compare the original and reversed strings
-  return alphanumeric === reversed;
+function quicksort(arr) {
+  if (arr.length <= 1) {
+    return arr;
+  }
+
+  const pivot = arr[Math.floor(arr.length / 2)];
+  const less = [];
+  const equal = [];
+  const greater = [];
+
+  for (const element of arr) {
+    if (element < pivot) {
+      less.push(element);
+    } else if (element > pivot) {
+      greater.push(element);
+    } else {
+      equal.push(element);
+    }
+  }
+
+  return [...quicksort(less), ...equal, ...quicksort(greater)];
 }
 
-// Example usage
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // Output: true
-console.log(isPalindrome("racecar")); // Output: true
-console.log(isPalindrome("hello world")); // Output: false
+// Example usage:
+const unsortedArray = [5, 3, 9, 1, 10, 4];
+const sortedArray = quicksort(unsortedArray);
+console.log(sortedArray); // Outputs: [1, 3, 4, 5, 9, 10]
