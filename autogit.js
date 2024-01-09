@@ -1,18 +1,23 @@
-function findSecondLargest(arr) {
-  let largest = -Infinity;
-  let secondLargest = -Infinity;
-
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] > largest) {
-      secondLargest = largest;
-      largest = arr[i];
-    } else if (arr[i] > secondLargest && arr[i] < largest) {
-      secondLargest = arr[i];
+function quickSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
+  }
+  
+  const pivot = arr[Math.floor(arr.length / 2)];
+  const left = [];
+  const right = [];
+  
+  for (const element of arr) {
+    if (element < pivot) {
+      left.push(element);
+    } else if (element > pivot) {
+      right.push(element);
     }
   }
-
-  return secondLargest;
+  
+  return quickSort(left).concat(pivot, quickSort(right));
 }
-const arr = [1, 5, 2, 9, 10, 6];
 
-console.log(findSecondLargest(arr)); // Output: 9
+// Example usage:
+const array = [5, 9, 2, 1, 7, 6, 3];
+console.log(quickSort(array)); // Output: [1, 2, 3, 5, 6, 7, 9]
