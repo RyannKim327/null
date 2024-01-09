@@ -1,29 +1,23 @@
-function findKthSmallestElement(arr, k) {
-  arr.sort((a, b) => a - b);
-  return arr[k - 1];
-}
-
-const array = [4, 2, 8, 1, 5];
-const k = 2;
-const kthSmallest = findKthSmallestElement(array, k); // Returns 2
-console.log(kthSmallest);
-const PriorityQueue = require('js-priority-queue');
-
-function findKthSmallestElement(arr, k) {
-  const priorityQueue = new PriorityQueue({ comparator: (a, b) => a - b });
-
-  for (const num of arr) {
-    priorityQueue.queue(num);
+function findMiddleElement(head) {
+  if (!head) {
+    return null; // Empty linked list
   }
 
-  for (let i = 1; i < k; i++) {
-    priorityQueue.dequeue();
+  let slowPointer = head;
+  let fastPointer = head;
+
+  while (fastPointer && fastPointer.next) {
+    slowPointer = slowPointer.next;
+    fastPointer = fastPointer.next.next;
   }
 
-  return priorityQueue.dequeue();
+  return slowPointer;
 }
-
-const array = [4, 2, 8, 1, 5];
-const k = 2;
-const kthSmallest = findKthSmallestElement(array, k); // Returns 2
-console.log(kthSmallest);
+const middleElement = findMiddleElement(head);
+console.log(middleElement);
+class ListNode {
+  constructor(val, next = null) {
+    this.val = val;
+    this.next = next;
+  }
+}
