@@ -1,25 +1,30 @@
-function findFirstRepeatedCharacter(str) {
-    // Create an empty object to store the frequency of characters
-    const charFrequency = {};
-
-    // Iterate over each character in the string
-    for (let i = 0; i < str.length; i++) {
-        const char = str[i];
-
-        // If the character is already in the charFrequency object, we have found the first repeated character
-        if (charFrequency[char]) {
-            return char;
-        }
-
-        // Otherwise, update the frequency of the character in the charFrequency object
-        charFrequency[char] = true;
+function largestPrimeFactor(number) {
+    // Your code here
+}
+while (number % 2 === 0) {
+    number = number / 2;
+}
+for (let i = 3; i <= Math.sqrt(number); i = i + 2) {
+    while (number % i === 0) {
+        number = number / i;
     }
-
-    // If no repeated character is found, return null or any other desired value
-    return null;
+}
+if (number > 2) {
+    return number;
+}
+function largestPrimeFactor(number) {
+    while (number % 2 === 0) {
+        number = number / 2;
+    }
+    for (let i = 3; i <= Math.sqrt(number); i = i + 2) {
+        while (number % i === 0) {
+            number = number / i;
+        }
+    }
+    if (number > 2) {
+        return number;
+    }
 }
 
-// Example usage:
-const inputString = "hello world!";
-const firstRepeatedChar = findFirstRepeatedCharacter(inputString);
-console.log(firstRepeatedChar);  // Output: "l"
+// Example usage
+console.log(largestPrimeFactor(13195)); // Output: 29
