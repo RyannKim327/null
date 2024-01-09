@@ -1,27 +1,36 @@
-const graph = {
-  A: ["B", "C"],
-  B: ["A", "D"],
-  C: ["A", "D"],
-  D: ["B", "C", "E"],
-  E: ["D"]
-};
-const queue = [];
-function breadthFirstSearch(graph, startNode) {
-  const visited = new Set(); // to keep track of visited nodes
-  queue.push(startNode);
+function findMajorityElement(arr) {
+  let count = 0;
+  let majorityElement = null;
 
-  while (queue.length > 0) {
-    const node = queue.shift(); // dequeue the first node
-
-    if (!visited.has(node)) {
-      console.log(node);
-      visited.add(node);
-
-      const neighbors = graph[node];
-      for (let neighbor of neighbors) {
-        queue.push(neighbor); // enqueue the neighbors
+  for (let i = 0; i < arr.length; i++) {
+    if (count === 0) {
+      majorityElement = arr[i];
+      count = 1;
+    } else {
+      if (arr[i] === majorityElement) {
+        count++;
+      } else {
+        count--;
       }
     }
   }
+
+  // Check if the majority element is indeed a majority
+  count = 0;
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === majorityElement) {
+      count++;
+    }
+  }
+
+  if (count > arr.length / 2) {
+    return majorityElement;
+  } else {
+    return null; // No majority element found
+  }
 }
-breadthFirstSearch(graph, "A");
+
+// Example usage:
+const array = [2, 4, 4, 2, 4, 4, 4];
+const majorityElement = findMajorityElement(array);
+console.log(majorityElement);  // Output: 4
