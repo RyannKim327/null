@@ -1,14 +1,11 @@
-function randomSort(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
+function getStringLength(str) {
+  let count = 0;
+  for (let i = 0; str[i] !== undefined; i++) {
+    count++;
   }
-  return arr;
+  return count;
 }
 
-// Example usage:
-const array = [1, 2, 3, 4, 5];
-console.log("Before sorting:", array);
-
-const sortedArray = randomSort(array);
-console.log("After sorting:", sortedArray);
+const myString = "Hello, world!";
+const length = getStringLength(myString);
+console.log(length); // Output: 13
