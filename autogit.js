@@ -1,41 +1,62 @@
-function longestCommonSubsequence(str1, str2) {
-  const m = str1.length;
-  const n = str2.length;
+class Graph {
+  constructor(vertices) {
+    this.V = vertices;
+    this.edges = [];
+  }
 
-  // Create a 2D array to store lengths of LCS
-  const dp = Array.from(Array(m + 1), () => new Array(n + 1).fill(0));
+  addEdge(source, destination, weight) {
+    this.edges.push({ source, destination, weight });
+  }
+}
+function initialize(graph, source) {
+  const distance = [];
+  const predecessor = [];
 
-  // Building the LCS table
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-      } else {
-        dp[i][j] = Math.max(dp[i][j - 1], dp[i - 1][j]);
+  for (let i = 0; i < graph.V; i++) {
+    distance[i] = Infinity;
+    predecessor[i] = null;
+  }
+
+  distance[source] = 0;
+
+  return { distance, predecessor };
+}
+function bellmanFord(graph, source) {
+  const { distance, predecessor } = initialize(graph, source);
+
+  // Relax all edges V - 1 times
+  for (let i = 0; i < graph.V - 1; i++) {
+    for (const { source, destination, weight } of graph.edges) {
+      if (distance[source] + weight < distance[destination]) {
+        distance[destination] = distance[source] + weight;
+        predecessor[destination] = source;
       }
     }
   }
 
-  // Finding the LCS from the table
-  let lcs = "";
-  let i = m, j = n;
-  while (i > 0 && j > 0) {
-    if (str1[i - 1] === str2[j - 1]) {
-      lcs = str1[i - 1] + lcs;
-      i--;
-      j--;
-    } else if (dp[i][j - 1] > dp[i - 1][j]) {
-      j--;
-    } else {
-      i--;
+  // Check for negative-weight cycles
+  for (const { source, destination, weight } of graph.edges) {
+    if (distance[source] + weight < distance[destination]) {
+      throw new Error("Graph contains a negative-weight cycle");
     }
   }
 
-  return lcs;
+  return { distance, predecessor };
 }
+const graph = new Graph(5);
+graph.addEdge(0, 1, -1);
+graph.addEdge(0, 2, 4);
+graph.addEdge(1, 2, 3);
+graph.addEdge(1, 3, 2);
+graph.addEdge(1, 4, 2);
+graph.addEdge(3, 2, 5);
+graph.addEdge(3, 1, 1);
+graph.addEdge(4, 3, -3);
 
-// Example usage:
-const str1 = "ABCDGH";
-const str2 = "AEDFHR";
-const result = longestCommonSubsequence(str1, str2);
-console.log(result); // Output: "ADH"
+const source = 0;
+const { distance, predecessor } = bellmanFord(graph, source);
+
+console.log('Vertex\tDistance\tPredecessor');
+for (let i = 0; i < graph.V; i++) {
+  console.log(`${i}\t${distance[i]}\t\t${predecessor[i]}`);
+}
