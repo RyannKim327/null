@@ -1,24 +1,53 @@
-function sanitizeString(str) {
-  return str.toLowerCase().replace(/[^a-z\d]/g, '');
+function buildPrefixTable(pattern) {
+  const prefixTable = Array(pattern.length).fill(0);
+  let len = 0;
+  let i = 1;
+  
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[len]) {
+      len++;
+      prefixTable[i] = len;
+      i++;
+    } else {
+      if (len !== 0) {
+        len = prefixTable[len - 1];
+      } else {
+        prefixTable[i] = 0;
+        i++;
+      }
+    }
+  }
+  
+  return prefixTable;
 }
-function sortString(str) {
-  return str.split('').sort().join('');
+function stringMatch(pattern, text) {
+  const prefixTable = buildPrefixTable(pattern);
+  const matches = [];
+  let i = 0;
+  let j = 0;
+  
+  while (i < text.length) {
+    if (pattern[j] === text[i]) {
+      i++;
+      j++;
+    }
+    
+    if (j === pattern.length) {
+      matches.push(i - j);
+      j = prefixTable[j - 1];
+    } else if (i < text.length && pattern[j] !== text[i]) {
+      if (j !== 0) {
+        j = prefixTable[j - 1];
+      } else {
+        i++;
+      }
+    }
+  }
+  
+  return matches;
 }
-function isAnagram(str1, str2) {
-  const sanitizedStr1 = sanitizeString(str1);
-  const sanitizedStr2 = sanitizeString(str2);
+const pattern = "abc";
+const text = "ababcabcababc";
 
-  const sortedStr1 = sortString(sanitizedStr1);
-  const sortedStr2 = sortString(sanitizedStr2);
-
-  return sortedStr1 === sortedStr2;
-}
-const string1 = 'listen';
-const string2 = 'silent';
-
-if (isAnagram(string1, string2)) {
-  console.log(string1 + ' and ' + string2 + ' are anagrams.');
-} else {
-  console.log(string1 + ' and ' + string2 + ' are not anagrams.');
-}
-listen and silent are anagrams.
+const matches = stringMatch(pattern, text);
+console.log(matches); // Output: [2, 5, 10]
