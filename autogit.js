@@ -1,18 +1,21 @@
-function findNthFromEnd(head, n) {
-    let p1 = head;
-    let p2 = head;
+function burrowsWheelerTransform(input) {
+  // Create an array to store the rotations
+  const rotations = [];
 
-    for (let i = 0; i < n; i++) {
-        if (p1 === null) {
-            return null;
-        }
-        p1 = p1.next;
-    }
+  // Generate all rotations of the input string
+  for (let i = 0; i < input.length; i++) {
+    rotations.push(input.slice(i) + input.slice(0, i));
+  }
 
-    while (p1 !== null) {
-        p1 = p1.next;
-        p2 = p2.next;
-    }
+  // Sort the rotations lexicographically
+  rotations.sort();
 
-    return p2.value;
+  // Extract the last character of each rotation
+  const transformed = rotations.map(rotation => rotation.charAt(rotation.length - 1));
+
+  // Return the transformed string
+  return transformed.join('');
 }
+const inputString = 'banana';
+const transformedString = burrowsWheelerTransform(inputString);
+console.log(transformedString);
