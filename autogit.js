@@ -1,9 +1,5 @@
-let array = [1, 2, 3, 4, 5];
-array.reverse();
+let str = "42";
+let num = parseInt(str);
 
-console.log(array);  // Output: [5, 4, 3, 2, 1]
-let array = [1, 2, 3, 4, 5];
-let reversedArray = [...array].reverse();
-
-console.log(reversedArray);  // Output: [5, 4, 3, 2, 1]
-console.log(array);  // Output: [1, 2, 3, 4, 5]
+console.log(num); // Output: 42
+console.log(typeof num); // Output: number
