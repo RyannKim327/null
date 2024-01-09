@@ -1,43 +1,19 @@
-function mergeSort(arr) {
-  if (arr.length <= 1) {
-    return arr; // returns the array if it has only one element or is empty
+function isPrime(number) {
+  // Check if the number is less than 2
+  if (number < 2) {
+    return false;
   }
 
-  const midIndex = Math.floor(arr.length / 2);
-  const leftArr = arr.slice(0, midIndex);
-  const rightArr = arr.slice(midIndex);
-
-  const sortedLeftArr = mergeSort(leftArr);
-  const sortedRightArr = mergeSort(rightArr);
-
-  return merge(sortedLeftArr, sortedRightArr);
-}
-
-function merge(leftArr, rightArr) {
-  const sortedArr = [];
-
-  while (leftArr.length && rightArr.length) {
-    if (leftArr[0] <= rightArr[0]) {
-      sortedArr.push(leftArr.shift());
-    } else {
-      sortedArr.push(rightArr.shift());
+  // Check for numbers from 2 to the square root of the given number
+  for (let i = 2; i <= Math.sqrt(number); i++) {
+    if (number % i === 0) {
+      return false;
     }
   }
 
-  // If any elements are remaining in the left array, add them to the sorted array
-  while (leftArr.length) {
-    sortedArr.push(leftArr.shift());
-  }
-
-  // If any elements are remaining in the right array, add them to the sorted array
-  while (rightArr.length) {
-    sortedArr.push(rightArr.shift());
-  }
-
-  return sortedArr;
+  return true;
 }
 
-// Example usage:
-const arr = [5, 2, 9, 1, 7, 6, 4, 3, 8];
-const sortedArr = mergeSort(arr);
-console.log(sortedArr);
+// Usage:
+console.log(isPrime(7));  // Output: true
+console.log(isPrime(12)); // Output: false
