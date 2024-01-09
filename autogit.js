@@ -1,14 +1,54 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  const formattedStr = str.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
+function buildFailureTable(pattern) {
+  const table = [0];
+  let prefixLength = 0;
 
-  // Reverse the string
-  const reversedStr = formattedStr.split('').reverse().join('');
+  for (let i = 1; i < pattern.length; i++) {
+    if (pattern[i] === pattern[prefixLength]) {
+      prefixLength++;
+      table[i] = prefixLength;
+    } else {
+      if (prefixLength) {
+        prefixLength = table[prefixLength - 1];
+        i--;
+      } else {
+        table[i] = 0;
+      }
+    }
+  }
 
-  // Compare the reversed string with the original string
-  return formattedStr === reversedStr;
+  return table;
 }
+function kmpSearch(text, pattern) {
+  const n = text.length;
+  const m = pattern.length;
+  const table = buildFailureTable(pattern);
 
-// Test the function
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // Output: true
-console.log(isPalindrome("Hello, world!")); // Output: false
+  let i = 0;
+  let j = 0;
+  const indices = [];
+
+  while (i < n) {
+    if (pattern[j] === text[i]) {
+      i++;
+      j++;
+
+      if (j === m) {
+        indices.push(i - j);
+        j = table[j - 1];
+      }
+    } else {
+      if (j !== 0) {
+        j = table[j - 1];
+      } else {
+        i++;
+      }
+    }
+  }
+
+  return indices;
+}
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+
+const indices = kmpSearch(text, pattern);
+console.log("Pattern found at indices:", indices);
