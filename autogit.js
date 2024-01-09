@@ -1,25 +1,61 @@
-function burrowsWheelerTransform(input) {
-  function cyclicShift(str) {
-    return str.slice(-1) + str.slice(0, -1);
-  }
-  
-  const rotations = [];
-  for (let i = 0; i < input.length; i++) {
-    rotations.push(input);
-    input = cyclicShift(input);
-  }
-  
-  rotations.sort();
-  
-  let bwtString = '';
-  for (let i = 0; i < rotations.length; i++) {
-    bwtString += rotations[i].slice(-1);
-  }
-  
-  return bwtString;
+function shellSort(array) {
+  // ...
 }
+function shellSort(array) {
+  let gap = Math.floor(array.length / 2);
+  // ...
+}
+function shellSort(array) {
+  let gap = Math.floor(array.length / 2);
 
-// Usage example
-const inputString = 'banana';
-const bwtResult = burrowsWheelerTransform(inputString);
-console.log(bwtResult);
+  while (gap > 0) {
+    // Shell sort algorithm steps
+    // ...
+    gap = Math.floor(gap / 2);
+  }
+}
+function shellSort(array) {
+  let gap = Math.floor(array.length / 2);
+
+  while (gap > 0) {
+    for (let i = gap; i < array.length; i++) {
+      let j = i;
+
+      while (j >= gap && array[j - gap] > array[j]) {
+        // Swap elements
+        let temp = array[j];
+        array[j] = array[j - gap];
+        array[j - gap] = temp;
+
+        j -= gap;
+      }
+    }
+
+    gap = Math.floor(gap / 2);
+  }
+}
+function shellSort(array) {
+  let gap = Math.floor(array.length / 2);
+
+  while (gap > 0) {
+    for (let i = gap; i < array.length; i++) {
+      let j = i;
+
+      while (j >= gap && array[j - gap] > array[j]) {
+        // Swap elements
+        let temp = array[j];
+        array[j] = array[j - gap];
+        array[j - gap] = temp;
+
+        j -= gap;
+      }
+    }
+
+    gap = Math.floor(gap / 2);
+  }
+
+  return array;
+}
+let array = [8, 4, 1, 6, 10, 2];
+let sortedArray = shellSort(array);
+console.log(sortedArray); // Output: [1, 2, 4, 6, 8, 10]
