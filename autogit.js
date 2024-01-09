@@ -1,32 +1,42 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
-
-function getSumOfNodes(root) {
-  // Base case: if the root is null, return 0
-  if (root === null) {
-    return 0;
+function mergeSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
   }
 
-  // Recursively compute the sum of nodes in the left and right subtrees
-  const leftSum = getSumOfNodes(root.left);
-  const rightSum = getSumOfNodes(root.right);
+  // Split the array into two halves
+  const mid = Math.floor(arr.length / 2);
+  const left = arr.slice(0, mid);
+  const right = arr.slice(mid);
 
-  // Return the sum of the root value, left subtree sum, and right subtree sum
-  return root.value + leftSum + rightSum;
+  // Recursively sort the two halves
+  const sortedLeft = mergeSort(left);
+  const sortedRight = mergeSort(right);
+
+  // Merge the sorted halves
+  return merge(sortedLeft, sortedRight);
 }
 
-// Create a binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
+function merge(left, right) {
+  let merged = [];
+  let leftIndex = 0;
+  let rightIndex = 0;
 
-// Find the sum of all nodes
-const sum = getSumOfNodes(root);
-console.log("Sum of all nodes:", sum);
+  // Merge the two arrays into a single sorted array
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] < right[rightIndex]) {
+      merged.push(left[leftIndex]);
+      leftIndex++;
+    } else {
+      merged.push(right[rightIndex]);
+      rightIndex++;
+    }
+  }
+
+  // Concatenate the remaining elements (if any)
+  return merged.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+}
+
+// Example usage
+const arr = [5, 2, 9, 1, 7, 6, 4, 8, 3];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr);
