@@ -1,8 +1,6 @@
-let string1 = "Hello";
-let string2 = "World";
-let result = string1 + " " + string2;
-console.log(result); // Output: "Hello World"
-let string1 = "Hello";
-let string2 = "World";
-let result = string1.concat(" ", string2);
-console.log(result); // Output: "Hello World"
+let str = "This is a string with spaces";
+
+// Using regular expression to remove spaces
+let stringWithoutSpaces = str.replace(/\s/g, "");
+
+console.log(stringWithoutSpaces);  // Output: "Thisisastringwithspaces"
