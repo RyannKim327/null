@@ -1,133 +1,44 @@
-class Node {
-  constructor(value, level) {
-    this.value = value;
-    this.next = new Array(level + 1);
-    this.previous = null;
+function generateFibonacciArray(n) {
+  let fibSeq = [0, 1];
+  let i = 2;
+  
+  while (fibSeq[i - 1] < n) {
+    fibSeq[i] = fibSeq[i - 1] + fibSeq[i - 2];
+    i++;
   }
+  
+  return fibSeq;
 }
+function fibonacciSearch(arr, target) {
+  let fibSeq = generateFibonacciArray(arr.length);
+  let offset = -1;
 
-class SkipList {
-  constructor() {
-    this.head = new Node(-Infinity, 0);
-    this.maxLevel = 0;
-    this.length = 0;
-    this.probability = 0.5; // adjust the probability based on the desired performance characteristics
+  while (fibSeq.length > 2) {
+    const fibIndex = fibSeq.length - 3;
+    const mid = offset + fibSeq[fibIndex];
+
+    if (arr[mid] === target) {
+      return mid;
+    } else if (arr[mid] > target) {
+      fibSeq.splice(fibIndex + 1);
+    } else {
+      fibSeq.splice(fibIndex, 1);
+      offset = mid;
+    }
   }
 
-  randomLevel() {
-    let level = 0;
-    while (Math.random() < this.probability && level < this.maxLevel + 1) {
-      level++;
-    }
-    return level;
+  if (fibSeq[0] === target && arr[offset + 1] === target) {
+    return offset + 1;
   }
 
-  insert(value) {
-    const newNode = new Node(value, this.randomLevel());
-
-    if (newNode.level > this.maxLevel) {
-      this.maxLevel = newNode.level;
-    }
-
-    let currentNode = this.head;
-    const update = new Array(this.maxLevel + 1);
-
-    for (let i = this.maxLevel; i >= 0; i--) {
-      while (
-        currentNode.next[i] !== undefined &&
-        currentNode.next[i].value < value
-      ) {
-        currentNode = currentNode.next[i];
-      }
-      update[i] = currentNode;
-    }
-
-    currentNode = currentNode.next[0];
-
-    if (currentNode !== undefined && currentNode.value === value) {
-      // Value already exists in the skip list
-      return;
-    }
-
-    for (let i = 0; i <= newNode.level; i++) {
-      newNode.next[i] = update[i].next[i];
-      update[i].next[i] = newNode;
-    }
-
-    if (newNode.next[0] !== undefined) {
-      newNode.next[0].previous = newNode;
-    }
-
-    newNode.previous = update[0];
-
-    this.length++;
-  }
-
-  remove(value) {
-    let currentNode = this.head;
-    const update = new Array(this.maxLevel + 1);
-
-    for (let i = this.maxLevel; i >= 0; i--) {
-      while (
-        currentNode.next[i] !== undefined &&
-        currentNode.next[i].value < value
-      ) {
-        currentNode = currentNode.next[i];
-      }
-      update[i] = currentNode;
-    }
-
-    currentNode = currentNode.next[0];
-
-    if (currentNode === undefined || currentNode.value !== value) {
-      // Value does not exist in the skip list
-      return;
-    }
-
-    for (let i = 0; i <= this.maxLevel; i++) {
-      if (update[i].next[i] === currentNode) {
-        update[i].next[i] = currentNode.next[i];
-      }
-    }
-
-    if (currentNode.next[0] !== undefined) {
-      currentNode.next[0].previous = currentNode.previous;
-    }
-
-    while (this.maxLevel > 0 && this.head.next[this.maxLevel] === undefined) {
-      this.maxLevel--;
-    }
-
-    this.length--;
-  }
-
-  search(value) {
-    let currentNode = this.head;
-
-    for (let i = this.maxLevel; i >= 0; i--) {
-      while (
-        currentNode.next[i] !== undefined &&
-        currentNode.next[i].value <= value
-      ) {
-        if (currentNode.next[i].value === value) {
-          return currentNode.next[i];
-        }
-        currentNode = currentNode.next[i];
-      }
-    }
-
-    return null;
-  }
+  return -1;
 }
-const skipList = new SkipList();
+const numbers = [1, 5, 8, 12, 20, 28, 30, 42, 50];
+const target = 30;
 
-skipList.insert(10);
-skipList.insert(5);
-skipList.insert(20);
-
-console.log(skipList.search(5)); // Node { value: 5, next: [Node], previous: null }
-console.log(skipList.search(15)); // null
-
-skipList.remove(5);
-
-console.log(skipList.search(5)); // null
+const index = fibonacciSearch(numbers, target);
+if (index !== -1) {
+  console.log(`Element ${target} found at index ${index}.`);
+} else {
+  console.log(`Element ${target} not found in the array.`);
+}
