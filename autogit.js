@@ -1,19 +1,30 @@
-let array = [1, 2, 3, 3, 4, 4, 5];
-let uniqueArray = [...new Set(array)];
+function findFirstNonRepeatingCharacter(string) {
+  // Create an empty object to store character counts
+  const charCount = {};
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-let array = [1, 2, 3, 3, 4, 4, 5];
-let uniqueArray = array.filter((value, index) => {
-  return array.indexOf(value) === index;
-});
+  // Iterate over each character in the string
+  for (let i = 0; i < string.length; i++) {
+    const char = string[i];
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-let array = [1, 2, 3, 3, 4, 4, 5];
-let uniqueArray = array.reduce((accumulator, value) => {
-  if (!accumulator.includes(value)) {
-    accumulator.push(value);
+    // Increment the count of the current character in the charCount object
+    charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
   }
-  return accumulator;
-}, []);
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+  // Iterate over each character in the string again
+  for (let i = 0; i < string.length; i++) {
+    const char = string[i];
+
+    // If the count of the current character is 1, it is the first non-repeating character
+    if (charCount[char] === 1) {
+      return char;
+    }
+  }
+
+  // If no non-repeating character is found, return null
+  return null;
+}
+
+// Example usage
+const inputString = "abracadabra";
+const firstNonRepeatingChar = findFirstNonRepeatingCharacter(inputString);
+console.log(firstNonRepeatingChar); // Output: "b"
