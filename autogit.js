@@ -1,53 +1,18 @@
-function mergeSort(arr) {
-  // Base case: if the array is empty or contains only one element, it is already sorted
-  if (arr.length <= 1) {
-    return arr;
-  }
-  
-  // Split the array into two halves
-  const mid = Math.floor(arr.length / 2);
-  const leftHalf = arr.slice(0, mid);
-  const rightHalf = arr.slice(mid);
-  
-  // Recursively sort the two halves
-  const sortedLeft = mergeSort(leftHalf);
-  const sortedRight = mergeSort(rightHalf);
-  
-  // Merge the sorted halves
-  return merge(sortedLeft, sortedRight);
-}
+function isAnagram(string1, string2) {
+  // Convert both strings to lowercase and remove non-alphanumeric characters
+  string1 = string1.toLowerCase().replace(/[^a-z0-9]/g, '');
+  string2 = string2.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-function merge(left, right) {
-  let mergedArr = [];
-  let leftIndex = 0;
-  let rightIndex = 0;
-  
-  // Compare elements from both arrays and push the smaller element to the result array
-  while (leftIndex < left.length && rightIndex < right.length) {
-    if (left[leftIndex] < right[rightIndex]) {
-      mergedArr.push(left[leftIndex]);
-      leftIndex++;
-    } else {
-      mergedArr.push(right[rightIndex]);
-      rightIndex++;
-    }
-  }
-  
-  // Push any remaining elements from the left and right arrays
-  while (leftIndex < left.length) {
-    mergedArr.push(left[leftIndex]);
-    leftIndex++;
-  }
-  
-  while (rightIndex < right.length) {
-    mergedArr.push(right[rightIndex]);
-    rightIndex++;
-  }
-  
-  return mergedArr;
+  // Convert strings to character arrays, sort them, and convert back to strings
+  const sortedString1 = string1.split('').sort().join('');
+  const sortedString2 = string2.split('').sort().join('');
+
+  // Compare the sorted strings
+  return sortedString1 === sortedString2;
 }
 
 // Example usage:
-const arr = [5, 3, 8, 4, 2, 1, 6, 7];
-const sortedArr = mergeSort(arr);
-console.log(sortedArr); // Output: [1, 2, 3, 4, 5, 6, 7, 8]
+console.log(isAnagram('listen', 'silent')); // true
+console.log(isAnagram('hello', 'bye')); // false
+console.log(isAnagram('Eleven plus two', 'Twelve plus one')); // true
+console.log(isAnagram('restful', 'fluster')); // true
