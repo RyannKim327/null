@@ -1,44 +1,94 @@
-function buildBadCharTable(pattern) {
-  const table = {};
-  const lastIndex = pattern.length - 1;
+// Node class represents each node in the binary search tree
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
 
-  for (let i = 0; i < lastIndex; i++) {
-    table[pattern[i]] = lastIndex - i;
+// BinarySearchTree class represents the binary search tree
+class BinarySearchTree {
+  constructor() {
+    this.root = null;
   }
 
-  return table;
-}
-function boyerMooreHorspool(text, pattern) {
-  const badCharTable = buildBadCharTable(pattern);
-  const patternLength = pattern.length;
-  const textLength = text.length;
-  let i = 0;
+  // Insert a value into the BST
+  insert(value) {
+    const newNode = new Node(value);
 
-  while (i <= textLength - patternLength) {
-    let j = patternLength - 1;
-
-    while (j >= 0 && pattern[j] === text[i + j]) {
-      j--;
-    }
-
-    if (j === -1) {
-      // Pattern found at index i
-      return i;
+    if (this.root === null) {
+      this.root = newNode;
     } else {
-      // Skip based on the bad character table
-      i += badCharTable[text[i + j]] || patternLength;
+      this.insertNode(this.root, newNode);
     }
   }
 
-  // Pattern not found
-  return -1;
-}
-const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit';
-const pattern = 'ipsum';
+  // Helper function to recursively insert a node
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
 
-const index = boyerMooreHorspool(text, pattern);
-if (index !== -1) {
-  console.log(`Pattern found at index ${index}`);
-} else {
-  console.log('Pattern not found');
+  // Search for a value in the BST
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  // Helper function to recursively search for a node
+  searchNode(node, value) {
+    if (node === null) {
+      return false;
+    }
+
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else if (value > node.value) {
+      return this.searchNode(node.right, value);
+    } else {
+      return true;
+    }
+  }
+
+  // In-order traversal of the BST (returns an array of sorted values)
+  inorderTraversal() {
+    const result = [];
+    this.inorderTraversalNode(this.root, result);
+    return result;
+  }
+
+  // Helper function to recursively perform in-order traversal
+  inorderTraversalNode(node, result) {
+    if (node !== null) {
+      this.inorderTraversalNode(node.left, result);
+      result.push(node.value);
+      this.inorderTraversalNode(node.right, result);
+    }
+  }
 }
+const bst = new BinarySearchTree();
+bst.insert(8);
+bst.insert(3);
+bst.insert(10);
+bst.insert(1);
+bst.insert(6);
+bst.insert(14);
+bst.insert(4);
+bst.insert(7);
+bst.insert(13);
+
+console.log(bst.search(6)); // true
+console.log(bst.search(9)); // false
+
+console.log(bst.inorderTraversal()); // [1, 3, 4, 6, 7, 8, 10, 13, 14]
