@@ -1,35 +1,74 @@
-function beamSearch(startNode, beamWidth, maxDepth) {
-  let beam = [startNode];
-  let nextBeam = [];
-  let depth = 0;
+// Define a class for the tree node
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
 
-  while (depth < maxDepth && beam.length > 0) {
-    depth++;
-    nextBeam = [];
-
-    for (const node of beam) {
-      const childNodes = expandNode(node);
-
-      for (const childNode of childNodes) {
-        nextBeam.push(childNode);
-      }
-    }
-
-    // Sort nextBeam based on scoring function to keep only the top beamWidth nodes
-    nextBeam.sort((a, b) => evaluateNode(b) - evaluateNode(a));
-    beam = nextBeam.slice(0, beamWidth);
+// Define a class for the binary search tree
+class BinarySearchTree {
+  constructor() {
+    this.root = null;
   }
 
-  return beam[0];
+  // Method to insert a new value into the tree
+  insert(value) {
+    const newNode = new Node(value);
+
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
+
+  // Helper method to insert a node recursively
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  // Method to search for a value in the tree
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  // Helper method to search for a value recursively
+  searchNode(node, value) {
+    if (node === null) {
+      return false;
+    }
+
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else if (value > node.value) {
+      return this.searchNode(node.right, value);
+    } else {
+      return true;
+    }
+  }
 }
 
-// Example helper functions
-function expandNode(node) {
-  // Generate child nodes for the given node
-  // ...
-}
+// Example usage:
+const bst = new BinarySearchTree();
+bst.insert(8);
+bst.insert(3);
+bst.insert(10);
+bst.insert(1);
+bst.insert(6);
 
-function evaluateNode(node) {
-  // Evaluate the given node based on some scoring criterion
-  // ...
-}
+console.log(bst.search(6)); // Output: true
+console.log(bst.search(12)); // Output: false
