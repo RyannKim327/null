@@ -1,55 +1,43 @@
 class Node {
-  constructor(label) {
-    this.label = label;
-    this.neighbors = [];
+  constructor(data) {
+    this.data = data;
+    this.next = null;
   }
 }
 
-class Graph {
+class LinkedList {
   constructor() {
-    this.nodes = {};
+    this.head = null;
   }
-
-  addNode(label) {
-    this.nodes[label] = new Node(label);
-  }
-
-  addEdge(source, destination) {
-    const sourceNode = this.nodes[source];
-    const destinationNode = this.nodes[destination];
-    sourceNode.neighbors.push(destinationNode);
-    // If your graph is undirected, you may also add the following line
-    // destinationNode.neighbors.push(sourceNode);
-  }
-}
-function depthFirstSearch(graph, startNode) {
-  const visited = {};
-
-  function dfs(node) {
-    if (!node) return;
-
-    visited[node.label] = true;
-    console.log(node.label); // Process the visited node
-
-    for (const neighbor of node.neighbors) {
-      if (!visited[neighbor.label]) {
-        dfs(neighbor); // Recursively visit neighbors
-      }
+  
+  append(data) {
+    const newNode = new Node(data);
+    if (!this.head) {
+      this.head = newNode;
+      return;
     }
+    let current = this.head;
+    while (current.next) {
+      current = current.next;
+    }
+    current.next = newNode;
   }
-
-  dfs(graph.nodes[startNode]);
+  
+  getLength() {
+    let current = this.head;
+    let count = 0;
+    while (current) {
+      count++;
+      current = current.next;
+    }
+    return count;
+  }
 }
-const graph = new Graph();
 
-graph.addNode('A');
-graph.addNode('B');
-graph.addNode('C');
-graph.addNode('D');
-graph.addNode('E');
-
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'D');
-graph.addEdge('B', 'C');
-graph.addEdge('C', 'E');
-depthFirstSearch(graph, 'A');
+// Example usage
+const list = new LinkedList();
+list.append(10);
+list.append(20);
+list.append(30);
+list.append(40);
+console.log(list.getLength()); // Output: 4
