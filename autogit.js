@@ -1,70 +1,15 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
-class BinarySearchTree {
-  constructor() {
-    this.root = null;
-  }
-}
-class BinarySearchTree {
-  // ...
-
-  insert(value) {
-    const newNode = new Node(value);
-
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
+function isArraySortedAscending(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false; // Array is not sorted in ascending order
     }
   }
-
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
+  return true; // Array is sorted in ascending order
 }
-class BinarySearchTree {
-  // ...
 
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
+// Example usage
+const sortedArray = [1, 2, 3, 4, 5];
+const unsortedArray = [5, 3, 1, 2, 4];
 
-  searchNode(node, value) {
-    if (node === null || node.value === value) {
-      return node;
-    }
-
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    }
-
-    return this.searchNode(node.right, value);
-  }
-}
-const tree = new BinarySearchTree();
-
-tree.insert(8);
-tree.insert(3);
-tree.insert(10);
-tree.insert(1);
-tree.insert(6);
-
-console.log(tree.search(6)); // Output: Node { value: 6, left: null, right: null }
-console.log(tree.search(12)); // Output: null
+console.log(isArraySortedAscending(sortedArray));    // Output: true
+console.log(isArraySortedAscending(unsortedArray));  // Output: false
