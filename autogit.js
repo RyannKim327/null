@@ -1,18 +1,11 @@
-function isValidPalindrome(str) {
-  let left = 0;
-  let right = str.length - 1;
+function findMiddleElement(head) {
+  let slow = head;
+  let fast = head;
 
-  while (left < right) {
-    if (str.charAt(left) !== str.charAt(right)) {
-      return false;
-    }
-    left++;
-    right--;
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
   }
-  return true;
-}
 
-// Example usage
-console.log(isValidPalindrome("radar")); // Output: true
-console.log(isValidPalindrome("level")); // Output: true
-console.log(isValidPalindrome("hello")); // Output: false
+  return slow.value;
+}
