@@ -1,9 +1,17 @@
-// Original array
-let array = [1, 2, 3, 4, 5];
+function calculateMean(numbers) {
+  if (numbers.length === 0) {
+    return 0; // Return 0 if the list is empty
+  }
 
-// Reverse the order of elements
-array.reverse();
+  var sum = numbers.reduce(function (a, b) {
+    return a + b;
+  });
 
-// Print the reversed array
-console.log(array);
-[5, 4, 3, 2, 1]
+  var mean = sum / numbers.length;
+  return mean;
+}
+
+// Example usage
+var numbers = [1, 2, 3, 4, 5];
+var mean = calculateMean(numbers);
+console.log(mean); // Output: 3
