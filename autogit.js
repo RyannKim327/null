@@ -1,10 +1,23 @@
-function getStringLength(str) {
-  let count = 0;
-  for (let i = 0; str[i] !== undefined; i++) {
-    count++;
+function interpolationSearch(arr, target) {
+  let left = 0;
+  let right = arr.length - 1;
+
+  while (left <= right && target >= arr[left] && target <= arr[right]) {
+    const pos =
+      Math.floor(
+        left + ((target - arr[left]) / (arr[right] - arr[left])) * (right - left)
+      );
+
+    if (arr[pos] === target) {
+      return pos;
+    }
+
+    if (arr[pos] > target) {
+      right = pos - 1;
+    } else {
+      left = pos + 1;
+    }
   }
-  return count;
+
+  return -1;
 }
-const myString = "Hello World!";
-const length = getStringLength(myString);
-console.log(length); // Output: 12
