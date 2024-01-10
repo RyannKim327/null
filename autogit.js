@@ -1,17 +1,19 @@
-function calculateMean(numbers) {
-  if (numbers.length === 0) {
-    return 0; // Return 0 if the list is empty
+function insertionSort(arr) {
+  for (let i = 1; i < arr.length; i++) {
+    let current = arr[i];
+    let j = i - 1;
+
+    while (j >= 0 && arr[j] > current) {
+      arr[j + 1] = arr[j];
+      j--;
+    }
+
+    arr[j + 1] = current;
   }
 
-  var sum = numbers.reduce(function (a, b) {
-    return a + b;
-  });
-
-  var mean = sum / numbers.length;
-  return mean;
+  return arr;
 }
 
-// Example usage
-var numbers = [1, 2, 3, 4, 5];
-var mean = calculateMean(numbers);
-console.log(mean); // Output: 3
+// Example usage:
+let numbers = [5, 3, 1, 4, 2];
+console.log(insertionSort(numbers)); // Output: [1, 2, 3, 4, 5]
