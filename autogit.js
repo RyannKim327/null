@@ -1,28 +1,13 @@
-position = start + ((target - arr[start]) * (end - start)) / (arr[end] - arr[start])
-function interpolationSearch(arr, target, n) {
-    let start = 0;
-    let end = n - 1;
-
-    while (start <= end && target >= arr[start] && target <= arr[end]) {
-        if (start === end) {
-            if (arr[start] === target) {
-                return start;
-            }
-            return -1;
-        }
-
-        let position = start + Math.floor(((target - arr[start]) * (end - start)) / (arr[end] - arr[start]));
-
-        if (arr[position] === target) {
-            return position;
-        }
-
-        if (arr[position] < target) {
-            start = position + 1;
-        } else {
-            end = position - 1;
-        }
-    }
-
-    return -1;
+function getRandomNumber(min, max) {
+  // Calculate the range of the numbers
+  const range = max - min + 1;
+  
+  // Generate a random number within the range
+  const randomNumber = Math.floor(Math.random() * range) + min;
+  
+  return randomNumber;
 }
+
+// Example usage, generating a random number between 1 and 100
+const randomNumber = getRandomNumber(1, 100);
+console.log(randomNumber);
