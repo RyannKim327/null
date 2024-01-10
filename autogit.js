@@ -1,42 +1,25 @@
-function prepareBadCharacterTable(pattern) {
-  const table = {};
-  const patternLength = pattern.length;
+function longestCommonPrefix(strs) {
+  if (strs.length === 0) return '';
 
-  for (let i = 0; i < patternLength - 1; i++) {
-    table[pattern[i]] = patternLength - i - 1;
-  }
+  let prefix = strs[0];
 
-  return table;
-}
-function boyerMooreHorspool(text, pattern) {
-  const textLength = text.length;
-  const patternLength = pattern.length;
-  const badCharTable = prepareBadCharacterTable(pattern);
+  for (let i = 1; i < strs.length; i++) {
+    const currentStr = strs[i];
 
-  let i = 0;
-
-  while (i <= textLength - patternLength) {
-    let j = patternLength - 1;
-
-    while (j >= 0 && pattern[j] === text[i + j]) {
-      j--;
+    let j = 0;
+    while (j < prefix.length && j < currentStr.length && prefix[j] === currentStr[j]) {
+      j++;
     }
 
-    if (j === -1) {
-      // Pattern found
-      return i;
-    } else {
-      const badChar = text[i + j];
-      const shift = badCharTable[badChar] || patternLength;
-      i += shift;
-    }
+    prefix = prefix.substring(0, j);
+
+    if (prefix === '') return '';
   }
 
-  // Pattern not found
-  return -1;
+  return prefix;
 }
-const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
-const pattern = "sit";
+const strings1 = ['flower', 'flow', 'flight'];
+console.log(longestCommonPrefix(strings1)); // Output: 'fl'
 
-const index = boyerMooreHorspool(text, pattern);
-console.log(index); // Output: 18
+const strings2 = ['dog', 'racecar', 'car'];
+console.log(longestCommonPrefix(strings2)); // Output: ''
