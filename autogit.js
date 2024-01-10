@@ -1,89 +1,98 @@
+// Create a class for a linked list node
 class Node {
-  constructor(value, level) {
+  constructor(value) {
     this.value = value;
-    this.next = new Array(level + 1);
+    this.next = null;
   }
 }
-class SkipList {
+
+// Create a class for the queue using a linked list
+class Queue {
   constructor() {
-    this.head = new Node(null, 0); // Initialize with null head node
-    this.maxLevel = 0; // Maximum level in the skip list
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
   }
 
-  // Generate a random level for a node
-  randomLevel() {
-    let level = 0;
-    while (Math.random() < 0.5 && level < this.maxLevel + 1) {
-      level++;
+  // Add an element to the end of the queue
+  enqueue(value) {
+    const newNode = new Node(value);
+
+    if (this.isEmpty()) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
     }
-    return level;
+
+    this.length++;
   }
 
-  // Insert a value into the skip list
-  insert(value) {
-    const level = this.randomLevel();
-    const newNode = new Node(value, level);
-
-    // Update the head pointers at each level
-    while (this.head.next.length < level + 1) {
-      this.head.next.push(null);
+  // Remove and return the element at the front of the queue
+  dequeue() {
+    if (this.isEmpty()) {
+      return null;
     }
 
-    let current = this.head;
-    for (let i = this.maxLevel; i >= 0; i--) {
-      while (current.next[i] && current.next[i].value < value) {
-        current = current.next[i];
-      }
-      if (i <= level) {
-        newNode.next[i] = current.next[i];
-        current.next[i] = newNode;
-      }
+    const removedNode = this.head;
+
+    if (this.head === this.tail) {
+      this.tail = null;
     }
 
-    if (level > this.maxLevel) {
-      this.maxLevel = level;
-    }
+    this.head = this.head.next;
+    this.length--;
+
+    return removedNode.value;
   }
 
-  // Remove a value from the skip list
-  remove(value) {
-    let current = this.head;
-    for (let i = this.maxLevel; i >= 0; i--) {
-      while (current.next[i] && current.next[i].value < value) {
-        current = current.next[i];
-      }
-      if (current.next[i] && current.next[i].value === value) {
-        current.next[i] = current.next[i].next[i];
-      }
+  // Return the element at the front of the queue without removing it
+  peek() {
+    if (this.isEmpty()) {
+      return null;
     }
+
+    return this.head.value;
   }
 
-  // Search for a value in the skip list
-  search(value) {
-    let current = this.head;
-    for (let i = this.maxLevel; i >= 0; i--) {
-      while (current.next[i] && current.next[i].value < value) {
-        current = current.next[i];
+  // Check if the queue is empty
+  isEmpty() {
+    return this.length === 0;
+  }
+
+  // Get the size of the queue
+  size() {
+    return this.length;
+  }
+
+  // Print the elements of the queue
+  print() {
+    if (this.isEmpty()) {
+      console.log("Queue is empty");
+    } else {
+      let current = this.head;
+      let elements = [];
+      while (current) {
+        elements.push(current.value);
+        current = current.next;
       }
+      console.log(elements.join(" -> "));
     }
-    if (current.next[0] && current.next[0].value === value) {
-      return current.next[0];
-    }
-    return null;
   }
 }
-// Create a new skip list
-const skipList = new SkipList();
 
-// Insert values
-skipList.insert(10);
-skipList.insert(5);
-skipList.insert(15);
-skipList.insert(7);
+// Example usage
+const queue = new Queue();
 
-// Search for a value
-const result = skipList.search(15);
-console.log(result); // Output: Node { value: 15, next: [...] }
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+queue.print(); // Output: 1 -> 2 -> 3
 
-// Remove a value
-skipList.remove(7);
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.peek()); // Output: 2
+console.log(queue.size()); // Output: 2
+console.log(queue.isEmpty()); // Output: false
+
+queue.print(); // Output: 2 -> 3
