@@ -1,25 +1,37 @@
-function longestCommonPrefix(strs) {
-  if (strs.length === 0) return '';
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.children = [];
+  }
+}
+function bfs(root) {
+  const queue = []; // Create a queue to store nodes
+  const result = []; // Create an array to store the result
 
-  let prefix = strs[0];
+  queue.push(root); // Add the root node to the queue
 
-  for (let i = 1; i < strs.length; i++) {
-    const currentStr = strs[i];
+  while (queue.length > 0) {
+    const current = queue.shift(); // Take the first node from the queue
 
-    let j = 0;
-    while (j < prefix.length && j < currentStr.length && prefix[j] === currentStr[j]) {
-      j++;
+    result.push(current.value); // Add the value of the current node to the result
+
+    // Add all the child nodes of the current node to the queue
+    for (let child of current.children) {
+      queue.push(child);
     }
-
-    prefix = prefix.substring(0, j);
-
-    if (prefix === '') return '';
   }
 
-  return prefix;
+  return result;
 }
-const strings1 = ['flower', 'flow', 'flight'];
-console.log(longestCommonPrefix(strings1)); // Output: 'fl'
+const rootNode = new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
+const node4 = new Node(4);
+const node5 = new Node(5);
 
-const strings2 = ['dog', 'racecar', 'car'];
-console.log(longestCommonPrefix(strings2)); // Output: ''
+rootNode.children.push(node2);
+rootNode.children.push(node3);
+node2.children.push(node4);
+node2.children.push(node5);
+const result = bfs(rootNode);
+console.log(result); // Output: [1, 2, 3, 4, 5]
