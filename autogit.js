@@ -1,25 +1,27 @@
-function interpolationSearch(arr, target, start = 0) {
-  let low = start;
-  let high = arr.length - 1;
+function selectionSort(arr) {
+  const length = arr.length;
 
-  while (low <= high && target >= arr[low] && target <= arr[high]) {
-    if (low === high) {
-      if (arr[low] === target) return low;
-      return -1;
+  for (let i = 0; i < length - 1; i++) {
+    let minIndex = i;
+
+    for (let j = i + 1; j < length; j++) {
+      if (arr[j] < arr[minIndex]) {
+        minIndex = j;
+      }
     }
 
-    const pos = Math.floor(low + ((target - arr[low]) * (high - low)) / (arr[high] - arr[low]));
-
-    if (arr[pos] === target) {
-      return pos;
-    }
-
-    if (arr[pos] < target) {
-      low = pos + 1;
-    } else {
-      high = pos - 1;
+    if (minIndex !== i) {
+      // Swap elements
+      const temp = arr[i];
+      arr[i] = arr[minIndex];
+      arr[minIndex] = temp;
     }
   }
 
-  return -1;
+  return arr;
 }
+
+// Testing the selectionSort function
+const array = [64, 25, 12, 22, 11];
+const sortedArray = selectionSort(array);
+console.log(sortedArray);  // Output: [11, 12, 22, 25, 64]
