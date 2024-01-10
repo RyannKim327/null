@@ -1,22 +1,23 @@
-// Define a function to connect asynchronously
-async function connectAsync() {
-  try {
-    // Simulating a network request delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Perform the actual connection here
-    // For example, you can use the fetch() API to make an HTTP request
-    const response = await fetch('https://api.example.com/data');
-    
-    // Process the response data
-    const data = await response.json();
-    
-    // Use the data as needed
-    console.log(data);
-  } catch (error) {
-    console.error('Error connecting:', error);
-  }
+function bubbleSort(arr) {
+  var len = arr.length;
+  var swapped;
+  
+  do {
+    swapped = false;
+    for (var i = 0; i < len - 1; i++) {
+      if (arr[i] > arr[i + 1]) {
+        var temp = arr[i];
+        arr[i] = arr[i + 1];
+        arr[i + 1] = temp;
+        swapped = true;
+      }
+    }
+    len--;
+  } while (swapped);
+
+  return arr;
 }
 
-// Call the async function to start the connection
-connectAsync();
+// Example usage:
+var array = [5, 3, 8, 4, 2];
+console.log(bubbleSort(array)); // Output: [2, 3, 4, 5, 8]
