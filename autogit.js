@@ -1,89 +1,80 @@
-class BTreeNode {
-  constructor(order, leaf) {
-    this.order = order; // maximum number of keys this node can hold
-    this.keys = []; // array to store keys
-    this.child = []; // array to store child nodes
-    this.leaf = leaf; // indicates whether this node is a leaf node
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
 }
-class BTree {
-  constructor(order) {
-    this.root = new BTreeNode(order, true); // initialize an empty tree with a root node
-    this.order = order; // maximum number of keys in each node
-  }
-}
-BTree.prototype.insert = function (key) {
-  let root = this.root;
-  if (root.keys.length === this.order - 1) {
-    // tree is full, split the root node
-    let newNode = new BTreeNode(this.order, false);
-    this.root = newNode;
-    newNode.child[0] = root;
-    this.splitChild(newNode, 0, root);
-    this.insertNonFull(newNode, key);
-  } else {
-    this.insertNonFull(root, key);
-  }
-};
 
-BTree.prototype.insertNonFull = function (node, key) {
-  let i = node.keys.length - 1;
-  if (node.leaf) {
-    // if node is a leaf, insert key at the correct position
-    while (i >= 0 && key < node.keys[i]) {
-      node.keys[i + 1] = node.keys[i];
-      i--;
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+  }
+
+  // Add a new node to the end of the list
+  insert(value) {
+    const newNode = new Node(value);
+
+    if (!this.head) {
+      // If the list is empty, set the new node as both head and tail
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      // If the list is not empty, append the new node to the tail
+      this.tail.next = newNode;
+      this.tail = newNode;
     }
-    node.keys[i + 1] = key;
-  } else {
-    // if node is not a leaf, find the child to insert the key
-    while (i >= 0 && key < node.keys[i]) {
-      i--;
+  }
+
+  // Remove the first node in the list with the given value
+  remove(value) {
+    if (!this.head) {
+      // If the list is empty, nothing to remove
+      return;
     }
-    i++;
-    if (node.child[i].keys.length === this.order - 1) {
-      // child node is full, split it
-      this.splitChild(node, i, node.child[i]);
-      if (key > node.keys[i]) {
-        i++;
+
+    // Special case: if the head node has the value
+    if (this.head.value === value) {
+      // If the head is also the tail, set the list as empty
+      if (this.head === this.tail) {
+        this.head = null;
+        this.tail = null;
+      } else {
+        this.head = this.head.next;
       }
+      return;
     }
-    this.insertNonFull(node.child[i], key);
-  }
-};
 
-BTree.prototype.splitChild = function (parent, index, child) {
-  let newNode = new BTreeNode(this.order, child.leaf);
-  parent.keys.splice(index, 0, child.keys[this.order - 1]);
-  parent.child.splice(index + 1, 0, newNode);
-  newNode.keys = child.keys.splice(this.order, this.order - 1);
-  if (!child.leaf) {
-    newNode.child = child.child.splice(this.order, this.order);
+    // Traverse the list to find the node before the one to remove
+    let current = this.head;
+    while (current.next) {
+      if (current.next.value === value) {
+        // Remove the node by bypassing its reference in the list
+        current.next = current.next.next;
+        // Update the tail if necessary
+        if (current.next === null) {
+          this.tail = current;
+        }
+        return;
+      }
+      current = current.next;
+    }
   }
-};
-BTree.prototype.search = function (key) {
-  return this.searchRecursive(this.root, key);
-};
 
-BTree.prototype.searchRecursive = function (node, key) {
-  let i = 0;
-  while (i < node.keys.length && key > node.keys[i]) {
-    i++;
+  // Traverse the list and print all node values
+  print() {
+    let current = this.head;
+    while (current) {
+      console.log(current.value);
+      current = current.next;
+    }
   }
-  if (node.keys[i] === key) {
-    return node; // key found in the current node
-  } else if (node.leaf) {
-    return null; // key does not exist in the tree
-  } else {
-    return this.searchRecursive(node.child[i], key); // recursively search in the appropriate child node
-  }
-};
-let bTree = new BTree(4); // Create a B-tree with maximum 4 keys in each node
-bTree.insert(5);
-bTree.insert(10);
-bTree.insert(20);
-bTree.insert(30);
-bTree.insert(40);
+}
+const list = new LinkedList();
+list.insert(1);
+list.insert(2);
+list.insert(3);
+list.print();  // Output: 1 2 3
 
-console.log(bTree.search(10)); // Output: BTreeNode { order: 4, keys: [ 10 ], child: [], leaf: true }
-console.log(bTree.search(15)); // Output: null (key not found)
+list.remove(2);
+list.print();  // Output: 1 3
