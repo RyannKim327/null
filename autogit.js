@@ -1,13 +1,20 @@
-// Define an array of numbers
-const numbers = [1, 2, 3, 4, 5];
+function bubbleSort(arr) {
+  let len = arr.length;
+  let swapped;
+  
+  do {
+    swapped = false;
+    for (let i = 0; i < len - 1; i++) {
+      if (arr[i] > arr[i + 1]) {
+        [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
+        swapped = true;
+      }
+    }
+  } while (swapped);
+  
+  return arr;
+}
 
-// Calculate the sum using the reduce() method
-const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-
-// Calculate the mean by dividing the sum by the array length
-const mean = sum / numbers.length;
-
-// Round the mean to 2 decimal places
-const roundedMean = mean.toFixed(2);
-
-console.log(`Mean: ${roundedMean}`);
+// Example usage:
+let myArray = [9, 1, 5, 8, 3, 7, 4, 6, 2];
+console.log(bubbleSort(myArray));
