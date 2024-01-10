@@ -1,15 +1,18 @@
-// Prompt the user to enter their name
-let name = prompt("Enter your name:");
+function isValidPalindrome(str) {
+  let left = 0;
+  let right = str.length - 1;
 
-// Display a greeting message with the user's name
-console.log("Hello, " + name + "!");
-
-// Prompt the user to enter their age
-let age = parseInt(prompt("Enter your age:"));
-
-// Display a message based on the user's age
-if (age >= 18) {
-  console.log("You are an adult.");
-} else {
-  console.log("You are a minor.");
+  while (left < right) {
+    if (str.charAt(left) !== str.charAt(right)) {
+      return false;
+    }
+    left++;
+    right--;
+  }
+  return true;
 }
+
+// Example usage
+console.log(isValidPalindrome("radar")); // Output: true
+console.log(isValidPalindrome("level")); // Output: true
+console.log(isValidPalindrome("hello")); // Output: false
