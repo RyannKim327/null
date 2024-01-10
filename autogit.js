@@ -1,80 +1,42 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+function prepareBadCharacterTable(pattern) {
+  const table = {};
+  const patternLength = pattern.length;
+
+  for (let i = 0; i < patternLength - 1; i++) {
+    table[pattern[i]] = patternLength - i - 1;
   }
+
+  return table;
 }
+function boyerMooreHorspool(text, pattern) {
+  const textLength = text.length;
+  const patternLength = pattern.length;
+  const badCharTable = prepareBadCharacterTable(pattern);
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-  }
+  let i = 0;
 
-  // Add a new node to the end of the list
-  insert(value) {
-    const newNode = new Node(value);
+  while (i <= textLength - patternLength) {
+    let j = patternLength - 1;
 
-    if (!this.head) {
-      // If the list is empty, set the new node as both head and tail
-      this.head = newNode;
-      this.tail = newNode;
+    while (j >= 0 && pattern[j] === text[i + j]) {
+      j--;
+    }
+
+    if (j === -1) {
+      // Pattern found
+      return i;
     } else {
-      // If the list is not empty, append the new node to the tail
-      this.tail.next = newNode;
-      this.tail = newNode;
+      const badChar = text[i + j];
+      const shift = badCharTable[badChar] || patternLength;
+      i += shift;
     }
   }
 
-  // Remove the first node in the list with the given value
-  remove(value) {
-    if (!this.head) {
-      // If the list is empty, nothing to remove
-      return;
-    }
-
-    // Special case: if the head node has the value
-    if (this.head.value === value) {
-      // If the head is also the tail, set the list as empty
-      if (this.head === this.tail) {
-        this.head = null;
-        this.tail = null;
-      } else {
-        this.head = this.head.next;
-      }
-      return;
-    }
-
-    // Traverse the list to find the node before the one to remove
-    let current = this.head;
-    while (current.next) {
-      if (current.next.value === value) {
-        // Remove the node by bypassing its reference in the list
-        current.next = current.next.next;
-        // Update the tail if necessary
-        if (current.next === null) {
-          this.tail = current;
-        }
-        return;
-      }
-      current = current.next;
-    }
-  }
-
-  // Traverse the list and print all node values
-  print() {
-    let current = this.head;
-    while (current) {
-      console.log(current.value);
-      current = current.next;
-    }
-  }
+  // Pattern not found
+  return -1;
 }
-const list = new LinkedList();
-list.insert(1);
-list.insert(2);
-list.insert(3);
-list.print();  // Output: 1 2 3
+const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+const pattern = "sit";
 
-list.remove(2);
-list.print();  // Output: 1 3
+const index = boyerMooreHorspool(text, pattern);
+console.log(index); // Output: 18
