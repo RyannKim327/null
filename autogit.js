@@ -1,27 +1,7 @@
-function selectionSort(arr) {
-  const length = arr.length;
+const numbers = [5, 3, 8, 1, 2, 9, 4];
 
-  for (let i = 0; i < length - 1; i++) {
-    let minIndex = i;
+// The sort() method performs a lexicographic sort by default,
+// so to sort numbers correctly, we need to provide a comparison function.
+numbers.sort((a, b) => a - b);
 
-    for (let j = i + 1; j < length; j++) {
-      if (arr[j] < arr[minIndex]) {
-        minIndex = j;
-      }
-    }
-
-    if (minIndex !== i) {
-      // Swap elements
-      const temp = arr[i];
-      arr[i] = arr[minIndex];
-      arr[minIndex] = temp;
-    }
-  }
-
-  return arr;
-}
-
-// Testing the selectionSort function
-const array = [64, 25, 12, 22, 11];
-const sortedArray = selectionSort(array);
-console.log(sortedArray);  // Output: [11, 12, 22, 25, 64]
+console.log(numbers); // Output: [1, 2, 3, 4, 5, 8, 9]
