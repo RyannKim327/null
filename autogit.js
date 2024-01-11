@@ -1,25 +1,16 @@
-function insertionSort(arr) {
-  // Iterate through each element in the array starting from the second element
+function maxSubarraySum(arr) {
+  let maxSum = arr[0];
+  let currentSum = arr[0];
+
   for (let i = 1; i < arr.length; i++) {
-    // Store the current element in a temporary variable
-    let current = arr[i];
-    // Store the index of the previous element
-    let j = i - 1;
-
-    // Move the elements of the sorted sub-array that are greater than the current element
-    // to one position ahead of their current position
-    while (j >= 0 && arr[j] > current) {
-      arr[j + 1] = arr[j];
-      j--;
-    }
-
-    // Place the current element in its correct position in the sorted sub-array
-    arr[j + 1] = current;
+    currentSum = Math.max(arr[i], currentSum + arr[i]);
+    maxSum = Math.max(maxSum, currentSum);
   }
 
-  return arr;
+  return maxSum;
 }
 
 // Example usage:
-const array = [5, 8, 2, 1, 6, 3, 7, 4];
-console.log(insertionSort(array));
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const maxSum = maxSubarraySum(array);
+console.log(maxSum); // Output: 6
