@@ -1,5 +1,10 @@
-// Make a GET request to an API and log the response
-fetch('https://api.example.com/data')
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.log('Error:', error));
+function calculateMean(numbers) {
+  const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+  const mean = sum / numbers.length;
+  return mean;
+}
+
+// Example usage
+const numbers = [1, 2, 3, 4, 5];
+const mean = calculateMean(numbers);
+console.log(mean);
