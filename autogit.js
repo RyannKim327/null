@@ -1,51 +1,40 @@
-class BeamSearch {
-  constructor(beamWidth, maxSteps, generateCandidates, evaluateCandidates) {
-    this.beamWidth = beamWidth;  // Number of candidates to keep at each step
-    this.maxSteps = maxSteps;    // Maximum number of search steps
-    this.generateCandidates = generateCandidates;    // Function to generate candidate solutions
-    this.evaluateCandidates = evaluateCandidates;    // Function to evaluate candidate solutions
-  }
-
-  search(initialState) {
-    let beam = [{ state: initialState, score: 0, path: [] }];  // Initialize the beam with the initial state
-
-    for (let step = 1; step <= this.maxSteps; step++) {
-      const candidates = [];
-
-      for (const { state, score, path } of beam) {
-        const newCandidates = this.generateCandidates(state);
-        
-        for (const candidate of newCandidates) {
-          const newPath = path.concat(candidate);
-          const candidateScore = score + this.evaluateCandidates(newPath);
-          candidates.push({ state: candidate, score: candidateScore, path: newPath });
-        }
-      }
-
-      candidates.sort((a, b) => b.score - a.score);  // Sort candidates in descending order of score
-      beam = candidates.slice(0, this.beamWidth);   // Keep only the top candidates for the next step
-    }
-
-    return beam[0].path;  // Return the path of the best candidate
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
-// Example generateCandidates function
-function generateCandidates(state) {
-  // Generate new candidate solutions based on the current state
-  // Return an array of candidate solutions
+
+function countLeafNodes(root) {
+  if (!root) {
+    // If the tree is empty or if we've reached a null node, return 0
+    return 0;
+  }
+
+  if (!root.left && !root.right) {
+    // If the current node is a leaf node, return 1
+    return 1;
+  }
+
+  // Recursively count the leaf nodes in the left and right subtrees
+  const leftLeafCount = countLeafNodes(root.left);
+  const rightLeafCount = countLeafNodes(root.right);
+
+  // Return the sum of leaf counts in both subtrees
+  return leftLeafCount + rightLeafCount;
 }
 
-// Example evaluateCandidates function
-function evaluateCandidates(path) {
-  // Evaluate the quality/score of a candidate solution
-  // Return a score for the candidate solution
-}
-const beamWidth = 3;
-const maxSteps = 5;
+// Create a binary tree for testing
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
+root.right.right.right = new Node(8);
 
-const beamSearch = new BeamSearch(beamWidth, maxSteps, generateCandidates, evaluateCandidates);
-
-const initialState = ...;  // Define your initial state
-const bestPath = beamSearch.search(initialState);
-
-console.log(bestPath);
+// Find the number of leaf nodes
+const leafCount = countLeafNodes(root);
+console.log("Leaf Count:", leafCount);
