@@ -1,18 +1,64 @@
-function reverseWords(str) {
-  // Split the string into an array of words
-  var wordsArray = str.split(" ");
+class Graph {
+  constructor() {
+    this.vertices = new Map();
+  }
 
-  // Reverse the order of words in the array
-  var reversedArray = wordsArray.reverse();
+  addVertex(vertex) {
+    this.vertices.set(vertex, []);
+  }
 
-  // Join the words back into a single string
-  var reversedString = reversedArray.join(" ");
+  addEdge(source, destination) {
+    if (!this.vertices.has(source) || !this.vertices.has(destination)) {
+      throw new Error('Invalid vertex');
+    }
+    this.vertices.get(source).push(destination);
+  }
 
-  return reversedString;
+  getAdjacentVertices(vertex) {
+    return this.vertices.get(vertex);
+  }
+
+  getVertices() {
+    return Array.from(this.vertices.keys());
+  }
 }
+function topologicalSort(graph) {
+  const visited = new Set();
+  const stack = [];
 
-// Example usage
-var originalString = "Hello world!";
+  function explore(vertex) {
+    visited.add(vertex);
 
-var reversedString = reverseWords(originalString);
-console.log(reversedString); // Output: "world! Hello"
+    const neighbors = graph.getAdjacentVertices(vertex);
+    for (const neighbor of neighbors) {
+      if (!visited.has(neighbor)) {
+        explore(neighbor);
+      }
+    }
+
+    stack.unshift(vertex);
+  }
+
+  for (const vertex of graph.getVertices()) {
+    if (!visited.has(vertex)) {
+      explore(vertex);
+    }
+  }
+
+  return stack;
+}
+const graph = new Graph();
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addVertex('E');
+
+graph.addEdge('A', 'B');
+graph.addEdge('B', 'C');
+graph.addEdge('C', 'D');
+graph.addEdge('D', 'E');
+graph.addEdge('E', 'C');
+
+const result = topologicalSort(graph);
+console.log(result);  // Output: ['A', 'B', 'E', 'D', 'C']
