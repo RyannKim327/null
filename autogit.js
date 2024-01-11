@@ -1,17 +1,25 @@
-function reverseWords(str) {
-  // Step 1: Split the string into an array of words
-  const words = str.split(' ');
+function selectionSort(array) {
+  let len = array.length;
 
-  // Step 2: Reverse the order of array elements
-  const reversedWords = words.reverse();
+  for (let i = 0; i < len - 1; i++) {
+    let minIndex = i;
 
-  // Step 3: Join the reversed array into a string
-  const reversedStr = reversedWords.join(' ');
+    for (let j = i + 1; j < len; j++) {
+      if (array[j] < array[minIndex]) {
+        minIndex = j;
+      }
+    }
 
-  return reversedStr;
+    if (minIndex !== i) {
+      let temp = array[i];
+      array[i] = array[minIndex];
+      array[minIndex] = temp;
+    }
+  }
+
+  return array;
 }
 
-// Example usage
-const input = 'Hello World! How are you?';
-const reversedString = reverseWords(input);
-console.log(reversedString);  // Output: you? are How World! Hello
+// Example usage:
+let arr = [64, 25, 12, 22, 11];
+console.log(selectionSort(arr)); // Output: [11, 12, 22, 25, 64]
