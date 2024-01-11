@@ -1,25 +1,17 @@
-function quickSort(arr) {
-  if (arr.length <= 1) {
-    return arr;
-  }
+function areAnagrams(stringA, stringB) {
+    // Remove whitespace and convert to lowercase
+    stringA = stringA.replace(/\s/g, '').toLowerCase();
+    stringB = stringB.replace(/\s/g, '').toLowerCase();
 
-  const pivot = arr[Math.floor(Math.random() * arr.length)];
-  const left = [];
-  const equal = [];
-  const right = [];
+    // Sort the characters in both strings
+    const sortedA = stringA.split('').sort().join('');
+    const sortedB = stringB.split('').sort().join('');
 
-  for (let value of arr) {
-    if (value < pivot) {
-      left.push(value);
-    } else if (value === pivot) {
-      equal.push(value);
-    } else {
-      right.push(value);
-    }
-  }
-
-  return [...quickSort(left), ...equal, ...quickSort(right)];
+    // Compare the sorted strings
+    return sortedA === sortedB;
 }
-const array = [5, 3, 8, 2, 1, 4];
-const sortedArray = quickSort(array);
-console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 8]
+
+// Examples
+console.log(areAnagrams('LISTEN', 'SILENT')); // true
+console.log(areAnagrams('hello', 'lloeh')); // true
+console.log(areAnagrams('abc', 'def')); // false
