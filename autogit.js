@@ -1,15 +1,45 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  var cleanStr = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+function tarjansAlgorithm(graph) {
+  let index = [];
+  let lowlink = [];
+  let onStack = [];
+  let indexCounter = 0;
+  let stack = [];
+  let stronglyConnectedComponents = [];
 
-  // Compare with its reversed version
-  var reversedStr = cleanStr.split('').reverse().join('');
+  function strongConnect(v) {
+    index[v] = indexCounter;
+    lowlink[v] = indexCounter;
+    indexCounter++;
+    stack.push(v);
+    onStack[v] = true;
 
-  // Check if the reversed string is the same as the original string
-  return cleanStr === reversedStr;
+    for (let w of graph[v]) {
+      if (index[w] === undefined) {
+        strongConnect(w);
+        lowlink[v] = Math.min(lowlink[v], lowlink[w]);
+      } else if (onStack[w]) {
+        lowlink[v] = Math.min(lowlink[v], index[w]);
+      }
+    }
+
+    if (lowlink[v] === index[v]) {
+      let component = [];
+      let w;
+      do {
+        w = stack.pop();
+        onStack[w] = false;
+        component.push(w);
+      } while (w !== v);
+
+      stronglyConnectedComponents.push(component);
+    }
+  }
+
+  for (let v in graph) {
+    if (index[v] === undefined) {
+      strongConnect(v);
+    }
+  }
+
+  return stronglyConnectedComponents;
 }
-
-// Test the function
-console.log(isPalindrome("racecar")); // true
-console.log(isPalindrome("hello world")); // false
-console.log(isPalindrome("A man, a plan, a canal, Panama!")); // true
