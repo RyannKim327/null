@@ -1,43 +1,37 @@
-function longestCommonSubsequence(str1, str2) {
-  const m = str1.length;
-  const n = str2.length;
-  const matrix = Array(m + 1)
-    .fill(null)
-    .map(() => Array(n + 1).fill(0));
+class Node {
+  constructor(value, children = []) {
+    this.value = value;
+    this.children = children;
+  }
+}
 
-  // Fill the matrix
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1.charAt(i - 1) === str2.charAt(j - 1)) {
-        matrix[i][j] = matrix[i - 1][j - 1] + 1;
-      } else {
-        matrix[i][j] = Math.max(matrix[i - 1][j], matrix[i][j - 1]);
+function depthLimitedSearch(root, target, depthLimit) {
+  let stack = [{ node: root, depth: 0 }];
+
+  while (stack.length > 0) {
+    let { node, depth } = stack.pop();
+
+    if (node.value === target) {
+      return node;
+    }
+
+    // Check if reached the depth limit
+    if (depth < depthLimit) {
+      // Add children in reverse order to visit them in the correct order
+      for (let i = node.children.length - 1; i >= 0; i--) {
+        stack.push({ node: node.children[i], depth: depth + 1 });
       }
     }
   }
 
-  // Traverse the matrix to build the longest common subsequence
-  let i = m,
-    j = n;
-  let lcs = '';
-  while (i > 0 && j > 0) {
-    if (str1.charAt(i - 1) === str2.charAt(j - 1)) {
-      lcs = str1.charAt(i - 1) + lcs;
-      i--;
-      j--;
-    } else if (matrix[i - 1][j] > matrix[i][j - 1]) {
-      i--;
-    } else {
-      j--;
-    }
-  }
-
-  return lcs;
+  return null; // Target not found within depth limit
 }
 
-// Example usage
-const str1 = "ABCDGH";
-const str2 = "AEDFHR";
-const lcs = longestCommonSubsequence(str1, str2);
-console.log("Longest Common Subsequence:", lcs);
-Longest Common Subsequence: ADH
+// Usage example
+const root = new Node(1, [
+  new Node(2, [new Node(4), new Node(5)]),
+  new Node(3, [new Node(6), new Node(7)]),
+]);
+
+const targetNode = depthLimitedSearch(root, 5, 2);
+console.log(targetNode ? targetNode.value : "Target not found");
