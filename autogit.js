@@ -1,19 +1,42 @@
-function isPrime(number) {
-  // 1 and numbers less than 1 are not prime
-  if (number <= 1) {
-    return false;
-  }
+function findLongestCommonSubstring(string1, string2) {
+  // Initialize a 2D matrix to store lengths of common substrings
+  const matrix = Array(string1.length + 1)
+    .fill(0)
+    .map(() => Array(string2.length + 1).fill(0));
 
-  // Check if number is divisible by any number from 2 to the square root of the number
-  for (let i = 2; i <= Math.sqrt(number); i++) {
-    if (number % i === 0) {
-      return false; // It's divisible by a number other than 1 and itself
+  let longestSubstringLength = 0; // Length of the longest common substring
+  let endIndex = 0; // End index of the longest common substring in string1
+
+  // Iterate over each character in string1
+  for (let i = 1; i <= string1.length; i++) {
+    // Iterate over each character in string2
+    for (let j = 1; j <= string2.length; j++) {
+      if (string1[i - 1] === string2[j - 1]) {
+        // Characters match
+        matrix[i][j] = matrix[i - 1][j - 1] + 1;
+
+        if (matrix[i][j] > longestSubstringLength) {
+          // New longest common substring found
+          longestSubstringLength = matrix[i][j];
+          endIndex = i - 1; // Update the end index accordingly
+        }
+      } else {
+        matrix[i][j] = 0; // Reset length to 0 if characters don't match
+      }
     }
   }
 
-  return true; // It's only divisible by 1 and itself
+  // Extract the longest common substring using the end index
+  const longestSubstring = string1.substring(
+    endIndex - longestSubstringLength + 1,
+    endIndex + 1
+  );
+
+  return longestSubstring;
 }
 
 // Example usage
-console.log(isPrime(7)); // Output: true
-console.log(isPrime(10)); // Output: false
+const string1 = "abcde";
+const string2 = "defgab";
+
+console.log(findLongestCommonSubstring(string1, string2)); // Output: "a"
