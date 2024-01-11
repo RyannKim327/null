@@ -1,13 +1,5 @@
-function factorial(n) {
-  if (n === 0 || n === 1) {
-    return 1;
-  } else {
-    let result = 1;
-    for (let i = 2; i <= n; i++) {
-      result *= i;
-    }
-    return result;
-  }
-}
+// Prompt the user for input
+let userInput = prompt("Enter your name:");
 
-console.log(factorial(5)); // output: 120
+// Display the user input on the console
+console.log("Hello, " + userInput + "!");
