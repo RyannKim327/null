@@ -1,6 +1,24 @@
-const numbers = [5, 2, 8, 1, 4];
+function quicksort(arr) {
+  if (arr.length <= 1) {
+    return arr;
+  }
 
-// Sorting array in ascending order
-numbers.sort((a, b) => a - b);
+  const pivot = arr[arr.length - 1];
+  const left = [];
+  const right = [];
 
-console.log(numbers); // Output: [1, 2, 4, 5, 8]
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] < pivot) {
+      left.push(arr[i]);
+    } else {
+      right.push(arr[i]);
+    }
+  }
+
+  return [...quicksort(left), pivot, ...quicksort(right)];
+}
+
+// Example usage:
+const arr = [4, 2, 7, 1, 3];
+const sortedArr = quicksort(arr);
+console.log(sortedArr); // Output: [1, 2, 3, 4, 7]
