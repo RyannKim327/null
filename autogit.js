@@ -1,20 +1,22 @@
-function binarySearch(arr, target, start, end) {
-  if (start > end)
-    return -1;
+function radixSort(arr) {
+  const maxNum = Math.max(...arr);
+  const maxDigits = Math.floor(Math.log10(maxNum) + 1);
 
-  const mid = Math.floor((start + end) / 2);
+  for (let i = 0; i < maxDigits; i++) {
+    const buckets = Array.from({ length: 10 }, () => []);
 
-  if (arr[mid] === target)
-    return mid;
-  else if (arr[mid] > target)
-    return binarySearch(arr, target, start, mid - 1);
-  else
-    return binarySearch(arr, target, mid + 1, end);
+    for (let j = 0; j < arr.length; j++) {
+      const digit = Math.floor((arr[j] / Math.pow(10, i)) % 10);
+      buckets[digit].push(arr[j]);
+    }
+
+    arr = buckets.flat();
+  }
+
+  return arr;
 }
 
 // Example usage:
-const array = [1, 4, 7, 12, 18, 23, 29, 37, 42, 50];
-const targetElement = 18;
-
-const index = binarySearch(array, targetElement, 0, array.length - 1);
-console.log('Target element found at index:', index);
+const unsortedArray = [43, 21, 55, 9, 87, 12, 95];
+const sortedArray = radixSort(unsortedArray);
+console.log(sortedArray); // Output: [9, 12, 21, 43, 55, 87, 95]
