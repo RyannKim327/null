@@ -1,23 +1,16 @@
-function bubbleSort(arr) {
-  var len = arr.length;
-  var swapped;
-
-  do {
-    swapped = false;
-
-    for (var i = 0; i < len - 1; i++) {
-      if (arr[i] > arr[i + 1]) {
-        var temp = arr[i];
-        arr[i] = arr[i + 1];
-        arr[i + 1] = temp;
-        swapped = true;
-      }
+function insertionSort(arr) {
+  const length = arr.length;
+  for (let i = 1; i < length; i++) {
+    let current = arr[i];
+    let j = i - 1;
+    while (j >= 0 && arr[j] > current) {
+      arr[j + 1] = arr[j];
+      j--;
     }
-  } while (swapped);
-
+    arr[j + 1] = current;
+  }
   return arr;
 }
-
-// Test the implementation
-var arr = [5, 3, 8, 4, 2];
-console.log(bubbleSort(arr)); // Output: [2, 3, 4, 5, 8]
+const array = [5, 2, 4, 6, 1, 3];
+const sortedArray = insertionSort(array);
+console.log(sortedArray);
