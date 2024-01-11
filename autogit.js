@@ -1,21 +1,27 @@
-function areAnagrams(str1, str2) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  str1 = str1.replace(/[^0-9a-z]/gi, '').toLowerCase();
-  str2 = str2.replace(/[^0-9a-z]/gi, '').toLowerCase();
-  
-  // Convert the strings to arrays and sort them
-  var arr1 = str1.split('').sort();
-  var arr2 = str2.split('').sort();
-  
-  // Convert the sorted arrays back to strings and compare them
-  var sortedStr1 = arr1.join('');
-  var sortedStr2 = arr2.join('');
-  
-  // Check if the sorted strings are equal
-  return sortedStr1 === sortedStr2;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-// Example usage
-console.log(areAnagrams('listen', 'silent'));  // Output: true
-console.log(areAnagrams('hello', 'world'));    // Output: false
-console.log(areAnagrams('Clint Eastwood', 'Old West Action')); // Output: true
+function countLeafNodes(root) {
+  if (root === null) {
+    return 0;
+  } else if (root.left === null && root.right === null) {
+    return 1; // Leaf node
+  } else {
+    return countLeafNodes(root.left) + countLeafNodes(root.right);
+  }
+}
+
+// Example usage:
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+
+console.log(countLeafNodes(root)); // Output: 3 (nodes 4, 5, and 6 are leaf nodes)
