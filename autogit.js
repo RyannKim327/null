@@ -1,43 +1,78 @@
-function mergeSort(arr) {
-  if (arr.length <= 1) {
-    return arr;
+// Define the Node class
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
   }
-
-  // Split the array into two halves
-  const middle = Math.floor(arr.length / 2);
-  const leftHalf = arr.slice(0, middle);
-  const rightHalf = arr.slice(middle);
-
-  // Recursively sort the two halves
-  const sortedLeftHalf = mergeSort(leftHalf);
-  const sortedRightHalf = mergeSort(rightHalf);
-
-  // Merge the sorted halves
-  return merge(sortedLeftHalf, sortedRightHalf);
 }
 
-function merge(leftHalf, rightHalf) {
-  let sortedArray = [];
+// Define the Queue class
+class Queue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+  }
 
-  while (leftHalf.length && rightHalf.length) {
-    if (leftHalf[0] < rightHalf[0]) {
-      // Add the smallest element from the left to the sorted array
-      sortedArray.push(leftHalf.shift());
+  // Add an element to the end of the queue
+  enqueue(data) {
+    const newNode = new Node(data);
+
+    if (!this.tail) {
+      this.head = newNode;
+      this.tail = newNode;
     } else {
-      // Add the smallest element from the right to the sorted array
-      sortedArray.push(rightHalf.shift());
+      this.tail.next = newNode;
+      this.tail = newNode;
     }
+
+    this.length++;
   }
 
-  // Add the remaining elements from the left and right halves (if any)
-  sortedArray = [...sortedArray, ...leftHalf, ...rightHalf];
+  // Remove and return the element at the front of the queue
+  dequeue() {
+    if (!this.head) {
+      return null;
+    }
 
-  return sortedArray;
+    const removedNode = this.head;
+    this.head = this.head.next;
+
+    if (!this.head) {
+      this.tail = null;
+    }
+
+    this.length--;
+
+    return removedNode.data;
+  }
+
+  // Get the element at the front of the queue without removing it
+  peek() {
+    return this.head ? this.head.data : null;
+  }
+
+  // Check if the queue is empty
+  isEmpty() {
+    return this.length === 0;
+  }
+
+  // Get the size of the queue
+  size() {
+    return this.length;
+  }
 }
+const queue = new Queue();
 
-// Example usage
-const unsortedArray = [5, 2, 1, 7, 8, 4, 3];
+queue.enqueue(10);
+queue.enqueue(20);
+queue.enqueue(30);
 
-console.log("Unsorted Array:", unsortedArray);
-const sortedArray = mergeSort(unsortedArray);
-console.log("Sorted Array:", sortedArray);
+console.log(queue.size()); // Output: 3
+console.log(queue.peek()); // Output: 10
+
+console.log(queue.dequeue()); // Output: 10
+console.log(queue.dequeue()); // Output: 20
+
+console.log(queue.size()); // Output: 1
+console.log(queue.isEmpty()); // Output: false
