@@ -1,25 +1,21 @@
-const axios = require('axios');
+function countCharacterOccurrences(string, character) {
+  let count = 0;
+  for (let i = 0; i < string.length; i++) {
+    if (string[i] === character) {
+      count++;
+    }
+  }
+  return count;
+}
 
-// Make a GET request to retrieve data from an API
-axios.get('https://api.example.com/data')
-  .then(response => {
-    console.log('Response:', response.data);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+const myString = "Hello, World!";
+const myCharacter = "o";
+const occurrenceCount = countCharacterOccurrences(myString, myCharacter);
 
-// Make a POST request to send data to an API
-const data = {
-  name: 'John Doe',
-  age: 25,
-  email: 'johndoe@example.com'
-};
+console.log(`The character "${myCharacter}" occurs ${occurrenceCount} times in the string.`);
+const myString = "Hello, World!";
+const myCharacter = "o";
 
-axios.post('https://api.example.com/post-data', data)
-  .then(response => {
-    console.log('Response:', response.data);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+const occurrenceCount = myString.split("").filter(char => char === myCharacter).length;
+
+console.log(`The character "${myCharacter}" occurs ${occurrenceCount} times in the string.`);
