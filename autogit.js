@@ -1,18 +1,17 @@
-function reverseWords(str) {
-  // Split the string into an array of words
-  var wordsArray = str.split(" ");
+function areAnagrams(str1, str2) {
+  // Remove spaces and punctuation
+  const cleanStr1 = str1.replace(/[^\w]/g, "").toLowerCase();
+  const cleanStr2 = str2.replace(/[^\w]/g, "").toLowerCase();
 
-  // Reverse the order of words in the array
-  var reversedArray = wordsArray.reverse();
+  // Sort the characters of the strings
+  const sortedStr1 = cleanStr1.split("").sort().join("");
+  const sortedStr2 = cleanStr2.split("").sort().join("");
 
-  // Join the reversed array elements into a string
-  var reversedString = reversedArray.join(" ");
-
-  return reversedString;
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
 
 // Example usage
-var originalString = "Hello World, how are you?";
-var reversedString = reverseWords(originalString);
-
-console.log(reversedString);  // Outputs: "you? are how World, Hello"
+const string1 = "listen";
+const string2 = "silent";
+console.log(areAnagrams(string1, string2)); // Output: true
