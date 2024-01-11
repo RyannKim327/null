@@ -1,61 +1,90 @@
-class PriorityQueue {
-  constructor() {
-    this.heap = [];
-  }
-}
-enqueue(value, priority) {
-  const element = { value, priority };
-  this.heap.push(element);
-  this.bubbleUp();
-}
-bubbleUp() {
-  let index = this.heap.length - 1;
+function boyerMooreSearch(text, pattern) {
+  const badMatchTable = buildBadMatchTable(pattern);
+  const goodSuffixTable = buildGoodSuffixTable(pattern);
 
-  while (index > 0) {
-    const element = this.heap[index];
-    const parentIndex = Math.floor((index - 1) / 2);
-    const parent = this.heap[parentIndex];
+  let textIndex = pattern.length - 1;
+  let patternIndex = pattern.length - 1;
 
-    if (element.priority >= parent.priority) break;
-    
-    this.heap[parentIndex] = element;
-    this.heap[index] = parent;
-    index = parentIndex;
-  }
-}
-dequeue() {
-  const min = this.heap[0];
-  const last = this.heap.pop();
-  
-  if (this.heap.length > 0) {
-    this.heap[0] = last;
-    this.sinkDown(0);
-  }
-  
-  return min;
-}
-sinkDown(index) {
-  const leftChildIndex = 2 * index + 1;
-  const rightChildIndex = 2 * index + 2;
-  let smallestIndex = index;
+  while (textIndex < text.length) {
+    if (text[textIndex] === pattern[patternIndex]) {
+      if (patternIndex === 0) {
+        return textIndex; // Pattern found
+      }
+      patternIndex--;
+      textIndex--;
+    } else {
+      const badMatchSkip = badMatchTable[text[textIndex].charCodeAt()];
+      const goodSuffixSkip = goodSuffixTable[patternIndex];
 
-  if (leftChildIndex < this.heap.length && this.heap[leftChildIndex].priority < this.heap[smallestIndex].priority) {
-    smallestIndex = leftChildIndex;
+      textIndex += Math.max(badMatchSkip, goodSuffixSkip);
+      patternIndex = pattern.length - 1;
+    }
   }
 
-  if (rightChildIndex < this.heap.length && this.heap[rightChildIndex].priority < this.heap[smallestIndex].priority) {
-    smallestIndex = rightChildIndex;
+  return -1; // Pattern not found
+}
+
+function buildBadMatchTable(pattern) {
+  const table = new Array(256).fill(pattern.length);
+
+  for (let i = 0; i < pattern.length - 1; i++) {
+    const charCode = pattern[i].charCodeAt();
+    const distance = pattern.length - i - 1;
+    table[charCode] = distance;
   }
 
-  if (smallestIndex !== index) {
-    [this.heap[index], this.heap[smallestIndex]] = [this.heap[smallestIndex], this.heap[index]];
-    this.sinkDown(smallestIndex);
-  }
+  return table;
 }
-const pq = new PriorityQueue();
-pq.enqueue('Task 1', 1);
-pq.enqueue('Task 2', 3);
-pq.enqueue('Task 3', 2);
-console.log(pq.dequeue()); // Output: { value: 'Task 1', priority: 1 }
-console.log(pq.dequeue()); // Output: { value: 'Task 3', priority: 2 }
-console.log(pq.dequeue()); // Output: { value: 'Task 2', priority: 3 }
+
+function buildGoodSuffixTable(pattern) {
+  const table = new Array(pattern.length).fill(0);
+
+  let lastPrefixIndex = pattern.length;
+
+  for (let i = pattern.length - 1; i >= 0; i--) {
+    if (isPrefix(pattern, i + 1)) {
+      lastPrefixIndex = i + 1;
+    }
+    table[pattern.length - 1 - i] = lastPrefixIndex - i + pattern.length - 1;
+  }
+
+  for (let i = 0; i < pattern.length - 1; i++) {
+    const suffixLength = getSuffixLength(pattern, i);
+    table[suffixLength] = pattern.length - 1 - i + suffixLength;
+  }
+
+  return table;
+}
+
+function isPrefix(pattern, p) {
+  for (let i = p, j = 0; i < pattern.length; i++, j++) {
+    if (pattern[i] !== pattern[j]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function getSuffixLength(pattern, p) {
+  let suffixLength = 0;
+  let i = p;
+  let j = pattern.length - 1;
+
+  while (i >= 0 && pattern[i] === pattern[j]) {
+    i--;
+    j--;
+    suffixLength++;
+  }
+
+  return suffixLength;
+}
+const text = "Example text for searching";
+const pattern = "search";
+
+const index = boyerMooreSearch(text, pattern);
+
+if (index !== -1) {
+  console.log(`Pattern found at index ${index}`);
+} else {
+  console.log("Pattern not found");
+}
