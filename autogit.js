@@ -1,40 +1,19 @@
-function buildBadCharShift(pattern) {
-  const badCharShift = {};
-  const len = pattern.length;
-
-  for (let i = 0; i < len - 1; i++) {
-    badCharShift[pattern[i]] = len - 1 - i;
+function isPrime(number) {
+  // 1 and numbers less than 1 are not prime
+  if (number <= 1) {
+    return false;
   }
 
-  badCharShift.default = len;
-  return badCharShift;
-}
-
-function boyerMoore(text, pattern) {
-  const occurrences = [];
-  const m = pattern.length;
-  const n = text.length;
-  const badCharShift = buildBadCharShift(pattern);
-  let s = 0;
-
-  while (s <= (n - m)) {
-    let j = m - 1;
-    while (j >= 0 && pattern[j] === text[s + j]) {
-      j--;
-    }
-    if (j < 0) {
-      occurrences.push(s);
-      s += Math.max(1, m - badCharShift[text[s + m - 1]] || 0);
-    } else {
-      s += Math.max(1, j - badCharShift[text[s + j]] || 0);
+  // Check if number is divisible by any number from 2 to the square root of the number
+  for (let i = 2; i <= Math.sqrt(number); i++) {
+    if (number % i === 0) {
+      return false; // It's divisible by a number other than 1 and itself
     }
   }
 
-  return occurrences;
+  return true; // It's only divisible by 1 and itself
 }
 
-// Example usage:
-const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
-const pattern = "Lorem";
-const result = boyerMoore(text, pattern);
-console.log(result); // Output: [0]
+// Example usage
+console.log(isPrime(7)); // Output: true
+console.log(isPrime(10)); // Output: false
