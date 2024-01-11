@@ -1,16 +1,20 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  str = str.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    // Generate a random index from 0 to i
+    let j = Math.floor(Math.random() * (i + 1));
+    
+    // Swap elements array[i] and array[j]
+    let temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
   
-  // Reverse the string
-  const reversed = str.split('').reverse().join('');
-  
-  // Compare the reversed string with the original string
-  return str === reversed;
+  return array;
 }
 
-// Test cases
-console.log(isPalindrome("level")); // true
-console.log(isPalindrome("hello")); // false
-console.log(isPalindrome("A man, a plan, a canal, Panama!")); // true
-console.log(isPalindrome("12321")); // true
+// Usage example
+let arr = [1, 2, 3, 4, 5];
+console.log("Original array:", arr);
+
+let shuffledArr = shuffleArray(arr);
+console.log("Shuffled array:", shuffledArr);
