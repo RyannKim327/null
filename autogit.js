@@ -1,14 +1,20 @@
-function getRandomNumber(min, max) {
-  // Calculate the range of the numbers
-  var range = max - min + 1;
-
-  // Generate a random number from 0 to range - 1
-  var random = Math.floor(Math.random() * range);
-
-  // Add the random number to the minimum value to get a number within the range
-  var result = min + random;
-
-  return result;
+function isPrime(number) {
+  // 1 and numbers less than 1 are not prime
+  if (number <= 1) {
+    return false;
+  }
+  
+  // Check for divisibility of the number from 2 to the square root of the number
+  for (let i = 2; i <= Math.sqrt(number); i++) {
+    if (number % i === 0) {
+      return false;
+    }
+  }
+  
+  // If the number is not divisible by any other number, it is prime
+  return true;
 }
-var randomNumber = getRandomNumber(1, 100);
-console.log(randomNumber);
+
+// Example usage:
+console.log(isPrime(17)); // Output: true
+console.log(isPrime(20)); // Output: false
