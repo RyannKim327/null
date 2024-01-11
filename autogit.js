@@ -1,12 +1,15 @@
-function factorial(n) {
-  // Base case: factorial of 0 or 1 is 1
-  if (n === 0 || n === 1) {
-    return 1;
-  } else {
-    // Recursive case: multiply n with factorial of (n-1)
-    return n * factorial(n - 1);
+function calculateMean(numbers) {
+  let sum = 0;
+
+  for (let i = 0; i < numbers.length; i++) {
+    sum += numbers[i];
   }
+
+  const mean = sum / numbers.length;
+  return mean;
 }
 
 // Example usage:
-console.log(factorial(5)); // Output: 120
+const numbers = [1, 2, 3, 4, 5];
+const mean = calculateMean(numbers);
+console.log(mean); // Output: 3
