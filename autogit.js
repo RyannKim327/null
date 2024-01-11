@@ -1,17 +1,20 @@
-function isPalindrome(str) {
-  // Step 1: Remove non-alphanumeric characters and convert to lowercase
-  const alphanumericStr = str.replace(/[^0-9a-z]/gi, '').toLowerCase();
-  
-  // Step 2: Reverse the string
-  const reversedStr = alphanumericStr.split('').reverse().join('');
-  
-  // Step 3: Compare original and reversed strings
-  return alphanumericStr === reversedStr;
+// Import required libraries
+const fetch = require('node-fetch');
+
+// Async function to make the API call
+async function connectToAndroidDevice(url) {
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log(data);
+    // Process the response data here
+  } catch (error) {
+    console.error('An error occurred while connecting to the Android device:', error);
+  }
 }
 
-// Example usage
-const string1 = "racecar";
-console.log(isPalindrome(string1)); // Output: true
+// Define the URL of the Android device
+const androidDeviceUrl = 'https://your-android-device-url.com/api';
 
-const string2 = "hello";
-console.log(isPalindrome(string2)); // Output: false
+// Call the async function
+connectToAndroidDevice(androidDeviceUrl);
