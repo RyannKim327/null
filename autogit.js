@@ -1,19 +1,18 @@
-function validateEmail(email) {
-  // Regular expression for email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  
-  if (emailRegex.test(email)) {
-    return true; // Email is valid
+class ListNode {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
-  
-  return false; // Email is invalid
 }
 
-// Usage
-const email = 'test@example.com';
+function findLinkedListLength(head) {
+  let length = 0;
+  let current = head;
 
-if (validateEmail(email)) {
-  console.log('Valid email');
-} else {
-  console.log('Invalid email');
+  while (current !== null) {
+    length++;
+    current = current.next;
+  }
+
+  return length;
 }
