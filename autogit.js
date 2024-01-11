@@ -1,24 +1,20 @@
-// Import the necessary libraries
-const fetch = require('node-fetch');
+function findMedianSortedArrays(nums1, nums2) {
+  const merged = [...nums1, ...nums2];
+  merged.sort((a, b) => a - b);
 
-// Define the URL of the API
-const API_URL = 'https://api.example.com';
+  const middleIndex = Math.floor(merged.length / 2);
 
-// Define the asynchronous function to connect to the API
-async function connectToAPI() {
-  try {
-    // Perform the API request
-    const response = await fetch(API_URL);
-    
-    // Parse the response as JSON
-    const data = await response.json();
-
-    // Process the retrieved data
-    console.log(data);
-  } catch (error) {
-    console.error('Error connecting to API:', error);
+  if (merged.length % 2 === 0) {
+    const median = (merged[middleIndex] + merged[middleIndex - 1]) / 2;
+    return median;
+  } else {
+    return merged[middleIndex];
   }
 }
 
-// Call the function to connect to the API
-connectToAPI();
+// Example usage:
+const nums1 = [1, 3]; // First sorted array
+const nums2 = [2, 4]; // Second sorted array
+
+const median = findMedianSortedArrays(nums1, nums2);
+console.log(median); // Output: 2.5
