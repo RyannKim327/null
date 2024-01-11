@@ -1,17 +1,20 @@
-const cron = require('cron');
+function bubbleSort(arr) {
+  var len = arr.length;
+  for (var i = 0; i < len; i++) {
+    for (var j = 0; j < len - 1 - i; j++) {
+      if (arr[j] > arr[j + 1]) {
+        // Swap elements
+        var temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
+      }
+    }
+  }
+  return arr;
+}
 
-// Create a new cron job
-const job = new cron.CronJob({
-  cronTime: '0 * * * *', // Run the job every hour at 0 minutes
-  onTick: function() {
-    // Code to be executed at every tick
-    console.log('Cron job running...');
-    // Add your task here
-  },
-  timeZone: 'Etc/UTC', // Set the timezone
-});
-
-// Start the cron job
-job.start();
-
-console.log('Cron job scheduled.');
+// Testing the algorithm
+var unsortedArray = [5, 3, 8, 1, 2, 7];
+console.log('Unsorted Array:', unsortedArray);
+var sortedArray = bubbleSort(unsortedArray);
+console.log('Sorted Array:', sortedArray);
