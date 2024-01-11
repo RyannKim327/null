@@ -1,15 +1,25 @@
-function removeVowels(str) {
-  // Use regular expression to match all vowels (both lowercase and uppercase)
-  // The 'gi' flags make it case-insensitive and match multiple occurrences
-  const vowelsRegex = /[aeiou]/gi;
+function longestCommonPrefix(strings) {
+  if (strings.length === 0) {
+    return '';
+  }
 
-  // Use the replace() method to remove all vowels by replacing them with an empty space
-  const result = str.replace(vowelsRegex, '');
+  let prefix = '';
 
-  return result;
+  for (let i = 0; i < strings[0].length; i++) {
+    const char = strings[0][i];
+
+    for (let j = 1; j < strings.length; j++) {
+      if (i >= strings[j].length || strings[j][i] !== char) {
+        return prefix;
+      }
+    }
+
+    prefix += char;
+  }
+
+  return prefix;
 }
-
-// Example usage:
-const originalString = 'Hello, World!';
-const stringWithoutVowels = removeVowels(originalString);
-console.log(stringWithoutVowels); // Output: "Hll, Wrld!"
+const strings = ['flower', 'flow', 'flight'];
+const commonPrefix = longestCommonPrefix(strings);
+console.log(commonPrefix);
+fl
