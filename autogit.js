@@ -1,37 +1,34 @@
-class Node {
-  constructor() {
-    this.children = {};
-    // Add any other required properties
+function boyerMooreHorspool(text, pattern) {
+  const patternLength = pattern.length;
+  const shiftTable = buildShiftTable(pattern);
+
+  let i = 0;
+  while (i <= text.length - patternLength) {
+    let j = patternLength - 1;
+
+    while (j >= 0 && pattern[j] === text[i + j]) {
+      j--;
+    }
+
+    if (j === -1) {
+      return i; // Match found at index i
+    }
+    
+    // Calculate the shift value for the last character of the current substring
+    const shift = shiftTable[text.charCodeAt(i + patternLength - 1)];
+    i += shift || patternLength; // Shift the index by the calculated shift value
   }
-}
-class SuffixTree {
-  constructor(text) {
-    this.root = new Node();
-    this.text = text;
-    this.buildSuffixTree();
-  }
-  
-  buildSuffixTree() {
-    // Implement the logic to build the suffix tree here
-  }
-  
-  // Implement other required methods here
-}
-buildSuffixTree() {
-  const len = this.text.length;
-  for (let i = 0; i < len; i++) {
-    this.addSuffix(this.text.substring(i));
-  }
+
+  return -1; // Pattern not found
 }
 
-addSuffix(suffix) {
-  let currentNode = this.root;
-  for (let i = 0; i < suffix.length; i++) {
-    const currentChar = suffix[i];
-    if (!currentNode.children[currentChar]) {
-      currentNode.children[currentChar] = new Node();
-    }
-    currentNode = currentNode.children[currentChar];
+function buildShiftTable(pattern) {
+  const shiftTable = {};
+  const patternLength = pattern.length;
+
+  for (let i = 0; i < patternLength - 1; i++) {
+    shiftTable[pattern.charCodeAt(i)] = patternLength - i - 1;
   }
-  // Store any metadata or flags at the last character node of the suffix
+  
+  return shiftTable;
 }
