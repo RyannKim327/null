@@ -1,46 +1,25 @@
-function radixSort(arr) {
-  const getMax = (arr) => {
-    let max = 0;
-    for (let num of arr) {
-      if (num > max) {
-        max = num;
-      }
-    }
-    return max;
-  };
+const axios = require('axios');
 
-  const digitCount = (num) => {
-    if (num === 0) {
-      return 1;
-    }
-    return Math.floor(Math.log10(Math.abs(num))) + 1;
-  };
+// Make a GET request to retrieve data from an API
+axios.get('https://api.example.com/data')
+  .then(response => {
+    console.log('Response:', response.data);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
 
-  const getDigit = (num, place) => {
-    return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
-  };
+// Make a POST request to send data to an API
+const data = {
+  name: 'John Doe',
+  age: 25,
+  email: 'johndoe@example.com'
+};
 
-  const radixSortHelper = (arr) => {
-    const max = getMax(arr);
-    const maxDigits = digitCount(max);
-
-    for (let digit = 0; digit < maxDigits; digit++) {
-      const buckets = Array.from({ length: 10 }, () => []);
-
-      for (let num of arr) {
-        const digitValue = getDigit(num, digit);
-        buckets[digitValue].push(num);
-      }
-
-      arr = [].concat(...buckets);
-    }
-
-    return arr;
-  };
-
-  return radixSortHelper(arr);
-}
-
-// Example usage:
-const array = [100, 2, 15, 1, 200, 12, 99];
-console.log(radixSort(array)); // Output: [1, 2, 12, 15, 99, 100, 200]
+axios.post('https://api.example.com/post-data', data)
+  .then(response => {
+    console.log('Response:', response.data);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
