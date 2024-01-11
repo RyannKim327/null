@@ -1,35 +1,6 @@
-function LCS(str1, str2) {
-  const m = str1.length;
-  const n = str2.length;
-  const dp = [...Array(m + 1)].map(() => Array(n + 1).fill(0));
+const numbers = [5, 2, 9, 1, 7];
 
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1[i - 1] === str2[j - 1])
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-      else
-        dp[i][j] = Math.max(dp[i][j - 1], dp[i - 1][j]);
-    }
-  }
+numbers.sort((a, b) => a - b);
 
-  let lcs = '';
-  let i = m, j = n;
-  while (i > 0 && j > 0) {
-    if (str1[i - 1] === str2[j - 1]) {
-      lcs = str1[i - 1] + lcs;
-      i--;
-      j--;
-    } else if (dp[i][j - 1] > dp[i - 1][j]) {
-      j--;
-    } else {
-      i--;
-    }
-  }
-
-  return lcs;
-}
-
-// Example usage:
-const str1 = 'ABCDGH';
-const str2 = 'AEDFHR';
-console.log(LCS(str1, str2)); // Output: 'ADH'
+console.log(numbers);
+[1, 2, 5, 7, 9]
