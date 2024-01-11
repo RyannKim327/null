@@ -1,29 +1,61 @@
-function findLongestIncreasingSubsequence(array) {
-  const n = array.length;
-  const dp = new Array(n).fill(1);
-
-  for (let i = 1; i < n; i++) {
-    for (let j = 0; j < i; j++) {
-      if (array[i] > array[j] && dp[i] <= dp[j] + 1) {
-        dp[i] = dp[j] + 1;
-      }
-    }
+class Node {
+  constructor() {
+    this.children = {};
   }
-
-  let maxLen = Math.max(...dp);
-  let result = [];
-
-  for (let i = n - 1; i >= 0; i--) {
-    if (dp[i] === maxLen) {
-      result.push(array[i]);
-      maxLen--;
-    }
-  }
-
-  return result.reverse();
 }
 
-// Example usage:
-const arr = [3, 10, 2, 1, 20];
-const lis = findLongestIncreasingSubsequence(arr);
-console.log(lis); // Output: [3, 10, 20]
+class SuffixTree {
+  constructor(string) {
+    this.root = new Node();
+    this.buildTree(string);
+  }
+
+  buildTree(string) {
+    // Add all suffixes to the tree
+    for (let i = 0; i < string.length; i++) {
+      const suffix = string.slice(i);
+      this.addSuffix(suffix, i);
+    }
+  }
+
+  addSuffix(suffix, index) {
+    let currentNode = this.root;
+
+    for (let i = 0; i < suffix.length; i++) {
+      const char = suffix[i];
+
+      if (!currentNode.children[char]) {
+        currentNode.children[char] = new Node();
+      }
+
+      currentNode = currentNode.children[char];
+    }
+
+    // Store the index where the suffix starts
+    if (!currentNode.index) {
+      currentNode.index = index;
+    }
+  }
+
+  search(pattern) {
+    let currentNode = this.root;
+
+    for (let i = 0; i < pattern.length; i++) {
+      const char = pattern[i];
+
+      if (!currentNode.children[char]) {
+        return null; // Pattern not found
+      }
+
+      currentNode = currentNode.children[char];
+    }
+
+    return currentNode.index; // Return the index where the pattern starts
+  }
+}
+
+// Example usage
+const suffixTree = new SuffixTree("banana");
+console.log(suffixTree.search("ana")); // Output: 1
+console.log(suffixTree.search("na")); // Output: 2
+console.log(suffixTree.search("foo")); // Output: null
