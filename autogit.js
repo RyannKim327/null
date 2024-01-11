@@ -1,40 +1,56 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function mergeSort(array) {
+  // Base case: if the array is empty or contains only one element, return the array
+  if (array.length <= 1) {
+    return array;
   }
+  
+  // Find the middle index to divide the array into two halves
+  const middle = Math.floor(array.length / 2);
+  
+  // Divide the array into two halves
+  const leftHalf = array.slice(0, middle);
+  const rightHalf = array.slice(middle);
+  
+  // Recursively call mergeSort on the left and right halves
+  const sortedLeft = mergeSort(leftHalf);
+  const sortedRight = mergeSort(rightHalf);
+  
+  // Merge the sorted halves
+  return merge(sortedLeft, sortedRight);
 }
 
-function countLeafNodes(root) {
-  if (!root) {
-    // If the tree is empty or if we've reached a null node, return 0
-    return 0;
+function merge(left, right) {
+  let mergedArray = [];
+  let leftIndex = 0;
+  let rightIndex = 0;
+  
+  // Compare elements from both subarrays and merge them into the mergedArray in sorted order
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] < right[rightIndex]) {
+      mergedArray.push(left[leftIndex]);
+      leftIndex++;
+    } else {
+      mergedArray.push(right[rightIndex]);
+      rightIndex++;
+    }
   }
-
-  if (!root.left && !root.right) {
-    // If the current node is a leaf node, return 1
-    return 1;
+  
+  // Add remaining elements from the left subarray (if any)
+  while (leftIndex < left.length) {
+    mergedArray.push(left[leftIndex]);
+    leftIndex++;
   }
-
-  // Recursively count the leaf nodes in the left and right subtrees
-  const leftLeafCount = countLeafNodes(root.left);
-  const rightLeafCount = countLeafNodes(root.right);
-
-  // Return the sum of leaf counts in both subtrees
-  return leftLeafCount + rightLeafCount;
+  
+  // Add remaining elements from the right subarray (if any)
+  while (rightIndex < right.length) {
+    mergedArray.push(right[rightIndex]);
+    rightIndex++;
+  }
+  
+  return mergedArray;
 }
 
-// Create a binary tree for testing
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
-root.right.right.right = new Node(8);
-
-// Find the number of leaf nodes
-const leafCount = countLeafNodes(root);
-console.log("Leaf Count:", leafCount);
+// Example usage:
+const array = [5, 3, 8, 4, 2, 1, 6, 9, 7];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
