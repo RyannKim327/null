@@ -1,20 +1,11 @@
-function isPrime(number) {
-  // Check if the number is less than 2 (not prime)
-  if (number < 2) {
-    return false;
+function calculateMean(numbers) {
+  let sum = 0;
+  const totalNumbers = numbers.length;
+
+  for (let i = 0; i < totalNumbers; i++) {
+    sum += numbers[i];
   }
 
-  // Check if the number is divisible by any integer from 2 to the square root of the number
-  for (let i = 2; i <= Math.sqrt(number); i++) {
-    if (number % i === 0) {
-      return false;
-    }
-  }
-
-  // If the number passes all the checks, it is prime
-  return true;
+  const mean = sum / totalNumbers;
+  return mean;
 }
-
-// Testing the function
-console.log(isPrime(7)); // Output: true
-console.log(isPrime(10)); // Output: false
