@@ -1,79 +1,111 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+class BTreeNode {
+  constructor(order) {
+    this.order = order; // the maximum number of keys the node can hold
+    this.keys = [];     // sorted array of keys
+    this.values = [];   // array of corresponding values
+    this.children = []; // array of child nodes
+    this.isLeaf = true; // flag to indicate if the node is a leaf
   }
 }
-
-class BinarySearchTree {
-  constructor() {
-    this.root = null;
+class BTree {
+  constructor(order) {
+    this.root = new BTreeNode(order);
+    this.order = order;
   }
 
-  // Insert a new value into the tree
-  insert(value) {
-    const newNode = new Node(value);
+  insert(key, value) {
+    const { root, order } = this;
 
-    // If the tree is empty, set the new node as the root
-    if (this.root === null) {
-      this.root = newNode;
+    if (root.keys.length === 2 * order - 1) {
+      const newRoot = new BTreeNode(order);
+      newRoot.children.push(root);
+      this.root = newRoot;
+      this.splitChild(newRoot, 0);
+      this.insertNonFull(newRoot, key, value);
     } else {
-      this.insertNode(this.root, newNode);
+      this.insertNonFull(root, key, value);
     }
   }
 
-  // Helper function to recursively insert a node
-  insertNode(node, newNode) {
-    // If the new value is less than the current node, go left
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
+  insertNonFull(node, key, value) {
+    let i = node.keys.length - 1;
+
+    if (node.isLeaf) {
+      while (i >= 0 && key < node.keys[i]) {
+        node.keys[i + 1] = node.keys[i];
+        node.values[i + 1] = node.values[i];
+        i--;
+      }
+
+      node.keys[i + 1] = key;
+      node.values[i + 1] = value;
+    } else {
+      while (i >= 0 && key < node.keys[i]) {
+        i--;
+      }
+
+      i++;
+
+      if (node.children[i].keys.length === 2 * this.order - 1) {
+        this.splitChild(node, i);
+
+        if (key > node.keys[i]) {
+          i++;
+        }
+      }
+
+      this.insertNonFull(node.children[i], key, value);
+    }
+  }
+
+  splitChild(parent, index) {
+    const { order } = this;
+    const child = parent.children[index];
+    const newChild = new BTreeNode(order);
+    parent.keys.splice(index, 0, child.keys[order - 1]);
+    parent.values.splice(index, 0, child.values[order - 1]);
+    parent.children.splice(index + 1, 0, newChild);
+    newChild.isLeaf = child.isLeaf;
+
+    for (let j = 0; j < order - 1; j++) {
+      newChild.keys[j] = child.keys[j + order];
+      newChild.values[j] = child.values[j + order];
+    }
+
+    if (!child.isLeaf) {
+      for (let j = 0; j < order; j++) {
+        newChild.children[j] = child.children[j + order];
       }
     }
-    // If the new value is greater than the current node, go right
-    else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
+
+    child.keys.length = order - 1;
+    child.values.length = order - 1;
+    child.children.length = child.isLeaf ? 0 : order;
   }
 
-  // Search for a value in the tree
-  search(value) {
-    return this.searchNode(this.root, value);
+  search(key) {
+    return this.searchNode(this.root, key);
   }
 
-  // Helper function to recursively search for a node
-  searchNode(node, value) {
-    // If the tree is empty or the value is found at the current node, return the node
-    if (node === null || node.value === value) {
-      return node;
+  searchNode(node, key) {
+    let i = 0;
+
+    while (i < node.keys.length && key > node.keys[i]) {
+      i++;
     }
 
-    // If the value is less than the current node, search the left subtree
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
+    if (node.keys[i] === key) {
+      return node.values[i];
+    } else if (node.isLeaf) {
+      return null;
+    } else {
+      return this.searchNode(node.children[i], key);
     }
-
-    // If the value is greater than the current node, search the right subtree
-    return this.searchNode(node.right, value);
   }
 }
-
-// Example usage:
-const bst = new BinarySearchTree();
-bst.insert(50);
-bst.insert(30);
-bst.insert(70);
-bst.insert(20);
-bst.insert(40);
-bst.insert(60);
-bst.insert(80);
-
-console.log(bst.search(60)); // found
-console.log(bst.search(55)); // not found
+const bTree = new BTree(3); // Order 3 B-tree
+bTree.insert(5, "Five");
+bTree.insert(3, "Three");
+bTree.insert(7, "Seven");
+console.log(bTree.search(5)); // Output: "Five"
+console.log(bTree.search(10)); // Output: null
