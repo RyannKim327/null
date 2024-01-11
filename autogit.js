@@ -1,20 +1,14 @@
-function findSecondLargest(arr) {
-  let largest = -Infinity;
-  let secondLargest = -Infinity;
-
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] > largest) {
-      secondLargest = largest;
-      largest = arr[i];
-    } else if (arr[i] > secondLargest && arr[i] !== largest) {
-      secondLargest = arr[i];
-    }
+function getStringLength(str) {
+  let length = 0;
+  let index = 0;
+  while (str[index] !== undefined) {
+    length++;
+    index++;
   }
-
-  return secondLargest;
+  return length;
 }
 
 // Example usage:
-const arr = [5, 2, 8, 4, 7];
-const secondLargest = findSecondLargest(arr);
-console.log(secondLargest); // Output: 7
+const myString = "Hello, World!";
+const length = getStringLength(myString);
+console.log(length);  // Output: 13
