@@ -1,25 +1,23 @@
-function findNthNodeFromEnd(head, n) {
-  let p1 = head;
-  let p2 = head;
+function bubbleSort(arr) {
+  let len = arr.length;
+  let swapped;
 
-  // Move p2 n positions forward
-  for (let i = 0; i < n; i++) {
-    if (p2 === null) {
-      return null; // Linked list length is less than n
+  do {
+    swapped = false;
+    for (let i = 0; i < len - 1; i++) {
+      if (arr[i] > arr[i + 1]) {
+        let temp = arr[i];
+        arr[i] = arr[i + 1];
+        arr[i + 1] = temp;
+        swapped = true;
+      }
     }
-    p2 = p2.next;
-  }
+    len--;
+  } while (swapped);
 
-  // Move both pointers until p2 reaches the end
-  while (p2 !== null) {
-    p1 = p1.next;
-    p2 = p2.next;
-  }
-
-  return p1.value;
+  return arr;
 }
-const head = { value: 1, next: { value: 2, next: { value: 3, next: null } } };
-const n = 2;
 
-const result = findNthNodeFromEnd(head, n);
-console.log(result); // Output: 2
+// Usage example
+let numbers = [5, 3, 8, 2, 1, 4];
+console.log(bubbleSort(numbers));
