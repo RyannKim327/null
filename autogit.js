@@ -1,13 +1,47 @@
-function isSortedAscending(arr) {
-  for (let i = 0; i < arr.length - 1; i++) {
-    if (arr[i] > arr[i + 1]) {
-      return false; // If current element is greater than the next element, array is not sorted in ascending order
+class TarjanSCC {
+  constructor(graph) {
+    this.graph = graph;
+    this.component = [];
+    this.low = [];
+    this.ids = [];
+    this.onStack = [];
+    this.id = 0;
+
+    this.stronglyConnectedComponents();
+  }
+
+  stronglyConnectedComponents() {
+    for (let node = 0; node < this.graph.length; node++) {
+      if (!this.ids[node]) {
+        this.dfs(node);
+      }
     }
   }
-  return true; // If all elements are in ascending order or the array is empty, it is sorted
-}
-const array1 = [1, 2, 3, 4, 5];
-console.log(isSortedAscending(array1)); // Output: true
 
-const array2 = [4, 2, 6, 1, 3];
-console.log(isSortedAscending(array2)); // Output: false
+  dfs(node) {
+    this.ids[node] = this.low[node] = ++this.id;
+    this.onStack.push(node);
+
+    for (let neighbor of this.graph[node]) {
+      if (!this.ids[neighbor]) {
+        this.dfs(neighbor);
+        this.low[node] = Math.min(this.low[node], this.low[neighbor]);
+      } else if (this.onStack.includes(neighbor)) {
+        this.low[node] = Math.min(this.low[node], this.ids[neighbor]);
+      }
+    }
+
+    if (this.low[node] === this.ids[node]) {
+      const stronglyConnectedComponent = [];
+      let curNode;
+      do {
+        curNode = this.onStack.pop();
+        stronglyConnectedComponent.push(curNode);
+      } while (curNode !== node);
+      this.component.push(stronglyConnectedComponent);
+    }
+  }
+}
+const graph = [[1], [2, 4], [3], [0, 5], [2], [0, 6], [0, 2]];
+const tarjan = new TarjanSCC(graph);
+console.log(tarjan.component);
