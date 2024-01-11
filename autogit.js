@@ -1,147 +1,87 @@
 class Node {
-  constructor(value = null) {
-    this.value = value;
-    this.next = [];
-  }
-}
-class SkipList {
   constructor() {
-    this.head = new Node(); // The head node doesn't store any value
-    this.maxLevel = 0; // Current maximum level of the skip list
-  }
-
-  // Insert a value into the skip list
-  insert(value) {
-    // Determine the level of the new node
-    const level = this.randomLevel();
-
-    // Create a new node
-    const newNode = new Node(value);
-    newNode.next = new Array(level + 1).fill(null);
-
-    // Track the current node while traversing the skip list
-    let currentNode = this.head;
-
-    // Track the highest level where we have reached a node
-    let highestAffectedLevel = -1;
-
-    // Traverse the skip list from the top level to the lowest
-    for (let i = this.maxLevel; i >= 0; i--) {
-      // Move forward until we find the right position
-      while (
-        currentNode.next[i] !== null &&
-        currentNode.next[i].value < value
-      ) {
-        currentNode = currentNode.next[i];
-      }
-
-      // If the current level is within the level of the new node
-      if (i <= level) {
-        // Insert the new node into the skip list
-        newNode.next[i] = currentNode.next[i];
-        currentNode.next[i] = newNode;
-
-        // Track the highest level affected by the insertion
-        if (i > highestAffectedLevel) {
-          highestAffectedLevel = i;
-        }
-      }
-    }
-
-    // Update the maximum level if necessary
-    if (highestAffectedLevel > this.maxLevel) {
-      this.maxLevel = highestAffectedLevel;
-    }
-  }
-
-  // Remove a value from the skip list
-  remove(value) {
-    // Track the current node while traversing the skip list
-    let currentNode = this.head;
-
-    // Flag to indicate if we found the value
-    let found = false;
-
-    // Traverse the skip list from the top level to the lowest
-    for (let i = this.maxLevel; i >= 0; i--) {
-      // Move forward until we find the right position
-      while (
-        currentNode.next[i] !== null &&
-        currentNode.next[i].value < value
-      ) {
-        currentNode = currentNode.next[i];
-      }
-
-      // If the current node contains the desired value
-      if (
-        currentNode.next[i] !== null &&
-        currentNode.next[i].value === value
-      ) {
-        // Delete the node from the skip list
-        currentNode.next[i] = currentNode.next[i].next[i];
-
-        // Update the maximum level if necessary
-        if (this.head.next[i] === null) {
-          this.maxLevel--;
-        }
-
-        // Mark as found
-        found = true;
-      }
-    }
-
-    return found;
-  }
-
-  // Search for a value in the skip list
-  search(value) {
-    // Track the current node while traversing the skip list
-    let currentNode = this.head;
-
-    // Traverse the skip list from the top level to the lowest
-    for (let i = this.maxLevel; i >= 0; i--) {
-      // Move forward until we find the right position
-      while (
-        currentNode.next[i] !== null &&
-        currentNode.next[i].value < value
-      ) {
-        currentNode = currentNode.next[i];
-      }
-
-      // If we found the value, return true
-      if (
-        currentNode.next[i] !== null &&
-        currentNode.next[i].value === value
-      ) {
-        return true;
-      }
-    }
-
-    // Value not found
-    return false;
-  }
-
-  // Generate a random level for a new node
-  randomLevel() {
-    let level = 0;
-
-    // Increase the level with a 50% probability
-    while (Math.random() < 0.5) {
-      level++;
-    }
-
-    return level;
+    this.children = {};
+    this.startIndex = null;
+    this.endIndex = null;
+    this.parent = null;
   }
 }
-const skipList = new SkipList();
+class SuffixTree {
+  constructor() {
+    this.root = new Node();
+  }
 
-skipList.insert(10);
-skipList.insert(5);
-skipList.insert(7);
-skipList.insert(20);
+  addSuffix(suffix) {
+    let currentNode = this.root;
+    let remainingSuffix = suffix;
 
-console.log(skipList.search(7)); // Output: true
-console.log(skipList.search(15)); // Output: false
+    while (remainingSuffix.length > 0) {
+      const firstChar = remainingSuffix[0];
 
-skipList.remove(5);
-console.log(skipList.search(5)); // Output: false
+      if (!currentNode.children[firstChar]) {
+        // Create a new node for the suffix
+        const newNode = new Node();
+        currentNode.children[firstChar] = newNode;
+        newNode.startIndex = suffix.length - remainingSuffix.length;
+        newNode.endIndex = suffix.length - 1;
+        newNode.parent = currentNode;
+      } else {
+        let node = currentNode.children[firstChar];
+        let walkIndex;
+
+        for (walkIndex = node.startIndex; walkIndex <= node.endIndex; walkIndex++) {
+          // Find the longest common prefix
+          if (suffix[walkIndex] !== remainingSuffix[walkIndex - node.startIndex]) {
+            break;
+          }
+        }
+
+        if (walkIndex === node.endIndex + 1) {
+          // The suffix already exists in the tree, move to the next suffix
+          currentNode = node;
+          remainingSuffix = remainingSuffix.substring(node.endIndex - node.startIndex + 1);
+          continue;
+        }
+
+        // Split the node and create a new node with the common prefix
+        const splitNode = new Node();
+        splitNode.startIndex = node.startIndex;
+        splitNode.endIndex = walkIndex - 1;
+        splitNode.parent = currentNode;
+        node.startIndex = walkIndex;
+
+        // Create a new leaf node for the current suffix
+        const leafNode = new Node();
+        leafNode.startIndex = suffix.length - remainingSuffix.length;
+        leafNode.endIndex = suffix.length - 1;
+        leafNode.parent = splitNode;
+
+        // Update parent and child references
+        currentNode.children[firstChar] = splitNode;
+        splitNode.children[remainingSuffix[splitNode.startIndex]] = node;
+        splitNode.children[remainingSuffix[leafNode.startIndex]] = leafNode;
+
+        break;
+      }
+    }
+  }
+
+  buildTree(string) {
+    for (let i = 0; i < string.length; i++) {
+      this.addSuffix(string.substring(i));
+    }
+  }
+}
+const suffixTree = new SuffixTree();
+suffixTree.buildTree("banana");
+
+console.log(suffixTree);
+{
+  root: {
+    children: {
+      b: { ... },
+      a: { ... },
+      n: { ... }
+    }
+  }
+}
