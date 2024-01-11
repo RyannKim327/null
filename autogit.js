@@ -1,29 +1,44 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+function buildMaxHeap(arr) {
+  const n = arr.length;
+  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+    heapify(arr, n, i);
   }
 }
-const node1 = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
+function heapify(arr, heapSize, rootIndex) {
+  let largestIndex = rootIndex;
+  const leftChildIndex = 2 * rootIndex + 1;
+  const rightChildIndex = 2 * rootIndex + 2;
 
-node1.next = node2;
-node2.next = node3;
-
-// The linked list is: 1 -> 2 -> 3 -> null
-function getLinkedListLength(head) {
-  let count = 0;
-  let current = head;
-
-  while (current !== null) {
-    count++;
-    current = current.next;
+  if (leftChildIndex < heapSize && arr[leftChildIndex] > arr[largestIndex]) {
+    largestIndex = leftChildIndex;
   }
 
-  return count;
-}
+  if (rightChildIndex < heapSize && arr[rightChildIndex] > arr[largestIndex]) {
+    largestIndex = rightChildIndex;
+  }
 
-// Usage:
-const length = getLinkedListLength(node1);
-console.log(length); // Output: 3
+  if (largestIndex !== rootIndex) {
+    swap(arr, largestIndex, rootIndex);
+    heapify(arr, heapSize, largestIndex);
+  }
+}
+function heapSort(arr) {
+  const n = arr.length;
+
+  buildMaxHeap(arr);
+
+  for (let i = n - 1; i > 0; i--) {
+    swap(arr, 0, i);
+    heapify(arr, i, 0);
+  }
+
+  return arr;
+}
+function swap(arr, i, j) {
+  const temp = arr[i];
+  arr[i] = arr[j];
+  arr[j] = temp;
+}
+const unsortedArray = [6, 3, 8, 5, 2];
+const sortedArray = heapSort(unsortedArray);
+console.log(sortedArray); // Output: [2, 3, 5, 6, 8]
