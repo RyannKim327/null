@@ -1,35 +1,50 @@
-function topologicalSort(graph) {
-  const visited = new Set();
-  const stack = [];
+function preprocessPattern(pattern) {
+  const badChar = {};
+  const goodSuffix = {};
+  const m = pattern.length;
 
-  function dfs(vertex) {
-    visited.add(vertex);
+  for (let i = 0; i < m; i++) {
+    const char = pattern[i];
+    badChar[char] = i;
+    goodSuffix[i] = 0;
+  }
 
-    for (const adjacentVertex of graph[vertex]) {
-      if (!visited.has(adjacentVertex)) {
-        dfs(adjacentVertex);
+  for (let i = m - 2; i >= 0; i--) {
+    const shift = m - i - 1;
+    const suffix = pattern.substring(i + 1);
+
+    for (let j = i; j >= 0; j--) {
+      const prefix = pattern.substring(j, i + 1);
+      if (suffix === prefix) {
+        goodSuffix[i] = shift;
+        break;
       }
     }
-
-    stack.push(vertex);
   }
 
-  for (const vertex in graph) {
-    if (!visited.has(vertex)) {
-      dfs(vertex);
-    }
-  }
-
-  return stack.reverse();
+  return { badChar, goodSuffix };
 }
-const graph = {
-  A: ['B', 'C'],
-  B: ['D'],
-  C: ['D', 'E'],
-  D: [],
-  E: ['F'],
-  F: [],
-};
 
-const sortedVertices = topologicalSort(graph);
-console.log(sortedVertices); // Output: ['A', 'C', 'E', 'F', 'B', 'D']
+function boyerMoore(pattern, text) {
+  const { badChar, goodSuffix } = preprocessPattern(pattern);
+  const m = pattern.length;
+  const n = text.length;
+
+  let i = 0;
+  while (i <= n - m) {
+    let j = m - 1;
+    while (j >= 0 && text[i + j] === pattern[j]) {
+      j--;
+    }
+
+    if (j < 0) {
+      return i;
+    }
+
+    const x = j - badChar[text[i + j]];
+    const y = goodSuffix[j];
+    i += Math.max(x, y);
+  }
+
+  return -1;
+}
