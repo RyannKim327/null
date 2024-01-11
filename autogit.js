@@ -1,22 +1,39 @@
-function isAnagram(str1, str2) {
-  // Normalize strings and remove non-alphabet characters
-  str1 = str1.toLowerCase().replace(/[^a-z]/g, '');
-  str2 = str2.toLowerCase().replace(/[^a-z]/g, '');
+function findLCS(str1, str2) {
+  const lcsMatrix = Array(str1.length + 1)
+    .fill(0)
+    .map(() => Array(str2.length + 1).fill(0));
 
-  // Sort characters
-  const sortedStr1 = str1.split('').sort().join('');
-  const sortedStr2 = str2.split('').sort().join('');
+  for (let i = 1; i <= str1.length; i++) {
+    for (let j = 1; j <= str2.length; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        lcsMatrix[i][j] = lcsMatrix[i - 1][j - 1] + 1;
+      } else {
+        lcsMatrix[i][j] = Math.max(lcsMatrix[i - 1][j], lcsMatrix[i][j - 1]);
+      }
+    }
+  }
 
-  // Compare sorted strings
-  return sortedStr1 === sortedStr2;
+  let i = str1.length;
+  let j = str2.length;
+  let lcs = '';
+
+  while (i > 0 && j > 0) {
+    if (str1[i - 1] === str2[j - 1]) {
+      lcs = str1[i - 1] + lcs;
+      i--;
+      j--;
+    } else if (lcsMatrix[i][j - 1] > lcsMatrix[i - 1][j]) {
+      j--;
+    } else {
+      i--;
+    }
+  }
+
+  return lcs;
 }
 
-// Example usage
-const string1 = 'listen';
-const string2 = 'silent';
-
-if (isAnagram(string1, string2)) {
-  console.log(`${string1} and ${string2} are anagrams.`);
-} else {
-  console.log(`${string1} and ${string2} are not anagrams.`);
-}
+// Example usage:
+const str1 = 'ABCDGH';
+const str2 = 'AEDFHR';
+const lcs = findLCS(str1, str2);
+console.log(lcs); // Output: ADH
