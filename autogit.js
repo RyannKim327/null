@@ -1,12 +1,9 @@
-function getStringLength(str) {
-  let count = 0;
-  while (str[count] !== undefined) {
-    count++;
-  }
-  return count;
+let str = "Hello, World!";
+let reversedStr = str.split('').reverse().join('');
+console.log(reversedStr); // Output: !dlroW ,olleH
+let str = "Hello, World!";
+let reversedStr = '';
+for (let i = str.length - 1; i >= 0; i--) {
+  reversedStr += str[i];
 }
-
-// Example usage:
-const myString = "Hello, World!";
-const length = getStringLength(myString);
-console.log(length); // Output: 13
+console.log(reversedStr); // Output: !dlroW ,olleH
