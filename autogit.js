@@ -1,39 +1,51 @@
-class ListNode {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+class BeamSearch {
+  constructor(beamWidth, maxSteps, generateCandidates, evaluateCandidates) {
+    this.beamWidth = beamWidth;  // Number of candidates to keep at each step
+    this.maxSteps = maxSteps;    // Maximum number of search steps
+    this.generateCandidates = generateCandidates;    // Function to generate candidate solutions
+    this.evaluateCandidates = evaluateCandidates;    // Function to evaluate candidate solutions
+  }
+
+  search(initialState) {
+    let beam = [{ state: initialState, score: 0, path: [] }];  // Initialize the beam with the initial state
+
+    for (let step = 1; step <= this.maxSteps; step++) {
+      const candidates = [];
+
+      for (const { state, score, path } of beam) {
+        const newCandidates = this.generateCandidates(state);
+        
+        for (const candidate of newCandidates) {
+          const newPath = path.concat(candidate);
+          const candidateScore = score + this.evaluateCandidates(newPath);
+          candidates.push({ state: candidate, score: candidateScore, path: newPath });
+        }
+      }
+
+      candidates.sort((a, b) => b.score - a.score);  // Sort candidates in descending order of score
+      beam = candidates.slice(0, this.beamWidth);   // Keep only the top candidates for the next step
+    }
+
+    return beam[0].path;  // Return the path of the best candidate
   }
 }
-
-function findNthFromEnd(head, n) {
-  // Create two pointers
-  let pointer1 = head;
-  let pointer2 = head;
-
-  // Move pointer2 n positions ahead
-  for (let i = 0; i < n; i++) {
-    if (pointer2 === null) return null; // Check if n is larger than the list size
-    pointer2 = pointer2.next;
-  }
-
-  // Move both pointers until pointer2 reaches the end of the list
-  while (pointer2 !== null) {
-    pointer1 = pointer1.next;
-    pointer2 = pointer2.next;
-  }
-
-  // pointer1 will be pointing to the nth node from the end
-  return pointer1;
+// Example generateCandidates function
+function generateCandidates(state) {
+  // Generate new candidate solutions based on the current state
+  // Return an array of candidate solutions
 }
 
-// Example usage:
-// Create a linked list: 1 -> 2 -> 3 -> 4 -> 5 -> null
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
+// Example evaluateCandidates function
+function evaluateCandidates(path) {
+  // Evaluate the quality/score of a candidate solution
+  // Return a score for the candidate solution
+}
+const beamWidth = 3;
+const maxSteps = 5;
 
-const n = 2;
-const nthFromEnd = findNthFromEnd(head, n);
-console.log(`The ${n}th node from the end is:`, nthFromEnd);
+const beamSearch = new BeamSearch(beamWidth, maxSteps, generateCandidates, evaluateCandidates);
+
+const initialState = ...;  // Define your initial state
+const bestPath = beamSearch.search(initialState);
+
+console.log(bestPath);
