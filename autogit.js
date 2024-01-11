@@ -1,25 +1,16 @@
-function longestCommonPrefix(strings) {
-  if (strings.length === 0) {
-    return '';
-  }
+function findKthSmallestElement(array, k) {
+  // Sort the array in ascending order
+  array.sort(function(a, b) {
+    return a - b;
+  });
 
-  let prefix = '';
-
-  for (let i = 0; i < strings[0].length; i++) {
-    const char = strings[0][i];
-
-    for (let j = 1; j < strings.length; j++) {
-      if (i >= strings[j].length || strings[j][i] !== char) {
-        return prefix;
-      }
-    }
-
-    prefix += char;
-  }
-
-  return prefix;
+  // Access the kth element in the sorted array
+  return array[k - 1];
 }
-const strings = ['flower', 'flow', 'flight'];
-const commonPrefix = longestCommonPrefix(strings);
-console.log(commonPrefix);
-fl
+
+// Example usage
+const arr = [9, 4, 7, 1, 3, 5];
+const k = 3;
+
+const kthSmallest = findKthSmallestElement(arr, k);
+console.log(kthSmallest); // Output: 4
