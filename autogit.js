@@ -1,49 +1,81 @@
 class Node {
-  constructor() {
-    this.edges = {}; // Incoming edges
-    this.children = {}; // Child nodes
+  constructor(start, end) {
+    this.children = {};
+    this.start = start;
+    this.end = end;
   }
 }
 class SuffixTree {
   constructor() {
-    this.root = new Node(); // The root node of the tree
+    this.root = new Node(-1, -1);
+    this.inputString = '';
   }
 
-  // Implement other methods here
-}
-insert(string) {
-  for (let i = 0; i < string.length; i++) {
-    let currentNode = this.root;
-    const suffix = string.substring(i);
-    for (let j = 0; j < suffix.length; j++) {
-      const char = suffix.charAt(j);
+  buildSuffixTree(input) {
+    this.inputString = input;
+    const n = input.length;
 
-      if (!currentNode.edges[char]) {
-        // If edge doesn't exist, create a new node and add the edge
-        const newNode = new Node();
-        currentNode.edges[char] = newNode;
-        currentNode.children[char] = newNode;
+    for (let i = 0; i < n; i++) {
+      this._addSuffix(this.root, i, n);
+    }
+  }
+
+  _addSuffix(currNode, suffixStart, suffixEnd) {
+    if (suffixStart >= suffixEnd) {
+      return;
+    }
+
+    const currChar = this.inputString[suffixStart];
+
+    if (!currNode.children[currChar]) {
+      currNode.children[currChar] = new Node(suffixStart, suffixEnd);
+    } else {
+      const childNode = currNode.children[currChar];
+      let i = suffixStart;
+      let j = childNode.start;
+
+      while (i < suffixEnd && j < childNode.end && this.inputString[i] === this.inputString[j]) {
+        i++;
+        j++;
       }
 
-      currentNode = currentNode.edges[char];
+      if (j === childNode.end) {
+        this._addSuffix(childNode, i, suffixEnd);
+      } else {
+        const commonNode = new Node(childNode.start, j);
+
+        childNode.start = j;
+
+        currNode.children[currChar] = commonNode;
+        commonNode.children[this.inputString[j]] = childNode;
+
+        this._addSuffix(commonNode, i, suffixEnd);
+      }
     }
   }
-}
-search(pattern) {
-  let currentNode = this.root;
-  for (let i = 0; i < pattern.length; i++) {
-    const char = pattern.charAt(i);
-    if (currentNode.edges[char]) {
-      currentNode = currentNode.edges[char];
-    } else {
-      return false; // Pattern not found
+
+  searchSubstring(substring) {
+    const n = substring.length;
+    let currNode = this.root;
+
+    for (let i = 0; i < n; i++) {
+      const currChar = substring[i];
+      if (currNode.children[currChar]) {
+        currNode = currNode.children[currChar];
+      } else {
+        return false;
+      }
     }
+
+    return true;
   }
-  return true; // Pattern found
 }
 const suffixTree = new SuffixTree();
-suffixTree.insert("banana");
-suffixTree.insert("apple");
-console.log(suffixTree.search("banana")); // Output: true
-console.log(suffixTree.search("apple")); // Output: true
-console.log(suffixTree.search("orange")); // Output: false
+suffixTree.buildSuffixTree('banana');
+
+console.log(suffixTree.searchSubstring('ana')); // true
+console.log(suffixTree.searchSubstring('nan')); // true
+console.log(suffixTree.searchSubstring('peach')); // false
+true
+true
+false
