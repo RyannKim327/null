@@ -1,81 +1,132 @@
-function dijkstra(graph, startNode, endNode) {
-  const distances = {};
-  const visited = new Set();
-  const queue = new PriorityQueue();
+function computeLPSArray(pattern, lps) {
+  let len = 0;
+  let i = 1;
+  lps[0] = 0;
 
-  // Step 2: Initialize distances
-  for (const node in graph) {
-    distances[node] = Infinity;
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[len]) {
+      len++;
+      lps[i] = len;
+      i++;
+    } else {
+      if (len !== 0) {
+        len = lps[len - 1];
+      } else {
+        lps[i] = 0;
+        i++;
+      }
+    }
   }
-  distances[startNode] = 0;
+}
 
-  // Step 3: Enqueue start node
-  queue.enqueue({ node: startNode, distance: 0 });
+function KMPSearch(text, pattern) {
+  const M = pattern.length;
+  const N = text.length;
 
-  while (!queue.isEmpty()) {
-    const { node, distance } = queue.dequeue();
+  const lps = new Array(M).fill(0);
+  computeLPSArray(pattern, lps);
 
-    if (node === endNode) {
-      // Reached the destination, terminate the algorithm
-      break;
+  let i = 0;
+  let j = 0;
+  const matches = [];
+
+  while (i < N) {
+    if (pattern[j] === text[i]) {
+      i++;
+      j++;
     }
 
-    if (visited.has(node)) {
-      // Skip nodes that have already been visited
-      continue;
-    }
-
-    visited.add(node);
-
-    for (const [adjacentNode, weight] of graph[node]) {
-      const newDistance = distances[node] + weight;
-
-      if (newDistance < distances[adjacentNode]) {
-        distances[adjacentNode] = newDistance;
-        queue.enqueue({ node: adjacentNode, distance: newDistance });
+    if (j === M) {
+      matches.push(i - j);
+      j = lps[j - 1];
+    } else if (i < N && pattern[j] !== text[i]) {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
       }
     }
   }
 
-  // Step 6: Backtrack and construct the shortest path
-  const shortestPath = [endNode];
-  let currentNode = endNode;
+  return matches;
+}
 
-  while (currentNode !== startNode) {
-    for (const [adjacentNode, weight] of graph[currentNode]) {
-      const distance = distances[currentNode] - weight;
+// Example usage:
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
 
-      if (distance === distances[adjacentNode]) {
-        shortestPath.unshift(adjacentNode);
-        currentNode = adjacentNode;
-        break;
+const matches = KMPSearch(text, pattern);
+console.log(matches); // Output: [10]
+function buildBadCharShiftMap(pattern) {
+  const map = new Map();
+
+  for (let i = 0; i < pattern.length - 1; i++) {
+    map.set(pattern[i], pattern.length - 1 - i);
+  }
+
+  return map;
+}
+
+function buildSuffixes(pattern) {
+  const m = pattern.length;
+  const suffixes = new Array(m).fill(0);
+
+  let f = 0;
+  let g = m - 1;
+  suffixes[m - 1] = m;
+
+  for (let i = m - 2; i >= 0; i--) {
+    if (i > g && suffixes[i + m - 1 - f] < i - g) {
+      suffixes[i] = suffixes[i + m - 1 - f];
+    } else {
+      if (i < g) g = i;
+      f = i;
+      while (g >= 0 && pattern[g] === pattern[g + m - 1 - f]) {
+        g--;
       }
+      suffixes[i] = f - g;
     }
   }
 
-  return shortestPath;
+  return suffixes;
 }
 
-// Helper class for priority queue
-class PriorityQueue {
-  constructor() {
-    this.queue = [];
+function BoyerMoore(text, pattern) {
+  const n = text.length;
+  const m = pattern.length;
+
+  if (m === 0 || n < m) {
+    return [];
   }
 
-  enqueue(item) {
-    this.queue.push(item);
-    this.sort();
+  const matches = [];
+  const badCharShiftMap = buildBadCharShiftMap(pattern);
+  const suffixes = buildSuffixes(pattern);
+
+  let i = 0;
+  while (i <= n - m) {
+    let j = m - 1;
+    while (j >= 0 && pattern[j] === text[i + j]) {
+      j--;
+    }
+
+    if (j < 0) {
+      matches.push(i);
+      i += suffixes[0];
+    } else {
+      const badShift = badCharShiftMap.get(text[i + j]) || m;
+      const goodShift = suffixes[j];
+
+      i += Math.max(badShift, goodShift);
+    }
   }
 
-  dequeue() {
-    return this.queue.shift();
-  }
-
-  isEmpty() {
-    return this.queue.length === 0;
-  }
-
-  sort() {
-    this.queue.sort((a, b) => a.distance - b.distance);
-  }
+  return matches;
 }
+
+// Example usage:
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+
+const matches = BoyerMoore(text, pattern);
+console.log(matches); // Output: [10]
