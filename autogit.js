@@ -1,20 +1,36 @@
-// Import required libraries
-const fetch = require('node-fetch');
-
-// Async function to make the API call
-async function connectToAndroidDevice(url) {
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-    console.log(data);
-    // Process the response data here
-  } catch (error) {
-    console.error('An error occurred while connecting to the Android device:', error);
+class TreeNode {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
 
-// Define the URL of the Android device
-const androidDeviceUrl = 'https://your-android-device-url.com/api';
+// Function to count the number of leaf nodes
+function countLeafNodes(root) {
+  if (root === null) {
+    return 0;
+  }
+  
+  if (root.left === null && root.right === null) {
+    return 1;
+  }
+  
+  const leftCount = countLeafNodes(root.left);
+  const rightCount = countLeafNodes(root.right);
+  
+  return leftCount + rightCount;
+}
 
-// Call the async function
-connectToAndroidDevice(androidDeviceUrl);
+// Creating a binary tree
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+root.right.left = new TreeNode(6);
+root.right.right = new TreeNode(7);
+
+// Counting the number of leaf nodes
+const leafNodeCount = countLeafNodes(root);
+console.log('Number of leaf nodes:', leafNodeCount);
