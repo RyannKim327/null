@@ -1,10 +1,27 @@
-function factorialRecursive(number) {
-  if (number === 0) {
-    return 1;
-  } else {
-    return number * factorialRecursive(number - 1);
+function findLongestCommonPrefix(strings) {
+  if (strings.length === 0) return "";
+  if (strings.length === 1) return strings[0];
+
+  let commonPrefix = strings[0];
+
+  for (let i = 1; i < strings.length; i++) {
+    const currentString = strings[i];
+    let j = 0;
+
+    while (j < commonPrefix.length && j < currentString.length && commonPrefix[j] === currentString[j]) {
+      j++;
+    }
+
+    commonPrefix = commonPrefix.substring(0, j);
+
+    if (commonPrefix === "")
+      break;
   }
+
+  return commonPrefix;
 }
 
-// Usage example
-console.log(factorialRecursive(5)); // Output: 120
+// Example usage:
+const strings = ["apple", "app", "appreciate"];
+const longestCommonPrefix = findLongestCommonPrefix(strings);
+console.log(longestCommonPrefix);  // Output: "app"
