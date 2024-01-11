@@ -1,69 +1,87 @@
 class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+  constructor(position, parent = null, g = 0, h = 0) {
+    this.position = position;
+    this.parent = parent;
+    this.g = g; // the cost to reach this node from the start node
+    this.h = h; // the estimated heuristic cost from this node to the goal node
+  }
+
+  // Calculate the total cost f = g + h
+  get f() {
+    return this.g + this.h;
   }
 }
-class BinarySearchTree {
-  constructor() {
-    this.root = null;
-  }
+function astarSearch(start, goal, heuristic) {
+  // Create open and closed sets
+  const openSet = [new Node(start)];
+  const closedSet = [];
 
-  insert(value) {
-    const newNode = new Node(value);
+  // Loop until the open set becomes empty
+  while (openSet.length > 0) {
+    // Get the node with the lowest f value from the open set
+    const currentNode = openSet.reduce((minNode, node) => (node.f < minNode.f ? node : minNode));
 
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
+    // Move the current node from the open set to the closed set
+    openSet.splice(openSet.indexOf(currentNode), 1);
+    closedSet.push(currentNode);
 
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
+    // Check if the current node is the goal node
+    if (currentNode.position === goal) {
+      // Goal reached, construct the path and return it
+      const path = [];
+      let node = currentNode;
+      while (node) {
+        path.unshift(node.position);
+        node = node.parent;
       }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
+      return path;
+    }
+
+    // Generate neighboring nodes
+    const neighbors = getNeighbors(currentNode.position);
+
+    // Evaluate each neighbor
+    neighbors.forEach((neighborPos) => {
+      // Create a new node for the neighbor
+      const neighborNode = new Node(neighborPos, currentNode);
+
+      // Check if the neighbor is already in the closed set
+      if (closedSet.some((node) => node.position === neighborNode.position)) {
+        return; // Ignore this neighbor, it's already evaluated
       }
-    }
+
+      // Calculate g and h values for the neighbor
+      neighborNode.g = currentNode.g + 1; // Assuming the cost to move between neighbors is 1
+      neighborNode.h = heuristic(neighborPos, goal);
+
+      // Check if the neighbor is already in the open set
+      const existingNode = openSet.find((node) => node.position === neighborNode.position);
+      if (existingNode) {
+        // Check if this path to the neighbor is better than the previous one
+        if (neighborNode.g < existingNode.g) {
+          existingNode.g = neighborNode.g;
+          existingNode.parent = currentNode;
+        }
+      } else {
+        // Add the neighbor to the open set
+        openSet.push(neighborNode);
+      }
+    });
   }
 
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
-    }
-
-    if (value === node.value) {
-      return true;
-    }
-
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else {
-      return this.searchNode(node.right, value);
-    }
-  }
+  // Open set is empty, and goal was not reached
+  return null;
 }
-const bst = new BinarySearchTree();
-bst.insert(5);
-bst.insert(3);
-bst.insert(7);
-bst.insert(2);
-bst.insert(4);
-bst.insert(6);
-bst.insert(8);
+// Example usage
+const start = [0, 0];
+const goal = [4, 4];
 
-console.log(bst.search(6)); // true
-console.log(bst.search(9)); // false
+// A simple Manhattan distance heuristic
+function heuristic(position, goal) {
+  const dx = Math.abs(position[0] - goal[0]);
+  const dy = Math.abs(position[1] - goal[1]);
+  return dx + dy;
+}
+
+const path = astarSearch(start, goal, heuristic);
+console.log(path);
