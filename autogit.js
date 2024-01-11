@@ -1,17 +1,32 @@
-const cron = require('node-cron');
+class ListNode {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
 
-// Define the cron schedule
-const schedule = '0 * * * *'; // Runs every hour at the 0th minute
+function findMiddleNode(head) {
+  let slow = head;
+  let fast = head;
 
-// Define the cron job function
-const cronJob = cron.schedule(schedule, () => {
-  // Code to be executed on schedule
-  console.log('Running cron job...');
-  // Add your desired code here
-}, {
-  scheduled: true, // Start the cron job immediately
-  timezone: 'America/New_York' // Set the timezone as per your requirements
-});
+  // Move the fast pointer two steps ahead and the slow pointer one step ahead
+  // When the fast pointer reaches the end of the linked list, the slow pointer will be at the middle
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
+  }
 
-// Start the cron job
-cronJob.start();
+  // Return the middle node
+  return slow;
+}
+// Create a linked list: 1 -> 2 -> 3 -> 4 -> 5
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+// Find the middle node
+const middleNode = findMiddleNode(head);
+
+console.log(middleNode.value); // Output: 3
