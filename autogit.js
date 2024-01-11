@@ -1,78 +1,46 @@
-// Define the Node class
+// Node definition
 class Node {
   constructor(data) {
     this.data = data;
-    this.next = null;
+    this.left = null;
+    this.right = null;
   }
 }
 
-// Define the Queue class
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-    this.length = 0;
+// Function to find the height of a node
+function height(node) {
+  if (node === null) {
+    return 0;
   }
-
-  // Add an element to the end of the queue
-  enqueue(data) {
-    const newNode = new Node(data);
-
-    if (!this.tail) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
-    }
-
-    this.length++;
-  }
-
-  // Remove and return the element at the front of the queue
-  dequeue() {
-    if (!this.head) {
-      return null;
-    }
-
-    const removedNode = this.head;
-    this.head = this.head.next;
-
-    if (!this.head) {
-      this.tail = null;
-    }
-
-    this.length--;
-
-    return removedNode.data;
-  }
-
-  // Get the element at the front of the queue without removing it
-  peek() {
-    return this.head ? this.head.data : null;
-  }
-
-  // Check if the queue is empty
-  isEmpty() {
-    return this.length === 0;
-  }
-
-  // Get the size of the queue
-  size() {
-    return this.length;
-  }
+  return 1 + Math.max(height(node.left), height(node.right));
 }
-const queue = new Queue();
 
-queue.enqueue(10);
-queue.enqueue(20);
-queue.enqueue(30);
+// Function to find the diameter of a binary tree
+function diameter(root) {
+  if (root === null) {
+    return 0;
+  }
 
-console.log(queue.size()); // Output: 3
-console.log(queue.peek()); // Output: 10
+  // Get the height of the left and right subtrees
+  const leftHeight = height(root.left);
+  const rightHeight = height(root.right);
 
-console.log(queue.dequeue()); // Output: 10
-console.log(queue.dequeue()); // Output: 20
+  // Get the diameter of the left and right subtrees recursively
+  const leftDiameter = diameter(root.left);
+  const rightDiameter = diameter(root.right);
 
-console.log(queue.size()); // Output: 1
-console.log(queue.isEmpty()); // Output: false
+  // The diameter can be either:
+  // 1. The longest path through the root node
+  // 2. The maximum diameter of the left subtree
+  // 3. The maximum diameter of the right subtree
+  return Math.max(leftHeight + rightHeight + 1, leftDiameter, rightDiameter);
+}
+
+// Example usage:
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+console.log("The diameter of the binary tree is: " + diameter(root));
