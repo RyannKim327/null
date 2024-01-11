@@ -1,8 +1,15 @@
-let array = [1, 2, 3, 4, 5];
-let index = array.indexOf(3); // Find the index of the element you want to remove
-
-if (index !== -1) {
-  array.splice(index, 1); // Remove one element at the found index
+function countOccurrences(str, char) {
+  let count = 0;
+  for (let i = 0; i < str.length; i++) {
+    if (str[i] === char) {
+      count++;
+    }
+  }
+  return count;
 }
 
-console.log(array); // [1, 2, 4, 5]
+// Example Usage
+const sentence = "Hello, world!";
+const character = "o";
+const occurrences = countOccurrences(sentence, character);
+console.log(`The character '${character}' occurs ${occurrences} times.`);
