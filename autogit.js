@@ -1,36 +1,31 @@
-class ListNode {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+function countingSort(arr) {
+  // Find the maximum element in the array
+  let max = Math.max(...arr);
+
+  // Create a count array with length equal to max+1
+  let count = new Array(max + 1).fill(0);
+
+  // Count the occurrences of each element
+  for (let i = 0; i < arr.length; i++) {
+    count[arr[i]]++;
   }
-}
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
+
+  // Modify the count array to store the actual position of each element
+  for (let i = 1; i <= max; i++) {
+    count[i] += count[i - 1];
   }
-}
-enqueue(value) {
-  const newNode = new ListNode(value);
-  if (this.head === null) {
-    this.head = newNode;
-    this.tail = newNode;
-  } else {
-    this.tail.next = newNode;
-    this.tail = newNode;
+
+  // Create a sorted array using the count array
+  let sorted = new Array(arr.length);
+  for (let i = arr.length - 1; i >= 0; i--) {
+    sorted[count[arr[i]] - 1] = arr[i];
+    count[arr[i]]--;
   }
+
+  return sorted;
 }
-dequeue() {
-  if (this.head === null) {
-    return null;
-  }
-  const value = this.head.value;
-  this.head = this.head.next;
-  if (this.head === null) {
-    this.tail = null;
-  }
-  return value;
-}
-isEmpty() {
-  return this.head === null;
-}
+
+// Example usage:
+let arr = [4, 5, 1, 3, 4, 5];
+let sortedArr = countingSort(arr);
+console.log(sortedArr); // Output: [1, 3, 4, 4, 5, 5]
