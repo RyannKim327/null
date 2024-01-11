@@ -1,16 +1,33 @@
-function findKthSmallestElement(array, k) {
-  // Sort the array in ascending order
-  array.sort(function(a, b) {
-    return a - b;
-  });
-
-  // Access the kth element in the sorted array
-  return array[k - 1];
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-// Example usage
-const arr = [9, 4, 7, 1, 3, 5];
-const k = 3;
+function countLeafNodes(root) {
+  if (!root) {
+    // Empty tree
+    return 0;
+  }
+  
+  if (!root.left && !root.right) {
+    // Leaf node
+    return 1;
+  }
+  
+  // Recursively count leaf nodes in the left and right subtrees
+  return countLeafNodes(root.left) + countLeafNodes(root.right);
+}
 
-const kthSmallest = findKthSmallestElement(arr, k);
-console.log(kthSmallest); // Output: 4
+// Example binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+
+// Output the number of leaf nodes
+console.log(countLeafNodes(root)); // Output: 3
