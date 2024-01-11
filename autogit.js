@@ -1,19 +1,25 @@
-function insertionSort(arr) {
-  for (let i = 1; i < arr.length; i++) {
-    let currentValue = arr[i];
-    let j = i - 1;
+// Create a graph represented as an adjacency list
+const graph = {
+  A: ['B', 'C'],
+  B: ['D', 'E'],
+  C: ['F', 'G'],
+  D: [],
+  E: [],
+  F: ['H'],
+  G: [],
+  H: []
+};
 
-    while (j >= 0 && arr[j] > currentValue) {
-      arr[j + 1] = arr[j];
-      j--;
-    }
+// Depth-Limited Search algorithm
+function depthLimitedSearch(graph, node, depth) {
+  console.log(node); // Process the current node
+  if (depth === 0) return; // Exit if depth limit reached
 
-    arr[j + 1] = currentValue;
+  const neighbors = graph[node];
+  for (const neighbor of neighbors) {
+    depthLimitedSearch(graph, neighbor, depth - 1); // Recursively search the neighbors
   }
-
-  return arr;
 }
 
-// Example usage:
-let unsortedArray = [5, 2, 4, 6, 1, 3];
-console.log(insertionSort(unsortedArray)); // Output: [1, 2, 3, 4, 5, 6]
+// Usage
+depthLimitedSearch(graph, 'A', 2);
