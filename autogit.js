@@ -1,26 +1,18 @@
-function longestCommonPrefix(strings) {
-  let prefix = '';
-
-  if (strings.length === 0 || strings[0].length === 0) {
-    return prefix;
-  }
-
-  strings.sort();
-  const firstStr = strings[0];
-  const lastStr = strings[strings.length - 1];
-  const minLength = Math.min(firstStr.length, lastStr.length);
-
-  for (let i = 0; i < minLength; i++) {
-    if (firstStr.charAt(i) === lastStr.charAt(i)) {
-      prefix += firstStr.charAt(i);
-    } else {
-      return prefix;
+function bubbleSort(arr) {
+  var len = arr.length;
+  for (var i = 0; i < len - 1; i++) {
+    for (var j = 0; j < len - 1 - i; j++) {
+      if (arr[j] > arr[j + 1]) {
+        // Swap elements
+        var temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
+      }
     }
   }
-
-  return prefix;
+  return arr;
 }
 
-// Example usage:
-const strings = ['apple', 'app', 'application', 'aptitude'];
-console.log(longestCommonPrefix(strings)); // Output: "app"
+// Usage example:
+var numbers = [5, 3, 8, 4, 2];
+console.log(bubbleSort(numbers)); // Output: [2, 3, 4, 5, 8]
