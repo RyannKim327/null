@@ -1,21 +1,69 @@
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-
-const index = array.indexOf(elementToRemove);
-if (index !== -1) {
-  array.splice(index, 1);
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
+class BinarySearchTree {
+  constructor() {
+    this.root = null;
+  }
 
-console.log(array); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
+  insert(value) {
+    const newNode = new Node(value);
 
-const newArray = array.filter((element) => element !== elementToRemove);
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
 
-console.log(newArray); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
 
-const newArray = [...array.slice(0, array.indexOf(elementToRemove)), ...array.slice(array.indexOf(elementToRemove) + 1)];
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
 
-console.log(newArray); // Output: [1, 2, 4, 5]
+  searchNode(node, value) {
+    if (node === null) {
+      return false;
+    }
+
+    if (value === node.value) {
+      return true;
+    }
+
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else {
+      return this.searchNode(node.right, value);
+    }
+  }
+}
+const bst = new BinarySearchTree();
+bst.insert(5);
+bst.insert(3);
+bst.insert(7);
+bst.insert(2);
+bst.insert(4);
+bst.insert(6);
+bst.insert(8);
+
+console.log(bst.search(6)); // true
+console.log(bst.search(9)); // false
