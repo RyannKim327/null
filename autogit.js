@@ -1,33 +1,25 @@
-class TreeNode {
-  constructor(val) {
-    this.val = val;
-    this.left = null;
-    this.right = null;
-  }
-}
+function findNthNodeFromEnd(head, n) {
+  let p1 = head;
+  let p2 = head;
 
-function sumOfNodes(root) {
-  if (root === null) {
-    // Empty tree, sum is 0
-    return 0;
+  // Move p2 n positions forward
+  for (let i = 0; i < n; i++) {
+    if (p2 === null) {
+      return null; // Linked list length is less than n
+    }
+    p2 = p2.next;
   }
-  // Sum of current node value and the sum of nodes in the left and right subtrees
-  return root.val + sumOfNodes(root.left) + sumOfNodes(root.right);
-}
-// Create a binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-root.right.left = new TreeNode(6);
-root.right.right = new TreeNode(7);
 
-// Calculate the sum of all nodes
-const sum = sumOfNodes(root);
-console.log("Sum of all nodes:", sum); // Output: Sum of all nodes: 28
-       1
-     /   \
-    2     3
-   / \   / \
-  4   5 6   7 
+  // Move both pointers until p2 reaches the end
+  while (p2 !== null) {
+    p1 = p1.next;
+    p2 = p2.next;
+  }
+
+  return p1.value;
+}
+const head = { value: 1, next: { value: 2, next: { value: 3, next: null } } };
+const n = 2;
+
+const result = findNthNodeFromEnd(head, n);
+console.log(result); // Output: 2
