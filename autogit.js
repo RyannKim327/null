@@ -1,12 +1,15 @@
-const str = "Hello, World!";
-const reversed = str.split("").reverse().join("");
-console.log(reversed); // Output: !dlroW ,olleH
-const str = "Hello, World!";
-let reversed = "";
-for (let i = str.length - 1; i >= 0; i--) {
-  reversed += str[i];
+function calculateTriangleArea(base, height) {
+  // check for valid inputs
+  if (base <= 0 || height <= 0) {
+    return 'Please provide positive values for base and height.';
+  }
+
+  const area = (base * height) / 2;
+  return area;
 }
-console.log(reversed); // Output: !dlroW ,olleH
-const str = "Hello, World!";
-const reversed = [...str].reverse().join("");
-console.log(reversed); // Output: !dlroW ,olleH
+const base = 10;
+const height = 5;
+
+const area = calculateTriangleArea(base, height);
+console.log('Triangle Area:', area);
+Triangle Area: 25
