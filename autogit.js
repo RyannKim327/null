@@ -1,37 +1,70 @@
-function generateCandidates(item) {
-  // generate candidate items based on the current item
-  // return an array of candidate items
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
-function scoreCandidates(candidates) {
-  // score each candidate item based on a specific criterion
-  // return an array of scored candidate items
-}
-function beamSearch(startItem, beamWidth, maxIterations) {
-  let beam = [startItem]; // initialize the beam with the start item
 
-  for (let iteration = 0; iteration < maxIterations; iteration++) {
-    let candidates = [];
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+  }
 
-    // generate candidate items for each item in the beam
-    for (let item of beam) {
-      let newCandidates = generateCandidates(item);
-      candidates = candidates.concat(newCandidates);
-    }
+  isEmpty() {
+    return this.head === null;
+  }
 
-    // score the candidate items
-    let scoredCandidates = scoreCandidates(candidates);
-
-    // sort the scored candidates in descending order based on their scores
-    scoredCandidates.sort((a, b) => b.score - a.score);
-
-    // truncate the beam to the desired width
-    beam = scoredCandidates.slice(0, beamWidth).map(item => item.item);
-
-    // check if the search has converged to an end condition
-    if (beam.length === 0) {
-      break;
+  enqueue(value) {
+    const newNode = new Node(value);
+    if (this.isEmpty()) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
     }
   }
 
-  return beam;
+  dequeue() {
+    if (this.isEmpty()) {
+      return null;
+    }
+
+    const removedNode = this.head;
+    this.head = this.head.next;
+
+    if (this.isEmpty()) {
+      this.tail = null;
+    }
+
+    return removedNode.value;
+  }
 }
+
+class Queue {
+  constructor() {
+    this.linkedList = new LinkedList();
+  }
+
+  isEmpty() {
+    return this.linkedList.isEmpty();
+  }
+
+  enqueue(value) {
+    this.linkedList.enqueue(value);
+  }
+
+  dequeue() {
+    return this.linkedList.dequeue();
+  }
+}
+const queue = new Queue();
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+
+console.log(queue.dequeue());  // Output: 1
+console.log(queue.dequeue());  // Output: 2
+console.log(queue.dequeue());  // Output: 3
+console.log(queue.dequeue());  // Output: null (queue is empty)
