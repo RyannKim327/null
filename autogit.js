@@ -1,14 +1,10 @@
-function countCharacter(str, char) {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str.charAt(i) === char) {
-            count++;
-        }
-    }
-    return count;
+function factorialRecursive(number) {
+  if (number === 0) {
+    return 1;
+  } else {
+    return number * factorialRecursive(number - 1);
+  }
 }
 
-const myString = "Hello, World!";
-const character = "l";
-
-console.log(countCharacter(myString, character)); // Output: 3 (since 'l' appears 3 times in the string)
+// Usage example
+console.log(factorialRecursive(5)); // Output: 120
