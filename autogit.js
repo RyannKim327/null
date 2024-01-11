@@ -1,34 +1,47 @@
-function findMajorityElement(nums) {
-  let majorityElement = nums[0];
-  let count = 1;
-
-  for (let i = 1; i < nums.length; i++) {
-    if (nums[i] === majorityElement) {
-      count++;
-    } else {
-      count--;
-      if (count === 0) {
-        majorityElement = nums[i];
-        count = 1;
-      }
-    }
-  }
-
-  // Verify if majorityElement is the majority element
-  count = 0;
-  for (let i = 0; i < nums.length; i++) {
-    if (nums[i] === majorityElement) {
-      count++;
-    }
-  }
-
-  if (count > Math.floor(nums.length / 2)) {
-    return majorityElement;
-  } else {
-    return "No majority element found.";
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
 }
+function reverseLinkedList(head) {
+  let previous = null;
+  let current = head;
+  
+  while (current !== null) {
+    const next = current.next; // temporarily store the next node
+    current.next = previous; // reverse the next pointer of the current node
+    
+    // move the previous and current pointers one step forward
+    previous = current;
+    current = next;
+  }
+  
+  return previous; // return the new head of the reversed list
+}
+// Create the linked list: 1 -> 2 -> 3 -> 4
 
-// Example usage:
-const nums = [1, 2, 2, 2, 3];
-console.log(findMajorityElement(nums)); // Output: 2
+const node1 = new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
+const node4 = new Node(4);
+
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+
+// Reverse the linked list
+
+const reversedHead = reverseLinkedList(node1);
+
+// Print the reversed list: 4 -> 3 -> 2 -> 1
+
+let currentNode = reversedHead;
+while (currentNode !== null) {
+  console.log(currentNode.value);
+  currentNode = currentNode.next;
+}
+4
+3
+2
+1
