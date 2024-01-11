@@ -1,25 +1,12 @@
-// Create a graph represented as an adjacency list
-const graph = {
-  A: ['B', 'C'],
-  B: ['D', 'E'],
-  C: ['F', 'G'],
-  D: [],
-  E: [],
-  F: ['H'],
-  G: [],
-  H: []
-};
+const readline = require('readline');
 
-// Depth-Limited Search algorithm
-function depthLimitedSearch(graph, node, depth) {
-  console.log(node); // Process the current node
-  if (depth === 0) return; // Exit if depth limit reached
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
 
-  const neighbors = graph[node];
-  for (const neighbor of neighbors) {
-    depthLimitedSearch(graph, neighbor, depth - 1); // Recursively search the neighbors
-  }
-}
+rl.question('Enter a value: ', (answer) => {
+  console.log('You entered:', answer);
 
-// Usage
-depthLimitedSearch(graph, 'A', 2);
+  rl.close();
+});
