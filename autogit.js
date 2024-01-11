@@ -1,22 +1,53 @@
-function binarySearchRecursive(array, target, start, end) {
-   if (start > end) {
-      return -1; // Target value not found
-   }
-
-   let mid = Math.floor((start + end) / 2);
-
-   if (array[mid] === target) {
-      return mid; // Target value found
-   } else if (array[mid] > target) {
-      return binarySearchRecursive(array, target, start, mid - 1); // Search in the left half
-   } else {
-      return binarySearchRecursive(array, target, mid + 1, end); // Search in the right half
-   }
+// Node object
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-// Example usage:
-const array = [1, 2, 3, 4, 5, 6, 7, 8];
-const target = 6;
+// Function to calculate the height of a given node
+function height(node) {
+  if (node === null) {
+    return 0;
+  }
+  return 1 + Math.max(height(node.left), height(node.right));
+}
 
-const result = binarySearchRecursive(array, target, 0, array.length - 1);
-console.log(`Index of target value ${target}: ${result}`);
+// Function to calculate the diameter of a binary tree
+function diameter(node) {
+  if (node === null) {
+    return 0;
+  }
+
+  // Calculate the height of left and right subtrees
+  const leftHeight = height(node.left);
+  const rightHeight = height(node.right);
+
+  // Calculate the diameter recursively for left and right subtrees
+  const leftDiameter = diameter(node.left);
+  const rightDiameter = diameter(node.right);
+
+  // Find the maximum diameter among left subtree, right subtree, and through the root
+  return Math.max(leftHeight + rightHeight + 1, Math.max(leftDiameter, rightDiameter));
+}
+
+// Example usage
+
+// Creating a binary tree
+const root = new Node(1);
+
+root.left = new Node(2);
+root.right = new Node(3);
+
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+root.right.left = new Node(6);
+root.right.right = new Node(7);
+
+// Calculate diameter of the binary tree
+const treeDiameter = diameter(root);
+
+console.log('Diameter of the binary tree:', treeDiameter);
