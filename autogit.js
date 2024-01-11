@@ -1,80 +1,62 @@
-class PriorityQueue {
-  constructor() {
-    this.values = [];
-  }
+function tarjanAlgorithm(graph) {
+  var index = 0;
+  var stack = [];
+  var scc = [];
+  var indices = {};
+  var lowLinks = {};
 
-  enqueue(node, priority) {
-    this.values.push({ node, priority });
-    this.sort();
-  }
+  // Step 3: Implement the depth-first search function
+  function depthFirstSearch(node) {
+    indices[node] = index;
+    lowLinks[node] = index;
+    index++;
+    stack.push(node);
 
-  dequeue() {
-    return this.values.shift();
-  }
-
-  sort() {
-    this.values.sort((a, b) => a.priority - b.priority);
-  }
-
-  isEmpty() {
-    return this.values.length === 0;
-  }
-}
-
-function dijkstra(graph, startNode) {
-  const distances = {};
-  const previous = {};
-  const queue = new PriorityQueue();
-
-  // Set initial distances to infinity except for the startNode
-  for (let node in graph) {
-    distances[node] = Infinity;
-    previous[node] = null;
-  }
-  distances[startNode] = 0;
-
-  // Enqueue the startNode with priority 0
-  queue.enqueue(startNode, 0);
-
-  while (!queue.isEmpty()) {
-    const { node } = queue.dequeue();
-
-    for (let neighbor in graph[node]) {
-      const cost = graph[node][neighbor];
-      const distance = distances[node] + cost;
-
-      if (distance < distances[neighbor]) {
-        distances[neighbor] = distance;
-        previous[neighbor] = node;
-        queue.enqueue(neighbor, distance);
+    var neighbors = graph[node];
+    for (var i = 0; i < neighbors.length; i++) {
+      var neighbor = neighbors[i];
+      if (!indices.hasOwnProperty(neighbor)) {
+        depthFirstSearch(neighbor);
+        lowLinks[node] = Math.min(lowLinks[node], lowLinks[neighbor]);
+      } else if (stack.includes(neighbor)) {
+        lowLinks[node] = Math.min(lowLinks[node], indices[neighbor]);
       }
+    }
+
+    if (lowLinks[node] === indices[node]) {
+      var sccComponent = [];
+      var connectedNode = null;
+      do {
+        connectedNode = stack.pop();
+        sccComponent.push(connectedNode);
+      } while (connectedNode !== node);
+
+      scc.push(sccComponent);
     }
   }
 
-  return { distances, previous };
-}
-
-function reconstructPath(previous, targetNode) {
-  const path = [];
-  while (targetNode !== null) {
-    path.unshift(targetNode);
-    targetNode = previous[targetNode];
+  // Step 4: Call the depth-first search for each unvisited node
+  for (var node in graph) {
+    if (!indices.hasOwnProperty(node)) {
+      depthFirstSearch(node);
+    }
   }
-  return path;
-}
 
-// Example Usage:
-const graph = {
-  A: { B: 5, C: 2 },
-  B: { A: 5, C: 1, D: 3 },
-  C: { A: 2, B: 1, D: 6 },
-  D: { B: 3, C: 6 },
+  // Step 5: Return the strongly connected components
+  return scc;
+}
+var graph = {
+  'A': ['B', 'C'],
+  'B': ['D', 'E'],
+  'C': ['A', 'F'],
+  'D': [],
+  'E': ['F'],
+  'F': ['G', 'H'],
+  'G': ['E', 'H'],
+  'H': ['I'],
+  'I': ['J'],
+  'J': ['G']
 };
 
-const startNode = 'A';
-const { distances, previous } = dijkstra(graph, startNode);
-const targetNode = 'D';
-const shortestPath = reconstructPath(previous, targetNode);
-
-console.log('Shortest Distances:', distances);
-console.log('Shortest Path from', startNode, 'to', targetNode + ':', shortestPath);
+var stronglyConnectedComponents = tarjanAlgorithm(graph);
+console.log(stronglyConnectedComponents);
