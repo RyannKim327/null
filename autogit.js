@@ -1,34 +1,28 @@
-function boyerMooreHorspool(text, pattern) {
-  const patternLength = pattern.length;
-  const shiftTable = buildShiftTable(pattern);
-
-  let i = 0;
-  while (i <= text.length - patternLength) {
-    let j = patternLength - 1;
-
-    while (j >= 0 && pattern[j] === text[i + j]) {
-      j--;
+function getMax(arr) {
+  let max = 0;
+  for (let num of arr) {
+    if (num > max) {
+      max = num;
     }
+  }
+  return max;
+}
+function radixSort(arr) {
+  const max = getMax(arr);
+  let divisor = 1;
 
-    if (j === -1) {
-      return i; // Match found at index i
+  while (divisor < max) {
+    let buckets = Array.from({ length: 10 }, () => []);
+    for (let num of arr) {
+      let digit = Math.floor((num / divisor) % 10);
+      buckets[digit].push(num);
     }
-    
-    // Calculate the shift value for the last character of the current substring
-    const shift = shiftTable[text.charCodeAt(i + patternLength - 1)];
-    i += shift || patternLength; // Shift the index by the calculated shift value
+    arr = [].concat(...buckets);
+    divisor *= 10;
   }
 
-  return -1; // Pattern not found
+  return arr;
 }
+const array = [170, 45, 75, 90, 802, 24, 2, 66];
 
-function buildShiftTable(pattern) {
-  const shiftTable = {};
-  const patternLength = pattern.length;
-
-  for (let i = 0; i < patternLength - 1; i++) {
-    shiftTable[pattern.charCodeAt(i)] = patternLength - i - 1;
-  }
-  
-  return shiftTable;
-}
+console.log(radixSort(array)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
