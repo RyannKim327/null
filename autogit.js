@@ -1,12 +1,20 @@
-let arr = [5, 2, 8, 1, 6];
+function binarySearch(arr, target, start, end) {
+  if (start > end)
+    return -1;
 
-// Sorting the array in ascending order
-arr.sort((a, b) => a - b);
+  const mid = Math.floor((start + end) / 2);
 
-console.log(arr); // Output: [1, 2, 5, 6, 8]
-let arr = [5, 2, 8, 1, 6];
+  if (arr[mid] === target)
+    return mid;
+  else if (arr[mid] > target)
+    return binarySearch(arr, target, start, mid - 1);
+  else
+    return binarySearch(arr, target, mid + 1, end);
+}
 
-// Sorting the array in descending order
-arr.sort((a, b) => b - a);
+// Example usage:
+const array = [1, 4, 7, 12, 18, 23, 29, 37, 42, 50];
+const targetElement = 18;
 
-console.log(arr); // Output: [8, 6, 5, 2, 1]
+const index = binarySearch(array, targetElement, 0, array.length - 1);
+console.log('Target element found at index:', index);
