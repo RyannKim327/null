@@ -1,20 +1,14 @@
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    // Generate a random index from 0 to i
-    let j = Math.floor(Math.random() * (i + 1));
-    
-    // Swap elements array[i] and array[j]
-    let temp = array[i];
-    array[i] = array[j];
-    array[j] = temp;
-  }
-  
-  return array;
+function areAnagrams(str1, str2) {
+  const cleanStr1 = str1.replace(/[^A-Za-z]/g, '').toLowerCase();
+  const cleanStr2 = str2.replace(/[^A-Za-z]/g, '').toLowerCase();
+
+  const sortedStr1 = cleanStr1.split('').sort().join('');
+  const sortedStr2 = cleanStr2.split('').sort().join('');
+
+  return sortedStr1 === sortedStr2;
 }
 
-// Usage example
-let arr = [1, 2, 3, 4, 5];
-console.log("Original array:", arr);
-
-let shuffledArr = shuffleArray(arr);
-console.log("Shuffled array:", shuffledArr);
+// Test cases
+console.log(areAnagrams('listen', 'silent')); // true
+console.log(areAnagrams('rail safety', 'fairy tales')); // true
+console.log(areAnagrams('hello', 'goodbye')); // false
