@@ -1,11 +1,54 @@
-const axios = require('axios');
+function depthLimitedSearch(node, goal, depthLimit) {
+    if (node === goal) {
+        return true;
+    }
 
-axios.get('https://api.example.com/data')
-  .then(function (response) {
-    // Handle the response data
-    console.log(response.data);
-  })
-  .catch(function (error) {
-    // Handle any errors that occurred during the request
-    console.error(error);
-  });
+    if (depthLimit === 0) {
+        return false;
+    }
+
+    for (let i = 0; i < node.children.length; i++) {
+        if (depthLimitedSearch(node.children[i], goal, depthLimit - 1)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+// Define a simple tree structure
+const rootNode = {
+    value: 'A',
+    children: [
+        {
+            value: 'B',
+            children: [
+                {
+                    value: 'C',
+                    children: []
+                },
+                {
+                    value: 'D',
+                    children: []
+                }
+            ]
+        },
+        {
+            value: 'E',
+            children: [
+                {
+                    value: 'F',
+                    children: []
+                },
+                {
+                    value: 'G',
+                    children: []
+                }
+            ]
+        }
+    ]
+};
+
+// Search for node 'G' with a depth limit of 2
+const result = depthLimitedSearch(rootNode, 'G', 2);
+
+console.log(result); // Output: true
