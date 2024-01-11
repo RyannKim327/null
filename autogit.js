@@ -1,38 +1,43 @@
-function longestCommonSubstring(str1, str2) {
-  if (!str1 || !str2) return ''; // Handles empty strings
-  const m = str1.length;
-  const n = str2.length;
-  
-  // Create a 2D array to store the lengths of the common substrings
-  const dp = Array(m + 1).fill(0).map(() => Array(n + 1).fill(0));
-  
-  let maxLength = 0; // Length of the longest common substring
-  let endIndex = 0; // End index of the longest common substring in str1
-  
-  // Iterate over the strings and fill the dp array
-  for (let i = 0; i <= m; i++) {
-    for (let j = 0; j <= n; j++) {
-      if (i === 0 || j === 0) {
-        dp[i][j] = 0; // No common substring
-      } else if (str1[i - 1] === str2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-        if (dp[i][j] > maxLength) {
-          maxLength = dp[i][j];
-          endIndex = i - 1;
-        }
-      } else {
-        dp[i][j] = 0;
-      }
+function mergeSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
+  }
+
+  // Split the array into two halves
+  const middle = Math.floor(arr.length / 2);
+  const leftHalf = arr.slice(0, middle);
+  const rightHalf = arr.slice(middle);
+
+  // Recursively sort the two halves
+  const sortedLeftHalf = mergeSort(leftHalf);
+  const sortedRightHalf = mergeSort(rightHalf);
+
+  // Merge the sorted halves
+  return merge(sortedLeftHalf, sortedRightHalf);
+}
+
+function merge(leftHalf, rightHalf) {
+  let sortedArray = [];
+
+  while (leftHalf.length && rightHalf.length) {
+    if (leftHalf[0] < rightHalf[0]) {
+      // Add the smallest element from the left to the sorted array
+      sortedArray.push(leftHalf.shift());
+    } else {
+      // Add the smallest element from the right to the sorted array
+      sortedArray.push(rightHalf.shift());
     }
   }
-  
-  // Extract the longest common substring from str1 using the endIndex
-  const longestSubstring = str1.substr(endIndex - maxLength + 1, maxLength);
-  return longestSubstring;
+
+  // Add the remaining elements from the left and right halves (if any)
+  sortedArray = [...sortedArray, ...leftHalf, ...rightHalf];
+
+  return sortedArray;
 }
 
 // Example usage
-const str1 = "HelloWorld";
-const str2 = "HiWorld";
-const result = longestCommonSubstring(str1, str2);
-console.log(result); // Output: "World"
+const unsortedArray = [5, 2, 1, 7, 8, 4, 3];
+
+console.log("Unsorted Array:", unsortedArray);
+const sortedArray = mergeSort(unsortedArray);
+console.log("Sorted Array:", sortedArray);
