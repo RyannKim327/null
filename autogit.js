@@ -1,63 +1,19 @@
-// Create a TrieNode class
-class TrieNode {
-  constructor() {
-    this.children = {}; // mapping of character -> TrieNode
-    this.isWord = false; // whether the node represents the end of a word
+function findMedianSortedArrays(nums1, nums2) {
+  const merged = nums1.concat(nums2).sort((a, b) => a - b);
+  const length = merged.length;
+  
+  if (length % 2 === 0) {
+    const middle = length / 2;
+    return (merged[middle - 1] + merged[middle]) / 2;
+  } else {
+    const middle = Math.floor(length / 2);
+    return merged[middle];
   }
 }
 
-// Create a Trie class
-class Trie {
-  constructor() {
-    this.root = new TrieNode();
-  }
+// Example usage:
+const nums1 = [1, 3];
+const nums2 = [2, 4];
 
-  // Insert a word into the trie
-  insert(word) {
-    let node = this.root;
-    for (let i = 0; i < word.length; i++) {
-      const ch = word[i];
-      if (!(ch in node.children)) {
-        node.children[ch] = new TrieNode();
-      }
-      node = node.children[ch];
-    }
-    node.isWord = true;
-  }
-
-  // Search for a word in the trie
-  search(word) {
-    let node = this.root;
-    for (let i = 0; i < word.length; i++) {
-      const ch = word[i];
-      if (!(ch in node.children)) {
-        return false;
-      }
-      node = node.children[ch];
-    }
-    return node.isWord;
-  }
-
-  // Determine if any word in the trie starts with the given prefix
-  startsWith(prefix) {
-    let node = this.root;
-    for (let i = 0; i < prefix.length; i++) {
-      const ch = prefix[i];
-      if (!(ch in node.children)) {
-        return false;
-      }
-      node = node.children[ch];
-    }
-    return true;
-  }
-}
-
-// Example usage
-const trie = new Trie();
-trie.insert("apple");
-trie.insert("banana");
-console.log(trie.search("apple")); // true
-console.log(trie.search("banana")); // true
-console.log(trie.search("orange")); // false
-console.log(trie.startsWith("app")); // true
-console.log(trie.startsWith("ora")); // false
+const median = findMedianSortedArrays(nums1, nums2);
+console.log(median); // Output: 2.5
