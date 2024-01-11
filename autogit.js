@@ -1,11 +1,19 @@
-// Taking input from the user
-const userInput = prompt('Enter something:');
+function isPrime(num) {
+  // 1 and non-integer numbers are not prime
+  if (num <= 1 || !Number.isInteger(num)) {
+    return false;
+  }
 
-// Display message based on the input
-if (userInput) {
-  console.log(`User entered: ${userInput}`);
-  alert('Input received! Thank you.');
-} else {
-  console.log('No input provided.');
-  alert('No input received!');
+  // Check if it is divisible by any number from 2 to the square root of the number
+  for (let i = 2; i <= Math.sqrt(num); i++) {
+    if (num % i === 0) {
+      return false;
+    }
+  }
+
+  return true;
 }
+
+// Usage
+console.log(isPrime(17)); // true
+console.log(isPrime(15)); // false
