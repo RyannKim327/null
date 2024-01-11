@@ -1,23 +1,45 @@
-function binarySearch(arr, target) {
-    let left = 0, right = arr.length - 1;
+async function connectToAndroid() {
+  try {
+    // Create a new instance of the Android Async Task
+    const androidTask = new AndroidAsyncTask();
 
-    while (left <= right) {
-        let mid = Math.floor((left + right) / 2);
+    // Execute the task asynchronously
+    await androidTask.execute();
 
-        if (arr[mid] === target) {
-            return mid; // Found the target, return the index
-        } else if (arr[mid] < target) {
-            left = mid + 1; // Target is in the right half
-        } else {
-            right = mid - 1; // Target is in the left half
-        }
-    }
-
-    return -1; // Target not found
+    // Connection successful
+    console.log('Connected to Android device!');
+  } catch (error) {
+    // Connection failed
+    console.log('Failed to connect to Android device:', error);
+  }
 }
 
-// Example usage
-const arr = [2, 4, 6, 8, 10, 12, 14];
-const target = 10;
-const index = binarySearch(arr, target);
-console.log(index); // Output: 4
+// Define the AndroidAsyncTask class
+class AndroidAsyncTask {
+  constructor() {
+    // TODO: Initialize any required variables or settings
+  }
+
+  async execute() {
+    return new Promise((resolve, reject) => {
+      // TODO: Perform any required connection logic here
+      // e.g., establish a socket connection, send/receive data
+
+      // Simulating a delay for demonstration purposes
+      setTimeout(() => {
+        const connectionSuccess = true; // Set to false to simulate connection failure
+
+        if (connectionSuccess) {
+          // Resolve the promise if connected successfully
+          resolve();
+        } else {
+          // Reject the promise if connection failed
+          reject('Failed to establish connection');
+        }
+      }, 2000); // 2 seconds delay
+    });
+  }
+}
+
+// Call the connectToAndroid function to start the connection
+connectToAndroid();
