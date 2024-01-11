@@ -1,20 +1,30 @@
-function largestPrimeFactor(number) {
-  let factors = [];
-  let divisor = 2;
-
-  while (number >= 2) {
-    if (number % divisor === 0) {
-      factors.push(divisor);
-      number = number / divisor;
-    } else {
-      divisor++;
+function isPalindrome(str) {
+  const len = str.length;
+  for (let i = 0; i < len / 2; i++) {
+    if (str[i] !== str[len - 1 - i]) {
+      return false;
     }
   }
-
-  return Math.max(...factors);
+  return true;
 }
 
-// Example usage
-const number = 13195;
-const largestFactor = largestPrimeFactor(number);
-console.log("Largest prime factor:", largestFactor);
+// Usage:
+console.log(isPalindrome("madam")); // Output: true
+console.log(isPalindrome("hello")); // Output: false
+function isPalindrome(str) {
+  const reversed = str.split("").reverse().join("");
+  return str === reversed;
+}
+
+// Usage:
+console.log(isPalindrome("madam")); // Output: true
+console.log(isPalindrome("hello")); // Output: false
+function isPalindrome(str) {
+  return str.split("").every((char, index) => {
+    return char === str[str.length - 1 - index];
+  });
+}
+
+// Usage:
+console.log(isPalindrome("madam")); // Output: true
+console.log(isPalindrome("hello")); // Output: false
