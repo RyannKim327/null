@@ -1,24 +1,26 @@
-function shellSort(arr) {
-  const len = arr.length;
-  let gap = Math.floor(len / 2);
+function findFirstRepeatedChar(str) {
+  // Create an empty object to store characters and their frequencies
+  let charMap = {};
 
-  while (gap > 0) {
-    for (let i = gap; i < len; i++) {
-      const temp = arr[i];
-      let j = i;
+  // Convert the string to an array to iterate over each character
+  let charArray = [...str];
 
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
-      }
-
-      arr[j] = temp;
+  // Loop through each character
+  for (let char of charArray) {
+    // If the character is already in the charMap, it is repeated
+    if (charMap[char]) {
+      return char;
     }
-    gap = Math.floor(gap / 2);
+
+    // If the character is not in the charMap, add it with a frequency of 1
+    charMap[char] = 1;
   }
 
-  return arr;
+  // If no repeated character is found, return null
+  return null;
 }
-const array = [8, 3, 9, 0, 5, 1];
-const sortedArray = shellSort(array);
-console.log(sortedArray);
+
+// Testing the function
+console.log(findFirstRepeatedChar("hello")); // Output: l
+console.log(findFirstRepeatedChar("world")); // Output: null
+console.log(findFirstRepeatedChar("javascript")); // Output: a
