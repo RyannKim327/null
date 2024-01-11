@@ -1,20 +1,31 @@
-function bubbleSort(arr) {
-  let len = arr.length;
-  for (let i = 0; i < len - 1; i++) {
-    for (let j = 0; j < len - 1 - i; j++) {
-      if (arr[j] > arr[j + 1]) {
-        let temp = arr[j];
-        arr[j] = arr[j + 1];
-        arr[j + 1] = temp;
-      }
+function beamSearch(initialState, k, candidateGeneration, objectiveFunction) {
+  let beam = [initialState];
+
+  while (!terminationConditionMet()) {
+    let candidates = [];
+    for (let state of beam) {
+      let newCandidates = candidateGeneration(state);
+      candidates.push(...newCandidates);
     }
+    beam = prune(candidates, k);
   }
-  return arr;
+
+  return findBestCandidate(beam, objectiveFunction);
 }
 
-// Usage example
-let numbers = [5, 3, 8, 4, 2];
-console.log('Before sorting:', numbers);
+function terminationConditionMet() {
+  // Define your termination condition based on your problem-specific criteria
+  // Example: maximum number of iterations, reaching a specific score threshold, etc.
+}
 
-let sortedNumbers = bubbleSort(numbers);
-console.log('After sorting:', sortedNumbers);
+function prune(candidates, k) {
+  // Select the top-k candidates based on a defined criterion
+  // Example: sorting candidates and selecting the best-k
+}
+
+function findBestCandidate(candidates, objectiveFunction) {
+  // Calculate the objective function score for each candidate
+  // Example: iterate over candidates and score each one using objectiveFunction
+
+  // Return the best candidate based on the objective function score
+}
