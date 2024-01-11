@@ -1,70 +1,49 @@
-class Node {
+class TreeNode {
   constructor(value) {
     this.value = value;
-    this.next = null;
+    this.left = null;
+    this.right = null;
   }
 }
 
-class LinkedList {
+class BinaryTree {
   constructor() {
-    this.head = null;
-    this.tail = null;
+    this.root = null;
   }
 
-  isEmpty() {
-    return this.head === null;
-  }
+  insert(value) {
+    const newNode = new TreeNode(value);
 
-  enqueue(value) {
-    const newNode = new Node(value);
-    if (this.isEmpty()) {
-      this.head = newNode;
-      this.tail = newNode;
+    if (this.root === null) {
+      this.root = newNode;
     } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
+      this.insertNode(this.root, newNode);
     }
   }
 
-  dequeue() {
-    if (this.isEmpty()) {
-      return null;
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
     }
-
-    const removedNode = this.head;
-    this.head = this.head.next;
-
-    if (this.isEmpty()) {
-      this.tail = null;
-    }
-
-    return removedNode.value;
   }
+
+  // Other operations like search, traversal, delete, etc. can also be implemented
 }
-
-class Queue {
-  constructor() {
-    this.linkedList = new LinkedList();
-  }
-
-  isEmpty() {
-    return this.linkedList.isEmpty();
-  }
-
-  enqueue(value) {
-    this.linkedList.enqueue(value);
-  }
-
-  dequeue() {
-    return this.linkedList.dequeue();
-  }
-}
-const queue = new Queue();
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
-
-console.log(queue.dequeue());  // Output: 1
-console.log(queue.dequeue());  // Output: 2
-console.log(queue.dequeue());  // Output: 3
-console.log(queue.dequeue());  // Output: null (queue is empty)
+const tree = new BinaryTree();
+tree.insert(4);
+tree.insert(2);
+tree.insert(6);
+tree.insert(1);
+tree.insert(3);
+tree.insert(5);
+tree.insert(7);
