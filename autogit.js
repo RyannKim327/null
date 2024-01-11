@@ -1,30 +1,65 @@
-function largestPrimeFactor(number) {
-  let largestPrime = 2; // Initialize the largest prime factor to 2
-  
-  // Divide the number by 2 until it is no longer divisible by 2
-  while (number % 2 === 0) {
-    largestPrime = 2;
-    number /= 2;
+// Create a graph object
+class Graph {
+  constructor() {
+    this.adjacencyList = {};
   }
-  
-  // Check for prime factors starting from 3
-  let factor = 3;
-  while (factor <= Math.sqrt(number)) {
-    if (number % factor === 0) {
-      largestPrime = factor;
-      number /= factor;
-    } else {
-      factor += 2; // Increment factor by 2 to skip even numbers
+
+  // Add a new vertex to the graph
+  addVertex(vertex) {
+    if (!this.adjacencyList[vertex]) {
+      this.adjacencyList[vertex] = [];
     }
   }
-  
-  // If the remaining number is greater than 2, it must be prime
-  if (number > 2) {
-    largestPrime = number;
+
+  // Add an undirected edge between two vertices
+  addEdge(vertex1, vertex2) {
+    this.adjacencyList[vertex1].push(vertex2);
+    this.adjacencyList[vertex2].push(vertex1);
   }
-  
-  return largestPrime;
+
+  // Depth-first search algorithm
+  dfs(startVertex) {
+    const visited = {};
+    const result = [];
+
+    const dfsHelper = (vertex) => {
+      // Mark the vertex as visited
+      visited[vertex] = true;
+      result.push(vertex);
+
+      // Visit all neighbors
+      for (const neighbor of this.adjacencyList[vertex]) {
+        if (!visited[neighbor]) {
+          dfsHelper(neighbor);
+        }
+      }
+    };
+
+    dfsHelper(startVertex);
+    return result;
+  }
 }
 
-// Example usage
-console.log(largestPrimeFactor(600851475143)); // Outputs: 6857
+// Create a graph object
+const graph = new Graph();
+
+// Add vertices to the graph
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addVertex('E');
+graph.addVertex('F');
+
+// Add edges to the graph
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('C', 'E');
+graph.addEdge('D', 'E');
+graph.addEdge('D', 'F');
+graph.addEdge('E', 'F');
+
+// Perform depth-first search starting from vertex 'A'
+const result = graph.dfs('A');
+console.log(result);
