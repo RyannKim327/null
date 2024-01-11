@@ -1,49 +1,78 @@
-function binarySearch(arr, target) {
-  // ...
-}
-function binarySearch(arr, target) {
-  let start = 0;
-  let end = arr.length - 1;
-  // ...
-}
-function binarySearch(arr, target) {
-  let start = 0;
-  let end = arr.length - 1;
-
-  while (start <= end) {
-    // ...
+class HashTable {
+  constructor() {
+    this.data = {};
   }
-}
-function binarySearch(arr, target) {
-  let start = 0;
-  let end = arr.length - 1;
 
-  while (start <= end) {
-    let mid = Math.floor((start + end) / 2);
-    // ...
+  // Hash function to generate the index
+  hash(key) {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash = (hash + key.charCodeAt(i) * i) % this.size;
+    }
+    return hash;
   }
-}
-function binarySearch(arr, target) {
-  let start = 0;
-  let end = arr.length - 1;
 
-  while (start <= end) {
-    let mid = Math.floor((start + end) / 2);
+  // Add a key-value pair to the hash table
+  add(key, value) {
+    const index = this.hash(key);
+    if (!this.data[index]) {
+      this.data[index] = {};
+    }
+    this.data[index][key] = value;
+  }
 
-    if (arr[mid] === target) {
-      return mid;
-    } else if (arr[mid] < target) {
-      start = mid + 1;
-    } else {
-      end = mid - 1;
+  // Get the value associated with the key
+  get(key) {
+    const index = this.hash(key);
+    if (this.data[index] && this.data[index].hasOwnProperty(key)) {
+      return this.data[index][key];
+    }
+    return undefined;
+  }
+
+  // Remove a key-value pair from the hash table
+  remove(key) {
+    const index = this.hash(key);
+    if (this.data[index] && this.data[index].hasOwnProperty(key)) {
+      delete this.data[index][key];
     }
   }
 
-  // If the target is not found, return -1
-  return -1;
-}
-const array = [1, 3, 5, 7, 9, 11, 13, 15];
-const target = 9;
-const index = binarySearch(array, target);
+  // Get all keys in the hash table
+  keys() {
+    const keys = [];
+    for (let index in this.data) {
+      for (let key in this.data[index]) {
+        keys.push(key);
+      }
+    }
+    return keys;
+  }
 
-console.log(index); // Output: 4 (index of the target element)
+  // Get all values in the hash table
+  values() {
+    const values = [];
+    for (let index in this.data) {
+      for (let key in this.data[index]) {
+        values.push(this.data[index][key]);
+      }
+    }
+    return values;
+  }
+}
+
+// Example usage:
+const hashTable = new HashTable();
+hashTable.add("name", "John");
+hashTable.add("age", 30);
+hashTable.add("city", "New York");
+
+console.log(hashTable.get("name")); // Output: John
+console.log(hashTable.get("age")); // Output: 30
+console.log(hashTable.get("city")); // Output: New York
+
+hashTable.remove("age");
+console.log(hashTable.get("age")); // Output: undefined
+
+console.log(hashTable.keys()); // Output: ["name", "city"]
+console.log(hashTable.values()); // Output: ["John", "New York"]
