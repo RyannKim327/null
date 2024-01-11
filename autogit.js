@@ -1,29 +1,36 @@
-function countingSort(arr) {
-  // Find the maximum element in the array
-  let max = Math.max(...arr);
-  
-  // Create a count array with length max+1 and initialize all counts to 0
-  let count = new Array(max + 1).fill(0);
-  
-  // Count the occurrences of each element
-  for (let i = 0; i < arr.length; i++) {
-    count[arr[i]]++;
+const getMax = (arr) => Math.max(...arr);
+const maxNumber = getMax(arr);
+const maxDigits = Math.floor(Math.log10(maxNumber) + 1);
+const getDigit = (num, position) => Math.floor(Math.abs(num) / Math.pow(10, position)) % 10;
+const buckets = Array.from({ length: 10 }, () => []);
+for (let i = 0; i < maxDigits; i++) {
+  for (let j = 0; j < arr.length; j++) {
+    const digit = getDigit(arr[j], i);
+    buckets[digit].push(arr[j]);
   }
-  
-  // Modify the count array to store the actual position of each element in the sorted array
-  for (let i = 1; i <= max; i++) {
-    count[i] += count[i - 1];
-  }
-  
-  // Create a sorted array
-  let sortedArr = new Array(arr.length);
-  for (let i = arr.length - 1; i >= 0; i--) {
-    sortedArr[count[arr[i]] - 1] = arr[i];
-    count[arr[i]]--;
-  }
-  
-  return sortedArr;
+  arr = [].concat(...buckets);
+  buckets.forEach((bucket) => (bucket.length = 0));
 }
-let arr = [4, 2, 2, 8, 3, 3, 1];
-let sortedArr = countingSort(arr);
-console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
+return arr;
+function radixSort(arr) {
+  const getMax = (arr) => Math.max(...arr);
+  const maxNumber = getMax(arr);
+  const maxDigits = Math.floor(Math.log10(maxNumber) + 1);
+  
+  const getDigit = (num, position) => Math.floor(Math.abs(num) / Math.pow(10, position)) % 10;
+
+  const buckets = Array.from({ length: 10 }, () => []);
+
+  for (let i = 0; i < maxDigits; i++) {
+    for (let j = 0; j < arr.length; j++) {
+      const digit = getDigit(arr[j], i);
+      buckets[digit].push(arr[j]);
+    }
+    arr = [].concat(...buckets);
+    buckets.forEach((bucket) => (bucket.length = 0));
+  }
+
+  return arr;
+}
+const myArray = [23, 345, 5467, 12, 2345, 9852];
+console.log(radixSort(myArray)); // Output: [12, 23, 345, 2345, 5467, 9852]
