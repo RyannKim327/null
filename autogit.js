@@ -1,17 +1,15 @@
-function areAnagrams(stringA, stringB) {
-    // Remove whitespace and convert to lowercase
-    stringA = stringA.replace(/\s/g, '').toLowerCase();
-    stringB = stringB.replace(/\s/g, '').toLowerCase();
+function isPrime(number) {
+  if (number <= 1) {
+    return false;
+  }
 
-    // Sort the characters in both strings
-    const sortedA = stringA.split('').sort().join('');
-    const sortedB = stringB.split('').sort().join('');
+  for (let i = 2; i <= Math.sqrt(number); i++) {
+    if (number % i === 0) {
+      return false;
+    }
+  }
 
-    // Compare the sorted strings
-    return sortedA === sortedB;
+  return true;
 }
-
-// Examples
-console.log(areAnagrams('LISTEN', 'SILENT')); // true
-console.log(areAnagrams('hello', 'lloeh')); // true
-console.log(areAnagrams('abc', 'def')); // false
+console.log(isPrime(7));  // Output: true
+console.log(isPrime(12)); // Output: false
