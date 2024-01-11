@@ -1,32 +1,20 @@
-const graph = {
-  'A': ['B', 'C'],
-  'B': ['D'],
-  'C': ['D', 'E'],
-  'D': [],
-  'E': ['F'],
-  'F': []
-};
-function topologicalSort(graph) {
-  const visited = new Set();
-  const sorted = [];
+let arr = [1, 2, 3, 4, 5];
+let elementToRemove = 3;
 
-  function dfs(node) {
-    visited.add(node);
-    graph[node].forEach(neighbor => {
-      if (!visited.has(neighbor)) {
-        dfs(neighbor);
-      }
-    });
-    sorted.unshift(node); // Prepend node to the sorted list
-  }
-
-  for (const node in graph) {
-    if (!visited.has(node)) {
-      dfs(node);
-    }
-  }
-
-  return sorted;
+let index = arr.indexOf(elementToRemove);
+if (index > -1) {
+  arr.splice(index, 1);
 }
-const result = topologicalSort(graph);
-console.log(result); // Output: ['A', 'C', 'E', 'F', 'B', 'D']
+let arr = [1, 2, 3, 4, 5];
+let elementToRemove = 3;
+
+arr = arr.filter(function(value) {
+  return value !== elementToRemove;
+});
+let arr = [1, 2, 3, 4, 5];
+let elementToRemove = 3;
+
+let index = arr.indexOf(elementToRemove);
+if (index > -1) {
+  arr = arr.slice(0, index).concat(arr.slice(index + 1));
+}
