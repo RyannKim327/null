@@ -1,21 +1,30 @@
-function bubbleSort(array) {
-  const length = array.length;
+function isAnagram(str1, str2) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  str1 = str1.replace(/[^a-z0-9]/gi, '').toLowerCase();
+  str2 = str2.replace(/[^a-z0-9]/gi, '').toLowerCase();
 
-  for (let i = 0; i < length - 1; i++) {
-    for (let j = 0; j < length - 1 - i; j++) {
-      // Swap elements if the current element is greater than the next element
-      if (array[j] > array[j + 1]) {
-        const temp = array[j];
-        array[j] = array[j + 1];
-        array[j + 1] = temp;
-      }
-    }
-  }
+  // Convert strings to arrays of characters
+  const arr1 = Array.from(str1);
+  const arr2 = Array.from(str2);
 
-  return array;
+  // Sort the arrays
+  arr1.sort();
+  arr2.sort();
+
+  // Join sorted arrays back into strings
+  const sortedStr1 = arr1.join('');
+  const sortedStr2 = arr2.join('');
+
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
 
-// Usage example
-const numbers = [8, 1, 6, 3, 9, 2, 5, 7, 4];
-const sortedNumbers = bubbleSort(numbers);
-console.log(sortedNumbers); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+// Example usage
+const string1 = 'listen';
+const string2 = 'silent';
+if (isAnagram(string1, string2)) {
+  console.log(`"${string1}" and "${string2}" are anagrams.`);
+} else {
+  console.log(`"${string1}" and "${string2}" are not anagrams.`);
+}
+"listen" and "silent" are anagrams.
