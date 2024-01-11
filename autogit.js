@@ -1,27 +1,40 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function createLookupTable(pattern) {
+  const table = {};
+  const patternLength = pattern.length;
+  
+  for (let i = 0; i < patternLength - 1; i++) {
+    table[pattern[i]] = patternLength - 1 - i;
   }
+  
+  return table;
 }
-
-function countLeafNodes(root) {
-  if (root === null) {
-    return 0;
-  } else if (root.left === null && root.right === null) {
-    return 1; // Leaf node
-  } else {
-    return countLeafNodes(root.left) + countLeafNodes(root.right);
+function search(text, pattern) {
+  const textLength = text.length;
+  const patternLength = pattern.length;
+  const table = createLookupTable(pattern);
+  
+  let i = patternLength - 1;
+  while (i < textLength) {
+    let k = 0;
+    while (k < patternLength && text[i - k] === pattern[patternLength - 1 - k]) {
+      k++;
+    }
+    
+    if (k === patternLength) {
+      // Pattern found
+      return i - patternLength + 1;
+    } else {
+      // Mismatch occurred
+      const skip = table[text[i]] || patternLength; // If character not in lookup table, skip entire pattern
+      i += skip;
+    }
   }
+  
+  // Pattern not found
+  return -1;
 }
+const text = "ABAAABCD";
+const pattern = "ABC";
 
-// Example usage:
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-
-console.log(countLeafNodes(root)); // Output: 3 (nodes 4, 5, and 6 are leaf nodes)
+const index = search(text, pattern);
+console.log(index); // Output: 5
