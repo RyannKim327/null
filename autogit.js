@@ -1,12 +1,23 @@
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
+function findFirstNonRepeatingChar(str) {
+  const charFreq = {};
 
-// Find the index of the element to remove
-let index = array.indexOf(elementToRemove);
+  // Loop through the string and increment character counts
+  for (let char of str) {
+    charFreq[char] = charFreq[char] ? charFreq[char] + 1 : 1;
+  }
 
-// If the element exists in the array, remove it
-if (index !== -1) {
-  array.splice(index, 1);
+  // Loop through the string again and find the first character with a count of 1
+  for (let char of str) {
+    if (charFreq[char] === 1) {
+      return char;
+    }
+  }
+
+  // Return null if there are no non-repeating characters
+  return null;
 }
 
-console.log(array); // Output: [1, 2, 4, 5]
+// Example usage
+const string = "abacabad";
+const firstNonRepeatingChar = findFirstNonRepeatingChar(string);
+console.log("First non-repeating character:", firstNonRepeatingChar);
