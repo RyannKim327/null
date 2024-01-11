@@ -1,78 +1,62 @@
-class HashTable {
-  constructor() {
-    this.data = {};
-  }
-
-  // Hash function to generate the index
-  hash(key) {
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) {
-      hash = (hash + key.charCodeAt(i) * i) % this.size;
-    }
-    return hash;
-  }
-
-  // Add a key-value pair to the hash table
-  add(key, value) {
-    const index = this.hash(key);
-    if (!this.data[index]) {
-      this.data[index] = {};
-    }
-    this.data[index][key] = value;
-  }
-
-  // Get the value associated with the key
-  get(key) {
-    const index = this.hash(key);
-    if (this.data[index] && this.data[index].hasOwnProperty(key)) {
-      return this.data[index][key];
-    }
-    return undefined;
-  }
-
-  // Remove a key-value pair from the hash table
-  remove(key) {
-    const index = this.hash(key);
-    if (this.data[index] && this.data[index].hasOwnProperty(key)) {
-      delete this.data[index][key];
-    }
-  }
-
-  // Get all keys in the hash table
-  keys() {
-    const keys = [];
-    for (let index in this.data) {
-      for (let key in this.data[index]) {
-        keys.push(key);
-      }
-    }
-    return keys;
-  }
-
-  // Get all values in the hash table
-  values() {
-    const values = [];
-    for (let index in this.data) {
-      for (let key in this.data[index]) {
-        values.push(this.data[index][key]);
-      }
-    }
-    return values;
+function interpolationSearch(arr, value, isAscending) {
+  // ...
+}
+function interpolationSearch(arr, value, isAscending) {
+  let low = 0;
+  let high = arr.length - 1;
+  // ...
+}
+function interpolationSearch(arr, value, isAscending) {
+  let low = 0;
+  let high = arr.length - 1;
+  
+  while (low <= high) {
+    // ...
   }
 }
+let pos = Math.floor(low + ((value - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+if (arr[pos] === value) {
+  return pos;
+}
+if (arr[pos] > value) {
+  high = pos - 1;
+} else {
+  low = pos + 1;
+}
+if (arr[pos] < value) {
+  low = pos + 1;
+} else {
+  high = pos - 1;
+}
+return -1;
+function interpolationSearch(arr, value, isAscending) {
+  let low = 0;
+  let high = arr.length - 1;
 
-// Example usage:
-const hashTable = new HashTable();
-hashTable.add("name", "John");
-hashTable.add("age", 30);
-hashTable.add("city", "New York");
+  while (low <= high) {
+    let pos = Math.floor(low + ((value - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+    
+    if (arr[pos] === value) {
+      return pos;
+    }
 
-console.log(hashTable.get("name")); // Output: John
-console.log(hashTable.get("age")); // Output: 30
-console.log(hashTable.get("city")); // Output: New York
+    if (arr[pos] > value) {
+      high = pos - 1;
+    } else {
+      low = pos + 1;
+    }
+  }
 
-hashTable.remove("age");
-console.log(hashTable.get("age")); // Output: undefined
+  return -1;
+}
+const arr = [1, 3, 5, 7, 9, 11, 13, 15];
+const value = 7;
+const isAscending = true;
 
-console.log(hashTable.keys()); // Output: ["name", "city"]
-console.log(hashTable.values()); // Output: ["John", "New York"]
+const result = interpolationSearch(arr, value, isAscending);
+
+if (result !== -1) {
+  console.log(`Found at index ${result}`);
+} else {
+  console.log("Not found");
+}
