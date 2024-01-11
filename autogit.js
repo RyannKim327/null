@@ -1,36 +1,20 @@
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+function isPalindrome(str) {
+    // Remove non-alphanumeric characters and convert to lowercase
+    const modifiedStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+    // Reverse the modified string
+    const reversedStr = modifiedStr.split('').reverse().join('');
+
+    // Check if reversed string is the same as the original string
+    return modifiedStr === reversedStr;
 }
 
-// Function to count the number of leaf nodes
-function countLeafNodes(root) {
-  if (root === null) {
-    return 0;
-  }
-  
-  if (root.left === null && root.right === null) {
-    return 1;
-  }
-  
-  const leftCount = countLeafNodes(root.left);
-  const rightCount = countLeafNodes(root.right);
-  
-  return leftCount + rightCount;
-}
+// Example usage
+const word = "Madam";
+console.log(isPalindrome(word)); // Output: true
 
-// Creating a binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-root.right.left = new TreeNode(6);
-root.right.right = new TreeNode(7);
+const sentence = "A man, a plan, a canal, Panama!";
+console.log(isPalindrome(sentence)); // Output: true
 
-// Counting the number of leaf nodes
-const leafNodeCount = countLeafNodes(root);
-console.log('Number of leaf nodes:', leafNodeCount);
+const notPalindrome = "Hello, world!";
+console.log(isPalindrome(notPalindrome)); // Output: false
