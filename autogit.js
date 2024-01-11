@@ -1,22 +1,27 @@
-function findFirstRepeatedCharacter(str) {
-  let charMap = {};
+function countingSort(arr) {
+  const min = Math.min(...arr);
+  const max = Math.max(...arr);
+  const count = Array(max - min + 1).fill(0);
 
-  // Iterate through each character in the string
-  for (let i = 0; i < str.length; i++) {
-    let char = str[i];
+  arr.forEach((num) => {
+    count[num - min]++;
+  });
 
-    // If the character exists in the character map, return it
-    if (charMap[char]) {
-      return char;
-    }
-
-    // Otherwise, mark the character as seen by setting its value to true
-    charMap[char] = true;
+  for (let i = 1; i < count.length; i++) {
+    count[i] += count[i - 1];
   }
 
-  // If no repeated character is found, return null or an appropriate value
-  return null;
+  const output = Array(arr.length);
+
+  arr.forEach((num) => {
+    output[count[num - min] - 1] = num;
+    count[num - min]--;
+  });
+
+  return output;
 }
-const str = "Hello World";
-const repeatedChar = findFirstRepeatedCharacter(str);
-console.log(repeatedChar); // Output: l
+
+// Example usage
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const sortedArr = countingSort(arr);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
