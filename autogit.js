@@ -1,16 +1,19 @@
-// Original array
-const array = [1, 2, 3, 4, 5];
-
-// Element to be removed
-const elementToRemove = 3;
-
-// Find the index of the element in the array
-const index = array.indexOf(elementToRemove);
-
-// Remove the element using the splice() method
-if (index !== -1) {
-  array.splice(index, 1);
+function isPrime(number) {
+  if (number <= 1) {
+    return false;
+  }
+  
+  // Check if the number is divisible by any integer from 2 to the square root of the number
+  for (let i = 2; i <= Math.sqrt(number); i++) {
+    if (number % i === 0) {
+      return false;
+    }
+  }
+  
+  return true;
 }
 
-// Resulting array after removal
-console.log(array); // Output: [1, 2, 4, 5]
+// Example usage
+console.log(isPrime(7)); // true
+console.log(isPrime(12)); // false
+console.log(isPrime(23)); // true
