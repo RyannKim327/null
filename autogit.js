@@ -1,14 +1,14 @@
-const array = [2, 5, 9, 1, 4];
-const max = Math.max(...array);
-
-console.log(max);  // Output: 9
-const array = [2, 5, 9, 1, 4];
-let max = array[0];
-
-for (let i = 1; i < array.length; i++) {
-  if (array[i] > max) {
-    max = array[i];
-  }
+function countCharacter(str, char) {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str.charAt(i) === char) {
+            count++;
+        }
+    }
+    return count;
 }
 
-console.log(max);  // Output: 9
+const myString = "Hello, World!";
+const character = "l";
+
+console.log(countCharacter(myString, character)); // Output: 3 (since 'l' appears 3 times in the string)
