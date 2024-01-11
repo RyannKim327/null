@@ -1,46 +1,36 @@
-class Node {
+class ListNode {
   constructor(value) {
     this.value = value;
-    this.neighbors = [];
-  }
-  
-  addNeighbor(neighbor) {
-    this.neighbors.push(neighbor);
+    this.next = null;
   }
 }
-
-function breadthFirstSearch(startNode) {
-  const queue = [];
-  const visited = new Set();
-  
-  queue.push(startNode);
-  visited.add(startNode);
-  
-  while (queue.length > 0) {
-    const currentNode = queue.shift();
-    console.log(currentNode.value); // Process the node here
-    
-    for (const neighbor of currentNode.neighbors) {
-      if (!visited.has(neighbor)) {
-        queue.push(neighbor);
-        visited.add(neighbor);
-      }
-    }
+class Queue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
   }
 }
-// Create the graph
-const nodeA = new Node('A');
-const nodeB = new Node('B');
-const nodeC = new Node('C');
-const nodeD = new Node('D');
-const nodeE = new Node('E');
-
-nodeA.addNeighbor(nodeB);
-nodeA.addNeighbor(nodeC);
-nodeB.addNeighbor(nodeC);
-nodeC.addNeighbor(nodeA);
-nodeC.addNeighbor(nodeD);
-nodeD.addNeighbor(nodeD);
-
-// Perform breadth-first search
-breadthFirstSearch(nodeA);
+enqueue(value) {
+  const newNode = new ListNode(value);
+  if (this.head === null) {
+    this.head = newNode;
+    this.tail = newNode;
+  } else {
+    this.tail.next = newNode;
+    this.tail = newNode;
+  }
+}
+dequeue() {
+  if (this.head === null) {
+    return null;
+  }
+  const value = this.head.value;
+  this.head = this.head.next;
+  if (this.head === null) {
+    this.tail = null;
+  }
+  return value;
+}
+isEmpty() {
+  return this.head === null;
+}
