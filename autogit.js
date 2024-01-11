@@ -1,64 +1,33 @@
-function selectionSort(arr) {
-    // Implementation goes here
+class TreeNode {
+  constructor(val) {
+    this.val = val;
+    this.left = null;
+    this.right = null;
+  }
 }
-function selectionSort(arr) {
-    let minIndex;
-    // Implementation goes here
+
+function sumOfNodes(root) {
+  if (root === null) {
+    // Empty tree, sum is 0
+    return 0;
+  }
+  // Sum of current node value and the sum of nodes in the left and right subtrees
+  return root.val + sumOfNodes(root.left) + sumOfNodes(root.right);
 }
-function selectionSort(arr) {
-    let minIndex;
-    for (let i = 0; i < arr.length - 1; i++) {
-        // Implementation goes here
-    }
-}
-function selectionSort(arr) {
-    let minIndex;
-    for (let i = 0; i < arr.length - 1; i++) {
-        minIndex = i;
-        // Implementation goes here
-    }
-}
-function selectionSort(arr) {
-    let minIndex;
-    for (let i = 0; i < arr.length - 1; i++) {
-        minIndex = i;
-        for (let j = i + 1; j < arr.length; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j;
-            }
-        }
-        // Implementation goes here
-    }
-}
-function selectionSort(arr) {
-    let minIndex;
-    for (let i = 0; i < arr.length - 1; i++) {
-        minIndex = i;
-        for (let j = i + 1; j < arr.length; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j;
-            }
-        }
-        // Swap the minimum element with the element at the current index
-        let temp = arr[i];
-        arr[i] = arr[minIndex];
-        arr[minIndex] = temp;
-    }
-}
-function selectionSort(arr) {
-    let minIndex;
-    for (let i = 0; i < arr.length - 1; i++) {
-        minIndex = i;
-        for (let j = i + 1; j < arr.length; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j;
-            }
-        }
-        let temp = arr[i];
-        arr[i] = arr[minIndex];
-        arr[minIndex] = temp;
-    }
-    return arr;
-}
-let array = [5, 2, 8, 4, 1];
-console.log(selectionSort(array)); // Output: [1, 2, 4, 5, 8]
+// Create a binary tree
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+root.right.left = new TreeNode(6);
+root.right.right = new TreeNode(7);
+
+// Calculate the sum of all nodes
+const sum = sumOfNodes(root);
+console.log("Sum of all nodes:", sum); // Output: Sum of all nodes: 28
+       1
+     /   \
+    2     3
+   / \   / \
+  4   5 6   7 
