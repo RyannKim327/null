@@ -1,28 +1,24 @@
-function getMax(arr) {
-  let max = 0;
-  for (let num of arr) {
-    if (num > max) {
-      max = num;
-    }
-  }
-  return max;
-}
-function radixSort(arr) {
-  const max = getMax(arr);
-  let divisor = 1;
+function shellSort(arr) {
+  const len = arr.length;
+  let gap = Math.floor(len / 2);
 
-  while (divisor < max) {
-    let buckets = Array.from({ length: 10 }, () => []);
-    for (let num of arr) {
-      let digit = Math.floor((num / divisor) % 10);
-      buckets[digit].push(num);
+  while (gap > 0) {
+    for (let i = gap; i < len; i++) {
+      const temp = arr[i];
+      let j = i;
+
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
+      }
+
+      arr[j] = temp;
     }
-    arr = [].concat(...buckets);
-    divisor *= 10;
+    gap = Math.floor(gap / 2);
   }
 
   return arr;
 }
-const array = [170, 45, 75, 90, 802, 24, 2, 66];
-
-console.log(radixSort(array)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+const array = [8, 3, 9, 0, 5, 1];
+const sortedArray = shellSort(array);
+console.log(sortedArray);
