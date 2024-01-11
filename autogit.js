@@ -1,21 +1,43 @@
-function countCharacterOccurrences(string, character) {
-  let count = 0;
-  for (let i = 0; i < string.length; i++) {
-    if (string[i] === character) {
-      count++;
+function longestCommonSubsequence(str1, str2) {
+  const m = str1.length;
+  const n = str2.length;
+  const matrix = Array(m + 1)
+    .fill(null)
+    .map(() => Array(n + 1).fill(0));
+
+  // Fill the matrix
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (str1.charAt(i - 1) === str2.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1] + 1;
+      } else {
+        matrix[i][j] = Math.max(matrix[i - 1][j], matrix[i][j - 1]);
+      }
     }
   }
-  return count;
+
+  // Traverse the matrix to build the longest common subsequence
+  let i = m,
+    j = n;
+  let lcs = '';
+  while (i > 0 && j > 0) {
+    if (str1.charAt(i - 1) === str2.charAt(j - 1)) {
+      lcs = str1.charAt(i - 1) + lcs;
+      i--;
+      j--;
+    } else if (matrix[i - 1][j] > matrix[i][j - 1]) {
+      i--;
+    } else {
+      j--;
+    }
+  }
+
+  return lcs;
 }
 
-const myString = "Hello, World!";
-const myCharacter = "o";
-const occurrenceCount = countCharacterOccurrences(myString, myCharacter);
-
-console.log(`The character "${myCharacter}" occurs ${occurrenceCount} times in the string.`);
-const myString = "Hello, World!";
-const myCharacter = "o";
-
-const occurrenceCount = myString.split("").filter(char => char === myCharacter).length;
-
-console.log(`The character "${myCharacter}" occurs ${occurrenceCount} times in the string.`);
+// Example usage
+const str1 = "ABCDGH";
+const str2 = "AEDFHR";
+const lcs = longestCommonSubsequence(str1, str2);
+console.log("Longest Common Subsequence:", lcs);
+Longest Common Subsequence: ADH
