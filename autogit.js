@@ -1,22 +1,16 @@
-function findNthNodeFromEnd(head, n) {
-  let p1 = head;
-  let p2 = head;
+function maxSubarraySum(arr) {
+  let maxSoFar = arr[0];
+  let maxEndingHere = arr[0];
 
-  // Move p2 n nodes ahead
-  for (let i = 0; i < n; i++) {
-    if (p2 === null) {
-      // Length of the linked list is less than n
-      return null;
-    }
-    p2 = p2.next;
+  for (let i = 1; i < arr.length; i++) {
+    maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
+    maxSoFar = Math.max(maxSoFar, maxEndingHere);
   }
-
-  // Move both pointers together until p2 reaches the end
-  while (p2 !== null) {
-    p1 = p1.next;
-    p2 = p2.next;
-  }
-
-  // p1 will be pointing to the nth node from the end of the linked list
-  return p1.value;
+  
+  return maxSoFar;
 }
+
+// Example usage:
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const maxSum = maxSubarraySum(array);
+console.log(maxSum); // Output: 6
