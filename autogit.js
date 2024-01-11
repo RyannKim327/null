@@ -1,27 +1,16 @@
-function selectionSort(array) {
-  const length = array.length;
-  
-  for (let i = 0; i < length - 1; i++) {
-    let minIndex = i;
+// Original array
+const array = [1, 2, 3, 4, 5];
 
-    for (let j = i + 1; j < length; j++) {
-      if (array[j] < array[minIndex]) {
-        minIndex = j;
-      }
-    }
+// Element to be removed
+const elementToRemove = 3;
 
-    if (minIndex !== i) {
-      // Swap values
-      const temp = array[i];
-      array[i] = array[minIndex];
-      array[minIndex] = temp;
-    }
-  }
+// Find the index of the element in the array
+const index = array.indexOf(elementToRemove);
 
-  return array;
+// Remove the element using the splice() method
+if (index !== -1) {
+  array.splice(index, 1);
 }
 
-// Example usage:
-const unsortedArray = [5, 2, 8, 12, 1, 6];
-const sortedArray = selectionSort(unsortedArray);
-console.log(sortedArray);
+// Resulting array after removal
+console.log(array); // Output: [1, 2, 4, 5]
