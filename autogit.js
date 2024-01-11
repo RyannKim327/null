@@ -1,19 +1,57 @@
-function findMaxSubarray(arr) {
-  let currentSum = arr[0];
-  let maxSum = arr[0];
+function computeLPSArray(pattern) {
+  const m = pattern.length;
+  const lps = Array(m).fill(0);
+  let len = 0;
+  let i = 1;
 
-  for (let i = 1; i < arr.length; i++) {
-    // Calculate the current sum by either extending the previous subarray or starting a new subarray
-    currentSum = Math.max(arr[i], currentSum + arr[i]);
+  while (i < m) {
+    if (pattern[i] === pattern[len]) {
+      len++;
+      lps[i] = len;
+      i++;
+    } else {
+      if (len !== 0) {
+        len = lps[len - 1];
+      } else {
+        lps[i] = 0;
+        i++;
+      }
+    }
+  }
+  return lps;
+}
+function KMP(text, pattern) {
+  const n = text.length;
+  const m = pattern.length;
+  const result = [];
 
-    // Update the maximum sum if the current sum is greater
-    maxSum = Math.max(maxSum, currentSum);
+  const lps = computeLPSArray(pattern);
+
+  let i = 0; // index for text
+  let j = 0; // index for pattern
+
+  while (i < n) {
+    if (pattern[j] === text[i]) {
+      i++;
+      j++;
+    }
+
+    if (j === m) {
+      result.push(i - j);
+      j = lps[j - 1];
+    } else if (i < n && pattern[j] !== text[i]) {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
+      }
+    }
   }
 
-  return maxSum;
+  return result;
 }
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const indices = KMP(text, pattern);
 
-// Example usage:
-const arr = [1, -3, 2, 1, -1];
-const maxSum = findMaxSubarray(arr);
-console.log(maxSum); // Output: 3
+console.log("Pattern found at indices:", indices);
