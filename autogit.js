@@ -1,15 +1,8 @@
-function hasCycle(head) {
-  let slow = head;
-  let fast = head;
+let array = [1, 2, 3, 4, 5];
+let index = array.indexOf(3); // Find the index of the element you want to remove
 
-  while (fast !== null && fast.next !== null) {
-    slow = slow.next;
-    fast = fast.next.next;
-
-    if (slow === fast) {
-      return true; // Cycle detected
-    }
-  }
-
-  return false; // No cycle found
+if (index !== -1) {
+  array.splice(index, 1); // Remove one element at the found index
 }
+
+console.log(array); // [1, 2, 4, 5]
