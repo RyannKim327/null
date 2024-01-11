@@ -1,65 +1,68 @@
-// Create a graph object
-class Graph {
-  constructor() {
-    this.adjacencyList = {};
-  }
-
-  // Add a new vertex to the graph
-  addVertex(vertex) {
-    if (!this.adjacencyList[vertex]) {
-      this.adjacencyList[vertex] = [];
-    }
-  }
-
-  // Add an undirected edge between two vertices
-  addEdge(vertex1, vertex2) {
-    this.adjacencyList[vertex1].push(vertex2);
-    this.adjacencyList[vertex2].push(vertex1);
-  }
-
-  // Depth-first search algorithm
-  dfs(startVertex) {
-    const visited = {};
-    const result = [];
-
-    const dfsHelper = (vertex) => {
-      // Mark the vertex as visited
-      visited[vertex] = true;
-      result.push(vertex);
-
-      // Visit all neighbors
-      for (const neighbor of this.adjacencyList[vertex]) {
-        if (!visited[neighbor]) {
-          dfsHelper(neighbor);
-        }
-      }
-    };
-
-    dfsHelper(startVertex);
-    return result;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
 
-// Create a graph object
-const graph = new Graph();
+class BinaryTree {
+  constructor() {
+    this.root = null;
+  }
 
-// Add vertices to the graph
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
-graph.addVertex('F');
+  insert(value) {
+    const newNode = new Node(value);
 
-// Add edges to the graph
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('C', 'E');
-graph.addEdge('D', 'E');
-graph.addEdge('D', 'F');
-graph.addEdge('E', 'F');
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
 
-// Perform depth-first search starting from vertex 'A'
-const result = graph.dfs('A');
-console.log(result);
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  searchNode(node, value) {
+    if (node === null) {
+      return false;
+    }
+
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else if (value > node.value) {
+      return this.searchNode(node.right, value);
+    } else {
+      return true;
+    }
+  }
+}
+const tree = new BinaryTree();
+tree.insert(5);
+tree.insert(3);
+tree.insert(7);
+tree.insert(2);
+tree.insert(4);
+tree.insert(6);
+tree.insert(8);
+
+console.log(tree.search(6)); // Output: true
+console.log(tree.search(9)); // Output: false
