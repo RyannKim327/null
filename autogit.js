@@ -1,12 +1,8 @@
-const cron = require('node-cron');
-
-// Define a function to be executed
-function myFunction() {
-  console.log('Function executed at:', new Date());
-  // Place your code logic here
+function removeVowels(string) {
+  return string.replace(/[aeiou]/gi, '');
 }
 
-// Schedule the function to run every minute using cron syntax
-cron.schedule('* * * * *', () => {
-  myFunction();
-});
+// Example usage
+const inputString = 'Hello World';
+const result = removeVowels(inputString);
+console.log(result); // Output: "Hll Wrld"
