@@ -1,24 +1,46 @@
-function quickSort(array) {
-  if (array.length <= 1) {
-    return array;
+function badCharHeuristic(pattern) {
+  const length = pattern.length;
+  const badChar = Array(256).fill(-1);
+
+  for (let i = 0; i < length; i++) {
+    badChar[pattern[i].charCodeAt(0)] = i;
   }
 
-  const pivot = array[array.length - 1];
-  const left = [];
-  const right = [];
+  return badChar;
+}
+function boyerMooreSearch(text, pattern) {
+  const textLength = text.length;
+  const patternLength = pattern.length;
 
-  for (let i = 0; i < array.length - 1; i++) {
-    if (array[i] < pivot) {
-      left.push(array[i]);
+  const badChar = badCharHeuristic(pattern);
+  const matches = [];
+
+  let shift = 0;
+
+  while (shift <= textLength - patternLength) {
+    let i = patternLength - 1;
+
+    while (i >= 0 && pattern[i] === text[shift + i]) {
+      i--;
+    }
+
+    if (i < 0) {
+      matches.push(shift);
+      shift += (shift + patternLength < textLength) ? patternLength - badChar[text[shift + patternLength].charCodeAt(0)] : 1;
     } else {
-      right.push(array[i]);
+      shift += Math.max(1, i - badChar[text[shift + i].charCodeAt(0)]);
     }
   }
 
-  return [...quickSort(left), pivot, ...quickSort(right)];
+  return matches;
 }
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
 
-// Example usage:
-const unsortedArray = [8, 3, 5, 1, 9, 2];
-const sortedArray = quickSort(unsortedArray);
-console.log(sortedArray); // Output: [1, 2, 3, 5, 8, 9]
+const matches = boyerMooreSearch(text, pattern);
+
+if (matches.length > 0) {
+  console.log(`Pattern found at index(es): ${matches.join(", ")}`);
+} else {
+  console.log("Pattern not found");
+}
