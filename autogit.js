@@ -1,15 +1,23 @@
-function calculateMean(numbers) {
-  let sum = 0;
+function bubbleSort(arr) {
+  var len = arr.length;
+  var swapped;
 
-  for (let i = 0; i < numbers.length; i++) {
-    sum += numbers[i];
-  }
+  do {
+    swapped = false;
 
-  const mean = sum / numbers.length;
-  return mean;
+    for (var i = 0; i < len - 1; i++) {
+      if (arr[i] > arr[i + 1]) {
+        var temp = arr[i];
+        arr[i] = arr[i + 1];
+        arr[i + 1] = temp;
+        swapped = true;
+      }
+    }
+  } while (swapped);
+
+  return arr;
 }
 
-// Example usage:
-const numbers = [1, 2, 3, 4, 5];
-const mean = calculateMean(numbers);
-console.log(mean); // Output: 3
+// Test the implementation
+var arr = [5, 3, 8, 4, 2];
+console.log(bubbleSort(arr)); // Output: [2, 3, 4, 5, 8]
