@@ -1,52 +1,79 @@
-function buildPrefixTable(pattern) {
-  const prefixTable = [0];
-  let length = 0;
-
-  for (let i = 1; i < pattern.length; ) {
-    if (pattern[i] === pattern[length]) {
-      length++;
-      prefixTable[i] = length;
-      i++;
-    } else {
-      if (length !== 0) {
-        length = prefixTable[length - 1];
-      } else {
-        prefixTable[i] = 0;
-        i++;
-      }
+class Graph {
+  constructor(vertices) {
+    this.vertices = vertices;
+    this.adjList = new Map();
+    for (const v of vertices) {
+      this.adjList.set(v, []);
     }
   }
 
-  return prefixTable;
+  addEdge(u, v) {
+    this.adjList.get(u).push(v);
+  }
 }
-function kmpSearch(text, pattern) {
-  const prefixTable = buildPrefixTable(pattern);
-  const indices = [];
+function tarjanAlgorithm(graph) {
+  const vertices = graph.vertices;
+  const visited = new Set();
+  const stack = [];
+  const low = new Map();
+  const ids = new Map();
+  const result = [];
 
-  let i = 0; // index in the text
-  let j = 0; // index in the pattern
+  let id = 0;
 
-  while (i < text.length) {
-    if (pattern[j] === text[i]) {
-      i++;
-      j++;
-    }
-
-    if (j === pattern.length) {
-      indices.push(i - j);
-      j = prefixTable[j - 1];
-    } else if (i < text.length && pattern[j] !== text[i]) {
-      if (j !== 0) {
-        j = prefixTable[j - 1];
-      } else {
-        i++;
-      }
+  for (const v of vertices) {
+    if (!visited.has(v)) {
+      dfs(v);
     }
   }
 
-  return indices;
+  function dfs(vertex) {
+    visited.add(vertex);
+    low.set(vertex, id);
+    ids.set(vertex, id);
+    id++;
+    stack.unshift(vertex);
+
+    const neighbors = graph.adjList.get(vertex);
+
+    for (const neighbor of neighbors) {
+      if (!visited.has(neighbor)) {
+        dfs(neighbor);
+      }
+
+      if (stack.includes(neighbor)) {
+        low.set(vertex, Math.min(low.get(vertex), low.get(neighbor)));
+      }
+    }
+
+    if (ids.get(vertex) === low.get(vertex)) {
+      const component = [];
+
+      let v;
+      do {
+        v = stack.shift();
+        component.push(v);
+      } while (v !== vertex);
+
+      result.push(component);
+    }
+  }
+
+  return result;
 }
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const indices = kmpSearch(text, pattern);
-console.log(indices); // Output: [10]
+const vertices = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+const graph = new Graph(vertices);
+
+graph.addEdge('A', 'B');
+graph.addEdge('B', 'C');
+graph.addEdge('C', 'A');
+graph.addEdge('C', 'D');
+graph.addEdge('D', 'E');
+graph.addEdge('E', 'F');
+graph.addEdge('F', 'D');
+graph.addEdge('G', 'F');
+graph.addEdge('G', 'G');
+
+const components = tarjanAlgorithm(graph);
+console.log(components);
+[ [ 'D', 'E', 'F' ], [ 'C', 'A', 'B' ], [ 'G' ] ]
