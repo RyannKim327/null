@@ -1,26 +1,70 @@
-function countOccurrences(string, word) {
-  // Split the string into an array of words
-  const words = string.split(' ');
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
 
-  // Initialize a count variable
-  let count = 0;
+class BinaryTree {
+  constructor() {
+    this.root = null;
+  }
 
-  // Iterate through the array of words
-  for (let i = 0; i < words.length; i++) {
-    // Check if the current word matches the word to count
-    if (words[i] === word) {
-      count++;
+  insert(value) {
+    const newNode = new Node(value);
+
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
     }
   }
 
-  // Return the count
-  return count;
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  searchNode(node, value) {
+    if (node === null) {
+      return false;
+    }
+
+    if (value === node.value) {
+      return true;
+    }
+
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else {
+      return this.searchNode(node.right, value);
+    }
+  }
 }
+const tree = new BinaryTree();
+tree.insert(4);   // Inserting nodes into the tree
+tree.insert(2);
+tree.insert(6);
+tree.insert(1);
+tree.insert(3);
+tree.insert(5);
+tree.insert(7);
 
-// Example usage
-const text = 'How much wood would a woodchuck chuck if a woodchuck could chuck wood?';
-const wordToCount = 'wood';
-const occurrences = countOccurrences(text, wordToCount);
-
-console.log(`The word "${wordToCount}" occurs ${occurrences} times in the text.`);
-The word "wood" occurs 2 times in the text.
+console.log(tree.search(6));  // Output: true
+console.log(tree.search(10)); // Output: false
