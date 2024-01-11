@@ -1,43 +1,29 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.children = [];
+function countingSort(arr) {
+  // Find the maximum element in the array
+  let max = Math.max(...arr);
+  
+  // Create a count array with length max+1 and initialize all counts to 0
+  let count = new Array(max + 1).fill(0);
+  
+  // Count the occurrences of each element
+  for (let i = 0; i < arr.length; i++) {
+    count[arr[i]]++;
   }
-}
-
-function depthLimitedSearchIterative(root, target, depthLimit) {
-  if (root.value === target) return root;
-
-  const stack = [{ node: root, depth: 0 }];
-
-  while (stack.length !== 0) {
-    const { node, depth } = stack.pop();
-
-    if (depth < depthLimit) {
-      // Check if the current node's value matches the target
-      if (node.value === target) return node;
-
-      // Add the children of the current node to the stack
-      for (let i = node.children.length - 1; i >= 0; i--) {
-        stack.push({ node: node.children[i], depth: depth + 1 });
-      }
-    }
+  
+  // Modify the count array to store the actual position of each element in the sorted array
+  for (let i = 1; i <= max; i++) {
+    count[i] += count[i - 1];
   }
-
-  return null; // Target not found within the depth limit
+  
+  // Create a sorted array
+  let sortedArr = new Array(arr.length);
+  for (let i = arr.length - 1; i >= 0; i--) {
+    sortedArr[count[arr[i]] - 1] = arr[i];
+    count[arr[i]]--;
+  }
+  
+  return sortedArr;
 }
-
-// Usage example:
-const rootNode = new Node(1); // Create a root node with value 1
-rootNode.children.push(new Node(2)); // Add children to the root node
-rootNode.children.push(new Node(3));
-rootNode.children[0].children.push(new Node(4)); // Add children to the first child node
-rootNode.children[0].children.push(new Node(5));
-
-const targetNode = depthLimitedSearchIterative(rootNode, 5, 3); // Search for value 5 within depth limit 3
-
-if (targetNode) {
-  console.log("Target found!");
-} else {
-  console.log("Target not found within the depth limit.");
-}
+let arr = [4, 2, 2, 8, 3, 3, 1];
+let sortedArr = countingSort(arr);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
