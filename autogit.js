@@ -1,30 +1,22 @@
-function isPalindrome(str) {
-  const len = str.length;
-  for (let i = 0; i < len / 2; i++) {
-    if (str[i] !== str[len - 1 - i]) {
-      return false;
+function selectionSort(arr) {
+  const len = arr.length;
+  
+  for (let i = 0; i < len; i++) {
+    let minIndex = i;
+    
+    for (let j = i + 1; j < len; j++) {
+      if (arr[j] < arr[minIndex]) {
+        minIndex = j;
+      }
+    }
+    
+    if (minIndex !== i) {
+      // Swapping elements
+      [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
     }
   }
-  return true;
+  
+  return arr;
 }
-
-// Usage:
-console.log(isPalindrome("madam")); // Output: true
-console.log(isPalindrome("hello")); // Output: false
-function isPalindrome(str) {
-  const reversed = str.split("").reverse().join("");
-  return str === reversed;
-}
-
-// Usage:
-console.log(isPalindrome("madam")); // Output: true
-console.log(isPalindrome("hello")); // Output: false
-function isPalindrome(str) {
-  return str.split("").every((char, index) => {
-    return char === str[str.length - 1 - index];
-  });
-}
-
-// Usage:
-console.log(isPalindrome("madam")); // Output: true
-console.log(isPalindrome("hello")); // Output: false
+const arr = [9, 5, 1, 4, 3, 2, 8, 6, 7];
+console.log(selectionSort(arr)); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
