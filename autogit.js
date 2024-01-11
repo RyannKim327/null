@@ -1,87 +1,37 @@
-// Graph representation (you can modify this to fit your specific problem)
+function topologicalSort(graph) {
+  const visited = new Set();
+  const stack = [];
+
+  function dfs(node) {
+    visited.add(node);
+
+    const neighbors = graph[node];
+
+    for (const neighbor of neighbors) {
+      if (!visited.has(neighbor)) {
+        dfs(neighbor);
+      }
+    }
+
+    stack.unshift(node); // Push the node onto the stack when all its neighbors are visited
+  }
+
+  for (const node in graph) {
+    if (!visited.has(node)) {
+      dfs(node);
+    }
+  }
+
+  return stack;
+}
 const graph = {
-  'A': ['B', 'C'],
-  'B': ['A', 'D', 'E'],
-  'C': ['A', 'F'],
-  'D': ['B'],
-  'E': ['B', 'F'],
-  'F': ['C', 'E', 'G'],
-  'G': ['F']
+  A: ["B", "C"],
+  B: ["D", "E"],
+  C: ["F"],
+  D: ["G"],
+  E: [],
+  F: [],
+  G: [],
 };
-
-function bidirectionalSearch(start, goal) {
-  // Initialize frontiers
-  const forwardFrontier = [start];
-  const backwardFrontier = [goal];
-  
-  // Initialize visited sets
-  const forwardVisited = new Set([start]);
-  const backwardVisited = new Set([goal]);
-
-  // Initialize parent maps
-  const forwardParents = {};
-  const backwardParents = {};
-  
-  while (forwardFrontier.length > 0 && backwardFrontier.length > 0) {
-    // Expand from forward frontier
-    const forwardNode = forwardFrontier.shift();
-    
-    // Check if forward node is in the backward frontier
-    if (backwardVisited.has(forwardNode)) {
-      const meetingPoint = forwardNode;
-      return buildPath(forwardParents, backwardParents, meetingPoint);
-    }
-    
-    for (const neighbor of graph[forwardNode]) {
-      if (!forwardVisited.has(neighbor)) {
-        forwardVisited.add(neighbor);
-        forwardFrontier.push(neighbor);
-        forwardParents[neighbor] = forwardNode;
-      }
-    }
-    
-    // Expand from backward frontier
-    const backwardNode = backwardFrontier.shift();
-    
-    // Check if backward node is in the forward frontier
-    if (forwardVisited.has(backwardNode)) {
-      const meetingPoint = backwardNode;
-      return buildPath(forwardParents, backwardParents, meetingPoint);
-    }
-    
-    for (const neighbor of graph[backwardNode]) {
-      if (!backwardVisited.has(neighbor)) {
-        backwardVisited.add(neighbor);
-        backwardFrontier.push(neighbor);
-        backwardParents[neighbor] = backwardNode;
-      }
-    }
-  }
-  
-  // No path found
-  return null;
-}
-
-function buildPath(forwardParents, backwardParents, meetingPoint) {
-  const path = [];
-  
-  let current = meetingPoint;
-  while (current) {
-    path.unshift(current);
-    current = forwardParents[current];
-  }
-  
-  current = backwardParents[meetingPoint];
-  while (current) {
-    path.push(current);
-    current = backwardParents[current];
-  }
-  
-  return path;
-}
-
-// Usage example
-const startNode = 'A';
-const goalNode = 'G';
-const path = bidirectionalSearch(startNode, goalNode);
-console.log('Path:', path);
+const result = topologicalSort(graph);
+console.log(result); // Output: ["A", "C", "F", "B", "E", "D", "G"]
