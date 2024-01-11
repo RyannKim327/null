@@ -1,129 +1,115 @@
-class Node {
-  constructor() {
-    this.edges = {};
-    this.suffixLink = null;
+class BTreeNode {
+  constructor(t, isLeaf) {
+    this.t = t; // Minimum degree (defines the range for number of keys)
+    this.keys = []; // Array of keys
+    this.children = []; // Array of child nodes
+    this.isLeaf = isLeaf; // Is true when node is a leaf, false otherwise
+  }
+
+  // Search the node for a given key
+  search(key) {
+    let i = 0;
+    while (i < this.keys.length && key > this.keys[i]) {
+      i++;
+    }
+    if (this.keys[i] === key) {
+      return this;
+    }
+    if (this.isLeaf) {
+      return null;
+    }
+    return this.children[i].search(key);
   }
 }
 
-class SuffixTree {
-  constructor(input) {
-    this.input = input;
-    this.root = new Node();
-    this.activeNode = this.root;
-    this.activeEdge = '';
-    this.activeLength = 0;
-    this.remainingSuffixCount = 0;
-    this.end = { value: -1 };
+class BTree {
+  constructor(t) {
+    this.root = null;
+    this.t = t; // Minimum degree (defines the range for number of keys)
   }
 
-  extendSuffixTree(pos) {
-    this.remainingSuffixCount++;
+  // Function to traverse the B-tree
+  traverse() {
+    if (this.root !== null) {
+      this.traverseNode(this.root);
+    }
+  }
 
-    this.lastNewNode = null;
+  traverseNode(node) {
+    console.log(node.keys);
 
-    while (this.remainingSuffixCount > 0) {
-      if (this.activeLength === 0) this.activeEdge = this.input[pos];
-
-      if (!(this.activeEdge in this.activeNode.edges)) {
-        const newNode = new Node();
-        this.activeNode.edges[this.activeEdge] = newNode;
-
-        if (this.lastNewNode) {
-          this.lastNewNode.suffixLink = this.activeNode;
-          this.lastNewNode = null;
-        }
-      } else {
-        const nextNode = this.activeNode.edges[this.activeEdge];
-        if (this.walkDown(nextNode, pos)) continue;
-
-        if (this.input[nextNode.start + this.activeLength] === this.input[pos]) {
-          if (this.lastNewNode && this.activeNode !== this.root) {
-            this.lastNewNode.suffixLink = this.activeNode;
-            this.lastNewNode = null;
-          }
-
-          this.activeLength++;
-          break;
-        }
-
-        const splitEnd = nextNode.start + this.activeLength - 1;
-
-        const splitNode = new Node();
-        nextNode.start += this.activeLength;
-        splitNode.start = nextNode.start;
-        splitNode.end = splitEnd;
-        nextNode.start = splitEnd + 1;
-        splitNode.edges[this.input[pos]] = new Node();
-        splitNode.edges[this.input[splitNode.start]] = nextNode;
-        this.activeNode.edges[this.input[splitNode.start]] = splitNode;
-
-        if (this.lastNewNode) {
-          this.lastNewNode.suffixLink = splitNode;
-        }
-
-        this.lastNewNode = splitNode;
-      }
-
-      this.remainingSuffixCount--;
-      if (this.activeNode === this.root && this.activeLength > 0) {
-        this.activeLength--;
-        this.activeEdge = this.input[pos - this.remainingSuffixCount + 1];
-      } else if (this.activeNode !== this.root) {
-        this.activeNode = this.activeNode.suffixLink;
+    if (!node.isLeaf) {
+      for (let i = 0; i < node.children.length; i++) {
+        this.traverseNode(node.children[i]);
       }
     }
   }
 
-  walkDown(node, pos) {
-    if (this.activeLength >= node.end - node.start + 1) {
-      this.activeEdge = this.input[pos - (node.end - node.start + 1) + 1];
-      this.activeLength -= node.end - node.start + 1;
-      this.activeNode = node;
-      return true;
-    }
-    return false;
-  }
-
-  buildSuffixTree() {
-    const len = this.input.length;
-
-    for (let i = 0; i < len; i++) {
-      this.extendSuffixTree(i);
+  // Function to insert a key
+  insert(key) {
+    if (this.root === null) {
+      this.root = new BTreeNode(this.t, true);
+      this.root.keys.push(key);
+    } else {
+      if (this.root.keys.length === 2 * this.t - 1) {
+        let newRoot = new BTreeNode(this.t, false);
+        newRoot.children.push(this.root);
+        this.splitChild(newRoot, 0, this.root);
+        this.root = newRoot;
+      }
+      this.insertNonFull(this.root, key);
     }
   }
 
-  search(pattern) {
-    const len = pattern.length;
-    let currentNode = this.root;
-    let currentLen = 0;
-    let i = 0;
+  insertNonFull(node, key) {
+    let i = node.keys.length - 1;
 
-    while (i < len) {
-      if (currentNode.edges[pattern[i]]) {
-        const edge = currentNode.edges[pattern[i]];
-        const edgeLen = edge.end - edge.start + 1;
-        const j = edge.start;
+    if (node.isLeaf) {
+      // Insert the key at the right position
+      while (i >= 0 && key < node.keys[i]) {
+        node.keys[i + 1] = node.keys[i];
+        i--;
+      }
+      node.keys[i + 1] = key;
+    } else {
+      while (i >= 0 && key < node.keys[i]) {
+        i--;
+      }
+      i++;
 
-        while (currentLen < len && i < len && pattern[i] === this.input[j]) {
+      if (node.children[i].keys.length === 2 * this.t - 1) {
+        this.splitChild(node, i, node.children[i]);
+        if (key > node.keys[i]) {
           i++;
-          currentLen++;
-          j++;
-
-          if (currentLen === edgeLen)
-            currentNode = edge;
         }
-      } else {
-        return false;
       }
+      this.insertNonFull(node.children[i], key);
+    }
+  }
+
+  splitChild(parent, index, node) {
+    let newNode = new BTreeNode(this.t, node.isLeaf);
+
+    parent.keys.splice(index, 0, node.keys[this.t - 1]);
+
+    if (!node.isLeaf) {
+      // Move the last t-1 keys and their children to the new node
+      newNode.children = node.children.splice(this.t, this.t - 1);
     }
 
-    return true;
+    node.keys.splice(this.t - 1);
+
+    parent.children.splice(index + 1, 0, newNode);
   }
 }
 
 // Example usage:
-const suffixTree = new SuffixTree('banana');
-suffixTree.buildSuffixTree();
+let bTree = new BTree(3);
+bTree.insert(1);
+bTree.insert(3);
+bTree.insert(7);
+bTree.insert(10);
+bTree.insert(12);
+bTree.insert(5);
 
-console.log(suffixTree.search('ana')); // Output: true
-console.log(suffixTree.search('apple')); // Output: false
+bTree.traverse(); // Output: [5, 7, 10] [1, 3] [12]
