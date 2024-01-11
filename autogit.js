@@ -1,9 +1,10 @@
-let str = "Hello, World!";
-let reversedStr = str.split('').reverse().join('');
-console.log(reversedStr); // Output: !dlroW ,olleH
-let str = "Hello, World!";
-let reversedStr = '';
-for (let i = str.length - 1; i >= 0; i--) {
-  reversedStr += str[i];
+function calculateTriangleArea(base, height) {
+  let area = (base * height) / 2;
+  return area;
 }
-console.log(reversedStr); // Output: !dlroW ,olleH
+
+// Example usage
+let base = 5;
+let height = 3;
+let area = calculateTriangleArea(base, height);
+console.log("The area of the triangle is: " + area);
