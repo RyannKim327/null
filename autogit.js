@@ -1,31 +1,23 @@
-function countOccurrencesUsingRegex(word, string) {
-  const regex = new RegExp(word, 'gi'); // 'gi' indicates a global and case-insensitive search
-  const matches = string.match(regex);
-  return matches ? matches.length : 0;
+function areAnagrams(str1, str2) {
+  // Remove non-alphabetic characters and convert to lowercase
+  str1 = str1.replace(/[^A-Za-z]/g, '').toLowerCase();
+  str2 = str2.replace(/[^A-Za-z]/g, '').toLowerCase();
+
+  // Convert strings to arrays, sort them, and convert back to strings
+  const sortedStr1 = str1.split('').sort().join('');
+  const sortedStr2 = str2.split('').sort().join('');
+
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
 
-const sentence = "How much wood would a woodchuck chuck if a woodchuck could chuck wood?";
-const word = "wood";
+// Example usage
+const string1 = 'listen';
+const string2 = 'silent';
 
-const count = countOccurrencesUsingRegex(word, sentence);
-console.log(`The word "${word}" occurs ${count} times.`);
-function countOccurrencesUsingStringMethods(word, string) {
-  // Split the string into an array of words
-  const words = string.split(' ');
-
-  let count = 0;
-  for (let i = 0; i < words.length; i++) {
-    if (words[i].toLowerCase() === word.toLowerCase()) { // Perform a case-insensitive comparison
-      count++;
-    }
-  }
-
-  return count;
+if (areAnagrams(string1, string2)) {
+  console.log(`${string1} and ${string2} are anagrams.`);
+} else {
+  console.log(`${string1} and ${string2} are not anagrams.`);
 }
-
-const sentence = "How much wood would a woodchuck chuck if a woodchuck could chuck wood?";
-const word = "wood";
-
-const count = countOccurrencesUsingStringMethods(word, sentence);
-console.log(`The word "${word}" occurs ${count} times.`);
-The word "wood" occurs 2 times.
+listen and silent are anagrams.
