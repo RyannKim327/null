@@ -1,63 +1,24 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-
-function reverseLinkedList(head) {
-  let current = head;
-  let previous = null;
-  let next = null;
-
-  while (current !== null) {
-    // Store the next node
-    next = current.next;
-
-    // Reverse the pointer of current node
-    current.next = previous;
-
-    // Move previous and current one step forward
-    previous = current;
-    current = next;
+function quickSort(array) {
+  if (array.length <= 1) {
+    return array;
   }
 
-  // Update the head to point to the last node (new first node)
-  head = previous;
+  const pivot = array[array.length - 1];
+  const left = [];
+  const right = [];
 
-  return head;
-}
-// Create a linked list: 1 -> 2 -> 3 -> 4 -> 5
-const head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-console.log("Original Linked List:");
-printLinkedList(head);
-
-const reversedHead = reverseLinkedList(head);
-
-console.log("Reversed Linked List:");
-printLinkedList(reversedHead);
-
-function printLinkedList(head) {
-  let current = head;
-  while (current !== null) {
-    console.log(current.value);
-    current = current.next;
+  for (let i = 0; i < array.length - 1; i++) {
+    if (array[i] < pivot) {
+      left.push(array[i]);
+    } else {
+      right.push(array[i]);
+    }
   }
+
+  return [...quickSort(left), pivot, ...quickSort(right)];
 }
-Original Linked List:
-1
-2
-3
-4
-5
-Reversed Linked List:
-5
-4
-3
-2
-1
+
+// Example usage:
+const unsortedArray = [8, 3, 5, 1, 9, 2];
+const sortedArray = quickSort(unsortedArray);
+console.log(sortedArray); // Output: [1, 2, 3, 5, 8, 9]
