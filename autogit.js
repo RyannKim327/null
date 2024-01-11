@@ -1,11 +1,12 @@
-function getListLength(head) {
-  let length = 0;
-  let currentNode = head;
-
-  while (currentNode !== null) {
-    length++;
-    currentNode = currentNode.next;
+function findStringLength(str) {
+  let count = 0;
+  while (str[count] !== undefined) {
+    count++;
   }
-
-  return length;
+  return count;
 }
+
+// Example usage:
+const myString = "Hello, World!";
+const length = findStringLength(myString);
+console.log(length); // Output: 13
