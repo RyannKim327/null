@@ -1,4 +1,4 @@
-function getLinkedListLength(head) {
+function getListLength(head) {
   let length = 0;
   let currentNode = head;
 
