@@ -1,23 +1,15 @@
-function areAnagrams(str1, str2) {
-  // Remove non-alphabetic characters and convert to lowercase
-  str1 = str1.replace(/[^A-Za-z]/g, '').toLowerCase();
-  str2 = str2.replace(/[^A-Za-z]/g, '').toLowerCase();
-
-  // Convert strings to arrays, sort them, and convert back to strings
-  const sortedStr1 = str1.split('').sort().join('');
-  const sortedStr2 = str2.split('').sort().join('');
-
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+function isAscending(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false; // If any element is greater than the next element, the array is not sorted in ascending order
+    }
+  }
+  return true; // If no elements violate the ascending order, the array is sorted in ascending order
 }
 
-// Example usage
-const string1 = 'listen';
-const string2 = 'silent';
+// Example usage:
+const array1 = [1, 2, 3, 4, 5];
+console.log(isAscending(array1)); // Output: true
 
-if (areAnagrams(string1, string2)) {
-  console.log(`${string1} and ${string2} are anagrams.`);
-} else {
-  console.log(`${string1} and ${string2} are not anagrams.`);
-}
-listen and silent are anagrams.
+const array2 = [5, 4, 3, 2, 1];
+console.log(isAscending(array2)); // Output: false
