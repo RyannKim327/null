@@ -1,86 +1,61 @@
-function initializeGraph(vertices, edges) {
-  const graph = {};
-  for (let vertex of vertices) {
-    graph[vertex] = [];
-  }
-  for (let edge of edges) {
-    const [start, end, weight] = edge;
-    graph[start].push({ end, weight });
-  }
-  return graph;
-}
-function bellmanFord(graph, source) {
-  const distance = {};
-  for (let vertex in graph) {
-    distance[vertex] = Infinity;
-  }
-  distance[source] = 0;
-}
-for (let i = 0; i < Object.keys(graph).length - 1; i++) {
-  for (let start in graph) {
-    for (let { end, weight } of graph[start]) {
-      distance[end] = Math.min(distance[end], distance[start] + weight);
-    }
+class PriorityQueue {
+  constructor() {
+    this.heap = [];
   }
 }
-for (let start in graph) {
-  for (let { end, weight } of graph[start]) {
-    if (distance[end] > distance[start] + weight) {
-      throw new Error('Graph contains a negative-weight cycle');
-    }
+enqueue(value, priority) {
+  const element = { value, priority };
+  this.heap.push(element);
+  this.bubbleUp();
+}
+bubbleUp() {
+  let index = this.heap.length - 1;
+
+  while (index > 0) {
+    const element = this.heap[index];
+    const parentIndex = Math.floor((index - 1) / 2);
+    const parent = this.heap[parentIndex];
+
+    if (element.priority >= parent.priority) break;
+    
+    this.heap[parentIndex] = element;
+    this.heap[index] = parent;
+    index = parentIndex;
   }
 }
-return distance;
-function initializeGraph(vertices, edges) {
-  const graph = {};
-  for (let vertex of vertices) {
-    graph[vertex] = [];
+dequeue() {
+  const min = this.heap[0];
+  const last = this.heap.pop();
+  
+  if (this.heap.length > 0) {
+    this.heap[0] = last;
+    this.sinkDown(0);
   }
-  for (let edge of edges) {
-    const [start, end, weight] = edge;
-    graph[start].push({ end, weight });
-  }
-  return graph;
+  
+  return min;
 }
+sinkDown(index) {
+  const leftChildIndex = 2 * index + 1;
+  const rightChildIndex = 2 * index + 2;
+  let smallestIndex = index;
 
-function bellmanFord(graph, source) {
-  const distance = {};
-  for (let vertex in graph) {
-    distance[vertex] = Infinity;
-  }
-  distance[source] = 0;
-
-  for (let i = 0; i < Object.keys(graph).length - 1; i++) {
-    for (let start in graph) {
-      for (let { end, weight } of graph[start]) {
-        distance[end] = Math.min(distance[end], distance[start] + weight);
-      }
-    }
+  if (leftChildIndex < this.heap.length && this.heap[leftChildIndex].priority < this.heap[smallestIndex].priority) {
+    smallestIndex = leftChildIndex;
   }
 
-  for (let start in graph) {
-    for (let { end, weight } of graph[start]) {
-      if (distance[end] > distance[start] + weight) {
-        throw new Error('Graph contains a negative-weight cycle');
-      }
-    }
+  if (rightChildIndex < this.heap.length && this.heap[rightChildIndex].priority < this.heap[smallestIndex].priority) {
+    smallestIndex = rightChildIndex;
   }
 
-  return distance;
+  if (smallestIndex !== index) {
+    [this.heap[index], this.heap[smallestIndex]] = [this.heap[smallestIndex], this.heap[index]];
+    this.sinkDown(smallestIndex);
+  }
 }
-
-// Example Usage
-const vertices = ['A', 'B', 'C', 'D', 'E'];
-const edges = [
-  ['A', 'B', 4],
-  ['A', 'C', 2],
-  ['B', 'D', 5],
-  ['C', 'B', -1],
-  ['C', 'D', 6],
-  ['D', 'E', 3],
-];
-
-const graph = initializeGraph(vertices, edges);
-const source = 'A';
-const shortestDistances = bellmanFord(graph, source);
-console.log(shortestDistances);
+const pq = new PriorityQueue();
+pq.enqueue('Task 1', 1);
+pq.enqueue('Task 2', 3);
+pq.enqueue('Task 3', 2);
+console.log(pq.dequeue()); // Output: { value: 'Task 1', priority: 1 }
+console.log(pq.dequeue()); // Output: { value: 'Task 3', priority: 2 }
+console.log(pq.dequeue()); // Output: { value: 'Task 2', priority: 3 }
