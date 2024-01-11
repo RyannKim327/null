@@ -1,17 +1,13 @@
-function isPrime(number) {
-  // Handle special cases
-  if (number <= 1) {
-    return false;
-  }
-  
-  // Check if number is divisible by any number from 2 to the square root of the number
-  for (let i = 2; i <= Math.sqrt(number); i++) {
-    if (number % i === 0) {
+function isSortedAscending(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
       return false;
     }
   }
-  
   return true;
 }
-console.log(isPrime(7)); // Output: true
-console.log(isPrime(12)); // Output: false
+const array1 = [1, 2, 3, 4, 5];
+console.log(isSortedAscending(array1));  // true
+
+const array2 = [5, 3, 2, 1];
+console.log(isSortedAscending(array2));  // false
