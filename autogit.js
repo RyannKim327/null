@@ -1,53 +1,19 @@
-class Graph {
-  constructor() {
-    this.adjList = {};
-  }
+function insertionSort(arr) {
+  for (let i = 1; i < arr.length; i++) {
+    let currentValue = arr[i];
+    let j = i - 1;
 
-  addVertex(vertex) {
-    if (!this.adjList[vertex]) {
-      this.adjList[vertex] = [];
-    }
-  }
-
-  addEdge(vertex1, vertex2) {
-    if (!this.adjList[vertex1] || !this.adjList[vertex2]) {
-      throw new Error('Vertex does not exist in the graph.');
+    while (j >= 0 && arr[j] > currentValue) {
+      arr[j + 1] = arr[j];
+      j--;
     }
 
-    this.adjList[vertex1].push(vertex2);
-    this.adjList[vertex2].push(vertex1);
+    arr[j + 1] = currentValue;
   }
 
-  dfs(startVertex) {
-    const visited = new Set();
-
-    const dfsHelper = (vertex) => {
-      console.log(vertex);
-      visited.add(vertex);
-
-      const neighbors = this.adjList[vertex];
-      for (let neighbor of neighbors) {
-        if (!visited.has(neighbor)) {
-          dfsHelper(neighbor);
-        }
-      }
-    };
-
-    dfsHelper(startVertex);
-  }
+  return arr;
 }
 
 // Example usage:
-const graph = new Graph();
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
-
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('D', 'E');
-
-graph.dfs('A');
+let unsortedArray = [5, 2, 4, 6, 1, 3];
+console.log(insertionSort(unsortedArray)); // Output: [1, 2, 3, 4, 5, 6]
