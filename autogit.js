@@ -1,35 +1,89 @@
 class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+  constructor(data) {
+    this.data = data;
+    this.next = null;
   }
 }
 
-function countLeafNodes(root) {
-  if (root === null) {
-    return 0; // Base case: an empty tree has no leaf nodes
-  } else if (root.left === null && root.right === null) {
-    return 1; // Base case: a tree with only a root node is a leaf node
-  } else {
-    // Recursively count leaf nodes in the left and right subtrees
-    const leftCount = countLeafNodes(root.left);
-    const rightCount = countLeafNodes(root.right);
-    return leftCount + rightCount;
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+  }
+
+  append(data) {
+    const newNode = new Node(data);
+    
+    if (this.head === null) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+  }
+
+  prepend(data) {
+    const newNode = new Node(data);
+
+    if (this.head === null) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      newNode.next = this.head;
+      this.head = newNode;
+    }
+  }
+
+  delete(data) {
+    if (this.head === null) {
+      return;
+    }
+
+    if (this.head.data === data) {
+      this.head = this.head.next;
+
+      if (this.head === null) {
+        this.tail = null;
+      }
+      
+      return;
+    }
+
+    let currentNode = this.head;
+    while (currentNode.next !== null) {
+      if (currentNode.next.data === data) {
+        currentNode.next = currentNode.next.next;
+
+        if (currentNode.next === null) {
+          this.tail = currentNode;
+        }
+
+        return;
+      }
+
+      currentNode = currentNode.next;
+    }
+  }
+
+  print() {
+    let currentNode = this.head;
+    const result = [];
+
+    while (currentNode !== null) {
+      result.push(currentNode.data);
+      currentNode = currentNode.next;
+    }
+
+    console.log(result);
   }
 }
+const list = new LinkedList();
 
-// Example usage:
+list.append(10);
+list.append(20);
+list.prepend(5);
+list.print(); // Output: [5, 10, 20]
 
-// Create a binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
-
-// Call the countLeafNodes function
-const leafNodeCount = countLeafNodes(root);
-console.log("Number of leaf nodes:", leafNodeCount);
+list.delete(10);
+list.print(); // Output: [5, 20]
