@@ -1,16 +1,38 @@
-function maxSubarraySum(arr) {
-  let maxSoFar = arr[0];
-  let maxEndingHere = arr[0];
+function topologicalSort(graph) {
+  const visited = new Set();
+  const stack = [];
 
-  for (let i = 1; i < arr.length; i++) {
-    maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
-    maxSoFar = Math.max(maxSoFar, maxEndingHere);
+  function dfs(node) {
+    visited.add(node);
+
+    // Visit all neighbors
+    for (let neighbor of graph[node]) {
+      if (!visited.has(neighbor)) {
+        dfs(neighbor);
+      }
+    }
+
+    // Push the node to the stack after visiting all neighbors
+    stack.unshift(node);
   }
-  
-  return maxSoFar;
-}
 
-// Example usage:
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const maxSum = maxSubarraySum(array);
-console.log(maxSum); // Output: 6
+  // Visit all nodes in the graph
+  for (let node in graph) {
+    if (!visited.has(node)) {
+      dfs(node);
+    }
+  }
+
+  return stack;
+}
+const graph = {
+  A: ["B", "C"],
+  B: ["D", "E"],
+  C: ["F"],
+  D: [],
+  E: ["F"],
+  F: []
+};
+
+const sorted = topologicalSort(graph);
+console.log(sorted);
