@@ -1,49 +1,24 @@
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+// Import the necessary libraries
+const fetch = require('node-fetch');
+
+// Define the URL of the API
+const API_URL = 'https://api.example.com';
+
+// Define the asynchronous function to connect to the API
+async function connectToAPI() {
+  try {
+    // Perform the API request
+    const response = await fetch(API_URL);
+    
+    // Parse the response as JSON
+    const data = await response.json();
+
+    // Process the retrieved data
+    console.log(data);
+  } catch (error) {
+    console.error('Error connecting to API:', error);
   }
 }
 
-class BinaryTree {
-  constructor() {
-    this.root = null;
-  }
-
-  insert(value) {
-    const newNode = new TreeNode(value);
-
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
-
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
-
-  // Other operations like search, traversal, delete, etc. can also be implemented
-}
-const tree = new BinaryTree();
-tree.insert(4);
-tree.insert(2);
-tree.insert(6);
-tree.insert(1);
-tree.insert(3);
-tree.insert(5);
-tree.insert(7);
+// Call the function to connect to the API
+connectToAPI();
