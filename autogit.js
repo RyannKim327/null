@@ -1,30 +1,21 @@
-function bfs(graph, startNode) {
-  const queue = [startNode];
-  const visited = new Set();
-  
-  visited.add(startNode);
-  
-  while (queue.length > 0) {
-    const current = queue.shift();
-    console.log(current); // Process the current node
-    
-    const neighbors = graph[current];
-    
-    for (let neighbor of neighbors) {
-      if (!visited.has(neighbor)) {
-        visited.add(neighbor);
-        queue.push(neighbor);
-      }
-    }
-  }
-}
-const graph = {
-  A: ['B', 'C'],
-  B: ['A', 'D', 'E'],
-  C: ['A', 'F'],
-  D: ['B'],
-  E: ['B', 'F'],
-  F: ['C', 'E']
-};
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
 
-bfs(graph, 'A'); // Call the BFS function with the graph and starting node
+const index = array.indexOf(elementToRemove);
+if (index !== -1) {
+  array.splice(index, 1);
+}
+
+console.log(array); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
+
+const newArray = array.filter((element) => element !== elementToRemove);
+
+console.log(newArray); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
+
+const newArray = [...array.slice(0, array.indexOf(elementToRemove)), ...array.slice(array.indexOf(elementToRemove) + 1)];
+
+console.log(newArray); // Output: [1, 2, 4, 5]
