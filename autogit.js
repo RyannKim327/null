@@ -1,54 +1,14 @@
-function depthLimitedSearch(node, goal, depthLimit) {
-    if (node === goal) {
-        return true;
-    }
+function getRandomNumber(min, max) {
+  // Calculate the range of the numbers
+  var range = max - min + 1;
 
-    if (depthLimit === 0) {
-        return false;
-    }
+  // Generate a random number from 0 to range - 1
+  var random = Math.floor(Math.random() * range);
 
-    for (let i = 0; i < node.children.length; i++) {
-        if (depthLimitedSearch(node.children[i], goal, depthLimit - 1)) {
-            return true;
-        }
-    }
+  // Add the random number to the minimum value to get a number within the range
+  var result = min + random;
 
-    return false;
+  return result;
 }
-// Define a simple tree structure
-const rootNode = {
-    value: 'A',
-    children: [
-        {
-            value: 'B',
-            children: [
-                {
-                    value: 'C',
-                    children: []
-                },
-                {
-                    value: 'D',
-                    children: []
-                }
-            ]
-        },
-        {
-            value: 'E',
-            children: [
-                {
-                    value: 'F',
-                    children: []
-                },
-                {
-                    value: 'G',
-                    children: []
-                }
-            ]
-        }
-    ]
-};
-
-// Search for node 'G' with a depth limit of 2
-const result = depthLimitedSearch(rootNode, 'G', 2);
-
-console.log(result); // Output: true
+var randomNumber = getRandomNumber(1, 100);
+console.log(randomNumber);
