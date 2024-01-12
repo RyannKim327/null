@@ -1,51 +1,76 @@
-function findMedianSortedArrays(nums1, nums2) {
-  // Merge the two arrays into one sorted array
-  const mergedArray = mergeSortedArrays(nums1, nums2);
-
-  // Find the median of the merged array
-  const length = mergedArray.length;
-  const mid = Math.floor(length / 2);
-
-  if (length % 2 === 0) {
-    // If the merged array length is even, average the middle two elements
-    return (mergedArray[mid - 1] + mergedArray[mid]) / 2;
-  } else {
-    // If the merged array length is odd, return the middle element
-    return mergedArray[mid];
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
+class BinarySearchTree {
+  constructor() {
+    this.root = null;
+  }
 
-function mergeSortedArrays(nums1, nums2) {
-  const mergedArray = [];
-  let i = 0; // Pointer for nums1
-  let j = 0; // Pointer for nums2
+  // Helper method to insert a value into the tree
+  insert(value) {
+    const newNode = new Node(value);
 
-  while (i < nums1.length && j < nums2.length) {
-    if (nums1[i] <= nums2[j]) {
-      mergedArray.push(nums1[i]);
-      i++;
+    if (this.root === null) {
+      this.root = newNode;
     } else {
-      mergedArray.push(nums2[j]);
-      j++;
+      this.insertNode(this.root, newNode);
     }
   }
 
-  // Copy the remaining elements from nums1, if any
-  while (i < nums1.length) {
-    mergedArray.push(nums1[i]);
-    i++;
+  // Recursive helper method to insert a value into the tree
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
   }
 
-  // Copy the remaining elements from nums2, if any
-  while (j < nums2.length) {
-    mergedArray.push(nums2[j]);
-    j++;
+  // Helper method to perform an in-order traversal of the tree
+  inOrderTraversal(callback) {
+    this.inOrderTraversalNode(this.root, callback);
   }
 
-  return mergedArray;
+  // Recursive helper method to perform an in-order traversal of the tree
+  inOrderTraversalNode(node, callback) {
+    if (node !== null) {
+      this.inOrderTraversalNode(node.left, callback);
+      callback(node.value);
+      this.inOrderTraversalNode(node.right, callback);
+    }
+  }
 }
-const nums1 = [1, 3];
-const nums2 = [2, 4];
+const tree = new BinarySearchTree();
+tree.insert(8);
+tree.insert(3);
+tree.insert(10);
+tree.insert(1);
+tree.insert(6);
+tree.insert(14);
+tree.insert(4);
+tree.insert(7);
+tree.insert(13);
 
-const median = findMedianSortedArrays(nums1, nums2);
-console.log(median); // Output: 2.5
+// Example usage of in-order traversal
+tree.inOrderTraversal((value) => console.log(value));
+1
+3
+4
+6
+7
+8
+10
+13
+14
