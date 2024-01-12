@@ -1,28 +1,85 @@
-function findCommonPrefix(strings) {
-  // Base case: If the array is empty, return an empty string
-  if (strings.length === 0) {
-    return '';
+class BTreeNode {
+  constructor(order) {
+    this.order = order; // Maximum number of children
+    this.keys = []; // Array of keys stored in the node
+    this.children = []; // Array of child nodes
+    this.isLeaf = true; // Indicates if the node is a leaf
   }
-
-  // Start with the first string as the common prefix
-  let prefix = strings[0];
-
-  // Iterate through the array, starting from the second string
-  for (let i = 1; i < strings.length; i++) {
-    // While the current string does not start with the prefix, remove the last character of the prefix
-    while (strings[i].indexOf(prefix) !== 0) {
-      prefix = prefix.slice(0, prefix.length - 1);
-    }
-
-    // If the prefix becomes empty, there are no common characters among the strings
-    if (prefix === '') {
-      return '';
-    }
-  }
-
-  return prefix;
 }
-const strings = ['apple', 'app', 'approve'];
 
-const longestCommonPrefix = findCommonPrefix(strings);
-console.log(longestCommonPrefix);  // Output: "app"
+class BTree {
+  constructor(order) {
+    this.root = new BTreeNode(order);
+  }
+
+  insert(key) {
+    const node = this.root;
+
+    if (node.keys.includes(key)) {
+      console.log('Key already exists');
+      return;
+    }
+
+    if (node.keys.length === 2 * node.order - 1) {
+      const newNode = new BTreeNode(node.order);
+      this.root = newNode;
+      newNode.children.push(node);
+      this.splitChild(newNode, 0);
+      this.insertNonFull(newNode, key);
+    } else {
+      this.insertNonFull(node, key);
+    }
+  }
+
+  insertNonFull(node, key) {
+    let i = node.keys.length - 1;
+
+    if (node.isLeaf) {
+      while (i >= 0 && key < node.keys[i]) {
+        node.keys[i + 1] = node.keys[i];
+        i--;
+      }
+
+      node.keys[i + 1] = key;
+    } else {
+      while (i >= 0 && key < node.keys[i]) {
+        i--;
+      }
+
+      i++;
+
+      if (node.children[i].keys.length === 2 * node.order - 1) {
+        this.splitChild(node, i);
+
+        if (key > node.keys[i]) {
+          i++;
+        }
+      }
+
+      this.insertNonFull(node.children[i], key);
+    }
+  }
+
+  splitChild(node, index) {
+    const y = node.children[index];
+    const newChild = new BTreeNode(y.order);
+    node.children.splice(index + 1, 0, newChild);
+    node.keys.splice(index, 0, y.keys[y.keys.length - 1]);
+
+    newChild.isLeaf = y.isLeaf;
+    const keysToMove = y.keys.splice(y.order, y.keys.length);
+    newChild.keys = keysToMove;
+
+    if (!y.isLeaf) {
+      const childrenToMove = y.children.splice(y.order, y.children.length);
+      newChild.children = childrenToMove;
+    }
+  }
+}
+const bTree = new BTree(3); // Create a B-tree with order 3
+
+bTree.insert(10);
+bTree.insert(5);
+bTree.insert(15);
+bTree.insert(20);
+bTree.insert(12);
