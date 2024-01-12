@@ -1,11 +1,4 @@
-function getLinkedListLength(head) {
-  let length = 0;
-  let current = head;
+const array = [5, 2, 9, 1, 7];
+const max = Math.max(...array);
 
-  while (current !== null) {
-    length++;
-    current = current.next;
-  }
-
-  return length;
-}
+console.log(max); // Output: 9
