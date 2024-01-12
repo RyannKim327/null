@@ -1,49 +1,43 @@
-function findKthSmallest(arr, k) {
-  if (k < 1 || k > arr.length) {
-    return "Invalid input";
+function generateSkipTable(pattern) {
+  const skipTable = {};
+  const patternLength = pattern.length - 1;
+  
+  // Fill the skip table with the maximum number of characters to skip
+  for (let i = 0; i < patternLength; i++) {
+    skipTable[pattern[i]] = patternLength - i;
   }
-
-  function swap(arr, a, b) {
-    const temp = arr[a];
-    arr[a] = arr[b];
-    arr[b] = temp;
-  }
-
-  function partition(arr, low, high) {
-    const pivot = arr[high];
-    let i = low;
-
-    for (let j = low; j < high; j++) {
-      if (arr[j] < pivot) {
-        swap(arr, i, j);
-        i++;
+  
+  return skipTable;
+}
+function boyerMooreHorspoolSearch(pattern, text) {
+  const skipTable = generateSkipTable(pattern);
+  const patternLength = pattern.length;
+  const textLength = text.length;
+  let index = 0;
+  
+  while (index <= textLength - patternLength) {
+    let match = true;
+    
+    // Compare pattern characters from right to left
+    for (let i = patternLength - 1; i >= 0; i--) {
+      if (pattern[i] !== text[index + i]) {
+        match = false;
+        
+        // Skip characters based on the skip table
+        const skip = skipTable[text[index + patternLength - 1]] || patternLength;
+        index += skip;
+        break;
       }
     }
-
-    swap(arr, i, high);
-    return i;
-  }
-
-  function quickSelect(arr, low, high, k) {
-    if (low === high) {
-      return arr[low];
-    }
-
-    const pivotIndex = partition(arr, low, high);
-
-    if (k === pivotIndex) {
-      return arr[k];
-    } else if (k < pivotIndex) {
-      return quickSelect(arr, low, pivotIndex - 1, k);
-    } else {
-      return quickSelect(arr, pivotIndex + 1, high, k);
+    
+    if (match) {
+      return index;  // Pattern found
     }
   }
-
-  return quickSelect(arr, 0, arr.length - 1, k - 1);
+  
+  return -1;  // Pattern not found
 }
-const array = [7, 10, 4, 3, 20, 15];
-const k = 3;
-
-const kthSmallest = findKthSmallest(array, k);
-console.log(kthSmallest); // Output: 7
+const text = "Hello, world!";
+const pattern = "world";
+const index = boyerMooreHorspoolSearch(pattern, text);
+console.log(index);  // Output: 7
