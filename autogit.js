@@ -1,16 +1,24 @@
-function countOccurrences(string, word) {
-  // Create a regular expression dynamically with the word and the global flag
-  var regex = new RegExp(word, 'g');
+function quicksort(array) {
+    if (array.length <= 1) {
+        return array;
+    } else {
+        const pivot = array[0];
+        const lesser = [];
+        const greater = [];
 
-  // Use the match() function to find all matches
-  var matches = string.match(regex);
+        for (let i = 1; i < array.length; i++) {
+            if (array[i] < pivot) {
+                lesser.push(array[i]);
+            } else {
+                greater.push(array[i]);
+            }
+        }
 
-  // Return the count of matches
-  return matches ? matches.length : 0;
+        return quicksort(lesser).concat(pivot, quicksort(greater));
+    }
 }
 
 // Example usage
-var sentence = "How much wood would a woodchuck chuck, if a woodchuck could chuck wood?";
-var wordToCount = "wood";
-var count = countOccurrences(sentence, wordToCount);
-console.log(count); // Output: 2
+const unsortedArray = [5, 9, 3, 1, 8, 6, 2, 7, 4];
+const sortedArray = quicksort(unsortedArray);
+console.log(sortedArray);
