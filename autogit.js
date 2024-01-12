@@ -1,60 +1,37 @@
-class HashTable {
-  constructor(size) {
-    this.size = size;
-    this.data = new Array(size);
-  }
-
-  _hash(key) {
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) {
-      hash = (hash + key.charCodeAt(i) * i) % this.size;
-    }
-    return hash;
-  }
-
-  set(key, value) {
-    const index = this._hash(key);
-    if (!this.data[index]) {
-      this.data[index] = [];
-    }
-    this.data[index].push([key, value]);
-  }
-
-  get(key) {
-    const index = this._hash(key);
-    const bucket = this.data[index];
-    if (!bucket) {
-      return undefined;
-    }
-    for (let i = 0; i < bucket.length; i++) {
-      if (bucket[i][0] === key) {
-        return bucket[i][1];
-      }
-    }
-    return undefined;
-  }
-
-  remove(key) {
-    const index = this._hash(key);
-    const bucket = this.data[index];
-    if (!bucket) {
-      return undefined;
-    }
-    for (let i = 0; i < bucket.length; i++) {
-      if (bucket[i][0] === key) {
-        const value = bucket[i][1];
-        bucket.splice(i, 1);
-        return value;
-      }
-    }
-    return undefined;
-  }
+function Node(value) {
+  this.value = value;
+  this.next = null;
 }
-const hashTable = new HashTable(10);
-hashTable.set("name", "John");
-hashTable.set("age", 25);
-console.log(hashTable.get("name")); // Output: "John"
-console.log(hashTable.get("age")); // Output: 25
-console.log(hashTable.get("city")); // Output: undefined
-hashTable.remove("name");
-console.log(hashTable.get("name")); // Output: undefined
+function reverseLinkedList(head) {
+  let prevNode = null;
+  let currNode = head;
+
+  while (currNode !== null) {
+    const nextNode = currNode.next;
+    currNode.next = prevNode;
+    prevNode = currNode;
+    currNode = nextNode;
+  }
+
+  return prevNode;
+}
+// Create a linked list with 3 nodes: 1 -> 2 -> 3
+const node1 = new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
+
+node1.next = node2;
+node2.next = node3;
+
+// Reverse the linked list
+const reversedHead = reverseLinkedList(node1);
+
+// Output the reversed list: 3 -> 2 -> 1
+let current = reversedHead;
+while (current !== null) {
+  console.log(current.value);
+  current = current.next;
+}
+3
+2
+1
