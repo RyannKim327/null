@@ -1,39 +1,15 @@
-function fibonacciSearch(arr, x, n) {
-  let fib = [0, 1];
-
-  // Generating Fibonacci sequence up to a certain length or until it exceeds the array length
-  while (fib[fib.length - 1] < n) {
-    fib.push(fib[fib.length - 1] + fib[fib.length - 2]);
-  }
-  
-  let offset = 0;
-  let index = 0;
-
-  while (fib.length > 2) {
-    let i = Math.min(offset + fib[fib.length - 2], n - 1);
-
-    if (arr[i] === x) {
-      return i;
-    } else if (arr[i] < x) {
-      fib.splice(fib.length - 1, 1);
-      offset = i;
-    } else {
-      fib.splice(fib.length - 1, 2);
-    }
-
-    index = i;
+function binarySearch(array, target, start = 0, end = array.length - 1) {
+  if (start > end) {
+    return -1; // target value not found
   }
 
-  if (arr[offset] === x) {
-    return offset;
-  }
+  const middle = Math.floor((start + end) / 2);
 
-  return -1;
+  if (array[middle] === target) {
+    return middle; // target value found
+  } else if (array[middle] > target) {
+    return binarySearch(array, target, start, middle - 1); // search in the left half
+  } else {
+    return binarySearch(array, target, middle + 1, end); // search in the right half
+  }
 }
-
-// Example usage:
-const arr = [1, 3, 5, 7, 9, 11, 13, 15];
-const x = 11;
-const n = arr.length;
-const index = fibonacciSearch(arr, x, n);
-console.log(index); // Output: 5
