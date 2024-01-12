@@ -1,9 +1,13 @@
 const cron = require('node-cron');
 
-// Function to be executed by cron
-function myTask() {
-  console.log('This task will be executed by cron!');
-}
+// Define the task to be executed
+const task = () => {
+  console.log('Task executed!');
+  // Insert your desired task code here
+};
 
-// Cron schedule
-cron.schedule('*/5 * * * *', myTask);
+// Schedule the task to run every minute
+cron.schedule('* * * * *', task);
+
+// Keep the script running indefinitely
+setInterval(() => {}, 1000);
