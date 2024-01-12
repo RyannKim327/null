@@ -1,22 +1,19 @@
-function findFirstNonRepeatingCharacter(str) {
-  let frequencyCounter = {};
-
-  // Count the frequency of each character
-  for (let char of str) {
-    frequencyCounter[char] = (frequencyCounter[char] || 0) + 1;
-  }
-
-  // Find the first non-repeating character
-  for (let char of str) {
-    if (frequencyCounter[char] === 1) {
-      return char;
-    }
-  }
-
-  return null; // No non-repeating character found
+let str = "Hello, World!";
+let reversedStr = str.split("").reverse().join("");
+console.log(reversedStr); // Output: "!dlroW ,olleH"
+let str = "Hello, World!";
+let reversedStr = "";
+for (let i = str.length - 1; i >= 0; i--) {
+  reversedStr += str[i];
+}
+console.log(reversedStr); // Output: "!dlroW ,olleH"
+function reverseString(str) {
+  if (str === "")
+    return "";
+  else
+    return reverseString(str.substr(1)) + str.charAt(0);
 }
 
-// Example usage
-const str = "aabcccdeff";
-const firstNonRepeatingChar = findFirstNonRepeatingCharacter(str);
-console.log(firstNonRepeatingChar); // Output: "b"
+let str = "Hello, World!";
+let reversedStr = reverseString(str);
+console.log(reversedStr); // Output: "!dlroW ,olleH"
