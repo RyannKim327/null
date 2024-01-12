@@ -1,49 +1,49 @@
-function beamSearch(initialState, expandFunction, evaluateFunction, beamWidth, maxLength) {
-  let currentSet = [{ sequence: initialState, score: 0 }];
-  let finishedSequences = [];
+// Function to merge two sorted arrays
+const merge = (arr1, arr2) => {
+  const merged = [];
+  let i = 0;
+  let j = 0;
 
-  for (let length = 0; length < maxLength; length++) {
-    let newSet = [];
-
-    for (let i = 0; i < currentSet.length; i++) {
-      let { sequence, score } = currentSet[i];
-
-      let expansions = expandFunction(sequence);
-      expansions.forEach(expansion => {
-        let newSequence = sequence.concat(expansion);
-        let newScore = score + evaluateFunction(newSequence);
-
-        newSet.push({
-          sequence: newSequence,
-          score: newScore
-        });
-      });
-    }
-
-    newSet.sort((a, b) => b.score - a.score);
-    currentSet = newSet.slice(0, beamWidth);
-
-    currentSet.forEach(sequenceObj => {
-      if (sequenceObj.sequence.length === maxLength) {
-        finishedSequences.push(sequenceObj);
-      }
-    });
-
-    if (currentSet.length === 0) {
-      break;
+  while (i < arr1.length && j < arr2.length) {
+    if (arr1[i] <= arr2[j]) {
+      merged.push(arr1[i]);
+      i++;
+    } else {
+      merged.push(arr2[j]);
+      j++;
     }
   }
 
-  finishedSequences.sort((a, b) => b.score - a.score);
-  return finishedSequences[0].sequence;
-}
+  while (i < arr1.length) {
+    merged.push(arr1[i]);
+    i++;
+  }
 
-// Example usage
-const initialState = [];
-const expandFunction = (sequence) => ['A', 'B', 'C'];
-const evaluateFunction = (sequence) => Math.random(); // Replace with your evaluation function
-const beamWidth = 3;
-const maxLength = 5;
+  while (j < arr2.length) {
+    merged.push(arr2[j]);
+    j++;
+  }
 
-const result = beamSearch(initialState, expandFunction, evaluateFunction, beamWidth, maxLength);
-console.log(result);
+  return merged;
+};
+
+// Iterative merge sort function
+const mergeSort = (arr) => {
+  if (arr.length <= 1) {
+    return arr;
+  }
+
+  const queue = arr.map((item) => [item]);
+
+  while (queue.length > 1) {
+    const merged = merge(queue.shift(), queue.shift());
+    queue.push(merged);
+  }
+
+  return queue[0];
+};
+
+// Example usage:
+const arr = [4, 1, 9, 3, 5, 7, 8, 2, 6];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
