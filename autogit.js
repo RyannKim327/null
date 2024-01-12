@@ -1,36 +1,30 @@
-function hasCycle(head) {
-    if (!head || !head.next) {
-        return false;
+function longestIncreasingSubsequence(arr) {
+  const n = arr.length;
+  const dp = Array(n).fill(1);
+  let maxLength = 1;
+
+  for (let i = 1; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      if (arr[i] > arr[j] && dp[i] < dp[j] + 1) {
+        dp[i] = dp[j] + 1;
+        maxLength = Math.max(maxLength, dp[i]);
+      }
     }
+  }
 
-    let slow = head;
-    let fast = head.next;
+  const result = [];
+  let currLength = maxLength;
 
-    while (slow !== fast) {
-        if (!fast || !fast.next) {
-            return false;
-        }
-
-        slow = slow.next;
-        fast = fast.next.next;
+  for (let i = n - 1; i >= 0; i--) {
+    if (dp[i] === currLength) {
+      result.unshift(arr[i]);
+      currLength--;
     }
+  }
 
-    return true;
+  return result;
 }
-const linkedList = {
-    value: 1,
-    next: {
-        value: 2,
-        next: {
-            value: 3,
-            next: null
-        }
-    }
-};
 
-console.log(hasCycle(linkedList));  // false
-
-// Creating a cycle
-linkedList.next.next.next = linkedList;
-
-console.log(hasCycle(linkedList));  // true
+// Example usage
+const array = [3, 10, 2, 1, 20];
+console.log(longestIncreasingSubsequence(array)); // Output: [3, 10, 20]
