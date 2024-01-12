@@ -1,25 +1,35 @@
-function countingSort(arr) {
-  const max = Math.max(...arr);
-  const count = Array(max + 1).fill(0);
-  const output = Array(arr.length);
-
-  for (let i = 0; i < arr.length; i++) {
-    count[arr[i]]++;
+class ListNode {
+  constructor(val) {
+    this.val = val;
+    this.next = null;
   }
-
-  for (let i = 1; i <= max; i++) {
-    count[i] += count[i - 1];
-  }
-
-  for (let i = arr.length - 1; i >= 0; i--) {
-    output[count[arr[i]] - 1] = arr[i];
-    count[arr[i]]--;
-  }
-
-  return output;
 }
 
-// Example usage:
-const inputArray = [4, 2, 2, 8, 3, 3, 1];
-const sortedArray = countingSort(inputArray);
-console.log(sortedArray);
+const getIntersectionNode = (headA, headB) => {
+  let p1 = headA;
+  let p2 = headB;
+
+  while (p1 !== p2) {
+    p1 = p1 ? p1.next : headB;
+    p2 = p2 ? p2.next : headA;
+  }
+
+  return p1; // Return null if there is no intersection
+};
+// Create the linked lists
+const intersect = new ListNode(8);
+intersect.next = new ListNode(4);
+intersect.next.next = new ListNode(5);
+
+const listA = new ListNode(4);
+listA.next = new ListNode(1);
+listA.next.next = intersect;
+
+const listB = new ListNode(5);
+listB.next = new ListNode(6);
+listB.next.next = new ListNode(1);
+listB.next.next.next = intersect;
+
+// Find the intersection
+const intersection = getIntersectionNode(listA, listB);
+console.log(intersection); // Output: ListNode { val: 8, next: ListNode { val: 4, next: [ListNode] } }
