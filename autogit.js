@@ -1,110 +1,107 @@
-class BinaryHeap {
+function dijkstra(graph, source) {
+  const distance = {};
+  const previous = {};
+  const priorityQueue = new PriorityQueue();
+
+  // Initialize all distances to infinity except the source node
+  for (let node in graph) {
+    distance[node] = Infinity;
+    previous[node] = null;
+  }
+  distance[source] = 0;
+
+  // Insert source node into the priority queue
+  priorityQueue.enqueue(source, 0);
+
+  while (!priorityQueue.isEmpty()) {
+    const currentNode = priorityQueue.dequeue().element;
+
+    // Visit each neighboring node of the current node
+    for (let neighbor in graph[currentNode]) {
+      const weight = graph[currentNode][neighbor];
+      const totalDistance = distance[currentNode] + weight;
+
+      // Update distance and previous node if a shorter path is found
+      if (totalDistance < distance[neighbor]) {
+        distance[neighbor] = totalDistance;
+        previous[neighbor] = currentNode;
+        priorityQueue.enqueue(neighbor, totalDistance);
+      }
+    }
+  }
+  
+  return { distance, previous };
+}
+
+// Priority Queue implementation using a binary heap
+class PriorityQueue {
   constructor() {
-    this.heap = [];
-    this.size = 0;
+    this.queue = [];
   }
 
-  getParentIndex(index) {
-    return Math.floor((index - 1) / 2);
+  enqueue(element, priority) {
+    const node = { element, priority };
+    this.queue.push(node);
+    this.bubbleUp();
   }
 
-  getLeftChildIndex(index) {
-    return (2 * index) + 1;
+  dequeue() {
+    const minNode = this.queue.shift();
+    this.heapify();
+    return minNode;
   }
 
-  getRightChildIndex(index) {
-    return (2 * index) + 2;
+  isEmpty() {
+    return this.queue.length === 0;
   }
 
-  hasParent(index) {
-    return this.getParentIndex(index) >= 0;
-  }
+  bubbleUp() {
+    let index = this.queue.length - 1;
+    const node = this.queue[index];
 
-  hasLeftChild(index) {
-    return this.getLeftChildIndex(index) < this.size;
-  }
+    while (index > 0) {
+      const parentIndex = Math.floor((index - 1) / 2);
+      const parent = this.queue[parentIndex];
 
-  hasRightChild(index) {
-    return this.getRightChildIndex(index) < this.size;
-  }
+      if (node.priority >= parent.priority) break;
 
-  parent(index) {
-    return this.heap[this.getParentIndex(index)];
-  }
-
-  leftChild(index) {
-    return this.heap[this.getLeftChildIndex(index)];
-  }
-
-  rightChild(index) {
-    return this.heap[this.getRightChildIndex(index)];
-  }
-
-  swap(index1, index2) {
-    const temp = this.heap[index1];
-    this.heap[index1] = this.heap[index2];
-    this.heap[index2] = temp;
-  }
-
-  peek() {
-    if (this.size === 0) {
-      throw new Error('Priority queue is empty.');
-    }
-    return this.heap[0];
-  }
-
-  add(item) {
-    this.heap.push(item);
-    this.size++;
-    this.heapifyUp();
-  }
-
-  poll() {
-    if (this.size === 0) {
-      throw new Error('Priority queue is empty.');
-    }
-    const item = this.heap[0];
-    this.heap[0] = this.heap[this.size - 1];
-    this.heap.pop();
-    this.size--;
-    this.heapifyDown();
-    return item;
-  }
-
-  heapifyUp() {
-    let index = this.size - 1;
-    while (this.hasParent(index) && this.parent(index) > this.heap[index]) {
-      const parentIndex = this.getParentIndex(index);
-      this.swap(parentIndex, index);
+      this.queue[parentIndex] = node;
+      this.queue[index] = parent;
       index = parentIndex;
     }
   }
 
-  heapifyDown() {
+  heapify() {
     let index = 0;
-    while (this.hasLeftChild(index)) {
-      let smallerChildIndex = this.getLeftChildIndex(index);
-      if (this.hasRightChild(index) &&
-          this.rightChild(index) < this.leftChild(index)) {
-        smallerChildIndex = this.getRightChildIndex(index);
+    const length = this.queue.length;
+    const node = this.queue[index];
+
+    while (true) {
+      let leftChildIndex = 2 * index + 1;
+      let rightChildIndex = 2 * index + 2;
+      let leftChild, rightChild;
+      let swapIndex = null;
+
+      if (leftChildIndex < length) {
+        leftChild = this.queue[leftChildIndex];
+        if (leftChild.priority < node.priority) swapIndex = leftChildIndex;
       }
 
-      if (this.heap[index] < this.heap[smallerChildIndex]) {
-        break;
-      } else {
-        this.swap(index, smallerChildIndex);
+      if (rightChildIndex < length) {
+        rightChild = this.queue[rightChildIndex];
+        if (
+          (swapIndex === null && rightChild.priority < node.priority) ||
+          (swapIndex !== null && rightChild.priority < leftChild.priority)
+        ) {
+          swapIndex = rightChildIndex;
+        }
       }
 
-      index = smallerChildIndex;
+      if (swapIndex === null) break;
+
+      this.queue[index] = this.queue[swapIndex];
+      this.queue[swapIndex] = node;
+      index = swapIndex;
     }
   }
 }
-const priorityQueue = new BinaryHeap();
-priorityQueue.add(5);
-priorityQueue.add(3);
-priorityQueue.add(7);
-priorityQueue.add(1);
-console.log(priorityQueue.poll()); // Output: 1
-console.log(priorityQueue.poll()); // Output: 3
-console.log(priorityQueue.poll()); // Output: 5
-console.log(priorityQueue.poll()); // Output: 7
