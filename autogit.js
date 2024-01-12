@@ -1,25 +1,57 @@
-function findCommonElements(array1, array2) {
-  let commonElements = [];
-  for (let i = 0; i < array1.length; i++) {
-    if (array2.includes(array1[i])) {
-      commonElements.push(array1[i]);
-    }
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
-  return commonElements;
 }
-function findCommonElements(array1, array2) {
-  return array1.filter(element => array2.includes(element));
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
 }
-function findCommonElements(array1, array2) {
-  const set = new Set(array1);
-  return array2.filter(element => set.has(element));
+class LinkedList {
+  // ...
+
+  reverse() {
+    let current = this.head;
+    let prev = null;
+    let next = null;
+
+    while (current) {
+      next = current.next;
+      current.next = prev;
+      prev = current;
+      current = next;
+    }
+
+    this.head = prev;
+  }
 }
-function findCommonElements(array1, array2) {
-  const set1 = new Set(array1);
-  const set2 = new Set(array2);
-  return [...set1].filter(element => set2.has(element));
+const linkedList = new LinkedList();
+linkedList.head = new Node(1);
+linkedList.head.next = new Node(2);
+linkedList.head.next.next = new Node(3);
+
+console.log("Original linked list:");
+let current = linkedList.head;
+while (current) {
+  console.log(current.value);
+  current = current.next;
 }
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
+
+linkedList.reverse();
+
+console.log("Reversed linked list:");
+current = linkedList.head;
+while (current) {
+  console.log(current.value);
+  current = current.next;
+}
+Original linked list:
+1
+2
+3
+Reversed linked list:
+3
+2
+1
