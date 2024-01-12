@@ -1,22 +1,16 @@
-function isPrime(number) {
-  // Check if the number is less than 2
-  if (number < 2) {
-    return false;
-  }
+function getRandomNumber(min, max) {
+  // Calculate the range of the desired random numbers
+  const range = max - min + 1;
 
-  // Check if the number is divisible by any integer from 2 to the square root of the number
-  for (let i = 2; i <= Math.sqrt(number); i++) {
-    if (number % i === 0) {
-      return false;
-    }
-  }
+  // Generate a random number between 0 and range - 1
+  const randomNumber = Math.floor(Math.random() * range);
 
-  return true;
+  // Add the minimum value to offset the range
+  return randomNumber + min;
 }
+
 // Example usage
-const number = 17;
-if (isPrime(number)) {
-  console.log(`${number} is a prime number`);
-} else {
-  console.log(`${number} is not a prime number`);
-}
+const minNumber = 1;
+const maxNumber = 100;
+const randomNum = getRandomNumber(minNumber, maxNumber);
+console.log(randomNum);
