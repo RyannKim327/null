@@ -1,23 +1,27 @@
-function quicksort(arr) {
-  if (arr.length <= 1) {
-    return arr;
+function findFirstNonRepeatingChar(str) {
+  // Create a counter object to store character count
+  const counter = {};
+
+  // Iterate over each character in the string
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    // Increment the counter for the current character
+    counter[char] = (counter[char] || 0) + 1;
   }
 
-  const pivot = arr[arr.length - 1];
-  const left = [];
-  const right = [];
-
-  for (let i = 0; i < arr.length - 1; i++) {
-    if (arr[i] < pivot) {
-      left.push(arr[i]);
-    } else {
-      right.push(arr[i]);
+  // Find the first character with count 1
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    if (counter[char] === 1) {
+      return char;
     }
   }
 
-  return [...quicksort(left), pivot, ...quicksort(right)];
+  // Return null if no non-repeating character found
+  return null;
 }
-const arr = [4, 2, 7, 1, 3];
-const sortedArr = quicksort(arr);
 
-console.log(sortedArr);  // Output: [1, 2, 3, 4, 7]
+// Example usage
+const str = "aabbcde";
+const firstNonRepeatingChar = findFirstNonRepeatingChar(str);
+console.log(firstNonRepeatingChar); // Output: "c"
