@@ -1,43 +1,18 @@
-function generateSkipTable(pattern) {
-  const skipTable = {};
-  const patternLength = pattern.length - 1;
-  
-  // Fill the skip table with the maximum number of characters to skip
-  for (let i = 0; i < patternLength; i++) {
-    skipTable[pattern[i]] = patternLength - i;
-  }
-  
-  return skipTable;
+function reverseWords(str) {
+  // Step 1: Split the string into an array of words
+  var wordsArray = str.split(' ');
+
+  // Step 2: Reverse the array of words
+  var reversedArray = wordsArray.reverse();
+
+  // Step 3: Join the reversed array back into a string
+  var reversedString = reversedArray.join(' ');
+
+  return reversedString;
 }
-function boyerMooreHorspoolSearch(pattern, text) {
-  const skipTable = generateSkipTable(pattern);
-  const patternLength = pattern.length;
-  const textLength = text.length;
-  let index = 0;
-  
-  while (index <= textLength - patternLength) {
-    let match = true;
-    
-    // Compare pattern characters from right to left
-    for (let i = patternLength - 1; i >= 0; i--) {
-      if (pattern[i] !== text[index + i]) {
-        match = false;
-        
-        // Skip characters based on the skip table
-        const skip = skipTable[text[index + patternLength - 1]] || patternLength;
-        index += skip;
-        break;
-      }
-    }
-    
-    if (match) {
-      return index;  // Pattern found
-    }
-  }
-  
-  return -1;  // Pattern not found
-}
-const text = "Hello, world!";
-const pattern = "world";
-const index = boyerMooreHorspoolSearch(pattern, text);
-console.log(index);  // Output: 7
+
+// Example usage
+var originalString = "Hello World!";
+var reversedString = reverseWords(originalString);
+
+console.log(reversedString); // Outputs: "World! Hello"
