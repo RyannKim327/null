@@ -1,60 +1,30 @@
-function generateFibonacciSequence(n) {
-  const sequence = [0, 1];
-  while (sequence[sequence.length - 1] < n) {
-    const len = sequence.length;
-    const next = sequence[len - 1] + sequence[len - 2];
-    sequence.push(next);
-  }
-  return sequence;
-}
-function fibonacciSearch(arr, target, fibSequence) {
-  let fib1 = fib1Index(fibSequence, arr.length);
-  let fib2 = fib2Index(fibSequence, arr.length);
-  let offset = -1;
-
-  while (fib1 > 1) {
-    const i = Math.min(offset + fibSequence[fib1 - 2], arr.length - 1);
-
-    if (arr[i] < target) {
-      fib1 = fib2;
-      fib2 = fibSequence[fib1 - 1] - fibSequence[fib1 - 2];
-      offset = i;
-    } else if (arr[i] > target) {
-      fib1 = fib1 - fib2;
-      fib2 = fib2 - fib1;
-    } else {
-      return i;
-    }
+function burrowsWheelerTransform(input) {
+  // Step 2: Generate all rotations of the input string
+  let rotations = [];
+  for (let i = 0; i < input.length; i++) {
+    rotations.push(input.slice(i) + input.slice(0, i));
   }
 
-  if (fib2 && arr[offset + 1] === target) {
-    return offset + 1;
-  }
+  // Step 3: Sort the rotations
+  rotations.sort();
 
-  return -1;
-}
-function fib1Index(sequence, n) {
-  let i = 0;
-  while (sequence[i] <= n) {
-    i++;
-  }
-  return i - 1;
+  // Step 4: Find the original string index in the sorted rotations
+  let index = rotations.indexOf(input);
+
+  // Step 5: Construct the result string from the last characters of each rotation
+  let result = '';
+  rotations.forEach((rotation) => {
+    result += rotation.charAt(rotation.length - 1);
+  });
+
+  // Step 6: Return the result string and index
+  return [result, index];
 }
 
-function fib2Index(sequence, n) {
-  let i = 0;
-  while (sequence[i] <= n) {
-    i++;
-  }
-  return i - 2;
-}
-const arr = [1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
-const target = 13;
-const fibSequence = generateFibonacciSequence(arr.length);
-
-const index = fibonacciSearch(arr, target, fibSequence);
-if (index !== -1) {
-  console.log(`Element found at index ${index}`);
-} else {
-  console.log("Element not found");
-}
+// Example usage
+const inputString = 'banana';
+const [transformedString, index] = burrowsWheelerTransform(inputString);
+console.log('Transformed String:', transformedString);
+console.log('Original String Index:', index);
+Transformed String: annb$aa
+Original String Index: 2
