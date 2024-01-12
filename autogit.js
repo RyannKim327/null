@@ -1,53 +1,35 @@
-function depthLimitedSearch(state, depthLimit, goalTest) {
-    // ...
+// Define the structure of a binary tree node
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
-function recursiveDLS(state, depthLimit, goalTest) {
-    // ...
-}
-function recursiveDLS(state, depthLimit, goalTest) {
-    if (goalTest(state)) {
-        return state;
-    }
-    // ...
-}
-function recursiveDLS(state, depthLimit, goalTest) {
-    if (goalTest(state)) {
-        return state;
-    }
-    if (depthLimit === 0) {
-        return null;
-    }
-    // ...
-}
-function recursiveDLS(state, depthLimit, goalTest) {
-    if (goalTest(state)) {
-        return state;
-    }
-    if (depthLimit === 0) {
-        return null;
-    }
-    
-    const actions = getActions(state);
-    for (let i = 0; i < actions.length; i++) {
-        const resultingState = // apply action to current state;
-        const result = recursiveDLS(resultingState, depthLimit - 1, goalTest);
-        if (result !== null) {
-            return result;
-        }
-    }
-    
-    return null;
-}
-function getActions(state) {
-    // ...
-}
-const initial_state = // define initial state;
-const depth_limit = // define depth limit;
 
-const goalTest = (state) => {
-    // define your own goal test logic
-    // return true if the state is a goal state, else false
-};
+// Function to calculate the maximum depth of the binary tree
+function maxDepth(node) {
+  if (!node) {
+    // If the node is null, return 0
+    return 0;
+  } else {
+    // Recursively calculate the maximum depth of the left and right subtrees
+    const leftDepth = maxDepth(node.left);
+    const rightDepth = maxDepth(node.right);
 
-const result = depthLimitedSearch(initial_state, depth_limit, goalTest);
-console.log(result);
+    // Return the maximum depth among the left and right subtrees, adding 1 for the current node
+    return Math.max(leftDepth, rightDepth) + 1;
+  }
+}
+
+// Example usage:
+// Create a binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+// Call the maxDepth function on the root node
+const depth = maxDepth(root);
+console.log("Maximum depth of the binary tree:", depth);
