@@ -1,53 +1,46 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function heapify(arr, n, i) {
+  let largest = i; // Initialize largest as root
+  let left = 2 * i + 1; // Left child
+  let right = 2 * i + 2; // Right child
+
+  // If left child is larger than root
+  if (left < n && arr[left] > arr[largest]) {
+    largest = left;
+  }
+
+  // If right child is larger than largest so far
+  if (right < n && arr[right] > arr[largest]) {
+    largest = right;
+  }
+
+  // If largest is not root
+  if (largest !== i) {
+    [arr[i], arr[largest]] = [arr[largest], arr[i]]; // Swap
+    heapify(arr, n, largest); // Recursively heapify the affected sub-tree
   }
 }
 
-// Function to calculate the height of a binary tree
-function height(node) {
-  if (node === null) {
-    return 0;
+function buildMaxHeap(arr) {
+  const n = arr.length;
+
+  // Build heap (re-arrange array)
+  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+    heapify(arr, n, i);
+  }
+}
+function heapSort(arr) {
+  const n = arr.length;
+
+  // Build max-heap
+  buildMaxHeap(arr);
+
+  // Extract elements from the heap one by one
+  for (let i = n - 1; i >= 0; i--) {
+    [arr[0], arr[i]] = [arr[i], arr[0]]; // Swap current root with element at the end
+    heapify(arr, i, 0); // Heapify the reduced heap
   }
 
-  const leftHeight = height(node.left);
-  const rightHeight = height(node.right);
-
-  return Math.max(leftHeight, rightHeight) + 1;
+  return arr;
 }
-
-// Function to calculate the diameter of a binary tree
-function diameter(node) {
-  if (node === null) {
-    return 0;
-  }
-
-  // Calculate the height of left and right subtrees
-  const leftHeight = height(node.left);
-  const rightHeight = height(node.right);
-
-  // Calculate the diameter of left and right subtrees
-  const leftDiameter = diameter(node.left);
-  const rightDiameter = diameter(node.right);
-
-  // Return the maximum of the following:
-  // 1. Diameter of the left subtree
-  // 2. Diameter of the right subtree
-  // 3. Height of the left subtree + height of the right subtree + 1
-  return Math.max(leftHeight + rightHeight + 1, leftDiameter, rightDiameter);
-}
-
-// Create a binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
-
-// Calculate the diameter of the binary tree
-const treeDiameter = diameter(root);
-console.log(`Diameter of the binary tree is: ${treeDiameter}`);
+const array = [5, 1, 4, 2, 8];
+console.log(heapSort(array)); // Output: [1, 2, 4, 5, 8]
