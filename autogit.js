@@ -1,34 +1,22 @@
-function longestCommonSubstring(str1, str2) {
-  let maxLength = 0; // Length of the longest common substring
-  let endIndex = 0; // Index of the last character of the longest common substring
+function findNthFromEnd(head, n) {
+  let first = head;
+  let second = head;
 
-  const table = Array.from({ length: str1.length + 1 }, () =>
-    Array.from({ length: str2.length + 1 }, () => 0)
-  );
-
-  for (let i = 1; i <= str1.length; i++) {
-    for (let j = 1; j <= str2.length; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        table[i][j] = table[i - 1][j - 1] + 1;
-        if (table[i][j] > maxLength) {
-          maxLength = table[i][j];
-          endIndex = i - 1;
-        }
-      } else {
-        table[i][j] = 0;
-      }
+  // Move the first pointer n positions ahead
+  for (let i = 0; i < n; i++) {
+    if (!first) {
+      // Length of list is less than n
+      return null;
     }
+    first = first.next;
   }
 
-  if (maxLength === 0) {
-    return ''; // No common substring found
+  // Move both pointers until first reaches the end
+  while (first) {
+    first = first.next;
+    second = second.next;
   }
 
-  return str1.slice(endIndex - maxLength + 1, endIndex + 1);
+  // Return the value of the node pointed by the second pointer
+  return second.value;
 }
-
-// Usage example:
-const str1 = 'Hello, World!';
-const str2 = 'Welcome to the World!';
-const longestSubstring = longestCommonSubstring(str1, str2);
-console.log(longestSubstring); // Output: " World"
