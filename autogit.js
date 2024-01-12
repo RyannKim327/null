@@ -1,9 +1,36 @@
-const array = [4, 2, 9, 1, 5];
-array.sort((a, b) => a - b);
-console.log(array); // Output: [1, 2, 4, 5, 9]
-const array = [4, 2, 9, 1, 5];
-array.sort((a, b) => a - b).reverse();
-console.log(array); // Output: [9, 5, 4, 2, 1]
-const array = [4, 2, 9, 1, 5];
-const sortedArray = array.slice().sort((a, b) => a - b);
-console.log(sortedArray); // Output: [1, 2, 4, 5, 9]
+function hasCycle(head) {
+    if (!head || !head.next) {
+        return false;
+    }
+
+    let slow = head;
+    let fast = head.next;
+
+    while (slow !== fast) {
+        if (!fast || !fast.next) {
+            return false;
+        }
+
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+
+    return true;
+}
+const linkedList = {
+    value: 1,
+    next: {
+        value: 2,
+        next: {
+            value: 3,
+            next: null
+        }
+    }
+};
+
+console.log(hasCycle(linkedList));  // false
+
+// Creating a cycle
+linkedList.next.next.next = linkedList;
+
+console.log(hasCycle(linkedList));  // true
