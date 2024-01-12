@@ -1,36 +1,48 @@
-// Node constructor
-function Node(data) {
-  this.data = data;
-  this.left = null;
-  this.right = null;
+function getIntersection(headA, headB) {
+    if (!headA || !headB) {
+        return null;
+    }
+
+    // Find lengths of both linked lists
+    let lenA = getLength(headA);
+    let lenB = getLength(headB);
+
+    // Calculate the difference in lengths
+    let diff = Math.abs(lenA - lenB);
+
+    // Traverse the longer linked list till the difference
+    let currA = headA;
+    let currB = headB;
+
+    if (lenA > lenB) {
+        while (diff > 0) {
+            currA = currA.next;
+            diff--;
+        }
+    } else if (lenA < lenB) {
+        while (diff > 0) {
+            currB = currB.next;
+            diff--;
+        }
+    }
+
+    // Traverse both linked lists until a common node is found
+    while (currA && currB) {
+        if (currA === currB) {
+            return currA;
+        }
+        currA = currA.next;
+        currB = currB.next;
+    }
+
+    return null; // No intersection found
 }
 
-// Function to count leaf nodes
-function countLeafNodes(root) {
-  // Base case: if the root is null, there are no leaf nodes
-  if (root === null) {
-    return 0;
-  }
-  
-  // Base case: if the root has no children, it is a leaf node
-  if (root.left === null && root.right === null) {
-    return 1;
-  }
-  
-  // Recursively count the leaf nodes in the left and right subtrees
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
+function getLength(node) {
+    let length = 0;
+    while (node) {
+        length++;
+        node = node.next;
+    }
+    return length;
 }
-
-// Example usage:
-
-// Create a binary tree
-var rootNode = new Node(1);
-rootNode.left = new Node(2);
-rootNode.right = new Node(3);
-rootNode.left.left = new Node(4);
-rootNode.left.right = new Node(5);
-rootNode.right.left = new Node(6);
-
-// Count the leaf nodes
-var leafNodeCount = countLeafNodes(rootNode);
-console.log("Number of leaf nodes:", leafNodeCount);
