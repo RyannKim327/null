@@ -1,44 +1,20 @@
-function longestCommonSubsequence(str1, str2) {
-  const m = str1.length;
-  const n = str2.length;
+function isAnagram(str1, str2) {
+  // Convert strings to lowercase and remove non-alphabetic characters
+  str1 = str1.toLowerCase().replace(/[^a-z]/g, '');
+  str2 = str2.toLowerCase().replace(/[^a-z]/g, '');
 
-  // Create a matrix to store the lengths of longest common subsequences
-  const dp = Array(m + 1)
-    .fill(0)
-    .map(() => Array(n + 1).fill(0));
+  // Convert strings into arrays of characters
+  let arr1 = str1.split('');
+  let arr2 = str2.split('');
 
-  // Compute the lengths of longest common subsequences
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-      } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-      }
-    }
-  }
+  // Sort the arrays
+  arr1.sort();
+  arr2.sort();
 
-  // Construct the longest common subsequence
-  let subsequence = '';
-  let i = m;
-  let j = n;
-  while (i > 0 && j > 0) {
-    if (str1[i - 1] === str2[j - 1]) {
-      subsequence = str1[i - 1] + subsequence;
-      i--;
-      j--;
-    } else if (dp[i - 1][j] > dp[i][j - 1]) {
-      i--;
-    } else {
-      j--;
-    }
-  }
-
-  return subsequence;
+  // Compare the sorted arrays
+  return arr1.join('') === arr2.join('');
 }
 
-// Example usage:
-const str1 = 'AGGTAB';
-const str2 = 'GXTXAYB';
-
-console.log(longestCommonSubsequence(str1, str2)); // Output: GTAB
+// Example usage
+console.log(isAnagram('listen', 'silent')); // true
+console.log(isAnagram('hello', 'world')); // false
