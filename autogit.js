@@ -1,57 +1,46 @@
-function buildFailureTable(pattern) {
-  const table = Array(pattern.length).fill(0);
-  let prefixEnd = 0;
-  let suffixStart = 1;
-
-  while (suffixStart < pattern.length) {
-    if (pattern[prefixEnd] === pattern[suffixStart]) {
-      // There is a match between the prefix and suffix.
-      table[suffixStart] = prefixEnd + 1;
-      prefixEnd++;
-      suffixStart++;
-    } else if (prefixEnd > 0) {
-      // Try to find a shorter prefix that matches the current suffix.
-      prefixEnd = table[prefixEnd - 1];
-    } else {
-      // No match found, move to the next suffix position.
-      table[suffixStart] = 0;
-      suffixStart++;
-    }
+function findMedianSortedArrays(nums1, nums2) {
+  const mergedArray = mergeSortedArrays(nums1, nums2);
+  const length = mergedArray.length;
+  
+  if (length % 2 === 0) {
+    const mid = length / 2;
+    const median = (mergedArray[mid - 1] + mergedArray[mid]) / 2;
+    return median;
+  } else {
+    const mid = Math.floor(length / 2);
+    return mergedArray[mid];
   }
-
-  return table;
 }
 
-function searchString(text, pattern) {
-  const failureTable = buildFailureTable(pattern);
-  let textIndex = 0;
-  let patternIndex = 0;
-
-  while (textIndex < text.length && patternIndex < pattern.length) {
-    if (text[textIndex] === pattern[patternIndex]) {
-      // Characters match, move to the next position.
-      textIndex++;
-      patternIndex++;
-    } else if (patternIndex > 0) {
-      // Mismatch, try to find a shorter match in pattern using failure table.
-      patternIndex = failureTable[patternIndex - 1];
+function mergeSortedArrays(nums1, nums2) {
+  const mergedArray = [];
+  let i = 0, j = 0;
+  
+  while (i < nums1.length && j < nums2.length) {
+    if (nums1[i] < nums2[j]) {
+      mergedArray.push(nums1[i]);
+      i++;
     } else {
-      // Mismatch occurred at the first character of the pattern, move to the next text position.
-      textIndex++;
+      mergedArray.push(nums2[j]);
+      j++;
     }
   }
-
-  if (patternIndex === pattern.length) {
-    // Pattern found at index (textIndex - pattern.length)
-    return (textIndex - pattern.length);
+  
+  while (i < nums1.length) {
+    mergedArray.push(nums1[i]);
+    i++;
   }
-
-  // Pattern not found
-  return -1;
+  
+  while (j < nums2.length) {
+    mergedArray.push(nums2[j]);
+    j++;
+  }
+  
+  return mergedArray;
 }
 
 // Example usage:
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const index = searchString(text, pattern);
-console.log(index); // Output: 10
+const nums1 = [1, 3, 5];
+const nums2 = [2, 4, 6];
+const median = findMedianSortedArrays(nums1, nums2);
+console.log(median); // Output: 3.5
