@@ -1,38 +1,22 @@
-class TreeNode {
-  constructor(val, left = null, right = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
-  }
-}
+const cron = require('node-cron');
 
-function diameterOfBinaryTree(root) {
-  let diameter = 0;
+// Schedule a cron job to run every minute
+cron.schedule('* * * * *', () => {
+  console.log('This cron job runs every minute.');
+});
 
-  function depth(node) {
-    if (node === null) {
-      return 0;
-    }
+// Schedule a cron job to run every day at 12:00 PM
+cron.schedule('0 12 * * *', () => {
+  console.log('This cron job runs every day at 12:00 PM.');
+});
 
-    const leftDepth = depth(node.left);
-    const rightDepth = depth(node.right);
+// Schedule a cron job to run on specific weekdays at 9:00 AM
+cron.schedule('0 9 * * 1-5', () => {
+  console.log('This cron job runs on weekdays (Monday to Friday) at 9:00 AM.');
+});
 
-    // calculate the diameter passing through the current node
-    diameter = Math.max(diameter, leftDepth + rightDepth);
-
-    // return the depth of the current node
-    return Math.max(leftDepth, rightDepth) + 1;
-  }
-
-  depth(root);
-  return diameter;
-}
-
-// Usage example:
-const tree = new TreeNode(1);
-tree.left = new TreeNode(2);
-tree.right = new TreeNode(3);
-tree.left.left = new TreeNode(4);
-tree.left.right = new TreeNode(5);
-
-console.log(diameterOfBinaryTree(tree)); // Output: 3
+// Schedule a cron job to run every 30 seconds
+cron.schedule('*/30 * * * * *', () => {
+  console.log('This cron job runs every 30 seconds.');
+});
+npm install node-cron
