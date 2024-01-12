@@ -1,4 +1,17 @@
-const array = [2, 5, 1, 8, 3, 9];
+let array = [1, 2, 3, 3, 4, 4, 5];
+let uniqueArray = [...new Set(array)];
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+let array = [1, 2, 3, 3, 4, 4, 5];
+let uniqueArray = array.filter((value, index, self) => {
+    return self.indexOf(value) === index;
+});
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+let array = [1, 2, 3, 3, 4, 4, 5];
+let uniqueArray = [];
 
-const max = Math.max(...array);
-console.log(max); // Output: 9
+for (let i = 0; i < array.length; i++) {
+    if (uniqueArray.indexOf(array[i]) === -1) {
+        uniqueArray.push(array[i]);
+    }
+}
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
