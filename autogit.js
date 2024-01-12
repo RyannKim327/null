@@ -1,20 +1,14 @@
-function findFirstRepeatedCharacter(str) {
-  const charMap = {};
-
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-
-    if (charMap[char]) {
-      return char;
+function isSortedAscending(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false; // If any element is greater than the next element, the array is not sorted in ascending order.
     }
-
-    charMap[char] = true;
   }
-
-  return null;
+  
+  return true; // If the loop completes without returning false, the array is sorted in ascending order.
 }
+const myArray = [1, 2, 3, 4, 5];
+console.log(isSortedAscending(myArray)); // Output: true
 
-// Example usage
-const str = 'hello world';
-const repeatedChar = findFirstRepeatedCharacter(str);
-console.log(repeatedChar); // Output: "l"
+const anotherArray = [5, 3, 2, 1];
+console.log(isSortedAscending(anotherArray)); // Output: false
