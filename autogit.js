@@ -1,49 +1,35 @@
-function buildPrefixTable(pattern) {
-  const prefixTable = [0];
-  let prefixLen = 0;
-  
-  for (let i = 1; i < pattern.length; i++) {
-    while (prefixLen > 0 && pattern[i] !== pattern[prefixLen]) {
-      prefixLen = prefixTable[prefixLen - 1];
-    }
-    
-    if (pattern[i] === pattern[prefixLen]) {
-      prefixLen++;
-    }
-    
-    prefixTable[i] = prefixLen;
-  }
-  
-  return prefixTable;
-}
+function findMajorityElement(nums) {
+  let candidate = null;
+  let count = 0;
 
-function knuthMorrisPratt(text, pattern) {
-  const prefixTable = buildPrefixTable(pattern);
-  const matches = [];
-  let patternIndex = 0;
-  let textIndex = 0;
-  
-  while (textIndex < text.length) {
-    if (pattern[patternIndex] === text[textIndex]) {
-      textIndex++;
-      patternIndex++;
-      
-      if (patternIndex === pattern.length) {
-        matches.push(textIndex - patternIndex);
-        patternIndex = prefixTable[patternIndex - 1];
-      }
-    } else if (patternIndex > 0) {
-      patternIndex = prefixTable[patternIndex - 1];
+  for (let num of nums) {
+    if (count === 0) {
+      candidate = num;
+      count = 1;
+    } else if (candidate === num) {
+      count++;
     } else {
-      textIndex++;
+      count--;
     }
   }
-  
-  return matches;
+
+  // At this point, the candidate might be the majority element
+  // We need to validate it by counting its occurrences
+
+  count = 0;
+  for (let num of nums) {
+    if (num === candidate) {
+      count++;
+    }
+  }
+
+  if (count > nums.length / 2) {
+    return candidate;
+  } else {
+    return "No majority element found";
+  }
 }
 
-// Example usage:
-const text = "ABABCABABABA";
-const pattern = "ABA";
-const matches = knuthMorrisPratt(text, pattern);
-console.log(matches); // Output: [2, 5, 7, 9]
+// Example usage
+const array = [2, 2, 1, 1, 1, 2, 2];
+console.log(findMajorityElement(array)); // Output: 2
