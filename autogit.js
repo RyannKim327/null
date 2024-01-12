@@ -1,8 +1,13 @@
-function decimalToBinary(decimal) {
-  return decimal.toString(2);
+let str = "Hello, World!";
+let reversedStr = str.split("").reverse().join("");
+console.log(reversedStr);
+let str = "Hello, World!";
+let reversedStr = "";
+for (let i = str.length - 1; i >= 0; i--) {
+  reversedStr += str.charAt(i);
 }
-
-// Example usage
-console.log(decimalToBinary(10)); // Output: "1010"
-console.log(decimalToBinary(27)); // Output: "11011"
-console.log(decimalToBinary(123)); // Output: "1111011"
+console.log(reversedStr);
+let str = "Hello, World!";
+let reversedStr = Array.from(str).reverse().join("");
+console.log(reversedStr);
+!dlroW ,olleH
