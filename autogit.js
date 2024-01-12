@@ -1,16 +1,21 @@
-function isAnagram(str1, str2) {
-  // Remove any non-alphanumeric characters and convert to lowercase
-  const cleanStr1 = str1.toLowerCase().replace(/[^a-z0-9]/g, '');
-  const cleanStr2 = str2.toLowerCase().replace(/[^a-z0-9]/g, '');
+function isPrime(number) {
+    // Check if the number is less than 2 (not prime)
+    if (number < 2) {
+        return false;
+    }
 
-  // Sort the characters in the strings
-  const sortedStr1 = cleanStr1.split('').sort().join('');
-  const sortedStr2 = cleanStr2.split('').sort().join('');
+    // Find the square root of the number (rounded up)
+    const sqrt = Math.ceil(Math.sqrt(number));
 
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+    // Check divisibility up to the square root
+    for (let i = 2; i <= sqrt; i++) {
+        if (number % i === 0) {
+            return false; // If divisible by any number, not prime
+        }
+    }
+
+    return true; // If not divisible by any number, prime
 }
-
-// Example usage:
-console.log(isAnagram('listen', 'silent')); // true
-console.log(isAnagram('hello', 'world')); // false
+console.log(isPrime(7)); // Output: true
+console.log(isPrime(12)); // Output: false
+console.log(isPrime(37)); // Output: true
