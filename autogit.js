@@ -1,12 +1,22 @@
-const cron = require('cron');
+function countOccurrences(word, string) {
+  // Construct a regular expression using the word and the 'g' flag to match all occurrences
+  const regex = new RegExp(word, 'g');
 
-// Function to be executed
-const myFunction = () => {
-    console.log('Hello, World!');
-};
+  // Use the match() function with the regex to get an array of matched occurrences
+  const matches = string.match(regex);
 
-// Cron job schedule
-const cronJob = new cron.CronJob('*/1 * * * *', myFunction);
+  // If matches is null or empty, return 0
+  if (!matches) {
+    return 0;
+  }
 
-// Start the cron job
-cronJob.start();
+  // Return the length of the matches array to get the count of occurrences
+  return matches.length;
+}
+
+// Example usage:
+const str = 'JavaScript is a powerful and flexible programming language. JavaScript is widely used in web development.';
+const wordToCount = 'JavaScript';
+
+const count = countOccurrences(wordToCount, str);
+console.log(`The word '${wordToCount}' appears ${count} times.`);
