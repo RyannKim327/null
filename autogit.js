@@ -1,22 +1,32 @@
-const str = 'Hello, World!';
+function findMajorityElement(arr) {
+  const freqMap = {};
+  const n = arr.length;
 
-if (str.includes('Hello')) {
-  console.log('Substring found');
-} else {
-  console.log('Substring not found');
-}
-const str = 'Hello, World!';
+  // Populate the frequency map
+  for (let i = 0; i < n; i++) {
+    const num = arr[i];
+    freqMap[num] = (freqMap[num] || 0) + 1;
+  }
 
-if (str.indexOf('Hello') !== -1) {
-  console.log('Substring found');
-} else {
-  console.log('Substring not found');
-}
-const str = 'Hello, World!';
-const regex = /Hello/;
+  // Find the element with the highest frequency
+  let majorityElement = null;
+  let maxFreq = 0;
 
-if (regex.test(str)) {
-  console.log('Substring found');
-} else {
-  console.log('Substring not found');
+  for (const num in freqMap) {
+    if (freqMap[num] > maxFreq) {
+      maxFreq = freqMap[num];
+      majorityElement = num;
+    }
+  }
+
+  // Check if the majority element exists
+  if (maxFreq > n / 2) {
+    return majorityElement;
+  } else {
+    return "No majority element found";
+  }
 }
+
+// Example usage:
+const arr = [2, 2, 1, 1, 1, 2, 2];
+console.log(findMajorityElement(arr)); // Output: 2
