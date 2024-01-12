@@ -1,12 +1,36 @@
-const numbers = [3, 1, 5, 2, 4];
+// Node constructor
+function Node(data) {
+  this.data = data;
+  this.left = null;
+  this.right = null;
+}
 
-// Sorting in ascending order
-numbers.sort((a, b) => a - b);
+// Function to count leaf nodes
+function countLeafNodes(root) {
+  // Base case: if the root is null, there are no leaf nodes
+  if (root === null) {
+    return 0;
+  }
+  
+  // Base case: if the root has no children, it is a leaf node
+  if (root.left === null && root.right === null) {
+    return 1;
+  }
+  
+  // Recursively count the leaf nodes in the left and right subtrees
+  return countLeafNodes(root.left) + countLeafNodes(root.right);
+}
 
-console.log(numbers); // Output: [1, 2, 3, 4, 5]
-const numbers = [3, 1, 5, 2, 4];
+// Example usage:
 
-// Sorting in descending order
-numbers.sort((a, b) => b - a);
+// Create a binary tree
+var rootNode = new Node(1);
+rootNode.left = new Node(2);
+rootNode.right = new Node(3);
+rootNode.left.left = new Node(4);
+rootNode.left.right = new Node(5);
+rootNode.right.left = new Node(6);
 
-console.log(numbers); // Output: [5, 4, 3, 2, 1]
+// Count the leaf nodes
+var leafNodeCount = countLeafNodes(rootNode);
+console.log("Number of leaf nodes:", leafNodeCount);
