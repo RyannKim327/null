@@ -1,58 +1,27 @@
-class Stack {
-  constructor() {
-    this.stack = [];
-  }
+function selectionSort(arr) {
+  const n = arr.length;
 
-  // Add an element to the top of the stack
-  push(element) {
-    this.stack.push(element);
-  }
+  for (let i = 0; i < n - 1; i++) {
+    let minIdx = i;
 
-  // Remove and return the element at the top of the stack
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
+    for (let j = i + 1; j < n; j++) {
+      if (arr[j] < arr[minIdx]) {
+        minIdx = j;
+      }
     }
-    return this.stack.pop();
-  }
 
-  // Return the element at the top of the stack without removing it
-  peek() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
+    if (minIdx !== i) {
+      // Swap elements
+      const temp = arr[i];
+      arr[i] = arr[minIdx];
+      arr[minIdx] = temp;
     }
-    return this.stack[this.stack.length - 1];
   }
 
-  // Check if the stack is empty
-  isEmpty() {
-    return this.stack.length === 0;
-  }
-
-  // Return the size of the stack
-  size() {
-    return this.stack.length;
-  }
-
-  // Empty the stack
-  clear() {
-    this.stack = [];
-  }
-
-  // Print the stack elements
-  print() {
-    console.log(this.stack.join(" "));
-  }
+  return arr;
 }
 
-// Example usage
-const stack = new Stack();
-stack.push(5);
-stack.push(10);
-stack.push(15);
-console.log(stack.size()); // Output: 3
-console.log(stack.pop()); // Output: 15
-console.log(stack.peek()); // Output: 10
-stack.print(); // Output: 5 10
-stack.clear();
-console.log(stack.isEmpty()); // Output: true
+// Example usage:
+const arr = [64, 25, 12, 22, 11];
+const sortedArray = selectionSort(arr);
+console.log(sortedArray); // [11, 12, 22, 25, 64]
