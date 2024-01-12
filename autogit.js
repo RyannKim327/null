@@ -1,12 +1,8 @@
-function countStringLength(str) {
-  let count = 0;
-  for (let i = 0; str[i] !== undefined; i++) {
-    count++;
-  }
-  return count;
+function decimalToBinary(decimal) {
+  return decimal.toString(2);
 }
 
-// Example usage:
-const string = "Hello, world!";
-const length = countStringLength(string);
-console.log(length); // Output: 13
+// Example usage
+console.log(decimalToBinary(10)); // Output: 1010
+console.log(decimalToBinary(27)); // Output: 11011
+console.log(decimalToBinary(0));  // Output: 0
