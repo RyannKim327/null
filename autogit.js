@@ -1,10 +1,43 @@
-let str = "42";
-let num = parseInt(str);
+function tarjanSCC(adjList) {
+  const result = [];
+  const stack = [];
+  const visited = [];
+  const disc = [];
+  const low = [];
+  let time = 0;
 
-console.log(num); // Output: 42
-console.log(typeof num); // Output: number
-let str = "Hello";
-let num = parseInt(str);
+  function strongConnect(v) {
+    visited[v] = true;
+    stack.push(v);
+    disc[v] = time;
+    low[v] = time;
+    time++;
 
-console.log(num); // Output: NaN
-console.log(isNaN(num)); // Output: true
+    for (const t of adjList[v]) {
+      if (!visited[t]) {
+        strongConnect(t);
+        low[v] = Math.min(low[v], low[t]);
+      } else if (stack.includes(t)) {
+        low[v] = Math.min(low[v], disc[t]);
+      }
+    }
+
+    if (low[v] === disc[v]) {
+      const scc = [];
+      let x;
+      do {
+        x = stack.pop();
+        scc.push(x);
+      } while (x !== v);
+      result.push(scc);
+    }
+  }
+
+  for (let i = 0; i < adjList.length; i++) {
+    if (!visited[i]) {
+      strongConnect(i);
+    }
+  }
+
+  return result;
+}
