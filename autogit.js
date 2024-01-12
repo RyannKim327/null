@@ -1,28 +1,44 @@
-function shellSort(arr) {
-  var len = arr.length;
-  var gapSize = Math.floor(len / 2);
+function longestCommonSubsequence(str1, str2) {
+  const m = str1.length;
+  const n = str2.length;
 
-  while (gapSize > 0) {
-    for (var i = gapSize; i < len; i++) {
-      var temp = arr[i];
-      var j = i;
+  // Create a matrix to store the lengths of longest common subsequences
+  const dp = Array(m + 1)
+    .fill(0)
+    .map(() => Array(n + 1).fill(0));
 
-      while (j >= gapSize && arr[j - gapSize] > temp) {
-        arr[j] = arr[j - gapSize];
-        j -= gapSize;
+  // Compute the lengths of longest common subsequences
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
       }
-
-      arr[j] = temp;
     }
-
-    gapSize = Math.floor(gapSize / 2);
   }
 
-  return arr;
+  // Construct the longest common subsequence
+  let subsequence = '';
+  let i = m;
+  let j = n;
+  while (i > 0 && j > 0) {
+    if (str1[i - 1] === str2[j - 1]) {
+      subsequence = str1[i - 1] + subsequence;
+      i--;
+      j--;
+    } else if (dp[i - 1][j] > dp[i][j - 1]) {
+      i--;
+    } else {
+      j--;
+    }
+  }
+
+  return subsequence;
 }
-var arr = [9, 5, 1, 3, 8, 4, 7, 2, 6];
-console.log("Before sorting:", arr);
-shellSort(arr);
-console.log("After sorting:", arr);
-Before sorting: [9, 5, 1, 3, 8, 4, 7, 2, 6]
-After sorting: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+// Example usage:
+const str1 = 'AGGTAB';
+const str2 = 'GXTXAYB';
+
+console.log(longestCommonSubsequence(str1, str2)); // Output: GTAB
