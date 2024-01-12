@@ -1,59 +1,141 @@
-class Stack {
-  constructor() {
-    this.stack = [];
-  }
-
-  // Add an element to the top of the stack
-  push(element) {
-    this.stack.push(element);
-  }
-
-  // Remove and return the topmost element from the stack
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
-    }
-    return this.stack.pop();
-  }
-
-  // Return the topmost element without removing it from the stack
-  peek() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
-    }
-    return this.stack[this.stack.length - 1];
-  }
-
-  // Check if the stack is empty
-  isEmpty() {
-    return this.stack.length === 0;
-  }
-
-  // Get the number of elements in the stack
-  size() {
-    return this.stack.length;
-  }
-
-  // Clear the stack
-  clear() {
-    this.stack = [];
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
   }
 }
 
-// Example usage:
-const stack = new Stack();
-stack.push(1);
-stack.push(2);
-stack.push(3);
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
 
-console.log(stack.peek()); // Output: 3
+  // Add a new node at the end of the list
+  append(data) {
+    const newNode = new Node(data);
+    
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next !== null) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
 
-console.log(stack.pop()); // Output: 3
-console.log(stack.pop()); // Output: 2
+  // Insert a new node at a specific position in the list
+  insert(position, data) {
+    if (position < 0 || (position > 0 && !this.head)) {
+      throw new Error('Invalid position');
+    }
 
-console.log(stack.size()); // Output: 1
+    const newNode = new Node(data);
 
-console.log(stack.isEmpty()); // Output: false
+    if (position === 0) {
+      newNode.next = this.head;
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      let previous = null;
+      let count = 0;
 
-stack.clear();
-console.log(stack.isEmpty()); // Output: true
+      while (count < position) {
+        previous = current;
+        current = current.next;
+        count++;
+      }
+
+      previous.next = newNode;
+      newNode.next = current;
+    }
+  }
+
+  // Remove a node at a specific position from the list
+  removeAt(position) {
+    if (position < 0 || !this.head) {
+      throw new Error('Invalid position');
+    }
+
+    if (position === 0) {
+      this.head = this.head.next;
+    } else {
+      let current = this.head;
+      let previous = null;
+      let count = 0;
+
+      while (count < position) {
+        previous = current;
+        current = current.next;
+        count++;
+      }
+
+      previous.next = current.next;
+    }
+  }
+
+  // Get the index of a node with the given data
+  indexOf(data) {
+    let current = this.head;
+    let index = 0;
+
+    while (current !== null) {
+      if (current.data === data) {
+        return index;
+      }
+      current = current.next;
+      index++;
+    }
+
+    return -1;
+  }
+
+  // Get the size of the list
+  size() {
+    let current = this.head;
+    let count = 0;
+
+    while (current !== null) {
+      current = current.next;
+      count++;
+    }
+
+    return count;
+  }
+
+  // Check if the list is empty
+  isEmpty() {
+    return this.head === null;
+  }
+
+  // Clear the list
+  clear() {
+    this.head = null;
+  }
+
+  // Print the list
+  print() {
+    let current = this.head;
+    let result = "";
+
+    while (current !== null) {
+      result += current.data + " -> ";
+      current = current.next;
+    }
+
+    result += "null";
+    console.log(result);
+  }
+}
+const list = new LinkedList();
+list.append(5);
+list.append(10);
+list.insert(1, 7);
+list.print(); // Output: 5 -> 7 -> 10 -> null
+console.log(list.indexOf(7)); // Output: 1
+console.log(list.size()); // Output: 3
+console.log(list.isEmpty()); // Output: false
+list.removeAt(0);
+list.clear();
+console.log(list.isEmpty()); // Output: true
