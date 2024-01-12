@@ -1,29 +1,22 @@
-function countingSort(arr) {
-  let max = Math.max(...arr);
-  let count = new Array(max + 1).fill(0);
-
-  // Count the occurrences of each element
-  for (let num of arr) {
-    count[num]++;
+function isPrime(number) {
+  // Check if the number is less than 2
+  if (number < 2) {
+    return false;
   }
 
-  // Modify the count array
-  for (let i = 1; i < count.length; i++) {
-    count[i] += count[i - 1];
+  // Check if the number is divisible by any integer from 2 to the square root of the number
+  for (let i = 2; i <= Math.sqrt(number); i++) {
+    if (number % i === 0) {
+      return false;
+    }
   }
 
-  let output = new Array(arr.length);
-
-  // Place the elements in the output array
-  for (let i = arr.length - 1; i >= 0; i--) {
-    output[count[arr[i]] - 1] = arr[i];
-    count[arr[i]]--;
-  }
-
-  return output;
+  return true;
 }
-
 // Example usage
-let arr = [6, 2, 9, 3, 5, 1];
-let sortedArr = countingSort(arr);
-console.log(sortedArr); // Output: [1, 2, 3, 5, 6, 9]
+const number = 17;
+if (isPrime(number)) {
+  console.log(`${number} is a prime number`);
+} else {
+  console.log(`${number} is not a prime number`);
+}
