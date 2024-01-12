@@ -1,18 +1,45 @@
-function findFirstRepeatedChar(str) {
-  const charCount = {};
+function boyerMooreHorspool(pattern, text) {
+  // Step 2: Prepare the bad character shift table
+  const badCharShift = {};
 
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    if (charCount[char]) {
-      return char;
-    }
-    charCount[char] = 1;
+  // Calculate the maximum offset
+  const maxOffset = Math.max(1, pattern.length - 1);
+
+  // Iterate over the pattern to determine the bad character shift table
+  for (let i = 0; i < pattern.length - 1; i++) {
+    badCharShift[pattern[i]] = maxOffset - i;
   }
 
-  return null;
-}
+  // Step 3: Search for the pattern in the text
+  const indices = [];
 
+  let i = 0; // Index in text
+  while (i <= text.length - pattern.length) {
+    let j = pattern.length - 1; // Index in pattern
+
+    while (j >= 0 && pattern[j] === text[i + j]) {
+      j--;
+    }
+
+    if (j === -1) {
+      indices.push(i);
+      i++;
+    } else {
+      const badChar = text[i + j];
+
+      if (badCharShift.hasOwnProperty(badChar)) {
+        i += badCharShift[badChar];
+      } else {
+        i += maxOffset;
+      }
+    }
+  }
+
+  return indices;
+}
 // Example usage
-const input = 'Hello, World!';
-const repeatedChar = findFirstRepeatedChar(input);
-console.log(repeatedChar); // Output: l
+const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+const pattern = "ipsum";
+
+const indices = boyerMooreHorspool(pattern, text);
+console.log("Pattern found at indices:", indices);
