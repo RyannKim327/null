@@ -1,19 +1,20 @@
-const str = "Hello, World!";
-const reversedStr = str.split("").reverse().join("");
-console.log(reversedStr); // Output: "!dlroW ,olleH"
-const str = "Hello, World!";
-let reversedStr = "";
-for (let i = str.length - 1; i >= 0; i--) {
-  reversedStr += str[i];
-}
-console.log(reversedStr); // Output: "!dlroW ,olleH"
-function reverseString(str) {
-  if (str === "") {
-    return "";
-  } else {
-    return reverseString(str.substr(1)) + str.charAt(0);
-  }
-}
+function areAnagrams(str1, str2) {
+  // Convert both strings to lowercase and remove spaces
+  str1 = str1.toLowerCase().replace(/\s/g, '');
+  str2 = str2.toLowerCase().replace(/\s/g, '');
 
-const str = "Hello, World!";
-console.log(reverseString(str)); // Output: "!dlroW ,olleH"
+  // Sort the characters of both strings
+  const sortedStr1 = str1.split('').sort().join('');
+  const sortedStr2 = str2.split('').sort().join('');
+
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
+}
+const string1 = 'listen';
+const string2 = 'silent';
+
+if (areAnagrams(string1, string2)) {
+  console.log('Strings are anagrams.');
+} else {
+  console.log('Strings are not anagrams.');
+}
