@@ -1,48 +1,54 @@
-function buildFailureTable(pattern) {
-  const table = new Array(pattern.length).fill(0);
-  let j = 0;
-  
-  for (let i = 1; i < pattern.length; i++) {
-    if (pattern[i] === pattern[j]) {
-      table[i] = j + 1;
-      j++;
-    } else {
-      if (j !== 0) {
-        j = table[j - 1];
-        i--;  // Continue comparing the character in the next loop
-      } else {
-        table[i] = 0;
-      }
-    }
+// Suffix Tree Node
+class Node {
+  constructor() {
+    this.children = {};
   }
-  
-  return table;
 }
 
-function stringMatch(text, pattern) {
-  const failureTable = buildFailureTable(pattern);
-  let i = 0;
-  let j = 0;
-  
-  while (i < text.length) {
-    if (text[i] === pattern[j]) {
-      if (j === pattern.length - 1) {
-        return i - j;  // Match found, return the starting index
-      }
-      i++;
-      j++;
-    } else if (j > 0) {
-      j = failureTable[j - 1];
-    } else {
-      i++;
+// Suffix Tree
+class SuffixTree {
+  constructor(str) {
+    this.root = new Node();
+    this.buildSuffixTree(str);
+  }
+
+  // Build the suffix tree
+  buildSuffixTree(str) {
+    for (let i = 0; i < str.length; i++) {
+      const suffix = str.slice(i);
+      this.insertSuffix(suffix, i);
     }
   }
-  
-  return -1;  // Match not found
+
+  // Insert a suffix into the suffix tree
+  insertSuffix(suffix, index) {
+    let currentNode = this.root;
+    for (let i = 0; i < suffix.length; i++) {
+      const char = suffix[i];
+      if (!currentNode.children[char]) {
+        currentNode.children[char] = new Node();
+      }
+      currentNode = currentNode.children[char];
+    }
+    // Store the index of the suffix endpoint
+    currentNode.endpoint = index;
+  }
+
+  // Search for a pattern in the suffix tree
+  search(pattern) {
+    let currentNode = this.root;
+    for (let i = 0; i < pattern.length; i++) {
+      const char = pattern[i];
+      if (!currentNode.children[char]) {
+        return false; // Pattern not found
+      }
+      currentNode = currentNode.children[char];
+    }
+    return true; // Pattern found
+  }
 }
 
-// Example usage
-const text = "ABCABDABABCABCDABDE";
-const pattern = "ABCD";
-
-console.log(stringMatch(text, pattern));  // Output: 12
+// Usage example
+const suffixTree = new SuffixTree("banana");
+console.log(suffixTree.search("ana")); // true
+console.log(suffixTree.search("xyz")); // false
