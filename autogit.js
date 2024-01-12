@@ -1,15 +1,23 @@
-function findMaxSubarray(arr) {
-  let maxSum = arr[0];
-  let currentSum = arr[0];
+function burrowsWheelerTransform(str) {
+  function transform(str) {
+    const transformedStrings = [];
+    const len = str.length;
+    let rotations = str;
 
-  for (let i = 1; i < arr.length; i++) {
-    currentSum = Math.max(arr[i], currentSum + arr[i]);
-    maxSum = Math.max(maxSum, currentSum);
+    for (let i = 0; i < len; i++) {
+      transformedStrings.push(rotations);
+      rotations = rotations.substr(len - 1) + rotations.substr(0, len - 1);
+    }
+
+    transformedStrings.sort();
+    const result = transformedStrings.map(str => str.charAt(len - 1)).join('');
+    return result;
   }
 
-  return maxSum;
+  return transform(str);
 }
 
 // Example usage:
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-console.log(findMaxSubarray(array)); // Output: 6
+const inputString = 'banana';
+const transformedString = burrowsWheelerTransform(inputString);
+console.log(transformedString);
