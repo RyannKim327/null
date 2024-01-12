@@ -1,18 +1,12 @@
-function factorialLoop(num) {
-  let result = 1;
-  for (let i = 2; i <= num; i++) {
-    result *= i;
-  }
-  return result;
+function validateEmail(email) {
+  // Regular expression pattern for validating email addresses
+  var pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+  return pattern.test(email);
 }
 
-console.log(factorialLoop(5)); // Output: 120
-function factorialRecursive(num) {
-  if (num === 0 || num === 1) {
-    return 1;
-  } else {
-    return num * factorialRecursive(num - 1);
-  }
-}
+// Example usage
+var email = "example@example.com";
+var isValid = validateEmail(email);
 
-console.log(factorialRecursive(5)); // Output: 120
+console.log(isValid); // true
