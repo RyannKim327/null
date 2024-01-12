@@ -1,131 +1,110 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
-
-class BinarySearchTree {
+class BinaryHeap {
   constructor() {
-    this.root = null;
+    this.heap = [];
+    this.size = 0;
   }
 
-  insert(value) {
-    const newNode = new Node(value);
+  getParentIndex(index) {
+    return Math.floor((index - 1) / 2);
+  }
 
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
+  getLeftChildIndex(index) {
+    return (2 * index) + 1;
+  }
+
+  getRightChildIndex(index) {
+    return (2 * index) + 2;
+  }
+
+  hasParent(index) {
+    return this.getParentIndex(index) >= 0;
+  }
+
+  hasLeftChild(index) {
+    return this.getLeftChildIndex(index) < this.size;
+  }
+
+  hasRightChild(index) {
+    return this.getRightChildIndex(index) < this.size;
+  }
+
+  parent(index) {
+    return this.heap[this.getParentIndex(index)];
+  }
+
+  leftChild(index) {
+    return this.heap[this.getLeftChildIndex(index)];
+  }
+
+  rightChild(index) {
+    return this.heap[this.getRightChildIndex(index)];
+  }
+
+  swap(index1, index2) {
+    const temp = this.heap[index1];
+    this.heap[index1] = this.heap[index2];
+    this.heap[index2] = temp;
+  }
+
+  peek() {
+    if (this.size === 0) {
+      throw new Error('Priority queue is empty.');
+    }
+    return this.heap[0];
+  }
+
+  add(item) {
+    this.heap.push(item);
+    this.size++;
+    this.heapifyUp();
+  }
+
+  poll() {
+    if (this.size === 0) {
+      throw new Error('Priority queue is empty.');
+    }
+    const item = this.heap[0];
+    this.heap[0] = this.heap[this.size - 1];
+    this.heap.pop();
+    this.size--;
+    this.heapifyDown();
+    return item;
+  }
+
+  heapifyUp() {
+    let index = this.size - 1;
+    while (this.hasParent(index) && this.parent(index) > this.heap[index]) {
+      const parentIndex = this.getParentIndex(index);
+      this.swap(parentIndex, index);
+      index = parentIndex;
     }
   }
 
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
+  heapifyDown() {
+    let index = 0;
+    while (this.hasLeftChild(index)) {
+      let smallerChildIndex = this.getLeftChildIndex(index);
+      if (this.hasRightChild(index) &&
+          this.rightChild(index) < this.leftChild(index)) {
+        smallerChildIndex = this.getRightChildIndex(index);
+      }
+
+      if (this.heap[index] < this.heap[smallerChildIndex]) {
+        break;
       } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
-
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  searchNode(node, value) {
-    if (node === null || node.value === value) {
-      return node;
-    }
-
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    }
-
-    return this.searchNode(node.right, value);
-  }
-
-  remove(value) {
-    this.root = this.removeNode(this.root, value);
-  }
-
-  removeNode(node, value) {
-    if (node === null) {
-      return null;
-    }
-
-    if (value < node.value) {
-      node.left = this.removeNode(node.left, value);
-      return node;
-    } else if (value > node.value) {
-      node.right = this.removeNode(node.right, value);
-      return node;
-    } else {
-      if (node.left === null && node.right === null) {
-        node = null;
-        return node;
+        this.swap(index, smallerChildIndex);
       }
 
-      if (node.left === null) {
-        node = node.right;
-        return node;
-      } else if (node.right === null) {
-        node = node.left;
-        return node;
-      }
-
-      const minRight = this.findMinNode(node.right);
-      node.value = minRight.value;
-      node.right = this.removeNode(node.right, minRight.value);
-      return node;
-    }
-  }
-
-  findMinNode(node) {
-    if (node.left === null) {
-      return node;
-    }
-    return this.findMinNode(node.left);
-  }
-
-  inorderTraversal(callback) {
-    this.inorderTraversalNode(this.root, callback);
-  }
-
-  inorderTraversalNode(node, callback) {
-    if (node !== null) {
-      this.inorderTraversalNode(node.left, callback);
-      callback(node.value);
-      this.inorderTraversalNode(node.right, callback);
+      index = smallerChildIndex;
     }
   }
 }
-const bst = new BinarySearchTree();
-
-bst.insert(8);
-bst.insert(3);
-bst.insert(10);
-bst.insert(1);
-bst.insert(6);
-bst.insert(14);
-bst.insert(4);
-bst.insert(7);
-bst.insert(13);
-
-console.log('Inorder Traversal:');
-bst.inorderTraversal(value => console.log(value));
-
-console.log('Search 6:', bst.search(6)); // returns Node object
-console.log('Search 11:', bst.search(11)); // returns null
-
-bst.remove(3);
-console.log('Inorder Traversal after removing 3:');
-bst.inorderTraversal(value => console.log(value));
+const priorityQueue = new BinaryHeap();
+priorityQueue.add(5);
+priorityQueue.add(3);
+priorityQueue.add(7);
+priorityQueue.add(1);
+console.log(priorityQueue.poll()); // Output: 1
+console.log(priorityQueue.poll()); // Output: 3
+console.log(priorityQueue.poll()); // Output: 5
+console.log(priorityQueue.poll()); // Output: 7
