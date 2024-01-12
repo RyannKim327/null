@@ -1,27 +1,14 @@
-function selectionSort(arr) {
-  const n = arr.length;
+function isPalindrome(str) {
+  let left = 0;
+  let right = str.length - 1;
 
-  for (let i = 0; i < n - 1; i++) {
-    let minIdx = i;
-
-    for (let j = i + 1; j < n; j++) {
-      if (arr[j] < arr[minIdx]) {
-        minIdx = j;
-      }
+  while (left < right) {
+    if (str[left] !== str[right]) {
+      return false;
     }
-
-    if (minIdx !== i) {
-      // Swap elements
-      const temp = arr[i];
-      arr[i] = arr[minIdx];
-      arr[minIdx] = temp;
-    }
+    left++;
+    right--;
   }
 
-  return arr;
+  return true;
 }
-
-// Example usage:
-const arr = [64, 25, 12, 22, 11];
-const sortedArray = selectionSort(arr);
-console.log(sortedArray); // [11, 12, 22, 25, 64]
