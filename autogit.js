@@ -1,37 +1,72 @@
-function Node(value) {
-  this.value = value;
-  this.next = null;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
-function reverseLinkedList(head) {
-  let prevNode = null;
-  let currNode = head;
 
-  while (currNode !== null) {
-    const nextNode = currNode.next;
-    currNode.next = prevNode;
-    prevNode = currNode;
-    currNode = nextNode;
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
   }
 
-  return prevNode;
+  isEmpty() {
+    return this.length === 0;
+  }
+
+  addToTail(value) {
+    const node = new Node(value);
+    if (this.isEmpty()) {
+      this.head = node;
+      this.tail = node;
+    } else {
+      this.tail.next = node;
+      this.tail = node;
+    }
+    this.length++;
+  }
+
+  removeFromHead() {
+    if (this.isEmpty()) {
+      return null;
+    }
+    const value = this.head.value;
+    if (this.length === 1) {
+      this.head = null;
+      this.tail = null;
+    } else {
+      this.head = this.head.next;
+    }
+    this.length--;
+    return value;
+  }
 }
-// Create a linked list with 3 nodes: 1 -> 2 -> 3
-const node1 = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
 
-node1.next = node2;
-node2.next = node3;
+class Queue {
+  constructor() {
+    this.list = new LinkedList();
+  }
 
-// Reverse the linked list
-const reversedHead = reverseLinkedList(node1);
+  isEmpty() {
+    return this.list.isEmpty();
+  }
 
-// Output the reversed list: 3 -> 2 -> 1
-let current = reversedHead;
-while (current !== null) {
-  console.log(current.value);
-  current = current.next;
+  enqueue(value) {
+    this.list.addToTail(value);
+  }
+
+  dequeue() {
+    return this.list.removeFromHead();
+  }
 }
-3
-2
-1
+const queue = new Queue();
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.dequeue()); // Output: 2
+console.log(queue.isEmpty()); // Output: false
+console.log(queue.dequeue()); // Output: 3
+console.log(queue.isEmpty()); // Output: true
