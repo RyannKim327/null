@@ -1,31 +1,36 @@
-function longestCommonSubstring(str1, str2) {
-  const m = str1.length;
-  const n = str2.length;
-  let maxLength = 0; // length of the longest common substring
-  let endIndex = 0; // ending index of the longest common substring
+function fibonacciSearch(target, arr, n) {
+  function generateFibonacciSeries(length) {
+    const fibSeries = [0, 1];
+    while (fibSeries[fibSeries.length - 1] < length) {
+      const next = fibSeries[fibSeries.length - 1] + fibSeries[fibSeries.length - 2];
+      fibSeries.push(next);
+    }
+    return fibSeries;
+  }
 
-  // Create a 2D table to store the lengths of common substrings
-  const dp = Array(m + 1).fill(0).map(() => Array(n + 1).fill(0));
+  const fibSeries = generateFibonacciSeries(n);
+  let offset = 0;
+  let prevIndex = -1;
+  let currentIndex = Math.min(offset + fibSeries[fibSeries.length - 2], n - 1);
 
-  // Calculate the lengths of common substrings
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-        if (dp[i][j] > maxLength) {
-          maxLength = dp[i][j];
-          endIndex = i - 1; // update the ending index
-        }
-      }
+  while (offset < n) {
+    if (arr[currentIndex] === target) {
+      return currentIndex;
+    } else if (arr[currentIndex] > target) {
+      currentIndex = offset + fibSeries[fibSeries.length - 3];
+      prevIndex = currentIndex;
+    } else {
+      offset = currentIndex + 1;
+      currentIndex = Math.min(offset + fibSeries[fibSeries.length - 2], n - 1);
     }
   }
 
-  // Extract the longest common substring using the ending index
-  return str1.substr(endIndex - maxLength + 1, maxLength);
+  return -1;
 }
 
-// Example usage
-const str1 = "abcdef";
-const str2 = "defghijkl";
-const longestSubstring = longestCommonSubstring(str1, str2);
-console.log(longestSubstring); // Output: "def"
+// Example usage:
+const arr = [1, 4, 6, 8, 10, 12, 14, 18, 20, 25, 30];
+const target = 14;
+const index = fibonacciSearch(target, arr, arr.length);
+
+console.log(`Target ${target} is found at index ${index}`);
