@@ -1,23 +1,15 @@
-function binarySearch(arr, target, start = 0) {
-  let low = start;
-  let high = arr.length - 1;
+function findMaxSubarray(arr) {
+  let maxSum = arr[0];
+  let currentSum = arr[0];
 
-  while (low <= high) {
-    let mid = Math.floor((low + high) / 2);
-
-    if (target === arr[mid]) {
-      return mid;
-    } else if (target < arr[mid]) {
-      high = mid - 1;
-    } else {
-      low = mid + 1;
-    }
+  for (let i = 1; i < arr.length; i++) {
+    currentSum = Math.max(arr[i], currentSum + arr[i]);
+    maxSum = Math.max(maxSum, currentSum);
   }
-  
-  return -1;
-}
-const myArray = [2, 4, 7, 10, 14, 16, 19, 20, 26, 29];
-const targetElement = 16;
 
-const resultIndex = binarySearch(myArray, targetElement);
-console.log(resultIndex); // Output: 5
+  return maxSum;
+}
+
+// Example usage:
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+console.log(findMaxSubarray(array)); // Output: 6
