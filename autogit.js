@@ -1,14 +1,19 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  const formattedStr = str.replace(/[^0-9a-z]/gi, '').toLowerCase();
-  
-  // Compare the string with its reverse
-  return formattedStr === formattedStr.split('').reverse().join('');
+function factorialIterative(num) {
+  let result = 1;
+  for(let i = 2; i <= num; i++) {
+    result *= i;
+  }
+  return result;
 }
 
-// Usage example
-const input1 = "racecar";
-console.log(isPalindrome(input1)); // Output: true
+const number = 5;
+console.log(`Factorial of ${number} (iterative approach): ${factorialIterative(number)}`);
+function factorialRecursive(num) {
+  if (num === 0 || num === 1) {
+    return 1;
+  }
+  return num * factorialRecursive(num - 1);
+}
 
-const input2 = "hello";
-console.log(isPalindrome(input2)); // Output: false
+const number = 5;
+console.log(`Factorial of ${number} (recursive approach): ${factorialRecursive(number)}`);
