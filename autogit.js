@@ -1,5 +1,11 @@
-// Prompt the user for input
-var userInput = prompt("Enter something:");
+function getLinkedListLength(head) {
+  let length = 0;
+  let current = head;
 
-// Display the user input on the console
-console.log("You entered: " + userInput);
+  while (current !== null) {
+    length++;
+    current = current.next;
+  }
+
+  return length;
+}
