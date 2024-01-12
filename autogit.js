@@ -1,12 +1,35 @@
-function validateEmail(email) {
-  // Define the regular expression pattern for email validation
-  const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-  // Use the test() method of the regular expression to check if the email matches the pattern
-  return pattern.test(email);
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+}
+reverse() {
+  let prev = null;
+  let current = this.head;
+  let next = null;
 
-// Usage example
-const email = "example@example.com";
-const isValid = validateEmail(email);
-console.log(isValid); // Output: true
+  while (current !== null) {
+    next = current.next;
+    current.next = prev;
+    prev = current;
+    current = next;
+  }
+
+  this.head = prev;
+}
+const linkedList = new LinkedList();
+
+// Add nodes to the list (for example)
+linkedList.head = new Node(1);
+linkedList.head.next = new Node(2);
+linkedList.head.next.next = new Node(3);
+linkedList.head.next.next.next = new Node(4);
+
+// Reverse the list
+linkedList.reverse();
