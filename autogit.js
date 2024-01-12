@@ -1,29 +1,66 @@
-function countingSort(array) {
-  // Step 2: Find the maximum element in the array
-  let max = Math.max(...array);
-  
-  // Step 3: Create a count array with all elements initialized to 0
-  let countArray = new Array(max + 1).fill(0);
-  
-  // Step 4: Iterate over the input array and count the occurrences of each element
-  for (let i = 0; i < array.length; i++) {
-    countArray[array[i]]++;
+class BinaryTreeNode {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
-  
-  // Step 5: Modify the count array to contain the correct position of each element
-  for (let i = 1; i <= max; i++) {
-    countArray[i] += countArray[i - 1];
-  }
-  
-  // Step 6: Create a sorted array using the count array
-  let sortedArray = new Array(array.length);
-  for (let i = array.length - 1; i >= 0; i--) {
-    sortedArray[--countArray[array[i]]] = array[i];
-  }
-  
-  // Step 7: Return the sorted array
-  return sortedArray;
 }
-let array = [4, 2, 2, 8, 3, 3, 1];
-let sortedArray = countingSort(array);
-console.log(sortedArray); // Output: [1, 2, 2, 3, 3, 4, 8]
+
+class BinaryTree {
+  constructor() {
+    this.root = null;
+  }
+  
+  insert(value) {
+    const newNode = new BinaryTreeNode(value);
+    
+    if (this.root === null) {
+      // If the tree is empty, set the new node as the root
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
+  
+  insertNode(node, newNode) {
+    // If the new value is less than the current node, go left
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } 
+    // If the new value is greater than the current node, go right
+    else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+  
+  // To traverse the tree in a specific order, you can implement
+  // various traversal methods like preorder, inorder, postorder, etc.
+  
+  // Example: Inorder traversal (left -> root -> right)
+  inorder(node) {
+    if (node !== null) {
+      this.inorder(node.left);
+      console.log(node.value);
+      this.inorder(node.right);
+    }
+  }
+}
+
+// Usage example:
+const tree = new BinaryTree();
+tree.insert(5);
+tree.insert(3);
+tree.insert(7);
+tree.insert(1);
+tree.insert(4);
+
+// Traversing the tree (inorder traversal)
+tree.inorder(tree.root);
