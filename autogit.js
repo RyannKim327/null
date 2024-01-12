@@ -1,13 +1,20 @@
-let str = "Hello, World!";
-let reversedStr = str.split("").reverse().join("");
-console.log(reversedStr);
-let str = "Hello, World!";
-let reversedStr = "";
-for (let i = str.length - 1; i >= 0; i--) {
-  reversedStr += str.charAt(i);
+function findFirstRepeatedCharacter(str) {
+  const charMap = {};
+
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+
+    if (charMap[char]) {
+      return char;
+    }
+
+    charMap[char] = true;
+  }
+
+  return null;
 }
-console.log(reversedStr);
-let str = "Hello, World!";
-let reversedStr = Array.from(str).reverse().join("");
-console.log(reversedStr);
-!dlroW ,olleH
+
+// Example usage
+const str = 'hello world';
+const repeatedChar = findFirstRepeatedCharacter(str);
+console.log(repeatedChar); // Output: "l"
