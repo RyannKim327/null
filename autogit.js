@@ -1,29 +1,49 @@
-function findMajorityElement(arr) {
-  const freq = {};
+function beamSearch(initialState, expandFunction, evaluateFunction, beamWidth, maxLength) {
+  let currentSet = [{ sequence: initialState, score: 0 }];
+  let finishedSequences = [];
 
-  for (let i = 0; i < arr.length; i++) {
-    const element = arr[i];
-    freq[element] = (freq[element] || 0) + 1;
-  }
+  for (let length = 0; length < maxLength; length++) {
+    let newSet = [];
 
-  let majorityElement = null;
-  let majorityCount = 0;
+    for (let i = 0; i < currentSet.length; i++) {
+      let { sequence, score } = currentSet[i];
 
-  for (const element in freq) {
-    if (freq[element] > majorityCount) {
-      majorityCount = freq[element];
-      majorityElement = element;
+      let expansions = expandFunction(sequence);
+      expansions.forEach(expansion => {
+        let newSequence = sequence.concat(expansion);
+        let newScore = score + evaluateFunction(newSequence);
+
+        newSet.push({
+          sequence: newSequence,
+          score: newScore
+        });
+      });
+    }
+
+    newSet.sort((a, b) => b.score - a.score);
+    currentSet = newSet.slice(0, beamWidth);
+
+    currentSet.forEach(sequenceObj => {
+      if (sequenceObj.sequence.length === maxLength) {
+        finishedSequences.push(sequenceObj);
+      }
+    });
+
+    if (currentSet.length === 0) {
+      break;
     }
   }
 
-  if (majorityCount > arr.length / 2) {
-    return majorityElement;
-  } else {
-    return null;
-  }
+  finishedSequences.sort((a, b) => b.score - a.score);
+  return finishedSequences[0].sequence;
 }
 
 // Example usage
-const array = [1, 2, 2, 3, 2, 1, 2, 2, 3, 2, 2];
-const majorityElement = findMajorityElement(array);
-console.log(majorityElement); // Output: 2
+const initialState = [];
+const expandFunction = (sequence) => ['A', 'B', 'C'];
+const evaluateFunction = (sequence) => Math.random(); // Replace with your evaluation function
+const beamWidth = 3;
+const maxLength = 5;
+
+const result = beamSearch(initialState, expandFunction, evaluateFunction, beamWidth, maxLength);
+console.log(result);
