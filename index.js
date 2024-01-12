@@ -2,7 +2,8 @@ const fs = require("fs")
 const { exec } = require("child_process")
 const date = require("./date")
 const axios = require("axios")
-let commits = Math.floor(Math.random() * 5) * 100
+let commits = Math.floor(Math.random() * 5)
+commits *= 100
 let _commitments = 1
 console.log(`You send git ${commits} commits`)
 let run = async () => {
