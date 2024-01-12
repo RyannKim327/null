@@ -1,28 +1,17 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+function getRandomNumber(min, max) {
+  // Calculate the range by subtracting min from max
+  let range = max - min;
+
+  // Generate a random number between 0 and the range
+  let randomNumber = Math.random() * range;
+
+  // Add the minimum value to the random number
+  randomNumber += min;
+
+  // Return the final random number
+  return Math.floor(randomNumber);
 }
 
-function findMiddleElement(head) {
-  let slowPtr = head; // Moves one node at a time
-  let fastPtr = head; // Moves two nodes at a time
-
-  while (fastPtr !== null && fastPtr.next !== null) {
-    slowPtr = slowPtr.next;
-    fastPtr = fastPtr.next.next;
-  }
-
-  return slowPtr.value;
-}
-// Create the linked list: 1 -> 2 -> 3 -> 4 -> 5
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-// Find the middle element
-let middleElement = findMiddleElement(head);
-console.log(middleElement); // Output: 3
+// Example usage: Generate a random number between 1 and 10
+let randomNumber = getRandomNumber(1, 10);
+console.log(randomNumber);
