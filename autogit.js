@@ -1,27 +1,16 @@
-function findFirstNonRepeatingChar(str) {
-  // Create a counter object to store character count
-  const counter = {};
-
-  // Iterate over each character in the string
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    // Increment the counter for the current character
-    counter[char] = (counter[char] || 0) + 1;
-  }
-
-  // Find the first character with count 1
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    if (counter[char] === 1) {
-      return char;
-    }
-  }
-
-  // Return null if no non-repeating character found
-  return null;
-}
-
-// Example usage
-const str = "aabbcde";
-const firstNonRepeatingChar = findFirstNonRepeatingChar(str);
-console.log(firstNonRepeatingChar); // Output: "c"
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = [...new Set(array)];
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = array.filter((value, index, self) => {
+  return self.indexOf(value) === index;
+});
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = Object.keys(
+  array.reduce((obj, value) => {
+    obj[value] = true;
+    return obj;
+  }, {})
+).map(Number);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
