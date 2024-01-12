@@ -1,46 +1,11 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+// Create a function that prompts the user for input
+function getUserInput() {
+  var userInput = prompt("Enter something:");
+  return userInput;
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+// Call the function and store the user input in a variable
+var input = getUserInput();
 
-  add(value) {
-    const newNode = new Node(value);
-
-    if (this.head === null) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next !== null) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
-
-  getLength() {
-    let length = 0;
-    let current = this.head;
-
-    while (current !== null) {
-      length++;
-      current = current.next;
-    }
-
-    return length;
-  }
-}
-
-// Example usage:
-const list = new LinkedList();
-list.add(1);
-list.add(2);
-list.add(3);
-
-console.log(list.getLength()); // Output: 3
+// Display the user input on the webpage
+document.write("You entered: " + input);
