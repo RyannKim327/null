@@ -1,16 +1,26 @@
-function getRandomNumber(min, max) {
-  // Calculate the range of the desired random numbers
-  const range = max - min + 1;
-
-  // Generate a random number between 0 and range - 1
-  const randomNumber = Math.floor(Math.random() * range);
-
-  // Add the minimum value to offset the range
-  return randomNumber + min;
+function isPalindrome(str) {
+  const reversedStr = str.split('').reverse().join('');
+  return str === reversedStr;
 }
 
 // Example usage
-const minNumber = 1;
-const maxNumber = 100;
-const randomNum = getRandomNumber(minNumber, maxNumber);
-console.log(randomNum);
+console.log(isPalindrome('racecar')); // true
+console.log(isPalindrome('hello')); // false
+function isPalindrome(str) {
+  let left = 0;
+  let right = str.length - 1;
+
+  while (left < right) {
+    if (str.charAt(left) !== str.charAt(right))
+      return false;
+
+    left++;
+    right--;
+  }
+
+  return true;
+}
+
+// Example usage
+console.log(isPalindrome('racecar')); // true
+console.log(isPalindrome('hello')); // false
