@@ -1,22 +1,20 @@
-const cron = require('node-cron');
+function areAnagrams(str1, str2) {
+  // Convert both strings to lowercase
+  str1 = str1.toLowerCase();
+  str2 = str2.toLowerCase();
 
-// Schedule a cron job to run every minute
-cron.schedule('* * * * *', () => {
-  console.log('This cron job runs every minute.');
-});
+  // Remove non-alphabetic characters using regular expressions
+  str1 = str1.replace(/[^a-z]/g, '');
+  str2 = str2.replace(/[^a-z]/g, '');
 
-// Schedule a cron job to run every day at 12:00 PM
-cron.schedule('0 12 * * *', () => {
-  console.log('This cron job runs every day at 12:00 PM.');
-});
+  // Sort the characters in both strings
+  str1 = str1.split('').sort().join('');
+  str2 = str2.split('').sort().join('');
 
-// Schedule a cron job to run on specific weekdays at 9:00 AM
-cron.schedule('0 9 * * 1-5', () => {
-  console.log('This cron job runs on weekdays (Monday to Friday) at 9:00 AM.');
-});
+  // Compare the sorted strings
+  return str1 === str2;
+}
 
-// Schedule a cron job to run every 30 seconds
-cron.schedule('*/30 * * * * *', () => {
-  console.log('This cron job runs every 30 seconds.');
-});
-npm install node-cron
+// Example usage
+console.log(areAnagrams('listen', 'silent')); // true
+console.log(areAnagrams('hello', 'world')); // false
