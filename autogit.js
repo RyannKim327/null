@@ -1,9 +1,8 @@
-const axios = require('axios');
+function removeVowels(str) {
+  return str.replace(/[aeiou]/gi, '');
+}
 
-axios.get('https://api.example.com/data')
-  .then(response => {
-    console.log('Response:', response.data);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+// Example usage:
+const input = 'Hello, World!';
+const output = removeVowels(input);
+console.log(output); // Output: "Hll, Wrld!"
