@@ -1,18 +1,64 @@
-function reverseWords(str) {
-  // Step 1: Split the string into an array of words
-  var wordsArray = str.split(' ');
+function tarjanSCC(graph) {
+  let index = 0;
+  const stack = [];
+  const scc = [];
+  const indices = new Array(graph.length).fill(-1);
+  const lowLinks = new Array(graph.length).fill(-1);
+  const visited = new Array(graph.length).fill(false);
 
-  // Step 2: Reverse the array of words
-  var reversedArray = wordsArray.reverse();
+  function strongconnect(v) {
+    indices[v] = index;
+    lowLinks[v] = index;
+    index++;
+    stack.push(v);
+    visited[v] = true;
 
-  // Step 3: Join the reversed array back into a string
-  var reversedString = reversedArray.join(' ');
+    for (let w of graph[v]) {
+      if (indices[w] === -1) {
+        strongconnect(w);
+        lowLinks[v] = Math.min(lowLinks[v], lowLinks[w]);
+      } else if (visited[w]) {
+        lowLinks[v] = Math.min(lowLinks[v], indices[w]);
+      }
+    }
 
-  return reversedString;
+    if (lowLinks[v] === indices[v]) {
+      const component = [];
+      let w;
+      do {
+        w = stack.pop();
+        visited[w] = false;
+        component.push(w);
+      } while (w !== v);
+
+      scc.push(component);
+    }
+  }
+
+  for (let v = 0; v < graph.length; v++) {
+    if (indices[v] === -1) {
+      strongconnect(v);
+    }
+  }
+
+  return scc;
 }
+const graph = [
+  [1],
+  [2, 4],
+  [3, 6],
+  [2, 7],
+  [0, 5],
+  [6],
+  [5],
+  [3, 6],
+];
 
-// Example usage
-var originalString = "Hello World!";
-var reversedString = reverseWords(originalString);
-
-console.log(reversedString); // Outputs: "World! Hello"
+const stronglyConnectedComponents = tarjanSCC(graph);
+console.log(stronglyConnectedComponents);
+[
+  [6, 5],
+  [7, 3, 2],
+  [4, 1],
+  [0]
+]
