@@ -1,93 +1,43 @@
-class BTreeNode {
-  constructor(order) {
-    this.order = order;
-    this.keys = [];
-    this.children = [];
-    this.isLeaf = true;
-  }
-}
+const mergeArrays = (arr1, arr2) => {
+  let mergedArray = [];
+  let i = 0, j = 0;
 
-class BTree {
-  constructor(order) {
-    this.order = order;
-    this.root = new BTreeNode(order);
-  }
-  
-  insert(key) {
-    const root = this.root;
-    if (root.keys.length === (2 * this.order) - 1) {
-      const newRoot = new BTreeNode(this.order);
-      this.root = newRoot;
-      newRoot.children.push(root);
-      this.splitChild(newRoot, 0);
-      this.insertNonFull(newRoot, key);
-    } else {
-      this.insertNonFull(root, key);
-    }
-  }
-  
-  insertNonFull(node, key) {
-    let i = node.keys.length - 1;
-    
-    if (node.isLeaf) {
-      while (i >= 0 && key < node.keys[i]) {
-        node.keys[i + 1] = node.keys[i];
-        i--;
-      }
-      node.keys[i + 1] = key;
-    } else {
-      while (i >= 0 && key < node.keys[i]) {
-        i--;
-      }
+  while (i < arr1.length && j < arr2.length) {
+    if (arr1[i] <= arr2[j]) {
+      mergedArray.push(arr1[i]);
       i++;
-      if (node.children[i].keys.length === (2 * this.order) - 1) {
-        this.splitChild(node, i);
-        if (key > node.keys[i]) {
-          i++;
-        }
-      }
-      this.insertNonFull(node.children[i], key);
+    } else {
+      mergedArray.push(arr2[j]);
+      j++;
     }
   }
-  
-  splitChild(node, i) {
-    const order = this.order;
-    const child = node.children[i];
-    const newNode = new BTreeNode(order);
-    node.children.splice(i + 1, 0, newNode);
 
-    node.keys.splice(i, 0, child.keys[order - 1]);
-
-    newNode.keys = child.keys.splice(order, order - 1);
-    newNode.children = child.children.splice(order, order);
-    
-    newNode.isLeaf = child.isLeaf;
+  while (i < arr1.length) {
+    mergedArray.push(arr1[i]);
+    i++;
   }
-  
-  search(key, node = this.root) {
-    let i = 0;
-    while (i < node.keys.length && key > node.keys[i]) {
-      i++;
-    }
-    
-    if (node.keys[i] === key) {
-      return true;
-    }
-    
-    if (node.isLeaf) {
-      return false;
-    }
-    
-    return this.search(key, node.children[i]);
+
+  while (j < arr2.length) {
+    mergedArray.push(arr2[j]);
+    j++;
   }
-}
 
-// Usage example:
-const bTree = new BTree(3);
-bTree.insert(10);
-bTree.insert(20);
-bTree.insert(5);
-bTree.insert(15);
+  return mergedArray;
+};
+const findMedianSortedArrays = (nums1, nums2) => {
+  const mergedArray = mergeArrays(nums1, nums2);
+  const length = mergedArray.length;
+  const middleIndex = Math.floor(length / 2);
 
-console.log(bTree.search(5));    // true
-console.log(bTree.search(12));   // false
+  // Check if the length is odd
+  if (length % 2 !== 0) {
+    return mergedArray[middleIndex];
+  }
+
+  // If the length is even, calculate the average of the middle two elements
+  return (mergedArray[middleIndex - 1] + mergedArray[middleIndex]) / 2;
+};
+const nums1 = [1, 3, 5];
+const nums2 = [2, 4, 6];
+const median = findMedianSortedArrays(nums1, nums2);
+console.log(median); // Output: 3.5
