@@ -1,9 +1,32 @@
-let array = [1, 2, 3, 4, 5];
-array.reverse();
+// Define the Binary Tree Node
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.left = null;
+    this.right = null;
+  }
+}
 
-console.log(array); // Output: [5, 4, 3, 2, 1]
-let array = [1, 2, 3, 4, 5];
-let reversedArray = array.slice().reverse();
+// Function to calculate the sum of all nodes in a binary tree
+function sumOfNodes(root) {
+  if (root === null) {
+    return 0;
+  } else {
+    return (
+      root.data +
+      sumOfNodes(root.left) +
+      sumOfNodes(root.right)
+    );
+  }
+}
 
-console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
-console.log(array); // Output: [1, 2, 3, 4, 5] (original array remains unchanged)
+// Test the function
+const tree = new Node(1);
+tree.left = new Node(2);
+tree.right = new Node(3);
+tree.left.left = new Node(4);
+tree.left.right = new Node(5);
+tree.right.left = new Node(6);
+tree.right.right = new Node(7);
+
+console.log('Sum of all nodes:', sumOfNodes(tree)); // Output: 28
