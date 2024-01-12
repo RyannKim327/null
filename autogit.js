@@ -1,42 +1,31 @@
-class Node {
-  constructor() {
-    this.edges = new Map(); // Map of edges {character: Node}
-    // Additional properties for node implementation
-  }
-}
+function longestCommonSubstring(str1, str2) {
+  const m = str1.length;
+  const n = str2.length;
+  let maxLength = 0; // length of the longest common substring
+  let endIndex = 0; // ending index of the longest common substring
 
-class SuffixTree {
-  constructor() {
-    this.root = new Node();
-  }
+  // Create a 2D table to store the lengths of common substrings
+  const dp = Array(m + 1).fill(0).map(() => Array(n + 1).fill(0));
 
-  // Function to add a suffix to the tree
-  addSuffix(suffix) {
-    let currentNode = this.root;
-
-    for (let i = 0; i < suffix.length; i++) {
-      const character = suffix[i];
-
-      if (!currentNode.edges.has(character)) {
-        const newNode = new Node();
-        currentNode.edges.set(character, newNode);
+  // Calculate the lengths of common substrings
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+        if (dp[i][j] > maxLength) {
+          maxLength = dp[i][j];
+          endIndex = i - 1; // update the ending index
+        }
       }
-
-      currentNode = currentNode.edges.get(character);
     }
   }
 
-  // Function to build the suffix tree
-  build(text) {
-    for (let i = 0; i < text.length; i++) {
-      const suffix = text.slice(i);
-      this.addSuffix(suffix);
-    }
-  }
+  // Extract the longest common substring using the ending index
+  return str1.substr(endIndex - maxLength + 1, maxLength);
 }
 
 // Example usage
-const suffixTree = new SuffixTree();
-suffixTree.build("banana");
-
-// Now you can perform various operations on the suffix tree
+const str1 = "abcdef";
+const str2 = "defghijkl";
+const longestSubstring = longestCommonSubstring(str1, str2);
+console.log(longestSubstring); // Output: "def"
