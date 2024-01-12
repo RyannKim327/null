@@ -1,29 +1,27 @@
-function countingSort(array) {
-  const max = Math.max(...array);
-  const countArray = Array(max + 1).fill(0);
-
-  // Count occurrences
-  for (let i = 0; i < array.length; i++) {
-    countArray[array[i]]++;
+function findCommonElements(arr1, arr2) {
+  const commonElements = [];
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr2.includes(arr1[i])) {
+      commonElements.push(arr1[i]);
+    }
   }
-
-  // Modify countArray to contain the sum of previous counts
-  for (let i = 1; i < countArray.length; i++) {
-    countArray[i] += countArray[i - 1];
-  }
-
-  const sortedArray = Array(array.length);
-
-  // Build the sorted array by iterating the original array in reverse order
-  for (let i = array.length - 1; i >= 0; i--) {
-    const val = array[i];
-    const sortedIndex = countArray[val] - 1;
-    sortedArray[sortedIndex] = val;
-    countArray[val]--;
-  }
-
-  return sortedArray;
+  return commonElements;
 }
-const array = [2, 5, 2, 9, 1, 5, 8, 3, 3];
-const sortedArray = countingSort(array);
-console.log(sortedArray); // Output: [1, 2, 2, 3, 3, 5, 5, 8, 9]
+function findCommonElements(arr1, arr2) {
+  const commonElements = [];
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr2.indexOf(arr1[i]) !== -1) {
+      commonElements.push(arr1[i]);
+    }
+  }
+  return commonElements;
+}
+function findCommonElements(arr1, arr2) {
+  const set2 = new Set(arr2);
+  const commonElements = arr1.filter((element) => set2.has(element));
+  return commonElements;
+}
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements);  // Output: [4, 5]
