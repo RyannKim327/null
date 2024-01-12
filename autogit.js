@@ -1,20 +1,12 @@
-function findSecondLargest(arr) {
-  let largest = -Infinity;
-  let secondLargest = -Infinity;
+function validateEmail(email) {
+  // Define the regular expression pattern for email validation
+  const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] > largest) {
-      secondLargest = largest;
-      largest = arr[i];
-    } else if (arr[i] > secondLargest && arr[i] < largest) {
-      secondLargest = arr[i];
-    }
-  }
-
-  return secondLargest;
+  // Use the test() method of the regular expression to check if the email matches the pattern
+  return pattern.test(email);
 }
 
-// Example usage:
-const array = [5, 10, 2, 8, 9];
-const secondLargestElement = findSecondLargest(array);
-console.log(secondLargestElement); // Output: 9
+// Usage example
+const email = "example@example.com";
+const isValid = validateEmail(email);
+console.log(isValid); // Output: true
