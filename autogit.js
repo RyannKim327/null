@@ -1,64 +1,25 @@
-function tarjanSCC(graph) {
-  let index = 0;
-  const stack = [];
-  const scc = [];
-  const indices = new Array(graph.length).fill(-1);
-  const lowLinks = new Array(graph.length).fill(-1);
-  const visited = new Array(graph.length).fill(false);
-
-  function strongconnect(v) {
-    indices[v] = index;
-    lowLinks[v] = index;
-    index++;
-    stack.push(v);
-    visited[v] = true;
-
-    for (let w of graph[v]) {
-      if (indices[w] === -1) {
-        strongconnect(w);
-        lowLinks[v] = Math.min(lowLinks[v], lowLinks[w]);
-      } else if (visited[w]) {
-        lowLinks[v] = Math.min(lowLinks[v], indices[w]);
-      }
-    }
-
-    if (lowLinks[v] === indices[v]) {
-      const component = [];
-      let w;
-      do {
-        w = stack.pop();
-        visited[w] = false;
-        component.push(w);
-      } while (w !== v);
-
-      scc.push(component);
-    }
+function bwt(string) {
+  // Step 1: Create an array to store all rotations
+  let rotations = [];
+  
+  // Step 2: Generate all cyclic rotations of the input string
+  for (let i = 0; i < string.length; i++) {
+    rotations.push(string.slice(i) + string.slice(0, i));
   }
-
-  for (let v = 0; v < graph.length; v++) {
-    if (indices[v] === -1) {
-      strongconnect(v);
-    }
+  
+  // Step 3: Sort the rotations array lexicographically
+  rotations.sort();
+  
+  // Step 4: Extract the last characters from each rotation
+  let bwtResult = '';
+  for (let i = 0; i < rotations.length; i++) {
+    bwtResult += rotations[i][string.length - 1];
   }
-
-  return scc;
+  
+  // Step 5: Return the BWT result
+  return bwtResult;
 }
-const graph = [
-  [1],
-  [2, 4],
-  [3, 6],
-  [2, 7],
-  [0, 5],
-  [6],
-  [5],
-  [3, 6],
-];
 
-const stronglyConnectedComponents = tarjanSCC(graph);
-console.log(stronglyConnectedComponents);
-[
-  [6, 5],
-  [7, 3, 2],
-  [4, 1],
-  [0]
-]
+const input = 'banana';
+const bwtResult = bwt(input);
+console.log(bwtResult);  // Outputs: 'annb$aa'
