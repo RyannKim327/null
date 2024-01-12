@@ -1,23 +1,48 @@
-function bubbleSort(array) {
-  let swapped = true;
-
-  while (swapped) {
-    swapped = false;
-
-    for (let i = 0; i < array.length - 1; i++) {
-      if (array[i] > array[i + 1]) {
-        let temp = array[i];
-        array[i] = array[i + 1];
-        array[i + 1] = temp;
-        swapped = true;
+function buildFailureTable(pattern) {
+  const table = new Array(pattern.length).fill(0);
+  let j = 0;
+  
+  for (let i = 1; i < pattern.length; i++) {
+    if (pattern[i] === pattern[j]) {
+      table[i] = j + 1;
+      j++;
+    } else {
+      if (j !== 0) {
+        j = table[j - 1];
+        i--;  // Continue comparing the character in the next loop
+      } else {
+        table[i] = 0;
       }
     }
   }
-
-  return array;
+  
+  return table;
 }
 
-// Example usage:
-const unsortedArray = [5, 3, 8, 2, 1, 4];
-const sortedArray = bubbleSort(unsortedArray);
-console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 8]
+function stringMatch(text, pattern) {
+  const failureTable = buildFailureTable(pattern);
+  let i = 0;
+  let j = 0;
+  
+  while (i < text.length) {
+    if (text[i] === pattern[j]) {
+      if (j === pattern.length - 1) {
+        return i - j;  // Match found, return the starting index
+      }
+      i++;
+      j++;
+    } else if (j > 0) {
+      j = failureTable[j - 1];
+    } else {
+      i++;
+    }
+  }
+  
+  return -1;  // Match not found
+}
+
+// Example usage
+const text = "ABCABDABABCABCDABDE";
+const pattern = "ABCD";
+
+console.log(stringMatch(text, pattern));  // Output: 12
