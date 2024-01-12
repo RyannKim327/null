@@ -1,26 +1,42 @@
-function findMaxSubarraySum(arr) {
-  let currentSum = 0;
-  let maxSum = 0;
+class Node {
+  constructor() {
+    this.edges = new Map(); // Map of edges {character: Node}
+    // Additional properties for node implementation
+  }
+}
 
-  for (let i = 0; i < arr.length; i++) {
-    // Add the current element to the current sum
-    currentSum += arr[i];
+class SuffixTree {
+  constructor() {
+    this.root = new Node();
+  }
 
-    // If the current sum is negative, reset it to 0
-    if (currentSum < 0) {
-      currentSum = 0;
-    }
+  // Function to add a suffix to the tree
+  addSuffix(suffix) {
+    let currentNode = this.root;
 
-    // Update the maximum sum if the current sum is greater
-    if (currentSum > maxSum) {
-      maxSum = currentSum;
+    for (let i = 0; i < suffix.length; i++) {
+      const character = suffix[i];
+
+      if (!currentNode.edges.has(character)) {
+        const newNode = new Node();
+        currentNode.edges.set(character, newNode);
+      }
+
+      currentNode = currentNode.edges.get(character);
     }
   }
 
-  return maxSum;
+  // Function to build the suffix tree
+  build(text) {
+    for (let i = 0; i < text.length; i++) {
+      const suffix = text.slice(i);
+      this.addSuffix(suffix);
+    }
+  }
 }
 
 // Example usage
-const array = [1, -2, 3, 4, -5, 6, -7, 8, 9];
-const maxSum = findMaxSubarraySum(array);
-console.log(maxSum); // Output: 18 (3 + 4 + -5 + 6 + -7 + 8 + 9 = 18)
+const suffixTree = new SuffixTree();
+suffixTree.build("banana");
+
+// Now you can perform various operations on the suffix tree
