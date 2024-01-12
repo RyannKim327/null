@@ -1,69 +1,48 @@
-function fibonacciSearch(arr, x, n) {
-  // ...
-}
-function generateFib(n) {
-  const fib = [0, 1];
-  while (fib[fib.length - 1] < n) {
-    fib.push(fib[fib.length - 1] + fib[fib.length - 2]);
+function searchBMH(haystack, needle) {
+  const skipTable = {};
+
+  for (let i = 0; i < needle.length - 1; i++) {
+    skipTable[needle[i]] = needle.length - 1 - i;
   }
-  return fib;
-}
-const fib = generateFib(n);
 
-let offset = -1;
-let prev = fib[fib.length - 2];
-let curr = fib[fib.length - 3];
-while (curr >= 0 && curr < n) {
-  if (arr[offset + prev] < x) {
-    offset = offset + prev;
-    prev = curr;
-    curr = fib[fib.indexOf(prev) - 1];
-  } else if (arr[offset + prev] > x) {
-    prev = curr;
-    curr = fib[fib.indexOf(curr) - 2];
-  } else {
-    return offset + prev;
+  // Set the default skip value
+  const lastChar = needle[needle.length - 1];
+  skipTable[lastChar] = skipTable[lastChar] || needle.length;
+
+  // Rest of the algorithm goes here
+}
+function searchBMH(haystack, needle) {
+  const skipTable = {};
+
+  for (let i = 0; i < needle.length - 1; i++) {
+    skipTable[needle[i]] = needle.length - 1 - i;
   }
-}
-return -1;
-function generateFib(n) {
-  const fib = [0, 1];
-  while (fib[fib.length - 1] < n) {
-    fib.push(fib[fib.length - 1] + fib[fib.length - 2]);
-  }
-  return fib;
-}
 
-function fibonacciSearch(arr, x, n) {
-  const fib = generateFib(n);
+  const lastChar = needle[needle.length - 1];
+  skipTable[lastChar] = skipTable[lastChar] || needle.length;
 
-  let offset = -1;
-  let prev = fib[fib.length - 2];
-  let curr = fib[fib.length - 3];
+  let haystackIndex = needle.length - 1;
+  let needleIndex;
 
-  while (curr >= 0 && curr < n) {
-    if (arr[offset + prev] < x) {
-      offset = offset + prev;
-      prev = curr;
-      curr = fib[fib.indexOf(prev) - 1];
-    } else if (arr[offset + prev] > x) {
-      prev = curr;
-      curr = fib[fib.indexOf(curr) - 2];
-    } else {
-      return offset + prev;
+  while (haystackIndex < haystack.length) {
+    needleIndex = needle.length - 1;
+
+    while (needleIndex >= 0 && haystack[haystackIndex] === needle[needleIndex]) {
+      haystackIndex--;
+      needleIndex--;
     }
+
+    if (needleIndex === -1) {
+      return haystackIndex + 1;
+    }
+
+    const skipValue = skipTable[haystack[haystackIndex]] || needle.length;
+    haystackIndex += skipValue;
   }
 
   return -1;
 }
-const arr = [4, 8, 15, 16, 23, 42];
-const x = 16;
-const n = arr.length;
-
-const index = fibonacciSearch(arr, x, n);
-
-if (index === -1) {
-  console.log("Element not found");
-} else {
-  console.log(`Element found at index ${index}`);
-}
+const haystack = "This is a sample text for searching.";
+const needle = "sample";
+const index = searchBMH(haystack, needle);
+console.log(index); // Output: 10
