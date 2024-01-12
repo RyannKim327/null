@@ -1,30 +1,60 @@
-function depthLimitedSearch(node, goal, depthLimit) {
-  if (depthLimit === 0) {
-    return null;  // If depth limit is reached, return null (or any other appropriate value)
+class HashTable {
+  constructor(size) {
+    this.size = size;
+    this.data = new Array(size);
   }
 
-  if (node === goal) {
-    return node;  // If the goal is found, return the node
-  }
-
-  for (let child of node.children) {
-    let result = depthLimitedSearch(child, goal, depthLimit - 1);  // Recursive call with reduced depth limit
-
-    if (result !== null) {
-      return result;  // If a non-null result is found, propagate it back up the recursion
+  _hash(key) {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash = (hash + key.charCodeAt(i) * i) % this.size;
     }
+    return hash;
   }
 
-  return null;  // If goal is not found in this branch, return null
-}
-let rootNode = /* create the root node */;
-let goalNode = /* create the goal node */;
-let depthLimit = 5;
-let result = depthLimitedSearch(rootNode, goalNode, depthLimit);
+  set(key, value) {
+    const index = this._hash(key);
+    if (!this.data[index]) {
+      this.data[index] = [];
+    }
+    this.data[index].push([key, value]);
+  }
 
-if (result === null) {
-  console.log("Goal not found within the depth limit");
-} else {
-  console.log("Goal found");
-  // do something with the result
+  get(key) {
+    const index = this._hash(key);
+    const bucket = this.data[index];
+    if (!bucket) {
+      return undefined;
+    }
+    for (let i = 0; i < bucket.length; i++) {
+      if (bucket[i][0] === key) {
+        return bucket[i][1];
+      }
+    }
+    return undefined;
+  }
+
+  remove(key) {
+    const index = this._hash(key);
+    const bucket = this.data[index];
+    if (!bucket) {
+      return undefined;
+    }
+    for (let i = 0; i < bucket.length; i++) {
+      if (bucket[i][0] === key) {
+        const value = bucket[i][1];
+        bucket.splice(i, 1);
+        return value;
+      }
+    }
+    return undefined;
+  }
 }
+const hashTable = new HashTable(10);
+hashTable.set("name", "John");
+hashTable.set("age", 25);
+console.log(hashTable.get("name")); // Output: "John"
+console.log(hashTable.get("age")); // Output: 25
+console.log(hashTable.get("city")); // Output: undefined
+hashTable.remove("name");
+console.log(hashTable.get("name")); // Output: undefined
