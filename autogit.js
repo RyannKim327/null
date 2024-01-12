@@ -1,20 +1,22 @@
-function findFirstNonRepeatingChar(str) {
-  const charCount = {};
-  
-  // Count the occurrence of each character
-  for (let char of str) {
-    charCount[char] = (charCount[char] || 0) + 1;
-  }
-  
-  // Find the first non-repeating character
-  for (let char of str) {
-    if (charCount[char] === 1) {
-      return char;
+function shellSort(array) {
+  let gap = Math.floor(array.length / 2); // Initial gap size
+
+  while (gap > 0) {
+    for (let i = gap; i < array.length; i++) {
+      let temp = array[i];
+      let j;
+
+      for (j = i; j >= gap && array[j - gap] > temp; j -= gap) {
+        array[j] = array[j - gap];
+      }
+
+      array[j] = temp;
     }
+
+    gap = Math.floor(gap / 2); // Reduce the gap size
   }
-  
-  return null; // Return null if no non-repeating character is found
+
+  return array;
 }
-const str = "aabbcde";
-const firstNonRepeatingChar = findFirstNonRepeatingChar(str);
-console.log(firstNonRepeatingChar); // Output: "c"
+let arr = [8, 4, 1, 6, 9, 2];
+console.log(shellSort(arr)); // Output: [1, 2, 4, 6, 8, 9]
