@@ -1,46 +1,80 @@
-class Graph {
-  constructor(vertices) {
-    this.vertices = vertices; // Number of vertices
-    this.edges = []; // Array to store edges
-  }
-
-  addEdge(from, to, weight) {
-    this.edges.push({ from, to, weight });
+class Node {
+  constructor() {
+    this.children = {};
+    this.suffixLink = null;
   }
 }
-function bellmanFord(graph, source, vertices) {
-  // Step 1: Initialize distances from source to all other vertices as Infinity
-  const distances = Array(vertices).fill(Infinity);
-  distances[source] = 0;
+class SuffixTree {
+  constructor() {
+    this.root = new Node();
+    this.activeNode = this.root;
+  }
+}
+class SuffixTree {
+  // ...
 
-  // Step 2: Relax all edges |V|-1 times
-  for (let i = 1; i < vertices; ++i) {
-    for (const { from, to, weight } of graph.edges) {
-      if (distances[from] != Infinity && distances[from] + weight < distances[to]) {
-        distances[to] = distances[from] + weight;
+  addSuffix(suffix) {
+    let currentNode = this.root;
+    let remainingSuffix = suffix;
+
+    while (remainingSuffix.length > 0) {
+      const firstChar = remainingSuffix[0];
+
+      if (currentNode.children[firstChar]) {
+        const childNode = currentNode.children[firstChar];
+        let prefix = "";
+        let i = 0;
+
+        // Traverse through the common prefix between the remaining suffix and the child node's string
+        while (i < childNode.string.length && childNode.string[i] === remainingSuffix[i]) {
+          prefix += childNode.string[i];
+          i++;
+        }
+
+        if (i === childNode.string.length) {
+          // The entire child node's string is a prefix of the remaining suffix
+          currentNode = childNode;
+          remainingSuffix = remainingSuffix.slice(i);
+        } else {
+          // Split the child node and create a new node for the common prefix
+          const newNode = new Node();
+          newNode.string = prefix;
+          newNode.children[childNode.string[i]] = childNode;
+
+          // Update the child node's string
+          childNode.string = childNode.string.substring(i);
+
+          // Assign the new node as a child of the current node
+          currentNode.children[firstChar] = newNode;
+
+          // Update the remaining suffix and break out of the loop
+          remainingSuffix = remainingSuffix.slice(i);
+          break;
+        }
+      } else {
+        // Create a new child node for the remaining suffix
+        const newNode = new Node();
+        newNode.string = remainingSuffix;
+
+        // Assign the new node as a child of the current node
+        currentNode.children[firstChar] = newNode;
+
+        // Break out of the loop
+        break;
       }
     }
   }
+}
+class SuffixTree {
+  // ...
 
-  // Step 3: Check for negative-weight cycles
-  for (const { from, to, weight } of graph.edges) {
-    if (distances[from] != Infinity && distances[from] + weight < distances[to]) {
-      throw new Error('Graph contains a negative-weight cycle');
+  build(str) {
+    for (let i = 0; i < str.length; i++) {
+      const suffix = str.slice(i);
+      this.addSuffix(suffix);
     }
   }
-
-  return distances;
 }
-const graph = new Graph(5); // Create a graph with 5 vertices
-graph.addEdge(0, 1, -1);
-graph.addEdge(0, 2, 4);
-graph.addEdge(1, 2, 3);
-graph.addEdge(1, 3, 2);
-graph.addEdge(1, 4, 2);
-graph.addEdge(3, 2, 5);
-graph.addEdge(3, 1, 1);
-graph.addEdge(4, 3, -3);
-
-const source = 0;
-const distances = bellmanFord(graph, source, graph.vertices);
-console.log(distances);
+const tree = new SuffixTree();
+tree.build('banana');
+console.log(tree);
