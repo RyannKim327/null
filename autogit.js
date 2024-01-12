@@ -1,32 +1,19 @@
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
+// Make a GET request to a random cat image API
+fetch("https://api.thecatapi.com/v1/images/search")
+  .then(response => response.json())
+  .then(data => {
+    const imageUrl = data[0].url;
 
-function countLeafNodes(root) {
-  if (root === null) {
-    return 0;
-  }
+    // Create an image element
+    const image = document.createElement("img");
+    image.src = imageUrl;
 
-  if (root.left === null && root.right === null) {
-    return 1;
-  }
+    // Add the image to the body of the document
+    document.body.appendChild(image);
 
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
-}
-
-// Example Usage:
-// Create a binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-root.right.left = new TreeNode(6);
-root.right.right = new TreeNode(7);
-
-const leafNodeCount = countLeafNodes(root);
-console.log("Number of leaf nodes:", leafNodeCount);
+    // Log the image URL to the console
+    console.log(imageUrl);
+  })
+  .catch(error => {
+    console.error("Error:", error);
+  });
