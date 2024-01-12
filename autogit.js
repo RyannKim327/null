@@ -1,20 +1,25 @@
-function areAnagrams(str1, str2) {
-  // Convert both strings to lowercase and remove spaces
-  str1 = str1.toLowerCase().replace(/\s/g, '');
-  str2 = str2.toLowerCase().replace(/\s/g, '');
-
-  // Sort the characters of both strings
-  const sortedStr1 = str1.split('').sort().join('');
-  const sortedStr2 = str2.split('').sort().join('');
-
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+function findCommonElements(array1, array2) {
+  let commonElements = [];
+  for (let i = 0; i < array1.length; i++) {
+    if (array2.includes(array1[i])) {
+      commonElements.push(array1[i]);
+    }
+  }
+  return commonElements;
 }
-const string1 = 'listen';
-const string2 = 'silent';
-
-if (areAnagrams(string1, string2)) {
-  console.log('Strings are anagrams.');
-} else {
-  console.log('Strings are not anagrams.');
+function findCommonElements(array1, array2) {
+  return array1.filter(element => array2.includes(element));
 }
+function findCommonElements(array1, array2) {
+  const set = new Set(array1);
+  return array2.filter(element => set.has(element));
+}
+function findCommonElements(array1, array2) {
+  const set1 = new Set(array1);
+  const set2 = new Set(array2);
+  return [...set1].filter(element => set2.has(element));
+}
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
