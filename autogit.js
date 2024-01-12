@@ -1,27 +1,69 @@
-function findCommonElements(arr1, arr2) {
-  const commonElements = [];
-  for (let i = 0; i < arr1.length; i++) {
-    if (arr2.includes(arr1[i])) {
-      commonElements.push(arr1[i]);
+function bidirectionalSearch(start, end, getNeighbors) {
+  const forwardFrontier = new Set([start]);
+  const backwardFrontier = new Set([end]);
+  
+  const forwardParents = {};
+  const backwardParents = {};
+
+  forwardParents[start] = null;
+  backwardParents[end] = null;
+
+  while (forwardFrontier.size > 0 && backwardFrontier.size > 0) {
+    // Check if any node in the forward frontier exists in the backward frontier
+    for (const node of forwardFrontier) {
+      if (backwardFrontier.has(node)) {
+        // Path found, reconstruct and return the complete path
+        return reconstructPath(node, forwardParents, backwardParents);
+      }
     }
-  }
-  return commonElements;
-}
-function findCommonElements(arr1, arr2) {
-  const commonElements = [];
-  for (let i = 0; i < arr1.length; i++) {
-    if (arr2.indexOf(arr1[i]) !== -1) {
-      commonElements.push(arr1[i]);
+    
+    // Expand nodes in the forward frontier
+    const newForwardFrontier = new Set();
+    for (const node of forwardFrontier) {
+      const neighbors = getNeighbors(node);
+      for (const neighbor of neighbors) {
+        if (!forwardParents.hasOwnProperty(neighbor)) {
+          forwardParents[neighbor] = node;
+          newForwardFrontier.add(neighbor);
+        }
+      }
     }
+    forwardFrontier.clear();
+    forwardFrontier.addAll(newForwardFrontier);
+    
+    // Expand nodes in the backward frontier
+    const newBackwardFrontier = new Set();
+    for (const node of backwardFrontier) {
+      const neighbors = getNeighbors(node);
+      for (const neighbor of neighbors) {
+        if (!backwardParents.hasOwnProperty(neighbor)) {
+          backwardParents[neighbor] = node;
+          newBackwardFrontier.add(neighbor);
+        }
+      }
+    }
+    backwardFrontier.clear();
+    backwardFrontier.addAll(newBackwardFrontier);
   }
-  return commonElements;
+
+  // No path found
+  return null;
 }
-function findCommonElements(arr1, arr2) {
-  const set2 = new Set(arr2);
-  const commonElements = arr1.filter((element) => set2.has(element));
-  return commonElements;
+
+function reconstructPath(node, forwardParents, backwardParents) {
+  const forwardPath = [];
+  let current = node;
+  while (current) {
+    forwardPath.unshift(current);
+    current = forwardParents[current];
+  }
+  
+  const backwardPath = [];
+  current = backwardParents[node];
+  while (current) {
+    backwardPath.push(current);
+    current = backwardParents[current];
+  }
+  
+  return forwardPath.concat(backwardPath);
 }
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements);  // Output: [4, 5]
