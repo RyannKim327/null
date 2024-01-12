@@ -1,43 +1,15 @@
-function tarjanSCC(adjList) {
-  const result = [];
-  const stack = [];
-  const visited = [];
-  const disc = [];
-  const low = [];
-  let time = 0;
-
-  function strongConnect(v) {
-    visited[v] = true;
-    stack.push(v);
-    disc[v] = time;
-    low[v] = time;
-    time++;
-
-    for (const t of adjList[v]) {
-      if (!visited[t]) {
-        strongConnect(t);
-        low[v] = Math.min(low[v], low[t]);
-      } else if (stack.includes(t)) {
-        low[v] = Math.min(low[v], disc[t]);
-      }
-    }
-
-    if (low[v] === disc[v]) {
-      const scc = [];
-      let x;
-      do {
-        x = stack.pop();
-        scc.push(x);
-      } while (x !== v);
-      result.push(scc);
-    }
+function factorialIterative(num) {
+  let result = 1;
+  for (let i = 2; i <= num; i++) {
+    result *= i;
   }
-
-  for (let i = 0; i < adjList.length; i++) {
-    if (!visited[i]) {
-      strongConnect(i);
-    }
-  }
-
   return result;
 }
+function factorialRecursive(num) {
+  if (num === 0 || num === 1) {
+    return 1;
+  }
+  return num * factorialRecursive(num - 1);
+}
+console.log(factorialIterative(5));    // Output: 120
+console.log(factorialRecursive(5));    // Output: 120
