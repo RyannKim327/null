@@ -1,46 +1,32 @@
-function heapify(arr, n, i) {
-  let largest = i; // Initialize largest as root
-  let left = 2 * i + 1; // Left child
-  let right = 2 * i + 2; // Right child
-
-  // If left child is larger than root
-  if (left < n && arr[left] > arr[largest]) {
-    largest = left;
-  }
-
-  // If right child is larger than largest so far
-  if (right < n && arr[right] > arr[largest]) {
-    largest = right;
-  }
-
-  // If largest is not root
-  if (largest !== i) {
-    [arr[i], arr[largest]] = [arr[largest], arr[i]]; // Swap
-    heapify(arr, n, largest); // Recursively heapify the affected sub-tree
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
 
-function buildMaxHeap(arr) {
-  const n = arr.length;
-
-  // Build heap (re-arrange array)
-  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-    heapify(arr, n, i);
+function countLeafNodes(root) {
+  if (root === null) {
+    return 0; // Base case: an empty tree has no leaf nodes
+  } else if (root.left === null && root.right === null) {
+    return 1; // Base case: a single node is a leaf node
+  } else {
+    // Recursively count leaf nodes in the left and right subtrees
+    return countLeafNodes(root.left) + countLeafNodes(root.right);
   }
 }
-function heapSort(arr) {
-  const n = arr.length;
 
-  // Build max-heap
-  buildMaxHeap(arr);
+// Example usage:
+// Create a binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
 
-  // Extract elements from the heap one by one
-  for (let i = n - 1; i >= 0; i--) {
-    [arr[0], arr[i]] = [arr[i], arr[0]]; // Swap current root with element at the end
-    heapify(arr, i, 0); // Heapify the reduced heap
-  }
-
-  return arr;
-}
-const array = [5, 1, 4, 2, 8];
-console.log(heapSort(array)); // Output: [1, 2, 4, 5, 8]
+// Count the number of leaf nodes
+const leafNodeCount = countLeafNodes(root);
+console.log("Number of leaf nodes:", leafNodeCount); // Output: Number of leaf nodes: 4
