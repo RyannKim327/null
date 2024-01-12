@@ -1,36 +1,69 @@
-function findMajorityElement(nums) {
-  let count = 0;
-  let candidate = null;
-
-  // Step 1: Find potential candidate
-  for (let i = 0; i < nums.length; i++) {
-    if (count === 0) {
-      candidate = nums[i];
-      count++;
-    } else if (candidate === nums[i]) {
-      count++;
-    } else {
-      count--;
-    }
+class TrieNode {
+  constructor() {
+    this.children = new Map();
+    this.isEnd = false;
   }
 
-  // Step 2: Check if the candidate is the majority element
-  count = 0;
-  for (let i = 0; i < nums.length; i++) {
-    if (nums[i] === candidate) {
-      count++;
-    }
+  setEnd() {
+    this.isEnd = true;
   }
 
-  // Step 3: Return the majority element if it exists
-  if (count > (nums.length / 2)) {
-    return candidate;
-  } else {
-    return null; // No majority element
+  isWordEnd() {
+    return this.isEnd;
   }
 }
 
-// Example usage:
-const nums = [1, 2, 2, 3, 2, 4, 2];
-const majorityElement = findMajorityElement(nums);
-console.log(majorityElement); // Output: 2
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
+  }
+
+  insert(word) {
+    let node = this.root;
+    for (const char of word) {
+      if (!node.children.has(char)) {
+        node.children.set(char, new TrieNode());
+      }
+      node = node.children.get(char);
+    }
+    node.setEnd();
+  }
+
+  search(word) {
+    let node = this.root;
+    for (const char of word) {
+      if (!node.children.has(char)) {
+        return false;
+      }
+      node = node.children.get(char);
+    }
+    return node.isWordEnd();
+  }
+
+  startsWith(prefix) {
+    let node = this.root;
+    for (const char of prefix) {
+      if (!node.children.has(char)) {
+        return false;
+      }
+      node = node.children.get(char);
+    }
+    return true;
+  }
+}
+const trie = new Trie();
+
+// Insert words
+trie.insert("apple");
+trie.insert("banana");
+trie.insert("grape");
+trie.insert("orange");
+
+// Search for words
+console.log(trie.search("apple")); // true
+console.log(trie.search("grapefruit")); // false
+
+// Check if prefix exists
+console.log(trie.startsWith("ban")); // true
+console.log(trie.startsWith("or")); // true
+console.log(trie.startsWith("grap")); // false
