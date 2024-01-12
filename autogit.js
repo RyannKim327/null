@@ -1,43 +1,10 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
+function calculateMean(numbers) {
+  const sum = numbers.reduce((total, num) => total + num, 0);
+  const mean = sum / numbers.length;
+  return mean;
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-
-  append(data) {
-    const newNode = new Node(data);
-
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
-
-  getLength() {
-    let length = 0;
-    let current = this.head;
-    while (current) {
-      length++;
-      current = current.next;
-    }
-    return length;
-  }
-}
-
-// Example usage
-const linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
-console.log(linkedList.getLength()); // Output: 3
+// Example usage:
+const numbers = [1, 2, 3, 4, 5];
+const mean = calculateMean(numbers);
+console.log(mean);
