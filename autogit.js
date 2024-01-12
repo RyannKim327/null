@@ -1,19 +1,19 @@
-// Make a GET request to a random cat image API
-fetch("https://api.thecatapi.com/v1/images/search")
-  .then(response => response.json())
-  .then(data => {
-    const imageUrl = data[0].url;
+const str = "Hello, World!";
+const reversedStr = str.split("").reverse().join("");
+console.log(reversedStr); // Output: "!dlroW ,olleH"
+const str = "Hello, World!";
+let reversedStr = "";
+for (let i = str.length - 1; i >= 0; i--) {
+  reversedStr += str[i];
+}
+console.log(reversedStr); // Output: "!dlroW ,olleH"
+function reverseString(str) {
+  if (str === "") {
+    return "";
+  } else {
+    return reverseString(str.substr(1)) + str.charAt(0);
+  }
+}
 
-    // Create an image element
-    const image = document.createElement("img");
-    image.src = imageUrl;
-
-    // Add the image to the body of the document
-    document.body.appendChild(image);
-
-    // Log the image URL to the console
-    console.log(imageUrl);
-  })
-  .catch(error => {
-    console.error("Error:", error);
-  });
+const str = "Hello, World!";
+console.log(reverseString(str)); // Output: "!dlroW ,olleH"
