@@ -1,10 +1,7 @@
-var str1 = "Hello";
-var str2 = "World";
+function getRandomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
-var result = str1 + " " + str2;
-console.log(result); // Output: "Hello World"
-var str1 = "Hello";
-var str2 = "World";
-
-var result = str1.concat(" ", str2);
-console.log(result); // Output: "Hello World"
+// Example usage
+var randomNumber = getRandomNumber(1, 10);
+console.log(randomNumber);
