@@ -1,9 +1,7 @@
-const cron = require('cron');
+function removeVowels(str) {
+  return str.replace(/[aeiou]/gi, '');
+}
 
-// Create a new cron job that runs every minute
-const job = new cron.CronJob('* * * * *', () => {
-  console.log('This function will be executed every minute');
-}, null, true, 'UTC');
-
-// Start the cron job
-job.start();
+// Example usage
+console.log(removeVowels('Hello World'));  // Output: Hll Wrld
+console.log(removeVowels('JavaScript is awesome'));  // Output: JvScrpt s wsm
