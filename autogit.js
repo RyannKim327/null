@@ -1,12 +1,8 @@
-const axios = require('axios');
-
-async function fetchData() {
-  try {
-    const response = await axios.get('https://api.example.com/data');
-    console.log(response.data);
-  } catch (error) {
-    console.error(error);
-  }
+function decimalToBinary(decimal) {
+  return decimal.toString(2);
 }
 
-fetchData();
+// Example usage
+console.log(decimalToBinary(10));   // Output: "1010"
+console.log(decimalToBinary(42));   // Output: "101010"
+console.log(decimalToBinary(255));  // Output: "11111111"
