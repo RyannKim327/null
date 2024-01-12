@@ -1,56 +1,49 @@
-function findKthSmallestElement(arr, k) {
-  // Perform quickselect to find kth smallest element
-  function quickselect(arr, left, right, k) {
-    if (left === right) {
-      return arr[left];
-    }
+class Node {
+  constructor(value, next = null) {
+    this.value = value;
+    this.next = next;
+  }
+}
+function reverseLinkedList(head) {
+  let prev = null;
+  let current = head;
+  let next = null;
 
-    const pivotIndex = partition(arr, left, right);
-    if (k === pivotIndex) {
-      return arr[k];
-    } else if (k < pivotIndex) {
-      return quickselect(arr, left, pivotIndex - 1, k);
-    } else {
-      return quickselect(arr, pivotIndex + 1, right, k);
-    }
+  while (current !== null) {
+    next = current.next;
+    current.next = prev;
+    prev = current;
+    current = next;
   }
 
-  // Partition the array
-  function partition(arr, left, right) {
-    const pivotIndex = Math.floor(Math.random() * (right - left + 1) + left);
-    const pivotValue = arr[pivotIndex];
-    swap(arr, pivotIndex, right);
-    let i = left;
+  return prev;
+}
+// Create nodes
+const node1 = new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
+const node4 = new Node(4);
 
-    for (let j = left; j < right; j++) {
-      if (arr[j] <= pivotValue) {
-        swap(arr, i, j);
-        i++;
-      }
-    }
+// Connect nodes
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
 
-    swap(arr, i, right);
-    return i;
-  }
-
-  // Swap two elements in an array
-  function swap(arr, i, j) {
-    const temp = arr[i];
-    arr[i] = arr[j];
-    arr[j] = temp;
-  }
-
-  // Validate input
-  if (k < 0 || k >= arr.length) {
-    return undefined;
-  }
-
-  // Find kth smallest element
-  return quickselect(arr, 0, arr.length - 1, k);
+// Print original linked list
+let current = node1;
+while (current !== null) {
+  console.log(current.value);
+  current = current.next;
 }
 
-// Example usage
-const array = [7, 10, 4, 3, 20, 15];
-const k = 3;
-const kthSmallest = findKthSmallestElement(array, k);
-console.log(kthSmallest); // Output: 7
+// Reverse the linked list
+const newHead = reverseLinkedList(node1);
+
+// Print reversed linked list
+current = newHead;
+while (current !== null) {
+  console.log(current.value);
+  current = current.next;
+}
+Original Linked List: 1 -> 2 -> 3 -> 4
+Reversed Linked List: 4 -> 3 -> 2 -> 1
