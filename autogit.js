@@ -1,50 +1,19 @@
-class Graph {
-  constructor(vertices) {
-    this.vertices = vertices;
-    this.adjList = new Map();
+function isPrime(number) {
+  // Check if the number is less than 2, as prime numbers start from 2
+  if (number < 2) {
+    return false;
   }
 
-  addEdge(v, w) {
-    this.adjList.get(v).push(w);
-  }
-
-  bfs(startingNode) {
-    const visited = new Set();
-    const queue = [];
-
-    visited.add(startingNode);
-    queue.push(startingNode);
-
-    while (queue.length > 0) {
-      const currentNode = queue.shift();
-      console.log(currentNode);
-
-      const neighbors = this.adjList.get(currentNode);
-
-      for (const neighbor of neighbors) {
-        if (!visited.has(neighbor)) {
-          visited.add(neighbor);
-          queue.push(neighbor);
-        }
-      }
+  // Loop from 2 to the square root of the number
+  for (let i = 2; i <= Math.sqrt(number); i++) {
+    // If the number is divisible by any value, it is not prime
+    if (number % i === 0) {
+      return false;
     }
   }
+
+  // If no divisors are found, the number is prime
+  return true;
 }
-
-// example usage
-const graph = new Graph(6);
-const vertices = ['A', 'B', 'C', 'D', 'E', 'F'];
-
-for (const vertex of vertices) {
-  graph.adjList.set(vertex, []);
-}
-
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('C', 'E');
-graph.addEdge('D', 'E');
-graph.addEdge('D', 'F');
-graph.addEdge('E', 'F');
-
-graph.bfs('A');
+console.log(isPrime(7));  // Output: true
+console.log(isPrime(10)); // Output: false
