@@ -1,12 +1,11 @@
 function getStringLength(str) {
-  let count = 0;
-  for (let char of str) {
-    count++;
+  let length = 0;
+  while (str[length] !== undefined) {
+    length++;
   }
-  return count;
+  return length;
 }
 
-// Example usage:
-const string = "Hello, World!";
-const length = getStringLength(string);
+const myString = "Hello, World!";
+const length = getStringLength(myString);
 console.log(length); // Output: 13
