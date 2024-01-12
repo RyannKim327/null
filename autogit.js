@@ -1,72 +1,41 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+function longestCommonSubsequence(str1, str2) {
+  const m = str1.length;
+  const n = str2.length;
+  
+  // Create a 2D array to store the lengths of longest common subsequences
+  const dp = Array(m + 1).fill(0).map(() => Array(n + 1).fill(0));
+  
+  // Fill the dp array with lengths of longest common subsequences
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+      }
+    }
   }
-}
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-  }
-
-  enqueue(value) {
-    const newNode = new Node(value);
-
-    if (!this.head) {
-      this.head = newNode;
-      this.tail = newNode;
+  
+  // Build the longest common subsequence
+  let lcs = '';
+  let i = m, j = n;
+  while (i > 0 && j > 0) {
+    if (str1[i - 1] === str2[j - 1]) {
+      lcs = str1[i - 1] + lcs;
+      i--;
+      j--;
+    } else if (dp[i - 1][j] > dp[i][j - 1]) {
+      i--;
     } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
+      j--;
     }
   }
-
-  dequeue() {
-    if (!this.head) {
-      return null;
-    }
-
-    const dequeuedValue = this.head.value;
-
-    if (this.head === this.tail) {
-      this.head = null;
-      this.tail = null;
-    } else {
-      this.head = this.head.next;
-    }
-
-    return dequeuedValue;
-  }
-
-  isEmpty() {
-    return this.head === null;
-  }
-
-  peek() {
-    if (!this.head) {
-      return null;
-    }
-    return this.head.value;
-  }
+  
+  return lcs;
 }
-const queue = new Queue();
 
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
-
-console.log(queue.peek()); // Output: 1
-
-console.log(queue.dequeue()); // Output: 1
-console.log(queue.dequeue()); // Output: 2
-
-console.log(queue.isEmpty()); // Output: false
-
-console.log(queue.peek()); // Output: 3
-
-console.log(queue.dequeue()); // Output: 3
-
-console.log(queue.isEmpty()); // Output: true
-
-console.log(queue.dequeue()); // Output: null
+// Example usage:
+const str1 = 'ABCDGH';
+const str2 = 'AEDFHR';
+const result = longestCommonSubsequence(str1, str2);
+console.log(result); // Output: ADH
