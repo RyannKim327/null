@@ -1,31 +1,23 @@
-function binarySearch(array, target, start, end) {
-  if (start > end) {
-    return -1;
+function findMedianSortedArrays(nums1, nums2) {
+  // Merge the two sorted arrays
+  const mergedArray = [...nums1, ...nums2].sort((a, b) => a - b);
+
+  const length = mergedArray.length;
+
+  // Determine if the length is even or odd
+  if (length % 2 !== 0) {
+    // Length is odd, return middle element
+    return mergedArray[Math.floor(length / 2)];
+  } else {
+    // Length is even, return average of middle elements
+    const midIndex1 = length / 2 - 1;
+    const midIndex2 = length / 2;
+    return (mergedArray[midIndex1] + mergedArray[midIndex2]) / 2;
   }
-
-  let mid = Math.floor((start + end) / 2);
-
-  if (array[mid] === target) {
-    return mid;
-  }
-
-  if (array[mid] > target) {
-    return binarySearch(array, target, start, mid - 1);
-  }
-
-  return binarySearch(array, target, mid + 1, end);
 }
 
-// Example usage:
-const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-const targetElement = 6;
-const startIndex = 0;
-const endIndex = sortedArray.length - 1;
-
-const resultIndex = binarySearch(sortedArray, targetElement, startIndex, endIndex);
-
-if (resultIndex === -1) {
-  console.log("Element not found");
-} else {
-  console.log(`Element found at index ${resultIndex}`);
-}
+// Example usage
+const nums1 = [1, 3];
+const nums2 = [2, 4];
+const median = findMedianSortedArrays(nums1, nums2);
+console.log(median); // Output: 2.5
