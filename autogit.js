@@ -1,22 +1,20 @@
-function countOccurrences(word, string) {
-  // Construct a regular expression using the word and the 'g' flag to match all occurrences
-  const regex = new RegExp(word, 'g');
+function findSecondLargest(arr) {
+  let largest = -Infinity;
+  let secondLargest = -Infinity;
 
-  // Use the match() function with the regex to get an array of matched occurrences
-  const matches = string.match(regex);
-
-  // If matches is null or empty, return 0
-  if (!matches) {
-    return 0;
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] > largest) {
+      secondLargest = largest;
+      largest = arr[i];
+    } else if (arr[i] > secondLargest && arr[i] < largest) {
+      secondLargest = arr[i];
+    }
   }
 
-  // Return the length of the matches array to get the count of occurrences
-  return matches.length;
+  return secondLargest;
 }
 
 // Example usage:
-const str = 'JavaScript is a powerful and flexible programming language. JavaScript is widely used in web development.';
-const wordToCount = 'JavaScript';
-
-const count = countOccurrences(wordToCount, str);
-console.log(`The word '${wordToCount}' appears ${count} times.`);
+const array = [5, 10, 2, 8, 9];
+const secondLargestElement = findSecondLargest(array);
+console.log(secondLargestElement); // Output: 9
