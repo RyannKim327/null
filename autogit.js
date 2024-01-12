@@ -1,19 +1,27 @@
-function isPrime(number) {
-  // Check if the number is less than 2, as prime numbers start from 2
-  if (number < 2) {
-    return false;
-  }
+function breadthLimitedSearch(startNode, depthLimit) {
+  const queue = [];
+  let depth = 0;
 
-  // Loop from 2 to the square root of the number
-  for (let i = 2; i <= Math.sqrt(number); i++) {
-    // If the number is divisible by any value, it is not prime
-    if (number % i === 0) {
-      return false;
+  queue.push({ node: startNode, depth: depth });
+
+  while (queue.length > 0) {
+    const { node, depth } = queue.shift();
+
+    if (depth > depthLimit) {
+      // Ignore nodes beyond the depth limit
+      continue;
+    }
+
+    // Perform your desired action or check for the search criteria here
+    console.log(node);
+
+    // Enqueue unvisited children
+    if (depth < depthLimit) {
+      for (let i = 0; i < node.children.length; i++) {
+        const child = node.children[i];
+        queue.push({ node: child, depth: depth + 1 });
+      }
     }
   }
-
-  // If no divisors are found, the number is prime
-  return true;
 }
-console.log(isPrime(7));  // Output: true
-console.log(isPrime(10)); // Output: false
+breadthLimitedSearch(startNode, 3);
