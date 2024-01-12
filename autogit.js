@@ -1,16 +1,32 @@
-const string = "Hello, World!";
-const substring = "World";
-
-if (string.includes(substring)) {
-  console.log("Substring found!");
-} else {
-  console.log("Substring not found!");
+class TreeNode {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
-const string = "Hello, World!";
-const substring = "World";
 
-if (string.indexOf(substring) !== -1) {
-  console.log("Substring found!");
-} else {
-  console.log("Substring not found!");
+function countLeafNodes(root) {
+  if (root === null) {
+    return 0;
+  }
+
+  if (root.left === null && root.right === null) {
+    return 1;
+  }
+
+  return countLeafNodes(root.left) + countLeafNodes(root.right);
 }
+
+// Example Usage:
+// Create a binary tree
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+root.right.left = new TreeNode(6);
+root.right.right = new TreeNode(7);
+
+const leafNodeCount = countLeafNodes(root);
+console.log("Number of leaf nodes:", leafNodeCount);
