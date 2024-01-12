@@ -1,58 +1,43 @@
-function dijkstra(graph, start) {
+function Dijkstra(graph, source, destination) {
+  const nodes = Object.keys(graph);
   const distances = {};
-  const pq = new PriorityQueue();
-  const previous = {};
+  const visited = {};
 
-  // Step 3: Initialize distances
-  for (let vertex in graph) {
-    distances[vertex] = Infinity;
+  // Set initial distances to infinity
+  for (let node of nodes) {
+    distances[node] = Infinity;
   }
-  distances[start] = 0;
 
-  // Step 4: Implement Dijkstra's algorithm
-  pq.enqueue(start, 0);
+  distances[source] = 0;
 
-  while (!pq.isEmpty()) {
-    const { element: current } = pq.dequeue();
+  while (!visited[destination]) {
+    let smallestDist = Infinity;
+    let smallestNode = null;
 
-    if (current === end) {
-      // Stop algorithm if target node reached
-      break;
+    // Find the unvisited node with the smallest distance
+    for (let node of nodes) {
+      if (!visited[node] && distances[node] < smallestDist) {
+        smallestDist = distances[node];
+        smallestNode = node;
+      }
     }
 
-    for (let neighbor in graph[current]) {
-      const weight = graph[current][neighbor];
-      const distance = distances[current] + weight;
+    if (smallestNode === null) {
+      break; // No more unvisited nodes
+    }
 
-      if (distance < distances[neighbor]) {
-        distances[neighbor] = distance;
-        previous[neighbor] = current;
-        pq.enqueue(neighbor, distance);
+    visited[smallestNode] = true;
+
+    // Update distances to neighbors
+    for (let neighbor in graph[smallestNode]) {
+      let distance = graph[smallestNode][neighbor];
+      let newDistance = distances[smallestNode] + distance;
+
+      if (newDistance < distances[neighbor]) {
+        distances[neighbor] = newDistance;
       }
     }
   }
 
-  // Step 5: Reconstruct shortest path
-  const path = [];
-  let current = end;
-
-  while (current) {
-    path.unshift(current);
-    current = previous[current];
-  }
-
-  return { distances, path };
+  return distances[destination];
 }
-
-// Example usage
-const graph = {
-  A: { B: 2, C: 4 },
-  B: { D: 3, E: 2 },
-  C: { B: 1, D: 5 },
-  D: { E: 3 },
-  E: {},
-};
-
-const { distances, path } = dijkstra(graph, 'A');
-console.log(distances); // { A: 0, B: 2, C: 3, D: 5, E: 4 }
-console.log(path); // [ 'A', 'B', 'E' ]
