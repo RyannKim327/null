@@ -1,3 +1,6 @@
-let array = [1, 2, 3, 4, 5];
-array.reverse(); // Reverses the order of elements in the array
-console.log(array); // Outputs: [5, 4, 3, 2, 1]
+function decimalToBinary(decimal) {
+  return decimal.toString(2);
+}
+
+console.log(decimalToBinary(10)); // Output: 1010
+console.log(decimalToBinary(42)); // Output: 101010
