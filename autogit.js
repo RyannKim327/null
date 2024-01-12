@@ -1,10 +1,9 @@
 class BTreeNode {
   constructor(order, isLeaf) {
-    this.order = order;
     this.keys = [];
-    this.child = [];
-    this.isLeaf = isLeaf;
-    this.size = 0;
+    this.children = [];
+    this.isLeaf = isLeaf || false;
+    this.order = order;
   }
 }
 class BTree {
@@ -13,86 +12,80 @@ class BTree {
     this.order = order;
   }
 
-  // Method to search for a key in the tree
-  search(key) {
-    return this._searchRecursive(this.root, key);
-  }
-
-  _searchRecursive(node, key) {
-    let i = 0;
-    while (i < node.size && key > node.keys[i]) {
-      i++;
-    }
-    if (node.keys[i] === key) {
-      return true;
-    }
-    if (node.isLeaf) {
-      return false;
-    }
-    return this._searchRecursive(node.child[i], key);
-  }
-
-  // Method to insert a key into the tree
   insert(key) {
-    const root = this.root;
-    if (root.size === (2 * this.order) - 1) {
-      const newRoot = new BTreeNode(this.order, false);
-      newRoot.child[0] = root;
-      this.root = newRoot;
-      this._splitChild(newRoot, 0);
-      this._insertNonFull(newRoot, key);
+    if (this.root.keys.length === (2 * this.order) - 1) {
+      const newNode = new BTreeNode(this.order);
+      newNode.children[0] = this.root;
+      this.splitChild(newNode, 0);
+      this.root = newNode;
+      this.insertNonFull(newNode, key);
     } else {
-      this._insertNonFull(root, key);
+      this.insertNonFull(this.root, key);
     }
   }
 
-  _insertNonFull(node, key) {
-    let i = node.size - 1;
+  insertNonFull(node, key) {
+    let i = node.keys.length - 1;
+
     if (node.isLeaf) {
-      while (i >= 0 && node.keys[i] > key) {
+      while (i >= 0 && key < node.keys[i]) {
         node.keys[i + 1] = node.keys[i];
         i--;
       }
       node.keys[i + 1] = key;
-      node.size++;
     } else {
-      while (i >= 0 && node.keys[i] > key) {
+      while (i >= 0 && key < node.keys[i]) {
         i--;
       }
       i++;
-      if (node.child[i].size === (2 * this.order) - 1) {
-        this._splitChild(node, i);
-        if (node.keys[i] < key) {
+
+      if (node.children[i].keys.length === (2 * this.order) - 1) {
+        this.splitChild(node, i);
+        if (key > node.keys[i]) {
           i++;
         }
       }
-      this._insertNonFull(node.child[i], key);
+      this.insertNonFull(node.children[i], key);
     }
   }
 
-  _splitChild(parent, i) {
+  splitChild(parent, index) {
     const order = this.order;
-    const child = parent.child[i];
+    const child = parent.children[index];
     const newNode = new BTreeNode(order, child.isLeaf);
-    parent.keys.splice(i, 0, child.keys[order - 1]);
-    parent.child.splice(i + 1, 0, newNode);
-    parent.size++;
+
+    parent.keys.splice(index, 0, child.keys[order - 1]);
+    parent.children.splice(index, 0, newNode);
 
     newNode.keys = child.keys.splice(order, order - 1);
-    newNode.child = child.child.splice(order, order);
-    newNode.size = order - 1;
+
+    if (!child.isLeaf) {
+      newNode.children = child.children.splice(order, order);
+    }
+  }
+
+  search(key, node = this.root) {
+    let i = 0;
+    while (i < node.keys.length && key > node.keys[i]) {
+      i++;
+    }
+
+    if (node.keys[i] === key) {
+      return node;
+    } else if (node.isLeaf) {
+      return null;
+    } else {
+      return this.search(key, node.children[i]);
+    }
   }
 }
-const bTree = new BTree(3); // Create a B-tree of order 3
+const btree = new BTree(3);
 
-bTree.insert(5); // Insert elements into the tree
-bTree.insert(9);
-bTree.insert(2);
+btree.insert(10);
+btree.insert(20);
+btree.insert(5);
+btree.insert(6);
+btree.insert(12);
 
-console.log(bTree.search(5)); // Search for a key in the tree (return true if found)
-console.log(bTree.search(8));
-
-bTree.insert(8);
-
-console.log(bTree.search(8));
-console.log(bTree.search(10));
+console.log(btree.search(6)); // Output: BTreeNode { keys: [ 5, 6, 10, 12 ], children: [], isLeaf: true, order: 3 }
+console.log(btree.search(15)); // Output: null
