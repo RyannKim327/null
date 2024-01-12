@@ -1,49 +1,31 @@
-class Graph {
-  constructor() {
-    this.vertices = {};
+function binarySearch(array, target, start, end) {
+  if (start > end) {
+    return -1;
   }
 
-  addVertex(vertex) {
-    this.vertices[vertex] = [];
+  let mid = Math.floor((start + end) / 2);
+
+  if (array[mid] === target) {
+    return mid;
   }
 
-  addEdge(vertex1, vertex2) {
-    this.vertices[vertex1].push(vertex2);
-    this.vertices[vertex2].push(vertex1);
+  if (array[mid] > target) {
+    return binarySearch(array, target, start, mid - 1);
   }
 
-  getNeighbors(vertex) {
-    return this.vertices[vertex];
-  }
+  return binarySearch(array, target, mid + 1, end);
 }
-function breadthFirstSearch(graph, startVertex) {
-  const queue = [startVertex]; // Initialize a queue with the starting vertex
-  const visited = new Set(); // Track the visited vertices
-  visited.add(startVertex);
 
-  while (queue.length > 0) {
-    const currentVertex = queue.shift();
-    console.log(currentVertex); // Or perform any other operation on the current vertex
+// Example usage:
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const targetElement = 6;
+const startIndex = 0;
+const endIndex = sortedArray.length - 1;
 
-    const neighbors = graph.getNeighbors(currentVertex);
-    for (const neighbor of neighbors) {
-      if (!visited.has(neighbor)) {
-        queue.push(neighbor);
-        visited.add(neighbor);
-      }
-    }
-  }
+const resultIndex = binarySearch(sortedArray, targetElement, startIndex, endIndex);
+
+if (resultIndex === -1) {
+  console.log("Element not found");
+} else {
+  console.log(`Element found at index ${resultIndex}`);
 }
-const graph = new Graph();
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
-
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('C', 'E');
-graph.addEdge('D', 'E');
-breadthFirstSearch(graph, 'A');
