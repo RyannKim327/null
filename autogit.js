@@ -1,20 +1,20 @@
-function findSecondLargest(arr) {
-  let max = Number.NEGATIVE_INFINITY;
-  let secondMax = Number.NEGATIVE_INFINITY;
-
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] > max) {
-      secondMax = max;
-      max = arr[i];
-    } else if (arr[i] > secondMax && arr[i] < max) {
-      secondMax = arr[i];
+function insertionSort(arr) {
+  for (let i = 1; i < arr.length; i++) {
+    let current = arr[i];
+    let j = i - 1;
+    
+    while (j >= 0 && arr[j] > current) {
+      arr[j + 1] = arr[j];
+      j--;
     }
+    
+    arr[j + 1] = current;
   }
-
-  return secondMax;
+  
+  return arr;
 }
 
-// Example usage
-const array = [5, 10, 2, 8, 9];
-const secondLargest = findSecondLargest(array);
-console.log(secondLargest); // Output: 9
+// Example usage:
+let array = [5, 2, 4, 6, 1, 3];
+insertionSort(array);
+console.log(array); // Output: [1, 2, 3, 4, 5, 6]
