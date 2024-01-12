@@ -1,113 +1,111 @@
-class Graph {
+class BinaryHeap {
   constructor() {
-    this.nodes = {};
+    this.heap = [];
   }
 
-  addNode(name, neighbors) {
-    this.nodes[name] = neighbors;
+  // Helper functions
+  getParentIndex(index) {
+    return Math.floor((index - 1) / 2);
   }
 
-  getNeighbors(node) {
-    return this.nodes[node];
+  getLeftChildIndex(index) {
+    return 2 * index + 1;
   }
 
-  hasNode(node) {
-    return node in this.nodes;
-  }
-}
-
-function bidirectionalSearch(graph, source, target) {
-  // Check if source and target nodes exist
-  if (!graph.hasNode(source) || !graph.hasNode(target)) {
-    return null;
+  getRightChildIndex(index) {
+    return 2 * index + 2;
   }
 
-  // Initialize the forward and backward search queues
-  const forwardQueue = [source];
-  const backwardQueue = [target];
+  hasParent(index) {
+    return this.getParentIndex(index) >= 0;
+  }
 
-  // Keep track of visited nodes for forward and backward searches
-  const forwardVisited = {};
-  const backwardVisited = {};
-  forwardVisited[source] = null;
-  backwardVisited[target] = null;
+  hasLeftChild(index) {
+    return this.getLeftChildIndex(index) < this.heap.length;
+  }
 
-  while (forwardQueue.length > 0 && backwardQueue.length > 0) {
-    // Perform forward search
-    const forwardNode = forwardQueue.shift();
-    const forwardNeighbors = graph.getNeighbors(forwardNode);
+  hasRightChild(index) {
+    return this.getRightChildIndex(index) < this.heap.length;
+  }
 
-    for (let neighbor of forwardNeighbors) {
-      if (!forwardVisited.hasOwnProperty(neighbor)) {
-        forwardQueue.push(neighbor);
-        forwardVisited[neighbor] = forwardNode;
+  swap(index1, index2) {
+    [this.heap[index1], this.heap[index2]] = [this.heap[index2], this.heap[index1]];
+  }
 
-        // Check if the node exists in the backward search
-        if (backwardVisited.hasOwnProperty(neighbor)) {
-          // Path found - merge paths
-          const path = mergePaths(forwardVisited, backwardVisited, neighbor);
-          return path;
-        }
-      }
+  // Heap operations
+  push(value) {
+    this.heap.push(value);
+    this.heapifyUp();
+  }
+
+  pop() {
+    if (this.heap.length === 0) {
+      throw new Error("Priority queue is empty!");
     }
 
-    // Perform backward search
-    const backwardNode = backwardQueue.shift();
-    const backwardNeighbors = graph.getNeighbors(backwardNode);
+    const root = this.heap[0];
+    this.heap[0] = this.heap.pop();
+    this.heapifyDown();
+    return root;
+  }
 
-    for (let neighbor of backwardNeighbors) {
-      if (!backwardVisited.hasOwnProperty(neighbor)) {
-        backwardQueue.push(neighbor);
-        backwardVisited[neighbor] = backwardNode;
+  heapifyUp() {
+    let index = this.heap.length - 1;
 
-        // Check if the node exists in the forward search
-        if (forwardVisited.hasOwnProperty(neighbor)) {
-          // Path found - merge paths
-          const path = mergePaths(forwardVisited, backwardVisited, neighbor);
-          return path;
-        }
-      }
+    while (this.hasParent(index) && this.heap[index] < this.heap[this.getParentIndex(index)]) {
+      const parentIndex = this.getParentIndex(index);
+      this.swap(index, parentIndex);
+      index = parentIndex;
     }
   }
 
-  // No path found
-  return null;
+  heapifyDown() {
+    let index = 0;
+
+    while (this.hasLeftChild(index)) {
+      let smallerChildIndex = this.getLeftChildIndex(index);
+
+      if (this.hasRightChild(index) && this.heap[this.getRightChildIndex(index)] < this.heap[smallerChildIndex]) {
+        smallerChildIndex = this.getRightChildIndex(index);
+      }
+
+      if (this.heap[index] < this.heap[smallerChildIndex]) {
+        break;
+      } else {
+        this.swap(index, smallerChildIndex);
+      }
+
+      index = smallerChildIndex;
+    }
+  }
 }
-
-// Helper function to merge paths from forward and backward searches
-function mergePaths(forwardVisited, backwardVisited, intersectionNode) {
-  const forwardPath = getNodePath(forwardVisited, intersectionNode);
-  const backwardPath = getNodePath(backwardVisited, intersectionNode).reverse();
-
-  return forwardPath.concat(backwardPath);
-}
-
-// Helper function to retrieve the path from the visited nodes
-function getNodePath(visited, node) {
-  const path = [node];
-  let curr = visited[node];
-
-  while (curr !== null) {
-    path.unshift(curr);
-    curr = visited[curr];
+class PriorityQueue {
+  constructor() {
+    this.binaryHeap = new BinaryHeap();
   }
 
-  return path;
+  enqueue(value) {
+    this.binaryHeap.push(value);
+  }
+
+  dequeue() {
+    return this.binaryHeap.pop();
+  }
+
+  isEmpty() {
+    return this.binaryHeap.heap.length === 0;
+  }
 }
+const pq = new PriorityQueue();
+pq.enqueue(5);
+pq.enqueue(3);
+pq.enqueue(10);
+pq.enqueue(1);
 
-// Example usage
-const graph = new Graph();
-graph.addNode("A", ["B", "C"]);
-graph.addNode("B", ["A", "D"]);
-graph.addNode("C", ["A", "E"]);
-graph.addNode("D", ["B", "F"]);
-graph.addNode("E", ["C", "G"]);
-graph.addNode("F", ["D", "H"]);
-graph.addNode("G", ["E", "H"]);
-graph.addNode("H", ["F", "G"]);
-
-const source = "A";
-const target = "H";
-
-const path = bidirectionalSearch(graph, source, target);
-console.log("Path:", path);
+while(!pq.isEmpty()) {
+  console.log(pq.dequeue());
+}
+1
+3
+5
+10
