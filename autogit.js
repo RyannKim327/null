@@ -1,52 +1,40 @@
-function mergeSort(array) {
-  // Base case
-  if (array.length <= 1) {
-    return array;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
-
-  // Splitting the array
-  const middle = Math.floor(array.length / 2);
-  const left = array.slice(0, middle);
-  const right = array.slice(middle);
-
-  // Recursively sort the two halves
-  const sortedLeft = mergeSort(left);
-  const sortedRight = mergeSort(right);
-
-  // Merge the two sorted halves
-  return merge(sortedLeft, sortedRight);
 }
-
-function merge(left, right) {
-  let result = [];
-  let i = 0;
-  let j = 0;
-
-  while (i < left.length && j < right.length) {
-    if (left[i] <= right[j]) {
-      result.push(left[i]);
-      i++;
-    } else {
-      result.push(right[j]);
-      j++;
-    }
+class Queue {
+  constructor() {
+    this.first = null;
+    this.last = null;
   }
-
-  // Append remaining elements if any
-  while (i < left.length) {
-    result.push(left[i]);
-    i++;
-  }
-
-  while (j < right.length) {
-    result.push(right[j]);
-    j++;
-  }
-
-  return result;
 }
+enqueue(value) {
+  const newNode = new Node(value);
+  if (!this.first) {
+    this.first = newNode;
+    this.last = newNode;
+  } else {
+    this.last.next = newNode;
+    this.last = newNode;
+  }
+}
+dequeue() {
+  if (!this.first) {
+    return null;
+  }
+  const removedNode = this.first;
+  if (this.first === this.last) {
+    this.last = null;
+  }
+  this.first = this.first.next;
+  return removedNode.value;
+}
+const queue = new Queue();
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
 
-// Example usage:
-const unsortedArray = [5, 2, 8, 3, 1, 9, 4, 7, 6];
-const sortedArray = mergeSort(unsortedArray);
-console.log(sortedArray);
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.dequeue()); // Output: 2
