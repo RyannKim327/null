@@ -1,4 +1,11 @@
-fetch('https://api.example.com/data')
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.error(error));
+function calculateTriangleArea(base, height) {
+  var area = (base * height) / 2;
+  return area;
+}
+
+// Example usage:
+var triangleBase = 5;
+var triangleHeight = 7;
+var triangleArea = calculateTriangleArea(triangleBase, triangleHeight);
+
+console.log("The area of the triangle is: " + triangleArea);
