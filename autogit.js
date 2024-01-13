@@ -1,50 +1,28 @@
-function buildBadCharTable(pattern) {
-  const badCharTable = {};
-  const patternLen = pattern.length;
+function breadthLimitedSearch(startNode, targetNode, depthLimit) {
+  const queue = [];
+  const visited = new Set();
 
-  for (let i = 0; i < patternLen; i++) {
-    const char = pattern[i];
-    const lastIndex = pattern.lastIndexOf(char);
+  queue.push({ node: startNode, depth: 0 });
 
-    if (lastIndex === i) {
-      badCharTable[char] = patternLen - i - 1;
-    } else {
-      badCharTable[char] = patternLen - lastIndex - 1;
+  while (queue.length > 0) {
+    const { node, depth } = queue.shift();
+
+    if (node === targetNode) {
+      return node; // Return the found target node
+    }
+
+    visited.add(node);
+
+    if (depth < depthLimit) {
+      const neighbors = getNeighbors(node); // Implement your own function to get the neighbors of a node
+
+      for (const neighbor of neighbors) {
+        if (!visited.has(neighbor)) {
+          queue.push({ node: neighbor, depth: depth + 1 });
+        }
+      }
     }
   }
 
-  return badCharTable;
+  return 'Target node not found'; // Target node not found within the depth limit
 }
-
-function boyerMooreSearch(pattern, text) {
-  const patternLen = pattern.length;
-  const textLen = text.length;
-  const badCharTable = buildBadCharTable(pattern);
-  const occurrences = [];
-  let skip = 0;
-
-  for (let i = 0; i <= textLen - patternLen; i += skip) {
-    let j = patternLen - 1;
-
-    while (j >= 0 && text[i + j] === pattern[j]) {
-      j--;
-    }
-
-    if (j === -1) {
-      occurrences.push(i);
-      skip = badCharTable[text[i + patternLen]] || 1;
-    } else {
-      skip = Math.max(1, j - badCharTable[text[i + j]]);
-    }
-  }
-
-  return occurrences;
-}
-
-// Example usage:
-const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
-const pattern = "ipsum";
-
-const occurrences = boyerMooreSearch(pattern, text);
-
-console.log("Pattern occurrences:", occurrences);
