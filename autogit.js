@@ -1,39 +1,37 @@
-function fibonacciSearch(arr, value, length) {
-  let fib2 = 0;
-  let fib1 = 1;
-
-  // Find the smallest Fibonacci number that is greater than or equal to length
-  while (fib1 < length) {
-    const temp = fib2;
-    fib2 = fib1;
-    fib1 = temp + fib1;
+function mergeSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
   }
-
-  let offset = 0;
-
-  // Perform the search
-  while (fib2 > 0) {
-    const i = Math.min(offset + fib2, length - 1);
-
-    if (arr[i] === value) {
-      return i; // target found
-    } else if (value > arr[i]) {
-      fib1 = fib1 - fib2;
-      fib2 = fib2 - fib1;
-      offset = i;
-    } else {
-      fib1 = fib2;
-      fib2 = fib2 - fib1;
-    }
-  }
-
-  return -1; // target not found
+  
+  const middle = Math.floor(arr.length / 2);
+  const left = arr.slice(0, middle);
+  const right = arr.slice(middle);
+  
+  return merge(mergeSort(left), mergeSort(right));
 }
 
-// Example usage:
-const array = [1, 4, 7, 11, 16, 23, 33, 42, 54, 67];
-const target = 42;
-const length = array.length;
+function merge(left, right) {
+  let result = [];
 
-const index = fibonacciSearch(array, target, length);
-console.log(index); // Output: 7 (index of the target value in the array)
+  while (left.length && right.length) {
+    if (left[0] <= right[0]) {
+      result.push(left.shift());
+    } else {
+      result.push(right.shift());
+    }
+  }
+  
+  // Concatenate any remaining elements
+  while (left.length) {
+    result.push(left.shift());
+  }
+  
+  while (right.length) {
+    result.push(right.shift());
+  }
+  
+  return result;
+}
+const arr = [5, 2, 9, 1, 7, 6];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr);  // [1, 2, 5, 6, 7, 9]
