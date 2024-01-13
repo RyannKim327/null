@@ -1,16 +1,18 @@
-function ListNode(val) {
-  this.val = val;
-  this.next = null;
+const str = "Hello, world!";
+const substring = "world";
+
+if (str.includes(substring)) {
+  console.log("Substring found in the string.");
+} else {
+  console.log("Substring not found in the string.");
 }
+Substring found in the string.
+const str = "Hello, world!";
+const substring = "WORLD";
 
-function findMiddle(head) {
-  let slowPtr = head;
-  let fastPtr = head;
-
-  while (fastPtr !== null && fastPtr.next !== null) {
-    fastPtr = fastPtr.next.next;
-    slowPtr = slowPtr.next;
-  }
-
-  return slowPtr.val;
+if (str.toLowerCase().includes(substring.toLowerCase())) {
+  console.log("Substring found in the string (case-insensitive).");
+} else {
+  console.log("Substring not found in the string (case-insensitive).");
 }
+Substring found in the string (case-insensitive).
