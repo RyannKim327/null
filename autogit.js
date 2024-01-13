@@ -1,33 +1,63 @@
-const graph = {
-  A: ['B', 'C'],
-  B: ['D', 'E'],
-  C: ['F'],
-  D: [],
-  E: [],
-  F: []
-};
-function breadthLimitedSearch(graph, start, limit) {
-  const visited = new Set();                // To track visited nodes
-  const queue = [[start, 0]];               // Queue to store nodes and their depth
-
-  while (queue.length > 0) {
-    const [node, depth] = queue.shift();    // Dequeue the first node
-
-    console.log(node);                      // Perform your required action, here printing node value
-
-    visited.add(node);                      // Mark node as visited
-
-    if (depth >= limit) continue;            // If depth exceeds the limit, skip expanding further
-
-    const neighbors = graph[node];           // Get neighboring nodes
-
-    for (const neighbor of neighbors) {
-      if (!visited.has(neighbor)) {          // Check if neighbor is already visited
-        queue.push([neighbor, depth + 1]);   // Enqueue unvisited neighbor with increased depth
-      }
-    }
+class TrieNode {
+  constructor() {
+    this.isEndOfWord = false;
+    this.children = {};
   }
 }
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
+  }
 
-// Example usage
-breadthLimitedSearch(graph, 'A', 2);
+  // Insert a word into the Trie
+  insert(word) {
+    let current = this.root;
+
+    for (let i = 0; i < word.length; i++) {
+      const ch = word[i];
+      if (!current.children[ch]) {
+        current.children[ch] = new TrieNode();
+      }
+      current = current.children[ch];
+    }
+
+    current.isEndOfWord = true;
+  }
+
+  // Search for a word in the Trie
+  search(word) {
+    let current = this.root;
+
+    for (let i = 0; i < word.length; i++) {
+      const ch = word[i];
+      if (!current.children[ch]) {
+        return false;
+      }
+      current = current.children[ch];
+    }
+
+    return current.isEndOfWord;
+  }
+
+  // Check if a word has any prefix in the Trie
+  startsWith(prefix) {
+    let current = this.root;
+
+    for (let i = 0; i < prefix.length; i++) {
+      const ch = prefix[i];
+      if (!current.children[ch]) {
+        return false;
+      }
+      current = current.children[ch];
+    }
+
+    return true;
+  }
+}
+const trie = new Trie();
+trie.insert("apple");
+console.log(trie.search("apple")); // Output: true
+console.log(trie.search("app")); // Output: false
+console.log(trie.startsWith("app")); // Output: true
+trie.insert("app");
+console.log(trie.search("app")); // Output: true
