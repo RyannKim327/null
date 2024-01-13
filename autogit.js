@@ -1,67 +1,41 @@
-class GraphNode {
-  constructor(id) {
-    this.id = id;
-    this.index = null;
-    this.lowlink = null;
-    this.onStack = false;
-    this.neighbors = [];
+function radixSort(arr) {
+  // Find the maximum number in the array
+  const maxNum = Math.max(...arr);
+
+  // Perform counting sort for every digit
+  for (let exp = 1; Math.floor(maxNum / exp) > 0; exp *= 10) {
+    countSort(arr, exp);
+  }
+
+  return arr;
+}
+function countSort(arr, exp) {
+  const output = [];
+  const count = new Array(10).fill(0);
+
+  // Store the count of occurrences in count[]
+  for (let i = 0; i < arr.length; i++) {
+    const digit = Math.floor(arr[i] / exp) % 10;
+    count[digit]++;
+  }
+
+  // Change count[i] so that count[i] contains
+  // the actual position of this digit in output[]
+  for (let i = 1; i < count.length; i++) {
+    count[i] += count[i - 1];
+  }
+
+  // Build the output array
+  for (let i = arr.length - 1; i >= 0; i--) {
+    const digit = Math.floor(arr[i] / exp) % 10;
+    output[count[digit] - 1] = arr[i];
+    count[digit]--;
+  }
+
+  // Copy the output array to arr[] so that arr[] contains sorted numbers according to the current digit
+  for (let i = 0; i < arr.length; i++) {
+    arr[i] = output[i];
   }
 }
-function tarjan(graph) {
-  const components = [];
-  const stack = [];
-  let index = 0;
-
-  function strongConnect(node) {
-    node.index = index;
-    node.lowlink = index;
-    index += 1;
-    stack.push(node);
-    node.onStack = true;
-
-    for (const neighbor of node.neighbors) {
-      if (neighbor.index === null) {
-        strongConnect(neighbor);
-        node.lowlink = Math.min(node.lowlink, neighbor.lowlink);
-      } else if (neighbor.onStack) {
-        node.lowlink = Math.min(node.lowlink, neighbor.index);
-      }
-    }
-
-    if (node.lowlink === node.index) {
-      const component = [];
-      let currNode = null;
-
-      do {
-        currNode = stack.pop();
-        currNode.onStack = false;
-        component.push(currNode);
-      } while (currNode !== node);
-
-      components.push(component);
-    }
-  }
-
-  for (const node of graph) {
-    if (node.index === null) {
-      strongConnect(node);
-    }
-  }
-
-  return components;
-}
-// Example usage
-const node1 = new GraphNode(1);
-const node2 = new GraphNode(2);
-const node3 = new GraphNode(3);
-const node4 = new GraphNode(4);
-
-node1.neighbors.push(node2);
-node2.neighbors.push(node3);
-node3.neighbors.push(node1);
-node4.neighbors.push(node3);
-
-const graph = [node1, node2, node3, node4];
-const stronglyConnectedComponents = tarjan(graph);
-
-console.log(stronglyConnectedComponents);
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+console.log(radixSort(arr));
