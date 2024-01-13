@@ -1,49 +1,46 @@
-class HashTable {
-  constructor() {
-    this.table = {};
+function heapSort(array) {
+  const arrayLength = array.length;
+
+  // Build Max Heap
+  for (let i = Math.floor(arrayLength / 2) - 1; i >= 0; i--) {
+    heapify(array, arrayLength, i);
   }
 
-  // Hash function to generate an index
-  hash(key) {
-    let hashValue = 0;
-    for (let i = 0; i < key.length; i++) {
-      hashValue += key.charCodeAt(i);
-    }
-    return hashValue % 100; // Choose a prime number for the table size
+  // Heap sort
+  for (let i = arrayLength - 1; i > 0; i--) {
+    // Swap the root (max element) with the last element of the array
+    [array[0], array[i]] = [array[i], array[0]];
+
+    // Heapify the reduced heap
+    heapify(array, i, 0);
   }
 
-  // Insert a key-value pair into the hash table
-  insert(key, value) {
-    const index = this.hash(key);
-    if (!this.table[index]) {
-      this.table[index] = {};
-    }
-    this.table[index][key] = value;
+  return array;
+}
+
+function heapify(array, heapSize, rootIndex) {
+  let largestIndex = rootIndex;
+  const leftChildIndex = 2 * rootIndex + 1;
+  const rightChildIndex = 2 * rootIndex + 2;
+
+  // Compare the root with the left child
+  if (leftChildIndex < heapSize && array[leftChildIndex] > array[largestIndex]) {
+    largestIndex = leftChildIndex;
   }
 
-  // Retrieve a value from the hash table using a key
-  get(key) {
-    const index = this.hash(key);
-    if (this.table[index] && this.table[index][key]) {
-      return this.table[index][key];
-    }
-    return null;
+  // Compare the root with the right child
+  if (rightChildIndex < heapSize && array[rightChildIndex] > array[largestIndex]) {
+    largestIndex = rightChildIndex;
   }
 
-  // Remove a key-value pair from the hash table
-  remove(key) {
-    const index = this.hash(key);
-    if (this.table[index] && this.table[index][key]) {
-      delete this.table[index][key];
-    }
+  // If the largest value is not the root, swap them and heapify the affected subtree
+  if (largestIndex !== rootIndex) {
+    [array[rootIndex], array[largestIndex]] = [array[largestIndex], array[rootIndex]];
+    heapify(array, heapSize, largestIndex);
   }
 }
 
-// Usage:
-const hashTable = new HashTable();
-hashTable.insert("name", "John");
-hashTable.insert("age", 25);
-console.log(hashTable.get("name")); // Output: John
-console.log(hashTable.get("age")); // Output: 25
-hashTable.remove("age");
-console.log(hashTable.get("age")); // Output: null
+// Example usage:
+const arr = [5, 9, 3, 1, 8, 6, 4, 2, 7];
+console.log('Original array:', arr);
+console.log('Sorted array:', heapSort(arr));
