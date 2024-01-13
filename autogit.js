@@ -1,35 +1,45 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+function Node(value, neighbors) {
+  this.value = value;
+  this.neighbors = neighbors;
 }
 
-function binaryTreeDiameter(root) {
-  let maxDiameter = 0;
+function breadthLimitedSearch(initialNode, goalNode, depthLimit) {
+  const queue = [{ node: initialNode, depth: 0 }];
+  const visited = new Set();
 
-  function longestPath(node) {
-    if (node === null) return 0;
+  while (queue.length > 0) {
+    const { node, depth } = queue.shift();
 
-    const leftPath = longestPath(node.left);
-    const rightPath = longestPath(node.right);
+    if (node === goalNode) {
+      return node;
+    }
 
-    maxDiameter = Math.max(maxDiameter, leftPath + rightPath);
+    if (depth < depthLimit) {
+      for (const neighbor of node.neighbors) {
+        if (!visited.has(neighbor)) {
+          queue.push({ node: neighbor, depth: depth + 1 });
+        }
+      }
+    }
 
-    return Math.max(leftPath, rightPath) + 1;
+    visited.add(node);
   }
 
-  longestPath(root);
-
-  return maxDiameter;
+  return null; // No solution within depth limit
 }
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
 
-console.log(binaryTreeDiameter(root)); // Output: 4
+// Example usage:
+const nodeA = new Node('A', []);
+const nodeB = new Node('B', []);
+const nodeC = new Node('C', []);
+const nodeD = new Node('D', []);
+const nodeE = new Node('E', []);
+
+nodeA.neighbors = [nodeB, nodeC];
+nodeB.neighbors = [nodeA, nodeD];
+nodeC.neighbors = [nodeA, nodeE];
+nodeD.neighbors = [nodeB];
+nodeE.neighbors = [nodeC];
+
+const goal = breadthLimitedSearch(nodeA, nodeD, 2);
+console.log(goal ? `Goal node found: ${goal.value}` : 'Goal not found within depth limit');
