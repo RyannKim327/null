@@ -1,45 +1,69 @@
-class Graph {
-  constructor() {
-    this.adjacencyList = new Map();
-  }
-
-  addVertex(vertex) {
-    this.adjacencyList.set(vertex, []);
-  }
-
-  addEdge(vertex1, vertex2) {
-    this.adjacencyList.get(vertex1).push(vertex2);
-    this.adjacencyList.get(vertex2).push(vertex1);
-  }
+// Define the HashTable class
+function HashTable(size) {
+  this.size = size;
+  this.table = new Array(size); // Create an array of the specified size
 }
-function bfs(startingVertex) {
-  const visited = new Set();
-  const queue = [];
 
-  visited.add(startingVertex);
-  queue.push(startingVertex);
+// Hash function to convert keys into array indices
+HashTable.prototype.hash = function(key) {
+  let hash = 0;
+  for (let i = 0; i < key.length; i++) {
+    hash += key.charCodeAt(i);
+  }
+  return hash % this.size;
+};
 
-  while (queue.length > 0) {
-    const vertex = queue.shift();
-    console.log(vertex);
+// Function to insert a key-value pair into the hash table
+HashTable.prototype.insert = function(key, value) {
+  const index = this.hash(key);
+  if (!this.table[index]) {
+    this.table[index] = []; // Create a new array if the index is empty
+  }
+  this.table[index].push([key, value]); // Push the [key, value] pair to the array
+};
 
-    const neighbors = graph.adjacencyList.get(vertex);
-    for (const neighbor of neighbors) {
-      if (!visited.has(neighbor)) {
-        visited.add(neighbor);
-        queue.push(neighbor);
+// Function to retrieve the value associated with a key from the hash table
+HashTable.prototype.get = function(key) {
+  const index = this.hash(key);
+  if (this.table[index]) {
+    for (let i = 0; i < this.table[index].length; i++) {
+      if (this.table[index][i][0] === key) {
+        return this.table[index][i][1]; // Return the value if key is found
       }
     }
   }
-}
-const graph = new Graph();
-graph.addVertex("A");
-graph.addVertex("B");
-graph.addVertex("C");
-graph.addVertex("D");
-graph.addVertex("E");
-graph.addEdge("A", "B");
-graph.addEdge("A", "C");
-graph.addEdge("B", "D");
-graph.addEdge("D", "E");
-bfs("A");
+  return undefined; // Return undefined if key is not found
+};
+
+// Function to remove a key-value pair from the hash table
+HashTable.prototype.remove = function(key) {
+  const index = this.hash(key);
+  if (this.table[index]) {
+    for (let i = 0; i < this.table[index].length; i++) {
+      if (this.table[index][i][0] === key) {
+        this.table[index].splice(i, 1); // Remove the [key, value] pair from the array
+        return true; // Return true to indicate success
+      }
+    }
+  }
+  return false; // Return false to indicate failure
+};
+// Create a new hash table
+const hashTable = new HashTable(10);
+
+// Insert key-value pairs
+hashTable.insert("apple", 5);
+hashTable.insert("banana", 7);
+hashTable.insert("orange", 2);
+
+// Retrieve values
+console.log(hashTable.get("apple"));   // Output: 5
+console.log(hashTable.get("banana"));  // Output: 7
+console.log(hashTable.get("orange"));  // Output: 2
+console.log(hashTable.get("grape"));   // Output: undefined
+
+// Remove a key-value pair
+console.log(hashTable.remove("banana"));  // Output: true
+
+// Check if the key-value pair is removed
+console.log(hashTable.get("banana"));  // Output: undefined
