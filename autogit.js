@@ -1,29 +1,12 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
+let str = "  Hello,   World!  \n";
 
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
+// Remove all whitespace
+str = str.replace(/\s/g, "");
 
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
+console.log(str); // Output: "Hello,World!"
+let str = "  Hello,   World!  \n";
 
-  return slow.value;
-}
+// Remove leading and trailing whitespace
+str = str.trim().replace(/\s+/g, " ");
 
-// Create a linked list
-const head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-// Find the middle element
-const middleElement = findMiddleElement(head);
-console.log(middleElement); // Output: 3
+console.log(str); // Output: "Hello, World!"
