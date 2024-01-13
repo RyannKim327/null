@@ -1,36 +1,30 @@
-function bubbleSort(arr) {
-  // ...
-}
-  let sorted = false;
-  while (!sorted) {
-    sorted = true;
-    // ...
+function isLinkedListPalindrome(head) {
+  // Step 1: Define function
+  let fast = head;
+  let slow = head;
+  let stack = [];
+
+  // Step 2: Initialize pointers
+
+  while (fast !== null && fast.next !== null) {
+    // Step 3: Traverse and push values into stack
+    stack.push(slow.val);
+    slow = slow.next;
+    fast = fast.next.next;
   }
-    for (let i = 0; i < arr.length - 1; i++) {
-      if (arr[i] > arr[i + 1]) {
-        // Swap the elements
-        [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
-        sorted = false;
-      }
-    }
-    // Reduce the inner loop length by 1
-    // as the largest element is already at its correct position
-    for (let i = 0; i < arr.length - 1; i++) {
-      // ...
-    }
-function bubbleSort(arr) {
-  let sorted = false;
-  while (!sorted) {
-    sorted = true;
-    for (let i = 0; i < arr.length - 1; i++) {
-      if (arr[i] > arr[i + 1]) {
-        [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
-        sorted = false;
-      }
-    }
+
+  if (fast !== null) {
+    // Step 4: If length is odd, move slow pointer one step forward
+    slow = slow.next;
   }
-  return arr;
+
+  while (slow !== null) {
+    // Step 5: Compare values
+    if (slow.val !== stack.pop()) {
+      return false;
+    }
+    slow = slow.next;
+  }
+
+  return true;
 }
-const unsortedArray = [5, 3, 1, 4, 2];
-const sortedArray = bubbleSort(unsortedArray);
-console.log(sortedArray); // Output: [1, 2, 3, 4, 5]
