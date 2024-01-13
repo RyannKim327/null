@@ -1,45 +1,47 @@
-function Node(value, neighbors) {
-  this.value = value;
-  this.neighbors = neighbors;
+// Merge function to merge the two halves of an array
+function merge(left, right) {
+  let result = [];
+  let i = 0;
+  let j = 0;
+  
+  while (i < left.length && j < right.length) {
+    if (left[i] < right[j]) {
+      result.push(left[i]);
+      i++;
+    } else {
+      result.push(right[j]);
+      j++;
+    }
+  }
+  
+  // Add the remaining elements from either left or right array
+  while (i < left.length) {
+    result.push(left[i]);
+    i++;
+  }
+  
+  while (j < right.length) {
+    result.push(right[j]);
+    j++;
+  }
+  
+  return result;
 }
 
-function breadthLimitedSearch(initialNode, goalNode, depthLimit) {
-  const queue = [{ node: initialNode, depth: 0 }];
-  const visited = new Set();
-
-  while (queue.length > 0) {
-    const { node, depth } = queue.shift();
-
-    if (node === goalNode) {
-      return node;
-    }
-
-    if (depth < depthLimit) {
-      for (const neighbor of node.neighbors) {
-        if (!visited.has(neighbor)) {
-          queue.push({ node: neighbor, depth: depth + 1 });
-        }
-      }
-    }
-
-    visited.add(node);
+// Merge sort function
+function mergeSort(array) {
+  if (array.length <= 1) {
+    return array; // Array already sorted
   }
-
-  return null; // No solution within depth limit
+  
+  const mid = Math.floor(array.length / 2);
+  const left = array.slice(0, mid);
+  const right = array.slice(mid);
+  
+  return merge(mergeSort(left), mergeSort(right));
 }
 
 // Example usage:
-const nodeA = new Node('A', []);
-const nodeB = new Node('B', []);
-const nodeC = new Node('C', []);
-const nodeD = new Node('D', []);
-const nodeE = new Node('E', []);
-
-nodeA.neighbors = [nodeB, nodeC];
-nodeB.neighbors = [nodeA, nodeD];
-nodeC.neighbors = [nodeA, nodeE];
-nodeD.neighbors = [nodeB];
-nodeE.neighbors = [nodeC];
-
-const goal = breadthLimitedSearch(nodeA, nodeD, 2);
-console.log(goal ? `Goal node found: ${goal.value}` : 'Goal not found within depth limit');
+const arr = [7, 2, 1, 6, 8, 5, 3, 4];
+console.log("Original Array:", arr);
+console.log("Sorted Array:", mergeSort(arr));
