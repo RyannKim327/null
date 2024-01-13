@@ -1,17 +1,50 @@
-let array = ["one", "two", "three", "four", "five"];
+function buildBadCharTable(pattern) {
+  const badCharTable = {};
+  const patternLen = pattern.length;
 
-console.log("Original array:", array);
+  for (let i = 0; i < patternLen; i++) {
+    const char = pattern[i];
+    const lastIndex = pattern.lastIndexOf(char);
 
-// Reverse the array
-array.reverse();
+    if (lastIndex === i) {
+      badCharTable[char] = patternLen - i - 1;
+    } else {
+      badCharTable[char] = patternLen - lastIndex - 1;
+    }
+  }
 
-console.log("Reversed array:", array);
-Original array: [ 'one', 'two', 'three', 'four', 'five' ]
-Reversed array: [ 'five', 'four', 'three', 'two', 'one' ]
-let array = ["one", "two", "three", "four", "five"];
-let reversedArray = array.slice().reverse();
+  return badCharTable;
+}
 
-console.log("Original array:", array);
-console.log("Reversed array:", reversedArray);
-Original array: [ 'one', 'two', 'three', 'four', 'five' ]
-Reversed array: [ 'five', 'four', 'three', 'two', 'one' ]
+function boyerMooreSearch(pattern, text) {
+  const patternLen = pattern.length;
+  const textLen = text.length;
+  const badCharTable = buildBadCharTable(pattern);
+  const occurrences = [];
+  let skip = 0;
+
+  for (let i = 0; i <= textLen - patternLen; i += skip) {
+    let j = patternLen - 1;
+
+    while (j >= 0 && text[i + j] === pattern[j]) {
+      j--;
+    }
+
+    if (j === -1) {
+      occurrences.push(i);
+      skip = badCharTable[text[i + patternLen]] || 1;
+    } else {
+      skip = Math.max(1, j - badCharTable[text[i + j]]);
+    }
+  }
+
+  return occurrences;
+}
+
+// Example usage:
+const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+const pattern = "ipsum";
+
+const occurrences = boyerMooreSearch(pattern, text);
+
+console.log("Pattern occurrences:", occurrences);
