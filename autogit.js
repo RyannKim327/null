@@ -1,35 +1,17 @@
-function findMajorityElement(array) {
-  const countMap = {};
-  const n = array.length;
-
-  // Count the frequency of each element
-  for (let i = 0; i < n; i++) {
-    const element = array[i];
-    countMap[element] = (countMap[element] || 0) + 1;
-  }
-
-  // Find the element with the maximum count
-  let majorityElement;
-  let maxCount = 0;
-
-  for (const key in countMap) {
-    if (countMap.hasOwnProperty(key)) {
-      const count = countMap[key];
-      if (count > maxCount) {
-        maxCount = count;
-        majorityElement = key;
-      }
-    }
-  }
-
-  // Check if the majority element exists
-  if (maxCount > n / 2) {
-    return majorityElement;
-  } else {
-    return "No majority element found";
-  }
+function areAnagrams(str1, str2) {
+  // Convert the strings to lowercase and remove whitespace
+  str1 = str1.toLowerCase().replace(/\s/g, '');
+  str2 = str2.toLowerCase().replace(/\s/g, '');
+  
+  // Sort the strings
+  const sortedStr1 = str1.split('').sort().join('');
+  const sortedStr2 = str2.split('').sort().join('');
+  
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
 
-// Example usage
-const array = [1, 2, 2, 2, 3, 4, 2];
-console.log(findMajorityElement(array)); // Output: 2
+// Test the function
+const string1 = 'listen';
+const string2 = 'silent';
+console.log(areAnagrams(string1, string2)); // Output: true
