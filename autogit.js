@@ -1,12 +1,20 @@
-function findStringLength(str) {
-  let count = 0;
-  for (let i = 0; i < str.length; i++) {
-    count++;
-  }
-  return count;
-}
+function interpolationSearch(arr, target) {
+  var low = 0;
+  var high = arr.length - 1;
 
-// Example usage:
-const myString = "Hello, World!";
-const length = findStringLength(myString);
-console.log(length); // Output: 13
+  while (low <= high && target >= arr[low] && target <= arr[high]) {
+    var pos = Math.floor(low + ((target - arr[low]) / (arr[high] - arr[low])) * (high - low));
+
+    if (arr[pos] === target) {
+      return pos;
+    }
+
+    if (arr[pos] < target) {
+      low = pos + 1;
+    } else {
+      high = pos - 1;
+    }
+  }
+
+  return -1;
+}
