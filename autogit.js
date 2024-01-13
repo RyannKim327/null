@@ -1,27 +1,16 @@
-function longestCommonPrefix(strs) {
-  if (strs.length === 0) {
-    return '';
+function largestPrimeFactor(num) {
+  let factor = 2;
+
+  while (num > 1) {
+    if (num % factor === 0) {
+      num /= factor;
+    } else {
+      factor++;
+    }
   }
 
-  let prefix = strs[0];
-
-  for (let i = 1; i < strs.length; i++) {
-    const currentString = strs[i];
-    let j = 0;
-
-    while (j < prefix.length && j < currentString.length && prefix[j] === currentString[j]) {
-      j++;
-    }
-
-    if (j === 0) {
-      return '';
-    }
-
-    prefix = prefix.slice(0, j);
-  }
-
-  return prefix;
+  return factor;
 }
-const strings = ['flower', 'flow', 'flight'];
-const commonPrefix = longestCommonPrefix(strings);
-console.log(commonPrefix); // Output: "fl"
+const number = 84;
+const largestFactor = largestPrimeFactor(number);
+console.log(`The largest prime factor of ${number} is ${largestFactor}`);
