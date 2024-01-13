@@ -1,37 +1,47 @@
-function interpolationSearch(arr, target) {
-  let low = 0;
-  let high = arr.length - 1;
-  
-  while (low <= high && target >= arr[low] && target <= arr[high]) {
-    if (low === high) {
-      if (arr[low] === target) {
-        return low;
-      }
-      return -1;
-    }
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
+}
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+}
+reverse() {
+  let prev = null;
+  let current = this.head;
+  let next = null;
 
-    const position = low + ((target - arr[low]) * (high - low)) / (arr[high] - arr[low]);
-
-    if (arr[position] === target) {
-      return position;
-    }
-    
-    if (arr[position] < target) {
-      low = position + 1;
-    } else {
-      high = position - 1;
-    }
+  while (current !== null) {
+    next = current.next;
+    current.next = prev;
+    prev = current;
+    current = next;
   }
 
-  return -1;
+  this.head = prev;
 }
-const arr = [2, 4, 6, 8, 10, 12, 14];
-const target = 10;
+const linkedList = new LinkedList();
+linkedList.insert(1);
+linkedList.insert(2);
+linkedList.insert(3);
+linkedList.insert(4);
 
-const index = interpolationSearch(arr, target);
+console.log("Before reverse:");
+linkedList.print(); // Output: 1 -> 2 -> 3 -> 4
 
-if (index !== -1) {
-  console.log(`Element ${target} found at index ${index}`);
-} else {
-  console.log(`Element ${target} not found in the array`);
+linkedList.reverse();
+
+console.log("After reverse:");
+linkedList.print(); // Output: 4 -> 3 -> 2 -> 1
+print() {
+  let current = this.head;
+  let values = [];
+  while (current !== null) {
+    values.push(current.data);
+    current = current.next;
+  }
+  console.log(values.join(' -> '));
 }
