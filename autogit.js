@@ -1,99 +1,42 @@
-class PuzzleState {
-  constructor(board, previousMove) {
-    this.board = board;
-    this.previousMove = previousMove;
+const graph = {
+  A: [{ node: 'B', weight: 6 }, { node: 'C', weight: 3 }],
+  B: [{ node: 'D', weight: 2 }],
+  C: [{ node: 'D', weight: 1 }, { node: 'B', weight: 2 }],
+  D: []
+};
+function initializeDistances(graph, source) {
+  const distances = {};
+  for (const node in graph) {
+    distances[node] = node === source ? 0 : Infinity;
   }
-
-  isGoalState() {
-    // Check if the current state is the goal state
-    // e.g., all tiles are in the correct order
-  }
-
-  expand() {
-    // Generate all possible child states from the current state
-    // e.g., by moving one tile in each legal direction
-  }
+  return distances;
 }
+function bellmanFord(graph, source) {
+  const distances = initializeDistances(graph, source);
 
-function bidirectionalSearch(initialState, goalState) {
-  // Perform a two-directional BFS simultaneously from both the initial and goal state
-  const initialQueue = [initialState];
-  const goalQueue = [goalState];
-  const initialVisited = new Set();
-  const goalVisited = new Set();
-
-  initialVisited.add(initialState.board.toString());
-  goalVisited.add(goalState.board.toString());
-
-  while (initialQueue.length > 0 && goalQueue.length > 0) {
-    // Expand states from the initial queue
-    const initialNode = initialQueue.shift();
-    const initialChildStates = initialNode.expand();
-
-    for (const child of initialChildStates) {
-      if (goalVisited.has(child.board.toString())) {
-        // Solution found! Reconstruct the path
-        return reconstructPath(child, initialNode);
-      }
-
-      if (!initialVisited.has(child.board.toString())) {
-        initialVisited.add(child.board.toString());
-        initialQueue.push(child);
-      }
-    }
-
-    // Expand states from the goal queue
-    const goalNode = goalQueue.shift();
-    const goalChildStates = goalNode.expand();
-
-    for (const child of goalChildStates) {
-      if (initialVisited.has(child.board.toString())) {
-        // Solution found! Reconstruct the path
-        return reconstructPath(initialNode, child);
-      }
-
-      if (!goalVisited.has(child.board.toString())) {
-        goalVisited.add(child.board.toString());
-        goalQueue.push(child);
+  // Relax edges |V - 1| times
+  for (let i = 0; i < Object.keys(graph).length - 1; i++) {
+    for (const node in graph) {
+      for (const { node: neighbor, weight } of graph[node]) {
+        const distanceToNeighbor = distances[node] + weight;
+        if (distanceToNeighbor < distances[neighbor]) {
+          distances[neighbor] = distanceToNeighbor;
+        }
       }
     }
   }
 
-  // If no solution was found, return null or handle the failure case
-  return null;
-}
-
-function reconstructPath(initialNode, goalNode) {
-  // Reconstruct the path from the initial state to the goal state
-  // by following the previousMove pointers
-  let path = [];
-
-  while (initialNode) {
-    path.push(initialNode);
-    initialNode = initialNode.previousMove;
+  // Check for negative cycles
+  for (const node in graph) {
+    for (const { node: neighbor, weight } of graph[node]) {
+      if (distances[node] + weight < distances[neighbor]) {
+        throw new Error('Graph contains a negative-weight cycle');
+      }
+    }
   }
 
-  path.reverse();
-
-  while (goalNode) {
-    path.push(goalNode);
-    goalNode = goalNode.previousMove;
-  }
-
-  return path;
+  return distances;
 }
-
-// Example usage
-const initialState = new PuzzleState(initialBoard /* initial state */, null /* no previous move */);
-const goalState = new PuzzleState(goalBoard /* goal state */, null /* no previous move */);
-
-const solutionPath = bidirectionalSearch(initialState, goalState);
-
-if (solutionPath) {
-  console.log("Solution found!");
-  for (const state of solutionPath) {
-    console.log(state.board);
-  }
-} else {
-  console.log("No solution found!");
-}
+const sourceNode = 'A';
+const shortestDistances = bellmanFord(graph, sourceNode);
+console.log(shortestDistances);
