@@ -1,42 +1,50 @@
-const graph = {
-  A: [{ node: 'B', weight: 6 }, { node: 'C', weight: 3 }],
-  B: [{ node: 'D', weight: 2 }],
-  C: [{ node: 'D', weight: 1 }, { node: 'B', weight: 2 }],
-  D: []
-};
-function initializeDistances(graph, source) {
-  const distances = {};
-  for (const node in graph) {
-    distances[node] = node === source ? 0 : Infinity;
+class ListNode {
+  constructor(value, next = null) {
+    this.value = value;
+    this.next = next;
   }
-  return distances;
 }
-function bellmanFord(graph, source) {
-  const distances = initializeDistances(graph, source);
+function reverseLinkedList(head) {
+  let current = head;
+  let prev = null;
 
-  // Relax edges |V - 1| times
-  for (let i = 0; i < Object.keys(graph).length - 1; i++) {
-    for (const node in graph) {
-      for (const { node: neighbor, weight } of graph[node]) {
-        const distanceToNeighbor = distances[node] + weight;
-        if (distanceToNeighbor < distances[neighbor]) {
-          distances[neighbor] = distanceToNeighbor;
-        }
-      }
-    }
+  while (current !== null) {
+    const nextNode = current.next;
+    current.next = prev;
+    prev = current;
+    current = nextNode;
   }
 
-  // Check for negative cycles
-  for (const node in graph) {
-    for (const { node: neighbor, weight } of graph[node]) {
-      if (distances[node] + weight < distances[neighbor]) {
-        throw new Error('Graph contains a negative-weight cycle');
-      }
-    }
-  }
-
-  return distances;
+  return prev;
 }
-const sourceNode = 'A';
-const shortestDistances = bellmanFord(graph, sourceNode);
-console.log(shortestDistances);
+// Create a sample linked list: 1 -> 2 -> 3 -> 4 -> null
+const node4 = new ListNode(4);
+const node3 = new ListNode(3, node4);
+const node2 = new ListNode(2, node3);
+const node1 = new ListNode(1, node2);
+
+console.log("Original linked list:");
+let current = node1;
+while (current !== null) {
+  console.log(current.value);
+  current = current.next;
+}
+
+const reversed = reverseLinkedList(node1);
+
+console.log("Reversed linked list:");
+let currentReversed = reversed;
+while (currentReversed !== null) {
+  console.log(currentReversed.value);
+  currentReversed = currentReversed.next;
+}
+Original linked list:
+1
+2
+3
+4
+Reversed linked list:
+4
+3
+2
+1
