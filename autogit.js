@@ -1,17 +1,9 @@
-function reverseWords(str) {
-  // Step 1: Split the string into an array of words
-  var wordsArr = str.split(" ");
+const cron = require('node-cron');
 
-  // Step 2: Reverse the order of the array
-  var reversedWordsArr = wordsArr.reverse();
+// Define the task function that will be run on schedule
+const task = () => {
+  console.log('This task runs every minute');
+};
 
-  // Step 3: Join the array elements into a string
-  var reversedStr = reversedWordsArr.join(" ");
-
-  return reversedStr;
-}
-
-// Example usage
-var inputString = "Hello World!";
-var reversedString = reverseWords(inputString);
-console.log(reversedString);  // Output: "World! Hello"
+// Schedule the task to run every minute
+cron.schedule('* * * * *', task);
