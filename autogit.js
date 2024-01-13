@@ -1,83 +1,30 @@
-// Define the linked list node class
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+function reverseString(str) {
+  return str.split('').reverse().join('');
 }
 
-// Define the queue class
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-    this.size = 0;
+// Example usage
+const originalString = 'Hello, world!';
+const reversedString = reverseString(originalString);
+console.log(reversedString); // Output: '!dlrow ,olleH'
+function reverseString(str) {
+  let reversedString = '';
+  for (let i = str.length - 1; i >= 0; i--) {
+    reversedString += str[i];
   }
-
-  // Add an element to the end of the queue
-  enqueue(value) {
-    const newNode = new Node(value);
-
-    if (this.head === null) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
-    }
-
-    this.size++;
-  }
-
-  // Remove and return an element from the front of the queue
-  dequeue() {
-    if (this.head === null) {
-      return null; // Queue is empty
-    }
-
-    const value = this.head.value;
-    this.head = this.head.next;
-    this.size--;
-
-    if (this.head === null) {
-      this.tail = null; // Queue is now empty
-    }
-
-    return value;
-  }
-
-  // Return the number of elements in the queue
-  getSize() {
-    return this.size;
-  }
-
-  // Check if the queue is empty
-  isEmpty() {
-    return this.size === 0;
-  }
-
-  // Peek at the element at the front of the queue without removing it
-  peek() {
-    if (this.head === null) {
-      return null; // Queue is empty
-    }
-
-    return this.head.value;
-  }
+  return reversedString;
 }
 
-// Usage example
-const queue = new Queue();
+// Example usage
+const originalString = 'Hello, world!';
+const reversedString = reverseString(originalString);
+console.log(reversedString); // Output: '!dlrow ,olleH'
+function reverseString(str) {
+  return str.split('').reduce((reversed, character) => {
+    return character + reversed;
+  }, '');
+}
 
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
-
-console.log(queue.getSize()); // Output: 3
-console.log(queue.peek()); // Output: 1
-
-console.log(queue.dequeue()); // Output: 1
-console.log(queue.dequeue()); // Output: 2
-
-console.log(queue.isEmpty()); // Output: false
-console.log(queue.getSize()); // Output: 1
+// Example usage
+const originalString = 'Hello, world!';
+const reversedString = reverseString(originalString);
+console.log(reversedString); // Output: '!dlrow ,olleH'
