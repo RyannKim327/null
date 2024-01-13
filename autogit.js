@@ -1,43 +1,29 @@
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
-
-function diameterOfBinaryTree(root) {
-  let diameter = 0;
-
-  function depth(node) {
-    if (node === null) {
-      return 0;
+function depthLimitedSearch(startNode, goalNode, depthLimit) {
+  function recursiveDLS(node, goalNode, depth) {
+    if (node === goalNode) {
+      return true;
     }
 
-    let leftDepth = depth(node.left);
-    let rightDepth = depth(node.right);
+    if (depth === depthLimit) {
+      return false;
+    }
 
-    // calculate the current diameter
-    let currentDiameter = leftDepth + rightDepth;
+    for (let child of node.children) {
+      if (recursiveDLS(child, goalNode, depth + 1)) {
+        return true;
+      }
+    }
 
-    // update the global diameter if necessary
-    diameter = Math.max(diameter, currentDiameter);
-
-    // return the depth of the subtree rooted at the current node
-    return Math.max(leftDepth, rightDepth) + 1;
+    return false;
   }
 
-  depth(root);
-  return diameter;
+  return recursiveDLS(startNode, goalNode, 0);
 }
 
-// Example usage:
-let root = new TreeNode(1);
+// Usage example:
+const startNode = /* your start node */;
+const goalNode = /* your goal node */;
+const depthLimit = /* your depth limit */;
 
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(diameterOfBinaryTree(root)); // Output: 3
+const result = depthLimitedSearch(startNode, goalNode, depthLimit);
+console.log(result); // true if a solution is found, false otherwise
