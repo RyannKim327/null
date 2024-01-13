@@ -1,28 +1,22 @@
-function bubbleSort(arr) {
-  var len = arr.length;
-  var swapped;
-  
-  do {
-    swapped = false;
-    
-    for (var i = 0; i < len - 1; i++) {
-      if (arr[i] > arr[i + 1]) {
-        // Swap elements
-        var temp = arr[i];
-        arr[i] = arr[i + 1];
-        arr[i + 1] = temp;
-        
-        swapped = true;
-      }
-    }
-  } while (swapped);
-  
-  return arr;
+class ListNode {
+  constructor(val) {
+    this.val = val;
+    this.next = null;
+  }
 }
 
-// Example usage
-var numbers = [5, 3, 8, 4, 2];
-console.log("Before sorting:", numbers);
-console.log("After sorting:", bubbleSort(numbers));
-Before sorting: [5, 3, 8, 4, 2]
-After sorting: [2, 3, 4, 5, 8]
+const getIntersectionNode = (headA, headB) => {
+  if (!headA || !headB) {
+    return null;
+  }
+
+  let ptr1 = headA;
+  let ptr2 = headB;
+  
+  while (ptr1 !== ptr2) {
+    ptr1 = ptr1 ? ptr1.next : headB;
+    ptr2 = ptr2 ? ptr2.next : headA;
+  }
+
+  return ptr1;
+};
