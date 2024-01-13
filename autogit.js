@@ -1,7 +1,16 @@
-function removeVowels(str) {
-  return str.replace(/[aeiou]/gi, '');  // Matches all vowels (both lowercase and uppercase)
+function ListNode(val) {
+  this.val = val;
+  this.next = null;
 }
 
-// Example usage:
-console.log(removeVowels('Hello, World!'));  // Output: "Hll, Wrld!"
-console.log(removeVowels('JavaScript'));    // Output: "JvScrpt"
+function findMiddle(head) {
+  let slowPtr = head;
+  let fastPtr = head;
+
+  while (fastPtr !== null && fastPtr.next !== null) {
+    fastPtr = fastPtr.next.next;
+    slowPtr = slowPtr.next;
+  }
+
+  return slowPtr.val;
+}
