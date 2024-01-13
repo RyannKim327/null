@@ -1,4 +1,17 @@
-const array = [5, 2, 9, 1, 7, 4];
+var stringNumber = "42";
+var integerNumber = parseInt(stringNumber);
 
-const max = Math.max(...array);
-console.log(max); // Output: 9
+console.log(integerNumber); // Output: 42
+var stringNumber = "42";
+var integerNumber = Number(stringNumber);
+
+console.log(integerNumber); // Output: 42
+var stringNumber = "42abc";
+var integerNumber = parseInt(stringNumber);
+
+console.log(integerNumber); // Output: 42
+
+var stringNumber = "abc42";
+var integerNumber = parseInt(stringNumber);
+
+console.log(integerNumber); // Output: NaN (Not a Number)
