@@ -1,37 +1,67 @@
-function findMajorityElement(arr) {
-  let candidate = null;
-  let count = 0;
-  
-  // Find the potential candidate for the majority element
-  for (let i = 0; i < arr.length; i++) {
-    if (count === 0) {
-      candidate = arr[i];
-      count = 1;
-    } else {
-      if (arr[i] === candidate) {
-        count++;
-      } else {
-        count--;
+class GraphNode {
+  constructor(id) {
+    this.id = id;
+    this.index = null;
+    this.lowlink = null;
+    this.onStack = false;
+    this.neighbors = [];
+  }
+}
+function tarjan(graph) {
+  const components = [];
+  const stack = [];
+  let index = 0;
+
+  function strongConnect(node) {
+    node.index = index;
+    node.lowlink = index;
+    index += 1;
+    stack.push(node);
+    node.onStack = true;
+
+    for (const neighbor of node.neighbors) {
+      if (neighbor.index === null) {
+        strongConnect(neighbor);
+        node.lowlink = Math.min(node.lowlink, neighbor.lowlink);
+      } else if (neighbor.onStack) {
+        node.lowlink = Math.min(node.lowlink, neighbor.index);
       }
     }
-  }
-  
-  // Check if the candidate is the majority element
-  count = 0;
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] === candidate) {
-      count++;
+
+    if (node.lowlink === node.index) {
+      const component = [];
+      let currNode = null;
+
+      do {
+        currNode = stack.pop();
+        currNode.onStack = false;
+        component.push(currNode);
+      } while (currNode !== node);
+
+      components.push(component);
     }
   }
-  
-  if (count > arr.length / 2) {
-    return candidate;
-  }
-  
-  return "No majority element found";
-}
 
+  for (const node of graph) {
+    if (node.index === null) {
+      strongConnect(node);
+    }
+  }
+
+  return components;
+}
 // Example usage
-const array = [3, 4, 2, 4, 4, 2, 4, 4];
-const majorityElement = findMajorityElement(array);
-console.log(majorityElement); // Output: 4
+const node1 = new GraphNode(1);
+const node2 = new GraphNode(2);
+const node3 = new GraphNode(3);
+const node4 = new GraphNode(4);
+
+node1.neighbors.push(node2);
+node2.neighbors.push(node3);
+node3.neighbors.push(node1);
+node4.neighbors.push(node3);
+
+const graph = [node1, node2, node3, node4];
+const stronglyConnectedComponents = tarjan(graph);
+
+console.log(stronglyConnectedComponents);
