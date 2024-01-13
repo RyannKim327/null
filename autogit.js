@@ -1,47 +1,24 @@
-// Merge function to merge the two halves of an array
-function merge(left, right) {
-  let result = [];
-  let i = 0;
-  let j = 0;
-  
-  while (i < left.length && j < right.length) {
-    if (left[i] < right[j]) {
-      result.push(left[i]);
-      i++;
+function findFirstNonRepeatingCharacter(str) {
+  const charCount = {};
+
+  for (const char of str) {
+    if (charCount[char]) {
+      charCount[char]++;
     } else {
-      result.push(right[j]);
-      j++;
+      charCount[char] = 1;
     }
   }
-  
-  // Add the remaining elements from either left or right array
-  while (i < left.length) {
-    result.push(left[i]);
-    i++;
+
+  for (const char of str) {
+    if (charCount[char] === 1) {
+      return char;
+    }
   }
-  
-  while (j < right.length) {
-    result.push(right[j]);
-    j++;
-  }
-  
-  return result;
+
+  return null;
 }
 
-// Merge sort function
-function mergeSort(array) {
-  if (array.length <= 1) {
-    return array; // Array already sorted
-  }
-  
-  const mid = Math.floor(array.length / 2);
-  const left = array.slice(0, mid);
-  const right = array.slice(mid);
-  
-  return merge(mergeSort(left), mergeSort(right));
-}
-
-// Example usage:
-const arr = [7, 2, 1, 6, 8, 5, 3, 4];
-console.log("Original Array:", arr);
-console.log("Sorted Array:", mergeSort(arr));
+// Example usage
+const inputString = "abbcdeff";
+const firstNonRepeatingChar = findFirstNonRepeatingCharacter(inputString);
+console.log(firstNonRepeatingChar); // Output: 'a'
