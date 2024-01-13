@@ -1,15 +1,38 @@
-function findMedianSortedArrays(nums1, nums2) {
-  const combined = [...nums1, ...nums2];
-  combined.sort((a, b) => a - b);
+function countingSort(arr) {
+  // Find the maximum element in the array
+  let max = Math.max(...arr);
 
-  const middle = Math.floor(combined.length / 2);
-  if (combined.length % 2 === 0) {
-    return (combined[middle - 1] + combined[middle]) / 2;
-  } else {
-    return combined[middle];
+  // Create a count array of size max+1 and initialize all elements to 0
+  let count = Array(max + 1).fill(0);
+
+  // Store the count of each element in the count array
+  for (let i = 0; i < arr.length; i++) {
+    count[arr[i]]++;
   }
+
+  // Modify the count array such that each element at index i stores the sum of previous counts
+  for (let i = 1; i <= max; i++) {
+    count[i] += count[i - 1];
+  }
+
+  // Create an output array
+  let output = Array(arr.length);
+
+  // Build the output array
+  for (let i = arr.length - 1; i >= 0; i--) {
+    output[count[arr[i]] - 1] = arr[i];
+    count[arr[i]]--;
+  }
+
+  // Copy the sorted elements back to the original array
+  for (let i = 0; i < arr.length; i++) {
+    arr[i] = output[i];
+  }
+
+  return arr;
 }
-const nums1 = [1, 3, 5];
-const nums2 = [2, 4, 6];
-const median = findMedianSortedArrays(nums1, nums2);
-console.log(median);  // Output: 3.5
+
+// Example usage:
+let array = [4, 2, 0, 2, 1, 4, 3, 6, 7, 2, 1];
+console.log("Original Array:", array);
+console.log("Sorted Array:", countingSort(array));
