@@ -1,15 +1,15 @@
-let str1 = "Hello";
-let str2 = "World";
+function countOccurrences(str, char) {
+  let count = 0;
+  for (let i = 0; i < str.length; i++) {
+    if (str.charAt(i) === char) {
+      count++;
+    }
+  }
+  return count;
+}
 
-let result = str1 + " " + str2;
-console.log(result); // Output: "Hello World"
-let str1 = "Hello";
-let str2 = "World";
-
-str1 += " " + str2;
-console.log(str1); // Output: "Hello World"
-let str1 = "Hello";
-let str2 = "World";
-
-let result = `${str1} ${str2}`;
-console.log(result); // Output: "Hello World"
+// Example usage:
+const myString = "Hello, World!";
+const myCharacter = "o";
+const occurrenceCount = countOccurrences(myString, myCharacter);
+console.log(occurrenceCount); // Output: 2
