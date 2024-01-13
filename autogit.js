@@ -1,26 +1,44 @@
-function reverseString(str) {
-  return str.split('').reverse().join('');
-}
-
-var originalString = "Hello, world!";
-var reversedString = reverseString(originalString);
-console.log(reversedString);
-function reverseString(str) {
-  var reversedString = '';
-  for (var i = str.length - 1; i >= 0; i--) {
-    reversedString += str[i];
+function mergeSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
   }
-  return reversedString;
+
+  const middle = Math.floor(arr.length / 2);
+  const left = mergeSort(arr.slice(0, middle));
+  const right = mergeSort(arr.slice(middle));
+
+  return merge(left, right);
 }
 
-var originalString = "Hello, world!";
-var reversedString = reverseString(originalString);
-console.log(reversedString);
-function reverseString(str) {
-  return str.split('').reduce((reversedString, char) => char + reversedString, '');
+function merge(left, right) {
+  let result = [];
+  let i = 0;
+  let j = 0;
+
+  while (i < left.length && j < right.length) {
+    if (left[i] < right[j]) {
+      result.push(left[i]);
+      i++;
+    } else {
+      result.push(right[j]);
+      j++;
+    }
+  }
+
+  while (i < left.length) {
+    result.push(left[i]);
+    i++;
+  }
+
+  while (j < right.length) {
+    result.push(right[j]);
+    j++;
+  }
+
+  return result;
 }
 
-var originalString = "Hello, world!";
-var reversedString = reverseString(originalString);
-console.log(reversedString);
-!dlrow ,olleH
+// Testing the mergeSort function
+const arr = [8, 4, 9, 2, 5, 1, 6, 3, 7];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr);
