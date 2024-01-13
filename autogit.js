@@ -1,32 +1,28 @@
-// Node class representing a node in the binary tree
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+function bubbleSort(arr) {
+  var len = arr.length;
+  var swapped;
+  
+  do {
+    swapped = false;
+    
+    for (var i = 0; i < len - 1; i++) {
+      if (arr[i] > arr[i + 1]) {
+        // Swap elements
+        var temp = arr[i];
+        arr[i] = arr[i + 1];
+        arr[i + 1] = temp;
+        
+        swapped = true;
+      }
+    }
+  } while (swapped);
+  
+  return arr;
 }
 
-// Function to calculate the sum of nodes in the binary tree
-function getSumOfNodes(root) {
-  if (root === null) {
-    return 0; // Base case: empty node, sum is 0
-  } else {
-    const leftSum = getSumOfNodes(root.left); // Calculate sum of left subtree
-    const rightSum = getSumOfNodes(root.right); // Calculate sum of right subtree
-    return root.value + leftSum + rightSum; // Sum the current node value with left and right subtree sums
-  }
-}
-
-// Create the binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
-
-// Calculate the sum of all nodes
-const sum = getSumOfNodes(root);
-console.log("Sum of all nodes:", sum);
+// Example usage
+var numbers = [5, 3, 8, 4, 2];
+console.log("Before sorting:", numbers);
+console.log("After sorting:", bubbleSort(numbers));
+Before sorting: [5, 3, 8, 4, 2]
+After sorting: [2, 3, 4, 5, 8]
