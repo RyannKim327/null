@@ -1,28 +1,83 @@
-function interpolationSearch(arr, target, start = 0) {
-  if (start > arr.length - 1) {
-    return -1; // Target value not found
-  }
-
-  let pos = start + Math.floor(
-    (target - arr[start]) * (arr.length - 1 - start) / (arr[arr.length - 1] - arr[start])
-  );
-
-  if (arr[pos] === target) {
-    return pos; // Target value found
-  }
-
-  if (arr[pos] > target) {
-    return interpolationSearch(arr, target, pos + 1);
-  }
-
-  if (arr[pos] < target) {
-    return interpolationSearch(arr, target, pos - 1);
-  }
-
-  return -1; // Target value not found
+function rabinKarpSearch(text, pattern) {
+  // ...
 }
-const arr = [1, 4, 8, 12, 16, 20, 24, 28, 32, 36];
-const target = 16;
+function rabinKarpSearch(text, pattern) {
+  if (text.length === 0 || pattern.length === 0) {
+    return -1;
+  }
+  // ...
+}
+function rabinKarpSearch(text, pattern) {
+  if (text.length === 0 || pattern.length === 0) {
+    return -1;
+  }
 
-const result = interpolationSearch(arr, target);
-console.log(`Target value found at index ${result}`);
+  const prime = 101; // prime number for hashing
+  const textSize = text.length;
+  const patternSize = pattern.length;
+  let textHash = 0;
+  let patternHash = 0;
+  // ...
+}
+function rabinKarpSearch(text, pattern) {
+  if (text.length === 0 || pattern.length === 0) {
+    return -1;
+  }
+
+  const prime = 101; // prime number for hashing
+  const textSize = text.length;
+  const patternSize = pattern.length;
+  let textHash = 0;
+  let patternHash = 0;
+
+  // Calculate initial hash values
+  for (let i = 0; i < patternSize; i++) {
+    textHash += text.charCodeAt(i) * Math.pow(prime, patternSize - i - 1);
+    patternHash += pattern.charCodeAt(i) * Math.pow(prime, patternSize - i - 1);
+  }
+  // ...
+}
+function rabinKarpSearch(text, pattern) {
+  if (text.length === 0 || pattern.length === 0) {
+    return -1;
+  }
+
+  const prime = 101; // prime number for hashing
+  const textSize = text.length;
+  const patternSize = pattern.length;
+  let textHash = 0;
+  let patternHash = 0;
+
+  // Calculate initial hash values
+  for (let i = 0; i < patternSize; i++) {
+    textHash += text.charCodeAt(i) * Math.pow(prime, patternSize - i - 1);
+    patternHash += pattern.charCodeAt(i) * Math.pow(prime, patternSize - i - 1);
+  }
+
+  for (let i = 0; i <= textSize - patternSize; i++) {
+    // Compare hash values
+    if (textHash === patternHash) {
+      let found = true;
+      for (let j = 0; j < patternSize; j++) {
+        if (text[i + j] !== pattern[j]) {
+          found = false;
+          break;
+        }
+      }
+      if (found) {
+        return i; // Found the pattern at position i
+      }
+    }
+
+    // Calculate hash for the next substring
+    textHash = (textHash - text.charCodeAt(i) * Math.pow(prime, patternSize - 1)) * prime + text.
+        charCodeAt(i + patternSize);
+  }
+
+  return -1; // Pattern not found
+}
+const text = "Hello, world!";
+const pattern = "world";
+
+const index = rabinKarpSearch(text, pattern);
+console.log(index); // Output: 7
