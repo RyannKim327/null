@@ -1,28 +1,25 @@
-function breadthLimitedSearch(startNode, targetNode, depthLimit) {
-  const queue = [];
-  const visited = new Set();
-
-  queue.push({ node: startNode, depth: 0 });
-
-  while (queue.length > 0) {
-    const { node, depth } = queue.shift();
-
-    if (node === targetNode) {
-      return node; // Return the found target node
-    }
-
-    visited.add(node);
-
-    if (depth < depthLimit) {
-      const neighbors = getNeighbors(node); // Implement your own function to get the neighbors of a node
-
-      for (const neighbor of neighbors) {
-        if (!visited.has(neighbor)) {
-          queue.push({ node: neighbor, depth: depth + 1 });
-        }
-      }
-    }
+class TreeNode {
+  constructor(val) {
+    this.val = val;
+    this.left = this.right = null;
   }
-
-  return 'Target node not found'; // Target node not found within the depth limit
 }
+
+function maxDepth(root) {
+  if (root === null) {
+    return 0;
+  } else {
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
+    return Math.max(leftDepth, rightDepth) + 1;
+  }
+}
+
+// Example usage:
+const root = new TreeNode(3);
+root.left = new TreeNode(9);
+root.right = new TreeNode(20);
+root.right.left = new TreeNode(15);
+root.right.right = new TreeNode(7);
+
+console.log(maxDepth(root)); // Output: 3
