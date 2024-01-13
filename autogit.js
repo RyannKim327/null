@@ -1,44 +1,41 @@
-// Function to get the digit at a given position
-function getDigit(num, pos) {
-  return Math.floor(Math.abs(num) / Math.pow(10, pos)) % 10;
-}
+function isPalindrome(str) {
+  // Convert the string to lowercase
+  str = str.toLowerCase();
 
-// Function to get the number of digits in the largest number
-function digitCount(num) {
-  if (num === 0) return 1;
-  return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
+  // Initialize two pointers, one at the beginning and one at the end of the string
+  let left = 0;
+  let right = str.length - 1;
 
-// Function to find the number with the most digits
-function mostDigits(nums) {
-  let maxDigits = 0;
-  for (let i = 0; i < nums.length; i++) {
-    maxDigits = Math.max(maxDigits, digitCount(nums[i]));
-  }
-  return maxDigits;
-}
-
-// Radix Sort function
-function radixSort(nums) {
-  const maxDigits = mostDigits(nums);
-  
-  for (let k = 0; k < maxDigits; k++) {
-    // Create empty digit buckets
-    const digitBuckets = Array.from({ length: 10 }, () => []);
-  
-    for (let i = 0; i < nums.length; i++) {
-      const digit = getDigit(nums[i], k);
-      digitBuckets[digit].push(nums[i]);
+  // Iterate until the two pointers meet in the middle
+  while (left < right) {
+    // Ignore non-alphanumeric characters by skipping them
+    while (!isAlphanumeric(str[left])) {
+      left++;
     }
-  
-    // Concatenate the digit buckets back into the original array
-    nums = [].concat(...digitBuckets);
+    while (!isAlphanumeric(str[right])) {
+      right--;
+    }
+
+    // If the characters at the two pointers are not equal, the string is not a palindrome
+    if (str[left] !== str[right]) {
+      return false;
+    }
+
+    // Move the pointers towards the middle
+    left++;
+    right--;
   }
-  
-  return nums;
+
+  // If the loop completes without finding any mismatch, the string is a palindrome
+  return true;
+}
+
+// Helper function to check if a character is alphanumeric
+function isAlphanumeric(char) {
+  return /[a-z0-9]/.test(char);
 }
 
 // Example usage
-const nums = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedNums = radixSort(nums);
-console.log(sortedNums);  // [2, 24, 45, 66, 75, 90, 170, 802]
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
+console.log(isPalindrome("No 'x' in Nixon")); // true
