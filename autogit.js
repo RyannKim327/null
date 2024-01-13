@@ -1,56 +1,61 @@
-function calculateGoodSuffix(pattern) {
-  const suffixLengths = new Array(pattern.length);
-  const isSuffix = (i, j) => pattern.slice(i).startsWith(pattern.slice(j));
+function generateFibonacciSequence(length) {
+  const sequence = [0, 1]; // Initialize Fibonacci sequence with [0, 1]
 
-  for (let i = pattern.length - 2; i >= 0; i--) {
-    let j = i;
-    while (j >= 0 && pattern[j] === pattern[j + 1]) j--;
-    suffixLengths[i] = i - j;
-    while (j >= 0 && !isSuffix(i, j)) {
-      suffixLengths[i]++;
-      j--;
-    }
+  for (let i = 2; i < length; i++) {
+    sequence[i] = sequence[i - 1] + sequence[i - 2];
   }
 
-  return suffixLengths;
+  return sequence;
 }
+function fibonacciSearch(arr, x) {
+  const length = arr.length;
 
-function boyerMooreSearch(text, pattern) {
-  const badChar = new Array(256).fill(-1);
-  const patternLength = pattern.length;
-  const goodSuffix = calculateGoodSuffix(pattern);
+  let fib2 = 0; // Second-to-last Fibonacci number
+  let fib1 = 1; // Last Fibonacci number
+  let fib = fib1 + fib2; // Current Fibonacci number
 
-  // Preprocessing the bad character array
-  for (let i = 0; i < patternLength; i++) {
-    badChar[pattern.charCodeAt(i)] = i;
+  // Find the smallest Fibonacci number greater than or equal to the array length
+  while (fib < length) {
+    fib2 = fib1;
+    fib1 = fib;
+    fib = fib1 + fib2;
   }
 
-  let textIndex = patternLength - 1;
-  let patternIndex = patternLength - 1;
+  let offset = -1; // Offset from the beginning of the array
 
-  while (textIndex < text.length) {
-    if (text[textIndex] === pattern[patternIndex]) {
-      if (patternIndex === 0) {
-        // Pattern found
-        return textIndex;
-      }
-      patternIndex--;
-      textIndex--;
-    } else {
-      const badCharShift = patternIndex - badChar[text.charCodeAt(textIndex)];
-      const goodSuffixShift = goodSuffix[patternIndex];
+  while (fib > 1) {
+    const i = Math.min(offset + fib2, length - 1);
 
-      textIndex += Math.max(badCharShift, goodSuffixShift);
-      patternIndex = patternLength - 1;
+    // If x is greater than the current element, move the offset and update Fibonacci numbers
+    if (arr[i] < x) {
+      fib = fib1;
+      fib1 = fib2;
+      fib2 = fib - fib1;
+      offset = i;
+    }
+
+    // If x is smaller than the current element, update Fibonacci numbers
+    else if (arr[i] > x) {
+      fib = fib2;
+      fib1 = fib1 - fib2;
+      fib2 = fib - fib1;
+    }
+
+    // If x is found, return its index
+    else {
+      return i;
     }
   }
 
-  // Pattern not found
+  // If x is not found, return -1
+  if (fib1 === 1 && arr[offset + 1] === x) {
+    return offset + 1;
+  }
+
   return -1;
 }
+const arr = [2, 3, 5, 8, 13, 21, 34, 55, 89];
+const x = 55;
 
-// Example usage
-const text = "This is a test text";
-const pattern = "test";
-
-console.log(boyerMooreSearch(text, pattern)); // Output: 10 (index of 'test' in the text)
+const index = fibonacciSearch(arr, x);
+console.log(`Element ${x} is found at index ${index}`);
