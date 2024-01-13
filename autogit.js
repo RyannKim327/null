@@ -1,29 +1,15 @@
-function depthLimitedSearch(startNode, goalNode, depthLimit) {
-  function recursiveDLS(node, goalNode, depth) {
-    if (node === goalNode) {
-      return true;
-    }
+let str1 = "Hello";
+let str2 = "World";
 
-    if (depth === depthLimit) {
-      return false;
-    }
+let result = str1 + " " + str2;
+console.log(result); // Output: "Hello World"
+let str1 = "Hello";
+let str2 = "World";
 
-    for (let child of node.children) {
-      if (recursiveDLS(child, goalNode, depth + 1)) {
-        return true;
-      }
-    }
+str1 += " " + str2;
+console.log(str1); // Output: "Hello World"
+let str1 = "Hello";
+let str2 = "World";
 
-    return false;
-  }
-
-  return recursiveDLS(startNode, goalNode, 0);
-}
-
-// Usage example:
-const startNode = /* your start node */;
-const goalNode = /* your goal node */;
-const depthLimit = /* your depth limit */;
-
-const result = depthLimitedSearch(startNode, goalNode, depthLimit);
-console.log(result); // true if a solution is found, false otherwise
+let result = `${str1} ${str2}`;
+console.log(result); // Output: "Hello World"
