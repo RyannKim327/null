@@ -1,57 +1,27 @@
-class Stack {
-  constructor() {
-    this.stackArray = [];
+function longestCommonPrefix(strs) {
+  if (strs.length === 0) {
+    return '';
   }
 
-  // Add an element to the top of the stack
-  push(element) {
-    this.stackArray.push(element);
-  }
+  let prefix = strs[0];
 
-  // Remove and return the top element from the stack
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack is Empty";
+  for (let i = 1; i < strs.length; i++) {
+    const currentString = strs[i];
+    let j = 0;
+
+    while (j < prefix.length && j < currentString.length && prefix[j] === currentString[j]) {
+      j++;
     }
-    return this.stackArray.pop();
-  }
 
-  // Return the top element without removing it from the stack
-  peek() {
-    if (this.isEmpty()) {
-      return "Stack is Empty";
+    if (j === 0) {
+      return '';
     }
-    return this.stackArray[this.stackArray.length - 1];
+
+    prefix = prefix.slice(0, j);
   }
 
-  // Check if the stack is empty
-  isEmpty() {
-    return this.stackArray.length === 0;
-  }
-
-  // Return the size of the stack
-  size() {
-    return this.stackArray.length;
-  }
-
-  // Clear the stack
-  clear() {
-    this.stackArray = [];
-  }
+  return prefix;
 }
-
-// Example usage:
-const stack = new Stack();
-
-stack.push(5);
-stack.push(10);
-stack.push(15);
-
-console.log(stack.pop()); // Output: 15
-console.log(stack.peek()); // Output: 10
-
-console.log(stack.size()); // Output: 2
-console.log(stack.isEmpty()); // Output: false
-
-stack.clear();
-console.log(stack.isEmpty()); // Output: true
+const strings = ['flower', 'flow', 'flight'];
+const commonPrefix = longestCommonPrefix(strings);
+console.log(commonPrefix); // Output: "fl"
