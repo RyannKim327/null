@@ -1,63 +1,69 @@
-class TrieNode {
-  constructor() {
-    this.isEndOfWord = false;
-    this.children = {};
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
-class Trie {
+class BinarySearchTree {
   constructor() {
-    this.root = new TrieNode();
+    this.root = null;
+  }
+}
+class BinarySearchTree {
+  // ...
+
+  insert(value) {
+    const newNode = new Node(value);
+
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
   }
 
-  // Insert a word into the Trie
-  insert(word) {
-    let current = this.root;
-
-    for (let i = 0; i < word.length; i++) {
-      const ch = word[i];
-      if (!current.children[ch]) {
-        current.children[ch] = new TrieNode();
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
       }
-      current = current.children[ch];
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+}
+class BinarySearchTree {
+  // ...
+
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  searchNode(node, value) {
+    if (node === null) {
+      return false;
     }
 
-    current.isEndOfWord = true;
-  }
-
-  // Search for a word in the Trie
-  search(word) {
-    let current = this.root;
-
-    for (let i = 0; i < word.length; i++) {
-      const ch = word[i];
-      if (!current.children[ch]) {
-        return false;
-      }
-      current = current.children[ch];
-    }
-
-    return current.isEndOfWord;
-  }
-
-  // Check if a word has any prefix in the Trie
-  startsWith(prefix) {
-    let current = this.root;
-
-    for (let i = 0; i < prefix.length; i++) {
-      const ch = prefix[i];
-      if (!current.children[ch]) {
-        return false;
-      }
-      current = current.children[ch];
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else if (value > node.value) {
+      return this.searchNode(node.right, value);
     }
 
     return true;
   }
 }
-const trie = new Trie();
-trie.insert("apple");
-console.log(trie.search("apple")); // Output: true
-console.log(trie.search("app")); // Output: false
-console.log(trie.startsWith("app")); // Output: true
-trie.insert("app");
-console.log(trie.search("app")); // Output: true
+const tree = new BinarySearchTree();
+tree.insert(10);
+tree.insert(5);
+tree.insert(15);
+
+console.log(tree.search(10)); // true
+console.log(tree.search(20)); // false
