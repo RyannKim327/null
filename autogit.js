@@ -1,15 +1,26 @@
-const cron = require('cron');
+function burrowsWheelerTransform(input) {
+  // Step 1: Generate all cyclic rotations
+  const rotations = [];
+  const length = input.length;
+  for (let i = 0; i < length; i++) {
+    rotations.push(input.substring(i) + input.substring(0, i));
+  }
 
-// Create a new cron job that runs every minute
-const job = new cron.CronJob('* * * * *', function() {
-  console.log('This job runs every minute');
-});
+  // Step 2: Sort the cyclic rotations
+  rotations.sort();
 
-// Start the cron job
-job.start();
+  // Step 3: Extract the last characters of each sorted rotation
+  let transformed = '';
+  for (let i = 0; i < length; i++) {
+    transformed += rotations[i][length - 1];
+  }
 
-// Stop the cron job after 5 minutes
-setTimeout(function() {
-  job.stop();
-  console.log('Job stopped after 5 minutes');
-}, 5 * 60 * 1000);
+  // Step 4: Find the index of the original string in the sorted rotations
+  const indexOfOriginal = rotations.indexOf(input);
+
+  return { transformed, indexOfOriginal };
+}
+const originalString = "banana"; // Replace with your input
+const { transformed, indexOfOriginal } = burrowsWheelerTransform(originalString);
+console.log("Transformed String:", transformed);
+console.log("Index of Original String:", indexOfOriginal);
