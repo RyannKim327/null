@@ -1,159 +1,52 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+function boyerMooreHorspool(text, pattern) {
+  // Step 2: Preprocess pattern
+  const { badMatchTable, patternLength } = preprocessPattern(pattern);
+
+  // Step 3: Perform string searching
+  let matches = search(text, pattern, badMatchTable, patternLength);
+
+  // Step 4: Return the matched indices
+  return matches;
 }
+function preprocessPattern(pattern) {
+  const patternLength = pattern.length;
+  const badMatchTable = {};
 
-class BinarySearchTree {
-  constructor() {
-    this.root = null;
+  for (let i = 0; i < patternLength - 1; i++) {
+    badMatchTable[pattern[i]] = patternLength - 1 - i;
   }
 
-  insert(value) {
-    const newNode = new Node(value);
+  // Default shift for other characters
+  badMatchTable.default = patternLength;
 
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
-
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
-
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
-    }
-
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else if (value > node.value) {
-      return this.searchNode(node.right, value);
-    } else {
-      return true;
-    }
-  }
-
-  remove(value) {
-    this.root = this.removeNode(this.root, value);
-  }
-
-  removeNode(node, value) {
-    if (node === null) {
-      return null;
-    }
-
-    if (value < node.value) {
-      node.left = this.removeNode(node.left, value);
-      return node;
-    } else if (value > node.value) {
-      node.right = this.removeNode(node.right, value);
-      return node;
-    } else {
-      if (node.left === null && node.right === null) {
-        node = null;
-        return node;
-      }
-
-      if (node.left === null) {
-        node = node.right;
-        return node;
-      } else if (node.right === null) {
-        node = node.left;
-        return node;
-      }
-
-      const aux = this.findMinNode(node.right);
-      node.value = aux.value;
-      node.right = this.removeNode(node.right, aux.value);
-      return node;
-    }
-  }
-
-  findMinNode(node) {
-    if (node.left === null) {
-      return node;
-    } else {
-      return this.findMinNode(node.left);
-    }
-  }
-
-  getRootNode() {
-    return this.root;
-  }
-
-  inorder(node) {
-    if (node === null) {
-      return [];
-    }
-
-    return [...this.inorder(node.left), node.value, ...this.inorder(node.right)];
-  }
-
-  preorder(node) {
-    if (node === null) {
-      return [];
-    }
-
-    return [node.value, ...this.preorder(node.left), ...this.preorder(node.right)];
-  }
-
-  postorder(node) {
-    if (node === null) {
-      return [];
-    }
-
-    return [...this.postorder(node.left), ...this.postorder(node.right), node.value];
-  }
+  return { badMatchTable, patternLength };
 }
-const bst = new BinarySearchTree();
+function search(text, pattern, badMatchTable, patternLength) {
+  const matches = [];
+  const textLength = text.length;
+  let i = 0;
 
-// Insert nodes
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(7);
-bst.insert(13);
-bst.insert(20);
+  while (i <= textLength - patternLength) {
+    let j = patternLength - 1;
+    while (j >= 0 && pattern[j] === text[i + j]) {
+      j--;
+    }
 
-// Get the root node
-const root = bst.getRootNode();
-console.log('Root:', root); // Node { value: 10, left: Node {...}, right: Node {...} }
+    if (j === -1) {
+      // Match found
+      matches.push(i);
+      i += patternLength;
+    } else {
+      const badMatchChar = text[i + j];
+      const shift = badMatchTable[badMatchChar] || badMatchTable.default;
+      i += shift;
+    }
+  }
 
-// Search for a value
-console.log('Search 13:', bst.search(13)); // true
-console.log('Search 11:', bst.search(11)); // false
+  return matches;
+}
+const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
+const pattern = 'sit';
 
-// In-order traversal
-console.log('In-order:', bst.inorder(root)); // [ 5, 7, 10, 13, 15, 20 ]
-
-// Pre-order traversal
-console.log('Pre-order:', bst.preorder(root)); // [ 10, 5, 7, 15, 13, 20 ]
-
-// Post-order traversal
-console.log('Post-order:', bst.postorder(root)); // [ 7, 5, 13, 20, 15, 10 ]
-
-// Remove a node
-bst.remove(15);
-console.log('New In-order:', bst.inorder(root)); // [ 5, 7, 10, 13, 20 ]
+const matches = boyerMooreHorspool(text, pattern);
+console.log(matches); // Output: [18]
