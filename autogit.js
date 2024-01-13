@@ -1,37 +1,35 @@
-class Node {
-  constructor(value, children = []) {
-    this.value = value;
-    this.children = children;
-  }
-}
-
-// Iterative depth-limited search algorithm
-function depthLimitedSearchIterative(root, targetValue, depthLimit) {
-  const stack = []; // Stack to keep track of nodes
-  stack.push({ node: root, depth: 0 });
-
-  while (stack.length > 0) {
-    const { node, depth } = stack.pop(); // Get the last node in the stack
-
-    if (node.value === targetValue) {
-      return node; // If the target value is found, return the node
-    }
-
-    if (depth < depthLimit) {
-      // Add children of current node to the stack, incrementing their depth
-      for (let i = node.children.length - 1; i >= 0; i--) {
-        stack.push({ node: node.children[i], depth: depth + 1 });
-      }
+function countOccurrences(string, character) {
+  let count = 0;
+  for (let i = 0; i < string.length; i++) {
+    if (string.charAt(i) === character) {
+      count++;
     }
   }
-
-  return null; // If target value is not found within depth limit, return null
+  return count;
 }
 
-// Usage example
-const tree = new Node(1, [
-  new Node(2, [new Node(4), new Node(5)]),
-  new Node(3, [new Node(6), new Node(7)]),
-]);
+// Example usage
+const str = "Hello, World!";
+const char = "o";
+const occurrences = countOccurrences(str, char);
+console.log(`The character "${char}" occurs ${occurrences} times in "${str}".`);
+function countOccurrences(string, character) {
+  return string.split(character).length - 1;
+}
 
-console.log(depthLimitedSearchIterative(tree, 7, 3)); // Output: Node { value: 7, children: [] }
+// Example usage
+const str = "Hello, World!";
+const char = "o";
+const occurrences = countOccurrences(str, char);
+console.log(`The character "${char}" occurs ${occurrences} times in "${str}".`);
+function countOccurrences(string, character) {
+  const regex = new RegExp(character, 'g');
+  const matches = string.match(regex);
+  return matches ? matches.length : 0;
+}
+
+// Example usage
+const str = "Hello, World!";
+const char = "o";
+const occurrences = countOccurrences(str, char);
+console.log(`The character "${char}" occurs ${occurrences} times in "${str}".`);
