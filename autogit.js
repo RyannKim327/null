@@ -1,29 +1,45 @@
-class ListNode {
-  constructor(value) {
-    this.val = value;
-    this.next = null;
+class Graph {
+  constructor() {
+    this.adjacencyList = new Map();
+  }
+
+  addVertex(vertex) {
+    this.adjacencyList.set(vertex, []);
+  }
+
+  addEdge(vertex1, vertex2) {
+    this.adjacencyList.get(vertex1).push(vertex2);
+    this.adjacencyList.get(vertex2).push(vertex1);
   }
 }
+function bfs(startingVertex) {
+  const visited = new Set();
+  const queue = [];
 
-const findMiddleElement = (head) => {
-  let slow = head; // slow pointer
-  let fast = head; // fast pointer
+  visited.add(startingVertex);
+  queue.push(startingVertex);
 
-  while (fast !== null && fast.next !== null) {
-    // Move slow pointer by one step
-    slow = slow.next;
-    // Move fast pointer by two steps
-    fast = fast.next.next;
+  while (queue.length > 0) {
+    const vertex = queue.shift();
+    console.log(vertex);
+
+    const neighbors = graph.adjacencyList.get(vertex);
+    for (const neighbor of neighbors) {
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.push(neighbor);
+      }
+    }
   }
-
-  return slow.val; // Middle element
-};
-
-// Creating a linked list
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-console.log(findMiddleElement(head)); // Output: 3
+}
+const graph = new Graph();
+graph.addVertex("A");
+graph.addVertex("B");
+graph.addVertex("C");
+graph.addVertex("D");
+graph.addVertex("E");
+graph.addEdge("A", "B");
+graph.addEdge("A", "C");
+graph.addEdge("B", "D");
+graph.addEdge("D", "E");
+bfs("A");
