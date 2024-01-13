@@ -1,11 +1,11 @@
-function calculateTriangleArea(base, height) {
-  var area = (base * height) / 2;
-  return area;
+function isPalindrome(str) {
+  // Remove any non-alphanumeric characters and convert to lowercase
+  const original = str.replace(/[^A-Za-z0-9]/g, "").toLowerCase();
+  const reversed = original.split("").reverse().join("");
+  
+  return original === reversed;
 }
 
-// Example usage:
-var triangleBase = 5;
-var triangleHeight = 7;
-var triangleArea = calculateTriangleArea(triangleBase, triangleHeight);
-
-console.log("The area of the triangle is: " + triangleArea);
+// Example usage
+console.log(isPalindrome("racecar"));         // true
+console.log(isPalindrome("Hello, World!"));  // false
