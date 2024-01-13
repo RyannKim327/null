@@ -1,61 +1,33 @@
-function generateFibonacciSequence(length) {
-  const sequence = [0, 1]; // Initialize Fibonacci sequence with [0, 1]
+function findLongestIncreasingSubsequence(arr) {
+  const n = arr.length;
+  const lengths = new Array(n).fill(1); // Initialize lengths array with default values of 1
+  let maxLength = 1;
 
-  for (let i = 2; i < length; i++) {
-    sequence[i] = sequence[i - 1] + sequence[i - 2];
+  for (let i = 1; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      if (arr[i] > arr[j] && lengths[i] < lengths[j] + 1) {
+        lengths[i] = lengths[j] + 1;
+        if (lengths[i] > maxLength) {
+          maxLength = lengths[i];
+        }
+      }
+    }
   }
 
-  return sequence;
+  const subsequence = [];
+  let count = maxLength;
+
+  for (let i = n - 1; i >= 0 && count > 0; i--) {
+    if (lengths[i] === count) {
+      subsequence.unshift(arr[i]);
+      count--;
+    }
+  }
+
+  return subsequence;
 }
-function fibonacciSearch(arr, x) {
-  const length = arr.length;
 
-  let fib2 = 0; // Second-to-last Fibonacci number
-  let fib1 = 1; // Last Fibonacci number
-  let fib = fib1 + fib2; // Current Fibonacci number
-
-  // Find the smallest Fibonacci number greater than or equal to the array length
-  while (fib < length) {
-    fib2 = fib1;
-    fib1 = fib;
-    fib = fib1 + fib2;
-  }
-
-  let offset = -1; // Offset from the beginning of the array
-
-  while (fib > 1) {
-    const i = Math.min(offset + fib2, length - 1);
-
-    // If x is greater than the current element, move the offset and update Fibonacci numbers
-    if (arr[i] < x) {
-      fib = fib1;
-      fib1 = fib2;
-      fib2 = fib - fib1;
-      offset = i;
-    }
-
-    // If x is smaller than the current element, update Fibonacci numbers
-    else if (arr[i] > x) {
-      fib = fib2;
-      fib1 = fib1 - fib2;
-      fib2 = fib - fib1;
-    }
-
-    // If x is found, return its index
-    else {
-      return i;
-    }
-  }
-
-  // If x is not found, return -1
-  if (fib1 === 1 && arr[offset + 1] === x) {
-    return offset + 1;
-  }
-
-  return -1;
-}
-const arr = [2, 3, 5, 8, 13, 21, 34, 55, 89];
-const x = 55;
-
-const index = fibonacciSearch(arr, x);
-console.log(`Element ${x} is found at index ${index}`);
+// Example usage:
+const arr = [3, 10, 2, 1, 20];
+const longestIncreasingSubsequence = findLongestIncreasingSubsequence(arr);
+console.log(longestIncreasingSubsequence); // Output: [3, 10, 20]
