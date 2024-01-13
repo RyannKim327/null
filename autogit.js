@@ -1,16 +1,29 @@
-function isAnagram(str1, str2) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  const normalizedStr1 = str1.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-  const normalizedStr2 = str2.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-
-  // Convert strings to arrays, sort them, and compare
-  const sortedStr1 = normalizedStr1.split('').sort().join('');
-  const sortedStr2 = normalizedStr2.split('').sort().join('');
-
-  return sortedStr1 === sortedStr2;
+class ListNode {
+  constructor(value) {
+    this.val = value;
+    this.next = null;
+  }
 }
 
-// Example usage
-console.log(isAnagram('anagram', 'nagaram')); // true
-console.log(isAnagram('listen', 'silent')); // true
-console.log(isAnagram('hello', 'world')); // false
+const findMiddleElement = (head) => {
+  let slow = head; // slow pointer
+  let fast = head; // fast pointer
+
+  while (fast !== null && fast.next !== null) {
+    // Move slow pointer by one step
+    slow = slow.next;
+    // Move fast pointer by two steps
+    fast = fast.next.next;
+  }
+
+  return slow.val; // Middle element
+};
+
+// Creating a linked list
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+console.log(findMiddleElement(head)); // Output: 3
