@@ -1,34 +1,34 @@
-function burrowsWheelerTransform(input) {
-  // Implementation goes here
-}
-function generateRotations(input) {
-  const rotations = [];
-  const length = input.length;
+function findMajorityElement(arr) {
+  let majority = arr[0];
+  let count = 1;
 
-  for (let i = 0; i < length; i++) {
-    const rotation = input.slice(-1) + input.slice(0, -1);
-    rotations.push(rotation);
-    input = rotation;
+  for (let i = 1; i < arr.length; i++) {
+    if (arr[i] === majority) {
+      count++;
+    } else {
+      count--;
+    }
+
+    if (count === 0) {
+      majority = arr[i];
+      count = 1;
+    }
   }
 
-  return rotations;
-}
-function sortRotations(rotations) {
-  rotations.sort();
-}
-function extractLastCharacters(rotations) {
-  let transformedString = "";
-  for (let i = 0; i < rotations.length; i++) {
-    transformedString += rotations[i].slice(-1);
+  // Verifying if the majority element is a true majority
+  count = 0;
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === majority) {
+      count++;
+    }
   }
-  return transformedString;
+  if (count > arr.length / 2) {
+    return majority;
+  } else {
+    return "No majority element found.";
+  }
 }
-function burrowsWheelerTransform(input) {
-  const rotations = generateRotations(input);
-  sortRotations(rotations);
-  const transformedString = extractLastCharacters(rotations);
-  return transformedString;
-}
-const input = "banana";
-const bwt = burrowsWheelerTransform(input);
-console.log(bwt); // Outputs: "annb$aa"
+
+// Example usage
+const array = [1, 2, 3, 2, 2, 2, 5, 4, 2];
+console.log(findMajorityElement(array)); // Output: 2
