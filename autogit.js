@@ -1,22 +1,42 @@
-function bubbleSort(arr) {
-  var len = arr.length;
-  
-  for (var i = 0; i < len - 1; i++) {
-    for (var j = 0; j < len - i - 1; j++) {
-      if (arr[j] > arr[j + 1]) {
-        // Swap arr[j] and arr[j + 1]
-        var temp = arr[j];
-        arr[j] = arr[j + 1];
-        arr[j + 1] = temp;
+function depthLimitedSearchIterative(root, goal, maxDepth) {
+  // Create a stack to keep track of nodes
+  const stack = [{
+    node: root,
+    depth: 0
+  }];
+
+  while (stack.length > 0) {
+    // Pop the top node from the stack
+    const { node, depth } = stack.pop();
+
+    // Check if the current node matches the goal
+    if (node === goal) {
+      return node;
+    }
+
+    // If the depth is within the limit, expand the node's children
+    if (depth < maxDepth) {
+      // Get the node's children
+      const children = getChildren(node);
+
+      // Push the children into the stack with increased depth
+      for (let i = children.length - 1; i >= 0; i--) {
+        stack.push({
+          node: children[i],
+          depth: depth + 1
+        });
       }
     }
   }
-  
-  return arr;
+
+  // If there is no match, return null
+  return null;
 }
 
-// Example usage:
-var unsortedArray = [5, 3, 8, 1, 2, 9];
-var sortedArray = bubbleSort(unsortedArray);
+// Example usage
+const goal = /* your goal node */;
+const root = /* your root node */;
+const maxDepth = /* your desired maximum depth */;
 
-console.log(sortedArray);
+const result = depthLimitedSearchIterative(root, goal, maxDepth);
+console.log(result);
