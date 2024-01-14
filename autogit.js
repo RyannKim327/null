@@ -1,23 +1,46 @@
-function findCommonElements(array1, array2) {
-  // Create an empty array to store the common elements
-  const commonElements = [];
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.children = [];
+  }
+
+  addChild(node) {
+    this.children.push(node);
+  }
+}
+
+function depthLimitedSearch(root, target, maxDepth) {
+  const stack = [];
+  stack.push({ node: root, depth: 0 });
+
+  while (stack.length > 0) {
+    const { node, depth } = stack.pop();
   
-  // Iterate through the first array
-  for (let i = 0; i < array1.length; i++) {
-    // Check if the current element exists in the second array
-    if (array2.includes(array1[i])) {
-      // If it does, push the element to the commonElements array
-      commonElements.push(array1[i]) ;
+    if (node.value === target) {
+      return node;
+    }
+
+    if (depth < maxDepth) {
+      // Add children to the stack in reverse order
+      for (let i = node.children.length - 1; i >= 0; i--) {
+        stack.push({ node: node.children[i], depth: depth + 1 });
+      }
     }
   }
-  
-  // Return the common elements array
-  return commonElements;
+
+  return null; // Target not found within the depth limit
 }
 
 // Example usage
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
+const root = new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
+const node4 = new Node(4);
+const node5 = new Node(5);
+root.addChild(node2);
+root.addChild(node3);
+node2.addChild(node4);
+node2.addChild(node5);
 
-const common = findCommonElements(array1, array2);
-console.log(common); // Output: [4, 5]
+const targetNode = depthLimitedSearch(root, 5, 2);
+console.log(targetNode); // Output: Node { value: 5, children: [] }
