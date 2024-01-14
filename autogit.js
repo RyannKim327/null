@@ -1,40 +1,35 @@
-// Define an async task to connect to Android
-function connectToAndroid() {
-  return new Promise((resolve, reject) => {
-    // Create an XMLHttpRequest object
-    const xhr = new XMLHttpRequest();
+function isPalindrome(str) {
+  // Set the left and right pointers
+  let left = 0;
+  let right = str.length - 1;
 
-    // Define the request parameters
-    xhr.open('GET', 'http://android-api-endpoint', true);
+  while (left < right) {
+    // Ignore non-alphanumeric characters and move the pointers
+    while (!isAlphanumeric(str[left])) {
+      left++;
+    }
+    while (!isAlphanumeric(str[right])) {
+      right--;
+    }
 
-    // Set the response type to JSON
-    xhr.responseType = 'json';
+    // If the characters don't match, it's not a palindrome
+    if (str[left].toLowerCase() !== str[right].toLowerCase()) {
+      return false;
+    }
 
-    // Handle the response
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === XMLHttpRequest.DONE) {
-        if (xhr.status === 200) {
-          // Connection successful
-          resolve(xhr.response);
-        } else {
-          // Connection failed
-          reject('Failed to connect to Android');
-        }
-      }
-    };
+    // Move the pointers
+    left++;
+    right--;
+  }
 
-    // Send the request
-    xhr.send();
-  });
+  // If all characters matched, it's a palindrome
+  return true;
 }
 
-// Usage
-connectToAndroid()
-  .then((response) => {
-    console.log('Connected to Android:', response);
-    // Perform further actions with the response
-  })
-  .catch((error) => {
-    console.error(error);
-    // Handle the connection error
-  });
+function isAlphanumeric(char) {
+  // Helper function to check if a character is alphanumeric
+  return /^[a-zA-Z0-9]+$/.test(char);
+}
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
+console.log(isPalindrome("No lemon, no melon")); // true
