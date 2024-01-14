@@ -1,19 +1,19 @@
-async function connectToAsyncTaskInAndroid() {
-    try {
-        const response = await fetch('https://example.com/async-task-endpoint');
-        const data = await response.json();
-        
-        // Process the received data from the async task
-        console.log('Received data:', data);
-        
-        // Perform additional actions with the data
-        
-    } catch (error) {
-        console.error('Error connecting to async task:', error);
-        
-        // Handle the error appropriately
+function findSecondLargest(arr) {
+  let largest = arr[0];
+  let secondLargest = arr[1];
+
+  for (let i = 2; i < arr.length; i++) {
+    if (arr[i] > largest) {
+      secondLargest = largest;
+      largest = arr[i];
+    } else if (arr[i] < largest && arr[i] > secondLargest) {
+      secondLargest = arr[i];
     }
+  }
+
+  return secondLargest;
 }
 
-// Call the function to connect to the async task in Android
-connectToAsyncTaskInAndroid();
+// Test the function
+const arr = [5, 10, 2, 8, 15];
+console.log(findSecondLargest(arr)); // Output: 10
