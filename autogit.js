@@ -1,87 +1,51 @@
-class SkipListNode {
-  constructor(value, level) {
+class Node {
+  constructor(value) {
     this.value = value;
-    this.next = new Array(level + 1).fill(null);
+    this.left = null;
+    this.right = null;
   }
 }
-class SkipList {
-  constructor() {
-    this.head = new SkipListNode(-Infinity, 0);
-    this.level = 0;
+
+// Function to find the height of a binary tree
+function height(node) {
+  if (node === null) {
+    return 0;
   }
+  const leftHeight = height(node.left);
+  const rightHeight = height(node.right);
+  return Math.max(leftHeight, rightHeight) + 1;
 }
-class SkipList {
-  // ... existing code
 
-  search(target) {
-    let currentNode = this.head;
-    for (let i = this.level; i >= 0; i--) {
-      while (currentNode.next[i] && currentNode.next[i].value < target) {
-        currentNode = currentNode.next[i];
-      }
-    }
-    currentNode = currentNode.next[0];
-    if (currentNode && currentNode.value === target) {
-      return currentNode;
-    }
-    return null;
+// Function to find the diameter of a binary tree
+function diameter(node) {
+  if (node === null) {
+    return 0;
   }
 
-  insert(value) {
-    const update = new Array(this.level + 1);
-    let currentNode = this.head;
-    for (let i = this.level; i >= 0; i--) {
-      while (currentNode.next[i] && currentNode.next[i].value < value) {
-        currentNode = currentNode.next[i];
-      }
-      update[i] = currentNode;
-    }
-    currentNode = currentNode.next[0];
-    if (!currentNode || currentNode.value !== value) {
-      const newNode = new SkipListNode(value, this.randomLevel());
-      if (newNode.level > this.level) {
-        for (let i = this.level + 1; i <= newNode.level; i++) {
-          update[i] = this.head;
-        }
-        this.level = newNode.level;
-      }
-      for (let i = 0; i <= newNode.level; i++) {
-        newNode.next[i] = update[i].next[i];
-        update[i].next[i] = newNode;
-      }
-    }
-  }
+  const leftHeight = height(node.left);
+  const rightHeight = height(node.right);
 
-  delete(value) {
-    const update = new Array(this.level + 1);
-    let currentNode = this.head;
-    for (let i = this.level; i >= 0; i--) {
-      while (currentNode.next[i] && currentNode.next[i].value < value) {
-        currentNode = currentNode.next[i];
-      }
-      update[i] = currentNode;
-    }
-    currentNode = currentNode.next[0];
-    if (currentNode && currentNode.value === value) {
-      for (let i = 0; i <= this.level; i++) {
-        if (update[i].next[i] !== currentNode) break;
-        update[i].next[i] = currentNode.next[i];
-      }
-    }
-  }
+  const leftDiameter = diameter(node.left);
+  const rightDiameter = diameter(node.right);
 
-  // ... existing code
+  // Return the maximum of:
+  // 1. Diameter of left subtree
+  // 2. Diameter of right subtree
+  // 3. Longest path that passes through the root
+  return Math.max(leftHeight + rightHeight + 1, Math.max(leftDiameter, rightDiameter));
 }
-class SkipList {
-  // ... existing code
 
-  randomLevel() {
-    let level = 0;
-    while (Math.random() < 0.5 && level < this.level + 1) {
-      level++;
-    }
-    return level;
-  }
+// Example usage:
 
-  // ... existing code
-}
+// Create a binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
+
+// Find the diameter of the binary tree
+const treeDiameter = diameter(root);
+console.log("Diameter of the binary tree: " + treeDiameter);
