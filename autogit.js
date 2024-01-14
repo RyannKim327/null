@@ -1,20 +1,34 @@
-function findSecondLargest(arr) {
-  let largest = -Infinity;
-  let secondLargest = -Infinity;
+function burrowsWheelerTransform(input) {
+  // Implementation goes here
+}
+function generateRotations(input) {
+  const rotations = [];
+  const length = input.length;
 
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] > largest) {
-      secondLargest = largest;
-      largest = arr[i];
-    } else if (arr[i] > secondLargest && arr[i] !== largest) {
-      secondLargest = arr[i];
-    }
+  for (let i = 0; i < length; i++) {
+    const rotation = input.slice(-1) + input.slice(0, -1);
+    rotations.push(rotation);
+    input = rotation;
   }
 
-  return secondLargest;
+  return rotations;
 }
-
-// Usage example:
-const array = [5, 10, 15, 20, 25];
-const secondLargest = findSecondLargest(array);
-console.log(secondLargest); // Output: 20
+function sortRotations(rotations) {
+  rotations.sort();
+}
+function extractLastCharacters(rotations) {
+  let transformedString = "";
+  for (let i = 0; i < rotations.length; i++) {
+    transformedString += rotations[i].slice(-1);
+  }
+  return transformedString;
+}
+function burrowsWheelerTransform(input) {
+  const rotations = generateRotations(input);
+  sortRotations(rotations);
+  const transformedString = extractLastCharacters(rotations);
+  return transformedString;
+}
+const input = "banana";
+const bwt = burrowsWheelerTransform(input);
+console.log(bwt); // Outputs: "annb$aa"
