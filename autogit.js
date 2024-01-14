@@ -1,21 +1,36 @@
-function bubbleSort(array) {
-  const length = array.length;
-  
-  for (let i = 0; i < length - 1; i++) {
-    for (let j = 0; j < length - i - 1; j++) {
-      if (array[j] > array[j + 1]) {
-        // Swap elements using a temporary variable
-        let temp = array[j];
-        array[j] = array[j + 1];
-        array[j + 1] = temp;
-      }
-    }
+function shellSort(arr) {
+  const len = arr.length;
+  let h = 1;
+
+  // Calculate initial interval
+  while (h < len / 3) {
+    h = 3 * h + 1;
   }
 
-  return array;
+  // Reduce interval until it becomes 1
+  while (h >= 1) {
+    // Perform insertion sort with current interval
+    for (let i = h; i < len; i++) {
+      const currentVal = arr[i];
+      let j = i;
+
+      // Compare elements that are h positions apart and swap if necessary
+      while (j >= h && arr[j - h] > currentVal) {
+        arr[j] = arr[j - h];
+        j -= h;
+      }
+
+      arr[j] = currentVal;
+    }
+
+    // Reduce interval
+    h = Math.floor(h / 3);
+  }
+
+  return arr;
 }
 
 // Example usage:
-const unsortedArray = [5, 3, 8, 4, 2];
-const sortedArray = bubbleSort(unsortedArray);
-console.log(sortedArray); // [2, 3, 4, 5, 8]
+const unsortedArray = [10, 5, 8, 3, 2, 6, 4, 7, 9, 1];
+const sortedArray = shellSort(unsortedArray);
+console.log(sortedArray);
