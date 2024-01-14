@@ -1,15 +1,21 @@
-function countOccurrences(str, char) {
-  let count = 0;
-  for (let i = 0; i < str.length; i++) {
-    if (str.charAt(i) === char) {
-      count++;
+function bubbleSort(array) {
+  const length = array.length;
+  
+  for (let i = 0; i < length - 1; i++) {
+    for (let j = 0; j < length - i - 1; j++) {
+      if (array[j] > array[j + 1]) {
+        // Swap elements using a temporary variable
+        let temp = array[j];
+        array[j] = array[j + 1];
+        array[j + 1] = temp;
+      }
     }
   }
-  return count;
+
+  return array;
 }
 
-// Example usage
-const myString = "hello world";
-const myCharacter = "l";
-const occurrences = countOccurrences(myString, myCharacter);
-console.log("Number of occurrences:", occurrences);
+// Example usage:
+const unsortedArray = [5, 3, 8, 4, 2];
+const sortedArray = bubbleSort(unsortedArray);
+console.log(sortedArray); // [2, 3, 4, 5, 8]
