@@ -1,45 +1,25 @@
-function buildFailureFunction(pattern) {
-  const failure = new Array(pattern.length).fill(0);
-  let j = 0;
-  let i = 1;
+class ListNode {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
 
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[j]) {
-      failure[i] = j + 1;
-      i++;
-      j++;
-    } else if (j > 0) {
-      j = failure[j - 1];
-    } else {
-      failure[i] = 0;
-      i++;
-    }
+function findMiddleElement(head) {
+  let slow = head;
+  let fast = head;
+
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
   }
 
-  return failure;
+  return slow.value;
 }
-function knuthMorrisPratt(text, pattern) {
-  const failure = buildFailureFunction(pattern);
-  let i = 0;
-  let j = 0;
+const list = new ListNode(1);
+list.next = new ListNode(2);
+list.next.next = new ListNode(3);
+list.next.next.next = new ListNode(4);
+list.next.next.next.next = new ListNode(5);
 
-  while (i < text.length) {
-    if (text[i] === pattern[j]) {
-      if (j === pattern.length - 1) {
-        return i - j; // Match found, return the start index of the match
-      }
-      i++;
-      j++;
-    } else if (j > 0) {
-      j = failure[j - 1];
-    } else {
-      i++;
-    }
-  }
-
-  return -1; // Match not found
-}
-const text = "ABCDEFABCD";
-const pattern = "ABCD";
-const matchIndex = knuthMorrisPratt(text, pattern);
-console.log(matchIndex); // Output: 0 (match found at index 0)
+console.log(findMiddleElement(list)); // Output: 3 (middle element)
