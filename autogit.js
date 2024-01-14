@@ -1,60 +1,68 @@
-function breadthLimitedSearch(startNode, limit) {
-  // ...
+class TrieNode {
+    constructor() {
+        this.children = {};
+        this.isWord = false;
+    }
 }
-function breadthLimitedSearch(startNode, limit) {
-  let queue = [startNode];
-  // ...
-}
-function breadthLimitedSearch(startNode, limit) {
-  let queue = [startNode];
-  let visited = new Set();
-  // ...
-}
-function breadthLimitedSearch(startNode, limit) {
-  let queue = [startNode];
-  let visited = new Set();
-
-  while (queue.length > 0 && limit > 0) {
-    // ...
-  }
-}
-function breadthLimitedSearch(startNode, goalNode, limit) {
-  let queue = [startNode];
-  let visited = new Set();
-
-  while (queue.length > 0 && limit > 0) {
-    let currentNode = queue.shift();
-
-    if (currentNode === goalNode) {
-      return currentNode;
+class Trie {
+    constructor() {
+        this.root = new TrieNode();
     }
 
-    // ...
-  }
-}
-function breadthLimitedSearch(startNode, goalNode, limit) {
-  let queue = [startNode];
-  let visited = new Set();
-
-  while (queue.length > 0 && limit > 0) {
-    let currentNode = queue.shift();
-
-    if (currentNode === goalNode) {
-      return currentNode;
+    // Method to insert a word into the trie
+    insert(word) {
+        let node = this.root;
+        for (let i = 0; i < word.length; i++) {
+            const character = word[i];
+            if (!node.children[character]) {
+                node.children[character] = new TrieNode();
+            }
+            node = node.children[character];
+        }
+        node.isWord = true;
     }
 
-    visited.add(currentNode);
-
-    let neighbors = getNeighbors(currentNode); // Implement this function to get the neighboring nodes
-
-    for (let neighbor of neighbors) {
-      if (!visited.has(neighbor)) {
-        queue.push(neighbor);
-      }
+    // Method to search for a word in the trie
+    search(word) {
+        let node = this.root;
+        for (let i = 0; i < word.length; i++) {
+            const character = word[i];
+            if (!node.children[character]) {
+                return false;
+            }
+            node = node.children[character];
+        }
+        return node.isWord;
     }
 
-    limit--;
-  }
-
-  return null; // Return null if the goal node is not found within the limit
+    // Method to check if a word has any prefix in the trie
+    startsWith(prefix) {
+        let node = this.root;
+        for (let i = 0; i < prefix.length; i++) {
+            const character = prefix[i];
+            if (!node.children[character]) {
+                return false;
+            }
+            node = node.children[character];
+        }
+        return true;
+    }
 }
+// Create a new trie
+const trie = new Trie();
+
+// Insert words into the trie
+trie.insert("apple");
+trie.insert("banana");
+trie.insert("mango");
+
+// Search for words
+console.log(trie.search("apple"));    // Output: true
+console.log(trie.search("banana"));   // Output: true
+console.log(trie.search("mango"));    // Output: true
+console.log(trie.search("orange"));   // Output: false
+
+// Check for prefixes
+console.log(trie.startsWith("app"));   // Output: true
+console.log(trie.startsWith("ban"));   // Output: true
+console.log(trie.startsWith("man"));   // Output: false
