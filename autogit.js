@@ -1,0 +1,13 @@
+var str = "Hello, World!";
+var reversed = str.split("").reverse().join("");
+console.log(reversed);
+var str = "Hello, World!";
+var reversed = "";
+for (var i = str.length - 1; i >= 0; i--) {
+  reversed += str.charAt(i);
+}
+console.log(reversed);
+var str = "Hello, World!";
+var reversed = [...str].reverse().join("");
+console.log(reversed);
+!dlroW ,olleH
