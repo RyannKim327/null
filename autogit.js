@@ -1,170 +1,92 @@
 class Node {
   constructor(value) {
     this.value = value;
-    this.left = null;
-    this.right = null;
-    this.height = 1;
+    this.next = null;
   }
 }
-class AVLTree {
-  constructor() {
-    this.root = null;
+
+function isPalindrome(head) {
+  if (!head || !head.next) {
+    return true; // Empty list or single element is a palindrome
   }
 
-  // Implement tree operations here
+  // Helper function to reverse a linked list
+  function reverseList(node) {
+    let prev = null;
+    while (node) {
+      let next = node.next;
+      node.next = prev;
+      prev = node;
+      node = next;
+    }
+    return prev;
+  }
+
+  // Helper function to find the middle of the linked list
+  function findMiddle(node) {
+    let slow = node;
+    let fast = node;
+    while (fast && fast.next) {
+      slow = slow.next;
+      fast = fast.next.next;
+    }
+    return slow;
+  }
+
+  let slow = head;
+  let fast = head;
+  let prevSlow = null;
+  let mid = null;
+  let isPalindrome = true;
+
+  // Find the middle of the linked list and reverse the second half
+  while (fast && fast.next) {
+    fast = fast.next.next;
+    prevSlow = slow;
+    slow = slow.next;
+  }
+
+  // Check if the total number of elements is odd or even
+  if (fast) {
+    // Total number of elements is odd
+    mid = slow;
+    slow = slow.next;
+  }
+
+  prevSlow.next = null; // Cut off the first half
+  let secondHalf = reverseList(slow); // Reverse the second half
+
+  // Compare the first half with the reversed second half
+  let p1 = head;
+  let p2 = secondHalf;
+  while (p1 && p2) {
+    if (p1.value !== p2.value) {
+      isPalindrome = false;
+      break;
+    }
+    p1 = p1.next;
+    p2 = p2.next;
+  }
+
+  // Restore the original linked list by reversing the second half again
+  secondHalf = reverseList(secondHalf);
+  if (mid) {
+    prevSlow.next = mid;
+    mid.next = secondHalf;
+  } else {
+    prevSlow.next = secondHalf;
+  }
+
+  return isPalindrome;
 }
-class AVLTree {
-  // ...
 
-  insert(value) {
-    this.root = this._insertNode(this.root, value);
-  }
+// Example usage:
 
-  _insertNode(node, value) {
-    if (node === null)
-      return new Node(value);
+// Create the linked list: 1 -> 2 -> 3 -> 2 -> 1
+const head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(2);
+head.next.next.next.next = new Node(1);
 
-    if (value < node.value)
-      node.left = this._insertNode(node.left, value);
-    else
-      node.right = this._insertNode(node.right, value);
-
-    node.height = 1 + Math.max(this._getHeight(node.left), this._getHeight(node.right));
-    const balanceFactor = this._getBalanceFactor(node);
-
-    if (balanceFactor > 1 && value < node.left.value) {
-      return this._rotateRight(node);
-    }
-    if (balanceFactor > 1 && value > node.left.value) {
-      node.left = this._rotateLeft(node.left);
-      return this._rotateRight(node);
-    }
-    if (balanceFactor < -1 && value > node.right.value) {
-      return this._rotateLeft(node);
-    }
-    if (balanceFactor < -1 && value < node.right.value) {
-      node.right = this._rotateRight(node.right);
-      return this._rotateLeft(node);
-    }
-    return node;
-  }
-
-  delete(value) {
-    this.root = this._deleteNode(this.root, value);
-  }
-
-  _deleteNode(node, value) {
-    if (node === null)
-      return null;
-
-    if (value < node.value)
-      node.left = this._deleteNode(node.left, value);
-    else if (value > node.value)
-      node.right = this._deleteNode(node.right, value);
-    else {
-      if (node.left === null && node.right === null)
-        return null;
-      else if (node.left === null)
-        node = node.right;
-      else if (node.right === null)
-        node = node.left;
-      else {
-        const minNode = this._findMinNode(node.right);
-        node.value = minNode.value;
-        node.right = this._deleteNode(node.right, minNode.value);
-      }
-    }
-
-    node.height = 1 + Math.max(this._getHeight(node.left), this._getHeight(node.right));
-    const balanceFactor = this._getBalanceFactor(node);
-
-    if (balanceFactor > 1 && this._getBalanceFactor(node.left) >= 0) {
-      return this._rotateRight(node);
-    }
-    if (balanceFactor > 1 && this._getBalanceFactor(node.left) < 0) {
-      node.left = this._rotateLeft(node.left);
-      return this._rotateRight(node);
-    }
-    if (balanceFactor < -1 && this._getBalanceFactor(node.right) <= 0) {
-      return this._rotateLeft(node);
-    }
-    if (balanceFactor < -1 && this._getBalanceFactor(node.right) > 0) {
-      node.right = this._rotateRight(node.right);
-      return this._rotateLeft(node);
-    }
-
-    return node;
-  }
-
-  search(value) {
-    return this._searchNode(this.root, value);
-  }
-
-  _searchNode(node, value) {
-    if (node === null)
-      return false;
-
-    if (value < node.value)
-      return this._searchNode(node.left, value);
-    else if (value > node.value)
-      return this._searchNode(node.right, value);
-    else
-      return true;
-  }
-
-  // Helper methods
-
-  _getHeight(node) {
-    if (node === null)
-      return 0;
-    return node.height;
-  }
-
-  _getBalanceFactor(node) {
-    if (node === null)
-      return 0;
-    return this._getHeight(node.left) - this._getHeight(node.right);
-  }
-
-  _rotateRight(z) {
-    const y = z.left;
-    const T3 = y.right;
-
-    y.right = z;
-    z.left = T3;
-
-    z.height = 1 + Math.max(this._getHeight(z.left), this._getHeight(z.right));
-    y.height = 1 + Math.max(this._getHeight(y.left), this._getHeight(y.right));
-
-    return y;
-  }
-
-  _rotateLeft(z) {
-    const y = z.right;
-    const T2 = y.left;
-
-    y.left = z;
-    z.right = T2;
-
-    z.height = 1 + Math.max(this._getHeight(z.left), this._getHeight(z.right));
-    y.height = 1 + Math.max(this._getHeight(y.left), this._getHeight(y.right));
-
-    return y;
-  }
-
-  _findMinNode(node) {
-    if (node.left === null)
-      return node;
-    else
-      return this._findMinNode(node.left);
-  }
-}
-const avlTree = new AVLTree();
-
-avlTree.insert(10);
-avlTree.insert(20);
-avlTree.insert(30);
-
-console.log(avlTree.search(20)); // Output: true
-avlTree.delete(20);
-console.log(avlTree.search(20)); // Output: false
+console.log(isPalindrome(head)); // Output: true
