@@ -1,21 +1,30 @@
-function selectionSort(arr) {
-    var len = arr.length;
-    for (var i = 0; i < len - 1; i++) {
-        var minIndex = i;
-        for (var j = i + 1; j < len; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j;
-            }
-        }
-        if (minIndex !== i) {
-            var temp = arr[i];
-            arr[i] = arr[minIndex];
-            arr[minIndex] = temp;
-        }
-    }
-    return arr;
+function bwt(input) {
+  // Perform the BWT
 }
-
-// Example usage:
-var myArray = [64, 25, 12, 22, 11];
-console.log(selectionSort(myArray));
+function createPermutations(input) {
+  let permutations = [];
+  for (let i = 0; i < input.length; i++) {
+    let rotation = input.slice(i) + input.slice(0, i);
+    permutations.push(rotation);
+  }
+  return permutations;
+}
+function sortPermutations(permutations) {
+  return permutations.sort();
+}
+function extractLastColumn(sortedPermutations) {
+  let lastColumn = '';
+  for (let i = 0; i < sortedPermutations.length; i++) {
+    lastColumn += sortedPermutations[i][sortedPermutations[i].length - 1];
+  }
+  return lastColumn;
+}
+function getBWT(input) {
+  let permutations = createPermutations(input);
+  let sortedPermutations = sortPermutations(permutations);
+  let transformedString = extractLastColumn(sortedPermutations);
+  return transformedString;
+}
+let inputString = 'your input string';
+let transformedString = bwt(inputString);
+console.log(transformedString);
