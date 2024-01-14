@@ -1,33 +1,41 @@
-function findLongestIncreasingSubsequence(arr) {
-  const n = arr.length;
-  const lengths = new Array(n).fill(1); // Initialize lengths array with default values of 1
-  let maxLength = 1;
+function hasCycle(head) {
+  if (!head || !head.next) {
+    // If the list is empty or has only one node, there can't be a cycle
+    return false;
+  }
 
-  for (let i = 1; i < n; i++) {
-    for (let j = 0; j < i; j++) {
-      if (arr[i] > arr[j] && lengths[i] < lengths[j] + 1) {
-        lengths[i] = lengths[j] + 1;
-        if (lengths[i] > maxLength) {
-          maxLength = lengths[i];
-        }
-      }
+  let slow = head;   // Tortoise
+  let fast = head;   // Hare
+
+  while (fast && fast.next) {
+    slow = slow.next;             // Move one step at a time
+    fast = fast.next.next;        // Move two steps at a time
+
+    if (slow === fast) {
+      // If the two pointers meet, there is a cycle
+      return true;
     }
   }
 
-  const subsequence = [];
-  let count = maxLength;
-
-  for (let i = n - 1; i >= 0 && count > 0; i--) {
-    if (lengths[i] === count) {
-      subsequence.unshift(arr[i]);
-      count--;
-    }
+  // If we reach null/undefined, there is no cycle
+  return false;
+}
+// Define the Node class
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
-
-  return subsequence;
 }
 
-// Example usage:
-const arr = [3, 10, 2, 1, 20];
-const longestIncreasingSubsequence = findLongestIncreasingSubsequence(arr);
-console.log(longestIncreasingSubsequence); // Output: [3, 10, 20]
+// Create a linked list with a cycle
+const node1 = new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
+const node4 = new Node(4);
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node2;  // cycle 
+
+console.log(hasCycle(node1)); // Output: true
