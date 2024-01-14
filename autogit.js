@@ -1,17 +1,20 @@
-function findFirstRepeatedChar(str) {
-  const charMap = new Map();
-  
-  for (let char of str) {
-    if (charMap.has(char)) {
-      return char;
-    }
-    charMap.set(char, true);
+function depthLimitedSearch(currentState, depthLimit) {
+  if (isGoalState(currentState)) {
+    return currentState;
   }
-  
-  return null; // No repeated character found
-}
 
-// Example usage:
-const inputString = "abcdbefg";
-const repeatedChar = findFirstRepeatedChar(inputString);
-console.log(repeatedChar); // Output: "b"
+  if (depthLimit === 0) {
+    return null;
+  }
+
+  var children = generateChildren(currentState);
+
+  for (var i = 0; i < children.length; i++) {
+    var result = depthLimitedSearch(children[i], depthLimit - 1);
+    if (result !== null) {
+      return result;
+    }
+  }
+
+  return null;
+}
