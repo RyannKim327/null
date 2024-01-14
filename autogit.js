@@ -1,12 +1,28 @@
-const numbers = [4, 2, 8, 5, 1, 3];
+function factorialLoop(n) {
+  if (n < 0) {
+    return undefined; // Factorial is not defined for negative numbers
+  }
+  
+  let result = 1;
+  
+  for (let i = 2; i <= n; i++) {
+    result *= i;
+  }
+  
+  return result;
+}
 
-// Sort the array in ascending order
-numbers.sort((a, b) => a - b);
+console.log(factorialLoop(5)); // Output: 120
+function factorialRecursive(n) {
+  if (n < 0) {
+    return undefined; // Factorial is not defined for negative numbers
+  }
+  
+  if (n === 0 || n === 1) {
+    return 1;
+  }
+  
+  return n * factorialRecursive(n - 1);
+}
 
-console.log(numbers); // Output: [1, 2, 3, 4, 5, 8]
-const numbers = [4, 2, 8, 5, 1, 3];
-
-// Sort the array in descending order
-numbers.sort((a, b) => b - a);
-
-console.log(numbers); // Output: [8, 5, 4, 3, 2, 1]
+console.log(factorialRecursive(5)); // Output: 120
