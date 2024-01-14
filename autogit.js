@@ -1,22 +1,13 @@
-function reverseString(str) {
-  return str.split('').reverse().join('');
-}
-
-// Example usage
-console.log(reverseString('Hello')); // Output: olleH
-function reverseString(str) {
-  let reversedStr = '';
-  for (let i = str.length - 1; i >= 0; i--) {
-    reversedStr += str[i];
+function factorial(n) {
+  // Base case: if n is 0 or 1, return 1
+  if (n === 0 || n === 1) {
+    return 1;
   }
-  return reversedStr;
+  // Recursive case: multiply n by factorial of (n - 1)
+  return n * factorial(n - 1);
 }
 
 // Example usage
-console.log(reverseString('Hello')); // Output: olleH
-function reverseString(str) {
-  return str.split('').reduce((reversedStr, char) => char + reversedStr, '');
-}
-
-// Example usage
-console.log(reverseString('Hello')); // Output: olleH
+const num = 5;
+const result = factorial(num);
+console.log(`The factorial of ${num} is ${result}.`);
