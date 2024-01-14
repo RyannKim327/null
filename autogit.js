@@ -1,4 +1,15 @@
-const array = [4, 2, 9, 5, 1, 7];
-const max = Math.max(...array);
+function countOccurrences(str, char) {
+  let count = 0;
+  for (let i = 0; i < str.length; i++) {
+    if (str.charAt(i) === char) {
+      count++;
+    }
+  }
+  return count;
+}
 
-console.log(max); // Output: 9
+// Example usage
+const myString = "hello world";
+const myCharacter = "l";
+const occurrences = countOccurrences(myString, myCharacter);
+console.log("Number of occurrences:", occurrences);
