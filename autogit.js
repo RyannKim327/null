@@ -1,48 +1,22 @@
-function hasCycle(head) {
-  if (head === null || head.next === null) {
-    return false;
-  }
+function areAnagrams(str1, str2) {
+  // Remove whitespace and convert to lowercase
+  str1 = str1.replace(/\s/g, "").toLowerCase();
+  str2 = str2.replace(/\s/g, "").toLowerCase();
 
-  let tortoise = head;
-  let hare = head.next;
+  // Convert strings to character arrays and sort them
+  const arr1 = str1.split("").sort();
+  const arr2 = str2.split("").sort();
 
-  while (tortoise != hare) {
-    if (hare === null || hare.next === null) {
-      return false;
-    }
-    tortoise = tortoise.next;
-    hare = hare.next.next;
-  }
-
-  return true;
+  // Compare the sorted arrays for equality
+  return arr1.join("") === arr2.join("");
 }
-// Linked list without a cycle
-const list1 = {
-  value: 1,
-  next: {
-    value: 2,
-    next: {
-      value: 3,
-      next: null
-    }
-  }
-};
 
-console.log(hasCycle(list1));  // Output: false
+// Example usage:
+const string1 = "listen";
+const string2 = "silent";
 
-// Linked list with a cycle
-const list2 = {
-  value: 1,
-  next: {
-    value: 2,
-    next: {
-      value: 3,
-      next: null
-    }
-  }
-};
-
-// Creating a cycle by connecting the last node to the second node
-list2.next.next.next = list2.next;
-
-console.log(hasCycle(list2));  // Output: true
+if (areAnagrams(string1, string2)) {
+  console.log("The strings are anagrams.");
+} else {
+  console.log("The strings are not anagrams.");
+}
