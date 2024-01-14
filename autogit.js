@@ -1,14 +1,10 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  const alphanumericStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
-
-  // Compare the original string with its reverse
-  return alphanumericStr === alphanumericStr.split('').reverse().join('');
+function calculateMean(numbers) {
+  const sum = numbers.reduce((a, b) => a + b, 0);
+  const mean = sum / numbers.length;
+  return mean;
 }
 
-// Testing the function
-console.log(isPalindrome("level"));           // true
-console.log(isPalindrome("A man, a plan, a canal: Panama"));   // true
-console.log(isPalindrome("hello"));           // false
-console.log(isPalindrome("12321"));           // true
-console.log(isPalindrome("racecar"));         // true
+// Example usage
+const numbers = [1, 2, 3, 4, 5];
+const mean = calculateMean(numbers);
+console.log(mean); // Output: 3
