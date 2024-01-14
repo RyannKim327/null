@@ -1,9 +1,17 @@
-function findKthSmallestElement(arr, k) {
-  arr.sort((a, b) => a - b);
-  return arr[k - 1];
+function findFirstRepeatedChar(str) {
+  const charMap = new Map();
+  
+  for (let char of str) {
+    if (charMap.has(char)) {
+      return char;
+    }
+    charMap.set(char, true);
+  }
+  
+  return null; // No repeated character found
 }
-const array = [8, 6, 2, 11, 5, 9];
-const k = 3;
-const kthSmallest = findKthSmallestElement(array, k);
 
-console.log(kthSmallest); // Output: 6
+// Example usage:
+const inputString = "abcdbefg";
+const repeatedChar = findFirstRepeatedChar(inputString);
+console.log(repeatedChar); // Output: "b"
