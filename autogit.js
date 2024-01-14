@@ -1,9 +1,11 @@
-let str = '42';
-let num = parseInt(str);
+Area = (base * height) / 2
+function calculateTriangleArea(base, height) {
+  var area = (base * height) / 2;
+  return area;
+}
 
-console.log(num); // Output: 42
-console.log(typeof num); // Output: number
-let hexStr = 'A';
-let hexNum = parseInt(hexStr, 16);
-
-console.log(hexNum); // Output: 10 (decimal)
+// Example usage
+var base = 10;
+var height = 5;
+var triangleArea = calculateTriangleArea(base, height);
+console.log("The area of the triangle is: " + triangleArea);
