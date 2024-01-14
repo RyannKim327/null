@@ -1,49 +1,24 @@
-function generateLPSArray(pattern) {
-  const lps = [0];
-  let len = 0;
-  let i = 1;
+function isPalindrome(head) {
+  let values = [];
+  let current = head;
 
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[len]) {
-      len++;
-      lps[i] = len;
-      i++;
-    } else {
-      if (len !== 0) {
-        len = lps[len - 1];
-      } else {
-        lps[i] = 0;
-        i++;
-      }
-    }
+  // Traverse the linked list
+  while (current) {
+    values.push(current.value);
+    current = current.next;
   }
-  return lps;
-}
-function search(text, pattern) {
-  const lps = generateLPSArray(pattern);
 
-  let i = 0; // index for text
-  let j = 0; // index for pattern
+  let start = 0;
+  let end = values.length - 1;
 
-  while (i < text.length) {
-    if (text[i] === pattern[j]) {
-      i++;
-      j++;
+  // Check if it is a palindrome
+  while (start <= end) {
+    if (values[start] !== values[end]) {
+      return false;
     }
-
-    if (j === pattern.length) {
-      console.log("Pattern found at index", i - j);
-      j = lps[j - 1];
-    } else if (i < text.length && text[i] !== pattern[j]) {
-      if (j !== 0) {
-        j = lps[j - 1];
-      } else {
-        i++;
-      }
-    }
+    start++;
+    end--;
   }
-}
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
 
-search(text, pattern);
+  return true;
+}
