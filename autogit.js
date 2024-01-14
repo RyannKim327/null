@@ -1,31 +1,26 @@
-// Define a TreeNode class representing each node in the binary tree
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+class BTreeNode {
+  constructor(t, leaf) {
+    this.t = t;
+    this.keys = [];
+    this.children = [];
+    this.leaf = leaf;
   }
+
+  // Implement your methods for searching, inserting, splitting nodes, etc.
 }
 
-// Function to calculate the sum of all nodes in the binary tree
-function calculateSum(root) {
-  if (root === null) {
-    return 0; // Base case: an empty tree has no sum
-  } else {
-    const leftSum = calculateSum(root.left); // Calculate the sum of nodes in the left subtree
-    const rightSum = calculateSum(root.right); // Calculate the sum of nodes in the right subtree
-    return root.value + leftSum + rightSum; // Return the sum of current node, left subtree sum, and right subtree sum
+class BTree {
+  constructor(t) {
+    this.t = t;
+    this.root = new BTreeNode(t, true);
   }
+
+  // Implement your methods for searching and inserting in B-tree
 }
 
-// Example usage:
-const rootNode = new TreeNode(5);
-rootNode.left = new TreeNode(3);
-rootNode.right = new TreeNode(8);
-rootNode.left.left = new TreeNode(2);
-rootNode.left.right = new TreeNode(4);
-rootNode.right.left = new TreeNode(7);
-rootNode.right.right = new TreeNode(9);
-
-const sum = calculateSum(rootNode);
-console.log("Sum of all nodes:", sum);
+// Usage
+const bTree = new BTree(3);
+bTree.insert(5);
+bTree.insert(10);
+const found = bTree.search(5);
+console.log(found); // true if found, false otherwise
