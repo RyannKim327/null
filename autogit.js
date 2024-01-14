@@ -1,52 +1,15 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
+function isSortedAscending(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false;
+    }
   }
+  return true;
 }
 
-function reverseLinkedList(head) {
-  let prev = null;
-  let current = head;
-  let next = null;
+// Example usage:
+const arr1 = [1, 2, 3, 4, 5];
+console.log(isSortedAscending(arr1));  // Output: true
 
-  while (current != null) {
-    next = current.next;
-    current.next = prev;
-    prev = current;
-    current = next;
-  }
-
-  return prev;
-}
-// Create a sample linked list: 1 -> 2 -> 3 -> 4 -> null
-const head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-
-console.log('Original list:');
-let current = head;
-while (current != null) {
-  console.log(current.data);
-  current = current.next;
-}
-
-const reversedHead = reverseLinkedList(head);
-
-console.log('Reversed list:');
-current = reversedHead;
-while (current != null) {
-  console.log(current.data);
-  current = current.next;
-}
-Original list:
-1
-2
-3
-4
-Reversed list:
-4
-3
-2
-1
+const arr2 = [5, 4, 3, 2, 1];
+console.log(isSortedAscending(arr2));  // Output: false
