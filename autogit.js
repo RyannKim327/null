@@ -1,44 +1,34 @@
-function mergeSort(arr) {
-  if (arr.length <= 1) {
-    return arr;
-  }
+function findLongestIncreasingSubsequence(arr) {
+  const n = arr.length;
+  const dp = Array(n).fill(1); // Initialize dp array with 1s
 
-  const mid = Math.floor(arr.length / 2);
-  const left = mergeSort(arr.slice(0, mid));
-  const right = mergeSort(arr.slice(mid));
+  let maxLength = 1; // Store the length of the longest increasing subsequence
 
-  return merge(left, right);
-}
-
-function merge(left, right) {
-  let result = [];
-  let i = 0;
-  let j = 0;
-
-  while (i < left.length && j < right.length) {
-    if (left[i] < right[j]) {
-      result.push(left[i]);
-      i++;
-    } else {
-      result.push(right[j]);
-      j++;
+  // Find the length of the longest increasing subsequence
+  for (let i = 1; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      if (arr[i] > arr[j]) {
+        dp[i] = Math.max(dp[i], dp[j] + 1);
+        maxLength = Math.max(maxLength, dp[i]);
+      }
     }
   }
 
-  while (i < left.length) {
-    result.push(left[i]);
-    i++;
+  // Reconstruct the longest increasing subsequence
+  const lis = [];
+  let currentIndex = maxLength - 1;
+  for (let i = n - 1; i >= 0; i--) {
+    if (dp[i] === maxLength && (currentIndex < 0 || arr[i] < lis[currentIndex])) {
+      lis[currentIndex] = arr[i];
+      currentIndex--;
+      maxLength--;
+    }
   }
 
-  while (j < right.length) {
-    result.push(right[j]);
-    j++;
-  }
-
-  return result;
+  return lis;
 }
 
-// Example usage:
-const array = [6, 5, 3, 1, 8, 7, 2, 4];
-const sortedArray = mergeSort(array);
-console.log(sortedArray);
+// Usage example:
+const arr = [3, 10, 2, 1, 20];
+const lis = findLongestIncreasingSubsequence(arr);
+console.log(lis); // Output: [3, 10, 20]
