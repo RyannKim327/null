@@ -1,75 +1,30 @@
-class BinaryHeap {
-  constructor() {
-    this.heap = [];
+function bwt(input) {
+  // ...
+}
+function rotate(str) {
+  const rotations = [];
+  for (let i = 0; i < str.length; i++) {
+    rotations.push(str.slice(i) + str.slice(0, i));
   }
-
-  // Helper methods...
+  return rotations;
 }
-swap(i, j) {
-  const temp = this.heap[i];
-  this.heap[i] = this.heap[j];
-  this.heap[j] = temp;
+function bwt(input) {
+  const rotations = rotate(input).sort();
+  // ...
 }
-getParentIndex(childIndex) {
-  return Math.floor((childIndex - 1) / 2);
+function bwt(input) {
+  const rotations = rotate(input).sort();
+  const transformed = rotations.map((rotation) => rotation.slice(-1)).join('');
+  const originalIndex = rotations.indexOf(input);
+  // ...
 }
-getLeftChildIndex(parentIndex) {
-  return parentIndex * 2 + 1;
+function bwt(input) {
+  const rotations = rotate(input).sort();
+  const transformed = rotations.map((rotation) => rotation.slice(-1)).join('');
+  const originalIndex = rotations.indexOf(input);
+  return { transformed, originalIndex };
 }
-getRightChildIndex(parentIndex) {
-  return parentIndex * 2 + 2;
-}
-hasParent(index) {
-  return this.getParentIndex(index) >= 0;
-}
-hasLeftChild(index) {
-  return this.getLeftChildIndex(index) < this.heap.length;
-}
-hasRightChild(index) {
-  return this.getRightChildIndex(index) < this.heap.length;
-}
-peek() {
-  if (this.heap.length === 0) {
-    return null; // Heap is empty
-  }
-  return this.heap[0];
-}
-poll() {
-  if (this.heap.length === 0) {
-    return null; // Heap is empty
-  }
-  if (this.heap.length === 1) {
-    return this.heap.pop();
-  }
-  const item = this.heap[0];
-  this.heap[0] = this.heap.pop();
-  this.heapifyDown();
-  return item;
-}
-add(item) {
-  this.heap.push(item);
-  this.heapifyUp();
-}
-heapifyUp() {
-  let index = this.heap.length - 1;
-  while (this.hasParent(index) && this.heap[index] < this.heap[this.getParentIndex(index)]) {
-    const parentIndex = this.getParentIndex(index);
-    this.swap(index, parentIndex);
-    index = parentIndex;
-  }
-}
-heapifyDown() {
-  let index = 0;
-  while (this.hasLeftChild(index)) {
-    let smallerChildIndex = this.getLeftChildIndex(index);
-    if (this.hasRightChild(index) && this.heap[this.getRightChildIndex(index)] < this.heap[smallerChildIndex]) {
-      smallerChildIndex = this.getRightChildIndex(index);
-    }
-    if (this.heap[index] < this.heap[smallerChildIndex]) {
-      break;
-    } else {
-      this.swap(index, smallerChildIndex);
-    }
-    index = smallerChildIndex;
-  }
-}
+const input = 'hello world';
+const { transformed, originalIndex } = bwt(input);
+console.log('Transformed:', transformed);
+console.log('Original Index:', originalIndex);
