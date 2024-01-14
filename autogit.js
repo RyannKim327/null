@@ -1,43 +1,51 @@
-function hash(pattern) {
-  let sum = 0;
-  // Calculate the hash by summing the ASCII values of each character
-  for (let i = 0; i < pattern.length; i++) {
-    sum += pattern.charCodeAt(i);
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
-  return sum;
 }
-function rabinKarpSearch(text, pattern) {
-  const patternHash = hash(pattern);
-  const windowSize = pattern.length;
-  let currentHash = hash(text.substring(0, windowSize));
+function isLinkedListPalindrome(head) {
+  // Step 1: Find the middle of the linked list
+  let slow = head;
+  let fast = head;
 
-  // Iterate over the input text while maintaining a sliding window
-  for (let i = 0; i <= text.length - windowSize; i++) {
-    // Check if the current window's hash matches the pattern's hash
-    if (currentHash === patternHash) {
-      // Perform a character-wise comparison to handle hash collisions
-      let found = true;
-      for (let j = 0; j < windowSize; j++) {
-        if (text[i + j] !== pattern[j]) {
-          found = false;
-          break;
-        }
-      }
-      if (found) {
-        // Pattern found at index i
-        return i;
-      }
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
+  }
+
+  // Step 2: Reverse the second half of the list
+  let prev = null;
+  let current = slow;
+  let next = null;
+
+  while (current) {
+    next = current.next;
+    current.next = prev;
+    prev = current;
+    current = next;
+  }
+
+  // Step 3: Compare the first and second half of the list
+  let firstHalf = head;
+  let secondHalf = prev;
+
+  while (secondHalf) {
+    if (firstHalf.value !== secondHalf.value) {
+      return false;
     }
 
-    // Update the hash for the next window position
-    currentHash -= text.charCodeAt(i);
-    currentHash += text.charCodeAt(i + windowSize);
+    firstHalf = firstHalf.next;
+    secondHalf = secondHalf.next;
   }
 
-  // Pattern not found
-  return -1;
+  return true;
 }
-const text = "Lorem ipsum dolor sit amet";
-const pattern = "sit";
-const result = rabinKarpSearch(text, pattern);
-console.log(result); // Output: 18
+// Create the linked list: 1 -> 2 -> 3 -> 2 -> 1
+let head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(2);
+head.next.next.next.next = new Node(1);
+
+console.log(isLinkedListPalindrome(head)); // Output: true
