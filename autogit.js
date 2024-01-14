@@ -1,45 +1,46 @@
-function isValidPalindrome(string) {
-  // Convert the string to lowercase
-  string = string.toLowerCase();
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
 
-  // Define two pointers, one starting from the beginning and one starting from the end
-  let left = 0;
-  let right = string.length - 1;
-
-  while (left < right) {
-    // Skip non-alphanumeric characters from the left pointer
-    if (!isAlphanumeric(string[left])) {
-      left++;
-      continue;
-    }
-
-    // Skip non-alphanumeric characters from the right pointer
-    if (!isAlphanumeric(string[right])) {
-      right--;
-      continue;
-    }
-
-    // If the characters at the left and right pointers are not equal, it's not a palindrome
-    if (string[left] !== string[right]) {
-      return false;
-    }
-
-    // Move the pointers towards the center
-    left++;
-    right--;
+class LinkedList {
+  constructor() {
+    this.head = null;
   }
 
-  // If we've reached this point, it's a valid palindrome
-  return true;
+  addToTail(value) {
+    const newNode = new Node(value);
+
+    if (this.head === null) {
+      this.head = newNode;
+    } else {
+      let currentNode = this.head;
+      while (currentNode.next !== null) {
+        currentNode = currentNode.next;
+      }
+      currentNode.next = newNode;
+    }
+  }
+
+  getLength() {
+    let currentNode = this.head;
+    let length = 0;
+
+    while (currentNode !== null) {
+      length++;
+      currentNode = currentNode.next;
+    }
+
+    return length;
+  }
 }
 
-function isAlphanumeric(char) {
-  // Match alphanumeric characters using a regular expression
-  return /[a-z0-9]/i.test(char);
-}
+// Example usage:
+const list = new LinkedList();
+list.addToTail(1);
+list.addToTail(2);
+list.addToTail(3);
 
-// Test cases
-console.log(isValidPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isValidPalindrome("race a car")); // false
-console.log(isValidPalindrome("level")); // true
-console.log(isValidPalindrome("123  !@#")); // true
+console.log(list.getLength()); // Output: 3
