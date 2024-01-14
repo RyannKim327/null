@@ -1,111 +1,100 @@
 class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+  constructor() {
+    this.children = {};  // stores child nodes
+    this.startIndex = -1;  // represents the start index of the substring
+    this.endIndex = -1;  // represents the end index of the substring
   }
 }
-
-class LinkedList {
+class SuffixTree {
   constructor() {
-    this.head = null;
-    this.tail = null;
+    this.root = new Node();
+    this.word = "";
   }
 
-  append(value) {
-    const newNode = new Node(value);
+  // Method to build the suffix tree
+  buildTree(word) {
+    this.word = word;
+    const n = word.length;
 
-    if (!this.head) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
-    }
-  }
+    for (let i = 0; i < n; i++) {
+      let currentNode = this.root;
+      const suffix = word.slice(i);
 
-  prepend(value) {
-    const newNode = new Node(value);
+      for (let j = 0; j < suffix.length; j++) {
+        const key = suffix[j];
 
-    if (!this.head) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      newNode.next = this.head;
-      this.head = newNode;
-    }
-  }
+        if (!(key in currentNode.children)) {
+          const newNode = new Node();
+          newNode.startIndex = i;
+          newNode.endIndex = n - 1;
+          currentNode.children[key] = newNode;
+          return;
+        }
 
-  find(value) {
-    let currentNode = this.head;
+        let nextNode = currentNode.children[key];
+        let k = j + 1;
 
-    while (currentNode) {
-      if (currentNode.value === value) {
-        return currentNode;
-      }
-      currentNode = currentNode.next;
-    }
+        // Traverse until no more characters are left in the edge label or a difference occurs
+        while (k - j < nextNode.endIndex - nextNode.startIndex + 1 && suffix[k] === word[nextNode.startIndex + k - j]) {
+          k++;
+        }
 
-    return null;
-  }
+        if (k - j === nextNode.endIndex - nextNode.startIndex + 1) {
+          currentNode = nextNode;
+        } else {
+          const splitNode = new Node();
+          splitNode.startIndex = nextNode.startIndex;
+          splitNode.endIndex = nextNode.startIndex + k - j - 1;
 
-  delete(value) {
-    if (!this.head) {
-      return null;
-    }
+          nextNode.startIndex += k - j;
+          splitNode.children[word[nextNode.startIndex]] = nextNode;
 
-    let deletedNode = null;
+          const newNode = new Node();
+          newNode.startIndex = i;
+          newNode.endIndex = n - 1;
+          splitNode.children[word[i]] = newNode;
 
-    if (this.head.value === value) {
-      deletedNode = this.head;
-      this.head = this.head.next;
-
-      if (this.head === null) {
-        this.tail = null;
-      }
-    } else {
-      let currentNode = this.head;
-
-      while (currentNode.next) {
-        if (currentNode.next.value === value) {
-          deletedNode = currentNode.next;
-          currentNode.next = currentNode.next.next;
-
-          if (currentNode.next === null) {
-            this.tail = currentNode;
-          }
+          currentNode.children[key] = splitNode;
           break;
         }
-        currentNode = currentNode.next;
       }
     }
-
-    return deletedNode;
   }
 
-  toArray() {
-    const values = [];
-    let currentNode = this.head;
+  // Method to search for a pattern in the tree
+  searchPattern(pattern) {
+    let currentNode = this.root;
+    let i = 0;
 
-    while (currentNode) {
-      values.push(currentNode.value);
-      currentNode = currentNode.next;
+    while (i < pattern.length) {
+      const key = pattern[i];
+
+      if (!(key in currentNode.children)) {
+        return false;
+      }
+
+      const node = currentNode.children[key];
+      const labelEndIndex = node.endIndex;
+
+      for (let j = node.startIndex; j <= labelEndIndex && i < pattern.length; j++) {
+        if (this.word[j] !== pattern[i]) {
+          return false;
+        }
+        i++;
+      }
+
+      if (i === pattern.length) {
+        return true;
+      }
+
+      currentNode = node;
     }
 
-    return values;
-  }
-
-  print() {
-    console.log(this.toArray().join(" -> "));
+    return false;
   }
 }
-const linkedList = new LinkedList();
-linkedList.append(5);
-linkedList.append(10);
-linkedList.prepend(1);
-linkedList.append(15);
-linkedList.print();  // Output: 1 -> 5 -> 10 -> 15
+const tree = new SuffixTree();
+tree.buildTree("banana");
 
-console.log(linkedList.find(10));  // Output: Node { value: 10, next: Node { value: 15, next: null } }
-
-console.log(linkedList.delete(5));  // Output: Node { value: 5, next: Node { value: 10, next: Node { value: 15, next: null } } }
-linkedList.print();  // Output: 1 -> 10 -> 15
+console.log(tree.searchPattern("ana"));  // Output: true
+console.log(tree.searchPattern("bad"));  // Output: false
