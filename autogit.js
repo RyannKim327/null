@@ -1,23 +1,35 @@
-function bwt(input) {
-  const rotations = [];
-  const len = input.length;
+function findMajorityElement(nums) {
+  let majority = null;
+  let count = 0;
 
-  for (let i = 0; i < len; i++) {
-    rotations.push(input.slice(i) + input.slice(0, i));
+  for (let num of nums) {
+    if (count === 0) {
+      majority = num;
+      count++;
+    } else if (num === majority) {
+      count++;
+    } else {
+      count--;
+    }
   }
 
-  rotations.sort();
-
-  let encoded = "";
-  for (let i = 0; i < len; i++) {
-    encoded += rotations[i][len - 1];
+  // Verify if the majority element is indeed the majority
+  count = 0;
+  for (let num of nums) {
+    if (num === majority) {
+      count++;
+    }
   }
 
-  const originalIndex = rotations.indexOf(input);
-
-  return { encoded, originalIndex };
+  if (count > nums.length / 2) {
+    return majority;
+  } else {
+    return null; // No majority element found
+  }
 }
-const input = "banana";
-const result = bwt(input);
-console.log("Encoded: ", result.encoded);
-console.log("Original Index: ", result.originalIndex);
+
+// Example Usage
+const nums = [1, 3, 3, 3, 2, 2, 3, 3, 4, 4, 4, 4, 4];
+const majorityElement = findMajorityElement(nums);
+
+console.log(`The majority element is: ${majorityElement}`);
