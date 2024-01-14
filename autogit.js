@@ -1,62 +1,51 @@
-function heapSort(array) {
-  // Build max heap
-  buildMaxHeap(array);
-
-  // Heapify the array
-  for (let i = array.length - 1; i > 0; i--) {
-    // Swap the root (maximum value) with the last element of the unsorted portion
-    swap(array, 0, i);
-
-    // Ensure the swapped element maintains the max heap property
-    heapify(array, 0, i);
+function fibonacciSeries(n) {
+  if (n === 1) return [0];
+  if (n === 2) return [0, 1];
+  
+  let fibSeries = [0, 1];
+  for (let i = 2; i < n; i++) {
+    fibSeries.push(fibSeries[i - 1] + fibSeries[i - 2]);
   }
-
-  return array;
+  return fibSeries;
 }
+function findFibonacciIndex(n) {
+  if (n <= 0) return -1;
+  if (n === 1) return 0;
 
-// Build the max heap
-function buildMaxHeap(array) {
-  const n = array.length;
-
-  // Find the parent of the last element
-  const startIdx = Math.floor(n / 2) - 1;
-
-  // Heapify each parent's subtree from the bottom-up
-  for (let i = startIdx; i >= 0; i--) {
-    heapify(array, i, n);
+  let fibSeries = fibonacciSeries(n);
+  let m = 0;
+  while (fibSeries[m] < n) {
+    m++;
   }
+  return m;
 }
-
-// Heapify a subtree rooted at index i
-function heapify(array, i, size) {
-  const left = 2 * i + 1;
-  const right = 2 * i + 2;
-  let largest = i;
-
-  // Compare the root with its left child
-  if (left < size && array[left] > array[largest]) {
-    largest = left;
+function fibonacciSearch(arr, x, n) {
+  let fibM = findFibonacciIndex(n);
+  
+  let offset = -1;
+  while (fibM > 1) {
+    let i = Math.min(offset + fibonacciSeries(fibM - 2), n - 1);
+    
+    if (arr[i] < x) {
+      fibM = fibM - 1;
+      offset = i;
+    } else if (arr[i] > x) {
+      fibM = fibM - 2;
+    } else {
+      return i;
+    }
   }
-
-  // Compare the root or the left child with the right child
-  if (right < size && array[right] > array[largest]) {
-    largest = right;
+  
+  if (fibM === 1 && arr[offset + 1] === x) {
+    return offset + 1;
   }
-
-  // If a larger element is found, swap it with the root and recursively heapify the affected subtree
-  if (largest !== i) {
-    swap(array, i, largest);
-    heapify(array, largest, size);
-  }
+  
+  return -1;
 }
+let arr = [1, 5, 10, 15, 20, 25, 30];
+let x = 25;
+let n = arr.length;
 
-// Swap two elements in an array
-function swap(array, i, j) {
-  const temp = array[i];
-  array[i] = array[j];
-  array[j] = temp;
-}
-
-// Usage example
-const arr = [5, 2, 9, 1, 7, 6, 4];
-console.log(heapSort(arr)); // Output: [1, 2, 4, 5, 6, 7, 9]
+let result = fibonacciSearch(arr, x, n);
+console.log(`Element ${x} is found at index ${result}.`);
+Element 25 is found at index 5.
