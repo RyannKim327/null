@@ -1,92 +1,66 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+class TrieNode {
+  constructor() {
+    this.children = new Map();
+    this.isEndOfWord = false;
   }
 }
-
-function isPalindrome(head) {
-  if (!head || !head.next) {
-    return true; // Empty list or single element is a palindrome
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
   }
 
-  // Helper function to reverse a linked list
-  function reverseList(node) {
-    let prev = null;
-    while (node) {
-      let next = node.next;
-      node.next = prev;
-      prev = node;
-      node = next;
+  // Insert a word into the Trie
+  insert(word) {
+    let current = this.root;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      if (!current.children.has(char)) {
+        current.children.set(char, new TrieNode());
+      }
+      current = current.children.get(char);
     }
-    return prev;
+    current.isEndOfWord = true;
   }
 
-  // Helper function to find the middle of the linked list
-  function findMiddle(node) {
-    let slow = node;
-    let fast = node;
-    while (fast && fast.next) {
-      slow = slow.next;
-      fast = fast.next.next;
+  // Search for a word in the Trie
+  search(word) {
+    let current = this.root;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      if (!current.children.has(char)) {
+        return false;
+      }
+      current = current.children.get(char);
     }
-    return slow;
+    return current.isEndOfWord;
   }
 
-  let slow = head;
-  let fast = head;
-  let prevSlow = null;
-  let mid = null;
-  let isPalindrome = true;
-
-  // Find the middle of the linked list and reverse the second half
-  while (fast && fast.next) {
-    fast = fast.next.next;
-    prevSlow = slow;
-    slow = slow.next;
-  }
-
-  // Check if the total number of elements is odd or even
-  if (fast) {
-    // Total number of elements is odd
-    mid = slow;
-    slow = slow.next;
-  }
-
-  prevSlow.next = null; // Cut off the first half
-  let secondHalf = reverseList(slow); // Reverse the second half
-
-  // Compare the first half with the reversed second half
-  let p1 = head;
-  let p2 = secondHalf;
-  while (p1 && p2) {
-    if (p1.value !== p2.value) {
-      isPalindrome = false;
-      break;
+  // Check if a word has any prefix in the Trie
+  startsWith(prefix) {
+    let current = this.root;
+    for (let i = 0; i < prefix.length; i++) {
+      const char = prefix[i];
+      if (!current.children.has(char)) {
+        return false;
+      }
+      current = current.children.get(char);
     }
-    p1 = p1.next;
-    p2 = p2.next;
+    return true;
   }
-
-  // Restore the original linked list by reversing the second half again
-  secondHalf = reverseList(secondHalf);
-  if (mid) {
-    prevSlow.next = mid;
-    mid.next = secondHalf;
-  } else {
-    prevSlow.next = secondHalf;
-  }
-
-  return isPalindrome;
 }
+const trie = new Trie();
 
-// Example usage:
+// Insert words into the Trie
+trie.insert("apple");
+trie.insert("app");
+trie.insert("application");
 
-// Create the linked list: 1 -> 2 -> 3 -> 2 -> 1
-const head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(2);
-head.next.next.next.next = new Node(1);
+// Search for words in the Trie
+console.log(trie.search("apple")); // Output: true
+console.log(trie.search("app")); // Output: true
+console.log(trie.search("application")); // Output: true
+console.log(trie.search("banana")); // Output: false
 
-console.log(isPalindrome(head)); // Output: true
+// Check if a word has any prefix in the Trie
+console.log(trie.startsWith("app")); // Output: true
+console.log(trie.startsWith("ban")); // Output: false
