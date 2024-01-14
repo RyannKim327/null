@@ -1,45 +1,26 @@
-function getIntersection(list1, list2) {
-  if (!list1 || !list2) {
-    return null;
+function shellSort(arr) {
+  const n = arr.length;
+  let gap = Math.floor(n / 2);
+
+  while (gap > 0) {
+    for (let i = gap; i < n; i++) {
+      let temp = arr[i];
+      let j = i;
+
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
+      }
+
+      arr[j] = temp;
+    }
+
+    gap = Math.floor(gap / 2);
   }
 
-  let len1 = getListLength(list1);
-  let len2 = getListLength(list2);
-  let diff = Math.abs(len1 - len2);
-
-  let ptr1 = list1;
-  let ptr2 = list2;
-
-  if (len1 > len2) {
-    while (diff > 0) {
-      ptr1 = ptr1.next;
-      diff--;
-    }
-  } else if (len2 > len1) {
-    while (diff > 0) {
-      ptr2 = ptr2.next;
-      diff--;
-    }
-  }
-
-  while (ptr1 && ptr2) {
-    if (ptr1 === ptr2) {
-      return ptr1;
-    }
-    ptr1 = ptr1.next;
-    ptr2 = ptr2.next;
-  }
-
-  return null;
+  return arr;
 }
+const array = [5, 2, 8, 4, 1, 9, 3, 7];
+const sortedArray = shellSort(array);
 
-// Helper function to calculate the length of a linked list
-function getListLength(head) {
-  let length = 0;
-  let current = head;
-  while (current) {
-    length++;
-    current = current.next;
-  }
-  return length;
-}
+console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 7, 8, 9]
