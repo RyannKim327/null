@@ -1,63 +1,26 @@
-class Node {
-  constructor(state, parent, cost) {
-    this.state = state;
-    this.parent = parent;
-    this.cost = cost;
-  }
-}
-function aStarSearch(startState, goalState, heuristic) {
-  const openSet = [new Node(startState, null, 0)];
-  const closedSet = new Set();
+function binarySearch(arr, target) {
+  let left = 0;
+  let right = arr.length - 1;
 
-  while (openSet.length > 0) {
-    // Find the node with the lowest cost
-    let currentNode = openSet[0];
-    let currentIndex = 0;
-    for (let i = 1; i < openSet.length; i++) {
-      if (openSet[i].cost < currentNode.cost) {
-        currentNode = openSet[i];
-        currentIndex = i;
-      }
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+
+    if (arr[mid] === target) {
+      return mid; // Found the target, return the index
     }
 
-    // Check if we reached the goal state
-    if (currentNode.state === goalState) {
-      let path = [];
-      while (currentNode !== null) {
-        path.push(currentNode.state);
-        currentNode = currentNode.parent;
-      }
-      return path.reverse();
-    }
-
-    // Move the current node to the closed set
-    openSet.splice(currentIndex, 1);
-    closedSet.add(currentNode.state);
-
-    // Generate successor nodes and add them to the open set
-    const successors = generateSuccessors(currentNode.state);
-    for (let successorState of successors) {
-      if (closedSet.has(successorState)) {
-        continue;
-      }
-
-      const cost = currentNode.cost + 1; // Assume uniform cost
-      const heuristicCost = cost + heuristic(successorState, goalState);
-
-      let alreadyInOpenSet = false;
-      for (let i = 0; i < openSet.length; i++) {
-        if (openSet[i].state === successorState && openSet[i].cost <= cost) {
-          alreadyInOpenSet = true;
-          break;
-        }
-      }
-
-      if (!alreadyInOpenSet) {
-        const successorNode = new Node(successorState, currentNode, cost);
-        openSet.push(successorNode);
-      }
+    if (arr[mid] < target) {
+      left = mid + 1; // Adjust the left pointer
+    } else {
+      right = mid - 1; // Adjust the right pointer
     }
   }
 
-  return []; // No path found
+  return -1; // Target not found
 }
+
+// Usage example:
+const sortedArray = [1, 3, 5, 7, 9, 11, 13, 15];
+
+console.log(binarySearch(sortedArray, 9)); // Outputs: 4 (index of 9 in the array)
+console.log(binarySearch(sortedArray, 4)); // Outputs: -1 (target not found)
