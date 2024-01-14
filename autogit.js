@@ -1,59 +1,55 @@
-class Node {
-  constructor(value, children = []) {
-    this.value = value;
-    this.children = children;
-  }
+function Graph() {
+  this.nodes = {};
 }
-function breadthLimitedSearch(root, limit) {
-  if (!root) return null;
-
-  const queue = [];
-  queue.push(root);
-
-  let depth = 0;
-
-  while (queue.length > 0 && depth <= limit) {
-    const node = queue.shift();
-
-    console.log(`Visiting node: ${node.value}`);
-
-    if (depth < limit) {
-      node.children.forEach(child => {
-        queue.push(child);
-      });
-    }
-
-    if (queue[0] && depth !== getNodeDepth(queue[0])) {
-      depth++;
+Graph.prototype.addNode = function(node, neighbors) {
+  this.nodes[node] = neighbors;
+};
+function dijkstra(graph, startNode) {
+  var distances = {};
+  distances[startNode] = 0;
+  
+  // Set all other distances to infinity
+  for (var node in graph.nodes) {
+    if (node !== startNode) {
+      distances[node] = Infinity;
     }
   }
 }
-function getNodeDepth(node) {
-  let depth = 0;
-  let currNode = node;
-
-  while (currNode) {
-    depth++;
-    currNode = currNode.parent;
+function findMinNode(distances, visited) {
+  var minNode = null;
+  
+  for (var node in distances) {
+    if (!visited[node] && (minNode === null || distances[node] < distances[minNode])) {
+      minNode = node;
+    }
   }
-
-  return depth;
+  
+  return minNode;
 }
-const rootNode = new Node('A');
-const nodeB = new Node('B');
-const nodeC = new Node('C');
-const nodeD = new Node('D');
-const nodeE = new Node('E');
-const nodeF = new Node('F');
+var visited = {};
+var currentNode = startNode;
 
-rootNode.children = [nodeB, nodeC];
-nodeB.children = [nodeD, nodeE];
-nodeC.children = [nodeF];
+while (currentNode) {
+  var neighbors = graph.nodes[currentNode];
+  
+  for (var neighbor in neighbors) {
+    var distance = distances[currentNode] + neighbors[neighbor];
+    if (distance < distances[neighbor]) {
+      distances[neighbor] = distance;
+    }
+  }
+  
+  visited[currentNode] = true;
+  currentNode = findMinNode(distances, visited);
+}
+var graph = new Graph();
+graph.addNode('A', { B: 4, C: 2 });
+graph.addNode('B', { C: 1, D: 5 });
+graph.addNode('C', { B: 2, D: 8 });
+graph.addNode('D', { E: 3 });
+graph.addNode('E', {});
 
-breadthLimitedSearch(rootNode, 2);
-Visiting node: A
-Visiting node: B
-Visiting node: C
-Visiting node: D
-Visiting node: E
-Visiting node: F
+var startNode = 'A';
+var distances = dijkstra(graph, startNode);
+
+console.log(distances); // Output: { A: 0, B: 3, C: 2, D: 6, E: Infinity }
