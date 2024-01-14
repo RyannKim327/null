@@ -1,68 +1,51 @@
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
+function dijkstra(graph, startNode) {
+  const distances = {};
+  const visited = new Set();
+  const unvisited = new Set(Object.keys(graph));
 
-class BinaryTree {
-  constructor() {
-    this.root = null;
+  // Set initial distances to infinity
+  for (const node in graph) {
+    distances[node] = Infinity;
   }
 
-  insert(value) {
-    const newNode = new TreeNode(value);
+  // Set distance of start node to 0
+  distances[startNode] = 0;
 
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
+  while (unvisited.size) {
+    let currentNode = null;
 
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
+    // Find node with the smallest distance
+    for (const node of unvisited) {
+      if (currentNode === null || distances[node] < distances[currentNode]) {
+        currentNode = node;
       }
     }
-  }
 
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
+    // Update distances for neighboring nodes
+    for (const neighbor in graph[currentNode]) {
+      const distance = graph[currentNode][neighbor];
+      const totalDistance = distances[currentNode] + distance;
 
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
+      if (totalDistance < distances[neighbor]) {
+        distances[neighbor] = totalDistance;
+      }
     }
 
-    if (node.value === value) {
-      return true;
-    }
-
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    }
-
-    return this.searchNode(node.right, value);
+    // Mark node as visited
+    visited.add(currentNode);
+    unvisited.delete(currentNode);
   }
+
+  return distances;
 }
-const tree = new BinaryTree();
-tree.insert(5);
-tree.insert(3);
-tree.insert(7);
-tree.insert(1);
-tree.insert(4);
 
-console.log(tree.search(7)); // Output: true
-console.log(tree.search(2)); // Output: false
+// Example usage
+const graph = {
+  A: { B: 5, C: 2 },
+  B: { A: 5, C: 1, D: 3 },
+  C: { A: 2, B: 1, D: 1 },
+  D: { B: 3, C: 1 },
+};
+
+const distances = dijkstra(graph, 'A');
+console.log(distances); // { A: 0, B: 3, C: 2, D: 3 }
