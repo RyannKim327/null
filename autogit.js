@@ -1,41 +1,22 @@
-function hasCycle(head) {
-  if (!head || !head.next) {
-    // If the list is empty or has only one node, there can't be a cycle
-    return false;
-  }
+function insertionSort(arr) {
+  const len = arr.length;
 
-  let slow = head;   // Tortoise
-  let fast = head;   // Hare
+  for (let i = 1; i < len; i++) {
+    let key = arr[i];
+    let j = i - 1;
 
-  while (fast && fast.next) {
-    slow = slow.next;             // Move one step at a time
-    fast = fast.next.next;        // Move two steps at a time
-
-    if (slow === fast) {
-      // If the two pointers meet, there is a cycle
-      return true;
+    while (j >= 0 && arr[j] > key) {
+      arr[j + 1] = arr[j];
+      j--;
     }
+
+    arr[j + 1] = key;
   }
 
-  // If we reach null/undefined, there is no cycle
-  return false;
-}
-// Define the Node class
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+  return arr;
 }
 
-// Create a linked list with a cycle
-const node1 = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
-const node4 = new Node(4);
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2;  // cycle 
-
-console.log(hasCycle(node1)); // Output: true
+// Example usage:
+const unsortedArray = [5, 2, 4, 6, 1, 3];
+const sortedArray = insertionSort(unsortedArray);
+console.log(sortedArray); // [1, 2, 3, 4, 5, 6]
