@@ -1,53 +1,62 @@
-function bellmanFord(graph, start) {
-  const distances = {};
-  const predecessors = {};
-  const vertices = Object.keys(graph);
+function preprocessPattern(pattern) {
+  const table = new Array(256).fill(pattern.length);
 
-  // Step 3
-  vertices.forEach(vertex => {
-    distances[vertex] = Infinity;
-    predecessors[vertex] = null;
-  });
-
-  // Step 4
-  distances[start] = 0;
-
-  // Step 5
-  for (let i = 0; i < vertices.length - 1; i++) {
-    vertices.forEach(vertex => {
-      graph[vertex].forEach(edge => {
-        const { destination, weight } = edge;
-        if (distances[vertex] + weight < distances[destination]) {
-          distances[destination] = distances[vertex] + weight;
-          predecessors[destination] = vertex;
-        }
-      });
-    });
+  for (let i = 0; i < pattern.length - 1; i++) {
+    table[pattern.charCodeAt(i)] = pattern.length - 1 - i;
   }
 
-  // Step 7
-  vertices.forEach(vertex => {
-    graph[vertex].forEach(edge => {
-      const { destination, weight } = edge;
-      if (distances[vertex] + weight < distances[destination]) {
-        throw new Error('Graph contains a negative weight cycle');
-      }
-    });
-  });
+  const suffix = new Array(pattern.length).fill(0);
+  let prefix = pattern.length;
 
-  // Step 8
-  return { distances, predecessors };
+  for (let i = pattern.length - 1; i >= 0; i--) {
+    if (isPrefix(pattern, i + 1)) {
+      prefix = i + 1;
+    }
+
+    suffix[i] = prefix + (pattern.length - 1 - i);
+  }
+
+  for (let i = 0; i < pattern.length - 1; i++) {
+    const idx = pattern.length - 1 - suffix[i];
+    if (suffix[i] === idx) {
+      suffix[idx] = pattern.length - 1 - i;
+    }
+  }
+
+  return { table, suffix };
 }
 
-// Example usage
-const graph = {
-  A: [{ destination: 'B', weight: 4 }, { destination: 'C', weight: 2 }],
-  B: [{ destination: 'C', weight: -3 }, { destination: 'D', weight: 2 }],
-  C: [{ destination: 'E', weight: 3 }],
-  D: [{ destination: 'B', weight: 1 }, { destination: 'C', weight: 5 }],
-  E: [{ destination: 'D', weight: 1 }],
-};
+function isPrefix(pattern, pos) {
+  for (let i = pos, j = 0; i < pattern.length; i++, j++) {
+    if (pattern[i] !== pattern[j]) {
+      return false;
+    }
+  }
+  return true;
+}
+function boyerMooreSearch(text, pattern) {
+  const { table, suffix } = preprocessPattern(pattern);
+  const matches = [];
 
-const { distances, predecessors } = bellmanFord(graph, 'A');
-console.log(distances); // Output: { A: 0, B: 1, C: -1, D: 3, E: 2 }
-console.log(predecessors); // Output: { A: null, B: 'A', C: 'B', D: 'E', E: 'C' }
+  let i = 0;
+  while (i <= text.length - pattern.length) {
+    let j = pattern.length - 1;
+
+    while (j >= 0 && pattern[j] === text[i + j]) {
+      j--;
+    }
+
+    if (j < 0) {
+      matches.push(i);
+      i += pattern.length;
+    } else {
+      i += Math.max(suffix[j], table[text.charCodeAt(i + j)] - pattern.length + 1 + j);
+    }
+  }
+
+  return matches;
+}
+const text = "ABAAABCDBBABCDDEBCABC";
+const pattern = "BC";
+const matches = boyerMooreSearch(text, pattern);
+console.log(matches); // Output: [6, 12, 18]
