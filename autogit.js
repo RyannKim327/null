@@ -1,10 +1,49 @@
-function validateEmail(email) {
-  // Email pattern
-  var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+function generateLPSArray(pattern) {
+  const lps = [0];
+  let len = 0;
+  let i = 1;
 
-  // Test the email against the pattern
-  return emailPattern.test(email);
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[len]) {
+      len++;
+      lps[i] = len;
+      i++;
+    } else {
+      if (len !== 0) {
+        len = lps[len - 1];
+      } else {
+        lps[i] = 0;
+        i++;
+      }
+    }
+  }
+  return lps;
 }
-var email = "example@example.com";
-var isValid = validateEmail(email);
-console.log(isValid); // Outputs: true or false
+function search(text, pattern) {
+  const lps = generateLPSArray(pattern);
+
+  let i = 0; // index for text
+  let j = 0; // index for pattern
+
+  while (i < text.length) {
+    if (text[i] === pattern[j]) {
+      i++;
+      j++;
+    }
+
+    if (j === pattern.length) {
+      console.log("Pattern found at index", i - j);
+      j = lps[j - 1];
+    } else if (i < text.length && text[i] !== pattern[j]) {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
+      }
+    }
+  }
+}
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+
+search(text, pattern);
