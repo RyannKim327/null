@@ -1,25 +1,9 @@
-function findFirstRepeatedChar(str) {
-    // Create an empty set to store characters
-    let charSet = new Set();
+let array = [1, 2, 3, 4, 5];
+let elementToRemove = 3;
+let index = array.indexOf(elementToRemove);
 
-    // Iterate through the string
-    for (let i = 0; i < str.length; i++) {
-        let char = str[i];
-
-        // If character is already in the set, it is repeated
-        if (charSet.has(char)) {
-            return char;
-        }
-
-        // Add character to set
-        charSet.add(char);
-    }
-
-    // If no repeated character found
-    return null;
+if (index !== -1) {
+  array.splice(index, 1);
 }
 
-// Test the function
-let str = "abca";
-let repeatedChar = findFirstRepeatedChar(str);
-console.log(repeatedChar); // Output: a
+console.log(array); // Output: [1, 2, 4, 5]
