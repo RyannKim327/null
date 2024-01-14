@@ -1,43 +1,109 @@
-class ListNode {
-  constructor(val, next = null) {
-    this.val = val;
-    this.next = next;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
 
-function findNthNodeFromEnd(head, n) {
-  let slow = head;
-  let fast = head;
+class BinaryTree {
+  constructor() {
+    this.root = null;
+  }
 
-  // Move the fast pointer n nodes ahead
-  for (let i = 0; i < n; i++) {
-    if (fast === null) {
-      return null; // There are less than n nodes in the list
+  insert(value) {
+    const newNode = new Node(value);
+
+    if (!this.root) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
     }
-    fast = fast.next;
   }
 
-  // Move both the slow and fast pointers until the fast pointer reaches the end
-  while (fast !== null) {
-    slow = slow.next;
-    fast = fast.next;
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (!node.left) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (!node.right) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
   }
 
-  // At this point, the slow pointer is at the nth node from the end
-  return slow;
-}
-// Create a sample linked list: 1 -> 2 -> 3 -> 4 -> 5
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
+  contains(value) {
+    return this.containsNode(this.root, value);
+  }
 
-const n = 2;
-const nthNodeFromEnd = findNthNodeFromEnd(head, n);
+  containsNode(node, value) {
+    if (!node) {
+      return false;
+    }
 
-if (nthNodeFromEnd !== null) {
-  console.log(`${n}th node from the end: ${nthNodeFromEnd.val}`);
-} else {
-  console.log(`There are less than ${n} nodes in the linked list.`);
+    if (value === node.value) {
+      return true;
+    } else if (value < node.value) {
+      return this.containsNode(node.left, value);
+    } else {
+      return this.containsNode(node.right, value);
+    }
+  }
+
+  remove(value) {
+    this.root = this.removeNode(this.root, value);
+  }
+
+  removeNode(node, value) {
+    if (!node) {
+      return null;
+    }
+
+    if (value === node.value) {
+      if (!node.left && !node.right) {
+        return null;
+      } else if (!node.left) {
+        return node.right;
+      } else if (!node.right) {
+        return node.left;
+      } else {
+        const temp = this.findMinNode(node.right);
+        node.value = temp.value;
+        node.right = this.removeNode(node.right, temp.value);
+        return node;
+      }
+    } else if (value < node.value) {
+      node.left = this.removeNode(node.left, value);
+      return node;
+    } else {
+      node.right = this.removeNode(node.right, value);
+      return node;
+    }
+  }
+
+  findMinNode(node) {
+    if (!node.left) {
+      return node;
+    } else {
+      return this.findMinNode(node.left);
+    }
+  }
 }
+const tree = new BinaryTree();
+
+tree.insert(10);
+tree.insert(5);
+tree.insert(15);
+tree.insert(2);
+tree.insert(7);
+
+console.log(tree.contains(7)); // Output: true
+console.log(tree.contains(20)); // Output: false
+
+tree.remove(5);
+console.log(tree.contains(5)); // Output: false
