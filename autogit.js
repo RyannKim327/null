@@ -1,50 +1,34 @@
-function buildFailureArray(pattern) {
-  const failure = Array(pattern.length).fill(0);
+function findMiddleElement(head) {
+  let slowPointer = head;
+  let fastPointer = head;
 
-  let i = 1, j = 0;
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[j]) {
-      failure[i] = j + 1;
-      i++;
-      j++;
-    } else if (j > 0) {
-      j = failure[j - 1];
-    } else {
-      failure[i] = 0;
-      i++;
-    }
+  while (fastPointer && fastPointer.next) {
+    slowPointer = slowPointer.next;
+    fastPointer = fastPointer.next.next;
   }
 
-  return failure;
+  return slowPointer;
 }
-function KMP(text, pattern) {
-  const failure = buildFailureArray(pattern);
-
-  let i = 0, j = 0;
-  while (i < text.length) {
-    if (text[i] === pattern[j]) {
-      if (j === pattern.length - 1) {
-        return i - j; // match found, return the starting position
-      }
-      i++;
-      j++;
-    } else if (j > 0) {
-      j = failure[j - 1];
-    } else {
-      i++;
-    }
+// Node constructor
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
-
-  return -1; // match not found
 }
-const text = "ABCABDABABCABCDABDE";
-const pattern = "ABCABCD";
 
-const position = KMP(text, pattern);
-console.log(position); // Output: 10
+// Create a linked list
+const head = new Node(1);
+const secondNode = new Node(2);
+const thirdNode = new Node(3);
+const fourthNode = new Node(4);
+const fifthNode = new Node(5);
 
-if (position !== -1) {
-  console.log("Pattern found at position", position);
-} else {
-  console.log("Pattern not found");
-}
+head.next = secondNode;
+secondNode.next = thirdNode;
+thirdNode.next = fourthNode;
+fourthNode.next = fifthNode;
+
+// Find the middle element
+const middleElement = findMiddleElement(head);
+console.log(middleElement.value); // Output: 3
