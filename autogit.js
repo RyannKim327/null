@@ -1,11 +1,9 @@
-Area = (base * height) / 2
-function calculateTriangleArea(base, height) {
-  var area = (base * height) / 2;
-  return area;
+let array = [1, 2, 3, 4, 5];
+let element = 3;  // element to remove
+
+let index = array.indexOf(element);
+if (index !== -1) {
+  array.splice(index, 1);
 }
 
-// Example usage
-var base = 10;
-var height = 5;
-var triangleArea = calculateTriangleArea(base, height);
-console.log("The area of the triangle is: " + triangleArea);
+console.log(array);  // [1, 2, 4, 5]
