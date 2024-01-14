@@ -1,15 +1,58 @@
-function calculateMean(numbers) {
-  let sum = 0;
-
-  for (let i = 0; i < numbers.length; i++) {
-    sum += numbers[i];
+class TrieNode {
+  constructor() {
+    this.children = {};
+    this.isEndOfWord = false;
   }
-
-  const mean = sum / numbers.length;
-  return mean;
 }
 
-// Example usage
-const numbers = [4, 5, 6, 7, 8];
-const mean = calculateMean(numbers);
-console.log(mean); // Output: 6
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
+  }
+
+  insert(word) {
+    let currentNode = this.root;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      if (!currentNode.children[char]) {
+        currentNode.children[char] = new TrieNode();
+      }
+      currentNode = currentNode.children[char];
+    }
+    currentNode.isEndOfWord = true;
+  }
+
+  search(word) {
+    let currentNode = this.root;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      if (!currentNode.children[char]) {
+        return false;
+      }
+      currentNode = currentNode.children[char];
+    }
+    return currentNode.isEndOfWord;
+  }
+
+  startsWith(prefix) {
+    let currentNode = this.root;
+    for (let i = 0; i < prefix.length; i++) {
+      const char = prefix[i];
+      if (!currentNode.children[char]) {
+        return false;
+      }
+      currentNode = currentNode.children[char];
+    }
+    return true;
+  }
+}
+
+// Example usage:
+const trie = new Trie();
+trie.insert("apple");
+trie.insert("banana");
+console.log(trie.search("apple")); // true
+console.log(trie.search("banana")); // true
+console.log(trie.search("app")); // false
+console.log(trie.startsWith("app")); // true
+console.log(trie.startsWith("orange")); // false
