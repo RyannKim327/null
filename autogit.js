@@ -1,8 +1,17 @@
-const string = "Hello, world!";
-const substring = "world";
+var str = "Hello, world!";
+var substring = "world";
 
-if (string.includes(substring)) {
-  console.log("Substring found!");
+if (str.includes(substring)) {
+  console.log("Substring is found.");
 } else {
-  console.log("Substring not found.");
+  console.log("Substring is not found.");
+}
+var str = "Hello, world!";
+var substring = "world";
+var regex = new RegExp(substring);
+
+if (regex.test(str)) {
+  console.log("Substring is found.");
+} else {
+  console.log("Substring is not found.");
 }
