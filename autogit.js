@@ -1,59 +1,22 @@
-class Stack {
-  constructor() {
-    this.items = []; // Array to store stack elements
+function binarySearch(arr, target, start = 0, end = arr.length - 1) {
+  if (start > end) {
+    return -1; // target not found
   }
 
-  // Push element to the top of the stack
-  push(element) {
-    this.items.push(element);
+  const mid = Math.floor((start + end) / 2);
+
+  if (arr[mid] === target) {
+    return mid; // target found
   }
 
-  // Remove and return the top element from the stack
-  pop() {
-    if (this.isEmpty()) {
-      return "Underflow";
-    }
-    return this.items.pop();
-  }
-
-  // Return the top element in the stack without removing it
-  peek() {
-    if (this.isEmpty()) {
-      return "No elements in the stack";
-    }
-    return this.items[this.items.length - 1];
-  }
-
-  // Check if the stack is empty
-  isEmpty() {
-    return this.items.length === 0;
-  }
-
-  // Return the number of elements in the stack
-  size() {
-    return this.items.length;
-  }
-
-  // Remove all elements from the stack
-  clear() {
-    this.items = [];
+  if (arr[mid] > target) {
+    return binarySearch(arr, target, start, mid - 1); // search in the left half
+  } else {
+    return binarySearch(arr, target, mid + 1, end); // search in the right half
   }
 }
+const sortedArray = [1, 4, 6, 8, 9, 13, 15];
 
-// Usage:
-const stack = new Stack();
-stack.push(1);
-stack.push(2);
-stack.push(3);
-
-console.log(stack.peek()); // Output: 3
-
-console.log(stack.pop()); // Output: 3
-console.log(stack.pop()); // Output: 2
-
-console.log(stack.size()); // Output: 1
-
-console.log(stack.isEmpty()); // Output: false
-
-stack.clear();
-console.log(stack.isEmpty()); // Output: true
+console.log(binarySearch(sortedArray, 6)); // Output: 2
+console.log(binarySearch(sortedArray, 13)); // Output: 5
+console.log(binarySearch(sortedArray, 2)); // Output: -1 (not found)
