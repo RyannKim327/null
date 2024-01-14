@@ -1,26 +1,9 @@
-function quicksort(arr) {
-  if (arr.length <= 1) {
-    return arr;
-  }
-  
-  const pivot = arr[Math.floor(arr.length / 2)];
-  const less = [];
-  const equal = [];
-  const greater = [];
-  
-  for (let element of arr) {
-    if (element < pivot) {
-      less.push(element);
-    } else if (element > pivot) {
-      greater.push(element);
-    } else {
-      equal.push(element);
-    }
-  }
-  
-  return quicksort(less).concat(equal, quicksort(greater));
+function findKthSmallestElement(arr, k) {
+  arr.sort((a, b) => a - b);
+  return arr[k - 1];
 }
+const array = [8, 6, 2, 11, 5, 9];
+const k = 3;
+const kthSmallest = findKthSmallestElement(array, k);
 
-// Example usage:
-const array = [4, 2, 7, 1, 3];
-console.log(quicksort(array)); // Output: [1, 2, 3, 4, 7]
+console.log(kthSmallest); // Output: 6
