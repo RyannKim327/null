@@ -1,55 +1,45 @@
-function calculateLPS(pattern) {
-    const lps = [0];
-    let len = 0; // keeps track of the length of the previous longest prefix suffix
+function getIntersection(list1, list2) {
+  if (!list1 || !list2) {
+    return null;
+  }
 
-    for (let i = 1; i < pattern.length; ) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
+  let len1 = getListLength(list1);
+  let len2 = getListLength(list2);
+  let diff = Math.abs(len1 - len2);
+
+  let ptr1 = list1;
+  let ptr2 = list2;
+
+  if (len1 > len2) {
+    while (diff > 0) {
+      ptr1 = ptr1.next;
+      diff--;
     }
+  } else if (len2 > len1) {
+    while (diff > 0) {
+      ptr2 = ptr2.next;
+      diff--;
+    }
+  }
 
-    return lps;
+  while (ptr1 && ptr2) {
+    if (ptr1 === ptr2) {
+      return ptr1;
+    }
+    ptr1 = ptr1.next;
+    ptr2 = ptr2.next;
+  }
+
+  return null;
 }
 
-function searchKMP(text, pattern) {
-    const lps = calculateLPS(pattern);
-    const result = [];
-
-    let i = 0; // index for text
-    let j = 0; // index for pattern
-
-    while (i < text.length) {
-        if (text[i] === pattern[j]) {
-            i++;
-            j++;
-        }
-
-        if (j === pattern.length) {
-            result.push(i - j);
-            j = lps[j - 1];
-        } else if (i < text.length && text[i] !== pattern[j]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
-    }
-
-    return result;
+// Helper function to calculate the length of a linked list
+function getListLength(head) {
+  let length = 0;
+  let current = head;
+  while (current) {
+    length++;
+    current = current.next;
+  }
+  return length;
 }
-
-// Example usage:
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const matches = searchKMP(text, pattern);
-console.log(matches); // Output: [10]
