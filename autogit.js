@@ -1,13 +1,13 @@
-function factorial(n) {
-  // Base case: if n is 0 or 1, return 1
-  if (n === 0 || n === 1) {
-    return 1;
+function isArraySorted(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false;
+    }
   }
-  // Recursive case: multiply n by factorial of (n - 1)
-  return n * factorial(n - 1);
+  return true;
 }
+const array1 = [1, 2, 3, 4, 5];
+console.log(isArraySorted(array1)); // Output: true
 
-// Example usage
-const num = 5;
-const result = factorial(num);
-console.log(`The factorial of ${num} is ${result}.`);
+const array2 = [4, 2, 6, 1, 8];
+console.log(isArraySorted(array2)); // Output: false
