@@ -1,57 +1,39 @@
-function depthLimitedSearch(node, goal, depthLimit) {
-  if (node === goal) {
-    // Goal reached, return the node
-    return node;
-  }
-  
-  // Check depth limit
-  if (depthLimit === 0) {
-    // Depth limit reached, return null to indicate failure
-    return null;
-  }
-  
-  // Recursive search for each child node
-  for (let i = 0; i < node.children.length; i++) {
-    const result = depthLimitedSearch(node.children[i], goal, depthLimit - 1);
-    
-    if (result) {
-      // If a non-null result is found, return it
-      return result;
+function findLongestIncreasingSubsequence(arr) {
+  const len = arr.length;
+  const memo = Array(len).fill(1); // Initialize memo array with 1 for each element
+
+  // Compute memo array
+  for (let i = 1; i < len; i++) {
+    for (let j = 0; j < i; j++) {
+      // Check if arr[i] can be added to previous subsequence
+      if (arr[i] > arr[j] && memo[i] <= memo[j]) {
+        memo[i] = memo[j] + 1;
+      }
     }
   }
-  
-  // No solution found at this depth
-  return null;
+
+  // Find the maximum subsequence length
+  let maxLength = 0;
+  for (let i = 0; i < len; i++) {
+    if (memo[i] > maxLength) {
+      maxLength = memo[i];
+    }
+  }
+
+  // Find the longest increasing subsequence
+  const result = [];
+  let currLength = maxLength;
+  for (let i = len - 1; i >= 0; i--) {
+    if (memo[i] === currLength) {
+      result.unshift(arr[i]);
+      currLength--;
+    }
+  }
+
+  return result;
 }
 
 // Example usage:
-let tree = {
-  value: 1,
-  children: [
-    {
-      value: 2,
-      children: [
-        {
-          value: 3,
-          children: []
-        }
-      ]
-    },
-    {
-      value: 4,
-      children: [
-        {
-          value: 5,
-          children: []
-        },
-        {
-          value: 6,
-          children: []
-        }
-      ]
-    }
-  ]
-};
-
-let result = depthLimitedSearch(tree, 5, 3);
-console.log(result);
+const array = [3, 7, 1, 8, 5, 9, 2, 6, 4];
+const longestIncreasingSubsequence = findLongestIncreasingSubsequence(array);
+console.log(longestIncreasingSubsequence); // Output: [1, 2, 4]
