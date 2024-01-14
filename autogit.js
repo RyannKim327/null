@@ -1,46 +1,59 @@
-function mergeSort(arr) {
-  const arrLen = arr.length;
-  let tempArray = [];
-
-  for (let i = 0; i < arrLen; i++) {
-    tempArray.push([arr[i]]);
+class Stack {
+  constructor() {
+    this.items = []; // Array to store stack elements
   }
 
-  let merged = [];
-  while (arrLen > 1) {
-    arrLen = Math.ceil(arrLen / 2);
-    for (let i = 0; i < arrLen; i++) {
-      const left = tempArray[2 * i];
-      const right = tempArray[2 * i + 1];
-      const mergedArr = merge(left, right);
-      merged.push(mergedArr);
+  // Push element to the top of the stack
+  push(element) {
+    this.items.push(element);
+  }
+
+  // Remove and return the top element from the stack
+  pop() {
+    if (this.isEmpty()) {
+      return "Underflow";
     }
-    tempArray = merged;
-    merged = [];
+    return this.items.pop();
   }
 
-  return tempArray[0];
+  // Return the top element in the stack without removing it
+  peek() {
+    if (this.isEmpty()) {
+      return "No elements in the stack";
+    }
+    return this.items[this.items.length - 1];
+  }
+
+  // Check if the stack is empty
+  isEmpty() {
+    return this.items.length === 0;
+  }
+
+  // Return the number of elements in the stack
+  size() {
+    return this.items.length;
+  }
+
+  // Remove all elements from the stack
+  clear() {
+    this.items = [];
+  }
 }
 
-function merge(left, right) {
-  const merged = [];
-  let leftIndex = 0;
-  let rightIndex = 0;
+// Usage:
+const stack = new Stack();
+stack.push(1);
+stack.push(2);
+stack.push(3);
 
-  while (leftIndex < left.length && rightIndex < right.length) {
-    if (left[leftIndex] < right[rightIndex]) {
-      merged.push(left[leftIndex]);
-      leftIndex++;
-    } else {
-      merged.push(right[rightIndex]);
-      rightIndex++;
-    }
-  }
+console.log(stack.peek()); // Output: 3
 
-  return merged.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
-}
+console.log(stack.pop()); // Output: 3
+console.log(stack.pop()); // Output: 2
 
-// Example usage:
-const arr = [4, 2, 8, 5, 1, 9, 6, 3, 7];
-const sortedArray = mergeSort(arr);
-console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+console.log(stack.size()); // Output: 1
+
+console.log(stack.isEmpty()); // Output: false
+
+stack.clear();
+console.log(stack.isEmpty()); // Output: true
