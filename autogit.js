@@ -1,51 +1,24 @@
-function fibonacciSeries(n) {
-  if (n === 1) return [0];
-  if (n === 2) return [0, 1];
-  
-  let fibSeries = [0, 1];
-  for (let i = 2; i < n; i++) {
-    fibSeries.push(fibSeries[i - 1] + fibSeries[i - 2]);
-  }
-  return fibSeries;
-}
-function findFibonacciIndex(n) {
-  if (n <= 0) return -1;
-  if (n === 1) return 0;
+function findFirstRepeatedCharacter(str) {
+  // Create a map to store character occurrences
+  const charMap = {};
 
-  let fibSeries = fibonacciSeries(n);
-  let m = 0;
-  while (fibSeries[m] < n) {
-    m++;
-  }
-  return m;
-}
-function fibonacciSearch(arr, x, n) {
-  let fibM = findFibonacciIndex(n);
-  
-  let offset = -1;
-  while (fibM > 1) {
-    let i = Math.min(offset + fibonacciSeries(fibM - 2), n - 1);
-    
-    if (arr[i] < x) {
-      fibM = fibM - 1;
-      offset = i;
-    } else if (arr[i] > x) {
-      fibM = fibM - 2;
-    } else {
-      return i;
+  // Loop through each character in the string
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+
+    // If the character is already in the map, it's a repeat
+    if (charMap[char]) {
+      return char; // Return the repeated character
     }
+    
+    // Store the occurrence of the character in the map
+    charMap[char] = true;
   }
-  
-  if (fibM === 1 && arr[offset + 1] === x) {
-    return offset + 1;
-  }
-  
-  return -1;
-}
-let arr = [1, 5, 10, 15, 20, 25, 30];
-let x = 25;
-let n = arr.length;
 
-let result = fibonacciSearch(arr, x, n);
-console.log(`Element ${x} is found at index ${result}.`);
-Element 25 is found at index 5.
+  return null; // No repeated character found
+}
+
+// Example usage
+const input = "abbcdeff";
+const firstRepeatedChar = findFirstRepeatedCharacter(input);
+console.log(firstRepeatedChar); // Output: "b"
