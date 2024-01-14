@@ -1,58 +1,75 @@
-function computeLPSArray(pattern) {
-  const lps = [0]; // initialize the lps array with 0
+class BiDirectionalSearch {
+  constructor(graph) {
+    this.graph = graph;
+    this.forwardQueue = [];
+    this.backwardQueue = [];
+    this.exploredForward = new Set();
+    this.exploredBackward = new Set();
+    this.path = [];
+  }
 
-  let len = 0; // length of the previous longest prefix suffix
-  let i = 1;
+  search(startNode, goalNode) {
+    this.forwardQueue.push(startNode);
+    this.backwardQueue.push(goalNode);
+    this.exploredForward.add(startNode);
+    this.exploredBackward.add(goalNode);
+    
+    while (this.forwardQueue.length && this.backwardQueue.length) {
+      const forwardNode = this.forwardQueue.shift();
+      const backwardNode = this.backwardQueue.shift();
 
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[len]) {
-      len++;
-      lps[i] = len;
-      i++;
-    } else {
-      if (len !== 0) {
-        len = lps[len - 1];
-      } else {
-        lps[i] = 0;
-        i++;
+      if (this.exploredBackward.has(forwardNode)) {
+        this.path.push(forwardNode);
+        this.path.push(backwardNode);
+        break;
+      }
+
+      if (this.exploredForward.has(backwardNode)) {
+        this.path.push(forwardNode);
+        this.path.push(backwardNode);
+        break;
+      }
+
+      this.expandForward(forwardNode);
+      this.expandBackward(backwardNode);
+    }
+
+    return this.path.reverse();
+  }
+
+  expandForward(node) {
+    const neighbors = this.graph[node];
+    for (let neighbor of neighbors) {
+      if (!this.exploredForward.has(neighbor)) {
+        this.exploredForward.add(neighbor);
+        this.forwardQueue.push(neighbor);
       }
     }
   }
 
-  return lps;
-}
-function kmpSearch(text, pattern) {
-  const lps = computeLPSArray(pattern);
-
-  let i = 0; // index for text[]
-  let j = 0; // index for pattern[]
-
-  const results = [];
-
-  while (i < text.length) {
-    if (pattern[j] === text[i]) {
-      i++;
-      j++;
-    }
-
-    if (j === pattern.length) {
-      // pattern found at index i-j
-      results.push(i - j);
-      j = lps[j - 1];
-    } else if (i < text.length && pattern[j] !== text[i]) {
-      // mismatch after j matches
-      if (j !== 0) {
-        j = lps[j - 1];
-      } else {
-        i++;
+  expandBackward(node) {
+    const neighbors = this.graph[node];
+    for (let neighbor of neighbors) {
+      if (!this.exploredBackward.has(neighbor)) {
+        this.exploredBackward.add(neighbor);
+        this.backwardQueue.push(neighbor);
       }
     }
   }
-
-  return results;
 }
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
 
-const indices = kmpSearch(text, pattern);
-console.log("Pattern found at indices:", indices); // Output: Pattern found at indices: [10]
+// Example usage
+const graph = {
+  A: ['B', 'C'],
+  B: ['A', 'D', 'E'],
+  C: ['A', 'F'],
+  D: ['B'],
+  E: ['B', 'G'],
+  F: ['C', 'H'],
+  G: ['E', 'H'],
+  H: ['F', 'G'],
+};
+
+const search = new BiDirectionalSearch(graph);
+const path = search.search('A', 'H');
+console.log(path);
