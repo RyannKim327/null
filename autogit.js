@@ -1,75 +1,69 @@
-class PriorityQueue {
-  constructor() {
-    this.queue = [];
-  }
-
-  enqueue(vertex, distance) {
-    this.queue.push({ vertex, distance });
-    this.queue.sort((a, b) => a.distance - b.distance);
-  }
-
-  dequeue() {
-    return this.queue.shift();
-  }
-
-  isEmpty() {
-    return this.queue.length === 0;
+// Definition of a LinkedList Node
+class Node {
+  constructor(value, next = null) {
+    this.value = value;
+    this.next = next;
   }
 }
 
-function dijkstra(graph, startVertex) {
-  const distances = {};
-  const previous = {};
-  const queue = new PriorityQueue();
-
-  // Initialize distances and previous
-  for (const vertex in graph) {
-    distances[vertex] = Infinity;
-    previous[vertex] = null;
+// Function to check if a LinkedList is a palindrome
+function isLinkedListPalindrome(head) {
+  if (!head || !head.next) {
+    return true; // An empty list or single element list is considered a palindrome
   }
-  distances[startVertex] = 0;
 
-  // Add the starting vertex to the priority queue
-  queue.enqueue(startVertex, 0);
+  let slow = head;
+  let fast = head;
 
-  while (!queue.isEmpty()) {
-    const { vertex: currentVertex, distance: currentDistance } = queue.dequeue();
+  // Use fast and slow pointers to find the middle of the LinkedList
+  while (fast && fast.next) {
+    fast = fast.next.next;
+    slow = slow.next;
+  }
 
-    // Explore neighbors
-    for (const neighbor in graph[currentVertex]) {
-      const totalDistance = currentDistance + graph[currentVertex][neighbor];
-      if (totalDistance < distances[neighbor]) {
-        distances[neighbor] = totalDistance;
-        previous[neighbor] = currentVertex;
-        queue.enqueue(neighbor, totalDistance);
-      }
+  // Reverse the second half of the LinkedList
+  let reversedSecondHalf = reverseLinkedList(slow);
+
+  fast = head;
+  slow = reversedSecondHalf;
+
+  // Compare values of the first and reversed second half of the LinkedList
+  while (slow) {
+    if (fast.value !== slow.value) {
+      return false;
     }
+    fast = fast.next;
+    slow = slow.next;
   }
 
-  return { distances, previous };
+  return true;
 }
 
-// Example graph
-const graph = {
-  A: { B: 5, C: 2 },
-  B: { A: 5, C: 1, D: 3 },
-  C: { A: 2, B: 1, D: 6 },
-  D: { B: 3, C: 6 },
-};
-
-const startVertex = 'A';
-const endVertex = 'D';
-
-const { distances, previous } = dijkstra(graph, startVertex);
-
-// Print shortest distance
-console.log(`Shortest distance from ${startVertex} to ${endVertex}: ${distances[endVertex]}`);
-
-// Print shortest path
-let currentVertex = endVertex;
-const shortestPath = [currentVertex];
-while (previous[currentVertex]) {
-  currentVertex = previous[currentVertex];
-  shortestPath.unshift(currentVertex);
+// Helper function to reverse a LinkedList from a given node
+function reverseLinkedList(node) {
+  let prev = null;
+  while (node) {
+    const next = node.next;
+    node.next = prev;
+    prev = node;
+    node = next;
+  }
+  return prev;
 }
-console.log(`Shortest path: ${shortestPath.join(' -> ')}`);
+// Example usage
+const node1 = new Node('R');
+const node2 = new Node('A');
+const node3 = new Node('C');
+const node4 = new Node('E');
+const node5 = new Node('C');
+const node6 = new Node('A');
+const node7 = new Node('R');
+
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node5;
+node5.next = node6;
+node6.next = node7;
+
+console.log(isLinkedListPalindrome(node1)); // Output: true
