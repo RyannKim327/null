@@ -1,24 +1,18 @@
-function isPalindrome(head) {
-  let values = [];
-  let current = head;
+// Import the Axios library
+const axios = require('axios');
 
-  // Traverse the linked list
-  while (current) {
-    values.push(current.value);
-    current = current.next;
-  }
+// Define the URL endpoint you want to send the request to
+const url = 'https://jsonplaceholder.typicode.com/posts/1';
 
-  let start = 0;
-  let end = values.length - 1;
-
-  // Check if it is a palindrome
-  while (start <= end) {
-    if (values[start] !== values[end]) {
-      return false;
-    }
-    start++;
-    end--;
-  }
-
-  return true;
-}
+// Send an HTTP GET request to the specified URL
+axios.get(url)
+  .then(response => {
+    // Handle the response data
+    console.log('Response:', response.data);
+  })
+  .catch(error => {
+    // Handle any errors that occurred during the request
+    console.error('Error:', error.message);
+  });
+npm install axios
+yarn add axios
