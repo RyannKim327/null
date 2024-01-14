@@ -1,20 +1,17 @@
-function isAnagram(str1, str2) {
-  // Remove non-alphabetic characters and convert to lowercase
-  str1 = str1.replace(/[^a-zA-Z]/g, '').toLowerCase();
-  str2 = str2.replace(/[^a-zA-Z]/g, '').toLowerCase();
+// Prompt the user for a number
+const num1 = parseFloat(prompt("Enter a number:"));
 
-  // Sort both strings
-  const sortedStr1 = str1.split('').sort().join('');
-  const sortedStr2 = str2.split('').sort().join('');
+// Prompt the user for another number
+const num2 = parseFloat(prompt("Enter another number:"));
 
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
-}
-const string1 = "listen";
-const string2 = "silent";
+// Perform addition, subtraction, multiplication, and division on the two numbers
+const sum = num1 + num2;
+const difference = num1 - num2;
+const product = num1 * num2;
+const quotient = num1 / num2;
 
-if (isAnagram(string1, string2)) {
-  console.log(`"${string1}" and "${string2}" are anagrams.`);
-} else {
-  console.log(`"${string1}" and "${string2}" are not anagrams.`);
-}
+// Output the results
+console.log("Sum:", sum);
+console.log("Difference:", difference);
+console.log("Product:", product);
+console.log("Quotient:", quotient);
