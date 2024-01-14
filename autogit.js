@@ -1,41 +1,58 @@
-function generateFibonacci(length) {
-  const fib = [0, 1];
-  for (let i = 2; i < length; i++) {
-    fib[i] = fib[i - 1] + fib[i - 2];
-  }
-  return fib;
-}
-function fibonacciSearch(array, searchValue, fib) {
-  const length = array.length;
-  let fibIndex = 0;
-  while (fib[fibIndex] < length) {
-    fibIndex++;
-  }
-  let left = 0;
-  let mid = fib[fibIndex - 2];
+function computeLPSArray(pattern) {
+  const lps = [0]; // initialize the lps array with 0
 
-  while (left <= length) {
-    if (searchValue === array[mid]) {
-      return mid;
-    }
-    if (searchValue < array[mid]) {
-      fibIndex -= 2;
-      mid = fib[fibIndex - 1];
-      left = mid + 1;
+  let len = 0; // length of the previous longest prefix suffix
+  let i = 1;
+
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[len]) {
+      len++;
+      lps[i] = len;
+      i++;
     } else {
-      fibIndex -= 1;
-      mid = fib[fibIndex];
-      left = mid + 1;
+      if (len !== 0) {
+        len = lps[len - 1];
+      } else {
+        lps[i] = 0;
+        i++;
+      }
     }
   }
-  return -1; // Element not found
+
+  return lps;
 }
-// Example usage
-const array = [1, 2, 3, 5, 8, 13, 21, 34, 55];
-const searchValue = 13;
+function kmpSearch(text, pattern) {
+  const lps = computeLPSArray(pattern);
 
-const fib = generateFibonacci(10); // Generate a Fibonacci sequence for an array of length 10
-const index = fibonacciSearch(array, searchValue, fib);
+  let i = 0; // index for text[]
+  let j = 0; // index for pattern[]
 
-console.log(`Index of ${searchValue}: ${index}`);
-Index of 13: 5
+  const results = [];
+
+  while (i < text.length) {
+    if (pattern[j] === text[i]) {
+      i++;
+      j++;
+    }
+
+    if (j === pattern.length) {
+      // pattern found at index i-j
+      results.push(i - j);
+      j = lps[j - 1];
+    } else if (i < text.length && pattern[j] !== text[i]) {
+      // mismatch after j matches
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
+      }
+    }
+  }
+
+  return results;
+}
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+
+const indices = kmpSearch(text, pattern);
+console.log("Pattern found at indices:", indices); // Output: Pattern found at indices: [10]
