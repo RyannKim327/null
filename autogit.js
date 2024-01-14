@@ -1,105 +1,71 @@
-class BTreeNode {
-  constructor(t, leaf) {
-    this.keys = [];
-    this.children = [];
-    this.leaf = leaf || true;
-    this.degree = t;
+class TrieNode {
+  constructor() {
+    this.children = {}; // Mapping of characters to TrieNode
+    this.isEndOfWord = false; // Flag indicating end of a word
   }
 }
-
-class BTree {
-  constructor(t) {
-    this.root = null;
-    this.degree = t;
+class Trie {
+  constructor() {
+    this.root = new TrieNode(); // Initialize the root node
   }
 
-  insert(key) {
-    if (this.root == null) {
-      this.root = new BTreeNode(this.degree, true);
-      this.root.keys.push(key);
-    } else {
-      if (this.root.keys.length === 2 * this.degree - 1) {
-        const newNode = new BTreeNode(this.degree, false);
-        newNode.children.push(this.root);
-        this.splitChild(newNode, 0, this.root);
-
-        let i = 0;
-        if (newNode.keys[0] < key) {
-          i++;
-        }
-        this.insertNonFull(newNode.children[i], key);
-        this.root = newNode;
-      } else {
-        this.insertNonFull(this.root, key);
+  // Insert a word into the Trie
+  insert(word) {
+    let node = this.root;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      if (!(char in node.children)) {
+        node.children[char] = new TrieNode(); // Create a new node if character doesn't exist
       }
+      node = node.children[char]; // Move to the next node
     }
+    node.isEndOfWord = true; // Mark end of word
   }
 
-  insertNonFull(node, key) {
-    let i = node.keys.length - 1;
-    if (node.leaf) {
-      while (i >= 0 && node.keys[i] > key) {
-        node.keys[i + 1] = node.keys[i];
-        i--;
+  // Search for a word in the Trie
+  search(word) {
+    let node = this.root;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      if (!(char in node.children)) {
+        return false; // Word not found
       }
-      node.keys[i + 1] = key;
-    } else {
-      while (i >= 0 && node.keys[i] > key) {
-        i--;
+      node = node.children[char]; // Move to the next node
+    }
+    return node.isEndOfWord; // Return true only if it's end of a word
+  }
+
+  // Check if any word starts with the given prefix
+  startsWith(prefix) {
+    let node = this.root;
+    for (let i = 0; i < prefix.length; i++) {
+      const char = prefix[i];
+      if (!(char in node.children)) {
+        return false; // Prefix not found
       }
-      i++;
-      if (node.children[i].keys.length === 2 * this.degree - 1) {
-        this.splitChild(node, i, node.children[i]);
-        if (node.keys[i] < key) {
-          i++;
-        }
-      }
-      this.insertNonFull(node.children[i], key);
+      node = node.children[char]; // Move to the next node
     }
-  }
-
-  splitChild(parent, index, node) {
-    const newNode = new BTreeNode(this.degree, node.leaf);
-    parent.keys.splice(index, 0, node.keys[this.degree - 1]);
-    parent.children.splice(index + 1, 0, newNode);
-
-    newNode.keys = node.keys.splice(this.degree, this.degree - 1);
-    if (!node.leaf) {
-      newNode.children = node.children.splice(this.degree, this.degree);
-    }
-  }
-
-  search(key) {
-    if (this.root) {
-      return this.searchKey(this.root, key);
-    }
-    return false;
-  }
-
-  searchKey(node, key) {
-    let i = 0;
-    while (i < node.keys.length && key > node.keys[i]) {
-      i++;
-    }
-
-    if (node.keys[i] === key) {
-      return true;
-    }
-
-    if (node.leaf) {
-      return false;
-    }
-
-    return this.searchKey(node.children[i], key);
+    return true; // Prefix found
   }
 }
+// Create a new Trie
+const trie = new Trie();
 
-// Example usage
-const bTree = new BTree(3); // t = 3, where t is the minimum degree
+// Insert words into the Trie
+trie.insert("apple");
+trie.insert("banana");
+trie.insert("apply");
+trie.insert("bat");
+trie.insert("batman");
 
-bTree.insert(10);
-bTree.insert(20);
-bTree.insert(30);
+// Search for words in the Trie
+console.log(trie.search("apple")); // true
+console.log(trie.search("banana")); // true
+console.log(trie.search("app")); // false
+console.log(trie.search("batman")); // true
 
-console.log(bTree.search(20)); // Output: true
-console.log(bTree.search(40)); // Output: false
+// Check if any word starts with a prefix
+console.log(trie.startsWith("app")); // true
+console.log(trie.startsWith("ban")); // true
+console.log(trie.startsWith("bat")); // true
+console.log(trie.startsWith("bats")); // false
