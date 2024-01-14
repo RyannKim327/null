@@ -1,29 +1,59 @@
-function binarySearch(arr, target) {
-    let left = 0;
-    let right = arr.length - 1;
+class Node {
+  constructor(value, children = []) {
+    this.value = value;
+    this.children = children;
+  }
+}
+function breadthLimitedSearch(root, limit) {
+  if (!root) return null;
 
-    while (left <= right) {
-        let mid = Math.floor((left + right) / 2);
+  const queue = [];
+  queue.push(root);
 
-        if (arr[mid] === target) {
-            return mid;
-        } else if (arr[mid] < target) {
-            left = mid + 1;
-        } else {
-            right = mid - 1;
-        }
+  let depth = 0;
+
+  while (queue.length > 0 && depth <= limit) {
+    const node = queue.shift();
+
+    console.log(`Visiting node: ${node.value}`);
+
+    if (depth < limit) {
+      node.children.forEach(child => {
+        queue.push(child);
+      });
     }
 
-    return -1; // return -1 if target is not found
+    if (queue[0] && depth !== getNodeDepth(queue[0])) {
+      depth++;
+    }
+  }
 }
+function getNodeDepth(node) {
+  let depth = 0;
+  let currNode = node;
 
-// Example usage:
-const sortedArray = [1, 3, 5, 7, 9, 11, 13, 15];
-const target = 9;
+  while (currNode) {
+    depth++;
+    currNode = currNode.parent;
+  }
 
-const result = binarySearch(sortedArray, target);
-if (result !== -1) {
-    console.log(`Target found at index ${result}`);
-} else {
-    console.log(`Target not found`);
+  return depth;
 }
+const rootNode = new Node('A');
+const nodeB = new Node('B');
+const nodeC = new Node('C');
+const nodeD = new Node('D');
+const nodeE = new Node('E');
+const nodeF = new Node('F');
+
+rootNode.children = [nodeB, nodeC];
+nodeB.children = [nodeD, nodeE];
+nodeC.children = [nodeF];
+
+breadthLimitedSearch(rootNode, 2);
+Visiting node: A
+Visiting node: B
+Visiting node: C
+Visiting node: D
+Visiting node: E
+Visiting node: F
