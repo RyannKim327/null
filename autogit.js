@@ -1,19 +1,29 @@
-// Define an async function to connect to the Android async task
-async function connectToAsyncTask() {
-  try {
-    const asyncTask = window.AndroidAsyncTask; // Reference to the Android async task
+function findMiddleElement(head) {
+  let slow = head;
+  let fast = head;
 
-    // Call the async task function
-    const result = await asyncTask.connect();
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
+  }
 
-    // Handle the result
-    console.log('Connected to async task:', result);
-
-    // Other code to execute after connecting...
-  } catch (error) {
-    console.error('Error connecting to async task:', error);
+  return slow;
+}
+// Linked List Node
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
   }
 }
 
-// Call the connectToAsyncTask() function when the page has finished loading
-window.addEventListener('load', connectToAsyncTask);
+// Create Linked List
+let head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
+
+// Find Middle Element
+let middleElement = findMiddleElement(head);
+console.log(middleElement.data); // Output: 3
