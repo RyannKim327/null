@@ -1,20 +1,29 @@
-function factorialLoop(num) {
-  let result = 1;
-  for (let i = 2; i <= num; i++) {
-    result *= i;
+function quickselect(arr, k) {
+  // Check if the array has only one element
+  if (arr.length === 1) {
+    return arr[0];
   }
-  return result;
-}
 
-// Example usage:
-console.log(factorialLoop(5)); // Output: 120
-function factorialRecursion(num) {
-  if (num === 0) {
-    return 1;
+  // Choose a pivot element
+  const pivotIndex = Math.floor(Math.random() * arr.length);
+  const pivot = arr[pivotIndex];
+
+  // Divide the array into two partitions
+  const smaller = arr.filter((num) => num < pivot);
+  const equal = arr.filter((num) => num === pivot);
+  const larger = arr.filter((num) => num > pivot);
+
+  // Recurse on the appropriate partition
+  if (k <= smaller.length) {
+    return quickselect(smaller, k);
+  } else if (k <= smaller.length + equal.length) {
+    return equal[0];
   } else {
-    return num * factorialRecursion(num - 1);
+    return quickselect(larger, k - smaller.length - equal.length);
   }
 }
+const arr = [6, 2, 8, 1, 4];
+const k = 3;
 
-// Example usage:
-console.log(factorialRecursion(5)); // Output: 120
+const kthSmallest = quickselect(arr, k);
+console.log(kthSmallest); // Output: 4
