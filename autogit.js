@@ -1,12 +1,18 @@
-function isPalindrome(str) {
-  // Remove all non-alphanumeric characters and convert to lowercase
-  const cleanStr = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+// Function to generate a random number in a given range
+function getRandomNumber(min, max) {
+  // Calculate the range (inclusive of both min and max)
+  const range = max - min + 1;
 
-  // Compare the clean string with its reversed version
-  return cleanStr === cleanStr.split('').reverse().join('');
+  // Generate a random number between 0 and 1
+  const randomNumber = Math.random();
+
+  // Scale the random number to the desired range and return it
+  return Math.floor(randomNumber * range) + min;
 }
 
-// Example usage:
-console.log(isPalindrome('racecar'));   // true
-console.log(isPalindrome('hello'));     // false
-console.log(isPalindrome('A man, a plan, a canal. Panama!'));  // true
+// Example usage
+const min = 1;
+const max = 10;
+
+const randomNumber = getRandomNumber(min, max);
+console.log(randomNumber);
