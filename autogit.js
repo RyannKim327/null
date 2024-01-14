@@ -1,21 +1,9 @@
-function findFirstRepeatedCharacter(str) {
-  const charMap = {};
-  
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    
-    if (charMap[char]) {
-      return char;
-    }
-    
-    charMap[char] = true;
-  }
-  
-  return null;
-}
+const cron = require('node-cron');
 
-// Example usage:
-const inputString = "abcdabc";
-const repeatedChar = findFirstRepeatedCharacter(inputString);
+// Define a function to be executed
+const myFunction = () => {
+  console.log('Running myFunction at', new Date());
+};
 
-console.log("First repeated character:", repeatedChar);
+// Schedule the function to run every minute using cron syntax
+cron.schedule('* * * * *', myFunction);
