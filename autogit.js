@@ -1,17 +1,22 @@
-function findMedianSortedArrays(arr1, arr2) {
-  const mergedArray = arr1.concat(arr2).sort((a, b) => a - b);
-  const n = mergedArray.length;
+function binarySearchRecursive(arr, target, start, end) {
+  if (start > end) {
+    return -1; // Element not found
+  }
 
-  if (n % 2 === 1) {
-    return mergedArray[Math.floor(n / 2)];
+  let mid = Math.floor((start + end) / 2);
+
+  if (arr[mid] === target) {
+    return mid; // Element found at mid index
+  } else if (arr[mid] > target) {
+    return binarySearchRecursive(arr, target, start, mid - 1); // Search left half
   } else {
-    const midIndex = n / 2;
-    const median = (mergedArray[midIndex - 1] + mergedArray[midIndex]) / 2;
-    return median;
+    return binarySearchRecursive(arr, target, mid + 1, end);  // Search right half
   }
 }
 
 // Example usage:
-const arr1 = [1, 3, 5];
-const arr2 = [2, 4, 6];
-console.log(findMedianSortedArrays(arr1, arr2));  // Output: 3.5
+const arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
+const target = 23;
+
+const index = binarySearchRecursive(arr, target, 0, arr.length - 1);
+console.log(`Element found at index ${index}`);
