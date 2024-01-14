@@ -1,19 +1,9 @@
-function factorialIterative(n) {
-  let result = 1;
-  for (let i = 2; i <= n; i++) {
-    result *= i;
-  }
-  return result;
-}
+let str = '42';
+let num = parseInt(str);
 
-// Example usage
-console.log(factorialIterative(5));  // Output: 120
-function factorialRecursive(n) {
-  if (n === 0 || n === 1) {
-    return 1;
-  }
-  return n * factorialRecursive(n - 1);
-}
+console.log(num); // Output: 42
+console.log(typeof num); // Output: number
+let hexStr = 'A';
+let hexNum = parseInt(hexStr, 16);
 
-// Example usage
-console.log(factorialRecursive(5));  // Output: 120
+console.log(hexNum); // Output: 10 (decimal)
