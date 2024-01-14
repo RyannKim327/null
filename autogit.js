@@ -1,16 +1,15 @@
-const str = "Hello World";
-const substring = "World";
-
-if (str.includes(substring)) {
-  console.log("Substring found!");
-} else {
-  console.log("Substring not found.");
+function findFirstRepeatedChar(str) {
+  const charCount = {};
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    if (charCount[char]) {
+      return char;
+    }
+    charCount[char] = 1;
+  }
+  return null; // return null if no repeated character is found
 }
-const str = "Hello World";
-const regex = /World/;
 
-if (regex.test(str)) {
-  console.log("Substring found!");
-} else {
-  console.log("Substring not found.");
-}
+const inputString = "Hello World";
+const firstRepeatedChar = findFirstRepeatedChar(inputString);
+console.log("First Repeated Character:", firstRepeatedChar);
