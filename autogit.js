@@ -1,67 +1,45 @@
-let fib2 = 0;
-let fib1 = 1;
-let fib = fib2 + fib1;
-
-while (fib < n) {
-    fib2 = fib1;
-    fib1 = fib;
-    fib = fib2 + fib1;
+class TreeNode {
+  constructor(val, left = null, right = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
+  }
 }
-let index = Math.min(fib1, n - 1);
-while (arr[index] !== x && fib > 1) {
-    if (arr[index] < x) {
-        fib = fib1;
-        fib1 = fib2;
-        fib2 = fib - fib1;
-        index += fib2;
-    } else {
-        fib = fib2;
-        fib1 = fib1 - fib2;
-        fib2 = fib - fib1;
-        index -= fib2;
+
+function sumBinaryTree(root) {
+  if (!root) {
+    return 0;
+  }
+
+  let sum = 0;
+
+  function dfs(node) {
+    sum += node.val;
+    if (node.left) {
+      dfs(node.left);
     }
+    if (node.right) {
+      dfs(node.right);
+    }
+  }
+
+  dfs(root);
+
+  return sum;
 }
-if (arr[index] === x) {
-    return index;
-} else {
-    return -1;
-}
-function fibonacciSearch(arr, x, n) {
-    let fib2 = 0;
-    let fib1 = 1;
-    let fib = fib2 + fib1;
 
-    while (fib < n) {
-        fib2 = fib1;
-        fib1 = fib;
-        fib = fib2 + fib1;
-    }
+// Example usage:
 
-    let index = Math.min(fib1, n - 1);
+//     1
+//    / \
+//   2   3
+//  / \   \
+// 4   5   6
 
-    while (arr[index] !== x && fib > 1) {
-        if (arr[index] < x) {
-            fib = fib1;
-            fib1 = fib2;
-            fib2 = fib - fib1;
-            index += fib2;
-        } else {
-            fib = fib2;
-            fib1 = fib1 - fib2;
-            fib2 = fib - fib1;
-            index -= fib2;
-        }
-    }
+const tree = new TreeNode(
+  1,
+  new TreeNode(2, new TreeNode(4), new TreeNode(5)),
+  new TreeNode(3, null, new TreeNode(6))
+);
 
-    if (arr[index] === x) {
-        return index;
-    } else {
-        return -1;
-    }
-}
-const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const x = 6;
-const n = arr.length;
-
-const result = fibonacciSearch(arr, x, n);
-console.log(result);  // Output: 5
+console.log(sumBinaryTree(tree)); // Output: 21 (1 + 2 + 4 + 5 + 3 + 6)
