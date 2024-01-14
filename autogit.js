@@ -1,10 +1,17 @@
-function factorial(n) {
-  if (n === 0) {
-    return 1; // base case: factorial of 0 is 1
-  } else {
-    return n * factorial(n - 1); // recursive case: n! = n * (n-1)!
-  }
+function getRandomNumber(min, max) {
+  // Generate a random decimal between 0 and 1
+  const randomNumber = Math.random();
+  
+  // Scale the random decimal to fit the given range
+  const scaledNumber = randomNumber * (max - min + 1);
+  
+  // Shift the number to the starting point of the range
+  const finalNumber = Math.floor(scaledNumber) + min;
+  
+  return finalNumber;
 }
+const minNumber = 1;
+const maxNumber = 100;
 
-// Example usage
-console.log(factorial(5)); // Output: 120
+const randomNumber = getRandomNumber(minNumber, maxNumber);
+console.log(randomNumber);
