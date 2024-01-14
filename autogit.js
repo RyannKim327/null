@@ -1,17 +1,19 @@
-function reverseWords(str) {
-  // Split the string into an array of words
-  const words = str.split(' ');
-
-  // Reverse the order of the words using the reverse method
-  const reversedWords = words.reverse();
-
-  // Join the reversed words back into a string
-  const reversedString = reversedWords.join(' ');
-
-  return reversedString;
+function factorialIterative(n) {
+  let result = 1;
+  for (let i = 2; i <= n; i++) {
+    result *= i;
+  }
+  return result;
 }
 
-const inputString = 'Hello world!';
+// Example usage
+console.log(factorialIterative(5));  // Output: 120
+function factorialRecursive(n) {
+  if (n === 0 || n === 1) {
+    return 1;
+  }
+  return n * factorialRecursive(n - 1);
+}
 
-const reversedString = reverseWords(inputString);
-console.log(reversedString); // Output: "world! Hello"
+// Example usage
+console.log(factorialRecursive(5));  // Output: 120
