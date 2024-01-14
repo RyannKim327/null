@@ -1,41 +1,15 @@
-// Example function to check if a state is the goal state
-function isGoalState(state) {
-  // implementation
-}
-
-// Example function to generate all possible actions from a state
-function generateActions(state) {
-  // implementation
-}
-
-function depthLimitedSearch(state, depthLimit) {
-  if (isGoalState(state)) {
-    return state;
-  }
-  
-  if (depthLimit === 0) {
-    return "Depth limit reached.";
-  }
-  
-  var actions = generateActions(state);
-  
-  for (var i = 0; i < actions.length; i++) {
-    var action = actions[i];
-    var newState = applyAction(state, action);
-    
-    var result = depthLimitedSearch(newState, depthLimit - 1);
-    
-    if (result !== null && result !== "Depth limit reached.") {
-      return result;
+function isAscending(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false;
     }
   }
-  
-  return null;
+  return true;
 }
 
-// Call the depthLimitedSearch function with initial parameters
-var initialState = // set the initial state
-var depthLimit = // set the depth limit
+// Example usage:
+const array1 = [1, 2, 3, 4, 5];
+console.log(isAscending(array1)); // Output: true
 
-var result = depthLimitedSearch(initialState, depthLimit);
-console.log(result);
+const array2 = [1, 3, 2, 4, 5];
+console.log(isAscending(array2)); // Output: false
