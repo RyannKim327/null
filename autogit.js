@@ -1,29 +1,40 @@
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
-
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
+function mergeSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
   }
-
-  return slow;
-}
-// Linked List Node
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
+  
+  const middle = Math.floor(arr.length / 2);
+  const left = arr.slice(0, middle);
+  const right = arr.slice(middle);
+  
+  return merge(mergeSort(left), mergeSort(right));
 }
 
-// Create Linked List
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
+function merge(left, right) {
+  let result = [];
+  let i = 0;
+  let j = 0;
+  
+  while (i < left.length && j < right.length) {
+    if (left[i] < right[j]) {
+      result.push(left[i++]);
+    } else {
+      result.push(right[j++]);
+    }
+  }
+  
+  while (i < left.length) {
+    result.push(left[i++]);
+  }
+  
+  while (j < right.length) {
+    result.push(right[j++]);
+  }
+  
+  return result;
+}
 
-// Find Middle Element
-let middleElement = findMiddleElement(head);
-console.log(middleElement.data); // Output: 3
+// Example usage
+const arr = [8, 4, 2, 9, 3, 1, 5, 7, 6];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr); // [1, 2, 3, 4, 5, 6, 7, 8, 9]
