@@ -1,29 +1,49 @@
-function binarySearch(arr, target) {
-  let start = 0;
-  let end = arr.length - 1;
+function reverseLinkedList(node) {
+  let prev = null;
+  let current = node;
+  let next = null;
 
-  while (start <= end) {
-    let mid = Math.floor((start + end) / 2);
-
-    if (arr[mid] === target) {
-      return mid;
-    } else if (arr[mid] < target) {
-      start = mid + 1;
-    } else {
-      end = mid - 1;
-    }
+  while (current != null) {
+    next = current.next;
+    current.next = prev;
+    prev = current;
+    current = next;
   }
 
-  return -1;
+  return prev;
 }
+function findMiddleNode(node) {
+  let slow = node;
+  let fast = node;
 
-// Example usage
-const numbers = [1, 3, 5, 7, 9];
-const target = 7;
-const result = binarySearch(numbers, target);
+  while (fast != null && fast.next != null) {
+    slow = slow.next;
+    fast = fast.next.next;
+  }
 
-if (result === -1) {
-  console.log("Element not found in array");
-} else {
-  console.log(`Element found at index ${result}`);
+  return slow;
+}
+function isLinkedListPalindrome(head) {
+  if (head == null || head.next == null) {
+    return true; // Empty or single-node list is a palindrome
+  }
+
+  // Find the middle node
+  const middle = findMiddleNode(head);
+
+  // Reverse the second half of the list starting from the middle node
+  const reversed = reverseLinkedList(middle);
+
+  // Compare the reversed second half with the first half
+  let current1 = head;
+  let current2 = reversed;
+  while (current1 != null && current2 != null) {
+    if (current1.value !== current2.value) {
+      return false; // Nodes don't match, not a palindrome
+    }
+    current1 = current1.next;
+    current2 = current2.next;
+  }
+
+  return true; // All nodes matched, it's a palindrome
 }
