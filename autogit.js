@@ -1,41 +1,47 @@
-function findLongestIncreasingSubsequence(arr) {
-  const n = arr.length;
-  // Create a dynamic programming table to store the lengths of the increasing subsequences
-  const dp = Array(n).fill(1);
+function merge(leftArr, rightArr) {
+  let mergedArr = [];
+  let leftIndex = 0;
+  let rightIndex = 0;
 
-  // Start from the second element and iterate over the array
-  for (let i = 1; i < n; i++) {
-    // Look for elements preceding the current element
-    for (let j = 0; j < i; j++) {
-      // If the current element is greater, update the length of the subsequence ending at the current element
-      if (arr[i] > arr[j] && dp[i] < dp[j] + 1) {
-        dp[i] = dp[j] + 1;
-      }
+  // Compare and merge elements from both arrays
+  while (leftIndex < leftArr.length && rightIndex < rightArr.length) {
+    if (leftArr[leftIndex] < rightArr[rightIndex]) {
+      mergedArr.push(leftArr[leftIndex]);
+      leftIndex++;
+    } else {
+      mergedArr.push(rightArr[rightIndex]);
+      rightIndex++;
     }
   }
 
-  // Find the maximum length in the dp array
-  let maxLength = 0;
-  for (let i = 0; i < n; i++) {
-    if (dp[i] > maxLength) {
-      maxLength = dp[i];
-    }
+  // Add remaining elements from leftArr (if any)
+  while (leftIndex < leftArr.length) {
+    mergedArr.push(leftArr[leftIndex]);
+    leftIndex++;
   }
 
-  // Reconstruct the longest increasing subsequence based on the dp array
-  const subsequence = [];
-  let length = maxLength;
-  for (let i = n - 1; i >= 0; i--) {
-    if (dp[i] === length) {
-      subsequence.unshift(arr[i]);
-      length--;
-    }
+  // Add remaining elements from rightArr (if any)
+  while (rightIndex < rightArr.length) {
+    mergedArr.push(rightArr[rightIndex]);
+    rightIndex++;
   }
 
-  return subsequence;
+  return mergedArr;
 }
+function mergeSort(arr) {
+  if (arr.length <= 1) {
+    return arr; // base case: array is already sorted
+  }
 
-// Example usage
-const array = [3, 10, 2, 1, 20];
-const longestIncreasingSubsequence = findLongestIncreasingSubsequence(array);
-console.log(longestIncreasingSubsequence);
+  const middleIndex = Math.floor(arr.length / 2);
+  const leftArr = arr.slice(0, middleIndex);
+  const rightArr = arr.slice(middleIndex);
+
+  const sortedLeftArr = mergeSort(leftArr);
+  const sortedRightArr = mergeSort(rightArr);
+
+  return merge(sortedLeftArr, sortedRightArr);
+}
+const arr = [5, 2, 6, 1, 3, 9, 4];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr);
