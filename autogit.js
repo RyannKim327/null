@@ -1,29 +1,38 @@
-function quickselect(arr, k) {
-  // Check if the array has only one element
-  if (arr.length === 1) {
-    return arr[0];
-  }
-
-  // Choose a pivot element
-  const pivotIndex = Math.floor(Math.random() * arr.length);
-  const pivot = arr[pivotIndex];
-
-  // Divide the array into two partitions
-  const smaller = arr.filter((num) => num < pivot);
-  const equal = arr.filter((num) => num === pivot);
-  const larger = arr.filter((num) => num > pivot);
-
-  // Recurse on the appropriate partition
-  if (k <= smaller.length) {
-    return quickselect(smaller, k);
-  } else if (k <= smaller.length + equal.length) {
-    return equal[0];
-  } else {
-    return quickselect(larger, k - smaller.length - equal.length);
-  }
+function topologicalSort(graph) {
+  let sorted = [];
 }
-const arr = [6, 2, 8, 1, 4];
-const k = 3;
+function visit(node, visited, sorted, graph) {
+  visited[node] = true;
 
-const kthSmallest = quickselect(arr, k);
-console.log(kthSmallest); // Output: 4
+  if (graph[node]) {
+    for (let neighbor of graph[node]) {
+      if (!visited[neighbor]) {
+        visit(neighbor, visited, sorted, graph);
+      }
+    }
+  }
+
+  sorted.unshift(node);
+}
+function topologicalSort(graph) {
+  let sorted = [];
+  let visited = {};
+
+  for (let node in graph) {
+    if (!visited[node]) {
+      visit(node, visited, sorted, graph);
+    }
+  }
+
+  return sorted;
+}
+let graph = {
+  A: ['B', 'C'],
+  B: ['D'],
+  C: [],
+  D: ['E'],
+  E: []
+};
+
+let sortedNodes = topologicalSort(graph);
+console.log(sortedNodes); // Output: ['A', 'C', 'B', 'D', 'E']
