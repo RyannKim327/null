@@ -1,58 +1,17 @@
-class Node {
-  constructor(position, gScore, hScore) {
-    this.position = position;
-    this.gScore = gScore;
-    this.hScore = hScore;
-    this.fScore = gScore + hScore;
-  }
+function areAnagrams(string1, string2) {
+  // Convert strings to character arrays
+  const charArray1 = string1.split('');
+  const charArray2 = string2.split('');
+
+  // Sort character arrays in alphabetical order
+  const sortedArray1 = charArray1.sort().join('');
+  const sortedArray2 = charArray2.sort().join('');
+
+  // Compare sorted strings
+  return sortedArray1 === sortedArray2;
 }
-function aStarSearch(start, goal) {
-  // Create open and closed sets to track nodes
-  const openSet = [new Node(start, 0, heuristic(start, goal))];
-  const closedSet = [];
 
-  while (openSet.length > 0) {
-    // Find the node with the lowest fScore in the openSet
-    const currentNode = openSet.reduce((minNode, node) =>
-      node.fScore < minNode.fScore ? node : minNode
-    );
-
-    // If we reached the goal, reconstruct and return the path
-    if (currentNode.position === goal) {
-      return reconstructPath(currentNode);
-    }
-
-    // Move the current node from openSet to closedSet
-    openSet.splice(openSet.indexOf(currentNode), 1);
-    closedSet.push(currentNode);
-
-    // Generate neighboring nodes, evaluate and update scores
-    const neighbors = generateNeighbors(currentNode);
-    neighbors.forEach((neighbor) => {
-      // Ignore the neighbor if it is in the closedSet
-      if (closedSet.some((node) => node.position === neighbor.position)) {
-        return;
-      }
-
-      // Calculate gScore for the neighbor
-      const tentativeGScore = currentNode.gScore + distance(currentNode, neighbor);
-
-      // Check if the neighbor is already in the openSet
-      const existingNode = openSet.find((node) => node.position === neighbor.position);
-
-      if (!existingNode) {
-        // Add the neighbor to the openSet
-        openSet.push(
-          new Node(neighbor.position, tentativeGScore, heuristic(neighbor.position, goal))
-        );
-      } else if (tentativeGScore < existingNode.gScore) {
-        // Update the existing node's gScore and fScore
-        existingNode.gScore = tentativeGScore;
-        existingNode.fScore = existingNode.gScore + existingNode.hScore;
-      }
-    });
-  }
-
-  // No path found
-  return null;
-}
+// Example usage
+const string1 = "listen";
+const string2 = "silent";
+console.log(areAnagrams(string1, string2));  // Output: true
