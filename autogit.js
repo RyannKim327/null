@@ -1,35 +1,75 @@
-function isPalindrome(str) {
-  // Set the left and right pointers
-  let left = 0;
-  let right = str.length - 1;
-
-  while (left < right) {
-    // Ignore non-alphanumeric characters and move the pointers
-    while (!isAlphanumeric(str[left])) {
-      left++;
-    }
-    while (!isAlphanumeric(str[right])) {
-      right--;
-    }
-
-    // If the characters don't match, it's not a palindrome
-    if (str[left].toLowerCase() !== str[right].toLowerCase()) {
-      return false;
-    }
-
-    // Move the pointers
-    left++;
-    right--;
+class BinaryHeap {
+  constructor(comparisonFn) {
+    this.heap = [];
+    this.compare = comparisonFn || ((a, b) => a - b);
   }
 
-  // If all characters matched, it's a palindrome
-  return true;
+  // Other methods will be added here...
 }
+class BinaryHeap {
+  // ...constructor...
 
-function isAlphanumeric(char) {
-  // Helper function to check if a character is alphanumeric
-  return /^[a-zA-Z0-9]+$/.test(char);
+  insert(element) {
+    this.heap.push(element);
+    this.siftUp(this.heap.length - 1);
+  }
+
+  siftUp(index) {
+    let parentIndex = Math.floor((index - 1) / 2);
+    while (index > 0 && this.compare(this.heap[index], this.heap[parentIndex]) < 0) {
+      this.swap(index, parentIndex);
+      index = parentIndex;
+      parentIndex = Math.floor((index - 1) / 2);
+    }
+  }
+
+  swap(i, j) {
+    [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
+  }
 }
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car")); // false
-console.log(isPalindrome("No lemon, no melon")); // true
+class BinaryHeap {
+  // ...constructor & insert methods...
+
+  deleteMin() {
+    if (this.heap.length === 0) {
+      return null;
+    }
+
+    const min = this.heap[0];
+    const last = this.heap.pop();
+    if (this.heap.length > 0) {
+      this.heap[0] = last;
+      this.siftDown(0);
+    }
+
+    return min;
+  }
+
+  siftDown(index) {
+    let childIndex = 2 * index + 1;
+    while (childIndex < this.heap.length) {
+      if (
+        childIndex + 1 < this.heap.length &&
+        this.compare(this.heap[childIndex + 1], this.heap[childIndex]) < 0
+      ) {
+        childIndex++;
+      }
+
+      if (this.compare(this.heap[childIndex], this.heap[index]) >= 0) {
+        break;
+      }
+
+      this.swap(childIndex, index);
+      index = childIndex;
+      childIndex = 2 * index + 1;
+    }
+  }
+}
+const priorityQueue = new BinaryHeap();
+
+priorityQueue.insert(10);
+priorityQueue.insert(5);
+priorityQueue.insert(8);
+
+console.log(priorityQueue.deleteMin()); // Output: 5
+console.log(priorityQueue.deleteMin()); // Output: 8
