@@ -1,12 +1,21 @@
-let str = "  Hello,   World!   ";
+let pos = low + Math.floor((x - arr[low]) * (high - low) / (arr[high] - arr[low]));
+function interpolationSearch(arr, x, n) {
+  let low = 0;
+  let high = n - 1;
 
-// Remove all whitespace (spaces, tabs, newlines) from the string
-let strippedStr = str.replace(/\s/g, "");
+  while (low <= high && x >= arr[low] && x <= arr[high]) {
+    let pos = low + Math.floor((x - arr[low]) * (high - low) / (arr[high] - arr[low]));
 
-console.log(strippedStr);  // Output: "Hello,World!"
-let str = "  Hello,   World!   ";
+    if (arr[pos] === x) {
+      return pos;
+    }
 
-// Remove leading and trailing whitespace from the string
-let trimmedStr = str.trim();
+    if (arr[pos] < x) {
+      low = pos + 1;
+    } else {
+      high = pos - 1;
+    }
+  }
 
-console.log(trimmedStr);  // Output: "Hello,   World!"
+  return -1;
+}
