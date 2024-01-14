@@ -1,42 +1,46 @@
-function depthLimitedSearchIterative(root, goal, maxDepth) {
-  // Create a stack to keep track of nodes
-  const stack = [{
-    node: root,
-    depth: 0
-  }];
-
-  while (stack.length > 0) {
-    // Pop the top node from the stack
-    const { node, depth } = stack.pop();
-
-    // Check if the current node matches the goal
-    if (node === goal) {
-      return node;
-    }
-
-    // If the depth is within the limit, expand the node's children
-    if (depth < maxDepth) {
-      // Get the node's children
-      const children = getChildren(node);
-
-      // Push the children into the stack with increased depth
-      for (let i = children.length - 1; i >= 0; i--) {
-        stack.push({
-          node: children[i],
-          depth: depth + 1
-        });
-      }
+function mergeArrays(arr1, arr2) {
+  let result = [];
+  let i = 0; // Pointer for arr1
+  let j = 0; // Pointer for arr2
+  
+  while (i < arr1.length && j < arr2.length) {
+    if (arr1[i] <= arr2[j]) {
+      result.push(arr1[i]);
+      i++;
+    } else {
+      result.push(arr2[j]);
+      j++;
     }
   }
-
-  // If there is no match, return null
-  return null;
+  
+  // Add any remaining elements from arr1
+  while (i < arr1.length) {
+    result.push(arr1[i]);
+    i++;
+  }
+  
+  // Add any remaining elements from arr2
+  while (j < arr2.length) {
+    result.push(arr2[j]);
+    j++;
+  }
+  
+  return result;
 }
+function findMedian(arr) {
+  const n = arr.length;
+  const mid = Math.floor(n / 2);
+  
+  if (n % 2 === 0) {
+    return (arr[mid - 1] + arr[mid]) / 2;
+  } else {
+    return arr[mid];
+  }
+}
+const nums1 = [1, 3, 5];
+const nums2 = [2, 4, 6];
+const mergedArray = mergeArrays(nums1, nums2);
+const median = findMedian(mergedArray);
 
-// Example usage
-const goal = /* your goal node */;
-const root = /* your root node */;
-const maxDepth = /* your desired maximum depth */;
-
-const result = depthLimitedSearchIterative(root, goal, maxDepth);
-console.log(result);
+console.log(mergedArray); // [1, 2, 3, 4, 5, 6]
+console.log(median); // 3.5
