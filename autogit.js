@@ -1,75 +1,100 @@
-class TrieNode {
-  constructor() {
-    this.children = new Map();
-    this.isEndOfWord = false;
+class SkipListNode {
+  constructor(value) {
+    this.value = value;
+    this.nextNodes = [];
   }
 }
-class Trie {
+class SkipList {
   constructor() {
-    this.root = new TrieNode();
-  }
-
-  // Insert a word into the Trie
-  insert(word) {
-    let currentNode = this.root;
-
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-      if (!currentNode.children.has(char)) {
-        currentNode.children.set(char, new TrieNode());
-      }
-      currentNode = currentNode.children.get(char);
-    }
-
-    currentNode.isEndOfWord = true;
-  }
-
-  // Search for a word in the Trie
-  search(word) {
-    let currentNode = this.root;
-
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-      if (!currentNode.children.has(char)) {
-        return false;
-      }
-      currentNode = currentNode.children.get(char);
-    }
-
-    return currentNode.isEndOfWord;
-  }
-
-  // Check if a prefix exists in the Trie
-  startsWith(prefix) {
-    let currentNode = this.root;
-
-    for (let i = 0; i < prefix.length; i++) {
-      const char = prefix[i];
-      if (!currentNode.children.has(char)) {
-        return false;
-      }
-      currentNode = currentNode.children.get(char);
-    }
-
-    return true;
+    this.head = new SkipListNode(-Infinity);
+    this.maxLevel = 0;
   }
 }
-// Create a new Trie instance
-const trie = new Trie();
+class SkipList {
+  // ...
 
-// Insert words into the Trie
-trie.insert("apple");
-trie.insert("banana");
-trie.insert("orange");
- 
-// Search for words in the Trie
-console.log(trie.search("apple")); // Output: true
-console.log(trie.search("banana")); // Output: true
-console.log(trie.search("orange")); // Output: true
-console.log(trie.search("grape")); // Output: false
- 
-// Search for prefixes in the Trie
-console.log(trie.startsWith("app")); // Output: true
-console.log(trie.startsWith("ban")); // Output: true
-console.log(trie.startsWith("ora")); // Output: true
-console.log(trie.startsWith("gr")); // Output: false
+  search(value) {
+    let currentNode = this.head;
+
+    for (let i = this.maxLevel; i >= 0; i--) {
+      while (
+        currentNode.nextNodes[i] &&
+        currentNode.nextNodes[i].value < value
+      ) {
+        currentNode = currentNode.nextNodes[i];
+      }
+    }
+
+    currentNode = currentNode.nextNodes[0];
+
+    if (currentNode && currentNode.value === value) {
+      return currentNode;
+    } else {
+      return null;
+    }
+  }
+}
+class SkipList {
+  // ...
+
+  insert(value) {
+    const newNode = new SkipListNode(value);
+    const update = new Array(this.maxLevel + 1).fill(this.head);
+
+    let currentNode = this.head;
+
+    for (let i = this.maxLevel; i >= 0; i--) {
+      while (
+        currentNode.nextNodes[i] &&
+        currentNode.nextNodes[i].value < value
+      ) {
+        currentNode = currentNode.nextNodes[i];
+      }
+      update[i] = currentNode;
+    }
+
+    for (let i = 0; i < newNode.nextNodes.length; i++) {
+      newNode.nextNodes[i] = update[i].nextNodes[i];
+      update[i].nextNodes[i] = newNode;
+    }
+
+    if (this.maxLevel < newNode.nextNodes.length - 1) {
+      this.maxLevel = newNode.nextNodes.length - 1;
+    }
+  }
+}
+class SkipList {
+  // ...
+
+  delete(value) {
+    const update = new Array(this.maxLevel + 1).fill(this.head);
+
+    let currentNode = this.head;
+
+    for (let i = this.maxLevel; i >= 0; i--) {
+      while (
+        currentNode.nextNodes[i] &&
+        currentNode.nextNodes[i].value < value
+      ) {
+        currentNode = currentNode.nextNodes[i];
+      }
+      update[i] = currentNode;
+    }
+
+    currentNode = currentNode.nextNodes[0];
+
+    if (currentNode && currentNode.value === value) {
+      for (let i = 0; i < currentNode.nextNodes.length; i++) {
+        update[i].nextNodes[i] = currentNode.nextNodes[i];
+      }
+
+      while (this.maxLevel > 0 && this.head.nextNodes[this.maxLevel] === null) {
+        this.maxLevel--;
+      }
+
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
