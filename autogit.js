@@ -1,55 +1,39 @@
-// Function to perform heap sort
-function heapSort(arr) {
-  let n = arr.length;
-
-  // Build heap (rearrange array)
-  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-    heapify(arr, n, i);
+function biDirectionalSearch(startNode, goalNode) {
+  const startQueue = [startNode];
+  const goalQueue = [goalNode];
+  
+  const startVisited = new Set([startNode]);
+  const goalVisited = new Set([goalNode]);
+  
+  while (startQueue.length && goalQueue.length) {
+    const start = startQueue.shift();
+    const goal = goalQueue.shift();
+    
+    if (goalVisited.has(start)) {
+      return 'Path found';
+    }
+    
+    if (startVisited.has(goal)) {
+      return 'Path found';
+    }
+    
+    const startNeighbors = getNeighbors(start); // implement a function to get neighbors of a node
+    const goalNeighbors = getNeighbors(goal); // implement a function to get neighbors of a node
+    
+    for (const neighbor of startNeighbors) {
+      if (!startVisited.has(neighbor)) {
+        startVisited.add(neighbor);
+        startQueue.push(neighbor);
+      }
+    }
+    
+    for (const neighbor of goalNeighbors) {
+      if (!goalVisited.has(neighbor)) {
+        goalVisited.add(neighbor);
+        goalQueue.push(neighbor);
+      }
+    }
   }
-
-  // Extract elements from the heap one by one
-  for (let i = n - 1; i > 0; i--) {
-    // Move current root to end
-    let temp = arr[0];
-    arr[0] = arr[i];
-    arr[i] = temp;
-
-    // Max heapify the reduced heap
-    heapify(arr, i, 0);
-  }
-
-  return arr;
+  
+  return null; // No path found
 }
-
-// To heapify a subtree rooted with node i which is
-// an index in arr[]. n is the size of the heap
-function heapify(arr, n, i) {
-  let largest = i; // Initialize largest as root
-  let left = 2 * i + 1; // left = 2*i + 1
-  let right = 2 * i + 2; // right = 2*i + 2
-
-  // If left child is larger than root
-  if (left < n && arr[left] > arr[largest]) {
-    largest = left;
-  }
-
-  // If right child is larger than largest so far
-  if (right < n && arr[right] > arr[largest]) {
-    largest = right;
-  }
-
-  // If largest is not root
-  if (largest !== i) {
-    let swap = arr[i];
-    arr[i] = arr[largest];
-    arr[largest] = swap;
-
-    // Recursively heapify the affected sub-tree
-    heapify(arr, n, largest);
-  }
-}
-
-// Example usage
-const array = [4, 10, 3, 5, 1];
-console.log("Original Array:", array);
-console.log("Heap Sorted Array:", heapSort(array));
