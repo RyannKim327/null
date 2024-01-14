@@ -1,30 +1,30 @@
-function binarySearch(arr, target, start, end) {
-  if (start > end) {
-    return -1;
-  }
-
-  const mid = Math.floor((start + end) / 2);
-
-  if (arr[mid] === target) {
-    return mid;
-  }
-
-  if (arr[mid] > target) {
-    return binarySearch(arr, target, start, mid - 1);
-  }
-
-  if (arr[mid] < target) {
-    return binarySearch(arr, target, mid + 1, end);
+let largest = -Infinity;
+let secondLargest = -Infinity;
+for (let i = 0; i < array.length; i++) {
+  if (array[i] > largest) {
+    secondLargest = largest;
+    largest = array[i];
+  } else if (array[i] > secondLargest && array[i] < largest) {
+    secondLargest = array[i];
   }
 }
+function findSecondLargest(array) {
+  let largest = -Infinity;
+  let secondLargest = -Infinity;
 
-// Example usage:
-const array = [1, 3, 5, 7, 9];
-const targetValue = 7;
-const index = binarySearch(array, targetValue, 0, array.length - 1);
+  for (let i = 0; i < array.length; i++) {
+    if (array[i] > largest) {
+      secondLargest = largest;
+      largest = array[i];
+    } else if (array[i] > secondLargest && array[i] < largest) {
+      secondLargest = array[i];
+    }
+  }
 
-if (index !== -1) {
-  console.log(`Found at index ${index}`);
-} else {
-  console.log(`Not found`);
+  return secondLargest;
 }
+
+// Example usage
+const numbers = [12, 35, 1, 10, 34, 50];
+const result = findSecondLargest(numbers);
+console.log(result); // Output: 35
