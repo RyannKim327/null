@@ -1,34 +1,12 @@
-function findMajorityElement(arr) {
-  let majority = arr[0];
-  let count = 1;
+const numbers = [4, 2, 8, 5, 1, 3];
 
-  for (let i = 1; i < arr.length; i++) {
-    if (arr[i] === majority) {
-      count++;
-    } else {
-      count--;
-    }
+// Sort the array in ascending order
+numbers.sort((a, b) => a - b);
 
-    if (count === 0) {
-      majority = arr[i];
-      count = 1;
-    }
-  }
+console.log(numbers); // Output: [1, 2, 3, 4, 5, 8]
+const numbers = [4, 2, 8, 5, 1, 3];
 
-  // Verifying if the majority element is a true majority
-  count = 0;
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] === majority) {
-      count++;
-    }
-  }
-  if (count > arr.length / 2) {
-    return majority;
-  } else {
-    return "No majority element found.";
-  }
-}
+// Sort the array in descending order
+numbers.sort((a, b) => b - a);
 
-// Example usage
-const array = [1, 2, 3, 2, 2, 2, 5, 4, 2];
-console.log(findMajorityElement(array)); // Output: 2
+console.log(numbers); // Output: [8, 5, 4, 3, 2, 1]
