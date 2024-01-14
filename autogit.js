@@ -1,26 +1,46 @@
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
+function boyerMooreHorspool(text, pattern) {
+  const last = {};
+  const patternLength = pattern.length;
+  const textLength = text.length;
 
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
+  // Preprocessing: Build the "last" dictionary for skips
+  for (let i = 0; i < patternLength - 1; i++) {
+    last[pattern[i]] = patternLength - 1 - i;
   }
 
-  return slow;
-}
-// Node constructor
-function Node(value) {
-  this.value = value;
-  this.next = null;
-}
+  // Search for the pattern in the text
+  let i = patternLength - 1;
 
-// Create linked list: 1 -> 2 -> 3 -> 4 -> 5
-const head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
+  while (i < textLength) {
+    let j = patternLength - 1;
+    let k = i;
 
-const middleElement = findMiddleElement(head);
-console.log(middleElement.value);  // Output: 3
+    // Compare characters from right to left
+    while (j >= 0 && text[k] === pattern[j]) {
+      j--;
+      k--;
+    }
+
+    if (j === -1) {
+      // Pattern found, return the starting index
+      return k + 1;
+    }
+
+    // Skip based on the last dictionary
+    const skip = last[text[i]] || patternLength;
+    i += skip;
+  }
+
+  // Pattern not found
+  return -1;
+}
+const text = 'Lorem ipsum dolor sit amet consectetur adipisicing elit';
+const pattern = 'sit amet';
+
+const index = boyerMooreHorspool(text, pattern);
+
+if (index === -1) {
+  console.log('Pattern not found');
+} else {
+  console.log(`Pattern found at index ${index}`);
+}
