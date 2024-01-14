@@ -1,23 +1,23 @@
-function removeVowels(str) {
-  return str.replace(/[aeiou]/gi, '');
-}
+function selectionSort(arr) {
+  const n = arr.length;
 
-// Example usage
-const originalString = 'Hello, World!';
-const noVowelsString = removeVowels(originalString);
-console.log(noVowelsString); // Output: "Hll, Wrld!"
-function removeVowels(str) {
-  let result = '';
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i].toLowerCase();
-    if (char !== 'a' && char !== 'e' && char !== 'i' && char !== 'o' && char !== 'u') {
-      result += str[i];
+  for (let i = 0; i < n - 1; i++) {
+    let minIndex = i;
+
+    for (let j = i + 1; j < n; j++) {
+      if (arr[j] < arr[minIndex]) {
+        minIndex = j;
+      }
+    }
+
+    if (minIndex !== i) {
+      let temp = arr[minIndex];
+      arr[minIndex] = arr[i];
+      arr[i] = temp;
     }
   }
-  return result;
-}
 
-// Example usage
-const originalString = 'Hello, World!';
-const noVowelsString = removeVowels(originalString);
-console.log(noVowelsString); // Output: "Hll, Wrld!"
+  return arr;
+}
+const array = [64, 25, 12, 22, 11];
+console.log(selectionSort(array)); // Output: [11, 12, 22, 25, 64]
