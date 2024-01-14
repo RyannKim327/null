@@ -1,26 +1,27 @@
-function largestPrimeFactor(number) {
-  let largestPrime = 1;
-  
-  // Check for divisibility by 2
-  while (number % 2 === 0) {
-    largestPrime = 2;
-    number /= 2;
-  }
-  
-  // Check for divisibility by odd factors
-  for (let i = 3; i <= Math.sqrt(number); i += 2) {
-    while (number % i === 0) {
-      largestPrime = i;
-      number /= i;
+function binarySearch(arr, target) {
+  let low = 0;
+  let high = arr.length - 1;
+
+  while (low <= high) {
+    const mid = Math.floor((low + high) / 2);
+    const guess = arr[mid];
+
+    if (guess === target) {
+      return mid; // Found the target, return the index
+    }
+
+    if (guess > target) {
+      high = mid - 1; // Target is in the lower half
+    } else {
+      low = mid + 1; // Target is in the upper half
     }
   }
-  
-  // Check if the remaining number is prime and greater than 1
-  if (number > 1)
-    largestPrime = number;
-  
-  return largestPrime;
+
+  return -1; // Target value not found
 }
 
-// Example usage
-console.log(largestPrimeFactor(13195));  // Output: 29
+// Usage example:
+const sortedArray = [1, 3, 5, 7, 9, 11, 13];
+
+console.log(binarySearch(sortedArray, 7)); // Output: 3 (index of value 7 in the array)
+console.log(binarySearch(sortedArray, 4)); // Output: -1 (target value not found in the array)
