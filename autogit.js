@@ -1,75 +1,21 @@
-class BiDirectionalSearch {
-  constructor(graph) {
-    this.graph = graph;
-    this.forwardQueue = [];
-    this.backwardQueue = [];
-    this.exploredForward = new Set();
-    this.exploredBackward = new Set();
-    this.path = [];
-  }
+function getNthNodeFromEnd(head, n) {
+  let fast = head;
+  let slow = head;
 
-  search(startNode, goalNode) {
-    this.forwardQueue.push(startNode);
-    this.backwardQueue.push(goalNode);
-    this.exploredForward.add(startNode);
-    this.exploredBackward.add(goalNode);
-    
-    while (this.forwardQueue.length && this.backwardQueue.length) {
-      const forwardNode = this.forwardQueue.shift();
-      const backwardNode = this.backwardQueue.shift();
-
-      if (this.exploredBackward.has(forwardNode)) {
-        this.path.push(forwardNode);
-        this.path.push(backwardNode);
-        break;
-      }
-
-      if (this.exploredForward.has(backwardNode)) {
-        this.path.push(forwardNode);
-        this.path.push(backwardNode);
-        break;
-      }
-
-      this.expandForward(forwardNode);
-      this.expandBackward(backwardNode);
+  // Move the 'fast' pointer ahead by n positions
+  for (let i = 0; i < n; i++) {
+    if (fast === null) {
+      return null; // If there are less than n nodes, return null
     }
-
-    return this.path.reverse();
+    fast = fast.next;
   }
 
-  expandForward(node) {
-    const neighbors = this.graph[node];
-    for (let neighbor of neighbors) {
-      if (!this.exploredForward.has(neighbor)) {
-        this.exploredForward.add(neighbor);
-        this.forwardQueue.push(neighbor);
-      }
-    }
+  // Iterate until the 'fast' pointer reaches the end
+  while (fast !== null) {
+    fast = fast.next;
+    slow = slow.next;
   }
 
-  expandBackward(node) {
-    const neighbors = this.graph[node];
-    for (let neighbor of neighbors) {
-      if (!this.exploredBackward.has(neighbor)) {
-        this.exploredBackward.add(neighbor);
-        this.backwardQueue.push(neighbor);
-      }
-    }
-  }
+  // 'slow' pointer now points to the nth node from the end
+  return slow.value;
 }
-
-// Example usage
-const graph = {
-  A: ['B', 'C'],
-  B: ['A', 'D', 'E'],
-  C: ['A', 'F'],
-  D: ['B'],
-  E: ['B', 'G'],
-  F: ['C', 'H'],
-  G: ['E', 'H'],
-  H: ['F', 'G'],
-};
-
-const search = new BiDirectionalSearch(graph);
-const path = search.search('A', 'H');
-console.log(path);
