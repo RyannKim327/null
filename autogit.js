@@ -1,8 +1,23 @@
-const arr = [5, 2, 9, 1, 7];
+function beamSearch(startNode, beamWidth, expandNode, evaluationFunction, isGoalNode) {
+  let beam = [startNode];
+  let currentLevel = 0;
 
-// Sorting in ascending order
-arr.sort((a, b) => a - b);
+  while (currentLevel < maxLevel) {
+    let nextBeam = [];
 
-console.log(arr);  // Output: [1, 2, 5, 7, 9]
-const arr = [5, 2, 9, 1, 7];
-const sortedArr = [...arr].sort((a, b) => a - b);
+    for (let node of beam) {
+      let childNodes = expandNode(node);
+      let sortedChildNodes = childNodes.sort((a, b) => evaluationFunction(b) - evaluationFunction(a));
+      nextBeam.push(...sortedChildNodes.slice(0, beamWidth));
+    }
+
+    beam = nextBeam;
+    currentLevel++;
+
+    if (beam.some(isGoalNode)) {
+      return beam.find(isGoalNode);
+    }
+  }
+
+  return beam.reduce((bestNode, node) => evaluationFunction(node) > evaluationFunction(bestNode) ? node : bestNode);
+}
