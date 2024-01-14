@@ -1,53 +1,68 @@
-function computePrefixTable(pattern) {
-  const prefixTable = [0];
-  let length = 0;
-  let i = 1;
-  
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[length]) {
-      length++;
-      prefixTable[i] = length;
-      i++;
-    } else {
-      if (length !== 0) {
-        length = prefixTable[length - 1];
-      } else {
-        prefixTable[i] = 0;
-        i++;
+function preprocessPattern(pattern) {
+  const badChar = {};
+  const goodSuffix = new Array(pattern.length + 1).fill(0);
+
+  // Initialize bad character table
+  for (let i = 0; i < pattern.length; i++) {
+    badChar[pattern[i]] = i;
+  }
+
+  // Calculate good suffix table
+  let i = pattern.length, j = pattern.length + 1;
+  while (i > 0) {
+    while (j <= pattern.length && pattern[i - 1] !== pattern[j - 1]) {
+      if (goodSuffix[j] === 0) {
+        goodSuffix[j] = j - i;
       }
+      j = goodSuffix[j];
+    }
+    i--;
+    j--;
+    goodSuffix[i] = j;
+  }
+
+  // Handle the case where the whole pattern is a suffix
+  j = goodSuffix[0];
+  for (let i = 0; i <= pattern.length; i++) {
+    if (goodSuffix[i] === 0) {
+      goodSuffix[i] = j;
+    }
+    if (i === j) {
+      j = goodSuffix[j];
     }
   }
-  
-  return prefixTable;
+
+  return { badChar, goodSuffix };
 }
-function KMP(text, pattern) {
-  const prefixTable = computePrefixTable(pattern);
+function boyerMooreSearch(text, pattern) {
+  const { badChar, goodSuffix } = preprocessPattern(pattern);
   const occurrences = [];
+
   let i = 0;
-  let j = 0;
-  
-  while (i < text.length) {
-    if (pattern[j] === text[i]) {
-      i++;
-      j++;
+  while (i <= text.length - pattern.length) {
+    let j = pattern.length - 1;
+
+    // Match characters from right to left
+    while (j >= 0 && pattern[j] === text[i + j]) {
+      j--;
     }
-    
-    if (j === pattern.length) {
-      occurrences.push(i - j);
-      j = prefixTable[j - 1];
-    } else if (i < text.length && pattern[j] !== text[i]) {
-      if (j !== 0) {
-        j = prefixTable[j - 1];
-      } else {
-        i++;
-      }
+
+    if (j < 0) {
+      occurrences.push(i);
+      i += goodSuffix[0];
+    } else {
+      const char = text[i + j];
+      const badCharShift = badChar[char] || -1;
+      const shift = Math.max(goodSuffix[j + 1], j - badCharShift);
+      i += shift;
     }
   }
-  
+
   return occurrences;
 }
-const text = "ABCABCDABABCDABCDABDE";
-const pattern = "ABCDABD";
+const text = 'ABABCABABABA';
+const pattern = 'ABA';
 
-const occurrences = KMP(text, pattern);
-console.log(occurrences); // [11]
+const occurrences = boyerMooreSearch(text, pattern);
+
+console.log(occurrences);  // Output: [2, 5, 9]
