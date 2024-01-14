@@ -1,47 +1,12 @@
-class ListNode {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+function getStringLength(str) {
+  let count = 0;
+  for (let i = 0; str[i] !== undefined; i++) {
+    count++;
   }
+  return count;
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-
-  append(value) {
-    const newNode = new ListNode(value);
-
-    if (!this.head) {
-      this.head = newNode;
-      return;
-    }
-
-    let current = this.head;
-    while (current.next) {
-      current = current.next;
-    }
-    current.next = newNode;
-  }
-
-  getLength() {
-    let count = 0;
-    let current = this.head;
-
-    while (current) {
-      count++;
-      current = current.next;
-    }
-
-    return count;
-  }
-}
-
-// Usage:
-const linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
-
-console.log(linkedList.getLength()); // Output: 3
+// Example usage:
+const str = "Hello, World!";
+const length = getStringLength(str);
+console.log(length); // Output: 13
