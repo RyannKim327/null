@@ -1,30 +1,55 @@
-function findLongestCommonSubstring(string1, string2) {
-  let maxLength = 0;
-  let endIndex = 0;
-  const dp = [];
-
-  for (let i = 0; i <= string1.length; i++) {
-    dp[i] = new Array(string2.length + 1).fill(0);
-    for (let j = 0; j <= string2.length; j++) {
-      if (i === 0 || j === 0) {
-        dp[i][j] = 0;
-      } else if (string1[i - 1] === string2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-        if (dp[i][j] > maxLength) {
-          maxLength = dp[i][j];
-          endIndex = i;
-        }
-      } else {
-        dp[i][j] = 0;
-      }
-    }
+class Stack {
+  constructor() {
+    this.stack = []; // array to store stack elements
   }
 
-  return string1.slice(endIndex - maxLength, endIndex);
+  // Push operation: adds an element to the top of the stack
+  push(element) {
+    this.stack.push(element);
+  }
+
+  // Pop operation: removes and returns the top element of the stack
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack Underflow";
+    }
+    return this.stack.pop();
+  }
+
+  // Peek operation: returns the top element of the stack without modifying the stack
+  peek() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
+    }
+    return this.stack[this.stack.length - 1];
+  }
+
+  // Check if the stack is empty
+  isEmpty() {
+    return this.stack.length === 0;
+  }
+
+  // Get the size of the stack
+  size() {
+    return this.stack.length;
+  }
+
+  // Print the elements of the stack
+  printStack() {
+    console.log(this.stack);
+  }
 }
 
 // Example usage
-const string1 = "abcdef";
-const string2 = "abdf";
+const stack = new Stack();
+stack.push(1);
+stack.push(2);
+stack.push(3);
+stack.printStack(); // Output: [1, 2, 3]
 
-console.log(findLongestCommonSubstring(string1, string2)); // Output: "ab"
+console.log(stack.pop()); // Output: 3
+console.log(stack.peek()); // Output: 2
+
+stack.printStack(); // Output: [1, 2]
+console.log(stack.size()); // Output: 2
+console.log(stack.isEmpty()); // Output: false
