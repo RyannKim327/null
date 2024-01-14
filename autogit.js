@@ -1,22 +1,18 @@
-function areAnagrams(str1, str2) {
-  // Remove whitespace and convert to lowercase
-  str1 = str1.replace(/\s/g, "").toLowerCase();
-  str2 = str2.replace(/\s/g, "").toLowerCase();
-
-  // Convert strings to character arrays and sort them
-  const arr1 = str1.split("").sort();
-  const arr2 = str2.split("").sort();
-
-  // Compare the sorted arrays for equality
-  return arr1.join("") === arr2.join("");
+function findLongestCommonPrefix(strings) {
+  if (strings.length === 0) {
+    return "";
+  }
+  
+  let prefix = strings[0];
+  
+  for (let i = 1; i < strings.length; i++) {
+    while (strings[i].indexOf(prefix) !== 0) {
+      prefix = prefix.substring(0, prefix.length - 1);
+    }
+  }
+  
+  return prefix;
 }
-
-// Example usage:
-const string1 = "listen";
-const string2 = "silent";
-
-if (areAnagrams(string1, string2)) {
-  console.log("The strings are anagrams.");
-} else {
-  console.log("The strings are not anagrams.");
-}
+const strings = ["flower", "flow", "flight"];
+const longestPrefix = findLongestCommonPrefix(strings);
+console.log(longestPrefix); // Output: "fl"
