@@ -1,34 +1,57 @@
-function findMiddleElement(head) {
-  let slowPointer = head;
-  let fastPointer = head;
-
-  while (fastPointer && fastPointer.next) {
-    slowPointer = slowPointer.next;
-    fastPointer = fastPointer.next.next;
+function depthLimitedSearch(node, goal, depthLimit) {
+  if (node === goal) {
+    // Goal reached, return the node
+    return node;
   }
-
-  return slowPointer;
-}
-// Node constructor
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+  
+  // Check depth limit
+  if (depthLimit === 0) {
+    // Depth limit reached, return null to indicate failure
+    return null;
   }
+  
+  // Recursive search for each child node
+  for (let i = 0; i < node.children.length; i++) {
+    const result = depthLimitedSearch(node.children[i], goal, depthLimit - 1);
+    
+    if (result) {
+      // If a non-null result is found, return it
+      return result;
+    }
+  }
+  
+  // No solution found at this depth
+  return null;
 }
 
-// Create a linked list
-const head = new Node(1);
-const secondNode = new Node(2);
-const thirdNode = new Node(3);
-const fourthNode = new Node(4);
-const fifthNode = new Node(5);
+// Example usage:
+let tree = {
+  value: 1,
+  children: [
+    {
+      value: 2,
+      children: [
+        {
+          value: 3,
+          children: []
+        }
+      ]
+    },
+    {
+      value: 4,
+      children: [
+        {
+          value: 5,
+          children: []
+        },
+        {
+          value: 6,
+          children: []
+        }
+      ]
+    }
+  ]
+};
 
-head.next = secondNode;
-secondNode.next = thirdNode;
-thirdNode.next = fourthNode;
-fourthNode.next = fifthNode;
-
-// Find the middle element
-const middleElement = findMiddleElement(head);
-console.log(middleElement.value); // Output: 3
+let result = depthLimitedSearch(tree, 5, 3);
+console.log(result);
