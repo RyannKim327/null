@@ -1,19 +1,44 @@
-function findMedianSortedArrays(nums1, nums2) {
-  const merged = [...nums1, ...nums2].sort((a, b) => a - b);
-  const length = merged.length;
-  const mid = Math.floor(length / 2);
-
-  if (length % 2 === 0) {
-    // Even length
-    return (merged[mid - 1] + merged[mid]) / 2;
-  } else {
-    // Odd length
-    return merged[mid];
+function mergeSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
   }
+
+  const mid = Math.floor(arr.length / 2);
+  const left = mergeSort(arr.slice(0, mid));
+  const right = mergeSort(arr.slice(mid));
+
+  return merge(left, right);
+}
+
+function merge(left, right) {
+  let result = [];
+  let i = 0;
+  let j = 0;
+
+  while (i < left.length && j < right.length) {
+    if (left[i] < right[j]) {
+      result.push(left[i]);
+      i++;
+    } else {
+      result.push(right[j]);
+      j++;
+    }
+  }
+
+  while (i < left.length) {
+    result.push(left[i]);
+    i++;
+  }
+
+  while (j < right.length) {
+    result.push(right[j]);
+    j++;
+  }
+
+  return result;
 }
 
 // Example usage:
-const nums1 = [1, 3, 5];
-const nums2 = [2, 4, 6];
-const median = findMedianSortedArrays(nums1, nums2);
-console.log(median); // Output: 3.5
+const array = [6, 5, 3, 1, 8, 7, 2, 4];
+const sortedArray = mergeSort(array);
+console.log(sortedArray);
