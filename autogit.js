@@ -1,28 +1,60 @@
-function findFirstNonRepeatingChar(str) {
-  // Create an empty object to store character frequencies
-  let charMap = {};
-
-  // Iterate over the string and count character occurrences
-  for (let char of str) {
-    if (charMap[char]) {
-      charMap[char]++;
-    } else {
-      charMap[char] = 1;
-    }
-  }
-
-  // Iterate over the string again and find the first non-repeating character
-  for (let char of str) {
-    if (charMap[char] === 1) {
-      return char;
-    }
-  }
-
-  // If no non-repeating character is found, return null or any other value as desired
-  return null;
+function breadthLimitedSearch(startNode, limit) {
+  // ...
 }
+function breadthLimitedSearch(startNode, limit) {
+  let queue = [startNode];
+  // ...
+}
+function breadthLimitedSearch(startNode, limit) {
+  let queue = [startNode];
+  let visited = new Set();
+  // ...
+}
+function breadthLimitedSearch(startNode, limit) {
+  let queue = [startNode];
+  let visited = new Set();
 
-// Usage Example
-let input = "hello world";
-let firstNonRepeatingChar = findFirstNonRepeatingChar(input);
-console.log(firstNonRepeatingChar); // Output: "h"
+  while (queue.length > 0 && limit > 0) {
+    // ...
+  }
+}
+function breadthLimitedSearch(startNode, goalNode, limit) {
+  let queue = [startNode];
+  let visited = new Set();
+
+  while (queue.length > 0 && limit > 0) {
+    let currentNode = queue.shift();
+
+    if (currentNode === goalNode) {
+      return currentNode;
+    }
+
+    // ...
+  }
+}
+function breadthLimitedSearch(startNode, goalNode, limit) {
+  let queue = [startNode];
+  let visited = new Set();
+
+  while (queue.length > 0 && limit > 0) {
+    let currentNode = queue.shift();
+
+    if (currentNode === goalNode) {
+      return currentNode;
+    }
+
+    visited.add(currentNode);
+
+    let neighbors = getNeighbors(currentNode); // Implement this function to get the neighboring nodes
+
+    for (let neighbor of neighbors) {
+      if (!visited.has(neighbor)) {
+        queue.push(neighbor);
+      }
+    }
+
+    limit--;
+  }
+
+  return null; // Return null if the goal node is not found within the limit
+}
