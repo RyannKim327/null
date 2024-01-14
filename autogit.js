@@ -1,58 +1,36 @@
-class TrieNode {
-  constructor() {
-    this.children = {};
-    this.isEndOfWord = false;
+function longestCommonSubstring(str1, str2) {
+  // Create a table to store the lengths of common substrings
+  const table = Array(str1.length + 1).fill(0).map(() => Array(str2.length + 1).fill(0));
+  
+  // Variables to keep track of the longest substring and its length
+  let longestLength = 0;
+  let longestIndex = 0;
+
+  for (let i = 1; i <= str1.length; i++) {
+    for (let j = 1; j <= str2.length; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        // If characters match, the length of the common substring increases by 1
+        table[i][j] = table[i - 1][j - 1] + 1;
+
+        if (table[i][j] > longestLength) {
+          // Update longest substring length and index
+          longestLength = table[i][j];
+          longestIndex = i;
+        }
+      } else {
+        // If characters don't match, the length of the common substring is 0
+        table[i][j] = 0;
+      }
+    }
   }
+  
+  // Extract the longest common substring using the longestIndex and longestLength
+  const longestSubstring = str1.slice(longestIndex - longestLength, longestIndex);
+
+  return longestSubstring;
 }
+const str1 = "abcdefg";
+const str2 = "xyzcdef";
 
-class Trie {
-  constructor() {
-    this.root = new TrieNode();
-  }
-
-  insert(word) {
-    let currentNode = this.root;
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-      if (!currentNode.children[char]) {
-        currentNode.children[char] = new TrieNode();
-      }
-      currentNode = currentNode.children[char];
-    }
-    currentNode.isEndOfWord = true;
-  }
-
-  search(word) {
-    let currentNode = this.root;
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-      if (!currentNode.children[char]) {
-        return false;
-      }
-      currentNode = currentNode.children[char];
-    }
-    return currentNode.isEndOfWord;
-  }
-
-  startsWith(prefix) {
-    let currentNode = this.root;
-    for (let i = 0; i < prefix.length; i++) {
-      const char = prefix[i];
-      if (!currentNode.children[char]) {
-        return false;
-      }
-      currentNode = currentNode.children[char];
-    }
-    return true;
-  }
-}
-
-// Example usage:
-const trie = new Trie();
-trie.insert("apple");
-trie.insert("banana");
-console.log(trie.search("apple")); // true
-console.log(trie.search("banana")); // true
-console.log(trie.search("app")); // false
-console.log(trie.startsWith("app")); // true
-console.log(trie.startsWith("orange")); // false
+const longestSubstring = longestCommonSubstring(str1, str2);
+console.log(longestSubstring); // Output: "cdef"
