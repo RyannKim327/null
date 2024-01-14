@@ -1,21 +1,19 @@
-let pos = low + Math.floor((x - arr[low]) * (high - low) / (arr[high] - arr[low]));
-function interpolationSearch(arr, x, n) {
-  let low = 0;
-  let high = n - 1;
-
-  while (low <= high && x >= arr[low] && x <= arr[high]) {
-    let pos = low + Math.floor((x - arr[low]) * (high - low) / (arr[high] - arr[low]));
-
-    if (arr[pos] === x) {
-      return pos;
+async function connectToAsyncTaskInAndroid() {
+    try {
+        const response = await fetch('https://example.com/async-task-endpoint');
+        const data = await response.json();
+        
+        // Process the received data from the async task
+        console.log('Received data:', data);
+        
+        // Perform additional actions with the data
+        
+    } catch (error) {
+        console.error('Error connecting to async task:', error);
+        
+        // Handle the error appropriately
     }
-
-    if (arr[pos] < x) {
-      low = pos + 1;
-    } else {
-      high = pos - 1;
-    }
-  }
-
-  return -1;
 }
+
+// Call the function to connect to the async task in Android
+connectToAsyncTaskInAndroid();
