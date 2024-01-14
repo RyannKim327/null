@@ -1,26 +1,17 @@
-function interpolationSearch(arr, x) {
-  let low = 0;
-  let high = arr.length - 1;
+function findMedianSortedArrays(arr1, arr2) {
+  const mergedArray = arr1.concat(arr2).sort((a, b) => a - b);
+  const n = mergedArray.length;
 
-  while (low <= high && x >= arr[low] && x <= arr[high]) {
-    if (low === high) {
-      if (arr[low] === x) return low;
-      return -1;
-    }
-
-    let pos = low + Math.floor((high - low) * (x - arr[low]) / (arr[high] - arr[low]));
-
-    if (arr[pos] === x) return pos;
-
-    if (arr[pos] < x) low = pos + 1;
-    else high = pos - 1;
+  if (n % 2 === 1) {
+    return mergedArray[Math.floor(n / 2)];
+  } else {
+    const midIndex = n / 2;
+    const median = (mergedArray[midIndex - 1] + mergedArray[midIndex]) / 2;
+    return median;
   }
-
-  return -1;
 }
 
 // Example usage:
-const array = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const searchValue = 12;
-const resultIndex = interpolationSearch(array, searchValue);
-console.log(resultIndex); // Output: 5
+const arr1 = [1, 3, 5];
+const arr2 = [2, 4, 6];
+console.log(findMedianSortedArrays(arr1, arr2));  // Output: 3.5
