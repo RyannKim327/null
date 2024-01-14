@@ -1,36 +1,45 @@
-function shellSort(arr) {
-  const len = arr.length;
-  let h = 1;
+function isValidPalindrome(string) {
+  // Convert the string to lowercase
+  string = string.toLowerCase();
 
-  // Calculate initial interval
-  while (h < len / 3) {
-    h = 3 * h + 1;
-  }
+  // Define two pointers, one starting from the beginning and one starting from the end
+  let left = 0;
+  let right = string.length - 1;
 
-  // Reduce interval until it becomes 1
-  while (h >= 1) {
-    // Perform insertion sort with current interval
-    for (let i = h; i < len; i++) {
-      const currentVal = arr[i];
-      let j = i;
-
-      // Compare elements that are h positions apart and swap if necessary
-      while (j >= h && arr[j - h] > currentVal) {
-        arr[j] = arr[j - h];
-        j -= h;
-      }
-
-      arr[j] = currentVal;
+  while (left < right) {
+    // Skip non-alphanumeric characters from the left pointer
+    if (!isAlphanumeric(string[left])) {
+      left++;
+      continue;
     }
 
-    // Reduce interval
-    h = Math.floor(h / 3);
+    // Skip non-alphanumeric characters from the right pointer
+    if (!isAlphanumeric(string[right])) {
+      right--;
+      continue;
+    }
+
+    // If the characters at the left and right pointers are not equal, it's not a palindrome
+    if (string[left] !== string[right]) {
+      return false;
+    }
+
+    // Move the pointers towards the center
+    left++;
+    right--;
   }
 
-  return arr;
+  // If we've reached this point, it's a valid palindrome
+  return true;
 }
 
-// Example usage:
-const unsortedArray = [10, 5, 8, 3, 2, 6, 4, 7, 9, 1];
-const sortedArray = shellSort(unsortedArray);
-console.log(sortedArray);
+function isAlphanumeric(char) {
+  // Match alphanumeric characters using a regular expression
+  return /[a-z0-9]/i.test(char);
+}
+
+// Test cases
+console.log(isValidPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isValidPalindrome("race a car")); // false
+console.log(isValidPalindrome("level")); // true
+console.log(isValidPalindrome("123  !@#")); // true
