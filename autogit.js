@@ -1,9 +1,17 @@
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
-let index = array.indexOf(elementToRemove);
+function reverseWords(str) {
+  // Split the string into an array of words
+  const words = str.split(' ');
 
-if (index !== -1) {
-  array.splice(index, 1);
+  // Reverse the order of the words using the reverse method
+  const reversedWords = words.reverse();
+
+  // Join the reversed words back into a string
+  const reversedString = reversedWords.join(' ');
+
+  return reversedString;
 }
 
-console.log(array); // Output: [1, 2, 4, 5]
+const inputString = 'Hello world!';
+
+const reversedString = reverseWords(inputString);
+console.log(reversedString); // Output: "world! Hello"
