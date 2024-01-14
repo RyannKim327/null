@@ -1,23 +1,26 @@
-function beamSearch(startNode, beamWidth, expandNode, evaluationFunction, isGoalNode) {
-  let beam = [startNode];
-  let currentLevel = 0;
+class TreeNode {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
 
-  while (currentLevel < maxLevel) {
-    let nextBeam = [];
-
-    for (let node of beam) {
-      let childNodes = expandNode(node);
-      let sortedChildNodes = childNodes.sort((a, b) => evaluationFunction(b) - evaluationFunction(a));
-      nextBeam.push(...sortedChildNodes.slice(0, beamWidth));
-    }
-
-    beam = nextBeam;
-    currentLevel++;
-
-    if (beam.some(isGoalNode)) {
-      return beam.find(isGoalNode);
-    }
+function maxDepth(root) {
+  if (!root) {
+    // Base case: if the node is null, return 0
+    return 0;
   }
 
-  return beam.reduce((bestNode, node) => evaluationFunction(node) > evaluationFunction(bestNode) ? node : bestNode);
+  const leftDepth = maxDepth(root.left); // Recursively calculate the depth of the left subtree
+  const rightDepth = maxDepth(root.right); // Recursively calculate the depth of the right subtree
+
+  return 1 + Math.max(leftDepth, rightDepth); // Return the maximum depth of the tree (1 + maximum of left and right depths)
 }
+const root = new TreeNode(3);
+root.left = new TreeNode(9);
+root.right = new TreeNode(20);
+root.right.left = new TreeNode(15);
+root.right.right = new TreeNode(7);
+
+console.log(maxDepth(root)); // Output: 3
