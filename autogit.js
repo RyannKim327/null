@@ -1,12 +1,7 @@
-// Make a GET request to an API endpoint using fetch
-fetch('https://api.example.com/data')
-  .then(response => response.json()) // Parse the response as JSON
-  .then(data => {
-    // Handle the data returned from the API
-    console.log(data);
-    // Your code logic goes here
-  })
-  .catch(error => {
-    // Handle any errors that occur during the API call
-    console.error('Error:', error);
-  });
+function decimalToBinary(decimalNumber) {
+  return decimalNumber.toString(2);
+}
+
+// Usage
+console.log(decimalToBinary(10)); // Output: "1010"
+console.log(decimalToBinary(42)); // Output: "101010"
