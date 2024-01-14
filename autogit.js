@@ -1,29 +1,44 @@
-function countOccurrences(str, char) {
-  let count = 0;
-  for (let i = 0; i < str.length; i++) {
-    if (str.charAt(i) === char) {
-      count++;
+function generateBadCharacterTable(pattern) {
+  const table = {};
+  
+  for (let i = 0; i < pattern.length - 1; i++) {
+    table[pattern[i]] = pattern.length - 1 - i;
+  }
+  
+  return table;
+}
+function searchBMH(text, pattern) {
+  const m = pattern.length;
+  const n = text.length;
+  const table = generateBadCharacterTable(pattern);
+  
+  let i = m - 1; // pattern pointer
+  let j = m - 1; // text pointer
+  
+  while (j < n) {
+    if (pattern[i] === text[j]) {
+      if (i === 0) {
+        return j; // match found
+      } else {
+        i--;
+        j--;
+      }
+    } else {
+      // perform bad character shift
+      const shift = table[text[j]] || m;
+      j += shift;
+      i = m - 1;
     }
   }
-  return count;
+  
+  return -1; // no match found
 }
+const text = "Hello, how are you?";
+const pattern = "are";
 
-const myString = "Hello, world!";
-const myChar = "o";
-console.log(countOccurrences(myString, myChar)); // Output: 2
-function countOccurrences(str, char) {
-  return str.split(char).length - 1;
+const index = searchBMH(text, pattern);
+if (index !== -1) {
+  console.log(`Pattern found at index ${index}`);
+} else {
+  console.log("Pattern not found.");
 }
-
-const myString = "Hello, world!";
-const myChar = "o";
-console.log(countOccurrences(myString, myChar)); // Output: 2
-function countOccurrences(str, char) {
-  const regex = new RegExp(char, "g");
-  const matches = str.match(regex);
-  return matches ? matches.length : 0;
-}
-
-const myString = "Hello, world!";
-const myChar = "o";
-console.log(countOccurrences(myString, myChar)); // Output: 2
