@@ -1,42 +1,9 @@
-function shellSort(arr) {
-  // ...
-}
-function shellSort(arr) {
-  const n = arr.length;
-  // ...
-}
-function shellSort(arr) {
-  const n = arr.length;
-  let gap = 1;
-  while (gap < n / 3) {
-    gap = 3 * gap + 1;
-  }
-  // ...
-}
-function shellSort(arr) {
-  const n = arr.length;
-  let gap = 1;
-  while (gap < n / 3) {
-    gap = 3 * gap + 1;
-  }
-
-  while (gap > 0) {
-    for (let i = gap; i < n; i++) {
-      let temp = arr[i];
-      let j = i;
-
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
-      }
-
-      arr[j] = temp;
-    }
-
-    gap = Math.floor(gap / 3);
-  }
-
-  return arr;
-}
-const array = [5, 2, 8, 9, 1, 3];
-console.log(shellSort(array));
+let str = "This is a sample string with spaces";
+let newStr = str.replace(/\s/g, "");
+console.log(newStr);
+let str = "This is a sample string with spaces";
+let newStr = str.split(" ").join("");
+console.log(newStr);
+let str = "This is a sample string with spaces";
+let newStr = str.replace(/ /g, "");
+console.log(newStr);
