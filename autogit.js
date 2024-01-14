@@ -1,15 +1,25 @@
-function isSortedAscending(arr) {
-  for (let i = 0; i < arr.length - 1; i++) {
-    if (arr[i] > arr[i + 1]) {
-      return false;
-    }
+// Import necessary modules for making HTTP requests in JavaScript
+const fetch = require('node-fetch');
+
+// Define the async task function
+async function connectAsyncTask() {
+  try {
+    // Make an HTTP GET request to a sample API endpoint
+    const response = await fetch('https://api.example.com/data');
+
+    // Parse the response as JSON
+    const data = await response.json();
+
+    // Log the data to the console
+    console.log(data);
+
+    // Perform further operations with the received data
+    // ...
+  } catch (error) {
+    // Handle any errors that occur during the async task
+    console.error('Error occurred:', error);
   }
-  return true;
 }
 
-// Example usage:
-const arr1 = [1, 2, 3, 4, 5];
-console.log(isSortedAscending(arr1));  // Output: true
-
-const arr2 = [5, 4, 3, 2, 1];
-console.log(isSortedAscending(arr2));  // Output: false
+// Call the async task function
+connectAsyncTask();
