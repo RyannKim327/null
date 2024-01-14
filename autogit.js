@@ -1,46 +1,57 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-
-class LinkedList {
+class TrieNode {
   constructor() {
-    this.head = null;
-  }
-
-  addToTail(value) {
-    const newNode = new Node(value);
-
-    if (this.head === null) {
-      this.head = newNode;
-    } else {
-      let currentNode = this.head;
-      while (currentNode.next !== null) {
-        currentNode = currentNode.next;
-      }
-      currentNode.next = newNode;
-    }
-  }
-
-  getLength() {
-    let currentNode = this.head;
-    let length = 0;
-
-    while (currentNode !== null) {
-      length++;
-      currentNode = currentNode.next;
-    }
-
-    return length;
+    this.isWord = false;
+    this.children = {};
   }
 }
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
+  }
 
-// Example usage:
-const list = new LinkedList();
-list.addToTail(1);
-list.addToTail(2);
-list.addToTail(3);
+  insert(word) {
+    let node = this.root;
+    for (let char of word) {
+      if (!node.children[char]) {
+        node.children[char] = new TrieNode();
+      }
+      node = node.children[char];
+    }
+    node.isWord = true;
+  }
 
-console.log(list.getLength()); // Output: 3
+  search(word) {
+    let node = this.root;
+    for (let char of word) {
+      if (!node.children[char]) {
+        return false;
+      }
+      node = node.children[char];
+    }
+    return node.isWord;
+  }
+
+  startsWith(prefix) {
+    let node = this.root;
+    for (let char of prefix) {
+      if (!node.children[char]) {
+        return false;
+      }
+      node = node.children[char];
+    }
+    return true;
+  }
+}
+const trie = new Trie();
+
+// Insert some words into the trie
+trie.insert("hello");
+trie.insert("world");
+
+// Search for a word
+console.log(trie.search("hello")); // true
+console.log(trie.search("hi")); // false
+
+// Check if a prefix exists
+console.log(trie.startsWith("hell")); // true
+console.log(trie.startsWith("word")); // false
