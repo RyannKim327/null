@@ -1,16 +1,26 @@
-let array = [1, 2, 3, 4, 5];
-let index = array.indexOf(3); // Find the index of the element you want to remove
-if (index !== -1) {
-  array.splice(index, 1); // Remove the element at the specified index
+function findMiddleElement(head) {
+  let slow = head;
+  let fast = head;
+
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
+  }
+
+  return slow;
 }
-console.log(array); // Output: [1, 2, 4, 5]
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
-array = array.filter(item => item !== elementToRemove);
-console.log(array); // Output: [1, 2, 4, 5]
-let array = [1, 2, 3, 4, 5];
-let index = array.indexOf(3); // Find the index of the element you want to remove
-if (index !== -1) {
-  array = [...array.slice(0, index), ...array.slice(index + 1)];
+// Node constructor
+function Node(value) {
+  this.value = value;
+  this.next = null;
 }
-console.log(array); // Output: [1, 2, 4, 5]
+
+// Create linked list: 1 -> 2 -> 3 -> 4 -> 5
+const head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
+
+const middleElement = findMiddleElement(head);
+console.log(middleElement.value);  // Output: 3
