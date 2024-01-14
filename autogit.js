@@ -1,16 +1,25 @@
-function calculateMean(numbers) {
-  let sum = 0;
+function findFirstRepeatedChar(str) {
+    // Create an empty set to store characters
+    let charSet = new Set();
 
-  for (let i = 0; i < numbers.length; i++) {
-    sum += numbers[i];
-  }
+    // Iterate through the string
+    for (let i = 0; i < str.length; i++) {
+        let char = str[i];
 
-  const mean = sum / numbers.length;
+        // If character is already in the set, it is repeated
+        if (charSet.has(char)) {
+            return char;
+        }
 
-  return mean;
+        // Add character to set
+        charSet.add(char);
+    }
+
+    // If no repeated character found
+    return null;
 }
 
-// Usage example:
-const numbers = [1, 2, 3, 4, 5];
-const mean = calculateMean(numbers);
-console.log(mean); // Output: 3
+// Test the function
+let str = "abca";
+let repeatedChar = findFirstRepeatedChar(str);
+console.log(repeatedChar); // Output: a
