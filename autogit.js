@@ -1,81 +1,41 @@
-function mergeSort(array) {
-  // Implementation goes here
-}
-function mergeSort(array) {
-  if (array.length <= 1) {
-    return array;
+function generateFibonacci(length) {
+  const fib = [0, 1];
+  for (let i = 2; i < length; i++) {
+    fib[i] = fib[i - 1] + fib[i - 2];
   }
-  
-  // Continue with the merge sort implementation
+  return fib;
 }
-function mergeSort(array) {
-  if (array.length <= 1) {
-    return array;
+function fibonacciSearch(array, searchValue, fib) {
+  const length = array.length;
+  let fibIndex = 0;
+  while (fib[fibIndex] < length) {
+    fibIndex++;
   }
-  
-  const middle = Math.floor(array.length / 2);
-  const left = array.slice(0, middle);
-  const right = array.slice(middle);
-  
-  // Continue with the merge sort implementation
-}
-function mergeSort(array) {
-  if (array.length <= 1) {
-    return array;
-  }
-  
-  const middle = Math.floor(array.length / 2);
-  const left = array.slice(0, middle);
-  const right = array.slice(middle);
-  
-  const sortedLeft = mergeSort(left);
-  const sortedRight = mergeSort(right);
-  
-  // Continue with the merge sort implementation
-}
-function merge(left, right) {
-  const result = [];
-  let i = 0;
-  let j = 0;
-  
-  while (i < left.length && j < right.length) {
-    if (left[i] < right[j]) {
-      result.push(left[i]);
-      i++;
+  let left = 0;
+  let mid = fib[fibIndex - 2];
+
+  while (left <= length) {
+    if (searchValue === array[mid]) {
+      return mid;
+    }
+    if (searchValue < array[mid]) {
+      fibIndex -= 2;
+      mid = fib[fibIndex - 1];
+      left = mid + 1;
     } else {
-      result.push(right[j]);
-      j++;
+      fibIndex -= 1;
+      mid = fib[fibIndex];
+      left = mid + 1;
     }
   }
-  
-  // Copy remaining elements from left array
-  while (i < left.length) {
-    result.push(left[i]);
-    i++;
-  }
-  
-  // Copy remaining elements from right array
-  while (j < right.length) {
-    result.push(right[j]);
-    j++;
-  }
-  
-  return result;
+  return -1; // Element not found
 }
-function mergeSort(array) {
-  if (array.length <= 1) {
-    return array;
-  }
-  
-  const middle = Math.floor(array.length / 2);
-  const left = array.slice(0, middle);
-  const right = array.slice(middle);
-  
-  const sortedLeft = mergeSort(left);
-  const sortedRight = mergeSort(right);
-  
-  return merge(sortedLeft, sortedRight);
-}
-const unsortedArray = [5, 2, 9, 1, 3];
-const sortedArray = mergeSort(unsortedArray);
-console.log(sortedArray);  // Output: [1, 2, 3, 5, 9]
+// Example usage
+const array = [1, 2, 3, 5, 8, 13, 21, 34, 55];
+const searchValue = 13;
+
+const fib = generateFibonacci(10); // Generate a Fibonacci sequence for an array of length 10
+const index = fibonacciSearch(array, searchValue, fib);
+
+console.log(`Index of ${searchValue}: ${index}`);
+Index of 13: 5
