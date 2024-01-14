@@ -1,17 +1,20 @@
-function getIntersectionNode(headA, headB) {
-  if (!headA || !headB) {
-    return null;
-  }
+function findSecondLargest(array) {
+  let largest = Number.MIN_SAFE_INTEGER;
+  let secondLargest = Number.MIN_SAFE_INTEGER;
 
-  let p1 = headA;
-  let p2 = headB;
+  array.forEach((element) => {
+    if (element > largest) {
+      secondLargest = largest;
+      largest = element;
+    } else if (element > secondLargest && element < largest) {
+      secondLargest = element;
+    }
+  });
 
-  // Traverse the lists until pointers are equal or reach the end
-  while (p1 !== p2) {
-    p1 = p1 ? p1.next : headB;
-    p2 = p2 ? p2.next : headA;
-  }
-
-  return p1; // Return the intersection node or null
+  return secondLargest;
 }
-let intersectionNode = getIntersectionNode(headA, headB);
+
+// Usage:
+const array = [10, 5, 8, 20, 9];
+const secondLargest = findSecondLargest(array);
+console.log("Second largest element:", secondLargest);
