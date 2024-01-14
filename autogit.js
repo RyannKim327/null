@@ -1,25 +1,25 @@
-// Import necessary modules for making HTTP requests in JavaScript
-const fetch = require('node-fetch');
+function binarySearch(arr, target, start = 0, end = arr.length - 1) {
+  if (start <= end) {
+    const mid = Math.floor((start + end) / 2);
 
-// Define the async task function
-async function connectAsyncTask() {
-  try {
-    // Make an HTTP GET request to a sample API endpoint
-    const response = await fetch('https://api.example.com/data');
-
-    // Parse the response as JSON
-    const data = await response.json();
-
-    // Log the data to the console
-    console.log(data);
-
-    // Perform further operations with the received data
-    // ...
-  } catch (error) {
-    // Handle any errors that occur during the async task
-    console.error('Error occurred:', error);
+    if (arr[mid] === target) {
+      return mid;
+    } else if (arr[mid] > target) {
+      return binarySearch(arr, target, start, mid - 1);
+    } else {
+      return binarySearch(arr, target, mid + 1, end);
+    }
   }
-}
 
-// Call the async task function
-connectAsyncTask();
+  return -1;
+}
+const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+const target = 12;
+
+const index = binarySearch(arr, target);
+
+if (index !== -1) {
+  console.log(`The target value ${target} was found at index ${index}.`);
+} else {
+  console.log(`The target value ${target} was not found in the array.`);
+}
