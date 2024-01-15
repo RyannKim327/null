@@ -1,18 +1,34 @@
-function bubbleSort(array) {
-  var len = array.length;
-  for (var i = 0; i < len - 1; i++) {
-    for (var j = 0; j < len - 1 - i; j++) {
-      if (array[j] > array[j + 1]) {
-        var temp = array[j];
-        array[j] = array[j + 1];
-        array[j + 1] = temp;
-      }
+function findMajorityElement(arr) {
+  let candidate = null;
+  let count = 0;
+
+  for (let num of arr) {
+    if (count === 0) {
+      candidate = num;
+      count = 1;
+    } else if (candidate === num) {
+      count++;
+    } else {
+      count--;
     }
   }
-  return array;
+
+  // Verify if the candidate is the majority element
+  count = 0;
+  for (let num of arr) {
+    if (num === candidate) {
+      count++;
+    }
+  }
+
+  if (count > arr.length / 2) {
+    return candidate;
+  }
+
+  return null; // No majority element found
 }
 
-// Example usage
-var myArray = [5, 3, 8, 4, 2];
-console.log(bubbleSort(myArray));
-// Output: [2, 3, 4, 5, 8]
+// Example usage:
+const arr = [2, 4, 5, 2, 2, 3, 2, 2, 6];
+const majorityElement = findMajorityElement(arr);
+console.log(majorityElement); // Output: 2
