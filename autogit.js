@@ -1,70 +1,48 @@
-function initializeGraph(vertices, edges) {
-  const graph = new Map();
+// Function to compute the failure table
+function computeFailureTable(pattern) {
+  const patternLength = pattern.length;
+  const table = new Array(patternLength);
 
-  for (let i = 0; i < vertices.length; i++) {
-    graph.set(vertices[i], []);
+  let i = 0;
+  let j = -1;
+  table[0] = -1;
+
+  while (i < patternLength - 1) {
+    while (j >= 0 && pattern[i] !== pattern[j]) {
+      j = table[j];
+    }
+    i++;
+    j++;
+    table[i] = j;
   }
 
-  for (let i = 0; i < edges.length; i++) {
-    const [src, dest, weight] = edges[i];
-    graph.get(src).push({ destination: dest, weight: weight });
-  }
-
-  return graph;
+  return table;
 }
-function bellmanFord(graph, source) {
-  const distances = new Map();
-  const predecessors = new Map();
 
-  // Step 1: Initialize distances and predecessors
-  for (let [vertex] of graph) {
-    distances.set(vertex, Infinity);
-    predecessors.set(vertex, null);
-  }
-  distances.set(source, 0);
+// Function to search for pattern occurrences in text using the failure table
+function search(text, pattern) {
+  const textLength = text.length;
+  const patternLength = pattern.length;
+  const table = computeFailureTable(pattern);
 
-  // Step 2: Relax edges repeatedly
-  for (let i = 0; i < graph.size - 1; i++) {
-    for (let [vertex, edges] of graph) {
-      for (let edge of edges) {
-        const { destination, weight } = edge;
-        const distance = distances.get(vertex) + weight;
+  let i = 0;
+  let j = 0;
 
-        if (distance < distances.get(destination)) {
-          distances.set(destination, distance);
-          predecessors.set(destination, vertex);
-        }
-      }
+  while (i < textLength) {
+    while (j >= 0 && text[i] !== pattern[j]) {
+      j = table[j];
+    }
+    i++;
+    j++;
+    
+    if (j === patternLength) {
+      console.log(`Pattern found at index ${i - j}`);
+      j = table[j];
     }
   }
-
-  // Step 3: Check for negative-weight cycles
-  for (let [vertex, edges] of graph) {
-    for (let edge of edges) {
-      const { destination, weight } = edge;
-      const distance = distances.get(vertex) + weight;
-
-      if (distance < distances.get(destination)) {
-        throw new Error('Graph contains negative-weight cycles');
-      }
-    }
-  }
-
-  return { distances, predecessors };
 }
-const vertices = ['A', 'B', 'C', 'D', 'E'];
-const edges = [
-  ['A', 'B', 4],
-  ['A', 'C', 2],
-  ['B', 'E', 3],
-  ['C', 'D', 2],
-  ['D', 'B', -1],
-  ['D', 'E', 2]
-];
 
-const graph = initializeGraph(vertices, edges);
-const source = 'A';
-const { distances, predecessors } = bellmanFord(graph, source);
-
-console.log('Distances:', distances);
-console.log('Predecessors:', predecessors);
+// Example usage
+const text = "AABAACAADAABAAABAA";
+const pattern = "AABA";
+search(text, pattern);
