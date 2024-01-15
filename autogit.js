@@ -1,34 +1,52 @@
-function findMajorityElement(arr) {
-  let candidate = null;
-  let count = 0;
+function bidirectionalSearch(graph, initialNode, goalNode) {
+  // Track visited nodes for both forward and backward search
+  const visitedForward = new Set();
+  const visitedBackward = new Set();
 
-  for (let num of arr) {
-    if (count === 0) {
-      candidate = num;
-      count = 1;
-    } else if (candidate === num) {
-      count++;
-    } else {
-      count--;
+  // Start the searches from the initial and goal nodes
+  const forwardQueue = [{ node: initialNode, path: [] }];
+  const backwardQueue = [{ node: goalNode, path: [] }];
+
+  while (forwardQueue.length > 0 && backwardQueue.length > 0) {
+    // Perform forward search on the graph
+    const forwardNodeData = forwardQueue.shift();
+    const forwardNode = forwardNodeData.node;
+    const forwardPath = forwardNodeData.path;
+
+    visitedForward.add(forwardNode);
+
+    if (visitedBackward.has(forwardNode)) {
+      // Nodes meet in the middle, merge paths and return
+      const backwardPath = backwardQueue.find(data => data.node === forwardNode).path;
+      return forwardPath.concat(backwardPath.reverse());
+    }
+
+    for (const neighbor of graph[forwardNode]) {
+      if (!visitedForward.has(neighbor)) {
+        forwardQueue.push({ node: neighbor, path: [...forwardPath, forwardNode] });
+      }
+    }
+
+    // Perform backward search on the graph
+    const backwardNodeData = backwardQueue.shift();
+    const backwardNode = backwardNodeData.node;
+    const backwardPath = backwardNodeData.path;
+
+    visitedBackward.add(backwardNode);
+
+    if (visitedForward.has(backwardNode)) {
+      // Nodes meet in the middle, merge paths and return
+      const forwardPath = forwardQueue.find(data => data.node === backwardNode).path;
+      return forwardPath.concat(backwardPath.reverse());
+    }
+
+    for (const neighbor of graph[backwardNode]) {
+      if (!visitedBackward.has(neighbor)) {
+        backwardQueue.push({ node: neighbor, path: [...backwardPath, backwardNode] });
+      }
     }
   }
 
-  // Verify if the candidate is the majority element
-  count = 0;
-  for (let num of arr) {
-    if (num === candidate) {
-      count++;
-    }
-  }
-
-  if (count > arr.length / 2) {
-    return candidate;
-  }
-
-  return null; // No majority element found
+  // No path found
+  return null;
 }
-
-// Example usage:
-const arr = [2, 4, 5, 2, 2, 3, 2, 2, 6];
-const majorityElement = findMajorityElement(arr);
-console.log(majorityElement); // Output: 2
