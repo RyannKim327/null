@@ -1,48 +1,42 @@
-class Stack {
-  constructor() {
-    this.stack = [];
-  }
+let startNode = { state: startState, parent: null };
+let goalNode = { state: goalState, parent: null };
+queueStart.push(startNode);
+queueGoal.push(goalNode);
+while (queueStart.length > 0 && queueGoal.length > 0) {
+  // Explore next state from the start direction
+  let currentState = queueStart.shift();
+  let neighbors = getNeighbors(currentState.state);
 
-  // Check if the stack is empty
-  isEmpty() {
-    return this.stack.length === 0;
-  }
+  for (let neighbor of neighbors) {
+    if (!visited.hasOwnProperty(neighbor)) {
+      let newNode = { state: neighbor, parent: currentState };
+      queueStart.push(newNode);
+      visited[neighbor] = newNode;
 
-  // Push an element onto the stack
-  push(item) {
-    this.stack.push(item);
-  }
-
-  // Remove and return the most recently added element from the stack
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
+      // Check if this state has already been visited from the goal direction
+      if (visited.hasOwnProperty(neighbor)) {
+        return "Path found!"; // or return the path here
+      }
     }
-    return this.stack.pop();
   }
 
-  // Return the size of the stack
-  size() {
-    return this.stack.length;
-  }
+  // Explore next state from the goal direction
+  currentState = queueGoal.shift();
+  neighbors = getNeighbors(currentState.state);
 
-  // Return the most recently added element without removing it
-  peek() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
+  for (let neighbor of neighbors) {
+    if (!visited.hasOwnProperty(neighbor)) {
+      let newNode = { state: neighbor, parent: currentState };
+      queueGoal.push(newNode);
+      visited[neighbor] = newNode;
+
+      // Check if this state has already been visited from the start direction
+      if (visited.hasOwnProperty(neighbor)) {
+        return "Path found!"; // or return the path here
+      }
     }
-    return this.stack[this.stack.length - 1];
   }
 }
 
-// Example usage:
-const stack = new Stack();
-stack.push(1);
-stack.push(2);
-stack.push(3);
-
-console.log(stack.pop());    // Output: 3
-console.log(stack.pop());    // Output: 2
-console.log(stack.peek());   // Output: 1
-console.log(stack.size());   // Output: 1
-console.log(stack.isEmpty()); // Output: false
+// If there is no path connecting the start and goal states
+return "No path found!";
