@@ -1,37 +1,28 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
+function binarySearch(arr, target, startIdx = 0, endIdx = arr.length - 1) {
+  const midIdx = Math.floor((startIdx + endIdx) / 2);
+
+  if (startIdx > endIdx) {
+    return -1; // Target element not found
+  }
+
+  if (target === arr[midIdx]) {
+    return midIdx; // Target element found
+  }
+
+  if (target < arr[midIdx]) {
+    return binarySearch(arr, target, startIdx, midIdx - 1);
+  }
+
+  if (target > arr[midIdx]) {
+    return binarySearch(arr, target, midIdx + 1, endIdx);
   }
 }
-function findNthNodeFromEnd(head, n) {
-  let slow = head;
-  let fast = head;
-  
-  // Move the fast pointer n nodes ahead
-  for (let i = 0; i < n; i++) {
-    if (fast === null) {
-      return null; // n is greater than the length of the linked list
-    }
-    fast = fast.next;
-  }
-  
-  // Move both pointers until the fast pointer reaches the end
-  while (fast !== null) {
-    slow = slow.next;
-    fast = fast.next;
-  }
-  
-  return slow;
+const numbers = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
+const target = 16;
+const index = binarySearch(numbers, target);
+
+if (index !== -1) {
+  console.log(`Target element ${target} found at index ${index}`);
+} else {
+  console.log(`Target element ${target} not found`);
 }
-// Create a linked list: 1 -> 2 -> 3 -> 4 -> 5 -> null
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-let n = 2; // Find the 2nd node from the end
-
-let result = findNthNodeFromEnd(head, n);
-console.log(result.data); // Output: 4
