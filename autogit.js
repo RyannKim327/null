@@ -1,25 +1,24 @@
-function breadthLimitedSearch(start, goal, limit) {
-  let queue = [start];
-  let visited = new Set([start]);
+function findFirstRepeatedCharacter(str) {
+  const charMap = {};
 
-  while (queue.length > 0) {
-    let currentNode = queue.shift();
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
 
-    if (currentNode === goal) {
-      return currentNode; // or return any other result
+    // If the character already exists in the charMap, it is a repeated character
+    if (charMap[char]) {
+      return char;
     }
 
-    if (currentNode.depth < limit) {
-      let childNodes = generateChildNodes(currentNode); // Implement function to generate child nodes
-
-      for (let child of childNodes) {
-        if (!visited.has(child)) {
-          queue.push(child);
-          visited.add(child);
-        }
-      }
-    }
+    // Otherwise, add the character to the charMap
+    charMap[char] = true;
   }
 
-  return null; // or return any other result for unsuccessful search
+  // If no repeated character is found, return null or any other appropriate value
+  return null;
 }
+
+// Example usage
+const input = 'hello world';
+const repeatedChar = findFirstRepeatedCharacter(input);
+
+console.log(repeatedChar); // Output: 'l'
