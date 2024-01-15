@@ -1,47 +1,48 @@
-class Node {
+class Stack {
   constructor() {
-    this.children = {};
+    this.stack = [];
+  }
+
+  // Check if the stack is empty
+  isEmpty() {
+    return this.stack.length === 0;
+  }
+
+  // Push an element onto the stack
+  push(item) {
+    this.stack.push(item);
+  }
+
+  // Remove and return the most recently added element from the stack
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
+    }
+    return this.stack.pop();
+  }
+
+  // Return the size of the stack
+  size() {
+    return this.stack.length;
+  }
+
+  // Return the most recently added element without removing it
+  peek() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
+    }
+    return this.stack[this.stack.length - 1];
   }
 }
 
-class SuffixTree {
-  constructor(text) {
-    this.root = new Node();
-    this.construct(text);
-  }
+// Example usage:
+const stack = new Stack();
+stack.push(1);
+stack.push(2);
+stack.push(3);
 
-  construct(text) {
-    for (let i = 0; i < text.length; i++) {
-      this.insertSuffix(text.slice(i));
-    }
-  }
-
-  insertSuffix(suffix) {
-    let node = this.root;
-    for (let i = 0; i < suffix.length; i++) {
-      const char = suffix[i];
-      if (!node.children[char]) {
-        node.children[char] = new Node();
-      }
-      node = node.children[char];
-    }
-  }
-
-  search(pattern) {
-    let node = this.root;
-    for (let i = 0; i < pattern.length; i++) {
-      const char = pattern[i];
-      if (!node.children[char]) {
-        return false;
-      }
-      node = node.children[char];
-    }
-    return true;
-  }
-}
-const text = "banana";
-const suffixTree = new SuffixTree(text);
-
-console.log(suffixTree.search("ana")); // Output: true
-console.log(suffixTree.search("nan")); // Output: true
-console.log(suffixTree.search("xxx")); // Output: false
+console.log(stack.pop());    // Output: 3
+console.log(stack.pop());    // Output: 2
+console.log(stack.peek());   // Output: 1
+console.log(stack.size());   // Output: 1
+console.log(stack.isEmpty()); // Output: false
