@@ -1,30 +1,54 @@
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
+function mergeSortIterative(array) {
+  const arrayLength = array.length;
+  let subarraySize = 1;
 
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
+  while (subarraySize < arrayLength) {
+    let index = 0;
 
-  return slow.value;
-}
-const linkedList = {
-  value: 1,
-  next: {
-    value: 2,
-    next: {
-      value: 3,
-      next: {
-        value: 4,
-        next: {
-          value: 5,
-          next: null
-        }
-      }
+    while (index < arrayLength - subarraySize) {
+      const mid = index + subarraySize - 1;
+      const end = Math.min(index + subarraySize * 2 - 1, arrayLength - 1);
+      merge(array, index, mid, end);
+      index += subarraySize * 2;
     }
-  }
-};
 
-const middleElement = findMiddleElement(linkedList);
-console.log(middleElement); // Output: 3
+    subarraySize *= 2;
+  }
+
+  return array;
+}
+
+function merge(array, startIndex, midIndex, endIndex) {
+  const leftArray = array.slice(startIndex, midIndex + 1);
+  const rightArray = array.slice(midIndex + 1, endIndex + 1);
+
+  let leftIndex = 0;
+  let rightIndex = 0;
+  let mergeIndex = startIndex;
+
+  while (leftIndex < leftArray.length && rightIndex < rightArray.length) {
+    if (leftArray[leftIndex] <= rightArray[rightIndex]) {
+      array[mergeIndex] = leftArray[leftIndex];
+      leftIndex++;
+    } else {
+      array[mergeIndex] = rightArray[rightIndex];
+      rightIndex++;
+    }
+    mergeIndex++;
+  }
+
+  while (leftIndex < leftArray.length) {
+    array[mergeIndex] = leftArray[leftIndex];
+    leftIndex++;
+    mergeIndex++;
+  }
+
+  while (rightIndex < rightArray.length) {
+    array[mergeIndex] = rightArray[rightIndex];
+    rightIndex++;
+    mergeIndex++;
+  }
+}
+const array = [6, 2, 9, 5, 1, 0, 4, 8, 7, 3];
+const sortedArray = mergeSortIterative(array);
+console.log(sortedArray);
