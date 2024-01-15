@@ -1,52 +1,19 @@
-function buildPrefixTable(pattern) {
-  const prefixTable = [0];
-  let prefixLen = 0;
-  let i = 1;
+function findMaxSubarraySum(arr) {
+  let maxSum = arr[0]; // Initialize the maximum sum as the first element
+  let currentSum = arr[0]; // Initialize the current sum as the first element
 
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[prefixLen]) {
-      prefixLen++;
-      prefixTable[i] = prefixLen;
-      i++;
-    } else {
-      if (prefixLen !== 0) {
-        prefixLen = prefixTable[prefixLen - 1];
-      } else {
-        prefixTable[i] = 0;
-        i++;
-      }
-    }
+  // Iterate through the array, starting from the second element
+  for (let i = 1; i < arr.length; i++) {
+    // Calculate the current sum by either extending the subarray or starting a new subarray
+    currentSum = Math.max(arr[i], currentSum + arr[i]);
+    
+    // Update the maximum sum if the current sum is greater
+    maxSum = Math.max(maxSum, currentSum);
   }
 
-  return prefixTable;
+  return maxSum;
 }
-function searchKMP(text, pattern) {
-  const prefixTable = buildPrefixTable(pattern);
-  const result = [];
-  let i = 0; // index in text
-  let j = 0; // index in pattern
 
-  while (i < text.length) {
-    if (pattern[j] === text[i]) {
-      i++;
-      j++;
-
-      if (j === pattern.length) {
-        result.push(i - j);
-        j = prefixTable[j - 1];
-      }
-    } else {
-      if (j !== 0) {
-        j = prefixTable[j - 1];
-      } else {
-        i++;
-      }
-    }
-  }
-
-  return result;
-}
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const result = searchKMP(text, pattern);
-console.log(result); // Output: [10]
+// Example usage:
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+console.log(findMaxSubarraySum(array)); // Output: 6 (from subarray [4, -1, 2, 1])
