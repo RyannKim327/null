@@ -1,19 +1,20 @@
-function binarySearchRecursive(arr, target, low, high) {
-  if (low > high) {
-    return -1;
-  }
+const str = "Hello World";
 
-  const mid = Math.floor((low + high) / 2);
+// Check if the string 'World' is present
+const isSubstringPresent = str.includes('World');
 
-  if (arr[mid] === target) {
-    return mid;
-  } else if (target < arr[mid]) {
-    return binarySearchRecursive(arr, target, low, mid - 1);
-  } else {
-    return binarySearchRecursive(arr, target, mid + 1, high);
-  }
+if (isSubstringPresent) {
+  console.log("Substring is present");
+} else {
+  console.log("Substring is not present");
 }
-const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-const target = 6;
-const index = binarySearchRecursive(arr, target, 0, arr.length - 1);
-console.log(index); // Output: 5
+const str = "Hello World";
+
+// Check the index of the substring 'World'
+const substringIndex = str.indexOf('World');
+
+if (substringIndex !== -1) {
+  console.log("Substring is present at index", substringIndex);
+} else {
+  console.log("Substring is not present");
+}
