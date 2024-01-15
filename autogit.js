@@ -1,47 +1,27 @@
-function depthLimitedSearch(startNode, targetValue, depthLimit) {
-  const stack = [];
-  stack.push({ node: startNode, depth: 0 });
-  // Rest of the code goes here...
-}
-while (stack.length > 0) {
-  const { node, depth } = stack.pop();
-  // Rest of the code goes here...
-}
-if (node.value === targetValue) {
-  console.log(`Found target value ${targetValue} at depth ${depth}`);
-  return node;
-}
-if (depth === depthLimit) {
-  continue;
-}
-if (node.children) {
-  for (const childNode of node.children) {
-    stack.push({ node: childNode, depth: depth + 1 });
+class ListNode {
+  constructor(value, next = null) {
+    this.value = value;
+    this.next = next;
   }
 }
-function depthLimitedSearch(startNode, targetValue, depthLimit) {
-  const stack = [];
-  stack.push({ node: startNode, depth: 0 });
 
-  while (stack.length > 0) {
-    const { node, depth } = stack.pop();
+function findMiddleElement(head) {
+  let slow = head;
+  let fast = head;
 
-    if (node.value === targetValue) {
-      console.log(`Found target value ${targetValue} at depth ${depth}`);
-      return node;
-    }
-
-    if (depth === depthLimit) {
-      continue;
-    }
-
-    if (node.children) {
-      for (const childNode of node.children) {
-        stack.push({ node: childNode, depth: depth + 1 });
-      }
-    }
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
   }
 
-  console.log(`Could not find target value ${targetValue} within depth limit`);
-  return null;
+  return slow.value;
 }
+
+// Example usage:
+const list = new ListNode(1);
+list.next = new ListNode(2);
+list.next.next = new ListNode(3);
+list.next.next.next = new ListNode(4);
+list.next.next.next.next = new ListNode(5);
+
+console.log(findMiddleElement(list)); // Output: 3
