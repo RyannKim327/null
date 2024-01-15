@@ -1,31 +1,13 @@
-function beamSearch(initialState, successorsFn, evaluationFn, beamWidth, numIterations) {
-  let candidates = [initialState];
-
-  for (let i = 0; i < numIterations; i++) {
-    let successors = [];
-
-    for (let candidate of candidates) {
-      let nextStates = successorsFn(candidate);
-
-      for (let nextState of nextStates) {
-        let score = evaluationFn(nextState);
-        successors.push({ state: nextState, score });
-      }
-    }
-
-    successors.sort((a, b) => b.score - a.score);
-    candidates = successors.slice(0, beamWidth).map(s => s.state);
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
   }
-
-  return candidates[0]; // Return the best candidate
+  return array;
 }
 
-// Example usage:
-let initialState = // Define your initial state
-let successorsFn = // Define your successor function
-let evaluationFn = // Define your evaluation function
-let beamWidth = 5;
-let numIterations = 10;
+// Usage example:
 
-let bestSolution = beamSearch(initialState, successorsFn, evaluationFn, beamWidth, numIterations);
-console.log("Best solution:", bestSolution);
+const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const shuffledNumbers = shuffleArray(numbers);
+console.log(shuffledNumbers);
