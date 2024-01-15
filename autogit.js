@@ -1,78 +1,30 @@
-class LinkedList {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-  }
-
-  addToHead(value) {
-    const newNode = new Node(value, this.head);
-    if (!this.head) {
-      this.tail = newNode;
-    }
-    this.head = newNode;
-  }
-
-  addToTail(value) {
-    const newNode = new Node(value);
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      this.tail.next = newNode;
-    }
-    this.tail = newNode;
-  }
-
-  removeHead() {
-    if (!this.head) {
-      return null;
-    }
-    const removedValue = this.head.value;
-    this.head = this.head.next;
-    if (!this.head) {
-      this.tail = null;
-    }
-    return removedValue;
-  }
-
-  search(value) {
-    let currentNode = this.head;
-    while (currentNode) {
-      if (currentNode.value === value) {
-        return currentNode;
-      }
-      currentNode = currentNode.next;
-    }
-    return null;
-  }
-
-  remove(value) {
-    if (!this.head) {
-      return null;
-    }
-
-    if (this.head.value === value) {
-      return this.removeHead();
-    }
-
-    let currentNode = this.head;
-    while (currentNode.next) {
-      if (currentNode.next.value === value) {
-        const removedValue = currentNode.next.value;
-        currentNode.next = currentNode.next.next;
-        if (!currentNode.next) {
-          this.tail = currentNode;
-        }
-        return removedValue;
-      }
-      currentNode = currentNode.next;
-    }
-    return null;
-  }
-}
-
 class Node {
-  constructor(value, next = null) {
+  constructor(value) {
     this.value = value;
-    this.next = next;
+    this.left = null;
+    this.right = null;
   }
 }
+
+function maxDepth(root) {
+  if (root === null) {
+    return 0;
+  }
+  
+  // Recursively calculate the maximum depth of the left and right subtrees
+  const leftDepth = maxDepth(root.left);
+  const rightDepth = maxDepth(root.right);
+  
+  // Return the maximum of the depths of the left and right subtrees, plus 1 for the current node
+  return Math.max(leftDepth, rightDepth) + 1;
+}
+// Create a binary tree
+const root = new Node(3);
+root.left = new Node(9);
+root.right = new Node(20);
+root.right.left = new Node(15);
+root.right.right = new Node(7);
+
+// Find the maximum depth
+const depth = maxDepth(root);
+console.log(depth); // Output: 3
