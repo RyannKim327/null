@@ -1,73 +1,25 @@
-function binarySearch(array, target, low = 0, high = array.length - 1) {
-  // ...
+function findFirstRepeatedCharacter(str) {
+  // Create an object to keep track of characters and their counts
+  const characters = {};
+
+  // Loop through each character in the string
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+
+    // If the character already exists in the characters object, return it
+    if (characters[char]) {
+      return char;
+    }
+
+    // Otherwise, increment the count for that character
+    characters[char] = 1;
+  }
+
+  // Return null if no repeated character is found
+  return null;
 }
-function binarySearch(array, target, low = 0, high = array.length - 1) {
-  if (low > high) {
-    return -1;
-  }
-}
-function binarySearch(array, target, low = 0, high = array.length - 1) {
-  if (low > high) {
-    return -1;
-  }
 
-  const mid = Math.floor((low + high) / 2);
-}
-function binarySearch(array, target, low = 0, high = array.length - 1) {
-  if (low > high) {
-    return -1;
-  }
-
-  const mid = Math.floor((low + high) / 2);
-  const midValue = array[mid];
-
-  if (midValue === target) {
-    return mid;
-  }
-}
-function binarySearch(array, target, low = 0, high = array.length - 1) {
-  if (low > high) {
-    return -1;
-  }
-
-  const mid = Math.floor((low + high) / 2);
-  const midValue = array[mid];
-
-  if (midValue === target) {
-    return mid;
-  } else if (midValue > target) {
-    return binarySearch(array, target, low, mid - 1);
-  }
-}
-function binarySearch(array, target, low = 0, high = array.length - 1) {
-  if (low > high) {
-    return -1;
-  }
-
-  const mid = Math.floor((low + high) / 2);
-  const midValue = array[mid];
-
-  if (midValue === target) {
-    return mid;
-  } else if (midValue > target) {
-    return binarySearch(array, target, low, mid - 1);
-  } else {
-    return binarySearch(array, target, mid + 1, high);
-  }
-}
-function binarySearch(array, target, low = 0, high = array.length - 1) {
-  if (low > high) {
-    return -1;
-  }
-
-  const mid = Math.floor((low + high) / 2);
-  const midValue = array[mid];
-
-  if (midValue === target) {
-    return mid;
-  } else if (midValue > target) {
-    return binarySearch(array, target, low, mid - 1);
-  } else {
-    return binarySearch(array, target, mid + 1, high);
-  }
-}
+// Example usage
+const input = "hello world";
+const firstRepeatedChar = findFirstRepeatedCharacter(input);
+console.log(firstRepeatedChar); // Output: l
