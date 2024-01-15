@@ -1,24 +1,28 @@
-function isLinkedListPalindrome(head) {
-  const values = [];
-  let current = head;
-
-  // Step 2: Traverse the linked list and store the values
-  while (current) {
-    values.push(current.val);
-    current = current.next;
+class TreeNode {
+  constructor(val, left = null, right = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
   }
-
-  let start = 0;
-  let end = values.length - 1;
-
-  // Step 3: Compare values using two pointers
-  while (start < end) {
-    if (values[start] !== values[end]) {
-      return false; // Step 4: Not a palindrome
-    }
-    start++;
-    end--;
-  }
-
-  return true; // Step 5: Linked list is a palindrome
 }
+
+function findSum(root) {
+  if (root === null) {
+    return 0; // Return 0 for an empty tree or leaf node
+  }
+
+  const leftSum = findSum(root.left); // Recursively calculate sum of left subtree
+  const rightSum = findSum(root.right); // Recursively calculate sum of right subtree
+
+  return root.val + leftSum + rightSum; // Return the sum of current node and its subtrees
+}
+
+// Usage example:
+const tree = new TreeNode(1);
+tree.left = new TreeNode(2);
+tree.right = new TreeNode(3);
+tree.left.left = new TreeNode(4);
+tree.left.right = new TreeNode(5);
+
+const sum = findSum(tree);
+console.log(sum); // Output: 15
