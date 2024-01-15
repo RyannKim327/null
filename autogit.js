@@ -1,51 +1,89 @@
 class Node {
-  constructor(data) {
-    this.data = data;
+  constructor(value) {
+    this.value = value;
     this.left = null;
     this.right = null;
   }
 }
 
-function diameterOfBinaryTree(root) {
-  // Base case: empty tree
-  if (root === null) {
-    return 0;
+class BinarySearchTree {
+  constructor() {
+    this.root = null;
   }
 
-  // Recursive calls to find the height of the left and right subtrees
-  const leftHeight = heightOfBinaryTree(root.left);
-  const rightHeight = heightOfBinaryTree(root.right);
-
-  // Recursive calls to find the diameter of the left and right subtrees
-  const leftDiameter = diameterOfBinaryTree(root.left);
-  const rightDiameter = diameterOfBinaryTree(root.right);
-
-  // Return the maximum of:
-  // 1. Diameter of the left and right subtrees
-  // 2. (Height of the left subtree + Height of the right subtree + 1)
-  return Math.max(leftHeight + rightHeight + 1, Math.max(leftDiameter, rightDiameter));
-}
-
-function heightOfBinaryTree(root) {
-  // Base case: empty tree
-  if (root === null) {
-    return 0;
+  // Helper method to create a new node
+  createNode(value) {
+    return new Node(value);
   }
 
-  // Recursive calls to find the height of the left and right subtrees
-  const leftHeight = heightOfBinaryTree(root.left);
-  const rightHeight = heightOfBinaryTree(root.right);
+  // Method to insert a value into the BST
+  insert(value) {
+    const newNode = this.createNode(value);
 
-  // Return the maximum of the left and right subtrees heights, plus 1 for the current node
-  return Math.max(leftHeight, rightHeight) + 1;
+    if (this.root === null) {
+      // If the tree is empty, set the new node as the root
+      this.root = newNode;
+    } else {
+      // Traverse the tree to find the appropriate position to insert the new node
+      this.insertNode(this.root, newNode);
+    }
+  }
+
+  // Helper method to recursively insert a node
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      // If the new node's value is less than the current node's value, go to the left subtree
+      if (node.left === null) {
+        // If the left child is null, insert the new node here
+        node.left = newNode;
+      } else {
+        // Recursively traverse the left subtree
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      // If the new node's value is greater than or equal to the current node's value, go to the right subtree
+      if (node.right === null) {
+        // If the right child is null, insert the new node here
+        node.right = newNode;
+      } else {
+        // Recursively traverse the right subtree
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  // Method to search for a value in the BST
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  // Helper method to recursively search for a node
+  searchNode(node, value) {
+    if (node === null) {
+      // If the node is null, the value is not found in the tree
+      return false;
+    }
+
+    if (value < node.value) {
+      // If the value is less than the current node's value, search in the left subtree
+      return this.searchNode(node.left, value);
+    } else if (value > node.value) {
+      // If the value is greater than the current node's value, search in the right subtree
+      return this.searchNode(node.right, value);
+    } else {
+      // If the value is equal to the current node's value, the node is found
+      return true;
+    }
+  }
 }
-// Create a binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
 
-// Find the diameter of the binary tree
-const diameter = diameterOfBinaryTree(root);
-console.log("Diameter of the binary tree:", diameter);
+// Example usage:
+const bst = new BinarySearchTree();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(2);
+bst.insert(7);
+
+console.log(bst.search(7)); // Output: true
+console.log(bst.search(20)); // Output: false
