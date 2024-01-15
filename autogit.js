@@ -1,26 +1,15 @@
-function countOccurrences(str, char) {
-  let count = 0;
-  for (let i = 0; i < str.length; i++) {
-    if (str[i] === char) {
-      count++;
+function isSortedAscending(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false; // Not in ascending order
     }
   }
-  return count;
+  return true; // Sorted in ascending order
 }
 
-const str = "Hello, world!";
-const char = "o";
+// Example usage:
+const array1 = [1, 2, 3, 4, 5];
+console.log(isSortedAscending(array1)); // Output: true
 
-const occurrences = countOccurrences(str, char);
-console.log(`The character '${char}' occurs ${occurrences} times in the string.`);
-function countOccurrences(str, char) {
-  const occurrences = str.split(char).length - 1;
-  return occurrences;
-}
-
-const str = "Hello, world!";
-const char = "o";
-
-const occurrences = countOccurrences(str, char);
-console.log(`The character '${char}' occurs ${occurrences} times in the string.`);
-The character 'o' occurs 2 times in the string.
+const array2 = [1, 3, 2, 4, 5];
+console.log(isSortedAscending(array2)); // Output: false
