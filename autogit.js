@@ -1,27 +1,21 @@
-class ListNode {
-  constructor(value, next = null) {
-    this.value = value;
-    this.next = next;
-  }
+let str = "Hello, World!";
+let reversedStr = str.split("").reverse().join("");
+console.log(reversedStr);
+let str = "Hello, World!";
+let reversedStr = "";
+for(let i = str.length - 1; i >= 0; i--) {
+    reversedStr += str[i];
+}
+console.log(reversedStr);
+function reverseString(str) {
+    if (str === "") {
+        return "";
+    } else {
+        return reverseString(str.substr(1)) + str.charAt(0);
+    }
 }
 
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
-
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
-
-  return slow.value;
-}
-
-// Example usage:
-const list = new ListNode(1);
-list.next = new ListNode(2);
-list.next.next = new ListNode(3);
-list.next.next.next = new ListNode(4);
-list.next.next.next.next = new ListNode(5);
-
-console.log(findMiddleElement(list)); // Output: 3
+let str = "Hello, World!";
+let reversedStr = reverseString(str);
+console.log(reversedStr);
+!dlroW ,olleH
