@@ -1,38 +1,51 @@
-function longestCommonSubstring(str1, str2) {
-  const m = str1.length;
-  const n = str2.length;
-
-  // Create a matrix to store the lengths of the common substrings
-  const dp = Array(m + 1);
-  for (let i = 0; i <= m; i++) {
-    dp[i] = Array(n + 1).fill(0);
-  }
-
-  let longestLength = 0; // length of longest common substring
-  let endIndex = 0; // ending index of longest common substring
-
-  // Fill the matrix in bottom-up manner
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-        if (dp[i][j] > longestLength) {
-          longestLength = dp[i][j];
-          endIndex = i - 1; // update the ending index
-        }
-      } else {
-        dp[i][j] = 0;
-      }
+function mergeSortIterative(arr) {
+  const n = arr.length;
+  const aux = Array(n);
+  
+  for (let size = 1; size < n; size *= 2) {
+    for (let leftStart = 0; leftStart < n - 1; leftStart += 2 * size) {
+      const mid = Math.min(leftStart + size - 1, n - 1);
+      const rightEnd = Math.min(leftStart + 2 * size - 1, n - 1);
+      merge(arr, aux, leftStart, mid, rightEnd);
     }
   }
+  
+  return arr;
+}
 
-  // Extract the longest common substring using the ending index
-  const longestSubstring = str1.substr(endIndex - longestLength + 1, longestLength);
-  return longestSubstring;
+function merge(arr, aux, leftStart, mid, rightEnd) {
+  let left = leftStart;
+  let right = mid + 1;
+  let auxIdx = leftStart;
+  
+  while (left <= mid && right <= rightEnd) {
+    if (arr[left] <= arr[right]) {
+      aux[auxIdx] = arr[left];
+      left++;
+    } else {
+      aux[auxIdx] = arr[right];
+      right++;
+    }
+    auxIdx++;
+  }
+  
+  while (left <= mid) {
+    aux[auxIdx] = arr[left];
+    auxIdx++;
+    left++;
+  }
+  
+  while (right <= rightEnd) {
+    aux[auxIdx] = arr[right];
+    auxIdx++;
+    right++;
+  }
+  
+  for (let i = leftStart; i <= rightEnd; i++) {
+    arr[i] = aux[i];
+  }
 }
 
 // Example usage
-const str1 = 'ABAB';
-const str2 = 'BABA';
-const longestSubstring = longestCommonSubstring(str1, str2);
-console.log(longestSubstring); // Output: 'ABA'
+const arr = [5, 8, 2, 4, 1, 3];
+console.log(mergeSortIterative(arr)); // Output: [1, 2, 3, 4, 5, 8]
