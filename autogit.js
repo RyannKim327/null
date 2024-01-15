@@ -1,51 +1,20 @@
-class ListNode {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
-}
-
-function getIntersectionNode(headA, headB) {
-  let nodeA = headA;
-  let nodeB = headB;
-  let lenA = 0;
-  let lenB = 0;
-
-  // Get the length of linked lists A and B
-  while (nodeA) {
-    lenA += 1;
-    nodeA = nodeA.next;
-  }
-
-  while (nodeB) {
-    lenB += 1;
-    nodeB = nodeB.next;
-  }
-
-  // Reset current node references
-  nodeA = headA;
-  nodeB = headB;
-
-  // Move the longer linked list pointer forward
-  while (lenA > lenB) {
-    nodeA = nodeA.next;
-    lenA -= 1;
-  }
-
-  while (lenB > lenA) {
-    nodeB = nodeB.next;
-    lenB -= 1;
-  }
-
-  // Traverse both lists and find the intersection point
-  while (nodeA && nodeB) {
-    if (nodeA === nodeB) {
-      return nodeA;
+function findSecondLargest(arr) {
+  let max = -Infinity;
+  let secondMax = -Infinity;
+  
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] > max) {
+      secondMax = max;
+      max = arr[i];
+    } else if (arr[i] > secondMax && arr[i] < max) {
+      secondMax = arr[i];
     }
-    nodeA = nodeA.next;
-    nodeB = nodeB.next;
   }
-
-  // No intersection found
-  return null;
+  
+  return secondMax;
 }
+
+// Example usage:
+const array = [3, 5, 9, 2, 8, 10];
+const secondLargest = findSecondLargest(array);
+console.log(secondLargest); // Output: 9
