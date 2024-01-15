@@ -1,20 +1,15 @@
-function findSecondLargest(arr) {
-  let max = -Infinity;
-  let secondMax = -Infinity;
+const cron = require('node-cron');
 
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] > max) {
-      secondMax = max;
-      max = arr[i];
-    } else if (arr[i] > secondMax && arr[i] < max) {
-      secondMax = arr[i];
-    }
-  }
+// Define the task to be executed
+const task = () => {
+  console.log('Task executed!');
+  // Add your desired code here
+};
 
-  return secondMax;
-}
+// Schedule the task to run every minute
+cron.schedule('* * * * *', task);
 
-// Usage example
-const array = [10, 20, 30, 40, 50];
-const secondLargest = findSecondLargest(array);
-console.log("Second largest element: " + secondLargest); // Output: 40
+// Alternatively, you can schedule the task to run at a specific time
+// cron.schedule('0 8 * * *', task); // Runs the task at 8:00 AM every day
+
+console.log('Cron job scheduled!');
