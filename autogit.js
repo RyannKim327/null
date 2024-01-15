@@ -1,15 +1,18 @@
-function validateEmail(email) {
-  // Regular expression for email validation
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+function isPrime(num) {
+  if (num <= 1) {
+    return false;
+  }
   
-  // Test the email against the regular expression
-  return regex.test(email);
+  // Check from 2 to the square root of the number
+  for (let i = 2; i <= Math.sqrt(num); i++) {
+    if (num % i === 0) {
+      return false;
+    }
+  }
+  
+  return true;
 }
 
-// Usage example
-const inputEmail = "test@example.com";
-if (validateEmail(inputEmail)) {
-  console.log("Email is valid");
-} else {
-  console.log("Email is not valid");
-}
+// Test the function
+console.log(isPrime(7)); // true
+console.log(isPrime(10)); // false
