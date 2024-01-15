@@ -1,13 +1,47 @@
-let str = "  Hello,    World!   ";
+function createPrefixTable(pattern) {
+  const prefixTable = Array(pattern.length).fill(0);
+  let i = 0;
+  for (let j = 1; j < pattern.length;) {
+    if (pattern[i] === pattern[j]) {
+      prefixTable[j++] = ++i;
+    } else {
+      if (i !== 0) {
+        i = prefixTable[i - 1];
+      } else {
+        prefixTable[j++] = 0;
+      }
+    }
+  }
+  return prefixTable;
+}
+function kmpSearch(text, pattern) {
+  const prefixTable = createPrefixTable(pattern);
+  const matches = [];
+  let i = 0; // Index for text
+  let j = 0; // Index for pattern
 
-// Method 1: Using regular expression
-let trimmedStr = str.replace(/\s+/g, '');
-console.log(trimmedStr); // Output: "Hello,World!"
+  while (i < text.length) {
+    if (pattern[j] === text[i]) {
+      j++;
+      i++;
+    }
 
-// Method 2: Using trim() and replace() together
-let trimmedStr2 = str.trim().replace(/\s+/g, '');
-console.log(trimmedStr2); // Output: "Hello,World!"
+    if (j === pattern.length) {
+      matches.push(i - j);
+      j = prefixTable[j - 1];
+    } else if (i < text.length && pattern[j] !== text[i]) {
+      if (j !== 0) {
+        j = prefixTable[j - 1];
+      } else {
+        i++;
+      }
+    }
+  }
 
-// Method 3: Using split() and join() together
-let trimmedStr3 = str.split(' ').join('');
-console.log(trimmedStr3); // Output: "Hello,World!"
+  return matches;
+}
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+
+const matches = kmpSearch(text, pattern);
+console.log("Pattern found at positions:", matches);
