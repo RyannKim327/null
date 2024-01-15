@@ -1,26 +1,20 @@
-function findFirstNonRepeatingChar(str) {
-  const charFrequency = {};
-
-  // Build charFrequency object
-  for (let char of str) {
-    if (charFrequency[char]) {
-      charFrequency[char]++;
-    } else {
-      charFrequency[char] = 1;
+function findSecondLargest(array) {
+  let largest = -Infinity;
+  let secondLargest = -Infinity;
+  
+  for (let i = 0; i < array.length; i++) {
+    if (array[i] > largest) {
+      secondLargest = largest;
+      largest = array[i];
+    } else if (array[i] > secondLargest && array[i] !== largest) {
+      secondLargest = array[i];
     }
   }
-
-  // Find the first non-repeating character
-  for (let char of str) {
-    if (charFrequency[char] === 1) {
-      return char;
-    }
-  }
-
-  return undefined; // or an appropriate indicator value
+  
+  return secondLargest;
 }
 
 // Example usage
-const inputString = "hello";
-const firstNonRepeatingChar = findFirstNonRepeatingChar(inputString);
-console.log(firstNonRepeatingChar); // Output: "h"
+const arr = [5, 10, 3, 8, 15];
+const secondLargest = findSecondLargest(arr);
+console.log(secondLargest);  // Output: 10
