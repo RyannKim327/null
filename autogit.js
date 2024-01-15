@@ -1,24 +1,46 @@
-function findFirstNonRepeatingCharacter(str) {
-  // Create an empty object to store character counts
-  const charCount = {};
-
-  // Iterate over the string to count each character
-  for (let char of str) {
-    charCount[char] = (charCount[char] || 0) + 1;
+function findKthSmallest(arr, k) {
+  if (k < 1 || k > arr.length) {
+    return -1; // Invalid k value
   }
 
-  // Iterate over the string again to find the first non-repeating character
-  for (let char of str) {
-    if (charCount[char] === 1) {
-      return char;
+  let sortedArr = arr.slice().sort((a, b) => a - b);
+  return sortedArr[k - 1];
+}
+function partition(arr, low, high) {
+  let pivot = arr[high];
+  let i = low - 1;
+
+  for (let j = low; j <= high - 1; j++) {
+    if (arr[j] < pivot) {
+      i++;
+      [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap elements
     }
   }
 
-  // If no non-repeating character is found, return null or an appropriate value
-  return null;
+  [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
+  return i + 1;
 }
 
-// Example usage
-const input = "aabbccde";
-const result = findFirstNonRepeatingCharacter(input);
-console.log(result); // Output: 'd'
+function quickselect(arr, low, high, k) {
+  if (k > 0 && k <= high - low + 1) {
+    let pivotIndex = partition(arr, low, high);
+
+    if (pivotIndex - low === k - 1) {
+      return arr[pivotIndex];
+    } else if (pivotIndex - low > k - 1) {
+      return quickselect(arr, low, pivotIndex - 1, k);
+    } else {
+      return quickselect(arr, pivotIndex + 1, high, k - pivotIndex + low - 1);
+    }
+  }
+
+  return -1; // Invalid k value
+}
+
+function findKthSmallest(arr, k) {
+  if (k < 1 || k > arr.length) {
+    return -1; // Invalid k value
+  }
+
+  return quickselect(arr, 0, arr.length - 1, k);
+}
