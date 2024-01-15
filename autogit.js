@@ -1,45 +1,15 @@
-function getIntersectionNode(headA, headB) {
-  if (!headA || !headB) {
-    return null;
-  }
+const userInput = prompt("Enter a number:");  // Takes user input through a prompt dialog
 
-  let lengthA = getLength(headA);
-  let lengthB = getLength(headB);
+// Converts the user input to a number
+const number = parseFloat(userInput);
 
-  let diff = Math.abs(lengthA - lengthB);
+// Checks if the user input is valid
+if (isNaN(number)) {
+  console.log("Invalid input! Please enter a number.");
+} else {
+  // Performs a calculation (e.g., doubles the input number)
+  const result = number * 2;
 
-  let currA = headA;
-  let currB = headB;
-
-  if (lengthA > lengthB) {
-    for (let i = 0; i < diff; i++) {
-      currA = currA.next;
-    }
-  } else if (lengthA < lengthB) {
-    for (let i = 0; i < diff; i++) {
-      currB = currB.next;
-    }
-  }
-
-  while (currA !== null && currB !== null) {
-    if (currA === currB) {
-      return currA;
-    }
-    currA = currA.next;
-    currB = currB.next;
-  }
-
-  return null;
-}
-
-function getLength(node) {
-  let length = 0;
-  let curr = node;
-
-  while (curr !== null) {
-    length++;
-    curr = curr.next;
-  }
-
-  return length;
+  // Displays the result
+  console.log(`The result is: ${result}`);
 }
