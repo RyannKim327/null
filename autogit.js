@@ -1,88 +1,66 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+class Graph {
+  constructor(numVertices) {
+    this.numVertices = numVertices;
+    this.adjList = new Map(); // Using ES6 Map to store adjacency list
+  }
+
+  addVertex(v) {
+    this.adjList.set(v, []);
+  }
+
+  addEdge(v, w) {
+    this.adjList.get(v).push(w); // For undirected graph, add both v -> w and w -> v
+  }
+
+  getAdjacencyList() {
+    return this.adjList;
   }
 }
-// Example Linked List: 1 -> 2 -> 3 -> 2 -> 1
+function DFS(graph, startVertex, visitCallback) {
+  // Create a set to keep track of visited vertices
+  const visited = new Set();
 
-const head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(2);
-head.next.next.next.next = new Node(1);
-let slow = head;
-let fast = head;
+  // Recursive helper function
+  function DFSUtil(vertex) {
+    visited.add(vertex);
+    visitCallback(vertex);
 
-while (fast && fast.next) {
-  slow = slow.next;
-  fast = fast.next.next;
-}
-let prev = null;
-let current = slow;
-let nextNode = null;
-
-while (current) {
-  nextNode = current.next;
-  current.next = prev;
-  prev = current;
-  current = nextNode;
-}
-let firstHalf = head;
-let secondHalf = prev;
-
-while (secondHalf) {
-  if (firstHalf.value !== secondHalf.value) {
-    console.log("Linked list is not a palindrome.");
-    return;
+    const neighbours = graph.get(vertex);
+    for (const neighbour of neighbours) {
+      if (!visited.has(neighbour)) {
+        DFSUtil(neighbour); // Recursive call
+      }
+    }
   }
-  firstHalf = firstHalf.next;
-  secondHalf = secondHalf.next;
+
+  // Call the DFSUtil starting from the startVertex
+  DFSUtil(startVertex);
+}
+// Create a graph
+const graph = new Graph(6);
+const vertices = ['A', 'B', 'C', 'D', 'E', 'F'];
+vertices.forEach(vertex => graph.addVertex(vertex));
+
+// Add edges
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('B', 'E');
+graph.addEdge('C', 'E');
+graph.addEdge('D', 'E');
+graph.addEdge('D', 'F');
+graph.addEdge('E', 'F');
+
+// Define a callback function to handle vertex visit
+function visitCallback(vertex) {
+  console.log(vertex);
 }
 
-console.log("Linked list is a palindrome.");
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-
-const head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(2);
-head.next.next.next.next = new Node(1);
-
-let slow = head;
-let fast = head;
-
-while (fast && fast.next) {
-  slow = slow.next;
-  fast = fast.next.next;
-}
-
-let prev = null;
-let current = slow;
-let nextNode = null;
-
-while (current) {
-  nextNode = current.next;
-  current.next = prev;
-  prev = current;
-  current = nextNode;
-}
-
-let firstHalf = head;
-let secondHalf = prev;
-
-while (secondHalf) {
-  if (firstHalf.value !== secondHalf.value) {
-    console.log("Linked list is not a palindrome.");
-    return;
-  }
-  firstHalf = firstHalf.next;
-  secondHalf = secondHalf.next;
-}
-
-console.log("Linked list is a palindrome.");
+// Perform DFS traversal starting from vertex 'A'
+DFS(graph.getAdjacencyList(), 'A', visitCallback);
+A
+B
+D
+E
+F
+C
