@@ -1,24 +1,16 @@
-function longestCommonPrefix(strings) {
-  if (strings.length === 0) {
-    return '';
-  }
+function isAnagram(string1, string2) {
+  // Convert strings to lowercase and remove non-alphanumeric characters
+  string1 = string1.toLowerCase().replace(/[^a-z0-9]/g, '');
+  string2 = string2.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-  let prefix = '';
+  // Sort the strings alphabetically
+  string1 = string1.split('').sort().join('');
+  string2 = string2.split('').sort().join('');
 
-  for (let i = 0; i < strings[0].length; i++) {
-    const char = strings[0][i];
-
-    for (let j = 1; j < strings.length; j++) {
-      if (strings[j][i] !== char) {
-        return prefix;
-      }
-    }
-
-    prefix += char;
-  }
-
-  return prefix;
+  // Compare the sorted strings
+  return string1 === string2;
 }
-const strings = ['flower', 'flow', 'flight'];
-const commonPrefix = longestCommonPrefix(strings);
-console.log(commonPrefix); // Output: 'fl'
+
+// Example usage
+console.log(isAnagram('listen', 'silent')); // true
+console.log(isAnagram('hello', 'bye')); // false
