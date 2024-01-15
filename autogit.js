@@ -1,28 +1,38 @@
-function findFirstNonRepeatingChar(str) {
-  // Create an empty map to track the character occurrences
-  const charCount = new Map();
+function longestCommonSubstring(str1, str2) {
+  const m = str1.length;
+  const n = str2.length;
 
-  // Iterate over each character in the string and count their occurrences
-  for (let char of str) {
-    if (charCount.has(char)) {
-      charCount.set(char, charCount.get(char) + 1);
-    } else {
-      charCount.set(char, 1);
+  // Create a matrix to store the lengths of the common substrings
+  const dp = Array(m + 1);
+  for (let i = 0; i <= m; i++) {
+    dp[i] = Array(n + 1).fill(0);
+  }
+
+  let longestLength = 0; // length of longest common substring
+  let endIndex = 0; // ending index of longest common substring
+
+  // Fill the matrix in bottom-up manner
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+        if (dp[i][j] > longestLength) {
+          longestLength = dp[i][j];
+          endIndex = i - 1; // update the ending index
+        }
+      } else {
+        dp[i][j] = 0;
+      }
     }
   }
 
-  // Iterate over the characters again and find the first non-repeating character
-  for (let char of str) {
-    if (charCount.get(char) === 1) {
-      return char;
-    }
-  }
-
-  // If no non-repeating character is found, return null
-  return null;
+  // Extract the longest common substring using the ending index
+  const longestSubstring = str1.substr(endIndex - longestLength + 1, longestLength);
+  return longestSubstring;
 }
 
 // Example usage
-const inputString = "aabccdeff";
-const firstNonRepeatingChar = findFirstNonRepeatingChar(inputString);
-console.log(firstNonRepeatingChar); // Output: "b"
+const str1 = 'ABAB';
+const str2 = 'BABA';
+const longestSubstring = longestCommonSubstring(str1, str2);
+console.log(longestSubstring); // Output: 'ABA'
