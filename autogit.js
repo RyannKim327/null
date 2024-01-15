@@ -1,51 +1,70 @@
-function generateFibonacciSequence(limit) {
-  const sequence = [0, 1];
-  let i = 1;
+function initializeGraph(vertices, edges) {
+  const graph = new Map();
 
-  while (sequence[i] < limit) {
-    const nextValue = sequence[i] + sequence[i - 1];
-    sequence.push(nextValue);
-    i++;
+  for (let i = 0; i < vertices.length; i++) {
+    graph.set(vertices[i], []);
   }
 
-  return sequence;
+  for (let i = 0; i < edges.length; i++) {
+    const [src, dest, weight] = edges[i];
+    graph.get(src).push({ destination: dest, weight: weight });
+  }
+
+  return graph;
 }
-function fibonacciSearch(arr, target) {
-  const n = arr.length;
+function bellmanFord(graph, source) {
+  const distances = new Map();
+  const predecessors = new Map();
 
-  // Generate the Fibonacci sequence
-  const fibSeq = generateFibonacciSequence(n);
+  // Step 1: Initialize distances and predecessors
+  for (let [vertex] of graph) {
+    distances.set(vertex, Infinity);
+    predecessors.set(vertex, null);
+  }
+  distances.set(source, 0);
 
-  // Initialize the variables
-  let offset = -1;
-  let fibIdx = fibSeq.length - 1;
+  // Step 2: Relax edges repeatedly
+  for (let i = 0; i < graph.size - 1; i++) {
+    for (let [vertex, edges] of graph) {
+      for (let edge of edges) {
+        const { destination, weight } = edge;
+        const distance = distances.get(vertex) + weight;
 
-  while (fibIdx > 1) {
-    // Check if fibIdx is a valid index
-    const index = Math.min(offset + fibSeq[fibIdx - 2], n - 1);
-
-    // If the target value is less than the element at the current index,
-    // move fibonacci index two steps down
-    if (arr[index] > target) {
-      fibIdx -= 2;
-    }
-    // If the target value is greater than the element at the current index,
-    // move fibonacci index one step down and update the offset
-    else if (arr[index] < target) {
-      fibIdx -= 1;
-      offset = index;
-    }
-    // If the target value is found at the current index, return the index
-    else {
-      return index;
+        if (distance < distances.get(destination)) {
+          distances.set(destination, distance);
+          predecessors.set(destination, vertex);
+        }
+      }
     }
   }
 
-  // If the target value is present in the array, it will be at the offset+1 position
-  // Return -1 if the target value is not found
-  return arr[offset + 1] === target ? offset + 1 : -1;
-}
-const arr = [2, 5, 8, 13, 21, 34, 55, 89];
-const target = 13;
+  // Step 3: Check for negative-weight cycles
+  for (let [vertex, edges] of graph) {
+    for (let edge of edges) {
+      const { destination, weight } = edge;
+      const distance = distances.get(vertex) + weight;
 
-console.log(fibonacciSearch(arr, target)); // Output: 3 (index of target value)
+      if (distance < distances.get(destination)) {
+        throw new Error('Graph contains negative-weight cycles');
+      }
+    }
+  }
+
+  return { distances, predecessors };
+}
+const vertices = ['A', 'B', 'C', 'D', 'E'];
+const edges = [
+  ['A', 'B', 4],
+  ['A', 'C', 2],
+  ['B', 'E', 3],
+  ['C', 'D', 2],
+  ['D', 'B', -1],
+  ['D', 'E', 2]
+];
+
+const graph = initializeGraph(vertices, edges);
+const source = 'A';
+const { distances, predecessors } = bellmanFord(graph, source);
+
+console.log('Distances:', distances);
+console.log('Predecessors:', predecessors);
