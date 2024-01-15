@@ -1,12 +1,47 @@
-let string1 = "Hello";
-let string2 = "World";
+class Node {
+  constructor() {
+    this.children = {};
+  }
+}
 
-let concatenatedString = string1 + " " + string2;
+class SuffixTree {
+  constructor(text) {
+    this.root = new Node();
+    this.construct(text);
+  }
 
-console.log(concatenatedString); // Output: "Hello World"
-let string1 = "Hello";
-let string2 = "World";
+  construct(text) {
+    for (let i = 0; i < text.length; i++) {
+      this.insertSuffix(text.slice(i));
+    }
+  }
 
-let concatenatedString = string1.concat(" ", string2);
+  insertSuffix(suffix) {
+    let node = this.root;
+    for (let i = 0; i < suffix.length; i++) {
+      const char = suffix[i];
+      if (!node.children[char]) {
+        node.children[char] = new Node();
+      }
+      node = node.children[char];
+    }
+  }
 
-console.log(concatenatedString); // Output: "Hello World"
+  search(pattern) {
+    let node = this.root;
+    for (let i = 0; i < pattern.length; i++) {
+      const char = pattern[i];
+      if (!node.children[char]) {
+        return false;
+      }
+      node = node.children[char];
+    }
+    return true;
+  }
+}
+const text = "banana";
+const suffixTree = new SuffixTree(text);
+
+console.log(suffixTree.search("ana")); // Output: true
+console.log(suffixTree.search("nan")); // Output: true
+console.log(suffixTree.search("xxx")); // Output: false
