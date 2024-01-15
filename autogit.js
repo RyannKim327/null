@@ -1,22 +1,14 @@
-function binarySearch(array, target, start = 0, end = array.length - 1) {
-    if (start > end) {
-        return -1;
-    }
+function maxSubarraySum(arr) {
+  let maxSum = arr[0];
+  let currentSum = arr[0];
 
-    const mid = Math.floor((start + end) / 2);
+  for (let i = 1; i < arr.length; i++) {
+    currentSum = Math.max(arr[i], currentSum + arr[i]);
+    maxSum = Math.max(maxSum, currentSum);
+  }
 
-    if (array[mid] === target) {
-        return mid;
-    } else if (target < array[mid]) {
-        return binarySearch(array, target, start, mid - 1);
-    } else {
-        return binarySearch(array, target, mid + 1, end);
-    }
+  return maxSum;
 }
-
-// Usage example
-const arr = [2, 4, 7, 10, 15, 20];
-const target = 10;
-const index = binarySearch(arr, target);
-
-console.log(`The target value ${target} is at index ${index}`);
+const array = [1, -3, 2, 1, -1];
+const maxSum = maxSubarraySum(array);
+console.log(maxSum); // Output: 3
