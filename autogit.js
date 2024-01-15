@@ -1,95 +1,126 @@
 class Node {
-  constructor(state, parent = null, g = 0, h = 0) {
-    this.state = state;
-    this.parent = parent;
-    this.g = g;
-    this.h = h;
-    this.f = g + h;
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
 }
-function aStarSearch(startState, goalState) {
-  let openList = [];
-  let closedList = new Set();
 
-  // Create a starting node
-  const startNode = new Node(startState);
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+  }
 
-  // Add the starting node to the open list
-  openList.push(startNode);
+  // Add a value to the end of the list
+  append(value) {
+    const newNode = new Node(value);
 
-  while (openList.length > 0) {
-    // Find the node with the lowest f value in the open list
-    let currentNode = openList[0];
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+  }
+
+  // Add a value to the beginning of the list
+  prepend(value) {
+    const newNode = new Node(value);
+
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      newNode.next = this.head;
+      this.head = newNode;
+    }
+  }
+
+  // Insert a value at a specific index
+  insert(index, value) {
+    if (index === 0) {
+      this.prepend(value);
+      return;
+    }
+
+    const newNode = new Node(value);
+    let currentNode = this.head;
     let currentIndex = 0;
 
-    for (let i = 1; i < openList.length; i++) {
-      if (openList[i].f < currentNode.f) {
-        currentNode = openList[i];
-        currentIndex = i;
-      }
+    while (currentNode && currentIndex < index - 1) {
+      currentNode = currentNode.next;
+      currentIndex++;
     }
 
-    // Move the current node from the open list to the closed list
-    openList.splice(currentIndex, 1);
-    closedList.add(JSON.stringify(currentNode.state));
-
-    if (JSON.stringify(currentNode.state) === JSON.stringify(goalState)) {
-      // Found the goal state, retrieve the path
-      let path = [];
-      while (currentNode !== null) {
-        path.unshift(currentNode.state);
-        currentNode = currentNode.parent;
-      }
-      return path;
+    if (!currentNode) {
+      this.append(value);
+      return;
     }
 
-    // Generate children nodes
-    const children = [];
+    newNode.next = currentNode.next;
+    currentNode.next = newNode;
+  }
 
-    // TODO: Implement code to generate children nodes based on the current state
+  // Delete the node at a specific index
+  delete(index) {
+    if (!this.head) {
+      return;
+    }
 
-    for (let i = 0; i < children.length; i++) {
-      const child = children[i];
+    if (index === 0) {
+      this.head = this.head.next;
 
-      if (closedList.has(JSON.stringify(child.state))) {
-        // Child node has already been evaluated, skip it
-        continue;
+      if (!this.head) {
+        this.tail = null;
       }
 
-      // Calculate the g, h, and f values for the child node
-      const g = currentNode.g + 1; // Assuming each step has a cost of 1
-      const h = heuristic(child);
-      const f = g + h;
+      return;
+    }
 
-      // Check if the child is already in the open list and has a lower cost
-      let inOpenList = false;
+    let currentNode = this.head;
+    let previousNode = null;
+    let currentIndex = 0;
 
-      for (let i = 0; i < openList.length; i++) {
-        if (JSON.stringify(openList[i].state) === JSON.stringify(child.state) && g >= openList[i].g) {
-          inOpenList = true;
-          break;
-        }
-      }
+    while (currentNode && currentIndex < index) {
+      previousNode = currentNode;
+      currentNode = currentNode.next;
+      currentIndex++;
+    }
 
-      if (inOpenList) {
-        continue;
-      }
+    if (!currentNode) {
+      return;
+    }
 
-      // Add the child node to the open list
-      openList.push(new Node(child.state, currentNode, g, h));
+    previousNode.next = currentNode.next;
+
+    if (currentNode === this.tail) {
+      this.tail = previousNode;
     }
   }
 
-  // No path found
-  return null;
-}
-const startState = "start";
-const goalState = "goal";
+  // Print the list values
+  values() {
+    const result = [];
+    let currentNode = this.head;
 
-const path = aStarSearch(startState, goalState);
+    while (currentNode) {
+      result.push(currentNode.value);
+      currentNode = currentNode.next;
+    }
 
-if (path) {
-  console.log("Path found:", path);
-} else {
-  console.log("No path found.");
+    return result;
+  }
 }
+
+// Usage example:
+const list = new LinkedList();
+
+list.append(1);
+list.append(2);
+list.append(3);
+list.prepend(4);
+list.insert(2, 5);
+list.delete(1);
+
+console.log(list.values()); // Output: [4, 1, 5, 3]
