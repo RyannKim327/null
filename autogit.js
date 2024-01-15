@@ -1,52 +1,51 @@
-function bidirectionalSearch(graph, initialNode, goalNode) {
-  // Track visited nodes for both forward and backward search
-  const visitedForward = new Set();
-  const visitedBackward = new Set();
+function generateFibonacciSequence(limit) {
+  const sequence = [0, 1];
+  let i = 1;
 
-  // Start the searches from the initial and goal nodes
-  const forwardQueue = [{ node: initialNode, path: [] }];
-  const backwardQueue = [{ node: goalNode, path: [] }];
+  while (sequence[i] < limit) {
+    const nextValue = sequence[i] + sequence[i - 1];
+    sequence.push(nextValue);
+    i++;
+  }
 
-  while (forwardQueue.length > 0 && backwardQueue.length > 0) {
-    // Perform forward search on the graph
-    const forwardNodeData = forwardQueue.shift();
-    const forwardNode = forwardNodeData.node;
-    const forwardPath = forwardNodeData.path;
+  return sequence;
+}
+function fibonacciSearch(arr, target) {
+  const n = arr.length;
 
-    visitedForward.add(forwardNode);
+  // Generate the Fibonacci sequence
+  const fibSeq = generateFibonacciSequence(n);
 
-    if (visitedBackward.has(forwardNode)) {
-      // Nodes meet in the middle, merge paths and return
-      const backwardPath = backwardQueue.find(data => data.node === forwardNode).path;
-      return forwardPath.concat(backwardPath.reverse());
+  // Initialize the variables
+  let offset = -1;
+  let fibIdx = fibSeq.length - 1;
+
+  while (fibIdx > 1) {
+    // Check if fibIdx is a valid index
+    const index = Math.min(offset + fibSeq[fibIdx - 2], n - 1);
+
+    // If the target value is less than the element at the current index,
+    // move fibonacci index two steps down
+    if (arr[index] > target) {
+      fibIdx -= 2;
     }
-
-    for (const neighbor of graph[forwardNode]) {
-      if (!visitedForward.has(neighbor)) {
-        forwardQueue.push({ node: neighbor, path: [...forwardPath, forwardNode] });
-      }
+    // If the target value is greater than the element at the current index,
+    // move fibonacci index one step down and update the offset
+    else if (arr[index] < target) {
+      fibIdx -= 1;
+      offset = index;
     }
-
-    // Perform backward search on the graph
-    const backwardNodeData = backwardQueue.shift();
-    const backwardNode = backwardNodeData.node;
-    const backwardPath = backwardNodeData.path;
-
-    visitedBackward.add(backwardNode);
-
-    if (visitedForward.has(backwardNode)) {
-      // Nodes meet in the middle, merge paths and return
-      const forwardPath = forwardQueue.find(data => data.node === backwardNode).path;
-      return forwardPath.concat(backwardPath.reverse());
-    }
-
-    for (const neighbor of graph[backwardNode]) {
-      if (!visitedBackward.has(neighbor)) {
-        backwardQueue.push({ node: neighbor, path: [...backwardPath, backwardNode] });
-      }
+    // If the target value is found at the current index, return the index
+    else {
+      return index;
     }
   }
 
-  // No path found
-  return null;
+  // If the target value is present in the array, it will be at the offset+1 position
+  // Return -1 if the target value is not found
+  return arr[offset + 1] === target ? offset + 1 : -1;
 }
+const arr = [2, 5, 8, 13, 21, 34, 55, 89];
+const target = 13;
+
+console.log(fibonacciSearch(arr, target)); // Output: 3 (index of target value)
