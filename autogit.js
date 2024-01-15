@@ -1,70 +1,38 @@
-function graph(node) {
-  // Define your graph or search space here
-  // This function should return the neighbors of the given node
-}
-
-function biDirectionalSearch(start, end) {
-  let visitedForward = new Set();
-  let visitedBackward = new Set();
-
-  let forwardQueue = [start];
-  let backwardQueue = [end];
-
-  visitedForward.add(start);
-  visitedBackward.add(end);
-
-  while (forwardQueue.length && backwardQueue.length) {
-    // Forward iteration
-    let forwardNode = forwardQueue.shift();
-    let forwardNeighbors = graph(forwardNode);
-
-    for (let neighbor of forwardNeighbors) {
-      if (visitedBackward.has(neighbor)) {
-        // Path found
-        // Combine both paths and return
-        return combinePaths(forwardNode, neighbor);
-      }
-
-      if (!visitedForward.has(neighbor)) {
-        visitedForward.add(neighbor);
-        forwardQueue.push(neighbor);
+function bubbleSort(arr) {
+  var len = arr.length;
+  var swapped;
+  do {
+    swapped = false;
+    for (var i = 0; i < len - 1; i++) {
+      if (arr[i] > arr[i + 1]) {
+        var temp = arr[i];
+        arr[i] = arr[i + 1];
+        arr[i + 1] = temp;
+        swapped = true;
       }
     }
-
-    // Backward iteration
-    let backwardNode = backwardQueue.shift();
-    let backwardNeighbors = graph(backwardNode);
-
-    for (let neighbor of backwardNeighbors) {
-      if (visitedForward.has(neighbor)) {
-        // Path found
-        // Combine both paths and return
-        return combinePaths(neighbor, backwardNode);
-      }
-
-      if (!visitedBackward.has(neighbor)) {
-        visitedBackward.add(neighbor);
-        backwardQueue.push(neighbor);
+  } while (swapped);
+}
+var arr = [5, 3, 8, 2, 1, 4];
+bubbleSort(arr);
+console.log(arr);
+function bubbleSort(arr) {
+  var len = arr.length;
+  var swapped;
+  do {
+    swapped = false;
+    for (var i = 0; i < len - 1; i++) {
+      if (arr[i] > arr[i + 1]) {
+        var temp = arr[i];
+        arr[i] = arr[i + 1];
+        arr[i + 1] = temp;
+        swapped = true;
       }
     }
-  }
-
-  // No path found
-  return null;
+  } while (swapped);
 }
 
-function combinePaths(start, end) {
-  // Combine the paths from both directions
-  // to get the complete path
-}
-
-// Usage example
-let startNode = /* create start node */;
-let endNode = /* create end node */;
-
-let path = biDirectionalSearch(startNode, endNode);
-if (path) {
-  console.log("Path found:", path);
-} else {
-  console.log("No path found");
-}
+// Example usage
+var arr = [5, 3, 8, 2, 1, 4];
+bubbleSort(arr);
+console.log(arr); // [1, 2, 3, 4, 5, 8]
