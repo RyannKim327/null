@@ -1,44 +1,68 @@
-function longestCommonSubsequence(str1, str2) {
-  const m = str1.length;
-  const n = str2.length;
-  
-  // Create a 2D array to store the LCS lengths
-  const dp = new Array(m + 1);
-  for (let i = 0; i <= m; i++) {
-    dp[i] = new Array(n + 1).fill(0);
-  }
-  
-  // Compute LCS lengths
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-      } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+// Function to find strongly connected components using Tarjan's algorithm
+function tarjanSCC(graph) {
+  // Initialize the variables
+  let index = 0;
+  const stack = [];
+  const indexes = new Map(); // Map to store the index of each node
+  const lowLinks = new Map(); // Map to store the low link value of each node
+  const onStack = new Set(); // Set to store the visited nodes
+
+  const result = []; // Array to store the strongly connected components
+
+  // Recursive function to perform DFS traversal and find SCCs
+  function strongConnect(node) {
+    indexes.set(node, index);
+    lowLinks.set(node, index);
+    index++;
+    stack.push(node);
+    onStack.add(node);
+
+    // Iterate over the neighbors of the node
+    for (const neighbor of graph[node]) {
+      if (!indexes.has(neighbor)) {
+        strongConnect(neighbor);
+        lowLinks.set(node, Math.min(lowLinks.get(node), lowLinks.get(neighbor)));
+      } else if (onStack.has(neighbor)) {
+        lowLinks.set(node, Math.min(lowLinks.get(node), indexes.get(neighbor)));
       }
     }
-  }
-  
-  // Construct the LCS string
-  let lcs = '';
-  let i = m, j = n;
-  while (i > 0 && j > 0) {
-    if (str1[i - 1] === str2[j - 1]) {
-      lcs = str1[i - 1] + lcs;
-      i--;
-      j--;
-    } else if (dp[i - 1][j] >= dp[i][j - 1]) {
-      i--;
-    } else {
-      j--;
+
+    // If node is a root node, pop the stack and add the SCC to the result
+    if (lowLinks.get(node) === indexes.get(node)) {
+      const scc = [];
+      let w;
+      do {
+        w = stack.pop();
+        onStack.delete(w);
+        scc.push(w);
+      } while (w !== node);
+      result.push(scc);
     }
   }
-  
-  return lcs;
+
+  // Iterate over each node in the graph and perform DFS if not already visited
+  for (const node of Object.keys(graph)) {
+    if (!indexes.has(node)) {
+      strongConnect(node);
+    }
+  }
+
+  return result;
 }
 
-// Usage example
-const str1 = 'ABCDGH';
-const str2 = 'AEDFHR';
-const lcs = longestCommonSubsequence(str1, str2);
-console.log(lcs); // Output: ADH
+// Example usage
+const graph = {
+  A: ["B"],
+  B: ["C", "E"],
+  C: ["A", "D"],
+  D: ["C"],
+  E: ["F"],
+  F: ["G"],
+  G: ["E", "H"],
+  H: ["I"],
+  I: ["J", "G"],
+  J: ["H"],
+};
+
+const components = tarjanSCC(graph);
+console.log(components);
