@@ -1,39 +1,42 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+function stringMatch(text, pattern) {
+  const textLen = text.length;
+  const patternLen = pattern.length;
+  const lastOccurrence = {};
+
+  // Preprocess the pattern to compute the last occurrence of each character
+  for (let i = 0; i < patternLen; i++) {
+    lastOccurrence[pattern[i]] = i;
   }
-}
 
-function findNthNodeFromEnd(head, n) {
-  let first = head;
-  let second = head;
+  let i = patternLen - 1; // Index for text
+  let j = patternLen - 1; // Index for pattern
 
-  // Move `first` n steps forward
-  for (let i = 0; i < n; i++) {
-    if (first === null) {
-      // If linked list has less than n nodes
-      return null;
+  while (i < textLen) {
+    if (text[i] === pattern[j]) {
+      // Character matches
+      if (j === 0) {
+        // Pattern found
+        return i;
+      }
+      i--;
+      j--;
+    } else {
+      // Character mismatch
+      const last = lastOccurrence[text[i]];
+
+      // Move the pattern to align with the last occurrence
+      i += patternLen - Math.min(j, 1 + last || 0);
+
+      // Reset pattern index
+      j = patternLen - 1;
     }
-    first = first.next;
   }
 
-  // Move both `first` and `second` pointers until `first` reaches the end
-  while (first !== null) {
-    first = first.next;
-    second = second.next;
-  }
-
-  // Return the node pointed by the `second` pointer
-  return second;
+  return -1; // Pattern not found
 }
-// Create a linked list: 1 -> 2 -> 3 -> 4 -> 5 -> null
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
 
-let n = 2;
-let nthNodeFromEnd = findNthNodeFromEnd(head, n);
-console.log(nthNodeFromEnd.value); // Output: 4
+// Example usage
+const text = "Lorem ipsum dolor sit amet";
+const pattern = "ipsum";
+
+console.log(stringMatch(text, pattern)); // Output: 6
