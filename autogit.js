@@ -1,46 +1,145 @@
-function bellmanFord(graph, source, nodes) {
-  let distances = new Array(nodes).fill(Infinity);
-  let previous = new Array(nodes).fill(null);
-  let path = new Array(nodes);
+function biDirectionalSearch(startNode, endNode) {
+  // Your code goes here
+}
+function biDirectionalSearch(startNode, endNode) {
+  const startSet = new Set([startNode]);
+  const endSet = new Set([endNode]);
+  // Your code goes here
+}
+function biDirectionalSearch(startNode, endNode) {
+  const startSet = new Set([startNode]);
+  const endSet = new Set([endNode]);
+  const startParents = { [startNode.id]: null };
+  const endParents = { [endNode.id]: null };
+  // Your code goes here
+}
+function biDirectionalSearch(startNode, endNode) {
+  const startSet = new Set([startNode]);
+  const endSet = new Set([endNode]);
+  const startParents = { [startNode.id]: null };
+  const endParents = { [endNode.id]: null };
 
-  distances[source] = 0;
-  
-  for (let i = 0; i < nodes - 1; i++) {
-    for (let j = 0; j < graph.length; j++) {
-      let [u, v, weight] = graph[j];
-      if (distances[u] + weight < distances[v]) {
-        distances[v] = distances[u] + weight;
-        previous[v] = u;
+  function getNeighbors(node) {
+    // Your code to retrieve neighbors goes here
+  }
+
+  // Your code goes here
+}
+function biDirectionalSearch(startNode, endNode) {
+  const startSet = new Set([startNode]);
+  const endSet = new Set([endNode]);
+  const startParents = { [startNode.id]: null };
+  const endParents = { [endNode.id]: null };
+
+  function getNeighbors(node) {
+    // Your code to retrieve neighbors goes here
+  }
+
+  while (startSet.size && endSet.size) {
+    // Consider nodes from the start end
+    const nextStartNode = startSet.values().next().value;
+    startSet.delete(nextStartNode);
+
+    // Check if the node is present in the endSet
+    if (endSet.has(nextStartNode)) {
+      // Common node found, do something
+      break;
+    }
+
+    // Find neighbors of the start node
+    const startNeighbors = getNeighbors(nextStartNode);
+    for (const neighbor of startNeighbors) {
+      if (!startParents.hasOwnProperty(neighbor.id)) {
+        startSet.add(neighbor);
+        startParents[neighbor.id] = nextStartNode;
+      }
+    }
+
+    // Consider nodes from the end end
+    const nextEndNode = endSet.values().next().value;
+    endSet.delete(nextEndNode);
+
+    // Check if the node is present in the startSet
+    if (startSet.has(nextEndNode)) {
+      // Common node found, do something
+      break;
+    }
+
+    // Find neighbors of the end node
+    const endNeighbors = getNeighbors(nextEndNode);
+    for (const neighbor of endNeighbors) {
+      if (!endParents.hasOwnProperty(neighbor.id)) {
+        endSet.add(neighbor);
+        endParents[neighbor.id] = nextEndNode;
       }
     }
   }
 
-  // Check for negative cycles
-  for (let i = 0; i < graph.length; i++) {
-    let [u, v, weight] = graph[i];
-    if (distances[u] + weight < distances[v]) {
-      console.log("Graph contains negative cycle");
-      return;
-    }
-  }
-
-  // Construct the shortest path
-  for (let i = 0; i < nodes; i++) {
-    let pathNodes = [];
-    let current = i;
-    while (current !== null) {
-      pathNodes.unshift(current);
-      current = previous[current];
-    }
-    path[i] = pathNodes;
-  }
-
-  return { distances, path };
+  // Your code goes here
 }
+function biDirectionalSearch(startNode, endNode) {
+  const startSet = new Set([startNode]);
+  const endSet = new Set([endNode]);
+  const startParents = { [startNode.id]: null };
+  const endParents = { [endNode.id]: null };
 
-// Example usage:
-const graph = [[0, 1, 4], [0, 2, 1], [2, 1, -2], [1, 3, 3], [2, 3, 2]];
-const source = 0;
-const nodes = 4;
+  function getNeighbors(node) {
+    // Your code to retrieve neighbors goes here
+  }
 
-console.log(bellmanFord(graph, source, nodes));
+  while (startSet.size && endSet.size) {
+    // Consider nodes from the start end
+    const nextStartNode = startSet.values().next().value;
+    startSet.delete(nextStartNode);
+
+    // Check if the node is present in the endSet
+    if (endSet.has(nextStartNode)) {
+      // Common node found, do something
+      break;
+    }
+
+    // Find neighbors of the start node
+    const startNeighbors = getNeighbors(nextStartNode);
+    for (const neighbor of startNeighbors) {
+      if (!startParents.hasOwnProperty(neighbor.id)) {
+        startSet.add(neighbor);
+        startParents[neighbor.id] = nextStartNode;
+      }
+    }
+
+    // Consider nodes from the end end
+    const nextEndNode = endSet.values().next().value;
+    endSet.delete(nextEndNode);
+
+    // Check if the node is present in the startSet
+    if (startSet.has(nextEndNode)) {
+      // Common node found, do something
+      break;
+    }
+
+    // Find neighbors of the end node
+    const endNeighbors = getNeighbors(nextEndNode);
+    for (const neighbor of endNeighbors) {
+      if (!endParents.hasOwnProperty(neighbor.id)) {
+        endSet.add(neighbor);
+        endParents[neighbor.id] = nextEndNode;
+      }
+    }
+  }
+
+  // Reconstruct the shortest path
+  const shortestPath = [];
+  let current = nextStartNode;
+  while (current !== null) {
+    shortestPath.unshift(current);
+    current = startParents[current.id];
+  }
+
+  current = endParents[nextStartNode.id];
+  while (current !== null) {
+    shortestPath.push(current);
+    current = endParents[current.id];
+  }
+
+  return shortestPath;
+}
