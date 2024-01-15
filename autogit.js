@@ -1,91 +1,38 @@
-function interpolationSearch(arr, value, low = 0, high = arr.length - 1) {
-   // Add implementation here
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
-function interpolationSearch(arr, value, low = 0, high = arr.length - 1) {
-   if (low > high) {
-      return -1;
-   }
-   // Continue implementation here
+
+function sumBinaryTree(root) {
+  if (root === null) {
+    // Base case: empty tree has a sum of 0
+    return 0;
+  }
+
+  // Calculate the sum recursively by adding the value of the root node
+  // to the sum of its left and right subtrees
+  return (
+    root.value +
+    sumBinaryTree(root.left) +
+    sumBinaryTree(root.right)
+  );
 }
-function interpolationSearch(arr, value, low = 0, high = arr.length - 1) {
-   if (low > high) {
-      return -1;
-   }
-   
-   // Calculate the position
-   const pos = Math.floor(low + ((value - arr[low]) * (high - low)) / (arr[high] - arr[low]));
 
-   // Continue implementation here
-}
-function interpolationSearch(arr, value, low = 0, high = arr.length - 1) {
-   if (low > high) {
-      return -1;
-   }
-   
-   const pos = Math.floor(low + ((value - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+// Example usage:
 
-   if (pos >= low && pos <= high && arr[pos] === value) {
-      return pos;
-   }
+// Create a binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
 
-   // Continue implementation here
-}
-function interpolationSearch(arr, value, low = 0, high = arr.length - 1) {
-   if (low > high) {
-      return -1;
-   }
-   
-   const pos = Math.floor(low + ((value - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+// Calculate the sum
+const sum = sumBinaryTree(root);
 
-   if (pos >= low && pos <= high && arr[pos] === value) {
-      return pos;
-   }
-
-   if (value < arr[pos]) {
-      return interpolationSearch(arr, value, low, pos - 1);
-   }
-
-   // Continue implementation here
-}
-function interpolationSearch(arr, value, low = 0, high = arr.length - 1) {
-   if (low > high) {
-      return -1;
-   }
-   
-   const pos = Math.floor(low + ((value - arr[low]) * (high - low)) / (arr[high] - arr[low]));
-
-   if (pos >= low && pos <= high && arr[pos] === value) {
-      return pos;
-   }
-
-   if (value < arr[pos]) {
-      return interpolationSearch(arr, value, low, pos - 1);
-   }
-
-   if (value > arr[pos]) {
-      return interpolationSearch(arr, value, pos + 1, high);
-   }
-
-   // Continue implementation here
-}
-function interpolationSearch(arr, value, low = 0, high = arr.length - 1) {
-   if (low > high) {
-      return -1;
-   }
-   
-   const pos = Math.floor(low + ((value - arr[low]) * (high - low)) / (arr[high] - arr[low]));
-
-   if (pos >= low && pos <= high && arr[pos] === value) {
-      return pos;
-   }
-
-   if (value < arr[pos]) {
-      return interpolationSearch(arr, value, low, pos - 1);
-   }
-
-   if (value > arr[pos]) {
-      return interpolationSearch(arr, value, pos + 1, high);
-   }
-
-   return -1;
-}
+console.log('Sum of all nodes:', sum);
