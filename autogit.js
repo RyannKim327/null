@@ -1,39 +1,37 @@
-function biDirectionalSearch(startNode, endNode) {
-  let startQueue = [startNode];
-  let endQueue = [endNode];
-
-  let visitedStart = new Set([startNode]);
-  let visitedEnd = new Set([endNode]);
-
-  let startPrev = new Map();
-  let endPrev = new Map();
-
-  while (startQueue.length > 0 && endQueue.length > 0) {
-    let currentStartNode = startQueue.shift();
-    let currentEndNode = endQueue.shift();
-
-    if (visitedEnd.has(currentStartNode)) {
-      return getPath(startPrev, endPrev, currentStartNode);
+function interpolationSearch(arr, target, start = 0) {
+    // Check if the array is empty or out of bounds
+    if (arr.length === 0 || start >= arr.length || target < arr[0] || target > arr[arr.length - 1]) {
+        return -1; // Element not found
     }
 
-    if (visitedStart.has(currentEndNode)) {
-      return getPath(startPrev, endPrev, currentEndNode);
+    // Calculate the mid index using interpolation formula
+    let mid = Math.floor(start + ((target - arr[start]) * (arr.length - 1 - start)) / (arr[arr.length - 1] - arr[start]));
+
+    // Check if the target is found at the mid index
+    if (arr[mid] === target) {
+        return mid; // Element found
     }
 
-    processNeighbors(currentStartNode, startQueue, visitedStart, startPrev);
-    processNeighbors(currentEndNode, endQueue, visitedEnd, endPrev);
-  }
+    // If the target is smaller, search in the left half of the array
+    if (arr[mid] > target) {
+        return interpolationSearch(arr, target, start);
+    }
 
-  return null; // No path found
+    // If the target is larger, search in the right half of the array
+    if (arr[mid] < target) {
+        return interpolationSearch(arr, target, mid + 1);
+    }
+
+    return -1; // Element not found
 }
+// Example usage
+const arr = [1, 3, 5, 7, 9];
+const target = 7;
 
-function processNeighbors(node, queue, visited, prev) {
-  // Process neighbors of the node and add to the queue
-  // Mark them as visited and set their previous node in prev
-}
+const result = interpolationSearch(arr, target);
 
-function getPath(startPrev, endPrev, intersectionNode) {
-  // Construct the path by traversing startPrev and endPrev maps
-  // from intersectionNode to startNode and endNode respectively
-  // Return the concatenated path
+if (result === -1) {
+    console.log("Element not found");
+} else {
+    console.log(`Element found at index ${result}`);
 }
