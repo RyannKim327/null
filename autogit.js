@@ -1,16 +1,39 @@
-function findMaxSubarraySum(arr) {
-  let maxSoFar = arr[0];
-  let maxEndingHere = arr[0];
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
 
-  for (let i = 1; i < arr.length; i++) {
-    // Find the maximum sum by either extending the subarray or starting a new subarray
-    maxEndingHere = Math.max(maxEndingHere + arr[i], arr[i]);
-    // Update the maximum sum so far
-    maxSoFar = Math.max(maxSoFar, maxEndingHere);
+function findNthNodeFromEnd(head, n) {
+  let first = head;
+  let second = head;
+
+  // Move `first` n steps forward
+  for (let i = 0; i < n; i++) {
+    if (first === null) {
+      // If linked list has less than n nodes
+      return null;
+    }
+    first = first.next;
   }
 
-  return maxSoFar;
+  // Move both `first` and `second` pointers until `first` reaches the end
+  while (first !== null) {
+    first = first.next;
+    second = second.next;
+  }
+
+  // Return the node pointed by the `second` pointer
+  return second;
 }
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const maxSum = findMaxSubarraySum(array);
-console.log(maxSum); // Output: 6
+// Create a linked list: 1 -> 2 -> 3 -> 4 -> 5 -> null
+let head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
+
+let n = 2;
+let nthNodeFromEnd = findNthNodeFromEnd(head, n);
+console.log(nthNodeFromEnd.value); // Output: 4
