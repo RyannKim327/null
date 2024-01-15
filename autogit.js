@@ -1,16 +1,12 @@
-function isAnagram(str1, str2) {
-  // Convert strings to lowercase and remove whitespace
-  str1 = str1.toLowerCase().replace(/\s+/g, '');
-  str2 = str2.toLowerCase().replace(/\s+/g, '');
+let numbers = [5, 2, 9, 1, 8, 3];
 
-  // Convert strings to arrays and sort them
-  const arr1 = str1.split('').sort();
-  const arr2 = str2.split('').sort();
+// Sorting the array in ascending order
+numbers.sort(function(a, b) {
+  return a - b;
+});
 
-  // Compare sorted arrays
-  return JSON.stringify(arr1) === JSON.stringify(arr2);
-}
-const string1 = 'listen';
-const string2 = 'silent';
-
-console.log(isAnagram(string1, string2)); // Output: true
+console.log(numbers); // Output: [1, 2, 3, 5, 8, 9]
+numbers.sort(function(a, b) {
+  return b - a;
+});
+console.log(numbers); // Output: [9, 8, 5, 3, 2, 1]
