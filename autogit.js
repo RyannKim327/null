@@ -1,20 +1,114 @@
-function findNthNodeFromEnd(head, n) {
-  let pointer1 = head;
-  let pointer2 = head;
-
-  // Move pointer1 n nodes ahead
-  for (let i = 0; i < n; i++) {
-    if (pointer1 === null) {
-      return null; // Invalid input, list smaller than n
-    }
-    pointer1 = pointer1.next;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
-
-  // Move both pointers until pointer1 reaches the end of the list
-  while (pointer1 !== null) {
-    pointer1 = pointer1.next;
-    pointer2 = pointer2.next;
-  }
-
-  return pointer2; // Return the nth node from the end
 }
+
+class BinarySearchTree {
+  constructor() {
+    this.root = null;
+  }
+
+  insert(value) {
+    const newNode = new Node(value);
+
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
+
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  searchNode(node, value) {
+    if (node === null) {
+      return false;
+    }
+
+    if (value === node.value) {
+      return true;
+    } else if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else {
+      return this.searchNode(node.right, value);
+    }
+  }
+
+  remove(value) {
+    this.root = this.removeNode(this.root, value);
+  }
+
+  removeNode(node, value) {
+    if (node === null) {
+      return null;
+    }
+
+    if (value === node.value) {
+      if (node.left === null && node.right === null) {
+        return null;
+      }
+
+      if (node.left === null) {
+        return node.right;
+      }
+
+      if (node.right === null) {
+        return node.left;
+      }
+
+      const minNode = this.findMinNode(node.right);
+      node.value = minNode.value;
+      node.right = this.removeNode(node.right, minNode.value);
+      return node;
+    } else if (value < node.value) {
+      node.left = this.removeNode(node.left, value);
+      return node;
+    } else {
+      node.right = this.removeNode(node.right, value);
+      return node;
+    }
+  }
+
+  findMinNode(node) {
+    if (node.left === null) {
+      return node;
+    } else {
+      return this.findMinNode(node.left);
+    }
+  }
+}
+const bst = new BinarySearchTree();
+bst.insert(50);
+bst.insert(30);
+bst.insert(70);
+bst.insert(20);
+bst.insert(40);
+bst.insert(60);
+bst.insert(80);
+
+console.log(bst.search(60)); // Output: true
+console.log(bst.search(90)); // Output: false
+
+bst.remove(30);
+console.log(bst.root.left.value); // Output: 40
