@@ -1,34 +1,28 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function findFirstNonRepeatingChar(str) {
+  // Create an empty map to track the character occurrences
+  const charCount = new Map();
+
+  // Iterate over each character in the string and count their occurrences
+  for (let char of str) {
+    if (charCount.has(char)) {
+      charCount.set(char, charCount.get(char) + 1);
+    } else {
+      charCount.set(char, 1);
+    }
   }
+
+  // Iterate over the characters again and find the first non-repeating character
+  for (let char of str) {
+    if (charCount.get(char) === 1) {
+      return char;
+    }
+  }
+
+  // If no non-repeating character is found, return null
+  return null;
 }
 
-function sumOfNodes(root) {
-  if (!root) {
-    return 0; // Base case: null node, sum is 0
-  }
-
-  const sumLeft = sumOfNodes(root.left);   // Recursively calculate sum of nodes in the left subtree
-  const sumRight = sumOfNodes(root.right); // Recursively calculate sum of nodes in the right subtree
-
-  return root.value + sumLeft + sumRight;  // Return the sum of current node value and the sums of subtrees
-}
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-
-const sum = sumOfNodes(root);
-console.log(sum); // Output: 21
-        1
-       / \
-      2   3
-     / \ 
-    4   5
-   /
-  6
+// Example usage
+const inputString = "aabccdeff";
+const firstNonRepeatingChar = findFirstNonRepeatingChar(inputString);
+console.log(firstNonRepeatingChar); // Output: "b"
