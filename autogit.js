@@ -1,12 +1,55 @@
-function getRandomNumber(min, max) {
-  // Generate a random decimal between 0 and 1
-  var randomDecimal = Math.random();
+function computeLPSArray(pattern) {
+  const lps = [0];
+  let len = 0; // length of the previous longest proper prefix suffix
 
-  // Scale the decimal to the desired range
-  var randomNumber = randomDecimal * (max - min + 1) + min;
+  let i = 1;
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[len]) {
+      len++;
+      lps[i] = len;
+      i++;
+    } else {
+      if (len !== 0) {
+        len = lps[len - 1];
+      } else {
+        lps[i] = 0;
+        i++;
+      }
+    }
+  }
 
-  // Return the final random number (use Math.floor if an integer is desired)
-  return Math.floor(randomNumber);
+  return lps;
 }
-var result = getRandomNumber(1, 100);
-console.log(result); // Output: a random number between 1 and 100 inclusive
+function KMPSearch(text, pattern) {
+  const indices = [];
+  const lps = computeLPSArray(pattern);
+
+  let i = 0; // index for `text`
+  let j = 0; // index for `pattern`
+
+  while (i < text.length) {
+    if (pattern[j] === text[i]) {
+      j++;
+      i++;
+    }
+
+    if (j === pattern.length) {
+      indices.push(i - j);
+      j = lps[j - 1];
+    } else if (i < text.length && pattern[j] !== text[i]) {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
+      }
+    }
+  }
+
+  return indices;
+}
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+
+const indices = KMPSearch(text, pattern);
+console.log("Pattern found at indices:", indices);
+Pattern found at indices: [10]
