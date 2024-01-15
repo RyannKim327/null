@@ -1,25 +1,24 @@
-function findFirstRepeatedCharacter(str) {
-  // Create an object to keep track of characters and their counts
-  const characters = {};
-
-  // Loop through each character in the string
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-
-    // If the character already exists in the characters object, return it
-    if (characters[char]) {
-      return char;
-    }
-
-    // Otherwise, increment the count for that character
-    characters[char] = 1;
+function longestCommonPrefix(strings) {
+  if (strings.length === 0) {
+    return '';
   }
 
-  // Return null if no repeated character is found
-  return null;
-}
+  let prefix = '';
 
-// Example usage
-const input = "hello world";
-const firstRepeatedChar = findFirstRepeatedCharacter(input);
-console.log(firstRepeatedChar); // Output: l
+  for (let i = 0; i < strings[0].length; i++) {
+    const char = strings[0][i];
+
+    for (let j = 1; j < strings.length; j++) {
+      if (strings[j][i] !== char) {
+        return prefix;
+      }
+    }
+
+    prefix += char;
+  }
+
+  return prefix;
+}
+const strings = ['flower', 'flow', 'flight'];
+const commonPrefix = longestCommonPrefix(strings);
+console.log(commonPrefix); // Output: 'fl'
