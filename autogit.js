@@ -1,53 +1,26 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
+function findFirstNonRepeatingChar(str) {
+  const charFrequency = {};
 
-class BinaryTree {
-  constructor() {
-    this.root = null;
-  }
-
-  insert(value) {
-    const newNode = new Node(value);
-
-    if (this.root === null) {
-      this.root = newNode;
+  // Build charFrequency object
+  for (let char of str) {
+    if (charFrequency[char]) {
+      charFrequency[char]++;
     } else {
-      this.insertNode(this.root, newNode);
+      charFrequency[char] = 1;
     }
   }
 
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
+  // Find the first non-repeating character
+  for (let char of str) {
+    if (charFrequency[char] === 1) {
+      return char;
     }
   }
-  
-  // Additional operations like search, delete, traversal, etc. can be added here
+
+  return undefined; // or an appropriate indicator value
 }
-const tree = new BinaryTree();
-tree.insert(8);
-tree.insert(3);
-tree.insert(10);
-tree.insert(1);
-tree.insert(6);
-tree.insert(14);
-       8
-     /   \
-    3    10
-   / \     \
-  1   6     14
+
+// Example usage
+const inputString = "hello";
+const firstNonRepeatingChar = findFirstNonRepeatingChar(inputString);
+console.log(firstNonRepeatingChar); // Output: "h"
