@@ -1,68 +1,19 @@
-class Node {
-  constructor(value, next = null) {
-    this.value = value;
-    this.next = next;
+function findMedianSortedArrays(nums1, nums2) {
+  const combined = nums1.concat(nums2);
+  combined.sort((a, b) => a - b);
+
+  const length = combined.length;
+  const middle = Math.floor(length / 2);
+
+  if (length % 2 === 0) {
+    return (combined[middle - 1] + combined[middle]) / 2;
+  } else {
+    return combined[middle];
   }
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-
-  // Method to reverse the linked list
-  reverse() {
-    let prev = null;
-    let current = this.head;
-    let next = null;
-
-    while (current) {
-      next = current.next; // Store the next node
-      current.next = prev; // Reverse the current node's pointer
-      prev = current; // Move prev to current node
-      current = next; // Move current to next node
-    }
-
-    this.head = prev; // Reset the head to the last node
-  }
-
-  // Method to add a new node to the linked list
-  add(value) {
-    const newNode = new Node(value);
-
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
-  
-  // Method to display the linked list
-  display() {
-    let current = this.head;
-    while (current) {
-      console.log(current.value);
-      current = current.next;
-    }
-  }
-}
-
-// Example usage
-const linkedList = new LinkedList();
-
-linkedList.add(1);
-linkedList.add(2);
-linkedList.add(3);
-linkedList.add(4);
-
-console.log("Original Linked List:");
-linkedList.display();
-
-linkedList.reverse();
-
-console.log("Reversed Linked List:");
-linkedList.display();
+// Example usage:
+const nums1 = [1, 3];
+const nums2 = [2, 4];
+const median = findMedianSortedArrays(nums1, nums2);
+console.log(median); // Output: 2.5
