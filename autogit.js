@@ -1,8 +1,5 @@
-var str1 = "Hello";
-var str2 = "World";
-var result = str1 + " " + str2;
-console.log(result);  // Output: "Hello World"
-var str1 = "Hello";
-var str2 = "World";
-var result = str1.concat(" ", str2);
-console.log(result);  // Output: "Hello World"
+const numbers = [1, 5, 3, 9, 2, 7]; // Example array
+
+const max = Math.max(...numbers); // Find the maximum value
+
+console.log(max); // Output: 9
