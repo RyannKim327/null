@@ -1,32 +1,70 @@
-function longestCommonSubstring(str1, str2) {
-  const matrix = Array(str1.length + 1);
+function graph(node) {
+  // Define your graph or search space here
+  // This function should return the neighbors of the given node
+}
 
-  let longestSubstring = '';
-  let maxLength = 0;
+function biDirectionalSearch(start, end) {
+  let visitedForward = new Set();
+  let visitedBackward = new Set();
 
-  for (let i = 0; i <= str1.length; i++) {
-    matrix[i] = Array(str2.length + 1);
+  let forwardQueue = [start];
+  let backwardQueue = [end];
 
-    for (let j = 0; j <= str2.length; j++) {
-      if (i === 0 || j === 0) {
-        matrix[i][j] = 0;
-      } else if (str1[i - 1] === str2[j - 1]) {
-        matrix[i][j] = matrix[i - 1][j - 1] + 1;
-        if (matrix[i][j] > maxLength) {
-          maxLength = matrix[i][j];
-          longestSubstring = str1.substring(i - maxLength, i);
-        }
-      } else {
-        matrix[i][j] = 0;
+  visitedForward.add(start);
+  visitedBackward.add(end);
+
+  while (forwardQueue.length && backwardQueue.length) {
+    // Forward iteration
+    let forwardNode = forwardQueue.shift();
+    let forwardNeighbors = graph(forwardNode);
+
+    for (let neighbor of forwardNeighbors) {
+      if (visitedBackward.has(neighbor)) {
+        // Path found
+        // Combine both paths and return
+        return combinePaths(forwardNode, neighbor);
+      }
+
+      if (!visitedForward.has(neighbor)) {
+        visitedForward.add(neighbor);
+        forwardQueue.push(neighbor);
+      }
+    }
+
+    // Backward iteration
+    let backwardNode = backwardQueue.shift();
+    let backwardNeighbors = graph(backwardNode);
+
+    for (let neighbor of backwardNeighbors) {
+      if (visitedForward.has(neighbor)) {
+        // Path found
+        // Combine both paths and return
+        return combinePaths(neighbor, backwardNode);
+      }
+
+      if (!visitedBackward.has(neighbor)) {
+        visitedBackward.add(neighbor);
+        backwardQueue.push(neighbor);
       }
     }
   }
 
-  return longestSubstring;
+  // No path found
+  return null;
 }
 
-// Example usage:
-const str1 = 'javascript';
-const str2 = 'typescript';
-const longestSubstr = longestCommonSubstring(str1, str2);
-console.log(longestSubstr); // Output: "script"
+function combinePaths(start, end) {
+  // Combine the paths from both directions
+  // to get the complete path
+}
+
+// Usage example
+let startNode = /* create start node */;
+let endNode = /* create end node */;
+
+let path = biDirectionalSearch(startNode, endNode);
+if (path) {
+  console.log("Path found:", path);
+} else {
+  console.log("No path found");
+}
