@@ -1,23 +1,73 @@
-function insertionSort(array) {
-  // Loop through each element in the array
-  for (let i = 1; i < array.length; i++) {
-    let key = array[i]; // Current element to be compared
-    
-    let j = i - 1;
-    // Compare the current element with the previous elements
-    // and shift them to the right if they are greater than the key
-    while (j >= 0 && array[j] > key) {
-      array[j + 1] = array[j];
-      j--;
-    }
-    
-    array[j + 1] = key; // Insert the key at its correct position
+class TrieNode {
+  constructor() {
+    this.value = null;
+    this.children = {};
+    this.isEndOfWord = false;
   }
-  
-  return array;
 }
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
+  }
 
-// Example usage:
-const unsortedArray = [4, 3, 2, 10, 12, 1, 5, 6];
-const sortedArray = insertionSort(unsortedArray);
-console.log(sortedArray);
+  insert(word) {
+    let current = this.root;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      if (!current.children[char]) {
+        current.children[char] = new TrieNode();
+      }
+      current = current.children[char];
+    }
+    current.isEndOfWord = true;
+  }
+
+  search(word) {
+    let current = this.root;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      if (!current.children[char]) {
+        return false;
+      }
+      current = current.children[char];
+    }
+    return current.isEndOfWord;
+  }
+
+  delete(word) {
+    function deleteHelper(node, word, index) {
+      if (index === word.length) {
+        node.isEndOfWord = false;
+        return Object.keys(node.children).length === 0;
+      }
+
+      const char = word[index];
+      if (!node.children[char]) {
+        return false;
+      }
+
+      const shouldDeleteNode = deleteHelper(node.children[char], word, index + 1);
+
+      if (shouldDeleteNode) {
+        delete node.children[char];
+        return Object.keys(node.children).length === 0;
+      }
+
+      return false;
+    }
+
+    deleteHelper(this.root, word, 0);
+  }
+}
+const trie = new Trie();
+
+trie.insert("hello");
+trie.insert("world");
+
+console.log(trie.search("hello"));  // Output: true
+console.log(trie.search("world"));  // Output: true
+console.log(trie.search("hell"));   // Output: false
+
+trie.delete("world");
+
+console.log(trie.search("world"));  // Output: false
