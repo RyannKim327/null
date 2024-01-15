@@ -1,15 +1,41 @@
-const cron = require('node-cron');
+function breadthLimitedSearch(root, limit) {
+  const queue = [root];
+  const visited = new Set();
 
-// Define the task to be executed
-const task = () => {
-  console.log('Task executed!');
-  // Add your desired code here
-};
+  while (queue.length > 0) {
+    if (limit === 0) {
+      return "Limit reached";
+    }
 
-// Schedule the task to run every minute
-cron.schedule('* * * * *', task);
+    const currentNode = queue.shift();
+    limit--;
 
-// Alternatively, you can schedule the task to run at a specific time
-// cron.schedule('0 8 * * *', task); // Runs the task at 8:00 AM every day
+    if (isGoalState(currentNode)) {
+      return currentNode;
+    }
 
-console.log('Cron job scheduled!');
+    visited.add(currentNode);
+
+    const children = getChildren(currentNode);
+
+    for (let child of children) {
+      if (!visited.has(child)) {
+        queue.push(child);
+      }
+    }
+  }
+
+  return "Goal not found";
+}
+
+// Helper functions (replace with your own)
+
+function isGoalState(node) {
+  // Implement the condition to check if the node is the goal state
+  // Return true or false accordingly
+}
+
+function getChildren(node) {
+  // Implement the logic to get the children (or neighbors) of the given node
+  // Return an array of children
+}
