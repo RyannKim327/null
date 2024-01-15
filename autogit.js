@@ -1,104 +1,91 @@
-class LinkedListNode {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+function interpolationSearch(arr, value, low = 0, high = arr.length - 1) {
+   // Add implementation here
 }
-
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-    this.size = 0;
-  }
-
-  enqueue(value) {
-    const newNode = new LinkedListNode(value);
-
-    if (this.isEmpty()) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
-    }
-
-    this.size++;
-  }
-
-  dequeue() {
-    if (this.isEmpty()) {
-      console.log("Queue is empty");
-      return null;
-    }
-
-    const dequeuedNode = this.head;
-    this.head = this.head.next;
-
-    if (this.head === null) {
-      this.tail = null;
-    }
-
-    this.size--;
-
-    return dequeuedNode.value;
-  }
-
-  isEmpty() {
-    return this.size === 0;
-  }
-
-  getSize() {
-    return this.size;
-  }
-
-  getFront() {
-    if (this.isEmpty()) {
-      console.log("Queue is empty");
-      return null;
-    }
-
-    return this.head.value;
-  }
-
-  getRear() {
-    if (this.isEmpty()) {
-      console.log("Queue is empty");
-      return null;
-    }
-
-    return this.tail.value;
-  }
-
-  printQueue() {
-    if (this.isEmpty()) {
-      console.log("Queue is empty");
-      return;
-    }
-
-    let currentNode = this.head;
-    let result = "";
-
-    while (currentNode) {
-      result += currentNode.value + " ";
-      currentNode = currentNode.next;
-    }
-
-    console.log("Queue: " + result.trim());
-  }
+function interpolationSearch(arr, value, low = 0, high = arr.length - 1) {
+   if (low > high) {
+      return -1;
+   }
+   // Continue implementation here
 }
-const queue = new Queue();
+function interpolationSearch(arr, value, low = 0, high = arr.length - 1) {
+   if (low > high) {
+      return -1;
+   }
+   
+   // Calculate the position
+   const pos = Math.floor(low + ((value - arr[low]) * (high - low)) / (arr[high] - arr[low]));
 
-queue.enqueue(10);
-queue.enqueue(20);
-queue.enqueue(30);
-queue.printQueue(); // Output: Queue: 10 20 30
+   // Continue implementation here
+}
+function interpolationSearch(arr, value, low = 0, high = arr.length - 1) {
+   if (low > high) {
+      return -1;
+   }
+   
+   const pos = Math.floor(low + ((value - arr[low]) * (high - low)) / (arr[high] - arr[low]));
 
-console.log(queue.getFront()); // Output: 10
-console.log(queue.getRear()); // Output: 30
+   if (pos >= low && pos <= high && arr[pos] === value) {
+      return pos;
+   }
 
-queue.dequeue();
-queue.printQueue(); // Output: Queue: 20 30
+   // Continue implementation here
+}
+function interpolationSearch(arr, value, low = 0, high = arr.length - 1) {
+   if (low > high) {
+      return -1;
+   }
+   
+   const pos = Math.floor(low + ((value - arr[low]) * (high - low)) / (arr[high] - arr[low]));
 
-console.log(queue.getSize()); // Output: 2
-console.log(queue.isEmpty()); // Output: false
+   if (pos >= low && pos <= high && arr[pos] === value) {
+      return pos;
+   }
+
+   if (value < arr[pos]) {
+      return interpolationSearch(arr, value, low, pos - 1);
+   }
+
+   // Continue implementation here
+}
+function interpolationSearch(arr, value, low = 0, high = arr.length - 1) {
+   if (low > high) {
+      return -1;
+   }
+   
+   const pos = Math.floor(low + ((value - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+
+   if (pos >= low && pos <= high && arr[pos] === value) {
+      return pos;
+   }
+
+   if (value < arr[pos]) {
+      return interpolationSearch(arr, value, low, pos - 1);
+   }
+
+   if (value > arr[pos]) {
+      return interpolationSearch(arr, value, pos + 1, high);
+   }
+
+   // Continue implementation here
+}
+function interpolationSearch(arr, value, low = 0, high = arr.length - 1) {
+   if (low > high) {
+      return -1;
+   }
+   
+   const pos = Math.floor(low + ((value - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+
+   if (pos >= low && pos <= high && arr[pos] === value) {
+      return pos;
+   }
+
+   if (value < arr[pos]) {
+      return interpolationSearch(arr, value, low, pos - 1);
+   }
+
+   if (value > arr[pos]) {
+      return interpolationSearch(arr, value, pos + 1, high);
+   }
+
+   return -1;
+}
