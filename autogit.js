@@ -1,28 +1,53 @@
-function bubbleSort(arr) {
-  var len = arr.length;
-  var isSwapped;
-  
-  do {
-    isSwapped = false;
-    
-    for (var i = 0; i < len - 1; i++) {
-      if (arr[i] > arr[i + 1]) {
-        // Swap the elements
-        var temp = arr[i];
-        arr[i] = arr[i + 1];
-        arr[i + 1] = temp;
-
-        isSwapped = true;
-      }
-    }
-    
-    len--;
-  } while (isSwapped);
-  
-  return arr;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-// Example usage:
-var unsortedArray = [5, 3, 8, 2, 1, 4];
-var sortedArray = bubbleSort(unsortedArray);
-console.log(sortedArray); 
+class BinaryTree {
+  constructor() {
+    this.root = null;
+  }
+
+  insert(value) {
+    const newNode = new Node(value);
+
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
+
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+  
+  // Additional operations like search, delete, traversal, etc. can be added here
+}
+const tree = new BinaryTree();
+tree.insert(8);
+tree.insert(3);
+tree.insert(10);
+tree.insert(1);
+tree.insert(6);
+tree.insert(14);
+       8
+     /   \
+    3    10
+   / \     \
+  1   6     14
