@@ -1,11 +1,9 @@
-function decimalToBinary(decimal) {
-  return decimal.toString(2);
-}
-
-// Example usage
-console.log(decimalToBinary(10));      // Output: "1010"
-console.log(decimalToBinary(255));     // Output: "11111111"
-console.log(decimalToBinary(1000));    // Output: "1111101000"
-let binary = decimalToBinary(10);
-let numericValue = parseInt(binary, 2);
-console.log(numericValue);             // Output: 10
+let str = "Hello, world! This is a string with spaces.";
+let newStr = str.replace(/\s/g, ""); // Removes all spaces
+console.log(newStr); // Output: "Hello,world!Thisisastringwithspaces."
+let str = "Hello, world! This is a string with spaces.";
+let newStr = str.split(" ").join(""); // Removes all spaces
+console.log(newStr); // Output: "Hello,world!Thisisastringwithspaces."
+let str = "Hello, world! This is a string with spaces.";
+let newStr = [...str].filter(char => char !== " ").join(""); // Removes all spaces
+console.log(newStr); // Output: "Hello,world!Thisisastringwithspaces."
