@@ -1,17 +1,73 @@
-function isAnagram(str1, str2) {
-  // Remove non-alphabetic characters
-  str1 = str1.replace(/[^A-Za-z]/g, '').toLowerCase();
-  str2 = str2.replace(/[^A-Za-z]/g, '').toLowerCase();
-
-  // Sort the characters
-  const sortedStr1 = str1.split('').sort().join('');
-  const sortedStr2 = str2.split('').sort().join('');
-
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+function binarySearch(array, target, low = 0, high = array.length - 1) {
+  // ...
 }
+function binarySearch(array, target, low = 0, high = array.length - 1) {
+  if (low > high) {
+    return -1;
+  }
+}
+function binarySearch(array, target, low = 0, high = array.length - 1) {
+  if (low > high) {
+    return -1;
+  }
 
-// Usage example
-const string1 = 'listen';
-const string2 = 'silent';
-console.log(isAnagram(string1, string2)); // true
+  const mid = Math.floor((low + high) / 2);
+}
+function binarySearch(array, target, low = 0, high = array.length - 1) {
+  if (low > high) {
+    return -1;
+  }
+
+  const mid = Math.floor((low + high) / 2);
+  const midValue = array[mid];
+
+  if (midValue === target) {
+    return mid;
+  }
+}
+function binarySearch(array, target, low = 0, high = array.length - 1) {
+  if (low > high) {
+    return -1;
+  }
+
+  const mid = Math.floor((low + high) / 2);
+  const midValue = array[mid];
+
+  if (midValue === target) {
+    return mid;
+  } else if (midValue > target) {
+    return binarySearch(array, target, low, mid - 1);
+  }
+}
+function binarySearch(array, target, low = 0, high = array.length - 1) {
+  if (low > high) {
+    return -1;
+  }
+
+  const mid = Math.floor((low + high) / 2);
+  const midValue = array[mid];
+
+  if (midValue === target) {
+    return mid;
+  } else if (midValue > target) {
+    return binarySearch(array, target, low, mid - 1);
+  } else {
+    return binarySearch(array, target, mid + 1, high);
+  }
+}
+function binarySearch(array, target, low = 0, high = array.length - 1) {
+  if (low > high) {
+    return -1;
+  }
+
+  const mid = Math.floor((low + high) / 2);
+  const midValue = array[mid];
+
+  if (midValue === target) {
+    return mid;
+  } else if (midValue > target) {
+    return binarySearch(array, target, low, mid - 1);
+  } else {
+    return binarySearch(array, target, mid + 1, high);
+  }
+}
