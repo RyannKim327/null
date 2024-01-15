@@ -1,28 +1,19 @@
-function binarySearchRecursive(arr, target, start = 0, end = arr.length - 1) {
-  // Base case: not found
-  if (start > end) {
+function binarySearchRecursive(arr, target, low, high) {
+  if (low > high) {
     return -1;
   }
 
-  // Get the middle index
-  const mid = Math.floor((start + end) / 2);
+  const mid = Math.floor((low + high) / 2);
 
-  // We found the target
   if (arr[mid] === target) {
     return mid;
-  }
-
-  // Decide which half to search next
-  if (arr[mid] > target) {
-    // Search in the left half
-    return binarySearchRecursive(arr, target, start, mid - 1);
+  } else if (target < arr[mid]) {
+    return binarySearchRecursive(arr, target, low, mid - 1);
   } else {
-    // Search in the right half
-    return binarySearchRecursive(arr, target, mid + 1, end);
+    return binarySearchRecursive(arr, target, mid + 1, high);
   }
 }
-
-// Example usage
-const arr = [1, 3, 5, 7, 9];
-const target = 5;
-console.log(binarySearchRecursive(arr, target)); // Output: 2
+const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const target = 6;
+const index = binarySearchRecursive(arr, target, 0, arr.length - 1);
+console.log(index); // Output: 5
