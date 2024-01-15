@@ -1,22 +1,36 @@
-function areAnagrams(str1, str2) {
-  // Convert both strings to lowercase
-  const lowerStr1 = str1.toLowerCase();
-  const lowerStr2 = str2.toLowerCase();
-
-  // Remove non-alphabetic characters and sort alphabets
-  const sortedStr1 = lowerStr1.replace(/[^a-z]/g, '').split('').sort().join('');
-  const sortedStr2 = lowerStr2.replace(/[^a-z]/g, '').split('').sort().join('');
-
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+class Node {
+  constructor() {
+    this.children = {};
+  }
 }
+class SuffixTree {
+  constructor() {
+    this.root = new Node();
+  }
 
-// Example usage
-const string1 = 'listen';
-const string2 = 'silent';
-
-if (areAnagrams(string1, string2)) {
-  console.log(`${string1} and ${string2} are anagrams!`);
-} else {
-  console.log(`${string1} and ${string2} are not anagrams.`);
+  // Implementation methods go here
+}
+insert(word) {
+  for (let i = 0; i < word.length; i++) {
+    let currentNode = this.root;
+    for (let j = i; j < word.length; j++) {
+      const currentChar = word[j];
+      if (!currentNode.children[currentChar]) {
+        currentNode.children[currentChar] = new Node();
+      }
+      currentNode = currentNode.children[currentChar];
+      // You can perform additional operations on currentNode if needed
+    }
+  }
+}
+search(substring) {
+  let currentNode = this.root;
+  for (let i = 0; i < substring.length; i++) {
+    const currentChar = substring[i];
+    if (!currentNode.children[currentChar]) {
+      return false; // Substring not found
+    }
+    currentNode = currentNode.children[currentChar];
+  }
+  return true; // Substring found
 }
