@@ -1,14 +1,7 @@
-function maxSubarraySum(arr) {
-  let maxSum = arr[0];
-  let currentSum = arr[0];
+const cron = require('node-cron');
 
-  for (let i = 1; i < arr.length; i++) {
-    currentSum = Math.max(arr[i], currentSum + arr[i]);
-    maxSum = Math.max(maxSum, currentSum);
-  }
+const task = cron.schedule('*/5 * * * * *', () => {
+  console.log('This task runs every 5 seconds');
+});
 
-  return maxSum;
-}
-const array = [1, -3, 2, 1, -1];
-const maxSum = maxSubarraySum(array);
-console.log(maxSum); // Output: 3
+task.start();
