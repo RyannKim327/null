@@ -1,54 +1,160 @@
-function findKthSmallest(arr, k) {
-  if (k < 1 || k > arr.length) {
-    return null;
+// Define the Node class
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+    this.parent = null;
+    this.color = "red"; // Set default color to red
+  }
+}
+
+// Define the RedBlackTree class
+class RedBlackTree {
+  constructor() {
+    this.root = null;
   }
 
-  function swap(a, b) {
-    const temp = arr[a];
-    arr[a] = arr[b];
-    arr[b] = temp;
+  // Insert a value into the tree
+  insert(value) {
+    const newNode = new Node(value);
+
+    // Helper function to recursively insert nodes
+    const insertNode = (node, newNode) => {
+      if (node == null) {
+        this.root = newNode;
+        newNode.color = "black"; // Set root color to black
+        return;
+      }
+
+      if (newNode.value < node.value) {
+        if (node.left == null) {
+          node.left = newNode;
+          newNode.parent = node;
+        } else {
+          insertNode(node.left, newNode);
+        }
+      } else {
+        if (node.right == null) {
+          node.right = newNode;
+          newNode.parent = node;
+        } else {
+          insertNode(node.right, newNode);
+        }
+      }
+    };
+
+    insertNode(this.root, newNode);
+    this.fixTree(newNode);
   }
 
-  function partition(left, right, pivotIndex) {
-    const pivotValue = arr[pivotIndex];
-    let partitionIndex = left;
+  // Fix the tree after insertion
+  fixTree(node) {
+    while (node.parent && node.parent.color === "red") {
+      let uncle;
 
-    swap(pivotIndex, right);
+      if (node.parent === node.parent.parent.left) {
+        uncle = node.parent.parent.right;
 
-    for (let i = left; i < right; i++) {
-      if (arr[i] < pivotValue) {
-        swap(i, partitionIndex);
-        partitionIndex++;
+        if (uncle && uncle.color === "red") {
+          node.parent.color = "black";
+          uncle.color = "black";
+          node.parent.parent.color = "red";
+          node = node.parent.parent;
+        } else {
+          if (node === node.parent.right) {
+            node = node.parent;
+            this.rotateLeft(node);
+          }
+
+          node.parent.color = "black";
+          node.parent.parent.color = "red";
+          this.rotateRight(node.parent.parent);
+        }
+      } else {
+        uncle = node.parent.parent.left;
+
+        if (uncle && uncle.color === "red") {
+          node.parent.color = "black";
+          uncle.color = "black";
+          node.parent.parent.color = "red";
+          node = node.parent.parent;
+        } else {
+          if (node === node.parent.left) {
+            node = node.parent;
+            this.rotateRight(node);
+          }
+
+          node.parent.color = "black";
+          node.parent.parent.color = "red";
+          this.rotateLeft(node.parent.parent);
+        }
       }
     }
 
-    swap(partitionIndex, right);
-    return partitionIndex;
+    this.root.color = "black";
   }
 
-  function quickSelect(left, right, k) {
-    if (left === right) {
-      return arr[left];
+  // Left rotation
+  rotateLeft(node) {
+    const rightChild = node.right;
+
+    if (rightChild) {
+      node.right = rightChild.left;
+
+      if (rightChild.left) {
+        rightChild.left.parent = node;
+      }
+
+      rightChild.parent = node.parent;
     }
 
-    const pivotIndex = Math.floor(Math.random() * (right - left + 1)) + left;
-    const partitionIndex = partition(left, right, pivotIndex);
-
-    if (k === partitionIndex) {
-      return arr[k];
-    } else if (k < partitionIndex) {
-      return quickSelect(left, partitionIndex - 1, k);
+    if (node.parent == null) {
+      this.root = rightChild;
+    } else if (node === node.parent.left) {
+      node.parent.left = rightChild;
     } else {
-      return quickSelect(partitionIndex + 1, right, k);
+      node.parent.right = rightChild;
     }
+
+    if (rightChild) {
+      rightChild.left = node;
+    }
+
+    node.parent = rightChild;
   }
 
-  return quickSelect(0, arr.length - 1, k - 1);
+  // Right rotation
+  rotateRight(node) {
+    const leftChild = node.left;
+
+    if (leftChild) {
+      node.left = leftChild.right;
+
+      if (leftChild.right) {
+        leftChild.right.parent = node;
+      }
+
+      leftChild.parent = node.parent;
+    }
+
+    if (node.parent == null) {
+      this.root = leftChild;
+    } else if (node === node.parent.right) {
+      node.parent.right = leftChild;
+    } else {
+      node.parent.left = leftChild;
+    }
+
+    if (leftChild) {
+      leftChild.right = node;
+    }
+
+    node.parent = leftChild;
+  }
 }
-
-// Example usage:
-const arr = [7, 2, 10, 1, 5];
-const k = 3;
-
-const kthSmallest = findKthSmallest(arr, k);
-console.log(`The ${k}th smallest element is ${kthSmallest}`);
+const tree = new RedBlackTree();
+tree.insert(10);
+tree.insert(20);
+tree.insert(30);
+tree.insert(40);
