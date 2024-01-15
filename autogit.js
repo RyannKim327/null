@@ -1,22 +1,51 @@
-function bubbleSort(arr) {
-  var len = arr.length;
-  var swapped;
-  
-  do {
-    swapped = false;
-    for (var i = 0; i < len - 1; i++) {
-      if (arr[i] > arr[i + 1]) {
-        var temp = arr[i];
-        arr[i] = arr[i + 1];
-        arr[i + 1] = temp;
-        swapped = true;
-      }
-    }
-  } while (swapped);
-  
-  return arr;
+class ListNode {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
 }
 
-// Example usage:
-var numbers = [5, 3, 8, 4, 2];
-console.log(bubbleSort(numbers)); // Output: [2, 3, 4, 5, 8]
+function getIntersectionNode(headA, headB) {
+  let nodeA = headA;
+  let nodeB = headB;
+  let lenA = 0;
+  let lenB = 0;
+
+  // Get the length of linked lists A and B
+  while (nodeA) {
+    lenA += 1;
+    nodeA = nodeA.next;
+  }
+
+  while (nodeB) {
+    lenB += 1;
+    nodeB = nodeB.next;
+  }
+
+  // Reset current node references
+  nodeA = headA;
+  nodeB = headB;
+
+  // Move the longer linked list pointer forward
+  while (lenA > lenB) {
+    nodeA = nodeA.next;
+    lenA -= 1;
+  }
+
+  while (lenB > lenA) {
+    nodeB = nodeB.next;
+    lenB -= 1;
+  }
+
+  // Traverse both lists and find the intersection point
+  while (nodeA && nodeB) {
+    if (nodeA === nodeB) {
+      return nodeA;
+    }
+    nodeA = nodeA.next;
+    nodeB = nodeB.next;
+  }
+
+  // No intersection found
+  return null;
+}
