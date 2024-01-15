@@ -4,33 +4,85 @@ class Node {
     this.next = null;
   }
 }
-const node1 = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
+// Example Linked List: 1 -> 2 -> 3 -> 2 -> 1
 
-node1.next = node2;
-node2.next = node3;
-function reverseLinkedList(head) {
-  let current = head;
-  let prev = null;
-  let next = null;
+const head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(2);
+head.next.next.next.next = new Node(1);
+let slow = head;
+let fast = head;
 
-  while (current) {
-    // Store the next node
-    next = current.next;
-
-    // Reverse the pointer
-    current.next = prev;
-
-    // Move prev and current one step forward
-    prev = current;
-    current = next;
-  }
-
-  // Set the new head as prev
-  head = prev;
-
-  // Return the reversed list
-  return head;
+while (fast && fast.next) {
+  slow = slow.next;
+  fast = fast.next.next;
 }
-const reversedHead = reverseLinkedList(node1);
+let prev = null;
+let current = slow;
+let nextNode = null;
+
+while (current) {
+  nextNode = current.next;
+  current.next = prev;
+  prev = current;
+  current = nextNode;
+}
+let firstHalf = head;
+let secondHalf = prev;
+
+while (secondHalf) {
+  if (firstHalf.value !== secondHalf.value) {
+    console.log("Linked list is not a palindrome.");
+    return;
+  }
+  firstHalf = firstHalf.next;
+  secondHalf = secondHalf.next;
+}
+
+console.log("Linked list is a palindrome.");
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
+
+const head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(2);
+head.next.next.next.next = new Node(1);
+
+let slow = head;
+let fast = head;
+
+while (fast && fast.next) {
+  slow = slow.next;
+  fast = fast.next.next;
+}
+
+let prev = null;
+let current = slow;
+let nextNode = null;
+
+while (current) {
+  nextNode = current.next;
+  current.next = prev;
+  prev = current;
+  current = nextNode;
+}
+
+let firstHalf = head;
+let secondHalf = prev;
+
+while (secondHalf) {
+  if (firstHalf.value !== secondHalf.value) {
+    console.log("Linked list is not a palindrome.");
+    return;
+  }
+  firstHalf = firstHalf.next;
+  secondHalf = secondHalf.next;
+}
+
+console.log("Linked list is a palindrome.");
