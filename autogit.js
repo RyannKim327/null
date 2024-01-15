@@ -1,42 +1,36 @@
-function generateBadCharTable(pattern) {
-  const table = {};
-  for (let i = 0; i < pattern.length - 1; i++) {
-    table[pattern[i]] = i;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
-  table[pattern[pattern.length - 1]] = -1;
-  return table;
 }
+const node1 = new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
 
-function boyerMooreSearch(text, pattern) {
-  const badCharTable = generateBadCharTable(pattern);
-  let textIndex = 0;
+node1.next = node2;
+node2.next = node3;
+function reverseLinkedList(head) {
+  let current = head;
+  let prev = null;
+  let next = null;
 
-  while (textIndex <= text.length - pattern.length) {
-    let patternIndex = pattern.length - 1;
+  while (current) {
+    // Store the next node
+    next = current.next;
 
-    while (patternIndex >= 0 && pattern[patternIndex] === text[textIndex + patternIndex]) {
-      patternIndex--;
-    }
+    // Reverse the pointer
+    current.next = prev;
 
-    if (patternIndex === -1) {
-      return textIndex; // Pattern found
-    }
-
-    const badChar = text[textIndex + patternIndex];
-    const maxShift = badCharTable[badChar] || -1;
-    textIndex += Math.max(1, patternIndex - maxShift);
+    // Move prev and current one step forward
+    prev = current;
+    current = next;
   }
 
-  return -1; // Pattern not found
-}
+  // Set the new head as prev
+  head = prev;
 
-// Example usage:
-const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
-const pattern = 'ipsum';
-const index = boyerMooreSearch(text, pattern);
-
-if (index !== -1) {
-  console.log(`Pattern found at index ${index}`);
-} else {
-  console.log('Pattern not found');
+  // Return the reversed list
+  return head;
 }
+const reversedHead = reverseLinkedList(node1);
