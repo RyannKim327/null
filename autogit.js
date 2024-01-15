@@ -1,38 +1,45 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
-
-function sumBinaryTree(root) {
-  if (root === null) {
-    // Base case: empty tree has a sum of 0
-    return 0;
+function getIntersectionNode(headA, headB) {
+  if (!headA || !headB) {
+    return null;
   }
 
-  // Calculate the sum recursively by adding the value of the root node
-  // to the sum of its left and right subtrees
-  return (
-    root.value +
-    sumBinaryTree(root.left) +
-    sumBinaryTree(root.right)
-  );
+  let lengthA = getLength(headA);
+  let lengthB = getLength(headB);
+
+  let diff = Math.abs(lengthA - lengthB);
+
+  let currA = headA;
+  let currB = headB;
+
+  if (lengthA > lengthB) {
+    for (let i = 0; i < diff; i++) {
+      currA = currA.next;
+    }
+  } else if (lengthA < lengthB) {
+    for (let i = 0; i < diff; i++) {
+      currB = currB.next;
+    }
+  }
+
+  while (currA !== null && currB !== null) {
+    if (currA === currB) {
+      return currA;
+    }
+    currA = currA.next;
+    currB = currB.next;
+  }
+
+  return null;
 }
 
-// Example usage:
+function getLength(node) {
+  let length = 0;
+  let curr = node;
 
-// Create a binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
+  while (curr !== null) {
+    length++;
+    curr = curr.next;
+  }
 
-// Calculate the sum
-const sum = sumBinaryTree(root);
-
-console.log('Sum of all nodes:', sum);
+  return length;
+}
