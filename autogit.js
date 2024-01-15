@@ -1,28 +1,47 @@
-function binarySearch(arr, target, startIdx = 0, endIdx = arr.length - 1) {
-  const midIdx = Math.floor((startIdx + endIdx) / 2);
-
-  if (startIdx > endIdx) {
-    return -1; // Target element not found
-  }
-
-  if (target === arr[midIdx]) {
-    return midIdx; // Target element found
-  }
-
-  if (target < arr[midIdx]) {
-    return binarySearch(arr, target, startIdx, midIdx - 1);
-  }
-
-  if (target > arr[midIdx]) {
-    return binarySearch(arr, target, midIdx + 1, endIdx);
+function depthLimitedSearch(startNode, targetValue, depthLimit) {
+  const stack = [];
+  stack.push({ node: startNode, depth: 0 });
+  // Rest of the code goes here...
+}
+while (stack.length > 0) {
+  const { node, depth } = stack.pop();
+  // Rest of the code goes here...
+}
+if (node.value === targetValue) {
+  console.log(`Found target value ${targetValue} at depth ${depth}`);
+  return node;
+}
+if (depth === depthLimit) {
+  continue;
+}
+if (node.children) {
+  for (const childNode of node.children) {
+    stack.push({ node: childNode, depth: depth + 1 });
   }
 }
-const numbers = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
-const target = 16;
-const index = binarySearch(numbers, target);
+function depthLimitedSearch(startNode, targetValue, depthLimit) {
+  const stack = [];
+  stack.push({ node: startNode, depth: 0 });
 
-if (index !== -1) {
-  console.log(`Target element ${target} found at index ${index}`);
-} else {
-  console.log(`Target element ${target} not found`);
+  while (stack.length > 0) {
+    const { node, depth } = stack.pop();
+
+    if (node.value === targetValue) {
+      console.log(`Found target value ${targetValue} at depth ${depth}`);
+      return node;
+    }
+
+    if (depth === depthLimit) {
+      continue;
+    }
+
+    if (node.children) {
+      for (const childNode of node.children) {
+        stack.push({ node: childNode, depth: depth + 1 });
+      }
+    }
+  }
+
+  console.log(`Could not find target value ${targetValue} within depth limit`);
+  return null;
 }
