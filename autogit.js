@@ -1,29 +1,11 @@
-// Create a function to connect asynchronously
-async function connectAsync() {
-  try {
-    // Perform the connection logic
-    const result = await performConnectionLogic();
-    console.log(result); // Output the result
-  } catch (error) {
-    console.log("Error:", error);
+function findMiddleElement(head) {
+  let slow = head;  // slow pointer moves 1 step at a time
+  let fast = head;  // fast pointer moves 2 steps at a time
+
+  while (fast !== null && fast.next !== null) {
+    slow = slow.next;      // move slow pointer by 1 step
+    fast = fast.next.next; // move fast pointer by 2 steps
   }
+
+  return slow;
 }
-
-// Create a Promise to mimic the connection logic
-function performConnectionLogic() {
-  return new Promise((resolve, reject) => {
-    // Simulate connection delay with setTimeout
-    setTimeout(() => {
-      const isConnected = Math.random() >= 0.5; // Simulate successful connection
-
-      if (isConnected) {
-        resolve("Connected successfully!");
-      } else {
-        reject("Failed to connect.");
-      }
-    }, 2000); // Simulate a 2-second delay
-  });
-}
-
-// Call the connectAsync function to initiate the connection
-connectAsync();
