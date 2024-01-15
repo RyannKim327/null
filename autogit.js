@@ -1,48 +1,24 @@
-// Function to compute the failure table
-function computeFailureTable(pattern) {
-  const patternLength = pattern.length;
-  const table = new Array(patternLength);
+function isLinkedListPalindrome(head) {
+  const values = [];
+  let current = head;
 
-  let i = 0;
-  let j = -1;
-  table[0] = -1;
-
-  while (i < patternLength - 1) {
-    while (j >= 0 && pattern[i] !== pattern[j]) {
-      j = table[j];
-    }
-    i++;
-    j++;
-    table[i] = j;
+  // Step 2: Traverse the linked list and store the values
+  while (current) {
+    values.push(current.val);
+    current = current.next;
   }
 
-  return table;
-}
+  let start = 0;
+  let end = values.length - 1;
 
-// Function to search for pattern occurrences in text using the failure table
-function search(text, pattern) {
-  const textLength = text.length;
-  const patternLength = pattern.length;
-  const table = computeFailureTable(pattern);
-
-  let i = 0;
-  let j = 0;
-
-  while (i < textLength) {
-    while (j >= 0 && text[i] !== pattern[j]) {
-      j = table[j];
+  // Step 3: Compare values using two pointers
+  while (start < end) {
+    if (values[start] !== values[end]) {
+      return false; // Step 4: Not a palindrome
     }
-    i++;
-    j++;
-    
-    if (j === patternLength) {
-      console.log(`Pattern found at index ${i - j}`);
-      j = table[j];
-    }
+    start++;
+    end--;
   }
-}
 
-// Example usage
-const text = "AABAACAADAABAAABAA";
-const pattern = "AABA";
-search(text, pattern);
+  return true; // Step 5: Linked list is a palindrome
+}
