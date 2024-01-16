@@ -1,24 +1,27 @@
-function longestCommonPrefix(strings) {
+function findLongestCommonPrefix(strings) {
   if (strings.length === 0) {
-    return '';
+    return "";
   }
-  
-  let prefix = '';
-  
-  for (let i = 0; i < strings[0].length; i++) {
-    const char = strings[0][i];
-    
-    for (let j = 1; j < strings.length; j++) {
-      if (strings[j][i] !== char) {
-        return prefix;  // Found a mismatch, return the current prefix
-      }
+
+  // Sort the strings to ensure the shortest string comes first
+  strings.sort();
+
+  let prefix = "";
+  const first = strings[0];
+  const last = strings[strings.length - 1];
+  const minLen = Math.min(first.length, last.length);
+
+  // Find the common prefix between the first and last strings
+  for (let i = 0; i < minLen; i++) {
+    if (first[i] === last[i]) {
+      prefix += first[i];
+    } else {
+      break;
     }
-    
-    prefix += char;  // All characters matched, append to the prefix
   }
-  
+
   return prefix;
 }
-const strings = ['flower', 'flow', 'flight'];
-const result = longestCommonPrefix(strings);
-console.log(result);  // Output: 'fl'
+const strings = ["flower", "flow", "flight"];
+const longestPrefix = findLongestCommonPrefix(strings);
+console.log(longestPrefix);  // Output: "fl"
