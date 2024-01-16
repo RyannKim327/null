@@ -1,27 +1,43 @@
-function rotateString(str) {
-  const rotations = [str];
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.children = [];
+  }
+  
+  addChild(node) {
+    this.children.push(node);
+  }
+}
 
-  for (let i = 1; i < str.length; i++) {
-    str = str.slice(1) + str[0]; // Rotate the string
-    rotations.push(str);
+function depthLimitedSearch(node, target, depthLimit) {
+  if (node.value === target) {
+    return node;
   }
 
-  return rotations;
-}
-function generateBWTMatrix(str) {
-  const rotations = rotateString(str);
-  rotations.sort();
+  if (depthLimit === 0) {
+    return null;
+  }
 
-  return rotations;
-}
-function extractBWT(matrix) {
-  return matrix.map((rotation) => rotation.slice(-1)).join('');
-}
-const input = 'banana';
-const matrix = generateBWTMatrix(input);
-const bwt = extractBWT(matrix);
+  for (let child of node.children) {
+    const result = depthLimitedSearch(child, target, depthLimit - 1);
+    if (result !== null) {
+      return result;
+    }
+  }
 
-console.log(`Input: ${input}`);
-console.log(`BWT: ${bwt}`);
-Input: banana
-BWT: annb$aa
+  return null;
+}
+
+// Usage example:
+const root = new Node(1);
+const child1 = new Node(2);
+const child2 = new Node(3);
+const grandChild1 = new Node(4);
+const grandChild2 = new Node(5);
+
+root.addChild(child1);
+root.addChild(child2);
+child1.addChild(grandChild1);
+child2.addChild(grandChild2);
+
+console.log(depthLimitedSearch(root, 5, 3));
