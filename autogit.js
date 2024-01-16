@@ -1,34 +1,54 @@
-function breadthLimitedSearch(startNode, goalNode, limit) {
-  const queue = [];
-  queue.push({ node: startNode, depth: 0 });
-
-  const visited = [];
-
-  while (queue.length > 0) {
-    const { node, depth } = queue.shift();
-
-    if (node === goalNode) {
-      // Generate path from startNode to goalNode
-      const path = [node];
-      let parent = node.parent;
-      while (parent) {
-        path.unshift(parent);
-        parent = parent.parent;
-      }
-      return path;
+class Node {
+    constructor() {
+        this.children = {};
     }
-
-    if (!visited.includes(node) && depth < limit) {
-      visited.push(node);
-
-      // Enqueue neighboring nodes
-      const neighbors = getNeighbors(node); // Implement this function to return neighboring nodes
-      neighbors.forEach(neighbor => {
-        neighbor.parent = node;
-        queue.push({ node: neighbor, depth: depth + 1 });
-      });
-    }
-  }
-
-  return null; // No path found
 }
+
+class SuffixTree {
+    constructor() {
+        this.root = new Node();
+    }
+
+    insertSuffix(suffix) {
+        let currentNode = this.root;
+
+        for (let i = 0; i < suffix.length; i++) {
+            const char = suffix[i];
+
+            if (!currentNode.children[char]) {
+                currentNode.children[char] = new Node();
+            }
+
+            currentNode = currentNode.children[char];
+        }
+    }
+
+    buildTree(string) {
+        for (let i = 0; i < string.length; i++) {
+            const suffix = string.slice(i);
+            this.insertSuffix(suffix);
+        }
+    }
+
+    searchSubstring(substring) {
+        let currentNode = this.root;
+
+        for (let i = 0; i < substring.length; i++) {
+            const char = substring[i];
+
+            if (!currentNode.children[char]) {
+                return false;
+            }
+
+            currentNode = currentNode.children[char];
+        }
+
+        return true;
+    }
+}
+
+// Usage example
+const suffixTree = new SuffixTree();
+suffixTree.buildTree("banana");
+console.log(suffixTree.searchSubstring("ana")); // Output: true
+console.log(suffixTree.searchSubstring("xyz")); // Output: false
