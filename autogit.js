@@ -1,20 +1,60 @@
-function findSecondLargest(arr) {
-  let largest = -Infinity;
-  let secondLargest = -Infinity;
-
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] > largest) {
-      secondLargest = largest;
-      largest = arr[i];
-    } else if (arr[i] > secondLargest && arr[i] !== largest) {
-      secondLargest = arr[i];
-    }
+class TrieNode {
+  constructor(value) {
+    this.value = value;
+    this.isWord = false;
+    this.children = {};
+  }
+}
+class Trie {
+  constructor() {
+    this.root = new TrieNode(null);
   }
 
-  return secondLargest;
-}
+  insert(word) {
+    let currentNode = this.root;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      if (!currentNode.children[char]) {
+        currentNode.children[char] = new TrieNode(char);
+      }
+      currentNode = currentNode.children[char];
+    }
+    currentNode.isWord = true;
+  }
 
-// Example usage
-const array = [5, 10, 3, 8, 14, 1];
-const secondLargest = findSecondLargest(array);
-console.log(secondLargest); // Output: 10
+  search(word) {
+    let currentNode = this.root;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      if (!currentNode.children[char]) {
+        return false;
+      }
+      currentNode = currentNode.children[char];
+    }
+    return currentNode.isWord;
+  }
+
+  startsWith(prefix) {
+    let currentNode = this.root;
+    for (let i = 0; i < prefix.length; i++) {
+      const char = prefix[i];
+      if (!currentNode.children[char]) {
+        return false;
+      }
+      currentNode = currentNode.children[char];
+    }
+    return true;
+  }
+}
+const trie = new Trie();
+trie.insert("apple");
+trie.insert("banana");
+trie.insert("app");
+console.log(trie.search("apple")); // true
+console.log(trie.search("app")); // true
+console.log(trie.search("ap")); // false
+console.log(trie.search("banana")); // true
+console.log(trie.search("bananas")); // false
+console.log(trie.startsWith("app")); // true
+console.log(trie.startsWith("ban")); // true
+console.log(trie.startsWith("banz")); // false
