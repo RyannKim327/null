@@ -1,23 +1,18 @@
-function findMajorityElement(arr) {
-  const count = {};
-  const halfLength = Math.floor(arr.length / 2);
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters
+  const alphanumericStr = str.replace(/[\W_]/g, '');
 
-  for (let i = 0; i < arr.length; i++) {
-    const element = arr[i];
-    count[element] = (count[element] || 0) + 1;
-  }
+  // Convert to lowercase
+  const lowercaseStr = alphanumericStr.toLowerCase();
 
-  for (let element in count) {
-    if (count[element] > halfLength) {
-      return element;
-    }
-  }
+  // Reverse the string
+  const reversedStr = lowercaseStr.split('').reverse().join('');
 
-  return null;
+  // Compare the reversed string with the original string
+  return lowercaseStr === reversedStr;
 }
 
 // Example usage
-const array = [2, 4, 5, 2, 2, 3, 2, 2, 6];
-const majorityElement = findMajorityElement(array);
-
-console.log(majorityElement); // Output: 2
+console.log(isPalindrome("level")); // Output: true
+console.log(isPalindrome("Hello")); // Output: false
+console.log(isPalindrome("A man, a plan, a canal, Panama!")); // Output: true
