@@ -1,27 +1,36 @@
-function quicksort(arr) {
-  if (arr.length <= 1) {
-    return arr;
+function heapify(arr, n, i) {
+  let largest = i; 
+  let left = 2 * i + 1;
+  let right = 2 * i + 2;
+
+  if (left < n && arr[left] > arr[largest]) {
+    largest = left;
   }
 
-  const pivot = arr[Math.floor(arr.length / 2)];
-  const less = [];
-  const equal = [];
-  const greater = [];
-
-  for (const value of arr) {
-    if (value < pivot) {
-      less.push(value);
-    } else if (value > pivot) {
-      greater.push(value);
-    } else {
-      equal.push(value);
-    }
+  if (right < n && arr[right] > arr[largest]) {
+    largest = right;
   }
 
-  return [...quicksort(less), ...equal, ...quicksort(greater)];
+  if (largest !== i) {
+    [arr[i], arr[largest]] = [arr[largest], arr[i]];
+    heapify(arr, n, largest);
+  }
 }
+function heapSort(arr) {
+  const n = arr.length;
 
-// Example usage
-const unsortedArray = [5, 9, 2, 8, 3, 7, 4, 6, 1];
-const sortedArray = quicksort(unsortedArray);
-console.log(sortedArray);
+  // Build a max heap.
+  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+    heapify(arr, n, i);
+  }
+
+  // Extract elements from the heap one by one.
+  for (let i = n - 1; i >= 0; i--) {
+    [arr[0], arr[i]] = [arr[i], arr[0]]; // Swap root with last element.
+    heapify(arr, i, 0); // Heapify reduced heap.
+  }
+
+  return arr;
+}
+const arr = [12, 11, 13, 5, 6, 7];
+console.log(heapSort(arr)); // Output: [5, 6, 7, 11, 12, 13]
