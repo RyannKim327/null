@@ -1,65 +1,38 @@
-class PriorityQueue {
-  constructor() {
-    this.heap = [];
+function countingSort(arr) {
+  // Find the maximum element in the array
+  let max = Math.max(...arr);
+
+  // Create a count array of size max+1 and initialize it with 0
+  let count = new Array(max + 1).fill(0);
+
+  // Store the count of each element in the input array
+  arr.forEach((num) => {
+    count[num]++;
+  });
+
+  // Modify the count array to store the actual position of each element in the sorted array
+  for (let i = 1; i <= max; i++) {
+    count[i] += count[i - 1];
   }
+
+  // Create a temporary output array
+  let output = new Array(arr.length);
+
+  // Build the output array
+  for (let i = arr.length - 1; i >= 0; i--) {
+    output[count[arr[i]] - 1] = arr[i];
+    count[arr[i]]--;
+  }
+
+  // Copy the sorted elements from the output array to the input array
+  for (let i = 0; i < arr.length; i++) {
+    arr[i] = output[i];
+  }
+
+  return arr;
 }
-enqueue(value, priority) {
-  const element = { value, priority };
-  this.heap.push(element);
-  this.bubbleUp();
-}
-bubbleUp() {
-  let index = this.heap.length - 1;
-  const element = this.heap[index];
 
-  while (index > 0) {
-    const parentIndex = Math.floor((index - 1) / 2);
-    const parent = this.heap[parentIndex];
-
-    if (element.priority >= parent.priority) break;
-
-    this.heap[index] = parent;
-    index = parentIndex;
-  }
-
-  this.heap[index] = element;
-}
-dequeue() {
-  const min = this.heap[0];
-  const last = this.heap.pop();
-  
-  if (this.heap.length > 0) {
-    this.heap[0] = last;
-    this.sinkDown(0);
-  }
-  
-  return min;
-}
-sinkDown(index) {
-  const leftChildIdx = 2 * index + 1;
-  const rightChildIdx = 2 * index + 2;
-  const length = this.heap.length;
-  let smallestIdx = index;
-
-  if (leftChildIdx < length && this.heap[leftChildIdx].priority < this.heap[smallestIdx].priority) {
-    smallestIdx = leftChildIdx;
-  }
-
-  if (rightChildIdx < length && this.heap[rightChildIdx].priority < this.heap[smallestIdx].priority) {
-    smallestIdx = rightChildIdx;
-  }
-
-  if (smallestIdx !== index) {
-    [this.heap[smallestIdx], this.heap[index]] = [this.heap[index], this.heap[smallestIdx]];
-    this.sinkDown(smallestIdx);
-  }
-}
-const priorityQueue = new PriorityQueue();
-
-priorityQueue.enqueue('Task 1', 3);
-priorityQueue.enqueue('Task 2', 1);
-priorityQueue.enqueue('Task 3', 2);
-
-console.log(priorityQueue.dequeue());  // Output: { value: 'Task 2', priority: 1 }
-console.log(priorityQueue.dequeue());  // Output: { value: 'Task 3', priority: 2 }
-console.log(priorityQueue.dequeue());  // Output: { value: 'Task 1', priority: 3 }
+// Example usage:
+let arr = [4, 2, 9, 6, 2, 1, 5, 8, 7];
+let sortedArr = countingSort(arr);
+console.log(sortedArr);
