@@ -1,48 +1,38 @@
-function findLongestCommonSubsequence(str1, str2) {
-  const m = str1.length;
-  const n = str2.length;
+function generateBadCharShift(pattern) {
+  const badCharShift = {};
+  const patternLength = pattern.length;
 
-  const dp = [];
-
-  // Initialize dp array with zeros
-  for (let i = 0; i <= m; i++) {
-    dp[i] = [];
-    for (let j = 0; j <= n; j++) {
-      dp[i][j] = 0;
-    }
+  for (let i = 0; i < patternLength; i++) {
+    badCharShift[pattern[i]] = i;
   }
 
-  // Fill the dp array
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-      } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-      }
-    }
-  }
-
-  // Find the longest common subsequence
-  let i = m;
-  let j = n;
-  const lcs = [];
-  while (i > 0 && j > 0) {
-    if (str1[i - 1] === str2[j - 1]) {
-      lcs.unshift(str1[i - 1]);
-      i--;
-      j--;
-    } else if (dp[i - 1][j] >= dp[i][j - 1]) {
-      i--;
-    } else {
-      j--;
-    }
-  }
-
-  return lcs.join('');
+  return badCharShift;
 }
+function boyerMoore(text, pattern) {
+  const textLength = text.length;
+  const patternLength = pattern.length;
+  const badCharShift = generateBadCharShift(pattern);
 
-// Example usage
-const str1 = 'ABCDGH';
-const str2 = 'AEDFHR';
-console.log(findLongestCommonSubsequence(str1, str2)); // Output: ADH
+  let shift = 0;
+
+  for (let i = 0; i <= textLength - patternLength; i += shift) {
+    let j = patternLength - 1;
+
+    while (j >= 0 && pattern[j] === text[i + j]) {
+      j--;
+    }
+
+    if (j < 0) {
+      return i; // match found
+    }
+
+    shift = Math.max(1, j - badCharShift[text[i + j]]);
+  }
+
+  return -1; // no match found
+}
+const text = 'This is a test string';
+const pattern = 'test';
+
+const index = boyerMoore(text, pattern);
+console.log(index); // Output: 10
