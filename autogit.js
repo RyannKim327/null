@@ -1,57 +1,45 @@
-function depthLimitedSearch(state, depth, maxDepth) {
-    // Perform search logic here
-}
-if (isGoalState(state) || depth === maxDepth) {
-    return state;
-}
-const successors = generateSuccessors(state);
-for (const successor of successors) {
-    const result = depthLimitedSearch(successor, depth + 1, maxDepth);
-    if (result !== null) {
-        return result;
-    }
-}
-return null;
-function depthLimitedSearch(node, depth, maxDepth) {
-    if (node.value === target || depth === maxDepth) {
-        return node;
-    }
-    
-    const children = node.children;
-    for (const child of children) {
-        const result = depthLimitedSearch(child, depth + 1, maxDepth);
-        if (result !== null) {
-            return result;
-        }
-    }
-    
-    return null;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-// Usage example
-const tree = {
-    value: 'A',
-    children: [
-        {
-            value: 'B',
-            children: [
-                { value: 'E', children: [] },
-                { value: 'F', children: [] }
-            ]
-        },
-        {
-            value: 'C',
-            children: []
-        },
-        {
-            value: 'D',
-            children: [
-                { value: 'G', children: [] }
-            ]
-        }
-    ]
-};
+function reverseLinkedList(head) {
+  let prev = null;
+  let current = head;
+  let next = null;
 
-const target = 'F';
-const result = depthLimitedSearch(tree, 0, 2);
-console.log(result); // { value: 'F', children: [] }
+  while (current !== null) {
+    // Save the next node
+    next = current.next;
+    // Reverse the pointer of current node
+    current.next = prev;
+    // Move prev and current one step forward
+    prev = current;
+    current = next;
+  }
+
+  // prev will now be the new head of the reversed list
+  return prev;
+}
+// Create a linked list
+const node1 = new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
+
+node1.next = node2;
+node2.next = node3;
+
+// Reverse the linked list
+const reversedHead = reverseLinkedList(node1);
+
+// Print the reversed linked list
+let current = reversedHead;
+while (current !== null) {
+  console.log(current.value);
+  current = current.next;
+}
+3
+2
+1
