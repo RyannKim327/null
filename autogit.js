@@ -1,41 +1,12 @@
-function beamSearch(initialSolutions, beamSize, evaluateFunc, terminationCondition) {
-  let beam = initialSolutions;
-
-  while (!terminationCondition()) {
-    const expandedBeam = [];
-
-    for (const solution of beam) {
-      const neighbors = generateNeighbors(solution);
-
-      for (const neighbor of neighbors) {
-        const score = evaluateFunc(neighbor);
-        expandedBeam.push({ solution: neighbor, score });
-      }
-    }
-
-    expandedBeam.sort((a, b) => b.score - a.score);
-    beam = expandedBeam.slice(0, beamSize);
+function getStringLength(str) {
+  let count = 0;
+  for (let i = 0; str[i] !== undefined; i++) {
+    count++;
   }
-
-  return beam[0].solution; // Return the best solution
+  return count;
 }
 
 // Example usage:
-const initialSolutions = [initialSolution1, initialSolution2, ...];
-const beamSize = 5;
-
-function evaluateFunc(solution) {
-  // Calculate the score or cost of the solution
-  // ...
-
-  return score;
-}
-
-function terminationCondition() {
-  // Check some termination condition, e.g., maximum iterations or solution found
-  // ...
-
-  return conditionMet;
-}
-
-const bestSolution = beamSearch(initialSolutions, beamSize, evaluateFunc, terminationCondition);
+const myString = "Hello, World!";
+const length = getStringLength(myString);
+console.log(length); // Output: 13
