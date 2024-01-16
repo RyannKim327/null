@@ -1,15 +1,18 @@
-// Function to make GET request using fetch
-function getData(url) {
-  fetch(url)
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-    })
-    .catch(error => {
-      console.log('Error:', error);
-    });
+function reverseWords(str) {
+  // Split the string into an array of words
+  var wordsArray = str.split(' ');
+
+  // Reverse the array
+  var reversedArray = wordsArray.reverse();
+
+  // Join the reversed array into a string
+  var reversedString = reversedArray.join(' ');
+
+  return reversedString;
 }
 
 // Example usage
-const apiUrl = 'https://api.example.com/data';
-getData(apiUrl);
+var originalString = "Hello World!";
+
+var reversedString = reverseWords(originalString);
+console.log(reversedString); // Output: "World! Hello"
