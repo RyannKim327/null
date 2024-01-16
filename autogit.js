@@ -1,65 +1,122 @@
 class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+    constructor(data) {
+        this.data = data;
+        this.left = null;
+        this.right = null;
+        this.height = 1;
+    }
 }
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-    this.size = 0;
-  }
-
-  enqueue(value) {
-    const newNode = new Node(value);
-    if (this.isEmpty()) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
+class AVLTree {
+    constructor() {
+        this.root = null;
     }
-    this.size++;
-  }
 
-  dequeue() {
-    if (this.isEmpty()) {
-      return null;
+    // Insert a node into the AVL tree
+    insert(data) {
+        this.root = this._insertNode(this.root, data);
     }
-    const value = this.head.value;
-    this.head = this.head.next;
-    this.size--;
-    if (this.isEmpty()) {
-      this.tail = null;
+
+    // Recursive function to insert a node in the AVL tree
+    _insertNode(node, data) {
+        if (node === null) {
+            return new Node(data);
+        }
+
+        if (data < node.data) {
+            node.left = this._insertNode(node.left, data);
+        } else if (data > node.data) {
+            node.right = this._insertNode(node.right, data);
+        } else {
+            // Duplicate keys are not allowed
+            return node;
+        }
+
+        // Update height of the current node
+        node.height = 1 + Math.max(this._getHeight(node.left), this._getHeight(node.right));
+
+        // Check if the node is balanced and perform rotations if necessary
+        const balanceFactor = this._getBalanceFactor(node);
+
+        if (balanceFactor > 1 && data < node.left.data) {
+            return this._rotateRight(node);
+        }
+        if (balanceFactor < -1 && data > node.right.data) {
+            return this._rotateLeft(node);
+        }
+        if (balanceFactor > 1 && data > node.left.data) {
+            node.left = this._rotateLeft(node.left);
+            return this._rotateRight(node);
+        }
+        if (balanceFactor < -1 && data < node.right.data) {
+            node.right = this._rotateRight(node.right);
+            return this._rotateLeft(node);
+        }
+
+        return node;
     }
-    return value;
-  }
 
-  isEmpty() {
-    return this.size === 0;
-  }
+    // Get the height of a node
+    _getHeight(node) {
+        return node ? node.height : 0;
+    }
 
-  peek() {
-    return this.isEmpty() ? null : this.head.value;
-  }
+    // Get the balance factor of a node
+    _getBalanceFactor(node) {
+        return node ? this._getHeight(node.left) - this._getHeight(node.right) : 0;
+    }
 
-  getSize() {
-    return this.size;
-  }
+    // Perform a right rotation
+    _rotateRight(node) {
+        const newRoot = node.left;
+        const temp = newRoot.right;
+
+        newRoot.right = node;
+        node.left = temp;
+
+        node.height = 1 + Math.max(this._getHeight(node.left), this._getHeight(node.right));
+        newRoot.height = 1 + Math.max(this._getHeight(newRoot.left), this._getHeight(newRoot.right));
+
+        return newRoot;
+    }
+
+    // Perform a left rotation
+    _rotateLeft(node) {
+        const newRoot = node.right;
+        const temp = newRoot.left;
+
+        newRoot.left = node;
+        node.right = temp;
+
+        node.height = 1 + Math.max(this._getHeight(node.left), this._getHeight(node.right));
+        newRoot.height = 1 + Math.max(this._getHeight(newRoot.left), this._getHeight(newRoot.right));
+
+        return newRoot;
+    }
+
+    // Print the tree in in-order traversal
+    printInOrder() {
+        this._printInOrder(this.root);
+    }
+
+    // Recursive function to print the tree in in-order traversal
+    _printInOrder(node) {
+        if (node !== null) {
+            this._printInOrder(node.left);
+            console.log(node.data);
+            this._printInOrder(node.right);
+        }
+    }
 }
-// Create a new queue
-const queue = new Queue();
+// Create an instance of AVLTree
+const avlTree = new AVLTree();
 
-queue.enqueue(10);
-queue.enqueue(20);
-queue.enqueue(30);
+// Insert nodes into the tree
+avlTree.insert(10);
+avlTree.insert(20);
+avlTree.insert(30);
+avlTree.insert(40);
+avlTree.insert(50);
+avlTree.insert(25);
 
-console.log(queue.peek()); // Output: 10
-console.log(queue.getSize()); // Output: 3
-
-console.log(queue.dequeue()); // Output: 10
-console.log(queue.dequeue()); // Output: 20
-
-console.log(queue.peek()); // Output: 30
-console.log(queue.isEmpty()); // Output: false
+// Print the tree in in-order traversal
+avlTree.printInOrder();
