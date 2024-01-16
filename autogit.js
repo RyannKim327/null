@@ -1,51 +1,45 @@
-class TrieNode {
-  constructor() {
-    this.isEndOfWord = false;
-    this.children = {};
+function buildPrefixTable(pattern) {
+  const table = [0];
+  let prefixLength = 0;
+
+  for (let i = 1; i < pattern.length; i++) {
+    while (prefixLength > 0 && pattern[i] !== pattern[prefixLength]) {
+      prefixLength = table[prefixLength - 1];
+    }
+    if (pattern[i] === pattern[prefixLength]) {
+      prefixLength++;
+    }
+    table[i] = prefixLength;
   }
+
+  return table;
 }
-class Trie {
-  constructor() {
-    this.root = new TrieNode();
+function kmpSearch(text, pattern) {
+  const prefixTable = buildPrefixTable(pattern);
+  const matches = [];
+
+  let textIndex = 0;
+  let patternIndex = 0;
+
+  while (textIndex < text.length) {
+    if (text[textIndex] === pattern[patternIndex]) {
+      if (patternIndex === pattern.length - 1) {
+        matches.push(textIndex - pattern.length + 1);
+        patternIndex = prefixTable[patternIndex];
+      } else {
+        textIndex++;
+        patternIndex++;
+      }
+    } else if (patternIndex > 0) {
+      patternIndex = prefixTable[patternIndex - 1];
+    } else {
+      textIndex++;
+    }
   }
 
-  insert(word) {
-    let node = this.root;
-    for (const char of word) {
-      if (!node.children[char]) {
-        node.children[char] = new TrieNode();
-      }
-      node = node.children[char];
-    }
-    node.isEndOfWord = true;
-  }
-
-  search(word) {
-    let node = this.root;
-    for (const char of word) {
-      if (!node.children[char]) {
-        return false;
-      }
-      node = node.children[char];
-    }
-    return node.isEndOfWord;
-  }
-
-  startsWith(prefix) {
-    let node = this.root;
-    for (const char of prefix) {
-      if (!node.children[char]) {
-        return false;
-      }
-      node = node.children[char];
-    }
-    return true;
-  }
+  return matches;
 }
-const trie = new Trie();
-trie.insert("apple");
-console.log(trie.search("apple")); // true
-console.log(trie.search("app")); // false
-console.log(trie.startsWith("app")); // true
-trie.insert("app");
-console.log(trie.search("app")); // true
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const matches = kmpSearch(text, pattern);
+console.log(matches); // Output: [10]
