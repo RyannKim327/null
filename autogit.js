@@ -1,17 +1,29 @@
-function isSortedAscending(arr) {
-  for (let i = 0; i < arr.length - 1; i++) {
-    // If the current element is greater than the next element, return false
-    if (arr[i] > arr[i + 1]) {
-      return false;
-    }
-  }
-  // If the loop completes without returning false, the array is sorted in ascending order
-  return true;
+function LinkedListNode(value) {
+  this.value = value;
+  this.next = null;
 }
 
-// Test the function
-const array1 = [1, 2, 3, 4, 5];
-console.log(isSortedAscending(array1)); // Output: true
+function findLinkedListLength(head) {
+  let length = 0;
+  let current = head;
 
-const array2 = [5, 4, 3, 2, 1];
-console.log(isSortedAscending(array2)); // Output: false
+  while (current !== null) {
+    length++;
+    current = current.next;
+  }
+
+  return length;
+}
+
+// Example usage:
+const node1 = new LinkedListNode(1);
+const node2 = new LinkedListNode(2);
+const node3 = new LinkedListNode(3);
+
+node1.next = node2;
+node2.next = node3;
+
+const head = node1;
+
+const length = findLinkedListLength(head);
+console.log(length); // Output: 3
