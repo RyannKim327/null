@@ -1,33 +1,21 @@
-function shellSort(arr) {
-  // TODO: Implementation
-}
-function calculateGapSequence(arrLength) {
-  const sequence = [];
-  let gap = 1;
-  while (gap < arrLength) {
-    sequence.push(gap);
-    gap = 3 * gap + 1;
-  }
-  return sequence.reverse();
-}
-function shellSort(arr) {
-  const sequence = calculateGapSequence(arr.length);
+function selectionSort(array) {
+  const length = array.length;
   
-  for (let gap of sequence) {
-    for (let i = gap; i < arr.length; i++) {
-      const temp = arr[i];
-      let j = i;
-      
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
+  for (let i = 0; i < length - 1; i++) {
+    let minIndex = i;
+    
+    for (let j = i + 1; j < length; j++) {
+      if (array[j] < array[minIndex]) {
+        minIndex = j;
       }
-      
-      arr[j] = temp;
+    }
+    
+    if (minIndex !== i) {
+      let temp = array[i];
+      array[i] = array[minIndex];
+      array[minIndex] = temp;
     }
   }
   
-  return arr;
+  return array;
 }
-const array = [8, 4, 1, 5, 2];
-console.log(shellSort(array)); // Output: [1, 2, 4, 5, 8]
