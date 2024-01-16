@@ -1,39 +1,17 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
+function findFirstRepeatedCharacter(str) {
+  let charMap = {}; // A map to store characters and their counts
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-    this.length = 0;
-  }
-
-  append(value) {
-    const newNode = new Node(value);
-    if (this.head === null) {
-      this.head = newNode;
+  for (let char of str) {
+    if (charMap[char]) {
+      return char; // Return the first repeated character
     } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
+      charMap[char] = true;
     }
-    this.length++;
   }
-  
-  getLength() {
-    return this.length;
-  }
+
+  return null; // Return null if no repeated character is found
 }
-
-// Usage example
-const list = new LinkedList();
-list.append(10);
-list.append(20);
-list.append(30);
-
-console.log(list.getLength()); // Output: 3
+let input = "hello world";
+let firstRepeatedChar = findFirstRepeatedCharacter(input);
+console.log(firstRepeatedChar);
+l
