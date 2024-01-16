@@ -1,43 +1,19 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.children = [];
-  }
-  
-  addChild(node) {
-    this.children.push(node);
-  }
-}
-
-function depthLimitedSearch(node, target, depthLimit) {
-  if (node.value === target) {
-    return node;
-  }
-
-  if (depthLimit === 0) {
-    return null;
-  }
-
-  for (let child of node.children) {
-    const result = depthLimitedSearch(child, target, depthLimit - 1);
-    if (result !== null) {
-      return result;
+function countOccurrences(str, word) {
+    let count = 0;
+    let words = str.split(' ');
+    
+    for (let i = 0; i < words.length; i++) {
+        if (words[i].toLowerCase() === word.toLowerCase()) {
+            count++;
+        }
     }
-  }
-
-  return null;
+    
+    return count;
 }
 
-// Usage example:
-const root = new Node(1);
-const child1 = new Node(2);
-const child2 = new Node(3);
-const grandChild1 = new Node(4);
-const grandChild2 = new Node(5);
+// Example usage
+let sentence = "JavaScript is a powerful and flexible programming language. JavaScript is widely used in web development.";
+let wordToCount = "JavaScript";
+let occurrences = countOccurrences(sentence, wordToCount);
 
-root.addChild(child1);
-root.addChild(child2);
-child1.addChild(grandChild1);
-child2.addChild(grandChild2);
-
-console.log(depthLimitedSearch(root, 5, 3));
+console.log("Number of occurrences of '" + wordToCount + "': " + occurrences);
