@@ -1,19 +1,30 @@
-function reverseStringWords(str) {
-  // Step 1: Split the string into an array of words
-  let wordsArray = str.split(" ");
+function makeAsyncRequest(url) {
+    return new Promise(function(resolve, reject) {
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
 
-  // Step 2: Reverse the order of the array
-  wordsArray.reverse();
+        request.onload = function() {
+            if (request.status === 200) {
+                resolve(request.responseText);
+            } else {
+                reject(Error(request.statusText));
+            }
+        };
 
-  // Step 3: Join the array of words back into a single string
-  let reversedString = wordsArray.join(" ");
+        request.onerror = function() {
+            reject(Error('Network Error'));
+        };
 
-  // Return the reversed string
-  return reversedString;
+        request.send();
+    });
 }
 
-// Example usage
-let originalString = "Hello world, how are you?";
-let reversedString = reverseStringWords(originalString);
-
-console.log(reversedString); // Output: "you? are how world, Hello"
+makeAsyncRequest('https://example.com')
+    .then(function(responseText) {
+        console.log('Response:', responseText);
+        // Deal with the response here
+    })
+    .catch(function(error) {
+        console.error('Error:', error);
+        // Handle the error here
+    });
