@@ -1,49 +1,18 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-  }
-}
-class Queue {
-  // ...
-
-  enqueue(value) {
-    const newNode = new Node(value);
-
-    if (!this.head) {
-      // If the queue is empty
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      // If the queue has elements
-      this.tail.next = newNode;
-      this.tail = newNode;
+function bubbleSort(arr) {
+  var len = arr.length;
+  
+  for (var i = 0; i < len - 1; i++) {
+    for (var j = 0; j < len - 1 - i; j++) {
+      if (arr[j] > arr[j + 1]) {
+        // Swap elements
+        var temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
+      }
     }
   }
+  
+  return arr;
 }
-class Queue {
-  // ...
-
-  dequeue() {
-    if (!this.head) {
-      // If the queue is empty
-      return null;
-    }
-
-    const removedNode = this.head;
-    this.head = this.head.next;
-
-    if (!this.head) {
-      // If the queue had only one element
-      this.tail = null;
-    }
-
-    return removedNode.value;
-  }
-}
+var numbers = [5, 3, 8, 4, 2];
+console.log(bubbleSort(numbers)); // Output: [2, 3, 4, 5, 8]
