@@ -1,13 +1,25 @@
-function findMedianSortedArrays(array1, array2) {
-  let combinedArray = array1.concat(array2).sort((a, b) => a - b);
-  let length = combinedArray.length;
-  let median;
-  
-  if (length % 2 === 0) {
-    median = (combinedArray[length / 2 - 1] + combinedArray[length / 2]) / 2;
-  } else {
-    median = combinedArray[Math.floor(length / 2)];
-  }
-  
-  return median;
+function shellSort(array) {
+    let gap = Math.floor(array.length / 2);
+
+    while (gap > 0) {
+        for (let i = gap; i < array.length; i++) {
+            let temp = array[i];
+
+            let j;
+            for (j = i; j >= gap && array[j - gap] > temp; j -= gap) {
+                array[j] = array[j - gap];
+            }
+
+            array[j] = temp;
+        }
+
+        gap = gap >> 1;
+    }
+
+    return array;
 }
+
+// Example usage:
+const unsortedArray = [5, 1, 4, 2, 8];
+const sortedArray = shellSort(unsortedArray);
+console.log(sortedArray);
