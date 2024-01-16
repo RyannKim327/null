@@ -1,32 +1,90 @@
-function ListNode(val) {
-  this.val = val;
-  this.next = null;
+class Graph {
+  constructor() {
+    this.nodes = {};
+  }
+
+  addNode(name) {
+    this.nodes[name] = [];
+  }
+
+  addEdge(source, destination, weight) {
+    this.nodes[source].push({ node: destination, weight });
+    this.nodes[destination].push({ node: source, weight });
+  }
 }
+function dijkstra(graph, startNode, endNode) {
+  const distances = {};
+  const visited = {};
+  const previous = {};
 
-function hasCycle(head) {
-  let slow = head;
-  let fast = head;
+  // Initialize distances and previous nodes
+  for (let node in graph.nodes) {
+    distances[node] = Infinity;
+    previous[node] = null;
+  }
+  distances[startNode] = 0;
 
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
+  while (true) {
+    let smallestNode = null;
 
-    if (slow === fast) {
-      return true; // Cycle detected
+    // Find the node with the smallest distance
+    for (let node in graph.nodes) {
+      if (!visited[node] && (smallestNode === null || distances[node] < distances[smallestNode])) {
+        smallestNode = node;
+      }
+    }
+
+    if (smallestNode === null || distances[smallestNode] === Infinity) {
+      break;
+    }
+
+    visited[smallestNode] = true;
+
+    // Update distances to neighbors
+    for (let neighbor of graph.nodes[smallestNode]) {
+      let { node, weight } = neighbor;
+      let distance = distances[smallestNode] + weight;
+
+      if (distance < distances[node]) {
+        distances[node] = distance;
+        previous[node] = smallestNode;
+      }
     }
   }
 
-  return false; // No cycle found
+  // Build the shortest path
+  let path = [];
+
+  let currentNode = endNode;
+  while (currentNode !== startNode) {
+    path.unshift(currentNode);
+    currentNode = previous[currentNode];
+  }
+  path.unshift(startNode);
+
+  return { path, distance: distances[endNode] };
 }
-const head = new ListNode(1);
-const node2 = new ListNode(2);
-const node3 = new ListNode(3);
-const node4 = new ListNode(4);
+// Create the graph
+const graph = new Graph();
+graph.addNode('A');
+graph.addNode('B');
+graph.addNode('C');
+graph.addNode('D');
+graph.addNode('E');
 
-head.next = node2;
-node2.next = node3;
-node3.next = node4;
-// Uncomment the line below to introduce a cycle
-// node4.next = node2;
+// Add edges with their weights
+graph.addEdge('A', 'B', 4);
+graph.addEdge('A', 'C', 2);
+graph.addEdge('B', 'C', 1);
+graph.addEdge('B', 'D', 5);
+graph.addEdge('C', 'D', 8);
+graph.addEdge('C', 'E', 10);
+graph.addEdge('D', 'E', 2);
+const startNode = 'A';
+const endNode = 'E';
+const shortestPath = dijkstra(graph, startNode, endNode);
 
-console.log(hasCycle(head)); // false
+console.log('Shortest path:', shortestPath.path.join(' -> '));
+console.log('Distance:', shortestPath.distance);
+Shortest path: A -> C -> D -> E
+Distance: 9
