@@ -1,13 +1,23 @@
-// Prompt the user for input
-var userInput = prompt("Please enter your name: ");
+function factorialRecursive(n) {
+  if (n === 0) {
+    return 1;
+  }
+  return n * factorialRecursive(n - 1);
+}
 
-// Display a greeting message with the user's input
-console.log("Hello, " + userInput + "!");
+// Example usage
+const number = 5;
+const result = factorialRecursive(number);
+console.log(`Factorial of ${number} is: ${result}`);
+function factorialIterative(n) {
+  let result = 1;
+  for (let i = 2; i <= n; i++) {
+    result *= i;
+  }
+  return result;
+}
 
-// Perform some calculations with the input
-var inputLength = userInput.length;
-var reversedInput = userInput.split("").reverse().join("");
-
-// Display the calculated values
-console.log("Length of your name: " + inputLength);
-console.log("Reversed name: " + reversedInput);
+// Example usage
+const number = 5;
+const result = factorialIterative(number);
+console.log(`Factorial of ${number} is: ${result}`);
