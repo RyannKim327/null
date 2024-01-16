@@ -1,4 +1,12 @@
-let str = "Hello World";
-let lowerCaseStr = str.toLowerCase();
+function validateEmail(email) {
+  // Regular expression pattern for email validation
+  var pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-console.log(lowerCaseStr); // Output: "hello world"
+  // Test the email against the pattern
+  return pattern.test(email);
+}
+
+// Example usage
+var email = "example@example.com";
+var isValid = validateEmail(email);
+console.log(isValid); // Output: true
