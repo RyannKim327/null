@@ -1,17 +1,25 @@
-let str = "This is a string with spaces.";
-let stringWithoutSpaces = str.replace(/\s/g, "");
-console.log(stringWithoutSpaces);
-"Thisisastringwithspaces."
-let str = "This is a string with spaces.";
-let stringWithoutSpaces = str.split(" ").join("");
-console.log(stringWithoutSpaces);
-"Thisisastringwithspaces."
-let str = "This is a string with spaces.";
-let stringWithoutSpaces = "";
-for (let i = 0; i < str.length; i++) {
-  if (str[i] !== " ") {
-    stringWithoutSpaces += str[i];
+function factorialRecursive(num) {
+  // Base case: factorial of 0 or 1 is 1
+  if (num === 0 || num === 1) {
+    return 1;
   }
+  
+  // Recursive case: multiply num with factorial of num-1
+  return num * factorialRecursive(num - 1);
 }
-console.log(stringWithoutSpaces);
-"Thisisastringwithspaces."
+
+// Usage
+console.log(factorialRecursive(5)); // Output: 120
+function factorialIterative(num) {
+  let result = 1;
+  
+  // Multiply result with numbers from 2 to num
+  for (let i = 2; i <= num; i++) {
+    result *= i;
+  }
+  
+  return result;
+}
+
+// Usage
+console.log(factorialIterative(5)); // Output: 120
