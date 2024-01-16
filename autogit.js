@@ -1,25 +1,14 @@
-function randomSort(arr) {
-  var currentIndex = arr.length, temporaryValue, randomIndex;
+const CronJob = require('cron').CronJob;
 
-  // While there remain elements to shuffle
-  while (currentIndex !== 0) {
-
-    // Pick a remaining element
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex -= 1;
-
-    // Swap it with the current element
-    temporaryValue = arr[currentIndex];
-    arr[currentIndex] = arr[randomIndex];
-    arr[randomIndex] = temporaryValue;
-  }
-
-  return arr;
+// Function to be executed by the cron job
+function myJob() {
+  console.log('Cron job is running!');
+  // Add your code here
 }
 
-// Usage example
-var numbers = [1, 2, 3, 4, 5];
-console.log("Before:", numbers);
+// Schedule the cron job to run every minute
+const cronExpression = '* * * * *'; // Runs every minute
+const job = new CronJob(cronExpression, myJob);
 
-var shuffledNumbers = randomSort(numbers);
-console.log("After:", shuffledNumbers);
+// Start the cron job
+job.start();
