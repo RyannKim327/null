@@ -1,23 +1,43 @@
-function findMedianSortedArrays(nums1, nums2) {
-  // Step 1: Concatenate the arrays and sort them
-  const combined = nums1.concat(nums2).sort((a, b) => a - b);
-
-  // Step 2: Calculate the length of the combined array
-  const length = combined.length;
-
-  // Step 3: Determine if the length is odd or even
-  if (length % 2 === 1) {
-    // Step 4: Length is odd, return the middle element
-    return combined[Math.floor(length / 2)];
-  } else {
-    // Step 5: Length is even, return the average of the middle two elements
-    const mid = length / 2;
-    return (combined[mid - 1] + combined[mid]) / 2;
+// Define the Node class with a value and children array
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.children = [];
+  }
+  
+  // Add a child to the node
+  addChild(child) {
+    this.children.push(child);
   }
 }
 
-// Example usage
-const nums1 = [1, 3];
-const nums2 = [2, 4];
+// Depth-limited search algorithm
+function depthLimitedSearch(node, target, depthLimit) {
+  if (node.value === target) {
+    return true; // Found the target
+  } else if (depthLimit === 0) {
+    return false; // Reached depth limit without finding the target
+  } else {
+    for (let child of node.children) {
+      if (depthLimitedSearch(child, target, depthLimit - 1)) {
+        return true; // Found the target in the child nodes
+      }
+    }
+    return false; // Target not found in any child nodes
+  }
+}
 
-console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.5
+// Create a sample tree
+const root = new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
+const node4 = new Node(4);
+const node5 = new Node(5);
+
+root.addChild(node2);
+root.addChild(node3);
+node2.addChild(node4);
+node3.addChild(node5);
+
+// Test the depth-limited search
+console.log(depthLimitedSearch(root, 4, 3)); // Output: true
