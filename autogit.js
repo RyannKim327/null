@@ -1,22 +1,10 @@
-function bubbleSort(arr) {
-  var len = arr.length;
-  var swapped;
-  do {
-    swapped = false;
-    for (var i = 0; i < len - 1; i++) {
-      if (arr[i] > arr[i + 1]) {
-        // Swap elements
-        var temp = arr[i];
-        arr[i] = arr[i + 1];
-        arr[i + 1] = temp;
-        swapped = true;
-      }
-    }
-  } while (swapped);
-  
-  return arr;
-}
+var string1 = "Hello";
+var string2 = "World";
 
-// Example usage
-var array = [5, 2, 8, 4, 1];
-console.log(bubbleSort(array)); // Output: [1, 2, 4, 5, 8]
+var result = string1 + " " + string2;
+console.log(result); // Output: "Hello World"
+var string1 = "Hello";
+var string2 = "World";
+
+var result = string1.concat(" ", string2);
+console.log(result); // Output: "Hello World"
