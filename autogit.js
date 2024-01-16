@@ -1,22 +1,37 @@
-function countOccurrences(string, word) {
-    // Split the string by spaces and store the resulting words in an array
-    const wordsArray = string.split(' ');
-  
-    // Variable to store the count of occurrences
-    let count = 0;
-  
-    // Loop through each word in the array and check if it matches the desired word
-    for (let i = 0; i < wordsArray.length; i++) {
-        if (wordsArray[i].toLowerCase() === word.toLowerCase()) {
-            count++;
-        }
-    }
-  
-    return count;
+function binarySearchRecursive(arr, item, low = 0, high = arr.length - 1) {
+    // ...
 }
+function binarySearchRecursive(arr, item, low = 0, high = arr.length - 1) {
+    if (low > high) {
+        return -1;
+    }
+    // ...
+}
+function binarySearchRecursive(arr, item, low = 0, high = arr.length - 1) {
+    if (low > high) {
+        return -1;
+    }
+    
+    const mid = Math.floor((low + high) / 2);
+    // ...
+}
+function binarySearchRecursive(arr, item, low = 0, high = arr.length - 1) {
+    if (low > high) {
+        return -1;
+    }
+   
+    const mid = Math.floor((low + high) / 2);
+   
+    if (arr[mid] === item) {
+        return mid;
+    } else if (arr[mid] > item) {
+        return binarySearchRecursive(arr, item, low, mid - 1);
+    } else {
+        return binarySearchRecursive(arr, item, mid + 1, high);
+    }
+}
+const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const item = 6;
+const index = binarySearchRecursive(arr, item);
 
-// Example usage
-const sentence = 'JavaScript is a programming language. JavaScript is widely used.';
-const wordToCount = 'JavaScript';
-const occurrences = countOccurrences(sentence, wordToCount);
-console.log(`The word "${wordToCount}" occurs ${occurrences} time(s) in the sentence.`);
+console.log(index); // Output: 5 (index of the item in the array)
