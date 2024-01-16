@@ -1,13 +1,10 @@
-function factorialRecursive(n) {
-  if (n === 0 || n === 1) {
-    return 1;
-  }
-  return n * factorialRecursive(n - 1);
-}
-function factorialIterative(n) {
-  let result = 1;
-  for (let i = 2; i <= n; i++) {
-    result *= i;
-  }
-  return result;
-}
+const str = "  Hello   World  ";  // Example string with whitespace
+
+const stringWithoutWhitespace = str.replace(/\s/g, "");
+
+console.log(stringWithoutWhitespace);  // Output: "HelloWorld"
+const str = "  Hello   World  ";  // Example string with whitespace
+
+const trimmedString = str.trim();
+
+console.log(trimmedString);  // Output: "Hello   World"
