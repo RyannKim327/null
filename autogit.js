@@ -1,43 +1,23 @@
-function countingSort(array) {
-  // ...
-}
-  let max = Math.max(...array);
-  let count = new Array(max + 1).fill(0);
-  for (let i = 0; i < array.length; i++) {
-    count[array[i]]++;
-  }
-  for (let i = 1; i < count.length; i++) {
-    count[i] += count[i - 1];
-  }
-  let result = new Array(array.length);
-  for (let i = array.length - 1; i >= 0; i--) {
-    result[count[array[i]] - 1] = array[i];
-    count[array[i]]--;
-  }
-  return result;
-function countingSort(array) {
-  let max = Math.max(...array);
-  let count = new Array(max + 1).fill(0);
-
-  for (let i = 0; i < array.length; i++) {
-    count[array[i]]++;
+function isPrime(number) {
+  // Check if the number is less than 2
+  if (number < 2) {
+    return false;
   }
 
-  for (let i = 1; i < count.length; i++) {
-    count[i] += count[i - 1];
+  // Check for divisibility from 2 to the square root of the number
+  for (let i = 2; i <= Math.sqrt(number); i++) {
+    if (number % i === 0) {
+      return false;
+    }
   }
 
-  let result = new Array(array.length);
-
-  for (let i = array.length - 1; i >= 0; i--) {
-    result[count[array[i]] - 1] = array[i];
-    count[array[i]]--;
-  }
-
-  return result;
+  return true;
 }
 
-// Example usage:
-let array = [4, 2, 2, 8, 3, 3, 1];
-let sortedArray = countingSort(array);
-console.log(sortedArray); // [1, 2, 2, 3, 3, 4, 8]
+// Example usage
+const number = 17;
+if (isPrime(number)) {
+  console.log(`${number} is a prime number`);
+} else {
+  console.log(`${number} is not a prime number`);
+}
