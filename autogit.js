@@ -1,39 +1,30 @@
-function reverseLinkedList(head) {
-    let previous = null;
-    let current = head;
+// Create a graph using an adjacency list
+const graph = {
+  A: ['B', 'C'],
+  B: ['D', 'E'],
+  C: ['F'],
+  D: [],
+  E: ['F'],
+  F: []
+};
 
-    while (current !== null) {
-        let next = current.next;
-        current.next = previous;
-        previous = current;
-        current = next;
+// Implement the depth-first search algorithm
+function depthFirstSearch(graph, startNode) {
+  const visited = new Set();
+
+  function dfs(node) {
+    console.log(node);
+    visited.add(node);
+
+    for (const neighbor of graph[node]) {
+      if (!visited.has(neighbor)) {
+        dfs(neighbor);
+      }
     }
+  }
 
-    return previous; // new head
-}
-// Define a sample linked list
-class ListNode {
-    constructor(value) {
-        this.val = value;
-        this.next = null;
-    }
+  dfs(startNode);
 }
 
-let head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-
-// Reverse the linked list
-let newHead = reverseLinkedList(head);
-
-// Print the reversed linked list
-let current = newHead;
-while (current !== null) {
-    console.log(current.val);
-    current = current.next;
-}
-4
-3
-2
-1
+// Call the depth-first search function
+depthFirstSearch(graph, 'A');
