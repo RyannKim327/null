@@ -1,12 +1,20 @@
-// Prompt the user for input
-var userInput = prompt("Enter a number:");
+function findSecondLargest(arr) {
+  let largest = -Infinity;
+  let secondLargest = -Infinity;
 
-// Convert the user input to a number
-var number = Number(userInput);
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] > largest) {
+      secondLargest = largest;
+      largest = arr[i];
+    } else if (arr[i] < largest && arr[i] > secondLargest) {
+      secondLargest = arr[i];
+    }
+  }
 
-// Check if the number is divisible by 2
-if (number % 2 === 0) {
-  alert(number + " is even!");
-} else {
-  alert(number + " is odd!");
+  return secondLargest;
 }
+
+const array = [5, 2, 9, 1, 7, 6];
+const secondLargest = findSecondLargest(array);
+
+console.log(secondLargest); // Output: 7
