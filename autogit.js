@@ -1,58 +1,14 @@
-class TrieNode {
-  constructor() {
-    this.children = {};
-    this.isEndOfWord = false;
+function isSortedAscending(arr) {
+  const n = arr.length;
+  for (let i = 0; i < n - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false;
+    }
   }
+  return true;
 }
+const array1 = [1, 2, 3, 4, 5];
+console.log(isSortedAscending(array1));  // Output: true
 
-class Trie {
-  constructor() {
-    this.root = new TrieNode();
-  }
-
-  insert(word) {
-    let node = this.root;
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-      if (!(char in node.children)) {
-        node.children[char] = new TrieNode();
-      }
-      node = node.children[char];
-    }
-    node.isEndOfWord = true;
-  }
-
-  search(word) {
-    let node = this.root;
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-      if (!(char in node.children)) {
-        return false;
-      }
-      node = node.children[char];
-    }
-    return node.isEndOfWord;
-  }
-
-  startsWith(prefix) {
-    let node = this.root;
-    for (let i = 0; i < prefix.length; i++) {
-      const char = prefix[i];
-      if (!(char in node.children)) {
-        return false;
-      }
-      node = node.children[char];
-    }
-    return true;
-  }
-}
-const trie = new Trie();
-trie.insert("apple");
-console.log(trie.search("apple"));  // Output: true
-console.log(trie.search("app"));    // Output: false
-
-trie.insert("app");
-console.log(trie.search("app"));   // Output: true
-
-console.log(trie.startsWith("app"));  // Output: true
-console.log(trie.startsWith("apt"));  // Output: false
+const array2 = [5, 4, 3, 2, 1];
+console.log(isSortedAscending(array2));  // Output: false
