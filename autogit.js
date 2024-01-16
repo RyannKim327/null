@@ -1,18 +1,15 @@
-function reverseWords(str) {
-  // Split the string into an array of words
-  var wordsArray = str.split(' ');
-
-  // Reverse the array
-  var reversedArray = wordsArray.reverse();
-
-  // Join the reversed array into a string
-  var reversedString = reversedArray.join(' ');
-
-  return reversedString;
+function validateEmail(email) {
+  // Regular expression for email validation
+  var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+  // Test the email against the regular expression
+  return re.test(email);
 }
 
-// Example usage
-var originalString = "Hello World!";
-
-var reversedString = reverseWords(originalString);
-console.log(reversedString); // Output: "World! Hello"
+// Usage:
+var email = "example@example.com";
+if (validateEmail(email)) {
+  console.log("Email is valid");
+} else {
+  console.log("Email is invalid");
+}
