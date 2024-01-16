@@ -1,77 +1,92 @@
-class Graph {
-  constructor(vertices) {
-    this.V = vertices;
-    this.edges = [];
-  }
-  
-  addEdge(source, destination, weight) {
-    this.edges.push({ source, destination, weight });
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
 }
-
-function initializeDistances(graph, source) {
-  const distances = [];
-  for (let i = 0; i < graph.V; i++) {
-    distances[i] = Infinity;
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
   }
-  distances[source] = 0;
-  return distances;
-}
 
-function initializePredecessors(graph) {
-  const predecessors = [];
-  for (let i = 0; i < graph.V; i++) {
-    predecessors[i] = -1;
+  // Add a new node at the end of the linked list
+  append(value) {
+    const newNode = new Node(value);
+
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
   }
-  return predecessors;
-}
-function bellmanFord(graph, source) {
-  const distances = initializeDistances(graph, source);
-  const predecessors = initializePredecessors(graph);
 
-  for (let i = 0; i < graph.V - 1; i++) {
-    for (let j = 0; j < graph.edges.length; j++) {
-      const { source, destination, weight } = graph.edges[j];
-      if (distances[source] + weight < distances[destination]) {
-        distances[destination] = distances[source] + weight;
-        predecessors[destination] = source;
+  // Add a new node at the beginning of the linked list
+  prepend(value) {
+    const newNode = new Node(value);
+
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      newNode.next = this.head;
+      this.head = newNode;
+    }
+  }
+
+  // Delete the first node with the given value from the linked list
+  delete(value) {
+    if (!this.head) {
+      return;
+    }
+
+    if (this.head.value === value) {
+      this.head = this.head.next;
+
+      if (!this.head) {
+        this.tail = null;
       }
+
+      return;
+    }
+
+    let currentNode = this.head;
+
+    while (currentNode.next) {
+      if (currentNode.next.value === value) {
+        if (currentNode.next === this.tail) {
+          this.tail = currentNode;
+        }
+
+        currentNode.next = currentNode.next.next;
+        return;
+      }
+
+      currentNode = currentNode.next;
     }
   }
 
-  // Check for negative cycles
-  for (let i = 0; i < graph.edges.length; i++) {
-    const { source, destination, weight } = graph.edges[i];
-    if (distances[source] + weight < distances[destination]) {
-      throw new Error("Graph contains a negative cycle!");
+  // Display the linked list in an array format
+  toArray() {
+    const array = [];
+    let currentNode = this.head;
+
+    while (currentNode) {
+      array.push(currentNode.value);
+      currentNode = currentNode.next;
     }
+
+    return array;
   }
-
-  return { distances, predecessors };
 }
-const graph = new Graph(5);
-graph.addEdge(0, 1, -1);
-graph.addEdge(0, 2, 4);
-graph.addEdge(1, 2, 3);
-graph.addEdge(1, 3, 2);
-graph.addEdge(1, 4, 2);
-graph.addEdge(3, 2, 5);
-graph.addEdge(3, 1, 1);
-graph.addEdge(4, 3, -3);
+const linkedList = new LinkedList();
 
-const sourceNode = 0;
-const { distances, predecessors } = bellmanFord(graph, sourceNode);
+linkedList.append(5);
+linkedList.append(10);
+linkedList.prepend(2);
+linkedList.append(15);
+linkedList.delete(10);
 
-console.log("Shortest paths from node", sourceNode);
-for (let i = 0; i < graph.V; i++) {
-  console.log(`Node ${sourceNode} to node ${i}, distance: ${distances[i]}, path: ${getPath(predecessors, i)}`);
-}
-
-function getPath(predecessors, node) {
-  const path = [];
-  while (node !== -1) {
-    path.unshift(node);
-    node = predecessors[node];
-  }
-  return path.join(" -> ");
-}
+console.log(linkedList.toArray()); // Output: [2, 5, 15]
