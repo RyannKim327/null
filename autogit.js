@@ -1,24 +1,53 @@
-function quicksort(arr) {
-  if (arr.length <= 1) {
-    return arr;
+function mergeSort(array) {
+  // Base case: if the array is empty or has only one element, it is already sorted
+  if (array.length <= 1) {
+    return array;
   }
-
-  const pivot = arr[Math.floor(arr.length / 2)];
-  const less = [];
-  const greater = [];
-
-  for (const element of arr) {
-    if (element < pivot) {
-      less.push(element);
-    } else if (element > pivot) {
-      greater.push(element);
+  
+  // Find the middle index of the array
+  const middle = Math.floor(array.length / 2);
+  
+  // Split the array into two halves
+  const left = array.slice(0, middle);
+  const right = array.slice(middle);
+  
+  // Recursively call mergeSort on the left and right halves
+  const leftSorted = mergeSort(left);
+  const rightSorted = mergeSort(right);
+  
+  // Merge the sorted halves
+  return merge(leftSorted, rightSorted);
+}
+function merge(left, right) {
+  const mergedArray = [];
+  let leftIndex = 0;
+  let rightIndex = 0;
+  
+  // Compare elements from both arrays and add the smaller one to the merged array
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] <= right[rightIndex]) {
+      mergedArray.push(left[leftIndex]);
+      leftIndex++;
+    } else {
+      mergedArray.push(right[rightIndex]);
+      rightIndex++;
     }
   }
+  
+  // Add the remaining elements from the left array
+  while (leftIndex < left.length) {
+    mergedArray.push(left[leftIndex]);
+    leftIndex++;
+  }
 
-  return [...quicksort(less), pivot, ...quicksort(greater)];
+  // Add the remaining elements from the right array
+  while (rightIndex < right.length) {
+    mergedArray.push(right[rightIndex]);
+    rightIndex++;
+  }
+  
+  return mergedArray;
 }
-
-// Example usage:
-const array = [9, 4, 2, 7, 3, 1, 6, 8, 5];
-const sortedArray = quicksort(array);
-console.log(sortedArray);
+const arr = [5, 9, 2, 1, 6, 3, 8, 4, 7];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
