@@ -1,48 +1,34 @@
-class TreeNode {
-  constructor(val, left = null, right = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
-  }
-}
+function interpolationSearch(arr, target, startIdx = 0) {
+  const length = arr.length;
+  let low = startIdx;
+  let high = length - 1;
 
-function countLeafNodes(root) {
-  if (!root) {
-    return 0; // Empty tree has no leaf nodes
-  }
-  
-  let count = 0;
-  
-  function traverse(node) {
-    if (!node.left && !node.right) {
-      count++; // Found a leaf node
+  while (low <= high && target >= arr[low] && target <= arr[high]) {
+    if (low === high) {
+      if (arr[low] === target) {
+        return low;
+      }
+      return -1;
+    }
+
+    const pos = Math.floor(low + ((target - arr[low]) / (arr[high] - arr[low])) * (high - low));
+
+    if (arr[pos] === target) {
+      return pos;
     }
     
-    if (node.left) {
-      traverse(node.left);
-    }
-    
-    if (node.right) {
-      traverse(node.right);
+    if (arr[pos] < target) {
+      low = pos + 1;
+    } else {
+      high = pos - 1;
     }
   }
-  
-  traverse(root);
-  
-  return count;
+
+  return -1;
 }
+const array = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+const target = 14;
 
-// Example usage:
+const index = interpolationSearch(array, target);
 
-// Constructing a binary tree
-const tree = new TreeNode(4);
-tree.left = new TreeNode(2);
-tree.right = new TreeNode(6);
-tree.left.left = new TreeNode(1);
-tree.left.right = new TreeNode(3);
-tree.right.left = new TreeNode(5);
-tree.right.right = new TreeNode(7);
-tree.right.right.right = new TreeNode(9);
-
-const leafNodeCount = countLeafNodes(tree);
-console.log('Number of leaf nodes:', leafNodeCount); // Output: 4
+console.log(`Target ${target} found at index ${index}`);
