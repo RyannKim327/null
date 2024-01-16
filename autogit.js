@@ -1,48 +1,38 @@
-// AsyncTask class
-class ConnectTask extends AsyncTask<String, Void, String> {
-
-  // Pre-execute tasks
-  protected void onPreExecute() {
-    // Display a progress dialog or perform setup tasks
-  }
-
-  // Background task
-  protected String doInBackground(String... params) {
-    try {
-      // Connect to the server
-      URL url = new URL(params[0]);
-      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-      connection.setRequestMethod("GET");
-
-      // Read the response
-      BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-      StringBuilder response = new StringBuilder();
-      String line;
-      while ((line = reader.readLine()) != null) {
-        response.append(line);
-      }
-      reader.close();
-
-      // Return the response
-      return response.toString();
-    } catch (Exception e) {
-      e.printStackTrace();
-      return null;
+function hasCycle(head) {
+  // The input head is the first node of the linked list
+  
+  // Initialize two pointers: slow and fast
+  let slow = head;
+  let fast = head;
+  
+  while (fast !== null && fast.next !== null) {
+    // Move slow pointer by 1 node
+    slow = slow.next;
+    // Move fast pointer by 2 nodes
+    fast = fast.next.next;
+    
+    // If the slow and fast pointers meet, there is a cycle
+    if (slow === fast) {
+      return true;
     }
   }
-
-  // Post-execute tasks
-  protected void onPostExecute(String result) {
-    // Process the response data
-    if (result != null) {
-      // Display the result or perform further actions
-    } else {
-      // Show an error message or handle the failure
-    }
-  }
+  
+  // No cycle found
+  return false;
 }
+// Example usage
+const linkedList = {
+  value: 1,
+  next: {
+    value: 2,
+    next: {
+      value: 3,
+      next: {
+        value: 4,
+        next: null
+      }
+    }
+  }
+};
 
-// Usage
-String serverUrl = "https://myserver.com/api/data";
-ConnectTask connectTask = new ConnectTask();
-connectTask.execute(serverUrl);
+console.log(hasCycle(linkedList));  // Output: false
