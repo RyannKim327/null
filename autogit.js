@@ -1,20 +1,35 @@
-let str = "Hello, World!";
-let reversedStr = str.split("").reverse().join("");
-console.log(reversedStr); // Output: "!dlroW ,olleH"
-let str = "Hello, World!";
-let reversedStr = "";
-for (let i = str.length - 1; i >= 0; i--) {
-  reversedStr += str.charAt(i);
+function binarySearch(arr, target, start = 0, end = arr.length - 1) {
+  // ... implementation goes here
 }
-console.log(reversedStr); // Output: "!dlroW ,olleH"
-function reverseString(str) {
-  if (str === "") {
-    return "";
-  } else {
-    return reverseString(str.substr(1)) + str.charAt(0);
+if (start > end) {
+  return -1;
+}
+var mid = Math.floor((start + end) / 2);
+if (arr[mid] === target) {
+  return mid;
+}
+if (arr[mid] > target) {
+  return binarySearch(arr, target, start, mid - 1);
+}
+if (arr[mid] < target) {
+  return binarySearch(arr, target, mid + 1, end);
+}
+function binarySearch(arr, target, start = 0, end = arr.length - 1) {
+  if (start > end) {
+    return -1;
+  }
+
+  var mid = Math.floor((start + end) / 2);
+
+  if (arr[mid] === target) {
+    return mid;
+  }
+
+  if (arr[mid] > target) {
+    return binarySearch(arr, target, start, mid - 1);
+  }
+
+  if (arr[mid] < target) {
+    return binarySearch(arr, target, mid + 1, end);
   }
 }
-
-let str = "Hello, World!";
-let reversedStr = reverseString(str);
-console.log(reversedStr); // Output: "!dlroW ,olleH"
