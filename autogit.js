@@ -1,5 +1,25 @@
-// Prompt user for input
-let user_input = prompt("Enter a value:");
+const str = "Hello, World!";
+const substring = "World";
 
-// Display the entered value
-console.log("You entered: " + user_input);
+if (str.includes(substring)) {
+  console.log("Substring found!");
+} else {
+  console.log("Substring not found!");
+}
+const str = "Hello, World!";
+const substring = "World";
+
+if (str.indexOf(substring) !== -1) {
+  console.log("Substring found!");
+} else {
+  console.log("Substring not found!");
+}
+const str = "Hello, World!";
+const substring = "World";
+const regex = new RegExp(substring);
+
+if (regex.test(str)) {
+  console.log("Substring found!");
+} else {
+  console.log("Substring not found!");
+}
