@@ -1,25 +1,29 @@
-function shellSort(array) {
-    let gap = Math.floor(array.length / 2);
-
-    while (gap > 0) {
-        for (let i = gap; i < array.length; i++) {
-            let temp = array[i];
-
-            let j;
-            for (j = i; j >= gap && array[j - gap] > temp; j -= gap) {
-                array[j] = array[j - gap];
-            }
-
-            array[j] = temp;
-        }
-
-        gap = gap >> 1;
-    }
-
-    return array;
+function countOccurrences(word, str) {
+  const regex = new RegExp(word, 'g');
+  const matches = str.match(regex);
+  return matches ? matches.length : 0;
 }
 
 // Example usage:
-const unsortedArray = [5, 1, 4, 2, 8];
-const sortedArray = shellSort(unsortedArray);
-console.log(sortedArray);
+const string = 'JavaScript is a popular programming language. JavaScript is versatile.';
+const word = 'JavaScript';
+const count = countOccurrences(word, string);
+console.log(count); // Output: 2
+function countOccurrences(word, str) {
+  const words = str.split(' ');
+  let count = 0;
+  
+  for (let i = 0; i < words.length; i++) {
+    if (words[i] === word) {
+      count++;
+    }
+  }
+  
+  return count;
+}
+
+// Example usage:
+const string = 'JavaScript is a popular programming language. JavaScript is versatile.';
+const word = 'JavaScript';
+const count = countOccurrences(word, string);
+console.log(count); // Output: 2
