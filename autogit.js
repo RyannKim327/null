@@ -1,42 +1,45 @@
-class Node {
-  constructor(value, children = []) {
-    this.value = value;
-    this.children = children;
-  }
-}
+function depthLimitedSearchIterative(startNode, target, depthLimit) {
+  // Create a stack for nodes to explore
+  const stack = [];
 
-function depthLimitedSearch(root, targetValue, depthLimit) {
-  const stack = [{ node: root, depth: 0 }];
+  // Push the start node with its depth
+  stack.push({ node: startNode, depth: 0 });
 
+  // Iteratively explore nodes until the stack is empty
   while (stack.length > 0) {
+    // Pop the top node from the stack
     const { node, depth } = stack.pop();
 
-    if (node.value === targetValue) {
-      return node;
+    // Check if the node is the target
+    if (node === target) {
+      console.log('Target found!');
+      return;
     }
 
+    // Check if the maximum depth limit is reached
     if (depth < depthLimit) {
-      for (let i = node.children.length - 1; i >= 0; i--) {
-        stack.push({ node: node.children[i], depth: depth + 1 });
+      // Get the children of the current node
+      const children = getChildren(node);
+
+      // Push the children onto the stack with their depths
+      for (const child of children) {
+        stack.push({ node: child, depth: depth + 1 });
       }
     }
   }
 
-  return null; // Target value not found within depth limit
+  // If the stack is empty and target not found, print a message
+  console.log('Target not found within depth limit.');
+}
+
+// Example helper function to get children of a node
+function getChildren(node) {
+  // Return an array of child nodes
 }
 
 // Example usage
-const tree = new Node(1, [
-  new Node(2, [
-    new Node(5),
-    new Node(6),
-  ]),
-  new Node(3, [
-    new Node(7),
-    new Node(8),
-  ]),
-  new Node(4),
-]);
+const startNode = ...; // Set your start node
+const target = ...; // Set your target node
+const depthLimit = ...; // Set your desired depth limit
 
-const target = depthLimitedSearch(tree, 7, 3);
-console.log(target); // Output: Node { value: 7, children: [] }, or null if not found within depth limit
+depthLimitedSearchIterative(startNode, target, depthLimit);
