@@ -1,22 +1,8 @@
-function countOccurrences(str, char) {
-  let count = 0;
-  for (let i = 0; i < str.length; i++) {
-    if (str.charAt(i) === char) {
-      count++;
-    }
-  }
-  return count;
-}
+var stringNumber = "42";
+var integerNumber = parseInt(stringNumber);
 
-const myString = "Hello, world!";
-const myChar = "l";
-const occurrenceCount = countOccurrences(myString, myChar);
-console.log(occurrenceCount); // Output: 3
-function countOccurrences(str, char) {
-  return str.split(char).length - 1;
-}
+console.log(integerNumber); // Output: 42
+var binaryString = "1010";
+var integerValue = parseInt(binaryString, 2);
 
-const myString = "Hello, world!";
-const myChar = "l";
-const occurrenceCount = countOccurrences(myString, myChar);
-console.log(occurrenceCount); // Output: 3
+console.log(integerValue); // Output: 10
