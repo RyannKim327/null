@@ -1,12 +1,4 @@
-const axios = require('axios');
+let str = "HELLO WORLD";
+let lowercaseStr = str.toLowerCase();
 
-async function getApiData() {
-  try {
-    const response = await axios.get('https://jsonplaceholder.typicode.com/posts/1');
-    console.log(response.data);
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-getApiData();
+console.log(lowercaseStr); // Output: "hello world"
