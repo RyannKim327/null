@@ -1,46 +1,98 @@
 class Node {
   constructor(value) {
     this.value = value;
-    this.left = null;
-    this.right = null;
+    this.next = null;
   }
 }
 
-function diameterOfBinaryTree(root) {
-  let diameter = 0;
-  
-  function getHeight(node) {
-    if (node === null) {
-      return 0;
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+  }
+
+  append(value) {
+    const newNode = new Node(value);
+
+    if (!this.head) {
+      // If the list is empty, set the new node as the head and tail
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      // If the list is not empty, append the new node to the tail
+      this.tail.next = newNode;
+      this.tail = newNode;
     }
-    
-    const leftHeight = getHeight(node.left);
-    const rightHeight = getHeight(node.right);
-    
-    // Update the diameter if the current path has maximum nodes
-    diameter = Math.max(diameter, leftHeight + rightHeight);
-    
-    // Return the height of the current node
-    return Math.max(leftHeight, rightHeight) + 1;
   }
-  
-  getHeight(root);
-  return diameter;
+
+  prepend(value) {
+    const newNode = new Node(value);
+
+    if (!this.head) {
+      // If the list is empty, set the new node as the head and tail
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      // If the list is not empty, prepend the new node to the head
+      newNode.next = this.head;
+      this.head = newNode;
+    }
+  }
+
+  delete(value) {
+    if (!this.head) {
+      // If the list is empty, return
+      return;
+    }
+
+    if (this.head.value === value) {
+      // If the head node should be deleted, update the head
+      this.head = this.head.next;
+
+      if (!this.head) {
+        // If the list becomes empty, update the tail as well
+        this.tail = null;
+      }
+
+      return;
+    }
+
+    let currentNode = this.head;
+
+    while (currentNode.next !== null) {
+      if (currentNode.next.value === value) {
+        // If the next node's value matches the value to be deleted, update the next reference
+        currentNode.next = currentNode.next.next;
+
+        if (currentNode.next === null) {
+          // If the next node is the tail, update the tail
+          this.tail = currentNode;
+        }
+
+        return;
+      }
+
+      currentNode = currentNode.next;
+    }
+  }
+
+  toArray() {
+    const array = [];
+    let currentNode = this.head;
+
+    while (currentNode) {
+      array.push(currentNode.value);
+      currentNode = currentNode.next;
+    }
+
+    return array;
+  }
 }
+const linkedList = new LinkedList();
 
-// Example usage:
+linkedList.append(5);
+linkedList.append(10);
+linkedList.prepend(2);
+linkedList.delete(5);
 
-// Initialize the binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
-root.left.left.left = new Node(8);
-root.right.right.right = new Node(9);
-
-// Find the diameter of the binary tree
-const diameter = diameterOfBinaryTree(root);
-console.log(diameter); // Output: 6
+console.log(linkedList.toArray());  // Output: [2, 10]
