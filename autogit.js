@@ -1,17 +1,13 @@
-const array = [1, 2, 2, 3, 4, 5, 5];
-const uniqueArray = [...new Set(array)];
-
-console.log(uniqueArray); // [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 5, 5];
-const uniqueArray = array.filter((value, index, self) => self.indexOf(value) === index);
-
-console.log(uniqueArray); // [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 5, 5];
-const uniqueArray = array.reduce((accumulator, currentValue) => {
-  if (!accumulator.includes(currentValue)) {
-    accumulator.push(currentValue);
+function factorialRecursive(n) {
+  if (n === 0 || n === 1) {
+    return 1;
   }
-  return accumulator;
-}, []);
-
-console.log(uniqueArray); // [1, 2, 3, 4, 5]
+  return n * factorialRecursive(n - 1);
+}
+function factorialIterative(n) {
+  let result = 1;
+  for (let i = 2; i <= n; i++) {
+    result *= i;
+  }
+  return result;
+}
