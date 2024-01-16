@@ -1,54 +1,61 @@
-class Node {
-    constructor() {
-        this.children = {};
-    }
+class DirectedGraph {
+  constructor(numNodes) {
+    this.numNodes = numNodes;
+    this.adjList = new Array(numNodes).fill(0).map(() => []);
+  }
+
+  addEdge(from, to) {
+    this.adjList[from].push(to);
+  }
 }
+function tarjansAlgorithm(graph) {
+  const numNodes = graph.numNodes;
+  const visited = new Array(numNodes).fill(false);
+  const lowLink = new Array(numNodes).fill(0);
+  const stack = [];
+  let count = 0;
+  function tarjanDFS(node) {
+    visited[node] = true;
+    lowLink[node] = count++;
+    stack.push(node);
 
-class SuffixTree {
-    constructor() {
-        this.root = new Node();
+    for (const neighbor of graph.adjList[node]) {
+      if (!visited[neighbor]) {
+        tarjanDFS(neighbor);
+        lowLink[node] = Math.min(lowLink[node], lowLink[neighbor]);
+      } else if (stack.includes(neighbor)) {
+        lowLink[node] = Math.min(lowLink[node], lowLink[neighbor]);
+      }
     }
 
-    insertSuffix(suffix) {
-        let currentNode = this.root;
+    if (lowLink[node] === visited[node]) {
+      const component = [];
+      let currNode;
+      do {
+        currNode = stack.pop();
+        component.push(currNode);
+      } while (currNode !== node);
 
-        for (let i = 0; i < suffix.length; i++) {
-            const char = suffix[i];
-
-            if (!currentNode.children[char]) {
-                currentNode.children[char] = new Node();
-            }
-
-            currentNode = currentNode.children[char];
-        }
+      console.log("Strongly Connected Component:");
+      console.log(component);
     }
-
-    buildTree(string) {
-        for (let i = 0; i < string.length; i++) {
-            const suffix = string.slice(i);
-            this.insertSuffix(suffix);
-        }
+  }
+  for (let i = 0; i < numNodes; i++) {
+    if (!visited[i]) {
+      tarjanDFS(i);
     }
-
-    searchSubstring(substring) {
-        let currentNode = this.root;
-
-        for (let i = 0; i < substring.length; i++) {
-            const char = substring[i];
-
-            if (!currentNode.children[char]) {
-                return false;
-            }
-
-            currentNode = currentNode.children[char];
-        }
-
-        return true;
-    }
+  }
 }
+// Create a directed graph with 5 nodes
+const graph = new DirectedGraph(5);
 
-// Usage example
-const suffixTree = new SuffixTree();
-suffixTree.buildTree("banana");
-console.log(suffixTree.searchSubstring("ana")); // Output: true
-console.log(suffixTree.searchSubstring("xyz")); // Output: false
+// Add edges to the graph
+graph.addEdge(0, 3);
+graph.addEdge(0, 2);
+graph.addEdge(1, 0);
+graph.addEdge(2, 1);
+graph.addEdge(3, 4);
+graph.addEdge(4, 3);
+
+// Find the strongly connected components
+tarjansAlgorithm(graph);
