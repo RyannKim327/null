@@ -1,26 +1,21 @@
-function longestCommonPrefix(strings) {
-  if (strings.length === 0) {
-    return "";
-  }
-  
-  let prefix = strings[0];
-  
-  for (let i = 1; i < strings.length; i++) {
-    // Check if the current prefix is a prefix of the next string
-    while (strings[i].indexOf(prefix) !== 0) {
-      // If not, remove the last character from the prefix and try again
-      prefix = prefix.substring(0, prefix.length - 1);
-      
-      // If the prefix becomes empty, there is no common prefix
-      if (prefix === "") {
-        return "";
-      }
-    }
-  }
-  
-  return prefix;
-}
-const strings = ["flower", "flow", "flight"];
-const commonPrefix = longestCommonPrefix(strings);
+function areAnagrams(string1, string2) {
+  // Remove non-alphabetic characters and convert to lowercase
+  string1 = string1.replace(/[^a-z]/gi, '').toLowerCase();
+  string2 = string2.replace(/[^a-z]/gi, '').toLowerCase();
 
-console.log(commonPrefix); // Output: "fl"
+  // Split the strings into character arrays, sort them, and convert back to strings
+  string1 = string1.split('').sort().join('');
+  string2 = string2.split('').sort().join('');
+
+  // Compare the sorted strings
+  if (string1 === string2) {
+    return true; // The strings are anagrams
+  } else {
+    return false; // The strings are not anagrams
+  }
+}
+
+// Example usage
+console.log(areAnagrams('heart', 'earth')); // Output: true
+console.log(areAnagrams('listen', 'silent')); // Output: true
+console.log(areAnagrams('hello', 'hollow')); // Output: false
