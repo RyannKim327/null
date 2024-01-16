@@ -1,122 +1,90 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.left = null;
-        this.right = null;
-        this.height = 1;
-    }
+class BTreeNode {
+  constructor(leaf = true) {
+    this.keys = []; // Array to store keys
+    this.children = []; // Array to store child nodes
+    this.leaf = leaf; // Boolean indicating if node is a leaf
+  }
 }
-class AVLTree {
-    constructor() {
-        this.root = null;
-    }
+class BTree {
+  constructor(order) {
+    this.root = new BTreeNode(); // Create an empty root node
+    this.order = order; // Maximum number of keys in a node
+  }
 
-    // Insert a node into the AVL tree
-    insert(data) {
-        this.root = this._insertNode(this.root, data);
+  insert(key) {
+    const { root, order } = this;
+    if (root.keys.length === (2 * order) - 1) {
+      const newNode = new BTreeNode(false);
+      newNode.children.push(root);
+      this.root = newNode;
+      this.splitChild(newNode, 0);
     }
+    this.insertNonFull(root, key);
+  }
 
-    // Recursive function to insert a node in the AVL tree
-    _insertNode(node, data) {
-        if (node === null) {
-            return new Node(data);
+  insertNonFull(node, key) {
+    let i = node.keys.length - 1;
+    if (node.leaf) {
+      while (i >= 0 && key < node.keys[i]) {
+        node.keys[i + 1] = node.keys[i];
+        i--;
+      }
+      node.keys[i + 1] = key;
+    } else {
+      while (i >= 0 && key < node.keys[i]) {
+        i--;
+      }
+      i++;
+      if (node.children[i].keys.length === (2 * this.order) - 1) {
+        this.splitChild(node, i);
+        if (key > node.keys[i]) {
+          i++;
         }
+      }
+      this.insertNonFull(node.children[i], key);
+    }
+  }
 
-        if (data < node.data) {
-            node.left = this._insertNode(node.left, data);
-        } else if (data > node.data) {
-            node.right = this._insertNode(node.right, data);
-        } else {
-            // Duplicate keys are not allowed
-            return node;
-        }
+  splitChild(parent, index) {
+    const { order } = this;
+    const node = parent.children[index];
+    const newNode = new BTreeNode(node.leaf);
+    parent.keys.splice(index, 0, node.keys[order - 1]);
+    parent.children.splice(index + 1, 0, newNode);
+    newNode.keys = node.keys.splice(order, order - 1);
 
-        // Update height of the current node
-        node.height = 1 + Math.max(this._getHeight(node.left), this._getHeight(node.right));
+    if (!node.leaf) {
+      newNode.children = node.children.splice(order, order);
+    }
+  }
 
-        // Check if the node is balanced and perform rotations if necessary
-        const balanceFactor = this._getBalanceFactor(node);
+  search(key) {
+    return this.searchNode(this.root, key);
+  }
 
-        if (balanceFactor > 1 && data < node.left.data) {
-            return this._rotateRight(node);
-        }
-        if (balanceFactor < -1 && data > node.right.data) {
-            return this._rotateLeft(node);
-        }
-        if (balanceFactor > 1 && data > node.left.data) {
-            node.left = this._rotateLeft(node.left);
-            return this._rotateRight(node);
-        }
-        if (balanceFactor < -1 && data < node.right.data) {
-            node.right = this._rotateRight(node.right);
-            return this._rotateLeft(node);
-        }
-
-        return node;
+  searchNode(node, key) {
+    let i = 0;
+    while (i < node.keys.length && key > node.keys[i]) {
+      i++;
     }
 
-    // Get the height of a node
-    _getHeight(node) {
-        return node ? node.height : 0;
+    if (node.keys[i] === key) {
+      return true;
+    } else if (node.leaf) {
+      return false;
+    } else {
+      return this.searchNode(node.children[i], key);
     }
-
-    // Get the balance factor of a node
-    _getBalanceFactor(node) {
-        return node ? this._getHeight(node.left) - this._getHeight(node.right) : 0;
-    }
-
-    // Perform a right rotation
-    _rotateRight(node) {
-        const newRoot = node.left;
-        const temp = newRoot.right;
-
-        newRoot.right = node;
-        node.left = temp;
-
-        node.height = 1 + Math.max(this._getHeight(node.left), this._getHeight(node.right));
-        newRoot.height = 1 + Math.max(this._getHeight(newRoot.left), this._getHeight(newRoot.right));
-
-        return newRoot;
-    }
-
-    // Perform a left rotation
-    _rotateLeft(node) {
-        const newRoot = node.right;
-        const temp = newRoot.left;
-
-        newRoot.left = node;
-        node.right = temp;
-
-        node.height = 1 + Math.max(this._getHeight(node.left), this._getHeight(node.right));
-        newRoot.height = 1 + Math.max(this._getHeight(newRoot.left), this._getHeight(newRoot.right));
-
-        return newRoot;
-    }
-
-    // Print the tree in in-order traversal
-    printInOrder() {
-        this._printInOrder(this.root);
-    }
-
-    // Recursive function to print the tree in in-order traversal
-    _printInOrder(node) {
-        if (node !== null) {
-            this._printInOrder(node.left);
-            console.log(node.data);
-            this._printInOrder(node.right);
-        }
-    }
+  }
 }
-// Create an instance of AVLTree
-const avlTree = new AVLTree();
+const tree = new BTree(3); // Create a B-tree with order 3
 
-// Insert nodes into the tree
-avlTree.insert(10);
-avlTree.insert(20);
-avlTree.insert(30);
-avlTree.insert(40);
-avlTree.insert(50);
-avlTree.insert(25);
+tree.insert(10);
+tree.insert(20);
+tree.insert(5);
+tree.insert(6);
+tree.insert(12);
+tree.insert(30);
 
-// Print the tree in in-order traversal
-avlTree.printInOrder();
+console.log(tree.search(6)); // Output: true
+console.log(tree.search(15)); // Output: false
