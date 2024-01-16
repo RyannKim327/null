@@ -1,23 +1,49 @@
-function binarySearch(arr, target) {
-  let start = 0;
-  let end = arr.length - 1;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
 
-  while (start <= end) {
-    let mid = Math.floor((start + end) / 2);
+class BinaryTree {
+  constructor() {
+    this.root = null;
+  }
 
-    if (arr[mid] === target) {
-      return mid; // target found
-    } else if (arr[mid] < target) {
-      start = mid + 1; // target might be in the right half
+  insert(value) {
+    const newNode = new Node(value);
+
+    if (this.root === null) {
+      this.root = newNode;
     } else {
-      end = mid - 1; // target might be in the left half
+      this.insertNode(this.root, newNode);
     }
   }
 
-  return -1; // target not found
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
 }
 
 // Example usage:
-const nums = [2, 5, 7, 12, 16, 23, 31];
-const target = 12;
-console.log(binarySearch(nums, target)); // Output: 3 (index of target)
+const tree = new BinaryTree();
+tree.insert(5);
+tree.insert(3);
+tree.insert(7);
+tree.insert(1);
+tree.insert(4);
+tree.insert(6);
+tree.insert(8);
