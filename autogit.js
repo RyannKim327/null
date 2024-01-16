@@ -1,14 +1,48 @@
-// Sample array
-let arr = [1, 2, 3, 4, 5];
+class Graph {
+  constructor() {
+    this.adjacencyList = {};
+  }
 
-// Index of the element you want to remove
-let index = 2;
+  addVertex(vertex) {
+    if (!this.adjacencyList[vertex]) {
+      this.adjacencyList[vertex] = [];
+    }
+  }
 
-// Number of elements to remove starting from the given index
-let count = 1;
+  addEdge(vertex1, vertex2) {
+    this.adjacencyList[vertex1].push(vertex2);
+    this.adjacencyList[vertex2].push(vertex1);
+  }
 
-// Remove the element using splice()
-arr.splice(index, count);
+  depthFirstSearch(startVertex) {
+    const visited = {};
 
-// The updated array without the removed element
-console.log(arr); // Output: [1, 2, 4, 5]
+    const dfs = (vertex) => {
+      visited[vertex] = true;
+      console.log(vertex);
+
+      this.adjacencyList[vertex].forEach((neighbor) => {
+        if (!visited[neighbor]) {
+          dfs(neighbor);
+        }
+      });
+    };
+
+    dfs(startVertex);
+  }
+}
+
+// Usage example:
+
+const graph = new Graph();
+graph.addVertex("A");
+graph.addVertex("B");
+graph.addVertex("C");
+graph.addVertex("D");
+graph.addVertex("E");
+graph.addEdge("A", "B");
+graph.addEdge("A", "C");
+graph.addEdge("B", "D");
+graph.addEdge("C", "E");
+
+graph.depthFirstSearch("A");
