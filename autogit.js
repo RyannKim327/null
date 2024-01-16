@@ -1,36 +1,60 @@
 class Node {
   constructor(value) {
     this.value = value;
-    this.next = null;
+    this.left = null;
+    this.right = null;
   }
 }
 
-function findNthFromEnd(head, n) {
-  let ptr1 = head;
-  let ptr2 = head;
+class BinaryTree {
+  constructor() {
+    this.root = null;
+  }
 
-  // Move ptr2 n positions ahead
-  for (let i = 0; i < n; i++) {
-    if (ptr2 === null) {
-      return null; // Invalid input: list length is less than n
+  insert(value) {
+    const newNode = new Node(value);
+
+    if (this.root === null) {
+      // If the tree is empty, set the new node as the root
+      this.root = newNode;
+    } else {
+      // Traverse the tree to find the appropriate position to insert the new node
+      this.insertNode(this.root, newNode);
     }
-    ptr2 = ptr2.next;
   }
 
-  // Move both pointers until ptr2 reaches the end
-  while (ptr2 !== null) {
-    ptr1 = ptr1.next;
-    ptr2 = ptr2.next;
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      // If the new node value is less than the current node, go to the left subtree
+      if (node.left === null) {
+        // If there is no left child, set the new node as the left child
+        node.left = newNode;
+      } else {
+        // Recursively traverse the left subtree
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      // If the new node value is greater than or equal to the current node, go to the right subtree
+      if (node.right === null) {
+        // If there is no right child, set the new node as the right child
+        node.right = newNode;
+      } else {
+        // Recursively traverse the right subtree
+        this.insertNode(node.right, newNode);
+      }
+    }
   }
 
-  return ptr1 !== null ? ptr1.value : null;
+  // Other operations like search, delete, etc., can be implemented similarly
 }
+const tree = new BinaryTree();
 
-// Example usage:
-const list = new Node(1);
-list.next = new Node(2);
-list.next.next = new Node(3);
-list.next.next.next = new Node(4);
-list.next.next.next.next = new Node(5);
+tree.insert(5);
+tree.insert(3);
+tree.insert(8);
+tree.insert(2);
+tree.insert(4);
+tree.insert(7);
+tree.insert(9);
 
-console.log(findNthFromEnd(list, 2)); // Output: 4
+console.log(tree.root);
