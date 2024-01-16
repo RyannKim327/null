@@ -1,15 +1,17 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  str = str.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
-  
-  // Reverse the string
-  const reversed = str.split('').reverse().join('');
-  
-  // Compare reversed string with the original string
-  return str === reversed;
-}
+function getRandomNumber(min, max) {
+  // Calculate the difference between max and min
+  const range = max - min;
 
-// Test the function
-console.log(isPalindrome("level")); // true
-console.log(isPalindrome("hello")); // false
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+  // Generate a random number between 0 and range
+  const random = Math.random() * range;
+
+  // Apply the offset to the random number to adjust the range
+  const number = random + min;
+
+  // Return the final random number
+  return Math.floor(number);
+}
+const min = 1;
+const max = 10;
+const randomNumber = getRandomNumber(min, max);
+console.log(randomNumber);
