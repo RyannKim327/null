@@ -1,22 +1,28 @@
-function getNthNodeFromEnd(head, n) {
-  let p1 = head;
-  let p2 = head;
-
-  // Move p1 n steps ahead
-  for (let i = 0; i < n; i++) {
-    if (p1 === null) {
-      // Invalid n value, as there are fewer than n nodes in the list
-      return "Invalid n value";
-    }
-    p1 = p1.next;
+function mergeSort(array) {
+  if (array.length <= 1) {
+    return array;
   }
 
-  // Move both pointers until p1 reaches the end
-  while (p1 !== null) {
-    p1 = p1.next;
-    p2 = p2.next;
-  }
+  const middle = Math.floor(array.length / 2);
+  const left = mergeSort(array.slice(0, middle));
+  const right = mergeSort(array.slice(middle));
 
-  // p2 will be pointing to the nth node from the end
-  return p2.value;
+  return merge(left, right);
 }
+
+function merge(left, right) {
+  const result = [];
+
+  while (left.length && right.length) {
+    if (left[0] <= right[0]) {
+      result.push(left.shift());
+    } else {
+      result.push(right.shift());
+    }
+  }
+
+  return [...result, ...left, ...right];
+}
+const array = [5, 3, 8, 4, 2, 1, 9, 6, 7];
+const sortedArray = mergeSort(array);
+console.log(sortedArray);
