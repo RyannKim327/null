@@ -1,17 +1,81 @@
-function reverseWords(str) {
-  // Step 1: Split the string into an array of words
-  let words = str.split(' ');
-
-  // Step 2: Reverse the order of the words array
-  words = words.reverse();
-
-  // Step 3: Join the elements of the array back into a string
-  let reversedStr = words.join(' ');
-
-  return reversedStr;
+class SkipListNode {
+  constructor(value) {
+    this.value = value;
+    this.next = [];
+  }
 }
 
-// Example usage
-const originalStr = "Hello World! I am learning JavaScript";
-const reversedStr = reverseWords(originalStr);
-console.log(reversedStr); // Output: "JavaScript learning am I World! Hello"
+class SkipList {
+  constructor() {
+    this.head = new SkipListNode(-Infinity);
+    this.tail = new SkipListNode(Infinity);
+    this.head.next.push(this.tail);
+  }
+}
+SkipList.prototype.search = function (value) {
+  let currentNode = this.head;
+
+  for (let i = this.maxLevel(); i >= 0; i--) {
+    while (
+      currentNode.next[i] !== this.tail &&
+      currentNode.next[i].value < value
+    ) {
+      currentNode = currentNode.next[i];
+    }
+  }
+
+  return currentNode;
+};
+SkipList.prototype.insert = function (value) {
+  const node = new SkipListNode(value);
+  const update = new Array(this.maxLevel() + 1);
+
+  let currentNode = this.head;
+  for (let i = this.maxLevel(); i >= 0; i--) {
+    while (
+      currentNode.next[i] !== this.tail &&
+      currentNode.next[i].value < value
+    ) {
+      currentNode = currentNode.next[i];
+    }
+    update[i] = currentNode;
+  }
+
+  for (let i = 0; i < node.next.length; i++) {
+    node.next[i] = update[i].next[i];
+    update[i].next[i] = node;
+  }
+};
+SkipList.prototype.remove = function (value) {
+  const update = new Array(this.maxLevel() + 1);
+
+  let currentNode = this.head;
+  for (let i = this.maxLevel(); i >= 0; i--) {
+    while (
+      currentNode.next[i] !== this.tail &&
+      currentNode.next[i].value < value
+    ) {
+      currentNode = currentNode.next[i];
+    }
+    update[i] = currentNode;
+  }
+
+  const nodeToRemove = currentNode.next[0];
+  if (nodeToRemove.value === value) {
+    for (let i = 0; i < nodeToRemove.next.length; i++) {
+      update[i].next[i] = nodeToRemove.next[i];
+    }
+  }
+};
+SkipList.prototype.contains = function (value) {
+  const node = this.search(value);
+  return node.next[0].value === value;
+};
+
+SkipList.prototype.display = function () {
+  let currentNode = this.head.next[0];
+  while (currentNode !== this.tail) {
+    console.log(currentNode.value);
+    currentNode = currentNode.next[0];
+  }
+};
