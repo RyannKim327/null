@@ -1,12 +1,12 @@
-function calculateMean(numbers) {
-  let sum = 0;
-  for (let i = 0; i < numbers.length; i++) {
-    sum += numbers[i];
-  }
-  return sum / numbers.length;
+const str = "Hello, World!";
+const reversedStr = str.split('').reverse().join('');
+console.log(reversedStr);
+const str = "Hello, World!";
+let reversedStr = '';
+for (let i = str.length - 1; i >= 0; i--) {
+  reversedStr += str[i];
 }
-
-// Example usage:
-const numbers = [1, 2, 3, 4, 5];
-const mean = calculateMean(numbers);
-console.log(mean); // Output: 3
+console.log(reversedStr);
+const str = "Hello, World!";
+const reversedStr = Array.from(str).reduce((acc, char) => char + acc, '');
+console.log(reversedStr);
