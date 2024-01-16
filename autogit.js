@@ -1,36 +1,52 @@
-function findMajorityElement(array) {
-  let candidate;
-  let count = 0;
-
-  for (let i = 0; i < array.length; i++) {
-    if (count === 0) {
-      candidate = array[i];
-      count = 1;
-    } else if (candidate === array[i]) {
-      count++;
-    } else {
-      count--;
-    }
-  }
-
-  // At this point, the majority element should be stored in `candidate`
-  // Now, we need to verify if it is the actual majority element
-
-  // Resetting the count
-  count = 0;
-
-  for (let i = 0; i < array.length; i++) {
-    if (candidate === array[i]) {
-      count++;
-    }
-  }
-
-  if (count > array.length / 2) {
-    return candidate;
-  } else {
-    return "No majority element found.";
+class Node {
+  constructor() {
+    this.children = {};  // Map of character => Node
+    this.indexes = [];   // Array of indices where the suffix starts
   }
 }
-const array = [1, 2, 2, 2, 3, 2, 4, 2, 5];
+class SuffixTree {
+  constructor() {
+    this.root = new Node();
+  }
 
-console.log(findMajorityElement(array)); // Output: 2
+  // Function to insert a suffix into the suffix tree
+  insertSuffix(suffix, index) {
+    let node = this.root;
+    for (let i = 0; i < suffix.length; i++) {
+      const char = suffix[i];
+      if (!node.children[char]) {
+        node.children[char] = new Node();
+      }
+      node = node.children[char];
+      node.indexes.push(index);
+    }
+  }
+
+  // Function to build the suffix tree
+  buildSuffixTree(text) {
+    for (let i = 0; i < text.length; i++) {
+      const suffix = text.substring(i);
+      this.insertSuffix(suffix, i);
+    }
+  }
+
+  // Function to search for a pattern in the suffix tree
+  search(pattern) {
+    let node = this.root;
+    for (let i = 0; i < pattern.length; i++) {
+      const char = pattern[i];
+      if (!node.children[char]) {
+        return false;
+      }
+      node = node.children[char];
+    }
+    return true;
+  }
+}
+const text = "banana";
+const pattern = "na";
+
+const suffixTree = new SuffixTree();
+suffixTree.buildSuffixTree(text);
+
+console.log(`Search result for "${pattern}":`, suffixTree.search(pattern));
