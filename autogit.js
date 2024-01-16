@@ -1,28 +1,11 @@
-function isPalindrome(str) {
-  // Convert the string to lowercase and remove non-alphanumeric characters
-  const alphanumericStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+let array = [1, 2, 3, 4, 5];
 
-  // Initialize two pointers at the start and end of the string
-  let left = 0;
-  let right = alphanumericStr.length - 1;
+// Find the index of the element you want to remove
+let index = array.indexOf(3);
 
-  // Iterate until the pointers meet in the middle
-  while (left < right) {
-    // If the characters at both pointers are not equal, return false
-    if (alphanumericStr[left] !== alphanumericStr[right]) {
-      return false;
-    }
-
-    // Move both pointers towards the center
-    left++;
-    right--;
-  }
-
-  // If the loop completes, the string is a valid palindrome
-  return true;
+if (index !== -1) {
+  // Use the splice() method to remove the element
+  array.splice(index, 1);
 }
 
-// Example usage
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car"));                   // false
-console.log(isPalindrome("level"));                         // true
+console.log(array); // Output: [1, 2, 4, 5]
