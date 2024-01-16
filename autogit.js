@@ -1,39 +1,65 @@
-function isAnagram(string1, string2) {
-  // Remove any non-alphanumeric characters and convert to lowercase
-  const cleanString1 = string1.toLowerCase().replace(/[^a-z0-9]/g, '');
-  const cleanString2 = string2.toLowerCase().replace(/[^a-z0-9]/g, '');
-
-  // Return false if the lengths are different
-  if (cleanString1.length !== cleanString2.length) {
-    return false;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
+class Queue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.size = 0;
   }
 
-  // Create character frequency objects for both strings
-  const charFrequency1 = getCharFrequency(cleanString1);
-  const charFrequency2 = getCharFrequency(cleanString2);
-
-  // Compare the character frequencies
-  for (const char in charFrequency1) {
-    if (charFrequency1[char] !== charFrequency2[char]) {
-      return false;
+  enqueue(value) {
+    const newNode = new Node(value);
+    if (this.isEmpty()) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
     }
+    this.size++;
   }
 
-  // Strings are anagrams
-  return true;
-}
-
-function getCharFrequency(str) {
-  const frequency = {};
-
-  for (const char of str) {
-    frequency[char] = (frequency[char] || 0) + 1;
+  dequeue() {
+    if (this.isEmpty()) {
+      return null;
+    }
+    const value = this.head.value;
+    this.head = this.head.next;
+    this.size--;
+    if (this.isEmpty()) {
+      this.tail = null;
+    }
+    return value;
   }
 
-  return frequency;
-}
+  isEmpty() {
+    return this.size === 0;
+  }
 
-// Example usage
-console.log(isAnagram('listen', 'silent'));  // Output: true
-console.log(isAnagram('hello', 'world'));    // Output: false
-console.log(isAnagram('rail safety', 'fairy tales'));  // Output: true
+  peek() {
+    return this.isEmpty() ? null : this.head.value;
+  }
+
+  getSize() {
+    return this.size;
+  }
+}
+// Create a new queue
+const queue = new Queue();
+
+queue.enqueue(10);
+queue.enqueue(20);
+queue.enqueue(30);
+
+console.log(queue.peek()); // Output: 10
+console.log(queue.getSize()); // Output: 3
+
+console.log(queue.dequeue()); // Output: 10
+console.log(queue.dequeue()); // Output: 20
+
+console.log(queue.peek()); // Output: 30
+console.log(queue.isEmpty()); // Output: false
