@@ -1,29 +1,18 @@
-function findCommonElements(arr1, arr2) {
-  let commonElements = [];
+const cron = require('node-cron');
 
-  for (let i = 0; i < arr1.length; i++) {
-    if (arr2.includes(arr1[i])) {
-      commonElements.push(arr1[i]);
-    }
-  }
+// Define the task to be executed
+const task = () => {
+  console.log('Running scheduled task...');
+};
 
-  return commonElements;
-}
-function findCommonElements(arr1, arr2) {
-  return arr1.filter((element) => arr2.includes(element));
-}
-function findCommonElements(arr1, arr2) {
-  const set1 = new Set(arr1);
-  const commonElements = new Set();
+// Schedule the task to run every minute
+const cronJob = cron.schedule('* * * * *', task);
 
-  arr2.forEach((element) => {
-    if (set1.has(element)) {
-      commonElements.add(element);
-    }
-  });
+// Start the cron job
+cronJob.start();
 
-  return Array.from(commonElements);
-}
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7];
-console.log(findCommonElements(array1, array2));  // Output: [4, 5]
+// Stop the cron job after 5 minutes
+setTimeout(() => {
+  console.log('Stopping the scheduled task...');
+  cronJob.stop();
+}, 5 * 60 * 1000);
