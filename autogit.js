@@ -1,23 +1,27 @@
-function burrowsWheelerTransform(str) {
-  // Create an array of rotated strings
-  var rotations = [];
-  for (var i = 0; i < str.length; i++) {
-    var rotatedStr = str.slice(i) + str.slice(0, i);
-    rotations.push(rotatedStr);
+class ListNode {
+  constructor(val, next = null) {
+    this.val = val;
+    this.next = next;
   }
-
-  // Sort the rotations
-  rotations.sort();
-
-  // Extract the last characters of each rotation to form the transformed string
-  var transformedStr = '';
-  for (var i = 0; i < rotations.length; i++) {
-    transformedStr += rotations[i].charAt(rotations[i].length - 1);
-  }
-
-  return transformedStr;
 }
-var inputString = 'banana';
-var transformedString = burrowsWheelerTransform(inputString);
-console.log(transformedString);
-annb$aa
+
+function findMiddleElement(head) {
+  let slow = head;
+  let fast = head;
+
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
+  }
+
+  return slow;
+}
+
+// Example usage:
+const list = new ListNode(1);
+list.next = new ListNode(2);
+list.next.next = new ListNode(3);
+list.next.next.next = new ListNode(4);
+list.next.next.next.next = new ListNode(5);
+
+console.log(findMiddleElement(list)); // Output: ListNode { val: 3, next: ListNode { val: 4, next: ListNode { val: 5, next: null } } }
