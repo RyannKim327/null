@@ -1,17 +1,17 @@
-function findFirstRepeatedCharacter(str) {
-  let charMap = {}; // A map to store characters and their counts
+function isPalindrome(str) {
+  let left = 0;
+  let right = str.length - 1;
 
-  for (let char of str) {
-    if (charMap[char]) {
-      return char; // Return the first repeated character
-    } else {
-      charMap[char] = true;
+  while (left < right) {
+    if (str[left] !== str[right]) {
+      return false;
     }
+
+    left++;
+    right--;
   }
 
-  return null; // Return null if no repeated character is found
+  return true;
 }
-let input = "hello world";
-let firstRepeatedChar = findFirstRepeatedCharacter(input);
-console.log(firstRepeatedChar);
-l
+console.log(isPalindrome("racecar")); // true
+console.log(isPalindrome("hello")); // false
