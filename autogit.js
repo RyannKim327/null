@@ -1,51 +1,66 @@
-class Graph {
-  constructor() {
-    this.adjList = new Map();
-  }
-
-  addVertex(vertex) {
-    this.adjList.set(vertex, []);
-  }
-
-  addEdge(v1, v2) {
-    this.adjList.get(v1).push(v2);
-    // if the graph is undirected, include the following line
-    // this.adjList.get(v2).push(v1);
-  }
-
-  depthFirstSearch(startingNode) {
-    const visited = new Set();
-    const stack = [];
-
-    stack.push(startingNode);
-
-    while (stack.length > 0) {
-      const currentNode = stack.pop();
-
-      if (!visited.has(currentNode)) {
-        console.log(currentNode);
-        visited.add(currentNode);
-
-        const neighbors = this.adjList.get(currentNode);
-        for (let neighbor of neighbors) {
-          stack.push(neighbor);
-        }
-      }
-    }
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
 
-// Example usage
-const graph = new Graph();
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
+class BinaryTree {
+  constructor() {
+    this.root = null;
+  }
 
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('C', 'E');
+  insert(value) {
+    const newNode = new Node(value);
 
-graph.depthFirstSearch('A');
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
+
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  searchNode(node, value) {
+    if (node === null) {
+      return false;
+    }
+
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else if (value > node.value) {
+      return this.searchNode(node.right, value);
+    } else {
+      return true;
+    }
+  }
+}
+const tree = new BinaryTree();
+tree.insert(10);
+tree.insert(2);
+tree.insert(7);
+tree.insert(15);
+tree.insert(12);
+
+console.log(tree.search(7)); // Output: true
+console.log(tree.search(20)); // Output: false
