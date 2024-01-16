@@ -1,37 +1,38 @@
-function binarySearchRecursive(arr, item, low = 0, high = arr.length - 1) {
-    // ...
+class HashTable {
+  constructor(size) {
+    this.size = size;
+    this.buckets = Array(size);
+  }
 }
-function binarySearchRecursive(arr, item, low = 0, high = arr.length - 1) {
-    if (low > high) {
-        return -1;
+HashTable.prototype.hash = function (key) {
+  let hash = 0;
+  for (let i = 0; i < key.length; i++) {
+    hash += key.charCodeAt(i);
+  }
+  return hash % this.size;
+};
+HashTable.prototype.put = function (key, value) {
+  const index = this.hash(key);
+  if (!this.buckets[index]) {
+    this.buckets[index] = [];
+  }
+  this.buckets[index].push({ key, value });
+};
+HashTable.prototype.get = function (key) {
+  const index = this.hash(key);
+  if (!this.buckets[index]) {
+    return null;
+  }
+  for (let i = 0; i < this.buckets[index].length; i++) {
+    if (this.buckets[index][i].key === key) {
+      return this.buckets[index][i].value;
     }
-    // ...
-}
-function binarySearchRecursive(arr, item, low = 0, high = arr.length - 1) {
-    if (low > high) {
-        return -1;
-    }
-    
-    const mid = Math.floor((low + high) / 2);
-    // ...
-}
-function binarySearchRecursive(arr, item, low = 0, high = arr.length - 1) {
-    if (low > high) {
-        return -1;
-    }
-   
-    const mid = Math.floor((low + high) / 2);
-   
-    if (arr[mid] === item) {
-        return mid;
-    } else if (arr[mid] > item) {
-        return binarySearchRecursive(arr, item, low, mid - 1);
-    } else {
-        return binarySearchRecursive(arr, item, mid + 1, high);
-    }
-}
-const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-const item = 6;
-const index = binarySearchRecursive(arr, item);
-
-console.log(index); // Output: 5 (index of the item in the array)
+  }
+  return null;
+};
+const hashTable = new HashTable(10);
+hashTable.put("apple", 5);
+hashTable.put("banana", 2);
+console.log(hashTable.get("apple")); // Output: 5
+console.log(hashTable.get("banana")); // Output: 2
+console.log(hashTable.get("orange")); // Output: null
