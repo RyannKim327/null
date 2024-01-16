@@ -1,43 +1,17 @@
-function bubbleSort(arr) {
-  // Bubble sort logic goes here
-}
-function bubbleSort(arr) {
-  for (let i = 0; i < arr.length; i++) {
-    // Bubble sort logic goes here
+function findMaxSubarray(array) {
+  let currentSum = array[0];
+  let maxSum = array[0];
+
+  for (let i = 1; i < array.length; i++) {
+    // Choose the larger value between the current element and the sum of the current element and the previous subarray
+    currentSum = Math.max(array[i], currentSum + array[i]);
+
+    // Update the maximum sum if the current sum is greater
+    maxSum = Math.max(maxSum, currentSum);
   }
+
+  return maxSum;
 }
-function bubbleSort(arr) {
-  for (let i = 0; i < arr.length; i++) {
-    for (let j = 0; j < arr.length - i - 1; j++) {
-      // Compare adjacent elements and swap if necessary
-    }
-  }
-}
-function bubbleSort(arr) {
-  for (let i = 0; i < arr.length; i++) {
-    for (let j = 0; j < arr.length - i - 1; j++) {
-      if (arr[j] > arr[j+1]) {
-        // Swap elements
-        let temp = arr[j];
-        arr[j] = arr[j+1];
-        arr[j+1] = temp;
-      }
-    }
-  }
-}
-function bubbleSort(arr) {
-  for (let i = 0; i < arr.length; i++) {
-    for (let j = 0; j < arr.length - i - 1; j++) {
-      if (arr[j] > arr[j+1]) {
-        // Swap elements
-        let temp = arr[j];
-        arr[j] = arr[j+1];
-        arr[j+1] = temp;
-      }
-    }
-  }
-  
-  return arr;
-}
-let array = [64, 34, 25, 12, 22, 11, 90];
-console.log(bubbleSort(array)); // Output: [ 11, 12, 22, 25, 34, 64, 90 ]
+const array = [2, -5, 4, -2, 1, 7, -6, -4, 3];
+const maxSum = findMaxSubarray(array);
+console.log(maxSum); // Output: 10
