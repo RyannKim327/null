@@ -1,30 +1,18 @@
-function makeAsyncRequest(url) {
-    return new Promise(function(resolve, reject) {
-        var request = new XMLHttpRequest();
-        request.open('GET', url, true);
+function findMedianSortedArrays(nums1, nums2) {
+  const merged = [...nums1, ...nums2].sort((a, b) => a - b);
+  const length = merged.length;
+  const mid = Math.floor(length / 2);
 
-        request.onload = function() {
-            if (request.status === 200) {
-                resolve(request.responseText);
-            } else {
-                reject(Error(request.statusText));
-            }
-        };
-
-        request.onerror = function() {
-            reject(Error('Network Error'));
-        };
-
-        request.send();
-    });
+  if (length % 2 === 0) {
+    return (merged[mid - 1] + merged[mid]) / 2;
+  } else {
+    return merged[mid];
+  }
 }
 
-makeAsyncRequest('https://example.com')
-    .then(function(responseText) {
-        console.log('Response:', responseText);
-        // Deal with the response here
-    })
-    .catch(function(error) {
-        console.error('Error:', error);
-        // Handle the error here
-    });
+// Example usage:
+const nums1 = [1, 3];
+const nums2 = [2, 4];
+
+const median = findMedianSortedArrays(nums1, nums2);
+console.log(median); // Output: 2.5
