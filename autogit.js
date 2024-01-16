@@ -1,29 +1,69 @@
-function binarySearchRecursive(arr, target, startIdx = 0, endIdx = arr.length - 1, exactMatch = true) {
-  if (startIdx > endIdx) {
-    return -1; // Target not found
+function generateBadCharTable(pattern) {
+  const table = new Array(256).fill(pattern.length);
+
+  for (let i = 0; i < pattern.length - 1; i++) {
+    table[pattern.charCodeAt(i)] = pattern.length - 1 - i;
   }
 
-  const midIdx = Math.floor((startIdx + endIdx) / 2);
+  return table;
+}
+function generateGoodSuffixTable(pattern) {
+  const table = new Array(pattern.length).fill(pattern.length);
+  const suffixes = new Array(pattern.length).fill(0);
 
-  if (arr[midIdx] === target) {
-    if (exactMatch) {
-      return midIdx;
-    } else {
-      // Continue searching for the first occurrence of the target element
-      let result = binarySearchRecursive(arr, target, startIdx, midIdx - 1, exactMatch);
-      return (result !== -1 ? result : midIdx);
+  // Compute the suffixes
+  for (let i = pattern.length - 2; i >= 0; i--) {
+    let j = i;
+
+    while (j >= 0 && pattern[j] === pattern[pattern.length - 1 - (i - j)]) {
+      j--;
+    }
+
+    suffixes[i] = i - j;
+  }
+
+  // Case 1: Complete match at the end
+  for (let i = 0; i < pattern.length - 1; i++) {
+    table[pattern.length - 1 - suffixes[i]] = pattern.length - 1 - i;
+  }
+
+  // Case 2: Partial match at the end
+  for (let i = 0; i < pattern.length - 2; i++) {
+    const length = pattern.length - 1 - suffixes[i];
+    if (table[length] > pattern.length - 1 - i) {
+      table[length] = pattern.length - 1 - i;
     }
   }
 
-  if (arr[midIdx] < target) {
-    return binarySearchRecursive(arr, target, midIdx + 1, endIdx, exactMatch);
+  return table;
+}
+function searchBoyerMoore(text, pattern) {
+  const badCharTable = generateBadCharTable(pattern);
+  const goodSuffixTable = generateGoodSuffixTable(pattern);
+  const matches = [];
+
+  let i = pattern.length - 1;
+  while (i < text.length) {
+    let j = pattern.length - 1;
+
+    while (j >= 0 && text[i] === pattern[j]) {
+      i--;
+      j--;
+    }
+
+    if (j === -1) {
+      matches.push(i + 1);
+      i++;
+    } else {
+      const badCharShift = badCharTable[text.charCodeAt(i)] - pattern.length + 1 + j;
+      const goodSuffixShift = goodSuffixTable[j];
+      i += Math.max(badCharShift, goodSuffixShift);
+    }
   }
 
-  return binarySearchRecursive(arr, target, startIdx, midIdx - 1, exactMatch);
+  return matches;
 }
-
-// Usage example:
-const sortedArr = [1, 2, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-console.log(binarySearchRecursive(sortedArr, 6)); // Output: 6 (index of the target element)
-console.log(binarySearchRecursive(sortedArr, 2)); // Output: 1 (index of the first occurrence of the target element)
-console.log(binarySearchRecursive(sortedArr, 11)); // Output: -1 (not found)
+const text = "ABAAABCDBBABCDDEBCABC";
+const pattern = "ABC";
+const matches = searchBoyerMoore(text, pattern);
+console.log(matches); // Output: [4, 14, 19]
