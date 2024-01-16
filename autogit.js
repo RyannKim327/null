@@ -1,60 +1,90 @@
 class TrieNode {
-  constructor(value) {
-    this.value = value;
-    this.isWord = false;
+  constructor() {
     this.children = {};
+    this.isEndOfWord = false;
   }
 }
 class Trie {
   constructor() {
-    this.root = new TrieNode(null);
+    this.root = new TrieNode();
   }
 
+  // Insert a word into the Trie
   insert(word) {
-    let currentNode = this.root;
+    let current = this.root;
+    
     for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-      if (!currentNode.children[char]) {
-        currentNode.children[char] = new TrieNode(char);
+      const ch = word[i];
+      
+      if (!current.children[ch]) {
+        current.children[ch] = new TrieNode();
       }
-      currentNode = currentNode.children[char];
+      
+      current = current.children[ch];
     }
-    currentNode.isWord = true;
+    
+    current.isEndOfWord = true;
   }
 
+  // Search for a word in the Trie
   search(word) {
-    let currentNode = this.root;
+    let current = this.root;
+    
     for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-      if (!currentNode.children[char]) {
+      const ch = word[i];
+      
+      if (!current.children[ch]) {
         return false;
       }
-      currentNode = currentNode.children[char];
+      
+      current = current.children[ch];
     }
-    return currentNode.isWord;
+    
+    return current.isEndOfWord;
   }
 
-  startsWith(prefix) {
-    let currentNode = this.root;
-    for (let i = 0; i < prefix.length; i++) {
-      const char = prefix[i];
-      if (!currentNode.children[char]) {
+  // Delete a word from the Trie
+  delete(word) {
+    const deleteHelper = (node, word, index) => {
+      if (index === word.length) {
+        if (!node.isEndOfWord) {
+          return false;
+        }
+        
+        node.isEndOfWord = false;
+        return Object.keys(node.children).length === 0;
+      }
+      
+      const ch = word[index];
+      
+      if (!node.children[ch]) {
         return false;
       }
-      currentNode = currentNode.children[char];
-    }
-    return true;
+      
+      const shouldDeleteCurrentNode = deleteHelper(node.children[ch], word, index + 1);
+      
+      if (shouldDeleteCurrentNode) {
+        delete node.children[ch];
+        return Object.keys(node.children).length === 0;
+      }
+      
+      return false;
+    };
+    
+    deleteHelper(this.root, word, 0);
   }
 }
+// Usage example
 const trie = new Trie();
+
 trie.insert("apple");
 trie.insert("banana");
-trie.insert("app");
-console.log(trie.search("apple")); // true
-console.log(trie.search("app")); // true
-console.log(trie.search("ap")); // false
-console.log(trie.search("banana")); // true
-console.log(trie.search("bananas")); // false
-console.log(trie.startsWith("app")); // true
-console.log(trie.startsWith("ban")); // true
-console.log(trie.startsWith("banz")); // false
+trie.insert("orange");
+
+console.log(trie.search("apple"));     // Output: true
+console.log(trie.search("banana"));    // Output: true
+console.log(trie.search("orange"));    // Output: true
+console.log(trie.search("grape"));     // Output: false
+
+trie.delete("banana");
+console.log(trie.search("banana"));    // Output: false
