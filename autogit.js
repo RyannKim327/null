@@ -1,28 +1,51 @@
-function mergeSort(array) {
-  if (array.length <= 1) {
-    return array;
+class TrieNode {
+  constructor() {
+    this.isEndOfWord = false;
+    this.children = {};
+  }
+}
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
   }
 
-  const middle = Math.floor(array.length / 2);
-  const left = mergeSort(array.slice(0, middle));
-  const right = mergeSort(array.slice(middle));
-
-  return merge(left, right);
-}
-
-function merge(left, right) {
-  const result = [];
-
-  while (left.length && right.length) {
-    if (left[0] <= right[0]) {
-      result.push(left.shift());
-    } else {
-      result.push(right.shift());
+  insert(word) {
+    let node = this.root;
+    for (const char of word) {
+      if (!node.children[char]) {
+        node.children[char] = new TrieNode();
+      }
+      node = node.children[char];
     }
+    node.isEndOfWord = true;
   }
 
-  return [...result, ...left, ...right];
+  search(word) {
+    let node = this.root;
+    for (const char of word) {
+      if (!node.children[char]) {
+        return false;
+      }
+      node = node.children[char];
+    }
+    return node.isEndOfWord;
+  }
+
+  startsWith(prefix) {
+    let node = this.root;
+    for (const char of prefix) {
+      if (!node.children[char]) {
+        return false;
+      }
+      node = node.children[char];
+    }
+    return true;
+  }
 }
-const array = [5, 3, 8, 4, 2, 1, 9, 6, 7];
-const sortedArray = mergeSort(array);
-console.log(sortedArray);
+const trie = new Trie();
+trie.insert("apple");
+console.log(trie.search("apple")); // true
+console.log(trie.search("app")); // false
+console.log(trie.startsWith("app")); // true
+trie.insert("app");
+console.log(trie.search("app")); // true
