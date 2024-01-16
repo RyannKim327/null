@@ -1,11 +1,15 @@
-const str = "Hello, world!";
+function countOccurrences(string, word) {
+  // Create a regular expression object to match the word
+  var regex = new RegExp('\\b' + word + '\\b', 'gi');
 
-console.log(str.includes("world"));  // true
-console.log(str.includes("foo"));    // false
-const str = "Hello, world!";
+  // Use the match() method with the regex to find all matches in the string
+  var matches = string.match(regex);
 
-console.log(/world/.test(str));     // true
-console.log(/foo/.test(str));       // false
+  // Return the number of matches found
+  return matches ? matches.length : 0;
+}
+var str = 'How much wood would a woodchuck chuck if a woodchuck could chuck wood?';
+var word = 'wood';
 
-// Case-insensitive search
-console.log(/world/i.test(str));    // true
+var count = countOccurrences(str, word);
+console.log('Number of occurrences of "' + word + '": ' + count);
