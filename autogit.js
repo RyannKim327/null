@@ -1,45 +1,20 @@
-async function connectToAPI() {
-  try {
-    // Create a new instance of the XMLHttpRequest object
-    const xhr = new XMLHttpRequest();
+function findSecondLargest(arr) {
+  let largest = -Infinity;
+  let secondLargest = -Infinity;
 
-    // Open a GET request to the API endpoint
-    xhr.open('GET', 'https://api.example.com/data', true);
-
-    // Set the response type to JSON
-    xhr.responseType = 'json';
-
-    // Send the request
-    xhr.send();
-
-    // Wrap the request in a Promise
-    return new Promise((resolve, reject) => {
-      xhr.onreadystatechange = function() {
-        // Check if the request is done and successful
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-          // Check for a successful response status (200)
-          if (xhr.status === 200) {
-            // Resolve the Promise with the API response
-            resolve(xhr.response);
-          } else {
-            // Reject the Promise with an error message
-            reject('Error: Unable to connect to the API.');
-          }
-        }
-      };
-    });
-  } catch (error) {
-    console.error('Error:', error);
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] > largest) {
+      secondLargest = largest;
+      largest = arr[i];
+    } else if (arr[i] > secondLargest && arr[i] < largest) {
+      secondLargest = arr[i];
+    }
   }
+
+  return secondLargest;
 }
 
-// Usage:
-connectToAPI()
-  .then(response => {
-    console.log('API Response:', response);
-    // Do something with the API response data
-  })
-  .catch(error => {
-    console.error('API Error:', error);
-    // Handle the API error
-  });
+// Example usage:
+const array = [1, 3, 2, 5, 8, 4];
+const secondLargest = findSecondLargest(array);
+console.log("Second largest element:", secondLargest);
