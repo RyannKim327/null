@@ -1,14 +1,17 @@
-function countOccurrence(str, char) {
-  let count = 0;
-  for (let i = 0; i < str.length; i++) {
-    if (str.charAt(i) === char) {
-      count++;
-    }
-  }
-  return count;
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  var cleanedStr = str.replace(/[^0-9a-z]/gi, '').toLowerCase();
+
+  // Reverse the string
+  var reversedStr = cleanedStr.split('').reverse().join('');
+
+  // Compare the original string with the reversed string
+  return cleanedStr === reversedStr;
 }
-const string = "Hello, world!";
-const character = "o";
-const occurrence = countOccurrence(string, character);
-console.log(`The character "${character}" occurs ${occurrence} times in the string.`);
-The character "o" occurs 2 times in the string.
+
+// Example usage
+var str1 = "A man, a plan, a canal, Panama!";
+console.log(isPalindrome(str1)); // Output: true
+
+var str2 = "not a palindrome";
+console.log(isPalindrome(str2)); // Output: false
