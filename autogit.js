@@ -1,55 +1,21 @@
-class Stack {
-  constructor() {
-    this.stack = [];
-  }
+function bubbleSort(arr) {
+  const length = arr.length;
 
-  // Pushes an element onto the stack
-  push(element) {
-    this.stack.push(element);
-  }
-
-  // Removes and returns the top element of the stack
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
+  for (let i = 0; i < length; i++) {
+    for (let j = 0; j < length - 1; j++) {
+      if (arr[j] > arr[j + 1]) {
+        // Swap elements
+        const temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
+      }
     }
-    return this.stack.pop();
   }
 
-  // Returns the top element of the stack without removing it
-  peek() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
-    }
-    return this.stack[this.stack.length - 1];
-  }
-
-  // Returns the size of the stack
-  size() {
-    return this.stack.length;
-  }
-
-  // Checks if the stack is empty
-  isEmpty() {
-    return this.size() === 0;
-  }
-
-  // Clears the stack
-  clear() {
-    this.stack = [];
-  }
+  return arr;
 }
 
-// Usage:
-const stack = new Stack();
-stack.push(10);
-stack.push(20);
-stack.push(30);
-
-console.log(stack.peek()); // Output: 30
-console.log(stack.pop()); // Output: 30
-console.log(stack.size()); // Output: 2
-console.log(stack.isEmpty()); // Output: false
-
-stack.clear();
-console.log(stack.isEmpty()); // Output: true
+// Example usage:
+const unsortedArray = [5, 3, 8, 4, 2];
+const sortedArray = bubbleSort(unsortedArray);
+console.log(sortedArray);  // Output: [2, 3, 4, 5, 8]
