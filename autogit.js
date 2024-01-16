@@ -1,12 +1,26 @@
-let arr = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
+function bubbleSort(array) {
+  let len = array.length;
+  let swapped;
 
-// Find the index of the element
-let index = arr.indexOf(elementToRemove);
+  do {
+    swapped = false;
 
-// If the element exists in the array, remove it
-if (index > -1) {
-  arr.splice(index, 1);
+    for (let i = 0; i < len - 1; i++) {
+      if (array[i] > array[i + 1]) {
+        let temp = array[i];
+        array[i] = array[i + 1];
+        array[i + 1] = temp;
+        swapped = true;
+      }
+    }
+
+    len--;
+  } while (swapped);
+
+  return array;
 }
 
-console.log(arr); // Output: [1, 2, 4, 5]
+// Example usage:
+let unsortedArray = [5, 3, 8, 2, 1, 4];
+let sortedArray = bubbleSort(unsortedArray);
+console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 8]
