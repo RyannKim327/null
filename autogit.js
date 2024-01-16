@@ -1,21 +1,48 @@
-// Prompting the user for input
-let userInput = prompt("Please enter a number:");
-
-// Checking if the user input is valid
-if (userInput !== null) {
-  // Converting the user input to a number
-  let number = parseFloat(userInput);
-
-  // Checking if the user input is a valid number
-  if (!isNaN(number)) {
-    // Performing some manipulation on the number (e.g., multiplying by 2)
-    let result = number * 2;
-
-    // Outputting the result
-    console.log("Result: " + result);
-  } else {
-    console.log("Invalid input. Please enter a valid number.");
+class TreeNode {
+  constructor(val, left = null, right = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
   }
-} else {
-  console.log("No input provided.");
 }
+
+function countLeafNodes(root) {
+  if (!root) {
+    return 0; // Empty tree has no leaf nodes
+  }
+  
+  let count = 0;
+  
+  function traverse(node) {
+    if (!node.left && !node.right) {
+      count++; // Found a leaf node
+    }
+    
+    if (node.left) {
+      traverse(node.left);
+    }
+    
+    if (node.right) {
+      traverse(node.right);
+    }
+  }
+  
+  traverse(root);
+  
+  return count;
+}
+
+// Example usage:
+
+// Constructing a binary tree
+const tree = new TreeNode(4);
+tree.left = new TreeNode(2);
+tree.right = new TreeNode(6);
+tree.left.left = new TreeNode(1);
+tree.left.right = new TreeNode(3);
+tree.right.left = new TreeNode(5);
+tree.right.right = new TreeNode(7);
+tree.right.right.right = new TreeNode(9);
+
+const leafNodeCount = countLeafNodes(tree);
+console.log('Number of leaf nodes:', leafNodeCount); // Output: 4
