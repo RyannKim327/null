@@ -1,58 +1,35 @@
-function longestCommonPrefix(strings) {
-  // ...
-}
-  if (strings.length === 0) {
-    return '';
-  }
+function findLongestIncreasingSubsequence(arr) {
+  const n = arr.length;
+  const dp = new Array(n).fill(1);
 
-  if (strings.length === 1) {
-    return strings[0];
-  }
-  strings.sort();
-  let prefix = '';
-  for (let i = 0; i < strings[0].length; i++) {
-    // ...
-  }
-    const currentChar = strings[0][i];
-
-    for (let j = 1; j < strings.length; j++) {
-      if (strings[j][i] !== currentChar) {
-        return prefix;
+  for (let i = 1; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      if (arr[i] > arr[j] && dp[i] < dp[j] + 1) {
+        dp[i] = dp[j] + 1;
       }
     }
-    prefix += currentChar;
   }
-  return prefix;
-}
-function longestCommonPrefix(strings) {
-  if (strings.length === 0) {
-    return '';
-  }
+  
+  let maxLength = 0;
+  let lis = [];
 
-  if (strings.length === 1) {
-    return strings[0];
-  }
-
-  strings.sort();
-
-  let prefix = '';
-
-  for (let i = 0; i < strings[0].length; i++) {
-    const currentChar = strings[0][i];
-
-    for (let j = 1; j < strings.length; j++) {
-      if (strings[j][i] !== currentChar) {
-        return prefix;
-      }
+  for (let i = 0; i < n; i++) {
+    if (dp[i] > maxLength) {
+      maxLength = dp[i];
     }
-
-    prefix += currentChar;
   }
-
-  return prefix;
+  
+  for (let i = n - 1; i >= 0; i--) {
+    if (dp[i] === maxLength) {
+      lis.unshift(arr[i]);
+      maxLength--;
+    }
+  }
+  
+  return lis;
 }
 
-// Example usage:
-const strings = ['flower', 'flow', 'flight'];
-const commonPrefix = longestCommonPrefix(strings);
-console.log(commonPrefix);  // Output: "fl"
+// Example usage
+const arr = [3, 10, 2, 1, 20];
+const longestIncreasingSubsequence = findLongestIncreasingSubsequence(arr);
+console.log(longestIncreasingSubsequence); // Output: [3, 10, 20]
