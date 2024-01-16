@@ -1,34 +1,9 @@
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
+let userInput = prompt("Enter a number:");
+let maxNumber = parseInt(userInput);
 
-function diameterOfBinaryTree(root) {
-  let diameter = 0;
-
-  function depth(node) {
-    if (node === null) {
-      return 0;
-    }
-    
-    const leftDepth = depth(node.left);
-    const rightDepth = depth(node.right);
-    
-    diameter = Math.max(diameter, leftDepth + rightDepth);
-    
-    return Math.max(leftDepth, rightDepth) + 1;
-  }
-  
-  depth(root);
-  return diameter;
+if (isNaN(maxNumber)) {
+  console.log("Invalid input. Please enter a number.");
+} else {
+  let randomNumber = Math.floor(Math.random() * maxNumber) + 1;
+  console.log("Random number:", randomNumber);
 }
-// Create a binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-console.log(diameterOfBinaryTree(root)); // Output: 3
