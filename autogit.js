@@ -1,40 +1,21 @@
-function mergeArrays(arr1, arr2) {
-  let i = 0, j = 0;
-  const merged = [];
+function isPalindrome(str) {
+  var i = 0; // Start from the beginning of the string
+  var j = str.length - 1; // Start from the end of the string
 
-  while (i < arr1.length && j < arr2.length) {
-    if (arr1[i] <= arr2[j]) {
-      merged.push(arr1[i]);
-      i++;
-    } else {
-      merged.push(arr2[j]);
-      j++;
+  // Compare characters from both ends until i < j
+  while (i < j) {
+    // If characters don't match, return false
+    if (str[i] !== str[j]) {
+      return false;
     }
+    i++; // Move i to the next character
+    j--; // Move j to the previous character
   }
 
-  while (i < arr1.length) {
-    merged.push(arr1[i]);
-    i++;
-  }
-
-  while (j < arr2.length) {
-    merged.push(arr2[j]);
-    j++;
-  }
-
-  return merged;
+  // If the loop completes without returning false, the string is a palindrome
+  return true;
 }
-function findMedian(arr) {
-  const length = arr.length;
-  const mid = Math.floor(length / 2);
-
-  if (length % 2 === 0) {
-    return (arr[mid - 1] + arr[mid]) / 2;
-  } else {
-    return arr[mid];
-  }
-}
-function findMedianOfSortedArrays(arr1, arr2) {
-  const merged = mergeArrays(arr1, arr2);
-  return findMedian(merged);
-}
+console.log(isPalindrome("level")); // true
+console.log(isPalindrome("hello")); // false
+console.log(isPalindrome("racecar")); // true
+console.log(isPalindrome("")); // true
