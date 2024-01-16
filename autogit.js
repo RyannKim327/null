@@ -1,20 +1,15 @@
-function countOccurrences(string, word) {
-  // Split the string into an array of words
-  const words = string.split(" ");
-  
-  // Count the number of occurrences
-  let count = 0;
-  for (let i = 0; i < words.length; i++) {
-    if (words[i].toLowerCase() === word.toLowerCase()) {
-      count++;
+function isArraySortedAscending(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false;
     }
   }
-  
-  return count;
+  return true;
 }
 
-// Usage example
-const text = "The quick brown fox jumps over the lazy dog";
-const wordToCount = "the";
-const result = countOccurrences(text, wordToCount);
-console.log(`The word '${wordToCount}' occurs ${result} times in the text.`);
+// Example usage
+const sortedArray = [1, 2, 3, 4, 5];
+const unsortedArray = [4, 2, 6, 1, 3];
+
+console.log(isArraySortedAscending(sortedArray));   // Output: true
+console.log(isArraySortedAscending(unsortedArray)); // Output: false
