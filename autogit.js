@@ -1,14 +1,32 @@
-const numbers = [5, 3, 8, 2, 9, 1];
+class Node {
+  constructor(state, parent, action, g, h) {
+    this.state = state;
+    this.parent = parent;
+    this.action = action;
+    this.g = g;
+    this.h = h;
+  }
 
-numbers.sort(function(a, b) {
-  return a - b;
-});
+  getTotalCost() {
+    return this.g + this.h;
+  }
+}
 
-console.log(numbers);
-[1, 2, 3, 5, 8, 9]
-const numbers = [5, 3, 8, 2, 9, 1];
+function aStarSearch(start, goal) {
+  const openSet = [];
+  const closedSet = new Set();
 
-numbers.sort((a, b) => a - b);
+  const startNode = new Node(start, null, null, 0, heuristic(start, goal));
+  openSet.push(startNode);
 
-console.log(numbers);
-[1, 2, 3, 5, 8, 9]
+  while (openSet.length > 0) {
+    // TODO: Implement the rest of the algorithm
+  }
+
+  return null; // No path found
+}
+
+// Heuristic function to estimate the minimum cost from node to goal
+function heuristic(node, goal) {
+  // TODO: Implement your heuristic function here
+}
