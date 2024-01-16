@@ -1,27 +1,16 @@
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
+const cron = require('cron');
 
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
+// Create a cron job that runs every 30 seconds
+const job = new cron.CronJob('*/30 * * * * *', () => {
+  // Task to be executed
+  console.log('Cron job running...');
+});
 
-  return slow;
-}
-// Linked List Node class
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
-}
+// Start the cron job
+job.start();
 
-// Create a sample linked list
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-console.log(findMiddleElement(head).data);  // Output: 3
+// Let the cron job run for 2 minutes
+setTimeout(() => {
+  // Stop the cron job after 2 minutes
+  job.stop();
+}, 120000);
