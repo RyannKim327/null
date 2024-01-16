@@ -1,28 +1,17 @@
-function shellSort(array) {
-  const len = array.length;
-  let increment = Math.floor(len / 2);
+function reverseWords(str) {
+  // Step 1: Split the string into an array of words
+  let words = str.split(" ");
 
-  // Iterate over gaps
-  while (increment > 0) {
-    for (let i = increment; i < len; i++) {
-      const temp = array[i];
-      let j = i;
+  // Step 2: Reverse the order of the array
+  words.reverse();
 
-      // Sort the sub-array using insertion sort
-      while (j >= increment && array[j - increment] > temp) {
-        array[j] = array[j - increment];
-        j -= increment;
-      }
+  // Step 3: Join the reversed array back into a string
+  let reversedString = words.join(" ");
 
-      array[j] = temp;
-    }
-
-    increment = Math.floor(increment / 2);
-  }
-
-  return array;
+  return reversedString;
 }
 
 // Example usage:
-const arr = [9, 4, 7, 2, 1, 5, 3, 6, 8];
-console.log(shellSort(arr));
+let sentence = "Hello, how are you?";
+let reversedSentence = reverseWords(sentence);
+console.log(reversedSentence); // Output: "you? are how Hello,"
