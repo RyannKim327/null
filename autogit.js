@@ -1,10 +1,21 @@
-function calculateTriangleArea(base, height) {
-  var area = (base * height) / 2;
-  return area;
+function findSecondLargest(array) {
+  let largest = -Infinity;
+  let secondLargest = -Infinity;
+
+  for (let i = 0; i < array.length; i++) {
+    const currentElement = array[i];
+
+    if (currentElement > largest) {
+      secondLargest = largest;
+      largest = currentElement;
+    } else if (currentElement < largest && currentElement > secondLargest) {
+      secondLargest = currentElement;
+    }
+  }
+
+  return secondLargest;
 }
 
 // Example usage:
-var base = 10; // triangle base length
-var height = 5; // triangle height
-var area = calculateTriangleArea(base, height);
-console.log("The area of the triangle is: " + area);
+const arr = [5, 10, 2, 8, 15];
+console.log(findSecondLargest(arr)); // Output: 10
