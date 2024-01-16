@@ -1,27 +1,72 @@
-function bwt(input) {
-  // Step 1: Append EOT character
-  input += '\u0003'; // EOT character
-
-  // Step 2: Generate rotations
-  const rotations = [];
-  for (let i = 0; i < input.length; i++) {
-    rotations.push(input.slice(i) + input.slice(0, i));
+class TrieNode {
+  constructor() {
+    this.children = {};
+    this.isEndOfWord = false;
+  }
+}
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
   }
 
-  // Step 3: Sort rotations in lexicographic order
-  rotations.sort();
+  // Inserts a word into the trie
+  insert(word) {
+    let node = this.root;
+    
+    for (let char of word) {
+      if (!node.children[char]) {
+        node.children[char] = new TrieNode();
+      }
+      node = node.children[char];
+    }
+    
+    node.isEndOfWord = true;
+  }
 
-  // Step 4: Extract last characters from rotations
-  const bwt = rotations.map(rotation => rotation.slice(-1)).join('');
+  // Returns true if the word is in the trie, otherwise false
+  search(word) {
+    let node = this.root;
 
-  // Step 5: Find index of original input
-  const index = rotations.findIndex(rotation => rotation.slice(-1) === '\u0003');
+    for (let char of word) {
+      if (!node.children[char]) {
+        return false;
+      }
+      node = node.children[char];
+    }
 
-  // Step 6: Return transformed string
-  return bwt;
+    return node.isEndOfWord;
+  }
+
+  // Returns true if there is any word in the trie that starts with the given prefix
+  startsWith(prefix) {
+    let node = this.root;
+
+    for (let char of prefix) {
+      if (!node.children[char]) {
+        return false;
+      }
+      node = node.children[char];
+    }
+
+    return true;
+  }
 }
+// Create a new trie
+const trie = new Trie();
 
-// Example usage
-const input = 'banana';
-const transformed = bwt(input);
-console.log(transformed); // Outputs: 'annb\u0003aa'
+// Insert words into the trie
+trie.insert("apple");
+trie.insert("banana");
+trie.insert("orange");
+
+// Search for words in the trie
+console.log(trie.search("apple")); // Output: true
+console.log(trie.search("banana")); // Output: true
+console.log(trie.search("orange")); // Output: true
+console.log(trie.search("grape")); // Output: false
+
+// Check if words start with a given prefix
+console.log(trie.startsWith("app")); // Output: true
+console.log(trie.startsWith("ban")); // Output: true
+console.log(trie.startsWith("ora")); // Output: true
+console.log(trie.startsWith("gr")); // Output: false
