@@ -1,12 +1,8 @@
-function validateEmail(email) {
-  // Regular expression pattern for email validation
-  var pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  // Test the email against the pattern
-  return pattern.test(email);
+function decimalToBinary(decimal) {
+  return decimal.toString(2);
 }
 
 // Example usage
-var email = "example@example.com";
-var isValid = validateEmail(email);
-console.log(isValid); // Output: true
+console.log(decimalToBinary(10)); // Output: 1010
+console.log(decimalToBinary(42)); // Output: 101010
+console.log(decimalToBinary(255)); // Output: 11111111
