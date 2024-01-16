@@ -1,61 +1,67 @@
-function bidirectionalSearch(graph, startNode, targetNode) {
-  // Create starting and target queues
-  const startingQueue = [startNode];
-  const targetQueue = [targetNode];
-
-  // Initialize visited nodes
-  const startingVisited = new Set();
-  const targetVisited = new Set();
-
-  // Mark start and target nodes as visited
-  startingVisited.add(startNode);
-  targetVisited.add(targetNode);
-
-  while (startingQueue.length > 0 && targetQueue.length > 0) {
-    // Perform forward search
-    const currentNode = startingQueue.shift();
-    const neighbors = graph[currentNode];
-
-    for (let neighbor of neighbors) {
-      if (!startingVisited.has(neighbor)) {
-        startingVisited.add(neighbor);
-        startingQueue.push(neighbor);
-
-        // Check for meeting point
-        if (targetVisited.has(neighbor)) {
-          return "Meeting point found!";
-        }
+function HashTable() {
+  this.table = new Array(137); // Choose a size for the array (prime number encourages better distribution)
+}
+HashTable.prototype.hash = function(key) {
+  let total = 0;
+  for (let i = 0; i < key.length; ++i) {
+    total += key.charCodeAt(i);
+  }
+  return total % this.table.length;
+};
+// Insert key-value pair into the hash table
+HashTable.prototype.insert = function(key, value) {
+  const index = this.hash(key);
+  if (this.table[index] === undefined) {
+    this.table[index] = [[key, value]]; // If the index is empty, store the key-value pair
+  } else {
+    // If the index is already occupied, handle collisions by chaining
+    let chainedArray = this.table[index];
+    for (let i = 0; i < chainedArray.length; i++) {
+      if (chainedArray[i][0] === key) {
+        chainedArray[i][1] = value; // Update the value if the key already exists
+        return;
       }
     }
+    chainedArray.push([key, value]); // Otherwise, add the key-value pair to the chain
+  }
+};
 
-    // Perform backward search
-    const targetNode = targetQueue.shift();
-    const targetNeighbors = graph[targetNode];
+// Retrieve the value associated with the given key
+HashTable.prototype.get = function(key) {
+  const index = this.hash(key);
+  if (this.table[index] === undefined) {
+    return undefined; // Key does not exist
+  } else {
+    let chainedArray = this.table[index];
+    for (let i = 0; i < chainedArray.length; i++) {
+      if (chainedArray[i][0] === key) {
+        return chainedArray[i][1]; // Return the found value
+      }
+    }
+    return undefined; // Key does not exist in the chain
+  }
+};
 
-    for (let neighbor of targetNeighbors) {
-      if (!targetVisited.has(neighbor)) {
-        targetVisited.add(neighbor);
-        targetQueue.push(neighbor);
-
-        // Check for meeting point
-        if (startingVisited.has(neighbor)) {
-          return "Meeting point found!";
+// Remove the key-value pair associated with the given key
+HashTable.prototype.remove = function(key) {
+  const index = this.hash(key);
+  if (this.table[index] !== undefined) {
+    let chainedArray = this.table[index];
+    for (let i = 0; i < chainedArray.length; i++) {
+      if (chainedArray[i][0] === key) {
+        chainedArray.splice(i, 1); // Remove the key-value pair from chain
+        if (chainedArray.length === 0) {
+          this.table[index] = undefined; // If chain becomes empty, clear the index
         }
+        return;
       }
     }
   }
-
-  return "No meeting point found!";
-}
-
-// Example usage
-const graph = {
-  A: ['B', 'C'],
-  B: ['D', 'E'],
-  C: ['F'],
-  D: [],
-  E: [],
-  F: []
 };
-
-console.log(bidirectionalSearch(graph, 'A', 'F'));
+const hashTable = new HashTable();
+hashTable.insert("apple", 1);
+hashTable.insert("banana", 2);
+hashTable.insert("cherry", 3);
+console.log(hashTable.get("banana")); // Output: 2
+hashTable.remove("banana");
+console.log(hashTable.get("banana")); // Output: undefined
