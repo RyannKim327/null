@@ -1,20 +1,15 @@
-function findMajorityElement(arr) {
-  const freqMap = new Map();
-  const targetFreq = Math.floor(arr.length / 2);
-
-  for (let i = 0; i < arr.length; i++) {
-    const element = arr[i];
-    freqMap.set(element, (freqMap.get(element) || 0) + 1);
-    
-    if (freqMap.get(element) > targetFreq) {
-      return element;
+function isSorted(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false; // If element at index i is greater than the next element, the array is not sorted
     }
   }
-
-  return "No majority element found.";
+  return true; // If all elements are in sorted order, return true
 }
 
 // Example usage:
-const arr = [2, 4, 3, 2, 2, 1, 2, 2, 2];
-const majorityElement = findMajorityElement(arr);
-console.log("Majority element:", majorityElement);
+const array1 = [1, 2, 3, 4, 5];
+console.log(isSorted(array1)); // Output: true
+
+const array2 = [1, 2, 5, 4, 3];
+console.log(isSorted(array2)); // Output: false
