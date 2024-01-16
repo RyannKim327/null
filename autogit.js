@@ -1,12 +1,16 @@
-const str = "Hello, World!";
-const reversedStr = str.split("").reverse().join("");
-console.log(reversedStr);
-const str = "Hello, World!";
-let reversedStr = "";
-for (let i = str.length - 1; i >= 0; i--) {
-  reversedStr += str[i];
+const str = "Hello, world!";
+const substring = "world";
+
+if (str.includes(substring)) {
+  console.log("Substring found!");
+} else {
+  console.log("Substring not found!");
 }
-console.log(reversedStr);
-const str = "Hello, World!";
-const reversedStr = [...str].reverse().join("");
-console.log(reversedStr);
+const str = "Hello, world!";
+const substring = "world";
+
+if (str.indexOf(substring) !== -1) {
+  console.log("Substring found!");
+} else {
+  console.log("Substring not found!");
+}
