@@ -1,57 +1,18 @@
-function findKthSmallest(arr, k) {
-  if (arr.length === 0 || k < 1 || k > arr.length) {
-    return null;
-  }
-
-  // Shuffle the array to ensure average-case linear time complexity
-  shuffle(arr);
-
-  // Perform quickselect to find the kth smallest element
-  return quickselect(arr, 0, arr.length - 1, k - 1);
-}
-
-function quickselect(arr, start, end, k) {
-  if (start === end) {
-    return arr[start];
-  }
-
-  // Partition the array around a pivot
-  const pivotIndex = partition(arr, start, end);
-
-  // Check the pivot's position relative to k
-  if (pivotIndex === k) {
-    return arr[pivotIndex];
-  } else if (pivotIndex < k) {
-    return quickselect(arr, pivotIndex + 1, end, k);
-  } else {
-    return quickselect(arr, start, pivotIndex - 1, k);
-  }
-}
-
-function partition(arr, start, end) {
-  const pivotValue = arr[end];
-  let pivotIndex = start;
-
-  for (let i = start; i < end; i++) {
-    if (arr[i] <= pivotValue) {
-      swap(arr, i, pivotIndex);
-      pivotIndex++;
+function isSortedAscending(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false;
     }
   }
-
-  swap(arr, pivotIndex, end);
-  return pivotIndex;
+  return true;
 }
 
-function swap(arr, i, j) {
-  const temp = arr[i];
-  arr[i] = arr[j];
-  arr[j] = temp;
-}
+// Example usage
+const array1 = [1, 2, 3, 4, 5];
+console.log(isSortedAscending(array1));  // Output: true
 
-function shuffle(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    swap(arr, i, j);
-  }
-}
+const array2 = [5, 4, 3, 2, 1];
+console.log(isSortedAscending(array2));  // Output: false
+
+const array3 = [1, 3, 2, 4, 5];
+console.log(isSortedAscending(array3));  // Output: false
