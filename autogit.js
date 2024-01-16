@@ -1,94 +1,77 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+class Graph {
+  constructor(vertices) {
+    this.V = vertices;
+    this.edges = [];
+  }
+  
+  addEdge(source, destination, weight) {
+    this.edges.push({ source, destination, weight });
   }
 }
 
-class BinarySearchTree {
-  constructor() {
-    this.root = null;
+function initializeDistances(graph, source) {
+  const distances = [];
+  for (let i = 0; i < graph.V; i++) {
+    distances[i] = Infinity;
   }
-
-  // Method to insert a value into the BST
-  insert(value) {
-    const newNode = new Node(value);
-
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
-
-  // Recursive helper method to insert a value
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
-
-  // Method to search for a value in the BST
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  // Recursive helper method to search for a value
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
-    }
-
-    if (value === node.value) {
-      return true;
-    } else if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else {
-      return this.searchNode(node.right, value);
-    }
-  }
-
-  // Method to traverse the BST in-order (left-root-right)
-  inOrderTraversal(callback) {
-    this.inOrderTraversalNode(this.root, callback);
-  }
-
-  // Recursive helper method for in-order traversal
-  inOrderTraversalNode(node, callback) {
-    if (node !== null) {
-      this.inOrderTraversalNode(node.left, callback);
-      callback(node.value);
-      this.inOrderTraversalNode(node.right, callback);
-    }
-  }
+  distances[source] = 0;
+  return distances;
 }
 
-// Example usage:
-const bst = new BinarySearchTree();
+function initializePredecessors(graph) {
+  const predecessors = [];
+  for (let i = 0; i < graph.V; i++) {
+    predecessors[i] = -1;
+  }
+  return predecessors;
+}
+function bellmanFord(graph, source) {
+  const distances = initializeDistances(graph, source);
+  const predecessors = initializePredecessors(graph);
 
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(2);
-bst.insert(7);
-bst.insert(12);
-bst.insert(20);
+  for (let i = 0; i < graph.V - 1; i++) {
+    for (let j = 0; j < graph.edges.length; j++) {
+      const { source, destination, weight } = graph.edges[j];
+      if (distances[source] + weight < distances[destination]) {
+        distances[destination] = distances[source] + weight;
+        predecessors[destination] = source;
+      }
+    }
+  }
 
-console.log('In-order traversal:');
-bst.inOrderTraversal(value => {
-  console.log(value);
-});
+  // Check for negative cycles
+  for (let i = 0; i < graph.edges.length; i++) {
+    const { source, destination, weight } = graph.edges[i];
+    if (distances[source] + weight < distances[destination]) {
+      throw new Error("Graph contains a negative cycle!");
+    }
+  }
 
-console.log('Search 15:', bst.search(15)); // true
-console.log('Search 8:', bst.search(8));   // false
+  return { distances, predecessors };
+}
+const graph = new Graph(5);
+graph.addEdge(0, 1, -1);
+graph.addEdge(0, 2, 4);
+graph.addEdge(1, 2, 3);
+graph.addEdge(1, 3, 2);
+graph.addEdge(1, 4, 2);
+graph.addEdge(3, 2, 5);
+graph.addEdge(3, 1, 1);
+graph.addEdge(4, 3, -3);
+
+const sourceNode = 0;
+const { distances, predecessors } = bellmanFord(graph, sourceNode);
+
+console.log("Shortest paths from node", sourceNode);
+for (let i = 0; i < graph.V; i++) {
+  console.log(`Node ${sourceNode} to node ${i}, distance: ${distances[i]}, path: ${getPath(predecessors, i)}`);
+}
+
+function getPath(predecessors, node) {
+  const path = [];
+  while (node !== -1) {
+    path.unshift(node);
+    node = predecessors[node];
+  }
+  return path.join(" -> ");
+}
