@@ -1,24 +1,24 @@
-function quicksort(arr) {
-  if (arr.length <= 1) {
-    return arr;
-  }
-
-  const pivot = arr[arr.length - 1];
-  const left = [];
-  const right = [];
-
-  for (let i = 0; i < arr.length - 1; i++) {
-    if (arr[i] < pivot) {
-      left.push(arr[i]);
-    } else {
-      right.push(arr[i]);
+function selectionSort(array) {
+  const length = array.length;
+  
+  for (let i = 0; i < length - 1; i++) {
+    let minIndex = i;
+    
+    for (let j = i + 1; j < length; j++) {
+      if (array[j] < array[minIndex]) {
+        minIndex = j;
+      }
+    }
+    
+    if (minIndex !== i) {
+      [array[i], array[minIndex]] = [array[minIndex], array[i]];
     }
   }
-
-  return [...quicksort(left), pivot, ...quicksort(right)];
+  
+  return array;
 }
 
 // Example usage:
-const array = [7, 2, 5, 9, 1, 6, 4];
-const sortedArray = quicksort(array);
-console.log(sortedArray);
+const unsortedArray = [4, 2, 1, 5, 3];
+const sortedArray = selectionSort(unsortedArray);
+console.log(sortedArray); // Output: [1, 2, 3, 4, 5]
