@@ -1,25 +1,20 @@
-function shellSort(array) {
-  const length = array.length;
-  let gap = Math.floor(length / 2);
-
-  while (gap > 0) {
-    for (let i = gap; i < length; i++) {
-      let temp = array[i];
-      let j;
-
-      for (j = i; j >= gap && array[j - gap] > temp; j -= gap) {
-        array[j] = array[j - gap];
-      }
-
-      array[j] = temp;
-    }
-
-    gap = Math.floor(gap / 2);
+function isPrime(number) {
+  // Check if the number is less than 2
+  if (number < 2) {
+    return false;
   }
 
-  return array;
-}
+  // Iterate from 2 to the square root of the number
+  for (let i = 2; i <= Math.sqrt(number); i++) {
+    // If the number is divisible by any value in this range, it's not prime
+    if (number % i === 0) {
+      return false;
+    }
+  }
 
-// Example usage:
-const arr = [9, 4, 8, 2, 1, 5, 7, 3, 6];
-console.log(shellSort(arr)); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+  // If the number is not divisible by any value in the range, it's prime
+  return true;
+}
+console.log(isPrime(7));   // Output: true
+console.log(isPrime(12));  // Output: false
+console.log(isPrime(97));  // Output: true
