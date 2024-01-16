@@ -1,27 +1,31 @@
-function findMaxSubarray(arr) {
-  let maxSum = arr[0];
-  let currentSum = arr[0];
-  let start = 0;
-  let end = 0;
-  let tempStart = 0;
+function findFirstNonRepeatingChar(str) {
+  // Step 1: Create an empty object to store character counts
+  const charCount = {};
 
-  for (let i = 1; i < arr.length; i++) {
-    if (arr[i] > currentSum + arr[i]) {
-      tempStart = i;
-      currentSum = arr[i];
+  // Step 2: Iterate through the string to count characters
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    if (charCount[char]) {
+      charCount[char]++;
     } else {
-      currentSum += arr[i];
-    }
-
-    if (currentSum > maxSum) {
-      maxSum = currentSum;
-      start = tempStart;
-      end = i;
+      charCount[char] = 1;
     }
   }
 
-  return arr.slice(start, end + 1);
+  // Step 3: Iterate through the string again to find the first non-repeating character
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    if (charCount[char] === 1) {
+      return char;
+    }
+  }
+
+  // Step 4: If no non-repeating character found, return null or an appropriate value
+  return null;
 }
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const maxSubarray = findMaxSubarray(array);
-console.log(maxSubarray); // [4, -1, 2, 1]
+
+// Example usage
+const str = "abacabad";
+const firstNonRepeatingChar = findFirstNonRepeatingChar(str);
+
+console.log(firstNonRepeatingChar); // Output: 'c'
