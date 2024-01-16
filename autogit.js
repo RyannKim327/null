@@ -1,24 +1,128 @@
-function isPrime(number) {
-  // Check if the number is less than 2 (not prime)
-  if (number < 2) {
-    return false;
+class AVLNode {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+    this.height = 1;
+  }
+}
+class AVLTree {
+  constructor() {
+    this.root = null;
   }
 
-  // Loop from 2 to the square root of the number
-  for (let i = 2; i <= Math.sqrt(number); i++) {
-    // If the number is divisible by any i, it's not prime
-    if (number % i === 0) {
-      return false;
+  // Calculate the height of a node
+  height(node) {
+    if (node === null)
+      return 0;
+    return node.height;
+  }
+
+  // Update the height of a node
+  updateHeight(node) {
+    node.height = 1 + Math.max(this.height(node.left), this.height(node.right));
+  }
+
+  // Right rotate a subtree rooted with a given node
+  rightRotate(y) {
+    const x = y.left;
+    const T2 = x.right;
+
+    // Perform rotation
+    x.right = y;
+    y.left = T2;
+
+    // Update heights
+    this.updateHeight(y);
+    this.updateHeight(x);
+
+    // Return new root
+    return x;
+  }
+
+  // Left rotate a subtree rooted with a given node
+  leftRotate(x) {
+    const y = x.right;
+    const T2 = y.left;
+
+    // Perform rotation
+    y.left = x;
+    x.right = T2;
+
+    // Update heights
+    this.updateHeight(x);
+    this.updateHeight(y);
+
+    // Return new root
+    return y;
+  }
+
+  // Get the balance factor of a node
+  getBalance(node) {
+    if (node === null)
+      return 0;
+    return this.height(node.left) - this.height(node.right);
+  }
+
+  // Insert a new node into the AVL tree
+  insert(value) {
+    this.root = this.insertNode(this.root, value);
+  }
+
+  insertNode(node, value) {
+    // Standard BST insertion
+    if (node === null)
+      return new AVLNode(value);
+
+    if (value < node.value)
+      node.left = this.insertNode(node.left, value);
+    else if (value > node.value)
+      node.right = this.insertNode(node.right, value);
+    else // Duplicate values are not allowed
+      return node;
+
+    // Update the height of the ancestor node
+    this.updateHeight(node);
+
+    // Balance the tree if necessary
+    const balance = this.getBalance(node);
+    if (balance > 1 && value < node.left.value) {
+      return this.rightRotate(node);
+    }
+
+    if (balance < -1 && value > node.right.value) {
+      return this.leftRotate(node);
+    }
+
+    if (balance > 1 && value > node.left.value) {
+      node.left = this.leftRotate(node.left);
+      return this.rightRotate(node);
+    }
+
+    if (balance < -1 && value < node.right.value) {
+      node.right = this.rightRotate(node.right);
+      return this.leftRotate(node);
+    }
+
+    return node;
+  }
+
+  // In-order traversal of the AVL tree
+  inOrderTraversal(node) {
+    if (node !== null) {
+      this.inOrderTraversal(node.left);
+      console.log(node.value);
+      this.inOrderTraversal(node.right);
     }
   }
-
-  // If the number is not divisible by any i, it's prime
-  return true;
 }
+const avlTree = new AVLTree();
 
-// Testing the function
-console.log(isPrime(2));  // true
-console.log(isPrime(3));  // true
-console.log(isPrime(4));  // false
-console.log(isPrime(11)); // true
-console.log(isPrime(15)); // false
+avlTree.insert(10);
+avlTree.insert(20);
+avlTree.insert(30);
+avlTree.insert(40);
+avlTree.insert(50);
+avlTree.insert(25);
+
+avlTree.inOrderTraversal(avlTree.root);
