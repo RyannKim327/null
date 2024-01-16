@@ -1,66 +1,49 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+function reverseString(str) {
+  // Step 1: Split the original string into an array of characters
+  var arr = str.split('');
+
+  // Step 2: Reverse the array
+  var reversedArray = arr.reverse();
+
+  // Step 3: Join the array elements back into a string
+  var reversedStr = reversedArray.join('');
+
+  // Step 4: Return the reversed string
+  return reversedStr;
 }
 
-class BinaryTree {
-  constructor() {
-    this.root = null;
+// Example usage
+var originalString = "Hello, World!";
+var reversedString = reverseString(originalString);
+console.log(reversedString); // Output: "!dlroW ,olleH"
+function reverseString(str) {
+  var reversedStr = '';
+  for (var i = str.length - 1; i >= 0; i--) {
+    // Append each character to the reversed string
+    reversedStr += str[i];
   }
-
-  insert(value) {
-    const newNode = new Node(value);
-
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
-
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
-
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
-    }
-
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else if (value > node.value) {
-      return this.searchNode(node.right, value);
-    } else {
-      return true;
-    }
-  }
+  return reversedStr;
 }
-const tree = new BinaryTree();
-tree.insert(10);
-tree.insert(2);
-tree.insert(7);
-tree.insert(15);
-tree.insert(12);
 
-console.log(tree.search(7)); // Output: true
-console.log(tree.search(20)); // Output: false
+// Example usage
+var originalString = "Hello, World!";
+var reversedString = reverseString(originalString);
+console.log(reversedString); // Output: "!dlroW ,olleH"
+function reverseString(str) {
+  // Step 1: Convert the string into an array of characters
+  var arr = Array.from(str);
+
+  // Step 2: Reverse the array
+  var reversedArray = arr.reverse();
+
+  // Step 3: Join the array elements back into a string
+  var reversedStr = reversedArray.join('');
+
+  // Step 4: Return the reversed string
+  return reversedStr;
+}
+
+// Example usage
+var originalString = "Hello, World!";
+var reversedString = reverseString(originalString);
+console.log(reversedString); // Output: "!dlroW ,olleH"
