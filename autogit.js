@@ -1,17 +1,20 @@
-function findMedianSortedArrays(nums1, nums2) {
-  const combined = [...nums1, ...nums2].sort((a, b) => a - b);
-  const length = combined.length;
+function insertionSort(array) {
+  const arr = [...array];
 
-  if (length % 2 === 0) {
-    const mid = length / 2;
-    return (combined[mid - 1] + combined[mid]) / 2;
-  } else {
-    const mid = Math.floor(length / 2);
-    return combined[mid];
+  for (let i = 1; i < arr.length; i++) {
+    const currentValue = arr[i];
+    let j = i - 1;
+
+    while (j >= 0 && arr[j] > currentValue) {
+      arr[j + 1] = arr[j];
+      j--;
+    }
+
+    arr[j + 1] = currentValue;
   }
-}
 
-// Example usage:
-const nums1 = [1, 3];
-const nums2 = [2, 4];
-console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.5
+  return arr;
+}
+const unsortedArray = [5, 2, 9, 1, 7];
+const sortedArray = insertionSort(unsortedArray);
+console.log(sortedArray);  // Output: [1, 2, 5, 7, 9]
