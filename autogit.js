@@ -1,8 +1,29 @@
-function decimalToBinary(decimal) {
-  return decimal.toString(2);
+function findLongestCommonPrefix(strings) {
+  if (strings.length === 0) {
+    return "";
+  }
+
+  if (strings.length === 1) {
+    return strings[0];
+  }
+
+  strings.sort();
+
+  var firstString = strings[0];
+  var lastString = strings[strings.length - 1];
+  var longestPrefix = "";
+
+  for (var i = 0; i < firstString.length; i++) {
+    if (firstString[i] === lastString[i]) {
+      longestPrefix += firstString[i];
+    } else {
+      break;
+    }
+  }
+
+  return longestPrefix;
 }
 
-// Example usage
-console.log(decimalToBinary(10)); // Output: 1010
-console.log(decimalToBinary(42)); // Output: 101010
-console.log(decimalToBinary(255)); // Output: 11111111
+// Example usage:
+var strings = ["flower", "flight", "flour"];
+console.log(findLongestCommonPrefix(strings)); // Output: "fl"
