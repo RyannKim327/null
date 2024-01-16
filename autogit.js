@@ -1,11 +1,14 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert string to lowercase
-  str = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+const numbers = [5, 3, 8, 2, 9, 1];
 
-  // Check if the reversed string is equal to the original string
-  return str === str.split('').reverse().join('');
-}
+numbers.sort(function(a, b) {
+  return a - b;
+});
 
-// Example use:
-console.log(isPalindrome("racecar")); // Output: true
-console.log(isPalindrome("hello")); // Output: false
+console.log(numbers);
+[1, 2, 3, 5, 8, 9]
+const numbers = [5, 3, 8, 2, 9, 1];
+
+numbers.sort((a, b) => a - b);
+
+console.log(numbers);
+[1, 2, 3, 5, 8, 9]
