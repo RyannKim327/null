@@ -1,50 +1,17 @@
-function merge(leftArr, rightArr) {
-  let mergedArr = [];
-  let leftIndex = 0;
-  let rightIndex = 0;
+function areAnagrams(str1, str2) {
+  // Remove spaces and punctuation, convert to lowercase
+  let cleanStr1 = str1.replace(/[^a-z0-9]/g, "").toLowerCase();
+  let cleanStr2 = str2.replace(/[^a-z0-9]/g, "").toLowerCase();
 
-  // Merge two sorted arrays into one
-  while (leftIndex < leftArr.length && rightIndex < rightArr.length) {
-    if (leftArr[leftIndex] < rightArr[rightIndex]) {
-      mergedArr.push(leftArr[leftIndex]);
-      leftIndex++;
-    } else {
-      mergedArr.push(rightArr[rightIndex]);
-      rightIndex++;
-    }
-  }
+  // Sort the strings alphabetically
+  let sortedStr1 = cleanStr1.split("").sort().join("");
+  let sortedStr2 = cleanStr2.split("").sort().join("");
 
-  // Handle remaining elements (if any) in leftArr
-  while (leftIndex < leftArr.length) {
-    mergedArr.push(leftArr[leftIndex]);
-    leftIndex++;
-  }
-
-  // Handle remaining elements (if any) in rightArr
-  while (rightIndex < rightArr.length) {
-    mergedArr.push(rightArr[rightIndex]);
-    rightIndex++;
-  }
-
-  return mergedArr;
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
-function mergeSort(arr) {
-  if (arr.length <= 1) {
-    return arr; // Array is already sorted
-  }
 
-  // Split the array into two halves
-  const mid = Math.floor(arr.length / 2);
-  const leftArr = arr.slice(0, mid);
-  const rightArr = arr.slice(mid);
-
-  // Recursively sort and merge the subarrays
-  const sortedLeftArr = mergeSort(leftArr);
-  const sortedRightArr = mergeSort(rightArr);
-
-  // Merge the sorted subarrays
-  return merge(sortedLeftArr, sortedRightArr);
-}
-const array = [8, 3, 5, 4, 7, 9, 2, 1, 6];
-const sortedArray = mergeSort(array);
-console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+// Example usage
+console.log(areAnagrams("listen", "silent")); // true
+console.log(areAnagrams("hello", "world")); // false
+console.log(areAnagrams("Eleven plus two", "Twelve plus one")); // true
