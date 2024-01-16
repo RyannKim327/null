@@ -1,22 +1,18 @@
-function areAnagrams(str1, str2) {
-  // Convert both strings to lowercase and remove non-alphabetic characters
-  str1 = str1.toLowerCase().replace(/[^a-z]/g, '');
-  str2 = str2.toLowerCase().replace(/[^a-z]/g, '');
+// Prompt the user to enter a name
+var name = prompt("Enter your name:");
 
-  // Convert strings to arrays, sort them, and convert them back to strings
-  const sortedStr1 = str1.split('').sort().join('');
-  const sortedStr2 = str2.split('').sort().join('');
+// Display a greeting message
+console.log("Hello, " + name + "!");
 
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
-}
+// Prompt the user to enter their age
+var age = prompt("Enter your age:");
 
-// Example usage
-const string1 = 'listen';
-const string2 = 'silent';
+// Convert the age to a number
+age = parseInt(age);
 
-if (areAnagrams(string1, string2)) {
-  console.log('The strings are anagrams.');
+// Check if the user is an adult (age above 18)
+if (age >= 18) {
+  console.log("You are an adult.");
 } else {
-  console.log('The strings are not anagrams.');
+  console.log("You are not an adult.");
 }
