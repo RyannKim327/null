@@ -1,60 +1,38 @@
-function dijkstra(graph, source, target) {
-  // Step 2: Initialize the algorithm
-  let distances = {};
-  let visited = {};
-  let previous = {};
-  let queue = new PriorityQueue();
+function rabinKarp(text, pattern) {
+  const patternLength = pattern.length;
+  const textLength = text.length;
 
-  // Step 3: Initialize the data structures
-  for (let vertex in graph) {
-    distances[vertex] = Infinity;
-    visited[vertex] = false;
-    previous[vertex] = null;
+  // Calculate pattern hash
+  let patternHash = 0;
+  for (let i = 0; i < patternLength; i++) {
+    patternHash += pattern.charCodeAt(i);
   }
 
-  distances[source] = 0;
+  // Calculate initial window hash
+  let windowHash = 0;
+  for (let i = 0; i < patternLength; i++) {
+    windowHash += text.charCodeAt(i);
+  }
 
-  // Step 4: Enqueue the source vertex with a priority of 0
-  queue.enqueue(source, 0);
-
-  // Step 5: Main algorithm loop
-  while (!queue.isEmpty()) {
-    // Dequeue the vertex with the minimum priority
-    let currentVertex = queue.dequeue().element;
-
-    // If the current vertex is the target, we're done
-    if (currentVertex === target) {
-      break;
-    }
-
-    // Skip this iteration if the vertex has been visited already
-    if (visited[currentVertex]) {
-      continue;
-    }
-
-    visited[currentVertex] = true;
-
-    // Step 6: Update distances to adjacent vertices
-    for (let neighbor in graph[currentVertex]) {
-      let distance = distances[currentVertex] + graph[currentVertex][neighbor];
-
-      if (distance < distances[neighbor]) {
-        distances[neighbor] = distance;
-        previous[neighbor] = currentVertex;
-        queue.enqueue(neighbor, distance);
+  // Iterate through text
+  for (let i = 0; i <= textLength - patternLength; i++) {
+    if (windowHash === patternHash) {
+      // Check for match
+      if (text.substring(i, i + patternLength) === pattern) {
+        return i; // Match found, return starting position
       }
     }
+
+    // Calculate hash for next window
+    windowHash -= text.charCodeAt(i);
+    windowHash += text.charCodeAt(i + patternLength);
   }
 
-  // Step 7: Build the shortest path
-  let path = [];
-  let currentVertex = target;
-
-  while (currentVertex !== null) {
-    path.unshift(currentVertex);
-    currentVertex = previous[currentVertex];
-  }
-
-  // Return the shortest path distance and path
-  return [distances[target], path];
+  return -1; // No match found
 }
+
+// Example usage
+const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+const pattern = "ipsum";
+const result = rabinKarp(text, pattern);
+console.log(result); // Output: 6 (starting index of the pattern in the text)
