@@ -1,26 +1,35 @@
-function hasCycle(head) {
-  let slow = head;
-  let fast = head;
+function findLongestIncreasingSubsequence(arr) {
+  const length = arr.length;
+  const dp = new Array(length).fill(1);
+  const prev = new Array(length).fill(-1);
 
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
-
-    if (slow === fast) {
-      return true; // Cycle detected
+  for (let i = 1; i < length; i++) {
+    for (let j = 0; j < i; j++) {
+      if (arr[i] > arr[j] && dp[j] + 1 > dp[i]) {
+        dp[i] = dp[j] + 1;
+        prev[i] = j;
+      }
     }
   }
 
-  return false; // No cycle detected
-}
-// Example Linked List with a cycle
-const node1 = { value: 1 };
-const node2 = { value: 2 };
-const node3 = { value: 3 };
-const node4 = { value: 4 };
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2; // Cycle from node4 to node2
+  let maxIndex = 0;
+  for (let i = 1; i < length; i++) {
+    if (dp[i] > dp[maxIndex]) {
+      maxIndex = i;
+    }
+  }
 
-console.log(hasCycle(node1)); // Output: true
+  const sequence = [];
+  let currentIndex = maxIndex;
+  while (currentIndex !== -1) {
+    sequence.push(arr[currentIndex]);
+    currentIndex = prev[currentIndex];
+  }
+
+  return sequence.reverse();
+}
+
+// Example usage:
+const array = [3, 4, -1, 0, 6, 2, 3];
+const longestIncreasingSubsequence = findLongestIncreasingSubsequence(array);
+console.log(longestIncreasingSubsequence); // Output: [-1, 0, 2, 3]
