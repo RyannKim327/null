@@ -1,15 +1,19 @@
-function isArraySorted(arr) {
-  for (let i = 0; i < arr.length - 1; i++) {
-    if (arr[i] > arr[i + 1]) {
-      return false; // Array is not sorted in ascending order
-    }
-  }
-  return true; // Array is sorted in ascending order
+function reverseStringWords(str) {
+  // Step 1: Split the string into an array of words
+  let wordsArray = str.split(" ");
+
+  // Step 2: Reverse the order of the array
+  wordsArray.reverse();
+
+  // Step 3: Join the array of words back into a single string
+  let reversedString = wordsArray.join(" ");
+
+  // Return the reversed string
+  return reversedString;
 }
 
-// Usage example:
-const sortedArray = [1, 2, 3, 4, 5];
-const unsortedArray = [5, 2, 6, 1, 3];
+// Example usage
+let originalString = "Hello world, how are you?";
+let reversedString = reverseStringWords(originalString);
 
-console.log(isArraySorted(sortedArray)); // Output: true
-console.log(isArraySorted(unsortedArray)); // Output: false
+console.log(reversedString); // Output: "you? are how world, Hello"
