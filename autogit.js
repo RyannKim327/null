@@ -1,32 +1,39 @@
-class Node {
-  constructor(state, parent, action, g, h) {
-    this.state = state;
-    this.parent = parent;
-    this.action = action;
-    this.g = g;
-    this.h = h;
+function isAnagram(string1, string2) {
+  // Remove any non-alphanumeric characters and convert to lowercase
+  const cleanString1 = string1.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const cleanString2 = string2.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+  // Return false if the lengths are different
+  if (cleanString1.length !== cleanString2.length) {
+    return false;
   }
 
-  getTotalCost() {
-    return this.g + this.h;
-  }
-}
+  // Create character frequency objects for both strings
+  const charFrequency1 = getCharFrequency(cleanString1);
+  const charFrequency2 = getCharFrequency(cleanString2);
 
-function aStarSearch(start, goal) {
-  const openSet = [];
-  const closedSet = new Set();
-
-  const startNode = new Node(start, null, null, 0, heuristic(start, goal));
-  openSet.push(startNode);
-
-  while (openSet.length > 0) {
-    // TODO: Implement the rest of the algorithm
+  // Compare the character frequencies
+  for (const char in charFrequency1) {
+    if (charFrequency1[char] !== charFrequency2[char]) {
+      return false;
+    }
   }
 
-  return null; // No path found
+  // Strings are anagrams
+  return true;
 }
 
-// Heuristic function to estimate the minimum cost from node to goal
-function heuristic(node, goal) {
-  // TODO: Implement your heuristic function here
+function getCharFrequency(str) {
+  const frequency = {};
+
+  for (const char of str) {
+    frequency[char] = (frequency[char] || 0) + 1;
+  }
+
+  return frequency;
 }
+
+// Example usage
+console.log(isAnagram('listen', 'silent'));  // Output: true
+console.log(isAnagram('hello', 'world'));    // Output: false
+console.log(isAnagram('rail safety', 'fairy tales'));  // Output: true
