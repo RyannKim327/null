@@ -1,27 +1,14 @@
-function selectionSort(arr) {
-  const len = arr.length;
+// Sample array
+let arr = [1, 2, 3, 4, 5];
 
-  for (let i = 0; i < len - 1; i++) {
-    let minIndex = i;
+// Index of the element you want to remove
+let index = 2;
 
-    // Find the index of the minimum element in the remaining unsorted part of the array
-    for (let j = i + 1; j < len; j++) {
-      if (arr[j] < arr[minIndex]) {
-        minIndex = j;
-      }
-    }
+// Number of elements to remove starting from the given index
+let count = 1;
 
-    // Swap the found minimum element with the first element
-    if (minIndex !== i) {
-      let temp = arr[i];
-      arr[i] = arr[minIndex];
-      arr[minIndex] = temp;
-    }
-  }
+// Remove the element using splice()
+arr.splice(index, count);
 
-  return arr;
-}
-
-// Example usage
-const array = [64, 25, 12, 22, 11];
-console.log(selectionSort(array)); 
+// The updated array without the removed element
+console.log(arr); // Output: [1, 2, 4, 5]
