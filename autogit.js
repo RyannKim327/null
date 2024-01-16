@@ -1,23 +1,59 @@
-function findMedianSortedArrays(nums1, nums2) {
-  // Merge the two arrays
-  const merged = [...nums1, ...nums2].sort((a, b) => a - b);
+// Main function to implement Heap Sort
+function heapSort(arr) {
+  // Build Max Heap
+  buildMaxHeap(arr);
+  
+  // Heapify the remaining elements
+  for (let i = arr.length - 1; i > 0; i--) {
+    // Swap root (max element) with the last element
+    [arr[i], arr[0]] = [arr[0], arr[i]];
+    
+    // Heapify the root element
+    maxHeapify(arr, i, 0);
+  }
+  
+  return arr;
+}
 
-  // Determine the middle index and length of the merged array
-  const middleIndex = Math.floor(merged.length / 2);
-  const isEvenLength = merged.length % 2 === 0;
+// Function to build a Max Heap
+function buildMaxHeap(arr) {
+  const n = arr.length;
+  const startIdx = Math.floor(n / 2) - 1;
 
-  if (isEvenLength) {
-    // If the merged array has an even length, return the average
-    // of the two middle elements
-    return (merged[middleIndex - 1] + merged[middleIndex]) / 2;
-  } else {
-    // If the merged array has an odd length, return the middle element
-    return merged[middleIndex];
+  // Heapify each non-leaf node in reverse order
+  for (let i = startIdx; i >= 0; i--) {
+    maxHeapify(arr, n, i);
   }
 }
 
-// Example usage:
-const nums1 = [1, 3];
-const nums2 = [2, 4];
+// Function to heapify a subtree rooted at index i
+function maxHeapify(arr, n, i) {
+  let largest = i; // Initialize largest as root
+  const left = 2 * i + 1; // Left child index
+  const right = 2 * i + 2; // Right child index
 
-console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.5
+  // If left child is larger than root
+  if (left < n && arr[left] > arr[largest]) {
+    largest = left;
+  }
+  
+  // If right child is larger than the largest so far
+  if (right < n && arr[right] > arr[largest]) {
+    largest = right;
+  }
+
+  // If largest is not root
+  if (largest !== i) {
+    // Swap the root with the largest element
+    [arr[i], arr[largest]] = [arr[largest], arr[i]];
+    
+    // Recursively heapify the affected sub-tree
+    maxHeapify(arr, n, largest);
+  }
+}
+
+// Example usage
+const arr = [6, 5, 3, 1, 8, 7, 2, 4];
+console.log('Input:', arr);
+const sortedArr = heapSort(arr);
+console.log('Sorted Output:', sortedArr);
