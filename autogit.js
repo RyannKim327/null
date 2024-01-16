@@ -1,17 +1,12 @@
-function findFirstRepeatedChar(str) {
-  const frequency = {};
+const axios = require('axios');
 
-  for (const char of str) {
-    if (frequency[char]) {
-      return char;
-    }
-    frequency[char] = 1;
+async function getApiData() {
+  try {
+    const response = await axios.get('https://jsonplaceholder.typicode.com/posts/1');
+    console.log(response.data);
+  } catch (error) {
+    console.error(error);
   }
-
-  return null;
 }
 
-// Example usage
-const inputString = "hello";
-const result = findFirstRepeatedChar(inputString);
-console.log(result); // Output: "l"
+getApiData();
