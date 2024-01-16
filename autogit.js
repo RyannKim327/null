@@ -1,36 +1,29 @@
-function findLongestIncreasingSubsequence(arr) {
-  const n = arr.length;
-  const dp = Array(n).fill(1); // Initialize all elements of dp array to 1
-  
-  // Compute longest increasing subsequence ending at each element
-  for (let i = 1; i < n; i++) {
-    for (let j = 0; j < i; j++) {
-      if (arr[i] > arr[j] && dp[i] < dp[j] + 1) {
-        dp[i] = dp[j] + 1; // Update the longest increasing subsequence size
-      }
+function binarySearchRecursive(arr, target, startIdx = 0, endIdx = arr.length - 1, exactMatch = true) {
+  if (startIdx > endIdx) {
+    return -1; // Target not found
+  }
+
+  const midIdx = Math.floor((startIdx + endIdx) / 2);
+
+  if (arr[midIdx] === target) {
+    if (exactMatch) {
+      return midIdx;
+    } else {
+      // Continue searching for the first occurrence of the target element
+      let result = binarySearchRecursive(arr, target, startIdx, midIdx - 1, exactMatch);
+      return (result !== -1 ? result : midIdx);
     }
   }
-  
-  // Find the maximum value in the dp array
-  let maxLength = Math.max(...dp);
-  
-  // Find the indices of the longest increasing subsequence elements
-  let subsequenceIndices = [];
-  let lastIndex = dp.indexOf(maxLength);
-  for (let i = lastIndex; i >= 0; i--) {
-    if (arr[i] < arr[lastIndex] && dp[i] === dp[lastIndex] - 1) {
-      subsequenceIndices.unshift(i);
-      lastIndex = i;
-    }
+
+  if (arr[midIdx] < target) {
+    return binarySearchRecursive(arr, target, midIdx + 1, endIdx, exactMatch);
   }
-  
-  // Build the longest increasing subsequence from the indices
-  let subsequence = subsequenceIndices.map(index => arr[index]);
-  
-  return subsequence;
+
+  return binarySearchRecursive(arr, target, startIdx, midIdx - 1, exactMatch);
 }
 
-// Example usage:
-const array = [3, 4, -1, 0, 6, 2, 3];
-const longestIncreasingSubsequence = findLongestIncreasingSubsequence(array);
-console.log(longestIncreasingSubsequence);
+// Usage example:
+const sortedArr = [1, 2, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+console.log(binarySearchRecursive(sortedArr, 6)); // Output: 6 (index of the target element)
+console.log(binarySearchRecursive(sortedArr, 2)); // Output: 1 (index of the first occurrence of the target element)
+console.log(binarySearchRecursive(sortedArr, 11)); // Output: -1 (not found)
