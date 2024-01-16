@@ -1,12 +1,55 @@
-function findKthSmallest(arr, k) {
-  // Sort the array in ascending order
-  arr.sort((a, b) => a - b);
+class Graph {
+  constructor() {
+    this.adjacencyList = {};
+  }
 
-  // Return the kth smallest element
-  return arr[k - 1];
+  addVertex(vertex) {
+    if (!this.adjacencyList[vertex]) {
+      this.adjacencyList[vertex] = [];
+    }
+  }
+
+  addEdge(vertex1, vertex2) {
+    this.adjacencyList[vertex1].push(vertex2);
+    this.adjacencyList[vertex2].push(vertex1);
+  }
+
+  breadthFirstSearch(startVertex) {
+    const queue = [startVertex];
+    const visited = {};
+
+    visited[startVertex] = true;
+
+    while (queue.length) {
+      const currentVertex = queue.shift();
+      console.log(currentVertex);
+
+      this.adjacencyList[currentVertex].forEach((neighbor) => {
+        if (!visited[neighbor]) {
+          visited[neighbor] = true;
+          queue.push(neighbor);
+        }
+      });
+    }
+  }
 }
-const array = [10, 2, 8, 6, 7];
-const k = 3;
 
-const kthSmallest = findKthSmallest(array, k);
-console.log(`The ${k}th smallest element is: ${kthSmallest}`);
+// Usage example
+const graph = new Graph();
+
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addVertex('E');
+graph.addVertex('F');
+
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('C', 'E');
+graph.addEdge('D', 'E');
+graph.addEdge('D', 'F');
+graph.addEdge('E', 'F');
+
+graph.breadthFirstSearch('A');
