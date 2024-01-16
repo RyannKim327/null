@@ -1,8 +1,15 @@
-let stringNumber = "42";
-let integerNumber = parseInt(stringNumber, 10); // The second parameter is the radix/base (optional, default is 10)
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  const modifiedStr = str.replace(/[\W_]/g, '').toLowerCase();
 
-console.log(integerNumber); // Output: 42 (as an integer)
-let stringNumber = "42";
-let integerNumber = +stringNumber;
+  // Reverse the modified string
+  const reversedStr = modifiedStr.split('').reverse().join('');
 
-console.log(integerNumber); // Output: 42 (as an integer)
+  // Compare the modified string with the reversed string
+  return modifiedStr === reversedStr;
+}
+
+// Example usage:
+const input = 'A man, a plan, a canal - Panama!';
+const result = isPalindrome(input);
+console.log(result); // Output: true
