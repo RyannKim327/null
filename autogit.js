@@ -1,24 +1,19 @@
-function longestCommonPrefix(strings) {
-  let prefix = '';
-  
-  if (strings.length === 0) {
-    return prefix;
-  }
-  
-  for (let i = 0; i < strings[0].length; i++) {
-    const char = strings[0][i];
-    
-    for (let j = 1; j < strings.length; j++) {
-      if (strings[j][i] !== char || i >= strings[j].length) {
-        return prefix;
-      }
-    }
-    
-    prefix += char;
-  }
-  
-  return prefix;
+function countCharOccurrences(string, char) {
+  // Use the split() method to convert the string into an array of characters
+  var charArray = string.split("");
+
+  // Use the filter() method to create a new array containing only the occurrences of the specified character
+  var filteredArray = charArray.filter(function (c) {
+    return c === char;
+  });
+
+  // Return the length of the filtered array, which indicates the count of occurrences
+  return filteredArray.length;
 }
-const strings = ['apple', 'app', 'application', 'aptitude'];
-const commonPrefix = longestCommonPrefix(strings);
-console.log(commonPrefix); // Output: 'app'
+
+// Example usage
+var myString = "Hello, world!";
+var myChar = "o";
+var occurrenceCount = countCharOccurrences(myString, myChar);
+
+console.log("The character '" + myChar + "' occurs " + occurrenceCount + " times in the string.");
