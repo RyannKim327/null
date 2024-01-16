@@ -1,36 +1,41 @@
-function heapify(arr, n, i) {
-  let largest = i; 
-  let left = 2 * i + 1;
-  let right = 2 * i + 2;
-
-  if (left < n && arr[left] > arr[largest]) {
-    largest = left;
+function findCommonElements(array1, array2) {
+  const common = [];
+  
+  for (let i = 0; i < array1.length; i++) {
+    if (array2.includes(array1[i])) {
+      common.push(array1[i]);
+    }
   }
-
-  if (right < n && arr[right] > arr[largest]) {
-    largest = right;
-  }
-
-  if (largest !== i) {
-    [arr[i], arr[largest]] = [arr[largest], arr[i]];
-    heapify(arr, n, largest);
-  }
+  
+  return common;
 }
-function heapSort(arr) {
-  const n = arr.length;
 
-  // Build a max heap.
-  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-    heapify(arr, n, i);
-  }
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
 
-  // Extract elements from the heap one by one.
-  for (let i = n - 1; i >= 0; i--) {
-    [arr[0], arr[i]] = [arr[i], arr[0]]; // Swap root with last element.
-    heapify(arr, i, 0); // Heapify reduced heap.
-  }
-
-  return arr;
+console.log(findCommonElements(array1, array2)); // Output: [4, 5]
+function findCommonElements(array1, array2) {
+  return array1.filter(element => array2.includes(element));
 }
-const arr = [12, 11, 13, 5, 6, 7];
-console.log(heapSort(arr)); // Output: [5, 6, 7, 11, 12, 13]
+
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+
+console.log(findCommonElements(array1, array2)); // Output: [4, 5]
+function findCommonElements(array1, array2) {
+  const set1 = new Set(array1);
+  const common = [];
+
+  for (const element of array2) {
+    if (set1.has(element)) {
+      common.push(element);
+    }
+  }
+
+  return common;
+}
+
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+
+console.log(findCommonElements(array1, array2)); // Output: [4, 5]
