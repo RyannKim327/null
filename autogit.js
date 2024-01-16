@@ -1,48 +1,27 @@
-class Graph {
-  constructor() {
-    this.nodes = new Map();
-  }
+function findMaxSubarray(arr) {
+  let maxSum = arr[0];
+  let currentSum = arr[0];
+  let start = 0;
+  let end = 0;
+  let tempStart = 0;
 
-  addNode(id) {
-    if (!this.nodes.has(id)) {
-      this.nodes.set(id, []);
+  for (let i = 1; i < arr.length; i++) {
+    if (arr[i] > currentSum + arr[i]) {
+      tempStart = i;
+      currentSum = arr[i];
+    } else {
+      currentSum += arr[i];
+    }
+
+    if (currentSum > maxSum) {
+      maxSum = currentSum;
+      start = tempStart;
+      end = i;
     }
   }
 
-  addEdge(src, dest) {
-    this.addNode(src);
-    this.addNode(dest);
-    this.nodes.get(src).push(dest);
-    // Uncomment the line below if the graph is undirected
-    // this.nodes.get(dest).push(src);
-  }
-
-  getNeighbors(id) {
-    return this.nodes.get(id);
-  }
+  return arr.slice(start, end + 1);
 }
-function depthFirstSearch(graph, start, visited = new Set()) {
-  visited.add(start);
-  console.log(start); // Do whatever you want with the visited node
-
-  const neighbors = graph.getNeighbors(start);
-  for (const neighbor of neighbors) {
-    if (!visited.has(neighbor)) {
-      depthFirstSearch(graph, neighbor, visited);
-    }
-  }
-}
-// Create a graph
-const graph = new Graph();
-
-// Add nodes and edges
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('B', 'E');
-graph.addEdge('C', 'F');
-graph.addEdge('D', 'G');
-graph.addEdge('F', 'H');
-
-// Call depthFirstSearch
-depthFirstSearch(graph, 'A');
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const maxSubarray = findMaxSubarray(array);
+console.log(maxSubarray); // [4, -1, 2, 1]
