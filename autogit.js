@@ -1,28 +1,30 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function findLongestCommonPrefix(strings) {
+  if (strings.length === 0) {
+    return "";
   }
+  
+  let prefix = strings[0];
+  
+  for (let i = 1; i < strings.length; i++) {
+    const currentString = strings[i];
+    let j = 0;
+    
+    while (j < prefix.length && j < currentString.length && prefix[j] === currentString[j]) {
+      j++;
+    }
+    
+    prefix = prefix.slice(0, j);
+    
+    if (prefix === "") {
+      break;
+    }
+  }
+  
+  return prefix;
 }
 
-function findMaxDepth(node) {
-  if (node === null) {
-    return 0;
-  }
-
-  const leftDepth = findMaxDepth(node.left);
-  const rightDepth = findMaxDepth(node.right);
-
-  return Math.max(leftDepth, rightDepth) + 1;
-}
-
-// Example usage:
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-const maxDepth = findMaxDepth(root);
-console.log(maxDepth); // Output: 3
+// Example usage
+const strings = ["flower", "flow", "flight"];
+const longestPrefix = findLongestCommonPrefix(strings);
+console.log("Longest Common Prefix:", longestPrefix);
+Longest Common Prefix: fl
