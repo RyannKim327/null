@@ -1,40 +1,60 @@
-function longestCommonSubsequence(str1, str2) {
-  const m = str1.length;
-  const n = str2.length;
-  
-  // Create a memoization table
-  const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-  
-  // Compute the length of the longest common subsequence
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-      } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+function dijkstra(graph, source, target) {
+  // Step 2: Initialize the algorithm
+  let distances = {};
+  let visited = {};
+  let previous = {};
+  let queue = new PriorityQueue();
+
+  // Step 3: Initialize the data structures
+  for (let vertex in graph) {
+    distances[vertex] = Infinity;
+    visited[vertex] = false;
+    previous[vertex] = null;
+  }
+
+  distances[source] = 0;
+
+  // Step 4: Enqueue the source vertex with a priority of 0
+  queue.enqueue(source, 0);
+
+  // Step 5: Main algorithm loop
+  while (!queue.isEmpty()) {
+    // Dequeue the vertex with the minimum priority
+    let currentVertex = queue.dequeue().element;
+
+    // If the current vertex is the target, we're done
+    if (currentVertex === target) {
+      break;
+    }
+
+    // Skip this iteration if the vertex has been visited already
+    if (visited[currentVertex]) {
+      continue;
+    }
+
+    visited[currentVertex] = true;
+
+    // Step 6: Update distances to adjacent vertices
+    for (let neighbor in graph[currentVertex]) {
+      let distance = distances[currentVertex] + graph[currentVertex][neighbor];
+
+      if (distance < distances[neighbor]) {
+        distances[neighbor] = distance;
+        previous[neighbor] = currentVertex;
+        queue.enqueue(neighbor, distance);
       }
     }
   }
-  
-  // Construct the longest common subsequence
-  let lcs = '';
-  let i = m, j = n;
-  while (i > 0 && j > 0) {
-    if (str1[i - 1] === str2[j - 1]) {
-      lcs = str1[i - 1] + lcs;
-      i--;
-      j--;
-    } else if (dp[i - 1][j] > dp[i][j - 1]) {
-      i--;
-    } else {
-      j--;
-    }
-  }
-  
-  return lcs;
-}
-const str1 = 'ABCDGH';
-const str2 = 'AEDFHR';
 
-const lcs = longestCommonSubsequence(str1, str2);
-console.log(lcs); // Output: 'ADH'
+  // Step 7: Build the shortest path
+  let path = [];
+  let currentVertex = target;
+
+  while (currentVertex !== null) {
+    path.unshift(currentVertex);
+    currentVertex = previous[currentVertex];
+  }
+
+  // Return the shortest path distance and path
+  return [distances[target], path];
+}
