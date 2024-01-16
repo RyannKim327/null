@@ -1,55 +1,92 @@
-class Graph {
-  constructor() {
-    this.adjacencyList = {};
+class GraphNode {
+  constructor(id) {
+    this.id = id;
+    this.adjacentNodes = [];
   }
 
-  addVertex(vertex) {
-    if (!this.adjacencyList[vertex]) {
-      this.adjacencyList[vertex] = [];
-    }
-  }
-
-  addEdge(vertex1, vertex2) {
-    this.adjacencyList[vertex1].push(vertex2);
-    this.adjacencyList[vertex2].push(vertex1);
-  }
-
-  breadthFirstSearch(startVertex) {
-    const queue = [startVertex];
-    const visited = {};
-
-    visited[startVertex] = true;
-
-    while (queue.length) {
-      const currentVertex = queue.shift();
-      console.log(currentVertex);
-
-      this.adjacencyList[currentVertex].forEach((neighbor) => {
-        if (!visited[neighbor]) {
-          visited[neighbor] = true;
-          queue.push(neighbor);
-        }
-      });
-    }
+  addAdjacentNode(node) {
+    this.adjacentNodes.push(node);
   }
 }
 
-// Usage example
-const graph = new Graph();
+function biDirectionalSearch(startNode, endNode) {
+  let startSet = new Set();
+  let endSet = new Set();
+  let visitedStart = {};
+  let visitedEnd = {};
 
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
-graph.addVertex('F');
+  startSet.add(startNode);
+  visitedStart[startNode.id] = null;
 
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('C', 'E');
-graph.addEdge('D', 'E');
-graph.addEdge('D', 'F');
-graph.addEdge('E', 'F');
+  endSet.add(endNode);
+  visitedEnd[endNode.id] = null;
 
-graph.breadthFirstSearch('A');
+  while (startSet.size > 0 && endSet.size > 0) {
+    let commonNode = expandSearch(startSet, visitedStart, visitedEnd);
+    if (commonNode != null) {
+      return getPath(commonNode, visitedStart, visitedEnd);
+    }
+
+    commonNode = expandSearch(endSet, visitedEnd, visitedStart);
+    if (commonNode != null) {
+      return getPath(commonNode, visitedStart, visitedEnd);
+    }
+  }
+
+  return null;
+}
+
+function expandSearch(set, visited, otherVisited) {
+  let currentNode = set.values().next().value;
+  set.delete(currentNode);
+
+  for (let adjacentNode of currentNode.adjacentNodes) {
+    if (!visited.hasOwnProperty(adjacentNode.id)) {
+      set.add(adjacentNode);
+      visited[adjacentNode.id] = currentNode;
+
+      if (otherVisited.hasOwnProperty(adjacentNode.id)) {
+        return adjacentNode;
+      }
+    }
+  }
+
+  return null;
+}
+
+function getPath(commonNode, visitedStart, visitedEnd) {
+  let path = [];
+  let currentNode = commonNode;
+
+  while (currentNode != null) {
+    path.push(currentNode.id);
+    currentNode = visitedStart[currentNode.id];
+  }
+  path.reverse();
+
+  currentNode = visitedEnd[commonNode.id];
+  while (currentNode != null) {
+    path.push(currentNode.id);
+    currentNode = visitedEnd[currentNode.id];
+  }
+
+  return path;
+}
+
+// Example usage
+let node1 = new GraphNode(1);
+let node2 = new GraphNode(2);
+let node3 = new GraphNode(3);
+let node4 = new GraphNode(4);
+let node5 = new GraphNode(5);
+
+node1.addAdjacentNode(node2);
+node2.addAdjacentNode(node1);
+node2.addAdjacentNode(node3);
+node3.addAdjacentNode(node2);
+node3.addAdjacentNode(node4);
+node4.addAdjacentNode(node3);
+node4.addAdjacentNode(node5);
+node5.addAdjacentNode(node4);
+
+console.log(biDirectionalSearch(node1, node5));
