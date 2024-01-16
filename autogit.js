@@ -1,14 +1,18 @@
-const CronJob = require('cron').CronJob;
+function reverseWords(string) {
+  // Step 1: Split the string into an array of words
+  const wordsArray = string.split(' ');
 
-// Function to be executed by the cron job
-function myJob() {
-  console.log('Cron job is running!');
-  // Add your code here
+  // Step 2: Reverse the array
+  const reversedArray = wordsArray.reverse();
+
+  // Step 3: Join the array back into a string
+  const reversedString = reversedArray.join(' ');
+
+  return reversedString;
 }
 
-// Schedule the cron job to run every minute
-const cronExpression = '* * * * *'; // Runs every minute
-const job = new CronJob(cronExpression, myJob);
-
-// Start the cron job
-job.start();
+// Example Usage
+const originalString = "Hello world! I am coding in JavaScript!";
+const reversedString = reverseWords(originalString);
+console.log(reversedString);
+JavaScript! in coding am I world! Hello
