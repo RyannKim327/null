@@ -1,24 +1,24 @@
-function countOccurrences(string, char) {
-  let count = 0;
-  for (let i = 0; i < string.length; i++) {
-    if (string[i] === char) {
-      count++;
+function quicksort(arr) {
+  if (arr.length <= 1) {
+    return arr;
+  }
+
+  const pivot = arr[arr.length - 1];
+  const left = [];
+  const right = [];
+
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] < pivot) {
+      left.push(arr[i]);
+    } else {
+      right.push(arr[i]);
     }
   }
-  return count;
+
+  return [...quicksort(left), pivot, ...quicksort(right)];
 }
 
-const myString = "Hello, World!";
-const character = "o";
-const occurrenceCount = countOccurrences(myString, character);
-console.log(occurrenceCount);  // Output: 2
-function countOccurrences(string, char) {
-  const regex = new RegExp(char, "g");
-  const matches = string.match(regex);
-  return matches ? matches.length : 0;
-}
-
-const myString = "Hello, World!";
-const character = "o";
-const occurrenceCount = countOccurrences(myString, character);
-console.log(occurrenceCount);  // Output: 2
+// Example usage:
+const array = [7, 2, 5, 9, 1, 6, 4];
+const sortedArray = quicksort(array);
+console.log(sortedArray);
