@@ -1,40 +1,24 @@
-function fibonacciSearch(arr, x) {
-  let fibM2 = 0;
-  let fibM1 = 1;
-  let fibM = fibM2 + fibM1;
-
-  while (fibM < arr.length) {
-    fibM2 = fibM1;
-    fibM1 = fibM;
-    fibM = fibM2 + fibM1;
+function isPrime(number) {
+  // Check if the number is less than 2 (not prime)
+  if (number < 2) {
+    return false;
   }
 
-  let offset = -1;
-
-  while (fibM > 1) {
-    let i = Math.min(offset + fibM2, arr.length - 1);
-
-    if (arr[i] < x) {
-      fibM = fibM1;
-      fibM1 = fibM2;
-      fibM2 = fibM - fibM1;
-      offset = i;
-    } else if (arr[i] > x) {
-      fibM = fibM2;
-      fibM1 = fibM1 - fibM2;
-      fibM2 = fibM - fibM1;
-    } else {
-      return i;
+  // Loop from 2 to the square root of the number
+  for (let i = 2; i <= Math.sqrt(number); i++) {
+    // If the number is divisible by any i, it's not prime
+    if (number % i === 0) {
+      return false;
     }
   }
 
-  if (fibM1 && arr[offset + 1] === x) {
-    return offset + 1;
-  }
-
-  return -1;
+  // If the number is not divisible by any i, it's prime
+  return true;
 }
-const array = [1, 3, 5, 9, 13, 21, 34, 55, 89];
-const value = 13;
 
-console.log(fibonacciSearch(array, value)); // Output: 4
+// Testing the function
+console.log(isPrime(2));  // true
+console.log(isPrime(3));  // true
+console.log(isPrime(4));  // false
+console.log(isPrime(11)); // true
+console.log(isPrime(15)); // false
