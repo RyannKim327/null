@@ -1,18 +1,12 @@
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
+function factorial(num) {
+  // Base case: Factorial of 0 or 1 is 1
+  if (num === 0 || num === 1) {
+    return 1;
+  }
 
-// Find the index of the element in the array
-let index = array.indexOf(elementToRemove);
-
-// If the element exists in the array, remove it
-if (index !== -1) {
-  array.splice(index, 1);
+  // Recursive case: Multiply the number with factorial of num-1
+  return num * factorial(num - 1);
 }
 
-console.log(array); // Output: [1, 2, 4, 5]
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
-
-let newArray = array.filter(element => element !== elementToRemove);
-
-console.log(newArray); // Output: [1, 2, 4, 5]
+// Example usage:
+console.log(factorial(5)); // Output: 120
