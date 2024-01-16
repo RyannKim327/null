@@ -1,17 +1,51 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  var cleanedStr = str.replace(/[^0-9a-z]/gi, '').toLowerCase();
+class Graph {
+  constructor() {
+    this.adjList = new Map();
+  }
 
-  // Reverse the string
-  var reversedStr = cleanedStr.split('').reverse().join('');
+  addVertex(vertex) {
+    this.adjList.set(vertex, []);
+  }
 
-  // Compare the original string with the reversed string
-  return cleanedStr === reversedStr;
+  addEdge(v1, v2) {
+    this.adjList.get(v1).push(v2);
+    // if the graph is undirected, include the following line
+    // this.adjList.get(v2).push(v1);
+  }
+
+  depthFirstSearch(startingNode) {
+    const visited = new Set();
+    const stack = [];
+
+    stack.push(startingNode);
+
+    while (stack.length > 0) {
+      const currentNode = stack.pop();
+
+      if (!visited.has(currentNode)) {
+        console.log(currentNode);
+        visited.add(currentNode);
+
+        const neighbors = this.adjList.get(currentNode);
+        for (let neighbor of neighbors) {
+          stack.push(neighbor);
+        }
+      }
+    }
+  }
 }
 
 // Example usage
-var str1 = "A man, a plan, a canal, Panama!";
-console.log(isPalindrome(str1)); // Output: true
+const graph = new Graph();
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addVertex('E');
 
-var str2 = "not a palindrome";
-console.log(isPalindrome(str2)); // Output: false
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('C', 'E');
+
+graph.depthFirstSearch('A');
