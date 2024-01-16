@@ -1,9 +1,22 @@
-const cron = require('cron');
+function areAnagrams(str1, str2) {
+  // Convert both strings to lowercase and remove non-alphabetic characters
+  str1 = str1.toLowerCase().replace(/[^a-z]/g, '');
+  str2 = str2.toLowerCase().replace(/[^a-z]/g, '');
 
-// Create a cron job that runs every minute
-const job = new cron.CronJob('* * * * *', function() {
-  console.log('Running task!');
-});
+  // Convert strings to arrays, sort them, and convert them back to strings
+  const sortedStr1 = str1.split('').sort().join('');
+  const sortedStr2 = str2.split('').sort().join('');
 
-// Start the cron job
-job.start();
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
+}
+
+// Example usage
+const string1 = 'listen';
+const string2 = 'silent';
+
+if (areAnagrams(string1, string2)) {
+  console.log('The strings are anagrams.');
+} else {
+  console.log('The strings are not anagrams.');
+}
