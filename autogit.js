@@ -1,42 +1,45 @@
-class HashTable {
-  constructor() {
-    this.table = {};
-  }
+function bellmanFord(graph, start) {
+   // Step 1: Initialize distance array and set all distances to Infinity
+   let distance = {};
+   for (let node in graph) {
+      distance[node] = Infinity;
+   }
+   
+   // Set the distance of the start node to 0
+   distance[start] = 0;
 
-  // hash function and other methods here
-}
-getHashCode(key) {
-  let hashCode = 0;
-  for (let i = 0; i < key.length; i++) {
-    hashCode += key.charCodeAt(i);
-  }
-  return hashCode;
-}
-insert(key, value) {
-  const index = this.getHashCode(key);
-  this.table[index] = value;
-}
+   // Step 2: Relax edges repeatedly
+   for (let i = 0; i < Object.keys(graph).length - 1; i++) {
+      for (let node in graph) {
+         for (let neighbor in graph[node]) {
+            let weight = graph[node][neighbor];
+            if (distance[node] + weight < distance[neighbor]) {
+               distance[neighbor] = distance[node] + weight;
+            }
+         }
+      }
+   }
 
-get(key) {
-  const index = this.getHashCode(key);
-  return this.table[index];
-}
+   // Step 3: Check for negative-weight cycles
+   for (let node in graph) {
+      for (let neighbor in graph[node]) {
+         let weight = graph[node][neighbor];
+         if (distance[node] + weight < distance[neighbor]) {
+            throw new Error('Graph contains negative-weight cycle');
+         }
+      }
+   }
 
-remove(key) {
-  const index = this.getHashCode(key);
-  if (this.table.hasOwnProperty(index)) {
-    delete this.table[index];
-  }
+   return distance;
 }
-hasKey(key) {
-  const index = this.getHashCode(key);
-  return this.table.hasOwnProperty(index);
-}
+let graph = {
+   A: { B: -1, C: 4 },
+   B: { C: 3, D: 2, E: 2 },
+   C: {},
+   D: { B: 1, C: 5 },
+   E: { D: -3 }
+};
+let startNode = 'A';
+let shortestPaths = bellmanFord(graph, startNode);
 
-getKeys() {
-  return Object.keys(this.table);
-}
-
-clear() {
-  this.table = {};
-}
+console.log(shortestPaths);
