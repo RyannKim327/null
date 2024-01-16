@@ -1,21 +1,19 @@
-function bubbleSort(arr) {
-  const length = arr.length;
-
-  for (let i = 0; i < length; i++) {
-    for (let j = 0; j < length - 1; j++) {
-      if (arr[j] > arr[j + 1]) {
-        // Swap elements
-        const temp = arr[j];
-        arr[j] = arr[j + 1];
-        arr[j + 1] = temp;
-      }
-    }
-  }
-
-  return arr;
+function reverseStringWords(str) {
+  // Split the string into an array of words
+  var wordsArr = str.split(" ");
+  
+  // Reverse the order of the array
+  var reversedArr = wordsArr.reverse();
+  
+  // Join the reversed array into a string
+  var reversedStr = reversedArr.join(" ");
+  
+  // Return the reversed string
+  return reversedStr;
 }
 
-// Example usage:
-const unsortedArray = [5, 3, 8, 4, 2];
-const sortedArray = bubbleSort(unsortedArray);
-console.log(sortedArray);  // Output: [2, 3, 4, 5, 8]
+// Example usage
+var originalString = "Hello World!";
+var reversedString = reverseStringWords(originalString);
+console.log(reversedString);
+World! Hello
