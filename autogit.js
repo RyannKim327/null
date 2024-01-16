@@ -1,45 +1,36 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+function findLongestIncreasingSubsequence(arr) {
+  const n = arr.length;
+  const dp = Array(n).fill(1); // Initialize all elements of dp array to 1
+  
+  // Compute longest increasing subsequence ending at each element
+  for (let i = 1; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      if (arr[i] > arr[j] && dp[i] < dp[j] + 1) {
+        dp[i] = dp[j] + 1; // Update the longest increasing subsequence size
+      }
+    }
   }
-}
-
-function reverseLinkedList(head) {
-  let prev = null;
-  let current = head;
-  let next = null;
-
-  while (current !== null) {
-    // Save the next node
-    next = current.next;
-    // Reverse the pointer of current node
-    current.next = prev;
-    // Move prev and current one step forward
-    prev = current;
-    current = next;
+  
+  // Find the maximum value in the dp array
+  let maxLength = Math.max(...dp);
+  
+  // Find the indices of the longest increasing subsequence elements
+  let subsequenceIndices = [];
+  let lastIndex = dp.indexOf(maxLength);
+  for (let i = lastIndex; i >= 0; i--) {
+    if (arr[i] < arr[lastIndex] && dp[i] === dp[lastIndex] - 1) {
+      subsequenceIndices.unshift(i);
+      lastIndex = i;
+    }
   }
-
-  // prev will now be the new head of the reversed list
-  return prev;
+  
+  // Build the longest increasing subsequence from the indices
+  let subsequence = subsequenceIndices.map(index => arr[index]);
+  
+  return subsequence;
 }
-// Create a linked list
-const node1 = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
 
-node1.next = node2;
-node2.next = node3;
-
-// Reverse the linked list
-const reversedHead = reverseLinkedList(node1);
-
-// Print the reversed linked list
-let current = reversedHead;
-while (current !== null) {
-  console.log(current.value);
-  current = current.next;
-}
-3
-2
-1
+// Example usage:
+const array = [3, 4, -1, 0, 6, 2, 3];
+const longestIncreasingSubsequence = findLongestIncreasingSubsequence(array);
+console.log(longestIncreasingSubsequence);
