@@ -1,4 +1,13 @@
-const array = [1, 5, 3, 9, 2];
-const max = Math.max(...array);
+function getStringLength(str) {
+  let length = 0;
+  // Loop through the characters in the string
+  for (let i = 0; str[i] !== undefined; i++) {
+    length++;
+  }
+  return length;
+}
 
-console.log(max); // Output: 9
+// Usage example:
+const myString = "Hello, World!";
+const length = getStringLength(myString);
+console.log(length);  // Output: 13
