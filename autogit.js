@@ -1,17 +1,17 @@
-function getRandomNumber(min, max) {
-  // Calculate the difference between max and min
-  const range = max - min;
-
-  // Generate a random number between 0 and range
-  const random = Math.random() * range;
-
-  // Apply the offset to the random number to adjust the range
-  const number = random + min;
-
-  // Return the final random number
-  return Math.floor(number);
+let str = "This is a string with spaces.";
+let stringWithoutSpaces = str.replace(/\s/g, "");
+console.log(stringWithoutSpaces);
+"Thisisastringwithspaces."
+let str = "This is a string with spaces.";
+let stringWithoutSpaces = str.split(" ").join("");
+console.log(stringWithoutSpaces);
+"Thisisastringwithspaces."
+let str = "This is a string with spaces.";
+let stringWithoutSpaces = "";
+for (let i = 0; i < str.length; i++) {
+  if (str[i] !== " ") {
+    stringWithoutSpaces += str[i];
+  }
 }
-const min = 1;
-const max = 10;
-const randomNumber = getRandomNumber(min, max);
-console.log(randomNumber);
+console.log(stringWithoutSpaces);
+"Thisisastringwithspaces."
