@@ -1,24 +1,21 @@
-function shellSort(arr) {
+function bubbleSort(arr) {
   var len = arr.length;
-  var gap = Math.floor(len / 2);
-
-  while (gap > 0) {
-    for (var i = gap; i < len; i++) {
-      var temp = arr[i];
-      var j = i;
-
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
+  
+  for (var i = 0; i < len - 1; i++) {
+    for (var j = 0; j < len - i - 1; j++) {
+      if (arr[j] > arr[j + 1]) {
+        // Swapping elements
+        var temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
       }
-
-      arr[j] = temp;
     }
-
-    gap = Math.floor(gap / 2);
   }
-
+  
   return arr;
 }
-var myArray = [9, 3, 5, 2, 1, 8, 4, 7, 6];
-console.log(shellSort(myArray));
+
+// Example usage
+var array = [5, 3, 8, 2, 1, 4];
+console.log("Original array:", array);
+console.log("Sorted array:", bubbleSort(array));
