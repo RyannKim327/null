@@ -1,12 +1,19 @@
-function isPalindrome(str) {
-  // Remove any non-alphanumeric characters and convert string to lowercase
-  const cleanStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
-  
-  // Check if the cleaned string is equal to its reverse
-  return cleanStr === cleanStr.split('').reverse().join('');
+function isPrime(number) {
+  // Check if the number is less than 2, as prime numbers start from 2
+  if (number < 2) {
+    return false;
+  }
+
+  // Check for divisibility from 2 to the square root of the number
+  for (let i = 2; i <= Math.sqrt(number); i++) {
+    if (number % i === 0) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
-// Example usage
-console.log(isPalindrome('A man, a plan, a canal: Panama')); // true
-console.log(isPalindrome('race car')); // true
-console.log(isPalindrome('Hello, World!')); // false
+// Example usage:
+console.log(isPrime(17));  // Returns: true
+console.log(isPrime(6));   // Returns: false
