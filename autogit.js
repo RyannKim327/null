@@ -1,55 +1,25 @@
-function tarjanSCC(graph) {
-  const scc = [];
-  const stack = [];
-  const indexMap = {};
-  const lowLinkMap = {};
-  let index = 0;
+function randomSort(arr) {
+  var currentIndex = arr.length, temporaryValue, randomIndex;
 
-  function strongConnect(node) {
-    indexMap[node] = index;
-    lowLinkMap[node] = index;
-    index++;
-    stack.push(node);
+  // While there remain elements to shuffle
+  while (currentIndex !== 0) {
 
-    for (const neighbor of graph[node]) {
-      if (indexMap[neighbor] === undefined) {
-        strongConnect(neighbor);
-        lowLinkMap[node] = Math.min(lowLinkMap[node], lowLinkMap[neighbor]);
-      } else if (stack.includes(neighbor)) {
-        lowLinkMap[node] = Math.min(lowLinkMap[node], indexMap[neighbor]);
-      }
-    }
+    // Pick a remaining element
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
 
-    if (lowLinkMap[node] === indexMap[node]) {
-      const component = [];
-      let element;
-      do {
-        element = stack.pop();
-        component.push(element);
-        lowLinkMap[element] = indexMap[node];
-      } while (element !== node);
-      scc.push(component);
-    }
+    // Swap it with the current element
+    temporaryValue = arr[currentIndex];
+    arr[currentIndex] = arr[randomIndex];
+    arr[randomIndex] = temporaryValue;
   }
 
-  for (const node in graph) {
-    if (indexMap[node] === undefined) {
-      strongConnect(node);
-    }
-  }
-
-  return scc;
+  return arr;
 }
-const graph = {
-  0: [1],
-  1: [2],
-  2: [0, 3],
-  3: [4],
-  4: [5, 7],
-  5: [6],
-  6: [4],
-  7: [3, 6],
-};
-const stronglyConnectedComponents = tarjanSCC(graph);
-console.log(stronglyConnectedComponents);
-[ [ '4', '6', '5' ], [ '3', '7' ], [ '2', '0', '1' ] ]
+
+// Usage example
+var numbers = [1, 2, 3, 4, 5];
+console.log("Before:", numbers);
+
+var shuffledNumbers = randomSort(numbers);
+console.log("After:", shuffledNumbers);
