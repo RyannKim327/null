@@ -1,69 +1,58 @@
-function generateBadCharTable(pattern) {
-  const table = new Array(256).fill(pattern.length);
-
-  for (let i = 0; i < pattern.length - 1; i++) {
-    table[pattern.charCodeAt(i)] = pattern.length - 1 - i;
+class ListNode {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
-
-  return table;
 }
-function generateGoodSuffixTable(pattern) {
-  const table = new Array(pattern.length).fill(pattern.length);
-  const suffixes = new Array(pattern.length).fill(0);
-
-  // Compute the suffixes
-  for (let i = pattern.length - 2; i >= 0; i--) {
-    let j = i;
-
-    while (j >= 0 && pattern[j] === pattern[pattern.length - 1 - (i - j)]) {
-      j--;
-    }
-
-    suffixes[i] = i - j;
+class Queue {
+  constructor() {
+    this.front = null; // points to the front of the queue
+    this.rear = null; // points to the rear of the queue
   }
-
-  // Case 1: Complete match at the end
-  for (let i = 0; i < pattern.length - 1; i++) {
-    table[pattern.length - 1 - suffixes[i]] = pattern.length - 1 - i;
-  }
-
-  // Case 2: Partial match at the end
-  for (let i = 0; i < pattern.length - 2; i++) {
-    const length = pattern.length - 1 - suffixes[i];
-    if (table[length] > pattern.length - 1 - i) {
-      table[length] = pattern.length - 1 - i;
-    }
-  }
-
-  return table;
 }
-function searchBoyerMoore(text, pattern) {
-  const badCharTable = generateBadCharTable(pattern);
-  const goodSuffixTable = generateGoodSuffixTable(pattern);
-  const matches = [];
+Queue.prototype.enqueue = function (value) {
+  const newNode = new ListNode(value);
 
-  let i = pattern.length - 1;
-  while (i < text.length) {
-    let j = pattern.length - 1;
-
-    while (j >= 0 && text[i] === pattern[j]) {
-      i--;
-      j--;
-    }
-
-    if (j === -1) {
-      matches.push(i + 1);
-      i++;
-    } else {
-      const badCharShift = badCharTable[text.charCodeAt(i)] - pattern.length + 1 + j;
-      const goodSuffixShift = goodSuffixTable[j];
-      i += Math.max(badCharShift, goodSuffixShift);
-    }
+  if (this.rear === null) {
+    // if the queue is empty, set both front and rear to the new node
+    this.front = newNode;
+    this.rear = newNode;
+  } else {
+    // otherwise, add the new node to the rear and update the rear pointer
+    this.rear.next = newNode;
+    this.rear = newNode;
+  }
+};
+Queue.prototype.dequeue = function () {
+  if (this.front === null) {
+    // if the queue is empty, return null
+    return null;
   }
 
-  return matches;
-}
-const text = "ABAAABCDBBABCDDEBCABC";
-const pattern = "ABC";
-const matches = searchBoyerMoore(text, pattern);
-console.log(matches); // Output: [4, 14, 19]
+  const removedNode = this.front;
+  this.front = this.front.next;
+
+  if (this.front === null) {
+    // if the front becomes null, update the rear to null as well
+    this.rear = null;
+  }
+
+  return removedNode.value;
+};
+Queue.prototype.isEmpty = function () {
+  return this.front === null;
+};
+const queue = new Queue();
+
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.dequeue()); // Output: 2
+
+console.log(queue.isEmpty()); // Output: false
+
+console.log(queue.dequeue()); // Output: 3
+
+console.log(queue.isEmpty()); // Output: true
