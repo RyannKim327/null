@@ -1,27 +1,27 @@
-function findCommonPrefix(str1, str2) {
-  let i = 0;
-  while (i < str1.length && i < str2.length && str1[i] === str2[i]) {
-    i++;
+function findMiddleElement(head) {
+  let slow = head;
+  let fast = head;
+
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
   }
-  return str1.slice(0, i);
+
+  return slow;
 }
-function longestCommonPrefix(strs) {
-  if (strs.length === 0) {
-    return ''; // No strings to compare
+// Linked List Node class
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
   }
-  
-  let prefix = strs[0]; // Assume first string as initial prefix
-  
-  // Iterate over all strings starting from the second one
-  for (let i = 1; i < strs.length; i++) {
-    prefix = findCommonPrefix(prefix, strs[i]);
-    if (prefix === '') {
-      return ''; // No common prefix found
-    }
-  }
-  
-  return prefix;
 }
-const strings = ['flower', 'flow', 'flight', 'flock'];
-const commonPrefix = longestCommonPrefix(strings);
-console.log(commonPrefix); // Output: 'fl'
+
+// Create a sample linked list
+let head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
+
+console.log(findMiddleElement(head).data);  // Output: 3
