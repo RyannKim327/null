@@ -1,52 +1,176 @@
-class Stack {
-  constructor() {
-    this.stack = [];
-  }
-
-  // Add an item to the stack
-  push(item) {
-    this.stack.push(item);
-  }
-
-  // Remove and return the top item from the stack
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
-    }
-    return this.stack.pop();
-  }
-
-  // Return the top item of the stack without removing it
-  peek() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
-    }
-    return this.stack[this.stack.length - 1];
-  }
-
-  // Check if the stack is empty
-  isEmpty() {
-    return this.stack.length === 0;
-  }
-
-  // Return the size of the stack
-  size() {
-    return this.stack.length;
-  }
-
-  // Print the stack elements
-  print() {
-    console.log(this.stack.join(" "));
+// Create a Node class
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
 }
 
-// Usage example
-const stack = new Stack();
-stack.push(10);
-stack.push(20);
-stack.push(30);
-stack.print(); // Output: 10 20 30
-console.log(stack.pop()); // Output: 30
-console.log(stack.peek()); // Output: 20
-console.log(stack.size()); // Output: 2
-console.log(stack.isEmpty()); // Output: false
+// Create a LinkedList class
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+  }
+
+  // Add a value to the end of the list
+  append(value) {
+    const newNode = new Node(value);
+
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+  }
+
+  // Add a value to the beginning of the list
+  prepend(value) {
+    const newNode = new Node(value);
+
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      newNode.next = this.head;
+      this.head = newNode;
+    }
+  }
+
+  // Insert a value at a specific index
+  insert(index, value) {
+    if (index === 0) {
+      this.prepend(value);
+      return;
+    }
+
+    const newNode = new Node(value);
+    let currentNode = this.head;
+    let previousNode = null;
+    let currentIndex = 0;
+
+    while (currentIndex < index && currentNode) {
+      previousNode = currentNode;
+      currentNode = currentNode.next;
+      currentIndex++;
+    }
+
+    if (currentIndex === index) {
+      newNode.next = currentNode;
+      previousNode.next = newNode;
+
+      if (newNode.next === null) {
+        this.tail = newNode;
+      }
+    } else {
+      throw new Error('Index out of bounds');
+    }
+  }
+
+  // Remove a value at a specific index
+  remove(index) {
+    if (index === 0) {
+      this.head = this.head.next;
+
+      if (!this.head) {
+        this.tail = null;
+      }
+
+      return;
+    }
+
+    let currentNode = this.head;
+    let previousNode = null;
+    let currentIndex = 0;
+
+    while (currentIndex < index && currentNode) {
+      previousNode = currentNode;
+      currentNode = currentNode.next;
+      currentIndex++;
+    }
+
+    if (currentIndex === index && currentNode) {
+      previousNode.next = currentNode.next;
+
+      if (previousNode.next === null) {
+        this.tail = previousNode;
+      }
+    } else {
+      throw new Error('Index out of bounds');
+    }
+  }
+
+  // Get the value at a specific index
+  get(index) {
+    let currentNode = this.head;
+    let currentIndex = 0;
+
+    while (currentIndex < index && currentNode) {
+      currentNode = currentNode.next;
+      currentIndex++;
+    }
+
+    if (currentIndex === index && currentNode) {
+      return currentNode.value;
+    } else {
+      throw new Error('Index out of bounds');
+    }
+  }
+
+  // Check if the list contains a value
+  contains(value) {
+    let currentNode = this.head;
+
+    while (currentNode) {
+      if (currentNode.value === value) {
+        return true;
+      }
+
+      currentNode = currentNode.next;
+    }
+
+    return false;
+  }
+
+  // Get the number of items in the list
+  size() {
+    let count = 0;
+    let currentNode = this.head;
+
+    while (currentNode) {
+      count++;
+      currentNode = currentNode.next;
+    }
+
+    return count;
+  }
+
+  // Print the list
+  print() {
+    const values = [];
+    let currentNode = this.head;
+
+    while (currentNode) {
+      values.push(currentNode.value);
+      currentNode = currentNode.next;
+    }
+
+    console.log(values.join(' -> '));
+  }
+}
+
+// Example usage:
+const list = new LinkedList();
+
+list.append(1);
+list.append(2);
+list.append(3);
+list.prepend(0);
+list.insert(2, 2.5);
+list.remove(1);
+console.log(list.get(2)); // Output: 2.5
+console.log(list.contains(3)); // Output: true
+console.log(list.size()); // Output: 4
+list.print(); // Output: 0 -> 1 -> 2.5 -> 3
