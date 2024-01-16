@@ -1,27 +1,16 @@
-class Node {
-  constructor(val) {
-    this.val = val;
-    this.left = null;
-    this.right = null;
+const array = [1, 2, 3, 3, 4, 5, 5];
+const uniqueArray = [...new Set(array)];
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 3, 3, 4, 5, 5];
+const uniqueArray = array.filter((value, index, self) => {
+  return self.indexOf(value) === index;
+});
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 3, 3, 4, 5, 5];
+const uniqueArray = array.reduce((accumulator, currentValue) => {
+  if (!accumulator.includes(currentValue)) {
+    accumulator.push(currentValue);
   }
-}
-
-function getMaxDepth(root) {
-  if (root === null) {
-    return 0;
-  }
-
-  const leftDepth = getMaxDepth(root.left);
-  const rightDepth = getMaxDepth(root.right);
-  
-  return Math.max(leftDepth, rightDepth) + 1;
-}
-
-// Usage:
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-console.log(getMaxDepth(root)); // Output: 3
+  return accumulator;
+}, []);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
