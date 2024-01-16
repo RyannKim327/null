@@ -1,43 +1,37 @@
-class Node {
-  constructor(value, children) {
-    this.value = value;
-    this.children = children || [];
+function bubbleSort(arr) {
+  // code goes here
+}
+function bubbleSort(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    // code goes here
   }
 }
-
-function depthLimitedSearch(root, target, limit) {
-  let stack = [];
-  stack.push({ node: root, depth: 0 });
-
-  while (stack.length > 0) {
-    let { node, depth } = stack.pop();
-
-    if (node.value === target) {
-      return node;
-    }
-
-    if (depth < limit) {
-      for (let child of node.children) {
-        stack.push({ node: child, depth: depth + 1 });
+function bubbleSort(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    for (let j = 0; j < arr.length - 1 - i; j++) {
+      if (arr[j] > arr[j + 1]) {
+        // swap
+        let temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
       }
     }
   }
-
-  return null;
 }
-
-// Usage example:
-let rootNode = new Node(1, [
-  new Node(2, [
-    new Node(4),
-    new Node(5),
-    new Node(6)
-  ]),
-  new Node(3, [
-    new Node(7),
-    new Node(8)
-  ])
-]);
-
-let targetNode = depthLimitedSearch(rootNode, 5, 2);
-console.log(targetNode); // Node { value: 5, children: [] }
+function bubbleSort(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    for (let j = 0; j < arr.length - 1 - i; j++) {
+      if (arr[j] > arr[j + 1]) {
+        // swap
+        let temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
+      }
+    }
+  }
+  
+  return arr;
+}
+let array = [5, 3, 8, 2, 1, 4];
+let sortedArray = bubbleSort(array);
+console.log(sortedArray);
