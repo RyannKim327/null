@@ -1,28 +1,22 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function shellSort(array) {
+  const gaps = [701, 301, 132, 57, 23, 10, 4, 1];
+
+  for (let gap of gaps) {
+    for (let i = gap; i < array.length; i++) {
+      let temp = array[i];
+      let j;
+
+      for (j = i; j >= gap && array[j - gap] > temp; j -= gap) {
+        array[j] = array[j - gap];
+      }
+
+      array[j] = temp;
+    }
   }
+
+  return array;
 }
 
-function calculateMaxDepth(node) {
-  if (!node) {
-    return 0; // Return 0 for an empty tree
-  }
-
-  const leftDepth = calculateMaxDepth(node.left);
-  const rightDepth = calculateMaxDepth(node.right);
-
-  return Math.max(leftDepth, rightDepth) + 1; // Add 1 to the maximum depth of the left and right subtrees
-}
-
-// Example usage
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-const maxDepth = calculateMaxDepth(root);
-console.log('Maximum depth:', maxDepth);
+// Example usage:
+const arr = [6, 5, 3, 1, 8, 7, 2, 4];
+console.log(shellSort(arr));
