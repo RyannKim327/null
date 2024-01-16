@@ -1,58 +1,52 @@
-class ListNode {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-class Queue {
+class Stack {
   constructor() {
-    this.front = null; // points to the front of the queue
-    this.rear = null; // points to the rear of the queue
+    this.stack = [];
+  }
+
+  // Add an item to the stack
+  push(item) {
+    this.stack.push(item);
+  }
+
+  // Remove and return the top item from the stack
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
+    }
+    return this.stack.pop();
+  }
+
+  // Return the top item of the stack without removing it
+  peek() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
+    }
+    return this.stack[this.stack.length - 1];
+  }
+
+  // Check if the stack is empty
+  isEmpty() {
+    return this.stack.length === 0;
+  }
+
+  // Return the size of the stack
+  size() {
+    return this.stack.length;
+  }
+
+  // Print the stack elements
+  print() {
+    console.log(this.stack.join(" "));
   }
 }
-Queue.prototype.enqueue = function (value) {
-  const newNode = new ListNode(value);
 
-  if (this.rear === null) {
-    // if the queue is empty, set both front and rear to the new node
-    this.front = newNode;
-    this.rear = newNode;
-  } else {
-    // otherwise, add the new node to the rear and update the rear pointer
-    this.rear.next = newNode;
-    this.rear = newNode;
-  }
-};
-Queue.prototype.dequeue = function () {
-  if (this.front === null) {
-    // if the queue is empty, return null
-    return null;
-  }
-
-  const removedNode = this.front;
-  this.front = this.front.next;
-
-  if (this.front === null) {
-    // if the front becomes null, update the rear to null as well
-    this.rear = null;
-  }
-
-  return removedNode.value;
-};
-Queue.prototype.isEmpty = function () {
-  return this.front === null;
-};
-const queue = new Queue();
-
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
-
-console.log(queue.dequeue()); // Output: 1
-console.log(queue.dequeue()); // Output: 2
-
-console.log(queue.isEmpty()); // Output: false
-
-console.log(queue.dequeue()); // Output: 3
-
-console.log(queue.isEmpty()); // Output: true
+// Usage example
+const stack = new Stack();
+stack.push(10);
+stack.push(20);
+stack.push(30);
+stack.print(); // Output: 10 20 30
+console.log(stack.pop()); // Output: 30
+console.log(stack.peek()); // Output: 20
+console.log(stack.size()); // Output: 2
+console.log(stack.isEmpty()); // Output: false
