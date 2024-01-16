@@ -1,17 +1,22 @@
-function isAnagram(str1, str2) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  str1 = str1.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-  str2 = str2.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+function bubbleSort(arr) {
+  var len = arr.length;
+  var swapped;
 
-  // Sort the characters and join them back into strings
-  const sortedStr1 = str1.split('').sort().join('');
-  const sortedStr2 = str2.split('').sort().join('');
+  do {
+    swapped = false;
+    for (var i = 0; i < len - 1; i++) {
+      if (arr[i] > arr[i + 1]) {
+        var temp = arr[i];
+        arr[i] = arr[i + 1];
+        arr[i + 1] = temp;
+        swapped = true;
+      }
+    }
+  } while (swapped);
 
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+  return arr;
 }
 
-// Example usage
-const string1 = 'listen';
-const string2 = 'silent';
-console.log(isAnagram(string1, string2)); // Output: true
+// Example usage:
+var numbers = [5, 3, 8, 4, 2];
+console.log(bubbleSort(numbers)); // Output: [2, 3, 4, 5, 8]
