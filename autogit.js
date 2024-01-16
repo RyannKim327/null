@@ -1,11 +1,20 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  const cleanStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
-
-  // Compare the reversed string with the original string
-  return cleanStr === cleanStr.split('').reverse().join('');
+function countOccurrences(string, word) {
+  // Split the string into an array of words
+  const words = string.split(" ");
+  
+  // Count the number of occurrences
+  let count = 0;
+  for (let i = 0; i < words.length; i++) {
+    if (words[i].toLowerCase() === word.toLowerCase()) {
+      count++;
+    }
+  }
+  
+  return count;
 }
 
-// Example usage
-console.log(isPalindrome('A man, a plan, a canal, Panama')); // true
-console.log(isPalindrome('Hello, world!')); // false
+// Usage example
+const text = "The quick brown fox jumps over the lazy dog";
+const wordToCount = "the";
+const result = countOccurrences(text, wordToCount);
+console.log(`The word '${wordToCount}' occurs ${result} times in the text.`);
