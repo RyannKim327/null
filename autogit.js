@@ -1,48 +1,55 @@
-// Node class
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
-}
+const graph = {
+  A: { B: 5, C: 2 },
+  B: { A: 5, C: 1, D: 3 },
+  C: { A: 2, B: 1, D: 2 },
+  D: { B: 3, C: 2 },
+};
+function dijkstra(graph, startNode) {
+  // Step 1: Initialize data structures
+  const distances = {};
+  const visited = {};
 
-// Linked list class
-class LinkedList {
-  constructor() {
-    this.head = null;
+  for (let vertex in graph) {
+    distances[vertex] = Infinity;
+    visited[vertex] = false;
   }
 
-  // Method to add elements to the linked list
-  add(data) {
-    const newNode = new Node(data);
-    
-    if (this.head === null) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next !== null) {
-        current = current.next;
+  distances[startNode] = 0;
+
+  // Step 2: Traverse the graph
+  for (let vertex in graph) {
+    let currentNode = minDistanceNode(distances, visited);
+    visited[currentNode] = true;
+
+    for (let neighbor in graph[currentNode]) {
+      let distance = graph[currentNode][neighbor];
+      let totalDistance = distances[currentNode] + distance;
+
+      if (totalDistance < distances[neighbor]) {
+        distances[neighbor] = totalDistance;
       }
-      current.next = newNode;
     }
   }
 
-  // Method to find the length of the linked list
-  length() {
-    let count = 0;
-    let current = this.head;
-    while (current !== null) {
-      count++;
-      current = current.next;
-    }
-    return count;
-  }
+  // Step 3: Output the shortest distances
+  return distances;
 }
+function minDistanceNode(distances, visited) {
+  let minDistance = Infinity;
+  let minNode = null;
 
-// Example usage
-const list = new LinkedList();
-list.add(1);
-list.add(2);
-list.add(3);
+  for (let node in distances) {
+    let distance = distances[node];
 
-console.log(list.length()); // Output: 3
+    if (distance < minDistance && !visited[node]) {
+      minDistance = distance;
+      minNode = node;
+    }
+  }
+
+  return minNode;
+}
+const startNode = 'A';
+const shortestDistances = dijkstra(graph, startNode);
+
+console.log(shortestDistances);
