@@ -1,23 +1,26 @@
-function factorialRecursive(n) {
-  if (n === 0) {
-    return 1;
+function longestCommonPrefix(strings) {
+  if (strings.length === 0) {
+    return "";
   }
-  return n * factorialRecursive(n - 1);
-}
-
-// Example usage
-const number = 5;
-const result = factorialRecursive(number);
-console.log(`Factorial of ${number} is: ${result}`);
-function factorialIterative(n) {
-  let result = 1;
-  for (let i = 2; i <= n; i++) {
-    result *= i;
+  
+  let prefix = strings[0];
+  
+  for (let i = 1; i < strings.length; i++) {
+    // Check if the current prefix is a prefix of the next string
+    while (strings[i].indexOf(prefix) !== 0) {
+      // If not, remove the last character from the prefix and try again
+      prefix = prefix.substring(0, prefix.length - 1);
+      
+      // If the prefix becomes empty, there is no common prefix
+      if (prefix === "") {
+        return "";
+      }
+    }
   }
-  return result;
+  
+  return prefix;
 }
+const strings = ["flower", "flow", "flight"];
+const commonPrefix = longestCommonPrefix(strings);
 
-// Example usage
-const number = 5;
-const result = factorialIterative(number);
-console.log(`Factorial of ${number} is: ${result}`);
+console.log(commonPrefix); // Output: "fl"
