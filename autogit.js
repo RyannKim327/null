@@ -1,17 +1,5 @@
-function isPalindrome(str) {
-  // Convert the string to lowercase and remove non-alphanumeric characters
-  const cleanStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+// Prompt the user for input
+var userInput = prompt('Enter something:');
 
-  // Check if the clean string is equal to its reversed version
-  return cleanStr === cleanStr.split('').reverse().join('');
-}
-
-// Example usage
-const str1 = "A man, a plan, a canal – Panama";
-console.log(isPalindrome(str1)); // Output: true
-
-const str2 = "race car";
-console.log(isPalindrome(str2)); // Output: true
-
-const str3 = "Hello World";
-console.log(isPalindrome(str3)); // Output: false
+// Display the input on the screen
+console.log('You entered: ' + userInput);
