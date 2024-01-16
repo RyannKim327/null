@@ -1,28 +1,20 @@
-async function connectToAndroidDevice() {
-    const url = 'https://example.com/connect'; // Replace with your endpoint
+function findNthNodeFromEnd(head, n) {
+  let first = head;
+  let second = head;
 
-    try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to connect to Android device.');
-        }
-
-        const data = await response.json();
-        
-        // Process the data from the Android device
-        console.log('Data received:', data);
-
-        // Perform further operations or actions if needed
-
-    } catch (error) {
-        console.error('Error connecting to Android device:', error.message);
+  // Move the first pointer n positions ahead
+  for (let i = 0; i < n; i++) {
+    if (first === null) {
+      return null; // The list has fewer than n nodes
     }
-}
+    first = first.next;
+  }
 
-connectToAndroidDevice();
+  // Move both pointers until first reaches the end
+  while (first !== null) {
+    first = first.next;
+    second = second.next;
+  }
+
+  return second; // Returns the nth node from the end
+}
