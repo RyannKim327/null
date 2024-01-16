@@ -1,41 +1,28 @@
-function connectToServer() {
-    return new Promise((resolve, reject) => {
-        // Create a new XMLHttpRequest object
-        const xhr = new XMLHttpRequest();
+function isPalindrome(str) {
+  // Convert the string to lowercase and remove non-alphanumeric characters
+  const alphanumericStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-        // Define the request URL and method
-        const url = 'http://example.com/api';
-        const method = 'GET';
+  // Initialize two pointers at the start and end of the string
+  let left = 0;
+  let right = alphanumericStr.length - 1;
 
-        // Configure the request
-        xhr.open(method, url, true);
+  // Iterate until the pointers meet in the middle
+  while (left < right) {
+    // If the characters at both pointers are not equal, return false
+    if (alphanumericStr[left] !== alphanumericStr[right]) {
+      return false;
+    }
 
-        // Set the callback for when the request is complete
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                resolve(xhr.responseText);
-            } else {
-                reject(new Error(`Request failed with status ${xhr.status}`));
-            }
-        };
+    // Move both pointers towards the center
+    left++;
+    right--;
+  }
 
-        // Set the callback for network errors
-        xhr.onerror = function () {
-            reject(new Error('Network error'));
-        };
-
-        // Send the request
-        xhr.send();
-    });
+  // If the loop completes, the string is a valid palindrome
+  return true;
 }
 
-// Usage example
-connectToServer()
-    .then(response => {
-        console.log('Response:', response);
-        // Do something with the response
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        // Handle the error
-    });
+// Example usage
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car"));                   // false
+console.log(isPalindrome("level"));                         // true
