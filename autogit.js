@@ -1,45 +1,12 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+function countOccurrences(string, word) {
+  const regex = new RegExp('\\b' + word + '\\b', 'gi');
+  const matches = string.match(regex);
+  return matches ? matches.length : 0;
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nulla lectus, fringilla sed metus id, hendrerit sagittis elit. Sed sodales lorem vitae metus fringilla, et suscipit elit consequat. Sed ipsum ante, elementum eu nisi id, ultricies facilisis mauris.';
 
-  addNode(value) {
-    const newNode = new Node(value);
+const wordToCount = 'sed';
+const occurrences = countOccurrences(text, wordToCount);
 
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
-
-  getLength() {
-    let count = 0;
-    let current = this.head;
-    while (current) {
-      count++;
-      current = current.next;
-    }
-    return count;
-  }
-}
-
-// Example usage
-const list = new LinkedList();
-list.addNode(1);
-list.addNode(2);
-list.addNode(3);
-list.addNode(4);
-
-console.log(list.getLength()); // Output: 4
+console.log(`The word "${wordToCount}" appears ${occurrences} time(s) in the text.`);
