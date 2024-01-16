@@ -1,36 +1,41 @@
-function countOccurrences(str, char) {
-  let count = 0;
-  for (let i = 0; i < str.length; i++) {
-    if (str[i] === char) {
-      count++;
+function preprocessPattern(pattern) {
+    const table = {};
+    const patternLength = pattern.length - 1;
+    
+    for (let i = 0; i < patternLength; i++) {
+        table[pattern[i]] = patternLength - i;
     }
-  }
-  return count;
+    
+    return table;
 }
+function search(text, pattern) {
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    const table = preprocessPattern(pattern);
+    let i = patternLength - 1;
+    
+    while (i < textLength) {
+        let k = 0;
 
-// Example usage
-const myString = "Hello, world!";
-const myChar = "o";
-const occurrenceCount = countOccurrences(myString, myChar);
-console.log(occurrenceCount); // Output: 2
-function countOccurrences(str, char) {
-  const chars = str.split(char);
-  return chars.length - 1;
+        while (k < patternLength && pattern[patternLength - 1 - k] === text[i - k]) {
+            k++;
+        }
+        
+        if (k === patternLength) {
+            return i - patternLength + 1; // Match found
+        } else {
+            i += table[text[i]] || patternLength; // Shift the pattern
+        }
+    }
+    
+    return -1; // Match not found
 }
+const text = 'This is a sample text for searching.';
+const pattern = 'sample';
 
-// Example usage
-const myString = "Hello, world!";
-const myChar = "o";
-const occurrenceCount = countOccurrences(myString, myChar);
-console.log(occurrenceCount); // Output: 2
-function countOccurrences(str, char) {
-  const regex = new RegExp(char, "g");
-  const matches = str.match(regex);
-  return matches ? matches.length : 0;
+const result = search(text, pattern);
+if (result !== -1) {
+    console.log(`Pattern found at index ${result}`);
+} else {
+    console.log('Pattern not found');
 }
-
-// Example usage
-const myString = "Hello, world!";
-const myChar = "o";
-const occurrenceCount = countOccurrences(myString, myChar);
-console.log(occurrenceCount); // Output: 2
