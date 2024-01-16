@@ -1,53 +1,121 @@
-class Stack {
+class Node {
+  constructor(value = null, level = 0) {
+    this.value = value;
+    this.forward = Array(level + 1);
+  }
+}
+class SkipList {
   constructor() {
-    this.stack = []; // Initialize an empty array
+    this.head = new Node();
+    this.maxLevel = 0;
   }
+}
+/*
+   Insert a new node into the skip list
+   by maintaining the sorted order
+*/
+insert(value) {
+  const update = new Array(this.maxLevel + 1);
+  let currentNode = this.head;
 
-  push(element) {
-    this.stack.push(element); // Add element to the top of the stack
-  }
-
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
+  // Find the appropriate position for the new node
+  for (let i = this.maxLevel; i >= 0; i--) {
+    while (currentNode.forward[i] && currentNode.forward[i].value < value) {
+      currentNode = currentNode.forward[i];
     }
-    return this.stack.pop(); // Remove element from the top of the stack and return it
+    update[i] = currentNode;
   }
 
-  peek() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
+  currentNode = currentNode.forward[0];
+
+  // Generate a random level for the new node
+  const level = this.randomLevel();
+
+  // Create a new node with the given value and level
+  const newNode = new Node(value, level);
+
+  // Update the forward pointers in the skip list
+  for (let i = 0; i <= level; i++) {
+    newNode.forward[i] = update[i].forward[i];
+    update[i].forward[i] = newNode;
+  }
+
+  if (this.maxLevel < level) {
+    this.maxLevel = level;
+  }
+}
+/*
+   Remove a node with the given value from the skip list
+*/
+remove(value) {
+  const update = new Array(this.maxLevel + 1);
+  let currentNode = this.head;
+
+  // Find the node to be deleted
+  for (let i = this.maxLevel; i >= 0; i--) {
+    while (currentNode.forward[i] && currentNode.forward[i].value < value) {
+      currentNode = currentNode.forward[i];
     }
-    return this.stack[this.stack.length - 1]; // Returns the element at the top of the stack without removing it
+    update[i] = currentNode;
   }
 
-  size() {
-    return this.stack.length; // Returns the number of elements in the stack
-  }
+  currentNode = currentNode.forward[0];
 
-  isEmpty() {
-    return this.stack.length === 0; // Returns true if the stack is empty, false otherwise
-  }
+  if (currentNode && currentNode.value === value) {
+    // Update the forward pointers in the skip list
+    for (let i = 0; i <= this.maxLevel; i++) {
+      if (update[i].forward[i] !== currentNode) {
+        break;
+      }
+      update[i].forward[i] = currentNode.forward[i];
+    }
 
-  print() {
-    if (this.isEmpty()) {
-      console.log("Stack is empty");
-    } else {
-      console.log(this.stack.join(" > ")); // Print the elements of the stack in order
+    // Update the maximum level of the skip list
+    while (this.maxLevel > 0 && !this.head.forward[this.maxLevel]) {
+      this.maxLevel--;
     }
   }
 }
+/*
+   Search for a node with the given value
+   and return true if found, false otherwise
+*/
+search(value) {
+  let currentNode = this.head;
 
-// Usage
-const stack = new Stack();
-stack.push(5);
-stack.push(10);
-stack.push(15);
-stack.push(20);
-stack.print(); // Output: 5 > 10 > 15 > 20
+  // Traverse the skip list from highest level to lowest
+  for (let i = this.maxLevel; i >= 0; i--) {
+    while (currentNode.forward[i] && currentNode.forward[i].value < value) {
+      currentNode = currentNode.forward[i];
+    }
+  }
 
-console.log("Popped:", stack.pop()); // Output: Popped: 20
-console.log("Top element:", stack.peek()); // Output: Top element: 15
+  currentNode = currentNode.forward[0];
 
-console.log("Size:", stack.size()); // Output: Size: 3
-console.log("Is empty?", stack.isEmpty()); // Output: Is empty? false
+  return currentNode && currentNode.value === value;
+}
+/*
+   Generate a random level for a new node
+   based on the probability factor
+*/
+randomLevel() {
+  const p = 0.5;
+  let level = 0;
+
+  while (Math.random() < p && level < this.maxLevel + 1) {
+    level++;
+  }
+
+  return level;
+}
+const skipList = new SkipList();
+skipList.insert(3);
+skipList.insert(1);
+skipList.insert(5);
+
+console.log(skipList.search(2));  // returns false
+console.log(skipList.search(3));  // returns true
+
+skipList.remove(1);
+
+console.log(skipList.search(1));  // returns false
