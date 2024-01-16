@@ -1,12 +1,42 @@
-function validateEmail(email) {
-  // Regular expression pattern for email validation
-  const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  
-  // Test the email against the pattern
-  return pattern.test(email);
+class HashTable {
+  constructor() {
+    this.table = {};
+  }
+
+  // hash function and other methods here
+}
+getHashCode(key) {
+  let hashCode = 0;
+  for (let i = 0; i < key.length; i++) {
+    hashCode += key.charCodeAt(i);
+  }
+  return hashCode;
+}
+insert(key, value) {
+  const index = this.getHashCode(key);
+  this.table[index] = value;
 }
 
-// Example usage
-const email = 'example@email.com';
-const isValid = validateEmail(email);
-console.log(isValid);
+get(key) {
+  const index = this.getHashCode(key);
+  return this.table[index];
+}
+
+remove(key) {
+  const index = this.getHashCode(key);
+  if (this.table.hasOwnProperty(index)) {
+    delete this.table[index];
+  }
+}
+hasKey(key) {
+  const index = this.getHashCode(key);
+  return this.table.hasOwnProperty(index);
+}
+
+getKeys() {
+  return Object.keys(this.table);
+}
+
+clear() {
+  this.table = {};
+}
