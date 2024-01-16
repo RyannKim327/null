@@ -5,46 +5,42 @@ class Node {
     this.right = null;
   }
 }
+
 function diameterOfBinaryTree(root) {
-  // base case: an empty tree has a diameter of 0
-  if (root === null) {
-    return 0;
+  let diameter = 0;
+  
+  function getHeight(node) {
+    if (node === null) {
+      return 0;
+    }
+    
+    const leftHeight = getHeight(node.left);
+    const rightHeight = getHeight(node.right);
+    
+    // Update the diameter if the current path has maximum nodes
+    diameter = Math.max(diameter, leftHeight + rightHeight);
+    
+    // Return the height of the current node
+    return Math.max(leftHeight, rightHeight) + 1;
   }
-
-  // calculate the diameter recursively for the left and right subtrees
-  const leftHeight = heightOfBinaryTree(root.left);
-  const rightHeight = heightOfBinaryTree(root.right);
-
-  // calculate the diameter passing through the root node
-  const throughRoot = leftHeight + rightHeight;
-
-  // calculate the diameters of the left and right subtrees
-  const leftDiameter = diameterOfBinaryTree(root.left);
-  const rightDiameter = diameterOfBinaryTree(root.right);
-
-  // return the maximum of the three diameters
-  return Math.max(throughRoot, leftDiameter, rightDiameter);
+  
+  getHeight(root);
+  return diameter;
 }
-function heightOfBinaryTree(node) {
-  // base case: an empty tree has a height of 0
-  if (node === null) {
-    return 0;
-  }
 
-  // recursively calculate the heights of the left and right subtrees
-  const leftHeight = heightOfBinaryTree(node.left);
-  const rightHeight = heightOfBinaryTree(node.right);
+// Example usage:
 
-  // the height of the tree is the maximum height of its subtrees plus 1
-  return Math.max(leftHeight, rightHeight) + 1;
-}
-// Create the binary tree
-const rootNode = new Node(1);
-rootNode.left = new Node(2);
-rootNode.right = new Node(3);
-rootNode.left.left = new Node(4);
-rootNode.left.right = new Node(5);
+// Initialize the binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
+root.left.left.left = new Node(8);
+root.right.right.right = new Node(9);
 
-// Calculate the diameter
-const diameter = diameterOfBinaryTree(rootNode);
-console.log("Diameter of binary tree:", diameter);
+// Find the diameter of the binary tree
+const diameter = diameterOfBinaryTree(root);
+console.log(diameter); // Output: 6
