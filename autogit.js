@@ -1,23 +1,58 @@
-function isAnagram(str1, str2) {
-  // Convert to lowercase and remove whitespace
-  str1 = str1.toLowerCase().replace(/\s/g, '');
-  str2 = str2.toLowerCase().replace(/\s/g, '');
-  
-  // Split strings into arrays, sort, and join back into strings
-  const sortedStr1 = str1.split('').sort().join('');
-  const sortedStr2 = str2.split('').sort().join('');
-
-  // Compare sorted strings
-  return sortedStr1 === sortedStr2;
+class TrieNode {
+  constructor() {
+    this.children = {};
+    this.isEndOfWord = false;
+  }
 }
 
-// Example usage
-const string1 = 'listen';
-const string2 = 'silent';
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
+  }
 
-if (isAnagram(string1, string2)) {
-  console.log(`${string1} and ${string2} are anagrams.`);
-} else {
-  console.log(`${string1} and ${string2} are not anagrams.`);
+  insert(word) {
+    let node = this.root;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      if (!(char in node.children)) {
+        node.children[char] = new TrieNode();
+      }
+      node = node.children[char];
+    }
+    node.isEndOfWord = true;
+  }
+
+  search(word) {
+    let node = this.root;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      if (!(char in node.children)) {
+        return false;
+      }
+      node = node.children[char];
+    }
+    return node.isEndOfWord;
+  }
+
+  startsWith(prefix) {
+    let node = this.root;
+    for (let i = 0; i < prefix.length; i++) {
+      const char = prefix[i];
+      if (!(char in node.children)) {
+        return false;
+      }
+      node = node.children[char];
+    }
+    return true;
+  }
 }
-listen and silent are anagrams.
+const trie = new Trie();
+trie.insert("apple");
+console.log(trie.search("apple"));  // Output: true
+console.log(trie.search("app"));    // Output: false
+
+trie.insert("app");
+console.log(trie.search("app"));   // Output: true
+
+console.log(trie.startsWith("app"));  // Output: true
+console.log(trie.startsWith("apt"));  // Output: false
