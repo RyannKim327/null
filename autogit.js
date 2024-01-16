@@ -1,31 +1,43 @@
 class Node {
-  constructor(data) {
-    this.data = data;
-    this.left = null;
-    this.right = null;
+  constructor(startIndex) {
+    this.startIndex = startIndex;
+    this.children = {};
+    // Add other properties if needed
   }
 }
-
-function maxDepth(root) {
-  // If the root is null, the tree has a depth of 0
-  if (root === null) {
-    return 0;
-  } else {
-    // Recursively calculate the maximum depth of the left and right subtrees
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
-
-    // Return the maximum depth among the left and right subtrees, plus 1 for the root node
-    return Math.max(leftDepth, rightDepth) + 1;
+class SuffixTree {
+  constructor(text) {
+    this.text = text;
+    this.root = new Node(-1);
+    this.construct();
   }
+
+  construct() {
+    const len = this.text.length;
+    for (let i = 0; i < len; i++) {
+      this._addSuffix(i);
+    }
+  }
+
+  _addSuffix(startIndex) {
+    let current = this.root;
+    const suffix = this.text.slice(startIndex);
+    const len = suffix.length;
+
+    for (let i = 0; i < len; i++) {
+      const char = suffix[i];
+      if (!current.children[char]) {
+        current.children[char] = new Node(startIndex + i);
+      }
+      current = current.children[char];
+    }
+  }
+
+  // Add other methods for operations like searching, deleting, etc.
 }
+const suffixTree = new SuffixTree('banana');
 
-// Example usage
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
+// Testing by traversing the tree
+console.log(suffixTree.root.children['a'].children); // Output: { n: Node { startIndex: 2, children: {} } }
 
-console.log('Maximum depth:', maxDepth(root));
+console.log(suffixTree.root.children['b']); // Output: Node { startIndex: 0, children: { a: Node { startIndex: 1, children: [Object] } } }
