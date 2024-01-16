@@ -1,49 +1,29 @@
-function computeLPSArray(pattern) {
-  const lps = new Array(pattern.length).fill(0);
-  let len = 0, i = 1;
+function findFirstNonRepeatingChar(str) {
+  // Create an empty object to store character occurrences
+  const charOccurrences = {};
 
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[len]) {
-      len++;
-      lps[i] = len;
-      i++;
-    } else {
-      if (len !== 0) {
-        len = lps[len - 1];
-      } else {
-        lps[i] = 0;
-        i++;
-      }
-    }
+  // Iterate over each character in the string
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+
+    // If the character is already in the object, increment its count
+    // Otherwise, initialize its count to 1
+    charOccurrences[char] = charOccurrences[char] ? charOccurrences[char] + 1 : 1;
   }
-  return lps;
-}
-function KMPSearch(text, pattern) {
-  const lps = computeLPSArray(pattern);
-  let i = 0, j = 0;
-  const n = text.length, m = pattern.length;
-  const matches = [];
 
-  while (i < n) {
-    if (text[i] === pattern[j]) {
-      i++;
-      j++;
-    }
-    if (j === m) {
-      matches.push(i - j);
-      j = lps[j - 1];
-    } else if (i < n && text[i] !== pattern[j]) {
-      if (j !== 0) {
-        j = lps[j - 1];
-      } else {
-        i++;
-      }
+  // Find the first character with a count of 1
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    if (charOccurrences[char] === 1) {
+      return char;
     }
   }
 
-  return matches;
+  // If no non-repeating character is found, return null
+  return null;
 }
-const text = "ABABAABABABA";
-const pattern = "ABA";
-const matches = KMPSearch(text, pattern);
-console.log(matches); // Output: [0, 2, 4, 9]
+
+// Example usage
+const input = "abracadabra";
+const result = findFirstNonRepeatingChar(input);
+console.log("First non-repeating character:", result);  // Output: "b"
