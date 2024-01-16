@@ -1,52 +1,32 @@
-class Graph {
-  constructor() {
-    this.adjList = new Map(); // Using a Map to store adjacency list
-  }
+function findMajorityElement(arr) {
+  let count = 0;
+  let candidate = null;
 
-  // Add a vertex to the graph
-  addVertex(vertex) {
-    this.adjList.set(vertex, []);
-  }
-
-  // Add an edge between two vertices
-  addEdge(vertex1, vertex2) {
-    this.adjList.get(vertex1).push(vertex2);
-  }
-
-  // Get the list of adjacent vertices for a given vertex
-  getAdjacentVertices(vertex) {
-    return this.adjList.get(vertex);
-  }
-}
-function breadthFirstSearch(graph, startVertex) {
-  let visited = new Set(); // To keep track of already visited vertices
-  let queue = []; // Queue to store vertices to visit
-
-  visited.add(startVertex);
-  queue.push(startVertex);
-
-  while (queue.length > 0) {
-    let currentVertex = queue.shift();
-    console.log(currentVertex);
-
-    let adjacentVertices = graph.getAdjacentVertices(currentVertex);
-    for (let neighbor of adjacentVertices) {
-      if (!visited.has(neighbor)) {
-        visited.add(neighbor);
-        queue.push(neighbor);
-      }
+  for (let i = 0; i < arr.length; i++) {
+    if (count === 0) {
+      candidate = arr[i];
+      count = 1;
+    } else if (arr[i] === candidate) {
+      count++;
+    } else {
+      count--;
     }
   }
-}
-const graph = new Graph();
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('C', 'E');
 
-breadthFirstSearch(graph, 'A');
+  // Verify if the candidate is the majority element
+  count = 0;
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === candidate) {
+      count++;
+    }
+  }
+
+  if (count > Math.floor(arr.length / 2)) {
+    return candidate;
+  } else {
+    return "No majority element found";
+  }
+}
+const array = [2, 4, 5, 2, 2, 3, 2, 2, 6, 2, 2]; // Majority element = 2
+const majorityElement = findMajorityElement(array);
+console.log(majorityElement); // Output: 2
