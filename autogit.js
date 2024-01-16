@@ -1,30 +1,29 @@
-pos = low + Math.floor((target - arr[low]) * (high - low) / (arr[high] - arr[low]));
-function interpolationSearch(arr, target, size) {
-  let low = 0;
-  let high = size - 1;
-  
-  while (low <= high && target >= arr[low] && target <= arr[high]) {
-    if (low === high) {
-      if (arr[low] === target) return low;
-      return -1;
+function shellSort(array) {
+  // Create the gap sequence
+  let gap = 1;
+  while (gap < array.length / 3) {
+    gap = gap * 3 + 1;
+  }
+
+  while (gap > 0) {
+    for (let i = gap; i < array.length; i++) {
+      let temp = array[i];
+      let j = i;
+
+      while (j >= gap && array[j - gap] > temp) {
+        array[j] = array[j - gap];
+        j -= gap;
+      }
+
+      array[j] = temp;
     }
-  
-    let pos = low + Math.floor((target - arr[low]) * (high - low) / (arr[high] - arr[low]));
-  
-    if (arr[pos] === target) return pos;
-  
-    if (arr[pos] < target) {
-      low = pos + 1;
-    } else {
-      high = pos - 1;
-    }
+
+    gap = Math.floor(gap / 3);
   }
   
-  return -1;
+  return array;
 }
-const arr = [1, 3, 5, 7, 9];
-const target = 7;
-const size = arr.length;
 
-const result = interpolationSearch(arr, target, size);
-console.log(result); // Output: 3 (index position of target element)
+// Example usage
+const unsortedArray = [7, 3, 9, 4, 1, 5];
+console.log(shellSort(unsortedArray)); // Output: [1, 3, 4, 5, 7, 9]
