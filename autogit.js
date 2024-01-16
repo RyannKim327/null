@@ -1,44 +1,49 @@
-function findCommonElements(arr1, arr2) {
-  const commonElements = [];
+function computeLPSArray(pattern) {
+  const lps = new Array(pattern.length).fill(0);
+  let len = 0, i = 1;
 
-  for (let i = 0; i < arr1.length; i++) {
-    for (let j = 0; j < arr2.length; j++) {
-      if (arr1[i] === arr2[j]) {
-        commonElements.push(arr1[i]);
-        break;
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[len]) {
+      len++;
+      lps[i] = len;
+      i++;
+    } else {
+      if (len !== 0) {
+        len = lps[len - 1];
+      } else {
+        lps[i] = 0;
+        i++;
       }
     }
   }
-  
-  return commonElements;
+  return lps;
 }
+function KMPSearch(text, pattern) {
+  const lps = computeLPSArray(pattern);
+  let i = 0, j = 0;
+  const n = text.length, m = pattern.length;
+  const matches = [];
 
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7];
-
-console.log(findCommonElements(array1, array2)); // Output: [4, 5]
-function findCommonElements(arr1, arr2) {
-  return arr1.filter(value => arr2.includes(value));
-}
-
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7];
-
-console.log(findCommonElements(array1, array2)); // Output: [4, 5]
-function findCommonElements(arr1, arr2) {
-  const set1 = new Set(arr1);
-  const commonElements = [];
-
-  for (const value of arr2) {
-    if (set1.has(value)) {
-      commonElements.push(value);
+  while (i < n) {
+    if (text[i] === pattern[j]) {
+      i++;
+      j++;
+    }
+    if (j === m) {
+      matches.push(i - j);
+      j = lps[j - 1];
+    } else if (i < n && text[i] !== pattern[j]) {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
+      }
     }
   }
-  
-  return commonElements;
+
+  return matches;
 }
-
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7];
-
-console.log(findCommonElements(array1, array2)); // Output: [4, 5]
+const text = "ABABAABABABA";
+const pattern = "ABA";
+const matches = KMPSearch(text, pattern);
+console.log(matches); // Output: [0, 2, 4, 9]
