@@ -1,47 +1,20 @@
-function findMedianSortedArrays(nums1, nums2) {
-  const merged = mergeSortedArrays(nums1, nums2);
-  const length = merged.length;
-  
-  if (length % 2 === 0) {
-    const middleIndex = length / 2;
-    const previousIndex = middleIndex - 1;
-    return (merged[middleIndex] + merged[previousIndex]) / 2;
-  } else {
-    const middleIndex = Math.floor(length / 2);
-    return merged[middleIndex];
-  }
-}
+function findSecondLargest(arr) {
+  let max = -Infinity;
+  let secondMax = -Infinity;
 
-function mergeSortedArrays(nums1, nums2) {
-  const merged = [];
-  let i = 0;
-  let j = 0;
-  
-  while (i < nums1.length && j < nums2.length) {
-    if (nums1[i] < nums2[j]) {
-      merged.push(nums1[i]);
-      i++;
-    } else {
-      merged.push(nums2[j]);
-      j++;
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] > max) {
+      secondMax = max;
+      max = arr[i];
+    } else if (arr[i] > secondMax && arr[i] < max) {
+      secondMax = arr[i];
     }
   }
 
-  while (i < nums1.length) {
-    merged.push(nums1[i]);
-    i++;
-  }
-  
-  while (j < nums2.length) {
-    merged.push(nums2[j]);
-    j++;
-  }
-  
-  return merged;
+  return secondMax;
 }
 
 // Example usage:
-const nums1 = [1, 3];
-const nums2 = [2, 4, 5];
-const median = findMedianSortedArrays(nums1, nums2);
-console.log(median);
+const array = [5, 8, 1, 2, 10, 3, 6];
+const secondLargest = findSecondLargest(array);
+console.log(secondLargest); // Output: 8
