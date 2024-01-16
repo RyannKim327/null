@@ -1,17 +1,14 @@
-function findMaxSubarray(array) {
-  let currentSum = array[0];
-  let maxSum = array[0];
+function calculateMean(numbers) {
+    if (numbers.length === 0) {
+        return 0;
+    }
 
-  for (let i = 1; i < array.length; i++) {
-    // Choose the larger value between the current element and the sum of the current element and the previous subarray
-    currentSum = Math.max(array[i], currentSum + array[i]);
+    const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue);
+    const mean = sum / numbers.length;
 
-    // Update the maximum sum if the current sum is greater
-    maxSum = Math.max(maxSum, currentSum);
-  }
-
-  return maxSum;
+    return mean;
 }
-const array = [2, -5, 4, -2, 1, 7, -6, -4, 3];
-const maxSum = findMaxSubarray(array);
-console.log(maxSum); // Output: 10
+const numbers = [1, 2, 3, 4, 5];
+const mean = calculateMean(numbers);
+
+console.log(mean); // Output: 3
