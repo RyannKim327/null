@@ -1,28 +1,36 @@
-function makeRequest(url, callback) {
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', url, true);
+function findMajorityElement(array) {
+  let candidate;
+  let count = 0;
 
-  xhr.onload = function() {
-    if (xhr.status >= 200 && xhr.status < 400) {
-      callback(null, xhr.responseText);
+  for (let i = 0; i < array.length; i++) {
+    if (count === 0) {
+      candidate = array[i];
+      count = 1;
+    } else if (candidate === array[i]) {
+      count++;
     } else {
-      callback(new Error('Request failed with status ' + xhr.status));
+      count--;
     }
-  };
-
-  xhr.onerror = function() {
-    callback(new Error('Request failed'));
-  };
-
-  xhr.send();
-}
-
-// Example usage
-makeRequest('http://example.com/api/data', function(error, response) {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log(response);
-    // Do something with the response
   }
-});
+
+  // At this point, the majority element should be stored in `candidate`
+  // Now, we need to verify if it is the actual majority element
+
+  // Resetting the count
+  count = 0;
+
+  for (let i = 0; i < array.length; i++) {
+    if (candidate === array[i]) {
+      count++;
+    }
+  }
+
+  if (count > array.length / 2) {
+    return candidate;
+  } else {
+    return "No majority element found.";
+  }
+}
+const array = [1, 2, 2, 2, 3, 2, 4, 2, 5];
+
+console.log(findMajorityElement(array)); // Output: 2
