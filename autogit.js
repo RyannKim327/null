@@ -1,25 +1,16 @@
-function bwt(input) {
+function isAnagram(str1, str2) {
+  // Convert strings to lowercase and remove non-alphabetic characters
+  str1 = str1.toLowerCase().replace(/[^a-z]/g, '');
+  str2 = str2.toLowerCase().replace(/[^a-z]/g, '');
 
+  // Convert strings to arrays, sort them, and join them back to strings
+  str1 = str1.split('').sort().join('');
+  str2 = str2.split('').sort().join('');
+
+  // Compare the sorted strings and return the result
+  return str1 === str2;
 }
-function rotate(input) {
-  return input.slice(-1) + input.slice(0, -1);
-}
-function rotations(input) {
-  let rotations = [];
-  for (let i = 0; i < input.length; i++) {
-    rotations.push(rotate(input));
-    input = rotate(input);
-  }
-  return rotations;
-}
-function bwt(input) {
-  let rotationsArray = rotations(input);
-  let sortedArray = rotationsArray.sort();
-  let bwtOutput = "";
-  for (let i = 0; i < sortedArray.length; i++) {
-    bwtOutput += sortedArray[i].slice(-1);
-  }
-  return bwtOutput;
-}
-let inputString = "banana";
-console.log(bwt(inputString)); // Output: "annb$aa"
+
+// Example usage
+console.log(isAnagram('listen', 'silent')); // true
+console.log(isAnagram('hello', 'world')); // false
