@@ -1,28 +1,32 @@
-function bubbleSort(arr) {
-  let len = arr.length;
-  let swapped;
-  
-  do {
-    swapped = false;
-    
-    for (let i = 0; i < len-1; i++) {
-      if (arr[i] > arr[i+1]) {
-        // Swap elements
-        let temp = arr[i];
-        arr[i] = arr[i+1];
-        arr[i+1] = temp;
-        
-        swapped = true;
-      }
-    }
-    
-    // Optimized bubble sort by reducing the last element on each iteration
-    len--;
-  } while (swapped);
-  
-  return arr;
+// Node constructor
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-// Example usage:
-let numbers = [5, 3, 8, 2, 1, 4];
-console.log(bubbleSort(numbers)); // Output: [1, 2, 3, 4, 5, 8]
+// Function to calculate the maximum depth
+function maxDepth(root) {
+  // If the root is null, the depth is 0
+  if (root === null) {
+    return 0;
+  }
+
+  // Calculate the maximum depth of the left and right subtrees recursively
+  const leftDepth = maxDepth(root.left);
+  const rightDepth = maxDepth(root.right);
+
+  // Return the maximum depth plus 1 for the current node
+  return Math.max(leftDepth, rightDepth) + 1;
+}
+
+// Example usage
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+console.log(maxDepth(root)); // Output: 3
