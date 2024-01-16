@@ -1,18 +1,17 @@
-function reverseWords(string) {
-  // Step 1: Split the string into an array of words
-  const wordsArray = string.split(' ');
+const array = [1, 2, 2, 3, 4, 5, 5];
+const uniqueArray = [...new Set(array)];
 
-  // Step 2: Reverse the array
-  const reversedArray = wordsArray.reverse();
+console.log(uniqueArray); // [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 5, 5];
+const uniqueArray = array.filter((value, index, self) => self.indexOf(value) === index);
 
-  // Step 3: Join the array back into a string
-  const reversedString = reversedArray.join(' ');
+console.log(uniqueArray); // [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 5, 5];
+const uniqueArray = array.reduce((accumulator, currentValue) => {
+  if (!accumulator.includes(currentValue)) {
+    accumulator.push(currentValue);
+  }
+  return accumulator;
+}, []);
 
-  return reversedString;
-}
-
-// Example Usage
-const originalString = "Hello world! I am coding in JavaScript!";
-const reversedString = reverseWords(originalString);
-console.log(reversedString);
-JavaScript! in coding am I world! Hello
+console.log(uniqueArray); // [1, 2, 3, 4, 5]
