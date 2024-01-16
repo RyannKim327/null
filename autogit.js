@@ -1,29 +1,34 @@
-function findLongestCommonPrefix(strings) {
-  if (strings.length === 0) {
-    return "";
+class TreeNode {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
-
-  if (strings.length === 1) {
-    return strings[0];
-  }
-
-  strings.sort();
-
-  var firstString = strings[0];
-  var lastString = strings[strings.length - 1];
-  var longestPrefix = "";
-
-  for (var i = 0; i < firstString.length; i++) {
-    if (firstString[i] === lastString[i]) {
-      longestPrefix += firstString[i];
-    } else {
-      break;
-    }
-  }
-
-  return longestPrefix;
 }
 
-// Example usage:
-var strings = ["flower", "flight", "flour"];
-console.log(findLongestCommonPrefix(strings)); // Output: "fl"
+function diameterOfBinaryTree(root) {
+  let diameter = 0;
+
+  function depth(node) {
+    if (node === null) {
+      return 0;
+    }
+    
+    const leftDepth = depth(node.left);
+    const rightDepth = depth(node.right);
+    
+    diameter = Math.max(diameter, leftDepth + rightDepth);
+    
+    return Math.max(leftDepth, rightDepth) + 1;
+  }
+  
+  depth(root);
+  return diameter;
+}
+// Create a binary tree
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+console.log(diameterOfBinaryTree(root)); // Output: 3
