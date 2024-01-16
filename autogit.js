@@ -1,43 +1,36 @@
-class Node {
-  constructor(startIndex) {
-    this.startIndex = startIndex;
-    this.children = {};
-    // Add other properties if needed
-  }
-}
-class SuffixTree {
-  constructor(text) {
-    this.text = text;
-    this.root = new Node(-1);
-    this.construct();
-  }
-
-  construct() {
-    const len = this.text.length;
-    for (let i = 0; i < len; i++) {
-      this._addSuffix(i);
+function countOccurrences(str, char) {
+  let count = 0;
+  for (let i = 0; i < str.length; i++) {
+    if (str[i] === char) {
+      count++;
     }
   }
-
-  _addSuffix(startIndex) {
-    let current = this.root;
-    const suffix = this.text.slice(startIndex);
-    const len = suffix.length;
-
-    for (let i = 0; i < len; i++) {
-      const char = suffix[i];
-      if (!current.children[char]) {
-        current.children[char] = new Node(startIndex + i);
-      }
-      current = current.children[char];
-    }
-  }
-
-  // Add other methods for operations like searching, deleting, etc.
+  return count;
 }
-const suffixTree = new SuffixTree('banana');
 
-// Testing by traversing the tree
-console.log(suffixTree.root.children['a'].children); // Output: { n: Node { startIndex: 2, children: {} } }
+// Example usage
+const myString = "Hello, world!";
+const myChar = "o";
+const occurrenceCount = countOccurrences(myString, myChar);
+console.log(occurrenceCount); // Output: 2
+function countOccurrences(str, char) {
+  const chars = str.split(char);
+  return chars.length - 1;
+}
 
-console.log(suffixTree.root.children['b']); // Output: Node { startIndex: 0, children: { a: Node { startIndex: 1, children: [Object] } } }
+// Example usage
+const myString = "Hello, world!";
+const myChar = "o";
+const occurrenceCount = countOccurrences(myString, myChar);
+console.log(occurrenceCount); // Output: 2
+function countOccurrences(str, char) {
+  const regex = new RegExp(char, "g");
+  const matches = str.match(regex);
+  return matches ? matches.length : 0;
+}
+
+// Example usage
+const myString = "Hello, world!";
+const myChar = "o";
+const occurrenceCount = countOccurrences(myString, myChar);
+console.log(occurrenceCount); // Output: 2
