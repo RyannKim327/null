@@ -1,25 +1,47 @@
-function factorialRecursive(num) {
-  // Base case: factorial of 0 or 1 is 1
-  if (num === 0 || num === 1) {
-    return 1;
+// Define a class for each node in the graph
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.adjacentNodes = [];
   }
-  
-  // Recursive case: multiply num with factorial of num-1
-  return num * factorialRecursive(num - 1);
+
+  // Method to add an adjacent node
+  addAdjacentNode(node) {
+    this.adjacentNodes.push(node);
+  }
 }
 
-// Usage
-console.log(factorialRecursive(5)); // Output: 120
-function factorialIterative(num) {
-  let result = 1;
+// Define the depth-first search function
+function depthFirstSearch(node, visited = new Set()) {
+  // Print the value of the current node
+  console.log(node.value);
   
-  // Multiply result with numbers from 2 to num
-  for (let i = 2; i <= num; i++) {
-    result *= i;
+  // Mark the current node as visited
+  visited.add(node);
+
+  // Recursively visit all adjacent nodes
+  for (const adjacentNode of node.adjacentNodes) {
+    // Skip if the adjacent node has already been visited
+    if (!visited.has(adjacentNode)) {
+      depthFirstSearch(adjacentNode, visited);
+    }
   }
-  
-  return result;
 }
 
-// Usage
-console.log(factorialIterative(5)); // Output: 120
+// Create nodes for the graph
+const nodeA = new Node('A');
+const nodeB = new Node('B');
+const nodeC = new Node('C');
+const nodeD = new Node('D');
+const nodeE = new Node('E');
+const nodeF = new Node('F');
+
+// Define the connections between nodes
+nodeA.addAdjacentNode(nodeB);
+nodeA.addAdjacentNode(nodeC);
+nodeB.addAdjacentNode(nodeD);
+nodeB.addAdjacentNode(nodeE);
+nodeC.addAdjacentNode(nodeF);
+
+// Run the depth-first search starting from node A
+depthFirstSearch(nodeA);
