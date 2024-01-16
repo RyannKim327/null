@@ -1,52 +1,67 @@
-function mergeSort(arr) {
-  const len = arr.length;
-  const sortedArr = Array(len).fill(0); // Create an auxiliary array for merging
-  let blockSize = 1; // Current size of the blocks being merged
+const INF = Number.MAX_SAFE_INTEGER;
+const dist = [];
+const prev = [];
+function bellmanFord(graph, source) {
+  const vertices = Object.keys(graph);
 
-  while (blockSize < len) {
-    let i = 0;
-
-    while (i < len - blockSize) {
-      merge(arr, sortedArr, i, i + blockSize, Math.min(i + 2 * blockSize, len));
-      i += 2 * blockSize;
-    }
-
-    blockSize *= 2;
+  // Step 1: Initialize distances and previous array
+  for (let i = 0; i < vertices.length; i++) {
+    dist[vertices[i]] = INF;
+    prev[vertices[i]] = null;
   }
+  dist[source] = 0;
 
-  return arr;
-}
+  // Step 2: Relax edges repeatedly
+  for (let i = 0; i < vertices.length - 1; i++) {
+    for (let j = 0; j < vertices.length; j++) {
+      const u = vertices[j];
+      const neighbors = Object.keys(graph[u]);
 
-function merge(arr, sortedArr, leftStart, rightStart, rightEnd) {
-  const leftEnd = rightStart - 1;
-  let i = leftStart;
-  let j = rightStart;
-  let k = leftStart;
-
-  // Merge the two sorted subarrays into the auxiliary array
-  while (i <= leftEnd && j <= rightEnd) {
-    if (arr[i] <= arr[j]) {
-      sortedArr[k++] = arr[i++];
-    } else {
-      sortedArr[k++] = arr[j++];
+      for (let k = 0; k < neighbors.length; k++) {
+        const v = neighbors[k];
+        const weight = graph[u][v];
+        if (dist[u] + weight < dist[v]) {
+          dist[v] = dist[u] + weight;
+          prev[v] = u;
+        }
+      }
     }
   }
 
-  // Copy the remaining elements from the left subarray, if any
-  while (i <= leftEnd) {
-    sortedArr[k++] = arr[i++];
+  // Step 3: Check for negative-weight cycles
+  for (let i = 0; i < vertices.length; i++) {
+    const u = vertices[i];
+    const neighbors = Object.keys(graph[u]);
+
+    for (let j = 0; j < neighbors.length; j++) {
+      const v = neighbors[j];
+      const weight = graph[u][v];
+      if (dist[u] + weight < dist[v]) {
+        throw new Error("Graph contains a negative-weight cycle!");
+      }
+    }
   }
 
-  // Copy the remaining elements from the right subarray, if any
-  while (j <= rightEnd) {
-    sortedArr[k++] = arr[j++];
-  }
-
-  // Copy the sorted elements back to the original array
-  for (let m = leftStart; m <= rightEnd; m++) {
-    arr[m] = sortedArr[m];
-  }
+  return { dist, prev };
 }
-const arr = [5, 2, 8, 4, 1, 9, 3];
-const sortedArr = mergeSort(arr);
-console.log(sortedArr); // Output: [1, 2, 3, 4, 5, 8, 9]
+const graph = {
+  A: { B: -1, C: 4 },
+  B: { C: 3, D: 2, E: 2 },
+  C: {},
+  D: { B: 1, C: 5 },
+  E: { D: -3 },
+};
+
+const sourceVertex = 'A';
+const result = bellmanFord(graph, sourceVertex);
+
+console.log("The shortest distances from '" + sourceVertex + "' are:");
+console.log(result.dist);
+
+console.log("The previous vertices on the shortest paths are:");
+console.log(result.prev);
+The shortest distances from 'A' are:
+{ A: 0, B: -1, C: 2, D: -2, E: 1 }
+
+The previous vertices on the shortest paths are:
+{ A: null, B: 'A', C: 'B', D: 'E', E: 'B' }
