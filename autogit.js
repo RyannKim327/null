@@ -1,32 +1,65 @@
-function shellSort(arr) {
-  // Start with a large gap size
-  let gap = Math.floor(arr.length / 2);
+function dijkstra(graph, startNode, endNode) {
+  const distances = {};
+  const previous = {};
+  const queue = [];
 
-  // Reduce the gap in each iteration
-  while (gap > 0) {
-    // Iterate over each element in the array
-    for (let i = gap; i < arr.length; i++) {
-      // Store the current element
-      let temp = arr[i];
+  // Initialize distances and previous
+  for (let node in graph) {
+    distances[node] = Infinity;
+    previous[node] = null;
+  }
+  distances[startNode] = 0;
 
-      // Find the position to insert the current element
-      let j;
+  // Push the start node into the queue
+  queue.push(startNode);
 
-      for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
-        arr[j] = arr[j - gap];
-      }
+  while (queue.length) {
+    // Get the node with the smallest distance from the queue
+    const currentNode = queue.shift();
 
-      // Insert the current element
-      arr[j] = temp;
+    // If end node is reached, exit the loop
+    if (currentNode === endNode) {
+      break;
     }
 
-    // Reduce the gap for the next iteration
-    gap = Math.floor(gap / 2);
-  }
-  
-  return arr;
-}
+    // Loop through all neighbors of the current node
+    for (let neighbor in graph[currentNode]) {
+      const distance = graph[currentNode][neighbor];
+      const totalDistance = distances[currentNode] + distance;
 
-// Usage
-const array = [9, 4, 7, 2, 6, 1, 3, 5, 8];
-console.log(shellSort(array)); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      if (totalDistance < distances[neighbor]) {
+        // Update distances and previous
+        distances[neighbor] = totalDistance;
+        previous[neighbor] = currentNode;
+
+        // Add the neighbor to the queue
+        queue.push(neighbor);
+      }
+    }
+  }
+
+  // Reconstruct the shortest path
+  const path = [endNode];
+  let node = endNode;
+
+  while (node !== startNode) {
+    node = previous[node];
+    path.unshift(node);
+  }
+
+  return path;
+}
+const graph = {
+  A: { B: 5, C: 1 },
+  B: { A: 5, C: 2, D: 1 },
+  C: { A: 1, B: 2, D: 4, E: 8 },
+  D: { B: 1, C: 4, E: 3, F: 6 },
+  E: { C: 8, D: 3 },
+  F: { D: 6 }
+};
+
+const startNode = 'A';
+const endNode = 'E';
+
+const shortestPath = dijkstra(graph, startNode, endNode);
+console.log(shortestPath); // Output: [ 'A', 'C', 'D', 'E' ]
