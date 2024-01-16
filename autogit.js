@@ -1,15 +1,24 @@
-function countOccurrences(string, character) {
-    let count = 0;
-    for (let i = 0; i < string.length; i++) {
-        if (string.charAt(i) === character) {
-            count++;
-        }
+function longestCommonPrefix(strings) {
+  if (strings.length === 0) {
+    return '';
+  }
+  
+  let prefix = '';
+  
+  for (let i = 0; i < strings[0].length; i++) {
+    const char = strings[0][i];
+    
+    for (let j = 1; j < strings.length; j++) {
+      if (strings[j][i] !== char) {
+        return prefix;  // Found a mismatch, return the current prefix
+      }
     }
-    return count;
+    
+    prefix += char;  // All characters matched, append to the prefix
+  }
+  
+  return prefix;
 }
-
-// Example usage
-const myString = "Hello, World!";
-const myCharacter = "o";
-const occurrenceCount = countOccurrences(myString, myCharacter);
-console.log(`The character "${myCharacter}" appears ${occurrenceCount} times in the string "${myString}".`);
+const strings = ['flower', 'flow', 'flight'];
+const result = longestCommonPrefix(strings);
+console.log(result);  // Output: 'fl'
