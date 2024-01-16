@@ -1,30 +1,22 @@
-// Create a graph using an adjacency list
-const graph = {
-  A: ['B', 'C'],
-  B: ['D', 'E'],
-  C: ['F'],
-  D: [],
-  E: ['F'],
-  F: []
-};
-
-// Implement the depth-first search algorithm
-function depthFirstSearch(graph, startNode) {
-  const visited = new Set();
-
-  function dfs(node) {
-    console.log(node);
-    visited.add(node);
-
-    for (const neighbor of graph[node]) {
-      if (!visited.has(neighbor)) {
-        dfs(neighbor);
-      }
-    }
+function isPalindrome(head) {
+  // Step 1: Traverse linked list and store values in an array
+  let currentNode = head;
+  const values = [];
+  while (currentNode !== null) {
+    values.push(currentNode.val);
+    currentNode = currentNode.next;
   }
 
-  dfs(startNode);
-}
+  // Step 2: Use two pointers to check if the array is a palindrome
+  let start = 0;
+  let end = values.length - 1;
+  while (start < end) {
+    if (values[start] !== values[end]) {
+      return false;
+    }
+    start++;
+    end--;
+  }
 
-// Call the depth-first search function
-depthFirstSearch(graph, 'A');
+  return true;
+}
