@@ -1,36 +1,44 @@
 class Node {
   constructor() {
-    this.children = {};
-    this.suffixLink = null;
+    // Each node has a children map, where the key is the character
+    // and the value is the corresponding child node.
+    this.children = new Map();
   }
 }
 class SuffixTree {
   constructor() {
+    // The root node of the suffix tree
     this.root = new Node();
   }
-}
-SuffixTree.prototype.insert = function(string) {
-  const len = string.length;
-  for (let i = 0; i < len; i++) {
-    let node = this.root;
-    let suffix = string.substring(i);
-    for (let j = 0; j < suffix.length; j++) {
-      const char = suffix[j];
-      if (!(char in node.children)) {
-        node.children[char] = new Node();
+  
+  // Add a suffix to the tree
+  addSuffix(suffix) {
+    let current = this.root;
+    
+    for (let i = 0; i < suffix.length; i++) {
+      const char = suffix[i];
+      
+      if (!current.children.has(char)) {
+        // If the character doesn't exist in the children, create a new node
+        const newNode = new Node();
+        current.children.set(char, newNode);
       }
-      node = node.children[char];
+      
+      // Move to the next node
+      current = current.children.get(char);
     }
-    // Store the remaining suffix as the value of the leaf node
-    node.value = suffix;
   }
-};
-SuffixTree.prototype.buildSuffixTree = function(string) {
-  for (let i = 0; i < string.length; i++) {
-    this.insert(string.substring(i));
+}
+function buildSuffixTree(str) {
+  const suffixTree = new SuffixTree();
+  
+  // Add all suffixes of the given string to the tree
+  for (let i = 0; i < str.length; i++) {
+    suffixTree.addSuffix(str.slice(i));
   }
-};
-const suffixTree = new SuffixTree();
-const inputString = "banana";
-suffixTree.buildSuffixTree(inputString);
-console.log(suffixTree.root);
+  
+  return suffixTree;
+}
+const str = "banana";
+const suffixTree = buildSuffixTree(str);
+console.log(suffixTree);
