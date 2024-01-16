@@ -1,20 +1,11 @@
-function largestPrimeFactor(number) {
-  let factor = 2;
-  
-  while (factor * factor <= number) {
-    // Check if number is divisible by factor
-    if (number % factor === 0) {
-      // Update the number by dividing it by factor
-      number /= factor;
-    } else {
-      // Increment factor if number is not divisible
-      factor++;
-    }
-  }
-  
-  // Return the last factor, which is the largest prime factor
-  return number;
+// Function to calculate the area of a triangle
+function calculateArea(base, height) {
+  var area = (base * height) / 2;
+  return area;
 }
 
 // Example usage
-console.log(largestPrimeFactor(13195));  // Output: 29
+var base = 5;
+var height = 8;
+var triangleArea = calculateArea(base, height);
+console.log("The area of the triangle is: " + triangleArea);
