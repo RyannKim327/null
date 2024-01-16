@@ -1,38 +1,27 @@
-function rabinKarp(text, pattern) {
-  const patternLength = pattern.length;
-  const textLength = text.length;
+function rotateString(str) {
+  const rotations = [str];
 
-  // Calculate pattern hash
-  let patternHash = 0;
-  for (let i = 0; i < patternLength; i++) {
-    patternHash += pattern.charCodeAt(i);
+  for (let i = 1; i < str.length; i++) {
+    str = str.slice(1) + str[0]; // Rotate the string
+    rotations.push(str);
   }
 
-  // Calculate initial window hash
-  let windowHash = 0;
-  for (let i = 0; i < patternLength; i++) {
-    windowHash += text.charCodeAt(i);
-  }
-
-  // Iterate through text
-  for (let i = 0; i <= textLength - patternLength; i++) {
-    if (windowHash === patternHash) {
-      // Check for match
-      if (text.substring(i, i + patternLength) === pattern) {
-        return i; // Match found, return starting position
-      }
-    }
-
-    // Calculate hash for next window
-    windowHash -= text.charCodeAt(i);
-    windowHash += text.charCodeAt(i + patternLength);
-  }
-
-  return -1; // No match found
+  return rotations;
 }
+function generateBWTMatrix(str) {
+  const rotations = rotateString(str);
+  rotations.sort();
 
-// Example usage
-const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
-const pattern = "ipsum";
-const result = rabinKarp(text, pattern);
-console.log(result); // Output: 6 (starting index of the pattern in the text)
+  return rotations;
+}
+function extractBWT(matrix) {
+  return matrix.map((rotation) => rotation.slice(-1)).join('');
+}
+const input = 'banana';
+const matrix = generateBWTMatrix(input);
+const bwt = extractBWT(matrix);
+
+console.log(`Input: ${input}`);
+console.log(`BWT: ${bwt}`);
+Input: banana
+BWT: annb$aa
