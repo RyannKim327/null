@@ -1,23 +1,11 @@
-function selectionSort(array) {
-  const length = array.length;
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert string to lowercase
+  str = str.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-  for (let i = 0; i < length - 1; i++) {
-    let minIndex = i;
-
-    // Find the index of the minimum element in the remaining unsorted portion of the array
-    for (let j = i + 1; j < length; j++) {
-      if (array[j] < array[minIndex]) {
-        minIndex = j;
-      }
-    }
-
-    // Swap the minimum element with the first unsorted element
-    [array[i], array[minIndex]] = [array[minIndex], array[i]];
-  }
-
-  return array;
+  // Check if the reversed string is equal to the original string
+  return str === str.split('').reverse().join('');
 }
 
-// Example usage:
-const unsortedArray = [9, 5, 1, 4, 3];
-console.log(selectionSort(unsortedArray)); // Output: [1, 3, 4, 5, 9]
+// Example use:
+console.log(isPalindrome("racecar")); // Output: true
+console.log(isPalindrome("hello")); // Output: false
