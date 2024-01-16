@@ -1,15 +1,11 @@
-function isArraySortedAscending(arr) {
-  for (let i = 0; i < arr.length - 1; i++) {
-    if (arr[i] > arr[i + 1]) {
-      return false;
-    }
+function calculateMean(numbers) {
+  var sum = 0;
+  for (var i = 0; i < numbers.length; i++) {
+    sum += numbers[i];
   }
-  return true;
+  var mean = sum / numbers.length;
+  return mean;
 }
-
-// Example usage
-const sortedArray = [1, 2, 3, 4, 5];
-const unsortedArray = [4, 2, 6, 1, 3];
-
-console.log(isArraySortedAscending(sortedArray));   // Output: true
-console.log(isArraySortedAscending(unsortedArray)); // Output: false
+var numbers = [1, 2, 3, 4, 5];
+var mean = calculateMean(numbers);
+console.log(mean);  // Output: 3
