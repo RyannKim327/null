@@ -1,30 +1,22 @@
-function findLongestCommonPrefix(strings) {
-  if (strings.length === 0) {
-    return "";
+function factorialRecursive(n) {
+  if (n === 0 || n === 1) {
+    return 1;
+  } else {
+    return n * factorialRecursive(n - 1);
   }
-  
-  let prefix = strings[0];
-  
-  for (let i = 1; i < strings.length; i++) {
-    const currentString = strings[i];
-    let j = 0;
-    
-    while (j < prefix.length && j < currentString.length && prefix[j] === currentString[j]) {
-      j++;
-    }
-    
-    prefix = prefix.slice(0, j);
-    
-    if (prefix === "") {
-      break;
-    }
-  }
-  
-  return prefix;
 }
 
 // Example usage
-const strings = ["flower", "flow", "flight"];
-const longestPrefix = findLongestCommonPrefix(strings);
-console.log("Longest Common Prefix:", longestPrefix);
-Longest Common Prefix: fl
+console.log(factorialRecursive(5)); // Output: 120
+function factorialLoop(n) {
+  let result = 1;
+  
+  for (let i = 2; i <= n; i++) {
+    result *= i;
+  }
+
+  return result;
+}
+
+// Example usage
+console.log(factorialLoop(5)); // Output: 120
