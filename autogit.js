@@ -1,24 +1,34 @@
-function burrowsWheelerTransform(input) {
-  // Add end of text marker
-  input += '\0';
+function breadthLimitedSearch(startNode, goalNode, limit) {
+  const queue = [];
+  queue.push({ node: startNode, depth: 0 });
 
-  // Generate all rotations
-  var rotations = [];
-  for (var i = 0; i < input.length; i++) {
-    rotations.push(input.slice(i) + input.slice(0, i));
+  const visited = [];
+
+  while (queue.length > 0) {
+    const { node, depth } = queue.shift();
+
+    if (node === goalNode) {
+      // Generate path from startNode to goalNode
+      const path = [node];
+      let parent = node.parent;
+      while (parent) {
+        path.unshift(parent);
+        parent = parent.parent;
+      }
+      return path;
+    }
+
+    if (!visited.includes(node) && depth < limit) {
+      visited.push(node);
+
+      // Enqueue neighboring nodes
+      const neighbors = getNeighbors(node); // Implement this function to return neighboring nodes
+      neighbors.forEach(neighbor => {
+        neighbor.parent = node;
+        queue.push({ node: neighbor, depth: depth + 1 });
+      });
+    }
   }
 
-  // Sort rotations
-  rotations.sort();
-
-  // Extract last characters of each rotation
-  var result = '';
-  for (var i = 0; i < rotations.length; i++) {
-    result += rotations[i][rotations[i].length - 1];
-  }
-
-  return result;
+  return null; // No path found
 }
-var input = 'banana';
-var transformed = burrowsWheelerTransform(input);
-console.log(transformed); // Outputs: 'annb\0aa'
