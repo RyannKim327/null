@@ -1,41 +1,45 @@
-function findLongestIncreasingSubsequence(arr) {
-  // Create an array to store the lengths of the subsequences
-  const lengths = Array(arr.length).fill(1);
-  
-  // Traverse the array from left to right
-  for (let i = 1; i < arr.length; i++) {
-    // Compare the current element with all previous elements
-    for (let j = 0; j < i; j++) {
-      // If the current element is greater than the previous element,
-      // update the length of the subsequence
-      if (arr[i] > arr[j] && lengths[i] < lengths[j] + 1) {
-        lengths[i] = lengths[j] + 1;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+class BinaryTree {
+  constructor() {
+    this.root = null;
+  }
+
+  insert(value) {
+    const newNode = new Node(value);
+
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
+
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
       }
     }
   }
-  
-  // Find the maximum length in the lengths array
-  let maxLength = 0;
-  for (let i = 0; i < lengths.length; i++) {
-    if (maxLength < lengths[i]) {
-      maxLength = lengths[i];
-    }
-  }
-  
-  // Find the longest increasing subsequence
-  const subsequence = [];
-  let currentLength = maxLength;
-  for (let i = arr.length - 1; i >= 0; i--) {
-    if (lengths[i] === currentLength) {
-      subsequence.unshift(arr[i]);
-      currentLength--;
-    }
-  }
-  
-  return subsequence;
-}
 
-// Example usage:
-const array = [3, 10, 2, 1, 20]; // [2, 3, 10, 20] is the longest increasing subsequence
-const longestIncreasingSubsequence = findLongestIncreasingSubsequence(array);
-console.log(longestIncreasingSubsequence); // Output: [2, 3, 10, 20]
+  // Other methods (e.g., remove, search, traverse) can be added here
+}
+const binaryTree = new BinaryTree();
+binaryTree.insert(10);
+binaryTree.insert(5);
+binaryTree.insert(15);
