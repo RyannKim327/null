@@ -1,16 +1,23 @@
-function findMedianSortedArrays(nums1, nums2) {
-  const merged = [...nums1, ...nums2].sort((a, b) => a - b);
-  const len = merged.length;
-  const mid = Math.floor(len / 2);
-  
-  if (len % 2 === 0) {
-    return (merged[mid - 1] + merged[mid]) / 2;
-  } else {
-    return merged[mid];
-  }
-}
+function binarySearch(arr, target) {
+  let start = 0;
+  let end = arr.length - 1;
 
-// Example usage:
-const nums1 = [1, 3];
-const nums2 = [2, 4];
-console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.5
+  while (start <= end) {
+    const mid = Math.floor((start + end) / 2);
+
+    if (arr[mid] === target) {
+      return mid;
+    } else if (arr[mid] < target) {
+      start = mid + 1;
+    } else {
+      end = mid - 1;
+    }
+  }
+
+  return -1;
+}
+const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const target = 5;
+const index = binarySearch(arr, target);
+
+console.log(index);  // Output: 4 (index of the target value)
