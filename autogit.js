@@ -1,81 +1,30 @@
-class Graph {
-  constructor() {
-    this.adjacencyList = {};
-  }
-
-  addVertex(vertex) {
-    if (!this.adjacencyList[vertex]) {
-      this.adjacencyList[vertex] = [];
-    }
-  }
-
-  addEdge(vertex1, vertex2, weight) {
-    this.adjacencyList[vertex1].push({ node: vertex2, weight });
-    this.adjacencyList[vertex2].push({ node: vertex1, weight });
-  }
+function generateCandidates(partialSolution) {
+  // Generate candidate solutions based on partialSolution
+  // Assign scores or ranks to each candidate
+  // Return the candidate solutions sorted by score/rank
 }
 
-function dijkstra(graph, start, end) {
-  const distances = {};
-  const previous = {};
-  const queue = new PriorityQueue();
+function beamSearch(initialSolution, beamSize, convergenceCriteria) {
+  let beam = [initialSolution];
 
-  for (let vertex in graph.adjacencyList) {
-    distances[vertex] = vertex === start ? 0 : Infinity;
-    previous[vertex] = null;
-    queue.enqueue(vertex, distances[vertex]);
-  }
-
-  while (!queue.isEmpty()) {
-    const currentVertex = queue.dequeue().value;
-
-    if (currentVertex === end) {
-      break;
+  while (!convergenceCriteria()) {
+    let candidates = [];
+    for (let solution of beam) {
+      const newCandidates = generateCandidates(solution);
+      candidates.push(...newCandidates);
     }
 
-    if (distances[currentVertex] === Infinity) {
-      continue;
-    }
-
-    for (let neighbor of graph.adjacencyList[currentVertex]) {
-      const { node, weight } = neighbor;
-      const tentativeDistance = distances[currentVertex] + weight;
-
-      if (tentativeDistance < distances[node]) {
-        distances[node] = tentativeDistance;
-        previous[node] = currentVertex;
-        queue.enqueue(node, distances[node]);
-      }
-    }
+    candidates.sort((a, b) => b.score - a.score);
+    beam = candidates.slice(0, beamSize);
   }
 
-  if (distances[end] === Infinity) {
-    return null;
-  }
-
-  const shortestPath = [];
-  let currentVertex = end;
-
-  while (currentVertex) {
-    shortestPath.unshift(currentVertex);
-    currentVertex = previous[currentVertex];
-  }
-
-  return shortestPath;
+  return beam[0]; // Returning the best solution
 }
 
-// Usage example:
-const graph = new Graph();
-graph.addVertex("A");
-graph.addVertex("B");
-graph.addVertex("C");
-graph.addVertex("D");
-graph.addVertex("E");
-graph.addEdge("A", "B", 4);
-graph.addEdge("A", "C", 2);
-graph.addEdge("C", "D", 2);
-graph.addEdge("C", "E", 3);
-graph.addEdge("D", "E", 1);
-graph.addEdge("B", "E", 3);
+// Usage
+const initialSolution = // Your initial solution
+const beamSize = // Beam size
+const convergenceCriteria = // Function to check convergence
 
-console.log(dijkstra(graph, "A", "E")); // Output: ["A", "C", "D", "E"]
+const bestSolution = beamSearch(initialSolution, beamSize, convergenceCriteria);
+console.log(bestSolution);
