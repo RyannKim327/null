@@ -1,21 +1,23 @@
-function isPalindrome(str) {
-  let left = 0; // pointer starting from the left end of the string
-  let right = str.length - 1; // pointer starting from the right end of the string
-
-  while (left < right) {
-    if (str[left] !== str[right]) {
-      return false; // characters at the left and right pointers don't match, it's not a palindrome
-    }
-    
-    left++; // move the left pointer to the right
-    right--; // move the right pointer to the left
+function depthLimitedSearch(node, goal, depth) {
+  if (depth === 0) {
+    // Reached the maximum depth, end search
+    return null;
   }
 
-  return true; // all characters matched, it's a palindrome
-}
+  if (node === goal) {
+    // Goal node found
+    return node;
+  }
 
-// Example usage:
-console.log(isPalindrome('racecar')); // true
-console.log(isPalindrome('hello')); // false
-console.log(isPalindrome('level')); // true
-console.log(isPalindrome('12321')); // true
+  // Recursively search child nodes
+  for (let i = 0; i < node.children.length; i++) {
+    const result = depthLimitedSearch(node.children[i], goal, depth - 1);
+    if (result) {
+      // Goal node found in child nodes
+      return result;
+    }
+  }
+
+  // Goal node not found
+  return null;
+}
