@@ -1,83 +1,42 @@
-class Node {
-  constructor(position, cost, heuristic, parent) {
-    this.position = position;
-    this.cost = cost;
-    this.heuristic = heuristic;
-    this.parent = parent;
-  }
-}
-function AStarSearch(start, goal, neighbors, heuristic) {
-  // Create open and closed lists
-  let open = [];
-  let closed = new Set();
+function merge(left, right) {
+  let result = [];
+  let i = 0;
+  let j = 0;
 
-  // Add the start node to the open list
-  open.push(new Node(start, 0, heuristic(start), null));
-
-  while (open.length > 0) {
-    // Get the node with the lowest cost in the open list
-    open.sort((a, b) => a.cost + a.heuristic - b.cost - b.heuristic);
-    let current = open.shift();
-
-    // Check if we reached the goal
-    if (current.position === goal) {
-      return constructPath(current);
-    }
-
-    // Add the current node to the closed list
-    closed.add(current.position);
-
-    // Generate neighboring nodes
-    let neighborsList = neighbors(current.position);
-
-    // Process each neighbor
-    for (let neighbor of neighborsList) {
-      // Skip if neighbor is in the closed list
-      if (closed.has(neighbor)) {
-        continue;
-      }
-
-      // Calculate the cost to reach the neighbor from the current node
-      let newCost = current.cost + 1;
-
-      // Check if the neighbor is already in the open list
-      let existingNode = open.find((node) => node.position === neighbor);
-
-      // Add or update the neighbor in the open list
-      if (!existingNode || newCost < existingNode.cost) {
-        let heuristicValue = heuristic(neighbor);
-        let newNode = new Node(
-          neighbor,
-          newCost,
-          heuristicValue,
-          current
-        );
-
-        if (!existingNode) {
-          open.push(newNode);
-        } else {
-          existingNode.cost = newCost;
-          existingNode.heuristic = heuristicValue;
-          existingNode.parent = current;
-        }
-      }
+  while (i < left.length && j < right.length) {
+    if (left[i] < right[j]) {
+      result.push(left[i]);
+      i++;
+    } else {
+      result.push(right[j]);
+      j++;
     }
   }
 
-  // No path found
-  return null;
-}
-function constructPath(node) {
-  let path = [];
-  let current = node;
-
-  while (current !== null) {
-    path.push(current.position);
-    current = current.parent;
+  while (i < left.length) {
+    result.push(left[i]);
+    i++;
   }
 
-  // Reverse the path to get it from start to goal
-  path.reverse();
+  while (j < right.length) {
+    result.push(right[j]);
+    j++;
+  }
 
-  return path;
+  return result;
 }
+function mergeSort(array) {
+  if (array.length <= 1) {
+    return array;
+  }
+
+  const middle = Math.floor(array.length / 2);
+  const left = array.slice(0, middle);
+  const right = array.slice(middle);
+
+  return merge(mergeSort(left), mergeSort(right));
+}
+const numbers = [8, 3, 1, 5, 2, 4, 7, 6];
+const sortedNumbers = mergeSort(numbers);
+
+console.log(sortedNumbers);
