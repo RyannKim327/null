@@ -1,9 +1,12 @@
-let array = [1, 2, 3, 4, 5];
-array.reverse();
+function isPalindrome(str) {
+  // Remove all non-alphanumeric characters and convert to lowercase
+  const cleanedStr = str.toLowerCase().replace(/[\W_]/g, '');
 
-console.log(array); // Output: [5, 4, 3, 2, 1]
-let array = [1, 2, 3, 4, 5];
-let reversedArray = array.slice().reverse();
+  // Compare the cleaned string with its reversed version
+  return cleanedStr === cleanedStr.split('').reverse().join('');
+}
+const str1 = "racecar";
+console.log(isPalindrome(str1)); // Output: true
 
-console.log(array); // Output: [1, 2, 3, 4, 5]
-console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
+const str2 = "hello";
+console.log(isPalindrome(str2)); // Output: false
