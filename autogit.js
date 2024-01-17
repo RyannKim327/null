@@ -1,28 +1,8 @@
-function longestCommonPrefix(strings) {
-  if (strings.length === 0) {
-    return '';
-  }
+// Define an array
+let numbers = [5, 2, 9, 1, 7];
 
-  if (strings.length === 1) {
-    return strings[0];
-  }
+// Find the maximum value
+let max = Math.max(...numbers);
 
-  const firstString = strings[0];
-  let prefix = '';
-
-  for (let i = 0; i < firstString.length; i++) {
-    const currentChar = firstString[i];
-
-    for (let j = 1; j < strings.length; j++) {
-      if (i >= strings[j].length || strings[j][i] !== currentChar) {
-        return prefix;
-      }
-    }
-
-    prefix += currentChar;
-  }
-
-  return prefix;
-}
-const strings = ['apple', 'append', 'appetite'];
-console.log(longestCommonPrefix(strings));  // Output: 'app'
+// Output the maximum value
+console.log(max); // Output: 9
