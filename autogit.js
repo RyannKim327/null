@@ -1,29 +1,32 @@
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
+function findMajorityElement(arr) {
+  let majorityElement = arr[0];
+  let count = 1;
 
-  while (fast !== null && fast.next !== null) {
-    slow = slow.next;
-    fast = fast.next.next;
+  for (let i = 1; i < arr.length; i++) {
+    if (count === 0) {
+      majorityElement = arr[i];
+      count = 1;
+    } else if (majorityElement === arr[i]) {
+      count++;
+    } else {
+      count--;
+    }
   }
 
-  return slow;
-}
-// Define a linked list
-class ListNode {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+  // Verify if the majorityElement is indeed the majority
+  count = 0;
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === majorityElement) {
+      count++;
+    }
   }
+
+  if (count > arr.length / 2) {
+    return majorityElement;
+  }
+
+  return -1; // No majority element found
 }
-
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-// Find the middle element
-const middle = findMiddleElement(head);
-
-console.log(middle.value); // Output: 3
+const array = [2, 2, 1, 1, 1, 2, 2];
+const majorityElement = findMajorityElement(array);
+console.log("Majority Element:", majorityElement); // Output: 2
