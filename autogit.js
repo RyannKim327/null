@@ -1,22 +1,21 @@
-function areAnagrams(str1, str2) {
-  // Convert the strings to lowercase and remove non-alphabetic characters
-  str1 = str1.toLowerCase().replace(/[^a-z]/g, '');
-  str2 = str2.toLowerCase().replace(/[^a-z]/g, '');
+function isPalindrome(str) {
+  let left = 0; // pointer starting from the left end of the string
+  let right = str.length - 1; // pointer starting from the right end of the string
 
-  // Convert strings to arrays, sort them, and convert back to strings
-  const sortedStr1 = str1.split('').sort().join('');
-  const sortedStr2 = str2.split('').sort().join('');
+  while (left < right) {
+    if (str[left] !== str[right]) {
+      return false; // characters at the left and right pointers don't match, it's not a palindrome
+    }
+    
+    left++; // move the left pointer to the right
+    right--; // move the right pointer to the left
+  }
 
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+  return true; // all characters matched, it's a palindrome
 }
 
-// Example usage
-const string1 = 'listen';
-const string2 = 'silent';
-
-if (areAnagrams(string1, string2)) {
-  console.log(`${string1} and ${string2} are anagrams.`);
-} else {
-  console.log(`${string1} and ${string2} are not anagrams.`);
-}
+// Example usage:
+console.log(isPalindrome('racecar')); // true
+console.log(isPalindrome('hello')); // false
+console.log(isPalindrome('level')); // true
+console.log(isPalindrome('12321')); // true
