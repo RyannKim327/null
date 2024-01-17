@@ -1,32 +1,34 @@
 function findMajorityElement(arr) {
-  let majorityElement = arr[0];
-  let count = 1;
+  let count = 0;
+  let candidate = null;
 
-  for (let i = 1; i < arr.length; i++) {
+  for (let i = 0; i < arr.length; i++) {
     if (count === 0) {
-      majorityElement = arr[i];
+      candidate = arr[i];
       count = 1;
-    } else if (majorityElement === arr[i]) {
+    } else if (arr[i] === candidate) {
       count++;
     } else {
       count--;
     }
   }
 
-  // Verify if the majorityElement is indeed the majority
+  // Confirm if the candidate is the majority element
   count = 0;
   for (let i = 0; i < arr.length; i++) {
-    if (arr[i] === majorityElement) {
+    if (arr[i] === candidate) {
       count++;
     }
   }
 
   if (count > arr.length / 2) {
-    return majorityElement;
+    return candidate;
+  } else {
+    return "No majority element found!";
   }
-
-  return -1; // No majority element found
 }
-const array = [2, 2, 1, 1, 1, 2, 2];
+
+// Example usage:
+const array = [2, 4, 5, 4, 4, 2, 4, 2, 4];
 const majorityElement = findMajorityElement(array);
-console.log("Majority Element:", majorityElement); // Output: 2
+console.log(`Majority element: ${majorityElement}`);
