@@ -1,73 +1,129 @@
-class Graph {
-  constructor() {
-    this.vertices = {};
-  }
-
-  addVertex(vertex) {
-    this.vertices[vertex] = {};
-  }
-
-  addEdge(vertex1, vertex2, weight) {
-    this.vertices[vertex1][vertex2] = weight;
-    this.vertices[vertex2][vertex1] = weight;
+// Define Node class
+class Node {
+  constructor(order) {
+    this.order = order; // Maximum number of children
+    this.keys = []; // Array to store keys
+    this.children = []; // Array to store children
+    this.isLeaf = true; // Indicates whether the node is a leaf node
   }
 }
-function dijkstra(graph, startVertex) {
-  const distances = {};
-  const visited = {};
-  const previous = {};
 
-  // Initialize distances with Infinity and previous with null for all vertices
-  for (let vertex in graph.vertices) {
-    distances[vertex] = Infinity;
-    previous[vertex] = null;
+// Define BTree class
+class BTree {
+  constructor(order) {
+    this.root = new Node(order); // Initialize an empty tree with root node
+    this.order = order; // Maximum number of children
   }
 
-  // The distance to the starting vertex is 0
-  distances[startVertex] = 0;
+  // Insert a key into the tree
+  insert(key) {
+    const node = this.root;
 
-  while (Object.keys(visited).length !== Object.keys(graph.vertices).length) {
-    let minVertex = null;
+    if (node.keys.length === (2 * this.order) - 1) {
+      const newRoot = new Node(this.order);
 
-    // Find the vertex with the minimum distance
-    for (let vertex in graph.vertices) {
-      if (!visited[vertex] && (minVertex === null || distances[vertex] < distances[minVertex])) {
-        minVertex = vertex;
-      }
-    }
+      this.root = newRoot;
+      newRoot.children[0] = node;
 
-    visited[minVertex] = true;
+      this.splitChild(newRoot, 0);
 
-    // Update the distances to neighboring vertices
-    for (let neighbor in graph.vertices[minVertex]) {
-      let distance = graph.vertices[minVertex][neighbor];
-      let totalDistance = distances[minVertex] + distance;
-
-      if (totalDistance < distances[neighbor]) {
-        distances[neighbor] = totalDistance;
-        previous[neighbor] = minVertex;
-      }
+      this.insertNonFull(newRoot, key);
+    } else {
+      this.insertNonFull(node, key);
     }
   }
 
-  return { distances, previous };
+  // Insert key into a non-full node
+  insertNonFull(node, key) {
+    let i = node.keys.length - 1;
+
+    if (node.isLeaf) {
+      // Shifting keys to make space for new key
+      while (i >= 0 && key < node.keys[i]) {
+        node.keys[i + 1] = node.keys[i];
+        i--;
+      }
+
+      // Insert the new key at its sorted position
+      node.keys[i + 1] = key;
+    } else {
+      // Finding the child node to insert the key
+      while (i >= 0 && key < node.keys[i]) {
+        i--;
+      }
+
+      i++;
+
+      // Splitting the child if it's full
+      if (node.children[i].keys.length === (2 * this.order) - 1) {
+        this.splitChild(node, i);
+
+        if (key > node.keys[i]) {
+          i++;
+        }
+      }
+
+      // Recursively insert the key in the child node
+      this.insertNonFull(node.children[i], key);
+    }
+  }
+
+  // Split child node into two
+  splitChild(parent, index) {
+    const order = this.order;
+    const child = parent.children[index];
+    const newNode = new Node(order);
+
+    parent.keys.splice(index, 0, child.keys[order - 1]);
+    parent.children.splice(index + 1, 0, newNode);
+
+    newNode.isLeaf = child.isLeaf;
+
+    // Moving keys from the full child to newly created child
+    for (let j = 0; j < order - 1; j++) {
+      newNode.keys[j] = child.keys[j + order];
+    }
+
+    child.keys.length = order - 1;
+
+    if (!child.isLeaf) {
+      // Moving children from the full child to newly created child
+      for (let j = 0; j < order; j++) {
+        newNode.children[j] = child.children[j + order];
+      }
+
+      child.children.length = order;
+    }
+  }
+
+  // Search for a key in the tree
+  search(key, node = this.root) {
+    let i = 0;
+
+    while (i < node.keys.length && key > node.keys[i]) {
+      i++;
+    }
+
+    if (node.keys[i] === key) {
+      return true;
+    }
+
+    if (node.isLeaf) {
+      return false;
+    }
+
+    return this.search(key, node.children[i]);
+  }
 }
-// Create a graph
-const graph = new Graph();
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
-graph.addEdge('A', 'B', 4);
-graph.addEdge('A', 'C', 2);
-graph.addEdge('B', 'E', 3);
-graph.addEdge('C', 'D', 2);
-graph.addEdge('C', 'E', 1);
-graph.addEdge('D', 'E', 3);
 
-// Find the shortest path from vertex 'A'
-const { distances, previous } = dijkstra(graph, 'A');
+// Example usage
+const bTree = new BTree(3);
 
-console.log(distances);  // Output: { A: 0, B: 3, C: 2, D: 4, E: 3 }
-console.log(previous);   // Output: { A: null, B: 'A', C: 'A', D: 'C', E: 'C' }
+bTree.insert(1);
+bTree.insert(2);
+bTree.insert(3);
+bTree.insert(4);
+bTree.insert(5);
+
+console.log(bTree.search(3)); // Output: true
+console.log(bTree.search(6)); // Output: false
