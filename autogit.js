@@ -1,30 +1,33 @@
-function longestCommonPrefix(strArray) {
-  let prefix = '';
+function findMajorityElement(nums) {
+  // Step 1: Find the potential candidate for majority element
+  let candidate;
+  let count = 0;
 
-  if (!strArray || strArray.length === 0) {
-    return prefix;
-  }
-
-  strArray.sort(); // Sort the array in lexicographical order
-
-  const refStr = strArray[0]; // Get the first string as the reference
-
-  for (let i = 0; i < refStr.length; i++) {
-    const char = refStr[i];
-
-    for (let j = 1; j < strArray.length; j++) {
-      if (strArray[j][i] !== char) {
-        return prefix;
-      }
+  for (let num of nums) {
+    if (count === 0) {
+      candidate = num;
+      count = 1;
+    } else {
+      count += (candidate === num) ? 1 : -1;
     }
-
-    prefix += char;
   }
 
-  return prefix;
+  // Step 2: Verify if the candidate is the majority element
+  count = 0;
+  for (let num of nums) {
+    if (num === candidate) {
+      count++;
+    }
+  }
+
+  if (count > nums.length / 2) {
+    return candidate;
+  } else {
+    return "No majority element found";
+  }
 }
 
-// Example usage
-const strings = ['apple', 'app', 'aptitude', 'applaud'];
-const commonPrefix = longestCommonPrefix(strings);
-console.log(commonPrefix); // Output: 'ap'
+// Example usage:
+const arr = [2, 2, 1, 1, 1, 2, 2];
+const majorityElement = findMajorityElement(arr);
+console.log(majorityElement); // Output: 2
