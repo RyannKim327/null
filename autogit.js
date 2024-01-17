@@ -1,35 +1,43 @@
-function boyerMooreHorspool(text, pattern) {
+function buildBadMatchTable(pattern) {
+  const table = {};
   const patternLength = pattern.length;
-  const textLength = text.length;
-
-  // Preprocessing - create Bad Character Shift table
-  const badCharacterShift = {};
+  
   for (let i = 0; i < patternLength - 1; i++) {
-    badCharacterShift[pattern[i]] = patternLength - i - 1;
+    const char = pattern[i];
+    const shift = patternLength - 1 - i;
+    table[char] = shift;
   }
-
-  // String Searching
+  
+  return table;
+}
+function boyerMooreHorspool(text, pattern) {
+  const result = [];
+  const textLength = text.length;
+  const patternLength = pattern.length;
+  
+  if (patternLength > textLength) {
+    return result;
+  }
+  
+  const badMatchTable = buildBadMatchTable(pattern);
   let i = 0;
+  
   while (i <= textLength - patternLength) {
     let j = patternLength - 1;
-
+    
     while (j >= 0 && pattern[j] === text[i + j]) {
       j--;
     }
-
-    if (j === -1) {
-      return i; // match found, return the starting index of the match
+    
+    if (j < 0) {
+      result.push(i);
+      i += 1; // Slide the window by 1
     } else {
-      const shift = badCharacterShift[text[i + j]] || patternLength;
+      const mismatchedChar = text[i + j];
+      const shift = badMatchTable[mismatchedChar] || patternLength;
       i += shift;
     }
   }
-
-  return -1; // no match found
+  
+  return result;
 }
-
-// Example usage:
-const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
-const pattern = "sit";
-const result = boyerMooreHorspool(text, pattern);
-console.log(result); // Output: 19
