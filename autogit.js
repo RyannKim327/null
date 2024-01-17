@@ -1,110 +1,22 @@
-class Node {
-  constructor(start, end) {
-    this.start = start;
-    this.end = end;
-    this.children = {};
-  }
-}
-class SuffixTree {
-  constructor() {
-    this.root = new Node(-1, -1); // Root node representing an empty string
-    this.string = '';
-  }
+function bubbleSort(arr) {
+    let len = arr.length;
+    let swapped;
+    do {
+        swapped = false;
+        for (let i = 0; i < len - 1; i++) {
+            if (arr[i] > arr[i + 1]) {
+                let temp = arr[i];
+                arr[i] = arr[i + 1];
+                arr[i + 1] = temp;
+                swapped = true;
+            }
+        }
+        len--;
+    } while (swapped);
 
-  insert(suffix) {
-    let current = this.root;
-
-    for (let i = 0; i < suffix.length; i++) {
-      const char = suffix[i];
-
-      if (!current.children[char]) {
-        current.children[char] = new Node(i, suffix.length - 1);
-      }
-
-      current = current.children[char];
-    }
-  }
-
-  search(pattern) {
-    let current = this.root;
-
-    for (let i = 0; i < pattern.length; i++) {
-      const char = pattern[i];
-
-      if (!current.children[char]) {
-        return false; // Pattern not found
-      }
-
-      current = current.children[char];
-    }
-
-    return true; // Pattern found
-  }
-}
-const tree = new SuffixTree();
-const suffixes = ['abc', 'def', 'xyz'];
-
-for (const suffix of suffixes) {
-  tree.insert(suffix);
+    return arr;
 }
 
-console.log(JSON.stringify(tree.root, null, 2));
-
-// Output:
-// {
-//   "start": -1,
-//   "end": -1,
-//   "children": {
-//     "a": {
-//       "start": 0,
-//       "end": 2,
-//       "children": {
-//         "b": {
-//           "start": 1,
-//           "end": 2,
-//           "children": {
-//             "c": {
-//               "start": 2,
-//               "end": 2,
-//               "children": {}
-//             }
-//           }
-//         }
-//       }
-//     },
-//     "d": {
-//       "start": 1,
-//       "end": 2,
-//       "children": {
-//         "e": {
-//           "start": 0,
-//           "end": 0,
-//           "children": {
-//             "f": {
-//               "start": 1,
-//               "end": 1,
-//               "children": {}
-//             }
-//           }
-//         }
-//       }
-//     },
-//     "x": {
-//       "start": 0,
-//       "end": 2,
-//       "children": {
-//         "y": {
-//           "start": 1,
-//           "end": 1,
-//           "children": {
-//             "z": {
-//               "start": 2,
-//               "end": 2,
-//               "children": {}
-//             }
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
+// Example usage:
+const numbers = [5, 3, 8, 1, 2];
+console.log(bubbleSort(numbers)); // [1, 2, 3, 5, 8]
