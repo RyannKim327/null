@@ -1,6 +1,8 @@
-let str = "Hello, world! This is a string with spaces.";
+const cron = require('node-cron');
 
-let noSpaces = str.replace(/ /g, "");
+cron.schedule('*/5 * * * *', () => {
+  // This code will run every 5 minutes
 
-console.log(noSpaces);
-Hello,world!Thisisastringwithspaces.
+  // Add your desired functionality here
+  console.log('Running cron job...');
+});
