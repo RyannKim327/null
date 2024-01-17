@@ -1,36 +1,25 @@
-function countingSort(arr) {
-  const len = arr.length;
-
-  if (len <= 1) {
-    return arr;
+function longestCommonPrefix(strs) {
+  if (strs.length === 0) {
+    return '';
   }
+  
+  let prefix = '';
+  const firstStr = strs[0];
 
-  let max = arr[0];
-  for (let i = 1; i < len; i++) {
-    if (arr[i] > max) {
-      max = arr[i];
+  for (let i = 0; i < firstStr.length; i++) {
+    const char = firstStr[i];
+    
+    for (let j = 1; j < strs.length; j++) {
+      if (strs[j][i] !== char) {
+        return prefix;
+      }
     }
+    
+    prefix += char;
   }
-
-  const count = new Array(max + 1).fill(0);
-  const output = new Array(len);
-
-  for (let i = 0; i < len; i++) {
-    count[arr[i]]++;
-  }
-
-  for (let i = 1; i <= max; i++) {
-    count[i] += count[i - 1];
-  }
-
-  for (let i = len - 1; i >= 0; i--) {
-    const val = arr[i];
-    count[val]--;
-    output[count[val]] = val;
-  }
-
-  return output;
+  
+  return prefix;
 }
-const array = [5, 2, 9, 5, 2, 3, 5];
-const sortedArray = countingSort(array);
-console.log(sortedArray); // Output: [2, 2, 3, 5, 5, 5, 9]
+
+const strings = ['flower', 'flow', 'flight'];
+console.log(longestCommonPrefix(strings)); // Output: 'fl'
