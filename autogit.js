@@ -1,26 +1,24 @@
-function findFirstNonRepeatingCharacter(str) {
-  // Create an object to store the character count
-  const charCount = {};
+function bwt(input) {
+  // Add a special end-of-text marker
+  input += '$';
 
-  // Iterate over the string to count the occurrences of each character
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
+  // Generate all possible rotations of the input string
+  const rotations = [];
+  for (let i = 0; i < input.length; i++) {
+    rotations.push(input.slice(i) + input.slice(0, i));
   }
 
-  // Iterate over the string again to find the first non-repeating character
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    if (charCount[char] === 1) {
-      return char;
-    }
+  // Sort the rotations lexicographically
+  rotations.sort();
+
+  // Extract the last character of each rotation
+  let result = '';
+  for (let i = 0; i < rotations.length; i++) {
+    result += rotations[i][input.length - 1];
   }
 
-  // If there are no non-repeating characters, return null
-  return null;
+  return result;
 }
-
-// Example usage:
-const str = "abacddbec";
-const result = findFirstNonRepeatingCharacter(str);
-console.log(result);  // Output: "e"
+const inputString = 'banana';
+const transformedString = bwt(inputString);
+console.log(transformedString);
