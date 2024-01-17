@@ -1,16 +1,11 @@
-function factorialLoop(num) {
-  let factorial = 1;
-  for (let i = 2; i <= num; i++) {
-    factorial *= i;
-  }
-  return factorial;
-}
-function factorialRecursive(num) {
-  if (num === 0) {
+function factorial(n) {
+  if (n === 0) { // base case: factorial of 0 is 1
     return 1;
   } else {
-    return num * factorialRecursive(num - 1);
+    return n * factorial(n - 1); // recursively call the factorial function with n-1
   }
 }
-console.log(factorialLoop(5));       // Output: 120 (5! = 5 * 4 * 3 * 2 * 1 = 120)
-console.log(factorialRecursive(7));  // Output: 5040 (7! = 7 * 6 * 5 * 4 * 3 * 2 * 1 = 5040)
+const number = 5;
+const result = factorial(number);
+console.log(`Factorial of ${number} is: ${result}`);
+Factorial of 5 is: 120
