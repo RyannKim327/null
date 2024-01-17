@@ -1,63 +1,53 @@
-class HashTable {
-  constructor(size = 10) {
-    this.size = size;
-    this.table = new Array(size);
-  }
+// Construct the prefix table (also known as the failure function)
+function buildPrefixTable(pattern) {
+  const prefixTable = [0];
+  let prefixIdx = 0;
 
-  _hash(key) {
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) {
-      hash = (hash + key.charCodeAt(i)) % this.size;
-    }
-    return hash;
-  }
-
-  set(key, value) {
-    const index = this._hash(key);
-    if (!this.table[index]) {
-      this.table[index] = [];
-    }
-    this.table[index].push([key, value]);
-  }
-
-  get(key) {
-    const index = this._hash(key);
-    if (!this.table[index]) {
-      return undefined;
-    }
-    for (let i = 0; i < this.table[index].length; i++) {
-      if (this.table[index][i][0] === key) {
-        return this.table[index][i][1];
+  for (let i = 1; i < pattern.length; i++) {
+    if (pattern[i] === pattern[prefixIdx]) {
+      prefixIdx++;
+    } else {
+      prefixIdx = prefixTable[prefixIdx - 1] || 0;
+      while (prefixIdx && pattern[i] !== pattern[prefixIdx]) {
+        prefixIdx = prefixTable[prefixIdx - 1] || 0;
       }
     }
-    return undefined;
+
+    prefixTable.push(prefixIdx);
   }
 
-  remove(key) {
-    const index = this._hash(key);
-    if (!this.table[index]) {
-      return;
-    }
-    for (let i = 0; i < this.table[index].length; i++) {
-      if (this.table[index][i][0] === key) {
-        this.table[index].splice(i, 1);
-        if (this.table[index].length === 0) {
-          delete this.table[index];
-        }
-        return;
-      }
-    }
-  }
+  return prefixTable;
 }
-const table = new HashTable();
-table.set('apple', 5);
-table.set('banana', 10);
-table.set('orange', 7);
 
-console.log(table.get('apple'));    // Output: 5
-console.log(table.get('banana'));   // Output: 10
-console.log(table.get('orange'));   // Output: 7
-console.log(table.get('pear'));     // Output: undefined
+// Perform string matching using the KMP algorithm
+function stringMatch(text, pattern) {
+  const prefixTable = buildPrefixTable(pattern);
+  const matches = [];
 
-table.remove('banana');
-console.log(table.get('banana'));   // Output: undefined
+  let textIdx = 0;
+  let patternIdx = 0;
+
+  while (textIdx < text.length && patternIdx < pattern.length) {
+    if (text[textIdx] === pattern[patternIdx]) {
+      textIdx++;
+      patternIdx++;
+    } else if (patternIdx !== 0) {
+      patternIdx = prefixTable[patternIdx - 1];
+    } else {
+      textIdx++;
+    }
+
+    if (patternIdx === pattern.length) {
+      matches.push(textIdx - patternIdx);
+      patternIdx = 0;
+    }
+  }
+
+  return matches;
+}
+
+// Example usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const matches = stringMatch(text, pattern);
+console.log(matches); // output: [10]
