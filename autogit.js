@@ -1,30 +1,15 @@
-function generateCandidates(partialSolution) {
-  // Generate candidate solutions based on partialSolution
-  // Assign scores or ranks to each candidate
-  // Return the candidate solutions sorted by score/rank
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  const alphanumericStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+  // Reverse the string
+  const reversedStr = alphanumericStr.split('').reverse().join('');
+
+  // Compare the reversed string with the original string
+  return alphanumericStr === reversedStr;
 }
+const str1 = "A man, a plan, a canal: Panama";
+const str2 = "race a car";
 
-function beamSearch(initialSolution, beamSize, convergenceCriteria) {
-  let beam = [initialSolution];
-
-  while (!convergenceCriteria()) {
-    let candidates = [];
-    for (let solution of beam) {
-      const newCandidates = generateCandidates(solution);
-      candidates.push(...newCandidates);
-    }
-
-    candidates.sort((a, b) => b.score - a.score);
-    beam = candidates.slice(0, beamSize);
-  }
-
-  return beam[0]; // Returning the best solution
-}
-
-// Usage
-const initialSolution = // Your initial solution
-const beamSize = // Beam size
-const convergenceCriteria = // Function to check convergence
-
-const bestSolution = beamSearch(initialSolution, beamSize, convergenceCriteria);
-console.log(bestSolution);
+console.log(isPalindrome(str1));  // Output: true
+console.log(isPalindrome(str2));  // Output: false
