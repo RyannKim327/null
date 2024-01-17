@@ -1,26 +1,35 @@
-function shellSort(array) {
-  const length = array.length;
-  let gap = Math.floor(length / 2);
+function boyerMooreHorspool(text, pattern) {
+  const patternLength = pattern.length;
+  const textLength = text.length;
 
-  while (gap > 0) {
-    for (let i = gap; i < length; i++) {
-      let temp = array[i];
-      let j = i;
-
-      while (j >= gap && array[j - gap] > temp) {
-        array[j] = array[j - gap];
-        j -= gap;
-      }
-
-      array[j] = temp;
-    }
-
-    gap = Math.floor(gap / 2);
+  // Preprocessing - create Bad Character Shift table
+  const badCharacterShift = {};
+  for (let i = 0; i < patternLength - 1; i++) {
+    badCharacterShift[pattern[i]] = patternLength - i - 1;
   }
 
-  return array;
+  // String Searching
+  let i = 0;
+  while (i <= textLength - patternLength) {
+    let j = patternLength - 1;
+
+    while (j >= 0 && pattern[j] === text[i + j]) {
+      j--;
+    }
+
+    if (j === -1) {
+      return i; // match found, return the starting index of the match
+    } else {
+      const shift = badCharacterShift[text[i + j]] || patternLength;
+      i += shift;
+    }
+  }
+
+  return -1; // no match found
 }
 
 // Example usage:
-const arr = [8, 3, 11, 5, 2, 9, 0, 1];
-console.log(shellSort(arr)); // Output: [0, 1, 2, 3, 5, 8, 9, 11]
+const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
+const pattern = "sit";
+const result = boyerMooreHorspool(text, pattern);
+console.log(result); // Output: 19
