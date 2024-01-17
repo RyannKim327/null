@@ -1,46 +1,63 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
-}
-
-class LinkedList {
-  constructor() {
-    this.head = null;
+class HashTable {
+  constructor(size = 10) {
+    this.size = size;
+    this.table = new Array(size);
   }
 
-  addNode(data) {
-    const newNode = new Node(data);
+  _hash(key) {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash = (hash + key.charCodeAt(i)) % this.size;
+    }
+    return hash;
+  }
 
-    if (this.head === null) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next !== null) {
-        current = current.next;
+  set(key, value) {
+    const index = this._hash(key);
+    if (!this.table[index]) {
+      this.table[index] = [];
+    }
+    this.table[index].push([key, value]);
+  }
+
+  get(key) {
+    const index = this._hash(key);
+    if (!this.table[index]) {
+      return undefined;
+    }
+    for (let i = 0; i < this.table[index].length; i++) {
+      if (this.table[index][i][0] === key) {
+        return this.table[index][i][1];
       }
-      current.next = newNode;
     }
+    return undefined;
   }
 
-  getLength() {
-    let count = 0;
-    let current = this.head;
-
-    while (current !== null) {
-      count++;
-      current = current.next;
+  remove(key) {
+    const index = this._hash(key);
+    if (!this.table[index]) {
+      return;
     }
-
-    return count;
+    for (let i = 0; i < this.table[index].length; i++) {
+      if (this.table[index][i][0] === key) {
+        this.table[index].splice(i, 1);
+        if (this.table[index].length === 0) {
+          delete this.table[index];
+        }
+        return;
+      }
+    }
   }
 }
+const table = new HashTable();
+table.set('apple', 5);
+table.set('banana', 10);
+table.set('orange', 7);
 
-// Example usage:
-const linkedList = new LinkedList();
-linkedList.addNode(1);
-linkedList.addNode(2);
-linkedList.addNode(3);
+console.log(table.get('apple'));    // Output: 5
+console.log(table.get('banana'));   // Output: 10
+console.log(table.get('orange'));   // Output: 7
+console.log(table.get('pear'));     // Output: undefined
 
-console.log(linkedList.getLength()); // Output: 3
+table.remove('banana');
+console.log(table.get('banana'));   // Output: undefined
