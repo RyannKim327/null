@@ -1,21 +1,20 @@
-function binarySearchRecursive(arr, target, start = 0, end = arr.length - 1) {
-    if (start > end) {
-        return -1;
-    }
+function findSecondLargest(arr) {
+  let largest = -Infinity;
+  let secondLargest = -Infinity;
 
-    const mid = Math.floor((start + end) / 2);
-
-    if (arr[mid] === target) {
-        return mid;
-    } else if (arr[mid] > target) {
-        return binarySearchRecursive(arr, target, start, mid - 1);
-    } else {
-        return binarySearchRecursive(arr, target, mid + 1, end);
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] > largest) {
+      secondLargest = largest;
+      largest = arr[i];
+    } else if (arr[i] > secondLargest && arr[i] < largest) {
+      secondLargest = arr[i];
     }
+  }
+
+  return secondLargest;
 }
 
 // Example usage:
-const array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const targetValue = 8;
-
-console.log(binarySearchRecursive(array, targetValue));  // Output: 7
+const arr = [5, 10, 3, 8, 2];
+const secondLargest = findSecondLargest(arr);
+console.log(secondLargest); // Output: 8
