@@ -1,15 +1,11 @@
-function getRandomNumber(min, max) {
-  // Generate a random decimal number between 0 and 1
-  var randomDecimal = Math.random();
-  
-  // Scale the random decimal to fit within the desired range
-  var randomNumber = Math.floor(randomDecimal * (max - min + 1)) + min;
-  
-  return randomNumber;
+Area = (base * height) / 2;
+function calculateTriangleArea(base, height) {
+  var area = (base * height) / 2;
+  return area;
 }
 
-// Example usage
-var minNumber = 1;
-var maxNumber = 10;
-var randomNumber = getRandomNumber(minNumber, maxNumber);
-console.log(randomNumber);
+// Example usage:
+var base = 5;
+var height = 3;
+var area = calculateTriangleArea(base, height);
+console.log("The area of the triangle is: " + area);
