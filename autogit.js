@@ -1,22 +1,15 @@
-function bubbleSort(arr) {
-    let len = arr.length;
-    let swapped;
-    do {
-        swapped = false;
-        for (let i = 0; i < len - 1; i++) {
-            if (arr[i] > arr[i + 1]) {
-                let temp = arr[i];
-                arr[i] = arr[i + 1];
-                arr[i + 1] = temp;
-                swapped = true;
-            }
-        }
-        len--;
-    } while (swapped);
+function maxSubarraySum(arr) {
+  let maxSum = arr[0];
+  let currentSum = arr[0];
 
-    return arr;
+  for (let i = 1; i < arr.length; i++) {
+    currentSum = Math.max(arr[i], currentSum + arr[i]);
+    maxSum = Math.max(maxSum, currentSum);
+  }
+
+  return maxSum;
 }
 
 // Example usage:
-const numbers = [5, 3, 8, 1, 2];
-console.log(bubbleSort(numbers)); // [1, 2, 3, 5, 8]
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+console.log(maxSubarraySum(array)); // Output: 6 (corresponding to [4, -1, 2, 1])
