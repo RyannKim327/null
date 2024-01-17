@@ -1,17 +1,22 @@
-function getRandomNumber(min, max) {
-  // Generate a random decimal between 0 and 1
-  var randomDecimal = Math.random();
-  
-  // Scale the random decimal to the desired range
-  var randomInRange = randomDecimal * (max - min) + min;
-  
-  // Round down the number to the nearest whole number
-  var randomInteger = Math.floor(randomInRange);
-  
-  // Return the random number
-  return randomInteger;
+function findMajorityElement(arr) {
+  const freqMap = {};
+
+  // Count the frequency of each element
+  for (let num of arr) {
+    freqMap[num] = (freqMap[num] || 0) + 1;
+  }
+
+  // Find the element with frequency greater than half the array length
+  for (let num in freqMap) {
+    if (freqMap[num] > arr.length / 2) {
+      return parseInt(num);
+    }
+  }
+
+  return -1; // If no majority element is found
 }
 
-// Usage example
-var randomNumber = getRandomNumber(1, 100);
-console.log(randomNumber);
+// Example usage:
+const arr = [2, 4, 2, 3, 2, 2, 6];
+const majorityElement = findMajorityElement(arr);
+console.log(`The majority element is: ${majorityElement}`);
