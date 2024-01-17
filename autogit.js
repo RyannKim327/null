@@ -1,37 +1,20 @@
-function topologicalSort(graph) {
-  const visited = new Set();
-  const sorted = [];
-
-  function visit(node) {
-    visited.add(node);
-
-    if (graph[node]) {
-      graph[node].forEach(neighbor => {
-        if (!visited.has(neighbor)) {
-          visit(neighbor);
-        }
-      });
-    }
-
-    sorted.unshift(node);
+function binarySearch(arr, target, start, end) {
+  if (start > end) {
+    return -1; // Target not found
   }
 
-  Object.keys(graph).forEach(node => {
-    if (!visited.has(node)) {
-      visit(node);
-    }
-  });
+  const mid = Math.floor((start + end) / 2);
 
-  return sorted;
+  if (arr[mid] === target) {
+    return mid; // Target found
+  } else if (arr[mid] > target) {
+    return binarySearch(arr, target, start, mid - 1); // Search in the left half
+  } else {
+    return binarySearch(arr, target, mid + 1, end); // Search in the right half
+  }
 }
-const graph = {
-  A: ["B", "C"],
-  B: ["D"],
-  C: ["D", "E"],
-  D: ["F"],
-  E: [],
-  F: []
-};
+const arr = [1, 3, 5, 7, 9, 11, 13, 15];
+const target = 7;
 
-const sortedOrder = topologicalSort(graph);
-console.log(sortedOrder); // Output: ["A", "C", "E", "B", "D", "F"]
+const result = binarySearch(arr, target, 0, arr.length - 1);
+console.log(result); // Output: 3 (index of target value)
