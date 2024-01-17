@@ -1,20 +1,44 @@
-function binarySearch(arr, target, start, end) {
-  if (start > end) {
-    return -1; // Target not found
+function findLCS(str1, str2) {
+  const m = str1.length;
+  const n = str2.length;
+
+  // Create a 2D array to store the lengths of LCS
+  const dp = new Array(m + 1);
+  for (let i = 0; i < dp.length; i++) {
+    dp[i] = new Array(n + 1).fill(0);
   }
 
-  const mid = Math.floor((start + end) / 2);
-
-  if (arr[mid] === target) {
-    return mid; // Target found
-  } else if (arr[mid] > target) {
-    return binarySearch(arr, target, start, mid - 1); // Search in the left half
-  } else {
-    return binarySearch(arr, target, mid + 1, end); // Search in the right half
+  // Build the dp table
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        dp[i][j] = 1 + dp[i - 1][j - 1];
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+      }
+    }
   }
+
+  // Find the longest common subsequence by backtracking
+  let i = m;
+  let j = n;
+  const lcs = [];
+  while (i > 0 && j > 0) {
+    if (str1[i - 1] === str2[j - 1]) {
+      lcs.unshift(str1[i - 1]);
+      i--;
+      j--;
+    } else if (dp[i - 1][j] > dp[i][j - 1]) {
+      i--;
+    } else {
+      j--;
+    }
+  }
+
+  return lcs.join('');
 }
-const arr = [1, 3, 5, 7, 9, 11, 13, 15];
-const target = 7;
 
-const result = binarySearch(arr, target, 0, arr.length - 1);
-console.log(result); // Output: 3 (index of target value)
+// Example usage
+const str1 = 'ABCDGH';
+const str2 = 'AEDFHR';
+console.log(findLCS(str1, str2)); // Output: ADH
