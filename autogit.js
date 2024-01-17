@@ -1,24 +1,11 @@
-function findFirstRepeatedChar(str) {
-    let charMap = {};
-
-    for (let i = 0; i < str.length; i++) {
-        let currentChar = str[i];
-
-        // Check if the character has already been encountered
-        if (charMap[currentChar]) {
-            return currentChar;
-        } else {
-            // Mark the character as encountered
-            charMap[currentChar] = true;
-        }
-    }
-
-    // Return null if no repeated character is found
-    return null;
+function removeDuplicates(array) {
+  return array.filter((value, index, self) => {
+    return self.indexOf(value) === index;
+  });
 }
 
-// Example usage
-let inputString = "Hello World";
-let firstRepeatedChar = findFirstRepeatedChar(inputString);
+// Example usage:
+var array = [1, 2, 3, 4, 4, 5, 6, 6];
+var uniqueArray = removeDuplicates(array);
 
-console.log(firstRepeatedChar);  // Output: 'l'
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5, 6]
