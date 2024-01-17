@@ -1,12 +1,17 @@
-let numbers = [5, 3, 8, 2, 1, 4];
+function getRandomNumber(min, max) {
+  // Generate a random decimal between 0 and 1
+  var randomDecimal = Math.random();
+  
+  // Scale the random decimal to the desired range
+  var randomInRange = randomDecimal * (max - min) + min;
+  
+  // Round down the number to the nearest whole number
+  var randomInteger = Math.floor(randomInRange);
+  
+  // Return the random number
+  return randomInteger;
+}
 
-// Sorting the array in ascending order
-numbers.sort((a, b) => a - b);
-
-console.log(numbers); // Output: [1, 2, 3, 4, 5, 8]
-let numbers = [5, 3, 8, 2, 1, 4];
-
-// Sorting the array in descending order
-numbers.sort((a, b) => b - a);
-
-console.log(numbers); // Output: [8, 5, 4, 3, 2, 1]
+// Usage example
+var randomNumber = getRandomNumber(1, 100);
+console.log(randomNumber);
