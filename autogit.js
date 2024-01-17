@@ -1,38 +1,43 @@
-class ListNode {
-  constructor(value) {
-    this.val = value;
-    this.next = null;
+function mergeSortIterative(arr) {
+  const len = arr.length;
+  const sorted = Array.from(arr); // Create a copy of the input array
+
+  // Merge the groups of two, then four, then eight, and so on...
+  for (let groupSize = 1; groupSize < len; groupSize *= 2) {
+    for (let i = 0; i < len - groupSize; i += 2 * groupSize) {
+      merge(sorted, i, i + groupSize, Math.min(i + 2 * groupSize, len));
+    }
   }
+
+  return sorted;
 }
 
-function findNthNodeFromEnd(head, n) {
-  let pointer1 = head;
-  let pointer2 = head;
+// Helper function to merge two sorted subarrays
+function merge(arr, leftStart, rightStart, rightEnd) {
+  const left = arr.slice(leftStart, rightStart); // Create a copy of the left subarray
+  let leftIndex = 0;
+  let rightIndex = rightStart;
+  let mergeIndex = leftStart;
 
-  // Move pointer2 'n' nodes ahead
-  for (let i = 0; i < n; i++) {
-    if (pointer2 === null) {
-      return null; // List length is less than 'n'
+  while (leftIndex < left.length && rightIndex < rightEnd) {
+    if (left[leftIndex] <= arr[rightIndex]) {
+      arr[mergeIndex] = left[leftIndex];
+      leftIndex++;
+    } else {
+      arr[mergeIndex] = arr[rightIndex];
+      rightIndex++;
     }
-    pointer2 = pointer2.next;
+    mergeIndex++;
   }
 
-  // Move both pointers until pointer2 reaches the end of the list
-  while (pointer2 !== null) {
-    pointer1 = pointer1.next;
-    pointer2 = pointer2.next;
+  // Copy remaining elements from the left subarray, if any
+  while (leftIndex < left.length) {
+    arr[mergeIndex] = left[leftIndex];
+    leftIndex++;
+    mergeIndex++;
   }
-
-  return pointer1;
 }
 
 // Example usage:
-// Create a linked list: 1 -> 2 -> 3 -> 4 -> 5
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-const nthNode = findNthNodeFromEnd(head, 2); // Find the 2nd node from the end
-console.log(nthNode.val); // Output: 4
+const arr = [7, 2, 1, 6, 8, 5, 3, 4];
+console.log(mergeSortIterative(arr)); // Output: [1, 2, 3, 4, 5, 6, 7, 8]
