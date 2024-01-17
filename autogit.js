@@ -1,46 +1,23 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+function isPalindrome(str) {
+  // Step 1
+  const cleanedStr = str.replace(/[\W_]/g, '');
+
+  // Step 2
+  const lowercaseStr = cleanedStr.toLowerCase();
+
+  // Step 3
+  const reversedStr = lowercaseStr.split('').reverse().join('');
+
+  // Step 4
+  return lowercaseStr === reversedStr;
 }
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
 
-  addNode(value) {
-    const node = new Node(value);
+// Usage
+const str1 = "A man, a plan, a canal: Panama";
+console.log(isPalindrome(str1)); // Output: true
 
-    if (!this.head) {
-      this.head = node;
-    } else {
-      let currentNode = this.head;
-      while (currentNode.next) {
-        currentNode = currentNode.next;
-      }
-      currentNode.next = node;
-    }
-  }
+const str2 = "race car";
+console.log(isPalindrome(str2)); // Output: true
 
-  reverse() {
-    let previous = null;
-    let current = this.head;
-    let next = null;
-
-    while (current) {
-      next = current.next;
-      current.next = previous;
-      previous = current;
-      current = next;
-    }
-
-    this.head = previous;
-  }
-}
-const list = new LinkedList();
-list.addNode(1);
-list.addNode(2);
-list.addNode(3);
-list.addNode(4);
-list.reverse();
+const str3 = "hello world";
+console.log(isPalindrome(str3)); // Output: false
