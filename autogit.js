@@ -1,45 +1,15 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  var cleanedStr = str.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
+
+  // Create a reversed version of the string
+  var reversedStr = cleanedStr.split('').reverse().join('');
+
+  // Compare the original string with the reversed string
+  return cleanedStr === reversedStr;
 }
 
-class BinaryTree {
-  constructor() {
-    this.root = null;
-  }
-
-  insert(value) {
-    const newNode = new Node(value);
-
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
-
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
-
-  // Other methods (e.g., remove, search, traverse) can be added here
-}
-const binaryTree = new BinaryTree();
-binaryTree.insert(10);
-binaryTree.insert(5);
-binaryTree.insert(15);
+// Example usage
+console.log(isPalindrome("racecar")); // true
+console.log(isPalindrome("hello"));   // false
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
