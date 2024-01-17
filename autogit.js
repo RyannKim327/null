@@ -1,8 +1,14 @@
-// Define an array
-let numbers = [5, 2, 9, 1, 7];
+function calculateMean(numbers) {
+  let sum = 0;
 
-// Find the maximum value
-let max = Math.max(...numbers);
+  for (let i = 0; i < numbers.length; i++) {
+    sum += numbers[i];
+  }
 
-// Output the maximum value
-console.log(max); // Output: 9
+  const mean = sum / numbers.length;
+  return mean;
+}
+const numbers = [1, 2, 3, 4, 5];
+
+const mean = calculateMean(numbers);
+console.log(mean); // Output: 3
