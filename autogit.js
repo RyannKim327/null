@@ -1,123 +1,72 @@
-class Node {
-  constructor(value, forward = []) {
-    this.value = value;
-    this.forward = forward;
+function preprocessPattern(pattern) {
+  const m = pattern.length;
+  
+  // Bad character table
+  const badChar = new Array(256).fill(-1);
+  for (let i = 0; i < m; i++) {
+    badChar[pattern.charCodeAt(i)] = i;
   }
+  
+  // Good suffix table
+  const suffix = Array(m + 1).fill(0); // stores the length of the longest suffix
+  const shift = new Array(m + 1).fill(m); // stores the shift value for each shift case
+  let j = m;
+
+  for (let i = m - 1; i >= 0; i--) {
+    if (suffix[i + 1] !== j - i - 1) {
+      continue;
+    }
+
+    while (j < m - i && pattern.charAt(j - 1) !== pattern.charAt(m - i - 1)) {
+      if (shift[j] === m) {
+        shift[j] = m - i - 1;
+      }
+      j = shift[j];
+    }
+
+    j -= 1;
+    suffix[i] = m - j;
+
+    if (shift[j] === m) {
+      shift[j] = m - i - 1;
+    }
+  }
+
+  for (let i = 0; i < m; i++) {
+    shift[i] = Math.min(shift[i], m - suffix[0]);
+  }
+
+  return { badChar, shift };
 }
-class SkipList {
-  constructor() {
-    this.head = new Node(-Infinity);
-    this.levels = 1; // current number of levels, starts with 1
+function boyerMooreSearch(text, pattern) {
+  const n = text.length;
+  const m = pattern.length;
+
+  if (m === 0) {
+    return [];
   }
 
-  insert(value) {
-    const update = new Array(this.levels);
-    let node = this.head;
+  const result = [];
+  const { badChar, shift } = preprocessPattern(pattern);
 
-    for (let i = this.levels - 1; i >= 0; i--) {
-      while (node.forward[i] && node.forward[i].value < value) {
-        node = node.forward[i];
-      }
-      update[i] = node;
+  let s = 0; // text pointer
+  while (s <= n - m) {
+    let j = m - 1;
+    while (j >= 0 && pattern.charAt(j) === text.charAt(s + j)) {
+      j--;
     }
 
-    node = node.forward[0];
-
-    if (!node || node.value !== value) {
-      const newNode = new Node(value);
-      const newLevels = this.randomLevels();
-      if (newLevels > this.levels) {
-        for (let i = this.levels; i < newLevels; i++) {
-          update[i] = this.head;
-        }
-        this.levels = newLevels;
-      }
-
-      for (let i = 0; i < newLevels; i++) {
-        newNode.forward[i] = update[i].forward[i];
-        update[i].forward[i] = newNode;
-      }
+    if (j < 0) {
+      result.push(s); // pattern found at index s
+      s += shift[0];
+    } else {
+      s += Math.max(shift[j + 1], j - badChar[text.charCodeAt(s + j)]);
     }
   }
 
-  delete(value) {
-    const update = new Array(this.levels);
-    let node = this.head;
-
-    for (let i = this.levels - 1; i >= 0; i--) {
-      while (node.forward[i] && node.forward[i].value < value) {
-        node = node.forward[i];
-      }
-      update[i] = node;
-    }
-
-    node = node.forward[0];
-
-    if (node && node.value === value) {
-      for (let i = 0; i < this.levels; i++) {
-        if (update[i].forward[i] !== node)
-          break;
-        update[i].forward[i] = node.forward[i];
-      }
-
-      while (this.levels > 1 && this.head.forward[this.levels - 1] === null) {
-        this.levels--;
-      }
-    }
-  }
-
-  search(value) {
-    let node = this.head;
-
-    for (let i = this.levels - 1; i >= 0; i--) {
-      while (node.forward[i] && node.forward[i].value < value) {
-        node = node.forward[i];
-      }
-    }
-
-    node = node.forward[0];
-
-    if (node && node.value === value) {
-      return true;
-    }
-
-    return false;
-  }
-
-  display() {
-    for (let i = this.levels - 1; i >= 0; i--) {
-      let node = this.head.forward[i];
-      let str = `Level ${i}: `;
-      while (node) {
-        str += `${node.value} `;
-        node = node.forward[i];
-      }
-      console.log(str);
-    }
-  }
-
-  randomLevels() {
-    let levels = 1;
-
-    while (Math.random() < 0.5 && levels < this.levels + 1) {
-      levels++;
-    }
-
-    return levels;
-  }
+  return result;
 }
-const list = new SkipList();
-
-list.insert(3);
-list.insert(6);
-list.insert(2);
-list.insert(8);
-list.insert(1);
-
-list.display(); // Display the skip list
-
-console.log(list.search(6)); // Search for 6
-
-list.delete(6); // Delete 6 from the skip list
-
-list.display(); // Display the skip list after deletion
+const text = "ABAAABCD";
+const pattern = "ABC";
+const matches = boyerMooreSearch(text, pattern);
+console.log(matches); // Output: [5]
