@@ -1,26 +1,53 @@
-class ListNode {
-  constructor(value, next = null) {
-    this.value = value;
-    this.next = next;
-  }
-}
-
-function getLinkedListLength(head) {
-  let length = 0;
-  let currentNode = head;
-
-  while (currentNode !== null) {
-    length++;
-    currentNode = currentNode.next;
+class Graph {
+  constructor() {
+    this.adjacencyList = new Map();
   }
 
-  return length;
-}
-// Create a linked list example: 1 -> 2 -> 3 -> 4 -> null
-const node4 = new ListNode(4);
-const node3 = new ListNode(3, node4);
-const node2 = new ListNode(2, node3);
-const node1 = new ListNode(1, node2);
+  addVertex(vertex) {
+    if (!this.adjacencyList.has(vertex)) {
+      this.adjacencyList.set(vertex, []);
+    }
+  }
 
-const length = getLinkedListLength(node1);
-console.log(length); // Output: 4
+  addEdge(source, destination) {
+    if (this.adjacencyList.has(source) && this.adjacencyList.has(destination)) {
+      this.adjacencyList.get(source).push(destination);
+      this.adjacencyList.get(destination).push(source);
+    }
+  }
+
+  getAdjacencyList() {
+    return this.adjacencyList;
+  }
+}
+function dfs(graph, startVertex) {
+  const visited = new Set();
+
+  function explore(vertex) {
+    visited.add(vertex);
+
+    console.log(vertex); // Do something with the visited vertex (e.g., display it)
+
+    const neighbors = graph.get(vertex);
+    for (const neighbor of neighbors) {
+      if (!visited.has(neighbor)) {
+        explore(neighbor);
+      }
+    }
+  }
+
+  explore(startVertex);
+}
+const graph = new Graph();
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addVertex('E');
+
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('D', 'E');
+
+dfs(graph.getAdjacencyList(), 'A');
