@@ -1,103 +1,29 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+function getDigit(num, place) {
+  return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
 }
-class BinarySearchTree {
-    constructor() {
-        this.root = null;
-    }
-
-    // Insert a value into the binary search tree
-    insert(value) {
-        const newNode = new Node(value);
-
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    // Helper method to insert a node into the binary search tree
-    insertNode(node, newNode) {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
-
-    // Perform an in-order traversal of the binary search tree
-    inOrderTraversal(callback) {
-        this.inOrderTraversalNode(this.root, callback);
-    }
-
-    // Helper method to perform an in-order traversal on a specific node
-    inOrderTraversalNode(node, callback) {
-        if (node !== null) {
-            this.inOrderTraversalNode(node.left, callback);
-            callback(node.value);
-            this.inOrderTraversalNode(node.right, callback);
-        }
-    }
-
-    // Search for a value in the binary search tree
-    search(value) {
-        return this.searchNode(this.root, value);
-    }
-
-    // Helper method to search for a value in a specific node
-    searchNode(node, value) {
-        if (node === null) {
-            return false;
-        }
-
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true;
-        }
-    }
+function digitCount(num) {
+  if (num === 0) return 1;
+  return Math.floor(Math.log10(Math.abs(num))) + 1;
 }
-class BSTNode {
-    constructor() {
-        this.bst = new BinarySearchTree();
-    }
-
-    insert(value) {
-        this.bst.insert(value);
-    }
-
-    search(value) {
-        return this.bst.search(value);
-    }
-
-    inOrderTraversal(callback) {
-        this.bst.inOrderTraversal(callback);
-    }
+function mostDigits(nums) {
+  let maxDigits = 0;
+  for (let i = 0; i < nums.length; i++) {
+    maxDigits = Math.max(maxDigits, digitCount(nums[i]));
+  }
+  return maxDigits;
 }
-const bst = new BinarySearchTree();
-
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(8);
-bst.insert(3);
-
-bst.inOrderTraversal(value => console.log(value));
-
-console.log(bst.search(8)); // Output: true
-console.log(bst.search(20)); // Output: false
+function radixSort(nums) {
+  const maxDigitsCount = mostDigits(nums);
+  for (let k = 0; k < maxDigitsCount; k++) {
+    const buckets = Array.from({ length: 10 }, () => []);
+    for (let i = 0; i < nums.length; i++) {
+      const digit = getDigit(nums[i], k);
+      buckets[digit].push(nums[i]);
+    }
+    nums = [].concat(...buckets);
+  }
+  return nums;
+}
+const numbers = [56, 2, 478, 235, 9];
+const sortedNumbers = radixSort(numbers);
+console.log(sortedNumbers); // Output: [2, 9, 56, 235, 478]
