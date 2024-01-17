@@ -1,15 +1,37 @@
-function getIntersectionNode(headA, headB) {
-  if (!headA || !headB) {
-    return null;
+function topologicalSort(graph) {
+  const visited = new Set();
+  const sorted = [];
+
+  function visit(node) {
+    visited.add(node);
+
+    if (graph[node]) {
+      graph[node].forEach(neighbor => {
+        if (!visited.has(neighbor)) {
+          visit(neighbor);
+        }
+      });
+    }
+
+    sorted.unshift(node);
   }
-  
-  let p1 = headA;
-  let p2 = headB;
-  
-  while (p1 !== p2) {
-    p1 = p1 ? p1.next : headB;
-    p2 = p2 ? p2.next : headA;
-  }
-  
-  return p1;
+
+  Object.keys(graph).forEach(node => {
+    if (!visited.has(node)) {
+      visit(node);
+    }
+  });
+
+  return sorted;
 }
+const graph = {
+  A: ["B", "C"],
+  B: ["D"],
+  C: ["D", "E"],
+  D: ["F"],
+  E: [],
+  F: []
+};
+
+const sortedOrder = topologicalSort(graph);
+console.log(sortedOrder); // Output: ["A", "C", "E", "B", "D", "F"]
