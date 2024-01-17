@@ -1,31 +1,38 @@
-function countingSort(arr) {
-  // Find the maximum element in the array
-  let max = Math.max(...arr);
+function findLCS(str1, str2) {
+  const m = str1.length;
+  const n = str2.length;
+  const table = new Array(m + 1).fill().map(() => new Array(n + 1).fill(0));
 
-  // Create a count array with length equal to max+1 and initialize all elements to 0
-  let count = new Array(max + 1).fill(0);
-
-  // Store the count of each element in the count array
-  for (let i = 0; i < arr.length; i++) {
-    count[arr[i]]++;
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        table[i][j] = table[i - 1][j - 1] + 1;
+      } else {
+        table[i][j] = Math.max(table[i][j - 1], table[i - 1][j]);
+      }
+    }
   }
 
-  // Modify the count array to store the actual position of each element in the sorted output
-  for (let i = 1; i <= max; i++) {
-    count[i] += count[i - 1];
+  let lcsLength = table[m][n];
+  let lcs = '';
+
+  while (m > 0 && n > 0) {
+    if (str1[m - 1] === str2[n - 1]) {
+      lcs = str1[m - 1] + lcs;
+      m--;
+      n--;
+    } else if (table[m][n - 1] > table[m - 1][n]) {
+      n--;
+    } else {
+      m--;
+    }
   }
 
-  // Create a sorted array and copy the elements from the input array to the sorted array based on the count array
-  let sortedArr = new Array(arr.length);
-  for (let i = arr.length - 1; i >= 0; i--) {
-    sortedArr[count[arr[i]] - 1] = arr[i];
-    count[arr[i]]--;
-  }
-
-  return sortedArr;
+  return lcs;
 }
 
 // Example usage
-let arr = [4, 2, 2, 8, 3, 3, 1];
-let sortedArr = countingSort(arr);
-console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
+const str1 = 'ABCDGH';
+const str2 = 'AEDFHR';
+const longestSubsequence = findLCS(str1, str2);
+console.log(longestSubsequence); // Output: ADH
