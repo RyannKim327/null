@@ -1,28 +1,17 @@
-function binarySearch(array, target) {
-  let start = 0;
-  let end = array.length - 1;
+function findFirstRepeatedChar(str) {
+  const charCount = {};
 
-  while (start <= end) {
-    let middle = Math.floor((start + end) / 2);
-    let value = array[middle];
-
-    if (value === target) {
-      return middle;
-    } else if (value < target) {
-      start = middle + 1;
-    } else {
-      end = middle - 1;
+  for (const char of str) {
+    if (charCount[char]) {
+      return char;
     }
+    charCount[char] = 1;
   }
 
-  return -1; // Element not found
+  return null;
 }
-const arr = [1, 3, 5, 7, 9, 11, 13, 15];
-const target = 9;
-const index = binarySearch(arr, target);
 
-if (index !== -1) {
-  console.log(`Element found at index ${index}`);
-} else {
-  console.log("Element not found");
-}
+// Example usage:
+const inputString = "Hello, World!";
+const firstRepeatedChar = findFirstRepeatedChar(inputString);
+console.log("First repeated character:", firstRepeatedChar);
