@@ -1,38 +1,18 @@
-function findLCS(str1, str2) {
-  const m = str1.length;
-  const n = str2.length;
-  const table = new Array(m + 1).fill().map(() => new Array(n + 1).fill(0));
+function reverseWords(str) {
+  // Step 1: Split the string into an array of words
+  const wordsArray = str.split(" ");
 
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        table[i][j] = table[i - 1][j - 1] + 1;
-      } else {
-        table[i][j] = Math.max(table[i][j - 1], table[i - 1][j]);
-      }
-    }
-  }
+  // Step 2: Reverse the array
+  const reversedArray = wordsArray.reverse();
 
-  let lcsLength = table[m][n];
-  let lcs = '';
+  // Step 3: Join the reversed array back into a string
+  const reversedString = reversedArray.join(" ");
 
-  while (m > 0 && n > 0) {
-    if (str1[m - 1] === str2[n - 1]) {
-      lcs = str1[m - 1] + lcs;
-      m--;
-      n--;
-    } else if (table[m][n - 1] > table[m - 1][n]) {
-      n--;
-    } else {
-      m--;
-    }
-  }
-
-  return lcs;
+  // Return the reversed string
+  return reversedString;
 }
 
 // Example usage
-const str1 = 'ABCDGH';
-const str2 = 'AEDFHR';
-const longestSubsequence = findLCS(str1, str2);
-console.log(longestSubsequence); // Output: ADH
+const originalString = "Hello, how are you?";
+const reversedString = reverseWords(originalString);
+console.log(reversedString); // Output: "you? are how Hello,"
