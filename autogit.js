@@ -1,22 +1,38 @@
-function countOccurrences(string, character) {
-  let count = 0;
-  for (let i = 0; i < string.length; i++) {
-    if (string[i] === character) {
-      count++;
+function boyerMooreHorspool(text, pattern) {
+  const textLength = text.length;
+  const patternLength = pattern.length;
+  const badMatchTable = {};
+
+  // Initialize bad match table
+  for (let i = 0; i < patternLength - 1; i++) {
+    badMatchTable[pattern[i]] = patternLength - i - 1;
+  }
+
+  let index = 0;
+  while (index <= textLength - patternLength) {
+    let match = true;
+
+    // Compare pattern from right to left
+    for (let j = patternLength - 1; j >= 0; j--) {
+      if (pattern[j] !== text[index + j]) {
+        match = false;
+        break;
+      }
+    }
+
+    if (match) {
+      return index; // Match found
+    } else {
+      const skip = badMatchTable[text[index + patternLength - 1]] || patternLength;
+      index += skip;
     }
   }
-  return count;
+
+  return -1; // No match found
 }
 
-const str = "Hello, world!";
-const char = "o";
-const occurrences = countOccurrences(str, char);
-console.log(`The character '${char}' appears ${occurrences} time(s) in the string.`);
-function countOccurrences(string, character) {
-  return string.split(character).length - 1;
-}
-
-const str = "Hello, world!";
-const char = "o";
-const occurrences = countOccurrences(str, char);
-console.log(`The character '${char}' appears ${occurrences} time(s) in the string.`);
+// Example usage
+const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+const pattern = "ipsum";
+const result = boyerMooreHorspool(text, pattern);
+console.log(result); // Output: 6
