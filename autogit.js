@@ -1,34 +1,9 @@
-function findMajorityElement(arr) {
-  let count = 0;
-  let candidate = null;
+let array = [1, 2, 3, 4, 5];
+array.reverse();
 
-  for (let i = 0; i < arr.length; i++) {
-    if (count === 0) {
-      candidate = arr[i];
-      count = 1;
-    } else if (arr[i] === candidate) {
-      count++;
-    } else {
-      count--;
-    }
-  }
+console.log(array); // Output: [5, 4, 3, 2, 1]
+let array = [1, 2, 3, 4, 5];
+let reversedArray = array.slice().reverse();
 
-  // Confirm if the candidate is the majority element
-  count = 0;
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] === candidate) {
-      count++;
-    }
-  }
-
-  if (count > arr.length / 2) {
-    return candidate;
-  } else {
-    return "No majority element found!";
-  }
-}
-
-// Example usage:
-const array = [2, 4, 5, 4, 4, 2, 4, 2, 4];
-const majorityElement = findMajorityElement(array);
-console.log(`Majority element: ${majorityElement}`);
+console.log(array); // Output: [1, 2, 3, 4, 5]
+console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
