@@ -1,70 +1,102 @@
-class Graph {
-  constructor() {
-    this.adjList = new Map();
-  }
-
-  addNode(node) {
-    this.adjList.set(node, []);
-  }
-
-  addEdge(node1, node2) {
-    if (!this.adjList.has(node1) || !this.adjList.has(node2)) {
-      throw new Error("Invalid node");
-    }
-    this.adjList.get(node1).push(node2);
-  }
-
-  getNeighbors(node) {
-    if (!this.adjList.has(node)) {
-      throw new Error("Invalid node");
-    }
-    return this.adjList.get(node);
-  }
-
-  getNodes() {
-    return Array.from(this.adjList.keys());
+class Node {
+  constructor(x, y, g = 0, h = 0) {
+    this.x = x; // x-coordinate
+    this.y = y; // y-coordinate
+    this.g = g; // cost from start node to current node
+    this.h = h; // heuristic (estimated) cost from current node to goal node
+    this.f = g + h; // total cost (f = g + h)
+    this.parent = null; // parent node
   }
 }
-function topologicalSort(graph) {
-  const visited = new Set();
-  const result = [];
-
-  function helper(node) {
-    visited.add(node);
-
-    const neighbors = graph.getNeighbors(node);
-    for (const neighbor of neighbors) {
-      if (!visited.has(neighbor)) {
-        helper(neighbor);
+function aStar(start, goal, grid) {
+  const openSet = [start];
+  const closedSet = [];
+  
+  while (openSet.length > 0) {
+    // Find the node with the lowest f value in the open set
+    let lowestIndex = 0;
+    for (let i = 0; i < openSet.length; i++) {
+      if (openSet[i].f < openSet[lowestIndex].f) {
+        lowestIndex = i;
       }
     }
-
-    result.unshift(node);
-  }
-
-  const nodes = graph.getNodes();
-  for (const node of nodes) {
-    if (!visited.has(node)) {
-      helper(node);
+    const current = openSet[lowestIndex];
+    
+    // Check if goal node is reached
+    if (current === goal) {
+      const path = [];
+      let temp = current;
+      while (temp) {
+        path.unshift(temp);
+        temp = temp.parent;
+      }
+      return path;
+    }
+    
+    // Move current node from open set to closed set
+    openSet.splice(lowestIndex, 1);
+    closedSet.push(current);
+    
+    // Generate neighboring nodes
+    const neighbors = [];
+    const {x, y} = current;
+    
+    if (x > 0) {
+      neighbors.push(grid[x - 1][y]);
+    }
+    if (x < grid.length - 1) {
+      neighbors.push(grid[x + 1][y]);
+    }
+    if (y > 0) {
+      neighbors.push(grid[x][y - 1]);
+    }
+    if (y < grid[0].length - 1) {
+      neighbors.push(grid[x][y + 1]);
+    }
+    
+    // Process neighboring nodes
+    for (const neighbor of neighbors) {
+      if (!closedSet.includes(neighbor)) {
+        const gScore = current.g + 1; // assuming the distance between two neighboring nodes is 1
+        
+        // Check if the neighbor is in the open set or if it has a lower g value
+        if (openSet.includes(neighbor)) {
+          if (gScore < neighbor.g) {
+            neighbor.g = gScore;
+            neighbor.f = gScore + neighbor.h;
+            neighbor.parent = current;
+          }
+        } else {
+          neighbor.g = gScore;
+          neighbor.h = heuristic(neighbor, goal); // calculate heuristic cost
+          neighbor.f = gScore + neighbor.h;
+          neighbor.parent = current;
+          openSet.push(neighbor);
+        }
+      }
     }
   }
-
-  return result;
+  
+  return null; // If no path is found
 }
-const graph = new Graph();
+function heuristic(node, goal) {
+  const dx = Math.abs(node.x - goal.x);
+  const dy = Math.abs(node.y - goal.y);
+  return Math.sqrt(dx * dx + dy * dy);
+}
+const grid = [
+  // your grid representation here
+];
 
-// Add nodes
-graph.addNode("A");
-graph.addNode("B");
-graph.addNode("C");
-graph.addNode("D");
-graph.addNode("E");
+const startNode = new Node(0, 0);
+const goalNode = new Node(4, 4);
 
-// Add edges
-graph.addEdge("A", "C");
-graph.addEdge("C", "D");
-graph.addEdge("B", "D");
-graph.addEdge("B", "E");
-graph.addEdge("D", "E");
-const sorted = topologicalSort(graph);
-console.log(sorted);
+const path = aStar(startNode, goalNode, grid);
+
+if (path) {
+  // Path found, do something with the path
+  console.log('Path found:', path);
+} else {
+  // Path not found
+  console.log('No path found');
+}
