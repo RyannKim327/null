@@ -1,12 +1,16 @@
-function isPalindrome(str) {
-  // Remove all non-alphanumeric characters and convert to lowercase
-  str = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-
-  // Compare the string with its reverse
-  return str === str.split('').reverse().join('');
+function isSortedAscending(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false;
+    }
+  }
+  return true;
 }
+const arr1 = [1, 2, 3, 4, 5];
+console.log(isSortedAscending(arr1)); // Output: true
 
-// Example usage:
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // Output: true
-console.log(isPalindrome("racecar")); // Output: true
-console.log(isPalindrome("hello")); // Output: false
+const arr2 = [5, 4, 3, 2, 1];
+console.log(isSortedAscending(arr2)); // Output: false
+
+const arr3 = [1, 3, 2, 4, 5];
+console.log(isSortedAscending(arr3)); // Output: false
