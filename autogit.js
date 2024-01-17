@@ -1,16 +1,11 @@
-function isPalindrome(str) {
-  // Convert the string to lowercase and remove non-alphanumeric characters
-  const cleanedStr = str.toLowerCase().replace(/[\W_]/g, '');
+const numbers = [5, 2, 8, 1, 9, 3];
 
-  // Reverse the string
-  const reversedStr = cleanedStr.split('').reverse().join('');
+// Function to sort the array in ascending order
+const ascendingOrder = (a, b) => a - b;
+numbers.sort(ascendingOrder);
+console.log(numbers); // Output: [1, 2, 3, 5, 8, 9]
 
-  // Compare the original string with the reversed string
-  return cleanedStr === reversedStr;
-}
-
-// Test cases
-console.log(isPalindrome('racecar')); // true
-console.log(isPalindrome('level')); // true
-console.log(isPalindrome('hello')); // false
-console.log(isPalindrome('A man, a plan, a canal, Panama!')); // true
+// Function to sort the array in descending order
+const descendingOrder = (a, b) => b - a;
+numbers.sort(descendingOrder);
+console.log(numbers); // Output: [9, 8, 5, 3, 2, 1]
