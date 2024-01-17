@@ -1,37 +1,17 @@
-// Binary tree node
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+function areAnagrams(str1, str2) {
+  // Convert strings to lowercase and remove non-alphabetic characters
+  str1 = str1.toLowerCase().replace(/[^a-z]/g, '');
+  str2 = str2.toLowerCase().replace(/[^a-z]/g, '');
+
+  // Sort both strings
+  str1 = str1.split('').sort().join('');
+  str2 = str2.split('').sort().join('');
+
+  // Compare the sorted strings
+  return str1 === str2;
 }
 
-// Function to count leaf nodes in a binary tree
-function countLeafNodes(root) {
-  // Base case: an empty tree has 0 leaf nodes
-  if (root === null) {
-    return 0;
-  }
-
-  // Base case: a leaf node has 1 leaf node
-  if (root.left === null && root.right === null) {
-    return 1;
-  }
-
-  // Recursive case: find leaf nodes in the left and right subtrees
-  const leftLeafNodes = countLeafNodes(root.left);
-  const rightLeafNodes = countLeafNodes(root.right);
-
-  // Return the sum of leaf nodes in the left and right subtrees
-  return leftLeafNodes + rightLeafNodes;
-}
-
-// Test the function
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-console.log("Number of leaf nodes:", countLeafNodes(root)); // Output: 3
+// Example usage
+console.log(areAnagrams('listen', 'silent')); // Output: true
+console.log(areAnagrams('abcde', 'edcba')); // Output: false (different lengths)
+console.log(areAnagrams('listen', 'silents')); // Output: false (different letters)
