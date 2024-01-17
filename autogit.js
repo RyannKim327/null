@@ -1,53 +1,21 @@
-function rabinKarpSearch(text, pattern) {
-  const textLength = text.length;
-  const patternLength = pattern.length;
-  const prime = 101; // A prime number to calculate the hash
-
-  function calculateHash(str) {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      hash += str.charCodeAt(i) * Math.pow(prime, i);
+function binarySearchRecursive(arr, target, start = 0, end = arr.length - 1) {
+    if (start > end) {
+        return -1;
     }
-    return hash;
-  }
 
-  function reCalculateHash(oldHash, oldChar, newChar, patternLength) {
-    let newHash = oldHash - oldChar.charCodeAt(0);
-    newHash /= prime;
-    newHash += newChar.charCodeAt(0) * Math.pow(prime, patternLength - 1);
-    return newHash;
-  }
+    const mid = Math.floor((start + end) / 2);
 
-  const patternHash = calculateHash(pattern);
-  let windowHash = calculateHash(text.slice(0, patternLength));
-
-  for (let i = 0; i <= textLength - patternLength; i++) {
-    if (patternHash === windowHash) {
-      let window = text.slice(i, i + patternLength);
-      if (window === pattern) {
-        return i; // Return the starting index of the pattern in the text
-      }
+    if (arr[mid] === target) {
+        return mid;
+    } else if (arr[mid] > target) {
+        return binarySearchRecursive(arr, target, start, mid - 1);
+    } else {
+        return binarySearchRecursive(arr, target, mid + 1, end);
     }
-    if (i < textLength - patternLength) {
-      windowHash = reCalculateHash(
-        windowHash,
-        text[i].charCodeAt(0),
-        text[i + patternLength].charCodeAt(0),
-        patternLength
-      );
-    }
-  }
-
-  return -1; // Return -1 if pattern not found
 }
 
 // Example usage:
-const text = "Hello, World!";
-const pattern = "World";
+const array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const targetValue = 8;
 
-const index = rabinKarpSearch(text, pattern);
-if (index === -1) {
-  console.log("Pattern not found");
-} else {
-  console.log(`Pattern found at index ${index}`);
-}
+console.log(binarySearchRecursive(array, targetValue));  // Output: 7
