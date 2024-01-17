@@ -1,42 +1,53 @@
-function mergeSort(arr) {
-  if (arr.length <= 1) {
-    return arr;
+function rabinKarpSearch(text, pattern) {
+  const textLength = text.length;
+  const patternLength = pattern.length;
+  const prime = 101; // A prime number to calculate the hash
+
+  function calculateHash(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash += str.charCodeAt(i) * Math.pow(prime, i);
+    }
+    return hash;
   }
 
-  // Split the array into two halves
-  const mid = Math.floor(arr.length / 2);
-  const left = arr.slice(0, mid);
-  const right = arr.slice(mid);
+  function reCalculateHash(oldHash, oldChar, newChar, patternLength) {
+    let newHash = oldHash - oldChar.charCodeAt(0);
+    newHash /= prime;
+    newHash += newChar.charCodeAt(0) * Math.pow(prime, patternLength - 1);
+    return newHash;
+  }
 
-  // Recursive calls to mergeSort to sort the two halves
-  const sortedLeft = mergeSort(left);
-  const sortedRight = mergeSort(right);
+  const patternHash = calculateHash(pattern);
+  let windowHash = calculateHash(text.slice(0, patternLength));
 
-  // Merge the sorted halves
-  return merge(sortedLeft, sortedRight);
-}
-
-function merge(left, right) {
-  let result = [];
-  let leftIndex = 0;
-  let rightIndex = 0;
-
-  // Merge the left and right arrays into the result array in ascending order
-  while (leftIndex < left.length && rightIndex < right.length) {
-    if (left[leftIndex] < right[rightIndex]) {
-      result.push(left[leftIndex]);
-      leftIndex++;
-    } else {
-      result.push(right[rightIndex]);
-      rightIndex++;
+  for (let i = 0; i <= textLength - patternLength; i++) {
+    if (patternHash === windowHash) {
+      let window = text.slice(i, i + patternLength);
+      if (window === pattern) {
+        return i; // Return the starting index of the pattern in the text
+      }
+    }
+    if (i < textLength - patternLength) {
+      windowHash = reCalculateHash(
+        windowHash,
+        text[i].charCodeAt(0),
+        text[i + patternLength].charCodeAt(0),
+        patternLength
+      );
     }
   }
 
-  // Concatenate the remaining elements in the left or right array
-  return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+  return -1; // Return -1 if pattern not found
 }
 
 // Example usage:
-const arr = [5, 1, 4, 2, 8];
-const sortedArr = mergeSort(arr);
-console.log(sortedArr); // Output: [1, 2, 4, 5, 8]
+const text = "Hello, World!";
+const pattern = "World";
+
+const index = rabinKarpSearch(text, pattern);
+if (index === -1) {
+  console.log("Pattern not found");
+} else {
+  console.log(`Pattern found at index ${index}`);
+}
