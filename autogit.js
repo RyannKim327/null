@@ -1,65 +1,37 @@
-function depthLimitedSearch(initialState, maxDepth, goalTest) {
-  // ...
-}
-function depthLimitedSearch(initialState, maxDepth, goalTest) {
-  const stack = [];
-  // ...
-}
-function depthLimitedSearch(initialState, maxDepth, goalTest) {
-  const stack = [];
-  stack.push({ state: initialState, depth: 0 });
-  // ...
-}
-function depthLimitedSearch(initialState, maxDepth, goalTest) {
-  const stack = [];
-  stack.push({ state: initialState, depth: 0 });
-
-  while (stack.length > 0) {
-    // ...
+class Node {
+  constructor(startIndex, endIndex) {
+    this.startIndex = startIndex;
+    this.endIndex = endIndex;
+    this.children = {};
   }
 }
-function depthLimitedSearch(initialState, maxDepth, goalTest) {
-  const stack = [];
-  stack.push({ state: initialState, depth: 0 });
 
-  while (stack.length > 0) {
-    const { state, depth } = stack.pop();
-    // ...
-  }
-}
-function depthLimitedSearch(initialState, maxDepth, goalTest) {
-  const stack = [];
-  stack.push({ state: initialState, depth: 0 });
-
-  while (stack.length > 0) {
-    const { state, depth } = stack.pop();
-
-    if (goalTest(state)) {
-      return state;
-    }
-
-    // ...
-  }
-}
-function depthLimitedSearch(initialState, maxDepth, goalTest) {
-  const stack = [];
-  stack.push({ state: initialState, depth: 0 });
-
-  while (stack.length > 0) {
-    const { state, depth } = stack.pop();
-
-    if (goalTest(state)) {
-      return state;
-    }
-
-    if (depth < maxDepth) {
-      const successors = generateSuccessors(state); // Implement this function to generate the successors of the current state.
-
-      for (const successor of successors) {
-        stack.push({ state: successor, depth: depth + 1 });
-      }
-    }
+class SuffixTree {
+  constructor(text) {
+    this.text = text;
+    this.root = new Node(-1, -1); // Create the root node
+    // Call tree construction method here
   }
 
-  return null; // Return null if no goal state found within the given depth.
+  // Method to add a suffix to the tree
+  addSuffix(suffix, startIndex) {
+    // Implement this method
+  }
+
+  // Method to construct the entire suffix tree from the text
+  constructTree() {
+    // Implement Ukkonen's or McCreight's algorithm here
+  }
+
+  // Method to search for a pattern in the tree
+  search(pattern) {
+    // Implement pattern matching logic here
+  }
 }
+
+// Usage
+const text = "banana";
+const suffixTree = new SuffixTree(text);
+suffixTree.constructTree();
+const pattern = "ana";
+console.log(suffixTree.search(pattern)); // Output: true
