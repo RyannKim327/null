@@ -1,23 +1,22 @@
-function binarySearch(arr, target) {
-  let start = 0;
-  let end = arr.length - 1;
+function isPalindrome(str) {
+  // Convert the string to lowercase and remove non-alphanumeric characters
+  str = str.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-  while (start <= end) {
-    const mid = Math.floor((start + end) / 2);
+  let left = 0; // Pointer for the start of the string
+  let right = str.length - 1; // Pointer for the end of the string
 
-    if (arr[mid] === target) {
-      return mid;
-    } else if (arr[mid] < target) {
-      start = mid + 1;
-    } else {
-      end = mid - 1;
+  while (left < right) {
+    if (str.charAt(left) !== str.charAt(right)) {
+      return false; // Characters don't match, not a palindrome
     }
+    left++; // Move left pointer forward
+    right--; // Move right pointer backward
   }
 
-  return -1;
+  return true; // All characters matched, palindrome
 }
-const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const target = 5;
-const index = binarySearch(arr, target);
 
-console.log(index);  // Output: 4 (index of the target value)
+// Example usage
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
+console.log(isPalindrome("Madam")); // true
