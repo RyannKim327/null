@@ -1,38 +1,110 @@
-function boyerMooreHorspool(text, pattern) {
-  const textLength = text.length;
-  const patternLength = pattern.length;
-  const badMatchTable = {};
-
-  // Initialize bad match table
-  for (let i = 0; i < patternLength - 1; i++) {
-    badMatchTable[pattern[i]] = patternLength - i - 1;
+class Node {
+  constructor(start, end) {
+    this.start = start;
+    this.end = end;
+    this.children = {};
+  }
+}
+class SuffixTree {
+  constructor() {
+    this.root = new Node(-1, -1); // Root node representing an empty string
+    this.string = '';
   }
 
-  let index = 0;
-  while (index <= textLength - patternLength) {
-    let match = true;
+  insert(suffix) {
+    let current = this.root;
 
-    // Compare pattern from right to left
-    for (let j = patternLength - 1; j >= 0; j--) {
-      if (pattern[j] !== text[index + j]) {
-        match = false;
-        break;
+    for (let i = 0; i < suffix.length; i++) {
+      const char = suffix[i];
+
+      if (!current.children[char]) {
+        current.children[char] = new Node(i, suffix.length - 1);
       }
-    }
 
-    if (match) {
-      return index; // Match found
-    } else {
-      const skip = badMatchTable[text[index + patternLength - 1]] || patternLength;
-      index += skip;
+      current = current.children[char];
     }
   }
 
-  return -1; // No match found
+  search(pattern) {
+    let current = this.root;
+
+    for (let i = 0; i < pattern.length; i++) {
+      const char = pattern[i];
+
+      if (!current.children[char]) {
+        return false; // Pattern not found
+      }
+
+      current = current.children[char];
+    }
+
+    return true; // Pattern found
+  }
+}
+const tree = new SuffixTree();
+const suffixes = ['abc', 'def', 'xyz'];
+
+for (const suffix of suffixes) {
+  tree.insert(suffix);
 }
 
-// Example usage
-const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
-const pattern = "ipsum";
-const result = boyerMooreHorspool(text, pattern);
-console.log(result); // Output: 6
+console.log(JSON.stringify(tree.root, null, 2));
+
+// Output:
+// {
+//   "start": -1,
+//   "end": -1,
+//   "children": {
+//     "a": {
+//       "start": 0,
+//       "end": 2,
+//       "children": {
+//         "b": {
+//           "start": 1,
+//           "end": 2,
+//           "children": {
+//             "c": {
+//               "start": 2,
+//               "end": 2,
+//               "children": {}
+//             }
+//           }
+//         }
+//       }
+//     },
+//     "d": {
+//       "start": 1,
+//       "end": 2,
+//       "children": {
+//         "e": {
+//           "start": 0,
+//           "end": 0,
+//           "children": {
+//             "f": {
+//               "start": 1,
+//               "end": 1,
+//               "children": {}
+//             }
+//           }
+//         }
+//       }
+//     },
+//     "x": {
+//       "start": 0,
+//       "end": 2,
+//       "children": {
+//         "y": {
+//           "start": 1,
+//           "end": 1,
+//           "children": {
+//             "z": {
+//               "start": 2,
+//               "end": 2,
+//               "children": {}
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
