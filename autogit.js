@@ -1,11 +1,30 @@
-// Prompt the user to enter their name
-var name = prompt("Please enter your name:");
+function longestCommonPrefix(strArray) {
+  let prefix = '';
 
-// Display the user's name on the console
-console.log("Hello, " + name + "!");
+  if (!strArray || strArray.length === 0) {
+    return prefix;
+  }
 
-// Prompt the user to enter their age
-var age = prompt("Please enter your age:");
+  strArray.sort(); // Sort the array in lexicographical order
 
-// Display the user's age on the console
-console.log("You are " + age + " years old.");
+  const refStr = strArray[0]; // Get the first string as the reference
+
+  for (let i = 0; i < refStr.length; i++) {
+    const char = refStr[i];
+
+    for (let j = 1; j < strArray.length; j++) {
+      if (strArray[j][i] !== char) {
+        return prefix;
+      }
+    }
+
+    prefix += char;
+  }
+
+  return prefix;
+}
+
+// Example usage
+const strings = ['apple', 'app', 'aptitude', 'applaud'];
+const commonPrefix = longestCommonPrefix(strings);
+console.log(commonPrefix); // Output: 'ap'
