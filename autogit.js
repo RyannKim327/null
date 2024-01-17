@@ -1,53 +1,25 @@
-// Construct the prefix table (also known as the failure function)
-function buildPrefixTable(pattern) {
-  const prefixTable = [0];
-  let prefixIdx = 0;
-
-  for (let i = 1; i < pattern.length; i++) {
-    if (pattern[i] === pattern[prefixIdx]) {
-      prefixIdx++;
-    } else {
-      prefixIdx = prefixTable[prefixIdx - 1] || 0;
-      while (prefixIdx && pattern[i] !== pattern[prefixIdx]) {
-        prefixIdx = prefixTable[prefixIdx - 1] || 0;
-      }
-    }
-
-    prefixTable.push(prefixIdx);
+// Function to fetch data from the API
+async function fetchData(url) {
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log('Error:', error);
   }
-
-  return prefixTable;
 }
 
-// Perform string matching using the KMP algorithm
-function stringMatch(text, pattern) {
-  const prefixTable = buildPrefixTable(pattern);
-  const matches = [];
+// API endpoint
+const apiUrl = 'https://jsonplaceholder.typicode.com/posts';
 
-  let textIdx = 0;
-  let patternIdx = 0;
-
-  while (textIdx < text.length && patternIdx < pattern.length) {
-    if (text[textIdx] === pattern[patternIdx]) {
-      textIdx++;
-      patternIdx++;
-    } else if (patternIdx !== 0) {
-      patternIdx = prefixTable[patternIdx - 1];
-    } else {
-      textIdx++;
-    }
-
-    if (patternIdx === pattern.length) {
-      matches.push(textIdx - patternIdx);
-      patternIdx = 0;
-    }
-  }
-
-  return matches;
-}
-
-// Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const matches = stringMatch(text, pattern);
-console.log(matches); // output: [10]
+// Fetch data from the API
+fetchData(apiUrl)
+  .then(posts => {
+    // Display the fetched data
+    posts.forEach(post => {
+      console.log(`Post ID: ${post.id}`);
+      console.log(`Title: ${post.title}`);
+      console.log(`Body: ${post.body}`);
+      console.log('-------------');
+    });
+  });
