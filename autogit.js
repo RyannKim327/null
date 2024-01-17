@@ -1,20 +1,15 @@
-function findSecondLargest(array) {
-  let largest = -Infinity;
-  let secondLargest = -Infinity;
-
-  for (let i = 0; i < array.length; i++) {
-    if (array[i] > largest) {
-      secondLargest = largest;
-      largest = array[i];
-    } else if (array[i] > secondLargest && array[i] < largest) {
-      secondLargest = array[i];
-    }
-  }
-
-  return secondLargest;
+// Generates a random number between min (inclusive) and max (exclusive)
+function getRandomNumber(min, max) {
+  return Math.random() * (max - min) + min;
 }
+// Generates a random integer between min (inclusive) and max (inclusive)
+function getRandomInteger(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+var randomNum = getRandomNumber(1, 10);
+console.log(randomNum); // Output: a random number between 1 and 10
 
-const array = [5, 3, 9, 1, 7];
-const result = findSecondLargest(array);
-
-console.log('Second largest element:', result);
+var randomInt = getRandomInteger(1, 10);
+console.log(randomInt); // Output: a random integer between 1 and 10
