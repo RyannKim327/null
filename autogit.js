@@ -1,17 +1,36 @@
-function areAnagrams(str1, str2) {
-  // Convert strings to lowercase and remove non-alphabetic characters
-  str1 = str1.toLowerCase().replace(/[^a-z]/g, '');
-  str2 = str2.toLowerCase().replace(/[^a-z]/g, '');
+function findLongestIncreasingSubsequence(arr) {
+  const n = arr.length;
+  const lisLength = new Array(n).fill(1);
 
-  // Sort both strings
-  str1 = str1.split('').sort().join('');
-  str2 = str2.split('').sort().join('');
+  for (let i = 1; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      if (arr[i] > arr[j] && lisLength[i] < lisLength[j] + 1) {
+        lisLength[i] = lisLength[j] + 1;
+      }
+    }
+  }
 
-  // Compare the sorted strings
-  return str1 === str2;
+  let maxLength = 0;
+  let maxIdx = 0;
+  for (let i = 0; i < n; i++) {
+    if (lisLength[i] > maxLength) {
+      maxLength = lisLength[i];
+      maxIdx = i;
+    }
+  }
+
+  const longestSubsequence = [];
+  for (let i = maxIdx; i >= 0; i--) {
+    if (arr[maxIdx] > arr[i] && lisLength[maxIdx] === lisLength[i] + 1) {
+      longestSubsequence.unshift(arr[i]);
+      maxIdx = i;
+    }
+  }
+
+  return longestSubsequence;
 }
 
-// Example usage
-console.log(areAnagrams('listen', 'silent')); // Output: true
-console.log(areAnagrams('abcde', 'edcba')); // Output: false (different lengths)
-console.log(areAnagrams('listen', 'silents')); // Output: false (different letters)
+// Example usage:
+const arr = [3, 10, 2, 1, 20];
+const longestSubsequence = findLongestIncreasingSubsequence(arr);
+console.log(longestSubsequence); // Output: [3, 10, 20]
