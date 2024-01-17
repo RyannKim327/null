@@ -1,42 +1,55 @@
-function merge(left, right) {
-  let result = [];
-  let i = 0;
-  let j = 0;
-
-  while (i < left.length && j < right.length) {
-    if (left[i] < right[j]) {
-      result.push(left[i]);
-      i++;
-    } else {
-      result.push(right[j]);
-      j++;
-    }
+class Graph {
+  constructor() {
+    this.vertices = [];
+    this.adjacencyList = {};
   }
 
-  while (i < left.length) {
-    result.push(left[i]);
-    i++;
+  addVertex(vertex) {
+    this.vertices.push(vertex);
+    this.adjacencyList[vertex] = [];
   }
 
-  while (j < right.length) {
-    result.push(right[j]);
-    j++;
+  addEdge(from, to) {
+    this.adjacencyList[from].push(to);
   }
 
-  return result;
+  topologicalSort() {
+    const result = [];
+    const visited = new Set();
+
+    const dfs = (vertex) => {
+      visited.add(vertex);
+
+      this.adjacencyList[vertex].forEach((neighbor) => {
+        if (!visited.has(neighbor)) {
+          dfs(neighbor);
+        }
+      });
+
+      result.unshift(vertex);
+    };
+
+    this.vertices.forEach((vertex) => {
+      if (!visited.has(vertex)) {
+        dfs(vertex);
+      }
+    });
+
+    return result;
+  }
 }
-function mergeSort(array) {
-  if (array.length <= 1) {
-    return array;
-  }
 
-  const middle = Math.floor(array.length / 2);
-  const left = array.slice(0, middle);
-  const right = array.slice(middle);
+// Example usage
+const graph = new Graph();
+graph.addVertex("A");
+graph.addVertex("B");
+graph.addVertex("C");
+graph.addVertex("D");
+graph.addVertex("E");
 
-  return merge(mergeSort(left), mergeSort(right));
-}
-const numbers = [8, 3, 1, 5, 2, 4, 7, 6];
-const sortedNumbers = mergeSort(numbers);
+graph.addEdge("A", "C");
+graph.addEdge("C", "D");
+graph.addEdge("D", "E");
+graph.addEdge("B", "D");
 
-console.log(sortedNumbers);
+console.log(graph.topologicalSort()); // Output: ["B", "A", "C", "D", "E"]
