@@ -1,16 +1,23 @@
-function findMaxSubarraySum(arr) {
-  let maxSum = arr[0];
-  let currentSum = arr[0];
-  
-  for (let i = 1; i < arr.length; i++) {
-    currentSum = Math.max(arr[i], currentSum + arr[i]);
-    maxSum = Math.max(maxSum, currentSum);
+let str = "Hello, World! This is a string with spaces.";
+
+// Using a regular expression to replace all spaces with an empty string
+let newStr = str.replace(/\s/g, '');
+
+console.log(newStr); // Output: "Hello,World!Thisisastringwithspaces."
+let str = "Hello, World! This is a string with spaces.";
+
+// Split the string into an array of substrings using spaces as separators,
+// then join the substrings without any separator
+let newStr = str.split(' ').join('');
+
+console.log(newStr); // Output: "Hello,World!Thisisastringwithspaces."
+let str = "Hello, World! This is a string with spaces.";
+
+let newStr = '';
+for (let i = 0; i < str.length; i++) {
+  if (str[i] !== ' ') {
+    newStr += str[i];
   }
-  
-  return maxSum;
 }
 
-// Example usage:
-const array = [1, -2, 3, 4, -1, 2, 1, -5, 4];
-const maxSum = findMaxSubarraySum(array);
-console.log(maxSum); // Output: 10 (corresponding to subarray [3, 4, -1, 2, 1])
+console.log(newStr); // Output: "Hello,World!Thisisastringwithspaces."
