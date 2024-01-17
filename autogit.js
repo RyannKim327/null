@@ -1,84 +1,83 @@
 class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+  constructor(position, cost, heuristic, parent) {
+    this.position = position;
+    this.cost = cost;
+    this.heuristic = heuristic;
+    this.parent = parent;
   }
 }
+function AStarSearch(start, goal, neighbors, heuristic) {
+  // Create open and closed lists
+  let open = [];
+  let closed = new Set();
 
-class BinaryTree {
-  constructor() {
-    this.root = null;
-  }
+  // Add the start node to the open list
+  open.push(new Node(start, 0, heuristic(start), null));
 
-  insert(value) {
-    const newNode = new Node(value);
+  while (open.length > 0) {
+    // Get the node with the lowest cost in the open list
+    open.sort((a, b) => a.cost + a.heuristic - b.cost - b.heuristic);
+    let current = open.shift();
 
-    if (!this.root) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
+    // Check if we reached the goal
+    if (current.position === goal) {
+      return constructPath(current);
     }
-  }
 
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (!node.left) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
+    // Add the current node to the closed list
+    closed.add(current.position);
+
+    // Generate neighboring nodes
+    let neighborsList = neighbors(current.position);
+
+    // Process each neighbor
+    for (let neighbor of neighborsList) {
+      // Skip if neighbor is in the closed list
+      if (closed.has(neighbor)) {
+        continue;
       }
-    } else {
-      if (!node.right) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
+
+      // Calculate the cost to reach the neighbor from the current node
+      let newCost = current.cost + 1;
+
+      // Check if the neighbor is already in the open list
+      let existingNode = open.find((node) => node.position === neighbor);
+
+      // Add or update the neighbor in the open list
+      if (!existingNode || newCost < existingNode.cost) {
+        let heuristicValue = heuristic(neighbor);
+        let newNode = new Node(
+          neighbor,
+          newCost,
+          heuristicValue,
+          current
+        );
+
+        if (!existingNode) {
+          open.push(newNode);
+        } else {
+          existingNode.cost = newCost;
+          existingNode.heuristic = heuristicValue;
+          existingNode.parent = current;
+        }
       }
     }
   }
 
-  // Traverse in-order: left -> root -> right
-  inOrderTraversal(node = this.root, callback) {
-    if (node) {
-      this.inOrderTraversal(node.left, callback);
-      callback(node.value);
-      this.inOrderTraversal(node.right, callback);
-    }
-  }
-
-  // Traverse pre-order: root -> left -> right
-  preOrderTraversal(node = this.root, callback) {
-    if (node) {
-      callback(node.value);
-      this.preOrderTraversal(node.left, callback);
-      this.preOrderTraversal(node.right, callback);
-    }
-  }
-
-  // Traverse post-order: left -> right -> root
-  postOrderTraversal(node = this.root, callback) {
-    if (node) {
-      this.postOrderTraversal(node.left, callback);
-      this.postOrderTraversal(node.right, callback);
-      callback(node.value);
-    }
-  }
+  // No path found
+  return null;
 }
-const binaryTree = new BinaryTree();
+function constructPath(node) {
+  let path = [];
+  let current = node;
 
-binaryTree.insert(4);
-binaryTree.insert(2);
-binaryTree.insert(6);
-binaryTree.insert(1);
-binaryTree.insert(3);
-binaryTree.insert(5);
-binaryTree.insert(7);
+  while (current !== null) {
+    path.push(current.position);
+    current = current.parent;
+  }
 
-console.log("In-order traversal:");
-binaryTree.inOrderTraversal((value) => console.log(value));
+  // Reverse the path to get it from start to goal
+  path.reverse();
 
-console.log("Pre-order traversal:");
-binaryTree.preOrderTraversal((value) => console.log(value));
-
-console.log("Post-order traversal:");
-binaryTree.postOrderTraversal((value) => console.log(value));
+  return path;
+}
