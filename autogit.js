@@ -1,21 +1,50 @@
-function insertionSort(arr) {
-  const length = arr.length;
+function rabinKarp(text, pattern) {
+  const prime = 101; // Prime number for hash calculation
+  const textLength = text.length;
+  const patternLength = pattern.length;
+  const patternHash = hash(pattern);
 
-  for (let i = 1; i < length; i++) {
-    const currentValue = arr[i];
-    let j = i - 1;
+  // Calculate initial hash value for the first window of the text
+  let windowHash = hash(text.substring(0, patternLength));
 
-    while (j >= 0 && arr[j] > currentValue) {
-      arr[j + 1] = arr[j];
-      j--;
-    }
-
-    arr[j + 1] = currentValue;
+  // Check if pattern exists in the first window
+  if (patternHash === windowHash && text.substring(0, patternLength) === pattern) {
+    return 0; // Pattern found at index 0
   }
 
-  return arr;
+  // Move the window one character at a time
+  for (let i = patternLength; i < textLength; i++) {
+    // Remove the leftmost character from the window hash
+    windowHash -= text.charCodeAt(i - patternLength);
+    // Shift the window hash by multiplying with prime number
+    windowHash *= prime;
+    // Add the new character to the window hash
+    windowHash += text.charCodeAt(i);
+
+    // Check if pattern exists in the current window
+    if (windowHash === patternHash && text.substring(i - patternLength + 1, i + 1) === pattern) {
+      return i - patternLength + 1; // Pattern found at index i - patternLength + 1
+    }
+  }
+
+  return -1; // Pattern not found
 }
 
-// Example usage:
-const array = [5, 2, 6, 1, 3, 9];
-console.log(insertionSort(array)); // Output: [1, 2, 3, 5, 6, 9]
+// Hash function
+function hash(str) {
+  let hashValue = 0;
+  for (let i = 0; i < str.length; i++) {
+    hashValue += str.charCodeAt(i) * Math.pow(prime, i);
+  }
+  return hashValue;
+}
+
+// Example usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const index = rabinKarp(text, pattern);
+if (index !== -1) {
+  console.log(`Pattern found at index ${index}`);
+} else {
+  console.log("Pattern not found");
+}
