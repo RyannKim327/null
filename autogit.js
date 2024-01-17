@@ -1,25 +1,16 @@
-// Function to fetch data from the API
-async function fetchData(url) {
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.log('Error:', error);
-  }
+function isPalindrome(str) {
+  // Convert the string to lowercase and remove non-alphanumeric characters
+  const cleanedStr = str.toLowerCase().replace(/[\W_]/g, '');
+
+  // Reverse the string
+  const reversedStr = cleanedStr.split('').reverse().join('');
+
+  // Compare the original string with the reversed string
+  return cleanedStr === reversedStr;
 }
 
-// API endpoint
-const apiUrl = 'https://jsonplaceholder.typicode.com/posts';
-
-// Fetch data from the API
-fetchData(apiUrl)
-  .then(posts => {
-    // Display the fetched data
-    posts.forEach(post => {
-      console.log(`Post ID: ${post.id}`);
-      console.log(`Title: ${post.title}`);
-      console.log(`Body: ${post.body}`);
-      console.log('-------------');
-    });
-  });
+// Test cases
+console.log(isPalindrome('racecar')); // true
+console.log(isPalindrome('level')); // true
+console.log(isPalindrome('hello')); // false
+console.log(isPalindrome('A man, a plan, a canal, Panama!')); // true
