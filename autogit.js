@@ -1,11 +1,65 @@
-function removeDuplicates(array) {
-  return array.filter((value, index, self) => {
-    return self.indexOf(value) === index;
-  });
+function depthLimitedSearch(initialState, maxDepth, goalTest) {
+  // ...
 }
+function depthLimitedSearch(initialState, maxDepth, goalTest) {
+  const stack = [];
+  // ...
+}
+function depthLimitedSearch(initialState, maxDepth, goalTest) {
+  const stack = [];
+  stack.push({ state: initialState, depth: 0 });
+  // ...
+}
+function depthLimitedSearch(initialState, maxDepth, goalTest) {
+  const stack = [];
+  stack.push({ state: initialState, depth: 0 });
 
-// Example usage:
-var array = [1, 2, 3, 4, 4, 5, 6, 6];
-var uniqueArray = removeDuplicates(array);
+  while (stack.length > 0) {
+    // ...
+  }
+}
+function depthLimitedSearch(initialState, maxDepth, goalTest) {
+  const stack = [];
+  stack.push({ state: initialState, depth: 0 });
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5, 6]
+  while (stack.length > 0) {
+    const { state, depth } = stack.pop();
+    // ...
+  }
+}
+function depthLimitedSearch(initialState, maxDepth, goalTest) {
+  const stack = [];
+  stack.push({ state: initialState, depth: 0 });
+
+  while (stack.length > 0) {
+    const { state, depth } = stack.pop();
+
+    if (goalTest(state)) {
+      return state;
+    }
+
+    // ...
+  }
+}
+function depthLimitedSearch(initialState, maxDepth, goalTest) {
+  const stack = [];
+  stack.push({ state: initialState, depth: 0 });
+
+  while (stack.length > 0) {
+    const { state, depth } = stack.pop();
+
+    if (goalTest(state)) {
+      return state;
+    }
+
+    if (depth < maxDepth) {
+      const successors = generateSuccessors(state); // Implement this function to generate the successors of the current state.
+
+      for (const successor of successors) {
+        stack.push({ state: successor, depth: depth + 1 });
+      }
+    }
+  }
+
+  return null; // Return null if no goal state found within the given depth.
+}
