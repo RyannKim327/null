@@ -1,100 +1,25 @@
-class Node {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-    this.parent = null;
-    this.g = Infinity;
-    this.h = 0;
-    this.f = Infinity;
+function findLargestPrimeFactor(number) {
+  let largestPrimeFactor = 1;
+
+  while (number % 2 === 0) {
+    largestPrimeFactor = 2;
+    number /= 2;
   }
-  
-  calculateHeuristic(goalNode) {
-    // Calculate the heuristic value (e.g., Manhattan distance)
-    this.h = Math.abs(this.x - goalNode.x) + Math.abs(this.y - goalNode.y);
-  }
-  
-  calculateTotalCost() {
-    // Calculate the total cost f = g + h
-    this.f = this.g + this.h;
-  }
-}
 
-function AStarSearch(startNode, goalNode) {
-  let openSet = [startNode];
-  let closedSet = [];
-
-  startNode.g = 0;
-  startNode.calculateHeuristic(goalNode);
-  startNode.calculateTotalCost();
-
-  while (openSet.length > 0) {
-    let currentNode = openSet[0];
-
-    // Find the node with the lowest f value
-    for (let i = 1; i < openSet.length; i++) {
-      if (openSet[i].f < currentNode.f) {
-        currentNode = openSet[i];
-      }
-    }
-
-    if (currentNode === goalNode) {
-      // Reconstruct and return the path
-      let path = [];
-      while (currentNode !== null) {
-        path.push(currentNode);
-        currentNode = currentNode.parent;
-      }
-      return path.reverse();
-    }
-
-    // Move the current node from open set to closed set
-    openSet = openSet.filter(node => node !== currentNode);
-    closedSet.push(currentNode);
-
-    // Generate neighbors
-    let neighbors = generateNeighbors(currentNode);
-
-    for (let neighbor of neighbors) {
-      if (closedSet.includes(neighbor) || neighbor.g <= currentNode.g + 1) {
-        // Skip if the neighbor is already evaluated or has higher g value
-        continue;
-      }
-
-      neighbor.parent = currentNode;
-      neighbor.g = currentNode.g + 1;
-      neighbor.calculateHeuristic(goalNode);
-      neighbor.calculateTotalCost();
-
-      if (!openSet.includes(neighbor)) {
-        openSet.push(neighbor);
-      }
+  for (let i = 3; i <= Math.sqrt(number); i += 2) {
+    while (number % i === 0) {
+      largestPrimeFactor = i;
+      number /= i;
     }
   }
 
-  return []; // No path found
-}
-
-// Helper function to generate neighbors
-function generateNeighbors(node) {
-  let neighbors = [];
-  // Generate neighbors based on your graph structure
-  // Example for grid-based graph:
-  const offsets = [[1, 0], [-1, 0], [0, 1], [0, -1]];
-  for (let offset of offsets) {
-    let x = node.x + offset[0];
-    let y = node.y + offset[1];
-    neighbors.push(new Node(x, y));
+  if (number > 2) {
+    largestPrimeFactor = number;
   }
 
-  return neighbors;
+  return largestPrimeFactor;
 }
 
-// Example usage:
-// Define your start and goal nodes
-let startNode = new Node(0, 0);
-let goalNode = new Node(5, 5);
-
-// Find the path using A* algorithm
-let path = AStarSearch(startNode, goalNode);
-
-console.log(path);
+const number = 123456789; // Replace with your desired number
+const largestPrimeFactor = findLargestPrimeFactor(number);
+console.log("Largest Prime Factor:", largestPrimeFactor);
