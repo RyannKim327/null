@@ -1,8 +1,6 @@
-function removeVowels(str) {
-  return str.replace(/[aeiou]/gi, '');
-}
+let str = "Hello, world! This is a string with spaces.";
 
-// Example usage:
-let input = "Hello World";
-let result = removeVowels(input);
-console.log(result); // Output: "Hll Wrld"
+let noSpaces = str.replace(/ /g, "");
+
+console.log(noSpaces);
+Hello,world!Thisisastringwithspaces.
