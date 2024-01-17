@@ -1,18 +1,20 @@
-function areAnagrams(str1, str2) {
-  // Step 1: Remove whitespace and non-alphabetic characters
-  const regex = /[^a-zA-Z0-9]/g;
-  const sortedStr1 = str1.replace(regex, '').toLowerCase();
-  const sortedStr2 = str2.replace(regex, '').toLowerCase();
+// Function to generate a random number in a given range
+function getRandomNumber(min, max) {
+  // Generate a random decimal number between 0 and 1
+  var randomDecimal = Math.random();
 
-  // Step 2: Sort the strings
-  const sorted1 = sortedStr1.split('').sort().join('');
-  const sorted2 = sortedStr2.split('').sort().join('');
+  // Scale the random decimal to the range [min, max]
+  var randomNum = randomDecimal * (max - min + 1) + min;
 
-  // Step 3: Compare the sorted strings
-  return sorted1 === sorted2;
+  // Remove the fractional part to get an integer
+  randomNum = Math.floor(randomNum);
+
+  // Return the generated random number
+  return randomNum;
 }
 
-// Example usage
-const string1 = "listen";
-const string2 = "silent";
-console.log(areAnagrams(string1, string2)); // true
+// Example usage:
+var minRange = 1;
+var maxRange = 10;
+var randomNumber = getRandomNumber(minRange, maxRange);
+console.log(randomNumber);
