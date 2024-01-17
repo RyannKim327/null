@@ -1,24 +1,14 @@
-function findFirstRepeatedChar(str) {
-    // Create an empty Set to keep track of seen characters
-    var charsSet = new Set();
+// Make a GET request to the API endpoint
+fetch('https://api.example.com/data')
+  .then(response => response.json())
+  .then(data => {
+    // Process the API response data
+    console.log(data);
 
-    // Iterate through each character in the string
-    for (var i = 0; i < str.length; i++) {
-        var char = str[i];
+    // Do something with the data
+    // ...
 
-        // Check if the character has already been seen
-        if (charsSet.has(char)) {
-            return char; // Return the first repeated character
-        }
-
-        // Add the character to the set
-        charsSet.add(char);
-    }
-
-    return null; // Return null if no repeated character is found
-}
-
-// Example usage
-var inputString = "Hello World!";
-var repeatedChar = findFirstRepeatedChar(inputString);
-console.log("First repeated character: " + repeatedChar);
+  })
+  .catch(error => {
+    console.log('Error fetching data:', error);
+  });
