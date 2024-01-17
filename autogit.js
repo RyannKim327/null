@@ -1,18 +1,16 @@
-function reverseWords(str) {
-  // Step 1: Split the string into an array of words
-  const wordsArray = str.split(" ");
+function countOccurrences(string, word) {
+   const regex = new RegExp(word, 'g');
+   const matches = string.match(regex);
 
-  // Step 2: Reverse the array
-  const reversedArray = wordsArray.reverse();
-
-  // Step 3: Join the reversed array back into a string
-  const reversedString = reversedArray.join(" ");
-
-  // Return the reversed string
-  return reversedString;
+   if (matches) {
+      return matches.length;
+   } else {
+      return 0;
+   }
 }
 
-// Example usage
-const originalString = "Hello, how are you?";
-const reversedString = reverseWords(originalString);
-console.log(reversedString); // Output: "you? are how Hello,"
+// Example usage:
+const sentence = "The quick brown fox jumps over the lazy dog";
+
+const wordCount = countOccurrences(sentence, "the");
+console.log(wordCount); // Output: 2
