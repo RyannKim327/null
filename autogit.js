@@ -1,51 +1,30 @@
-function mergeSortIterative(array) {
-  const length = array.length;
-  let size = 1;
-
-  while (size < length) {
-    for (let i = 0; i < length - size; i += 2 * size) {
-      const left = array.slice(i, i + size);
-      const right = array.slice(i + size, i + 2 * size);
-
-      array = merge(left, right, array, i);
-    }
-
-    size *= 2;
+class TreeNode {
+  constructor(value) {
+    this.val = value;
+    this.left = null;
+    this.right = null;
   }
-
-  return array;
 }
 
-function merge(left, right, array, startIndex) {
-  let leftIndex = 0,
-    rightIndex = 0,
-    arrayIndex = startIndex;
-
-  while (leftIndex < left.length && rightIndex < right.length) {
-    if (left[leftIndex] <= right[rightIndex]) {
-      array[arrayIndex] = left[leftIndex];
-      leftIndex++;
-    } else {
-      array[arrayIndex] = right[rightIndex];
-      rightIndex++;
-    }
-    arrayIndex++;
+function maxDepth(root) {
+  if (root === null) {
+    return 0; // Empty tree has depth 0
   }
 
-  while (leftIndex < left.length) {
-    array[arrayIndex] = left[leftIndex];
-    leftIndex++;
-    arrayIndex++;
-  }
+  // Depth of the left and right subtrees
+  const leftDepth = maxDepth(root.left);
+  const rightDepth = maxDepth(root.right);
 
-  while (rightIndex < right.length) {
-    array[arrayIndex] = right[rightIndex];
-    rightIndex++;
-    arrayIndex++;
-  }
-
-  return array;
+  // Return the maximum depth among the two subtrees, plus 1 for the current level
+  return Math.max(leftDepth, rightDepth) + 1;
 }
-const array = [5, 3, 8, 4, 2, 1, 6, 9, 7];
-const sortedArray = mergeSortIterative(array);
-console.log(sortedArray); // [1, 2, 3, 4, 5, 6, 7, 8, 9]
+// Create a binary tree
+const root = new TreeNode(3);
+root.left = new TreeNode(9);
+root.right = new TreeNode(20);
+root.right.left = new TreeNode(15);
+root.right.right = new TreeNode(7);
+
+// Calculate the maximum depth
+const depth = maxDepth(root);
+console.log(depth); // Output: 3
