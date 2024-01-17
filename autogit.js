@@ -1,24 +1,17 @@
-function shellSort(arr) {
-    let gap = Math.floor(arr.length / 2);
+function findMedianSortedArrays(nums1, nums2) {
+  const mergedArray = nums1.concat(nums2).sort((a, b) => a - b);
+  const length = mergedArray.length;
+  const middleIndex = Math.floor(length / 2);
 
-    while (gap > 0) {
-        for (let i = gap; i < arr.length; i++) {
-            let temp = arr[i];
-            let j = i;
-
-            while (j >= gap && arr[j - gap] > temp) {
-                arr[j] = arr[j - gap];
-                j -= gap;
-            }
-
-            arr[j] = temp;
-        }
-        gap = Math.floor(gap / 2);
-    }
-
-    return arr;
+  if (length % 2 === 1) {
+    return mergedArray[middleIndex];
+  } else {
+    return (mergedArray[middleIndex - 1] + mergedArray[middleIndex]) / 2;
+  }
 }
 
 // Example usage:
-const array = [9, 7, 5, 1, 3, 8, 2, 6, 4];
-console.log(shellSort(array));
+const nums1 = [1, 3];
+const nums2 = [2, 4];
+
+console.log(findMedianSortedArrays(nums1, nums2));  // Output: 2.5
