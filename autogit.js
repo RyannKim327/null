@@ -1,46 +1,70 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+class Graph {
+  constructor() {
+    this.adjList = new Map();
+  }
+
+  addNode(node) {
+    this.adjList.set(node, []);
+  }
+
+  addEdge(node1, node2) {
+    if (!this.adjList.has(node1) || !this.adjList.has(node2)) {
+      throw new Error("Invalid node");
+    }
+    this.adjList.get(node1).push(node2);
+  }
+
+  getNeighbors(node) {
+    if (!this.adjList.has(node)) {
+      throw new Error("Invalid node");
+    }
+    return this.adjList.get(node);
+  }
+
+  getNodes() {
+    return Array.from(this.adjList.keys());
   }
 }
+function topologicalSort(graph) {
+  const visited = new Set();
+  const result = [];
 
-function diameterOfBinaryTree(root) {
-  let diameter = 0;
+  function helper(node) {
+    visited.add(node);
 
-  function depth(node) {
-    if (node == null) {
-      return 0;
+    const neighbors = graph.getNeighbors(node);
+    for (const neighbor of neighbors) {
+      if (!visited.has(neighbor)) {
+        helper(neighbor);
+      }
     }
 
-    const leftDepth = depth(node.left);
-    const rightDepth = depth(node.right);
-    
-    // Update the diameter if necessary
-    diameter = Math.max(diameter, leftDepth + rightDepth);
-
-    // Return the depth of the subtree rooted at the current node
-    return 1 + Math.max(leftDepth, rightDepth);
+    result.unshift(node);
   }
 
-  depth(root);
-  return diameter;
+  const nodes = graph.getNodes();
+  for (const node of nodes) {
+    if (!visited.has(node)) {
+      helper(node);
+    }
+  }
+
+  return result;
 }
+const graph = new Graph();
 
-// Example usage:
+// Add nodes
+graph.addNode("A");
+graph.addNode("B");
+graph.addNode("C");
+graph.addNode("D");
+graph.addNode("E");
 
-/*
-      1
-     / \
-    2   3
-   / \
-  4   5
-*/
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-console.log(diameterOfBinaryTree(root)); // Output: 3
+// Add edges
+graph.addEdge("A", "C");
+graph.addEdge("C", "D");
+graph.addEdge("B", "D");
+graph.addEdge("B", "E");
+graph.addEdge("D", "E");
+const sorted = topologicalSort(graph);
+console.log(sorted);
