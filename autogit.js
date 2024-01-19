@@ -1,37 +1,56 @@
-function interpolationSearch(array, target) {
-    let low = 0;
-    let high = array.length - 1;
+function computeLPSArray(pattern) {
+  const lps = [0];
+  let len = 0;
+  let i = 1;
 
-    while (low <= high && target >= array[low] && target <= array[high]) {
-        if (low === high) {
-            if (array[low] === target) {
-                return low;
-            }
-            return -1; // Element not found
-        }
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[len]) {
+      len++;
+      lps[i] = len;
+      i++;
+    } else {
+      if (len !== 0) {
+        len = lps[len - 1];
+      } else {
+        lps[i] = 0;
+        i++;
+      }
+    }
+  }
 
-        // Estimate the position of the target value
-        let position = Math.floor(low + ((target - array[low]) * (high - low)) / (array[high] - array[low]));
+  return lps;
+}
 
-        if (array[position] === target) {
-            return position;
-        }
+function search(text, pattern) {
+  const lps = computeLPSArray(pattern);
+  const result = [];
 
-        if (array[position] < target) {
-            low = position + 1;
-        } else {
-            high = position - 1;
-        }
+  let i = 0; // index for text
+  let j = 0; // index for pattern
+
+  while (i < text.length) {
+    if (pattern[j] === text[i]) {
+      i++;
+      j++;
     }
 
-    return -1; // Element not found
-}
-const array = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const target = 12;
+    if (j === pattern.length) {
+      result.push(i - j);
+      j = lps[j - 1];
+    } else if (i < text.length && pattern[j] !== text[i]) {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
+      }
+    }
+  }
 
-const resultIndex = interpolationSearch(array, target);
-if (resultIndex !== -1) {
-    console.log(`Element ${target} found at index ${resultIndex}`);
-} else {
-    console.log(`Element ${target} not found in the array`);
+  return result;
 }
+
+// Example usage:
+const text = "ABCABCDABABCDABCDABDE";
+const pattern = "ABCDABD";
+const matches = search(text, pattern);
+console.log(matches);
