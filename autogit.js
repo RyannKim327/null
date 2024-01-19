@@ -1,8 +1,10 @@
-let string1 = "Hello";
-let string2 = " World";
-let result = string1 + string2;
-console.log(result);  // Output: "Hello World"
-let string1 = "Hello";
-let string2 = " World";
-let result = string1.concat(string2);
-console.log(result);  // Output: "Hello World"
+let str = "42";
+let num = parseInt(str);
+
+console.log(num); // Output: 42
+console.log(typeof num); // Output: number
+let str = "42";
+let num = Number(str);
+
+console.log(num); // Output: 42
+console.log(typeof num); // Output: number
