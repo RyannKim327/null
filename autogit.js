@@ -1,39 +1,51 @@
-function reverseLinkedList(head) {
-  let previous = null;
-  let current = null;
-  let next = null;
+function biDirectionalSearch(graph, startNode, goalNode) {
+  // Initialize forward search
+  let forwardVisited = new Set();
+  let forwardQueue = [[startNode]];
 
-  while (head) {
-    next = head.next;
-    head.next = current;
-    current = head;
-    head = next;
+  // Initialize backward search
+  let backwardVisited = new Set();
+  let backwardQueue = [[goalNode]];
+
+  // Perform the search
+  while (forwardQueue.length > 0 && backwardQueue.length > 0) {
+    // Forward search
+    let forwardPath = forwardQueue.shift();
+    let forwardNode = forwardPath[forwardPath.length - 1];
+    forwardVisited.add(forwardNode);
+
+    // Backward search
+    let backwardPath = backwardQueue.shift();
+    let backwardNode = backwardPath[backwardPath.length - 1];
+    backwardVisited.add(backwardNode);
+
+    // Check for intersection
+    if (forwardVisited.has(backwardNode)) {
+      let intersectionNode = backwardNode;
+      let intersectionPath = backwardPath.reverse().slice(1);
+
+      forwardPath = forwardPath.concat(intersectionPath);
+
+      return forwardPath;
+    }
+
+    // Explore neighbors for forward search
+    let forwardNeighbors = graph[forwardNode];
+    for (let neighbor of forwardNeighbors) {
+      if (!forwardVisited.has(neighbor)) {
+        forwardQueue.push([...forwardPath, neighbor]);
+      }
+    }
+
+    // Explore neighbors for backward search
+    let backwardNeighbors = graph[backwardNode];
+    for (let neighbor of backwardNeighbors) {
+      if (!backwardVisited.has(neighbor)) {
+        backwardQueue.push([...backwardPath, neighbor]);
+      }
+    }
   }
 
-  return current;
+  // No path found
+  return [];
 }
-// Create the linked list
-const node1 = { data: 1, next: null };
-const node2 = { data: 2, next: null };
-const node3 = { data: 3, next: null };
-const node4 = { data: 4, next: null };
-
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-
-const head = node1;
-
-// Reverse the linked list
-const reversedHead = reverseLinkedList(head);
-
-// Print the reversed linked list
-let current = reversedHead;
-while (current) {
-  console.log(current.data);
-  current = current.next;
-}
-4
-3
-2
-1
