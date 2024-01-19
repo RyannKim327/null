@@ -1,32 +1,35 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function longestCommonSubstring(str1, str2) {
+  // Create a 2D matrix to store lengths of the common substrings
+  const matrix = Array(str1.length + 1)
+    .fill(0)
+    .map(() => Array(str2.length + 1).fill(0));
+
+  let maxLength = 0; // Length of the longest common substring
+  let endIndex = 0; // Ending index of the longest common substring
+
+  // Fill the matrix by checking each character of the strings
+  for (let i = 1; i <= str1.length; i++) {
+    for (let j = 1; j <= str2.length; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        matrix[i][j] = matrix[i - 1][j - 1] + 1;
+
+        if (matrix[i][j] > maxLength) {
+          maxLength = matrix[i][j];
+          endIndex = i - 1; // Update the ending index of the longest common substring
+        }
+      } else {
+        matrix[i][j] = 0;
+      }
+    }
   }
+
+  // Extract the longest common substring using the ending index and maxLength
+  const longestSubstring = str1.slice(endIndex - maxLength + 1, endIndex + 1);
+  return longestSubstring;
 }
 
-function sumBinaryTree(root) {
-  if (root === null) {
-    return 0;
-  }
-  
-  return root.value + sumBinaryTree(root.left) + sumBinaryTree(root.right);
-}
-// Create a binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
+// Example usage
+const string1 = "abcdefgh";
+const string2 = "xyzabcd";
 
-// Calculate the sum of all nodes
-const sum = sumBinaryTree(root);
-console.log(sum);  // Output: 28
-       1
-     /   \
-    2     3
-   / \   / \
-  4   5 6   7
+console.log(longestCommonSubstring(string1, string2));
