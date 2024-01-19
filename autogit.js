@@ -1,23 +1,13 @@
-function interpolationSearch(arr, target, start = 0, end = arr.length - 1) {
-  if (start > end || target < arr[start] || target > arr[end]) {
-    return -1;
+const numbers = [1, 2, 3, 4, 5];
+const max = Math.max(...numbers);
+console.log(max); // Output: 5
+const numbers = [1, 2, 3, 4, 5];
+let max = numbers[0]; // Assume the first element as maximum
+
+for (let i = 1; i < numbers.length; i++) {
+  if (numbers[i] > max) {
+    max = numbers[i]; // Update the maximum
   }
-
-  let pos = Math.floor(start + ((target - arr[start]) / (arr[end] - arr[start])) * (end - start));
-
-  if (arr[pos] === target) {
-    return pos;
-  }
-
-  if (arr[pos] > target) {
-    return interpolationSearch(arr, target, start, pos - 1);
-  }
-
-  return interpolationSearch(arr, target, pos + 1, end);
 }
 
-// Example usage:
-const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const target = 12;
-
-console.log(interpolationSearch(arr, target)); // Output: 5 (index of element 12)
+console.log(max); // Output: 5
