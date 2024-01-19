@@ -1,23 +1,16 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters
-  str = str.replace(/[\W_]/g, '');
+const CronJob = require('cron').CronJob;
 
-  // Convert string to lowercase
-  str = str.toLowerCase();
+// Define the cron schedule pattern (runs every minute)
+const schedule = '* * * * *';
 
-  // Reverse the string
-  var reversed = str.split('').reverse().join('');
+// Create a new cron job
+const job = new CronJob(schedule, function() {
+  // This code will be executed when the cron job triggers
+  console.log('Cron job triggered!');
+}, null, true);
 
-  // Compare reversed string with original string
-  return str === reversed;
-}
+// Start the cron job
+job.start();
 
-// Test the function
-var input = "A man, a plan, a canal: Panama";
-console.log(isPalindrome(input));  // Output: true
-
-input = "race car";
-console.log(isPalindrome(input));  // Output: true
-
-input = "hello world";
-console.log(isPalindrome(input));  // Output: false
+// Logging a message to indicate the job has started
+console.log('Cron job started!');
