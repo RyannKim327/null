@@ -1,49 +1,36 @@
-function buildPrefixTable(pattern) {
-  const prefixTable = [0];
-  let prefixLength = 0;
+function findLongestIncreasingSubsequence(arr) {
+  const n = arr.length;
+  // Initialize an array dp with all elements set to 1
+  const dp = new Array(n).fill(1);
+  // Initialize an array sequence to store the subsequence
+  const sequence = new Array(n);
 
-  for (let i = 1; i < pattern.length; i++) {
-    while (prefixLength > 0 && pattern[i] !== pattern[prefixLength]) {
-      prefixLength = prefixTable[prefixLength - 1];
-    }
-
-    if (pattern[i] === pattern[prefixLength]) {
-      prefixLength++;
-    }
-
-    prefixTable[i] = prefixLength;
+  for (let i = 0; i < n; i++) {
+    sequence[i] = [arr[i]];
   }
 
-  return prefixTable;
-}
-
-function kmpSearch(text, pattern) {
-  const prefixTable = buildPrefixTable(pattern);
-  let textIndex = 0;
-  let patternIndex = 0;
-  const matches = [];
-
-  while (textIndex < text.length) {
-    if (text[textIndex] === pattern[patternIndex]) {
-      textIndex++;
-      patternIndex++;
-
-      if (patternIndex === pattern.length) {
-        matches.push(textIndex - patternIndex);
-        patternIndex = prefixTable[patternIndex - 1];
+  for (let i = 1; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      if (arr[j] < arr[i] && dp[i] < dp[j] + 1) {
+        dp[i] = dp[j] + 1;
+        sequence[i] = sequence[j].concat(arr[i]);
       }
-    } else if (patternIndex > 0) {
-      patternIndex = prefixTable[patternIndex - 1];
-    } else {
-      textIndex++;
     }
   }
 
-  return matches;
+  // Find the maximum value in dp array
+  let maxIndex = 0;
+  for (let i = 1; i < n; i++) {
+    if (dp[i] > dp[maxIndex]) {
+      maxIndex = i;
+    }
+  }
+
+  // Return the longest increasing subsequence
+  return sequence[maxIndex];
 }
 
-// Example usage:
-const text = "ABCABDABCABCABD";
-const pattern = "ABCABD";
-const matches = kmpSearch(text, pattern);
-console.log(matches); // Outputs: [0, 7, 12]
+// Example usage
+const arr = [3, 10, 2, 1, 20];
+const longestSubsequence = findLongestIncreasingSubsequence(arr);
+console.log(longestSubsequence); // Output: [3, 10, 20]
