@@ -1,26 +1,17 @@
-function bubbleSort(array) {
-  const length = array.length;
+function areAnagrams(str1, str2) {
+  // Remove whitespace and punctuation, convert to lowercase
+  const cleanStr1 = str1.replace(/[^a-z0-9]/gi, '').toLowerCase();
+  const cleanStr2 = str2.replace(/[^a-z0-9]/gi, '').toLowerCase();
 
-  for(let i = 0; i < length - 1; i++) {
-    let swapped = false;
+  // Sort the strings
+  const sortedStr1 = cleanStr1.split('').sort().join('');
+  const sortedStr2 = cleanStr2.split('').sort().join('');
 
-    for(let j = 0; j < length - 1 - i; j++) {
-      if(array[j] > array[j+1]) {
-        // Swap elements
-        [array[j], array[j+1]] = [array[j+1], array[j]];
-        swapped = true;
-      }
-    }
-
-    if(!swapped) {
-      // No more swaps, the array is sorted
-      break;
-    }
-  }
-
-  return array;
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
 
-// Usage example
-const numbers = [5, 3, 8, 4, 2];
-console.log(bubbleSort(numbers));  // Output: [2, 3, 4, 5, 8]
+// Example usage:
+const string1 = "listen";
+const string2 = "silent";
+console.log(areAnagrams(string1, string2)); // Output: true
