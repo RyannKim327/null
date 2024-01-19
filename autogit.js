@@ -1,29 +1,25 @@
-function quicksort(arr) {
-  if (arr.length <= 1) {
-    return arr;
-  }
+function shellSort(array) {
+  let gap = Math.floor(array.length / 2);
+  
+  while (gap > 0) {
+    for (let i = gap; i < array.length; i++) {
+      let temp = array[i];
+      let j = i;
 
-  const pivot = arr[Math.floor(arr.length / 2)];
-  const left = [];
-  const right = [];
+      while (j >= gap && array[j - gap] > temp) {
+        array[j] = array[j - gap];
+        j -= gap;
+      }
 
-  for (let i = 0; i < arr.length; i++) {
-    if (i === Math.floor(arr.length / 2)) {
-      continue;
+      array[j] = temp;
     }
 
-    if (arr[i] < pivot) {
-      left.push(arr[i]);
-    } else {
-      right.push(arr[i]);
-    }
+    gap = Math.floor(gap / 2);
   }
 
-  return [...quicksort(left), pivot, ...quicksort(right)];
+  return array;
 }
 
-// Usage example:
-
-const unsortedArray = [5, 8, 3, 1, 9];
-const sortedArray = quicksort(unsortedArray);
-console.log(sortedArray);
+// Example usage:
+const arr = [9, 5, 1, 3, 8, 4, 7, 2, 6];
+console.log(shellSort(arr)); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
