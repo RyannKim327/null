@@ -1,5 +1,16 @@
-let str = "Hello World";
-let lowercaseStr = str.toLowerCase();
+// Import the required Axios library
+const axios = require('axios');
 
-console.log(lowercaseStr);
-hello world
+// Define the API endpoint URL
+const apiUrl = 'https://jsonplaceholder.typicode.com/posts';
+
+// Make a GET request to the API endpoint using Axios
+axios.get(apiUrl)
+  .then(response => {
+    // Handle the successful response
+    console.log('Response:', response.data);
+  })
+  .catch(error => {
+    // Handle any errors that occurred during the request
+    console.error('Error:', error);
+  });
