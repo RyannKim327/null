@@ -1,64 +1,70 @@
 class Node {
   constructor(value) {
     this.value = value;
-    this.next = null;
+    this.left = null;
+    this.right = null;
   }
 }
-
-class Queue {
+class BinarySearchTree {
   constructor() {
-    this.head = null;
-    this.tail = null;
-    this.size = 0;
+    this.root = null;
   }
 
-  enqueue(value) {
+  // Method to insert a value into the tree
+  insert(value) {
     const newNode = new Node(value);
-    if (this.isEmpty()) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
-    }
-    this.size++;
-  }
 
-  dequeue() {
-    if (this.isEmpty()) {
-      return null;
+    if (this.root === null) {
+      this.root = newNode;
     } else {
-      const removedNode = this.head;
-      this.head = this.head.next;
-      removedNode.next = null;
-      this.size--;
-      return removedNode.value;
+      this.insertNode(this.root, newNode);
     }
   }
 
-  peek() {
-    if (this.isEmpty()) {
-      return null;
+  // Helper method to recursively insert a value into the tree
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
     } else {
-      return this.head.value;
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
     }
   }
 
-  isEmpty() {
-    return this.size === 0;
+  // Method to search for a value in the tree
+  search(value) {
+    return this.searchNode(this.root, value);
   }
 
-  getSize() {
-    return this.size;
+  // Helper method to recursively search for a value in the tree
+  searchNode(node, value) {
+    if (node === null) {
+      return false;
+    }
+
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else if (value > node.value) {
+      return this.searchNode(node.right, value);
+    } else {
+      return true;
+    }
   }
 }
-const queue = new Queue();
+const bst = new BinarySearchTree();
 
-queue.enqueue(10);
-queue.enqueue(20);
-queue.enqueue(30);
+bst.insert(8);
+bst.insert(3);
+bst.insert(10);
+bst.insert(1);
+bst.insert(6);
 
-console.log(queue.dequeue()); // Output: 10
-console.log(queue.peek()); // Output: 20
-console.log(queue.isEmpty()); // Output: false
-console.log(queue.getSize()); // Output: 2
+console.log(bst.search(6)); // true
+console.log(bst.search(12)); // false
