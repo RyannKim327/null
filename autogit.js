@@ -1,40 +1,53 @@
-function partition(arr, low, high) {
-  const pivot = arr[high];
-  let i = low - 1;
-  
-  for (let j = low; j < high; j++) {
-    if (arr[j] <= pivot) {
+function buildLPS(pattern) {
+  const lps = [0];
+  let len = 0;
+  let i = 1;
+
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[len]) {
+      len++;
+      lps[i] = len;
       i++;
-      [arr[i], arr[j]] = [arr[j], arr[i]];
+    } else {
+      if (len !== 0) {
+        len = lps[len - 1];
+      } else {
+        lps[i] = 0;
+        i++;
+      }
     }
   }
-  
-  [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
-  return i + 1;
+
+  return lps;
 }
 
-function quicksort(arr, low, high) {
-  if (low < high) {
-    const pivotIndex = partition(arr, low, high);
-    quicksort(arr, low, pivotIndex - 1);
-    quicksort(arr, pivotIndex + 1, high);
+function KMPSearch(text, pattern) {
+  const lps = buildLPS(pattern);
+  const results = [];
+  let i = 0;
+  let j = 0;
+
+  while (i < text.length) {
+    if (pattern[j] === text[i]) {
+      i++;
+      j++;
+    }
+
+    if (j === pattern.length) {
+      results.push(i - j);
+      j = lps[j - 1];
+    } else if (i < text.length && pattern[j] !== text[i]) {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
+      }
+    }
   }
+
+  return results;
 }
-
-function findKthSmallest(arr, k) {
-  const len = arr.length;
-  
-  if (k >= 1 && k <= len) {
-    quicksort(arr, 0, len - 1);
-    return arr[k - 1];
-  }
-  
-  return null;
-}
-
-// Example usage:
-const array = [7, 2, 9, 1, 5, 8];
-const k = 3;
-
-const kthSmallest = findKthSmallest(array, k);
-console.log(`The ${k}th smallest element is: ${kthSmallest}`);
+const text = "ABCABCDABABCDABCDABDE";
+const pattern = "ABCDABD";
+const matches = KMPSearch(text, pattern);
+console.log(matches); // Output: [10]
