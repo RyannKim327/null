@@ -1,17 +1,29 @@
-function areAnagrams(str1, str2) {
-  // Remove whitespace and punctuation, convert to lowercase
-  const cleanStr1 = str1.replace(/[^a-z0-9]/gi, '').toLowerCase();
-  const cleanStr2 = str2.replace(/[^a-z0-9]/gi, '').toLowerCase();
+function quicksort(arr) {
+  if (arr.length <= 1) {
+    return arr;
+  }
 
-  // Sort the strings
-  const sortedStr1 = cleanStr1.split('').sort().join('');
-  const sortedStr2 = cleanStr2.split('').sort().join('');
+  const pivot = arr[Math.floor(arr.length / 2)];
+  const left = [];
+  const right = [];
 
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+  for (let i = 0; i < arr.length; i++) {
+    if (i === Math.floor(arr.length / 2)) {
+      continue;
+    }
+
+    if (arr[i] < pivot) {
+      left.push(arr[i]);
+    } else {
+      right.push(arr[i]);
+    }
+  }
+
+  return [...quicksort(left), pivot, ...quicksort(right)];
 }
 
-// Example usage:
-const string1 = "listen";
-const string2 = "silent";
-console.log(areAnagrams(string1, string2)); // Output: true
+// Usage example:
+
+const unsortedArray = [5, 8, 3, 1, 9];
+const sortedArray = quicksort(unsortedArray);
+console.log(sortedArray);
