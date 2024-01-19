@@ -1,90 +1,61 @@
-class Node {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-    this.cost = Infinity;
-    this.heuristic = 0;
-    this.parent = null;
-    this.neighbors = [];
+class HashTable {
+  constructor() {
+    this.table = new Array(100); // Size of the hash table array
   }
-}
-function calculateCost(node, target) {
-  // Calculate the cost to move from the current node to a neighbor
-  // For example, you can use Euclidean distance or Manhattan distance
 
-  // Here's an example using Euclidean distance:
-  const dx = node.x - target.x;
-  const dy = node.y - target.y;
-  const distance = Math.sqrt(dx * dx + dy * dy);
+  hashFunction(key) {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash += key.charCodeAt(i);
+    }
+    return hash % this.table.length;
+  }
 
-  return distance;
-}
+  insert(key, value) {
+    const index = this.hashFunction(key);
+    if (!this.table[index]) {
+      this.table[index] = [];
+    }
+    this.table[index].push({ key, value });
+  }
 
-function calculateHeuristic(node, target) {
-  // Calculate the estimated cost to reach the goal from the current node
-  // You can use the same distance calculation used in the cost function
-
-  // Here's an example using Euclidean distance:
-  const dx = target.x - node.x;
-  const dy = target.y - node.y;
-  const distance = Math.sqrt(dx * dx + dy * dy);
-
-  return distance;
-}
-function aStarSearch(start, goal) {
-  const openSet = [start];
-  const closedSet = [];
-
-  start.cost = 0;
-  start.heuristic = calculateHeuristic(start, goal);
-
-  while (openSet.length > 0) {
-    let current = openSet[0];
-    let currentIndex = 0;
-
-    // Find the node with the lowest cost
-    for (let i = 1; i < openSet.length; i++) {
-      if (openSet[i].cost + openSet[i].heuristic < current.cost + current.heuristic) {
-        current = openSet[i];
-        currentIndex = i;
+  get(key) {
+    const index = this.hashFunction(key);
+    if (!this.table[index]) {
+      return undefined;
+    }
+    for (let i = 0; i < this.table[index].length; i++) {
+      if (this.table[index][i].key === key) {
+        return this.table[index][i].value;
       }
     }
+    return undefined;
+  }
 
-    // Move the current node from open to closed set
-    openSet.splice(currentIndex, 1);
-    closedSet.push(current);
-
-    if (current === goal) {
-      // Path found, reconstruct and return it
-      const path = [];
-      let node = current;
-      while (node.parent) {
-        path.push(node);
-        node = node.parent;
-      }
-      return path.reverse();
+  remove(key) {
+    const index = this.hashFunction(key);
+    if (!this.table[index]) {
+      return undefined;
     }
-
-    // Expand the current node's neighbors
-    for (let neighbor of current.neighbors) {
-      if (closedSet.includes(neighbor)) {
-        continue; // Skip already evaluated nodes
-      }
-
-      const cost = current.cost + calculateCost(current, neighbor);
-
-      if (cost < neighbor.cost) {
-        neighbor.cost = cost;
-        neighbor.heuristic = calculateHeuristic(neighbor, goal);
-        neighbor.parent = current;
-
-        if (!openSet.includes(neighbor)) {
-          openSet.push(neighbor);
+    for (let i = 0; i < this.table[index].length; i++) {
+      if (this.table[index][i].key === key) {
+        const removedValue = this.table[index][i].value;
+        this.table[index].splice(i, 1);
+        if (this.table[index].length === 0) {
+          this.table[index] = undefined;
         }
+        return removedValue;
       }
     }
+    return undefined;
   }
-
-  // No path found
-  return null;
 }
+const hashTable = new HashTable();
+hashTable.insert("name", "John");
+hashTable.insert("age", 30);
+
+console.log(hashTable.get("name")); // Output: John
+console.log(hashTable.get("age")); // Output: 30
+
+hashTable.remove("age");
+console.log(hashTable.get("age")); // Output: undefined
