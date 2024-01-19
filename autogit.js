@@ -1,30 +1,42 @@
-function findLongestIncreasingSubsequence(arr) {
-  const n = arr.length;
-  const dp = Array(n).fill(1);
-  let maxLength = 1;
-  
-  for (let i = 1; i < n; i++) {
-    for (let j = 0; j < i; j++) {
-      if (arr[i] > arr[j]) {
-        dp[i] = Math.max(dp[i], dp[j] + 1);
-        maxLength = Math.max(maxLength, dp[i]);
+function findLongestCommonSubsequence(str1, str2) {
+  const m = str1.length;
+  const n = str2.length;
+
+  // Create a 2D array to store the lengths of common subsequences
+  const dp = Array(m + 1).fill().map(() => Array(n + 1).fill(0));
+
+  // Build the dp array
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
       }
     }
   }
-  
-  const lis = [];
-  let currentLength = maxLength;
-  for (let i = n - 1; i >= 0; i--) {
-    if (dp[i] === currentLength) {
-      lis.unshift(arr[i]);
-      currentLength--;
+
+  // Construct the longest common subsequence
+  let lcs = '';
+  let i = m;
+  let j = n;
+  while (i > 0 && j > 0) {
+    if (str1[i - 1] === str2[j - 1]) {
+      lcs = str1[i - 1] + lcs;
+      i--;
+      j--;
+    } else if (dp[i - 1][j] >= dp[i][j - 1]) {
+      i--;
+    } else {
+      j--;
     }
   }
-  
-  return lis;
+
+  return lcs;
 }
 
-// Example usage
-const arr = [3, 10, 2, 1, 20];
-const lis = findLongestIncreasingSubsequence(arr);
-console.log("Longest Increasing Subsequence:", lis); // [3, 10, 20]
+// Example usage:
+const str1 = 'ABCDGH';
+const str2 = 'AEDFHR';
+const longestCommonSubsequence = findLongestCommonSubsequence(str1, str2);
+console.log(longestCommonSubsequence);  // Output: ADH
