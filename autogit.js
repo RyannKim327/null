@@ -1,31 +1,39 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
+function reverseLinkedList(head) {
+  let previous = null;
+  let current = null;
+  let next = null;
 
-function findMaxDepth(root) {
-  if (root === null) {
-    // If the root is null, the tree has no depth
-    return 0;
+  while (head) {
+    next = head.next;
+    head.next = current;
+    current = head;
+    head = next;
   }
 
-  // Recursively find the maximum depth of the left and right subtrees
-  const leftDepth = findMaxDepth(root.left);
-  const rightDepth = findMaxDepth(root.right);
-
-  // Return the maximum depth found plus 1 for the current node
-  return Math.max(leftDepth, rightDepth) + 1;
+  return current;
 }
+// Create the linked list
+const node1 = { data: 1, next: null };
+const node2 = { data: 2, next: null };
+const node3 = { data: 3, next: null };
+const node4 = { data: 4, next: null };
 
-// Example usage:
-const tree = new Node(1);
-tree.left = new Node(2);
-tree.right = new Node(3);
-tree.left.right = new Node(4);
-tree.right.left = new Node(5);
-tree.right.right = new Node(6);
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
 
-console.log(findMaxDepth(tree)); // Output: 3
+const head = node1;
+
+// Reverse the linked list
+const reversedHead = reverseLinkedList(head);
+
+// Print the reversed linked list
+let current = reversedHead;
+while (current) {
+  console.log(current.data);
+  current = current.next;
+}
+4
+3
+2
+1
