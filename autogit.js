@@ -1,56 +1,31 @@
-function fibonacciSearch(arr, target) {
-  // ...
-}
-function generateFibonacciSequence(length) {
-  const fib = [0, 1];
-  let i = 1;
-  while (fib[i] < length) {
-    fib.push(fib[i] + fib[i - 1]);
-    i++;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
-  return fib;
+}
+
+function findMaxDepth(root) {
+  if (root === null) {
+    // If the root is null, the tree has no depth
+    return 0;
+  }
+
+  // Recursively find the maximum depth of the left and right subtrees
+  const leftDepth = findMaxDepth(root.left);
+  const rightDepth = findMaxDepth(root.right);
+
+  // Return the maximum depth found plus 1 for the current node
+  return Math.max(leftDepth, rightDepth) + 1;
 }
 
 // Example usage:
-const arr = [10, 20, 30, 40, 50];
-const fibSequence = generateFibonacciSequence(arr.length);
-console.log(fibSequence);
-function getSmallestFibonacciNumber(sequence, length) {
-  let i = 0;
-  while (sequence[i] < length) {
-    i++;
-  }
-  return i;
-}
+const tree = new Node(1);
+tree.left = new Node(2);
+tree.right = new Node(3);
+tree.left.right = new Node(4);
+tree.right.left = new Node(5);
+tree.right.right = new Node(6);
 
-// Example usage:
-const arrLength = arr.length;
-const fibNumberIndex = getSmallestFibonacciNumber(fibSequence, arrLength);
-console.log(fibNumberIndex);
-function fibonacciSearch(arr, target) {
-  const length = arr.length;
-  const fibSequence = generateFibonacciSequence(length);
-  const fibNumberIndex = getSmallestFibonacciNumber(fibSequence, length);
-
-  let offset = -1;
-  let k = fibNumberIndex;
-  let i;
-
-  while (k > 0) {
-    i = Math.min(offset + fibSequence[k - 2], length - 1);
-
-    if (arr[i] < target) {
-      k--;
-      offset = i;
-    } else if (arr[i] > target) {
-      k -= 2;
-    } else {
-      return i;
-    }
-  }
-
-  return -1;
-}
-
-// Example usage:
-console.log(fibonacciSearch(arr, 30));
+console.log(findMaxDepth(tree)); // Output: 3
