@@ -1,32 +1,17 @@
-function longestCommonSubstring(str1, str2) {
-    const m = str1.length;
-    const n = str2.length;
+function findMedianSortedArrays(nums1, nums2) {
+  const mergedArray = nums1.concat(nums2);
+  mergedArray.sort((a, b) => a - b);
+  
+  const len = mergedArray.length;
+  const mid = Math.floor(len / 2);
 
-    // Create a 2D array to store the substrings
-    const dp = Array(m + 1).fill(0).map(() => Array(n + 1).fill(0));
-
-    let maxLength = 0; // Length of the longest common substring
-    let endIndex = 0; // Ending index of the longest common substring
-
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-                if (dp[i][j] > maxLength) {
-                    maxLength = dp[i][j];
-                    endIndex = i - 1; // Update the ending index
-                }
-            }
-        }
-    }
-
-    // Extract the longest common substring based on the ending index and maxLength
-    const longestSubstring = str1.slice(endIndex - maxLength + 1, endIndex + 1);
-    return longestSubstring;
+  if (len % 2 === 0) {
+    return (mergedArray[mid - 1] + mergedArray[mid]) / 2;
+  } else {
+    return mergedArray[mid];
+  }
 }
+const nums1 = [1, 3];
+const nums2 = [2, 4];
 
-// Example usage:
-const str1 = "abcdefg";
-const str2 = "defghij";
-const result = longestCommonSubstring(str1, str2);
-console.log(result); // Output: "def"
+console.log(findMedianSortedArrays(nums1, nums2));  // Output: 2.5
