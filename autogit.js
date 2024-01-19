@@ -1,23 +1,30 @@
-function quickSort(arr) {
-  if (arr.length <= 1) {
-    return arr;
+function findMiddleElement(head) {
+  let slowPtr = head;
+  let fastPtr = head;
+
+  while (fastPtr !== null && fastPtr.next !== null) {
+    slowPtr = slowPtr.next;
+    fastPtr = fastPtr.next.next;
   }
 
-  const pivot = arr[arr.length - 1];
-  const left = [];
-  const right = [];
-
-  for (let i = 0; i < arr.length - 1; i++) {
-    if (arr[i] < pivot) {
-      left.push(arr[i]);
-    } else {
-      right.push(arr[i]);
-    }
-  }
-
-  return [...quickSort(left), pivot, ...quickSort(right)];
+  return slowPtr.value;
 }
+// Example linked list
+const head = {
+  value: 1,
+  next: {
+    value: 2,
+    next: {
+      value: 3,
+      next: {
+        value: 4,
+        next: {
+          value: 5,
+          next: null,
+        },
+      },
+    },
+  },
+};
 
-// Example usage:
-const arr = [5, 9, 1, 3, 4, 6, 6, 3, 2];
-console.log(quickSort(arr)); // Output: [1, 2, 3, 3, 4, 5, 6, 6, 9]
+console.log(findMiddleElement(head)); // Output: 3
