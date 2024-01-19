@@ -1,61 +1,31 @@
-class HashTable {
-  constructor() {
-    this.table = new Array(100); // Size of the hash table array
+function hasCycle(head) {
+  let tortoise = head;
+  let hare = head;
+
+  while (hare && hare.next) {
+    tortoise = tortoise.next;
+    hare = hare.next.next;
+
+    if (tortoise === hare) {
+      return true; // Cycle found
+    }
   }
 
-  hashFunction(key) {
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) {
-      hash += key.charCodeAt(i);
-    }
-    return hash % this.table.length;
-  }
-
-  insert(key, value) {
-    const index = this.hashFunction(key);
-    if (!this.table[index]) {
-      this.table[index] = [];
-    }
-    this.table[index].push({ key, value });
-  }
-
-  get(key) {
-    const index = this.hashFunction(key);
-    if (!this.table[index]) {
-      return undefined;
-    }
-    for (let i = 0; i < this.table[index].length; i++) {
-      if (this.table[index][i].key === key) {
-        return this.table[index][i].value;
-      }
-    }
-    return undefined;
-  }
-
-  remove(key) {
-    const index = this.hashFunction(key);
-    if (!this.table[index]) {
-      return undefined;
-    }
-    for (let i = 0; i < this.table[index].length; i++) {
-      if (this.table[index][i].key === key) {
-        const removedValue = this.table[index][i].value;
-        this.table[index].splice(i, 1);
-        if (this.table[index].length === 0) {
-          this.table[index] = undefined;
-        }
-        return removedValue;
-      }
-    }
-    return undefined;
-  }
+  return false; // No cycle found
 }
-const hashTable = new HashTable();
-hashTable.insert("name", "John");
-hashTable.insert("age", 30);
+// Example linked list with a cycle
+const node1 = { value: 1 };
+const node2 = { value: 2 };
+const node3 = { value: 3 };
+node1.next = node2;
+node2.next = node3;
+node3.next = node2;
 
-console.log(hashTable.get("name")); // Output: John
-console.log(hashTable.get("age")); // Output: 30
+console.log(hasCycle(node1)); // Output: true
 
-hashTable.remove("age");
-console.log(hashTable.get("age")); // Output: undefined
+// Example linked list without a cycle
+const node4 = { value: 4 };
+const node5 = { value: 5 };
+node4.next = node5;
+
+console.log(hasCycle(node4)); // Output: false
