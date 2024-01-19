@@ -1,32 +1,47 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function heapSort(array) {
+  // Build max heap
+  buildMaxHeap(array);
+
+  // Heapify the array
+  for (let i = array.length - 1; i >= 0; i--) {
+    // Swap root (maximum element) with the last element in the heap
+    [array[0], array[i]] = [array[i], array[0]];
+
+    // Heapify the reduced heap
+    heapify(array, 0, i);
+  }
+
+  return array;
+}
+
+function buildMaxHeap(array) {
+  const n = array.length;
+  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+    heapify(array, i, n);
   }
 }
 
-// Function to calculate the sum of all nodes in a binary tree
-function sumBinaryTree(root) {
-  if (root === null) {
-    return 0; // Empty tree has a sum of 0
-  } else {
-    // Recursively calculate the sum of nodes in the left and right subtrees
-    const leftSum = sumBinaryTree(root.left);
-    const rightSum = sumBinaryTree(root.right);
+function heapify(array, i, heapSize) {
+  const left = 2 * i + 1;
+  const right = 2 * i + 2;
+  let largest = i;
 
-    // Return the sum of the current node value and the sums of the subtrees
-    return root.value + leftSum + rightSum;
+  if (left < heapSize && array[left] > array[largest]) {
+    largest = left;
+  }
+
+  if (right < heapSize && array[right] > array[largest]) {
+    largest = right;
+  }
+
+  if (largest !== i) {
+    // Swap array[i] with array[largest]
+    [array[i], array[largest]] = [array[largest], array[i]];
+
+    // Recursively heapify the affected sub-tree
+    heapify(array, largest, heapSize);
   }
 }
-
-// Example binary tree
-const rootNode = new Node(1);
-rootNode.left = new Node(2);
-rootNode.right = new Node(3);
-rootNode.left.left = new Node(4);
-rootNode.left.right = new Node(5);
-
-// Calculate the sum of all nodes in the binary tree
-const sum = sumBinaryTree(rootNode);
-console.log("Sum of all nodes:", sum);
+const array = [7, 3, 1, 5, 2];
+const sortedArray = heapSort(array);
+console.log(sortedArray); // Output: [1, 2, 3, 5, 7]
