@@ -1,91 +1,31 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
+function findMaxSubarraySum(arr) {
+  let currSum = 0;
+  let maxSum = -Infinity;
+  let start = 0;
+  let end = 0;
+  let maxStart = 0;
+  
+  for (let i = 0; i < arr.length; i++) {
+    currSum += arr[i];
+    
+    if (currSum > maxSum) {
+      maxSum = currSum;
+      start = maxStart;
+      end = i;
+    }
+    
+    if (currSum < 0) {
+      currSum = 0;
+      maxStart = i + 1;
+    }
   }
+  
+  return {
+    subarray: arr.slice(start, end + 1),
+    sum: maxSum
+  };
 }
-
-class LinkedList {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-  }
-
-  isEmpty() {
-    return this.head === null;
-  }
-
-  append(data) {
-    const newNode = new Node(data);
-
-    if (this.isEmpty()) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
-    }
-  }
-
-  prepend(data) {
-    const newNode = new Node(data);
-
-    if (this.isEmpty()) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      newNode.next = this.head;
-      this.head = newNode;
-    }
-  }
-
-  delete(data) {
-    if (this.isEmpty()) {
-      return;
-    }
-
-    if (this.head.data === data) {
-      this.head = this.head.next;
-      if (this.head === null) {
-        this.tail = null;
-      }
-      return;
-    }
-
-    let currentNode = this.head;
-    while (currentNode.next !== null && currentNode.next.data !== data) {
-      currentNode = currentNode.next;
-    }
-
-    if (currentNode.next !== null) {
-      currentNode.next = currentNode.next.next;
-      if (currentNode.next === null) {
-        this.tail = currentNode;
-      }
-    }
-  }
-
-  print() {
-    let currentNode = this.head;
-    const output = [];
-
-    while (currentNode !== null) {
-      output.push(currentNode.data);
-      currentNode = currentNode.next;
-    }
-
-    console.log(output.join(' -> '));
-  }
-}
-const list = new LinkedList();
-
-list.append(5);
-list.append(10);
-list.prepend(2);
-list.append(15);
-
-list.print(); // Output: 2 -> 5 -> 10 -> 15
-
-list.delete(5);
-
-list.print(); // Output: 2 -> 10 -> 15
+const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const result = findMaxSubarraySum(arr);
+console.log(result.subarray); // Output: [4, -1, 2, 1]
+console.log(result.sum);     // Output: 6
