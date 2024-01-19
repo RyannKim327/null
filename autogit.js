@@ -1,56 +1,64 @@
-function computeLPSArray(pattern) {
-  const lps = [0];
-  let len = 0;
-  let i = 1;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
 
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[len]) {
-      len++;
-      lps[i] = len;
-      i++;
+class Queue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.size = 0;
+  }
+
+  enqueue(value) {
+    const newNode = new Node(value);
+    if (this.isEmpty()) {
+      this.head = newNode;
+      this.tail = newNode;
     } else {
-      if (len !== 0) {
-        len = lps[len - 1];
-      } else {
-        lps[i] = 0;
-        i++;
-      }
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+    this.size++;
+  }
+
+  dequeue() {
+    if (this.isEmpty()) {
+      return null;
+    } else {
+      const removedNode = this.head;
+      this.head = this.head.next;
+      removedNode.next = null;
+      this.size--;
+      return removedNode.value;
     }
   }
 
-  return lps;
-}
-
-function search(text, pattern) {
-  const lps = computeLPSArray(pattern);
-  const result = [];
-
-  let i = 0; // index for text
-  let j = 0; // index for pattern
-
-  while (i < text.length) {
-    if (pattern[j] === text[i]) {
-      i++;
-      j++;
-    }
-
-    if (j === pattern.length) {
-      result.push(i - j);
-      j = lps[j - 1];
-    } else if (i < text.length && pattern[j] !== text[i]) {
-      if (j !== 0) {
-        j = lps[j - 1];
-      } else {
-        i++;
-      }
+  peek() {
+    if (this.isEmpty()) {
+      return null;
+    } else {
+      return this.head.value;
     }
   }
 
-  return result;
-}
+  isEmpty() {
+    return this.size === 0;
+  }
 
-// Example usage:
-const text = "ABCABCDABABCDABCDABDE";
-const pattern = "ABCDABD";
-const matches = search(text, pattern);
-console.log(matches);
+  getSize() {
+    return this.size;
+  }
+}
+const queue = new Queue();
+
+queue.enqueue(10);
+queue.enqueue(20);
+queue.enqueue(30);
+
+console.log(queue.dequeue()); // Output: 10
+console.log(queue.peek()); // Output: 20
+console.log(queue.isEmpty()); // Output: false
+console.log(queue.getSize()); // Output: 2
