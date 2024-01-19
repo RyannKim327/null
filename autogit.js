@@ -1,30 +1,93 @@
-function depthLimitedSearch(state, depth) {
-  if (isGoalState(state)) {
-    return state; // return the solution
+class Node {
+  constructor() {
+    this.children = {};
+    this.suffixLink = null;
+    // Other properties...
   }
-
-  if (depth === 0) {
-    return null; // depth limit exceeded, return failure
+}
+class SuffixTree {
+  constructor() {
+    this.root = new Node();
   }
-
-  const successorStates = generateSuccessorStates(state);
-
-  for (const successorState of successorStates) {
-    const result = depthLimitedSearch(successorState, depth - 1);
-
-    if (result !== null) {
-      return result; // return the solution
+}
+class SuffixTree {
+  // ...
+  build(string) {
+    for (let i = 0; i < string.length; i++) {
+      this._extend(string.substring(i));
     }
   }
 
-  return null; // return failure if no solution found
-}
+  _extend(suffix) {
+    let node = this.root;
+    let remainder = { value: 0 };
 
-// Example helper functions
-function isGoalState(state) {
-  // Check if the given state is the goal state
-}
+    for (let i = 0; i < suffix.length; i++) {
+      remainder.value++;
+      let suffixChar = suffix.charAt(i);
 
-function generateSuccessorStates(state) {
-  // Generate all possible successor states from the given state
+      while (remainder.value > 0) {
+        let nextNode = node.children[suffixChar];
+
+        if (!nextNode) {
+          const leaf = new Node();
+          node.children[suffixChar] = leaf;
+          // Create a suffix link
+          if (this.lastNewNode !== null) {
+            this.lastNewNode.suffixLink = node;
+            this.lastNewNode = null;
+          }
+        } else {
+          if (this._walkDown(suffix, node, remainder, nextNode)) {
+            continue;
+          }
+        }
+
+        // Rule 2
+        if (suffix.charAt(i) === suffix.charAt(i - remainder.value)) {
+          if (this.lastNewNode !== null && node !== this.root) {
+            this.lastNewNode.suffixLink = node;
+            this.lastNewNode = null;
+          }
+
+          remainder.value--;
+          break;
+        }
+
+        // Rule 3
+        const splitNode = new Node();
+        const nextNode = node.children[suffix.charAt(i - remainder.value)];
+        splitNode.children[suffix.charAt(i)] = new Node();
+        splitNode.children[suffix.charAt(i - remainder.value)] = nextNode;
+
+        node.children[suffix.charAt(i - remainder.value)] = splitNode;
+        nextNode.label = nextNode.label.substring(0, remainder.value);
+        splitNode.children[nextNode.label.charAt(0)] = nextNode;
+        nextNode.label = nextNode.label.substring(remainder.value);
+
+        // Create a suffix link
+        if (this.lastNewNode !== null) {
+          this.lastNewNode.suffixLink = splitNode;
+        }
+
+        this.lastNewNode = splitNode;
+      }
+    }
+  }
+
+  _walkDown(suffix, node, remainder, nextNode) {
+    if (remainder.value >= nextNode.label.length) {
+      remainder.value -= nextNode.label.length;
+      node = nextNode;
+      return true;
+    }
+    return false;
+  }
 }
+const suffixTree = new SuffixTree();
+suffixTree.build('banana');
+
+// Test some operations
+console.log(suffixTree.root.children['a']);        // Node { children: { n: Node { ... } }, ... }
+console.log(suffixTree.root.children['b']);        // Node { children: { a: Node { ... } }, ... }
+console.log(suffixTree.root.children['a'].label);  // 'na'
