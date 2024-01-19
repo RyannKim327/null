@@ -1,30 +1,33 @@
-function findMiddleElement(head) {
-  let slowPtr = head;
-  let fastPtr = head;
-
-  while (fastPtr !== null && fastPtr.next !== null) {
-    slowPtr = slowPtr.next;
-    fastPtr = fastPtr.next.next;
+function depthLimitedSearch(state, depth) {
+  if (isGoalState(state)) {
+    return state; // Goal state found, return solution
   }
 
-  return slowPtr.value;
-}
-// Example linked list
-const head = {
-  value: 1,
-  next: {
-    value: 2,
-    next: {
-      value: 3,
-      next: {
-        value: 4,
-        next: {
-          value: 5,
-          next: null,
-        },
-      },
-    },
-  },
-};
+  if (depth === 0 || isLeafNode(state)) {
+    return null; // Maximum depth reached or leaf node, return failure signal
+  }
 
-console.log(findMiddleElement(head)); // Output: 3
+  const successors = generateSuccessorStates(state);
+  for (const successor of successors) {
+    const result = depthLimitedSearch(successor, depth - 1);
+    if (result !== null) {
+      return result; // Solution found, return solution
+    }
+  }
+
+  return null; // No solution found
+}
+
+// Helper functions (replace with your own)
+
+function isGoalState(state) {
+  // Check if the current state is the goal state
+}
+
+function isLeafNode(state) {
+  // Check if the current state is a leaf node (no more moves are possible)
+}
+
+function generateSuccessorStates(state) {
+  // Generate all possible successor states from the current state
+}
