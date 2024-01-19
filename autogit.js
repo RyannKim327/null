@@ -1,47 +1,21 @@
-function heapSort(array) {
-  // Build max heap
-  buildMaxHeap(array);
+function areAnagrams(str1, str2) {
+  // Remove all non-alphanumeric characters and convert to lowercase
+  const normalizeString = (str) => str.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-  // Heapify the array
-  for (let i = array.length - 1; i >= 0; i--) {
-    // Swap root (maximum element) with the last element in the heap
-    [array[0], array[i]] = [array[i], array[0]];
+  // Normalize both strings
+  const normalizedStr1 = normalizeString(str1);
+  const normalizedStr2 = normalizeString(str2);
 
-    // Heapify the reduced heap
-    heapify(array, 0, i);
-  }
-
-  return array;
+  // Check if the sorted characters of the normalized strings match
+  return normalizedStr1.split('').sort().join('') === normalizedStr2.split('').sort().join('');
 }
 
-function buildMaxHeap(array) {
-  const n = array.length;
-  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-    heapify(array, i, n);
-  }
+// Example usage:
+const string1 = 'Listen';
+const string2 = 'Silent';
+
+if (areAnagrams(string1, string2)) {
+  console.log(`${string1} and ${string2} are anagrams.`);
+} else {
+  console.log(`${string1} and ${string2} are not anagrams.`);
 }
-
-function heapify(array, i, heapSize) {
-  const left = 2 * i + 1;
-  const right = 2 * i + 2;
-  let largest = i;
-
-  if (left < heapSize && array[left] > array[largest]) {
-    largest = left;
-  }
-
-  if (right < heapSize && array[right] > array[largest]) {
-    largest = right;
-  }
-
-  if (largest !== i) {
-    // Swap array[i] with array[largest]
-    [array[i], array[largest]] = [array[largest], array[i]];
-
-    // Recursively heapify the affected sub-tree
-    heapify(array, largest, heapSize);
-  }
-}
-const array = [7, 3, 1, 5, 2];
-const sortedArray = heapSort(array);
-console.log(sortedArray); // Output: [1, 2, 3, 5, 7]
