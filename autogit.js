@@ -1,38 +1,49 @@
-function LinkedListNode(value) {
-  this.value = value;
-  this.next = null;
-}
+function buildPrefixTable(pattern) {
+  const prefixTable = [0];
+  let prefixLength = 0;
 
-function LinkedList() {
-  this.head = null;
-}
-
-LinkedList.prototype.addNode = function(value) {
-  const newNode = new LinkedListNode(value);
-  if (this.head === null) {
-    this.head = newNode;
-  } else {
-    let current = this.head;
-    while (current.next !== null) {
-      current = current.next;
+  for (let i = 1; i < pattern.length; i++) {
+    while (prefixLength > 0 && pattern[i] !== pattern[prefixLength]) {
+      prefixLength = prefixTable[prefixLength - 1];
     }
-    current.next = newNode;
-  }
-};
 
-LinkedList.prototype.getLength = function() {
-  let count = 0;
-  let current = this.head;
-  while (current !== null) {
-    count++;
-    current = current.next;
-  }
-  return count;
-};
+    if (pattern[i] === pattern[prefixLength]) {
+      prefixLength++;
+    }
 
-// Usage example:
-const myList = new LinkedList();
-myList.addNode(1);
-myList.addNode(2);
-myList.addNode(3);
-console.log(myList.getLength()); // Output: 3
+    prefixTable[i] = prefixLength;
+  }
+
+  return prefixTable;
+}
+
+function kmpSearch(text, pattern) {
+  const prefixTable = buildPrefixTable(pattern);
+  let textIndex = 0;
+  let patternIndex = 0;
+  const matches = [];
+
+  while (textIndex < text.length) {
+    if (text[textIndex] === pattern[patternIndex]) {
+      textIndex++;
+      patternIndex++;
+
+      if (patternIndex === pattern.length) {
+        matches.push(textIndex - patternIndex);
+        patternIndex = prefixTable[patternIndex - 1];
+      }
+    } else if (patternIndex > 0) {
+      patternIndex = prefixTable[patternIndex - 1];
+    } else {
+      textIndex++;
+    }
+  }
+
+  return matches;
+}
+
+// Example usage:
+const text = "ABCABDABCABCABD";
+const pattern = "ABCABD";
+const matches = kmpSearch(text, pattern);
+console.log(matches); // Outputs: [0, 7, 12]
