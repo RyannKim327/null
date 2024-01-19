@@ -1,7 +1,12 @@
-function getRandomNumber(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
+function randomSort(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
 }
 
-// Usage example
-var randomNumber = getRandomNumber(1, 10);
-console.log(randomNumber); // Outputs a random number between 1 and 10
+// Example usage
+const numbers = [1, 2, 3, 4, 5];
+const shuffledNumbers = randomSort(numbers);
+console.log(shuffledNumbers);
