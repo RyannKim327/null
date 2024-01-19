@@ -1,70 +1,35 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
-class BinarySearchTree {
-  constructor() {
-    this.root = null;
-  }
-
-  // Method to insert a value into the tree
-  insert(value) {
-    const newNode = new Node(value);
-
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
+function depthLimitedSearch(initialState, maxDepth) {
+  function DLS(state, depth) {
+    if (isGoalState(state)) {
+      return state;
     }
-  }
-
-  // Helper method to recursively insert a value into the tree
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
+    
+    if (depth >= maxDepth) {
+      return null;
+    }
+    
+    var children = generateChildStates(state);
+    
+    for (var i = 0; i < children.length; i++) {
+      var result = DLS(children[i], depth + 1);
+      if (result !== null) {
+        return result;
       }
     }
+    
+    return null;
   }
-
-  // Method to search for a value in the tree
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  // Helper method to recursively search for a value in the tree
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
-    }
-
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else if (value > node.value) {
-      return this.searchNode(node.right, value);
-    } else {
-      return true;
-    }
-  }
+  
+  return DLS(initialState, 0);
 }
-const bst = new BinarySearchTree();
 
-bst.insert(8);
-bst.insert(3);
-bst.insert(10);
-bst.insert(1);
-bst.insert(6);
+// Example helper functions
+function isGoalState(state) {
+  // Implement your own goal state check logic
+  return false;
+}
 
-console.log(bst.search(6)); // true
-console.log(bst.search(12)); // false
+function generateChildStates(state) {
+  // Implement your own state generation logic
+  return [];
+}
