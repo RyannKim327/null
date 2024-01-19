@@ -1,51 +1,13 @@
-function biDirectionalSearch(graph, startNode, goalNode) {
-  // Initialize forward search
-  let forwardVisited = new Set();
-  let forwardQueue = [[startNode]];
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
 
-  // Initialize backward search
-  let backwardVisited = new Set();
-  let backwardQueue = [[goalNode]];
+// Find the index of the element to remove
+const index = array.indexOf(elementToRemove);
 
-  // Perform the search
-  while (forwardQueue.length > 0 && backwardQueue.length > 0) {
-    // Forward search
-    let forwardPath = forwardQueue.shift();
-    let forwardNode = forwardPath[forwardPath.length - 1];
-    forwardVisited.add(forwardNode);
-
-    // Backward search
-    let backwardPath = backwardQueue.shift();
-    let backwardNode = backwardPath[backwardPath.length - 1];
-    backwardVisited.add(backwardNode);
-
-    // Check for intersection
-    if (forwardVisited.has(backwardNode)) {
-      let intersectionNode = backwardNode;
-      let intersectionPath = backwardPath.reverse().slice(1);
-
-      forwardPath = forwardPath.concat(intersectionPath);
-
-      return forwardPath;
-    }
-
-    // Explore neighbors for forward search
-    let forwardNeighbors = graph[forwardNode];
-    for (let neighbor of forwardNeighbors) {
-      if (!forwardVisited.has(neighbor)) {
-        forwardQueue.push([...forwardPath, neighbor]);
-      }
-    }
-
-    // Explore neighbors for backward search
-    let backwardNeighbors = graph[backwardNode];
-    for (let neighbor of backwardNeighbors) {
-      if (!backwardVisited.has(neighbor)) {
-        backwardQueue.push([...backwardPath, neighbor]);
-      }
-    }
-  }
-
-  // No path found
-  return [];
+// Check if the element is present in the array
+if (index > -1) {
+  // Use the splice method to remove the element
+  array.splice(index, 1);
 }
+
+console.log(array); // [1, 2, 4, 5]
