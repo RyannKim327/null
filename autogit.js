@@ -1,14 +1,16 @@
 function factorial(n) {
-  // Base case: factorial(0) = 1
-  if (n === 0) {
+  if (n === 0 || n === 1) {
     return 1;
   }
   
-  // Recursive case: factorial(n) = n * factorial(n-1)
-  return n * factorial(n - 1);
+  let result = 1;
+  
+  for(let i = 2; i <= n; i++) {
+    result *= i;
+  }
+  
+  return result;
 }
 
 // Example usage
-const number = 5;
-const result = factorial(number);
-console.log(`The factorial of ${number} is ${result}`);
+console.log(factorial(5)); // Output: 120
