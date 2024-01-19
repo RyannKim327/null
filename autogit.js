@@ -1,27 +1,30 @@
-function selectionSort(array) {
-  const length = array.length;
-
-  for (let i = 0; i < length - 1; i++) {
-    let minIndex = i;
-
-    for (let j = i + 1; j < length; j++) {
-      if (array[j] < array[minIndex]) {
-        minIndex = j;
+function findLongestIncreasingSubsequence(arr) {
+  const n = arr.length;
+  const dp = Array(n).fill(1);
+  let maxLength = 1;
+  
+  for (let i = 1; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      if (arr[i] > arr[j]) {
+        dp[i] = Math.max(dp[i], dp[j] + 1);
+        maxLength = Math.max(maxLength, dp[i]);
       }
     }
-
-    if (minIndex !== i) {
-      // Swap the elements
-      let temp = array[i];
-      array[i] = array[minIndex];
-      array[minIndex] = temp;
+  }
+  
+  const lis = [];
+  let currentLength = maxLength;
+  for (let i = n - 1; i >= 0; i--) {
+    if (dp[i] === currentLength) {
+      lis.unshift(arr[i]);
+      currentLength--;
     }
   }
-
-  return array;
+  
+  return lis;
 }
 
-// Example usage:
-const unsortedArray = [64, 25, 12, 22, 11];
-const sortedArray = selectionSort(unsortedArray);
-console.log(sortedArray);  // Output: [11, 12, 22, 25, 64]
+// Example usage
+const arr = [3, 10, 2, 1, 20];
+const lis = findLongestIncreasingSubsequence(arr);
+console.log("Longest Increasing Subsequence:", lis); // [3, 10, 20]
