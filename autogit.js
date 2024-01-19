@@ -1,47 +1,23 @@
-function rabinKarpSearch(pattern, text) {
-  const patternLength = pattern.length;
-  const textLength = text.length;
-  const primeNumber = 101; // Choosing a prime number for hash calculation
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters
+  str = str.replace(/[\W_]/g, '');
 
-  // Calculate hash values for pattern and first substring in the text
-  let patternHash = 0;
-  let textHash = 0;
-  let multiplier = 1;
-  for (let i = 0; i < patternLength; i++) {
-    patternHash += pattern.charCodeAt(i) * multiplier;
-    textHash += text.charCodeAt(i) * multiplier;
-    multiplier *= primeNumber;
-  }
+  // Convert string to lowercase
+  str = str.toLowerCase();
 
-  // Iterate through the text with rolling hash search
-  for (let i = 0; i <= textLength - patternLength; i++) {
-    // Check if hash values match
-    if (patternHash === textHash) {
-      // Double-check by comparing characters
-      let match = true;
-      for (let j = 0; j < patternLength; j++) {
-        if (text[i + j] !== pattern[j]) {
-          match = false;
-          break;
-        }
-      }
-      if (match) {
-        return i; // Match found, return the starting index
-      }
-    }
+  // Reverse the string
+  var reversed = str.split('').reverse().join('');
 
-    // Update the hash value for the next substring
-    textHash =
-      (textHash - text.charCodeAt(i) * multiplier) * primeNumber +
-      text.charCodeAt(i + patternLength);
-  }
-
-  return -1; // Pattern not found
+  // Compare reversed string with original string
+  return str === reversed;
 }
 
-// Example usage
-const text = "The quick brown fox jumps over the lazy dog";
-const pattern = "fox";
-const index = rabinKarpSearch(pattern, text);
+// Test the function
+var input = "A man, a plan, a canal: Panama";
+console.log(isPalindrome(input));  // Output: true
 
-console.log(`Pattern found at index ${index}`);
+input = "race car";
+console.log(isPalindrome(input));  // Output: true
+
+input = "hello world";
+console.log(isPalindrome(input));  // Output: false
