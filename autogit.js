@@ -1,35 +1,169 @@
-function longestCommonSubstring(str1, str2) {
-  // Create a 2D matrix to store lengths of the common substrings
-  const matrix = Array(str1.length + 1)
-    .fill(0)
-    .map(() => Array(str2.length + 1).fill(0));
+// Define a class for the Red-Black Tree Node
+class Node {
+  constructor(key, color) {
+    this.key = key;
+    this.left = null;
+    this.right = null;
+    this.parent = null;
+    this.color = color;
+  }
+}
 
-  let maxLength = 0; // Length of the longest common substring
-  let endIndex = 0; // Ending index of the longest common substring
-
-  // Fill the matrix by checking each character of the strings
-  for (let i = 1; i <= str1.length; i++) {
-    for (let j = 1; j <= str2.length; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        matrix[i][j] = matrix[i - 1][j - 1] + 1;
-
-        if (matrix[i][j] > maxLength) {
-          maxLength = matrix[i][j];
-          endIndex = i - 1; // Update the ending index of the longest common substring
-        }
+// Define a class for the Red-Black Tree
+class RedBlackTree {
+  constructor() {
+    this.root = null;
+  }
+  
+  // Insert a key into the tree
+  insert(key) {
+    const newNode = new Node(key, "red");
+    
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+    
+    this.fixTree(newNode);
+  }
+  
+  // Insert a new node into the correct position in the tree
+  insertNode(root, newNode) {
+    if (newNode.key < root.key) {
+      if (root.left === null) {
+        root.left = newNode;
+        newNode.parent = root;
       } else {
-        matrix[i][j] = 0;
+        this.insertNode(root.left, newNode);
+      }
+    } else {
+      if (root.right === null) {
+        root.right = newNode;
+        newNode.parent = root;
+      } else {
+        this.insertNode(root.right, newNode);
       }
     }
   }
-
-  // Extract the longest common substring using the ending index and maxLength
-  const longestSubstring = str1.slice(endIndex - maxLength + 1, endIndex + 1);
-  return longestSubstring;
+  
+  // Fix the tree after insertion to maintain Red-Black Tree properties
+  fixTree(node) {
+    while (node !== this.root && node.parent.color === "red") {
+      if (node.parent === node.parent.parent.left) {
+        const uncle = node.parent.parent.right;
+        
+        if (uncle !== null && uncle.color === "red") {
+          node.parent.color = "black";
+          uncle.color = "black";
+          node.parent.parent.color = "red";
+          node = node.parent.parent;
+        } else {
+          if (node === node.parent.right) {
+            node = node.parent;
+            this.leftRotate(node);
+          }
+          
+          node.parent.color = "black";
+          node.parent.parent.color = "red";
+          this.rightRotate(node.parent.parent);
+        }
+      } else {
+        const uncle = node.parent.parent.left;
+        
+        if (uncle !== null && uncle.color === "red") {
+          node.parent.color = "black";
+          uncle.color = "black";
+          node.parent.parent.color = "red";
+          node = node.parent.parent;
+        } else {
+          if (node === node.parent.left) {
+            node = node.parent;
+            this.rightRotate(node);
+          }
+          
+          node.parent.color = "black";
+          node.parent.parent.color = "red";
+          this.leftRotate(node.parent.parent);
+        }
+      }
+    }
+    
+    this.root.color = "black";
+  }
+  
+  // Perform a left rotation around the given node
+  leftRotate(node) {
+    const pivot = node.right;
+    
+    node.right = pivot.left;
+    if (pivot.left !== null) {
+      pivot.left.parent = node;
+    }
+    
+    pivot.parent = node.parent;
+    if (node.parent === null) {
+      this.root = pivot;
+    } else if (node === node.parent.left) {
+      node.parent.left = pivot;
+    } else {
+      node.parent.right = pivot;
+    }
+    
+    pivot.left = node;
+    node.parent = pivot;
+  }
+  
+  // Perform a right rotation around the given node
+  rightRotate(node) {
+    const pivot = node.left;
+    
+    node.left = pivot.right;
+    if (pivot.right !== null) {
+      pivot.right.parent = node;
+    }
+    
+    pivot.parent = node.parent;
+    if (node.parent === null) {
+      this.root = pivot;
+    } else if (node === node.parent.left) {
+      node.parent.left = pivot;
+    } else {
+      node.parent.right = pivot;
+    }
+    
+    pivot.right = node;
+    node.parent = pivot;
+  }
+  
+  // Perform an in-order traversal of the tree and return the result as an array
+  inOrderTraversal(node, result) {
+    if (node !== null) {
+      this.inOrderTraversal(node.left, result);
+      result.push(node.key);
+      this.inOrderTraversal(node.right, result);
+    }
+  }
+  
+  // Get the in-order traversal of the tree as an array
+  getInOrderTraversal() {
+    const result = [];
+    this.inOrderTraversal(this.root, result);
+    return result;
+  }
 }
 
 // Example usage
-const string1 = "abcdefgh";
-const string2 = "xyzabcd";
-
-console.log(longestCommonSubstring(string1, string2));
+const tree = new RedBlackTree();
+tree.insert(7);
+tree.insert(3);
+tree.insert(18);
+tree.insert(10);
+tree.insert(22);
+tree.insert(8);
+tree.insert(11);
+tree.insert(26);
+tree.insert(2);
+tree.insert(6);
+tree.insert(13);
+console.log(tree.getInOrderTraversal()); // [ 2, 3, 6, 7, 8, 10, 11, 13, 18, 22, 26 ]
