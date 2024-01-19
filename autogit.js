@@ -1,24 +1,30 @@
-function countOccurrences(string, word) {
-  // Split the string by spaces to get an array of words
-  var words = string.split(' ');
-  
-  // Initialize a counter variable
-  var count = 0;
-  
-  // Iterate over each word in the array
-  for (var i = 0; i < words.length; i++) {
-    // If the current word matches the target word, increment the count
-    if (words[i].toLowerCase() === word.toLowerCase()) {
-      count++;
+function depthLimitedSearch(state, depth) {
+  if (isGoalState(state)) {
+    return state; // return the solution
+  }
+
+  if (depth === 0) {
+    return null; // depth limit exceeded, return failure
+  }
+
+  const successorStates = generateSuccessorStates(state);
+
+  for (const successorState of successorStates) {
+    const result = depthLimitedSearch(successorState, depth - 1);
+
+    if (result !== null) {
+      return result; // return the solution
     }
   }
-  
-  // Return the final count
-  return count;
+
+  return null; // return failure if no solution found
 }
 
-// Example usage:
-var sentence = "This is an example sentence. This sentence contains the word example.";
-var wordToCount = "example";
-var result = countOccurrences(sentence, wordToCount);
-console.log("Number of occurrences:", result);
+// Example helper functions
+function isGoalState(state) {
+  // Check if the given state is the goal state
+}
+
+function generateSuccessorStates(state) {
+  // Generate all possible successor states from the given state
+}
