@@ -1,23 +1,17 @@
-function quicksort(arr) {
-  if (arr.length <= 1) {
-    return arr;
-  }
+function findKthSmallest(arr, k) {
+  // Sort the array in ascending order
+  arr.sort((a, b) => a - b);
 
-  var pivot = arr[0];
-  var lesser = [];
-  var greater = [];
-
-  for (var i = 1; i < arr.length; i++) {
-    if (arr[i] < pivot) {
-      lesser.push(arr[i]);
-    } else {
-      greater.push(arr[i]);
-    }
-  }
-
-  return quicksort(lesser).concat(pivot, quicksort(greater));
+  // Return the kth element from the sorted array
+  return arr[k - 1];
 }
+const array = [5, 2, 8, 10, 1, 9];
+const k = 3;
 
-// Example usage:
-var array = [5, 8, 2, 9, 1, 10, 7];
-console.log(quicksort(array)); // Outputs: [1, 2, 5, 7, 8, 9, 10]
+const kthSmallest = findKthSmallest(array, k);
+console.log(`The ${k}th smallest element is: ${kthSmallest}`);
+The 3rd smallest element is: 5
+function findKthSmallest(arr, k) {
+  const sortedArr = arr.slice().sort((a, b) => a - b);
+  return sortedArr[k - 1];
+}
