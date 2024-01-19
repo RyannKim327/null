@@ -1,5 +1,5 @@
-// Prompt the user for input
-const userInput = prompt('Enter your input');
-
-// Log the user input to the console
-console.log('User input:', userInput);
+function getRandomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+var randomNumber = getRandomNumber(1, 10);
+console.log(randomNumber);
