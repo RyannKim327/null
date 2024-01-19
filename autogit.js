@@ -1,43 +1,77 @@
 class Node {
-  constructor(value) {
+  constructor(value, level) {
     this.value = value;
-    this.next = null;
+    this.next = new Array(level);
   }
 }
-class LinkedList {
+
+class SkipList {
   constructor() {
-    this.head = null;
+    this.maxLevel = 16; // maximum number of levels
+    this.level = 0; // current number of levels in the list
+    this.head = new Node(-Infinity, this.maxLevel);
   }
 
-  // method to reverse the linked list
-  reverse() {
-    let current = this.head;
-    let prev = null;
-    let next = null;
+  insert(value) {
+    const node = new Node(value, this.randomLevel());
+    const update = new Array(this.maxLevel);
 
-    while (current) {
-      next = current.next;
-      current.next = prev;
-      prev = current;
-      current = next;
+    let current = this.head;
+
+    // Search for the correct insertion position and update pointers
+    for (let i = this.level; i >= 0; i--) {
+      while (current.next[i] && current.next[i].value < value) {
+        current = current.next[i];
+      }
+      update[i] = current;
     }
 
-    this.head = prev;
+    // Insert the new node into the skip list at appropriate levels
+    for (let i = 0; i <= node.level; i++) {
+      node.next[i] = update[i].next[i];
+      update[i].next[i] = node;
+    }
+
+    if (node.level > this.level) {
+      this.level = node.level;
+    }
+  }
+
+  remove(value) {
+    let current = this.head;
+
+    // Search for the node to remove and update pointers
+    for (let i = this.level; i >= 0; i--) {
+      while (current.next[i] && current.next[i].value < value) {
+        current = current.next[i];
+      }
+      if (current.next[i] && current.next[i].value === value) {
+        current.next[i] = current.next[i].next[i];
+      }
+    }
+  }
+
+  search(value) {
+    let current = this.head;
+
+    // Search for the node with the given value
+    for (let i = this.level; i >= 0; i--) {
+      while (current.next[i] && current.next[i].value < value) {
+        current = current.next[i];
+      }
+      if (current.next[i] && current.next[i].value === value) {
+        return true; // Found the value in the skip list
+      }
+    }
+
+    return false; // Value not found
+  }
+
+  randomLevel() {
+    let level = 0;
+    while (Math.random() < 0.5 && level < this.maxLevel) {
+      level++;
+    }
+    return level;
   }
 }
-const linkedList = new LinkedList();
-
-const node1 = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
-
-linkedList.head = node1;
-node1.next = node2;
-node2.next = node3;
-// Before reversing
-// 1 -> 2 -> 3
-
-linkedList.reverse();
-
-// After reversing
-// 3 -> 2 -> 1
