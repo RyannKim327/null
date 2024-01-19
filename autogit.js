@@ -1,55 +1,34 @@
-class Stack {
-  constructor() {
-    this.items = []; // array to store stack elements
-  }
+function breadthFirstSearch(graph, startNode) {
+  const queue = [];
+  const visited = [];
 
-  // push element to the top of the stack
-  push(element) {
-    this.items.push(element);
-  }
+  queue.push(startNode);
+  visited[startNode] = true;
 
-  // remove and return the top element of the stack
-  pop() {
-    if (this.items.length === 0) {
-      return "Stack is empty";
+  while (queue.length > 0) {
+    const node = queue.shift();
+    visited.push(node);
+
+    const neighbors = graph[node];
+    for (let neighbor of neighbors) {
+      if (!visited[neighbor]) {
+        queue.push(neighbor);
+        visited[neighbor] = true;
+      }
     }
-    return this.items.pop();
   }
 
-  // return the top element without removing it
-  peek() {
-    return this.items[this.items.length - 1];
-  }
-
-  // check if the stack is empty
-  isEmpty() {
-    return this.items.length === 0;
-  }
-
-  // return the size of the stack
-  size() {
-    return this.items.length;
-  }
-
-  // clear the stack
-  clear() {
-    this.items = [];
-  }
+  return visited;
 }
 
 // Example usage:
-const stack = new Stack();
-stack.push(10);
-stack.push(20);
-stack.push(30);
+const graph = {
+  A: ['B', 'C'],
+  B: ['A', 'D'],
+  C: ['A', 'E'],
+  D: ['B', 'E', 'F'],
+  E: ['C', 'D', 'F'],
+  F: ['D', 'E']
+};
 
-console.log(stack.size()); // Output: 3
-
-console.log(stack.peek()); // Output: 30
-
-console.log(stack.pop()); // Output: 30
-
-console.log(stack.isEmpty()); // Output: false
-
-stack.clear();
-console.log(stack.isEmpty()); // Output: true
+console.log(breadthFirstSearch(graph, 'A'));
