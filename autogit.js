@@ -1,17 +1,25 @@
-function findKthSmallest(arr, k) {
-  // Sort the array in ascending order
-  arr.sort((a, b) => a - b);
+function largestPrimeFactor(num) {
+  if (num < 2) {
+    return "Number should be greater than or equal to 2";
+  }
 
-  // Return the kth element from the sorted array
-  return arr[k - 1];
-}
-const array = [5, 2, 8, 10, 1, 9];
-const k = 3;
+  let factor = 2;
 
-const kthSmallest = findKthSmallest(array, k);
-console.log(`The ${k}th smallest element is: ${kthSmallest}`);
-The 3rd smallest element is: 5
-function findKthSmallest(arr, k) {
-  const sortedArr = arr.slice().sort((a, b) => a - b);
-  return sortedArr[k - 1];
+  while (factor * factor <= num) {
+    if (num % factor === 0) {
+      num = num / factor;
+    } else {
+      factor++;
+    }
+  }
+
+  if (num > 1) {
+    return num;
+  }
+  
+  return factor;
 }
+
+// Example usage
+console.log(largestPrimeFactor(13195));  // Output: 29
+console.log(largestPrimeFactor(600851475143));  // Output: 6857
