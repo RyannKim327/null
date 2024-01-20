@@ -1,101 +1,121 @@
-class BinaryHeap {
+class SkipListNode {
+  constructor(key, value) {
+    this.key = key;
+    this.value = value;
+    this.next = null;
+    this.down = null;
+  }
+}
+class SkipList {
   constructor() {
-    this.heap = [];
+    this.head = null;
+    this.maxLevel = 0; // The maximum level of the skip list
+    this.probability = 0.5; // The probability of moving to the next level
   }
 
-  // Return the parent index of a node
-  getParentIndex(index) {
-    return Math.floor((index - 1) / 2);
-  }
+  // Insert a new node into the skip list
+  insert(key, value) {
+    // If the skip list is empty, create a new level
+    if (!this.head) {
+      this.head = new SkipListNode(null, null);
+      this.head.next = new SkipListNode(key, value);
+      this.maxLevel = 1;
+      return;
+    }
 
-  // Return the left child index of a node
-  getLeftChildIndex(index) {
-    return index * 2 + 1;
-  }
+    // Find the insertion point on each level
+    let currentLevel = this.maxLevel;
+    const update = new Array(currentLevel + 1);
+    let node = this.head;
 
-  // Return the right child index of a node
-  getRightChildIndex(index) {
-    return index * 2 + 2;
-  }
+    while (currentLevel >= 0) {
+      while (node.next && node.next.key < key) {
+        node = node.next;
+      }
+      update[currentLevel] = node;
+      if (node.down) {
+        node = node.down;
+      }
+      currentLevel--;
+    }
 
-  // Swap two elements in the heap
-  swap(index1, index2) {
-    [this.heap[index1], this.heap[index2]] = [this.heap[index2], this.heap[index1]];
-  }
+    // Create a new node and connect it with the previous level
+    const newNode = new SkipListNode(key, value);
+    for (let i = 0; i < update.length; i++) {
+      newNode.next = update[i].next;
+      update[i].next = newNode;
 
-  // Insert an element into the heap
-  insert(value) {
-    this.heap.push(value);
-    this.heapifyUp(this.heap.length - 1);
-  }
+      // Randomly decide whether to create a new level
+      if (Math.random() < this.probability) {
+        const newLevelNode = new SkipListNode(key, value);
+        newLevelNode.next = newNode;
+        newNode = newLevelNode;
 
-  // Move the element at the given index up the heap
-  heapifyUp(index) {
-    if (index <= 0) return;
-
-    const parentIndex = this.getParentIndex(index);
-    if (this.heap[parentIndex] > this.heap[index]) {
-      this.swap(parentIndex, index);
-      this.heapifyUp(parentIndex);
+        // If a new level is created, update the head
+        if (i === this.maxLevel - 1) {
+          const newHead = new SkipListNode(null, null);
+          newHead.next = newNode;
+          this.head.down = newHead;
+          this.maxLevel++;
+        }
+      }
     }
   }
 
-  // Remove and return the minimum element from the heap
-  removeMin() {
-    if (this.heap.length === 0) return null;
+  // Search for a node with a given key in the skip list
+  search(key) {
+    let node = this.head;
 
-    const minValue = this.heap[0];
-    const lastValue = this.heap.pop();
-
-    if (this.heap.length > 0) {
-      this.heap[0] = lastValue;
-      this.heapifyDown(0);
+    while (node) {
+      if (node.next && node.next.key <= key) {
+        if (node.next.key === key) {
+          return node.next.value;
+        }
+        node = node.next;
+      } else if (node.down) {
+        node = node.down;
+      } else {
+        break;
+      }
     }
 
-    return minValue;
+    return null; // Key not found
   }
 
-  // Move the element at the given index down the heap
-  heapifyDown(index) {
-    const leftChildIndex = this.getLeftChildIndex(index);
-    const rightChildIndex = this.getRightChildIndex(index);
+  // Delete a node with a given key from the skip list
+  delete(key) {
+    let node = this.head;
+    let deleted = false;
 
-    let minIndex = index;
-    if (leftChildIndex < this.heap.length && this.heap[leftChildIndex] < this.heap[minIndex]) {
-      minIndex = leftChildIndex;
-    }
-    if (rightChildIndex < this.heap.length && this.heap[rightChildIndex] < this.heap[minIndex]) {
-      minIndex = rightChildIndex;
+    while (node) {
+      if (node.next && node.next.key <= key) {
+        if (node.next.key === key) {
+          node.next = node.next.next;
+          deleted = true;
+        }
+        node = node.next;
+      } else if (node.down) {
+        node = node.down;
+      } else {
+        break;
+      }
     }
 
-    if (minIndex !== index) {
-      this.swap(minIndex, index);
-      this.heapifyDown(minIndex);
+    if (deleted && this.head.next === null) {
+      // If all nodes are deleted, reset the skip list
+      this.head = null;
+      this.maxLevel = 0;
     }
   }
 }
-class PriorityQueue {
-  constructor() {
-    this.heap = new BinaryHeap();
-  }
+const skipList = new SkipList();
 
-  // Insert an element with a priority into the priority queue
-  enqueue(value, priority) {
-    this.heap.insert({ value, priority });
-  }
+skipList.insert(1, "Value 1");
+skipList.insert(3, "Value 3");
+skipList.insert(2, "Value 2");
 
-  // Remove and return the element with the highest priority from the priority queue
-  dequeue() {
-    const element = this.heap.removeMin();
-    return element ? element.value : null;
-  }
-}
-const priorityQueue = new PriorityQueue();
+console.log(skipList.search(2)); // Output: Value 2
 
-priorityQueue.enqueue("Task 1", 3);
-priorityQueue.enqueue("Task 2", 1);
-priorityQueue.enqueue("Task 3", 2);
+skipList.delete(2);
 
-console.log(priorityQueue.dequeue()); // Output: Task 2
-console.log(priorityQueue.dequeue()); // Output: Task 3
-console.log(priorityQueue.dequeue()); // Output: Task 1
+console.log(skipList.search(2)); // Output: null
