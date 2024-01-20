@@ -1,26 +1,31 @@
-function findFirstRepeatedCharacter(str) {
-  let charMap = {};
-  
-  for (let i = 0; i < str.length; i++) {
-    let char = str[i];
-    
-    // Check if the character has been seen before
-    if (charMap[char]) {
-      return char;
+// This code assumes you have a backend API to connect to your Android device
+
+// Function to connect to Android device using an async task
+async function connectToDevice(deviceId) {
+  try {
+    // Make an API request to connect to the Android device
+    const response = await fetch('https://your-backend-api/connect', {
+      method: 'POST',
+      body: JSON.stringify({ deviceId }),
+      headers: {
+        'Content-Type': 'application/json'
+        // Add any additional headers if required
+      }
+    });
+
+    // Check if the API request was successful
+    if (response.ok) {
+      const data = await response.json();
+      console.log('Connected to device:', data.deviceName);
+      // Perform any actions or operations with the connected device
+    } else {
+      console.error('Failed to connect to device');
     }
-    
-    // Mark the character as seen
-    charMap[char] = true;
+  } catch (error) {
+    console.error('An error occurred:', error);
   }
-  
-  // If no repeated character is found
-  return null;
 }
 
-// Example usage
-let string1 = "abcdefg";
-let string2 = "hello world";
-let string3 = "javascript";
-console.log(findFirstRepeatedCharacter(string1)); // Returns null
-console.log(findFirstRepeatedCharacter(string2)); // Returns 'l'
-console.log(findFirstRepeatedCharacter(string3)); // Returns 'a'
+// Call the connectToDevice function with a specific device ID
+const deviceId = 'your-android-device-id';
+connectToDevice(deviceId);
