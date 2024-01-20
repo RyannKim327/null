@@ -1,15 +1,33 @@
-function isSortedAscending(arr) {
-  for (let i = 0; i < arr.length - 1; i++) {
-    if (arr[i] > arr[i + 1]) {
-      return false;
+function mergeSortIterative(arr) {
+  if (arr.length <= 1) {
+    return arr;
+  }
+
+  // Split the array into two halves
+  let left = arr,
+    right = [];
+
+  while (left.length > 1) {
+    right.unshift(left.splice(left.length / 2));
+  }
+
+  // Merge the two sorted halves
+  while (left.length && right.length) {
+    if (left[0] < right[0]) {
+      arr.push(left.shift());
+    } else {
+      arr.push(right.shift());
     }
   }
-  return true;
+  
+  // Concatenate the remaining elements
+  arr.push(...left, ...right);
+
+  return arr;
 }
 
-// Example usage:
-const arr1 = [1, 2, 3, 4, 5];
-console.log(isSortedAscending(arr1)); // Output: true
-
-const arr2 = [1, 2, 4, 3, 5];
-console.log(isSortedAscending(arr2)); // Output: false
+// Example usage
+let arr = [8, 3, 1, 5, 2, 9, 7, 6, 4];
+console.log("Before sorting:", arr);
+arr = mergeSortIterative(arr);
+console.log("After sorting:", arr);
