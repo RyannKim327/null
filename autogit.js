@@ -1,72 +1,28 @@
-function biDirectionalSearch(start, goal) {
-  let visitedStart = new Set();
-  let visitedGoal = new Set();
-  let queueStart = [start];
-  let queueGoal = [goal];
-  let parentStart = {};
-  let parentGoal = {};
+function countingSort(arr) {
+  const max = Math.max(...arr);
+  const countArray = Array(max + 1).fill(0);
 
-  while (queueStart.length && queueGoal.length) {
-    const currentStart = queueStart.shift();
-
-    if (currentStart === goal || visitedGoal.has(currentStart)) {
-      return getPath(currentStart, goal, parentStart, parentGoal);
-    }
-
-    visitedStart.add(currentStart);
-    for (const neighbor of getNeighbors(currentStart)) {
-      if (!visitedStart.has(neighbor)) {
-        queueStart.push(neighbor);
-        parentStart[neighbor] = currentStart;
-      }
-    }
-
-    const currentGoal = queueGoal.shift();
-
-    if (currentGoal === start || visitedStart.has(currentGoal)) {
-      return getPath(start, currentGoal, parentStart, parentGoal);
-    }
-
-    visitedGoal.add(currentGoal);
-    for (const neighbor of getNeighbors(currentGoal)) {
-      if (!visitedGoal.has(neighbor)) {
-        queueGoal.push(neighbor);
-        parentGoal[neighbor] = currentGoal;
-      }
-    }
+  // Count occurrences of each element
+  for (let i = 0; i < arr.length; i++) {
+    countArray[arr[i]]++;
   }
 
-  return null;
-}
-
-function getPath(start, goal, parentStart, parentGoal) {
-  const path = [start, goal];
-  let current = start;
-  
-  while (current !== goal) {
-    const next = parentStart[current];
-    path.push(next);
-    current = next;
+  // Modify countArray to store the cumulative sum
+  for (let i = 1; i < countArray.length; i++) {
+    countArray[i] += countArray[i - 1];
   }
-  
-  current = goal;
-  while (current !== start) {
-    const next = parentGoal[current];
-    path.unshift(next);
-    current = next;
+
+  const outputArray = Array(arr.length);
+
+  // Place elements in the output array based on countArray
+  for (let i = arr.length - 1; i >= 0; i--) {
+    outputArray[--countArray[arr[i]]] = arr[i];
   }
-  
-  return path;
+
+  return outputArray;
 }
 
-function getNeighbors(node) {
-  // Implement the logic to get the neighbors of a node here
-  // Return an array of neighboring nodes
-  // For example, if the nodes are represented as an adjacency list, you can return the corresponding array
-}
-
-// Example usage
-const startNode = 'A';
-const goalNode = 'F';
-const path = biDirectionalSearch(startNode, goalNode);
-console.log('Path:', path);
+// Example usage:
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const sortedArray = countingSort(arr);
+console.log(sortedArray);
