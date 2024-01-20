@@ -1,31 +1,42 @@
-// This code assumes you have a backend API to connect to your Android device
+function bellmanFord(graph, start, numNodes) {
+  // Step 1: Initialize distances
+  let distances = Array(numNodes).fill(Infinity);
+  distances[start] = 0;
 
-// Function to connect to Android device using an async task
-async function connectToDevice(deviceId) {
-  try {
-    // Make an API request to connect to the Android device
-    const response = await fetch('https://your-backend-api/connect', {
-      method: 'POST',
-      body: JSON.stringify({ deviceId }),
-      headers: {
-        'Content-Type': 'application/json'
-        // Add any additional headers if required
+  // Step 2: Relax edges repeatedly
+  for (let i = 0; i < numNodes - 1; i++) {
+    for (let j = 0; j < graph.length; j++) {
+      let [source, destination, weight] = graph[j];
+
+      if (distances[source] + weight < distances[destination]) {
+        distances[destination] = distances[source] + weight;
       }
-    });
-
-    // Check if the API request was successful
-    if (response.ok) {
-      const data = await response.json();
-      console.log('Connected to device:', data.deviceName);
-      // Perform any actions or operations with the connected device
-    } else {
-      console.error('Failed to connect to device');
     }
-  } catch (error) {
-    console.error('An error occurred:', error);
   }
-}
 
-// Call the connectToDevice function with a specific device ID
-const deviceId = 'your-android-device-id';
-connectToDevice(deviceId);
+  // Step 3: Check for negative-weight cycles
+  for (let i = 0; i < graph.length; i++) {
+    let [source, destination, weight] = graph[i];
+
+    if (distances[source] + weight < distances[destination]) {
+      throw new Error('Graph contains negative-weight cycle');
+    }
+  }
+
+  return distances;
+}
+let graph = [
+  [0, 1, 6],
+  [0, 2, 2],
+  [1, 2, 3],
+  [1, 3, 5],
+  [2, 3, 4],
+  [2, 4, 2],
+  [3, 4, 6]
+];
+
+let startNode = 0;
+let numNodes = Math.max(...graph.flat()) + 1;
+
+let distances = bellmanFord(graph, startNode, numNodes);
+console.log(distances);
