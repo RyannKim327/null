@@ -1,38 +1,32 @@
-function radixSort(arr) {
-  const max = Math.max(...arr);
-  const maxDigitCount = getDigitCount(max);
+function shellSort(arr) {
+  // Calculate the gap, starting from the highest power of 2 less than the array length
+  let gap = Math.floor(arr.length / 2);
 
-  for (let i = 0; i < maxDigitCount; i++) {
-    let digitBuckets = Array.from({ length: 10 }, () => []);
+  while (gap > 0) {
+    // Perform insertion sort on subarrays defined by the gap
+    for (let i = gap; i < arr.length; i++) {
+      let j = i;
+      const temp = arr[i];
 
-    for (let j = 0; j < arr.length; j++) {
-      const digit = getDigit(arr[j], i);
-      digitBuckets[digit].push(arr[j]);
+      // Shift elements to the right until the correct position is found
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
+      }
+
+      arr[j] = temp;
     }
 
-    arr = [].concat(...digitBuckets);
+    // Reduce the gap by half in each iteration
+    gap = Math.floor(gap / 2);
   }
 
   return arr;
 }
 
-function getDigit(num, place) {
-  return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
-}
-
-function getDigitCount(num) {
-  if (num === 0) return 1;
-  return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
-
-function mostDigits(nums) {
-  let maxDigits = 0;
-  for (let i = 0; i < nums.length; i++) {
-    maxDigits = Math.max(maxDigits, getDigitCount(nums[i]));
-  }
-  return maxDigits;
-}
-
-// Example usage:
-const unsortedArray = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log(radixSort(unsortedArray)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+// Test the algorithm
+const array = [7, 2, 4, 1, 5, 3];
+console.log("Before sorting:", array);
+console.log("After sorting:", shellSort(array));
+Before sorting: [7, 2, 4, 1, 5, 3]
+After sorting: [1, 2, 3, 4, 5, 7]
