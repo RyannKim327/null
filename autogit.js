@@ -1,121 +1,101 @@
-class SkipListNode {
-  constructor(key, value) {
-    this.key = key;
-    this.value = value;
-    this.next = null;
-    this.down = null;
-  }
-}
-class SkipList {
+class BinaryHeap {
   constructor() {
-    this.head = null;
-    this.maxLevel = 0; // The maximum level of the skip list
-    this.probability = 0.5; // The probability of moving to the next level
-  }
-
-  // Insert a new node into the skip list
-  insert(key, value) {
-    // If the skip list is empty, create a new level
-    if (!this.head) {
-      this.head = new SkipListNode(null, null);
-      this.head.next = new SkipListNode(key, value);
-      this.maxLevel = 1;
-      return;
-    }
-
-    // Find the insertion point on each level
-    let currentLevel = this.maxLevel;
-    const update = new Array(currentLevel + 1);
-    let node = this.head;
-
-    while (currentLevel >= 0) {
-      while (node.next && node.next.key < key) {
-        node = node.next;
-      }
-      update[currentLevel] = node;
-      if (node.down) {
-        node = node.down;
-      }
-      currentLevel--;
-    }
-
-    // Create a new node and connect it with the previous level
-    const newNode = new SkipListNode(key, value);
-    for (let i = 0; i < update.length; i++) {
-      newNode.next = update[i].next;
-      update[i].next = newNode;
-
-      // Randomly decide whether to create a new level
-      if (Math.random() < this.probability) {
-        const newLevelNode = new SkipListNode(key, value);
-        newLevelNode.next = newNode;
-        newNode = newLevelNode;
-
-        // If a new level is created, update the head
-        if (i === this.maxLevel - 1) {
-          const newHead = new SkipListNode(null, null);
-          newHead.next = newNode;
-          this.head.down = newHead;
-          this.maxLevel++;
-        }
-      }
-    }
-  }
-
-  // Search for a node with a given key in the skip list
-  search(key) {
-    let node = this.head;
-
-    while (node) {
-      if (node.next && node.next.key <= key) {
-        if (node.next.key === key) {
-          return node.next.value;
-        }
-        node = node.next;
-      } else if (node.down) {
-        node = node.down;
-      } else {
-        break;
-      }
-    }
-
-    return null; // Key not found
-  }
-
-  // Delete a node with a given key from the skip list
-  delete(key) {
-    let node = this.head;
-    let deleted = false;
-
-    while (node) {
-      if (node.next && node.next.key <= key) {
-        if (node.next.key === key) {
-          node.next = node.next.next;
-          deleted = true;
-        }
-        node = node.next;
-      } else if (node.down) {
-        node = node.down;
-      } else {
-        break;
-      }
-    }
-
-    if (deleted && this.head.next === null) {
-      // If all nodes are deleted, reset the skip list
-      this.head = null;
-      this.maxLevel = 0;
-    }
+    this.heap = [];
   }
 }
-const skipList = new SkipList();
+BinaryHeap.prototype.parent = function (index) {
+  return Math.floor((index - 1) / 2);
+};
 
-skipList.insert(1, "Value 1");
-skipList.insert(3, "Value 3");
-skipList.insert(2, "Value 2");
+BinaryHeap.prototype.leftChild = function (index) {
+  return 2 * index + 1;
+};
 
-console.log(skipList.search(2)); // Output: Value 2
+BinaryHeap.prototype.rightChild = function (index) {
+  return 2 * index + 2;
+};
+BinaryHeap.prototype.insert = function (value) {
+  this.heap.push(value);
+  this.heapifyUp();
+};
 
-skipList.delete(2);
+BinaryHeap.prototype.remove = function () {
+  if (this.isEmpty()) {
+    return undefined;
+  }
+  if (this.size() === 1) {
+    return this.heap.pop();
+  }
 
-console.log(skipList.search(2)); // Output: null
+  const root = this.heap[0];
+  this.heap[0] = this.heap.pop();
+  this.heapifyDown();
+
+  return root;
+};
+BinaryHeap.prototype.heapifyUp = function () {
+  let currentIndex = this.size() - 1;
+
+  while (
+    currentIndex > 0 &&
+    this.heap[currentIndex] < this.heap[this.parent(currentIndex)]
+  ) {
+    this.swap(currentIndex, this.parent(currentIndex));
+    currentIndex = this.parent(currentIndex);
+  }
+};
+BinaryHeap.prototype.heapifyDown = function () {
+  let currentIndex = 0;
+
+  while (this.hasLeftChild(currentIndex)) {
+    let smallestChildIndex = this.leftChild(currentIndex);
+
+    if (
+      this.hasRightChild(currentIndex) &&
+      this.heap[this.rightChild(currentIndex)] < this.heap[smallestChildIndex]
+    ) {
+      smallestChildIndex = this.rightChild(currentIndex);
+    }
+
+    if (this.heap[currentIndex] < this.heap[smallestChildIndex]) {
+      break;
+    } else {
+      this.swap(currentIndex, smallestChildIndex);
+    }
+
+    currentIndex = smallestChildIndex;
+  }
+};
+BinaryHeap.prototype.size = function () {
+  return this.heap.length;
+};
+
+BinaryHeap.prototype.isEmpty = function () {
+  return this.size() === 0;
+};
+
+BinaryHeap.prototype.swap = function (index1, index2) {
+  [this.heap[index1], this.heap[index2]] = [
+    this.heap[index2],
+    this.heap[index1],
+  ];
+};
+
+BinaryHeap.prototype.hasLeftChild = function (index) {
+  return this.leftChild(index) < this.size();
+};
+
+BinaryHeap.prototype.hasRightChild = function (index) {
+  return this.rightChild(index) < this.size();
+};
+const pq = new BinaryHeap();
+pq.insert(5);
+pq.insert(10);
+pq.insert(3);
+pq.insert(8);
+
+console.log(pq.remove()); // Output: 3
+console.log(pq.remove()); // Output: 5
+console.log(pq.remove()); // Output: 8
+console.log(pq.remove()); // Output: 10
+console.log(pq.remove()); // Output: undefined (empty queue)
