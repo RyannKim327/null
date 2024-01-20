@@ -1,27 +1,19 @@
-function findFirstNonRepeatingChar(str) {
-  // Create an empty object to store character frequencies
-  let charFreq = {};
+function insertionSort(array) {
+  for (let i = 1; i < array.length; i++) {
+    let current = array[i];
+    let j = i - 1;
 
-  // Iterate through each character in the string
-  for (let char of str) {
-    // If the character is not in the object, add it as a key with a value of 1
-    // Otherwise, increment its value in the object
-    charFreq[char] = charFreq[char] ? charFreq[char] + 1 : 1;
-  }
-
-  // Iterate through the string again
-  for (let char of str) {
-    // If the character's frequency is 1, return it
-    if (charFreq[char] === 1) {
-      return char;
+    while (j >= 0 && array[j] > current) {
+      array[j + 1] = array[j];
+      j--;
     }
+
+    array[j + 1] = current;
   }
 
-  // If no non-repeating character is found, return null or an appropriate value
-  return null;
+  return array;
 }
 
-// Example usage
-let str = "aabbcde";
-let firstNonRepeatingChar = findFirstNonRepeatingChar(str);
-console.log(firstNonRepeatingChar); // Output: "c"
+// Example usage:
+const array = [4, 2, 7, 1, 3];
+console.log(insertionSort(array)); // Output: [1, 2, 3, 4, 7]
