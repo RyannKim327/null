@@ -1,28 +1,22 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
-
-function countLeafNodes(root) {
-  if (root === null) {
-    return 0; // Empty tree has no leaf nodes
-  } else if (root.left === null && root.right === null) {
-    return 1; // A single node tree is a leaf node
-  } else {
-    // Recursively count leaf nodes in the left and right subtrees
-    return countLeafNodes(root.left) + countLeafNodes(root.right);
-  }
+function bubbleSort(array) {
+    let swapped = true;
+    
+    while (swapped) {
+        swapped = false;
+        
+        for (let i = 0; i < array.length - 1; i++) {
+            if (array[i] > array[i + 1]) {
+                [array[i], array[i + 1]] = [array[i + 1], array[i]]; // Swap positions
+                
+                swapped = true;
+            }
+        }
+    }
+    
+    return array;
 }
 
 // Example usage:
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-
-console.log(countLeafNodes(root)); // Output: 3 (nodes 4, 5, and 6 are leaf nodes)
+const unsortedArray = [5, 3, 8, 2, 1, 4];
+const sortedArray = bubbleSort(unsortedArray);
+console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 8]
