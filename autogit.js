@@ -1,22 +1,16 @@
-function findNthNodeFromEnd(list, n) {
-  let ptr1 = list.head;
-  let ptr2 = list.head;
-
-  // Move ptr2 ahead by n nodes
-  for (let i = 0; i < n; i++) {
-    if (ptr2 === null) {
-      // n is greater than the length of the linked list
-      return null;
-    }
-    ptr2 = ptr2.next;
-  }
-
-  // Move both pointers simultaneously until ptr2 reaches the end
-  while (ptr2 !== null) {
-    ptr1 = ptr1.next;
-    ptr2 = ptr2.next;
-  }
-
-  // ptr1 points to the nth node from the end
-  return ptr1;
+function sanitizeString(str) {
+  return str.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
+function reverseString(str) {
+  return str.split('').reverse().join('');
+}
+function isPalindrome(str) {
+  const sanitizedString = sanitizeString(str);
+  const reversedString = reverseString(sanitizedString);
+  return sanitizedString === reversedString;
+}
+const str1 = 'race car';
+console.log(isPalindrome(str1)); // Output: true
+
+const str2 = 'hello world';
+console.log(isPalindrome(str2)); // Output: false
