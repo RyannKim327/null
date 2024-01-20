@@ -1,29 +1,34 @@
-function binarySearch(arr, target) {
-  let left = 0;
-  let right = arr.length - 1;
-
-  while (left <= right) {
-    const mid = Math.floor((left + right) / 2);
-
-    if (arr[mid] === target) {
-      return mid; // Found the target, return the index
-    } else if (arr[mid] < target) {
-      left = mid + 1; // Target is on the right half
+function findMajorityElement(array) {
+  // Step 1: Find a candidate for the majority element
+  let candidate = null;
+  let count = 0;
+  for (let num of array) {
+    if (count === 0) {
+      candidate = num;
+      count = 1;
+    } else if (num === candidate) {
+      count++;
     } else {
-      right = mid - 1; // Target is on the left half
+      count--;
     }
   }
 
-  return -1; // Target not found
+  // Step 2: Verify if the candidate is indeed the majority element
+  count = 0;
+  for (let num of array) {
+    if (num === candidate) {
+      count++;
+    }
+  }
+
+  if (count > array.length / 2) {
+    return candidate;
+  } else {
+    return null; // No majority element found
+  }
 }
 
-// Usage example:
-const sortedArray = [1, 3, 5, 7, 9, 11, 13, 15, 17];
-const target = 9;
-const index = binarySearch(sortedArray, target);
-
-if (index >= 0) {
-  console.log(`Target ${target} found at index ${index}`);
-} else {
-  console.log(`Target ${target} not found`);
-}
+// Example usage:
+const array = [1, 2, 2, 2, 3, 2, 4, 2, 5];
+const majorityElement = findMajorityElement(array);
+console.log('Majority Element:', majorityElement);
