@@ -1,38 +1,20 @@
-class GraphNode {
-  constructor(id) {
-    this.id = id;
-    this.neighbors = [];
-  }
+function findSecondLargest(arr) {
+  let max = -Infinity;
+  let secondMax = -Infinity;
 
-  addNeighbor(node) {
-    this.neighbors.push(node);
-  }
-}
-function dfs(startNode, visited) {
-  // Mark the current node as visited
-  visited.add(startNode);
-
-  // Process the current node (print it, manipulate its data, etc.)
-  console.log(startNode.id);
-
-  // Traverse the neighbors
-  for (const neighbor of startNode.neighbors) {
-    if (!visited.has(neighbor)) {
-      dfs(neighbor, visited); // Recursively visit the neighbor
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] > max) {
+      secondMax = max;
+      max = arr[i];
+    } else if (arr[i] > secondMax && arr[i] < max) {
+      secondMax = arr[i];
     }
   }
-}
-// Create nodes
-const nodeA = new GraphNode('A');
-const nodeB = new GraphNode('B');
-const nodeC = new GraphNode('C');
-const nodeD = new GraphNode('D');
-const nodeE = new GraphNode('E');
 
-// Connect nodes with edges
-nodeA.addNeighbor(nodeB);
-nodeA.addNeighbor(nodeC);
-nodeB.addNeighbor(nodeD);
-nodeD.addNeighbor(nodeE);
-const visited = new Set();
-dfs(nodeA, visited);
+  return secondMax;
+}
+
+// Usage example:
+const arr = [4, 2, 9, 5, 1, 8];
+const secondLargest = findSecondLargest(arr);
+console.log(secondLargest); // Output: 8
