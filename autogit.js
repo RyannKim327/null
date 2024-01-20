@@ -1,100 +1,105 @@
-function bidirectionalSearch(graph, startNode, goalNode) {
-  const forwardQueue = [startNode];
-  const backwardQueue = [goalNode];
-  
-  const forwardVisited = new Set();
-  const backwardVisited = new Set();
-  
-  const forwardParent = {};
-  const backwardParent = {};
-  
-  forwardVisited.add(startNode);
-  backwardVisited.add(goalNode);
-  forwardParent[startNode] = null;
-  backwardParent[goalNode] = null;
-  
-  while (forwardQueue.length > 0 && backwardQueue.length > 0) {
-    const meetingNode = exploreNeighbors(
-      graph,
-      forwardQueue,
-      backwardQueue,
-      forwardVisited,
-      backwardVisited,
-      forwardParent,
-      backwardParent
-    );
-    
-    if (meetingNode !== null) {
-      // Path found!
-      const path = getPath(meetingNode, forwardParent, backwardParent);
-      return path;
-    }
+class BinaryHeap {
+  constructor() {
+    this.heap = [];
   }
-  
-  // No path found
-  return null;
-}
 
-function exploreNeighbors(
-  graph,
-  forwardQueue,
-  backwardQueue,
-  forwardVisited,
-  backwardVisited,
-  forwardParent,
-  backwardParent
-) {
-  const forwardNode = forwardQueue.shift();
-  const backwardNode = backwardQueue.shift();
-  
-  const forwardNeighbors = graph[forwardNode];
-  const backwardNeighbors = graph[backwardNode];
-  
-  for (const neighbor of forwardNeighbors) {
-    if (!forwardVisited.has(neighbor)) {
-      forwardQueue.push(neighbor);
-      forwardVisited.add(neighbor);
-      forwardParent[neighbor] = forwardNode;
-    }
-    
-    if (backwardVisited.has(neighbor)) {
-      // Meeting point found!
-      return neighbor;
-    }
+  getParentIndex(index) {
+    return Math.floor((index - 1) / 2);
   }
-  
-  for (const neighbor of backwardNeighbors) {
-    if (!backwardVisited.has(neighbor)) {
-      backwardQueue.push(neighbor);
-      backwardVisited.add(neighbor);
-      backwardParent[neighbor] = backwardNode;
-    }
-    
-    if (forwardVisited.has(neighbor)) {
-      // Meeting point found!
-      return neighbor;
-    }
-  }
-  
-  return null;
-}
 
-function getPath(meetingNode, forwardParent, backwardParent) {
-  const path = [];
-  
-  // Traverse from the start node to the meeting point
-  let node = meetingNode;
-  while (node !== null) {
-    path.push(node);
-    node = forwardParent[node];
+  getLeftChildIndex(index) {
+    return index * 2 + 1;
+  }
+
+  getRightChildIndex(index) {
+    return index * 2 + 2;
   }
   
-  // Traverse from the goal node to the meeting point
-  node = backwardParent[meetingNode];
-  while (node !== null) {
-    path.unshift(node);
-    node = backwardParent[node];
+  hasParent(index) {
+    return this.getParentIndex(index) >= 0;
+  }
+
+  hasLeftChild(index) {
+    return this.getLeftChildIndex(index) < this.heap.length;
+  }
+
+  hasRightChild(index) {
+    return this.getRightChildIndex(index) < this.heap.length;
+  }
+
+  parent(index) {
+    return this.heap[this.getParentIndex(index)];
+  }
+
+  leftChild(index) {
+    return this.heap[this.getLeftChildIndex(index)];
+  }
+
+  rightChild(index) {
+    return this.heap[this.getRightChildIndex(index)];
+  }
+
+  swap(index1, index2) {
+    const temp = this.heap[index1];
+    this.heap[index1] = this.heap[index2];
+    this.heap[index2] = temp;
+  }
+
+  peek() {
+    if (this.heap.length === 0) {
+      return null;
+    }
+    return this.heap[0];
+  }
+
+  poll() {
+    if (this.heap.length === 0) {
+      return null;
+    }
+    if (this.heap.length === 1) {
+      return this.heap.pop();
+    }
+    const highestPriority = this.heap[0];
+    this.heap[0] = this.heap.pop();
+    this.heapifyDown();
+    return highestPriority;
+  }
+
+  add(element) {
+    this.heap.push(element);
+    this.heapifyUp();
   }
   
-  return path;
+  heapifyUp() {
+    let index = this.heap.length - 1;
+    while (this.hasParent(index) && this.parent(index) > this.heap[index]) {
+      const parentIndex = this.getParentIndex(index);
+      this.swap(index, parentIndex);
+      index = parentIndex;
+    }
+  }
+
+  heapifyDown() {
+    let index = 0;
+    while (this.hasLeftChild(index)) {
+      let smallerChildIndex = this.getLeftChildIndex(index);
+      if (this.hasRightChild(index) && this.rightChild(index) < this.leftChild(index)) {
+        smallerChildIndex = this.getRightChildIndex(index);
+      }
+      if (this.heap[index] < this.heap[smallerChildIndex]) {
+        break;
+      } else {
+        this.swap(index, smallerChildIndex);
+      }
+      index = smallerChildIndex;
+    }
+  }
 }
+const priorityQueue = new BinaryHeap();
+priorityQueue.add(5);
+priorityQueue.add(3);
+priorityQueue.add(7);
+const highestPriorityElement = priorityQueue.poll();
+console.log(highestPriorityElement); // Output: 3
+const highestPriorityElement = priorityQueue.peek();
+console.log(highestPriorityElement); // Output: 5
