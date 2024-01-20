@@ -1,28 +1,15 @@
-function countingSort(arr) {
-  const max = Math.max(...arr);
-  const countArray = Array(max + 1).fill(0);
-
-  // Count occurrences of each element
-  for (let i = 0; i < arr.length; i++) {
-    countArray[arr[i]]++;
+function isSortedAscending(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false;
+    }
   }
-
-  // Modify countArray to store the cumulative sum
-  for (let i = 1; i < countArray.length; i++) {
-    countArray[i] += countArray[i - 1];
-  }
-
-  const outputArray = Array(arr.length);
-
-  // Place elements in the output array based on countArray
-  for (let i = arr.length - 1; i >= 0; i--) {
-    outputArray[--countArray[arr[i]]] = arr[i];
-  }
-
-  return outputArray;
+  return true;
 }
 
 // Example usage:
-const arr = [4, 2, 2, 8, 3, 3, 1];
-const sortedArray = countingSort(arr);
-console.log(sortedArray);
+const arr1 = [1, 2, 3, 4, 5];
+console.log(isSortedAscending(arr1)); // Output: true
+
+const arr2 = [1, 2, 4, 3, 5];
+console.log(isSortedAscending(arr2)); // Output: false
