@@ -1,14 +1,92 @@
-function countOccurrences(str, char) {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str.charAt(i) === char) {
-            count++;
-        }
-    }
-    return count;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
-let string = "Hello, world!";
-let character = "o";
-let occurrences = countOccurrences(string, character);
-console.log(`The character "${character}" occurs ${occurrences} times in the string.`);
-The character "o" occurs 2 times in the string.
+class Queue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+  }
+}
+enqueue(value) {
+  const newNode = new Node(value);
+  
+  if (this.head === null) {
+    this.head = newNode;
+    this.tail = newNode;
+  } else {
+    this.tail.next = newNode;
+    this.tail = newNode;
+  }
+}
+dequeue() {
+  if (this.head === null) {
+    return null;
+  }
+  
+  const dequeuedValue = this.head.value;
+  this.head = this.head.next;
+  
+  if (this.head === null) {
+    this.tail = null;
+  }
+  
+  return dequeuedValue;
+}
+peek() {
+  if (this.head === null) {
+    return null;
+  }
+  
+  return this.head.value;
+}
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
+
+class Queue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+  }
+
+  enqueue(value) {
+    const newNode = new Node(value);
+  
+    if (this.head === null) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+  }
+
+  dequeue() {
+    if (this.head === null) {
+      return null;
+    }
+  
+    const dequeuedValue = this.head.value;
+    this.head = this.head.next;
+  
+    if (this.head === null) {
+      this.tail = null;
+    }
+  
+    return dequeuedValue;
+  }
+
+  peek() {
+    if (this.head === null) {
+      return null;
+    }
+  
+    return this.head.value;
+  }
+}
