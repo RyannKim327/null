@@ -1,37 +1,62 @@
-class Node {
-  constructor(value, children = []) {
-    this.value = value;
-    this.children = children;
+function fibonacci(n) {
+  if (n <= 1) {
+    return n;
   }
+
+  let a = 0;
+  let b = 1;
+
+  for (let i = 2; i <= n; i++) {
+    let temp = a + b;
+    a = b;
+    b = temp;
+  }
+
+  return b;
 }
+function fibonacciSearch(arr, key) {
+  let fibNMinus2 = 0;
+  let fibNMinus1 = 1;
+  let fibN = fibNMinus1 + fibNMinus2;
 
-function depthLimitedSearch(node, target, depth) {
-  if (node.value === target) {
-    return node;
+  while (fibN < arr.length) {
+    fibNMinus2 = fibNMinus1;
+    fibNMinus1 = fibN;
+    fibN = fibNMinus1 + fibNMinus2;
   }
 
-  if (depth === 0) {
-    return null;
-  }
+  let offset = -1;
 
-  for (let child of node.children) {
-    const result = depthLimitedSearch(child, target, depth - 1);
-    if (result) {
-      return result;
+  while (fibN > 1) {
+    let i = Math.min(offset + fibNMinus2, arr.length - 1);
+
+    if (arr[i] < key) {
+      fibN = fibNMinus1;
+      fibNMinus1 = fibNMinus2;
+      fibNMinus2 = fibN - fibNMinus1;
+      offset = i;
+    } else if (arr[i] > key) {
+      fibN = fibNMinus2;
+      fibNMinus1 = fibNMinus1 - fibNMinus2;
+      fibNMinus2 = fibN - fibNMinus1;
+    } else {
+      return i;
     }
   }
 
-  return null;
+  if (fibNMinus1 && arr[offset + 1] === key) {
+    return offset + 1;
+  }
+
+  return -1;
 }
+const arr = [2, 4, 6, 8, 10, 12, 14, 16];
+const key = 10;
+const index = fibonacciSearch(arr, key);
 
-// Example usage:
-const G = new Node("G");
-const F = new Node("F");
-const E = new Node("E", [G]);
-const D = new Node("D", [F]);
-const C = new Node("C", [E]);
-const B = new Node("B", [D]);
-const A = new Node("A", [B, C]);
-
-const result = depthLimitedSearch(A, "G", 3);
-console.log(result);
+if (index !== -1) {
+  console.log(`Element ${key} found at index ${index}`);
+} else {
+  console.log(`Element ${key} not found`);
+}
+Element 10 found at index 4
