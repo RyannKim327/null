@@ -1,27 +1,32 @@
-class ListNode {
-  constructor(val) {
-    this.val = val;
-    this.next = null;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
 
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
-
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
+function countLeafNodes(node) {
+  if (node === null) {
+    return 0;
   }
 
-  return slow.val;
+  if (node.left === null && node.right === null) {
+    return 1;
+  }
+
+  return countLeafNodes(node.left) + countLeafNodes(node.right);
 }
+// Create the binary tree
+let root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
 
-// Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-console.log(findMiddleElement(head)); // Output: 3
+// Count the number of leaf nodes
+let leafNodeCount = countLeafNodes(root);
+console.log("Number of leaf nodes:", leafNodeCount);
+Number of leaf nodes: 4
