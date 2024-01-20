@@ -1,19 +1,39 @@
-function insertionSort(array) {
-  for (let i = 1; i < array.length; i++) {
-    let current = array[i];
-    let j = i - 1;
-
-    while (j >= 0 && array[j] > current) {
-      array[j + 1] = array[j];
-      j--;
-    }
-
-    array[j + 1] = current;
+class Stack {
+  constructor() {
+    this.stack = [];
   }
 
-  return array;
-}
+  push(value) {
+    this.stack.push(value);
+  }
 
-// Example usage:
-const array = [4, 2, 7, 1, 3];
-console.log(insertionSort(array)); // Output: [1, 2, 3, 4, 7]
+  pop() {
+    return this.stack.pop();
+  }
+
+  peek() {
+    return this.stack[this.stack.length - 1];
+  }
+
+  isEmpty() {
+    return this.stack.length === 0;
+  }
+
+  size() {
+    return this.stack.length;
+  }
+}
+const stack = new Stack();
+
+stack.push(1);
+stack.push(2);
+stack.push(3);
+
+console.log(stack.peek()); // Output: 3
+
+console.log(stack.pop()); // Output: 3
+console.log(stack.pop()); // Output: 2
+
+console.log(stack.size()); // Output: 1
+
+console.log(stack.isEmpty()); // Output: false
