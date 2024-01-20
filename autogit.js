@@ -1,4 +1,7 @@
-fetch('https://api.example.com/data') // replace with your API endpoint URL
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.log('Error:', error));
+function getRandomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Example usage
+var randomNumber = getRandomNumber(1, 10);
+console.log(randomNumber);
