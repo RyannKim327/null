@@ -1,14 +1,11 @@
-function getRandomNumber(min, max) {
-  // Generate a random decimal number between 0 and 1
-  const randomDecimal = Math.random();
+const axios = require('axios');
 
-  // Scale the random decimal number to the desired range
-  const randomNumber = randomDecimal * (max - min + 1) + min;
+const url = 'https://jsonplaceholder.typicode.com/posts';
 
-  // Convert the scaled number to a whole number (integer)
-  return Math.floor(randomNumber);
-}
-
-// Example usage: generating a random number between 1 and 10
-const result = getRandomNumber(1, 10);
-console.log(result);
+axios.get(url)
+  .then(response => {
+    console.log('Response:', response.data);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
