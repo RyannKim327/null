@@ -1,25 +1,26 @@
-function selectionSort(array) {
-  const length = array.length;
-
-  for (let i = 0; i < length - 1; i++) {
-    let minIndex = i;
+function findFirstRepeatedCharacter(str) {
+  let charMap = {};
+  
+  for (let i = 0; i < str.length; i++) {
+    let char = str[i];
     
-    for (let j = i + 1; j < length; j++) {
-      if (array[j] < array[minIndex]) {
-        minIndex = j;
-      }
+    // Check if the character has been seen before
+    if (charMap[char]) {
+      return char;
     }
-
-    if (minIndex !== i) {
-      // Swapping elements
-      const temp = array[i];
-      array[i] = array[minIndex];
-      array[minIndex] = temp;
-    }
+    
+    // Mark the character as seen
+    charMap[char] = true;
   }
-
-  return array;
+  
+  // If no repeated character is found
+  return null;
 }
-const numbers = [5, 3, 8, 2, 1, 4];
-const sortedNumbers = selectionSort(numbers);
-console.log(sortedNumbers);
+
+// Example usage
+let string1 = "abcdefg";
+let string2 = "hello world";
+let string3 = "javascript";
+console.log(findFirstRepeatedCharacter(string1)); // Returns null
+console.log(findFirstRepeatedCharacter(string2)); // Returns 'l'
+console.log(findFirstRepeatedCharacter(string3)); // Returns 'a'
