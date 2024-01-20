@@ -1,19 +1,39 @@
-function isPrime(number) {
-  // Check if the number is less than 2
-  if (number < 2) {
-    return false;
+class Graph {
+  constructor() {
+    this.vertices = [];
+    this.adjacencyList = {};
   }
-  
-  // Check for divisibility from 2 to the square root of the number
-  for (let i = 2; i <= Math.sqrt(number); i++) {
-    if (number % i === 0) {
-      return false;
+
+  addVertex(vertex) {
+    this.vertices.push(vertex);
+    this.adjacencyList[vertex] = [];
+  }
+
+  addEdge(vertex1, vertex2) {
+    this.adjacencyList[vertex1].push(vertex2);
+    this.adjacencyList[vertex2].push(vertex1);
+  }
+
+  dfs(startVertex, visited = {}) {
+    console.log(startVertex);
+    visited[startVertex] = true;
+
+    for (const neighbor of this.adjacencyList[startVertex]) {
+      if (!visited[neighbor]) {
+        this.dfs(neighbor, visited);
+      }
     }
   }
-  
-  return true;
 }
 
 // Example usage
-console.log(isPrime(17));  // Output: true
-console.log(isPrime(15));  // Output: false
+const myGraph = new Graph();
+myGraph.addVertex('A');
+myGraph.addVertex('B');
+myGraph.addVertex('C');
+myGraph.addVertex('D');
+myGraph.addEdge('A', 'B');
+myGraph.addEdge('B', 'D');
+myGraph.addEdge('D', 'C');
+
+myGraph.dfs('A');
