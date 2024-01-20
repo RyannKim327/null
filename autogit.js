@@ -1,92 +1,27 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-  }
-}
-enqueue(value) {
-  const newNode = new Node(value);
-  
-  if (this.head === null) {
-    this.head = newNode;
-    this.tail = newNode;
-  } else {
-    this.tail.next = newNode;
-    this.tail = newNode;
-  }
-}
-dequeue() {
-  if (this.head === null) {
-    return null;
-  }
-  
-  const dequeuedValue = this.head.value;
-  this.head = this.head.next;
-  
-  if (this.head === null) {
-    this.tail = null;
-  }
-  
-  return dequeuedValue;
-}
-peek() {
-  if (this.head === null) {
-    return null;
-  }
-  
-  return this.head.value;
-}
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
+function findFirstNonRepeatingChar(str) {
+  // Create an empty object to store character frequencies
+  let charFreq = {};
 
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
+  // Iterate through each character in the string
+  for (let char of str) {
+    // If the character is not in the object, add it as a key with a value of 1
+    // Otherwise, increment its value in the object
+    charFreq[char] = charFreq[char] ? charFreq[char] + 1 : 1;
   }
 
-  enqueue(value) {
-    const newNode = new Node(value);
-  
-    if (this.head === null) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
+  // Iterate through the string again
+  for (let char of str) {
+    // If the character's frequency is 1, return it
+    if (charFreq[char] === 1) {
+      return char;
     }
   }
 
-  dequeue() {
-    if (this.head === null) {
-      return null;
-    }
-  
-    const dequeuedValue = this.head.value;
-    this.head = this.head.next;
-  
-    if (this.head === null) {
-      this.tail = null;
-    }
-  
-    return dequeuedValue;
-  }
-
-  peek() {
-    if (this.head === null) {
-      return null;
-    }
-  
-    return this.head.value;
-  }
+  // If no non-repeating character is found, return null or an appropriate value
+  return null;
 }
+
+// Example usage
+let str = "aabbcde";
+let firstNonRepeatingChar = findFirstNonRepeatingChar(str);
+console.log(firstNonRepeatingChar); // Output: "c"
