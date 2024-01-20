@@ -1,33 +1,29 @@
-function mergeSortIterative(arr) {
-  if (arr.length <= 1) {
-    return arr;
-  }
+function binarySearch(arr, target) {
+  let left = 0;
+  let right = arr.length - 1;
 
-  // Split the array into two halves
-  let left = arr,
-    right = [];
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
 
-  while (left.length > 1) {
-    right.unshift(left.splice(left.length / 2));
-  }
-
-  // Merge the two sorted halves
-  while (left.length && right.length) {
-    if (left[0] < right[0]) {
-      arr.push(left.shift());
+    if (arr[mid] === target) {
+      return mid; // Found the target, return the index
+    } else if (arr[mid] < target) {
+      left = mid + 1; // Target is on the right half
     } else {
-      arr.push(right.shift());
+      right = mid - 1; // Target is on the left half
     }
   }
-  
-  // Concatenate the remaining elements
-  arr.push(...left, ...right);
 
-  return arr;
+  return -1; // Target not found
 }
 
-// Example usage
-let arr = [8, 3, 1, 5, 2, 9, 7, 6, 4];
-console.log("Before sorting:", arr);
-arr = mergeSortIterative(arr);
-console.log("After sorting:", arr);
+// Usage example:
+const sortedArray = [1, 3, 5, 7, 9, 11, 13, 15, 17];
+const target = 9;
+const index = binarySearch(sortedArray, target);
+
+if (index >= 0) {
+  console.log(`Target ${target} found at index ${index}`);
+} else {
+  console.log(`Target ${target} not found`);
+}
