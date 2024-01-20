@@ -1,42 +1,28 @@
-function bellmanFord(graph, start, numNodes) {
-  // Step 1: Initialize distances
-  let distances = Array(numNodes).fill(Infinity);
-  distances[start] = 0;
-
-  // Step 2: Relax edges repeatedly
-  for (let i = 0; i < numNodes - 1; i++) {
-    for (let j = 0; j < graph.length; j++) {
-      let [source, destination, weight] = graph[j];
-
-      if (distances[source] + weight < distances[destination]) {
-        distances[destination] = distances[source] + weight;
-      }
-    }
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
-
-  // Step 3: Check for negative-weight cycles
-  for (let i = 0; i < graph.length; i++) {
-    let [source, destination, weight] = graph[i];
-
-    if (distances[source] + weight < distances[destination]) {
-      throw new Error('Graph contains negative-weight cycle');
-    }
-  }
-
-  return distances;
 }
-let graph = [
-  [0, 1, 6],
-  [0, 2, 2],
-  [1, 2, 3],
-  [1, 3, 5],
-  [2, 3, 4],
-  [2, 4, 2],
-  [3, 4, 6]
-];
 
-let startNode = 0;
-let numNodes = Math.max(...graph.flat()) + 1;
+function countLeafNodes(root) {
+  if (root === null) {
+    return 0; // Empty tree has no leaf nodes
+  } else if (root.left === null && root.right === null) {
+    return 1; // A single node tree is a leaf node
+  } else {
+    // Recursively count leaf nodes in the left and right subtrees
+    return countLeafNodes(root.left) + countLeafNodes(root.right);
+  }
+}
 
-let distances = bellmanFord(graph, startNode, numNodes);
-console.log(distances);
+// Example usage:
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+
+console.log(countLeafNodes(root)); // Output: 3 (nodes 4, 5, and 6 are leaf nodes)
