@@ -1,83 +1,33 @@
-class BinaryTreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+let array = [1, 2, 3, 4, 5];
+let elementToRemove = 3;
+let index = array.indexOf(elementToRemove);
+
+if (index !== -1) {
+  array.splice(index, 1);
 }
-class BinaryTree {
-  constructor() {
-    this.root = null;
-  }
 
-  insert(value) {
-    const node = new BinaryTreeNode(value);
+console.log(array); // [1, 2, 4, 5]
+let array = [1, 2, 3, 4, 5];
+let elementToRemove = 3;
 
-    if (!this.root) {
-      this.root = node;
-    } else {
-      this.insertNode(this.root, node);
-    }
-  }
+array = array.filter(item => item !== elementToRemove);
 
-  insertNode(currentNode, newNode) {
-    if (newNode.value < currentNode.value) {
-      if (!currentNode.left) {
-        currentNode.left = newNode;
-      } else {
-        this.insertNode(currentNode.left, newNode);
-      }
-    } else {
-      if (!currentNode.right) {
-        currentNode.right = newNode;
-      } else {
-        this.insertNode(currentNode.right, newNode);
-      }
-    }
-  }
+console.log(array); // [1, 2, 4, 5]
+let array = [1, 2, 3, 4, 5];
+let elementToRemove = 3;
+let index = array.indexOf(elementToRemove);
 
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  searchNode(currentNode, value) {
-    if (currentNode === null) {
-      return false;
-    }
-
-    if (currentNode.value === value) {
-      return true;
-    }
-
-    if (value < currentNode.value) {
-      return this.searchNode(currentNode.left, value);
-    } else {
-      return this.searchNode(currentNode.right, value);
-    }
-  }
-
-  traverseInOrder() {
-    const result = [];
-    this.inOrder(this.root, result);
-    return result;
-  }
-
-  inOrder(node, result) {
-    if (node !== null) {
-      this.inOrder(node.left, result);
-      result.push(node.value);
-      this.inOrder(node.right, result);
-    }
-  }
+if (index !== -1) {
+  array = array.slice(0, index).concat(array.slice(index + 1));
 }
-const tree = new BinaryTree();
 
-tree.insert(5);
-tree.insert(3);
-tree.insert(7);
-tree.insert(2);
-tree.insert(4);
+console.log(array); // [1, 2, 4, 5]
+let array = [1, 2, 3, 4, 5];
+let elementToRemove = 3;
+let index = array.indexOf(elementToRemove);
 
-console.log(tree.traverseInOrder()); // Output: [2, 3, 4, 5, 7]
-console.log(tree.search(4)); // Output: true
-console.log(tree.search(6)); // Output: false
+if (index !== -1) {
+  array.splice(index, array.lastIndexOf(elementToRemove) - index + 1);
+}
+
+console.log(array); // [1, 2, 4, 5]
