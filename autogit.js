@@ -1,32 +1,67 @@
-function largestPrimeFactor(number) {
-  let largestPrime = 1;
-
-  function isPrime(num) {
-    for (let i = 2, sqrt = Math.sqrt(num); i <= sqrt; i++) {
-      if (num % i === 0) {
-        return false;
-      }
-    }
-    return true;
+class BinaryTreeNode {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
-
-  for (let i = 2, sqrt = Math.sqrt(number); i <= sqrt; i++) {
-    if (number % i === 0 && isPrime(i)) {
-      largestPrime = i;
-      while (number % i === 0) {
-        number /= i;
-      }
-    }
-  }
-
-  if (number > 1) {
-    largestPrime = number;
-  }
-
-  return largestPrime;
 }
 
-// Example usage:
-console.log(largestPrimeFactor(84)); // Output: 7
-console.log(largestPrimeFactor(13195)); // Output: 29
-console.log(largestPrimeFactor(600851475143)); // Output: 6857
+class BinaryTree {
+  constructor() {
+    this.root = null;
+  }
+
+  insert(value) {
+    const newNode = new BinaryTreeNode(value);
+
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
+
+  insertNode(node, newNode) {
+    // If the value is less than the node, it should be placed on the left
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } 
+    // If the value is greater than the node, it should be placed on the right
+    else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  searchNode(node, value) {
+    if (node === null) {
+      return null;
+    } else if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else if (value > node.value) {
+      return this.searchNode(node.right, value);
+    } else {
+      return node;
+    }
+  }
+}
+const binaryTree = new BinaryTree();
+binaryTree.insert(8);
+binaryTree.insert(3);
+binaryTree.insert(10);
+binaryTree.insert(1);
+binaryTree.insert(6);
+
+console.log(binaryTree.search(6)); // Outputs the node object for value 6
+console.log(binaryTree.search(11)); // Outputs null (not found)
