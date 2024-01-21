@@ -1,16 +1,41 @@
-const cron = require('cron');
+function hasCycle(head) {
+  if (!head || !head.next) {
+    return false;
+  }
+  
+  let slow = head;
+  let fast = head.next;
+  
+  while (slow !== fast) {
+    if (!fast || !fast.next) {
+      return false;
+    }
+    
+    slow = slow.next;
+    fast = fast.next.next;
+  }
+  
+  return true;
+}
+// Definition for a linked list node
+class ListNode {
+  constructor(val) {
+    this.val = val;
+    this.next = null;
+  }
+}
 
-// Create a cron job
-const job = new cron.CronJob('* * * * *', () => {
-  // This function will be executed every minute
-  console.log('Cron job executed!');
-});
+// Create a linked list with a cycle
+const head = new ListNode(1);
+const node2 = new ListNode(2);
+const node3 = new ListNode(3);
+const node4 = new ListNode(4);
+const node5 = new ListNode(5);
 
-// Start the cron job
-job.start();
+head.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node5;
+node5.next = node2; // This creates a cycle
 
-// Stop the cron job after 10 seconds
-setTimeout(() => {
-  job.stop();
-  console.log('Cron job stopped!');
-}, 10000);
+console.log(hasCycle(head)); // Output: true
