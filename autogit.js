@@ -1,38 +1,29 @@
-function findLongestCommonSubstring(str1, str2) {
-  // Initialize a 2D array with 0s
-  const matrix = Array(str1.length + 1)
-    .fill(0)
-    .map(() => Array(str2.length + 1).fill(0));
-
-  let longestCommonSubstringLength = 0;
-  let longestCommonSubstringEndIndex = 0;
-
-  // Fill the matrix and track the longest common substring
-  for (let i = 1; i <= str1.length; i++) {
-    for (let j = 1; j <= str2.length; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        matrix[i][j] = matrix[i - 1][j - 1] + 1;
-
-        if (matrix[i][j] > longestCommonSubstringLength) {
-          longestCommonSubstringLength = matrix[i][j];
-          longestCommonSubstringEndIndex = i - 1;
-        }
-      } else {
-        matrix[i][j] = 0;
-      }
+function findMajorityElement(arr) {
+  // Create an object to count the occurrences of each element
+  const count = {};
+  
+  // Iterate through the array and count the occurrences
+  for (let i = 0; i < arr.length; i++) {
+    const element = arr[i];
+    if (count[element]) {
+      count[element]++;
+    } else {
+      count[element] = 1;
     }
   }
-
-  // Extract the longest common substring from str1
-  const longestCommonSubstring = str1.slice(
-    longestCommonSubstringEndIndex - longestCommonSubstringLength + 1,
-    longestCommonSubstringEndIndex + 1
-  );
-
-  return longestCommonSubstring;
+  
+  // Iterate through the count object to find the majority element
+  for (const key in count) {
+    if (count[key] > arr.length / 2) {
+      return key;
+    }
+  }
+  
+  // If no majority element is found, return null or any other suitable value
+  return null;
 }
 
 // Example usage
-const str1 = 'abcdef';
-const str2 = 'cdefg';
-console.log(findLongestCommonSubstring(str1, str2));  // Output: 'cdef'
+const array = [2, 4, 2, 2, 5, 2, 8, 2, 9, 2, 2];
+const majorityElement = findMajorityElement(array);
+console.log(majorityElement);
