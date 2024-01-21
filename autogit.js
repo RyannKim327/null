@@ -1,22 +1,15 @@
-function diameterOfBinaryTree(root) {
-  let diameter = 0;
-
-  function depth(node) {
-    if (node === null) {
-      return 0;
+function binarySearchRecursive(arr, target, start, end) {
+    if (start > end) {
+        return -1;
     }
 
-    const leftDepth = depth(node.left);
-    const rightDepth = depth(node.right);
+    let middle = Math.floor((start + end) / 2);
 
-    // Update the diameter if the sum of depths is greater
-    diameter = Math.max(diameter, leftDepth + rightDepth);
-
-    // Return the depth of the subtree rooted at the current node
-    return 1 + Math.max(leftDepth, rightDepth);
-  }
-
-  depth(root);
-
-  return diameter;
+    if (arr[middle] === target) {
+        return middle;
+    } else if (arr[middle] > target) {
+        return binarySearchRecursive(arr, target, start, middle - 1);
+    } else {
+        return binarySearchRecursive(arr, target, middle + 1, end);
+    }
 }
