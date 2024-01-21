@@ -1,59 +1,33 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function countingSort(arr) {
+  // Find the maximum element in the array
+  let max = Math.max(...arr);
+
+  // Create a count array with size equal to the maximum element
+  let count = new Array(max + 1).fill(0);
+
+  // Count the occurrences of each element in the array
+  for (let i = 0; i < arr.length; i++) {
+    count[arr[i]]++;
   }
+
+  // Calculate the cumulative count array
+  for (let i = 1; i <= max; i++) {
+    count[i] += count[i - 1];
+  }
+
+  // Create a temporary array to store the sorted elements
+  let result = new Array(arr.length);
+
+  // Build the sorted array
+  for (let i = arr.length - 1; i >= 0; i--) {
+    result[count[arr[i]] - 1] = arr[i];
+    count[arr[i]]--;
+  }
+
+  return result;
 }
 
-class BinarySearchTree {
-  constructor() {
-    this.root = null;
-  }
-
-  insert(value) {
-    const node = new Node(value);
-
-    if (!this.root) {
-      this.root = node;
-    } else {
-      let current = this.root;
-      while (true) {
-        if (value < current.value) {
-          if (!current.left) {
-            current.left = node;
-            break;
-          }
-          current = current.left;
-        } else {
-          if (!current.right) {
-            current.right = node;
-            break;
-          }
-          current = current.right;
-        }
-      }
-    }
-  }
-
-  search(value) {
-    let current = this.root;
-    while (current && current.value !== value) {
-      if (value < current.value) {
-        current = current.left;
-      } else {
-        current = current.right;
-      }
-    }
-    return current;
-  }
-}
-const bst = new BinarySearchTree();
-bst.insert(5);
-bst.insert(3);
-bst.insert(7);
-bst.insert(1);
-bst.insert(4);
-
-console.log(bst.search(4));  // Output: Node { value: 4, left: null, right: null }
-console.log(bst.search(6));  // Output: null (not found)
+// Example usage
+let arr = [4, 2, 9, 6, 5, 3];
+let sortedArr = countingSort(arr);
+console.log(sortedArr);  // Output: [2, 3, 4, 5, 6, 9]
