@@ -1,67 +1,22 @@
-class HashTable {
-  constructor(size = 100) {
-    this.size = size;
-    this.table = new Array(size);
-  }
+const mergedArray = [...arr1, ...arr2].sort((a, b) => a - b);
+const medianIdx = Math.floor(mergedArray.length / 2);
+const median = mergedArray[medianIdx];
+const medianIdx1 = Math.floor(mergedArray.length / 2) - 1;
+const medianIdx2 = medianIdx1 + 1;
+const median = (mergedArray[medianIdx1] + mergedArray[medianIdx2]) / 2;
+function findMedian(arr1, arr2) {
+  const mergedArray = [...arr1, ...arr2].sort((a, b) => a - b);
+  const medianIdx = Math.floor(mergedArray.length / 2);
 
-  // Hash function to determine index for a given key
-  hash(key) {
-    let hashCode = 0;
-    for (let i = 0; i < key.length; i++) {
-      hashCode += key.charCodeAt(i);
-    }
-    return hashCode % this.size;
-  }
-
-  // Insert a key-value pair into the hash table
-  insert(key, value) {
-    const index = this.hash(key);
-    if (!this.table[index]) {
-      this.table[index] = [];
-    }
-    this.table[index].push([key, value]);
-  }
-
-  // Retrieve the value associated with a given key
-  get(key) {
-    const index = this.hash(key);
-    if (!this.table[index]) {
-      return undefined;
-    }
-    for (let i = 0; i < this.table[index].length; i++) {
-      if (this.table[index][i][0] === key) {
-        return this.table[index][i][1];
-      }
-    }
-    return undefined;
-  }
-
-  // Remove a key-value pair from the hash table
-  remove(key) {
-    const index = this.hash(key);
-    if (!this.table[index]) {
-      return undefined;
-    }
-    for (let i = 0; i < this.table[index].length; i++) {
-      if (this.table[index][i][0] === key) {
-        const value = this.table[index][i][1];
-        this.table[index].splice(i, 1);
-        if (this.table[index].length === 0) {
-          this.table[index] = undefined;
-        }
-        return value;
-      }
-    }
-    return undefined;
+  if (mergedArray.length % 2 === 1) {
+    return mergedArray[medianIdx];
+  } else {
+    const medianIdx1 = medianIdx - 1;
+    const medianIdx2 = medianIdx;
+    return (mergedArray[medianIdx1] + mergedArray[medianIdx2]) / 2;
   }
 }
-const hashTable = new HashTable();
-hashTable.insert("name", "John");
-hashTable.insert("age", 30);
-
-console.log(hashTable.get("name")); // Output: John
-console.log(hashTable.get("age")); // Output: 30
-
-hashTable.remove("age");
-
-console.log(hashTable.get("age")); // Output: undefined
+const arr1 = [1, 3, 5];
+const arr2 = [2, 4, 6];
+const median = findMedian(arr1, arr2);
+console.log(median); // Output: 3.5
