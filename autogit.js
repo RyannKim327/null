@@ -1,56 +1,29 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-
-function reverseLinkedList(head) {
-  let current = head;
-  let previous = null;
-  let next = null;
-
-  while (current !== null) {
-    next = current.next;
-    current.next = previous;
-    previous = current;
-    current = next;
+function hasCycle(head) {
+  if (!head || !head.next) {
+    return false; // If the list is empty or only has one node, there can't be a cycle
   }
 
-  return previous;
-}
-// Create a sample linked list: 1 -> 2 -> 3 -> 4 -> 5
+  let slow = head; // Slow pointer moves one node at a time
+  let fast = head.next; // Fast pointer moves two nodes at a time
 
-const head = new Node(1);
-const second = new Node(2);
-const third = new Node(3);
-const fourth = new Node(4);
-const fifth = new Node(5);
+  while (slow !== fast) {
+    if (!fast || !fast.next) {
+      return false; // If the fast pointer reaches the end of the list, there is no cycle
+    }
 
-head.next = second;
-second.next = third;
-third.next = fourth;
-fourth.next = fifth;
-
-console.log('Original List:');
-printList(head);
-
-const reversedHead = reverseLinkedList(head);
-
-console.log('Reversed List:');
-printList(reversedHead);
-
-function printList(node) {
-  let current = node;
-  let list = '';
-  while (current !== null) {
-    list += current.value + ' -> ';
-    current = current.next;
+    slow = slow.next; // Move the slow pointer one node ahead
+    fast = fast.next.next; // Move the fast pointer two nodes ahead
   }
-  list += 'null';
-  console.log(list);
+
+  return true; // If the slow and fast pointers meet, there is a cycle
 }
-Original List:
-1 -> 2 -> 3 -> 4 -> 5 -> null
-Reversed List:
-5 -> 4 -> 3 -> 2 -> 1 -> null
+const node1 = { value: 1, next: null };
+const node2 = { value: 2, next: null };
+const node3 = { value: 3, next: null };
+const node4 = { value: 4, next: null };
+
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node2; // Creating a cycle by pointing the last node to node2
+console.log(hasCycle(node1)); // Output: true
