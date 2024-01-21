@@ -1,15 +1,35 @@
-function countOccurrences(str, word) {
-  // Use regex to create a dynamic word pattern
-  const regex = new RegExp(`\\b${word}\\b`, 'gi');
-  
-  // Use match() to find all matches and return the count
-  const matches = str.match(regex);
-  return matches ? matches.length : 0;
+function isPalindrome(str) {
+  for (let i = 0; i < Math.floor(str.length / 2); i++) {
+    if (str[i] !== str[str.length - 1 - i]) {
+      return false;
+    }
+  }
+  return true;
 }
 
-// Example usage
-const string = 'Lorem ipsum dolor ipsum sit amet, consectetur adipiscing ipsum elit.';
-const word = 'ipsum';
+console.log(isPalindrome("racecar"));  // true
+console.log(isPalindrome("hello"));    // false
+console.log(isPalindrome("madam"));    // true
+function isPalindrome(str) {
+  const reversed = str.split("").reverse().join("");
+  return str === reversed;
+}
 
-const count = countOccurrences(string, word);
-console.log(`The word "${word}" occurs ${count} times in the string.`);
+console.log(isPalindrome("racecar"));  // true
+console.log(isPalindrome("hello"));    // false
+console.log(isPalindrome("madam"));    // true
+function isPalindrome(str) {
+  if (str.length === 0 || str.length === 1) {
+    return true;
+  }
+  
+  if (str[0] === str[str.length - 1]) {
+    return isPalindrome(str.slice(1, str.length - 1));
+  }
+  
+  return false;
+}
+
+console.log(isPalindrome("racecar"));  // true
+console.log(isPalindrome("hello"));    // false
+console.log(isPalindrome("madam"));    // true
