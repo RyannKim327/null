@@ -1,30 +1,35 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+// Function to perform interpolation search
+function interpolationSearch(arr, target) {
+  let low = 0;
+  let high = arr.length - 1;
+
+  while (low <= high && target >= arr[low] && target <= arr[high]) {
+    // Calculate the position using interpolation formula
+    let position = Math.floor(
+      low + ((high - low) / (arr[high] - arr[low])) * (target - arr[low])
+    );
+
+    // If target is found at position
+    if (arr[position] === target) {
+      return position;
+    }
+
+    // If target is less, ignore the right half
+    if (arr[position] > target) {
+      high = position - 1;
+    } else {
+      // If target is greater, ignore the left half
+      low = position + 1;
+    }
   }
+
+  return -1; // Target not found
 }
 
-function countLeafNodes(root) {
-  if (root === null) {
-    return 0;
-  }
-  
-  if (root.left === null && root.right === null) {
-    return 1;
-  }
-  
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
-}
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
+// Usage example
+const array = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+const target = 12;
 
-const leafNodeCount = countLeafNodes(root);
-console.log("Number of leaf nodes:", leafNodeCount);
-Number of leaf nodes: 4
+console.log("Array:", array);
+console.log("Target:", target);
+console.log("Index:", interpolationSearch(array, target));
