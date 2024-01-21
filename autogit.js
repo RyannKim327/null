@@ -1,26 +1,21 @@
-function findFirstNonRepeatingChar(str) {
-  // Create an empty object to store character counts
-  const charCount = {};
-  
-  // Iterate over each character in the string and count its occurrences
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
-  }
-  
-  // Find the first character that has a count of 1
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    if (charCount[char] === 1) {
-      return char;
-    }
-  }
-  
-  // If no non-repeating characters are found, return null
-  return null;
-}
+function bubbleSort(arr) {
+  var len = arr.length;
+  var swapped;
 
-// Testing the function
-const inputString = "aabccdeff";
-const result = findFirstNonRepeatingChar(inputString);
-console.log(result); // Output: 'b'
+  do {
+    swapped = false;
+    for (var i = 0; i < len - 1; i++) {
+      if (arr[i] > arr[i + 1]) {
+        // swap elements
+        var temp = arr[i];
+        arr[i] = arr[i + 1];
+        arr[i + 1] = temp;
+        swapped = true;
+      }
+    }
+  } while (swapped);
+
+  return arr;
+}
+var numbers = [5, 3, 8, 4, 2];
+console.log(bubbleSort(numbers)); // [2, 3, 4, 5, 8]
