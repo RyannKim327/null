@@ -1,54 +1,59 @@
-function heapSort(arr) {
-  // Build a max heap from the array
-  buildMaxHeap(arr);
-
-  // Heapify the array from the end to the beginning
-  for (let i = arr.length - 1; i > 0; i--) {
-    // Swap the root (maximum value) of the heap with the last element of the array
-    swap(arr, 0, i);
-
-    // Perform max heapify on the reduced heap
-    heapify(arr, 0, i);
-  }
-
-  return arr;
-}
-
-function buildMaxHeap(arr) {
-  // Start from the first non-leaf node
-  const startIndex = Math.floor(arr.length / 2) - 1;
-
-  // Perform max heapify on each parent node from the end to the beginning
-  for (let i = startIndex; i >= 0; i--) {
-    heapify(arr, i, arr.length);
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
 
-function heapify(arr, index, heapSize) {
-  const leftIndex = 2 * index + 1;
-  const rightIndex = 2 * index + 2;
-  let largestIndex = index;
-
-  // Find the largest element among the parent, left child, and right child
-  if (leftIndex < heapSize && arr[leftIndex] > arr[largestIndex]) {
-    largestIndex = leftIndex;
-  }
-  if (rightIndex < heapSize && arr[rightIndex] > arr[largestIndex]) {
-    largestIndex = rightIndex;
+class BinarySearchTree {
+  constructor() {
+    this.root = null;
   }
 
-  // If the largest element is not the parent, swap it with the parent and recursively heapify the affected sub-tree
-  if (largestIndex !== index) {
-    swap(arr, index, largestIndex);
-    heapify(arr, largestIndex, heapSize);
+  insert(value) {
+    const node = new Node(value);
+
+    if (!this.root) {
+      this.root = node;
+    } else {
+      let current = this.root;
+      while (true) {
+        if (value < current.value) {
+          if (!current.left) {
+            current.left = node;
+            break;
+          }
+          current = current.left;
+        } else {
+          if (!current.right) {
+            current.right = node;
+            break;
+          }
+          current = current.right;
+        }
+      }
+    }
+  }
+
+  search(value) {
+    let current = this.root;
+    while (current && current.value !== value) {
+      if (value < current.value) {
+        current = current.left;
+      } else {
+        current = current.right;
+      }
+    }
+    return current;
   }
 }
+const bst = new BinarySearchTree();
+bst.insert(5);
+bst.insert(3);
+bst.insert(7);
+bst.insert(1);
+bst.insert(4);
 
-function swap(arr, i, j) {
-  const temp = arr[i];
-  arr[i] = arr[j];
-  arr[j] = temp;
-}
-const array = [6, 5, 3, 1, 8, 7, 2, 4];
-const sortedArray = heapSort(array);
-console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 6, 7, 8]
+console.log(bst.search(4));  // Output: Node { value: 4, left: null, right: null }
+console.log(bst.search(6));  // Output: null (not found)
