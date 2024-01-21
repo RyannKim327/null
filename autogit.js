@@ -1,73 +1,48 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+function mergeSortIterative(arr) {
+  const n = arr.length;
+  const sortedArr = [...arr];
+
+  for (let size = 1; size < n; size *= 2) {
+    for (let leftStart = 0; leftStart < n - 1; leftStart += 2 * size) {
+      const mid = Math.min(leftStart + size - 1, n - 1);
+      const rightEnd = Math.min(leftStart + 2 * size - 1, n - 1);
+
+      merge(sortedArr, leftStart, mid, rightEnd);
+    }
   }
+  return sortedArr;
 }
 
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-    this.size = 0;
-  }
+function merge(arr, leftStart, mid, rightEnd) {
+  const leftEnd = mid;
+  const rightStart = mid + 1;
 
-  enqueue(value) {
-    const newNode = new Node(value);
+  let leftPtr = leftStart;
+  let rightPtr = rightStart;
+  let sortedPtr = leftStart;
 
-    if (!this.head) {
-      this.head = newNode;
-      this.tail = newNode;
+  const tempArr = Array.from(arr); // create a temporary array to store merged values
+
+  while (leftPtr <= leftEnd && rightPtr <= rightEnd) {
+    if (tempArr[leftPtr] <= tempArr[rightPtr]) {
+      arr[sortedPtr++] = tempArr[leftPtr++];
     } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
+      arr[sortedPtr++] = tempArr[rightPtr++];
     }
-
-    this.size++;
   }
 
-  dequeue() {
-    if (!this.head) {
-      return null;
-    }
-
-    const value = this.head.value;
-
-    if (this.head === this.tail) {
-      this.tail = null;
-    }
-
-    this.head = this.head.next;
-    this.size--;
-
-    return value;
+  // Copy the remaining elements from the left side
+  while (leftPtr <= leftEnd) {
+    arr[sortedPtr++] = tempArr[leftPtr++];
   }
 
-  isEmpty() {
-    return this.size === 0;
-  }
-
-  getSize() {
-    return this.size;
-  }
-
-  peek() {
-    return this.head ? this.head.value : null;
+  // Copy the remaining elements from the right side
+  while (rightPtr <= rightEnd) {
+    arr[sortedPtr++] = tempArr[rightPtr++];
   }
 }
-const myQueue = new Queue();
 
-myQueue.enqueue(10);
-myQueue.enqueue(20);
-myQueue.enqueue(30);
-
-console.log(myQueue.getSize()); // Output: 3
-console.log(myQueue.isEmpty()); // Output: false
-console.log(myQueue.peek()); // Output: 10
-
-console.log(myQueue.dequeue()); // Output: 10
-console.log(myQueue.dequeue()); // Output: 20
-
-console.log(myQueue.getSize()); // Output: 1
-console.log(myQueue.isEmpty()); // Output: false
-console.log(myQueue.peek()); // Output: 30
+// Example usage:
+const arr = [8, 4, 2, 9, 1, 7, 5, 3];
+const sortedArr = mergeSortIterative(arr);
+console.log(sortedArr);
