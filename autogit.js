@@ -1,22 +1,9 @@
-function findFirstRepeatedChar(str) {
-  const charCounts = {};
+const numbers = [5, 2, 8, 3, 1];
 
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    
-    // Check if the character has already been encountered
-    if (charCounts[char]) {
-      return char;
-    }
+// Sorting in ascending order
+numbers.sort((a, b) => a - b);
+console.log(numbers); // Output: [1, 2, 3, 5, 8]
 
-    // Otherwise, add it to the character counts object
-    charCounts[char] = 1;
-  }
-
-  return null; // Return null if no repeated character is found
-}
-
-// Example usage:
-const str = "hello world";
-const repeatedChar = findFirstRepeatedChar(str);
-console.log(repeatedChar); // Output: 'l'
+// Sorting in descending order
+numbers.sort((a, b) => b - a);
+console.log(numbers); // Output: [8, 5, 3, 2, 1]
