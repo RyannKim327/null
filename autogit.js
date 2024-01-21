@@ -1,35 +1,136 @@
-function isAnagram(str1, str2) {
-  // Remove white spaces and convert to lowercase
-  str1 = str1.replace(/\s/g, '').toLowerCase();
-  str2 = str2.replace(/\s/g, '').toLowerCase();
-
-  // Check if the length of the strings is equal
-  if (str1.length !== str2.length) {
-    return false;
-  }
-
-  // Create character frequency maps for both strings
-  const charCount1 = {};
-  const charCount2 = {};
-
-  for (let char of str1) {
-    charCount1[char] = (charCount1[char] || 0) + 1;
-  }
-
-  for (let char of str2) {
-    charCount2[char] = (charCount2[char] || 0) + 1;
-  }
-
-  // Check if the frequency of characters is the same in both maps
-  for (let char in charCount1) {
-    if (charCount1[char] !== charCount2[char]) {
-      return false;
+class Node {
+    constructor(value, color) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+        this.parent = null;
+        this.color = color; // 'red' or 'black'
     }
-  }
-
-  return true;
+}
+class RedBlackTree {
+    constructor() {
+        this.root = null;
+    }
+    
+    // Your implementation of insert, delete, rotateLeft, rotateRight, and other necessary methods goes here
+}
+insert(value) {
+    const newNode = new Node(value, 'red');
+    
+    if (!this.root) {
+        this.root = newNode;
+    } else {
+        let current = this.root;
+        
+        while (current) {
+            if (value < current.value) {
+                if (current.left) {
+                    current = current.left;
+                } else {
+                    current.left = newNode;
+                    newNode.parent = current;
+                    break;
+                }
+            } else {
+                if (current.right) {
+                    current = current.right;
+                } else {
+                    current.right = newNode;
+                    newNode.parent = current;
+                    break;
+                }
+            }
+        }
+        
+        this.fixViolation(newNode);
+    }
+}
+fixViolation(node) {
+    while (node.parent && node.parent.color === 'red' && node.color === 'red') {
+        const parent = node.parent;
+        const grandparent = parent.parent;
+        
+        if (parent === grandparent.left) { // parent is the left child of the grandparent
+            const uncle = grandparent.right;
+            
+            if (uncle && uncle.color === 'red') { // Case 1: Uncle is red
+                parent.color = 'black';
+                uncle.color = 'black';
+                grandparent.color = 'red';
+                node = grandparent;
+            } else { // Case 2: Uncle is black or null
+                if (node === parent.right) {
+                    this.rotateLeft(parent);
+                    node = parent;
+                    parent = node.parent;
+                }
+                
+                parent.color = 'black';
+                grandparent.color = 'red';
+                this.rotateRight(grandparent);
+            }
+        } else { // parent is the right child of the grandparent
+            const uncle = grandparent.left;
+            
+            if (uncle && uncle.color === 'red') { // Case 1: Uncle is red
+                parent.color = 'black';
+                uncle.color = 'black';
+                grandparent.color = 'red';
+                node = grandparent;
+            } else { // Case 2: Uncle is black or null
+                if (node === parent.left) {
+                    this.rotateRight(parent);
+                    node = parent;
+                    parent = node.parent;
+                }
+                
+                parent.color = 'black';
+                grandparent.color = 'red';
+                this.rotateLeft(grandparent);
+            }
+        }
+    }
+    
+    this.root.color = 'black'; // Ensure root is always black
+}
+rotateLeft(node) {
+    const right = node.right;
+    node.right = right.left;
+    
+    if (right.left) {
+        right.left.parent = node;
+    }
+    
+    if (!node.parent) {
+        this.root = right;
+    } else if (node === node.parent.left) {
+        node.parent.left = right;
+    } else {
+        node.parent.right = right;
+    }
+    
+    right.left = node;
+    right.parent = node.parent;
+    node.parent = right;
 }
 
-// Example usage
-console.log(isAnagram('listen', 'silent')); // Output: true
-console.log(isAnagram('hello', 'hi'));      // Output: false
+rotateRight(node) {
+    const left = node.left;
+    node.left = left.right;
+    
+    if (left.right) {
+        left.right.parent = node;
+    }
+    
+    if (!node.parent) {
+        this.root = left;
+    } else if (node === node.parent.left) {
+        node.parent.left = left;
+    } else {
+        node.parent.right = left;
+    }
+    
+    left.right = node;
+    left.parent = node.parent;
+    node.parent = left;
+}
