@@ -1,26 +1,19 @@
-function selectionSort(array) {
-  const len = array.length;
-  
-  for (let i = 0; i < len - 1; i++) {
-    let minIndex = i;
+// Prompt the user for input
+var userInput = prompt("Enter a number:");
 
-    for (let j = i + 1; j < len; j++) {
-      if (array[j] < array[minIndex]) {
-        minIndex = j;
-      }
-    }
+// Convert the user input to a number
+var number = parseInt(userInput);
 
-    if (minIndex !== i) {
-      const temp = array[i];
-      array[i] = array[minIndex];
-      array[minIndex] = temp;
-    }
-  }
+// Check if the input is a valid number
+if (isNaN(number)) {
+  console.log("Invalid input! Please enter a valid number.");
+} else {
+  // Perform some calculations with the number
+  var square = number * number;
+  var cube = number * number * number;
 
-  return array;
+  // Display the results
+  console.log("Number: " + number);
+  console.log("Square: " + square);
+  console.log("Cube: " + cube);
 }
-
-// Example usage:
-const unsortedArray = [64, 25, 12, 22, 11];
-const sortedArray = selectionSort(unsortedArray);
-console.log(sortedArray);  // Output: [11, 12, 22, 25, 64]
