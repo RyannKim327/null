@@ -1,18 +1,40 @@
-function bubbleSort(array) {
-  const length = array.length;
-  
-  for (let i = 0; i < length - 1; i++) {
-    for (let j = 0; j < length - 1 - i; j++) {
-      if (array[j] > array[j + 1]) {
-        // Swapping the elements
-        [array[j], array[j + 1]] = [array[j + 1], array[j]];
-      }
-    }
+function heapify(array, size, index) {
+  let largest = index;
+  const left = 2 * index + 1;
+  const right = 2 * index + 2;
+
+  if (left < size && array[left] > array[largest]) {
+    largest = left;
   }
-  
-  return array;
+
+  if (right < size && array[right] > array[largest]) {
+    largest = right;
+  }
+
+  if (largest !== index) {
+    [array[index], array[largest]] = [array[largest], array[index]];
+    heapify(array, size, largest);
+  }
 }
 
-// Example usage:
-const numbers = [5, 2, 8, 12, 1];
-console.log(bubbleSort(numbers)); // Output: [1, 2, 5, 8, 12]
+function buildMaxHeap(array) {
+  const size = array.length;
+
+  for (let i = Math.floor(size / 2) - 1; i >= 0; i--) {
+    heapify(array, size, i);
+  }
+}
+function heapSort(array) {
+  const size = array.length;
+
+  buildMaxHeap(array);
+
+  for (let i = size - 1; i > 0; i--) {
+    [array[0], array[i]] = [array[i], array[0]];
+    heapify(array, i, 0);
+  }
+
+  return array;
+}
+const array = [5, 9, 2, 1, 6, 3];
+console.log(heapSort(array)); // Output: [1, 2, 3, 5, 6, 9]
