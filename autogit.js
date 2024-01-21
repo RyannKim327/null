@@ -1,39 +1,53 @@
-function mergeSort(array) {
-  // Base case: if the array is empty or has only one element, it is already sorted
-  if (array.length <= 1) {
-    return array;
-  }
+function buildPatternTable(pattern) {
+  const patternTable = [0];
+  let prefixIndex = 0;
+  let suffixIndex = 1;
 
-  // Split the array into two halves
-  const middleIndex = Math.floor(array.length / 2);
-  const leftHalf = array.slice(0, middleIndex);
-  const rightHalf = array.slice(middleIndex);
-
-  // Recursively sort the two halves
-  const sortedLeft = mergeSort(leftHalf);
-  const sortedRight = mergeSort(rightHalf);
-
-  // Merge the sorted halves
-  return merge(sortedLeft, sortedRight);
-}
-
-function merge(left, right) {
-  const merged = [];
-
-  // Compare the elements of the two arrays and add them to the merged array in order
-  while (left.length && right.length) {
-    if (left[0] < right[0]) {
-      merged.push(left.shift());
+  while (suffixIndex < pattern.length) {
+    if (pattern[prefixIndex] === pattern[suffixIndex]) {
+      patternTable[suffixIndex] = prefixIndex + 1;
+      suffixIndex++;
+      prefixIndex++;
+    } else if (prefixIndex === 0) {
+      patternTable[suffixIndex] = 0;
+      suffixIndex++;
     } else {
-      merged.push(right.shift());
+      prefixIndex = patternTable[prefixIndex - 1];
     }
   }
 
-  // Add any remaining elements from the left and right arrays
-  return merged.concat(left, right);
+  return patternTable;
 }
 
-// Example usage:
-const unsortedArray = [8, 3, 1, 5, 2, 7, 4, 6];
-const sortedArray = mergeSort(unsortedArray);
-console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 6, 7, 8]
+function searchString(text, pattern) {
+  const patternTable = buildPatternTable(pattern);
+  let textIndex = 0;
+  let patternIndex = 0;
+
+  while (textIndex < text.length) {
+    if (text[textIndex] === pattern[patternIndex]) {
+      if (patternIndex === pattern.length - 1) {
+        return textIndex - pattern.length + 1; // match found
+      }
+      textIndex++;
+      patternIndex++;
+    } else if (patternIndex > 0) {
+      patternIndex = patternTable[patternIndex - 1];
+    } else {
+      textIndex++;
+    }
+  }
+
+  return -1; // no match found
+}
+
+// Example usage
+const text = "This is a sample text for string matching";
+const pattern = "string";
+const result = searchString(text, pattern);
+
+if (result === -1) {
+  console.log("No match found");
+} else {
+  console.log(`Match found at index ${result}`);
+}
