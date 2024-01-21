@@ -1,60 +1,31 @@
-class Node {
-  constructor(start, end) {
-    this.start = start;
-    this.end = end;
-    this.children = new Map();
-    this.suffixLink = null;
-  }
-}
-class SuffixTree {
-  constructor(word) {
-    this.root = new Node(-1, -1); // The root node with dummy values
-    this.word = word;
-    this.buildTree();
+function hasCycle(head) {
+  if (!head || !head.next) {
+    return false;
   }
 
-  buildTree() {
-    const len = this.word.length;
-    for (let i = 0; i < len; i++) {
-      this.addSuffix(i);
+  let tortoise = head;
+  let hare = head.next;
+
+  while (tortoise !== hare) {
+    if (!hare || !hare.next) {
+      return false;
     }
+
+    tortoise = tortoise.next;
+    hare = hare.next.next;
   }
 
-  addSuffix(start) {
-    let current = this.root;
-    const len = this.word.length;
-
-    for (let i = start; i < len; i++) {
-      const char = this.word[i];
-      if (!current.children.has(char)) {
-        const newNode = new Node(i, len - 1);
-        current.children.set(char, newNode);
-        return;
-      }
-
-      current = current.children.get(char);
-      const end = current.end;
-
-      // Check if suffix is already present
-      const suffixLen = end - current.start + 1;
-      if (i - start + 1 >= suffixLen) {
-        start += suffixLen;
-        continue;
-      }
-
-      // If suffix doesn't match, split the node
-      if (this.word[i] !== this.word[start + i - current.start]) {
-        const splitNode = new Node(current.start, start + i - 1);
-        const newNode = new Node(start + i, len - 1);
-        
-        current.start = start - 1;
-        current.end = current.start + suffixLen - 1;
-        current.children.set(this.word[start + i], newNode);
-        current.children.set(this.word[start], splitNode);
-        
-        return;
-      }
-    }
-  }
+  return true;
 }
-const suffixTree = new SuffixTree('banana');
+// Example usage
+const node1 = { value: 1 };
+const node2 = { value: 2 };
+const node3 = { value: 3 };
+const node4 = { value: 4 };
+
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node2; // Creating a cycle
+
+console.log(hasCycle(node1)); // Output: true
