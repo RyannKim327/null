@@ -1,17 +1,15 @@
-function isPrime(num) {
-  if (num <= 1) {
-    return false;
-  }
-  for (let i = 2; i <= Math.sqrt(num); i++) {
-    if (num % i === 0) {
-      return false;
-    }
-  }
-  return true;
+let str = "Hello World";
+let reversedStr = str.split("").reverse().join("");
+console.log(reversedStr);
+let str = "Hello World";
+let reversedStr = "";
+
+for (let i = str.length - 1; i >= 0; i--) {
+  reversedStr += str[i];
 }
 
-// Example usage
-console.log(isPrime(7));   // true
-console.log(isPrime(16));  // false
-console.log(isPrime(23));  // true
-console.log(isPrime(30));  // false
+console.log(reversedStr);
+let str = "Hello World";
+let reversedStr = [...str].reverse().join("");
+console.log(reversedStr);
+dlroW olleH
