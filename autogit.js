@@ -1,33 +1,22 @@
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
-let index = array.indexOf(elementToRemove);
+function largestPrimeFactor(num) {
+  let maxPrime = 2;
 
-if (index !== -1) {
-  array.splice(index, 1);
+  while (num % 2 === 0) {
+    num /= 2;
+  }
+
+  for (let i = 3; i <= Math.sqrt(num); i += 2) {
+    while (num % i === 0) {
+      maxPrime = i;
+      num /= i;
+    }
+  }
+
+  if (num > 2) {
+    maxPrime = num;
+  }
+
+  return maxPrime;
 }
-
-console.log(array); // [1, 2, 4, 5]
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
-
-array = array.filter(item => item !== elementToRemove);
-
-console.log(array); // [1, 2, 4, 5]
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
-let index = array.indexOf(elementToRemove);
-
-if (index !== -1) {
-  array = array.slice(0, index).concat(array.slice(index + 1));
-}
-
-console.log(array); // [1, 2, 4, 5]
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
-let index = array.indexOf(elementToRemove);
-
-if (index !== -1) {
-  array.splice(index, array.lastIndexOf(elementToRemove) - index + 1);
-}
-
-console.log(array); // [1, 2, 4, 5]
+console.log(largestPrimeFactor(13195)); // Output: 29 (largest prime factor of 13195)
+console.log(largestPrimeFactor(600851475143)); // Output: 6857 (largest prime factor of 600851475143)
