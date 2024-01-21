@@ -1,21 +1,24 @@
-function isPrime(num) {
-  // Check if input is less than 2
-  if (num < 2) {
-    return false;
-  }
-  
-  // Loop from 2 to the square root of the input number
-  for (let i = 2; i <= Math.sqrt(num); i++) {
-    // If the number is divisible by any smaller number, it is not prime
-    if (num % i === 0) {
-      return false;
-    }
-  }
-  
-  // If the number is not divisible by any smaller number, it is prime
-  return true;
-}
+function shellSort(array) {
+  var length = array.length;
+  var gap = Math.floor(length / 2);
 
-// Example usage
-console.log(isPrime(7));  // Output: true
-console.log(isPrime(12)); // Output: false
+  while (gap > 0) {
+    for (var i = gap; i < length; i++) {
+      var temp = array[i];
+      var j = i;
+  
+      while (j >= gap && array[j - gap] > temp) {
+        array[j] = array[j - gap];
+        j -= gap;
+      }
+  
+      array[j] = temp;
+    }
+  
+    gap = Math.floor(gap / 2);
+  }
+
+  return array;
+}
+var arr = [9, 5, 1, 3, 8, 4, 7, 2, 6];
+console.log(shellSort(arr)); // [1, 2, 3, 4, 5, 6, 7, 8, 9]
