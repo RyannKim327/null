@@ -1,97 +1,107 @@
-class Graph {
-  constructor(vertices) {
-    this.vertices = vertices;
-    this.adjList = new Map();
-    for (const vertex of vertices) {
-      this.adjList.set(vertex, []);
-    }
-  }
-
-  addEdge(u, v) {
-    this.adjList.get(u).push(v);
-    this.adjList.get(v).push(u);
-  }
-
-  bfs(startNode) {
-    const visited = new Set();
-    const queue = [];
-
-    visited.add(startNode);
-    queue.push([startNode, null]);
-    
-    while (queue.length > 0) {
-      const [current, parent] = queue.shift();
-      
-      for (const neighbor of this.adjList.get(current)) {
-        if (!visited.has(neighbor)) {
-          visited.add(neighbor);
-          queue.push([neighbor, current]);
-        }
-      }
-    }
-    
-    return visited;
-  }
-
-  biDirectionalSearch(source, target) {
-    const visitedFromSource = this.bfs(source);
-    const visitedFromTarget = this.bfs(target);
-
-    let intersectionNode = null;
-    
-    for (const node of visitedFromSource) {
-      if (visitedFromTarget.has(node)) {
-        intersectionNode = node;
-        break;
-      }
-    }
-
-    if (!intersectionNode) {
-      return null;
-    }
-
-    const pathFromSource = [];
-    let currentNode = intersectionNode;
-
-    while (currentNode !== null) {
-      pathFromSource.unshift(currentNode);
-      currentNode = this.getParentNode(visitedFromSource, currentNode);
-    }
-
-    const pathFromTarget = [];
-    currentNode = intersectionNode;
-
-    while (currentNode !== null) {
-      pathFromTarget.push(currentNode);
-      currentNode = this.getParentNode(visitedFromTarget, currentNode);
-    }
-
-    return pathFromSource.concat(pathFromTarget.slice(1));
-  }
-
-  getParentNode(visited, node) {
-    for (const [currentNode, parent] of visited) {
-      if (currentNode === node) {
-        return parent;
-      }
-    }
-    return null;
+class SkipNode {
+  constructor(value, level) {
+    this.value = value;
+    this.next = Array(level + 1);
   }
 }
+class SkipList {
+  constructor() {
+    this.head = new SkipNode(-Infinity, 0);
+    this.level = 0;
+  }
 
-// Usage example
-const vertices = [1, 2, 3, 4, 5, 6];
-const graph = new Graph(vertices);
+  // Function to generate the level for a new node
+  generateLevel() {
+    let level = 0;
+    while (Math.random() < 0.5 && level < this.level + 1) {
+      level++;
+    }
+    return level;
+  }
 
-graph.addEdge(1, 2);
-graph.addEdge(2, 3);
-graph.addEdge(2, 4);
-graph.addEdge(3, 5);
-graph.addEdge(4, 6);
-graph.addEdge(5, 6);
+  // Function to search for a value in the skip list
+  search(value) {
+    let currentNode = this.head;
+    for (let i = this.level; i >= 0; i--) {
+      while (
+        currentNode.next[i] !== undefined &&
+        currentNode.next[i].value < value
+      ) {
+        currentNode = currentNode.next[i];
+      }
+    }
+    currentNode = currentNode.next[0];
+    if (currentNode !== undefined && currentNode.value === value) {
+      return currentNode;
+    } else {
+      return null;
+    }
+  }
 
-const source = 1;
-const target = 6;
-const shortestPath = graph.biDirectionalSearch(source, target);
+  // Function to insert a value into the skip list
+  insert(value) {
+    const update = Array(this.level + 1);
+    let currentNode = this.head;
+    for (let i = this.level; i >= 0; i--) {
+      while (
+        currentNode.next[i] !== undefined &&
+        currentNode.next[i].value < value
+      ) {
+        currentNode = currentNode.next[i];
+      }
+      update[i] = currentNode;
+    }
+    currentNode = currentNode.next[0];
+    if (currentNode === undefined || currentNode.value !== value) {
+      const newNode = new SkipNode(value, this.generateLevel());
+      if (newNode.level > this.level) {
+        this.level = newNode.level;
+      }
+      for (let i = 0; i <= newNode.level; i++) {
+        newNode.next[i] = update[i].next[i];
+        update[i].next[i] = newNode;
+      }
+      console.log(`${value} inserted.`);
+    } else {
+      console.log(`${value} already exists.`);
+    }
+  }
 
-console.log(shortestPath); // [1, 2, 4, 6]
+  // Function to remove a value from the skip list
+  remove(value) {
+    const update = Array(this.level + 1);
+    let currentNode = this.head;
+    for (let i = this.level; i >= 0; i--) {
+      while (
+        currentNode.next[i] !== undefined &&
+        currentNode.next[i].value < value
+      ) {
+        currentNode = currentNode.next[i];
+      }
+      update[i] = currentNode;
+    }
+    currentNode = currentNode.next[0];
+    if (currentNode !== undefined && currentNode.value === value) {
+      for (let i = 0; i <= this.level; i++) {
+        if (update[i].next[i] !== currentNode) {
+          break;
+        }
+        update[i].next[i] = currentNode.next[i];
+      }
+      console.log(`${value} removed.`);
+      while (this.level > 0 && this.head.next[this.level] === undefined) {
+        this.level--;
+      }
+    } else {
+      console.log(`${value} not found.`);
+    }
+  }
+}
+const skipList = new SkipList();
+skipList.insert(3);
+skipList.insert(5);
+skipList.insert(1);
+skipList.insert(8);
+console.log(skipList.search(5)); // Output: { value: 5, next: [SkipNode] }
+skipList.remove(1); 
+console.log(skipList.search(1)); // Output: null
