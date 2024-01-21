@@ -1,93 +1,56 @@
-// Define the TreeNode class
-class TreeNode {
+class TrieNode {
   constructor(value) {
     this.value = value;
-    this.left = null;
-    this.right = null;
+    this.isEndOfWord = false;
+    this.children = {};
   }
 }
 
-// Define the BinarySearchTree class
-class BinarySearchTree {
+class Trie {
   constructor() {
-    this.root = null;
+    this.root = new TrieNode('');
   }
 
-  // Insert a value into the tree
-  insert(value) {
-    const newNode = new TreeNode(value);
-
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
-
-  // Helper function to insert a node recursively
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
+  insert(word) {
+    let node = this.root;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      if (!node.children[char]) {
+        node.children[char] = new TrieNode(char);
       }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
+      node = node.children[char];
+    }
+    node.isEndOfWord = true;
+  }
+
+  search(word) {
+    let node = this.root;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      if (!node.children[char]) {
+        return false;
       }
+      node = node.children[char];
     }
+    return node.isEndOfWord;
   }
 
-  // Search for a value in the tree
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  // Helper function to search for a node recursively
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
+  startsWith(prefix) {
+    let node = this.root;
+    for (let i = 0; i < prefix.length; i++) {
+      const char = prefix[i];
+      if (!node.children[char]) {
+        return false;
+      }
+      node = node.children[char];
     }
-
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else if (value > node.value) {
-      return this.searchNode(node.right, value);
-    } else {
-      return true;
-    }
-  }
-
-  // Traverse the tree using an in-order traversal
-  inorderTraversal(callback) {
-    this.inorderTraversalNode(this.root, callback);
-  }
-
-  // Helper function to perform in-order traversal recursively
-  inorderTraversalNode(node, callback) {
-    if (node !== null) {
-      this.inorderTraversalNode(node.left, callback);
-      callback(node.value);
-      this.inorderTraversalNode(node.right, callback);
-    }
+    return true;
   }
 }
-
-// Example usage
-const bst = new BinarySearchTree();
-bst.insert(8);
-bst.insert(3);
-bst.insert(10);
-bst.insert(1);
-bst.insert(6);
-bst.insert(14);
-bst.insert(4);
-bst.insert(7);
-bst.insert(13);
-
-bst.inorderTraversal((value) => console.log(value)); // Outputs: 1, 3, 4, 6, 7, 8, 10, 13, 14
-console.log(bst.search(6)); // Outputs: true
-console.log(bst.search(12)); // Outputs: false
+const trie = new Trie();
+trie.insert('apple');
+console.log(trie.search('apple')); // Output: true
+console.log(trie.search('app')); // Output: false
+console.log(trie.startsWith('app')); // Output: true
+trie.insert('application');
+console.log(trie.search('app')); // Output: false (prefix exists but not a complete word)
