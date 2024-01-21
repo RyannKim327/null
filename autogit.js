@@ -1,28 +1,9 @@
-function findFirstNonRepeatingCharacter(str) {
-  var charCount = {};
+let array = [1, 2, 3, 4, 5];
+array.reverse();
 
-  // count the occurrences of each character
-  for (var i = 0; i < str.length; i++) {
-    var char = str.charAt(i);
-    if (charCount[char]) {
-      charCount[char]++;
-    } else {
-      charCount[char] = 1;
-    }
-  }
+console.log(array); // Output: [5, 4, 3, 2, 1]
+let array = [1, 2, 3, 4, 5];
+let reversedArray = array.slice().reverse();
 
-  // find the first character with count 1
-  for (var j = 0; j < str.length; j++) {
-    var char = str.charAt(j);
-    if (charCount[char] === 1) {
-      return char;
-    }
-  }
-
-  return null; // return null if no non-repeating character is found
-}
-
-// example usage
-var str = "aabccdde";
-var firstNonRepeatingChar = findFirstNonRepeatingCharacter(str);
-console.log("First non-repeating character:", firstNonRepeatingChar);
+console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
+console.log(array); // Output: [1, 2, 3, 4, 5]
