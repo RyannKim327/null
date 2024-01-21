@@ -1,8 +1,17 @@
-const str = 'Hello, World!';
-const substring = 'World';
-
-if (str.includes(substring)) {
-  console.log('The string contains the substring');
-} else {
-  console.log('The string does not contain the substring');
+function isPrime(num) {
+  if (num <= 1) {
+    return false;
+  }
+  for (let i = 2; i <= Math.sqrt(num); i++) {
+    if (num % i === 0) {
+      return false;
+    }
+  }
+  return true;
 }
+
+// Example usage
+console.log(isPrime(7));   // true
+console.log(isPrime(16));  // false
+console.log(isPrime(23));  // true
+console.log(isPrime(30));  // false
