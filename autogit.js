@@ -1,64 +1,39 @@
-function tarjansAlgorithm(graph) {
-    const indexMap = new Map(); // To store the index of each node
-    const lowLinkMap = new Map(); // To store the low-link value of each node
-    const onStack = new Set(); // To track whether a node is currently on the stack
-    const stack = []; // The stack used for DFS traversal
-    const result = []; // To store the strongly connected components
-  
-    let index = 0; // Index counter
-  
-    // Function to perform DFS traversal
-    function dfs(u) {
-        indexMap.set(u, index);
-        lowLinkMap.set(u, index);
-        index++;
-        stack.push(u);
-        onStack.add(u);
-  
-        for (const v of graph[u]) {
-            if (!indexMap.has(v)) {
-                dfs(v);
-                lowLinkMap.set(u, Math.min(lowLinkMap.get(u), lowLinkMap.get(v)));
-            } else if (onStack.has(v)) {
-                lowLinkMap.set(u, Math.min(lowLinkMap.get(u), indexMap.get(v)));
-            }
-        }
-  
-        if (lowLinkMap.get(u) === indexMap.get(u)) {
-            const component = [];
-            let w;
-  
-            do {
-                w = stack.pop();
-                onStack.delete(w);
-                component.push(w);
-            } while (w !== u);
-  
-            result.push(component);
-        }
-    }
-  
-    // Perform DFS traversal for each unvisited node
-    for (const u of Object.keys(graph)) {
-        if (!indexMap.has(u)) {
-            dfs(u);
-        }
-    }
-  
-    return result;
+function breadthLimitedSearch(root, target, limit) {
+  // Your code here
 }
-const graph = {
-    A: ['B'],
-    B: ['C', 'E', 'F'],
-    C: ['A', 'D'],
-    D: ['G'],
-    E: ['D', 'F'],
-    F: ['C', 'I'],
-    G: ['E'],
-    H: ['B', 'G'],
-    I: ['H'],
-};
+function breadthLimitedSearch(root, target, limit) {
+  const queue = [root];
+  let level = 0;
+  
+  // Your code here
+}
+function breadthLimitedSearch(root, target, limit) {
+  const queue = [root];
+  let level = 0;
 
-const result = tarjansAlgorithm(graph);
-console.log(result);
-[ [ 'G', 'D' ], [ 'I', 'H', 'B', 'E' ], [ 'F', 'C', 'A' ] ]
+  while (queue.length > 0 && level <= limit) {
+    const currentNode = queue.shift();
+
+    // Check if the current node matches the target
+    if (currentNode === target) {
+      return true;
+    }
+    
+    // Add the children of the current node to the queue
+    const children = getChildren(currentNode); // A helper function to get the children of a node
+    queue.push(...children);
+
+    // Move to the next level
+    if (queue[0] === null) {
+      queue.shift();
+      level++;
+      queue.push(null);
+    }
+  }
+
+  return false; // Target not found within the limit
+}
+function getChildren(node) {
+  // Implement this function based on your specific data structure and requirements
+  // It should return an array of the node's children
+}
