@@ -1,34 +1,39 @@
-function hasCycle(head) {
-  let tortoise = head;
-  let hare = head;
+function binarySearch(array, target, start, end) {
+  // Check if the start index is undefined, default it to 0
+  if (start === undefined)
+    start = 0;
+  // Check if the end index is undefined, default it to array length minus 1
+  if (end === undefined)
+    end = array.length - 1;
 
-  while (hare !== null && hare.next !== null) {
-    tortoise = tortoise.next;
-    hare = hare.next.next;
+  // Base case: if the start index is greater than the end index, the target value is not found
+  if (start > end)
+    return -1;
 
-    if (tortoise === hare) {
-      return true; // Cycle detected
-    }
-  }
+  // Calculate the middle index
+  let mid = Math.floor((start + end) / 2);
 
-  return false; // No cycle found
+  // Base case: if the middle element is equal to the target value, return its index
+  if (array[mid] === target)
+    return mid;
+
+  // Recursive case: if the middle element is greater than the target value,
+  // search in the left half of the array (before the middle position)
+  if (array[mid] > target)
+    return binarySearch(array, target, start, mid - 1);
+
+  // Recursive case: if the middle element is less than the target value,
+  // search in the right half of the array (after the middle position)
+  if (array[mid] < target)
+    return binarySearch(array, target, mid + 1, end);
 }
-// Linked List implementation
-class ListNode {
-  constructor(value) {
-    this.val = value;
-    this.next = null;
-  }
+let arr = [2, 5, 8, 10, 18, 23, 32, 40, 49, 59];
+let target = 23;
+
+let result = binarySearch(arr, target);
+
+if (result === -1) {
+  console.log("Element not found");
+} else {
+  console.log("Element found at index", result);
 }
-
-// Create a linked list with a cycle
-const head = new ListNode(1);
-const node2 = new ListNode(2);
-const node3 = new ListNode(3);
-const node4 = new ListNode(4);
-head.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2; // creating a cycle
-
-console.log(hasCycle(head)); // Output: true
