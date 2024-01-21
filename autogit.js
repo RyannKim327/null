@@ -1,15 +1,14 @@
-function calculateStringLength(str) {
-  let length = 0;
-  
-  // Iterate over each character in the string
-  for (let i = 0; i < str.length; i++) {
-    // Increment the length counter
-    length++;
-  }
-  
-  return length;
-}
+function isPalindrome(str) {
+  let start = 0;
+  let end = str.length - 1;
 
-const myString = "Hello, World!";
-const stringLength = calculateStringLength(myString);
-console.log(stringLength); // Output: 13
+  while (start < end) {
+    if (str[start] !== str[end]) {
+      return false; // Characters don't match, not a palindrome
+    }
+    start++;
+    end--;
+  }
+
+  return true; // All characters matched, palindrome
+}
