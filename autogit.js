@@ -1,28 +1,74 @@
-function getDigit(num, i) {
-  return Math.floor(Math.abs(num) / Math.pow(10, i)) % 10;
+function topologicalSort(nodes) {
+  // ...
 }
-function digitCount(num) {
-  if (num === 0) return 1;
-  return Math.floor(Math.log10(Math.abs(num))) + 1;
+function topologicalSort(nodes) {
+  const sorted = [];
+  // ...
 }
-function mostDigits(nums) {
-  let maxDigits = 0;
-  for (let i = 0; i < nums.length; i++) {
-    maxDigits = Math.max(maxDigits, digitCount(nums[i]));
-  }
-  return maxDigits;
+function topologicalSort(nodes) {
+  const sorted = [];
+  const visited = new Set();
+  // ...
 }
-function radixSort(nums) {
-  const maxDigits = mostDigits(nums);
-  for (let i = 0; i < maxDigits; i++) {
-    let digitBuckets = Array.from({ length: 10 }, () => []);
-    for (let j = 0; j < nums.length; j++) {
-      let digit = getDigit(nums[j], i);
-      digitBuckets[digit].push(nums[j]);
+function topologicalSort(nodes) {
+  const sorted = [];
+  const visited = new Set();
+
+  for (const node of nodes) {
+    if (!visited.has(node)) {
+      visit(node);
     }
-    nums = [].concat(...digitBuckets);
   }
-  return nums;
+
+  // Helper functions go here...
+
+  return sorted;
 }
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log(radixSort(arr)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+function visit(node) {
+  visited.add(node);
+
+  for (const neighbor of node.neighbors) {
+    if (!visited.has(neighbor)) {
+      visit(neighbor);
+    }
+  }
+
+  sorted.unshift(node); // Add the node to the beginning of the array to maintain order.
+}
+function topologicalSort(nodes) {
+  const sorted = [];
+  const visited = new Set();
+
+  for (const node of nodes) {
+    if (!visited.has(node)) {
+      visit(node);
+    }
+  }
+
+  function visit(node) {
+    visited.add(node);
+
+    for (const neighbor of node.neighbors) {
+      if (!visited.has(neighbor)) {
+        visit(neighbor);
+      }
+    }
+
+    sorted.unshift(node);
+  }
+
+  return sorted;
+}
+
+// Usage example:
+const nodes = [
+  { id: 1, neighbors: [3, 4] },
+  { id: 2, neighbors: [3, 6] },
+  { id: 3, neighbors: [4, 5, 6] },
+  { id: 4, neighbors: [] },
+  { id: 5, neighbors: [] },
+  { id: 6, neighbors: [] },
+];
+
+const sortedNodes = topologicalSort(nodes);
+console.log(sortedNodes);
