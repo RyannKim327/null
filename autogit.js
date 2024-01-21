@@ -1,25 +1,36 @@
-function longestCommonPrefix(strs) {
-  let prefix = '';
+function boyerMooreHorspool(text, pattern) {
+  const badMatchTable = Array(256).fill(pattern.length);
 
-  if (strs.length === 0) {
-    return prefix;
+  for (let i = 0; i < pattern.length - 1; i++) {
+    const charCode = pattern.charCodeAt(i);
+    const shift = pattern.length - i - 1;
+    badMatchTable[charCode] = shift;
   }
 
-  for (let i = 0; i < strs[0].length; i++) {
-    const char = strs[0][i];
+  const textLength = text.length;
+  const patternLength = pattern.length;
+  let index = 0;
 
-    for (let j = 1; j < strs.length; j++) {
-      if (strs[j][i] !== char || i >= strs[j].length) {
-        return prefix;
-      }
+  while (index <= textLength - patternLength) {
+    let patternIndex = patternLength - 1;
+
+    while (patternIndex >= 0 && pattern[patternIndex] === text[index + patternIndex]) {
+      patternIndex--;
     }
 
-    prefix += char;
+    if (patternIndex === -1) {
+      return index;
+    }
+
+    const charCode = text.charCodeAt(index + patternLength - 1);
+    index += badMatchTable[charCode];
   }
 
-  return prefix;
+  return -1;
 }
-const strings = ['flower', 'flow', 'flight'];
-const prefix = longestCommonPrefix(strings);
 
-console.log(prefix); // Outputs: "fl"
+// Example usage:
+const text = 'Lorem ipsum dolor sit amet';
+const pattern = 'ipsum';
+const index = boyerMooreHorspool(text, pattern);
+console.log(index); // Output: 6
