@@ -1,21 +1,28 @@
-function interpolationSearch(array, target, start = 0) {
-  const end = array.length - 1;
-
-  const pos = Math.floor(
-    start + ((target - array[start]) * (end - start)) / (array[end] - array[start])
-  );
-  if (pos < start || pos > end || array[pos] !== target) {
-    return -1;
-  } else if (array[pos] === target) {
-    return pos;
-  }
-  if (array[pos] > target) {
-    return interpolationSearch(array, target, start, pos - 1);
-  } else {
-    return interpolationSearch(array, target, pos + 1, end);
-  }
+function getDigit(num, i) {
+  return Math.floor(Math.abs(num) / Math.pow(10, i)) % 10;
 }
-const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
-const target = 13;
-
-console.log(interpolationSearch(arr, target)); // Output: 6
+function digitCount(num) {
+  if (num === 0) return 1;
+  return Math.floor(Math.log10(Math.abs(num))) + 1;
+}
+function mostDigits(nums) {
+  let maxDigits = 0;
+  for (let i = 0; i < nums.length; i++) {
+    maxDigits = Math.max(maxDigits, digitCount(nums[i]));
+  }
+  return maxDigits;
+}
+function radixSort(nums) {
+  const maxDigits = mostDigits(nums);
+  for (let i = 0; i < maxDigits; i++) {
+    let digitBuckets = Array.from({ length: 10 }, () => []);
+    for (let j = 0; j < nums.length; j++) {
+      let digit = getDigit(nums[j], i);
+      digitBuckets[digit].push(nums[j]);
+    }
+    nums = [].concat(...digitBuckets);
+  }
+  return nums;
+}
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+console.log(radixSort(arr)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
