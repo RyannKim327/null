@@ -1,47 +1,24 @@
-function hash(str) {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash += str.charCodeAt(i);
-  }
-  return hash;
-}
-function rabinKarpSearch(text, pattern) {
-  const patternHash = hash(pattern);
-  const patternLength = pattern.length;
-  const textLength = text.length;
-
-  // Calculate the hash value of the first substring in the text
-  let textHash = hash(text.substr(0, patternLength));
-
-  for (let i = 0; i <= textLength - patternLength; i++) {
-    if (patternHash === textHash) {
-      // If the hash values match, compare each character
-      let found = true;
-      for (let j = 0; j < patternLength; j++) {
-        if (text[i + j] !== pattern[j]) {
-          found = false;
-          break;
-        }
+function shellSort(array) {
+  var gap = Math.floor(array.length / 2);
+  
+  while (gap > 0) {
+    for (var i = gap; i < array.length; i++) {
+      var temp = array[i];
+      
+      for (var j = i; j >= gap && array[j - gap] > temp; j -= gap) {
+        array[j] = array[j - gap];
       }
-      if (found) {
-        return i; // Return the starting index of the found pattern
-      }
+      
+      array[j] = temp;
     }
-
-    // Recalculate the hash value of the next substring
-    textHash -= text.charCodeAt(i);
-    textHash += text.charCodeAt(i + patternLength);
+    
+    gap = Math.floor(gap / 2);
   }
-
-  return -1; // Return -1 if pattern is not found
+  
+  return array;
 }
-const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit';
-const pattern = 'ipsum';
 
-const foundIndex = rabinKarpSearch(text, pattern);
-if (foundIndex !== -1) {
-  console.log(`Pattern found at index ${foundIndex}`);
-} else {
-  console.log('Pattern not found');
-}
-Pattern found at index 6
+// Example usage:
+var array = [7, 2, 9, 1, 6, 3];
+console.log("Before sorting:", array);
+console.log("After sorting:", shellSort(array));
