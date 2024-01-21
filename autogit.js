@@ -1,26 +1,58 @@
-function getDigit(num, position) {
-  return Math.floor(Math.abs(num) / Math.pow(10, position)) % 10;
-}
-function digitCount(num) {
-  if (num === 0) return 1;
-  return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
-function radixSort(arr) {
-  const maxDigits = mostDigits(arr);
+// Bottom-up merge sort
+function mergeSortIterative(arr) {
+  const len = arr.length;
+  const sorted = Array.from(arr); // create a copy of the array
 
-  for (let i = 0; i < maxDigits; i++) {
-    const digitBuckets = Array.from({ length: 10 }, () => []);
-
-    for (let j = 0; j < arr.length; j++) {
-      const digit = getDigit(arr[j], i);
-      digitBuckets[digit].push(arr[j]);
+  // Merge the subarrays of size 1, 2, 4, 8, ... up to len/2
+  for (let size = 1; size < len; size *= 2) {
+    for (let leftStart = 0; leftStart < len; leftStart += 2*size) {
+      const mid = leftStart + size - 1;
+      const rightEnd = Math.min(leftStart + 2*size - 1, len - 1);
+      
+      merge(sorted, leftStart, mid, rightEnd);
     }
-
-    arr = [].concat(...digitBuckets);
   }
 
-  return arr;
+  return sorted;
 }
-const numbers = [43, 342, 19, 100, 1, 872];
-const sortedNumbers = radixSort(numbers);
-console.log(sortedNumbers); // Output: [1, 19, 43, 100, 342, 872]
+
+// Merge two sorted subarrays (in-place)
+function merge(arr, leftStart, mid, rightEnd) {
+  const leftEnd = mid;
+  const rightStart = mid + 1;
+  const temp = [];
+
+  let i = leftStart;
+  let j = rightStart;
+
+  // Merge elements into the temporary array
+  while (i <= leftEnd && j <= rightEnd) {
+    if (arr[i] <= arr[j]) {
+      temp.push(arr[i]);
+      i++;
+    } else {
+      temp.push(arr[j]);
+      j++;
+    }
+  }
+
+  // Copy remaining elements from left subarray, if any
+  while (i <= leftEnd) {
+    temp.push(arr[i]);
+    i++;
+  }
+
+  // Copy remaining elements from right subarray, if any
+  while (j <= rightEnd) {
+    temp.push(arr[j]);
+    j++;
+  }
+
+  // Copy sorted elements back to the original array
+  for (let k = leftStart; k <= rightEnd; k++) {
+    arr[k] = temp[k - leftStart];
+  }
+}
+const arr = [5, 3, 8, 4, 2, 1, 6, 9, 7];
+const sortedArray = mergeSortIterative(arr);
+console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
