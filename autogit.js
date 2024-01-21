@@ -1,48 +1,31 @@
-function mergeSortIterative(arr) {
-  const n = arr.length;
-  const sortedArr = [...arr];
+// Binary Search Function
+function binarySearch(arr, target) {
+  let start = 0;
+  let end = arr.length - 1;
 
-  for (let size = 1; size < n; size *= 2) {
-    for (let leftStart = 0; leftStart < n - 1; leftStart += 2 * size) {
-      const mid = Math.min(leftStart + size - 1, n - 1);
-      const rightEnd = Math.min(leftStart + 2 * size - 1, n - 1);
+  while (start <= end) {
+    let mid = Math.floor((start + end) / 2);
 
-      merge(sortedArr, leftStart, mid, rightEnd);
-    }
-  }
-  return sortedArr;
-}
-
-function merge(arr, leftStart, mid, rightEnd) {
-  const leftEnd = mid;
-  const rightStart = mid + 1;
-
-  let leftPtr = leftStart;
-  let rightPtr = rightStart;
-  let sortedPtr = leftStart;
-
-  const tempArr = Array.from(arr); // create a temporary array to store merged values
-
-  while (leftPtr <= leftEnd && rightPtr <= rightEnd) {
-    if (tempArr[leftPtr] <= tempArr[rightPtr]) {
-      arr[sortedPtr++] = tempArr[leftPtr++];
+    if (arr[mid] === target) {
+      return mid; // Element found, return index
+    } else if (arr[mid] < target) {
+      start = mid + 1; // Search in the right half
     } else {
-      arr[sortedPtr++] = tempArr[rightPtr++];
+      end = mid - 1; // Search in the left half
     }
   }
 
-  // Copy the remaining elements from the left side
-  while (leftPtr <= leftEnd) {
-    arr[sortedPtr++] = tempArr[leftPtr++];
-  }
-
-  // Copy the remaining elements from the right side
-  while (rightPtr <= rightEnd) {
-    arr[sortedPtr++] = tempArr[rightPtr++];
-  }
+  return -1; // Element not found
 }
 
-// Example usage:
-const arr = [8, 4, 2, 9, 1, 7, 5, 3];
-const sortedArr = mergeSortIterative(arr);
-console.log(sortedArr);
+// Usage example
+const array = [2, 4, 6, 8, 10, 12, 14, 16];
+const target = 8;
+
+const result = binarySearch(array, target);
+
+if (result === -1) {
+  console.log("Element not found");
+} else {
+  console.log(`Element found at index ${result}`);
+}
