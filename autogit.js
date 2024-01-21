@@ -1,19 +1,73 @@
-function radixSort(arr) {
-  const maxNum = Math.max(...arr);
-  const maxDigits = String(maxNum).length;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
 
-  for (let i = 0; i < maxDigits; i++) {
-    const buckets = Array.from({ length: 10 }, () => []);
-
-    for (let j = 0; j < arr.length; j++) {
-      const digit = Math.floor(arr[j] / Math.pow(10, i)) % 10;
-      buckets[digit].push(arr[j]);
-    }
-
-    arr = [].concat(...buckets);
+class Queue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.size = 0;
   }
 
-  return arr;
+  enqueue(value) {
+    const newNode = new Node(value);
+
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+
+    this.size++;
+  }
+
+  dequeue() {
+    if (!this.head) {
+      return null;
+    }
+
+    const value = this.head.value;
+
+    if (this.head === this.tail) {
+      this.tail = null;
+    }
+
+    this.head = this.head.next;
+    this.size--;
+
+    return value;
+  }
+
+  isEmpty() {
+    return this.size === 0;
+  }
+
+  getSize() {
+    return this.size;
+  }
+
+  peek() {
+    return this.head ? this.head.value : null;
+  }
 }
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log(radixSort(arr)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+const myQueue = new Queue();
+
+myQueue.enqueue(10);
+myQueue.enqueue(20);
+myQueue.enqueue(30);
+
+console.log(myQueue.getSize()); // Output: 3
+console.log(myQueue.isEmpty()); // Output: false
+console.log(myQueue.peek()); // Output: 10
+
+console.log(myQueue.dequeue()); // Output: 10
+console.log(myQueue.dequeue()); // Output: 20
+
+console.log(myQueue.getSize()); // Output: 1
+console.log(myQueue.isEmpty()); // Output: false
+console.log(myQueue.peek()); // Output: 30
