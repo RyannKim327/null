@@ -1,43 +1,26 @@
-// Node class representing a single node in the linked list
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+function getDigit(num, position) {
+  return Math.floor(Math.abs(num) / Math.pow(10, position)) % 10;
+}
+function digitCount(num) {
+  if (num === 0) return 1;
+  return Math.floor(Math.log10(Math.abs(num))) + 1;
+}
+function radixSort(arr) {
+  const maxDigits = mostDigits(arr);
+
+  for (let i = 0; i < maxDigits; i++) {
+    const digitBuckets = Array.from({ length: 10 }, () => []);
+
+    for (let j = 0; j < arr.length; j++) {
+      const digit = getDigit(arr[j], i);
+      digitBuckets[digit].push(arr[j]);
+    }
+
+    arr = [].concat(...digitBuckets);
   }
-}
 
-// Function to reverse a linked list
-function reverseLinkedList(head) {
-  let prevNode = null;
-  let currNode = head;
-  
-  while (currNode !== null) {
-    const nextNode = currNode.next;
-    currNode.next = prevNode;
-    prevNode = currNode;
-    currNode = nextNode;
-  }
-  
-  return prevNode;
+  return arr;
 }
-// Creating a sample linked list: 1 -> 2 -> 3 -> 4 -> 5
-const head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-// Reversing the linked list
-const reversedHead = reverseLinkedList(head);
-
-// Printing the reversed linked list
-let currNode = reversedHead;
-while (currNode !== null) {
-  console.log(currNode.value);
-  currNode = currNode.next;
-}
-5
-4
-3
-2
-1
+const numbers = [43, 342, 19, 100, 1, 872];
+const sortedNumbers = radixSort(numbers);
+console.log(sortedNumbers); // Output: [1, 19, 43, 100, 342, 872]
