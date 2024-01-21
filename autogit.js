@@ -1,12 +1,42 @@
-let str = "   Hello,    World!   ";
+const graph = {
+  A: ["B", "C"],
+  B: ["A", "D"],
+  C: ["A", "E"],
+  D: ["B"],
+  E: ["C", "F"],
+  F: ["E"],
+};
+function breadthFirstSearch(graph, startNode) {
+  // Create a visited object to keep track of visited nodes
+  const visited = {};
+  
+  // Create a queue for BFS
+  const queue = [startNode];
+  
+  // Mark the start node as visited
+  visited[startNode] = true;
 
-// Remove all whitespace characters
-let trimmedStr = str.replace(/\s/g, '');
+  // Loop until the queue is empty
+  while (queue.length > 0) {
+    // Dequeue a node from the queue
+    const currentNode = queue.shift();
+    
+    // Process the current node
+    console.log(currentNode);
 
-console.log(trimmedStr); // Output: "Hello,World!"
-let str = "   Hello,    World!   ";
+    // Get the neighbors of the current node
+    const neighbors = graph[currentNode];
 
-// Remove leading and trailing whitespace
-let trimmedStr = str.trim();
-
-console.log(trimmedStr); // Output: "Hello,    World!"
+    // Check each neighbor
+    for (let neighbor of neighbors) {
+      // If the neighbor is not visited
+      if (!visited[neighbor]) {
+        // Mark it as visited
+        visited[neighbor] = true;
+        // Enqueue the neighbor
+        queue.push(neighbor);
+      }
+    }
+  }
+}
+breadthFirstSearch(graph, "A");
