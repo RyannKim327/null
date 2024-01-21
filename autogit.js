@@ -1,15 +1,23 @@
-let str = "Hello World";
-let reversedStr = str.split("").reverse().join("");
-console.log(reversedStr);
-let str = "Hello World";
-let reversedStr = "";
+function isAnagram(str1, str2) {
+  // Remove non-alphabetic characters and convert to lowercase
+  const cleanStr1 = str1.replace(/[^A-Za-z]/g, '').toLowerCase();
+  const cleanStr2 = str2.replace(/[^A-Za-z]/g, '').toLowerCase();
 
-for (let i = str.length - 1; i >= 0; i--) {
-  reversedStr += str[i];
+  // Convert strings to arrays, sort them, and join back into strings
+  const sortedStr1 = cleanStr1.split('').sort().join('');
+  const sortedStr2 = cleanStr2.split('').sort().join('');
+
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
 
-console.log(reversedStr);
-let str = "Hello World";
-let reversedStr = [...str].reverse().join("");
-console.log(reversedStr);
-dlroW olleH
+// Example usage
+const string1 = 'listen';
+const string2 = 'silent';
+
+if (isAnagram(string1, string2)) {
+  console.log(`${string1} and ${string2} are anagrams.`);
+} else {
+  console.log(`${string1} and ${string2} are not anagrams.`);
+}
+listen and silent are anagrams.
