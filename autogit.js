@@ -1,24 +1,37 @@
-function countOccurrences(string, word) {
-  // Split the string into an array of words
-  var words = string.split(/\s+/);
+function depthLimitedSearchIterative(root, target, depthLimit) {
+  // Create an empty stack
+  const stack = [];
 
-  // Initialize a counter variable
-  var count = 0;
+  // Push the root node to the stack
+  stack.push({ node: root, depth: 0 });
 
-  // Iterate over the words array
-  for (var i = 0; i < words.length; i++) {
-    // If the current word matches the given word, increment the count
-    if (words[i].toLowerCase() === word.toLowerCase()) {
-      count++;
+  while (stack.length > 0) {
+    // Pop the top node from the stack
+    const { node, depth } = stack.pop();
+
+    // Check if the current node is the target
+    if (node === target) {
+      return node;
+    }
+
+    // Check if the depth limit has been reached
+    if (depth >= depthLimit) {
+      continue;
+    }
+
+    // Push child nodes to the stack in reverse order
+    const children = getChildren(node);
+    for (let i = children.length - 1; i >= 0; i--) {
+      stack.push({ node: children[i], depth: depth + 1 });
     }
   }
 
-  return count;
+  // Return null when target not found within the depth limit
+  return null;
 }
 
-// Example usage
-var sentence = "JavaScript is a programming language that is widely used.";
-var wordToCount = "is";
-
-var occurrences = countOccurrences(sentence, wordToCount);
-console.log("Number of occurrences:", occurrences);
+// Helper function to get the children of a node (replace with your own implementation)
+function getChildren(node) {
+  // Return an array of child nodes
+  // ...
+}
