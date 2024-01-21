@@ -1,32 +1,32 @@
-function topologicalSort(graph) {
+function BFS(graph, startNode) {
+  const queue = [];
   const visited = new Set();
-  const order = [];
+  const traversalOrder = [];
+  queue.push(startNode);
+  visited.add(startNode);
+  while (queue.length > 0) {
+    const currentNode = queue.shift();
+    traversalOrder.push(currentNode);
 
-  function dfs(node) {
-    visited.add(node);
-
-    for (const neighbor of graph[node]) {
+    const neighbors = graph[currentNode];
+    for (let i = 0; i < neighbors.length; i++) {
+      const neighbor = neighbors[i];
       if (!visited.has(neighbor)) {
-        dfs(neighbor);
+        queue.push(neighbor);
+        visited.add(neighbor);
       }
     }
-
-    order.unshift(node);
   }
-
-  for (const node in graph) {
-    if (!visited.has(node)) {
-      dfs(node);
-    }
-  }
-
-  return order;
+  return traversalOrder;
 }
+
+// Test example graph
 const graph = {
   A: ['B', 'C'],
-  B: ['D'],
-  C: [],
-  D: ['E'],
-  E: [],
+  B: ['A', 'D'],
+  C: ['A', 'E'],
+  D: ['B'],
+  E: ['C']
 };
-console.log(topologicalSort(graph));
+
+console.log(BFS(graph, 'A'));
