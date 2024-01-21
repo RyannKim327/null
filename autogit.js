@@ -1,14 +1,20 @@
-function factorial(num) {
-  if (num === 0 || num === 1) {
-    return 1;
+function findCommonElements(array1, array2) {
+  const commonElements = [];
+
+  for (let i = 0; i < array1.length; i++) {
+    const element = array1[i];
+
+    if (array2.includes(element) && !commonElements.includes(element)) {
+      commonElements.push(element);
+    }
   }
-  let result = 1;
-  for (let i = 2; i <= num; i++) {
-    result *= i;
-  }
-  return result;
+
+  return commonElements;
 }
 
 // Example usage
-console.log(factorial(5));  // Output: 120
-console.log(factorial(0));  // Output: 1
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
