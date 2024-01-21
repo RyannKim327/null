@@ -1,8 +1,8 @@
-let string1 = "Hello";
-let string2 = " World";
-let result = string1 + string2; // "Hello World"
-console.log(result);
-let string1 = "Hello";
-let string2 = " World";
-let result = string1.concat(string2); // "Hello World"
-console.log(result);
+fetch('https://api.example.com/data')
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
