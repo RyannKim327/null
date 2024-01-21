@@ -1,49 +1,38 @@
-function generateFibonacci(n) {
-  const fibArr = [0, 1];
-  
-  for (let i = 2; i <= n; i++) {
-    fibArr[i] = fibArr[i - 1] + fibArr[i - 2];
+function calculateHash(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash += str.charCodeAt(i) * Math.pow(26, i);
   }
-  
-  return fibArr;
+  return hash;
 }
-function fibonacciSearch(arr, target) {
-  let fibMMinus2 = 0;
-  let fibMMinus1 = 1;
-  let fibM = fibMMinus1 + fibMMinus2;
-  
-  while (fibM < arr.length) {
-    fibMMinus2 = fibMMinus1;
-    fibMMinus1 = fibM;
-    fibM = fibMMinus1 + fibMMinus2;
-  }
-  
-  let offset = -1;
+hash = (hash - text.charCodeAt(i) * Math.pow(26, 0)) * 26 + text.charCodeAt(i + pattern.length);
+function rabinKarpSearch(pattern, text) {
+  const patternHash = calculateHash(pattern);
+  let textHash = calculateHash(text.slice(0, pattern.length));
 
-  while (fibM > 1) {
-    const i = Math.min(offset + fibMMinus2, arr.length - 1);
-    
-    if (arr[i] < target) {
-      fibM = fibMMinus1;
-      fibMMinus1 = fibMMinus2;
-      fibMMinus2 = fibM - fibMMinus1;
-      offset = i;
-    } else if (arr[i] > target) {
-      fibM = fibMMinus2;
-      fibMMinus1 = fibMMinus1 - fibMMinus2;
-      fibMMinus2 = fibM - fibMMinus1;
-    } else {
-      return i;
+  for (let i = 0; i <= text.length - pattern.length; i++) {
+    if (textHash === patternHash) {
+      if (text.slice(i, i + pattern.length) === pattern) {
+        return i;
+      }
     }
-  }
 
-  if (fibMMinus1 && arr[offset + 1] === target) {
-    return offset + 1;
+    textHash = (textHash - text.charCodeAt(i) * Math.pow(26, 0)) * 26 + text.charCodeAt(i + pattern.length);
   }
 
   return -1;
 }
-const arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
-const target = 23;
 
-console.log(fibonacciSearch(arr, target)); // Output: 5
+function calculateHash(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash += str.charCodeAt(i) * Math.pow(26, i);
+  }
+  return hash;
+}
+
+// Example usage
+const text = 'Lorem ipsum dolor sit amet';
+const pattern = 'dolor';
+const index = rabinKarpSearch(pattern, text);
+console.log(index); // Output: 12
