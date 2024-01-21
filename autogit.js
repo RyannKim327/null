@@ -1,44 +1,79 @@
-function mergeSort(arr) {
-  if (arr.length <= 1) {
-    return arr;
+class BTreeNode {
+  constructor(isLeaf) {
+    this.keys = [];
+    this.children = [];
+    this.isLeaf = isLeaf;
   }
-
-  const middle = Math.floor(arr.length / 2);
-  const left = arr.slice(0, middle);
-  const right = arr.slice(middle);
-
-  return merge(mergeSort(left), mergeSort(right));
 }
+class BTree {
+  constructor(degree) {
+    this.root = null;
+    this.degree = degree;
+  }
+}
+class BTree {
+  // ...
 
-function merge(left, right) {
-  let i = 0;
-  let j = 0;
-  const merged = [];
-
-  while (i < left.length && j < right.length) {
-    if (left[i] <= right[j]) {
-      merged.push(left[i]);
-      i++;
+  insert(key) {
+    if (!this.root) {
+      this.root = new BTreeNode(true);
+      this.root.keys.push(key);
     } else {
-      merged.push(right[j]);
-      j++;
+      if (this.root.keys.length === (2 * this.degree) - 1) {
+        const newRoot = new BTreeNode(false);
+        newRoot.children.push(this.root);
+        this.root = newRoot;
+        this.splitChild(this.root, 0);
+      }
+
+      this.insertNonFull(this.root, key);
     }
   }
 
-  while (i < left.length) {
-    merged.push(left[i]);
-    i++;
+  insertNonFull(node, key) {
+    let i = node.keys.length - 1;
+
+    if (node.isLeaf) {
+      while (i >= 0 && key < node.keys[i]) {
+        node.keys[i + 1] = node.keys[i];
+        i--;
+      }
+
+      node.keys[i + 1] = key;
+    } else {
+      while (i >= 0 && key < node.keys[i]) {
+        i--;
+      }
+
+      i++;
+
+      if (node.children[i].keys.length === (2 * this.degree) - 1) {
+        this.splitChild(node, i);
+
+        if (key > node.keys[i]) {
+          i++;
+        }
+      }
+
+      this.insertNonFull(node.children[i], key);
+    }
   }
 
-  while (j < right.length) {
-    merged.push(right[j]);
-    j++;
-  }
+  splitChild(parent, index) {
+    const degree = this.degree;
+    const child = parent.children[index];
 
-  return merged;
+    const newChild = new BTreeNode(child.isLeaf);
+    parent.keys.splice(index, 0, child.keys[degree - 1]);
+    parent.children.splice(index + 1, 0, newChild);
+
+    newChild.keys = child.keys.splice(degree, degree - 1);
+    newChild.children = child.children.splice(degree, degree);
+  }
 }
-
-// Example usage:
-const unsortedArray = [5, 3, 8, 4, 2, 1, 10, 6, 9, 7];
-const sortedArray = mergeSort(unsortedArray);
-console.log(sortedArray);
+const btree = new BTree(3);
+btree.insert(10);
+btree.insert(20);
+btree.insert(5);
+btree.insert(15);
+btree.insert(25);
