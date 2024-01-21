@@ -1,22 +1,26 @@
-function largestPrimeFactor(num) {
-  let maxPrime = 2;
+function selectionSort(arr) {
+  const length = arr.length;
 
-  while (num % 2 === 0) {
-    num /= 2;
-  }
+  for (let i = 0; i < length - 1; i++) {
+    let minIndex = i;
 
-  for (let i = 3; i <= Math.sqrt(num); i += 2) {
-    while (num % i === 0) {
-      maxPrime = i;
-      num /= i;
+    // Find the index of the smallest element in the unsorted portion
+    for (let j = i + 1; j < length; j++) {
+      if (arr[j] < arr[minIndex]) {
+        minIndex = j;
+      }
+    }
+
+    // Swap the smallest element with the first element of the unsorted portion
+    if (minIndex !== i) {
+      [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
     }
   }
 
-  if (num > 2) {
-    maxPrime = num;
-  }
-
-  return maxPrime;
+  return arr;
 }
-console.log(largestPrimeFactor(13195)); // Output: 29 (largest prime factor of 13195)
-console.log(largestPrimeFactor(600851475143)); // Output: 6857 (largest prime factor of 600851475143)
+
+// Example usage
+const unsortedArray = [64, 25, 12, 22, 11];
+const sortedArray = selectionSort(unsortedArray);
+console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
