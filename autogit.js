@@ -1,30 +1,35 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.left = null;
-    this.right = null;
-  }
-}
+function isAnagram(str1, str2) {
+  // Remove white spaces and convert to lowercase
+  str1 = str1.replace(/\s/g, '').toLowerCase();
+  str2 = str2.replace(/\s/g, '').toLowerCase();
 
-function findSumOfNodes(root) {
-  if (root === null) {
-    return 0;
+  // Check if the length of the strings is equal
+  if (str1.length !== str2.length) {
+    return false;
   }
 
-  // Recursively calculate the sum of nodes in the left and right subtrees
-  const leftSum = findSumOfNodes(root.left);
-  const rightSum = findSumOfNodes(root.right);
+  // Create character frequency maps for both strings
+  const charCount1 = {};
+  const charCount2 = {};
 
-  // Sum the current node's value with the values from left and right subtrees
-  return root.data + leftSum + rightSum;
+  for (let char of str1) {
+    charCount1[char] = (charCount1[char] || 0) + 1;
+  }
+
+  for (let char of str2) {
+    charCount2[char] = (charCount2[char] || 0) + 1;
+  }
+
+  // Check if the frequency of characters is the same in both maps
+  for (let char in charCount1) {
+    if (charCount1[char] !== charCount2[char]) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 // Example usage
-const root = new Node(3);
-root.left = new Node(2);
-root.right = new Node(5);
-root.left.left = new Node(1);
-root.left.right = new Node(4);
-
-const sum = findSumOfNodes(root);
-console.log("Sum of all nodes:", sum);
+console.log(isAnagram('listen', 'silent')); // Output: true
+console.log(isAnagram('hello', 'hi'));      // Output: false
