@@ -1,46 +1,26 @@
-function isPalindrome(str) {
-  // Convert the string to lowercase
-  str = str.toLowerCase();
+function findFirstNonRepeatingChar(str) {
+  // Create an empty object to store character counts
+  const charCount = {};
   
-  // Initialize two pointers, one at the beginning and one at the end of the string
-  let left = 0;
-  let right = str.length - 1;
-  
-  // Iterate until the pointers meet or cross each other
-  while (left < right) {
-    // Skip non-alphanumeric characters from the left pointer
-    while (!isAlphanumeric(str.charAt(left))) {
-      left++;
-    }
-    
-    // Skip non-alphanumeric characters from the right pointer
-    while (!isAlphanumeric(str.charAt(right))) {
-      right--;
-    }
-    
-    // If the characters at the pointers are not equal, the string is not a palindrome
-    if (str.charAt(left) !== str.charAt(right)) {
-      return false;
-    }
-    
-    // Move the pointers towards each other
-    left++;
-    right--;
+  // Iterate over each character in the string and count its occurrences
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
   }
   
-  // If the loop completes without returning false, the string is a valid palindrome
-  return true;
-}
-
-function isAlphanumeric(char) {
-  // Regular expression to match only alphanumeric characters
-  const regex = /[a-zA-Z0-9]/;
+  // Find the first character that has a count of 1
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    if (charCount[char] === 1) {
+      return char;
+    }
+  }
   
-  // Return true if the character matches the regex
-  return regex.test(char);
+  // If no non-repeating characters are found, return null
+  return null;
 }
 
-// Example usage
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car")); // false
-console.log(isPalindrome("level")); // true
+// Testing the function
+const inputString = "aabccdeff";
+const result = findFirstNonRepeatingChar(inputString);
+console.log(result); // Output: 'b'
