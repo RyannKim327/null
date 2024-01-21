@@ -1,41 +1,12 @@
-function topologicalSort(graph) {
-  const result = []; // Stores the sorted nodes
-  const visited = {}; // Keeps track of visited nodes
+let str = "   Hello,    World!   ";
 
-  function dfs(current) {
-    visited[current] = true; // Mark the current node as visited
+// Remove all whitespace characters
+let trimmedStr = str.replace(/\s/g, '');
 
-    const neighbors = graph[current]; // Get the adjacent nodes
+console.log(trimmedStr); // Output: "Hello,World!"
+let str = "   Hello,    World!   ";
 
-    if (neighbors) {
-      for (const neighbor of neighbors) {
-        if (!visited[neighbor]) {
-          dfs(neighbor); // Recursively call dfs on the neighbor
-        }
-      }
-    }
+// Remove leading and trailing whitespace
+let trimmedStr = str.trim();
 
-    result.unshift(current); // Add the current node to the result array
-  }
-
-  // Iterate over all nodes in the graph
-  for (const node in graph) {
-    if (!visited[node]) {
-      dfs(node); // Call dfs on unvisited nodes
-    }
-  }
-
-  return result;
-}
-
-// Example usage:
-const graph = {
-  A: ["C", "D"],
-  B: ["D", "E"],
-  C: ["F"],
-  D: ["F"],
-  E: [],
-  F: [],
-};
-
-console.log(topologicalSort(graph)); // Output: [ 'B', 'E', 'A', 'D', 'C', 'F' ]
+console.log(trimmedStr); // Output: "Hello,    World!"
