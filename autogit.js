@@ -1,21 +1,26 @@
-function bubbleSort(arr) {
-  var len = arr.length;
-  var swapped;
+function selectionSort(array) {
+  const len = array.length;
+  
+  for (let i = 0; i < len - 1; i++) {
+    let minIndex = i;
 
-  do {
-    swapped = false;
-    for (var i = 0; i < len - 1; i++) {
-      if (arr[i] > arr[i + 1]) {
-        // swap elements
-        var temp = arr[i];
-        arr[i] = arr[i + 1];
-        arr[i + 1] = temp;
-        swapped = true;
+    for (let j = i + 1; j < len; j++) {
+      if (array[j] < array[minIndex]) {
+        minIndex = j;
       }
     }
-  } while (swapped);
 
-  return arr;
+    if (minIndex !== i) {
+      const temp = array[i];
+      array[i] = array[minIndex];
+      array[minIndex] = temp;
+    }
+  }
+
+  return array;
 }
-var numbers = [5, 3, 8, 4, 2];
-console.log(bubbleSort(numbers)); // [2, 3, 4, 5, 8]
+
+// Example usage:
+const unsortedArray = [64, 25, 12, 22, 11];
+const sortedArray = selectionSort(unsortedArray);
+console.log(sortedArray);  // Output: [11, 12, 22, 25, 64]
