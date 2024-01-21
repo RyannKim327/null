@@ -1,72 +1,63 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function shellSort(arr) {
+  // Shell sort logic goes here
+}
+function shellSort(arr) {
+  let gap = Math.floor(arr.length / 2);
+  // Shell sort logic goes here
+}
+function shellSort(arr) {
+  let gap = Math.floor(arr.length / 2);
+
+  while (gap > 0) {
+    // Shell sort logic goes here
+
+    gap = Math.floor(gap / 2);
   }
 }
-class BinarySearchTree {
-  constructor() {
-    this.root = null;
-  }
-}
-class BinarySearchTree {
-  // ...
+function shellSort(arr) {
+  let gap = Math.floor(arr.length / 2);
 
-  insert(value) {
-    const newNode = new Node(value);
-
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      let current = this.root;
-
-      while (true) {
-        if (value < current.value) {
-          if (current.left === null) {
-            current.left = newNode;
-            break;
-          }
-          current = current.left;
-        } else {
-          if (current.right === null) {
-            current.right = newNode;
-            break;
-          }
-          current = current.right;
-        }
+  while (gap > 0) {
+    for (let i = gap; i < arr.length; i++) {
+      let j = i;
+      let temp = arr[i];
+ 
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
       }
-    }
-  }
-}
-class BinarySearchTree {
-  // ...
-
-  search(value) {
-    let current = this.root;
-
-    while (current !== null) {
-      if (value === current.value) {
-        return current;
-      } else if (value < current.value) {
-        current = current.left;
-      } else {
-        current = current.right;
-      }
+ 
+      arr[j] = temp;
     }
 
-    return null;
+    gap = Math.floor(gap / 2);
   }
+
+  return arr;
 }
-const bst = new BinarySearchTree();
+function shellSort(arr) {
+  let gap = Math.floor(arr.length / 2);
 
-bst.insert(50);
-bst.insert(30);
-bst.insert(70);
-bst.insert(20);
-bst.insert(40);
-bst.insert(60);
-bst.insert(80);
+  while (gap > 0) {
+    for (let i = gap; i < arr.length; i++) {
+      let j = i;
+      let temp = arr[i];
+ 
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
+      }
+ 
+      arr[j] = temp;
+    }
 
-console.log(bst.search(60)); // Output: Node { value: 60, left: null, right: null }
-console.log(bst.search(55)); // Output: null
+    gap = Math.floor(gap / 2);
+  }
+
+  return arr;
+}
+
+// Usage:
+const unsortedArray = [9, 2, 5, 3, 8, 7, 1, 10, 4, 6];
+const sortedArray = shellSort(unsortedArray);
+console.log(sortedArray);
