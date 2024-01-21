@@ -1,29 +1,21 @@
-function findMajorityElement(arr) {
-  // Create an object to count the occurrences of each element
-  const count = {};
-  
-  // Iterate through the array and count the occurrences
-  for (let i = 0; i < arr.length; i++) {
-    const element = arr[i];
-    if (count[element]) {
-      count[element]++;
-    } else {
-      count[element] = 1;
-    }
+function binarySearchRecursive(target, array, start, end) {
+  if (start > end) {
+    return -1; // Target value not found
   }
-  
-  // Iterate through the count object to find the majority element
-  for (const key in count) {
-    if (count[key] > arr.length / 2) {
-      return key;
-    }
+
+  const middle = Math.floor((start + end) / 2);
+
+  if (array[middle] === target) {
+    return middle; // Target value found
+  } else if (array[middle] > target) {
+    return binarySearchRecursive(target, array, start, middle - 1); // Search in the left half
+  } else {
+    return binarySearchRecursive(target, array, middle + 1, end); // Search in the right half
   }
-  
-  // If no majority element is found, return null or any other suitable value
-  return null;
 }
 
-// Example usage
-const array = [2, 4, 2, 2, 5, 2, 8, 2, 9, 2, 2];
-const majorityElement = findMajorityElement(array);
-console.log(majorityElement);
+// Example usage:
+const array = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
+const target = 23;
+const result = binarySearchRecursive(target, array, 0, array.length - 1);
+console.log(`Index of ${target}: ${result}`);
