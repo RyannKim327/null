@@ -1,42 +1,33 @@
-const graph = {
-  A: ["B", "C"],
-  B: ["A", "D"],
-  C: ["A", "E"],
-  D: ["B"],
-  E: ["C", "F"],
-  F: ["E"],
-};
-function breadthFirstSearch(graph, startNode) {
-  // Create a visited object to keep track of visited nodes
-  const visited = {};
-  
-  // Create a queue for BFS
-  const queue = [startNode];
-  
-  // Mark the start node as visited
-  visited[startNode] = true;
+function majorityElement(nums) {
+  let candidate = null;
+  let count = 0;
 
-  // Loop until the queue is empty
-  while (queue.length > 0) {
-    // Dequeue a node from the queue
-    const currentNode = queue.shift();
-    
-    // Process the current node
-    console.log(currentNode);
-
-    // Get the neighbors of the current node
-    const neighbors = graph[currentNode];
-
-    // Check each neighbor
-    for (let neighbor of neighbors) {
-      // If the neighbor is not visited
-      if (!visited[neighbor]) {
-        // Mark it as visited
-        visited[neighbor] = true;
-        // Enqueue the neighbor
-        queue.push(neighbor);
-      }
+  for (const num of nums) {
+    if (count === 0) {
+      candidate = num;
+      count = 1;
+    } else if (candidate === num) {
+      count++;
+    } else {
+      count--;
     }
   }
+
+  // Verify if the candidate is the majority element
+  count = 0;
+  for (const num of nums) {
+    if (num === candidate) {
+      count++;
+    }
+  }
+
+  if (count > nums.length / 2) {
+    return candidate;
+  } else {
+    return "No majority element found.";
+  }
 }
-breadthFirstSearch(graph, "A");
+
+// Example usage:
+const arr = [2, 2, 1, 1, 1, 2, 2];
+console.log(majorityElement(arr)); // Output: 2
