@@ -1,129 +1,38 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function findLongestCommonSubstring(str1, str2) {
+  // Initialize a 2D array with 0s
+  const matrix = Array(str1.length + 1)
+    .fill(0)
+    .map(() => Array(str2.length + 1).fill(0));
+
+  let longestCommonSubstringLength = 0;
+  let longestCommonSubstringEndIndex = 0;
+
+  // Fill the matrix and track the longest common substring
+  for (let i = 1; i <= str1.length; i++) {
+    for (let j = 1; j <= str2.length; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        matrix[i][j] = matrix[i - 1][j - 1] + 1;
+
+        if (matrix[i][j] > longestCommonSubstringLength) {
+          longestCommonSubstringLength = matrix[i][j];
+          longestCommonSubstringEndIndex = i - 1;
+        }
+      } else {
+        matrix[i][j] = 0;
+      }
+    }
   }
+
+  // Extract the longest common substring from str1
+  const longestCommonSubstring = str1.slice(
+    longestCommonSubstringEndIndex - longestCommonSubstringLength + 1,
+    longestCommonSubstringEndIndex + 1
+  );
+
+  return longestCommonSubstring;
 }
 
-class BinarySearchTree {
-  constructor() {
-    this.root = null;
-  }
-
-  insert(value) {
-    const newNode = new Node(value);
-    
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
-  
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
-
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-  
-  searchNode(node, value) {
-    if (node === null || node.value === value) {
-      return node;
-    }
-    
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    }
-    
-    return this.searchNode(node.right, value);
-  }
-  
-  remove(value) {
-    this.root = this.removeNode(this.root, value);
-  }
-  
-  removeNode(node, value) {
-    if (node === null) {
-      return null;
-    } else if (value < node.value) {
-      node.left = this.removeNode(node.left, value);
-      return node;
-    } else if (value > node.value) {
-      node.right = this.removeNode(node.right, value);
-      return node;
-    } else {
-      if (node.left === null && node.right === null) {
-        node = null;
-        return node;
-      } else if (node.left === null) {
-        node = node.right;
-        return node;
-      } else if (node.right === null) {
-        node = node.left;
-        return node;
-      }
-      
-      const minNode = this.findMinNode(node.right);
-      node.value = minNode.value;
-      
-      node.right = this.removeNode(node.right, minNode.value);
-      return node;
-    }
-  }
-  
-  findMinNode(node) {
-    if (node.left === null) {
-      return node;
-    }
-    
-    return this.findMinNode(node.left);
-  }
-
-  inorderTraversal() {
-    const result = [];
-    this.inorderTraversalNode(this.root, result);
-    return result;
-  }
-
-  inorderTraversalNode(node, result) {
-    if (node !== null) {
-      this.inorderTraversalNode(node.left, result);
-      result.push(node.value);
-      this.inorderTraversalNode(node.right, result);
-    }
-  }
-}
-const bst = new BinarySearchTree();
-
-bst.insert(8);
-bst.insert(3);
-bst.insert(10);
-bst.insert(1);
-bst.insert(6);
-bst.insert(14);
-bst.insert(4);
-bst.insert(7);
-bst.insert(13);
-
-console.log(bst.inorderTraversal()); // [1, 3, 4, 6, 7, 8, 10, 13, 14]
-
-console.log(bst.search(6)); // Node { value: 6, left: Node { value: 4, ... }, right: Node { value: 7, ... } }
-
-bst.remove(6);
-
-console.log(bst.inorderTraversal()); // [1, 3, 4, 7, 8, 10, 13, 14]
+// Example usage
+const str1 = 'abcdef';
+const str2 = 'cdefg';
+console.log(findLongestCommonSubstring(str1, str2));  // Output: 'cdef'
