@@ -1,44 +1,39 @@
-function mergeArrays(arr1, arr2) {
-  let merged = [];
-  let i = 0;
-  let j = 0;
+function longestCommonSubsequence(str1, str2) {
+  const m = str1.length;
+  const n = str2.length;
 
-  while (i < arr1.length && j < arr2.length) {
-    if (arr1[i] <= arr2[j]) {
-      merged.push(arr1[i]);
-      i++;
-    } else {
-      merged.push(arr2[j]);
-      j++;
+  // Create a 2D array to store the lengths of LCS
+  const dp = [...Array(m + 1)].map(() => Array(n + 1).fill(0));
+
+  // Fill in the dp array
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+      } else {
+        dp[i][j] = Math.max(dp[i][j - 1], dp[i - 1][j]);
+      }
     }
   }
 
-  while (i < arr1.length) {
-    merged.push(arr1[i]);
-    i++;
+  // Construct the LCS string
+  const lcs = [];
+  let i = m, j = n;
+  while (i > 0 && j > 0) {
+    if (str1[i - 1] === str2[j - 1]) {
+      lcs.unshift(str1[i - 1]);
+      i--;
+      j--;
+    } else if (dp[i][j - 1] > dp[i - 1][j]) {
+      j--;
+    } else {
+      i--;
+    }
   }
 
-  while (j < arr2.length) {
-    merged.push(arr2[j]);
-    j++;
-  }
-
-  return merged;
+  return lcs.join('');
 }
-function findMedian(arr) {
-  const n = arr.length;
-  const mid = Math.floor(n / 2);
-
-  if (n % 2 === 0) {
-    return (arr[mid - 1] + arr[mid]) / 2;
-  } else {
-    return arr[mid];
-  }
-}
-const arr1 = [1, 3, 5];
-const arr2 = [2, 4, 6];
-
-const merged = mergeArrays(arr1, arr2);
-const median = findMedian(merged);
-
-console.log(median); // Output: 3.5
+const str1 = "ABCDGH";
+const str2 = "AEDFHR";
+const lcs = longestCommonSubsequence(str1, str2);
+console.log(lcs); // Output: "ADH"
