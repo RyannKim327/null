@@ -1,23 +1,19 @@
-async function connectAsync() {
-  try {
-    const response = await fetch('https://api.example.com/data'); // Make an HTTP request
-    
-    if (response.ok) {
-      const data = await response.json(); // Get the response data
-      
-      // Process the data
-      console.log(data);
-      
-      // Perform any additional tasks
-      // ...
-      
-    } else {
-      console.error('Error:', response.status);
-    }
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
+function radixSort(arr) {
+  const maxNum = Math.max(...arr);
+  const maxDigits = String(maxNum).length;
 
-// Call the async task function
-connectAsync();
+  for (let i = 0; i < maxDigits; i++) {
+    const buckets = Array.from({ length: 10 }, () => []);
+
+    for (let j = 0; j < arr.length; j++) {
+      const digit = Math.floor(arr[j] / Math.pow(10, i)) % 10;
+      buckets[digit].push(arr[j]);
+    }
+
+    arr = [].concat(...buckets);
+  }
+
+  return arr;
+}
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+console.log(radixSort(arr)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
