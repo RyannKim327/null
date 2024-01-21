@@ -1,17 +1,43 @@
-function beamSearch(initialState, beamWidth, scoreFunction, generateSuccessors, terminationCondition) {
-  let candidates = [initialState];
+class ListNode {
+  constructor(val, next = null) {
+    this.val = val;
+    this.next = next;
+  }
+}
 
-  while (!terminationCondition()) {
-    let successors = [];
+function findNthNodeFromEnd(head, n) {
+  let slow = head;
+  let fast = head;
 
-    for (let candidate of candidates) {
-      let candidateSuccessors = generateSuccessors(candidate);
-      successors.push(...candidateSuccessors);
+  // Move fast pointer n steps ahead
+  for (let i = 0; i < n; i++) {
+    fast = fast.next;
+    if (fast === null) {
+      // Handle case where n exceeds the length of linked list
+      return null;
     }
-
-    successors.sort((a, b) => scoreFunction(b) - scoreFunction(a));
-    candidates = successors.slice(0, beamWidth);
   }
 
-  return candidates[0]; // Return the best candidate solution found
+  // Move slow and fast pointer together
+  while (fast.next !== null) {
+    slow = slow.next;
+    fast = fast.next;
+  }
+
+  return slow;
+}
+
+// Testing the function
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+const n = 2;
+const nthNodeFromEnd = findNthNodeFromEnd(head, n);
+if (nthNodeFromEnd !== null) {
+  console.log(`The ${n}th node from the end is: ${nthNodeFromEnd.val}`);
+} else {
+  console.log(`The list does not contain ${n} nodes.`);
 }
