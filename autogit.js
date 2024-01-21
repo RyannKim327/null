@@ -1,25 +1,51 @@
-function findFirstNonRepeatingChar(str) {
-  // Create an object to store character counts
-  const charCount = {};
+function buildLPSArray(pattern) {
+  const lps = [0];
+  let len = 0;
+  let i = 1;
 
-  // Iterate over each character in the string
-  for (let char of str) {
-    // If the character is already in the object, increment its count
-    // Otherwise, set its count to 1
-    charCount[char] = (charCount[char] || 0) + 1;
-  }
-
-  // Find the first character with a count of 1 in the original string
-  for (let char of str) {
-    if (charCount[char] === 1) {
-      return char;
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[len]) {
+      len++;
+      lps[i] = len;
+      i++;
+    } else {
+      if (len !== 0) {
+        len = lps[len - 1];
+      } else {
+        lps[i] = 0;
+        i++;
+      }
     }
   }
 
-  // Return null if no non-repeating character is found
-  return null;
+  return lps;
+}
+
+function stringMatch(mainString, pattern) {
+  const lps = buildLPSArray(pattern);
+  let i = 0;
+  let j = 0;
+
+  while (i < mainString.length) {
+    if (mainString[i] === pattern[j]) {
+      i++;
+      j++;
+    }
+
+    if (j === pattern.length) {
+      console.log("Pattern found at index", i - j);
+      j = lps[j - 1];
+    } else if (i < mainString.length && mainString[i] !== pattern[j]) {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
+      }
+    }
+  }
 }
 
 // Example usage:
-console.log(findFirstNonRepeatingChar("aabbcdd")); // Output: 'c'
-console.log(findFirstNonRepeatingChar("aabbccdd")); // Output: null (no non-repeating character)
+const mainString = "ABCABCDABABCDABCDABDE";
+const pattern = "ABCDABD";
+stringMatch(mainString, pattern);
