@@ -1,11 +1,3 @@
-// Fetch data from API
-fetch('https://api.example.com/data')
-  .then(response => response.json())
-  .then(data => {
-    // Process the response data
-    console.log(data);
-  })
-  .catch(error => {
-    // Handle any errors
-    console.log('An error occurred:', error);
-  });
+let str = "Hello, world!";
+let strWithoutSpaces = str.replace(/\s/g, "");
+console.log(strWithoutSpaces); // Output: "Hello,world!"
