@@ -1,9 +1,11 @@
-let array = [1, 2, 3, 4, 5];
-array.reverse();
+// Function to calculate the area of a triangle
+function calculateTriangleArea(base, height) {
+  var area = (base * height) / 2;
+  return area;
+}
 
-console.log(array); // Output: [5, 4, 3, 2, 1]
-let array = [1, 2, 3, 4, 5];
-let reversedArray = array.slice().reverse();
-
-console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
-console.log(array); // Output: [1, 2, 3, 4, 5]
+// Example usage
+var base = 5;
+var height = 8;
+var triangleArea = calculateTriangleArea(base, height);
+console.log("The area of the triangle is: " + triangleArea);
