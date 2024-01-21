@@ -1,38 +1,15 @@
-function findMajorityElement(arr) {
-  let majorityIndex = 0;
-  let count = 1;
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  const cleanStr = str.replace(/[^0-9a-z]/gi, '').toLowerCase();
 
-  // Find a candidate for majority element
-  for (let i = 1; i < arr.length; i++) {
-    if (arr[i] === arr[majorityIndex]) {
-      count++;
-    } else {
-      count--;
-    }
+  // Reverse the string
+  const reversedStr = cleanStr.split('').reverse().join('');
 
-    if (count === 0) {
-      majorityIndex = i;
-      count = 1;
-    }
-  }
-
-  const majorityElement = arr[majorityIndex];
-  count = 0;
-
-  // Verify if the candidate is a majority element
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] === majorityElement) {
-      count++;
-    }
-  }
-
-  if (count > arr.length / 2) {
-    return majorityElement;
-  } else {
-    return undefined; // No majority element found
-  }
+  // Check if the clean string and the reversed string are equal
+  return cleanStr === reversedStr;
 }
 
 // Example usage:
-const array = [3, 1, 3, 3, 2];
-console.log(findMajorityElement(array)); // Output: 3
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // Output: true
+console.log(isPalindrome("race car")); // Output: true
+console.log(isPalindrome("hello")); // Output: false
