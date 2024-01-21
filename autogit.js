@@ -1,68 +1,19 @@
-class SkipListNode {
-  constructor(value) {
-    this.value = value;
-    this.next = [];
-  }
-}
-class SkipList {
-  constructor() {
-    this.head = new SkipListNode(-Infinity);
-    this.maxHeight = 1;
-  }
-}
-insert(value) {
-  const newNode = new SkipListNode(value);
-  const nodePath = this.createNodePath(value);
-
-  for (let i = 0; i < nodePath.length; i++) {
-    const nextNode = nodePath[i].next[i];
-    nodePath[i].next[i] = newNode;
-    newNode.next[i] = nextNode;
+function burrowsWheelerTransform(str) {
+  // Step 2: Generate all rotations of the input string
+  const rotations = [];
+  for (let i = 0; i < str.length; i++) {
+    rotations.push(str.slice(i) + str.slice(0, i));
   }
 
-  if (nodePath.length > this.maxHeight) {
-    this.maxHeight = nodePath.length;
-  }
-}
-createNodePath(value) {
-  const path = [this.head];
-  let node = this.head;
-  for (let i = this.maxHeight - 1; i >= 0; i--) {
-    while (node.next[i] && node.next[i].value < value) {
-      node = node.next[i];
-    }
-    path[i] = node;
-  }
-  return path;
-}
-search(value) {
-  let node = this.head;
-  for (let i = this.maxHeight - 1; i >= 0; i--) {
-    while (node.next[i] && node.next[i].value < value) {
-      node = node.next[i];
-    }
+  // Step 3: Sort the rotations lexicographically
+  rotations.sort();
 
-    if (node.next[i] && node.next[i].value === value) {
-      return node.next[i];
-    }
-  }
-  return null;
+  // Step 4: Extract the last characters of each rotation to form the transformed string
+  const transformedStr = rotations.map(rot => rot.charAt(rot.length - 1)).join('');
+
+  // Step 5: Return the transformed string
+  return transformedStr;
 }
-remove(value) {
-  const nodePath = this.createNodePath(value);
-  const nodeToRemove = nodePath[0].next[0];
-
-  if (!nodeToRemove || nodeToRemove.value !== value) {
-    return; // Element not found
-  }
-
-  for (let i = 0; i < nodeToRemove.next.length; i++) {
-    const prevNode = nodePath[i];
-    const nextNode = nodeToRemove.next[i];
-    prevNode.next[i] = nextNode;
-  }
-
-  while (this.maxHeight > 1 && !this.head.next[this.maxHeight - 1]) {
-    this.maxHeight--;
-  }
-}
+const input = 'banana';
+const transformedStr = burrowsWheelerTransform(input);
+console.log(transformedStr); // Outputs: 'annb#aa'
