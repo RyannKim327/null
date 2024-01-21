@@ -1,39 +1,22 @@
-function binarySearch(array, target, start, end) {
-  // Check if the start index is undefined, default it to 0
-  if (start === undefined)
-    start = 0;
-  // Check if the end index is undefined, default it to array length minus 1
-  if (end === undefined)
-    end = array.length - 1;
+function diameterOfBinaryTree(root) {
+  let diameter = 0;
 
-  // Base case: if the start index is greater than the end index, the target value is not found
-  if (start > end)
-    return -1;
+  function depth(node) {
+    if (node === null) {
+      return 0;
+    }
 
-  // Calculate the middle index
-  let mid = Math.floor((start + end) / 2);
+    const leftDepth = depth(node.left);
+    const rightDepth = depth(node.right);
 
-  // Base case: if the middle element is equal to the target value, return its index
-  if (array[mid] === target)
-    return mid;
+    // Update the diameter if the sum of depths is greater
+    diameter = Math.max(diameter, leftDepth + rightDepth);
 
-  // Recursive case: if the middle element is greater than the target value,
-  // search in the left half of the array (before the middle position)
-  if (array[mid] > target)
-    return binarySearch(array, target, start, mid - 1);
+    // Return the depth of the subtree rooted at the current node
+    return 1 + Math.max(leftDepth, rightDepth);
+  }
 
-  // Recursive case: if the middle element is less than the target value,
-  // search in the right half of the array (after the middle position)
-  if (array[mid] < target)
-    return binarySearch(array, target, mid + 1, end);
-}
-let arr = [2, 5, 8, 10, 18, 23, 32, 40, 49, 59];
-let target = 23;
+  depth(root);
 
-let result = binarySearch(arr, target);
-
-if (result === -1) {
-  console.log("Element not found");
-} else {
-  console.log("Element found at index", result);
+  return diameter;
 }
