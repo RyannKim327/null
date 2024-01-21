@@ -1,51 +1,90 @@
-function buildLPSArray(pattern) {
-  const lps = [0];
-  let len = 0;
-  let i = 1;
+class BTreeNode {
+  constructor(order) {
+    this.order = order;
+    this.keys = [];
+    this.children = [];
+    this.leaf = true;
+  }
+}
+class BTree {
+  constructor(order) {
+    this.root = new BTreeNode(order);
+    this.order = order;
+  }
 
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[len]) {
-      len++;
-      lps[i] = len;
-      i++;
+  insert(key) {
+    const root = this.root;
+    if (root.keys.length === (2 * this.order) - 1) {
+      const newNode = new BTreeNode(this.order);
+      this.root = newNode;
+      newNode.children[0] = root;
+      this.splitChild(newNode, 0);
+      this.insertNonFull(newNode, key);
     } else {
-      if (len !== 0) {
-        len = lps[len - 1];
-      } else {
-        lps[i] = 0;
-        i++;
-      }
+      this.insertNonFull(root, key);
     }
   }
 
-  return lps;
-}
-
-function stringMatch(mainString, pattern) {
-  const lps = buildLPSArray(pattern);
-  let i = 0;
-  let j = 0;
-
-  while (i < mainString.length) {
-    if (mainString[i] === pattern[j]) {
+  insertNonFull(node, key) {
+    let i = node.keys.length - 1;
+    if (node.leaf) {
+      node.keys.push(null);
+      while (i >= 0 && key < node.keys[i]) {
+        node.keys[i + 1] = node.keys[i];
+        i--;
+      }
+      node.keys[i + 1] = key;
+    } else {
+      while (i >= 0 && key < node.keys[i]) {
+        i--;
+      }
       i++;
-      j++;
-    }
-
-    if (j === pattern.length) {
-      console.log("Pattern found at index", i - j);
-      j = lps[j - 1];
-    } else if (i < mainString.length && mainString[i] !== pattern[j]) {
-      if (j !== 0) {
-        j = lps[j - 1];
-      } else {
-        i++;
+      if (node.children[i].keys.length === (2 * this.order) - 1) {
+        this.splitChild(node, i);
+        if (key > node.keys[i]) {
+          i++;
+        }
       }
+      this.insertNonFull(node.children[i], key);
     }
   }
-}
 
-// Example usage:
-const mainString = "ABCABCDABABCDABCDABDE";
-const pattern = "ABCDABD";
-stringMatch(mainString, pattern);
+  splitChild(parent, index) {
+    const order = this.order;
+    const child = parent.children[index];
+    const newNode = new BTreeNode(order);
+    parent.keys.splice(index, 0, child.keys[order - 1]);
+    parent.children.splice(index + 1, 0, newNode);
+    newNode.leaf = child.leaf;
+    for (let i = 0; i < order - 1; i++) {
+      newNode.keys[i] = child.keys[i + order];
+    }
+    if (!child.leaf) {
+      for (let i = 0; i < order; i++) {
+        newNode.children[i] = child.children[i + order];
+      }
+    }
+    child.keys.length = order - 1;
+    child.children.length = order;
+  }
+
+  search(node, key) {
+    let i = 0;
+    while (i < node.keys.length && key > node.keys[i]) {
+      i++;
+    }
+    if (node.keys[i] === key) {
+      return true;
+    }
+    if (node.leaf) {
+      return false;
+    }
+    return this.search(node.children[i], key);
+  }
+}
+const bTree = new BTree(3);
+bTree.insert(10);
+bTree.insert(20);
+bTree.insert(5);
+console.log(bTree.search(bTree.root, 10)); // Output: true
+console.log(bTree.search(bTree.root, 30)); // Output: false
