@@ -1,18 +1,17 @@
-const str = 'Hello, world!';
-const substring = 'world';
+function reverseString(str) {
+  // Step 1: Split the string into an array of words
+  var wordsArray = str.split(" ");
 
-if (str.includes(substring)) {
-  console.log(`"${str}" contains "${substring}"`);
-} else {
-  console.log(`"${str}" does not contain "${substring}"`);
-}
-const str = 'Hello, world!';
-const substring = 'world';
+  // Step 2: Reverse the array
+  var reversedArray = wordsArray.reverse();
 
-const regex = new RegExp(substring);
-if (regex.test(str)) {
-  console.log(`"${str}" contains "${substring}"`);
-} else {
-  console.log(`"${str}" does not contain "${substring}"`);
+  // Step 3: Join the reversed array into a string
+  var reversedString = reversedArray.join(" ");
+
+  return reversedString;
 }
-"Hello, world!" contains "world"
+
+// Usage example
+var inputString = "Hello, how are you?";
+var reversedString = reverseString(inputString);
+console.log(reversedString); // Output: "you? are how Hello,"
