@@ -1,43 +1,67 @@
-function longestCommonSubsequence(str1, str2) {
-  const m = str1.length;
-  const n = str2.length;
+class HashTable {
+  constructor(size = 100) {
+    this.size = size;
+    this.table = new Array(size);
+  }
 
-  // Create a matrix to store the lengths of common subsequences
-  const dp = Array(m + 1)
-    .fill(0)
-    .map(() => Array(n + 1).fill(0));
+  // Hash function to determine index for a given key
+  hash(key) {
+    let hashCode = 0;
+    for (let i = 0; i < key.length; i++) {
+      hashCode += key.charCodeAt(i);
+    }
+    return hashCode % this.size;
+  }
 
-  // Fill the matrix based on the lengths of common subsequences
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-      } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+  // Insert a key-value pair into the hash table
+  insert(key, value) {
+    const index = this.hash(key);
+    if (!this.table[index]) {
+      this.table[index] = [];
+    }
+    this.table[index].push([key, value]);
+  }
+
+  // Retrieve the value associated with a given key
+  get(key) {
+    const index = this.hash(key);
+    if (!this.table[index]) {
+      return undefined;
+    }
+    for (let i = 0; i < this.table[index].length; i++) {
+      if (this.table[index][i][0] === key) {
+        return this.table[index][i][1];
       }
     }
+    return undefined;
   }
 
-  // Read the longest common subsequence from the matrix
-  let lcs = '';
-  let i = m;
-  let j = n;
-  while (i > 0 && j > 0) {
-    if (str1[i - 1] === str2[j - 1]) {
-      lcs = str1[i - 1] + lcs;
-      i--;
-      j--;
-    } else if (dp[i - 1][j] > dp[i][j - 1]) {
-      i--;
-    } else {
-      j--;
+  // Remove a key-value pair from the hash table
+  remove(key) {
+    const index = this.hash(key);
+    if (!this.table[index]) {
+      return undefined;
     }
+    for (let i = 0; i < this.table[index].length; i++) {
+      if (this.table[index][i][0] === key) {
+        const value = this.table[index][i][1];
+        this.table[index].splice(i, 1);
+        if (this.table[index].length === 0) {
+          this.table[index] = undefined;
+        }
+        return value;
+      }
+    }
+    return undefined;
   }
-
-  return lcs;
 }
+const hashTable = new HashTable();
+hashTable.insert("name", "John");
+hashTable.insert("age", 30);
 
-// Example usage
-const str1 = 'ABCDGH';
-const str2 = 'AEDFHR';
-console.log(longestCommonSubsequence(str1, str2)); // Output: ADH
+console.log(hashTable.get("name")); // Output: John
+console.log(hashTable.get("age")); // Output: 30
+
+hashTable.remove("age");
+
+console.log(hashTable.get("age")); // Output: undefined
