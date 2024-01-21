@@ -1,24 +1,21 @@
-function findFirstNonRepeatingCharacter(inputString) {
-    const chars = inputString.split('');
-    const charCount = {};
-
-    // Count the frequency of each character
-    for (const char of chars) {
-        charCount[char] = (charCount[char] || 0) + 1;
+function isPrime(num) {
+  // Check if input is less than 2
+  if (num < 2) {
+    return false;
+  }
+  
+  // Loop from 2 to the square root of the input number
+  for (let i = 2; i <= Math.sqrt(num); i++) {
+    // If the number is divisible by any smaller number, it is not prime
+    if (num % i === 0) {
+      return false;
     }
-
-    // Find the first non-repeating character
-    for (const char of chars) {
-        if (charCount[char] === 1) {
-            return char;
-        }
-    }
-
-    // If no non-repeating character is found, return null or any meaningful value
-    return null;
+  }
+  
+  // If the number is not divisible by any smaller number, it is prime
+  return true;
 }
 
 // Example usage
-const input = 'hello world';
-const firstNonRepeatingChar = findFirstNonRepeatingCharacter(input);
-console.log(firstNonRepeatingChar);
+console.log(isPrime(7));  // Output: true
+console.log(isPrime(12)); // Output: false
