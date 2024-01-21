@@ -1,35 +1,53 @@
-function merge(left, right) {
-  const array = [];
-  while (left.length && right.length) {
-    if (left[0] < right[0]) {
-      array.push(left.shift());
-    } else {
-      array.push(right.shift());
-    }
+class Stack {
+  constructor() {
+    this.stack = []; // the underlying array
   }
-  return [...array, ...left, ...right];
+
+  // Add an element to the top of the stack
+  push(element) {
+    this.stack.push(element);
+  }
+
+  // Remove and return the top element from the stack
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
+    }
+    return this.stack.pop();
+  }
+
+  // Return the top element of the stack without removing it
+  peek() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
+    }
+    return this.stack[this.stack.length - 1];
+  }
+
+  // Check if the stack is empty
+  isEmpty() {
+    return this.stack.length === 0;
+  }
+
+  // Return the number of elements in the stack
+  size() {
+    return this.stack.length;
+  }
+
+  // Clear the stack
+  clear() {
+    this.stack = [];
+  }
 }
 
-function mergeSortIterative(array) {
-  const n = array.length;
-  let subArraySize = 1;
-  while (subArraySize < n) {
-    let start = 0;
-    while (start < n - 1) {
-      const mid = Math.min(start + subArraySize - 1, n - 1);
-      const end = Math.min(start + 2 * subArraySize - 1, n - 1);
-      const left = array.slice(start, mid + 1);
-      const right = array.slice(mid + 1, end + 1);
-      const mergedArray = merge(left, right);
-      array.splice(start, mergedArray.length, ...mergedArray);
-      start += 2 * subArraySize;
-    }
-    subArraySize *= 2;
-  }
-  return array;
-}
-
-// Example usage:
-const array = [7, 2, 6, 3, 8, 1, 5, 4];
-const sortedArray = mergeSortIterative(array);
-console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 6, 7, 8]
+// Usage example:
+const stack = new Stack();
+stack.push(5);
+stack.push(10);
+stack.push(15);
+console.log(stack.size()); // Output: 3
+console.log(stack.peek()); // Output: 15
+console.log(stack.pop()); // Output: 15
+console.log(stack.isEmpty()); // Output: false
+stack.clear();
+console.log(stack.isEmpty()); // Output: true
