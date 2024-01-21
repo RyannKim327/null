@@ -1,19 +1,24 @@
-function findFirstRepeatedCharacter(str) {
-  var charMap = {};
+function findFirstNonRepeatingCharacter(inputString) {
+    const chars = inputString.split('');
+    const charCount = {};
 
-  for (var i = 0; i < str.length; i++) {
-    var char = str[i];
-    if (charMap[char]) {
-      return char;
-    } else {
-      charMap[char] = true;
+    // Count the frequency of each character
+    for (const char of chars) {
+        charCount[char] = (charCount[char] || 0) + 1;
     }
-  }
-  
-  return null; // Return null if no repeated character is found
+
+    // Find the first non-repeating character
+    for (const char of chars) {
+        if (charCount[char] === 1) {
+            return char;
+        }
+    }
+
+    // If no non-repeating character is found, return null or any meaningful value
+    return null;
 }
 
-var input = "abcda";
-var repeatedChar = findFirstRepeatedCharacter(input);
-
-console.log(repeatedChar); // Output: a
+// Example usage
+const input = 'hello world';
+const firstNonRepeatingChar = findFirstNonRepeatingCharacter(input);
+console.log(firstNonRepeatingChar);
