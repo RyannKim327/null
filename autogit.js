@@ -1,107 +1,44 @@
-class SkipNode {
-  constructor(value, level) {
-    this.value = value;
-    this.next = Array(level + 1);
+function mergeSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
   }
+
+  const middle = Math.floor(arr.length / 2);
+  const left = arr.slice(0, middle);
+  const right = arr.slice(middle);
+
+  return merge(mergeSort(left), mergeSort(right));
 }
-class SkipList {
-  constructor() {
-    this.head = new SkipNode(-Infinity, 0);
-    this.level = 0;
-  }
 
-  // Function to generate the level for a new node
-  generateLevel() {
-    let level = 0;
-    while (Math.random() < 0.5 && level < this.level + 1) {
-      level++;
-    }
-    return level;
-  }
+function merge(left, right) {
+  let i = 0;
+  let j = 0;
+  const merged = [];
 
-  // Function to search for a value in the skip list
-  search(value) {
-    let currentNode = this.head;
-    for (let i = this.level; i >= 0; i--) {
-      while (
-        currentNode.next[i] !== undefined &&
-        currentNode.next[i].value < value
-      ) {
-        currentNode = currentNode.next[i];
-      }
-    }
-    currentNode = currentNode.next[0];
-    if (currentNode !== undefined && currentNode.value === value) {
-      return currentNode;
+  while (i < left.length && j < right.length) {
+    if (left[i] <= right[j]) {
+      merged.push(left[i]);
+      i++;
     } else {
-      return null;
+      merged.push(right[j]);
+      j++;
     }
   }
 
-  // Function to insert a value into the skip list
-  insert(value) {
-    const update = Array(this.level + 1);
-    let currentNode = this.head;
-    for (let i = this.level; i >= 0; i--) {
-      while (
-        currentNode.next[i] !== undefined &&
-        currentNode.next[i].value < value
-      ) {
-        currentNode = currentNode.next[i];
-      }
-      update[i] = currentNode;
-    }
-    currentNode = currentNode.next[0];
-    if (currentNode === undefined || currentNode.value !== value) {
-      const newNode = new SkipNode(value, this.generateLevel());
-      if (newNode.level > this.level) {
-        this.level = newNode.level;
-      }
-      for (let i = 0; i <= newNode.level; i++) {
-        newNode.next[i] = update[i].next[i];
-        update[i].next[i] = newNode;
-      }
-      console.log(`${value} inserted.`);
-    } else {
-      console.log(`${value} already exists.`);
-    }
+  while (i < left.length) {
+    merged.push(left[i]);
+    i++;
   }
 
-  // Function to remove a value from the skip list
-  remove(value) {
-    const update = Array(this.level + 1);
-    let currentNode = this.head;
-    for (let i = this.level; i >= 0; i--) {
-      while (
-        currentNode.next[i] !== undefined &&
-        currentNode.next[i].value < value
-      ) {
-        currentNode = currentNode.next[i];
-      }
-      update[i] = currentNode;
-    }
-    currentNode = currentNode.next[0];
-    if (currentNode !== undefined && currentNode.value === value) {
-      for (let i = 0; i <= this.level; i++) {
-        if (update[i].next[i] !== currentNode) {
-          break;
-        }
-        update[i].next[i] = currentNode.next[i];
-      }
-      console.log(`${value} removed.`);
-      while (this.level > 0 && this.head.next[this.level] === undefined) {
-        this.level--;
-      }
-    } else {
-      console.log(`${value} not found.`);
-    }
+  while (j < right.length) {
+    merged.push(right[j]);
+    j++;
   }
+
+  return merged;
 }
-const skipList = new SkipList();
-skipList.insert(3);
-skipList.insert(5);
-skipList.insert(1);
-skipList.insert(8);
-console.log(skipList.search(5)); // Output: { value: 5, next: [SkipNode] }
-skipList.remove(1); 
-console.log(skipList.search(1)); // Output: null
+
+// Example usage:
+const unsortedArray = [5, 3, 8, 4, 2, 1, 10, 6, 9, 7];
+const sortedArray = mergeSort(unsortedArray);
+console.log(sortedArray);
