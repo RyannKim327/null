@@ -1,10 +1,16 @@
-let array = [5, 2, 8, 1, 9];
-
-array.sort((a, b) => a - b);
-
-console.log(array); // Output: [1, 2, 5, 8, 9]
-let array = [5, 2, 8, 1, 9];
-
-array.sort((a, b) => b - a);
-
-console.log(array); // Output: [9, 8, 5, 2, 1]
+const array = [1, 2, 3, 3, 4, 5, 5];
+const uniqueArray = Array.from(new Set(array));
+console.log(uniqueArray); // [1, 2, 3, 4, 5]
+const array = [1, 2, 3, 3, 4, 5, 5];
+const uniqueArray = array.filter((value, index, self) => {
+  return self.indexOf(value) === index;
+});
+console.log(uniqueArray); // [1, 2, 3, 4, 5]
+const array = [1, 2, 3, 3, 4, 5, 5];
+const uniqueArray = [];
+for (let i = 0; i < array.length; i++) {
+  if (uniqueArray.indexOf(array[i]) === -1) {
+    uniqueArray.push(array[i]);
+  }
+}
+console.log(uniqueArray); // [1, 2, 3, 4, 5]
