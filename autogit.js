@@ -1,23 +1,19 @@
-function bubbleSort(array) {
-  var len = array.length;
-  var swapped;
-  
-  do {
-    swapped = false;
-    for (var i = 0; i < len - 1; i++) {
-      if (array[i] > array[i + 1]) {
-        var temp = array[i];
-        array[i] = array[i + 1];
-        array[i + 1] = temp;
-        swapped = true;
+function bubbleSort(arr) {
+  var len = arr.length;
+  for (var i = 0; i < len - 1; i++) {
+    for (var j = 0; j < len - i - 1; j++) {
+      if (arr[j] > arr[j + 1]) {
+        // Swapping the elements
+        var temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
       }
     }
-  } while (swapped);
-  
-  return array;
+  }
+  return arr;
 }
 
 // Example usage:
-var arr = [34, 23, 12, 45, 9, 1, 24];
-console.log("Original array:", arr);
-console.log("Sorted array:", bubbleSort(arr));
+var array = [64, 34, 25, 12, 22, 11, 90];
+console.log("Original Array: " + array);
+console.log("Sorted Array: " + bubbleSort(array));
