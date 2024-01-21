@@ -1,12 +1,21 @@
-function calculateMean(numbers) {
-  let sum = 0;
-  for (let i = 0; i < numbers.length; i++) {
-    sum += numbers[i];
-  }
-  return sum / numbers.length;
-}
+function interpolationSearch(array, target, start = 0) {
+  const end = array.length - 1;
 
-// Example usage:
-const numbers = [1, 2, 3, 4, 5];
-const mean = calculateMean(numbers);
-console.log("Mean:", mean);
+  const pos = Math.floor(
+    start + ((target - array[start]) * (end - start)) / (array[end] - array[start])
+  );
+  if (pos < start || pos > end || array[pos] !== target) {
+    return -1;
+  } else if (array[pos] === target) {
+    return pos;
+  }
+  if (array[pos] > target) {
+    return interpolationSearch(array, target, start, pos - 1);
+  } else {
+    return interpolationSearch(array, target, pos + 1, end);
+  }
+}
+const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
+const target = 13;
+
+console.log(interpolationSearch(arr, target)); // Output: 6
