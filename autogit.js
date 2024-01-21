@@ -1,25 +1,31 @@
-const axios = require('axios');
+function findFirstNonRepeatingCharacter(str) {
+  // Create an empty object to store character frequencies
+  let charFreq = {};
 
-// Function to make an HTTP GET request using Axios
-const makeGetRequest = async () => {
-  try {
-    const response = await axios.get('https://api.example.com/users');
-    console.log('Response:', response.data);
-  } catch (error) {
-    console.error('Error:', error.message);
+  // Iterate over the string to count character frequencies
+  for (let char of str) {
+    if (charFreq.hasOwnProperty(char)) {
+      // If the character is already in the object, increase its count
+      charFreq[char]++;
+    } else {
+      // Otherwise, add the character to the object with count 1
+      charFreq[char] = 1;
+    }
   }
-};
 
-// Function to make an HTTP POST request using Axios
-const makePostRequest = async (data) => {
-  try {
-    const response = await axios.post('https://api.example.com/users', data);
-    console.log('Response:', response.data);
-  } catch (error) {
-    console.error('Error:', error.message);
+  // Iterate over the string again to find the first non-repeating character
+  for (let char of str) {
+    if (charFreq[char] === 1) {
+      // Return the first non-repeating character
+      return char;
+    }
   }
-};
 
-// Call the functions
-makeGetRequest();
-makePostRequest({ name: 'John Doe', email: 'johndoe@example.com' });
+  // If no non-repeating character is found, return null
+  return null;
+}
+
+// Example usage:
+console.log(findFirstNonRepeatingCharacter("abcab")); // Output: "c"
+console.log(findFirstNonRepeatingCharacter("aabbcdd")); // Output: "c"
+console.log(findFirstNonRepeatingCharacter("aabbcc")); // Output: null (no non-repeating characters)
