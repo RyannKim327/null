@@ -1,43 +1,70 @@
-// Step 1: Define a function to score a candidate solution
-function scoreSolution(solution) {
-  // Calculate the score based on the quality of the solution
-  // Lower score means a better solution
-  return Math.random(); // Placeholder score function
+function largestPrimeFactor(number) {
+  // Your code here
 }
-
-// Step 2: Define a function to generate next candidate solutions
-function generateCandidates(solution) {
-  // Generate all possible next candidate solutions from the given solution
-  // Return an array of candidate solutions
-  return []; // Placeholder generate function
+function largestPrimeFactor(number) {
+  let largestFactor = 1;
+  // Your code here
 }
-
-// Step 3: Implement the beam search algorithm
-function beamSearch(initialSolution, beamWidth, iterations) {
-  let currentSolutions = [initialSolution];
-
-  for (let i = 0; i < iterations; i++) {
-    let nextSolutions = [];
-
-    for (let solution of currentSolutions) {
-      let candidates = generateCandidates(solution);
-
-      for (let candidate of candidates) {
-        candidate.score = scoreSolution(candidate);
-        nextSolutions.push(candidate);
-      }
-    }
-
-    nextSolutions.sort((a, b) => a.score - b.score);
-    currentSolutions = nextSolutions.slice(0, beamWidth);
+function largestPrimeFactor(number) {
+  let largestFactor = 1;
+  
+  while (number % 2 === 0) {
+    largestFactor = 2;
+    number = number / 2;
   }
-
-  return currentSolutions[0];
+  
+  // Your code here
 }
-
-// Example usage
-const initialSolution = // Your initial solution
-const beamWidth = 3;
-const iterations = 10;
-const bestSolution = beamSearch(initialSolution, beamWidth, iterations);
-console.log(bestSolution);
+function largestPrimeFactor(number) {
+  let largestFactor = 1;
+  
+  while (number % 2 === 0) {
+    largestFactor = 2;
+    number = number / 2;
+  }
+  
+  for (let i = 3; i <= Math.sqrt(number); i = i + 2) {
+    // Your code here
+  }
+}
+function largestPrimeFactor(number) {
+  let largestFactor = 1;
+  
+  while (number % 2 === 0) {
+    largestFactor = 2;
+    number = number / 2;
+  }
+  
+  for (let i = 3; i <= Math.sqrt(number); i = i + 2) {
+    while (number % i === 0) {
+      largestFactor = i;
+      number = number / i;
+    }
+  }
+  
+  // Your code here
+}
+function largestPrimeFactor(number) {
+  let largestFactor = 1;
+  
+  while (number % 2 === 0) {
+    largestFactor = 2;
+    number = number / 2;
+  }
+  
+  for (let i = 3; i <= Math.sqrt(number); i = i + 2) {
+    while (number % i === 0) {
+      largestFactor = i;
+      number = number / i;
+    }
+  }
+  
+  if (number > 2) {
+    largestFactor = number;
+  }
+  
+  return largestFactor;
+}
+const number = 84;
+const largestPrimeFactorOfNumber = largestPrimeFactor(number);
+console.log(largestPrimeFactorOfNumber);
