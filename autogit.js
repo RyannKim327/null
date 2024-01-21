@@ -1,24 +1,36 @@
-function shellSort(array) {
-  var length = array.length;
-  var gap = Math.floor(length / 2);
+function radixSort(arr) {
+  const max = Math.max(...arr);
+  const maxDigitCount = String(max).length;
 
-  while (gap > 0) {
-    for (var i = gap; i < length; i++) {
-      var temp = array[i];
-      var j = i;
-  
-      while (j >= gap && array[j - gap] > temp) {
-        array[j] = array[j - gap];
-        j -= gap;
-      }
-  
-      array[j] = temp;
-    }
-  
-    gap = Math.floor(gap / 2);
+  for (let k = 0; k < maxDigitCount; k++) {
+    arr = countingSort(arr, k);
   }
 
-  return array;
+  return arr;
 }
-var arr = [9, 5, 1, 3, 8, 4, 7, 2, 6];
-console.log(shellSort(arr)); // [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+function countingSort(arr, position) {
+  const count = Array(10).fill(0);
+  const output = Array(arr.length);
+
+  for (let num of arr) {
+    const countIndex = Math.floor(Math.abs(num) / Math.pow(10, position)) % 10;
+    count[countIndex]++;
+  }
+
+  for (let i = 1; i < count.length; i++) {
+    count[i] += count[i - 1];
+  }
+
+  for (let i = arr.length - 1; i >= 0; i--) {
+    const countIndex = Math.floor(Math.abs(arr[i]) / Math.pow(10, position)) % 10;
+    output[count[countIndex] - 1] = arr[i];
+    count[countIndex]--;
+  }
+
+  return output;
+}
+
+// Example usage
+const array = [170, 45, 75, 90, 802, 24, 2, 66];
+console.log(radixSort(array)); // [2, 24, 45, 66, 75, 90, 170, 802]
