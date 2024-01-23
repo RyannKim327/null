@@ -1,38 +1,27 @@
-function hasCycle(head) {
-  // Initialize two pointers
-  let slow = head;
-  let fast = head;
+function bfs(graph, startNode) {
+  const queue = [startNode];
+  const visited = [startNode];
 
-  // Move the slow pointer by one step and the fast pointer by two steps
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
+  while (queue.length > 0) {
+    const node = queue.shift();
+    console.log(node); // Process the node
 
-    // If the two pointers meet, there is a cycle
-    if (slow === fast) {
-      return true;
+    const neighbors = graph[node];
+    for (let i = 0; i < neighbors.length; i++) {
+      const neighborNode = neighbors[i];
+      if (!visited.includes(neighborNode)) {
+        queue.push(neighborNode);
+        visited.push(neighborNode);
+      }
     }
   }
-
-  // If the fast pointer reaches the end of the list, there is no cycle
-  return false;
 }
-// Node definition
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-
-// Create a linked list with a cycle
-const head = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
-const node4 = new Node(4);
-head.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2; // Creating a cycle
-
-console.log(hasCycle(head)); // Output: true
+const graph = {
+  A: ['B', 'C'],
+  B: ['A', 'D', 'E'],
+  C: ['A', 'F'],
+  D: ['B'],
+  E: ['B', 'F'],
+  F: ['C', 'E'],
+};
+bfs(graph, 'A');
