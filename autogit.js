@@ -1,33 +1,89 @@
-function longestCommonSubstring(str1, str2) {
-  // Initialize a 2D matrix to store the lengths of common substrings
-  const matrix = Array(str1.length + 1).fill(Array(str2.length + 1).fill(0));
-  
-  // Variables to store the length and endpoint of the longest common substring
-  let longestLength = 0;
-  let endIndex = 0;
-  
-  // Loop through each character of the strings and fill the matrix
-  for (let i = 1; i <= str1.length; i++) {
-    for (let j = 1; j <= str2.length; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        matrix[i][j] = matrix[i - 1][j - 1] + 1;
-        
-        // Update the length and endpoint of the longest common substring
-        if (matrix[i][j] > longestLength) {
-          longestLength = matrix[i][j];
-          endIndex = i - 1;
-        }
-      }
-    }
+class BTreeNode {
+  constructor(leaf = true) {
+    this.keys = [];
+    this.children = [];
+    this.leaf = leaf;
   }
-  
-  // Extract the longest common substring using the endpoint and length
-  const longestSubstring = str1.substr(endIndex - longestLength + 1, longestLength);
-  return longestSubstring;
+}
+function insert(root, key) {
+  if (root.keys.length === 2 * t - 1) {
+    const newNode = new BTreeNode(false);
+    newNode.children.push(root);
+    splitChild(newNode, 0, root);
+    insertNonFull(newNode, key);
+    return newNode;
+  } else {
+    insertNonFull(root, key);
+    return root;
+  }
 }
 
-// Example usage:
-const str1 = 'abcdxyz';
-const str2 = 'xyzabcd';
-const longestSubstring = longestCommonSubstring(str1, str2);
-console.log(longestSubstring);  // Output: "abcd"
+function insertNonFull(node, key) {
+  let i = node.keys.length - 1;
+
+  if (node.leaf) {
+    while (i >= 0 && key < node.keys[i]) {
+      node.keys[i + 1] = node.keys[i];
+      i--;
+    }
+    node.keys[i + 1] = key;
+  } else {
+    while (i >= 0 && key < node.keys[i]) {
+      i--;
+    }
+    i++;
+    if (node.children[i].keys.length === 2 * t - 1) {
+      splitChild(node, i, node.children[i]);
+      if (key > node.keys[i]) {
+        i++;
+      }
+    }
+    insertNonFull(node.children[i], key);
+  }
+}
+
+function splitChild(parent, index, child) {
+  const newNode = new BTreeNode(child.leaf);
+  parent.keys.splice(index, 0, child.keys[t - 1]);
+  parent.children.splice(index + 1, 0, newNode);
+  newNode.keys = child.keys.splice(t, t - 1);
+  if (!child.leaf) {
+    newNode.children = child.children.splice(t, t);
+  }
+}
+function search(node, key) {
+  let i = 0;
+  while (i < node.keys.length && key > node.keys[i]) {
+    i++;
+  }
+  if (node.keys[i] === key) {
+    return node;
+  } else if (node.leaf) {
+    return null;
+  } else {
+    return search(node.children[i], key);
+  }
+}
+function deleteKey(node, key) {
+  const index = node.keys.findIndex(k => k === key);
+
+  if (index !== -1) {
+    if (node.leaf) {
+      node.keys.splice(index, 1);
+    } else {
+      // deletion from internal node
+      // implement appropriate logic based on different scenarios
+    }
+  } else if (!node.leaf) {
+    let i = 0;
+    while (i < node.keys.length && key > node.keys[i]) {
+      i++;
+    }
+    if (node.children[i].keys.length < t) {
+      // handling underflow by borrowing from left or right sibling
+      // implement appropriate logic
+    }
+    // recursively delete in the appropriate child node
+    deleteKey(node.children[i], key);
+  }
+}
