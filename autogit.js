@@ -1,37 +1,68 @@
-function longestCommonSubstring(str1, str2) {
-  const m = str1.length;
-  const n = str2.length;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
 
-  // Create a matrix to store the lengths of the common substrings
-  const dp = Array(m + 1)
-    .fill(0)
-    .map(() => Array(n + 1).fill(0));
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
 
-  let maxLength = 0; // Length of longest common substring
-  let endIndex = 0; // End index of longest common substring
+  // Add a new node to the end of the list
+  add(value) {
+    const newNode = new Node(value);
 
-  // Loop through each character of the two strings
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-
-        // Update the maxLength and endIndex if a longer common substring is found
-        if (dp[i][j] > maxLength) {
-          maxLength = dp[i][j];
-          endIndex = i - 1;
-        }
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
       }
+      current.next = newNode;
     }
   }
 
-  // Extract the longest common substring using the endIndex
-  const longestCommonSubstr = str1.substring(endIndex - maxLength + 1, endIndex + 1);
+  // Remove the node with the specified value from the list
+  remove(value) {
+    if (!this.head) {
+      return;
+    }
 
-  return longestCommonSubstr;
+    if (this.head.value === value) {
+      this.head = this.head.next;
+      return;
+    }
+
+    let current = this.head;
+    let previous = null;
+    while (current) {
+      if (current.value === value) {
+        previous.next = current.next;
+        return;
+      }
+      previous = current;
+      current = current.next;
+    }
+  }
+
+  // Print the elements of the linked list
+  print() {
+    let current = this.head;
+    while (current) {
+      console.log(current.value);
+      current = current.next;
+    }
+  }
 }
+const linkedList = new LinkedList();
+linkedList.add(1);
+linkedList.add(2);
+linkedList.add(3);
 
-// Example usage
-const str1 = "ABCDXYZ";
-const str2 = "XYZABCD";
-console.log(longestCommonSubstring(str1, str2));
+linkedList.print(); // Output: 1, 2, 3
+
+linkedList.remove(2);
+linkedList.print(); // Output: 1, 3
