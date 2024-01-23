@@ -1,23 +1,10 @@
-function factorialLoop(num) {
-  let result = 1;
-  for (let i = 2; i <= num; i++) {
-    result *= i;
-  }
-  return result;
-}
-
-const number = 5;
-const factorial = factorialLoop(number);
-console.log(`Factorial of ${number} is ${factorial}`);
-function factorialRecursion(num) {
-  if (num <= 1) {
+function factorial(n) {
+  if (n === 0) {
     return 1;
   } else {
-    return num * factorialRecursion(num - 1);
+    return n * factorial(n - 1);
   }
 }
 
-const number = 5;
-const factorial = factorialRecursion(number);
-console.log(`Factorial of ${number} is ${factorial}`);
-Factorial of 5 is 120
+// Usage example
+console.log(factorial(5)); // Output: 120
