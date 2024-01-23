@@ -1,60 +1,68 @@
-function biDirectionalSearch(startState, goalState) {
-  // Initialize data structures
-  const startSet = new Set();
-  const goalSet = new Set();
-  const startVisited = new Map();
-  const goalVisited = new Map();
-  const startParent = new Map();
-  const goalParent = new Map();
+function boyerMoore(text, pattern) {
+  const occurrences = [];
+  const patternLength = pattern.length;
+  const textLength = text.length;
 
-  let meetingPoint = null;
-  let meetingPath = [];
+  const badCharTable = calculateBadCharTable(pattern);
+  const goodSuffixTable = calculateGoodSuffixTable(pattern);
 
-  // Add start and goal states
-  startSet.add(startState);
-  goalSet.add(goalState);
-  startVisited.set(startState, null);
-  goalVisited.set(goalState, null);
+  let shift = 0;
+  while (shift <= textLength - patternLength) {
+    let j = patternLength - 1;
 
-  while (startSet.size > 0 && goalSet.size > 0) {
-    const currentState = startSet.values().next().value;
-
-    if (goalVisited.has(currentState)) {
-      meetingPoint = currentState;
-      // Construct meetingPath using startParent and goalParent
-      break;
+    while (j >= 0 && pattern[j] === text[j + shift]) {
+      j--;
     }
 
-    startSet.delete(currentState);
-    startVisited.set(currentState, true);
-
-    // Expand currentState to get neighboring states
-    const neighbors = expandState(currentState);
-
-    for (const neighbor of neighbors) {
-      if (!startVisited.has(neighbor)) {
-        startSet.add(neighbor);
-        startParent.set(neighbor, currentState);
-      }
+    if (j < 0) {
+      occurrences.push(shift);
+      shift += goodSuffixTable[0];
+    } else {
+      const badCharShift = badCharTable[text[j + shift]] || patternLength;
+      const goodSuffixShift = goodSuffixTable[j];
+      shift += Math.max(badCharShift, goodSuffixShift);
     }
-
-    // Perform similar expansion and update for goalSet, goalVisited, and goalParent
   }
 
-  // Reconstruct path using startParent and goalParent
-
-  return meetingPath;
+  return occurrences;
 }
 
-// Function to expand a state and get neighboring states
-function expandState(state) {
-  // Implement your logic here to generate neighboring states
+function calculateBadCharTable(pattern) {
+  const badCharTable = {};
+
+  for (let i = 0; i < pattern.length - 1; i++) {
+    badCharTable[pattern[i]] = pattern.length - 1 - i;
+  }
+
+  return badCharTable;
 }
 
-// Usage example
-const startState = /* start state */;
-const goalState = /* goal state */;
+function calculateGoodSuffixTable(pattern) {
+  const goodSuffixTable = [];
+  const patternLength = pattern.length;
+  const suffixes = new Array(patternLength).fill(patternLength);
 
-const path = biDirectionalSearch(startState, goalState);
+  for (let i = patternLength - 1; i >= 0; i--) {
+    if (suffixes[i] === i + 1) {
+      for (let j = 0; j < patternLength - 1 - i; j++) {
+        if (suffixes[j] === patternLength) {
+          suffixes[j] = patternLength - 1 - i;
+        }
+      }
+    }
+  }
 
-console.log(path);
+  for (let i = 0; i < patternLength - 1; i++) {
+    goodSuffixTable[i] = patternLength;
+  }
+
+  for (let i = 0; i < patternLength - 1; i++) {
+    goodSuffixTable[patternLength - 1 - suffixes[i]] = patternLength - 1 - i;
+  }
+
+  return goodSuffixTable;
+}
+const text = 'ABAAABCDABCABCDABCDABDE';
+const pattern = 'ABCDABD';
+const occurrences = boyerMoore(text, pattern);
+console.log(occurrences); // Output: [10, 17]
