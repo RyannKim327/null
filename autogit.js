@@ -1,58 +1,25 @@
-class HashTable {
-  constructor(size = 10) {
-    this.table = new Array(size);
+function countingSort(arr) {
+  const max = Math.max(...arr);
+  const count = Array(max + 1).fill(0);
+
+  arr.forEach((num) => {
+    count[num]++;
+  });
+
+  for (let i = 1; i <= max; i++) {
+    count[i] += count[i - 1];
   }
 
-  _hash(key) {
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) {
-      hash += key.charCodeAt(i);
-    }
-    return hash % this.table.length;
+  const sortedArr = Array(arr.length);
+
+  for (let i = arr.length - 1; i >= 0; i--) {
+    sortedArr[--count[arr[i]]] = arr[i];
   }
 
-  set(key, value) {
-    const index = this._hash(key);
-    if (!this.table[index]) {
-      this.table[index] = [];
-    }
-    this.table[index].push([key, value]);
-  }
-
-  get(key) {
-    const index = this._hash(key);
-    if (this.table[index]) {
-      for (let i = 0; i < this.table[index].length; i++) {
-        if (this.table[index][i][0] === key) {
-          return this.table[index][i][1];
-        }
-      }
-    }
-    return undefined;
-  }
-
-  remove(key) {
-    const index = this._hash(key);
-    if (this.table[index]) {
-      for (let i = 0; i < this.table[index].length; i++) {
-        if (this.table[index][i][0] === key) {
-          this.table[index].splice(i, 1);
-          return true;
-        }
-      }
-    }
-    return false;
-  }
+  return sortedArr;
 }
-const hashTable = new HashTable();
 
-hashTable.set("name", "John");
-hashTable.set("age", 30);
-hashTable.set("email", "john@example.com");
-
-console.log(hashTable.get("name")); // Output: John
-console.log(hashTable.get("age")); // Output: 30
-console.log(hashTable.get("email")); // Output: john@example.com
-
-hashTable.remove("age");
-console.log(hashTable.get("age")); // Output: undefined
+// Example usage
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const sortedArr = countingSort(arr);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
