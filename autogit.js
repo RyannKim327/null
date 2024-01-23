@@ -1,17 +1,21 @@
-function interpolationSearch(arr, target, low, high) {
-  if (low <= high && target >= arr[low] && target <= arr[high]) {
-    let pos = low + Math.floor((target - arr[low]) * (high - low) / (arr[high] - arr[low]));
+function longestCommonPrefix(strings) {
+  let prefix = '';
 
-    if (arr[pos] === target) {
-      return pos;
-    }
-
-    if (arr[pos] > target) {
-      return interpolationSearch(arr, target, low, pos - 1);
-    }
-
-    return interpolationSearch(arr, target, pos + 1, high);
+  if (strings.length === 0) {
+    return prefix;
   }
 
-  return -1;
+  for (let i = 0; i < strings[0].length; i++) {
+    const char = strings[0][i];
+
+    for (let j = 1; j < strings.length; j++) {
+      if (strings[j][i] !== char) {
+        return prefix;
+      }
+    }
+
+    prefix += char;
+  }
+
+  return prefix;
 }
