@@ -1,10 +1,20 @@
-function calculateTriangleArea(base, height) {
-  var area = (base * height) / 2;
-  return area;
+function bubbleSort(arr) {
+  var len = arr.length;
+  for (var i = 0; i < len; i++) {
+    for (var j = 0; j < len - 1; j++) {
+      if (arr[j] > arr[j + 1]) {
+        var temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
+      }
+    }
+  }
+  return arr;
 }
 
-var base = 10; // Base length of the triangle
-var height = 5; // Height of the triangle
+// Example usage:
+var unsortedArray = [5, 3, 8, 1, 2];
+console.log("Unsorted array:", unsortedArray);
 
-var triangleArea = calculateTriangleArea(base, height);
-console.log("The area of the triangle is: " + triangleArea);
+var sortedArray = bubbleSort(unsortedArray);
+console.log("Sorted array:", sortedArray);
