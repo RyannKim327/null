@@ -1,21 +1,43 @@
-function areAnagrams(str1, str2) {
-  // Remove non-alphabetic characters and convert to lowercase
-  str1 = str1.replace(/[^a-zA-Z]/g, "").toLowerCase();
-  str2 = str2.replace(/[^a-zA-Z]/g, "").toLowerCase();
-
-  // Sort the characters in both strings
-  const sortedStr1 = str1.split("").sort().join("");
-  const sortedStr2 = str2.split("").sort().join("");
-
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+// Define the structure for a tree node
+class TreeNode {
+  constructor(val, left = null, right = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
+  }
 }
 
-// Example usage
-const string1 = "listen";
-const string2 = "silent";
-console.log(areAnagrams(string1, string2)); // Output: true
+// Function to calculate the diameter of a binary tree
+function diameterOfBinaryTree(root) {
+  let diameter = 0;
 
-const string3 = "hello";
-const string4 = "world";
-console.log(areAnagrams(string3, string4)); // Output: false
+  // Helper function to calculate the height of a node
+  function height(node) {
+    if (node === null) return 0;
+
+    const leftHeight = height(node.left);
+    const rightHeight = height(node.right);
+
+    // Update the diameter if the sum of left and right heights is larger
+    diameter = Math.max(diameter, leftHeight + rightHeight);
+
+    // Return the maximum height between left and right subtree
+    return Math.max(leftHeight, rightHeight) + 1;
+  }
+
+  height(root);
+  return diameter;
+}
+
+// Usage example:
+
+// Create a binary tree
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+// Calculate the diameter
+const treeDiameter = diameterOfBinaryTree(root);
+console.log(treeDiameter); // Output: 3
