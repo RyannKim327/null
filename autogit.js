@@ -1,24 +1,56 @@
-function selectionSort(arr) {
-  const len = arr.length;
-  
-  for(let i = 0; i < len - 1; i++) {
-    let minIndex = i;
-    
-    for(let j = i + 1; j < len; j++) {
-      if(arr[j] < arr[minIndex]) {
-        minIndex = j;
-      }
-    }
-    
-    if(minIndex !== i) {
-      [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
-    }
-  }
-  
-  return arr;
-}
-const unsortedArray = [64, 25, 12, 22, 11];
-const sortedArray = selectionSort(unsortedArray);
+function getLength(head) {
+  let length = 0;
+  let current = head;
 
-console.log(sortedArray);
-// Output: [11, 12, 22, 25, 64]
+  while (current !== null) {
+    length++;
+    current = current.next;
+  }
+
+  return length;
+}
+function getIntersectionNode(headA, headB) {
+  let lengthA = getLength(headA);
+  let lengthB = getLength(headB);
+
+  while (lengthA > lengthB) {
+    headA = headA.next;
+    lengthA--;
+  }
+
+  while (lengthB > lengthA) {
+    headB = headB.next;
+    lengthB--;
+  }
+
+  while (headA !== headB) {
+    headA = headA.next;
+    headB = headB.next;
+  }
+
+  return headA;
+}
+// Definition for a linked list node
+class ListNode {
+  constructor(val) {
+    this.val = val;
+    this.next = null;
+  }
+}
+
+// Create linked lists
+const listA = new ListNode(1);
+listA.next = new ListNode(2);
+listA.next.next = new ListNode(3);
+listA.next.next.next = new ListNode(4);
+listA.next.next.next.next = new ListNode(5);
+
+const listB = new ListNode(6);
+listB.next = new ListNode(7);
+listB.next.next = listA.next.next;
+
+// Find the intersection
+const intersection = getIntersectionNode(listA, listB);
+
+// Print the intersection point value
+console.log(intersection.val);
