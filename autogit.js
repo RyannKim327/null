@@ -1,33 +1,79 @@
-function findLongestIncreasingSubsequence(arr) {
-  const n = arr.length;
-  const lengths = Array(n).fill(1); // Initialize lengths of all subsequences to 1
+function biDirectionalSearch(graph, source, target) {
+  const forwardQueue = [source];
+  const backwardQueue = [target];
+  const forwardVisited = new Set();
+  const backwardVisited = new Set();
+  const forwardParent = {};
+  const backwardParent = {};
 
-  let maxLength = 1; // Initialize the maximum length to 1
+  while (forwardQueue.length && backwardQueue.length) {
+    const currentForward = forwardQueue.shift();
+    const currentBackward = backwardQueue.shift();
 
-  // Compute the lengths of the longest increasing subsequences
-  for (let i = 1; i < n; i++) {
-    for (let j = 0; j < i; j++) {
-      if (arr[i] > arr[j] && lengths[i] < lengths[j] + 1) {
-        lengths[i] = lengths[j] + 1;
-        maxLength = Math.max(maxLength, lengths[i]);
+    forwardVisited.add(currentForward);
+    backwardVisited.add(currentBackward);
+
+    for (const neighbor of graph[currentForward]) {
+      if (!forwardVisited.has(neighbor)) {
+        forwardQueue.push(neighbor);
+        forwardVisited.add(neighbor);
+        forwardParent[neighbor] = currentForward;
+      }
+
+      if (backwardVisited.has(neighbor)) {
+        return reconstructPath(forwardParent, backwardParent, neighbor);
+      }
+    }
+
+    for (const neighbor of graph[currentBackward]) {
+      if (!backwardVisited.has(neighbor)) {
+        backwardQueue.push(neighbor);
+        backwardVisited.add(neighbor);
+        backwardParent[neighbor] = currentBackward;
+      }
+
+      if (forwardVisited.has(neighbor)) {
+        return reconstructPath(forwardParent, backwardParent, neighbor);
       }
     }
   }
 
-  // Find the longest increasing subsequence using the lengths array
-  const subsequence = [];
-  let currLength = maxLength;
-  for (let i = n - 1; i >= 0; i--) {
-    if (lengths[i] === currLength) {
-      subsequence.unshift(arr[i]);
-      currLength--;
-    }
-  }
-
-  return subsequence;
+  return null; // No path found
 }
 
-// Example usage
-const arr = [3, 4, -1, 0, 6, 2, 3];
-const longestIncreasingSubsequence = findLongestIncreasingSubsequence(arr);
-console.log(longestIncreasingSubsequence); // Output: [3, 4, 6]
+function reconstructPath(forwardParent, backwardParent, meetingNode) {
+  const path = [];
+  let node = meetingNode;
+
+  while (node) {
+    path.push(node);
+    node = forwardParent[node];
+  }
+
+  path.reverse();
+  node = backwardParent[meetingNode];
+
+  while (node) {
+    path.push(node);
+    node = backwardParent[node];
+  }
+
+  return path;
+}
+
+// Example usage:
+const graph = {
+  A: ["B", "C"],
+  B: ["A", "D"],
+  C: ["A", "D", "E"],
+  D: ["B", "C", "F"],
+  E: ["C", "G"],
+  F: ["D"],
+  G: ["E"]
+};
+
+const source = "A";
+const target = "G";
+
+const path = biDirectionalSearch(graph, source, target);
+console.log(path); // Output: ["A", "C", "E", "G"]
