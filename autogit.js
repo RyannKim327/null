@@ -1,50 +1,58 @@
-function calculateHash(str) {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash += str.charCodeAt(i) * Math.pow(2, i);
+class HashTable {
+  constructor(size = 10) {
+    this.table = new Array(size);
   }
-  return hash;
-}
 
-function rollingHash(text, oldHash, patternLength, start, end) {
-  const newHash = oldHash - (text.charCodeAt(start) * Math.pow(2, patternLength - 1));
-  return (newHash * 2) + text.charCodeAt(end);
-}
-function searchRabinKarp(pattern, text) {
-  const patternLength = pattern.length;
-  const textLength = text.length;
+  _hash(key) {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash += key.charCodeAt(i);
+    }
+    return hash % this.table.length;
+  }
 
-  const patternHash = calculateHash(pattern);
-  let textHash = calculateHash(text.substring(0, patternLength));
+  set(key, value) {
+    const index = this._hash(key);
+    if (!this.table[index]) {
+      this.table[index] = [];
+    }
+    this.table[index].push([key, value]);
+  }
 
-  for (let i = 0; i <= textLength - patternLength; i++) {
-    if (patternHash === textHash) {
-      let found = true;
-      for (let j = 0; j < patternLength; j++) {
-        if (pattern[j] !== text[i + j]) {
-          found = false;
-          break;
+  get(key) {
+    const index = this._hash(key);
+    if (this.table[index]) {
+      for (let i = 0; i < this.table[index].length; i++) {
+        if (this.table[index][i][0] === key) {
+          return this.table[index][i][1];
         }
       }
-
-      if (found) {
-        return i; // Pattern found at position i
-      }
     }
-
-    if (i < textLength - patternLength) {
-      textHash = rollingHash(text, textHash, patternLength, i, i + patternLength);
-    }
+    return undefined;
   }
 
-  return -1; // Pattern not found
+  remove(key) {
+    const index = this._hash(key);
+    if (this.table[index]) {
+      for (let i = 0; i < this.table[index].length; i++) {
+        if (this.table[index][i][0] === key) {
+          this.table[index].splice(i, 1);
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 }
-const pattern = "world";
-const text = "Hello, world!";
+const hashTable = new HashTable();
 
-const position = searchRabinKarp(pattern, text);
-if (position === -1) {
-  console.log("Pattern not found");
-} else {
-  console.log(`Pattern found at position ${position}`);
-}
+hashTable.set("name", "John");
+hashTable.set("age", 30);
+hashTable.set("email", "john@example.com");
+
+console.log(hashTable.get("name")); // Output: John
+console.log(hashTable.get("age")); // Output: 30
+console.log(hashTable.get("email")); // Output: john@example.com
+
+hashTable.remove("age");
+console.log(hashTable.get("age")); // Output: undefined
