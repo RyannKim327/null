@@ -1,23 +1,51 @@
-function binarySearchRecursive(arr, searchValue, left, right) {
-  if (left > right) {
-    return -1; // Element not found
+function reverseLinkedList(head) {
+  let previous = null;
+  let current = head;
+  let next = null;
+
+  while (current != null) {
+    next = current.next;
+    current.next = previous;
+    previous = current;
+    current = next;
   }
 
-  const middle = Math.floor((left + right) / 2);
-
-  if (arr[middle] === searchValue) {
-    return middle; // Element found at middle index
-  }
-
-  if (arr[middle] > searchValue) {
-    return binarySearchRecursive(arr, searchValue, left, middle - 1);
-  } else {
-    return binarySearchRecursive(arr, searchValue, middle + 1, right);
+  return previous;
+}
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
 }
 
-// Usage example:
-const arr = [1, 3, 5, 7, 9];
-const searchValue = 5;
-const index = binarySearchRecursive(arr, searchValue, 0, arr.length - 1);
-console.log(index); // Output: 2 (index of 5 in the array)
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+
+  add(value) {
+    const newNode = new Node(value);
+
+    if (this.head === null) {
+      this.head = newNode;
+    } else {
+      let currentNode = this.head;
+      while (currentNode.next !== null) {
+        currentNode = currentNode.next;
+      }
+      currentNode.next = newNode;
+    }
+  }
+}
+const linkedList = new LinkedList();
+linkedList.add(1);
+linkedList.add(2);
+linkedList.add(3);
+linkedList.add(4);
+console.log("Original List:");
+console.log(linkedList.head);
+
+const reversedList = reverseLinkedList(linkedList.head);
+console.log("Reversed List:");
+console.log(reversedList);
