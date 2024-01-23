@@ -1,10 +1,8 @@
-let str = "42";
-let num = parseInt(str);
+function decimalToBinary(decimalNumber) {
+  return decimalNumber.toString(2);
+}
 
-console.log(num); // Output: 42
-console.log(typeof num); // Output: number
-let str = "42";
-let num = +str;
-
-console.log(num); // Output: 42
-console.log(typeof num); // Output: number
+// Example usage
+console.log(decimalToBinary(10)); // Output: 1010
+console.log(decimalToBinary(27)); // Output: 11011
+console.log(decimalToBinary(42)); // Output: 101010
