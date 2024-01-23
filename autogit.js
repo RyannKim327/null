@@ -1,17 +1,26 @@
-function isAnagram(str1, str2) {
-  // Remove whitespace and punctuation
-  str1 = str1.replace(/[^\w]/g, "").toLowerCase();
-  str2 = str2.replace(/[^\w]/g, "").toLowerCase();
+function findFirstNonRepeatingChar(str) {
+  // Create an empty object to store character counts
+  var charCount = {};
 
-  // Sort the characters in the strings
-  const sortedStr1 = str1.split("").sort().join("");
-  const sortedStr2 = str2.split("").sort().join("");
+  // Iterate through each character in the string, and count their occurrences
+  for (var i = 0; i < str.length; i++) {
+    var char = str[i];
+    charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
+  }
 
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+  // Iterate through the string again and return the first character with count 1
+  for (var i = 0; i < str.length; i++) {
+    var char = str[i];
+    if (charCount[char] === 1) {
+      return char;
+    }
+  }
+
+  // If there are no non-repeating characters, return null
+  return null;
 }
 
-// Example usage
-const string1 = "listen";
-const string2 = "silent";
-console.log(isAnagram(string1, string2)); // Output: true
+// Example usage:
+var str = "ababcdeff";
+var firstNonRepeatingChar = findFirstNonRepeatingChar(str);
+console.log(firstNonRepeatingChar); // Output: "c"
