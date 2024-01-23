@@ -1,59 +1,53 @@
-function binarySearch(arr, target) {
-    // implementation goes here
-}
-function binarySearch(arr, target) {
-    let start = 0;
-    let end = arr.length - 1;
-    // implementation goes here
-}
-function binarySearch(arr, target) {
-    let start = 0;
-    let end = arr.length - 1;
-    while (start <= end) {
-        // implementation goes here
-    }
-}
-function binarySearch(arr, target) {
-    let start = 0;
-    let end = arr.length - 1;
-    while (start <= end) {
-        let mid = Math.floor((start + end) / 2);
-        let midValue = arr[mid];
-        // implementation goes here
-    }
-}
-function binarySearch(arr, target) {
-    let start = 0;
-    let end = arr.length - 1;
-    while (start <= end) {
-        let mid = Math.floor((start + end) / 2);
-        let midValue = arr[mid];
+class Graph {
+  constructor() {
+    this.vertices = [];
+    this.adjacencyList = new Map();
+  }
 
-        if (midValue === target) {
-            return mid;
+  addVertex(vertex) {
+    this.vertices.push(vertex);
+    this.adjacencyList.set(vertex, []);
+  }
+
+  addEdge(src, dest) {
+    this.adjacencyList.get(src).push(dest);
+    this.adjacencyList.get(dest).push(src);
+  }
+
+  depthFirstSearch(startingVertex) {
+    const visited = new Set();
+
+    const dfsRecursive = (vertex) => {
+      visited.add(vertex);
+      console.log(vertex);
+
+      const neighbors = this.adjacencyList.get(vertex);
+      for (const neighbor of neighbors) {
+        if (!visited.has(neighbor)) {
+          dfsRecursive(neighbor);
         }
-        // implementation goes here
-    }
+      }
+    };
 
-    // target value not found
-    return -1;
+    dfsRecursive(startingVertex);
+  }
 }
-function binarySearch(arr, target) {
-    let start = 0;
-    let end = arr.length - 1;
-    while (start <= end) {
-        let mid = Math.floor((start + end) / 2);
-        let midValue = arr[mid];
 
-        if (midValue === target) {
-            return mid;
-        } else if (midValue < target) {
-            start = mid + 1;
-        } else {
-            end = mid - 1;
-        }
-    }
+// Usage example:
+const graph = new Graph();
 
-    // target value not found
-    return -1;
-}
+// Add vertices
+graph.addVertex(1);
+graph.addVertex(2);
+graph.addVertex(3);
+graph.addVertex(4);
+graph.addVertex(5);
+
+// Add edges
+graph.addEdge(1, 2);
+graph.addEdge(1, 3);
+graph.addEdge(2, 4);
+graph.addEdge(3, 5);
+
+// Perform DFS
+graph.depthFirstSearch(1);
