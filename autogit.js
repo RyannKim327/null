@@ -1,18 +1,17 @@
-const array = [1, 2, 3, 4, 4, 5, 6, 6];
-const uniqueArray = [...new Set(array)];
-
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5, 6]
-const array = [1, 2, 3, 4, 4, 5, 6, 6];
-const uniqueArray = array.filter((element, index, arr) => arr.indexOf(element) === index);
-
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5, 6]
-const array = [1, 2, 3, 4, 4, 5, 6, 6];
-const uniqueArray = [];
-
-for (const element of array) {
-    if (!uniqueArray.includes(element)) {
-        uniqueArray.push(element);
-    }
+function findMedianSortedArrays(arr1, arr2) {
+  const mergedArray = arr1.concat(arr2).sort((a, b) => a - b);
+  const length = mergedArray.length;
+  
+  if (length % 2 === 1) {
+    return mergedArray[Math.floor(length / 2)];
+  } else {
+    const midIndex = length / 2;
+    return (mergedArray[midIndex - 1] + mergedArray[midIndex]) / 2;
+  }
 }
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5, 6]
+// Example usage:
+const arr1 = [1, 3, 5];
+const arr2 = [2, 4, 6];
+  
+console.log(findMedianSortedArrays(arr1, arr2)); // Output: 3.5
