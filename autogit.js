@@ -1,53 +1,25 @@
-// Define a TreeNode class for representing the nodes in the search tree
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.children = [];
+function quicksort(arr) {
+  if (arr.length <= 1) {
+    return arr;
   }
 
-  addChild(child) {
-    this.children.push(child);
-  }
-}
+  const pivot = arr[arr.length - 1];
+  const left = [];
+  const right = [];
 
-// Depth-Limited Search function
-function depthLimitedSearch(node, target, depthLimit) {
-  // Base case: If the current node contains the target value, return true
-  if (node.value === target) {
-    return true;
-  }
-  
-  // Base case: If the depth limit has been reached, return false
-  if (depthLimit === 0) {
-    return false;
-  }
-
-  // Recursive case: Search the children nodes within the depth limit
-  for (let child of node.children) {
-    // Recursively call depthLimitedSearch on each child node
-    if (depthLimitedSearch(child, target, depthLimit - 1)) {
-      return true; // If found in any of the child nodes, return true
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] < pivot) {
+      left.push(arr[i]);
+    } else {
+      right.push(arr[i]);
     }
   }
 
-  return false; // If not found in any child nodes, return false
+  return [...quicksort(left), pivot, ...quicksort(right)];
 }
 
-// Usage example
-// Create a sample tree
-const rootNode = new TreeNode(1);
-const node2 = new TreeNode(2);
-const node3 = new TreeNode(3);
-const node4 = new TreeNode(4);
-const node5 = new TreeNode(5);
-const node6 = new TreeNode(6);
+// Example usage
+const array = [5, 2, 9, 1, 3, 7, 6, 4, 8];
+const sortedArray = quicksort(array);
 
-rootNode.addChild(node2);
-rootNode.addChild(node3);
-node2.addChild(node4);
-node2.addChild(node5);
-node4.addChild(node6);
-
-// Call depthLimitedSearch with a depth limit of 2
-console.log(depthLimitedSearch(rootNode, 6, 2)); // Output: true
-console.log(depthLimitedSearch(rootNode, 7, 2)); // Output: false
+console.log(sortedArray);
