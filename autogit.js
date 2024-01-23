@@ -1,26 +1,15 @@
-function countOccurrences(string, character) {
-  let count = 0;
-  for (let i = 0; i < string.length; i++) {
-    if (string[i] === character) {
-      count++;
-    }
+function calculateMean(numbers) {
+  let sum = 0;
+
+  for (let i = 0; i < numbers.length; i++) {
+    sum += numbers[i];
   }
-  return count;
+
+  const mean = sum / numbers.length;
+  return mean;
 }
 
-// Example usage
-const myString = "Hello World";
-const myCharacter = "o";
-const occurrences = countOccurrences(myString, myCharacter);
-console.log(occurrences); // Output: 2
-function countOccurrences(string, character) {
-  const regex = new RegExp(character, "g");
-  const matches = string.match(regex);
-  return matches ? matches.length : 0;
-}
-
-// Example usage
-const myString = "Hello World";
-const myCharacter = "o";
-const occurrences = countOccurrences(myString, myCharacter);
-console.log(occurrences); // Output: 2
+// Example usage:
+const numbers = [1, 2, 3, 4, 5];
+const mean = calculateMean(numbers);
+console.log(mean);
