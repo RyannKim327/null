@@ -1,54 +1,67 @@
-function computeLPSArray(pattern) {
-  const lps = [0]; // Longest proper prefix matching suffix array
-  let len = 0; // Length of the previous longest prefix suffix
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
 
-  let i = 1;
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[len]) {
-      len++;
-      lps[i] = len;
-      i++;
+class BinaryTree {
+  constructor() {
+    this.root = null;
+  }
+
+  insert(value) {
+    const newNode = new Node(value);
+
+    if (!this.root) {
+      this.root = newNode;
     } else {
-      if (len !== 0) {
-        len = lps[len - 1];
+      this.insertNode(this.root, newNode);
+    }
+  }
+
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (!node.left) {
+        node.left = newNode;
       } else {
-        lps[i] = 0;
-        i++;
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (!node.right) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
       }
     }
   }
 
-  return lps;
-}
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
 
-function stringMatch(text, pattern) {
-  const n = text.length;
-  const m = pattern.length;
-  const lps = computeLPSArray(pattern);
-
-  let i = 0; // Index for text[]
-  let j = 0; // Index for pattern[]
-
-  while (i < n) {
-    if (pattern[j] === text[i]) {
-      i++;
-      j++;
+  searchNode(node, value) {
+    if (!node || node.value === value) {
+      return node;
     }
 
-    if (j === m) {
-      console.log(`Pattern found at index ${i - j}`);
-      j = lps[j - 1];
-    } else if (i < n && pattern[j] !== text[i]) {
-      if (j !== 0)
-        j = lps[j - 1];
-      else
-        i++;
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else {
+      return this.searchNode(node.right, value);
     }
   }
 }
-const text = "ABCABCDABABCDABCDABDE";
-const pattern = "ABCDABD";
 
-stringMatch(text, pattern);
-Pattern found at index 11
-Pattern found at index 18
+// Example usage:
+const tree = new BinaryTree();
+tree.insert(8);
+tree.insert(3);
+tree.insert(10);
+tree.insert(1);
+tree.insert(6);
+tree.insert(14);
+
+console.log(tree.search(6)); // Output: Node { value: 6, left: Node { value: 1, ... }, right: Node { value: 6, ... } }
+console.log(tree.search(11)); // Output: null
