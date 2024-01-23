@@ -1,17 +1,23 @@
-function areAnagrams(string1, string2) {
-  // Remove non-alphabetic characters and spaces
-  string1 = string1.replace(/[^A-Za-z]/g, "").toLowerCase();
-  string2 = string2.replace(/[^A-Za-z]/g, "").toLowerCase();
+function binarySearchRecursive(arr, searchValue, left, right) {
+  if (left > right) {
+    return -1; // Element not found
+  }
 
-  // Sort the strings
-  string1 = string1.split('').sort().join('');
-  string2 = string2.split('').sort().join('');
+  const middle = Math.floor((left + right) / 2);
 
-  // Compare the sorted strings
-  return string1 === string2;
+  if (arr[middle] === searchValue) {
+    return middle; // Element found at middle index
+  }
+
+  if (arr[middle] > searchValue) {
+    return binarySearchRecursive(arr, searchValue, left, middle - 1);
+  } else {
+    return binarySearchRecursive(arr, searchValue, middle + 1, right);
+  }
 }
 
-// Example usage
-const word1 = 'listen';
-const word2 = 'silent';
-console.log(areAnagrams(word1, word2)); // Output: true
+// Usage example:
+const arr = [1, 3, 5, 7, 9];
+const searchValue = 5;
+const index = binarySearchRecursive(arr, searchValue, 0, arr.length - 1);
+console.log(index); // Output: 2 (index of 5 in the array)
