@@ -1,70 +1,53 @@
-class Graph {
-  constructor() {
-    this.vertices = new Map();
+// Define a TreeNode class for representing the nodes in the search tree
+class TreeNode {
+  constructor(value) {
+    this.value = value;
+    this.children = [];
   }
 
-  addVertex(vertex) {
-    if (!this.vertices.has(vertex)) {
-      this.vertices.set(vertex, []);
-    }
-  }
-
-  addEdge(source, target) {
-    if (this.vertices.has(source) && this.vertices.has(target)) {
-      const edges = this.vertices.get(source);
-      edges.push(target);
-    } else {
-      throw new Error("Invalid vertex!");
-    }
-  }
-
-  getNeighbors(vertex) {
-    return this.vertices.get(vertex) || [];
-  }
-
-  getVertices() {
-    return this.vertices.keys();
+  addChild(child) {
+    this.children.push(child);
   }
 }
-function topologicalSort(graph) {
-  const visited = new Set();
-  const stack = [];
 
-  function visit(vertex) {
-    if (visited.has(vertex)) {
-      return;
-    }
-
-    visited.add(vertex);
-
-    const neighbors = graph.getNeighbors(vertex);
-    for (const neighbor of neighbors) {
-      visit(neighbor);
-    }
-
-    stack.push(vertex);
+// Depth-Limited Search function
+function depthLimitedSearch(node, target, depthLimit) {
+  // Base case: If the current node contains the target value, return true
+  if (node.value === target) {
+    return true;
+  }
+  
+  // Base case: If the depth limit has been reached, return false
+  if (depthLimit === 0) {
+    return false;
   }
 
-  const vertices = graph.getVertices();
-  for (const vertex of vertices) {
-    visit(vertex);
+  // Recursive case: Search the children nodes within the depth limit
+  for (let child of node.children) {
+    // Recursively call depthLimitedSearch on each child node
+    if (depthLimitedSearch(child, target, depthLimit - 1)) {
+      return true; // If found in any of the child nodes, return true
+    }
   }
 
-  return stack.reverse();
+  return false; // If not found in any child nodes, return false
 }
-const graph = new Graph();
 
-graph.addVertex("A");
-graph.addVertex("B");
-graph.addVertex("C");
-graph.addVertex("D");
-graph.addVertex("E");
+// Usage example
+// Create a sample tree
+const rootNode = new TreeNode(1);
+const node2 = new TreeNode(2);
+const node3 = new TreeNode(3);
+const node4 = new TreeNode(4);
+const node5 = new TreeNode(5);
+const node6 = new TreeNode(6);
 
-graph.addEdge("A", "B");
-graph.addEdge("A", "C");
-graph.addEdge("B", "D");
-graph.addEdge("C", "D");
-graph.addEdge("D", "E");
+rootNode.addChild(node2);
+rootNode.addChild(node3);
+node2.addChild(node4);
+node2.addChild(node5);
+node4.addChild(node6);
 
-const sortedOrder = topologicalSort(graph);
-console.log(sortedOrder);  // Output: ["A", "C", "B", "D", "E"]
+// Call depthLimitedSearch with a depth limit of 2
+console.log(depthLimitedSearch(rootNode, 6, 2)); // Output: true
+console.log(depthLimitedSearch(rootNode, 7, 2)); // Output: false
