@@ -1,44 +1,50 @@
-function isPalindrome(str) {
-  // Convert the string to lowercase
-  str = str.toLowerCase();
+function calculateHash(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash += str.charCodeAt(i) * Math.pow(2, i);
+  }
+  return hash;
+}
 
-  // Initialize two pointers, one at the start and another at the end
-  let leftPtr = 0;
-  let rightPtr = str.length - 1;
+function rollingHash(text, oldHash, patternLength, start, end) {
+  const newHash = oldHash - (text.charCodeAt(start) * Math.pow(2, patternLength - 1));
+  return (newHash * 2) + text.charCodeAt(end);
+}
+function searchRabinKarp(pattern, text) {
+  const patternLength = pattern.length;
+  const textLength = text.length;
 
-  // While the pointers don't cross each other
-  while (leftPtr < rightPtr) {
-    // Skip non-alphanumeric characters by moving the pointers
-    while (!isAlphanumeric(str[leftPtr]) && leftPtr < rightPtr) {
-      leftPtr++;
+  const patternHash = calculateHash(pattern);
+  let textHash = calculateHash(text.substring(0, patternLength));
+
+  for (let i = 0; i <= textLength - patternLength; i++) {
+    if (patternHash === textHash) {
+      let found = true;
+      for (let j = 0; j < patternLength; j++) {
+        if (pattern[j] !== text[i + j]) {
+          found = false;
+          break;
+        }
+      }
+
+      if (found) {
+        return i; // Pattern found at position i
+      }
     }
-    while (!isAlphanumeric(str[rightPtr]) && leftPtr < rightPtr) {
-      rightPtr--;
-    }
 
-    // If the characters at the pointers are not equal, it's not a palindrome
-    if (str[leftPtr] !== str[rightPtr]) {
-      return false;
+    if (i < textLength - patternLength) {
+      textHash = rollingHash(text, textHash, patternLength, i, i + patternLength);
     }
-
-    // Move the pointers towards each other
-    leftPtr++;
-    rightPtr--;
   }
 
-  // If the while loop completes without returning false, it's a palindrome
-  return true;
+  return -1; // Pattern not found
 }
+const pattern = "world";
+const text = "Hello, world!";
 
-// Helper function to check if a character is alphanumeric
-function isAlphanumeric(char) {
-  const code = char.charCodeAt(0);
-  return (
-    (code >= 48 && code <= 57) || // Numeric (0-9)
-    (code >= 97 && code <= 122) // Lowercase alphabets (a-z)
-  );
+const position = searchRabinKarp(pattern, text);
+if (position === -1) {
+  console.log("Pattern not found");
+} else {
+  console.log(`Pattern found at position ${position}`);
 }
-
-// Example usage:
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // Output: true
-console.log(isPalindrome("race a car")); // Output: false
