@@ -1,53 +1,82 @@
-class Graph {
-  constructor() {
-    this.vertices = [];
-    this.adjacencyList = new Map();
-  }
-
-  addVertex(vertex) {
-    this.vertices.push(vertex);
-    this.adjacencyList.set(vertex, []);
-  }
-
-  addEdge(src, dest) {
-    this.adjacencyList.get(src).push(dest);
-    this.adjacencyList.get(dest).push(src);
-  }
-
-  depthFirstSearch(startingVertex) {
-    const visited = new Set();
-
-    const dfsRecursive = (vertex) => {
-      visited.add(vertex);
-      console.log(vertex);
-
-      const neighbors = this.adjacencyList.get(vertex);
-      for (const neighbor of neighbors) {
-        if (!visited.has(neighbor)) {
-          dfsRecursive(neighbor);
-        }
-      }
-    };
-
-    dfsRecursive(startingVertex);
+class Node {
+  constructor(id) {
+    this.id = id; // Node ID or name
+    this.index = -1; // Index used by Tarjan's algorithm
+    this.lowLink = -1; // Low link used by Tarjan's algorithm
+    this.onStack = false; // Flag to track if the node is on the stack
+    this.adjacentNodes = []; // List of adjacent nodes
   }
 }
+function tarjanAlgorithm(nodes) {
+  let index = 0; // Index counter
+  const stack = []; // Stack to track visited nodes
 
-// Usage example:
-const graph = new Graph();
+  const stronglyConnectedComponents = []; // Resultant SCCs
 
-// Add vertices
-graph.addVertex(1);
-graph.addVertex(2);
-graph.addVertex(3);
-graph.addVertex(4);
-graph.addVertex(5);
+  // Perform the Tarjan's algorithm for each unvisited node
+  for (const node of nodes) {
+    if (node.index === -1) {
+      strongConnect(node);
+    }
+  }
 
-// Add edges
-graph.addEdge(1, 2);
-graph.addEdge(1, 3);
-graph.addEdge(2, 4);
-graph.addEdge(3, 5);
+  // The recursive function in Tarjan's algorithm
+  function strongConnect(node) {
+    node.index = index;
+    node.lowLink = index;
+    index++;
+    stack.push(node);
+    node.onStack = true;
 
-// Perform DFS
-graph.depthFirstSearch(1);
+    // Visit each adjacent node
+    for (const adjacentNode of node.adjacentNodes) {
+      if (adjacentNode.index === -1) {
+        strongConnect(adjacentNode);
+        node.lowLink = Math.min(node.lowLink, adjacentNode.lowLink);
+      } else if (adjacentNode.onStack) {
+        node.lowLink = Math.min(node.lowLink, adjacentNode.index);
+      }
+    }
+
+    // If the node is a root node, generate an SCC
+    if (node.lowLink === node.index) {
+      const scc = [];
+      let w;
+      do {
+        w = stack.pop();
+        w.onStack = false;
+        scc.push(w);
+      } while (w !== node);
+      stronglyConnectedComponents.push(scc);
+    }
+  }
+
+  return stronglyConnectedComponents;
+}
+// Create graph nodes
+const nodeA = new Node("A");
+const nodeB = new Node("B");
+const nodeC = new Node("C");
+const nodeD = new Node("D");
+const nodeE = new Node("E");
+
+// Connect nodes
+nodeA.adjacentNodes.push(nodeB);
+nodeB.adjacentNodes.push(nodeC);
+nodeC.adjacentNodes.push(nodeA);
+nodeC.adjacentNodes.push(nodeD);
+nodeD.adjacentNodes.push(nodeE);
+nodeE.adjacentNodes.push(nodeD);
+
+// Create an array of all nodes in the graph
+const allNodes = [nodeA, nodeB, nodeC, nodeD, nodeE];
+
+// Call Tarjan's algorithm
+const result = tarjanAlgorithm(allNodes);
+
+// Print the strongly connected components
+console.log("Strongly Connected Components:");
+for (const component of result) {
+  const names = component.map((node) => node.id).join(", ");
+  console.log(names);
+}
