@@ -1,12 +1,9 @@
-function getStringLength(str) {
-    var count = 0;
-    var index = 0;
-    while (str[index] !== undefined) {
-        count++;
-        index++;
-    }
-    return count;
-}
+// Prompt the user for input
+const number1 = parseFloat(prompt("Enter the first number:"));
+const number2 = parseFloat(prompt("Enter the second number:"));
 
-var myString = "Hello, World!";
-console.log(getStringLength(myString));  // Output: 13
+// Perform the calculation
+const sum = number1 + number2;
+
+// Display the result
+console.log("The sum of " + number1 + " and " + number2 + " is: " + sum);
