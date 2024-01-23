@@ -1,56 +1,75 @@
-function getLength(head) {
-  let length = 0;
-  let current = head;
-
-  while (current !== null) {
-    length++;
-    current = current.next;
-  }
-
-  return length;
-}
-function getIntersectionNode(headA, headB) {
-  let lengthA = getLength(headA);
-  let lengthB = getLength(headB);
-
-  while (lengthA > lengthB) {
-    headA = headA.next;
-    lengthA--;
-  }
-
-  while (lengthB > lengthA) {
-    headB = headB.next;
-    lengthB--;
-  }
-
-  while (headA !== headB) {
-    headA = headA.next;
-    headB = headB.next;
-  }
-
-  return headA;
-}
-// Definition for a linked list node
-class ListNode {
-  constructor(val) {
-    this.val = val;
+class Node {
+  constructor(value) {
+    this.value = value;
     this.next = null;
   }
 }
 
-// Create linked lists
-const listA = new ListNode(1);
-listA.next = new ListNode(2);
-listA.next.next = new ListNode(3);
-listA.next.next.next = new ListNode(4);
-listA.next.next.next.next = new ListNode(5);
+class Queue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.size = 0;
+  }
 
-const listB = new ListNode(6);
-listB.next = new ListNode(7);
-listB.next.next = listA.next.next;
+  enqueue(value) {
+    const newNode = new Node(value);
 
-// Find the intersection
-const intersection = getIntersectionNode(listA, listB);
+    if (this.isEmpty()) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
 
-// Print the intersection point value
-console.log(intersection.val);
+    this.size++;
+  }
+
+  dequeue() {
+    if (this.isEmpty()) {
+      throw new Error('Queue is empty');
+    }
+
+    const value = this.head.value;
+    this.head = this.head.next;
+    this.size--;
+
+    if (this.isEmpty()) {
+      this.tail = null;
+    }
+
+    return value;
+  }
+
+  isEmpty() {
+    return this.size === 0;
+  }
+
+  getSize() {
+    return this.size;
+  }
+
+  peek() {
+    if (this.isEmpty()) {
+      throw new Error('Queue is empty');
+    }
+
+    return this.head.value;
+  }
+}
+const queue = new Queue();
+
+queue.enqueue('apple');
+queue.enqueue('banana');
+queue.enqueue('cherry');
+
+console.log(queue.getSize()); // Output: 3
+console.log(queue.peek()); // Output: 'apple'
+
+console.log(queue.dequeue()); // Output: 'apple'
+console.log(queue.dequeue()); // Output: 'banana'
+console.log(queue.peek()); // Output: 'cherry'
+
+console.log(queue.getSize()); // Output: 1
+console.log(queue.isEmpty()); // Output: false
