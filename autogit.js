@@ -1,17 +1,43 @@
-function findMedianSortedArrays(arr1, arr2) {
-  const mergedArray = arr1.concat(arr2).sort((a, b) => a - b);
-  const length = mergedArray.length;
+function search(text, pattern) {
+  // Step 2: Preprocessing
+  const table = createBadCharTable(pattern);
   
-  if (length % 2 === 1) {
-    return mergedArray[Math.floor(length / 2)];
-  } else {
-    const midIndex = length / 2;
-    return (mergedArray[midIndex - 1] + mergedArray[midIndex]) / 2;
-  }
-}
+  // Step 3: Searching
+  let i = pattern.length - 1;
+  while (i < text.length) {
+    let j = pattern.length - 1;
 
-// Example usage:
-const arr1 = [1, 3, 5];
-const arr2 = [2, 4, 6];
-  
-console.log(findMedianSortedArrays(arr1, arr2)); // Output: 3.5
+    while (j >= 0 && text[i] === pattern[j]) {
+      i--;
+      j--;
+    }
+
+    if (j === -1) {
+      // Pattern found
+      return i + 1;
+    } else {
+      // Shift based on bad character table
+      i += table[text[i]] || pattern.length;
+    }
+  }
+
+  return -1; // Pattern not found
+}
+function createBadCharTable(pattern) {
+  const table = {};
+
+  for (let i = 0; i < pattern.length - 1; i++) {
+    table[pattern[i]] = pattern.length - 1 - i;
+  }
+
+  return table;
+}
+const text = "Lorem ipsum dolor sit amet";
+const pattern = "sit";
+
+const index = search(text, pattern);
+if (index !== -1) {
+  console.log(`Pattern found at index ${index}`);
+} else {
+  console.log("Pattern not found");
+}
