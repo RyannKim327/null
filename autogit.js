@@ -1,7 +1,19 @@
-function decimalToBinary(decimal) {
-  return decimal.toString(2);
+function selectionSort(array) {
+  for (let i = 0; i < array.length - 1; i++) {
+    let minIndex = i;
+    for (let j = i + 1; j < array.length; j++) {
+      if (array[j] < array[minIndex]) {
+        minIndex = j;
+      }
+    }
+    if (minIndex !== i) {
+      [array[i], array[minIndex]] = [array[minIndex], array[i]];
+    }
+  }
+  return array;
 }
 
-// Example usage
-console.log(decimalToBinary(10)); // Output: "1010"
-console.log(decimalToBinary(25)); // Output: "11001"
+// Example usage:
+const unsortedArray = [64, 25, 12, 22, 11];
+const sortedArray = selectionSort(unsortedArray);
+console.log(sortedArray);
