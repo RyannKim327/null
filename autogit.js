@@ -1,30 +1,45 @@
-function shellSort(arr) {
-  var len = arr.length,
-      gap = Math.floor(len / 2); // Set the initial gap value
+function heapSort(arr) {
+  const n = arr.length;
 
-  while (gap > 0) {
-    for (var i = gap; i < len; i++) {
-      var temp = arr[i];
-      var j = i;
+  // Build Max Heap
+  for (let i = Math.floor(n / 2) - 1; i >= 0; i--)
+    heapify(arr, n, i);
 
-      // Shift the elements of the subarray
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
-      }
+  // Heap sort
+  for (let i = n - 1; i >= 0; i--) {
+    // Swap the root (max element) with the last element of the array
+    [arr[0], arr[i]] = [arr[i], arr[0]];
 
-      arr[j] = temp;
-    }
-    
-    gap = Math.floor(gap / 2); // Reduce the gap for next iteration
+    // Heapify the reduced heap
+    heapify(arr, i, 0);
   }
-  
+
   return arr;
 }
-var arr = [9, 5, 1, 3, 8, 4, 7, 2, 6];
-console.log("Original Array:", arr);
 
-arr = shellSort(arr);
-console.log("Sorted Array:", arr);
-Original Array: [9, 5, 1, 3, 8, 4, 7, 2, 6]
-Sorted Array: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+function heapify(arr, n, i) {
+  let largest = i; // Initialize the largest as the root
+  const left = 2 * i + 1; // Left child
+  const right = 2 * i + 2; // Right child
+
+  // If the left child is larger than the root
+  if (left < n && arr[left] > arr[largest])
+    largest = left;
+
+  // If the right child is larger than the largest so far
+  if (right < n && arr[right] > arr[largest])
+    largest = right;
+
+  // If the largest element is not the root
+  if (largest !== i) {
+    // Swap the root with the largest element
+    [arr[i], arr[largest]] = [arr[largest], arr[i]];
+
+    // Recursively heapify the affected sub-tree
+    heapify(arr, n, largest);
+  }
+}
+
+// Example usage:
+const array = [6, 5, 3, 1, 8, 7, 2, 4];
+console.log(heapSort(array)); // Output: [1, 2, 3, 4, 5, 6, 7, 8]
