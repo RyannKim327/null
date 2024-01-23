@@ -1,40 +1,18 @@
-function findKthSmallest(arr, k) {
-  arr.sort((a, b) => a - b);
-  return arr[k - 1];
-}
-function findKthSmallest(arr, k) {
-  function partition(arr, left, right) {
-    const pivot = arr[Math.floor((left + right) / 2)];
-    while (left <= right) {
-      while (arr[left] < pivot) {
-        left++;
-      }
-      while (arr[right] > pivot) {
-        right--;
-      }
-      if (left <= right) {
-        [arr[left], arr[right]] = [arr[right], arr[left]];
-        left++;
-        right--;
-      }
-    }
-    return left;
-  }
+const array = [1, 2, 3, 4, 4, 5, 6, 6];
+const uniqueArray = [...new Set(array)];
 
-  function quickSelect(arr, left, right, k) {
-    const index = partition(arr, left, right);
-    if (left < index - 1 && k < index) {
-      return quickSelect(arr, left, index - 1, k);
-    } else if (index < right && k >= index) {
-      return quickSelect(arr, index, right, k);
-    } else {
-      return arr[k - 1];
-    }
-  }
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5, 6]
+const array = [1, 2, 3, 4, 4, 5, 6, 6];
+const uniqueArray = array.filter((element, index, arr) => arr.indexOf(element) === index);
 
-  return quickSelect(arr, 0, arr.length - 1, k);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5, 6]
+const array = [1, 2, 3, 4, 4, 5, 6, 6];
+const uniqueArray = [];
+
+for (const element of array) {
+    if (!uniqueArray.includes(element)) {
+        uniqueArray.push(element);
+    }
 }
-const arr = [7, 2, 9, 1, 5, 8];
-const k = 3;
-const kthSmallest = findKthSmallest(arr, k);
-console.log(kthSmallest); // Output: 5
+
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5, 6]
