@@ -176,11 +176,11 @@ let run = async () => {
 										console.log("Thank you for spamming hahaha")
 										process.exit(0)
 									}
-								}, 2000)
+								}, 250)
 							})
-						}, 2000)
+						}, 250)
 					})
-				}, 1000)
+				}, 250)
 			})
 		})
 	}catch(e){
