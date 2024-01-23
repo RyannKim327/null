@@ -1,17 +1,8 @@
-function largestPrimeFactor(number) {
-  let largestFactor = 1;
+let numbers = [5, 2, 7, 1, 9, 3];
 
-  for (let factor = 2; factor <= Math.sqrt(number); factor++) {
-    while (number % factor === 0) {
-      largestFactor = Math.max(largestFactor, factor);
-      number /= factor;
-    }
-  }
+// Sort the array in ascending order
+numbers.sort(function(a, b) {
+  return a - b;
+});
 
-  if (number > 1) {
-    largestFactor = Math.max(largestFactor, number);
-  }
-
-  return largestFactor;
-}
-console.log(largestPrimeFactor(123456789));  // Output: 3803
+console.log(numbers);
