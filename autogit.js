@@ -1,21 +1,16 @@
-function countOccurrences(string, word) {
-  // Split the string into an array of words
-  var wordsArr = string.split(' ');
-
-  // Use the filter method to create a new array containing only the matching words
-  var matchingWords = wordsArr.filter(function (element) { 
-    // Convert both the element and word to lowercase for case-insensitive matching
-    return element.toLowerCase() === word.toLowerCase(); 
+function calculateMean(numbers) {
+  if (numbers.length === 0) {
+    return 0; // Considering an empty list has a mean of 0, you can change this if desired
+  }
+  
+  var sum = numbers.reduce(function(a, b) {
+    return a + b;
   });
-
-  // Return the count of matching words
-  return matchingWords.length;
+  
+  return sum / numbers.length;
 }
 
 // Example usage
-var string = 'Count count count the occurrences of count';
-var word = 'count';
-
-var occurrencesCount = countOccurrences(string, word);
-console.log('The word \'' + word + '\' occurs ' + occurrencesCount + ' time(s).');
-The word 'count' occurs 4 time(s).
+var numbersList = [1, 2, 3, 4, 5];
+var mean = calculateMean(numbersList);
+console.log(mean); // Output: 3
