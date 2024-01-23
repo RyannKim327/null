@@ -1,17 +1,23 @@
-function areAnagrams(str1, str2) {
-  // Remove non-alphabetic characters and convert to lowercase
-  str1 = str1.replace(/[^a-zA-Z]/g, "").toLowerCase();
-  str2 = str2.replace(/[^a-zA-Z]/g, "").toLowerCase();
-
-  // Sort the characters of both strings
-  const sortedStr1 = str1.split("").sort().join("");
-  const sortedStr2 = str2.split("").sort().join("");
-
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+function countOccurrences(str, word) {
+  // Split the string by spaces
+  const words = str.split(" ");
+  
+  // Initialize a count variable
+  let count = 0;
+  
+  // Iterate through each word
+  for (let i = 0; i < words.length; i++) {
+    // If the word matches, increment the count
+    if (words[i].toLowerCase() === word.toLowerCase()) {
+      count++;
+    }
+  }
+  
+  return count;
 }
 
 // Example usage
-const string1 = "listen";
-const string2 = "silent";
-console.log(areAnagrams(string1, string2)); // Output: true
+const sentence = "The cat and the hat sat on the mat.";
+const word = "the";
+const occurrences = countOccurrences(sentence, word);
+console.log("The word '" + word + "' occurs " + occurrences + " times.");
