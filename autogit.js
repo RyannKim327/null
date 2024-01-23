@@ -1,20 +1,44 @@
-function interpolationSearch(arr, value) {
-  let low = 0;
-  let high = arr.length - 1;
+function searchPattern(text, pattern) {
+  const n = text.length;
+  const m = pattern.length;
 
-  while (low <= high && value >= arr[low] && value <= arr[high]) {
-    let pos = low + Math.floor((value - arr[low]) * (high - low) / (arr[high] - arr[low]));
+  // Preprocess the pattern
+  const lps = new Array(m).fill(0);
+  let len = 0;
+  let i = 1;
 
-    if (arr[pos] === value) {
-      return pos;
-    }
-
-    if (arr[pos] < value) {
-      low = pos + 1;
+  while (i < m) {
+    if (pattern[i] === pattern[len]) {
+      len++;
+      lps[i] = len;
+      i++;
     } else {
-      high = pos - 1;
+      if (len !== 0) {
+        len = lps[len - 1];
+      } else {
+        lps[i] = 0;
+        i++;
+      }
     }
   }
 
-  return -1;
+  // Search for the pattern
+  let j = 0;
+  let i = 0;
+
+  while (i < n) {
+    if (pattern[j] === text[i]) {
+      j++;
+      i++;
+
+      if (j === m) {
+        console.log("Pattern found at index", i - j);
+        j = lps[j - 1];
+      }
+    } else if (j !== 0) {
+      j = lps[j - 1];
+    } else {
+      i++;
+    }
+  }
 }
