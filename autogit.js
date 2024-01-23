@@ -1,6 +1,8 @@
-function decimalToBinary(decimal) {
-  return parseInt(decimal, 10).toString(2);
+function validateEmail(email) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
 }
-const decimalNumber = 42;
-const binaryNumber = decimalToBinary(decimalNumber);
-console.log(binaryNumber);
+
+// Example usage
+console.log(validateEmail('john.doe@example.com')); // true
+console.log(validateEmail('invalid_email')); // false
