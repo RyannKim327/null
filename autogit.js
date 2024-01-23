@@ -1,19 +1,20 @@
-function selectionSort(array) {
-  for (let i = 0; i < array.length - 1; i++) {
-    let minIndex = i;
-    for (let j = i + 1; j < array.length; j++) {
-      if (array[j] < array[minIndex]) {
-        minIndex = j;
+function longestCommonPrefix(strs) {
+  if (strs.length === 0 || strs[0].length === 0) {
+    return "";
+  }
+
+  let prefix = "";
+  for (let i = 0; i < strs[0].length; i++) {
+    const char = strs[0][i];
+    for (let j = 1; j < strs.length; j++) {
+      if (i >= strs[j].length || strs[j][i] !== char) {
+        return prefix;
       }
     }
-    if (minIndex !== i) {
-      [array[i], array[minIndex]] = [array[minIndex], array[i]];
-    }
+    prefix += char;
   }
-  return array;
-}
 
-// Example usage:
-const unsortedArray = [64, 25, 12, 22, 11];
-const sortedArray = selectionSort(unsortedArray);
-console.log(sortedArray);
+  return prefix;
+}
+const strings = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(strings)); // Output: "fl"
