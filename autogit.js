@@ -1,42 +1,44 @@
-function longestCommonSubsequence(str1, str2) {
-  const m = str1.length;
-  const n = str2.length;
+function isPalindrome(str) {
+  // Convert the string to lowercase
+  str = str.toLowerCase();
 
-  // Create an empty 2D array to store the lengths of LCS
-  const dp = Array.from({ length: m + 1 }, () =>
-    Array.from({ length: n + 1 }, () => 0)
-  );
+  // Initialize two pointers, one at the start and another at the end
+  let leftPtr = 0;
+  let rightPtr = str.length - 1;
 
-  // Fill the dp array
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-      } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-      }
+  // While the pointers don't cross each other
+  while (leftPtr < rightPtr) {
+    // Skip non-alphanumeric characters by moving the pointers
+    while (!isAlphanumeric(str[leftPtr]) && leftPtr < rightPtr) {
+      leftPtr++;
     }
+    while (!isAlphanumeric(str[rightPtr]) && leftPtr < rightPtr) {
+      rightPtr--;
+    }
+
+    // If the characters at the pointers are not equal, it's not a palindrome
+    if (str[leftPtr] !== str[rightPtr]) {
+      return false;
+    }
+
+    // Move the pointers towards each other
+    leftPtr++;
+    rightPtr--;
   }
 
-  // Construct the LCS from the dp array
-  let i = m, j = n;
-  const lcs = [];
-
-  while (i > 0 && j > 0) {
-    if (str1[i - 1] === str2[j - 1]) {
-      lcs.unshift(str1[i - 1]);
-      i--;
-      j--;
-    } else if (dp[i - 1][j] > dp[i][j - 1]) {
-      i--;
-    } else {
-      j--;
-    }
-  }
-
-  return lcs.join('');
+  // If the while loop completes without returning false, it's a palindrome
+  return true;
 }
-const str1 = 'ABCDGH';
-const str2 = 'AEDFHR';
-const result = longestCommonSubsequence(str1, str2);
-console.log(result); // Output: ADH
+
+// Helper function to check if a character is alphanumeric
+function isAlphanumeric(char) {
+  const code = char.charCodeAt(0);
+  return (
+    (code >= 48 && code <= 57) || // Numeric (0-9)
+    (code >= 97 && code <= 122) // Lowercase alphabets (a-z)
+  );
+}
+
+// Example usage:
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // Output: true
+console.log(isPalindrome("race a car")); // Output: false
