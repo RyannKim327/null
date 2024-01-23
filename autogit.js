@@ -1,68 +1,58 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-
-class LinkedList {
+class Stack {
   constructor() {
-    this.head = null;
+    this.stack = []; // Array to store stack elements
   }
 
-  // Add a new node to the end of the list
-  add(value) {
-    const newNode = new Node(value);
-
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
+  // Add an element to the top of the stack
+  push(element) {
+    this.stack.push(element);
   }
 
-  // Remove the node with the specified value from the list
-  remove(value) {
-    if (!this.head) {
-      return;
+  // Remove and return the top element from the stack
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack Underflow";
     }
-
-    if (this.head.value === value) {
-      this.head = this.head.next;
-      return;
-    }
-
-    let current = this.head;
-    let previous = null;
-    while (current) {
-      if (current.value === value) {
-        previous.next = current.next;
-        return;
-      }
-      previous = current;
-      current = current.next;
-    }
+    return this.stack.pop();
   }
 
-  // Print the elements of the linked list
+  // Return the top element of the stack without removing it
+  peek() {
+    if (this.isEmpty()) {
+      return "Stack is Empty";
+    }
+    return this.stack[this.stack.length - 1];
+  }
+
+  // Check if the stack is empty
+  isEmpty() {
+    return this.stack.length === 0;
+  }
+
+  // Return the size of the stack
+  size() {
+    return this.stack.length;
+  }
+
+  // Print the elements of the stack
   print() {
-    let current = this.head;
-    while (current) {
-      console.log(current.value);
-      current = current.next;
+    if (this.isEmpty()) {
+      console.log("Stack is Empty");
+    } else {
+      console.log("Elements in the stack:");
+      this.stack.forEach((element) => console.log(element));
     }
   }
 }
-const linkedList = new LinkedList();
-linkedList.add(1);
-linkedList.add(2);
-linkedList.add(3);
 
-linkedList.print(); // Output: 1, 2, 3
+// Example usage
+const stack = new Stack();
+stack.push(10);
+stack.push(20);
+stack.push(30);
 
-linkedList.remove(2);
-linkedList.print(); // Output: 1, 3
+console.log(stack.pop()); // Output: 30
+console.log(stack.peek()); // Output: 20
+console.log(stack.size()); // Output: 2
+
+stack.print();
