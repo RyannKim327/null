@@ -1,20 +1,25 @@
-function bubbleSort(arr) {
-  var len = arr.length;
-  for (var i = 0; i < len; i++) {
-    for (var j = 0; j < len - 1; j++) {
-      if (arr[j] > arr[j + 1]) {
-        var temp = arr[j];
-        arr[j] = arr[j + 1];
-        arr[j + 1] = temp;
-      }
+function findFirstRepeatedChar(inputString) {
+  var charCount = {};
+
+  // Traverse each character in the input string
+  for (var i = 0; i < inputString.length; i++) {
+    var char = inputString[i];
+
+    // Check if the character already exists in the map
+    if (charCount[char]) {
+      // If it does, return the first repeated character
+      return char;
     }
+
+    // If the character doesn't exist, add it to the map
+    charCount[char] = true;
   }
-  return arr;
+
+  // If no repeated character found
+  return null;
 }
 
 // Example usage:
-var unsortedArray = [5, 3, 8, 1, 2];
-console.log("Unsorted array:", unsortedArray);
-
-var sortedArray = bubbleSort(unsortedArray);
-console.log("Sorted array:", sortedArray);
+var string = "Hello World";
+var repeatedChar = findFirstRepeatedChar(string);
+console.log("First repeated character: " + repeatedChar);
