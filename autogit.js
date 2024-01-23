@@ -1,22 +1,22 @@
-function findMedianSortedArrays(nums1, nums2) {
-  const combinedArray = nums1.concat(nums2);
-
-  combinedArray.sort((a, b) => a - b);
-
-  const midIndex = Math.floor(combinedArray.length / 2);
-
-  if (combinedArray.length % 2 === 0) {
-    // Even length, return average of two middle values
-    return (combinedArray[midIndex - 1] + combinedArray[midIndex]) / 2;
-  } else {
-    // Odd length, return middle value
-    return combinedArray[midIndex];
+function isPrime(number) {
+  // If number is less than 2, it's not prime
+  if (number < 2) {
+    return false;
   }
+  
+  // Check for divisibility from 2 to square root of the number
+  for (let i = 2; i <= Math.sqrt(number); i++) {
+    if (number % i === 0) {
+      // Number is divisible, so it's not prime
+      return false;
+    }
+  }
+  
+  // Number is not divisible, so it's prime
+  return true;
 }
 
-// Example usage:
-const nums1 = [1, 3];
-const nums2 = [2, 4, 5];
-
-const median = findMedianSortedArrays(nums1, nums2);
-console.log(median); // Output: 3
+// Test the function
+console.log(isPrime(13));  // true
+console.log(isPrime(25));  // false
+console.log(isPrime(1));   // false
