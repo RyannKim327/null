@@ -1,12 +1,17 @@
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
+function areAnagrams(str1, str2) {
+  // Remove non-alphabetic characters and convert to lowercase
+  str1 = str1.replace(/[^a-zA-Z]/g, "").toLowerCase();
+  str2 = str2.replace(/[^a-zA-Z]/g, "").toLowerCase();
 
-// Find the index of the element to remove
-let index = array.indexOf(elementToRemove);
+  // Sort the characters of both strings
+  const sortedStr1 = str1.split("").sort().join("");
+  const sortedStr2 = str2.split("").sort().join("");
 
-// Remove the element using splice()
-if (index !== -1) {
-  array.splice(index, 1);
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
 
-console.log(array); // [1, 2, 4, 5]
+// Example usage
+const string1 = "listen";
+const string2 = "silent";
+console.log(areAnagrams(string1, string2)); // Output: true
