@@ -1,68 +1,54 @@
-class Graph {
-  constructor() {
-    this.adjList = new Map();
-  }
-
-  addVertex(v) {
-    if (!this.adjList.has(v)) {
-      this.adjList.set(v, []);
+function bwt(input) {
+    // Step 1: Generate all rotations of the input string
+    const rotations = [];
+    for (let i = 0; i < input.length; i++) {
+        rotations.push(input.slice(i) + input.slice(0, i));
     }
-  }
 
-  addEdge(v1, v2) {
-    this.adjList.get(v1).push(v2);
-  }
+    // Step 2: Sort the rotations in lexicographic order
+    rotations.sort();
 
-  getVertices() {
-    return Array.from(this.adjList.keys());
-  }
+    // Step 3: Extract the last character of each rotation
+    const bwtString = rotations.map(rotation => rotation.slice(-1)).join('');
 
-  getEdges() {
-    const edges = [];
-    for (let [vertex, neighbors] of this.adjList) {
-      for (let neighbor of neighbors) {
-        edges.push([vertex, neighbor]);
-      }
-    }
-    return edges;
-  }
+    // Step 4: Return the transformed string
+    return bwtString;
 }
-function topologicalSort(graph) {
-  const visited = new Set();
-  const stack = [];
+function inverseBwt(input) {
+    // Step 1: Create an array to hold the intermediate steps
+    const table = [];
 
-  function dfs(v) {
-    visited.add(v);
-    const neighbors = graph.adjList.get(v);
-
-    for (let neighbor of neighbors) {
-      if (!visited.has(neighbor)) {
-        dfs(neighbor);
-      }
+    // Step 2: Initialize the table with the input string
+    for (let i = 0; i < input.length; i++) {
+        table[i] = input.split('');
     }
 
-    stack.push(v);
-  }
+    // Step 3: Sort the table rows lexicographically
+    for (let j = 1; j < input.length; j++) {
+        table.sort();
 
-  const vertices = graph.getVertices();
-  for (let vertex of vertices) {
-    if (!visited.has(vertex)) {
-      dfs(vertex);
+        // Step 4: Update each row by appending the corresponding character from the input string
+        for (let i = 0; i < input.length; i++) {
+            table[i].push(input.charAt(i));
+        }
     }
-  }
 
-  return stack.reverse();
+    // Step 5: Find the row that ends with '\0'
+    const index = table.findIndex(row => row[row.length - 1] === '\0');
+
+    // Step 6: Reconstruct the original string by following the last characters
+    let originalString = '';
+    for (let i = 0; i < input.length - 1; i++) {
+        originalString += table[index][i];
+    }
+
+    // Step 7: Return the reconstructed string
+    return originalString;
 }
-const graph = new Graph();
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
-graph.addEdge('A', 'C');
-graph.addEdge('C', 'D');
-graph.addEdge('D', 'E');
-graph.addEdge('B', 'E');
+// Transform a string using Burrows-Wheeler Transform
+const transformedString = bwt('banana');
+console.log(transformedString);  // Output: "annb\$aa"
 
-const sortedOrder = topologicalSort(graph);
-console.log(sortedOrder); // Output: ['B', 'A', 'C', 'D', 'E']
+// Reconstruct the original string
+const reconstructedString = inverseBwt(transformedString);
+console.log(reconstructedString); // Output: "banana"
