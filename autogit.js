@@ -1,42 +1,42 @@
-class Node {
-  constructor(value, children = []) {
-    this.value = value;
-    this.children = children;
-  }
-}
+function longestCommonSubsequence(str1, str2) {
+  const m = str1.length;
+  const n = str2.length;
 
-function depthLimitedSearch(root, target, depthLimit) {
-  const stack = [{ node: root, depth: 0 }];
+  // Create an empty 2D array to store the lengths of LCS
+  const dp = Array.from({ length: m + 1 }, () =>
+    Array.from({ length: n + 1 }, () => 0)
+  );
 
-  while (stack.length > 0) {
-    const { node, depth } = stack.pop();
-
-    if (node.value === target) {
-      return node; // or return true if you only need to check if the target exists
-    }
-
-    if (depth < depthLimit) {
-      // Add child nodes to the stack in reverse order
-      for (let i = node.children.length - 1; i >= 0; i--) {
-        stack.push({ node: node.children[i], depth: depth + 1 });
+  // Fill the dp array
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
       }
     }
   }
 
-  return null; // or return false if the target doesn't exist
+  // Construct the LCS from the dp array
+  let i = m, j = n;
+  const lcs = [];
+
+  while (i > 0 && j > 0) {
+    if (str1[i - 1] === str2[j - 1]) {
+      lcs.unshift(str1[i - 1]);
+      i--;
+      j--;
+    } else if (dp[i - 1][j] > dp[i][j - 1]) {
+      i--;
+    } else {
+      j--;
+    }
+  }
+
+  return lcs.join('');
 }
-
-// Usage example:
-const tree = new Node(1, [
-  new Node(2, [
-    new Node(3, [
-      new Node(4),
-      new Node(5)
-    ]),
-    new Node(6)
-  ]),
-  new Node(7)
-]);
-
-const targetNode = depthLimitedSearch(tree, 6, 3);
-console.log(targetNode); // Output: Node { value: 6 }
+const str1 = 'ABCDGH';
+const str2 = 'AEDFHR';
+const result = longestCommonSubsequence(str1, str2);
+console.log(result); // Output: ADH
