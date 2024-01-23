@@ -1,129 +1,18 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  const sanitizedStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+  // Reverse the string
+  const reversedStr = sanitizedStr.split('').reverse().join('');
+
+  // Compare the reversed string with the original string
+  return sanitizedStr === reversedStr;
 }
+const string1 = "A man, a plan, a canal: Panama";
+console.log(isPalindrome(string1)); // Output: true
 
-class BinarySearchTree {
-  constructor() {
-    this.root = null;
-  }
+const string2 = "race car";
+console.log(isPalindrome(string2)); // Output: true
 
-  insert(value) {
-    const newNode = new Node(value);
-
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
-
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
-
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
-    } else if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else if (value > node.value) {
-      return this.searchNode(node.right, value);
-    } else {
-      return true;
-    }
-  }
-
-  inorderTraversal() {
-    this.inorderTraversalNode(this.root);
-  }
-
-  inorderTraversalNode(node) {
-    if (node !== null) {
-      this.inorderTraversalNode(node.left);
-      console.log(node.value);
-      this.inorderTraversalNode(node.right);
-    }
-  }
-
-  remove(value) {
-    this.root = this.removeNode(this.root, value);
-  }
-
-  removeNode(node, value) {
-    if (node === null) {
-      return null;
-    } else if (value < node.value) {
-      node.left = this.removeNode(node.left, value);
-      return node;
-    } else if (value > node.value) {
-      node.right = this.removeNode(node.right, value);
-      return node;
-    } else {
-      if (node.left === null && node.right === null) {
-        node = null;
-        return node;
-      }
-
-      if (node.left === null) {
-        node = node.right;
-        return node;
-      } else if (node.right === null) {
-        node =  node.left;
-        return node;
-      }
-
-      const minNode = this.findMinNode(node.right);
-      node.value = minNode.value;
-      node.right = this.removeNode(node.right, minNode.value);
-      return node;
-    }
-  }
-
-  findMinNode(node) {
-    if (node.left === null) {
-      return node;
-    } else {
-      return this.findMinNode(node.left);
-    }
-  }
-}
-const bst = new BinarySearchTree();
-
-bst.insert(8);
-bst.insert(3);
-bst.insert(10);
-bst.insert(1);
-bst.insert(6);
-bst.insert(14);
-bst.insert(4);
-bst.insert(7);
-bst.insert(13);
-
-// Perform an inorder traversal to print the tree in sorted order
-bst.inorderTraversal(); // Output: 1 3 4 6 7 8 10 13 14
-
-console.log(bst.search(6)); // Output: true
-console.log(bst.search(11)); // Output: false
-
-bst.remove(6);
-bst.inorderTraversal(); // Output: 1 3 4 7 8 10 13 14
+const string3 = "Hello, world!";
+console.log(isPalindrome(string3)); // Output: false
