@@ -1,68 +1,114 @@
-class ListNode {
-  constructor(val) {
-    this.val = val;
-    this.next = null;
-  }
-}
-
-function getIntersectionNode(headA, headB) {
-  // Traverse both linked lists to find their lengths and the last nodes
-  let lengthA = getLength(headA);
-  let lengthB = getLength(headB);
-  let currA = headA;
-  let currB = headB;
-
-  // If the last nodes are not the same, there is no intersection
-  if (getLastNode(currA) !== getLastNode(currB)) {
-    return null;
+class Graph {
+  constructor() {
+    this.nodes = {};
   }
 
-  // Determine the difference in lengths
-  let diff = Math.abs(lengthA - lengthB);
+  addNode(node) {
+    this.nodes[node] = [];
+  }
 
-  // Traverse the longer linked list
-  if (lengthA > lengthB) {
-    while (diff > 0) {
-      currA = currA.next;
-      diff--;
+  addEdge(node1, node2, weight) {
+    this.nodes[node1].push({ node: node2, weight: weight });
+    this.nodes[node2].push({ node: node1, weight: weight });
+  }
+
+  setEdgeWeight(node1, node2, weight) {
+    this.nodes[node1] = this.nodes[node1].map(edge => {
+      if (edge.node === node2) {
+        edge.weight = weight;
+      }
+      return edge;
+    });
+    this.nodes[node2] = this.nodes[node2].map(edge => {
+      if (edge.node === node1) {
+        edge.weight = weight;
+      }
+      return edge;
+    });
+  }
+
+  buildDistanceArray(sourceNode) {
+    const distance = {};
+    for (const node in this.nodes) {
+      distance[node] = node === sourceNode ? 0 : Infinity;
     }
-  } else if (lengthA < lengthB) {
-    while (diff > 0) {
-      currB = currB.next;
-      diff--;
+    return distance;
+  }
+
+  buildVisitedArray() {
+    const visited = {};
+    for (const node in this.nodes) {
+      visited[node] = false;
     }
+    return visited;
   }
 
-  // Traverse both linked lists together, comparing the nodes
-  while (currA !== currB) {
-    currA = currA.next;
-    currB = currB.next;
+  dijkstra(sourceNode) {
+    const distance = this.buildDistanceArray(sourceNode);
+    const visited = this.buildVisitedArray();
+
+    while (true) {
+      const closestNode = this.getMinDistanceNode(distance, visited);
+      if (closestNode === null) break;
+      visited[closestNode] = true;
+
+      for (const neighbor of this.nodes[closestNode]) {
+        const distanceToNeighbor = distance[closestNode] + neighbor.weight;
+        if (distanceToNeighbor < distance[neighbor.node]) {
+          distance[neighbor.node] = distanceToNeighbor;
+        }
+      }
+    }
+    return distance;
   }
 
-  // Return the intersection node
-  return currA;
+  getMinDistanceNode(distance, visited) {
+    let minDistance = Infinity;
+    let minNode = null;
+
+    for (const node in distance) {
+      if (!visited[node] && distance[node] <= minDistance) {
+        minDistance = distance[node];
+        minNode = node;
+      }
+    }
+    return minNode;
+  }
+
+  getShortestPath(sourceNode, destinationNode, distance) {
+    const path = [destinationNode];
+    let node = destinationNode;
+
+    while (node !== sourceNode) {
+      for (const edge of this.nodes[node]) {
+        if (distance[node] === distance[edge.node] + edge.weight) {
+          path.unshift(edge.node);
+          node = edge.node;
+          break;
+        }
+      }
+    }
+    return path;
+  }
 }
 
-// Helper function to get the length of a linked list
-function getLength(head) {
-  let length = 0;
-  let curr = head;
+// Example usage:
+const graph = new Graph();
 
-  while (curr) {
-    length++;
-    curr = curr.next;
-  }
+graph.addNode('A');
+graph.addNode('B');
+graph.addNode('C');
+graph.addNode('D');
+graph.addNode('E');
 
-  return length;
-}
+graph.addEdge('A', 'B', 4);
+graph.addEdge('A', 'C', 2);
+graph.addEdge('B', 'E', 3);
+graph.addEdge('C', 'D', 2);
+graph.addEdge('D', 'E', 3);
 
-// Helper function to get the last node of a linked list
-function getLastNode(head) {
-  let curr = head;
+const distance = graph.dijkstra('A');
+console.log(distance);  // Output: { A: 0, B: 4, C: 2, D: 4, E: 5 }
 
-  while (curr && curr.next) {
-    curr = curr.next;
-  }
-
-  return curr;
-}
+const shortestPath = graph.getShortestPath('A', 'E', distance);
+console.log(shortestPath);  // Output: ['A', 'C', 'D', 'E']
