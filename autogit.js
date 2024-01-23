@@ -1,9 +1,65 @@
-// Prompt the user for input
-const number1 = parseFloat(prompt("Enter the first number:"));
-const number2 = parseFloat(prompt("Enter the second number:"));
+class ListNode {
+  constructor(val, next = null) {
+    this.val = val;
+    this.next = next;
+  }
+}
 
-// Perform the calculation
-const sum = number1 + number2;
+function createLinkedList(values) {
+  let head = null;
+  let tail = null;
 
-// Display the result
-console.log("The sum of " + number1 + " and " + number2 + " is: " + sum);
+  for (let val of values) {
+    const newNode = new ListNode(val);
+    if (!head) {
+      head = tail = newNode;
+    } else {
+      tail.next = newNode;
+      tail = newNode;
+    }
+  }
+
+  return head;
+}
+function reverseLinkedList(head) {
+  let prev = null;
+  let curr = head;
+
+  while (curr) {
+    const next = curr.next;
+    curr.next = prev;
+    prev = curr;
+    curr = next;
+  }
+
+  return prev;
+}
+function isLinkedListPalindrome(head) {
+  let fast = head;
+  let slow = head;
+
+  while (fast && fast.next) {
+    fast = fast.next.next;
+    slow = slow.next;
+  }
+
+  if (fast) {
+    slow = slow.next; // Ignoring middle element for odd-length lists
+  }
+
+  let reversed = reverseLinkedList(slow);
+
+  while (reversed) {
+    if (reversed.val !== head.val) {
+      return false;
+    }
+    reversed = reversed.next;
+    head = head.next;
+  }
+
+  return true;
+}
+const values = [1, 2, 3, 2, 1];
+const linkedList = createLinkedList(values);
+
+console.log(isLinkedListPalindrome(linkedList)); // Output: true
