@@ -1,19 +1,29 @@
-function isPrime(num) {
-  if (num <= 1) {
-    return false;
-  }
+function findLongestIncreasingSubsequence(arr) {
+  const n = arr.length;
+  const dp = new Array(n).fill(1);
 
-  // Check for divisibility from 2 to the square root of the number
-  for (let i = 2; i <= Math.sqrt(num); i++) {
-    if (num % i === 0) {
-      return false;
+  for (let i = 1; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      if (arr[i] > arr[j] && dp[i] < dp[j] + 1) {
+        dp[i] = dp[j] + 1;
+      }
     }
   }
 
-  // If the number is not divisible by any smaller number, it is prime
-  return true;
+  let maxLength = Math.max(...dp);
+  let lis = [];
+
+  for (let i = n - 1; i >= 0 && maxLength > 0; i--) {
+    if (dp[i] === maxLength) {
+      lis.unshift(arr[i]);
+      maxLength--;
+    }
+  }
+
+  return lis;
 }
 
-// Example usage
-console.log(isPrime(17)); // Output: true
-console.log(isPrime(20)); // Output: false
+// Example usage:
+const arr = [3, 10, 2, 1, 20];
+const longestIncreasingSubsequence = findLongestIncreasingSubsequence(arr);
+console.log(longestIncreasingSubsequence); // Output: [3, 10, 20]
