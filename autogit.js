@@ -1,15 +1,11 @@
-function calculateMean(numbers) {
-  let sum = 0;
+function getIntersectionNode(headA, headB) {
+  let p1 = headA;
+  let p2 = headB;
 
-  for (let i = 0; i < numbers.length; i++) {
-    sum += numbers[i];
+  while (p1 !== p2) {
+    p1 = p1 === null ? headB : p1.next;
+    p2 = p2 === null ? headA : p2.next;
   }
 
-  const mean = sum / numbers.length;
-  return mean;
+  return p1;
 }
-
-// Example usage:
-const numbers = [1, 2, 3, 4, 5];
-const mean = calculateMean(numbers);
-console.log(mean);
