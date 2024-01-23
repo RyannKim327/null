@@ -1,39 +1,61 @@
-// Node class representing each node in the search space
-class Node {
-  constructor(value, children = []) {
-    this.value = value; // The value of the node
-    this.children = children; // Children nodes
-  }
-}
+// Tarjan's algorithm for finding strongly connected components
+function tarjanSCC(graph) {
+  let index = 0; // DFS node index
+  const stack = []; // Maintain a stack of nodes during the DFS
+  const indices = new Map(); // Map to store each node's DFS index
+  const lowLinks = new Map(); // Map to store each node's low link value
+  const inStack = new Set(); // Set to keep track of nodes in the current SCC
+  const result = []; // Store the strongly connected components
 
-// Depth-Limited Search algorithm
-function depthLimitedSearch(root, target, depthLimit) {
-  let stack = [{ node: root, depth: 0 }]; // Stack to store nodes and their current depth
+  // A helper function for DFS
+  function dfs(node) {
+    indices.set(node, index);
+    lowLinks.set(node, index);
+    index += 1;
+    stack.push(node);
+    inStack.add(node);
 
-  while (stack.length > 0) {
-    const { node, depth } = stack.pop(); // Get the last added node from the stack
-
-    if (node.value === target) {
-      return node; // Found the target node
-    }
-
-    if (depth < depthLimit) {
-      // Add the children of the current node to the stack with increased depth
-      for (let i = node.children.length - 1; i >= 0; i--) {
-        stack.push({ node: node.children[i], depth: depth + 1 });
+    for (const neighbor of graph[node]) {
+      if (!indices.has(neighbor)) {
+        dfs(neighbor);
+        lowLinks.set(node, Math.min(lowLinks.get(node), lowLinks.get(neighbor)));
+      } else if (inStack.has(neighbor)) {
+        lowLinks.set(node, Math.min(lowLinks.get(node), indices.get(neighbor)));
       }
     }
+
+    if (lowLinks.get(node) === indices.get(node)) {
+      const component = [];
+      let w;
+      do {
+        w = stack.pop();
+        inStack.delete(w);
+        component.push(w);
+      } while (w !== node);
+      result.push(component);
+    }
   }
 
-  return null; // Target not found within the depth limit
+  // Call DFS for each unvisited node
+  for (const node in graph) {
+    if (!indices.has(node)) {
+      dfs(node);
+    }
+  }
+
+  return result;
 }
 
-// Usage example
-const rootNode = new Node(1, [
-  new Node(2, [new Node(5)]),
-  new Node(3),
-  new Node(4, [new Node(6), new Node(7)]),
-]);
+// Example usage
+const graph = {
+  A: ['B', 'C'],
+  B: ['D'],
+  C: ['A', 'E'],
+  D: ['C', 'F'],
+  E: ['G'],
+  F: ['E'],
+  G: ['F'],
+};
 
-const targetNode = depthLimitedSearch(rootNode, 7, 3);
-console.log(targetNode); // Output: Node { value: 7, children: [] }
+const scc = tarjanSCC(graph);
+console.log(scc);
