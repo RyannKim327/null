@@ -1,25 +1,41 @@
-function quicksort(arr) {
-  if (arr.length <= 1) {
-    return arr;
-  }
+function longestCommonSubsequence(str1, str2) {
+    const m = str1.length;
+    const n = str2.length;
+    
+    // Create a matrix to store the lengths of LCS
+    const dp = new Array(m + 1).fill(0).map(() => new Array(n + 1).fill(0));
 
-  const pivot = arr[arr.length - 1];
-  const left = [];
-  const right = [];
-
-  for (let i = 0; i < arr.length - 1; i++) {
-    if (arr[i] < pivot) {
-      left.push(arr[i]);
-    } else {
-      right.push(arr[i]);
+    // Compute LCS lengths
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
     }
-  }
 
-  return [...quicksort(left), pivot, ...quicksort(right)];
+    // Retrieve the LCS from the matrix
+    let lcs = "";
+    let i = m, j = n;
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            lcs = str1[i - 1] + lcs;
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
+        }
+    }
+    
+    return lcs;
 }
 
 // Example usage
-const array = [5, 2, 9, 1, 3, 7, 6, 4, 8];
-const sortedArray = quicksort(array);
-
-console.log(sortedArray);
+const str1 = "AGGTAB";
+const str2 = "GXTXAYB";
+const lcs = longestCommonSubsequence(str1, str2);
+console.log(lcs); // Output: GTAB
