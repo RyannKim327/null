@@ -1,114 +1,68 @@
-class Graph {
-  constructor() {
-    this.nodes = {};
-  }
-
-  addNode(node) {
-    this.nodes[node] = [];
-  }
-
-  addEdge(node1, node2, weight) {
-    this.nodes[node1].push({ node: node2, weight: weight });
-    this.nodes[node2].push({ node: node1, weight: weight });
-  }
-
-  setEdgeWeight(node1, node2, weight) {
-    this.nodes[node1] = this.nodes[node1].map(edge => {
-      if (edge.node === node2) {
-        edge.weight = weight;
-      }
-      return edge;
-    });
-    this.nodes[node2] = this.nodes[node2].map(edge => {
-      if (edge.node === node1) {
-        edge.weight = weight;
-      }
-      return edge;
-    });
-  }
-
-  buildDistanceArray(sourceNode) {
-    const distance = {};
-    for (const node in this.nodes) {
-      distance[node] = node === sourceNode ? 0 : Infinity;
-    }
-    return distance;
-  }
-
-  buildVisitedArray() {
-    const visited = {};
-    for (const node in this.nodes) {
-      visited[node] = false;
-    }
-    return visited;
-  }
-
-  dijkstra(sourceNode) {
-    const distance = this.buildDistanceArray(sourceNode);
-    const visited = this.buildVisitedArray();
-
-    while (true) {
-      const closestNode = this.getMinDistanceNode(distance, visited);
-      if (closestNode === null) break;
-      visited[closestNode] = true;
-
-      for (const neighbor of this.nodes[closestNode]) {
-        const distanceToNeighbor = distance[closestNode] + neighbor.weight;
-        if (distanceToNeighbor < distance[neighbor.node]) {
-          distance[neighbor.node] = distanceToNeighbor;
-        }
-      }
-    }
-    return distance;
-  }
-
-  getMinDistanceNode(distance, visited) {
-    let minDistance = Infinity;
-    let minNode = null;
-
-    for (const node in distance) {
-      if (!visited[node] && distance[node] <= minDistance) {
-        minDistance = distance[node];
-        minNode = node;
-      }
-    }
-    return minNode;
-  }
-
-  getShortestPath(sourceNode, destinationNode, distance) {
-    const path = [destinationNode];
-    let node = destinationNode;
-
-    while (node !== sourceNode) {
-      for (const edge of this.nodes[node]) {
-        if (distance[node] === distance[edge.node] + edge.weight) {
-          path.unshift(edge.node);
-          node = edge.node;
-          break;
-        }
-      }
-    }
-    return path;
+class Node {
+  constructor(state, cost, parent) {
+    this.state = state; // The current state
+    this.cost = cost; // Cost to reach this state
+    this.parent = parent; // Parent node
   }
 }
 
-// Example usage:
-const graph = new Graph();
+function aStarSearch(initialState, goalState) {
+  let openList = [new Node(initialState, 0, null)];
+  let closedList = [];
 
-graph.addNode('A');
-graph.addNode('B');
-graph.addNode('C');
-graph.addNode('D');
-graph.addNode('E');
+  while (openList.length > 0) {
+    // Get the node with the lowest cost from the open list
+    let currentNode = openList.shift();
+    closedList.push(currentNode);
 
-graph.addEdge('A', 'B', 4);
-graph.addEdge('A', 'C', 2);
-graph.addEdge('B', 'E', 3);
-graph.addEdge('C', 'D', 2);
-graph.addEdge('D', 'E', 3);
+    // Check if the goal state is reached
+    if (currentNode.state === goalState) {
+      // Path found, perform path reconstruction
+      let path = [];
+      while (currentNode !== null) {
+        path.unshift(currentNode.state); // Add the state to the beginning of the path
+        currentNode = currentNode.parent;
+      }
+      return path;
+    }
 
-const distance = graph.dijkstra('A');
-console.log(distance);  // Output: { A: 0, B: 4, C: 2, D: 4, E: 5 }
+    // Generate neighboring states
+    let neighbors = generateNeighbors(currentNode.state);
 
-const shortestPath = graph.getShortestPath('A', 'E', distance);
-console.log(shortestPath);  // Output: ['A', 'C', 'D', 'E']
+    for (let neighbor of neighbors) {
+      let neighborCost = currentNode.cost + calculateCost(currentNode.state, neighbor);
+      let neighborNode = new Node(neighbor, neighborCost, currentNode);
+
+      // Check if the neighbor is already in the closed list
+      if (closedList.some(node => node.state === neighbor)) {
+        continue;
+      }
+
+      // Check if the neighbor is already in the open list
+      let existingNode = openList.find(node => node.state === neighbor);
+      if (existingNode) {
+        // Check if the new path has a lower cost
+        if (neighborCost < existingNode.cost) {
+          existingNode.cost = neighborCost;
+          existingNode.parent = currentNode;
+        }
+      } else {
+        openList.push(neighborNode);
+      }
+    }
+  }
+
+  // No solution found
+  return null;
+}
+
+// Helper functions
+function generateNeighbors(state) {
+  // Generate neighboring states based on the current state
+  // Return an array of neighboring states
+}
+
+function calculateCost(state1, state2) {
+  // Calculate the cost to move from state1 to state2
+  // Return a numeric cost value
+}
