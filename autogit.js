@@ -1,71 +1,42 @@
-class SkipListNode {
-  constructor(value, level) {
-    this.value = value;
-    this.level = level;
-    this.next = new Array(level + 1); // Array of next pointers
-  }
+function ListNode(val) {
+  this.val = val;
+  this.next = null;
 }
-class SkipList {
-  constructor() {
-    this.head = new SkipListNode(-Infinity, 0); // Dummy head node
-    this.tail = new SkipListNode(Infinity, 0); // Dummy tail node
-    this.level = 0; // Current maximum level of the skip list
-  }
-}
-randomLevel() {
-  let level = 0;
-  while (Math.random() < 0.5 && level < this.level + 1) {
-    level++;
-  }
-  return level;
-}
-insert(value) {
-  const newNode = new SkipListNode(value, this.randomLevel());
-  let currentNode = this.head;
 
-  // Find the appropriate positions to insert the new node
-  for (let i = this.level; i >= 0; i--) {
-    while (currentNode.next[i] && currentNode.next[i].value < value) {
-      currentNode = currentNode.next[i];
-    }
-    if (i <= newNode.level) {
-      newNode.next[i] = currentNode.next[i];
-      currentNode.next[i] = newNode;
-    }
+function getIntersectionNode(headA, headB) {
+  // Store nodes of the first list
+  const nodes = new Set();
+  let nodeA = headA;
+  while (nodeA !== null) {
+    nodes.add(nodeA);
+    nodeA = nodeA.next;
   }
 
-  // Update the maximum level of the skip list
-  if (newNode.level > this.level) {
-    this.level = newNode.level;
-  }
-}
-search(value) {
-  let currentNode = this.head;
-
-  // Traverse the skip list to find the node
-  for (let i = this.level; i >= 0; i--) {
-    while (currentNode.next[i] && currentNode.next[i].value < value) {
-      currentNode = currentNode.next[i];
+  // Traverse second list and check for intersection
+  let nodeB = headB;
+  while (nodeB !== null) {
+    if (nodes.has(nodeB)) {
+      return nodeB; // Intersection found
     }
+    nodeB = nodeB.next;
   }
 
-  // Check if the node's value matches the given value
-  if (currentNode.next[0] && currentNode.next[0].value === value) {
-    return currentNode.next[0];
-  } else {
-    return null;
-  }
+  return null; // No intersection found
 }
-remove(value) {
-  let currentNode = this.head;
+// Linked list 1: 1->2->3->4->5
+const head1 = new ListNode(1);
+head1.next = new ListNode(2);
+head1.next.next = new ListNode(3);
+head1.next.next.next = new ListNode(4);
+head1.next.next.next.next = new ListNode(5);
 
-  // Find the node to be removed
-  for (let i = this.level; i >= 0; i--) {
-    while (currentNode.next[i] && currentNode.next[i].value < value) {
-      currentNode = currentNode.next[i];
-    }
-    if (currentNode.next[i] && currentNode.next[i].value === value) {
-      currentNode.next[i] = currentNode.next[i].next[i];
-    }
-  }
-}
+// Linked list 2: 7->5->4->3->4->5
+const head2 = new ListNode(7);
+head2.next = new ListNode(5);
+head2.next.next = new ListNode(4);
+head2.next.next.next = head1.next.next; // Intersecting node
+head2.next.next.next.next = head1.next.next.next;
+head2.next.next.next.next.next = head1.next.next.next.next;
+
+const intersection = getIntersectionNode(head1, head2);
+console.log(intersection); // Output: ListNode { val: 3, next: ListNode { val: 4, next: ListNode { val: 5, next: null } } }
