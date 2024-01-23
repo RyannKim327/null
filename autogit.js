@@ -1,40 +1,24 @@
-function depthLimitedSearch(root, maxDepth) {
-  // Initialize a stack to store the nodes
-  const stack = [];
-  
-  // Push the root node to the stack with depth 0
-  stack.push({ node: root, depth: 0 });
+function longestCommonPrefix(strings) {
+  if (strings.length === 0) return '';
 
-  // Perform the iterative depth-limited search
-  while (stack.length > 0) {
-    // Pop a node from the stack
-    const { node, depth } = stack.pop();
+  let prefix = strings[0];
 
-    // Check if the node matches the target condition
-    if (/* Add your target condition here */) {
-      // Node matches the target condition, return it
-      return node;
-    }
+  for (let i = 1; i < strings.length; i++) {
+    const currentString = strings[i];
 
-    // Check if the maximum depth has been reached
-    if (depth < maxDepth) {
-      // Expand the node and push its children to the stack
-      const children = /* Add logic to generate node's children */;
-      for (let i = children.length - 1; i >= 0; i--) {
-        stack.push({ node: children[i], depth: depth + 1 });
+    for (let j = 0; j < prefix.length; j++) {
+      if (prefix[j] !== currentString[j] || j === currentString.length) {
+        prefix = prefix.slice(0, j); // Update prefix to exclude non-matching characters
+        break;
       }
     }
+
+    if (prefix.length === 0) break; // No common prefix found, exit the loop
   }
 
-  // Target not found within the depth limit, return null or handle appropriately
-  return null;
+  return prefix;
 }
-const rootNode = /* Create your initial state */;
-const maxDepth = 5; // Set the maximum depth limit as desired
-const result = depthLimitedSearch(rootNode, maxDepth);
 
-if (result) {
-  console.log("Target found:", result);
-} else {
-  console.log("Target not found within the depth limit.");
-}
+// Usage example:
+const strings = ['apple', 'app', 'application', 'aptitude'];
+console.log(longestCommonPrefix(strings)); // Output: 'app'
