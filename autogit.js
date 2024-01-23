@@ -1,20 +1,42 @@
-function isPalindrome(str) {
-  // Clean up the string by removing non-alphanumeric characters and converting to lowercase
-  const cleanStr = str.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
-  
-  // Reverse the string
-  const reversedStr = cleanStr.split('').reverse().join('');
-  
-  // Compare the reversed string with the original string
-  return cleanStr === reversedStr;
+class Node {
+  constructor(value, children = []) {
+    this.value = value;
+    this.children = children;
+  }
 }
 
-// Example usage
-const str1 = "A man, a plan, a canal: Panama";
-console.log(isPalindrome(str1));  // Output: true
+function depthLimitedSearch(root, target, depthLimit) {
+  const stack = [{ node: root, depth: 0 }];
 
-const str2 = "racecar";
-console.log(isPalindrome(str2));  // Output: true
+  while (stack.length > 0) {
+    const { node, depth } = stack.pop();
 
-const str3 = "hello";
-console.log(isPalindrome(str3));  // Output: false
+    if (node.value === target) {
+      return node; // or return true if you only need to check if the target exists
+    }
+
+    if (depth < depthLimit) {
+      // Add child nodes to the stack in reverse order
+      for (let i = node.children.length - 1; i >= 0; i--) {
+        stack.push({ node: node.children[i], depth: depth + 1 });
+      }
+    }
+  }
+
+  return null; // or return false if the target doesn't exist
+}
+
+// Usage example:
+const tree = new Node(1, [
+  new Node(2, [
+    new Node(3, [
+      new Node(4),
+      new Node(5)
+    ]),
+    new Node(6)
+  ]),
+  new Node(7)
+]);
+
+const targetNode = depthLimitedSearch(tree, 6, 3);
+console.log(targetNode); // Output: Node { value: 6 }
