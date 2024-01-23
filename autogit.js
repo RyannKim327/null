@@ -1,31 +1,21 @@
-function getDigit(num, pos) {
-  return Math.floor(Math.abs(num) / Math.pow(10, pos)) % 10;
-}
-function digitCount(num) {
-  if (num === 0) return 1;
-  return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
-function mostDigits(arr) {
-  let maxDigits = 0;
-  for (let i = 0; i < arr.length; i++) {
-    maxDigits = Math.max(maxDigits, digitCount(arr[i]));
-  }
-  return maxDigits;
-}
-function radixSort(arr) {
-  const maxDigits = mostDigits(arr);
-  for (let k = 0; k < maxDigits; k++) {
-    const buckets = Array.from({ length: 10 }, () => []);
+function findSecondLargest(array) {
+  let max = Number.NEGATIVE_INFINITY;
+  let secondMax = Number.NEGATIVE_INFINITY;
 
-    for (let i = 0; i < arr.length; i++) {
-      const digit = getDigit(arr[i], k);
-      buckets[digit].push(arr[i]);
+  for (let i = 0; i < array.length; i++) {
+    if (array[i] > max) {
+      secondMax = max;
+      max = array[i];
+    } else if (array[i] > secondMax && array[i] < max) {
+      secondMax = array[i];
     }
-
-    arr = [].concat(...buckets);
   }
 
-  return arr;
+  return secondMax;
 }
-const arr = [43, 16, 2, 109, 7, 8, 63, 25, 98, 34];
-console.log(radixSort(arr)); // Output: [2, 7, 8, 16, 25, 34, 43, 63, 98, 109]
+
+// Test the function
+const array = [2, 5, 8, 3, 10];
+const secondLargest = findSecondLargest(array);
+console.log("Second Largest: " + secondLargest);
+Second Largest: 8
