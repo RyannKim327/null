@@ -1,53 +1,43 @@
-function tarjansSCC(graph) {
-  let index = 0;
-  const indexes = {};
-  const lowlinks = {};
-  const onStack = {};
-  const stack = [];
-  const components = [];
+// Function to perform a depth-first search
+function dfs(graph, node, visited, stack) {
+  visited.add(node);
 
-  function dfs(node) {
-    indexes[node] = index;
-    lowlinks[node] = index;
-    index += 1;
-    stack.push(node);
-    onStack[node] = true;
-
-    for (const neighbor of graph[node]) {
-      if (typeof indexes[neighbor] === 'undefined') {
-        dfs(neighbor);
-        lowlinks[node] = Math.min(lowlinks[node], lowlinks[neighbor]);
-      } else if (onStack[neighbor]) {
-        lowlinks[node] = Math.min(lowlinks[node], indexes[neighbor]);
-      }
-    }
-
-    if (lowlinks[node] === indexes[node]) {
-      const component = [];
-      let w;
-      do {
-        w = stack.pop();
-        onStack[w] = false;
-        component.push(w);
-      } while (w !== node);
-      components.push(component);
+  // Visit all neighbors of the current node
+  for (let neighbor of graph[node]) {
+    if (!visited.has(neighbor)) {
+      dfs(graph, neighbor, visited, stack);
     }
   }
 
-  for (const node in graph) {
-    if (typeof indexes[node] === 'undefined') {
-      dfs(node);
-    }
-  }
-
-  return components;
+  // Push the current node to the stack
+  stack.push(node);
 }
+
+// Function to perform topological sort
+function topologicalSort(graph) {
+  const visited = new Set();
+  const stack = [];
+
+  // Visit all nodes in the graph
+  for (let node in graph) {
+    if (!visited.has(node)) {
+      dfs(graph, node, visited, stack);
+    }
+  }
+
+  // Reverse the order in the stack to get the sorted result
+  return stack.reverse();
+}
+
+// Example usage
 const graph = {
-  0: [1, 2],
-  1: [2],
-  2: [0, 3],
-  3: [3, 4],
+  A: ['B', 'C'],
+  B: ['D'],
+  C: ['D', 'E'],
+  D: [],
+  E: ['F'],
+  F: []
 };
 
-const components = tarjansSCC(graph);
-console.log(components);
+const sorted = topologicalSort(graph);
+console.log(sorted); // Output: ["A", "C", "E", "F", "B", "D"]
