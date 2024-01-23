@@ -1,35 +1,63 @@
-function countingSort(arr) {
-  // Find the minimum and maximum values in the input array
-  let min = Math.min(...arr);
-  let max = Math.max(...arr);
-
-  // Create a counting array with a length equal to the range between min and max
-  let count = new Array(max - min + 1).fill(0);
-
-  // Increment the count of each element in the input array
-  for (let i = 0; i < arr.length; i++) {
-    count[arr[i] - min]++;
+class Node {
+  constructor(start, end) {
+    this.start = start;
+    this.end = end;
+    this.children = {};
   }
-
-  // Modify the count array to store the sum of the previous counts
-  for (let i = 1; i < count.length; i++) {
-    count[i] += count[i - 1];
-  }
-
-  // Create a result array with the same length as the input array
-  let result = Array.from({ length: arr.length });
-
-  // Place each element from the input array into the result array using the count array
-  for (let i = 0; i < arr.length; i++) {
-    let index = count[arr[i] - min] - 1;
-    result[index] = arr[i];
-    count[arr[i] - min]--;
-  }
-
-  return result;
 }
 
-// Example usage
-let arr = [4, 2, 9, 5, 2, 8, 7, 1, 3, 7];
-let sortedArr = countingSort(arr);
-console.log(sortedArr); // Output: [1, 2, 2, 3, 4, 5, 7, 7, 8, 9]
+class SuffixTree {
+  constructor(input) {
+    this.root = new Node(-1, -1); // Create a dummy root node
+    this.input = input;
+    this.buildTree();
+  }
+
+  buildTree() {
+    const n = this.input.length;
+    for (let i = 0; i < n; i++) {
+      this.addSuffix(i);
+    }
+  }
+
+  addSuffix(start) {
+    let currentNode = this.root;
+    for (let i = start; i < this.input.length; i++) {
+      const currentChar = this.input[i];
+      if (!currentNode.children[currentChar]) {
+        currentNode.children[currentChar] = new Node(start, i);
+        return;
+      }
+      currentNode = currentNode.children[currentChar];
+    }
+  }
+
+  // Add other necessary methods for search and traversal
+
+  // Example: search for a substring in the suffix tree
+  search(substring) {
+    let currentNode = this.root;
+    let i = 0;
+    while (i < substring.length) {
+      const currentChar = substring[i];
+      if (!currentNode.children[currentChar]) {
+        return false;
+      }
+      currentNode = currentNode.children[currentChar];
+      const j = currentNode.start;
+      while (i < substring.length && j <= currentNode.end) {
+        if (substring[i] !== this.input[j]) {
+          return false;
+        }
+        i++;
+        j++;
+      }
+    }
+    return true;
+  }
+}
+
+// Usage:
+const suffixTree = new SuffixTree('banana');
+console.log(suffixTree.search('ana')); // Output: true
+console.log(suffixTree.search('xyz')); // Output: false
