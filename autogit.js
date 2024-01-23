@@ -1,46 +1,129 @@
 class Node {
   constructor(value) {
     this.value = value;
-    this.children = [];
-  }
-
-  addChild(node) {
-    this.children.push(node);
+    this.left = null;
+    this.right = null;
   }
 }
 
-function depthLimitedSearch(root, target, depthLimit) {
-  let stack = [];
-  stack.push({ node: root, depth: 0 });
+class BinarySearchTree {
+  constructor() {
+    this.root = null;
+  }
 
-  while (stack.length > 0) {
-    let { node, depth } = stack.pop();
+  insert(value) {
+    const newNode = new Node(value);
 
-    if (node.value === target) {
-      return node;
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
     }
+  }
 
-    if (depth < depthLimit) {
-      for (let child of node.children.reverse()) {
-        stack.push({ node: child, depth: depth + 1 });
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
       }
     }
   }
 
-  return null;
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  searchNode(node, value) {
+    if (node === null) {
+      return false;
+    } else if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else if (value > node.value) {
+      return this.searchNode(node.right, value);
+    } else {
+      return true;
+    }
+  }
+
+  inorderTraversal() {
+    this.inorderTraversalNode(this.root);
+  }
+
+  inorderTraversalNode(node) {
+    if (node !== null) {
+      this.inorderTraversalNode(node.left);
+      console.log(node.value);
+      this.inorderTraversalNode(node.right);
+    }
+  }
+
+  remove(value) {
+    this.root = this.removeNode(this.root, value);
+  }
+
+  removeNode(node, value) {
+    if (node === null) {
+      return null;
+    } else if (value < node.value) {
+      node.left = this.removeNode(node.left, value);
+      return node;
+    } else if (value > node.value) {
+      node.right = this.removeNode(node.right, value);
+      return node;
+    } else {
+      if (node.left === null && node.right === null) {
+        node = null;
+        return node;
+      }
+
+      if (node.left === null) {
+        node = node.right;
+        return node;
+      } else if (node.right === null) {
+        node =  node.left;
+        return node;
+      }
+
+      const minNode = this.findMinNode(node.right);
+      node.value = minNode.value;
+      node.right = this.removeNode(node.right, minNode.value);
+      return node;
+    }
+  }
+
+  findMinNode(node) {
+    if (node.left === null) {
+      return node;
+    } else {
+      return this.findMinNode(node.left);
+    }
+  }
 }
+const bst = new BinarySearchTree();
 
-// Example usage
-let a = new Node('A');
-let b = new Node('B');
-let c = new Node('C');
-let d = new Node('D');
-let e = new Node('E');
+bst.insert(8);
+bst.insert(3);
+bst.insert(10);
+bst.insert(1);
+bst.insert(6);
+bst.insert(14);
+bst.insert(4);
+bst.insert(7);
+bst.insert(13);
 
-a.addChild(b);
-a.addChild(c);
-b.addChild(d);
-b.addChild(e);
+// Perform an inorder traversal to print the tree in sorted order
+bst.inorderTraversal(); // Output: 1 3 4 6 7 8 10 13 14
 
-console.log(depthLimitedSearch(a, 'D', 2)); // Output: Node { value: 'D', children: [] }
-console.log(depthLimitedSearch(a, 'E', 1)); // Output: null
+console.log(bst.search(6)); // Output: true
+console.log(bst.search(11)); // Output: false
+
+bst.remove(6);
+bst.inorderTraversal(); // Output: 1 3 4 7 8 10 13 14
