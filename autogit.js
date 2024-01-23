@@ -1,9 +1,68 @@
-const numbers = [5, 1, 3, 2, 4];
+class ListNode {
+  constructor(val) {
+    this.val = val;
+    this.next = null;
+  }
+}
 
-// Sorting the array in ascending order
-const sortedNumbers = numbers.sort((a, b) => a - b);
-console.log(sortedNumbers);  // Output: [1, 2, 3, 4, 5]
+function getIntersectionNode(headA, headB) {
+  // Traverse both linked lists to find their lengths and the last nodes
+  let lengthA = getLength(headA);
+  let lengthB = getLength(headB);
+  let currA = headA;
+  let currB = headB;
 
-// Sorting the array in descending order
-const reversedNumbers = numbers.sort((a, b) => b - a);
-console.log(reversedNumbers);  // Output: [5, 4, 3, 2, 1]
+  // If the last nodes are not the same, there is no intersection
+  if (getLastNode(currA) !== getLastNode(currB)) {
+    return null;
+  }
+
+  // Determine the difference in lengths
+  let diff = Math.abs(lengthA - lengthB);
+
+  // Traverse the longer linked list
+  if (lengthA > lengthB) {
+    while (diff > 0) {
+      currA = currA.next;
+      diff--;
+    }
+  } else if (lengthA < lengthB) {
+    while (diff > 0) {
+      currB = currB.next;
+      diff--;
+    }
+  }
+
+  // Traverse both linked lists together, comparing the nodes
+  while (currA !== currB) {
+    currA = currA.next;
+    currB = currB.next;
+  }
+
+  // Return the intersection node
+  return currA;
+}
+
+// Helper function to get the length of a linked list
+function getLength(head) {
+  let length = 0;
+  let curr = head;
+
+  while (curr) {
+    length++;
+    curr = curr.next;
+  }
+
+  return length;
+}
+
+// Helper function to get the last node of a linked list
+function getLastNode(head) {
+  let curr = head;
+
+  while (curr && curr.next) {
+    curr = curr.next;
+  }
+
+  return curr;
+}
