@@ -1,32 +1,46 @@
-function shellSort(arr) {
-  // Start with a big gap, then reduce the gap until it becomes 1
-  let n = arr.length;
-  let gap = Math.floor(n / 2);
-
-  while (gap > 0) {
-    // Perform an insertion sort for elements at each gap
-    for (let i = gap; i < n; i++) {
-      let temp = arr[i];
-      let j = i;
-
-      // Shift earlier gap-sorted elements up until the correct location is found
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
-      }
-
-      // Put the current element in its correct location
-      arr[j] = temp;
-    }
-
-    // Reduce the gap for the next iteration
-    gap = Math.floor(gap / 2);
+class ListNode {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
-  
-  return arr;
 }
 
-// Example usage:
-const array = [10, 8, 3, 7, 5, 4, 1, 9, 2, 6];
-console.log("Before sorting:", array);
-console.log("After sorting:", shellSort(array));
+function findNthFromEnd(head, n) {
+  let first = head;
+  let second = head;
+
+  // Move the first pointer to the nth node from the beginning
+  for (let i = 0; i < n && first !== null; i++) {
+    first = first.next;
+  }
+
+  // If first pointer becomes null before reaching n, then the length of the list is less than n
+  if (first === null) {
+    return null;
+  }
+
+  // Move both pointers until first reaches the end of the list
+  while (first.next !== null) {
+    first = first.next;
+    second = second.next;
+  }
+
+  // At this point, the second pointer will be pointing to the nth node from the end
+  return second;
+}
+// Create a linked list
+let head = new ListNode(1);
+let second = new ListNode(2);
+let third = new ListNode(3);
+let fourth = new ListNode(4);
+let fifth = new ListNode(5);
+
+head.next = second;
+second.next = third;
+third.next = fourth;
+fourth.next = fifth;
+
+let n = 2;
+let nthNodeFromEnd = findNthFromEnd(head, n);
+
+console.log(`The ${n}th node from end is: ${nthNodeFromEnd.value}`);
