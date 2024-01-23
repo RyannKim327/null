@@ -1,16 +1,12 @@
-const cron = require('cron');
+let array = [1, 2, 3, 4, 5];
+let elementToRemove = 3;
 
-// Function to be executed
-function task() {
-  console.log('Executing task...');
-  // Add your task logic here
+// Find the index of the element to remove
+let index = array.indexOf(elementToRemove);
+
+// Remove the element using splice()
+if (index !== -1) {
+  array.splice(index, 1);
 }
 
-// Schedule the task to run every minute
-const cronJob = new cron.CronJob('* * * * *', task);
-
-// Start the cron job
-cronJob.start();
-
-// Stop the cron job after 5 minutes
-setTimeout(() => cronJob.stop(), 5 * 60 * 1000);
+console.log(array); // [1, 2, 4, 5]
