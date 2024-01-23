@@ -1,24 +1,23 @@
-function longestCommonPrefix(strings) {
-  if (strings.length === 0) return '';
+function findFirstRepeatedCharacter(str) {
+  const charCount = {};
 
-  let prefix = strings[0];
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
 
-  for (let i = 1; i < strings.length; i++) {
-    const currentString = strings[i];
-
-    for (let j = 0; j < prefix.length; j++) {
-      if (prefix[j] !== currentString[j] || j === currentString.length) {
-        prefix = prefix.slice(0, j); // Update prefix to exclude non-matching characters
-        break;
-      }
+    // If character already seen, return it as the first repeated character
+    if (charCount[char]) {
+      return char;
     }
 
-    if (prefix.length === 0) break; // No common prefix found, exit the loop
+    // Otherwise, update the count of the character
+    charCount[char] = 1;
   }
 
-  return prefix;
+  // No repeated character found
+  return null;
 }
 
-// Usage example:
-const strings = ['apple', 'app', 'application', 'aptitude'];
-console.log(longestCommonPrefix(strings)); // Output: 'app'
+// Example usage:
+const str = "hello world";
+const result = findFirstRepeatedCharacter(str);
+console.log(result); // Outputs: "l"
