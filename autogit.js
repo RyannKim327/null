@@ -1,90 +1,104 @@
-function biDirectionalSearch(graph, startNode, goalNode) {
-  // Initialize data structures
-  const startOpen = [startNode];
-  const goalOpen = [goalNode];
-  const startClosed = new Set();
-  const goalClosed = new Set();
-  const startParent = new Map();
-  const goalParent = new Map();
-
-  // Perform the search
-  while (startOpen.length > 0 && goalOpen.length > 0) {
-    // Expand node from start side
-    const currentStart = startOpen.shift();
-    startClosed.add(currentStart);
-
-    if (goalClosed.has(currentStart)) {
-      // Backtrack and return path
-      return getPath(currentStart, startParent, goalParent);
-    }
-
-    const neighbors = graph[currentStart];
-    for (const neighbor of neighbors) {
-      if (!startClosed.has(neighbor)) {
-        startOpen.push(neighbor);
-        startParent.set(neighbor, currentStart);
-      }
-    }
-
-    // Expand node from goal side
-    const currentGoal = goalOpen.shift();
-    goalClosed.add(currentGoal);
-
-    if (startClosed.has(currentGoal)) {
-      // Backtrack and return path
-      return getPath(currentGoal, startParent, goalParent);
-    }
-
-    const goalNeighbors = graph[currentGoal];
-    for (const neighbor of goalNeighbors) {
-      if (!goalClosed.has(neighbor)) {
-        goalOpen.push(neighbor);
-        goalParent.set(neighbor, currentGoal);
-      }
-    }
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
-
-  // No path found
-  return null;
 }
 
-function getPath(intersectNode, startParent, goalParent) {
-  const path = [];
-  let currentNode = intersectNode;
-
-  // Backtrack from intersect node to start node
-  while (currentNode) {
-    path.unshift(currentNode);
-    currentNode = startParent.get(currentNode);
+class BinaryTree {
+  constructor() {
+    this.root = null;
   }
 
-  // Backtrack from intersect node to goal node
-  currentNode = goalParent.get(intersectNode);
-  while (currentNode) {
-    path.push(currentNode);
-    currentNode = goalParent.get(currentNode);
+  // Helper method to create a new node
+  createNode(value) {
+    return new Node(value);
   }
 
-  return path;
+  // Insert a value into the binary tree
+  insert(value) {
+    const newNode = this.createNode(value);
+
+    if (!this.root) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
+
+  // Recursive method to insert a node into the binary tree
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (!node.left) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (!node.right) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  // Perform an in-order traversal of the binary tree
+  inOrderTraversal(callback) {
+    this.inOrderTraversalNode(this.root, callback);
+  }
+
+  // Recursive method for in-order traversal
+  inOrderTraversalNode(node, callback) {
+    if (node) {
+      this.inOrderTraversalNode(node.left, callback);
+      callback(node.value);
+      this.inOrderTraversalNode(node.right, callback);
+    }
+  }
+
+  // Perform a pre-order traversal of the binary tree
+  preOrderTraversal(callback) {
+    this.preOrderTraversalNode(this.root, callback);
+  }
+
+  // Recursive method for pre-order traversal
+  preOrderTraversalNode(node, callback) {
+    if (node) {
+      callback(node.value);
+      this.preOrderTraversalNode(node.left, callback);
+      this.preOrderTraversalNode(node.right, callback);
+    }
+  }
+
+  // Perform a post-order traversal of the binary tree
+  postOrderTraversal(callback) {
+    this.postOrderTraversalNode(this.root, callback);
+  }
+
+  // Recursive method for post-order traversal
+  postOrderTraversalNode(node, callback) {
+    if (node) {
+      this.postOrderTraversalNode(node.left, callback);
+      this.postOrderTraversalNode(node.right, callback);
+      callback(node.value);
+    }
+  }
 }
+const tree = new BinaryTree();
+tree.insert(8);
+tree.insert(3);
+tree.insert(10);
+tree.insert(1);
+tree.insert(6);
+tree.insert(14);
 
-// Example usage
-const graph = {
-  A: ["B", "C"],
-  B: ["A", "D"],
-  C: ["A", "E"],
-  D: ["B", "F"],
-  E: ["C", "G"],
-  F: ["D", "H"],
-  G: ["E", "I"],
-  H: ["F", "J"],
-  I: ["G", "K"],
-  J: ["H", "K"],
-  K: ["I", "J"],
-};
+// In-order traversal: 1, 3, 6, 8, 10, 14
+tree.inOrderTraversal(value => console.log(value));
 
-const startNode = "A";
-const goalNode = "K";
-const path = biDirectionalSearch(graph, startNode, goalNode);
+// Pre-order traversal: 8, 3, 1, 6, 10, 14
+tree.preOrderTraversal(value => console.log(value));
 
-console.log(path);
+// Post-order traversal: 1, 6, 3, 14, 10, 8
+tree.postOrderTraversal(value => console.log(value));
