@@ -1,55 +1,27 @@
-function depthLimitedSearch(node, depthLimit) {
-  // Base case: check if the current node is the goal node or depth limit is reached
-  if (node.isGoal() || depthLimit === 0) {
-    // Return the solution or failure
-    if (node.isGoal()) {
-      return node.solution();
-    } else {
-      return "Failure";
-    }
+function binarySearch(arr, target, start = 0, end = arr.length - 1) {
+  // base case: start index is greater than end index
+  if (start > end) {
+    return -1;
   }
-  
-  // Recursive case: explore the child nodes up to the depth limit
-  var cutoffOccurred = false;
-  var children = node.expand(); // Get the child nodes
-  
-  for (var i = 0; i < children.length; i++) {
-    var result = depthLimitedSearch(children[i], depthLimit - 1); // Recursive call
-    if (result === "cutoff") {
-      cutoffOccurred = true;
-    } else if (result !== "Failure") {
-      return result;
-    }
-  }
-  
-  // Return cutoff if any child encountered depth limit
-  if (cutoffOccurred) {
-    return "cutoff";
-  } else {
-    return "Failure"; // Return failure if no solution found
-  }
-}
-class Node {
-  constructor(state) {
-    this.state = state; // The state of the node
-  }
-  
-  isGoal() {
-    // Implement the goal check logic
-    // Return true if the node is the goal state, false otherwise
-  }
-  
-  expand() {
-    // Generate and return the child nodes of the current node
-  }
-  
-  solution() {
-    // Compute and return the solution path from the root node to the current node
-  }
-}
-var rootNode = new Node(initialState); // Create the root node
-var depthLimit = 5; // Set the depth limit
 
-var result = depthLimitedSearch(rootNode, depthLimit); // Call the DLS function
+  // calculate the middle index
+  const mid = Math.floor((start + end) / 2);
 
-console.log(result); // Output the result
+  // check if the middle element is the target
+  if (arr[mid] === target) {
+    return mid;
+  }
+
+  // if target is less than the middle element, search the left half
+  if (target < arr[mid]) {
+    return binarySearch(arr, target, start, mid - 1);
+  }
+
+  // if target is greater than the middle element, search the right half
+  return binarySearch(arr, target, mid + 1, end);
+}
+const sortedArray = [1, 4, 7, 9, 12, 15, 17, 20, 22];
+const targetNumber = 17;
+
+const result = binarySearch(sortedArray, targetNumber);
+console.log(result); // outputs: 6
