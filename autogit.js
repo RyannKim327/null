@@ -1,44 +1,47 @@
-function mergeSortIterative(arr) {
-  const len = arr.length;
-  const sorted = Array.from(arr);
-
-  for (let width = 1; width < len; width *= 2) {
-    for (let i = 0; i < len; i += width * 2) {
-      const left = i;
-      const middle = Math.min(i + width, len);
-      const right = Math.min(i + width * 2, len);
-
-      merge(sorted, left, middle, right);
-    }
-  }
-
-  return sorted;
+function interpolationSearch(arr, target, low = 0) {
+  // Implementation goes here
 }
+const high = arr.length - 1;
+if (low <= high && target >= arr[low] && target <= arr[high]) {
+  // Continue with the algorithm
+} else {
+  return -1;
+}
+const pos = Math.floor(
+  low + ((target - arr[low]) / (arr[high] - arr[low])) * (high - low)
+);
+if (arr[pos] === target) {
+  return pos;
+}
+if (arr[pos] > target) {
+  return interpolationSearch(arr, target, low, pos - 1);
+} else {
+  return interpolationSearch(arr, target, pos + 1, high);
+}
+return -1;
+function interpolationSearch(arr, target, low = 0) {
+  const high = arr.length - 1;
 
-function merge(arr, left, middle, right) {
-  const result = [];
-  let i = left;
-  let j = middle;
+  if (low <= high && target >= arr[low] && target <= arr[high]) {
+    const pos = Math.floor(
+      low + ((target - arr[low]) / (arr[high] - arr[low])) * (high - low)
+    );
 
-  while (i < middle && j < right) {
-    if (arr[i] <= arr[j]) {
-      result.push(arr[i++]);
+    if (arr[pos] === target) {
+      return pos;
+    }
+
+    if (arr[pos] > target) {
+      return interpolationSearch(arr, target, low, pos - 1);
     } else {
-      result.push(arr[j++]);
+      return interpolationSearch(arr, target, pos + 1, high);
     }
   }
 
-  while (i < middle) {
-    result.push(arr[i++]);
-  }
-  while (j < right) {
-    result.push(arr[j++]);
-  }
-
-  for (let k = left; k < right; k++) {
-    arr[k] = result[k - left];
-  }
+  return -1;
 }
-const arr = [5, 3, 8, 6, 2, 7, 1, 4];
-const sortedArr = mergeSortIterative(arr);
-console.log(sortedArr); // Output: [1, 2, 3, 4, 5, 6, 7, 8]
+const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+const target = 10;
+
+const result = interpolationSearch(arr, target);
+console.log(result); // Output: 4 (index of target value in the array)
