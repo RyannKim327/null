@@ -1,21 +1,19 @@
-function findSecondLargest(array) {
-  let max = Number.NEGATIVE_INFINITY;
-  let secondMax = Number.NEGATIVE_INFINITY;
-
-  for (let i = 0; i < array.length; i++) {
-    if (array[i] > max) {
-      secondMax = max;
-      max = array[i];
-    } else if (array[i] > secondMax && array[i] < max) {
-      secondMax = array[i];
+function selectionSort(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    let minIndex = i;
+    for (let j = i + 1; j < arr.length; j++) {
+      if (arr[j] < arr[minIndex]) {
+        minIndex = j;
+      }
     }
+    // Swap values
+    let temp = arr[minIndex];
+    arr[minIndex] = arr[i];
+    arr[i] = temp;
   }
-
-  return secondMax;
+  return arr;
 }
 
-// Test the function
-const array = [2, 5, 8, 3, 10];
-const secondLargest = findSecondLargest(array);
-console.log("Second Largest: " + secondLargest);
-Second Largest: 8
+// Testing the selectionSort function
+const arr = [64, 25, 12, 22, 11];
+console.log(selectionSort(arr)); // Output: [11, 12, 22, 25, 64]
