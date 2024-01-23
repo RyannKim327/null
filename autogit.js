@@ -1,25 +1,75 @@
-function countingSort(arr) {
-  const max = Math.max(...arr);
-  const count = Array(max + 1).fill(0);
-
-  arr.forEach((num) => {
-    count[num]++;
-  });
-
-  for (let i = 1; i <= max; i++) {
-    count[i] += count[i - 1];
-  }
-
-  const sortedArr = Array(arr.length);
-
-  for (let i = arr.length - 1; i >= 0; i--) {
-    sortedArr[--count[arr[i]]] = arr[i];
-  }
-
-  return sortedArr;
+class TrieNode {
+    constructor() {
+        this.children = {};
+        this.isEndOfWord = false;
+    }
 }
+class Trie {
+    constructor() {
+        this.root = new TrieNode();
+    }
 
-// Example usage
-const arr = [4, 2, 2, 8, 3, 3, 1];
-const sortedArr = countingSort(arr);
-console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
+    insert(word) {
+        let node = this.root;
+        for (let i = 0; i < word.length; i++) {
+            const ch = word[i];
+
+            if (!node.children[ch]) {
+                node.children[ch] = new TrieNode();
+            }
+
+            node = node.children[ch];
+        }
+
+        node.isEndOfWord = true;
+    }
+
+    search(word) {
+        let node = this.root;
+        for (let i = 0; i < word.length; i++) {
+            const ch = word[i];
+
+            if (!node.children[ch]) {
+                return false;
+            }
+
+            node = node.children[ch];
+        }
+
+        return node.isEndOfWord;
+    }
+
+    startsWith(prefix) {
+        let node = this.root;
+        for (let i = 0; i < prefix.length; i++) {
+            const ch = prefix[i];
+
+            if (!node.children[ch]) {
+                return false;
+            }
+
+            node = node.children[ch];
+        }
+
+        return true;
+    }
+}
+// Create a new Trie
+const trie = new Trie();
+
+// Insert words into the Trie
+trie.insert("apple");
+trie.insert("banana");
+trie.insert("orange");
+
+// Search for words in the Trie
+console.log(trie.search("apple")); // Output: true
+console.log(trie.search("banana")); // Output: true
+console.log(trie.search("orange")); // Output: true
+console.log(trie.search("grape")); // Output: false
+
+// Check if a prefix exists in the Trie
+console.log(trie.startsWith("app")); // Output: true
+console.log(trie.startsWith("ban")); // Output: true
+console.log(trie.startsWith("ora")); // Output: true
+console.log(trie.startsWith("gra")); // Output: false
