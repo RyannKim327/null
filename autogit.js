@@ -1,39 +1,70 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+class TrieNode {
+  constructor() {
+    this.children = new Map(); // Use a map for efficient key-value lookup
+    this.isEndOfWord = false;
   }
 }
-
-function findMaxDepth(root) {
-  // Base case: if the tree is empty, return 0
-  if (root === null) {
-    return 0;
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
   }
 
-  // Recursively find the maximum depth of the left and right subtrees
-  const leftDepth = findMaxDepth(root.left);
-  const rightDepth = findMaxDepth(root.right);
+  insert(word) {
+    let currentNode = this.root;
 
-  // Return the maximum depth between the left and right subtrees, plus 1 for the current node
-  return Math.max(leftDepth, rightDepth) + 1;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+
+      // Create a new node if the path doesn't exist
+      if (!currentNode.children.has(char)) {
+        currentNode.children.set(char, new TrieNode());
+      }
+
+      currentNode = currentNode.children.get(char);
+    }
+
+    // Mark the end of word
+    currentNode.isEndOfWord = true;
+  }
+
+  search(word) {
+    let currentNode = this.root;
+
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+
+      if (currentNode.children.has(char)) {
+        currentNode = currentNode.children.get(char);
+      } else {
+        return false; // Path doesn't exist
+      }
+    }
+
+    return currentNode.isEndOfWord; // Check if it's the end of a word
+  }
+
+  startsWith(prefix) {
+    let currentNode = this.root;
+
+    for (let i = 0; i < prefix.length; i++) {
+      const char = prefix[i];
+
+      if (currentNode.children.has(char)) {
+        currentNode = currentNode.children.get(char);
+      } else {
+        return false; // Path doesn't exist
+      }
+    }
+
+    return true; // Prefix exists
+  }
 }
+const trie = new Trie();
 
-// Example usage:
+trie.insert("apple");
+trie.insert("application");
+trie.insert("banana");
 
-// Constructing a binary tree:
-//      3
-//     / \
-//    9  20
-//      /  \
-//     15   7
-
-const root = new Node(3);
-root.left = new Node(9);
-root.right = new Node(20);
-root.right.left = new Node(15);
-root.right.right = new Node(7);
-
-const maxDepth = findMaxDepth(root);
-console.log(maxDepth); // Output: 3
+console.log(trie.search("apple")); // Output: true
+console.log(trie.search("app")); // Output: false
+console.log(trie.startsWith("app")); // Output: true
