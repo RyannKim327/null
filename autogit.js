@@ -1,21 +1,9 @@
-function longestCommonPrefix(strings) {
-  let prefix = '';
-
-  if (strings.length === 0) {
-    return prefix;
-  }
-
-  for (let i = 0; i < strings[0].length; i++) {
-    const char = strings[0][i];
-
-    for (let j = 1; j < strings.length; j++) {
-      if (strings[j][i] !== char) {
-        return prefix;
-      }
-    }
-
-    prefix += char;
-  }
-
-  return prefix;
-}
+let str = "Hello, World! This is a string with spaces.";
+let newStr = str.split(" ").join("");
+console.log(newStr); // Output: "Hello,World!Thisisastringwithspaces."
+let str = "Hello, World! This is a string with spaces.";
+let newStr = str.replace(/\s/g, "");
+console.log(newStr); // Output: "Hello,World!Thisisastringwithspaces."
+let str = "Hello, World! This is a string with spaces.";
+let newStr = str.replaceAll(" ", "");
+console.log(newStr); // Output: "Hello,World!Thisisastringwithspaces."
