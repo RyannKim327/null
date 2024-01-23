@@ -1,17 +1,25 @@
-const array = [4, 6, 2, 9, 1];
-const max = Math.max(...array);
-console.log(max); // Output: 9
-const array = [4, 6, 2, 9, 1];
-const max = Math.max.apply(null, array);
-console.log(max); // Output: 9
-const array = [4, 6, 2, 9, 1];
-let max = array[0];
-for (let i = 1; i < array.length; i++) {
-  if (array[i] > max) {
-    max = array[i];
+function quickSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
   }
+
+  const pivot = arr[arr.length - 1];
+  const leftArr = [];
+  const rightArr = [];
+
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] < pivot) {
+      leftArr.push(arr[i]);
+    } else {
+      rightArr.push(arr[i]);
+    }
+  }
+
+  return [...quickSort(leftArr), pivot, ...quickSort(rightArr)];
 }
-console.log(max); // Output: 9
-const array = [4, 6, 2, 9, 1];
-const max = array.reduce((a, b) => Math.max(a, b));
-console.log(max); // Output: 9
+
+// Example usage
+const array = [5, 2, 9, 1, 3, 8];
+const sortedArray = quickSort(array);
+
+console.log(sortedArray);
