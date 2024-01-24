@@ -1,15 +1,24 @@
-function insertionSort(array) {
-  for (let i = 1; i < array.length; i++) {
-    const currentElement = array[i];
-    let j = i - 1;
-    while (j >= 0 && array[j] > currentElement) {
-      array[j + 1] = array[j];
-      j--;
-    }
-    array[j + 1] = currentElement;
+function findFirstNonRepeatingChar(str) {
+  // Create a frequency count object
+  const charCount = {};
+
+  // Count the occurrences of each character
+  for (const char of str) {
+    charCount[char] = (charCount[char] || 0) + 1;
   }
-  return array;
+
+  // Find the first character with a count of 1
+  for (const char of str) {
+    if (charCount[char] === 1) {
+      return char;
+    }
+  }
+
+  // If no unique character is found, return null or any other default value
+  return null;
 }
-const unsortedArray = [5, 2, 4, 6, 1, 3];
-const sortedArray = insertionSort(unsortedArray);
-console.log(sortedArray);
+const str = "aabbccddeeffgghhijjkkll";
+
+const firstNonRepeatingChar = findFirstNonRepeatingChar(str);
+
+console.log(firstNonRepeatingChar); // Output: i
