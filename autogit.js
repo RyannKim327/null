@@ -1,11 +1,25 @@
-// Function to calculate the area of a triangle
-function calculateTriangleArea(base, height) {
-  return (base * height) / 2;
+function selectionSort(array) {
+  const length = array.length;
+  for (let i = 0; i < length - 1; i++) {
+    let minIndex = i;
+    for (let j = i + 1; j < length; j++) {
+      if (array[j] < array[minIndex]) {
+        minIndex = j;
+      }
+    }
+    if (minIndex !== i) {
+      [array[i], array[minIndex]] = [array[minIndex], array[i]];
+    }
+  }
+  return array;
 }
 
-// Example usage
-const base = 10;
-const height = 8;
+// Usage example:
 
-const area = calculateTriangleArea(base, height);
-console.log("The area of the triangle is: " + area);
+const unsortedArray = [64, 25, 12, 22, 11];
+
+console.log("Original array: " + unsortedArray);
+
+const sortedArray = selectionSort(unsortedArray);
+
+console.log("Sorted array: " + sortedArray);
