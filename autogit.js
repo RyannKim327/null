@@ -1,26 +1,36 @@
-function selectionSort(arr) {
-  const n = arr.length;
+function findLCS(str1, str2) {
+  const dp = Array.from({ length: str1.length + 1 }, () => Array(str2.length + 1).fill(0));
 
-  for (let i = 0; i < n - 1; i++) {
-    let minIndex = i;
-
-    for (let j = i + 1; j < n; j++) {
-      if (arr[j] < arr[minIndex]) {
-        minIndex = j;
+  for (let i = 1; i <= str1.length; i++) {
+    for (let j = 1; j <= str2.length; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
       }
-    }
-
-    if (minIndex !== i) {
-      // Swap the elements
-      let temp = arr[i];
-      arr[i] = arr[minIndex];
-      arr[minIndex] = temp;
     }
   }
 
-  return arr;
+  let i = str1.length, j = str2.length;
+  const lcs = [];
+
+  while (i > 0 && j > 0) {
+    if (str1[i - 1] === str2[j - 1]) {
+      lcs.unshift(str1[i - 1]);
+      i--;
+      j--;
+    } else if (dp[i - 1][j] > dp[i][j - 1]) {
+      i--;
+    } else {
+      j--;
+    }
+  }
+
+  return lcs.join('');
 }
 
-// Example usage:
-const arr = [64, 25, 12, 22, 11];
-console.log(selectionSort(arr));
+// Example usage
+const str1 = "ABCDGH";
+const str2 = "AEDFHR";
+const lcs = findLCS(str1, str2);
+console.log(lcs); // Output: ADH
