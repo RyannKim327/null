@@ -1,91 +1,28 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+function quicksort(arr) {
+  if (arr.length <= 1) {
+    return arr;
   }
+
+  const pivot = arr[Math.floor(arr.length / 2)];
+  const left = [];
+  const right = [];
+
+  for (let i = 0; i < arr.length; i++) {
+    if (i === Math.floor(arr.length / 2)) {
+      continue;
+    }
+
+    if (arr[i] < pivot) {
+      left.push(arr[i]);
+    } else {
+      right.push(arr[i]);
+    }
+  }
+
+  return [...quicksort(left), pivot, ...quicksort(right)];
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-  }
-
-  isEmpty() {
-    return this.head === null;
-  }
-
-  append(value) {
-    const newNode = new Node(value);
-
-    if (this.isEmpty()) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
-    }
-  }
-
-  prepend(value) {
-    const newNode = new Node(value);
-
-    if (this.isEmpty()) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      newNode.next = this.head;
-      this.head = newNode;
-    }
-  }
-
-  delete(value) {
-    if (this.isEmpty()) {
-      return;
-    }
-
-    if (this.head.value === value) {
-      this.head = this.head.next;
-
-      if (this.head === null) {
-        this.tail = null;
-      }
-      return;
-    }
-
-    let current = this.head;
-    while (current.next !== null) {
-      if (current.next.value === value) {
-        current.next = current.next.next;
-
-        if (current.next === null) {
-          this.tail = current;
-        }
-        return;
-      }
-
-      current = current.next;
-    }
-  }
-
-  toArray() {
-    const result = [];
-    let current = this.head;
-
-    while (current !== null) {
-      result.push(current.value);
-      current = current.next;
-    }
-
-    return result;
-  }
-}
-const list = new LinkedList();
-
-list.append(1);
-list.append(2);
-list.append(3);
-list.prepend(0);
-list.delete(2);
-
-console.log(list.toArray());  // Output: [0, 1, 3]
+// Example usage:
+const unsortedArray = [7, 2, 1, 6, 8, 5, 3, 4];
+const sortedArray = quicksort(unsortedArray);
+console.log(sortedArray);
