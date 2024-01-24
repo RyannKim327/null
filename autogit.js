@@ -1,111 +1,49 @@
-// Node class
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-
-// LinkedList class
-class LinkedList {
+class Graph {
   constructor() {
-    this.head = null;
+    this.vertices = new Map();
   }
 
-  // Add a node to the end of the list
-  append(value) {
-    const newNode = new Node(value);
-
-    // If the list is empty, make the new node the head
-    if (!this.head) {
-      this.head = newNode;
-      return;
-    }
-
-    // Traverse to the end of the list and add the new node there
-    let current = this.head;
-    while (current.next) {
-      current = current.next;
-    }
-    current.next = newNode;
+  addVertex(vertex) {
+    this.vertices.set(vertex, []);
   }
 
-  // Insert a node at a specific position
-  insert(value, position) {
-    const newNode = new Node(value);
-
-    // If the list is empty, make the new node the head
-    if (!this.head) {
-      this.head = newNode;
-      return;
-    }
-
-    // If position is 0, insert the new node at the beginning of the list
-    if (position === 0) {
-      newNode.next = this.head;
-      this.head = newNode;
-      return;
-    }
-
-    // Traverse to the desired position and insert the new node there
-    let current = this.head;
-    let previous = null;
-    let count = 0;
-    while (count < position) {
-      previous = current;
-      current = current.next;
-      count++;
-    }
-    newNode.next = current;
-    previous.next = newNode;
+  addEdge(vertex1, vertex2) {
+    this.vertices.get(vertex1).push(vertex2);
+    this.vertices.get(vertex2).push(vertex1);
   }
 
-  // Remove a node at a specific position
-  remove(position) {
-    // If the list is empty, there is nothing to remove
-    if (!this.head) {
-      return;
-    }
-
-    // If position is 0, remove the head node
-    if (position === 0) {
-      this.head = this.head.next;
-      return;
-    }
-
-    // Traverse to the desired position and remove the node
-    let current = this.head;
-    let previous = null;
-    let count = 0;
-    while (count < position) {
-      previous = current;
-      current = current.next;
-      count++;
-    }
-    previous.next = current.next;
+  dfs(startVertex) {
+    const visited = new Set();
+    this._dfsRecursive(startVertex, visited);
   }
 
-  // Print the linked list
-  print() {
-    let current = this.head;
-    const values = [];
-    while (current) {
-      values.push(current.value);
-      current = current.next;
+  _dfsRecursive(vertex, visited) {
+    visited.add(vertex);
+    console.log(vertex);
+
+    const neighbors = this.vertices.get(vertex);
+    for (const neighbor of neighbors) {
+      if (!visited.has(neighbor)) {
+        this._dfsRecursive(neighbor, visited);
+      }
     }
-    console.log(values.join(' -> '));
   }
 }
 
-// Usage example
-const list = new LinkedList();
-list.append(5);
-list.append(10);
-list.append(15);
-list.print(); // Output: 5 -> 10 -> 15
+// Test the DFS algorithm
+const graph = new Graph();
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addVertex('E');
+graph.addVertex('F');
 
-list.insert(12, 2);
-list.print(); // Output: 5 -> 10 -> 12 -> 15
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('B', 'E');
+graph.addEdge('C', 'F');
 
-list.remove(1);
-list.print(); // Output: 5 -> 12 -> 15
+console.log('Depth-First Search (DFS):');
+graph.dfs('A');
