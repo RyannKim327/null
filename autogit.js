@@ -1,36 +1,59 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+function kmpSearch(text, pattern) {
+    // Step 1: Initialize variables
+    let n = text.length;
+    let m = pattern.length;
+    let lps = computeLPSArray(pattern);
+    let i = 0; // Index for text
+    let j = 0; // Index for pattern
+    let positions = [];
+
+    // Step 2: Perform the search
+    while (i < n) {
+        if (pattern[j] === text[i]) {
+            j++;
+            i++;
+        }
+
+        if (j === m) {
+            // Pattern found at index i - j
+            positions.push(i - j);
+            j = lps[j - 1];
+        } else if (i < n && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+
+    return positions;
 }
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-  }
+function computeLPSArray(pattern) {
+    let m = pattern.length;
+    let lps = new Array(m).fill(0);
+    let len = 0;
+    let i = 1;
+
+    while (i < m) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+
+    return lps;
 }
-enqueue(value) {
-  const newNode = new Node(value);
-  if (this.head === null) {
-    this.head = newNode;
-    this.tail = newNode;
-  } else {
-    this.tail.next = newNode;
-    this.tail = newNode;
-  }
-}
-dequeue() {
-  if (this.head === null) {
-    return null;
-  }
-  const removedNode = this.head;
-  this.head = this.head.next;
-  if (this.head === null) {
-    this.tail = null;
-  }
-  return removedNode.value;
-}
-isEmpty() {
-  return this.head === null && this.tail === null;
-}
+let text = "ABABDABACDABABCABAB";
+let pattern = "ABABCABAB";
+let positions = kmpSearch(text, pattern);
+
+console.log("Pattern found at positions: ", positions);
