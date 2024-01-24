@@ -1,42 +1,26 @@
-class Graph {
-  constructor() {
-    this.vertices = {};
+function binarySearchRecursive(arr, target, start, end) {
+  if (start > end) {
+    return -1;
   }
 
-  addVertex(vertex) {
-    this.vertices[vertex] = [];
-  }
+  const mid = Math.floor((start + end) / 2);
 
-  addEdge(vertex1, vertex2) {
-    this.vertices[vertex1].push(vertex2);
-    this.vertices[vertex2].push(vertex1);
-  }
-}
-function depthFirstSearch(graph, startVertex) {
-  const visited = {};
-  dfs(startVertex);
-
-  function dfs(vertex) {
-    visited[vertex] = true;
-    console.log(vertex); // You can replace this with any required traversal logic
-
-    const neighbors = graph.vertices[vertex];
-    for (let i = 0; i < neighbors.length; i++) {
-      if (!visited[neighbors[i]]) {
-        dfs(neighbors[i]);
-      }
-    }
+  if (arr[mid] === target) {
+    return mid;
+  } else if (arr[mid] > target) {
+    const left = binarySearchRecursive(arr, target, start, mid - 1);
+    return left !== -1 ? left : -1;
+  } else {
+    const right = binarySearchRecursive(arr, target, mid + 1, end);
+    return right !== -1 ? right : -1;
   }
 }
-const graph = new Graph();
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
 
-graph.addEdge('A', 'B');
-graph.addEdge('B', 'C');
-graph.addEdge('C', 'D');
-graph.addEdge('D', 'E');
-depthFirstSearch(graph, 'A');
+// Example usage
+const array = [1, 3, 5, 7, 9, 11];
+const targetElement = 7;
+const startIndex = 0;
+const endIndex = array.length - 1;
+
+const result = binarySearchRecursive(array, targetElement, startIndex, endIndex);
+console.log(result);  // Output: 3 (index of the target element in the array)
