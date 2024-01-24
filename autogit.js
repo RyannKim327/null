@@ -1,23 +1,25 @@
-function selectionSort(arr) {
-  const len = arr.length;
+function findFirstRepeatedCharacter(str) {
+  // Keep track of visited characters
+  var visitedChars = {};
 
-  for (let i = 0; i < len; i++) {
-    let min = i;
-
-    for (let j = i + 1; j < len; j++) {
-      if (arr[j] < arr[min]) {
-        min = j;
-      }
+  // Iterate through each character in the string
+  for (var i = 0; i < str.length; i++) {
+    var char = str[i];
+    
+    // If the character is already visited, it is the first repeated character
+    if (visitedChars[char]) {
+      return char;
     }
-
-    if (min !== i) {
-      [arr[i], arr[min]] = [arr[min], arr[i]]; // Swap elements
-    }
+    
+    // Mark the character as visited
+    visitedChars[char] = true;
   }
 
-  return arr;
+  // Return null if no repeated character is found
+  return null;
 }
 
-// Example usage:
-const arr = [8, 5, 2, 9, 1, 7, 3];
-console.log(selectionSort(arr)); // [1, 2, 3, 5, 7, 8, 9]
+// Example usage
+var str = "abcdeff";
+var repeatedChar = findFirstRepeatedCharacter(str);
+console.log(repeatedChar); // Output: "f"
