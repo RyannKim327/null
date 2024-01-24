@@ -1,42 +1,49 @@
-function fibonacciSearch(arr, key) {
-  function generateFibonacci(n) {
-    const fib = [0, 1];
-    for (let i = 2; i < n; i++) {
-      fib[i] = fib[i - 1] + fib[i - 2];
-    }
-    return fib;
-  }
+function KMPSearch(pattern, text) {
+  const patternLength = pattern.length;
+  const textLength = text.length;
 
-  const fib = generateFibonacci(arr.length);
+  // Preprocess the pattern
+  const lps = new Array(patternLength).fill(0);
+  let len = 0;
+  let i = 1;
 
-  let offset = -1;
-  let prevOffset = -1;
-  let temp = fib[fib.length - 1];
-
-  while (temp > 1) {
-    if (arr[offset + prevOffset] === key) {
-      return offset + prevOffset;
-    }
-
-    if (arr[offset + prevOffset] < key) {
-      offset = prevOffset;
-      temp -= fib[fib.indexOf(temp) - 1];
+  while (i < patternLength) {
+    if (pattern[i] === pattern[len]) {
+      len++;
+      lps[i] = len;
+      i++;
     } else {
-      prevOffset = offset - prevOffset;
-      temp -= fib[fib.indexOf(temp) - 2];
+      if (len !== 0) {
+        len = lps[len - 1];
+      } else {
+        lps[i] = 0;
+        i++;
+      }
     }
   }
 
-  if (arr[offset + 1] === key) {
-    return offset + 1;
+  // Perform the string matching
+  let j = 0;
+  let i = 0;
+
+  while (i < textLength) {
+    if (pattern[j] === text[i]) {
+      j++;
+      i++;
+    }
+
+    if (j === patternLength) {
+      console.log("Pattern found at index", i - j);
+      j = lps[j - 1];
+    } else if (i < textLength && pattern[j] !== text[i]) {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
+      }
+    }
   }
-  
-  return -1;
 }
-
-// Example usage:
-const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const key = 12;
-const index = fibonacciSearch(arr, key);
-
-console.log(`Key ${key} found at index ${index}`);
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+KMPSearch(pattern, text);
