@@ -1,18 +1,15 @@
-function reverseWords(str) {
-  // Step 1: Split the string into an array of words
-  var words = str.split(' ');
-
-  // Step 2: Reverse the array of words
-  var reversedWords = words.reverse();
-
-  // Step 3: Join the reversed array into a string
-  var reversedStr = reversedWords.join(' ');
-
-  return reversedStr;
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  const cleanStr = str.replace(/[^0-9a-z]/gi, '').toLowerCase();
+  
+  // Reverse the string
+  const reverseStr = cleanStr.split('').reverse().join('');
+  
+  // Compare the reversed string with the original string
+  return cleanStr === reverseStr;
 }
 
-// Example usage
-var sentence = "Hello, how are you?";
-var reversedSentence = reverseWords(sentence);
-console.log(reversedSentence);
-// Output: "you? are how Hello,"
+// Examples
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
+console.log(isPalindrome("race car")); // true
+console.log(isPalindrome("hello world")); // false
