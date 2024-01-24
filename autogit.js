@@ -1,7 +1,12 @@
-let array = [1, 2, 3, 4, 5];
-console.log('Original array:', array);
-
-array.reverse();
-console.log('Reversed array:', array);
-Original array: [1, 2, 3, 4, 5]
-Reversed array: [5, 4, 3, 2, 1]
+let str = "Hello, World!";
+let reversedStr = str.split("").reverse().join("");
+console.log(reversedStr); // Output: "!dlroW ,olleH"
+let str = "Hello, World!";
+let reversedStr = "";
+for (let i = str.length - 1; i >= 0; i--) {
+  reversedStr += str[i];
+}
+console.log(reversedStr); // Output: "!dlroW ,olleH"
+let str = "Hello, World!";
+let reversedStr = str.split("").reduce((reversed, char) => char + reversed, "");
+console.log(reversedStr); // Output: "!dlroW ,olleH"
