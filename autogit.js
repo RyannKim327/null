@@ -1,69 +1,9 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.left = null;
-    this.right = null;
-  }
-}
+let array = [1, 2, 3, 4, 5];
+array.reverse();
 
-class BinaryTree {
-  constructor() {
-    this.root = null;
-  }
+console.log(array); // Output: [5, 4, 3, 2, 1]
+let array = [1, 2, 3, 4, 5];
+let reversedArray = [...array].reverse();
 
-  insert(data) {
-    const newNode = new Node(data);
-
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
-
-  insertNode(node, newNode) {
-    if (newNode.data < node.data) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
-
-  search(data) {
-    return this.searchNode(this.root, data);
-  }
-
-  searchNode(node, data) {
-    if (node === null) {
-      return false;
-    } else if (data === node.data) {
-      return true;
-    } else if (data < node.data) {
-      return this.searchNode(node.left, data);
-    } else {
-      return this.searchNode(node.right, data);
-    }
-  }
-}
-
-// Usage example:
-
-const tree = new BinaryTree();
-tree.insert(5);
-tree.insert(3);
-tree.insert(7);
-tree.insert(2);
-tree.insert(4);
-tree.insert(6);
-tree.insert(8);
-
-console.log(tree.search(6)); // Output: true
-console.log(tree.search(9)); // Output: false
+console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
+console.log(array); // Output: [1, 2, 3, 4, 5] (original array remains unchanged)
