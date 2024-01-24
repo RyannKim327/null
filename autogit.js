@@ -1,30 +1,26 @@
-// Define the structure of a binary tree node
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function binarySearch(arr, target, start = 0, end = arr.length - 1) {
+  if (start > end) {
+    return -1; // Target element is not found
+  }
+
+  const mid = Math.floor((start + end) / 2);
+
+  if (arr[mid] === target) {
+    return mid; // Target element found at index mid
+  } else if (arr[mid] > target) {
+    return binarySearch(arr, target, start, mid - 1); // Search in the left half
+  } else {
+    return binarySearch(arr, target, mid + 1, end); // Search in the right half
   }
 }
 
-// Function to calculate the sum of all nodes in a binary tree
-function calculateSum(root) {
-  // Base case: If the root is null, return 0
-  if (root === null) {
-    return 0;
-  }
-  
-  // Recursive case: Calculate the sum of the left and right subtrees, and add the current node's value
-  return (
-    root.value + calculateSum(root.left) + calculateSum(root.right)
-  );
+// Usage example:
+const sortedArray = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
+const targetElement = 23;
+const resultIndex = binarySearch(sortedArray, targetElement);
+
+if (resultIndex !== -1) {
+  console.log(`Element ${targetElement} found at index ${resultIndex}`);
+} else {
+  console.log(`Element ${targetElement} not found in the array`);
 }
-
-// Test the function
-const tree = new Node(1);
-tree.left = new Node(2);
-tree.right = new Node(3);
-tree.left.left = new Node(4);
-tree.left.right = new Node(5);
-
-console.log(calculateSum(tree)); // Output: 15
