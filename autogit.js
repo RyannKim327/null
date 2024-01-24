@@ -1,50 +1,20 @@
-function biDirectionalSearch(graph, start, target) {
-  let forwardVisited = new Set();
-  let backwardVisited = new Set();
+function insertionSort(arr) {
+  // Loop through each element in the array
+  for (let i = 1; i < arr.length; i++) {
+    let current = arr[i]; // Current element to be inserted at the right position
 
-  let forwardQueue = [];
-  let backwardQueue = [];
-
-  forwardQueue.push(start);
-  backwardQueue.push(target);
-
-  forwardVisited.add(start);
-  backwardVisited.add(target);
-
-  while (forwardQueue.length > 0 && backwardQueue.length > 0) {
-    let forwardNode = forwardQueue.shift();
-    let backwardNode = backwardQueue.shift();
-
-    if (backwardVisited.has(forwardNode)) {
-      return "Path found"; // or return the path between start and target
+    // Compare the current element with the sorted subarray on its left
+    let j = i - 1;
+    while (j >= 0 && arr[j] > current) {
+      arr[j + 1] = arr[j]; // Move elements greater than current to the right
+      j--;
     }
-
-    for (let neighbor of graph[forwardNode]) {
-      if (!forwardVisited.has(neighbor)) {
-        forwardQueue.push(neighbor);
-        forwardVisited.add(neighbor);
-      }
-    }
-
-    for (let neighbor of graph[backwardNode]) {
-      if (!backwardVisited.has(neighbor)) {
-        backwardQueue.push(neighbor);
-        backwardVisited.add(neighbor);
-      }
-    }
+    arr[j + 1] = current; // Insert the current element at the right position
   }
 
-  return "No path found";
+  return arr;
 }
 
 // Example usage
-let graph = {
-  A: ["B", "C"],
-  B: ["D", "E"],
-  C: ["F"],
-  D: [],
-  E: [],
-  F: []
-};
-
-console.log(biDirectionalSearch(graph, "A", "F"));
+const array = [5, 2, 4, 6, 1, 3];
+console.log(insertionSort(array)); // Output: [1, 2, 3, 4, 5, 6]
