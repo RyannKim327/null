@@ -1,24 +1,14 @@
-function findFirstNonRepeatingChar(str) {
-  // Create a frequency count object
-  const charCount = {};
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  str = str.replace(/[\W_]/g, '').toLowerCase();
 
-  // Count the occurrences of each character
-  for (const char of str) {
-    charCount[char] = (charCount[char] || 0) + 1;
-  }
+  // Reverse the modified string
+  var reversed = str.split('').reverse().join('');
 
-  // Find the first character with a count of 1
-  for (const char of str) {
-    if (charCount[char] === 1) {
-      return char;
-    }
-  }
-
-  // If no unique character is found, return null or any other default value
-  return null;
+  // Compare the modified string with the reversed string
+  return str === reversed;
 }
-const str = "aabbccddeeffgghhijjkkll";
 
-const firstNonRepeatingChar = findFirstNonRepeatingChar(str);
-
-console.log(firstNonRepeatingChar); // Output: i
+// Example usage
+console.log(isPalindrome('A man, a plan, a canal, Panama')); // Output: true
+console.log(isPalindrome('Hello, World!')); // Output: false
