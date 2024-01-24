@@ -1,68 +1,76 @@
 class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+  constructor(data) {
+    this.data = data;
+    this.next = null;
   }
 }
 
-class BinarySearchTree {
+class Queue {
   constructor() {
-    this.root = null;
+    this.head = null;
+    this.tail = null;
+    this.size = 0;
   }
 
-  insert(value) {
-    const newNode = new Node(value);
+  enqueue(data) {
+    const newNode = new Node(data);
 
-    if (this.root === null) {
-      this.root = newNode;
+    if (this.isEmpty()) {
+      this.head = newNode;
+      this.tail = newNode;
     } else {
-      this.insertNode(this.root, newNode);
+      this.tail.next = newNode;
+      this.tail = newNode;
     }
+
+    this.size++;
   }
 
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
+  dequeue() {
+    if (this.isEmpty()) {
+      return null;
     }
+
+    const removedNode = this.head;
+    this.head = this.head.next;
+    removedNode.next = null;
+
+    if (this.head === null) {
+      this.tail = null;
+    }
+
+    this.size--;
+    return removedNode.data;
   }
 
-  search(value) {
-    return this.searchNode(this.root, value);
+  isEmpty() {
+    return this.size === 0;
   }
 
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
-    } else if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else if (value > node.value) {
-      return this.searchNode(node.right, value);
-    } else {
-      return true;
+  getSize() {
+    return this.size;
+  }
+
+  peek() {
+    if (this.isEmpty()) {
+      return null;
     }
+    return this.head.data;
   }
 }
-const bst = new BinarySearchTree();
-bst.insert(8);
-bst.insert(3);
-bst.insert(10);
-bst.insert(1);
-bst.insert(6);
-bst.insert(14);
-bst.insert(4);
-bst.insert(7);
-bst.insert(13);
+const queue = new Queue();
 
-console.log(bst.search(6)); // true
-console.log(bst.search(12)); // false
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+
+console.log(queue.peek()); // Output: 1
+
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.dequeue()); // Output: 2
+
+console.log(queue.getSize()); // Output: 1
+
+console.log(queue.dequeue()); // Output: 3
+
+console.log(queue.isEmpty()); // Output: true
