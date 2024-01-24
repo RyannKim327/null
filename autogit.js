@@ -1,54 +1,25 @@
-function mergeSortIterative(arr) {
-  if (arr.length <= 1) {
-    return arr;
+function findFirstNonRepeatingChar(str) {
+  const charCount = {};
+
+  // Step 1: Count each character
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
   }
 
-  const length = arr.length;
-  let sorted = [];
-
-  for (let size = 1; size < length; size *= 2) {
-    for (let leftStart = 0; leftStart < length; leftStart += 2 * size) {
-      const mid = leftStart + size - 1;
-      const rightEnd = Math.min(leftStart + 2 * size - 1, length - 1);
-      merge(arr, leftStart, mid, rightEnd);
+  // Step 2: Find the first non-repeating character
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    if (charCount[char] === 1) {
+      return char;
     }
   }
 
-  return arr;
+  // Step 3: Return null if no non-repeating character is found
+  return null;
 }
 
-function merge(arr, leftStart, mid, rightEnd) {
-  const leftEnd = mid;
-  const rightStart = mid + 1;
-  const size = rightEnd - leftStart + 1;
-
-  let left = leftStart;
-  let right = rightStart;
-  let merged = [];
-
-  while (left <= leftEnd && right <= rightEnd) {
-    if (arr[left] <= arr[right]) {
-      merged.push(arr[left]);
-      left++;
-    } else {
-      merged.push(arr[right]);
-      right++;
-    }
-  }
-
-  while (left <= leftEnd) {
-    merged.push(arr[left]);
-    left++;
-  }
-
-  while (right <= rightEnd) {
-    merged.push(arr[right]);
-    right++;
-  }
-
-  for (let i = 0; i < size; i++) {
-    arr[leftStart + i] = merged[i];
-  }
-}
-const array = [5, 3, 8, 2, 1, 4];
-console.log(mergeSortIterative(array)); // Output: [1, 2, 3, 4, 5, 8]
+// Example usage
+const str = "aabccdeff";
+const firstNonRepeatingChar = findFirstNonRepeatingChar(str);
+console.log(firstNonRepeatingChar); // Output: "b"
