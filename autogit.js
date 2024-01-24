@@ -1,60 +1,43 @@
-class Stack {
-  constructor() {
-    this.items = [];
+function calculateHash(str, len) {
+  let hash = 0;
+  for (let i = 0; i < len; i++) {
+    hash += str.charCodeAt(i) * Math.pow(31, len - i - 1);
   }
-
-  // Add an element to the top of the stack
-  push(element) {
-    this.items.push(element);
-  }
-
-  // Remove the top element from the stack and return it
-  pop() {
-    if (this.items.length === 0) {
-      return "Stack is empty";
-    }
-    return this.items.pop();
-  }
-
-  // Get the top element of the stack without removing it
-  peek() {
-    if (this.items.length === 0) {
-      return "Stack is empty";
-    }
-    return this.items[this.items.length - 1];
-  }
-
-  // Check if the stack is empty
-  isEmpty() {
-    return this.items.length === 0;
-  }
-
-  // Get the size of the stack
-  size() {
-    return this.items.length;
-  }
-
-  // Clear the stack
-  clear() {
-    this.items = [];
-  }
+  return hash;
 }
-const stack = new Stack();
-stack.push(1);
-stack.push(2);
-stack.push(3);
+function RabinKarp(text, pattern) {
+  const N = text.length;
+  const M = pattern.length;
+  const patternHash = calculateHash(pattern, M);
+  let textHash = calculateHash(text, M);
 
-console.log(stack.peek()); // Output: 3
+  for (let i = 0; i <= N - M; i++) {
+    if (textHash === patternHash) {
+      let j;
+      for (j = 0; j < M; j++) {
+        if (text[i + j] !== pattern[j]) {
+          break;
+        }
+      }
+      if (j === M) {
+        return i; // Pattern found at index i
+      }
+    }
+    if (i < N - M) {
+      // Update the rolling hash value
+      textHash =
+        (textHash - text.charCodeAt(i) * Math.pow(31, M - 1)) * 31 +
+        text.charCodeAt(i + M);
+    }
+  }
+  return -1; // Pattern not found
+}
+const text = "Lorem ipsum dolor sit amet";
+const pattern = "ipsum";
 
-console.log(stack.pop()); // Output: 3
-console.log(stack.pop()); // Output: 2
-console.log(stack.pop()); // Output: 1
-console.log(stack.pop()); // Output: "Stack is empty"
-
-console.log(stack.isEmpty()); // Output: true
-
-stack.push(4);
-console.log(stack.size()); // Output: 1
-
-stack.clear();
-console.log(stack.isEmpty()); // Output: true
+const index = RabinKarp(text, pattern);
+if (index !== -1) {
+  console.log(`Pattern found at index ${index}`);
+} else {
+  console.log("Pattern not found");
+}
