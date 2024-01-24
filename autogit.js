@@ -1,18 +1,12 @@
-function isPalindrome(str) {
-  // Remove any non-alphanumeric characters and convert to lowercase
-  str = str.replace(/[\W_]/g, "").toLowerCase();
-  
-  // Start comparing characters from both ends of the string
-  for (let i = 0, j = str.length - 1; i < j; i++, j--) {
-    if (str[i] !== str[j]) {
-      return false; // Characters don't match, not a palindrome
-    }
-  }
-  
-  return true; // All characters match, it's a palindrome
-}
+let str = "   Hello,    World!   ";
 
-// Example usage:
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
-console.log(isPalindrome("racecar")); // true
-console.log(isPalindrome("hello")); // false
+// Using the replace() method with a regular expression pattern
+let result = str.replace(/\s/g, "");
+
+console.log(result); // Output: "Hello,World!"
+let str = "   Hello,    World!   ";
+
+// Using the trim() method to remove leading and trailing whitespace
+let result = str.trim();
+
+console.log(result); // Output: "Hello,    World!"
