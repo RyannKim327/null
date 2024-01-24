@@ -1,43 +1,15 @@
-function calculateHash(str, len) {
-  let hash = 0;
-  for (let i = 0; i < len; i++) {
-    hash += str.charCodeAt(i) * Math.pow(31, len - i - 1);
-  }
-  return hash;
-}
-function RabinKarp(text, pattern) {
-  const N = text.length;
-  const M = pattern.length;
-  const patternHash = calculateHash(pattern, M);
-  let textHash = calculateHash(text, M);
+// Define the API endpoint URL
+const apiUrl = 'https://api.example.com/data';
 
-  for (let i = 0; i <= N - M; i++) {
-    if (textHash === patternHash) {
-      let j;
-      for (j = 0; j < M; j++) {
-        if (text[i + j] !== pattern[j]) {
-          break;
-        }
-      }
-      if (j === M) {
-        return i; // Pattern found at index i
-      }
-    }
-    if (i < N - M) {
-      // Update the rolling hash value
-      textHash =
-        (textHash - text.charCodeAt(i) * Math.pow(31, M - 1)) * 31 +
-        text.charCodeAt(i + M);
-    }
-  }
-  return -1; // Pattern not found
-}
-const text = "Lorem ipsum dolor sit amet";
-const pattern = "ipsum";
-
-const index = RabinKarp(text, pattern);
-if (index !== -1) {
-  console.log(`Pattern found at index ${index}`);
-} else {
-  console.log("Pattern not found");
-}
+// Make a GET request to the API
+fetch(apiUrl)
+  .then(response => response.json())
+  .then(data => {
+    // Process the retrieved data
+    console.log(data);
+    // Do something with the data
+  })
+  .catch(error => {
+    // Handle any errors that occurred during the request
+    console.error('Error:', error);
+  });
