@@ -1,26 +1,6 @@
-function largestPrimeFactor(num) {
-  if (num < 2) {
-    return null;
-  }
-
-  let largestFactor = null;
-
-  for (let i = 2; i * i <= num; i++) {
-    while (num % i === 0) {
-      // num is divisible by i
-      num /= i;
-      largestFactor = i;
-    }
-  }
-
-  if (num > 1) {
-    largestFactor = num;
-  }
-
-  return largestFactor;
-}
-
-// Example usage
-console.log(largestPrimeFactor(21));  // Output: 7
-console.log(largestPrimeFactor(100)); // Output: 5
-console.log(largestPrimeFactor(17));  // Output: 17
+const array = [5, 8, 1, 9, 3];
+const max = Math.max(...array);
+console.log(max); // Output: 9
+const array = [5, 8, 1, 9, 3];
+const max = array.reduce((acc, curr) => (curr > acc ? curr : acc));
+console.log(max); // Output: 9
