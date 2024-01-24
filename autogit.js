@@ -1,101 +1,54 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
-}
+function generateLPS(pattern) {
+  const lps = [0]; // lps[0] is always 0
+  let len = 0; // length of the previous longest prefix suffix
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-  }
-
-  append(data) {
-    const newNode = new Node(data);
-
-    if (!this.head) {
-      this.head = newNode;
-      this.tail = newNode;
+  let i = 1;
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[len]) {
+      len++;
+      lps[i] = len;
+      i++;
     } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
-    }
-  }
-
-  prepend(data) {
-    const newNode = new Node(data);
-
-    if (!this.head) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      newNode.next = this.head;
-      this.head = newNode;
-    }
-  }
-
-  find(data) {
-    let currentNode = this.head;
-
-    while (currentNode) {
-      if (currentNode.data === data) {
-        return currentNode;
+      if (len !== 0) {
+        len = lps[len - 1];
+      } else {
+        lps[i] = 0;
+        i++;
       }
-      currentNode = currentNode.next;
-    }
-
-    return null;
-  }
-
-  delete(data) {
-    if (!this.head) {
-      return;
-    }
-
-    if (this.head.data === data) {
-      this.head = this.head.next;
-      if (!this.head) {
-        this.tail = null;
-      }
-      return;
-    }
-
-    let currentNode = this.head;
-    while (currentNode.next) {
-      if (currentNode.next.data === data) {
-        currentNode.next = currentNode.next.next;
-        if (currentNode.next === null) {
-          this.tail = currentNode;
-        }
-        return;
-      }
-      currentNode = currentNode.next;
     }
   }
-
-  print() {
-    let currentNode = this.head;
-    const elements = [];
-
-    while (currentNode) {
-      elements.push(currentNode.data);
-      currentNode = currentNode.next;
-    }
-
-    console.log(elements.join(" -> "));
-  }
+  return lps;
 }
-const linkedList = new LinkedList();
-linkedList.append(10);
-linkedList.append(20);
-linkedList.append(30);
-linkedList.prepend(5);
-linkedList.prepend(2);
+function KMP(text, pattern) {
+  const lps = generateLPS(pattern);
 
-linkedList.print(); // Output: 2 -> 5 -> 10 -> 20 -> 30
+  let i = 0; // index for text
+  let j = 0; // index for pattern
 
-linkedList.delete(10);
-linkedList.print(); // Output: 2 -> 5 -> 20 -> 30
+  const indexes = [];
 
-console.log(linkedList.find(20)); // Output: Node { data: 20, next: Node { data: 30, next: null } }
+  while (i < text.length) {
+    if (pattern[j] === text[i]) {
+      i++;
+      j++;
+    }
+
+    if (j === pattern.length) {
+      indexes.push(i - j);
+      j = lps[j - 1];
+    } else if (i < text.length && pattern[j] !== text[i]) {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
+      }
+    }
+  }
+
+  return indexes;
+}
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+
+const indexes = KMP(text, pattern);
+console.log(indexes); // Output: [10]
