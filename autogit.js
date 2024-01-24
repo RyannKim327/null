@@ -1,36 +1,31 @@
-function binarySearch(arr, target) {
-  let left = 0;
-  let right = arr.length - 1;
+// Sample graph representation
+const graph = {
+  A: ['B', 'C'],
+  B: ['D', 'E'],
+  C: ['F'],
+  D: ['G'],
+  E: [],
+  F: [],
+  G: []
+};
 
-  while (left <= right) {
-    let mid = Math.floor((left + right) / 2);
-
-    // Check if target is present at mid
-    if (arr[mid] === target) {
-      return mid;
+// Depth-limited search algorithm
+function depthLimitedSearch(graph, start, depthLimit) {
+  function DLS(node, depth) {
+    if (depth === 0) {
+      // Do something with the node at the depth limit
+      console.log(node);
+      return;
     }
 
-    // If target is greater, ignore the left half
-    if (arr[mid] < target) {
-      left = mid + 1;
-    }
-    // If target is smaller, ignore the right half
-    else {
-      right = mid - 1;
+    const neighbors = graph[node];
+    for (let i = 0; i < neighbors.length; i++) {
+      DLS(neighbors[i], depth - 1);
     }
   }
 
-  // Target was not found
-  return -1;
+  DLS(start, depthLimit);
 }
 
-// Example usage:
-const sortedArray = [2, 4, 6, 8, 10, 12];
-const target = 8;
-const index = binarySearch(sortedArray, target);
-
-if (index !== -1) {
-  console.log(`Target found at index ${index}`);
-} else {
-  console.log("Target not found");
-}
+// Example usage
+depthLimitedSearch(graph, 'A', 2);
