@@ -1,31 +1,45 @@
-class TreeNode {
-  constructor(val, left, right) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
-  }
-}
-
-function maxDepth(root) {
-  if (root === null) {
-    return 0; // Base case: an empty tree has a depth of 0
+class Graph {
+  constructor() {
+    this.vertices = {};
   }
 
-  const leftDepth = maxDepth(root.left);
-  const rightDepth = maxDepth(root.right);
+  addVertex(vertex) {
+    this.vertices[vertex] = [];
+  }
 
-  return Math.max(leftDepth, rightDepth) + 1;
+  addEdge(fromVertex, toVertex) {
+    this.vertices[fromVertex].push(toVertex);
+  }
+
+  dfs(startingVertex) {
+    let visited = {};
+    this._dfsUtil(startingVertex, visited);
+  }
+
+  _dfsUtil(vertex, visited) {
+    visited[vertex] = true;
+    console.log(vertex);
+
+    for (let neighbor of this.vertices[vertex]) {
+      if (!visited[neighbor]) {
+        this._dfsUtil(neighbor, visited);
+      }
+    }
+  }
 }
+const graph = new Graph();
 
-// Example usage:
-const tree = new TreeNode(
-  3,
-  new TreeNode(9),
-  new TreeNode(
-    20,
-    new TreeNode(15),
-    new TreeNode(7)
-  )
-);
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addVertex('E');
+graph.addVertex('F');
 
-console.log(maxDepth(tree)); // Output: 3
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('B', 'E');
+graph.addEdge('C', 'E');
+graph.addEdge('D', 'F');
+graph.dfs('A');
