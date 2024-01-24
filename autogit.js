@@ -1,39 +1,15 @@
-class HashTable {
-  constructor() {
-    this.table = {};
-  }
+function isAnagram(str1, str2) {
+  // Convert strings to lowercase and remove whitespace
+  str1 = str1.toLowerCase().replace(/[\W_]+/g, '');
+  str2 = str2.toLowerCase().replace(/[\W_]+/g, '');
 
-  // Function to generate a hash key
-  hashKey(key) {
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) {
-      hash += key.charCodeAt(i);
-    }
-    return hash;
-  }
+  // Convert strings to arrays, sort them, and join back into strings
+  let sorted1 = str1.split('').sort().join('');
+  let sorted2 = str2.split('').sort().join('');
 
-  // Function to add a key-value pair to the hash table
-  put(key, value) {
-    const hash = this.hashKey(key);
-    this.table[hash] = value;
-  }
-
-  // Function to get the value associated with a given key
-  get(key) {
-    const hash = this.hashKey(key);
-    return this.table[hash];
-  }
-
-  // Function to remove a key-value pair from the hash table
-  remove(key) {
-    const hash = this.hashKey(key);
-    delete this.table[hash];
-  }
+  // Compare the sorted strings
+  return sorted1 === sorted2;
 }
-
-// Usage:
-const hashTable = new HashTable();
-hashTable.put("foo", 42);
-console.log(hashTable.get("foo")); // Output: 42
-hashTable.remove("foo");
-console.log(hashTable.get("foo")); // Output: undefined
+console.log(isAnagram('listen', 'silent')); // Output: true
+console.log(isAnagram('hello', 'world'));   // Output: false
+console.log(isAnagram('Debit Card', 'Bad Credit')); // Output: true (case-insensitive, ignoring whitespace)
