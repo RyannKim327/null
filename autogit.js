@@ -1,26 +1,16 @@
-function bwt(text) {
-  // Generate all rotations of the text
-  let rotations = [];
-  for (let i = 0; i < text.length; i++) {
-    rotations.push(text.slice(i) + text.slice(0, i));
-  }
-  
-  // Sort the rotations lexicographically
-  rotations.sort();
-  
-  // Extract the last character of each rotation
-  let transformed = '';
-  for (let i = 0; i < rotations.length; i++) {
-    transformed += rotations[i][text.length - 1];
-  }
-  
-  return transformed;
+const array = [1, 2, 3, 3, 4, 5, 5];
+const uniqueArray = [...new Set(array)];
+console.log(uniqueArray);  // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 3, 3, 4, 5, 5];
+const uniqueArray = array.filter((element, index, self) => {
+    return index === self.indexOf(element);
+});
+console.log(uniqueArray);  // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 3, 3, 4, 5, 5];
+const uniqueArray = [];
+for (let i = 0; i < array.length; i++) {
+    if (uniqueArray.indexOf(array[i]) === -1) {
+        uniqueArray.push(array[i]);
+    }
 }
-// Input text for transformation
-let text = 'banana';
-
-// Perform the Burrows-Wheeler Transform
-let transformed = bwt(text);
-
-// Output the transformed text
-console.log(transformed);
+console.log(uniqueArray);  // Output: [1, 2, 3, 4, 5]
