@@ -1,20 +1,27 @@
-function bubbleSort(array) {
-  var len = array.length;
-
-  for (var i = 0; i < len - 1; i++) {
-    for (var j = 0; j < len - i - 1; j++) {
-      if (array[j] > array[j + 1]) {
-        // Swap elements
-        var temp = array[j];
-        array[j] = array[j + 1];
-        array[j + 1] = temp;
-      }
-    }
+class TreeNode {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
-
-  return array;
 }
 
-// Example usage:
-var arr = [64, 34, 25, 12, 22, 11, 90];
-console.log(bubbleSort(arr)); // Output: [11, 12, 22, 25, 34, 64, 90]
+function sumBinaryTree(root) {
+  if (root === null) {
+    return 0; // Base case: empty tree has sum 0
+  }
+  
+  const leftSum = sumBinaryTree(root.left); // Sum of left subtree
+  const rightSum = sumBinaryTree(root.right); // Sum of right subtree
+  
+  return root.value + leftSum + rightSum; // Sum of current node with left and right subtree sums
+}
+
+// Usage example:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(sumBinaryTree(root)); // Output: 15 (1 + 2 + 3 + 4 + 5)
