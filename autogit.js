@@ -1,14 +1,8 @@
-function getRandomNumber(min, max) {
-  // Calculate the range of the numbers
-  const range = max - min + 1;
-  
-  // Generate a random number between 0 and the range
-  const randomNumber = Math.floor(Math.random() * range);
-  
-  // Return the random number within the specified range
-  return randomNumber + min;
-}
+const numbers = [5, 1, 3, 2, 4];
+numbers.sort((a, b) => a - b);
 
-// Usage example: generate a random number between 1 and 10
-const randomNum = getRandomNumber(1, 10);
-console.log(randomNum);
+console.log(numbers); // Output: [1, 2, 3, 4, 5]
+const numbers = [5, 1, 3, 2, 4];
+numbers.sort((a, b) => b - a);
+
+console.log(numbers); // Output: [5, 4, 3, 2, 1]
