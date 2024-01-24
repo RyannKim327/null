@@ -1,12 +1,17 @@
-function isPalindrome(str) {
-  // Remove any non-alphanumeric characters and convert to lowercase
-  const cleanStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+function isAnagram(str1, str2) {
+  // Convert both strings to lowercase and remove non-alphabetic characters
+  str1 = str1.toLowerCase().replace(/[^a-z]/g, '');
+  str2 = str2.toLowerCase().replace(/[^a-z]/g, '');
 
-  // Compare the clean string with its reverse
-  return cleanStr === cleanStr.split('').reverse().join('');
+  // Sort the characters of both strings
+  const sortedStr1 = str1.split('').sort().join('');
+  const sortedStr2 = str2.split('').sort().join('');
+
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
 
-// Example usage:
-console.log(isPalindrome("level")); // true
-console.log(isPalindrome("Hello")); // false
-console.log(isPalindrome("A man, a plan, a canal, Panama!")); // true
+// Example usage
+const string1 = 'listen';
+const string2 = 'silent';
+console.log(isAnagram(string1, string2));  // Output: true
