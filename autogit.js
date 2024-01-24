@@ -1,18 +1,19 @@
-function isPalindrome(str) {
-  // Remove whitespace and convert to lowercase
-  var lowerCaseStr = str.toLowerCase().replace(/\s/g, '');
-  
-  // Reverse the string
-  var reversedStr = lowerCaseStr.split('').reverse().join('');
-  
-  // Compare the original and reversed strings
-  if (lowerCaseStr === reversedStr) {
-    return true;
-  } else {
-    return false;
+function longestCommonPrefix(strings) {
+  if (strings.length === 0) {
+    return '';
   }
+
+  let prefix = strings[0];
+
+  for (let i = 1; i < strings.length; i++) {
+    while (strings[i].indexOf(prefix) !== 0) {
+      prefix = prefix.substring(0, prefix.length - 1);
+    }
+  }
+
+  return prefix;
 }
 
-// Example usage
-console.log(isPalindrome('racecar')); // Output: true
-console.log(isPalindrome('Hello, World!')); // Output: false
+// Example usage:
+const strings = ['apple', 'app', 'application'];
+console.log(longestCommonPrefix(strings)); // Output: 'app'
