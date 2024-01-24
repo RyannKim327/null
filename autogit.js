@@ -1,58 +1,66 @@
-class Graph {
+class Node {
   constructor() {
-    this.vertices = [];
-    this.adjacencyList = {};
-  }
-
-  addVertex(vertex) {
-    this.vertices.push(vertex);
-    this.adjacencyList[vertex] = [];
-  }
-
-  addEdge(v1, v2) {
-    this.adjacencyList[v1].push(v2);
-    this.adjacencyList[v2].push(v1);
-  }
-
-  breadthFirstSearch(startVertex, targetVertex) {
-    let visited = {};
-    let queue = [];
-
-    visited[startVertex] = true;
-    queue.push(startVertex);
-
-    while (queue.length) {
-      let currentVertex = queue.shift();
-      
-      if (currentVertex === targetVertex) {
-        return true; // Target found
-      }
-      
-      for (let neighbor of this.adjacencyList[currentVertex]) {
-        if (!visited[neighbor]) {
-          visited[neighbor] = true;
-          queue.push(neighbor);
-        }
-      }
-    }
-    
-    return false; // Target not found
+    this.edges = {}; // Children edges
+    this.start = null; // Starting index of the substring
+    this.end = null; // Ending index of the substring
   }
 }
+class SuffixTree {
+  constructor() {
+    this.root = new Node();
+    this.word = null; // The word/substring represented by the tree
+  }
 
-// Usage:
-let graph = new Graph();
-graph.addVertex("A");
-graph.addVertex("B");
-graph.addVertex("C");
-graph.addVertex("D");
-graph.addVertex("E");
+  buildTree(text) {
+    // Store the word/substring for later reference
+    this.word = text + '$'; // Add a unique delimiter ('$') to mark the end of the word/substring
 
-graph.addEdge("A", "B");
-graph.addEdge("A", "C");
-graph.addEdge("B", "D");
-graph.addEdge("C", "E");
+    // Construct the suffix tree
+    for (let i = 0; i < this.word.length; i++) {
+      this._addSuffix(i);
+    }
+  }
 
-console.log(graph.breadthFirstSearch("A", "E")); // true
-console.log(graph.breadthFirstSearch("A", "D")); // true
-console.log(graph.breadthFirstSearch("B", "C")); // false
+  _addSuffix(start) {
+    let currentNode = this.root;
+    let index = start;
+    
+    while (index < this.word.length) {
+      if (!currentNode.edges[this.word[index]]) {
+        // Create a new edge if it doesn't exist
+        currentNode.edges[this.word[index]] = new Node();
+        currentNode.edges[this.word[index]].start = start;
+      }
+      
+      const edge = currentNode.edges[this.word[index]];
+      let i = 0;
+
+      // Find the common substring following the current edge
+      while (start + i < this.word.length && edge.start + i < this.word.length && this.word[start + i] === this.word[edge.start + i]) {
+        i++;
+      }
+
+      if (edge.start + i === edge.end) {
+        // Reached the end of the edge, move to the next node
+        currentNode = edge;
+        index += i;
+      } else {
+        // Split the edge
+        const splitNode = new Node();
+        splitNode.start = edge.start;
+        splitNode.end = edge.start + i;
+
+        currentNode.edges[this.word[edge.start]] = splitNode;
+        splitNode.edges[this.word[edge.start + i]] = edge;
+        edge.start += i;
+
+        break;
+      }
+    }
+  }
+}
+const suffixTree = new SuffixTree();
+suffixTree.buildTree('banana');
+
+// Test by printing the tree structure
+console.log(suffixTree.root);
