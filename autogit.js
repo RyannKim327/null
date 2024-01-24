@@ -1,16 +1,41 @@
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = Array.from(new Set(array));
-console.log(uniqueArray);  // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = array.filter((value, index, self) => {
-  return self.indexOf(value) === index;
-});
-console.log(uniqueArray);  // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = array.reduce((accumulator, currentValue) => {
-  if (!accumulator.includes(currentValue)) {
-    accumulator.push(currentValue);
+class HashTable {
+  constructor() {
+    this.table = {};
   }
-  return accumulator;
-}, []);
-console.log(uniqueArray);  // Output: [1, 2, 3, 4, 5]
+
+  // Hash function to convert keys into numerical indices
+  hash(key) {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash += key.charCodeAt(i);
+    }
+    return hash;
+  }
+
+  // Insert a new key-value pair
+  insert(key, value) {
+    const index = this.hash(key);
+    this.table[index] = value;
+  }
+
+  // Get the value associated with a given key
+  get(key) {
+    const index = this.hash(key);
+    return this.table[index];
+  }
+
+  // Remove a key-value pair from the hash table
+  remove(key) {
+    const index = this.hash(key);
+    delete this.table[index];
+  }
+}
+
+// Usage
+const hashTable = new HashTable();
+hashTable.insert('apple', 10);
+hashTable.insert('banana', 20);
+hashTable.insert('orange', 30);
+console.log(hashTable.get('apple')); // Output: 10
+hashTable.remove('banana');
+console.log(hashTable.get('banana')); // Output: undefined
