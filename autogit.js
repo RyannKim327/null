@@ -1,69 +1,25 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
+function breadthLimitedSearch(root, depthLimit) {
+  if (!root) return;
+  
+  const queue = [root];
+  let currentDepth = 0;
 
-class BinaryTree {
-  constructor() {
-    this.root = null;
-  }
+  while (queue.length > 0) {
+    const node = queue.shift();
 
-  insert(value) {
-    const newNode = new Node(value);
+    // Perform operations on the current node
+    console.log(node.value);
 
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
-
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
+    if (currentDepth < depthLimit) {
+      if (node.children) {
+        // Enqueue the node's children
+        queue.push(...node.children);
       }
     }
-  }
 
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
-    }
-
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else if (value > node.value) {
-      return this.searchNode(node.right, value);
-    } else {
-      return true;
+    if (queue.length === 0) {
+      // Reached the end of a level
+      currentDepth++;
     }
   }
 }
-
-// Example usage:
-const tree = new BinaryTree();
-
-tree.insert(5);
-tree.insert(3);
-tree.insert(8);
-tree.insert(2);
-tree.insert(4);
-
-console.log(tree.search(4)); // Output: true
-console.log(tree.search(6)); // Output: false
