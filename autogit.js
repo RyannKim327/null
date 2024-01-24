@@ -1,18 +1,24 @@
-function hasCycle(head) {
-  let tortoise = head;
-  let hare = head;
+const string = "Hello, World!";
+const substring = "World";
 
-  while (hare !== null && hare.next !== null) {
-    tortoise = tortoise.next;
-    hare = hare.next.next;
-
-    if (tortoise === hare) {
-      return true; // Cycle detected
-    }
-  }
-
-  return false; // No cycle found
+if (string.includes(substring)) {
+  console.log("Substring found!");
+} else {
+  console.log("Substring not found.");
 }
-const myList = /* create the linked list */;
+const string = "Hello, World!";
+const substring = "World";
 
-console.log(hasCycle(myList)); // Output: true or false
+if (string.indexOf(substring) !== -1) {
+  console.log("Substring found!");
+} else {
+  console.log("Substring not found.");
+}
+const string = "Hello, World!";
+const substring = /World/;
+
+if (substring.test(string)) {
+  console.log("Substring found!");
+} else {
+  console.log("Substring not found.");
+}
