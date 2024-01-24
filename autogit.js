@@ -1,16 +1,36 @@
-function countOccurrences(string, word) {
-  // Create a regular expression with the word and 'g' flag for global search
-  var regex = new RegExp(word, 'g');
-  
-  // Use match() to find all occurrences of the word in the string
-  var matches = string.match(regex);
-  
-  // Return the number of occurrences
-  return matches ? matches.length : 0;
+function binarySearch(arr, target) {
+  let left = 0;
+  let right = arr.length - 1;
+
+  while (left <= right) {
+    let mid = Math.floor((left + right) / 2);
+
+    // Check if target is present at mid
+    if (arr[mid] === target) {
+      return mid;
+    }
+
+    // If target is greater, ignore the left half
+    if (arr[mid] < target) {
+      left = mid + 1;
+    }
+    // If target is smaller, ignore the right half
+    else {
+      right = mid - 1;
+    }
+  }
+
+  // Target was not found
+  return -1;
 }
 
-// Example usage
-var myString = "How much wood would a woodchuck chuck if a woodchuck could chuck wood?";
-var wordToFind = "wood";
-var occurrences = countOccurrences(myString, wordToFind);
-console.log(occurrences); // Output: 2
+// Example usage:
+const sortedArray = [2, 4, 6, 8, 10, 12];
+const target = 8;
+const index = binarySearch(sortedArray, target);
+
+if (index !== -1) {
+  console.log(`Target found at index ${index}`);
+} else {
+  console.log("Target not found");
+}
