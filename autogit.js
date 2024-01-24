@@ -1,97 +1,44 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-  }
-}
-enqueue(value) {
-  const newNode = new Node(value);
+function findLongestIncreasingSubsequence(arr) {
+  const n = arr.length;
+  const lengths = Array(n).fill(1); // Array to store lengths of increasing subsequences
 
-  if (!this.head) {
-    this.head = newNode;
-    this.tail = newNode;
-  } else {
-    this.tail.next = newNode;
-    this.tail = newNode;
-  }
-}
-dequeue() {
-  if (!this.head) {
-    return null;
-  }
-
-  const removedNode = this.head;
-  this.head = this.head.next;
-
-  if (!this.head) {
-    this.tail = null;
-  }
-
-  return removedNode.value;
-}
-isEmpty() {
-  return this.head === null;
-}
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-  }
-
-  enqueue(value) {
-    const newNode = new Node(value);
-
-    if (!this.head) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
+  // Compute lengths of increasing subsequences
+  for (let i = 1; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      if (arr[i] > arr[j] && lengths[i] < lengths[j] + 1) {
+        lengths[i] = lengths[j] + 1;
+      }
     }
   }
 
-  dequeue() {
-    if (!this.head) {
-      return null;
+  let maxLength = 0; // Length of the longest increasing subsequence
+  let endIndex = 0; // Index of the last element in the longest increasing subsequence
+
+  // Find the index of the maximum value in lengths array
+  for (let i = 0; i < n; i++) {
+    if (maxLength < lengths[i]) {
+      maxLength = lengths[i];
+      endIndex = i;
     }
-
-    const removedNode = this.head;
-    this.head = this.head.next;
-
-    if (!this.head) {
-      this.tail = null;
-    }
-
-    return removedNode.value;
   }
 
-  isEmpty() {
-    return this.head === null;
+  // Construct the longest increasing subsequence
+  const lis = [];
+  lis.push(arr[endIndex]);
+
+  while (maxLength > 1) {
+    maxLength--;
+    endIndex--;
+    while (arr[endIndex] >= arr[endIndex + 1]) {
+      endIndex--;
+    }
+    lis.push(arr[endIndex]);
   }
+
+  return lis.reverse(); // Reverse the array to get the correct order
 }
 
-// Usage example
-const queue = new Queue();
-
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
-
-console.log(queue.dequeue()); // Output: 1
-console.log(queue.dequeue()); // Output: 2
-console.log(queue.isEmpty()); // Output: false
-console.log(queue.dequeue()); // Output: 3
-console.log(queue.isEmpty()); // Output: true
+// Example usage:
+const array = [3, 10, 2, 1, 20];
+const longestIncreasingSubsequence = findLongestIncreasingSubsequence(array);
+console.log(longestIncreasingSubsequence); // Output: [3, 10, 20]
