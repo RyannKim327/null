@@ -1,22 +1,18 @@
-function findMajorityElement(nums) {
-  let majorityIndex = 0;
-  let count = 1;
+function reverseWords(str) {
+  // Step 1: Split the string into an array of words
+  var words = str.split(' ');
 
-  for (let i = 1; i < nums.length; i++) {
-    if (nums[i] === nums[majorityIndex]) {
-      count++;
-    } else {
-      count--;
-    }
+  // Step 2: Reverse the array of words
+  var reversedWords = words.reverse();
 
-    if (count === 0) {
-      majorityIndex = i;
-      count = 1;
-    }
-  }
+  // Step 3: Join the reversed array into a string
+  var reversedStr = reversedWords.join(' ');
 
-  return nums[majorityIndex];
+  return reversedStr;
 }
-const nums = [2, 2, 1, 1, 1, 2, 2];
-const majorityElement = findMajorityElement(nums);
-console.log(majorityElement); // Output: 2
+
+// Example usage
+var sentence = "Hello, how are you?";
+var reversedSentence = reverseWords(sentence);
+console.log(reversedSentence);
+// Output: "you? are how Hello,"
