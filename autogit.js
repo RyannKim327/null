@@ -1,33 +1,17 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
+function areAnagrams(str1, str2) {
+  // Remove non-alphabetic characters and convert to lowercase
+  str1 = str1.replace(/[^A-Za-z]/g, "").toLowerCase();
+  str2 = str2.replace(/[^A-Za-z]/g, "").toLowerCase();
 
-function findMaxDepth(node) {
-  if (node === null) {
-    // If the node is null, it means we have reached the leaf node and there are no more children.
-    return 0;
-  } else {
-    // Recursively calculate the maximum depth of the left and right subtrees.
-    const leftDepth = findMaxDepth(node.left);
-    const rightDepth = findMaxDepth(node.right);
+  // Convert strings to arrays and sort them
+  const arr1 = str1.split("").sort();
+  const arr2 = str2.split("").sort();
 
-    // Return the maximum depth from the current node.
-    return Math.max(leftDepth, rightDepth) + 1;
-  }
+  // Compare the sorted arrays
+  return arr1.join("") === arr2.join("");
 }
 
 // Example usage:
-// Create a binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-// Find the maximum depth
-const maxDepth = findMaxDepth(root);
-console.log("Maximum depth of the binary tree:", maxDepth);
+const string1 = "debit card";
+const string2 = "bad credit";
+console.log(areAnagrams(string1, string2)); // Output: true
