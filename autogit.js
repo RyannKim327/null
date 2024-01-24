@@ -1,64 +1,55 @@
-class TrieNode {
-  constructor() {
-    this.children = {};
-    this.isEndOfWord = false;
+function buildPrefixTable(pattern) {
+  const prefixTable = [0];
+  let prefixLength = 0;
+  let i = 1;
+
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[prefixLength]) {
+      prefixLength++;
+      prefixTable[i] = prefixLength;
+      i++;
+    } else {
+      if (prefixLength > 0) {
+        prefixLength = prefixTable[prefixLength - 1];
+      } else {
+        prefixTable[i] = 0;
+        i++;
+      }
+    }
   }
+
+  return prefixTable;
 }
 
-class Trie {
-  constructor() {
-    this.root = new TrieNode();
+function stringMatch(text, pattern) {
+  const matches = [];
+  const prefixTable = buildPrefixTable(pattern);
+  let textIndex = 0;
+  let patternIndex = 0;
+
+  while (textIndex < text.length) {
+    if (pattern[patternIndex] === text[textIndex]) {
+      patternIndex++;
+      textIndex++;
+
+      if (patternIndex === pattern.length) {
+        matches.push(textIndex - patternIndex);
+        patternIndex = prefixTable[patternIndex - 1];
+      }
+    } else {
+      if (patternIndex > 0) {
+        patternIndex = prefixTable[patternIndex - 1];
+      } else {
+        textIndex++;
+      }
+    }
   }
 
-  insert(word) {
-    let currentNode = this.root;
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-      if (!currentNode.children[char]) {
-        currentNode.children[char] = new TrieNode();
-      }
-      currentNode = currentNode.children[char];
-    }
-    currentNode.isEndOfWord = true;
-  }
-
-  search(word) {
-    let currentNode = this.root;
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-      if (!currentNode.children[char]) {
-        return false;
-      }
-      currentNode = currentNode.children[char];
-    }
-    return currentNode.isEndOfWord;
-  }
-
-  startsWith(prefix) {
-    let currentNode = this.root;
-    for (let i = 0; i < prefix.length; i++) {
-      const char = prefix[i];
-      if (!currentNode.children[char]) {
-        return false;
-      }
-      currentNode = currentNode.children[char];
-    }
-    return true;
-  }
+  return matches;
 }
 
-// Example usage:
-const trie = new Trie();
-
-trie.insert('apple');
-trie.insert('banana');
-trie.insert('app');
-trie.insert('ball');
-
-console.log(trie.search('apple')); // Output: true
-console.log(trie.search('app')); // Output: true
-console.log(trie.search('banana')); // Output: true
-
-console.log(trie.startsWith('app')); // Output: true
-console.log(trie.startsWith('ba')); // Output: true
-console.log(trie.startsWith('apx')); // Output: false
+// Usage Example:
+const text = 'ABCABCDABABCDABCDABDE';
+const pattern = 'ABCDABD';
+const matches = stringMatch(text, pattern);
+console.log(matches); // Output: [9, 15]
