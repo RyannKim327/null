@@ -1,13 +1,29 @@
-let arr = [1, 5, 3, 9, 2];
-let max = Math.max(...arr);
-console.log(max);  // Output: 9
-let arr = [1, 5, 3, 9, 2];
-let max = arr[0];  // Assume the first element is the maximum
-
-for (let i = 1; i < arr.length; i++) {
-  if (arr[i] > max) {
-    max = arr[i];  // Update max if a larger value is found
+// Linked list node class
+class ListNode {
+  constructor(val) {
+    this.val = val;
+    this.next = null;
   }
 }
 
-console.log(max);  // Output: 9
+// Function to find the middle element of a linked list
+function findMiddleElement(head) {
+  let slowPtr = head;
+  let fastPtr = head;
+
+  while (fastPtr && fastPtr.next) {
+    slowPtr = slowPtr.next;
+    fastPtr = fastPtr.next.next;
+  }
+
+  return slowPtr.val;
+}
+
+// Example usage
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+console.log(findMiddleElement(head)); // Output: 3
