@@ -1,17 +1,16 @@
-function reverseWords(str) {
-  // Step 1: Split the string into an array of words
-  var wordsArray = str.split(" ");
-
-  // Step 2: Reverse the order of the array
-  var reversedArray = wordsArray.reverse();
-
-  // Step 3: Join the elements of the reversed array into a string
-  var reversedString = reversedArray.join(" ");
-
-  return reversedString;
+let str = "Hello, World!";
+let reversedStr = str.split("").reverse().join("");
+console.log(reversedStr);
+let str = "Hello, World!";
+let reversedStr = "";
+for (let i = str.length - 1; i >= 0; i--) {
+  reversedStr += str[i];
 }
-
-// Example usage
-var originalString = "Hello World!";
-var reversedString = reverseWords(originalString);
-console.log(reversedString);
+console.log(reversedStr);
+let str = "Hello, World!";
+let chars = Array.from(str);
+let reversedStr = "";
+for (let char of chars) {
+  reversedStr = char + reversedStr;
+}
+console.log(reversedStr);
