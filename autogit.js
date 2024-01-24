@@ -1,25 +1,16 @@
-function longestCommonPrefix(strs) {
-  let prefix = '';
-
-  if (strs.length === 0) {
-    return prefix;
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = array.filter((value, index, self) => {
+  return self.indexOf(value) === index;
+});
+console.log(uniqueArray);
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = [...new Set(array)];
+console.log(uniqueArray);
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = [];
+for (let i = 0; i < array.length; i++) {
+  if (!uniqueArray.includes(array[i])) {
+    uniqueArray.push(array[i]);
   }
-
-  strs.sort();
-
-  const first = strs[0];
-  const last = strs[strs.length - 1];
-
-  for (let i = 0; i < first.length; i++) {
-    if (first[i] === last[i]) {
-      prefix += first[i];
-    } else {
-      break;
-    }
-  }
-
-  return prefix;
 }
-const strings = ['flower', 'flow', 'flight'];
-console.log(longestCommonPrefix(strings));
-"fl"
+console.log(uniqueArray);
