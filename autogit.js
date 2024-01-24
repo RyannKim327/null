@@ -1,18 +1,16 @@
-function reverseWords(string) {
-  // Step 1: Split the string into an array of words
-  var wordsArray = string.split(" ");
+function reverseStringWords(str) {
+  // Split the string into an array of words
+  var words = str.split(' ');
 
-  // Step 2: Reverse the order of words in the array
-  var reversedArray = wordsArray.reverse();
+  // Reverse the array of words
+  var reversedWords = words.reverse();
 
-  // Step 3: Join the words back into a string
-  var reversedString = reversedArray.join(" ");
+  // Join the reversed array back into a string
+  var reversedString = reversedWords.join(' ');
 
   return reversedString;
 }
 
-// Example usage
-var sentence = "Hello, how are you?";
-var reversedSentence = reverseWords(sentence);
-console.log(reversedSentence);
-you? are how Hello,
+var originalString = "Hello, World!";
+var reversedString = reverseStringWords(originalString);
+console.log(reversedString);  // Output: "World! Hello,"
