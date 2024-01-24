@@ -1,24 +1,8 @@
-function findFirstNonRepeatingCharacter(str) {
-  const charCount = new Map();
+let array = [1, 2, 3, 4, 5];
+array.reverse();
 
-  for (const char of str) {
-    if (charCount.has(char)) {
-      charCount.set(char, charCount.get(char) + 1);
-    } else {
-      charCount.set(char, 1);
-    }
-  }
+console.log(array); // Output: [5, 4, 3, 2, 1]
+let array = [1, 2, 3, 4, 5];
+let reversedArray = array.slice().reverse();
 
-  for (const [char, count] of charCount.entries()) {
-    if (count === 1) {
-      return char;
-    }
-  }
-
-  return null; // If there are no non-repeating characters
-}
-
-// Usage example:
-const input = "aabbccdeeff";
-const firstNonRepeatingChar = findFirstNonRepeatingCharacter(input);
-console.log(firstNonRepeatingChar); // Output: "d"
+console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
