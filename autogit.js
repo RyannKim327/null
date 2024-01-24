@@ -1,38 +1,39 @@
-function beamSearch(initialState, beamWidth) {
-  let candidates = [{ state: initialState, score: 0 }];
+function Node(value, children) {
+  this.value = value;
+  this.children = children;
+}
 
-  while (true) {
-    let nextCandidates = [];
+function depthLimitedSearch(root, targetValue, depthLimit) {
+  let stack = [];
+  stack.push({ node: root, depth: 0 });
 
-    for (let candidate of candidates) {
-      let nextStates = generateNextStates(candidate.state);
+  while (stack.length > 0) {
+    const { node, depth } = stack.pop();
 
-      for (let nextState of nextStates) {
-        let score = calculateScore(nextState);
-
-        nextCandidates.push({ state: nextState, score: candidate.score + score });
-      }
+    if (node.value === targetValue) {
+      return node; // return the node if its value matches the target value
     }
 
-    // Sort the candidates by score in descending order
-    nextCandidates.sort((a, b) => b.score - a.score);
-
-    // Select the top candidates based on the beam width
-    candidates = nextCandidates.slice(0, beamWidth);
-
-    // Check if any of the top candidates satisfy the termination condition
-    if (candidates.some(candidate => isGoalState(candidate.state))) {
-      break;
+    if (depth < depthLimit) {
+      // Add the node's children to the stack if depth limit is not reached
+      const children = node.children;
+      for (let i = children.length - 1; i >= 0; i--) {
+        stack.push({ node: children[i], depth: depth + 1 });
+      }
     }
   }
 
-  // Return the best candidate (or multiple candidates depending on your problem)
-  return candidates[0];
+  return null; // return null if the target value is not found within the depth limit
 }
 
-// Usage example
-let initialState = /* define your initial state */;
-let beamWidth = 3; // Set beam width as desired
-let result = beamSearch(initialState, beamWidth);
+// Example usage
+const node1 = new Node(1, []);
+const node4 = new Node(4, []);
+const node6 = new Node(6, []);
+const node3 = new Node(3, [node6]);
+const node5 = new Node(5, []);
+const node2 = new Node(2, [node4, node5]);
+const root = new Node(0, [node1, node2, node3]);
 
-console.log(result);
+const targetNode = depthLimitedSearch(root, 6, 3);
+console.log(targetNode); // Output: Node { value: 6, children: [] }
