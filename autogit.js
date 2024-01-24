@@ -1,25 +1,17 @@
-function removeVowels(str) {
-  // Use the replace() function with a regular expression to remove all vowels
-  return str.replace(/[aeiou]/gi, "");
+function reverseWords(str) {
+  // Step 1: Split the string into an array of words
+  let wordsArray = str.split(" ");
+
+  // Step 2: Reverse the array
+  let reversedArray = wordsArray.reverse();
+
+  // Step 3: Join the reversed array into a string
+  let reversedString = reversedArray.join(" ");
+
+  return reversedString;
 }
 
-console.log(removeVowels("Hello World")); // Output: Hll Wrld
-function removeVowels(str) {
-  var vowels = "aeiouAEIOU";
-  var result = "";
-
-  // Loop through each character in the string
-  for (var i = 0; i < str.length; i++) {
-    var char = str.charAt(i);
-
-    // Check if the character is a vowel
-    if (vowels.indexOf(char) === -1) {
-      // If it's not a vowel, append it to the result
-      result += char;
-    }
-  }
-
-  return result;
-}
-
-console.log(removeVowels("Hello World")); // Output: Hll Wrld
+// Example usage
+let sentence = "Hello, how are you?";
+let reversedSentence = reverseWords(sentence);
+console.log(reversedSentence);
