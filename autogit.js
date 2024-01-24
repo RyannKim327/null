@@ -1,49 +1,101 @@
-function calculateHash(str, prime, mod) {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = (hash * prime + str.charCodeAt(i)) % mod;
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
   }
-  return hash;
 }
-function rabinKarp(pattern, text) {
-  const prime = 31; // a prime number that helps reduce collisions
-  const mod = 100000007; // a large prime number to avoid overflow
 
-  const patternLength = pattern.length;
-  const textLength = text.length;
-  const patternHash = calculateHash(pattern, prime, mod);
-  let textHash = calculateHash(text.substring(0, patternLength), prime, mod);
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+  }
 
-  for (let i = 0; i <= textLength - patternLength; i++) {
-    if (patternHash === textHash) { // hash match, now compare strings
-      let found = true;
-      for (let j = 0; j < patternLength; j++) {
-        if (pattern.charAt(j) !== text.charAt(i + j)) {
-          found = false;
-          break;
+  append(data) {
+    const newNode = new Node(data);
+
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+  }
+
+  prepend(data) {
+    const newNode = new Node(data);
+
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      newNode.next = this.head;
+      this.head = newNode;
+    }
+  }
+
+  find(data) {
+    let currentNode = this.head;
+
+    while (currentNode) {
+      if (currentNode.data === data) {
+        return currentNode;
+      }
+      currentNode = currentNode.next;
+    }
+
+    return null;
+  }
+
+  delete(data) {
+    if (!this.head) {
+      return;
+    }
+
+    if (this.head.data === data) {
+      this.head = this.head.next;
+      if (!this.head) {
+        this.tail = null;
+      }
+      return;
+    }
+
+    let currentNode = this.head;
+    while (currentNode.next) {
+      if (currentNode.next.data === data) {
+        currentNode.next = currentNode.next.next;
+        if (currentNode.next === null) {
+          this.tail = currentNode;
         }
+        return;
       }
-      if (found) {
-        return i; // pattern found at index i
-      }
-    }
-    if (i < textLength - patternLength) { // update the rolling hash
-      textHash = (textHash - text.charCodeAt(i) * prime ** (patternLength - 1)) % mod;
-      textHash = (textHash * prime + text.charCodeAt(i + patternLength)) % mod;
-      if (textHash < 0) { // make sure the hash is positive
-        textHash += mod;
-      }
+      currentNode = currentNode.next;
     }
   }
 
-  return -1; // pattern not found
-}
-const text = "Hello, world!";
-const pattern = "world";
-const index = rabinKarp(pattern, text);
+  print() {
+    let currentNode = this.head;
+    const elements = [];
 
-if (index !== -1) {
-  console.log(`Pattern found at index ${index}`);
-} else {
-  console.log("Pattern not found");
+    while (currentNode) {
+      elements.push(currentNode.data);
+      currentNode = currentNode.next;
+    }
+
+    console.log(elements.join(" -> "));
+  }
 }
+const linkedList = new LinkedList();
+linkedList.append(10);
+linkedList.append(20);
+linkedList.append(30);
+linkedList.prepend(5);
+linkedList.prepend(2);
+
+linkedList.print(); // Output: 2 -> 5 -> 10 -> 20 -> 30
+
+linkedList.delete(10);
+linkedList.print(); // Output: 2 -> 5 -> 20 -> 30
+
+console.log(linkedList.find(20)); // Output: Node { data: 20, next: Node { data: 30, next: null } }
