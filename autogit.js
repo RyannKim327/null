@@ -1,40 +1,53 @@
-function countingSort(arr) {
-  // Find the maximum element in the array
-  let max = Math.max(...arr);
-
-  // Create a count array initialized with zeros
-  let count = new Array(max + 1).fill(0);
-
-  // Store the count of each element in the count array
-  for (let i = 0; i < arr.length; i++) {
-    count[arr[i]]++;
+class Stack {
+  constructor() {
+    this.stackArray = [];
   }
 
-  // Modify the count array to store the actual position of each element
-  for (let i = 1; i < count.length; i++) {
-    count[i] += count[i - 1];
+  // Add an element to the top of the stack
+  push(element) {
+    this.stackArray.push(element);
   }
 
-  // Create a temporary array to store the sorted output
-  let output = new Array(arr.length);
-
-  // Build the output array
-  for (let i = arr.length - 1; i >= 0; i--) {
-    output[count[arr[i]] - 1] = arr[i];
-    count[arr[i]]--;
+  // Remove and return the top element from the stack
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack Underflow";
+    }
+    return this.stackArray.pop();
   }
 
-  // Copy the sorted output array back to the original array
-  for (let i = 0; i < arr.length; i++) {
-    arr[i] = output[i];
+  // Return the top element of the stack without removing it
+  peek() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
+    }
+    return this.stackArray[this.stackArray.length - 1];
   }
 
-  return arr;
+  // Check if the stack is empty
+  isEmpty() {
+    return this.stackArray.length === 0;
+  }
+
+  // Get the size of the stack
+  size() {
+    return this.stackArray.length;
+  }
+
+  // Print the stack elements
+  printStack() {
+    let stackElements = this.stackArray.join(", ");
+    console.log(`Stack: ${stackElements}`);
+  }
 }
-let arr = [4, 2, 2, 8, 3, 3, 1];
-console.log("Original Array:", arr);
 
-arr = countingSort(arr);
-console.log("Sorted Array:", arr);
-Original Array: [4, 2, 2, 8, 3, 3, 1]
-Sorted Array: [1, 2, 2, 3, 3, 4, 8]
+// Example usage:
+const stack = new Stack();
+stack.push(10);
+stack.push(20);
+stack.push(30);
+stack.printStack(); // Output: Stack: 10, 20, 30
+console.log(stack.pop()); // Output: 30
+console.log(stack.peek()); // Output: 20
+console.log(stack.isEmpty()); // Output: false
+console.log(stack.size()); // Output: 2
