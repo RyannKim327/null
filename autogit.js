@@ -1,18 +1,8 @@
-function reverseWords(str) {
-  // Split the string into an array of words
-  var words = str.split(' ');
-
-  // Reverse the order of the array
-  var reversedWords = words.reverse();
-
-  // Join the words back together
-  var reversedString = reversedWords.join(' ');
-
-  return reversedString;
+function validateEmail(email) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
 }
 
-// Example usage
-var inputString = 'Hello world, how are you?';
-var reversedString = reverseWords(inputString);
-console.log(reversedString);
-you? are how world, Hello
+// Example usage:
+console.log(validateEmail("test@example.com")); // true
+console.log(validateEmail("invalid_email")); // false
