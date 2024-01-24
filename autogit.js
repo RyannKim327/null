@@ -1,6 +1,6 @@
-function decimalToBinary(decimalNumber) {
-  return decimalNumber.toString(2);
-}
-let decimal = 10;
-let binary = decimalToBinary(decimal);
-console.log(binary); // Output: 1010
+let numbers = [5, 1, 3, 2, 4];
+numbers.sort((a, b) => a - b);
+console.log(numbers); // Output: [1, 2, 3, 4, 5]
+let numbers = [5, 1, 3, 2, 4];
+numbers.sort((a, b) => b - a);
+console.log(numbers); // Output: [5, 4, 3, 2, 1]
