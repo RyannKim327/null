@@ -1,87 +1,115 @@
-// Node class for skip list nodes
-class SkipListNode {
-  constructor(value = null, next = null, down = null) {
-    this.value = value;
-    this.next = next;
-    this.down = down;
-  }
-}
-
-// Skip list class
-class SkipList {
+class Graph {
   constructor() {
-    this.head = new SkipListNode();
-    this.maxLevel = 1;
+    this.nodes = {};
   }
 
-  // Generate a random level for a newly inserted node
-  randomLevel() {
-    let level = 1;
-    while (Math.random() < 0.5 && level < this.maxLevel + 1) {
-      level++;
-    }
-    return level;
+  addNode(node) {
+    this.nodes[node] = [];
   }
 
-  // Insert a node into the skip list
-  insert(value) {
-    const newNode = new SkipListNode(value);
-    const update = new Array(this.maxLevel + 1).fill(this.head);
-    let currentNode = this.head;
-    for (let i = this.maxLevel; i >= 0; i--) {
-      while (currentNode.next && currentNode.next.value < value) {
-        currentNode = currentNode.next;
-      }
-      update[i] = currentNode;
-      currentNode = currentNode.down;
-    }
-    for (let i = 0; i < newNode.next.length; i++) {
-      newNode.next[i] = update[i].next;
-      update[i].next = newNode;
-    }
-    if (newNode.next[0]) {
-      newNode.next[0].prev = newNode;
-    }
-    if (newNode.next.length > this.maxLevel) {
-      this.maxLevel = newNode.next.length;
-    }
+  addEdge(node1, node2, weight) {
+    this.nodes[node1].push({ node: node2, weight: weight });
+    this.nodes[node2].push({ node: node1, weight: weight });
   }
 
-  // Remove a node from the skip list
-  remove(value) {
-    let currentNode = this.head;
-    for (let i = this.maxLevel; i >= 0; i--) {
-      while (currentNode.next && currentNode.next.value < value) {
-        currentNode = currentNode.next;
+  dijkstra(startNode) {
+    const distances = {};
+    const previous = {};
+    const queue = new PriorityQueue();
+
+    // Initialize distances and previous
+    for (let node in this.nodes) {
+      if (node === startNode) {
+        distances[node] = 0;
+        queue.enqueue(node, 0);
+      } else {
+        distances[node] = Infinity;
       }
-      if (currentNode.next && currentNode.next.value === value) {
-        currentNode.next = currentNode.next.next;
-      }
-      currentNode = currentNode.down;
+      previous[node] = null;
     }
+
+    while (!queue.isEmpty()) {
+      const currentNode = queue.dequeue().element;
+
+      this.nodes[currentNode].forEach(neighbor => {
+        const { node, weight } = neighbor;
+        const tentativeDistance = distances[currentNode] + weight;
+
+        if (tentativeDistance < distances[node]) {
+          distances[node] = tentativeDistance;
+          previous[node] = currentNode;
+          queue.enqueue(node, tentativeDistance);
+        }
+      });
+    }
+
+    return { distances, previous };
   }
 
-  // Search for a node in the skip list
-  search(value) {
-    let currentNode = this.head;
-    for (let i = this.maxLevel; i >= 0; i--) {
-      while (currentNode.next && currentNode.next.value < value) {
-        currentNode = currentNode.next;
-      }
-      if (currentNode.next && currentNode.next.value === value) {
-        return true;
-      }
-      currentNode = currentNode.down;
+  shortestPath(startNode, endNode) {
+    const { distances, previous } = this.dijkstra(startNode);
+
+    const path = [];
+    let currentNode = endNode;
+    while (currentNode) {
+      path.unshift(currentNode);
+      currentNode = previous[currentNode];
     }
-    return false;
+
+    return path;
   }
 }
 
-// Usage example
-const skipList = new SkipList();
-skipList.insert(3);
-skipList.insert(5);
-skipList.insert(7);
-console.log(skipList.search(5)); // Output: true
-skipList.remove(5);
-console.log(skipList.search(5)); // Output: false
+class PriorityQueue {
+  constructor() {
+    this.elements = [];
+  }
+
+  enqueue(element, priority) {
+    const item = { element, priority };
+    if (this.isEmpty()) {
+      this.elements.push(item);
+    } else {
+      let added = false;
+      for (let i = 0; i < this.elements.length; i++) {
+        if (item.priority < this.elements[i].priority) {
+          this.elements.splice(i, 0, item);
+          added = true;
+          break;
+        }
+      }
+      if (!added) {
+        this.elements.push(item);
+      }
+    }
+  }
+
+  dequeue() {
+    if (this.isEmpty()) {
+      return null;
+    }
+    return this.elements.shift();
+  }
+
+  isEmpty() {
+    return this.elements.length === 0;
+  }
+}
+
+// Example usage:
+const graph = new Graph();
+
+graph.addNode('A');
+graph.addNode('B');
+graph.addNode('C');
+graph.addNode('D');
+graph.addNode('E');
+
+graph.addEdge('A', 'B', 4);
+graph.addEdge('A', 'C', 2);
+graph.addEdge('B', 'E', 3);
+graph.addEdge('C', 'D', 2);
+graph.addEdge('C', 'B', 1);
+graph.addEdge('D', 'E', 3);
+
+console.log(graph.shortestPath('A', 'E')); // Output: [ 'A', 'C', 'B', 'E' ]
