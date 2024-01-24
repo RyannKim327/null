@@ -1,16 +1,34 @@
-const array = [1, 2, 3, 4, 4, 5, 6, 6, 7];
-const uniqueArray = Array.from(new Set(array));
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5, 6, 7]
-const array = [1, 2, 3, 4, 4, 5, 6, 6, 7];
-const uniqueArray = array.filter((value, index, self) => {
-  return self.indexOf(value) === index;
-});
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5, 6, 7]
-const array = [1, 2, 3, 4, 4, 5, 6, 6, 7];
-const uniqueArray = array.reduce((accumulator, currentValue) => {
-  if (accumulator.indexOf(currentValue) === -1) {
-    accumulator.push(currentValue);
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
-  return accumulator;
-}, []);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5, 6, 7]
+}
+
+function sumOfNodes(root) {
+  if (root === null) {
+    // Base case: empty tree
+    return 0;
+  } else {
+    // Recursive case: sum of current node's value and left and right subtrees
+    return (
+      root.value + sumOfNodes(root.left) + sumOfNodes(root.right)
+    );
+  }
+}
+
+// Usage example:
+
+// Create the binary tree
+const root = new Node(5);
+root.left = new Node(3);
+root.right = new Node(7);
+root.left.left = new Node(2);
+root.left.right = new Node(4);
+root.right.left = new Node(6);
+root.right.right = new Node(8);
+
+// Calculate the sum of all nodes
+const sum = sumOfNodes(root);
+console.log(sum); // Output: 35
