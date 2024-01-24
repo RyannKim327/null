@@ -1,19 +1,14 @@
-function reverseString(str) {
-  return str.split('').reverse().join('');
-}
+function isPalindrome(str) {
+  // Remove any non-alphanumeric characters and convert to lowercase
+  str = str.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
 
-console.log(reverseString('Hello')); // Output: "olleH"
-function reverseString(str) {
-  let reversedStr = '';
-  for (let i = str.length - 1; i >= 0; i--) {
-    reversedStr += str.charAt(i);
-  }
-  return reversedStr;
+  // Check if the reversed string is equal to the original string
+  return str === str.split('').reverse().join('');
 }
+let str1 = "A man, a plan, a canal, Panama.";
+let str2 = "Racecar";
+let str3 = "Hello, World!";
 
-console.log(reverseString('Hello')); // Output: "olleH"
-function reverseString(str) {
-  return [...str].reverse().join('');
-}
-
-console.log(reverseString('Hello')); // Output: "olleH"
+console.log(isPalindrome(str1)); // Output: true
+console.log(isPalindrome(str2)); // Output: true
+console.log(isPalindrome(str3)); // Output: false
