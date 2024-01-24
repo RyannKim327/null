@@ -1,10 +1,20 @@
-function getStringLength(str) {
-  let length = 0;
-  while (str[length] !== undefined) {
-    length++;
+function bubbleSort(array) {
+  var len = array.length;
+
+  for (var i = 0; i < len - 1; i++) {
+    for (var j = 0; j < len - i - 1; j++) {
+      if (array[j] > array[j + 1]) {
+        // Swap elements
+        var temp = array[j];
+        array[j] = array[j + 1];
+        array[j + 1] = temp;
+      }
+    }
   }
-  return length;
+
+  return array;
 }
-const myString = "Hello, world!";
-const length = getStringLength(myString);
-console.log(length); // Output: 13
+
+// Example usage:
+var arr = [64, 34, 25, 12, 22, 11, 90];
+console.log(bubbleSort(arr)); // Output: [11, 12, 22, 25, 34, 64, 90]
