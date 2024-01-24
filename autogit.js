@@ -1,35 +1,92 @@
-// Define the structure of a node in the binary tree
-class Node {
+class TreeNode {
   constructor(value) {
     this.value = value;
     this.left = null;
     this.right = null;
   }
 }
-
-// Function to calculate the maximum depth of a binary tree
-function maxDepth(root) {
-  // If the root is null, return 0
-  if (root === null) {
-    return 0;
+class BinarySearchTree {
+  constructor() {
+    this.root = null;
   }
-  
-  // Recursively calculate the maximum depth of the left and right subtrees
-  const leftDepth = maxDepth(root.left);
-  const rightDepth = maxDepth(root.right);
-  
-  // Return the maximum depth between the left and right subtrees,
-  // adding 1 to account for the current node
-  return Math.max(leftDepth, rightDepth) + 1;
+
+  insert(value) {
+    const newNode = new TreeNode(value);
+
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
+
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  searchNode(node, value) {
+    if (node === null) {
+      return false;
+    }
+
+    if (value === node.value) {
+      return true;
+    }
+
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    }
+
+    return this.searchNode(node.right, value);
+  }
+
+  inorderTraversal() {
+    this.inorderTraversalNode(this.root);
+  }
+
+  inorderTraversalNode(node) {
+    if (node !== null) {
+      this.inorderTraversalNode(node.left);
+      console.log(node.value);
+      this.inorderTraversalNode(node.right);
+    }
+  }
 }
+const bst = new BinarySearchTree();
 
-// Example usage:
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
+bst.insert(4);
+bst.insert(2);
+bst.insert(6);
+bst.insert(1);
+bst.insert(3);
+bst.insert(5);
+bst.insert(7);
 
-console.log(maxDepth(root));  // Output: 3
+console.log(bst.search(5)); // Output: true
+console.log(bst.search(8)); // Output: false
+
+bst.inorderTraversal();
+// Output:
+// 1
+// 2
+// 3
+// 4
+// 5
+// 6
+// 7
