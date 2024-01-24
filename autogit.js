@@ -1,25 +1,20 @@
-function findFirstRepeatedCharacter(str) {
-  // Keep track of visited characters
-  var visitedChars = {};
-
-  // Iterate through each character in the string
-  for (var i = 0; i < str.length; i++) {
-    var char = str[i];
-    
-    // If the character is already visited, it is the first repeated character
-    if (visitedChars[char]) {
-      return char;
-    }
-    
-    // Mark the character as visited
-    visitedChars[char] = true;
-  }
-
-  // Return null if no repeated character is found
-  return null;
+function countOccurrences(string, word) {
+  const regex = new RegExp(`\\b${word}\\b`, 'gi');
+  const matches = string.match(regex);
+  return matches ? matches.length : 0;
 }
 
-// Example usage
-var str = "abcdeff";
-var repeatedChar = findFirstRepeatedCharacter(str);
-console.log(repeatedChar); // Output: "f"
+const sentence = "Hello, hello! How are you today? Hello, world!";
+const wordToCount = "hello";
+
+console.log(countOccurrences(sentence, wordToCount)); // Output: 3
+function countOccurrences(string, word) {
+  const words = string.split(' ');
+  const count = words.filter(w => w.toLowerCase() === word.toLowerCase()).length;
+  return count;
+}
+
+const sentence = "Hello, hello! How are you today? Hello, world!";
+const wordToCount = "hello";
+
+console.log(countOccurrences(sentence, wordToCount)); // Output: 3
