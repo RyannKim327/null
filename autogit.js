@@ -1,38 +1,97 @@
-function buildHeap(arr, n, i) {
-  let largest = i; // Initialize largest as the root
-  let left = 2 * i + 1; // left child
-  let right = 2 * i + 2; // right child
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
+class Queue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+  }
+}
+enqueue(value) {
+  const newNode = new Node(value);
 
-  // If the left child is larger than the root
-  if (left < n && arr[left] > arr[largest])
-    largest = left;
+  if (!this.head) {
+    this.head = newNode;
+    this.tail = newNode;
+  } else {
+    this.tail.next = newNode;
+    this.tail = newNode;
+  }
+}
+dequeue() {
+  if (!this.head) {
+    return null;
+  }
 
-  // If the right child is larger than the largest so far
-  if (right < n && arr[right] > arr[largest])
-    largest = right;
+  const removedNode = this.head;
+  this.head = this.head.next;
 
-  // If the largest is not the root
-  if (largest != i) {
-    [arr[i], arr[largest]] = [arr[largest], arr[i]]; // Swap elements
-    buildHeap(arr, n, largest); // Recursively heapify the affected sub-tree
+  if (!this.head) {
+    this.tail = null;
+  }
+
+  return removedNode.value;
+}
+isEmpty() {
+  return this.head === null;
+}
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
 }
 
-function heapSort(arr) {
-  const n = arr.length;
-
-  // Build a max heap
-  for (let i = Math.floor(n / 2) - 1; i >= 0; i--)
-    buildHeap(arr, n, i);
-
-  // One by one extract elements from the heap
-  for (let i = n - 1; i > 0; i--) {
-    [arr[0], arr[i]] = [arr[i], arr[0]]; // Move current root to end
-    buildHeap(arr, i, 0); // Recursively heapify the reduced heap
+class Queue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
   }
 
-  return arr;
+  enqueue(value) {
+    const newNode = new Node(value);
+
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+  }
+
+  dequeue() {
+    if (!this.head) {
+      return null;
+    }
+
+    const removedNode = this.head;
+    this.head = this.head.next;
+
+    if (!this.head) {
+      this.tail = null;
+    }
+
+    return removedNode.value;
+  }
+
+  isEmpty() {
+    return this.head === null;
+  }
 }
-const array = [5, 3, 8, 4, 2, 1];
-const sortedArray = heapSort(array);
-console.log(sortedArray); // [1, 2, 3, 4, 5, 8]
+
+// Usage example
+const queue = new Queue();
+
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.dequeue()); // Output: 2
+console.log(queue.isEmpty()); // Output: false
+console.log(queue.dequeue()); // Output: 3
+console.log(queue.isEmpty()); // Output: true
