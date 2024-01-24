@@ -1,65 +1,46 @@
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+function findKthSmallestElement(arr, k) {
+  arr.sort((a, b) => a - b);
+  return arr[k - 1];
 }
-class BinarySearchTree {
-  constructor() {
-    this.root = null;
-  }
-}
-class BinarySearchTree {
-  // ...
 
-  insert(value) {
-    const newNode = new TreeNode(value);
+const array = [3, 1, 7, 4, 2, 9, 6, 5, 8];
+const k = 3;
 
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
+const kthSmallest = findKthSmallestElement(array, k);
+console.log(kthSmallest); // Output: 3
+function partition(arr, low, high) {
+  const pivot = arr[high];
+  let i = low - 1;
+
+  for (let j = low; j < high; j++) {
+    if (arr[j] < pivot) {
+      i++;
+      [arr[i], arr[j]] = [arr[j], arr[i]];
     }
   }
 
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
+  [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
+  return i + 1;
+}
+
+function quickSelect(arr, low, high, k) {
+  const pivotIndex = partition(arr, low, high);
+
+  if (pivotIndex === k - 1) {
+    return arr[pivotIndex];
+  } else if (pivotIndex > k - 1) {
+    return quickSelect(arr, low, pivotIndex - 1, k);
+  } else {
+    return quickSelect(arr, pivotIndex + 1, high, k);
   }
 }
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
 
-  searchNode(node, value) {
-    if (node === null || node.value === value) {
-      return node;
-    } else if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else {
-      return this.searchNode(node.right, value);
-    }
-  }
-const bst = new BinarySearchTree();
-bst.insert(50);
-bst.insert(30);
-bst.insert(70);
-bst.insert(20);
-bst.insert(40);
-bst.insert(60);
-bst.insert(80);
+function findKthSmallestElement(arr, k) {
+  return quickSelect(arr, 0, arr.length - 1, k);
+}
 
-console.log(bst.search(60)); // Output: TreeNode { value: 60, left: null, right: null }
-console.log(bst.search(90)); // Output: null
+const array = [3, 1, 7, 4, 2, 9, 6, 5, 8];
+const k = 3;
+
+const kthSmallest = findKthSmallestElement(array, k);
+console.log(kthSmallest); // Output: 3
