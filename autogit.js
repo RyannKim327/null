@@ -1,21 +1,25 @@
-function insertionSort(arr) {
-  // Start from the second element (index 1)
-  for (let i = 1; i < arr.length; i++) {
-    let currentElement = arr[i];
-    let j = i - 1;
+function areAnagrams(str1, str2) {
+  // Remove non-alphabetic characters and convert to lowercase
+  str1 = str1.replace(/[^A-Za-z]/g, '').toLowerCase();
+  str2 = str2.replace(/[^A-Za-z]/g, '').toLowerCase();
 
-    // Move elements that are greater than the current element to one position ahead
-    while (j >= 0 && arr[j] > currentElement) {
-      arr[j + 1] = arr[j];
-      j--;
-    }
+  // Convert the strings to arrays of characters
+  var arr1 = str1.split('');
+  var arr2 = str2.split('');
 
-    // Insert the current element at the correct position
-    arr[j + 1] = currentElement;
-  }
+  // Sort the arrays alphabetically
+  arr1.sort();
+  arr2.sort();
 
-  return arr;
+  // Join the sorted arrays back into strings
+  var sortedStr1 = arr1.join('');
+  var sortedStr2 = arr2.join('');
+
+  // Compare the two resulting strings
+  return sortedStr1 === sortedStr2;
 }
-const array = [5, 3, 1, 4, 2];
-const sortedArray = insertionSort(array);
-console.log(sortedArray); // Output: [1, 2, 3, 4, 5]
+
+// Test the function
+console.log(areAnagrams('listen', 'silent')); // true
+console.log(areAnagrams('hello', 'world')); // false
+console.log(areAnagrams('rail safety', 'fairy tales')); // true
