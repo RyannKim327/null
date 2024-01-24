@@ -1,17 +1,27 @@
-function areAnagrams(str1, str2) {
-  // Remove whitespace and punctuation
-  const regExp = /[^\w]/g;
-  str1 = str1.replace(regExp, '').toLowerCase();
-  str2 = str2.replace(regExp, '').toLowerCase();
+function bwtTransform(input) {
+  // Step 2: Generate all rotations
+  const rotations = [];
+  const length = input.length;
+  const concatStr = input + input;
 
-  // Convert strings to arrays, sort, and then join back into strings
-  const sortedStr1 = str1.split('').sort().join('');
-  const sortedStr2 = str2.split('').sort().join('');
+  for (let i = 0; i < length; i++) {
+    rotations.push(concatStr.substr(i, length));
+  }
 
-  // Compare the sorted strings for equality
-  return sortedStr1 === sortedStr2;
+  // Step 3: Sort rotations
+  rotations.sort();
+
+  // Step 5: Construct BWT string
+  let bwtString = '';
+  for (let i = 0; i < length; i++) {
+    bwtString += rotations[i][length - 1];
+  }
+
+  return bwtString;
 }
 
-// Example usage:
-console.log(areAnagrams('listen', 'silent')); // true
-console.log(areAnagrams('hello', 'world')); // false
+// Example usage
+const input = 'banana';
+const transformed = bwtTransform(input);
+console.log(transformed);
+annb$aa
