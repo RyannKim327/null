@@ -1,5 +1,13 @@
+function isSortedAscending(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false;
+    }
+  }
+  return true;
+}
 const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
+console.log(isSortedAscending(array1));  // Output: true
 
-const commonElements = array1.filter((element) => array2.includes(element));
-console.log(commonElements);
+const array2 = [5, 4, 3, 2, 1];
+console.log(isSortedAscending(array2));  // Output: false
