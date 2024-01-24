@@ -1,41 +1,12 @@
-class HashTable {
-  constructor() {
-    this.table = {};
-  }
+function isPalindrome(str) {
+  // Remove any non-alphanumeric characters and convert to lowercase
+  const cleanStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-  // Hash function to convert keys into numerical indices
-  hash(key) {
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) {
-      hash += key.charCodeAt(i);
-    }
-    return hash;
-  }
-
-  // Insert a new key-value pair
-  insert(key, value) {
-    const index = this.hash(key);
-    this.table[index] = value;
-  }
-
-  // Get the value associated with a given key
-  get(key) {
-    const index = this.hash(key);
-    return this.table[index];
-  }
-
-  // Remove a key-value pair from the hash table
-  remove(key) {
-    const index = this.hash(key);
-    delete this.table[index];
-  }
+  // Compare the clean string with its reverse
+  return cleanStr === cleanStr.split('').reverse().join('');
 }
 
-// Usage
-const hashTable = new HashTable();
-hashTable.insert('apple', 10);
-hashTable.insert('banana', 20);
-hashTable.insert('orange', 30);
-console.log(hashTable.get('apple')); // Output: 10
-hashTable.remove('banana');
-console.log(hashTable.get('banana')); // Output: undefined
+// Example usage:
+console.log(isPalindrome("level")); // true
+console.log(isPalindrome("Hello")); // false
+console.log(isPalindrome("A man, a plan, a canal, Panama!")); // true
