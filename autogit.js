@@ -1,50 +1,62 @@
-// Function to perform Heap Sort
-function heapSort(arr) {
-  const n = arr.length;
-
-  // Build heap (rearrange array)
-  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-    heapify(arr, n, i);
+class HashTable {
+  constructor(size) {
+    this.size = size;
+    this.table = new Array(size);
   }
 
-  // One by one extract an element from heap
-  for (let i = n - 1; i > 0; i--) {
-    // Move current root to end
-    [arr[0], arr[i]] = [arr[i], arr[0]];
-
-    // call max heapify on the reduced heap
-    heapify(arr, i, 0);
+  // Hash function to convert a key into an index
+  hash(key) {
+    let hashValue = 0;
+    for (let i = 0; i < key.length; i++) {
+      hashValue += key.charCodeAt(i);
+    }
+    return hashValue % this.size;
   }
 
-  return arr;
+  // Insert a key-value pair into the hash table
+  insert(key, value) {
+    const index = this.hash(key);
+    if (!this.table[index]) {
+      this.table[index] = [];
+    }
+    this.table[index].push([key, value]);
+  }
+
+  // Get the value associated with a key
+  get(key) {
+    const index = this.hash(key);
+    if (!this.table[index]) {
+      return undefined;
+    }
+    for (let i = 0; i < this.table[index].length; i++) {
+      if (this.table[index][i][0] === key) {
+        return this.table[index][i][1];
+      }
+    }
+    return undefined;
+  }
+
+  // Remove a key-value pair from the hash table
+  remove(key) {
+    const index = this.hash(key);
+    if (!this.table[index]) {
+      return undefined;
+    }
+    for (let i = 0; i < this.table[index].length; i++) {
+      if (this.table[index][i][0] === key) {
+        return this.table[index].splice(i, 1)[0][1];
+      }
+    }
+    return undefined;
+  }
 }
 
-// To heapify a subtree rooted with node i which is an index in arr[]. n is the size of the heap
-function heapify(arr, n, i) {
-  let largest = i; // Initialize largest as root
-  const left = 2 * i + 1; // Left child index
-  const right = 2 * i + 2; // Right child index
-
-  // If left child is larger than root
-  if (left < n && arr[left] > arr[largest]) {
-    largest = left;
-  }
-
-  // If right child is larger than current largest
-  if (right < n && arr[right] > arr[largest]) {
-    largest = right;
-  }
-
-  // If largest is not root
-  if (largest !== i) {
-    [arr[i], arr[largest]] = [arr[largest], arr[i]]; // Swap
-
-    // Recursively heapify the affected sub-tree
-    heapify(arr, n, largest);
-  }
-}
-
-// Example usage:
-const array = [9, 8, 7, 6, 5, 4, 3, 2, 1];
-console.log("Original Array:", array);
-console.log("Sorted Array:", heapSort(array));
+// Usage
+const hashTable = new HashTable(10);
+hashTable.insert("firstName", "John");
+hashTable.insert("lastName", "Doe");
+console.log(hashTable.get("firstName")); // Output: John
+console.log(hashTable.get("lastName")); // Output: Doe
+console.log(hashTable.get("age")); // Output: undefined
+hashTable.remove("lastName");
+console.log(hashTable.get("lastName")); // Output: undefined
