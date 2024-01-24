@@ -1,12 +1,12 @@
-function factorialRecursive(num) {
-  // Base case: factorial of 0 is 1
-  if (num === 0) {
-    return 1;
-  }
+const axios = require('axios');
 
-  // Recursive case: multiply num by factorial of num - 1
-  return num * factorialRecursive(num - 1);
-}
-
-// Example usage
-console.log(factorialRecursive(5)); // Output: 120 (5! = 5 * 4 * 3 * 2 * 1 = 120)
+// Make a GET request to an API endpoint
+axios.get('https://api.example.com/data')
+  .then(response => {
+    // Handle the response data
+    console.log(response.data);
+  })
+  .catch(error => {
+    // Handle any errors
+    console.error(error);
+  });
