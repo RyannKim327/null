@@ -1,17 +1,37 @@
-function areAnagrams(str1, str2) {
-  // Convert strings to lowercase and remove non-alphanumeric characters
-  str1 = str1.toLowerCase().replace(/[^a-z0-9]/g, '');
-  str2 = str2.toLowerCase().replace(/[^a-z0-9]/g, '');
-
-  // Sort the strings
-  let sortedStr1 = str1.split('').sort().join('');
-  let sortedStr2 = str2.split('').sort().join('');
-
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-// Example usage
-console.log(areAnagrams('listen', 'silent')); // true
-console.log(areAnagrams('hello', 'world')); // false
-console.log(areAnagrams('Eleven plus two', 'Twelve plus one')); // true
+function isPalindrome(head) {
+  let values = [];
+  let current = head;
+
+  while (current !== null) {
+    values.push(current.value);
+    current = current.next;
+  }
+
+  let left = 0;
+  let right = values.length - 1;
+
+  while (left < right) {
+    if (values[left] !== values[right]) {
+      return false;
+    }
+    left++;
+    right--;
+  }
+
+  return true;
+}
+// Example Linked List: 1 -> 2 -> 3 -> 2 -> 1
+const head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(2);
+head.next.next.next.next = new Node(1);
+
+console.log(isPalindrome(head)); // Output: true
