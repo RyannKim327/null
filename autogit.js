@@ -1,8 +1,8 @@
-fetch('https://jsonplaceholder.typicode.com/posts')
+fetch('https://api.example.com/data')
   .then(response => response.json())
   .then(data => {
     console.log(data);
   })
   .catch(error => {
-    console.log('Error:', error);
+    console.error('Error:', error);
   });
