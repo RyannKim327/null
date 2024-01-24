@@ -1,15 +1,15 @@
-function countOccurrences(string, character) {
-  let count = 0;
-  for (let i = 0; i < string.length; i++) {
-    if (string[i] === character) {
-      count++;
+function insertionSort(array) {
+  for (let i = 1; i < array.length; i++) {
+    const currentElement = array[i];
+    let j = i - 1;
+    while (j >= 0 && array[j] > currentElement) {
+      array[j + 1] = array[j];
+      j--;
     }
+    array[j + 1] = currentElement;
   }
-  return count;
+  return array;
 }
-
-// Example usage
-const str = "Hello, world!";
-const char = "o";
-const occurrences = countOccurrences(str, char);
-console.log(`The character "${char}" appears ${occurrences} times in the string "${str}".`);
+const unsortedArray = [5, 2, 4, 6, 1, 3];
+const sortedArray = insertionSort(unsortedArray);
+console.log(sortedArray);
