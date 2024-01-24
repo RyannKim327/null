@@ -1,37 +1,19 @@
-class HashTable {
-  constructor() {
-    this.data = {};
-  }
+function findMedianSortedArrays(nums1, nums2) {
+  let combinedArray = nums1.concat(nums2);
+  combinedArray.sort((a, b) => a - b);
 
-  hash(key) {
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) {
-      hash = (hash + key.charCodeAt(i) * (i + 1)) % this.data.length;
-    }
-    return hash;
-  }
+  const length = combinedArray.length;
+  const mid = Math.floor(length / 2);
 
-  set(key, value) {
-    const index = this.hash(key);
-    this.data[index] = value;
-  }
-
-  get(key) {
-    const index = this.hash(key);
-    return this.data[index];
-  }
-
-  remove(key) {
-    const index = this.hash(key);
-    if (this.data[index]) {
-      delete this.data[index];
-    }
+  if (length % 2 === 0) {
+    return (combinedArray[mid - 1] + combinedArray[mid]) / 2;
+  } else {
+    return combinedArray[mid];
   }
 }
 
-// Example usage
-const hashTable = new HashTable();
-hashTable.set('name', 'John');
-console.log(hashTable.get('name')); // Output: John
-hashTable.remove('name');
-console.log(hashTable.get('name')); // Output: undefined
+// Example usage:
+const nums1 = [1, 3];
+const nums2 = [2, 4];
+const median = findMedianSortedArrays(nums1, nums2);
+console.log(median); // Output: 2.5
