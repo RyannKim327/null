@@ -1,26 +1,48 @@
-class ListNode {
-  constructor(value, next = null) {
-    this.value = value;
-    this.next = next;
-  }
-}
-
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
-
-  while (fast !== null && fast.next !== null) {
-    slow = slow.next;
-    fast = fast.next.next;
+function depthLimitedSearch(node, depthLimit) {
+  // Check if the node meets the goal condition
+  if (node.meetsGoalCondition()) {
+    return node;
   }
 
-  return slow.value;
-}
-// Create a linked list: 1->2->3->4->5->null
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
+  // If depth limit reached, return null to indicate failure
+  if (depthLimit === 0) {
+    return null;
+  }
 
-console.log(findMiddleElement(head)); // Output: 3
+  // Explore child nodes recursively up to the depth limit
+  for (let child of node.getChildren()) {
+    let result = depthLimitedSearch(child, depthLimit - 1);
+    if (result !== null) {
+      return result; // Return the successful node
+    }
+  }
+
+  // Return null to indicate failure
+  return null;
+}
+class Node {
+  constructor() {
+    // Initialize node properties
+  }
+
+  meetsGoalCondition() {
+    // Check if the node meets the goal condition
+  }
+
+  getChildren() {
+    // Generate and return the child nodes
+    // based on the current node's state
+  }
+}
+let initialNode = new Node(/* initial state */);
+let depthLimit = 3; // Specify the depth limit
+
+let result = depthLimitedSearch(initialNode, depthLimit);
+
+if (result !== null) {
+  // Goal node found
+  console.log("Goal node found:", result);
+} else {
+  // Goal node not found within the depth limit
+  console.log("Goal node not found within the depth limit");
+}
