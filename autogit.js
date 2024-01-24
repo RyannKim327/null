@@ -1,4 +1,3 @@
-// Define a binary tree node
 class Node {
   constructor(value) {
     this.value = value;
@@ -7,18 +6,13 @@ class Node {
   }
 }
 
-// Function to find the maximum depth of a binary tree
-function maxDepth(root) {
-  if (root == null) {
-    return 0;
-  }
+function getSumOfNodes(root) {
+  if (root === null) return 0; // base case: empty tree, sum is 0
 
-  // Recursively find the depth of the left and right subtrees
-  const leftDepth = maxDepth(root.left);
-  const rightDepth = maxDepth(root.right);
+  const sumLeft = getSumOfNodes(root.left); // recursive call for the left subtree
+  const sumRight = getSumOfNodes(root.right); // recursive call for the right subtree
 
-  // Return the maximum depth + 1 (for the current node)
-  return Math.max(leftDepth, rightDepth) + 1;
+  return root.value + sumLeft + sumRight; // sum of current node value with sums of left and right subtrees
 }
 
 // Example usage:
@@ -28,4 +22,4 @@ root.right = new Node(3);
 root.left.left = new Node(4);
 root.left.right = new Node(5);
 
-console.log('Maximum depth:', maxDepth(root));
+console.log("Sum of all nodes:", getSumOfNodes(root));
