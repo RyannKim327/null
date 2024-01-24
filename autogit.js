@@ -1,81 +1,38 @@
-function bidirectionalSearch(graph, start, target) {
-  let forwardQueue = [start];
-  let forwardVisited = new Set();
-  forwardVisited.add(start);
+function topologicalSort(graph) {
+  const result = [];
+  const visited = new Set();
 
-  let backwardQueue = [target];
-  let backwardVisited = new Set();
-  backwardVisited.add(target);
+  function dfs(node) {
+    visited.add(node);
 
-  while (forwardQueue.length > 0 && backwardQueue.length > 0) {
-    // Forward direction
-    let currentForwardNode = forwardQueue.shift();
-
-    if (backwardVisited.has(currentForwardNode)) {
-      return constructPath(currentForwardNode, start, target);
-    }
-
-    for (let neighbor of graph[currentForwardNode]) {
-      if (!forwardVisited.has(neighbor)) {
-        forwardQueue.push(neighbor);
-        forwardVisited.add(neighbor);
+    const neighbors = graph[node];
+    if (neighbors) {
+      for (const neighbor of neighbors) {
+        if (!visited.has(neighbor)) {
+          dfs(neighbor);
+        }
       }
     }
 
-    // Backward direction
-    let currentBackwardNode = backwardQueue.shift();
+    result.push(node);
+  }
 
-    if (forwardVisited.has(currentBackwardNode)) {
-      return constructPath(currentBackwardNode, start, target).reverse();
-    }
-
-    for (let neighbor of graph[currentBackwardNode]) {
-      if (!backwardVisited.has(neighbor)) {
-        backwardQueue.push(neighbor);
-        backwardVisited.add(neighbor);
-      }
+  for (const node in graph) {
+    if (!visited.has(node)) {
+      dfs(node);
     }
   }
 
-  return "No path found";
+  return result.reverse();
 }
-
-function constructPath(commonNode, start, target) {
-  let path = [commonNode];
-  let currentNode = commonNode;
-
-  while (currentNode !== start) {
-    for (let neighbor of graph[currentNode]) {
-      if (forwardVisited.has(neighbor) && graph[currentNode].includes(neighbor)) {
-        path.unshift(neighbor);
-        currentNode = neighbor;
-        break;
-      }
-    }
-  }
-
-  currentNode = commonNode;
-
-  while (currentNode !== target) {
-    for (let neighbor of graph[currentNode]) {
-      if (backwardVisited.has(neighbor) && graph[currentNode].includes(neighbor)) {
-        path.push(neighbor);
-        currentNode = neighbor;
-        break;
-      }
-    }
-  }
-
-  return path;
-}
-
-// Example usage
-let graph = {
-  A: ["B", "D"],
-  B: ["A", "C"],
-  C: ["B", "E"],
-  D: ["A", "E"],
-  E: ["C", "D"],
+const graph = {
+  A: ['B', 'C'],
+  B: ['D'],
+  C: ['D', 'E'],
+  D: ['F'],
+  E: ['F'],
+  F: [],
 };
 
-console.log(bidirectionalSearch(graph, "A", "E"));
+const result = topologicalSort(graph);
+console.log(result); // Output: [ 'A', 'C', 'E', 'B', 'D', 'F' ]
