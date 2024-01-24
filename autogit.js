@@ -1,19 +1,41 @@
-const cron = require('cron');
+function findLongestCommonSubsequence(str1, str2) {
+  const grid = Array(str1.length + 1)
+    .fill(null)
+    .map(() => Array(str2.length + 1).fill(0));
 
-// Define a cron job that runs every minute
-const cronJob = new cron.CronJob('* * * * *', function() {
-  // Function to be executed by the cron job
-  console.log('This is a random task scheduled by cron!');
-});
+  // Fill the grid using the LCS algorithm
+  for (let i = 1; i <= str1.length; i++) {
+    for (let j = 1; j <= str2.length; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        grid[i][j] = grid[i - 1][j - 1] + 1;
+      } else {
+        grid[i][j] = Math.max(grid[i - 1][j], grid[i][j - 1]);
+      }
+    }
+  }
 
-// Start the cron job
-cronJob.start();
+  // Traverse the grid to get the longest common subsequence
+  let lcs = '';
+  let i = str1.length;
+  let j = str2.length;
 
-// Add more cron jobs if needed
-// ...
+  while (i > 0 && j > 0) {
+    if (str1[i - 1] === str2[j - 1]) {
+      lcs = str1[i - 1] + lcs;
+      i--;
+      j--;
+    } else if (grid[i - 1][j] > grid[i][j - 1]) {
+      i--;
+    } else {
+      j--;
+    }
+  }
 
-// Stop the cron job after 5 minutes
-setTimeout(function() {
-  cronJob.stop();
-  console.log('Cron job stopped.');
-}, 5 * 60 * 1000);
+  return lcs;
+}
+
+// Example usage:
+const str1 = 'ABCDGH';
+const str2 = 'AEDFHR';
+const longestSubsequence = findLongestCommonSubsequence(str1, str2);
+console.log(longestSubsequence); // Output: ADH
