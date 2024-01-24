@@ -1,39 +1,43 @@
-function longestCommonSubsequence(s1, s2) {
-  const dp = Array(s1.length + 1)
-    .fill(0)
-    .map(() => Array(s2.length + 1).fill(0));
+function preprocessPattern(pattern) {
+  const badCharacters = {};
+  const length = pattern.length;
 
-  for (let i = 1; i <= s1.length; i++) {
-    for (let j = 1; j <= s2.length; j++) {
-      if (s1[i - 1] === s2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-      } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-      }
-    }
+  for (let i = 0; i < length - 1; i++) {
+    badCharacters[pattern[i]] = length - 1 - i;
   }
 
-  let lcs = '';
-  let i = s1.length;
-  let j = s2.length;
-
-  while (i > 0 && j > 0) {
-    if (s1[i - 1] === s2[j - 1]) {
-      lcs = s1[i - 1] + lcs;
-      i--;
-      j--;
-    } else if (dp[i - 1][j] > dp[i][j - 1]) {
-      i--;
-    } else {
-      j--;
-    }
-  }
-
-  return lcs;
+  return badCharacters;
 }
+function boyerMoore(text, pattern) {
+  const badCharacters = preprocessPattern(pattern);
+  const textLength = text.length;
+  const patternLength = pattern.length;
+  let textIndex = 0;
 
-// Usage example:
-const s1 = "AGGTAB";
-const s2 = "GXTXAYB";
-const result = longestCommonSubsequence(s1, s2);
-console.log(result); // Output: "GTAB"
+  while (textIndex <= textLength - patternLength) {
+    let patternIndex = patternLength - 1;
+
+    while (patternIndex >= 0 && pattern[patternIndex] === text[textIndex + patternIndex]) {
+      patternIndex--;
+    }
+
+    if (patternIndex === -1) {
+      return textIndex; // match found, return the starting index
+    }
+
+    const badCharacterShift = badCharacters[text[textIndex + patternIndex]];
+
+    textIndex += badCharacterShift || (patternIndex + 1);
+  }
+
+  return -1; // no match found
+}
+const text = "Lorem ipsum dolor sit amet";
+const pattern = "ipsum";
+const resultIndex = boyerMoore(text, pattern);
+
+if (resultIndex === -1) {
+  console.log("Pattern not found");
+} else {
+  console.log(`Pattern found at index ${resultIndex}`);
+}
