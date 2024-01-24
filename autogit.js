@@ -25,20 +25,22 @@ class LinkedList {
   }
 
   getLength() {
-    let count = 0;
+    let length = 0;
     let current = this.head;
+
     while (current !== null) {
-      count++;
+      length++;
       current = current.next;
     }
-    return count;
+
+    return length;
   }
 }
 
-// Example usage:
+// Example usage
 const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
+list.append(10);
+list.append(20);
+list.append(30);
 
 console.log(list.getLength()); // Output: 3
