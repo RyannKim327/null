@@ -1,22 +1,20 @@
-function bubbleSort(arr) {
-  var len = arr.length;
-  var swapped;
-  
-  do {
-    swapped = false;
-    for (var i = 0; i < len - 1; i++) {
-      if (arr[i] > arr[i + 1]) {
-        var temp = arr[i];
-        arr[i] = arr[i + 1];
-        arr[i + 1] = temp;
-        swapped = true;
-      }
-    }
-  } while (swapped);
+function findSecondLargest(arr) {
+  let max = -Infinity;
+  let secondMax = -Infinity;
 
-  return arr;
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] > max) {
+      secondMax = max;
+      max = arr[i];
+    } else if (arr[i] > secondMax && arr[i] < max) {
+      secondMax = arr[i];
+    }
+  }
+
+  return secondMax;
 }
 
-var numbers = [5, 3, 8, 4, 2];
-console.log("Before sorting:", numbers);
-console.log("After sorting:", bubbleSort(numbers));
+// Example usage
+const array = [1, 6, 2, 9, 4, 3, 7];
+const secondLargest = findSecondLargest(array);
+console.log(secondLargest); // Output: 7
