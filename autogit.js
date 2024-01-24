@@ -1,31 +1,19 @@
-// Sample graph representation
-const graph = {
-  A: ['B', 'C'],
-  B: ['D', 'E'],
-  C: ['F'],
-  D: ['G'],
-  E: [],
-  F: [],
-  G: []
-};
-
-// Depth-limited search algorithm
-function depthLimitedSearch(graph, start, depthLimit) {
-  function DLS(node, depth) {
-    if (depth === 0) {
-      // Do something with the node at the depth limit
-      console.log(node);
-      return;
+function insertionSort(arr) {
+  const len = arr.length;
+  
+  for (let i = 1; i < len; i++) {
+    let key = arr[i];
+    let j = i - 1;
+    
+    while (j >= 0 && arr[j] > key) {
+      arr[j + 1] = arr[j];
+      j = j - 1;
     }
-
-    const neighbors = graph[node];
-    for (let i = 0; i < neighbors.length; i++) {
-      DLS(neighbors[i], depth - 1);
-    }
+    
+    arr[j + 1] = key;
   }
-
-  DLS(start, depthLimit);
+  
+  return arr;
 }
-
-// Example usage
-depthLimitedSearch(graph, 'A', 2);
+const arr = [5, 2, 4, 6, 1, 3];
+console.log(insertionSort(arr)); // Output: [1, 2, 3, 4, 5, 6]
