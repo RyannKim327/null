@@ -1,48 +1,67 @@
-function depthLimitedSearch(node, depthLimit) {
-  // Check if the node meets the goal condition
-  if (node.meetsGoalCondition()) {
-    return node;
-  }
+function bidirectionalSearch(start, goal) {
+  const visitedStart = new Set();
+  const visitedGoal = new Set();
+  const queueStart = [];
+  const queueGoal = [];
 
-  // If depth limit reached, return null to indicate failure
-  if (depthLimit === 0) {
-    return null;
-  }
+  visitedStart.add(start);
+  queueStart.push([start]);
+  visitedGoal.add(goal);
+  queueGoal.push([goal]);
 
-  // Explore child nodes recursively up to the depth limit
-  for (let child of node.getChildren()) {
-    let result = depthLimitedSearch(child, depthLimit - 1);
-    if (result !== null) {
-      return result; // Return the successful node
+  while (queueStart.length > 0 && queueGoal.length > 0) {
+    const pathStart = queueStart.shift();
+    const currentStart = pathStart[pathStart.length - 1];
+
+    if (currentStart === goal) {
+      return pathStart;
+    }
+
+    const neighborsStart = getNeighbors(currentStart);
+    for (const neighbor of neighborsStart) {
+      if (!visitedStart.has(neighbor)) {
+        queueStart.push([...pathStart, neighbor]);
+        visitedStart.add(neighbor);
+      }
+    }
+
+    const pathGoal = queueGoal.shift();
+    const currentGoal = pathGoal[pathGoal.length - 1];
+
+    if (currentGoal === start) {
+      return pathGoal.reverse();
+    }
+
+    const neighborsGoal = getNeighbors(currentGoal);
+    for (const neighbor of neighborsGoal) {
+      if (!visitedGoal.has(neighbor)) {
+        queueGoal.push([...pathGoal, neighbor]);
+        visitedGoal.add(neighbor);
+      }
+    }
+
+    const intersect = [...visitedStart].find(node => visitedGoal.has(node));
+    if (intersect) {
+      const pathIntersection = [...pathStart, intersect, ...pathGoal.reverse()];
+      return pathIntersection;
     }
   }
 
-  // Return null to indicate failure
-  return null;
+  return "No path found";
 }
-class Node {
-  constructor() {
-    // Initialize node properties
-  }
 
-  meetsGoalCondition() {
-    // Check if the node meets the goal condition
-  }
+// Example usage
+const graph = {
+  'A': ['B', 'C'],
+  'B': ['A', 'D', 'E'],
+  'C': ['A', 'F'],
+  'D': ['B'],
+  'E': ['B', 'F'],
+  'F': ['C', 'E'],
+};
 
-  getChildren() {
-    // Generate and return the child nodes
-    // based on the current node's state
-  }
+function getNeighbors(node) {
+  return graph[node] || [];
 }
-let initialNode = new Node(/* initial state */);
-let depthLimit = 3; // Specify the depth limit
 
-let result = depthLimitedSearch(initialNode, depthLimit);
-
-if (result !== null) {
-  // Goal node found
-  console.log("Goal node found:", result);
-} else {
-  // Goal node not found within the depth limit
-  console.log("Goal node not found within the depth limit");
-}
+console.log(bidirectionalSearch('A', 'F'));
