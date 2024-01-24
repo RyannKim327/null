@@ -1,4 +1,8 @@
-let str = "Hello World";
-let lowercaseStr = str.toLowerCase();
-
-console.log(lowercaseStr); // Output: "hello world"
+fetch('https://api.example.com/data')
+  .then(response => response.json())
+  .then(data => {
+    console.log(data); // Do something with the retrieved data
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
