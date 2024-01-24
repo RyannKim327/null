@@ -1,52 +1,57 @@
-class Graph {
-  constructor() {
-    this.adjList = new Map();
-  }
+function buildPrefixSuffixTable(pattern) {
+  const table = [0]; // The first entry is always 0
+  let prefixLength = 0; // Length of the longest proper prefix
 
-  addVertex(vertex) {
-    this.adjList.set(vertex, []);
-  }
-
-  addEdge(vertex1, vertex2) {
-    this.adjList.get(vertex1).push(vertex2);
-    this.adjList.get(vertex2).push(vertex1);
-  }
-
-  dfs(startVertex) {
-    const visited = new Set();
-
-    this._dfsHelper(startVertex, visited);
-  }
-
-  _dfsHelper(vertex, visited) {
-    visited.add(vertex);
-    console.log(vertex);
-
-    const neighbors = this.adjList.get(vertex);
-    for (const neighbor of neighbors) {
-      if (!visited.has(neighbor)) {
-        this._dfsHelper(neighbor, visited);
+  for (let i = 1; i < pattern.length; i++) {
+    if (pattern[i] === pattern[prefixLength]) {
+      prefixLength++;
+      table[i] = prefixLength;
+    } else {
+      if (prefixLength > 0) {
+        // Try to find a shorter prefix
+        prefixLength = table[prefixLength - 1];
+        i--; // Keep the same i for the next iteration
+      } else {
+        table[i] = 0;
       }
     }
   }
+
+  return table;
 }
+function knuthMorrisPratt(text, pattern) {
+  const table = buildPrefixSuffixTable(pattern);
+  let textIndex = 0;
+  let patternIndex = 0;
 
-// Example usage
-const graph = new Graph();
+  while (textIndex < text.length) {
+    if (pattern[patternIndex] === text[textIndex]) {
+      if (patternIndex === pattern.length - 1) {
+        // Found a match
+        return textIndex - patternIndex;
+      }
 
-graph.addVertex("A");
-graph.addVertex("B");
-graph.addVertex("C");
-graph.addVertex("D");
-graph.addVertex("E");
-graph.addVertex("F");
+      patternIndex++;
+      textIndex++;
+    } else {
+      if (patternIndex > 0) {
+        // Try to find a shorter matching prefix
+        patternIndex = table[patternIndex - 1];
+      } else {
+        textIndex++;
+      }
+    }
+  }
 
-graph.addEdge("A", "B");
-graph.addEdge("A", "C");
-graph.addEdge("B", "D");
-graph.addEdge("C", "E");
-graph.addEdge("D", "E");
-graph.addEdge("D", "F");
-graph.addEdge("E", "F");
+  return -1; // No match found
+}
+const text = "ABCABDABABCABCDABDE";
+const pattern = "ABCABCD";
 
-graph.dfs("A");
+const index = knuthMorrisPratt(text, pattern);
+
+if (index !== -1) {
+  console.log(`Pattern found at index ${index}`);
+} else {
+  console.log(`Pattern not found`);
+}
