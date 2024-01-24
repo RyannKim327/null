@@ -1,11 +1,39 @@
-function getIntersectionNode(headA, headB) {
-  let pointerA = headA;
-  let pointerB = headB;
+const graph = {
+  A: ["B", "C"],
+  B: ["D"],
+  C: ["D", "E"],
+  D: [],
+  E: []
+};
+function topologicalSort(graph) {
+  const result = [];
+  const visited = {};
 
-  while (pointerA !== pointerB) {
-    pointerA = pointerA === null ? headB : pointerA.next;
-    pointerB = pointerB === null ? headA : pointerB.next;
+  function dfs(node) {
+    if (visited[node]) return;
+    visited[node] = true;
+
+    for (const neighbor of graph[node]) {
+      dfs(neighbor);
+    }
+
+    result.push(node);
   }
 
-  return pointerA; // or pointerB, as they are both intersecting nodes (null if no intersection)
+  for (const node in graph) {
+    dfs(node);
+  }
+
+  return result.reverse();
 }
+
+const graph = {
+  A: ["B", "C"],
+  B: ["D"],
+  C: ["D", "E"],
+  D: [],
+  E: []
+};
+
+const sortedNodes = topologicalSort(graph);
+console.log(sortedNodes); // Output: [ 'A', 'C', 'E', 'B', 'D' ]
