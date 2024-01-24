@@ -1,16 +1,13 @@
-const string = "Hello, World!";
-const substring = "Hello";
-
-if (string.includes(substring)) {
-  console.log("Substring found!");
-} else {
-  console.log("Substring not found!");
+function countOccurrence(str, char) {
+  var count = str.split('').filter(function (c) {
+    return c === char;
+  }).length;
+  
+  return count;
 }
-const string = "Hello, World!";
-const substring = "Hello";
 
-if (string.indexOf(substring) !== -1) {
-  console.log("Substring found!");
-} else {
-  console.log("Substring not found!");
-}
+var string = "Hello, world!";
+var character = "o";
+
+var occurrenceCount = countOccurrence(string, character);
+console.log("The character '" + character + "' occurs " + occurrenceCount + " times.");
