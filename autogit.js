@@ -1,32 +1,14 @@
-function binarySearchRecursive(arr, target, start = 0, end = arr.length - 1) {
-  // Base case: element not found
-  if (start > end) {
-    return -1;
-  }
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  str = str.replace(/[\W_]/g, "").toLowerCase();
 
-  // Find the middle index
-  const mid = Math.floor((start + end) / 2);
+  // Reverse the string
+  var reversed = str.split("").reverse().join("");
 
-  // Base case: element found
-  if (arr[mid] === target) {
-    return mid;
-  }
-
-  // Recursive case: search left or right half
-  if (target < arr[mid]) {
-    return binarySearchRecursive(arr, target, start, mid - 1); // search left half
-  } else {
-    return binarySearchRecursive(arr, target, mid + 1, end); // search right half
-  }
+  // Compare the reversed string with the original string
+  return str === reversed;
 }
 
 // Example usage
-const array = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const targetElement = 12;
-const index = binarySearchRecursive(array, targetElement);
-
-if (index !== -1) {
-  console.log(`Element ${targetElement} found at index ${index}.`);
-} else {
-  console.log(`Element ${targetElement} not found.`);
-}
+var input = "A man, a plan, a canal. Panama!";
+console.log(isPalindrome(input));  // Output: true
