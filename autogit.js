@@ -1,34 +1,25 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-let head = new Node(1);
-let second = new Node(2);
-let third = new Node(3);
+function largestPrimeFactor(number) {
+  let largestFactor = 1;
 
-head.next = second;
-second.next = third;
-function reverseLinkedList(head) {
-  let previousNode = null;
-  let currentNode = head;
-  let nextNode = null;
-
-  while (currentNode !== null) {
-    nextNode = currentNode.next;
-    currentNode.next = previousNode;
-    previousNode = currentNode;
-    currentNode = nextNode;
+  while (number % 2 === 0) {
+    largestFactor = 2;
+    number /= 2;
   }
 
-  return previousNode;
+  let sqrt = Math.sqrt(number);
+  for (let i = 3; i <= sqrt; i += 2) {
+    while (number % i === 0) {
+      largestFactor = i;
+      number /= i;
+    }
+  }
+
+  if (number > 2) {
+    largestFactor = number;
+  }
+
+  return largestFactor;
 }
 
-// Call the function to reverse the linked list
-let reversedHead = reverseLinkedList(head);
-let current = reversedHead;
-while (current !== null) {
-  console.log(current.value);
-  current = current.next;
-}
+// Usage example
+console.log(largestPrimeFactor(13195)); // Output: 29
