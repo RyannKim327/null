@@ -1,30 +1,41 @@
-class ListNode {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+function preprocessPattern(pattern) {
+  const patternLength = pattern.length;
+  const skipTable = new Array(256).fill(patternLength);
+
+  for (let i = 0; i < patternLength - 1; i++) {
+    skipTable[pattern.charCodeAt(i)] = patternLength - i - 1;
   }
+
+  return skipTable;
 }
-const node1 = new ListNode(1);
-const node2 = new ListNode(2);
-const node3 = new ListNode(3);
+function boyerMooreSearch(text, pattern) {
+  const textLength = text.length;
+  const patternLength = pattern.length;
+  const skipTable = preprocessPattern(pattern);
 
-node1.next = node2;
-node2.next = node3;
+  let i = patternLength - 1;
 
-// Linked list: 1 -> 2 -> 3
-function reverseLinkedList(head) {
-  let prev = null;
-  let current = head;
+  while (i < textLength) {
+    let j = patternLength - 1;
+    let k = i;
 
-  while (current !== null) {
-    const next = current.next;
-    current.next = prev;
-    prev = current;
-    current = next;
+    while (j >= 0 && text[k] === pattern[j]) {
+      j--;
+      k--;
+    }
+
+    if (j === -1) {
+      // Match found
+      return k + 1;
+    }
+
+    i += skipTable[text.charCodeAt(i)];
   }
-  
-  return prev;
-}
-const reversedHead = reverseLinkedList(node1);
 
-// The linked list is now reversed: 3 -> 2 -> 1
+  // Pattern not found
+  return -1;
+}
+const text = "Hello, world!";
+const pattern = "world";
+const result = boyerMooreSearch(text, pattern);
+console.log("Pattern found at index:", result); // Output: Pattern found at index: 7
