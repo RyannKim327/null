@@ -1,14 +1,30 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  const cleanStr = str.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+function interpolationSearch(arr, key) {
+  let low = 0;
+  let high = arr.length - 1;
 
-  // Compare the reversed string with the original string
-  return cleanStr === cleanStr.split("").reverse().join("");
+  while (low <= high && key >= arr[low] && key <= arr[high]) {
+    // Perform interpolation calculation
+    let position = low + Math.floor(((key - arr[low]) / (arr[high] - arr[low])) * (high - low));
+
+    if (arr[position] === key) {
+      return position; // Key found at the calculated position
+    }
+
+    if (arr[position] < key) {
+      low = position + 1; // Key is in the upper half
+    } else {
+      high = position - 1; // Key is in the lower half
+    }
+  }
+
+  return -1; // Key not found
 }
+const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+const key = 12;
+const index = interpolationSearch(arr, key);
 
-// Example usage
-const str1 = "radar";
-console.log(isPalindrome(str1)); // Output: true
-
-const str2 = "Hello, World!";
-console.log(isPalindrome(str2)); // Output: false
+if (index !== -1) {
+  console.log(`Key ${key} found at index ${index}.`);
+} else {
+  console.log(`Key ${key} not found.`);
+}
