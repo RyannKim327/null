@@ -1,16 +1,45 @@
-const array = [1, 2, 3, 3, 4, 5, 5];
-const uniqueArray = [...new Set(array)];
-console.log(uniqueArray);  // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 3, 3, 4, 5, 5];
-const uniqueArray = array.filter((element, index, self) => {
-    return index === self.indexOf(element);
-});
-console.log(uniqueArray);  // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 3, 3, 4, 5, 5];
-const uniqueArray = [];
-for (let i = 0; i < array.length; i++) {
-    if (uniqueArray.indexOf(array[i]) === -1) {
-        uniqueArray.push(array[i]);
-    }
+function shellSort(arr) {
+  // Shell sort implementation goes here
 }
-console.log(uniqueArray);  // Output: [1, 2, 3, 4, 5]
+function shellSort(arr) {
+  let gap = 1;
+  while (gap < arr.length / 3) {
+    gap = 3 * gap + 1;
+  }
+}
+function shellSort(arr) {
+  let gap = 1;
+  while (gap < arr.length / 3) {
+    gap = 3 * gap + 1;
+  }
+
+  while (gap > 0) {
+    // Perform shell sort for the current gap
+    // ...
+    gap = Math.floor(gap / 3);
+  }
+}
+function shellSort(arr) {
+  let gap = 1;
+  while (gap < arr.length / 3) {
+    gap = 3 * gap + 1;
+  }
+
+  while (gap > 0) {
+    for (let i = gap; i < arr.length; i++) {
+      let temp = arr[i];
+      let j = i;
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
+      }
+      arr[j] = temp;
+    }
+    gap = Math.floor(gap / 3);
+  }
+
+  return arr;
+}
+const unsortedArray = [9, 4, 1, 7, 3, 6, 8, 2, 5];
+const sortedArray = shellSort(unsortedArray);
+console.log(sortedArray);
