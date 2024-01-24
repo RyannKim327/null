@@ -1,26 +1,19 @@
-function topologicalSort(adjacencyList) {
-  const result = [];
-  const visited = new Set();
-
-  function dfs(vertex) {
-    visited.add(vertex);
-
-    const neighbors = adjacencyList[vertex] || [];
-
-    for (const neighbor of neighbors) {
-      if (!visited.has(neighbor)) {
-        dfs(neighbor);
-      }
-    }
-
-    result.unshift(vertex);
-  }
-
-  for (const vertex in adjacencyList) {
-    if (!visited.has(vertex)) {
-      dfs(vertex);
-    }
-  }
-
-  return result;
+function reverseString(str) {
+  return str.split('').reverse().join('');
 }
+
+console.log(reverseString('Hello')); // Output: "olleH"
+function reverseString(str) {
+  let reversedStr = '';
+  for (let i = str.length - 1; i >= 0; i--) {
+    reversedStr += str.charAt(i);
+  }
+  return reversedStr;
+}
+
+console.log(reverseString('Hello')); // Output: "olleH"
+function reverseString(str) {
+  return [...str].reverse().join('');
+}
+
+console.log(reverseString('Hello')); // Output: "olleH"
