@@ -1,35 +1,15 @@
-function findNthNodeFromEnd(head, n) {
-    // implementation here
-}
-let p1 = head;
-let p2 = head;
-for (let i = 0; i < n; i++) {
-    if (p2 === null) {
-        // Handle the scenario if 'n' is greater than the length of the linked list.
-        return null;
+function countOccurrences(string, character) {
+  let count = 0;
+  for (let i = 0; i < string.length; i++) {
+    if (string[i] === character) {
+      count++;
     }
-    p2 = p2.next;
+  }
+  return count;
 }
-while (p2 !== null) {
-    p1 = p1.next;
-    p2 = p2.next;
-}
-return p1;
-function findNthNodeFromEnd(head, n) {
-    let p1 = head;
-    let p2 = head;
-    
-    for (let i = 0; i < n; i++) {
-        if (p2 === null) {
-            return null;
-        }
-        p2 = p2.next;
-    }
-    
-    while (p2 !== null) {
-        p1 = p1.next;
-        p2 = p2.next;
-    }
-    
-    return p1;
-}
+
+// Example usage
+const myString = "Hello, World!";
+const myCharacter = "o";
+const occurrences = countOccurrences(myString, myCharacter);
+console.log("Occurrences:", occurrences);
