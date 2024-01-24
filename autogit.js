@@ -1,20 +1,31 @@
-function isPalindrome(str) {
-  let start = 0;
-  let end = str.length - 1;
+function LinkedList() {
+  this.head = null;
+}
 
-  while (start < end) {
-    if (str[start] !== str[end]) {
-      return false;
-    }
+// Node class
+function Node(data) {
+  this.data = data;
+  this.next = null;
+}
 
-    start++;
-    end--;
+// Method to find length of the linked list
+LinkedList.prototype.getLength = function() {
+  let length = 0;
+  let current = this.head;
+
+  while (current) {
+    length++;
+    current = current.next;
   }
 
-  return true;
+  return length;
 }
 
 // Example usage:
-console.log(isPalindrome("racecar")); // true
-console.log(isPalindrome("hello")); // false
-console.log(isPalindrome("level")); // true
+const list = new LinkedList();
+list.head = new Node(1);
+list.head.next = new Node(2);
+list.head.next.next = new Node(3);
+
+const length = list.getLength();
+console.log(length); // Output: 3
