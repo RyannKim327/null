@@ -1,41 +1,70 @@
-function findLCS(str1, str2) {
-  const m = str1.length;
-  const n = str2.length;
-  
-  // Create a 2D array to store LCS lengths
-  const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
-  
-  // Building the LCS matrix
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-      } else {
-        dp[i][j] = Math.max(dp[i][j - 1], dp[i - 1][j]);
-      }
-    }
+class Node {
+  constructor(state, parent, g, h) {
+    this.state = state;
+    this.parent = parent;
+    this.g = g;
+    this.h = h;
+    this.f = g + h;
   }
-  
-  // Backtrack to find the LCS
-  let i = m, j = n;
-  const lcs = [];
-  
-  while (i > 0 && j > 0) {
-    if (str1[i - 1] === str2[j - 1]) {
-      lcs.unshift(str1[i - 1]);
-      i--;
-      j--;
-    } else if (dp[i][j - 1] > dp[i - 1][j]) {
-      j--;
-    } else {
-      i--;
-    }
-  }
-  
-  return lcs.join('');
 }
-const str1 = 'abcdaf';
-const str2 = 'acbcf';
+class PriorityQueue {
+  constructor() {
+    this.queue = [];
+  }
 
-const lcs = findLCS(str1, str2);
-console.log(lcs);  // Output: "abcf"
+  enqueue(node) {
+    this.queue.push(node);
+    this.queue.sort((a, b) => a.f - b.f);
+  }
+
+  dequeue() {
+    return this.queue.shift();
+  }
+
+  isEmpty() {
+    return this.queue.length === 0;
+  }
+}
+function aStarSearch(startState, goalState, heuristic) {
+  const openList = new PriorityQueue();
+  const closedList = new Set();
+
+  const startNode = new Node(startState, null, 0, heuristic(startState, goalState));
+  openList.enqueue(startNode);
+
+  while (!openList.isEmpty()) {
+    const currentNode = openList.dequeue();
+
+    if (currentNode.state === goalState) {
+      // Goal state reached, return the path
+      return getPath(currentNode);
+    }
+
+    closedList.add(currentNode.state);
+
+    // Generate neighboring nodes
+    const neighbors = generateNeighbors(currentNode.state);
+
+    for (const neighborState of neighbors) {
+      if (closedList.has(neighborState)) {
+        continue; // Skip neighbors that have already been evaluated
+      }
+
+      const g = currentNode.g + 1; // Assuming a cost of 1 to move between states
+      const h = heuristic(neighborState, goalState);
+      const neighborNode = new Node(neighborState, currentNode, g, h);
+
+      openList.enqueue(neighborNode);
+    }
+  }
+
+  // No path found
+  return null;
+}
+function heuristic(state, goalState) {
+  // Calculate the Manhattan distance between the state and goalState
+  const [x1, y1] = state;
+  const [x2, y2] = goalState;
+  return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+}
+// Your A* search implementation
