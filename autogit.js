@@ -1,27 +1,37 @@
-class TreeNode {
-  constructor(value) {
+class Node {
+  constructor(value, children = []) {
     this.value = value;
-    this.left = null;
-    this.right = null;
+    this.children = children;
   }
 }
 
-function sumBinaryTree(root) {
-  if (root === null) {
-    return 0; // Base case: empty tree has sum 0
+function depthLimitedSearchIterative(root, target, maxDepth) {
+  let stack = [{ node: root, depth: 0 }];
+  
+  while (stack.length > 0) {
+    const { node, depth } = stack.pop();
+    
+    if (node.value === target) {
+      return node;
+    }
+    
+    if (depth < maxDepth) {
+      for (let i = node.children.length - 1; i >= 0; i--) {
+        stack.push({ node: node.children[i], depth: depth + 1 });
+      }
+    }
   }
   
-  const leftSum = sumBinaryTree(root.left); // Sum of left subtree
-  const rightSum = sumBinaryTree(root.right); // Sum of right subtree
-  
-  return root.value + leftSum + rightSum; // Sum of current node with left and right subtree sums
+  return null;
 }
+// Example usage
+const nodeA = new Node('A');
+const nodeB = new Node('B');
+const nodeC = new Node('C');
+const nodeD = new Node('D');
 
-// Usage example:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+nodeA.children = [nodeB, nodeC];
+nodeC.children = [nodeD];
 
-console.log(sumBinaryTree(root)); // Output: 15 (1 + 2 + 3 + 4 + 5)
+const result = depthLimitedSearchIterative(nodeA, 'D', 2);
+console.log(result); // Node { value: 'D', children: [] }
