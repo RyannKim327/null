@@ -1,11 +1,28 @@
-function isPalindrome(str) {
-    // Remove all non-alphanumeric characters and convert to lowercase
-    let cleanedStr = str.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
+function quicksort(arr) {
+  if (arr.length <= 1) {
+    return arr;
+  }
 
-    // Compare the cleaned string with its reverse
-    return cleanedStr === cleanedStr.split('').reverse().join('');
+  const pivot = arr[Math.floor(arr.length / 2)];
+
+  const less = [];
+  const equal = [];
+  const greater = [];
+
+  for (let num of arr) {
+    if (num < pivot) {
+      less.push(num);
+    } else if (num > pivot) {
+      greater.push(num);
+    } else {
+      equal.push(num);
+    }
+  }
+
+  return [...quicksort(less), ...equal, ...quicksort(greater)];
 }
+const unsortedArray = [9, -3, 5, 2, 6, 8, -6, 1, 3];
 
-// Example usage
-console.log(isPalindrome("racecar"));  // true
-console.log(isPalindrome("hello"));    // false
+const sortedArray = quicksort(unsortedArray);
+
+console.log(sortedArray); // Output: [-6, -3, 1, 2, 3, 5, 6, 8, 9]
