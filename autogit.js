@@ -1,44 +1,22 @@
-function findLongestIncreasingSubsequence(arr) {
-  const n = arr.length;
-  const lengths = Array(n).fill(1); // Array to store lengths of increasing subsequences
-
-  // Compute lengths of increasing subsequences
-  for (let i = 1; i < n; i++) {
-    for (let j = 0; j < i; j++) {
-      if (arr[i] > arr[j] && lengths[i] < lengths[j] + 1) {
-        lengths[i] = lengths[j] + 1;
-      }
-    }
+function binarySearch(arr, target, startIdx, endIdx) {
+  if (startIdx > endIdx) {
+    return -1;
   }
-
-  let maxLength = 0; // Length of the longest increasing subsequence
-  let endIndex = 0; // Index of the last element in the longest increasing subsequence
-
-  // Find the index of the maximum value in lengths array
-  for (let i = 0; i < n; i++) {
-    if (maxLength < lengths[i]) {
-      maxLength = lengths[i];
-      endIndex = i;
-    }
+  
+  const middleIdx = Math.floor((startIdx + endIdx) / 2);
+  
+  if (arr[middleIdx] === target) {
+    return middleIdx;
+  } else if (arr[middleIdx] > target) {
+    return binarySearch(arr, target, startIdx, middleIdx - 1);
+  } else {
+    return binarySearch(arr, target, middleIdx + 1, endIdx);
   }
-
-  // Construct the longest increasing subsequence
-  const lis = [];
-  lis.push(arr[endIndex]);
-
-  while (maxLength > 1) {
-    maxLength--;
-    endIndex--;
-    while (arr[endIndex] >= arr[endIndex + 1]) {
-      endIndex--;
-    }
-    lis.push(arr[endIndex]);
-  }
-
-  return lis.reverse(); // Reverse the array to get the correct order
 }
 
 // Example usage:
-const array = [3, 10, 2, 1, 20];
-const longestIncreasingSubsequence = findLongestIncreasingSubsequence(array);
-console.log(longestIncreasingSubsequence); // Output: [3, 10, 20]
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const targetValue = 6;
+
+const index = binarySearch(sortedArray, targetValue, 0, sortedArray.length - 1);
+console.log(index); // Output: 5 (index of the target value in the array)
