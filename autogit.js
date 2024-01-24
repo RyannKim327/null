@@ -1,17 +1,26 @@
-function isPalindrome(str) {
-  // Remove all non-alphanumeric characters and convert to lowercase
-  var formattedStr = str.replace(/[\W_]/g, '').toLowerCase();
+function bwt(text) {
+  // Generate all rotations of the text
+  let rotations = [];
+  for (let i = 0; i < text.length; i++) {
+    rotations.push(text.slice(i) + text.slice(0, i));
+  }
   
-  // Reverse the formatted string
-  var reversedStr = formattedStr.split('').reverse().join('');
+  // Sort the rotations lexicographically
+  rotations.sort();
   
-  // Check if the reversed string is equal to the original formatted string
-  return formattedStr === reversedStr;
+  // Extract the last character of each rotation
+  let transformed = '';
+  for (let i = 0; i < rotations.length; i++) {
+    transformed += rotations[i][text.length - 1];
+  }
+  
+  return transformed;
 }
+// Input text for transformation
+let text = 'banana';
 
-// Example usage
-var string1 = "radar";
-console.log(isPalindrome(string1)); // Output: true
+// Perform the Burrows-Wheeler Transform
+let transformed = bwt(text);
 
-var string2 = "Hello, World!";
-console.log(isPalindrome(string2)); // Output: false
+// Output the transformed text
+console.log(transformed);
