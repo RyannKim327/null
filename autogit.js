@@ -1,34 +1,35 @@
-function buildMaxHeap(array, length, rootIndex) {
-  let largest = rootIndex;
-  const leftChild = 2 * rootIndex + 1;
-  const rightChild = 2 * rootIndex + 2;
-
-  if (leftChild < length && array[leftChild] > array[largest])
-    largest = leftChild;
-
-  if (rightChild < length && array[rightChild] > array[largest])
-    largest = rightChild;
-
-  if (largest !== rootIndex) {
-    [array[rootIndex], array[largest]] = [array[largest], array[rootIndex]];
-    buildMaxHeap(array, length, largest);
-  }
-}
-function heapSort(array) {
-  const length = array.length;
-
-  // Build max heap
-  for (let i = Math.floor(length / 2) - 1; i >= 0; i--)
-    buildMaxHeap(array, length, i);
-
-  // Heap sort
-  for (let i = length - 1; i > 0; i--) {
-    [array[0], array[i]] = [array[i], array[0]];
-    buildMaxHeap(array, i, 0);
+function mergeSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
   }
 
-  return array;
+  const mid = Math.floor(arr.length / 2);
+  const left = arr.slice(0, mid);
+  const right = arr.slice(mid);
+
+  return merge(mergeSort(left), mergeSort(right));
 }
-const array = [8, 5, 2, 9, 5, 6, 3];
-const sortedArray = heapSort(array);
-console.log(sortedArray); // Output: [2, 3, 5, 5, 6, 8, 9]
+
+function merge(left, right) {
+  let result = [];
+  let i = 0;
+  let j = 0;
+
+  while (i < left.length && j < right.length) {
+    if (left[i] < right[j]) {
+      result.push(left[i]);
+      i++;
+    } else {
+      result.push(right[j]);
+      j++;
+    }
+  }
+
+  // Concatenate the remaining elements
+  return result.concat(left.slice(i)).concat(right.slice(j));
+}
+
+// Example usage:
+const arr = [5, 3, 8, 4, 2, 1, 10, 9];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr);
