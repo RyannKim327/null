@@ -1,21 +1,52 @@
-function findMaxSubarray(arr) {
-  let maxSoFar = 0;
-  let maxEndingHere = 0;
-
-  for (let i = 0; i < arr.length; i++) {
-    maxEndingHere = maxEndingHere + arr[i];
-
-    if (maxEndingHere < 0) {
-      maxEndingHere = 0;
-    }
-
-    if (maxSoFar < maxEndingHere) {
-      maxSoFar = maxEndingHere;
-    }
+class Graph {
+  constructor() {
+    this.adjList = new Map();
   }
 
-  return maxSoFar;
+  addVertex(vertex) {
+    this.adjList.set(vertex, []);
+  }
+
+  addEdge(vertex1, vertex2) {
+    this.adjList.get(vertex1).push(vertex2);
+    this.adjList.get(vertex2).push(vertex1);
+  }
+
+  dfs(startVertex) {
+    const visited = new Set();
+
+    this._dfsHelper(startVertex, visited);
+  }
+
+  _dfsHelper(vertex, visited) {
+    visited.add(vertex);
+    console.log(vertex);
+
+    const neighbors = this.adjList.get(vertex);
+    for (const neighbor of neighbors) {
+      if (!visited.has(neighbor)) {
+        this._dfsHelper(neighbor, visited);
+      }
+    }
+  }
 }
-const arr = [1, -3, 2, 1, -1];
-const maxSum = findMaxSubarray(arr);
-console.log(maxSum); // Output: 3
+
+// Example usage
+const graph = new Graph();
+
+graph.addVertex("A");
+graph.addVertex("B");
+graph.addVertex("C");
+graph.addVertex("D");
+graph.addVertex("E");
+graph.addVertex("F");
+
+graph.addEdge("A", "B");
+graph.addEdge("A", "C");
+graph.addEdge("B", "D");
+graph.addEdge("C", "E");
+graph.addEdge("D", "E");
+graph.addEdge("D", "F");
+graph.addEdge("E", "F");
+
+graph.dfs("A");
