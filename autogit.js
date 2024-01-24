@@ -1,6 +1,17 @@
-const array = [1, 5, 3, 9, 2];
-const max = Math.max(...array);
-console.log(max); // Output: 9
-const array = [1, 5, 3, 9, 2];
-const max = Math.max.apply(null, array);
-console.log(max); // Output: 9
+function largestPrimeFactor(number) {
+  let factor = 2;
+
+  while (factor <= number) {
+    if (number % factor === 0) {
+      number /= factor;
+    } else {
+      factor++;
+    }
+  }
+
+  return factor;
+}
+
+// Example usage
+console.log(largestPrimeFactor(13195)); // Output: 29
+console.log(largestPrimeFactor(600851475143)); // Output: 6857
