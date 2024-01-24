@@ -1,15 +1,29 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  const cleanStr = str.replace(/[^0-9a-z]/gi, '').toLowerCase();
+function findLongestCommonPrefix(strings) {
+  if (strings.length === 0) {
+    return '';
+  }
   
-  // Reverse the string
-  const reverseStr = cleanStr.split('').reverse().join('');
+  if (strings.length === 1) {
+    return strings[0];
+  }
   
-  // Compare the reversed string with the original string
-  return cleanStr === reverseStr;
+  strings.sort();
+  const firstString = strings[0];
+  const lastString = strings[strings.length - 1];
+  
+  let prefix = '';
+  for (let i = 0; i < firstString.length; i++) {
+    if (firstString[i] === lastString[i]) {
+      prefix += firstString[i];
+    } else {
+      break;
+    }
+  }
+  
+  return prefix;
 }
 
-// Examples
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
-console.log(isPalindrome("race car")); // true
-console.log(isPalindrome("hello world")); // false
+// Example usage:
+const strings = ['flower', 'flow', 'flight'];
+const longestPrefix = findLongestCommonPrefix(strings);
+console.log(longestPrefix); // Output: 'fl'
