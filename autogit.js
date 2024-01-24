@@ -1,11 +1,11 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  str = str.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
-  
-  // Compare the string with its reverse
-  return str === str.split("").reverse().join("");
+// Function to calculate the area of a triangle
+function calculateTriangleArea(base, height) {
+  return (base * height) / 2;
 }
 
 // Example usage
-console.log(isPalindrome("racecar")); // Output: true
-console.log(isPalindrome("hello"));   // Output: false
+const base = 10;
+const height = 8;
+
+const area = calculateTriangleArea(base, height);
+console.log("The area of the triangle is: " + area);
