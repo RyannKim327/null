@@ -1,61 +1,17 @@
-function fibonacci(n) {
-  if (n <= 1) return n;
+function areAnagrams(str1, str2) {
+  // Step 1: Remove non-alphabetic characters
+  str1 = str1.replace(/[^a-zA-Z]/g, "").toLowerCase();
+  str2 = str2.replace(/[^a-zA-Z]/g, "").toLowerCase();
 
-  let a = 0;
-  let b = 1;
+  // Step 2: Sort the strings
+  str1 = str1.split("").sort().join("");
+  str2 = str2.split("").sort().join("");
 
-  for (let i = 2; i <= n; i++) {
-    let temp = a + b;
-    a = b;
-    b = temp;
-  }
-
-  return b;
+  // Step 3: Compare the sorted strings
+  return str1 === str2;
 }
-function fibonacciSearch(arr, target) {
-  let n = arr.length;
-  let fibMMm2 = 0;
-  let fibMMm1 = 1;
-  let fibM = fibMMm2 + fibMMm1;
 
-  while (fibM < n) {
-    fibMMm2 = fibMMm1;
-    fibMMm1 = fibM;
-    fibM = fibMMm2 + fibMMm1;
-  }
-
-  let offset = -1;
-
-  while (fibM > 1) {
-    let i = Math.min(offset + fibMMm2, n - 1);
-
-    if (arr[i] < target) {
-      fibM = fibMMm1;
-      fibMMm1 = fibMMm2;
-      fibMMm2 = fibM - fibMMm1;
-      offset = i;
-    } else if (arr[i] > target) {
-      fibM = fibMMm2;
-      fibMMm1 = fibMMm1 - fibMMm2;
-      fibMMm2 = fibM - fibMMm1;
-    } else {
-      return i;
-    }
-  }
-
-  if (fibMMm1 && arr[offset + 1] === target) {
-    return offset + 1;
-  }
-
-  return -1;
-}
-const arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
-const target = 23;
-
-const index = fibonacciSearch(arr, target);
-
-if (index !== -1) {
-  console.log(`Found ${target} at index ${index}`);
-} else {
-  console.log(`${target} not found in the array`);
-}
+// Usage example
+const string1 = "listen";
+const string2 = "silent";
+console.log(areAnagrams(string1, string2)); // Output: true
