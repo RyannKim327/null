@@ -1,51 +1,62 @@
-class TrieNode {
-  constructor() {
-    this.children = {};
-    this.isWord = false;
+function dijkstra(startNode, endNode, graph) {
+  const distances = {};
+  const previousNodes = {};
+  const unvisitedNodes = new Set();
+
+  for (let node in graph) {
+    distances[node] = Infinity;
+    unvisitedNodes.add(node);
   }
+
+  distances[startNode] = 0;
+
+  while (unvisitedNodes.size > 0) {
+    let currentNode = null;
+
+    for (let node of unvisitedNodes) {
+      if (currentNode === null || distances[node] < distances[currentNode]) {
+        currentNode = node;
+      }
+    }
+
+    unvisitedNodes.delete(currentNode);
+
+    if (currentNode === endNode) {
+      break;
+    }
+
+    for (let neighbor in graph[currentNode]) {
+      let distance = graph[currentNode][neighbor];
+      let totalDistance = distances[currentNode] + distance;
+
+      if (totalDistance < distances[neighbor]) {
+        distances[neighbor] = totalDistance;
+        previousNodes[neighbor] = currentNode;
+      }
+    }
+  }
+
+  return buildPath(endNode, previousNodes);
 }
-class Trie {
-  constructor() {
-    this.root = new TrieNode();
+
+function buildPath(endNode, previousNodes) {
+  const path = [];
+  let currentNode = endNode;
+
+  while (currentNode !== null) {
+    path.unshift(currentNode);
+    currentNode = previousNodes[currentNode];
   }
 
-  insert(word) {
-    let node = this.root;
-    for (let char of word) {
-      if (!node.children[char]) {
-        node.children[char] = new TrieNode();
-      }
-      node = node.children[char];
-    }
-    node.isWord = true;
-  }
-
-  search(word) {
-    let node = this.root;
-    for (let char of word) {
-      if (!node.children[char]) {
-        return false;
-      }
-      node = node.children[char];
-    }
-    return node.isWord;
-  }
-
-  startsWith(prefix) {
-    let node = this.root;
-    for (let char of prefix) {
-      if (!node.children[char]) {
-        return false;
-      }
-      node = node.children[char];
-    }
-    return true;
-  }
+  return path;
 }
-const trie = new Trie();
-trie.insert('apple');
-console.log(trie.search('apple')); // true
-console.log(trie.search('app')); // false
-console.log(trie.startsWith('app')); // true
-trie.insert('app');
-console.log(trie.search('app')); // true
+
+// Example usage:
+const graph = {
+  A: { B: 5, C: 2 },
+  B: { A: 5, D: 1 },
+  C: { A: 2, D: 6 },
+  D: { B: 1, C: 6 },
+};
+
+console.log(dijkstra('A', 'D', graph)); // Output: ['A', 'B', 'D']
