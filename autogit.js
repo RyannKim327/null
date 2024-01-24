@@ -1,15 +1,24 @@
-function countOccurrence(str, char) {
-  var count = 0;
-  for (var i = 0; i < str.length; i++) {
-    if (str.charAt(i) === char) {
-      count++;
+function findFirstNonRepeatingCharacter(str) {
+  const charCount = new Map();
+
+  for (const char of str) {
+    if (charCount.has(char)) {
+      charCount.set(char, charCount.get(char) + 1);
+    } else {
+      charCount.set(char, 1);
     }
   }
-  return count;
+
+  for (const [char, count] of charCount.entries()) {
+    if (count === 1) {
+      return char;
+    }
+  }
+
+  return null; // If there are no non-repeating characters
 }
 
-// Example usage
-var myStr = 'Hello, World!';
-var myChar = 'l';
-var occurrenceCount = countOccurrence(myStr, myChar);
-console.log(occurrenceCount); // Output: 3
+// Usage example:
+const input = "aabbccdeeff";
+const firstNonRepeatingChar = findFirstNonRepeatingCharacter(input);
+console.log(firstNonRepeatingChar); // Output: "d"
