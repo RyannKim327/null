@@ -1,21 +1,12 @@
-function isPalindrome(str) {
-  var cleanedStr = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-  var start = 0;
-  var end = cleanedStr.length - 1;
-
-  while (start < end) {
-    if (cleanedStr[start] !== cleanedStr[end]) {
-      return false;
-    }
-    start++;
-    end--;
-  }
-  return true;
+let str = "Hello, World!";
+let reversed = str.split("").reverse().join("");
+console.log(reversed); // Output: "!dlroW ,olleH"
+let str = "Hello, World!";
+let reversed = "";
+for (let i = str.length - 1; i >= 0; i--) {
+  reversed += str[i];
 }
-
-// Example usage
-var str1 = "racecar";
-console.log(isPalindrome(str1)); // Output: true
-
-var str2 = "Hello World";
-console.log(isPalindrome(str2)); // Output: false
+console.log(reversed); // Output: "!dlroW ,olleH"
+let str = "Hello, World!";
+let reversed = str.split("").reduce((rev, char) => char + rev, "");
+console.log(reversed); // Output: "!dlroW ,olleH"
