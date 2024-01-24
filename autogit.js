@@ -1,46 +1,39 @@
-function constructPiTable(pattern) {
-  const pi = Array(pattern.length).fill(0);
-  let i = 1, j = 0;
-  
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[j]) {
-      pi[i] = j + 1;
-      i++;
-      j++;
-    } else if (j > 0) {
-      j = pi[j - 1];
-    } else {
-      pi[i] = 0;
-      i++;
-    }
+class HashTable {
+  constructor() {
+    this.table = {};
   }
 
-  return pi;
-}
-function stringMatch(text, pattern) {
-  const pi = constructPiTable(pattern);
-  const matches = [];
-
-  let i = 0, j = 0;
-  while (i < text.length) {
-    if (text[i] === pattern[j]) {
-      if (j === pattern.length - 1) {
-        matches.push(i - j);
-        j = pi[j];
-      } else {
-        i++;
-        j++;
-      }
-    } else if (j > 0) {
-      j = pi[j - 1];
-    } else {
-      i++;
+  // Function to generate a hash key
+  hashKey(key) {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash += key.charCodeAt(i);
     }
+    return hash;
   }
 
-  return matches;
+  // Function to add a key-value pair to the hash table
+  put(key, value) {
+    const hash = this.hashKey(key);
+    this.table[hash] = value;
+  }
+
+  // Function to get the value associated with a given key
+  get(key) {
+    const hash = this.hashKey(key);
+    return this.table[hash];
+  }
+
+  // Function to remove a key-value pair from the hash table
+  remove(key) {
+    const hash = this.hashKey(key);
+    delete this.table[hash];
+  }
 }
-const text = "ABABCABABABA";
-const pattern = "ABA";
-const matches = stringMatch(text, pattern);
-console.log(matches);  // Output: [2, 7, 9, 10]
+
+// Usage:
+const hashTable = new HashTable();
+hashTable.put("foo", 42);
+console.log(hashTable.get("foo")); // Output: 42
+hashTable.remove("foo");
+console.log(hashTable.get("foo")); // Output: undefined
