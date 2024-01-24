@@ -1,80 +1,53 @@
-function preprocessPattern(pattern) {
-  const badCharTable = new Map();
-  
-  for (let i = 0; i < pattern.length; i++) {
-    badCharTable.set(pattern[i], i);
+class Stack {
+  constructor() {
+    this.items = [];
   }
-  
-  const suffixTable = new Array(pattern.length).fill(0);
-  let lastPrefixPosition = pattern.length;
 
-  // Set suffixes with no prefix to the end of the pattern
-  for (let i = pattern.length - 1; i >= 0; i--) {
-    if (isPrefix(pattern, i + 1)) {
-      lastPrefixPosition = i + 1;
+  // Add an element to the top of the stack
+  push(element) {
+    this.items.push(element);
+  }
+
+  // Remove the top element from the stack and return it
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack Underflow";
     }
-    suffixTable[pattern.length - 1 - i] = lastPrefixPosition - i + pattern.length - 1;
+    return this.items.pop();
   }
 
-  // Set suffixes with a partial prefix match
-  for (let i = 0; i < pattern.length - 1; i++) {
-    const suffixLength = suffixLengthFromIndex(pattern, i);
-    suffixTable[suffixLength] = pattern.length - 1 - i + suffixLength;
+  // Get the top element of the stack without removing it
+  peek() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
+    }
+    return this.items[this.items.length - 1];
   }
 
-  return { badCharTable, suffixTable };
+  // Check if the stack is empty
+  isEmpty() {
+    return this.items.length === 0;
+  }
+
+  // Get the size of the stack
+  size() {
+    return this.items.length;
+  }
+
+  // Print the stack elements
+  printStack() {
+    console.log(this.items);
+  }
 }
 
-function isPrefix(pattern, index) {
-  for (let i = index, j = 0; i < pattern.length; i++, j++) {
-    if (pattern[i] !== pattern[j]) {
-      return false;
-    }
-  }
-  return true;
-}
-
-function suffixLengthFromIndex(pattern, index) {
-  let length = 0;
-  let i = index;
-  let j = pattern.length - 1;
-
-  while (i >= 0 && pattern[i] === pattern[j]) {
-    length += 1;
-    i--;
-    j--;
-  }
-
-  return length;
-}
-function boyerMooreSearch(text, pattern) {
-  const { badCharTable, suffixTable } = preprocessPattern(pattern);
-  const occurrences = [];
-  let i = 0;
-
-  while (i <= text.length - pattern.length) {
-    let j = pattern.length - 1;
-
-    while (j >= 0 && pattern[j] === text[i + j]) {
-      j--;
-    }
-
-    if (j < 0) {
-      // Pattern found
-      occurrences.push(i);
-      i += suffixTable[0];
-    } else {
-      const badCharSkip = j - badCharTable.get(text[i + j]);
-      const suffixSkip = suffixTable[j];
-
-      i += Math.max(badCharSkip, suffixSkip);
-    }
-  }
-
-  return occurrences;
-}
-const text = "This is an example text for testing Boyer-Moore algorithm.";
-const pattern = "example";
-
-const occurrences = boyerMooreSearch(text, pattern);
-console.log("Occurrences found at indices:", occurrences);
+// Usage example:
+const stack = new Stack();
+stack.push(10);
+stack.push(20);
+stack.push(30);
+stack.printStack(); // Output: [10, 20, 30]
+console.log(stack.pop()); // Output: 30
+console.log(stack.peek()); // Output: 20
+console.log(stack.isEmpty()); // Output: false
+console.log(stack.size()); // Output: 2
+stack.printStack(); // Output: [10, 20]
