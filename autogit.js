@@ -1,34 +1,25 @@
-function topologicalSort(adjacencyList) {
-  const visited = new Set();
-  const stack = [];
+function selectionSort(array) {
+  const length = array.length;
 
-  function dfs(node) {
-    visited.add(node);
+  for (let i = 0; i < length; i++) {
+    let minIndex = i;
 
-    for (const neighbor of adjacencyList[node]) {
-      if (!visited.has(neighbor)) {
-        dfs(neighbor);
+    for (let j = i + 1; j < length; j++) {
+      if (array[j] < array[minIndex]) {
+        minIndex = j;
       }
     }
 
-    stack.unshift(node);
-  }
-
-  for (const node in adjacencyList) {
-    if (!visited.has(node)) {
-      dfs(node);
+    if (minIndex !== i) {
+      let temp = array[i];
+      array[i] = array[minIndex];
+      array[minIndex] = temp;
     }
   }
 
-  return stack;
+  return array;
 }
-const graph = {
-  1: [2],
-  2: [3, 4],
-  3: [],
-  4: [5],
-  5: []
-};
-const sortedNodes = topologicalSort(graph);
 
-console.log(sortedNodes); // [1, 2, 4, 5, 3]
+// Example usage:
+const unsortedArray = [64, 25, 12, 22, 11];
+console.log(selectionSort(unsortedArray)); // Output: [11, 12, 22, 25, 64]
