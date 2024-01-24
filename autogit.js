@@ -1,56 +1,35 @@
-function getIntersectionNode(headA, headB) {
-  // Get the lengths of both linked lists
-  const lengthA = getLength(headA);
-  const lengthB = getLength(headB);
+function longestCommonSubstring(str1, str2) {
+  const m = str1.length;
+  const n = str2.length;
 
-  let pointerA = headA;
-  let pointerB = headB;
+  // Create a 2D matrix to store lengths of longest common suffixes
+  const dp = Array(m + 1)
+    .fill(0)
+    .map(() => Array(n + 1).fill(0));
 
-  // Calculate the length difference between the two lists
-  const lengthDiff = Math.abs(lengthA - lengthB);
+  let maxLength = 0; // Length of longest common substring
+  let endIndex = 0; // End index of longest common substring in str1
 
-  // Move the pointer of the longer list ahead by the length difference
-  if (lengthA > lengthB) {
-    for (let i = 0; i < lengthDiff; i++) {
-      pointerA = pointerA.next;
-    }
-  } else {
-    for (let i = 0; i < lengthDiff; i++) {
-      pointerB = pointerB.next;
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+
+        if (dp[i][j] > maxLength) {
+          maxLength = dp[i][j];
+          endIndex = i - 1;
+        }
+      }
     }
   }
 
-  // Traverse both linked lists simultaneously until the pointers meet or reach the end
-  while (pointerA !== null && pointerB !== null) {
-    if (pointerA === pointerB) {
-      return pointerA; // Intersection found
-    }
-    pointerA = pointerA.next;
-    pointerB = pointerB.next;
-  }
-
-  return null; // No intersection
+  // Extract the longest common substring from str1 using the endIndex
+  const longestSubstring = str1.substr(endIndex - maxLength + 1, maxLength);
+  return longestSubstring;
 }
 
-// Example usage:
-
-// Linked List A: 1 -> 2 -> 3 -> 4
-const nodeA1 = { val: 1, next: null };
-const nodeA2 = { val: 2, next: null };
-const nodeA3 = { val: 3, next: null };
-const nodeA4 = { val: 4, next: null };
-nodeA1.next = nodeA2;
-nodeA2.next = nodeA3;
-nodeA3.next = nodeA4;
-
-// Linked List B: 6 -> 7 -> 8 -> 2 -> 3 -> 4
-const nodeB1 = { val: 6, next: null };
-const nodeB2 = { val: 7, next: null };
-const nodeB3 = { val: 8, next: null };
-nodeB1.next = nodeB2;
-nodeB2.next = nodeB3;
-nodeB3.next = nodeA2; // Intersection point
-
-const intersectionNode = getIntersectionNode(nodeA1, nodeB1);
-
-console.log(intersectionNode); // Output: { val: 2, next: { val: 3, next: { val: 4, next: null } } }
+// Example usage
+const str1 = "abcdxyz";
+const str2 = "xyzabcd";
+const longestSubstring = longestCommonSubstring(str1, str2);
+console.log(longestSubstring); // Output: "abcd"
