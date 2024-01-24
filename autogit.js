@@ -1,48 +1,31 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.left = null;
-    this.right = null;
-  }
-}
-
-function diameterOfBinaryTree(root) {
-  if (root === null) {
-    return 0;
+function binarySearchRecursive(arr, target, start = 0, end = arr.length - 1) {
+  // Base case: if the start index becomes greater than the end index, the element was not found
+  if (start > end) {
+    return -1;
   }
 
-  // Calculate the height of the left and right subtrees
-  const leftHeight = height(root.left);
-  const rightHeight = height(root.right);
+  // Find the middle index
+  const mid = Math.floor((start + end) / 2);
 
-  // Calculate the diameter recursively
-  const leftDiameter = diameterOfBinaryTree(root.left);
-  const rightDiameter = diameterOfBinaryTree(root.right);
-
-  // Return the maximum of the following three values:
-  // 1. Diameter of the left subtree
-  // 2. Diameter of the right subtree
-  // 3. Length of the longest path that passes through the root
-  return Math.max(leftHeight + rightHeight, Math.max(leftDiameter, rightDiameter));
-}
-
-function height(node) {
-  if (node === null) {
-    return 0;
+  // If the element at the middle index equals the target, return the index
+  if (arr[mid] === target) {
+    return mid;
   }
 
-  // Calculate the height recursively
-  const leftHeight = height(node.left);
-  const rightHeight = height(node.right);
+  // If the element at the middle index is greater than the target,
+  // recursively search the left half of the array
+  if (arr[mid] > target) {
+    return binarySearchRecursive(arr, target, start, mid - 1);
+  }
 
-  // Return the height of the current node
-  return 1 + Math.max(leftHeight, rightHeight);
+  // If the element at the middle index is less than the target,
+  // recursively search the right half of the array
+  if (arr[mid] < target) {
+    return binarySearchRecursive(arr, target, mid + 1, end);
+  }
 }
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
+const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+const target = 12;
+const index = binarySearchRecursive(arr, target);
 
-const diameter = diameterOfBinaryTree(root);
-console.log("Diameter of the binary tree:", diameter);
+console.log(index); // Output: 5
