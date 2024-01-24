@@ -1,7 +1,11 @@
-let str = "Hello World!";
-let noSpaces = str.replace(/\s/g, "");
-console.log(noSpaces); // Output: HelloWorld!
-let str = "  Hello World!  ";
-let trimmed = str.trim();
-let noSpaces = trimmed.replace(/\s/g, "");
-console.log(noSpaces); // Output: HelloWorld!
+const axios = require('axios');
+
+axios.get('https://api.example.com/data')
+  .then(response => {
+    // Handle success
+    console.log(response.data);
+  })
+  .catch(error => {
+    // Handle error
+    console.log(error);
+  });
