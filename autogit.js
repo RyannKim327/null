@@ -1,45 +1,19 @@
-function shellSort(arr) {
-  // Shell sort implementation goes here
-}
-function shellSort(arr) {
-  let gap = 1;
-  while (gap < arr.length / 3) {
-    gap = 3 * gap + 1;
-  }
-}
-function shellSort(arr) {
-  let gap = 1;
-  while (gap < arr.length / 3) {
-    gap = 3 * gap + 1;
+function maxSubarraySum(arr) {
+  let maxSoFar = arr[0];
+  let maxEndingHere = arr[0];
+
+  for (let i = 1; i < arr.length; i++) {
+    // Check if the current element increases the sum or starts a new subarray
+    maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
+    
+    // Update the maximum sum so far
+    maxSoFar = Math.max(maxSoFar, maxEndingHere);
   }
 
-  while (gap > 0) {
-    // Perform shell sort for the current gap
-    // ...
-    gap = Math.floor(gap / 3);
-  }
+  return maxSoFar;
 }
-function shellSort(arr) {
-  let gap = 1;
-  while (gap < arr.length / 3) {
-    gap = 3 * gap + 1;
-  }
 
-  while (gap > 0) {
-    for (let i = gap; i < arr.length; i++) {
-      let temp = arr[i];
-      let j = i;
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
-      }
-      arr[j] = temp;
-    }
-    gap = Math.floor(gap / 3);
-  }
-
-  return arr;
-}
-const unsortedArray = [9, 4, 1, 7, 3, 6, 8, 2, 5];
-const sortedArray = shellSort(unsortedArray);
-console.log(sortedArray);
+// Example usage
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const maxSum = maxSubarraySum(array);
+console.log(maxSum); // Output: 6 (corresponding to the subarray [4, -1, 2, 1])
