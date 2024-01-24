@@ -1,20 +1,31 @@
-function countOccurrences(string, word) {
-  const regex = new RegExp(`\\b${word}\\b`, 'gi');
-  const matches = string.match(regex);
-  return matches ? matches.length : 0;
+function merge(leftArr, rightArr) {
+  let resultArr = [];
+  let leftIndex = 0;
+  let rightIndex = 0;
+
+  while (leftIndex < leftArr.length && rightIndex < rightArr.length) {
+    if (leftArr[leftIndex] < rightArr[rightIndex]) {
+      resultArr.push(leftArr[leftIndex]);
+      leftIndex++;
+    } else {
+      resultArr.push(rightArr[rightIndex]);
+      rightIndex++;
+    }
+  }
+
+  return resultArr.concat(leftArr.slice(leftIndex)).concat(rightArr.slice(rightIndex));
 }
+function mergeSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
+  }
 
-const sentence = "Hello, hello! How are you today? Hello, world!";
-const wordToCount = "hello";
+  const middle = Math.floor(arr.length / 2);
+  const leftArr = arr.slice(0, middle);
+  const rightArr = arr.slice(middle);
 
-console.log(countOccurrences(sentence, wordToCount)); // Output: 3
-function countOccurrences(string, word) {
-  const words = string.split(' ');
-  const count = words.filter(w => w.toLowerCase() === word.toLowerCase()).length;
-  return count;
+  return merge(mergeSort(leftArr), mergeSort(rightArr));
 }
-
-const sentence = "Hello, hello! How are you today? Hello, world!";
-const wordToCount = "hello";
-
-console.log(countOccurrences(sentence, wordToCount)); // Output: 3
+const unsortedArray = [7, 2, 5, 1, 8, 9, 3];
+const sortedArray = mergeSort(unsortedArray);
+console.log(sortedArray);
