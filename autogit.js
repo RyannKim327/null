@@ -1,58 +1,58 @@
-class Graph {
-  constructor() {
-    this.adjacencyList = {};
+function merge(arr, start, mid, end) {
+  const leftArr = arr.slice(start, mid + 1); // Left subarray
+  const rightArr = arr.slice(mid + 1, end + 1); // Right subarray
+
+  let i = 0, j = 0, k = start;
+
+  while (i < leftArr.length && j < rightArr.length) {
+    if (leftArr[i] <= rightArr[j]) {
+      arr[k] = leftArr[i];
+      i++;
+    } else {
+      arr[k] = rightArr[j];
+      j++;
+    }
+    k++;
   }
 
-  addVertex(vertex) {
-    if (!this.adjacencyList[vertex]) {
-      this.adjacencyList[vertex] = [];
+  // Copy the remaining elements of leftArr, if any
+  while (i < leftArr.length) {
+    arr[k] = leftArr[i];
+    i++;
+    k++;
+  }
+
+  // Copy the remaining elements of rightArr, if any
+  while (j < rightArr.length) {
+    arr[k] = rightArr[j];
+    j++;
+    k++;
+  }
+}
+
+function mergeSort(arr) {
+  const n = arr.length;
+  let currSize;
+
+  // Divide the array into subarrays of different sizes
+  // Starting from size 1 and doubling it each time
+  for (currSize = 1; currSize < n; currSize = currSize * 2) {
+    let leftStart;
+
+    // Merge subarrays in a bottom-up manner
+    // From left to right
+    for (leftStart = 0; leftStart < n - 1; leftStart += 2 * currSize) {
+      const mid = Math.min(leftStart + currSize - 1, n - 1);
+      const rightEnd = Math.min(leftStart + 2 * currSize - 1, n - 1);
+
+      merge(arr, leftStart, mid, rightEnd);
     }
   }
 
-  addEdge(vertex1, vertex2) {
-    this.adjacencyList[vertex1].push(vertex2);
-    this.adjacencyList[vertex2].push(vertex1);
-  }
+  return arr;
 }
-function depthFirstSearch(graph, startVertex) {
-  const visited = {};
-  const result = [];
 
-  function dfs(vertex) {
-    if (!vertex) return null;
-    visited[vertex] = true;
-    result.push(vertex);
-
-    graph.adjacencyList[vertex].forEach(neighbor => {
-      if (!visited[neighbor]) {
-        dfs(neighbor);
-      }
-    });
-  }
-
-  dfs(startVertex);
-  return result;
-}
-// Create a new graph
-const graph = new Graph();
-
-// Add vertices to the graph
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
-graph.addVertex('F');
-
-// Add edges to the graph
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('C', 'E');
-graph.addEdge('D', 'E');
-graph.addEdge('D', 'F');
-graph.addEdge('E', 'F');
-
-// Perform DFS starting from vertex 'A'
-const dfsResult = depthFirstSearch(graph, 'A');
-console.log(dfsResult); // Output: ["A", "B", "D", "E", "C", "F"]
+// Example usage:
+const arr = [9, 4, 2, 7, 1, 5, 6, 8, 3];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
