@@ -1,8 +1,8 @@
-function reverseString(str) {
-  return str.split("").reverse().join("");
-}
-
-var myString = "Hello, World!";
-var reversedString = reverseString(myString);
-
-console.log(reversedString); // Outputs: "!dlroW ,olleH"
+let string1 = "Hello";
+let string2 = " World";
+let result = string1 + string2;
+console.log(result); // Output: "Hello World"
+let string1 = "Hello";
+let string2 = " World";
+let result = string1.concat(string2);
+console.log(result); // Output: "Hello World"
