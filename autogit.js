@@ -1,41 +1,38 @@
-function findLongestIncreasingSubsequence(arr) {
-  const n = arr.length;
-  
-  // Create an array to store the lengths of the longest increasing subsequences
-  const lisLengths = new Array(n).fill(1);
-  
-  // Find the length of the longest increasing subsequence
-  for (let i = 1; i < n; i++) {
-    for (let j = 0; j < i; j++) {
-      if (arr[i] > arr[j] && lisLengths[i] < lisLengths[j] + 1) {
-        lisLengths[i] = lisLengths[j] + 1;
-      }
-    }
+function buildHeap(arr, n, i) {
+  let largest = i; // Initialize largest as the root
+  let left = 2 * i + 1; // left child
+  let right = 2 * i + 2; // right child
+
+  // If the left child is larger than the root
+  if (left < n && arr[left] > arr[largest])
+    largest = left;
+
+  // If the right child is larger than the largest so far
+  if (right < n && arr[right] > arr[largest])
+    largest = right;
+
+  // If the largest is not the root
+  if (largest != i) {
+    [arr[i], arr[largest]] = [arr[largest], arr[i]]; // Swap elements
+    buildHeap(arr, n, largest); // Recursively heapify the affected sub-tree
   }
-  
-  // Find the maximum length of the LIS
-  let maxLength = 0;
-  for (let i = 0; i < n; i++) {
-    if (lisLengths[i] > maxLength) {
-      maxLength = lisLengths[i];
-    }
-  }
-  
-  // Find the longest increasing subsequence
-  const lis = [];
-  let lastIndex = -1;
-  for (let i = n - 1; i >= 0; i--) {
-    if (lisLengths[i] === maxLength && (lastIndex === -1 || arr[i] < arr[lastIndex])) {
-      lis.unshift(arr[i]);
-      maxLength--;
-      lastIndex = i;
-    }
-  }
-  
-  return lis;
 }
 
-// Test the function
-const arr = [3, 4, -1, 0, 6, 2, 3];
-const lis = findLongestIncreasingSubsequence(arr);
-console.log(lis); // Output: [-1, 0, 2, 3]
+function heapSort(arr) {
+  const n = arr.length;
+
+  // Build a max heap
+  for (let i = Math.floor(n / 2) - 1; i >= 0; i--)
+    buildHeap(arr, n, i);
+
+  // One by one extract elements from the heap
+  for (let i = n - 1; i > 0; i--) {
+    [arr[0], arr[i]] = [arr[i], arr[0]]; // Move current root to end
+    buildHeap(arr, i, 0); // Recursively heapify the reduced heap
+  }
+
+  return arr;
+}
+const array = [5, 3, 8, 4, 2, 1];
+const sortedArray = heapSort(array);
+console.log(sortedArray); // [1, 2, 3, 4, 5, 8]
