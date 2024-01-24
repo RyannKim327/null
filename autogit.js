@@ -1,41 +1,65 @@
-function largestPrimeFactor(number) {
-  // code goes here
+class TreeNode {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
-function largestPrimeFactor(number) {
-  let factor = 2;
-  let largestFactor = 1;
-  // code continues...
+class BinarySearchTree {
+  constructor() {
+    this.root = null;
+  }
 }
-function largestPrimeFactor(number) {
-  let factor = 2;
-  let largestFactor = 1;
+class BinarySearchTree {
+  // ...
 
-  while (number > 1) {
-    if (number % factor === 0) {
-      largestFactor = factor;
-      number /= factor;
+  insert(value) {
+    const newNode = new TreeNode(value);
+
+    if (this.root === null) {
+      this.root = newNode;
     } else {
-      factor++;
+      this.insertNode(this.root, newNode);
     }
   }
-  
-  return largestFactor;
-}
-function largestPrimeFactor(number) {
-  let factor = 2;
-  let largestFactor = 1;
 
-  while (number > 1) {
-    if (number % factor === 0) {
-      largestFactor = factor;
-      number /= factor;
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
     } else {
-      factor++;
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
     }
   }
-  
-  return largestFactor;
 }
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
 
-// Example usage:
-console.log(largestPrimeFactor(13195));  // Output: 29
+  searchNode(node, value) {
+    if (node === null || node.value === value) {
+      return node;
+    } else if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else {
+      return this.searchNode(node.right, value);
+    }
+  }
+const bst = new BinarySearchTree();
+bst.insert(50);
+bst.insert(30);
+bst.insert(70);
+bst.insert(20);
+bst.insert(40);
+bst.insert(60);
+bst.insert(80);
+
+console.log(bst.search(60)); // Output: TreeNode { value: 60, left: null, right: null }
+console.log(bst.search(90)); // Output: null
