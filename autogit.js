@@ -1,59 +1,24 @@
-function kmpSearch(text, pattern) {
-    // Step 1: Initialize variables
-    let n = text.length;
-    let m = pattern.length;
-    let lps = computeLPSArray(pattern);
-    let i = 0; // Index for text
-    let j = 0; // Index for pattern
-    let positions = [];
+function binarySearchRecursive(arr, target, startIdx, endIdx) {
+  if (startIdx > endIdx) {
+    return -1; // Target value not found
+  }
 
-    // Step 2: Perform the search
-    while (i < n) {
-        if (pattern[j] === text[i]) {
-            j++;
-            i++;
-        }
+  const midIdx = Math.floor((startIdx + endIdx) / 2);
 
-        if (j === m) {
-            // Pattern found at index i - j
-            positions.push(i - j);
-            j = lps[j - 1];
-        } else if (i < n && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
-    }
+  if (arr[midIdx] === target) {
+    return midIdx; // Target value found
+  }
 
-    return positions;
+  if (target < arr[midIdx]) {
+    return binarySearchRecursive(arr, target, startIdx, midIdx - 1);
+  }
+
+  return binarySearchRecursive(arr, target, midIdx + 1, endIdx);
 }
-function computeLPSArray(pattern) {
-    let m = pattern.length;
-    let lps = new Array(m).fill(0);
-    let len = 0;
-    let i = 1;
 
-    while (i < m) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
+// Example usage:
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const targetValue = 7;
 
-    return lps;
-}
-let text = "ABABDABACDABABCABAB";
-let pattern = "ABABCABAB";
-let positions = kmpSearch(text, pattern);
-
-console.log("Pattern found at positions: ", positions);
+const result = binarySearchRecursive(sortedArray, targetValue, 0, sortedArray.length - 1);
+console.log(result); // Output: 6 (index of target value in the array)
