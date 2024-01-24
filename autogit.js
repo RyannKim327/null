@@ -1,49 +1,73 @@
-class Graph {
-  constructor(vertices, edges) {
-    this.vertices = vertices;
-    this.edges = edges;
-  }
-
-  bellmanFord(source) {
-    const distance = Array(this.vertices).fill(Infinity);
-    distance[source] = 0;
-
-    for (let i = 0; i < this.vertices - 1; i++) {
-      for (let j = 0; j < this.edges.length; j++) {
-        const { source, destination, weight } = this.edges[j];
-        if (distance[source] + weight < distance[destination]) {
-          distance[destination] = distance[source] + weight;
-        }
-      }
-    }
-
-    for (let i = 0; i < this.edges.length; i++) {
-      const { source, destination, weight } = this.edges[i];
-      if (distance[source] + weight < distance[destination]) {
-        throw new Error('Graph contains negative cycles');
-      }
-    }
-
-    return distance;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
 }
+function reverseLinkedList(head) {
+  let previous = null;
+  let current = head;
+  let following = head;
 
-// Example usage:
-const vertices = 5;
-const edges = [
-  { source: 0, destination: 1, weight: 6 },
-  { source: 0, destination: 3, weight: 7 },
-  { source: 1, destination: 2, weight: 5 },
-  { source: 1, destination: 3, weight: 8 },
-  { source: 1, destination: 4, weight: -4 },
-  { source: 2, destination: 1, weight: -2 },
-  { source: 3, destination: 2, weight: -3 },
-  { source: 3, destination: 4, weight: 9 },
-  { source: 4, destination: 0, weight: 2 },
-  { source: 4, destination: 2, weight: 7 },
-];
+  while (current !== null) {
+    following = following.next;
+    current.next = previous;
+    previous = current;
+    current = following;
+  }
 
-const graph = new Graph(vertices, edges);
-const sourceVertex = 0;
-const shortestPaths = graph.bellmanFord(sourceVertex);
-console.log(shortestPaths);
+  return previous;
+}
+function isLinkedListPalindrome(head) {
+  if (!head || !head.next) {
+    // A linked list with 0 or 1 node is always a palindrome
+    return true;
+  }
+
+  // Find the middle of the linked list using the two-pointer technique
+  let slow = head;
+  let fast = head;
+
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
+  }
+
+  // If the length of the linked list is odd, move slow pointer one step ahead
+  if (fast) {
+    slow = slow.next;
+  }
+
+  // Reverse the second half of the linked list
+  let reversed = reverseLinkedList(slow);
+
+  // Compare the first half (head) and reversed second half of the linked list
+  while (reversed) {
+    if (reversed.value !== head.value) {
+      return false;
+    }
+    reversed = reversed.next;
+    head = head.next;
+  }
+
+  return true;
+}
+// Create nodes for the linked list
+const node1 = new Node('r');
+const node2 = new Node('a');
+const node3 = new Node('c');
+const node4 = new Node('e');
+const node5 = new Node('c');
+const node6 = new Node('a');
+const node7 = new Node('r');
+
+// Connect the nodes to form a linked list
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node5;
+node5.next = node6;
+node6.next = node7;
+
+// Check if the linked list is a palindrome
+console.log(isLinkedListPalindrome(node1)); // Output: true
