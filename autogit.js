@@ -1,25 +1,24 @@
-function countingSort(arr) {
-  const max = Math.max(...arr);
-  const count = Array(max + 1).fill(0);
-  const sortedArray = Array(arr.length);
-
-  for (let i = 0; i < arr.length; i++) {
-    count[arr[i]]++;
+function findIntersection(headA, headB) {
+  let set = new Set();
+  
+  // Traverse the first linked list and store each node's reference in a set
+  let nodeA = headA;
+  while (nodeA) {
+    set.add(nodeA);
+    nodeA = nodeA.next;
   }
-
-  for (let i = 1; i <= max; i++) {
-    count[i] += count[i - 1];
+  
+  // Traverse the second linked list and check for intersection
+  let nodeB = headB;
+  while (nodeB) {
+    if (set.has(nodeB)) {
+      return nodeB;  // Intersection point found
+    }
+    nodeB = nodeB.next;
   }
-
-  for (let i = arr.length - 1; i >= 0; i--) {
-    sortedArray[count[arr[i]] - 1] = arr[i];
-    count[arr[i]]--;
-  }
-
-  return sortedArray;
+  
+  // If no intersection point found
+  return null;
 }
-
-// Example usage:
-const arr = [3, 1, 6, 2, 4, 9, 5];
-const sortedArr = countingSort(arr);
-console.log(sortedArr);
+const intersectionNode = findIntersection(headA, headB);
+console.log(intersectionNode);
