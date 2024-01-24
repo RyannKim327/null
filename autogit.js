@@ -1,23 +1,25 @@
-function countOccurrences(string, word) {
-  // Split the string into an array of words
-  var words = string.split(" ");
-  
-  // Initialize a count variable
-  var count = 0;
-  
-  // Iterate over each word
-  for (var i = 0; i < words.length; i++) {
-    // Check if the current word matches the target word
-    if (words[i] === word) {
-      count++;
-    }
+function longestCommonPrefix(strings) {
+  if (strings.length === 0) {
+    return "";
   }
-  
-  return count;
-}
 
-// Example usage:
-var string = "The quick brown fox jumps over the lazy dog";
-var word = "the";
-var count = countOccurrences(string, word);
-console.log(count);  // Output: 2
+  let prefix = "";
+
+  for (let i = 0; i < strings[0].length; i++) {
+    const char = strings[0][i];
+
+    for (let j = 1; j < strings.length; j++) {
+      if (strings[j][i] !== char) {
+        return prefix;
+      }
+    }
+
+    prefix += char;
+  }
+
+  return prefix;
+}
+const strings = ["flower", "flow", "flight"];
+const commonPrefix = longestCommonPrefix(strings);
+
+console.log(commonPrefix); // Output: "fl"
