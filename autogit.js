@@ -1,26 +1,49 @@
-function binarySearchRecursive(arr, target, start, end) {
-  if (start > end) {
-    return -1;
-  }
-
-  const mid = Math.floor((start + end) / 2);
-
-  if (arr[mid] === target) {
-    return mid;
-  } else if (arr[mid] > target) {
-    const left = binarySearchRecursive(arr, target, start, mid - 1);
-    return left !== -1 ? left : -1;
-  } else {
-    const right = binarySearchRecursive(arr, target, mid + 1, end);
-    return right !== -1 ? right : -1;
+class Node {
+  constructor(value, next = null) {
+    this.value = value;
+    this.next = next;
   }
 }
 
-// Example usage
-const array = [1, 3, 5, 7, 9, 11];
-const targetElement = 7;
-const startIndex = 0;
-const endIndex = array.length - 1;
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
 
-const result = binarySearchRecursive(array, targetElement, startIndex, endIndex);
-console.log(result);  // Output: 3 (index of the target element in the array)
+  add(value) {
+    const newNode = new Node(value);
+    if (this.head === null) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next !== null) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
+
+  getLength() {
+    let count = 0;
+    let current = this.head;
+    while (current !== null) {
+      count++;
+      current = current.next;
+    }
+    return count;
+  }
+}
+
+// Example usage:
+const linkedList = new LinkedList();
+
+// Add nodes to the linked list
+linkedList.add(1);
+linkedList.add(2);
+linkedList.add(3);
+linkedList.add(4);
+linkedList.add(5);
+
+// Get the length of the linked list
+const length = linkedList.getLength();
+console.log(length); // Output: 5
