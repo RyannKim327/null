@@ -1,47 +1,50 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.children = [];
-  }
+function biDirectionalSearch(graph, start, target) {
+  let forwardVisited = new Set();
+  let backwardVisited = new Set();
 
-  addChild(node) {
-    this.children.push(node);
-  }
+  let forwardQueue = [];
+  let backwardQueue = [];
 
-  breadthFirstSearch() {
-    const queue = [this]; // Start with the root node in the queue
-    const visited = [];
+  forwardQueue.push(start);
+  backwardQueue.push(target);
 
-    while (queue.length > 0) {
-      const currentNode = queue.shift(); // Dequeue the first node
+  forwardVisited.add(start);
+  backwardVisited.add(target);
 
-      // Process the current node
-      visited.push(currentNode.value);
+  while (forwardQueue.length > 0 && backwardQueue.length > 0) {
+    let forwardNode = forwardQueue.shift();
+    let backwardNode = backwardQueue.shift();
 
-      // Enqueue all children of the current node
-      for (const child of currentNode.children) {
-        queue.push(child);
+    if (backwardVisited.has(forwardNode)) {
+      return "Path found"; // or return the path between start and target
+    }
+
+    for (let neighbor of graph[forwardNode]) {
+      if (!forwardVisited.has(neighbor)) {
+        forwardQueue.push(neighbor);
+        forwardVisited.add(neighbor);
       }
     }
 
-    return visited;
+    for (let neighbor of graph[backwardNode]) {
+      if (!backwardVisited.has(neighbor)) {
+        backwardQueue.push(neighbor);
+        backwardVisited.add(neighbor);
+      }
+    }
   }
+
+  return "No path found";
 }
 
-// Usage example:
-const nodeA = new Node('A');
-const nodeB = new Node('B');
-const nodeC = new Node('C');
-const nodeD = new Node('D');
-const nodeE = new Node('E');
-const nodeF = new Node('F');
-const nodeG = new Node('G');
+// Example usage
+let graph = {
+  A: ["B", "C"],
+  B: ["D", "E"],
+  C: ["F"],
+  D: [],
+  E: [],
+  F: []
+};
 
-nodeA.addChild(nodeB);
-nodeA.addChild(nodeC);
-nodeB.addChild(nodeD);
-nodeB.addChild(nodeE);
-nodeC.addChild(nodeF);
-nodeC.addChild(nodeG);
-
-console.log(nodeA.breadthFirstSearch()); // Output: ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+console.log(biDirectionalSearch(graph, "A", "F"));
