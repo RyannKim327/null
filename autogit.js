@@ -1,94 +1,50 @@
-class BinaryTreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function kmpSearch(text, pattern) {
+  const lps = new Array(pattern.length).fill(0);
+  let i = 1;
+  let j = 0;
+
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[j]) {
+      lps[i] = j + 1;
+      i++;
+      j++;
+    } else {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        lps[i] = 0;
+        i++;
+      }
+    }
   }
 
-  insert(value) {
-    if (value <= this.value) {
-      if (this.left) {
-        this.left.insert(value);
-      } else {
-        this.left = new BinaryTreeNode(value);
+  const matches = [];
+  i = 0;
+  j = 0;
+
+  while (i < text.length) {
+    if (text[i] === pattern[j]) {
+      i++;
+      j++;
+
+      if (j === pattern.length) {
+        matches.push(i - j);
+        j = lps[j - 1];
       }
     } else {
-      if (this.right) {
-        this.right.insert(value);
+      if (j !== 0) {
+        j = lps[j - 1];
       } else {
-        this.right = new BinaryTreeNode(value);
+        i++;
       }
     }
   }
 
-  contains(value) {
-    if (value === this.value) {
-      return true;
-    } else if (value < this.value) {
-      if (this.left) {
-        return this.left.contains(value);
-      } else {
-        return false;
-      }
-    } else {
-      if (this.right) {
-        return this.right.contains(value);
-      } else {
-        return false;
-      }
-    }
-  }
-
-  // Pre-order traversal: visit node, traverse left subtree, traverse right subtree
-  traversePreOrder() {
-    console.log(this.value); // or do something else with the value
-    if (this.left) {
-      this.left.traversePreOrder();
-    }
-    if (this.right) {
-      this.right.traversePreOrder();
-    }
-  }
-
-  // In-order traversal: traverse left subtree, visit node, traverse right subtree
-  traverseInOrder() {
-    if (this.left) {
-      this.left.traverseInOrder();
-    }
-    console.log(this.value); // or do something else with the value
-    if (this.right) {
-      this.right.traverseInOrder();
-    }
-  }
-
-  // Post-order traversal: traverse left subtree, traverse right subtree, visit node
-  traversePostOrder() {
-    if (this.left) {
-      this.left.traversePostOrder();
-    }
-    if (this.right) {
-      this.right.traversePostOrder();
-    }
-    console.log(this.value); // or do something else with the value
-  }
+  return matches;
 }
-const tree = new BinaryTreeNode(5);
 
-tree.insert(3);
-tree.insert(8);
-tree.insert(2);
-tree.insert(4);
-tree.insert(7);
-tree.insert(9);
-
-console.log(tree.contains(4)); // Output: true
-console.log(tree.contains(6)); // Output: false
-
-console.log('Pre-order traversal:');
-tree.traversePreOrder();
-
-console.log('In-order traversal:');
-tree.traverseInOrder();
-
-console.log('Post-order traversal:');
-tree.traversePostOrder();
+// Example usage:
+const text = 'ABABDABACDABABCABAB';
+const pattern = 'ABABCABAB';
+const result = kmpSearch(text, pattern);
+console.log(result); // Output: [10]
