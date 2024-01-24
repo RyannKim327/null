@@ -1,16 +1,17 @@
-function LinkedListNode(value) {
-  this.value = value;
-  this.next = null;
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  str = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+  // Reverse the string
+  const reversedStr = str.split('').reverse().join('');
+
+  // Compare the original and reversed strings
+  return str === reversedStr;
 }
 
-function getLinkedListLength(head) {
-  let count = 0;
-  let currentNode = head;
+// Example usage
+const str1 = "racecar";
+console.log(isPalindrome(str1)); // Output: true
 
-  while (currentNode !== null) {
-    count++;
-    currentNode = currentNode.next;
-  }
-
-  return count;
-}
+const str2 = "hello";
+console.log(isPalindrome(str2)); // Output: false
