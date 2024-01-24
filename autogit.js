@@ -1,17 +1,20 @@
-const str = "Hello, World!";
-const reversedStr = str.split("").reverse().join("");
-console.log(reversedStr); // Output: "!dlroW ,olleH"
-function reverseString(str) {
-  let reversedStr = "";
-  for (let i = str.length - 1; i >= 0; i--) {
-    reversedStr += str[i];
+function isPalindrome(str) {
+  let start = 0;
+  let end = str.length - 1;
+
+  while (start < end) {
+    if (str[start] !== str[end]) {
+      return false;
+    }
+
+    start++;
+    end--;
   }
-  return reversedStr;
+
+  return true;
 }
 
-const str = "Hello, World!";
-const reversedStr = reverseString(str);
-console.log(reversedStr); // Output: "!dlroW ,olleH"
-const str = "Hello, World!";
-const reversedStr = [...str].reduce((acc, char) => char + acc, "");
-console.log(reversedStr); // Output: "!dlroW ,olleH"
+// Example usage:
+console.log(isPalindrome("racecar")); // true
+console.log(isPalindrome("hello")); // false
+console.log(isPalindrome("level")); // true
