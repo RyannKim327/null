@@ -1,18 +1,30 @@
-function isAnagram(str1, str2) {
-  // remove whitespace and convert to lowercase
-  str1 = str1.replace(/\s/g, '').toLowerCase();
-  str2 = str2.replace(/\s/g, '').toLowerCase();
+function binarySearch(arr, target) {
+  let left = 0;
+  let right = arr.length - 1;
 
-  // convert strings to arrays and sort them
-  const sortedStr1 = str1.split('').sort().join('');
-  const sortedStr2 = str2.split('').sort().join('');
+  while (left <= right) {
+    let mid = Math.floor((left + right) / 2);
 
-  // compare the sorted arrays
-  return sortedStr1 === sortedStr2;
+    if (arr[mid] === target) {
+      return mid;
+    } else if (arr[mid] < target) {
+      left = mid + 1;
+    } else {
+      right = mid - 1;
+    }
+  }
+
+  return -1; // Element not found
 }
 
-// example usage
-const string1 = 'listen';
-const string2 = 'silent';
+// Usage example:
+const array = [1, 3, 5, 7, 9];
+const target = 5;
 
-console.log(isAnagram(string1, string2)); // Output: true
+const index = binarySearch(array, target);
+
+if (index !== -1) {
+  console.log(`Element found at index ${index}`);
+} else {
+  console.log("Element not found");
+}
