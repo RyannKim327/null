@@ -1,14 +1,28 @@
-function factorialRecursive(num) {
-  // Base case: if the number is 0 or 1, return 1
-  if (num === 0 || num === 1) {
-    return 1;
+function quickSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
   }
-  
-  // Recursive case: multiply the number by the factorial of (num-1)
-  return num * factorialRecursive(num - 1);
-}
-const num = 5;
-const factorial = factorialRecursive(num);
 
-console.log(`Factorial of ${num} is: ${factorial}`);
-Factorial of 5 is: 120
+  const pivot = arr[Math.floor(arr.length / 2)];
+  const less = [];
+  const equal = [];
+  const greater = [];
+
+  for (const element of arr) {
+    if (element < pivot) {
+      less.push(element);
+    } else if (element === pivot) {
+      equal.push(element);
+    } else {
+      greater.push(element);
+    }
+  }
+
+  return quickSort(less).concat(equal, quickSort(greater));
+}
+
+// Example usage:
+const unsortedArray = [5, 2, 6, 1, 3, 9, 4];
+const sortedArray = quickSort(unsortedArray);
+
+console.log(sortedArray);  // output: [1, 2, 3, 4, 5, 6, 9]
