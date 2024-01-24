@@ -1,36 +1,23 @@
-class Node {
-  constructor() {
-    this.children = {};
-    // additional properties if needed
+function compareNumbers(a, b) {
+  return a - b;
+}
+
+combinedArray.sort(compareNumbers);
+function findMedianSortedArrays(arr1, arr2) {
+  let combinedArray = arr1.concat(arr2);
+  combinedArray.sort((a, b) => a - b);
+
+  const length = combinedArray.length;
+  const middleIndex = Math.floor(length / 2);
+
+  if (length % 2 === 0) {
+    return (combinedArray[middleIndex] + combinedArray[middleIndex - 1]) / 2;
+  } else {
+    return combinedArray[middleIndex];
   }
 }
-class SuffixTree {
-  constructor() {
-    this.root = new Node();
-    // additional properties if needed
-  }
 
-  // additional methods if needed
-}
-SuffixTree.prototype.addSuffix = function(suffix, index) {
-  let node = this.root;
-  for (let i = 0; i < suffix.length; i++) {
-    const char = suffix[i];
-    if (!node.children[char]) {
-      node.children[char] = new Node();
-    }
-    node = node.children[char];
-  }
-  
-  // Store additional information if needed (e.g., suffix index)
-};
-
-SuffixTree.prototype.build = function(str) {
-  for (let i = 0; i < str.length; i++) {
-    this.addSuffix(str.slice(i), i);
-  }
-};
-const suffixTree = new SuffixTree();
-const inputString = "banana";
-suffixTree.build(inputString);
-console.log(suffixTree); // Print the constructed tree for testing
+// Example usage:
+const nums1 = [1, 3];
+const nums2 = [2, 4];
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.5
