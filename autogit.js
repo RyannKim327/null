@@ -1,23 +1,35 @@
-function longestCommonPrefix(strings) {
-  if (strings.length === 0) return '';
-  if (strings.length === 1) return strings[0];
-  
-  let prefix = '';
-
-  for (let i = 0; i < strings[0].length; i++) {
-    const char = strings[0][i];
-
-    for (let j = 1; j < strings.length; j++) {
-      if (strings[j][i] !== char) {
-        return prefix;
-      }
-    }
-
-    prefix += char;
-  }
-
-  return prefix;
+function findNthNodeFromEnd(head, n) {
+    // implementation here
 }
-const strings = ['flower', 'flow', 'flight'];
-const commonPrefix = longestCommonPrefix(strings);
-console.log(commonPrefix);  // Output: 'fl'
+let p1 = head;
+let p2 = head;
+for (let i = 0; i < n; i++) {
+    if (p2 === null) {
+        // Handle the scenario if 'n' is greater than the length of the linked list.
+        return null;
+    }
+    p2 = p2.next;
+}
+while (p2 !== null) {
+    p1 = p1.next;
+    p2 = p2.next;
+}
+return p1;
+function findNthNodeFromEnd(head, n) {
+    let p1 = head;
+    let p2 = head;
+    
+    for (let i = 0; i < n; i++) {
+        if (p2 === null) {
+            return null;
+        }
+        p2 = p2.next;
+    }
+    
+    while (p2 !== null) {
+        p1 = p1.next;
+        p2 = p2.next;
+    }
+    
+    return p1;
+}
