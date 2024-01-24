@@ -1,31 +1,74 @@
-function binarySearchRecursive(arr, target, start = 0, end = arr.length - 1) {
-  // Base case: if the start index becomes greater than the end index, the element was not found
-  if (start > end) {
-    return -1;
+function biDirectionalSearch(graph, start, goal) {
+  // Initialization
+  let forwardQueue = [start];
+  let backwardQueue = [goal];
+  let forwardVisited = new Set();
+  let backwardVisited = new Set();
+  let parents = {};
+
+  // Main search algorithm
+  while (forwardQueue.length > 0 && backwardQueue.length > 0) {
+    // Perform one step of the forward search
+    let forwardNode = forwardQueue.shift();
+    forwardVisited.add(forwardNode);
+    
+    if (backwardVisited.has(forwardNode)) {
+      // path found
+      return reconstructPath(forwardNode, parents, start, goal);
+    }
+
+    // Expand neighbors of the forward node
+    for (let neighbor of graph[forwardNode]) {
+      if (!forwardVisited.has(neighbor)) {
+        forwardQueue.push(neighbor);
+        forwardVisited.add(neighbor);
+        parents[neighbor] = forwardNode;
+      }
+    }
+
+    // Perform one step of the backward search
+    let backwardNode = backwardQueue.shift();
+    backwardVisited.add(backwardNode);
+    
+    if (forwardVisited.has(backwardNode)) {
+      // path found
+      return reconstructPath(backwardNode, parents, start, goal);
+    }
+
+    // Expand neighbors of the backward node
+    for (let neighbor of graph[backwardNode]) {
+      if (!backwardVisited.has(neighbor)) {
+        backwardQueue.push(neighbor);
+        backwardVisited.add(neighbor);
+        parents[neighbor] = backwardNode;
+      }
+    }
   }
 
-  // Find the middle index
-  const mid = Math.floor((start + end) / 2);
-
-  // If the element at the middle index equals the target, return the index
-  if (arr[mid] === target) {
-    return mid;
-  }
-
-  // If the element at the middle index is greater than the target,
-  // recursively search the left half of the array
-  if (arr[mid] > target) {
-    return binarySearchRecursive(arr, target, start, mid - 1);
-  }
-
-  // If the element at the middle index is less than the target,
-  // recursively search the right half of the array
-  if (arr[mid] < target) {
-    return binarySearchRecursive(arr, target, mid + 1, end);
-  }
+  // No path found
+  return null;
 }
-const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const target = 12;
-const index = binarySearchRecursive(arr, target);
 
-console.log(index); // Output: 5
+function reconstructPath(commonNode, parents, start, goal) {
+  let path = [];
+  let current = commonNode;
+
+  // Reconstruct path from start to common node
+  while (current !== start) {
+    path.unshift(current);
+    current = parents[current];
+  }
+  
+  current = parents[commonNode];
+  
+  // Reconstruct path from goal to common node
+  while (current !== goal) {
+    path.push(current);
+    current = parents[current];
+  }
+  
+  // Add the common node
+  path.push(commonNode);
+  
+  return path;
+}
