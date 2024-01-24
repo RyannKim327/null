@@ -1,92 +1,36 @@
-class TreeNode {
+// Binary tree node
+class Node {
   constructor(value) {
     this.value = value;
     this.left = null;
     this.right = null;
   }
 }
-class BinarySearchTree {
-  constructor() {
-    this.root = null;
+
+// Function to count leaf nodes in a binary tree
+function countLeafNodes(root) {
+  if (root === null) {
+    return 0; // If the root is null, there are no leaf nodes
   }
-
-  insert(value) {
-    const newNode = new TreeNode(value);
-
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
+  
+  if (root.left === null && root.right === null) {
+    return 1; // If it is a leaf node, return 1
   }
-
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
-
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
-    }
-
-    if (value === node.value) {
-      return true;
-    }
-
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    }
-
-    return this.searchNode(node.right, value);
-  }
-
-  inorderTraversal() {
-    this.inorderTraversalNode(this.root);
-  }
-
-  inorderTraversalNode(node) {
-    if (node !== null) {
-      this.inorderTraversalNode(node.left);
-      console.log(node.value);
-      this.inorderTraversalNode(node.right);
-    }
-  }
+  
+  // Recursively count leaf nodes in the left and right subtrees
+  return countLeafNodes(root.left) + countLeafNodes(root.right);
 }
-const bst = new BinarySearchTree();
 
-bst.insert(4);
-bst.insert(2);
-bst.insert(6);
-bst.insert(1);
-bst.insert(3);
-bst.insert(5);
-bst.insert(7);
+// Example usage
+// Create a binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
 
-console.log(bst.search(5)); // Output: true
-console.log(bst.search(8)); // Output: false
-
-bst.inorderTraversal();
-// Output:
-// 1
-// 2
-// 3
-// 4
-// 5
-// 6
-// 7
+// Call the function to count leaf nodes
+const leafCount = countLeafNodes(root);
+console.log("Number of leaf nodes:", leafCount);
