@@ -1,17 +1,29 @@
-function isAnagram(str1, str2) {
-  // Convert both strings to lowercase and remove non-alphabetic characters
-  str1 = str1.toLowerCase().replace(/[^a-z]/g, '');
-  str2 = str2.toLowerCase().replace(/[^a-z]/g, '');
+function reverseLinkedList(head) {
+  let previous = null;
+  let current = head;
+  let next = null;
 
-  // Sort the characters of both strings
-  const sortedStr1 = str1.split('').sort().join('');
-  const sortedStr2 = str2.split('').sort().join('');
+  while (current !== null) {
+    next = current.next;
+    current.next = previous;
+    previous = current;
+    current = next;
+  }
 
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+  return previous;
 }
+// Define a sample linked list
+const node1 = { value: 1, next: null };
+const node2 = { value: 2, next: null };
+const node3 = { value: 3, next: null };
 
-// Example usage
-const string1 = 'listen';
-const string2 = 'silent';
-console.log(isAnagram(string1, string2));  // Output: true
+node1.next = node2;
+node2.next = node3;
+
+console.log("Original Linked List:");
+console.log(node1); // 1->2->3
+
+const reversedHead = reverseLinkedList(node1);
+
+console.log("Reversed Linked List:");
+console.log(reversedHead); // 3->2->1
