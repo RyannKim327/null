@@ -1,37 +1,54 @@
-class Node {
-  constructor(value, children = []) {
-    this.value = value;
-    this.children = children;
+function generateFibonacci(n) {
+  const fibSequence = [0, 1]; // Initialize the Fibonacci sequence with first two numbers
+  for (let i = 2; i <= n; i++) {
+    fibSequence[i] = fibSequence[i - 1] + fibSequence[i - 2]; // Add previous two numbers to generate next one
   }
+  return fibSequence;
 }
+function fibonacciSearch(arr, target) {
+  const length = arr.length;
+  let fibPrev = 0;
+  let fibCurr = 1;
+  let fibM = fibPrev + fibCurr; // Initialize the smallest Fibonacci number greater than the array length
 
-function depthLimitedSearchIterative(root, target, maxDepth) {
-  let stack = [{ node: root, depth: 0 }];
-  
-  while (stack.length > 0) {
-    const { node, depth } = stack.pop();
+  while (fibM < length) {
+    fibPrev = fibCurr;
+    fibCurr = fibM;
+    fibM = fibPrev + fibCurr;
+  }
+
+  let offset = -1; // Keeps track of the eliminated range from the front
+  while (fibM > 1) {
+    // Check if fibPrev is a valid index
+    const index = Math.min(offset + fibPrev, length - 1);
     
-    if (node.value === target) {
-      return node;
-    }
-    
-    if (depth < maxDepth) {
-      for (let i = node.children.length - 1; i >= 0; i--) {
-        stack.push({ node: node.children[i], depth: depth + 1 });
-      }
+    if (arr[index] < target) {
+      // If the target is larger, move the Fibonacci sequence 2 steps down
+      fibM = fibCurr;
+      fibCurr = fibPrev;
+      fibPrev = fibM - fibCurr;
+      offset = index;
+    } else if (arr[index] > target) {
+      // If the target is smaller, move the Fibonacci sequence 1 step down
+      fibM = fibPrev;
+      fibCurr = fibCurr - fibPrev;
+      fibPrev = fibM - fibCurr;
+    } else {
+      // Target found
+      return index;
     }
   }
-  
-  return null;
+
+  // Checking the last element
+  if (fibCurr === 1 && arr[offset + 1] === target) {
+    return offset + 1;
+  }
+
+  // Target not found
+  return -1;
 }
-// Example usage
-const nodeA = new Node('A');
-const nodeB = new Node('B');
-const nodeC = new Node('C');
-const nodeD = new Node('D');
+const arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
+const target = 16;
 
-nodeA.children = [nodeB, nodeC];
-nodeC.children = [nodeD];
-
-const result = depthLimitedSearchIterative(nodeA, 'D', 2);
-console.log(result); // Node { value: 'D', children: [] }
+const result = fibonacciSearch(arr, target);
+console.log(result); // Output: 4
