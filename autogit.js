@@ -1,9 +1,23 @@
-let array = [1, 2, 3, 4, 5];
-array.reverse();
+function factorialRecursive(num) {
+  if (num === 0 || num === 1) {
+    return 1;
+  }
+  return num * factorialRecursive(num - 1);
+}
 
-console.log(array); // Output: [5, 4, 3, 2, 1]
-let array = [1, 2, 3, 4, 5];
-let reversedArray = [...array].reverse();
+// Usage example:
+const number = 5;
+const factorial = factorialRecursive(number);
+console.log(`The factorial of ${number} is: ${factorial}`);
+function factorialLoop(num) {
+  let factorial = 1;
+  for (let i = 2; i <= num; i++) {
+    factorial *= i;
+  }
+  return factorial;
+}
 
-console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
-console.log(array); // Output: [1, 2, 3, 4, 5] (original array remains unchanged)
+// Usage example:
+const number = 5;
+const factorial = factorialLoop(number);
+console.log(`The factorial of ${number} is: ${factorial}`);
