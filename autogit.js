@@ -1,24 +1,34 @@
-function selectionSort(arr) {
-  // Loop through each element of the array
-  for (let i = 0; i < arr.length - 1; i++) {
-    let minIndex = i;
+function buildMaxHeap(array, length, rootIndex) {
+  let largest = rootIndex;
+  const leftChild = 2 * rootIndex + 1;
+  const rightChild = 2 * rootIndex + 2;
 
-    // Find the index of the minimum value in the unsorted part of the array
-    for (let j = i + 1; j < arr.length; j++) {
-      if (arr[j] < arr[minIndex]) {
-        minIndex = j;
-      }
-    }
+  if (leftChild < length && array[leftChild] > array[largest])
+    largest = leftChild;
 
-    // Swap the minimum value with the first unsorted element
-    if (minIndex !== i) {
-      [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
-    }
+  if (rightChild < length && array[rightChild] > array[largest])
+    largest = rightChild;
+
+  if (largest !== rootIndex) {
+    [array[rootIndex], array[largest]] = [array[largest], array[rootIndex]];
+    buildMaxHeap(array, length, largest);
+  }
+}
+function heapSort(array) {
+  const length = array.length;
+
+  // Build max heap
+  for (let i = Math.floor(length / 2) - 1; i >= 0; i--)
+    buildMaxHeap(array, length, i);
+
+  // Heap sort
+  for (let i = length - 1; i > 0; i--) {
+    [array[0], array[i]] = [array[i], array[0]];
+    buildMaxHeap(array, i, 0);
   }
 
-  return arr;
+  return array;
 }
-
-// Test the implementation
-const array = [64, 25, 12, 22, 11];
-console.log(selectionSort(array)); // [11, 12, 22, 25, 64]
+const array = [8, 5, 2, 9, 5, 6, 3];
+const sortedArray = heapSort(array);
+console.log(sortedArray); // Output: [2, 3, 5, 5, 6, 8, 9]
