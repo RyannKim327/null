@@ -1,41 +1,22 @@
-function mergeSortIterative(arr) {
-  const size = arr.length;
-  let temp = arr.map(value => [value]);
-  let mergeSize = 1;
+function interpolationSearch(arr, target, n) {
+  let low = 0;
+  let high = n - 1;
 
-  while (mergeSize < size) {
-    let i = 0;
-    while (i < size - mergeSize) {
-      const left = temp[i];
-      const right = temp[i + mergeSize];
-      const end = temp[i + 2 * mergeSize] || [];
+  while (low <= high && target >= arr[low] && target <= arr[high]) {
+    const pos = Math.floor(
+      low + ((target - arr[low]) / (arr[high] - arr[low])) * (high - low)
+    );
 
-      temp[i] = merge(left, right, end);
-      i += 2 * mergeSize;
+    if (arr[pos] === target) {
+      return pos;
     }
-    mergeSize *= 2;
-  }
 
-  return temp[0];
-}
-
-function merge(left, right, end) {
-  let i = 0;
-  let j = 0;
-  const merged = [];
-
-  while (i < left.length && j < right.length) {
-    if (left[i] < right[j]) {
-      merged.push(left[i]);
-      i++;
+    if (arr[pos] < target) {
+      low = pos + 1;
     } else {
-      merged.push(right[j]);
-      j++;
+      high = pos - 1;
     }
   }
 
-  return merged.concat(left.slice(i)).concat(right.slice(j)).concat(end);
+  return -1;
 }
-const arr = [8, 4, 2, 9, 1, 5, 7, 3, 6];
-const sortedArray = mergeSortIterative(arr);
-console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
