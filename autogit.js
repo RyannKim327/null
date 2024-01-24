@@ -1,10 +1,34 @@
-const cron = require('node-cron');
+function topologicalSort(adjacencyList) {
+  const visited = new Set();
+  const stack = [];
 
-// Define the task to be executed
-const task = () => {
-  console.log('Task is running...');
-  // Write your task logic here
+  function dfs(node) {
+    visited.add(node);
+
+    for (const neighbor of adjacencyList[node]) {
+      if (!visited.has(neighbor)) {
+        dfs(neighbor);
+      }
+    }
+
+    stack.unshift(node);
+  }
+
+  for (const node in adjacencyList) {
+    if (!visited.has(node)) {
+      dfs(node);
+    }
+  }
+
+  return stack;
+}
+const graph = {
+  1: [2],
+  2: [3, 4],
+  3: [],
+  4: [5],
+  5: []
 };
+const sortedNodes = topologicalSort(graph);
 
-// Schedule the task to run every 5 minutes (*/5 * * * *)
-cron.schedule('*/5 * * * *', task);
+console.log(sortedNodes); // [1, 2, 4, 5, 3]
