@@ -1,24 +1,34 @@
-function findFirstRepeatedChar(str) {
-  // Create an empty Set to store unique characters
-  let uniqueChars = new Set();
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
+let head = new Node(1);
+let second = new Node(2);
+let third = new Node(3);
 
-  // Loop through each character in the string
-  for (let char of str) {
-    // Check if the character is already in the set
-    if (uniqueChars.has(char)) {
-      // Found the first repeated character
-      return char;
-    }
+head.next = second;
+second.next = third;
+function reverseLinkedList(head) {
+  let previousNode = null;
+  let currentNode = head;
+  let nextNode = null;
 
-    // Add the character to the set
-    uniqueChars.add(char);
+  while (currentNode !== null) {
+    nextNode = currentNode.next;
+    currentNode.next = previousNode;
+    previousNode = currentNode;
+    currentNode = nextNode;
   }
 
-  // If no repeated character found, return null
-  return null;
+  return previousNode;
 }
 
-// Usage example
-let str = "Hello World!";
-let firstRepeatedChar = findFirstRepeatedChar(str);
-console.log(firstRepeatedChar); // Output: l
+// Call the function to reverse the linked list
+let reversedHead = reverseLinkedList(head);
+let current = reversedHead;
+while (current !== null) {
+  console.log(current.value);
+  current = current.next;
+}
