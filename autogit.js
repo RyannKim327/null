@@ -1,14 +1,23 @@
-function isPalindrome(str) {
-  // Convert the string to lowercase and remove non-alphanumeric characters
-  str = str.toLowerCase().replace(/[\W_]/g, '');
+function longestCommonPrefix(strings) {
+  if (strings.length === 0) return '';
+  if (strings.length === 1) return strings[0];
+  
+  let prefix = '';
 
-  // Reverse the string
-  var reversed = str.split('').reverse().join('');
+  for (let i = 0; i < strings[0].length; i++) {
+    const char = strings[0][i];
 
-  // Compare the reversed string with the original string
-  return str === reversed;
+    for (let j = 1; j < strings.length; j++) {
+      if (strings[j][i] !== char) {
+        return prefix;
+      }
+    }
+
+    prefix += char;
+  }
+
+  return prefix;
 }
-
-// Example usage
-console.log(isPalindrome('racecar')); // Output: true
-console.log(isPalindrome('hello')); // Output: false
+const strings = ['flower', 'flow', 'flight'];
+const commonPrefix = longestCommonPrefix(strings);
+console.log(commonPrefix);  // Output: 'fl'
