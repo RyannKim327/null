@@ -1,39 +1,113 @@
-function Node(value, children) {
-  this.value = value;
-  this.children = children;
+class AVLNode {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+    this.height = 1;
+  }
 }
-
-function depthLimitedSearch(root, targetValue, depthLimit) {
-  let stack = [];
-  stack.push({ node: root, depth: 0 });
-
-  while (stack.length > 0) {
-    const { node, depth } = stack.pop();
-
-    if (node.value === targetValue) {
-      return node; // return the node if its value matches the target value
-    }
-
-    if (depth < depthLimit) {
-      // Add the node's children to the stack if depth limit is not reached
-      const children = node.children;
-      for (let i = children.length - 1; i >= 0; i--) {
-        stack.push({ node: children[i], depth: depth + 1 });
-      }
-    }
+class AVLTree {
+  constructor() {
+    this.root = null;
   }
 
-  return null; // return null if the target value is not found within the depth limit
+  // Get the height of a node
+  height(node) {
+    if (node === null) return 0;
+    return node.height;
+  }
+
+  // Get the balance factor of a node
+  balanceFactor(node) {
+    if (node === null) return 0;
+    return this.height(node.left) - this.height(node.right);
+  }
+
+  // Update the height of a node
+  updateHeight(node) {
+    if (node === null) return;
+    node.height = Math.max(this.height(node.left), this.height(node.right)) + 1;
+  }
+
+  // Rotate a subtree to the left
+  rotateLeft(node) {
+    const rightChild = node.right;
+    node.right = rightChild.left;
+    rightChild.left = node;
+    this.updateHeight(node);
+    this.updateHeight(rightChild);
+    return rightChild; // Return the new root
+  }
+
+  // Rotate a subtree to the right
+  rotateRight(node) {
+    const leftChild = node.left;
+    node.left = leftChild.right;
+    leftChild.right = node;
+    this.updateHeight(node);
+    this.updateHeight(leftChild);
+    return leftChild; // Return the new root
+  }
+
+  // Balance a node and its children
+  balance(node) {
+    this.updateHeight(node);
+
+    if (this.balanceFactor(node) > 1) {
+      if (this.balanceFactor(node.left) < 0) {
+        node.left = this.rotateLeft(node.left);
+      }
+      return this.rotateRight(node);
+    }
+
+    if (this.balanceFactor(node) < -1) {
+      if (this.balanceFactor(node.right) > 0) {
+        node.right = this.rotateRight(node.right);
+      }
+      return this.rotateLeft(node);
+    }
+
+    return node;
+  }
+
+  // Insert a value into the tree
+  insert(value) {
+    this.root = this.insertNode(this.root, value);
+  }
+
+  insertNode(node, value) {
+    if (node === null) {
+      return new AVLNode(value);
+    }
+
+    if (value < node.value) {
+      node.left = this.insertNode(node.left, value);
+    } else {
+      node.right = this.insertNode(node.right, value);
+    }
+
+    return this.balance(node);
+  }
+
+  // Traverse the tree in-order
+  inOrderTraversal(callback) {
+    this.inOrderTraversalNode(this.root, callback);
+  }
+
+  inOrderTraversalNode(node, callback) {
+    if (node === null) return;
+    this.inOrderTraversalNode(node.left, callback);
+    callback(node.value);
+    this.inOrderTraversalNode(node.right, callback);
+  }
 }
+const avlTree = new AVLTree();
 
-// Example usage
-const node1 = new Node(1, []);
-const node4 = new Node(4, []);
-const node6 = new Node(6, []);
-const node3 = new Node(3, [node6]);
-const node5 = new Node(5, []);
-const node2 = new Node(2, [node4, node5]);
-const root = new Node(0, [node1, node2, node3]);
+avlTree.insert(10);
+avlTree.insert(5);
+avlTree.insert(15);
+avlTree.insert(20);
+avlTree.insert(9);
+avlTree.insert(7);
 
-const targetNode = depthLimitedSearch(root, 6, 3);
-console.log(targetNode); // Output: Node { value: 6, children: [] }
+avlTree.inOrderTraversal((value) => console.log(value));
