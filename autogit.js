@@ -1,16 +1,21 @@
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = array.filter((value, index, self) => {
-  return self.indexOf(value) === index;
-});
-console.log(uniqueArray);
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = [...new Set(array)];
-console.log(uniqueArray);
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = [];
-for (let i = 0; i < array.length; i++) {
-  if (!uniqueArray.includes(array[i])) {
-    uniqueArray.push(array[i]);
+function isPalindrome(str) {
+  var cleanedStr = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+  var start = 0;
+  var end = cleanedStr.length - 1;
+
+  while (start < end) {
+    if (cleanedStr[start] !== cleanedStr[end]) {
+      return false;
+    }
+    start++;
+    end--;
   }
+  return true;
 }
-console.log(uniqueArray);
+
+// Example usage
+var str1 = "racecar";
+console.log(isPalindrome(str1)); // Output: true
+
+var str2 = "Hello World";
+console.log(isPalindrome(str2)); // Output: false
