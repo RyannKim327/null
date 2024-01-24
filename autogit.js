@@ -1,28 +1,21 @@
-function quicksort(arr) {
-  if (arr.length <= 1) {
-    return arr;
-  }
-
-  const pivot = arr[Math.floor(arr.length / 2)];
-  const left = [];
-  const right = [];
+function findMaxSubarray(arr) {
+  let maxSoFar = 0;
+  let maxEndingHere = 0;
 
   for (let i = 0; i < arr.length; i++) {
-    if (i === Math.floor(arr.length / 2)) {
-      continue;
+    maxEndingHere = maxEndingHere + arr[i];
+
+    if (maxEndingHere < 0) {
+      maxEndingHere = 0;
     }
 
-    if (arr[i] < pivot) {
-      left.push(arr[i]);
-    } else {
-      right.push(arr[i]);
+    if (maxSoFar < maxEndingHere) {
+      maxSoFar = maxEndingHere;
     }
   }
 
-  return [...quicksort(left), pivot, ...quicksort(right)];
+  return maxSoFar;
 }
-
-// Example usage:
-const unsortedArray = [7, 2, 1, 6, 8, 5, 3, 4];
-const sortedArray = quicksort(unsortedArray);
-console.log(sortedArray);
+const arr = [1, -3, 2, 1, -1];
+const maxSum = findMaxSubarray(arr);
+console.log(maxSum); // Output: 3
