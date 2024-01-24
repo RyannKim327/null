@@ -1,72 +1,86 @@
-let fibMinus2 = 0;
-let fibMinus1 = 1;
-let fib = fibMinus1 + fibMinus2;
+function bidirectionalSearch(graph, start, target) {
+  // Step 2: Initialization
+  const forwardQueue = [start];
+  const backwardQueue = [target];
+  const forwardVisited = new Set([start]);
+  const backwardVisited = new Set([target]);
+  const forwardParents = {};
+  const backwardParents = {};
+  let commonNode = null;
 
-while (fib < arr.length) {
-  fibMinus2 = fibMinus1;
-  fibMinus1 = fib;
-  fib = fibMinus1 + fibMinus2;
-}
-let offset = -1;
-while (fib > 1) {
-  const i = Math.min(offset + fibMinus2, arr.length - 1);
+  // Step 6: Bidirectional search
+  while (forwardQueue.length && backwardQueue.length) {
+    // Forward search
+    const currentNode = forwardQueue.shift();
+    const neighbors = graph[currentNode];
 
-  if (arr[i] < target) {
-    fib = fibMinus1;
-    fibMinus1 = fibMinus2;
-    fibMinus2 = fib - fibMinus1;
-    offset = i;
-  } else if (arr[i] > target) {
-    fib = fibMinus2;
-    fibMinus1 = fibMinus1 - fibMinus2;
-    fibMinus2 = fib - fibMinus1;
-  } else {
-    return i; // Return the index if the element is found
-  }
-}
-if (fibMinus1 && arr[offset + 1] === target) {
-  return offset + 1; // Return the index if the element is found
-}
-return -1;
-function fibonacciSearch(arr, target) {
-  let fibMinus2 = 0;
-  let fibMinus1 = 1;
-  let fib = fibMinus1 + fibMinus2;
+    for (let neighbor of neighbors) {
+      if (!forwardVisited.has(neighbor)) {
+        forwardQueue.push(neighbor);
+        forwardVisited.add(neighbor);
+        forwardParents[neighbor] = currentNode;
 
-  while (fib < arr.length) {
-    fibMinus2 = fibMinus1;
-    fibMinus1 = fib;
-    fib = fibMinus1 + fibMinus2;
-  }
-
-  let offset = -1;
-
-  while (fib > 1) {
-    const i = Math.min(offset + fibMinus2, arr.length - 1);
-
-    if (arr[i] < target) {
-      fib = fibMinus1;
-      fibMinus1 = fibMinus2;
-      fibMinus2 = fib - fibMinus1;
-      offset = i;
-    } else if (arr[i] > target) {
-      fib = fibMinus2;
-      fibMinus1 = fibMinus1 - fibMinus2;
-      fibMinus2 = fib - fibMinus1;
-    } else {
-      return i; // Return the index if the element is found
+        if (backwardVisited.has(neighbor)) {
+          commonNode = neighbor;
+          break;
+        }
+      }
     }
+
+    if (commonNode) break;
+
+    // Backward search
+    const reverseNode = backwardQueue.shift();
+    const reverseNeighbors = graph[reverseNode];
+
+    for (let neighbor of reverseNeighbors) {
+      if (!backwardVisited.has(neighbor)) {
+        backwardQueue.push(neighbor);
+        backwardVisited.add(neighbor);
+        backwardParents[neighbor] = reverseNode;
+
+        if (forwardVisited.has(neighbor)) {
+          commonNode = neighbor;
+          break;
+        }
+      }
+    }
+
+    if (commonNode) break;
   }
 
-  if (fibMinus1 && arr[offset + 1] === target) {
-    return offset + 1; // Return the index if the element is found
+  // Step 7: Reconstruct path
+  if (!commonNode) {
+    return "Path not found";
   }
 
-  return -1; // Element not found
+  const path = [];
+  let node = commonNode;
+
+  while (node !== start) {
+    path.unshift(node);
+    node = forwardParents[node];
+  }
+
+  node = commonNode;
+
+  while (node !== target) {
+    node = backwardParents[node];
+    path.push(node);
+  }
+
+  return [start, ...path, target];
 }
-const arr = [1, 2, 3, 5, 8, 13, 21, 34, 55];
-const target = 13;
 
-const result = fibonacciSearch(arr, target);
+// Example usage
+const graph = {
+  A: ["B", "C"],
+  B: ["A", "D", "E"],
+  C: ["A", "F"],
+  D: ["B"],
+  E: ["B", "F"],
+  F: ["C", "E", "G"],
+  G: ["F"],
+};
 
-console.log(result); // Output: 5
+console.log(bidirectionalSearch(graph, "A", "G")); // ["A", "C", "F", "G"]
