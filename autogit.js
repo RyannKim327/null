@@ -1,28 +1,41 @@
-function quicksort(arr) {
-  if (arr.length <= 1) {
-    return arr;
-  }
-
-  const pivot = arr[Math.floor(arr.length / 2)];
-
-  const less = [];
-  const equal = [];
-  const greater = [];
-
-  for (let num of arr) {
-    if (num < pivot) {
-      less.push(num);
-    } else if (num > pivot) {
-      greater.push(num);
-    } else {
-      equal.push(num);
+function findLongestIncreasingSubsequence(arr) {
+  const n = arr.length;
+  
+  // Create an array to store the lengths of the longest increasing subsequences
+  const lisLengths = new Array(n).fill(1);
+  
+  // Find the length of the longest increasing subsequence
+  for (let i = 1; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      if (arr[i] > arr[j] && lisLengths[i] < lisLengths[j] + 1) {
+        lisLengths[i] = lisLengths[j] + 1;
+      }
     }
   }
-
-  return [...quicksort(less), ...equal, ...quicksort(greater)];
+  
+  // Find the maximum length of the LIS
+  let maxLength = 0;
+  for (let i = 0; i < n; i++) {
+    if (lisLengths[i] > maxLength) {
+      maxLength = lisLengths[i];
+    }
+  }
+  
+  // Find the longest increasing subsequence
+  const lis = [];
+  let lastIndex = -1;
+  for (let i = n - 1; i >= 0; i--) {
+    if (lisLengths[i] === maxLength && (lastIndex === -1 || arr[i] < arr[lastIndex])) {
+      lis.unshift(arr[i]);
+      maxLength--;
+      lastIndex = i;
+    }
+  }
+  
+  return lis;
 }
-const unsortedArray = [9, -3, 5, 2, 6, 8, -6, 1, 3];
 
-const sortedArray = quicksort(unsortedArray);
-
-console.log(sortedArray); // Output: [-6, -3, 1, 2, 3, 5, 6, 8, 9]
+// Test the function
+const arr = [3, 4, -1, 0, 6, 2, 3];
+const lis = findLongestIncreasingSubsequence(arr);
+console.log(lis); // Output: [-1, 0, 2, 3]
