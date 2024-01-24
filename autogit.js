@@ -1,21 +1,29 @@
-function areAnagrams(str1, str2) {
-  // Remove spaces and special characters, then convert to lowercase
-  str1 = str1.replace(/[^\w]/g, '').toLowerCase();
-  str2 = str2.replace(/[^\w]/g, '').toLowerCase();
-  
-  // Sort characters alphabetically
-  str1 = str1.split('').sort().join('');
-  str2 = str2.split('').sort().join('');
-  
-  // Compare the sorted strings
-  return str1 === str2;
+class TreeNode {
+  constructor(val) {
+    this.val = val;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-// Example usage
-const string1 = "listen";
-const string2 = "silent";
-console.log(areAnagrams(string1, string2)); // Output: true
+function countLeafNodes(root) {
+  if (!root) {
+    return 0; // Base case: empty tree
+  } else if (!root.left && !root.right) {
+    return 1; // Base case: leaf node
+  } else {
+    const leftCount = countLeafNodes(root.left);
+    const rightCount = countLeafNodes(root.right);
+    return leftCount + rightCount;
+  }
+}
 
-const string3 = "hello";
-const string4 = "world";
-console.log(areAnagrams(string3, string4)); // Output: false
+// Test the function
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+root.right.left = new TreeNode(6);
+
+console.log(countLeafNodes(root)); // Output: 3
