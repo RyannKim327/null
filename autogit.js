@@ -1,34 +1,36 @@
-function longestIncreasingSubsequence(arr) {
-  const n = arr.length;
-  const lis = Array(n).fill(1); // Initialize LIS array with 1s
+function breadthFirstSearch(graph, startNode, goalNode) {
+  const queue = [startNode]; // Create a queue and enqueue the starting node
+  const visited = new Set(); // Create a visited set to track visited nodes
 
-  // Compute LIS values
-  for (let i = 1; i < n; i++) {
-    for (let j = 0; j < i; j++) {
-      if (arr[i] > arr[j] && lis[i] < lis[j] + 1) {
-        lis[i] = lis[j] + 1;
+  while (queue.length > 0) {
+    const currentNode = queue.shift(); // Dequeue a node from the front of the queue
+
+    // Process the current node (check if it is the goal node)
+    if (currentNode === goalNode) {
+      console.log('Goal node found!');
+      return;
+    }
+
+    // Enqueue unvisited neighbors into the queue and mark them as visited
+    graph[currentNode].forEach((neighbor) => {
+      if (!visited.has(neighbor)) {
+        queue.push(neighbor);
+        visited.add(neighbor);
       }
-    }
+    });
   }
 
-  // Find the maximum LIS value and get the subsequence
-  let maxLength = Math.max(...lis);
-  let sequence = [];
-  let lastIndex = lis.indexOf(maxLength);
-
-  while (sequence.length < maxLength) {
-    sequence.unshift(arr[lastIndex]);
-    maxLength--;
-    lastIndex--;
-    while (lastIndex >= 0 && lis[lastIndex] !== maxLength) {
-      lastIndex--;
-    }
-  }
-
-  return sequence;
+  console.log('Goal node not found!');
 }
 
-// Example usage
-const arr = [3, 10, 2, 1, 20, 5, 8, 6];
-const longestSequence = longestIncreasingSubsequence(arr);
-console.log(longestSequence); // Output: [3, 10, 20]
+// Example usage:
+const graph = {
+  A: ['B', 'C'],
+  B: ['D', 'E'],
+  C: ['F'],
+  D: [],
+  E: ['F'],
+  F: []
+};
+
+breadthFirstSearch(graph, 'A', 'F');
