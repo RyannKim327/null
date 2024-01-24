@@ -1,39 +1,21 @@
-class TreeNode {
-  constructor(val, left=null, right=null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
-  }
+function areAnagrams(str1, str2) {
+  // Remove spaces and special characters, then convert to lowercase
+  str1 = str1.replace(/[^\w]/g, '').toLowerCase();
+  str2 = str2.replace(/[^\w]/g, '').toLowerCase();
+  
+  // Sort characters alphabetically
+  str1 = str1.split('').sort().join('');
+  str2 = str2.split('').sort().join('');
+  
+  // Compare the sorted strings
+  return str1 === str2;
 }
 
-function diameterOfBinaryTree(root) {
-  let diameter = 0;
+// Example usage
+const string1 = "listen";
+const string2 = "silent";
+console.log(areAnagrams(string1, string2)); // Output: true
 
-  // Helper function to calculate the height of a node
-  function height(node) {
-    if (node == null) {
-      return 0;
-    }
-
-    let leftHeight = height(node.left);
-    let rightHeight = height(node.right);
-
-    // Update the diameter if the sum of left and right heights is greater
-    diameter = Math.max(diameter, leftHeight + rightHeight);
-
-    // Return the height of the current node
-    return 1 + Math.max(leftHeight, rightHeight);
-  }
-
-  height(root);
-  return diameter;
-}
-
-// Create a binary tree
-let rootNode = new TreeNode(1);
-rootNode.left = new TreeNode(2);
-rootNode.right = new TreeNode(3);
-rootNode.left.left = new TreeNode(4);
-rootNode.left.right = new TreeNode(5);
-
-console.log(diameterOfBinaryTree(rootNode)); // Output: 3
+const string3 = "hello";
+const string4 = "world";
+console.log(areAnagrams(string3, string4)); // Output: false
