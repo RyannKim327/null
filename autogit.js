@@ -1,20 +1,12 @@
-function findSecondLargest(arr) {
-  let max = -Infinity;
-  let secondMax = -Infinity;
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
 
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] > max) {
-      secondMax = max;
-      max = arr[i];
-    } else if (arr[i] > secondMax && arr[i] < max) {
-      secondMax = arr[i];
-    }
-  }
+const filteredArray = array.filter((element) => element !== elementToRemove);
 
-  return secondMax;
-}
+console.log(filteredArray); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 4, 5];
+const indexToRemove = 2; // Index of the element to remove
 
-// Example usage
-const array = [1, 6, 2, 9, 4, 3, 7];
-const secondLargest = findSecondLargest(array);
-console.log(secondLargest); // Output: 7
+array.splice(indexToRemove, 1);
+
+console.log(array); // Output: [1, 2, 4, 5]
