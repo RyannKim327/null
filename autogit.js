@@ -1,40 +1,26 @@
-function ListNode(val) {
-  this.val = val;
-  this.next = null;
-}
+function selectionSort(arr) {
+  const n = arr.length;
 
-function isPalindrome(head) {
-  let values = [];
-  
-  // Store values of linked list nodes
-  while (head !== null) {
-    values.push(head.val);
-    head = head.next;
-  }
+  for (let i = 0; i < n - 1; i++) {
+    let minIndex = i;
 
-  let left = 0;
-  let right = values.length - 1;
-
-  // Check for palindrome
-  while (left < right) {
-    if (values[left] !== values[right]) {
-      return false;
+    for (let j = i + 1; j < n; j++) {
+      if (arr[j] < arr[minIndex]) {
+        minIndex = j;
+      }
     }
-    left++;
-    right--;
+
+    if (minIndex !== i) {
+      // Swap the elements
+      let temp = arr[i];
+      arr[i] = arr[minIndex];
+      arr[minIndex] = temp;
+    }
   }
 
-  return true;
+  return arr;
 }
 
 // Example usage:
-
-// Create a sample linked list: 1 -> 2 -> 3 -> 2 -> 1
-let head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(2);
-head.next.next.next.next = new ListNode(1);
-
-// Check if the linked list is a palindrome
-console.log(isPalindrome(head)); // Output: true
+const arr = [64, 25, 12, 22, 11];
+console.log(selectionSort(arr));
