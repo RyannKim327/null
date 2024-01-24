@@ -1,127 +1,187 @@
-// Node class
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+class BTreeNode {
+  constructor(isLeaf) {
+    this.keys = [];
+    this.children = [];
+    this.isLeaf = isLeaf;
   }
 }
-
-// BinarySearchTree class
-class BinarySearchTree {
-  constructor() {
-    this.root = null;
-  }
-
-  // helper method to insert a node in BST
-  insert(value) {
-    const newNode = new Node(value);
-
-    if (!this.root) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
-
-  // recursively insert a node in BST
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      // insert in the left subtree
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      // insert in the right subtree
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
-
-  // helper method to perform in-order traversal
-  inOrderTraversal(callback) {
-    this.inOrderTraversalNode(this.root, callback);
-  }
-
-  // recursively perform in-order traversal
-  inOrderTraversalNode(node, callback) {
-    if (node !== null) {
-      this.inOrderTraversalNode(node.left, callback);
-      callback(node.value);
-      this.inOrderTraversalNode(node.right, callback);
-    }
-  }
-
-  // helper method to perform pre-order traversal
-  preOrderTraversal(callback) {
-    this.preOrderTraversalNode(this.root, callback);
-  }
-
-  // recursively perform pre-order traversal
-  preOrderTraversalNode(node, callback) {
-    if (node !== null) {
-      callback(node.value);
-      this.preOrderTraversalNode(node.left, callback);
-      this.preOrderTraversalNode(node.right, callback);
-    }
-  }
-
-  // helper method to perform post-order traversal
-  postOrderTraversal(callback) {
-    this.postOrderTraversalNode(this.root, callback);
-  }
-
-  // recursively perform post-order traversal
-  postOrderTraversalNode(node, callback) {
-    if (node !== null) {
-      this.postOrderTraversalNode(node.left, callback);
-      this.postOrderTraversalNode(node.right, callback);
-      callback(node.value);
-    }
-  }
-
-  // method to search for a node in BST
-  search(value) {
-    return this.searchNode(this.root, value);
+class BTree {
+  constructor(degree) {
+    this.root = new BTreeNode(true);
+    this.degree = degree;
   }
   
-  // recursively search for a node in BST
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
-    }
+  insert(key) {
+    // TODO: Implement the insertion operation
+  }
+  
+  delete(key) {
+    // TODO: Implement the deletion operation
+  }
+  
+  search(key) {
+    // TODO: Implement the search operation
+  }
+}
+insert(key) {
+  const root = this.root;
+  
+  if (root.keys.length === (2 * this.degree) - 1) {
+    const newNode = new BTreeNode(false);
+    this.root = newNode;
+    newNode.children[0] = root;
+    this.splitChild(newNode, 0);
+    this.insertNonFull(newNode, key);
+  } else {
+    this.insertNonFull(root, key);
+  }
+}
 
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else if (value > node.value) {
-      return this.searchNode(node.right, value);
+insertNonFull(node, key) {
+  let i = node.keys.length - 1;
+  
+  if (node.isLeaf) {
+    while (i >= 0 && key < node.keys[i]) {
+      node.keys[i + 1] = node.keys[i];
+      i--;
+    }
+    node.keys[i + 1] = key;
+  } else {
+    while (i >= 0 && key < node.keys[i]) {
+      i--;
+    }
+    i++;
+    if (node.children[i].keys.length === (2 * this.degree) - 1) {
+      this.splitChild(node, i);
+      if (key > node.keys[i]) {
+        i++;
+      }
+    }
+    this.insertNonFull(node.children[i], key);
+  }
+}
+
+splitChild(parent, index) {
+  const degree = this.degree;
+  const child = parent.children[index];
+  
+  const newNode = new BTreeNode(child.isLeaf);
+  
+  parent.keys.splice(index, 0, child.keys[degree - 1]);
+  parent.children.splice(index + 1, 0, newNode);
+  
+  newNode.keys = child.keys.splice(degree, degree - 1);
+  if (!child.isLeaf) {
+    newNode.children = child.children.splice(degree, degree);
+  }
+}
+delete(key) {
+  const root = this.root;
+  
+  this.deleteKey(root, key);
+  
+  if (root.keys.length === 0 && root.children.length !== 0) {
+    this.root = root.children[0];
+  }
+}
+
+deleteKey(node, key) {
+  const degree = this.degree;
+  let i = node.keys.findIndex(k => k === key);
+  
+  if (i >= 0) {
+    if (node.isLeaf) {
+      node.keys.splice(i, 1);
     } else {
-      return true;
+      const predecessor = this.findPredecessor(node, i);
+      node.keys[i] = predecessor;
+      this.deleteKey(node.children[i], predecessor);
+    }
+  } else {
+    i = node.keys.findIndex(k => k > key);
+    if (node.isLeaf) {
+      return;
+    }
+    if (node.children[i].keys.length < degree) {
+      this.fill(node, i);
+    }
+    if (i > node.keys.length || key < node.keys[i]) {
+      this.deleteKey(node.children[i], key);
+    } else {
+      this.deleteKey(node.children[i + 1], key);
     }
   }
 }
 
-// Usage example
-const bst = new BinarySearchTree();
-bst.insert(12);
-bst.insert(6);
-bst.insert(15);
-bst.insert(3);
-bst.insert(8);
+findPredecessor(node, index) {
+  let current = node.children[index];
+  while (!current.isLeaf) {
+    current = current.children[current.keys.length];
+  }
+  return current.keys[current.keys.length - 1];
+}
 
-console.log("In-order traversal:");
-bst.inOrderTraversal((value) => console.log(value));
+fill(node, index) {
+  const degree = this.degree;
+  if (index > 0 && node.children[index - 1].keys.length >= degree) {
+    this.stealFromPrev(node, index);
+  } else if (index < node.keys.length && node.children[index + 1].keys.length >= degree) {
+    this.stealFromNext(node, index);
+  } else {
+    if (index > node.keys.length) {
+      index--;
+    }
+    this.merge(node, index);
+  }
+}
 
-console.log("Pre-order traversal:");
-bst.preOrderTraversal((value) => console.log(value));
+stealFromPrev(node, index) {
+  const child = node.children[index];
+  const sibling = node.children[index - 1];
+  
+  child.keys.splice(0, 0, node.keys[index - 1]);
+  node.keys[index - 1] = sibling.keys.pop();
+  
+  if (!child.isLeaf) {
+    child.children.splice(0, 0, sibling.children.pop());
+  }
+}
 
-console.log("Post-order traversal:");
-bst.postOrderTraversal((value) => console.log(value));
+stealFromNext(node, index) {
+  const child = node.children[index];
+  const sibling = node.children[index + 1];
+  
+  child.keys.push(node.keys[index]);
+  node.keys[index] = sibling.keys.shift();
+  
+  if (!child.isLeaf) {
+    child.children.push(sibling.children.shift());
+  }
+}
 
-console.log("Search for value 6:", bst.search(6));
-console.log("Search for value 10:", bst.search(10));
+merge(node, index) {
+  const child = node.children[index];
+  const sibling = node.children[index + 1];
+  
+  child.keys.push(node.keys[index]);
+  node.keys.splice(index, 1);
+  
+  child.keys.push(...sibling.keys);
+  child.children.push(...sibling.children);
+  node.children.splice(index + 1, 1);
+}
+search(key) {
+  return this.searchKey(this.root, key);
+}
+
+searchKey(node, key) {
+  const i = node.keys.findIndex(k => k === key);
+  if (i >= 0) {
+    return node;
+  } else if (node.isLeaf) {
+    return null;
+  } else {
+    const childIndex = node.keys.findIndex(k => k > key);
+    return this.searchKey(node.children[childIndex], key);
+  }
+}
