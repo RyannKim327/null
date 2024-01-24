@@ -1,19 +1,19 @@
-function findMedianSortedArrays(nums1, nums2) {
-  const merged = [...nums1, ...nums2].sort((a, b) => a - b);
-  const length = merged.length;
-  
-  if (length % 2 === 0) {
-    const midIndex1 = length / 2 - 1;
-    const midIndex2 = length / 2;
-    return (merged[midIndex1] + merged[midIndex2]) / 2;
-  } else {
-    const midIndex = Math.floor(length / 2);
-    return merged[midIndex];
+function isPrime(number) {
+  // 1 and all negative numbers are not prime
+  if (number <= 1) {
+    return false;
   }
+
+  // Check for divisibility from 2 to the square root of the number
+  for (let i = 2; i <= Math.sqrt(number); i++) {
+    if (number % i === 0) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 // Example usage:
-const nums1 = [1, 3];
-const nums2 = [2, 4];
-const median = findMedianSortedArrays(nums1, nums2);
-console.log(median); // Output: 2.5
+console.log(isPrime(7)); // Output: true
+console.log(isPrime(18)); // Output: false
