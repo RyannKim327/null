@@ -1,22 +1,13 @@
-function bubbleSort(arr) {
-  var len = arr.length;
-  var swapped;
+const numbers = [4, 2, 8, 5, 1, 3];
 
-  do {
-    swapped = false;
-    for (var i = 0; i < len - 1; i++) {
-      if (arr[i] > arr[i + 1]) {
-        var temp = arr[i];
-        arr[i] = arr[i + 1];
-        arr[i + 1] = temp;
-        swapped = true;
-      }
-    }
-  } while (swapped);
+// Sorting the array in ascending order
+numbers.sort((a, b) => a - b);
 
-  return arr;
-}
+console.log(numbers); // Output: [1, 2, 3, 4, 5, 8]
+const numbers = [4, 2, 8, 5, 1, 3];
 
-// Example usage:
-var arr = [5, 3, 8, 1, 2];
-console.log(bubbleSort(arr)); // Output: [1, 2, 3, 5, 8]
+// Sorting a copy of the array in ascending order
+const sortedNumbers = [...numbers].sort((a, b) => a - b);
+
+console.log(sortedNumbers); // Output: [1, 2, 3, 4, 5, 8]
+console.log(numbers); // Output: [4, 2, 8, 5, 1, 3]
