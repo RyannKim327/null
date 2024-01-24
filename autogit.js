@@ -1,43 +1,27 @@
-function preprocessPattern(pattern) {
-  const badCharacters = {};
-  const length = pattern.length;
+const axios = require('axios');
 
-  for (let i = 0; i < length - 1; i++) {
-    badCharacters[pattern[i]] = length - 1 - i;
-  }
+// Make a GET request to a URL
+axios.get('https://api.example.com/data')
+  .then(response => {
+    // Handle success response
+    console.log(response.data);
+  })
+  .catch(error => {
+    // Handle error
+    console.error(error);
+  });
 
-  return badCharacters;
-}
-function boyerMoore(text, pattern) {
-  const badCharacters = preprocessPattern(pattern);
-  const textLength = text.length;
-  const patternLength = pattern.length;
-  let textIndex = 0;
-
-  while (textIndex <= textLength - patternLength) {
-    let patternIndex = patternLength - 1;
-
-    while (patternIndex >= 0 && pattern[patternIndex] === text[textIndex + patternIndex]) {
-      patternIndex--;
-    }
-
-    if (patternIndex === -1) {
-      return textIndex; // match found, return the starting index
-    }
-
-    const badCharacterShift = badCharacters[text[textIndex + patternIndex]];
-
-    textIndex += badCharacterShift || (patternIndex + 1);
-  }
-
-  return -1; // no match found
-}
-const text = "Lorem ipsum dolor sit amet";
-const pattern = "ipsum";
-const resultIndex = boyerMoore(text, pattern);
-
-if (resultIndex === -1) {
-  console.log("Pattern not found");
-} else {
-  console.log(`Pattern found at index ${resultIndex}`);
-}
+// Make a POST request with data
+axios.post('https://api.example.com/data', {
+    name: 'John Doe',
+    age: 30
+  })
+  .then(response => {
+    // Handle success response
+    console.log(response.data);
+  })
+  .catch(error => {
+    // Handle error
+    console.error(error);
+  });
+npm install axios
