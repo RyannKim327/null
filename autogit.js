@@ -1,49 +1,37 @@
-class Graph {
+class HashTable {
   constructor() {
-    this.vertices = new Map();
+    this.data = {};
   }
 
-  addVertex(vertex) {
-    this.vertices.set(vertex, []);
+  hash(key) {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash = (hash + key.charCodeAt(i) * (i + 1)) % this.data.length;
+    }
+    return hash;
   }
 
-  addEdge(vertex1, vertex2) {
-    this.vertices.get(vertex1).push(vertex2);
-    this.vertices.get(vertex2).push(vertex1);
+  set(key, value) {
+    const index = this.hash(key);
+    this.data[index] = value;
   }
 
-  dfs(startVertex) {
-    const visited = new Set();
-    this._dfsRecursive(startVertex, visited);
+  get(key) {
+    const index = this.hash(key);
+    return this.data[index];
   }
 
-  _dfsRecursive(vertex, visited) {
-    visited.add(vertex);
-    console.log(vertex);
-
-    const neighbors = this.vertices.get(vertex);
-    for (const neighbor of neighbors) {
-      if (!visited.has(neighbor)) {
-        this._dfsRecursive(neighbor, visited);
-      }
+  remove(key) {
+    const index = this.hash(key);
+    if (this.data[index]) {
+      delete this.data[index];
     }
   }
 }
 
-// Test the DFS algorithm
-const graph = new Graph();
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
-graph.addVertex('F');
-
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('B', 'E');
-graph.addEdge('C', 'F');
-
-console.log('Depth-First Search (DFS):');
-graph.dfs('A');
+// Example usage
+const hashTable = new HashTable();
+hashTable.set('name', 'John');
+console.log(hashTable.get('name')); // Output: John
+hashTable.remove('name');
+console.log(hashTable.get('name')); // Output: undefined
