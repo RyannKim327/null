@@ -1,11 +1,9 @@
-Area = (base * height) / 2
-function calculateTriangleArea(base, height) {
-  let area = (base * height) / 2;
-  return area;
-}
-
-// Example usage:
-let base = 5;
-let height = 3;
-let area = calculateTriangleArea(base, height);
-console.log("The area of the triangle is: " + area);
+const stringWithWhitespace = "  Hello  World  ";
+const stringWithoutWhitespace = stringWithWhitespace.replace(/\s/g, "");
+console.log(stringWithoutWhitespace); // Output: "HelloWorld"
+const stringWithWhitespace = "  Hello  World  ";
+const stringWithoutWhitespace = stringWithWhitespace.trim();
+console.log(stringWithoutWhitespace); // Output: "Hello  World"
+const stringWithWhitespace = "  Hello    World  ";
+const stringWithoutWhitespace = stringWithWhitespace.replace(/\s+/g, " ").trim();
+console.log(stringWithoutWhitespace); // Output: "Hello World"
