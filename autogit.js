@@ -1,62 +1,27 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+function bwt(input) {
+  // Step 1: Create a matrix
+  let matrix = [];
+  for (let i = 0; i < input.length; i++) {
+    matrix.push(input.slice(i) + input.slice(0, i));
   }
+  
+  // Step 2: Sort the matrix
+  matrix.sort();
+  
+  // Step 3: Take the last characters of each matrix row
+  let transformed = "";
+  for (let i = 0; i < matrix.length; i++) {
+    transformed += matrix[i][input.length - 1];
+  }
+  
+  // Step 4: Find the original string's index in the transformed string
+  let index = matrix.indexOf(input);
+  
+  // Return the transformed string and the original index
+  return { transformed, index };
 }
-class LinkedList {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-    this.length = 0;
-  }
-
-  isEmpty() {
-    return this.length === 0;
-  }
-
-  addToTail(value) {
-    const newNode = new Node(value);
-    if (this.isEmpty()) {
-      this.head = newNode;
-    } else {
-      this.tail.next = newNode;
-    }
-    this.tail = newNode;
-    this.length++;
-  }
-
-  removeFromTail() {
-    if (this.isEmpty()) {
-      return undefined;
-    }
-    let removedValue;
-    if (this.head === this.tail) {
-      // Only one node in the list
-      removedValue = this.head.value;
-      this.head = null;
-      this.tail = null;
-    } else {
-      let currentNode = this.head;
-      while (currentNode.next !== this.tail) {
-        currentNode = currentNode.next;
-      }
-      removedValue = this.tail.value;
-      currentNode.next = null;
-      this.tail = currentNode;
-    }
-    this.length--;
-    return removedValue;
-  }
-
-  // Other methods like addToHead, removeFromHead, etc. can be added as needed
-}
-const linkedList = new LinkedList();
-
-linkedList.addToTail(1);
-linkedList.addToTail(2);
-linkedList.addToTail(3);
-
-console.log(linkedList.removeFromTail()); // Output: 3
-console.log(linkedList.removeFromTail()); // Output: 2
-console.log(linkedList.removeFromTail()); // Output: 1
+let input = "banana";
+let result = bwt(input);
+console.log("Original:", input);
+console.log("Transformed:", result.transformed);
+console.log("Index:", result.index);
