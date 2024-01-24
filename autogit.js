@@ -1,17 +1,15 @@
-function areAnagrams(str1, str2) {
-  // Remove non-alphabetic characters and convert to lowercase
-  str1 = str1.replace(/[^A-Za-z]/g, "").toLowerCase();
-  str2 = str2.replace(/[^A-Za-z]/g, "").toLowerCase();
-
-  // Convert strings to arrays and sort them
-  const arr1 = str1.split("").sort();
-  const arr2 = str2.split("").sort();
-
-  // Compare the sorted arrays
-  return arr1.join("") === arr2.join("");
+function countOccurrences(string, character) {
+  let count = 0;
+  for (let i = 0; i < string.length; i++) {
+    if (string[i] === character) {
+      count++;
+    }
+  }
+  return count;
 }
 
-// Example usage:
-const string1 = "debit card";
-const string2 = "bad credit";
-console.log(areAnagrams(string1, string2)); // Output: true
+// Example usage
+const str = "Hello, world!";
+const char = "o";
+const occurrences = countOccurrences(str, char);
+console.log(`The character "${char}" appears ${occurrences} times in the string "${str}".`);
