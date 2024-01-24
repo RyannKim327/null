@@ -1,57 +1,47 @@
-function buildPrefixSuffixTable(pattern) {
-  const table = [0]; // The first entry is always 0
-  let prefixLength = 0; // Length of the longest proper prefix
+function beamSearch() {
+  const beamWidth = 3; // Choose the width of your beam
+  const initialStates = [initialState]; // Add initial state(s) to the beam
 
-  for (let i = 1; i < pattern.length; i++) {
-    if (pattern[i] === pattern[prefixLength]) {
-      prefixLength++;
-      table[i] = prefixLength;
-    } else {
-      if (prefixLength > 0) {
-        // Try to find a shorter prefix
-        prefixLength = table[prefixLength - 1];
-        i--; // Keep the same i for the next iteration
-      } else {
-        table[i] = 0;
+  let beam = initialStates;
+
+  while (!terminationCondition) {
+    const nextBeam = [];
+
+    for (let state of beam) {
+      const successors = generateSuccessors(state);
+
+      for (let successor of successors) {
+        successor.score = evaluateState(successor);
+        nextBeam.push(successor);
       }
     }
+
+    nextBeam.sort((a, b) => b.score - a.score); // Sort nextBeam in descending order
+
+    beam = nextBeam.slice(0, beamWidth); // Keep only the top beamWidth states
+
+    // Termination condition check (e.g., max iterations, desired score reached)
   }
 
-  return table;
+  return beam[0]; // Return the best state found
 }
-function knuthMorrisPratt(text, pattern) {
-  const table = buildPrefixSuffixTable(pattern);
-  let textIndex = 0;
-  let patternIndex = 0;
 
-  while (textIndex < text.length) {
-    if (pattern[patternIndex] === text[textIndex]) {
-      if (patternIndex === pattern.length - 1) {
-        // Found a match
-        return textIndex - patternIndex;
-      }
+// Example functions (replace or modify based on your problem)
 
-      patternIndex++;
-      textIndex++;
-    } else {
-      if (patternIndex > 0) {
-        // Try to find a shorter matching prefix
-        patternIndex = table[patternIndex - 1];
-      } else {
-        textIndex++;
-      }
-    }
-  }
-
-  return -1; // No match found
+function generateSuccessors(state) {
+  // Generate and return the possible successor states
+  // based on the current state
 }
-const text = "ABCABDABABCABCDABDE";
-const pattern = "ABCABCD";
 
-const index = knuthMorrisPratt(text, pattern);
-
-if (index !== -1) {
-  console.log(`Pattern found at index ${index}`);
-} else {
-  console.log(`Pattern not found`);
+function evaluateState(state) {
+  // Evaluate the quality or fitness of a state
+  // and return a numerical value
 }
+
+function terminationCondition() {
+  // Check and return true if termination condition is met
+}
+
+// Usage
+const result = beamSearch();
+console.log(result);
