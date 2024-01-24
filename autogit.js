@@ -1,17 +1,13 @@
-function areAnagrams(str1, str2) {
-  // Remove non-alphabetic characters and convert to lowercase
-  const cleanStr1 = str1.replace(/[^A-Za-z]/g, '').toLowerCase();
-  const cleanStr2 = str2.replace(/[^A-Za-z]/g, '').toLowerCase();
-
-  // Sort the strings
-  const sortedStr1 = cleanStr1.split('').sort().join('');
-  const sortedStr2 = cleanStr2.split('').sort().join('');
-
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+function randomSort(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
 }
 
-// Example usage:
-const string1 = 'Listen';
-const string2 = 'Silent';
-console.log(areAnagrams(string1, string2)); // Output: true
+// Example usage
+const arr = [1, 2, 3, 4, 5];
+console.log('Original Array:', arr);
+const sortedArr = randomSort(arr);
+console.log('Randomly Sorted Array:', sortedArr);
