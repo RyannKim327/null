@@ -1,45 +1,91 @@
-class Graph {
-  constructor() {
-    this.vertices = {};
-  }
-
-  addVertex(vertex) {
-    this.vertices[vertex] = [];
-  }
-
-  addEdge(fromVertex, toVertex) {
-    this.vertices[fromVertex].push(toVertex);
-  }
-
-  dfs(startingVertex) {
-    let visited = {};
-    this._dfsUtil(startingVertex, visited);
-  }
-
-  _dfsUtil(vertex, visited) {
-    visited[vertex] = true;
-    console.log(vertex);
-
-    for (let neighbor of this.vertices[vertex]) {
-      if (!visited[neighbor]) {
-        this._dfsUtil(neighbor, visited);
-      }
-    }
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
 }
-const graph = new Graph();
 
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
-graph.addVertex('F');
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+  }
 
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('B', 'E');
-graph.addEdge('C', 'E');
-graph.addEdge('D', 'F');
-graph.dfs('A');
+  isEmpty() {
+    return this.head === null;
+  }
+
+  append(value) {
+    const newNode = new Node(value);
+
+    if (this.isEmpty()) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+  }
+
+  prepend(value) {
+    const newNode = new Node(value);
+
+    if (this.isEmpty()) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      newNode.next = this.head;
+      this.head = newNode;
+    }
+  }
+
+  delete(value) {
+    if (this.isEmpty()) {
+      return;
+    }
+
+    if (this.head.value === value) {
+      this.head = this.head.next;
+
+      if (this.head === null) {
+        this.tail = null;
+      }
+      return;
+    }
+
+    let current = this.head;
+    while (current.next !== null) {
+      if (current.next.value === value) {
+        current.next = current.next.next;
+
+        if (current.next === null) {
+          this.tail = current;
+        }
+        return;
+      }
+
+      current = current.next;
+    }
+  }
+
+  toArray() {
+    const result = [];
+    let current = this.head;
+
+    while (current !== null) {
+      result.push(current.value);
+      current = current.next;
+    }
+
+    return result;
+  }
+}
+const list = new LinkedList();
+
+list.append(1);
+list.append(2);
+list.append(3);
+list.prepend(0);
+list.delete(2);
+
+console.log(list.toArray());  // Output: [0, 1, 3]
