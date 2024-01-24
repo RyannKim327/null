@@ -1,20 +1,23 @@
-function isPalindrome(str) {
-  let left = 0;
-  let right = str.length - 1;
+function bubbleSort(arr) {
+  var len = arr.length;
+  var swapped;
 
-  while (left < right) {
-    if (str[left] !== str[right]) {
-      return false;
+  do {
+    swapped = false;
+    for (var i = 0; i < len - 1; i++) {
+      if (arr[i] > arr[i + 1]) {
+        var temp = arr[i];
+        arr[i] = arr[i + 1];
+        arr[i + 1] = temp;
+        swapped = true;
+      }
     }
-    left++;
-    right--;
-  }
+  } while (swapped);
 
-  return true;
+  return arr;
 }
 
-// Testing the function
-console.log(isPalindrome("racecar")); // true
-console.log(isPalindrome("hello"));   // false
-console.log(isPalindrome("level"));   // true
-console.log(isPalindrome("world"));   // false
+// Example usage
+var arr = [5, 3, 8, 1, 2];
+console.log("Original array:", arr); // [5, 3, 8, 1, 2]
+console.log("Sorted array:", bubbleSort(arr)); // [1, 2, 3, 5, 8]
