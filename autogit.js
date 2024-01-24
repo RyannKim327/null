@@ -1,66 +1,26 @@
-class HashTable {
-  constructor(size = 100) {
-    this.size = size;
-    this.buckets = Array(this.size);
-  }
-
-  hash(key) {
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) {
-      hash += key.charCodeAt(i);
-    }
-    return hash % this.size;
-  }
-
-  set(key, value) {
-    const index = this.hash(key);
-    
-    if (!this.buckets[index]) {
-      this.buckets[index] = [];
-    }
-
-    for (const pair of this.buckets[index]) {
-      if (pair[0] === key) {
-        pair[1] = value;
-        return;
-      }
-    }
-
-    this.buckets[index].push([key, value]);
-  }
-
-  get(key) {
-    const index = this.hash(key);
-    if (!this.buckets[index]) return undefined;
-
-    for (const pair of this.buckets[index]) {
-      if (pair[0] === key) {
-        return pair[1];
-      }
-    }
-
-    return undefined;
-  }
-
-  delete(key) {
-    const index = this.hash(key);
-    if (!this.buckets[index]) return undefined;
-
-    for (let i = 0; i < this.buckets[index].length; i++) {
-      if (this.buckets[index][i][0] === key) {
-        return this.buckets[index].splice(i, 1)[0][1];
-      }
-    }
-
-    return undefined;
+class ListNode {
+  constructor(value, next = null) {
+    this.value = value;
+    this.next = next;
   }
 }
-const table = new HashTable();
-table.set("name", "John");
-table.set("age", 25);
 
-console.log(table.get("name")); // Outputs: "John"
-console.log(table.get("age")); // Outputs: 25
+function findMiddleElement(head) {
+  let slow = head;
+  let fast = head;
 
-console.log(table.delete("age")); // Outputs: 25
-console.log(table.get("age")); // Outputs: undefined
+  while (fast !== null && fast.next !== null) {
+    slow = slow.next;
+    fast = fast.next.next;
+  }
+
+  return slow.value;
+}
+// Create a linked list: 1->2->3->4->5->null
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+console.log(findMiddleElement(head)); // Output: 3
