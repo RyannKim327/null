@@ -1,38 +1,64 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+class TrieNode {
+  constructor() {
+    this.children = {};
+    this.isEndOfWord = false;
   }
 }
 
-// Function to calculate the sum of all nodes in a binary tree
-function calculateSum(node) {
-  if (node === null) {
-    return 0;
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
   }
-  
-  // Recursively calculate the sum of nodes in the left and right subtree
-  const leftSum = calculateSum(node.left);
-  const rightSum = calculateSum(node.right);
 
-  // Return the sum of the current node's value and the sums of its subtrees
-  return node.value + leftSum + rightSum;
+  insert(word) {
+    let currentNode = this.root;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      if (!currentNode.children[char]) {
+        currentNode.children[char] = new TrieNode();
+      }
+      currentNode = currentNode.children[char];
+    }
+    currentNode.isEndOfWord = true;
+  }
+
+  search(word) {
+    let currentNode = this.root;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      if (!currentNode.children[char]) {
+        return false;
+      }
+      currentNode = currentNode.children[char];
+    }
+    return currentNode.isEndOfWord;
+  }
+
+  startsWith(prefix) {
+    let currentNode = this.root;
+    for (let i = 0; i < prefix.length; i++) {
+      const char = prefix[i];
+      if (!currentNode.children[char]) {
+        return false;
+      }
+      currentNode = currentNode.children[char];
+    }
+    return true;
+  }
 }
 
-/* Example binary tree:
-        1
-       / \
-      2   3
-     / \   \
-    4   5   6
-*/
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.right = new Node(6);
+// Example usage:
+const trie = new Trie();
 
-const sum = calculateSum(root);
-console.log("Sum of all nodes:", sum); // Output: 21
+trie.insert('apple');
+trie.insert('banana');
+trie.insert('app');
+trie.insert('ball');
+
+console.log(trie.search('apple')); // Output: true
+console.log(trie.search('app')); // Output: true
+console.log(trie.search('banana')); // Output: true
+
+console.log(trie.startsWith('app')); // Output: true
+console.log(trie.startsWith('ba')); // Output: true
+console.log(trie.startsWith('apx')); // Output: false
