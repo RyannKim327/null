@@ -1,16 +1,11 @@
-function countOccurrences(string, word) {
-  const regex = new RegExp('\\b' + word + '\\b', 'gi');
-  const matches = string.match(regex);
-
-  if (matches) {
-    return matches.length;
-  } else {
-    return 0;
-  }
-}
-
-// Example usage:
-const sentence = 'She sells seashells by the seashore';
-const wordToCount = 'she';
-const count = countOccurrences(sentence, wordToCount);
-console.log(count); // Output: 2
+// Make a GET request to an API endpoint using fetch
+fetch('https://api.example.com/data')
+  .then(response => response.json())
+  .then(data => {
+    // Do something with the retrieved data
+    console.log(data);
+  })
+  .catch(error => {
+    // Handle any errors that occurred during the request
+    console.log('Error:', error);
+  });
