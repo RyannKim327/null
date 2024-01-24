@@ -1,47 +1,46 @@
-function createBadCharTable(pattern) {
-  const table = {};
-  const patternLength = pattern.length;
-
-  for (let i = 0; i < patternLength - 1; i++) {
-    table[pattern[i]] = patternLength - 1 - i;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.children = [];
   }
 
-  return table;
+  addChild(node) {
+    this.children.push(node);
+  }
 }
-function boyerMooreHorspool(text, pattern) {
-  const textLength = text.length;
-  const patternLength = pattern.length;
 
-  if (patternLength > textLength) {
-    return -1; // Pattern is longer than the text
-  }
+function depthLimitedSearch(root, target, depthLimit) {
+  const stack = [];
+  stack.push({ node: root, depth: 0 });
 
-  const badCharTable = createBadCharTable(pattern);
+  while (stack.length > 0) {
+    const { node, depth } = stack.pop();
 
-  let shift = 0;
-  while (shift <= textLength - patternLength) {
-    let j = patternLength - 1;
-
-    while (j >= 0 && pattern[j] === text[shift + j]) {
-      j--;
+    if (node.value === target) {
+      return node;
     }
 
-    if (j < 0) {
-      return shift; // Pattern found
+    if (depth < depthLimit) {
+      for (let child of node.children) {
+        stack.push({ node: child, depth: depth + 1 });
+      }
     }
-
-    shift += badCharTable[text[shift + patternLength - 1]] || patternLength;
   }
 
-  return -1; // Pattern not found
+  return null; // Target value not found within the depth limit
 }
-const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
-const pattern = "adipiscing";
 
-const index = boyerMooreHorspool(text, pattern);
+// Example usage:
+// Create a simple tree
+const rootNode = new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
+const node4 = new Node(4);
+const node5 = new Node(5);
+rootNode.addChild(node2);
+rootNode.addChild(node3);
+node2.addChild(node4);
+node3.addChild(node5);
 
-if (index === -1) {
-  console.log("Pattern not found.");
-} else {
-  console.log("Pattern found at index:", index);
-}
+const targetNode = depthLimitedSearch(rootNode, 5, 2);
+console.log(targetNode); // Output: Node { value: 5, children: [] }
