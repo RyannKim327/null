@@ -1,21 +1,18 @@
-function insertionSort(array) {
-  const length = array.length;
+function hasCycle(head) {
+  let tortoise = head;
+  let hare = head;
 
-  for (let i = 1; i < length; i++) {
-    const current = array[i];
-    let j = i - 1;
+  while (hare !== null && hare.next !== null) {
+    tortoise = tortoise.next;
+    hare = hare.next.next;
 
-    while (j >= 0 && array[j] > current) {
-      array[j + 1] = array[j];
-      j--;
+    if (tortoise === hare) {
+      return true; // Cycle detected
     }
-
-    array[j + 1] = current;
   }
 
-  return array;
+  return false; // No cycle found
 }
+const myList = /* create the linked list */;
 
-// Example usage:
-const arr = [4, 2, 8, 1, 5];
-console.log(insertionSort(arr)); // Output: [1, 2, 4, 5, 8]
+console.log(hasCycle(myList)); // Output: true or false
