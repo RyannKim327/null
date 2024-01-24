@@ -1,39 +1,19 @@
-const graph = {
-  A: ["B", "C"],
-  B: ["D"],
-  C: ["D", "E"],
-  D: [],
-  E: []
-};
-function topologicalSort(graph) {
-  const result = [];
-  const visited = {};
+function isPalindrome(str) {
+  let left = 0;
+  let right = str.length - 1;
 
-  function dfs(node) {
-    if (visited[node]) return;
-    visited[node] = true;
-
-    for (const neighbor of graph[node]) {
-      dfs(neighbor);
+  while (left < right) {
+    if (str.charAt(left) !== str.charAt(right)) {
+      return false;
     }
 
-    result.push(node);
+    left++;
+    right--;
   }
 
-  for (const node in graph) {
-    dfs(node);
-  }
-
-  return result.reverse();
+  return true;
 }
 
-const graph = {
-  A: ["B", "C"],
-  B: ["D"],
-  C: ["D", "E"],
-  D: [],
-  E: []
-};
-
-const sortedNodes = topologicalSort(graph);
-console.log(sortedNodes); // Output: [ 'A', 'C', 'E', 'B', 'D' ]
+// Example usage
+console.log(isPalindrome('racecar')); // true
+console.log(isPalindrome('hello')); // false
