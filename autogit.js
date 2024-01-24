@@ -1,15 +1,10 @@
-function factorial(number) {
-  // Initialize the result to 1
-  let result = 1;
+const cron = require('node-cron');
 
-  // Multiply the result by every integer from 1 to the number
-  for (let i = 1; i <= number; i++) {
-    result *= i;
-  }
+// Define the task to be executed
+const task = () => {
+  console.log('Task is running...');
+  // Write your task logic here
+};
 
-  // Return the final result
-  return result;
-}
-
-// Example usage
-console.log(factorial(5)); // Output: 120
+// Schedule the task to run every 5 minutes (*/5 * * * *)
+cron.schedule('*/5 * * * *', task);
