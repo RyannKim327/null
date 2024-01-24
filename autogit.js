@@ -1,36 +1,110 @@
-function findLCS(str1, str2) {
-  const dp = Array.from({ length: str1.length + 1 }, () => Array(str2.length + 1).fill(0));
-
-  for (let i = 1; i <= str1.length; i++) {
-    for (let j = 1; j <= str2.length; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-      } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-      }
-    }
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
   }
-
-  let i = str1.length, j = str2.length;
-  const lcs = [];
-
-  while (i > 0 && j > 0) {
-    if (str1[i - 1] === str2[j - 1]) {
-      lcs.unshift(str1[i - 1]);
-      i--;
-      j--;
-    } else if (dp[i - 1][j] > dp[i][j - 1]) {
-      i--;
-    } else {
-      j--;
-    }
-  }
-
-  return lcs.join('');
 }
 
-// Example usage
-const str1 = "ABCDGH";
-const str2 = "AEDFHR";
-const lcs = findLCS(str1, str2);
-console.log(lcs); // Output: ADH
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+  }
+
+  append(data) {
+    const newNode = new Node(data);
+
+    if (this.head === null) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+  }
+
+  prepend(data) {
+    const newNode = new Node(data);
+
+    if (this.head === null) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      newNode.next = this.head;
+      this.head = newNode;
+    }
+  }
+
+  insertAfter(afterData, data) {
+    const newNode = new Node(data);
+    let currentNode = this.head;
+
+    while (currentNode !== null) {
+      if (currentNode.data === afterData) {
+        newNode.next = currentNode.next;
+        currentNode.next = newNode;
+
+        if (currentNode === this.tail) {
+          this.tail = newNode;
+        }
+
+        break;
+      }
+
+      currentNode = currentNode.next;
+    }
+  }
+
+  delete(data) {
+    if (this.head === null) {
+      return;
+    }
+
+    if (this.head.data === data) {
+      this.head = this.head.next;
+
+      if (this.head === null) {
+        this.tail = null;
+      }
+
+      return;
+    }
+
+    let currentNode = this.head;
+
+    while (currentNode.next !== null) {
+      if (currentNode.next.data === data) {
+        currentNode.next = currentNode.next.next;
+
+        if (currentNode.next === null) {
+          this.tail = currentNode;
+        }
+
+        break;
+      }
+
+      currentNode = currentNode.next;
+    }
+  }
+
+  toArray() {
+    const result = [];
+    let currentNode = this.head;
+
+    while (currentNode !== null) {
+      result.push(currentNode.data);
+      currentNode = currentNode.next;
+    }
+
+    return result;
+  }
+}
+const linkedList = new LinkedList();
+
+linkedList.append(3);
+linkedList.append(7);
+linkedList.prepend(1);
+linkedList.insertAfter(3, 5);
+linkedList.delete(7);
+
+console.log(linkedList.toArray()); // Output: [1, 3, 5]
