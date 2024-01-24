@@ -1,42 +1,26 @@
-function Node(value, children = []) {
-  this.value = value;
-  this.children = children;
+class TreeNode {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-function depthLimitedSearchIterative(root, target, depthLimit) {
-  // Create a stack to keep track of nodes to be explored
-  const stack = [{ node: root, depth: 0 }];
-
-  while (stack.length > 0) {
-    const { node, depth } = stack.pop();
-
-    // Check if the current node matches the target
-    if (node.value === target) {
-      return node;
-    }
-
-    // Stop expanding the node if depth limit is reached
-    if (depth === depthLimit) {
-      continue;
-    }
-
-    // Push children nodes onto the stack, with increased depth
-    for (let i = node.children.length - 1; i >= 0; i--) {
-      stack.push({ node: node.children[i], depth: depth + 1 });
-    }
+function maxDepth(root) {
+  if (root === null) {
+    return 0;
+  } else {
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
+    return Math.max(leftDepth, rightDepth) + 1;
   }
-
-  return null; // Target not found within depth limit
 }
 
 // Example usage
-const nodeG = new Node('G');
-const nodeF = new Node('F', [nodeG]);
-const nodeE = new Node('E');
-const nodeD = new Node('D');
-const nodeC = new Node('C', [nodeF]);
-const nodeB = new Node('B', [nodeD, nodeE]);
-const nodeA = new Node('A', [nodeB, nodeC]);
+const tree = new TreeNode(3);
+tree.left = new TreeNode(9);
+tree.right = new TreeNode(20);
+tree.right.left = new TreeNode(15);
+tree.right.right = new TreeNode(7);
 
-const result = depthLimitedSearchIterative(nodeA, 'G', 2);
-console.log(result); // Output: Node { value: 'G', children: [] }
+console.log(maxDepth(tree)); // Output: 3
