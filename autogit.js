@@ -1,33 +1,69 @@
-class TreeNode {
-  constructor(val) {
-    this.val = val;
+class Node {
+  constructor(data) {
+    this.data = data;
     this.left = null;
     this.right = null;
   }
 }
 
-function sumBinaryTree(root) {
-  // Base case: return 0 for an empty node (null)
-  if (root === null) {
-    return 0;
+class BinaryTree {
+  constructor() {
+    this.root = null;
   }
 
-  // Recursively calculate the sum of the left and right subtrees
-  const leftSum = sumBinaryTree(root.left);
-  const rightSum = sumBinaryTree(root.right);
+  insert(data) {
+    const newNode = new Node(data);
 
-  // Add the current node's value to the sum of both subtrees
-  return root.val + leftSum + rightSum;
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
+
+  insertNode(node, newNode) {
+    if (newNode.data < node.data) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  search(data) {
+    return this.searchNode(this.root, data);
+  }
+
+  searchNode(node, data) {
+    if (node === null) {
+      return false;
+    } else if (data === node.data) {
+      return true;
+    } else if (data < node.data) {
+      return this.searchNode(node.left, data);
+    } else {
+      return this.searchNode(node.right, data);
+    }
+  }
 }
-// Create the binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-root.right.left = new TreeNode(6);
-root.right.right = new TreeNode(7);
 
-// Calculate the sum of all nodes
-const sum = sumBinaryTree(root);
-console.log(sum); // Output: 28 (1 + 2 + 3 + 4 + 5 + 6 + 7)
+// Usage example:
+
+const tree = new BinaryTree();
+tree.insert(5);
+tree.insert(3);
+tree.insert(7);
+tree.insert(2);
+tree.insert(4);
+tree.insert(6);
+tree.insert(8);
+
+console.log(tree.search(6)); // Output: true
+console.log(tree.search(9)); // Output: false
