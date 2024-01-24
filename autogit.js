@@ -1,12 +1,15 @@
-function findStringLength(string) {
-  let count = 0;
-  while (string[count] !== undefined) {
-    count++;
-  }
-  return count;
-}
+let str = "Hello, World! This is a string with spaces.";
+let withoutSpaces = str.replace(/\s/g, "");
 
-// Example usage:
-const text = "Hello, World!";
-const length = findStringLength(text);
-console.log(length); // Output: 13
+console.log(withoutSpaces);
+Hello,World!Thisisastringwithspaces.
+let str = "Hello, World! This is a string with spaces.";
+let withoutSpaces = str.split(" ").join("");
+
+console.log(withoutSpaces);
+Hello,World!Thisisastringwithspaces.
+let str = "Hello, World! This is a string with spaces.";
+let withoutSpaces = str.split('').filter(char => char !== ' ').join('');
+
+console.log(withoutSpaces);
+Hello,World!Thisisastringwithspaces.
