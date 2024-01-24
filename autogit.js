@@ -1,21 +1,12 @@
-function insertionSort(array) {
-  const length = array.length;
-
-  for (let i = 1; i < length; i++) {
-    const temp = array[i];
-    let j = i - 1;
-
-    while (j >= 0 && array[j] > temp) {
-      array[j + 1] = array[j];
-      j--;
-    }
-
-    array[j + 1] = temp;
+function factorial(n) {
+  // Base case: 0! and 1! are both equal to 1
+  if (n === 0 || n === 1) {
+    return 1;
   }
-
-  return array;
+  
+  // Recursive case: call the factorial function with n-1
+  return n * factorial(n - 1);
 }
 
-// Test the function
-const arr = [5, 2, 4, 6, 1, 3];
-console.log(insertionSort(arr)); // Output: [1, 2, 3, 4, 5, 6]
+// Example usage
+console.log(factorial(5));  // Output: 120
