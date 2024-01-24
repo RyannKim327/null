@@ -1,27 +1,25 @@
-function LinkedListNode(value) {
-  this.value = value;
-  this.next = null;
+class ListNode {
+  constructor(val, next = null) {
+    this.val = val;
+    this.next = next;
+  }
 }
 
-function getLinkedListLength(head) {
-  let length = 0;
-  let current = head;
+function findMiddleElement(head) {
+  let slow = head;
+  let fast = head;
 
-  while (current !== null) {
-    length++;
-    current = current.next;
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
   }
 
-  return length;
+  return slow.val;
 }
+const node5 = new ListNode(5);
+const node4 = new ListNode(4, node5);
+const node3 = new ListNode(3, node4);
+const node2 = new ListNode(2, node3);
+const node1 = new ListNode(1, node2);
 
-// Example usage:
-const node1 = new LinkedListNode(5);
-const node2 = new LinkedListNode(10);
-const node3 = new LinkedListNode(15);
-
-node1.next = node2;
-node2.next = node3;
-
-const length = getLinkedListLength(node1);
-console.log(length); // Output: 3
+console.log(findMiddleElement(node1)); // Outputs: 3
