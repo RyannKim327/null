@@ -1,15 +1,25 @@
-let str = "Hello, World! This is a string with spaces.";
-let withoutSpaces = str.replace(/\s/g, "");
+function bwtTransform(input) {
+  // Append EOF (End-of-File) marker
+  const text = input + '$';
 
-console.log(withoutSpaces);
-Hello,World!Thisisastringwithspaces.
-let str = "Hello, World! This is a string with spaces.";
-let withoutSpaces = str.split(" ").join("");
+  // Generate all cyclic rotations of the input string
+  const rotations = [];
+  for (let i = 0; i < text.length; i++) {
+    const rotation = text.slice(i) + text.slice(0, i);
+    rotations.push(rotation);
+  }
 
-console.log(withoutSpaces);
-Hello,World!Thisisastringwithspaces.
-let str = "Hello, World! This is a string with spaces.";
-let withoutSpaces = str.split('').filter(char => char !== ' ').join('');
+  // Sort the rotations lexicographically
+  rotations.sort();
 
-console.log(withoutSpaces);
-Hello,World!Thisisastringwithspaces.
+  // Extract the last characters of each rotation
+  let output = '';
+  for (let i = 0; i < rotations.length; i++) {
+    output += rotations[i].charAt(rotations[i].length - 1);
+  }
+
+  return output;
+}
+const input = 'example';
+const result = bwtTransform(input);
+console.log(result);
