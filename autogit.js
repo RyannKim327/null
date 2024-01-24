@@ -1,21 +1,11 @@
-function binarySearchRecursive(arr, target, start = 0, end = arr.length - 1) {
-  if (start > end) {
-    return -1;
-  }
+function isPalindrome(str) {
+    // Remove all non-alphanumeric characters and convert to lowercase
+    let cleanedStr = str.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
 
-  const mid = Math.floor((start + end) / 2);
-
-  if (arr[mid] === target) {
-    return mid;
-  } else if (arr[mid] > target) {
-    return binarySearchRecursive(arr, target, start, mid - 1);
-  } else {
-    return binarySearchRecursive(arr, target, mid + 1, end);
-  }
+    // Compare the cleaned string with its reverse
+    return cleanedStr === cleanedStr.split('').reverse().join('');
 }
 
-// Example usage:
-const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-const target = 5;
-const index = binarySearchRecursive(arr, target);
-console.log(index); // Output: 4
+// Example usage
+console.log(isPalindrome("racecar"));  // true
+console.log(isPalindrome("hello"));    // false
