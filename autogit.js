@@ -1,29 +1,36 @@
-class TreeNode {
+class Node {
   constructor(value) {
     this.value = value;
-    this.left = null;
-    this.right = null;
+    this.next = null;
   }
 }
-
-function countLeafNodes(node) {
-  if (node === null) {
-    return 0;
+class Queue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
   }
-  
-  if (node.left === null && node.right === null) {
-    return 1;
-  }
-  
-  return countLeafNodes(node.left) + countLeafNodes(node.right);
 }
-// Create the binary tree
-let root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-// Call the function to count leaf nodes
-let leafNodeCount = countLeafNodes(root);
-console.log("Number of leaf nodes:", leafNodeCount);
+enqueue(value) {
+  const newNode = new Node(value);
+  if (this.head === null) {
+    this.head = newNode;
+    this.tail = newNode;
+  } else {
+    this.tail.next = newNode;
+    this.tail = newNode;
+  }
+}
+dequeue() {
+  if (this.head === null) {
+    return null;
+  }
+  const removedNode = this.head;
+  this.head = this.head.next;
+  if (this.head === null) {
+    this.tail = null;
+  }
+  return removedNode.value;
+}
+isEmpty() {
+  return this.head === null && this.tail === null;
+}
