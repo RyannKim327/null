@@ -1,17 +1,8 @@
-function countOccurrences(str, char) {
-  let count = 0;
+var string1 = "Hello";
+var string2 = "world";
 
-  for (let i = 0; i < str.length; i++) {
-    if (str[i] === char) {
-      count++;
-    }
-  }
+var result = string1 + " " + string2; // "Hello world"
+var string1 = "Hello";
+var string2 = "world";
 
-  return count;
-}
-const myString = "hello";
-const myChar = "l";
-const occurrences = countOccurrences(myString, myChar);
-
-console.log(`The character "${myChar}" occurs ${occurrences} time(s) in the string.`);
-The character "l" occurs 2 time(s) in the string.
+var result = string1.concat(" ", string2); // "Hello world"
