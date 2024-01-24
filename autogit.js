@@ -1,24 +1,56 @@
-function findFirstRepeatedChar(str) {
-  // Create an empty set to store unique characters
-  const uniqueChars = new Set();
-
-  // Iterate through each character in the string
-  for (let char of str) {
-    // Check if the character is already in the set
-    if (uniqueChars.has(char)) {
-      // If it is, return the repeated character
-      return char;
-    }
-
-    // Otherwise, add the character to the set
-    uniqueChars.add(char);
+function hash(key, size) {
+  let hash = 5381;
+  for (let i = 0; i < key.length; i++) {
+    hash = (hash * 33) ^ key.charCodeAt(i);
+  }
+  return hash % size;
+}
+class HashTable {
+  constructor(size) {
+    this.size = size;
+    this.table = new Array(size);
   }
 
-  // If no repeated character is found, return null
-  return null;
+  // ...
 }
+put(key, value) {
+  const index = hash(key, this.size);
+  if (!this.table[index]) {
+    this.table[index] = [];
+  }
+  this.table[index].push({ key, value });
+}
+get(key) {
+  const index = hash(key, this.size);
+  if (this.table[index]) {
+    const buckets = this.table[index];
+    for (let i = 0; i < buckets.length; i++) {
+      if (buckets[i].key === key) {
+        return buckets[i].value;
+      }
+    }
+  }
+  return undefined;
+}
+remove(key) {
+  const index = hash(key, this.size);
+  if (this.table[index]) {
+    const buckets = this.table[index];
+    for (let i = 0; i < buckets.length; i++) {
+      if (buckets[i].key === key) {
+        buckets.splice(i, 1);
+        break;
+      }
+    }
+  }
+}
+const myHashTable = new HashTable(10);
 
-// Example usage
-const input = "Hello World!";
-const firstRepeatedChar = findFirstRepeatedChar(input);
-console.log(firstRepeatedChar); // Output: l
+myHashTable.put('name', 'John');
+myHashTable.put('age', 25);
+
+console.log(myHashTable.get('name')); // Output: John
+
+myHashTable.remove('age');
+
+console.log(myHashTable.get('age')); // Output: undefined
