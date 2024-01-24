@@ -1,7 +1,9 @@
-function decimalToBinary(decimal) {
-  return decimal.toString(2);
-}
+const axios = require('axios');
 
-// Example usage
-console.log(decimalToBinary(10));  // Output: 1010
-console.log(decimalToBinary(42));  // Output: 101010
+axios.get('https://api.example.com/data')
+  .then(response => {
+    console.log('Response:', response.data);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
