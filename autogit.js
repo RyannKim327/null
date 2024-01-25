@@ -1,12 +1,14 @@
-let str = "Hello, World!";
-let reversedStr = str.split('').reverse().join('');
-console.log(reversedStr); // Output: "!dlroW ,olleH"
-let str = "Hello, World!";
-let reversedStr = '';
-for (let i = str.length - 1; i >= 0; i--) {
-  reversedStr += str[i];
+function getStringLength(str) {
+  let count = 0;
+  let index = 0;
+
+  while (str[index] !== undefined) {
+    count++;
+    index++;
+  }
+
+  return count;
 }
-console.log(reversedStr); // Output: "!dlroW ,olleH"
-let str = "Hello, World!";
-let reversedStr = Array.from(str).reduce((acc, char) => char + acc, '');
-console.log(reversedStr); // Output: "!dlroW ,olleH"
+let myString = "Hello, world!";
+let length = getStringLength(myString);
+console.log(length); // Output: 13
