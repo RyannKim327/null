@@ -1,29 +1,71 @@
-function burrowsWheelerTransform(text) {
-  // Step 1: Generate all cyclic rotations of the text
-  var rotations = [];
-  for (var i = 0; i < text.length; i++) {
-    rotations.push(text.slice(i) + text.slice(0, i));
+class Queue {
+  constructor() {
+    this.items = [];
   }
 
-  // Step 2: Sort the cyclic rotations lexicographically
-  rotations.sort();
-
-  // Step 3: Get the last characters of each rotation to construct the transformed text
-  var transformedText = '';
-  for (var i = 0; i < rotations.length; i++) {
-    transformedText += rotations[i].charAt(rotations[i].length - 1);
+  enqueue(element) {
+    this.items.push(element);
   }
 
-  // Step 4: Find the index of the original text in the sorted rotations
-  var originalIndex = rotations.indexOf(text);
+  dequeue() {
+    if (this.isEmpty()) {
+      return "Underflow";
+    }
+    return this.items.shift();
+  }
 
-  // Return the transformed text and the original index
-  return [transformedText, originalIndex];
+  isEmpty() {
+    return this.items.length === 0;
+  }
 }
-var inputText = "banana";
-var [transformedText, originalIndex] = burrowsWheelerTransform(inputText);
+class Graph {
+  constructor() {
+    this.adjList = new Map();
+  }
 
-console.log("Transformed Text:", transformedText);
-console.log("Original Index:", originalIndex);
-Transformed Text: annb$aa
-Original Index: 3
+  addNode(node) {
+    this.adjList.set(node, []);
+  }
+
+  addEdge(node1, node2) {
+    this.adjList.get(node1).push(node2);
+    this.adjList.get(node2).push(node1);
+  }
+
+  getNeighbors(node) {
+    return this.adjList.get(node);
+  }
+}
+function breadthFirstSearch(graph, startNode) {
+  let visited = new Set();
+  let queue = new Queue();
+
+  visited.add(startNode);
+  queue.enqueue(startNode);
+
+  while (!queue.isEmpty()) {
+    let currentNode = queue.dequeue();
+    console.log(currentNode);
+
+    let neighbors = graph.getNeighbors(currentNode);
+    for (let neighbor of neighbors) {
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.enqueue(neighbor);
+      }
+    }
+  }
+}
+let graph = new Graph();
+graph.addNode("A");
+graph.addNode("B");
+graph.addNode("C");
+graph.addNode("D");
+graph.addNode("E");
+
+graph.addEdge("A", "B");
+graph.addEdge("A", "C");
+graph.addEdge("B", "D");
+graph.addEdge("C", "E");
+
+breadthFirstSearch(graph, "A");
