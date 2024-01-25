@@ -1,37 +1,37 @@
-function findMajorityElement(arr) {
-  let count = 0;
-  let candidate = null;
+function isPalindrome(str) {
+  // Convert the string to lowercase for case-insensitive comparison
+  str = str.toLowerCase();
 
-  for (let i = 0; i < arr.length; i++) {
-    if (count === 0) {
-      candidate = arr[i];
-      count++;
-    } else {
-      if (candidate === arr[i]) {
-        count++;
-      } else {
-        count--;
-      }
+  // Initialize two pointers, one from the start and one from the end
+  let left = 0;
+  let right = str.length - 1;
+
+  while (left < right) {
+    // Skip non-alphanumeric characters from the left
+    while (!isAlphaNumeric(str[left])) {
+      left++;
     }
-  }
 
-  count = 0; // Reset count to re-verify the majority element
-
-  // Verify if candidate is the majority element
-  for (let i = 0; i < arr.length; i++) {
-    if (candidate === arr[i]) {
-      count++;
+    // Skip non-alphanumeric characters from the right
+    while (!isAlphaNumeric(str[right])) {
+      right--;
     }
+
+    // Compare the characters at both pointers
+    if (str[left] !== str[right]) {
+      return false;
+    }
+
+    // Move the pointers closer
+    left++;
+    right--;
   }
 
-  // Return the majority element if count is more than n/2
-  if (count > arr.length / 2) {
-    return candidate;
-  }
-
-  return "No majority element found";
+  // If the loop completes without returning false, the string is a valid palindrome
+  return true;
 }
 
-// Example usage:
-const arr = [3, 1, 3, 3, 2];
-console.log(findMajorityElement(arr)); // Output: 3
+function isAlphaNumeric(char) {
+  // Regular expression to check if a character is alphanumeric
+  return /[a-z0-9]/i.test(char);
+}
