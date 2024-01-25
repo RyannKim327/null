@@ -1,34 +1,49 @@
-function mergeSort(arr) {
-  if (arr.length <= 1) {
-    return arr;
+class Graph {
+  constructor() {
+    this.vertices = []; // Array to store all the vertices
+    this.edges = {};   // Object to store edges (adjacency list)
   }
 
-  const middle = Math.floor(arr.length / 2);
-  const left = arr.slice(0, middle);
-  const right = arr.slice(middle);
+  addVertex(vertex) {
+    this.vertices.push(vertex);
+    this.edges[vertex] = [];
+  }
 
-  return merge(mergeSort(left), mergeSort(right));
+  addEdge(vertex1, vertex2) {
+    this.edges[vertex1].push(vertex2);
+    this.edges[vertex2].push(vertex1);
+  }
 }
+function breadthFirstSearch(graph, startVertex) {
+  const visited = {};               // Object to store visited vertices
+  const queue = [startVertex];      // Queue to store vertices to visit
 
-function merge(left, right) {
-  let result = [];
-  let leftIndex = 0;
-  let rightIndex = 0;
+  while (queue.length !== 0) {
+    const currentVertex = queue.shift();
+    visited[currentVertex] = true;
 
-  while (leftIndex < left.length && rightIndex < right.length) {
-    if (left[leftIndex] < right[rightIndex]) {
-      result.push(left[leftIndex]);
-      leftIndex++;
-    } else {
-      result.push(right[rightIndex]);
-      rightIndex++;
+    // Process the current vertex (you can print it or perform any other operation)
+    console.log(currentVertex);
+
+    const adjacentVertices = graph.edges[currentVertex];
+    for (let i = 0; i < adjacentVertices.length; i++) {
+      const neighborVertex = adjacentVertices[i];
+      if (!visited[neighborVertex] && !queue.includes(neighborVertex)) {
+        queue.push(neighborVertex);
+      }
     }
   }
-
-  return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
 }
+const graph = new Graph();
 
-// Example usage:
-const arr = [9, 4, 7, 5, 1, 3, 8, 2, 6];
-const sortedArr = mergeSort(arr);
-console.log(sortedArr);
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addVertex('E');
+
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('C', 'E');
+breadthFirstSearch(graph, 'A');
