@@ -1,14 +1,24 @@
-const cron = require('cron');
+function radixSort(arr) {
+  const maxNum = Math.max(...arr);
+  const maxDigitCount = String(maxNum).length;
 
-// Schedule a task to run every minute
-const task = new cron.CronJob('*/1 * * * *', function() {
-  console.log('Task executed at: ', new Date());
-}, null, true, 'America/Los_Angeles');
+  for (let k = 0; k < maxDigitCount; k++) {
+    const buckets = Array.from({ length: 10 }, () => []);
 
-// Start the task
-task.start();
+    for (let num of arr) {
+      const digit = getDigit(num, k);
+      buckets[digit].push(num);
+    }
 
-// Stop the task after 5 minutes
-setTimeout(function() {
-  task.stop();
-}, 5 * 60 * 1000);
+    arr = [].concat(...buckets);
+  }
+
+  return arr;
+}
+
+function getDigit(num, i) {
+  return Math.floor(Math.abs(num) / Math.pow(10, i)) % 10;
+}
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArr = radixSort(arr);
+console.log(sortedArr); // Prints [2, 24, 45, 66, 75, 90, 170, 802]
