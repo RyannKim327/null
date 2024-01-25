@@ -1,33 +1,25 @@
-function findFirstNonRepeatingChar(str) {
-  // Create an empty hashtable (or an object)
-  var charCount = {};
+function longestCommonPrefix(strings) {
+  let prefix = "";
 
-  // Iterate over each character in the string
-  for (var i = 0; i < str.length; i++) {
-    var char = str[i];
-
-    // Increment the count of the character in the hashtable
-    if (charCount[char]) {
-      charCount[char]++;
-    } else {
-      charCount[char] = 1;
-    }
+  if (!strings || strings.length === 0) {
+    return prefix;
   }
 
-  // Iterate over each character in the string again
-  for (var i = 0; i < str.length; i++) {
-    var char = str[i];
+  for (let i = 0; i < strings[0].length; i++) {
+    const char = strings[0][i];
 
-    // Return the first character with a count of 1
-    if (charCount[char] === 1) {
-      return char;
+    for (let j = 1; j < strings.length; j++) {
+      if (strings[j][i] !== char) {
+        return prefix;
+      }
     }
+
+    prefix += char;
   }
 
-  // If no non-repeating character was found, return null
-  return null;
+  return prefix;
 }
+const strings = ["apple", "appstore", "appreciate"];
 
-// Example usage:
-var str = "hello";
-console.log(findFirstNonRepeatingChar(str));  // Output: 'h'
+const commonPrefix = longestCommonPrefix(strings);
+console.log(commonPrefix); // Output: "app"
