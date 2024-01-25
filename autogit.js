@@ -1,10 +1,35 @@
-// Define an array of numbers
-const numbers = [5, 10, 15, 20];
+function topologicalSort(graph) {
+  const result = [];
+  const visited = new Set();
+  
+  function dfs(node) {
+    visited.add(node);
+    graph[node].forEach(neighbor => {
+      if (!visited.has(neighbor)) {
+        dfs(neighbor);
+      }
+    });
+    result.unshift(node);
+  }
+  
+  for (const node in graph) {
+    if (!visited.has(node)) {
+      dfs(node);
+    }
+  }
+  
+  return result;
+}
 
-// Calculate the sum of all numbers
-const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+// Example graph
+const graph = {
+  'a': ['b', 'c'],
+  'b': ['d'],
+  'c': ['d'],
+  'd': [],
+  'e': ['a'],
+  'f': ['a', 'b'],
+};
 
-// Calculate the mean by dividing the sum by the length of the array
-const mean = sum / numbers.length;
-
-console.log(mean); // Output: 12.5
+const sorted = topologicalSort(graph);
+console.log(sorted);  // Output: [ 'e', 'f', 'a', 'c', 'b', 'd' ]
