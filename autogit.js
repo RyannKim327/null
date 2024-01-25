@@ -1,67 +1,16 @@
-class Node {
-  constructor(state, cost, parent, heuristic) {
-    this.state = state;
-    this.cost = cost;
-    this.parent = parent;
-    this.heuristic = heuristic;
-    this.totalCost = cost + heuristic;
-  }
-}
-function aStarSearch(startState, goalState, heuristicFunction) {
-  const open = [];
-  // ...
-}
-const startNode = new Node(startState, 0, null, heuristicFunction(startState, goalState));
-open.push(startNode);
-while (open.length > 0) {
-  const currentNode = open.shift();
-  // ...
-}
-if (currentNode.state === goalState) {
-  return constructPath(currentNode);
-}
-const successors = generateSuccessors(currentNode.state);
-successors.forEach((successor) => {
-  const cost = currentNode.cost + calculateCost(currentNode.state, successor);
-  const heuristic = heuristicFunction(successor, goalState);
-  const newNode = new Node(successor, cost, currentNode, heuristic);
-  open.push(newNode);
-});
-open.sort((a, b) => a.totalCost - b.totalCost);
-class Node {
-  constructor(state, cost, parent, heuristic) {
-    this.state = state;
-    this.cost = cost;
-    this.parent = parent;
-    this.heuristic = heuristic;
-    this.totalCost = cost + heuristic;
-  }
+function isAnagram(str1, str2) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  str1 = str1.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
+  str2 = str2.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
+
+  // Convert strings to arrays, sort them, and compare
+  const sortedStr1 = str1.split('').sort().join('');
+  const sortedStr2 = str2.split('').sort().join('');
+  
+  return sortedStr1 === sortedStr2;
 }
 
-function aStarSearch(startState, goalState, heuristicFunction) {
-  const open = [];
-
-  const startNode = new Node(startState, 0, null, heuristicFunction(startState, goalState));
-  open.push(startNode);
-
-  while (open.length > 0) {
-    const currentNode = open.shift();
-
-    if (currentNode.state === goalState) {
-      return constructPath(currentNode);
-    }
-
-    const successors = generateSuccessors(currentNode.state);
-    successors.forEach((successor) => {
-      const cost = currentNode.cost + calculateCost(currentNode.state, successor);
-      const heuristic = heuristicFunction(successor, goalState);
-      const newNode = new Node(successor, cost, currentNode, heuristic);
-      open.push(newNode);
-    });
-
-    open.sort((a, b) => a.totalCost - b.totalCost);
-  }
-
-  // If goal not found
-  return null;
-}
+// Example usage
+const string1 = "anagram";
+const string2 = "nagaram";
+console.log(isAnagram(string1, string2)); // Output: true
