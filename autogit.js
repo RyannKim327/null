@@ -1,23 +1,8 @@
-function factorialLoop(num) {
-  if (num === 0 || num === 1) {
-    return 1;
-  }
-
-  let result = 1;
-  for (let i = 2; i <= num; i++) {
-    result *= i;
-  }
-
-  return result;
-}
-
-console.log(factorialLoop(5)); // Output: 120
-function factorialRecursive(num) {
-  if (num === 0 || num === 1) {
-    return 1;
-  }
-  
-  return num * factorialRecursive(num - 1);
-}
-
-console.log(factorialRecursive(5)); // Output: 120
+let str1 = "Hello";
+let str2 = "World";
+let concatenatedString = str1 + str2;
+console.log(concatenatedString); // Output: "HelloWorld"
+let str1 = "Hello";
+let str2 = "World";
+let concatenatedString = str1.concat(str2);
+console.log(concatenatedString); // Output: "HelloWorld"
