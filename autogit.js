@@ -1,10 +1,37 @@
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
+function findMajorityElement(arr) {
+  let count = 0;
+  let candidate = null;
 
-let index = array.indexOf(elementToRemove); // Find the index of the element
+  for (let i = 0; i < arr.length; i++) {
+    if (count === 0) {
+      candidate = arr[i];
+      count++;
+    } else {
+      if (candidate === arr[i]) {
+        count++;
+      } else {
+        count--;
+      }
+    }
+  }
 
-if (index !== -1) {
-  array.splice(index, 1); // Remove the element at the given index
+  count = 0; // Reset count to re-verify the majority element
+
+  // Verify if candidate is the majority element
+  for (let i = 0; i < arr.length; i++) {
+    if (candidate === arr[i]) {
+      count++;
+    }
+  }
+
+  // Return the majority element if count is more than n/2
+  if (count > arr.length / 2) {
+    return candidate;
+  }
+
+  return "No majority element found";
 }
 
-console.log(array); // Output: [1, 2, 4, 5]
+// Example usage:
+const arr = [3, 1, 3, 3, 2];
+console.log(findMajorityElement(arr)); // Output: 3
