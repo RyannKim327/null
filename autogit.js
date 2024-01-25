@@ -1,58 +1,20 @@
-function tarjanSCC(graph) {
-  const stack = [];
-  let index = 0;
-  const components = [];
+function hasCycle(head) {
+  let slow = head; // Slow pointer moves one node at a time
+  let fast = head; // Fast pointer moves two nodes at a time
 
-  function tarjanDFS(node) {
-    node.index = index;
-    node.lowLink = index;
-    index++;
-    stack.push(node);
-    node.onStack = true;
+  while (fast !== null && fast.next !== null) {
+    // Move slow pointer one step
+    slow = slow.next;
 
-    for (const neighbor of graph[node.id]) {
-      if (neighbor.index === undefined) {
-        tarjanDFS(neighbor);
-        node.lowLink = Math.min(node.lowLink, neighbor.lowLink);
-      } else if (neighbor.onStack) {
-        node.lowLink = Math.min(node.lowLink, neighbor.index);
-      }
-    }
+    // Move fast pointer two steps
+    fast = fast.next.next;
 
-    if (node.lowLink === node.index) {
-      const component = [];
-      let neighbor;
-      
-      do {
-        neighbor = stack.pop();
-        neighbor.onStack = false;
-        component.push(neighbor);
-      } while (neighbor !== node);
-
-      components.push(component);
+    // If slow and fast pointers meet, there is a cycle
+    if (slow === fast) {
+      return true;
     }
   }
 
-  for (const node of Object.values(graph)) {
-    if (node.index === undefined) {
-      tarjanDFS(node);
-    }
-  }
-
-  return components;
+  // If fast pointer reaches the end (null), no cycle exists
+  return false;
 }
-
-// Example usage:
-const graph = {
-  A: ['B'],
-  B: ['C', 'E', 'F'],
-  C: ['D', 'G'],
-  D: ['C', 'H'],
-  E: ['A', 'F'],
-  F: ['G'],
-  G: ['F'],
-  H: ['D', 'G'],
-};
-
-const stronglyConnectedComponents = tarjanSCC(graph);
-console.log(stronglyConnectedComponents);
