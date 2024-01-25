@@ -1,81 +1,36 @@
-class Graph {
-  constructor() {
-    this.vertices = {};
-  }
-
-  addVertex(vertex) {
-    this.vertices[vertex] = {};
-  }
-
-  addEdge(source, target, weight) {
-    this.vertices[source][target] = weight;
-    this.vertices[target][source] = weight;
-  }
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
 }
 
-function dijkstra(graph, source) {
-  const distances = {};
-  const previous = {};
-  const unvisited = new Set();
-
-  Object.keys(graph.vertices).forEach((vertex) => {
-    distances[vertex] = Infinity;
-    previous[vertex] = null;
-    unvisited.add(vertex);
-  });
-
-  distances[source] = 0;
-
-  while (unvisited.size > 0) {
-    let currentVertex = null;
-    unvisited.forEach((vertex) => {
-      if (!currentVertex || distances[vertex] < distances[currentVertex]) {
-        currentVertex = vertex;
-      }
-    });
-
-    unvisited.delete(currentVertex);
-
-    Object.keys(graph.vertices[currentVertex]).forEach((neighbor) => {
-      const weight = graph.vertices[currentVertex][neighbor];
-      const distance = distances[currentVertex] + weight;
-      if (distance < distances[neighbor]) {
-        distances[neighbor] = distance;
-        previous[neighbor] = currentVertex;
-      }
-    });
-  }
-
-  return { distances, previous };
+function countLeafNodes(root) {
+    if (root === null) {
+        return 0;
+    }
+    
+    if (root.left === null && root.right === null) {
+        // Leaf node
+        return 1;
+    }
+    
+    const leftCount = countLeafNodes(root.left);
+    const rightCount = countLeafNodes(root.right);
+    
+    return leftCount + rightCount;
 }
 
-function shortestPath(previous, target) {
-  const path = [target];
-  let vertex = target;
-  while (previous[vertex]) {
-    vertex = previous[vertex];
-    path.unshift(vertex);
-  }
-  return path;
-}
+// Create a binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
+root.right.right.left = new Node(8);
 
-// Example usage:
-
-const graph = new Graph();
-
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
-
-graph.addEdge('A', 'B', 4);
-graph.addEdge('A', 'C', 2);
-graph.addEdge('B', 'E', 3);
-graph.addEdge('C', 'D', 2);
-graph.addEdge('D', 'E', 3);
-
-const { distances, previous } = dijkstra(graph, 'A');
-
-console.log('Distances:', distances);
-console.log('Shortest Path:', shortestPath(previous, 'E'));
+const leafNodeCount = countLeafNodes(root);
+console.log("Number of leaf nodes: " + leafNodeCount);
