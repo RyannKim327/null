@@ -1,16 +1,14 @@
-function isAnagram(str1, str2) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  str1 = str1.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
-  str2 = str2.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
+const cron = require('cron');
 
-  // Convert strings to arrays, sort them, and compare
-  const sortedStr1 = str1.split('').sort().join('');
-  const sortedStr2 = str2.split('').sort().join('');
-  
-  return sortedStr1 === sortedStr2;
-}
+// Schedule a task to run every minute
+const task = new cron.CronJob('*/1 * * * *', function() {
+  console.log('Task executed at: ', new Date());
+}, null, true, 'America/Los_Angeles');
 
-// Example usage
-const string1 = "anagram";
-const string2 = "nagaram";
-console.log(isAnagram(string1, string2)); // Output: true
+// Start the task
+task.start();
+
+// Stop the task after 5 minutes
+setTimeout(function() {
+  task.stop();
+}, 5 * 60 * 1000);
