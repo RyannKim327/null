@@ -1,15 +1,42 @@
-function areAnagrams(str1, str2) {
-  // Remove spaces and special characters, and convert to lowercase
-  str1 = str1.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
-  str2 = str2.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+function breadthLimitedSearch(initialState, goalState, maxDepth) {
+  let queue = [];
+  queue.push({ state: initialState, parent: null, depth: 0 });
 
-  // Sort the characters
-  str1 = str1.split("").sort().join("");
-  str2 = str2.split("").sort().join("");
+  while (queue.length > 0) {
+    let currentNode = queue.shift();
 
-  // Compare the sorted strings
-  return str1 === str2;
+    if (currentNode.state === goalState) {
+      return getPath(currentNode);
+    }
+
+    if (currentNode.depth < maxDepth) {
+      let successorStates = getSuccessorStates(currentNode.state);
+      successorStates.forEach((successorState) => {
+        queue.push({
+          state: successorState,
+          parent: currentNode,
+          depth: currentNode.depth + 1,
+        });
+      });
+    }
+  }
+
+  return null; // No solution found
 }
-const string1 = "listen";
-const string2 = "silent";
-console.log(areAnagrams(string1, string2)); // Output: true
+
+function getSuccessorStates(state) {
+  // Implement your code to generate successor states based on the current state
+  // Example: return an array of successor states
+}
+
+function getPath(node) {
+  let path = [];
+  let currentNode = node;
+
+  while (currentNode !== null) {
+    path.unshift(currentNode.state);
+    currentNode = currentNode.parent;
+  }
+
+  return path;
+}
