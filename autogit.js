@@ -1,43 +1,39 @@
-function heapSort(arr) {
-  // Build Max Heap
-  function buildHeap(arr) {
-    const len = arr.length;
-    for (let i = Math.floor(len / 2) - 1; i >= 0; i--) {
-      heapify(arr, len, i);
+function breadthLimitedSearch(startNode, goalNode, depthLimit) {
+  const queue = [startNode];
+  const visited = new Set();
+  
+  while (queue.length > 0) {
+    const currentNode = queue.shift();
+    
+    if (currentNode === goalNode || currentNode.depth === depthLimit) {
+      return currentNode;
+    }
+    
+    if (!visited.has(currentNode)) {
+      visited.add(currentNode);
+      
+      // Process the current node here
+      
+      const neighbors = generateNeighbors(currentNode);
+      for (const neighbor of neighbors) {
+        if (!visited.has(neighbor) && neighbor.depth <= depthLimit) {
+          queue.push(neighbor);
+        }
+      }
     }
   }
-
-  // Heapify a subtree rooted with index i
-  function heapify(arr, len, i) {
-    let largest = i;
-    const left = 2 * i + 1;
-    const right = 2 * i + 2;
-
-    if (left < len && arr[left] > arr[largest]) {
-      largest = left;
-    }
-
-    if (right < len && arr[right] > arr[largest]) {
-      largest = right;
-    }
-
-    if (largest !== i) {
-      [arr[i], arr[largest]] = [arr[largest], arr[i]];
-      heapify(arr, len, largest);
-    }
-  }
-
-  // Perform Heap Sort
-  const len = arr.length;
-  buildHeap(arr);
-  for (let i = len - 1; i >= 0; i--) {
-    [arr[0], arr[i]] = [arr[i], arr[0]];
-    heapify(arr, i, 0);
-  }
-
-  return arr;
+  
+  return null; // No solution found within the depth limit
 }
 
-// Example usage:
-const array = [7, 2, 9, 1, 6, 5, 3];
-console.log(heapSort(array)); // [1, 2, 3, 5, 6, 7, 9]
+// Example usage
+const startNode = { value: 'A', depth: 0 };
+const goalNode = { value: 'F' };
+const depthLimit = 3;
+
+const solution = breadthLimitedSearch(startNode, goalNode, depthLimit);
+if (solution) {
+  console.log('Solution found:', solution.value);
+} else {
+  console.log('No solution found within the depth limit');
+}
