@@ -1,13 +1,12 @@
-function factorial(num) {
-  let result = 1;
-  for (let i = 2; i <= num; i++) {
-    result *= i;
-  }
-  return result;
+let str = "Hello, World!";
+let reversedStr = str.split("").reverse().join("");
+console.log(reversedStr); // Output: "!dlroW ,olleH"
+let str = "Hello, World!";
+let reversedStr = "";
+for (let i = str.length - 1; i >= 0; i--) {
+  reversedStr += str.charAt(i);
 }
-function factorial(num) {
-  if (num === 0 || num === 1) {
-    return 1;
-  }
-  return num * factorial(num - 1);
-}
+console.log(reversedStr); // Output: "!dlroW ,olleH"
+let str = "Hello, World!";
+let reversedStr = [...str].reverse().join("");
+console.log(reversedStr); // Output: "!dlroW ,olleH"
