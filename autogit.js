@@ -1,49 +1,28 @@
-class Graph {
-  constructor() {
-    this.vertices = []; // Array to store all the vertices
-    this.edges = {};   // Object to store edges (adjacency list)
-  }
+function depthLimitedSearchIterative(root, target, depthLimit) {
+  // Create an empty stack
+  const stack = [];
 
-  addVertex(vertex) {
-    this.vertices.push(vertex);
-    this.edges[vertex] = [];
-  }
+  // Push the root node to the stack along with its current depth
+  stack.push({ node: root, depth: 0 });
 
-  addEdge(vertex1, vertex2) {
-    this.edges[vertex1].push(vertex2);
-    this.edges[vertex2].push(vertex1);
-  }
-}
-function breadthFirstSearch(graph, startVertex) {
-  const visited = {};               // Object to store visited vertices
-  const queue = [startVertex];      // Queue to store vertices to visit
+  while (stack.length > 0) {
+    // Pop the top node from the stack
+    const { node, depth } = stack.pop();
 
-  while (queue.length !== 0) {
-    const currentVertex = queue.shift();
-    visited[currentVertex] = true;
+    // Check if the target is found
+    if (node === target) {
+      return node; // Target found, return the node
+    }
 
-    // Process the current vertex (you can print it or perform any other operation)
-    console.log(currentVertex);
-
-    const adjacentVertices = graph.edges[currentVertex];
-    for (let i = 0; i < adjacentVertices.length; i++) {
-      const neighborVertex = adjacentVertices[i];
-      if (!visited[neighborVertex] && !queue.includes(neighborVertex)) {
-        queue.push(neighborVertex);
+    // Check if the depth limit has been reached
+    if (depth < depthLimit) {
+      // Push the child nodes to the stack in reverse order
+      for (const child of node.children.reverse()) {
+        stack.push({ node: child, depth: depth + 1 });
       }
     }
   }
+
+  // Target not found within the depth limit
+  return null;
 }
-const graph = new Graph();
-
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
-
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('C', 'E');
-breadthFirstSearch(graph, 'A');
