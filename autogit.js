@@ -1,24 +1,81 @@
-function radixSort(arr) {
-  const maxNum = Math.max(...arr);
-  const maxDigitCount = String(maxNum).length;
-
-  for (let k = 0; k < maxDigitCount; k++) {
-    const buckets = Array.from({ length: 10 }, () => []);
-
-    for (let num of arr) {
-      const digit = getDigit(num, k);
-      buckets[digit].push(num);
-    }
-
-    arr = [].concat(...buckets);
+class Graph {
+  constructor() {
+    this.vertices = {};
   }
 
-  return arr;
+  addVertex(vertex) {
+    this.vertices[vertex] = {};
+  }
+
+  addEdge(source, target, weight) {
+    this.vertices[source][target] = weight;
+    this.vertices[target][source] = weight;
+  }
 }
 
-function getDigit(num, i) {
-  return Math.floor(Math.abs(num) / Math.pow(10, i)) % 10;
+function dijkstra(graph, source) {
+  const distances = {};
+  const previous = {};
+  const unvisited = new Set();
+
+  Object.keys(graph.vertices).forEach((vertex) => {
+    distances[vertex] = Infinity;
+    previous[vertex] = null;
+    unvisited.add(vertex);
+  });
+
+  distances[source] = 0;
+
+  while (unvisited.size > 0) {
+    let currentVertex = null;
+    unvisited.forEach((vertex) => {
+      if (!currentVertex || distances[vertex] < distances[currentVertex]) {
+        currentVertex = vertex;
+      }
+    });
+
+    unvisited.delete(currentVertex);
+
+    Object.keys(graph.vertices[currentVertex]).forEach((neighbor) => {
+      const weight = graph.vertices[currentVertex][neighbor];
+      const distance = distances[currentVertex] + weight;
+      if (distance < distances[neighbor]) {
+        distances[neighbor] = distance;
+        previous[neighbor] = currentVertex;
+      }
+    });
+  }
+
+  return { distances, previous };
 }
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedArr = radixSort(arr);
-console.log(sortedArr); // Prints [2, 24, 45, 66, 75, 90, 170, 802]
+
+function shortestPath(previous, target) {
+  const path = [target];
+  let vertex = target;
+  while (previous[vertex]) {
+    vertex = previous[vertex];
+    path.unshift(vertex);
+  }
+  return path;
+}
+
+// Example usage:
+
+const graph = new Graph();
+
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addVertex('E');
+
+graph.addEdge('A', 'B', 4);
+graph.addEdge('A', 'C', 2);
+graph.addEdge('B', 'E', 3);
+graph.addEdge('C', 'D', 2);
+graph.addEdge('D', 'E', 3);
+
+const { distances, previous } = dijkstra(graph, 'A');
+
+console.log('Distances:', distances);
+console.log('Shortest Path:', shortestPath(previous, 'E'));
