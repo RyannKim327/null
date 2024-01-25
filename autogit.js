@@ -1,12 +1,14 @@
-function validateEmail(email) {
-  // Regular expression pattern to validate email addresses
-  var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  
-  // Test if the email matches the pattern
-  return emailPattern.test(email);
+function findMaxSubarray(arr) {
+  let maxSoFar = arr[0];
+  let currentMax = arr[0];
+
+  for (let i = 1; i < arr.length; i++) {
+    currentMax = Math.max(arr[i], currentMax + arr[i]);
+    maxSoFar = Math.max(maxSoFar, currentMax);
+  }
+
+  return maxSoFar;
 }
-
-// Example usage
-var email = "test@example.com";
-console.log(validateEmail(email));
-
+const array = [1, -2, 3, 10, -4, 7, 2, -5];
+const maxSum = findMaxSubarray(array);
+console.log(maxSum); // Output: 18
