@@ -1,39 +1,19 @@
-function breadthLimitedSearch(startNode, goalNode, depthLimit) {
-  const queue = [startNode];
-  const visited = new Set();
+function insertionSort(arr) {
+  const len = arr.length;
   
-  while (queue.length > 0) {
-    const currentNode = queue.shift();
-    
-    if (currentNode === goalNode || currentNode.depth === depthLimit) {
-      return currentNode;
+  for (let i = 1; i < len; i++) {
+    let currentValue = arr[i];
+    let j = i - 1;
+
+    while (j >= 0 && arr[j] > currentValue) {
+      arr[j + 1] = arr[j];
+      j--;
     }
-    
-    if (!visited.has(currentNode)) {
-      visited.add(currentNode);
-      
-      // Process the current node here
-      
-      const neighbors = generateNeighbors(currentNode);
-      for (const neighbor of neighbors) {
-        if (!visited.has(neighbor) && neighbor.depth <= depthLimit) {
-          queue.push(neighbor);
-        }
-      }
-    }
+
+    arr[j + 1] = currentValue;
   }
-  
-  return null; // No solution found within the depth limit
-}
 
-// Example usage
-const startNode = { value: 'A', depth: 0 };
-const goalNode = { value: 'F' };
-const depthLimit = 3;
-
-const solution = breadthLimitedSearch(startNode, goalNode, depthLimit);
-if (solution) {
-  console.log('Solution found:', solution.value);
-} else {
-  console.log('No solution found within the depth limit');
+  return arr;
 }
+const array = [5, 3, 8, 2, 1, 4];
+console.log(insertionSort(array)); // [1, 2, 3, 4, 5, 8]
