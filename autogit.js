@@ -1,74 +1,76 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
-class BinarySearchTree {
-  constructor() {
-    this.root = null;
-  }
-}
-class BinarySearchTree {
-  // ...
+function bellmanFord(graph, source) {
+  const vertices = Object.keys(graph);
+  const distance = {};
+  const prev = {};
+  let hasNegativeCycle = false;
 
-  insert(value) {
-    const newNode = new Node(value);
-  
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
+  // Step 1: Initialize distances
+  for (let i = 0; i < vertices.length; i++) {
+    distance[vertices[i]] = Infinity;
   }
+  distance[source] = 0;
 
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
+  // Step 2: Relax edges repeatedly
+  for (let i = 0; i < vertices.length - 1; i++) {
+    let changes = false;
+
+    for (let j = 0; j < vertices.length; j++) {
+      const u = vertices[j];
+
+      for (const v in graph[u]) {
+        const weight = graph[u][v];
+        if (distance[u] + weight < distance[v]) {
+          distance[v] = distance[u] + weight;
+          prev[v] = u;
+          changes = true;
+        }
       }
     }
-  }
-}
-class BinarySearchTree {
-  // ...
 
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  searchNode(node, value) {
-    if (node === null) {
-      return null;
-    } else if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else if (value > node.value) {
-      return this.searchNode(node.right, value);
-    } else {
-      return node;
+    // Optimization: If no changes are made in an iteration, break the loop
+    if (!changes) {
+      break;
     }
   }
+
+  // Step 3: Check for negative weight cycles
+  for (let i = 0; i < vertices.length; i++) {
+    const u = vertices[i];
+    for (const v in graph[u]) {
+      const weight = graph[u][v];
+      if (distance[u] + weight < distance[v]) {
+        hasNegativeCycle = true;
+        break;
+      }
+    }
+  }
+
+  // Step 4: Build the shortest path
+  function buildPath(destination) {
+    const path = [destination];
+    let vertex = destination;
+
+    while (prev[vertex] !== undefined) {
+      vertex = prev[vertex];
+      path.unshift(vertex);
+    }
+
+    return path;
+  }
+
+  return { distance, hasNegativeCycle, buildPath };
 }
-const bst = new BinarySearchTree();
 
-bst.insert(8);
-bst.insert(3);
-bst.insert(10);
-bst.insert(1);
-bst.insert(6);
-bst.insert(14);
-bst.insert(4);
-bst.insert(7);
-bst.insert(13);
+// Example usage:
+const graph = {
+  A: { B: 4, C: 2 },
+  B: { D: 5 },
+  C: { B: -1, D: 1 },
+  D: {},
+};
+const source = "A";
 
-console.log(bst.search(6)); // Output: Node { value: 6, left: Node {...}, right: Node {...} }
-console.log(bst.search(12)); // Output: null
+const { distance, hasNegativeCycle, buildPath } = bellmanFord(graph, source);
+console.log("Distance:", distance);
+console.log("Negative Cycle:", hasNegativeCycle);
+console.log("Shortest Path (A -> D):", buildPath("D"));
