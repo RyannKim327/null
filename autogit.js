@@ -1,14 +1,12 @@
-function findMaxSubarray(arr) {
-  let maxSoFar = arr[0];
-  let currentMax = arr[0];
-
-  for (let i = 1; i < arr.length; i++) {
-    currentMax = Math.max(arr[i], currentMax + arr[i]);
-    maxSoFar = Math.max(maxSoFar, currentMax);
+function randomSort(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
-
-  return maxSoFar;
+  return arr;
 }
-const array = [1, -2, 3, 10, -4, 7, 2, -5];
-const maxSum = findMaxSubarray(array);
-console.log(maxSum); // Output: 18
+
+// Example usage
+const myArray = [1, 2, 3, 4, 5];
+console.log("Original Array:", myArray);
+console.log("Randomly Sorted Array:", randomSort(myArray));
