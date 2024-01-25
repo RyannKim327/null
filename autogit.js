@@ -1,12 +1,20 @@
-const axios = require('axios');
+function isPrime(num) {
+  // 1 and numbers less than 1 are not prime
+  if (num <= 1) {
+    return false;
+  }
+  
+  // Check if num is divisible by any number up to its square root
+  for (let i = 2; i <= Math.sqrt(num); i++) {
+    if (num % i === 0) {
+      return false;
+    }
+  }
+  
+  // num is a prime number
+  return true;
+}
 
-// Make a GET request to a JSON placeholder API
-axios.get('https://jsonplaceholder.typicode.com/posts')
-  .then(response => {
-    // Handle the response data
-    console.log(response.data);
-  })
-  .catch(error => {
-    // Handle any errors
-    console.error(error);
-  });
+// Testing the function
+console.log(isPrime(29));  // Output: true
+console.log(isPrime(16));  // Output: false
