@@ -1,41 +1,139 @@
-function longestCommonSubsequence(str1, str2) {
-  const m = str1.length;
-  const n = str2.length;
-  
-  // Initialize the matrix
-  const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+class SkipList {
+  constructor() {
+    this.head = new SkipNode(-Infinity);
+    this.tail = new SkipNode(Infinity);
+    this.head.next = this.tail;
+    this.tail.previous = this.head;
+  }
 
-  // Build the matrix
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1; // Increase the count by 1
+  // implementation of insertion, deletion, search, and display methods goes here
+}
+class SkipNode {
+  constructor(value = null, previous = null, next = null, down = null) {
+    this.value = value;
+    this.previous = previous;
+    this.next = next;
+    this.down = down;
+  }
+}
+class SkipList {
+  // ...
+
+  insert(value) {
+    const path = []; // keep track of the nodes visited at each level
+    let current = this.head;
+
+    // Find the appropriate insertion position in each level
+    while (current.down) {
+      while (current.next.value < value) {
+        current = current.next;
+      }
+      path.push(current);
+      current = current.down;
+    }
+
+    // Insert the new node at the bottom level
+    let newNode = new SkipNode(value, current, current.next);
+    current.next.previous = newNode;
+    current.next = newNode;
+
+    // Build the tower up
+    while (Math.random() < 0.5) {
+      // Check if we need to create a new level
+      if (path.length === 0) {
+        let newHead = new SkipNode(-Infinity, null, null, this.head);
+        let newTail = new SkipNode(Infinity, null, null, this.tail);
+        newHead.next = newTail;
+        newTail.previous = newHead;
+        this.head = newHead;
+        this.tail = newTail;
+        this.head.down = current.down;
+        this.tail.down = newNode.down;
+      }
+
+      // Move up the path
+      let prev = path.pop();
+      while (!prev.down) {
+        prev = path.pop();
+      }
+
+      // Insert the new node at the upper level
+      newNode = new SkipNode(value, prev, prev.next, newNode);
+      prev.next.previous = newNode;
+      prev.next = newNode;
+    }
+  }
+
+  // ...
+}
+class SkipList {
+  // ...
+
+  search(value) {
+    let current = this.head;
+
+    // Traverse the skip list until value is found or the bottom level is reached
+    while (current !== null) {
+      if (current.next.value === value) {
+        return current.next;
+      } else if (current.next.value < value) {
+        current = current.next;
+      } else if (current.down) {
+        current = current.down;
       } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]); // Take the maximum of the previous counts
+        break;
       }
     }
+
+    return null; // Not found
   }
-  
-  // Retrieve the longest common subsequence
-  let i = m, j = n;
-  const lcs = [];
-  
-  while (i > 0 && j > 0) {
-    if (str1[i - 1] === str2[j - 1]) {
-      lcs.unshift(str1[i - 1]); // Add the character to the beginning of the array
-      i--;
-      j--;
-    } else if (dp[i - 1][j] > dp[i][j - 1]) {
-      i--;
-    } else {
-      j--;
+
+  // ...
+}
+class SkipList {
+  // ...
+
+  delete(value) {
+    let current = this.search(value);
+    if (current === null) {
+      return; // Value not found, no deletion required
+    }
+
+    // Delete the node from all levels
+    while (current !== null) {
+      current.previous.next = current.next;
+      current.next.previous = current.previous;
+      current = current.down;
     }
   }
 
-  return lcs.join('');
+  // ...
+}
+class SkipList {
+  // ...
+
+  display() {
+    let level = this.head;
+    let current = level;
+
+    while (current.down) {
+      level = level.down;
+      current = level;
+      let result = '';
+      while (current.next !== this.tail) {
+        result += current.next.value + ' ';
+        current = current.next;
+      }
+      console.log(result.trim());
+    }
+  }
 }
 
-// Example usage
-const str1 = "ABCDGH";
-const str2 = "AEDFHR";
-console.log(longestCommonSubsequence(str1, str2)); // Output: "ADH"
+// Example usage:
+const skipList = new SkipList();
+skipList.insert(5);
+skipList.insert(10);
+skipList.insert(2);
+skipList.insert(8);
+skipList.insert(15);
+skipList.display(); // Output: 2 5 8 10 15
