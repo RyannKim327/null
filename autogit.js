@@ -1,37 +1,15 @@
 function isPalindrome(str) {
-  // Convert the string to lowercase for case-insensitive comparison
-  str = str.toLowerCase();
+  // Convert to lowercase and remove non-alphanumeric characters
+  str = str.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-  // Initialize two pointers, one from the start and one from the end
-  let left = 0;
-  let right = str.length - 1;
+  // Create the reversed copy
+  var reversed = str.split('').reverse().join('');
 
-  while (left < right) {
-    // Skip non-alphanumeric characters from the left
-    while (!isAlphaNumeric(str[left])) {
-      left++;
-    }
-
-    // Skip non-alphanumeric characters from the right
-    while (!isAlphaNumeric(str[right])) {
-      right--;
-    }
-
-    // Compare the characters at both pointers
-    if (str[left] !== str[right]) {
-      return false;
-    }
-
-    // Move the pointers closer
-    left++;
-    right--;
-  }
-
-  // If the loop completes without returning false, the string is a valid palindrome
-  return true;
+  // Compare the original string with the reversed copy
+  return str === reversed;
 }
 
-function isAlphaNumeric(char) {
-  // Regular expression to check if a character is alphanumeric
-  return /[a-z0-9]/i.test(char);
-}
+// Test cases
+console.log(isPalindrome('level')); // true
+console.log(isPalindrome('algorithm')); // false
+console.log(isPalindrome('A man, a plan, a canal, Panama!')); // true
