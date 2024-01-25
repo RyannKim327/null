@@ -1,71 +1,87 @@
-class Queue {
-  constructor() {
-    this.items = [];
+class Node {
+  constructor(state, parent, gScore, hScore) {
+    this.state = state;
+    this.parent = parent;
+    this.gScore = gScore;
+    this.hScore = hScore;
+    this.fScore = gScore + hScore;
   }
+}
+function aStarSearch(start, goal, heuristic, getNeighbours) {
+  // Create open and closed sets
+  const openSet = [start];
+  const closedSet = [];
 
-  enqueue(element) {
-    this.items.push(element);
-  }
+  // Set gScore for start node to 0
+  start.gScore = 0;
 
-  dequeue() {
-    if (this.isEmpty()) {
-      return "Underflow";
+  while (openSet.length > 0) {
+    // Find the node in the open set with the lowest fScore
+    const current = openSet.reduce((a, b) => (b.fScore < a.fScore ? b : a));
+
+    // If the current node is the goal, we're done
+    if (current === goal) {
+      return reconstructPath(current);
     }
-    return this.items.shift();
-  }
 
-  isEmpty() {
-    return this.items.length === 0;
-  }
-}
-class Graph {
-  constructor() {
-    this.adjList = new Map();
-  }
+    // Move current node from open set to closed set
+    openSet.splice(openSet.indexOf(current), 1);
+    closedSet.push(current);
 
-  addNode(node) {
-    this.adjList.set(node, []);
-  }
+    // Get neighbors of the current node
+    const neighbors = getNeighbours(current);
 
-  addEdge(node1, node2) {
-    this.adjList.get(node1).push(node2);
-    this.adjList.get(node2).push(node1);
-  }
-
-  getNeighbors(node) {
-    return this.adjList.get(node);
-  }
-}
-function breadthFirstSearch(graph, startNode) {
-  let visited = new Set();
-  let queue = new Queue();
-
-  visited.add(startNode);
-  queue.enqueue(startNode);
-
-  while (!queue.isEmpty()) {
-    let currentNode = queue.dequeue();
-    console.log(currentNode);
-
-    let neighbors = graph.getNeighbors(currentNode);
-    for (let neighbor of neighbors) {
-      if (!visited.has(neighbor)) {
-        visited.add(neighbor);
-        queue.enqueue(neighbor);
+    for (const neighbor of neighbors) {
+      // Skip neighbor if it is already in the closed set
+      if (closedSet.includes(neighbor)) {
+        continue;
       }
+
+      // Calculate tentative gScore for the neighbor
+      const tentativeGScore = current.gScore + 1;
+
+      // If neighbor is not in the open set, add it
+      if (!openSet.includes(neighbor)) {
+        openSet.push(neighbor);
+      }
+      // If the tentative gScore is higher than neighbor's gScore, skip
+      else if (tentativeGScore >= neighbor.gScore) {
+        continue;
+      }
+
+      // Update the parent, gScore and fScore of neighbor
+      neighbor.parent = current;
+      neighbor.gScore = tentativeGScore;
+      neighbor.fScore = neighbor.gScore + heuristic(neighbor, goal);
     }
   }
+
+  // No path found
+  return null;
 }
-let graph = new Graph();
-graph.addNode("A");
-graph.addNode("B");
-graph.addNode("C");
-graph.addNode("D");
-graph.addNode("E");
+function heuristic(node, goal) {
+  // Manhattan distance heuristic
+  const dx = Math.abs(node.state.x - goal.state.x);
+  const dy = Math.abs(node.state.y - goal.state.y);
+  return dx + dy;
+}
 
-graph.addEdge("A", "B");
-graph.addEdge("A", "C");
-graph.addEdge("B", "D");
-graph.addEdge("C", "E");
+function getNeighbors(node) {
+  const neighbors = [];
 
-breadthFirstSearch(graph, "A");
+  // Implement logic to get neighbors of the node
+  // e.g., check adjacent cells in a grid
+
+  return neighbors;
+}
+function reconstructPath(node) {
+  const path = [node];
+  let current = node;
+
+  while (current.parent) {
+    path.unshift(current.parent);
+    current = current.parent;
+  }
+
+  return path;
+}
