@@ -1,12 +1,9 @@
-let str = "Hello, World!";
-let reversedStr = str.split("").reverse().join("");
-console.log(reversedStr); // Output: "!dlroW ,olleH"
-let str = "Hello, World!";
-let reversedStr = "";
-for (let i = str.length - 1; i >= 0; i--) {
-  reversedStr += str.charAt(i);
-}
-console.log(reversedStr); // Output: "!dlroW ,olleH"
-let str = "Hello, World!";
-let reversedStr = [...str].reverse().join("");
-console.log(reversedStr); // Output: "!dlroW ,olleH"
+const axios = require('axios');
+
+axios.get('https://jsonplaceholder.typicode.com/posts')
+  .then(response => {
+    console.log('Response:', response.data);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
