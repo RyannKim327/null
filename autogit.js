@@ -1,56 +1,30 @@
-class Queue {
-  constructor() {
-    this.items = [];
-  }
-
-  enqueue(item) {
-    this.items.push(item);
-  }
-
-  dequeue() {
-    if (this.isEmpty()) {
-      return null;
+function depthLimitedSearch(initialState, depthLimit, otherParams) {
+  function recursiveDLS(state, depth, otherParams) {
+    if (isGoalState(state)) {
+      return state; // Found the solution
     }
-    return this.items.shift();
-  }
 
-  isEmpty() {
-    return this.items.length === 0;
-  }
-}
+    if (depth === 0) {
+      return -1; // Reached the depth limit
+    }
 
-function breadthLimitedSearch(startNode, goalNode, depthLimit) {
-  if (startNode === goalNode) {
-    return startNode;
-  }
-
-  const queue = new Queue();
-  queue.enqueue({ node: startNode, depth: 0 });
-
-  while (!queue.isEmpty()) {
-    const { node, depth } = queue.dequeue();
-
-    if (depth < depthLimit) {
-      for (let child of node.children) {
-        if (child === goalNode) {
-          return child;
-        }
-        queue.enqueue({ node: child, depth: depth + 1 });
+    let cutoffOccurred = false;
+    const successors = generateSuccessors(state);
+    for (let i = 0; i < successors.length; i++) {
+      const result = recursiveDLS(successors[i], depth - 1, otherParams);
+      if (result === -1) {
+        cutoffOccurred = true;
+      } else if (result !== -1) {
+        return result; // Found the solution
       }
     }
+
+    if (cutoffOccurred) {
+      return -1; // Cutoff occurred
+    } else {
+      return -2; // No solution within depth limit
+    }
   }
 
-  return null; // Return null if goal node is not found within depth limit
+  return recursiveDLS(initialState, depthLimit, otherParams);
 }
-
-// Usage example:
-const nodeA = { name: 'A', children: [] };
-const nodeB = { name: 'B', children: [] };
-const nodeC = { name: 'C', children: [] };
-const nodeD = { name: 'D', children: [] };
-
-nodeA.children = [nodeB, nodeC];
-nodeB.children = [nodeD];
-
-const result = breadthLimitedSearch(nodeA, nodeD, 3);
-console.log(result); // Output: { name: 'D', children: [] }
