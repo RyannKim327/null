@@ -1,20 +1,17 @@
-function binarySearch(array, target) {
-  let start = 0;
-  let end = array.length - 1;
+async function connectToDevice() {
+  try {
+    const device = await navigator.usb.requestDevice({ filters: [{ vendorId: 0x1234, productId: 0xabcd }] });
+    const connection = await device.open();
+    await connection.selectConfiguration(1);
+    await connection.claimInterface(0);
 
-  while (start <= end) {
-    let mid = Math.floor((start + end) / 2);
+    // Your code to interact with the device
+    // e.g. send/receive data, control the device
 
-    if (array[mid] === target) {
-      return mid; // Target found
-    }
-
-    if (array[mid] < target) {
-      start = mid + 1; // Search the upper half
-    } else {
-      end = mid - 1; // Search the lower half
-    }
+    await connection.close();
+  } catch (error) {
+    console.error('Error connecting to the device:', error);
   }
-
-  return -1; // Target not found
 }
+
+connectToDevice();
