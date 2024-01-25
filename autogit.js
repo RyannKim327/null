@@ -1,26 +1,10 @@
-function binarySearch(arr, target, startIndex = 0) {
-  let endIndex = arr.length - 1;
+// Define an array of numbers
+const numbers = [5, 10, 15, 20];
 
-  while (startIndex <= endIndex) {
-    const midIndex = Math.floor((startIndex + endIndex) / 2);
+// Calculate the sum of all numbers
+const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 
-    if (arr[midIndex] === target) {
-      return midIndex;
-    }
+// Calculate the mean by dividing the sum by the length of the array
+const mean = sum / numbers.length;
 
-    if (arr[midIndex] < target) {
-      startIndex = midIndex + 1;
-    } else {
-      endIndex = midIndex - 1;
-    }
-  }
-  
-  return -1;
-}
-
-// Example usage:
-const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-const target = 6;
-const index = binarySearch(arr, target);
-
-console.log(index); // Output: 5 (index of the target element in the array)
+console.log(mean); // Output: 12.5
