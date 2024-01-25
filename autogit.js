@@ -1,12 +1,40 @@
-function removeVowels(string) {
-  // Define the vowels to remove
-  const vowels = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'];
+function preprocessPattern(pattern) {
+  const table = {};
+  const patternLength = pattern.length;
 
-  // Use regex to replace vowels with an empty string
-  return string.replace(new RegExp(vowels.join('|'), 'g'), '');
+  for (let i = 0; i < patternLength - 1; i++) {
+    table[pattern[i]] = patternLength - 1 - i;
+  }
+
+  return table;
 }
+function boyerMooreHorspool(text, pattern) {
+  const textLength = text.length;
+  const patternLength = pattern.length;
 
-// Example usage
-const inputString = 'Hello World';
-const resultString = removeVowels(inputString);
-console.log(resultString);  // Output: "Hll Wrld"
+  const skipTable = preprocessPattern(pattern);
+  let i = patternLength - 1;
+
+  while (i < textLength) {
+    let k = 0;
+
+    while (k < patternLength && pattern[patternLength - 1 - k] === text[i - k]) {
+      k++;
+    }
+
+    if (k === patternLength) {
+      return i - patternLength + 1; // Match found
+    }
+
+    const skip = skipTable[text[i]] || patternLength;
+
+    i += skip;
+  }
+
+  return -1; // Match not found
+}
+const text = "This is a sample text where the pattern will be searched.";
+const pattern = "pattern";
+
+const result = boyerMooreHorspool(text, pattern);
+console.log(`Pattern found at index ${result}`);
