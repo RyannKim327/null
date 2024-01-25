@@ -1,12 +1,17 @@
-function factorial(n) {
-  // Base case: factorial of 0 or 1 is 1
-  if (n === 0 || n === 1) {
-    return 1;
-  }
+const cron = require('node-cron');
 
-  // Recursive case: factorial of n is n multiplied by factorial of n-1
-  return n * factorial(n - 1);
-}
+// Define the task to be executed
+const task = () => {
+  console.log('Task executed!');
+};
 
-// Example usage:
-console.log(factorial(5)); // Output: 120
+// Schedule the task to run every minute
+cron.schedule('* * * * *', task);
+
+// Alternatively, you can schedule it for specific times/days using cron syntax
+// For example, to schedule the task to run every Monday at 9:30 AM
+// cron.schedule('30 9 * * 1', task);
+
+// Keep the script running to continuously execute the scheduled tasks
+setInterval(() => {}, 1000);
+npm install node-cron
