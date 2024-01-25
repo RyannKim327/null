@@ -1,17 +1,32 @@
-const cron = require('node-cron');
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
 
-// Define the task to be executed
-const task = () => {
-  console.log('Task executed!');
-};
+function countLeafNodes(root) {
+  if (root === null) {
+    return 0; // If the tree is empty, it doesn't have any leaf nodes
+  }
+  
+  if (root.left === null && root.right === null) {
+    return 1; // If the current node is a leaf, return 1
+  }
+  
+  // Recursively count the leaf nodes in the left and right subtrees
+  return countLeafNodes(root.left) + countLeafNodes(root.right);
+}
 
-// Schedule the task to run every minute
-cron.schedule('* * * * *', task);
+// Create a binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
 
-// Alternatively, you can schedule it for specific times/days using cron syntax
-// For example, to schedule the task to run every Monday at 9:30 AM
-// cron.schedule('30 9 * * 1', task);
-
-// Keep the script running to continuously execute the scheduled tasks
-setInterval(() => {}, 1000);
-npm install node-cron
+// Call the function to count leaf nodes
+const leafNodeCount = countLeafNodes(root);
+console.log("Number of leaf nodes:", leafNodeCount);
