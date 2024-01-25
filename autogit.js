@@ -1,87 +1,59 @@
-class Node {
-  constructor(state, parent, gScore, hScore) {
-    this.state = state;
-    this.parent = parent;
-    this.gScore = gScore;
-    this.hScore = hScore;
-    this.fScore = gScore + hScore;
+function findKthSmallest(arr, k) {
+  // Clone the array to avoid modifying the original array
+  const sortedArr = [...arr];
+  
+  // Define a helper function to swap elements in the array
+  function swap(a, b) {
+    const temp = sortedArr[a];
+    sortedArr[a] = sortedArr[b];
+    sortedArr[b] = temp;
   }
-}
-function aStarSearch(start, goal, heuristic, getNeighbours) {
-  // Create open and closed sets
-  const openSet = [start];
-  const closedSet = [];
-
-  // Set gScore for start node to 0
-  start.gScore = 0;
-
-  while (openSet.length > 0) {
-    // Find the node in the open set with the lowest fScore
-    const current = openSet.reduce((a, b) => (b.fScore < a.fScore ? b : a));
-
-    // If the current node is the goal, we're done
-    if (current === goal) {
-      return reconstructPath(current);
+  
+  // Partition the array
+  function partition(left, right, pivot) {
+    const pivotValue = sortedArr[pivot];
+    let partitionIndex = left;
+    
+    for (let i = left; i < right; i++) {
+      if (sortedArr[i] < pivotValue) {
+        swap(i, partitionIndex);
+        partitionIndex++;
+      }
+    }
+    
+    swap(right, partitionIndex);
+    return partitionIndex;
+  }
+  
+  // Recursive quickselect algorithm
+  function quickselect(left, right, k) {
+    if (left === right) {
+      return sortedArr[left];
     }
 
-    // Move current node from open set to closed set
-    openSet.splice(openSet.indexOf(current), 1);
-    closedSet.push(current);
-
-    // Get neighbors of the current node
-    const neighbors = getNeighbours(current);
-
-    for (const neighbor of neighbors) {
-      // Skip neighbor if it is already in the closed set
-      if (closedSet.includes(neighbor)) {
-        continue;
-      }
-
-      // Calculate tentative gScore for the neighbor
-      const tentativeGScore = current.gScore + 1;
-
-      // If neighbor is not in the open set, add it
-      if (!openSet.includes(neighbor)) {
-        openSet.push(neighbor);
-      }
-      // If the tentative gScore is higher than neighbor's gScore, skip
-      else if (tentativeGScore >= neighbor.gScore) {
-        continue;
-      }
-
-      // Update the parent, gScore and fScore of neighbor
-      neighbor.parent = current;
-      neighbor.gScore = tentativeGScore;
-      neighbor.fScore = neighbor.gScore + heuristic(neighbor, goal);
+    const pivotIndex = Math.floor(Math.random() * (right - left + 1)) + left;
+    const partitionIndex = partition(left, right, pivotIndex);
+    
+    if (k === partitionIndex) {
+      return sortedArr[k];
+    } else if (k < partitionIndex) {
+      return quickselect(left, partitionIndex - 1, k);
+    } else {
+      return quickselect(partitionIndex + 1, right, k);
     }
   }
-
-  // No path found
-  return null;
-}
-function heuristic(node, goal) {
-  // Manhattan distance heuristic
-  const dx = Math.abs(node.state.x - goal.state.x);
-  const dy = Math.abs(node.state.y - goal.state.y);
-  return dx + dy;
-}
-
-function getNeighbors(node) {
-  const neighbors = [];
-
-  // Implement logic to get neighbors of the node
-  // e.g., check adjacent cells in a grid
-
-  return neighbors;
-}
-function reconstructPath(node) {
-  const path = [node];
-  let current = node;
-
-  while (current.parent) {
-    path.unshift(current.parent);
-    current = current.parent;
+  
+  // Check if k is within the range of the array
+  if (k < 1 || k > sortedArr.length) {
+    return "Invalid input";
   }
-
-  return path;
+  
+  // Find the kth smallest element
+  return quickselect(0, sortedArr.length - 1, k - 1);
 }
+
+// Example usage:
+const array = [7, 2, 8, 1, 4, 5, 9, 3, 6];
+const k = 3;
+const kthSmallest = findKthSmallest(array, k);
+console.log(`The ${k}th smallest element in the array is: ${kthSmallest}`);
