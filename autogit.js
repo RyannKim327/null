@@ -1,14 +1,20 @@
-function getStringLength(str) {
-  let count = 0;
-  let index = 0;
+function binarySearch(array, target) {
+  let start = 0;
+  let end = array.length - 1;
 
-  while (str[index] !== undefined) {
-    count++;
-    index++;
+  while (start <= end) {
+    let mid = Math.floor((start + end) / 2);
+
+    if (array[mid] === target) {
+      return mid; // Target found
+    }
+
+    if (array[mid] < target) {
+      start = mid + 1; // Search the upper half
+    } else {
+      end = mid - 1; // Search the lower half
+    }
   }
 
-  return count;
+  return -1; // Target not found
 }
-let myString = "Hello, world!";
-let length = getStringLength(myString);
-console.log(length); // Output: 13
