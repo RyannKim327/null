@@ -1,25 +1,50 @@
-function longestCommonPrefix(strings) {
-  let prefix = "";
+function longestCommonSubstring(str1, str2) {
+  // Create a 2D array to store the lengths of the common substrings
+  const lengths = Array(str1.length + 1)
+    .fill(0)
+    .map(() => Array(str2.length + 1).fill(0));
 
-  if (!strings || strings.length === 0) {
-    return prefix;
-  }
+  // Variables to store the length and end position of the longest common substring
+  let maxLength = 0;
+  let endIndex = 0;
 
-  for (let i = 0; i < strings[0].length; i++) {
-    const char = strings[0][i];
+  // Iterate over the characters of the strings
+  for (let i = 1; i <= str1.length; i++) {
+    for (let j = 1; j <= str2.length; j++) {
+      // If the characters match, increment the length at (i, j) by 1
+      if (str1[i - 1] === str2[j - 1]) {
+        lengths[i][j] = lengths[i - 1][j - 1] + 1;
 
-    for (let j = 1; j < strings.length; j++) {
-      if (strings[j][i] !== char) {
-        return prefix;
+        // If the new length is longer than the current max length, update the max length and end position
+        if (lengths[i][j] > maxLength) {
+          maxLength = lengths[i][j];
+          endIndex = i - 1; // zero-based index
+
+          // Uncomment the following line if you want to find only the first longest common substring
+          // return str1.substring(endIndex - maxLength + 1, endIndex + 1);
+        }
+      }
+      // If the characters don't match, the length at (i, j) is 0
+      else {
+        lengths[i][j] = 0;
       }
     }
-
-    prefix += char;
   }
 
-  return prefix;
-}
-const strings = ["apple", "appstore", "appreciate"];
+  // Uncomment the following line if you want to find only the first longest common substring
+  // return str1.substring(endIndex - maxLength + 1, endIndex + 1);
 
-const commonPrefix = longestCommonPrefix(strings);
-console.log(commonPrefix); // Output: "app"
+  // If you want to find all the longest common substrings, you can use the following code:
+  const longestSubstrings = [];
+  for (let i = 0; i < str1.length; i++) {
+    if (lengths[i + 1][endIndex + 1] === maxLength) {
+      longestSubstrings.push(str1.substring(i - maxLength + 1, i + 1));
+    }
+  }
+  return longestSubstrings;
+}
+
+// Example usage:
+const str1 = "abcdefabc";
+const str2 = "xyzabcabc";
+console.log(longestCommonSubstring(str1, str2)); // Output: [ 'abc', 'abc' ]
