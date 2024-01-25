@@ -1,30 +1,43 @@
-function depthLimitedSearch(initialState, depthLimit, otherParams) {
-  function recursiveDLS(state, depth, otherParams) {
-    if (isGoalState(state)) {
-      return state; // Found the solution
-    }
-
-    if (depth === 0) {
-      return -1; // Reached the depth limit
-    }
-
-    let cutoffOccurred = false;
-    const successors = generateSuccessors(state);
-    for (let i = 0; i < successors.length; i++) {
-      const result = recursiveDLS(successors[i], depth - 1, otherParams);
-      if (result === -1) {
-        cutoffOccurred = true;
-      } else if (result !== -1) {
-        return result; // Found the solution
-      }
-    }
-
-    if (cutoffOccurred) {
-      return -1; // Cutoff occurred
-    } else {
-      return -2; // No solution within depth limit
+function heapSort(arr) {
+  // Build Max Heap
+  function buildHeap(arr) {
+    const len = arr.length;
+    for (let i = Math.floor(len / 2) - 1; i >= 0; i--) {
+      heapify(arr, len, i);
     }
   }
 
-  return recursiveDLS(initialState, depthLimit, otherParams);
+  // Heapify a subtree rooted with index i
+  function heapify(arr, len, i) {
+    let largest = i;
+    const left = 2 * i + 1;
+    const right = 2 * i + 2;
+
+    if (left < len && arr[left] > arr[largest]) {
+      largest = left;
+    }
+
+    if (right < len && arr[right] > arr[largest]) {
+      largest = right;
+    }
+
+    if (largest !== i) {
+      [arr[i], arr[largest]] = [arr[largest], arr[i]];
+      heapify(arr, len, largest);
+    }
+  }
+
+  // Perform Heap Sort
+  const len = arr.length;
+  buildHeap(arr);
+  for (let i = len - 1; i >= 0; i--) {
+    [arr[0], arr[i]] = [arr[i], arr[0]];
+    heapify(arr, i, 0);
+  }
+
+  return arr;
 }
+
+// Example usage:
+const array = [7, 2, 9, 1, 6, 5, 3];
+console.log(heapSort(array)); // [1, 2, 3, 5, 6, 7, 9]
