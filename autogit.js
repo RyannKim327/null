@@ -1,39 +1,48 @@
-function findLongestIncreasingSubsequence(arr) {
-  const n = arr.length;
-  const dp = new Array(n).fill(1);
+function heapify(arr, n, i) {
+  let largest = i; // Initialize largest as root
+  let left = 2 * i + 1; // Left child index
+  let right = 2 * i + 2; // Right child index
 
-  for (let i = 1; i < n; i++) {
-    for (let j = 0; j < i; j++) {
-      if (arr[i] > arr[j]) {
-        dp[i] = Math.max(dp[i], dp[j] + 1);
-      }
-    }
+  // If left child is larger than root
+  if (left < n && arr[left] > arr[largest]) {
+    largest = left;
   }
 
-  let maxLength = 0;
-  let endIndex = 0;
-
-  for (let i = 0; i < n; i++) {
-    if (dp[i] > maxLength) {
-      maxLength = dp[i];
-      endIndex = i;
-    }
+  // If right child is larger than largest so far
+  if (right < n && arr[right] > arr[largest]) {
+    largest = right;
   }
 
-  const subsequence = [];
-  subsequence.push(arr[endIndex]);
+  // If largest is not the root
+  if (largest !== i) {
+    // Swap arr[i] and arr[largest]
+    [arr[i], arr[largest]] = [arr[largest], arr[i]];
 
-  for (let i = endIndex - 1; i >= 0; i--) {
-    if (arr[i] < arr[endIndex] && dp[i] === dp[endIndex] - 1) {
-      subsequence.unshift(arr[i]);
-      endIndex = i;
-    }
+    // Recursively heapify the affected sub-tree
+    heapify(arr, n, largest);
   }
-
-  return subsequence;
 }
+function heapSort(arr) {
+  const n = arr.length;
 
-// Example usage:
-const arr = [3, 10, 2, 1, 20];
-const longestSubsequence = findLongestIncreasingSubsequence(arr);
-console.log(longestSubsequence); // Output: [3, 10, 20]
+  // Build the heap (rearrange array)
+  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+    heapify(arr, n, i);
+  }
+
+  // One by one extract an element from the heap
+  for (let i = n - 1; i > 0; i--) {
+    // Move current root element to end
+    [arr[0], arr[i]] = [arr[i], arr[0]];
+
+    // call max heapify on the reduced heap
+    heapify(arr, i, 0);
+  }
+
+  return arr;
+}
+const array = [5, 12, 3, 19, 15];
+console.log("Original Array:", array);
+
+const sortedArray = heapSort(array);
+console.log("Sorted Array:", sortedArray);
