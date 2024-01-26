@@ -1,50 +1,44 @@
-function generateFailureTable(pattern) {
-  const table = Array(pattern.length).fill(0);
-  let i = 1;
-  let j = 0;
+function generateFibonacci(max) {
+  var fibonacci = [0, 1];
+  var i = 2;
 
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[j]) {
-      table[i] = j + 1;
-      i++;
-      j++;
-    } else if (j > 0) {
-      j = table[j - 1];
+  while (true) {
+    var next = fibonacci[i - 1] + fibonacci[i - 2];
+    if (next > max) break;
+    fibonacci.push(next);
+    i++;
+  }
+  
+  return fibonacci;
+}
+function fibonacciSearch(arr, target) {
+  var fibonacci = generateFibonacci(arr.length);
+
+  var offset = -1; // Stores the index of the smallest element greater than or equal to the target
+  var i = fibonacci.length - 1; // Start with the last Fibonacci number
+
+  while (i > 0) {
+    var index = Math.min(offset + fibonacci[i - 2], arr.length - 1);
+
+    if (arr[index] < target) {
+      i--; // Move two steps down in the Fibonacci sequence
+      offset = index;
+    } else if (arr[index] > target) {
+      i -= 2; // Move two steps down and one step up in the Fibonacci sequence
     } else {
-      table[i] = 0;
-      i++;
+      return index; // Target found
     }
   }
 
-  return table;
+  return -1; // Target not found
 }
-function kmpSearch(text, pattern) {
-  const failureTable = generateFailureTable(pattern);
-  let i = 0;
-  let j = 0;
+var arr = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
+var target = 13;
 
-  while (i < text.length) {
-    if (text[i] === pattern[j]) {
-      if (j === pattern.length - 1) {
-        return i - j; // Match found at index i - j
-      }
-      i++;
-      j++;
-    } else if (j > 0) {
-      j = failureTable[j - 1];
-    } else {
-      i++;
-    }
-  }
+var index = fibonacciSearch(arr, target);
 
-  return -1; // Match not found
-}
-const text = 'ABCABCDABABCDABCDABDE';
-const pattern = 'ABCDABD';
-const index = kmpSearch(text, pattern);
-
-if (index === -1) {
-  console.log('Pattern not found');
+if (index !== -1) {
+  console.log("Element found at index", index);
 } else {
-  console.log(`Pattern found at index ${index}`);
+  console.log("Element not found");
 }
