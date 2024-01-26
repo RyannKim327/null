@@ -1,48 +1,43 @@
-function Node(value, parent) {
-  this.value = value;
-  this.children = [];
-  this.parent = parent;
-}
+function rabinKarpSearch(text, pattern) {
+  const textLength = text.length;
+  const patternLength = pattern.length;
+  const prime = 101; // A prime number to calculate the hash value
 
-function breadthLimitedSearch(initialState, limit) {
-  const root = new Node(initialState, null);
-  const queue = [];
-  const visited = new Set();
-
-  queue.push(root);
-
-  while (queue.length > 0) {
-    const current = queue.shift();
-
-    // Check if current node matches the target or satisfies the condition
-    if (current.value === targetState) {
-      return current; // or perform the required action
+  // Calculate the hash value for a given string
+  function calculateHash(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash += str.charCodeAt(i) * Math.pow(prime, i);
     }
-
-    if (current.depth < limit) {
-      // Generate and enqueue children nodes
-      const children = generateChildren(current.value);
-      for (const childValue of children) {
-        const childNode = new Node(childValue, current);
-        current.children.push(childNode);
-        queue.push(childNode);
-      }
-    }
-
-    visited.add(current);
+    return hash;
   }
 
-  return null; // Return null if target not found within the limit
+  // Recalculate the hash by removing the leftmost character and adding the rightmost character
+  function recalculateHash(oldHash, oldChar, newChar, patternLength) {
+    let newHash = oldHash - oldChar.charCodeAt(0);
+    newHash = Math.floor(newHash / prime);
+    newHash += newChar.charCodeAt(0) * Math.pow(prime, patternLength - 1);
+    return newHash;
+  }
+
+  const patternHash = calculateHash(pattern); // Calculate the hash of the pattern
+  let currentHash = calculateHash(text.substring(0, patternLength)); // Calculate the hash of the first window
+
+  // Check if the hash values match and perform character-by-character comparison to avoid false positives
+  for (let i = 0; i <= textLength - patternLength; i++) {
+    if (currentHash === patternHash && text.substring(i, i + patternLength) === pattern) {
+      return i; // Match found, return the starting index of the pattern
+    }
+    const oldChar = text[i];
+    const newChar = text[i + patternLength];
+    currentHash = recalculateHash(currentHash, oldChar, newChar, patternLength);
+  }
+
+  return -1; // No match found
 }
 
-// Example usage
-const targetState = 42;
+// Example Usage
+const text = "Lorem ipsum dolor sit amet";
+const pattern = "dolor";
 
-function generateChildren(parentValue) {
-  // Generate children based on the parent value
-  // Implement your own logic here
-  return [];
-}
-
-const result = breadthLimitedSearch(initialState, 5);
-console.log(result);
+console.log(rabinKarpSearch(text, pattern)); // Output: 12 (index of the starting position of the pattern)
