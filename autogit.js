@@ -1,17 +1,22 @@
-function calculateMean(numbers) {
-  // Check if the input is a valid array of numbers
-  if (!Array.isArray(numbers) || numbers.length === 0) {
-    throw new Error('The input is not a valid array of numbers.');
-  }
-
-  // Calculate the sum of all numbers in the array
-  const sum = numbers.reduce((a, b) => a + b, 0);
-
-  // Calculate the mean by dividing the sum by the number of elements
-  const mean = sum / numbers.length;
-
-  return mean;
-}
-const numbers = [1, 2, 3, 4, 5];
-const mean = calculateMean(numbers);
-console.log(mean); // Output: 3
+const cron = require('cron');
+ 
+// Define the cron expression for scheduling
+const cronExpression = '0 * * * *'; // Runs every hour on the hour
+ 
+// Create a new cron job
+const job = new cron.CronJob(cronExpression, () => {
+    // Task to be executed on every cron trigger
+    console.log('Cron job executed');
+});
+ 
+// Start the cron job
+job.start();
+ 
+// You can also listen for specific events like 'start', 'stop', and 'complete'
+job.on('start', () => {
+    console.log('Cron job started');
+});
+ 
+job.on('stop', () => {
+    console.log('Cron job stopped');
+});
