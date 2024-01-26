@@ -1,37 +1,39 @@
-class Node {
-  constructor(value, children = []) {
-    this.value = value;
-    this.children = children;
+function radixSort(arr) {
+  const max = Math.max(...arr); // Step 2
+  
+  let digitPosition = 1;
+  while (Math.floor(max / digitPosition) > 0) {
+    arr = countingSort(arr, digitPosition, 10);
+    digitPosition *= 10;
   }
+  
+  return arr;
 }
 
-function depthLimitedSearchIterative(root, target, depthLimit) {
-  let stack = [];
-  stack.push({ node: root, depth: 0 });
-
-  while (stack.length > 0) {
-    const { node, depth } = stack.pop();
-
-    if (node.value === target) {
-      console.log("Node found at depth:", depth);
-      return node;
-    }
-
-    if (depth < depthLimit) {
-      for (let i = node.children.length - 1; i >= 0; i--) {
-        stack.push({ node: node.children[i], depth: depth + 1 });
-      }
-    }
+function countingSort(arr, digitPosition, radix) {
+  const count = Array(radix).fill(0); // Step 4
+  
+  for (let num of arr) {
+    const digit = Math.floor((num / digitPosition) % radix); // Step 5
+    count[digit]++;
   }
-
-  console.log("Node not found within depth limit.");
-  return null;
+  
+  for (let i = 1; i < radix; i++) {
+    count[i] += count[i - 1]; // Step 6
+  }
+  
+  const sorted = Array(arr.length); // Step 7
+  
+  for (let i = arr.length - 1; i >= 0; i--) { // Step 8
+    const digit = Math.floor((arr[i] / digitPosition) % radix); // Step 9
+    count[digit]--; // Step 10
+    sorted[count[digit]] = arr[i]; // Step 11
+  }
+  
+  return sorted; // Step 12
 }
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArr = radixSort(arr);
 
-// Example usage
-const tree = new Node(1, [
-  new Node(2, [new Node(4), new Node(5)]),
-  new Node(3, [new Node(6), new Node(7)])
-]);
-
-depthLimitedSearchIterative(tree, 5, 3);
+console.log(sortedArr);
+// Output: [2, 24, 45, 66, 75, 90, 170, 802]
