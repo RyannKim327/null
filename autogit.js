@@ -1,34 +1,24 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function quickSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
   }
-}
 
-function countLeafNodes(root) {
-  if (root === null) {
-    return 0;
+  const pivot = arr[Math.floor(arr.length / 2)];
+  const lesser = [];
+  const greater = [];
+
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] < pivot) {
+      lesser.push(arr[i]);
+    } else if (arr[i] > pivot) {
+      greater.push(arr[i]);
+    }
   }
-  
-  // If the node is a leaf node, return 1
-  if (root.left === null && root.right === null) {
-    return 1;
-  }
-  
-  // Recursively count leaf nodes in the left and right subtrees
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
+
+  return [...quickSort(lesser), pivot, ...quickSort(greater)];
 }
 
 // Example usage:
-// Creating a binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-// Counting the number of leaf nodes
-const leafNodeCount = countLeafNodes(root);
-console.log('Number of leaf nodes:', leafNodeCount);
-Number of leaf nodes: 3
+const array = [5, 3, 1, 6, 4, 2];
+const sortedArray = quickSort(array);
+console.log(sortedArray);
