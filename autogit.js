@@ -1,17 +1,48 @@
-const cron = require('node-cron');
+class ListNode {
+  constructor(val, next = null) {
+    this.val = val;
+    this.next = next;
+  }
+}
 
-// Schedule a task to run every minute
-cron.schedule('* * * * *', () => {
-  console.log('Scheduled task running every minute');
-});
+function isPalindrome(head) {
+  if (!head || !head.next) {
+    return true; // An empty list or a list with a single node is a palindrome
+  }
 
-// Schedule a task to run every day at 9:00 AM
-cron.schedule('0 9 * * *', () => {
-  console.log('Scheduled task running every day at 9:00 AM');
-});
+  let slow = head;
+  let fast = head;
+  let prevSlow = null;
 
-// Schedule a task to run on specific days of the week
-cron.schedule('0 18 * * 1,4', () => {
-  console.log('Scheduled task running every Monday and Thursday at 6:00 PM');
-});
-npm install node-cron
+  while (fast && fast.next) {
+    fast = fast.next.next; // Fast pointer moves two nodes at a time
+    let temp = slow;
+    slow = slow.next; // Slow pointer moves one node at a time
+    temp.next = prevSlow; // Reverse the first half of the list
+    prevSlow = temp;
+  }
+
+  if (fast) {
+    // If the length is odd, move the slow pointer one step ahead
+    slow = slow.next;
+  }
+
+  while (slow) {
+    if (slow.val !== prevSlow.val) {
+      return false; // Elements don't match, not a palindrome
+    }
+    slow = slow.next;
+    prevSlow = prevSlow.next;
+  }
+
+  return true; // All elements match, it is a palindrome
+}
+
+// Example usage:
+const list = new ListNode(1);
+list.next = new ListNode(2);
+list.next.next = new ListNode(3);
+list.next.next.next = new ListNode(2);
+list.next.next.next.next = new ListNode(1);
+
+console.log(isPalindrome(list)); // Output: true
