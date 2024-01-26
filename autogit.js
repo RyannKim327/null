@@ -1,24 +1,40 @@
-function quickSort(arr) {
-  if (arr.length <= 1) {
-    return arr;
+function getGapSequence(length) {
+  const sequence = [1];
+  let gap = 1;
+  while (gap < length / 3) {
+    gap = 3 * gap + 1;
+    sequence.unshift(gap);
   }
+  return sequence;
+}
+function shellSort(arr) {
+  const length = arr.length;
+  const gapSequence = getGapSequence(length);
 
-  const pivot = arr[Math.floor(arr.length / 2)];
-  const lesser = [];
-  const greater = [];
+  for (const gap of gapSequence) {
+    for (let i = gap; i < length; i++) {
+      const temp = arr[i];
+      let j;
 
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] < pivot) {
-      lesser.push(arr[i]);
-    } else if (arr[i] > pivot) {
-      greater.push(arr[i]);
+      for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
+        arr[j] = arr[j - gap];
+      }
+      arr[j] = temp;
     }
   }
 
-  return [...quickSort(lesser), pivot, ...quickSort(greater)];
+  return arr;
 }
 
-// Example usage:
-const array = [5, 3, 1, 6, 4, 2];
-const sortedArray = quickSort(array);
+function getGapSequence(length) {
+  const sequence = [1];
+  let gap = 1;
+  while (gap < length / 3) {
+    gap = 3 * gap + 1;
+    sequence.unshift(gap);
+  }
+  return sequence;
+}
+const array = [9, 5, 7, 2, 1, 0, 6, 3, 8, 4];
+const sortedArray = shellSort(array);
 console.log(sortedArray);
