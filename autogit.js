@@ -1,39 +1,24 @@
-function findKthSmallest(arr, k) {
-  if (arr.length < k) {
-    return -1; // Invalid input if k exceeds array length
+function factorialLoop(number) {
+  // Check for edge cases
+  if (number === 0 || number === 1) {
+    return 1;
   }
 
-  // Helper function to partition the array
-  function partition(arr, left, right) {
-    const pivot = arr[right];
-    let i = left;
-    for (let j = left; j < right; j++) {
-      if (arr[j] < pivot) {
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-        i++;
-      }
-    }
-    [arr[i], arr[right]] = [arr[right], arr[i]];
-    return i;
+  let result = 1;
+
+  for (let i = 2; i <= number; i++) {
+    result *= i;
   }
 
-  // Main function to find kth smallest element
-  function quickselect(arr, left, right, k) {
-    const pivotIndex = partition(arr, left, right);
-    if (pivotIndex === k - 1) {
-      return arr[pivotIndex];
-    } else if (pivotIndex > k - 1) {
-      return quickselect(arr, left, pivotIndex - 1, k);
-    } else {
-      return quickselect(arr, pivotIndex + 1, right, k);
-    }
-  }
-
-  return quickselect(arr, 0, arr.length - 1, k);
+  return result;
 }
+function factorialRecursive(number) {
+  // Check for edge cases
+  if (number === 0 || number === 1) {
+    return 1;
+  }
 
-// Example usage
-const array = [5, 3, 9, 1, 7];
-const k = 3;
-const kthSmallest = findKthSmallest(array, k);
-console.log(`The ${k}th smallest element in [${array}] is ${kthSmallest}`);
+  return number * factorialRecursive(number - 1);
+}
+console.log(factorialLoop(5)); // Output: 120
+console.log(factorialRecursive(5)); // Output: 120
