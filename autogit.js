@@ -1,10 +1,14 @@
-function calculateTriangleArea(base, height) {
-  var area = (base * height) / 2;
-  return area;
+let stringWithSpaces = "Hello World! This is a string with spaces.";
+let stringWithoutSpaces = stringWithSpaces.replace(/\s/g, "");
+console.log(stringWithoutSpaces); // Output: HelloWorld!Thisisastringwithspaces.
+let stringWithSpaces = "Hello World! This is a string with spaces.";
+let stringWithoutSpaces = stringWithSpaces.split(" ").join("");
+console.log(stringWithoutSpaces); // Output: HelloWorld!Thisisastringwithspaces.
+let stringWithSpaces = "Hello World! This is a string with spaces.";
+let stringWithoutSpaces = "";
+for (let i = 0; i < stringWithSpaces.length; i++) {
+  if (stringWithSpaces[i] !== " ") {
+    stringWithoutSpaces += stringWithSpaces[i];
+  }
 }
-
-// Example usage:
-var base = 5;
-var height = 8;
-var area = calculateTriangleArea(base, height);
-console.log("The area of the triangle is: " + area);
+console.log(stringWithoutSpaces); // Output: HelloWorld!Thisisastringwithspaces.
