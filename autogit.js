@@ -1,57 +1,27 @@
-class Stack {
-  constructor() {
-    this.stack = [];
-  }
+function shellSort(arr) {
+  const len = arr.length;
+  let gap = Math.floor(len / 2);
 
-  // push an element onto the top of the stack
-  push(item) {
-    this.stack.push(item);
-  }
+  while (gap > 0) {
+    for (let i = gap; i < len; i++) {
+      const temp = arr[i];
+      let j = i;
 
-  // remove and return the top element from the stack
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack is empty.";
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
+      }
+
+      arr[j] = temp;
     }
-    return this.stack.pop();
+
+    gap = Math.floor(gap / 2);
   }
 
-  // return the top element of the stack without removing it
-  peek() {
-    if (this.isEmpty()) {
-      return "Stack is empty.";
-    }
-    return this.stack[this.stack.length - 1];
-  }
-
-  // check if the stack is empty
-  isEmpty() {
-    return this.stack.length === 0;
-  }
-
-  // return the size of the stack
-  size() {
-    return this.stack.length;
-  }
-
-  // clear the stack
-  clear() {
-    this.stack = [];
-  }
+  return arr;
 }
-const stack = new Stack();
-stack.push(10);
-stack.push(20);
-stack.push(30);
 
-console.log(stack.peek()); // Output: 30
-
-console.log(stack.pop()); // Output: 30
-console.log(stack.pop()); // Output: 20
-
-console.log(stack.isEmpty()); // Output: false
-
-console.log(stack.pop()); // Output: 10
-console.log(stack.pop()); // Output: "Stack is empty."
-
-console.log(stack.isEmpty()); // Output: true
+// Example usage:
+const array = [5, 9, 3, 1, 8, 6, 4, 2, 7];
+const sortedArray = shellSort(array);
+console.log(sortedArray); // Prints [1, 2, 3, 4, 5, 6, 7, 8, 9]
