@@ -1,30 +1,34 @@
-class TreeNode {
-  constructor(value, left = null, right = null) {
-    this.value = value;
-    this.left = left;
-    this.right = right;
+function findMax(arr) {
+  let max = 0;
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] > max) {
+      max = arr[i];
+    }
   }
+  return max;
 }
+function radixSort(arr) {
+  const max = findMax(arr);
+  let exp = 1; // exponent value for the current digit
 
-function findMaxDepth(root) {
-  // Base case: if the root is null, return 0
-  if (!root) {
-    return 0;
+  while (Math.floor(max / exp) > 0) {
+    // Create buckets
+    const buckets = Array.from({ length: 10 }, () => []);
+
+    // Place elements in corresponding buckets
+    for (let i = 0; i < arr.length; i++) {
+      const digit = Math.floor(arr[i] / exp) % 10;
+      buckets[digit].push(arr[i]);
+    }
+
+    // Flatten the buckets back into the original array
+    arr = [].concat(...buckets);
+
+    // Move to the next digit
+    exp *= 10;
   }
-  
-  // Recursively calculate the maximum depth of the left and right subtrees
-  const leftDepth = findMaxDepth(root.left);
-  const rightDepth = findMaxDepth(root.right);
-  
-  // Return the maximum depth between the left and right subtrees plus 1 (for the current level)
-  return Math.max(leftDepth, rightDepth) + 1;
+
+  return arr;
 }
-
-// Usage example:
-const tree = new TreeNode(1);
-tree.left = new TreeNode(2);
-tree.right = new TreeNode(3);
-tree.left.left = new TreeNode(4);
-tree.left.right = new TreeNode(5);
-
-console.log(findMaxDepth(tree));  // Output: 3
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+console.log(radixSort(arr));
