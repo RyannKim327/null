@@ -1,12 +1,8 @@
-const axios = require('axios');
+let str = "42";
+let num = parseInt(str); // Converts the string to an integer
 
-const fetchData = async () => {
-  try {
-    const response = await axios.get('https://jsonplaceholder.typicode.com/posts');
-    console.log(response.data);
-  } catch (error) {
-    console.error(error);
-  }
-};
+console.log(num); // Output: 42
+let str = "1010";
+let num = parseInt(str, 2); // Converts the binary string to an integer
 
-fetchData();
+console.log(num); // Output: 10
