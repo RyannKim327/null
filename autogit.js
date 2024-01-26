@@ -1,31 +1,14 @@
-function depthLimitedSearch(node, depthLimit) {
-  return depthLimitedSearchHelper(node, depthLimit, 0);
+function isPalindrome(str) {
+  // Preprocess the string
+  const processedStr = str.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
+
+  // Create a reversed version of the string
+  const reversedStr = processedStr.split('').reverse().join('');
+
+  // Compare the reversed string with the original string
+  return processedStr === reversedStr;
 }
 
-function depthLimitedSearchHelper(node, depthLimit, currentDepth) {
-  if (currentDepth === depthLimit) {
-    // Base case: reached the depth limit
-    // Perform the necessary operations on the node at the depth limit
-    // Return the result, or perform further actions as needed
-    return node;
-  }
-
-  if (node.isGoal()) {
-    // Base case: found the goal node
-    // Perform the necessary operations on the goal node
-    // Return the result, or perform further actions as needed
-    return node;
-  }
-
-  // Recursive case: continue exploring child nodes
-  for (let child of node.getChildren()) {
-    let result = depthLimitedSearchHelper(child, depthLimit, currentDepth + 1);
-    if (result) {
-      // If a non-null result is found, propagate it up the recursion stack
-      return result;
-    }
-  }
-
-  // Return null if no goal node is found within the depth limit
-  return null;
-}
+// Example usage
+const input = "A man, a plan, a canal, Panama!";
+console.log(isPalindrome(input)); // Output: true
