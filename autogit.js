@@ -1,29 +1,26 @@
-function boyerMooreHorspoolSearch(text, pattern) {
-  const shiftTable = {};
-
-  const patternLength = pattern.length;
-  for (let i = 0; i < patternLength - 1; i++) {
-    shiftTable[pattern[i]] = patternLength - i - 1;
+function largestPrimeFactor(number) {
+  let largestPrime = 2;
+  
+  while (number % 2 === 0) {
+    number /= 2;
   }
-  shiftTable['default'] = patternLength;
-
-  let textIndex = patternLength - 1;
-
-  while (textIndex < text.length) {
-    let patternIndex = patternLength - 1;
-    let tempTextIndex = textIndex;
-
-    while (patternIndex >= 0 && pattern[patternIndex] === text[tempTextIndex]) {
-      patternIndex--;
-      tempTextIndex--;
+  
+  for (let i = 3; i <= Math.sqrt(number); i += 2) {
+    while (number % i === 0) {
+      largestPrime = i;
+      number /= i;
     }
-
-    if (patternIndex === -1) {
-      return tempTextIndex + 1; // Return the starting position of the pattern
-    }
-
-    textIndex += shiftTable[text[textIndex]] || shiftTable['default'];
   }
-
-  return -1; // If pattern is not found
+  
+  if (number > 2) {
+    largestPrime = number;
+  }
+  
+  return largestPrime;
 }
+
+// Usage example
+const number = 123456789;
+const largestPrime = largestPrimeFactor(number);
+console.log(`The largest prime factor of ${number} is ${largestPrime}`);
+The largest prime factor of 123456789 is 3803
