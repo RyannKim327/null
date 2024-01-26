@@ -1,11 +1,18 @@
-const cron = require('node-cron');
+const numbers = [1, 5, 2, 9, 3, 6];
+const maxNumber = Math.max(...numbers);
+console.log(maxNumber); // Output: 9
+const numbers = [1, 5, 2, 9, 3, 6];
+const maxNumber = numbers.reduce((max, current) => {
+  return Math.max(max, current);
+});
+console.log(maxNumber); // Output: 9
+const numbers = [1, 5, 2, 9, 3, 6];
+let maxNumber = numbers[0];
 
-// Define a task to execute
-const task = () => {
-  console.log('This task ran at:', new Date());
-};
+for (let i = 1; i < numbers.length; i++) {
+  if (numbers[i] > maxNumber) {
+    maxNumber = numbers[i];
+  }
+}
 
-// Schedule the task to run every minute
-cron.schedule('* * * * *', task);
-
-console.log('Cron job has been scheduled.');
+console.log(maxNumber); // Output: 9
