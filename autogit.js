@@ -1,36 +1,43 @@
-// Define a class for a binary tree node
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
+function countingSort(arr) {
+  const n = arr.length;
+  if (n < 2) return arr;
 
-// Function to count leaf nodes in a binary tree
-function countLeafNodes(root) {
-  if (root === null) {
-    return 0;
+  // Find min and max values in the array
+  let min = arr[0],
+    max = arr[0];
+  for (let i = 1; i < n; i++) {
+    if (arr[i] < min) min = arr[i];
+    if (arr[i] > max) max = arr[i];
   }
   
-  // If the current node is a leaf node, return 1
-  if (root.left === null && root.right === null) {
-    return 1;
+  // Create a count array with the size of range + 1
+  const range = max - min + 1;
+  const count = Array(range).fill(0);
+
+  // Increment the count of each element in the count array
+  for (let i = 0; i < n; i++) {
+    count[arr[i] - min]++;
   }
-  
-  // Recursively count the leaf nodes in the left and right subtrees
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
+
+  // Modify the count array to store the actual position of each element
+  for (let i = 1; i < range; i++) {
+    count[i] += count[i - 1];
+  }
+
+  // Create a result array
+  const output = Array(n);
+
+  // Traverse through the input array and place elements in the output array
+  for (let i = n - 1; i >= 0; i--) {
+    output[count[arr[i] - min] - 1] = arr[i];
+    count[arr[i] - min]--;
+  }
+
+  return output;
 }
 
-// Create a binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
-
-// Calculate the number of leaf nodes in the binary tree
-const leafCount = countLeafNodes(root);
-console.log("Number of leaf nodes:", leafCount);
+// Example usage:
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const sortedArr = countingSort(arr);
+console.log(sortedArr);
+[1, 2, 2, 3, 3, 4, 8]
