@@ -1,34 +1,24 @@
-function findMax(arr) {
-  let max = 0;
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] > max) {
-      max = arr[i];
-    }
+function findMedianSortedArrays(nums1, nums2) {
+  // Merge the two sorted arrays
+  const merged = [...nums1, ...nums2];
+
+  // Sort the merged array
+  merged.sort((a, b) => a - b);
+
+  const length = merged.length;
+  const middle = Math.floor(length / 2);
+
+  if (length % 2 === 1) {
+    // Return the value in the middle for odd length
+    return merged[middle];
+  } else {
+    // Calculate the average for even length
+    return (merged[middle - 1] + merged[middle]) / 2;
   }
-  return max;
 }
-function radixSort(arr) {
-  const max = findMax(arr);
-  let exp = 1; // exponent value for the current digit
 
-  while (Math.floor(max / exp) > 0) {
-    // Create buckets
-    const buckets = Array.from({ length: 10 }, () => []);
-
-    // Place elements in corresponding buckets
-    for (let i = 0; i < arr.length; i++) {
-      const digit = Math.floor(arr[i] / exp) % 10;
-      buckets[digit].push(arr[i]);
-    }
-
-    // Flatten the buckets back into the original array
-    arr = [].concat(...buckets);
-
-    // Move to the next digit
-    exp *= 10;
-  }
-
-  return arr;
-}
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log(radixSort(arr));
+// Example usage:
+const nums1 = [1, 3];
+const nums2 = [2, 4, 5];
+const median = findMedianSortedArrays(nums1, nums2);
+console.log(median);  // Output: 3
