@@ -1,89 +1,64 @@
-// Create a TreeNode class
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
   }
 }
 
-// Create a BinarySearchTree class
-class BinarySearchTree {
-  constructor() {
-    this.root = null;
+function isPalindromeLinkedList(head) {
+  if (!head || !head.next) {
+    // If the linked list is empty or has only one node, it is a palindrome
+    return true;
   }
 
-  insert(value) {
-    const newNode = new TreeNode(value);
-
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
+  // Find the middle element of the linked list
+  let slow = head;
+  let fast = head;
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
   }
 
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
+  // Reverse the second half of the linked list
+  let prev = null;
+  let curr = slow;
+  while (curr) {
+    const next = curr.next;
+    curr.next = prev;
+    prev = curr;
+    curr = next;
   }
 
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  searchNode(node, value) {
-    if (node === null) {
+  // Compare the first half and reversed second half
+  let firstHalf = head;
+  let secondHalf = prev;
+  while (firstHalf && secondHalf) {
+    if (firstHalf.data !== secondHalf.data) {
+      // The linked list is not a palindrome
       return false;
     }
-
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else if (value > node.value) {
-      return this.searchNode(node.right, value);
-    } else {
-      return true;
-    }
+    firstHalf = firstHalf.next;
+    secondHalf = secondHalf.next;
   }
 
-  inorderTraversal() {
-    const result = [];
-    this.inorderTraversalNode(this.root, result);
-    return result;
+  // Restore the original order of the second half
+  curr = prev;
+  prev = null;
+  while (curr) {
+    const next = curr.next;
+    curr.next = prev;
+    prev = curr;
+    curr = next;
   }
+  slow.next = prev;
 
-  inorderTraversalNode(node, result) {
-    if (node !== null) {
-      this.inorderTraversalNode(node.left, result);
-      result.push(node.value);
-      this.inorderTraversalNode(node.right, result);
-    }
-  }
+  // The linked list is a palindrome
+  return true;
 }
+const list = new Node(1);
+list.next = new Node(2);
+list.next.next = new Node(3);
+list.next.next.next = new Node(2);
+list.next.next.next.next = new Node(1);
 
-// Example usage
-const bst = new BinarySearchTree();
-bst.insert(8);
-bst.insert(3);
-bst.insert(10);
-bst.insert(1);
-bst.insert(6);
-bst.insert(14);
-bst.insert(4);
-bst.insert(7);
-bst.insert(13);
-
-console.log(bst.inorderTraversal()); // Output: [1, 3, 4, 6, 7, 8, 10, 13, 14]
-console.log(bst.search(6)); // Output: true
-console.log(bst.search(9)); // Output: false
+console.log(isPalindromeLinkedList(list)); // Output: true
