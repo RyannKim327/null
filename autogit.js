@@ -1,22 +1,22 @@
-function bubbleSort(arr) {
-  var len = arr.length;
-  var swapped;
+function isAnagram(str1, str2) {
+  // Convert strings to lowercase and remove non-alphabetic characters
+  str1 = str1.toLowerCase().replace(/[^a-z]/g, '');
+  str2 = str2.toLowerCase().replace(/[^a-z]/g, '');
 
-  do {
-    swapped = false;
-    for (var i = 0; i < len-1; i++) {
-      if (arr[i] > arr[i + 1]) {
-        var temp = arr[i];
-        arr[i] = arr[i + 1];
-        arr[i + 1] = temp;
-        swapped = true;
-      }
-    }
-  } while (swapped);
+  // Convert strings to arrays of characters and sort them
+  const sortedStr1 = str1.split('').sort().join('');
+  const sortedStr2 = str2.split('').sort().join('');
 
-  return arr;
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
 
-// Example usage:
-var numbers = [5, 3, 8, 4, 2];
-console.log(bubbleSort(numbers)); // Output: [2, 3, 4, 5, 8]
+// Example usage
+const string1 = 'listen';
+const string2 = 'silent';
+
+if (isAnagram(string1, string2)) {
+  console.log(`"${string1}" and "${string2}" are anagrams.`);
+} else {
+  console.log(`"${string1}" and "${string2}" are not anagrams.`);
+}
