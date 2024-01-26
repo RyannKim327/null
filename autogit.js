@@ -1,14 +1,12 @@
-function isPalindrome(str) {
-  // Preprocess the string
-  const processedStr = str.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
+let str = "   Hello,    World!   ";
 
-  // Create a reversed version of the string
-  const reversedStr = processedStr.split('').reverse().join('');
+// Remove whitespace using regular expression
+let newStr = str.replace(/\s/g, "");
+console.log(newStr);
+"Hello,World!"
+let str = "   Hello,    World!   ";
 
-  // Compare the reversed string with the original string
-  return processedStr === reversedStr;
-}
-
-// Example usage
-const input = "A man, a plan, a canal, Panama!";
-console.log(isPalindrome(input)); // Output: true
+// Remove leading and trailing whitespace
+let newStr = str.trim();
+console.log(newStr);
+"Hello,    World!"
