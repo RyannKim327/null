@@ -1,55 +1,49 @@
-// Definition for a singly-linked list node
-class ListNode {
-  constructor(val = 0, next = null) {
-    this.val = val;
-    this.next = next;
-  }
-}
-
-// Function to reverse a linked list
-function reverseLinkedList(head) {
-  let prev = null;
-  let curr = head;
-
-  while (curr !== null) {
-    const next = curr.next;
-    curr.next = prev;
-    prev = curr;
-    curr = next;
+class Stack {
+  constructor() {
+    this.stack = [];
   }
 
-  return prev;
-}
-
-// Function to check if a linked list is a palindrome
-function isLinkedListPalindrome(head) {
-  if (head === null || head.next === null) {
-    return true; // An empty list or a single node list is considered palindrome
+  push(item) {
+    this.stack.push(item);
   }
 
-  let fast = head;
-  let slow = head;
-
-  // Move `fast` two steps ahead and `slow` one step ahead
-  while (fast.next !== null && fast.next.next !== null) {
-    fast = fast.next.next;
-    slow = slow.next;
-  }
-
-  // Reverse the second half of the linked list
-  slow.next = reverseLinkedList(slow.next);
-
-  let p1 = head;
-  let p2 = slow.next;
-
-  // Compare elements of both halves
-  while (p2 !== null) {
-    if (p1.val !== p2.val) {
-      return false;
+  pop() {
+    if (!this.isEmpty()) {
+      return this.stack.pop();
     }
-    p1 = p1.next;
-    p2 = p2.next;
+    return null;
   }
 
-  return true;
+  peek() {
+    if (!this.isEmpty()) {
+      return this.stack[this.stack.length - 1];
+    }
+    return null;
+  }
+
+  isEmpty() {
+    return this.stack.length === 0;
+  }
+
+  size() {
+    return this.stack.length;
+  }
+
+  clear() {
+    this.stack = [];
+  }
 }
+const stack = new Stack();
+
+stack.push(1);
+stack.push(2);
+stack.push(3);
+
+console.log(stack.pop());    // Output: 3
+console.log(stack.peek());   // Output: 2
+console.log(stack.size());   // Output: 2
+console.log(stack.isEmpty());  // Output: false
+
+stack.clear();
+console.log(stack.size());   // Output: 0
+console.log(stack.isEmpty());  // Output: true
