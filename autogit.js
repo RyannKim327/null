@@ -1,15 +1,16 @@
-function hasCycle(head) {
-    let slow = head;
-    let fast = head;
+function calculateMean(numbers) {
+  let sum = 0;
+  const count = numbers.length;
 
-    while (fast && fast.next) {
-        slow = slow.next;
-        fast = fast.next.next;
+  for (let i = 0; i < count; i++) {
+    sum += numbers[i];
+  }
 
-        if (slow === fast) {
-            return true; // Found a cycle
-        }
-    }
-
-    return false; // No cycle found
+  const mean = sum / count;
+  return mean;
 }
+
+// Example usage
+const numbers = [1, 2, 3, 4, 5];
+const mean = calculateMean(numbers);
+console.log(mean); // Output: 3
