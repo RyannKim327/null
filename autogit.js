@@ -1,23 +1,15 @@
-function shellSort(arr) {
-  let gap = Math.floor(arr.length / 2);
-
-  while (gap > 0) {
-    for (let i = gap; i < arr.length; i++) {
-      let temp = arr[i];
-      let j = i;
-
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
-      }
-
-      arr[j] = temp;
-    }
-
-    gap = Math.floor(gap / 2);
+function calculateMean(numbers) {
+  if (numbers.length === 0) {
+    return 0; // Return 0 for an empty list
   }
 
-  return arr;
+  let sum = 0;
+  for (let i = 0; i < numbers.length; i++) {
+    sum += numbers[i]; // Calculate the sum of all numbers
+  }
+
+  return sum / numbers.length; // Return the mean
 }
-let arr = [5, 2, 8, 9, 1, 6];
-console.log(shellSort(arr)); // Output: [1, 2, 5, 6, 8, 9]
+const numbers = [5, 2, 9, 1, 7];
+const mean = calculateMean(numbers);
+console.log(mean); // Output: 4.8
