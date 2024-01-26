@@ -1,100 +1,106 @@
-class BeamSearch {
-  constructor(beamWidth, maxSteps, scoreFunction) {
-    this.beamWidth = beamWidth;
-    this.maxSteps = maxSteps;
-    this.scoreFunction = scoreFunction;
-  }
-
-  search(initialState) {
-    // Implement the beam search algorithm here
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+    this.height = 1;
   }
 }
-search(initialState) {
-  let currentStates = [initialState];
-  
-  // Repeat for each step
-  for (let step = 0; step < this.maxSteps; step++) {
-    let nextStates = [];
+class AVLTree {
+  constructor() {
+    this.root = null;
+  }
 
-    // Expand each state in the current beam
-    for (let state of currentStates) {
-      let candidates = this.generateCandidates(state);
+  getHeight(node) {
+    if (node === null) {
+      return 0;
+    }
+    return node.height;
+  }
 
-      // Compute scores for the candidates
-      for (let candidate of candidates) {
-        candidate.score = this.scoreFunction(candidate);
-      }
+  getBalanceFactor(node) {
+    if (node === null) {
+      return 0;
+    }
+    return this.getHeight(node.left) - this.getHeight(node.right);
+  }
 
-      // Sort the candidates based on scores
-      candidates.sort((a, b) => b.score - a.score);
+  updateHeight(node) {
+    if (node === null) {
+      return;
+    }
+    node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
+  }
 
-      // Keep only the top beamWidth candidates
-      candidates = candidates.slice(0, this.beamWidth);
+  rotateRight(y) {
+    const x = y.left;
+    const T2 = x.right;
 
-      // Add the candidates to the next beam
-      nextStates.push(...candidates);
+    x.right = y;
+    y.left = T2;
+
+    this.updateHeight(y);
+    this.updateHeight(x);
+
+    return x;
+  }
+
+  rotateLeft(x) {
+    const y = x.right;
+    const T2 = y.left;
+
+    y.left = x;
+    x.right = T2;
+
+    this.updateHeight(x);
+    this.updateHeight(y);
+
+    return y;
+  }
+
+  insert(node, value) {
+    if (node === null) {
+      return new Node(value);
     }
 
-    // Sort the next beam based on scores
-    nextStates.sort((a, b) => b.score - a.score);
-
-    // Keep only the top beamWidth states for the next step
-    currentStates = nextStates.slice(0, this.beamWidth);
-  }
-
-  // Return the best state at the final step
-  return currentStates[0];
-}
-class BeamSearch {
-  constructor(beamWidth, maxSteps, scoreFunction) {
-    this.beamWidth = beamWidth;
-    this.maxSteps = maxSteps;
-    this.scoreFunction = scoreFunction;
-  }
-
-  search(initialState) {
-    let currentStates = [initialState];
-
-    for (let step = 0; step < this.maxSteps; step++) {
-      let nextStates = [];
-
-      for (let state of currentStates) {
-        let candidates = this.generateCandidates(state);
-
-        for (let candidate of candidates) {
-          candidate.score = this.scoreFunction(candidate);
-        }
-
-        candidates.sort((a, b) => b.score - a.score);
-
-        candidates = candidates.slice(0, this.beamWidth);
-
-        nextStates.push(...candidates);
-      }
-
-      nextStates.sort((a, b) => b.score - a.score);
-
-      currentStates = nextStates.slice(0, this.beamWidth);
+    if (value < node.value) {
+      node.left = this.insert(node.left, value);
+    } else {
+      node.right = this.insert(node.right, value);
     }
 
-    return currentStates[0];
+    this.updateHeight(node);
+
+    const balanceFactor = this.getBalanceFactor(node);
+
+    if (balanceFactor > 1) {
+      if (value < node.left.value) {
+        return this.rotateRight(node);
+      } else {
+        node.left = this.rotateLeft(node.left);
+        return this.rotateRight(node);
+      }
+    }
+
+    if (balanceFactor < -1) {
+      if (value > node.right.value) {
+        return this.rotateLeft(node);
+      } else {
+        node.right = this.rotateRight(node.right);
+        return this.rotateLeft(node);
+      }
+    }
+
+    return node;
   }
 
-  generateCandidates(state) {
-    // Generate candidate states based on the current state
-    // Modify this according to your specific problem
-    return [];
+  insert(value) {
+    this.root = this.insert(this.root, value);
   }
-}
 
-function scoreFunction(state) {
-  // Assign a score to the state based on some criteria
-  // Modify this according to your specific problem
-  return Math.random();
+  // Implement other methods like delete and search here...
 }
-
-// Usage
-let beamSearch = new BeamSearch(3, 5, scoreFunction);
-let initialState = {}; // Define your initial state accordingly
-let bestState = beamSearch.search(initialState);
-console.log(bestState);
+const avlTree = new AVLTree();
+avlTree.insert(10);
+avlTree.insert(20);
+avlTree.insert(30);
