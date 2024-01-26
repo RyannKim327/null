@@ -1,16 +1,22 @@
-function findMaxSubarray(arr) {
-  let maxSum = arr[0];
-  let currentSum = arr[0];
-  
-  for (let i = 1; i < arr.length; i++) {
-    currentSum = Math.max(arr[i], currentSum + arr[i]);
-    maxSum = Math.max(maxSum, currentSum);
-  }
-  
-  return maxSum;
-}
+function isPalindrome(str) {
+  // Convert the string to lowercase and remove non-alphanumeric characters
+  str = str.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-// Example usage:
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const maxSum = findMaxSubarray(array);
-console.log(maxSum); // Output: 6 (corresponding to the subarray [4, -1, 2, 1])
+  // Initialize two pointers, one pointing to the start of the string and the other to the end
+  let i = 0;
+  let j = str.length - 1;
+
+  // Move the pointers towards the center, comparing characters
+  while (i < j) {
+    if (str[i] !== str[j]) {
+      return false; // If characters don't match, it's not a palindrome
+    }
+    i++;
+    j--;
+  }
+
+  return true; // All characters matched, it's a palindrome
+}
+console.log(isPalindrome("racecar"));      // true
+console.log(isPalindrome("A man, a plan, a canal: Panama"));  // true
+console.log(isPalindrome("hello"));        // false
