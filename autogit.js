@@ -1,22 +1,22 @@
-function binarySearchRecursive(arr, target, start = 0, end = arr.length - 1) {
-  const middleIndex = Math.floor((start + end) / 2);
+function areAnagrams(str1, str2) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  str1 = str1.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+  str2 = str2.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
 
-  if (start > end) {
-    return -1; // Target element not found
-  }
+  // Split the strings into arrays, sort them, and join back into strings
+  const sortedStr1 = str1.split('').sort().join('');
+  const sortedStr2 = str2.split('').sort().join('');
 
-  if (arr[middleIndex] === target) {
-    return middleIndex; // Target element found
-  }
-
-  if (target < arr[middleIndex]) {
-    return binarySearchRecursive(arr, target, start, middleIndex - 1);
-  } else {
-    return binarySearchRecursive(arr, target, middleIndex + 1, end);
-  }
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
-const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-const targetElement = 6;
 
-const index = binarySearchRecursive(sortedArray, targetElement);
-console.log(index); // Output: 5 (index of the target element in the array)
+// Example usage
+const string1 = "Listen";
+const string2 = "Silent";
+
+if (areAnagrams(string1, string2)) {
+  console.log("The strings are anagrams.");
+} else {
+  console.log("The strings are not anagrams.");
+}
