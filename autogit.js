@@ -1,18 +1,54 @@
-const numbers = [1, 5, 2, 9, 3, 6];
-const maxNumber = Math.max(...numbers);
-console.log(maxNumber); // Output: 9
-const numbers = [1, 5, 2, 9, 3, 6];
-const maxNumber = numbers.reduce((max, current) => {
-  return Math.max(max, current);
-});
-console.log(maxNumber); // Output: 9
-const numbers = [1, 5, 2, 9, 3, 6];
-let maxNumber = numbers[0];
-
-for (let i = 1; i < numbers.length; i++) {
-  if (numbers[i] > maxNumber) {
-    maxNumber = numbers[i];
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
   }
 }
 
-console.log(maxNumber); // Output: 9
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+
+  // Method to add nodes to the linked list
+  addNode(data) {
+    const newNode = new Node(data);
+
+    if (this.head === null) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next !== null) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
+
+  // Method to find the middle element
+  findMiddleElement() {
+    if (this.head === null) {
+      return null;
+    }
+
+    let slow = this.head;
+    let fast = this.head;
+
+    while (fast !== null && fast.next !== null) {
+      fast = fast.next.next;
+      slow = slow.next;
+    }
+
+    return slow.data;
+  }
+}
+
+// Example usage
+const linkedList = new LinkedList();
+linkedList.addNode(1);
+linkedList.addNode(2);
+linkedList.addNode(3);
+linkedList.addNode(4);
+linkedList.addNode(5);
+
+console.log(linkedList.findMiddleElement()); // Output: 3
