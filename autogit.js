@@ -1,24 +1,11 @@
-function factorialLoop(number) {
-  // Check for edge cases
-  if (number === 0 || number === 1) {
-    return 1;
-  }
-
-  let result = 1;
-
-  for (let i = 2; i <= number; i++) {
-    result *= i;
-  }
-
-  return result;
+Area = (base * height) / 2
+function calculateTriangleArea(base, height) {
+  var area = (base * height) / 2;
+  return area;
 }
-function factorialRecursive(number) {
-  // Check for edge cases
-  if (number === 0 || number === 1) {
-    return 1;
-  }
 
-  return number * factorialRecursive(number - 1);
-}
-console.log(factorialLoop(5)); // Output: 120
-console.log(factorialRecursive(5)); // Output: 120
+// Example usage:
+var triangleBase = 4;
+var triangleHeight = 6;
+var triangleArea = calculateTriangleArea(triangleBase, triangleHeight);
+console.log("The area of the triangle is: " + triangleArea);
