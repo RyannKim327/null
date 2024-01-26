@@ -1,18 +1,29 @@
-// Function to generate a random number within a given range
-function getRandomNumber(min, max) {
-  // Generate a random decimal number between 0 and 1
-  var randomDecimal = Math.random();
+function findLongestCommonPrefix(strings) {
+  if (strings.length === 0) {
+    return "";
+  }
 
-  // Scale the range to the desired min and max values
-  var randomNumber = randomDecimal * (max - min + 1) + min;
+  let prefix = strings[0];
 
-  // Convert the decimal to an integer by using Math.floor()
-  return Math.floor(randomNumber);
+  for (let i = 1; i < strings.length; i++) {
+    const currentString = strings[i];
+    let j = 0;
+
+    while (j < prefix.length && j < currentString.length && prefix[j] === currentString[j]) {
+      j++;
+    }
+
+    prefix = prefix.slice(0, j);
+
+    if (prefix === "") {
+      break;
+    }
+  }
+
+  return prefix;
 }
 
-// Usage Example
-var minRange = 1; // Minimum value of the range
-var maxRange = 10; // Maximum value of the range
-
-var randomNum = getRandomNumber(minRange, maxRange);
-console.log(randomNum); // Print the random number to the console
+// Example usage:
+const strings = ["flower", "flow", "flight"];
+const commonPrefix = findLongestCommonPrefix(strings);
+console.log(commonPrefix); // Output: "fl"
