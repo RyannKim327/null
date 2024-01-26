@@ -1,55 +1,48 @@
-function buildPrefixTable(pattern) {
-  const prefixTable = [0];
-  let len = 0; // Length of the previous longest prefix suffix
-  
-  for (let i = 1; i < pattern.length; i++) {
-    if (pattern[i] === pattern[len]) {
-      len++;
-      prefixTable[i] = len;
-    } else {
-      if (len > 0) {
-        len = prefixTable[len - 1];
-        i--; // Compare current character with new len value
-      } else {
-        prefixTable[i] = 0;
-      }
-    }
-  }
-  
-  return prefixTable;
+function Node(value, parent) {
+  this.value = value;
+  this.children = [];
+  this.parent = parent;
 }
-function knuthMorrisPratt(text, pattern) {
-  const prefixTable = buildPrefixTable(pattern);
-  let i = 0; // Index for text
-  let j = 0; // Index for pattern
-  
-  while (i < text.length) {
-    if (text[i] === pattern[j]) {
-      i++;
-      j++;
-      
-      if (j === pattern.length) {
-        // Pattern found at index i-j
-        return i - j;
-      }
-    } else {
-      if (j > 0) {
-        j = prefixTable[j - 1];
-      } else {
-        i++;
-      }
-    }
-  }
-  
-  // Pattern not found
-  return -1;
-}
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const index = knuthMorrisPratt(text, pattern);
 
-if (index !== -1) {
-  console.log(`Pattern found at index ${index}`);
-} else {
-  console.log("Pattern not found");
+function breadthLimitedSearch(initialState, limit) {
+  const root = new Node(initialState, null);
+  const queue = [];
+  const visited = new Set();
+
+  queue.push(root);
+
+  while (queue.length > 0) {
+    const current = queue.shift();
+
+    // Check if current node matches the target or satisfies the condition
+    if (current.value === targetState) {
+      return current; // or perform the required action
+    }
+
+    if (current.depth < limit) {
+      // Generate and enqueue children nodes
+      const children = generateChildren(current.value);
+      for (const childValue of children) {
+        const childNode = new Node(childValue, current);
+        current.children.push(childNode);
+        queue.push(childNode);
+      }
+    }
+
+    visited.add(current);
+  }
+
+  return null; // Return null if target not found within the limit
 }
+
+// Example usage
+const targetState = 42;
+
+function generateChildren(parentValue) {
+  // Generate children based on the parent value
+  // Implement your own logic here
+  return [];
+}
+
+const result = breadthLimitedSearch(initialState, 5);
+console.log(result);
