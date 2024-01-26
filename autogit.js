@@ -1,30 +1,51 @@
-function largestPrimeFactor(number) {
-  let maxPrime = 1;
-  
-  while (number % 2 === 0) {
-    maxPrime = 2;
-    number /= 2;
+function bellmanFord(graph, start) {
+  const vertices = Object.keys(graph);
+  const distances = {};
+  const predecessors = {};
+
+  // Step 2: Initialization
+  for (const vertex of vertices) {
+    distances[vertex] = Infinity;
+    predecessors[vertex] = null;
   }
-  
-  let divisor = 3;
-  let maxFactor = Math.sqrt(number);
-  
-  while (divisor <= maxFactor) {
-    if (number % divisor === 0) {
-      maxPrime = divisor;
-      number /= divisor;
-      maxFactor = Math.sqrt(number);
-    } else {
-      divisor += 2;
+  distances[start] = 0;
+
+  // Step 3: Relaxation
+  for (let i = 0; i < vertices.length - 1; i++) {
+    for (const [source, edges] of Object.entries(graph)) {
+      for (const [target, weight] of Object.entries(edges)) {
+        const distance = distances[source] + weight;
+        if (distance < distances[target]) {
+          distances[target] = distance;
+          predecessors[target] = source;
+        }
+      }
     }
   }
-  
-  if (number > 2) {
-    maxPrime = number;
+
+  // Step 4: Check for negative weight cycles
+  for (const [source, edges] of Object.entries(graph)) {
+    for (const [target, weight] of Object.entries(edges)) {
+      const distance = distances[source] + weight;
+      if (distance < distances[target]) {
+        return null; // Negative weight cycle detected
+      }
+    }
   }
-  
-  return maxPrime;
+
+  // Step 5: Return the shortest distances and predecessors
+  return {
+    distances,
+    predecessors,
+  };
 }
 
 // Example usage:
-console.log(largestPrimeFactor(13195)); // Output: 29
+const graph = {
+  A: { B: 3, C: 5 },
+  B: { C: 1 },
+  C: { A: -2 },
+};
+
+const result = bellmanFord(graph, "A");
+console.log(result);
