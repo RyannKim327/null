@@ -1,47 +1,22 @@
-function findFirstRepeatedChar(str) {
-  const charCount = {};
-  
-  for (const char of str) {
-    if (charCount[char]) {
-      return char;
-    }
-    charCount[char] = true;
-  }
-  
-  return null;
-}
+function binarySearchRecursive(arr, target, start = 0, end = arr.length - 1) {
+  const middleIndex = Math.floor((start + end) / 2);
 
-const inputString = "Hello World";
-const result = findFirstRepeatedChar(inputString);
-console.log(result); // Output: 'l'
-function findFirstRepeatedChar(str) {
-  const charArray = Array.from(str);
-  const visitedChars = [];
-  
-  for (const char of charArray) {
-    if (visitedChars.includes(char)) {
-      return char;
-    }
-    visitedChars.push(char);
+  if (start > end) {
+    return -1; // Target element not found
   }
-  
-  return null;
-}
 
-const inputString = "Hello World";
-const result = findFirstRepeatedChar(inputString);
-console.log(result); // Output: 'l'
-function findFirstRepeatedChar(str) {
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charAt(i);
-    if (str.indexOf(char) !== str.lastIndexOf(char)) {
-      return char;
-    }
+  if (arr[middleIndex] === target) {
+    return middleIndex; // Target element found
   }
-  
-  return null;
-}
 
-const inputString = "Hello World";
-const result = findFirstRepeatedChar(inputString);
-console.log(result); // Output: 'l'
+  if (target < arr[middleIndex]) {
+    return binarySearchRecursive(arr, target, start, middleIndex - 1);
+  } else {
+    return binarySearchRecursive(arr, target, middleIndex + 1, end);
+  }
+}
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const targetElement = 6;
+
+const index = binarySearchRecursive(sortedArray, targetElement);
+console.log(index); // Output: 5 (index of the target element in the array)
