@@ -1,9 +1,19 @@
-let str = "  Hello,   World!  ";
-let trimmedString = str.replace(/\s/g, "");
-console.log(trimmedString); // Output: "Hello,World!"
-let str = "  Hello,   World!  ";
-let trimmedString = str.split(" ").join("");
-console.log(trimmedString); // Output: "Hello,World!"
-let str = "  Hello,   World!  ";
-let trimmedString = str.trim();
-console.log(trimmedString); // Output: "Hello,   World!"
+function findFirstRepeatedChar(str) {
+  var frequency = {};
+
+  for (var i = 0; i < str.length; i++) {
+    var char = str[i];
+
+    if (frequency[char]) {
+      return char;
+    } else {
+      frequency[char] = 1;
+    }
+  }
+
+  return null;
+}
+
+// Example usage
+var firstRepeatedChar = findFirstRepeatedChar("hello world");
+console.log(firstRepeatedChar); // Output: 'l'
