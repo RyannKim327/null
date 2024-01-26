@@ -1,151 +1,48 @@
-// Node class
-class Node {
-  constructor(value, color) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-    this.parent = null;
-    this.color = color;
-  }
+function ListNode(val) {
+  this.val = val;
+  this.next = null;
 }
 
-// Red-Black Tree class
-class RedBlackTree {
-  constructor() {
-    this.root = null;
+function isLinkedListPalindrome(head) {
+  if (!head || !head.next) {
+    // Empty list or single node is considered a palindrome
+    return true;
   }
-  
-  // Left rotation
-  rotateLeft(node) {
-    const rightChild = node.right;
-    node.right = rightChild.left;
-    
-    if (rightChild.left != null) {
-      rightChild.left.parent = node;
-    }
-      
-    rightChild.parent = node.parent;
-    
-    if (node.parent == null) {
-      this.root = rightChild;
-    } else if (node === node.parent.left) {
-      node.parent.left = rightChild;
-    } else {
-      node.parent.right = rightChild;
-    }
-    
-    rightChild.left = node;
-    node.parent = rightChild;
-  }
-  
-  // Right rotation
-  rotateRight(node) {
-    const leftChild = node.left;
-    node.left = leftChild.right;
-    
-    if (leftChild.right != null) {
-      leftChild.right.parent = node;
-    }
-    
-    leftChild.parent = node.parent;
-    
-    if (node.parent == null) {
-      this.root = leftChild;
-    } else if (node === node.parent.right) {
-      node.parent.right = leftChild;
-    } else {
-      node.parent.left = leftChild;
-    }
-    
-    leftChild.right = node;
-    node.parent = leftChild;
-  }
-  
-  // Insertion
-  insert(value) {
-    const node = new Node(value, "red");
-    
-    if (this.root === null) {
-      this.root = node;
-      node.color = "black";
-      return;
-    }
-    
-    let curr = this.root;
-    let prev = null;
-    
-    while (curr != null) {
-      prev = curr;
-      
-      if (value < curr.value) {
-        curr = curr.left;
-      } else {
-        curr = curr.right;
-      }
-    }
-    
-    node.parent = prev;
-    
-    if (value < prev.value) {
-      prev.left = node;
-    } else {
-      prev.right = node;
-    }
-    
-    this.fixViolation(node);
-  }
-  
-  // Fix violation after insertion
-  fixViolation(node) {
-    while (node !== this.root && node.parent.color === "red") {
-      if (node.parent === node.parent.parent.left) {
-        let uncle = node.parent.parent.right;
-        
-        if (uncle != null && uncle.color === "red") {
-          node.parent.color = "black";
-          uncle.color = "black";
-          node.parent.parent.color = "red";
-          node = node.parent.parent;
-        } else {
-          if (node === node.parent.right) {
-            node = node.parent;
-            this.rotateLeft(node);
-          }
-          
-          node.parent.color = "black";
-          node.parent.parent.color = "red";
-          this.rotateRight(node.parent.parent);
-        }
-      } else {
-        let uncle = node.parent.parent.left;
-        
-        if (uncle != null && uncle.color === "red") {
-          node.parent.color = "black";
-          uncle.color = "black";
-          node.parent.parent.color = "red";
-          node = node.parent.parent;
-        } else {
-          if (node === node.parent.left) {
-            node = node.parent;
-            this.rotateRight(node);
-          }
-          
-          node.parent.color = "black";
-          node.parent.parent.color = "red";
-          this.rotateLeft(node.parent.parent);
-        }
-      }
-    }
-    
-    this.root.color = "black";
-  }
-}
-const tree = new RedBlackTree();
 
-tree.insert(10);
-tree.insert(5);
-tree.insert(15);
-tree.insert(3);
-tree.insert(7);
-tree.insert(12);
-tree.insert(18);
+  // Step 1: Create slow and fast pointers
+  let slow = head;
+  let fast = head;
+  const stack = [];
+
+  // Step 2: Traverse and push the first half onto the stack
+  while (fast && fast.next) {
+    stack.push(slow.val);
+    slow = slow.next;
+    fast = fast.next.next;
+  }
+
+  // Step 3: Handle odd length by ignoring the middle node
+  if (fast) {
+    slow = slow.next;
+  }
+
+  // Step 4: Traverse the second half and compare with stack
+  while (slow) {
+    const top = stack.pop();
+    if (slow.val !== top) {
+      return false;
+    }
+    slow = slow.next;
+  }
+
+  // Step 5: All checks passed, it's a palindrome
+  return true;
+}
+// Example usage
+const list = new ListNode(1);
+list.next = new ListNode(2);
+list.next.next = new ListNode(3);
+list.next.next.next = new ListNode(2);
+list.next.next.next.next = new ListNode(1);
+
+console.log(isLinkedListPalindrome(list));  // Output: true
