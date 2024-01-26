@@ -1,11 +1,17 @@
-Area = (base * height) / 2
-function calculateTriangleArea(base, height) {
-  var area = (base * height) / 2;
-  return area;
-}
+const cron = require('node-cron');
 
-// Example usage:
-var triangleBase = 4;
-var triangleHeight = 6;
-var triangleArea = calculateTriangleArea(triangleBase, triangleHeight);
-console.log("The area of the triangle is: " + triangleArea);
+// Schedule a task to run every minute
+cron.schedule('* * * * *', () => {
+  console.log('Scheduled task running every minute');
+});
+
+// Schedule a task to run every day at 9:00 AM
+cron.schedule('0 9 * * *', () => {
+  console.log('Scheduled task running every day at 9:00 AM');
+});
+
+// Schedule a task to run on specific days of the week
+cron.schedule('0 18 * * 1,4', () => {
+  console.log('Scheduled task running every Monday and Thursday at 6:00 PM');
+});
+npm install node-cron
