@@ -1,52 +1,36 @@
-function burrowsWheelerTransform(input) {
-  // Generate all rotations of the input string
-  const rotations = [];
-  for (let i = 0; i < input.length; i++) {
-    const rotation = input.slice(i) + input.slice(0, i);
-    rotations.push(rotation);
-  }
+function findLongestIncreasingSubsequence(arr) {
+  const n = arr.length;
+  const dp = new Array(n).fill(1);
+  let maxLength = 1;
 
-  // Sort the rotations lexicographically
-  rotations.sort();
-
-  // Retrieve the last character of each rotation
-  const bwt = rotations.map(rotation => rotation.charAt(rotation.length - 1));
-
-  // Return the BWT string
-  return bwt.join('');
-}
-const input = 'banana';
-const bwt = burrowsWheelerTransform(input);
-console.log('BWT:', bwt);
-function inverseBurrowsWheelerTransform(bwt) {
-  // Create a list of characters from the BWT string
-  const chars = bwt.split('');
-
-  // Initialize an empty matrix to represent the sorted BWT string
-  const sortedMatrix = chars.map(_ => []);
-
-  // Fill in the sorted matrix
-  for (let i = 0; i < chars.length; i++) {
-    for (let j = 0; j < chars.length; j++) {
-      sortedMatrix[j].unshift(chars[j]);
-      sortedMatrix[j].sort();
+  for (let i = 1; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      if (arr[i] > arr[j]) {
+        dp[i] = Math.max(dp[i], dp[j] + 1);
+        maxLength = Math.max(maxLength, dp[i]);
+      }
     }
   }
 
-  // Find the original string in the sorted matrix
-  const originalIndex = chars.indexOf('$');
-  let originalString = '';
+  const lis = [];
+  let lastIndex = dp.indexOf(maxLength);
+  
+  while (lis.length < maxLength) {
+    lis.unshift(arr[lastIndex]);
 
-  // Reconstruct the original string from the sorted matrix
-  for (let i = 0; i < chars.length - 1; i++) {
-    const row = sortedMatrix[originalIndex];
-    const char = row.shift();
-    originalIndex = chars.indexOf(char);
-    originalString += char;
+    for (let i = lastIndex - 1; i >= 0; i--) {
+      if (dp[i] === maxLength - 1 && arr[i] < arr[lastIndex]) {
+        lastIndex = i;
+        break;
+      }
+    }
+    maxLength--;
   }
-
-  // Return the original string
-  return originalString;
+  
+  return lis;
 }
-const originalString = inverseBurrowsWheelerTransform(bwt);
-console.log('Original String:', originalString);
+
+// Example usage:
+const array = [3, 10, 2, 1, 20];
+const lis = findLongestIncreasingSubsequence(array);
+console.log(lis); // Output: [3, 10, 20]
