@@ -1,35 +1,29 @@
-function hash(str) {
-  let hashValue = 0;
-  for (let i = 0; i < str.length; i++) {
-    hashValue += str.charCodeAt(i);
-  }
-  return hashValue;
-}
-function rabinKarpSearch(text, pattern) {
-  const textLength = text.length;
+function boyerMooreHorspoolSearch(text, pattern) {
+  const shiftTable = {};
+
   const patternLength = pattern.length;
-  const patternHash = hash(pattern);
-  let windowHash = hash(text.slice(0, patternLength));
-
-  // Check if the pattern matches the first window of the text
-  if (windowHash === patternHash && text.slice(0, patternLength) === pattern) {
-    return 0; // Pattern found at index 0
+  for (let i = 0; i < patternLength - 1; i++) {
+    shiftTable[pattern[i]] = patternLength - i - 1;
   }
+  shiftTable['default'] = patternLength;
 
-  // Iterate through the remaining windows of the text
-  for (let i = 1; i <= textLength - patternLength; i++) {
-    // Update the rolling hash value
-    windowHash -= text.charCodeAt(i - 1);
-    windowHash += text.charCodeAt(i + patternLength - 1);
+  let textIndex = patternLength - 1;
 
-    // Check if the pattern matches the current window of the text
-    if (windowHash === patternHash && text.slice(i, i + patternLength) === pattern) {
-      return i; // Pattern found at index i
+  while (textIndex < text.length) {
+    let patternIndex = patternLength - 1;
+    let tempTextIndex = textIndex;
+
+    while (patternIndex >= 0 && pattern[patternIndex] === text[tempTextIndex]) {
+      patternIndex--;
+      tempTextIndex--;
     }
+
+    if (patternIndex === -1) {
+      return tempTextIndex + 1; // Return the starting position of the pattern
+    }
+
+    textIndex += shiftTable[text[textIndex]] || shiftTable['default'];
   }
 
-  return -1; // Pattern not found
+  return -1; // If pattern is not found
 }
-const text = "This is a test string";
-const pattern = "test";
-console.log(rabinKarpSearch(text, pattern)); // Output: 10
