@@ -1,21 +1,47 @@
-function binarySearch(arr, start, end, target) {
-  if (start > end) {
-    return -1;
-  }
+// Heapify the array
+function heapify(arr, n, i) {
+  let largest = i; // Initialize largest as root
+  let left = 2 * i + 1; // Left child
+  let right = 2 * i + 2; // Right child
 
-  const mid = Math.floor((start + end) / 2);
+  if (left < n && arr[left] > arr[largest])
+    largest = left;
 
-  if (arr[mid] === target) {
-    return mid;
-  } else if (arr[mid] > target) {
-    return binarySearch(arr, start, mid - 1, target);
-  } else {
-    return binarySearch(arr, mid + 1, end, target);
+  if (right < n && arr[right] > arr[largest])
+    largest = right;
+
+  if (largest != i) {
+    swap(arr, i, largest);
+    heapify(arr, n, largest);
   }
 }
 
-// Example usage
-const arr = [1, 5, 10, 15, 20, 25];
-const target = 15;
-const index = binarySearch(arr, 0, arr.length - 1, target);
-console.log(index); // Output: 3
+// Swap two elements in an array
+function swap(arr, i, j) {
+  let temp = arr[i];
+  arr[i] = arr[j];
+  arr[j] = temp;
+}
+
+// The main function to perform heap sort
+function heapSort(arr) {
+  let n = arr.length;
+
+  // Build a max heap
+  for (let i = Math.floor(n / 2) - 1; i >= 0; i--)
+    heapify(arr, n, i);
+
+  // Extract elements from the heap one by one
+  for (let i = n - 1; i > 0; i--) {
+    swap(arr, 0, i);
+    heapify(arr, i, 0);
+  }
+
+  return arr;
+}
+
+// Test the code
+let arr = [12, 11, 13, 5, 6, 7];
+console.log(`Original Array: ${arr}`);
+heapSort(arr);
+console.log(`Sorted Array: ${arr}`);
