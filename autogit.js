@@ -1,20 +1,50 @@
-function randomSort(arr) {
-  // Create a copy of the original array
-  const shuffledArr = [...arr];
-  
-  // Loop through the array from the last element to the first
-  for (let i = shuffledArr.length - 1; i > 0; i--) {
-    // Generate a random index between 0 and i
-    const randomIndex = Math.floor(Math.random() * (i + 1));
-    
-    // Swap elements at randomIndex and i
-    [shuffledArr[i], shuffledArr[randomIndex]] = [shuffledArr[randomIndex], shuffledArr[i]];
-  }
-  
-  return shuffledArr;
-}
+function generateFailureTable(pattern) {
+  const table = Array(pattern.length).fill(0);
+  let i = 1;
+  let j = 0;
 
-// Test the function
-const originalArray = [1, 2, 3, 4, 5];
-const sortedArray = randomSort(originalArray);
-console.log(sortedArray);
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[j]) {
+      table[i] = j + 1;
+      i++;
+      j++;
+    } else if (j > 0) {
+      j = table[j - 1];
+    } else {
+      table[i] = 0;
+      i++;
+    }
+  }
+
+  return table;
+}
+function kmpSearch(text, pattern) {
+  const failureTable = generateFailureTable(pattern);
+  let i = 0;
+  let j = 0;
+
+  while (i < text.length) {
+    if (text[i] === pattern[j]) {
+      if (j === pattern.length - 1) {
+        return i - j; // Match found at index i - j
+      }
+      i++;
+      j++;
+    } else if (j > 0) {
+      j = failureTable[j - 1];
+    } else {
+      i++;
+    }
+  }
+
+  return -1; // Match not found
+}
+const text = 'ABCABCDABABCDABCDABDE';
+const pattern = 'ABCDABD';
+const index = kmpSearch(text, pattern);
+
+if (index === -1) {
+  console.log('Pattern not found');
+} else {
+  console.log(`Pattern found at index ${index}`);
+}
