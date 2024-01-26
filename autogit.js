@@ -1,9 +1,20 @@
-let myArray = [1, 2, 3, 4, 5];
-myArray.reverse();
+function factorialLoop(num) {
+  let result = 1;
+  
+  for(let i = num; i >= 1; i--) {
+    result *= i;
+  }
+  
+  return result;
+}
 
-console.log(myArray); // Output: [5, 4, 3, 2, 1]
-let myArray = [1, 2, 3, 4, 5];
-let reversedArray = Array.from(myArray).reverse();
+console.log(factorialLoop(5));  // Output: 120
+function factorialRecursive(num) {
+  if(num === 0 || num === 1) {
+    return 1;
+  } else {
+    return num * factorialRecursive(num - 1);
+  }
+}
 
-console.log(myArray);       // Output: [1, 2, 3, 4, 5]
-console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
+console.log(factorialRecursive(5));  // Output: 120
