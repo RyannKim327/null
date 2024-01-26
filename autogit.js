@@ -1,13 +1,21 @@
-function factorial(num) {
-  if (num === 0 || num === 1)
-    return 1;
-  else {
-    let result = 1;
-    for (let i = 2; i <= num; i++) {
-      result *= i;
-    }
-    return result;
+function calculateMean(numbers) {
+  // Check if the input is empty
+  if (numbers.length === 0) {
+    return 0;
   }
+  
+  // Calculate the sum of all numbers
+  var sum = numbers.reduce(function(a, b) {
+    return a + b;
+  });
+  
+  // Calculate the mean by dividing the sum by the number of elements
+  var mean = sum / numbers.length;
+  
+  return mean;
 }
 
-console.log(factorial(5)); // Output: 120
+// Example usage
+var numbers = [1, 2, 3, 4, 5];
+var mean = calculateMean(numbers);
+console.log(mean); // Output: 3
