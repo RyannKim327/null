@@ -1,19 +1,22 @@
-function isPrime(number) {
-  // Handle special cases
-  if (number < 2) {
-    return false;
-  }
+function bubbleSort(arr) {
+  var len = arr.length;
+  var swapped;
 
-  // Check if the number is divisible by any integer from 2 to the square root of the number
-  for (let i = 2; i <= Math.sqrt(number); i++) {
-    if (number % i === 0) {
-      return false; // Number is divisible, hence not prime
+  do {
+    swapped = false;
+    for (var i = 0; i < len-1; i++) {
+      if (arr[i] > arr[i + 1]) {
+        var temp = arr[i];
+        arr[i] = arr[i + 1];
+        arr[i + 1] = temp;
+        swapped = true;
+      }
     }
-  }
+  } while (swapped);
 
-  return true; // Number is prime
+  return arr;
 }
 
-// Usage:
-console.log(isPrime(7)); // Output: true
-console.log(isPrime(10)); // Output: false
+// Example usage:
+var numbers = [5, 3, 8, 4, 2];
+console.log(bubbleSort(numbers)); // Output: [2, 3, 4, 5, 8]
