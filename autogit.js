@@ -1,68 +1,39 @@
-let fibM2 = 0; // (M-2)th Fibonacci number
-let fibM1 = 1; // (M-1)th Fibonacci number
-let fibM = fibM2 + fibM1; // Mth Fibonacci number
-
-while (fibM < n) {
-  fibM2 = fibM1;
-  fibM1 = fibM;
-  fibM = fibM2 + fibM1;
-}
-let offset = -1;
-
-while (fibM > 1) {
-  // Check if fibM2 is a valid index
-  const i = Math.min(offset + fibM2, n - 1);
-
-  // If x is greater than the value at index i, move the fibM indices two steps down
-  if (arr[i] < x) {
-    fibM = fibM1;
-    fibM1 = fibM2;
-    fibM2 = fibM - fibM1;
-    offset = i;
+function findMajorityElement(arr) {
+  const freqMap = new Map();
+  for (let i = 0; i < arr.length; i++) {
+    const current = arr[i];
+    freqMap.set(current, (freqMap.get(current) || 0) + 1);
   }
-
-  // If x is smaller than the value at index i, move the fibM indices one step down
-  else if (arr[i] > x) {
-    fibM = fibM2;
-    fibM1 = fibM1 - fibM2;
-    fibM2 = fibM - fibM1;
-  }
-
-  // If x is found, return the index
-  else {
-    return i;
-  }
-}
-return -1;
-function fibonacciSearch(arr, x, n) {
-  let fibM2 = 0;
-  let fibM1 = 1;
-  let fibM = fibM2 + fibM1;
-
-  while (fibM < n) {
-    fibM2 = fibM1;
-    fibM1 = fibM;
-    fibM = fibM2 + fibM1;
-  }
-
-  let offset = -1;
-
-  while (fibM > 1) {
-    const i = Math.min(offset + fibM2, n - 1);
-
-    if (arr[i] < x) {
-      fibM = fibM1;
-      fibM1 = fibM2;
-      fibM2 = fibM - fibM1;
-      offset = i;
-    } else if (arr[i] > x) {
-      fibM = fibM2;
-      fibM1 = fibM1 - fibM2;
-      fibM2 = fibM - fibM1;
-    } else {
-      return i;
+  let majorityElement;
+  let maxFrequency = 0;
+  for (const [element, frequency] of freqMap) {
+    if (frequency > maxFrequency) {
+      maxFrequency = frequency;
+      majorityElement = element;
     }
   }
-
-  return -1;
+  return majorityElement;
 }
+
+const arr = [1, 2, 3, 4, 4, 4, 4, 4, 5];
+const majorityElement = findMajorityElement(arr);
+console.log(majorityElement); // Output: 4
+function findMajorityElement(arr) {
+  let candidate;
+  let count = 0;
+  for (let i = 0; i < arr.length; i++) {
+    if (count === 0) {
+      candidate = arr[i];
+      count = 1;
+    } else if (arr[i] === candidate) {
+      count++;
+    } else {
+      count--;
+    }
+  }
+  return candidate;
+}
+
+const arr = [1, 2, 3, 4, 4, 4, 4, 4, 5];
+const majorityElement = findMajorityElement(arr);
+console.log(majorityElement); // Output: 4
