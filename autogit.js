@@ -1,13 +1,33 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  const alphanumericStr = str.replace(/[^0-9a-z]/gi, '').toLowerCase();
+function findMajorityElement(arr) {
+  const freqCount = {};
 
-  // Reverse the string
-  const reversedStr = alphanumericStr.split('').reverse().join('');
+  for (let i = 0; i < arr.length; i++) {
+    const element = arr[i];
 
-  // Compare the reversed string with the original string
-  return alphanumericStr === reversedStr;
+    if (freqCount[element]) {
+      freqCount[element]++;
+    } else {
+      freqCount[element] = 1;
+    }
+  }
+
+  let majorityElement = null;
+  let maxFrequency = 0;
+
+  for (const element in freqCount) {
+    if (freqCount[element] > maxFrequency) {
+      maxFrequency = freqCount[element];
+      majorityElement = element;
+    }
+  }
+
+  if (maxFrequency > arr.length / 2) {
+    return majorityElement;
+  } else {
+    return "No majority element found";
+  }
 }
-console.log(isPalindrome('racecar')); // true
-console.log(isPalindrome('hello')); // false
-console.log(isPalindrome('A man, a plan, a canal: Panama')); // true
+
+// Example usage:
+const array = [2, 4, 5, 2, 2, 2, 5, 2, 6];
+console.log(findMajorityElement(array)); // Output: 2
