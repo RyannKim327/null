@@ -1,15 +1,23 @@
-const CronJob = require('cron').CronJob;
+function shellSort(arr) {
+  let gap = Math.floor(arr.length / 2);
 
-// Function to be executed by the cron job
-function myTask() {
-  console.log('Running scheduled task...');
-  // Add your task logic here
+  while (gap > 0) {
+    for (let i = gap; i < arr.length; i++) {
+      let temp = arr[i];
+      let j = i;
+
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
+      }
+
+      arr[j] = temp;
+    }
+
+    gap = Math.floor(gap / 2);
+  }
+
+  return arr;
 }
-
-// Create a cron job that runs every minute
-const job = new CronJob('* * * * *', myTask);
-
-// Start the cron job
-job.start();
-
-console.log('Cron job has been scheduled.');
+let arr = [5, 2, 8, 9, 1, 6];
+console.log(shellSort(arr)); // Output: [1, 2, 5, 6, 8, 9]
