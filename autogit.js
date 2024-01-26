@@ -1,33 +1,85 @@
-function merge(leftArr, rightArr) {
-  let sortedArr = [];
-  let leftIndex = 0;
-  let rightIndex = 0;
-  
-  while (leftIndex < leftArr.length && rightIndex < rightArr.length) {
-    if (leftArr[leftIndex] < rightArr[rightIndex]) {
-      sortedArr.push(leftArr[leftIndex]);
-      leftIndex++;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
+class BinarySearchTree {
+  constructor() {
+    this.root = null;
+  }
+
+  // Method to insert a value into the BST
+  insert(value) {
+    const newNode = new Node(value);
+
+    if (this.root === null) {
+      this.root = newNode;
     } else {
-      sortedArr.push(rightArr[rightIndex]);
-      rightIndex++;
+      this.insertNode(this.root, newNode);
     }
   }
-  
-  // Concatenate any remaining elements from the left and right arrays
-  return sortedArr.concat(leftArr.slice(leftIndex)).concat(rightArr.slice(rightIndex));
-}
-function mergeSort(arr) {
-  if (arr.length <= 1) {
-    return arr; // Base case: Array is already sorted
+
+  // Helper method to recursively insert a value
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
   }
-  
-  const middle = Math.floor(arr.length / 2); // Find the middle index
-  const leftArr = arr.slice(0, middle); // Split array into left half
-  const rightArr = arr.slice(middle); // Split array into right half
-  
-  // Recursively sort and merge the two halves
-  return merge(mergeSort(leftArr), mergeSort(rightArr));
+
+  // Method to search for a value in the BST
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  // Helper method to recursively search for a value
+  searchNode(node, value) {
+    if (node === null) {
+      return false;
+    }
+
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else if (value > node.value) {
+      return this.searchNode(node.right, value);
+    } else {
+      return true;
+    }
+  }
+
+  // Method to perform in-order traversal of the BST
+  inOrderTraversal(callback) {
+    this.inOrderTraversalNode(this.root, callback);
+  }
+
+  // Helper method to recursively perform in-order traversal
+  inOrderTraversalNode(node, callback) {
+    if (node !== null) {
+      this.inOrderTraversalNode(node.left, callback);
+      callback(node.value);
+      this.inOrderTraversalNode(node.right, callback);
+    }
+  }
 }
-const arr = [5, 2, 8, 3, 1, 6, 4, 7];
-const sortedArr = mergeSort(arr);
-console.log(sortedArr);
+const bst = new BinarySearchTree();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(2);
+bst.insert(7);
+
+console.log(bst.search(5)); // Output: true
+console.log(bst.search(20)); // Output: false
+
+bst.inOrderTraversal(value => console.log(value)); // Output: 2, 5, 7, 10, 15
