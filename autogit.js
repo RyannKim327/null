@@ -1,23 +1,31 @@
-function quicksort(arr) {
-  if (arr.length <= 1) {
-    return arr;
+function depthLimitedSearch(node, depthLimit) {
+  return depthLimitedSearchHelper(node, depthLimit, 0);
+}
+
+function depthLimitedSearchHelper(node, depthLimit, currentDepth) {
+  if (currentDepth === depthLimit) {
+    // Base case: reached the depth limit
+    // Perform the necessary operations on the node at the depth limit
+    // Return the result, or perform further actions as needed
+    return node;
   }
 
-  const pivot = arr[Math.floor(arr.length / 2)];
-  const left = [];
-  const right = [];
+  if (node.isGoal()) {
+    // Base case: found the goal node
+    // Perform the necessary operations on the goal node
+    // Return the result, or perform further actions as needed
+    return node;
+  }
 
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] < pivot) {
-      left.push(arr[i]);
-    } else if (arr[i] > pivot) {
-      right.push(arr[i]);
+  // Recursive case: continue exploring child nodes
+  for (let child of node.getChildren()) {
+    let result = depthLimitedSearchHelper(child, depthLimit, currentDepth + 1);
+    if (result) {
+      // If a non-null result is found, propagate it up the recursion stack
+      return result;
     }
   }
 
-  return [...quicksort(left), pivot, ...quicksort(right)];
+  // Return null if no goal node is found within the depth limit
+  return null;
 }
-
-// Example usage:
-const arr = [7, 2, 9, 4, 5, 1, 8, 3, 6];
-console.log(quicksort(arr)); // [1, 2, 3, 4, 5, 6, 7, 8, 9]
