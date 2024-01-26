@@ -1,41 +1,28 @@
-function isValidPalindrome(str) {
-  // Convert the input string to lowercase
-  str = str.toLowerCase();
+function bwt(input) {
+  // BWT implementation goes here
+  // Return the transformed string
+}
+function bwt(input) {
+  // Add a sentinel symbol to the input
+  const sentinel = '\0';
+  const text = input + sentinel;
 
-  // Initialize two pointers, one from the start and another from the end of the string
-  let start = 0;
-  let end = str.length - 1;
-
-  // Iterate until the pointers meet in the middle
-  while (start < end) {
-    // Skip non-alphanumeric characters by moving the respective pointer
-    while (!isAlphaNumeric(str.charAt(start))) {
-      start++;
-    }
-    while (!isAlphaNumeric(str.charAt(end))) {
-      end--;
-    }
-
-    // If the characters at the pointers are not equal, the string is not a palindrome
-    if (str.charAt(start) !== str.charAt(end)) {
-      return false;
-    }
-
-    // Move the pointers towards the middle
-    start++;
-    end--;
+  // Generate rotations of the input string
+  const rotations = [];
+  for (let i = 0; i < text.length; i++) {
+    const rotation = text.slice(i) + text.slice(0, i);
+    rotations.push(rotation);
   }
 
-  // If the loop completes without returning, the string is a palindrome
-  return true;
-}
+  // Sort the rotations lexicographically
+  rotations.sort();
 
-// Helper function to check if a character is alphanumeric
-function isAlphaNumeric(char) {
-  return /^[0-9a-zA-Z]$/.test(char);
-}
+  // Extract the last characters of each rotation
+  const transformed = rotations.map(rotation => rotation.slice(-1));
 
-// Example usage
-console.log(isValidPalindrome("A man, a plan, a canal, Panama")); // true
-console.log(isValidPalindrome("race a car")); // false
-console.log(isValidPalindrome("Never odd or even")); // true
+  // Return the transformed string
+  return transformed.join('');
+}
+const input = 'banana';
+const transformed = bwt(input);
+console.log(transformed); // Outputs: 'annb$aa'
