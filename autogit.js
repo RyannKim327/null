@@ -1,15 +1,18 @@
-function calculateMean(numbers) {
-  if (numbers.length === 0) {
-    return 0; // Return 0 for an empty list
-  }
+function areAnagrams(str1, str2) {
+  // Remove spaces and convert to lowercase
+  str1 = str1.replace(/\s/g, '').toLowerCase();
+  str2 = str2.replace(/\s/g, '').toLowerCase();
 
-  let sum = 0;
-  for (let i = 0; i < numbers.length; i++) {
-    sum += numbers[i]; // Calculate the sum of all numbers
-  }
+  // Convert strings to arrays, sort them, and convert back to strings
+  const sortedStr1 = str1.split('').sort().join('');
+  const sortedStr2 = str2.split('').sort().join('');
 
-  return sum / numbers.length; // Return the mean
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
-const numbers = [5, 2, 9, 1, 7];
-const mean = calculateMean(numbers);
-console.log(mean); // Output: 4.8
+
+// Usage example:
+const string1 = 'listen';
+const string2 = 'silent';
+
+console.log(areAnagrams(string1, string2)); // Output: true
