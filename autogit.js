@@ -1,31 +1,41 @@
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function mergeSort(arr) {
+  // Base case: if the array is empty or contains only one element, it is already sorted
+  if (arr.length <= 1) {
+    return arr;
   }
+  
+  // Splitting the array in half
+  const middle = Math.floor(arr.length / 2);
+  const left = arr.slice(0, middle);
+  const right = arr.slice(middle);
+  
+  // Recursively sort both halves
+  const sortedLeft = mergeSort(left);
+  const sortedRight = mergeSort(right);
+  
+  // Merge the sorted halves
+  return merge(sortedLeft, sortedRight);
 }
 
-function maxDepth(root) {
-  // Base case: If the root is null, the depth is 0.
-  if (root === null) {
-    return 0;
+function merge(left, right) {
+  let result = [];
+  let leftIndex = 0;
+  let rightIndex = 0;
+  
+  // Compare elements from both halves and push the smaller one into the result array
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] < right[rightIndex]) {
+      result.push(left[leftIndex]);
+      leftIndex++;
+    } else {
+      result.push(right[rightIndex]);
+      rightIndex++;
+    }
   }
-
-  // Recursively calculate the maximum depth of the left and right subtrees.
-  const leftDepth = maxDepth(root.left);
-  const rightDepth = maxDepth(root.right);
-
-  // Return the maximum depth among the left and right subtrees, plus 1 for the current node.
-  return Math.max(leftDepth, rightDepth) + 1;
+  
+  // Push any remaining elements of the left and right halves into the result array
+  return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
 }
-// Create the binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.right.right = new TreeNode(5);
-
-// Calculate the maximum depth
-const depth = maxDepth(root);
-console.log(depth); // Output: 3
+const arr = [5, 3, 8, 4, 2, 1, 6, 7];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr); // Output: [1, 2, 3, 4, 5, 6, 7, 8]
