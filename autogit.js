@@ -1,14 +1,18 @@
-let stringWithSpaces = "Hello World! This is a string with spaces.";
-let stringWithoutSpaces = stringWithSpaces.replace(/\s/g, "");
-console.log(stringWithoutSpaces); // Output: HelloWorld!Thisisastringwithspaces.
-let stringWithSpaces = "Hello World! This is a string with spaces.";
-let stringWithoutSpaces = stringWithSpaces.split(" ").join("");
-console.log(stringWithoutSpaces); // Output: HelloWorld!Thisisastringwithspaces.
-let stringWithSpaces = "Hello World! This is a string with spaces.";
-let stringWithoutSpaces = "";
-for (let i = 0; i < stringWithSpaces.length; i++) {
-  if (stringWithSpaces[i] !== " ") {
-    stringWithoutSpaces += stringWithSpaces[i];
+// Function to perform the async GET request
+async function fetchData(url) {
+  try {
+    const response = await fetch(url); // Perform the GET request
+    if (response.ok) {
+      const data = await response.json(); // Parse the response as JSON
+      console.log(data); // Do something with the data
+    } else {
+      console.error('Request failed with status:', response.status);
+    }
+  } catch (error) {
+    console.error('Request failed with error:', error);
   }
 }
-console.log(stringWithoutSpaces); // Output: HelloWorld!Thisisastringwithspaces.
+
+// Call the fetchData function with the desired URL
+const url = 'https://api.example.com/data';
+fetchData(url);
