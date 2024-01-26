@@ -1,42 +1,36 @@
-class Stack {
-  constructor() {
-    this.data = [];
-  }
-  
-  push(element) {
-    this.data.push(element);
-  }
-  
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
-    }
-    return this.data.pop();
-  }
-  
-  peek() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
-    }
-    return this.data[this.data.length - 1];
-  }
-  
-  isEmpty() {
-    return this.data.length === 0;
-  }
-  
-  size() {
-    return this.data.length;
+// Define a class for a binary tree node
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
-const stack = new Stack();
 
-stack.push(10);
-stack.push(20);
-stack.push(30);
+// Function to count leaf nodes in a binary tree
+function countLeafNodes(root) {
+  if (root === null) {
+    return 0;
+  }
+  
+  // If the current node is a leaf node, return 1
+  if (root.left === null && root.right === null) {
+    return 1;
+  }
+  
+  // Recursively count the leaf nodes in the left and right subtrees
+  return countLeafNodes(root.left) + countLeafNodes(root.right);
+}
 
-console.log(stack.pop());   // Output: 30
-console.log(stack.pop());   // Output: 20
-console.log(stack.peek());  // Output: 10
-console.log(stack.size());  // Output: 1
-console.log(stack.isEmpty());// Output: false
+// Create a binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
+
+// Calculate the number of leaf nodes in the binary tree
+const leafCount = countLeafNodes(root);
+console.log("Number of leaf nodes:", leafCount);
