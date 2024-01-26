@@ -1,19 +1,11 @@
-function bubbleSort(array) {
-  let swapped;
-  do {
-    swapped = false;
-    for (let i = 0; i < array.length - 1; i++) {
-      if (array[i] > array[i + 1]) {
-        [array[i], array[i + 1]] = [array[i + 1], array[i]];
-        swapped = true;
-      }
-    }
-  } while (swapped);
+const cron = require('node-cron');
 
-  return array;
-}
+// Define a task to execute
+const task = () => {
+  console.log('This task ran at:', new Date());
+};
 
-// Example usage:
-const unsortedArray = [5, 2, 9, 1, 3];
-const sortedArray = bubbleSort(unsortedArray);
-console.log(sortedArray); // Output: [1, 2, 3, 5, 9]
+// Schedule the task to run every minute
+cron.schedule('* * * * *', task);
+
+console.log('Cron job has been scheduled.');
