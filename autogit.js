@@ -1,80 +1,39 @@
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
-
-class BinaryTree {
-  constructor() {
-    this.root = null;
+function findKthSmallest(arr, k) {
+  if (arr.length < k) {
+    return -1; // Invalid input if k exceeds array length
   }
 
-  // Insert a value into the binary tree
-  insert(value) {
-    const newNode = new TreeNode(value);
-
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
-
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
+  // Helper function to partition the array
+  function partition(arr, left, right) {
+    const pivot = arr[right];
+    let i = left;
+    for (let j = left; j < right; j++) {
+      if (arr[j] < pivot) {
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+        i++;
       }
     }
+    [arr[i], arr[right]] = [arr[right], arr[i]];
+    return i;
   }
 
-  // Perform an inorder traversal of the binary tree
-  inorderTraversal(callback) {
-    this.inorderTraversalNode(this.root, callback);
-  }
-
-  inorderTraversalNode(node, callback) {
-    if (node !== null) {
-      this.inorderTraversalNode(node.left, callback);
-      callback(node.value);
-      this.inorderTraversalNode(node.right, callback);
+  // Main function to find kth smallest element
+  function quickselect(arr, left, right, k) {
+    const pivotIndex = partition(arr, left, right);
+    if (pivotIndex === k - 1) {
+      return arr[pivotIndex];
+    } else if (pivotIndex > k - 1) {
+      return quickselect(arr, left, pivotIndex - 1, k);
+    } else {
+      return quickselect(arr, pivotIndex + 1, right, k);
     }
   }
+
+  return quickselect(arr, 0, arr.length - 1, k);
 }
-// Create a new binary tree
-const tree = new BinaryTree();
 
-// Insert values into the binary tree
-tree.insert(8);
-tree.insert(3);
-tree.insert(10);
-tree.insert(1);
-tree.insert(6);
-tree.insert(14);
-tree.insert(4);
-tree.insert(7);
-tree.insert(13);
-
-// Perform inorder traversal and print the values
-tree.inorderTraversal(value => {
-  console.log(value);
-});
-1
-3
-4
-6
-7
-8
-10
-13
-14
+// Example usage
+const array = [5, 3, 9, 1, 7];
+const k = 3;
+const kthSmallest = findKthSmallest(array, k);
+console.log(`The ${k}th smallest element in [${array}] is ${kthSmallest}`);
