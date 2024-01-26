@@ -1,10 +1,30 @@
-function factorial(n) {
-  if (n === 0) {
-    return 1;
-  } else {
-    return n * factorial(n - 1);
+function largestPrimeFactor(number) {
+  let maxPrime = 1;
+  
+  while (number % 2 === 0) {
+    maxPrime = 2;
+    number /= 2;
   }
+  
+  let divisor = 3;
+  let maxFactor = Math.sqrt(number);
+  
+  while (divisor <= maxFactor) {
+    if (number % divisor === 0) {
+      maxPrime = divisor;
+      number /= divisor;
+      maxFactor = Math.sqrt(number);
+    } else {
+      divisor += 2;
+    }
+  }
+  
+  if (number > 2) {
+    maxPrime = number;
+  }
+  
+  return maxPrime;
 }
 
-// Example usage
-console.log(factorial(5)); // Output: 120
+// Example usage:
+console.log(largestPrimeFactor(13195)); // Output: 29
