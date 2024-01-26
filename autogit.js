@@ -1,68 +1,54 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+// Represents the graph as an adjacency list
+class Graph {
+  constructor(numOfVertices) {
+    this.numOfVertices = numOfVertices;
+    this.edges = [];
+  }
+
+  addEdge(src, dest, weight) {
+    this.edges.push([src, dest, weight]);
   }
 }
 
-class BinaryTree {
-  constructor() {
-    this.root = null;
+// Calculates the shortest paths from a given source vertex
+function bellmanFord(graph, src) {
+  // Step 1: Initialize distances from source to all other vertices as infinite
+  let distances = new Array(graph.numOfVertices);
+  for (let i = 0; i < graph.numOfVertices; i++) {
+    distances[i] = Infinity;
   }
+  distances[src] = 0;
 
-  insert(value) {
-    const newNode = new Node(value);
-
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
-
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
+  // Step 2: Relax all edges |V| - 1 times
+  for (let i = 1; i <= graph.numOfVertices - 1; i++) {
+    for (let [src, dest, weight] of graph.edges) {
+      if (distances[src] + weight < distances[dest]) {
+        distances[dest] = distances[src] + weight;
       }
     }
   }
 
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
-    }
-
-    if (value === node.value) {
-      return true;
-    }
-
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else {
-      return this.searchNode(node.right, value);
+  // Step 3: Check for negative-weight cycles
+  for (let [src, dest, weight] of graph.edges) {
+    if (distances[src] + weight < distances[dest]) {
+      throw new Error("Graph contains a negative-weight cycle");
     }
   }
+
+  return distances;
 }
-const tree = new BinaryTree();
 
-tree.insert(10);
-tree.insert(5);
-tree.insert(15);
-tree.insert(3);
+// Example usage:
+let graph = new Graph(5);
+graph.addEdge(0, 1, -1);
+graph.addEdge(0, 2, 4);
+graph.addEdge(1, 2, 3);
+graph.addEdge(1, 3, 2);
+graph.addEdge(1, 4, 2);
+graph.addEdge(3, 2, 5);
+graph.addEdge(3, 1, 1);
+graph.addEdge(4, 3, -3);
 
-console.log(tree.search(15));  // Output: true
-console.log(tree.search(7));   // Output: false
+let src = 0;
+let distances = bellmanFord(graph, src);
+console.log("Shortest distances from source:", distances);
