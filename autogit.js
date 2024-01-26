@@ -1,51 +1,55 @@
-class ListNode {
-  constructor(val, next = null) {
-    this.val = val;
-    this.next = next;
-  }
-}
-
-function isPalindrome(head) {
-  let slow = head;
-  let fast = head;
-
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
-
-  slow = reverseLinkedList(slow);
-
-  while (slow) {
-    if (head.val !== slow.val) {
-      return false;
+function buildPrefixTable(pattern) {
+  const prefixTable = [0];
+  let len = 0; // Length of the previous longest prefix suffix
+  
+  for (let i = 1; i < pattern.length; i++) {
+    if (pattern[i] === pattern[len]) {
+      len++;
+      prefixTable[i] = len;
+    } else {
+      if (len > 0) {
+        len = prefixTable[len - 1];
+        i--; // Compare current character with new len value
+      } else {
+        prefixTable[i] = 0;
+      }
     }
-    head = head.next;
-    slow = slow.next;
   }
-
-  return true;
+  
+  return prefixTable;
 }
-
-function reverseLinkedList(head) {
-  let prevNode = null;
-  let currentNode = head;
-
-  while (currentNode) {
-    const nextNode = currentNode.next;
-    currentNode.next = prevNode;
-    prevNode = currentNode;
-    currentNode = nextNode;
+function knuthMorrisPratt(text, pattern) {
+  const prefixTable = buildPrefixTable(pattern);
+  let i = 0; // Index for text
+  let j = 0; // Index for pattern
+  
+  while (i < text.length) {
+    if (text[i] === pattern[j]) {
+      i++;
+      j++;
+      
+      if (j === pattern.length) {
+        // Pattern found at index i-j
+        return i - j;
+      }
+    } else {
+      if (j > 0) {
+        j = prefixTable[j - 1];
+      } else {
+        i++;
+      }
+    }
   }
-
-  return prevNode;
+  
+  // Pattern not found
+  return -1;
 }
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const index = knuthMorrisPratt(text, pattern);
 
-// Example usage:
-const list = new ListNode(1);
-list.next = new ListNode(2);
-list.next.next = new ListNode(3);
-list.next.next.next = new ListNode(2);
-list.next.next.next.next = new ListNode(1);
-
-console.log(isPalindrome(list)); // Output: true
+if (index !== -1) {
+  console.log(`Pattern found at index ${index}`);
+} else {
+  console.log("Pattern not found");
+}
