@@ -1,28 +1,55 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+// Definition for a singly-linked list node
+class ListNode {
+  constructor(val = 0, next = null) {
+    this.val = val;
+    this.next = next;
   }
 }
 
-function getMaxDepth(node) {
-  if (node === null) {
-    return 0;
-  } else {
-    const leftDepth = getMaxDepth(node.left);
-    const rightDepth = getMaxDepth(node.right);
-    return Math.max(leftDepth, rightDepth) + 1;
+// Function to reverse a linked list
+function reverseLinkedList(head) {
+  let prev = null;
+  let curr = head;
+
+  while (curr !== null) {
+    const next = curr.next;
+    curr.next = prev;
+    prev = curr;
+    curr = next;
   }
+
+  return prev;
 }
 
-// Example usage:
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
+// Function to check if a linked list is a palindrome
+function isLinkedListPalindrome(head) {
+  if (head === null || head.next === null) {
+    return true; // An empty list or a single node list is considered palindrome
+  }
 
-const maxDepth = getMaxDepth(root);
-console.log(`Maximum depth of the binary tree is ${maxDepth}`);
+  let fast = head;
+  let slow = head;
+
+  // Move `fast` two steps ahead and `slow` one step ahead
+  while (fast.next !== null && fast.next.next !== null) {
+    fast = fast.next.next;
+    slow = slow.next;
+  }
+
+  // Reverse the second half of the linked list
+  slow.next = reverseLinkedList(slow.next);
+
+  let p1 = head;
+  let p2 = slow.next;
+
+  // Compare elements of both halves
+  while (p2 !== null) {
+    if (p1.val !== p2.val) {
+      return false;
+    }
+    p1 = p1.next;
+    p2 = p2.next;
+  }
+
+  return true;
+}
