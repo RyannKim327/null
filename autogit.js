@@ -1,32 +1,44 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+const findMedianSortedArrays = (nums1, nums2) => {
+  const merged = merge(nums1, nums2);
+  const length = merged.length;
+  
+  if (length % 2 === 1) {
+    return merged[Math.floor(length / 2)];
+  } else {
+    const midIndex = length / 2;
+    return (merged[midIndex - 1] + merged[midIndex]) / 2;
   }
-}
+};
 
-function countLeafNodes(node) {
-  // Base case: an empty tree has zero leaf nodes
-  if (node === null) {
-    return 0;
+const merge = (nums1, nums2) => {
+  let merged = [];
+  let i = 0;
+  let j = 0;
+  
+  while (i < nums1.length && j < nums2.length) {
+    if (nums1[i] <= nums2[j]) {
+      merged.push(nums1[i]);
+      i++;
+    } else {
+      merged.push(nums2[j]);
+      j++;
+    }
   }
-
-  // Check if the node is a leaf node
-  if (node.left === null && node.right === null) {
-    return 1;
+  
+  while (i < nums1.length) {
+    merged.push(nums1[i]);
+    i++;
   }
-
-  // Recursive case: count the leaf nodes in the left and right subtrees
-  return countLeafNodes(node.left) + countLeafNodes(node.right);
-}
+  
+  while (j < nums2.length) {
+    merged.push(nums2[j]);
+    j++;
+  }
+  
+  return merged;
+};
 
 // Example usage:
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-const leafNodeCount = countLeafNodes(root);
-console.log("Number of leaf nodes:", leafNodeCount);
+const nums1 = [1, 3];
+const nums2 = [2, 4];
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.5
