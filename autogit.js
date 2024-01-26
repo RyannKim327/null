@@ -1,47 +1,34 @@
-function bellmanFord(graph, source) {
-  const vertices = Object.keys(graph);
-  const distances = {};
-
-  // Step 1: Initialization
-  for (let i = 0; i < vertices.length; i++) {
-    distances[vertices[i]] = Infinity;
-  }
-  distances[source] = 0;
-
-  // Step 2: Relax edges repeatedly
-  for (let i = 0; i < vertices.length - 1; i++) {
-    for (let j = 0; j < vertices.length; j++) {
-      const vertex = vertices[j];
-      const edges = graph[vertex];
-
-      for (let k = 0; k < edges.length; k++) {
-        const { to, weight } = edges[k];
-        const distance = distances[vertex] + weight;
-
-        if (distance < distances[to]) {
-          distances[to] = distance;
-        }
-      }
-    }
+function mergeSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
   }
 
-  // Step 3: Check for negative cycles
-  for (let i = 0; i < vertices.length - 1; i++) {
-    for (let j = 0; j < vertices.length; j++) {
-      const vertex = vertices[j];
-      const edges = graph[vertex];
+  const middle = Math.floor(arr.length / 2);
+  const left = arr.slice(0, middle);
+  const right = arr.slice(middle);
 
-      for (let k = 0; k < edges.length; k++) {
-        const { to, weight } = edges[k];
-        const distance = distances[vertex] + weight;
-
-        if (distance < distances[to]) {
-          // Negative cycle found
-          return null;
-        }
-      }
-    }
-  }
-
-  return distances;
+  return merge(mergeSort(left), mergeSort(right));
 }
+
+function merge(left, right) {
+  let result = [];
+  let leftIndex = 0;
+  let rightIndex = 0;
+
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] < right[rightIndex]) {
+      result.push(left[leftIndex]);
+      leftIndex++;
+    } else {
+      result.push(right[rightIndex]);
+      rightIndex++;
+    }
+  }
+
+  return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+}
+
+// Example usage
+const arr = [5, 1, 4, 2, 8];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr); // Output: [1, 2, 4, 5, 8]
