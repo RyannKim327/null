@@ -1,29 +1,55 @@
-function binarySearch(arr, target) {
-  let left = 0;
-  let right = arr.length - 1;
+function stringMatch(text, pattern) {
+  const m = pattern.length;
+  const n = text.length;
+  const lps = new Array(m).fill(0);
 
-  while (left <= right) {
-    let mid = Math.floor((left + right) / 2);
-
-    if (arr[mid] === target) {
-      return mid;
-    } else if (arr[mid] < target) {
-      left = mid + 1;
+  // Construct the lps array
+  let j = 0;
+  let i = 1;
+  while (i < m) {
+    if (pattern[i] === pattern[j]) {
+      lps[i] = j + 1;
+      i++;
+      j++;
     } else {
-      right = mid - 1;
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        lps[i] = 0;
+        i++;
+      }
     }
   }
 
-  return -1; // If the target is not found in the array
+  // Perform the string matching algorithm
+  i = 0;
+  j = 0;
+  const result = [];
+
+  while (i < n) {
+    if (pattern[j] === text[i]) {
+      i++;
+      j++;
+    }
+
+    if (j === m) {
+      // Found a match
+      result.push(i - j);
+      j = lps[j - 1];
+    } else if (i < n && pattern[j] !== text[i]) {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
+      }
+    }
+  }
+
+  return result;
 }
 
-// Example usage:
-const array = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const target = 10;
-const index = binarySearch(array, target);
-
-if (index !== -1) {
-  console.log("Target found at index", index);
-} else {
-  console.log("Target not found in the array");
-}
+// Example usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const matches = stringMatch(text, pattern);
+console.log(matches); // Output: [10]
