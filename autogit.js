@@ -1,35 +1,26 @@
-// Binary tree node definition
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function shellSort(arr) {
+  const len = arr.length;
+  let gap = Math.floor(len / 2);
+  
+  while (gap > 0) {
+    for (let i = gap; i < len; i++) {
+      let temp = arr[i];
+      let j = i;
+      
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
+      }
+      
+      arr[j] = temp;
+    }
+    
+    gap = Math.floor(gap / 2);
   }
+  
+  return arr;
 }
 
-// Calculate sum of all nodes in a binary tree
-function sumOfNodes(root) {
-  if (root === null) {
-    return 0; // Base case: empty tree has sum 0
-  }
-
-  // Recursive case: sum of nodes = node value + sum of left subtree + sum of right subtree
-  return (
-    root.value +
-    sumOfNodes(root.left) +
-    sumOfNodes(root.right)
-  );
-}
-
-// Create a binary tree
-const rootNode = new Node(1);
-rootNode.left = new Node(2);
-rootNode.right = new Node(3);
-rootNode.left.left = new Node(4);
-rootNode.left.right = new Node(5);
-rootNode.right.left = new Node(6);
-rootNode.right.right = new Node(7);
-
-// Calculate the sum of all nodes in the binary tree
-const sum = sumOfNodes(rootNode);
-console.log(sum); // Output: 28
+// Example usage:
+const array = [9, 5, 1, 8, 3, 7, 4, 6, 2];
+console.log(shellSort(array)); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
