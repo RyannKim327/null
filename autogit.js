@@ -1,67 +1,48 @@
-function interpolationSearch(arr, target, low, high) {
-  // ...
-}
-function interpolationSearch(arr, target, low, high) {
-  if (low <= high && target >= arr[low] && target <= arr[high]) {
-    // ...
-  } else {
-    return -1;
-  }
-}
-function interpolationSearch(arr, target, low, high) {
-  // Calculate the position of the target element in the array
-  // relative to the search range using interpolation formula
-  let position = Math.floor(
-    low + ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])
-  );
-  
-  // ...
-}
-function interpolationSearch(arr, target, low, high) {
-  let position = Math.floor(
-    low + ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])
-  );
-  
-  if (arr[position] === target) {
-    return position;
-  }
-  
-  // ...
-}
-function interpolationSearch(arr, target, low, high) {
-  let position = Math.floor(
-    low + ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])
-  );
-  
-  if (arr[position] === target) {
-    return position;
-  } else if (arr[position] > target) {
-    return interpolationSearch(arr, target, low, position - 1);
-  }
-  
-  // ...
-}
-function interpolationSearch(arr, target, low, high) {
-  let position = Math.floor(
-    low + ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])
-  );
-  
-  if (arr[position] === target) {
-    return position;
-  } else if (arr[position] > target) {
-    return interpolationSearch(arr, target, low, position - 1);
-  } else {
-    return interpolationSearch(arr, target, position + 1, high);
-  }
-}
-const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
-const target = 11;
-const low = 0;
-const high = arr.length - 1;
+function mergeSortIterative(arr) {
+  if (arr.length < 2) return arr; // Base case: array is already sorted
 
-const result = interpolationSearch(arr, target, low, high);
-if (result === -1) {
-  console.log("Element not found");
-} else {
-  console.log("Element found at index", result);
+  const n = arr.length;
+  const temp = Array.from(arr); // Create a temporary array to store the result
+
+  for (let width = 1; width < n; width *= 2) {
+    for (let i = 0; i < n; i += 2 * width) {
+      merge(arr, i, Math.min(i + width, n), Math.min(i + 2 * width, n), temp);
+    }
+
+    // Swap the arrays (temp becomes arr, arr becomes temp)
+    const tempArr = arr; 
+    arr = temp;
+    temp = tempArr;
+  }
+
+  return arr;
 }
+
+function merge(arr, left, mid, right, temp) {
+  let i = left;
+  let j = mid;
+  let k = left;
+
+  while (i < mid && j < right) {
+    if (arr[i] <= arr[j]) {
+      temp[k++] = arr[i++];
+    } else {
+      temp[k++] = arr[j++];
+    }
+  }
+
+  // Copy the remaining elements from the left subarray, if any
+  while (i < mid) {
+    temp[k++] = arr[i++];
+  }
+
+  // Copy the remaining elements from the right subarray, if any
+  while (j < right) {
+    temp[k++] = arr[j++];
+  }
+}
+
+// Example usage:
+const arr = [5, 2, 9, 1, 7];
+const sortedArr = mergeSortIterative(arr);
+console.log(sortedArr); // Output: [1, 2, 5, 7, 9]
