@@ -1,11 +1,8 @@
-function getLinkedListLength(head) {
-  let length = 0;
-  let current = head;
-
-  while (current !== null) {
-    length++;
-    current = current.next;
-  }
-
-  return length;
+function removeVowels(str) {
+  return str.replace(/[aeiou]/gi, '');
 }
+
+// Example usage
+const inputString = 'Hello, World!';
+const result = removeVowels(inputString);
+console.log(result); // Output: Hll, Wrld!
