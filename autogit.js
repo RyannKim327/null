@@ -1,18 +1,7 @@
-function binarySearch(arr, target) {
-  let start = 0;
-  let end = arr.length - 1;
-
-  while (start <= end) {
-    const mid = Math.floor((start + end) / 2);
-
-    if (arr[mid] === target) {
-      return mid;
-    } else if (arr[mid] < target) {
-      start = mid + 1;
-    } else {
-      end = mid - 1;
-    }
-  }
-
-  return -1;
+function removeVowels(str) {
+  // Use regular expression to replace all vowels (case-insensitive) with an empty string
+  return str.replace(/[aeiou]/gi, '');
 }
+
+// Example usage
+console.log(removeVowels("Hello World")); // Output: "Hll Wrld"
