@@ -1,18 +1,23 @@
-const str = "Hello World";
-const withoutSpaces = str.replace(/\s/g, "");
+const axios = require('axios');
 
-console.log(withoutSpaces); // Output: "HelloWorld"
-const str = "Hello World";
-const withoutSpaces = str.split(" ").join("");
+// Make a GET request to a URL
+axios.get('https://api.example.com/data')
+  .then(response => {
+    // Handle success, print the data
+    console.log('Response:', response.data);
+  })
+  .catch(error => {
+    // Handle error
+    console.log('Error:', error.message);
+  });
 
-console.log(withoutSpaces); // Output: "HelloWorld"
-const str = "Hello World";
-let withoutSpaces = "";
-
-for (let i = 0; i < str.length; i++) {
-  if (str[i] !== " ") {
-    withoutSpaces += str[i];
-  }
-}
-
-console.log(withoutSpaces); // Output: "HelloWorld"
+// Make a POST request with data
+axios.post('https://api.example.com/submit', { name: 'John', age: 25 })
+  .then(response => {
+    // Handle success, print the response
+    console.log('Response:', response.data);
+  })
+  .catch(error => {
+    // Handle error
+    console.log('Error:', error.message);
+  });
