@@ -1,38 +1,69 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+function Graph(nodes) {
+  this.nodes = nodes;
+  this.adjList = new Map();
+  for (let node of this.nodes) {
+    this.adjList.set(node, []);
+  }
+
+  this.addEdge = (u, v) => {
+    this.adjList.get(u).push(v);
+  };
+}
+let id = 0;
+let stack = [];
+let ids = [];
+let lows = [];
+let onStack = [];
+let sccs = [];
+function tarjanSCC(graph) {
+  for (let node of graph.nodes) {
+    if (ids[node] === undefined) {
+      dfs(graph, node);
+    }
   }
 }
 
-function reverseLinkedList(head) {
-  let previous = null;
-  let current = head;
-  
-  while (current !== null) {
-    const nextNode = current.next;
-    current.next = previous;
-    
-    previous = current;
-    current = nextNode;
+function dfs(graph, node) {
+  stack.push(node);
+  onStack[node] = true;
+  ids[node] = lows[node] = id++;
+
+  for (let neighbor of graph.adjList.get(node)) {
+    if (ids[neighbor] === undefined) {
+      dfs(graph, neighbor);
+    }
+    if (onStack[neighbor]) {
+      lows[node] = Math.min(lows[node], lows[neighbor]);
+    }
   }
-  
-  return previous;
+
+  if (ids[node] === lows[node]) {
+    let scc = [];
+
+    let w;
+    do {
+      w = stack.pop();
+      onStack[w] = false;
+      scc.push(w);
+    } while (w !== node);
+
+    sccs.push(scc);
+  }
 }
-// Create the linked list
-const node1 = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
+let nodes = ["A", "B", "C", "D", "E", "F", "G"];
+let graph = new Graph(nodes);
 
-node1.next = node2;
-node2.next = node3;
+graph.addEdge("A", "B");
+graph.addEdge("B", "C");
+graph.addEdge("C", "A");
+graph.addEdge("C", "D");
+graph.addEdge("D", "E");
+graph.addEdge("E", "F");
+graph.addEdge("F", "D");
+graph.addEdge("G", "E");
+graph.addEdge("G", "F");
 
-// Reverse the linked list
-const reversedHead = reverseLinkedList(node1);
+tarjanSCC(graph);
 
-// Print the reversed linked list
-let current = reversedHead;
-while (current !== null) {
-  console.log(current.value);
-  current = current.next;
-}
+console.log(sccs);
+[ [ 'A', 'B', 'C' ], [ 'D', 'F', 'E' ], [ 'G' ] ]
