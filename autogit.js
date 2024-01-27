@@ -1,18 +1,19 @@
-function bubbleSort(arr) {
-  var len = arr.length;
-  for (var i = 0; i < len - 1; i++) {
-    for (var j = 0; j < len - 1 - i; j++) {
-      if (arr[j] > arr[j + 1]) {
-        var temp = arr[j];
-        arr[j] = arr[j + 1];
-        arr[j + 1] = temp;
-      }
-    }
-  }
-  return arr;
-}
+// Import the cron package
+const cron = require('node-cron');
 
-// Usage example:
-var array = [5, 2, 6, 1, 3, 9];
-console.log("Original Array: " + array);
-console.log("Sorted Array: " + bubbleSort(array));
+// Define a task function to be executed by the cron job
+const task = () => {
+  console.log('Cron job is running!');
+};
+
+// Define the cron job using the cron syntax
+const cronJob = cron.schedule('* * * * *', task); // Execute every minute
+
+// Start the cron job
+cronJob.start();
+
+// Stop the cron job after 5 minutes
+setTimeout(() => {
+  cronJob.stop();
+  console.log('Cron job stopped!');
+}, 5 * 60 * 1000);
