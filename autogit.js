@@ -1,34 +1,38 @@
-function calculateHash(str, prime) {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash += str.charCodeAt(i) * (prime ** i);
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
-  return hash;
 }
-function recalculateHash(oldHash, oldChar, newChar, prime, windowSize) {
-  const newHash = oldHash - (oldChar.charCodeAt(0) * (prime ** (windowSize - 1)));
-  return newHash * prime + newChar.charCodeAt(0);
-}
-function rabinKarp(pattern, text) {
-  const prime = 101;   // Prime number as the base for the hash function
-  const windowSize = pattern.length;
-  const patternHash = calculateHash(pattern, prime);
-  let windowHash = calculateHash(text.slice(0, windowSize), prime);
 
-  for (let i = 0; i < text.length - windowSize + 1; i++) {
-    if (windowHash === patternHash && text.slice(i, i + windowSize) === pattern) {
-      return i;   // Match found at index i
-    }
-
-    const oldChar = text[i];
-    const newChar = text[i + windowSize];
-    windowHash = recalculateHash(windowHash, oldChar, newChar, prime, windowSize);
+function reverseLinkedList(head) {
+  let previous = null;
+  let current = head;
+  
+  while (current !== null) {
+    const nextNode = current.next;
+    current.next = previous;
+    
+    previous = current;
+    current = nextNode;
   }
-
-  return -1;   // No match found
+  
+  return previous;
 }
-const text = "Hello, world!";
-const pattern = "world";
-const index = rabinKarp(pattern, text);
+// Create the linked list
+const node1 = new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
 
-console.log(index);  // Output: 7
+node1.next = node2;
+node2.next = node3;
+
+// Reverse the linked list
+const reversedHead = reverseLinkedList(node1);
+
+// Print the reversed linked list
+let current = reversedHead;
+while (current !== null) {
+  console.log(current.value);
+  current = current.next;
+}
