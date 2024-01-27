@@ -1,19 +1,38 @@
-// Import the cron package
-const cron = require('node-cron');
+function countOccurrences(text, word) {
+  return text.split(word).length - 1;
+}
 
-// Define a task function to be executed by the cron job
-const task = () => {
-  console.log('Cron job is running!');
-};
+const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+const word = 'ipsum';
 
-// Define the cron job using the cron syntax
-const cronJob = cron.schedule('* * * * *', task); // Execute every minute
+const occurrences = countOccurrences(text, word);
+console.log(occurrences); // Output: 1
+function countOccurrences(text, word) {
+  const regex = new RegExp(word, 'g');
+  const matches = text.match(regex);
+  return matches ? matches.length : 0;
+}
 
-// Start the cron job
-cronJob.start();
+const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+const word = 'ipsum';
 
-// Stop the cron job after 5 minutes
-setTimeout(() => {
-  cronJob.stop();
-  console.log('Cron job stopped!');
-}, 5 * 60 * 1000);
+const occurrences = countOccurrences(text, word);
+console.log(occurrences); // Output: 1
+function countOccurrences(text, word) {
+  const words = text.split(' ');
+  let count = 0;
+
+  for (let i = 0; i < words.length; i++) {
+    if (words[i] === word) {
+      count++;
+    }
+  }
+
+  return count;
+}
+
+const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+const word = 'ipsum';
+
+const occurrences = countOccurrences(text, word);
+console.log(occurrences); // Output: 1
