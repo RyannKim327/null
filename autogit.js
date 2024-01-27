@@ -1,29 +1,24 @@
-function shellSort(arr) {
-  // Start with a large gap and reduce it over time
-  const len = arr.length;
-  let gap = Math.floor(len / 2);
-
-  while (gap > 0) {
-    // Perform insertion sort for this gap size
-    for (let i = gap; i < len; i++) {
-      const temp = arr[i];
-      let j = i;
-
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
-      }
-
-      arr[j] = temp;
+function countOccurrences(str, char) {
+  let count = 0;
+  for (let i = 0; i < str.length; i++) {
+    if (str.charAt(i) === char) {
+      count++;
     }
-
-    // Reduce the gap size
-    gap = Math.floor(gap / 2);
   }
-
-  return arr;
+  return count;
 }
 
-// Example usage
-const arr = [9, 4, 1, 7, 3, 6];
-console.log(shellSort(arr)); // Output: [1, 3, 4, 6, 7, 9]
+const myString = "Hello World";
+const myCharacter = "l";
+const occurrenceCount = countOccurrences(myString, myCharacter);
+console.log(`The character "${myCharacter}" occurs ${occurrenceCount} times in "${myString}"`);
+function countOccurrences(str, char) {
+  const regex = new RegExp(char, 'g');
+  const matches = str.match(regex);
+  return matches ? matches.length : 0;
+}
+
+const myString = "Hello World";
+const myCharacter = "l";
+const occurrenceCount = countOccurrences(myString, myCharacter);
+console.log(`The character "${myCharacter}" occurs ${occurrenceCount} times in "${myString}"`);
