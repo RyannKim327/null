@@ -1,31 +1,79 @@
-function interpolationSearch(array, target, compareFn = (a, b) => a - b) {
-  let low = 0;
-  let high = array.length - 1;
-  
-  while (low <= high && target >= array[low] && target <= array[high]) {
-    // Calculate the position using interpolation formula
-    let position = Math.floor(low + ((target - array[low]) * (high - low)) / (array[high] - array[low]));
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
+class Queue {
+  constructor() {
+    this.front = null;
+    this.rear = null;
+  }
 
-    // If the target value is found
-    if (compareFn(array[position], target) === 0) {
-      return position;
-    }
-
-    if (compareFn(array[position], target) < 0) {
-      low = position + 1;
+  // Add an element to the rear of the queue
+  enqueue(value) {
+    const newNode = new Node(value);
+    if (this.isEmpty()) {
+      this.front = newNode;
+      this.rear = newNode;
     } else {
-      high = position - 1;
+      this.rear.next = newNode;
+      this.rear = newNode;
     }
   }
 
-  return -1; // Target value not found
-}
-const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
-const target = 11;
-const result = interpolationSearch(arr, target);
+  // Remove and return the element from the front of the queue
+  dequeue() {
+    if (this.isEmpty()) {
+      return null;
+    }
+    const removedNode = this.front;
+    if (this.front === this.rear) {
+      this.front = null;
+      this.rear = null;
+    } else {
+      this.front = this.front.next;
+    }
+    return removedNode.value;
+  }
 
-if (result !== -1) {
-  console.log(`Element found at index ${result}`);
-} else {
-  console.log("Element not found");
+  // Check if the queue is empty
+  isEmpty() {
+    return this.front === null;
+  }
+
+  // Get the element at the front of the queue without removing it
+  peek() {
+    if (this.isEmpty()) {
+      return null;
+    }
+    return this.front.value;
+  }
+
+  // Print the elements of the queue
+  print() {
+    if (this.isEmpty()) {
+      console.log("Queue is empty");
+    } else {
+      let current = this.front;
+      let elements = "";
+      while (current) {
+        elements += current.value + " ";
+        current = current.next;
+      }
+      console.log(elements.trim());
+    }
+  }
 }
+const queue = new Queue();
+
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+
+queue.print(); // Output: 1 2 3
+
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.peek()); // Output: 2
+
+queue.print(); // Output: 2 3
