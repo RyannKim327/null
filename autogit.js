@@ -1,54 +1,109 @@
-function fibonacci(n) {
-  if (n <= 1) {
-    return n;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
-  return fibonacci(n - 1) + fibonacci(n - 2);
 }
-function fibonacciSearch(arr, target) {
-  // Find the smallest Fibonacci number greater than or equal to arr.length
-  let fib2 = 0; // Fibonacci number (n-2)
-  let fib1 = 1; // Fibonacci number (n-1)
-  let fibn = fib2 + fib1; // Fibonacci number (n)
 
-  while (fibn < arr.length) {
-    fib2 = fib1;
-    fib1 = fibn;
-    fibn = fib2 + fib1;
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
   }
 
-  let offset = -1; // The offset from the beginning of the array
+  isEmpty() {
+    return this.head === null;
+  }
 
-  while (fibn > 1) {
-    // Check if fib2 is a valid index
-    const idx = Math.min(offset + fib2, arr.length - 1);
+  prepend(value) {
+    const newNode = new Node(value);
 
-    if (arr[idx] < target) {
-      // If target is greater than the current element,
-      // move the two Fibonacci variables two steps down
-      fibn = fib1;
-      fib1 = fib2;
-      fib2 = fibn - fib1;
-      offset = idx;
-    } else if (arr[idx] > target) {
-      // If target is less than the current element,
-      // move the two Fibonacci variables one step down
-      fibn = fib2;
-      fib1 -= fib2;
-      fib2 = fibn - fib1;
+    if (this.isEmpty()) {
+      this.head = newNode;
+      this.tail = newNode;
     } else {
-      // If target is found, return the index
-      return idx;
+      newNode.next = this.head;
+      this.head = newNode;
     }
   }
 
-  // If the target is not found, return -1
-  if (fib1 && arr[offset + 1] === target) {
-    return offset + 1;
-  }
-  return -1;
-}
-const arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
-const target = 23;
+  append(value) {
+    const newNode = new Node(value);
 
-const index = fibonacciSearch(arr, target);
-console.log("Index:", index);
+    if (this.isEmpty()) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+  }
+
+  contains(value) {
+    let current = this.head;
+
+    while (current !== null) {
+      if (current.value === value) {
+        return true;
+      }
+      current = current.next;
+    }
+
+    return false;
+  }
+
+  delete(value) {
+    if (this.isEmpty()) {
+      return;
+    }
+
+    if (this.head.value === value) {
+      this.head = this.head.next;
+
+      if (this.head === null) {
+        this.tail = null;
+      }
+
+      return;
+    }
+
+    let current = this.head;
+
+    while (current.next !== null) {
+      if (current.next.value === value) {
+        if (current.next === this.tail) {
+          this.tail = current;
+          this.tail.next = null;
+        } else {
+          current.next = current.next.next;
+        }
+        return;
+      }
+      current = current.next;
+    }
+  }
+
+  print() {
+    let current = this.head;
+    const values = [];
+
+    while (current !== null) {
+      values.push(current.value);
+      current = current.next;
+    }
+
+    console.log(values.join(' -> '));
+  }
+}
+const linkedList = new LinkedList();
+
+linkedList.append(10); // Appends a node with a value of 10
+linkedList.append(20); // Appends a node with a value of 20
+linkedList.prepend(5); // Prepends a node with a value of 5
+linkedList.print(); // Prints: 5 -> 10 -> 20
+
+console.log(linkedList.contains(20)); // Prints: true
+console.log(linkedList.contains(15)); // Prints: false
+
+linkedList.delete(10); // Deletes the node with a value of 10
+linkedList.print(); // Prints: 5 -> 20
