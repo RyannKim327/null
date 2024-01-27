@@ -1,19 +1,22 @@
-function insertionSort(arr) {
-  const len = arr.length;
-  for (let i = 1; i < len; i++) {
-    let key = arr[i]; // current element to be compared
+function findFirstRepeatedCharacter(str) {
+  // Create an empty object to track character frequencies
+  const charFrequency = {};
 
-    let j = i - 1;
-    while (j >= 0 && arr[j] > key) {
-      // move elements greater than key to one position ahead
-      arr[j + 1] = arr[j];
-      j--;
+  // Traverse each character in the string
+  for (let char of str) {
+    // If the character is already tracked in the object, it is repeated
+    if (charFrequency[char]) {
+      return char;
+    } else {
+      // Otherwise, mark the character as tracked in the object
+      charFrequency[char] = true;
     }
-    arr[j + 1] = key; // insert the key element in its correct position
   }
-  return arr;
-}
 
-// Usage example:
-const array = [5, 2, 4, 6, 1, 3];
-console.log(insertionSort(array)); // Output: [1, 2, 3, 4, 5, 6]
+  // If no repeated character is found, return null
+  return null;
+}
+const string = "hello world";
+const firstRepeatedChar = findFirstRepeatedCharacter(string);
+
+console.log(firstRepeatedChar);  // Output: l
