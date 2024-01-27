@@ -1,35 +1,52 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function heapSort(array) {
+  // Build max heap
+  function buildMaxHeap(array) {
+    const n = array.length;
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+      heapify(array, n, i);
+    }
   }
-}
 
-function diameterOfBinaryTree(root) {
-  let diameter = 0;
+  // Heapify the subtree rooted at index i
+  function heapify(array, n, i) {
+    let largest = i;
+    const left = 2 * i + 1;
+    const right = 2 * i + 2;
 
-  function depth(node) {
-    if (node === null) {
-      return 0;
+    if (left < n && array[left] > array[largest]) {
+      largest = left;
     }
 
-    const leftDepth = depth(node.left);
-    const rightDepth = depth(node.right);
+    if (right < n && array[right] > array[largest]) {
+      largest = right;
+    }
 
-    diameter = Math.max(diameter, leftDepth + rightDepth);
-
-    return Math.max(leftDepth, rightDepth) + 1;
+    if (largest !== i) {
+      [array[i], array[largest]] = [array[largest], array[i]];
+      heapify(array, n, largest);
+    }
   }
 
-  depth(root);
+  // Perform heap sort
+  function sort(array) {
+    const n = array.length;
 
-  return diameter;
+    // Build max heap
+    buildMaxHeap(array);
+
+    // Heap sort
+    for (let i = n - 1; i >= 0; i--) {
+      [array[0], array[i]] = [array[i], array[0]];
+      heapify(array, i, 0);
+    }
+  }
+
+  // Call sort function
+  sort(array);
+  
+  return array;
 }
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
 
-console.log(diameterOfBinaryTree(root)); // Output: 3
+// Example usage
+const arr = [7, 4, 1, 9, 3, 6];
+console.log(heapSort(arr)); // [1, 3, 4, 6, 7, 9]
