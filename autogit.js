@@ -1,27 +1,39 @@
-function bubbleSort(array) {
-  const length = array.length;
-  let swapped;
+class LinkedListNode {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
+}
+function isPalindrome(head) {
+  // Create an array to hold the elements of the linked list
+  const arr = [];
 
-  for (let i = 0; i < length - 1; i++) {
-    swapped = false;
-    for (let j = 0; j < length - i - 1; j++) {
-      if (array[j] > array[j + 1]) {
-        // Swap elements
-        [array[j], array[j + 1]] = [array[j + 1], array[j]];
-        swapped = true;
-      }
-    }
-
-    // If no swaps were made in the inner loop, the array is already sorted
-    if (!swapped) {
-      break;
-    }
+  // Traverse the linked list and store each element in the array
+  let current = head;
+  while (current !== null) {
+    arr.push(current.data);
+    current = current.next;
   }
 
-  return array;
-}
+  // Compare the elements in the array to check for a palindrome
+  let start = 0;
+  let end = arr.length - 1;
+  while (start < end) {
+    if (arr[start] !== arr[end]) {
+      return false;
+    }
+    start++;
+    end--;
+  }
 
-// Example usage:
-const unsortedArray = [6, 3, 8, 2, 9, 1];
-const sortedArray = bubbleSort(unsortedArray);
-console.log(sortedArray);
+  return true;
+}
+// Create a linked list
+const list = new LinkedListNode(1);
+list.next = new LinkedListNode(2);
+list.next.next = new LinkedListNode(3);
+list.next.next.next = new LinkedListNode(2);
+list.next.next.next.next = new LinkedListNode(1);
+
+// Check if the linked list is a palindrome
+console.log(isPalindrome(list));  // Output: true
