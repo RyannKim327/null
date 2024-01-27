@@ -1,27 +1,30 @@
-class TreeNode {
-  constructor(val) {
-    this.val = val;
-    this.left = null;
-    this.right = null;
+function hasCycle(head) {
+  let slow = head;
+  let fast = head;
+
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
+    
+    if (slow === fast) {
+      return true; // Cycle detected
+    }
+  }
+
+  return false; // No cycle
+}
+class ListNode {
+  constructor(value, next) {
+    this.value = value;
+    this.next = next;
   }
 }
 
-function diameterOfBinaryTree(root) {
-  let diameter = 0;
+// Create a linked list with a cycle
+const node4 = new ListNode(4, null);
+const node3 = new ListNode(3, node4);
+const node2 = new ListNode(2, node3);
+const node1 = new ListNode(1, node2);
+node4.next = node2; // Creating a cycle
 
-  function depth(node) {
-    if (node === null) return 0;
-
-    const leftDepth = depth(node.left);
-    const rightDepth = depth(node.right);
-
-    // update the diameter if the current path is longer
-    diameter = Math.max(diameter, leftDepth + rightDepth);
-
-    // return the depth of the subtree rooted at this node
-    return Math.max(leftDepth, rightDepth) + 1;
-  }
-
-  depth(root);
-  return diameter;
-}
+console.log(hasCycle(node1)); // true, cycle exists
