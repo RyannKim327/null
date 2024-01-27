@@ -1,28 +1,30 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function findMajorityElement(arr) {
+  const count = {};
+  const n = arr.length;
+
+  for (let i = 0; i < n; i++) {
+    const element = arr[i];
+    count[element] = (count[element] || 0) + 1;
+  }
+
+  let majorityElement = null;
+  let majorityCount = 0;
+
+  for (const key in count) {
+    if (count[key] > majorityCount) {
+      majorityCount = count[key];
+      majorityElement = key;
+    }
+  }
+
+  if (majorityCount > n / 2) {
+    return majorityElement;
+  } else {
+    return "No majority element found";
   }
 }
 
-function findMaxDepth(node) {
-  if (node === null) {
-    return 0; // Base case: empty node, depth is 0
-  }
-  
-  const leftDepth = findMaxDepth(node.left);
-  const rightDepth = findMaxDepth(node.right);
-  
-  return 1 + Math.max(leftDepth, rightDepth); // Maximum depth is the bigger subtree depth + 1
-}
-// Create sample tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-// Find maximum depth
-const maxDepth = findMaxDepth(root);
-console.log("Maximum depth of the binary tree:", maxDepth);
+// Example usage:
+const arr = [2, 2, 3, 2, 4, 2, 5, 6, 2];
+const majorityElement = findMajorityElement(arr);
+console.log(majorityElement); // Output: 2
