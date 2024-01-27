@@ -1,22 +1,21 @@
-function findFirstRepeatedCharacter(str) {
-  // Create an empty object to track character frequencies
-  const charFrequency = {};
-
-  // Traverse each character in the string
-  for (let char of str) {
-    // If the character is already tracked in the object, it is repeated
-    if (charFrequency[char]) {
-      return char;
-    } else {
-      // Otherwise, mark the character as tracked in the object
-      charFrequency[char] = true;
-    }
+function countOccurrences(string, word) {
+  // Create a regular expression with the word and the 'g' flag for global search
+  const regex = new RegExp(word, 'g');
+  
+  // Use the match() method to get an array of all matches
+  const matches = string.match(regex);
+  
+  // If there are no matches, return 0
+  if (matches === null) {
+    return 0;
   }
-
-  // If no repeated character is found, return null
-  return null;
+  
+  // Return the length of the matches array to get the count
+  return matches.length;
 }
-const string = "hello world";
-const firstRepeatedChar = findFirstRepeatedCharacter(string);
 
-console.log(firstRepeatedChar);  // Output: l
+// Example usage
+const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed tortor ipsum.';
+const searchTerm = 'sed';
+const count = countOccurrences(text, searchTerm);
+console.log(count); // Output: 2
