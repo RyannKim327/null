@@ -1,43 +1,35 @@
-function depthFirstSearch(graph, startNode) {
-  // Create a stack to keep track of nodes to visit
-  const stack = [];
-
-  // Set of visited nodes
-  const visited = new Set();
-
-  // Push the starting node onto the stack
-  stack.push(startNode);
-
-  // Perform depth-first search
-  while (stack.length > 0) {
-    // Pop a node from the stack
-    const currentNode = stack.pop();
-
-    // Process the node if it hasn't been visited
-    if (!visited.has(currentNode)) {
-      visited.add(currentNode);
-      console.log(currentNode); // Do something with the node, e.g. print it
-
-      // Get neighbors of the current node
-      const neighbors = graph[currentNode];
-
-      // Push unvisited neighbors onto the stack
-      for (let i = neighbors.length - 1; i >= 0; i--) {
-        const neighbor = neighbors[i];
-        if (!visited.has(neighbor)) {
-          stack.push(neighbor);
-        }
-      }
-    }
+// Binary tree node definition
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
-const graph = {
-  A: ['B', 'C'],
-  B: ['D', 'E'],
-  C: ['F'],
-  D: [],
-  E: ['F'],
-  F: []
-};
-const startNode = 'A';
-depthFirstSearch(graph, startNode);
+
+// Calculate sum of all nodes in a binary tree
+function sumOfNodes(root) {
+  if (root === null) {
+    return 0; // Base case: empty tree has sum 0
+  }
+
+  // Recursive case: sum of nodes = node value + sum of left subtree + sum of right subtree
+  return (
+    root.value +
+    sumOfNodes(root.left) +
+    sumOfNodes(root.right)
+  );
+}
+
+// Create a binary tree
+const rootNode = new Node(1);
+rootNode.left = new Node(2);
+rootNode.right = new Node(3);
+rootNode.left.left = new Node(4);
+rootNode.left.right = new Node(5);
+rootNode.right.left = new Node(6);
+rootNode.right.right = new Node(7);
+
+// Calculate the sum of all nodes in the binary tree
+const sum = sumOfNodes(rootNode);
+console.log(sum); // Output: 28
