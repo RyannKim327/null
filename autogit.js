@@ -1,10 +1,34 @@
-let array = [1, 2, 3, 4, 5];
+function calculateHash(str, prime) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash += str.charCodeAt(i) * (prime ** i);
+  }
+  return hash;
+}
+function recalculateHash(oldHash, oldChar, newChar, prime, windowSize) {
+  const newHash = oldHash - (oldChar.charCodeAt(0) * (prime ** (windowSize - 1)));
+  return newHash * prime + newChar.charCodeAt(0);
+}
+function rabinKarp(pattern, text) {
+  const prime = 101;   // Prime number as the base for the hash function
+  const windowSize = pattern.length;
+  const patternHash = calculateHash(pattern, prime);
+  let windowHash = calculateHash(text.slice(0, windowSize), prime);
 
-console.log("Original Array:", array);
+  for (let i = 0; i < text.length - windowSize + 1; i++) {
+    if (windowHash === patternHash && text.slice(i, i + windowSize) === pattern) {
+      return i;   // Match found at index i
+    }
 
-// Reverse the order of elements in the array
-array.reverse();
+    const oldChar = text[i];
+    const newChar = text[i + windowSize];
+    windowHash = recalculateHash(windowHash, oldChar, newChar, prime, windowSize);
+  }
 
-console.log("Reversed Array:", array);
-Original Array: [1, 2, 3, 4, 5]
-Reversed Array: [5, 4, 3, 2, 1]
+  return -1;   // No match found
+}
+const text = "Hello, world!";
+const pattern = "world";
+const index = rabinKarp(pattern, text);
+
+console.log(index);  // Output: 7
