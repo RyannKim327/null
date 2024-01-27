@@ -1,29 +1,19 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-let head = new Node(1);
-let second = new Node(2);
-let third = new Node(3);
+function findMaxSubarraySum(arr) {
+    let maxSum = arr[0];
+    let currentSum = arr[0];
 
-head.next = second;
-second.next = third;
-let prev = null;
-let current = head;
-let next = null;
+    for (let i = 1; i < arr.length; i++) {
+        // Keep adding the current element to the current sum
+        currentSum = Math.max(arr[i], currentSum + arr[i]);
 
-while (current !== null) {
-  next = current.next;
-  current.next = prev;
-  prev = current;
-  current = next;
+        // Update the max sum if the current sum is greater
+        maxSum = Math.max(maxSum, currentSum);
+    }
+
+    return maxSum;
 }
 
-head = prev;
-let currentNode = head;
-while (currentNode !== null) {
-  console.log(currentNode.value);
-  currentNode = currentNode.next;
-}
+// Example usage:
+const array = [1, -2, 3, -4, 5, -6, 7];
+const maxSum = findMaxSubarraySum(array);
+console.log(maxSum);  // Output: 8
