@@ -1,35 +1,67 @@
-function mergeSort(arr) {
-  if (arr.length <= 1) {
-    return arr;
-  }
-  
-  const mid = Math.floor(arr.length / 2);
-  const left = mergeSort(arr.slice(0, mid));
-  const right = mergeSort(arr.slice(mid));
-  
-  return merge(left, right);
-}
+function mergeSortIterative(arr) {
+  const n = arr.length;
 
-function merge(left, right) {
-  let result = [];
-  let i = 0;
-  let j = 0;
-  
-  while (i < left.length && j < right.length) {
-    if (left[i] < right[j]) {
-      result.push(left[i]);
-      i++;
-    } else {
-      result.push(right[j]);
-      j++;
+  // Merging subarrays of size 1, then increasing the subarray size
+  for (let subSize = 1; subSize < n; subSize *= 2) {
+    // Merging subarrays of size subSize
+    for (let leftStart = 0; leftStart < n - 1; leftStart += 2 * subSize) {
+      const mid = Math.min(leftStart + subSize - 1, n - 1);
+      const rightEnd = Math.min(leftStart + 2 * subSize - 1, n - 1);
+
+      merge(arr, leftStart, mid, rightEnd);
     }
   }
-  
-  return result.concat(left.slice(i)).concat(right.slice(j));
+
+  return arr;
 }
 
-// Testing the merge sort algorithm
-const arr = [8, 4, 2, 7, 1, 5, 9, 3];
-console.log("Original array:", arr);
-const sortedArr = mergeSort(arr);
-console.log("Sorted array:", sortedArr);
+// Helper function to merge two sorted subarrays
+function merge(arr, leftStart, mid, rightEnd) {
+  const leftSize = mid - leftStart + 1;
+  const rightSize = rightEnd - mid;
+
+  // Create temporary arrays for left and right subarrays
+  const leftArr = new Array(leftSize);
+  const rightArr = new Array(rightSize);
+
+  // Copy data to temporary arrays
+  for (let i = 0; i < leftSize; i++) {
+    leftArr[i] = arr[leftStart + i];
+  }
+
+  for (let i = 0; i < rightSize; i++) {
+    rightArr[i] = arr[mid + 1 + i];
+  }
+
+  // Merge the temporary arrays back into arr[leftStart...rightEnd]
+  let i = 0; // Initial index of first subarray
+  let j = 0; // Initial index of second subarray
+  let k = leftStart; // Initial index of merged subarray
+
+  while (i < leftSize && j < rightSize) {
+    if (leftArr[i] <= rightArr[j]) {
+      arr[k] = leftArr[i];
+      i++;
+    } else {
+      arr[k] = rightArr[j];
+      j++;
+    }
+    k++;
+  }
+
+  // Copy the remaining elements of leftArr[], if any
+  while (i < leftSize) {
+    arr[k] = leftArr[i];
+    i++;
+    k++;
+  }
+
+  // Copy the remaining elements of rightArr[], if any
+  while (j < rightSize) {
+    arr[k] = rightArr[j];
+    j++;
+    k++;
+  }
+}
+const arr = [4, 3, 2, 1, 5];
+console.log(mergeSortIterative(arr)); // Output: [1, 2, 3, 4, 5]
