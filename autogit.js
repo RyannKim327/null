@@ -1,23 +1,23 @@
-const axios = require('axios');
+function removeVowels(str) {
+  return str.replace(/[aeiou]/gi, '');
+}
 
-// Make a GET request to a URL
-axios.get('https://api.example.com/data')
-  .then(response => {
-    // Handle success, print the data
-    console.log('Response:', response.data);
-  })
-  .catch(error => {
-    // Handle error
-    console.log('Error:', error.message);
-  });
+const input = 'Hello, World!';
+const output = removeVowels(input);
+console.log(output); // Output: Hll, Wrld!
+function removeVowels(str) {
+  let result = '';
+  const vowels = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'];
 
-// Make a POST request with data
-axios.post('https://api.example.com/submit', { name: 'John', age: 25 })
-  .then(response => {
-    // Handle success, print the response
-    console.log('Response:', response.data);
-  })
-  .catch(error => {
-    // Handle error
-    console.log('Error:', error.message);
-  });
+  for (let i = 0; i < str.length; i++) {
+    if (!vowels.includes(str[i])) {
+      result += str[i];
+    }
+  }
+
+  return result;
+}
+
+const input = 'Hello, World!';
+const output = removeVowels(input);
+console.log(output); // Output: Hll, Wrld!
