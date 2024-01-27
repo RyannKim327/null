@@ -1,21 +1,28 @@
-function isPrime(number) {
-  if (number <= 1) {
-    return false;
-  }
-  
-  // Check if number is divisible by any number from 2 to square root of the number
-  for (let i = 2; i <= Math.sqrt(number); i++) {
-    if (number % i === 0) {
-      return false;
-    }
-  }
-  
-  return true;
-}
-const number = 29;  // Example number to check
+function getLinkedListLength(head) {
+  let current = head;
+  let length = 0;
 
-if (isPrime(number)) {
-  console.log(number + ' is prime.');
-} else {
-  console.log(number + ' is not prime.');
+  while (current !== null) {
+    length++;
+    current = current.next; // Move to the next node
+  }
+
+  return length;
 }
+// Define Node class
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
+}
+
+// Create a linked list
+const head = new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
+
+head.next = node2;
+node2.next = node3;
+
+console.log(getLinkedListLength(head)); // Output: 3
