@@ -1,41 +1,35 @@
-class Graph {
-  constructor() {
-    this.adjList = {};
+function mergeSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
   }
-
-  addVertex(vertex) {
-    this.adjList[vertex] = [];
-  }
-
-  addEdge(source, destination) {
-    this.adjList[source].push(destination);
-  }
+  
+  const mid = Math.floor(arr.length / 2);
+  const left = mergeSort(arr.slice(0, mid));
+  const right = mergeSort(arr.slice(mid));
+  
+  return merge(left, right);
 }
-function dfs(graph, startVertex, visited = {}) {
-  console.log(startVertex);
-  visited[startVertex] = true;
 
-  for (const neighbor of graph.adjList[startVertex]) {
-    if (!visited[neighbor]) {
-      dfs(graph, neighbor, visited);
+function merge(left, right) {
+  let result = [];
+  let i = 0;
+  let j = 0;
+  
+  while (i < left.length && j < right.length) {
+    if (left[i] < right[j]) {
+      result.push(left[i]);
+      i++;
+    } else {
+      result.push(right[j]);
+      j++;
     }
   }
+  
+  return result.concat(left.slice(i)).concat(right.slice(j));
 }
-const graph = new Graph();
 
-// Add vertices
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
-
-// Add edges
-graph.addEdge('A', 'B');
-graph.addEdge('B', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('C', 'E');
-graph.addEdge('D', 'E');
-
-// Perform DFS
-dfs(graph, 'A');
+// Testing the merge sort algorithm
+const arr = [8, 4, 2, 7, 1, 5, 9, 3];
+console.log("Original array:", arr);
+const sortedArr = mergeSort(arr);
+console.log("Sorted array:", sortedArr);
