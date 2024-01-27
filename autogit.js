@@ -1,38 +1,43 @@
-function countOccurrences(text, word) {
-  return text.split(word).length - 1;
-}
+function depthFirstSearch(graph, startNode) {
+  // Create a stack to keep track of nodes to visit
+  const stack = [];
 
-const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
-const word = 'ipsum';
+  // Set of visited nodes
+  const visited = new Set();
 
-const occurrences = countOccurrences(text, word);
-console.log(occurrences); // Output: 1
-function countOccurrences(text, word) {
-  const regex = new RegExp(word, 'g');
-  const matches = text.match(regex);
-  return matches ? matches.length : 0;
-}
+  // Push the starting node onto the stack
+  stack.push(startNode);
 
-const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
-const word = 'ipsum';
+  // Perform depth-first search
+  while (stack.length > 0) {
+    // Pop a node from the stack
+    const currentNode = stack.pop();
 
-const occurrences = countOccurrences(text, word);
-console.log(occurrences); // Output: 1
-function countOccurrences(text, word) {
-  const words = text.split(' ');
-  let count = 0;
+    // Process the node if it hasn't been visited
+    if (!visited.has(currentNode)) {
+      visited.add(currentNode);
+      console.log(currentNode); // Do something with the node, e.g. print it
 
-  for (let i = 0; i < words.length; i++) {
-    if (words[i] === word) {
-      count++;
+      // Get neighbors of the current node
+      const neighbors = graph[currentNode];
+
+      // Push unvisited neighbors onto the stack
+      for (let i = neighbors.length - 1; i >= 0; i--) {
+        const neighbor = neighbors[i];
+        if (!visited.has(neighbor)) {
+          stack.push(neighbor);
+        }
+      }
     }
   }
-
-  return count;
 }
-
-const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
-const word = 'ipsum';
-
-const occurrences = countOccurrences(text, word);
-console.log(occurrences); // Output: 1
+const graph = {
+  A: ['B', 'C'],
+  B: ['D', 'E'],
+  C: ['F'],
+  D: [],
+  E: ['F'],
+  F: []
+};
+const startNode = 'A';
+depthFirstSearch(graph, startNode);
