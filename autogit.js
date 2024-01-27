@@ -1,20 +1,22 @@
-function longestCommonPrefix(strings) {
-    if (strings.length === 0) {
-        return "";
+function bubbleSort(arr) {
+  var len = arr.length;
+  var swapped;
+  
+  do {
+    swapped = false;
+    for (var i = 0; i < len-1; i++) {
+      if (arr[i] > arr[i + 1]) {
+        var temp = arr[i];
+        arr[i] = arr[i + 1];
+        arr[i + 1] = temp;
+        swapped = true;
+      }
     }
-    
-    let prefix = strings[0];
-    
-    for (let i = 1; i < strings.length; i++) {
-        for (let j = 0; j < prefix.length; j++) {
-            if (prefix[j] !== strings[i][j] || prefix === "") {
-                return prefix;
-            }
-        }
-    }
-    
-    return prefix;
+  } while (swapped);
+  
+  return arr;
 }
-const strings = ["apple", "application", "app"];
-const commonPrefix = longestCommonPrefix(strings);
-console.log(commonPrefix);  // Output: "app"
+
+// Example usage:
+var numbers = [5, 3, 8, 4, 2];
+console.log(bubbleSort(numbers)); // Output: [2, 3, 4, 5, 8]
