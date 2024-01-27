@@ -1,7 +1,8 @@
-function removeVowels(str) {
-  // Use regular expression to replace all vowels (case-insensitive) with an empty string
-  return str.replace(/[aeiou]/gi, '');
-}
-
-// Example usage
-console.log(removeVowels("Hello World")); // Output: "Hll Wrld"
+var string1 = "Hello";
+var string2 = " world!";
+var result = string1 + string2;
+console.log(result);  // Output: Hello world!
+var string1 = "Hello";
+var string2 = " world!";
+var result = string1.concat(string2);
+console.log(result);  // Output: Hello world!
