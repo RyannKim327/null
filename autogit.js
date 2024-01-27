@@ -1,59 +1,69 @@
-class HashTable {
-  constructor(size = 10) {
-    this.size = size;
-    this.buckets = new Array(size);
+class TreeNode {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+class BinaryTree {
+  constructor() {
+    this.root = null;
   }
 
-  hash(key) {
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) {
-      hash += key.charCodeAt(i);
+  insert(value) {
+    const newNode = new TreeNode(value);
+
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
     }
-    return hash % this.size;
   }
 
-  put(key, value) {
-    const index = this.hash(key);
-    if (!this.buckets[index]) {
-      this.buckets[index] = [];
-    }
-    this.buckets[index].push({ key, value });
-  }
-
-  get(key) {
-    const index = this.hash(key);
-    if (this.buckets[index]) {
-      for (let i = 0; i < this.buckets[index].length; i++) {
-        if (this.buckets[index][i].key === key) {
-          return this.buckets[index][i].value;
-        }
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
       }
     }
-    return undefined;
   }
 
-  remove(key) {
-    const index = this.hash(key);
-    if (this.buckets[index]) {
-      for (let i = 0; i < this.buckets[index].length; i++) {
-        if (this.buckets[index][i].key === key) {
-          this.buckets[index].splice(i, 1);
-          return;
-        }
-      }
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  searchNode(node, value) {
+    if (node === null) {
+      return false;
+    }
+
+    if (node.value === value) {
+      return true;
+    }
+
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else {
+      return this.searchNode(node.right, value);
     }
   }
 }
-const myHashTable = new HashTable(10); // Initialize hash table with size 10
+const binaryTree = new BinaryTree();
 
-myHashTable.put("name", "John"); // Insert data
-myHashTable.put("age", 30);
-myHashTable.put("city", "New York");
+binaryTree.insert(5);
+binaryTree.insert(3);
+binaryTree.insert(7);
+binaryTree.insert(1);
+binaryTree.insert(4);
 
-console.log(myHashTable.get("name")); // Output: John
-console.log(myHashTable.get("age")); // Output: 30
-console.log(myHashTable.get("city")); // Output: New York
-
-myHashTable.remove("age"); // Remove data
-
-console.log(myHashTable.get("age")); // Output: undefined
+console.log(binaryTree.search(5)); // Output: true
+console.log(binaryTree.search(2)); // Output: false
