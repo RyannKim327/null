@@ -1,40 +1,43 @@
 function mergeSort(array) {
+  // If the array is empty or only has one element, it is already sorted
   if (array.length <= 1) {
     return array;
   }
 
+  // Split the array into two halves
   const middle = Math.floor(array.length / 2);
-  const left = array.slice(0, middle);
-  const right = array.slice(middle);
+  const leftHalf = array.slice(0, middle);
+  const rightHalf = array.slice(middle);
 
-  const sortedLeft = mergeSort(left);
-  const sortedRight = mergeSort(right);
+  // Recursively sort the two halves
+  const sortedLeft = mergeSort(leftHalf);
+  const sortedRight = mergeSort(rightHalf);
 
+  // Merge the sorted halves
   return merge(sortedLeft, sortedRight);
 }
 
 function merge(left, right) {
-  const result = [];
-  let leftIdx = 0,
-    rightIdx = 0;
+  let result = [];
+  let leftIndex = 0;
+  let rightIndex = 0;
 
-  while (leftIdx < left.length && rightIdx < right.length) {
-    if (left[leftIdx] < right[rightIdx]) {
-      result.push(left[leftIdx]);
-      leftIdx++;
+  // Compare elements from left and right arrays and merge them in sorted order
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] <= right[rightIndex]) {
+      result.push(left[leftIndex]);
+      leftIndex++;
     } else {
-      result.push(right[rightIdx]);
-      rightIdx++;
+      result.push(right[rightIndex]);
+      rightIndex++;
     }
   }
 
-  result.push(...left.slice(leftIdx));
-  result.push(...right.slice(rightIdx));
-
-  return result;
+  // Concatenate the remaining elements from either left or right array
+  return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
 }
 
-// Usage example:
-const unsortedArray = [5, 2, 1, 6, 3, 9];
-const sortedArray = mergeSort(unsortedArray);
-console.log(sortedArray);
+// Example usage:
+const array = [9, 4, 6, 2, 8, 5, 1, 7, 3];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
