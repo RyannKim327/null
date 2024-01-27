@@ -1,102 +1,49 @@
-function findKthSmallestElement(arr, k) {
-    if (k < 1 || k > arr.length) {
-        return null; // Invalid k value
-    }
+function heapify(arr, n, i) {
+  let largest = i; // Initialize the largest element as the root
+  const left = 2 * i + 1; // Left child position
+  const right = 2 * i + 2; // Right child position
 
-    arr.sort((a, b) => a - b); // Sort in ascending order
+  // If the left child is larger than the root
+  if (left < n && arr[left] > arr[largest]) {
+    largest = left;
+  }
 
-    return arr[k - 1];
-}
-class MinHeap {
-    constructor() {
-        this.heap = [];
-    }
+  // If the right child is larger than the largest so far
+  if (right < n && arr[right] > arr[largest]) {
+    largest = right;
+  }
 
-    insert(element) {
-        this.heap.push(element);
-        this.heapifyUp(this.heap.length - 1);
-    }
+  // If the largest element is not the root
+  if (largest !== i) {
+    // Swap the largest element with the root
+    [arr[i], arr[largest]] = [arr[largest], arr[i]];
 
-    extractMin() {
-        if (this.isEmpty()) {
-            return null;
-        }
-
-        const min = this.heap[0];
-        const lastElement = this.heap.pop();
-
-        if (!this.isEmpty()) {
-            this.heap[0] = lastElement;
-            this.heapifyDown(0);
-        }
-
-        return min;
-    }
-
-    isEmpty() {
-        return this.heap.length === 0;
-    }
-
-    heapifyUp(index) {
-        let parentIndex = Math.floor((index - 1) / 2);
-
-        while (index > 0 && this.heap[index] < this.heap[parentIndex]) {
-            this.swap(index, parentIndex);
-            index = parentIndex;
-            parentIndex = Math.floor((index - 1) / 2);
-        }
-    }
-
-    heapifyDown(index) {
-        let smallestChildIndex = this.getSmallestChildIndex(index);
-
-        while (
-            smallestChildIndex !== null &&
-            this.heap[index] > this.heap[smallestChildIndex]
-        ) {
-            this.swap(index, smallestChildIndex);
-            index = smallestChildIndex;
-            smallestChildIndex = this.getSmallestChildIndex(index);
-        }
-    }
-
-    getSmallestChildIndex(parentIndex) {
-        const leftChildIndex = 2 * parentIndex + 1;
-        const rightChildIndex = 2 * parentIndex + 2;
-
-        if (leftChildIndex >= this.heap.length) {
-            return null;
-        }
-
-        if (
-            rightChildIndex >= this.heap.length ||
-            this.heap[leftChildIndex] < this.heap[rightChildIndex]
-        ) {
-            return leftChildIndex;
-        }
-
-        return rightChildIndex;
-    }
-
-    swap(i, j) {
-        [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
-    }
+    // Recursively heapify the affected sub-tree
+    heapify(arr, n, largest);
+  }
 }
 
-function findKthSmallestElement(arr, k) {
-    if (k < 1 || k > arr.length) {
-        return null; // Invalid k value
-    }
+function heapSort(arr) {
+  const n = arr.length;
 
-    const minHeap = new MinHeap();
+  // Build the heap (rearrange the array)
+  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+    heapify(arr, n, i);
+  }
 
-    for (let i = 0; i < arr.length; i++) {
-        minHeap.insert(arr[i]);
-    }
+  // Extract elements from the heap one by one
+  for (let i = n - 1; i > 0; i--) {
+    // Move current root to the end
+    [arr[0], arr[i]] = [arr[i], arr[0]];
 
-    for (let i = 0; i < k - 1; i++) {
-        minHeap.extractMin();
-    }
+    // Call heapify on the reduced heap
+    heapify(arr, i, 0);
+  }
 
-    return minHeap.extractMin();
+  return arr;
 }
+
+// Example usage:
+const arr = [7, 3, 2, 8, 1, 9, 4];
+const sortedArr = heapSort(arr);
+console.log(sortedArr); // [1, 2, 3, 4, 7, 8, 9]
