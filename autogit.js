@@ -1,12 +1,18 @@
-let arr = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
+function binarySearch(arr, target) {
+  let start = 0;
+  let end = arr.length - 1;
 
-// Find the index of the element to remove
-let index = arr.indexOf(elementToRemove);
+  while (start <= end) {
+    const mid = Math.floor((start + end) / 2);
 
-// Remove the element from the array
-if (index !== -1) {
-  arr.splice(index, 1);
+    if (arr[mid] === target) {
+      return mid;
+    } else if (arr[mid] < target) {
+      start = mid + 1;
+    } else {
+      end = mid - 1;
+    }
+  }
+
+  return -1;
 }
-
-console.log(arr); // Output: [1, 2, 4, 5]
