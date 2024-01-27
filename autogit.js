@@ -1,23 +1,31 @@
-async function connectToAndroidApp() {
-  try {
-    const response = await fetch('http://your-android-app-url', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ key: 'value' }) // Replace with the data you want to send to the Android app
-    });
+function interpolationSearch(array, target, compareFn = (a, b) => a - b) {
+  let low = 0;
+  let high = array.length - 1;
+  
+  while (low <= high && target >= array[low] && target <= array[high]) {
+    // Calculate the position using interpolation formula
+    let position = Math.floor(low + ((target - array[low]) * (high - low)) / (array[high] - array[low]));
 
-    if (response.ok) {
-      const responseData = await response.json();
-      // Process the response from the Android app
-      console.log(responseData);
-    } else {
-      console.error('Error connecting to Android app:', response.statusText);
+    // If the target value is found
+    if (compareFn(array[position], target) === 0) {
+      return position;
     }
-  } catch (error) {
-    console.error('An error occurred while connecting to Android app:', error);
-  }
-}
 
-connectToAndroidApp();
+    if (compareFn(array[position], target) < 0) {
+      low = position + 1;
+    } else {
+      high = position - 1;
+    }
+  }
+
+  return -1; // Target value not found
+}
+const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
+const target = 11;
+const result = interpolationSearch(arr, target);
+
+if (result !== -1) {
+  console.log(`Element found at index ${result}`);
+} else {
+  console.log("Element not found");
+}
