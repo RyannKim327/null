@@ -1,28 +1,19 @@
-function reverseString(str) {
-  return str.split('').reverse().join('');
-}
+function findMaxSubarraySum(arr) {
+  let maxSoFar = arr[0];  // Initialize the maximum sum to the first element
+  let maxEndingHere = arr[0];
 
-console.log(reverseString('Hello, World!')); // Output: "!dlroW ,olleH"
-function reverseString(str) {
-  let reversedString = '';
-  for (let i = str.length - 1; i >= 0; i--) {
-    reversedString += str[i];
+  for (let i = 1; i < arr.length; i++) {
+    // Calculate the maximum sum ending at the current index
+    maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
+    
+    // Update the maximum sum so far if the current maximum sum is greater
+    maxSoFar = Math.max(maxSoFar, maxEndingHere);
   }
-  return reversedString;
+
+  return maxSoFar;
 }
 
-console.log(reverseString('Hello, World!')); // Output: "!dlroW ,olleH"
-function reverseString(str) {
-  return Array.from(str).reverse().join('');
-}
-
-console.log(reverseString('Hello, World!')); // Output: "!dlroW ,olleH"
-function reverseString(str) {
-  if (str === '') {
-    return '';
-  } else {
-    return reverseString(str.substr(1)) + str.charAt(0);
-  }
-}
-
-console.log(reverseString('Hello, World!')); // Output: "!dlroW ,olleH"
+// Example usage
+const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const maxSum = findMaxSubarraySum(arr);
+console.log(maxSum);  // Output: 6
