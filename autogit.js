@@ -1,19 +1,39 @@
-function findMaxSubarraySum(arr) {
-    let maxSum = arr[0];
-    let currentSum = arr[0];
-
-    for (let i = 1; i < arr.length; i++) {
-        // Keep adding the current element to the current sum
-        currentSum = Math.max(arr[i], currentSum + arr[i]);
-
-        // Update the max sum if the current sum is greater
-        maxSum = Math.max(maxSum, currentSum);
-    }
-
-    return maxSum;
+function LinkedListNode(value) {
+  this.value = value;
+  this.next = null;
 }
 
+function LinkedList() {
+  this.head = null;
+}
+
+LinkedList.prototype.add = function(value) {
+  var node = new LinkedListNode(value);
+  if (!this.head) {
+    this.head = node;
+  } else {
+    var current = this.head;
+    while (current.next) {
+      current = current.next;
+    }
+    current.next = node;
+  }
+};
+
+LinkedList.prototype.length = function() {
+  var current = this.head;
+  var count = 0;
+  while (current) {
+    count++;
+    current = current.next;
+  }
+  return count;
+};
+
 // Example usage:
-const array = [1, -2, 3, -4, 5, -6, 7];
-const maxSum = findMaxSubarraySum(array);
-console.log(maxSum);  // Output: 8
+var list = new LinkedList();
+list.add(1);
+list.add(2);
+list.add(3);
+
+console.log(list.length()); // Output: 3
