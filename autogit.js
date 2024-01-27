@@ -1,30 +1,17 @@
-function ListNode(value) {
-  this.value = value;
-  this.next = null;
+function isAnagram(str1, str2) {
+  // Remove spaces and punctuation, convert to lowercase
+  const cleanedStr1 = str1.replace(/[^\w]/g, '').toLowerCase();
+  const cleanedStr2 = str2.replace(/[^\w]/g, '').toLowerCase();
+
+  // Convert to arrays and sort alphabetically
+  const arr1 = [...cleanedStr1].sort();
+  const arr2 = [...cleanedStr2].sort();
+
+  // Compare sorted arrays
+  return arr1.join('') === arr2.join('');
 }
-function reverseLinkedList(head) {
-  let prev = null;
-  let current = head;
 
-  while (current !== null) {
-    const next = current.next;
-    current.next = prev;
-    prev = current;
-    current = next;
-  }
-
-  return prev;
-}
-// Example linked list: 1 -> 2 -> 3 -> 4 -> null
-const node1 = new ListNode(1);
-const node2 = new ListNode(2);
-const node3 = new ListNode(3);
-const node4 = new ListNode(4);
-
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-// Reverse the linked list
-const reversedHead = reverseLinkedList(node1);
-
-// Current reversed linked list: 4 -> 3 -> 2 -> 1 -> null
+// Example usage
+const string1 = 'listen';
+const string2 = 'silent';
+console.log(isAnagram(string1, string2));  // Output: true
