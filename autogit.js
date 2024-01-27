@@ -1,43 +1,10 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
-}
+let array = [1, 2, 3, 4, 5];
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+console.log("Original Array:", array);
 
-  add(data) {
-    const newNode = new Node(data);
-    if (this.head === null) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
+// Reverse the order of elements in the array
+array.reverse();
 
-  getLength() {
-    let count = 0;
-    let current = this.head;
-    while (current) {
-      count++;
-      current = current.next;
-    }
-    return count;
-  }
-}
-
-// Example usage:
-const linkedList = new LinkedList();
-linkedList.add(1);
-linkedList.add(2);
-linkedList.add(3);
-linkedList.add(4);
-console.log(linkedList.getLength()); // Output: 4
+console.log("Reversed Array:", array);
+Original Array: [1, 2, 3, 4, 5]
+Reversed Array: [5, 4, 3, 2, 1]
