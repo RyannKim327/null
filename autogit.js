@@ -1,29 +1,31 @@
-function interpolationSearch(arr, x, n) {
-  let low = 0;
-  let high = n - 1;
+function breadthLimitedSearch(root, limit) {
+  // Step 2: Initialize an empty queue and an empty visited set
+  const queue = [];
+  const visited = new Set();
 
-  while (arr[low] <= x && arr[high] >= x) {
-    if (low === high) {
-      if (arr[low] === x)
-        return low;
-      return -1;
+  // Step 3: Enqueue the root node
+  queue.push(root);
+
+  // Step 4: Perform breadth-limited search
+  while (queue.length > 0) {
+    // Dequeue a node from the front of the queue
+    const node = queue.shift();
+
+    // Step 5: Skip if the node has already been visited
+    if (visited.has(node)) continue;
+
+    // Step 6: Mark the node as visited
+    visited.add(node);
+
+    // Step 7: Process the node (your custom logic goes here)
+    console.log(node);
+
+    // Step 8: Enqueue unvisited child nodes
+    if (node.children && node.children.length > 0 && limit > 0) {
+      queue.push(...node.children);
     }
-
-    let pos = low + Math.floor(((x - arr[low]) * (high - low)) / (arr[high] - arr[low]));
-
-    if (arr[pos] === x)
-      return pos;
-
-    if (arr[pos] < x)
-      low = pos + 1;
-    else
-      high = pos - 1;
   }
-
-  return -1;
 }
-const arr = [2, 4, 6, 9, 10, 13, 17, 20];
-const x = 13;
-const result = interpolationSearch(arr, x, arr.length);
-
-console.log(result); // Output: 5 (index of element 13)
+const rootNode = // Your root node;
+const limit = // Your limit;
+breadthLimitedSearch(rootNode, limit);
