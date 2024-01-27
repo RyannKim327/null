@@ -1,19 +1,20 @@
-let array = [1, 6, 3, 9, 2, 5];
-let max = Math.max(...array);
-console.log(max); // Output: 9
-let array = [1, 6, 3, 9, 2, 5];
-let max = Math.max.apply(null, array);
-console.log(max); // Output: 9
-let array = [1, 6, 3, 9, 2, 5];
-let max = array[0];
-for (let i = 1; i < array.length; i++) {
-  if (array[i] > max) {
-    max = array[i];
+function insertionSort(array) {
+  for (let i = 1; i < array.length; i++) {
+    let current = array[i];
+    let j = i - 1;
+
+    while (j >= 0 && array[j] > current) {
+      array[j + 1] = array[j];
+      j--;
+    }
+
+    array[j + 1] = current;
   }
+
+  return array;
 }
-console.log(max); // Output: 9
-let array = [1, 6, 3, 9, 2, 5];
-let max = array.reduce(function(a, b) {
-  return Math.max(a, b);
-});
-console.log(max); // Output: 9
+
+// Example usage:
+const unsortedArray = [7, 2, 4, 1, 5, 3];
+const sortedArray = insertionSort(unsortedArray);
+console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 7]
