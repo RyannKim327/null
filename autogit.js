@@ -1,52 +1,42 @@
-function fibonacciSearch(arr, target, n) {
-    let fib2 = 0;
-    let fib1 = 1;
-    let fibM = fib2 + fib1;
-  
-    // Locate the smallest Fibonacci number >= n
-    while (fibM < n) {
-        fib2 = fib1;
-        fib1 = fibM;
-        fibM = fib2 + fib1;
-    }
-  
-    let offset = -1;
-  
-    // Perform the search
-    while (fibM > 1) {
-        // Check if fibM-2 is a valid index
-        const i = Math.min(offset + fib2, n - 1);
-  
-        // If the element at index i is greater than the target
-        if (arr[i] > target) {
-            fibM = fib2;
-            fib1 = fib1 - fib2;
-            fib2 = fibM - fib1;
-        }
- 
-        // If the element at index i is smaller than the target
-        else if (arr[i] < target) {
-            fibM = fib1;
-            fib1 = fib2;
-            fib2 = fibM - fib1;
-            offset = i;
-        }
- 
-        // Element found
-        else return i;
-    }
-  
-    // If the element was not found
-    if (fib1 === 1 && arr[offset + 1] === target) {
-        return offset + 1;
-    }
-  
-    // Element not found
-    return -1;
-}
-const arr = [2, 6, 13, 25, 36, 42, 55, 63, 77, 82, 95];
-const target = 36;
-const n = arr.length;
+function mergeArrays(arr1, arr2) {
+  let mergedArray = [];
+  let i = 0;
+  let j = 0;
 
-const index = fibonacciSearch(arr, target, n);
-console.log(index); // Output: 4 (the index of target in the array)
+  while (i < arr1.length && j < arr2.length) {
+    if (arr1[i] <= arr2[j]) {
+      mergedArray.push(arr1[i]);
+      i++;
+    } else {
+      mergedArray.push(arr2[j]);
+      j++;
+    }
+  }
+
+  while (i < arr1.length) {
+    mergedArray.push(arr1[i]);
+    i++;
+  }
+
+  while (j < arr2.length) {
+    mergedArray.push(arr2[j]);
+    j++;
+  }
+
+  return mergedArray;
+}
+function findMedian(arr1, arr2) {
+  const mergedArray = mergeArrays(arr1, arr2);
+  const length = mergedArray.length;
+  
+  if (length % 2 === 1) {
+    return mergedArray[Math.floor(length / 2)];
+  } else {
+    const mid = length / 2;
+    return (mergedArray[mid] + mergedArray[mid - 1]) / 2;
+  }
+}
+const arr1 = [1, 3, 5];
+const arr2 = [2, 4, 6, 8];
+const median = findMedian(arr1, arr2);
+console.log(median); // Output: 4
