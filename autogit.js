@@ -1,57 +1,34 @@
-class Node {
-  constructor(value, children = []) {
-    this.value = value;
-    this.children = children;
+function mergeSort(array) {
+  if (array.length <= 1) {
+    return array;
   }
+
+  const middle = Math.floor(array.length / 2);
+  const left = mergeSort(array.slice(0, middle));
+  const right = mergeSort(array.slice(middle));
+
+  return merge(left, right);
 }
 
-class Queue {
-  constructor() {
-    this.items = [];
-  }
+function merge(left, right) {
+  let result = [];
+  let leftIndex = 0;
+  let rightIndex = 0;
 
-  enqueue(item) {
-    this.items.push(item);
-  }
-
-  dequeue() {
-    if (this.isEmpty()) {
-      return null;
-    }
-    return this.items.shift();
-  }
-
-  isEmpty() {
-    return this.items.length === 0;
-  }
-}
-
-function breadthLimitedSearch(root, limit) {
-  const queue = new Queue();
-  queue.enqueue({ node: root, depth: 0 });
-
-  while (!queue.isEmpty()) {
-    const { node, depth } = queue.dequeue();
-
-    if (node.value === target) {
-      return node;
-    }
-
-    if (depth < limit) {
-      queue.enqueue(...node.children.map(child => ({ node: child, depth: depth + 1 })));
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] < right[rightIndex]) {
+      result.push(left[leftIndex]);
+      leftIndex++;
+    } else {
+      result.push(right[rightIndex]);
+      rightIndex++;
     }
   }
 
-  return null;
+  return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
 }
 
-// Usage example:
-const target = 5;
-const root = new Node(1, [
-  new Node(2, [new Node(4)]),
-  new Node(3, [new Node(5), new Node(6)]),
-]);
-
-const result = breadthLimitedSearch(root, 2);
-
-console.log(result); // prints Node { value: 5, children: [] }
+// Example usage:
+const unsortedArray = [6, 5, 3, 1, 8, 7, 2, 4];
+const sortedArray = mergeSort(unsortedArray);
+console.log(sortedArray);
