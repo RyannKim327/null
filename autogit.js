@@ -1,69 +1,52 @@
-function Graph(nodes) {
-  this.nodes = nodes;
-  this.adjList = new Map();
-  for (let node of this.nodes) {
-    this.adjList.set(node, []);
-  }
-
-  this.addEdge = (u, v) => {
-    this.adjList.get(u).push(v);
-  };
-}
-let id = 0;
-let stack = [];
-let ids = [];
-let lows = [];
-let onStack = [];
-let sccs = [];
-function tarjanSCC(graph) {
-  for (let node of graph.nodes) {
-    if (ids[node] === undefined) {
-      dfs(graph, node);
+function fibonacciSearch(arr, target, n) {
+    let fib2 = 0;
+    let fib1 = 1;
+    let fibM = fib2 + fib1;
+  
+    // Locate the smallest Fibonacci number >= n
+    while (fibM < n) {
+        fib2 = fib1;
+        fib1 = fibM;
+        fibM = fib2 + fib1;
     }
-  }
-}
-
-function dfs(graph, node) {
-  stack.push(node);
-  onStack[node] = true;
-  ids[node] = lows[node] = id++;
-
-  for (let neighbor of graph.adjList.get(node)) {
-    if (ids[neighbor] === undefined) {
-      dfs(graph, neighbor);
+  
+    let offset = -1;
+  
+    // Perform the search
+    while (fibM > 1) {
+        // Check if fibM-2 is a valid index
+        const i = Math.min(offset + fib2, n - 1);
+  
+        // If the element at index i is greater than the target
+        if (arr[i] > target) {
+            fibM = fib2;
+            fib1 = fib1 - fib2;
+            fib2 = fibM - fib1;
+        }
+ 
+        // If the element at index i is smaller than the target
+        else if (arr[i] < target) {
+            fibM = fib1;
+            fib1 = fib2;
+            fib2 = fibM - fib1;
+            offset = i;
+        }
+ 
+        // Element found
+        else return i;
     }
-    if (onStack[neighbor]) {
-      lows[node] = Math.min(lows[node], lows[neighbor]);
+  
+    // If the element was not found
+    if (fib1 === 1 && arr[offset + 1] === target) {
+        return offset + 1;
     }
-  }
-
-  if (ids[node] === lows[node]) {
-    let scc = [];
-
-    let w;
-    do {
-      w = stack.pop();
-      onStack[w] = false;
-      scc.push(w);
-    } while (w !== node);
-
-    sccs.push(scc);
-  }
+  
+    // Element not found
+    return -1;
 }
-let nodes = ["A", "B", "C", "D", "E", "F", "G"];
-let graph = new Graph(nodes);
+const arr = [2, 6, 13, 25, 36, 42, 55, 63, 77, 82, 95];
+const target = 36;
+const n = arr.length;
 
-graph.addEdge("A", "B");
-graph.addEdge("B", "C");
-graph.addEdge("C", "A");
-graph.addEdge("C", "D");
-graph.addEdge("D", "E");
-graph.addEdge("E", "F");
-graph.addEdge("F", "D");
-graph.addEdge("G", "E");
-graph.addEdge("G", "F");
-
-tarjanSCC(graph);
-
-console.log(sccs);
-[ [ 'A', 'B', 'C' ], [ 'D', 'F', 'E' ], [ 'G' ] ]
+const index = fibonacciSearch(arr, target, n);
+console.log(index); // Output: 4 (the index of target in the array)
