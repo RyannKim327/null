@@ -1,34 +1,25 @@
-function mergeSort(array) {
-  if (array.length <= 1) {
-    return array;
-  }
-
-  const middle = Math.floor(array.length / 2);
-  const left = mergeSort(array.slice(0, middle));
-  const right = mergeSort(array.slice(middle));
-
-  return merge(left, right);
-}
-
-function merge(left, right) {
-  let result = [];
-  let leftIndex = 0;
-  let rightIndex = 0;
-
-  while (leftIndex < left.length && rightIndex < right.length) {
-    if (left[leftIndex] < right[rightIndex]) {
-      result.push(left[leftIndex]);
-      leftIndex++;
-    } else {
-      result.push(right[rightIndex]);
-      rightIndex++;
+function bubbleSort(arr) {
+  let len = arr.length;
+  let swapped;
+  
+  do {
+    swapped = false;
+    
+    for (let i = 0; i < len-1; i++) {
+      if (arr[i] > arr[i + 1]) {
+        let temp = arr[i];
+        arr[i] = arr[i + 1];
+        arr[i + 1] = temp;
+        swapped = true;
+      }
     }
-  }
-
-  return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+    len--;
+  } while (swapped);
+  
+  return arr;
 }
 
 // Example usage:
-const unsortedArray = [6, 5, 3, 1, 8, 7, 2, 4];
-const sortedArray = mergeSort(unsortedArray);
-console.log(sortedArray);
+let array = [5, 3, 8, 2, 1, 4];
+console.log("Before sorting: " + array);
+console.log("After sorting: " + bubbleSort(array));
