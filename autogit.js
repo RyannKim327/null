@@ -1,18 +1,15 @@
-function findMedianSortedArrays(nums1, nums2) {
-  const combinedArray = nums1.concat(nums2);
-  combinedArray.sort((a, b) => a - b);
+// Make a GET request to an API endpoint
+fetch('https://api.example.com/data')
+  .then(response => response.json()) // Parse response as JSON
+  .then(data => {
+    // Use the data received from the API
+    console.log(data);
 
-  const length = combinedArray.length;
-  const middle = Math.floor(length / 2);
-
-  if (length % 2 === 0) {
-    return (combinedArray[middle - 1] + combinedArray[middle]) / 2;
-  } else {
-    return combinedArray[middle];
-  }
-}
-const nums1 = [1, 3];
-const nums2 = [2, 4];
-
-const median = findMedianSortedArrays(nums1, nums2);
-console.log(median); // Output: 2.5
+    // Display the data on a webpage
+    const resultElement = document.getElementById('result');
+    resultElement.textContent = JSON.stringify(data);
+  })
+  .catch(error => {
+    // Handle any errors that occurred while fetching the data
+    console.log('Error:', error);
+  });
