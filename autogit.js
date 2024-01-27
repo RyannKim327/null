@@ -1,23 +1,19 @@
-function largestPrimeFactor(num) {
-  let largestFactor = 1;
-
-  // Iterate from 2 to square root of num
-  for (let i = 2; i * i <= num; i++) {
-    while (num % i === 0) {
-      if (i > largestFactor) {
-        largestFactor = i;
-      }
-
-      num /= i;
-    }
+let array = [1, 6, 3, 9, 2, 5];
+let max = Math.max(...array);
+console.log(max); // Output: 9
+let array = [1, 6, 3, 9, 2, 5];
+let max = Math.max.apply(null, array);
+console.log(max); // Output: 9
+let array = [1, 6, 3, 9, 2, 5];
+let max = array[0];
+for (let i = 1; i < array.length; i++) {
+  if (array[i] > max) {
+    max = array[i];
   }
-
-  if (num > largestFactor) {
-    largestFactor = num;
-  }
-
-  return largestFactor;
 }
-
-// Usage example
-console.log(largestPrimeFactor(123456789));  // Output: 3803
+console.log(max); // Output: 9
+let array = [1, 6, 3, 9, 2, 5];
+let max = array.reduce(function(a, b) {
+  return Math.max(a, b);
+});
+console.log(max); // Output: 9
