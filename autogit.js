@@ -1,71 +1,41 @@
-function tarjanSCC(graph) {
-  const indices = [];
-  const lowLink = [];
-}
-function tarjanSCC(graph) {
-  const indices = [];
-  const lowLink = [];
-  const stack = [];
-}
-function tarjanSCC(graph) {
-  const indices = [];
-  const lowLink = [];
-  const stack = [];
-  const result = [];
-}
-function tarjanSCC(graph) {
-  const indices = [];
-  const lowLink = [];
-  const stack = [];
-  const result = [];
-
-  function strongConnect(node) {
-    indices[node] = indices.length;
-    lowLink[node] = indices[node];
-    stack.push(node);
-
-    for (const neighbor of graph[node]) {
-      if (!indices[neighbor]) {
-        strongConnect(neighbor);
-        lowLink[node] = Math.min(lowLink[node], lowLink[neighbor]);
-      } else if (stack.includes(neighbor)) {
-        lowLink[node] = Math.min(lowLink[node], indices[neighbor]);
-      }
-    }
-
-    if (lowLink[node] === indices[node]) {
-      const component = [];
-      let currentNode;
-      do {
-        currentNode = stack.pop();
-        component.push(currentNode);
-      } while (currentNode !== node);
-      result.push(component);
-    }
+class Graph {
+  constructor() {
+    this.adjList = {};
   }
 
-  // Loop through all nodes in the graph
-  for (let node = 0; node < graph.length; node++) {
-    if (!indices[node]) {
-      strongConnect(node);
-    }
+  addVertex(vertex) {
+    this.adjList[vertex] = [];
   }
 
-  return result;
+  addEdge(source, destination) {
+    this.adjList[source].push(destination);
+  }
 }
-const graph = [
-  [1],
-  [2, 4],
-  [0, 5],
-  [6],
-  [2, 10],
-  [3, 7],
-  [5],
-  [6, 8],
-  [7, 9],
-  [8, 10],
-  [9, 4],
-];
+function dfs(graph, startVertex, visited = {}) {
+  console.log(startVertex);
+  visited[startVertex] = true;
 
-const stronglyConnectedComponents = tarjanSCC(graph);
-console.log(stronglyConnectedComponents);
+  for (const neighbor of graph.adjList[startVertex]) {
+    if (!visited[neighbor]) {
+      dfs(graph, neighbor, visited);
+    }
+  }
+}
+const graph = new Graph();
+
+// Add vertices
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addVertex('E');
+
+// Add edges
+graph.addEdge('A', 'B');
+graph.addEdge('B', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('C', 'E');
+graph.addEdge('D', 'E');
+
+// Perform DFS
+dfs(graph, 'A');
