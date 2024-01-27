@@ -1,30 +1,26 @@
-function hasCycle(head) {
-  let slow = head;
-  let fast = head;
+function longestCommonPrefix(strings) {
+  if (strings.length === 0) {
+    return '';
+  }
+  
+  let prefix = '';
+  const firstString = strings[0];
 
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
-    
-    if (slow === fast) {
-      return true; // Cycle detected
+  for (let i = 0; i < firstString.length; i++) {
+    const char = firstString[i];
+
+    for (let j = 1; j < strings.length; j++) {
+      if (i >= strings[j].length || strings[j][i] !== char) {
+        return prefix;
+      }
     }
+
+    prefix += char;
   }
 
-  return false; // No cycle
-}
-class ListNode {
-  constructor(value, next) {
-    this.value = value;
-    this.next = next;
-  }
+  return prefix;
 }
 
-// Create a linked list with a cycle
-const node4 = new ListNode(4, null);
-const node3 = new ListNode(3, node4);
-const node2 = new ListNode(2, node3);
-const node1 = new ListNode(1, node2);
-node4.next = node2; // Creating a cycle
-
-console.log(hasCycle(node1)); // true, cycle exists
+// Example usage:
+const strings = ['flower', 'flow', 'flight'];
+console.log(longestCommonPrefix(strings)); // Output: 'fl'
