@@ -1,13 +1,25 @@
-function randomSort(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
+function isPalindromeLinkedList(head) {
+  const values = [];
+  let node = head;
+
+  // Traverse the linked list and store the values in an array
+  while (node !== null) {
+    values.push(node.value);
+    node = node.next;
   }
-  return arr;
+
+  let start = 0;
+  let end = values.length - 1;
+
+  // Check if the list is a palindrome
+  while (start < end) {
+    if (values[start] !== values[end]) {
+      return false;
+    }
+
+    start++;
+    end--;
+  }
+
+  return true;
 }
-
-// Example usage:
-const numbers = [1, 2, 3, 4, 5];
-const sortedNumbers = randomSort(numbers);
-
-console.log(sortedNumbers);
