@@ -1,31 +1,62 @@
-function findMajorityElement(array) {
-  const frequency = {};
+function interpolationSearch(arr, target) {
+  // ...
+}
+function interpolationSearch(arr, target) {
+  let low = 0;
+  let high = arr.length - 1;
+  // ...
+}
+function interpolationSearch(arr, target) {
+  let low = 0;
+  let high = arr.length - 1;
 
-  // Count the frequency of each element
-  for (let i = 0; i < array.length; i++) {
-    const element = array[i];
-    frequency[element] = (frequency[element] || 0) + 1;
+  while (low <= high && target >= arr[low] && target <= arr[high]) {
+    // ...
   }
+}
+function interpolationSearch(arr, target) {
+  let low = 0;
+  let high = arr.length - 1;
 
-  // Find the element with the highest frequency
-  let majorityElement;
-  let maxFrequency = 0;
-  for (const element in frequency) {
-    if (frequency[element] > maxFrequency) {
-      majorityElement = element;
-      maxFrequency = frequency[element];
+  while (low <= high && target >= arr[low] && target <= arr[high]) {
+    const pos = low + Math.floor(((target - arr[low]) / (arr[high] - arr[low])) * (high - low));
+
+    // ...
+  }
+}
+function interpolationSearch(arr, target) {
+  let low = 0;
+  let high = arr.length - 1;
+
+  while (low <= high && target >= arr[low] && target <= arr[high]) {
+    const pos = low + Math.floor(((target - arr[low]) / (arr[high] - arr[low])) * (high - low));
+
+    if (arr[pos] === target) {
+      return pos;
+    }
+
+    // ...
+  }
+}
+function interpolationSearch(arr, target) {
+  let low = 0;
+  let high = arr.length - 1;
+
+  while (low <= high && target >= arr[low] && target <= arr[high]) {
+    const pos = low + Math.floor(((target - arr[low]) / (arr[high] - arr[low])) * (high - low));
+
+    if (arr[pos] === target) {
+      return pos;
+    } else if (arr[pos] < target) {
+      low = pos + 1;
+    } else {
+      high = pos - 1;
     }
   }
 
-  // Check if it is a majority element
-  if (maxFrequency > array.length / 2) {
-    return majorityElement;
-  }
-
-  return null;
+  return -1; // Return -1 if the target value is not found
 }
+const arr = [1, 3, 5, 7, 9, 11, 13];
+const target = 9;
 
-// Example usage
-const array = [1, 2, 2, 3, 2, 4, 2];
-const majorityElement = findMajorityElement(array);
-console.log(majorityElement); // Output: 2
+console.log(interpolationSearch(arr, target)); // Output: 4 (index of target value in the array)
