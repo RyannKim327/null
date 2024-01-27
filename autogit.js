@@ -1,8 +1,3 @@
-function removeVowels(str) {
-  return str.replace(/[aeiou]/gi, '');
-}
-
-// Example usage
-const inputString = 'Hello, World!';
-const result = removeVowels(inputString);
-console.log(result); // Output: Hll, Wrld!
+const numbers = [6, 2, 9, 4, 7];
+const max = Math.max(...numbers);
+console.log(max); // Output: 9
