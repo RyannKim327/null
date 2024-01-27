@@ -1,54 +1,38 @@
-function bidirectionalSearch(graph, startNode, endNode) {
-  // Initialize sets
-  const startSet = new Set();
-  const endSet = new Set();
-  startSet.add(startNode);
-  endSet.add(endNode);
-
-  // Keep track of visited nodes
-  const visited = new Set();
-
-  // Perform the search
-  while (startSet.size > 0 && endSet.size > 0) {
-    // Expand search from start node
-    const startPath = expandSearch(graph, startSet, visited);
-    if (startPath) {
-      return startPath.concat(expandSearch(graph, endSet, visited).reverse());
+function radixSort(arr) {
+  const getMaxDigits = (arr) => {
+    let maxDigits = 0;
+    for (let i = 0; i < arr.length; i++) {
+      maxDigits = Math.max(maxDigits, String(arr[i]).length);
     }
+    return maxDigits;
+  };
 
-    // Expand search from end node
-    const endPath = expandSearch(graph, endSet, visited);
-    if (endPath) {
-      return endPath.concat(expandSearch(graph, startSet, visited).reverse());
+  const distributeElements = (arr, digit) => {
+    const buckets = Array.from({ length: 10 }, () => []);
+    for (let i = 0; i < arr.length; i++) {
+      const digitValue = Math.floor(arr[i] / Math.pow(10, digit)) % 10;
+      buckets[digitValue].push(arr[i]);
     }
+    return buckets;
+  };
+
+  const collectElements = (buckets) => {
+    const newArr = [];
+    for (let i = 0; i < buckets.length; i++) {
+      newArr.push(...buckets[i]);
+    }
+    return newArr;
+  };
+
+  const maxDigits = getMaxDigits(arr);
+  for (let i = 0; i < maxDigits; i++) {
+    const buckets = distributeElements(arr, i);
+    arr = collectElements(buckets);
   }
 
-  // Path not found
-  return null;
+  return arr;
 }
 
-function expandSearch(graph, set, visited) {
-  const node = set.values().next().value;
-  set.delete(node);
-
-  for (const adjacentNode of graph[node]) {
-    if (visited.has(adjacentNode)) continue;
-    visited.add(adjacentNode);
-    set.add(adjacentNode);
-  }
-
-  return node;
-}
-
-// Example usage
-const graph = {
-  A: ["B", "C"],
-  B: ["A", "D", "E"],
-  C: ["A", "F"],
-  D: ["B"],
-  E: ["B", "F"],
-  F: ["C", "E"],
-};
-
-const shortestPath = bidirectionalSearch(graph, "A", "F");
-console.log(shortestPath); // Output: ["A", "C", "F"]
+// Example usage:
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+console.log(radixSort(arr));
