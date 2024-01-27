@@ -1,20 +1,18 @@
-function interpolationSearch(arr, target, start = 0) {
-  let end = arr.length - 1;
+const CronJob = require('cron').CronJob;
 
-  while (start <= end && target >= arr[start] && target <= arr[end]) {
-    let pos = start + Math.floor(((target - arr[start]) / (arr[end] - arr[start])) * (end - start));
-    
-    if (arr[pos] === target)
-      return pos;
+// Define the cron schedule
+const cronExpression = '0 * * * *'; // every hour
 
-    if (arr[pos] < target)
-      start = pos + 1;
-    else
-      end = pos - 1;
-  }
-  
-  return -1;
+// Function to be executed by the cron job
+function myCronFunction() {
+  console.log('Cron job executed!');
+  // Add your desired functionality here
 }
-const arr = [1, 3, 5, 7, 9, 11];
-console.log(interpolationSearch(arr, 7)); // Output: 3 (index of 7 in the array)
-console.log(interpolationSearch(arr, 4)); // Output: -1 (4 is not present in the array)
+
+// Create a new cron job
+const cronJob = new CronJob(cronExpression, myCronFunction);
+
+// Start the cron job
+cronJob.start();
+
+console.log('Cron job scheduled!');
