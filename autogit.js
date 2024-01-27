@@ -1,31 +1,43 @@
-class ListNode {
+class Node {
   constructor(data) {
     this.data = data;
     this.next = null;
   }
 }
 
-function findMiddleElement(head) {
-  if (!head) {
-    return null;
+class LinkedList {
+  constructor() {
+    this.head = null;
   }
 
-  let slowPtr = head;
-  let fastPtr = head;
-
-  while (fastPtr && fastPtr.next) {
-    slowPtr = slowPtr.next;
-    fastPtr = fastPtr.next.next;
+  add(data) {
+    const newNode = new Node(data);
+    if (this.head === null) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
   }
 
-  return slowPtr.data;
+  getLength() {
+    let count = 0;
+    let current = this.head;
+    while (current) {
+      count++;
+      current = current.next;
+    }
+    return count;
+  }
 }
 
 // Example usage:
-const list = new ListNode(1);
-list.next = new ListNode(2);
-list.next.next = new ListNode(3);
-list.next.next.next = new ListNode(4);
-list.next.next.next.next = new ListNode(5);
-
-console.log(findMiddleElement(list)); // Output: 3
+const linkedList = new LinkedList();
+linkedList.add(1);
+linkedList.add(2);
+linkedList.add(3);
+linkedList.add(4);
+console.log(linkedList.getLength()); // Output: 4
