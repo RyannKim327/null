@@ -1,37 +1,37 @@
-function mergeSort(arr) {
-  if (arr.length <= 1) {
-    return arr;
+function findLongestCommonSubstring(str1, str2) {
+  // Initialize a 2-dimensional array to store the lengths of common substrings
+  const matrix = Array(str1.length + 1);
+
+  for (let i = 0; i <= str1.length; i++) {
+    matrix[i] = Array(str2.length + 1).fill(0);
   }
-  
-  // Splitting the array into two halves
-  const mid = Math.floor(arr.length / 2);
-  const left = arr.slice(0, mid);
-  const right = arr.slice(mid);
 
-  // Recursively sorting the two halves
-  const sortedLeft = mergeSort(left);
-  const sortedRight = mergeSort(right);
+  let maxLength = 0; // Length of the longest common substring
+  let endIndex = 0; // Ending index of the longest common substring
 
-  // Merging the two sorted halves
-  return merge(sortedLeft, sortedRight);
-}
+  for (let i = 1; i <= str1.length; i++) {
+    for (let j = 1; j <= str2.length; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        matrix[i][j] = matrix[i - 1][j - 1] + 1;
 
-function merge(left, right) {
-  let result = [];
-
-  while (left.length && right.length) {
-    if (left[0] < right[0]) {
-      result.push(left.shift());
-    } else {
-      result.push(right.shift());
+        if (matrix[i][j] > maxLength) {
+          maxLength = matrix[i][j];
+          endIndex = i - 1; // Update the ending index
+        }
+      } else {
+        matrix[i][j] = 0;
+      }
     }
   }
 
-  // Concatenating the remaining elements if any
-  return [...result, ...left, ...right];
+  // Extract the longest common substring using the ending index and maximum length
+  const longestCommonSubstring = str1.substr(endIndex - maxLength + 1, maxLength);
+  return longestCommonSubstring;
 }
 
-// Usage example:
-const array = [8, 4, 2, 9, 1, 5, 7, 3, 6];
-const sortedArray = mergeSort(array);
-console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+// Example usage:
+const str1 = "abcdefg";
+const str2 = "xyzcdef";
+
+const longestSubstring = findLongestCommonSubstring(str1, str2);
+console.log(longestSubstring); // Output: "cdef"
