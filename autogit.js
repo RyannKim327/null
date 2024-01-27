@@ -1,16 +1,22 @@
-function decimalToBinary(decimal) {
-  // Check if the input is a valid number
-  if (isNaN(decimal) || !isFinite(decimal)) {
-    return "Invalid input, please provide a number.";
-  }
-
-  // Convert decimal to binary using toString() method
-  const binary = decimal.toString(2);
-
-  return binary;
+function bubbleSort(arr) {
+  var len = arr.length;
+  var swapped;
+  
+  do {
+    swapped = false;
+    for (var i = 0; i < len - 1; i++) {
+      if (arr[i] > arr[i + 1]) {
+        // Swap elements using a temporary variable
+        var temp = arr[i];
+        arr[i] = arr[i + 1];
+        arr[i + 1] = temp;
+        swapped = true;
+      }
+    }
+    len--;
+  } while (swapped);
+  
+  return arr;
 }
-
-// Example usage
-const decimal = 10;
-const binary = decimalToBinary(decimal);
-console.log(binary); // Output: "1010"
+var arr = [4, 2, 7, 1, 3];
+console.log(bubbleSort(arr)); // Output: [1, 2, 3, 4, 7]
