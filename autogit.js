@@ -1,43 +1,44 @@
-function mergeSort(array) {
-  // If the array is empty or only has one element, it is already sorted
-  if (array.length <= 1) {
-    return array;
+function findLongestCommonSubsequence(str1, str2) {
+  const m = str1.length;
+  const n = str2.length;
+
+  // Create a memoization table to store the lengths of common subsequences
+  const dp = new Array(m + 1);
+  for (let i = 0; i <= m; i++) {
+    dp[i] = new Array(n + 1).fill(0);
   }
 
-  // Split the array into two halves
-  const middle = Math.floor(array.length / 2);
-  const leftHalf = array.slice(0, middle);
-  const rightHalf = array.slice(middle);
-
-  // Recursively sort the two halves
-  const sortedLeft = mergeSort(leftHalf);
-  const sortedRight = mergeSort(rightHalf);
-
-  // Merge the sorted halves
-  return merge(sortedLeft, sortedRight);
-}
-
-function merge(left, right) {
-  let result = [];
-  let leftIndex = 0;
-  let rightIndex = 0;
-
-  // Compare elements from left and right arrays and merge them in sorted order
-  while (leftIndex < left.length && rightIndex < right.length) {
-    if (left[leftIndex] <= right[rightIndex]) {
-      result.push(left[leftIndex]);
-      leftIndex++;
-    } else {
-      result.push(right[rightIndex]);
-      rightIndex++;
+  // Fill the memoization table
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+      }
     }
   }
 
-  // Concatenate the remaining elements from either left or right array
-  return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+  // Construct the longest common subsequence string
+  let i = m, j = n;
+  const lcs = [];
+  while (i > 0 && j > 0) {
+    if (str1[i - 1] === str2[j - 1]) {
+      lcs.unshift(str1[i - 1]);
+      i--;
+      j--;
+    } else if (dp[i - 1][j] > dp[i][j - 1]) {
+      i--;
+    } else {
+      j--;
+    }
+  }
+
+  return lcs.join('');
 }
 
 // Example usage:
-const array = [9, 4, 6, 2, 8, 5, 1, 7, 3];
-const sortedArray = mergeSort(array);
-console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+const str1 = 'ABCDGH';
+const str2 = 'AEDFHR';
+const lcs = findLongestCommonSubsequence(str1, str2);
+console.log(lcs); // Output: ADH
