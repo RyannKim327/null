@@ -1,77 +1,22 @@
-function rabinKarp(pattern, text) {
-   // Implementation goes here
+const array = [1, 2, 3, 2, 4, 1, 5];
+const uniqueArray = [...new Set(array)];
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 3, 2, 4, 1, 5];
+const uniqueArray = array.filter((value, index, arr) => arr.indexOf(value) === index);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 3, 2, 4, 1, 5];
+const uniqueArray = array.reduce((accumulator, value) => {
+  if (!accumulator.includes(value)) {
+    accumulator.push(value);
+  }
+  return accumulator;
+}, []);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 3, 2, 4, 1, 5];
+const uniqueArray = [];
+for (let i = 0; i < array.length; i++) {
+  if (uniqueArray.indexOf(array[i]) === -1) {
+    uniqueArray.push(array[i]);
+  }
 }
-function rabinKarp(pattern, text) {
-   const patternLength = pattern.length;
-   const textLength = text.length;
-   
-   // Calculate the hash value of the pattern
-   let patternHash = 0;
-   let textHash = 0;
-   const prime = 31; // A prime number used to calculate hash
-   const modulus = 1e9 + 9; // A large prime number used for modulus
-   
-   for (let i = 0; i < patternLength; i++) {
-      patternHash = (patternHash * prime + pattern.charCodeAt(i)) % modulus;
-   }
-   
-   // Implementation continues...
-}
-function rabinKarp(pattern, text) {
-   const patternLength = pattern.length;
-   const textLength = text.length;
-   
-   let patternHash = 0;
-   let textHash = 0;
-   const prime = 31;
-   const modulus = 1e9 + 9;
-   
-   for (let i = 0; i < patternLength; i++) {
-      patternHash = (patternHash * prime + pattern.charCodeAt(i)) % modulus;
-      textHash = (textHash * prime + text.charCodeAt(i)) % modulus;
-   }
-   
-   // Implementation continues...
-}
-function rabinKarp(pattern, text) {
-   const patternLength = pattern.length;
-   const textLength = text.length;
-   
-   let patternHash = 0;
-   let textHash = 0;
-   const prime = 31;
-   const modulus = 1e9 + 9;
-   
-   for (let i = 0; i < patternLength; i++) {
-      patternHash = (patternHash * prime + pattern.charCodeAt(i)) % modulus;
-      textHash = (textHash * prime + text.charCodeAt(i)) % modulus;
-   }
-   
-   for (let i = 0; i <= textLength - patternLength; i++) {
-      if (patternHash === textHash) {
-         let j;
-         for (j = 0; j < patternLength; j++) {
-            if (text[i + j] !== pattern[j]) {
-               break;
-            }
-         }
-         
-         if (j === patternLength) {
-            console.log(`Pattern found at index ${i}`);
-         }
-      }
-      
-      if (i < textLength - patternLength) {
-         // Calculate the hash for the next substring
-         textHash = (prime * (textHash - text.charCodeAt(i) * Math.pow(prime, patternLength - 1)) +
-                     text.charCodeAt(i + patternLength)) % modulus;
-         if (textHash < 0) {
-            textHash += modulus;
-         }
-      }
-   }
-}
-const pattern = "abc";
-const text = "ababcabcabababd";
-
-rabinKarp(pattern, text);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
