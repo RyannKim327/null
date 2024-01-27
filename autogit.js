@@ -1,28 +1,29 @@
-function getLinkedListLength(head) {
-  let current = head;
-  let length = 0;
-
-  while (current !== null) {
-    length++;
-    current = current.next; // Move to the next node
-  }
-
-  return length;
-}
-// Define Node class
 class Node {
-  constructor(data) {
-    this.data = data;
+  constructor(value) {
+    this.value = value;
     this.next = null;
   }
 }
+let head = new Node(1);
+let second = new Node(2);
+let third = new Node(3);
 
-// Create a linked list
-const head = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
+head.next = second;
+second.next = third;
+let prev = null;
+let current = head;
+let next = null;
 
-head.next = node2;
-node2.next = node3;
+while (current !== null) {
+  next = current.next;
+  current.next = prev;
+  prev = current;
+  current = next;
+}
 
-console.log(getLinkedListLength(head)); // Output: 3
+head = prev;
+let currentNode = head;
+while (currentNode !== null) {
+  console.log(currentNode.value);
+  currentNode = currentNode.next;
+}
