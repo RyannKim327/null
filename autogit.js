@@ -1,22 +1,28 @@
-function findFirstNonRepeatingCharacter(str) {
-  const charCount = {};
-
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
-  }
-
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    if (charCount[char] === 1) {
-      return char;
-    }
-  }
-
-  return null;
+function reverseString(str) {
+  return str.split('').reverse().join('');
 }
 
-// Example usage
-const input = "hello";
-const firstNonRepeatingChar = findFirstNonRepeatingCharacter(input);
-console.log(firstNonRepeatingChar);  // Output: 'h'
+console.log(reverseString('Hello, World!')); // Output: "!dlroW ,olleH"
+function reverseString(str) {
+  let reversedString = '';
+  for (let i = str.length - 1; i >= 0; i--) {
+    reversedString += str[i];
+  }
+  return reversedString;
+}
+
+console.log(reverseString('Hello, World!')); // Output: "!dlroW ,olleH"
+function reverseString(str) {
+  return Array.from(str).reverse().join('');
+}
+
+console.log(reverseString('Hello, World!')); // Output: "!dlroW ,olleH"
+function reverseString(str) {
+  if (str === '') {
+    return '';
+  } else {
+    return reverseString(str.substr(1)) + str.charAt(0);
+  }
+}
+
+console.log(reverseString('Hello, World!')); // Output: "!dlroW ,olleH"
