@@ -1,71 +1,67 @@
-class Node {
-  constructor(state, parent, action, cost, heuristic) {
-    this.state = state;
-    this.parent = parent;
-    this.action = action;
-    this.cost = cost;
-    this.heuristic = heuristic;
-    this.totalCost = cost + heuristic;
+function interpolationSearch(arr, target, low, high) {
+  // ...
+}
+function interpolationSearch(arr, target, low, high) {
+  if (low <= high && target >= arr[low] && target <= arr[high]) {
+    // ...
+  } else {
+    return -1;
   }
 }
-
-function AStarSearch(startState, goalState, heuristicFn) {
-  const openQueue = new PriorityQueue();
-  const closedSet = new Set();
-
-  const startNode = new Node(startState, null, null, 0, heuristicFn(startState));
-  openQueue.enqueue(startNode);
-
-  while (!openQueue.isEmpty()) {
-    const currentNode = openQueue.dequeue();
-
-    if (currentNode.state === goalState) {
-      return getPath(currentNode);
-    }
-
-    closedSet.add(currentNode.state);
-
-    const successors = generateSuccessors(currentNode.state);
-    for (const successor of successors) {
-      if (closedSet.has(successor.state)) {
-        continue;
-      }
-
-      const newCost = currentNode.cost + successor.cost;
-      const existingNode = openQueue.find(node => node.state === successor.state);
-      if (!existingNode || newCost < existingNode.cost) {
-        const newNode = new Node(
-          successor.state,
-          currentNode,
-          successor.action,
-          newCost,
-          heuristicFn(successor.state)
-        );
-
-        if (!existingNode) {
-          openQueue.enqueue(newNode);
-        } else {
-          openQueue.update(existingNode, newNode);
-        }
-      }
-    }
-  }
-
-  return null;
+function interpolationSearch(arr, target, low, high) {
+  // Calculate the position of the target element in the array
+  // relative to the search range using interpolation formula
+  let position = Math.floor(
+    low + ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])
+  );
+  
+  // ...
 }
-
-function getPath(node) {
-  const path = [];
-  while (node) {
-    path.unshift(node.action);
-    node = node.parent;
+function interpolationSearch(arr, target, low, high) {
+  let position = Math.floor(
+    low + ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])
+  );
+  
+  if (arr[position] === target) {
+    return position;
   }
-  return path;
+  
+  // ...
 }
+function interpolationSearch(arr, target, low, high) {
+  let position = Math.floor(
+    low + ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])
+  );
+  
+  if (arr[position] === target) {
+    return position;
+  } else if (arr[position] > target) {
+    return interpolationSearch(arr, target, low, position - 1);
+  }
+  
+  // ...
+}
+function interpolationSearch(arr, target, low, high) {
+  let position = Math.floor(
+    low + ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])
+  );
+  
+  if (arr[position] === target) {
+    return position;
+  } else if (arr[position] > target) {
+    return interpolationSearch(arr, target, low, position - 1);
+  } else {
+    return interpolationSearch(arr, target, position + 1, high);
+  }
+}
+const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
+const target = 11;
+const low = 0;
+const high = arr.length - 1;
 
-// Sample usage:
-const startState = // initial state;
-const goalState = // goal state;
-const heuristicFn = // heuristic function;
-const result = AStarSearch(startState, goalState, heuristicFn);
-console.log(result);
+const result = interpolationSearch(arr, target, low, high);
+if (result === -1) {
+  console.log("Element not found");
+} else {
+  console.log("Element found at index", result);
+}
