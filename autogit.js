@@ -1,59 +1,37 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+function mergeSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
   }
+  
+  // Splitting the array into two halves
+  const mid = Math.floor(arr.length / 2);
+  const left = arr.slice(0, mid);
+  const right = arr.slice(mid);
+
+  // Recursively sorting the two halves
+  const sortedLeft = mergeSort(left);
+  const sortedRight = mergeSort(right);
+
+  // Merging the two sorted halves
+  return merge(sortedLeft, sortedRight);
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-  }
+function merge(left, right) {
+  let result = [];
 
-  append(value) {
-    const newNode = new Node(value);
-
-    if (!this.head) {
-      this.head = newNode;
-      this.tail = newNode;
+  while (left.length && right.length) {
+    if (left[0] < right[0]) {
+      result.push(left.shift());
     } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
+      result.push(right.shift());
     }
   }
 
-  prepend(value) {
-    const newNode = new Node(value);
-
-    if (!this.head) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      newNode.next = this.head;
-      this.head = newNode;
-    }
-  }
-
-  print() {
-    const values = [];
-    let current = this.head;
-
-    while (current) {
-      values.push(current.value);
-      current = current.next;
-    }
-
-    console.log(values.join(' -> '));
-  }
+  // Concatenating the remaining elements if any
+  return [...result, ...left, ...right];
 }
 
 // Usage example:
-const list = new LinkedList();
-
-list.append(1);
-list.append(2);
-list.append(3);
-list.prepend(0);
-
-list.print(); // Output: 0 -> 1 -> 2 -> 3
+const array = [8, 4, 2, 9, 1, 5, 7, 3, 6];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
