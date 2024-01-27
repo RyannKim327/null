@@ -1,71 +1,36 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function rabinKarp(text, pattern) {
+  if (text.length === 0 || pattern.length === 0) {
+    return [];
   }
+
+  const prime = 101; // Choose any suitable prime number
+
+  function hash(str, length) {
+    let hashValue = 0;
+    for (let i = 0; i < length; i++) {
+      hashValue += str.charCodeAt(i) * Math.pow(prime, i);
+    }
+    return hashValue;
+  }
+
+  const patternHash = hash(pattern, pattern.length);
+  let textHash = hash(text, pattern.length);
+
+  const result = [];
+  for (let i = 0; i <= text.length - pattern.length; i++) {
+    if (textHash === patternHash && text.slice(i, i + pattern.length) === pattern) {
+      result.push(i);
+    }
+    textHash -= text.charCodeAt(i);
+    textHash /= prime;
+    textHash += text.charCodeAt(i + pattern.length) * Math.pow(prime, pattern.length - 1);
+  }
+
+  return result;
 }
+const text = "abcabcabcdef";
+const pattern = "abc";
 
-class BinaryTree {
-  constructor() {
-    this.root = null;
-  }
+const matches = rabinKarp(text, pattern);
 
-  insert(value) {
-    const newNode = new Node(value);
-
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
-
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
-
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
-    }
-
-    if (value === node.value) {
-      return true;
-    }
-
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else {
-      return this.searchNode(node.right, value);
-    }
-  }
-}
-
-// Example usage:
-const tree = new BinaryTree();
-
-tree.insert(10);
-tree.insert(5);
-tree.insert(15);
-tree.insert(2);
-tree.insert(7);
-
-console.log(tree.search(7)); // Output: true
-console.log(tree.search(20)); // Output: false
+console.log(matches); // Output: [0, 3, 6]
