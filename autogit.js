@@ -1,23 +1,18 @@
-function binarySearchRecursive(arr, target, start, end) {
-  if (start > end) {
-    return -1;
+function bubbleSort(arr) {
+  var len = arr.length;
+  for (var i = 0; i < len - 1; i++) {
+    for (var j = 0; j < len - 1 - i; j++) {
+      if (arr[j] > arr[j + 1]) {
+        var temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
+      }
+    }
   }
-
-  const middle = Math.floor((start + end) / 2);
-
-  if (arr[middle] === target) {
-    return middle;
-  }
-
-  if (arr[middle] < target) {
-    return binarySearchRecursive(arr, target, middle + 1, end);
-  } else {
-    return binarySearchRecursive(arr, target, start, middle - 1);
-  }
+  return arr;
 }
 
-// Example usage:
-const array = [2, 4, 7, 10, 12, 15, 21, 23];
-const target = 10;
-const index = binarySearchRecursive(array, target, 0, array.length - 1);
-console.log(index); // Output: 3 (index of target value 10 in the array)
+// Usage example:
+var array = [5, 2, 6, 1, 3, 9];
+console.log("Original Array: " + array);
+console.log("Sorted Array: " + bubbleSort(array));
