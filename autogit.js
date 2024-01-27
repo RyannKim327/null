@@ -1,62 +1,27 @@
-function interpolationSearch(arr, target) {
-  // ...
-}
-function interpolationSearch(arr, target) {
-  let low = 0;
-  let high = arr.length - 1;
-  // ...
-}
-function interpolationSearch(arr, target) {
-  let low = 0;
-  let high = arr.length - 1;
-
-  while (low <= high && target >= arr[low] && target <= arr[high]) {
-    // ...
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
-function interpolationSearch(arr, target) {
-  let low = 0;
-  let high = arr.length - 1;
 
-  while (low <= high && target >= arr[low] && target <= arr[high]) {
-    const pos = low + Math.floor(((target - arr[low]) / (arr[high] - arr[low])) * (high - low));
-
-    // ...
+function maxDepth(root) {
+  if (root === null) {
+    return 0;
   }
+  
+  const leftDepth = maxDepth(root.left);
+  const rightDepth = maxDepth(root.right);
+
+  return Math.max(leftDepth, rightDepth) + 1;
 }
-function interpolationSearch(arr, target) {
-  let low = 0;
-  let high = arr.length - 1;
 
-  while (low <= high && target >= arr[low] && target <= arr[high]) {
-    const pos = low + Math.floor(((target - arr[low]) / (arr[high] - arr[low])) * (high - low));
+// Example usage:
+const root = new Node(3);
+root.left = new Node(9);
+root.right = new Node(20);
+root.right.left = new Node(15);
+root.right.right = new Node(7);
 
-    if (arr[pos] === target) {
-      return pos;
-    }
-
-    // ...
-  }
-}
-function interpolationSearch(arr, target) {
-  let low = 0;
-  let high = arr.length - 1;
-
-  while (low <= high && target >= arr[low] && target <= arr[high]) {
-    const pos = low + Math.floor(((target - arr[low]) / (arr[high] - arr[low])) * (high - low));
-
-    if (arr[pos] === target) {
-      return pos;
-    } else if (arr[pos] < target) {
-      low = pos + 1;
-    } else {
-      high = pos - 1;
-    }
-  }
-
-  return -1; // Return -1 if the target value is not found
-}
-const arr = [1, 3, 5, 7, 9, 11, 13];
-const target = 9;
-
-console.log(interpolationSearch(arr, target)); // Output: 4 (index of target value in the array)
+console.log(maxDepth(root)); // Output: 3
