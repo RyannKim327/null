@@ -1,21 +1,29 @@
-function countOccurrences(string, word) {
-  // Create a regular expression with the word and the 'g' flag for global search
-  const regex = new RegExp(word, 'g');
-  
-  // Use the match() method to get an array of all matches
-  const matches = string.match(regex);
-  
-  // If there are no matches, return 0
-  if (matches === null) {
-    return 0;
+function binarySearch(arr, target) {
+  let left = 0;
+  let right = arr.length - 1;
+
+  while (left <= right) {
+    let mid = Math.floor((left + right) / 2);
+
+    if (arr[mid] === target) {
+      return mid;
+    } else if (arr[mid] < target) {
+      left = mid + 1;
+    } else {
+      right = mid - 1;
+    }
   }
-  
-  // Return the length of the matches array to get the count
-  return matches.length;
+
+  return -1; // If the target is not found in the array
 }
 
-// Example usage
-const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed tortor ipsum.';
-const searchTerm = 'sed';
-const count = countOccurrences(text, searchTerm);
-console.log(count); // Output: 2
+// Example usage:
+const array = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+const target = 10;
+const index = binarySearch(array, target);
+
+if (index !== -1) {
+  console.log("Target found at index", index);
+} else {
+  console.log("Target not found in the array");
+}
