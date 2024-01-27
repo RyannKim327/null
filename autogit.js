@@ -1,35 +1,46 @@
-function breadthLimitedSearch(root, limit) {
-  const queue = []; // Create an empty queue
-  const visited = new Set(); // Keep track of visited nodes
-  queue.push(root); // Enqueue the root node
-  let depth = 0; // Initialize depth to 0
-
-  while (queue.length > 0 && depth <= limit) {
-    // Check if the queue is empty or depth exceeds limit
-    const currentNode = queue.shift(); // Dequeue a node from the front of the queue
-
-    // Process the currentNode as needed
-    console.log(currentNode); // Example: Print the currentNode value
-
-    if (depth < limit) {
-      // If depth is less than limit, enqueue all children/adjacent nodes
-      const neighbors = getNeighbors(currentNode); // Example: a helper function to get neighbors of currentNode
-      for (const neighbor of neighbors) {
-        if (!visited.has(neighbor)) {
-          queue.push(neighbor);
-          visited.add(neighbor); // Mark neighbor as visited
-        }
-      }
-    }
-
-    if (queue.length === 0) {
-      // Reached the end of a level, increment depth
-      depth++;
-    }
+// Define the linked list node
+class ListNode {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
 }
 
-// Example usage:
-const rootNode = { value: 1 }; // Example root node
-const limit = 2; // Maximum depth limit
-breadthLimitedSearch(rootNode, limit);
+// Function to find the nth node from the end
+function findNthFromEnd(head, n) {
+  if (!head) {
+    return null;
+  }
+
+  let ptr1 = head;
+  let ptr2 = head;
+
+  // Move ptr2 n nodes ahead
+  for (let i = 0; i < n; i++) {
+    if (!ptr2) {
+      // The list has less than n nodes
+      return null;
+    }
+    ptr2 = ptr2.next;
+  }
+
+  // Move both pointers until ptr2 reaches the end
+  while (ptr2) {
+    ptr1 = ptr1.next;
+    ptr2 = ptr2.next;
+  }
+
+  // ptr1 will be at the nth node from the end
+  return ptr1;
+}
+
+// Example usage
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+const n = 2;
+const nthNode = findNthFromEnd(head, n);
+console.log(`The ${n}th node from the end is ${nthNode ? nthNode.value : 'not found'}.`);
