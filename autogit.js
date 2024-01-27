@@ -1,49 +1,27 @@
-function reverseLinkedList(head) {
-  let prev = null;
-  let current = head;
-  while (current) {
-    let next = current.next;
-    current.next = prev;
-    prev = current;
-    current = next;
-  }
-  return prev;
-}
-function isLinkedListPalindrome(head) {
-  // Find the middle point of the linked list
-  let slow = head;
-  let fast = head;
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
+function quicksort(arr) {
+  if (arr.length <= 1) {
+    return arr;
   }
 
-  // Reverse the second half of the linked list
-  let rev = reverseLinkedList(slow);
-  
-  // Compare the original and reversed halves
-  while (rev) {
-    if (rev.val !== head.val) {
-      return false;
+  const pivot = arr[Math.floor(arr.length / 2)];
+  const smaller = [];
+  const equal = [];
+  const larger = [];
+
+  for (const element of arr) {
+    if (element < pivot) {
+      smaller.push(element);
+    } else if (element === pivot) {
+      equal.push(element);
+    } else {
+      larger.push(element);
     }
-    rev = rev.next;
-    head = head.next;
   }
-  return true;
-}
-// Define the ListNode class to represent a node in the linked list
-class ListNode {
-  constructor(val) {
-    this.val = val;
-    this.next = null;
-  }
+
+  return quicksort(smaller).concat(equal, quicksort(larger));
 }
 
-// Create a linked list: 1 -> 2 -> 3 -> 2 -> 1
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(2);
-head.next.next.next.next = new ListNode(1);
-
-console.log(isLinkedListPalindrome(head));  // Output: true
+// Example usage:
+const unsortedArray = [5, 3, 8, 4, 2, 1, 6, 7];
+const sortedArray = quicksort(unsortedArray);
+console.log(sortedArray);
