@@ -1,24 +1,23 @@
-function countOccurrences(string, char) {
-  let count = 0;
-  for (let i = 0; i < string.length; i++) {
-    if (string[i] === char) {
-      count++;
+async function connectToAndroidApp() {
+  try {
+    const response = await fetch('http://your-android-app-url', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ key: 'value' }) // Replace with the data you want to send to the Android app
+    });
+
+    if (response.ok) {
+      const responseData = await response.json();
+      // Process the response from the Android app
+      console.log(responseData);
+    } else {
+      console.error('Error connecting to Android app:', response.statusText);
     }
+  } catch (error) {
+    console.error('An error occurred while connecting to Android app:', error);
   }
-  return count;
 }
 
-const myString = "Hello World";
-const myChar = "o";
-const occurrences = countOccurrences(myString, myChar);
-console.log(occurrences); // Output: 2
-function countOccurrences(string, char) {
-  const regex = new RegExp(char, "g");
-  const occurrences = string.match(regex);
-  return occurrences ? occurrences.length : 0;
-}
-
-const myString = "Hello World";
-const myChar = "l";
-const occurrences = countOccurrences(myString, myChar);
-console.log(occurrences); // Output: 3
+connectToAndroidApp();
