@@ -1,25 +1,31 @@
-function factorial(num) {
-  if (num === 0 || num === 1) {
-    return 1;
+class ListNode {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
   }
-  
-  let result = 1;
-  for (let i = 2; i <= num; i++) {
-    result *= i;
-  }
-  
-  return result;
 }
 
-// Example usage
-console.log(factorial(5)); // Output: 120
-function factorial(num) {
-  if (num === 0 || num === 1) {
-    return 1;
+function findMiddleElement(head) {
+  if (!head) {
+    return null;
   }
-  
-  return num * factorial(num - 1);
+
+  let slowPtr = head;
+  let fastPtr = head;
+
+  while (fastPtr && fastPtr.next) {
+    slowPtr = slowPtr.next;
+    fastPtr = fastPtr.next.next;
+  }
+
+  return slowPtr.data;
 }
 
-// Example usage
-console.log(factorial(5)); // Output: 120
+// Example usage:
+const list = new ListNode(1);
+list.next = new ListNode(2);
+list.next.next = new ListNode(3);
+list.next.next.next = new ListNode(4);
+list.next.next.next.next = new ListNode(5);
+
+console.log(findMiddleElement(list)); // Output: 3
