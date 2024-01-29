@@ -1,40 +1,15 @@
-function longestCommonPrefix(strings) {
-  // ...
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  const sanitizedStr = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+  
+  // Reverse the string
+  const reversedStr = sanitizedStr.split('').reverse().join('');
+  
+  // Compare the original string with its reversed version
+  return sanitizedStr === reversedStr;
 }
-if (strings.length === 0) {
-  return '';
-}
-let prefix = strings[0];
-for (let i = 1; i < strings.length; i++) {
-  const currentString = strings[i];
-  let j = 0;
 
-  while (j < prefix.length && j < currentString.length && prefix[j] === currentString[j]) {
-    j++;
-  }
-
-  prefix = prefix.slice(0, j);
-}
-return prefix;
-function longestCommonPrefix(strings) {
-  if (strings.length === 0) {
-    return '';
-  }
-
-  let prefix = strings[0];
-
-  for (let i = 1; i < strings.length; i++) {
-    const currentString = strings[i];
-    let j = 0;
-
-    while (j < prefix.length && j < currentString.length && prefix[j] === currentString[j]) {
-      j++;
-    }
-
-    prefix = prefix.slice(0, j);
-  }
-
-  return prefix;
-}
-const strings = ['apple', 'app', 'application'];
-console.log(longestCommonPrefix(strings)); // Output: 'app'
+// Examples
+console.log(isPalindrome("racecar")); // true
+console.log(isPalindrome("hello")); // false
+console.log(isPalindrome("A man, a plan, a canal, Panama!")); // true
