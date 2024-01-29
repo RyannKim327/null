@@ -1,18 +1,16 @@
-function formatString(str) {
-  return str.toLowerCase().replace(/[^a-z0-9]/g, '');
-}
-function isAnagram(str1, str2) {
-  const formattedStr1 = formatString(str1);
-  const formattedStr2 = formatString(str2);
+async function connectToAndroidAsyncTask() {
+  try {
+    const response = await fetch('https://your-android-async-task-endpoint');
 
-  if (formattedStr1.length !== formattedStr2.length) {
-    return false;
+    if (!response.ok) {
+      throw new Error('Failed to connect to the Android async task');
+    }
+
+    const data = await response.json();
+    console.log('Received data from Android async task:', data);
+  } catch (error) {
+    console.error('An error occurred while connecting to the Android async task:', error);
   }
-
-  const sortedStr1 = formattedStr1.split('').sort().join('');
-  const sortedStr2 = formattedStr2.split('').sort().join('');
-
-  return sortedStr1 === sortedStr2;
 }
-console.log(isAnagram('listen', 'silent')); // Output: true
-console.log(isAnagram('hello', 'world')); // Output: false
+
+connectToAndroidAsyncTask();
