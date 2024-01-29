@@ -1,15 +1,12 @@
-function isPrime(number) {
-  if (number <= 1) { // 0 and 1 are not prime
-    return false;
-  }
+function isPalindrome(str) {
+  // Remove all non-alphanumeric characters and convert to lowercase
+  const processedStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-  for (let i = 2; i <= Math.sqrt(number); i++) {
-    if (number % i === 0) {
-      return false; // If divisible by any number from 2 to sqrt(number), it's not prime
-    }
-  }
-
-  return true; // If not divisible by any number, it's prime
+  // Compare the processed string with its reverse
+  return processedStr === processedStr.split('').reverse().join('');
 }
-const number = 17;
-console.log(isPrime(number)); // Output: true
+
+// Example usage
+console.log(isPalindrome("level")); // Output: true
+console.log(isPalindrome("hello")); // Output: false
+console.log(isPalindrome("A man, a plan, a canal, Panama!")); // Output: true
