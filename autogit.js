@@ -1,43 +1,60 @@
-function fibonacciSearch(arr, searchElement) {
-  let fib2 = 0;
-  let fib1 = 1;
-  let offset = -1;
-  let mid;
+// Merge two sorted arrays
+function merge(left, right) {
+  const result = [];
+  let leftIndex = 0;
+  let rightIndex = 0;
 
-  // Generate Fibonacci series until fib2 is greater than or equal to array length
-  while (fib2 < arr.length) {
-    const temp = fib2;
-    fib2 = fib1;
-    fib1 = temp + fib1;
-  }
-
-  // Perform the search
-  while (fib2 > 1) {
-    // Check if fib2 is a valid index
-    mid = Math.min(offset + fib2, arr.length - 1);
-
-    if (arr[mid] < searchElement) {
-      fib2 = fib1;
-      fib1 = fib2 - fib1;
-      offset = mid;
-    } else if (arr[mid] > searchElement) {
-      fib2 = fib2 - fib1;
-      fib1 = fib1 - fib2;
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] < right[rightIndex]) {
+      result.push(left[leftIndex]);
+      leftIndex++;
     } else {
-      return mid; // Element found
+      result.push(right[rightIndex]);
+      rightIndex++;
     }
   }
 
-  // Check the last element
-  if (fib1 === 1 && arr[offset + 1] === searchElement) {
-    return offset + 1;
+  // Push remaining elements from the left array
+  while (leftIndex < left.length) {
+    result.push(left[leftIndex]);
+    leftIndex++;
   }
 
-  return -1; // Element not found
+  // Push remaining elements from the right array
+  while (rightIndex < right.length) {
+    result.push(right[rightIndex]);
+    rightIndex++;
+  }
+
+  return result;
 }
 
-// Usage example
-const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
-const searchElement = 13;
-const index = fibonacciSearch(arr, searchElement);
-console.log(`Element ${searchElement} found at index ${index}`);
+// Perform bottom-up merge sort iteratively
+function mergeSortIterative(array) {
+  const n = array.length;
+  let blockSize = 1;
+
+  while (blockSize < n) {
+    let left = 0;
+
+    while (left + blockSize < n) {
+      const mid = left + blockSize - 1;
+      const right = Math.min(left + 2 * blockSize - 1, n - 1);
+      const merged = merge(
+        array.slice(left, mid + 1),
+        array.slice(mid + 1, right + 1)
+      );
+      array.splice(left, merged.length, ...merged);
+      left = right + 1;
+    }
+
+    blockSize *= 2;
+  }
+
+  return array;
+}
+
+// Example usage:
+const arr = [9, 5, 1, 4, 3, 8, 6, 2, 7];
+const sortedArr = mergeSortIterative(arr);
+console.log(sortedArr); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
