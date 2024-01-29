@@ -1,18 +1,26 @@
-function reverseString(str) {
-  // Step 1: Convert the string into an array of characters
-  var arr = str.split('');
-
-  // Step 2: Reverse the order of the characters in the array
-  var reversedArray = arr.reverse();
-
-  // Step 3: Convert the array back to a string
-  var reversedStr = reversedArray.join('');
-
-  // Step 4: Return the reversed string
-  return reversedStr;
+function countOccurrences(string, character) {
+  let count = 0;
+  for (let i = 0; i < string.length; i++) {
+    if (string[i] === character) {
+      count++;
+    }
+  }
+  return count;
 }
 
-// Example usage
-var myString = "Hello, World!";
-var reversedString = reverseString(myString);
-console.log(reversedString); // Output: "!dlroW ,olleH"
+let myString = "Hello, world!";
+let myCharacter = "o";
+
+let occurrences = countOccurrences(myString, myCharacter);
+console.log(`"${myCharacter}" occurs ${occurrences} times in "${myString}".`);
+"o" occurs 2 times in "Hello, world!".
+function countOccurrences(string, character) {
+  return string.split(character).length - 1;
+}
+
+let myString = "Hello, world!";
+let myCharacter = "o";
+
+let occurrences = countOccurrences(myString, myCharacter);
+console.log(`"${myCharacter}" occurs ${occurrences} times in "${myString}".`);
+"o" occurs 2 times in "Hello, world!".
