@@ -1,17 +1,15 @@
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
-let index = array.indexOf(elementToRemove);
-if (index > -1) {
-  array.splice(index, 1);
+function isPalindrome(str) {
+    // Remove all non-alphanumeric characters and convert to lowercase
+    var cleanedString = str.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
+
+    // Reverse the cleaned string
+    var reversedString = cleanedString.split('').reverse().join('');
+
+    // Compare the cleaned string with the reversed string
+    return cleanedString === reversedString;
 }
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
-array = array.filter(item => item !== elementToRemove);
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
-for (let i = 0; i < array.length; i++) {
-  if (array[i] === elementToRemove) {
-    array.splice(i, 1);
-    break; // optional, remove this line if you want to remove all occurrences.
-  }
-}
+
+// Test the function
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race car")); // true
+console.log(isPalindrome("hello world")); // false
