@@ -1,26 +1,35 @@
-function countOccurrences(string, character) {
-  let count = 0;
-  for (let i = 0; i < string.length; i++) {
-    if (string[i] === character) {
-      count++;
+function topologicalSort(graph) {
+  const visited = new Array(graph.length).fill(false);
+  const stack = [];
+
+  function dfs(node) {
+    visited[node] = true;
+    const neighbors = graph[node];
+    for (let i = 0; i < neighbors.length; i++) {
+      const neighbor = neighbors[i];
+      if (!visited[neighbor]) {
+        dfs(neighbor);
+      }
+    }
+    stack.push(node);
+  }
+
+  for (let i = 0; i < graph.length; i++) {
+    if (!visited[i]) {
+      dfs(i);
     }
   }
-  return count;
+
+  return stack.reverse();
 }
 
-let myString = "Hello, world!";
-let myCharacter = "o";
+// Example usage:
+const graph = [
+  [1, 2],      // 0 -> 1, 2
+  [3],         // 1 -> 3
+  [3],         // 2 -> 3
+  [],          // 3 -> null
+];
 
-let occurrences = countOccurrences(myString, myCharacter);
-console.log(`"${myCharacter}" occurs ${occurrences} times in "${myString}".`);
-"o" occurs 2 times in "Hello, world!".
-function countOccurrences(string, character) {
-  return string.split(character).length - 1;
-}
-
-let myString = "Hello, world!";
-let myCharacter = "o";
-
-let occurrences = countOccurrences(myString, myCharacter);
-console.log(`"${myCharacter}" occurs ${occurrences} times in "${myString}".`);
-"o" occurs 2 times in "Hello, world!".
+const sortedOrder = topologicalSort(graph);
+console.log(sortedOrder); // Output: [0, 2, 1, 3]
