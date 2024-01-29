@@ -1,12 +1,26 @@
-function isPalindrome(str) {
-  // Remove all non-alphanumeric characters and convert to lowercase
-  const processedStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
-
-  // Compare the processed string with its reverse
-  return processedStr === processedStr.split('').reverse().join('');
+class TreeNode {
+  constructor(val, left = null, right = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
+  }
 }
 
-// Example usage
-console.log(isPalindrome("level")); // Output: true
-console.log(isPalindrome("hello")); // Output: false
-console.log(isPalindrome("A man, a plan, a canal, Panama!")); // Output: true
+function maxDepth(root) {
+  if (root === null) {
+    return 0;
+  } else {
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
+    return Math.max(leftDepth, rightDepth) + 1;
+  }
+}
+
+// Example usage:
+const tree = new TreeNode(3);
+tree.left = new TreeNode(9);
+tree.right = new TreeNode(20);
+tree.right.left = new TreeNode(15);
+tree.right.right = new TreeNode(7);
+
+console.log(maxDepth(tree)); // Output: 3
