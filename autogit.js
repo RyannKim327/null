@@ -1,43 +1,16 @@
-function buildBadMatchTable(pattern) {
-  const table = {};
-
-  for (let i = 0; i < pattern.length - 1; i++) {
-    table[pattern[i]] = pattern.length - i - 1;
-  }
-
-  return table;
-}
-
-function boyerMooreSearch(text, pattern) {
-  const badMatchTable = buildBadMatchTable(pattern);
-  let i = pattern.length - 1; // Index in text
-  let j = pattern.length - 1; // Index in pattern
-
-  while (i < text.length) {
-    if (text[i] === pattern[j]) {
-      if (j === 0) {
-        return i; // Match found
-      } else {
-        i--;
-        j--;
-      }
+function isSortedAscending(arr) {
+  return arr.every((currentValue, index) => {
+    if (index === 0) {
+      return true;  // First element, always sorted
     } else {
-      const skip = badMatchTable[text[i]] || pattern.length;
-      i += skip;
-      j = pattern.length - 1;
+      return currentValue >= arr[index - 1];  // Check if current element is greater than or equal to the previous element
     }
-  }
-
-  return -1; // No match found
+  });
 }
 
-// Usage example:
-const text = "ABAAABCDBBABCDDEBCABC";
-const pattern = "ABC";
-const index = boyerMooreSearch(text, pattern);
+// Test the function
+const array1 = [1, 2, 3, 4, 5];
+console.log(isSortedAscending(array1));  // Output: true
 
-if (index !== -1) {
-  console.log(`Match found at index ${index}`);
-} else {
-  console.log("No match found");
-}
+const array2 = [1, 3, 2, 4, 5];
+console.log(isSortedAscending(array2));  // Output: false
