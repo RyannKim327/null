@@ -1,28 +1,27 @@
-// Create an XMLHttpRequest object
-var xhr = new XMLHttpRequest();
+function selectionSort(array) {
+  const length = array.length;
 
-// Define the endpoint URL
-var url = 'https://api.example.com/data';
+  for (let i = 0; i < length - 1; i++) {
+    let minIndex = i;
 
-// Open a request connection
-xhr.open('GET', url, true);
+    for (let j = i + 1; j < length; j++) {
+      if (array[j] < array[minIndex]) {
+        minIndex = j;
+      }
+    }
 
-// Set headers if required
-// xhr.setRequestHeader('Content-Type', 'application/json');
-
-// Define the success callback function
-xhr.onload = function() {
-  if (xhr.status === 200) {
-    var response = JSON.parse(xhr.responseText);
-    console.log(response);
-    // Do something with the API response data
+    if (minIndex !== i) {
+      // Swap elements
+      const temp = array[i];
+      array[i] = array[minIndex];
+      array[minIndex] = temp;
+    }
   }
-};
 
-// Define the error callback function
-xhr.onerror = function() {
-  console.log('Error occurred while making the request.');
-};
+  return array;
+}
 
-// Send the request
-xhr.send();
+// Usage example:
+const unsortedArray = [5, 2, 8, 3, 1, 4];
+const sortedArray = selectionSort(unsortedArray);
+console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 8]
