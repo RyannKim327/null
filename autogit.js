@@ -1,11 +1,21 @@
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
 
-  while (fast !== null && fast.next !== null) {
-    slow = slow.next;
-    fast = fast.next.next;
+const commonElements = array1.filter(element => array2.includes(element));
+console.log(commonElements); // Output: [4, 5]
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+
+const commonElements = array1.reduce((result, element) => {
+  if (array2.includes(element)) {
+    result.push(element);
   }
+  return result;
+}, []);
+console.log(commonElements); // Output: [4, 5]
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
 
-  return slow;
-}
+const set1 = new Set(array1);
+const commonElements = array2.filter(element => set1.has(element));
+console.log(commonElements); // Output: [4, 5]
