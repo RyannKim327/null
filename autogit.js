@@ -1,16 +1,51 @@
-function reverseWords(str) {
-  // Splitting the string into an array of words
-  var wordsArray = str.split(" ");
+function buildPrefixTable(pattern) {
+  const prefixTable = Array(pattern.length).fill(0);
+  let j = 0;
 
-  // Reversing the array of words
-  var reversedWordsArray = wordsArray.reverse();
+  for (let i = 1; i < pattern.length; i++) {
+    if (pattern[i] === pattern[j]) {
+      prefixTable[i] = j + 1;
+      j++;
+    } else {
+      if (j !== 0) {
+        j = prefixTable[j - 1];
+        i--;
+      }
+    }
+  }
 
-  // Joining the reversed array back into a string
-  var reversedString = reversedWordsArray.join(" ");
-
-  return reversedString;
+  return prefixTable;
 }
 
-// Example usage
-var originalString = "Hello, world!";
-console.log(reverseWords(originalString)); // Output: "world! Hello,"
+function stringMatch(text, pattern) {
+  const n = text.length;
+  const m = pattern.length;
+  const prefixTable = buildPrefixTable(pattern);
+  let i = 0;
+  let j = 0;
+
+  while (i < n) {
+    if (text[i] === pattern[j]) {
+      i++;
+      j++;
+    } else {
+      if (j !== 0) {
+        j = prefixTable[j - 1];
+      } else {
+        i++;
+      }
+    }
+
+    if (j === m) {
+      // Match found at index i - m
+      console.log('Match found at index', i - m);
+      j = prefixTable[j - 1];
+    }
+  }
+}
+
+// Example usage:
+const text = 'ABABDABACDABABCABAB';
+const pattern = 'ABABCABAB';
+
+stringMatch(text, pattern);
