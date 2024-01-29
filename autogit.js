@@ -1,36 +1,19 @@
-function findLongestIncreasingSubsequence(array) {
-  const n = array.length;
-  const lengths = new Array(n).fill(1); // Initialize all lengths to 1
+const cron = require('node-cron');
 
-  // Compute lengths of increasing subsequences
-  for (let i = 1; i < n; i++) {
-    for (let j = 0; j < i; j++) {
-      if (array[i] > array[j]) {
-        lengths[i] = Math.max(lengths[i], lengths[j] + 1);
-      }
-    }
-  }
+// Define a function to be executed periodically
+const task = () => {
+  console.log('Running cron job...');
+  // Your code here
+};
 
-  // Find the maximum length
-  let maxLength = 0;
-  for (let i = 0; i < n; i++) {
-    maxLength = Math.max(maxLength, lengths[i]);
-  }
+// Schedule the task to run every minute
+cron.schedule('* * * * *', task);
 
-  // Find the longest increasing subsequence based on the lengths computed
-  const subsequence = [];
-  let currLength = maxLength;
-  for (let i = n - 1; i >= 0; i--) {
-    if (lengths[i] === currLength) {
-      subsequence.unshift(array[i]);
-      currLength--;
-    }
-  }
+// You can also use cron expressions for more specific schedules
+// Examples:
+// - Run every hour, at the 30th minute: '30 * * * *'
+// - Run every day at 9 AM: '0 9 * * *'
+// - Run every Monday at 3 PM: '0 15 * * 1'
 
-  return subsequence;
-}
-
-// Example usage:
-const array = [3, 10, 2, 1, 20];
-const longestSubsequence = findLongestIncreasingSubsequence(array);
-console.log(longestSubsequence); // Output: [3, 10, 20]
+// Keep the script running indefinitely
+console.log('Cron job scheduled.');
