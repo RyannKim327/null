@@ -1,26 +1,21 @@
-function interpolationSearch(arr, x, n) {
-  let low = 0;
-  let high = n - 1;
-  
-  while (low <= high && x >= arr[low] && x <= arr[high]) {
-    if (low === high) {
-      if (arr[low] === x) return low;
-      return -1;
-    }
+function isAnagram(str1, str2) {
+  // convert strings to lowercase and remove spaces/punctuation
+  str1 = str1.toLowerCase().replace(/[^\w]/g, '');
+  str2 = str2.toLowerCase().replace(/[^\w]/g, '');
 
-    const pos = low + Math.floor((x - arr[low]) * (high - low) / (arr[high] - arr[low]));
+  // convert strings to arrays, sort, and convert back to strings
+  const sortedStr1 = str1.split('').sort().join('');
+  const sortedStr2 = str2.split('').sort().join('');
 
-    if (arr[pos] === x) return pos;
-
-    if (arr[pos] < x) low = pos + 1;
-    else high = pos - 1;
-  }
-  
-  return -1;
+  // compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
-const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const x = 12;
-const n = arr.length;
 
-const result = interpolationSearch(arr, x, n);
-console.log(result); // Output: 5
+// example usage
+const string1 = 'listen';
+const string2 = 'silent';
+if (isAnagram(string1, string2)) {
+  console.log('Strings are anagrams!');
+} else {
+  console.log('Strings are not anagrams.');
+}
