@@ -1,31 +1,46 @@
-function mergeSort(arr) {
-  if (arr.length <= 1) {
-    return arr;
-  }
-  
-  const middle = Math.floor(arr.length / 2);
-  const left = arr.slice(0, middle);
-  const right = arr.slice(middle);
-  
-  return merge(mergeSort(left), mergeSort(right));
-}
+const graph = {
+  A: [{ node: 'B', weight: 4 }, { node: 'C', weight: 2 }],
+  B: [{ node: 'D', weight: 3 }],
+  C: [{ node: 'B', weight: 1 }, { node: 'D', weight: 4 }],
+  D: [{ node: 'E', weight: 2 }],
+  E: []
+};
+function bellmanFord(graph, start) {
+  const distances = {};
+  const previous = {};
 
-function merge(left, right) {
-  let result = [];
-  
-  while (left.length && right.length) {
-    if (left[0] < right[0]) {
-      result.push(left.shift());
-    } else {
-      result.push(right.shift());
+  // Step 1: Initialize distances and previous
+  for (const vertex in graph) {
+    distances[vertex] = Infinity;
+    previous[vertex] = null;
+  }
+  distances[start] = 0;
+
+  // Step 2: Relax edges repeatedly
+  for (let i = 0; i < Object.keys(graph).length - 1; i++) {
+    for (const vertex in graph) {
+      for (const { node, weight } of graph[vertex]) {
+        if (distances[vertex] + weight < distances[node]) {
+          distances[node] = distances[vertex] + weight;
+          previous[node] = vertex;
+        }
+      }
     }
   }
-  
-  // Concatenate remaining elements from both arrays
-  return [...result, ...left, ...right];
-}
 
-// Example usage:
-const array = [4, 8, 2, 1, 5, 7, 6, 3];
-const sortedArray = mergeSort(array);
-console.log(sortedArray);
+  // Step 3: Check for negative cycles
+  for (const vertex in graph) {
+    for (const { node, weight } of graph[vertex]) {
+      if (distances[vertex] + weight < distances[node]) {
+        throw new Error('Graph contains negative cycle');
+      }
+    }
+  }
+
+  return { distances, previous };
+}
+const start = 'A';
+const result = bellmanFord(graph, start);
+
+console.log('Shortest distances:', result.distances);
+console.log('Previous nodes:', result.previous);
