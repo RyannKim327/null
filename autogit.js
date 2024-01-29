@@ -1,35 +1,26 @@
-function topologicalSort(graph) {
-  const visited = new Array(graph.length).fill(false);
-  const stack = [];
-
-  function dfs(node) {
-    visited[node] = true;
-    const neighbors = graph[node];
-    for (let i = 0; i < neighbors.length; i++) {
-      const neighbor = neighbors[i];
-      if (!visited[neighbor]) {
-        dfs(neighbor);
-      }
+function factorialLoop(num) {
+  if (num < 0) {
+    return -1; // Factorial of negative numbers is undefined
+  } else if (num === 0 || num === 1) {
+    return 1; // Factorial of 0 or 1 is always 1
+  } else {
+    let result = 1;
+    for (let i = 2; i <= num; i++) {
+      result *= i;
     }
-    stack.push(node);
+    return result;
   }
-
-  for (let i = 0; i < graph.length; i++) {
-    if (!visited[i]) {
-      dfs(i);
-    }
-  }
-
-  return stack.reverse();
 }
 
-// Example usage:
-const graph = [
-  [1, 2],      // 0 -> 1, 2
-  [3],         // 1 -> 3
-  [3],         // 2 -> 3
-  [],          // 3 -> null
-];
+console.log(factorialLoop(5)); // Output: 120
+function factorialRecursion(num) {
+  if (num < 0) {
+    return -1; // Factorial of negative numbers is undefined
+  } else if (num === 0 || num === 1) {
+    return 1; // Factorial of 0 or 1 is always 1
+  } else {
+    return num * factorialRecursion(num - 1);
+  }
+}
 
-const sortedOrder = topologicalSort(graph);
-console.log(sortedOrder); // Output: [0, 2, 1, 3]
+console.log(factorialRecursion(5)); // Output: 120
