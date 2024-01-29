@@ -1,26 +1,27 @@
-function bwt(text) {
-  var rotations = [];
-
-  // generate cyclic rotations
-  for (var i = 0; i < text.length; i++) {
-    rotations.push(text.slice(i) + text.slice(0, i));
+class TreeNode {
+  constructor(value) {
+    this.val = value;
+    this.left = null;
+    this.right = null;
   }
-
-  // sort rotations
-  rotations.sort();
-
-  // find original index and build transformed string
-  var bwtString = '';
-  for (var j = 0; j < rotations.length; j++) {
-    if (rotations[j] === text) {
-      bwtString += rotations[j][rotations[j].length - 1];
-    }
-  }
-
-  return bwtString;
 }
 
-// Example usage:
-var input = "banana";
-var transformed = bwt(input);
-console.log(transformed);  // Outputs: "annb"
+function sumBinaryTree(root) {
+  if (root === null) {
+    return 0;
+  }
+  
+  return root.val + sumBinaryTree(root.left) + sumBinaryTree(root.right);
+}
+// Create a binary tree
+let root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+root.right.left = new TreeNode(6);
+root.right.right = new TreeNode(7);
+
+// Find the sum of all nodes
+let sum = sumBinaryTree(root);
+console.log("Sum of all nodes:", sum); // Output: 28
