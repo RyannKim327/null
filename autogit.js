@@ -1,31 +1,21 @@
-function beamSearch(initialState, generateCandidates, beamWidth) {
-  let beam = [{ state: initialState, score: 0 }];
-
-  while (!terminationCondition) {
-    let nextBeam = [];
-
-    for (let candidate of beam) {
-      let newCandidates = generateCandidates(candidate.state);
-
-      for (let newCandidate of newCandidates) {
-        nextBeam.push({
-          state: newCandidate,
-          score: computeScore(newCandidate),
-        });
-      }
-    }
-
-    nextBeam.sort((a, b) => b.score - a.score);
-    beam = nextBeam.slice(0, beamWidth);
+function binarySearchRecursive(arr, target, left, right) {
+  if (left > right) {
+    return -1;
   }
 
-  return beam[0].state;
+  const mid = Math.floor((left + right) / 2);
+
+  if (arr[mid] === target) {
+    return mid;
+  } else if (arr[mid] > target) {
+    return binarySearchRecursive(arr, target, left, mid - 1);
+  } else {
+    return binarySearchRecursive(arr, target, mid + 1, right);
+  }
 }
 
-// Example usage
-const initialState = /* initial state */;
-const generateCandidates = /* candidate generation function */;
-const beamWidth = 5;
-
-const bestSolution = beamSearch(initialState, generateCandidates, beamWidth);
-console.log(bestSolution);
+// Example usage:
+const array = [1, 2, 3, 4, 5, 6, 7];
+const targetValue = 5;
+const result = binarySearchRecursive(array, targetValue, 0, array.length - 1);
+console.log(`Target value ${targetValue} found at index ${result}`);
