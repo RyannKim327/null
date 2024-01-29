@@ -1,21 +1,12 @@
-function binarySearchRecursive(arr, target, left, right) {
-  if (left > right) {
-    return -1;
-  }
-
-  const mid = Math.floor((left + right) / 2);
-
-  if (arr[mid] === target) {
-    return mid;
-  } else if (arr[mid] > target) {
-    return binarySearchRecursive(arr, target, left, mid - 1);
+function factorialRecursive(num) {
+  if (num === 0) {
+    // Base case: factorial of 0 is 1
+    return 1;
   } else {
-    return binarySearchRecursive(arr, target, mid + 1, right);
+    // Recursive case: factorial of num is num multiplied by factorial of num-1
+    return num * factorialRecursive(num - 1);
   }
 }
-
-// Example usage:
-const array = [1, 2, 3, 4, 5, 6, 7];
-const targetValue = 5;
-const result = binarySearchRecursive(array, targetValue, 0, array.length - 1);
-console.log(`Target value ${targetValue} found at index ${result}`);
+// Calculate factorial of 5
+const result = factorialRecursive(5);
+console.log(result);  // Output: 120
