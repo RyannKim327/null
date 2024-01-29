@@ -1,21 +1,11 @@
-function findNthFromEnd(head, n) {
-  let p1 = head;
-  let p2 = head;
-  
-  // Move p1 n steps forward
-  for (let i = 0; i < n; i++) {
-    if (p1 === null) {
-      return null; // n is larger than the length of the list
-    }
-    p1 = p1.next;
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7];
+const commonElements = [];
+
+for (let i = 0; i < array1.length; i++) {
+  if (array2.includes(array1[i])) {
+    commonElements.push(array1[i]);
   }
-  
-  // Move both pointers simultaneously until p1 reaches the end of the list
-  while (p1 !== null) {
-    p1 = p1.next;
-    p2 = p2.next;
-  }
-  
-  // p2 will be pointing to the nth node from the end of the list
-  return p2.value;
 }
+
+console.log(commonElements);
