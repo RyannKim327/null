@@ -1,21 +1,20 @@
-function binarySearchRecursive(arr, target, start, end) {
-    if (start > end) {
-        return -1; // target value is not found in the array
-    }
+function hasCycle(head) {
+  // Initialize two pointers - slow and fast
+  let slow = head;
+  let fast = head;
 
-    const mid = Math.floor((start + end) / 2);
+  // Move slow pointer by one step and fast pointer by two steps
+  // If a cycle exists, they will eventually meet
+  while (fast && fast.next && fast.next.next) {
+    slow = slow.next;
+    fast = fast.next.next;
 
-    if (arr[mid] === target) {
-        return mid; // target value found at the middle index
-    } else if (arr[mid] > target) {
-        return binarySearchRecursive(arr, target, start, mid - 1); // search in the left half
-    } else {
-        return binarySearchRecursive(arr, target, mid + 1, end); // search in the right half
+    // If they meet, a cycle exists
+    if (slow === fast) {
+      return true;
     }
+  }
+
+  // No cycle found
+  return false;
 }
-
-// Example usage:
-const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const target = 6;
-const result = binarySearchRecursive(arr, target, 0, arr.length - 1);
-console.log('Target value found at index', result);
