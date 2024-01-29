@@ -1,37 +1,29 @@
-function findLongestCommonSubstring(str1, str2) {
-  // Initialize a 2-dimensional array to store the lengths of common substrings
-  const matrix = Array(str1.length + 1);
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
 
-  for (let i = 0; i <= str1.length; i++) {
-    matrix[i] = Array(str2.length + 1).fill(0);
+function calculateSum(root) {
+  if (root === null) {
+    return 0;
   }
 
-  let maxLength = 0; // Length of the longest common substring
-  let endIndex = 0; // Ending index of the longest common substring
+  let sum = root.value;
+  sum += calculateSum(root.left);
+  sum += calculateSum(root.right);
 
-  for (let i = 1; i <= str1.length; i++) {
-    for (let j = 1; j <= str2.length; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        matrix[i][j] = matrix[i - 1][j - 1] + 1;
-
-        if (matrix[i][j] > maxLength) {
-          maxLength = matrix[i][j];
-          endIndex = i - 1; // Update the ending index
-        }
-      } else {
-        matrix[i][j] = 0;
-      }
-    }
-  }
-
-  // Extract the longest common substring using the ending index and maximum length
-  const longestCommonSubstring = str1.substr(endIndex - maxLength + 1, maxLength);
-  return longestCommonSubstring;
+  return sum;
 }
 
 // Example usage:
-const str1 = "abcdefg";
-const str2 = "xyzcdef";
+const tree = new Node(1);
+tree.left = new Node(2);
+tree.right = new Node(3);
+tree.left.left = new Node(4);
+tree.left.right = new Node(5);
 
-const longestSubstring = findLongestCommonSubstring(str1, str2);
-console.log(longestSubstring); // Output: "cdef"
+const sum = calculateSum(tree);
+console.log('Sum of all nodes:', sum);
