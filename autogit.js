@@ -1,22 +1,38 @@
-function binarySearch(arr, target) {
-  let start = 0; // starting index
-  let end = arr.length - 1; // ending index
-
-  while (start <= end) {
-    let mid = Math.floor((start + end) / 2);
-
-    if (arr[mid] === target) {
-      return mid; // found target
-    } else if (target < arr[mid]) {
-      end = mid - 1; // search in left half
-    } else {
-      start = mid + 1; // search in right half
+function findMajorityElement(arr) {
+  const length = arr.length;
+  for (let i = 0; i < length; i++) {
+    let count = 0;
+    for (let j = 0; j < length; j++) {
+      if (arr[j] === arr[i]) {
+        count++;
+      }
+    }
+    if (count > length / 2) {
+      return arr[i];
     }
   }
-
-  return -1; // target not found
+  return -1; // No majority element found
 }
-let arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
-let target = 23;
 
-console.log(binarySearch(arr, target)); // Output: 5
+const array = [1, 2, 3, 3, 3, 4, 5, 3, 3];
+console.log(findMajorityElement(array)); // Output: 3
+function findMajorityElement(arr) {
+  let count = 0;
+  let majorityElement = null;
+  
+  for (let i = 0; i < arr.length; i++) {
+    if (count === 0) {
+      majorityElement = arr[i];
+    }
+    if (arr[i] === majorityElement) {
+      count++;
+    } else {
+      count--;
+    }
+  }
+  
+  return majorityElement;
+}
+
+const array = [1, 2, 3, 3, 3, 4, 5, 3, 3];
+console.log(findMajorityElement(array)); // Output: 3
