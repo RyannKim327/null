@@ -1,44 +1,22 @@
-function mergeSort(arr) {
-  if (arr.length <= 1) {
-    return arr;
-  }
+function binarySearch(arr, target) {
+  let start = 0; // starting index
+  let end = arr.length - 1; // ending index
 
-  const mid = Math.floor(arr.length / 2);
-  const left = mergeSort(arr.slice(0, mid));
-  const right = mergeSort(arr.slice(mid));
+  while (start <= end) {
+    let mid = Math.floor((start + end) / 2);
 
-  return merge(left, right);
-}
-
-function merge(left, right) {
-  let result = [];
-  let i = 0;
-  let j = 0;
-
-  while (i < left.length && j < right.length) {
-    if (left[i] < right[j]) {
-      result.push(left[i]);
-      i++;
+    if (arr[mid] === target) {
+      return mid; // found target
+    } else if (target < arr[mid]) {
+      end = mid - 1; // search in left half
     } else {
-      result.push(right[j]);
-      j++;
+      start = mid + 1; // search in right half
     }
   }
 
-  while (i < left.length) {
-    result.push(left[i]);
-    i++;
-  }
-
-  while (j < right.length) {
-    result.push(right[j]);
-    j++;
-  }
-
-  return result;
+  return -1; // target not found
 }
+let arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
+let target = 23;
 
-// Usage example:
-const arr = [8, 2, 5, 1, 9, 3, 7];
-const sortedArr = mergeSort(arr);
-console.log(sortedArr);
+console.log(binarySearch(arr, target)); // Output: 5
