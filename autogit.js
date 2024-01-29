@@ -1,9 +1,18 @@
-let arr = [1, 2, 3, 4, 5];
-arr.reverse();
+function formatString(str) {
+  return str.toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+function isAnagram(str1, str2) {
+  const formattedStr1 = formatString(str1);
+  const formattedStr2 = formatString(str2);
 
-console.log(arr); // Output: [5, 4, 3, 2, 1]
-let arr = [1, 2, 3, 4, 5];
-let reversedArr = arr.reverse();
+  if (formattedStr1.length !== formattedStr2.length) {
+    return false;
+  }
 
-console.log(reversedArr); // Output: [5, 4, 3, 2, 1]
-console.log(arr); // Output: [5, 4, 3, 2, 1] -- original array is also reversed
+  const sortedStr1 = formattedStr1.split('').sort().join('');
+  const sortedStr2 = formattedStr2.split('').sort().join('');
+
+  return sortedStr1 === sortedStr2;
+}
+console.log(isAnagram('listen', 'silent')); // Output: true
+console.log(isAnagram('hello', 'world')); // Output: false
