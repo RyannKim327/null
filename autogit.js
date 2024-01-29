@@ -1,54 +1,39 @@
-function computeLPSArray(pattern) {
-  const lps = [0];
-  let length = 0; // length of the previous longest prefix suffix
+function longestCommonSubsequence(string1, string2) {
+  const len1 = string1.length;
+  const len2 = string2.length;
 
-  let i = 1;
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[length]) {
-      length++;
-      lps[i] = length;
-      i++;
-    } else {
-      if (length !== 0) {
-        length = lps[length - 1];
+  const lcsArray = new Array(len1 + 1).fill(0).map(() => new Array(len2 + 1).fill(0));
+
+  for (let i = 1; i <= len1; i++) {
+    for (let j = 1; j <= len2; j++) {
+      if (string1[i - 1] === string2[j - 1]) {
+        lcsArray[i][j] = lcsArray[i - 1][j - 1] + 1;
       } else {
-        lps[i] = 0;
-        i++;
+        lcsArray[i][j] = Math.max(lcsArray[i - 1][j], lcsArray[i][j - 1]);
       }
     }
   }
 
-  return lps;
-}
-function KMP(text, pattern) {
-  const result = [];
-  const lps = computeLPSArray(pattern);
+  let result = '';
+  let i = len1;
+  let j = len2;
 
-  let i = 0; // index for "text"
-  let j = 0; // index for "pattern"
-  
-  while (i < text.length) {
-    if (pattern[j] === text[i]) {
-      i++;
-      j++;
-    }
-
-    if (j === pattern.length) {
-      result.push(i - j); // found pattern at index i - j
-      j = lps[j - 1];
-    } else if (i < text.length && pattern[j] !== text[i]) {
-      if (j !== 0) {
-        j = lps[j - 1];
-      } else {
-        i++;
-      }
+  while (i > 0 && j > 0) {
+    if (string1[i - 1] === string2[j - 1]) {
+      result = string1[i - 1] + result;
+      i--;
+      j--;
+    } else if (lcsArray[i - 1][j] > lcsArray[i][j - 1]) {
+      i--;
+    } else {
+      j--;
     }
   }
 
   return result;
 }
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
 
-const indices = KMP(text, pattern);
-console.log("Pattern found at indices:", indices);
+// Example usage:
+const string1 = 'ABCDGH';
+const string2 = 'AEDFHR';
+console.log(longestCommonSubsequence(string1, string2)); // Output: ADH
