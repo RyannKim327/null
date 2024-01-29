@@ -1,53 +1,18 @@
-function boyerMooreHorspool(text, pattern) {
-  const textLength = text.length;
-  const patternLength = pattern.length;
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  str = str.replace(/[^a-z0-9]/gi, '').toLowerCase();
 
-  // ...
-}
-function boyerMooreHorspool(text, pattern) {
-  const textLength = text.length;
-  const patternLength = pattern.length;
-
-  const shiftTable = {};
-  for (let i = 0; i < patternLength - 1; i++) {
-    shiftTable[pattern[i]] = patternLength - i - 1;
-  }
-
-  // ...
-}
-function boyerMooreHorspool(text, pattern) {
-  const textLength = text.length;
-  const patternLength = pattern.length;
-
-  const shiftTable = {};
-  for (let i = 0; i < patternLength - 1; i++) {
-    shiftTable[pattern[i]] = patternLength - i - 1;
-  }
-
-  let index = 0;
-  while (index <= textLength - patternLength) {
-    let j = patternLength - 1;
-
-    while (j >= 0 && pattern[j] === text[index + j]) {
-      j--;
-    }
-
-    if (j < 0) {
-      // Pattern found at index
-      return index;
-    } else {
-      // Mismatch occurred, shift the pattern based on the shift table
-      const mismatchedChar = text[index + patternLength - 1];
-      const shift = shiftTable[mismatchedChar] || patternLength;
-      index += shift;
+  // Compare characters from the beginning and end
+  for (let i = 0; i < Math.floor(str.length / 2); i++) {
+    if (str[i] !== str[str.length - 1 - i]) {
+      return false;
     }
   }
-
-  // Pattern not found
-  return -1;
+  return true;
 }
-const text = 'ABAAABCD';
-const pattern = 'ABC';
 
-const result = boyerMooreHorspool(text, pattern);
-console.log(result); // Outputs: 4
+// Example usage:
+console.log(isPalindrome('level'));  // true
+console.log(isPalindrome('hello'));  // false
+console.log(isPalindrome('Step on no pets')); // true
+console.log(isPalindrome('A man, a plan, a canal: Panama')); // true
