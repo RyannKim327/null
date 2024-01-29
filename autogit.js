@@ -1,26 +1,59 @@
-class TreeNode {
-  constructor(val, left = null, right = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
+function ListNode(value, next) {
+  this.value = value;
+  this.next = next;
+}
+function reverseLinkedList(head) {
+  let prev = null;
+  let current = head;
+  let next = null;
+
+  while (current != null) {
+    next = current.next; // temporarily store the next node
+    current.next = prev; // reverse the next pointer
+
+    // move prev and current to the next nodes
+    prev = current;
+    current = next;
   }
+
+  // update the head to point to the new first node
+  head = prev;
+
+  return head; // return the reversed linked list
+}
+function ListNode(value, next) {
+  this.value = value;
+  this.next = next;
 }
 
-function maxDepth(root) {
-  if (root === null) {
-    return 0;
-  } else {
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
-    return Math.max(leftDepth, rightDepth) + 1;
+function reverseLinkedList(head) {
+  let prev = null;
+  let current = head;
+  let next = null;
+
+  while (current != null) {
+    next = current.next;
+    current.next = prev;
+    prev = current;
+    current = next;
   }
+
+  head = prev;
+
+  return head;
 }
 
-// Example usage:
-const tree = new TreeNode(3);
-tree.left = new TreeNode(9);
-tree.right = new TreeNode(20);
-tree.right.left = new TreeNode(15);
-tree.right.right = new TreeNode(7);
+// Create the original linked list
+const node3 = new ListNode(3, null);
+const node2 = new ListNode(2, node3);
+const node1 = new ListNode(1, node2);
 
-console.log(maxDepth(tree)); // Output: 3
+// Reverse the linked list
+const reversed = reverseLinkedList(node1);
+
+// Print the reversed linked list
+let currentNode = reversed;
+while (currentNode != null) {
+  console.log(currentNode.value);
+  currentNode = currentNode.next;
+}
