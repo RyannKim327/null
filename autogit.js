@@ -1,19 +1,31 @@
-function largestPrimeFactor(number) {
-  let factor = 2;
-  
-  while (factor * factor <= number) {
-    if (number % factor === 0) {
-      number = number / factor;
-    } else {
-      factor++;
+function beamSearch(initialState, generateCandidates, beamWidth) {
+  let beam = [{ state: initialState, score: 0 }];
+
+  while (!terminationCondition) {
+    let nextBeam = [];
+
+    for (let candidate of beam) {
+      let newCandidates = generateCandidates(candidate.state);
+
+      for (let newCandidate of newCandidates) {
+        nextBeam.push({
+          state: newCandidate,
+          score: computeScore(newCandidate),
+        });
+      }
     }
+
+    nextBeam.sort((a, b) => b.score - a.score);
+    beam = nextBeam.slice(0, beamWidth);
   }
-  
-  return number;
+
+  return beam[0].state;
 }
 
 // Example usage
-const number = 13195;
-const largestFactor = largestPrimeFactor(number);
+const initialState = /* initial state */;
+const generateCandidates = /* candidate generation function */;
+const beamWidth = 5;
 
-console.log("Largest prime factor of", number, "is", largestFactor);
+const bestSolution = beamSearch(initialState, generateCandidates, beamWidth);
+console.log(bestSolution);
