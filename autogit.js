@@ -1,21 +1,20 @@
-function areAnagrams(str1, str2) {
-  // Conversion to lowercase
-  str1 = str1.toLowerCase();
-  str2 = str2.toLowerCase();
+function findLinkedListLength(head) {
+  let count = 0; // Initialize count variable to 0
+  let current = head; // Start at the head of the linked list
 
-  // Removing non-alphabetic characters
-  str1 = str1.replace(/[^a-z]/g, '');
-  str2 = str2.replace(/[^a-z]/g, '');
+  while (current !== null) {
+    count++; // Increment the count
+    current = current.next; // Move to the next node
+  }
 
-  // Sort the strings
-  str1 = str1.split('').sort().join('');
-  str2 = str2.split('').sort().join('');
-
-  // Compare the sorted strings
-  return str1 === str2;
+  return count; // Return the length of the linked list
 }
+// Define a linked list with 3 nodes
+let node1 = { value: 1, next: null };
+let node2 = { value: 2, next: null };
+let node3 = { value: 3, next: null };
 
-// Example usage
-const string1 = "Listen";
-const string2 = "Silent";
-console.log(areAnagrams(string1, string2)); // Output: true
+node1.next = node2; // Link the nodes together
+node2.next = node3;
+
+console.log(findLinkedListLength(node1)); // Output: 3
