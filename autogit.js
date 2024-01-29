@@ -1,10 +1,22 @@
-const array = [5, 1, 3, 2, 4];
+function findNthNodeFromEnd(head, n) {
+  let first = head;
+  let second = head;
 
-// Sort the array in ascending order
-const sortedArray = array.sort((a, b) => a - b);
+  // Move first pointer n nodes ahead
+  for (let i = 0; i < n; i++) {
+    // If first pointer runs out of nodes, return null
+    if (first === null) {
+      return null;
+    }
+    first = first.next;
+  }
 
-console.log(sortedArray); // Output: [1, 2, 3, 4, 5]
-// Sort the array in descending order
-const sortedArray = array.sort((a, b) => b - a);
+  // Move both pointers until first reaches end
+  while (first !== null) {
+    first = first.next;
+    second = second.next;
+  }
 
-console.log(sortedArray); // Output: [5, 4, 3, 2, 1]
+  // Return the value of the node pointed by second
+  return second.value;
+}
