@@ -1,9 +1,9 @@
-const axios = require('axios');
+let arr = [1, 2, 3, 4, 5];
+arr.reverse();
 
-axios.get('https://jsonplaceholder.typicode.com/posts')
-  .then(response => {
-    console.log('Response:', response.data);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+console.log(arr); // Output: [5, 4, 3, 2, 1]
+let arr = [1, 2, 3, 4, 5];
+let reversedArr = [...arr].reverse();
+
+console.log(arr); // Output: [1, 2, 3, 4, 5]
+console.log(reversedArr); // Output: [5, 4, 3, 2, 1]
