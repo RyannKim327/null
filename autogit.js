@@ -1,48 +1,32 @@
-function mergeSortIterative(array) {
-  const n = array.length;
-  const aux = new Array(n); // Auxiliary array for merging
-
-  // Start with subarrays of size 1, then merge and double the subarray size
-  for (let subArraySize = 1; subArraySize < n; subArraySize *= 2) {
-    for (let startIndex = 0; startIndex < n - subArraySize; startIndex += 2 * subArraySize) {
-      const middleIndex = startIndex + subArraySize - 1;
-      const endIndex = Math.min(startIndex + 2 * subArraySize - 1, n - 1);
-
-      merge(array, aux, startIndex, middleIndex, endIndex);
-    }
+function burrowsWheelerTransform(input) {
+  // your code here
+}
+let rotations = [];
+for (let i = 0; i < input.length; i++) {
+  input = input.charAt(input.length - 1) + input.slice(0, input.length - 1);
+  rotations.push(input);
+}
+rotations.sort();
+let transformedString = rotations.map(rotation => rotation.charAt(rotation.length - 1)).join('');
+let originalIndex = rotations.indexOf(input);
+let originalString = rotations[originalIndex - 1];
+function burrowsWheelerTransform(input) {
+  let rotations = [];
+  for (let i = 0; i < input.length; i++) {
+    input = input.charAt(input.length - 1) + input.slice(0, input.length - 1);
+    rotations.push(input);
   }
 
-  return array;
+  rotations.sort();
+  let transformedString = rotations.map(rotation => rotation.charAt(rotation.length - 1)).join('');
+  
+  let originalIndex = rotations.indexOf(input);
+  let originalString = rotations[originalIndex - 1];
+  
+  return transformedString;
 }
 
-function merge(array, aux, startIndex, middleIndex, endIndex) {
-  let i = startIndex;
-  let j = middleIndex + 1;
-
-  // Copy array[startIndex..endIndex] to aux[startIndex..endIndex]
-  for (let k = startIndex; k <= endIndex; k++) {
-    aux[k] = array[k];
-  }
-
-  // Merge back to array[startIndex..endIndex]
-  for (let k = startIndex; k <= endIndex; k++) {
-    if (i > middleIndex) {
-      // Left subarray is exhausted
-      array[k] = aux[j++];
-    } else if (j > endIndex) {
-      // Right subarray is exhausted
-      array[k] = aux[i++];
-    } else if (aux[j] < aux[i]) {
-      // Right element is smaller than left element
-      array[k] = aux[j++];
-    } else {
-      // Left element is smaller than or equal to right element
-      array[k] = aux[i++];
-    }
-  }
-}
-
-// Example usage:
-const array = [5, 3, 8, 4, 2, 1, 6, 9, 7];
-const sortedArray = mergeSortIterative(array);
-console.log(sortedArray);
+// Example usage
+let input = "banana";
+let transformedString = burrowsWheelerTransform(input);
+console.log(transformedString);
