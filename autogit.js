@@ -1,20 +1,47 @@
-function insertionSort(array) {
-  for (let i = 1; i < array.length; i++) {
-    const temp = array[i];
-    let j = i - 1;
+function boyerMooreHorspool(text, pattern) {
+  function generateShiftTable(pattern) {
+    const shiftTable = {};
 
-    while (j >= 0 && array[j] > temp) {
-      array[j + 1] = array[j];
-      j--;
+    const patternLength = pattern.length;
+
+    for (let i = 0; i < patternLength - 1; i++) {
+      shiftTable[pattern[i]] = patternLength - i - 1;
     }
 
-    array[j + 1] = temp;
+    shiftTable[pattern[patternLength - 1]] = patternLength;
+
+    return shiftTable;
   }
 
-  return array;
+  const shiftTable = generateShiftTable(pattern);
+
+  const patternLength = pattern.length;
+  const textLength = text.length;
+
+  let index = 0;
+
+  while (index <= textLength - patternLength) {
+    let patternIndex = patternLength - 1;
+
+    while (patternIndex >= 0 && text[index + patternIndex] === pattern[patternIndex]) {
+      patternIndex--;
+    }
+
+    if (patternIndex === -1) {
+      return index;
+    }
+
+    const shift = shiftTable[text[index + patternLength - 1]] || patternLength;
+
+    index += shift;
+  }
+
+  return -1;
 }
 
-// Example usage:
-const unsortedArray = [5, 2, 4, 6, 1, 3];
-const sortedArray = insertionSort(unsortedArray);
-console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 6]
+// Example usage
+const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+const pattern = "ipsum";
+
+const result = boyerMooreHorspool(text, pattern);
+console.log(result); // Output: 6
