@@ -1,27 +1,28 @@
-function selectionSort(array) {
-  const length = array.length;
-
-  for (let i = 0; i < length - 1; i++) {
-    let minIndex = i;
-
-    for (let j = i + 1; j < length; j++) {
-      if (array[j] < array[minIndex]) {
-        minIndex = j;
-      }
+function interpolationSearch(array, target) {
+  let low = 0;
+  let high = array.length - 1;
+  
+  while (low <= high && target >= array[low] && target <= array[high]) {
+    if (low === high) {
+      if (array[low] === target)
+        return low;
+      return -1;
     }
-
-    if (minIndex !== i) {
-      // Swap elements
-      const temp = array[i];
-      array[i] = array[minIndex];
-      array[minIndex] = temp;
+    
+    let mid = low + Math.floor(((target - array[low]) * (high - low)) / (array[high] - array[low]));
+    
+    if (array[mid] === target) {
+      return mid;
+    } else if (array[mid] < target) {
+      low = mid + 1;
+    } else { // array[mid] > target
+      high = mid - 1;
     }
   }
-
-  return array;
+  
+  return -1;
 }
-
-// Usage example:
-const unsortedArray = [5, 2, 8, 3, 1, 4];
-const sortedArray = selectionSort(unsortedArray);
-console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 8]
+const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18];
+const target = 14;
+const result = interpolationSearch(arr, target);
+console.log("Target found at index:", result);
