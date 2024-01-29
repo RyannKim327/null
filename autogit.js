@@ -1,31 +1,61 @@
-function hasCycle(head) {
-  if (!head || !head.next) {
-    // An empty list or a list with only one node cannot contain a cycle
-    return false;
+class ListNode {
+  constructor(val, next = null) {
+    this.val = val;
+    this.next = next;
   }
-  
-  let slow = head; // Slow pointer moves one node at a time
-  let fast = head.next; // Fast pointer moves two nodes at a time
-
-  while (fast) {
-    if (slow === fast) {
-      // The pointers have met, indicating a cycle
-      return true;
-    }
-    slow = slow.next;
-    fast = fast.next ? fast.next.next : null;
-  }
-
-  // The fast pointer has reached the end, indicating no cycle
-  return false;
 }
-const listWithCycle = { value: 1, next: {/* ... */} };
-const listWithoutCycle = { value: 1, next: {/* ... */} };
+function isPalindrome(head) {
+  // Base case: empty list or single node list is a palindrome
+  if (!head || !head.next) {
+    return true;
+  }
 
-listWithoutCycle.next = { value: 2, next: null };
-listWithCycle.next = { value: 2, next: {/* ... */} };
-// Make the last node in the list point back to an earlier node to create a cycle
-listWithCycle.next.next = listWithCycle;
+  // Step 1: Find the middle of the linked list
+  let slow = head;
+  let fast = head;
 
-console.log(hasCycle(listWithCycle)); // true
-console.log(hasCycle(listWithoutCycle)); // false
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
+  }
+
+  // Step 2: Reverse the second half of the linked list
+  let prev = null;
+  let curr = slow;
+
+  while (curr) {
+    const next = curr.next;
+    curr.next = prev;
+    prev = curr;
+    curr = next;
+  }
+
+  // Step 3: Compare the reversed second half with the first half
+  let left = head;
+  let right = prev;
+
+  while (right) {
+    if (left.val !== right.val) {
+      return false;
+    }
+    left = left.next;
+    right = right.next;
+  }
+
+  return true;
+}
+// Sample linked list
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(2);
+head.next.next.next.next = new ListNode(1);
+
+console.log(isPalindrome(head)); // Output: true
+
+// Another sample linked list
+const head2 = new ListNode(1);
+head2.next = new ListNode(2);
+head2.next.next = new ListNode(3);
+
+console.log(isPalindrome(head2)); // Output: false
