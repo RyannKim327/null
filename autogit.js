@@ -1,12 +1,26 @@
-function factorialRecursive(num) {
-  // Base case: factorial of 0 and 1 is 1
-  if (num === 0 || num === 1) {
-    return 1;
-  }
+const str = 'Hello, world!';
+const substring = 'world';
 
-  // Recursive case: call the function again with num-1
-  return num * factorialRecursive(num - 1);
+if (str.includes(substring)) {
+  console.log('Substring found!');
+} else {
+  console.log('Substring not found.');
 }
+const str = 'Hello, world!';
+const substring = 'world';
 
-// Example usage:
-console.log(factorialRecursive(5)); // Output: 120
+if (str.indexOf(substring) >= 0) {
+  console.log('Substring found!');
+} else {
+  console.log('Substring not found.');
+}
+const str = 'Hello, world!';
+const substring = 'world';
+
+const regex = new RegExp(substring);
+
+if (regex.test(str)) {
+  console.log('Substring found!');
+} else {
+  console.log('Substring not found.');
+}
