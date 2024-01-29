@@ -1,18 +1,18 @@
-const str = 'Hello, World!';
-const substring = 'World';
+function reverseString(str) {
+  // Step 1: Convert the string into an array of characters
+  var arr = str.split('');
 
-// Check if the string contains the substring
-if (str.includes(substring)) {
-  console.log('Substring found!');
-} else {
-  console.log('Substring not found!');
-}
-const str = 'Hello, World!';
-const substring = 'World';
+  // Step 2: Reverse the order of the characters in the array
+  var reversedArray = arr.reverse();
 
-// Check if the string contains the substring
-if (str.indexOf(substring) !== -1) {
-  console.log('Substring found!');
-} else {
-  console.log('Substring not found!');
+  // Step 3: Convert the array back to a string
+  var reversedStr = reversedArray.join('');
+
+  // Step 4: Return the reversed string
+  return reversedStr;
 }
+
+// Example usage
+var myString = "Hello, World!";
+var reversedString = reverseString(myString);
+console.log(reversedString); // Output: "!dlroW ,olleH"
