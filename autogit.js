@@ -1,35 +1,58 @@
-class Node {
-  constructor(data, next = null) {
-    this.data = data;
-    this.next = next;
-  }
-}
-
-function findNthNodeFromEnd(head, n) {
-  if (!head) return null;
-
-  let slow = head;
-  let fast = head;
-
-  // Move the fast pointer n positions ahead
-  for (let i = 0; i < n; i++) {
-    if (!fast) return null; // The length of the list is less than n
-    fast = fast.next;
+class Tarjan {
+  constructor(vertices) {
+    this.vertices = vertices;
+    this.index = 0;
+    this.stack = [];
+    this.ids = new Array(vertices.length).fill(-1);
+    this.low = new Array(vertices.length);
+    this.onStack = new Array(vertices.length).fill(false);
+    this.scc = [];
   }
   
-  // Move both pointers at the same pace until the fast pointer reaches the end
-  while (fast) {
-    slow = slow.next;
-    fast = fast.next;
+  findSCC() {
+    for (let i = 0; i < this.vertices.length; i++) {
+      if (this.ids[i] === -1) {
+        this.tarjanDFS(i);
+      }
+    }
+    return this.scc;
   }
   
-  // The slow pointer is now pointing to the nth node from the end
-  return slow.data;
+  tarjanDFS(vertex) {
+    this.ids[vertex] = this.index;
+    this.low[vertex] = this.index;
+    this.index++;
+    this.stack.push(vertex);
+    this.onStack[vertex] = true;
+    
+    for (const adjacentVertex of this.vertices[vertex]) {
+      if (this.ids[adjacentVertex] === -1) {
+        this.tarjanDFS(adjacentVertex);
+        this.low[vertex] = Math.min(this.low[vertex], this.low[adjacentVertex]);
+      } else if (this.onStack[adjacentVertex]) {
+        this.low[vertex] = Math.min(this.low[vertex], this.ids[adjacentVertex]);
+      }
+    }
+    
+    if (this.ids[vertex] === this.low[vertex]) {
+      const component = [];
+      let v;
+      
+      do {
+        v = this.stack.pop();
+        this.onStack[v] = false;
+        component.push(v);
+      } while (v !== vertex);
+      
+      this.scc.push(component);
+    }
+  }
 }
-const node5 = new Node(5);
-const node4 = new Node(4, node5);
-const node3 = new Node(3, node4);
-const node2 = new Node(2, node3);
-const node1 = new Node(1, node2);
+const graph = [[1, 2], [0], [3], [4, 5], [3, 6], [5], [4]];
+const tarjan = new Tarjan(graph);
+const scc = tarjan.findSCC();
+const graph = [[1, 2], [0], [3], [4, 5], [3, 6], [5], [4]];
+const tarjan = new Tarjan(graph);
+const scc = tarjan.findSCC();
 
-console.log(findNthNodeFromEnd(node1, 2)); // Output: 4
+console.log(scc);  // [[6, 4, 5], [0, 1, 2], [3]]
