@@ -1,26 +1,23 @@
-function interpolationSearch(arr, target, start, end) {
-  if (start <= end && target >= arr[start] && target <= arr[end]) {
-    const pos = start + Math.floor(
-      ((target - arr[start]) * (end - start)) / (arr[end] - arr[start])
-    );
+function findLCS(string1, string2) {
+  const m = string1.length;
+  const n = string2.length;
+  const lcs = new Array(m + 1).fill().map(() => new Array(n + 1).fill(0));
 
-    if (arr[pos] === target) {
-      return pos;
-    }
-
-    if (arr[pos] < target) {
-      return interpolationSearch(arr, target, pos + 1, end);
-    }
-
-    if (arr[pos] > target) {
-      return interpolationSearch(arr, target, start, pos - 1);
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (string1[i - 1] === string2[j - 1]) {
+        lcs[i][j] = lcs[i - 1][j - 1] + 1;
+      } else {
+        lcs[i][j] = Math.max(lcs[i][j - 1], lcs[i - 1][j]);
+      }
     }
   }
 
-  return -1;
+  return lcs[m][n];
 }
-const arr = [1, 3, 5, 7, 9, 11, 13, 15];
-const target = 9;
 
-const position = interpolationSearch(arr, target, 0, arr.length - 1);
-console.log('Target found at position:', position); // Output: Target found at position: 4
+const string1 = "ABCD";
+const string2 = "ACDF";
+
+const lcsLength = findLCS(string1, string2);
+console.log("Length of LCS:", lcsLength);
