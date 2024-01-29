@@ -1,51 +1,40 @@
-function buildPrefixTable(pattern) {
-  const prefixTable = Array(pattern.length).fill(0);
-  let j = 0;
-
-  for (let i = 1; i < pattern.length; i++) {
-    if (pattern[i] === pattern[j]) {
-      prefixTable[i] = j + 1;
-      j++;
-    } else {
-      if (j !== 0) {
-        j = prefixTable[j - 1];
-        i--;
-      }
-    }
+function isPalindrome(head) {
+  if (!head || !head.next) {
+    return true; // Empty list or single node is a palindrome
   }
 
-  return prefixTable;
-}
+  let slow = head;
+  let fast = head;
 
-function stringMatch(text, pattern) {
-  const n = text.length;
-  const m = pattern.length;
-  const prefixTable = buildPrefixTable(pattern);
-  let i = 0;
-  let j = 0;
-
-  while (i < n) {
-    if (text[i] === pattern[j]) {
-      i++;
-      j++;
-    } else {
-      if (j !== 0) {
-        j = prefixTable[j - 1];
-      } else {
-        i++;
-      }
-    }
-
-    if (j === m) {
-      // Match found at index i - m
-      console.log('Match found at index', i - m);
-      j = prefixTable[j - 1];
-    }
+  while (fast && fast.next) {
+    fast = fast.next.next;
+    slow = slow.next;
   }
+
+  slow = reverseLinkedList(slow);
+
+  while (head && slow) {
+    if (head.val !== slow.val) {
+      return false;
+    }
+    head = head.next;
+    slow = slow.next;
+  }
+
+  return true;
 }
 
-// Example usage:
-const text = 'ABABDABACDABABCABAB';
-const pattern = 'ABABCABAB';
+function reverseLinkedList(node) {
+  let prev = null;
+  let current = node;
+  let next = null;
 
-stringMatch(text, pattern);
+  while (current) {
+    next = current.next;
+    current.next = prev;
+    prev = current;
+    current = next;
+  }
+
+  return prev;
+}
