@@ -1,20 +1,47 @@
-function findCommonElements(array1, array2) {
-  return array1.filter(element => array2.includes(element));
+function quickSelect(arr, left, right, k) {
+  if (left === right) {
+    return arr[left];
+  }
+
+  // Partition the array
+  const pivotIndex = partition(arr, left, right);
+  
+  // Recurse on the appropriate subarray
+  if (k === pivotIndex) {
+    return arr[k];
+  } else if (k < pivotIndex) {
+    return quickSelect(arr, left, pivotIndex - 1, k);
+  } else {
+    return quickSelect(arr, pivotIndex + 1, right, k);
+  }
 }
 
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
-function findCommonElements(array1, array2) {
-  const set1 = new Set(array1);
-  const commonElements = array2.filter(element => set1.has(element));
-  return commonElements;
+function partition(arr, left, right) {
+  const pivotValue = arr[right];
+  let i = left;
+
+  for (let j = left; j < right; j++) {
+    // Swap elements smaller than the pivot to the left
+    if (arr[j] < pivotValue) {
+      swap(arr, i, j);
+      i++;
+    }
+  }
+
+  // Move the pivot to its final position
+  swap(arr, i, right);
+
+  return i;
 }
 
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
+function swap(arr, i, j) {
+  const temp = arr[i];
+  arr[i] = arr[j];
+  arr[j] = temp;
+}
+
+// Example usage
+const array = [8, 4, 2, 10, 5, 9, 7];
+const k = 3; // find the 3rd smallest element
+const kthSmallest = quickSelect(array, 0, array.length - 1, k - 1);
+console.log(kthSmallest); // Output: 5
