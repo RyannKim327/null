@@ -1,26 +1,40 @@
-function findFirstNonRepeatingChar(str) {
-  // Create an empty object to store character counts
-  var charCount = {};
+function rabinKarpSearch(text, pattern) {
+  const prime = 101;  // A prime number to serve as the base for hash computation
+  const n = text.length;
+  const m = pattern.length;
+  const patternHash = hash(pattern, m);  // Compute the hash value of the pattern
 
-  // Iterate over each character in the string and count its occurrences
-  for (var i = 0; i < str.length; i++) {
-    var char = str[i];
-    charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
-  }
-
-  // Iterate over each character again and return the first non-repeating character
-  for (var j = 0; j < str.length; j++) {
-    var char = str[j];
-    if (charCount[char] === 1) {
-      return char;
+  let textHash = hash(text, m);  // Compute the initial hash value for the first window
+  for (let i = 0; i <= n - m; i++) {
+    if (textHash === patternHash && text.substring(i, i + m) === pattern) {
+      return i;  // Match found, return the starting index
+    }
+    if (i < n - m) {
+      textHash = rehash(text, i, i + m, textHash, m, prime);
     }
   }
+  return -1;  // No match found
+}
 
-  // If no non-repeating character is found, return null or any other value as desired
-  return null;
+// Compute the hash value for a given string
+function hash(str, len) {
+  let hashValue = 0;
+  for (let i = 0; i < len; i++) {
+    hashValue += str.charCodeAt(i) * Math.pow(prime, len - i - 1);
+  }
+  return hashValue;
+}
+
+// Recompute the hash value for the next window
+function rehash(str, oldIndex, newIndex, oldHash, len, prime) {
+  let newHash = oldHash - str.charCodeAt(oldIndex);
+  newHash = Math.floor(newHash / prime);
+  newHash += str.charCodeAt(newIndex) * Math.pow(prime, len - 1);
+  return newHash;
 }
 
 // Example usage
-var input = "abccadef";
-var firstNonRepeatingChar = findFirstNonRepeatingChar(input);
-console.log("First non-repeating character:", firstNonRepeatingChar);
+const text = "AABAACAADAABAABA";
+const pattern = "AABA";
+const index = rabinKarpSearch(text, pattern);
+console.log("Pattern found at index:", index);
