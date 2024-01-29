@@ -1,27 +1,36 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function findLongestIncreasingSubsequence(array) {
+  const n = array.length;
+  const lengths = new Array(n).fill(1); // Initialize all lengths to 1
+
+  // Compute lengths of increasing subsequences
+  for (let i = 1; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      if (array[i] > array[j]) {
+        lengths[i] = Math.max(lengths[i], lengths[j] + 1);
+      }
+    }
   }
-}
 
-function findMaxDepth(node) {
-  if (node === null) {
-    return 0; // base case: empty tree has depth 0
+  // Find the maximum length
+  let maxLength = 0;
+  for (let i = 0; i < n; i++) {
+    maxLength = Math.max(maxLength, lengths[i]);
   }
 
-  const leftDepth = findMaxDepth(node.left); // find depth of left subtree
-  const rightDepth = findMaxDepth(node.right); // find depth of right subtree
+  // Find the longest increasing subsequence based on the lengths computed
+  const subsequence = [];
+  let currLength = maxLength;
+  for (let i = n - 1; i >= 0; i--) {
+    if (lengths[i] === currLength) {
+      subsequence.unshift(array[i]);
+      currLength--;
+    }
+  }
 
-  return Math.max(leftDepth, rightDepth) + 1; // return the max depth + 1
+  return subsequence;
 }
 
 // Example usage:
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-console.log(findMaxDepth(root)); // Output: 3
+const array = [3, 10, 2, 1, 20];
+const longestSubsequence = findLongestIncreasingSubsequence(array);
+console.log(longestSubsequence); // Output: [3, 10, 20]
