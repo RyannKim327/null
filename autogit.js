@@ -1,36 +1,42 @@
-function findLongestIncreasingSubsequence(array) {
-  const lengths = new Array(array.length).fill(1); // Array to store lengths of increasing subsequences
-  const sequences = new Array(array.length); // Array to store the actual increasing subsequences
-
-  for (let i = 0; i < array.length; i++) {
-    sequences[i] = [array[i]]; // Start each sequence with the current element
-
-    for (let j = 0; j < i; j++) {
-      if (array[j] < array[i] && lengths[j] + 1 > lengths[i]) {
-        // If the element at j is smaller than i, and adding it to the sequence makes a longer subsequence
-        lengths[i] = lengths[j] + 1;
-
-        // Copy the subsequence from "sequences[j]" and add current element
-        sequences[i] = sequences[j].concat(array[i]);
-      }
-    }
-  }
-
-  // Find the longest subsequence
-  let longestLength = 0;
-  let longestSequence = [];
-
-  for (const sequence of sequences) {
-    if (sequence.length > longestLength) {
-      longestLength = sequence.length;
-      longestSequence = sequence;
-    }
-  }
-
-  return longestSequence;
+function LinkedListNode(value) {
+  this.value = value;
+  this.next = null;
 }
 
+function LinkedList() {
+  this.head = null;
+}
+
+LinkedList.prototype.addNode = function(value) {
+  var newNode = new LinkedListNode(value);
+
+  if (this.head === null) {
+    this.head = newNode;
+  } else {
+    var currentNode = this.head;
+    while (currentNode.next !== null) {
+      currentNode = currentNode.next;
+    }
+    currentNode.next = newNode;
+  }
+};
+
+LinkedList.prototype.getLength = function() {
+  var currentNode = this.head;
+  var length = 0;
+
+  while (currentNode !== null) {
+    length++;
+    currentNode = currentNode.next;
+  }
+
+  return length;
+};
+
 // Example usage
-const array = [3, 4, -1, 0, 6, 2, 3];
-const longestIncreasingSubsequence = findLongestIncreasingSubsequence(array);
-console.log(longestIncreasingSubsequence); // Output: [-1, 0, 2, 3]
+var list = new LinkedList();
+list.addNode(1);
+list.addNode(2);
+list.addNode(3);
+list.addNode(4);
+console.log(list.getLength()); // Output: 4
