@@ -1,12 +1,41 @@
-function factorial(n) {
-  // Base case: factorial of 0 is 1
-  if (n === 0) {
-    return 1;
+class Graph {
+  constructor() {
+    this.nodes = {};
   }
-  
-  // Recursive call
-  return n * factorial(n - 1);
+
+  addNode(node) {
+    this.nodes[node] = [];
+  }
+
+  addEdge(source, destination) {
+    this.nodes[source].push(destination);
+    this.nodes[destination].push(source);
+  }
+
+  getNeighbors(node) {
+    return this.nodes[node];
+  }
 }
-console.log(factorial(5)); // Output: 120
-console.log(factorial(0)); // Output: 1
-console.log(factorial(8)); // Output: 40320
+function depthFirstSearch(graph, start, visited = new Set()) {
+  visited.add(start);
+  console.log(start);
+
+  const neighbors = graph.getNeighbors(start);
+  for (const neighbor of neighbors) {
+    if (!visited.has(neighbor)) {
+      depthFirstSearch(graph, neighbor, visited);
+    }
+  }
+}
+const graph = new Graph();
+graph.addNode('A');
+graph.addNode('B');
+graph.addNode('C');
+graph.addNode('D');
+graph.addNode('E');
+
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('D', 'E');
+depthFirstSearch(graph, 'A');
