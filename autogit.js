@@ -1,25 +1,17 @@
-function longestCommonPrefix(strings) {
-  if (strings.length === 0) {
-    return '';
-  }
+function isAnagram(str1, str2) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  const sanitizedStr1 = str1.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+  const sanitizedStr2 = str2.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+  
+  // Sort the strings
+  const sortedStr1 = sanitizedStr1.split('').sort().join('');
+  const sortedStr2 = sanitizedStr2.split('').sort().join('');
 
-  if (strings.length === 1) {
-    return strings[0];
-  }
-
-  let prefix = '';
-
-  for (let i = 0; i < strings[0].length; i++) {
-    const char = strings[0][i];
-
-    for (let j = 1; j < strings.length; j++) {
-      if (strings[j][i] !== char) {
-        return prefix;
-      }
-    }
-
-    prefix += char;
-  }
-
-  return prefix;
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
+
+// Example usage
+console.log(isAnagram('listen', 'silent')); // Output: true
+console.log(isAnagram('hello', 'world')); // Output: false
+console.log(isAnagram('Dormitory', 'dirty room')); // Output: true
