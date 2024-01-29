@@ -1,13 +1,22 @@
-function isAscending(arr) {
-  for (let i = 0; i < arr.length - 1; i++) {
-    if (arr[i] > arr[i + 1]) {
-      return false;
-    }
-  }
-  return true;
+function reverseString(str) {
+    return str.split("").reverse().join("");
 }
-const array1 = [1, 2, 3, 4, 5];
-console.log(isAscending(array1)); // Output: true
 
-const array2 = [1, 5, 3, 4, 2];
-console.log(isAscending(array2)); // Output: false
+console.log(reverseString("Hello, World!")); // Output: !dlroW ,olleH
+function reverseString(str) {
+    let reversedStr = "";
+    for (let i = str.length - 1; i >= 0; i--) {
+        reversedStr += str[i];
+    }
+    return reversedStr;
+}
+
+console.log(reverseString("Hello, World!")); // Output: !dlroW ,olleH
+function reverseString(str) {
+    if (str === "")
+        return "";
+    else
+        return reverseString(str.substr(1)) + str.charAt(0);
+}
+
+console.log(reverseString("Hello, World!")); // Output: !dlroW ,olleH
