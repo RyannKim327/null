@@ -1,57 +1,39 @@
-class Stack {
-  constructor() {
-    this.stackArray = [];
+function heapify(arr, n, i) {
+  let largest = i;
+  const left = 2 * i + 1;
+  const right = 2 * i + 2;
+
+  if (left < n && arr[left] > arr[largest]) {
+    largest = left;
   }
 
-  // Push an element onto the stack
-  push(element) {
-    this.stackArray.push(element);
+  if (right < n && arr[right] > arr[largest]) {
+    largest = right;
   }
 
-  // Remove and return the top element of the stack
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack is empty, cannot pop an element.";
-    }
-    return this.stackArray.pop();
-  }
-
-  // Return the top element of the stack without removing it
-  peek() {
-    if (this.isEmpty()) {
-      return "Stack is empty, nothing to peek.";
-    }
-    return this.stackArray[this.stackArray.length - 1];
-  }
-
-  // Check if the stack is empty
-  isEmpty() {
-    return this.stackArray.length === 0;
-  }
-
-  // Return the size of the stack
-  size() {
-    return this.stackArray.length;
-  }
-
-  // Clear the stack
-  clear() {
-    this.stackArray = [];
-  }
-
-  // Print the stack elements
-  print() {
-    console.log(this.stackArray);
+  if (largest !== i) {
+    [arr[i], arr[largest]] = [arr[largest], arr[i]];
+    heapify(arr, n, largest);
   }
 }
 
-// Usage
-const stack = new Stack();
-stack.push(10);
-stack.push(20);
-stack.push(30);
-console.log(stack.size()); // Output: 3
-console.log(stack.peek()); // Output: 30
-console.log(stack.pop()); // Output: 30
-console.log(stack.isEmpty()); // Output: false
-stack.print(); // Output: [10, 20]
+function heapSort(arr) {
+  const n = arr.length;
+
+  // Build max heap
+  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+    heapify(arr, n, i);
+  }
+
+  // Heap sort
+  for (let i = n - 1; i > 0; i--) {
+    [arr[0], arr[i]] = [arr[i], arr[0]];
+    heapify(arr, i, 0);
+  }
+
+  return arr;
+}
+
+// Example usage
+const arr = [4, 10, 3, 5, 1];
+console.log(heapSort(arr)); // Output: [1, 3, 4, 5, 10]
