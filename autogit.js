@@ -1,40 +1,45 @@
-function rabinKarpSearch(text, pattern) {
-  const prime = 101;  // A prime number to serve as the base for hash computation
-  const n = text.length;
-  const m = pattern.length;
-  const patternHash = hash(pattern, m);  // Compute the hash value of the pattern
+function buildBadCharTable(pattern) {
+  const table = {};
+  const patternLength = pattern.length;
 
-  let textHash = hash(text, m);  // Compute the initial hash value for the first window
-  for (let i = 0; i <= n - m; i++) {
-    if (textHash === patternHash && text.substring(i, i + m) === pattern) {
-      return i;  // Match found, return the starting index
-    }
-    if (i < n - m) {
-      textHash = rehash(text, i, i + m, textHash, m, prime);
-    }
+  for (let i = 0; i < patternLength; i++) {
+    const char = pattern[i];
+    table[char.charCodeAt(0)] = i;
   }
-  return -1;  // No match found
-}
 
-// Compute the hash value for a given string
-function hash(str, len) {
-  let hashValue = 0;
-  for (let i = 0; i < len; i++) {
-    hashValue += str.charCodeAt(i) * Math.pow(prime, len - i - 1);
+  return table;
+}
+function boyerMooreSearch(text, pattern) {
+  const textLength = text.length;
+  const patternLength = pattern.length;
+  const badCharTable = buildBadCharTable(pattern);
+  let patternIndex = patternLength - 1;
+
+  while (patternIndex < textLength) {
+    let textIndex = patternIndex;
+    let patternCharIndex = patternLength - 1;
+
+    while (patternCharIndex >= 0 && text[textIndex] === pattern[patternCharIndex]) {
+      patternCharIndex--;
+      textIndex--;
+    }
+
+    if (patternCharIndex === -1) {
+      // Match found
+      return textIndex + 1;
+    }
+
+    const mismatchedChar = text[textIndex];
+    const badCharShift = badCharTable[mismatchedChar.charCodeAt(0)];
+    const skipLength = patternCharIndex - badCharShift;
+
+    patternIndex += skipLength >= 1 ? skipLength : patternLength;
   }
-  return hashValue;
-}
 
-// Recompute the hash value for the next window
-function rehash(str, oldIndex, newIndex, oldHash, len, prime) {
-  let newHash = oldHash - str.charCodeAt(oldIndex);
-  newHash = Math.floor(newHash / prime);
-  newHash += str.charCodeAt(newIndex) * Math.pow(prime, len - 1);
-  return newHash;
+  // No match found
+  return -1;
 }
-
-// Example usage
-const text = "AABAACAADAABAABA";
-const pattern = "AABA";
-const index = rabinKarpSearch(text, pattern);
-console.log("Pattern found at index:", index);
+const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+const pattern = "ipsum";
+const index = boyerMooreSearch(text, pattern);
+console.log(index); // Output: 6
