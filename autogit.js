@@ -1,10 +1,13 @@
-const numbers = [5, 1, 3, 2, 4];
+const cron = require('cron');
 
-// sorting the array in ascending order
-numbers.sort((a, b) => a - b);
+// Define the cron schedule
+const cronExpression = '0 * * * *'; // Runs every hour at minute 0
 
-console.log(numbers); // Output: [1, 2, 3, 4, 5]
-// sorting the array in descending order
-numbers.sort((a, b) => b - a);
+// Create a cron job
+const job = new cron.CronJob(cronExpression, () => {
+  // Code to be executed on each cron trigger
+  console.log('Cron job triggered!');
+}, null, true, 'UTC');
 
-console.log(numbers); // Output: [5, 4, 3, 2, 1]
+// Start the cron job
+job.start();
