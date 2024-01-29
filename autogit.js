@@ -1,19 +1,31 @@
-function bubbleSort(array) {
-  let swapped;
-  do {
-    swapped = false;
-    for (let i = 0; i < array.length - 1; i++) {
-      if (array[i] > array[i + 1]) {
-        [array[i], array[i + 1]] = [array[i + 1], array[i]];
-        swapped = true;
-      }
+function findMajorityElement(array) {
+  const frequency = {};
+  const n = array.length;
+
+  // Count the frequencies of each element
+  for (let i = 0; i < n; i++) {
+    const element = array[i];
+    frequency[element] = (frequency[element] || 0) + 1;
+  }
+
+  // Find the element with the highest frequency
+  let majorityElement;
+  let maxFrequency = 0;
+  for (const element in frequency) {
+    if (frequency[element] > maxFrequency) {
+      majorityElement = element;
+      maxFrequency = frequency[element];
     }
-  } while (swapped);
-  
-  return array;
+  }
+
+  // Check if the frequency of the majority element is greater than n/2
+  if (maxFrequency > n / 2) {
+    return majorityElement;
+  } else {
+    return "No majority element found.";
+  }
 }
 
-// Usage example:
-const unsortedArray = [5, 3, 8, 2, 1, 4];
-const sortedArray = bubbleSort(unsortedArray);
-console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 8]
+// Example usage
+const array = [2, 2, 3, 4, 2, 2];
+console.log(findMajorityElement(array)); // Output: 2
