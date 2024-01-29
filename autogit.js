@@ -1,14 +1,15 @@
-const cron = require('node-cron');
+function calculateMean(numbers) {
+  if(numbers.length === 0) {
+    return 0; // or display an error message
+  }
 
-// Define your task function
-function task() {
-  console.log('Running task...');
-  // Your task logic goes here
+  const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+  const mean = (sum / numbers.length).toFixed(2);
+
+  return mean;
 }
 
-// Schedule the task to run every minute using cron syntax
-cron.schedule('* * * * *', task);
-
-// Output a confirmation message
-console.log('Task scheduled. Waiting for it to run...');
-npm install node-cron
+// Example usage
+const numbers = [1, 2, 3, 4, 5];
+const mean = calculateMean(numbers);
+console.log(mean); // Output: 3
