@@ -1,18 +1,22 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  str = str.replace(/[^a-z0-9]/gi, '').toLowerCase();
-
-  // Compare characters from the beginning and end
-  for (let i = 0; i < Math.floor(str.length / 2); i++) {
-    if (str[i] !== str[str.length - 1 - i]) {
-      return false;
-    }
+function binarySearchRecursive(arr, target, low, high) {
+  if (low > high) {
+    return -1;
   }
-  return true;
+
+  let mid = Math.floor((low + high) / 2);
+
+  if (arr[mid] === target) {
+    return mid;
+  } else if (arr[mid] > target) {
+    return binarySearchRecursive(arr, target, low, mid - 1);
+  } else {
+    return binarySearchRecursive(arr, target, mid + 1, high);
+  }
 }
 
-// Example usage:
-console.log(isPalindrome('level'));  // true
-console.log(isPalindrome('hello'));  // false
-console.log(isPalindrome('Step on no pets')); // true
-console.log(isPalindrome('A man, a plan, a canal: Panama')); // true
+// Usage example:
+let sortedArray = [1, 3, 5, 7, 9];
+let targetElement = 5;
+
+let resultIndex = binarySearchRecursive(sortedArray, targetElement, 0, sortedArray.length - 1);
+console.log(resultIndex); // Output: 2 (index of the target element)
