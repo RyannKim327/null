@@ -1,55 +1,28 @@
-function biDirectionalSearch(graph, source, target) {
-  // Perform the forward search from the source
-  const forwardVisited = new Set();
-  const forwardQueue = [[source, [source]]];
+// Create an XMLHttpRequest object
+var xhr = new XMLHttpRequest();
 
-  // Perform the backward search from the target
-  const backwardVisited = new Set();
-  const backwardQueue = [[target, [target]]];
+// Define the endpoint URL
+var url = 'https://api.example.com/data';
 
-  while (forwardQueue.length && backwardQueue.length) {
-    const [forwardNode, forwardPath] = forwardQueue.shift();
-    const [backwardNode, backwardPath] = backwardQueue.shift();
+// Open a request connection
+xhr.open('GET', url, true);
 
-    // Check if nodes meet in the middle
-    if (backwardVisited.has(forwardNode)) {
-      return forwardPath.concat(backwardPath.reverse().slice(1));
-    }
+// Set headers if required
+// xhr.setRequestHeader('Content-Type', 'application/json');
 
-    // Forward Search
-    forwardVisited.add(forwardNode);
-    for (const neighbor of graph[forwardNode]) {
-      if (!forwardVisited.has(neighbor)) {
-        forwardQueue.push([neighbor, forwardPath.concat([neighbor])]);
-      }
-    }
-
-    // Backward Search
-    backwardVisited.add(backwardNode);
-    for (const neighbor of graph[backwardNode]) {
-      if (!backwardVisited.has(neighbor)) {
-        backwardQueue.push([neighbor, backwardPath.concat([neighbor])]);
-      }
-    }
+// Define the success callback function
+xhr.onload = function() {
+  if (xhr.status === 200) {
+    var response = JSON.parse(xhr.responseText);
+    console.log(response);
+    // Do something with the API response data
   }
-
-  // Path not found
-  return null;
-}
-
-// Example usage
-const graph = {
-  A: ["B", "C"],
-  B: ["A", "D"],
-  C: ["A", "E"],
-  D: ["B", "F"],
-  E: ["C"],
-  F: ["D", "G"],
-  G: ["F"],
 };
 
-const source = "A";
-const target = "G";
+// Define the error callback function
+xhr.onerror = function() {
+  console.log('Error occurred while making the request.');
+};
 
-const path = biDirectionalSearch(graph, source, target);
-console.log("Path:", path);
+// Send the request
+xhr.send();
