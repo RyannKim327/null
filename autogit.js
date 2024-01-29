@@ -1,33 +1,28 @@
-function findLongestIncreasingSubsequence(arr) {
-  const n = arr.length;
-  const dp = Array(n).fill(1);
-
-  for (let i = 1; i < n; i++) {
-    for (let j = 0; j < i; j++) {
-      if (arr[i] > arr[j] && dp[i] < dp[j] + 1) {
-        dp[i] = dp[j] + 1;
-      }
+function findMax(arr) {
+  let max = 0;
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] > max) {
+      max = arr[i];
     }
   }
-
-  let maxLength = 0;
-  for (let i = 0; i < n; i++) {
-    maxLength = Math.max(maxLength, dp[i]);
-  }
-
-  const lis = [];
-  let lisLength = maxLength;
-  for (let i = n - 1; i >= 0 && lisLength > 0; i--) {
-    if (dp[i] === lisLength) {
-      lis.unshift(arr[i]);
-      lisLength--;
-    }
-  }
-
-  return lis;
+  return max;
 }
+function radixSort(arr) {
+  const maxNum = findMax(arr);
+  let numDigits = Math.floor(Math.log10(maxNum)) + 1;
 
-// Example usage:
-const array = [3, 10, 2, 1, 20];
-const lis = findLongestIncreasingSubsequence(array);
-console.log("Longest Increasing Subsequence:", lis); // Output: [3, 10, 20]
+  for (let i = 0; i < numDigits; i++) {
+    let buckets = Array.from({ length: 10 }, () => []);
+    for (let j = 0; j < arr.length; j++) {
+      let digit = Math.floor((arr[j] / Math.pow(10, i)) % 10);
+      buckets[digit].push(arr[j]);
+    }
+    arr = [].concat(...buckets); // Merge the buckets into one array
+  }
+  
+  return arr;
+}
+let arr = [170, 45, 75, 90, 802, 24, 2, 66];
+console.log("Original Array:", arr);
+arr = radixSort(arr);
+console.log("Sorted Array:", arr);
