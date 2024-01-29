@@ -1,49 +1,26 @@
-function interpolationSearch(arr, target, start = 0, end = arr.length - 1) {
-  // Interpolation search logic goes here
-}
-function interpolationSearch(arr, target, start = 0, end = arr.length - 1) {
-  if (start > end) {
-    return -1;
-  }
-  // Interpolation search logic goes here
-}
-let position = start + Math.floor(((end - start) / (arr[end] - arr[start])) * (target - arr[start]));
-if (position < start) {
-  position = start;
-} else if (position > end) {
-  position = end;
-}
-if (arr[position] === target) {
-  return position;
-}
-if (arr[position] > target) {
-  return interpolationSearch(arr, target, start, position - 1);
-}
-if (arr[position] < target) {
-  return interpolationSearch(arr, target, position + 1, end);
-}
-function interpolationSearch(arr, target, start = 0, end = arr.length - 1) {
-  if (start > end) {
-    return -1;
-  }
+function interpolationSearch(arr, x, n) {
+  let low = 0;
+  let high = n - 1;
+  
+  while (low <= high && x >= arr[low] && x <= arr[high]) {
+    if (low === high) {
+      if (arr[low] === x) return low;
+      return -1;
+    }
 
-  let position = start + Math.floor(((end - start) / (arr[end] - arr[start])) * (target - arr[start]));
+    const pos = low + Math.floor((x - arr[low]) * (high - low) / (arr[high] - arr[low]));
 
-  if (position < start) {
-    position = start;
-  } else if (position > end) {
-    position = end;
-  }
+    if (arr[pos] === x) return pos;
 
-  if (arr[position] === target) {
-    return position;
+    if (arr[pos] < x) low = pos + 1;
+    else high = pos - 1;
   }
-
-  if (arr[position] > target) {
-    return interpolationSearch(arr, target, start, position - 1);
-  }
-
-  if (arr[position] < target) {
-    return interpolationSearch(arr, target, position + 1, end);
-  }
+  
+  return -1;
 }
+const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+const x = 12;
+const n = arr.length;
+
+const result = interpolationSearch(arr, x, n);
+console.log(result); // Output: 5
