@@ -1,28 +1,29 @@
-function findMaxSubarraySum(arr) {
-  // Initialize variables to track current sum and maximum sum
-  let currentSum = 0;
-  let maxSum = 0;
+function binarySearch(arr, target) {
+  let left = 0;
+  let right = arr.length - 1;
 
-  // Iterate through the array
-  for (let i = 0; i < arr.length; i++) {
-    // Add the current element to the current sum
-    currentSum += arr[i];
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
 
-    // If current sum is negative, reset it to 0
-    if (currentSum < 0) {
-      currentSum = 0;
-    }
-
-    // If current sum is greater than maximum sum, update the maximum sum
-    if (currentSum > maxSum) {
-      maxSum = currentSum;
+    if (arr[mid] === target) {
+      return mid; // Found the target
+    } else if (arr[mid] < target) {
+      left = mid + 1; // Target is in the right half
+    } else {
+      right = mid - 1; // Target is in the left half
     }
   }
 
-  return maxSum;
+  return -1; // Target not found
 }
 
-// Example usage
-const array = [1, -3, 2, 1, -1];
-const maxSum = findMaxSubarraySum(array);
-console.log(maxSum); // Output: 3
+// Test the binary search function
+const numbers = [2, 5, 7, 10, 15, 20, 22, 25, 30];
+const targetNumber = 10;
+const index = binarySearch(numbers, targetNumber);
+
+if (index !== -1) {
+  console.log(`Found ${targetNumber} at index ${index}`);
+} else {
+  console.log(`${targetNumber} not found in the array`);
+}
