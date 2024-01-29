@@ -1,25 +1,14 @@
-function burrowsWheelerTransform(input) {
-  let rotations = [];
-  
-  // Generate all rotations
-  for (let i = 0; i < input.length; i++) {
-    rotations.push(input.slice(i) + input.slice(0, i));
-  }
-  
-  // Sort the rotations
-  rotations.sort();
-  
-  let transformedString = '';
-  
-  // Build the transformed string
-  for (let rotation of rotations) {
-    transformedString += rotation.charAt(input.length - 1);
-  }
-  
-  return transformedString;
-}
+function reverseLinkedList(head) {
+  let previousNode = null;
+  let currentNode = head;
+  let nextNode = null;
 
-// Example usage
-const input = 'banana';
-const transformed = burrowsWheelerTransform(input);
-console.log(transformed); // outputs: 'annb$aa'
+  while (currentNode !== null) {
+    nextNode = currentNode.next;
+    currentNode.next = previousNode;
+    previousNode = currentNode;
+    currentNode = nextNode;
+  }
+
+  return previousNode;
+}
