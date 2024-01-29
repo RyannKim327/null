@@ -1,15 +1,15 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  const sanitizedStr = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-  
-  // Reverse the string
-  const reversedStr = sanitizedStr.split('').reverse().join('');
-  
-  // Compare the original string with its reversed version
-  return sanitizedStr === reversedStr;
+function findFirstRepeatedChar(str) {
+  var charSet = new Set();
+  for (var i = 0; i < str.length; i++) {
+    var char = str[i];
+    if (charSet.has(char)) {
+      return char;
+    }
+    charSet.add(char);
+  }
+  return null;
 }
 
-// Examples
-console.log(isPalindrome("racecar")); // true
-console.log(isPalindrome("hello")); // false
-console.log(isPalindrome("A man, a plan, a canal, Panama!")); // true
+var inputString = "abcdeabcd";
+var repeatedChar = findFirstRepeatedChar(inputString);
+console.log("First repeated character is: " + repeatedChar);
