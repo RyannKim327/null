@@ -1,27 +1,37 @@
-function binarySearchRecursive(array, target, low, high) {
-  if (low > high) {
-    return -1;
-  }
-
-  const mid = Math.floor((low + high) / 2);
-
-  if (array[mid] === target) {
-    return mid;
-  }
-
-  if (array[mid] > target) {
-    return binarySearchRecursive(array, target, low, mid - 1);
-  }
-
-  if (array[mid] < target) {
-    return binarySearchRecursive(array, target, mid + 1, high);
-  }
-
-  return -1;
+function radixSort(arr) {
+  // Implementation goes here
 }
+function getMax(arr) {
+  let max = arr[0];
+  for (let i = 1; i < arr.length; i++) {
+    if (arr[i] > max) {
+      max = arr[i];
+    }
+  }
+  return max;
+}
+function radixSort(arr) {
+  const max = getMax(arr);
+  
+  // Get the number of digits in the maximum element
+  const maxDigits = Math.floor(Math.log10(max) + 1);
+  
+  // Create the counter array
+  let counter;
+  for (let digit = 0; digit < maxDigits; digit++) {
+    counter = Array.from({ length: 10 }, () => []);
+  
+    for (let i = 0; i < arr.length; i++) {
+      const currentDigit = Math.floor((arr[i] / Math.pow(10, digit)) % 10);
+      counter[currentDigit].push(arr[i]);
+    }
+  
+    arr = counter.flat();
+  }
 
-// Usage example:
-const sortedArray = [2, 4, 5, 7, 10, 12, 15, 18, 20];
-const targetValue = 12;
-const resultIndex = binarySearchRecursive(sortedArray, targetValue, 0, sortedArray.length - 1);
-console.log(resultIndex); // Output: 5
+  // Return the sorted array
+  return arr;
+}
+const unsortedArray = [170, 45, 75, 90, 802, 24, 2, 66];
+
+console.log(radixSort(unsortedArray));
