@@ -1,56 +1,53 @@
-class HashTable {
+class Stack {
   constructor() {
-    this.table = new Array(100); // Size of the hash table (can be adjusted)
+    this.stackArray = [];
   }
 
-  hash(key) {
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) {
-      hash += key.charCodeAt(i);
-    }
-    return hash % this.table.length;
+  // Push an element onto the stack
+  push(element) {
+    this.stackArray.push(element);
   }
 
-  insert(key, value) {
-    const index = this.hash(key);
-    if (!this.table[index]) {
-      this.table[index] = [];
+  // Remove and return the topmost element from the stack
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
     }
-    this.table[index].push({ key, value });
+    return this.stackArray.pop();
   }
 
-  retrieve(key) {
-    const index = this.hash(key);
-    if (this.table[index]) {
-      for (let i = 0; i < this.table[index].length; i++) {
-        if (this.table[index][i].key === key) {
-          return this.table[index][i].value;
-        }
-      }
+  // Return the topmost element without removing it
+  peek() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
     }
-    return undefined;
+    return this.stackArray[this.stackArray.length - 1];
   }
 
-  delete(key) {
-    const index = this.hash(key);
-    if (this.table[index]) {
-      for (let i = 0; i < this.table[index].length; i++) {
-        if (this.table[index][i].key === key) {
-          this.table[index].splice(i, 1);
-          break;
-        }
-      }
-    }
+  // Check if the stack is empty
+  isEmpty() {
+    return this.stackArray.length === 0;
+  }
+
+  // Get the size of the stack
+  size() {
+    return this.stackArray.length;
+  }
+
+  // Print the stack elements
+  printStack() {
+    console.log(this.stackArray);
   }
 }
 
-// Example usage:
-const hashTable = new HashTable();
-hashTable.insert("name", "John");
-hashTable.insert("age", 25);
-
-console.log(hashTable.retrieve("name")); // Output: John
-console.log(hashTable.retrieve("age")); // Output: 25
-
-hashTable.delete("age");
-console.log(hashTable.retrieve("age")); // Output: undefined
+// Example usage
+const stack = new Stack();
+stack.push(1);
+stack.push(2);
+stack.push(3);
+stack.printStack(); // Output: [1, 2, 3]
+console.log(stack.pop()); // Output: 3
+console.log(stack.peek()); // Output: 2
+console.log(stack.isEmpty()); // Output: false
+console.log(stack.size()); // Output: 2
+stack.printStack(); // Output: [1, 2]
