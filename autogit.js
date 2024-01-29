@@ -1,4 +1,4 @@
-function countOccurrences(str, char) {
+function countCharOccurrences(str, char) {
   let count = 0;
   for (let i = 0; i < str.length; i++) {
     if (str.charAt(i) === char) {
@@ -7,9 +7,9 @@ function countOccurrences(str, char) {
   }
   return count;
 }
+const inputString = "Hello, World!";
+const charToCount = "o";
 
-// Example usage
-const string = "Hello, world!";
-const character = "l";
-const occurrences = countOccurrences(string, character);
-console.log(`The character "${character}" occurs ${occurrences} times in the string "${string}".`);
+const occurrences = countCharOccurrences(inputString, charToCount);
+console.log(`The character "${charToCount}" appears ${occurrences} times.`);
+The character "o" appears 2 times.
