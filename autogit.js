@@ -1,23 +1,49 @@
-function shellSort(arr) {
-  var len = arr.length;
-  var gap = Math.floor(len / 2);
-  
-  while (gap > 0) {
-    for (var i = gap; i < len; i++) {
-      var temp = arr[i];
-      var j = i;
-
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
-      }
-      arr[j] = temp;
-    }
-    gap = Math.floor(gap / 2);
-  }
-  return arr;
+function interpolationSearch(arr, target, start = 0, end = arr.length - 1) {
+  // Interpolation search logic goes here
 }
-var myArray = [5, 3, 8, 4, 2];
-var sortedArray = shellSort(myArray);
+function interpolationSearch(arr, target, start = 0, end = arr.length - 1) {
+  if (start > end) {
+    return -1;
+  }
+  // Interpolation search logic goes here
+}
+let position = start + Math.floor(((end - start) / (arr[end] - arr[start])) * (target - arr[start]));
+if (position < start) {
+  position = start;
+} else if (position > end) {
+  position = end;
+}
+if (arr[position] === target) {
+  return position;
+}
+if (arr[position] > target) {
+  return interpolationSearch(arr, target, start, position - 1);
+}
+if (arr[position] < target) {
+  return interpolationSearch(arr, target, position + 1, end);
+}
+function interpolationSearch(arr, target, start = 0, end = arr.length - 1) {
+  if (start > end) {
+    return -1;
+  }
 
-console.log(sortedArray); // Output: [2, 3, 4, 5, 8]
+  let position = start + Math.floor(((end - start) / (arr[end] - arr[start])) * (target - arr[start]));
+
+  if (position < start) {
+    position = start;
+  } else if (position > end) {
+    position = end;
+  }
+
+  if (arr[position] === target) {
+    return position;
+  }
+
+  if (arr[position] > target) {
+    return interpolationSearch(arr, target, start, position - 1);
+  }
+
+  if (arr[position] < target) {
+    return interpolationSearch(arr, target, position + 1, end);
+  }
+}
