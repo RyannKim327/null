@@ -1,24 +1,18 @@
-function bwtTransform(text) {
-  const transformed = [];
-  const rotations = [];
+function isAnagram(str1, str2) {
+  // Remove non-alphabetic characters and convert to lowercase
+  str1 = str1.replace(/[^a-zA-Z]/g, '').toLowerCase();
+  str2 = str2.replace(/[^a-zA-Z]/g, '').toLowerCase();
 
-  // Generate all rotations
-  for (let i = 0; i < text.length; i++) {
-    const rotation = text.slice(-1) + text.slice(0, -1);
-    rotations.push(rotation);
-    text = rotation;
-  }
+  // Convert strings to arrays and sort them
+  const sorted1 = str1.split('').sort();
+  const sorted2 = str2.split('').sort();
 
-  // Sort rotations lexicographically
-  rotations.sort();
-
-  // Find original index in the sorted rotations array
-  const originalIndex = rotations.findIndex((rotation) => rotation === text);
-
-  // Take the last character of each rotation in the sorted array
-  for (let i = 0; i < rotations.length; i++) {
-    transformed.push(rotations[i].slice(-1));
-  }
-
-  return transformed.join('');
+  // Compare the sorted arrays
+  return sorted1.join('') === sorted2.join('');
 }
+
+// Example usage
+const string1 = 'listen';
+const string2 = 'silent';
+
+console.log(isAnagram(string1, string2)); // Output: true
