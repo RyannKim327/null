@@ -1,20 +1,19 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters
-  const alphanumericStr = str.replace(/[\W_]/g, '');
-  
-  // Convert the string to lowercase
-  const lowercaseStr = alphanumericStr.toLowerCase();
-  
-  // Reverse the string
-  const reversedStr = lowercaseStr.split('').reverse().join('');
-  
-  // Compare the reversed string with the original string
-  return lowercaseStr === reversedStr;
+function bubbleSort(arr) {
+  var len = arr.length;
+  for (var i = 0; i < len - 1; i++) {
+    for (var j = 0; j < len - i - 1; j++) {
+      if (arr[j] > arr[j + 1]) {
+        // Swap arr[j] and arr[j+1]
+        var temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
+      }
+    }
+  }
+  return arr;
 }
 
-// Example usage
-const str1 = "A man, a plan, a canal: Panama";
-console.log(isPalindrome(str1)); // Output: true
-
-const str2 = "race a car";
-console.log(isPalindrome(str2)); // Output: false
+// Example usage:
+var numbers = [5, 8, 2, 1, 6];
+console.log("Original array:", numbers);
+console.log("Sorted array:", bubbleSort(numbers));
