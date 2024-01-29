@@ -1,24 +1,48 @@
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
+function mergeSortIterative(array) {
+  const n = array.length;
+  const aux = new Array(n); // Auxiliary array for merging
 
-let index = array.indexOf(elementToRemove);
-if (index > -1) {
-  array.splice(index, 1);
+  // Start with subarrays of size 1, then merge and double the subarray size
+  for (let subArraySize = 1; subArraySize < n; subArraySize *= 2) {
+    for (let startIndex = 0; startIndex < n - subArraySize; startIndex += 2 * subArraySize) {
+      const middleIndex = startIndex + subArraySize - 1;
+      const endIndex = Math.min(startIndex + 2 * subArraySize - 1, n - 1);
+
+      merge(array, aux, startIndex, middleIndex, endIndex);
+    }
+  }
+
+  return array;
 }
 
-console.log(array); // Output: [1, 2, 4, 5]
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
+function merge(array, aux, startIndex, middleIndex, endIndex) {
+  let i = startIndex;
+  let j = middleIndex + 1;
 
-array = array.filter(item => item !== elementToRemove);
+  // Copy array[startIndex..endIndex] to aux[startIndex..endIndex]
+  for (let k = startIndex; k <= endIndex; k++) {
+    aux[k] = array[k];
+  }
 
-console.log(array); // Output: [1, 2, 4, 5]
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
-
-let index = array.indexOf(elementToRemove);
-if (index > -1) {
-  array = [...array.slice(0, index), ...array.slice(index + 1)];
+  // Merge back to array[startIndex..endIndex]
+  for (let k = startIndex; k <= endIndex; k++) {
+    if (i > middleIndex) {
+      // Left subarray is exhausted
+      array[k] = aux[j++];
+    } else if (j > endIndex) {
+      // Right subarray is exhausted
+      array[k] = aux[i++];
+    } else if (aux[j] < aux[i]) {
+      // Right element is smaller than left element
+      array[k] = aux[j++];
+    } else {
+      // Left element is smaller than or equal to right element
+      array[k] = aux[i++];
+    }
+  }
 }
 
-console.log(array); // Output: [1, 2, 4, 5]
+// Example usage:
+const array = [5, 3, 8, 4, 2, 1, 6, 9, 7];
+const sortedArray = mergeSortIterative(array);
+console.log(sortedArray);
