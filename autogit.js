@@ -1,21 +1,38 @@
-function isAnagram(str1, str2) {
-  // convert strings to lowercase and remove spaces/punctuation
-  str1 = str1.toLowerCase().replace(/[^\w]/g, '');
-  str2 = str2.toLowerCase().replace(/[^\w]/g, '');
-
-  // convert strings to arrays, sort, and convert back to strings
-  const sortedStr1 = str1.split('').sort().join('');
-  const sortedStr2 = str2.split('').sort().join('');
-
-  // compare the sorted strings
-  return sortedStr1 === sortedStr2;
+function selectionSort(arr) {
+  // Your code goes here
+}
+function selectionSort(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    let minIndex = i;
+    for (let j = i + 1; j < arr.length; j++) {
+      if (arr[j] < arr[minIndex]) {
+        minIndex = j;
+      }
+    }
+    // Swap the found minimum element with the first element
+    let temp = arr[i];
+    arr[i] = arr[minIndex];
+    arr[minIndex] = temp;
+  }
+  return arr;
+}
+const arr = [64, 25, 12, 22, 11];
+console.log(selectionSort(arr));
+function selectionSort(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    let minIndex = i;
+    for (let j = i + 1; j < arr.length; j++) {
+      if (arr[j] < arr[minIndex]) {
+        minIndex = j;
+      }
+    }
+    // Swap the found minimum element with the first element
+    let temp = arr[i];
+    arr[i] = arr[minIndex];
+    arr[minIndex] = temp;
+  }
+  return arr;
 }
 
-// example usage
-const string1 = 'listen';
-const string2 = 'silent';
-if (isAnagram(string1, string2)) {
-  console.log('Strings are anagrams!');
-} else {
-  console.log('Strings are not anagrams.');
-}
+const arr = [64, 25, 12, 22, 11];
+console.log(selectionSort(arr));
