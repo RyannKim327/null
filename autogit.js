@@ -1,39 +1,53 @@
-function longestCommonSubsequence(string1, string2) {
-  const len1 = string1.length;
-  const len2 = string2.length;
-
-  const lcsArray = new Array(len1 + 1).fill(0).map(() => new Array(len2 + 1).fill(0));
-
-  for (let i = 1; i <= len1; i++) {
-    for (let j = 1; j <= len2; j++) {
-      if (string1[i - 1] === string2[j - 1]) {
-        lcsArray[i][j] = lcsArray[i - 1][j - 1] + 1;
-      } else {
-        lcsArray[i][j] = Math.max(lcsArray[i - 1][j], lcsArray[i][j - 1]);
-      }
-    }
+class Stack {
+  constructor() {
+    this.stack = [];
   }
 
-  let result = '';
-  let i = len1;
-  let j = len2;
-
-  while (i > 0 && j > 0) {
-    if (string1[i - 1] === string2[j - 1]) {
-      result = string1[i - 1] + result;
-      i--;
-      j--;
-    } else if (lcsArray[i - 1][j] > lcsArray[i][j - 1]) {
-      i--;
-    } else {
-      j--;
-    }
+  // Pushes an element onto the stack
+  push(element) {
+    this.stack.push(element);
   }
 
-  return result;
+  // Pops an element from the stack and returns it
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack is empty!";
+    }
+    return this.stack.pop();
+  }
+
+  // Returns the topmost element without removing it from the stack
+  peek() {
+    if (this.isEmpty()) {
+      return "Stack is empty!";
+    }
+    return this.stack[this.stack.length - 1];
+  }
+
+  // Checks if the stack is empty
+  isEmpty() {
+    return this.stack.length === 0;
+  }
+
+  // Returns the size of the stack
+  size() {
+    return this.stack.length;
+  }
+
+  // Clears the stack
+  clear() {
+    this.stack = [];
+  }
 }
+const stack = new Stack();
+stack.push(1);
+stack.push(2);
+stack.push(3);
 
-// Example usage:
-const string1 = 'ABCDGH';
-const string2 = 'AEDFHR';
-console.log(longestCommonSubsequence(string1, string2)); // Output: ADH
+console.log(stack.peek());   // Output: 3
+console.log(stack.pop());    // Output: 3
+console.log(stack.size());   // Output: 2
+console.log(stack.isEmpty());  // Output: false
+
+stack.clear();
+console.log(stack.isEmpty());  // Output: true
