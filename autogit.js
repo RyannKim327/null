@@ -1,54 +1,52 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.children = [];
+function buildPrefixTable(pattern) {
+  const prefixTable = [0];
+  let prefixIndex = 0;
+
+  for (let i = 1; i < pattern.length; i++) {
+    if (pattern[i] === pattern[prefixIndex]) {
+      prefixIndex++;
+      prefixTable[i] = prefixIndex;
+    } else {
+      if (prefixIndex > 0) {
+        prefixIndex = prefixTable[prefixIndex - 1];
+        i--; // Retry the current character against the new prefix index
+      } else {
+        prefixTable[i] = 0;
+      }
+    }
   }
-  
-  addChild(node) {
-    this.children.push(node);
-  }
+
+  return prefixTable;
 }
 
-function biDirectionalSearch(startNode, goalNode) {
-  // Initialize the frontiers for the start and goal searches
-  const startFrontier = [startNode];
-  const goalFrontier = [goalNode];
+function stringMatch(text, pattern) {
+  const prefixTable = buildPrefixTable(pattern);
+  const matches = [];
+  let j = 0; // index for pattern
+  let i = 0; // index for text
 
-  while (startFrontier.length > 0 && goalFrontier.length > 0) {
-    // Explore from the start node
-    const startNode = startFrontier.shift();
-    if (startNode === goalNode || goalFrontier.includes(startNode)) {
-      return true;  // Goal node found
+  while (i < text.length) {
+    if (text[i] === pattern[j]) {
+      i++; // Increment both indices
+      j++;
+
+      if (j === pattern.length) {
+        matches.push(i - j); // Found a match, add its start index to matches
+        j = prefixTable[j - 1]; // Check for more matches by using the prefix table
+      }
+    } else if (j > 0) {
+      j = prefixTable[j - 1];
+    } else {
+      i++;
     }
-    startFrontier.push(...startNode.children);
-    
-    // Explore from the goal node
-    const goalNode = goalFrontier.shift();
-    if (goalNode === startNode || startFrontier.includes(goalNode)) {
-      return true;  // Goal node found
-    }
-    goalFrontier.push(...goalNode.children);
   }
-  
-  return false;  // Goal node not found
+
+  return matches;
 }
 
-// Example usage
-const a = new Node('A');
-const b = new Node('B');
-const c = new Node('C');
-const d = new Node('D');
-const e = new Node('E');
-const f = new Node('F');
+// Example usage:
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
 
-a.addChild(b);
-a.addChild(c);
-b.addChild(d);
-c.addChild(d);
-c.addChild(e);
-e.addChild(f);
-
-const startNode = a;
-const goalNode = f;
-
-console.log(biDirectionalSearch(startNode, goalNode));  // Output: true
+const matches = stringMatch(text, pattern);
+console.log("Matches:", matches); // Output: [10]
