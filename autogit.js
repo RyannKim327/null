@@ -1,7 +1,6 @@
-let myArray = [1, 2, 3, 4, 5];
-myArray.reverse();
-console.log(myArray); // Output: [5, 4, 3, 2, 1]
-let myArray = [1, 2, 3, 4, 5];
-let reversedArray = [...myArray].reverse();
-console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
-console.log(myArray); // Output: [1, 2, 3, 4, 5] (original array unchanged)
+const array = [9, 5, 7, 2, 4, 1, 6, 3, 8];
+
+console.log("Original Array:", array);
+console.log("Sorted Array:", heapSort(array));
+Original Array: [9, 5, 7, 2, 4, 1, 6, 3, 8]
+Sorted Array: [1, 2, 3, 4, 5, 6, 7, 8, 9]
