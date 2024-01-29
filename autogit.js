@@ -1,33 +1,55 @@
-function longestCommonPrefix(strings) {
-  if (strings.length === 0) {
-    return ''; // If the array is empty, return an empty string
-  }
+function biDirectionalSearch(graph, source, target) {
+  // Perform the forward search from the source
+  const forwardVisited = new Set();
+  const forwardQueue = [[source, [source]]];
 
-  // Find the minimum string length in the array
-  let minLength = Infinity;
-  for (let i = 0; i < strings.length; i++) {
-    minLength = Math.min(minLength, strings[i].length);
-  }
+  // Perform the backward search from the target
+  const backwardVisited = new Set();
+  const backwardQueue = [[target, [target]]];
 
-  // Iterate from index 0 to minLength - 1
-  let prefix = '';
-  for (let i = 0; i < minLength; i++) {
-    const char = strings[0][i]; // Consider the character at index i in the first string
+  while (forwardQueue.length && backwardQueue.length) {
+    const [forwardNode, forwardPath] = forwardQueue.shift();
+    const [backwardNode, backwardPath] = backwardQueue.shift();
 
-    // Check if the character is common in all strings
-    for (let j = 1; j < strings.length; j++) {
-      if (strings[j][i] !== char) {
-        return prefix; // If a character doesn't match, return the current prefix
+    // Check if nodes meet in the middle
+    if (backwardVisited.has(forwardNode)) {
+      return forwardPath.concat(backwardPath.reverse().slice(1));
+    }
+
+    // Forward Search
+    forwardVisited.add(forwardNode);
+    for (const neighbor of graph[forwardNode]) {
+      if (!forwardVisited.has(neighbor)) {
+        forwardQueue.push([neighbor, forwardPath.concat([neighbor])]);
       }
     }
 
-    prefix += char; // If the character matches, append it to the prefix
+    // Backward Search
+    backwardVisited.add(backwardNode);
+    for (const neighbor of graph[backwardNode]) {
+      if (!backwardVisited.has(neighbor)) {
+        backwardQueue.push([neighbor, backwardPath.concat([neighbor])]);
+      }
+    }
   }
 
-  return prefix; // Return the longest common prefix
+  // Path not found
+  return null;
 }
 
 // Example usage
-const strings = ['flower', 'flow', 'flight'];
-const commonPrefix = longestCommonPrefix(strings);
-console.log(commonPrefix); // Output: "fl"
+const graph = {
+  A: ["B", "C"],
+  B: ["A", "D"],
+  C: ["A", "E"],
+  D: ["B", "F"],
+  E: ["C"],
+  F: ["D", "G"],
+  G: ["F"],
+};
+
+const source = "A";
+const target = "G";
+
+const path = biDirectionalSearch(graph, source, target);
+console.log("Path:", path);
