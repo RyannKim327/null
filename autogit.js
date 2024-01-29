@@ -1,47 +1,19 @@
-function boyerMooreHorspool(text, pattern) {
-  function generateShiftTable(pattern) {
-    const shiftTable = {};
-
-    const patternLength = pattern.length;
-
-    for (let i = 0; i < patternLength - 1; i++) {
-      shiftTable[pattern[i]] = patternLength - i - 1;
+function bubbleSort(array) {
+  let swapped;
+  do {
+    swapped = false;
+    for (let i = 0; i < array.length - 1; i++) {
+      if (array[i] > array[i + 1]) {
+        [array[i], array[i + 1]] = [array[i + 1], array[i]];
+        swapped = true;
+      }
     }
-
-    shiftTable[pattern[patternLength - 1]] = patternLength;
-
-    return shiftTable;
-  }
-
-  const shiftTable = generateShiftTable(pattern);
-
-  const patternLength = pattern.length;
-  const textLength = text.length;
-
-  let index = 0;
-
-  while (index <= textLength - patternLength) {
-    let patternIndex = patternLength - 1;
-
-    while (patternIndex >= 0 && text[index + patternIndex] === pattern[patternIndex]) {
-      patternIndex--;
-    }
-
-    if (patternIndex === -1) {
-      return index;
-    }
-
-    const shift = shiftTable[text[index + patternLength - 1]] || patternLength;
-
-    index += shift;
-  }
-
-  return -1;
+  } while (swapped);
+  
+  return array;
 }
 
-// Example usage
-const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
-const pattern = "ipsum";
-
-const result = boyerMooreHorspool(text, pattern);
-console.log(result); // Output: 6
+// Usage example:
+const unsortedArray = [5, 3, 8, 2, 1, 4];
+const sortedArray = bubbleSort(unsortedArray);
+console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 8]
