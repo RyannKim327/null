@@ -1,24 +1,20 @@
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
+function insertionSort(array) {
+  for (let i = 1; i < array.length; i++) {
+    const temp = array[i];
+    let j = i - 1;
 
-let index = array.indexOf(elementToRemove);
-if (index !== -1) {
-  array.splice(index, 1);
+    while (j >= 0 && array[j] > temp) {
+      array[j + 1] = array[j];
+      j--;
+    }
+
+    array[j + 1] = temp;
+  }
+
+  return array;
 }
 
-console.log(array); // [1, 2, 4, 5]
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
-
-array = array.filter((element) => element !== elementToRemove);
-
-console.log(array); // [1, 2, 4, 5]
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
-
-let index = array.indexOf(elementToRemove);
-if (index !== -1) {
-  array = array.slice(0, index).concat(array.slice(index + 1));
-}
-
-console.log(array); // [1, 2, 4, 5]
+// Example usage:
+const unsortedArray = [5, 2, 4, 6, 1, 3];
+const sortedArray = insertionSort(unsortedArray);
+console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 6]
