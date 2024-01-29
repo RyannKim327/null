@@ -1,21 +1,15 @@
-// Get user input
-let input = prompt("Enter a number:");
-
-// Convert the input to a number
-let number = parseFloat(input);
-
-// Check if the input is a valid number
-if (isNaN(number)) {
-  console.log("Invalid input, please enter a number.");
-} else {
-  // Perform some operations on the number
-  let squared = number * number;
-  let cubed = number * number * number;
-  let squareRoot = Math.sqrt(number);
-
-  // Print the results
-  console.log("Number:", number);
-  console.log("Squared:", squared);
-  console.log("Cubed:", cubed);
-  console.log("Square Root:", squareRoot);
+function countOccurrences(str, char) {
+  let count = 0;
+  for (let i = 0; i < str.length; i++) {
+    if (str.charAt(i) === char) {
+      count++;
+    }
+  }
+  return count;
 }
+
+// Example usage
+const string = "Hello, world!";
+const character = "l";
+const occurrences = countOccurrences(string, character);
+console.log(`The character "${character}" occurs ${occurrences} times in the string "${string}".`);
