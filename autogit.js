@@ -1,28 +1,24 @@
-function findMiddleElement(head) {
-  let slowPointer = head;
-  let fastPointer = head;
+function bwtTransform(text) {
+  const transformed = [];
+  const rotations = [];
 
-  while (fastPointer && fastPointer.next) {
-    slowPointer = slowPointer.next;
-    fastPointer = fastPointer.next.next;
+  // Generate all rotations
+  for (let i = 0; i < text.length; i++) {
+    const rotation = text.slice(-1) + text.slice(0, -1);
+    rotations.push(rotation);
+    text = rotation;
   }
 
-  return slowPointer;
-}
-// Node class to represent a linked list node
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+  // Sort rotations lexicographically
+  rotations.sort();
+
+  // Find original index in the sorted rotations array
+  const originalIndex = rotations.findIndex((rotation) => rotation === text);
+
+  // Take the last character of each rotation in the sorted array
+  for (let i = 0; i < rotations.length; i++) {
+    transformed.push(rotations[i].slice(-1));
   }
+
+  return transformed.join('');
 }
-
-// Creating a linked list: 1 -> 2 -> 3 -> 4 -> 5
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-let middleElement = findMiddleElement(head);
-console.log(middleElement.value);  // Output: 3
