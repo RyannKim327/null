@@ -1,53 +1,20 @@
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters
+  const alphanumericStr = str.replace(/[\W_]/g, '');
+  
+  // Convert the string to lowercase
+  const lowercaseStr = alphanumericStr.toLowerCase();
+  
+  // Reverse the string
+  const reversedStr = lowercaseStr.split('').reverse().join('');
+  
+  // Compare the reversed string with the original string
+  return lowercaseStr === reversedStr;
 }
 
-class BinaryTree {
-  constructor() {
-    this.root = null;
-  }
+// Example usage
+const str1 = "A man, a plan, a canal: Panama";
+console.log(isPalindrome(str1)); // Output: true
 
-  diameter() {
-    if (!this.root) {
-      return 0;
-    }
-
-    let diameter = 0;
-
-    const calculateHeight = (node) => {
-      if (!node) {
-        return 0;
-      }
-
-      const leftHeight = calculateHeight(node.left);
-      const rightHeight = calculateHeight(node.right);
-
-      // calculate the diameter passing through this node
-      diameter = Math.max(diameter, leftHeight + rightHeight);
-
-      // return the height of the subtree rooted at this node
-      return 1 + Math.max(leftHeight, rightHeight);
-    };
-
-    calculateHeight(this.root);
-
-    return diameter;
-  }
-}
-
-// Example usage:
-const tree = new BinaryTree();
-
-tree.root = new TreeNode(1);
-tree.root.left = new TreeNode(2);
-tree.root.right = new TreeNode(3);
-tree.root.left.left = new TreeNode(4);
-tree.root.left.right = new TreeNode(5);
-tree.root.right.left = new TreeNode(6);
-tree.root.right.right = new TreeNode(7);
-
-console.log(tree.diameter()); // Output: 5
+const str2 = "race a car";
+console.log(isPalindrome(str2)); // Output: false
