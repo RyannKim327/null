@@ -1,28 +1,13 @@
-function findMax(arr) {
-  let max = 0;
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] > max) {
-      max = arr[i];
+function isAscending(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false;
     }
   }
-  return max;
+  return true;
 }
-function radixSort(arr) {
-  const maxNum = findMax(arr);
-  let numDigits = Math.floor(Math.log10(maxNum)) + 1;
+const array1 = [1, 2, 3, 4, 5];
+console.log(isAscending(array1)); // Output: true
 
-  for (let i = 0; i < numDigits; i++) {
-    let buckets = Array.from({ length: 10 }, () => []);
-    for (let j = 0; j < arr.length; j++) {
-      let digit = Math.floor((arr[j] / Math.pow(10, i)) % 10);
-      buckets[digit].push(arr[j]);
-    }
-    arr = [].concat(...buckets); // Merge the buckets into one array
-  }
-  
-  return arr;
-}
-let arr = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log("Original Array:", arr);
-arr = radixSort(arr);
-console.log("Sorted Array:", arr);
+const array2 = [1, 5, 3, 4, 2];
+console.log(isAscending(array2)); // Output: false
