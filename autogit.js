@@ -1,45 +1,33 @@
-// Heapify the array in downward direction
-function heapify(arr, n, i) {
-    let largest = i;
-    const left = 2 * i + 1;
-    const right = 2 * i + 2;
+function findLongestIncreasingSubsequence(arr) {
+  const n = arr.length;
+  const dp = Array(n).fill(1);
 
-    if (left < n && arr[left] > arr[largest]) {
-        largest = left;
+  for (let i = 1; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      if (arr[i] > arr[j] && dp[i] < dp[j] + 1) {
+        dp[i] = dp[j] + 1;
+      }
     }
+  }
 
-    if (right < n && arr[right] > arr[largest]) {
-        largest = right;
-    }
+  let maxLength = 0;
+  for (let i = 0; i < n; i++) {
+    maxLength = Math.max(maxLength, dp[i]);
+  }
 
-    if (largest !== i) {
-        [arr[i], arr[largest]] = [arr[largest], arr[i]];
-        heapify(arr, n, largest);
+  const lis = [];
+  let lisLength = maxLength;
+  for (let i = n - 1; i >= 0 && lisLength > 0; i--) {
+    if (dp[i] === lisLength) {
+      lis.unshift(arr[i]);
+      lisLength--;
     }
+  }
+
+  return lis;
 }
 
-// Heap Sort function
-function heapSort(arr) {
-    const n = arr.length;
-
-    // Building the max heap
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(arr, n, i);
-    }
-
-    // Extract elements from the heap one by one
-    for (let i = n - 1; i >= 0; i--) {
-        // Move current root to the end
-        [arr[0], arr[i]] = [arr[i], arr[0]];
-
-        // Call max heapify on the reduced heap
-        heapify(arr, i, 0);
-    }
-
-    return arr;
-}
-
-// Example usage
-const arr = [12, 11, 13, 5, 6, 7];
-const sortedArr = heapSort(arr);
-console.log(sortedArr); // Output: [5, 6, 7, 11, 12, 13]
+// Example usage:
+const array = [3, 10, 2, 1, 20];
+const lis = findLongestIncreasingSubsequence(array);
+console.log("Longest Increasing Subsequence:", lis); // Output: [3, 10, 20]
