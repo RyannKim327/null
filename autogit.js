@@ -1,16 +1,24 @@
-async function connectToAndroidAsyncTask() {
-  try {
-    const response = await fetch('https://your-android-async-task-endpoint');
+function breadthLimitedSearch(startNode, goalNode, limit) {
+  const queue = [startNode];
+  const visited = new Set();
+  
+  while (queue.length > 0) {
+    const currentNode = queue.shift();
 
-    if (!response.ok) {
-      throw new Error('Failed to connect to the Android async task');
+    if (currentNode === goalNode) {
+      return currentNode; // Goal node found
     }
 
-    const data = await response.json();
-    console.log('Received data from Android async task:', data);
-  } catch (error) {
-    console.error('An error occurred while connecting to the Android async task:', error);
-  }
-}
+    visited.add(currentNode);
 
-connectToAndroidAsyncTask();
+    if (currentNode.depth < limit) {
+      currentNode.neighbors.forEach(neighbor => {
+        if (!visited.has(neighbor)) {
+          queue.push(neighbor);
+        }
+      });
+    }
+  }
+
+  return null; // Goal node not found
+}
