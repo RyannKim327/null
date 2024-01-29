@@ -1,56 +1,37 @@
-class Stack {
-  constructor() {
-    this.stackArray = []; // Empty array to store stack elements
-  }
-
-  // Push an element onto the stack
-  push(element) {
-    this.stackArray.push(element);
-  }
-
-  // Remove and return the top element from the stack
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
-    }
-    return this.stackArray.pop();
-  }
-
-  // Return the top element of the stack without removing it
-  peek() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
-    }
-    return this.stackArray[this.stackArray.length - 1];
-  }
-
-  // Check if the stack is empty
-  isEmpty() {
-    return this.stackArray.length === 0;
-  }
-
-  // Return the size of the stack
-  size() {
-    return this.stackArray.length;
-  }
-
-  // Print the stack elements
-  printStack() {
-    console.log(this.stackArray.join(" "));
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
 
+function countLeafNodes(node) {
+  // Base case: if node is null, return 0
+  if (node === null) {
+    return 0;
+  }
+
+  // Base case: if node is a leaf, return 1
+  if (node.left === null && node.right === null) {
+    return 1;
+  }
+
+  // Recursive case: return the sum of leaf nodes in left and right subtrees
+  return countLeafNodes(node.left) + countLeafNodes(node.right);
+}
 
 // Example usage:
-const stack = new Stack();
+//     1
+//    / \
+//   2   3
+//  / \ /
+// 4  5 6
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
 
-stack.push(1);
-stack.push(2);
-stack.push(3);
-console.log("Stack size:", stack.size()); // Output: 3
-stack.printStack(); // Output: 1 2 3
-
-console.log("Top element:", stack.peek()); // Output: 3
-
-console.log("Popped element:", stack.pop()); // Output: 3
-stack.printStack(); // Output: 1 2
+console.log(countLeafNodes(root)); // Output: 3
