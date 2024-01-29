@@ -1,40 +1,95 @@
-function preprocessShiftTable(pattern) {
-  const shiftTable = {};
-  const patternLength = pattern.length;
+// Node class
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
+}
 
-  for (let i = 0; i < patternLength - 1; i++) {
-    const char = pattern[i];
-    shiftTable[char] = patternLength - i - 1;
+// LinkedList class
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
   }
 
-  return shiftTable;
-}
-function boyerMooreHorspool(text, pattern) {
-  const shiftTable = preprocessShiftTable(pattern);
-  const patternLength = pattern.length;
-  const textLength = text.length;
-  let i = 0;
+  // Add a node to the end of the list
+  add(data) {
+    const newNode = new Node(data);
 
-  while (i <= textLength - patternLength) {
-    let j = patternLength - 1;
-
-    while (j >= 0 && pattern[j] === text[i + j]) {
-      j--;
-    }
-
-    if (j === -1) {
-      return i; // Pattern found
+    if (this.head === null) {
+      this.head = newNode;
+      this.tail = newNode;
     } else {
-      const char = text[i + j];
-      const shift = shiftTable[char] || patternLength;
-      i += shift;
+      this.tail.next = newNode;
+      this.tail = newNode;
     }
   }
 
-  return -1; // Pattern not found
-}
-const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
-const pattern = 'ipsum';
+  // Remove a node from the list
+  remove(data) {
+    if (this.head === null) {
+      return;
+    }
 
-const index = boyerMooreHorspool(text, pattern);
-console.log(index); // Output: 6
+    if (this.head.data === data) {
+      this.head = this.head.next;
+      if (this.head === null) {
+        this.tail = null;
+      }
+      return;
+    }
+
+    let current = this.head;
+    while (current.next !== null && current.next.data !== data) {
+      current = current.next;
+    }
+
+    if (current.next !== null) {
+      current.next = current.next.next;
+      if (current.next === null) {
+        this.tail = current;
+      }
+    }
+  }
+
+  // Traverse the list and execute a callback function on each node
+  traverse(callback) {
+    let current = this.head;
+    while (current !== null) {
+      callback(current);
+      current = current.next;
+    }
+  }
+
+  // Search for a node with a specific data value
+  search(data) {
+    let current = this.head;
+    while (current !== null) {
+      if (current.data === data) {
+        return current;
+      }
+      current = current.next;
+    }
+    return null;
+  }
+}
+
+// Example usage
+const linkedList = new LinkedList();
+
+linkedList.add(1);
+linkedList.add(2);
+linkedList.add(3);
+linkedList.add(4);
+
+console.log("Original List:");
+linkedList.traverse((node) => console.log(node.data));
+
+linkedList.remove(2);
+
+console.log("Modified List:");
+linkedList.traverse((node) => console.log(node.data));
+
+const node = linkedList.search(3);
+console.log("Searched Node:", node?.data);
