@@ -1,17 +1,26 @@
-const array = [1, 2, 3, 4, 4, 5, 6, 6];
-const uniqueArray = [...new Set(array)];
-console.log(uniqueArray);
-// Output: [1, 2, 3, 4, 5, 6]
-const array = [1, 2, 3, 4, 4, 5, 6, 6];
-const uniqueArray = array.filter((element, index) => array.indexOf(element) === index);
-console.log(uniqueArray);
-// Output: [1, 2, 3, 4, 5, 6]
-const array = [1, 2, 3, 4, 4, 5, 6, 6];
-const uniqueArray = array.reduce((accumulator, current) => {
-  if (!accumulator.includes(current)) {
-    accumulator.push(current);
+function interpolationSearch(arr, target, start, end) {
+  if (start <= end && target >= arr[start] && target <= arr[end]) {
+    const pos = start + Math.floor(
+      ((target - arr[start]) * (end - start)) / (arr[end] - arr[start])
+    );
+
+    if (arr[pos] === target) {
+      return pos;
+    }
+
+    if (arr[pos] < target) {
+      return interpolationSearch(arr, target, pos + 1, end);
+    }
+
+    if (arr[pos] > target) {
+      return interpolationSearch(arr, target, start, pos - 1);
+    }
   }
-  return accumulator;
-}, []);
-console.log(uniqueArray);
-// Output: [1, 2, 3, 4, 5, 6]
+
+  return -1;
+}
+const arr = [1, 3, 5, 7, 9, 11, 13, 15];
+const target = 9;
+
+const position = interpolationSearch(arr, target, 0, arr.length - 1);
+console.log('Target found at position:', position); // Output: Target found at position: 4
