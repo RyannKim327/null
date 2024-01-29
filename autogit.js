@@ -1,55 +1,40 @@
-class Stack {
-  constructor() {
-    this.stackArray = [];
+function preprocessShiftTable(pattern) {
+  const shiftTable = {};
+  const patternLength = pattern.length;
+
+  for (let i = 0; i < patternLength - 1; i++) {
+    const char = pattern[i];
+    shiftTable[char] = patternLength - i - 1;
   }
 
-  // Push an element to the top of the stack
-  push(element) {
-    this.stackArray.push(element);
-  }
-
-  // Remove and return the top element from the stack
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
-    }
-    return this.stackArray.pop();
-  }
-
-  // Return the top element from the stack without removing it
-  peek() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
-    }
-    return this.stackArray[this.stackArray.length - 1];
-  }
-
-  // Check if the stack is empty
-  isEmpty() {
-    return this.stackArray.length === 0;
-  }
-
-  // Get the size of the stack
-  size() {
-    return this.stackArray.length;
-  }
-
-  // Clear the stack
-  clear() {
-    this.stackArray = [];
-  }
+  return shiftTable;
 }
+function boyerMooreHorspool(text, pattern) {
+  const shiftTable = preprocessShiftTable(pattern);
+  const patternLength = pattern.length;
+  const textLength = text.length;
+  let i = 0;
 
-// Usage:
-const stack = new Stack();
+  while (i <= textLength - patternLength) {
+    let j = patternLength - 1;
 
-stack.push(10);
-stack.push(20);
-stack.push(30);
-console.log(stack.pop()); // Output: 30
-console.log(stack.peek()); // Output: 20
-console.log(stack.size()); // Output: 2
-console.log(stack.isEmpty()); // Output: false
+    while (j >= 0 && pattern[j] === text[i + j]) {
+      j--;
+    }
 
-stack.clear();
-console.log(stack.isEmpty()); // Output: true
+    if (j === -1) {
+      return i; // Pattern found
+    } else {
+      const char = text[i + j];
+      const shift = shiftTable[char] || patternLength;
+      i += shift;
+    }
+  }
+
+  return -1; // Pattern not found
+}
+const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
+const pattern = 'ipsum';
+
+const index = boyerMooreHorspool(text, pattern);
+console.log(index); // Output: 6
