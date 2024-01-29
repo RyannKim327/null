@@ -1,23 +1,10 @@
-function largestPrimeFactor(number) {
-  let largestPrime = 2;
+let string1 = "Hello";
+let string2 = " World!";
+let result = string1 + string2;
 
-  while (number % 2 === 0) {
-    number /= 2;
-  }
+console.log(result); // Output: "Hello World!"
+let string1 = "Hello";
+let string2 = " World!";
+let result = string1.concat(string2);
 
-  for (let i = 3; i * i <= number; i += 2) {
-    while (number % i === 0) {
-      largestPrime = i;
-      number /= i;
-    }
-  }
-
-  if (number > 1) {
-    largestPrime = number;
-  }
-
-  return largestPrime;
-}
-
-// Example usage
-console.log(largestPrimeFactor(13195)); // Output: 29
+console.log(result); // Output: "Hello World!"
