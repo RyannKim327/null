@@ -1,23 +1,16 @@
-function prepareString(str) {
-  return str.replace(/\s/g, '').toLowerCase();
+// Example function to fetch data from an API
+async function fetchData() {
+  try {
+    const response = await fetch('https://api.example.com/data');
+    if (!response.ok) {
+      throw new Error('API request failed');
+    }
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
 }
-function sortString(str) {
-  return str.split('').sort().join('');
-}
-function areAnagrams(str1, str2) {
-  const prepStr1 = prepareString(str1);
-  const prepStr2 = prepareString(str2);
-  const sortedStr1 = sortString(prepStr1);
-  const sortedStr2 = sortString(prepStr2);
-  
-  return sortedStr1 === sortedStr2;
-}
-const string1 = "listen";
-const string2 = "silent";
 
-if (areAnagrams(string1, string2)) {
-  console.log(`${string1} and ${string2} are anagrams.`);
-} else {
-  console.log(`${string1} and ${string2} are not anagrams.`);
-}
-listen and silent are anagrams.
+// Call the function to initiate the API request
+fetchData();
