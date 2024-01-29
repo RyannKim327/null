@@ -1,49 +1,11 @@
-function insertionSort(arr) {
-  // ... implementation goes here
+function calculateTriangleArea(base, height) {
+    let area = (base * height) / 2;
+    return area;
 }
-function insertionSort(arr) {
-  for (let i = 1; i < arr.length; i++) {
-    // ... continue implementation
-  }
-}
-function insertionSort(arr) {
-  for (let i = 1; i < arr.length; i++) {
-    let currentValue = arr[i];
-    // ... continue implementation
-  }
-}
-function insertionSort(arr) {
-  for (let i = 1; i < arr.length; i++) {
-    let currentValue = arr[i];
-    let j = i - 1;
-    // ... continue implementation
-  }
-}
-function insertionSort(arr) {
-  for (let i = 1; i < arr.length; i++) {
-    let currentValue = arr[i];
-    let j = i - 1;
 
-    while (j >= 0 && arr[j] > currentValue) {
-      arr[j + 1] = arr[j];
-      j--;
-    }
+// Example usage
+let base = 10;
+let height = 6;
+let area = calculateTriangleArea(base, height);
 
-    // ... continue implementation
-  }
-}
-function insertionSort(arr) {
-  for (let i = 1; i < arr.length; i++) {
-    let currentValue = arr[i];
-    let j = i - 1;
-
-    while (j >= 0 && arr[j] > currentValue) {
-      arr[j + 1] = arr[j];
-      j--;
-    }
-
-    arr[j + 1] = currentValue;
-  }
-
-  return arr;
-}
+console.log("The area of the triangle is: " + area);
