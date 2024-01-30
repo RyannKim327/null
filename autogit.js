@@ -1,57 +1,60 @@
-function mergeSort(arr) {
-    // Create a temporary array to store the sorted values
-    let temp = new Array(arr.length);
-    
-    // Perform the merge sort
-    for (let blockSize = 1; blockSize < arr.length; blockSize *= 2) {
-        for (let startIndex = 0; startIndex < arr.length - blockSize; startIndex += 2 * blockSize) {
-            let midIndex = startIndex + blockSize - 1;
-            let endIndex = Math.min(startIndex + 2 * blockSize - 1, arr.length - 1);
+function findKthSmallest(array, k) {
+  if (array.length < k) return null;
+  
+  // Shuffle the array to improve Quickselect's performance
+  shuffle(array);
 
-            merge(arr, temp, startIndex, midIndex, endIndex);
-        }
-    }
-
-    return arr;
+  return quickselect(array, 0, array.length - 1, k - 1);
 }
-function merge(arr, temp, start, mid, end) {
-    let i = start;          // Index for the left subarray
-    let j = mid + 1;        // Index for the right subarray
-    let k = 0;              // Index for the temporary array
 
-    // Merge the subarrays in sorted order
-    while (i <= mid && j <= end) {
-        if (arr[i] <= arr[j]) {
-            temp[k] = arr[i];
-            i++;
-        } else {
-            temp[k] = arr[j];
-            j++;
-        }
-        k++;
+function quickselect(array, left, right, k) {
+  while (left <= right) {
+    let pivotIndex = partition(array, left, right);
+    if (pivotIndex === k) {
+      return array[pivotIndex];
+    } else if (pivotIndex < k) {
+      left = pivotIndex + 1;
+    } else {
+      right = pivotIndex - 1;
     }
-
-    // Copy the remaining elements from the left subarray
-    while (i <= mid) {
-        temp[k] = arr[i];
-        i++;
-        k++;
-    }
-
-    // Copy the remaining elements from the right subarray
-    while (j <= end) {
-        temp[k] = arr[j];
-        j++;
-        k++;
-    }
-
-    // Copy the sorted elements back to the original array
-    for (let x = 0; x < k; x++) {
-        arr[start + x] = temp[x];
-    }
+  }
+  
+  return null;
 }
-let arr = [5, 3, 8, 4, 2, 1, 6, 7];
-console.log("Original array:", arr);
 
-let sortedArr = mergeSort(arr);
-console.log("Sorted array:", sortedArr);
+function partition(array, left, right) {
+  let pivotIndex = Math.floor((left + right) / 2);
+  let pivotValue = array[pivotIndex];
+  
+  swap(array, pivotIndex, right);
+  
+  let i = left;
+  for (let j = left; j < right; j++) {
+    if (array[j] < pivotValue) {
+      swap(array, i, j);
+      i++;
+    }
+  }
+  
+  swap(array, i, right);
+  
+  return i;
+}
+
+function swap(array, i, j) {
+  let temp = array[i];
+  array[i] = array[j];
+  array[j] = temp;
+}
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    swap(array, i, j);
+  }
+}
+let arr = [6, 9, 2, 5, 1, 8];
+let k = 3;
+
+let kthSmallest = findKthSmallest(arr, k);
+console.log(`The ${k}th smallest element is: ${kthSmallest}`);
