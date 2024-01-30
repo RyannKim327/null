@@ -1,25 +1,56 @@
-function bubbleSort(arr) {
-  let len = arr.length;
-  let swapped;
+function computeLPSArray(pattern) {
+  const lps = Array(pattern.length).fill(0);
+  let len = 0;
+  let i = 1;
 
-  do {
-    swapped = false;
-    for (let i = 0; i < len - 1; i++) {
-      if (arr[i] > arr[i + 1]) {
-        let temp = arr[i];
-        arr[i] = arr[i + 1];
-        arr[i + 1] = temp;
-        swapped = true;
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[len]) {
+      len++;
+      lps[i] = len;
+      i++;
+    } else if (len !== 0) {
+      len = lps[len - 1];
+    } else {
+      lps[i] = 0;
+      i++;
+    }
+  }
+
+  return lps;
+}
+function search(text, pattern) {
+  const lps = computeLPSArray(pattern);
+  const result = [];
+
+  let i = 0; // index for text
+  let j = 0; // index for pattern
+  while (i < text.length) {
+    if (pattern[j] === text[i]) {
+      j++;
+      i++;
+    }
+
+    if (j === pattern.length) {
+      result.push(i - j);
+      j = lps[j - 1];
+    } else if (i < text.length && pattern[j] !== text[i]) {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
       }
     }
-  } while (swapped);
+  }
 
-  return arr;
+  return result;
 }
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
 
-// Example usage:
-let numbers = [5, 3, 8, 4, 2];
-console.log("Before sorting:", numbers);
+const occurrences = search(text, pattern);
 
-let sortedNumbers = bubbleSort(numbers);
-console.log("After sorting:", sortedNumbers);
+if (occurrences.length === 0) {
+  console.log("Pattern not found in the text.");
+} else {
+  console.log(`Pattern found at index ${occurrences.join(", ")}`);
+}
