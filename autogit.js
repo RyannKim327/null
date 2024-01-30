@@ -1,28 +1,58 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
+class Stack {
+  constructor() {
+    this.stack = [];
+  }
+
+  // Push an element to the top of the stack
+  push(item) {
+    this.stack.push(item);
+  }
+
+  // Remove and return the top element from the stack
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack is empty!";
+    }
+    return this.stack.pop();
+  }
+
+  // Return the top element in the stack without removing it
+  peek() {
+    if (this.isEmpty()) {
+      return "Stack is empty!";
+    }
+    return this.stack[this.stack.length - 1];
+  }
+
+  // Check if the stack is empty
+  isEmpty() {
+    return this.stack.length === 0;
+  }
+
+  // Return the size of the stack
+  size() {
+    return this.stack.length;
+  }
+
+  // Clear the stack
+  clear() {
+    this.stack = [];
   }
 }
 
-function findMiddleElement(head) {
-  let slowPtr = head;
-  let fastPtr = head;
+// Example usage:
+const stack = new Stack();
+stack.push(10);
+stack.push(20);
+stack.push(30);
 
-  while (fastPtr && fastPtr.next) {
-    slowPtr = slowPtr.next;
-    fastPtr = fastPtr.next.next;
-  }
+console.log("Top of the stack:", stack.peek()); // Output: 30
 
-  return slowPtr;
-}
+console.log("Popped item:", stack.pop()); // Output: 30
 
-// Create a linked list with sample data
-const head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
+console.log("Is stack empty?", stack.isEmpty()); // Output: false
 
-const middleElement = findMiddleElement(head);
-console.log(middleElement.data); // Output: 3
+console.log("Size of stack:", stack.size()); // Output: 2
+
+stack.clear();
+console.log("Is stack empty?", stack.isEmpty()); // Output: true
