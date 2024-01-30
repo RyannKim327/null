@@ -1,30 +1,39 @@
-function findFirstNonRepeatingCharacter(str) {
-  // Create an empty object to store character counts
-  const charCounts = {};
+function hasCycle(head) {
+  // Initially, set both slow and fast pointers to the head node
+  let slow = head;
+  let fast = head;
 
-  // Iterate through each character in the string
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
+  // Move slow pointer by one node and fast pointer by two nodes
+  // If there's a cycle, they will eventually meet at the same node
+  while (fast !== null && fast.next !== null) {
+    slow = slow.next;
+    fast = fast.next.next;
 
-    // Increment the count of the current character
-    charCounts[char] = (charCounts[char] || 0) + 1;
-  }
-
-  // Iterate through the string again to find the first non-repeating character
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-
-    // If the count of the current character is 1, return it
-    if (charCounts[char] === 1) {
-      return char;
+    // If the pointers meet, it indicates the presence of a cycle
+    if (slow === fast) {
+      return true;
     }
   }
-
-  // If no non-repeating character is found, return null
-  return null;
+  
+  // If the loop completes without any cycle, return false
+  return false;
+}
+// Define a linked list node class
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-// Example usage
-const str = "hello world";
-const firstNonRepeatingCharacter = findFirstNonRepeatingCharacter(str);
-console.log(firstNonRepeatingCharacter);  // Output: "h"
+// Create a sample linked list with a cycle
+const node1 = new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
+const node4 = new Node(4);
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node2; // cycle
+
+console.log(hasCycle(node1)); // Output: true
