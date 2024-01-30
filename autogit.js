@@ -1,18 +1,47 @@
-function reverseWords(str) {
-  // Split the string into an array of words
-  var wordsArray = str.split(" ");
-  
-  // Reverse the order of the elements in the array
-  var reversedArray = wordsArray.reverse();
-  
-  // Join the elements of the array back into a string
-  var reversedString = reversedArray.join(" ");
-  
-  // Return the reversed string
-  return reversedString;
+function beamSearch(problem, beamSize, maxIterations) {
+  let beam = [problem.initialState]; // Step 3: Initialize the beam
+
+  for (let iteration = 0; iteration < maxIterations; iteration++) {
+    let candidates = [];
+
+    for (let i = 0; i < beam.length; i++) {
+      let partialSolution = beam[i];
+      let newCandidates = generateCandidates(partialSolution); // Step 4: Generate candidate solutions
+
+      for (let j = 0; j < newCandidates.length; j++) {
+        let candidate = newCandidates[j];
+        candidate.score = evaluate(candidate); // Step 5: Evaluate candidate solutions
+        candidates.push(candidate);
+      }
+    }
+
+    beam = pruneBeam(candidates, beamSize); // Step 6: Prune the beam
+  }
+
+  return getBestSolution(beam); // Step 8: Return the best solution
 }
 
-// Usage example
-var originalString = "Hello World, How Are You?";
-var reversedString = reverseWords(originalString);
-console.log(reversedString);
+// Helper functions
+function generateCandidates(solution) {
+  // Generate new candidate solutions based on the current solution
+  // ...
+  return candidates;
+}
+
+function evaluate(candidate) {
+  // Evaluate the candidate solution using a scoring function
+  // ...
+  return score;
+}
+
+function pruneBeam(candidates, beamSize) {
+  // Prune the candidates to retain the top-k solutions based on their scores
+  // ...
+  return prunedCandidates;
+}
+
+function getBestSolution(beam) {
+  // Return the best solution from the beam
+  // ...
+  return bestSolution;
+}
