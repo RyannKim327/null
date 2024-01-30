@@ -1,57 +1,58 @@
-function fibonacciSearch(arr, x, n) {
-  // Fibonacci numbers
-  let fib2 = 0; // (i-2)th Fibonacci number
-  let fib1 = 1; // (i-1)th Fibonacci number
-  let fib = fib2 + fib1; // ith Fibonacci number
+function mergeSort(arr) {
+  const n = arr.length;
+  const sortedArr = [...arr];
 
-  // Find the smallest Fibonacci number greater than or equal to n
-  while (fib < n) {
-    fib2 = fib1;
-    fib1 = fib;
-    fib = fib2 + fib1;
-  }
+  // Perform merge operations repeatedly for different subarray sizes
+  for (let size = 1; size <= n - 1; size *= 2) {
+    for (let leftStart = 0; leftStart < n - 1; leftStart += 2 * size) {
+      const mid = Math.min(leftStart + size - 1, n - 1);
+      const rightEnd = Math.min(leftStart + 2 * size - 1, n - 1);
 
-  // Searching by comparing the element against the last Fibonacci number found
-  let offset = -1;
-
-  while (fib > 1) {
-    // Check if fib2 is a valid location
-    const i = Math.min(offset + fib2, n - 1);
-
-    // If x is larger than the current element, move the Fibonacci numbers two steps down
-    if (arr[i] < x) {
-      fib = fib1;
-      fib1 = fib2;
-      fib2 = fib - fib1;
-      offset = i;
-    }
-    // If x is smaller than the current element, move the Fibonacci numbers one step down
-    else if (arr[i] > x) {
-      fib = fib2;
-      fib1 = fib1 - fib2;
-      fib2 = fib - fib1;
-    }
-    // If x is found, return the index
-    else {
-      return i;
+      merge(sortedArr, leftStart, mid, rightEnd);
     }
   }
 
-  // Return -1 if the element has not been found
-  if (fib1 === 1 && arr[offset + 1] === x) {
-    return offset + 1;
-  }
-
-  // Element not found
-  return -1;
+  return sortedArr;
 }
-const arr = [10, 20, 30, 40, 50, 60];
-const x = 30;
-const n = arr.length;
-const index = fibonacciSearch(arr, x, n);
 
-if (index !== -1) {
-  console.log(`Element found at index ${index}`);
-} else {
-  console.log(`Element not found`);
+// Merge two subarrays
+function merge(arr, leftStart, mid, rightEnd) {
+  const leftEnd = mid;
+  const rightStart = mid + 1;
+
+  let left = leftStart;
+  let right = rightStart;
+  const tempArr = [];
+
+  while (left <= leftEnd && right <= rightEnd) {
+    if (arr[left] <= arr[right]) {
+      tempArr.push(arr[left]);
+      left++;
+    } else {
+      tempArr.push(arr[right]);
+      right++;
+    }
+  }
+
+  // Copy the remaining elements from the left subarray, if any
+  while (left <= leftEnd) {
+    tempArr.push(arr[left]);
+    left++;
+  }
+
+  // Copy the remaining elements from the right subarray, if any
+  while (right <= rightEnd) {
+    tempArr.push(arr[right]);
+    right++;
+  }
+
+  // Copy back the merged elements to the original array
+  for (let i = leftStart; i <= rightEnd; i++) {
+    arr[i] = tempArr[i - leftStart];
+  }
 }
+
+// Example usage
+const arr = [7, 2, 9, 4, 5, 1, 6];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr); // Output: [1, 2, 4, 5, 6, 7, 9]
