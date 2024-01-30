@@ -1,67 +1,37 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+function findLongestIncreasingSubsequence(arr) {
+  const n = arr.length;
+  const dp = new Array(n).fill(1);
+  const sequence = [];
 
-  addNode(value) {
-    const newNode = new Node(value);
+  let maxLength = 1;
+  let prevIndex = 0;
 
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
+  for (let i = 1; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      if (arr[i] > arr[j]) {
+        if (dp[j] + 1 > dp[i]) {
+          dp[i] = dp[j] + 1;
+
+          if (dp[i] > maxLength) {
+            maxLength = dp[i];
+            prevIndex = j;
+          }
+        }
       }
-      current.next = newNode;
     }
   }
-}
-function isPalindrome(list) {
-  // Step 1: Find the middle of the linked list
-  let slow = list.head;
-  let fast = list.head;
 
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
-
-  // Step 2: Reverse the second half of the linked list
-  let prev = null;
-  let current = slow;
-  while (current) {
-    const nextNode = current.next;
-    current.next = prev;
-    prev = current;
-    current = nextNode;
-  }
-
-  // Step 3: Compare the first half and reversed second half of the linked list
-  let firstHalf = list.head;
-  let secondHalf = prev;
-
-  while (secondHalf) {
-    if (firstHalf.value !== secondHalf.value) {
-      return false;
+  for (let i = n - 1; i >= 0; i--) {
+    if (dp[i] === maxLength) {
+      sequence.unshift(arr[i]);
+      maxLength--;
     }
-    firstHalf = firstHalf.next;
-    secondHalf = secondHalf.next;
   }
 
-  return true;
+  return sequence;
 }
-const myList = new LinkedList();
-myList.addNode(1);
-myList.addNode(2);
-myList.addNode(3);
-myList.addNode(2);
-myList.addNode(1);
 
-console.log(isPalindrome(myList)); // Output: true
+// Example usage
+const array = [4, 2, 10, 6, 5, 1];
+const longestIncreasingSubsequence = findLongestIncreasingSubsequence(array);
+console.log(longestIncreasingSubsequence);
