@@ -1,116 +1,58 @@
-class AVLNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-    this.height = 1;
-  }
-}
-class AVLTree {
+class Stack {
   constructor() {
-    this.root = null;
+    this.stack = [];
   }
 
-  // Insert a value into the AVL tree
-  insert(value) {
-    this.root = this._insertNode(this.root, value);
+  // Add an element to the top of the stack
+  push(element) {
+    this.stack.push(element);
   }
 
-  // Helper function to insert a node recursively
-  _insertNode(node, value) {
-    // Perform a standard BST insertion
-    if (!node) {
-      return new AVLNode(value);
+  // Remove and return the top element from the stack
+  pop() {
+    if (this.stack.length === 0) {
+      return "Stack is empty";
     }
-
-    if (value < node.value) {
-      node.left = this._insertNode(node.left, value);
-    } else {
-      node.right = this._insertNode(node.right, value);
-    }
-
-    // Update the height of the ancestor node
-    node.height = 1 + Math.max(this._getHeight(node.left), this._getHeight(node.right));
-
-    // Perform balancing if necessary
-    return this._balanceNode(node);
+    return this.stack.pop();
   }
 
-  // Perform AVL tree rotations to balance the node
-  _balanceNode(node) {
-    // Check if the node is balanced or unbalanced
-    const balanceFactor = this._getBalanceFactor(node);
-
-    // Left-left case
-    if (balanceFactor > 1 && value < node.left.value) {
-      return this._rotateRight(node);
+  // Return the top element of the stack without removing it
+  peek() {
+    if (this.stack.length === 0) {
+      return "Stack is empty";
     }
-
-    // Right-right case
-    if (balanceFactor < -1 && value > node.right.value) {
-      return this._rotateLeft(node);
-    }
-
-    // Left-right case
-    if (balanceFactor > 1 && value > node.left.value) {
-      node.left = this._rotateLeft(node.left);
-      return this._rotateRight(node);
-    }
-
-    // Right-left case
-    if (balanceFactor < -1 && value < node.right.value) {
-      node.right = this._rotateRight(node.right);
-      return this._rotateLeft(node);
-    }
-
-    return node;
+    return this.stack[this.stack.length - 1];
   }
 
-  // Perform a right rotation
-  _rotateRight(node) {
-    const newRoot = node.left;
-    const tempNode = newRoot.right;
-
-    // Perform the rotation
-    newRoot.right = node;
-    node.left = tempNode;
-
-    // Update heights
-    node.height = 1 + Math.max(this._getHeight(node.left), this._getHeight(node.right));
-    newRoot.height = 1 + Math.max(this._getHeight(newRoot.left), this._getHeight(newRoot.right));
-
-    return newRoot;
+  // Check if the stack is empty
+  isEmpty() {
+    return this.stack.length === 0;
   }
 
-  // Perform a left rotation
-  _rotateLeft(node) {
-    const newRoot = node.right;
-    const tempNode = newRoot.left;
-
-    // Perform the rotation
-    newRoot.left = node;
-    node.right = tempNode;
-
-    // Update heights
-    node.height = 1 + Math.max(this._getHeight(node.left), this._getHeight(node.right));
-    newRoot.height = 1 + Math.max(this._getHeight(newRoot.left), this._getHeight(newRoot.right));
-
-    return newRoot;
+  // Return the number of elements in the stack
+  size() {
+    return this.stack.length;
   }
 
-  // Get the height of a node
-  _getHeight(node) {
-    if (!node) {
-      return 0;
-    }
-    return node.height;
-  }
-
-  // Get the balance factor of a node
-  _getBalanceFactor(node) {
-    if (!node) {
-      return 0;
-    }
-    return this._getHeight(node.left) - this._getHeight(node.right);
+  // Clear the stack
+  clear() {
+    this.stack = [];
   }
 }
+
+// Example usage
+const stack = new Stack();
+stack.push(10);
+stack.push(20);
+stack.push(30);
+
+console.log(stack.size()); // Output: 3
+console.log(stack.peek()); // Output: 30
+
+console.log(stack.pop()); // Output: 30
+console.log(stack.pop()); // Output: 20
+
+console.log(stack.isEmpty()); // Output: false
+
+stack.clear();
+console.log(stack.isEmpty()); // Output: true
