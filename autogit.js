@@ -1,24 +1,41 @@
-function selectionSort(array) {
-  const length = array.length;
-  
-  for(let i = 0; i < length - 1; i++) {
-    let minIndex = i;
-    
-    for(let j = i + 1; j < length; j++) {
-      if(array[j] < array[minIndex]) {
-        minIndex = j;
-      }
-    }
-    
-    if(minIndex !== i) {
-      [array[i], array[minIndex]] = [array[minIndex], array[i]]; // Swap values
-    }
-  }
-  
-  return array;
+function TrieNode() {
+  this.children = {};
+  this.isEndOfWord = false;
+  // Additional properties if needed
 }
-
-// Example usage:
-const unsortedArray = [6, 3, 8, 2, 9, 1];
-const sortedArray = selectionSort(unsortedArray);
-console.log(sortedArray); // Output: [1, 2, 3, 6, 8, 9]
+function Trie() {
+  this.root = new TrieNode();
+}
+Trie.prototype.insert = function (word) {
+  let node = this.root;
+  for (let i = 0; i < word.length; i++) {
+    const char = word[i];
+    if (!node.children[char]) {
+      node.children[char] = new TrieNode();
+    }
+    node = node.children[char];
+  }
+  node.isEndOfWord = true;
+};
+Trie.prototype.search = function (word) {
+  let node = this.root;
+  for (let i = 0; i < word.length; i++) {
+    const char = word[i];
+    if (!node.children[char]) {
+      return false;
+    }
+    node = node.children[char];
+  }
+  return node.isEndOfWord;
+};
+Trie.prototype.startsWith = function (prefix) {
+  let node = this.root;
+  for (let i = 0; i < prefix.length; i++) {
+    const char = prefix[i];
+    if (!node.children[char]) {
+      return false;
+    }
+    node = node.children[char];
+  }
+  return true;
+};
