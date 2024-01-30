@@ -1,10 +1,4 @@
-const array = [1, 2, 5, 3, 4];
+let str = "Hello, world! How are you?";
+let withoutSpaces = str.replace(/\s/g, "");
 
-const max = Math.max(...array);
-
-console.log(max); // Output: 5
-const array = [1, 2, 5, 3, 4];
-
-const max = array.reduce((a, b) => Math.max(a, b), 0);
-
-console.log(max); // Output: 5
+console.log(withoutSpaces);
