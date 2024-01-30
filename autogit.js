@@ -1,24 +1,12 @@
-function findCommonElements(array1, array2) {
-  let commonElements = [];
-  
-  for (let i = 0; i < array1.length; i++) {
-    if (array2.includes(array1[i])) {
-      commonElements.push(array1[i]);
-    }
-  }
-  
-  return commonElements;
-}
-function findCommonElements(array1, array2) {
-  return array1.filter(value => array2.includes(value));
-}
-function findCommonElements(array1, array2) {
-  const set1 = new Set(array1);
-  const commonElements = array2.filter(value => set1.has(value));
-  return commonElements;
-}
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements);  // Output: [4, 5]
+let str = "  Hello  World  ";
+let result = str.replace(/ /g, '');
+console.log(result); // Output: "HelloWorld"
+let str = "  Hello  World  ";
+let result = str.trim();
+console.log(result); // Output: "Hello  World"
+let str = "  Hello  World  ";
+let result = str.trim().replace(/ /g, '');
+console.log(result); // Output: "HelloWorld"
+let str = "  Hello  World  ";
+let result = str.split(' ').join('');
+console.log(result); // Output: "HelloWorld"
