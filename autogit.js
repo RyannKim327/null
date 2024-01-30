@@ -1,24 +1,25 @@
-function bwt(input) {
-  // Create rotations array
-  const rotations = [];
-  const length = input.length;
-  for (let i = 0; i < length; i++) {
-    rotations.push(input.slice(i) + input.slice(0, i));
+function selectionSort(arr) {
+  const length = arr.length;
+  
+  for (let i = 0; i < length - 1; i++) {
+    let minIndex = i;
+    
+    for (let j = i + 1; j < length; j++) {
+      if (arr[j] < arr[minIndex]) {
+        minIndex = j;
+      }
+    }
+    
+    if (minIndex !== i) {
+      // Swap elements
+      [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+    }
   }
-
-  // Sort rotations array
-  rotations.sort();
-
-  // Find original string
-  let result = '';
-  for (let i = 0; i < length; i++) {
-    result += rotations[i][length - 1];
-  }
-
-  return result;
+  
+  return arr;
 }
 
-// Example usage
-const input = 'banana';
-const transformed = bwt(input);
-console.log(transformed); // Output: 'annb#aa'
+// Example usage:
+const unsortedArray = [5, 2, 9, 1, 3];
+const sortedArray = selectionSort(unsortedArray);
+console.log(sortedArray);  // Output: [1, 2, 3, 5, 9]
