@@ -1,12 +1,4 @@
-function getStringLength(str) {
-  let length = 0;
-  while (str[length] !== undefined) {
-    length++;
-  }
-  return length;
-}
+let str = "HELLO WORLD";
+let lowercaseStr = str.toLowerCase();
 
-// Example usage
-const myString = "Hello, world!";
-const length = getStringLength(myString);
-console.log(length); // Output: 13
+console.log(lowercaseStr); // Output: hello world
