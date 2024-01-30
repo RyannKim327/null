@@ -1,47 +1,25 @@
-class Graph {
-  constructor() {
-    this.nodes = new Map();
-  }
+function shellSort(arr) {
+  let gap = Math.floor(arr.length / 2);
 
-  addNode(node) {
-    this.nodes.set(node, []);
-  }
+  while (gap > 0) {
+    for (let i = gap; i < arr.length; i++) {
+      let temp = arr[i];
+      let j = i;
 
-  addEdge(node1, node2) {
-    this.nodes.get(node1).push(node2);
-    this.nodes.get(node2).push(node1);
-  }
-
-  getNeighbors(node) {
-    return this.nodes.get(node);
-  }
-}
-function depthFirstSearch(graph, startNode) {
-  const visited = new Set();
-
-  function dfs(node) {
-    visited.add(node);
-    console.log(node); // or do any other processing
-
-    const neighbors = graph.getNeighbors(node);
-    for (const neighbor of neighbors) {
-      if (!visited.has(neighbor)) {
-        dfs(neighbor);
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
       }
+
+      arr[j] = temp;
     }
+
+    gap = Math.floor(gap / 2);
   }
 
-  dfs(startNode);
+  return arr;
 }
-const graph = new Graph();
-graph.addNode('A');
-graph.addNode('B');
-graph.addNode('C');
-graph.addNode('D');
-graph.addNode('E');
 
-graph.addEdge('A', 'B');
-graph.addEdge('B', 'C');
-graph.addEdge('C', 'D');
-graph.addEdge('D', 'E');
-depthFirstSearch(graph, 'A');
+// Example usage:
+const array = [8, 3, 11, 2, 15, 7];
+console.log(shellSort(array)); // Output: [2, 3, 7, 8, 11, 15]
