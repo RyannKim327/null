@@ -1,27 +1,42 @@
-function selectionSort(arr) {
-  const len = arr.length;
-  let minIndex, temp;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
 
-  for (let i = 0; i < len - 1; i++) {
-    minIndex = i;
+function findSumOfNodes(root) {
+  if (root === null) {
+    return 0;
+  }
 
-    for (let j = i + 1; j < len; j++) {
-      if (arr[j] < arr[minIndex]) {
-        minIndex = j;
-      }
+  // Use depth-first search to traverse the tree
+  const stack = [root];
+  let sum = 0;
+
+  while (stack.length > 0) {
+    const node = stack.pop();
+    sum += node.value;
+
+    if (node.right !== null) {
+      stack.push(node.right);
     }
 
-    if (minIndex !== i) {
-      temp = arr[i];
-      arr[i] = arr[minIndex];
-      arr[minIndex] = temp;
+    if (node.left !== null) {
+      stack.push(node.left);
     }
   }
 
-  return arr;
+  return sum;
 }
 
 // Example usage:
-const unsortedArray = [64, 25, 12, 22, 11];
-const sortedArray = selectionSort(unsortedArray);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+const sum = findSumOfNodes(root);
+console.log('Sum of all nodes:', sum); // Output: Sum of all nodes: 15
