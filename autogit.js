@@ -1,33 +1,23 @@
-function topologicalSort(graph) {
-  const visited = [];
-  const result = [];
-
-  function dfs(node) {
-    visited.push(node);
-
-    graph[node].forEach((neighbor) => {
-      if (!visited.includes(neighbor)) {
-        dfs(neighbor);
+function selectionSort(arr) {
+  const len = arr.length;
+  
+  for (let i = 0; i < len - 1; i++) {
+    let minIndex = i;
+    
+    for (let j = i + 1; j < len; j++) {
+      if (arr[j] < arr[minIndex]) {
+        minIndex = j;
       }
-    });
-
-    result.unshift(node);
-  }
-
-  for (const node in graph) {
-    if (!visited.includes(node)) {
-      dfs(node);
+    }
+    
+    if (minIndex !== i) {
+      [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
     }
   }
-
-  return result;
+  
+  return arr;
 }
-const graph = {
-  A: ["B", "C"],
-  B: ["D"],
-  C: ["D", "E"],
-  D: ["F"],
-  E: [],
-  F: [],
-};
-console.log(topologicalSort(graph));
+
+// Example usage:
+const numbers = [5, 3, 8, 2, 1, 4];
+console.log(selectionSort(numbers)); // Output: [1, 2, 3, 4, 5, 8]
