@@ -1,51 +1,25 @@
-function Graph() {
-  // Implement your graph representation here
-}
+function quicksort(arr) {
+  if (arr.length <= 1) {
+    return arr;
+  }
 
-function bidirectionalSearch(graph, start, goal) {
-  const startVisited = new Set();
-  const goalVisited = new Set();
-  const startQueue = [];
-  const goalQueue = [];
+  const pivot = arr[Math.floor(arr.length / 2)];
+  const less = [];
+  const equal = [];
+  const greater = [];
 
-  startQueue.push(start);
-  goalQueue.push(goal);
-
-  while (startQueue.length > 0 && goalQueue.length > 0) {
-    const currentStart = startQueue.shift();
-    const currentGoal = goalQueue.shift();
-
-    if (goalVisited.has(currentStart)) {
-      // Combine the paths from start to currentStart and goal to currentGoal
-      return combinePaths(start, currentStart, goal, currentGoal);
-    }
-
-    if (startVisited.has(currentGoal)) {
-      // Combine the paths from start to currentStart and goal to currentGoal
-      return combinePaths(start, currentStart, goal, currentGoal);
-    }
-
-    startVisited.add(currentStart);
-    goalVisited.add(currentGoal);
-
-    for (const neighbor of graph.getNeighbors(currentStart)) {
-      if (!startVisited.has(neighbor)) {
-        startQueue.push(neighbor);
-      }
-    }
-
-    for (const neighbor of graph.getNeighbors(currentGoal)) {
-      if (!goalVisited.has(neighbor)) {
-        goalQueue.push(neighbor);
-      }
+  for (const element of arr) {
+    if (element < pivot) {
+      less.push(element);
+    } else if (element > pivot) {
+      greater.push(element);
+    } else {
+      equal.push(element);
     }
   }
 
-  return null; // No path found
+  return [...quicksort(less), ...equal, ...quicksort(greater)];
 }
-
-// Helper function to combine paths
-function combinePaths(start, currentStart, goal, currentGoal) {
-  // Implement function to combine paths from start to currentStart and goal to currentGoal
-  return [...combinedPathFromStart, ...combinedPathFromGoal];
-}
+const array = [5, 8, 2, 1, 9, 10, 3];
+const sortedArray = quicksort(array);
+console.log(sortedArray); // [1, 2, 3, 5, 8, 9, 10]
