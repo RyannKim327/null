@@ -1,18 +1,27 @@
-const cron = require('cron');
-
-// Function to be executed on scheduled time
-function myTask() {
-  console.log('Task executed!');
+function reverseString(str) {
+  return str.split('').reverse().join('');
 }
 
-// Create a scheduled task using cron
-const cronJob = new cron.CronJob('* * * * *', myTask); // Runs every minute
+var originalString = 'Hello, World!';
+var reversedString = reverseString(originalString);
+console.log(reversedString); // Output: !dlroW ,olleH
+function reverseString(str) {
+  var reversedString = '';
+  for (var i = str.length - 1; i >= 0; i--) {
+    reversedString += str[i];
+  }
+  return reversedString;
+}
 
-// Start the cron job
-cronJob.start();
+var originalString = 'Hello, World!';
+var reversedString = reverseString(originalString);
+console.log(reversedString); // Output: !dlroW ,olleH
+function reverseString(str) {
+  return str.split('').reduce(function(reversed, character) {
+    return character + reversed;
+  }, '');
+}
 
-// Wait for 5 minutes and stop the cron job
-setTimeout(() => {
-  cronJob.stop();
-  console.log('Cron job stopped!');
-}, 5 * 60 * 1000);
+var originalString = 'Hello, World!';
+var reversedString = reverseString(originalString);
+console.log(reversedString); // Output: !dlroW ,olleH
