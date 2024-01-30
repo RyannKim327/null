@@ -1,25 +1,36 @@
-function findFirstNonRepeatingChar(str) {
-  // Create an empty object to store character frequencies
-  var charCount = {};
+function beamSearch(problem, width, maxIterations) {
+  let beam = [problem.initialSolution()];
 
-  // Loop through the string and count each character occurrence
-  for (var i = 0; i < str.length; i++) {
-    var char = str.charAt(i);
-    charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
-  }
+  for (let iteration = 0; iteration < maxIterations; iteration++) {
+    let successors = [];
 
-  // Loop through the string again and find the first character with frequency 1
-  for (var j = 0; j < str.length; j++) {
-    var char = str.charAt(j);
-    if (charCount[char] === 1) {
-      return char; // Return the first non-repeating character
+    for (let solution of beam) {
+      let newSuccessors = problem.generateSuccessors(solution);
+      successors.push(...newSuccessors);
+    }
+
+    successors.sort((a, b) => problem.evaluate(a) - problem.evaluate(b));
+    beam = successors.slice(0, width);
+
+    if (problem.isTermination(beam[0])) {
+      break;
     }
   }
 
-  return null; // Return null if no non-repeating character is found
+  return beam[0];
 }
 
-// Example usage:
-console.log(findFirstNonRepeatingChar("hello")); // Output: "h"
-console.log(findFirstNonRepeatingChar("aabbcdd")); // Output: "c"
-console.log(findFirstNonRepeatingChar("aabbcc")); // Output: null (no non-repeating characters)
+// Example usage
+
+const problem = {
+  initialSolution: () => [0], // Your initial solution representation
+  generateSuccessors: (solution) => [solution.concat([1]), solution.concat([2])], // Generate successors based on current solution
+  evaluate: (solution) => solution.reduce((a, b) => a + b), // Your evaluation function, higher is better
+  isTermination: (solution) => solution.length === 5 // Terminate search when solution length is 5
+};
+
+const width = 2; // Width of the beam, top-k solutions to keep
+const maxIterations = 10; // Maximum iterations before terminating
+
+const optimalSolution = beamSearch(problem, width, maxIterations);
+console.log("Optimal solution:", optimalSolution);
