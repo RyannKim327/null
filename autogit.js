@@ -1,23 +1,44 @@
-function binarySearch(array, target) {
-  let start = 0;
-  let end = array.length - 1;
+function generateBadCharShift(pattern) {
+  const table = {};
 
-  while (start <= end) {
-    const midpoint = Math.floor((start + end) / 2);
+  for (let i = 0; i < pattern.length - 1; i++) {
+    table[pattern[i]] = pattern.length - 1 - i;
+  }
 
-    if (array[midpoint] === target) {
-      return midpoint;
-    } else if (array[midpoint] < target) {
-      start = midpoint + 1;
+  return table;
+}
+function boyerMooreHorspool(text, pattern) {
+  const badCharTable = generateBadCharShift(pattern);
+  const n = text.length;
+  const m = pattern.length;
+  let i = 0;
+
+  while (i <= n - m) {
+    let j = m - 1;
+
+    while (j >= 0 && pattern[j] === text[i + j]) {
+      j--;
+    }
+
+    if (j === -1) {
+      // Pattern found at index i
+      return i;
     } else {
-      end = midpoint - 1;
+      const badChar = text[i + j];
+      const shift = badCharTable[badChar] || m;
+      i += shift;
     }
   }
 
+  // Pattern not found
   return -1;
 }
+const text = "Lorem ipsum dolor sit amet";
+const pattern = "ipsum";
 
-// Example usage:
-const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-console.log(binarySearch(arr, 10));  // Output: 4 (index of 10)
-console.log(binarySearch(arr, 5));   // Output: -1 (not found)
+const index = boyerMooreHorspool(text, pattern);
+if (index !== -1) {
+  console.log(`Pattern found at index ${index}`);
+} else {
+  console.log("Pattern not found");
+}
