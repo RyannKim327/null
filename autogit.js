@@ -1,39 +1,17 @@
-function hasCycle(head) {
-  // Initially, set both slow and fast pointers to the head node
-  let slow = head;
-  let fast = head;
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  const cleanStr = str.replace(/[\W_]+/g, '').toLowerCase();
 
-  // Move slow pointer by one node and fast pointer by two nodes
-  // If there's a cycle, they will eventually meet at the same node
-  while (fast !== null && fast.next !== null) {
-    slow = slow.next;
-    fast = fast.next.next;
+  // Reverse the string
+  const reversedStr = cleanStr.split('').reverse().join('');
 
-    // If the pointers meet, it indicates the presence of a cycle
-    if (slow === fast) {
-      return true;
-    }
-  }
-  
-  // If the loop completes without any cycle, return false
-  return false;
-}
-// Define a linked list node class
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+  // Compare the original string with the reversed string
+  return cleanStr === reversedStr;
 }
 
-// Create a sample linked list with a cycle
-const node1 = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
-const node4 = new Node(4);
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2; // cycle
+// Example usage
+const string1 = 'racecar';
+console.log(isPalindrome(string1)); // Output: true
 
-console.log(hasCycle(node1)); // Output: true
+const string2 = 'hello';
+console.log(isPalindrome(string2)); // Output: false
