@@ -1,58 +1,53 @@
-function biDirectionalSearch(graph, source, target) {
-  // Initialize forward and reverse queues
-  const forwardQueue = [source];
-  const reverseQueue = [target];
+class TreeNode {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
 
-  // Initialize forward and reverse visited sets
-  const forwardVisited = new Set([source]);
-  const reverseVisited = new Set([target]);
+class BinaryTree {
+  constructor() {
+    this.root = null;
+  }
 
-  while (forwardQueue.length && reverseQueue.length) {
-    // Forward Search
-    const forwardNode = forwardQueue.shift();
-    const forwardNeighbors = graph[forwardNode];
+  insert(value) {
+    const newNode = new TreeNode(value);
 
-    for (let neighbor of forwardNeighbors) {
-      if (!forwardVisited.has(neighbor)) {
-        forwardQueue.push(neighbor);
-        forwardVisited.add(neighbor);
-
-        // Check if a common node is found
-        if (reverseVisited.has(neighbor)) {
-          return true; // Path found
-        }
-      }
-    }
-
-    // Reverse Search
-    const reverseNode = reverseQueue.shift();
-    const reverseNeighbors = graph[reverseNode];
-
-    for (let neighbor of reverseNeighbors) {
-      if (!reverseVisited.has(neighbor)) {
-        reverseQueue.push(neighbor);
-        reverseVisited.add(neighbor);
-
-        // Check if a common node is found
-        if (forwardVisited.has(neighbor)) {
-          return true; // Path found
-        }
-      }
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
     }
   }
 
-  return false; // Path not found
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
 }
+const tree = new BinaryTree();
 
-// Usage example
-const graph = {
-  A: ["B", "E"],
-  B: ["A", "C", "F"],
-  C: ["B", "D"],
-  D: ["C"],
-  E: ["A", "F"],
-  F: ["B", "E"],
-};
-
-console.log(biDirectionalSearch(graph, "A", "D")); // Output: true
-console.log(biDirectionalSearch(graph, "A", "F")); // Output: false
+tree.insert(50);
+tree.insert(30);
+tree.insert(70);
+tree.insert(20);
+tree.insert(40);
+tree.insert(60);
+tree.insert(80);
+       50
+      /  \
+    30    70
+   / \    / \
+ 20  40  60  80
