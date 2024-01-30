@@ -1,47 +1,29 @@
-function beamSearch(problem, beamSize, maxIterations) {
-  let beam = [problem.initialState]; // Step 3: Initialize the beam
-
-  for (let iteration = 0; iteration < maxIterations; iteration++) {
-    let candidates = [];
-
-    for (let i = 0; i < beam.length; i++) {
-      let partialSolution = beam[i];
-      let newCandidates = generateCandidates(partialSolution); // Step 4: Generate candidate solutions
-
-      for (let j = 0; j < newCandidates.length; j++) {
-        let candidate = newCandidates[j];
-        candidate.score = evaluate(candidate); // Step 5: Evaluate candidate solutions
-        candidates.push(candidate);
+function depthLimitedSearchIterative(root, goal, depthLimit) {
+  // Create a stack to keep track of nodes to be explored
+  const stack = [];
+  
+  // Push the root node onto the stack
+  stack.push({ node: root, depth: 0 });
+  
+  // Continue searching until the stack is empty
+  while (stack.length > 0) {
+    // Pop the top node from the stack
+    const { node, depth } = stack.pop();
+    
+    // Check if the current node matches the goal
+    if (node === goal) {
+      return node;  // Goal found, return the node
+    }
+    
+    // Check if the depth limit has been reached
+    if (depth < depthLimit) {
+      // Expand the current node by adding its children to the stack
+      const children = getChildren(node);  // Implement the getChildren() function
+      for (let i = children.length - 1; i >= 0 ; i--) {
+        stack.push({ node: children[i], depth: depth + 1 });
       }
     }
-
-    beam = pruneBeam(candidates, beamSize); // Step 6: Prune the beam
   }
-
-  return getBestSolution(beam); // Step 8: Return the best solution
-}
-
-// Helper functions
-function generateCandidates(solution) {
-  // Generate new candidate solutions based on the current solution
-  // ...
-  return candidates;
-}
-
-function evaluate(candidate) {
-  // Evaluate the candidate solution using a scoring function
-  // ...
-  return score;
-}
-
-function pruneBeam(candidates, beamSize) {
-  // Prune the candidates to retain the top-k solutions based on their scores
-  // ...
-  return prunedCandidates;
-}
-
-function getBestSolution(beam) {
-  // Return the best solution from the beam
-  // ...
-  return bestSolution;
+  
+  return null;  // Goal not found within the depth limit
 }
