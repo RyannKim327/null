@@ -1,37 +1,44 @@
-function findLongestIncreasingSubsequence(arr) {
-  const n = arr.length;
-  const dp = new Array(n).fill(1);
-  const sequence = [];
-
-  let maxLength = 1;
-  let prevIndex = 0;
-
-  for (let i = 1; i < n; i++) {
-    for (let j = 0; j < i; j++) {
-      if (arr[i] > arr[j]) {
-        if (dp[j] + 1 > dp[i]) {
-          dp[i] = dp[j] + 1;
-
-          if (dp[i] > maxLength) {
-            maxLength = dp[i];
-            prevIndex = j;
-          }
-        }
-      }
-    }
+// Node class to represent a graph node
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.neighbors = [];
   }
-
-  for (let i = n - 1; i >= 0; i--) {
-    if (dp[i] === maxLength) {
-      sequence.unshift(arr[i]);
-      maxLength--;
-    }
+  
+  addNeighbor(neighbor) {
+    this.neighbors.push(neighbor);
   }
-
-  return sequence;
 }
 
-// Example usage
-const array = [4, 2, 10, 6, 5, 1];
-const longestIncreasingSubsequence = findLongestIncreasingSubsequence(array);
-console.log(longestIncreasingSubsequence);
+// Perform a depth-first search
+function depthFirstSearch(node, visited = new Set()) {
+  // Mark the current node as visited
+  visited.add(node.value);
+  
+  // Process the current node
+  console.log(node.value);
+  
+  // Recursive call on each unvisited neighbor
+  for (const neighbor of node.neighbors) {
+    if (!visited.has(neighbor.value)) {
+      depthFirstSearch(neighbor, visited);
+    }
+  }
+}
+
+// Create a graph
+const nodeA = new Node('A');
+const nodeB = new Node('B');
+const nodeC = new Node('C');
+const nodeD = new Node('D');
+const nodeE = new Node('E');
+const nodeF = new Node('F');
+
+nodeA.addNeighbor(nodeB);
+nodeA.addNeighbor(nodeC);
+nodeB.addNeighbor(nodeD);
+nodeB.addNeighbor(nodeE);
+nodeC.addNeighbor(nodeF);
+
+// Call depth-first search starting from nodeA
+depthFirstSearch(nodeA);
