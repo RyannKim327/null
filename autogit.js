@@ -1,37 +1,18 @@
-function breadthLimitedSearch(rootNode, targetValue, limit) {
-  // ...
-}
-function breadthLimitedSearch(rootNode, targetValue, limit) {
-  const queue = [];
-  // ...
-}
-function breadthLimitedSearch(rootNode, targetValue, limit) {
-  const queue = [];
-  queue.push(rootNode);
-  // ...
-}
-function breadthLimitedSearch(rootNode, targetValue, limit) {
-  const queue = [];
-  queue.push(rootNode);
+const cron = require('cron');
 
-  while (queue.length > 0 && limit >= 0) {
-    // ...
-  }
+// Function to be executed on scheduled time
+function myTask() {
+  console.log('Task executed!');
 }
-function breadthLimitedSearch(rootNode, targetValue, limit) {
-  const queue = [];
-  queue.push(rootNode);
 
-  while (queue.length > 0 && limit >= 0) {
-    const currentNode = queue.shift();
-    limit--;
+// Create a scheduled task using cron
+const cronJob = new cron.CronJob('* * * * *', myTask); // Runs every minute
 
-    if (currentNode.value === targetValue) {
-      return currentNode; // Or perform any action
-    }
+// Start the cron job
+cronJob.start();
 
-    queue.push(...currentNode.children); // Assuming children is an array of child nodes
-  }
-
-  return null; // If targetValue is not found
-}
+// Wait for 5 minutes and stop the cron job
+setTimeout(() => {
+  cronJob.stop();
+  console.log('Cron job stopped!');
+}, 5 * 60 * 1000);
