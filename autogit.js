@@ -1,60 +1,27 @@
-function bidirectionalSearch(graph, start, target) {
-  const visitedFromStart = new Set();
-  const visitedFromTarget = new Set();
-  const queueStart = [start];
-  const queueTarget = [target];
-  const parentFromStart = new Map();
-  const parentFromTarget = new Map();
+function findFirstNonRepeatingChar(str) {
+  // Create an empty frequency count object
+  const frequencyCount = {};
 
-  visitedFromStart.add(start);
-  visitedFromTarget.add(target);
-  
-  while (queueStart.length && queueTarget.length) {
-    const nodeStart = queueStart.shift();
-    const nodeTarget = queueTarget.shift();
-    
-    if (visitedFromTarget.has(nodeStart)) {
-      return getPath(nodeStart, nodeTarget, parentFromStart, parentFromTarget);
-    }
-    
-    if (visitedFromStart.has(nodeTarget)) {
-      return getPath(nodeStart, nodeTarget, parentFromStart, parentFromTarget);
-    }
+  // Iterate through each character in the string
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
 
-    for (const neighbor of graph[nodeStart]) {
-      if (!visitedFromStart.has(neighbor)) {
-        queueStart.push(neighbor);
-        visitedFromStart.add(neighbor);
-        parentFromStart.set(neighbor, nodeStart);
-      }
-    }
+    // Increment the frequency count of the character
+    frequencyCount[char] = (frequencyCount[char] || 0) + 1;
+  }
 
-    for (const neighbor of graph[nodeTarget]) {
-      if (!visitedFromTarget.has(neighbor)) {
-        queueTarget.push(neighbor);
-        visitedFromTarget.add(neighbor);
-        parentFromTarget.set(neighbor, nodeTarget);
-      }
+  // Iterate through the frequency count
+  for (const char in frequencyCount) {
+    // Return the first character with a frequency of one
+    if (frequencyCount[char] === 1) {
+      return char;
     }
   }
-  
-  return null; // No path found
+
+  // Return null if no non-repeating character is found
+  return null;
 }
 
-function getPath(start, target, parentFromStart, parentFromTarget) {
-  const path = [];
-  let currentNode = start;
-  while (currentNode !== target) {
-    path.push(currentNode);
-    currentNode = parentFromStart.get(currentNode);
-  }
-  path.push(target);
-  
-  currentNode = target;
-  while (currentNode !== start) {
-    path.unshift(currentNode);
-    currentNode = parentFromTarget.get(currentNode);
-  }
-  
-  return path;
-}
+// Example usage
+const str = "abacabad"; // Expected output: 'c'
+console.log(findFirstNonRepeatingChar(str));
