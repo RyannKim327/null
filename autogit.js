@@ -1,47 +1,35 @@
-function buildPrefixTable(pattern) {
-  const prefixTable = [0];
-  let prefixLength = 0;
-  
-  for (let i = 1; i < pattern.length; i++) {
-    while (prefixLength > 0 && pattern[i] !== pattern[prefixLength]) {
-      prefixLength = prefixTable[prefixLength - 1];
-    }
-    
-    if (pattern[i] === pattern[prefixLength]) {
-      prefixLength++;
-    }
-    
-    prefixTable[i] = prefixLength;
+class Node {
+  constructor(value, left = null, right = null) {
+    this.value = value;
+    this.left = left;
+    this.right = right;
   }
-  
-  return prefixTable;
 }
-function kmpSearch(text, pattern) {
-  const prefixTable = buildPrefixTable(pattern);
-  let textIndex = 0;
-  let patternIndex = 0;
-  const matches = [];
-  
-  while (textIndex < text.length) {
-    if (text[textIndex] === pattern[patternIndex]) {
-      if (patternIndex === pattern.length - 1) {
-        matches.push(textIndex - pattern.length + 1);
-        patternIndex = prefixTable[patternIndex];
-      } else {
-        textIndex++;
-        patternIndex++;
-      }
-    } else if (patternIndex > 0) {
-      patternIndex = prefixTable[patternIndex - 1];
-    } else {
-      textIndex++;
-    }
-  }
-  
-  return matches;
-}
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const matches = kmpSearch(text, pattern);
 
-console.log("Pattern found at positions:", matches);
+function findDiameter(root) {
+  let diameter = 0;
+
+  function computeHeight(node) {
+    if (node === null) return 0;
+
+    const leftHeight = computeHeight(node.left);
+    const rightHeight = computeHeight(node.right);
+
+    diameter = Math.max(diameter, leftHeight + rightHeight + 1);
+
+    return Math.max(leftHeight, rightHeight) + 1;
+  }
+
+  computeHeight(root);
+
+  return diameter;
+}
+
+// Usage example:
+const tree = new Node(1,
+  new Node(2,
+    new Node(4),
+    new Node(5)),
+  new Node(3));
+const diameter = findDiameter(tree);
+console.log(`Diameter of the binary tree is: ${diameter}`);
