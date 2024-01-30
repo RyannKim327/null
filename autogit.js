@@ -1,21 +1,57 @@
-function binarySearch(arr, target, start, end) {
-  if (start > end) {
-    return -1; // Target not found
+const graph = {}; // Adjacency list representation of the graph
+const stack = []; // Stack to keep track of visited vertices
+const visited = {}; // Object to keep track of visited vertices
+const lowLink = {}; // Object to store the low link values
+const ids = {}; // Object to assign unique ids to each vertex
+let id = 0; // Variable to assign a unique id to each vertex
+const scc = []; // Array to store the strongly connected components
+function tarjansAlgorithm(node) {
+  visited[node] = true;
+  lowLink[node] = ids[node] = id++;
+  stack.push(node);
+
+  const neighbors = graph[node];
+
+  for (let i = 0; i < neighbors.length; i++) {
+    const neighbor = neighbors[i];
+
+    if (!visited[neighbor]) {
+      tarjansAlgorithm(neighbor);
+      lowLink[node] = Math.min(lowLink[node], lowLink[neighbor]);
+    } else if (stack.includes(neighbor)) {
+      lowLink[node] = Math.min(lowLink[node], ids[neighbor]);
+    }
   }
 
-  const mid = Math.floor((start + end) / 2);
+  if (lowLink[node] === ids[node]) {
+    const component = [];
+    let currNode;
 
-  if (arr[mid] === target) {
-    return mid; // Target found at mid index
-  } else if (arr[mid] > target) {
-    return binarySearch(arr, target, start, mid - 1); // Search left subarray
-  } else {
-    return binarySearch(arr, target, mid + 1, end); // Search right subarray
+    do {
+      currNode = stack.pop();
+      component.push(currNode);
+    } while (currNode !== node);
+
+    scc.push(component);
   }
 }
+function findStronglyConnectedComponents() {
+  for (const node in graph) {
+    if (!visited[node]) {
+      tarjansAlgorithm(node);
+    }
+  }
+}
+// Example graph
+graph['A'] = ['B'];
+graph['B'] = ['C', 'E', 'F'];
+graph['C'] = ['D', 'G'];
+graph['D'] = ['C', 'H'];
+graph['E'] = ['A', 'F'];
+graph['F'] = ['G'];
+graph['G'] = ['F'];
+graph['H'] = ['D', 'G'];
 
-// Example usage:
-const array = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const target = 10;
-const result = binarySearch(array, target, 0, array.length - 1);
-console.log(result); // Output: 4 (as `10` is found at index 4)
+findStronglyConnectedComponents();
+
+console.log(scc);
