@@ -1,42 +1,31 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
+function longestCommonSubstring(str1, str2) {
+  const m = str1.length;
+  const n = str2.length;
+  let maxLength = 0; // Length of longest common substring
+  let endIndex = 0; // End index of longest common substring in str1
 
-function findSumOfNodes(root) {
-  if (root === null) {
-    return 0;
-  }
+  // Create a 2D array to store the lengths of common substrings
+  const dp = Array(m + 1).fill(0).map(() => Array(n + 1).fill(0));
 
-  // Use depth-first search to traverse the tree
-  const stack = [root];
-  let sum = 0;
-
-  while (stack.length > 0) {
-    const node = stack.pop();
-    sum += node.value;
-
-    if (node.right !== null) {
-      stack.push(node.right);
-    }
-
-    if (node.left !== null) {
-      stack.push(node.left);
+  // Fill the dp array and track the maximum length and ending index
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+        if (dp[i][j] > maxLength) {
+          maxLength = dp[i][j];
+          endIndex = i - 1;
+        }
+      }
     }
   }
 
-  return sum;
+  // Return the longest common substring
+  return str1.substr(endIndex - maxLength + 1, maxLength);
 }
 
-// Example usage:
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-const sum = findSumOfNodes(root);
-console.log('Sum of all nodes:', sum); // Output: Sum of all nodes: 15
+// Example usage
+const str1 = "ABABC";
+const str2 = "BABCA";
+const result = longestCommonSubstring(str1, str2);
+console.log(result); // Output: "BABC"
