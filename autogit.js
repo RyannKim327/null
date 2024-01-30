@@ -1,30 +1,26 @@
-function depthLimitedSearch(initialState, depthLimit) {
-  let stack = [];
-  stack.push({ state: initialState, depth: 0 });
-
-  while (stack.length > 0) {
-    const { state, depth } = stack.pop();
-
-    // Check if state is the goal state
-    if (isGoalState(state)) {
-      return state; // Return the solution
-    }
-
-    // Expand the current state if depth limit not reached
-    if (depth < depthLimit) {
-      const childStates = generateChildStates(state);
-      for (const childState of childStates) {
-        stack.push({ state: childState, depth: depth + 1 });
-      }
-    }
+class TreeNode {
+  constructor(val) {
+    this.val = val;
+    this.left = this.right = null;
   }
-
-  return null; // No solution found within depth limit
 }
 
-// Example usage
-const initialState = ...;   // Set initial state
-const depthLimit = ...;     // Set depth limit
+function maxDepth(root) {
+  if (root === null) {
+    return 0; // Base case: an empty tree has a depth of 0
+  }
+  
+  const leftDepth = maxDepth(root.left); // Recursively calculate the depth of the left subtree
+  const rightDepth = maxDepth(root.right); // Recursively calculate the depth of the right subtree
 
-const solution = depthLimitedSearch(initialState, depthLimit);
-console.log(solution);
+  return Math.max(leftDepth, rightDepth) + 1; // Return the maximum depth between the left and right subtrees, plus 1 for the current node
+}
+
+// Example usage:
+const root = new TreeNode(3);
+root.left = new TreeNode(9);
+root.right = new TreeNode(20);
+root.right.left = new TreeNode(15);
+root.right.right = new TreeNode(7);
+
+console.log(maxDepth(root)); // Output: 3
