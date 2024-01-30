@@ -1,31 +1,97 @@
-function depthLimitedSearch(node, goal, depthLimit) {
-  if (node === goal) {
-    return [node]; // Return the goal node
+class SkipNode {
+  constructor(value = null, level = 0) {
+    this.value = value;
+    this.next = new Array(level + 1);
+    this.previous = null;
+  }
+}
+class SkipList {
+  constructor() {
+    this.head = new SkipNode();
+    this.maxLevel = 0;
+    this.length = 0;
   }
 
-  if (depthLimit === 0) {
-    return null; // Reached depth limit, return failure
+  randomLevel() {
+    let level = 0;
+    while (Math.random() < 0.5 && level < this.maxLevel + 1) {
+      level++;
+    }
+    return level;
   }
 
-  for (let child of node.children) {
-    const result = depthLimitedSearch(child, goal, depthLimit - 1);
-    
-    if (result !== null) {
-      result.unshift(node); // Prepend the current node
-      return result; // Return the path
+  insert(value) {
+    const newNode = new SkipNode(value, this.randomLevel());
+
+    if (newNode.level > this.maxLevel) {
+      for (let i = this.maxLevel + 1; i <= newNode.level; i++) {
+        this.head.next[i] = newNode;
+      }
+      this.maxLevel = newNode.level;
+    }
+
+    let current = this.head;
+    for (let i = this.maxLevel; i >= 0; i--) {
+      while (current.next[i] && current.next[i].value < value) {
+        current = current.next[i];
+      }
+
+      if (i <= newNode.level) {
+        newNode.next[i] = current.next[i];
+        current.next[i] = newNode;
+        if (newNode.next[i]) {
+          newNode.next[i].previous = newNode;
+        }
+      }
+    }
+
+    newNode.previous = current;
+    if (newNode.next[0]) {
+      newNode.next[0].previous = newNode;
+    }
+    this.length++;
+  }
+
+  remove(value) {
+    let current = this.head;
+    for (let i = this.maxLevel; i >= 0; i--) {
+      while (current.next[i] && current.next[i].value < value) {
+        current = current.next[i];
+      }
+      if (current.next[i] && current.next[i].value === value) {
+        const nodeToRemove = current.next[i];
+        current.next[i] = nodeToRemove.next[i];
+        if (nodeToRemove.next[i]) {
+          nodeToRemove.next[i].previous = current;
+        }
+        if (i === 0) {
+          this.length--;
+        }
+      }
     }
   }
 
-  return null; // Return failure if no path found
+  contains(value) {
+    let current = this.head;
+    for (let i = this.maxLevel; i >= 0; i--) {
+      while (current.next[i] && current.next[i].value < value) {
+        current = current.next[i];
+      }
+      if (current.next[i] && current.next[i].value === value) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
-// Example usage
-const rootNode = /* define your root node */;
-const goalNode = /* define your goal node */;
-const depthLimit = 5; // Define the depth limit
+const skipList = new SkipList();
 
-const path = depthLimitedSearch(rootNode, goalNode, depthLimit);
-if (path !== null) {
-  console.log("Path found:", path);
-} else {
-  console.log("Path not found within depth limit.");
-}
+skipList.insert(3);
+skipList.insert(1);
+skipList.insert(5);
+
+console.log(skipList.contains(1)); // true
+console.log(skipList.contains(2)); // false
+
+skipList.remove(1);
+console.log(skipList.contains(1)); // false
