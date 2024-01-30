@@ -1,58 +1,36 @@
-class Stack {
-  constructor() {
-    this.stack = [];
-  }
+function findMajorityElement(array) {
+  let majorityElement = array[0];
+  let count = 1;
 
-  // Push an element to the top of the stack
-  push(item) {
-    this.stack.push(item);
-  }
-
-  // Remove and return the top element from the stack
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack is empty!";
+  for (let i = 1; i < array.length; i++) {
+    if (array[i] === majorityElement) {
+      count++;
+    } else {
+      count--;
+      if (count === 0) {
+        majorityElement = array[i];
+        count = 1;
+      }
     }
-    return this.stack.pop();
   }
 
-  // Return the top element in the stack without removing it
-  peek() {
-    if (this.isEmpty()) {
-      return "Stack is empty!";
+  // Verify if majorityElement is indeed the majority element
+  count = 0;
+  for (let i = 0; i < array.length; i++) {
+    if (array[i] === majorityElement) {
+      count++;
     }
-    return this.stack[this.stack.length - 1];
   }
 
-  // Check if the stack is empty
-  isEmpty() {
-    return this.stack.length === 0;
+  if (count > array.length / 2) {
+    return majorityElement;
   }
 
-  // Return the size of the stack
-  size() {
-    return this.stack.length;
-  }
-
-  // Clear the stack
-  clear() {
-    this.stack = [];
-  }
+  // Return null if there is no majority element
+  return null;
 }
 
 // Example usage:
-const stack = new Stack();
-stack.push(10);
-stack.push(20);
-stack.push(30);
-
-console.log("Top of the stack:", stack.peek()); // Output: 30
-
-console.log("Popped item:", stack.pop()); // Output: 30
-
-console.log("Is stack empty?", stack.isEmpty()); // Output: false
-
-console.log("Size of stack:", stack.size()); // Output: 2
-
-stack.clear();
-console.log("Is stack empty?", stack.isEmpty()); // Output: true
+const array = [3, 2, 3];
+const majorityElement = findMajorityElement(array);
+console.log(majorityElement); // Output: 3
