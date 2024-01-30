@@ -1,53 +1,76 @@
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+class Node {
+  constructor(state, parent, g, h) {
+    this.state = state;
+    this.parent = parent;
+    this.g = g;
+    this.h = h;
+    this.f = g + h;
   }
 }
-
-class BinaryTree {
-  constructor() {
-    this.root = null;
-  }
-
-  insert(value) {
-    const newNode = new TreeNode(value);
-
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
-
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
+function heuristic(node, goal) {
+  // Calculate the Manhattan distance between the current node and the goal node
+  const dx = Math.abs(node.state.x - goal.state.x);
+  const dy = Math.abs(node.state.y - goal.state.y);
+  return dx + dy;
 }
-const tree = new BinaryTree();
+const { BinaryHeap } = require('js-priority-queue');
 
-tree.insert(50);
-tree.insert(30);
-tree.insert(70);
-tree.insert(20);
-tree.insert(40);
-tree.insert(60);
-tree.insert(80);
-       50
-      /  \
-    30    70
-   / \    / \
- 20  40  60  80
+function aStarSearch(start, goal) {
+  const openList = new BinaryHeap((node) => node.f);
+  const closedList = new Set();
+
+  // Add the start node
+  openList.push(new Node(start, null, 0, heuristic(start, goal)));
+
+  while (!openList.isEmpty()) {
+    // Get the node with the lowest f value
+    const current = openList.pop();
+
+    // Goal check
+    if (current.state === goal.state) {
+      return constructPath(current);
+    }
+
+    closedList.add(current.state);
+
+    // Generate successors and process them
+    const successors = generateSuccessors(current);
+    successors.forEach((successor) => {
+      if (closedList.has(successor.state)) {
+        return;
+      }
+
+      const g = current.g + successor.cost;
+      const h = heuristic(successor, goal);
+      const f = g + h;
+      const existingOpenNode = openList.find((node) => node.state === successor.state);
+
+      if (existingOpenNode && existingOpenNode.g <= g) {
+        return;
+      }
+
+      if (existingOpenNode) {
+        openList.remove(existingOpenNode);
+      }
+
+      openList.push(new Node(successor.state, current, g, h));
+    });
+  }
+
+  // No path found
+  return null;
+}
+function generateSuccessors(node) {
+  // Generate and return the successors of the current node
+  // based on the rules of your specific problem
+  // Each successor should have a state and a cost to reach that state
+}
+
+function constructPath(node) {
+  const path = [];
+  while (node) {
+    path.unshift(node.state);
+    node = node.parent;
+  }
+  return path;
+}
