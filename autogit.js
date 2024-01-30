@@ -1,74 +1,100 @@
-// Define the Node class
 class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+  constructor(start, end) {
+    this.start = start;
+    this.end = end;
+    this.children = {};
+    this.link = null;
   }
 }
+class SuffixTree {
+  constructor(text) {
+    this.text = text;
+    this.root = new Node(-1, -1);
+    this.activeNode = this.root;
+    this.activeEdge = null;
+    this.activeLength = 0;
+    this.remainingSuffixCount = 0;
+    this.lastNewNode = null;
+    this.activeEdgeIndex = -1;
 
-// Define the BinaryTree class
-class BinaryTree {
-  constructor() {
-    this.root = null;
+    this.buildSuffixTree();
   }
 
-  // Method to insert a value into the tree
-  insert(value) {
-    const newNode = new Node(value);
-
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
+  // Other methods...
+}
+  buildSuffixTree() {
+    const n = this.text.length;
+    for (let i = 0; i < n; i++) {
+      this.extendSuffixTree(i);
     }
   }
+  extendSuffixTree(pos) {
+    this.remainingSuffixCount++;
+    this.lastNewNode = null;
 
-  // Recursive method to insert a value into a specific node
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
+    while (this.remainingSuffixCount > 0) {
+      if (this.activeLength === 0) {
+        this.activeEdgeIndex = pos;
       }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
+
+      if (!this.activeNode.children[this.text[this.activeEdgeIndex]]) {
+        this.activeNode.children[this.text[this.activeEdgeIndex]] = new Node(
+          pos,
+          n
+        );
+
+        if (this.lastNewNode !== null) {
+          this.lastNewNode.link = this.activeNode;
+          this.lastNewNode = null;
+        }
       } else {
-        this.insertNode(node.right, newNode);
+        const next = this.activeNode.children[this.text[this.activeEdgeIndex]];
+        if (this.walkDown(next)) {
+          continue;
+        }
+
+        if (this.text[next.start + this.activeLength] === this.text[pos]) {
+          if (this.lastNewNode !== null && this.activeNode !== this.root) {
+            this.lastNewNode.link = this.activeNode;
+            this.lastNewNode = null;
+          }
+
+          this.activeLength++;
+          break;
+        }
+
+        const splitEnd =
+          next.start + this.activeLength - 1;
+        const splitNode = new Node(next.start, splitEnd);
+        this.activeNode.children[this.text[this.activeEdgeIndex]] = splitNode;
+
+        splitNode.children[this.text[pos]] = new Node(pos, n);
+        next.start += this.activeLength;
+        splitNode.children[this.text[next.start]] = next;
+
+        if (this.lastNewNode !== null) {
+          this.lastNewNode.link = splitNode;
+        }
+
+        this.lastNewNode = splitNode;
+      }
+
+      this.remainingSuffixCount--;
+      if (this.activeNode === this.root && this.activeLength > 0) {
+        this.activeLength--;
+        this.activeEdgeIndex = pos - this.remainingSuffixCount + 1;
+      } else if (this.activeNode !== this.root) {
+        this.activeNode = this.activeNode.link;
       }
     }
   }
-
-  // Method to search for a value in the tree
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  // Recursive method to search for a value starting from a specific node
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
-    }
-
-    if (value === node.value) {
+  walkDown(node) {
+    const edgeLength = node.end - node.start + 1;
+    if (this.activeLength >= edgeLength) {
+      this.activeEdgeIndex += edgeLength;
+      this.activeLength -= edgeLength;
+      this.activeNode = node;
       return true;
-    } else if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else {
-      return this.searchNode(node.right, value);
     }
+    return false;
   }
-}
-
-// Example usage
-const tree = new BinaryTree();
-tree.insert(10);
-tree.insert(5);
-tree.insert(15);
-tree.insert(3);
-tree.insert(7);
-
-console.log(tree.search(7)); // true
-console.log(tree.search(12)); // false
