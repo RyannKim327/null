@@ -1,191 +1,143 @@
 class Node {
-  constructor(value) {
+  constructor(key, value, color) {
+    this.key = key;
     this.value = value;
+    this.color = color;
     this.left = null;
     this.right = null;
+    this.parent = null;
   }
 }
 
-class BinarySearchTree {
+class RedBlackTree {
   constructor() {
     this.root = null;
   }
 
-  insert(value) {
-    const newNode = new Node(value);
-
+  insert(key, value) {
+    const newNode = new Node(key, value, 'red');
     if (this.root === null) {
       this.root = newNode;
     } else {
-      this.insertNode(this.root, newNode);
+      let current = this.root;
+      while (true) {
+        if (key < current.key) {
+          if (current.left === null) {
+            current.left = newNode;
+            newNode.parent = current;
+            break;
+          } else {
+            current = current.left;
+          }
+        } else if (key > current.key) {
+          if (current.right === null) {
+            current.right = newNode;
+            newNode.parent = current;
+            break;
+          } else {
+            current = current.right;
+          }
+        } else { // if key already exists, update the value
+          current.value = value;
+          return;
+        }
+      }
+      this.balanceTreeAfterInsert(newNode);
     }
   }
 
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
+  balanceTreeAfterInsert(node) {
+    while (node !== this.root && node.parent.color === 'red') {
+      if (node.parent === node.parent.parent.left) {
+        const uncle = node.parent.parent.right;
+        if (uncle !== null && uncle.color === 'red') {
+          node.parent.color = 'black';
+          uncle.color = 'black';
+          node.parent.parent.color = 'red';
+          node = node.parent.parent;
+        } else {
+          if (node === node.parent.right) {
+            node = node.parent;
+            this.rotateLeft(node);
+          }
+          node.parent.color = 'black';
+          node.parent.parent.color = 'red';
+          this.rotateRight(node.parent.parent);
+        }
       } else {
-        this.insertNode(node.left, newNode);
+        const uncle = node.parent.parent.left;
+        if (uncle !== null && uncle.color === 'red') {
+          node.parent.color = 'black';
+          uncle.color = 'black';
+          node.parent.parent.color = 'red';
+          node = node.parent.parent;
+        } else {
+          if (node === node.parent.left) {
+            node = node.parent;
+            this.rotateRight(node);
+          }
+          node.parent.color = 'black';
+          node.parent.parent.color = 'red';
+          this.rotateLeft(node.parent.parent);
+        }
       }
+    }
+    this.root.color = 'black';
+  }
+
+  rotateLeft(node) {
+    const rightChild = node.right;
+    node.right = rightChild.left;
+    if (rightChild.left !== null) {
+      rightChild.left.parent = node;
+    }
+    rightChild.parent = node.parent;
+    if (node.parent === null) {
+      this.root = rightChild;
+    } else if (node === node.parent.left) {
+      node.parent.left = rightChild;
     } else {
-      if (node.right === null) {
-        node.right = newNode;
+      node.parent.right = rightChild;
+    }
+    rightChild.left = node;
+    node.parent = rightChild;
+  }
+
+  rotateRight(node) {
+    const leftChild = node.left;
+    node.left = leftChild.right;
+    if (leftChild.right !== null) {
+      leftChild.right.parent = node;
+    }
+    leftChild.parent = node.parent;
+    if (node.parent === null) {
+      this.root = leftChild;
+    } else if (node === node.parent.left) {
+      node.parent.left = leftChild;
+    } else {
+      node.parent.right = leftChild;
+    }
+    leftChild.right = node;
+    node.parent = leftChild;
+  }
+
+  search(key) {
+    let current = this.root;
+    while (current !== null) {
+      if (key < current.key) {
+        current = current.left;
+      } else if (key > current.key) {
+        current = current.right;
       } else {
-        this.insertNode(node.right, newNode);
+        return current.value;
       }
     }
-  }
-
-  remove(value) {
-    this.root = this.removeNode(this.root, value);
-  }
-
-  removeNode(node, key) {
-    if (node === null) {
-      return null;
-    } else if (key < node.value) {
-      node.left = this.removeNode(node.left, key);
-      return node;
-    } else if (key > node.value) {
-      node.right = this.removeNode(node.right, key);
-      return node;
-    } else {
-      if (node.left === null && node.right === null) {
-        node = null;
-        return node;
-      }
-
-      if (node.left === null) {
-        node = node.right;
-        return node;
-      } else if (node.right === null) {
-        node = node.left;
-        return node;
-      }
-
-      const minNode = this.findMinNode(node.right);
-      node.value = minNode.value;
-      node.right = this.removeNode(node.right, minNode.value);
-      return node;
-    }
-  }
-
-  findMinNode(node) {
-    if (node.left === null) {
-      return node;
-    } else {
-      return this.findMinNode(node.left);
-    }
-  }
-
-  inorderTraversal(callback) {
-    this.inorderTraversalNode(this.root, callback);
-  }
-
-  inorderTraversalNode(node, callback) {
-    if (node !== null) {
-      this.inorderTraversalNode(node.left, callback);
-      callback(node.value);
-      this.inorderTraversalNode(node.right, callback);
-    }
-  }
-
-  preorderTraversal(callback) {
-    this.preorderTraversalNode(this.root, callback);
-  }
-
-  preorderTraversalNode(node, callback) {
-    if (node !== null) {
-      callback(node.value);
-      this.preorderTraversalNode(node.left, callback);
-      this.preorderTraversalNode(node.right, callback);
-    }
-  }
-
-  postorderTraversal(callback) {
-    this.postorderTraversalNode(this.root, callback);
-  }
-
-  postorderTraversalNode(node, callback) {
-    if (node !== null) {
-      this.postorderTraversalNode(node.left, callback);
-      this.postorderTraversalNode(node.right, callback);
-      callback(node.value);
-    }
-  }
-
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
-    } else if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else if (value > node.value) {
-      return this.searchNode(node.right, value);
-    } else {
-      return true;
-    }
+    return null;
   }
 }
-const bst = new BinarySearchTree();
+const tree = new RedBlackTree();
+tree.insert(10, 'A');
+tree.insert(20, 'B');
+tree.insert(30, 'C');
 
-bst.insert(4);
-bst.insert(2);
-bst.insert(6);
-bst.insert(1);
-bst.insert(3);
-bst.insert(5);
-bst.insert(7);
-
-console.log("Inorder traversal: ");
-bst.inorderTraversal((value) => console.log(value));
-
-console.log("Preorder traversal: ");
-bst.preorderTraversal((value) => console.log(value));
-
-console.log("Postorder traversal: ");
-bst.postorderTraversal((value) => console.log(value));
-
-console.log("Search for value 5: ", bst.search(5));
-console.log("Search for value 8: ", bst.search(8));
-
-bst.remove(3);
-console.log("Inorder traversal after removing 3: ");
-bst.inorderTraversal((value) => console.log(value));
-Inorder traversal:
-1
-2
-3
-4
-5
-6
-7
-Preorder traversal:
-4
-2
-1
-3
-6
-5
-7
-Postorder traversal:
-1
-3
-2
-5
-7
-6
-4
-Search for value 5: true
-Search for value 8: false
-Inorder traversal after removing 3:
-1
-2
-4
-5
-6
-7
+console.log(tree.search(20)); // Output: B
