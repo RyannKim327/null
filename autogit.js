@@ -1,28 +1,46 @@
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
   }
 }
 
-function maxDepth(root) {
-  if (root === null) {
-    return 0;
+class LinkedList {
+  constructor() {
+    this.head = null;
   }
 
-  const leftDepth = maxDepth(root.left);
-  const rightDepth = maxDepth(root.right);
-
-  return Math.max(leftDepth, rightDepth) + 1;
+  add(data) {
+    const newNode = new Node(data);
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
+  
+  getLength() {
+    let count = 0;
+    let current = this.head;
+    
+    while (current) {
+      count++;
+      current = current.next;
+    }
+    
+    return count;
+  }
 }
-// Create a binary tree
-const root = new TreeNode(3);
-root.left = new TreeNode(9);
-root.right = new TreeNode(20);
-root.right.left = new TreeNode(15);
-root.right.right = new TreeNode(7);
 
-// Calculate the maximum depth of the tree
-const depth = maxDepth(root);
-console.log('Maximum depth:', depth); // Output: Maximum depth: 3
+// Example usage
+const linkedList = new LinkedList();
+linkedList.add(1);
+linkedList.add(2);
+linkedList.add(3);
+linkedList.add(4);
+
+console.log(linkedList.getLength()); // Output: 4
