@@ -1,24 +1,38 @@
-function shellSort(arr) {
-  const len = arr.length;
-  let gap = Math.floor(len / 2);
+function longestCommonSubstring(str1, str2) {
+  const m = str1.length;
+  const n = str2.length;
+  const dp = Array(m + 1)
+    .fill(0)
+    .map(() => Array(n + 1).fill(0));
 
-  while (gap > 0) {
-    for (let i = gap; i < len; i++) {
-      let temp = arr[i];
-      let j = i;
+  let maxLength = 0; // Length of longest common substring
+  let endIndex = 0; // End index of longest common substring in str1
 
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+        if (dp[i][j] > maxLength) {
+          maxLength = dp[i][j];
+          endIndex = i - 1;
+        }
+      } else {
+        dp[i][j] = 0;
       }
-
-      arr[j] = temp;
     }
-
-    gap = Math.floor(gap / 2);
   }
 
-  return arr;
+  if (maxLength === 0) {
+    return ''; // No common substring exists
+  }
+
+  // Extract the longest common substring from str1 using the endIndex
+  const longestSubstring = str1.substr(endIndex - maxLength + 1, maxLength);
+  return longestSubstring;
 }
-const array = [8, 3, 6, 2, 9, 1, 4, 5, 7];
-console.log(shellSort(array)); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+// Example usage:
+const str1 = 'abcdefg';
+const str2 = 'xyzabcd';
+const longestSubstring = longestCommonSubstring(str1, str2);
+console.log(longestSubstring); // Output: 'abcd'
