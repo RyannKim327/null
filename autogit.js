@@ -1,56 +1,31 @@
-function computeLPSArray(pattern) {
-  const lps = Array(pattern.length).fill(0);
-  let len = 0;
-  let i = 1;
+function depthLimitedSearch(node, goal, depthLimit) {
+  if (node === goal) {
+    return [node]; // Return the goal node
+  }
 
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[len]) {
-      len++;
-      lps[i] = len;
-      i++;
-    } else if (len !== 0) {
-      len = lps[len - 1];
-    } else {
-      lps[i] = 0;
-      i++;
+  if (depthLimit === 0) {
+    return null; // Reached depth limit, return failure
+  }
+
+  for (let child of node.children) {
+    const result = depthLimitedSearch(child, goal, depthLimit - 1);
+    
+    if (result !== null) {
+      result.unshift(node); // Prepend the current node
+      return result; // Return the path
     }
   }
 
-  return lps;
+  return null; // Return failure if no path found
 }
-function search(text, pattern) {
-  const lps = computeLPSArray(pattern);
-  const result = [];
+// Example usage
+const rootNode = /* define your root node */;
+const goalNode = /* define your goal node */;
+const depthLimit = 5; // Define the depth limit
 
-  let i = 0; // index for text
-  let j = 0; // index for pattern
-  while (i < text.length) {
-    if (pattern[j] === text[i]) {
-      j++;
-      i++;
-    }
-
-    if (j === pattern.length) {
-      result.push(i - j);
-      j = lps[j - 1];
-    } else if (i < text.length && pattern[j] !== text[i]) {
-      if (j !== 0) {
-        j = lps[j - 1];
-      } else {
-        i++;
-      }
-    }
-  }
-
-  return result;
-}
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-
-const occurrences = search(text, pattern);
-
-if (occurrences.length === 0) {
-  console.log("Pattern not found in the text.");
+const path = depthLimitedSearch(rootNode, goalNode, depthLimit);
+if (path !== null) {
+  console.log("Path found:", path);
 } else {
-  console.log(`Pattern found at index ${occurrences.join(", ")}`);
+  console.log("Path not found within depth limit.");
 }
