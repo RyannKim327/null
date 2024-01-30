@@ -1,26 +1,62 @@
-function isAnagram(str1, str2) {
-  // Convert the strings to lowercase
-  str1 = str1.toLowerCase();
-  str2 = str2.toLowerCase();
-
-  // Remove whitespace and punctuation
-  str1 = str1.replace(/[^\w]/g, '');
-  str2 = str2.replace(/[^\w]/g, '');
-
-  // Sort the characters of both strings
-  const sortedStr1 = str1.split('').sort().join('');
-  const sortedStr2 = str2.split('').sort().join('');
-
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-// Example usage
-const string1 = "Listen";
-const string2 = "silent";
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
 
-if (isAnagram(string1, string2)) {
-  console.log(`${string1} and ${string2} are anagrams.`);
-} else {
-  console.log(`${string1} and ${string2} are not anagrams.`);
+  addNode(value) {
+    const newNode = new Node(value);
+    if (this.head === null) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next !== null) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
 }
+
+function isPalindrome(head) {
+  if (!head || !head.next) {
+    return true;  // Empty or single-node linked list is a palindrome
+  }
+
+  const values = [];
+  let current = head;
+  
+  while (current) {
+    values.push(current.value);
+    current = current.next;
+  }
+
+  let left = 0;
+  let right = values.length - 1;
+
+  while (left < right) {
+    if (values[left] !== values[right]) {
+      return false;
+    }
+    left++;
+    right--;
+  }
+
+  return true;
+}
+
+// Example usage:
+const linkedList = new LinkedList();
+linkedList.addNode('r');
+linkedList.addNode('a');
+linkedList.addNode('d');
+linkedList.addNode('a');
+linkedList.addNode('r');
+
+console.log(isPalindrome(linkedList.head));  // Output: true
