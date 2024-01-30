@@ -1,13 +1,14 @@
-function isPalindrome(str) {
-  let i = 0;
-  let j = str.length - 1;
-
-  while (i < j) {
-    if (str[i] !== str[j]) {
-      return false;
-    }
-    i++;
-    j--;
+const array = [1, 2, 3, 4, 2, 1];
+const uniqueArray = Array.from(new Set(array));
+console.log(uniqueArray); // Output: [1, 2, 3, 4]
+const array = [1, 2, 3, 4, 2, 1];
+const uniqueArray = array.filter((element, index) => array.indexOf(element) === index);
+console.log(uniqueArray); // Output: [1, 2, 3, 4]
+const array = [1, 2, 3, 4, 2, 1];
+const uniqueArray = array.reduce((accumulator, currentValue) => {
+  if (!accumulator.includes(currentValue)) {
+    accumulator.push(currentValue);
   }
-  return true;
-}
+  return accumulator;
+}, []);
+console.log(uniqueArray); // Output: [1, 2, 3, 4]
