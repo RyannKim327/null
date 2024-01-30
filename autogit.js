@@ -1,52 +1,156 @@
-// Example graph
-const graph = {
-  A: { B: 3, C: 1 },
-  B: { A: 3, C: 7 },
-  C: { A: 1, B: 7 }
-};
-
-function dijkstra(graph, source) {
-  const distances = {};
-  const previous = {};
-  const queue = new FastPriorityQueue();
-
-  // Step 3: Initialization
-  for (const vertex in graph) {
-    distances[vertex] = Infinity;
-    previous[vertex] = null;
+// Define the RedBlackTree class
+class RedBlackTree {
+  constructor() {
+    this.root = null;
   }
-  distances[source] = 0;
 
-  // Step 4: Dijkstra's algorithm
-  queue.add(source, 0);
+  // Define the Node class
+  class Node {
+    constructor(value) {
+      this.value = value;
+      this.left = null;
+      this.right = null;
+      this.parent = null;
+      this.color = 'red';
+    }
+  }
 
-  while (!queue.isEmpty()) {
-    const current = queue.poll();
+  // Insert a value into the tree
+  insert(value) {
+    const newNode = new Node(value);
 
-    for (const neighbor in graph[current]) {
-      const weight = graph[current][neighbor];
-      const distance = distances[current] + weight;
+    if (this.root === null) {
+      this.root = newNode;
+      this.root.color = 'black';
+    } else {
+      this.insertNode(this.root, newNode);
+      this.fixTree(newNode);
+    }
+  }
 
-      if (distance < distances[neighbor]) {
-        distances[neighbor] = distance;
-        previous[neighbor] = current;
-        queue.add(neighbor, distance);
+  // Insert a node into the tree
+  insertNode(root, node) {
+    if (node.value < root.value) {
+      if (root.left === null) {
+        root.left = node;
+        node.parent = root;
+      } else {
+        this.insertNode(root.left, node);
+      }
+    } else {
+      if (root.right === null) {
+        root.right = node;
+        node.parent = root;
+      } else {
+        this.insertNode(root.right, node);
       }
     }
   }
 
-  // Step 5: Build the shortest path
-  const shortestPath = [];
-  let current = source;
+  // Fix the tree after insertion
+  fixTree(node) {
+    while (
+      node !== this.root &&
+      node.parent.color === 'red' &&
+      node.color !== 'black'
+    ) {
+      let parent = node.parent;
+      let grandparent = parent.parent;
 
-  while (current !== null) {
-    shortestPath.push(current);
-    current = previous[current];
+      if (parent === grandparent.left) {
+        let uncle = grandparent.right;
+
+        // Case 1: Uncle is red
+        if (uncle && uncle.color === 'red') {
+          grandparent.color = 'red';
+          parent.color = 'black';
+          uncle.color = 'black';
+          node = grandparent;
+        } else {
+          // Case 2: Node is a right child
+          if (node === parent.right) {
+            this.rotateLeft(parent);
+            node = parent;
+            parent = node.parent;
+          }
+
+          // Case 3: Node is a left child
+          this.rotateRight(grandparent);
+          [parent.color, grandparent.color] = [grandparent.color, parent.color];
+          node = parent;
+        }
+      } else {
+        let uncle = grandparent.left;
+
+        // Case 1: Uncle is red
+        if (uncle && uncle.color === 'red') {
+          grandparent.color = 'red';
+          parent.color = 'black';
+          uncle.color = 'black';
+          node = grandparent;
+        } else {
+          // Case 2: Node is a left child
+          if (node === parent.left) {
+            this.rotateRight(parent);
+            node = parent;
+            parent = node.parent;
+          }
+
+          // Case 3: Node is a right child
+          this.rotateLeft(grandparent);
+          [parent.color, grandparent.color] = [grandparent.color, parent.color];
+          node = parent;
+        }
+      }
+    }
+
+    this.root.color = 'black';
   }
-  
-  return shortestPath.reverse();
-}
 
-// Usage:
-const shortestPath = dijkstra(graph, 'A');
-console.log(shortestPath); // Output: [ 'A', 'C', 'B' ]
+  // Rotate left around a node
+  rotateLeft(node) {
+    let right = node.right;
+
+    node.right = right.left;
+    if (right.left) right.left.parent = node;
+
+    right.parent = node.parent;
+    if (node.parent === null) {
+      this.root = right;
+    } else if (node === node.parent.left) {
+      node.parent.left = right;
+    } else {
+      node.parent.right = right;
+    }
+
+    right.left = node;
+    node.parent = right;
+  }
+
+  // Rotate right around a node
+  rotateRight(node) {
+    let left = node.left;
+
+    node.left = left.right;
+    if (left.right) left.right.parent = node;
+
+    left.parent = node.parent;
+    if (node.parent === null) {
+      this.root = left;
+    } else if (node === node.parent.left) {
+      node.parent.left = left;
+    } else {
+      node.parent.right = left;
+    }
+
+    left.right = node;
+    node.parent = left;
+  }
+}
+const tree = new RedBlackTree();
+tree.insert(10);
+tree.insert(20);
+tree.insert(30);
+// ... add more values as needed
+
+console.log(tree); // Print the tree structure
