@@ -1,35 +1,52 @@
-class Node {
-  constructor(value, left = null, right = null) {
-    this.value = value;
-    this.left = left;
-    this.right = right;
+// Example graph
+const graph = {
+  A: { B: 3, C: 1 },
+  B: { A: 3, C: 7 },
+  C: { A: 1, B: 7 }
+};
+
+function dijkstra(graph, source) {
+  const distances = {};
+  const previous = {};
+  const queue = new FastPriorityQueue();
+
+  // Step 3: Initialization
+  for (const vertex in graph) {
+    distances[vertex] = Infinity;
+    previous[vertex] = null;
   }
+  distances[source] = 0;
+
+  // Step 4: Dijkstra's algorithm
+  queue.add(source, 0);
+
+  while (!queue.isEmpty()) {
+    const current = queue.poll();
+
+    for (const neighbor in graph[current]) {
+      const weight = graph[current][neighbor];
+      const distance = distances[current] + weight;
+
+      if (distance < distances[neighbor]) {
+        distances[neighbor] = distance;
+        previous[neighbor] = current;
+        queue.add(neighbor, distance);
+      }
+    }
+  }
+
+  // Step 5: Build the shortest path
+  const shortestPath = [];
+  let current = source;
+
+  while (current !== null) {
+    shortestPath.push(current);
+    current = previous[current];
+  }
+  
+  return shortestPath.reverse();
 }
 
-function findDiameter(root) {
-  let diameter = 0;
-
-  function computeHeight(node) {
-    if (node === null) return 0;
-
-    const leftHeight = computeHeight(node.left);
-    const rightHeight = computeHeight(node.right);
-
-    diameter = Math.max(diameter, leftHeight + rightHeight + 1);
-
-    return Math.max(leftHeight, rightHeight) + 1;
-  }
-
-  computeHeight(root);
-
-  return diameter;
-}
-
-// Usage example:
-const tree = new Node(1,
-  new Node(2,
-    new Node(4),
-    new Node(5)),
-  new Node(3));
-const diameter = findDiameter(tree);
-console.log(`Diameter of the binary tree is: ${diameter}`);
+// Usage:
+const shortestPath = dijkstra(graph, 'A');
+console.log(shortestPath); // Output: [ 'A', 'C', 'B' ]
