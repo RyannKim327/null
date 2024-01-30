@@ -1,41 +1,52 @@
-function isPalindrome(str) {
-  // Convert the string to lowercase to perform case-insensitive comparison
-  str = str.toLowerCase();
-  
-  // Define two pointers to iterate from both ends of the string
-  let start = 0;
-  let end = str.length - 1;
+// Helper function to swap values in an array
+function swap(array, i, j) {
+  const temp = array[i];
+  array[i] = array[j];
+  array[j] = temp;
+}
 
-  // Iterate until the two pointers meet or cross
-  while (start < end) {
-    // Skip non-alphanumeric characters
-    if (!isAlphaNumeric(str[start])) {
-      start++;
-      continue;
-    }
-    if (!isAlphaNumeric(str[end])) {
-      end--;
-      continue;
-    }
-    
-    // Compare characters at both pointers
-    if (str[start] !== str[end]) {
-      return false;
-    }
-    
-    // Move the pointers towards the center
-    start++;
-    end--;
+// Function to maintain the max heap property of the heap tree
+function heapify(array, n, i) {
+  let largest = i; // Initialize largest as root
+  const left = 2 * i + 1; // Left child
+  const right = 2 * i + 2; // Right child
+
+  // If left child is larger than root
+  if (left < n && array[left] > array[largest]) {
+    largest = left;
   }
 
-  return true;
+  // If right child is larger than the largest so far
+  if (right < n && array[right] > array[largest]) {
+    largest = right;
+  }
+
+  // If largest is not root
+  if (largest !== i) {
+    swap(array, i, largest);
+    heapify(array, n, largest);
+  }
 }
 
-// Helper function to check if a character is alphanumeric
-function isAlphaNumeric(char) {
-  return /[a-z0-9]/.test(char);
+// Main heap sort function
+function heapSort(array) {
+  const n = array.length;
+
+  // Build max heap
+  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+    heapify(array, n, i);
+  }
+
+  // Heap sort
+  for (let i = n - 1; i > 0; i--) {
+    swap(array, 0, i);
+    heapify(array, i, 0);
+  }
+
+  return array;
 }
 
-// Example usage:
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // Output: true
-console.log(isPalindrome("race a car")); // Output: false
+// Testing the heap sort algorithm
+const arr = [12, 11, 13, 5, 6, 7];
+const sortedArr = heapSort(arr);
+console.log(sortedArr); // Output: [5, 6, 7, 11, 12, 13]
