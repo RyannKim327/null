@@ -1,16 +1,28 @@
-const array = [1, 2, 3, 4, 3, 2, 1];
-const uniqueArray = Array.from(new Set(array));
-console.log(uniqueArray); // Output: [1, 2, 3, 4]
-const array = [1, 2, 3, 4, 3, 2, 1];
-const uniqueArray = array.filter((value, index, self) => {
-  return self.indexOf(value) === index;
-});
-console.log(uniqueArray); // Output: [1, 2, 3, 4]
-const array = [1, 2, 3, 4, 3, 2, 1];
-const uniqueArray = array.reduce((acc, value) => {
-  if (!acc.includes(value)) {
-    acc.push(value);
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
   }
-  return acc;
-}, []);
-console.log(uniqueArray); // Output: [1, 2, 3, 4]
+}
+
+function findMiddleElement(head) {
+  let slowPtr = head;
+  let fastPtr = head;
+
+  while (fastPtr && fastPtr.next) {
+    slowPtr = slowPtr.next;
+    fastPtr = fastPtr.next.next;
+  }
+
+  return slowPtr;
+}
+
+// Create a linked list with sample data
+const head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
+
+const middleElement = findMiddleElement(head);
+console.log(middleElement.data); // Output: 3
