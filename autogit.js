@@ -1,25 +1,31 @@
-function selectionSort(arr) {
-  const length = arr.length;
-  
-  for (let i = 0; i < length - 1; i++) {
-    let minIndex = i;
-    
-    for (let j = i + 1; j < length; j++) {
-      if (arr[j] < arr[minIndex]) {
-        minIndex = j;
-      }
-    }
-    
-    if (minIndex !== i) {
-      // Swap elements
-      [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
-    }
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
-  
-  return arr;
+}
+
+function sumBinaryTree(root) {
+  if (root === null) {
+    return 0;
+  }
+
+  let sum = root.value;
+  sum += sumBinaryTree(root.left);
+  sum += sumBinaryTree(root.right);
+
+  return sum;
 }
 
 // Example usage:
-const unsortedArray = [5, 2, 9, 1, 3];
-const sortedArray = selectionSort(unsortedArray);
-console.log(sortedArray);  // Output: [1, 2, 3, 5, 9]
+// Create a binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+// Calculate the sum of all nodes
+const sum = sumBinaryTree(root);
+console.log("Sum of all nodes:", sum); // Output: Sum of all nodes: 15
