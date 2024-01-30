@@ -1,46 +1,60 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
-}
+function bidirectionalSearch(graph, start, target) {
+  const visitedFromStart = new Set();
+  const visitedFromTarget = new Set();
+  const queueStart = [start];
+  const queueTarget = [target];
+  const parentFromStart = new Map();
+  const parentFromTarget = new Map();
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+  visitedFromStart.add(start);
+  visitedFromTarget.add(target);
+  
+  while (queueStart.length && queueTarget.length) {
+    const nodeStart = queueStart.shift();
+    const nodeTarget = queueTarget.shift();
+    
+    if (visitedFromTarget.has(nodeStart)) {
+      return getPath(nodeStart, nodeTarget, parentFromStart, parentFromTarget);
+    }
+    
+    if (visitedFromStart.has(nodeTarget)) {
+      return getPath(nodeStart, nodeTarget, parentFromStart, parentFromTarget);
+    }
 
-  add(data) {
-    const newNode = new Node(data);
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
+    for (const neighbor of graph[nodeStart]) {
+      if (!visitedFromStart.has(neighbor)) {
+        queueStart.push(neighbor);
+        visitedFromStart.add(neighbor);
+        parentFromStart.set(neighbor, nodeStart);
       }
-      current.next = newNode;
+    }
+
+    for (const neighbor of graph[nodeTarget]) {
+      if (!visitedFromTarget.has(neighbor)) {
+        queueTarget.push(neighbor);
+        visitedFromTarget.add(neighbor);
+        parentFromTarget.set(neighbor, nodeTarget);
+      }
     }
   }
   
-  getLength() {
-    let count = 0;
-    let current = this.head;
-    
-    while (current) {
-      count++;
-      current = current.next;
-    }
-    
-    return count;
-  }
+  return null; // No path found
 }
 
-// Example usage
-const linkedList = new LinkedList();
-linkedList.add(1);
-linkedList.add(2);
-linkedList.add(3);
-linkedList.add(4);
-
-console.log(linkedList.getLength()); // Output: 4
+function getPath(start, target, parentFromStart, parentFromTarget) {
+  const path = [];
+  let currentNode = start;
+  while (currentNode !== target) {
+    path.push(currentNode);
+    currentNode = parentFromStart.get(currentNode);
+  }
+  path.push(target);
+  
+  currentNode = target;
+  while (currentNode !== start) {
+    path.unshift(currentNode);
+    currentNode = parentFromTarget.get(currentNode);
+  }
+  
+  return path;
+}
