@@ -1,60 +1,41 @@
-function findKthSmallest(array, k) {
-  if (array.length < k) return null;
-  
-  // Shuffle the array to improve Quickselect's performance
-  shuffle(array);
+function findMajorityElement(array) {
+  let majorityElement = array[0];
+  let count = 1;
 
-  return quickselect(array, 0, array.length - 1, k - 1);
-}
-
-function quickselect(array, left, right, k) {
-  while (left <= right) {
-    let pivotIndex = partition(array, left, right);
-    if (pivotIndex === k) {
-      return array[pivotIndex];
-    } else if (pivotIndex < k) {
-      left = pivotIndex + 1;
+  for (let i = 1; i < array.length; i++) {
+    if (count === 0) {
+      majorityElement = array[i];
+      count = 1;
+    } else if (array[i] === majorityElement) {
+      count++;
     } else {
-      right = pivotIndex - 1;
+      count--;
     }
   }
-  
-  return null;
-}
 
-function partition(array, left, right) {
-  let pivotIndex = Math.floor((left + right) / 2);
-  let pivotValue = array[pivotIndex];
-  
-  swap(array, pivotIndex, right);
-  
-  let i = left;
-  for (let j = left; j < right; j++) {
-    if (array[j] < pivotValue) {
-      swap(array, i, j);
-      i++;
+  // At this point, we have a potential majority element.
+  // We need to verify if it actually occurs more than n/2 times.
+
+  count = 0;
+  for (let i = 0; i < array.length; i++) {
+    if (array[i] === majorityElement) {
+      count++;
     }
   }
-  
-  swap(array, i, right);
-  
-  return i;
-}
 
-function swap(array, i, j) {
-  let temp = array[i];
-  array[i] = array[j];
-  array[j] = temp;
-}
-
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    let j = Math.floor(Math.random() * (i + 1));
-    swap(array, i, j);
+  if (count > array.length / 2) {
+    return majorityElement;
+  } else {
+    return -1; // No majority element exists.
   }
 }
-let arr = [6, 9, 2, 5, 1, 8];
-let k = 3;
 
-let kthSmallest = findKthSmallest(arr, k);
-console.log(`The ${k}th smallest element is: ${kthSmallest}`);
+// Example usage:
+const array = [2, 2, 1, 1, 1, 2, 2];
+const majorityElement = findMajorityElement(array);
+
+if (majorityElement !== -1) {
+  console.log("The majority element is: " + majorityElement);
+} else {
+  console.log("There is no majority element.");
+}
