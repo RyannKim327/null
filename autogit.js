@@ -1,41 +1,24 @@
-function TrieNode() {
-  this.children = {};
-  this.isEndOfWord = false;
-  // Additional properties if needed
+function quicksort(arr) {
+  if (arr.length <= 1) {
+    return arr;
+  }
+
+  const pivot = arr[arr.length - 1];
+  const left = [];
+  const right = [];
+
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] < pivot) {
+      left.push(arr[i]);
+    } else {
+      right.push(arr[i]);
+    }
+  }
+
+  return [...quicksort(left), pivot, ...quicksort(right)];
 }
-function Trie() {
-  this.root = new TrieNode();
-}
-Trie.prototype.insert = function (word) {
-  let node = this.root;
-  for (let i = 0; i < word.length; i++) {
-    const char = word[i];
-    if (!node.children[char]) {
-      node.children[char] = new TrieNode();
-    }
-    node = node.children[char];
-  }
-  node.isEndOfWord = true;
-};
-Trie.prototype.search = function (word) {
-  let node = this.root;
-  for (let i = 0; i < word.length; i++) {
-    const char = word[i];
-    if (!node.children[char]) {
-      return false;
-    }
-    node = node.children[char];
-  }
-  return node.isEndOfWord;
-};
-Trie.prototype.startsWith = function (prefix) {
-  let node = this.root;
-  for (let i = 0; i < prefix.length; i++) {
-    const char = prefix[i];
-    if (!node.children[char]) {
-      return false;
-    }
-    node = node.children[char];
-  }
-  return true;
-};
+
+// Usage example
+const unsortedArray = [5, 3, 1, 6, 4, 2];
+const sortedArray = quicksort(unsortedArray);
+console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 6]
