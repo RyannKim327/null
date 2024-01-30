@@ -1,34 +1,26 @@
-function countingSort(array) {
-  // Find the maximum element in the array
-  let max = Math.max(...array);
-  
-  // Create an array to store the counts of each element
-  let count = new Array(max + 1).fill(0);
-  
-  // Count the occurrences of each element
-  for (let i = 0; i < array.length; i++) {
-    count[array[i]]++;
-  }
-  
-  // Modify the count array such that each element at index i
-  // stores the sum of previous counts
-  for (let i = 1; i < count.length; i++) {
-    count[i] += count[i - 1];
-  }
-  
-  // Create a temporary array to store the sorted output
-  let sortedArray = new Array(array.length);
-  
-  // Build the sorted array
-  for (let i = 0; i < array.length; i++) {
-    sortedArray[count[array[i]] - 1] = array[i];
-    count[array[i]]--;
-  }
-  
-  return sortedArray;
+function isAnagram(str1, str2) {
+  // Convert the strings to lowercase
+  str1 = str1.toLowerCase();
+  str2 = str2.toLowerCase();
+
+  // Remove whitespace and punctuation
+  str1 = str1.replace(/[^\w]/g, '');
+  str2 = str2.replace(/[^\w]/g, '');
+
+  // Sort the characters of both strings
+  const sortedStr1 = str1.split('').sort().join('');
+  const sortedStr2 = str2.split('').sort().join('');
+
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
 
-// Test the function
-let array = [4, 2, 2, 8, 3, 3, 1];
-let sortedArray = countingSort(array);
-console.log(sortedArray);  // Output: [1, 2, 2, 3, 3, 4, 8]
+// Example usage
+const string1 = "Listen";
+const string2 = "silent";
+
+if (isAnagram(string1, string2)) {
+  console.log(`${string1} and ${string2} are anagrams.`);
+} else {
+  console.log(`${string1} and ${string2} are not anagrams.`);
+}
