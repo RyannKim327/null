@@ -1,11 +1,5 @@
-function getLinkedListLength(head) {
-  let length = 0;
-  let currentNode = head;
+let str1 = "Hello";
+let str2 = "World";
+let result = str1 + " " + str2;
 
-  while (currentNode !== null) {
-    length++;
-    currentNode = currentNode.next;
-  }
-
-  return length;
-}
+console.log(result); // Output: Hello World
