@@ -1,4 +1,5 @@
-const array = [3, 9, 5, 1, 7];
-const maxValue = Math.max(...array);
+// Prompt the user for input
+const userInput = prompt("Enter something:");
 
-console.log(maxValue); // Output: 9
+// Display the user input on the console
+console.log("You entered: " + userInput);
