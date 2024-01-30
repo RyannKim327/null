@@ -1,19 +1,6 @@
-function isValidPalindrome(str) {
-  let start = 0;
-  let end = str.length - 1;
-
-  while (start < end) {
-    if (str[start] !== str[end]) {
-      return false;
-    }
-    start++;
-    end--;
-  }
-
-  return true;
+function reverseWords(str) {
+  return str.split(" ").reverse().join(" ");
 }
 
-// Example usage:
-console.log(isValidPalindrome("racecar")); // true
-console.log(isValidPalindrome("hello")); // false
-console.log(isValidPalindrome("madam")); // true
+// Example usage
+console.log(reverseWords("Hello World")); // Output: "World Hello"
