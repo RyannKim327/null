@@ -1,128 +1,41 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+function isPalindrome(str) {
+  // Convert the string to lowercase to perform case-insensitive comparison
+  str = str.toLowerCase();
+  
+  // Define two pointers to iterate from both ends of the string
+  let start = 0;
+  let end = str.length - 1;
+
+  // Iterate until the two pointers meet or cross
+  while (start < end) {
+    // Skip non-alphanumeric characters
+    if (!isAlphaNumeric(str[start])) {
+      start++;
+      continue;
+    }
+    if (!isAlphaNumeric(str[end])) {
+      end--;
+      continue;
+    }
+    
+    // Compare characters at both pointers
+    if (str[start] !== str[end]) {
+      return false;
+    }
+    
+    // Move the pointers towards the center
+    start++;
+    end--;
   }
+
+  return true;
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-  }
-
-  // Add a new node to the end of the list
-  append(value) {
-    const newNode = new Node(value);
-
-    if (!this.head) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
-    }
-  }
-
-  // Add a new node to the beginning of the list
-  prepend(value) {
-    const newNode = new Node(value);
-
-    if (!this.head) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      newNode.next = this.head;
-      this.head = newNode;
-    }
-  }
-
-  // Insert a new node at a specific index
-  insert(index, value) {
-    if (index === 0) {
-      this.prepend(value);
-      return;
-    }
-
-    const newNode = new Node(value);
-    let currentNode = this.head;
-    let previousNode = null;
-    let currentIndex = 0;
-
-    while (currentNode && currentIndex < index) {
-      previousNode = currentNode;
-      currentNode = currentNode.next;
-      currentIndex++;
-    }
-
-    previousNode.next = newNode;
-    newNode.next = currentNode;
-
-    if (newNode.next === null) {
-      this.tail = newNode;
-    }
-  }
-
-  // Remove a node at a specific index
-  remove(index) {
-    let currentNode = this.head;
-    let previousNode = null;
-    let currentIndex = 0;
-
-    if (index === 0) {
-      this.head = currentNode.next;
-      if (!this.head) {
-        this.tail = null;
-      }
-    } else {
-      while (currentNode && currentIndex < index) {
-        previousNode = currentNode;
-        currentNode = currentNode.next;
-        currentIndex++;
-      }
-
-      previousNode.next = currentNode.next;
-
-      if (previousNode.next === null) {
-        this.tail = previousNode;
-      }
-    }
-  }
-
-  // Get the size of the linked list
-  size() {
-    let count = 0;
-    let currentNode = this.head;
-
-    while (currentNode) {
-      count++;
-      currentNode = currentNode.next;
-    }
-
-    return count;
-  }
-
-  // Convert the linked list to an array
-  toArray() {
-    let result = [];
-    let currentNode = this.head;
-
-    while (currentNode) {
-      result.push(currentNode.value);
-      currentNode = currentNode.next;
-    }
-
-    return result;
-  }
+// Helper function to check if a character is alphanumeric
+function isAlphaNumeric(char) {
+  return /[a-z0-9]/.test(char);
 }
 
-// Example usage
-const myList = new LinkedList();
-myList.append(1);
-myList.append(2);
-myList.append(3);
-myList.prepend(0);
-myList.insert(2, 1.5);
-myList.remove(3);
-
-console.log(myList.toArray()); // Output: [0, 1, 1.5, 3]
+// Example usage:
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // Output: true
+console.log(isPalindrome("race a car")); // Output: false
