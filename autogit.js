@@ -1,108 +1,51 @@
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+function Graph() {
+  // Implement your graph representation here
 }
-class BinaryTree {
-  constructor() {
-    this.root = null;
-  }
 
-  insert(value) {
-    const newNode = new TreeNode(value);
+function bidirectionalSearch(graph, start, goal) {
+  const startVisited = new Set();
+  const goalVisited = new Set();
+  const startQueue = [];
+  const goalQueue = [];
 
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
+  startQueue.push(start);
+  goalQueue.push(goal);
+
+  while (startQueue.length > 0 && goalQueue.length > 0) {
+    const currentStart = startQueue.shift();
+    const currentGoal = goalQueue.shift();
+
+    if (goalVisited.has(currentStart)) {
+      // Combine the paths from start to currentStart and goal to currentGoal
+      return combinePaths(start, currentStart, goal, currentGoal);
     }
-  }
 
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
+    if (startVisited.has(currentGoal)) {
+      // Combine the paths from start to currentStart and goal to currentGoal
+      return combinePaths(start, currentStart, goal, currentGoal);
+    }
+
+    startVisited.add(currentStart);
+    goalVisited.add(currentGoal);
+
+    for (const neighbor of graph.getNeighbors(currentStart)) {
+      if (!startVisited.has(neighbor)) {
+        startQueue.push(neighbor);
       }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
+    }
+
+    for (const neighbor of graph.getNeighbors(currentGoal)) {
+      if (!goalVisited.has(neighbor)) {
+        goalQueue.push(neighbor);
       }
     }
   }
 
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
-    }
-
-    if (node.value === value) {
-      return true;
-    }
-
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else {
-      return this.searchNode(node.right, value);
-    }
-  }
-
-  preOrderTraversal(callback) {
-    this.preOrderTraversalNode(this.root, callback);
-  }
-
-  preOrderTraversalNode(node, callback) {
-    if (node !== null) {
-      callback(node.value);
-      this.preOrderTraversalNode(node.left, callback);
-      this.preOrderTraversalNode(node.right, callback);
-    }
-  }
-
-  inOrderTraversal(callback) {
-    this.inOrderTraversalNode(this.root, callback);
-  }
-
-  inOrderTraversalNode(node, callback) {
-    if (node !== null) {
-      this.inOrderTraversalNode(node.left, callback);
-      callback(node.value);
-      this.inOrderTraversalNode(node.right, callback);
-    }
-  }
-
-  postOrderTraversal(callback) {
-    this.postOrderTraversalNode(this.root, callback);
-  }
-
-  postOrderTraversalNode(node, callback) {
-    if (node !== null) {
-      this.postOrderTraversalNode(node.left, callback);
-      this.postOrderTraversalNode(node.right, callback);
-      callback(node.value);
-    }
-  }
+  return null; // No path found
 }
-const tree = new BinaryTree();
 
-tree.insert(7);
-tree.insert(4);
-tree.insert(9);
-tree.insert(1);
-tree.insert(6);
-
-console.log(tree.search(6)); // Output: true
-console.log(tree.search(8)); // Output: false
-
-tree.preOrderTraversal(value => console.log(value)); // Output: 7 4 1 6 9
-tree.inOrderTraversal(value => console.log(value)); // Output: 1 4 6 7 9
-tree.postOrderTraversal(value => console.log(value)); // Output: 1 6 4 9 7
+// Helper function to combine paths
+function combinePaths(start, currentStart, goal, currentGoal) {
+  // Implement function to combine paths from start to currentStart and goal to currentGoal
+  return [...combinedPathFromStart, ...combinedPathFromGoal];
+}
