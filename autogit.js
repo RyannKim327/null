@@ -1,8 +1,17 @@
-function reverseString(str) {
-  return str.split('').reverse().join('');
+function findFirstRepeatedCharacter(str) {
+  let charSet = new Set();
+  
+  for (let char of str) {
+    if (charSet.has(char)) {
+      return char;
+    }
+    charSet.add(char);
+  }
+  
+  return null; // If no repeated character found
 }
 
-// Example usage:
-var myString = "Hello, World!";
-var reversedString = reverseString(myString);
-console.log(reversedString);
+// Example usage
+let string = "hello world";
+let repeatedChar = findFirstRepeatedCharacter(string);
+console.log(repeatedChar); // Output: l
