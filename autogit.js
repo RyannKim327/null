@@ -1,22 +1,26 @@
-function selectionSort(arr) {
-  const length = arr.length;
+function binarySearch(arr, target) {
+  let left = 0;
+  let right = arr.length - 1;
 
-  for (let i = 0; i < length - 1; i++) {
-    let minIndex = i;
+  while (left <= right) {
+    let mid = Math.floor((left + right) / 2);
 
-    for (let j = i + 1; j < length; j++) {
-      if (arr[j] < arr[minIndex]) {
-        minIndex = j;
-      }
+    if (arr[mid] === target) {
+      return mid; // Element found at mid index
+    } 
+    else if (arr[mid] < target) {
+      left = mid + 1; // Discard left half
+    } 
+    else {
+      right = mid - 1; // Discard right half
     }
-
-    // Swap the minimum element with the first element of the unsorted part
-    [arr[minIndex], arr[i]] = [arr[i], arr[minIndex]];
   }
 
-  return arr;
+  return -1; // Element not found
 }
 
-// Example usage:
-const arr = [64, 25, 12, 22, 11];
-console.log(selectionSort(arr)); // Output: [11, 12, 22, 25, 64]
+// Usage
+const numbers = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
+const target = 16;
+
+console.log(binarySearch(numbers, target)); // Output: 4
