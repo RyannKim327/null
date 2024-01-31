@@ -1,44 +1,57 @@
-function fibonacciSearch(arr, x, n) {
-  let fibMMm2 = 0;
-  let fibMMm1 = 1;
-  let fibM = fibMMm1 + fibMMm2;
-
-  while (fibM < n) {
-    fibMMm2 = fibMMm1;
-    fibMMm1 = fibM;
-    fibM = fibMMm1 + fibMMm2;
-  }
-
-  let offset = 0;
-
-  while (fibM > 1) {
-    let i = Math.min(offset + fibMMm2, n - 1);
-
-    if (arr[i] < x) {
-      fibM = fibMMm1;
-      fibMMm1 = fibMMm2;
-      fibMMm2 = fibM - fibMMm1;
-      offset = i;
-    } else if (arr[i] > x) {
-      fibM = fibMMm2;
-      fibMMm1 = fibMMm1 - fibMMm2;
-      fibMMm2 = fibM - fibMMm1;
-    } else {
-      return i;
+function mergeSort(inputArray) {
+  let subarraySize = 1;
+  let tempArray = [];
+  
+  while (subarraySize < inputArray.length) {
+    let startIndex = 0;
+    let tempIndex = 0;
+    
+    while (startIndex < inputArray.length) {
+      const midIndex = Math.min(startIndex + subarraySize - 1, inputArray.length - 1);
+      const leftIndex = startIndex;
+      const rightIndex = midIndex + 1;
+      
+      const leftArray = [];
+      const rightArray = [];
+      
+      while (leftIndex <= midIndex) {
+        leftArray.push(inputArray[leftIndex]);
+        leftIndex++;
+      }
+      
+      while (rightIndex <= midIndex + subarraySize && rightIndex < inputArray.length) {
+        rightArray.push(inputArray[rightIndex]);
+        rightIndex++;
+      }
+      
+      let index = startIndex;
+      while (leftArray.length > 0 && rightArray.length > 0) {
+        if (leftArray[0] <= rightArray[0]) {
+          inputArray[index] = leftArray.shift();
+        } else {
+          inputArray[index] = rightArray.shift();
+        }
+        index++;
+      }
+      
+      while (leftArray.length > 0) {
+        inputArray[index] = leftArray.shift();
+        index++;
+      }
+      
+      while (rightArray.length > 0) {
+        inputArray[index] = rightArray.shift();
+        index++;
+      }
+      
+      startIndex += subarraySize * 2;
     }
+    
+    subarraySize *= 2;
+    tempArray = inputArray.slice();
   }
-
-  if (fibMMm1 && arr[offset] === x) {
-    return offset;
-  }
-
-  return -1;
+  
+  return inputArray;
 }
-
-// Example usage:
-const array = [2, 4, 7, 12, 16, 20, 22];
-const element = 16;
-const size = array.length;
-
-const result = fibonacciSearch(array, element, size);
-console.log(result); // Output: 4
+const array = [5, 8, 2, 10, 4];
+console.log(mergeSort(array)); // Output: [2, 4, 5, 8, 10]
