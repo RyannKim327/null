@@ -1,38 +1,16 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
-
-function diameterOfBinaryTree(root) {
-  let diameter = 0;
-
-  function height(node) {
-    if (node === null) {
-      return 0;
+function isSortedAscending(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false;
     }
-    
-    const leftHeight = height(node.left);
-    const rightHeight = height(node.right);
-    
-    // Update the diameter if the current node's diameter is larger
-    diameter = Math.max(diameter, leftHeight + rightHeight);
-
-    // Return the height of the current node
-    return 1 + Math.max(leftHeight, rightHeight);
   }
-
-  height(root);
-  return diameter;
+  return true;
 }
+const array1 = [1, 2, 3, 4, 5];
+console.log(isSortedAscending(array1));  // Output: true
 
-// Example usage:
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
+const array2 = [5, 4, 3, 2, 1];
+console.log(isSortedAscending(array2));  // Output: false
 
-console.log(diameterOfBinaryTree(root)); // Output: 3
+const array3 = [1, 3, 2, 4, 5];
+console.log(isSortedAscending(array3));  // Output: false
