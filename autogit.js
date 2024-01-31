@@ -1,107 +1,42 @@
-class Node {
-  constructor(value, level) {
-    this.value = value;
-    this.next = new Array(level);
+function largestPrimeFactor(number) {
+  let factor = 2;
+  let largestFactor = 1;
+
+  while (factor <= number) {
+    if (number % factor === 0) {
+      // Check if factor is prime
+      if (isPrime(factor)) {
+        largestFactor = factor;
+      }
+      // Reduce the number by dividing it with the factor
+      number /= factor;
+    } else {
+      // Increment the factor if it is not a factor of the number
+      factor++;
+    }
   }
+
+  return largestFactor;
 }
-class SkipList {
-  constructor() {
-    this.head = new Node(-Infinity, 32); // Head node with minimum value and maximum level
-    this.level = 1; // Current level of the skip list
-  }
 
-  // Returns a random level for a new node
-  randomLevel() {
-    let level = 1;
-    while (Math.random() < 0.5 && level < this.head.next.length) {
-      level++;
-    }
-    return level;
-  }
-
-  // Inserts a new value into the skip list
-  insert(value) {
-    const newNode = new Node(value, this.randomLevel());
-    const update = new Array(newNode.next.length);
-
-    let current = this.head;
-    for (let i = this.level - 1; i >= 0; i--) {
-      while (current.next[i] && current.next[i].value < value) {
-        current = current.next[i];
-      }
-      update[i] = current;
-    }
-
-    for (let i = 0; i < newNode.next.length; i++) {
-      newNode.next[i] = update[i].next[i];
-      update[i].next[i] = newNode;
-    }
-
-    if (newNode.next.length > this.level) {
-      this.level = newNode.next.length;
-    }
-  }
-
-  // Searches for a value in the skip list and returns true if found, false otherwise
-  search(value) {
-    let current = this.head;
-    for (let i = this.level - 1; i >= 0; i--) {
-      while (current.next[i] && current.next[i].value < value) {
-        current = current.next[i];
-      }
-    }
-    current = current.next[0];
-    return current && current.value === value;
-  }
-
-  // Removes a value from the skip list
-  remove(value) {
-    const update = new Array(this.level);
-
-    let current = this.head;
-    for (let i = this.level - 1; i >= 0; i--) {
-      while (current.next[i] && current.next[i].value < value) {
-        current = current.next[i];
-      }
-      update[i] = current;
-    }
-
-    current = current.next[0];
-    if (current && current.value === value) {
-      for (let i = 0; i < current.next.length; i++) {
-        update[i].next[i] = current.next[i];
-      }
-
-      while (this.level > 1 && !this.head.next[this.level - 1]) {
-        this.level--;
-      }
-      return true;
-    }
-
+// Function to check if a number is prime
+function isPrime(number) {
+  if (number <= 1) {
     return false;
   }
 
-  // Displays the skip list
-  display() {
-    for (let i = this.level - 1; i >= 0; i--) {
-      let current = this.head.next[i];
-      let line = `Level ${i}: `;
-      while (current) {
-        line += `${current.value} -> `;
-        current = current.next[i];
-      }
-      console.log(line);
+  // Check if the number is divisible by any number from 2 to its square root
+  for (let i = 2; i <= Math.sqrt(number); i++) {
+    if (number % i === 0) {
+      return false;
     }
   }
+
+  return true;
 }
 
-// Usage example:
-const skipList = new SkipList();
-skipList.insert(1);
-skipList.insert(4);
-skipList.insert(2);
-skipList.insert(3);
-skipList.display(); // Displays the skip list
-console.log(skipList.search(2)); // Returns true
-skipList.remove(2);
-console.log(skipList.search(2)); // Returns false
+// Test the function
+const number = 1234567890;
+const largestFactor = largestPrimeFactor(number);
+
+console.log(`The largest prime factor of ${number} is ${largestFactor}`);
