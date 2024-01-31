@@ -1,97 +1,41 @@
-function forwardSearch(graph, start, goal) {
-  const visited = new Set();
-  const queue = [[start, [start]]];
-
-  while (queue.length > 0) {
-    const [current, path] = queue.shift();
-    visited.add(current);
-
-    if (current === goal) {
-      return path;
-    }
-
-    for (const neighbor of graph[current]) {
-      if (!visited.has(neighbor)) {
-        queue.push([neighbor, path.concat(neighbor)]);
-      }
-    }
-  }
-
-  return null; // No path found
+function countingSort(arr) {
+  // ...
 }
+  let maxValue = Math.max(...arr);
+  let count = new Array(maxValue + 1).fill(0);
+  for (let i = 0; i < arr.length; i++) {
+    count[arr[i]]++;
+  }
+  for (let i = 1; i <= maxValue; i++) {
+    count[i] += count[i - 1];
+  }
+  let sortedArr = new Array(arr.length);
+  for (let i = arr.length - 1; i >= 0; i--) {
+    sortedArr[count[arr[i]] - 1] = arr[i];
+    count[arr[i]]--;
+  }
+  return sortedArr;
+function countingSort(arr) {
+  let maxValue = Math.max(...arr);
+  let count = new Array(maxValue + 1).fill(0);
 
-function backwardSearch(graph, start, goal) {
-  const visited = new Set();
-  const queue = [[goal, [goal]]];
-
-  while (queue.length > 0) {
-    const [current, path] = queue.shift();
-    visited.add(current);
-
-    if (current === start) {
-      return path.reverse();
-    }
-
-    for (const neighbor of graph[current]) {
-      if (!visited.has(neighbor)) {
-        queue.push([neighbor, path.concat(neighbor)]);
-      }
-    }
+  for (let i = 0; i < arr.length; i++) {
+    count[arr[i]]++;
   }
 
-  return null; // No path found
+  for (let i = 1; i <= maxValue; i++) {
+    count[i] += count[i - 1];
+  }
+
+  let sortedArr = new Array(arr.length);
+
+  for (let i = arr.length - 1; i >= 0; i--) {
+    sortedArr[count[arr[i]] - 1] = arr[i];
+    count[arr[i]]--;
+  }
+
+  return sortedArr;
 }
-
-function bidirectionalSearch(graph, start, goal) {
-  const commonNode = findCommonNode();
-
-  if (commonNode) {
-    const forwardPath = forwardSearch(graph, start, commonNode);
-    const backwardPath = backwardSearch(graph, commonNode, goal);
-    return forwardPath.concat(backwardPath.slice(1));
-  }
-
-  return null; // No path found
-
-  function findCommonNode() {
-    const visited = new Set();
-    const forwardQueue = [[start]];
-    const backwardQueue = [[goal]];
-
-    while (forwardQueue.length > 0 || backwardQueue.length > 0) {
-      if (forwardQueue.length > 0) {
-        const current = forwardQueue.shift();
-        const currentNode = current[current.length - 1];
-        visited.add(currentNode);
-
-        if (backwardQueue.some(path => path.includes(currentNode))) {
-          return currentNode;
-        }
-
-        for (const neighbor of graph[currentNode]) {
-          if (!visited.has(neighbor)) {
-            forwardQueue.push(current.concat(neighbor));
-          }
-        }
-      }
-
-      if (backwardQueue.length > 0) {
-        const current = backwardQueue.shift();
-        const currentNode = current[current.length - 1];
-        visited.add(currentNode);
-
-        if (forwardQueue.some(path => path.includes(currentNode))) {
-          return currentNode;
-        }
-
-        for (const neighbor of graph[currentNode]) {
-          if (!visited.has(neighbor)) {
-            backwardQueue.push(current.concat(neighbor));
-          }
-        }
-      }
-    }
-
-    return null; // No common node found
-  }
-}
+let arr = [3, 1, 6, 2, 5, 4];
+let sortedArr = countingSort(arr);
+console.log(sortedArr); // Output: [1, 2, 3, 4, 5, 6]
