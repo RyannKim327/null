@@ -1,28 +1,32 @@
-function countOccurrences(str, word) {
-  return str.split(word).length - 1;
+async function connectToDevice() {
+  try {
+    // Create a new WebSocket object and connect to the Android device
+    const websocket = new WebSocket('wss://android-device-url');
+
+    // Wait for the WebSocket to open
+    await new Promise((resolve, reject) => {
+      websocket.onopen = resolve;
+      websocket.onerror = reject;
+    });
+
+    // WebSocket is open, send a message to the Android device
+    websocket.send('Hello Android!');
+
+    // Wait for a response from the Android device
+    const response = await new Promise((resolve, reject) => {
+      websocket.onmessage = (event) => resolve(event.data);
+      websocket.onerror = reject;
+    });
+
+    // Received response from Android device
+    console.log('Response from Android:', response);
+
+    // Close the WebSocket connection
+    websocket.close();
+  } catch (error) {
+    console.error('Error:', error);
+  }
 }
 
-const sentence = "The quick brown fox jumps over the lazy dog";
-const word = "the";
-const count = countOccurrences(sentence.toLowerCase(), word.toLowerCase());
-console.log(count); // Output: 2
-function countOccurrences(str, word) {
-  const regex = new RegExp("\\b" + word + "\\b", "gi");
-  const matches = str.match(regex);
-  return matches ? matches.length : 0;
-}
-
-const sentence = "The quick brown fox jumps over the lazy dog";
-const word = "the";
-const count = countOccurrences(sentence, word);
-console.log(count); // Output: 2
-function countOccurrences(str, word) {
-  const regex = new RegExp("\\b" + word + "\\b", "gi");
-  const matches = str.split(regex);
-  return matches.length - 1;
-}
-
-const sentence = "The quick brown fox jumps over the lazy dog";
-const word = "the";
-const count = countOccurrences(sentence, word);
-console.log(count); // Output: 2
+// Call the connectToDevice() function
+connectToDevice();
