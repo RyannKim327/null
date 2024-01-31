@@ -1,22 +1,21 @@
-function areAnagrams(str1, str2) {
-  // Convert both strings to lowercase
-  str1 = str1.toLowerCase();
-  str2 = str2.toLowerCase();
-
-  // Sort both strings
-  str1 = str1.split('').sort().join('');
-  str2 = str2.split('').sort().join('');
-
-  // Compare the sorted strings
-  return str1 === str2;
+let str = "A man, a plan, a canal - Panama!";
+let cleanedStr = str.replace(/[^0-9a-z]/gi, "").toLowerCase();
+let reversedStr = cleanedStr.split("").reverse().join("");
+if (cleanedStr === reversedStr) {
+  console.log("It is a palindrome.");
+} else {
+  console.log("It is not a palindrome.");
+}
+function isPalindrome(str) {
+  let cleanedStr = str.replace(/[^0-9a-z]/gi, "").toLowerCase();
+  let reversedStr = cleanedStr.split("").reverse().join("");
+  
+  return cleanedStr === reversedStr;
 }
 
-// Example usage
-const string1 = 'listen';
-const string2 = 'silent';
-
-if (areAnagrams(string1, string2)) {
-  console.log('The strings are anagrams.');
+let str = "A man, a plan, a canal - Panama!";
+if (isPalindrome(str)) {
+  console.log("It is a palindrome.");
 } else {
-  console.log('The strings are not anagrams.');
+  console.log("It is not a palindrome.");
 }
