@@ -1,47 +1,49 @@
-function mergeSort(array) {
-  // Base case: if the array is empty or has only one element, it is already sorted
-  if (array.length <= 1) {
-    return array;
+class BinaryTree {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 
-  // Find the middle of the array
-  const mid = Math.floor(array.length / 2);
-
-  // Divide the array into two halves
-  const left = array.slice(0, mid);
-  const right = array.slice(mid);
-
-  // Recursively sort the two halves
-  const sortedLeft = mergeSort(left);
-  const sortedRight = mergeSort(right);
-
-  // Merge the sorted halves
-  return merge(sortedLeft, sortedRight);
-}
-
-function merge(left, right) {
-  let result = [];
-  let leftIndex = 0;
-  let rightIndex = 0;
-
-  // Compare elements from the left and right arrays and add them to the result array in ascending order
-  while (leftIndex < left.length && rightIndex < right.length) {
-    if (left[leftIndex] < right[rightIndex]) {
-      result.push(left[leftIndex]);
-      leftIndex++;
+  insert(value) {
+    if (value <= this.value) {
+      if (this.left === null) {
+        this.left = new BinaryTree(value);
+      } else {
+        this.left.insert(value);
+      }
     } else {
-      result.push(right[rightIndex]);
-      rightIndex++;
+      if (this.right === null) {
+        this.right = new BinaryTree(value);
+      } else {
+        this.right.insert(value);
+      }
     }
   }
 
-  // Add any remaining elements from the left and right arrays to the result array
-  result = result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
-
-  return result;
+  has(value) {
+    if (value === this.value) {
+      return true;
+    } else if (value < this.value) {
+      if (this.left === null) {
+        return false;
+      } else {
+        return this.left.has(value);
+      }
+    } else {
+      if (this.right === null) {
+        return false;
+      } else {
+        return this.right.has(value);
+      }
+    }
+  }
 }
+const tree = new BinaryTree(10);
+tree.insert(5);
+tree.insert(15);
+tree.insert(2);
+tree.insert(7);
 
-// Example usage:
-const array = [8, 4, 2, 9, 5, 1, 6, 3, 7];
-const sortedArray = mergeSort(array);
-console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+console.log(tree.has(7)); // Output: true
+console.log(tree.has(12)); // Output: false
