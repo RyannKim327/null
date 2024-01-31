@@ -1,24 +1,17 @@
-function quickSort(arr) {
-  if (arr.length <= 1) {
-    return arr;
-  }
+function findFirstRepeatedCharacter(str) {
+  const charFrequency = {};
 
-  const pivot = arr[Math.floor(arr.length / 2)];
-  const left = [];
-  const right = [];
-
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] < pivot) {
-      left.push(arr[i]);
-    } else if (arr[i] > pivot) {
-      right.push(arr[i]);
+  for (const char of str) {
+    if (charFrequency[char]) {
+      return char;
     }
+    charFrequency[char] = 1;
   }
 
-  return [...quickSort(left), pivot, ...quickSort(right)];
+  return null; // Return null if no repeated character is found
 }
 
-// Example usage:
-const unsortedArray = [7, 2, 9, 1, 6, 3, 8, 5, 4];
-const sortedArray = quickSort(unsortedArray);
-console.log(sortedArray);
+const inputString = "abcdefghab"; // Example string
+const firstRepeatedChar = findFirstRepeatedCharacter(inputString);
+
+console.log(firstRepeatedChar); // Output: "a"
