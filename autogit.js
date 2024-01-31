@@ -1,17 +1,48 @@
-function isAnagram(str1, str2) {
-  // Remove any non-alphanumeric characters and convert to lowercase
-  const cleanStr1 = str1.replace(/[^\w]/g, '').toLowerCase();
-  const cleanStr2 = str2.replace(/[^\w]/g, '').toLowerCase();
+class Graph {
+  constructor(vertices) {
+    this.vertices = vertices;
+    this.edges = [];
+  }
 
-  // Sort the characters in the strings
-  const sortedStr1 = cleanStr1.split('').sort().join('');
-  const sortedStr2 = cleanStr2.split('').sort().join('');
-
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+  addEdge(source, destination, weight) {
+    this.edges.push({ source, destination, weight });
+  }
 }
+function bellmanFord(graph, source) {
+  // Step 1: Initialize distances from source to all other nodes as INFINITE
+  let distances = {};
+  for (let vertex of graph.vertices) {
+    distances[vertex] = Infinity;
+  }
+  distances[source] = 0;
 
-// Example usage
-console.log(isAnagram('Listen', 'Silent'));          // true
-console.log(isAnagram('rail safety', 'fairy tales')); // true
-console.log(isAnagram('hello', 'hola'));             // false
+  // Step 2: Relax edges repeatedly
+  for (let i = 0; i < graph.vertices.length - 1; i++) {
+    for (let { source, destination, weight } of graph.edges) {
+      if (distances[source] + weight < distances[destination]) {
+        distances[destination] = distances[source] + weight;
+      }
+    }
+  }
+
+  // Step 3: Check for negative-weight cycles
+  for (let { source, destination, weight } of graph.edges) {
+    if (distances[source] + weight < distances[destination]) {
+      throw new Error("Graph contains a negative-weight cycle");
+    }
+  }
+
+  return distances;
+}
+const graph = new Graph(["A", "B", "C", "D", "E"]);
+graph.addEdge("A", "B", -1);
+graph.addEdge("A", "C", 4);
+graph.addEdge("B", "C", 3);
+graph.addEdge("B", "D", 2);
+graph.addEdge("B", "E", 2);
+graph.addEdge("D", "B", 1);
+graph.addEdge("D", "C", 5);
+graph.addEdge("E", "D", -3);
+const source = "A";
+const distances = bellmanFord(graph, source);
+console.log(distances);
