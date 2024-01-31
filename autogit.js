@@ -1,11 +1,40 @@
-function getIntersection(list1, list2) {
-  let pointer1 = list1;
-  let pointer2 = list2;
+function ListNode(value, next) {
+  this.value = value;
+  this.next = next;
+}
 
-  while (pointer1 !== pointer2) {
-    pointer1 = pointer1 ? pointer1.next : list2;
-    pointer2 = pointer2 ? pointer2.next : list1;
+function reverseLinkedList(head) {
+  let previous = null;
+  let current = head;
+
+  while (current !== null) {
+    let next = current.next;
+    current.next = previous;
+    previous = current;
+    current = next;
   }
 
-  return pointer1; // returns the intersection node or null if there is no intersection
+  return previous;
+}
+
+// Example usage:
+const node4 = new ListNode(4, null);
+const node3 = new ListNode(3, node4);
+const node2 = new ListNode(2, node3);
+const node1 = new ListNode(1, node2);
+
+console.log('Original Linked List:');
+let currentNode = node1;
+while (currentNode !== null) {
+  console.log(currentNode.value);
+  currentNode = currentNode.next;
+}
+
+const reversedHead = reverseLinkedList(node1);
+
+console.log('Reversed Linked List:');
+currentNode = reversedHead;
+while (currentNode !== null) {
+  console.log(currentNode.value);
+  currentNode = currentNode.next;
 }
