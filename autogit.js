@@ -1,9 +1,12 @@
-Area = (base * height) / 2;
-function calculateTriangleArea(base, height) {
-  var area = (base * height) / 2;
-  return area;
-}
-var triangleBase = 5;
-var triangleHeight = 8;
-var triangleArea = calculateTriangleArea(triangleBase, triangleHeight);
-console.log("The area of the triangle is: " + triangleArea);
+// Make a GET request to an API endpoint
+fetch('https://api.example.com/data')
+  .then(response => response.json())
+  .then(data => {
+    // Process the received data
+    console.log(data);
+    // Do something with the data
+    // ...
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
