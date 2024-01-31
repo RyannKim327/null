@@ -1,18 +1,9 @@
-function reverseWords(str) {
-  // Split the string into an array of words
-  var wordsArr = str.split(' ');
-
-  // Reverse the order of words in the array
-  var reversedArr = wordsArr.reverse();
-
-  // Join the reversed array back into a string
-  var reversedStr = reversedArr.join(' ');
-
-  return reversedStr;
+function calculateTriangleArea(base, height) {
+  return (base * height) / 2;
 }
 
 // Example usage
-var sentence = "Hello, how are you?";
-var reversedSentence = reverseWords(sentence);
-console.log(reversedSentence);
-you? are how Hello,
+var base = 5;
+var height = 8;
+var area = calculateTriangleArea(base, height);
+console.log("The area of the triangle is: " + area);
