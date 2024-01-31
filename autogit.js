@@ -1,41 +1,36 @@
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
+function topologicalSort(graph) {
+  const visited = new Set();
+  const stack = [];
 
-function diameterOfBinaryTree(root) {
-  let diameter = 0;
+  // DFS function
+  function dfs(node) {
+    visited.add(node);
 
-  // A recursive helper function to calculate the height of a tree
-  function height(node) {
-    if (node === null) {
-      return 0;
+    for (const neighbor of graph[node]) {
+      if (!visited.has(neighbor)) {
+        dfs(neighbor);
+      }
     }
 
-    const leftHeight = height(node.left);
-    const rightHeight = height(node.right);
-
-    // Update the diameter if the current path is longer
-    diameter = Math.max(diameter, leftHeight + rightHeight);
-
-    // Return the height of the subtree rooted at the current node
-    return Math.max(leftHeight, rightHeight) + 1;
+    stack.unshift(node); // add node to the front of the stack
   }
 
-  height(root);
+  for (const node in graph) {
+    if (!visited.has(node)) {
+      dfs(node);
+    }
+  }
 
-  return diameter;
+  return stack;
 }
 
 // Example usage:
+const graph = {
+  A: ['B', 'C'],
+  B: ['D'],
+  C: ['D'],
+  D: []
+};
 
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(diameterOfBinaryTree(root)); // Output: 3
+const result = topologicalSort(graph);
+console.log(result); // Output: ['A', 'C', 'B', 'D']
