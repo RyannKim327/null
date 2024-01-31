@@ -1,31 +1,39 @@
-class ListNode {
+class Node {
   constructor(value) {
     this.value = value;
-    this.next = null;
+    this.left = null;
+    this.right = null;
   }
 }
 
-function getLinkedListLength(head) {
-  let length = 0;
-  let current = head;
+function findDiameter(root) {
+  let result = 0;
 
-  while (current !== null) {
-    length++;
-    current = current.next;
+  function height(node) {
+    if (node === null) return 0;
+
+    const leftHeight = height(node.left);
+    const rightHeight = height(node.right);
+
+    // update result if current path is longest
+    result = Math.max(result, leftHeight + rightHeight + 1);
+
+    // return the height of the current node
+    return Math.max(leftHeight, rightHeight) + 1;
   }
 
-  return length;
+  height(root);
+
+  return result;
 }
-// Create a linked list with three nodes
-const head = new ListNode(1);
-const secondNode = new ListNode(2);
-const thirdNode = new ListNode(3);
+// Create a sample binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
 
-// Connect the nodes
-head.next = secondNode;
-secondNode.next = thirdNode;
-
-// Get the length of the linked list
-const length = getLinkedListLength(head);
-
-console.log(length); // Output: 3
+const diameter = findDiameter(root);
+console.log(diameter); // Output: 5
