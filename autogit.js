@@ -1,39 +1,27 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
-
-function findDiameter(root) {
-  let result = 0;
-
-  function height(node) {
-    if (node === null) return 0;
-
-    const leftHeight = height(node.left);
-    const rightHeight = height(node.right);
-
-    // update result if current path is longest
-    result = Math.max(result, leftHeight + rightHeight + 1);
-
-    // return the height of the current node
-    return Math.max(leftHeight, rightHeight) + 1;
+function hasCycle(head) {
+  if (!head || !head.next) {
+    return false; // Empty list or only one node, no cycle
   }
 
-  height(root);
+  let slow = head;
+  let fast = head.next;
 
-  return result;
+  while (slow !== fast) {
+    if (!fast || !fast.next) {
+      return false; // Reached end of list, no cycle
+    }
+    slow = slow.next;
+    fast = fast.next.next;
+  }
+
+  return true; // Found a cycle
 }
-// Create a sample binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
+const head = { value: 1, next: null };
+const node2 = { value: 2, next: null };
+const node3 = { value: 3, next: null };
 
-const diameter = findDiameter(root);
-console.log(diameter); // Output: 5
+head.next = node2;
+node2.next = node3;
+node3.next = head; // Creating a cycle
+
+console.log(hasCycle(head)); // Output: true
