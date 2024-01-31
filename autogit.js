@@ -6,64 +6,27 @@ class Node {
   }
 }
 
-class BinaryTree {
-  constructor() {
-    this.root = null;
+function findMaxDepth(root) {
+  if (root === null) {
+    return 0;
   }
 
-  insert(value) {
-    const newNode = new Node(value);
+  // Recursively find the maximum depth of the left and right subtrees
+  const leftDepth = findMaxDepth(root.left);
+  const rightDepth = findMaxDepth(root.right);
 
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
-
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
-
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
-    }
-
-    if (node.value === value) {
-      return true;
-    }
-
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else {
-      return this.searchNode(node.right, value);
-    }
-  }
+  // Return the maximum depth of the tree (add 1 for the current node)
+  return Math.max(leftDepth, rightDepth) + 1;
 }
-const tree = new BinaryTree();
 
-tree.insert(5);
-tree.insert(3);
-tree.insert(7);
-tree.insert(2);
-tree.insert(4);
+// Example usage:
+// Create a binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
 
-console.log(tree.search(4)); // Output: true
-console.log(tree.search(6)); // Output: false
+// Find the maximum depth of the binary tree
+const maxDepth = findMaxDepth(root);
+console.log(maxDepth); // Outputs: 3
