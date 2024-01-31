@@ -1,86 +1,80 @@
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+class TarjanSCC {
+  constructor(numNodes) {
+    this.adjList = new Array(numNodes).fill(null).map(() => []);
+    this.index = 0;
+    this.stack = [];
+    this.onStack = new Array(numNodes).fill(false);
+    this.lowLinkValues = new Array(numNodes).fill(-1);
+    this.ids = new Array(numNodes).fill(-1);
+    this.sccCount = 0;
   }
-}
 
-class BinaryTree {
-  constructor() {
-    this.root = null;
+  addEdge(from, to) {
+    this.adjList[from].push(to);
   }
-  
-  // Helper method to insert a value into the tree
-  insert(value) {
-    const newNode = new TreeNode(value);
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
-  
-  // Recursive helper method to perform the insertion
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
+
+  tarjan() {
+    for (let node = 0; node < this.adjList.length; node++) {
+      if (this.ids[node] === -1) {
+        this.strongConnect(node);
       }
     }
   }
-  
-  // Helper method to search for a value in the tree
-  search(value) {
-    return this.searchNode(this.root, value);
+
+  strongConnect(node) {
+    this.lowLinkValues[node] = this.index;
+    this.ids[node] = this.index;
+    this.index++;
+    this.stack.push(node);
+    this.onStack[node] = true;
+
+    const neighbors = this.adjList[node];
+    for (let i = 0; i < neighbors.length; i++) {
+      const neighbor = neighbors[i];
+      if (this.ids[neighbor] === -1) {
+        this.strongConnect(neighbor);
+        this.lowLinkValues[node] = Math.min(
+          this.lowLinkValues[node],
+          this.lowLinkValues[neighbor]
+        );
+      } else if (this.onStack[neighbor]) {
+        this.lowLinkValues[node] = Math.min(
+          this.lowLinkValues[node],
+          this.ids[neighbor]
+        );
+      }
+    }
+
+    if (this.lowLinkValues[node] === this.ids[node]) {
+      let component = [];
+      let current;
+      do {
+        current = this.stack.pop();
+        this.onStack[current] = false;
+        component.push(current);
+      } while (current !== node);
+
+      // Print or use the strongly connected component here
+      console.log(`Strongly Connected Component: ${component.join(", ")}`);
+      this.sccCount++;
+    }
   }
-  
-  // Recursive helper method to perform the search
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
-    }
-    
-    if (value === node.value) {
-      return true;
-    }
-    
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else {
-      return this.searchNode(node.right, value);
-    }
-  }
-  
-  // Helper method to traverse the tree in-order (left-root-right)
-  inorderTraversal() {
-    this.inorderTraversalNode(this.root);
-  }
-  
-  // Recursive helper method to perform the in-order traversal
-  inorderTraversalNode(node) {
-    if (node !== null) {
-      this.inorderTraversalNode(node.left);
-      console.log(node.value);
-      this.inorderTraversalNode(node.right);
-    }
+
+  stronglyConnectedComponents() {
+    this.tarjan();
+    console.log(`Total Strongly Connected Components: ${this.sccCount}`);
   }
 }
 
-// Example usage:
-const binaryTree = new BinaryTree();
-binaryTree.insert(5);
-binaryTree.insert(3);
-binaryTree.insert(7);
-binaryTree.insert(1);
-binaryTree.inorderTraversal(); // Outputs: 1 3 5 7
-console.log(binaryTree.search(7)); // Outputs: true
-console.log(binaryTree.search(4)); // Outputs: false
+// Example usage
+const graph = new TarjanSCC(8);
+graph.addEdge(0, 1);
+graph.addEdge(1, 2);
+graph.addEdge(2, 0);
+graph.addEdge(2, 3);
+graph.addEdge(3, 4);
+graph.addEdge(4, 5);
+graph.addEdge(5, 3);
+graph.addEdge(6, 5);
+graph.addEdge(6, 7);
+graph.stronglyConnectedComponents();
