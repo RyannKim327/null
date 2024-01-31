@@ -1,117 +1,43 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-    this.height = 1;
-  }
-}
-class AVLTree {
-  constructor() {
-    this.root = null;
-  }
+function findLCS(str1, str2) {
+  const m = str1.length;
+  const n = str2.length;
 
-  // Implement the various AVL tree operations here
-}
-class AVLTree {
-  // ...
+  // Create a matrix to store the lengths of LCS
+  const lcsMatrix = Array(m + 1)
+    .fill(0)
+    .map(() => Array(n + 1).fill(0));
 
-  getHeight(node) {
-    if (!node) return 0;
-    return node.height;
+  // Build the lcsMatrix in a bottom-up manner
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        lcsMatrix[i][j] = 1 + lcsMatrix[i - 1][j - 1];
+      } else {
+        lcsMatrix[i][j] = Math.max(lcsMatrix[i - 1][j], lcsMatrix[i][j - 1]);
+      }
+    }
   }
 
-  updateHeight(node) {
-    if (!node) return;
-    node.height = Math.max(this.getHeight(node.left), this.getHeight(node.right)) + 1;
-  }
-
-  getBalanceFactor(node) {
-    if (!node) return 0;
-    return this.getHeight(node.left) - this.getHeight(node.right);
-  }
-}
-class AVLTree {
-  // ...
-
-  rotateLeft(node) {
-    const newRoot = node.right;
-    node.right = newRoot.left;
-    newRoot.left = node;
-
-    this.updateHeight(node);
-    this.updateHeight(newRoot);
-
-    return newRoot;
-  }
-
-  rotateRight(node) {
-    const newRoot = node.left;
-    node.left = newRoot.right;
-    newRoot.right = node;
-
-    this.updateHeight(node);
-    this.updateHeight(newRoot);
-
-    return newRoot;
-  }
-
-  rotateLeftRight(node) {
-    node.left = this.rotateLeft(node.left);
-    return this.rotateRight(node);
-  }
-
-  rotateRightLeft(node) {
-    node.right = this.rotateRight(node.right);
-    return this.rotateLeft(node);
-  }
-}
-class AVLTree {
-  // ...
-
-  insert(value) {
-    this.root = this._insertNode(this.root, value);
-  }
-
-  _insertNode(node, value) {
-    if (!node) return new Node(value);
-
-    if (value < node.value) {
-      node.left = this._insertNode(node.left, value);
-    } else if (value > node.value) {
-      node.right = this._insertNode(node.right, value);
+  // Find the longest common subsequence by backtracking the lcsMatrix
+  let lcs = "";
+  let i = m;
+  let j = n;
+  while (i > 0 && j > 0) {
+    if (str1[i - 1] === str2[j - 1]) {
+      lcs = str1[i - 1] + lcs;
+      i--;
+      j--;
+    } else if (lcsMatrix[i - 1][j] > lcsMatrix[i][j - 1]) {
+      i--;
     } else {
-      return node; // value already exists
+      j--;
     }
-
-    this.updateHeight(node);
-
-    const balanceFactor = this.getBalanceFactor(node);
-
-    if (balanceFactor > 1) {
-      if (value < node.left.value) {
-        return this.rotateRight(node);
-      } else {
-        return this.rotateLeftRight(node);
-      }
-    }
-
-    if (balanceFactor < -1) {
-      if (value > node.right.value) {
-        return this.rotateLeft(node);
-      } else {
-        return this.rotateRightLeft(node);
-      }
-    }
-
-    return node;
   }
 
-  delete(value) {
-    this.root = this._deleteNode(this.root, value);
-  }
-
-  _deleteNode(node, value) {
-    // Implementation of the deletion operation
-  }
+  return lcs;
 }
+
+// Example usage:
+const str1 = "ABCDGH";
+const str2 = "AEDFHR";
+console.log(findLCS(str1, str2)); // Output: ADH
