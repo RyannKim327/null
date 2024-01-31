@@ -1,20 +1,18 @@
-function findNthNodeFromEnd(n) {
-  let mainPtr = head;
-  let refPtr = head;
-  
-  // Move refPtr n positions ahead
-  for (let i = 0; i < n; i++) {
-    if (refPtr === null) {
-      return null; // Linked list is shorter than n
-    }
-    refPtr = refPtr.next;
-  }
-  
-  // Move both pointers synchronously
-  while (refPtr !== null) {
-    mainPtr = mainPtr.next;
-    refPtr = refPtr.next;
-  }
-  
-  return mainPtr;
+function countOccurrences(string, word) {
+  // Create a regular expression with the word using word boundaries (\b)
+  const regex = new RegExp(`\\b${word}\\b`, 'gi');
+
+  // Use the match method to find all occurrences matching the regex
+  const matches = string.match(regex);
+
+  // If matches are found, return the count, otherwise return 0
+  return matches ? matches.length : 0;
 }
+
+// Example usage
+const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+const word = 'ipsum';
+
+const count = countOccurrences(text, word);
+console.log(`The word "${word}" occurs ${count} times in the text.`);
+The word "ipsum" occurs 1 times in the text.
