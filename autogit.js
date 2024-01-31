@@ -1,76 +1,29 @@
-class Queue {
-  constructor() {
-    this.queue = [];
-  }
-  
-  enqueue(item) {
-    this.queue.push(item);
-  }
-  
-  dequeue() {
-    if (this.isEmpty()) {
-      return null;
-    }
-    return this.queue.shift();
-  }
-  
-  isEmpty() {
-    return this.queue.length === 0;
-  }
-}
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.adjacents = [];
-  }
-  
-  addAdjacent(node) {
-    this.adjacents.push(node);
-  }
-  
-  getAdjacents() {
-    return this.adjacents;
-  }
-}
-function breadthFirstSearch(startingNode) {
-  const visited = new Set(); // to keep track of visited nodes
-  const queue = new Queue();
-  
-  visited.add(startingNode);
-  queue.enqueue(startingNode);
-  
-  while (!queue.isEmpty()) {
-    const currentNode = queue.dequeue();
-    console.log(currentNode.value); // perform desired operation
-    
-    const adjacents = currentNode.getAdjacents();
-    for (const adjacent of adjacents) {
-      if (!visited.has(adjacent)) {
-        visited.add(adjacent);
-        queue.enqueue(adjacent);
-      }
-    }
-  }
-}
-// Example graph
-const nodeA = new Node("A");
-const nodeB = new Node("B");
-const nodeC = new Node("C");
-const nodeD = new Node("D");
-const nodeE = new Node("E");
+// Make a GET request to the Random User Generator API
+fetch('https://randomuser.me/api/')
+  .then(response => response.json())
+  .then(data => {
+    const user = data.results[0]; // Get the first user object
 
-nodeA.addAdjacent(nodeB);
-nodeA.addAdjacent(nodeC);
-nodeB.addAdjacent(nodeD);
-nodeD.addAdjacent(nodeE);
+    // Extract the user data
+    const firstName = user.name.first;
+    const lastName = user.name.last;
+    const gender = user.gender;
+    const email = user.email;
+    const city = user.location.city;
+    const country = user.location.country;
+    const picture = user.picture.large;
 
-/* The graph looks like this:
-     A
-    / \
-   B   C
-   |
-   D
-   |
-   E
-   */
-breadthFirstSearch(nodeA);
+    // Display the user data in the browser
+    const userInfoContainer = document.getElementById('user-info');
+
+    userInfoContainer.innerHTML = `
+      <img src="${picture}" alt="Profile Picture">
+      <h2>${firstName} ${lastName}</h2>
+      <p><strong>Gender:</strong> ${gender}</p>
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Location:</strong> ${city}, ${country}</p>
+    `;
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
