@@ -1,24 +1,42 @@
-function burrowsWheelerTransform(input) {
-  // Step 1: Create a cyclic rotation of the input string
-  const cyclicRotations = [];
-  for (let i = 0; i < input.length; i++) {
-    cyclicRotations.push(input.slice(i) + input.slice(0, i));
+function BoyerMoore(text, pattern) {
+  const textLength = text.length;
+  const patternLength = pattern.length;
+
+  if (patternLength === 0) return 0;
+
+  const lastTable = buildLastTable(pattern);
+
+  let i = patternLength - 1;
+  let j = patternLength - 1;
+
+  while (i < textLength) {
+    if (text[i] === pattern[j]) {
+      if (j === 0) {
+        return i; // Match found
+      } else {
+        i--;
+        j--;
+      }
+    } else {
+      i += patternLength - Math.min(j, 1 + lastTable[text[i].charCodeAt()]);
+      j = patternLength - 1;
+    }
   }
 
-  // Step 2: Sort the cyclic rotations lexicographically
-  cyclicRotations.sort();
-
-  // Step 3: Extract the last characters of each cyclic rotation
-  const transformed = cyclicRotations.map(str => str.charAt(input.length - 1)).join('');
-
-  // Step 4: Return the transformed string and the index of the original input in the sorted rotations
-  const originalIndex = cyclicRotations.findIndex(str => str === input);
-  return { transformed, originalIndex };
+  return -1; // No match found
 }
-const input = 'banana';
-const { transformed, originalIndex } = burrowsWheelerTransform(input);
 
-console.log('Transformed String:', transformed);
-console.log('Original Index:', originalIndex);
-Transformed String: annb$aa
-Original Index: 3
+function buildLastTable(pattern) {
+  const lastTable = {};
+
+  for (let i = 0; i < pattern.length - 1; i++) {
+    lastTable[pattern[i].charCodeAt()] = i;
+  }
+
+  return lastTable;
+}
+const text = "This is a sample text";
+const pattern = "sample";
+
+const index = BoyerMoore(text, pattern);
+console.log(index); // Output: 10
