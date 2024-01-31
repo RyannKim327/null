@@ -1,18 +1,23 @@
-function isAnagram(str1, str2) {
-  // Remove non-alphabetic characters and convert to lowercase
-  str1 = str1.toLowerCase().replace(/[^a-z]/g, '');
-  str2 = str2.toLowerCase().replace(/[^a-z]/g, '');
-
-  // Convert strings to arrays, sort them, and join them back into strings
-  str1 = str1.split('').sort().join('');
-  str2 = str2.split('').sort().join('');
-
-  // Compare the sorted strings for equality
-  return str1 === str2;
+function countOccurrences(inputString, targetCharacter) {
+  let count = 0;
+  for (let i = 0; i < inputString.length; i++) {
+    if (inputString.charAt(i) === targetCharacter) {
+      count++;
+    }
+  }
+  return count;
 }
 
-// Usage example
-const string1 = "listen";
-const string2 = "silent";
+const str = "Hello, world!";
+const char = "o";
+const occurrences = countOccurrences(str, char);
+console.log('Occurrence count:', occurrences); // Output: 2
+function countOccurrences(inputString, targetCharacter) {
+  const occurrences = inputString.split(targetCharacter).length - 1;
+  return occurrences;
+}
 
-console.log(isAnagram(string1, string2)); // Output: true
+const str = "Hello, world!";
+const char = "o";
+const occurrences = countOccurrences(str, char);
+console.log('Occurrence count:', occurrences); // Output: 2
