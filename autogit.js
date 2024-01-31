@@ -1,29 +1,30 @@
-// Make a GET request to the Random User Generator API
-fetch('https://randomuser.me/api/')
-  .then(response => response.json())
-  .then(data => {
-    const user = data.results[0]; // Get the first user object
+class TreeNode {
+  constructor(val, left = null, right = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
+  }
+}
 
-    // Extract the user data
-    const firstName = user.name.first;
-    const lastName = user.name.last;
-    const gender = user.gender;
-    const email = user.email;
-    const city = user.location.city;
-    const country = user.location.country;
-    const picture = user.picture.large;
+function sumBinaryTree(root) {
+  if (root === null) {
+    return 0;
+  }
 
-    // Display the user data in the browser
-    const userInfoContainer = document.getElementById('user-info');
+  // Compute the sum of values in the current node and its subtrees
+  const currentSum = root.val;
+  const leftSum = sumBinaryTree(root.left);
+  const rightSum = sumBinaryTree(root.right);
 
-    userInfoContainer.innerHTML = `
-      <img src="${picture}" alt="Profile Picture">
-      <h2>${firstName} ${lastName}</h2>
-      <p><strong>Gender:</strong> ${gender}</p>
-      <p><strong>Email:</strong> ${email}</p>
-      <p><strong>Location:</strong> ${city}, ${country}</p>
-    `;
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+  return currentSum + leftSum + rightSum;
+}
+
+// Example usage
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+const sum = sumBinaryTree(root);
+console.log("Sum of all nodes:", sum);
