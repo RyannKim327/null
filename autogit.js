@@ -1,19 +1,16 @@
-function isPalindrome(str) {
-  let left = 0;
-  let right = str.length - 1;
+// Import the Axios library
+const axios = require('axios');
 
-  while (left < right) {
-    if (str[left] !== str[right]) {
-      return false;
-    }
-    left++;
-    right--;
-  }
+// Define the URL endpoint you want to send a GET request to
+const url = 'https://jsonplaceholder.typicode.com/posts';
 
-  return true;
-}
-const string = "racecar";
-console.log(isPalindrome(string)); // Output: true
-
-const anotherString = "hello";
-console.log(isPalindrome(anotherString)); // Output: false
+// Make a GET request using Axios
+axios.get(url)
+  .then(response => {
+    // Handle the response data
+    console.log('Response:', response.data);
+  })
+  .catch(error => {
+    // Handle any error that occurred during the request
+    console.error('Error:', error);
+  });
