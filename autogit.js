@@ -1,35 +1,73 @@
-class Node {
-  constructor(start, end) {
-    this.start = start;
-    this.end = end;
-    this.children = {};
+function shellSort(array) {
+  // ...
+}
+function shellSort(array) {
+  const n = array.length;
+  let gap = Math.floor(n / 2); // Start with a half-gap
+  // ...
+}
+function shellSort(array) {
+  const n = array.length;
+  let gap = Math.floor(n / 2); // Start with a half-gap
+
+  while (gap > 0) {
+    // ...
   }
 }
-class SuffixTree {
-  constructor() {
-    this.root = new Node(-1, -1); // Dummy root node
-  }
+function shellSort(array) {
+  const n = array.length;
+  let gap = Math.floor(n / 2); // Start with a half-gap
 
-  buildTree(text) {
-    for (let i = 0; i < text.length; i++) {
-      this._insertSuffix(text.substring(i), i);
+  while (gap > 0) {
+    for (let i = gap; i < n; i++) {
+      // ...
     }
+    gap = Math.floor(gap / 2);
   }
+}
+function shellSort(array) {
+  const n = array.length;
+  let gap = Math.floor(n / 2); // Start with a half-gap
 
-  _insertSuffix(suffix, index) {
-    let node = this.root;
-    for (let i = 0; i < suffix.length; i++) {
-      const char = suffix[i];
-      if (!node.children[char]) {
-        node.children[char] = new Node(index + i, -1);
+  while (gap > 0) {
+    for (let i = gap; i < n; i++) {
+      const temp = array[i];
+      let j = i;
+
+      while (j >= gap && array[j - gap] > temp) {
+        array[j] = array[j - gap];
+        j -= gap;
       }
-      node = node.children[char];
-    }
-    node.end = index;
-  }
-}
-const suffixTree = new SuffixTree();
-const text = "banana";
-suffixTree.buildTree(text);
 
-console.log(suffixTree.root.children); // Outputs the tree structure
+      array[j] = temp;
+    }
+    gap = Math.floor(gap / 2);
+  }
+  
+  return array;
+}
+function shellSort(array) {
+  const n = array.length;
+  let gap = Math.floor(n / 2); // Start with a half-gap
+
+  while (gap > 0) {
+    for (let i = gap; i < n; i++) {
+      const temp = array[i];
+      let j = i;
+
+      while (j >= gap && array[j - gap] > temp) {
+        array[j] = array[j - gap];
+        j -= gap;
+      }
+
+      array[j] = temp;
+    }
+    gap = Math.floor(gap / 2);
+  }
+  
+  return array;
+}
+
+// Test the function
+const arr = [8, 3, 11, 6, 2, 1, 9, 4];
+console.log(shellSort(arr)); // Output: [1, 2, 3, 4, 6, 8, 9, 11]
