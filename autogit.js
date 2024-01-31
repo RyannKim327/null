@@ -1,12 +1,18 @@
-let arr = [1, 2, 3, 4, 5];
-let element = 3; // remove element 3
+function reverseWords(str) {
+  // Split the string into an array of words
+  var wordsArr = str.split(' ');
 
-// Find the index of the element
-let index = arr.indexOf(element);
+  // Reverse the order of words in the array
+  var reversedArr = wordsArr.reverse();
 
-if (index !== -1) {
-  // Remove the element using splice
-  arr.splice(index, 1);
+  // Join the reversed array back into a string
+  var reversedStr = reversedArr.join(' ');
+
+  return reversedStr;
 }
 
-console.log(arr); // Output: [1, 2, 4, 5]
+// Example usage
+var sentence = "Hello, how are you?";
+var reversedSentence = reverseWords(sentence);
+console.log(reversedSentence);
+you? are how Hello,
