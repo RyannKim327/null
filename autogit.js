@@ -1,20 +1,28 @@
-function shellSort(array) {
-    let gap = Math.floor(array.length / 2);
-    while (gap > 0) {
-        for (let i = gap; i < array.length; i++) {
-            let temp = array[i];
-            let j = i;
-            while (j >= gap && array[j - gap] > temp) {
-                array[j] = array[j - gap];
-                j -= gap;
-            }
-            array[j] = temp;
-        }
-        gap = Math.floor(gap / 2);
-    }
-    return array;
+function countOccurrences(str, word) {
+  return str.split(word).length - 1;
 }
 
-// Example usage:
-const arr = [7, 2, 9, 10, 1, 5];
-console.log(shellSort(arr)); // Output: [1, 2, 5, 7, 9, 10]
+const sentence = "The quick brown fox jumps over the lazy dog";
+const word = "the";
+const count = countOccurrences(sentence.toLowerCase(), word.toLowerCase());
+console.log(count); // Output: 2
+function countOccurrences(str, word) {
+  const regex = new RegExp("\\b" + word + "\\b", "gi");
+  const matches = str.match(regex);
+  return matches ? matches.length : 0;
+}
+
+const sentence = "The quick brown fox jumps over the lazy dog";
+const word = "the";
+const count = countOccurrences(sentence, word);
+console.log(count); // Output: 2
+function countOccurrences(str, word) {
+  const regex = new RegExp("\\b" + word + "\\b", "gi");
+  const matches = str.split(regex);
+  return matches.length - 1;
+}
+
+const sentence = "The quick brown fox jumps over the lazy dog";
+const word = "the";
+const count = countOccurrences(sentence, word);
+console.log(count); // Output: 2
