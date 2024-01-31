@@ -1,15 +1,14 @@
-function calculateMean(numbers) {
-  let sum = 0;
+const numbers = [1, 6, 3, 9, 2, 7];
+const max = Math.max(...numbers);
+console.log(max); // Output: 9
+const students = [
+  { name: 'Alice', score: 85 },
+  { name: 'Bob', score: 92 },
+  { name: 'Charlie', score: 78 },
+];
 
-  for (let i = 0; i < numbers.length; i++) {
-    sum += numbers[i];
-  }
+const maxScore = students.reduce((max, student) => {
+  return student.score > max ? student.score : max;
+}, -Infinity);
 
-  const mean = sum / numbers.length;
-  return mean;
-}
-
-// Example usage:
-const numbers = [4, 7, 2, 9, 5];
-const mean = calculateMean(numbers);
-console.log(mean); // Output: 5.4
+console.log(maxScore); // Output: 92
