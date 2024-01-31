@@ -1,63 +1,103 @@
-// Helper function to swap elements in the array
-function swap(arr, i, j) {
-  const temp = arr[i];
-  arr[i] = arr[j];
-  arr[j] = temp;
-}
-
-// Heapify takes an array and its length
-// and assumes that binary trees at left(i)
-// and right(i) are heaps. But the tree rooted
-// at index i is not a heap. It applies max heap
-// property to restore the heap property in the tree.
-function heapify(arr, n, i) {
-  let largest = i; // Initialize largest as root
-  const left = 2 * i + 1; // Left child index
-  const right = 2 * i + 2; // Right child index
-
-  // If left child is larger than root
-  if (left < n && arr[left] > arr[largest]) {
-    largest = left;
-  }
-
-  // If right child is larger than largest so far
-  if (right < n && arr[right] > arr[largest]) {
-    largest = right;
-  }
-
-  // If largest is not root
-  if (largest !== i) {
-    swap(arr, i, largest);
-
-    // Recursively heapify the affected sub-tree
-    heapify(arr, n, largest);
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+    this.height = 1;
   }
 }
-
-// The main function to implement heap sort
-function heapSort(arr) {
-  const n = arr.length;
-
-  // Build max heap (rearrange the array)
-  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-    heapify(arr, n, i);
+class AVLTree {
+  constructor() {
+    this.root = null;
   }
-
-  // One by one extract an element from heap
-  for (let i = n - 1; i > 0; i--) {
-    // Move current root to end
-    swap(arr, 0, i);
-
-    // call max heapify on the reduced heap
-    heapify(arr, i, 0);
-  }
-
-  return arr;
 }
+function height(node) {
+  if (node === null) return 0;
+  return node.height;
+}
+function getBalance(node) {
+  if (node === null) return 0;
+  return height(node.left) - height(node.right);
+}
+function rightRotate(y) {
+  const x = y.left; // Set x as y's left child
+  const T2 = x.right; // Set T2 as x's right subtree
 
-// Example usage:
-const arr = [12, 11, 13, 5, 6, 7];
-console.log("Original array:", arr);
+  // Perform rotation
+  x.right = y;
+  y.left = T2;
 
-const sortedArr = heapSort(arr);
-console.log("Sorted array:", sortedArr);
+  // Update heights
+  y.height = Math.max(height(y.left), height(y.right)) + 1;
+  x.height = Math.max(height(x.left), height(x.right)) + 1;
+
+  return x; // Return the new root
+}
+function leftRotate(x) {
+  const y = x.right; // Set y as x's right child
+  const T2 = y.left; // Set T2 as y's left subtree
+
+  // Perform rotation
+  y.left = x;
+  x.right = T2;
+
+  // Update heights
+  x.height = Math.max(height(x.left), height(x.right)) + 1;
+  y.height = Math.max(height(y.left), height(y.right)) + 1;
+
+  return y; // Return the new root
+}
+AVLTree.prototype.insert = function (value) {
+  this.root = this._insert(this.root, value);
+};
+
+AVLTree.prototype._insert = function (node, value) {
+  // Standard BST insertion
+  if (node === null) return new Node(value);
+
+  if (value < node.value) {
+    node.left = this._insert(node.left, value);
+  } else if (value > node.value) {
+    node.right = this._insert(node.right, value);
+  } else {
+    return node; // Duplicate values are not allowed
+  }
+
+  // Update the height of the ancestor node
+  node.height = 1 + Math.max(height(node.left), height(node.right));
+
+  // Check if the node is unbalanced
+  const balance = getBalance(node);
+
+  // Left Left case
+  if (balance > 1 && value < node.left.value) {
+    return rightRotate(node);
+  }
+
+  // Right Right case
+  if (balance < -1 && value > node.right.value) {
+    return leftRotate(node);
+  }
+
+  // Left Right case
+  if (balance > 1 && value > node.left.value) {
+    node.left = leftRotate(node.left);
+    return rightRotate(node);
+  }
+
+  // Right Left case
+  if (balance < -1 && value < node.right.value) {
+    node.right = rightRotate(node.right);
+    return leftRotate(node);
+  }
+
+  return node;
+};
+const avlTree = new AVLTree();
+avlTree.insert(10);
+avlTree.insert(20);
+avlTree.insert(30);
+
+console.log(avlTree.root.value); // Output: 20
+console.log(avlTree.root.left.value); // Output: 10
+console.log(avlTree.root.right.value); // Output: 30
