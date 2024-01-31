@@ -1,93 +1,39 @@
-class BinaryHeap {
-  constructor() {
-    this.heap = [];
-  }
-  
-  isEmpty() {
-    return this.heap.length === 0;
-  }
-  
-  enqueue(value, priority) {
-    const node = { value, priority };
-    this.heap.push(node);
-    this.bubbleUp(this.heap.length - 1);
-  }
-  
-  dequeue() {
-    if (this.isEmpty()) {
-      return null;
-    }
-    const min = this.heap[0];
-    const lastNode = this.heap.pop();
-    
-    if (!this.isEmpty()) {
-      this.heap[0] = lastNode;
-      this.sinkDown(0);
-    }
-    
-    return min.value;
-  }
-  
-  bubbleUp(index) {
-    const node = this.heap[index];
-    while (index > 0) {
-      const parentIndex = Math.floor((index - 1) / 2);
-      const parent = this.heap[parentIndex];
-      
-      if (node.priority >= parent.priority) {
-        break;
+function findLongestIncreasingSubsequence(arr) {
+  // Create an array to store the lengths of increasing subsequences
+  const lengths = Array(arr.length).fill(1);
+
+  // Traverse the array from the second element
+  for (let i = 1; i < arr.length; i++) {
+    for (let j = 0; j < i; j++) {
+      // Check if arr[i] can be added to the increasing subsequence
+      if (arr[i] > arr[j] && lengths[i] < lengths[j] + 1) {
+        lengths[i] = lengths[j] + 1;
       }
-      
-      this.heap[parentIndex] = node;
-      this.heap[index] = parent;
-      index = parentIndex;
     }
   }
-  
-  sinkDown(index) {
-    const length = this.heap.length;
-    const node = this.heap[index];
-    
-    while (true) {
-      let leftChildIndex = 2 * index + 1;
-      let rightChildIndex = 2 * index + 2;
-      let leftChild, rightChild;
-      let swapIndex = null;
-      
-      if (leftChildIndex < length) {
-        leftChild = this.heap[leftChildIndex];
-        if (leftChild.priority < node.priority) {
-          swapIndex = leftChildIndex;
-        }
-      }
-      
-      if (rightChildIndex < length) {
-        rightChild = this.heap[rightChildIndex];
-        if (
-          (swapIndex === null && rightChild.priority < node.priority) ||
-          (swapIndex !== null && rightChild.priority < leftChild.priority)
-        ) {
-          swapIndex = rightChildIndex;
-        }
-      }
-      
-      if (swapIndex === null) {
-        break;
-      }
-      
-      this.heap[index] = this.heap[swapIndex];
-      this.heap[swapIndex] = node;
-      index = swapIndex;
+
+  // Find the maximum length in the lengths array
+  let maxLength = 0;
+  for (let i = 0; i < lengths.length; i++) {
+    if (lengths[i] > maxLength) {
+      maxLength = lengths[i];
     }
   }
+
+  // Find the longest increasing subsequence using the lengths array
+  const subsequence = [];
+  let currentLength = maxLength;
+  for (let i = arr.length - 1; i >= 0; i--) {
+    if (lengths[i] === currentLength) {
+      subsequence.unshift(arr[i]);
+      currentLength--;
+    }
+  }
+
+  return subsequence;
 }
-const priorityQueue = new BinaryHeap();
 
-priorityQueue.enqueue('Task 1', 3);
-priorityQueue.enqueue('Task 2', 1);
-priorityQueue.enqueue('Task 3', 2);
-
-console.log(priorityQueue.dequeue()); // Output: Task 2
-console.log(priorityQueue.dequeue()); // Output: Task 3
-console.log(priorityQueue.dequeue()); // Output: Task 1
-console.log(priorityQueue.dequeue()); // Output: null
+// Example usage:
+const arr = [3, 10, 2, 1, 20];
+const subsequence = findLongestIncreasingSubsequence(arr);
+console.log(subsequence); // Output: [3, 10, 20]
