@@ -1,14 +1,11 @@
-function findKthSmallest(arr, k) {
-  // Sort the array in ascending order
-  arr.sort(function(a, b) {
-    return a - b;
-  });
+function getIntersection(list1, list2) {
+  let pointer1 = list1;
+  let pointer2 = list2;
 
-  // Return the kth element
-  return arr[k - 1];
+  while (pointer1 !== pointer2) {
+    pointer1 = pointer1 ? pointer1.next : list2;
+    pointer2 = pointer2 ? pointer2.next : list1;
+  }
+
+  return pointer1; // returns the intersection node or null if there is no intersection
 }
-const array = [5, 2, 8, 3, 1, 9, 4];
-const k = 3;
-
-const kthSmallest = findKthSmallest(array, k);
-console.log(kthSmallest); // Output: 3
