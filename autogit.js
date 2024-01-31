@@ -1,26 +1,41 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
-}
+function findLongestIncreasingSubsequence(arr) {
+  const n = arr.length;
+  const lis = Array(n).fill(1);
 
-function findMiddleElement(head) {
-  let slowPtr = head;
-  let fastPtr = head;
-
-  while (fastPtr !== null && fastPtr.next !== null) {
-    slowPtr = slowPtr.next;
-    fastPtr = fastPtr.next.next;
+  for (let i = 1; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      if (arr[i] > arr[j] && lis[i] < lis[j] + 1) {
+        lis[i] = lis[j] + 1;
+      }
+    }
   }
 
-  return slowPtr.data;
-}
-// Create the linked list:
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
+  let maxLength = 0;
+  let maxIndex = 0;
+  for (let i = 0; i < n; i++) {
+    if (lis[i] > maxLength) {
+      maxLength = lis[i];
+      maxIndex = i;
+    }
+  }
 
-console.log(findMiddleElement(head)); // Output: 3
+  const subsequence = [];
+  let currentLength = maxLength;
+  subsequence[currentLength - 1] = arr[maxIndex];
+  currentLength--;
+
+  for (let i = maxIndex - 1; i >= 0; i--) {
+    if (arr[i] < arr[maxIndex] && lis[i] === lis[maxIndex] - 1) {
+      subsequence[currentLength - 1] = arr[i];
+      maxIndex = i;
+      currentLength--;
+    }
+  }
+
+  return subsequence;
+}
+
+// Example usage:
+const array = [3, 10, 2, 1, 20];
+const longestIncreasingSubsequence = findLongestIncreasingSubsequence(array);
+console.log(longestIncreasingSubsequence); // Output: [3, 10, 20]
