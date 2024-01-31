@@ -1,67 +1,77 @@
-function mergeSort(arr) {
-
-}
-function mergeSort(arr) {
-  if (arr.length <= 1) {
-    return arr;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
-function mergeSort(arr) {
-  if (arr.length <= 1) {
-    return arr;
+
+class BinaryTree {
+  constructor() {
+    this.root = null;
   }
 
-  const middleIndex = Math.floor(arr.length / 2);
-  const leftHalf = arr.slice(0, middleIndex);
-  const rightHalf = arr.slice(middleIndex);
+  insert(value) {
+    const newNode = new Node(value);
 
-  // Continue with merging the left and right halves
-}
-function mergeSort(arr) {
-  if (arr.length <= 1) {
-    return arr;
-  }
-
-  const middleIndex = Math.floor(arr.length / 2);
-  const leftHalf = arr.slice(0, middleIndex);
-  const rightHalf = arr.slice(middleIndex);
-
-  const sortedLeft = mergeSort(leftHalf);
-  const sortedRight = mergeSort(rightHalf);
-
-  // Continue with merging the sorted left and right halves
-}
-function mergeSort(arr) {
-  if (arr.length <= 1) {
-    return arr;
-  }
-
-  const middleIndex = Math.floor(arr.length / 2);
-  const leftHalf = arr.slice(0, middleIndex);
-  const rightHalf = arr.slice(middleIndex);
-
-  const sortedLeft = mergeSort(leftHalf);
-  const sortedRight = mergeSort(rightHalf);
-
-  return merge(sortedLeft, sortedRight);
-}
-
-function merge(leftArr, rightArr) {
-  let sortedArr = [];
-
-  while (leftArr.length && rightArr.length) {
-    if (leftArr[0] <= rightArr[0]) {
-      sortedArr.push(leftArr.shift());
+    if (!this.root) {
+      // If tree is empty, make new node as root
+      this.root = newNode;
     } else {
-      sortedArr.push(rightArr.shift());
+      this.insertNode(this.root, newNode);
     }
   }
 
-  // Concatenate the remaining elements from both arrays
-  sortedArr = [...sortedArr, ...leftArr, ...rightArr];
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      // If the new value is less than the current node, go left
+      if (node.left === null) {
+        // If no left child, insert new node as left child
+        node.left = newNode;
+      } else {
+        // Recursively insert on the left subtree
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      // If the new value is greater than or equal to the current node, go right
+      if (node.right === null) {
+        // If no right child, insert new node as right child
+        node.right = newNode;
+      } else {
+        // Recursively insert on the right subtree
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
 
-  return sortedArr;
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  searchNode(node, value) {
+    if (node === null) {
+      // Value not found in the tree
+      return false;
+    }
+
+    if (value < node.value) {
+      // If the value is less than the current node, search in the left subtree
+      return this.searchNode(node.left, value);
+    } else if (value > node.value) {
+      // If the value is greater than the current node, search in the right subtree
+      return this.searchNode(node.right, value);
+    } else {
+      // Value found
+      return true;
+    }
+  }
 }
-const array = [5, 3, 6, 1, 8, 2, 4, 7];
-const sortedArray = mergeSort(array);
-console.log(sortedArray);
+const tree = new BinaryTree();
+tree.insert(5);
+tree.insert(3);
+tree.insert(8);
+tree.insert(1);
+tree.insert(4);
+
+console.log(tree.search(4)); // Output: true
+console.log(tree.search(6)); // Output: false
