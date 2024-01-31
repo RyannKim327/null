@@ -1,9 +1,7 @@
-const cron = require('cron');
+// Sample array
+let array = [1, 2, 3, 4, 5];
 
-// Define a CronJob that runs every minute
-const job = new cron.CronJob('* * * * *', function() {
-  console.log('This task runs every minute');
-}, null, true, 'UTC');
+// Remove element at index 2 (value 3)
+array.splice(2, 1);
 
-// Start the CronJob
-job.start();
+console.log(array); // Output: [1, 2, 4, 5]
