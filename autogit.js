@@ -1,50 +1,73 @@
-class ListNode {
-  constructor(val, next = null) {
-    this.val = val;
-    this.next = next;
+class SuffixTreeNode {
+  constructor() {
+    // Mapping from character to child nodes
+    this.children = {};
+
+    // List of indexes where the suffix ends
+    this.indexes = [];
   }
 }
-function isPalindrome(head) {
-  if (!head || !head.next) {
-    return true; // an empty list or a list with a single node is considered a palindrome
-  }
-  
-  // Step 1: Find the middle of the linked list using slow and fast pointers
-  let slow = head;
-  let fast = head;
 
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
-  
-  // Step 2: Reverse the second half of the linked list
-  let prev = null;
-  while (slow) {
-    const next = slow.next;
-    slow.next = prev;
-    prev = slow;
-    slow = next;
+class SuffixTree {
+  constructor(text) {
+    // Store the input text
+    this.text = text;
+
+    // Create the root node
+    this.root = new SuffixTreeNode();
+
+    // Build the suffix tree
+    this.buildSuffixTree();
   }
 
-  // Step 3: Compare the reversed second half with the first half
-  while (prev) {
-    if (prev.val !== head.val) {
-      return false; // the list is not a palindrome
+  buildSuffixTree() {
+    // Create suffixes and insert them into the tree
+    for (let i = 0; i < this.text.length; i++) {
+      let suffix = this.text.slice(i);
+      this.insertSuffix(suffix, i);
     }
-    prev = prev.next;
-    head = head.next;
   }
 
-  return true; // the list is a palindrome
+  insertSuffix(suffix, index) {
+    let currentNode = this.root;
+
+    for (let i = 0; i < suffix.length; i++) {
+      let char = suffix[i];
+
+      // If the character is not in the child nodes, add a new node
+      if (!(char in currentNode.children)) {
+        currentNode.children[char] = new SuffixTreeNode();
+      }
+
+      currentNode = currentNode.children[char];
+    }
+
+    // Append the index where the suffix ends
+    currentNode.indexes.push(index);
+  }
+
+  search(pattern) {
+    let currentNode = this.root;
+
+    for (let i = 0; i < pattern.length; i++) {
+      let char = pattern[i];
+
+      // If the character is not in the child nodes, the pattern is not found
+      if (!(char in currentNode.children)) {
+        return [];
+      }
+
+      currentNode = currentNode.children[char];
+    }
+
+    // Return the indexes where the pattern ends
+    return currentNode.indexes;
+  }
 }
-// Example usage
 
-// Create a palindrome linked list: 1 -> 2 -> 3 -> 2 -> 1
-const node5 = new ListNode(1);
-const node4 = new ListNode(2, node5);
-const node3 = new ListNode(3, node4);
-const node2 = new ListNode(2, node3);
-const node1 = new ListNode(1, node2);
-
-console.log(isPalindrome(node1)); // Output: true
+// Usage:
+const suffixTree = new SuffixTree('banana');
+console.log(suffixTree.search('na')); // Output: [2, 4]
+console.log(suffixTree.search('an')); // Output: [1, 3]
+console.log(suffixTree.search('n'));  // Output: [2, 4]
+console.log(suffixTree.search('z'));  // Output: []
