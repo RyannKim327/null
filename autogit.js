@@ -1,11 +1,19 @@
-function getIntersection(headA, headB) {
-  let ptr1 = headA;
-  let ptr2 = headB;
+function isPalindrome(str) {
+  let left = 0;
+  let right = str.length - 1;
 
-  while (ptr1 !== ptr2) {
-    ptr1 = ptr1 ? ptr1.next : headB;
-    ptr2 = ptr2 ? ptr2.next : headA;
+  while (left < right) {
+    if (str[left] !== str[right]) {
+      return false;
+    }
+    left++;
+    right--;
   }
 
-  return ptr1;
+  return true;
 }
+const string = "racecar";
+console.log(isPalindrome(string)); // Output: true
+
+const anotherString = "hello";
+console.log(isPalindrome(anotherString)); // Output: false
