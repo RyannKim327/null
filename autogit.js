@@ -1,17 +1,19 @@
-function findFirstRepeatedCharacter(str) {
-  let charSet = new Set();
-  
-  for (let char of str) {
-    if (charSet.has(char)) {
-      return char;
-    }
-    charSet.add(char);
+function depthLimitedSearch(node, goal, depthLimit) {
+  if (node.value === goal) {
+    return node;
   }
-  
-  return null; // If no repeated character found
-}
 
-// Example usage
-let string = "hello world";
-let repeatedChar = findFirstRepeatedCharacter(string);
-console.log(repeatedChar); // Output: l
+  if (depthLimit === 0) {
+    return null;
+  }
+
+  for (let i = 0; i < node.children.length; i++) {
+    const childNode = node.children[i];
+    const result = depthLimitedSearch(childNode, goal, depthLimit - 1);
+    if (result !== null) {
+      return result;
+    }
+  }
+
+  return null;
+}
