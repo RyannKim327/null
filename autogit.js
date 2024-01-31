@@ -1,18 +1,9 @@
-function countOccurrences(string, character) {
-  let count = 0;
-  
-  for (let i = 0; i < string.length; i++) {
-    if (string.charAt(i) === character) {
-      count++;
-    }
-  }
-  
-  return count;
-}
+let array = [1, 2, 3, 4, 5];
+array.reverse();
 
-// Example usage
-const myString = "Hello, World!";
-const characterToCount = "o";
+console.log(array); // Output: [5, 4, 3, 2, 1]
+let array = [1, 2, 3, 4, 5];
+let reversedArray = array.slice().reverse();
 
-const occurrenceCount = countOccurrences(myString, characterToCount);
-console.log("Number of occurrences:", occurrenceCount);
+console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
+console.log(array);         // Output: [1, 2, 3, 4, 5]
