@@ -1,56 +1,36 @@
-// Define the Graph class
-class Graph {
-  constructor() {
-    this.vertices = [];
-    this.adjacencyList = {};
-  }
-  
-  // Add a vertex to the graph
-  addVertex(vertex) {
-    this.vertices.push(vertex);
-    this.adjacencyList[vertex] = [];
-  }
-  
-  // Add an edge between two vertices
-  addEdge(vertex1, vertex2) {
-    this.adjacencyList[vertex1].push(vertex2);
-    this.adjacencyList[vertex2].push(vertex1);
-  }
-  
-  // Depth-first search algorithm
-  dfs(startVertex) {
-    const visited = {};
-    for (const vertex of this.vertices) {
-      visited[vertex] = false; // Initialize all vertices as not visited
-    }
-    
-    this.dfsHelper(startVertex, visited);
-  }
-  
-  // Depth-first search helper function
-  dfsHelper(vertex, visited) {
-    visited[vertex] = true; // Mark the current vertex as visited
-    console.log(vertex); // Process the current vertex (e.g., print it)
-    
-    const neighbors = this.adjacencyList[vertex];
-    for (const neighbor of neighbors) {
-      if (!visited[neighbor]) {
-        this.dfsHelper(neighbor, visited); // Recursively call the helper function for neighboring vertices
+function findLongestIncreasingSubsequence(arr) {
+  const n = arr.length;
+  const dp = new Array(n).fill(1); // dp[i] represents the length of the longest increasing subsequence ending at index i
+
+  // Compute the lengths of the longest increasing subsequences
+  for (let i = 1; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      if (arr[i] > arr[j]) {
+        dp[i] = Math.max(dp[i], dp[j] + 1);
       }
     }
   }
+
+  // Find the maximum length in the dp array
+  let maxLength = 0;
+  for (let i = 0; i < n; i++) {
+    maxLength = Math.max(maxLength, dp[i]);
+  }
+
+  // Construct the longest increasing subsequence
+  const subsequence = [];
+  let currentLength = maxLength;
+  for (let i = n - 1; i >= 0; i--) {
+    if (dp[i] === currentLength) {
+      subsequence.unshift(arr[i]);
+      currentLength--;
+    }
+  }
+
+  return subsequence;
 }
 
-// Example usage
-const graph = new Graph();
-graph.addVertex("A");
-graph.addVertex("B");
-graph.addVertex("C");
-graph.addVertex("D");
-graph.addVertex("E");
-graph.addEdge("A", "B");
-graph.addEdge("A", "C");
-graph.addEdge("B", "D");
-graph.addEdge("D", "E");
-
-graph.dfs("A");
+// Test the function
+const arr = [3, 4, -1, 0, 6, 2, 3];
+const longestIncreasingSubsequence = findLongestIncreasingSubsequence(arr);
+console.log(longestIncreasingSubsequence); // Output: [-1, 0, 2, 3]
