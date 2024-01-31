@@ -1,23 +1,48 @@
-function selectionSort(arr) {
-  const len = arr.length;
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
+}
+function reverseLinkedList(head) {
+  let prev = null;
+  let current = head;
 
-  for (let i = 0; i < len - 1; i++) {
-    let minIndex = i;
+  while (current) {
+    const next = current.next;
+    
+    // Reverse the link
+    current.next = prev;
 
-    for (let j = i + 1; j < len; j++) {
-      if (arr[j] < arr[minIndex]) {
-        minIndex = j;
-      }
-    }
-
-    let temp = arr[i];
-    arr[i] = arr[minIndex];
-    arr[minIndex] = temp;
+    // Move to the next nodes
+    prev = current;
+    current = next;
   }
 
-  return arr;
+  // Return the new head of the reversed list
+  return prev;
+}
+// Create the linked list: 1 -> 2 -> 3 -> 4 -> null
+const head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+
+// Print the original linked list
+let current = head;
+while (current) {
+  console.log(current.data);
+  current = current.next;
 }
 
-// Example usage
-const unsortedArray = [5, 2, 8, 6, 1, 3];
-console.log(selectionSort(unsortedArray)); // Output: [1, 2, 3, 5, 6, 8]
+console.log('Reversed Linked List');
+
+// Reverse the linked list
+const reversedHead = reverseLinkedList(head);
+
+// Print the reversed linked list
+current = reversedHead;
+while (current) {
+  console.log(current.data);
+  current = current.next;
+}
