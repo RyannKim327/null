@@ -1,49 +1,22 @@
-function calculateHash(str, start, end, prime) {
-  let hash = 0;
-  for (let i = start; i < end; i++) {
-    hash = (hash * prime + str.charCodeAt(i)) % prime;
-  }
-  return hash;
+function areAnagrams(str1, str2) {
+  // Remove non-alphabetic characters and convert to lowercase
+  str1 = str1.replace(/[^a-z]/gi, '').toLowerCase();
+  str2 = str2.replace(/[^a-z]/gi, '').toLowerCase();
+
+  // Sort the strings
+  const sortedStr1 = str1.split('').sort().join('');
+  const sortedStr2 = str2.split('').sort().join('');
+
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
-function rabinKarpSearch(text, pattern) {
-  const prime = 101; // a prime number used for hashing
-  const textLength = text.length;
-  const patternLength = pattern.length;
-  const patternHash = calculateHash(pattern, 0, patternLength, prime);
-  let textHash = calculateHash(text, 0, patternLength, prime);
 
-  for (let i = 0; i <= textLength - patternLength; i++) {
-    if (textHash === patternHash) {
-      // If the hash values match, perform a character-by-character comparison
-      let found = true;
-      for (let j = 0; j < patternLength; j++) {
-        if (text[i + j] !== pattern[j]) {
-          found = false;
-          break;
-        }
-      }
-      if (found) {
-        return i; // pattern found at position i
-      }
-    }
-    // Calculate the rolling hash for the next substring
-    textHash =
-      (textHash - text.charCodeAt(i) + text.charCodeAt(i + patternLength)) %
-      prime;
+// Example usage
+const string1 = 'listen';
+const string2 = 'silent';
 
-    // Ensure the hash is positive
-    if (textHash < 0) {
-      textHash += prime;
-    }
-  }
-  return -1; // pattern not found
-}
-const text = "Hello, world!";
-const pattern = "world";
-const result = rabinKarpSearch(text, pattern);
-
-if (result !== -1) {
-  console.log(`Pattern found starting at position ${result}`);
+if (areAnagrams(string1, string2)) {
+  console.log('The strings are anagrams.');
 } else {
-  console.log("Pattern not found");
+  console.log('The strings are not anagrams.');
 }
