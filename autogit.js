@@ -1,75 +1,49 @@
-// Node class representing a single node in the binary tree
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function calculateHash(str, start, end, prime) {
+  let hash = 0;
+  for (let i = start; i < end; i++) {
+    hash = (hash * prime + str.charCodeAt(i)) % prime;
   }
+  return hash;
 }
+function rabinKarpSearch(text, pattern) {
+  const prime = 101; // a prime number used for hashing
+  const textLength = text.length;
+  const patternLength = pattern.length;
+  const patternHash = calculateHash(pattern, 0, patternLength, prime);
+  let textHash = calculateHash(text, 0, patternLength, prime);
 
-// BinaryTree class representing the overall binary tree
-class BinaryTree {
-  constructor() {
-    this.root = null;
-  }
-
-  // Insert a value into the binary tree
-  insert(value) {
-    const newNode = new Node(value);
-
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
-
-  // Helper method to insert a value recursively
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
+  for (let i = 0; i <= textLength - patternLength; i++) {
+    if (textHash === patternHash) {
+      // If the hash values match, perform a character-by-character comparison
+      let found = true;
+      for (let j = 0; j < patternLength; j++) {
+        if (text[i + j] !== pattern[j]) {
+          found = false;
+          break;
+        }
       }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
+      if (found) {
+        return i; // pattern found at position i
       }
     }
-  }
+    // Calculate the rolling hash for the next substring
+    textHash =
+      (textHash - text.charCodeAt(i) + text.charCodeAt(i + patternLength)) %
+      prime;
 
-  // Traverse the binary tree in in-order (left-root-right) order
-  inOrderTraversal(callback) {
-    this.inOrderTraversalNode(this.root, callback);
-  }
-
-  // Helper method for in-order traversal
-  inOrderTraversalNode(node, callback) {
-    if (node !== null) {
-      this.inOrderTraversalNode(node.left, callback);
-      callback(node.value);
-      this.inOrderTraversalNode(node.right, callback);
+    // Ensure the hash is positive
+    if (textHash < 0) {
+      textHash += prime;
     }
   }
+  return -1; // pattern not found
 }
+const text = "Hello, world!";
+const pattern = "world";
+const result = rabinKarpSearch(text, pattern);
 
-// Example usage
-const tree = new BinaryTree();
-tree.insert(8);
-tree.insert(4);
-tree.insert(12);
-tree.insert(2);
-tree.insert(6);
-tree.insert(10);
-tree.insert(14);
-
-// In-order traversal callback function
-const printValue = (value) => {
-  console.log(value);
-};
-
-// Perform in-order traversal
-tree.inOrderTraversal(printValue);
+if (result !== -1) {
+  console.log(`Pattern found starting at position ${result}`);
+} else {
+  console.log("Pattern not found");
+}
