@@ -1,50 +1,33 @@
-function buildPrefixTable(pattern) {
-  const prefixTable = Array(pattern.length).fill(0);
-  let prefixIndex = 0;
+function findMajorityElement(nums) {
+  let majorityElement = nums[0];
+  let count = 1;
   
-  for (let i = 1; i < pattern.length;) {
-    if (pattern[i] === pattern[prefixIndex]) {
-      prefixIndex++;
-      prefixTable[i] = prefixIndex;
-      i++;
+  for (let i = 1; i < nums.length; i++) {
+    if (count === 0) {
+      majorityElement = nums[i];
+      count = 1;
+    } else if (nums[i] === majorityElement) {
+      count++;
     } else {
-      if (prefixIndex !== 0) {
-        prefixIndex = prefixTable[prefixIndex - 1];
-      } else {
-        prefixTable[i] = 0;
-        i++;
-      }
+      count--;
     }
   }
-
-  return prefixTable;
-}
-function kmpSearch(text, pattern) {
-  const prefixTable = buildPrefixTable(pattern);
-  const matches = [];
-  let textIndex = 0;
-  let patternIndex = 0;
-
-  while (textIndex < text.length) {
-    if (pattern[patternIndex] === text[textIndex]) {
-      patternIndex++;
-      textIndex++;
-
-      if (patternIndex === pattern.length) {
-        matches.push(textIndex - pattern.length);
-        patternIndex = prefixTable[patternIndex - 1];
-      }
-    } else if (patternIndex !== 0) {
-      patternIndex = prefixTable[patternIndex - 1];
-    } else {
-      textIndex++;
+  
+  // Verify if the majority element occurs more than n/2 times
+  let occurrences = 0;
+  for (let i = 0; i < nums.length; i++) {
+    if (nums[i] === majorityElement) {
+      occurrences++;
     }
   }
-
-  return matches;
+  
+  if (occurrences > nums.length / 2) {
+    return majorityElement;
+  } else {
+    return "No majority element found";
+  }
 }
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const matches = kmpSearch(text, pattern);
 
-console.log(matches); // Output: [10]
+// Example usage:
+const nums = [2, 2, 1, 1, 1, 2, 2];
+console.log(findMajorityElement(nums)); // Output: 2
