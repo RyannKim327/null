@@ -1,46 +1,52 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+class Graph {
+  constructor() {
+    this.adjList = new Map();
+  }
+
+  addNode(node) {
+    this.adjList.set(node, []);
+  }
+
+  addEdge(src, dest) {
+    this.adjList.get(src).push(dest);
+  }
+
+  dfs(startNode) {
+    const visited = new Set();
+
+    this._dfsHelper(startNode, visited);
+  }
+
+  _dfsHelper(node, visited) {
+    visited.add(node);
+    console.log(node);
+
+    const neighbors = this.adjList.get(node);
+    
+    for (const neighbor of neighbors) {
+      if (!visited.has(neighbor)) {
+        this._dfsHelper(neighbor, visited);
+      }
+    }
   }
 }
 
-function reverseLinkedList(head) {
-  let prev = null;
-  let current = head;
+// Usage example:
 
-  while (current !== null) {
-    let nextNode = current.next;
-    current.next = prev;
-    prev = current;
-    current = nextNode;
-  }
+const graph = new Graph();
 
-  return prev;
-}
-// Create a linked list: 1 -> 2 -> 3 -> 4 -> 5
-let head = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-let node4 = new Node(4);
-let node5 = new Node(5);
+// Add nodes to the graph
+graph.addNode(1);
+graph.addNode(2);
+graph.addNode(3);
+graph.addNode(4);
+graph.addNode(5);
 
-head.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node5;
+// Add edges
+graph.addEdge(1, 2);
+graph.addEdge(1, 3);
+graph.addEdge(2, 4);
+graph.addEdge(3, 5);
 
-// Reverse the linked list
-let newHead = reverseLinkedList(head);
-
-// Print the reversed linked list
-let current = newHead;
-while (current !== null) {
-  console.log(current.value);
-  current = current.next;
-}
-5
-4
-3
-2
-1
+// Perform DFS starting from node 1
+graph.dfs(1);
