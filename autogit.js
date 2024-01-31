@@ -1,24 +1,10 @@
-function ListNode(val) {
-  this.val = val;
-  this.next = null;
+function calculateMean(numbers) {
+  const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+  const mean = sum / numbers.length;
+  return mean;
 }
 
-function getIntersectionNode(headA, headB) {
-  const visitedNodes = new Set();
-
-  let nodeA = headA;
-  while (nodeA) {
-    visitedNodes.add(nodeA);
-    nodeA = nodeA.next;
-  }
-
-  let nodeB = headB;
-  while (nodeB) {
-    if (visitedNodes.has(nodeB)) {
-      return nodeB;
-    }
-    nodeB = nodeB.next;
-  }
-
-  return null; // No intersection found
-}
+// Example usage
+const numbers = [5, 10, 15, 20, 25];
+const mean = calculateMean(numbers);
+console.log(mean); // Output: 15
