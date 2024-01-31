@@ -1,57 +1,27 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function countOccurrences(str, char) {
+  let count = 0;
+  for (let i = 0; i < str.length; i++) {
+    if (str.charAt(i) === char) {
+      count++;
+    }
   }
+  return count;
 }
 
-// Function to find the height of a tree
-function height(node) {
-  if (node === null) {
-    return 0;
-  }
-
-  // Recursively calculate the height of the left and right sub-trees
-  const leftHeight = height(node.left);
-  const rightHeight = height(node.right);
-
-  // Return the maximum height plus one
-  return Math.max(leftHeight, rightHeight) + 1;
+// Usage
+const myString = "Hello, World!";
+const myChar = "o";
+const occurrenceCount = countOccurrences(myString, myChar);
+console.log(`The character "${myChar}" occurs ${occurrenceCount} times in the string.`);
+The character "o" occurs 2 times in the string.
+function countOccurrences(str, char) {
+  const regex = new RegExp(char, "g");
+  const matches = str.match(regex);
+  return matches ? matches.length : 0;
 }
 
-// Function to find the diameter of a binary tree
-function diameter(node) {
-  if (node === null) {
-    return 0;
-  }
-
-  // Calculate the height of the left and right sub-trees
-  const leftHeight = height(node.left);
-  const rightHeight = height(node.right);
-
-  // Calculate the diameter recursively for the left and right sub-trees
-  const leftDiameter = diameter(node.left);
-  const rightDiameter = diameter(node.right);
-
-  // Return the maximum of the following three values:
-  // 1. Diameter of the left sub-tree
-  // 2. Diameter of the right sub-tree
-  // 3. Height of the left sub-tree + Height of the right sub-tree + 1
-  return Math.max(leftHeight + rightHeight + 1, Math.max(leftDiameter, rightDiameter));
-}
-
-// Create a sample binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
-root.left.left.left = new Node(8);
-root.left.left.right = new Node(9);
-
-// Calculate the diameter of the binary tree
-const treeDiameter = diameter(root);
-console.log(`The diameter of the binary tree is: ${treeDiameter}`);
+// Usage
+const myString = "Hello, World!";
+const myChar = "o";
+const occurrenceCount = countOccurrences(myString, myChar);
+console.log(`The character "${myChar}" occurs ${occurrenceCount} times in the string.`);
