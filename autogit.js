@@ -1,18 +1,25 @@
-const array = ['a', 'b', 'c', 'a', 'b'];
-const uniqueArray = [...new Set(array)];
-
-console.log(uniqueArray);
-const array = ['a', 'b', 'c', 'a', 'b'];
-const uniqueArray = array.filter((item, index) => array.indexOf(item) === index);
-
-console.log(uniqueArray);
-const array = ['a', 'b', 'c', 'a', 'b'];
-const uniqueArray = [];
-
-for (let i = 0; i < array.length; i++) {
-  if (uniqueArray.indexOf(array[i]) === -1) {
-    uniqueArray.push(array[i]);
-  }
+function removeVowels(str) {
+  return str.replace(/[aeiou]/gi, '');
 }
 
-console.log(uniqueArray);
+// Example usage
+const input = "Hello, World!";
+const result = removeVowels(input);
+console.log(result); // Output: "Hll, Wrld!"
+function removeVowels(str) {
+  const vowels = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'];
+  let result = '';
+
+  for (let i = 0; i < str.length; i++) {
+    if (!vowels.includes(str[i])) {
+      result += str[i];
+    }
+  }
+
+  return result;
+}
+
+// Example usage
+const input = "Hello, World!";
+const result = removeVowels(input);
+console.log(result); // Output: "Hll, Wrld!"
