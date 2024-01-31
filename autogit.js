@@ -1,28 +1,35 @@
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
-
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
-
-  return slow;
-}
-// Define the node class
 class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+  constructor(start, end) {
+    this.start = start;
+    this.end = end;
+    this.children = {};
   }
 }
+class SuffixTree {
+  constructor() {
+    this.root = new Node(-1, -1); // Dummy root node
+  }
 
-// Create a linked list
-const head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
+  buildTree(text) {
+    for (let i = 0; i < text.length; i++) {
+      this._insertSuffix(text.substring(i), i);
+    }
+  }
 
-const middleElement = findMiddleElement(head);
-console.log(middleElement.value); // Output: 3
+  _insertSuffix(suffix, index) {
+    let node = this.root;
+    for (let i = 0; i < suffix.length; i++) {
+      const char = suffix[i];
+      if (!node.children[char]) {
+        node.children[char] = new Node(index + i, -1);
+      }
+      node = node.children[char];
+    }
+    node.end = index;
+  }
+}
+const suffixTree = new SuffixTree();
+const text = "banana";
+suffixTree.buildTree(text);
+
+console.log(suffixTree.root.children); // Outputs the tree structure
