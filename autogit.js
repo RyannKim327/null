@@ -1,42 +1,27 @@
-function largestPrimeFactor(number) {
-  let factor = 2;
-  let largestFactor = 1;
-
-  while (factor <= number) {
-    if (number % factor === 0) {
-      // Check if factor is prime
-      if (isPrime(factor)) {
-        largestFactor = factor;
-      }
-      // Reduce the number by dividing it with the factor
-      number /= factor;
-    } else {
-      // Increment the factor if it is not a factor of the number
-      factor++;
-    }
+class TreeNode {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
-
-  return largestFactor;
 }
 
-// Function to check if a number is prime
-function isPrime(number) {
-  if (number <= 1) {
-    return false;
+function maxDepth(root) {
+  if (root === null) {
+    return 0;
   }
 
-  // Check if the number is divisible by any number from 2 to its square root
-  for (let i = 2; i <= Math.sqrt(number); i++) {
-    if (number % i === 0) {
-      return false;
-    }
-  }
+  const leftDepth = maxDepth(root.left);
+  const rightDepth = maxDepth(root.right);
 
-  return true;
+  return Math.max(leftDepth, rightDepth) + 1;
 }
 
-// Test the function
-const number = 1234567890;
-const largestFactor = largestPrimeFactor(number);
+// Usage example:
+const root = new TreeNode(3);
+root.left = new TreeNode(9);
+root.right = new TreeNode(20);
+root.right.left = new TreeNode(15);
+root.right.right = new TreeNode(7);
 
-console.log(`The largest prime factor of ${number} is ${largestFactor}`);
+console.log(maxDepth(root)); // Output: 3
