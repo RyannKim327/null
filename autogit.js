@@ -1,35 +1,22 @@
-function topologicalSort(graph) {
-  const sorted = [];
-  const visited = {};
+function areAnagrams(str1, str2) {
+  // Convert both strings to lowercase
+  str1 = str1.toLowerCase();
+  str2 = str2.toLowerCase();
 
-  function depthFirstSearch(node) {
-    visited[node] = true;
+  // Sort both strings
+  str1 = str1.split('').sort().join('');
+  str2 = str2.split('').sort().join('');
 
-    graph[node].forEach(neighbor => {
-      if (!visited[neighbor]) {
-        depthFirstSearch(neighbor);
-      }
-    });
-
-    sorted.unshift(node);
-  }
-
-  for (const node in graph) {
-    if (!visited[node]) {
-      depthFirstSearch(node);
-    }
-  }
-
-  return sorted;
+  // Compare the sorted strings
+  return str1 === str2;
 }
 
-// Example usage:
-const graph = {
-  'A': ['B', 'C'],
-  'B': ['D'],
-  'C': [],
-  'D': ['E'],
-  'E': []
-};
+// Example usage
+const string1 = 'listen';
+const string2 = 'silent';
 
-console.log(topologicalSort(graph));
+if (areAnagrams(string1, string2)) {
+  console.log('The strings are anagrams.');
+} else {
+  console.log('The strings are not anagrams.');
+}
