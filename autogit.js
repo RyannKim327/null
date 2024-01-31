@@ -1,26 +1,24 @@
-function LinkedListNode(value) {
-  this.value = value;
+function ListNode(val) {
+  this.val = val;
   this.next = null;
 }
 
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
+function getIntersectionNode(headA, headB) {
+  const visitedNodes = new Set();
 
-  while (fast !== null && fast.next !== null) {
-    slow = slow.next;
-    fast = fast.next.next;
+  let nodeA = headA;
+  while (nodeA) {
+    visitedNodes.add(nodeA);
+    nodeA = nodeA.next;
   }
 
-  return slow;
-}
-// Create a linked list: 1 -> 2 -> 3 -> 4 -> 5
-const head = new LinkedListNode(1);
-head.next = new LinkedListNode(2);
-head.next.next = new LinkedListNode(3);
-head.next.next.next = new LinkedListNode(4);
-head.next.next.next.next = new LinkedListNode(5);
+  let nodeB = headB;
+  while (nodeB) {
+    if (visitedNodes.has(nodeB)) {
+      return nodeB;
+    }
+    nodeB = nodeB.next;
+  }
 
-// Find the middle element
-const middleElement = findMiddleElement(head);
-console.log(middleElement.value); // Output: 3
+  return null; // No intersection found
+}
