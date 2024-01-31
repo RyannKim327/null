@@ -1,38 +1,12 @@
-function depthLimitedSearch(startState, goalState, depthLimit) {
-  function DLS(currentState, goalState, currentDepth, depthLimit) {
-    if (currentState === goalState) {
-      return currentState; // Found the goal state
-    }
+let str = "Hello, World! This is a string with spaces.";
 
-    if (currentDepth === depthLimit) {
-      return null; // Reached the depth limit
-    }
+let stringWithoutSpaces = str.split(' ').join('');
 
-    // Generate next states from the current state
-    const nextStates = generateNextStates(currentState);
+console.log(stringWithoutSpaces);
+Hello,World!Thisisastringwithspaces.
+let str = "Hello, World! This is a string with spaces.";
 
-    for (let nextState of nextStates) {
-      const solution = DLS(nextState, goalState, currentDepth + 1, depthLimit);
-      if (solution !== null) {
-        return solution; // Solution found
-      }
-    }
+let stringWithoutSpaces = str.replace(/\s/g, '');
 
-    return null; // No solution found
-  }
-
-  // Call the recursive helper function with initial parameters
-  return DLS(startState, goalState, 0, depthLimit);
-}
-
-// Example usage
-const startState = /* initial state */;
-const goalState = /* goal state */;
-const depthLimit = 10;
-const solution = depthLimitedSearch(startState, goalState, depthLimit);
-
-if (solution !== null) {
-  console.log("Found a solution:", solution);
-} else {
-  console.log("Failed to find a solution within the depth limit.");
-}
+console.log(stringWithoutSpaces);
+Hello,World!Thisisastringwithspaces.
