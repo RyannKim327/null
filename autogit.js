@@ -1,83 +1,107 @@
-function buildLPSArray(pattern) {
-  const lps = [0]; // longest proper prefix that is also a suffix
-  let i = 1, j = 0;
-
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[j]) {
-      lps[i] = j + 1;
-      i++;
-      j++;
-    } else if (j > 0) {
-      j = lps[j - 1];
-    } else {
-      lps[i] = 0;
-      i++;
-    }
+class Node {
+  constructor(value, level) {
+    this.value = value;
+    this.next = new Array(level);
+  }
+}
+class SkipList {
+  constructor() {
+    this.head = new Node(-Infinity, 32); // Head node with minimum value and maximum level
+    this.level = 1; // Current level of the skip list
   }
 
-  return lps;
-}
+  // Returns a random level for a new node
+  randomLevel() {
+    let level = 1;
+    while (Math.random() < 0.5 && level < this.head.next.length) {
+      level++;
+    }
+    return level;
+  }
 
-function stringMatchKMP(text, pattern) {
-  const lps = buildLPSArray(pattern);
-  let i = 0, j = 0;
+  // Inserts a new value into the skip list
+  insert(value) {
+    const newNode = new Node(value, this.randomLevel());
+    const update = new Array(newNode.next.length);
 
-  while (i < text.length) {
-    if (text[i] === pattern[j]) {
-      i++;
-      j++;
-
-      if (j === pattern.length) {
-        return i - j; // match found at index i - pattern.length
+    let current = this.head;
+    for (let i = this.level - 1; i >= 0; i--) {
+      while (current.next[i] && current.next[i].value < value) {
+        current = current.next[i];
       }
-    } else if (j > 0) {
-      j = lps[j - 1];
-    } else {
-      i++;
+      update[i] = current;
+    }
+
+    for (let i = 0; i < newNode.next.length; i++) {
+      newNode.next[i] = update[i].next[i];
+      update[i].next[i] = newNode;
+    }
+
+    if (newNode.next.length > this.level) {
+      this.level = newNode.next.length;
     }
   }
 
-  return -1; // no match found
-}
-
-// Example usage:
-const text = "ABCABDABACDABABCABCD";
-const pattern = "ABABCABCD";
-const index = stringMatchKMP(text, pattern);
-console.log(index); // Output: 10
-function buildBadCharTable(pattern) {
-  const table = new Map();
-
-  for (let i = 0; i < pattern.length - 1; i++) {
-    table.set(pattern[i], i);
-  }
-
-  return table;
-}
-
-function stringMatchBoyerMoore(text, pattern) {
-  const badCharTable = buildBadCharTable(pattern);
-  let i = pattern.length - 1, j = i;
-
-  while (i < text.length) {
-    if (text[i] === pattern[j]) {
-      if (j === 0) {
-        return i; // match found at index i
+  // Searches for a value in the skip list and returns true if found, false otherwise
+  search(value) {
+    let current = this.head;
+    for (let i = this.level - 1; i >= 0; i--) {
+      while (current.next[i] && current.next[i].value < value) {
+        current = current.next[i];
       }
-      i--;
-      j--;
-    } else {
-      const skip = badCharTable.get(text[i]);
-      i += pattern.length - Math.min(j, 1 + (skip !== undefined ? skip : -1));
-      j = pattern.length - 1;
     }
+    current = current.next[0];
+    return current && current.value === value;
   }
 
-  return -1; // no match found
+  // Removes a value from the skip list
+  remove(value) {
+    const update = new Array(this.level);
+
+    let current = this.head;
+    for (let i = this.level - 1; i >= 0; i--) {
+      while (current.next[i] && current.next[i].value < value) {
+        current = current.next[i];
+      }
+      update[i] = current;
+    }
+
+    current = current.next[0];
+    if (current && current.value === value) {
+      for (let i = 0; i < current.next.length; i++) {
+        update[i].next[i] = current.next[i];
+      }
+
+      while (this.level > 1 && !this.head.next[this.level - 1]) {
+        this.level--;
+      }
+      return true;
+    }
+
+    return false;
+  }
+
+  // Displays the skip list
+  display() {
+    for (let i = this.level - 1; i >= 0; i--) {
+      let current = this.head.next[i];
+      let line = `Level ${i}: `;
+      while (current) {
+        line += `${current.value} -> `;
+        current = current.next[i];
+      }
+      console.log(line);
+    }
+  }
 }
 
-// Example usage:
-const text = "ABCABDABACDABABCABCD";
-const pattern = "ABABCABCD";
-const index = stringMatchBoyerMoore(text, pattern);
-console.log(index); // Output: 10
+// Usage example:
+const skipList = new SkipList();
+skipList.insert(1);
+skipList.insert(4);
+skipList.insert(2);
+skipList.insert(3);
+skipList.display(); // Displays the skip list
+console.log(skipList.search(2)); // Returns true
+skipList.remove(2);
+console.log(skipList.search(2)); // Returns false
