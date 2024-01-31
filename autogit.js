@@ -1,43 +1,53 @@
-function mergeArrays(arr1, arr2) {
-  const merged = [];
-  let i = 0;
-  let j = 0;
+function isPalindrome(str) {
+   // Remove non-alphanumeric characters and convert to lowercase
+   const cleanedStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-  while (i < arr1.length && j < arr2.length) {
-    if (arr1[i] <= arr2[j]) {
-      merged.push(arr1[i]);
-      i++;
-    } else {
-      merged.push(arr2[j]);
-      j++;
-    }
-  }
+   // Compare characters from start and end of the string
+   for (let i = 0, j = cleanedStr.length - 1; i < j; i++, j--) {
+       if (cleanedStr[i] !== cleanedStr[j]) {
+           return false;
+       }
+   }
 
-  while (i < arr1.length) {
-    merged.push(arr1[i]);
-    i++;
-  }
-
-  while (j < arr2.length) {
-    merged.push(arr2[j]);
-    j++;
-  }
-
-  return merged;
+   return true;
 }
-function findMedianSortedArrays(nums1, nums2) {
-  const merged = mergeArrays(nums1, nums2);
-  const len = merged.length;
 
-  if (len % 2 === 1) {
-    return merged[Math.floor(len / 2)];
-  } else {
-    const mid = len / 2;
-    return (merged[mid - 1] + merged[mid]) / 2;
-  }
+// Example usage
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // Output: true
+console.log(isPalindrome("race car")); // Output: true
+console.log(isPalindrome("hello world")); // Output: false
+function isPalindrome(str) {
+   // Remove non-alphanumeric characters and convert to lowercase
+   const cleanedStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+   // Reverse the string and compare with original
+   const reversedStr = cleanedStr.split('').reverse().join('');
+   return cleanedStr === reversedStr;
 }
-const nums1 = [1, 3, 5];
-const nums2 = [2, 4, 6];
 
-const median = findMedianSortedArrays(nums1, nums2);
-console.log(median); // Output: 3.5
+// Example usage
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // Output: true
+console.log(isPalindrome("race car")); // Output: true
+console.log(isPalindrome("hello world")); // Output: false
+function isPalindrome(str) {
+   // Remove non-alphanumeric characters and convert to lowercase
+   const cleanedStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+   // Base case: if the string length is 0 or 1, it's a palindrome
+   if (cleanedStr.length <= 1) {
+       return true;
+   }
+
+   // Recursive call: check if first and last characters are equal,
+   // and recursively check the remaining substring
+   if (cleanedStr[0] === cleanedStr[cleanedStr.length - 1]) {
+       return isPalindrome(cleanedStr.substring(1, cleanedStr.length - 1));
+   }
+
+   return false;
+}
+
+// Example usage
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // Output: true
+console.log(isPalindrome("race car")); // Output: true
+console.log(isPalindrome("hello world")); // Output: false
