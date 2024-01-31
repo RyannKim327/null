@@ -1,18 +1,24 @@
-function countOccurrences(string, word) {
-  // Create a regular expression with the word using word boundaries (\b)
-  const regex = new RegExp(`\\b${word}\\b`, 'gi');
+function quickSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
+  }
 
-  // Use the match method to find all occurrences matching the regex
-  const matches = string.match(regex);
+  const pivot = arr[Math.floor(arr.length / 2)];
+  const left = [];
+  const right = [];
 
-  // If matches are found, return the count, otherwise return 0
-  return matches ? matches.length : 0;
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] < pivot) {
+      left.push(arr[i]);
+    } else if (arr[i] > pivot) {
+      right.push(arr[i]);
+    }
+  }
+
+  return [...quickSort(left), pivot, ...quickSort(right)];
 }
 
-// Example usage
-const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
-const word = 'ipsum';
-
-const count = countOccurrences(text, word);
-console.log(`The word "${word}" occurs ${count} times in the text.`);
-The word "ipsum" occurs 1 times in the text.
+// Example usage:
+const unsortedArray = [7, 2, 9, 1, 6, 3, 8, 5, 4];
+const sortedArray = quickSort(unsortedArray);
+console.log(sortedArray);
