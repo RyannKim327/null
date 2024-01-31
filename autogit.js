@@ -1,20 +1,9 @@
-function findSecondLargest(arr) {
-  let largest = -Infinity;
-  let secondLargest = -Infinity;
+let str = "123";
+let num = parseInt(str);
 
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] > largest) {
-      secondLargest = largest;
-      largest = arr[i];
-    } else if (arr[i] > secondLargest && arr[i] !== largest) {
-      secondLargest = arr[i];
-    }
-  }
+console.log(num); // Output: 123
+console.log(typeof num); // Output: number
+let hexString = "1A";
+let decimalNum = parseInt(hexString, 16);
 
-  return secondLargest;
-}
-
-// Example usage
-const array = [5, 2, 9, 1, 7];
-const result = findSecondLargest(array);
-console.log(result); // Output: 7
+console.log(decimalNum); // Output: 26
