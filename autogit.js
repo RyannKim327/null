@@ -1,31 +1,27 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function shellSort(arr) {
+  const len = arr.length;
+  let gap = Math.floor(len / 2);
+
+  while (gap > 0) {
+    for (let i = gap; i < len; i++) {
+      let temp = arr[i];
+      let j = i;
+
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
+      }
+
+      arr[j] = temp;
+    }
+
+    gap = Math.floor(gap / 2);
   }
-}
 
-function sumBinaryTree(root) {
-  if (root === null) {
-    return 0;
-  }
-
-  const leftSum = sumBinaryTree(root.left);
-  const rightSum = sumBinaryTree(root.right);
-
-  return root.value + leftSum + rightSum;
+  return arr;
 }
 
 // Example usage:
-
-// Create a binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-// Calculate the sum of all nodes
-const sum = sumBinaryTree(root);
-console.log(sum); // Output: 15
+const array = [5, 3, 8, 4, 2];
+const sortedArray = shellSort(array);
+console.log(sortedArray);  // Output: [2, 3, 4, 5, 8]
