@@ -1,45 +1,32 @@
-function reverseLinkedList(head) {
-  let prev = null;
-  let current = head;
-
-  while (current !== null) {
-    let next = current.next;
-    current.next = prev;
-    prev = current;
-    current = next;
-  }
-
-  return prev;
+function getHeight(node) {
+  if (node === null) return 0;   // Base case: an empty tree has height 0
+  return 1 + Math.max(getHeight(node.left), getHeight(node.right));
 }
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
+function getDiameter(node) {
+  if (node === null) return 0;   // Base case: an empty tree has diameter 0
+  
+  const leftHeight = getHeight(node.left);
+  const rightHeight = getHeight(node.right);
+
+  // Recurse to find the diameter of left and right subtrees
+  const leftDiameter = getDiameter(node.left);
+  const rightDiameter = getDiameter(node.right);
+
+  // Return the maximum of three values: left subtree diameter, right subtree diameter, and lengths of left and right paths
+  return Math.max(leftHeight + rightHeight + 1, Math.max(leftDiameter, rightDiameter));
 }
-// Create nodes
-const node1 = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
-const node4 = new Node(4);
-
-// Connect nodes to form a linked list
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-
-// Set head as the starting node of the linked list
-const head = node1;
-// Reverse the linked list
-const reversedHead = reverseLinkedList(head);
-
-// Print the reversed linked list
-let current = reversedHead;
-while (current !== null) {
-  console.log(current.data);
-  current = current.next;
+// Node constructor
+function TreeNode(val) {
+  this.val = val;
+  this.left = this.right = null;
 }
-4
-3
-2
-1
+
+// Example binary tree
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+const diameter = getDiameter(root);
+console.log("Diameter of the binary tree:", diameter);
