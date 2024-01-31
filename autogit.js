@@ -1,14 +1,26 @@
-const array = [1, 3, 5, 2, 4];
-const max = Math.max(...array);
-console.log(max); // Output: 5
-const array = [1, 3, 5, 2, 4];
-const max = Math.max.apply(null, array);
-console.log(max); // Output: 5
-const array = [1, 3, 5, 2, 4];
-let max = array[0];
-for (let i = 1; i < array.length; i++) {
-  if (array[i] > max) {
-    max = array[i];
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
   }
 }
-console.log(max); // Output: 5
+
+function findMiddleElement(head) {
+  let slowPtr = head;
+  let fastPtr = head;
+
+  while (fastPtr !== null && fastPtr.next !== null) {
+    slowPtr = slowPtr.next;
+    fastPtr = fastPtr.next.next;
+  }
+
+  return slowPtr.data;
+}
+// Create the linked list:
+let head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
+
+console.log(findMiddleElement(head)); // Output: 3
