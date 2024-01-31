@@ -1,17 +1,20 @@
-function calculateMean(numbers) {
-  if (numbers.length === 0) {
-    return 0;
+function findSecondLargest(arr) {
+  let largest = -Infinity;
+  let secondLargest = -Infinity;
+
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] > largest) {
+      secondLargest = largest;
+      largest = arr[i];
+    } else if (arr[i] > secondLargest && arr[i] !== largest) {
+      secondLargest = arr[i];
+    }
   }
-  
-  var sum = 0;
-  numbers.forEach(function(number) {
-    sum += number;
-  });
-  
-  return sum / numbers.length;
+
+  return secondLargest;
 }
 
 // Example usage
-var numbers = [2, 4, 6, 8, 10];
-var mean = calculateMean(numbers);
-console.log("Mean:", mean);
+const array = [5, 2, 9, 1, 7];
+const result = findSecondLargest(array);
+console.log(result); // Output: 7
