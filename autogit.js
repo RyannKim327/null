@@ -1,58 +1,49 @@
-class Stack {
-  constructor() {
-    this.stack = [];
-  }
-
-  // Add an element to the top of the stack
-  push(element) {
-    this.stack.push(element);
-  }
-
-  // Remove and return the top element from the stack
-  pop() {
-    if (this.stack.length === 0) {
-      return "Stack is empty";
-    }
-    return this.stack.pop();
-  }
-
-  // Return the top element of the stack without removing it
-  peek() {
-    if (this.stack.length === 0) {
-      return "Stack is empty";
-    }
-    return this.stack[this.stack.length - 1];
-  }
-
-  // Check if the stack is empty
-  isEmpty() {
-    return this.stack.length === 0;
-  }
-
-  // Return the number of elements in the stack
-  size() {
-    return this.stack.length;
-  }
-
-  // Clear the stack
-  clear() {
-    this.stack = [];
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
 
-// Example usage
-const stack = new Stack();
-stack.push(10);
-stack.push(20);
-stack.push(30);
+class BinaryTree {
+  constructor() {
+    this.root = null;
+  }
 
-console.log(stack.size()); // Output: 3
-console.log(stack.peek()); // Output: 30
+  // Recursive function to calculate the height of a binary tree
+  getHeight(node) {
+    if (node === null) {
+      return 0;
+    }
+    const leftHeight = this.getHeight(node.left);
+    const rightHeight = this.getHeight(node.right);
+    return Math.max(leftHeight, rightHeight) + 1;
+  }
 
-console.log(stack.pop()); // Output: 30
-console.log(stack.pop()); // Output: 20
+  // Recursive function to calculate the diameter of a binary tree
+  getDiameter(node) {
+    if (node === null) {
+      return 0;
+    }
+    const leftHeight = this.getHeight(node.left);
+    const rightHeight = this.getHeight(node.right);
 
-console.log(stack.isEmpty()); // Output: false
+    const leftDiameter = this.getDiameter(node.left);
+    const rightDiameter = this.getDiameter(node.right);
 
-stack.clear();
-console.log(stack.isEmpty()); // Output: true
+    // Return the maximum diameter among left subtree, right subtree, and the longest path through the current root node
+    return Math.max(leftHeight + rightHeight + 1, Math.max(leftDiameter, rightDiameter));
+  }
+}
+
+// Example usage:
+const tree = new BinaryTree();
+tree.root = new Node(1);
+tree.root.left = new Node(2);
+tree.root.right = new Node(3);
+tree.root.left.left = new Node(4);
+tree.root.left.right = new Node(5);
+tree.root.right.left = new Node(6);
+
+console.log("Diameter of the binary tree:", tree.getDiameter(tree.root));
