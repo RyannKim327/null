@@ -1,7 +1,14 @@
-let array = [1, 2, 3, 4, 5];
-array.reverse();
-console.log(array); // Output: [5, 4, 3, 2, 1]
-let array = [1, 2, 3, 4, 5];
-let reversedArray = array.slice().reverse();
-console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
-console.log(array); // Output: [1, 2, 3, 4, 5]
+// Make a GET request to an API endpoint
+fetch('https://api.example.com/data')
+  .then(response => response.json())
+  .then(data => {
+    // Process the fetched data
+    console.log('Fetched data:', data);
+
+    // Do something with the data
+    // ...
+  })
+  .catch(error => {
+    // Handle any errors that occur during the fetch
+    console.error('Error:', error);
+  });
