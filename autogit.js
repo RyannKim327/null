@@ -1,25 +1,18 @@
-function findLongestCommonPrefix(strings) {
-  if (strings.length === 0) return '';
-  if (strings.length === 1) return strings[0];
+function insertionSort(array) {
+  for (let i = 1; i < array.length; i++) {
+    const current = array[i];
+    let j = i;
 
-  let prefix = '';
-
-  for (let i = 0; i < strings[0].length; i++) {
-    const char = strings[0][i];
-    
-    for (let j = 1; j < strings.length; j++) {
-      if (i >= strings[j].length || strings[j][i] !== char) {
-        return prefix;
-      }
+    while (j > 0 && array[j - 1] > current) {
+      array[j] = array[j - 1];
+      j--;
     }
 
-    prefix += char;
+    array[j] = current;
   }
 
-  return prefix;
+  return array;
 }
-
-// Example usage:
-const strings = ['apple', 'app', 'aptitude', 'applicable'];
-const commonPrefix = findLongestCommonPrefix(strings);
-console.log(`Longest common prefix: ${commonPrefix}`); // Output: "app"
+const unsortedArray = [5, 2, 9, 1, 3];
+const sortedArray = insertionSort(unsortedArray);
+console.log(sortedArray); // Output: [1, 2, 3, 5, 9]
