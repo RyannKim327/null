@@ -1,23 +1,10 @@
-function factorialLoop(num) {
-  if (num === 0 || num === 1) {
-    return 1;
-  }
-  
-  let result = 1;
-  for (let i = 2; i <= num; i++) {
-    result *= i;
-  }
-  
-  return result;
-}
-
-console.log(factorialLoop(5)); // Output: 120
-function factorialRecursive(num) {
-  if (num === 0 || num === 1) {
-    return 1;
-  }
-  
-  return num * factorialRecursive(num - 1);
-}
-
-console.log(factorialRecursive(5)); // Output: 120
+fetch('https://api.example.com/data')
+  .then(response => response.json())
+  .then(data => {
+    // Do something with the fetched data
+    console.log(data);
+  })
+  .catch(error => {
+    // Handle any errors that occurred during the fetch
+    console.error('Error:', error);
+  });
