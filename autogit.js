@@ -1,36 +1,31 @@
-function findLongestIncreasingSubsequence(arr) {
-  const n = arr.length;
-  const dp = new Array(n).fill(1); // dp[i] represents the length of the longest increasing subsequence ending at index i
-
-  // Compute the lengths of the longest increasing subsequences
-  for (let i = 1; i < n; i++) {
-    for (let j = 0; j < i; j++) {
-      if (arr[i] > arr[j]) {
-        dp[i] = Math.max(dp[i], dp[j] + 1);
-      }
-    }
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
-
-  // Find the maximum length in the dp array
-  let maxLength = 0;
-  for (let i = 0; i < n; i++) {
-    maxLength = Math.max(maxLength, dp[i]);
-  }
-
-  // Construct the longest increasing subsequence
-  const subsequence = [];
-  let currentLength = maxLength;
-  for (let i = n - 1; i >= 0; i--) {
-    if (dp[i] === currentLength) {
-      subsequence.unshift(arr[i]);
-      currentLength--;
-    }
-  }
-
-  return subsequence;
 }
 
-// Test the function
-const arr = [3, 4, -1, 0, 6, 2, 3];
-const longestIncreasingSubsequence = findLongestIncreasingSubsequence(arr);
-console.log(longestIncreasingSubsequence); // Output: [-1, 0, 2, 3]
+function countLeafNodes(root) {
+  if (root === null) {
+    return 0;
+  }
+
+  if (root.left === null && root.right === null) {
+    return 1;
+  }
+
+  return countLeafNodes(root.left) + countLeafNodes(root.right);
+}
+// Create a binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
+
+// Calculate the number of leaf nodes
+const leafNodeCount = countLeafNodes(root);
+console.log("Number of leaf nodes:", leafNodeCount); // Output: 4
