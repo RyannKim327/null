@@ -1,52 +1,43 @@
-function findKthSmallest(arr, k) {
-  // Helper function to partition the array
-  function partition(arr, left, right) {
-    const pivot = arr[Math.floor((left + right) / 2)];
-    let i = left;
-    let j = right;
-
-    while (i <= j) {
-      while (arr[i] < pivot) {
-        i++;
-      }
-
-      while (arr[j] > pivot) {
-        j--;
-      }
-
-      if (i <= j) {
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-        i++;
-        j--;
-      }
-    }
-
-    return i;
+class ListNode {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
-
-  // Recursive function to find the kth smallest element
-  function findKthUtil(arr, left, right, k) {
-    if (left === right) {
-      return arr[left];
-    }
-
-    const partitionIndex = partition(arr, left, right);
-
-    if (k === partitionIndex) {
-      return arr[k];
-    } else if (k < partitionIndex) {
-      return findKthUtil(arr, left, partitionIndex - 1, k);
-    } else {
-      return findKthUtil(arr, partitionIndex, right, k);
-    }
-  }
-
-  // Call the recursive function
-  return findKthUtil(arr, 0, arr.length - 1, k - 1);
 }
+function findNthNodeFromEnd(head, n) {
+   let slow = head;
+   let fast = head;
 
-// Example usage
-const array = [4, 2, 7, 1, 5];
-const k = 3;
-const result = findKthSmallest(array, k);
-console.log(`The ${k}th smallest element is: ${result}`);
+   // Move the fast pointer to the nth node from the beginning
+   for (let i = 0; i < n; i++) {
+      if (fast === null) {
+         return null; // Out of bounds
+      }
+      fast = fast.next;
+   }
+
+   // Move both pointers until fast reaches the end
+   while (fast !== null) {
+      slow = slow.next;
+      fast = fast.next;
+   }
+
+   // At this point, slow pointer is pointing at the nth node from the end
+   return slow;
+}
+// Create the linked list
+const head = new ListNode(1);
+const second = new ListNode(2);
+const third = new ListNode(3);
+const fourth = new ListNode(4);
+const fifth = new ListNode(5);
+
+head.next = second;
+second.next = third;
+third.next = fourth;
+fourth.next = fifth;
+
+// Test the function
+const n = 2;
+const nthNodeFromEnd = findNthNodeFromEnd(head, n);
+console.log(`The ${n}th node from the end is: ${nthNodeFromEnd.value}`);
