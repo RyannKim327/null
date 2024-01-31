@@ -1,28 +1,41 @@
 class ListNode {
   constructor(value) {
-    this.value = value;
+    this.val = value;
     this.next = null;
   }
 }
 
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
-
-  while (fast !== null && fast.next !== null) {
-    slow = slow.next;
-    fast = fast.next.next;
+function getIntersectionNode(headA, headB) {
+  if (!headA || !headB) {
+    return null;
   }
 
-  return slow;
+  let pA = headA;
+  let pB = headB;
+
+  while (pA !== pB) {
+    pA = pA === null ? headB : pA.next;
+    pB = pB === null ? headA : pB.next;
+  }
+
+  return pA; // or pB, they would either be the same node or null
 }
+// list1: 1 → 2 → 3 → 6 → 7
+const node1 = new ListNode(1);
+const node2 = new ListNode(2);
+const node3 = new ListNode(3);
+const node6 = new ListNode(6);
+const node7 = new ListNode(7);
+node1.next = node2;
+node2.next = node3;
+node3.next = node6;
+node6.next = node7;
 
-// Create a linked list
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
+// list2: 4 → 5 → 6 → 7
+const node4 = new ListNode(4);
+const node5 = new ListNode(5);
+node4.next = node5;
+node5.next = node6;
 
-const middleElement = findMiddleElement(head);
-console.log(middleElement.value); // Output: 3
+const intersectionNode = getIntersectionNode(node1, node4);
+console.log(intersectionNode ? intersectionNode.val : "No intersection"); // Output: 6
