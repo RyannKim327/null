@@ -1,57 +1,21 @@
-function stringMatch(text, pattern) {
-    const n = text.length;
-    const m = pattern.length;
-    const lps = new Array(m).fill(0);
-    let i = 0, j = 0;
-    computeLPSArray(pattern, m, lps);
-    const indices = [];
+function isPalindrome(str) {
+  let left = 0; // Pointer to the start of the string
+  let right = str.length - 1; // Pointer to the end of the string
 
-    while (j < n) {
-        if (pattern[i] === text[j]) {
-            i++;
-            j++;
-        }
-
-        if (i === m) {
-            indices.push(j - i);
-            i = lps[i - 1];
-        }
-        else if (j < n && pattern[i] !== text[j]) {
-            if (i !== 0) {
-                i = lps[i - 1];
-            }
-            else {
-                j++;
-            }
-        }
+  while (left < right) {
+    if (str[left] !== str[right]) {
+      return false; // Characters don't match, not a palindrome
     }
 
-    return indices;
+    left++; // Move left pointer to the right
+    right--; // Move right pointer to the left
+  }
+
+  return true; // All characters match, it's a palindrome
 }
 
-function computeLPSArray(pattern, m, lps) {
-    let length = 0;
-    let i = 1;
-    lps[0] = 0;
-
-    while (i < m) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        }
-        else {
-            if (length !== 0) {
-                length = lps[length - 1];
-            }
-            else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-}
-const text = "ABCABCDABABCDABCDABDE";
-const pattern = "ABCDABD";
-const indices = stringMatch(text, pattern);
-console.log(indices); // Output: [5, 14]
+// Example usage
+console.log(isPalindrome("madam")); // true
+console.log(isPalindrome("racecar")); // true
+console.log(isPalindrome("hello")); // false
+console.log(isPalindrome("abccba")); // true
