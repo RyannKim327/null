@@ -1,66 +1,32 @@
 class Node {
-  constructor(state, cost, heuristic, parent) {
-    this.state = state;
-    this.cost = cost;
-    this.heuristic = heuristic;
-    this.parent = parent;
+  constructor(value, left = null, right = null) {
+    this.value = value;
+    this.left = left;
+    this.right = right;
   }
 }
-function aStarSearch(initialState, goalState) {
-  const openSet = [new Node(initialState, 0, heuristic(initialState), null)];
-  const closedSet = new Set();
 
-  while (openSet.length > 0) {
-    // Find the node with the lowest f_score
-    let currentIndex = 0;
-    for (let i = 1; i < openSet.length; i++) {
-      if (openSet[i].cost + openSet[i].heuristic <
-          openSet[currentIndex].cost + openSet[currentIndex].heuristic) {
-        currentIndex = i;
-      }
-    }
-
-    const currentNode = openSet[currentIndex];
-    openSet.splice(currentIndex, 1);
-
-    // Check if the goal state is reached
-    if (currentNode.state === goalState) {
-      const path = [currentNode.state];
-      let parent = currentNode.parent;
-      while (parent) {
-        path.unshift(parent.state);
-        parent = parent.parent;
-      }
-      return path;
-    }
-
-    // Generate neighboring states
-    const neighbors = generateNeighbors(currentNode.state);
-
-    for (const neighbor of neighbors) {
-      const neighborNode = new Node(
-        neighbor.state,
-        currentNode.cost + neighbor.cost,
-        heuristic(neighbor.state),
-        currentNode
-      );
-
-      if (closedSet.has(neighborNode.state)) {
-        continue;
-      }
-
-      const index = openSet.findIndex((node) => node.state === neighborNode.state);
-
-      if (index === -1) {
-        openSet.push(neighborNode);
-      } else if (neighborNode.cost < openSet[index].cost) {
-        openSet[index] = neighborNode;
-      }
-    }
-
-    closedSet.add(currentNode.state);
+function calculateSum(node) {
+  if (node === null) {
+    return 0;
   }
 
-  // No path found
-  return null;
+  // Recursively calculate the sum of nodes in the left and right subtrees
+  const leftSum = calculateSum(node.left);
+  const rightSum = calculateSum(node.right);
+
+  // Add the value of the current node to the sum of the subtrees
+  return node.value + leftSum + rightSum;
 }
+
+// Example usage:
+const tree = new Node(1);
+tree.left = new Node(2);
+tree.right = new Node(3);
+tree.left.left = new Node(4);
+tree.left.right = new Node(5);
+tree.right.left = new Node(6);
+tree.right.right = new Node(7);
+
+const sum = calculateSum(tree);
+console.log(sum);  // Output: 28 (1 + 2 + 3 + 4 + 5 + 6 + 7)
