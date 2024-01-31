@@ -1,27 +1,25 @@
-function hasCycle(head) {
-  if (!head || !head.next) {
-    return false; // Empty list or only one node, no cycle
-  }
+const axios = require('axios');
 
-  let slow = head;
-  let fast = head.next;
+// Make a GET request
+axios.get('https://jsonplaceholder.typicode.com/posts')
+  .then(response => {
+    console.log('GET Request - Response:', response.data);
+  })
+  .catch(error => {
+    console.error('GET Request - Error:', error);
+  });
 
-  while (slow !== fast) {
-    if (!fast || !fast.next) {
-      return false; // Reached end of list, no cycle
-    }
-    slow = slow.next;
-    fast = fast.next.next;
-  }
+// Make a POST request
+const newPost = {
+  title: 'New Post',
+  body: 'This is the body of a new post',
+  userId: 1
+};
 
-  return true; // Found a cycle
-}
-const head = { value: 1, next: null };
-const node2 = { value: 2, next: null };
-const node3 = { value: 3, next: null };
-
-head.next = node2;
-node2.next = node3;
-node3.next = head; // Creating a cycle
-
-console.log(hasCycle(head)); // Output: true
+axios.post('https://jsonplaceholder.typicode.com/posts', newPost)
+  .then(response => {
+    console.log('POST Request - Response:', response.data);
+  })
+  .catch(error => {
+    console.error('POST Request - Error:', error);
+  });
