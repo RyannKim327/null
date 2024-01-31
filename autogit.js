@@ -1,72 +1,32 @@
-class Graph {
-  constructor() {
-    this.nodes = new Map();
-  }
-  
-  addNode(id) {
-    if (!this.nodes.has(id)) {
-      this.nodes.set(id, []);
-    }
-  }
-  
-  addEdge(source, destination, weight) {
-    if (this.nodes.has(source) && this.nodes.has(destination)) {
-      this.nodes.get(source).push({ destination, weight });
-      this.nodes.get(destination).push({ destination: source, weight }); // if the graph is undirected
-    }
-  }
-}
-function dijkstra(graph, source) {
-  const distances = new Map(); // distance from source to a node
-  const visited = new Set(); // track visited nodes
-  const queue = new PriorityQueue(); // min-heap to extract nodes with minimum distance
-  
-  // initialize distances and add the source node to the queue
-  graph.nodes.forEach((_, node) => {
-    distances.set(node, Infinity);
-  });
-  distances.set(source, 0);
-  queue.enqueue(source, 0);
-  
-  while (!queue.isEmpty()) {
-    const currentNode = queue.dequeue().element;
-    
-    if (visited.has(currentNode)) {
-      continue;
-    }
-    visited.add(currentNode);
-    
-    for (const { destination, weight } of graph.nodes.get(currentNode)) {
-      const distance = distances.get(currentNode) + weight;
-      
-      if (distance < distances.get(destination)) {
-        distances.set(destination, distance);
-        queue.enqueue(destination, distance);
-      }
-    }
-  }
-  
-  return distances;
-}
-const graph = new Graph();
-graph.addNode('A');
-graph.addNode('B');
-graph.addNode('C');
-graph.addNode('D');
-graph.addEdge('A', 'B', 4);
-graph.addEdge('A', 'C', 2);
-graph.addEdge('B', 'D', 5);
-graph.addEdge('C', 'D', 1);
+function countingSort(arr) {
+  // Step 2: Find the maximum value in the array
+  let maxValue = Math.max(...arr);
 
-const source = 'A';
-const distances = dijkstra(graph, source);
+  // Step 3: Create a count array with a length equal to the maximum value plus one, and initialize all values to 0
+  let count = new Array(maxValue + 1).fill(0);
 
-console.log(`Shortest distances from ${source}:`);
-distances.forEach((distance, node) => {
-  console.log(`Distance to node ${node}: ${distance}`);
-});
-Shortest distances from A:
-Distance to node A: 0
-Distance to node B: 4
-Distance to node C: 2
-Distance to node D: 3
+  // Step 4: Count the occurrences of each value in the input array
+  for (let i = 0; i < arr.length; i++) {
+    count[arr[i]]++;
+  }
+
+  // Step 5: Modify the count array to contain the actual positions of the values in the sorted output array
+  for (let i = 1; i <= maxValue; i++) {
+    count[i] += count[i - 1];
+  }
+
+  // Step 6: Create an output array with the same length as the input array
+  let output = new Array(arr.length);
+
+  // Step 7: Build the output array by placing the elements in their correct sorted positions
+  for (let i = arr.length - 1; i >= 0; i--) {
+    output[count[arr[i]] - 1] = arr[i];
+    count[arr[i]]--;
+  }
+
+  // Step 8: Return the sorted array
+  return output;
+}
+let arr = [4, 3, 2, 1, 1, 3, 2, 4];
+console.log(countingSort(arr));
+[1, 1, 2, 2, 3, 3, 4, 4]
