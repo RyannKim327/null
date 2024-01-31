@@ -1,13 +1,24 @@
-// Make a GET request to an API endpoint
-fetch('https://api.example.com/data')
-  .then(response => response.json()) // Parse the response as JSON
-  .then(data => {
-    // Process the data returned from API
-    console.log(data);
-    
-    // ... Do something with the data ...
-  })
-  .catch(error => {
-    // Handle any errors that occurred during the fetch request
-    console.error('Error:', error);
-  });
+function findFirstNonRepeatingCharacter(str) {
+  const charFrequencies = {};
+
+  // Count character frequencies
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    charFrequencies[char] = charFrequencies[char] ? charFrequencies[char] + 1 : 1;
+  }
+
+  // Find first non-repeating character
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    if (charFrequencies[char] === 1) {
+      return char;
+    }
+  }
+
+  return null; // No non-repeating characters found
+}
+
+// Example usage
+const str = "hello world";
+const firstNonRepeatingChar = findFirstNonRepeatingCharacter(str);
+console.log(firstNonRepeatingChar); // Output: "h"
