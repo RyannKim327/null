@@ -1,16 +1,9 @@
-function isPrime(num) {
-  if (num < 2) {
-    return false;
-  }
-
-  for (let i = 2; i <= Math.sqrt(num); i++) {
-    if (num % i === 0) {
-      return false;
-    }
-  }
-
-  return true;
+Area = (base * height) / 2;
+function calculateTriangleArea(base, height) {
+  var area = (base * height) / 2;
+  return area;
 }
-console.log(isPrime(5)); // true
-console.log(isPrime(10)); // false
-console.log(isPrime(17)); // true
+var triangleBase = 5;
+var triangleHeight = 8;
+var triangleArea = calculateTriangleArea(triangleBase, triangleHeight);
+console.log("The area of the triangle is: " + triangleArea);
