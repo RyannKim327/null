@@ -1,30 +1,28 @@
-class TreeNode {
-  constructor(val, left = null, right = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
 
-function sumBinaryTree(root) {
-  if (root === null) {
+function sumOfNodes(node) {
+  if (node === null) {
     return 0;
   }
-
-  // Compute the sum of values in the current node and its subtrees
-  const currentSum = root.val;
-  const leftSum = sumBinaryTree(root.left);
-  const rightSum = sumBinaryTree(root.right);
-
-  return currentSum + leftSum + rightSum;
+  
+  const leftSum = sumOfNodes(node.left);
+  const rightSum = sumOfNodes(node.right);
+  
+  return node.value + leftSum + rightSum;
 }
 
-// Example usage
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+// Example usage:
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
 
-const sum = sumBinaryTree(root);
+const sum = sumOfNodes(root);
 console.log("Sum of all nodes:", sum);
