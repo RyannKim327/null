@@ -1,18 +1,32 @@
-function insertionSort(array) {
-  for (let i = 1; i < array.length; i++) {
-    const current = array[i];
-    let j = i;
-
-    while (j > 0 && array[j - 1] > current) {
-      array[j] = array[j - 1];
-      j--;
-    }
-
-    array[j] = current;
-  }
-
-  return array;
+function countOccurrences(string, word) {
+  const words = string.split(' ');
+  const occurrences = words.filter(w => w === word);
+  return occurrences.length;
 }
-const unsortedArray = [5, 2, 9, 1, 3];
-const sortedArray = insertionSort(unsortedArray);
-console.log(sortedArray); // Output: [1, 2, 3, 5, 9]
+
+const sentence = 'JavaScript is a programming language. JavaScript is widely used.';
+const word = 'JavaScript';
+console.log(countOccurrences(sentence, word)); // Output: 2
+function countOccurrences(string, word) {
+  const regex = new RegExp('\\b' + word + '\\b', 'gi');
+  const matches = string.match(regex);
+  return matches ? matches.length : 0;
+}
+
+const sentence = 'JavaScript is a programming language. JavaScript is widely used.';
+const word = 'JavaScript';
+console.log(countOccurrences(sentence, word)); // Output: 2
+function countOccurrences(string, word) {
+  const words = string.split(' ');
+  let count = 0;
+  for (let i = 0; i < words.length; i++) {
+    if (words[i] === word) {
+      count++;
+    }
+  }
+  return count;
+}
+
+const sentence = 'JavaScript is a programming language. JavaScript is widely used.';
+const word = 'JavaScript';
+console.log(countOccurrences(sentence, word)); // Output: 2
