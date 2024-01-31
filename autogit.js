@@ -1,22 +1,28 @@
-function areAnagrams(str1, str2) {
-  // Convert the strings to lowercase and remove non-alphabetic characters
-  str1 = str1.toLowerCase().replace(/[^a-z]/g, '');
-  str2 = str2.toLowerCase().replace(/[^a-z]/g, '');
-
-  // Convert strings to character arrays, sort them, and join back into strings
-  const sortedStr1 = str1.split('').sort().join('');
-  const sortedStr2 = str2.split('').sort().join('');
-
-  // Compare the sorted strings for equality
-  return sortedStr1 === sortedStr2;
+class ListNode {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-// Example usage
-const string1 = 'listen';
-const string2 = 'silent';
+function findMiddleElement(head) {
+  let slow = head;
+  let fast = head;
 
-if (areAnagrams(string1, string2)) {
-  console.log("The strings are anagrams.");
-} else {
-  console.log("The strings are not anagrams.");
+  while (fast !== null && fast.next !== null) {
+    slow = slow.next;
+    fast = fast.next.next;
+  }
+
+  return slow;
 }
+
+// Create a linked list
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+const middleElement = findMiddleElement(head);
+console.log(middleElement.value); // Output: 3
