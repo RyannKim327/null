@@ -1,28 +1,22 @@
-function quicksort(arr) {
-  if (arr.length <= 1) {
-    return arr;
-  }
+// Function to generate a random number in a given range
+function getRandomNumber(min, max) {
+  // Generate a random decimal number between 0 and 1
+  var randomDecimal = Math.random();
   
-  const pivot = arr[Math.floor(arr.length / 2)];
-  const left = [];
-  const right = [];
+  // Scale the random decimal to fit the given range
+  var scaledNumber = randomDecimal * (max - min + 1);
   
-  for (let i = 0; i < arr.length; i++) {
-    if (i === Math.floor(arr.length / 2)) {
-      continue;
-    }
-    
-    if (arr[i] < pivot) {
-      left.push(arr[i]);
-    }
-    else {
-      right.push(arr[i]);
-    }
-  }
+  // Truncate the decimal to get a whole number
+  var randomInteger = Math.floor(scaledNumber);
   
-  return [...quicksort(left), pivot, ...quicksort(right)];
+  // Shift the range to match the desired min value
+  var randomNumber = randomInteger + min;
+  
+  return randomNumber;
 }
 
-// Example usage:
-const array = [5, 2, 9, 1, 3, 7, 6];
-console.log(quicksort(array)); // Output: [1, 2, 3, 5, 6, 7, 9]
+// Generate a random number between 1 and 10
+var randomNumberInRange = getRandomNumber(1, 10);
+
+// Log the random number
+console.log(randomNumberInRange);
