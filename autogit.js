@@ -1,27 +1,76 @@
-class TreeNode {
+class Queue {
+  constructor() {
+    this.queue = [];
+  }
+  
+  enqueue(item) {
+    this.queue.push(item);
+  }
+  
+  dequeue() {
+    if (this.isEmpty()) {
+      return null;
+    }
+    return this.queue.shift();
+  }
+  
+  isEmpty() {
+    return this.queue.length === 0;
+  }
+}
+class Node {
   constructor(value) {
     this.value = value;
-    this.left = null;
-    this.right = null;
+    this.adjacents = [];
+  }
+  
+  addAdjacent(node) {
+    this.adjacents.push(node);
+  }
+  
+  getAdjacents() {
+    return this.adjacents;
   }
 }
-
-function maxDepth(root) {
-  if (root === null) {
-    return 0;
+function breadthFirstSearch(startingNode) {
+  const visited = new Set(); // to keep track of visited nodes
+  const queue = new Queue();
+  
+  visited.add(startingNode);
+  queue.enqueue(startingNode);
+  
+  while (!queue.isEmpty()) {
+    const currentNode = queue.dequeue();
+    console.log(currentNode.value); // perform desired operation
+    
+    const adjacents = currentNode.getAdjacents();
+    for (const adjacent of adjacents) {
+      if (!visited.has(adjacent)) {
+        visited.add(adjacent);
+        queue.enqueue(adjacent);
+      }
+    }
   }
-
-  const leftDepth = maxDepth(root.left);
-  const rightDepth = maxDepth(root.right);
-
-  return Math.max(leftDepth, rightDepth) + 1;
 }
+// Example graph
+const nodeA = new Node("A");
+const nodeB = new Node("B");
+const nodeC = new Node("C");
+const nodeD = new Node("D");
+const nodeE = new Node("E");
 
-// Usage example:
-const root = new TreeNode(3);
-root.left = new TreeNode(9);
-root.right = new TreeNode(20);
-root.right.left = new TreeNode(15);
-root.right.right = new TreeNode(7);
+nodeA.addAdjacent(nodeB);
+nodeA.addAdjacent(nodeC);
+nodeB.addAdjacent(nodeD);
+nodeD.addAdjacent(nodeE);
 
-console.log(maxDepth(root)); // Output: 3
+/* The graph looks like this:
+     A
+    / \
+   B   C
+   |
+   D
+   |
+   E
+   */
+breadthFirstSearch(nodeA);
