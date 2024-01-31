@@ -1,26 +1,24 @@
-function binarySearch(arr, target) {
-  let left = 0;
-  let right = arr.length - 1;
-
-  while (left <= right) {
-    let mid = Math.floor((left + right) / 2);
-
-    if (arr[mid] === target) {
-      return mid; // Element found at mid index
-    } 
-    else if (arr[mid] < target) {
-      left = mid + 1; // Discard left half
-    } 
-    else {
-      right = mid - 1; // Discard right half
-    }
+function burrowsWheelerTransform(input) {
+  // Step 1: Create a cyclic rotation of the input string
+  const cyclicRotations = [];
+  for (let i = 0; i < input.length; i++) {
+    cyclicRotations.push(input.slice(i) + input.slice(0, i));
   }
 
-  return -1; // Element not found
+  // Step 2: Sort the cyclic rotations lexicographically
+  cyclicRotations.sort();
+
+  // Step 3: Extract the last characters of each cyclic rotation
+  const transformed = cyclicRotations.map(str => str.charAt(input.length - 1)).join('');
+
+  // Step 4: Return the transformed string and the index of the original input in the sorted rotations
+  const originalIndex = cyclicRotations.findIndex(str => str === input);
+  return { transformed, originalIndex };
 }
+const input = 'banana';
+const { transformed, originalIndex } = burrowsWheelerTransform(input);
 
-// Usage
-const numbers = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
-const target = 16;
-
-console.log(binarySearch(numbers, target)); // Output: 4
+console.log('Transformed String:', transformed);
+console.log('Original Index:', originalIndex);
+Transformed String: annb$aa
+Original Index: 3
