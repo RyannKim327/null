@@ -1,65 +1,25 @@
-function getNeighbors(node) {
-  // Generate and return neighboring states from the current state
-  // based on the rules of your specific problem
-  // e.g., return an array of all neighboring states/positions
-}
-function heuristic(node) {
-  // Calculate and return the heuristic value for the given state/node
-  // based on your specific problem's requirements
-}
-function bidirectionalSearch(start, goal) {
-  // Initialize the forward and backward search queues
-  const forwardQueue = [start];
-  const backwardQueue = [goal];
+function radixSort(arr) {
+  const maxNum = Math.max(...arr); // Find the maximum number in the array
+  const maxDigits = Math.floor(Math.log10(maxNum) + 1); // Determine the number of digits in the largest number
 
-  // Initialize the forward and backward visited sets
-  const forwardVisited = new Set([start]);
-  const backwardVisited = new Set([goal]);
+  let output = arr.slice(); // Create a new array to store the sorted values temporarily
 
-  // Create variables to track the best path and minimum distance found so far
-  let bestPath = null;
-  let minDistance = Infinity;
+  for (let digit = 0; digit < maxDigits; digit++) {
+    const buckets = Array.from({ length: 10 }, () => []); // Create 10 buckets (0-9)
 
-  while (forwardQueue.length > 0 && backwardQueue.length > 0) {
-    // Perform the forward search step
-    const currentForwardNode = forwardQueue.shift();
-    const forwardNeighbors = getNeighbors(currentForwardNode);
-
-    for (const neighbor of forwardNeighbors) {
-      if (!forwardVisited.has(neighbor)) {
-        forwardVisited.add(neighbor);
-        forwardQueue.push(neighbor);
-
-        if (backwardVisited.has(neighbor) && calculateDistance(neighbor) < minDistance) {
-          // Update the best path and minimum distance
-          bestPath = [currentForwardNode, neighbor];
-          minDistance = calculateDistance(neighbor);
-        }
-      }
+    for (let i = 0; i < output.length; i++) {
+      const value = output[i];
+      const digitValue = Math.floor((value / Math.pow(10, digit)) % 10); // Determine the digit value for the current digit position
+      buckets[digitValue].push(value); // Place the number into the appropriate bucket
     }
 
-    // Perform the backward search step
-    const currentBackwardNode = backwardQueue.shift();
-    const backwardNeighbors = getNeighbors(currentBackwardNode);
-
-    for (const neighbor of backwardNeighbors) {
-      if (!backwardVisited.has(neighbor)) {
-        backwardVisited.add(neighbor);
-        backwardQueue.push(neighbor);
-
-        if (forwardVisited.has(neighbor) && calculateDistance(neighbor) < minDistance) {
-          // Update the best path and minimum distance
-          bestPath = [neighbor, currentBackwardNode];
-          minDistance = calculateDistance(neighbor);
-        }
-      }
-    }
+    output = [].concat(...buckets); // Merge the contents of all buckets back into the output array
   }
 
-  return bestPath;
+  return output;
 }
 
-function calculateDistance(node) {
-  // Calculate and return the distance from the starting node
-  // to the given node
-}
+// Example usage:
+const unsortedArray = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArray = radixSort(unsortedArray);
+console.log(sortedArray); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
