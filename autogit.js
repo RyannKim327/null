@@ -1,9 +1,11 @@
-let myArray = [1, 2, 3, 4, 5]; // original array
-myArray.reverse(); // reverse the order
+function findMiddleElement(head) {
+  let slowPtr = head;
+  let fastPtr = head;
 
-console.log(myArray); // Output: [5, 4, 3, 2, 1]
-let myArray = [1, 2, 3, 4, 5]; // original array
-let reversedArray = myArray.slice().reverse(); // create a copy and reverse
-
-console.log(myArray); // Output: [1, 2, 3, 4, 5] (original array)
-console.log(reversedArray); // Output: [5, 4, 3, 2, 1] (reversed array)
+  while (fastPtr !== null && fastPtr.next !== null) {
+    slowPtr = slowPtr.next;
+    fastPtr = fastPtr.next.next;
+  }
+  
+  return slowPtr.value;
+}
