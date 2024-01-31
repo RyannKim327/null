@@ -1,16 +1,31 @@
-function isSortedAscending(arr) {
-  for (let i = 1; i < arr.length; i++) {
-    if (arr[i] < arr[i - 1]) {
-      return false;
-    }
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
-  return true;
 }
-const arr1 = [1, 2, 3, 4, 5];
-console.log(isSortedAscending(arr1)); // Output: true
 
-const arr2 = [5, 4, 3, 2, 1];
-console.log(isSortedAscending(arr2)); // Output: false
+function sumBinaryTree(root) {
+  if (root === null) {
+    return 0;
+  }
 
-const arr3 = [1, 3, 2, 4, 5];
-console.log(isSortedAscending(arr3)); // Output: false
+  const leftSum = sumBinaryTree(root.left);
+  const rightSum = sumBinaryTree(root.right);
+
+  return root.value + leftSum + rightSum;
+}
+
+// Example usage:
+
+// Create a binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+// Calculate the sum of all nodes
+const sum = sumBinaryTree(root);
+console.log(sum); // Output: 15
