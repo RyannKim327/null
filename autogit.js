@@ -1,21 +1,15 @@
-let str = "A man, a plan, a canal - Panama!";
-let cleanedStr = str.replace(/[^0-9a-z]/gi, "").toLowerCase();
-let reversedStr = cleanedStr.split("").reverse().join("");
-if (cleanedStr === reversedStr) {
-  console.log("It is a palindrome.");
-} else {
-  console.log("It is not a palindrome.");
-}
-function isPalindrome(str) {
-  let cleanedStr = str.replace(/[^0-9a-z]/gi, "").toLowerCase();
-  let reversedStr = cleanedStr.split("").reverse().join("");
-  
-  return cleanedStr === reversedStr;
+function quicksort(arr) {
+  if (arr.length < 2) {
+    return arr;
+  } else {
+    const pivot = arr[0];
+    const smaller = arr.slice(1).filter((element) => element <= pivot);
+    const greater = arr.slice(1).filter((element) => element > pivot);
+    
+    return [...quicksort(smaller), pivot, ...quicksort(greater)];
+  }
 }
 
-let str = "A man, a plan, a canal - Panama!";
-if (isPalindrome(str)) {
-  console.log("It is a palindrome.");
-} else {
-  console.log("It is not a palindrome.");
-}
+// Example usage:
+const array = [7, 2, 10, -5, 4, 8, 0];
+console.log(quicksort(array)); // Output: [-5, 0, 2, 4, 7, 8, 10]
