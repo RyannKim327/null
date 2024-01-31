@@ -1,53 +1,57 @@
-function isPalindrome(str) {
-   // Remove non-alphanumeric characters and convert to lowercase
-   const cleanedStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
-
-   // Compare characters from start and end of the string
-   for (let i = 0, j = cleanedStr.length - 1; i < j; i++, j--) {
-       if (cleanedStr[i] !== cleanedStr[j]) {
-           return false;
-       }
-   }
-
-   return true;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-// Example usage
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // Output: true
-console.log(isPalindrome("race car")); // Output: true
-console.log(isPalindrome("hello world")); // Output: false
-function isPalindrome(str) {
-   // Remove non-alphanumeric characters and convert to lowercase
-   const cleanedStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+// Function to find the height of a tree
+function height(node) {
+  if (node === null) {
+    return 0;
+  }
 
-   // Reverse the string and compare with original
-   const reversedStr = cleanedStr.split('').reverse().join('');
-   return cleanedStr === reversedStr;
+  // Recursively calculate the height of the left and right sub-trees
+  const leftHeight = height(node.left);
+  const rightHeight = height(node.right);
+
+  // Return the maximum height plus one
+  return Math.max(leftHeight, rightHeight) + 1;
 }
 
-// Example usage
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // Output: true
-console.log(isPalindrome("race car")); // Output: true
-console.log(isPalindrome("hello world")); // Output: false
-function isPalindrome(str) {
-   // Remove non-alphanumeric characters and convert to lowercase
-   const cleanedStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+// Function to find the diameter of a binary tree
+function diameter(node) {
+  if (node === null) {
+    return 0;
+  }
 
-   // Base case: if the string length is 0 or 1, it's a palindrome
-   if (cleanedStr.length <= 1) {
-       return true;
-   }
+  // Calculate the height of the left and right sub-trees
+  const leftHeight = height(node.left);
+  const rightHeight = height(node.right);
 
-   // Recursive call: check if first and last characters are equal,
-   // and recursively check the remaining substring
-   if (cleanedStr[0] === cleanedStr[cleanedStr.length - 1]) {
-       return isPalindrome(cleanedStr.substring(1, cleanedStr.length - 1));
-   }
+  // Calculate the diameter recursively for the left and right sub-trees
+  const leftDiameter = diameter(node.left);
+  const rightDiameter = diameter(node.right);
 
-   return false;
+  // Return the maximum of the following three values:
+  // 1. Diameter of the left sub-tree
+  // 2. Diameter of the right sub-tree
+  // 3. Height of the left sub-tree + Height of the right sub-tree + 1
+  return Math.max(leftHeight + rightHeight + 1, Math.max(leftDiameter, rightDiameter));
 }
 
-// Example usage
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // Output: true
-console.log(isPalindrome("race car")); // Output: true
-console.log(isPalindrome("hello world")); // Output: false
+// Create a sample binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
+root.left.left.left = new Node(8);
+root.left.left.right = new Node(9);
+
+// Calculate the diameter of the binary tree
+const treeDiameter = diameter(root);
+console.log(`The diameter of the binary tree is: ${treeDiameter}`);
