@@ -1,62 +1,64 @@
-// Define the AsyncTask to handle the network request
-class ConnectAsyncTask extends AsyncTask<String, Void, String> {
-
-  @Override
-  protected String doInBackground(String... params) {
-    try {
-      String urlString = params[0]; // URL of the server
-      URL url = new URL(urlString);
-      
-      // Open a connection to the server
-      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-      connection.setRequestMethod("GET"); // Use GET method
-      connection.setConnectTimeout(5000); // Set connection timeout
-      connection.setReadTimeout(5000); // Set read timeout
-      
-      // Get the response from the server
-      int responseCode = connection.getResponseCode();
-      if (responseCode == HttpURLConnection.HTTP_OK) {
-        // Successful request
-        InputStream inputStream = connection.getInputStream();
-        
-        // Read the response from the server
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        StringBuilder response = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-          response.append(line);
-        }
-        
-        // Close the connections
-        reader.close();
-        inputStream.close();
-        connection.disconnect();
-        
-        return response.toString();
-      } else {
-        // Unsuccessful request
-        return "Error: " + responseCode;
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-      return "Error: " + e.getMessage();
-    }
+class HashTable {
+  constructor() {
+    this.table = {}; // Object to store key-value pairs
   }
 
-  @Override
-  protected void onPostExecute(String result) {
-    // Handle the result here
-    if (result.startsWith("Error")) {
-      // Error occurred
-      Log.e("ConnectAsyncTask", result);
-    } else {
-      // Success
-      Log.d("ConnectAsyncTask", result);
+  // Hash function to generate an index
+  hash(key) {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash += key.charCodeAt(i);
     }
+    return hash % 37; // Using a prime number for better distribution
+  }
+
+  // Insert or update a key-value pair
+  set(key, value) {
+    const index = this.hash(key);
+    this.table[index] = value;
+  }
+
+  // Retrieve a value based on the key
+  get(key) {
+    const index = this.hash(key);
+    return this.table[index];
+  }
+
+  // Remove a key-value pair from the hash table
+  remove(key) {
+    const index = this.hash(key);
+    if (this.table[index]) {
+      delete this.table[index];
+      return true;
+    }
+    return false;
+  }
+
+  // Check if a key exists in the hash table
+  has(key) {
+    const index = this.hash(key);
+    return this.table.hasOwnProperty(index);
+  }
+
+  // Get all the keys in the hash table
+  keys() {
+    return Object.keys(this.table);
+  }
+
+  // Get all the values in the hash table
+  values() {
+    return Object.values(this.table);
   }
 }
 
-// Usage
-String serverUrl = "http://example.com/api"; // Replace with your server URL
-ConnectAsyncTask connectTask = new ConnectAsyncTask();
-connectTask.execute(serverUrl);
+// Example usage:
+const myHashTable = new HashTable();
+myHashTable.set('name', 'John');
+myHashTable.set('age', 25);
+
+console.log(myHashTable.has('name')); // true
+console.log(myHashTable.get('age')); // 25
+
+myHashTable.remove('age');
+console.log(myHashTable.keys()); // ['name']
+console.log(myHashTable.values()); // ['John']
