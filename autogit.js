@@ -1,5 +1,4 @@
-// Define the structure of a binary tree node
-class Node {
+class TreeNode {
   constructor(value) {
     this.value = value;
     this.left = null;
@@ -7,27 +6,81 @@ class Node {
   }
 }
 
-// Function to calculate the maximum depth
-function maxDepth(root) {
-  // Base case: empty tree
-  if (root === null) {
-    return 0;
+class BinaryTree {
+  constructor() {
+    this.root = null;
   }
-
-  // Recursively calculate the depth of the left and right subtrees
-  const leftDepth = maxDepth(root.left);
-  const rightDepth = maxDepth(root.right);
-
-  // Return the maximum depth of the subtrees + 1 (for the current node)
-  return Math.max(leftDepth, rightDepth) + 1;
+  
+  // Helper method to insert a value into the tree
+  insert(value) {
+    const newNode = new TreeNode(value);
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
+  
+  // Recursive helper method to perform the insertion
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+  
+  // Helper method to search for a value in the tree
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+  
+  // Recursive helper method to perform the search
+  searchNode(node, value) {
+    if (node === null) {
+      return false;
+    }
+    
+    if (value === node.value) {
+      return true;
+    }
+    
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else {
+      return this.searchNode(node.right, value);
+    }
+  }
+  
+  // Helper method to traverse the tree in-order (left-root-right)
+  inorderTraversal() {
+    this.inorderTraversalNode(this.root);
+  }
+  
+  // Recursive helper method to perform the in-order traversal
+  inorderTraversalNode(node) {
+    if (node !== null) {
+      this.inorderTraversalNode(node.left);
+      console.log(node.value);
+      this.inorderTraversalNode(node.right);
+    }
+  }
 }
 
 // Example usage:
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-const depth = maxDepth(root);
-console.log(`Maximum Depth: ${depth}`);
+const binaryTree = new BinaryTree();
+binaryTree.insert(5);
+binaryTree.insert(3);
+binaryTree.insert(7);
+binaryTree.insert(1);
+binaryTree.inorderTraversal(); // Outputs: 1 3 5 7
+console.log(binaryTree.search(7)); // Outputs: true
+console.log(binaryTree.search(4)); // Outputs: false
