@@ -1,53 +1,80 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+class Graph {
+  constructor() {
+    this.nodes = new Set();
+    this.edges = {};
+  }
+  
+  addNode(node) {
+    this.nodes.add(node);
+    this.edges[node] = {};
+  }
+  
+  addEdge(node1, node2, weight) {
+    this.edges[node1][node2] = weight;
+    this.edges[node2][node1] = weight;
+  }
+  
+  getWeight(node1, node2) {
+    return this.edges[node1][node2];
+  }
+  
+  getNodes() {
+    return this.nodes;
   }
 }
-
-// Function to calculate the height of a node
-function height(node) {
-  if (node === null)
-    return 0;
-  else
-    return Math.max(height(node.left), height(node.right)) + 1;
+function dijkstra(graph, startNode) {
+  let distances = {};
+  let visited = new Set();
+  let previous = {};
+  
+  // Initialize distances with Infinity except for the start node
+  for (let node of graph.getNodes()) {
+    distances[node] = Infinity;
+  }
+  distances[startNode] = 0;
+  
+  while (visited.size < graph.getNodes().size) {
+    let currentNode = minDistanceNode(distances, visited);
+    visited.add(currentNode);
+    
+    for (let neighbor in graph.edges[currentNode]) {
+      let distance = distances[currentNode] + graph.getWeight(currentNode, neighbor);
+      if (distance < distances[neighbor]) {
+        distances[neighbor] = distance;
+        previous[neighbor] = currentNode;
+      }
+    }
+  }
+  
+  return { distances, previous };
 }
-
-// Function to calculate the diameter of a binary tree
-function diameter(node) {
-  if (node === null)
-    return 0;
-
-  // Calculate the height of the left and right subtrees
-  const leftHeight = height(node.left);
-  const rightHeight = height(node.right);
-
-  // Calculate the diameter of the left and right subtrees recursively
-  const leftDiameter = diameter(node.left);
-  const rightDiameter = diameter(node.right);
-
-  // Return the maximum of the following three values:
-  //   - Diameter of the left subtree
-  //   - Diameter of the right subtree
-  //   - Length of the longest path between two nodes that passes through the root
-  return Math.max(leftHeight + rightHeight + 1, Math.max(leftDiameter, rightDiameter));
+function minDistanceNode(distances, visited) {
+  let minimum = Infinity;
+  let minNode = null;
+  
+  for (let node in distances) {
+    if (!visited.has(node) && distances[node] <= minimum) {
+      minimum = distances[node];
+      minNode = node;
+    }
+  }
+  
+  return minNode;
 }
+// Create a graph
+let graph = new Graph();
+graph.addNode("A");
+graph.addNode("B");
+graph.addNode("C");
+graph.addNode("D");
+graph.addEdge("A", "B", 3);
+graph.addEdge("A", "C", 2);
+graph.addEdge("B", "D", 2);
+graph.addEdge("C", "D", 1);
 
-// Example usage:
-
-/*
-       1
-      / \
-     2   3
-    / \
-   4   5
-*/
-
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-console.log("Diameter of the binary tree:", diameter(root));
+// Find the shortest path from node A
+let result = dijkstra(graph, "A");
+console.log("Distances:", result.distances);
+console.log("Previous nodes:", result.previous);
+Distances: { A: 0, B: 3, C: 2, D: 3 }
+Previous nodes: { B: 'A', C: 'A', D: 'C' }
