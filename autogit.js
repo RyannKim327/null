@@ -1,64 +1,44 @@
-class HashTable {
-  constructor() {
-    this.table = {}; // Object to store key-value pairs
+const graph = {
+  0: { 1: 4, 2: 6 },
+  1: { 3: 5, 4: -2 },
+  2: { 5: -4 },
+  3: { 2: -1 },
+  4: { 3: 1, 5: 4 },
+  5: {}
+};
+function initializeDistances(graph, source) {
+  const distances = {};
+  for (let vertex in graph) {
+    distances[vertex] = vertex == source ? 0 : Infinity;
   }
-
-  // Hash function to generate an index
-  hash(key) {
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) {
-      hash += key.charCodeAt(i);
-    }
-    return hash % 37; // Using a prime number for better distribution
-  }
-
-  // Insert or update a key-value pair
-  set(key, value) {
-    const index = this.hash(key);
-    this.table[index] = value;
-  }
-
-  // Retrieve a value based on the key
-  get(key) {
-    const index = this.hash(key);
-    return this.table[index];
-  }
-
-  // Remove a key-value pair from the hash table
-  remove(key) {
-    const index = this.hash(key);
-    if (this.table[index]) {
-      delete this.table[index];
-      return true;
-    }
-    return false;
-  }
-
-  // Check if a key exists in the hash table
-  has(key) {
-    const index = this.hash(key);
-    return this.table.hasOwnProperty(index);
-  }
-
-  // Get all the keys in the hash table
-  keys() {
-    return Object.keys(this.table);
-  }
-
-  // Get all the values in the hash table
-  values() {
-    return Object.values(this.table);
-  }
+  return distances;
 }
+function bellmanFord(graph, source) {
+  const distances = initializeDistances(graph, source);
 
-// Example usage:
-const myHashTable = new HashTable();
-myHashTable.set('name', 'John');
-myHashTable.set('age', 25);
+  for (let i = 0; i < Object.keys(graph).length - 1; i++) {
+    for (let vertex in graph) {
+      for (let neighbor in graph[vertex]) {
+        const weight = graph[vertex][neighbor];
+        if (distances[vertex] != Infinity && distances[vertex] + weight < distances[neighbor]) {
+          distances[neighbor] = distances[vertex] + weight;
+        }
+      }
+    }
+  }
 
-console.log(myHashTable.has('name')); // true
-console.log(myHashTable.get('age')); // 25
+  // Check for negative cycles
+  for (let vertex in graph) {
+    for (let neighbor in graph[vertex]) {
+      const weight = graph[vertex][neighbor];
+      if (distances[vertex] != Infinity && distances[vertex] + weight < distances[neighbor]) {
+        throw new Error('Negative cycle detected');
+      }
+    }
+  }
 
-myHashTable.remove('age');
-console.log(myHashTable.keys()); // ['name']
-console.log(myHashTable.values()); // ['John']
+  return distances;
+}
+const source = 0;
+const shortestDistances = bellmanFord(graph, source);
+console.log(shortestDistances);
