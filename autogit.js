@@ -1,73 +1,134 @@
-function shellSort(array) {
-  // ...
-}
-function shellSort(array) {
-  const n = array.length;
-  let gap = Math.floor(n / 2); // Start with a half-gap
-  // ...
-}
-function shellSort(array) {
-  const n = array.length;
-  let gap = Math.floor(n / 2); // Start with a half-gap
-
-  while (gap > 0) {
-    // ...
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.height = 1;
+    this.left = null;
+    this.right = null;
   }
 }
-function shellSort(array) {
-  const n = array.length;
-  let gap = Math.floor(n / 2); // Start with a half-gap
 
-  while (gap > 0) {
-    for (let i = gap; i < n; i++) {
-      // ...
+class AVLTree {
+  constructor() {
+    this.root = null;
+  }
+
+  // Get the height of a node
+  getHeight(node) {
+    if (!node) return 0;
+    return node.height;
+  }
+
+  // Get the balance factor of a node
+  getBalanceFactor(node) {
+    if (!node) return 0;
+    return this.getHeight(node.left) - this.getHeight(node.right);
+  }
+
+  // Update the height of a node
+  updateHeight(node) {
+    if (!node) return;
+    node.height = Math.max(this.getHeight(node.left), this.getHeight(node.right)) + 1;
+  }
+
+  // Rotate the subtree rooted with the given node to the right
+  rotateRight(y) {
+    const x = y.left;
+    const T2 = x.right;
+
+    // Perform rotation
+    x.right = y;
+    y.left = T2;
+
+    // Update heights
+    this.updateHeight(y);
+    this.updateHeight(x);
+
+    return x; // New root
+  }
+
+  // Rotate the subtree rooted with the given node to the left
+  rotateLeft(x) {
+    const y = x.right;
+    const T2 = y.left;
+
+    // Perform rotation
+    y.left = x;
+    x.right = T2;
+
+    // Update heights
+    this.updateHeight(x);
+    this.updateHeight(y);
+
+    return y; // New root
+  }
+
+  // Insert a new node into the AVL tree
+  insert(data) {
+    this.root = this.insertNode(this.root, data);
+  }
+
+  insertNode(root, data) {
+    // Perform the normal BST insertion
+    if (!root) return new Node(data);
+    if (data < root.data) root.left = this.insertNode(root.left, data);
+    else if (data > root.data) root.right = this.insertNode(root.right, data);
+    else return root; // Duplicate keys not allowed
+
+    // Update the height of the ancestor node
+    this.updateHeight(root);
+
+    // Check the balance factor and rebalance if needed
+    const balanceFactor = this.getBalanceFactor(root);
+
+    // Left Left Case
+    if (balanceFactor > 1 && data < root.left.data) {
+      return this.rotateRight(root);
     }
-    gap = Math.floor(gap / 2);
-  }
-}
-function shellSort(array) {
-  const n = array.length;
-  let gap = Math.floor(n / 2); // Start with a half-gap
 
-  while (gap > 0) {
-    for (let i = gap; i < n; i++) {
-      const temp = array[i];
-      let j = i;
-
-      while (j >= gap && array[j - gap] > temp) {
-        array[j] = array[j - gap];
-        j -= gap;
-      }
-
-      array[j] = temp;
+    // Right Right Case
+    if (balanceFactor < -1 && data > root.right.data) {
+      return this.rotateLeft(root);
     }
-    gap = Math.floor(gap / 2);
-  }
-  
-  return array;
-}
-function shellSort(array) {
-  const n = array.length;
-  let gap = Math.floor(n / 2); // Start with a half-gap
 
-  while (gap > 0) {
-    for (let i = gap; i < n; i++) {
-      const temp = array[i];
-      let j = i;
-
-      while (j >= gap && array[j - gap] > temp) {
-        array[j] = array[j - gap];
-        j -= gap;
-      }
-
-      array[j] = temp;
+    // Left Right Case
+    if (balanceFactor > 1 && data > root.left.data) {
+      root.left = this.rotateLeft(root.left);
+      return this.rotateRight(root);
     }
-    gap = Math.floor(gap / 2);
+
+    // Right Left Case
+    if (balanceFactor < -1 && data < root.right.data) {
+      root.right = this.rotateRight(root.right);
+      return this.rotateLeft(root);
+    }
+
+    // Return the (unchanged) node
+    return root;
   }
-  
-  return array;
+
+  // Perform a recursive inorder traversal of the AVL tree
+  inOrderTraversal(node) {
+    if (!node) return [];
+    const result = [];
+    result.push(...this.inOrderTraversal(node.left));
+    result.push(node.data);
+    result.push(...this.inOrderTraversal(node.right));
+    return result;
+  }
+
+  // Print the AVL tree
+  print() {
+    console.log(this.inOrderTraversal(this.root));
+  }
 }
 
-// Test the function
-const arr = [8, 3, 11, 6, 2, 1, 9, 4];
-console.log(shellSort(arr)); // Output: [1, 2, 3, 4, 6, 8, 9, 11]
+// Usage example
+const avlTree = new AVLTree();
+avlTree.insert(10);
+avlTree.insert(20);
+avlTree.insert(30);
+avlTree.insert(40);
+avlTree.insert(50);
+avlTree.insert(25);
+
+avlTree.print();
