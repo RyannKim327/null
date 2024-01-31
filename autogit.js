@@ -1,32 +1,27 @@
-function getHeight(node) {
-  if (node === null) return 0;   // Base case: an empty tree has height 0
-  return 1 + Math.max(getHeight(node.left), getHeight(node.right));
-}
-function getDiameter(node) {
-  if (node === null) return 0;   // Base case: an empty tree has diameter 0
+function shellSort(arr) {
+  var length = arr.length;
+  var gap = Math.floor(length / 2);
   
-  const leftHeight = getHeight(node.left);
-  const rightHeight = getHeight(node.right);
-
-  // Recurse to find the diameter of left and right subtrees
-  const leftDiameter = getDiameter(node.left);
-  const rightDiameter = getDiameter(node.right);
-
-  // Return the maximum of three values: left subtree diameter, right subtree diameter, and lengths of left and right paths
-  return Math.max(leftHeight + rightHeight + 1, Math.max(leftDiameter, rightDiameter));
+  while (gap > 0) {
+    for (var i = gap; i < length; i++) {
+      var temp = arr[i];
+      var j = i;
+      
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
+      }
+      
+      arr[j] = temp;
+    }
+    
+    gap = Math.floor(gap / 2);
+  }
+  
+  return arr;
 }
-// Node constructor
-function TreeNode(val) {
-  this.val = val;
-  this.left = this.right = null;
-}
 
-// Example binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-const diameter = getDiameter(root);
-console.log("Diameter of the binary tree:", diameter);
+// Example usage:
+var unsortedArray = [8, 4, 1, 6, 2, 7, 3, 5];
+var sortedArray = shellSort(unsortedArray);
+console.log(sortedArray);
