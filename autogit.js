@@ -1,24 +1,41 @@
-function factorialRecursive(n) {
-  if (n === 0 || n === 1) {
-    return 1;
-  } else {
-    return n * factorialRecursive(n - 1);
+class TreeNode {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
 
-// Example usage:
-const number = 5;
-const factorial = factorialRecursive(number);
-console.log(`Factorial of ${number} is ${factorial}`);
-function factorialIterative(n) {
-  let factorial = 1;
-  for (let i = 2; i <= n; i++) {
-    factorial *= i;
+function diameterOfBinaryTree(root) {
+  let diameter = 0;
+
+  // A recursive helper function to calculate the height of a tree
+  function height(node) {
+    if (node === null) {
+      return 0;
+    }
+
+    const leftHeight = height(node.left);
+    const rightHeight = height(node.right);
+
+    // Update the diameter if the current path is longer
+    diameter = Math.max(diameter, leftHeight + rightHeight);
+
+    // Return the height of the subtree rooted at the current node
+    return Math.max(leftHeight, rightHeight) + 1;
   }
-  return factorial;
+
+  height(root);
+
+  return diameter;
 }
 
 // Example usage:
-const number = 5;
-const factorial = factorialIterative(number);
-console.log(`Factorial of ${number} is ${factorial}`);
+
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(diameterOfBinaryTree(root)); // Output: 3
