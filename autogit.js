@@ -1,13 +1,8 @@
-function calculateMean(numbers) {
-  let sum = 0;
-  for (let i = 0; i < numbers.length; i++) {
-    sum += numbers[i];
-  }
-  const mean = sum / numbers.length;
-  return mean;
-}
-
-// Example usage
-const numbers = [1, 2, 3, 4, 5];
-const mean = calculateMean(numbers);
-console.log(mean);  // Output: 3
+fetch('https://api.example.com/data')
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+  })
+  .catch(error => {
+    console.log('Error:', error);
+  });
