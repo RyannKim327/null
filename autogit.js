@@ -1,32 +1,34 @@
-class ListNode {
-  constructor(value, next = null) {
-    this.value = value;
-    this.next = next;
+const mergeSortedArrays = (arr1, arr2) => {
+  return [...arr1, ...arr2].sort((a, b) => a - b);
+};
+const findMedianSortedArrays = (nums1, nums2) => {
+  const mergedArray = mergeSortedArrays(nums1, nums2);
+  const length = mergedArray.length;
+};
+  if (length % 2 === 1) {
+    return mergedArray[Math.floor(length / 2)];
+  } else {
+    const mid = length / 2;
+    return (mergedArray[mid - 1] + mergedArray[mid]) / 2;
   }
-}
+};
+const mergeSortedArrays = (arr1, arr2) => {
+  return [...arr1, ...arr2].sort((a, b) => a - b);
+};
 
-function findMiddleElement(head) {
-  if (head === null) {
-    return null; // Empty list
+const findMedianSortedArrays = (nums1, nums2) => {
+  const mergedArray = mergeSortedArrays(nums1, nums2);
+  const length = mergedArray.length;
+
+  if (length % 2 === 1) {
+    return mergedArray[Math.floor(length / 2)];
+  } else {
+    const mid = length / 2;
+    return (mergedArray[mid - 1] + mergedArray[mid]) / 2;
   }
+};
 
-  let slow = head;
-  let fast = head;
-
-  while (fast !== null && fast.next !== null) {
-    slow = slow.next; // Moves one node at a time
-    fast = fast.next.next; // Moves two nodes at a time
-  }
-
-  return slow.value;
-}
-
-// Example usage:
-const list = new ListNode(1);
-list.next = new ListNode(2);
-list.next.next = new ListNode(3);
-list.next.next.next = new ListNode(4);
-list.next.next.next.next = new ListNode(5);
-
-const middle = findMiddleElement(list);
-console.log(middle); // Output: 3
+// Usage example:
+const nums1 = [1, 3];
+const nums2 = [2, 4];
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.5
