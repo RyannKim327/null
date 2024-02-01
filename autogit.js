@@ -1,53 +1,81 @@
-function fibonacciSearch(arr, target, n) {
-    // Step 2: Calculate Fibonacci numbers
-    const fibArr = [0, 1];
-    let fib = 1;
-    while (fib < n) {
-        fibArr.push(fib);
-        fib = fibArr[fibArr.length - 1] + fibArr[fibArr.length - 2];
+function boyerMooreSearch(text, pattern) {
+  const badMatchTable = {};
+  const goodSuffixTable = [];
+  const patternLength = pattern.length;
+  
+  // Populate badMatchTable
+  for (let i = 0; i < patternLength - 1; i++) {
+    badMatchTable[pattern[i]] = patternLength - i - 1;
+  }
+
+  // Populate goodSuffixTable
+  buildGoodSuffixTable(pattern, goodSuffixTable);
+  
+  let i = patternLength - 1;
+
+  while (i < text.length) {
+    let j = patternLength - 1;
+    let k = i;
+
+    while (j >= 0 && text[k] === pattern[j]) {
+      j--;
+      k--;
     }
 
-    // Step 3: Initialize variables
-    let offset = -1;
-    let prevOffset = -1;
+    if (j === -1) {
+      return k + 1; // Match found, return the starting index
+    } else {
+      const badMatchShift = badMatchTable[text[k]] || patternLength;
+      const goodSuffixShift = goodSuffixTable[j];
 
-    // Step 4: Perform the search
-    while (offset < n - 1) {
-        let i = fibArr.length - 1;
+      i += Math.max(badMatchShift, goodSuffixShift);
+    }
+  }
 
-        // Find the largest Fibonacci number less than or equal to the remaining elements
-        while (fibArr[i] > n - offset - 1) {
-            i--;
-        }
+  return -1; // No match found
+}
 
-        const index = offset + fibArr[i];
-        
-        // Compare the value at the index with the target
-        if (arr[index] === target) {
-            return index;
-        }
+function buildGoodSuffixTable(pattern, goodSuffixTable) {
+  const patternLength = pattern.length;
+  let lastPrefixPosition = patternLength;
 
-        // If the value is larger, update offset and prevOffset
-        if (arr[index] < target) {
-            offset = index;
-            prevOffset = fibArr[i - 1];
-        }
-
-        // If the value is smaller, update offset and prevOffset
-        if (arr[index] > target) {
-            offset = offset - prevOffset;
-            prevOffset = fibArr[i - 2];
-        }
+  for (let i = patternLength - 1; i >= 0; i--) {
+    if (isPrefix(pattern, i + 1)) {
+      lastPrefixPosition = i + 1;
     }
 
-    // The target was not found
-    return -1;
+    goodSuffixTable[i] = lastPrefixPosition + (patternLength - 1 - i);
+  }
+
+  for (let i = 0; i < patternLength - 1; i++) {
+    const suffixLength = getSuffixLength(pattern, i);
+    if (pattern[i - suffixLength] !== pattern[patternLength - 1 - suffixLength]) {
+      goodSuffixTable[patternLength - 1 - suffixLength] = patternLength - 1 - i + suffixLength;
+    }
+  }
+}
+
+function isPrefix(pattern, startIndex) {
+  const patternLength = pattern.length;
+  for (let i = startIndex, j = 0; i < patternLength; i++, j++) {
+    if (pattern[i] !== pattern[j]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function getSuffixLength(pattern, startIndex) {
+  let length = 0;
+  let j = pattern.length - 1;
+  for (let i = startIndex; i >= 0 && pattern[i] === pattern[j]; i--, j--) {
+    length++;
+  }
+  return length;
 }
 
 // Example usage:
-const arr = [2, 4, 5, 7, 9, 11, 13, 17, 19];
-const target = 11;
-const n = arr.length;
-
-const result = fibonacciSearch(arr, target, n);
-console.log(result); // Output: 5 (index of target value)
+const text = "This is an example text for searching";
+const pattern = "example";
+const index = boyerMooreSearch(text, pattern);
+console.log("Pattern found at index:", index);
