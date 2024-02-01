@@ -1,13 +1,5 @@
-const numbers = [3, 9, 2, 6, 5];
+let stringNumber = "42";
+let integerNumber = parseInt(stringNumber);
 
-const max = Math.max(...numbers);
-
-console.log(max); // Output: 9
-const numbers = [];
-
-if (numbers.length === 0) {
-  console.log("Array is empty");
-} else {
-  const max = Math.max(...numbers);
-  console.log(max);
-}
+console.log(integerNumber);  // Output: 42
+console.log(typeof integerNumber);  // Output: number
