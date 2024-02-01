@@ -1,24 +1,35 @@
-function findFirstRepeatedChar(str) {
-  const charCount = {};
-
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-
-    // If the character has been seen before, return it
-    if (charCount[char]) {
-      return char;
-    }
-
-    // Otherwise, mark it as seen by setting its count to 1
-    charCount[char] = 1;
-  }
-
-  // If no repeated character is found, return null
-  return null;
+function ListNode(val, next) {
+  this.val = val;
+  this.next = next;
 }
 
-// Example usage
-const string = "hello world";
-const repeatedChar = findFirstRepeatedChar(string);
+function isPalindrome(head) {
+  let values = [];
+  let currentNode = head;
 
-console.log(repeatedChar); // Output: "l"
+  while (currentNode) {
+    values.push(currentNode.val);
+    currentNode = currentNode.next;
+  }
+
+  let left = 0;
+  let right = values.length - 1;
+
+  while (left < right) {
+    if (values[left] !== values[right]) {
+      return false;
+    }
+    left++;
+    right--;
+  }
+
+  return true;
+}
+
+// Example usage:
+let linkedList = new ListNode(1);
+linkedList.next = new ListNode(2);
+linkedList.next.next = new ListNode(3);
+linkedList.next.next.next = new ListNode(2);
+linkedList.next.next.next.next = new ListNode(1);
+console.log(isPalindrome(linkedList)); // Output: true
