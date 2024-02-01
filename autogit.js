@@ -1,51 +1,29 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
-}
+function shellSort(arr) {
+    // Gap sequence for Shell Sort
+    let gap = Math.floor(arr.length / 2);
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+    // Start with a larger gap and reduce it
+    while (gap > 0) {
+        // Perform insertion sort on elements with the gap
+        for (let i = gap; i < arr.length; i++) {
+            let current = arr[i];
+            let j = i;
 
-  // Insert a new node at the end of the list
-  insert(data) {
-    const newNode = new Node(data);
+            // Shift elements with gap until the correct position is found
+            while (j >= gap && arr[j - gap] > current) {
+                arr[j] = arr[j - gap];
+                j -= gap;
+            }
 
-    if (this.head === null) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next !== null) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
+            arr[j] = current;
+        }
 
-  // Get the length of the list
-  getLength() {
-    let current = this.head;
-    let count = 0;
-
-    while (current !== null) {
-      count++;
-      current = current.next;
+        // Reduce the gap for the next iteration
+        gap = Math.floor(gap / 2);
     }
 
-    return count;
-  }
+    return arr; // Sorted array
 }
-
-// Usage:
-
-const linkedList = new LinkedList();
-
-linkedList.insert(10);
-linkedList.insert(20);
-linkedList.insert(30);
-linkedList.insert(40);
-
-console.log(linkedList.getLength()); // Output: 4
+const array = [7, 3, 9, 1, 6, 2, 8, 5, 4];
+const sortedArray = shellSort(array);
+console.log(sortedArray);
