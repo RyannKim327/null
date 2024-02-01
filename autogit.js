@@ -1,19 +1,50 @@
-function reverseWords(str) {
-  // Step 1: Split the string into an array of words
-  var wordsArray = str.split(' ');
+function createTable(pattern) {
+  const table = {};
 
-  // Step 2: Reverse the order of the array
-  var reversedArray = wordsArray.reverse();
+  for (let i = 0; i < pattern.length - 1; i++) {
+    table[pattern[i]] = pattern.length - 1 - i;
+  }
 
-  // Step 3: Join the reversed array back into a string
-  var reversedString = reversedArray.join(' ');
-
-  // Return the reversed string
-  return reversedString;
+  return table;
 }
+function boyerMooreHorspool(text, pattern) {
+  const table = createTable(pattern);
+  const patternLength = pattern.length;
+  const textLength = text.length;
+  let offset = 0;
 
-// Example usage
-var originalString = 'Hello World, how are you?';
-var reversedString = reverseWords(originalString);
+  while (offset <= textLength - patternLength) {
+    let mismatchFound = false;
 
-console.log(reversedString); // Output: "you? are how World, Hello"
+    // Compare pattern from right to left
+    for (let i = patternLength - 1; i >= 0; i--) {
+      const patternChar = pattern[i];
+      const textChar = text[offset + i];
+
+      if (patternChar !== textChar) {
+        mismatchFound = true;
+        
+        const skip = table[text[offset + patternLength - 1]];
+
+        offset += skip || patternLength;
+        break;
+      }
+    }
+
+    if (!mismatchFound) {
+      return offset; // Match found
+    }
+  }
+
+  return -1; // No match found
+}
+const text = "Lorem ipsum dolor sit amet";
+const pattern = "ipsum";
+
+const result = boyerMooreHorspool(text, pattern);
+
+if (result === -1) {
+  console.log("Pattern not found");
+} else {
+  console.log(`Pattern found at index ${result}`);
+}
