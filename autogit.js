@@ -1,20 +1,12 @@
-function findMaxSubarray(arr) {
-    if (arr.length === 0) {
-        return 0;
-    }
-
-    let maxSum = arr[0];
-    let currentSum = arr[0];
-
-    for (let i = 1; i < arr.length; i++) {
-        currentSum = Math.max(arr[i], currentSum + arr[i]);
-        maxSum = Math.max(maxSum, currentSum);
-    }
-
-    return maxSum;
+function factorial(n) {
+  // Base case: factorial of 0 or 1 is 1
+  if (n === 0 || n === 1) {
+    return 1;
+  }
+  
+  // Recursive case: multiply n by factorial of (n-1)
+  return n * factorial(n - 1);
 }
 
-// Example usage:
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const maxSum = findMaxSubarray(array);
-console.log(maxSum);
+// Example usage
+console.log(factorial(5)); // Output: 120
