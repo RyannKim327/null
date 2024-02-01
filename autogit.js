@@ -1,33 +1,30 @@
-function depthLimitedSearch(initialState, goalState, depthLimit) {
-  const stack = [{ state: initialState, depth: 0 }];
+function breadthFirstSearch(graph, startNode) {
+  let queue = [startNode];
+  let visited = [];
 
-  while (stack.length > 0) {
-    const currentNode = stack.pop();
+  visited[startNode] = true;
 
-    if (currentNode.state === goalState) {
-      return `Goal state found: ${currentNode.state}`;
+  while (queue.length > 0) {
+    const currentNode = queue.shift();
+    console.log(currentNode); // Process the dequeued node (e.g., print its value)
+
+    const neighbors = graph[currentNode];
+    for (let i = 0; i < neighbors.length; i++) {
+      const neighbor = neighbors[i];
+      if (!visited[neighbor]) {
+        queue.push(neighbor);
+        visited[neighbor] = true;
+      }
     }
-
-    if (currentNode.depth >= depthLimit) {
-      continue;
-    }
-
-    // Generate child nodes and add them to the stack
-    // Here, you would implement the logic to generate child nodes based on your problem's domain
-
-    // Example: Adding child nodes (Just for illustration purposes)
-    const childNodes = generateChildNodes(currentNode.state);
-    childNodes.forEach((child) => {
-      stack.push({ state: child, depth: currentNode.depth + 1 });
-    });
   }
-
-  return "Goal state not found within depth limit";
 }
+const graph = {
+  A: ["B", "C"],
+  B: ["D", "E"],
+  C: ["F"],
+  D: [],
+  E: ["F"],
+  F: []
+};
 
-// Example function to generate child nodes (Just for illustration purposes)
-function generateChildNodes(state) {
-  // Implement logic to generate child nodes based on your problem's domain
-  // Return an array of child nodes
-  return [];
-}
+breadthFirstSearch(graph, "A");
