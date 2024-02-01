@@ -1,24 +1,48 @@
-// Define the async task
-function AsyncTask() {
-  return new Promise((resolve, reject) => {
-    // Simulating an asynchronous task
-    setTimeout(() => {
-      // Resolve the task after 2 seconds
-      resolve('Async task completed!');
-    }, 2000);
-  });
-}
+function tarjansSCC(graph) {
+  let index = 0;
+  const stack = [];
+  const indexMap = {};
+  const lowLinkMap = {};
+  const onStack = {};
+  const scc = [];
 
-// Function that connects to the async task
-function connectAsyncTask() {
-  AsyncTask()
-    .then((result) => {
-      console.log(result); // Output the result when task is completed
-    })
-    .catch((error) => {
-      console.error(error); // Output any error that occurred during the task
-    });
-}
+  function tarjan(currentNode) {
+    indexMap[currentNode] = index;
+    lowLinkMap[currentNode] = index;
+    index++;
+    stack.push(currentNode);
+    onStack[currentNode] = true;
 
-// Call the function to connect to the async task
-connectAsyncTask();
+    const neighbors = graph[currentNode];
+
+    for (let i = 0; i < neighbors.length; i++) {
+      const neighbor = neighbors[i];
+  
+      if (!indexMap[neighbor]) {
+        tarjan(neighbor);
+        lowLinkMap[currentNode] = Math.min(lowLinkMap[currentNode], lowLinkMap[neighbor]);
+      } else if (onStack[neighbor]) {
+        lowLinkMap[currentNode] = Math.min(lowLinkMap[currentNode], indexMap[neighbor]);
+      }
+    }
+
+    if (indexMap[currentNode] === lowLinkMap[currentNode]) {
+      const component = [];
+      let node;
+      do {
+        node = stack.pop();
+        onStack[node] = false;
+        component.push(node);
+      } while (node !== currentNode);
+      scc.push(component);
+    }
+  }
+
+  for (let node in graph) {
+    if (!indexMap[node]) {
+      tarjan(node);
+    }
+  }
+
+  return scc;
+}
