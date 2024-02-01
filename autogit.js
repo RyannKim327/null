@@ -1,29 +1,71 @@
-function shellSort(arr) {
-    // Gap sequence for Shell Sort
-    let gap = Math.floor(arr.length / 2);
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
 
-    // Start with a larger gap and reduce it
-    while (gap > 0) {
-        // Perform insertion sort on elements with the gap
-        for (let i = gap; i < arr.length; i++) {
-            let current = arr[i];
-            let j = i;
+class BinaryTree {
+  constructor() {
+    this.root = null;
+  }
 
-            // Shift elements with gap until the correct position is found
-            while (j >= gap && arr[j - gap] > current) {
-                arr[j] = arr[j - gap];
-                j -= gap;
-            }
+  insert(value) {
+    const newNode = new Node(value);
 
-            arr[j] = current;
-        }
+    if (!this.root) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
 
-        // Reduce the gap for the next iteration
-        gap = Math.floor(gap / 2);
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (!node.left) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (!node.right) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  searchNode(node, value) {
+    if (!node || node.value === value) {
+      return node;
     }
 
-    return arr; // Sorted array
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else {
+      return this.searchNode(node.right, value);
+    }
+  }
 }
-const array = [7, 3, 9, 1, 6, 2, 8, 5, 4];
-const sortedArray = shellSort(array);
-console.log(sortedArray);
+
+// Example usage
+const tree = new BinaryTree();
+
+tree.insert(8);
+tree.insert(3);
+tree.insert(10);
+tree.insert(1);
+tree.insert(6);
+tree.insert(14);
+tree.insert(4);
+tree.insert(7);
+tree.insert(13);
+
+console.log(tree.search(6)); // Output: Node { value: 6, left: Node { ... }, right: Node { ... } }
+console.log(tree.search(11)); // Output: null
