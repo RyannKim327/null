@@ -1,22 +1,61 @@
-function selectionSort(arr) {
-  // Iterate through the entire array
-  for (let i = 0; i < arr.length - 1; i++) {
-    let minIndex = i; // Assume the current element is the minimum
+class HashTable {
+  constructor() {
+    this.size = 100; // Size of the hash table array
+    this.table = new Array(this.size);
+  }
 
-    // Find the index of the minimum element in the unsorted part of the array
-    for (let j = i + 1; j < arr.length; j++) {
-      if (arr[j] < arr[minIndex]) {
-        minIndex = j;
-      }
+  // Hash function to generate an index from a key
+  hash(key) {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash += key.charCodeAt(i);
     }
+    return hash % this.size;
+  }
 
-    // Swap the found minimum element with the first element
-    if (minIndex !== i) {
-      [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+  // Insert a key-value pair into the hash table
+  insert(key, value) {
+    const index = this.hash(key);
+    if (!this.table[index]) {
+      this.table[index] = [[key, value]];
+    } else {
+      for (let pair of this.table[index]) {
+        if (pair[0] === key) {
+          pair[1] = value; // Update the existing value if the key exists
+          return;
+        }
+      }
+      this.table[index].push([key, value]);
     }
   }
 
-  return arr;
+  // Get the value associated with a key
+  get(key) {
+    const index = this.hash(key);
+    if (this.table[index]) {
+      for (let pair of this.table[index]) {
+        if (pair[0] === key) {
+          return pair[1];
+        }
+      }
+    }
+    return undefined; // Key not found
+  }
+
+  // Remove a key-value pair from the hash table
+  remove(key) {
+    const index = this.hash(key);
+    if (this.table[index]) {
+      this.table[index] = this.table[index].filter(pair => pair[0] !== key);
+    }
+  }
 }
-const arr = [64, 25, 12, 22, 11];
-console.log(selectionSort(arr)); // Outputs: [11, 12, 22, 25, 64]
+
+// Usage Example
+const hashTable = new HashTable();
+hashTable.insert('name', 'John');
+hashTable.insert('age', 30);
+console.log(hashTable.get('name')); // Output: John
+console.log(hashTable.get('age'));  // Output: 30
+hashTable.remove('age');
+console.log(hashTable.get('age'));  // Output: undefined
