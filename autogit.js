@@ -1,48 +1,122 @@
-function depthLimitedSearch(state, depth, params) {
-  // Add your implementation here
-}
-if (isGoalState(state)) {
-  return state; // or desired output
-}
-if (depth === 0) {
-  return 'depth limit exceeded';
-}
-const childStates = generateChildStates(state, params);
-for (let i = 0; i < childStates.length; i++) {
-  const result = depthLimitedSearch(childStates[i], depth - 1, params);
-  
-  // Handle the result based on the problem or return it if it matches the goal state
-  if (result === 'depth limit exceeded') {
-    continue; // skip this child
-  }
-  
-  if (result !== null) {
-    return result;
+class Node {
+  constructor(value = null, level = 0) {
+    this.value = value;
+    this.next = new Array(level + 1);
   }
 }
-return null;
-function depthLimitedSearch(state, depth, params) {
-  if (isGoalState(state)) {
-    return state;
+class SkipList {
+  constructor() {
+    this.head = new Node();
+    this.maxLevel = 0;
   }
 
-  if (depth === 0) {
-    return 'depth limit exceeded';
+  // Generate a random level for a new node
+  getRandomLevel() {
+    let level = 0;
+    while (Math.random() < 0.5 && level < this.maxLevel + 1) {
+      level++;
+    }
+    return level;
   }
 
-  const childStates = generateChildStates(state, params);
+  // Insert a new node into the skip list
+  insert(value) {
+    const newNode = new Node(value, this.getRandomLevel());
+    const update = new Array(this.maxLevel + 1);
+    let current = this.head;
 
-  for (let i = 0; i < childStates.length; i++) {
-    const result = depthLimitedSearch(childStates[i], depth - 1, params);
-
-    if (result === 'depth limit exceeded') {
-      continue;
+    for (let i = this.maxLevel; i >= 0; i--) {
+      while (current.next[i] && current.next[i].value < value) {
+        current = current.next[i];
+      }
+      update[i] = current;
     }
 
-    if (result !== null) {
-      return result;
+    for (let i = 0; i <= newNode.next.length - 1; i++) {
+      newNode.next[i] = update[i].next[i];
+      update[i].next[i] = newNode;
+    }
+
+    if (newNode.next.length > this.maxLevel) {
+      this.maxLevel = newNode.next.length - 1;
     }
   }
 
-  return null;
+  // Search for a value in the skip list
+  search(value) {
+    let current = this.head;
+    
+    for (let i = this.maxLevel; i >= 0; i--) {
+      while (current.next[i] && current.next[i].value < value) {
+        current = current.next[i];
+      }
+    }
+
+    current = current.next[0];
+    if (current && current.value === value) {
+      return current;
+    }
+    
+    return null;
+  }
+
+  // Remove a value from the skip list
+  remove(value) {
+    const update = new Array(this.maxLevel + 1);
+    let current = this.head;
+
+    for (let i = this.maxLevel; i >= 0; i--) {
+      while (current.next[i] && current.next[i].value < value) {
+        current = current.next[i];
+      }
+      update[i] = current;
+    }
+
+    current = current.next[0];
+
+    if (current && current.value === value) {
+      for (let i = 0; i <= current.next.length - 1; i++) {
+        if (update[i].next[i] !== current) {
+          break;
+        }
+        update[i].next[i] = current.next[i];
+      }
+
+      // Adjust the max level if necessary
+      while (this.maxLevel > 0 && this.head.next[this.maxLevel] === null) {
+        this.maxLevel--;
+      }
+
+      return true;
+    }
+
+    return false;
+  }
+
+  // Print the skip list
+  print() {
+    for (let level = this.maxLevel; level >= 0; level--) {
+      let output = `Level ${level}: `;
+      let current = this.head.next[level];
+      while (current) {
+        output += `${current.value} `;
+        current = current.next[level];
+      }
+      console.log(output);
+    }
+  }
 }
+const list = new SkipList();
+
+list.insert(3);
+list.insert(7);
+list.insert(2);
+list.insert(5);
+
+list.print(); // Prints the skip list
+
+console.log(list.search(7)); // Searches for the value 7
+console.log(list.search(4)); // Searches for the value 4
+
+console.log(list.remove(2)); // Removes the value 2
+list.print(); // Prints the updated skip list
