@@ -1,7 +1,5 @@
-function validateEmail(email) {
-  const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return pattern.test(email);
-}
-const email = "test@example.com";
-const isValid = validateEmail(email);
-console.log(isValid); // Output: true
+let str = "Hello, world! How are you?";
+let stringWithoutSpaces = str.replace(/\s/g, '');
+
+console.log(stringWithoutSpaces);
+Hello,world!Howareyou?
