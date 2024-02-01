@@ -1,16 +1,12 @@
-function largestPrimeFactor(num) {
-  let largestFactor = 0;
+const string = "Hello, World!";
+const substring = "World";
 
-  for (let i = 2; i <= num; i++) {
-    while (num % i === 0) {
-      largestFactor = i;
-      num /= i;
-    }
-  }
+console.log(string.includes(substring)); // Output: true
+const string = "Hello, World!";
+const substring = "World";
 
-  return largestFactor;
-}
+console.log(string.indexOf(substring) !== -1); // Output: true
+const string = "Hello, World!";
+const substring = /World/;
 
-// Example usage:
-console.log(largestPrimeFactor(13195)); // Output: 29
-console.log(largestPrimeFactor(600851475143)); // Output: 6857
+console.log(substring.test(string)); // Output: true
