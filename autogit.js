@@ -1,26 +1,51 @@
-function shellSort(arr) {
-  const n = arr.length;
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
+}
 
-  // Start with a large gap and reduce it
-  for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
 
-    // Perform insertion sort on elements with the current gap
-    for (let i = gap; i < n; i++) {
-      const temp = arr[i];
+  // Insert a new node at the end of the list
+  insert(data) {
+    const newNode = new Node(data);
 
-      let j;
-      for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
-        arr[j] = arr[j - gap];
+    if (this.head === null) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next !== null) {
+        current = current.next;
       }
-
-      arr[j] = temp;
+      current.next = newNode;
     }
   }
 
-  return arr;
-}
-const array = [9, 4, 6, 2, 7, 1, 5, 3, 8];
-console.log("Original Array:", array);
+  // Get the length of the list
+  getLength() {
+    let current = this.head;
+    let count = 0;
 
-const sortedArray = shellSort(array);
-console.log("Sorted Array:", sortedArray);
+    while (current !== null) {
+      count++;
+      current = current.next;
+    }
+
+    return count;
+  }
+}
+
+// Usage:
+
+const linkedList = new LinkedList();
+
+linkedList.insert(10);
+linkedList.insert(20);
+linkedList.insert(30);
+linkedList.insert(40);
+
+console.log(linkedList.getLength()); // Output: 4
