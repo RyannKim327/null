@@ -1,85 +1,93 @@
 class Node {
-  constructor(substring) {
-    this.substring = substring; // substring represented by the node
-    this.children = {}; // child nodes
+  constructor(data) {
+    this.data = data;
+    this.next = null;
   }
 }
-class SuffixTree {
+
+class LinkedList {
   constructor() {
-    this.root = new Node("");
+    this.head = null;
   }
 
-  // Implement tree construction and search methods here
-}
-class SuffixTree {
-  // ...
+  append(data) {
+    const newNode = new Node(data);
 
-  buildTree(input) {
-    for (let i = 0; i < input.length; i++) {
-      this.addSuffix(input.substring(i));
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
     }
   }
 
-  addSuffix(suffix) {
-    let currentNode = this.root;
-    for (let i = 0; i < suffix.length; i++) {
-      const char = suffix[i];
-      if (!currentNode.children[char]) {
-        currentNode.children[char] = new Node(suffix.substring(i));
-        return;
+  prepend(data) {
+    const newNode = new Node(data);
+    newNode.next = this.head;
+    this.head = newNode;
+  }
+
+  insertAfter(data, prevNodeData) {
+    const newNode = new Node(data);
+    let current = this.head;
+    while (current) {
+      if (current.data === prevNodeData) {
+        newNode.next = current.next;
+        current.next = newNode;
+        break;
       }
-      const childNode = currentNode.children[char];
-      const substring = childNode.substring;
-      let j = 0;
-      while (j < substring.length && j < suffix.length && substring[j] === suffix[i + j]) {
-        j++;
-      }
-      if (j === substring.length) {
-        currentNode = childNode;
-        continue;
-      }
-      const oldSubstring = substring;
-      childNode.substring = substring.substring(0, j);
-      const newNode = new Node(oldSubstring.substring(j));
-      newNode.children[suffix[i + j]] = new Node(suffix.substring(i + j));
-      newNode.children[substring[j]] = childNode;
-      childNode.substring = substring.substring(j);
-      currentNode.children[char] = newNode;
+      current = current.next;
+    }
+  }
+
+  delete(data) {
+    if (!this.head) {
       return;
     }
-  }
 
-  // ...
-}
-class SuffixTree {
-  // ...
-
-  searchSubstring(substring) {
-    let currentNode = this.root;
-    let i = 0;
-    while (i < substring.length) {
-      const char = substring[i];
-      if (!currentNode.children[char]) return false;
-      const childNode = currentNode.children[char];
-      const nodeSubstring = childNode.substring;
-      let j = 0;
-      while (j < nodeSubstring.length && i < substring.length && nodeSubstring[j] === substring[i]) {
-        i++;
-        j++;
-      }
-      if (j === nodeSubstring.length) {
-        currentNode = childNode;
-      } else {
-        return false;
-      }
+    if (this.head.data === data) {
+      this.head = this.head.next;
+      return;
     }
-    return true;
+
+    let current = this.head;
+    let prev = null;
+
+    while (current) {
+      if (current.data === data) {
+        prev.next = current.next;
+        break;
+      }
+      prev = current;
+      current = current.next;
+    }
   }
 
-  // ...
-}
-const suffixTree = new SuffixTree();
-suffixTree.buildTree("banana");
+  display() {
+    let current = this.head;
+    let result = '';
 
-console.log(suffixTree.searchSubstring("ana")); // true
-console.log(suffixTree.searchSubstring("apple")); // false
+    while (current) {
+      result += current.data + ' -> ';
+      current = current.next;
+    }
+
+    result += 'null';
+    console.log(result);
+  }
+}
+
+// Example usage:
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+list.prepend(0);
+list.insertAfter(2.5, 2);
+list.display(); // Output: 0 -> 1 -> 2 -> 2.5 -> 3 -> null
+
+list.delete(1);
+list.display(); // Output: 0 -> 2 -> 2.5 -> 3 -> null
