@@ -1,22 +1,39 @@
-function isAnagram(str1, str2) {
-  // Convert strings to lowercase and remove non-alphanumeric characters
-  str1 = str1.toLowerCase().replace(/[^a-z0-9]/g, '');
-  str2 = str2.toLowerCase().replace(/[^a-z0-9]/g, '');
-
-  // Sort the strings alphabetically
-  const sortedStr1 = str1.split('').sort().join('');
-  const sortedStr2 = str2.split('').sort().join('');
-
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-// Example usage
-const string1 = 'listen';
-const string2 = 'silent';
-
-if (isAnagram(string1, string2)) {
-  console.log('The strings are anagrams.');
-} else {
-  console.log('The strings are not anagrams.');
+function countLeafNodes(root) {
+  // Base case: an empty tree has 0 leaf nodes
+  if (root === null) {
+    return 0;
+  }
+  
+  // Check if the current node is a leaf node
+  if (root.left === null && root.right === null) {
+    return 1;
+  }
+  
+  // Recursive case: count leaf nodes in the left and right subtrees
+  const leftCount = countLeafNodes(root.left);
+  const rightCount = countLeafNodes(root.right);
+  
+  // Return the sum of leaf nodes in the left and right subtrees
+  return leftCount + rightCount;
 }
+
+// Example usage:
+// Create a binary tree
+const tree = new Node(1);
+tree.left = new Node(2);
+tree.right = new Node(3);
+tree.left.left = new Node(4);
+tree.left.right = new Node(5);
+tree.right.left = new Node(6);
+
+// Get the number of leaf nodes
+const leafCount = countLeafNodes(tree);
+console.log(leafCount); // Output: 3 (nodes 4, 5, and 6 are leaf nodes)
