@@ -1,97 +1,100 @@
 class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
-    }
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+    this.height = 1;
+  }
 }
+class AVLTree {
+  constructor() {
+    this.root = null;
+  }
 
-class Queue {
-    constructor() {
-        this.head = null;
-        this.tail = null;
-        this.size = 0;
-    }
+  // ...
 
-    // Method to add an element to the queue
-    enqueue(value) {
-        const newNode = new Node(value);
-
-        if (this.isEmpty()) {
-            this.head = newNode;
-            this.tail = newNode;
-        } else {
-            this.tail.next = newNode;
-            this.tail = newNode;
-        }
-
-        this.size++;
-    }
-
-    // Method to remove an element from the queue and return its value
-    dequeue() {
-        if (this.isEmpty()) {
-            return null;
-        }
-
-        const value = this.head.value;
-
-        if (this.head === this.tail) {
-            this.tail = null;
-        }
-        
-        this.head = this.head.next;
-        this.size--;
-
-        return value;
-    }
-
-    // Method to check if the queue is empty
-    isEmpty() {
-        return this.size === 0;
-    }
-
-    // Method to get the size of the queue
-    getSize() {
-        return this.size;
-    }
-
-    // Method to get the front element of the queue
-    front() {
-        if (this.isEmpty()) {
-            return null;
-        }
-
-        return this.head.value;
-    }
-
-    // Method to print the elements of the queue
-    print() {
-        if (this.isEmpty()) {
-            console.log("Queue is empty.");
-        } else {
-            let current = this.head;
-            let elements = [];
-
-            while (current) {
-                elements.push(current.value);
-                current = current.next;
-            }
-
-            console.log(elements.join(" -> "));
-        }
-    }
 }
+function getHeight(node) {
+  if (node === null) return 0;
+  return node.height;
+}
+function getBalanceFactor(node) {
+  if (node === null) return 0;
+  return getHeight(node.left) - getHeight(node.right);
+}
+function rotateRight(node) {
+  const leftNode = node.left;
+  const rightChildOfLeftNode = leftNode.right;
 
-// Example usage:
-const queue = new Queue();
+  // Perform rotation
+  leftNode.right = node;
+  node.left = rightChildOfLeftNode;
 
-queue.enqueue(5);
-queue.enqueue(10);
-queue.enqueue(15);
+  // Update heights
+  node.height = Math.max(getHeight(node.left), getHeight(node.right)) + 1;
+  leftNode.height = Math.max(getHeight(leftNode.left), getHeight(leftNode.right)) + 1;
 
-queue.print(); // Output: 5 -> 10 -> 15
+  return leftNode;
+}
+function rotateLeft(node) {
+  const rightNode = node.right;
+  const leftChildOfRightNode = rightNode.left;
 
-console.log(queue.dequeue()); // Output: 5
-console.log(queue.dequeue()); // Output: 10
+  // Perform rotation
+  rightNode.left = node;
+  node.right = leftChildOfRightNode;
 
-queue.print(); // Output: 15
+  // Update heights
+  node.height = Math.max(getHeight(node.left), getHeight(node.right)) + 1;
+  rightNode.height = Math.max(getHeight(rightNode.left), getHeight(rightNode.right)) + 1;
+
+  return rightNode;
+}
+function insert(node, value) {
+  // Perform a normal BST insertion
+  if (node === null) {
+    return new Node(value);
+  }
+
+  if (value < node.value) {
+    node.left = insert(node.left, value);
+  } else if (value > node.value) {
+    node.right = insert(node.right, value);
+  } else {
+    // Duplicate values are not allowed in AVL tree
+    return node;
+  }
+
+  // Update height of this ancestor node
+  node.height = Math.max(getHeight(node.left), getHeight(node.right)) + 1;
+
+  // Check the balance factor and balance the tree if needed
+  const balanceFactor = getBalanceFactor(node);
+
+  // Left Left Case
+  if (balanceFactor > 1 && value < node.left.value) {
+    return rotateRight(node);
+  }
+
+  // Right Right Case
+  if (balanceFactor < -1 && value > node.right.value) {
+    return rotateLeft(node);
+  }
+
+  // Left Right Case
+  if (balanceFactor > 1 && value > node.left.value) {
+    node.left = rotateLeft(node.left);
+    return rotateRight(node);
+  }
+
+  // Right Left Case
+  if (balanceFactor < -1 && value < node.right.value) {
+    node.right = rotateRight(node.right);
+    return rotateLeft(node);
+  }
+
+  return node;
+}
+AVLTree.prototype.insert = function (value) {
+  this.root = insert(this.root, value);
+};
