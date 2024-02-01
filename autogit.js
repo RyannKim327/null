@@ -1,16 +1,17 @@
-function getRandomNumber(min, max) {
-  // Calculate the range of possible values
-  var range = max - min + 1;
-  
-  // Generate a random number within the range
-  var random = Math.floor(Math.random() * range) + min;
-  
-  // Return the random number
-  return random;
+function isPalindrome(str) {
+    // Remove non-alphanumeric characters and convert to lowercase
+    var alphanumericRegex = /[a-z0-9]/gi;
+    var cleanedStr = str.toLowerCase().match(alphanumericRegex).join('');
+
+    // Compare the cleaned string with its reversed version
+    var reversedStr = cleanedStr.split('').reverse().join('');
+
+    return cleanedStr === reversedStr;
 }
 
-// Usage example:
-var min = 1;
-var max = 10;
-var randomNumber = getRandomNumber(min, max);
-console.log(randomNumber);
+// Example usage:
+var string1 = "A man, a plan, a canal - Panama!";
+console.log(isPalindrome(string1)); // Output: true
+
+var string2 = "Hello, world!";
+console.log(isPalindrome(string2)); // Output: false
