@@ -1,4 +1,18 @@
-const numbers = [5, 2, 9, 1, 7];
-const max = Math.max(...numbers);
+function isPalindrome(str) {
+  let start = 0;
+  let end = str.length - 1;
 
-console.log(max); // Output: 9
+  while (start < end) {
+    if (str[start] !== str[end]) {
+      return false;
+    }
+
+    start++;
+    end--;
+  }
+
+  return true;
+}
+console.log(isPalindrome("madam")); // true
+console.log(isPalindrome("racecar")); // true
+console.log(isPalindrome("hello")); // false
