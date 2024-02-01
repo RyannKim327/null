@@ -1,24 +1,17 @@
-const axios = require('axios');
+function isPalindrome(str) {
+  // Convert the string to lowercase and remove non-alphanumeric characters
+  const alphaNumericStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-// Make a GET request
-axios.get('https://api.example.com/data')
-  .then(response => {
-    console.log('Response:', response.data);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+  let start = 0;
+  let end = alphaNumericStr.length - 1;
 
-// Make a POST request
-const data = {
-  name: 'John Doe',
-  email: 'john.doe@example.com'
-};
+  while (start < end) {
+    if (alphaNumericStr[start] !== alphaNumericStr[end]) {
+      return false; // Not a palindrome
+    }
+    start++;
+    end--;
+  }
 
-axios.post('https://api.example.com/users', data)
-  .then(response => {
-    console.log('Response:', response.data);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+  return true; // Palindrome
+}
