@@ -1,19 +1,42 @@
-function calculateMean(numbers) {
-  // Check if the numbers array is empty
-  if (numbers.length === 0) {
-    return 0; // return 0 for an empty array, but you can change this behavior if needed
+function generateFibonacci(n) {
+  const fibonacci = [0, 1];
+
+  for (let i = 2; i < n; i++) {
+    fibonacci[i] = fibonacci[i - 1] + fibonacci[i - 2];
   }
 
-  // Calculate the sum of all numbers
-  const sum = numbers.reduce((acc, curr) => acc + curr, 0);
-
-  // Calculate the mean by dividing the sum by the total number of elements
-  const mean = sum / numbers.length;
-
-  return mean;
+  return fibonacci;
 }
+function fibonacciSearch(arr, target) {
+  let fibNums = generateFibonacci(50); // Generate Fibonacci series up to a maximum of 50 elements
+  let fibIdx = -1; // Initialize the index of the smallest Fibonacci number greater than or equal to the array length
+  
+  // Finding the smallest Fibonacci number greater than or equal to the array length
+  while (fibNums[fibIdx] <= arr.length) {
+    fibIdx++;
+  }
+  
+  let offset = -1; // Initialize the offset from the start of the array
+  
+  // Execute the search
+  while (fibIdx > 1) {
+    let idx = Math.min(offset + fibNums[fibIdx - 2], arr.length - 1);
+    
+    if (target === arr[idx]) {
+      return idx;
+    } else if (target < arr[idx]) {
+      fibIdx -= 1;
+    } else {
+      offset = idx;
+      fibIdx -= 2;
+    }
+  }
 
-// Example usage
-const numbers = [1, 2, 3, 4, 5];
-const mean = calculateMean(numbers);
-console.log(mean); // Output: 3
+  return -1; // Return -1 if the target element is not found
+}
+const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17];
+const target = 11;
+
+const index = fibonacciSearch(arr, target);
+
+console.log(`Target element ${target} found at index: ${index}`);
