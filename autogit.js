@@ -1,34 +1,19 @@
-function findCommonElements(array1, array2) {
-  const commonElements = [];
+function isPalindrome(str) {
+  let start = 0;
+  let end = str.length - 1;
 
-  for (let element of array1) {
-    if (array2.includes(element)) {
-      commonElements.push(element);
+  while (start < end) {
+    if (str[start] !== str[end]) {
+      return false;
     }
+    start++;
+    end--;
   }
 
-  return commonElements;
+  return true;
 }
-function findCommonElements(array1, array2) {
-  return array1.filter(element => array2.includes(element));
-}
-function findCommonElements(array1, array2) {
-  const set2 = new Set(array2);
-  return array1.filter(element => set2.has(element));
-}
-function findCommonElements(array1, array2) {
-  const obj = {};
-  const commonElements = [];
 
-  for (let element of array1) {
-    obj[element] = true;
-  }
-
-  for (let element of array2) {
-    if (obj[element]) {
-      commonElements.push(element);
-    }
-  }
-
-  return commonElements;
-}
+// Example usage:
+console.log(isPalindrome("racecar")); // Output: true
+console.log(isPalindrome("hello"));   // Output: false
+console.log(isPalindrome("level"));   // Output: true
