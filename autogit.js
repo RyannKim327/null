@@ -1,17 +1,26 @@
-function isPalindrome(str) {
-    // Remove non-alphanumeric characters and convert to lowercase
-    var alphanumericRegex = /[a-z0-9]/gi;
-    var cleanedStr = str.toLowerCase().match(alphanumericRegex).join('');
+function findFirstNonRepeatingChar(str) {
+  // Create an empty object to store character counts
+  const charCount = {};
 
-    // Compare the cleaned string with its reversed version
-    var reversedStr = cleanedStr.split('').reverse().join('');
+  // Loop through the string to count the occurrence of each character
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
+  }
 
-    return cleanedStr === reversedStr;
+  // Loop through the string again to find the first character with count 1
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    if (charCount[char] === 1) {
+      return char;
+    }
+  }
+
+  // If no non-repeating character is found, return null
+  return null;
 }
 
-// Example usage:
-var string1 = "A man, a plan, a canal - Panama!";
-console.log(isPalindrome(string1)); // Output: true
-
-var string2 = "Hello, world!";
-console.log(isPalindrome(string2)); // Output: false
+// Example usage
+const str = "abacabad";
+const firstNonRepeatingChar = findFirstNonRepeatingChar(str);
+console.log(firstNonRepeatingChar); // Output: "c"
