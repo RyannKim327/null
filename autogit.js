@@ -1,21 +1,31 @@
-function findLongestIncreasingSubsequence(arr) {
-  const n = arr.length;
-  const lis = Array(n).fill(1);
-  let result = 1;
+function binarySearch(arr, target) {
+  let low = 0;
+  let high = arr.length - 1;
 
-  for (let i = 1; i < n; i++) {
-    for (let j = 0; j < i; j++) {
-      if (arr[i] > arr[j] && lis[i] < lis[j] + 1) {
-        lis[i] = lis[j] + 1;
-        if (lis[i] > result) result = lis[i];
-      }
+  while (low <= high) {
+    const mid = Math.floor((low + high) / 2);
+    const guess = arr[mid];
+
+    if (guess === target) {
+      return mid;
+    }
+
+    if (guess > target) {
+      high = mid - 1;
+    } else {
+      low = mid + 1;
     }
   }
 
-  return result;
+  return -1; // Target not found
 }
 
 // Example usage:
-const arr = [10, 22, 9, 33, 21, 50, 41, 60];
-const longestSubsequenceLength = findLongestIncreasingSubsequence(arr);
-console.log(`Length of Longest Increasing Subsequence: ${longestSubsequenceLength}`);
+const array = [1, 3, 5, 7, 9];
+const target = 5;
+const index = binarySearch(array, target);
+if (index !== -1) {
+  console.log(`Target found at index ${index}`);
+} else {
+  console.log("Target not found");
+}
