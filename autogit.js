@@ -1,21 +1,48 @@
-function bubbleSort(arr) {
-  const len = arr.length;
+class Node {
+  constructor(value, children = []) {
+    this.value = value;
+    this.children = children;
+  }
+}
+
+function depthLimitedSearch(node, target, depthLimit) {
+  if (node.value === target) {
+    return node;
+  }
   
-  for (let i = 0; i < len - 1; i++) {
-    for (let j = 0; j < len - i - 1; j++) {
-      if (arr[j] > arr[j + 1]) {
-        // Swap arr[j] and arr[j + 1]
-        let temp = arr[j];
-        arr[j] = arr[j + 1];
-        arr[j + 1] = temp;
-      }
+  if (depthLimit === 0) {
+    return null;
+  }
+  
+  for (let child of node.children) {
+    const result = depthLimitedSearch(child, target, depthLimit - 1);
+    if (result !== null) {
+      return result;
     }
   }
   
-  return arr;
+  return null;
 }
 
-// Usage example
-const numbers = [10, 5, 8, 3, 2, 7, 6, 4, 1, 9];
-console.log("Before sorting:", numbers);
-console.log("After sorting:", bubbleSort(numbers));
+// Example usage
+const tree = new Node('A', [
+  new Node('B', [
+    new Node('C', [
+      new Node('G'),
+      new Node('H')
+    ]),
+    new Node('D', [
+      new Node('I'),
+      new Node('J')
+    ]),
+  ]),
+  new Node('E', [
+    new Node('F', [
+      new Node('K'),
+      new Node('L')
+    ]),
+  ]),
+]);
+
+const targetNode = depthLimitedSearch(tree, 'K', 2);
+console.log(targetNode);
