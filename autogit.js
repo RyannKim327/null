@@ -1,33 +1,34 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.left = null;
-    this.right = null;
-  }
+function Node(value, children) {
+  this.value = value;
+  this.children = children || [];
 }
 
-function countLeafNodes(root) {
-  if (root === null) {
-    return 0;
+function depthLimitedSearch(root, targetValue, depthLimit) {
+  const stack = [];
+  stack.push({ node: root, depth: 0 });
+
+  while (stack.length > 0) {
+    const { node, depth } = stack.pop();
+
+    if (node.value === targetValue) {
+      return node;
+    }
+
+    if (depth < depthLimit) {
+      for (let i = node.children.length - 1; i >= 0; i--) {
+        stack.push({ node: node.children[i], depth: depth + 1 });
+      }
+    }
   }
 
-  if (root.left === null && root.right === null) {
-    return 1;
-  }
-
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
+  return null; // Target value not found within the depth limit
 }
 
-// Example usage:
-// Create the binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
+// Example usage
+const tree = new Node(1, [
+  new Node(2, [new Node(4), new Node(5)]),
+  new Node(3, [new Node(6), new Node(7)])
+]);
 
-// Count the number of leaf nodes
-const leafCount = countLeafNodes(root);
-console.log("Number of leaf nodes:", leafCount);
+const result = depthLimitedSearch(tree, 7, 2);
+console.log(result); // Output: Node { value: 7, children: [] }
