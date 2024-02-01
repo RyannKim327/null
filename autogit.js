@@ -1,16 +1,16 @@
-function findMedianSortedArrays(nums1, nums2) {
-  const merged = nums1.concat(nums2);
-  const length = merged.length;
+function largestPrimeFactor(num) {
+  let largestFactor = 0;
 
-  if (length % 2 === 1) {
-    return merged[Math.floor(length / 2)];
-  } else {
-    const midIndex = length / 2;
-    return (merged[midIndex - 1] + merged[midIndex]) / 2;
+  for (let i = 2; i <= num; i++) {
+    while (num % i === 0) {
+      largestFactor = i;
+      num /= i;
+    }
   }
-}
-const nums1 = [1, 3, 5];
-const nums2 = [2, 4];
 
-const median = findMedianSortedArrays(nums1, nums2);
-console.log(median);  // Output: 3
+  return largestFactor;
+}
+
+// Example usage:
+console.log(largestPrimeFactor(13195)); // Output: 29
+console.log(largestPrimeFactor(600851475143)); // Output: 6857
