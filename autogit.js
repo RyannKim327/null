@@ -1,5 +1,11 @@
-let stringNum = "42";
-let integerNum = parseInt(stringNum);
+function validateEmail(email) {
+  // Regular expression for email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+  // Test the email against the regex pattern
+  return emailRegex.test(email);
+}
 
-console.log(integerNum); // Output: 42
-console.log(typeof integerNum); // Output: number
+// Example usage
+console.log(validateEmail('test@example.com')); // true
+console.log(validateEmail('invalid_email')); // false
