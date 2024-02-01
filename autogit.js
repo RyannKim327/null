@@ -1,35 +1,29 @@
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+function getDigit(num, place) {
+  return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
 }
-
-function countLeafNodes(root) {
-  if (root === null) {
-    return 0;
-  }
-  
-  if (root.left === null && root.right === null) {
-    return 1;
-  }
-  
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
+function digitCount(num) {
+  if (num === 0) return 1;
+  return Math.floor(Math.log10(Math.abs(num))) + 1;
 }
-// Create nodes
-const root = new TreeNode(1);
-const node2 = new TreeNode(2);
-const node3 = new TreeNode(3);
-const node4 = new TreeNode(4);
-const node5 = new TreeNode(5);
-
-// Connect nodes
-root.left = node2;
-root.right = node3;
-node2.left = node4;
-node2.right = node5;
-
-// Count leaf nodes
-const leafCount = countLeafNodes(root);
-console.log(`Number of leaf nodes: ${leafCount}`);
+function mostDigits(arr) {
+  let maxDigits = 0;
+  for (let i = 0; i < arr.length; i++) {
+    maxDigits = Math.max(maxDigits, digitCount(arr[i]));
+  }
+  return maxDigits;
+}
+function radixSort(arr) {
+  const maxDigits = mostDigits(arr);
+  for (let k = 0; k < maxDigits; k++) {
+    const buckets = Array.from({ length: 10 }, () => []);
+    for (let i = 0; i < arr.length; i++) {
+      const digit = getDigit(arr[i], k);
+      buckets[digit].push(arr[i]);
+    }
+    arr = [].concat(...buckets);
+  }
+  return arr;
+}
+const arr = [23, 345, 5467, 12, 2345, 9852];
+const sortedArr = radixSort(arr);
+console.log(sortedArr); // Output: [12, 23, 345, 2345, 5467, 9852]
