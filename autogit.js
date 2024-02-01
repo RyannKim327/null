@@ -1,6 +1,20 @@
-let str = "   Hello,   World!   ";
+function findSecondLargest(arr) {
+  let largest = -Infinity;
+  let secondLargest = null;
 
-// Using the replace() method with a regular expression
-let newStr = str.replace(/\s/g, "");
+  arr.forEach((element) => {
+    if (element > largest) {
+      secondLargest = largest;
+      largest = element;
+    } else if (element > secondLargest && element !== largest) {
+      secondLargest = element;
+    }
+  });
 
-console.log(newStr);  // Output: "Hello,World!"
+  return secondLargest;
+}
+
+// Example usage:
+const numbers = [5, 10, 3, 8, 1];
+const secondLargestNumber = findSecondLargest(numbers);
+console.log(secondLargestNumber); // Output: 8
