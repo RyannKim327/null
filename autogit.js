@@ -1,17 +1,17 @@
-function isAnagram(str1, str2) {
-  // Convert strings to lowercase and remove non-alphabet characters
-  str1 = str1.toLowerCase().replace(/[^a-z]/g, '');
-  str2 = str2.toLowerCase().replace(/[^a-z]/g, '');
-  
-  // Sort the characters in both strings
-  const sortedStr1 = str1.split('').sort().join('');
-  const sortedStr2 = str2.split('').sort().join('');
+function calculateMean(numbers) {
+  if (numbers.length === 0) {
+    return 0;
+  }
 
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+  var sum = 0;
+  for (var i = 0; i < numbers.length; i++) {
+    sum += numbers[i];
+  }
+
+  return sum / numbers.length;
 }
 
 // Example usage
-const string1 = "listen";
-const string2 = "silent";
-console.log(isAnagram(string1, string2)); // Output: true
+var numbers = [1, 2, 3, 4, 5];
+var mean = calculateMean(numbers);
+console.log(mean); // Output: 3
