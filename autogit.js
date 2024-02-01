@@ -1,17 +1,21 @@
-function factorialLoop(num) {
-  let result = 1;
-  for (let i = 2; i <= num; i++) {
-    result *= i;
+function insertionSort(arr) {
+  const length = arr.length;
+
+  for (let i = 1; i < length; i++) {
+    let current = arr[i];
+    let j = i - 1;
+
+    while (j >= 0 && arr[j] > current) {
+      arr[j + 1] = arr[j];
+      j--;
+    }
+
+    arr[j + 1] = current;
   }
-  return result;
+
+  return arr;
 }
 
-console.log(factorialLoop(5)); // Output: 120
-function factorialRecursion(num) {
-  if (num <= 1) {
-    return 1;
-  }
-  return num * factorialRecursion(num - 1);
-}
-
-console.log(factorialRecursion(5)); // Output: 120
+// Example usage:
+const numbers = [5, 2, 4, 6, 1, 3];
+console.log(insertionSort(numbers)); // Output: [1, 2, 3, 4, 5, 6]
