@@ -1,9 +1,13 @@
-let str = "Hello World!";
-let newStr = str.replace(/\s/g, ""); // /\s/ is the regular expression for whitespace characters, and the "g" flag makes it global
-console.log(newStr); // Output: "HelloWorld!"
-let str = "Hello World!";
-let newStr = str.split(" ").join("");
-console.log(newStr); // Output: "HelloWorld!"
-let str = "Hello World!";
-let newStr = [...str].filter((char) => char !== " ").join("");
-console.log(newStr); // Output: "HelloWorld!"
+// Function to fetch data from an API
+async function fetchData() {
+  try {
+    const response = await fetch('https://api.example.com/data'); // Replace with the desired API endpoint
+    const data = await response.json();
+    console.log(data); // Do something with the retrieved data
+  } catch (error) {
+    console.log('Error fetching data:', error);
+  }
+}
+
+// Call the function to fetch data
+fetchData();
