@@ -1,20 +1,25 @@
-function bubbleSort(array) {
-    var len = array.length;
-    
-    for (var i = 0; i < len - 1; i++) {
-        for (var j = 0; j < len - 1 - i; j++) {
-            if (array[j] > array[j + 1]) {
-                // Swap elements
-                var temp = array[j];
-                array[j] = array[j + 1];
-                array[j + 1] = temp;
-            }
-        }
-    }
-    
-    return array;
+function binarySearchRecursive(arr, target, start, end) {
+  if (start > end) {
+    return -1; // target value not found
+  }
+
+  const mid = Math.floor((start + end) / 2);
+
+  if (arr[mid] === target) {
+    return mid; // target value found
+  }
+
+  if (arr[mid] > target) {
+    return binarySearchRecursive(arr, target, start, mid - 1); // search lower half
+  }
+
+  return binarySearchRecursive(arr, target, mid + 1, end); // search upper half
 }
 
 // Example usage:
-var arr = [64, 34, 25, 12, 22, 11, 90];
-console.log(bubbleSort(arr)); // Output: [11, 12, 22, 25, 34, 64, 90]
+const array = [1, 3, 5, 7, 9];
+const target = 7;
+
+const result = binarySearchRecursive(array, target, 0, array.length - 1);
+
+console.log(result); // Output: 3 (index of target value)
