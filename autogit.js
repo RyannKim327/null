@@ -1,57 +1,61 @@
-function fibonacci(n) {
-  if (n <= 1) {
-    return n;
-  } else {
-    return fibonacci(n - 1) + fibonacci(n - 2);
+function buildPrefixArray(pattern) {
+  const prefixArray = Array(pattern.length).fill(0);
+  let prefixLength = 0;
+  let i = 1;
+
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[prefixLength]) {
+      prefixLength++;
+      prefixArray[i] = prefixLength;
+      i++;
+    } else {
+      if (prefixLength !== 0) {
+        prefixLength = prefixArray[prefixLength - 1];
+      } else {
+        prefixArray[i] = 0;
+        i++;
+      }
+    }
   }
+
+  return prefixArray;
 }
-function fibonacciSearch(arr, x) {
-  // Find the smallest Fibonacci number greater than or equal to the length of the array
-  let fibNMinus2 = 0;
-  let fibNMinus1 = 1;
-  let fibN = fibNMinus1 + fibNMinus2;
-  while (fibN < arr.length) {
-    fibNMinus2 = fibNMinus1;
-    fibNMinus1 = fibN;
-    fibN = fibNMinus1 + fibNMinus2;
-  }
+function kmpSearch(text, pattern) {
+  const prefixArray = buildPrefixArray(pattern);
+  const result = [];
+  let textIndex = 0;
+  let patternIndex = 0;
 
-  // Initialize the offset
-  let offset = -1;
-
-  // Perform the search
-  while (fibN > 1) {
-    // Check if fibNMinus2 is a valid index
-    const i = Math.min(offset + fibNMinus2, arr.length - 1);
-
-    // If x is greater than the value at index i, move the offset to the right
-    if (arr[i] < x) {
-      fibN = fibNMinus1;
-      fibNMinus1 = fibNMinus2;
-      fibNMinus2 = fibN - fibNMinus1;
-      offset = i;
+  while (textIndex < text.length) {
+    if (pattern[patternIndex] === text[textIndex]) {
+      patternIndex++;
+      textIndex++;
     }
-    // If x is less than the value at index i, move the offset to the left
-    else if (arr[i] > x) {
-      fibN = fibNMinus2;
-      fibNMinus1 = fibNMinus1 - fibNMinus2;
-      fibNMinus2 = fibN - fibNMinus1;
-    }
-    // If x is found, return the index
-    else {
-      return i;
+
+    if (patternIndex === pattern.length) {
+      result.push(textIndex - patternIndex);
+      patternIndex = prefixArray[patternIndex - 1];
+    } else if (
+      textIndex < text.length &&
+      pattern[patternIndex] !== text[textIndex]
+    ) {
+      if (patternIndex !== 0) {
+        patternIndex = prefixArray[patternIndex - 1];
+      } else {
+        textIndex++;
+      }
     }
   }
 
-  // If x is not found, return -1
-  if (arr[offset + 1] == x) {
-    return offset + 1;
-  } else {
-    return -1;
-  }
+  return result;
 }
-// Test the Fibonacci search algorithm
-const arr = [2, 4, 7, 10, 14, 20, 24, 28, 30];
-const x = 24;
-const index = fibonacciSearch(arr, x);
-console.log(`Element ${x} is found at index ${index}`);
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+
+const matches = kmpSearch(text, pattern);
+
+if (matches.length > 0) {
+  console.log("Pattern found at indexes:", matches);
+} else {
+  console.log("Pattern not found.");
+}
