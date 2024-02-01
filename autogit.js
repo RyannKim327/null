@@ -1,15 +1,6 @@
-function calculateMean(numbers) {
-  let sum = 0;
+let str = "   Hello,   World!   ";
 
-  for (let i = 0; i < numbers.length; i++) {
-    sum += numbers[i];
-  }
+// Using the replace() method with a regular expression
+let newStr = str.replace(/\s/g, "");
 
-  const mean = sum / numbers.length;
-  return mean;
-}
-
-// Example usage:
-const numbers = [1, 2, 3, 4, 5];
-const meanValue = calculateMean(numbers);
-console.log(meanValue);
+console.log(newStr);  // Output: "Hello,World!"
