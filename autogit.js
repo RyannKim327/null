@@ -1,71 +1,48 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function findMedianSortedArrays(nums1, nums2) {
+  const merged = mergeArrays(nums1, nums2);
+  const n = merged.length;
+  
+  if (n % 2 === 0) {
+    // Median for an even number of elements is the average of the middle two
+    const middle = n / 2;
+    return (merged[middle - 1] + merged[middle]) / 2;
+  } else {
+    // Median for an odd number of elements is the middle element
+    return merged[Math.floor(n / 2)];
   }
 }
 
-class BinaryTree {
-  constructor() {
-    this.root = null;
-  }
-
-  insert(value) {
-    const newNode = new Node(value);
-
-    if (!this.root) {
-      this.root = newNode;
+function mergeArrays(nums1, nums2) {
+  const merged = [];
+  let i = 0;
+  let j = 0;
+  
+  while (i < nums1.length && j < nums2.length) {
+    if (nums1[i] < nums2[j]) {
+      merged.push(nums1[i]);
+      i++;
     } else {
-      this.insertNode(this.root, newNode);
+      merged.push(nums2[j]);
+      j++;
     }
   }
-
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (!node.left) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (!node.right) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
+  
+  // Add remaining elements if there are any
+  while (i < nums1.length) {
+    merged.push(nums1[i]);
+    i++;
   }
-
-  search(value) {
-    return this.searchNode(this.root, value);
+  
+  while (j < nums2.length) {
+    merged.push(nums2[j]);
+    j++;
   }
-
-  searchNode(node, value) {
-    if (!node || node.value === value) {
-      return node;
-    }
-
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else {
-      return this.searchNode(node.right, value);
-    }
-  }
+  
+  return merged;
 }
+const nums1 = [1, 3];
+const nums2 = [2, 4, 6];
 
-// Example usage
-const tree = new BinaryTree();
+const median = findMedianSortedArrays(nums1, nums2);
 
-tree.insert(8);
-tree.insert(3);
-tree.insert(10);
-tree.insert(1);
-tree.insert(6);
-tree.insert(14);
-tree.insert(4);
-tree.insert(7);
-tree.insert(13);
-
-console.log(tree.search(6)); // Output: Node { value: 6, left: Node { ... }, right: Node { ... } }
-console.log(tree.search(11)); // Output: null
+console.log(median); // Output: 3.0
