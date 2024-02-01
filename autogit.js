@@ -1,26 +1,48 @@
-function findFirstNonRepeatingChar(str) {
-  // Create an empty object to store character counts
-  const charCount = {};
-
-  // Loop through the string to count the occurrence of each character
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
+class Stack {
+  constructor() {
+    this.array = []; // Initialize an empty array to hold the stack elements
   }
 
-  // Loop through the string again to find the first character with count 1
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    if (charCount[char] === 1) {
-      return char;
+  push(element) {
+    this.array.push(element); // Add an element to the top of the stack
+  }
+
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
     }
+    return this.array.pop(); // Remove and return the top element from the stack
   }
 
-  // If no non-repeating character is found, return null
-  return null;
-}
+  peek() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
+    }
+    return this.array[this.array.length - 1]; // Return the top element of the stack
+  }
 
-// Example usage
-const str = "abacabad";
-const firstNonRepeatingChar = findFirstNonRepeatingChar(str);
-console.log(firstNonRepeatingChar); // Output: "c"
+  isEmpty() {
+    return this.array.length === 0; // Check if the stack is empty
+  }
+
+  size() {
+    return this.array.length; // Return the size of the stack
+  }
+
+  print() {
+    console.log(this.array); // Print the stack elements
+  }
+}
+const stack = new Stack();
+
+stack.push(1);
+stack.push(2);
+stack.push(3);
+
+stack.print(); // Output: [1, 2, 3]
+
+console.log(stack.pop()); // Output: 3
+console.log(stack.peek()); // Output: 2
+
+console.log(stack.isEmpty()); // Output: false
+console.log(stack.size()); // Output: 2
