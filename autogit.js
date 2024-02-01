@@ -1,14 +1,18 @@
-function reverseLinkedList(head) {
-    let prev = null;
-    let current = head;
-    let next = null;
+function reverseWords(str) {
+  // Step 1: Split the string into an array of words
+  var wordsArray = str.split(" ");
 
-    while (current !== null) {
-        next = current.next;
-        current.next = prev;
-        prev = current;
-        current = next;
-    }
+  // Step 2: Reverse the order of words in the array
+  wordsArray.reverse();
 
-    return prev; // New head of the reversed linked list
+  // Step 3: Join the reversed array back into a string
+  var reversedStr = wordsArray.join(" ");
+
+  return reversedStr;
 }
+
+// Example usage
+var originalStr = "Hello world, how are you?";
+var reversedStr = reverseWords(originalStr);
+console.log(reversedStr);
+you? are how world, Hello
