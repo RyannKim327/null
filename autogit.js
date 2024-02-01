@@ -1,47 +1,32 @@
-function biDirectionalSearch(graph, startState, goalState) {
-  // Create queues for nodes to visit from the start and goal states
-  const startQueue = [startState];
-  const goalQueue = [goalState];
-
-  // Create sets to track visited nodes from the start and goal states
-  const startVisited = new Set();
-  const goalVisited = new Set();
-
-  while (startQueue.length > 0 && goalQueue.length > 0) {
-    // Search from the start state
-    const startNode = startQueue.shift();
-    startVisited.add(startNode);
-
-    // Check if the node is also visited from the goal state
-    if (goalVisited.has(startNode)) {
-      return "Path found"; // or return the path
-    }
-
-    // Explore neighbors of the start state
-    for (let neighbor of graph[startNode]) {
-      if (!startVisited.has(neighbor)) {
-        startQueue.push(neighbor);
-        startVisited.add(neighbor);
-      }
-    }
-
-    // Search from the goal state
-    const goalNode = goalQueue.shift();
-    goalVisited.add(goalNode);
-
-    // Check if the node is also visited from the start state
-    if (startVisited.has(goalNode)) {
-      return "Path found"; // or return the path
-    }
-
-    // Explore neighbors of the goal state
-    for (let neighbor of graph[goalNode]) {
-      if (!goalVisited.has(neighbor)) {
-        goalQueue.push(neighbor);
-        goalVisited.add(neighbor);
-      }
-    }
+// Define the tree node structure
+class TreeNode {
+  constructor(val, left = null, right = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
   }
-
-  return "Path not found";
 }
+
+// Function to find the maximum depth of a binary tree
+function maxDepth(root) {
+  if (!root) {
+    // If the root is null, the tree has no depth
+    return 0;
+  } else {
+    // Recursively find the depth of the left and right subtrees
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
+
+    // Return the maximum depth plus 1 (for the current node)
+    return Math.max(leftDepth, rightDepth) + 1;
+  }
+}
+
+// Example usage
+const tree = new TreeNode(3);
+tree.left = new TreeNode(9);
+tree.right = new TreeNode(20);
+tree.right.left = new TreeNode(15);
+tree.right.right = new TreeNode(7);
+
+console.log(maxDepth(tree)); // Output: 3
