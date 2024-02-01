@@ -1,25 +1,15 @@
-function breadthLimitedSearch(root, target, limit) {
-  const queue = [];
-  const visited = new Set();
+function calculateMean(numbers) {
+  let sum = 0;
 
-  queue.push({ node: root, level: 0 });
-
-  while (queue.length > 0) {
-    const { node, level } = queue.shift();
-
-    if (node === target) {
-      return node; // Or perform any desired action when target is found
-    }
-
-    if (level < limit) {
-      for (const child of node.children) {
-        if (!visited.has(child)) {
-          queue.push({ node: child, level: level + 1 });
-          visited.add(child);
-        }
-      }
-    }
+  for (let i = 0; i < numbers.length; i++) {
+    sum += numbers[i];
   }
 
-  return null; // Or any suitable value to indicate target not found within limit
+  const mean = sum / numbers.length;
+  return mean;
 }
+
+// Example usage:
+const numbers = [1, 2, 3, 4, 5];
+const meanValue = calculateMean(numbers);
+console.log(meanValue);
