@@ -1,62 +1,38 @@
-class TrieNode {
-  constructor() {
-    this.children = {};
-    this.isEndOfWord = false;
-  }
+function Node(value, children) {
+  this.value = value;
+  this.children = children;
 }
-class Trie {
-  constructor() {
-    this.root = new TrieNode();
+
+function depthLimitedSearch(root, target, depthLimit) {
+  if (root.value === target) {
+    return root;
   }
 
-  insert(word) {
-    let current = this.root;
+  const stack = [];
+  stack.push({ node: root, depth: 0 });
 
-    for (let char of word) {
-      if (!current.children[char]) {
-        current.children[char] = new TrieNode();
+  while (stack.length > 0) {
+    const { node, depth } = stack.pop();
+
+    if (depth < depthLimit) {
+      for (let i = node.children.length - 1; i >= 0; i--) {
+        const child = node.children[i];
+        if (child.value === target) {
+          return child;
+        }
+        stack.push({ node: child, depth: depth + 1 });
       }
-      current = current.children[char];
     }
-
-    current.isEndOfWord = true;
   }
 
-  search(word) {
-    let current = this.root;
-
-    for (let char of word) {
-      if (!current.children[char]) {
-        return false;
-      }
-      current = current.children[char];
-    }
-
-    return current.isEndOfWord;
-  }
-
-  startsWith(prefix) {
-    let current = this.root;
-
-    for (let char of prefix) {
-      if (!current.children[char]) {
-        return false;
-      }
-      current = current.children[char];
-    }
-
-    return true;
-  }
+  return null; // Target not found within the depth limit
 }
-const trie = new Trie();
 
-trie.insert("apple");
-trie.insert("banana");
-trie.insert("app");
-console.log(trie.search("apple")); // true
-console.log(trie.search("app")); // true
-console.log(trie.search("banana")); // true
-console.log(trie.search("pineapple")); // false
-console.log(trie.startsWith("app")); // true
-console.log(trie.startsWith("ban")); // true
-console.log(trie.startsWith("cat")); // false
+// Example usage:
+const tree = new Node(1, [
+  new Node(2, [new Node(4, []), new Node(5, [])]),
+  new Node(3, [new Node(6, []), new Node(7, [])]),
+]);
+
+const result = depthLimitedSearch(tree, 6, 5);
+console.log(result); // Node { value: 6, children: [] }
