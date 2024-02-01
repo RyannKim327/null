@@ -1,14 +1,12 @@
-const array = [1, 2, 3, 3, 4, 5, 5];
-const uniqueArray = [...new Set(array)];
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 3, 3, 4, 5, 5];
-const uniqueArray = array.filter((value, index) => array.indexOf(value) === index);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 3, 3, 4, 5, 5];
-const uniqueArray = array.reduce((acc, current) => {
-  if (!acc.includes(current)) {
-    acc.push(current);
-  }
-  return acc;
-}, []);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const countOccurrences = (str, word) => {
+  const regex = new RegExp(word, 'gi');
+  const matches = str.match(regex);
+  
+  return matches ? matches.length : 0;
+};
+
+const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed aliquam aliquet mi nec pharetra. In non metus lorem.';
+const wordToCount = 'lorem';
+
+const occurrences = countOccurrences(text, wordToCount);
+console.log(`The word "${wordToCount}" occurs ${occurrences} times.`);
