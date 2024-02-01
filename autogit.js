@@ -1,29 +1,102 @@
-function findLongestIncreasingSubsequence(arr) {
-  const n = arr.length;
-  const dp = new Array(n).fill(1);
-  let maxLen = 1;
-
-  for (let i = 1; i < n; i++) {
-    for (let j = 0; j < i; j++) {
-      if (arr[i] > arr[j]) {
-        dp[i] = Math.max(dp[i], dp[j] + 1);
-        maxLen = Math.max(maxLen, dp[i]);
-      }
-    }
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
-
-  const subsequence = [];
-  for (let i = n - 1; i >= 0; i--) {
-    if (dp[i] === maxLen) {
-      subsequence.unshift(arr[i]); // Add elements in reverse order
-      maxLen--;
-    }
-  }
-
-  return subsequence;
 }
 
-// Example usage
-const array = [3, 10, 2, 1, 20];
-const longestSubsequence = findLongestIncreasingSubsequence(array);
-console.log(longestSubsequence); // Output: [3, 10, 20]
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+  }
+
+  isEmpty() {
+    return this.head === null;
+  }
+
+  addToHead(value) {
+    const newNode = new Node(value);
+    if (this.isEmpty()) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      newNode.next = this.head;
+      this.head = newNode;
+    }
+  }
+
+  addToTail(value) {
+    const newNode = new Node(value);
+    if (this.isEmpty()) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+  }
+
+  removeFromHead() {
+    if (this.isEmpty()) {
+      return undefined;
+    }
+
+    const value = this.head.value;
+    this.head = this.head.next;
+
+    if (this.head === null) {
+      this.tail = null;
+    }
+
+    return value;
+  }
+
+  removeFromTail() {
+    if (this.isEmpty()) {
+      return undefined;
+    }
+
+    let currentNode = this.head;
+    let previousNode = null;
+
+    while (currentNode.next !== null) {
+      previousNode = currentNode;
+      currentNode = currentNode.next;
+    }
+
+    if (previousNode === null) {
+      // Only one element in the list
+      this.head = null;
+      this.tail = null;
+    } else {
+      previousNode.next = null;
+      this.tail = previousNode;
+    }
+
+    return currentNode.value;
+  }
+
+  search(value) {
+    let currentNode = this.head;
+
+    while (currentNode !== null) {
+      if (currentNode.value === value) {
+        return true;
+      }
+      currentNode = currentNode.next;
+    }
+
+    return false;
+  }
+}
+const list = new LinkedList();
+list.addToHead(3);
+list.addToHead(2);
+list.addToHead(1);
+
+console.log(list.search(2)); // true
+console.log(list.search(4)); // false
+
+list.removeFromHead();
+console.log(list.search(1)); // false
