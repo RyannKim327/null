@@ -1,47 +1,22 @@
-function Node(value, children) {
-  this.value = value;
-  this.children = children;
+function isAnagram(str1, str2) {
+    // convert strings to lowercase and remove spaces/punctuation
+    str1 = str1.toLowerCase().replace(/[^a-z0-9]/g, '');
+    str2 = str2.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+    // sort the strings
+    const sortedStr1 = str1.split('').sort().join('');
+    const sortedStr2 = str2.split('').sort().join('');
+
+    // compare the sorted strings
+    return sortedStr1 === sortedStr2;
 }
 
-function depthLimitedSearch(root, target, depthLimit) {
-  // Create a stack to store nodes
-  const stack = [];
-  
-  // Push the root node to the stack
-  stack.push({ node: root, depth: 0 });
-  
-  while (stack.length > 0) {
-    // Pop the top node from the stack
-    const { node, depth } = stack.pop();
-    
-    // Check if the current node matches the target
-    if (node.value === target) {
-      return node;
-    }
-    
-    // Check if the depth limit has been reached
-    if (depth < depthLimit) {
-      // Push child nodes to the stack in reverse order
-      for (let i = node.children.length - 1; i >= 0; i--) {
-        stack.push({ node: node.children[i], depth: depth + 1 });
-      }
-    }
-  }
-  
-  // Target not found within depth limit
-  return null;
+// example usage
+const string1 = "listen";
+const string2 = "silent";
+
+if (isAnagram(string1, string2)) {
+    console.log("The strings are anagrams.");
+} else {
+    console.log("The strings are not anagrams.");
 }
-
-// Example usage
-const tree = new Node(1, [
-  new Node(2, [
-    new Node(4, []),
-    new Node(5, [])
-  ]),
-  new Node(3, [
-    new Node(6, []),
-    new Node(7, [])
-  ])
-]);
-
-console.log(depthLimitedSearch(tree, 5, 2));
