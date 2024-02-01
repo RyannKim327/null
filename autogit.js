@@ -1,20 +1,20 @@
-function findSecondLargest(arr) {
-  let largest = -Infinity;
-  let secondLargest = null;
-
-  arr.forEach((element) => {
-    if (element > largest) {
-      secondLargest = largest;
-      largest = element;
-    } else if (element > secondLargest && element !== largest) {
-      secondLargest = element;
+function bubbleSort(array) {
+    var len = array.length;
+    
+    for (var i = 0; i < len - 1; i++) {
+        for (var j = 0; j < len - 1 - i; j++) {
+            if (array[j] > array[j + 1]) {
+                // Swap elements
+                var temp = array[j];
+                array[j] = array[j + 1];
+                array[j + 1] = temp;
+            }
+        }
     }
-  });
-
-  return secondLargest;
+    
+    return array;
 }
 
 // Example usage:
-const numbers = [5, 10, 3, 8, 1];
-const secondLargestNumber = findSecondLargest(numbers);
-console.log(secondLargestNumber); // Output: 8
+var arr = [64, 34, 25, 12, 22, 11, 90];
+console.log(bubbleSort(arr)); // Output: [11, 12, 22, 25, 34, 64, 90]
