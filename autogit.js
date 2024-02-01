@@ -1,10 +1,25 @@
-function getStringLength(str) {
-    let count = 0;
-    for (let i = 0; str[i] !== undefined; i++) {
-        count++;
+function findFirstNonRepeatingChar(str) {
+  const charCount = {};
+
+  // Count the occurrences of each character
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
+  }
+
+  // Find the first non-repeating character
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    if (charCount[char] === 1) {
+      return char;
     }
-    return count;
+  }
+
+  // If no non-repeating character is found, return null
+  return null;
 }
-let myString = "Hello, world!";
-let length = getStringLength(myString);
-console.log(length); // Output: 13
+
+// Example usage
+const str = "aabbccddeeffg";
+const firstNonRepeatingChar = findFirstNonRepeatingChar(str);
+console.log(firstNonRepeatingChar); // Output: "g"
