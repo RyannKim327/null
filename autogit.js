@@ -1,18 +1,26 @@
-function reverseWords(str) {
-  // Step 1: Split the string into an array of words
-  var wordsArray = str.split(" ");
+function shellSort(arr) {
+  const n = arr.length;
 
-  // Step 2: Reverse the order of words in the array
-  wordsArray.reverse();
+  // Start with a large gap and reduce it
+  for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
 
-  // Step 3: Join the reversed array back into a string
-  var reversedStr = wordsArray.join(" ");
+    // Perform insertion sort on elements with the current gap
+    for (let i = gap; i < n; i++) {
+      const temp = arr[i];
 
-  return reversedStr;
+      let j;
+      for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
+        arr[j] = arr[j - gap];
+      }
+
+      arr[j] = temp;
+    }
+  }
+
+  return arr;
 }
+const array = [9, 4, 6, 2, 7, 1, 5, 3, 8];
+console.log("Original Array:", array);
 
-// Example usage
-var originalStr = "Hello world, how are you?";
-var reversedStr = reverseWords(originalStr);
-console.log(reversedStr);
-you? are how world, Hello
+const sortedArray = shellSort(array);
+console.log("Sorted Array:", sortedArray);
