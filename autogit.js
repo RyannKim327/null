@@ -1,20 +1,46 @@
-function findSecondLargest(arr) {
-  let largest = arr[0];
-  let secondLargest = -Infinity;
+function stepSearch(forwardQueue, backwardQueue) {
+  if (forwardQueue.length === 0 || backwardQueue.length === 0) {
+    return null; // No path exists
+  }
 
-  for (let i = 1; i < arr.length; i++) {
-    if (arr[i] > largest) {
-      secondLargest = largest;
-      largest = arr[i];
-    } else if (arr[i] > secondLargest && arr[i] !== largest) {
-      secondLargest = arr[i];
+  const currentNodeForward = forwardQueue.shift();
+  const currentNodeBackward = backwardQueue.shift();
+
+  // Check if the two nodes are the same or connected
+  if (currentNodeForward === currentNodeBackward || isConnected(currentNodeForward, currentNodeBackward)) {
+    return [currentNodeForward, ...backwardQueue.reverse()]; // Return the path
+  }
+
+  // Generate adjacent nodes in the forward direction
+  const adjacentNodesForward = generateAdjacentNodes(currentNodeForward);
+  for (const node of adjacentNodesForward) {
+    if (!visited.has(node)) {
+      visited.add(node);
+      forwardQueue.push(node);
     }
   }
 
-  return secondLargest;
+  // Generate adjacent nodes in the backward direction
+  const adjacentNodesBackward = generateAdjacentNodes(currentNodeBackward);
+  for (const node of adjacentNodesBackward) {
+    if (!visited.has(node)) {
+      visited.add(node);
+      backwardQueue.push(node);
+    }
+  }
+
+  return null; // No connection found yet
 }
 
-// Example usage
-const numbers = [10, 5, 8, 20, 9, 12];
-const secondLargest = findSecondLargest(numbers);
-console.log(secondLargest); // Output: 12
+function bidirectionalSearch(startNode, endNode) {
+  const forwardQueue = [startNode];
+  const backwardQueue = [endNode];
+  const visited = new Set([startNode, endNode]);
+
+  while (true) {
+    const path = stepSearch(forwardQueue, backwardQueue);
+    if (path) {
+      return path;
+    }
+  }
+}
