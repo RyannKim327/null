@@ -1,67 +1,117 @@
-let fibNMinus2 = 0;
-let fibNMinus1 = 1;
-let fibM = fibNMinus2 + fibNMinus1;
-
-while (fibM < n) {
-  fibNMinus2 = fibNMinus1;
-  fibNMinus1 = fibM;
-  fibM = fibNMinus2 + fibNMinus1;
+class Node {
+  constructor(start, end) {
+    this.children = {};
+    this.start = start;
+    this.end = end;
+    this.suffixLink = null;
+  }
 }
-function fibonacciSearch(arr, key, n) {
-  // Step 2: Create Fibonacci series array
-  let fib = [0, 1];
-
-  // Step 3: Find smallest Fibonacci number greater than or equal to n
-  let fibNMinus2 = 0;
-  let fibNMinus1 = 1;
-  let fibM = fibNMinus2 + fibNMinus1;
-
-  while (fibM < n) {
-    fibNMinus2 = fibNMinus1;
-    fibNMinus1 = fibM;
-    fibM = fibNMinus2 + fibNMinus1;
+class SuffixTree {
+  constructor(word) {
+    this.root = new Node(-1, -1); // The root node
+    this.word = word;
+    this.wordLength = word.length;
+    this.activeNode = this.root;
+    this.activeEdge = 0;
+    this.activeLength = 0;
+    this.remainingSuffixCount = 0;
+    this.lastNewNode = null;
+    this.end = [-1]; // A dummy node to store the end index of all suffixes
+    this.root.suffixLink = this.root; // The root node's suffix link points back to itself
+    this.build();
   }
-
-  // Step 4: Initialize offset and index
-  let offset = -1;
-  let index = fibNMinus2;
-
-  // Step 5: Perform Fibonacci search
-  while (fibM > 1) {
-    // Step 5a: Calculate index
-    let i = Math.min(offset + fibNMinus1, n - 1);
-
-    // Step 5b: Element found at index
-    if (arr[i] === key) {
-      return i;
-    }
-    // Step 5c: Key greater than current element
-    else if (arr[i] < key) {
-      offset = i;
-      fibM = fibNMinus1;
-      fibNMinus1 -= fibNMinus2;
-      fibNMinus2 = fibM - fibNMinus1;
-    }
-    // Step 5d: Key smaller than current element
-    else {
-      fibM = fibNMinus2;
-      fibNMinus1 -= fibNMinus2;
-      fibNMinus2 = fibM - fibNMinus1;
+  
+  build() {
+    for (let i = 0; i < this.wordLength; i++) {
+      this.extendSuffixTree(i);
     }
   }
-
-  // Step 6: Check last element and offset+1
-  if (fibNMinus1 === 1 && arr[offset + 1] === key) {
-    return offset + 1;
+  
+  extendSuffixTree(pos) {
+   // Your code for extending the suffix tree goes here
   }
-
-  // Step 7: Element not found
-  return -1;
 }
-
-// Example usage
-const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const key = 16;
-const n = arr.length;
-const result = fibonacciSearch(arr, key, n);
-console.log(`Element ${key} found at index ${result}`);
+extendSuffixTree(pos) {
+    this.end[0] = pos + 1;
+    this.remainingSuffixCount++;
+    this.lastNewNode = null;
+    
+    while (this.remainingSuffixCount > 0) {
+      if (this.activeLength === 0) {
+        this.activeEdge = pos; // Set the active edge to the current position
+      }
+      
+      if (!(this.word[this.activeEdge] in this.activeNode.children)) {
+        // If the active edge is not present in the active node's children,
+        // create a new leaf node and add it as a child
+        const leafNode = new Node(pos, this.wordLength);
+        this.activeNode.children[this.word[this.activeEdge]] = leafNode;
+        
+        if (this.lastNewNode !== null) {
+          this.lastNewNode.suffixLink = this.activeNode;
+          this.lastNewNode = null;
+        }
+      } else {
+        const nextNode = this.activeNode.children[this.word[this.activeEdge]];
+        
+        if (this.walkDown(nextNode)) {
+          // If the active length is greater than the edge length, move to the next edge
+          continue;
+        }
+        
+        if (this.word[nextNode.start + this.activeLength] === this.word[pos]) {
+          // If the character at the end of the active edge is the same as the current character,
+          // increment the active length and check the next phase
+          this.activeLength++;
+          
+          if (this.lastNewNode !== null && this.activeNode !== this.root) {
+            this.lastNewNode.suffixLink = this.activeNode;
+            this.lastNewNode = null;
+          }
+          
+          // Move to the next iteration
+          break;
+        }
+        
+        // If the characters don't match, split the edge and create a new internal node
+        const splitEnd = nextNode.start + this.activeLength - 1;
+        const splitNode = new Node(nextNode.start, splitEnd);
+        
+        // Create a new leaf node for the current character
+        const leafNode = new Node(pos, this.wordLength);
+        
+        nextNode.start += this.activeLength;
+        splitNode.children[this.word[nextNode.start]] = nextNode;
+        splitNode.children[this.word[pos]] = leafNode;
+        
+        this.activeNode.children[this.word[this.activeEdge]] = splitNode;
+        
+        if (this.lastNewNode !== null) {
+          this.lastNewNode.suffixLink = splitNode;
+        }
+        
+        this.lastNewNode = splitNode;
+      }
+      
+      this.remainingSuffixCount--;
+      
+      if (this.activeNode === this.root && this.activeLength > 0) {
+        this.activeLength--;
+        this.activeEdge = pos - this.remainingSuffixCount + 1;
+      } else if (this.activeNode !== this.root) {
+        this.activeNode = this.activeNode.suffixLink || this.root;
+      }
+    }
+  }
+  
+  walkDown(node) {
+    if (this.activeLength >= node.end - node.start) {
+      this.activeEdge += node.end - node.start;
+      this.activeLength -= node.end - node.start;
+      this.activeNode = node;
+      return true;
+    }
+    return false;
+  }
+const word = 'banana';
+const suffixTree = new SuffixTree(word);
