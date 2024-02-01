@@ -1,40 +1,43 @@
-class TreeNode {
-  constructor(val, left = null, right = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
+class Node {
+  constructor(data, next = null) {
+    this.data = data;
+    this.next = next;
   }
 }
 
-function findDiameter(root) {
-  let diameter = 0;
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
 
-  function depth(node) {
-    if (node === null) {
-      return 0;
+  add(data) {
+    const newNode = new Node(data);
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
     }
-
-    const leftDepth = depth(node.left);
-    const rightDepth = depth(node.right);
-
-    // update the diameter if the sum of left and right nodes' depths is greater
-    diameter = Math.max(diameter, leftDepth + rightDepth);
-
-    // return the depth of the current node
-    return 1 + Math.max(leftDepth, rightDepth);
   }
 
-  depth(root); // start the recursive traversal from the root node
-  return diameter;
+  getLength() {
+    let count = 0;
+    let current = this.head;
+    while (current) {
+      count++;
+      current = current.next;
+    }
+    return count;
+  }
 }
 
-// Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-root.right.left = new TreeNode(6);
-root.right.right = new TreeNode(7);
-
-console.log(findDiameter(root)); // Output: 5
+// Usage
+const list = new LinkedList();
+list.add(1);
+list.add(2);
+list.add(3);
+const length = list.getLength();
+console.log(length); // Output: 3
