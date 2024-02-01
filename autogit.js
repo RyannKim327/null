@@ -1,15 +1,26 @@
-function validateEmail(email) {
-  // Regular expression pattern for email validation
-  const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+function shellSort(arr) {
+  var len = arr.length,
+      gap = Math.floor(len / 2);
   
-  // Test the email against the pattern
-  return pattern.test(email);
+  while (gap > 0) {
+    for (var i = gap; i < len; i++) {
+      var temp = arr[i],
+          j = i;
+      
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
+      }
+      
+      arr[j] = temp;
+    }
+    
+    gap = Math.floor(gap / 2);
+  }
+  
+  return arr;
 }
 
-// Usage
-const email = "test@example.com";
-if (validateEmail(email)) {
-  console.log("Valid email address");
-} else {
-  console.log("Invalid email address");
-}
+// Example usage:
+var arr = [5, 3, 8, 4, 2];
+console.log(shellSort(arr)); // Output: [2, 3, 4, 5, 8]
