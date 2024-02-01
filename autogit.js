@@ -1,30 +1,16 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
+function countOccurrences(string, word) {
+    // Use regular expression with 'g' flag to perform a global search
+    var regex = new RegExp(word, 'g');
+    
+    // Use the `match()` method to find all matches
+    var matches = string.match(regex);
 
-function findMiddleElement(head) {
-  let slowPointer = head;
-  let fastPointer = head;
-
-  while (fastPointer !== null && fastPointer.next !== null) {
-    slowPointer = slowPointer.next;
-    fastPointer = fastPointer.next.next;
-  }
-
-  return slowPointer;
+    // Return the count of matches
+    return matches ? matches.length : 0;
 }
 
 // Example usage:
+var str = 'How much wood would a woodchuck chuck if a woodchuck could chuck wood?';
+var word = 'wood';
 
-// Creating a linked list: 1 -> 2 -> 3 -> 4 -> 5
-const head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-const middleElement = findMiddleElement(head);
-console.log(middleElement.value); // Output: 3
+console.log(countOccurrences(str, word)); // Output: 2
