@@ -1,14 +1,24 @@
-function getRandomNumber(min, max) {
-  // Generate a random decimal between 0 and 1
-  const randomDecimal = Math.random();
-  
-  // Scale the random decimal to fit the desired range
-  const randomNumber = randomDecimal * (max - min + 1) + min;
-  
-  // Convert the random number to an integer and return it
-  return Math.floor(randomNumber);
-}
+function bwtTransform(input) {
+  // Append a sentinel character to the input string
+  input += '$';
 
-// Usage example: generate a random number between 1 and 10
-const randomNum = getRandomNumber(1, 10);
-console.log(randomNum);
+  // Generate all rotations of the input string
+  const rotations = [];
+  for (let i = 0; i < input.length; i++) {
+    rotations.push(input.slice(i) + input.slice(0, i));
+  }
+
+  // Sort the rotations lexicographically
+  rotations.sort();
+
+  // Extract the last characters of each rotation to get the BWT result
+  let bwt = '';
+  for (let i = 0; i < rotations.length; i++) {
+    bwt += rotations[i][input.length - 1];
+  }
+
+  return bwt;
+}
+const inputString = 'banana';
+const bwtResult = bwtTransform(inputString);
+console.log(bwtResult); // Output: 'annb$aa'
