@@ -1,13 +1,92 @@
-function isArraySorted(arr) {
-  for (let i = 0; i < arr.length - 1; i++) {
-    if (arr[i] > arr[i + 1]) {
-      return false; // Array is not sorted in ascending order
+function binarySearch(arr, target) {
+
+}
+function binarySearch(arr, target) {
+  let start = 0;
+  let end = arr.length - 1;
+
+}
+function binarySearch(arr, target) {
+  let start = 0;
+  let end = arr.length - 1;
+
+  while (start <= end) {
+
+  }
+}
+function binarySearch(arr, target) {
+  let start = 0;
+  let end = arr.length - 1;
+
+  while (start <= end) {
+    let mid = Math.floor((start + end) / 2);
+
+  }
+}
+function binarySearch(arr, target) {
+  let start = 0;
+  let end = arr.length - 1;
+
+  while (start <= end) {
+    let mid = Math.floor((start + end) / 2);
+
+    if (arr[mid] === target) {
+      return mid;
+    }
+
+  }
+}
+function binarySearch(arr, target) {
+  let start = 0;
+  let end = arr.length - 1;
+
+  while (start <= end) {
+    let mid = Math.floor((start + end) / 2);
+
+    if (arr[mid] === target) {
+      return mid;
+    } else if (arr[mid] > target) {
+      end = mid - 1;
+    }
+
+  }
+}
+function binarySearch(arr, target) {
+  let start = 0;
+  let end = arr.length - 1;
+
+  while (start <= end) {
+    let mid = Math.floor((start + end) / 2);
+
+    if (arr[mid] === target) {
+      return mid;
+    } else if (arr[mid] > target) {
+      end = mid - 1;
+    } else {
+      start = mid + 1;
+    }
+
+  }
+}
+function binarySearch(arr, target) {
+  let start = 0;
+  let end = arr.length - 1;
+
+  while (start <= end) {
+    let mid = Math.floor((start + end) / 2);
+
+    if (arr[mid] === target) {
+      return mid;
+    } else if (arr[mid] > target) {
+      end = mid - 1;
+    } else {
+      start = mid + 1;
     }
   }
-  return true; // Array is sorted in ascending order
-}
-const arr1 = [1, 2, 3, 4, 5];
-console.log(isArraySorted(arr1)); // Output: true
 
-const arr2 = [5, 2, 8, 6, 1];
-console.log(isArraySorted(arr2)); // Output: false
+  return -1;
+}
+const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const target = 5;
+
+console.log(binarySearch(arr, target)); // Output: 4
