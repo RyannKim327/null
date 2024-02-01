@@ -1,30 +1,25 @@
-function breadthFirstSearch(graph, startNode) {
-  let queue = [startNode];
-  let visited = [];
+const sentence = "This is a sample sentence. This sentence contains the word 'sentence'.";
 
-  visited[startNode] = true;
+const word = "sentence";
+const regex = new RegExp(word, "gi");
+const count = (sentence.match(regex) || []).length;
 
-  while (queue.length > 0) {
-    const currentNode = queue.shift();
-    console.log(currentNode); // Process the dequeued node (e.g., print its value)
+console.log(count); // Output: 2
+const sentence = "This is a sample sentence. This sentence contains the word 'sentence'.";
 
-    const neighbors = graph[currentNode];
-    for (let i = 0; i < neighbors.length; i++) {
-      const neighbor = neighbors[i];
-      if (!visited[neighbor]) {
-        queue.push(neighbor);
-        visited[neighbor] = true;
-      }
-    }
-  }
+const word = "sentence";
+const words = sentence.split(" ");
+const count = words.filter((w) => w === word).length;
+
+console.log(count); // Output: 2
+const sentence = "This is a sample sentence. This sentence contains the word 'sentence'.";
+
+const word = "sentence";
+let count = 0;
+let currentIndex = -1;
+
+while ((currentIndex = sentence.indexOf(word, currentIndex + 1)) !== -1) {
+  count++;
 }
-const graph = {
-  A: ["B", "C"],
-  B: ["D", "E"],
-  C: ["F"],
-  D: [],
-  E: ["F"],
-  F: []
-};
 
-breadthFirstSearch(graph, "A");
+console.log(count); // Output: 2
