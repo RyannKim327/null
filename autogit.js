@@ -1,26 +1,10 @@
-function removeDuplicates(array) {
-  return array.filter((element, index) => array.indexOf(element) === index);
+area = (base * height) / 2;
+function calculateTriangleArea(base, height) {
+  var area = (base * height) / 2;
+  return area;
 }
 
-const originalArray = [1, 2, 3, 4, 4, 5, 6, 6, 7];
-const uniqueArray = removeDuplicates(originalArray);
-console.log(uniqueArray);
-function removeDuplicates(array) {
-  return Array.from(new Set(array));
-}
-
-const originalArray = [1, 2, 3, 4, 4, 5, 6, 6, 7];
-const uniqueArray = removeDuplicates(originalArray);
-console.log(uniqueArray);
-function removeDuplicates(array) {
-  return array.reduce((unique, element) => {
-    if (!unique.includes(element)) {
-      unique.push(element);
-    }
-    return unique;
-  }, []);
-}
-
-const originalArray = [1, 2, 3, 4, 4, 5, 6, 6, 7];
-const uniqueArray = removeDuplicates(originalArray);
-console.log(uniqueArray);
+// Example usage:
+var base = 5;
+var height = 10;
+console.log("The area of the triangle is: " + calculateTriangleArea(base, height));
