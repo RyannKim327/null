@@ -1,45 +1,55 @@
-class ListNode {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
-}
+function biDirectionalSearch(graph, startNode, goalNode) {
+  let startQueue = [startNode];
+  let goalQueue = [goalNode];
+  let startParents = { [startNode]: null };
+  let goalParents = { [goalNode]: null };
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+  while (startQueue.length && goalQueue.length) {
+    const startNode = startQueue.shift();
+    const goalNode = goalQueue.shift();
 
-  append(data) {
-    const newNode = new ListNode(data);
+    if (startNode in goalParents) {
+      // Intersection found
+      return buildPath(startParents, goalParents, startNode, goalNode);
+    }
 
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let currentNode = this.head;
-      while (currentNode.next) {
-        currentNode = currentNode.next;
+    // Expand start node's neighbors
+    for (let neighbor of graph[startNode]) {
+      if (!(neighbor in startParents)) {
+        startParents[neighbor] = startNode;
+        startQueue.push(neighbor);
       }
-      currentNode.next = newNode;
+    }
+
+    // Expand goal node's neighbors
+    for (let neighbor of graph[goalNode]) {
+      if (!(neighbor in goalParents)) {
+        goalParents[neighbor] = goalNode;
+        goalQueue.push(neighbor);
+      }
     }
   }
 
-  getLength() {
-    let currentNode = this.head;
-    let count = 0;
-
-    while (currentNode) {
-      count++;
-      currentNode = currentNode.next;
-    }
-
-    return count;
-  }
+  // No path found
+  return null;
 }
 
-// Example usage:
-const linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
-console.log(linkedList.getLength()); // Output: 3
+function buildPath(startParents, goalParents, startNode, goalNode) {
+  const path = [];
+  let node = startNode;
+
+  while (node !== null) {
+    path.push(node);
+    node = startParents[node];
+  }
+
+  path.reverse();
+
+  node = goalNode;
+  while (node !== null) {
+    path.push(node);
+    node = goalParents[node];
+  }
+
+  return path;
+}
