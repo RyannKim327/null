@@ -1,16 +1,7 @@
-function insertionSort(arr) {
-  for (let i = 1; i < arr.length; i++) {
-    let currentVal = arr[i];
-    let j = i - 1;
-    while (j >= 0 && arr[j] > currentVal) {
-      arr[j + 1] = arr[j];
-      j--;
-    }
-    arr[j + 1] = currentVal;
-  }
-  return arr;
-}
-
-// Example usage:
-const array = [5, 3, 1, 4, 2];
-console.log(insertionSort(array)); // Output: [1, 2, 3, 4, 5]
+let array = [1, 2, 3, 4, 5];
+array.reverse();
+console.log(array); // Output: [5, 4, 3, 2, 1]
+let array = [1, 2, 3, 4, 5];
+let reversedArray = array.slice().reverse();
+console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
+console.log(array); // Output: [1, 2, 3, 4, 5]
