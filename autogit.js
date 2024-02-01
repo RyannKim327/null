@@ -1,38 +1,51 @@
-function Node(value, children) {
-  this.value = value;
-  this.children = children;
-}
+// Heapify the given array
+function heapify(arr, n, i) {
+  let largest = i; // Initialize the largest as the root
+  const left = 2 * i + 1;
+  const right = 2 * i + 2;
 
-function depthLimitedSearch(root, target, depthLimit) {
-  if (root.value === target) {
-    return root;
+  // If the left child is larger than the root
+  if (left < n && arr[left] > arr[largest]) {
+    largest = left;
   }
 
-  const stack = [];
-  stack.push({ node: root, depth: 0 });
-
-  while (stack.length > 0) {
-    const { node, depth } = stack.pop();
-
-    if (depth < depthLimit) {
-      for (let i = node.children.length - 1; i >= 0; i--) {
-        const child = node.children[i];
-        if (child.value === target) {
-          return child;
-        }
-        stack.push({ node: child, depth: depth + 1 });
-      }
-    }
+  // If the right child is larger than the largest so far
+  if (right < n && arr[right] > arr[largest]) {
+    largest = right;
   }
 
-  return null; // Target not found within the depth limit
+  // If the largest is not the root
+  if (largest !== i) {
+    [arr[i], arr[largest]] = [arr[largest], arr[i]]; // Swap the elements
+
+    // Recursively heapify the affected sub-tree
+    heapify(arr, n, largest);
+  }
 }
 
-// Example usage:
-const tree = new Node(1, [
-  new Node(2, [new Node(4, []), new Node(5, [])]),
-  new Node(3, [new Node(6, []), new Node(7, [])]),
-]);
+// Heap sort function
+function heapSort(arr) {
+  const n = arr.length;
 
-const result = depthLimitedSearch(tree, 6, 5);
-console.log(result); // Node { value: 6, children: [] }
+  // Build the heap (rearrange the array)
+  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+    heapify(arr, n, i);
+  }
+
+  // Extract elements from the heap one by one
+  for (let i = n - 1; i > 0; i--) {
+    // Move the current root to the end
+    [arr[0], arr[i]] = [arr[i], arr[0]];
+
+    // Heapify the reduced heap
+    heapify(arr, i, 0);
+  }
+
+  return arr;
+}
+
+
+// Usage example
+const array = [5, 8, 2, 1, 6, 3, 7, 4];
+const sortedArray = heapSort(array);
+console.log(sortedArray);
