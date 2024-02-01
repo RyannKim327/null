@@ -1,43 +1,34 @@
-class TreeNode {
-  constructor(value) {
-    this.val = value;
-    this.left = null;
-    this.right = null;
-  }
-}
-
-function maxDepth(root) {
-  // If the root is null, the depth is 0
-  if (root === null) {
-    return 0;
+function fibonacciSearch(arr, key) {
+  // Create Fibonacci series
+  let fib = [0, 1];
+  let i = 2;
+  while (fib[i - 1] < arr.length) {
+    fib[i] = fib[i - 1] + fib[i - 2];
+    i++;
   }
 
-  // Recursively calculate the depth of the left and right subtrees
-  const leftDepth = maxDepth(root.left);
-  const rightDepth = maxDepth(root.right);
+  let offset = -1; // Offset from the starting index of the array
+  let k = fib[i - 2]; // Index used for comparison
 
-  // Return the maximum depth plus 1 (for the current node)
-  return Math.max(leftDepth, rightDepth) + 1;
+  while (k > 0) {
+    let idx = Math.min(offset + fib[i - 3], arr.length - 1);
+    if (arr[idx] === key) {
+      return idx;
+    } else if (arr[idx] < key) {
+      i--;
+      offset = idx;
+      k = fib[i - 2];
+    } else {
+      i -= 2;
+      k = fib[i - 2];
+    }
+  }
+
+  return -1; // Key not found
 }
-// Create nodes
-const root = new TreeNode(1);
-const node2 = new TreeNode(2);
-const node3 = new TreeNode(3);
-const node4 = new TreeNode(4);
-const node5 = new TreeNode(5);
 
-// Build the binary tree
-root.left = node2;
-root.right = node3;
-node2.left = node4;
-node2.right = node5;
-
-// Calculate the maximum depth
-const depth = maxDepth(root);
-console.log('Maximum depth:', depth);
-     1
-    / \
-   2   3
-  / \
- 4   5
-Maximum depth: 3
+// Usage example
+let sortedArray = [1, 3, 5, 8, 12, 18, 21, 30];
+let keyToFind = 8;
+let index = fibonacciSearch(sortedArray, keyToFind);
+console.log(`Element found at index ${index}`);
