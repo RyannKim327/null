@@ -1,39 +1,84 @@
-function findMax(arr) {
-  let max = arr[0];
-  for (let i = 1; i < arr.length; i++) {
-    if (arr[i] > max) {
-      max = arr[i];
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.neighbors = [];
+  }
+}
+class Node {
+  // ...
+
+  addNeighbor(node) {
+    this.neighbors.push(node);
+    node.neighbors.push(this);
+  }
+}
+function bidirectionalSearch(startNode, endNode) {
+  
+}
+function bidirectionalSearch(startNode, endNode) {
+  const visitedFromStart = new Set();
+  const visitedFromEnd = new Set();
+}
+function bidirectionalSearch(startNode, endNode) {
+  const visitedFromStart = new Set();
+  const visitedFromEnd = new Set();
+  const queueFromStart = [startNode];
+  const queueFromEnd = [endNode];
+}
+function performSearch(queue, visited, oppositeVisited) {
+  const node = queue.shift();
+  if (oppositeVisited.has(node))
+    return node;
+
+  visited.add(node);
+  for (const neighbor of node.neighbors) {
+    if (!visited.has(neighbor))
+      queue.push(neighbor);
+  }
+}
+function bidirectionalSearch(startNode, endNode) {
+  const visitedFromStart = new Set();
+  const visitedFromEnd = new Set();
+  const queueFromStart = [startNode];
+  const queueFromEnd = [endNode];
+
+  while (queueFromStart.length > 0 && queueFromEnd.length > 0) {
+    const nodeFromStart = performSearch(queueFromStart, visitedFromStart, visitedFromEnd);
+    if (nodeFromStart)
+      return reconstructPath(nodeFromStart, startNode, endNode);
+
+    const nodeFromEnd = performSearch(queueFromEnd, visitedFromEnd, visitedFromStart);
+    if (nodeFromEnd)
+      return reconstructPath(nodeFromEnd, startNode, endNode);
+  }
+
+  return null;
+}
+
+function reconstructPath(node, startNode, endNode) {
+  const path = [node.value];
+  let curr = node;
+
+  while (curr !== startNode) {
+    for (const neighbor of curr.neighbors) {
+      if (curr === endNode || visitedFromStart.has(neighbor) && neighbor.neighbors.includes(curr)) {
+        path.unshift(neighbor.value);
+        curr = neighbor;
+        break;
+      }
     }
   }
-  return max;
+
+  curr = node;
+  while (curr !== endNode) {
+    for (const neighbor of curr.neighbors) {
+      if (curr === startNode || visitedFromEnd.has(neighbor) && neighbor.neighbors.includes(curr)) {
+        path.push(neighbor.value);
+        curr = neighbor;
+        break;
+      }
+    }
+  }
+
+  return path;
 }
-function countingSort(arr) {
-  const max = findMax(arr); // Find the maximum value in the array
-
-  // Create a count array with size=max+1 and initialize it with zeros
-  const count = new Array(max + 1).fill(0);
-
-  // Count the occurrences of each element in the input array
-  for (let i = 0; i < arr.length; i++) {
-    count[arr[i]]++;
-  }
-
-  // Calculate the running sum of the count array
-  for (let i = 1; i < count.length; i++) {
-    count[i] += count[i - 1];
-  }
-
-  // Create a result array with the same length as the input array
-  const result = new Array(arr.length);
-
-  // Build the result array by placing elements into their correct sorted positions
-  for (let i = arr.length - 1; i >= 0; i--) {
-    result[count[arr[i]] - 1] = arr[i];
-    count[arr[i]]--;
-  }
-
-  return result;
-}
-const inputArray = [4, 2, 2, 8, 3, 3, 1];
-const sortedArray = countingSort(inputArray);
-console.log(sortedArray); // Output: [1, 2, 2, 3, 3, 4, 8]
