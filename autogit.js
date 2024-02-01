@@ -1,13 +1,32 @@
-function isSortedAscending(arr) {
-  for (let i = 0; i < arr.length - 1; i++) {
-    if (arr[i] > arr[i + 1]) {
-      return false; // Array is not sorted in ascending order
-    }
+class ListNode {
+  constructor(value, next = null) {
+    this.value = value;
+    this.next = next;
   }
-  return true; // Array is sorted in ascending order
 }
-const array1 = [1, 2, 3, 4, 5];
-console.log(isSortedAscending(array1)); // Output: true
 
-const array2 = [1, 3, 2, 4, 5];
-console.log(isSortedAscending(array2)); // Output: false
+function findMiddleElement(head) {
+  if (head === null) {
+    return null; // Empty list
+  }
+
+  let slow = head;
+  let fast = head;
+
+  while (fast !== null && fast.next !== null) {
+    slow = slow.next; // Moves one node at a time
+    fast = fast.next.next; // Moves two nodes at a time
+  }
+
+  return slow.value;
+}
+
+// Example usage:
+const list = new ListNode(1);
+list.next = new ListNode(2);
+list.next.next = new ListNode(3);
+list.next.next.next = new ListNode(4);
+list.next.next.next.next = new ListNode(5);
+
+const middle = findMiddleElement(list);
+console.log(middle); // Output: 3
