@@ -1,46 +1,98 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function bidirectionalSearch(startNode, goalNode) {
+  const startSet = new Set();
+  const goalSet = new Set();
+  startSet.add(startNode);
+  goalSet.add(goalNode);
+
+  let commonNode = null;
+
+  while (startSet.size > 0 && goalSet.size > 0) {
+    // Search from start direction
+    const startNext = new Set();
+    for (const node of startSet) {
+      // Expand node to its neighbors
+      const neighbors = expandNode(node);
+
+      // Check if any neighbor is in goalSet
+      for (const neighbor of neighbors) {
+        if (goalSet.has(neighbor)) {
+          commonNode = neighbor;
+          break;
+        }
+        startNext.add(neighbor);
+      }
+
+      if (commonNode) {
+        break;
+      }
+    }
+    if (commonNode) {
+      break;
+    }
+    startSet.clear();
+    for (const node of startNext) {
+      startSet.add(node);
+    }
+
+    // Search from goal direction
+    const goalNext = new Set();
+    for (const node of goalSet) {
+      // Expand node to its neighbors
+      const neighbors = expandNode(node);
+
+      // Check if any neighbor is in startSet
+      for (const neighbor of neighbors) {
+        if (startSet.has(neighbor)) {
+          commonNode = neighbor;
+          break;
+        }
+        goalNext.add(neighbor);
+      }
+
+      if (commonNode) {
+        break;
+      }
+    }
+    if (commonNode) {
+      break;
+    }
+    goalSet.clear();
+    for (const node of goalNext) {
+      goalSet.add(node);
+    }
+  }
+
+  if (commonNode) {
+    // Path from startNode to commonNode
+    const path1 = getPath(startNode, commonNode);
+
+    // Path from commonNode to goalNode
+    const path2 = getPath(commonNode, goalNode);
+
+    // Combine both paths
+    return path1.concat(path2);
+  } else {
+    return 'No path found';
   }
 }
 
-function diameterOfBinaryTree(root) {
-  if (root === null) {
-    return 0;
-  }
-
-  // Calculate the depth of the left and right subtrees
-  const leftDepth = depthOfBinaryTree(root.left);
-  const rightDepth = depthOfBinaryTree(root.right);
-
-  // Calculate the diameters of the left and right subtrees recursively
-  const leftDiameter = diameterOfBinaryTree(root.left);
-  const rightDiameter = diameterOfBinaryTree(root.right);
-
-  // Return the maximum of the left diameter, right diameter, and the sum of the depths
-  return Math.max(leftDepth + rightDepth, leftDiameter, rightDiameter);
+// Helper function to expand a node
+function expandNode(node) {
+  // Implement your own logic to expand the node and return its neighbors
+  // For example, if the node is represented as an object with a `neighbors` property:
+  return node.neighbors;
 }
 
-function depthOfBinaryTree(root) {
-  if (root === null) {
-    return 0;
+// Helper function to get the path from start to goal
+function getPath(startNode, goalNode) {
+  // Implement your own logic to find the path between startNode and goalNode
+  // For example, if the nodes have a `parent` property:
+  const path = [];
+  let current = goalNode;
+  while (current !== startNode) {
+    path.unshift(current);
+    current = current.parent;
   }
-  
-  // Calculate the maximum depth of the left and right subtrees recursively
-  const leftDepth = depthOfBinaryTree(root.left);
-  const rightDepth = depthOfBinaryTree(root.right);
-
-  // Return the maximum depth plus 1 (for the current node)
-  return Math.max(leftDepth, rightDepth) + 1;
+  path.unshift(startNode);
+  return path;
 }
-
-// Example usage:
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-console.log(diameterOfBinaryTree(root)); // Output: 3
