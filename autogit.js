@@ -1,24 +1,26 @@
-function countOccurrences(str, char) {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str.charAt(i) === char) {
-            count++;
-        }
+function beamSearch(startState, beamWidth, maxIterations, getSuccessorStates, evaluateState) {
+  let beam = [startState];
+
+  for (let i = 0; i < maxIterations; i++) {
+    let nextBeam = [];
+
+    for (let s of beam) {
+      let successorStates = getSuccessorStates(s);
+
+      for (let nextState of successorStates) {
+        let score = evaluateState(nextState);
+        let nextStateObj = { state: nextState, score: score, parent: s };
+        nextBeam.push(nextStateObj);
+      }
     }
-    return count;
-}
 
-// Example usage:
-const myString = "hello world";
-const myChar = "l";
-const occurrences = countOccurrences(myString, myChar);
-console.log(occurrences); // Output: 3
-function countOccurrences(str, char) {
-    return str.split('').filter((c) => c === char).length;
-}
+    nextBeam.sort((a, b) => b.score - a.score);
+    beam = nextBeam.slice(0, beamWidth);
 
-// Example usage:
-const myString = "hello world";
-const myChar = "l";
-const occurrences = countOccurrences(myString, myChar);
-console.log(occurrences); // Output: 3
+    if (beam.length === 0) {
+      break;
+    }
+  }
+
+  return beam[0].state;
+}
