@@ -1,39 +1,48 @@
-function reverseString(str) {
-  // Split the string into an array of characters
-  var chars = str.split('');
-  
-  // Reverse the array of characters
-  var reversedChars = chars.reverse();
-  
-  // Join the reversed characters back into a string
-  var reversedStr = reversedChars.join('');
-  
-  return reversedStr;
+function depthLimitedSearch(state, depth, params) {
+  // Add your implementation here
 }
-
-var myString = "Hello, World!";
-console.log(reverseString(myString)); // Output: "!dlroW ,olleH"
-function reverseString(str) {
-  var reversedStr = '';
+if (isGoalState(state)) {
+  return state; // or desired output
+}
+if (depth === 0) {
+  return 'depth limit exceeded';
+}
+const childStates = generateChildStates(state, params);
+for (let i = 0; i < childStates.length; i++) {
+  const result = depthLimitedSearch(childStates[i], depth - 1, params);
   
-  // Iterate over each character in the string, starting from the last one
-  for (var i = str.length - 1; i >= 0; i--) {
-    reversedStr += str.charAt(i); // Concatenate each character to the reversed string
+  // Handle the result based on the problem or return it if it matches the goal state
+  if (result === 'depth limit exceeded') {
+    continue; // skip this child
   }
   
-  return reversedStr;
+  if (result !== null) {
+    return result;
+  }
 }
+return null;
+function depthLimitedSearch(state, depth, params) {
+  if (isGoalState(state)) {
+    return state;
+  }
 
-var myString = "Hello, World!";
-console.log(reverseString(myString)); // Output: "!dlroW ,olleH"
-function reverseString(str) {
-  // Split the string into an array of characters and reduce it to a reversed string
-  var reversedStr = str.split('').reduce(function(reversed, char) {
-    return char + reversed;
-  }, '');
-  
-  return reversedStr;
+  if (depth === 0) {
+    return 'depth limit exceeded';
+  }
+
+  const childStates = generateChildStates(state, params);
+
+  for (let i = 0; i < childStates.length; i++) {
+    const result = depthLimitedSearch(childStates[i], depth - 1, params);
+
+    if (result === 'depth limit exceeded') {
+      continue;
+    }
+
+    if (result !== null) {
+      return result;
+    }
+  }
+
+  return null;
 }
-
-var myString = "Hello, World!";
-console.log(reverseString(myString)); // Output: "!dlroW ,olleH"
