@@ -1,43 +1,47 @@
-// Helper function to get the digit at a specific position in a number
-function getDigit(num, pos) {
-  return Math.floor(Math.abs(num) / Math.pow(10, pos)) % 10;
-}
+function biDirectionalSearch(graph, startState, goalState) {
+  // Create queues for nodes to visit from the start and goal states
+  const startQueue = [startState];
+  const goalQueue = [goalState];
 
-// Helper function to count the number of digits in a number
-function digitCount(num) {
-  if (num === 0) return 1;
-  return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
+  // Create sets to track visited nodes from the start and goal states
+  const startVisited = new Set();
+  const goalVisited = new Set();
 
-// Helper function to find the maximum number of digits in an array of numbers
-function mostDigits(nums) {
-  let maxDigits = 0;
-  for (let i = 0; i < nums.length; i++) {
-    maxDigits = Math.max(maxDigits, digitCount(nums[i]));
-  }
-  return maxDigits;
-}
+  while (startQueue.length > 0 && goalQueue.length > 0) {
+    // Search from the start state
+    const startNode = startQueue.shift();
+    startVisited.add(startNode);
 
-// Radix sort implementation
-function radixSort(nums) {
-  const maxDigits = mostDigits(nums);
-
-  for (let k = 0; k < maxDigits; k++) {
-    const digitBuckets = Array.from({ length: 10 }, () => []);
-
-    for (let i = 0; i < nums.length; i++) {
-      const digit = getDigit(nums[i], k);
-      digitBuckets[digit].push(nums[i]);
+    // Check if the node is also visited from the goal state
+    if (goalVisited.has(startNode)) {
+      return "Path found"; // or return the path
     }
 
-    nums = [].concat(...digitBuckets);
+    // Explore neighbors of the start state
+    for (let neighbor of graph[startNode]) {
+      if (!startVisited.has(neighbor)) {
+        startQueue.push(neighbor);
+        startVisited.add(neighbor);
+      }
+    }
+
+    // Search from the goal state
+    const goalNode = goalQueue.shift();
+    goalVisited.add(goalNode);
+
+    // Check if the node is also visited from the start state
+    if (startVisited.has(goalNode)) {
+      return "Path found"; // or return the path
+    }
+
+    // Explore neighbors of the goal state
+    for (let neighbor of graph[goalNode]) {
+      if (!goalVisited.has(neighbor)) {
+        goalQueue.push(neighbor);
+        goalVisited.add(neighbor);
+      }
+    }
   }
 
-  return nums;
+  return "Path not found";
 }
-
-// Example usage
-const numbers = [43, 211, 78, 31, 904, 32, 1006];
-const sortedNumbers = radixSort(numbers);
-
-console.log(sortedNumbers);
