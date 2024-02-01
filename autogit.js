@@ -1,41 +1,24 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+function shellSort(array) {
+  const len = array.length;
+  let gap = Math.floor(len / 2);
+  
+  while (gap > 0) {
+    for (let i = gap; i < len; i++) {
+      const temp = array[i];
+      let j = i;
+      
+      while (j >= gap && array[j - gap] > temp) {
+        array[j] = array[j - gap];
+        j -= gap;
+      }
+      
+      array[j] = temp;
+    }
+    
+    gap = Math.floor(gap / 2);
   }
+  
+  return array;
 }
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-  }
-}
-enqueue(value) {
-  const newNode = new Node(value);
-  if (this.head === null) {
-    this.head = newNode;
-    this.tail = newNode;
-  } else {
-    this.tail.next = newNode;
-    this.tail = newNode;
-  }
-}
-dequeue() {
-  if (this.head === null) {
-    return null; // Empty queue
-  }
-  const value = this.head.value;
-  this.head = this.head.next;
-  if (this.head === null) {
-    this.tail = null; // Last item removed
-  }
-  return value;
-}
-const myQueue = new Queue();
-myQueue.enqueue(1);
-myQueue.enqueue(2);
-myQueue.enqueue(3);
-
-console.log(myQueue.dequeue()); // Output: 1
-console.log(myQueue.dequeue()); // Output: 2
-console.log(myQueue.dequeue()); // Output: 3
+const arr = [12, 34, 54, 2, 3];
+console.log(shellSort(arr));
