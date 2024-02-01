@@ -1,29 +1,26 @@
-function getDigit(num, pos) {
-  return Math.floor(Math.abs(num) / Math.pow(10, pos)) % 10;
-}
-function digitCount(num) {
-  if (num === 0) return 1;
-  return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
-function mostDigits(arr) {
-  let maxDigits = 0;
-  for (let i = 0; i < arr.length; i++) {
-    maxDigits = Math.max(maxDigits, digitCount(arr[i]));
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
-  return maxDigits;
 }
-function radixSort(arr) {
-  const maxDigits = mostDigits(arr);
-  for (let k = 0; k < maxDigits; k++) {
-    let digitBuckets = Array.from({ length: 10 }, () => []);
-    for (let i = 0; i < arr.length; i++) {
-      const digit = getDigit(arr[i], k);
-      digitBuckets[digit].push(arr[i]);
-    }
-    arr = [].concat(...digitBuckets);
+
+function maxDepth(root) {
+  if (root === null) {
+    return 0;
   }
-  return arr;
+  
+  const leftDepth = maxDepth(root.left);
+  const rightDepth = maxDepth(root.right);
+
+  return Math.max(leftDepth, rightDepth) + 1;
 }
-const array = [23, 345, 5467, 12, 2345, 9852];
-const sortedArray = radixSort(array);
-console.log(sortedArray); // Output: [12, 23, 345, 2345, 5467, 9852]
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+const depth = maxDepth(root);
+console.log(depth); // Output: 3
