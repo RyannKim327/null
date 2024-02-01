@@ -1,51 +1,44 @@
-function fibonacciSearch(arr, x) {
-  // Generate the Fibonacci series
-  const fibonacci = generateFibonacci(arr.length);
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
+class BinaryTree {
+  constructor() {
+    this.root = null;
+  }
 
-  let offset = -1; // Offset from the start of the array
+  insert(value) {
+    const newNode = new Node(value);
 
-  // Loop until the smallest Fibonacci number is greater than or equal to array length
-  while (fibonacci[0] >= 0) {
-    // Find the index of the element to be searched using Fibonacci series
-    const i = Math.min(offset + fibonacci[0], arr.length - 1);
-
-    // If the element is found, return its index
-    if (arr[i] === x) {
-      return i;
-    }
-    // If the element is larger than the current Fibonacci element
-    // move the offset to skip the checked elements
-    else if (arr[i] < x) {
-      fibonacci.splice(0, 1);
-      offset = i;
-    }
-    // If the element is smaller than the current Fibonacci element
-    // Move two Fibonacci steps down to get a smaller range to search
-    else {
-      fibonacci.splice(0, 2);
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
     }
   }
 
-  // Element not found
-  return -1;
-}
-function generateFibonacci(n) {
-  const fibonacci = [0, 1]; // Initialize with the first two Fibonacci numbers
-
-  while (fibonacci[fibonacci.length - 1] < n) {
-    // Generate the next Fibonacci number
-    const next = fibonacci[fibonacci.length - 1] + fibonacci[fibonacci.length - 2];
-    fibonacci.push(next);
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
   }
-
-  return fibonacci.reverse(); // Reverse the series for easier handling
 }
-const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const x = 12;
-const index = fibonacciSearch(arr, x);
-
-if (index !== -1) {
-  console.log(`Element ${x} is found at index ${index}.`);
-} else {
-  console.log(`Element ${x} is not found in the array.`);
-}
+const tree = new BinaryTree();
+tree.insert(5);
+tree.insert(3);
+tree.insert(7);
+tree.insert(1);
+tree.insert(4);
