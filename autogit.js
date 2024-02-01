@@ -1,21 +1,7 @@
-function insertionSort(arr) {
-  // Iterate over each element in the array starting from the second element
-  for (let i = 1; i < arr.length; i++) {
-    let current = arr[i];  // Current element to be inserted at the right position
-    let j = i - 1;
+var numbers = [3, 1, 5, 2, 4];
 
-    // Move elements of arr[0..i-1], that are greater than the current element, to one position ahead of their current position
-    while (j >= 0 && arr[j] > current) {
-      arr[j + 1] = arr[j];  // Shift elements to the right
-      j--;
-    }
+numbers.sort(function(a, b) {
+  return a - b;
+});
 
-    arr[j + 1] = current;  // Insert the current element at its correct position
-  }
-
-  return arr;
-}
-
-// Example usage:
-let array = [64, 34, 25, 12, 22, 11, 90];
-console.log(insertionSort(array));
+console.log(numbers); // Output: [1, 2, 3, 4, 5]
