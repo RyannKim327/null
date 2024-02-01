@@ -1,12 +1,25 @@
-let str = "Hello World";
-let reversed = str.split("").reverse().join("");
-console.log(reversed);
-let str = "Hello World";
-let reversed = "";
-for (let i = str.length - 1; i >= 0; i--) {
-  reversed += str[i];
+function binarySearch(array, target) {
+  let left = 0;
+  let right = array.length - 1;
+
+  while (left <= right) {
+    let mid = Math.floor((left + right) / 2);
+
+    if (array[mid] === target) {
+      return mid; // Found the target
+    } else if (array[mid] < target) {
+      left = mid + 1; // Target is in the right half
+    } else {
+      right = mid - 1; // Target is in the left half
+    }
+  }
+
+  return -1; // Target was not found
 }
-console.log(reversed);
-let str = "Hello World";
-let reversed = str.split("").reduce((accumulator, char) => char + accumulator, "");
-console.log(reversed);
+
+// Example usage
+const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const target = 7;
+const index = binarySearch(arr, target);
+
+console.log("Index of", target, "is", index);
