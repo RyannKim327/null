@@ -1,21 +1,39 @@
-function insertionSort(arr) {
-  const length = arr.length;
-
-  for (let i = 1; i < length; i++) {
-    let current = arr[i];
-    let j = i - 1;
-
-    while (j >= 0 && arr[j] > current) {
-      arr[j + 1] = arr[j];
-      j--;
-    }
-
-    arr[j + 1] = current;
-  }
-
-  return arr;
+function reverseString(str) {
+  // Split the string into an array of characters
+  var chars = str.split('');
+  
+  // Reverse the array of characters
+  var reversedChars = chars.reverse();
+  
+  // Join the reversed characters back into a string
+  var reversedStr = reversedChars.join('');
+  
+  return reversedStr;
 }
 
-// Example usage:
-const numbers = [5, 2, 4, 6, 1, 3];
-console.log(insertionSort(numbers)); // Output: [1, 2, 3, 4, 5, 6]
+var myString = "Hello, World!";
+console.log(reverseString(myString)); // Output: "!dlroW ,olleH"
+function reverseString(str) {
+  var reversedStr = '';
+  
+  // Iterate over each character in the string, starting from the last one
+  for (var i = str.length - 1; i >= 0; i--) {
+    reversedStr += str.charAt(i); // Concatenate each character to the reversed string
+  }
+  
+  return reversedStr;
+}
+
+var myString = "Hello, World!";
+console.log(reverseString(myString)); // Output: "!dlroW ,olleH"
+function reverseString(str) {
+  // Split the string into an array of characters and reduce it to a reversed string
+  var reversedStr = str.split('').reduce(function(reversed, char) {
+    return char + reversed;
+  }, '');
+  
+  return reversedStr;
+}
+
+var myString = "Hello, World!";
+console.log(reverseString(myString)); // Output: "!dlroW ,olleH"
