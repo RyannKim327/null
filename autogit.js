@@ -1,22 +1,17 @@
-function isPrime(number) {
-  if (number < 2) {
-    // Numbers less than 2 are not prime
-    return false;
-  }
+async function connectToServer() {
+  try {
+    const response = await fetch('http://your-server-url');
 
-  // Check if the number is divisible by any number less than its square root
-  for (let i = 2; i <= Math.sqrt(number); i++) {
-    if (number % i === 0) {
-      // If it is divisible, then it is not prime
-      return false;
+    if (!response.ok) {
+      throw new Error('Connection failed');
     }
-  }
 
-  // If it is not divisible by any number, it is prime
-  return true;
+    const data = await response.json();
+
+    console.log('Received data:', data);
+  } catch (error) {
+    console.error('Error connecting to server:', error);
+  }
 }
 
-// Example usage
-console.log(isPrime(7));  // Output: true
-console.log(isPrime(12));  // Output: false
-console.log(isPrime(37));  // Output: true
+connectToServer();
