@@ -1,10 +1,10 @@
-function factorial(num) {
-  if (num === 0) {
-    return 1;  // base case: factorial of 0 is 1
-  } else {
-    return num * factorial(num - 1);  // recursive case: multiply num with factorial(num - 1)
-  }
+function validateEmail(email) {
+  const regexPattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+  return regexPattern.test(email);
 }
-
-// Example usage
-console.log(factorial(5));  // Output: 120
+const email = "example@email.com";
+if (validateEmail(email)) {
+  console.log("Email is valid");
+} else {
+  console.log("Email is invalid");
+}
