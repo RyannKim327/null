@@ -1,17 +1,9 @@
-function getRandomNumber(min, max) {
-  // Generate a random decimal number between 0 and 1
-  let randomDecimal = Math.random();
-
-  // Scale the decimal to the desired range
-  let randomNumber = randomDecimal * (max - min + 1) + min;
-
-  // Convert the decimal to an integer
-  randomNumber = Math.floor(randomNumber);
-
-  // Return the random number
-  return randomNumber;
+function removeVowels(str) {
+  // Use regular expression to match all vowels (both lowercase and uppercase)
+  // and replace them with an empty string
+  return str.replace(/[aeiou]/gi, '');
 }
 
-// Example usage: Generate a random number between 1 and 10
-let randomNum = getRandomNumber(1, 10);
-console.log(randomNum);
+// Example usage
+console.log(removeVowels("Hello, World!")); // Output: Hll, Wrld!
+console.log(removeVowels("JavaScript")); // Output: JvScrpt
