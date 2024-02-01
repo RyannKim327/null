@@ -1,58 +1,14 @@
-function computeLPSArray(pattern, lps) {
-  let len = 0;
-  let i = 1;
-  lps[0] = 0;
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  const formattedStr = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
 
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[len]) {
-      len++;
-      lps[i] = len;
-      i++;
-    } else {
-      if (len !== 0) {
-        len = lps[len - 1];
-      } else {
-        lps[i] = 0;
-        i++;
-      }
-    }
-  }
-}
+  // Create reversed version of the string
+  const reversedStr = formattedStr.split('').reverse().join('');
 
-function KMPSearch(text, pattern) {
-  const n = text.length;
-  const m = pattern.length;
-
-  const lps = new Array(m).fill(0);
-  computeLPSArray(pattern, lps);
-
-  let i = 0;
-  let j = 0;
-  const indices = [];
-
-  while (i < n) {
-    if (pattern[j] === text[i]) {
-      i++;
-      j++;
-    }
-
-    if (j === m) {
-      indices.push(i - j);
-      j = lps[j - 1];
-    } else if (i < n && pattern[j] !== text[i]) {
-      if (j !== 0) {
-        j = lps[j - 1];
-      } else {
-        i++;
-      }
-    }
-  }
-
-  return indices;
+  // Compare the original string with the reversed version
+  return formattedStr === reversedStr;
 }
 
 // Example usage:
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const indices = KMPSearch(text, pattern);
-console.log(indices); // Outputs: [10]
+console.log(isPalindrome('A man, a plan, a canal, Panama.')); // Output: true
+console.log(isPalindrome('Hello, World!')); // Output: false
