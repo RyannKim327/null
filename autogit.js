@@ -1,26 +1,10 @@
-function shellSort(arr) {
-  const len = arr.length;
-  let gap = Math.floor(len / 2);
+let array = [1, 2, 3, 4, 5];
+let elementToRemove = 3;
 
-  while (gap > 0) {
-    for (let i = gap; i < len; i++) {
-      const temp = arr[i];
-      let j = i;
+let index = array.indexOf(elementToRemove); // Get the index of the element
 
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
-      }
-
-      arr[j] = temp;
-    }
-
-    gap = Math.floor(gap / 2);
-  }
-
-  return arr;
+if (index !== -1) {
+  array.splice(index, 1); // Remove the element using splice
 }
 
-// Example usage:
-const array = [5, 2, 8, 12, 1, 6];
-console.log(shellSort(array)); // Output: [1, 2, 5, 6, 8, 12]
+console.log(array); // Output: [1, 2, 4, 5]
