@@ -1,15 +1,15 @@
-function insertionSort(array) {
-  for (let i = 1; i < array.length; i++) {
-    let current = array[i];
-    let j = i - 1;
-    while (j >= 0 && array[j] > current) {
-      array[j + 1] = array[j];
-      j--;
+function isSortedAscending(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false;
     }
-    array[j + 1] = current;
   }
-  return array;
+  return true;
 }
-let unsortedArray = [5, 3, 1, 2, 4];
-let sortedArray = insertionSort(unsortedArray);
-console.log(sortedArray); // Output: [1, 2, 3, 4, 5]
+
+// Example usage
+const array1 = [1, 2, 3, 4, 5];
+console.log(isSortedAscending(array1)); // Output: true
+
+const array2 = [1, 3, 2, 4, 5];
+console.log(isSortedAscending(array2)); // Output: false
