@@ -1,15 +1,35 @@
-function areAnagrams(str1, str2) {
-  // Convert the strings to lowercase and remove non-alphabetic characters
-  const cleanStr1 = str1.toLowerCase().replace(/[^a-z]/g, '');
-  const cleanStr2 = str2.toLowerCase().replace(/[^a-z]/g, '');
-
-  // Sort the characters of both strings
-  const sortedStr1 = cleanStr1.split('').sort().join('');
-  const sortedStr2 = cleanStr2.split('').sort().join('');
-
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+function getMax(arr) {
+  let max = 0;
+  for (let num of arr) {
+    if (num > max) {
+      max = num;
+    }
+  }
+  return max;
 }
-console.log(areAnagrams('listen', 'silent'));     // Output: true
-console.log(areAnagrams('debit card', 'bad credit'));   // Output: true
-console.log(areAnagrams('test', 'best'));   // Output: false
+
+function getDigitCount(num) {
+  return Math.floor(Math.log10(num) + 1);
+}
+function getDigit(num, place) {
+  return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
+}
+function radixSort(arr) {
+  const max = getMax(arr);
+  const maxDigits = getDigitCount(max);
+
+  for (let k = 0; k < maxDigits; k++) {
+    const buckets = Array.from({ length: 10 }, () => []);
+
+    for (let num of arr) {
+      const digit = getDigit(num, k);
+      buckets[digit].push(num);
+    }
+
+    arr = [].concat(...buckets);
+  }
+
+  return arr;
+}
+const numbers = [532, 12, 75, 24, 45, 102, 9];
+console.log(radixSort(numbers)); // Output: [9, 12, 24, 45, 75, 102, 532]
