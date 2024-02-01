@@ -1,33 +1,18 @@
-function findMajorityElement(nums) {
-  let majorityElement = nums[0];
-  let count = 1;
-  
-  for (let i = 1; i < nums.length; i++) {
-    if (count === 0) {
-      majorityElement = nums[i];
-      count = 1;
-    } else if (nums[i] === majorityElement) {
-      count++;
-    } else {
-      count--;
-    }
-  }
-  
-  // Verify if the majority element occurs more than n/2 times
-  let occurrences = 0;
-  for (let i = 0; i < nums.length; i++) {
-    if (nums[i] === majorityElement) {
-      occurrences++;
-    }
-  }
-  
-  if (occurrences > nums.length / 2) {
-    return majorityElement;
-  } else {
-    return "No majority element found";
-  }
+function isAnagram(str1, str2) {
+  // Remove non-alphabet characters and convert to lowercase
+  str1 = str1.replace(/[^A-Za-z]/g, "").toLowerCase();
+  str2 = str2.replace(/[^A-Za-z]/g, "").toLowerCase();
+
+  // Convert strings to arrays, sort, and join back into strings
+  const sortedStr1 = str1.split("").sort().join("");
+  const sortedStr2 = str2.split("").sort().join("");
+
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
 
-// Example usage:
-const nums = [2, 2, 1, 1, 1, 2, 2];
-console.log(findMajorityElement(nums)); // Output: 2
+// Example usage
+const string1 = "listen";
+const string2 = "silent";
+
+console.log(isAnagram(string1, string2)); // Output: true
