@@ -1,26 +1,27 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
-
-function maxDepth(root) {
-  if (root === null) {
-    return 0;
+function shellSort(arr) {
+  const n = arr.length;
+  
+  // Start with a big gap, then reduce the gap
+  for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
+    
+    // Perform insertion sort on each subset defined by the gap
+    for (let i = gap; i < n; i++) {
+      const temp = arr[i];
+      
+      // Shift elements until the correct position for arr[i] is found
+      let j;
+      for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
+        arr[j] = arr[j - gap];
+      }
+      
+      // Place the current element at its correct position
+      arr[j] = temp;
+    }
   }
   
-  const leftDepth = maxDepth(root.left);
-  const rightDepth = maxDepth(root.right);
-
-  return Math.max(leftDepth, rightDepth) + 1;
+  return arr;
 }
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-const depth = maxDepth(root);
-console.log(depth); // Output: 3
+const arr = [6, 1, 3, 8, 2, 9, 4, 7, 5];
+const sortedArr = shellSort(arr);
+console.log(sortedArr);
+[1, 2, 3, 4, 5, 6, 7, 8, 9]
