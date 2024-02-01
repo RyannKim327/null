@@ -1,24 +1,24 @@
-function depthLimitedSearch(startNode, depthLimit, goalNode) {
-  let stack = [];
-  stack.push({ node: startNode, depth: 0 });
+function findFirstRepeatedChar(str) {
+  const charCount = {};
 
-  while (stack.length > 0) {
-    let { node, depth } = stack.pop();
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
 
-    if (node === goalNode) {
-      return node; // or return relevant result indicating success
+    // If the character has been seen before, return it
+    if (charCount[char]) {
+      return char;
     }
 
-    if (depth < depthLimit) {
-      // Expand the node and push its children into the stack
-      // Assuming getChildren() returns an array of the node's children
-      let children = getChildren(node);
-
-      for (let child of children) {
-        stack.push({ node: child, depth: depth + 1 });
-      }
-    }
+    // Otherwise, mark it as seen by setting its count to 1
+    charCount[char] = 1;
   }
 
-  return "Goal not found"; // or return relevant result indicating failure
+  // If no repeated character is found, return null
+  return null;
 }
+
+// Example usage
+const string = "hello world";
+const repeatedChar = findFirstRepeatedChar(string);
+
+console.log(repeatedChar); // Output: "l"
