@@ -1,98 +1,71 @@
-function bidirectionalSearch(startNode, goalNode) {
-  const startSet = new Set();
-  const goalSet = new Set();
-  startSet.add(startNode);
-  goalSet.add(goalNode);
+function generateBadCharTable(pattern) {
+  const table = new Array(256).fill(-1); // Initialize all characters as -1
 
-  let commonNode = null;
-
-  while (startSet.size > 0 && goalSet.size > 0) {
-    // Search from start direction
-    const startNext = new Set();
-    for (const node of startSet) {
-      // Expand node to its neighbors
-      const neighbors = expandNode(node);
-
-      // Check if any neighbor is in goalSet
-      for (const neighbor of neighbors) {
-        if (goalSet.has(neighbor)) {
-          commonNode = neighbor;
-          break;
-        }
-        startNext.add(neighbor);
-      }
-
-      if (commonNode) {
-        break;
-      }
-    }
-    if (commonNode) {
-      break;
-    }
-    startSet.clear();
-    for (const node of startNext) {
-      startSet.add(node);
-    }
-
-    // Search from goal direction
-    const goalNext = new Set();
-    for (const node of goalSet) {
-      // Expand node to its neighbors
-      const neighbors = expandNode(node);
-
-      // Check if any neighbor is in startSet
-      for (const neighbor of neighbors) {
-        if (startSet.has(neighbor)) {
-          commonNode = neighbor;
-          break;
-        }
-        goalNext.add(neighbor);
-      }
-
-      if (commonNode) {
-        break;
-      }
-    }
-    if (commonNode) {
-      break;
-    }
-    goalSet.clear();
-    for (const node of goalNext) {
-      goalSet.add(node);
-    }
+  for (let i = 0; i < pattern.length - 1; i++) {
+    table[pattern.charCodeAt(i)] = i;
   }
 
-  if (commonNode) {
-    // Path from startNode to commonNode
-    const path1 = getPath(startNode, commonNode);
-
-    // Path from commonNode to goalNode
-    const path2 = getPath(commonNode, goalNode);
-
-    // Combine both paths
-    return path1.concat(path2);
-  } else {
-    return 'No path found';
-  }
+  return table;
 }
 
-// Helper function to expand a node
-function expandNode(node) {
-  // Implement your own logic to expand the node and return its neighbors
-  // For example, if the node is represented as an object with a `neighbors` property:
-  return node.neighbors;
-}
+function generateGoodSuffixTable(pattern) {
+  const table = new Array(pattern.length).fill(0);
 
-// Helper function to get the path from start to goal
-function getPath(startNode, goalNode) {
-  // Implement your own logic to find the path between startNode and goalNode
-  // For example, if the nodes have a `parent` property:
-  const path = [];
-  let current = goalNode;
-  while (current !== startNode) {
-    path.unshift(current);
-    current = current.parent;
+  let j = 0;
+  let k = 1;
+  while (k < pattern.length) {
+    if (pattern[j] === pattern[k]) {
+      table[k] = j + 1;
+      j++;
+      k++;
+    } else {
+      if (j === 0) {
+        table[k] = 0;
+        k++;
+      } else {
+        j = table[j - 1];
+      }
+    }
   }
-  path.unshift(startNode);
-  return path;
+
+  return table;
+}
+function boyerMooreSearch(text, pattern) {
+  const m = pattern.length;
+  const n = text.length;
+
+  const badCharTable = generateBadCharTable(pattern);
+  const goodSuffixTable = generateGoodSuffixTable(pattern);
+
+  let i = 0;
+  while (i <= n - m) {
+    let j = m - 1;
+
+    while (j >= 0 && pattern[j] === text[i + j]) {
+      j--;
+    }
+
+    if (j === -1) {
+      // Pattern found at index i
+      return i;
+    } else {
+      const badCharSkip = j - badCharTable[text.charCodeAt(i + j)];
+      const goodSuffixSkip = goodSuffixTable[j];
+
+      i += Math.max(badCharSkip, goodSuffixSkip);
+    }
+  }
+
+  // Pattern not found
+  return -1;
+}
+const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+const pattern = "dolor";
+
+const index = boyerMooreSearch(text, pattern);
+
+if (index !== -1) {
+  console.log(`Pattern found at index ${index}.`);
+} else {
+  console.log(`Pattern not found.`);
 }
