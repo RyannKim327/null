@@ -1,33 +1,38 @@
-// Define the TreeNode class
-class TreeNode {
-  constructor(val, left = null, right = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
+function isAnagram(str1, str2) {
+  // Remove any non-word characters and convert to lowercase
+  const cleanStr1 = str1.replace(/[^\w]/g, '').toLowerCase();
+  const cleanStr2 = str2.replace(/[^\w]/g, '').toLowerCase();
+
+  // If lengths differ, they can't be anagrams
+  if (cleanStr1.length !== cleanStr2.length) {
+    return false;
   }
+
+  // Create frequency counters to track character occurrences
+  const charCount1 = {};
+  const charCount2 = {};
+
+  // Count characters in str1
+  for (let char of cleanStr1) {
+    charCount1[char] = (charCount1[char] || 0) + 1;
+  }
+
+  // Count characters in str2
+  for (let char of cleanStr2) {
+    charCount2[char] = (charCount2[char] || 0) + 1;
+  }
+
+  // Compare character frequencies
+  for (let char in charCount1) {
+    if (charCount1[char] !== charCount2[char]) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
-// Function to calculate the sum of all nodes
-function sumBinaryTree(root) {
-  if (root === null) {
-    return 0; // Base case: an empty tree has a sum of 0
-  }
-  
-  // Recursively calculate the sum of nodes in the left and right subtrees
-  const sumLeft = sumBinaryTree(root.left);
-  const sumRight = sumBinaryTree(root.right);
-  
-  // Return the sum of the root and the sums of the subtrees
-  return root.val + sumLeft + sumRight;
-}
-
-// Create a sample binary tree
-const tree = new TreeNode(1);
-tree.left = new TreeNode(2);
-tree.right = new TreeNode(3);
-tree.left.left = new TreeNode(4);
-tree.left.right = new TreeNode(5);
-
-// Calculate the sum of all nodes in the binary tree
-const sum = sumBinaryTree(tree);
-console.log("Sum of all nodes:", sum);
+// Usage examples:
+console.log(isAnagram('listen', 'silent'));  // true
+console.log(isAnagram('hello', 'world'));    // false
+console.log(isAnagram('debit card', 'bad credit')); // true
