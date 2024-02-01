@@ -1,19 +1,43 @@
-function isPrime(number) {
-  // Check if the number is less than 2
-  if (number < 2) {
-    return false;
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
+}
+
+class LinkedList {
+  constructor() {
+    this.head = null;
   }
 
-  // Check divisibility from 2 to the square root of the number
-  for (let i = 2; i <= Math.sqrt(number); i++) {
-    if (number % i === 0) {
-      return false;
+  add(data) {
+    const newNode = new Node(data);
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
     }
   }
 
-  return true;
+  getLength() {
+    let count = 0;
+    let current = this.head;
+    while (current) {
+      count++;
+      current = current.next;
+    }
+    return count;
+  }
 }
 
-// Test the function
-console.log(isPrime(7));  // Output: true
-console.log(isPrime(10)); // Output: false
+// Example usage:
+const linkedList = new LinkedList();
+linkedList.add(5);
+linkedList.add(10);
+linkedList.add(15);
+
+console.log(linkedList.getLength()); // Output: 3
