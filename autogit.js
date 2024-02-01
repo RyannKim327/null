@@ -1,19 +1,47 @@
-function isPalindrome(str) {
-  let start = 0;
-  let end = str.length - 1;
+function tarjanSCC(graph) {
+  const n = graph.length;
+  const ids = Array(n).fill(-1);
+  const lowLink = Array(n).fill(-1);
+  const onStack = Array(n).fill(false);
+  const stack = [];
+  const result = [];
+  let index = 0;
 
-  while (start < end) {
-    if (str[start] !== str[end]) {
-      return false;
+  function dfs(node) {
+    ids[node] = index;
+    lowLink[node] = index;
+    index++;
+    stack.push(node);
+    onStack[node] = true;
+
+    for (let i = 0; i < graph[node].length; i++) {
+      const adjacent = graph[node][i];
+      if (ids[adjacent] === -1) {
+        dfs(adjacent);
+      }
+      if (onStack[adjacent]) {
+        lowLink[node] = Math.min(lowLink[node], lowLink[adjacent]);
+      }
     }
-    start++;
-    end--;
+
+    if (lowLink[node] === ids[node]) {
+      const component = [];
+      let curr;
+      do {
+        curr = stack.pop();
+        onStack[curr] = false;
+        lowLink[curr] = ids[node];
+        component.push(curr);
+      } while (curr !== node);
+      result.push(component);
+    }
   }
 
-  return true;
-}
+  for (let i = 0; i < n; i++) {
+    if (ids[i] === -1) {
+      dfs(i);
+    }
+  }
 
-// Example usage:
-console.log(isPalindrome("racecar")); // Output: true
-console.log(isPalindrome("hello"));   // Output: false
-console.log(isPalindrome("level"));   // Output: true
+  return result;
+}
