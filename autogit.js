@@ -1,38 +1,54 @@
-function isAnagram(str1, str2) {
-  // Remove any non-word characters and convert to lowercase
-  const cleanStr1 = str1.replace(/[^\w]/g, '').toLowerCase();
-  const cleanStr2 = str2.replace(/[^\w]/g, '').toLowerCase();
+function mergeSortIterative(array) {
+  const n = array.length;
+  let startSize = 1;
 
-  // If lengths differ, they can't be anagrams
-  if (cleanStr1.length !== cleanStr2.length) {
-    return false;
-  }
+  while (startSize < n) {
+    let i = 0;
 
-  // Create frequency counters to track character occurrences
-  const charCount1 = {};
-  const charCount2 = {};
+    while (i < n - 1) {
+      const middle = i + startSize - 1;
+      const end = Math.min(i + 2 * startSize - 1, n - 1);
 
-  // Count characters in str1
-  for (let char of cleanStr1) {
-    charCount1[char] = (charCount1[char] || 0) + 1;
-  }
+      const leftArray = array.slice(i, middle + 1);
+      const rightArray = array.slice(middle + 1, end + 1);
 
-  // Count characters in str2
-  for (let char of cleanStr2) {
-    charCount2[char] = (charCount2[char] || 0) + 1;
-  }
+      let leftIndex = 0;
+      let rightIndex = 0;
+      let mainIndex = i;
 
-  // Compare character frequencies
-  for (let char in charCount1) {
-    if (charCount1[char] !== charCount2[char]) {
-      return false;
+      while (leftIndex < leftArray.length && rightIndex < rightArray.length) {
+        if (leftArray[leftIndex] <= rightArray[rightIndex]) {
+          array[mainIndex] = leftArray[leftIndex];
+          leftIndex++;
+        } else {
+          array[mainIndex] = rightArray[rightIndex];
+          rightIndex++;
+        }
+
+        mainIndex++;
+      }
+
+      while (leftIndex < leftArray.length) {
+        array[mainIndex] = leftArray[leftIndex];
+        leftIndex++;
+        mainIndex++;
+      }
+
+      while (rightIndex < rightArray.length) {
+        array[mainIndex] = rightArray[rightIndex];
+        rightIndex++;
+        mainIndex++;
+      }
+
+      i += 2 * startSize;
     }
+
+    startSize *= 2;
   }
 
-  return true;
+  return array;
 }
 
-// Usage examples:
-console.log(isAnagram('listen', 'silent'));  // true
-console.log(isAnagram('hello', 'world'));    // false
-console.log(isAnagram('debit card', 'bad credit')); // true
+// Example usage:
+const arr = [5, 3, 8, 4, 2, 1, 6];
+console.log(mergeSortIterative(arr));
