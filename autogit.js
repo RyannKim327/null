@@ -1,20 +1,14 @@
-let array = [1, 2, 3, 4, 5];
-let element = 3;
-let index = array.indexOf(element);
-if (index !== -1) {
-  array.splice(index, 1);
-}
-console.log(array); // Output: [1, 2, 4, 5]
-let array = [1, 2, 3, 4, 5];
-let element = 3;
-array = array.filter(item => item !== element);
-console.log(array); // Output: [1, 2, 4, 5]
-let array = [1, 2, 3, 4, 5];
-let element = 3;
-for (let i = 0; i < array.length; i++) {
-  if (array[i] === element) {
-    array.splice(i, 1);
-    break;
+let str = "Hello, World! This is a string with spaces.";
+let stringWithoutSpaces = str.split(' ').join('');
+console.log(stringWithoutSpaces);
+let str = "Hello, World! This is a string with spaces.";
+let stringWithoutSpaces = str.replace(/\s/g, '');
+console.log(stringWithoutSpaces);
+let str = "Hello, World! This is a string with spaces.";
+let stringWithoutSpaces = "";
+for (let i = 0; i < str.length; i++) {
+  if (str[i] !== ' ') {
+    stringWithoutSpaces += str[i];
   }
 }
-console.log(array); // Output: [1, 2, 4, 5]
+console.log(stringWithoutSpaces);
