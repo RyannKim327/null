@@ -1,60 +1,67 @@
-class ListNode {
-  constructor(value) {
-    this.val = value;
-    this.next = null;
-  }
-}
+function biDirectionalSearch(graph, startNode, goalNode) {
+    // Step 1: Define the graph
 
-function reverseLinkedList(head) {
-  let prev = null;
-  let current = head;
-  
-  while (current !== null) {
-    let next = current.next;
-    current.next = prev;
-    prev = current;
-    current = next;
-  }
-  
-  return prev;
-}
-function isLinkedListPalindrome(head) {
-  let slow = head;
-  let fast = head;
+    // Step 2: Forward search
+    const forwardVisited = new Set();
+    const forwardQueue = [[startNode, null]];
 
-  // Find the middle node
-  while (fast !== null && fast.next !== null) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
+    while (forwardQueue.length > 0) {
+        const [currentNode, parent] = forwardQueue.shift();
+        forwardVisited.add(currentNode);
 
-  if (fast !== null) {
-    // The linked list has odd number of elements, skip the middle node
-    slow = slow.next;
-  }
+        if (currentNode === goalNode) {
+            return constructPath(parent, currentNode);
+        }
 
-  // Reverse the second half of the linked list
-  let reversedSecondHalf = reverseLinkedList(slow);
-
-  // Compare the first half with the reversed second half
-  let current = head;
-  let secondHalf = reversedSecondHalf;
-  
-  while (current !== null && secondHalf !== null) {
-    if (current.val !== secondHalf.val) {
-      return false;
+        for (const neighbor of graph[currentNode]) {
+            if (!forwardVisited.has(neighbor)) {
+                forwardQueue.push([neighbor, currentNode]);
+            }
+        }
     }
-    current = current.next;
-    secondHalf = secondHalf.next;
-  }
 
-  return true;
+    // Step 3: Backward search
+    const backwardVisited = new Set();
+    const backwardQueue = [[goalNode, null]];
+
+    while (backwardQueue.length > 0) {
+        const [currentNode, parent] = backwardQueue.shift();
+        backwardVisited.add(currentNode);
+
+        if (currentNode === startNode) {
+            return constructPath(parent, currentNode).reverse();
+        }
+
+        for (const neighbor of graph[currentNode]) {
+            if (!backwardVisited.has(neighbor)) {
+                backwardQueue.push([neighbor, currentNode]);
+            }
+        }
+    }
+
+    return null; // No path found
+
+    // Step 5: Build the final path
+    function constructPath(parent, currentNode) {
+        const path = [currentNode];
+        while (parent !== null) {
+            path.push(parent);
+            parent = backwardVisited.has(parent) ? graph[parent][0] : graph[parent];
+        }
+        return path;
+    }
 }
-// Create a linked list: 1 -> 2 -> 3 -> 2 -> 1
-let head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(2);
-head.next.next.next.next = new ListNode(1);
+const graph = {
+    A: ['B', 'D'],
+    B: ['A', 'C'],
+    C: ['B', 'E'],
+    D: ['A', 'E'],
+    E: ['C', 'D', 'F'],
+    F: ['E']
+};
 
-console.log(isLinkedListPalindrome(head)); // Output: true
+const startNode = 'A';
+const goalNode = 'F';
+
+const path = biDirectionalSearch(graph, startNode, goalNode);
+console.log('Shortest path:', path);
