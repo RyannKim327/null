@@ -1,7 +1,24 @@
-let numbers = [4, 2, 8, 5, 1];
-numbers.sort((a, b) => a - b);
-console.log(numbers); // Output: [1, 2, 4, 5, 8]
-let numbers = [4, 2, 8, 5, 1];
-let sortedNumbers = [...numbers].sort((a, b) => a - b);
-console.log(numbers); // Output: [4, 2, 8, 5, 1]
-console.log(sortedNumbers); // Output: [1, 2, 4, 5, 8]
+function depthLimitedSearch(startNode, depthLimit, goalNode) {
+  let stack = [];
+  stack.push({ node: startNode, depth: 0 });
+
+  while (stack.length > 0) {
+    let { node, depth } = stack.pop();
+
+    if (node === goalNode) {
+      return node; // or return relevant result indicating success
+    }
+
+    if (depth < depthLimit) {
+      // Expand the node and push its children into the stack
+      // Assuming getChildren() returns an array of the node's children
+      let children = getChildren(node);
+
+      for (let child of children) {
+        stack.push({ node: child, depth: depth + 1 });
+      }
+    }
+  }
+
+  return "Goal not found"; // or return relevant result indicating failure
+}
