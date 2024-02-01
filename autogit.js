@@ -1,24 +1,13 @@
-function shellSort(array) {
-  const len = array.length;
-  let gap = Math.floor(len / 2);
-  
-  while (gap > 0) {
-    for (let i = gap; i < len; i++) {
-      const temp = array[i];
-      let j = i;
-      
-      while (j >= gap && array[j - gap] > temp) {
-        array[j] = array[j - gap];
-        j -= gap;
-      }
-      
-      array[j] = temp;
+function isArraySorted(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false; // Array is not sorted in ascending order
     }
-    
-    gap = Math.floor(gap / 2);
   }
-  
-  return array;
+  return true; // Array is sorted in ascending order
 }
-const arr = [12, 34, 54, 2, 3];
-console.log(shellSort(arr));
+const arr1 = [1, 2, 3, 4, 5];
+console.log(isArraySorted(arr1)); // Output: true
+
+const arr2 = [5, 2, 8, 6, 1];
+console.log(isArraySorted(arr2)); // Output: false
