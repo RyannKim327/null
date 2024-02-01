@@ -1,10 +1,10 @@
-var string1 = "Hello";
-var string2 = "world!";
-var result = string1 + " " + string2;
-console.log(result);
-Hello world!
-var string1 = "Hello";
-var string2 = "world!";
-var result = string1.concat(" ", string2);
-console.log(result);
-Hello world!
+function getStringLength(str) {
+    let count = 0;
+    for (let i = 0; str[i] !== undefined; i++) {
+        count++;
+    }
+    return count;
+}
+let myString = "Hello, world!";
+let length = getStringLength(myString);
+console.log(length); // Output: 13
