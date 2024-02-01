@@ -1,16 +1,17 @@
-function countOccurrences(string, word) {
-    // Use regular expression with 'g' flag to perform a global search
-    var regex = new RegExp(word, 'g');
-    
-    // Use the `match()` method to find all matches
-    var matches = string.match(regex);
+function findMedianSortedArrays(nums1, nums2) {
+  const mergedArray = nums1.concat(nums2).sort((a, b) => a - b);
+  const length = mergedArray.length;
+  const middleIndex = Math.floor(length / 2);
 
-    // Return the count of matches
-    return matches ? matches.length : 0;
+  if (length % 2 === 1) {
+    return mergedArray[middleIndex];
+  } else {
+    return (mergedArray[middleIndex - 1] + mergedArray[middleIndex]) / 2;
+  }
 }
 
 // Example usage:
-var str = 'How much wood would a woodchuck chuck if a woodchuck could chuck wood?';
-var word = 'wood';
-
-console.log(countOccurrences(str, word)); // Output: 2
+const nums1 = [1, 3, 5];
+const nums2 = [2, 4, 6];
+const median = findMedianSortedArrays(nums1, nums2);
+console.log(median); // Output: 3.5
