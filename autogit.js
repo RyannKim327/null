@@ -1,21 +1,22 @@
-function findNthFromEnd(head, n) {
-  let firstPointer = head;
-  let secondPointer = head;
+function isAnagram(str1, str2) {
+  // Convert strings to lowercase and remove non-alphanumeric characters
+  str1 = str1.toLowerCase().replace(/[^a-z0-9]/g, '');
+  str2 = str2.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-  // Move secondPointer n nodes ahead
-  for (let i = 0; i < n; i++) {
-    if (secondPointer === null) {
-      return null; // Return null if there are fewer than n nodes in the linked list
-    }
-    secondPointer = secondPointer.next;
-  }
+  // Sort the strings alphabetically
+  const sortedStr1 = str1.split('').sort().join('');
+  const sortedStr2 = str2.split('').sort().join('');
 
-  // Iterate both pointers until secondPointer reaches the end
-  while (secondPointer !== null) {
-    firstPointer = firstPointer.next;
-    secondPointer = secondPointer.next;
-  }
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
+}
 
-  // Return the value of the nth node from the end
-  return firstPointer.value;
+// Example usage
+const string1 = 'listen';
+const string2 = 'silent';
+
+if (isAnagram(string1, string2)) {
+  console.log('The strings are anagrams.');
+} else {
+  console.log('The strings are not anagrams.');
 }
