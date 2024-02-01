@@ -1,27 +1,17 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function factorialLoop(num) {
+  let result = 1;
+  for (let i = 2; i <= num; i++) {
+    result *= i;
   }
+  return result;
 }
 
-function countLeafNodes(root) {
-  if (root === null) {
-    return 0;
-  }
-  
-  if (root.left === null && root.right === null) {
+console.log(factorialLoop(5)); // Output: 120
+function factorialRecursion(num) {
+  if (num <= 1) {
     return 1;
   }
-  
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
+  return num * factorialRecursion(num - 1);
 }
-const root = new Node(3);
-root.left = new Node(9);
-root.right = new Node(20);
-root.right.left = new Node(15);
-root.right.right = new Node(7);
 
-const leafNodeCount = countLeafNodes(root);
-console.log('Number of leaf nodes:', leafNodeCount); // Output: Number of leaf nodes: 3
+console.log(factorialRecursion(5)); // Output: 120
