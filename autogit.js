@@ -1,20 +1,14 @@
-function findSecondLargest(arr) {
-  let max = -Infinity;
-  let secondMax = -Infinity;
+function reverseLinkedList(head) {
+    let prev = null;
+    let current = head;
+    let next = null;
 
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] > max) {
-      secondMax = max;
-      max = arr[i];
-    } else if (arr[i] > secondMax && arr[i] < max) {
-      secondMax = arr[i];
+    while (current !== null) {
+        next = current.next;
+        current.next = prev;
+        prev = current;
+        current = next;
     }
-  }
 
-  return secondMax;
+    return prev; // New head of the reversed linked list
 }
-
-// Example usage
-const arr = [1, 3, 5, 9, 2, 7, 6];
-const secondLargest = findSecondLargest(arr);
-console.log(secondLargest); // Output: 7
