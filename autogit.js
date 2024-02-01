@@ -1,48 +1,60 @@
-function tarjansSCC(graph) {
-  let index = 0;
-  const stack = [];
-  const indexMap = {};
-  const lowLinkMap = {};
-  const onStack = {};
-  const scc = [];
-
-  function tarjan(currentNode) {
-    indexMap[currentNode] = index;
-    lowLinkMap[currentNode] = index;
-    index++;
-    stack.push(currentNode);
-    onStack[currentNode] = true;
-
-    const neighbors = graph[currentNode];
-
-    for (let i = 0; i < neighbors.length; i++) {
-      const neighbor = neighbors[i];
-  
-      if (!indexMap[neighbor]) {
-        tarjan(neighbor);
-        lowLinkMap[currentNode] = Math.min(lowLinkMap[currentNode], lowLinkMap[neighbor]);
-      } else if (onStack[neighbor]) {
-        lowLinkMap[currentNode] = Math.min(lowLinkMap[currentNode], indexMap[neighbor]);
-      }
-    }
-
-    if (indexMap[currentNode] === lowLinkMap[currentNode]) {
-      const component = [];
-      let node;
-      do {
-        node = stack.pop();
-        onStack[node] = false;
-        component.push(node);
-      } while (node !== currentNode);
-      scc.push(component);
-    }
+class TrieNode {
+  constructor() {
+    this.children = {};
+    this.isEndOfWord = false;
   }
-
-  for (let node in graph) {
-    if (!indexMap[node]) {
-      tarjan(node);
-    }
-  }
-
-  return scc;
 }
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
+  }
+
+  // Insert a word into the trie
+  insert(word) {
+    let currentNode = this.root;
+
+    for (const char of word) {
+      if (!currentNode.children[char]) {
+        currentNode.children[char] = new TrieNode();
+      }
+      currentNode = currentNode.children[char];
+    }
+
+    currentNode.isEndOfWord = true;
+  }
+
+  // Search for a word in the trie
+  search(word) {
+    let currentNode = this.root;
+
+    for (const char of word) {
+      if (!currentNode.children[char]) {
+        return false;
+      }
+      currentNode = currentNode.children[char];
+    }
+
+    return currentNode.isEndOfWord;
+  }
+
+  // Check if a given prefix exists in the trie
+  startsWith(prefix) {
+    let currentNode = this.root;
+
+    for (const char of prefix) {
+      if (!currentNode.children[char]) {
+        return false;
+      }
+      currentNode = currentNode.children[char];
+    }
+
+    return true;
+  }
+}
+const trie = new Trie();
+trie.insert("apple");
+console.log(trie.search("apple")); // Output: true
+console.log(trie.search("app"));   // Output: false
+console.log(trie.startsWith("app")); // Output: true
+trie.insert("app");
+console.log(trie.search("app"));   // Output: true
