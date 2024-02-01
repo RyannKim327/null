@@ -1,20 +1,19 @@
-function findSecondLargest(arr) {
-  let largest = -Infinity;
-  let secondLargest = -Infinity;
+function calculateMean(numbers) {
+  // Check if the numbers array is empty
+  if (numbers.length === 0) {
+    return 0; // return 0 for an empty array, but you can change this behavior if needed
+  }
 
-  arr.forEach((element) => {
-    if (element > largest) {
-      secondLargest = largest;
-      largest = element;
-    } else if (element > secondLargest && element < largest) {
-      secondLargest = element;
-    }
-  });
+  // Calculate the sum of all numbers
+  const sum = numbers.reduce((acc, curr) => acc + curr, 0);
 
-  return secondLargest;
+  // Calculate the mean by dividing the sum by the total number of elements
+  const mean = sum / numbers.length;
+
+  return mean;
 }
 
 // Example usage
-const array = [5, 10, 3, 8, 2];
-const secondLargest = findSecondLargest(array);
-console.log(secondLargest); // Output: 8
+const numbers = [1, 2, 3, 4, 5];
+const mean = calculateMean(numbers);
+console.log(mean); // Output: 3
