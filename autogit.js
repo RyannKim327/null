@@ -1,53 +1,60 @@
-class Stack {
-  constructor() {
-    this.items = [];
-  }
-
-  // Push element to the stack
-  push(item) {
-    this.items.push(item);
-  }
-
-  // Remove and return the top element from the stack
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
-    }
-    return this.items.pop();
-  }
-
-  // Get the top element of the stack without removing it
-  peek() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
-    }
-    return this.items[this.items.length - 1];
-  }
-
-  // Check if the stack is empty
-  isEmpty() {
-    return this.items.length === 0;
-  }
-
-  // Get the size of the stack
-  size() {
-    return this.items.length;
-  }
-
-  // Clear the stack
-  clear() {
-    this.items = [];
+class ListNode {
+  constructor(value) {
+    this.val = value;
+    this.next = null;
   }
 }
-const stack = new Stack();
-stack.push(10);
-stack.push(20);
-stack.push(30);
 
-console.log(stack.pop());    // Output: 30
-console.log(stack.peek());   // Output: 20
-console.log(stack.isEmpty()); // Output: false
-console.log(stack.size());   // Output: 2
+function reverseLinkedList(head) {
+  let prev = null;
+  let current = head;
+  
+  while (current !== null) {
+    let next = current.next;
+    current.next = prev;
+    prev = current;
+    current = next;
+  }
+  
+  return prev;
+}
+function isLinkedListPalindrome(head) {
+  let slow = head;
+  let fast = head;
 
-stack.clear();
-console.log(stack.isEmpty()); // Output: true
+  // Find the middle node
+  while (fast !== null && fast.next !== null) {
+    slow = slow.next;
+    fast = fast.next.next;
+  }
+
+  if (fast !== null) {
+    // The linked list has odd number of elements, skip the middle node
+    slow = slow.next;
+  }
+
+  // Reverse the second half of the linked list
+  let reversedSecondHalf = reverseLinkedList(slow);
+
+  // Compare the first half with the reversed second half
+  let current = head;
+  let secondHalf = reversedSecondHalf;
+  
+  while (current !== null && secondHalf !== null) {
+    if (current.val !== secondHalf.val) {
+      return false;
+    }
+    current = current.next;
+    secondHalf = secondHalf.next;
+  }
+
+  return true;
+}
+// Create a linked list: 1 -> 2 -> 3 -> 2 -> 1
+let head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(2);
+head.next.next.next.next = new ListNode(1);
+
+console.log(isLinkedListPalindrome(head)); // Output: true
