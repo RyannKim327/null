@@ -1,50 +1,41 @@
-const graph = {
-  A: [{ node: 'B', weight: 1 }, { node: 'C', weight: 4 }],
-  B: [{ node: 'A', weight: 1 }, { node: 'C', weight: 2 }],
-  C: [{ node: 'A', weight: 4 }, { node: 'B', weight: 2 }],
-};
-function dijkstra(graph, start) {
-  const distances = {}; // Stores shortest distance
-  const visited = {}; // Stores visited vertices
-  const previous = {}; // Stores previous vertices
-
-  // Initialize distances with Infinity and start distance as 0
-  for (let vertex in graph) {
-    distances[vertex] = Infinity;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
-  distances[start] = 0;
-
-  while (true) {
-    let closestVertex = null;
-
-    // Find the vertex with the shortest distance
-    for (let vertex in graph) {
-      if (!visited[vertex] && (closestVertex === null || distances[vertex] < distances[closestVertex])) {
-        closestVertex = vertex;
-      }
-    }
-
-    if (distances[closestVertex] === Infinity) {
-      break; // No reachable vertices remaining
-    }
-
-    // Mark the closest vertex as visited
-    visited[closestVertex] = true;
-
-    // Update distances for the adjacent vertices
-    for (let neighbor of graph[closestVertex]) {
-      let totalDistance = distances[closestVertex] + neighbor.weight;
-      if (totalDistance < distances[neighbor.node]) {
-        distances[neighbor.node] = totalDistance;
-        previous[neighbor.node] = closestVertex;
-      }
-    }
-  }
-
-  return { distances, previous };
 }
-const startVertex = 'A';
-const result = dijkstra(graph, startVertex);
+class Queue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+  }
+}
+enqueue(value) {
+  const newNode = new Node(value);
+  if (this.head === null) {
+    this.head = newNode;
+    this.tail = newNode;
+  } else {
+    this.tail.next = newNode;
+    this.tail = newNode;
+  }
+}
+dequeue() {
+  if (this.head === null) {
+    return null; // Empty queue
+  }
+  const value = this.head.value;
+  this.head = this.head.next;
+  if (this.head === null) {
+    this.tail = null; // Last item removed
+  }
+  return value;
+}
+const myQueue = new Queue();
+myQueue.enqueue(1);
+myQueue.enqueue(2);
+myQueue.enqueue(3);
 
-console.log(result.distances); // Shortest distances from the start vertex
-console.log(result.previous); // Previous vertices to reach each vertex
+console.log(myQueue.dequeue()); // Output: 1
+console.log(myQueue.dequeue()); // Output: 2
+console.log(myQueue.dequeue()); // Output: 3
