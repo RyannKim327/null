@@ -1,27 +1,34 @@
-function bwt(input) {
-  var rotations = [];
-  
-  // Generate all rotations of the input string
-  for (var i = 0; i < input.length; i++) {
-    rotations.push(input.slice(i) + input.slice(0, i));
+function beamSearch(initialSolution, beamWidth, maxDepth) {
+  let beam = [initialSolution];
+
+  for (let depth = 0; depth < maxDepth; depth++) {
+    let nextBeam = [];
+
+    for (let i = 0; i < beam.length; i++) {
+      let partialSolution = beam[i];
+      let candidates = generateCandidates(partialSolution);
+
+      candidates.forEach(candidate => {
+        candidate.score = scoreCandidate(candidate);
+      });
+
+      candidates.sort((a, b) => b.score - a.score); // Sort in descending order by score
+
+      nextBeam.push(...candidates.slice(0, beamWidth));
+    }
+
+    beam = nextBeam;
   }
-  
-  // Sort the rotations
-  rotations.sort();
-  
-  // Find the index of the original input string
-  var index = rotations.indexOf(input);
-  
-  // Construct the transformed string
-  var transformed = '';
-  for (var i = 0; i < rotations.length; i++) {
-    transformed += rotations[i][input.length - 1];
-  }
-  
-  return transformed;
+
+  return beam[0]; // Return the best solution found
 }
 
-// Usage example:
-var inputString = "banana";
-var transformedString = bwt(inputString);
-console.log(transformedString);  // Outputs "annb$aa"
+function generateCandidates(partialSolution) {
+  // Generate and return a list of possible next candidates given a partial solution
+  // e.g., generateCandidates("ABC") -> ["ABCD", "ABCE", "ABCF"]
+}
+
+function scoreCandidate(candidate) {
+  // Compute and return a score for the given candidate solution
+  // The scoring function should reflect the quality or fitness of the solution
+}
