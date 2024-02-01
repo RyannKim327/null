@@ -1,55 +1,47 @@
-function biDirectionalSearch(graph, startNode, goalNode) {
-  let startQueue = [startNode];
-  let goalQueue = [goalNode];
-  let startParents = { [startNode]: null };
-  let goalParents = { [goalNode]: null };
-
-  while (startQueue.length && goalQueue.length) {
-    const startNode = startQueue.shift();
-    const goalNode = goalQueue.shift();
-
-    if (startNode in goalParents) {
-      // Intersection found
-      return buildPath(startParents, goalParents, startNode, goalNode);
-    }
-
-    // Expand start node's neighbors
-    for (let neighbor of graph[startNode]) {
-      if (!(neighbor in startParents)) {
-        startParents[neighbor] = startNode;
-        startQueue.push(neighbor);
-      }
-    }
-
-    // Expand goal node's neighbors
-    for (let neighbor of graph[goalNode]) {
-      if (!(neighbor in goalParents)) {
-        goalParents[neighbor] = goalNode;
-        goalQueue.push(neighbor);
-      }
-    }
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
   }
-
-  // No path found
-  return null;
 }
 
-function buildPath(startParents, goalParents, startNode, goalNode) {
-  const path = [];
-  let node = startNode;
-
-  while (node !== null) {
-    path.push(node);
-    node = startParents[node];
+class LinkedList {
+  constructor() {
+    this.head = null;
   }
 
-  path.reverse();
+  add(data) {
+    const newNode = new Node(data);
 
-  node = goalNode;
-  while (node !== null) {
-    path.push(node);
-    node = goalParents[node];
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
   }
 
-  return path;
+  getLength() {
+    let count = 0;
+    let current = this.head;
+
+    while (current) {
+      count++;
+      current = current.next;
+    }
+
+    return count;
+  }
 }
+
+// Example usage
+const list = new LinkedList();
+list.add(1);
+list.add(2);
+list.add(3);
+list.add(4);
+
+console.log(list.getLength()); // Output: 4
