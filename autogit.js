@@ -1,12 +1,32 @@
-function randomSort(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
+function hasCycle(head) {
+  let slow = head;
+  let fast = head;
 
-// Example usage:
-const array = [1, 2, 3, 4, 5];
-const shuffledArray = randomSort(array);
-console.log(shuffledArray);
+  while (fast !== null && fast.next !== null) {
+    slow = slow.next;
+    fast = fast.next.next;
+
+    // If there's a cycle, the slow and fast pointers will meet at some point
+    if (slow === fast) {
+      return true;
+    }
+  }
+
+  return false; // No cycle found
+}
+let LinkedListNode = function (value) {
+  this.value = value;
+  this.next = null;
+};
+
+let head = new LinkedListNode(1);
+let second = new LinkedListNode(2);
+let third = new LinkedListNode(3);
+let fourth = new LinkedListNode(4);
+
+head.next = second;
+second.next = third;
+third.next = fourth;
+fourth.next = second; // creating a cycle
+
+console.log(hasCycle(head)); // Output: true
