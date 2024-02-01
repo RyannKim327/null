@@ -1,51 +1,15 @@
-// Heapify the given array
-function heapify(arr, n, i) {
-  let largest = i; // Initialize the largest as the root
-  const left = 2 * i + 1;
-  const right = 2 * i + 2;
+function areAnagrams(str1, str2) {
+  // Convert the strings to lowercase and remove non-alphabetic characters
+  const cleanStr1 = str1.toLowerCase().replace(/[^a-z]/g, '');
+  const cleanStr2 = str2.toLowerCase().replace(/[^a-z]/g, '');
 
-  // If the left child is larger than the root
-  if (left < n && arr[left] > arr[largest]) {
-    largest = left;
-  }
+  // Sort the characters of both strings
+  const sortedStr1 = cleanStr1.split('').sort().join('');
+  const sortedStr2 = cleanStr2.split('').sort().join('');
 
-  // If the right child is larger than the largest so far
-  if (right < n && arr[right] > arr[largest]) {
-    largest = right;
-  }
-
-  // If the largest is not the root
-  if (largest !== i) {
-    [arr[i], arr[largest]] = [arr[largest], arr[i]]; // Swap the elements
-
-    // Recursively heapify the affected sub-tree
-    heapify(arr, n, largest);
-  }
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
-
-// Heap sort function
-function heapSort(arr) {
-  const n = arr.length;
-
-  // Build the heap (rearrange the array)
-  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-    heapify(arr, n, i);
-  }
-
-  // Extract elements from the heap one by one
-  for (let i = n - 1; i > 0; i--) {
-    // Move the current root to the end
-    [arr[0], arr[i]] = [arr[i], arr[0]];
-
-    // Heapify the reduced heap
-    heapify(arr, i, 0);
-  }
-
-  return arr;
-}
-
-
-// Usage example
-const array = [5, 8, 2, 1, 6, 3, 7, 4];
-const sortedArray = heapSort(array);
-console.log(sortedArray);
+console.log(areAnagrams('listen', 'silent'));     // Output: true
+console.log(areAnagrams('debit card', 'bad credit'));   // Output: true
+console.log(areAnagrams('test', 'best'));   // Output: false
