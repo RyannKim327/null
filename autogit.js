@@ -1,33 +1,33 @@
-// Function to perform interpolation search
-function interpolationSearch(arr, target) {
-  let low = 0;
-  let high = arr.length - 1;
+function findLongestCommonSubstring(string1, string2) {
+  const m = string1.length;
+  const n = string2.length;
+  let maxLength = 0;
+  let endIndex = 0;
 
-  // Iterate until the target is within the range
-  while (low <= high && target >= arr[low] && target <= arr[high]) {
-    // Calculate the position using interpolation formula
-    let pos =
-      low +
-      Math.floor(((target - arr[low]) / (arr[high] - arr[low])) * (high - low));
+  // Create a 2D array to store the lengths of common substrings
+  const dp = Array(m + 1).fill(0).map(() => Array(n + 1).fill(0));
 
-    // If the target is found
-    if (arr[pos] === target)
-      return `Element ${target} found at index ${pos}`;
-
-    // If the target is smaller, move the high pointer
-    if (arr[pos] > target)
-      high = pos - 1;
-    // If the target is larger, move the low pointer
-    else
-      low = pos + 1;
+  // Iterate over the strings and update the dp array
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (string1[i - 1] === string2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+        if (dp[i][j] > maxLength) {
+          maxLength = dp[i][j];
+          endIndex = i - 1; // Update the ending index of the common substring
+        }
+      }
+    }
   }
 
-  // Return message if the target is not found
-  return `Element ${target} not found`;
+  // Extract the longest common substring from string1
+  const longestSubstring = string1.substring(endIndex - maxLength + 1, endIndex + 1);
+  return longestSubstring;
 }
 
-// Usage example
-const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const target = 12;
+// Example usage:
+const string1 = 'abcdefg';
+const string2 = 'cdefgh';
 
-console.log(interpolationSearch(arr, target));
+const longestSubstring = findLongestCommonSubstring(string1, string2);
+console.log(longestSubstring); // Output: "cdef"
