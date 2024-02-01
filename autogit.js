@@ -1,114 +1,98 @@
-class AVLNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-    this.height = 1;
-  }
+function bidirectionalSearch(start, target, getNeighbors) {
+  // Implementation goes here
 }
-
-class AVLTree {
-  constructor() {
-    this.root = null;
-  }
-
-  // Helper function to calculate the height of a node
-  getHeight(node) {
-    if (node === null) return 0;
-    return node.height;
-  }
-
-  // Helper function to update the height of a node
-  updateHeight(node) {
-    node.height =
-      Math.max(this.getHeight(node.left), this.getHeight(node.right)) + 1;
-  }
-
-  // Helper function to calculate the balance factor of a node
-  getBalanceFactor(node) {
-    if (node === null) return 0;
-    return this.getHeight(node.left) - this.getHeight(node.right);
-  }
-
-  // Rotate a subtree right at the given node
-  rotateRight(node) {
-    const newRoot = node.left;
-    node.left = newRoot.right;
-    newRoot.right = node;
-    this.updateHeight(node);
-    this.updateHeight(newRoot);
-    return newRoot;
-  }
-
-  // Rotate a subtree left at the given node
-  rotateLeft(node) {
-    const newRoot = node.right;
-    node.right = newRoot.left;
-    newRoot.left = node;
-    this.updateHeight(node);
-    this.updateHeight(newRoot);
-    return newRoot;
-  }
-
-  // Rebalance the tree starting from the given node
-  rebalance(node) {
-    this.updateHeight(node);
-
-    if (this.getBalanceFactor(node) > 1) {
-      if (this.getBalanceFactor(node.left) < 0) {
-        node.left = this.rotateLeft(node.left);
-      }
-      return this.rotateRight(node);
-    }
-
-    if (this.getBalanceFactor(node) < -1) {
-      if (this.getBalanceFactor(node.right) > 0) {
-        node.right = this.rotateRight(node.right);
-      }
-      return this.rotateLeft(node);
-    }
-
-    return node;
-  }
-
-  // Insert a value into the AVL tree
-  insert(value) {
-    this.root = this._insertHelper(this.root, value);
-  }
-
-  _insertHelper(node, value) {
-    if (node === null) {
-      return new AVLNode(value);
-    }
-
-    if (value < node.value) {
-      node.left = this._insertHelper(node.left, value);
-    } else {
-      node.right = this._insertHelper(node.right, value);
-    }
-
-    return this.rebalance(node);
-  }
-
-  // In-order traversal of the AVL tree
-  inorder() {
-    this._inorderHelper(this.root);
-  }
-
-  _inorderHelper(node) {
-    if (node === null) return;
-
-    this._inorderHelper(node.left);
-    console.log(node.value);
-    this._inorderHelper(node.right);
-  }
+function bidirectionalSearch(start, target, getNeighbors) {
+  const startExplored = [];
+  const targetExplored = [];
+  
+  // Implementation goes here
 }
-
-// Usage example:
-const avlTree = new AVLTree();
-avlTree.insert(10);
-avlTree.insert(20);
-avlTree.insert(30);
-avlTree.insert(40);
-avlTree.insert(50);
-avlTree.inorder();
+function bidirectionalSearch(start, target, getNeighbors) {
+  if (start === target) {
+    return [start];
+  }
+  
+  const startExplored = [];
+  const targetExplored = [];
+  
+  // Implementation goes here
+}
+function bidirectionalSearch(start, target, getNeighbors) {
+  if (start === target) {
+    return [start];
+  }
+  
+  const startExplored = [];
+  const targetExplored = [];
+  
+  const startQueue = [start];
+  const targetQueue = [target];
+  
+  // Implementation goes here
+}
+function bidirectionalSearch(start, target, getNeighbors) {
+  if (start === target) {
+    return [start];
+  }
+  
+  const startExplored = [];
+  const targetExplored = [];
+  
+  const startQueue = [start];
+  const targetQueue = [target];
+  
+  while (startQueue.length > 0 && targetQueue.length > 0) {
+    // Expand the front node of the start queue
+    const currentNodeStart = startQueue.shift();
+    startExplored.push(currentNodeStart);
+    const neighborsStart = getNeighbors(currentNodeStart);
+    
+    // Check if any neighbor is already explored in the target direction
+    const commonNode = neighborsStart.find(node => targetExplored.includes(node));
+    if (commonNode) {
+      // Found a common node, combine the paths from start and target directions
+      return getPath(currentNodeStart, commonNode, startExplored, targetExplored);
+    }
+    
+    // Expand the front node of the target queue
+    const currentNodeTarget = targetQueue.shift();
+    targetExplored.push(currentNodeTarget);
+    const neighborsTarget = getNeighbors(currentNodeTarget);
+    
+    // Check if any neighbor is already explored in the start direction
+    const commonNodeReverse = neighborsTarget.find(node => startExplored.includes(node));
+    if (commonNodeReverse) {
+      // Found a common node, combine the paths from start and target directions
+      return getPath(commonNodeReverse, currentNodeTarget, startExplored, targetExplored);
+    }
+    
+    // Add neighbors to the exploration queues
+    startQueue.push(...neighborsStart.filter(node => !startExplored.includes(node)));
+    targetQueue.push(...neighborsTarget.filter(node => !targetExplored.includes(node)));
+  }
+  
+  // No path found
+  return [];
+}
+function getPath(commonNode, startNode, targetNode, startExplored, targetExplored) {
+  const pathStart = [];
+  
+  // Follow the path from start node to common node
+  let currentNode = startNode;
+  while (currentNode !== commonNode) {
+    pathStart.push(currentNode);
+    currentNode = startExplored.find(node => node !== commonNode && getNeighbors(node).includes(currentNode));
+  }
+  
+  const pathTarget = [];
+  
+  // Follow the path from target node to common node
+  currentNode = targetNode;
+  while (currentNode !== commonNode) {
+    pathTarget.push(currentNode);
+    currentNode = targetExplored.find(node => node !== commonNode && getNeighbors(node).includes(currentNode));
+  }
+  
+  // Combine the paths in reverse order
+  return [...pathStart.reverse(), commonNode, ...pathTarget];
+}
