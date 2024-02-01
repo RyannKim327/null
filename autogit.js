@@ -1,17 +1,31 @@
-function quickSort(arr) {
-  if (arr.length <= 1) {
-    return arr;
+function shellSort(arr) {
+  // Calculate the gap (initial value of h)
+  let n = arr.length;
+  let gap = Math.floor(n / 2);
+
+  // Perform an insertion sort for each gap value
+  while (gap > 0) {
+    for (let i = gap; i < n; i++) {
+      let temp = arr[i];
+      let j = i;
+
+      // Shift elements until the correct position for the current element is found
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
+      }
+
+      arr[j] = temp;
+    }
+
+    // Reduce the gap for the next iteration
+    gap = Math.floor(gap / 2);
   }
 
-  const pivot = arr[Math.floor(arr.length / 2)];
-  const equal = arr.filter((element) => element === pivot);
-  const less = arr.filter((element) => element < pivot);
-  const greater = arr.filter((element) => element > pivot);
-
-  return quickSort(less).concat(equal, quickSort(greater));
+  return arr;
 }
+let arr = [9, 5, 1, 3, 8, 4, 2, 7, 6];
+console.log("Original array:", arr);
 
-// Example usage:
-const arr = [5, 8, 1, 3, 9, 2];
-const sortedArr = quickSort(arr);
-console.log(sortedArr);
+let sortedArr = shellSort(arr);
+console.log("Sorted array:", sortedArr);
