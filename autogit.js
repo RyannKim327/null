@@ -1,7 +1,16 @@
-let array = [1, 2, 3, 4, 5];
-array.reverse();
-console.log(array); // Output: [5, 4, 3, 2, 1]
-let array = [1, 2, 3, 4, 5];
-let reversedArray = array.slice().reverse();
-console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
-console.log(array); // Output: [1, 2, 3, 4, 5]
+function bubbleSort(arr) {
+    var len = arr.length;
+    for (var i = 0; i < len - 1; i++) {
+        for (var j = 0; j < len - 1 - i; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap the elements
+                var temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+    return arr;
+}
+var array = [5, 3, 8, 4, 2];
+console.log(bubbleSort(array));
