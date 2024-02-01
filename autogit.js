@@ -1,43 +1,22 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
-}
-
-class LinkedList {
-  constructor() {
-    this.head = null;
+function isPrime(number) {
+  if (number < 2) {
+    // Numbers less than 2 are not prime
+    return false;
   }
 
-  add(data) {
-    const newNode = new Node(data);
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
+  // Check if the number is divisible by any number less than its square root
+  for (let i = 2; i <= Math.sqrt(number); i++) {
+    if (number % i === 0) {
+      // If it is divisible, then it is not prime
+      return false;
     }
   }
 
-  getLength() {
-    let count = 0;
-    let current = this.head;
-    while (current) {
-      count++;
-      current = current.next;
-    }
-    return count;
-  }
+  // If it is not divisible by any number, it is prime
+  return true;
 }
 
-// Example usage:
-const linkedList = new LinkedList();
-linkedList.add(5);
-linkedList.add(10);
-linkedList.add(15);
-
-console.log(linkedList.getLength()); // Output: 3
+// Example usage
+console.log(isPrime(7));  // Output: true
+console.log(isPrime(12));  // Output: false
+console.log(isPrime(37));  // Output: true
