@@ -1,52 +1,58 @@
-function reverseLinkedList(head) {
-    let previous = null;
-    let current = head;
+function computeLPSArray(pattern, lps) {
+  let len = 0;
+  let i = 1;
+  lps[0] = 0;
 
-    while (current) {
-        let next = current.next;
-        current.next = previous;
-        previous = current;
-        current = next;
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[len]) {
+      len++;
+      lps[i] = len;
+      i++;
+    } else {
+      if (len !== 0) {
+        len = lps[len - 1];
+      } else {
+        lps[i] = 0;
+        i++;
+      }
+    }
+  }
+}
+
+function KMPSearch(text, pattern) {
+  const n = text.length;
+  const m = pattern.length;
+
+  const lps = new Array(m).fill(0);
+  computeLPSArray(pattern, lps);
+
+  let i = 0;
+  let j = 0;
+  const indices = [];
+
+  while (i < n) {
+    if (pattern[j] === text[i]) {
+      i++;
+      j++;
     }
 
-    return previous; // New head of the reversed linked list
-}
-// Linked list node structure
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
+    if (j === m) {
+      indices.push(i - j);
+      j = lps[j - 1];
+    } else if (i < n && pattern[j] !== text[i]) {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
+      }
     }
+  }
+
+  return indices;
 }
 
-// Create a linked list: 1 -> 2 -> 3 -> 4 -> null
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-
-console.log('Original Linked List:');
-let current = head;
-while (current) {
-    console.log(current.value);
-    current = current.next;
-}
-
-let reversedHead = reverseLinkedList(head);
-
-console.log('Reversed Linked List:');
-current = reversedHead;
-while (current) {
-    console.log(current.value);
-    current = current.next;
-}
-Original Linked List:
-1
-2
-3
-4
-Reversed Linked List:
-4
-3
-2
-1
+// Example usage:
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const indices = KMPSearch(text, pattern);
+console.log(indices); // Outputs: [10]
