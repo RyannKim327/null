@@ -1,44 +1,16 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+function getRandomNumber(min, max) {
+  // Calculate the range
+  const range = max - min + 1;
+  
+  // Generate a random number within the range
+  const randomNumber = Math.floor(Math.random() * range) + min;
+  
+  return randomNumber;
 }
-class BinaryTree {
-  constructor() {
-    this.root = null;
-  }
 
-  insert(value) {
-    const newNode = new Node(value);
+// Usage example
+const minRange = 1;
+const maxRange = 10;
 
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
-
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
-}
-const tree = new BinaryTree();
-tree.insert(5);
-tree.insert(3);
-tree.insert(7);
-tree.insert(1);
-tree.insert(4);
+const randomNum = getRandomNumber(minRange, maxRange);
+console.log(randomNum); // Output: A random number between 1 and 10
