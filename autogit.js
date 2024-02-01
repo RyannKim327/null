@@ -1,45 +1,40 @@
-function longestCommonSubsequence(str1, str2) {
-  const m = str1.length;
-  const n = str2.length;
+function topologicalSort(graph) {
+  const visited = new Set();
+  const stack = [];
 
-  // Create a 2D array to store the lengths of the common subsequences
-  const dp = new Array(m + 1);
-  for (let i = 0; i <= m; i++) {
-    dp[i] = new Array(n + 1).fill(0);
-  }
+  function dfs(node) {
+    visited.add(node);
 
-  // Compute the lengths of the common subsequences
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-      } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+    const neighbors = graph[node];
+    if (neighbors) {
+      for (const neighbor of neighbors) {
+        if (!visited.has(neighbor)) {
+          dfs(neighbor);
+        }
       }
     }
+
+    stack.unshift(node);
   }
 
-  // Backtrack to find the longest common subsequence
-  let i = m;
-  let j = n;
-  const subsequence = [];
-  while (i > 0 && j > 0) {
-    if (str1[i - 1] === str2[j - 1]) {
-      subsequence.unshift(str1[i - 1]);
-      i--;
-      j--;
-    } else if (dp[i - 1][j] > dp[i][j - 1]) {
-      i--;
-    } else {
-      j--;
+  for (const node in graph) {
+    if (!visited.has(node)) {
+      dfs(node);
     }
   }
 
-  return subsequence.join('');
+  return stack;
 }
 
-// Example usage
-const str1 = 'ABCDGH';
-const str2 = 'AEDFHR';
-const result = longestCommonSubsequence(str1, str2);
-console.log(result);  // Output: 'ADH'
+// Example usage:
+const graph = {
+  A: ["B", "C"],
+  B: ["D", "E"],
+  C: ["F"],
+  D: [],
+  E: ["F"],
+  F: []
+};
+
+const result = topologicalSort(graph);
+console.log(result); // Output: ["A", "C", "F", "B", "E", "D"]
