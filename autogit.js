@@ -1,16 +1,34 @@
-function bubbleSort(arr) {
-    var len = arr.length;
-    for (var i = 0; i < len - 1; i++) {
-        for (var j = 0; j < len - 1 - i; j++) {
-            if (arr[j] > arr[j + 1]) {
-                // Swap the elements
-                var temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
-        }
-    }
-    return arr;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
-var array = [5, 3, 8, 4, 2];
-console.log(bubbleSort(array));
+
+function countLeafNodes(root) {
+  if (root === null) {
+    return 0;
+  }
+
+  if (root.left === null && root.right === null) {
+    return 1;  // It's a leaf node
+  }
+
+  const leftCount = countLeafNodes(root.left);
+  const rightCount = countLeafNodes(root.right);
+
+  return leftCount + rightCount;
+}
+
+// Usage:
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
+
+const leafNodeCount = countLeafNodes(root);
+console.log("Number of leaf nodes:", leafNodeCount);  // Output: 4
