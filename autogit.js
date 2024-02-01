@@ -1,13 +1,22 @@
-// Function to fetch data from an API
-async function fetchData() {
-  try {
-    const response = await fetch('https://api.example.com/data'); // Replace with the desired API endpoint
-    const data = await response.json();
-    console.log(data); // Do something with the retrieved data
-  } catch (error) {
-    console.log('Error fetching data:', error);
+function longestCommonPrefix(strings) {
+  if (strings.length === 0) {
+    return '';
   }
+  
+  let prefix = strings[0];
+  
+  for (let i = 1; i < strings.length; i++) {
+    while (strings[i].indexOf(prefix) !== 0) {
+      prefix = prefix.substring(0, prefix.length - 1);
+      
+      if (prefix === '') {
+        return '';
+      }
+    }
+  }
+  
+  return prefix;
 }
-
-// Call the function to fetch data
-fetchData();
+const strings = ['apple', 'app', 'application', 'aptitude'];
+const commonPrefix = longestCommonPrefix(strings);
+console.log(commonPrefix); // Output: 'app'
