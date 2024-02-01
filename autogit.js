@@ -1,130 +1,102 @@
-class AVLNode {
+class Node {
   constructor(value) {
     this.value = value;
     this.left = null;
     this.right = null;
-    this.height = 1;
   }
 }
-
-class AVLTree {
+class BinarySearchTree {
   constructor() {
     this.root = null;
   }
 
-  // Get the height of a node
-  getHeight(node) {
-    if (node === null) {
-      return 0;
-    }
-    return node.height;
-  }
-
-  // Get the balance factor of a node
-  getBalanceFactor(node) {
-    if (node === null) {
-      return 0;
-    }
-    return this.getHeight(node.left) - this.getHeight(node.right);
-  }
-
-  // Update the height of a node
-  updateHeight(node) {
-    if (node === null) {
-      return;
-    }
-    node.height = Math.max(this.getHeight(node.left), this.getHeight(node.right)) + 1;
-  }
-
-  // Perform left rotation on a node
-  leftRotate(node) {
-    const newRoot = node.right;
-    node.right = newRoot.left;
-    newRoot.left = node;
-
-    this.updateHeight(node);
-    this.updateHeight(newRoot);
-
-    return newRoot;
-  }
-
-  // Perform right rotation on a node
-  rightRotate(node) {
-    const newRoot = node.left;
-    node.left = newRoot.right;
-    newRoot.right = node;
-
-    this.updateHeight(node);
-    this.updateHeight(newRoot);
-
-    return newRoot;
-  }
-
-  // Balance the tree at a specific node
-  balance(node) {
-    this.updateHeight(node);
-
-    if (this.getBalanceFactor(node) > 1) {
-      if (this.getBalanceFactor(node.left) < 0) {
-        node.left = this.leftRotate(node.left);
-      }
-      return this.rightRotate(node);
-    }
-
-    if (this.getBalanceFactor(node) < -1) {
-      if (this.getBalanceFactor(node.right) > 0) {
-        node.right = this.rightRotate(node.right);
-      }
-      return this.leftRotate(node);
-    }
-
-    return node;
-  }
-
-  // Insert a value into the tree
   insert(value) {
-    this.root = this._insertRecursive(this.root, value);
-  }
+    const newNode = new Node(value);
 
-  _insertRecursive(node, value) {
-    if (node === null) {
-      return new AVLNode(value);
-    }
-
-    if (value < node.value) {
-      node.left = this._insertRecursive(node.left, value);
+    if (this.root === null) {
+      this.root = newNode;
     } else {
-      node.right = this._insertRecursive(node.right, value);
+      this.insertNode(this.root, newNode);
     }
-
-    return this.balance(node);
   }
 
-  // Print the tree in-order
-  printInOrder() {
-    this._printInOrderRecursive(this.root);
-    console.log();
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
   }
 
-  _printInOrderRecursive(node) {
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  searchNode(node, value) {
     if (node === null) {
-      return;
+      return false;
+    } else if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else if (value > node.value) {
+      return this.searchNode(node.right, value);
+    } else {
+      return true;
     }
+  }
 
-    this._printInOrderRecursive(node.left);
-    process.stdout.write(node.value + " ");
-    this._printInOrderRecursive(node.right);
+  inOrderTraversal(callback) {
+    this.inOrderTraversalNode(this.root, callback);
+  }
+
+  inOrderTraversalNode(node, callback) {
+    if (node !== null) {
+      this.inOrderTraversalNode(node.left, callback);
+      callback(node.value);
+      this.inOrderTraversalNode(node.right, callback);
+    }
+  }
+
+  preOrderTraversal(callback) {
+    this.preOrderTraversalNode(this.root, callback);
+  }
+
+  preOrderTraversalNode(node, callback) {
+    if (node !== null) {
+      callback(node.value);
+      this.preOrderTraversalNode(node.left, callback);
+      this.preOrderTraversalNode(node.right, callback);
+    }
+  }
+
+  postOrderTraversal(callback) {
+    this.postOrderTraversalNode(this.root, callback);
+  }
+
+  postOrderTraversalNode(node, callback) {
+    if (node !== null) {
+      this.postOrderTraversalNode(node.left, callback);
+      this.postOrderTraversalNode(node.right, callback);
+      callback(node.value);
+    }
   }
 }
+const bst = new BinarySearchTree();
 
-// Usage example
-const avlTree = new AVLTree();
-avlTree.insert(10);
-avlTree.insert(5);
-avlTree.insert(15);
-avlTree.insert(3);
-avlTree.insert(8);
-avlTree.insert(12);
-avlTree.insert(17);
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(2);
+bst.insert(7);
+bst.insert(12);
 
-avlTree.printInOrder(); // Output: 3 5 8 10 12 15 17
+console.log(bst.search(7)); // Output: true
+
+bst.inOrderTraversal(value => console.log(value)); // Output: 2 5 7 10 12 15
