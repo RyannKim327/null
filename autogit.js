@@ -1,12 +1,25 @@
-const str = "Hello, World!";
-const reversedStr = str.split("").reverse().join("");
-console.log(reversedStr);
-const str = "Hello, World!";
-let reversedStr = "";
-for (let i = str.length - 1; i >= 0; i--) {
-  reversedStr += str.charAt(i);
+function findFirstNonRepeatingChar(str) {
+  // Create an object to store character count
+  const charCount = {};
+
+  // Iterate through the string and count each character
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
+  }
+
+  // Iterate through the object and find the first character with a count of 1
+  for (let char in charCount) {
+    if (charCount[char] === 1) {
+      return char;
+    }
+  }
+
+  // If no non-repeating characters found, return null or any other desired value
+  return null;
 }
-console.log(reversedStr);
-const str = "Hello, World!";
-const reversedStr = Array.from(str).reduce((accumulator, char) => char + accumulator, "");
-console.log(reversedStr);
+
+// Example usage
+const input = "aabcbd";
+const firstNonRepeatingChar = findFirstNonRepeatingChar(input);
+console.log(firstNonRepeatingChar); // Output: 'c'
