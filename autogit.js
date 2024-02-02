@@ -1,44 +1,158 @@
-function longestCommonSubsequence(str1, str2) {
-  const m = str1.length;
-  const n = str2.length;
+function dijkstra(graph, startNode) {
+  // ...
+}
+function dijkstra(graph, startNode) {
+  const distance = {};
+  const visited = {};
 
-  // Create a 2D array with dimensions (m+1)x(n+1)
-  const dp = Array(m + 1)
-    .fill(0)
-    .map(() => Array(n + 1).fill(0));
+  // ...
+}
+function dijkstra(graph, startNode) {
+  const distance = {};
+  const visited = {};
 
-  // Fill the 2D array using dynamic programming
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1; // Increment the count
-      } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]); // Take the maximum of the previous counts
+  // Set initial distance of the startNode to 0, and all others to infinity
+  for (let node in graph) {
+    distance[node] = Infinity;
+  }
+  distance[startNode] = 0;
+
+  // ...
+}
+function dijkstra(graph, startNode) {
+  const distance = {};
+  const visited = {};
+
+  // Set initial distance of the startNode to 0, and all others to infinity
+  for (let node in graph) {
+    distance[node] = Infinity;
+  }
+  distance[startNode] = 0;
+
+  while (true) {
+    let shortestDistanceNode = null;
+
+    // Find the node with the shortest distance that hasn't been visited
+    for (let node in graph) {
+      if (!visited[node] && (shortestDistanceNode === null || distance[node] < distance[shortestDistanceNode])) {
+        shortestDistanceNode = node;
+      }
+    }
+
+    // ...
+  }
+}
+function dijkstra(graph, startNode) {
+  const distance = {};
+  const visited = {};
+
+  // Set initial distance of the startNode to 0, and all others to infinity
+  for (let node in graph) {
+    distance[node] = Infinity;
+  }
+  distance[startNode] = 0;
+
+  while (true) {
+    let shortestDistanceNode = null;
+
+    // Find the node with the shortest distance that hasn't been visited
+    for (let node in graph) {
+      if (!visited[node] && (shortestDistanceNode === null || distance[node] < distance[shortestDistanceNode])) {
+        shortestDistanceNode = node;
+      }
+    }
+
+    // If all nodes have been visited, break out of the loop
+    if (shortestDistanceNode === null) {
+      break;
+    }
+
+    // ...
+  }
+}
+function dijkstra(graph, startNode) {
+  const distance = {};
+  const visited = {};
+
+  // Set initial distance of the startNode to 0, and all others to infinity
+  for (let node in graph) {
+    distance[node] = Infinity;
+  }
+  distance[startNode] = 0;
+
+  while (true) {
+    let shortestDistanceNode = null;
+
+    // Find the node with the shortest distance that hasn't been visited
+    for (let node in graph) {
+      if (!visited[node] && (shortestDistanceNode === null || distance[node] < distance[shortestDistanceNode])) {
+        shortestDistanceNode = node;
+      }
+    }
+
+    // If all nodes have been visited, break out of the loop
+    if (shortestDistanceNode === null) {
+      break;
+    }
+
+    // Mark the current node as visited
+    visited[shortestDistanceNode] = true;
+
+    let neighbors = graph[shortestDistanceNode];
+
+    // Iterate through the neighbors of the current node
+    for (let neighbor in neighbors) {
+      let newDistance = distance[shortestDistanceNode] + neighbors[neighbor];
+
+      // If the new distance is shorter than the previously recorded distance, update it
+      if (newDistance < distance[neighbor]) {
+        distance[neighbor] = newDistance;
       }
     }
   }
 
-  // Backtrack through the 2D array to find the longest common subsequence
-  let i = m;
-  let j = n;
-  const subsequence = [];
+  // ...
+}
+function dijkstra(graph, startNode) {
+  const distance = {};
+  const visited = {};
 
-  while (i > 0 && j > 0) {
-    if (str1[i - 1] === str2[j - 1]) {
-      subsequence.unshift(str1[i - 1]); // Add the character to the beginning of the subsequence
-      i--;
-      j--;
-    } else if (dp[i - 1][j] > dp[i][j - 1]) {
-      i--;
-    } else {
-      j--;
+  // Set initial distance of the startNode to 0, and all others to infinity
+  for (let node in graph) {
+    distance[node] = Infinity;
+  }
+  distance[startNode] = 0;
+
+  while (true) {
+    let shortestDistanceNode = null;
+
+    // Find the node with the shortest distance that hasn't been visited
+    for (let node in graph) {
+      if (!visited[node] && (shortestDistanceNode === null || distance[node] < distance[shortestDistanceNode])) {
+        shortestDistanceNode = node;
+      }
+    }
+
+    // If all nodes have been visited, break out of the loop
+    if (shortestDistanceNode === null) {
+      break;
+    }
+
+    // Mark the current node as visited
+    visited[shortestDistanceNode] = true;
+
+    let neighbors = graph[shortestDistanceNode];
+
+    // Iterate through the neighbors of the current node
+    for (let neighbor in neighbors) {
+      let newDistance = distance[shortestDistanceNode] + neighbors[neighbor];
+
+      // If the new distance is shorter than the previously recorded distance, update it
+      if (newDistance < distance[neighbor]) {
+        distance[neighbor] = newDistance;
+      }
     }
   }
 
-  return subsequence.join('');
+  return distance;
 }
-
-// Example usage:
-const str1 = 'ABCDGH';
-const str2 = 'AEDFHR';
-console.log(longestCommonSubsequence(str1, str2)); // Output: ADH
