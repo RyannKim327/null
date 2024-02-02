@@ -1,27 +1,95 @@
-function findKthSmallest(arr, k) {
-  arr.sort((a, b) => a - b);
-  return arr[k - 1];
-}
-function findKthSmallest(arr, k) {
-  // Base case: If the array has only one element, return it.
-  if (arr.length === 1) {
-    return arr[0];
+class BinaryHeap {
+  constructor() {
+    this.heap = [];
   }
 
-  // Choose the pivot (last element)
-  const pivot = arr[arr.length - 1];
+  get size() {
+    return this.heap.length;
+  }
 
-  // Partition elements
-  const smaller = arr.filter((element) => element < pivot);
-  const equal = arr.filter((element) => element === pivot);
-  const greater = arr.filter((element) => element > pivot);
+  insert(value) {
+    this.heap.push(value);
+    this.bubbleUp(this.size - 1);
+  }
 
-  // Recur on the appropriate part of the array
-  if (k <= smaller.length) {
-    return findKthSmallest(smaller, k);
-  } else if (k <= smaller.length + equal.length) {
-    return pivot;
-  } else {
-    return findKthSmallest(greater, k - (smaller.length + equal.length));
+  remove() {
+    const rootIndex = 0;
+    const lastIndex = this.size - 1;
+    this.swap(rootIndex, lastIndex);
+    const root = this.heap.pop();
+    this.bubbleDown(rootIndex);
+    return root;
+  }
+
+  bubbleUp(index) {
+    while (index > 0) {
+      const parentIndex = Math.floor((index - 1) / 2);
+      if (this.compare(index, parentIndex) >= 0) break; // min-heap
+      this.swap(index, parentIndex);
+      index = parentIndex;
+    }
+  }
+
+  bubbleDown(index) {
+    while (true) {
+      const leftChildIndex = index * 2 + 1;
+      const rightChildIndex = index * 2 + 2;
+      let smallestIndex = index;
+
+      if (
+        leftChildIndex < this.size &&
+        this.compare(leftChildIndex, smallestIndex) < 0
+      ) {
+        smallestIndex = leftChildIndex;
+      }
+
+      if (
+        rightChildIndex < this.size &&
+        this.compare(rightChildIndex, smallestIndex) < 0
+      ) {
+        smallestIndex = rightChildIndex;
+      }
+
+      if (smallestIndex === index) break; // min-heap
+
+      this.swap(index, smallestIndex);
+      index = smallestIndex;
+    }
+  }
+
+  swap(a, b) {
+    [this.heap[a], this.heap[b]] = [this.heap[b], this.heap[a]];
+  }
+
+  compare(a, b) {
+    return this.heap[a] - this.heap[b]; // adjust comparison based on priority logic
   }
 }
+class PriorityQueue {
+  constructor() {
+    this.queue = new BinaryHeap();
+  }
+
+  enqueue(element, priority) {
+    this.queue.insert({ element, priority });
+  }
+
+  dequeue() {
+    return this.queue.remove().element;
+  }
+
+  isEmpty() {
+    return this.queue.size === 0;
+  }
+}
+const pq = new PriorityQueue();
+pq.enqueue("Task 1", 2);
+pq.enqueue("Task 2", 1);
+pq.enqueue("Task 3", 3);
+
+while (!pq.isEmpty()) {
+  console.log(pq.dequeue());
+}
+Task 2
+Task 1
+Task 3
