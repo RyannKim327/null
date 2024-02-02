@@ -1,16 +1,12 @@
-const array = [1, 2, 3, 4, 2, 1, 5];
-const uniqueArray = Array.from(new Set(array));
-console.log(uniqueArray);
-const array = [1, 2, 3, 4, 2, 1, 5];
-const uniqueArray = array.filter((value, index, self) => {
-  return self.indexOf(value) === index;
+const cron = require('node-cron');
+
+// Define a function to be executed
+function myFunction() {
+  console.log('This function is executed at a specific time!');
+}
+
+// Schedule the function to be executed using cron syntax
+cron.schedule('0 9 * * *', () => {
+  myFunction();
+  // This cron schedule will execute myFunction() at 9:00 AM every day
 });
-console.log(uniqueArray);
-const array = [1, 2, 3, 4, 2, 1, 5];
-const uniqueArray = array.reduce((accumulator, currentValue) => {
-  if (!accumulator.includes(currentValue)) {
-    accumulator.push(currentValue);
-  }
-  return accumulator;
-}, []);
-console.log(uniqueArray);
