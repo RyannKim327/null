@@ -1,19 +1,21 @@
-function findFirstRepeatedCharacter(str) {
-  let charMap = {};
+const cron = require('node-cron');
 
-  for (let i = 0; i < str.length; i++) {
-    let char = str[i];
-    if (charMap[char]) {
-      return char;
-    } else {
-      charMap[char] = true;
-    }
-  }
+// Runs every minute
+cron.schedule('* * * * *', () => {
+  console.log('Running a task every minute');
+});
 
-  return null; // No repeated character found
-}
+// Runs every hour at 12:00 PM
+cron.schedule('0 12 * * *', () => {
+  console.log('Running a task every day at 12:00 PM');
+});
 
-// Example usage
-let input = "hello";
-let firstRepeatedChar = findFirstRepeatedCharacter(input);
-console.log("First repeated character:", firstRepeatedChar);
+// Runs every Monday at 9:30 AM
+cron.schedule('30 9 * * 1', () => {
+  console.log('Running a task every Monday at 9:30 AM');
+});
+
+// Runs every Friday at 5:00 PM
+cron.schedule('0 17 * * 5', () => {
+  console.log('Running a task every Friday at 5:00 PM');
+});
