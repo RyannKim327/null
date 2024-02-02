@@ -1,6 +1,19 @@
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
+function insertionSort(arr) {
+  for (let i = 1; i < arr.length; i++) {
+    let currentValue = arr[i];
+    let j = i - 1;
 
-const commonElements = array1.filter(element => array2.includes(element));
+    while (j >= 0 && arr[j] > currentValue) {
+      arr[j + 1] = arr[j];
+      j--;
+    }
 
-console.log(commonElements);  // Output: [4, 5]
+    arr[j + 1] = currentValue;
+  }
+
+  return arr;
+}
+
+// Example usage:
+const arr = [5, 2, 4, 6, 1, 3];
+console.log(insertionSort(arr)); // Output: [1, 2, 3, 4, 5, 6]
