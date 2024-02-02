@@ -1,54 +1,71 @@
-function buildPatternTable(pattern) {
-  const patternTable = [0];
-  let prefixLength = 0;
-  let i = 1;
-
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[prefixLength]) {
-      prefixLength++;
-      patternTable[i] = prefixLength;
-      i++;
-    } else {
-      if (prefixLength !== 0) {
-        prefixLength = patternTable[prefixLength - 1];
-      } else {
-        patternTable[i] = 0;
-        i++;
-      }
-    }
+function preprocessBadCharacter(pattern, patternLength) {
+  const badCharacter = {};
+  for (let i = 0; i < patternLength; i++) {
+    badCharacter[pattern[i]] = i;
   }
-
-  return patternTable;
+  return badCharacter;
 }
 
-function stringMatch(text, pattern) {
-  const patternTable = buildPatternTable(pattern);
-
-  let textIndex = 0;
-  let patternIndex = 0;
-
-  while (textIndex < text.length) {
-    if (pattern[patternIndex] === text[textIndex]) {
-      if (patternIndex === pattern.length - 1) {
-        // Found a match
-        return textIndex - pattern.length + 1;
+function preprocessGoodSuffix(pattern, patternLength) {
+  const suffixTable = Array(patternLength + 1).fill(0);
+  let i = patternLength, j = patternLength + 1;
+  suffixTable[patternLength] = j;
+  
+  while (i > 0) {
+    while (j <= patternLength && pattern[i - 1] !== pattern[j - 1]) {
+      if (suffixTable[j] === 0) {
+        suffixTable[j] = j - i;
       }
-      textIndex++;
-      patternIndex++;
-    } else if (patternIndex > 0) {
-      patternIndex = patternTable[patternIndex - 1];
-    } else {
-      textIndex++;
+      j = suffixTable[j];
     }
+    i--;
+    j--;
+    suffixTable[j] = i;
   }
-
-  // No match found
-  return -1;
+  
+  return suffixTable;
 }
 
-// Example usage:
-const text = "Lorem ipsum dolor sit amet";
-const pattern = "ipsum";
+function generateBadCharacterTable(pattern) {
+  const patternLength = pattern.length;
+  return preprocessBadCharacter(pattern, patternLength);
+}
 
-const matchIndex = stringMatch(text, pattern);
-console.log(matchIndex); // Output: 6
+function generateGoodSuffixTable(pattern) {
+  const patternLength = pattern.length;
+  return preprocessGoodSuffix(pattern, patternLength);
+}
+
+function boyerMooreSearch(text, pattern) {
+  const textLength = text.length;
+  const patternLength = pattern.length;
+  const badCharacter = generateBadCharacterTable(pattern);
+  const suffixTable = generateGoodSuffixTable(pattern);
+  let shift = 0;
+
+  let i = 0;
+  while (i <= textLength - patternLength) {
+    let j = patternLength - 1;
+    
+    while (j >= 0 && pattern[j] === text[i + j]) {
+      j--;
+    }
+
+    if (j < 0) {
+      // Match found at index i
+      console.log("Match found at index", i);
+      // Do whatever you want with this information
+    }
+
+    const badCharShift = j >= 0 ? Math.max(1, j - badCharacter[text[i + j]] || 0) : 1;
+    const goodSuffixShift = suffixTable[j + 1];
+
+    shift = Math.max(badCharShift, goodSuffixShift);
+    i += shift;
+  }
+}
+
+// Example usage
+const text = "ABCDABCAABCDABC";
+const pattern = "ABCDABC";
+boyerMooreSearch(text, pattern);
