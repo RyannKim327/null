@@ -1,45 +1,161 @@
-function prefixTable(pattern) {
-  const table = [0];
-  let prefixLen = 0;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
 
-  for (let i = 1; i < pattern.length; i++) {
-    while (prefixLen > 0 && pattern[i] !== pattern[prefixLen]) {
-      prefixLen = table[prefixLen - 1];
-    }
-
-    if (pattern[i] === pattern[prefixLen]) {
-      prefixLen++;
-    }
-
-    table[i] = prefixLen;
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
   }
 
-  return table;
-}
-function KMP(str, pattern) {
-  const table = prefixTable(pattern);
-  let strIndex = 0;
-  let patternIndex = 0;
+  // Add a new node to the end of the list
+  append(value) {
+    const newNode = new Node(value);
 
-  while (strIndex < str.length) {
-    if (str[strIndex] === pattern[patternIndex]) {
-      if (patternIndex === pattern.length - 1) {
-        return strIndex - pattern.length + 1;
+    if (this.length === 0) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+
+    this.length++;
+  }
+
+  // Insert a new node at a specific position
+  insert(position, value) {
+    if (position < 0 || position > this.length) {
+      return false;
+    }
+
+    const newNode = new Node(value);
+
+    if (position === 0) {
+      newNode.next = this.head;
+      this.head = newNode;
+      if (this.length === 0) {
+        this.tail = newNode;
+      }
+    } else if (position === this.length) {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    } else {
+      let current = this.head;
+      let previous = null;
+      let index = 0;
+
+      while (index < position) {
+        previous = current;
+        current = current.next;
+        index++;
       }
 
-      patternIndex++;
-      strIndex++;
-    } else if (patternIndex > 0) {
-      patternIndex = table[patternIndex - 1];
-    } else {
-      strIndex++;
+      newNode.next = current;
+      previous.next = newNode;
     }
+
+    this.length++;
+    return true;
   }
 
-  return -1;
-}
-const inputStr = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
+  // Remove a node at a specific position
+  removeAt(position) {
+    if (position < 0 || position >= this.length) {
+      return null;
+    }
 
-const result = KMP(inputStr, pattern);
-console.log(result); // Output: 10
+    let current = this.head;
+    let previous = null;
+    let index = 0;
+
+    if (position === 0) {
+      this.head = current.next;
+      if (this.length === 1) {
+        this.tail = null;
+      }
+    } else if (position === this.length - 1) {
+      while (index < position) {
+        previous = current;
+        current = current.next;
+        index++;
+      }
+
+      this.tail = previous;
+      this.tail.next = null;
+    } else {
+      while (index < position) {
+        previous = current;
+        current = current.next;
+        index++;
+      }
+
+      previous.next = current.next;
+    }
+
+    this.length--;
+    return current.value;
+  }
+
+  // Get the value at a specific position
+  get(position) {
+    if (position < 0 || position >= this.length) {
+      return null;
+    }
+
+    let current = this.head;
+    let index = 0;
+
+    while (index < position) {
+      current = current.next;
+      index++;
+    }
+
+    return current.value;
+  }
+
+  // Check if the list is empty
+  isEmpty() {
+    return this.length === 0;
+  }
+
+  // Get the size of the list
+  size() {
+    return this.length;
+  }
+
+  // Print the list as an array
+  print() {
+    const result = [];
+    let current = this.head;
+
+    while (current) {
+      result.push(current.value);
+      current = current.next;
+    }
+
+    console.log(result);
+  }
+}
+const list = new LinkedList();
+list.append(10);
+list.append(20);
+list.append(30);
+
+list.print(); // Output: [10, 20, 30]
+
+console.log(list.get(1)); // Output: 20
+
+list.insert(1, 15);
+list.print(); // Output: [10, 15, 20, 30]
+
+list.removeAt(2);
+list.print(); // Output: [10, 15, 30]
+
+console.log(list.isEmpty()); // Output: false
+
+console.log(list.size()); // Output: 3
