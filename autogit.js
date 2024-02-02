@@ -1,100 +1,57 @@
 class Node {
-  constructor(value, level) {
-    this.value = value;
-    this.next = new Array(level + 1).fill(null);
-  }
-}
-class SkipList {
   constructor() {
-    this.head = new Node(-Infinity, 16); // -Infinity represents the lowest possible value
-    this.level = 0;
+    this.children = {}; // Mapping of characters to child nodes
+    this.indices = []; // Array to store the indices of suffixes
   }
 }
-class SkipList {
-  // ...
+class SuffixTree {
+  constructor() {
+    this.root = new Node(); // Initialize the root node
+  }
 
-  insert(value) {
-    const update = new Array(this.level + 1).fill(null);
-    let curr = this.head;
-
-    // Find the proper insertion position at each level
-    for (let i = this.level; i >= 0; i--) {
-      while (curr.next[i] && curr.next[i].value < value) {
-        curr = curr.next[i];
+  // Function to insert a suffix into the suffix tree
+  insert(suffix, index) {
+    let node = this.root;
+    for (let i = 0; i < suffix.length; i++) {
+      const char = suffix[i];
+      if (!node.children[char]) {
+        node.children[char] = new Node();
       }
-      update[i] = curr;
-    }
-
-    curr = curr.next[0];
-
-    // Create a new node and update the pointers
-    const newNode = new Node(value, this.randomLevel());
-    if (newNode.next.length > this.level) {
-      this.level = newNode.next.length - 1;
-    }
-
-    for (let i = 0; i <= this.level; i++) {
-      newNode.next[i] = update[i].next[i];
-      update[i].next[i] = newNode;
+      node = node.children[char]; // Move to the child node
+      node.indices.push(index); // Add the suffix index to the node
     }
   }
 
-  randomLevel() {
-    let level = 0;
-    while (Math.random() < 0.5 && level < this.level) {
-      level++;
+  // Function to build the suffix tree from an input string
+  build(str) {
+    for (let i = 0; i < str.length; i++) {
+      const suffix = str.slice(i);
+      this.insert(suffix, i);
     }
-    return level;
   }
-}
-class SkipList {
-  // ...
 
-  search(value) {
-    let curr = this.head;
-
-    // Navigate through the skip list
-    for (let i = this.level; i >= 0; i--) {
-      while (curr.next[i] && curr.next[i].value < value) {
-        curr = curr.next[i];
+  // Function to search for a pattern in the suffix tree
+  search(pattern) {
+    let node = this.root;
+    for (let i = 0; i < pattern.length; i++) {
+      const char = pattern[i];
+      if (node.children[char]) {
+        node = node.children[char]; // Move to the child node
+      } else {
+        return []; // Pattern not found
       }
     }
-
-    curr = curr.next[0];
-
-    // Check if the target value exists
-    if (curr && curr.value === value) {
-      return curr;
-    } else {
-      return null;
-    }
+    return node.indices; // Return the indices of matching suffixes
   }
 }
-class SkipList {
-  // ...
+// Create a new suffix tree
+const suffixTree = new SuffixTree();
 
-  delete(value) {
-    const update = new Array(this.level + 1).fill(null);
-    let curr = this.head;
+// Build the suffix tree from the input string
+const inputString = "banana";
+suffixTree.build(inputString);
 
-    // Find the node to be deleted and store the previous nodes at each level
-    for (let i = this.level; i >= 0; i--) {
-      while (curr.next[i] && curr.next[i].value < value) {
-        curr = curr.next[i];
-      }
-      update[i] = curr;
-    }
-
-    curr = curr.next[0];
-
-    // Delete the node and update the pointers
-    if (curr && curr.value === value) {
-      for (let i = 0; i <= this.level; i++) {
-        if (update[i].next[i] !== curr) {
-          break;
-        }
-        update[i].next[i] = curr.next[i];
-      }
-    }
-  }
-}
+// Search for a pattern in the suffix tree
+const pattern = "na";
+const matches = suffixTree.search(pattern);
+console.log(`Matching suffixes for pattern "${pattern}":`, matches);
