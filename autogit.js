@@ -1,19 +1,32 @@
-function interpolationSearch(arr, target, start, end) {
-  if (start > end || target < arr[start] || target > arr[end]) {
-    return -1; // Target is not found
+function findMiddleElement(head) {
+  // Initialize two pointers
+  let slow = head;
+  let fast = head;
+
+  // Move the fast pointer two steps ahead and the slow pointer one step ahead
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
   }
 
-  const pos = start + Math.floor(((target - arr[start]) / (arr[end] - arr[start])) * (end - start));
-
-  if (arr[pos] === target) {
-    return pos; // Target is found
-  } else if (arr[pos] < target) {
-    return interpolationSearch(arr, target, pos + 1, end); // Recurse on the right side
-  } else {
-    return interpolationSearch(arr, target, start, pos - 1); // Recurse on the left side
+  // The slow pointer will be at the middle element
+  return slow;
+}
+// Linked list node
+class ListNode {
+  constructor(value) {
+    this.val = value;
+    this.next = null;
   }
 }
-const sortedArray = [1, 3, 5, 7, 9, 11, 13, 15];
-const targetElement = 9;
-const index = interpolationSearch(sortedArray, targetElement, 0, sortedArray.length - 1);
-console.log(index); // Output: 4 (index of 9 in the array)
+
+// Create a linked list
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+// Find the middle element
+const middleElement = findMiddleElement(head);
+console.log(middleElement.val); // Output: 3
