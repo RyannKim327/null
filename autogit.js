@@ -1,43 +1,35 @@
-function rabinKarp(pat, txt) {
-  const M = pat.length;
-  const N = txt.length;
-  const prime = 101; // A prime number (larger than the character set size)
+function fibonacciSearch(arr, key, n) {
+  // Calculate Fibonacci numbers until fn is greater than or equal to n
+  let fib1 = 0; // First Fibonacci number
+  let fib2 = 1; // Second Fibonacci number
+  let fibM = fib1 + fib2; // Third Fibonacci number
 
-  // Function to calculate the hash value
-  function calculateHash(str) {
-    let hash = 0;
-    for (let i = 0; i < M; i++) {
-      hash += str.charCodeAt(i) * Math.pow(prime, i);
-    }
-    return hash;
+  while (fibM < n) {
+    fib1 = fib2;
+    fib2 = fibM;
+    fibM = fib1 + fib2;
   }
 
-  const pHash = calculateHash(pat);
-  let tHash = calculateHash(txt.slice(0, M));
+  let offset = 0; // Effective offset from the start of the array
+  let previousOffset = 0; // Previous offset
+  let temp = -1; // Temporary variable to store Fn-2
 
-  for (let i = 0; i <= N - M; i++) {
-    if (pHash === tHash) {
-      let found = true;
-      for (let j = 0; j < M; j++) {
-        if (pat[j] !== txt[i + j]) {
-          found = false;
-          break;
-        }
-      }
-      if (found) {
-        return i; // Match found at index i
-      }
+  while (fibM > 1) {
+    const i = Math.min(offset + fib1, n - 1);
+
+    if (arr[i] < key) {
+      fibM = fib1;
+      fib1 = fib2;
+      fib2 = temp - fib1;
+      offset = i;
+    } else if (arr[i] > key) {
+      fibM = fib2;
+      fib1 = fib1 - fib2;
+      fib2 = fibM - fib1;
+    } else {
+      return i;
     }
-    // Update the hash value for the next window
-    tHash = (tHash - txt.charCodeAt(i) + txt.charCodeAt(i + M)) * prime;
   }
 
-  return -1; // No match found
+  return -1; // Key not found
 }
-
-// Example usage:
-const text = "AABAACAADAABAAABAA";
-const pattern = "AABA";
-const index = rabinKarp(pattern, text);
-
-console.log(`Pattern found at index ${index}`);
