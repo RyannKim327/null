@@ -1,39 +1,43 @@
-function interpolationSearch(array, target) {
-    // ...
+function buildHeap(arr, n, i) {
+  let largest = i; // Initialize largest as the root
+  let left = 2 * i + 1; // Left child
+  let right = 2 * i + 2; // Right child
+
+  // If the left child is larger than root
+  if (left < n && arr[left] > arr[largest])
+    largest = left;
+
+  // If the right child is larger than largest so far
+  if (right < n && arr[right] > arr[largest])
+    largest = right;
+
+  // If largest is not the root
+  if (largest !== i) {
+    // Swap the root with the largest element
+    [arr[i], arr[largest]] = [arr[largest], arr[i]];
+
+    // Recursively heapify the affected sub-tree
+    buildHeap(arr, n, largest);
+  }
 }
-    let low = 0;
-    let high = array.length - 1;
-    while (low <= high && target >= array[low] && target <= array[high]) {
-        // ...
-    }
-        let pos = Math.floor(
-            low + ((target - array[low]) * (high - low)) / (array[high] - array[low])
-        );
-        if (array[pos] === target) return pos;
-        if (array[pos] > target) {
-            high = pos - 1;
-        }
-        else {
-            low = pos + 1;
-        }
-    return -1;
-function interpolationSearch(array, target) {
-    let low = 0;
-    let high = array.length - 1;
+function heapSort(arr) {
+  const n = arr.length;
 
-    while (low <= high && target >= array[low] && target <= array[high]) {
-        let pos = Math.floor(
-            low + ((target - array[low]) * (high - low)) / (array[high] - array[low])
-        );
+  // Build Max Heap
+  for (let i = Math.floor(n / 2) - 1; i >= 0; i--)
+    buildHeap(arr, n, i);
 
-        if (array[pos] === target) return pos;
+  // Heap sort
+  for (let i = n - 1; i > 0; i--) {
+    // Move current root to end
+    [arr[0], arr[i]] = [arr[i], arr[0]];
 
-        if (array[pos] > target) {
-            high = pos - 1;
-        } else {
-            low = pos + 1;
-        }
-    }
+    // Call max heapify on the reduced heap
+    buildHeap(arr, i, 0);
+  }
 
-    return -1;
+  return arr;
 }
+const array = [8, 5, 2, 9, 6, 3];
+const sortedArray = heapSort(array);
+console.log(sortedArray); // Output: [2, 3, 5, 6, 8, 9]
