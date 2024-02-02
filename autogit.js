@@ -1,24 +1,22 @@
-// Random Quote Generator using an API
+function areAnagrams(str1, str2) {
+  // Remove non-alphabetic characters and convert to lowercase
+  str1 = str1.replace(/[^a-zA-Z]/g, '').toLowerCase();
+  str2 = str2.replace(/[^a-zA-Z]/g, '').toLowerCase();
 
-// Function to fetch a random quote from an API
-async function getRandomQuote() {
-  const response = await fetch('https://api.quotable.io/random');
-  const data = await response.json();
-  return data.content;
+  // Convert the strings to arrays, sort them, and join back into strings
+  const sortedStr1 = str1.split('').sort().join('');
+  const sortedStr2 = str2.split('').sort().join('');
+
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
 
-// Function to display the random quote
-async function displayRandomQuote() {
-  try {
-    const quote = await getRandomQuote();
-    console.log("Random Quote:", quote);
-    // You can display the quote on your webpage using DOM manipulation
-    // For example, update a div element with the quote text
-    document.getElementById('quote').innerText = quote;
-  } catch (error) {
-    console.log("Error:", error);
-  }
-}
+// Example usage
+const string1 = "listen";
+const string2 = "silent";
 
-// Call the displayRandomQuote function to fetch and display a random quote
-displayRandomQuote();
+if (areAnagrams(string1, string2)) {
+  console.log("The strings are anagrams.");
+} else {
+  console.log("The strings are not anagrams.");
+}
