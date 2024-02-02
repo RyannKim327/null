@@ -1,53 +1,28 @@
-class Stack {
-  constructor() {
-    this.items = []; // Array to store stack elements
-  }
+function findFirstNonRepeatingChar(str) {
+  // Step 1: Create an empty object to store character counts
+  const charCounts = {};
 
-  // Push element to the top of the stack
-  push(element) {
-    this.items.push(element);
-  }
-
-  // Remove and return the top element of the stack
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
+  // Step 2: Iterate over the string and count occurrences
+  for (const char of str) {
+    if (charCounts[char]) {
+      charCounts[char]++;
+    } else {
+      charCounts[char] = 1;
     }
-    return this.items.pop();
   }
 
-  // Return the top element of the stack without removing it
-  peek() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
+  // Step 3: Iterate over the string again and find the first non-repeating character
+  for (const char of str) {
+    if (charCounts[char] === 1) {
+      return char;
     }
-    return this.items[this.items.length - 1];
   }
 
-  // Check if the stack is empty
-  isEmpty() {
-    return this.items.length === 0;
-  }
-
-  // Return the size of the stack
-  size() {
-    return this.items.length;
-  }
-
-  // Empty the stack
-  clear() {
-    this.items = [];
-  }
+  // If no non-repeating characters are found, return null or any appropriate value
+  return null;
 }
 
 // Example usage
-let stack = new Stack();
-stack.push(10); // Add elements to the stack
-stack.push(20);
-stack.push(30);
-console.log(stack.peek()); // Output: 30 (top element)
-console.log(stack.pop()); // Output: 30 (remove top element)
-console.log(stack.size()); // Output: 2 (remaining elements in stack)
-console.log(stack.isEmpty()); // Output: false (stack is not empty)
-stack.clear(); // Remove all elements from the stack
-console.log(stack.isEmpty()); // Output: true (stack is empty)
+const str = "abccba";
+const firstNonRepeatingChar = findFirstNonRepeatingChar(str);
+console.log(firstNonRepeatingChar); // Output: "a"
