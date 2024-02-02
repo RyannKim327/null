@@ -1,9 +1,8 @@
-const axios = require('axios');
-
-axios.get('https://api.example.com/users')
-  .then(response => {
-    console.log(response.data);
-  })
-  .catch(error => {
-    console.log(error);
-  });
+let str1 = "Hello";
+let str2 = "World";
+let result = str1 + " " + str2;
+console.log(result); // Output: "Hello World"
+let str1 = "Hello";
+let str2 = "World";
+let result = str1.concat(" ", str2);
+console.log(result); // Output: "Hello World"
