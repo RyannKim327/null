@@ -6,69 +6,28 @@ class Node {
   }
 }
 
-class BinaryTree {
-  constructor() {
-    this.root = null;
-  }
-
-  insert(value) {
-    const newNode = new Node(value);
-
-    // If the tree is empty, set the new node as the root
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
-
-  insertNode(node, newNode) {
-    // If the new value is less than the current node, go to the left subtree
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    }
-    // If the new value is greater than the current node, go to the right subtree
-    else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
-
-  // In-order traversal of the binary tree
-  inOrderTraversal(callback) {
-    this.inOrderTraversalNode(this.root, callback);
-  }
-
-  inOrderTraversalNode(node, callback) {
-    if (node !== null) {
-      this.inOrderTraversalNode(node.left, callback);
-      callback(node.value);
-      this.inOrderTraversalNode(node.right, callback);
-    }
+function countLeafNodes(root) {
+  if (root === null) {
+    return 0;
+  } else if (root.left === null && root.right === null) {
+    // Leaf node
+    return 1;
+  } else {
+    // Recursively count leaf nodes in the left and right subtrees
+    return countLeafNodes(root.left) + countLeafNodes(root.right);
   }
 }
-const binaryTree = new BinaryTree();
 
-binaryTree.insert(5);
-binaryTree.insert(3);
-binaryTree.insert(8);
-binaryTree.insert(2);
-binaryTree.insert(4);
-binaryTree.insert(7);
-binaryTree.insert(9);
+// Example usage:
+// Create a binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
 
-binaryTree.inOrderTraversal(value => console.log(value));
-2
-3
-4
-5
-7
-8
-9
+// Calculate the number of leaf nodes
+const leafCount = countLeafNodes(root);
+console.log("Number of leaf nodes:", leafCount);
