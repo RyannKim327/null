@@ -1,22 +1,14 @@
-function burrowsWheelerTransform(input) {
-  // Creating all rotations of the input string
-  const rotations = [];
-  for (let i = 0; i < input.length; i++) {
-    const rotation = input.slice(i) + input.slice(0, i);
-    rotations.push(rotation);
-  }
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  let cleanedStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
   
-  // Sorting the rotations in lexicographical order
-  rotations.sort();
-  
-  // Extracting the last characters of each rotation
-  let transformedString = '';
-  for (let rotation of rotations) {
-    transformedString += rotation.charAt(rotation.length - 1);
-  }
-  
-  return transformedString;
+  // Compare the cleaned string with its reverse
+  return cleanedStr === cleanedStr.split('').reverse().join('');
 }
-const inputString = 'banana';
-const transformedString = burrowsWheelerTransform(inputString);
-console.log(transformedString);
+
+// Example usage
+let str1 = "racecar";
+console.log(isPalindrome(str1)); // true
+
+let str2 = "hello world";
+console.log(isPalindrome(str2)); // false
