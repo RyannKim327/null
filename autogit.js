@@ -1,18 +1,28 @@
-function calculateMean(numbers) {
-  if (numbers.length === 0) {
-    return 0; // handle the case of an empty array
+function isValidPalindrome(str) {
+  // Removing non-alphanumeric characters and converting to lowercase
+  const formattedStr = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+  
+  // Initialize two pointers
+  let left = 0;
+  let right = formattedStr.length - 1;
+  
+  // Loop until pointers meet
+  while (left < right) {
+    // If characters at the pointers don't match, it's not a palindrome
+    if (formattedStr[left] !== formattedStr[right]) {
+      return false;
+    }
+    
+    // Move the pointers inward
+    left++;
+    right--;
   }
-
-  let sum = 0;
-  for (let i = 0; i < numbers.length; i++) {
-    sum += numbers[i];
-  }
-
-  const mean = sum / numbers.length;
-  return mean;
+  
+  // If the loop ends, it means the string is a palindrome
+  return true;
 }
 
-// Example usage:
-const numbers = [5, 10, 15, 20];
-const mean = calculateMean(numbers);
-console.log(mean); // Output: 12.5
+// Testing the function:
+console.log(isValidPalindrome("No 'x' in Nixon")); // true
+console.log(isValidPalindrome("A man, a plan, a canal, Panama!")); // true
+console.log(isValidPalindrome("Palindrome test")); // false
