@@ -1,33 +1,49 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function topologicalSort(graph) {
+  // Step 1: Create an empty array to store the result
+  const result = [];
+
+  // Step 2: Create a visited array to keep track of visited vertices
+  const visited = {};
+
+  // Step 3: Iterate over each vertex in the graph
+  for (const vertex in graph) {
+    // Call the DFS function for unvisited vertices
+    if (!visited[vertex]) {
+      dfs(vertex);
+    }
+  }
+
+  // Step 6: Return the topologically sorted array
+  return result;
+
+  // Step 4: Recursive Depth First Search function
+  function dfs(vertex) {
+    // Mark current vertex as visited
+    visited[vertex] = true;
+
+    // Step 5: Recursively visit all adjacent vertices
+    for (const neighbor of graph[vertex]) {
+      // Call DFS if the neighbor vertex is unvisited
+      if (!visited[neighbor]) {
+        dfs(neighbor);
+      }
+    }
+
+    // Push the current vertex to the result array
+    result.unshift(vertex);
   }
 }
+// Create a sample directed graph
+const graph = {
+  A: ['B', 'C'],
+  B: ['D'],
+  C: ['D', 'E'],
+  D: ['F'],
+  E: ['F'],
+  F: []
+};
+// Call the topological sort function
+const sortedOrder = topologicalSort(graph);
 
-function countLeafNodes(root) {
-  if (root === null) {
-    return 0;
-  } else if (root.left === null && root.right === null) {
-    // Leaf node
-    return 1;
-  } else {
-    // Recursively count leaf nodes in the left and right subtrees
-    return countLeafNodes(root.left) + countLeafNodes(root.right);
-  }
-}
-
-// Example usage:
-// Create a binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
-
-// Calculate the number of leaf nodes
-const leafCount = countLeafNodes(root);
-console.log("Number of leaf nodes:", leafCount);
+// Print the result
+console.log(sortedOrder);
