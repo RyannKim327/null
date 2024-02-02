@@ -1,27 +1,26 @@
-function burrowsWheelerTransform(str) {
-  const rotations = [];
+function findFirstNonRepeatingChar(str) {
+  // Step 1: Create an object to store character counts
+  const charCount = {};
   
-  // Generate cyclic rotations
+  // Step 2: Iterate through the string and count occurrence of each character
   for (let i = 0; i < str.length; i++) {
-    rotations.push(str.slice(i) + str.slice(0, i));
+    const char = str[i];
+    charCount[char] = (charCount[char] || 0) + 1;
   }
-
-  // Sort the rotations lexicographically
-  rotations.sort();
-
-  // Build the transformed string
-  let transformed = '';
-  rotations.forEach(rotation => {
-    transformed += rotation.charAt(rotation.length - 1);
-  });
-
-  // Find the index of the original string in the sorted rotations
-  const index = rotations.indexOf(str);
-
-  return transformed;
+  
+  // Step 3: Iterate through the string and return the first character with count 1
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    if (charCount[char] === 1) {
+      return char;
+    }
+  }
+  
+  // If there are no non-repeating characters, return null or any other value as needed
+  return null;
 }
 
-// Example usage
-const originalString = "banana";
-const transformedString = burrowsWheelerTransform(originalString);
-console.log(transformedString); // Outputs: "annb$aa"
+// Usage example:
+const str = "abacabad";
+const firstNonRepeatingChar = findFirstNonRepeatingChar(str);
+console.log("First non-repeating character:", firstNonRepeatingChar);
