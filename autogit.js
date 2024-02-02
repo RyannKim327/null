@@ -1,36 +1,49 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+// Define a depth-limited search function
+function depthLimitedSearch(node, depthLimit) {
+  return DLS(node, depthLimit);
 }
 
-function findDiameter(root) {
-  let diameter = 0;
+// Recursive helper function for depth-limited search
+function DLS(node, depthLimit) {
+  // Check if the node satisfies the goal condition
+  if (isGoalState(node)) {
+    return node;
+  }
 
-  function findHeight(node) {
-    if (node === null) {
-      return 0;
+  // Check if depth limit has been reached
+  if (depthLimit === 0) {
+    return null;
+  }
+
+  // Expand the current node
+  var children = expandNode(node);
+
+  // Recursively apply depth-limited search to children
+  for (var i = 0; i < children.length; i++) {
+    var result = DLS(children[i], depthLimit - 1);
+    if (result !== null) {
+      return result;
     }
-
-    const leftHeight = findHeight(node.left);
-    const rightHeight = findHeight(node.right);
-
-    // update diameter if the current path has a greater sum of heights
-    diameter = Math.max(diameter, leftHeight + rightHeight);
-
-    // return the maximum height of the current node
-    return Math.max(leftHeight, rightHeight) + 1;
   }
 
-  findHeight(root);
-  return diameter;
+  // If no solution found at this depth, return null
+  return null;
 }
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
 
-console.log(findDiameter(root)); // Output: 3
+// Example helper functions
+function isGoalState(node) {
+  // Implement your goal condition check
+  // Return true if the node satisfies the goal condition, false otherwise
+}
+
+function expandNode(node) {
+  // Implement the node expansion logic
+  // Return an array of child nodes
+}
+
+// Example usage
+var initialNode = // Define your initial node
+var depthLimit = // Specify the depth limit
+
+var result = depthLimitedSearch(initialNode, depthLimit);
+console.log(result);
