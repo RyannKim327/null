@@ -1,22 +1,36 @@
-function areAnagrams(str1, str2) {
-  // Remove non-alphabetic characters and convert to lowercase
-  str1 = str1.replace(/[^a-zA-Z]/g, '').toLowerCase();
-  str2 = str2.replace(/[^a-zA-Z]/g, '').toLowerCase();
-
-  // Convert the strings to arrays, sort them, and join back into strings
-  const sortedStr1 = str1.split('').sort().join('');
-  const sortedStr2 = str2.split('').sort().join('');
-
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-// Example usage
-const string1 = "listen";
-const string2 = "silent";
+function findDiameter(root) {
+  let diameter = 0;
 
-if (areAnagrams(string1, string2)) {
-  console.log("The strings are anagrams.");
-} else {
-  console.log("The strings are not anagrams.");
+  function findHeight(node) {
+    if (node === null) {
+      return 0;
+    }
+
+    const leftHeight = findHeight(node.left);
+    const rightHeight = findHeight(node.right);
+
+    // update diameter if the current path has a greater sum of heights
+    diameter = Math.max(diameter, leftHeight + rightHeight);
+
+    // return the maximum height of the current node
+    return Math.max(leftHeight, rightHeight) + 1;
+  }
+
+  findHeight(root);
+  return diameter;
 }
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+console.log(findDiameter(root)); // Output: 3
