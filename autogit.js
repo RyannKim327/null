@@ -1,35 +1,43 @@
-function longestCommonSubsequence(str1, str2) {
-  const dp = Array.from(Array(str1.length + 1), () => Array(str2.length + 1).fill(0));
+function rabinKarp(pat, txt) {
+  const M = pat.length;
+  const N = txt.length;
+  const prime = 101; // A prime number (larger than the character set size)
 
-  for (let i = 0; i < str1.length; i++) {
-    for (let j = 0; j < str2.length; j++) {
-      if (str1[i] === str2[j]) {
-        dp[i + 1][j + 1] = dp[i][j] + 1;
-      } else {
-        dp[i + 1][j + 1] = Math.max(dp[i][j + 1], dp[i + 1][j]);
+  // Function to calculate the hash value
+  function calculateHash(str) {
+    let hash = 0;
+    for (let i = 0; i < M; i++) {
+      hash += str.charCodeAt(i) * Math.pow(prime, i);
+    }
+    return hash;
+  }
+
+  const pHash = calculateHash(pat);
+  let tHash = calculateHash(txt.slice(0, M));
+
+  for (let i = 0; i <= N - M; i++) {
+    if (pHash === tHash) {
+      let found = true;
+      for (let j = 0; j < M; j++) {
+        if (pat[j] !== txt[i + j]) {
+          found = false;
+          break;
+        }
+      }
+      if (found) {
+        return i; // Match found at index i
       }
     }
+    // Update the hash value for the next window
+    tHash = (tHash - txt.charCodeAt(i) + txt.charCodeAt(i + M)) * prime;
   }
 
-  let lcs = '';
-  let i = str1.length;
-  let j = str2.length;
-
-  while (i > 0 && j > 0) {
-    if (str1[i - 1] === str2[j - 1]) {
-      lcs = str1[i - 1] + lcs;
-      i--;
-      j--;
-    } else if (dp[i - 1][j] > dp[i][j - 1]) {
-      i--;
-    } else {
-      j--;
-    }
-  }
-
-  return lcs;
+  return -1; // No match found
 }
 
 // Example usage:
-console.log(longestCommonSubsequence('ABCD', 'ACDF')); // Output: 'ACD'
-console.log(longestCommonSubsequence('AGGTAB', 'GXTXAYB')); // Output: 'GTAB'
+const text = "AABAACAADAABAAABAA";
+const pattern = "AABA";
+const index = rabinKarp(pattern, text);
+
+console.log(`Pattern found at index ${index}`);
