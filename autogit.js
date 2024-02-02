@@ -1,14 +1,39 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  let cleanedStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
-  
-  // Compare the cleaned string with its reverse
-  return cleanedStr === cleanedStr.split('').reverse().join('');
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-// Example usage
-let str1 = "racecar";
-console.log(isPalindrome(str1)); // true
+function diameterOfBinaryTree(root) {
+  let diameter = 0;
 
-let str2 = "hello world";
-console.log(isPalindrome(str2)); // false
+  function depth(node) {
+    if (node === null) {
+      return 0;
+    }
+
+    const leftDepth = depth(node.left);
+    const rightDepth = depth(node.right);
+
+    // Update the diameter if the current node's diameter is larger
+    diameter = Math.max(diameter, leftDepth + rightDepth);
+
+    // Return the depth of the current node
+    return Math.max(leftDepth, rightDepth) + 1;
+  }
+
+  depth(root);
+
+  return diameter;
+}
+
+// Usage example:
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+console.log(diameterOfBinaryTree(root)); // Output: 3
