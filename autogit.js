@@ -1,24 +1,15 @@
-function isPrime(number) {
-  if (number < 2) return false;
-  for (let i = 2; i <= Math.sqrt(number); i++) {
-    if (number % i === 0) {
-      return false;
-    }
+function calculateMean(numbers) {
+  let sum = 0;
+
+  for (let i = 0; i < numbers.length; i++) {
+    sum += numbers[i];
   }
-  return true;
+
+  const mean = (sum / numbers.length).toFixed(2);
+  return mean;
 }
 
-function largestPrimeFactor(number) {
-  let largestPrime = 1;
-  for (let i = 2; i <= Math.sqrt(number); i++) {
-    if (number % i === 0 && isPrime(i)) {
-      largestPrime = i;
-    }
-  }
-  return largestPrime === 1 ? number : largestPrime;
-}
-
-// Example usage
-const number = 1234567890;
-const largestPrime = largestPrimeFactor(number);
-console.log(`The largest prime factor of ${number} is ${largestPrime}`);
+// Usage example
+const numbers = [1, 2, 3, 4, 5];
+const mean = calculateMean(numbers);
+console.log(mean); // Output: 3.00
