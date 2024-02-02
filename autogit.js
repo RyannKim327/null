@@ -1,95 +1,100 @@
-class BinaryHeap {
+class Node {
+  constructor(value, level) {
+    this.value = value;
+    this.next = new Array(level + 1).fill(null);
+  }
+}
+class SkipList {
   constructor() {
-    this.heap = [];
+    this.head = new Node(-Infinity, 16); // -Infinity represents the lowest possible value
+    this.level = 0;
   }
-
-  get size() {
-    return this.heap.length;
-  }
+}
+class SkipList {
+  // ...
 
   insert(value) {
-    this.heap.push(value);
-    this.bubbleUp(this.size - 1);
-  }
+    const update = new Array(this.level + 1).fill(null);
+    let curr = this.head;
 
-  remove() {
-    const rootIndex = 0;
-    const lastIndex = this.size - 1;
-    this.swap(rootIndex, lastIndex);
-    const root = this.heap.pop();
-    this.bubbleDown(rootIndex);
-    return root;
-  }
+    // Find the proper insertion position at each level
+    for (let i = this.level; i >= 0; i--) {
+      while (curr.next[i] && curr.next[i].value < value) {
+        curr = curr.next[i];
+      }
+      update[i] = curr;
+    }
 
-  bubbleUp(index) {
-    while (index > 0) {
-      const parentIndex = Math.floor((index - 1) / 2);
-      if (this.compare(index, parentIndex) >= 0) break; // min-heap
-      this.swap(index, parentIndex);
-      index = parentIndex;
+    curr = curr.next[0];
+
+    // Create a new node and update the pointers
+    const newNode = new Node(value, this.randomLevel());
+    if (newNode.next.length > this.level) {
+      this.level = newNode.next.length - 1;
+    }
+
+    for (let i = 0; i <= this.level; i++) {
+      newNode.next[i] = update[i].next[i];
+      update[i].next[i] = newNode;
     }
   }
 
-  bubbleDown(index) {
-    while (true) {
-      const leftChildIndex = index * 2 + 1;
-      const rightChildIndex = index * 2 + 2;
-      let smallestIndex = index;
+  randomLevel() {
+    let level = 0;
+    while (Math.random() < 0.5 && level < this.level) {
+      level++;
+    }
+    return level;
+  }
+}
+class SkipList {
+  // ...
 
-      if (
-        leftChildIndex < this.size &&
-        this.compare(leftChildIndex, smallestIndex) < 0
-      ) {
-        smallestIndex = leftChildIndex;
+  search(value) {
+    let curr = this.head;
+
+    // Navigate through the skip list
+    for (let i = this.level; i >= 0; i--) {
+      while (curr.next[i] && curr.next[i].value < value) {
+        curr = curr.next[i];
       }
+    }
 
-      if (
-        rightChildIndex < this.size &&
-        this.compare(rightChildIndex, smallestIndex) < 0
-      ) {
-        smallestIndex = rightChildIndex;
-      }
+    curr = curr.next[0];
 
-      if (smallestIndex === index) break; // min-heap
-
-      this.swap(index, smallestIndex);
-      index = smallestIndex;
+    // Check if the target value exists
+    if (curr && curr.value === value) {
+      return curr;
+    } else {
+      return null;
     }
   }
+}
+class SkipList {
+  // ...
 
-  swap(a, b) {
-    [this.heap[a], this.heap[b]] = [this.heap[b], this.heap[a]];
-  }
+  delete(value) {
+    const update = new Array(this.level + 1).fill(null);
+    let curr = this.head;
 
-  compare(a, b) {
-    return this.heap[a] - this.heap[b]; // adjust comparison based on priority logic
+    // Find the node to be deleted and store the previous nodes at each level
+    for (let i = this.level; i >= 0; i--) {
+      while (curr.next[i] && curr.next[i].value < value) {
+        curr = curr.next[i];
+      }
+      update[i] = curr;
+    }
+
+    curr = curr.next[0];
+
+    // Delete the node and update the pointers
+    if (curr && curr.value === value) {
+      for (let i = 0; i <= this.level; i++) {
+        if (update[i].next[i] !== curr) {
+          break;
+        }
+        update[i].next[i] = curr.next[i];
+      }
+    }
   }
 }
-class PriorityQueue {
-  constructor() {
-    this.queue = new BinaryHeap();
-  }
-
-  enqueue(element, priority) {
-    this.queue.insert({ element, priority });
-  }
-
-  dequeue() {
-    return this.queue.remove().element;
-  }
-
-  isEmpty() {
-    return this.queue.size === 0;
-  }
-}
-const pq = new PriorityQueue();
-pq.enqueue("Task 1", 2);
-pq.enqueue("Task 2", 1);
-pq.enqueue("Task 3", 3);
-
-while (!pq.isEmpty()) {
-  console.log(pq.dequeue());
-}
-Task 2
-Task 1
-Task 3
