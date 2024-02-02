@@ -1,21 +1,55 @@
-const cron = require('node-cron');
+class TrieNode {
+  constructor() {
+    this.children = new Map(); // Using Map for efficient key-value pairs storage
+    this.isEndOfWord = false;
+  }
+}
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
+  }
 
-// Runs every minute
-cron.schedule('* * * * *', () => {
-  console.log('Running a task every minute');
-});
+  insert(word) {
+    let currentNode = this.root;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      if (!currentNode.children.has(char)) {
+        currentNode.children.set(char, new TrieNode());
+      }
+      currentNode = currentNode.children.get(char);
+    }
+    currentNode.isEndOfWord = true;
+  }
 
-// Runs every hour at 12:00 PM
-cron.schedule('0 12 * * *', () => {
-  console.log('Running a task every day at 12:00 PM');
-});
+  search(word) {
+    let currentNode = this.root;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      if (!currentNode.children.has(char)) {
+        return false;
+      }
+      currentNode = currentNode.children.get(char);
+    }
+    return currentNode.isEndOfWord;
+  }
 
-// Runs every Monday at 9:30 AM
-cron.schedule('30 9 * * 1', () => {
-  console.log('Running a task every Monday at 9:30 AM');
-});
-
-// Runs every Friday at 5:00 PM
-cron.schedule('0 17 * * 5', () => {
-  console.log('Running a task every Friday at 5:00 PM');
-});
+  startsWith(prefix) {
+    let currentNode = this.root;
+    for (let i = 0; i < prefix.length; i++) {
+      const char = prefix[i];
+      if (!currentNode.children.has(char)) {
+        return false;
+      }
+      currentNode = currentNode.children.get(char);
+    }
+    return true;
+  }
+}
+const trie = new Trie();
+trie.insert("apple");
+trie.insert("banana");
+console.log(trie.search("apple")); // Output: true
+console.log(trie.search("banana")); // Output: true
+console.log(trie.search("orange")); // Output: false
+console.log(trie.startsWith("app")); // Output: true
+console.log(trie.startsWith("ora")); // Output: false
