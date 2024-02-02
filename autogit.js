@@ -1,23 +1,115 @@
-function findFirstRepeatedChar(str) {
-  // Create an empty set to store the characters
-  const charSet = new Set();
-
-  // Iterate through each character in the string
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charAt(i);
-
-    // If the character is already in the set, it is repeated
-    if (charSet.has(char)) {
-      return char;
-    }
-
-    // Add the character to the set
-    charSet.add(char);
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
-
-  // If no repeated character is found, return null
-  return null;
 }
 
-// Example usage:
-console.log(findFirstRepeatedChar("Hello World")); // Output: 'l'
+class BinaryTree {
+  constructor() {
+    this.root = null;
+  }
+
+  insert(value) {
+    const newNode = new Node(value);
+
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
+
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  searchNode(node, value) {
+    if (node === null) {
+      return false;
+    }
+
+    if (value === node.value) {
+      return true;
+    }
+
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else {
+      return this.searchNode(node.right, value);
+    }
+  }
+
+  remove(value) {
+    this.root = this.removeNode(this.root, value);
+  }
+
+  removeNode(node, value) {
+    if (node === null) {
+      return null;
+    }
+
+    if (value === node.value) {
+      if (node.left === null && node.right === null) {
+        return null;
+      }
+
+      if (node.left === null) {
+        return node.right;
+      }
+
+      if (node.right === null) {
+        return node.left;
+      }
+
+      const minNode = this.findMinNode(node.right);
+      node.value = minNode.value;
+      node.right = this.removeNode(node.right, minNode.value);
+      return node;
+    }
+
+    if (value < node.value) {
+      node.left = this.removeNode(node.left, value);
+      return node;
+    } else {
+      node.right = this.removeNode(node.right, value);
+      return node;
+    }
+  }
+
+  findMinNode(node) {
+    if (node.left === null) {
+      return node;
+    }
+    return this.findMinNode(node.left);
+  }
+}
+const tree = new BinaryTree();
+
+tree.insert(5);
+tree.insert(3);
+tree.insert(7);
+
+console.log(tree.search(3)); // Output: true
+console.log(tree.search(8)); // Output: false
+
+tree.remove(3);
+
+console.log(tree.search(3)); // Output: false
