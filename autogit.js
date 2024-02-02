@@ -1,35 +1,49 @@
-function fibonacciSearch(arr, key, n) {
-  // Calculate Fibonacci numbers until fn is greater than or equal to n
-  let fib1 = 0; // First Fibonacci number
-  let fib2 = 1; // Second Fibonacci number
-  let fibM = fib1 + fib2; // Third Fibonacci number
-
-  while (fibM < n) {
-    fib1 = fib2;
-    fib2 = fibM;
-    fibM = fib1 + fib2;
+class Graph {
+  constructor() {
+    this.adjList = new Map();
   }
 
-  let offset = 0; // Effective offset from the start of the array
-  let previousOffset = 0; // Previous offset
-  let temp = -1; // Temporary variable to store Fn-2
+  addVertex(vertex) {
+    this.adjList.set(vertex, []);
+  }
 
-  while (fibM > 1) {
-    const i = Math.min(offset + fib1, n - 1);
+  addEdge(vertex1, vertex2) {
+    this.adjList.get(vertex1).push(vertex2);
+    this.adjList.get(vertex2).push(vertex1);
+  }
+}
+class Graph {
+  // ...
 
-    if (arr[i] < key) {
-      fibM = fib1;
-      fib1 = fib2;
-      fib2 = temp - fib1;
-      offset = i;
-    } else if (arr[i] > key) {
-      fibM = fib2;
-      fib1 = fib1 - fib2;
-      fib2 = fibM - fib1;
-    } else {
-      return i;
+  depthFirstSearch(startingNode) {
+    const visited = new Set();
+
+    this._dfs(startingNode, visited);
+  }
+
+  _dfs(vertex, visited) {
+    visited.add(vertex);
+    console.log(vertex);
+
+    const neighbors = this.adjList.get(vertex);
+
+    for (const neighbor of neighbors) {
+      if (!visited.has(neighbor)) {
+        this._dfs(neighbor, visited);
+      }
     }
   }
-
-  return -1; // Key not found
 }
+const graph = new Graph();
+
+graph.addVertex(1);
+graph.addVertex(2);
+graph.addVertex(3);
+graph.addVertex(4);
+graph.addVertex(5);
+
+graph.addEdge(1, 2);
+graph.addEdge(1, 3);
+graph.addEdge(2, 4);
+graph.addEdge(2, 5);
+graph.depthFirstSearch(1);
