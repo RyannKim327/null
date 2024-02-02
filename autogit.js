@@ -1,35 +1,24 @@
-class ListNode {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+function selectionSort(arr) {
+  const len = arr.length;
+  
+  for (let i = 0; i < len - 1; i++) {
+    let min = i;
+    
+    for (let j = i + 1; j < len; j++) {
+      if (arr[j] < arr[min]) {
+        min = j;
+      }
+    }
+    
+    if (min !== i) {
+      [arr[min], arr[i]] = [arr[i], arr[min]];
+    }
   }
+  
+  return arr;
 }
-function reverseLinkedList(head) {
-  let prev = null;
-  let current = head;
 
-  while (current !== null) {
-    let next = current.next;
-    current.next = prev;
-    prev = current;
-    current = next;
-  }
-
-  return prev;
-}
-// Creating a sample linked list: 1 -> 2 -> 3 -> 4 -> 5
-let head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-// Reversing the linked list
-head = reverseLinkedList(head);
-
-// Printing the reversed linked list
-let current = head;
-while (current !== null) {
-  console.log(current.value);
-  current = current.next;
-}
+// Example usage:
+const array = [64, 25, 12, 22, 11];
+const sortedArray = selectionSort(array);
+console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
