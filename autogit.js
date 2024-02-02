@@ -1,16 +1,6 @@
-function calculateTriangleArea(base, height) {
-  // Validate input
-  if (base <= 0 || height <= 0) {
-    return "Invalid input. Both base and height must be positive numbers.";
-  }
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
 
-  // Calculate and return the area
-  const area = (base * height) / 2;
-  return area;
-}
+const commonElements = array1.filter(element => array2.includes(element));
 
-// Example usage:
-const base = 10;
-const height = 5;
-const triangleArea = calculateTriangleArea(base, height);
-console.log("The area of the triangle is: " + triangleArea);
+console.log(commonElements);  // Output: [4, 5]
