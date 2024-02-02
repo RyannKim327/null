@@ -1,15 +1,47 @@
-function isPalindrome(str) {
-  // Remove all non-alphanumeric characters and convert to lowercase
-  const alphanumericStr = str.replace(/[^0-9a-z]/gi, '').toLowerCase();
-
-  // Reverse the string
-  const reversedStr = alphanumericStr.split('').reverse().join('');
-
-  // Compare the original string with the reversed string
-  return alphanumericStr === reversedStr;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-// Test the function
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("racecar")); // true
-console.log(isPalindrome("hello world")); // false
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+  }
+
+  // Insert a new node at the end of the linked list
+  append(value) {
+    const newNode = new Node(value);
+
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+  }
+
+  // Insert a new node at the beginning of the linked list
+  prepend(value) {
+    const newNode = new Node(value);
+
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      newNode.next = this.head;
+      this.head = newNode;
+    }
+  }
+}
+
+// Example usage
+const list = new LinkedList();
+list.append(2);
+list.append(5);
+list.prepend(1);
+
+console.log(list);
