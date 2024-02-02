@@ -1,58 +1,49 @@
-function bellmanFord(graph, source) {
-  const distance = {};
-  const predecessor = {};
-
-  for (let node in graph) {
-    distance[node] = Infinity;
-    predecessor[node] = null;
+class Queue {
+  constructor() {
+    this.items = [];
   }
-  distance[source] = 0;
-}
-function bellmanFord(graph, source) {
-  // ...
 
-  for (let i = 0; i < Object.keys(graph).length - 1; i++) {
-    for (let node in graph) {
-      for (let neighbor in graph[node]) {
-        const weight = graph[node][neighbor];
-        if (distance[node] + weight < distance[neighbor]) {
-          distance[neighbor] = distance[node] + weight;
-          predecessor[neighbor] = node;
-        }
-      }
+  enqueue(item) {
+    this.items.push(item);
+  }
+
+  dequeue() {
+    if (this.isEmpty()) {
+      return null;
     }
-  }
-}
-function bellmanFord(graph, source) {
-  // ...
-
-  for (let i = 0; i < Object.keys(graph).length - 1; i++) {
-    // ...
+    return this.items.shift();
   }
 
-  for (let node in graph) {
-    for (let neighbor in graph[node]) {
-      const weight = graph[node][neighbor];
-      if (distance[node] + weight < distance[neighbor]) {
-        throw new Error('Graph contains negative cycle');
-      }
-    }
+  isEmpty() {
+    return this.items.length === 0;
   }
-}
-function bellmanFord(graph, source) {
-  // ...
-
-  return { distance, predecessor };
 }
 const graph = {
-  A: { B: -1, C: 4 },
-  B: { D: 2, E: 3, C: 2 },
-  C: {},
-  D: { B: 1, C: 5 },
-  E: { D: -3 },
+  A: ['B', 'C'],
+  B: ['D', 'E'],
+  C: ['F'],
+  D: [],
+  E: [],
+  F: []
 };
+function breadthFirstSearch(graph, startNode) {
+  const visited = new Set();
+  const queue = new Queue();
 
-const source = 'A';
-const result = bellmanFord(graph, source);
-console.log(result.distance);      // { A: 0, B: -1, C: 2, D: -2, E: 1 }
-console.log(result.predecessor);   // { A: null, B: 'A', C: 'B', D: 'E', E: 'B' }
+  visited.add(startNode);
+  queue.enqueue(startNode);
+
+  while (!queue.isEmpty()) {
+    const currentNode = queue.dequeue();
+    console.log(currentNode); // process or store the node however you need
+
+    const neighbors = graph[currentNode];
+    for (let neighbor of neighbors) {
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.enqueue(neighbor);
+      }
+    }
+  }
+}
+breadthFirstSearch(graph, 'A');
