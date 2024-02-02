@@ -1,51 +1,40 @@
-function calculateHash(str, start, end) {
-  let hash = 0;
-  const prime = 31; // You can choose any prime number
-  const mod = 1e9 + 9; // Choose a large prime number to avoid collisions
-  
-  for (let i = start; i <= end; i++) {
-    hash = (hash * prime + str.charCodeAt(i)) % mod;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.children = [];
   }
   
-  return hash;
+  addChild(node) {
+    this.children.push(node);
+  }
 }
-function rabinKarpSearch(text, pattern) {
-  const n = text.length;
-  const m = pattern.length;
-  const patternHash = calculateHash(pattern, 0, m - 1);
-  let textHash = calculateHash(text, 0, m - 1);
+
+function depthFirstSearch(rootNode, target) {
+  if (rootNode.value === target) {
+    return rootNode; // Found the target
+  }
   
-  for (let i = 0; i <= n - m; i++) {
-    if (patternHash === textHash) {
-      let found = true;
-      for (let j = 0; j < m; j++) {
-        if (pattern[j] !== text[i + j]) {
-          found = false;
-          break;
-        }
-      }
-      if (found) {
-        return i; // Pattern found at index i
-      }
-    }
-    if (i < n - m) {
-      // Recalculate the rolling hash for the next substring
-      textHash = (textHash - text.charCodeAt(i) + text.charCodeAt(i + m)) % mod;
-      if (textHash < 0) {
-        textHash += mod;
-      }
+  for (let childNode of rootNode.children) {
+    const result = depthFirstSearch(childNode, target); // Recursively search each child node
+    if (result) {
+      return result; // Target found in child node
     }
   }
   
-  return -1; // Pattern not found
+  return null; // Target not found
 }
-const text = 'This is a sample text for testing.';
-const pattern = 'sample';
 
-const index = rabinKarpSearch(text, pattern);
+// Usage example:
+const rootNode = new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
+const node4 = new Node(4);
+const node5 = new Node(5);
 
-if (index !== -1) {
-  console.log(`Pattern found at index ${index}.`);
-} else {
-  console.log('Pattern not found.');
-}
+rootNode.addChild(node2);
+rootNode.addChild(node3);
+node2.addChild(node4);
+node3.addChild(node5);
+
+console.log(depthFirstSearch(rootNode, 5)); // Output: Node { value: 5, children: [] }
+console.log(depthFirstSearch(rootNode, 6)); // Output: null (Target not found)
