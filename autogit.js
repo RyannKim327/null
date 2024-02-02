@@ -1,54 +1,31 @@
-class ListNode {
+class Node {
   constructor(value) {
     this.value = value;
-    this.next = null;
+    this.left = null;
+    this.right = null;
   }
 }
-function isLinkedListPalindrome(head) {
-  // Implementation goes here
-}
-function isLinkedListPalindrome(head) {
-  const values = [];
-  let current = head;
 
-  while (current) {
-    values.push(current.value);
-    current = current.next;
+function maxDepth(root) {
+  if (root === null) {
+    return 0;
   }
 
-  // Implementation continues...
+  const leftDepth = maxDepth(root.left);
+  const rightDepth = maxDepth(root.right);
+
+  return Math.max(leftDepth, rightDepth) + 1;
 }
-function isLinkedListPalindrome(head) {
-  const values = [];
-  let current = head;
 
-  while (current) {
-    values.push(current.value);
-    current = current.next;
-  }
+// Example usage:
 
-  let start = 0;
-  let end = values.length - 1;
+// Create a binary tree
+const rootNode = new Node(1);
+rootNode.left = new Node(2);
+rootNode.right = new Node(3);
+rootNode.left.left = new Node(4);
+rootNode.left.right = new Node(5);
 
-  while (start < end) {
-    if (values[start] !== values[end]) {
-      return false;
-    }
-    start++;
-    end--;
-  }
-
-  return true;
-}
-const node1 = new ListNode('a');
-const node2 = new ListNode('b');
-const node3 = new ListNode('c');
-const node4 = new ListNode('b');
-const node5 = new ListNode('a');
-
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node5;
-
-console.log(isLinkedListPalindrome(node1)); // Output: true
+// Calculate the maximum depth
+const depth = maxDepth(rootNode);
+console.log(depth); // Output: 3
