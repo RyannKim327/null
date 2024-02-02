@@ -1,15 +1,10 @@
-function calculateMean(numbers) {
-  let sum = 0;
-
-  for (let i = 0; i < numbers.length; i++) {
-    sum += numbers[i];
-  }
-
-  const mean = (sum / numbers.length).toFixed(2);
-  return mean;
+Area = (base * height) / 2
+function calculateTriangleArea(base, height) {
+  var area = (base * height) / 2;
+  return area;
 }
 
-// Usage example
-const numbers = [1, 2, 3, 4, 5];
-const mean = calculateMean(numbers);
-console.log(mean); // Output: 3.00
+var base = 10;
+var height = 5;
+var triangleArea = calculateTriangleArea(base, height);
+console.log("The area of the triangle is: " + triangleArea);
