@@ -1,68 +1,16 @@
-let fibM2 = 0;
-let fibM1 = 1;
-
-while (fibM1 < n) {
-  const temp = fibM1;
-  fibM1 = fibM1 + fibM2;
-  fibM2 = temp;
-}
-let offset = -1;
-let index = Math.min(fibM2, n - 1);
-while (fibM2 > 1) {
-  const i = Math.min(offset + fibM2, n - 1);
-
-  if (arr[i] < target) {
-    fibM1 = fibM2;
-    fibM2 = fibM2 - fibM1;
-    offset = i;
-  } else if (arr[i] > target) {
-    fibM2 = fibM2 - fibM1;
-    fibM1 = fibM1 - fibM2;
-  } else {
-    return i; // Found the target element
-  }
-}
-if (fibM1 === 1 && arr[offset + 1] === target) {
-  return offset + 1;
-} else {
-  return -1;
-}
-function fibonacciSearch(arr, target, n) {
-  let fibM2 = 0;
-  let fibM1 = 1;
-
-  while (fibM1 < n) {
-    const temp = fibM1;
-    fibM1 = fibM1 + fibM2;
-    fibM2 = temp;
+function calculateTriangleArea(base, height) {
+  // Validate input
+  if (base <= 0 || height <= 0) {
+    return "Invalid input. Both base and height must be positive numbers.";
   }
 
-  let offset = -1;
-  let index = Math.min(fibM2, n - 1);
-
-  while (fibM2 > 1) {
-    const i = Math.min(offset + fibM2, n - 1);
-
-    if (arr[i] < target) {
-      fibM1 = fibM2;
-      fibM2 = fibM2 - fibM1;
-      offset = i;
-    } else if (arr[i] > target) {
-      fibM2 = fibM2 - fibM1;
-      fibM1 = fibM1 - fibM2;
-    } else {
-      return i;
-    }
-  }
-  
-  if (fibM1 === 1 && arr[offset + 1] === target) {
-    return offset + 1;
-  } else {
-    return -1;
-  }
+  // Calculate and return the area
+  const area = (base * height) / 2;
+  return area;
 }
-const arr = [1, 3, 5, 8, 13, 21, 34, 55];
-const target = 13;
 
-const index = fibonacciSearch(arr, target, arr.length);
-console.log(index); // Output: 4 (index of the target element in the array)
+// Example usage:
+const base = 10;
+const height = 5;
+const triangleArea = calculateTriangleArea(base, height);
+console.log("The area of the triangle is: " + triangleArea);
