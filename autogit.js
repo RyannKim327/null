@@ -1,100 +1,58 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
+function bellmanFord(graph, source) {
+  const distance = {};
+  const predecessor = {};
+
+  for (let node in graph) {
+    distance[node] = Infinity;
+    predecessor[node] = null;
   }
+  distance[source] = 0;
 }
+function bellmanFord(graph, source) {
+  // ...
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-  }
-
-  isEmpty() {
-    return this.head === null;
-  }
-
-  prepend(data) {
-    const newNode = new Node(data);
-    if (this.isEmpty()) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      newNode.next = this.head;
-      this.head = newNode;
-    }
-  }
-
-  append(data) {
-    const newNode = new Node(data);
-    if (this.isEmpty()) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
-    }
-  }
-
-  delete(data) {
-    if (this.isEmpty()) {
-      return;
-    }
-
-    if (this.head.data === data) {
-      if (this.head === this.tail) {
-        this.head = null;
-        this.tail = null;
-      } else {
-        this.head = this.head.next;
-      }
-      return;
-    }
-
-    let currentNode = this.head;
-    while (currentNode.next !== null) {
-      if (currentNode.next.data === data) {
-        if (currentNode.next === this.tail) {
-          this.tail = currentNode;
+  for (let i = 0; i < Object.keys(graph).length - 1; i++) {
+    for (let node in graph) {
+      for (let neighbor in graph[node]) {
+        const weight = graph[node][neighbor];
+        if (distance[node] + weight < distance[neighbor]) {
+          distance[neighbor] = distance[node] + weight;
+          predecessor[neighbor] = node;
         }
-        currentNode.next = currentNode.next.next;
-        return;
       }
-      currentNode = currentNode.next;
     }
-  }
-
-  search(data) {
-    let currentNode = this.head;
-    while (currentNode !== null) {
-      if (currentNode.data === data) {
-        return currentNode;
-      }
-      currentNode = currentNode.next;
-    }
-    return null;
-  }
-
-  print() {
-    let currentNode = this.head;
-    const listArr = [];
-    while (currentNode !== null) {
-      listArr.push(currentNode.data);
-      currentNode = currentNode.next;
-    }
-    console.log(listArr.join(' -> '));
   }
 }
-const myList = new LinkedList();
+function bellmanFord(graph, source) {
+  // ...
 
-myList.append(5);
-myList.append(10);
-myList.prepend(2);
-myList.print(); // Output: 2 -> 5 -> 10
+  for (let i = 0; i < Object.keys(graph).length - 1; i++) {
+    // ...
+  }
 
-myList.delete(5);
-myList.print(); // Output: 2 -> 10
+  for (let node in graph) {
+    for (let neighbor in graph[node]) {
+      const weight = graph[node][neighbor];
+      if (distance[node] + weight < distance[neighbor]) {
+        throw new Error('Graph contains negative cycle');
+      }
+    }
+  }
+}
+function bellmanFord(graph, source) {
+  // ...
 
-console.log(myList.search(10)); // Output: Node { data: 10, next: null }
-console.log(myList.search(5)); // Output: null
+  return { distance, predecessor };
+}
+const graph = {
+  A: { B: -1, C: 4 },
+  B: { D: 2, E: 3, C: 2 },
+  C: {},
+  D: { B: 1, C: 5 },
+  E: { D: -3 },
+};
+
+const source = 'A';
+const result = bellmanFord(graph, source);
+console.log(result.distance);      // { A: 0, B: -1, C: 2, D: -2, E: 1 }
+console.log(result.predecessor);   // { A: null, B: 'A', C: 'B', D: 'E', E: 'B' }
