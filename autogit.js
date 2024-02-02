@@ -1,51 +1,53 @@
 class Stack {
   constructor() {
-    this.stack = []; // Create an empty array to represent the stack
+    this.items = []; // Array to store stack elements
   }
 
-  push(item) {
-    this.stack.push(item); // Add an item to the top of the stack
+  // Push element to the top of the stack
+  push(element) {
+    this.items.push(element);
   }
 
+  // Remove and return the top element of the stack
   pop() {
     if (this.isEmpty()) {
-      return null; // Return null if the stack is empty
+      return "Stack is empty";
     }
-    return this.stack.pop(); // Remove and return the item from the top of the stack
+    return this.items.pop();
   }
 
-  isEmpty() {
-    return this.stack.length === 0; // Check if the stack is empty
-  }
-
+  // Return the top element of the stack without removing it
   peek() {
     if (this.isEmpty()) {
-      return null; // Return null if the stack is empty
+      return "Stack is empty";
     }
-    return this.stack[this.stack.length - 1]; // Return the item at the top of the stack without removing it
+    return this.items[this.items.length - 1];
   }
 
+  // Check if the stack is empty
+  isEmpty() {
+    return this.items.length === 0;
+  }
+
+  // Return the size of the stack
   size() {
-    return this.stack.length; // Return the number of items in the stack
+    return this.items.length;
   }
 
+  // Empty the stack
   clear() {
-    this.stack = []; // Clear the stack
+    this.items = [];
   }
 }
 
 // Example usage
-const stack = new Stack();
-stack.push(5);
-stack.push(10);
-stack.push(15);
-
-console.log(stack.peek()); // Output: 15
-
-console.log(stack.pop()); // Output: 15
-console.log(stack.pop()); // Output: 10
-console.log(stack.pop()); // Output: 5
-console.log(stack.pop()); // Output: null
-
-console.log(stack.isEmpty()); // Output: true
-console.log(stack.size()); // Output: 0
+let stack = new Stack();
+stack.push(10); // Add elements to the stack
+stack.push(20);
+stack.push(30);
+console.log(stack.peek()); // Output: 30 (top element)
+console.log(stack.pop()); // Output: 30 (remove top element)
+console.log(stack.size()); // Output: 2 (remaining elements in stack)
+console.log(stack.isEmpty()); // Output: false (stack is not empty)
+stack.clear(); // Remove all elements from the stack
+console.log(stack.isEmpty()); // Output: true (stack is empty)
