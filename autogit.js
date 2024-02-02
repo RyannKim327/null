@@ -1,32 +1,11 @@
-function findMajorityElement(array) {
-  let candidate = null;
-  let count = 0;
+const axios = require('axios');
 
-  // Step 1: Find the candidate
-  for (let num of array) {
-    if (count === 0) {
-      candidate = num;
-    }
-
-    count += candidate === num ? 1 : -1;
-  }
-
-  // Step 2: Verify the candidate
-  count = 0;
-  for (let num of array) {
-    if (candidate === num) {
-      count++;
-    }
-  }
-
-  // Step 3: Check if the candidate is a majority element
-  if (count > array.length / 2) {
-    return candidate;
-  } else {
-    return "No majority element found";
-  }
-}
-
-// Example usage
-const array = [1, 2, 2, 2, 4, 2, 5];
-console.log(findMajorityElement(array)); // Output: 2
+axios.get('https://api.example.com/data')
+  .then(response => {
+    // Handle data retrieval success
+    console.log(response.data);
+  })
+  .catch(error => {
+    // Handle data retrieval failure
+    console.error(error);
+  });
