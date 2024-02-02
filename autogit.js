@@ -1,20 +1,8 @@
-function bubbleSort(arr) {
-  var len = arr.length;
-  for (var i = 0; i < len; i++) {
-    for (var j = 0; j < len - 1 - i; j++) {
-      if (arr[j] > arr[j + 1]) {
-        // Swap elements
-        var temp = arr[j];
-        arr[j] = arr[j + 1];
-        arr[j + 1] = temp;
-      }
-    }
-  }
-  return arr;
+function decimalToBinary(decimal) {
+  return (decimal >>> 0).toString(2);
 }
 
-// Example usage:
-var myArray = [5, 3, 8, 2, 1, 4];
-
-console.log("Before sorting: ", myArray);
-console.log("After sorting: ", bubbleSort(myArray));
+// Example usage
+console.log(decimalToBinary(10)); // Output: 1010
+console.log(decimalToBinary(42)); // Output: 101010
+console.log(decimalToBinary(255)); // Output: 11111111
