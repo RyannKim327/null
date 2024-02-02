@@ -1,42 +1,39 @@
-function createBadCharTable(pattern) {
-  const table = {};
-  const patternLength = pattern.length;
-  
-  for (let i = 0; i < patternLength - 1; i++) {
-    table[pattern[i]] = patternLength - 1 - i;
-  }
-  
-  return table;
+function interpolationSearch(array, target) {
+    // ...
 }
-function searchBMH(text, pattern) {
-  const textLength = text.length;
-  const patternLength = pattern.length;
-  
-  const badCharTable = createBadCharTable(pattern);
-  
-  let shift = 0;
-  
-  while (shift <= textLength - patternLength) {
-    let mismatchIndex = patternLength - 1;
-    
-    while (mismatchIndex >= 0 && pattern[mismatchIndex] === text[shift + mismatchIndex]) {
-      mismatchIndex -= 1;
+    let low = 0;
+    let high = array.length - 1;
+    while (low <= high && target >= array[low] && target <= array[high]) {
+        // ...
     }
-    
-    if (mismatchIndex === -1) {
-      // Pattern found at shift index
-      return shift;
-    } else {
-      // Shift the pattern according to the bad character table
-      const badCharShift = badCharTable[text[shift + mismatchIndex]] || patternLength;
-      shift += badCharShift;
+        let pos = Math.floor(
+            low + ((target - array[low]) * (high - low)) / (array[high] - array[low])
+        );
+        if (array[pos] === target) return pos;
+        if (array[pos] > target) {
+            high = pos - 1;
+        }
+        else {
+            low = pos + 1;
+        }
+    return -1;
+function interpolationSearch(array, target) {
+    let low = 0;
+    let high = array.length - 1;
+
+    while (low <= high && target >= array[low] && target <= array[high]) {
+        let pos = Math.floor(
+            low + ((target - array[low]) * (high - low)) / (array[high] - array[low])
+        );
+
+        if (array[pos] === target) return pos;
+
+        if (array[pos] > target) {
+            high = pos - 1;
+        } else {
+            low = pos + 1;
+        }
     }
-  }
-  
-  // Pattern not found
-  return -1;
+
+    return -1;
 }
-const text = "This is a test string";
-const pattern = "test";
-const result = searchBMH(text, pattern);
-console.log(result); // Output: 10
