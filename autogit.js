@@ -1,53 +1,74 @@
-function boyerMooreHorspool(text, pattern) {
-    // Your code goes here
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
-function boyerMooreHorspool(text, pattern) {
-    const textLength = text.length;
-    const patternLength = pattern.length;
 
-    // Generate the bad character shift table
-    const shiftTable = generateShiftTable(pattern);
+class BinaryTree {
+  constructor() {
+    this.root = null;
+  }
 
-    // Your code goes here
-}
-function generateShiftTable(pattern) {
-    const table = {};
+  insert(value) {
+    const newNode = new Node(value);
 
-    for (let i = 0; i < pattern.length - 1; i++) {
-        table[pattern[i]] = pattern.length - 1 - i;
+    // If the tree is empty, set the new node as the root
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
     }
+  }
 
-    return table;
-}
-function boyerMooreHorspool(text, pattern) {
-    const textLength = text.length;
-    const patternLength = pattern.length;
-
-    // Generate the bad character shift table
-    const shiftTable = generateShiftTable(pattern);
-
-    let i = 0;
-    while (i <= textLength - patternLength) {
-        let j = patternLength - 1;
-
-        // Keep reducing the index of the pattern while characters match
-        while (j >= 0 && pattern[j] === text[i + j]) {
-            j--;
-        }
-
-        if (j < 0) {
-            // Pattern found at index i
-            return i;
-        } else {
-            // Shift based on the bad character rule
-            i += shiftTable[text[i + patternLength - 1]] || patternLength;
-        }
+  insertNode(node, newNode) {
+    // If the new value is less than the current node, go to the left subtree
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
     }
+    // If the new value is greater than the current node, go to the right subtree
+    else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
 
-    // Pattern not found in the text
-    return -1;
+  // In-order traversal of the binary tree
+  inOrderTraversal(callback) {
+    this.inOrderTraversalNode(this.root, callback);
+  }
+
+  inOrderTraversalNode(node, callback) {
+    if (node !== null) {
+      this.inOrderTraversalNode(node.left, callback);
+      callback(node.value);
+      this.inOrderTraversalNode(node.right, callback);
+    }
+  }
 }
-const text = "This is a test string";
-const pattern = "test";
-const result = boyerMooreHorspool(text, pattern);
-console.log(`Pattern found at index ${result}`);
+const binaryTree = new BinaryTree();
+
+binaryTree.insert(5);
+binaryTree.insert(3);
+binaryTree.insert(8);
+binaryTree.insert(2);
+binaryTree.insert(4);
+binaryTree.insert(7);
+binaryTree.insert(9);
+
+binaryTree.inOrderTraversal(value => console.log(value));
+2
+3
+4
+5
+7
+8
+9
