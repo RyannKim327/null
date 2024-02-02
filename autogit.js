@@ -1,71 +1,51 @@
-function binarySearch(arr, target) {
-    // ...
-}
-function binarySearch(arr, target) {
-    let start = 0;
-    let end = arr.length - 1;
-    // ...
-}
-function binarySearch(arr, target) {
-    let start = 0;
-    let end = arr.length - 1;
+class Stack {
+  constructor() {
+    this.stack = []; // Create an empty array to represent the stack
+  }
 
-    while (start <= end) {
-        // ...
-    }
-}
-function binarySearch(arr, target) {
-    let start = 0;
-    let end = arr.length - 1;
+  push(item) {
+    this.stack.push(item); // Add an item to the top of the stack
+  }
 
-    while (start <= end) {
-        let mid = Math.floor((start + end) / 2);
-        // ...
+  pop() {
+    if (this.isEmpty()) {
+      return null; // Return null if the stack is empty
     }
-}
-function binarySearch(arr, target) {
-    let start = 0;
-    let end = arr.length - 1;
+    return this.stack.pop(); // Remove and return the item from the top of the stack
+  }
 
-    while (start <= end) {
-        let mid = Math.floor((start + end) / 2);
-        if (arr[mid] === target) {
-            return mid;
-        }
-        // ...
-    }
-}
-function binarySearch(arr, target) {
-    let start = 0;
-    let end = arr.length - 1;
+  isEmpty() {
+    return this.stack.length === 0; // Check if the stack is empty
+  }
 
-    while (start <= end) {
-        let mid = Math.floor((start + end) / 2);
-        if (arr[mid] === target) {
-            return mid;
-        } else if (arr[mid] < target) {
-            start = mid + 1;
-        } else {
-            end = mid - 1;
-        }
+  peek() {
+    if (this.isEmpty()) {
+      return null; // Return null if the stack is empty
     }
-}
-function binarySearch(arr, target) {
-    let start = 0;
-    let end = arr.length - 1;
+    return this.stack[this.stack.length - 1]; // Return the item at the top of the stack without removing it
+  }
 
-    while (start <= end) {
-        let mid = Math.floor((start + end) / 2);
-        if (arr[mid] === target) {
-            return mid;
-        } else if (arr[mid] < target) {
-            start = mid + 1;
-        } else {
-            end = mid - 1;
-        }
-    }
-    return -1; // Target not found
+  size() {
+    return this.stack.length; // Return the number of items in the stack
+  }
+
+  clear() {
+    this.stack = []; // Clear the stack
+  }
 }
-const array = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-const target = 5;
-console.log(binarySearch(array, target)); // Output: 4 (index of target value)
+
+// Example usage
+const stack = new Stack();
+stack.push(5);
+stack.push(10);
+stack.push(15);
+
+console.log(stack.peek()); // Output: 15
+
+console.log(stack.pop()); // Output: 15
+console.log(stack.pop()); // Output: 10
+console.log(stack.pop()); // Output: 5
+console.log(stack.pop()); // Output: null
+
+console.log(stack.isEmpty()); // Output: true
+console.log(stack.size()); // Output: 0
