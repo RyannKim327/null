@@ -1,40 +1,27 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.children = [];
-  }
+function burrowsWheelerTransform(str) {
+  const rotations = [];
   
-  addChild(node) {
-    this.children.push(node);
+  // Generate cyclic rotations
+  for (let i = 0; i < str.length; i++) {
+    rotations.push(str.slice(i) + str.slice(0, i));
   }
+
+  // Sort the rotations lexicographically
+  rotations.sort();
+
+  // Build the transformed string
+  let transformed = '';
+  rotations.forEach(rotation => {
+    transformed += rotation.charAt(rotation.length - 1);
+  });
+
+  // Find the index of the original string in the sorted rotations
+  const index = rotations.indexOf(str);
+
+  return transformed;
 }
 
-function depthFirstSearch(rootNode, target) {
-  if (rootNode.value === target) {
-    return rootNode; // Found the target
-  }
-  
-  for (let childNode of rootNode.children) {
-    const result = depthFirstSearch(childNode, target); // Recursively search each child node
-    if (result) {
-      return result; // Target found in child node
-    }
-  }
-  
-  return null; // Target not found
-}
-
-// Usage example:
-const rootNode = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
-const node4 = new Node(4);
-const node5 = new Node(5);
-
-rootNode.addChild(node2);
-rootNode.addChild(node3);
-node2.addChild(node4);
-node3.addChild(node5);
-
-console.log(depthFirstSearch(rootNode, 5)); // Output: Node { value: 5, children: [] }
-console.log(depthFirstSearch(rootNode, 6)); // Output: null (Target not found)
+// Example usage
+const originalString = "banana";
+const transformedString = burrowsWheelerTransform(originalString);
+console.log(transformedString); // Outputs: "annb$aa"
