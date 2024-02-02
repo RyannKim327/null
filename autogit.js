@@ -1,19 +1,31 @@
-function bubbleSort(arr) {
-  var len = arr.length;
-  for (var i = 0; i < len - 1; i++) {
-    for (var j = 0; j < len - 1; j++) {
-      if (arr[j] > arr[j + 1]) {
-        // Swap elements
-        var temp = arr[j];
-        arr[j] = arr[j + 1];
-        arr[j + 1] = temp;
-      }
-    }
+class TreeNode {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
-  return arr;
+}
+
+function findMaxDepth(root) {
+  if (root === null) {
+    return 0;
+  }
+
+  const leftDepth = findMaxDepth(root.left);
+  const rightDepth = findMaxDepth(root.right);
+
+  return Math.max(leftDepth, rightDepth) + 1;
 }
 
 // Example usage:
-var arr = [5, 3, 8, 4, 2];
-console.log("Before sorting:", arr);
-console.log("After sorting:", bubbleSort(arr));
+// Create a binary tree
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+root.right.right = new TreeNode(6);
+
+// Find maximum depth
+const maxDepth = findMaxDepth(root);
+console.log("Maximum depth:", maxDepth);
