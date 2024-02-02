@@ -1,49 +1,38 @@
-class Queue {
-  constructor() {
-    this.items = [];
-  }
-
-  enqueue(item) {
-    this.items.push(item);
-  }
-
-  dequeue() {
-    if (this.isEmpty()) {
-      return null;
-    }
-    return this.items.shift();
-  }
-
-  isEmpty() {
-    return this.items.length === 0;
+class ListNode {
+  constructor(val) {
+    this.val = val;
+    this.next = null;
   }
 }
-const graph = {
-  A: ['B', 'C'],
-  B: ['D', 'E'],
-  C: ['F'],
-  D: [],
-  E: [],
-  F: []
-};
-function breadthFirstSearch(graph, startNode) {
-  const visited = new Set();
-  const queue = new Queue();
 
-  visited.add(startNode);
-  queue.enqueue(startNode);
+function getIntersectionNode(headA, headB) {
+  let set = new Set();
 
-  while (!queue.isEmpty()) {
-    const currentNode = queue.dequeue();
-    console.log(currentNode); // process or store the node however you need
-
-    const neighbors = graph[currentNode];
-    for (let neighbor of neighbors) {
-      if (!visited.has(neighbor)) {
-        visited.add(neighbor);
-        queue.enqueue(neighbor);
-      }
-    }
+  // Traverse the first linked list and store nodes in a set
+  let nodeA = headA;
+  while (nodeA) {
+    set.add(nodeA);
+    nodeA = nodeA.next;
   }
+
+  // Traverse the second linked list and find the intersection node
+  let nodeB = headB;
+  while (nodeB) {
+    if (set.has(nodeB)) {
+      return nodeB; // Intersection point found
+    }
+    nodeB = nodeB.next;
+  }
+
+  return null; // No intersection point found
 }
-breadthFirstSearch(graph, 'A');
+// Example linked lists
+const listA = new ListNode(1);
+listA.next = new ListNode(2);
+listA.next.next = new ListNode(3);
+
+const listB = new ListNode(6);
+listB.next = listA.next;
+
+const intersection = getIntersectionNode(listA, listB);
+console.log('Intersection node:', intersection);
