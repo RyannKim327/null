@@ -1,19 +1,24 @@
-function insertionSort(arr) {
-  for (let i = 1; i < arr.length; i++) {
-    let currentValue = arr[i];
-    let j = i - 1;
+function shellSort(arr) {
+  let gap = Math.floor(arr.length / 2);
 
-    while (j >= 0 && arr[j] > currentValue) {
-      arr[j + 1] = arr[j];
-      j--;
+  while (gap > 0) {
+    for (let i = gap; i < arr.length; i++) {
+      let temp = arr[i];
+      let j = i;
+
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
+      }
+
+      arr[j] = temp;
     }
 
-    arr[j + 1] = currentValue;
+    gap = Math.floor(gap / 2);
   }
 
   return arr;
 }
+let arr = [9, 5, 1, 8, 3, 6, 4, 7, 2];
 
-// Example usage:
-const arr = [5, 2, 4, 6, 1, 3];
-console.log(insertionSort(arr)); // Output: [1, 2, 3, 4, 5, 6]
+console.log(shellSort(arr));
