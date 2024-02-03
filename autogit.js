@@ -1,31 +1,22 @@
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+function bubbleSort(arr) {
+    let len = arr.length;
+    
+    for (let i = 0; i < len - 1; i++) {
+        for (let j = 0; j < len - 1 - i; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap elements
+                let temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+    
+    return arr;
 }
-
-function getMaxDepth(root) {
-  // Base case: if the root node is null, the depth is 0
-  if (root === null) {
-    return 0;
-  }
-
-  // Recursively get the maximum depth of the left and right subtrees
-  const leftDepth = getMaxDepth(root.left);
-  const rightDepth = getMaxDepth(root.right);
-
-  // Return the maximum depth from the current node, adding 1 to account for the current level
-  return Math.max(leftDepth, rightDepth) + 1;
-}
-
-// Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-root.right.left = new TreeNode(6);
-
-console.log(getMaxDepth(root)); // Output: 3
+// Test the bubbleSort function
+let arr = [64, 34, 25, 12, 22, 11, 90];
+console.log("Original array: " + arr);
+console.log("Sorted array: " + bubbleSort(arr));
+Original array: 64,34,25,12,22,11,90
+Sorted array: 11,12,22,25,34,64,90
