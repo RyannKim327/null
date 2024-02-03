@@ -1,11 +1,53 @@
-function validateEmail(email) {
-  // Regular expression pattern for validating email addresses
-  var regexPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-
-  // Test the email against the pattern
-  return regexPattern.test(email);
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
+class Queue {
+  constructor() {
+    this.head = null; // points to the head of the queue
+    this.tail = null; // points to the tail of the queue
+  }
 
-// Example usage
-console.log(validateEmail('test@example.com')); // true
-console.log(validateEmail('invalid')); // false
+  enqueue(value) {
+    const newNode = new Node(value);
+
+    if (this.isEmpty()) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+  }
+
+  dequeue() {
+    if (this.isEmpty()) {
+      return 'Queue is empty';
+    }
+
+    const removedValue = this.head.value;
+    this.head = this.head.next;
+
+    if (this.head === null) {
+      this.tail = null;
+    }
+
+    return removedValue;
+  }
+
+  isEmpty() {
+    return this.head === null;
+  }
+}
+const queue = new Queue();
+
+queue.enqueue(10);
+queue.enqueue(20);
+queue.enqueue(30);
+
+console.log(queue.dequeue()); // Output: 10
+console.log(queue.dequeue()); // Output: 20
+console.log(queue.dequeue()); // Output: 30
+console.log(queue.dequeue()); // Output: 'Queue is empty'
