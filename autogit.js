@@ -1,25 +1,41 @@
-function quicksort(arr) {
-  if (arr.length <= 1) {
-    return arr; // if the array has 0 or 1 element, it is already sorted
-  }
+function hasCycle(head) {
+  let slow = head; // the slower pointer
+  let fast = head; // the faster pointer
 
-  const pivot = arr[Math.floor(arr.length / 2)]; // select a pivot element
-  const left = []; // create two empty arrays for elements smaller and greater than the pivot
-  const right = [];
+  while (fast !== null && fast.next !== null) {
+    slow = slow.next; // move slow pointer by one node
+    fast = fast.next.next; // move fast pointer by two nodes
 
-  for (let i = 0; i < arr.length; i++) {
-    if (i === Math.floor(arr.length / 2)) continue; // skip the pivot element
-    if (arr[i] < pivot) {
-      left.push(arr[i]); // push smaller elements into the left array
-    } else {
-      right.push(arr[i]); // push greater elements into the right array
+    // If the two pointers meet, it means there is a cycle in the linked list
+    if (slow === fast) {
+      return true;
     }
   }
-
-  return [...quicksort(left), pivot, ...quicksort(right)]; // recursively sort subarrays and combine
+  
+  return false; // if fast reaches the end of the list, it means there is no cycle
 }
+// Example usage
+const linkedListWithCycle = {
+  value: 1,
+  next: {
+    value: 2,
+    next: {
+      value: 3,
+      next: null // points back to the second node, creating a cycle
+    }
+  }
+};
 
-// Example usage:
-const array = [8, 1, 6, 3, 7, 2, 5, 4];
-const sortedArray = quicksort(array);
-console.log(sortedArray); // [1, 2, 3, 4, 5, 6, 7, 8]
+const linkedListWithoutCycle = {
+  value: 1,
+  next: {
+    value: 2,
+    next: {
+      value: 3,
+      next: null
+    }
+  }
+};
+
+console.log(hasCycle(linkedListWithCycle)); // Output: true
+console.log(hasCycle(linkedListWithoutCycle)); // Output: false
