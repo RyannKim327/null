@@ -1,117 +1,85 @@
-// Node class
 class Node {
-  constructor(data) {
-    this.data = data;
+  constructor(value) {
+    this.value = value;
     this.next = null;
   }
 }
 
-// LinkedList class
 class LinkedList {
   constructor() {
     this.head = null;
+    this.tail = null;
   }
 
-  // Add a node to the end of the list
-  append(data) {
-    const newNode = new Node(data);
+  append(value) {
+    const newNode = new Node(value);
 
-    if (this.head === null) {
+    if (!this.head) {
       this.head = newNode;
-    } else {
-      let currentNode = this.head;
-      while (currentNode.next) {
-        currentNode = currentNode.next;
-      }
-      currentNode.next = newNode;
+      this.tail = newNode;
+      return;
     }
+
+    this.tail.next = newNode;
+    this.tail = newNode;
   }
 
-  // Insert a node at a specific position
-  insert(data, position) {
-    const newNode = new Node(data);
+  prepend(value) {
+    const newNode = new Node(value);
 
-    if (position === 0) {
-      newNode.next = this.head;
+    if (!this.head) {
       this.head = newNode;
-    } else {
-      let currentNode = this.head;
-      let previousNode = null;
-      let currentPosition = 0;
-
-      while (currentPosition < position) {
-        previousNode = currentNode;
-        currentNode = currentNode.next;
-        currentPosition++;
-      }
-
-      newNode.next = currentNode;
-      previousNode.next = newNode;
+      this.tail = newNode;
+      return;
     }
+
+    newNode.next = this.head;
+    this.head = newNode;
   }
 
-  // Remove a node at a specific position
-  remove(position) {
-    if (this.head === null) {
+  delete(value) {
+    if (!this.head) {
+      return;
+    }
+
+    if (this.head.value === value) {
+      this.head = this.head.next;
+      if (!this.head) {
+        this.tail = null;
+      }
       return;
     }
 
     let currentNode = this.head;
-    let previousNode = null;
-    let currentPosition = 0;
-
-    if (position === 0) {
-      this.head = currentNode.next;
-    } else {
-      while (currentPosition < position) {
-        previousNode = currentNode;
-        currentNode = currentNode.next;
-        currentPosition++;
+    while (currentNode.next) {
+      if (currentNode.next.value === value) {
+        currentNode.next = currentNode.next.next;
+        if (!currentNode.next) {
+          this.tail = currentNode;
+        }
+        return;
       }
-
-      previousNode.next = currentNode.next;
-    }
-  }
-
-  // Get the size of the linked list
-  size() {
-    let count = 0;
-    let currentNode = this.head;
-
-    while (currentNode) {
-      count++;
       currentNode = currentNode.next;
     }
-
-    return count;
   }
 
-  // Print the linked list elements
   print() {
+    const values = [];
     let currentNode = this.head;
-    let list = '';
 
     while (currentNode) {
-      list += currentNode.data + ' -> ';
+      values.push(currentNode.value);
       currentNode = currentNode.next;
     }
 
-    list += 'null';
-    console.log(list);
+    console.log(values.join(' -> '));
   }
 }
-
-// Usage:
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.print(); // Output: 1 -> 2 -> 3 -> null
-
-list.insert(4, 1);
-list.print(); // Output: 1 -> 4 -> 2 -> 3 -> null
-
-list.remove(2);
-list.print(); // Output: 1 -> 4 -> 3 -> null
-
-console.log(list.size()); // Output: 3
+const linkedList = new LinkedList();
+linkedList.append(5);
+linkedList.append(10);
+linkedList.append(15);
+linkedList.prepend(2);
+linkedList.print(); // Output: 2 -> 5 -> 10 -> 15
+linkedList.delete(10);
+linkedList.print(); // Output: 2 -> 5 -> 15
