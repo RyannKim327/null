@@ -1,65 +1,90 @@
-function boyerMooreHorspool(text, pattern) {
-    const patternLength = pattern.length;
-    const textLength = text.length;
+class PriorityQueue {
+  constructor() {
+    this.heap = [];
+  }
 
-    // Step 1: Create bad character shift table
-    const badCharacterShift = new Array(256).fill(patternLength);
-    for (let i = 0; i < patternLength - 1; i++) {
-        badCharacterShift[pattern.charCodeAt(i)] = patternLength - i - 1;
+  swap(index1, index2) {
+    [this.heap[index1], this.heap[index2]] = [this.heap[index2], this.heap[index1]];
+  }
+
+  getParentIndex(index) {
+    return Math.floor((index - 1) / 2);
+  }
+
+  getLeftChildIndex(index) {
+    return index * 2 + 1;
+  }
+
+  getRightChildIndex(index) {
+    return index * 2 + 2;
+  }
+
+  enqueue(value, priority) {
+    const element = { value, priority };
+    this.heap.push(element);
+
+    let currentIndex = this.heap.length - 1;
+    while (
+      currentIndex > 0 &&
+      this.heap[currentIndex].priority < this.heap[this.getParentIndex(currentIndex)].priority
+    ) {
+      const parentIndex = this.getParentIndex(currentIndex);
+      this.swap(currentIndex, parentIndex);
+      currentIndex = parentIndex;
+    }
+  }
+
+  dequeue() {
+    if (this.isEmpty()) {
+      return null;
     }
 
-    // Step 2: Create good suffix shift table
-    const goodSuffixShift = new Array(patternLength).fill(patternLength);
-    let j = 0;
-    let i = patternLength - 1;
-    for (; i >= 0; i--) {
-        if (pattern[i] === pattern[j]) {
-            goodSuffixShift[i] = j - i + patternLength - 1;
-            j--;
-        } else {
-            j = patternLength - 1;
-        }
-    }
-    for (i = 0; i < patternLength - 1; i++) {
-        let suffixLength = suffixLengthCalculator(pattern, i);
-        if (pattern[i - suffixLength] !== pattern[patternLength - 1 - suffixLength]) {
-            goodSuffixShift[patternLength - 1 - suffixLength] = patternLength - 1 - i + suffixLength;
-        }
+    if (this.heap.length === 1) {
+      return this.heap.pop().value;
     }
 
-    // Step 3: String search
-    let index = patternLength - 1;
-    while (index < textLength) {
-        let k = index;
-        let i = patternLength - 1;
-        while (i >= 0 && text[k] === pattern[i]) {
-            k--;
-            i--;
-        }
-        if (i === -1) {
-            return k + 1; // Match found
-        } else {
-            index += Math.max(badCharacterShift[text.charCodeAt(index)], goodSuffixShift[i]);
-        }
+    const root = this.heap[0];
+    this.heap[0] = this.heap.pop();
+
+    let currentIndex = 0;
+    while (true) {
+      const leftChildIndex = this.getLeftChildIndex(currentIndex);
+      const rightChildIndex = this.getRightChildIndex(currentIndex);
+
+      let smallestChildIndex = leftChildIndex;
+      if (
+        rightChildIndex < this.heap.length &&
+        this.heap[rightChildIndex].priority < this.heap[leftChildIndex].priority
+      ) {
+        smallestChildIndex = rightChildIndex;
+      }
+
+      if (
+        leftChildIndex >= this.heap.length ||
+        this.heap[currentIndex].priority <= this.heap[smallestChildIndex].priority
+      ) {
+        break;
+      }
+
+      this.swap(currentIndex, smallestChildIndex);
+      currentIndex = smallestChildIndex;
     }
-    return -1; // No match found
+
+    return root.value;
+  }
+
+  isEmpty() {
+    return this.heap.length === 0;
+  }
 }
+const priorityQueue = new PriorityQueue();
 
-function suffixLengthCalculator(pattern, p) {
-    let length = 0;
-    let i = p;
-    let j = pattern.length - 1;
-    while (i >= 0 && pattern[i] === pattern[j]) {
-        length++;
-        i--;
-        j--;
-    }
-    return length;
-}
+priorityQueue.enqueue('Task 1', 3);
+priorityQueue.enqueue('Task 2', 1);
+priorityQueue.enqueue('Task 3', 5);
 
-// Example usage:
-const text = 'This is an example string for searching';
-const pattern = 'example';
-const index = boyerMooreHorspool(text, pattern);
+console.log(priorityQueue.dequeue()); // Output: Task 2
+console.log(priorityQueue.dequeue()); // Output: Task 1
+console.log(priorityQueue.dequeue()); // Output: Task 3
 
-console.log('Pattern occurs at index:', index); // Output: 10
+console.log(priorityQueue.isEmpty()); // Output: true
