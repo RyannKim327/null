@@ -1,19 +1,21 @@
-let str = "Hello, World!";
-let reversedStr = str.split("").reverse().join("");
-console.log(reversedStr);
-let str = "Hello, World!";
-let reversedStr = "";
-for (let i = str.length - 1; i >= 0; i--) {
-  reversedStr += str[i];
-}
-console.log(reversedStr);
-function reverseString(str) {
-  if (str === "")
-    return "";
-  else
-    return reverseString(str.substr(1)) + str.charAt(0);
+function areAnagrams(str1, str2) {
+  // Remove spaces and punctuation, convert to lowercase
+  str1 = str1.replace(/[^\w]/g, "").toLowerCase();
+  str2 = str2.replace(/[^\w]/g, "").toLowerCase();
+
+  // Convert strings to arrays, sort the arrays, join back into strings
+  const sortedStr1 = str1.split("").sort().join("");
+  const sortedStr2 = str2.split("").sort().join("");
+
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
 
-let str = "Hello, World!";
-let reversedStr = reverseString(str);
-console.log(reversedStr);
+// Example usage
+const string1 = "listen";
+const string2 = "silent";
+console.log(areAnagrams(string1, string2)); // Output: true
+
+const string3 = "hello";
+const string4 = "world";
+console.log(areAnagrams(string3, string4)); // Output: false
