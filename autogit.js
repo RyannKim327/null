@@ -1,16 +1,52 @@
-function findKthSmallest(arr, k) {
-  // Sort the array in ascending order
-  arr.sort((a, b) => a - b);
+function dijkstra(graph, startNode) {
+  const distances = {};
+  const visited = new Set();
+  const previous = {};
 
-  // Return the kth smallest element
-  return arr[k - 1];
+  // Initialize distances with Infinity for all nodes except the startNode
+  for (const node in graph) {
+    distances[node] = Infinity;
+  }
+  distances[startNode] = 0;
+
+  while (Object.keys(visited).length !== Object.keys(graph).length) {
+    let currentNode = null;
+    let shortestDistance = Infinity;
+
+    // Find the unvisited node with the smallest distance
+    for (const node in graph) {
+      if (!visited.has(node) && distances[node] < shortestDistance) {
+        currentNode = node;
+        shortestDistance = distances[node];
+      }
+    }
+
+    // Mark the current node as visited
+    visited.add(currentNode);
+
+    // Update distances of neighboring nodes
+    for (const neighbor in graph[currentNode]) {
+      const distance = graph[currentNode][neighbor];
+      const totalDistance = distances[currentNode] + distance;
+
+      if (totalDistance < distances[neighbor]) {
+        distances[neighbor] = totalDistance;
+        previous[neighbor] = currentNode;
+      }
+    }
+  }
+
+  return { distances, previous };
 }
-const arr = [7, 2, 1, 6, 8, 5];
-const k = 3;
 
-const kthSmallest = findKthSmallest(arr, k);
-console.log(`The ${k}th smallest element is ${kthSmallest}`); // Output: The 3rd smallest element is 5
-function findKthSmallest(arr, k) {
-  const sortedArr = [...arr].sort((a, b) => a - b);
-  return sortedArr[k - 1];
+function getPath(previous, targetNode) {
+  const path = [targetNode];
+  let node = targetNode;
+
+  while (previous[node]) {
+    node = previous[node];
+    path.unshift(node);
+  }
+
+  return path;
 }
