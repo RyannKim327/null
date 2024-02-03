@@ -1,22 +1,10 @@
-function isLinkedListPalindrome(head) {
-  let values = [];
-  let currentNode = head;
-
-  while (currentNode) {
-    values.push(currentNode.val);
-    currentNode = currentNode.next;
-  }
-
-  let left = 0;
-  let right = values.length - 1;
-
-  while (left < right) {
-    if (values[left] !== values[right]) {
-      return false;
-    }
-    left++;
-    right--;
-  }
-  
-  return true;
+function calculateTriangleArea(base, height) {
+  var area = 0.5 * base * height;
+  return area;
 }
+
+// Example usage:
+var triangleBase = 10;
+var triangleHeight = 5;
+var triangleArea = calculateTriangleArea(triangleBase, triangleHeight);
+console.log('The area of the triangle is: ' + triangleArea);
