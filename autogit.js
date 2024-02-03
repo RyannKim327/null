@@ -1,41 +1,44 @@
-function hasCycle(head) {
-  let slow = head; // the slower pointer
-  let fast = head; // the faster pointer
+function boyerMooreHorspool(text, pattern) {
+  const patternLength = pattern.length;
+  const table = buildTable(pattern);
 
-  while (fast !== null && fast.next !== null) {
-    slow = slow.next; // move slow pointer by one node
-    fast = fast.next.next; // move fast pointer by two nodes
+  let i = patternLength - 1;
+  while (i < text.length) {
+    let j = patternLength - 1;
 
-    // If the two pointers meet, it means there is a cycle in the linked list
-    if (slow === fast) {
-      return true;
+    while (j >= 0 && text[i] === pattern[j]) {
+      j--;
+      i--;
+    }
+
+    if (j === -1) {
+      return i + 1;
+    } else {
+      const mismatchedChar = text[i];
+      const shift = table[mismatchedChar] || patternLength;
+      i += shift;
     }
   }
-  
-  return false; // if fast reaches the end of the list, it means there is no cycle
+
+  return -1;
 }
-// Example usage
-const linkedListWithCycle = {
-  value: 1,
-  next: {
-    value: 2,
-    next: {
-      value: 3,
-      next: null // points back to the second node, creating a cycle
-    }
-  }
-};
 
-const linkedListWithoutCycle = {
-  value: 1,
-  next: {
-    value: 2,
-    next: {
-      value: 3,
-      next: null
-    }
-  }
-};
+function buildTable(pattern) {
+  const table = {};
+  const patternLength = pattern.length - 1;
 
-console.log(hasCycle(linkedListWithCycle)); // Output: true
-console.log(hasCycle(linkedListWithoutCycle)); // Output: false
+  for (let i = 0; i < patternLength; i++) {
+    table[pattern[i]] = patternLength - i;
+  }
+
+  return table;
+}
+const text = "Lorem ipsum dolor sit amet";
+const pattern = "dolor";
+
+const position = boyerMooreHorspool(text, pattern);
+if (position !== -1) {
+  console.log(`Pattern found at position ${position}`);
+} else {
+  console.log("Pattern not found");
+}
