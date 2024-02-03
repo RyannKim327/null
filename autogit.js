@@ -1,50 +1,135 @@
-function heapSort(array) {
-  const len = array.length;
-
-  // Build max heap
-  for (let i = Math.floor(len / 2) - 1; i >= 0; i--) {
-    heapify(array, len, i);
-  }
-
-  // Heap sort
-  for (let i = len - 1; i >= 0; i--) {
-    // Swap root (maximum element) with the last element
-    [array[0], array[i]] = [array[i], array[0]];
-
-    // Heapify the reduced heap
-    heapify(array, i, 0);
-  }
-
-  return array;
-}
-
-function heapify(array, len, rootIndex) {
-  let largestIndex = rootIndex;
-  const leftChildIndex = 2 * rootIndex + 1;
-  const rightChildIndex = 2 * rootIndex + 2;
-
-  // Compare with left child
-  if (leftChildIndex < len && array[leftChildIndex] > array[largestIndex]) {
-    largestIndex = leftChildIndex;
-  }
-
-  // Compare with right child
-  if (
-    rightChildIndex < len &&
-    array[rightChildIndex] > array[largestIndex]
-  ) {
-    largestIndex = rightChildIndex;
-  }
-
-  // Swap and heapify if needed
-  if (largestIndex !== rootIndex) {
-    [array[rootIndex], array[largestIndex]] = [
-      array[largestIndex],
-      array[rootIndex],
-    ];
-    heapify(array, len, largestIndex);
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
-const arr = [6, 5, 3, 1, 8, 7, 2, 4];
-const sortedArray = heapSort(arr);
-console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 6, 7, 8]
+
+class BinarySearchTree {
+  constructor() {
+    this.root = null;
+  }
+
+  insert(value) {
+    const newNode = new Node(value);
+
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
+
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  searchNode(node, value) {
+    if (node === null || node.value === value) {
+      return node;
+    }
+
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    }
+
+    return this.searchNode(node.right, value);
+  }
+
+  remove(value) {
+    this.root = this.removeNode(this.root, value);
+  }
+
+  removeNode(node, value) {
+    if (node === null) {
+      return null;
+    }
+
+    if (value < node.value) {
+      node.left = this.removeNode(node.left, value);
+      return node;
+    } else if (value > node.value) {
+      node.right = this.removeNode(node.right, value);
+      return node;
+    } else {
+      if (node.left === null && node.right === null) {
+        node = null;
+        return null;
+      }
+
+      if (node.left === null) {
+        node = node.right;
+        return node;
+      }
+
+      if (node.right === null) {
+        node = node.left;
+        return node;
+      }
+
+      const minNode = this.findMinNode(node.right);
+      node.value = minNode.value;
+      node.right = this.removeNode(node.right, minNode.value);
+      return node;
+    }
+  }
+
+  findMinNode(node) {
+    if (node.left === null) {
+      return node;
+    }
+
+    return this.findMinNode(node.left);
+  }
+
+  getRootNode() {
+    return this.root;
+  }
+
+  inorderTraversal(callback) {
+    this.inorderTraversalNode(this.root, callback);
+  }
+
+  inorderTraversalNode(node, callback) {
+    if (node !== null) {
+      this.inorderTraversalNode(node.left, callback);
+      callback(node.value);
+      this.inorderTraversalNode(node.right, callback);
+    }
+  }
+}
+const bst = new BinarySearchTree();
+
+bst.insert(8);
+bst.insert(3);
+bst.insert(10);
+bst.insert(1);
+bst.insert(6);
+
+console.log("Inorder Traversal:");
+bst.inorderTraversal(value => console.log(value));
+
+console.log("Search 6:", bst.search(6));
+console.log("Search 9:", bst.search(9));
+
+bst.remove(3);
+
+console.log("Inorder Traversal after removing 3:");
+bst.inorderTraversal(value => console.log(value));
