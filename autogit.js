@@ -1,40 +1,27 @@
-class ListNode {
-  constructor(value, next = null) {
-    this.value = value;
-    this.next = next;
-  }
-}
+function findFirstNonRepeatingChar(str) {
+  // Create an empty object to store character frequencies
+  const charCount = {};
 
-function getIntersectionNode(headA, headB) {
-  let setA = new Set();
-
-  // Traverse the first linked list and store each node's reference in a Set
-  let currA = headA;
-  while (currA) {
-    setA.add(currA);
-    currA = currA.next;
+  // Iterate over each character in the string
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    // Increment the frequency count of the character
+    charCount[char] = (charCount[char] || 0) + 1;
   }
 
-  // Traverse the second linked list
-  let currB = headB;
-  while (currB) {
-    // Check if the node's reference is already present in the Set
-    if (setA.has(currB)) {
-      return currB; // Return the intersection point
+  // Iterate over each character in the string again
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    // Check if the frequency count of the character is 1
+    if (charCount[char] === 1) {
+      return char; // Return the first non-repeating character
     }
-    currB = currB.next;
   }
 
-  return null; // Lists do not intersect
+  return null; // Return null if there are no non-repeating characters
 }
-// Create linked lists
-let list1 = new ListNode(3);
-list1.next = new ListNode(7);
-list1.next.next = new ListNode(10);
 
-let list2 = new ListNode(99);
-list2.next = list1.next;
-
-// Find intersection node
-let intersectionNode = getIntersectionNode(list1, list2);
-console.log(intersectionNode); // Output: ListNode { value: 7, next: ListNode { value: 10, next: null } }
+// Example usage
+const str = 'aabbcde';
+const firstNonRepeatingChar = findFirstNonRepeatingChar(str);
+console.log(firstNonRepeatingChar); // Output: 'c'
