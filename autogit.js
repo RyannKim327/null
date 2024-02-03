@@ -1,75 +1,40 @@
-class Node {
-  constructor(state, parent, cost, heuristic) {
-    this.state = state;
-    this.parent = parent;
-    this.cost = cost;
-    this.heuristic = heuristic;
+class ListNode {
+  constructor(value, next = null) {
+    this.value = value;
+    this.next = next;
   }
 }
-class PriorityQueue {
-  constructor() {
-    this.queue = [];
+
+function getIntersectionNode(headA, headB) {
+  let setA = new Set();
+
+  // Traverse the first linked list and store each node's reference in a Set
+  let currA = headA;
+  while (currA) {
+    setA.add(currA);
+    currA = currA.next;
   }
 
-  enqueue(node) {
-    this.queue.push(node);
-    this.sort();
-  }
-
-  dequeue() {
-    if (!this.isEmpty()) {
-      return this.queue.shift();
+  // Traverse the second linked list
+  let currB = headB;
+  while (currB) {
+    // Check if the node's reference is already present in the Set
+    if (setA.has(currB)) {
+      return currB; // Return the intersection point
     }
-    return null;
+    currB = currB.next;
   }
 
-  isEmpty() {
-    return this.queue.length === 0;
-  }
-
-  sort() {
-    this.queue.sort((a, b) => (a.cost + a.heuristic) - (b.cost + b.heuristic));
-  }
+  return null; // Lists do not intersect
 }
-function aStarSearch(initialState, goalState) {
-  const openSet = new PriorityQueue();
-  const visited = new Set();
+// Create linked lists
+let list1 = new ListNode(3);
+list1.next = new ListNode(7);
+list1.next.next = new ListNode(10);
 
-  const heuristic = (state) => {
-    // Calculate the heuristic value (e.g., Manhattan distance, Euclidean distance)
-    // between the current state and the goal state.
-    // Return the estimated remaining cost.
-  };
+let list2 = new ListNode(99);
+list2.next = list1.next;
 
-  openSet.enqueue(new Node(initialState, null, 0, heuristic(initialState)));
-
-  while (!openSet.isEmpty()) {
-    const current = openSet.dequeue();
-
-    if (current.state === goalState) {
-      // Path found; reconstruct and return the path.
-      const path = [];
-      let node = current;
-      while (node !== null) {
-        path.push(node.state);
-        node = node.parent;
-      }
-      return path.reverse();
-    }
-
-    visited.add(current.state);
-
-    const neighbors = getNeighbors(current.state); // Implement a function to get the neighboring states.
-
-    for (const neighbor of neighbors) {
-      if (!visited.has(neighbor)) {
-        const cost = current.cost + 1; // Assuming each step cost is 1.
-        const newNode = new Node(neighbor, current, cost, heuristic(neighbor));
-        openSet.enqueue(newNode);
-      }
-    }
-  }
-
-  // Path not found.
-  return null;
-}
+// Find intersection node
+let intersectionNode = getIntersectionNode(list1, list2);
+console.log(intersectionNode); // Output: ListNode { value: 7, next: ListNode { value: 10, next: null } }
