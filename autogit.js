@@ -1,49 +1,46 @@
-function KMPSearch(string, pattern) {
-  const n = string.length;
-  const m = pattern.length;
-
-  const lps = new Array(m).fill(0);
-  let j = 0;
-
-  computeLPSArray(pattern, m, lps);
-
-  let i = 0;
-  while (i < n) {
-    if (string[i] === pattern[j]) {
-      i++;
-      j++;
-    }
-
-    if (j === m) {
-      console.log('Pattern found at index', i - j);
-      j = lps[j - 1];
-    } else if (i < n && string[i] !== pattern[j]) {
-      if (j !== 0) {
-        j = lps[j - 1];
-      } else {
-        i++;
-      }
-    }
-  }
+function boyerMooreHorspool(pattern, text) {
+  // ...
 }
+function createShiftTable(pattern) {
+  const shiftTable = {};
 
-function computeLPSArray(pattern, m, lps) {
-  let len = 0;
-  let i = 1;
-  lps[0] = 0;
-
-  while (i < m) {
-    if (pattern[i] === pattern[len]) {
-      len++;
-      lps[i] = len;
-      i++;
-    } else {
-      if (len !== 0) {
-        len = lps[len - 1];
-      } else {
-        lps[i] = 0;
-        i++;
-      }
-    }
+  for (let i = 0; i < pattern.length - 1; i++) {
+    shiftTable[pattern[i]] = pattern.length - i - 1;
   }
+
+  return shiftTable;
 }
+function boyerMooreHorspool(pattern, text) {
+  const shiftTable = createShiftTable(pattern);
+  const patternLength = pattern.length;
+  const textLength = text.length;
+  let i = patternLength - 1;
+
+  while (i < textLength) {
+    let patternIndex = patternLength - 1;
+    let textIndex = i;
+
+    while (patternIndex >= 0 && pattern[patternIndex] === text[textIndex]) {
+      patternIndex--;
+      textIndex--;
+    }
+
+    if (patternIndex === -1) {
+      // Pattern found
+      return textIndex + 1;
+    }
+
+    const mismatchedChar = text[textIndex];
+    const shift = shiftTable[mismatchedChar] || patternLength;
+
+    i += shift;
+  }
+
+  // Pattern not found
+  return -1;
+}
+const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+const pattern = "ipsum";
+
+const index = boyerMooreHorspool(pattern, text);
+console.log(index);  // Output: 6
