@@ -1,12 +1,10 @@
-function getStringLength(str) {
-  let length = 0;
-  while (str[length] !== undefined) {
-    length++;
-  }
-  return length;
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  const formattedStr = str.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
+  
+  // Compare the formatted string with its reverse
+  return formattedStr === formattedStr.split('').reverse().join('');
 }
-
-// Example usage:
-const myString = "Hello, World!";
-const length = getStringLength(myString);
-console.log(length); // Outputs: 13
+console.log(isPalindrome("level"));       // true
+console.log(isPalindrome("A car, a man")); // true
+console.log(isPalindrome("hello"));       // false
