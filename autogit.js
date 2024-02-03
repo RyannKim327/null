@@ -1,22 +1,24 @@
-function binarySearchRecursive(arr, target, start, end) {
-    if (start <= end) {
-        const mid = Math.floor((start + end) / 2);
+function getLinkedListLength(head) {
+  let length = 0;
+  let currentNode = head;
 
-        if (arr[mid] === target) {
-            return mid;
-        } else if (target < arr[mid]) {
-            return binarySearchRecursive(arr, target, start, mid - 1);
-        } else {
-            return binarySearchRecursive(arr, target, mid + 1, end);
-        }
-    }
+  while (currentNode !== null) {
+    length++;
+    currentNode = currentNode.next;
+  }
 
-    return -1;
+  return length;
 }
+const myList = {
+  value: 1,
+  next: {
+    value: 2,
+    next: {
+      value: 3,
+      next: null
+    }
+  }
+};
 
-// Usage:
-const array = [1, 2, 3, 4, 5, 6, 7];
-const targetElement = 4;
-
-const index = binarySearchRecursive(array, targetElement, 0, array.length - 1);
-console.log(index); // Output: 3 (index of target element in the array)
+const length = getLinkedListLength(myList);
+console.log(length); // Output: 3
