@@ -1,48 +1,18 @@
-function constructFailureTable(pattern) {
-  const table = [0];
-  let prefixIndex = 0;
-  let suffixIndex = 1;
-
-  while (suffixIndex < pattern.length) {
-    if (pattern[prefixIndex] === pattern[suffixIndex]) {
-      table[suffixIndex] = prefixIndex + 1;
-      prefixIndex++;
-      suffixIndex++;
-    } else if (prefixIndex === 0) {
-      table[suffixIndex] = 0;
-      suffixIndex++;
-    } else {
-      prefixIndex = table[prefixIndex - 1];
-    }
+function factorialRecursive(num) {
+  if (num === 0) {
+    return 1;
+  } else {
+    return num * factorialRecursive(num - 1);
   }
-
-  return table;
 }
-function search(text, pattern) {
-  const failureTable = constructFailureTable(pattern);
-  let textIndex = 0;
-  let patternIndex = 0;
 
-  while (textIndex < text.length) {
-    if (pattern[patternIndex] === text[textIndex]) {
-      if (patternIndex === pattern.length - 1) {
-        // Match found!
-        return textIndex - pattern.length + 1;
-      }
-      patternIndex++;
-      textIndex++;
-    } else if (patternIndex > 0) {
-      patternIndex = failureTable[patternIndex - 1];
-    } else {
-      textIndex++;
-    }
+console.log(factorialRecursive(5)); // Output: 120
+function factorialLoop(num) {
+  let result = 1;
+  for (let i = 2; i <= num; i++) {
+    result *= i;
   }
-
-  // No match found
-  return -1;
+  return result;
 }
-const text = "ABCABBABCABCABD";
-const pattern = "ABCABD";
-const result = search(text, pattern);
 
-console.log(result); // Output: 10 (index of the first occurrence of the pattern in the text)
+console.log(factorialLoop(5)); // Output: 120
