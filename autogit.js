@@ -1,20 +1,15 @@
-function longestCommonPrefix(strings) {
-  if (strings.length === 0) {
-    return "";
-  }
-  
-  let prefix = "";
-  let index = 0;
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  const alphanumericStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-  // Iterate until all characters at the current index match or end of any string is reached
-  while (strings.every(str => index < str.length && str[index] === strings[0][index])) {
-    prefix += strings[0][index];
-    index++;
-  }
-  
-  return prefix;
+  // Reverse the string
+  const reversedStr = alphanumericStr.split('').reverse().join('');
+
+  // Compare the original and reversed strings
+  return alphanumericStr === reversedStr;
 }
 
-// Example usage:
-const strings = ["apple", "app", "application", "apartment"];
-console.log(longestCommonPrefix(strings)); // Output: "ap"
+// Example usage
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race car")); // true
+console.log(isPalindrome("hello world")); // false
