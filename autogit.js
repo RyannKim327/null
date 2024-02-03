@@ -1,72 +1,37 @@
-// Define the singly linked list node class
-class ListNode {
-  constructor(val, next = null) {
+class TreeNode {
+  constructor(val) {
     this.val = val;
-    this.next = next;
+    this.left = null;
+    this.right = null;
   }
 }
 
-// Function to reverse the linked list in-place
-function reverseList(head) {
-  let prev = null;
-  let curr = head;
+function diameterOfBinaryTree(root) {
+  let diameter = 0;
 
-  while (curr !== null) {
-    let next = curr.next;
-    curr.next = prev;
-    prev = curr;
-    curr = next;
+  function depth(node) {
+    if (node === null) return 0;
+
+    const leftDepth = depth(node.left);
+    const rightDepth = depth(node.right);
+
+    // Update the diameter if the sum of left and right depths is greater
+    diameter = Math.max(diameter, leftDepth + rightDepth);
+
+    // Return the depth of the current node
+    return Math.max(leftDepth, rightDepth) + 1;
   }
 
-  return prev;
+  depth(root);
+
+  return diameter;
 }
 
-// Function to check if a linked list is a palindrome
-function isPalindrome(head) {
-  if (head === null || head.next === null) {
-    return true;
-  }
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-  let slow = head;
-  let fast = head;
-
-  // Find the middle of the linked list
-  while (fast !== null && fast.next !== null) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
-
-  // Reverse the second half of the linked list
-  let reversedHalf = reverseList(slow.next);
-
-  // Compare the first half with the reversed second half
-  let current = head;
-  while (reversedHalf !== null) {
-    if (current.val !== reversedHalf.val) {
-      // Restore the linked list by reversing the second half again
-      reverseList(reversedHalf);
-      return false;
-    }
-    current = current.next;
-    reversedHalf = reversedHalf.next;
-  }
-
-  // Restore the linked list by reversing the second half again
-  reverseList(slow.next);
-
-  return true;
-}
-
-// Example usage
-const list1 = new ListNode(1);
-list1.next = new ListNode(2);
-list1.next.next = new ListNode(3);
-list1.next.next.next = new ListNode(2);
-list1.next.next.next.next = new ListNode(1);
-console.log(isPalindrome(list1)); // Output: true
-
-const list2 = new ListNode(1);
-list2.next = new ListNode(2);
-list2.next.next = new ListNode(3);
-list2.next.next.next = new ListNode(4);
-console.log(isPalindrome(list2)); // Output: false
+console.log(diameterOfBinaryTree(root)); // Output: 3
