@@ -1,16 +1,20 @@
-function isSortedAscending(arr) {
-  const length = arr.length;
-  for (let i = 0; i < length - 1; i++) {
-    if (arr[i] > arr[i + 1]) {
-      return false;
+function findSecondLargest(array) {
+  let largest = -Infinity;
+  let secondLargest = -Infinity;
+
+  for (let i = 0; i < array.length; i++) {
+    if (array[i] > largest) {
+      secondLargest = largest;
+      largest = array[i];
+    } else if (array[i] > secondLargest && array[i] < largest) {
+      secondLargest = array[i];
     }
   }
-  return true;
+
+  return secondLargest;
 }
 
 // Example usage:
-const array1 = [1, 2, 3, 4, 5];
-console.log(isSortedAscending(array1)); // Output: true
-
-const array2 = [5, 2, 3, 1, 4];
-console.log(isSortedAscending(array2)); // Output: false
+const arr = [1, 5, 2, 9, 6];
+const secondLargest = findSecondLargest(arr);
+console.log(secondLargest); // Output: 6
