@@ -1,23 +1,17 @@
-function findFirstNonRepeatingCharacter(str) {
-  const frequencies = {};
+function getRandomNumber(min, max) {
+  // Generate a random decimal between 0 and 1
+  const randomDecimal = Math.random();
 
-  // Update character frequencies
-  for (let char of str) {
-    frequencies[char] = (frequencies[char] || 0) + 1;
-  }
+  // Scale the decimal to the desired range
+  const randomNumber = randomDecimal * (max - min + 1) + min;
 
-  // Find first non-repeating character
-  for (let char of str) {
-    if (frequencies[char] === 1) {
-      return char;
-    }
-  }
-
-  // No non-repeating characters found
-  return null;
+  // Convert the decimal to an integer
+  return Math.floor(randomNumber);
 }
 
 // Example usage
-const str = "hello";
-const firstNonRepeatingChar = findFirstNonRepeatingCharacter(str);
-console.log(firstNonRepeatingChar);  // Output: "h"
+const minRange = 1;
+const maxRange = 10;
+const randomNum = getRandomNumber(minRange, maxRange);
+
+console.log(randomNum);
