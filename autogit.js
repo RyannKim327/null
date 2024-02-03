@@ -1,88 +1,83 @@
-class BinaryHeap {
+class SkipNode {
+  constructor(value, level) {
+    this.value = value;
+    this.next = new Array(level + 1);
+  }
+}
+class SkipList {
   constructor() {
-    this.heap = [];
+    this.head = new SkipNode(-Infinity, 0);
+    this.maxLevel = 0;
+    this.size = 0;
   }
-
-  // other methods will be implemented here
 }
-class BinaryHeap {
+class SkipList {
   // ...
 
-  insert(element) {
-    this.heap.push(element);
-    this.bubbleUp(this.heap.length - 1);
-  }
-  
-  bubbleUp(index) {
-    const element = this.heap[index];
-    while (index > 0) {
-      const parentIndex = Math.floor((index - 1) / 2);
-      const parent = this.heap[parentIndex];
-      if (element >= parent) break;
-      this.heap[parentIndex] = element;
-      this.heap[index] = parent;
-      index = parentIndex;
-    }
-  }
+  search(value) {
+    let currentNode = this.head;
 
-  // ...
-}
-class BinaryHeap {
-  // ...
-
-  extractMin() {
-    if (this.heap.length === 0) return null;
-    if (this.heap.length === 1) return this.heap.pop();
-  
-    const min = this.heap[0];
-    this.heap[0] = this.heap.pop();
-    this.sinkDown(0);
-  
-    return min;
-  }
-  
-  sinkDown(index) {
-    const length = this.heap.length;
-    const element = this.heap[index];
-  
-    while (true) {
-      const leftChildIndex = 2 * index + 1;
-      const rightChildIndex = 2 * index + 2;
-      let swapIndex = null;
-  
-      if (leftChildIndex < length) {
-        const leftChild = this.heap[leftChildIndex];
-        if (leftChild < element) {
-          swapIndex = leftChildIndex;
-        }
+    for (let i = this.maxLevel; i >= 0; i--) {
+      while (
+        currentNode.next[i] !== undefined &&
+        currentNode.next[i].value < value
+      ) {
+        currentNode = currentNode.next[i];
       }
-  
-      if (rightChildIndex < length) {
-        const rightChild = this.heap[rightChildIndex];
-        if (
-          (swapIndex === null && rightChild < element) ||
-          (swapIndex !== null && rightChild < this.heap[swapIndex])
-        ) {
-          swapIndex = rightChildIndex;
-        }
-      }
-  
-      if (swapIndex === null) break;
-  
-      this.heap[index] = this.heap[swapIndex];
-      this.heap[swapIndex] = element;
-      index = swapIndex;
     }
+
+    currentNode = currentNode.next[0];
+
+    if (currentNode !== undefined && currentNode.value === value) {
+      return currentNode;
+    }
+
+    return null;
   }
 
-  // ...
-}
-const pq = new BinaryHeap();
-pq.insert(5);
-pq.insert(1);
-pq.insert(10);
+  insert(value) {
+    const update = new Array(this.maxLevel + 1);
+    let currentNode = this.head;
 
-console.log(pq.extractMin()); // Output: 1
-console.log(pq.extractMin()); // Output: 5
-console.log(pq.extractMin()); // Output: 10
-console.log(pq.extractMin()); // Output: null
+    for (let i = this.maxLevel; i >= 0; i--) {
+      while (
+        currentNode.next[i] !== undefined &&
+        currentNode.next[i].value < value
+      ) {
+        currentNode = currentNode.next[i];
+      }
+      update[i] = currentNode;
+    }
+
+    currentNode = currentNode.next[0];
+
+    if (currentNode !== undefined && currentNode.value === value) {
+      return; // value already exists
+    }
+
+    const level = randomLevel(); // determine the level for the new node
+
+    if (level > this.maxLevel) {
+      for (let i = this.maxLevel + 1; i <= level; i++) {
+        update[i] = this.head;
+      }
+      this.maxLevel = level;
+    }
+
+    const newNode = new SkipNode(value, level);
+
+    for (let i = 0; i <= level; i++) {
+      newNode.next[i] = update[i].next[i];
+      update[i].next[i] = newNode;
+    }
+
+    this.size++;
+  }
+}
+function randomLevel() {
+  let level = 0;
+  while (Math.random() < 0.5 && level < maxLevel) {
+    level++;
+  }
+  return level;
+}
