@@ -1,44 +1,73 @@
-function boyerMooreHorspool(text, pattern) {
-  const patternLength = pattern.length;
-  const table = buildTable(pattern);
+function interpolationSearch(array, target, compareFn) {
+  // Code implementation goes here
+}
+function interpolationSearch(array, target, compareFn) {
+  let start = 0;
+  let end = array.length - 1;
+  // Code implementation goes here
+}
+function interpolationSearch(array, target, compareFn) {
+  let start = 0;
+  let end = array.length - 1;
 
-  let i = patternLength - 1;
-  while (i < text.length) {
-    let j = patternLength - 1;
+  while (start <= end) {
+    // Code implementation goes here
+  }
+}
+function interpolationSearch(array, target, compareFn) {
+  let start = 0;
+  let end = array.length - 1;
 
-    while (j >= 0 && text[i] === pattern[j]) {
-      j--;
-      i--;
-    }
+  while (start <= end) {
+    const position = start + ((target - array[start]) / (array[end] - array[start])) * (end - start);
+    // Code implementation goes here
+  }
+}
+function interpolationSearch(array, target, compareFn) {
+  let start = 0;
+  let end = array.length - 1;
 
-    if (j === -1) {
-      return i + 1;
-    } else {
-      const mismatchedChar = text[i];
-      const shift = table[mismatchedChar] || patternLength;
-      i += shift;
-    }
+  while (start <= end) {
+    const position = start + ((target - array[start]) / (array[end] - array[start])) * (end - start);
+
+    if (position < start || position > end)
+      break;
+
+    if (compareFn && compareFn(array[position], target) === 0)
+      return position;
+    else if (array[position] === target)
+      return position;
+    else if (compareFn && compareFn(array[position], target) < 0)
+      start = position + 1;
+    else
+      end = position - 1;
   }
 
   return -1;
 }
+function interpolationSearch(array, target, compareFn) {
+  let start = 0;
+  let end = array.length - 1;
 
-function buildTable(pattern) {
-  const table = {};
-  const patternLength = pattern.length - 1;
+  while (start <= end) {
+    const position = start + ((target - array[start]) / (array[end] - array[start])) * (end - start);
 
-  for (let i = 0; i < patternLength; i++) {
-    table[pattern[i]] = patternLength - i;
+    if (position < start || position > end)
+      break;
+
+    if (compareFn && compareFn(array[position], target) === 0)
+      return position;
+    else if (array[position] === target)
+      return position;
+    else if (compareFn && compareFn(array[position], target) < 0)
+      start = position + 1;
+    else
+      end = position - 1;
   }
 
-  return table;
+  return -1;
 }
-const text = "Lorem ipsum dolor sit amet";
-const pattern = "dolor";
-
-const position = boyerMooreHorspool(text, pattern);
-if (position !== -1) {
-  console.log(`Pattern found at position ${position}`);
-} else {
-  console.log("Pattern not found");
-}
+const array = [1, 2, 4, 6, 8, 10];
+const target = 6;
+const index = interpolationSearch(array, target);
+console.log(index);  // Output: 3
