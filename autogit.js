@@ -1,38 +1,20 @@
-function findLongestIncreasingSubsequence(arr) {
-  const length = arr.length;
-  const dp = new Array(length).fill(1);
-
-  for (let i = 1; i < length; i++) {
-    for (let j = 0; j < i; j++) {
-      if (arr[i] > arr[j] && dp[j] + 1 > dp[i]) {
-        dp[i] = dp[j] + 1;
-      }
-    }
+function longestCommonPrefix(strings) {
+  if (strings.length === 0) {
+    return "";
   }
+  
+  let prefix = "";
+  let index = 0;
 
-  // Find the maximum subsequence length
-  let maxLength = 0;
-  for (let i = 0; i < length; i++) {
-    if (dp[i] > maxLength) {
-      maxLength = dp[i];
-    }
+  // Iterate until all characters at the current index match or end of any string is reached
+  while (strings.every(str => index < str.length && str[index] === strings[0][index])) {
+    prefix += strings[0][index];
+    index++;
   }
-
-  // Find the longest increasing subsequence
-  const result = [];
-  let lastIndex = -1;
-  for (let i = length - 1; i >= 0; i--) {
-    if (dp[i] === maxLength && (lastIndex === -1 || arr[i] < arr[lastIndex])) {
-      result.unshift(arr[i]);
-      maxLength--;
-      lastIndex = i;
-    }
-  }
-
-  return result;
+  
+  return prefix;
 }
 
-// Usage
-const inputArray = [3, 10, 2, 1, 20];
-const longestIncreasingSubsequence = findLongestIncreasingSubsequence(inputArray);
-console.log(longestIncreasingSubsequence); // [3, 10, 20]
+// Example usage:
+const strings = ["apple", "app", "application", "apartment"];
+console.log(longestCommonPrefix(strings)); // Output: "ap"
