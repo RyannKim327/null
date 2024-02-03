@@ -1,23 +1,12 @@
-function factorialLoop(num) {
-  if (num === 0 || num === 1) {
-    return 1;
-  }
+const numbers = [9, 5, 1, 3, 7, 2];
 
-  let result = 1;
-  for (let i = 2; i <= num; i++) {
-    result *= i;
-  }
+// Using the sort() method
+numbers.sort((a, b) => a - b);
 
-  return result;
-}
+console.log(numbers); // Output: [1, 2, 3, 5, 7, 9]
+const numbers = [9, 5, 1, 3, 7, 2];
 
-console.log(factorialLoop(5)); // Output: 120
-function factorialRecursion(num) {
-  if (num === 0 || num === 1) {
-    return 1;
-  }
+// Using the spread operator
+const sortedNumbers = [...numbers].sort((a, b) => a - b);
 
-  return num * factorialRecursion(num - 1);
-}
-
-console.log(factorialRecursion(5)); // Output: 120
+console.log(sortedNumbers); // Output: [1, 2, 3, 5, 7, 9]
