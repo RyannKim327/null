@@ -1,9 +1,17 @@
-let array = [1, 2, 3, 4, 5];
-array.reverse();
+function reverseWords(str) {
+  // Step 1: Split the string into an array of words
+  const wordsArray = str.split(' ');
 
-console.log(array); // [5, 4, 3, 2, 1]
-let array = [1, 2, 3, 4, 5];
-let reversedArray = array.slice().reverse();
+  // Step 2: Reverse the order of words in the array
+  const reversedArray = wordsArray.reverse();
 
-console.log(reversedArray); // [5, 4, 3, 2, 1]
-console.log(array); // [1, 2, 3, 4, 5]
+  // Step 3: Join the array elements back into a string
+  const reversedString = reversedArray.join(' ');
+
+  return reversedString;
+}
+
+// Example usage
+const originalString = "Hello, world! How are you?";
+const reversedString = reverseWords(originalString);
+console.log(reversedString);
