@@ -1,33 +1,22 @@
-// Define the binary tree node structure
-class Node {
-  constructor(value, left = null, right = null) {
-    this.value = value;
-    this.left = left;
-    this.right = right;
-  }
+function binarySearchRecursive(arr, target, start, end) {
+    if (start <= end) {
+        const mid = Math.floor((start + end) / 2);
+
+        if (arr[mid] === target) {
+            return mid;
+        } else if (target < arr[mid]) {
+            return binarySearchRecursive(arr, target, start, mid - 1);
+        } else {
+            return binarySearchRecursive(arr, target, mid + 1, end);
+        }
+    }
+
+    return -1;
 }
 
-// Function to calculate the sum of all nodes in a binary tree
-function sumOfNodes(root) {
-  if (root === null) {
-    return 0; // Base case: empty tree has sum = 0
-  }
+// Usage:
+const array = [1, 2, 3, 4, 5, 6, 7];
+const targetElement = 4;
 
-  const leftSum = sumOfNodes(root.left); // Sum of nodes in the left subtree
-  const rightSum = sumOfNodes(root.right); // Sum of nodes in the right subtree
-
-  return root.value + leftSum + rightSum; // Sum of nodes = current node value + sum of left subtree + sum of right subtree
-}
-
-// Create a sample binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
-
-// Calculate the sum of nodes
-const sum = sumOfNodes(root);
-console.log("Sum of nodes:", sum);
+const index = binarySearchRecursive(array, targetElement, 0, array.length - 1);
+console.log(index); // Output: 3 (index of target element in the array)
