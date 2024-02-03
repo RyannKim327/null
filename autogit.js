@@ -1,12 +1,31 @@
-// Make a GET request to an API endpoint
-fetch('https://api.example.com/data')
-  .then(response => response.json())
-  .then(data => {
-    // Process the received data
-    console.log(data);
-    // Your code to handle the data goes here
-  })
-  .catch(error => {
-    // Handle any errors that occurred during the request
-    console.error('Error:', error);
-  });
+function isPrime(num) {
+  if (num < 2) {
+    return false;
+  }
+  for (let i = 2; i <= Math.sqrt(num); i++) {
+    if (num % i === 0) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function largestPrimeFactor(number) {
+  let n = number;
+  let factor = 2;
+
+  while (factor <= n) {
+    if (n % factor === 0) {
+      n /= factor;
+    } else {
+      factor++;
+    }
+  }
+
+  return factor;
+}
+
+// Example usage
+const number = 150;
+const largestFactor = largestPrimeFactor(number);
+console.log(`The largest prime factor of ${number} is: ${largestFactor}`);
