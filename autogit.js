@@ -1,11 +1,20 @@
-// Make an HTTP GET request using fetch
-fetch('https://api.example.com/data')
-  .then(response => response.json())
-  .then(data => {
-    // Process the received data
-    console.log(data);
-  })
-  .catch(error => {
-    // Handle any errors
-    console.error('Error:', error);
-  });
+function findSecondLargest(arr) {
+  let largest = -Infinity;
+  let secondLargest = -Infinity;
+
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] > largest) {
+      secondLargest = largest;
+      largest = arr[i];
+    } else if (arr[i] > secondLargest && arr[i] < largest) {
+      secondLargest = arr[i];
+    }
+  }
+
+  return secondLargest;
+}
+
+// Example usage:
+const array = [5, 10, 1, 8, 3];
+const secondLargest = findSecondLargest(array);
+console.log(secondLargest); // Output: 8
