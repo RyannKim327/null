@@ -1,35 +1,88 @@
-function longestCommonSubstring(str1, str2) {
-  // Create a matrix to store the lengths of common substrings
-  const matrix = Array(str1.length + 1)
-    .fill(0)
-    .map(() => Array(str2.length + 1).fill(0));
+class BinaryHeap {
+  constructor() {
+    this.heap = [];
+  }
 
-  let maxLength = 0; // Length of the longest common substring
-  let endIndex = 0; // Index where the longest common substring ends in str1
+  // other methods will be implemented here
+}
+class BinaryHeap {
+  // ...
 
-  for (let i = 1; i <= str1.length; i++) {
-    for (let j = 1; j <= str2.length; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        matrix[i][j] = matrix[i - 1][j - 1] + 1;
-        if (matrix[i][j] > maxLength) {
-          maxLength = matrix[i][j];
-          endIndex = i - 1;
-        }
-      } else {
-        matrix[i][j] = 0;
-      }
+  insert(element) {
+    this.heap.push(element);
+    this.bubbleUp(this.heap.length - 1);
+  }
+  
+  bubbleUp(index) {
+    const element = this.heap[index];
+    while (index > 0) {
+      const parentIndex = Math.floor((index - 1) / 2);
+      const parent = this.heap[parentIndex];
+      if (element >= parent) break;
+      this.heap[parentIndex] = element;
+      this.heap[index] = parent;
+      index = parentIndex;
     }
   }
 
-  // Extract the longest common substring from str1
-  const longestCommon = str1.substr(endIndex - maxLength + 1, maxLength);
-
-  return longestCommon;
+  // ...
 }
+class BinaryHeap {
+  // ...
 
-// Example usage
-const string1 = "abcdefg";
-const string2 = "xyzabctuv";
+  extractMin() {
+    if (this.heap.length === 0) return null;
+    if (this.heap.length === 1) return this.heap.pop();
+  
+    const min = this.heap[0];
+    this.heap[0] = this.heap.pop();
+    this.sinkDown(0);
+  
+    return min;
+  }
+  
+  sinkDown(index) {
+    const length = this.heap.length;
+    const element = this.heap[index];
+  
+    while (true) {
+      const leftChildIndex = 2 * index + 1;
+      const rightChildIndex = 2 * index + 2;
+      let swapIndex = null;
+  
+      if (leftChildIndex < length) {
+        const leftChild = this.heap[leftChildIndex];
+        if (leftChild < element) {
+          swapIndex = leftChildIndex;
+        }
+      }
+  
+      if (rightChildIndex < length) {
+        const rightChild = this.heap[rightChildIndex];
+        if (
+          (swapIndex === null && rightChild < element) ||
+          (swapIndex !== null && rightChild < this.heap[swapIndex])
+        ) {
+          swapIndex = rightChildIndex;
+        }
+      }
+  
+      if (swapIndex === null) break;
+  
+      this.heap[index] = this.heap[swapIndex];
+      this.heap[swapIndex] = element;
+      index = swapIndex;
+    }
+  }
 
-const longestCommon = longestCommonSubstring(string1, string2);
-console.log(longestCommon); // Output: "abc"
+  // ...
+}
+const pq = new BinaryHeap();
+pq.insert(5);
+pq.insert(1);
+pq.insert(10);
+
+console.log(pq.extractMin()); // Output: 1
+console.log(pq.extractMin()); // Output: 5
+console.log(pq.extractMin()); // Output: 10
+console.log(pq.extractMin()); // Output: null
