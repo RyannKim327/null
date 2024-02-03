@@ -1,24 +1,17 @@
-let str = "Hello, World!";
-let substring = "World";
+function isAnagram(str1, str2) {
+  // Remove any non-alphanumeric characters and convert to lowercase
+  str1 = str1.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+  str2 = str2.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
 
-if (str.includes(substring)) {
-  console.log("Substring found!");
-} else {
-  console.log("Substring not found!");
-}
-let str = "Hello, World!";
-let substring = "World";
+  // Sort the characters and compare the sorted strings
+  const sortedStr1 = str1.split('').sort().join('');
+  const sortedStr2 = str2.split('').sort().join('');
 
-if (str.indexOf(substring) !== -1) {
-  console.log("Substring found!");
-} else {
-  console.log("Substring not found!");
+  return sortedStr1 === sortedStr2;
 }
-let str = "Hello, World!";
-let substring = /world/i; // 'i' makes it case insensitive
 
-if (str.match(substring)) {
-  console.log("Substring found!");
-} else {
-  console.log("Substring not found!");
-}
+// Test the function
+const string1 = "listen";
+const string2 = "silent";
+
+console.log(isAnagram(string1, string2));  // Output: true
