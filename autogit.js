@@ -1,17 +1,9 @@
-function getRandomNumber(min, max) {
-  // Generate a random decimal between 0 and 1
-  const randomDecimal = Math.random();
+let array = [1, 2, 3, 4, 5];
+array.reverse();
 
-  // Scale the decimal to the desired range
-  const randomNumber = randomDecimal * (max - min + 1) + min;
+console.log(array); // [5, 4, 3, 2, 1]
+let array = [1, 2, 3, 4, 5];
+let reversedArray = array.slice().reverse();
 
-  // Convert the decimal to an integer
-  return Math.floor(randomNumber);
-}
-
-// Example usage
-const minRange = 1;
-const maxRange = 10;
-const randomNum = getRandomNumber(minRange, maxRange);
-
-console.log(randomNum);
+console.log(reversedArray); // [5, 4, 3, 2, 1]
+console.log(array); // [1, 2, 3, 4, 5]
