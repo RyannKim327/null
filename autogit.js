@@ -1,5 +1,23 @@
-// Prompt the user for input
-var userInput = prompt("Enter a value:");
+function findFirstNonRepeatingCharacter(str) {
+  const frequencies = {};
 
-// Alert the entered value
-alert("You entered: " + userInput);
+  // Update character frequencies
+  for (let char of str) {
+    frequencies[char] = (frequencies[char] || 0) + 1;
+  }
+
+  // Find first non-repeating character
+  for (let char of str) {
+    if (frequencies[char] === 1) {
+      return char;
+    }
+  }
+
+  // No non-repeating characters found
+  return null;
+}
+
+// Example usage
+const str = "hello";
+const firstNonRepeatingChar = findFirstNonRepeatingCharacter(str);
+console.log(firstNonRepeatingChar);  // Output: "h"
