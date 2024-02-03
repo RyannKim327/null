@@ -1,27 +1,16 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-const node1 = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
+const cron = require('node-cron');
 
-node1.next = node2;
-node2.next = node3;
-function reverseLinkedList(head) {
-  let previous = null;
-  let current = head;
-  let next = null;
+// Define a cron job that runs every minute
+const task = cron.schedule('* * * * *', () => {
+  console.log('Cron job running...');
+}, {
+  scheduled: false, // Don't start the cron job immediately
+});
 
-  while (current != null) {
-    next = current.next;  // Save the next node
-    current.next = previous;  // Reverse the link
-    previous = current;
-    current = next;
-  }
+// Start the cron job
+task.start();
 
-  return previous;  // New head of the reversed list
-}
-const reversedHead = reverseLinkedList(node1);
+// Stop the cron job after 5 minutes
+setTimeout(() => {
+  task.stop();
+}, 5 * 60 * 1000);
