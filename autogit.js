@@ -1,12 +1,35 @@
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
+function longestCommonSubstring(str1, str2) {
+  // Create a matrix to store the lengths of common substrings
+  const matrix = Array(str1.length + 1)
+    .fill(0)
+    .map(() => Array(str2.length + 1).fill(0));
 
-// Find the index of the element to remove
-let index = array.indexOf(elementToRemove);
+  let maxLength = 0; // Length of the longest common substring
+  let endIndex = 0; // Index where the longest common substring ends in str1
 
-// If the element exists in the array, remove it
-if (index > -1) {
-  array.splice(index, 1);
+  for (let i = 1; i <= str1.length; i++) {
+    for (let j = 1; j <= str2.length; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        matrix[i][j] = matrix[i - 1][j - 1] + 1;
+        if (matrix[i][j] > maxLength) {
+          maxLength = matrix[i][j];
+          endIndex = i - 1;
+        }
+      } else {
+        matrix[i][j] = 0;
+      }
+    }
+  }
+
+  // Extract the longest common substring from str1
+  const longestCommon = str1.substr(endIndex - maxLength + 1, maxLength);
+
+  return longestCommon;
 }
 
-console.log(array); // Output: [1, 2, 4, 5]
+// Example usage
+const string1 = "abcdefg";
+const string2 = "xyzabctuv";
+
+const longestCommon = longestCommonSubstring(string1, string2);
+console.log(longestCommon); // Output: "abc"
