@@ -1,85 +1,36 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+function heapify(arr, n, i) {
+  let largest = i;
+  let left = 2 * i + 1;
+  let right = 2 * i + 2;
+
+  if (left < n && arr[left] > arr[largest])
+    largest = left;
+
+  if (right < n && arr[right] > arr[largest])
+    largest = right;
+
+  if (largest !== i) {
+    [arr[i], arr[largest]] = [arr[largest], arr[i]];
+    heapify(arr, n, largest);
   }
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-    this.tail = null;
+function heapSort(arr) {
+  const n = arr.length;
+
+  // Build max heap
+  for (let i = Math.floor(n / 2) - 1; i >= 0; i--)
+    heapify(arr, n, i);
+
+  // Heap sort
+  for (let i = n - 1; i >= 0; i--) {
+    [arr[0], arr[i]] = [arr[i], arr[0]];
+    heapify(arr, i, 0);
   }
 
-  append(value) {
-    const newNode = new Node(value);
-
-    if (!this.head) {
-      this.head = newNode;
-      this.tail = newNode;
-      return;
-    }
-
-    this.tail.next = newNode;
-    this.tail = newNode;
-  }
-
-  prepend(value) {
-    const newNode = new Node(value);
-
-    if (!this.head) {
-      this.head = newNode;
-      this.tail = newNode;
-      return;
-    }
-
-    newNode.next = this.head;
-    this.head = newNode;
-  }
-
-  delete(value) {
-    if (!this.head) {
-      return;
-    }
-
-    if (this.head.value === value) {
-      this.head = this.head.next;
-      if (!this.head) {
-        this.tail = null;
-      }
-      return;
-    }
-
-    let currentNode = this.head;
-    while (currentNode.next) {
-      if (currentNode.next.value === value) {
-        currentNode.next = currentNode.next.next;
-        if (!currentNode.next) {
-          this.tail = currentNode;
-        }
-        return;
-      }
-      currentNode = currentNode.next;
-    }
-  }
-
-  print() {
-    const values = [];
-    let currentNode = this.head;
-
-    while (currentNode) {
-      values.push(currentNode.value);
-      currentNode = currentNode.next;
-    }
-
-    console.log(values.join(' -> '));
-  }
+  return arr;
 }
-const linkedList = new LinkedList();
-linkedList.append(5);
-linkedList.append(10);
-linkedList.append(15);
-linkedList.prepend(2);
-linkedList.print(); // Output: 2 -> 5 -> 10 -> 15
-linkedList.delete(10);
-linkedList.print(); // Output: 2 -> 5 -> 15
+
+// Example usage:
+const arr = [12, 11, 13, 5, 6, 7];
+console.log(heapSort(arr)); // Output: [5, 6, 7, 11, 12, 13]
