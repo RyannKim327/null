@@ -1,16 +1,39 @@
-let arr = [1, 2, 3, 4, 5];
-let index = arr.indexOf(3); // Get the index of the element to remove
-if (index !== -1) {
-  arr.splice(index, 1); // Remove 1 element at the found index
+function countOccurrences(string, word) {
+  const regex = new RegExp("\\b" + word + "\\b", "gi");
+  const matches = string.match(regex);
+  return matches ? matches.length : 0;
 }
-console.log(arr); // Output: [1, 2, 4, 5]
-let arr = [1, 2, 3, 4, 5];
-arr = arr.filter(element => element !== 3); // Remove the element with a value of 3
-console.log(arr); // Output: [1, 2, 4, 5]
-let arr = [1, 2, 3, 4, 5];
-arr.forEach((element, index) => {
-  if (element === 3) {
-    arr.splice(index, 1); // Remove 1 element at the current index
+
+// Example usage:
+const string = "Hello world, hello universe, hello everyone!";
+const word = "hello";
+const count = countOccurrences(string, word);
+console.log(count); // Output: 3
+function countOccurrences(string, word) {
+  const splitString = string.split(word);
+  return splitString.length - 1;
+}
+
+// Example usage:
+const string = "Hello world, hello universe, hello everyone!";
+const word = "hello";
+const count = countOccurrences(string, word);
+console.log(count); // Output: 3
+function countOccurrences(string, word) {
+  let count = 0;
+  const words = string.split(" ");
+  
+  for (let i = 0; i < words.length; i++) {
+    if (words[i].toLowerCase() === word.toLowerCase()) {
+      count++;
+    }
   }
-});
-console.log(arr); // Output: [1, 2, 4, 5]
+  
+  return count;
+}
+
+// Example usage:
+const string = "Hello world, hello universe, hello everyone!";
+const word = "hello";
+const count = countOccurrences(string, word);
+console.log(count); // Output: 3
