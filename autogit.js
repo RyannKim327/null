@@ -1,25 +1,49 @@
-for (let i = 1; i < length; i++) {
-  // ...
-}
-while (j >= 0 && arr[j] > current) {
-  arr[j + 1] = arr[j];
-  j--;
-}
-arr[j + 1] = current;
-function insertionSort(arr) {
-  const length = arr.length;
+function KMPSearch(string, pattern) {
+  const n = string.length;
+  const m = pattern.length;
 
-  for (let i = 1; i < length; i++) {
-    const current = arr[i];
-    let j = i - 1;
+  const lps = new Array(m).fill(0);
+  let j = 0;
 
-    while (j >= 0 && arr[j] > current) {
-      arr[j + 1] = arr[j];
-      j--;
+  computeLPSArray(pattern, m, lps);
+
+  let i = 0;
+  while (i < n) {
+    if (string[i] === pattern[j]) {
+      i++;
+      j++;
     }
 
-    arr[j + 1] = current;
+    if (j === m) {
+      console.log('Pattern found at index', i - j);
+      j = lps[j - 1];
+    } else if (i < n && string[i] !== pattern[j]) {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
+      }
+    }
   }
+}
 
-  return arr;
+function computeLPSArray(pattern, m, lps) {
+  let len = 0;
+  let i = 1;
+  lps[0] = 0;
+
+  while (i < m) {
+    if (pattern[i] === pattern[len]) {
+      len++;
+      lps[i] = len;
+      i++;
+    } else {
+      if (len !== 0) {
+        len = lps[len - 1];
+      } else {
+        lps[i] = 0;
+        i++;
+      }
+    }
+  }
 }
