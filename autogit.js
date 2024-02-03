@@ -1,33 +1,29 @@
-// Binary Tree Node
-function Node(value, left = null, right = null) {
-  this.value = value;
-  this.left = left;
-  this.right = right;
-}
+function findFirstNonRepeatingChar(str) {
+  // Create an object to store character frequency
+  const charCount = {};
 
-// Function to find sum of all nodes in a binary tree
-function findSum(root) {
-  // Base case: if root is null, return 0
-  if (root === null) {
-    return 0;
+  // Iterate over each character in the string
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    
+    // Update the frequency count for the character
+    charCount[char] = (charCount[char] || 0) + 1;
   }
 
-  // Recursively calculate the sum of nodes in left and right subtrees
-  const leftSum = findSum(root.left);
-  const rightSum = findSum(root.right);
+  // Find the first character with a frequency count of 1
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    
+    if (charCount[char] === 1) {
+      return char;
+    }
+  }
 
-  // Add the current node value to the sum of left and right subtrees
-  return root.value + leftSum + rightSum;
+  // If there are no non-repeating characters, return null or an empty string
+  return null;
 }
 
-// Test the function
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
-
-const sum = findSum(root);
-console.log("Sum of all nodes:", sum); // Output: 28
+// Example usage:
+const str = "aabbccdeeff";
+const result = findFirstNonRepeatingChar(str);
+console.log(result); // Output: "d"
