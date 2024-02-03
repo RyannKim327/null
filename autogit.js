@@ -1,19 +1,20 @@
-function longestCommonPrefix(strings) {
-  if (strings.length === 0) {
-    return '';
-  }
+function isPalindrome(str) {
+  let left = 0;                      // left pointer
+  let right = str.length - 1;        // right pointer
 
-  let prefix = strings[0];
-
-  for (let i = 1; i < strings.length; i++) {
-    while (!strings[i].startsWith(prefix)) {
-      prefix = prefix.slice(0, prefix.length - 1);
+  while (left < right) {
+    if (str[left] !== str[right]) {  // if characters don't match
+      return false;                  // not a palindrome
     }
+    left++;                          // move left pointer forward
+    right--;                         // move right pointer backward
   }
 
-  return prefix;
+  return true;                       // palindrome
 }
 
-// Example usage:
-const strings = ['abcdef', 'abcd', 'abcde'];
-console.log(longestCommonPrefix(strings));  // Output: 'abc'
+// Example usage
+console.log(isPalindrome('racecar'));   // true
+console.log(isPalindrome('hello'));     // false
+console.log(isPalindrome('level'));     // true
+console.log(isPalindrome('12321'));     // true
