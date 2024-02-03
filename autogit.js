@@ -1,20 +1,12 @@
-function findSecondLargest(array) {
-  let largest = -Infinity;
-  let secondLargest = -Infinity;
+const apiUrl = 'https://api.example.com/data'; // Replace with your API URL
 
-  for (let i = 0; i < array.length; i++) {
-    if (array[i] > largest) {
-      secondLargest = largest;
-      largest = array[i];
-    } else if (array[i] > secondLargest && array[i] < largest) {
-      secondLargest = array[i];
-    }
-  }
-
-  return secondLargest;
-}
-
-// Example usage:
-const arr = [1, 5, 2, 9, 6];
-const secondLargest = findSecondLargest(arr);
-console.log(secondLargest); // Output: 6
+fetch(apiUrl)
+  .then(response => response.json())
+  .then(data => {
+    // Do something with the data received from the API
+    console.log(data);
+  })
+  .catch(error => {
+    // Handle any errors that occur during the request
+    console.log(error);
+  });
