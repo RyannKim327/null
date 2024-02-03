@@ -1,46 +1,57 @@
-function boyerMooreHorspool(pattern, text) {
-  // ...
-}
-function createShiftTable(pattern) {
-  const shiftTable = {};
+function mergeSortIterative(arr) {
+  const n = arr.length;
+  let subarraySize = 1;
+  let temp = [];
 
-  for (let i = 0; i < pattern.length - 1; i++) {
-    shiftTable[pattern[i]] = pattern.length - i - 1;
-  }
+  while (subarraySize < n) {
+    let i = 0;
 
-  return shiftTable;
-}
-function boyerMooreHorspool(pattern, text) {
-  const shiftTable = createShiftTable(pattern);
-  const patternLength = pattern.length;
-  const textLength = text.length;
-  let i = patternLength - 1;
+    while (i < n) {
+      const leftStart = i;
+      const mid = Math.min(i + subarraySize - 1, n - 1);
+      i = Math.min(i + subarraySize * 2, n - 1);
+      const rightStart = i;
+      const end = Math.min(i + subarraySize - 1, n - 1);
 
-  while (i < textLength) {
-    let patternIndex = patternLength - 1;
-    let textIndex = i;
-
-    while (patternIndex >= 0 && pattern[patternIndex] === text[textIndex]) {
-      patternIndex--;
-      textIndex--;
+      merge(arr, leftStart, mid, rightStart, end, temp);
+      i = end + 1;
     }
 
-    if (patternIndex === -1) {
-      // Pattern found
-      return textIndex + 1;
-    }
-
-    const mismatchedChar = text[textIndex];
-    const shift = shiftTable[mismatchedChar] || patternLength;
-
-    i += shift;
+    subarraySize *= 2;
+    arr = [...temp];
   }
 
-  // Pattern not found
-  return -1;
+  return arr;
 }
-const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
-const pattern = "ipsum";
 
-const index = boyerMooreHorspool(pattern, text);
-console.log(index);  // Output: 6
+function merge(arr, leftStart, mid, rightStart, end, temp) {
+  let left = leftStart,
+    right = rightStart,
+    k = leftStart;
+
+  while (left <= mid && right <= end) {
+    if (arr[left] <= arr[right]) {
+      temp[k] = arr[left];
+      left++;
+    } else {
+      temp[k] = arr[right];
+      right++;
+    }
+    k++;
+  }
+
+  while (left <= mid) {
+    temp[k] = arr[left];
+    left++;
+    k++;
+  }
+
+  while (right <= end) {
+    temp[k] = arr[right];
+    right++;
+    k++;
+  }
+}
+const arr = [4, 8, 2, 1, 6, 7, 3, 5];
+const sortedArr = mergeSortIterative(arr);
+console.log(sortedArr); // Output: [1, 2, 3, 4, 5, 6, 7, 8]
