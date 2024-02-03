@@ -1,12 +1,37 @@
-const numbers = [9, 5, 1, 3, 7, 2];
+function mergeSortIterative(array) {
+  const len = array.length;
+  let chunkSize = 1;
 
-// Using the sort() method
-numbers.sort((a, b) => a - b);
+  while (chunkSize < len) {
+    for (let start = 0; start < len; start += chunkSize * 2) {
+      const left = array.slice(start, start + chunkSize);
+      const right = array.slice(start + chunkSize, start + chunkSize * 2);
+      const merged = merge(left, right);
+    
+      for (let i = 0; i < merged.length; i++) {
+        array[start + i] = merged[i];
+      }
+    }
+    chunkSize *= 2;
+  }
 
-console.log(numbers); // Output: [1, 2, 3, 5, 7, 9]
-const numbers = [9, 5, 1, 3, 7, 2];
+  return array;
+}
 
-// Using the spread operator
-const sortedNumbers = [...numbers].sort((a, b) => a - b);
+function merge(left, right) {
+  const merged = [];
+  let leftIndex = 0;
+  let rightIndex = 0;
 
-console.log(sortedNumbers); // Output: [1, 2, 3, 5, 7, 9]
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] < right[rightIndex]) {
+      merged.push(left[leftIndex++]);
+    } else {
+      merged.push(right[rightIndex++]);
+    }
+  }
+
+  return merged.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+}
+const arr = [5, 2, 8, 3, 9, 1];
+console.log(mergeSortIterative(arr)); // Output: [1, 2, 3, 5, 8, 9]
