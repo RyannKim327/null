@@ -1,17 +1,12 @@
-const array = [1, 2, 3, 2, 4, 3, 5];
-const uniqueArray = [...new Set(array)];
-
-console.log(uniqueArray); // [1, 2, 3, 4, 5]
-const array = [1, 2, 3, 2, 4, 3, 5];
-const uniqueArray = array.filter((value, index, self) => self.indexOf(value) === index);
-
-console.log(uniqueArray); // [1, 2, 3, 4, 5]
-const array = [1, 2, 3, 2, 4, 3, 5];
-const uniqueArray = array.reduce((result, value) => {
-  if (!result.includes(value)) {
-    result.push(value);
+function getStringLength(str) {
+  let length = 0;
+  while (str[length] !== undefined) {
+    length++;
   }
-  return result;
-}, []);
+  return length;
+}
 
-console.log(uniqueArray); // [1, 2, 3, 4, 5]
+// Example usage:
+const myString = "Hello, World!";
+const length = getStringLength(myString);
+console.log(length); // Outputs: 13
