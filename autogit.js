@@ -1,22 +1,49 @@
-const CronJob = require('cron').CronJob;
+// Define the depth-limited search function
+function depthLimitedSearch(node, goal, depthLimit) {
+  if (node === goal) {
+    // Goal found, return true
+    return true;
+  }
 
-// Function to be executed
-function myFunction() {
-  console.log('Executing myFunction...');
-  // Your code here
+  if (depthLimit <= 0) {
+    // Reached the depth limit, return false
+    return false;
+  }
+
+  for (let child of node.children) {
+    // Recursively call depthLimitedSearch on child nodes
+    if (depthLimitedSearch(child, goal, depthLimit - 1)) {
+      return true;
+    }
+  }
+
+  // Goal not found within depth limit, return false
+  return false;
 }
 
-// Define the cron schedule
-const cronSchedule = '* * * * *'; // Runs every minute
+// Example usage
+class Node {
+  constructor(value, children = []) {
+    this.value = value;
+    this.children = children;
+  }
+}
 
-// Create a new cron job
-const job = new CronJob(cronSchedule, myFunction);
+const goal = 10;
+const tree = new Node(1, [
+  new Node(2, [
+    new Node(4),
+    new Node(5)
+  ]),
+  new Node(3, [
+    new Node(6),
+    new Node(7, [
+      new Node(8, [
+        new Node(10)
+      ])
+    ])
+  ])
+]);
 
-// Start the cron job
-job.start();
-
-// Stop the cron job after 5 minutes
-setTimeout(() => {
-  job.stop();
-  console.log('Cron job stopped.');
-}, 5 * 60 * 1000);
+console.log(depthLimitedSearch(tree, goal, 3)); // Output: true
+console.log(depthLimitedSearch(tree, goal, 2)); // Output: false
