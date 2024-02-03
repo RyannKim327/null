@@ -1,13 +1,22 @@
-function removeNonAlphanumeric(str) {
-  return str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+const CronJob = require('cron').CronJob;
+
+// Function to be executed
+function myFunction() {
+  console.log('Executing myFunction...');
+  // Your code here
 }
-function reverseString(str) {
-  return str.split('').reverse().join('');
-}
-function isPalindrome(str) {
-  const cleanStr = removeNonAlphanumeric(str);
-  const reversedStr = reverseString(cleanStr);
-  return cleanStr === reversedStr;
-}
-const word = "A man, a plan, a canal: Panama";
-console.log(isPalindrome(word));  // Output: true
+
+// Define the cron schedule
+const cronSchedule = '* * * * *'; // Runs every minute
+
+// Create a new cron job
+const job = new CronJob(cronSchedule, myFunction);
+
+// Start the cron job
+job.start();
+
+// Stop the cron job after 5 minutes
+setTimeout(() => {
+  job.stop();
+  console.log('Cron job stopped.');
+}, 5 * 60 * 1000);
