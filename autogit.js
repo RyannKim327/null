@@ -1,50 +1,110 @@
-// Function to merge two sorted arrays
-function merge(arr, start, mid, end) {
-  const leftArr = arr.slice(start, mid + 1);
-  const rightArr = arr.slice(mid + 1, end + 1);
+class BinaryHeap {
+  constructor() {
+    this.heap = [];
+  }
 
-  let i = 0, j = 0, k = start;
+  // Helper method to get the parent index
+  getParentIndex(index) {
+    return Math.floor((index - 1) / 2);
+  }
 
-  while (i < leftArr.length && j < rightArr.length) {
-    if (leftArr[i] <= rightArr[j]) {
-      arr[k] = leftArr[i];
-      i++;
-    } else {
-      arr[k] = rightArr[j];
-      j++;
+  // Helper method to get the left child index
+  getLeftChildIndex(index) {
+    return 2 * index + 1;
+  }
+
+  // Helper method to get the right child index
+  getRightChildIndex(index) {
+    return 2 * index + 2;
+  }
+
+  // Helper method to swap two elements in the heap
+  swap(index1, index2) {
+    [this.heap[index1], this.heap[index2]] = [this.heap[index2], this.heap[index1]];
+  }
+
+  // Helper method to compare the priority of two elements
+  compare(a, b) {
+    // Use a custom comparison logic here
+    return a.priority - b.priority;
+  }
+
+  // Add an element to the priority queue
+  enqueue(element) {
+    this.heap.push(element);
+    this.heapifyUp(this.heap.length - 1);
+  }
+
+  // Remove and return the element with the highest priority
+  dequeue() {
+    if (this.heap.length === 0) {
+      return null;
     }
-    k++;
+
+    this.swap(0, this.heap.length - 1);
+    const removed = this.heap.pop();
+    this.heapifyDown(0);
+    return removed;
   }
 
-  while (i < leftArr.length) {
-    arr[k] = leftArr[i];
-    i++;
-    k++;
+  // Heapify the element up to the correct position
+  heapifyUp(index) {
+    let currentIndex = index;
+    while (currentIndex > 0 && this.compare(this.heap[currentIndex], this.heap[this.getParentIndex(currentIndex)]) < 0) {
+      this.swap(currentIndex, this.getParentIndex(currentIndex));
+      currentIndex = this.getParentIndex(currentIndex);
+    }
   }
 
-  while (j < rightArr.length) {
-    arr[k] = rightArr[j];
-    j++;
-    k++;
+  // Heapify the element down to the correct position
+  heapifyDown(index) {
+    let currentIndex = index;
+    let nextIndex = null;
+
+    while (nextIndex !== currentIndex) {
+      currentIndex = nextIndex;
+      const leftChildIndex = this.getLeftChildIndex(currentIndex);
+      const rightChildIndex = this.getRightChildIndex(currentIndex);
+
+      if (leftChildIndex < this.heap.length && this.compare(this.heap[leftChildIndex], this.heap[currentIndex]) < 0) {
+        nextIndex = leftChildIndex;
+      } else {
+        nextIndex = currentIndex;
+      }
+
+      if (rightChildIndex < this.heap.length && this.compare(this.heap[rightChildIndex], this.heap[nextIndex]) < 0) {
+        nextIndex = rightChildIndex;
+      }
+
+      this.swap(currentIndex, nextIndex);
+    }
+  }
+
+  // Get the number of elements in the priority queue
+  size() {
+    return this.heap.length;
+  }
+
+  // Check if the priority queue is empty
+  isEmpty() {
+    return this.heap.length === 0;
   }
 }
+// Create a new priority queue
+const priorityQueue = new BinaryHeap();
 
-// Iterative Merge Sort function
-function mergeSort(arr) {
-  const n = arr.length;
+// Enqueue elements with priorities
+priorityQueue.enqueue({ value: 'A', priority: 5 });
+priorityQueue.enqueue({ value: 'B', priority: 3 });
+priorityQueue.enqueue({ value: 'C', priority: 10 });
+priorityQueue.enqueue({ value: 'D', priority: 2 });
 
-  for (let currSize = 1; currSize < n; currSize = 2 * currSize) {
-    for (let start = 0; start < n - 1; start += 2 * currSize) {
-      const mid = start + currSize - 1;
-      const end = Math.min(start + 2 * currSize - 1, n - 1);
-
-      merge(arr, start, mid, end);
-    }
-  }
-
-  return arr;
+// Dequeue elements with the highest priority
+while (!priorityQueue.isEmpty()) {
+  const element = priorityQueue.dequeue();
+  console.log(element);
 }
-
-// Example usage:
-const arr = [9, 5, 1, 3, 8, 4, 7];
-console.log(mergeSort(arr));
+{ value: 'D', priority: 2 }
+{ value: 'B', priority: 3 }
+{ value: 'A', priority: 5 }
+{ value: 'C', priority: 10 }
