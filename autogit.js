@@ -1,16 +1,28 @@
-function getRandomNumber(min, max) {
-  // Generate a random decimal between 0 and 1
-  var randomDecimal = Math.random();
+function countingSort(arr) {
+  // Find the maximum value in the array
+  const max = Math.max(...arr);
 
-  // Scale the random decimal to the desired range
-  var randomNumber = randomDecimal * (max - min + 1) + min;
+  // Create a count array with a length equal to the maximum value plus one
+  const countArray = new Array(max + 1).fill(0);
 
-  // Convert the random number to an integer
-  return Math.floor(randomNumber);
+  // Count the occurrences of each element in the input array
+  for (let i = 0; i < arr.length; i++) {
+    countArray[arr[i]]++;
+  }
+
+  // Build the sorted array
+  let sortedIndex = 0;
+  for (let i = 0; i < countArray.length; i++) {
+    while (countArray[i] > 0) {
+      arr[sortedIndex++] = i;
+      countArray[i]--;
+    }
+  }
+
+  return arr;
 }
 
-// Usage example
-var minRange = 1;
-var maxRange = 100;
-var randomNum = getRandomNumber(minRange, maxRange);
-console.log(randomNum);
+// Example usage:
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const sortedArr = countingSort(arr);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
