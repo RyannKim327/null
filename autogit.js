@@ -1,3 +1,18 @@
-const array = [1, 4, 2, 9, 5];
-const max = Math.max(...array);
-console.log(max); // Output: 9
+function findFirstRepeatedChar(str) {
+  const hashTable = {};
+
+  for (let char of str) {
+    if (hashTable[char]) {
+      return char;
+    } else {
+      hashTable[char] = true;
+    }
+  }
+
+  return null; // No repeated character found
+}
+
+// Example usage:
+const str = "abcdeff";
+const result = findFirstRepeatedChar(str);
+console.log(result); // Output: 'f'
