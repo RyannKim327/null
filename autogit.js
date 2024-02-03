@@ -1,37 +1,33 @@
-class TreeNode {
-  constructor(val) {
-    this.val = val;
-    this.left = null;
-    this.right = null;
-  }
+// Binary Tree Node
+function Node(value, left = null, right = null) {
+  this.value = value;
+  this.left = left;
+  this.right = right;
 }
 
-function diameterOfBinaryTree(root) {
-  let diameter = 0;
-
-  function depth(node) {
-    if (node === null) return 0;
-
-    const leftDepth = depth(node.left);
-    const rightDepth = depth(node.right);
-
-    // Update the diameter if the sum of left and right depths is greater
-    diameter = Math.max(diameter, leftDepth + rightDepth);
-
-    // Return the depth of the current node
-    return Math.max(leftDepth, rightDepth) + 1;
+// Function to find sum of all nodes in a binary tree
+function findSum(root) {
+  // Base case: if root is null, return 0
+  if (root === null) {
+    return 0;
   }
 
-  depth(root);
+  // Recursively calculate the sum of nodes in left and right subtrees
+  const leftSum = findSum(root.left);
+  const rightSum = findSum(root.right);
 
-  return diameter;
+  // Add the current node value to the sum of left and right subtrees
+  return root.value + leftSum + rightSum;
 }
 
-// Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+// Test the function
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
 
-console.log(diameterOfBinaryTree(root)); // Output: 3
+const sum = findSum(root);
+console.log("Sum of all nodes:", sum); // Output: 28
