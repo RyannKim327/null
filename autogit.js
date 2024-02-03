@@ -1,10 +1,19 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  const formattedStr = str.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
-  
-  // Compare the formatted string with its reverse
-  return formattedStr === formattedStr.split('').reverse().join('');
+function longestCommonPrefix(strings) {
+  if (strings.length === 0) {
+    return '';
+  }
+
+  let prefix = strings[0];
+
+  for (let i = 1; i < strings.length; i++) {
+    while (!strings[i].startsWith(prefix)) {
+      prefix = prefix.slice(0, prefix.length - 1);
+    }
+  }
+
+  return prefix;
 }
-console.log(isPalindrome("level"));       // true
-console.log(isPalindrome("A car, a man")); // true
-console.log(isPalindrome("hello"));       // false
+
+// Example usage:
+const strings = ['abcdef', 'abcd', 'abcde'];
+console.log(longestCommonPrefix(strings));  // Output: 'abc'
