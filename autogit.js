@@ -1,18 +1,24 @@
-function findFirstRepeatedChar(str) {
-  const hashTable = {};
+let str = "Hello, World!";
+let substring = "World";
 
-  for (let char of str) {
-    if (hashTable[char]) {
-      return char;
-    } else {
-      hashTable[char] = true;
-    }
-  }
-
-  return null; // No repeated character found
+if (str.includes(substring)) {
+  console.log("Substring found!");
+} else {
+  console.log("Substring not found!");
 }
+let str = "Hello, World!";
+let substring = "World";
 
-// Example usage:
-const str = "abcdeff";
-const result = findFirstRepeatedChar(str);
-console.log(result); // Output: 'f'
+if (str.indexOf(substring) !== -1) {
+  console.log("Substring found!");
+} else {
+  console.log("Substring not found!");
+}
+let str = "Hello, World!";
+let substring = /world/i; // 'i' makes it case insensitive
+
+if (str.match(substring)) {
+  console.log("Substring found!");
+} else {
+  console.log("Substring not found!");
+}
