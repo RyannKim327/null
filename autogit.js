@@ -1,36 +1,58 @@
-function findLIS(arr) {
-  const n = arr.length;
-  const dp = Array(n).fill(1);
-  const subseq = Array(n).fill(null);
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.adjacentNodes = [];
+  }
+}
+class Graph {
+  constructor() {
+    this.nodes = [];
+  }
 
-  for (let i = 1; i < n; i++) {
-    for (let j = 0; j < i; j++) {
-      if (arr[i] > arr[j] && dp[j] + 1 > dp[i]) {
-        dp[i] = dp[j] + 1;
-        subseq[i] = j;
+  addNode(value) {
+    const newNode = new Node(value);
+    this.nodes.push(newNode);
+    return newNode;
+  }
+
+  addEdge(node1, node2) {
+    node1.adjacentNodes.push(node2);
+    node2.adjacentNodes.push(node1);
+  }
+}
+function breadthFirstSearch(graph, startNode, targetValue) {
+  const visited = new Set();
+  const queue = [startNode];
+
+  while (queue.length > 0) {
+    const currentNode = queue.shift();
+    
+    if (currentNode.value === targetValue) {
+      return true; // The target value was found
+    }
+    
+    visited.add(currentNode);
+    
+    for (const adjacentNode of currentNode.adjacentNodes) {
+      if (!visited.has(adjacentNode)) {
+        queue.push(adjacentNode);
       }
     }
   }
-
-  let maxLen = dp[0];
-  let lastIndex = 0;
-  for (let i = 1; i < n; i++) {
-    if (dp[i] > maxLen) {
-      maxLen = dp[i];
-      lastIndex = i;
-    }
-  }
-
-  const lisIndices = [];
-  while (lastIndex !== null) {
-    lisIndices.unshift(lastIndex);
-    lastIndex = subseq[lastIndex];
-  }
-
-  return lisIndices.map((index) => arr[index]);
+  
+  return false; // The target value was not found
 }
+const graph = new Graph();
+const nodeA = graph.addNode('A');
+const nodeB = graph.addNode('B');
+const nodeC = graph.addNode('C');
+const nodeD = graph.addNode('D');
+const nodeE = graph.addNode('E');
 
-// Example usage:
-const arr = [3, 4, -1, 0, 6, 2, 3];
-const lis = findLIS(arr);
-console.log(lis); // Output: [-1, 0, 2, 3]
+graph.addEdge(nodeA, nodeB);
+graph.addEdge(nodeA, nodeC);
+graph.addEdge(nodeB, nodeD);
+graph.addEdge(nodeC, nodeE);
+
+console.log(breadthFirstSearch(graph, nodeA, 'E')); // Output: true
+console.log(breadthFirstSearch(graph, nodeA, 'F')); // Output: false
