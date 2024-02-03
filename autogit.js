@@ -1,52 +1,48 @@
-function dijkstra(graph, startNode) {
-  const distances = {};
-  const visited = new Set();
-  const previous = {};
-
-  // Initialize distances with Infinity for all nodes except the startNode
-  for (const node in graph) {
-    distances[node] = Infinity;
+class Node {
+  constructor(data) {
+    this.data = data;    // Data stored in the node
+    this.next = null;    // Reference to the next node in the queue
   }
-  distances[startNode] = 0;
-
-  while (Object.keys(visited).length !== Object.keys(graph).length) {
-    let currentNode = null;
-    let shortestDistance = Infinity;
-
-    // Find the unvisited node with the smallest distance
-    for (const node in graph) {
-      if (!visited.has(node) && distances[node] < shortestDistance) {
-        currentNode = node;
-        shortestDistance = distances[node];
-      }
-    }
-
-    // Mark the current node as visited
-    visited.add(currentNode);
-
-    // Update distances of neighboring nodes
-    for (const neighbor in graph[currentNode]) {
-      const distance = graph[currentNode][neighbor];
-      const totalDistance = distances[currentNode] + distance;
-
-      if (totalDistance < distances[neighbor]) {
-        distances[neighbor] = totalDistance;
-        previous[neighbor] = currentNode;
-      }
-    }
-  }
-
-  return { distances, previous };
 }
-
-function getPath(previous, targetNode) {
-  const path = [targetNode];
-  let node = targetNode;
-
-  while (previous[node]) {
-    node = previous[node];
-    path.unshift(node);
+class Queue {
+  constructor() {
+    this.head = null;    // Reference to the front of the queue
+    this.tail = null;    // Reference to the rear of the queue
   }
-
-  return path;
 }
+enqueue(data) {
+  const newNode = new Node(data);
+  if (this.head === null) {    // If the queue is empty
+    this.head = newNode;
+    this.tail = newNode;
+  } else {
+    this.tail.next = newNode;
+    this.tail = newNode;
+  }
+}
+dequeue() {
+  if (this.head === null) {    // If the queue is empty
+    return null;
+  } else {
+    const dequeuedNode = this.head;
+    this.head = this.head.next;
+    if (this.head === null) {    // If the queue is now empty
+      this.tail = null;
+    }
+    return dequeuedNode.data;
+  }
+}
+isEmpty() {
+  return this.head === null;
+}
+const queue = new Queue();
+
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+
+console.log(queue.dequeue());    // Output: 1
+console.log(queue.dequeue());    // Output: 2
+console.log(queue.dequeue());    // Output: 3
+
+console.log(queue.isEmpty());    // Output: true
