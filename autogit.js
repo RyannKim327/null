@@ -1,26 +1,55 @@
-function shellSort(array) {
-  const len = array.length;
-  let gap = Math.floor(len / 2);
-
-  while (gap > 0) {
-    for (let i = gap; i < len; i++) {
-      let j = i;
-      let temp = array[i];
-
-      while (j >= gap && array[j - gap] > temp) {
-        array[j] = array[j - gap];
-        j -= gap;
+function buildLPS(pattern) {
+  const lps = [0]; // lps[i] stores the length of the longest proper prefix which is also suffix of pattern[0..i]
+  let len = 0; // length of the previous longest prefix suffix
+  
+  for (let i = 1; i < pattern.length; i++) {
+    if (pattern[i] === pattern[len]) {
+      len++;
+      lps[i] = len;
+    } else {
+      if (len !== 0) {
+        len = lps[len - 1];
+        i--; // Check pattern[i] again in the next iteration
+      } else {
+        lps[i] = 0;
       }
-
-      array[j] = temp;
     }
-
-    gap = Math.floor(gap / 2);
   }
 
-  return array;
+  return lps;
 }
 
-// Example usage:
-const arr = [8, 3, 11, 5, 2, 9, 1, 6];
-console.log(shellSort(arr)); // Output: [1, 2, 3, 5, 6, 8, 9, 11]
+function knuthMorrisPratt(text, pattern) {
+  const n = text.length;
+  const m = pattern.length;
+  const lps = buildLPS(pattern);
+  const indexes = [];
+
+  let i = 0; // index for text
+  let j = 0; // index for pattern
+  
+  while (i < n) {
+    if (pattern[j] === text[i]) { // Match found, move both pointers
+      i++;
+      j++;
+      
+      if (j === m) { // Entire pattern is matched
+        indexes.push(i - j);
+        j = lps[j - 1];
+      }
+    } else if (j !== 0) {
+      j = lps[j - 1]; // Mismatch, shift pattern to the right
+    } else {
+      i++; // No match, move only the text pointer
+    }
+  }
+
+  return indexes;
+}
+
+// Usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+
+const indexes = knuthMorrisPratt(text, pattern);
+console.log("Pattern found at indexes:", indexes);
