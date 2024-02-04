@@ -1,71 +1,43 @@
-function bidirectionalSearch(graph, start, goal) {
-  // Create forward and backward search queues
-  const forwardQueue = [start];
-  const backwardQueue = [goal];
-
-  // Create forward and backward visited sets
-  const forwardVisited = new Set();
-  const backwardVisited = new Set();
-
-  // Track parents for path reconstruction
-  const forwardParents = new Map();
-  const backwardParents = new Map();
-
-  while (forwardQueue.length > 0 && backwardQueue.length > 0) {
-    // Perform forward search step
-    const forwardNode = forwardQueue.shift();
-    forwardVisited.add(forwardNode);
-
-    // Check if forward search finds a node in the backward search visited set
-    if (backwardVisited.has(forwardNode)) {
-      return reconstructPath(forwardNode, forwardParents, backwardParents);
+function buildPatternTable(pattern) {
+  const table = [0];
+  let prefix = 0;
+  
+  for (let i = 1; i < pattern.length; i++) {
+    if (pattern[i] === pattern[prefix]) {
+      prefix++;
+    } else {
+      prefix = 0;
     }
-
-    // Expand forward node and enqueue its neighbors
-    const forwardNeighbors = graph.getNeighbors(forwardNode);
-    for (const neighbor of forwardNeighbors) {
-      if (!forwardVisited.has(neighbor)) {
-        forwardQueue.push(neighbor);
-        forwardParents.set(neighbor, forwardNode);
-      }
-    }
-
-    // Perform backward search step
-    const backwardNode = backwardQueue.shift();
-    backwardVisited.add(backwardNode);
-
-    // Check if backward search finds a node in the forward search visited set
-    if (forwardVisited.has(backwardNode)) {
-      return reconstructPath(backwardNode, forwardParents, backwardParents);
-    }
-
-    // Expand backward node and enqueue its neighbors
-    const backwardNeighbors = graph.getNeighbors(backwardNode);
-    for (const neighbor of backwardNeighbors) {
-      if (!backwardVisited.has(neighbor)) {
-        backwardQueue.push(neighbor);
-        backwardParents.set(neighbor, backwardNode);
-      }
-    }
+    table[i] = prefix;
   }
-
-  return null; // No path found
+  
+  return table;
 }
 
-function reconstructPath(node, forwardParents, backwardParents) {
-  const path = [node];
+function stringMatch(text, pattern) {
+  const patternTable = buildPatternTable(pattern);
+  let textIndex = 0;
+  let patternIndex = 0;
 
-  let currentNode = node;
-  while (forwardParents.has(currentNode)) {
-    currentNode = forwardParents.get(currentNode);
-    path.unshift(currentNode);
+  while (textIndex < text.length) {
+    if (pattern[patternIndex] === text[textIndex]) {
+      if (patternIndex === pattern.length - 1) {
+        return true; // Match found
+      }
+      patternIndex++;
+      textIndex++;
+    } else if (patternIndex > 0) {
+      patternIndex = patternTable[patternIndex - 1];
+    } else {
+      textIndex++;
+    }
   }
 
-  currentNode = node;
-  while (backwardParents.has(currentNode)) {
-    currentNode = backwardParents.get(currentNode);
-    path.push(currentNode);
-  }
-
-  return path;
+  return false; // No match found
 }
+
+// Example usage:
+const text = "Lorem ipsum dolor sit amet";
+const pattern = "ipsum";
+
+console.log(stringMatch(text, pattern)); // Output: true
