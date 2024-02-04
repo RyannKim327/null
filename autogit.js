@@ -1,26 +1,45 @@
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
+class HashTable {
+  constructor() {
+    this.table = {};
+  }
 
-let index = array.indexOf(elementToRemove);
-if (index > -1) {
-  array.splice(index, 1);
-}
+  // Hash function to convert key into a hash value
+  hash(key) {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash += key.charCodeAt(i);
+    }
+    return hash;
+  }
 
-console.log(array); // [1, 2, 4, 5]
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
+  // Insert key-value pair into the hash table
+  insert(key, value) {
+    const hashValue = this.hash(key);
+    this.table[hashValue] = value;
+  }
 
-array = array.filter(item => item !== elementToRemove);
+  // Retrieve value based on key from the hash table
+  get(key) {
+    const hashValue = this.hash(key);
+    return this.table[hashValue];
+  }
 
-console.log(array); // [1, 2, 4, 5]
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
-
-for (let i = 0; i < array.length; i++) {
-  if (array[i] === elementToRemove) {
-    array.splice(i, 1);
-    break; // exit the loop once the element is removed
+  // Remove key-value pair from the hash table
+  remove(key) {
+    const hashValue = this.hash(key);
+    delete this.table[hashValue];
   }
 }
 
-console.log(array); // [1, 2, 4, 5]
+// Usage example
+const hashTable = new HashTable();
+
+hashTable.insert("name", "John");
+hashTable.insert("age", 30);
+
+console.log(hashTable.get("name"));  // Output: John
+console.log(hashTable.get("age"));   // Output: 30
+
+hashTable.remove("name");
+
+console.log(hashTable.get("name"));  // Output: undefined
