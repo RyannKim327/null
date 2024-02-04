@@ -1,23 +1,41 @@
-function findNthNodeFromEnd(head, n) {
-  let count = 0;
-  let first = head;
-  let second = head;
+// Function to perform topological sort using DFS
+function topologicalSort(graph) {
+  const visited = new Set(); // Set to track visited nodes
+  const result = []; // Array to store the sorted elements
 
-  // Move second pointer n nodes ahead
-  while (count < n) {
-    if (second === null) {
-      // Edge case: fewer than n nodes in the list
-      return null;
+  // Recursive helper function to perform DFS
+  function dfs(node) {
+    visited.add(node); // Mark the current node as visited
+
+    // Recurse on all unvisited neighbors
+    for (const neighbor of graph[node]) {
+      if (!visited.has(neighbor)) {
+        dfs(neighbor);
+      }
     }
-    second = second.next;
-    count++;
+
+    result.unshift(node); // Add the current node to the beginning of the result array
   }
 
-  // Move both pointers until second reaches the end
-  while (second !== null) {
-    first = first.next;
-    second = second.next;
+  // Perform DFS on all nodes
+  for (const node in graph) {
+    if (!visited.has(node)) {
+      dfs(node);
+    }
   }
 
-  return first.value;
+  return result;
 }
+
+// Example usage:
+const graph = {
+  A: ["D"],
+  B: ["D"],
+  C: ["A", "B"],
+  D: ["E", "F"],
+  E: [],
+  F: [],
+};
+
+const sortedNodes = topologicalSort(graph);
+console.log(sortedNodes); // Output: ['C', 'A', 'B', 'D', 'F', 'E']
