@@ -1,20 +1,56 @@
-function findMaxSubarray(arr) {
-  let maxSum = arr[0]; // Initialize the maximum sum as the first element
-  let currentSum = arr[0]; // Initialize the current sum as the first element
-  
-  // Iterate through the array starting from the second element
-  for (let i = 1; i < arr.length; i++) {
-    // Compare current element with the sum of the current element and the previous subarray
-    currentSum = Math.max(arr[i], currentSum + arr[i]);
-    
-    // Update the maximum sum if necessary
-    maxSum = Math.max(maxSum, currentSum);
+class Stack {
+  constructor() {
+    this.items = [];
   }
-  
-  return maxSum; // Return the maximum sum
+
+  // Push element onto the stack
+  push(item) {
+    this.items.push(item);
+  }
+
+  // Remove and return the topmost element from the stack
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
+    }
+    return this.items.pop();
+  }
+
+  // Get the topmost element of the stack without removing it
+  peek() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
+    }
+    return this.items[this.items.length - 1];
+  }
+
+  // Check if the stack is empty
+  isEmpty() {
+    return this.items.length === 0;
+  }
+
+  // Get the size of the stack
+  size() {
+    return this.items.length;
+  }
+
+  // Clear the stack
+  clear() {
+    this.items = [];
+  }
 }
 
-// Example usage
-const array = [-2, 3, -1, 5, 4, -7, 2, 1, -3, 6];
-const maxSum = findMaxSubarray(array);
-console.log(maxSum); // Output: 13
+// Example usage:
+const stack = new Stack();
+
+stack.push(1);
+stack.push(2);
+stack.push(3);
+
+console.log(stack.pop()); // Output: 3
+console.log(stack.peek()); // Output: 2
+console.log(stack.isEmpty()); // Output: false
+console.log(stack.size()); // Output: 2
+
+stack.clear();
+console.log(stack.isEmpty()); // Output: true
