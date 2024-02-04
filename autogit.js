@@ -1,58 +1,90 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
-}
-class LinkedList {
+class Graph {
   constructor() {
-    this.head = null;
+    this.adjList = {};
   }
 }
-insert(data) {
-  const newNode = new Node(data);
-  newNode.next = this.head;
-  this.head = newNode;
-}
-delete(data) {
-  if (this.head === null) {
-    return;
+class Graph {
+  constructor() {
+    this.adjList = {};
   }
 
-  if (this.head.data === data) {
-    this.head = this.head.next;
-    return;
-  }
-
-  let currNode = this.head;
-  let prevNode = null;
-
-  while (currNode !== null) {
-    if (currNode.data === data) {
-      prevNode.next = currNode.next;
-      break;
+  addVertex(vertex) {
+    if (!this.adjList[vertex]) {
+      this.adjList[vertex] = [];
     }
-    prevNode = currNode;
-    currNode = currNode.next;
   }
 }
-print() {
-  let currNode = this.head;
-  let result = '';
-
-  while (currNode !== null) {
-    result += currNode.data + ' ';
-    currNode = currNode.next;
+class Graph {
+  constructor() {
+    this.adjList = {};
   }
 
-  console.log(result);
+  addVertex(vertex) {
+    if (!this.adjList[vertex]) {
+      this.adjList[vertex] = [];
+    }
+  }
+
+  addEdge(vertex1, vertex2) {
+    if (!this.adjList[vertex1] || !this.adjList[vertex2]) {
+      throw new Error('Vertex does not exist in the graph.');
+    }
+    this.adjList[vertex1].push(vertex2);
+  }
 }
-const linkedList = new LinkedList();
+class Graph {
+  constructor() {
+    this.adjList = {};
+  }
 
-linkedList.insert(3);
-linkedList.insert(7);
-linkedList.insert(12);
-linkedList.print(); // Output: 12 7 3
+  addVertex(vertex) {
+    if (!this.adjList[vertex]) {
+      this.adjList[vertex] = [];
+    }
+  }
 
-linkedList.delete(7);
-linkedList.print(); // Output: 12 3
+  addEdge(vertex1, vertex2) {
+    if (!this.adjList[vertex1] || !this.adjList[vertex2]) {
+      throw new Error('Vertex does not exist in the graph.');
+    }
+    this.adjList[vertex1].push(vertex2);
+  }
+
+  topologicalSort() {
+    let visited = {};
+    let stack = [];
+
+    for (let vertex in this.adjList) {
+      if (!visited[vertex]) {
+        this.topologicalSortUtil(vertex, visited, stack);
+      }
+    }
+
+    return stack.reverse();
+  }
+
+  topologicalSortUtil(vertex, visited, stack) {
+    visited[vertex] = true;
+
+    for (let adjacentVertex of this.adjList[vertex]) {
+      if (!visited[adjacentVertex]) {
+        this.topologicalSortUtil(adjacentVertex, visited, stack);
+      }
+    }
+
+    stack.push(vertex);
+  }
+}
+let graph = new Graph();
+
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addEdge('A', 'D');
+graph.addEdge('B', 'D');
+graph.addEdge('C', 'A');
+graph.addEdge('C', 'B');
+
+let sorted = graph.topologicalSort();
+console.log(sorted); // Output: ['C', 'B', 'A', 'D']
