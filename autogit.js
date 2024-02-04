@@ -1,30 +1,19 @@
-// Make a GET request to an API endpoint
-fetch('https://api.example.com/data')
-  .then(response => response.json())
-  .then(data => {
-    // Handle the response data
-    console.log(data);
-  })
-  .catch(error => {
-    // Handle any errors that occurred during the request
-    console.error('Error:', error);
-  });
+// Function to generate a random number in a given range
+function getRandomNumber(min, max) {
+  // Compute the difference between the maximum and minimum values
+  const range = max - min;
+  // Generate a random number between 0 and 1, then scale it up to the range
+  const randomNumber = Math.random() * range;
+  // Shift the number to the desired range starting point
+  const adjustedNumber = randomNumber + min;
+  // Convert the number to an integer, if necessary
+  const finalNumber = Math.floor(adjustedNumber);
 
-// Make a POST request with JSON data
-const postData = { name: 'John', age: 30 };
-fetch('https://api.example.com/users', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify(postData)
-})
-  .then(response => response.json())
-  .then(data => {
-    // Handle the response data
-    console.log(data);
-  })
-  .catch(error => {
-    // Handle any errors that occurred during the request
-    console.error('Error:', error);
-  });
+  return finalNumber;
+}
+
+// Usage example
+const minRange = 1;
+const maxRange = 10;
+const randomNum = getRandomNumber(minRange, maxRange);
+console.log(randomNum);
