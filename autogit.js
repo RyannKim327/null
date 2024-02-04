@@ -1,56 +1,27 @@
-function buildFailureTable(pattern) {
-  const table = Array(pattern.length).fill(0);
-  let i = 0;
+function shellSort(arr) {
+  // Calculate the gap sequence
+  let gap = Math.floor(arr.length / 2);
   
-  for (let j = 1; j < pattern.length;) {
-    if (pattern[i] === pattern[j]) {
-      table[j] = i + 1;
-      i++;
-      j++;
-    } else {
-      if (i !== 0) {
-        i = table[i - 1];
-      } else {
-        table[j] = 0;
-        j++;
-      }
-    }
-  }
-  
-  return table;
-}
-
-function stringMatch(text, pattern) {
-  const failureTable = buildFailureTable(pattern);
-  let j = 0;
-
-  for (let i = 0; i < text.length;) {
-    if (pattern[j] === text[i]) {
-      i++;
-      j++;
+  // Loop over the gap values
+  while (gap > 0) {
+    // Perform insertion sort on each sublist
+    for (let i = gap; i < arr.length; i++) {
+      let j = i;
+      let temp = arr[i];
       
-      if (j === pattern.length) {
-        return i - j; // Match found, return the starting index
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
       }
-    } else {
-      if (j !== 0) {
-        j = failureTable[j - 1];
-      } else {
-       i++;
-      }
+      
+      arr[j] = temp;
     }
+    
+    // Reduce the gap value
+    gap = Math.floor(gap / 2);
   }
-
-  return -1; // Match not found
+  
+  return arr;
 }
-
-// Example usage:
-const text = "ABCABCDABABCDABCDABDE";
-const pattern = "ABCDABD";
-
-const matchIndex = stringMatch(text, pattern);
-if (matchIndex !== -1) {
-  console.log(`Pattern found at index ${matchIndex}`);
-} else {
-  console.log("Pattern not found");
-}
+let arr = [9, 2, 5, 1, 4, 6, 8, 3, 7];
+console.log(shellSort(arr));  // [1, 2, 3, 4, 5, 6, 7, 8, 9]
