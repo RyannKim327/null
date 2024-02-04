@@ -1,29 +1,20 @@
-function factorialRecursive(n) {
-  // Base case: factorial of 0 is 1
-  if (n === 0) {
-    return 1;
+function findFirstNonRepeatingCharacter(str) {
+  const charCount = {};
+
+  for (const char of str) {
+    charCount[char] = (charCount[char] || 0) + 1;
   }
-  
-  // Recursive case: factorial of n is n multiplied by factorial of n-1
-  return n * factorialRecursive(n - 1);
+
+  for (const char of str) {
+    if (charCount[char] === 1) {
+      return char;
+    }
+  }
+
+  return null; // Return null if there are no non-repeating characters
 }
 
-// Usage example
-const number = 5;
-const result = factorialRecursive(number);
-console.log(`Factorial of ${number} is ${result}`);
-function factorialIterative(n) {
-  let result = 1;
-  
-  // Multiply result by numbers from 1 to n
-  for(let i = 1; i <= n; i++) {
-    result *= i;
-  }
-  
-  return result;
-}
-
-// Usage example
-const number = 5;
-const result = factorialIterative(number);
-console.log(`Factorial of ${number} is ${result}`);
+// Example usage
+const string = "abcaebdcefd";
+const firstNonRepeatingChar = findFirstNonRepeatingCharacter(string);
+console.log(firstNonRepeatingChar); // Output: "u"
