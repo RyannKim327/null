@@ -1,45 +1,58 @@
 class Node {
   constructor(value) {
     this.value = value;
-    this.left = null;
-    this.right = null;
+    this.next = null; // Reference to the next node
   }
 }
-
-function diameterOfBinaryTree(root) {
-  if (root === null) {
-    return 0;
+class Queue {
+  constructor() {
+    this.front = null; // Pointer to the front of the queue
+    this.rear = null; // Pointer to the rear of the queue
   }
-
-  const leftHeight = height(root.left);
-  const rightHeight = height(root.right);
-
-  const leftDiameter = diameterOfBinaryTree(root.left);
-  const rightDiameter = diameterOfBinaryTree(root.right);
-
-  // The diameter can be either passing through the root (i.e., leftHeight + rightHeight + 1)
-  // or it can lie entirely in the left or right subtree
-  const totalDiameter = Math.max(leftHeight + rightHeight + 1, leftDiameter, rightDiameter);
-
-  return totalDiameter;
 }
+class Queue {
+  // ...
 
-function height(node) {
-  if (node === null) {
-    return 0;
+  enqueue(value) {
+    const newNode = new Node(value);
+    if (this.rear === null) {
+      // The queue was empty, so both front and rear point to the new node
+      this.front = newNode;
+      this.rear = newNode;
+    } else {
+      // Append the new node to the rear and update the rear pointer
+      this.rear.next = newNode;
+      this.rear = newNode;
+    }
   }
-  
-  const leftHeight = height(node.left);
-  const rightHeight = height(node.right);
-
-  return Math.max(leftHeight, rightHeight) + 1;
 }
+class Queue {
+  // ...
 
-// Example usage:
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
+  dequeue() {
+    if (this.front === null) {
+      // The queue is empty
+      return null;
+    }
+    
+    const removedNode = this.front;
+    this.front = this.front.next;
 
-console.log("Diameter of the binary tree is:", diameterOfBinaryTree(root));
+    // If the front becomes null, the queue is now empty, so update rear as well
+    if (this.front === null) {
+      this.rear = null;
+    }
+
+    return removedNode.value;
+  }
+}
+const queue = new Queue();
+
+queue.enqueue(10);
+queue.enqueue(20);
+queue.enqueue(30);
+
+console.log(queue.dequeue()); // Output: 10
+console.log(queue.dequeue()); // Output: 20
+console.log(queue.dequeue()); // Output: 30
+console.log(queue.dequeue()); // Output: null, as the queue is now empty
