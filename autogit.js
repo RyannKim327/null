@@ -1,10 +1,28 @@
-function removeVowels(str) {
-  // Use regular expression to match all vowels (i, e, a, o, u) in the string
-  var removed = str.replace(/[aeiou]/gi, '');
-  return removed;
+function longestCommonPrefix(strings) {
+  if (strings.length === 0) {
+    return '';
+  }
+
+  let prefix = strings[0];
+
+  for (let i = 1; i < strings.length; i++) {
+    const currentString = strings[i];
+    let j = 0;
+
+    while (j < prefix.length && j < currentString.length && prefix[j] === currentString[j]) {
+      j++;
+    }
+
+    prefix = prefix.substring(0, j);
+
+    if (prefix === '') {
+      return '';
+    }
+  }
+
+  return prefix;
 }
 
-var input = "Hello, World!";
-var result = removeVowels(input);
-
-console.log(result); // Output: "Hll, Wrld!"
+// Example usage:
+const strings = ['hello', 'heaven', 'helicopter'];
+console.log(longestCommonPrefix(strings)); // Output: 'he'
