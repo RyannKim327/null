@@ -1,55 +1,34 @@
-class ListNode {
-  constructor(val, next = null) {
-    this.val = val;
-    this.next = next;
-  }
-}
-
-function isPalindrome(head) {
-  if (!head || !head.next) {
-    return true; // Empty list or single node is a palindrome
-  }
-
-  let slow = head;
-  let fast = head;
-  while (fast.next && fast.next.next) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
-
-  let secondHalfHead = reverseList(slow.next);
-  let p1 = head;
-  let p2 = secondHalfHead;
-
-  while (p2) {
-    if (p1.val !== p2.val) {
-      return false;
+function interpolationSearch(arr, target) {
+  let low = 0;
+  let high = arr.length - 1;
+  
+  while (low <= high && target >= arr[low] && target <= arr[high]) {
+    // Calculate the position using interpolation formula
+    let pos = Math.floor(low + ((target - arr[low]) / (arr[high] - arr[low])) * (high - low));
+    
+    // If target is found, return the index
+    if (arr[pos] === target) {
+      return pos;
     }
-    p1 = p1.next;
-    p2 = p2.next;
+    
+    // If target is less, search the left subarray
+    if (arr[pos] > target) {
+      high = pos - 1;
+    }
+    
+    // If target is greater, search the right subarray
+    else {
+      low = pos + 1;
+    }
   }
-
-  return true;
+  
+  // If target is not found, return -1
+  return -1;
 }
 
-function reverseList(head) {
-  let prev = null;
-  let current = head;
-
-  while (current) {
-    let next = current.next;
-    current.next = prev;
-    prev = current;
-    current = next;
-  }
-
-  return prev;
-}
 // Example usage
-const list = new ListNode(1);
-list.next = new ListNode(2);
-list.next.next = new ListNode(3);
-list.next.next.next = new ListNode(2);
-list.next.next.next.next = new ListNode(1);
+const arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
+const target = 23;
 
-console.log(isPalindrome(list)); // Output: true
+const index = interpolationSearch(arr, target);
+console.log("Element found at index:", index);
