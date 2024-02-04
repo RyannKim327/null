@@ -1,17 +1,30 @@
-function calculateMean(numbers) {
-  // Check if the input is valid
-  if (!Array.isArray(numbers) || numbers.length === 0) {
-    return 0;
-  }
+// Make a GET request to an API endpoint
+fetch('https://api.example.com/data')
+  .then(response => response.json())
+  .then(data => {
+    // Handle the response data
+    console.log(data);
+  })
+  .catch(error => {
+    // Handle any errors that occurred during the request
+    console.error('Error:', error);
+  });
 
-  // Calculate the sum of all numbers
-  const sum = numbers.reduce((acc, num) => acc + num, 0);
-
-  // Calculate the mean by dividing the sum by the number of elements
-  const mean = sum / numbers.length;
-
-  return mean;
-}
-const numbers = [1, 2, 3, 4, 5];
-const mean = calculateMean(numbers);
-console.log(mean); // Output: 3
+// Make a POST request with JSON data
+const postData = { name: 'John', age: 30 };
+fetch('https://api.example.com/users', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(postData)
+})
+  .then(response => response.json())
+  .then(data => {
+    // Handle the response data
+    console.log(data);
+  })
+  .catch(error => {
+    // Handle any errors that occurred during the request
+    console.error('Error:', error);
+  });
