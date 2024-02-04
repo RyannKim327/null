@@ -1,25 +1,26 @@
-function shellSort(arr) {
-  const len = arr.length;
-  let gap = Math.floor(len / 2);
+// Define a graph using adjacency list representation
+const graph = {
+  A: ['B', 'C'],
+  B: ['D', 'E'],
+  C: ['F'],
+  D: [],
+  E: ['F'],
+  F: [],
+};
 
-  while (gap > 0) {
-    for (let i = gap; i < len; i++) {
-      const temp = arr[i];
-      let innerIndex = i;
-
-      while (innerIndex >= gap && arr[innerIndex - gap] > temp) {
-        arr[innerIndex] = arr[innerIndex - gap];
-        innerIndex -= gap;
-      }
-
-      arr[innerIndex] = temp;
+// Define a function for depth-first search
+function dfs(graph, node, visited) {
+  if (!visited.includes(node)) {
+    console.log(`Visiting node: ${node}`);
+    visited.push(node);
+    
+    const neighbors = graph[node];
+    for (const neighbor of neighbors) {
+      dfs(graph, neighbor, visited);
     }
-
-    gap = Math.floor(gap / 2);
   }
-
-  return arr;
 }
-const arr = [9, 4, 1, 7, 3, 6, 2, 8, 5];
-const sortedArr = shellSort(arr);
-console.log(sortedArr); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+// Start the depth-first search with a starting node
+const startingNode = 'A';
+dfs(graph, startingNode, []);
