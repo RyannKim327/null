@@ -1,43 +1,20 @@
-function radixSort(arr) {
-  const max = Math.max(...arr);
+function isAnagram(string1, string2) {
+  // Convert strings to lowercase and remove non-alphabetic characters or spaces
+  string1 = string1.toLowerCase().replace(/[^a-z]/g, '');
+  string2 = string2.toLowerCase().replace(/[^a-z]/g, '');
 
-  // Perform counting sort for every digit
-  for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
-    countingSort(arr, exp);
-  }
+  // Convert strings into arrays of characters
+  let arr1 = string1.split('');
+  let arr2 = string2.split('');
 
-  return arr;
+  // Sort the character arrays
+  arr1.sort();
+  arr2.sort();
+
+  // Compare the sorted arrays
+  return arr1.join('') === arr2.join('');
 }
 
-function countingSort(arr, exp) {
-  const n = arr.length;
-  const output = new Array(n).fill(0);
-  const count = new Array(10).fill(0);
-
-  // Count occurrences of digits
-  for (let i = 0; i < n; i++) {
-    const digit = Math.floor(arr[i] / exp) % 10;
-    count[digit]++;
-  }
-
-  // Calculate cumulative count
-  for (let i = 1; i < 10; i++) {
-    count[i] += count[i - 1];
-  }
-
-  // Build the output array
-  for (let i = n - 1; i >= 0; i--) {
-    const digit = Math.floor(arr[i] / exp) % 10;
-    output[count[digit] - 1] = arr[i];
-    count[digit]--;
-  }
-
-  // Copy the output array to the original array
-  for (let i = 0; i < n; i++) {
-    arr[i] = output[i];
-  }
-}
-
-// Usage example
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log(radixSort(arr)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+// Example usage
+console.log(isAnagram('listen', 'silent')); // true
+console.log(isAnagram('hello', 'world')); // false
