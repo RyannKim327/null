@@ -1,35 +1,20 @@
-function countOccurrences(str, char) {
-  let count = 0;
-  for (let i = 0; i < str.length; i++) {
-    if (str[i] === char) {
-      count++;
+function binarySearch(arr, target, left = 0, right = arr.length - 1) {
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+    
+    if (arr[mid] === target) {
+      return mid;
+    } else if (arr[mid] < target) {
+      left = mid + 1;
+    } else {
+      right = mid - 1;
     }
   }
-  return count;
+
+  return -1;
 }
 
-// Example usage
-const myString = "Hello, World!";
-const myChar = "o";
-const occurrences = countOccurrences(myString, myChar);
-console.log(occurrences); // Output: 2
-function countOccurrences(str, char) {
-  return str.split(char).length - 1;
-}
-
-// Example usage
-const myString = "Hello, World!";
-const myChar = "o";
-const occurrences = countOccurrences(myString, myChar);
-console.log(occurrences); // Output: 2
-function countOccurrences(str, char) {
-  const regex = new RegExp(char, "g");
-  const matches = str.match(regex);
-  return matches ? matches.length : 0;
-}
-
-// Example usage
-const myString = "Hello, World!";
-const myChar = "o";
-const occurrences = countOccurrences(myString, myChar);
-console.log(occurrences); // Output: 2
+// Example usage:
+const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18];
+console.log(binarySearch(arr, 10));  // Outputs: 4
+console.log(binarySearch(arr, 5));   // Outputs: -1 (not found)
