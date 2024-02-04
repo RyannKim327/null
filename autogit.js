@@ -1,4 +1,10 @@
-let array = [1, 2, 3, 4, 5];
-array.reverse();
+const cron = require('node-cron');
 
-console.log(array); // Output: [5, 4, 3, 2, 1]
+// Define the task to be executed
+const task = () => {
+  console.log('Running scheduled task!');
+  // Your code logic here
+};
+
+// Schedule the task to run every minute
+cron.schedule('* * * * *', task);
