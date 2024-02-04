@@ -1,23 +1,27 @@
-function findFirstNonRepeatingCharacter(str) {
-  const frequency = {}; // store character frequencies
+function LinkedListNode(value) {
+  this.value = value;
+  this.next = null;
+}
 
-  // loop through the string to update frequencies
-  for (let char of str) {
-    frequency[char] = (frequency[char] || 0) + 1;
+function findLinkedListLength(head) {
+  let count = 0;
+  let currentNode = head;
+
+  while (currentNode !== null) {
+    count++;
+    currentNode = currentNode.next;
   }
 
-  // loop through the string to find the first non-repeating character
-  for (let char of str) {
-    if (frequency[char] === 1) {
-      return char; // found the first non-repeating character
-    }
-  }
-
-  return null; // no non-repeating character found
+  return count;
 }
 
 // Example usage:
-const input = "abacddbec";
-const firstNonRepeatingChar = findFirstNonRepeatingCharacter(input);
+const node1 = new LinkedListNode(1);
+const node2 = new LinkedListNode(2);
+const node3 = new LinkedListNode(3);
 
-console.log(firstNonRepeatingChar); // Output: "e"
+node1.next = node2;
+node2.next = node3;
+
+const length = findLinkedListLength(node1);
+console.log(length); // Output: 3
