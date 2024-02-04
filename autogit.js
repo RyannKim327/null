@@ -1,20 +1,19 @@
-function isAnagram(string1, string2) {
-  // Convert strings to lowercase and remove non-alphabetic characters or spaces
-  string1 = string1.toLowerCase().replace(/[^a-z]/g, '');
-  string2 = string2.toLowerCase().replace(/[^a-z]/g, '');
-
-  // Convert strings into arrays of characters
-  let arr1 = string1.split('');
-  let arr2 = string2.split('');
-
-  // Sort the character arrays
-  arr1.sort();
-  arr2.sort();
-
-  // Compare the sorted arrays
-  return arr1.join('') === arr2.join('');
+function areAnagrams(str1, str2) {
+  // Remove non-alphabetic characters and convert to lowercase
+  const cleanStr1 = str1.replace(/[^a-z]/gi, '').toLowerCase();
+  const cleanStr2 = str2.replace(/[^a-z]/gi, '').toLowerCase();
+  
+  // Sort the strings
+  const sortedStr1 = cleanStr1.split('').sort().join('');
+  const sortedStr2 = cleanStr2.split('').sort().join('');
+  
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
 
-// Example usage
-console.log(isAnagram('listen', 'silent')); // true
-console.log(isAnagram('hello', 'world')); // false
+// Testing the function
+const string1 = "listen";
+const string2 = "silent";
+const string3 = "hello";
+console.log(areAnagrams(string1, string2));  // Output: true
+console.log(areAnagrams(string1, string3));  // Output: false
