@@ -1,16 +1,20 @@
-const array = [1, 2, 3, 4, 4, 5, 6, 6];
-const uniqueArray = [...new Set(array)];
-console.log(uniqueArray);
-const array = [1, 2, 3, 4, 4, 5, 6, 6];
-const uniqueArray = array.filter((value, index, self) => {
-  return self.indexOf(value) === index;
-});
-console.log(uniqueArray);
-const array = [1, 2, 3, 4, 4, 5, 6, 6];
-const uniqueArray = array.reduce((accumulator, currentValue) => {
-  if (!accumulator.includes(currentValue)) {
-    accumulator.push(currentValue);
+function randomSort(arr) {
+  // Loop through each element in the array
+  for (let i = 0; i < arr.length; i++) {
+    // Generate a random index within the array length
+    let randomIndex = Math.floor(Math.random() * arr.length);
+    
+    // Swap the current element with the randomly selected element
+    let temp = arr[i];
+    arr[i] = arr[randomIndex];
+    arr[randomIndex] = temp;
   }
-  return accumulator;
-}, []);
-console.log(uniqueArray);
+  
+  return arr;
+}
+
+// Test the random sort algorithm
+let numbers = [5, 2, 9, 1, 3, 7];
+console.log("Original array: " + numbers);
+let sortedArray = randomSort(numbers);
+console.log("Sorted array: " + sortedArray);
