@@ -1,41 +1,35 @@
-// Function to perform topological sort using DFS
-function topologicalSort(graph) {
-  const visited = new Set(); // Set to track visited nodes
-  const result = []; // Array to store the sorted elements
+function findMajorityElement(nums) {
+  let count = 0;
+  let candidate = null;
 
-  // Recursive helper function to perform DFS
-  function dfs(node) {
-    visited.add(node); // Mark the current node as visited
-
-    // Recurse on all unvisited neighbors
-    for (const neighbor of graph[node]) {
-      if (!visited.has(neighbor)) {
-        dfs(neighbor);
-      }
-    }
-
-    result.unshift(node); // Add the current node to the beginning of the result array
-  }
-
-  // Perform DFS on all nodes
-  for (const node in graph) {
-    if (!visited.has(node)) {
-      dfs(node);
+  for (let i = 0; i < nums.length; i++) {
+    if (count === 0) {
+      candidate = nums[i];
+      count = 1;
+    } else if (nums[i] === candidate) {
+      count++;
+    } else {
+      count--;
     }
   }
 
-  return result;
+  // Verify if the candidate is the majority element
+  count = 0;
+  for (let i = 0; i < nums.length; i++) {
+    if (nums[i] === candidate) {
+      count++;
+    }
+  }
+
+  // Return the majority element if it exists
+  if (count > Math.floor(nums.length / 2)) {
+    return candidate;
+  } else {
+    return "No majority element found.";
+  }
 }
 
-// Example usage:
-const graph = {
-  A: ["D"],
-  B: ["D"],
-  C: ["A", "B"],
-  D: ["E", "F"],
-  E: [],
-  F: [],
-};
-
-const sortedNodes = topologicalSort(graph);
-console.log(sortedNodes); // Output: ['C', 'A', 'B', 'D', 'F', 'E']
+// Example usage
+const nums = [2, 2, 1, 1, 1, 2, 2];
+const majorityElement = findMajorityElement(nums);
+console.log(majorityElement); // Output: 2
