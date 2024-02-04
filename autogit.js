@@ -1,17 +1,17 @@
-function largestPrimeFactor(number) {
-  let i = 2;
- 
-  while (i <= number) {
-    if (number % i === 0) {
-      number /= i;
-    } else {
-      i++;
-    }
+const array = [1, 2, 3, 3, 4, 5, 5];
+const uniqueArray = [...new Set(array)];
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 3, 3, 4, 5, 5];
+const uniqueArray = array.filter((value, index) => array.indexOf(value) === index);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 3, 3, 4, 5, 5];
+const uniqueArray = array.filter((value, index) => array.indexOf(value) === index);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 3, 3, 4, 5, 5];
+const uniqueArray = [];
+for (const element of array) {
+  if (!uniqueArray.includes(element)) {
+    uniqueArray.push(element);
   }
- 
-  return i;
 }
-const number = 84;
-const largestFactor = largestPrimeFactor(number);
-console.log(`The largest prime factor of ${number} is ${largestFactor}`);
-The largest prime factor of 84 is 7
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
