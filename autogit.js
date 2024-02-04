@@ -1,35 +1,55 @@
-function findMajorityElement(arr) {
-  let count = 0;
-  let candidate;
-
-  // Step 1: Finding a candidate for majority element
-  for (let i = 0; i < arr.length; i++) {
-    if (count === 0) {
-      candidate = arr[i];
-      count = 1;
-    } else if (candidate === arr[i]) {
-      count++;
-    } else {
-      count--;
-    }
-  }
-
-  // Step 2: Checking if the candidate is a majority element
-  count = 0;
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] === candidate) {
-      count++;
-    }
-  }
-
-  if (count > arr.length / 2) {
-    return candidate; // majority element found
-  } else {
-    throw new Error('No majority element found');
+class ListNode {
+  constructor(val, next = null) {
+    this.val = val;
+    this.next = next;
   }
 }
 
-// Example usage:
-const arr = [3, 1, 3, 3, 2];
-const majorityElement = findMajorityElement(arr);
-console.log(majorityElement); // Output: 3
+function isPalindrome(head) {
+  if (!head || !head.next) {
+    return true; // Empty list or single node is a palindrome
+  }
+
+  let slow = head;
+  let fast = head;
+  while (fast.next && fast.next.next) {
+    slow = slow.next;
+    fast = fast.next.next;
+  }
+
+  let secondHalfHead = reverseList(slow.next);
+  let p1 = head;
+  let p2 = secondHalfHead;
+
+  while (p2) {
+    if (p1.val !== p2.val) {
+      return false;
+    }
+    p1 = p1.next;
+    p2 = p2.next;
+  }
+
+  return true;
+}
+
+function reverseList(head) {
+  let prev = null;
+  let current = head;
+
+  while (current) {
+    let next = current.next;
+    current.next = prev;
+    prev = current;
+    current = next;
+  }
+
+  return prev;
+}
+// Example usage
+const list = new ListNode(1);
+list.next = new ListNode(2);
+list.next.next = new ListNode(3);
+list.next.next.next = new ListNode(2);
+list.next.next.next.next = new ListNode(1);
+
+console.log(isPalindrome(list)); // Output: true
