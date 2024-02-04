@@ -1,38 +1,15 @@
-function findMajorityElement(nums) {
-  let majorityElement = null;
-  let count = 0;
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  const alphanumericStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-  for (let i = 0; i < nums.length; i++) {
-    if (count === 0) {
-      majorityElement = nums[i];
-      count++;
-    } else if (nums[i] === majorityElement) {
-      count++;
-    } else {
-      count--;
-    }
-  }
+  // Reverse the string
+  const reversedStr = alphanumericStr.split('').reverse().join('');
 
-  // Count occurrences of the majority element
-  count = 0;
-  for (let i = 0; i < nums.length; i++) {
-    if (nums[i] === majorityElement) {
-      count++;
-    }
-  }
-
-  // Check if the majority element is indeed the majority
-  if (count > Math.floor(nums.length / 2)) {
-    return majorityElement;
-  } else {
-    return "No majority element found";
-  }
+  // Compare the reversed string with the original string
+  return alphanumericStr === reversedStr;
 }
-const nums = [2, 5, 5, 2, 5];
-console.log(findMajorityElement(nums)); // Output: 5
 
-const nums2 = [3, 1, 2, 3, 2, 3, 3];
-console.log(findMajorityElement(nums2)); // Output: 3
-
-const nums3 = [1, 2, 3];
-console.log(findMajorityElement(nums3)); // Output: No majority element found
+// Example usage
+console.log(isPalindrome('level'));      // Output: true
+console.log(isPalindrome('Hello'));      // Output: false
+console.log(isPalindrome('A man, a plan, a canal: Panama'));   // Output: true
