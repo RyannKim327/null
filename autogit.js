@@ -1,28 +1,26 @@
-function longestCommonPrefix(strings) {
-  if (strings.length === 0) {
-    return '';
-  }
+let array = [1, 2, 3, 4, 5];
+let elementToRemove = 3;
 
-  let prefix = strings[0];
-
-  for (let i = 1; i < strings.length; i++) {
-    const currentString = strings[i];
-    let j = 0;
-
-    while (j < prefix.length && j < currentString.length && prefix[j] === currentString[j]) {
-      j++;
-    }
-
-    prefix = prefix.substring(0, j);
-
-    if (prefix === '') {
-      return '';
-    }
-  }
-
-  return prefix;
+let index = array.indexOf(elementToRemove);
+if (index > -1) {
+  array.splice(index, 1);
 }
 
-// Example usage:
-const strings = ['hello', 'heaven', 'helicopter'];
-console.log(longestCommonPrefix(strings)); // Output: 'he'
+console.log(array); // [1, 2, 4, 5]
+let array = [1, 2, 3, 4, 5];
+let elementToRemove = 3;
+
+array = array.filter(item => item !== elementToRemove);
+
+console.log(array); // [1, 2, 4, 5]
+let array = [1, 2, 3, 4, 5];
+let elementToRemove = 3;
+
+for (let i = 0; i < array.length; i++) {
+  if (array[i] === elementToRemove) {
+    array.splice(i, 1);
+    break; // exit the loop once the element is removed
+  }
+}
+
+console.log(array); // [1, 2, 4, 5]
