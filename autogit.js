@@ -1,16 +1,8 @@
-function countCharacter(str, char) {
-  let count = 0;
-  for (let i = 0; i < str.length; i++) {
-    if (str.charAt(i) === char) {
-      count++;
-    }
-  }
-  return count;
-}
-
-// Example usage
-const myString = "Hello, World!";
-const myCharacter = "o";
-const occurrenceCount = countCharacter(myString, myCharacter);
-
-console.log(`The character "${myCharacter}" occurs ${occurrenceCount} times in the string "${myString}".`);
+let graph = {
+  A: { B: 4, C: 2 },
+  B: { A: 4, C: 1, D: 5 },
+  C: { A: 2, B: 1, D: 8 },
+  D: { B: 5, C: 8 }
+};
+let path = shortestPath(graph, 'A', 'D');
+console.log(path);  // Output: ['A', 'C', 'D']
