@@ -1,19 +1,23 @@
-// Function to generate a random number in a given range
-function getRandomNumber(min, max) {
-  // Compute the difference between the maximum and minimum values
-  const range = max - min;
-  // Generate a random number between 0 and 1, then scale it up to the range
-  const randomNumber = Math.random() * range;
-  // Shift the number to the desired range starting point
-  const adjustedNumber = randomNumber + min;
-  // Convert the number to an integer, if necessary
-  const finalNumber = Math.floor(adjustedNumber);
+function findFirstNonRepeatingCharacter(str) {
+  const frequency = {}; // store character frequencies
 
-  return finalNumber;
+  // loop through the string to update frequencies
+  for (let char of str) {
+    frequency[char] = (frequency[char] || 0) + 1;
+  }
+
+  // loop through the string to find the first non-repeating character
+  for (let char of str) {
+    if (frequency[char] === 1) {
+      return char; // found the first non-repeating character
+    }
+  }
+
+  return null; // no non-repeating character found
 }
 
-// Usage example
-const minRange = 1;
-const maxRange = 10;
-const randomNum = getRandomNumber(minRange, maxRange);
-console.log(randomNum);
+// Example usage:
+const input = "abacddbec";
+const firstNonRepeatingChar = findFirstNonRepeatingCharacter(input);
+
+console.log(firstNonRepeatingChar); // Output: "e"
