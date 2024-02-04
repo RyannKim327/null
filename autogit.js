@@ -1,17 +1,15 @@
-function isAnagram(str1, str2) {
+function isPalindrome(str) {
   // Remove non-alphanumeric characters and convert to lowercase
-  const cleanStr1 = str1.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-  const cleanStr2 = str2.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-
-  // Convert the strings to arrays, sort them, and convert back to strings
-  const sortedStr1 = cleanStr1.split('').sort().join('');
-  const sortedStr2 = cleanStr2.split('').sort().join('');
-
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+  var cleanStr = str.replace(/[\W_]/g, '').toLowerCase();
+  
+  // Reverse the string
+  var reversedStr = cleanStr.split('').reverse().join('');
+  
+  // Compare the original string with the reversed string
+  return cleanStr === reversedStr;
 }
 
-// Test cases
-console.log(isAnagram('listen', 'silent')); // Output: true
-console.log(isAnagram('debit card', 'bad credit')); // Output: true
-console.log(isAnagram('hello', 'world')); // Output: false
+// Example Usage:
+console.log(isPalindrome("racecar")); // true
+console.log(isPalindrome("hello")); // false
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
