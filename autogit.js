@@ -1,15 +1,7 @@
-function factorial(n) {
-  if (n === 0 || n === 1) {
-    return 1;
-  }
-  let result = 1;
-  for (let i = 2; i <= n; i++) {
-    result *= i;
-  }
-  return result;
+function countOccurrences(str, char) {
+  return str.split(char).length - 1;
 }
-
-// Example usage
-console.log(factorial(5)); // Output: 120
-console.log(factorial(0)); // Output: 1
-console.log(factorial(1)); // Output: 1
+var myString = "Hello World!";
+var myChar = "o";
+var occurrenceCount = countOccurrences(myString, myChar);
+console.log("Number of occurrences:", occurrenceCount);
