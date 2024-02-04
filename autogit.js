@@ -1,21 +1,16 @@
-function selectionSort(arr) {
-  for (let i = 0; i < arr.length - 1; i++) {
-    let minIndex = i;
+function findFirstRepeatedChar(str) {
+  const charMap = new Map();
 
-    for (let j = i + 1; j < arr.length; j++) {
-      if (arr[j] < arr[minIndex]) {
-        minIndex = j;
-      }
+  for (let char of str) {
+    if (charMap.has(char)) {
+      return char;
     }
-
-    // Swap elements
-    const temp = arr[i];
-    arr[i] = arr[minIndex];
-    arr[minIndex] = temp;
+    charMap.set(char, true);
   }
 
-  return arr;
+  return null; // Return null if no repeated character is found
 }
-const unsortedArray = [64, 25, 12, 22, 11];
-const sortedArray = selectionSort(unsortedArray);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
+
+const inputString = "hello world";
+const firstRepeatedChar = findFirstRepeatedChar(inputString);
+console.log(firstRepeatedChar); // Output: "l"
