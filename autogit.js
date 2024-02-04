@@ -1,15 +1,16 @@
-let str = "Hello, World!";
-let reversedStr = str.split('').reverse().join('');
-console.log(reversedStr);
-!dlroW ,olleH
-let str = "Hello, World!";
-let reversedStr = "";
-for (let i = str.length - 1; i >= 0; i--) {
-  reversedStr += str[i];
+function countCharacter(str, char) {
+  let count = 0;
+  for (let i = 0; i < str.length; i++) {
+    if (str.charAt(i) === char) {
+      count++;
+    }
+  }
+  return count;
 }
-console.log(reversedStr);
-!dlroW ,olleH
-let str = "Hello, World!";
-let reversedStr = str.split('').reduce((reversed, char) => char + reversed, '');
-console.log(reversedStr);
-!dlroW ,olleH
+
+// Example usage
+const myString = "Hello, World!";
+const myCharacter = "o";
+const occurrenceCount = countCharacter(myString, myCharacter);
+
+console.log(`The character "${myCharacter}" occurs ${occurrenceCount} times in the string "${myString}".`);
