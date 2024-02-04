@@ -1,20 +1,24 @@
-function findFirstNonRepeatingCharacter(str) {
-  const charCount = {};
-
-  for (const char of str) {
-    charCount[char] = (charCount[char] || 0) + 1;
-  }
-
-  for (const char of str) {
-    if (charCount[char] === 1) {
-      return char;
-    }
-  }
-
-  return null; // Return null if there are no non-repeating characters
+function reverseString(str) {
+  return str.split('').reverse().join('');
 }
 
-// Example usage
-const string = "abcaebdcefd";
-const firstNonRepeatingChar = findFirstNonRepeatingCharacter(string);
-console.log(firstNonRepeatingChar); // Output: "u"
+var reversed = reverseString('Hello, World!');
+console.log(reversed); // Output: '!dlroW ,olleH'
+function reverseString(str) {
+  var reversed = '';
+  for (var i = str.length - 1; i >= 0; i--) {
+    reversed += str[i];
+  }
+  return reversed;
+}
+
+var reversed = reverseString('Hello, World!');
+console.log(reversed); // Output: '!dlroW ,olleH'
+function reverseString(str) {
+  return str.split('').reduce(function (reversed, character) {
+    return character + reversed;
+  }, '');
+}
+
+var reversed = reverseString('Hello, World!');
+console.log(reversed); // Output: '!dlroW ,olleH'
