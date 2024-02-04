@@ -1,16 +1,8 @@
-function largestPrimeFactor(number) {
-    let factor = 2;
-    while (factor <= number) {
-        if (number % factor === 0) {
-            number /= factor;
-        } else {
-            factor++;
-        }
-    }
-    return factor;
+function decimalToBinary(decimal) {
+  return decimal.toString(2);
 }
 
-// Example usage:
-const number = 84;
-const largestFactor = largestPrimeFactor(number);
-console.log(`The largest prime factor of ${number} is ${largestFactor}.`);
+// Example usage
+console.log(decimalToBinary(10)); // Output: "1010"
+console.log(decimalToBinary(42)); // Output: "101010"
+console.log(decimalToBinary(255)); // Output: "11111111"
