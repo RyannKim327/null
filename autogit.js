@@ -1,11 +1,14 @@
-function getIntersection(list1, list2) {
-  let p1 = list1;
-  let p2 = list2;
-
-  while (p1 !== p2) {
-    p1 = p1 ? p1.next : list2; // Move to the next node or start of list2
-    p2 = p2 ? p2.next : list1; // Move to the next node or start of list1
-  }
-
-  return p1; // Return null (no intersection) or the intersection node
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  str = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+  
+  // Reverse the string
+  let reverseStr = str.split('').reverse().join('');
+  
+  // Compare reversed string with original string
+  return reverseStr === str;
 }
+
+// Example usage
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("Hello World")); // false
