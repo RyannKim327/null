@@ -1,14 +1,25 @@
-const array = [1, 2, 3, 3, 4, 5, 5];
-const uniqueArray = [...new Set(array)];
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 3, 3, 4, 5, 5];
-const uniqueArray = array.filter((value, index) => array.indexOf(value) === index);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 3, 3, 4, 5, 5];
-const uniqueArray = [];
-for (let i = 0; i < array.length; i++) {
-  if (uniqueArray.indexOf(array[i]) === -1) {
-    uniqueArray.push(array[i]);
+function countingSort(arr, min, max) {
+  const count = Array(max - min + 1).fill(0);
+  const sortedArr = [];
+
+  for (let i = 0; i < arr.length; i++) {
+    count[arr[i] - min]++;
   }
+
+  for (let i = min; i <= max; i++) {
+    while (count[i - min] > 0) {
+      sortedArr.push(i);
+      count[i - min]--;
+    }
+  }
+
+  return sortedArr;
 }
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+
+// Usage example:
+const array = [4, 2, 5, 1, 3, 5, 2];
+const min = Math.min(...array);
+const max = Math.max(...array);
+
+const sortedArray = countingSort(array, min, max);
+console.log(sortedArray); // Output: [1, 2, 2, 3, 4, 5, 5]
