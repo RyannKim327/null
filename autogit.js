@@ -1,27 +1,26 @@
-function shellSort(arr) {
-  // Calculate the gap sequence
-  let gap = Math.floor(arr.length / 2);
-  
-  // Loop over the gap values
-  while (gap > 0) {
-    // Perform insertion sort on each sublist
-    for (let i = gap; i < arr.length; i++) {
-      let j = i;
-      let temp = arr[i];
-      
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
+function longestCommonSubstring(str1, str2) {
+  const matrix = Array(str1.length + 1)
+    .fill(0)
+    .map(() => Array(str2.length + 1).fill(0));
+
+  let maxLength = 0;
+  let endIndex = 0;
+
+  for (let i = 1; i <= str1.length; i++) {
+    for (let j = 1; j <= str2.length; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        matrix[i][j] = matrix[i - 1][j - 1] + 1;
+        if (matrix[i][j] > maxLength) {
+          maxLength = matrix[i][j];
+          endIndex = i - 1; // or j - 1
+        }
       }
-      
-      arr[j] = temp;
     }
-    
-    // Reduce the gap value
-    gap = Math.floor(gap / 2);
   }
-  
-  return arr;
+
+  return str1.substr(endIndex - maxLength + 1, maxLength);
 }
-let arr = [9, 2, 5, 1, 4, 6, 8, 3, 7];
-console.log(shellSort(arr));  // [1, 2, 3, 4, 5, 6, 7, 8, 9]
+const str1 = "abcdef";
+const str2 = "xyzdef";
+const commonSubstring = longestCommonSubstring(str1, str2);
+console.log(commonSubstring); // Output: "def"
