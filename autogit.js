@@ -1,16 +1,23 @@
-function countOccurrences(word, str) {
-  // Create a regular expression with 'g' flag for global search and 'i' flag for case-insensitive search.
-  const regex = new RegExp(word, 'gi');
+function findNthNodeFromEnd(head, n) {
+  let count = 0;
+  let first = head;
+  let second = head;
 
-  // Use the match() method to find all occurrences of the word in the string.
-  const matches = str.match(regex);
+  // Move second pointer n nodes ahead
+  while (count < n) {
+    if (second === null) {
+      // Edge case: fewer than n nodes in the list
+      return null;
+    }
+    second = second.next;
+    count++;
+  }
 
-  // Return the count of matches (number of occurrences).
-  return matches ? matches.length : 0;
+  // Move both pointers until second reaches the end
+  while (second !== null) {
+    first = first.next;
+    second = second.next;
+  }
+
+  return first.value;
 }
-
-// Example usage:
-const myString = 'How much wood would a woodchuck chuck if a woodchuck could chuck wood?';
-const wordToCount = 'wood';
-const count = countOccurrences(wordToCount, myString);
-console.log(`The word "${wordToCount}" occurs ${count} times in the string.`);
