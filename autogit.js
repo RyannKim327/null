@@ -1,59 +1,55 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-
-function reverseLinkedList(head) {
-  let prev = null;
-  let current = head;
-  while (current) {
-    const next = current.next;
-    current.next = prev;
-    prev = current;
-    current = next;
-  }
-  return prev;
-}
-function isLinkedListPalindrome(head) {
-  if (!head || !head.next) {
-    // Empty or single-node list is always a palindrome
-    return true;
+// Depth-limited search algorithm
+function depthLimitedSearch(node, goalState, depthLimit) {
+  // Base case: goal state found
+  if (node.state === goalState) {
+    return node;
   }
 
-  // Find the midpoint of the list using the slow and fast pointers
-  let slow = head;
-  let fast = head;
-  while (fast && fast.next) {
-    fast = fast.next.next;
-    slow = slow.next;
+  // Base case: depth limit reached
+  if (node.depth === depthLimit) {
+    return null;
   }
 
-  // Reverse the second half of the list
-  let secondHalf = reverseLinkedList(slow);
-
-  // Compare the first and second half of the list
-  let p1 = head;
-  let p2 = secondHalf;
-  while (p2) {
-    if (p1.value !== p2.value) {
-      // Nodes don't match, not a palindrome
-      return false;
+  // Recursive case: explore child nodes
+  for (let childNode of node.children) {
+    let result = depthLimitedSearch(childNode, goalState, depthLimit);
+    if (result) {
+      return result; // Goal state found in child node
     }
-    p1 = p1.next;
-    p2 = p2.next;
   }
 
-  // If all nodes matched, it's a palindrome
-  return true;
+  return null; // Goal state not found within depth limit
 }
-// Create a sample linked list
-const head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(2);
-head.next.next.next.next = new Node(1);
 
-// Check if the linked list is a palindrome
-console.log(isLinkedListPalindrome(head)); // Output: true
+// Example usage
+class Node {
+  constructor(state, depth, children) {
+    this.state = state;
+    this.depth = depth;
+    this.children = children;
+  }
+}
+
+// Create a sample tree with nodes
+const node1 = new Node("A", 0, []);
+const node2 = new Node("B", 1, []);
+const node3 = new Node("C", 1, []);
+const node4 = new Node("D", 2, []);
+const node5 = new Node("E", 2, []);
+const node6 = new Node("F", 2, []);
+const node7 = new Node("G", 3, []);
+
+node1.children = [node2, node3];
+node2.children = [node4, node5];
+node3.children = [node6];
+node4.children = [node7];
+
+// Perform depth-limited search
+const result = depthLimitedSearch(node1, "G", 3);
+
+// Output the result
+if (result) {
+  console.log("Goal state found:", result.state);
+} else {
+  console.log("Goal state not found within depth limit");
+}
