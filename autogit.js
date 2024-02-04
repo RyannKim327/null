@@ -1,33 +1,14 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+const array = [1, 2, 3, 3, 4, 5, 5];
+const uniqueArray = [...new Set(array)];
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 3, 3, 4, 5, 5];
+const uniqueArray = array.filter((value, index) => array.indexOf(value) === index);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 3, 3, 4, 5, 5];
+const uniqueArray = [];
+for (let i = 0; i < array.length; i++) {
+  if (uniqueArray.indexOf(array[i]) === -1) {
+    uniqueArray.push(array[i]);
   }
 }
-
-function findMaxDepth(root) {
-  // Base case: if the root is null, the depth is 0
-  if (root === null) {
-    return 0;
-  }
-  
-  // Recursively find the depths of the left and right subtrees
-  const leftDepth = findMaxDepth(root.left);
-  const rightDepth = findMaxDepth(root.right);
-  
-  // The maximum depth is the larger of the left and right depths, plus 1
-  return Math.max(leftDepth, rightDepth) + 1;
-}
-
-// Example usage:
-// Create a binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-// Call the function to find the maximum depth
-const maxDepth = findMaxDepth(root);
-console.log(maxDepth); // Output: 3
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
