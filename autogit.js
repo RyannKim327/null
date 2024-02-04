@@ -1,43 +1,73 @@
-function breadthLimitedSearch(startNode, targetNode, limit) {
-  if (startNode === targetNode) {
-    return [startNode];
+// Define the Node class
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+// Define the BinarySearchTree class
+class BinarySearchTree {
+  constructor() {
+    this.root = null;
   }
 
-  const queue = [startNode];
-  const visited = new Set([startNode]);
+  // Method to insert a value into the tree
+  insert(value) {
+    const newNode = new Node(value);
 
-  while (queue.length > 0) {
-    const currentNode = queue.shift();
-    const neighbors = currentNode.getNeighbors(); // Replace with logic to get neighbors of the current node
-
-    if (currentNode.depth >= limit) {
-      continue;
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
     }
+  }
 
-    for (const neighbor of neighbors) {
-      if (!visited.has(neighbor)) {
-        neighbor.parent = currentNode;
-        neighbor.depth = currentNode.depth + 1;
-
-        if (neighbor === targetNode) {
-          // Build and return the path
-          const path = [targetNode];
-          let node = currentNode;
-
-          while (node !== startNode) {
-            path.unshift(node);
-            node = node.parent;
-          }
-
-          path.unshift(startNode);
-          return path;
-        }
-
-        visited.add(neighbor);
-        queue.push(neighbor);
+  // Recursive helper method to insert a value into the sub-tree
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
       }
     }
   }
 
-  return null; // Path not found
+  // Method to search for a value in the tree
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  // Recursive helper method to search for a value in the sub-tree
+  searchNode(node, value) {
+    if (node === null) {
+      return false;
+    } else if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else if (value > node.value) {
+      return this.searchNode(node.right, value);
+    } else {
+      return true;
+    }
+  }
 }
+
+// Example usage:
+const bst = new BinarySearchTree();
+bst.insert(8);
+bst.insert(3);
+bst.insert(10);
+bst.insert(1);
+bst.insert(6);
+bst.insert(14);
+
+console.log(bst.search(6)); // Output: true
+console.log(bst.search(12)); // Output: false
