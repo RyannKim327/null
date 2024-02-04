@@ -1,42 +1,38 @@
-function longestCommonSubsequence(str1, str2) {
-  const m = str1.length;
-  const n = str2.length;
-  
-  // Create a 2D array to store the lengths of LCS
-  const dp = Array(m + 1)
-    .fill(null)
-    .map(() => Array(n + 1).fill(0));
-  
-  // Calculate the lengths of LCS for all substrings
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-      } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-      }
-    }
+// Define a Node class
+class ListNode {
+  constructor(value, next = null) {
+    this.value = value;
+    this.next = next;
   }
-  
-  // Backtrack to construct the LCS
-  let lcs = '';
-  let i = m, j = n;
-  while (i > 0 && j > 0) {
-    if (str1[i - 1] === str2[j - 1]) {
-      lcs = str1[i - 1] + lcs;
-      i--;
-      j--;
-    } else if (dp[i - 1][j] >= dp[i][j - 1]) {
-      i--;
-    } else {
-      j--;
-    }
-  }
-  
-  return lcs;
 }
-const str1 = 'ABCD';
-const str2 = 'AEBD';
 
-const lcs = longestCommonSubsequence(str1, str2);
-console.log(lcs); // Output: ABD
+// Function to find the middle element
+function findMiddleElement(head) {
+  let slow = head;
+  let fast = head;
+
+  // Move 'fast' pointer at twice the speed of 'slow' pointer
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
+  }
+
+  // 'slow' pointer will be at the middle element
+  return slow.value;
+}
+
+// Create a sample linked list
+const node1 = new ListNode(1);
+const node2 = new ListNode(2);
+const node3 = new ListNode(3);
+const node4 = new ListNode(4);
+const node5 = new ListNode(5);
+
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node5;
+
+// Call the function to find the middle element
+const middleElement = findMiddleElement(node1);
+console.log(middleElement);
