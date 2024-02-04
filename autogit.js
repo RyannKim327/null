@@ -1,38 +1,35 @@
-// Define a Node class
-class ListNode {
-  constructor(value, next = null) {
-    this.value = value;
-    this.next = next;
+function countOccurrences(str, char) {
+  let count = 0;
+  for (let i = 0; i < str.length; i++) {
+    if (str[i] === char) {
+      count++;
+    }
   }
+  return count;
 }
 
-// Function to find the middle element
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
-
-  // Move 'fast' pointer at twice the speed of 'slow' pointer
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
-
-  // 'slow' pointer will be at the middle element
-  return slow.value;
+// Example usage
+const myString = "Hello, World!";
+const myChar = "o";
+const occurrences = countOccurrences(myString, myChar);
+console.log(occurrences); // Output: 2
+function countOccurrences(str, char) {
+  return str.split(char).length - 1;
 }
 
-// Create a sample linked list
-const node1 = new ListNode(1);
-const node2 = new ListNode(2);
-const node3 = new ListNode(3);
-const node4 = new ListNode(4);
-const node5 = new ListNode(5);
+// Example usage
+const myString = "Hello, World!";
+const myChar = "o";
+const occurrences = countOccurrences(myString, myChar);
+console.log(occurrences); // Output: 2
+function countOccurrences(str, char) {
+  const regex = new RegExp(char, "g");
+  const matches = str.match(regex);
+  return matches ? matches.length : 0;
+}
 
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node5;
-
-// Call the function to find the middle element
-const middleElement = findMiddleElement(node1);
-console.log(middleElement);
+// Example usage
+const myString = "Hello, World!";
+const myChar = "o";
+const occurrences = countOccurrences(myString, myChar);
+console.log(occurrences); // Output: 2
