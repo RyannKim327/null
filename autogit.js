@@ -1,23 +1,19 @@
-function largestPrimeFactor(number) {
-  let largestPrime = 2;
+function bubbleSort(array) {
+  const length = array.length;
 
-  while (number % 2 === 0) {
-    number /= 2;
-  }
-
-  for (let i = 3; i <= Math.sqrt(number); i += 2) {
-    while (number % i === 0) {
-      largestPrime = i;
-      number /= i;
+  for (let i = 0; i < length - 1; i++) {
+    for (let j = 0; j < length - 1 - i; j++) {
+      if (array[j] > array[j + 1]) {
+        // Swap elements
+        const temp = array[j];
+        array[j] = array[j + 1];
+        array[j + 1] = temp;
+      }
     }
   }
 
-  if (number > 2) {
-    largestPrime = number;
-  }
-
-  return largestPrime;
+  return array;
 }
-
-// Example usage:
-console.log(largestPrimeFactor(13195)); // Output: 29
+const unsortedArray = [5, 3, 8, 4, 2];
+const sortedArray = bubbleSort(unsortedArray);
+console.log(sortedArray); // Output: [2, 3, 4, 5, 8]
