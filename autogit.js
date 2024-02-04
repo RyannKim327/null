@@ -1,67 +1,35 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+function mergeSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
   }
+
+  const middle = Math.floor(arr.length / 2);
+  const left = arr.slice(0, middle);
+  const right = arr.slice(middle);
+
+  return merge(mergeSort(left), mergeSort(right));
 }
-class Queue {
-  constructor() {
-    this.front = null;  // points to the front of the queue
-    this.rear = null;   // points to the rear of the queue
-  }
 
-  // Add an item to the rear of the queue
-  enqueue(value) {
-    const newNode = new Node(value);
+function merge(left, right) {
+  let result = [];
+  let leftIndex = 0;
+  let rightIndex = 0;
 
-    if (this.isEmpty()) {
-      this.front = newNode;
-      this.rear = newNode;
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] < right[rightIndex]) {
+      result.push(left[leftIndex]);
+      leftIndex++;
     } else {
-      this.rear.next = newNode;
-      this.rear = newNode;
+      result.push(right[rightIndex]);
+      rightIndex++;
     }
   }
 
-  // Remove and return the item from the front of the queue
-  dequeue() {
-    if (this.isEmpty()) {
-      return null;
-    }
-
-    const removedNode = this.front;
-
-    if (this.front === this.rear) {
-      // only one node in the queue
-      this.front = null;
-      this.rear = null;
-    } else {
-      this.front = this.front.next;
-    }
-
-    return removedNode.value;
-  }
-
-  // Return the item at the front of the queue without removing it
-  peek() {
-    if (this.isEmpty()) {
-      return null;
-    }
-
-    return this.front.value;
-  }
-
-  // Check if the queue is empty
-  isEmpty() {
-    return this.front === null;
-  }
+  // Deal with any remaining elements
+  return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
 }
-const queue = new Queue();
 
-queue.enqueue(10);
-queue.enqueue(20);
-queue.enqueue(30);
-
-console.log(queue.dequeue());  // Output: 10
-console.log(queue.peek());     // Output: 20
-console.log(queue.isEmpty());  // Output: false
+// Usage example:
+const arr = [5, 3, 8, 4, 2, 1, 9, 7, 6];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr);
