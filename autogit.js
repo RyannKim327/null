@@ -1,58 +1,74 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null; // Reference to the next node
-  }
-}
-class Queue {
-  constructor() {
-    this.front = null; // Pointer to the front of the queue
-    this.rear = null; // Pointer to the rear of the queue
-  }
-}
-class Queue {
-  // ...
+// Graph representation (adjacency list)
+const graph = {
+  A: { B: 5, C: 2 },
+  B: { A: 5, C: 1, D: 3 },
+  C: { A: 2, B: 1, D: 6 },
+  D: { B: 3, C: 6 },
+};
 
-  enqueue(value) {
-    const newNode = new Node(value);
-    if (this.rear === null) {
-      // The queue was empty, so both front and rear point to the new node
-      this.front = newNode;
-      this.rear = newNode;
-    } else {
-      // Append the new node to the rear and update the rear pointer
-      this.rear.next = newNode;
-      this.rear = newNode;
+function dijkstra(graph, start) {
+  const distances = {};
+  const visited = {};
+  const queue = new PriorityQueue();
+
+  // Initialize distances and queue
+  for (let vertex in graph) {
+    distances[vertex] = Infinity;
+  }
+  distances[start] = 0;
+  queue.enqueue(start, 0);
+
+  while (!queue.isEmpty()) {
+    const { element: currentVertex } = queue.dequeue();
+    if (visited[currentVertex]) continue;
+
+    const neighbors = graph[currentVertex];
+    for (let neighbor in neighbors) {
+      const distance = distances[currentVertex] + neighbors[neighbor];
+
+      if (distance < distances[neighbor]) {
+        distances[neighbor] = distance;
+        queue.enqueue(neighbor, distance);
+      }
+    }
+
+    visited[currentVertex] = true;
+  }
+
+  return distances;
+}
+
+class PriorityQueue {
+  constructor() {
+    this.elements = [];
+  }
+
+  enqueue(element, priority) {
+    const item = { element, priority };
+    let added = false;
+
+    for (let i = 0; i < this.elements.length; i++) {
+      if (item.priority < this.elements[i].priority) {
+        this.elements.splice(i, 0, item);
+        added = true;
+        break;
+      }
+    }
+
+    if (!added) {
+      this.elements.push(item);
     }
   }
-}
-class Queue {
-  // ...
 
   dequeue() {
-    if (this.front === null) {
-      // The queue is empty
-      return null;
-    }
-    
-    const removedNode = this.front;
-    this.front = this.front.next;
+    return this.elements.shift();
+  }
 
-    // If the front becomes null, the queue is now empty, so update rear as well
-    if (this.front === null) {
-      this.rear = null;
-    }
-
-    return removedNode.value;
+  isEmpty() {
+    return this.elements.length === 0;
   }
 }
-const queue = new Queue();
 
-queue.enqueue(10);
-queue.enqueue(20);
-queue.enqueue(30);
-
-console.log(queue.dequeue()); // Output: 10
-console.log(queue.dequeue()); // Output: 20
-console.log(queue.dequeue()); // Output: 30
-console.log(queue.dequeue()); // Output: null, as the queue is now empty
+// Example usage
+const distances = dijkstra(graph, 'A');
+console.log(distances); // { A: 0, B: 5, C: 2, D: 6 }
