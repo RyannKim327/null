@@ -1,20 +1,86 @@
-function binarySearch(arr, target, left = 0, right = arr.length - 1) {
-  while (left <= right) {
-    const mid = Math.floor((left + right) / 2);
-    
-    if (arr[mid] === target) {
-      return mid;
-    } else if (arr[mid] < target) {
-      left = mid + 1;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
+
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+  }
+
+  append(value) {
+    const newNode = new Node(value);
+
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
     } else {
-      right = mid - 1;
+      this.tail.next = newNode;
+      this.tail = newNode;
     }
   }
 
-  return -1;
+  prepend(value) {
+    const newNode = new Node(value);
+
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      newNode.next = this.head;
+      this.head = newNode;
+    }
+  }
+
+  delete(value) {
+    if (!this.head) {
+      return;
+    }
+
+    if (this.head.value === value) {
+      this.head = this.head.next;
+      return;
+    }
+
+    let currentNode = this.head;
+    while (currentNode.next) {
+      if (currentNode.next.value === value) {
+        currentNode.next = currentNode.next.next;
+        if (currentNode.next === null) {
+          this.tail = currentNode;
+        }
+        return;
+      }
+      currentNode = currentNode.next;
+    }
+  }
+
+  print() {
+    if (!this.head) {
+      console.log("Linked List is empty");
+      return;
+    }
+
+    let currentNode = this.head;
+    let result = '';
+    while (currentNode) {
+      result += currentNode.value + ' -> ';
+      currentNode = currentNode.next;
+    }
+    result += 'null';
+    console.log(result);
+  }
 }
 
-// Example usage:
-const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18];
-console.log(binarySearch(arr, 10));  // Outputs: 4
-console.log(binarySearch(arr, 5));   // Outputs: -1 (not found)
+// Example usage
+const linkedList = new LinkedList();
+linkedList.append(10);
+linkedList.append(20);
+linkedList.prepend(5);
+linkedList.append(30);
+linkedList.print(); // Output: 5 -> 10 -> 20 -> 30 -> null
+linkedList.delete(20);
+linkedList.print(); // Output: 5 -> 10 -> 30 -> null
