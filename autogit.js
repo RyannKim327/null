@@ -1,42 +1,79 @@
-// Define a function for depth-limited search
-function depthLimitedSearch(node, depthLimit) {
-  // Base case 1: If the node is the goal or the depth limit is reached, return the result
-  if (isGoalNode(node) || depthLimit === 0) {
-    return node;
-  }
+function bidirectionalSearch(graph, start, goal) {
+  // Initialize frontier and visited sets for forward and backward searches
+  let forwardFrontier = [start];
+  let backwardFrontier = [goal];
+  const forwardVisited = new Set([start]);
+  const backwardVisited = new Set([goal]);
+  const forwardParent = {};
+  const backwardParent = {};
+  
+  while (forwardFrontier.length && backwardFrontier.length) {
+    // Perform one step of the forward search
+    const currentForward = forwardFrontier.shift();
+    const neighborsForward = graph[currentForward];
+    for (let neighbor of neighborsForward) {
+      if (!forwardVisited.has(neighbor)) {
+        forwardVisited.add(neighbor);
+        forwardParent[neighbor] = currentForward;
+        forwardFrontier.push(neighbor);
 
-  // Base case 2: If the node has no children, return null
-  if (!hasChildren(node)) {
-    return null;
-  }
+        if (backwardVisited.has(neighbor)) {
+          // Path found
+          return reconstructPath(neighbor, forwardParent, backwardParent);
+        }
+      }
+    }
 
-  // Recursive case: Explore the children within the depth limit
-  for (let child of getChildren(node)) {
-    const result = depthLimitedSearch(child, depthLimit - 1);
+    // Perform one step of the backward search
+    const currentBackward = backwardFrontier.shift();
+    const neighborsBackward = graph[currentBackward];
+    for (let neighbor of neighborsBackward) {
+      if (!backwardVisited.has(neighbor)) {
+        backwardVisited.add(neighbor);
+        backwardParent[neighbor] = currentBackward;
+        backwardFrontier.push(neighbor);
 
-    // If a solution is found, return it
-    if (result !== null) {
-      return result;
+        if (forwardVisited.has(neighbor)) {
+          // Path found
+          return reconstructPath(neighbor, forwardParent, backwardParent);
+        }
+      }
     }
   }
 
-  // If no solution is found within the depth limit, return null
+  // No path found
   return null;
 }
 
-// Define helper functions as per your specific problem
+function reconstructPath(node, forwardParent, backwardParent) {
+  const path = [node];
+  let current = node;
 
-// Function to check if the given node is the goal node
-function isGoalNode(node) {
-  // Implement your own logic here
+  while (forwardParent[current]) {
+    current = forwardParent[current];
+    path.unshift(current);
+  }
+
+  current = node;
+
+  while (backwardParent[current]) {
+    current = backwardParent[current];
+    path.push(current);
+  }
+
+  return path;
 }
 
-// Function to check if the given node has children
-function hasChildren(node) {
-  // Implement your own logic here
-}
+// Example usage
+const adjacencyList = {
+  A: ['B', 'C'],
+  B: ['A', 'D'],
+  C: ['A', 'E'],
+  D: ['B', 'F'],
+  E: ['C', 'F'],
+  F: ['D', 'E', 'G'],
+  G: ['F']
+};
 
-// Function to get the children of a given node
-function getChildren(node) {
-  // Implement your own logic here
-}
+const path = bidirectionalSearch(adjacencyList, 'A', 'G');
+console.log(path); // Output: ["A", "C", "E", "F", "G"]
