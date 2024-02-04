@@ -1,90 +1,104 @@
-class BTreeNode {
-  constructor(order, leaf = true) {
-    this.keys = [];
-    this.children = [];
-    this.leaf = leaf;
-    this.order = order;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
 }
 
-class BTree {
-  constructor(order) {
-    this.root = new BTreeNode(order, true);
-    this.order = order;
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
   }
 
-  insert(key) {
-    const root = this.root;
-    if (root.keys.length === (2 * this.order) - 1) { // If root is full, split it
-      const temp = new BTreeNode(this.order, false);
-      this.root = temp;
-      temp.children[0] = root;
-      this.splitChild(temp, 0);
-      this.insertNonFull(temp, key);
+  // Add a new element at the end of the linked list
+  append(value) {
+    const newNode = new Node(value);
+
+    if (this.head === null) {
+      this.head = newNode;
+      this.tail = newNode;
     } else {
-      this.insertNonFull(root, key);
+      this.tail.next = newNode;
+      this.tail = newNode;
     }
   }
 
-  insertNonFull(node, key) {
-    let i = node.keys.length - 1;
-    if (node.leaf) {
-      node.keys.push(null);
-      while (i >= 0 && key < node.keys[i]) {
-        node.keys[i + 1] = node.keys[i];
-        i--;
-      }
-      node.keys[i + 1] = key;
+  // Add a new element at the beginning of the linked list
+  prepend(value) {
+    const newNode = new Node(value);
+
+    if (this.head === null) {
+      this.head = newNode;
+      this.tail = newNode;
     } else {
-      while (i >= 0 && key < node.keys[i]) {
-        i--;
+      newNode.next = this.head;
+      this.head = newNode;
+    }
+  }
+
+  // Remove the first occurrence of a value from the linked list
+  remove(value) {
+    if (this.head === null) {
+      return;
+    }
+
+    if (this.head.value === value) {
+      this.head = this.head.next;
+
+      if (this.head === null) {
+        this.tail = null;
       }
-      i++;
-      if (node.children[i].keys.length === (2 * this.order) - 1) {
-        this.splitChild(node, i);
-        if (key > node.keys[i]) {
-          i++;
+      return;
+    }
+
+    let current = this.head;
+
+    while (current.next !== null) {
+      if (current.next.value === value) {
+        current.next = current.next.next;
+
+        if (current.next === null) {
+          this.tail = current;
         }
+        return;
       }
-      this.insertNonFull(node.children[i], key);
+      current = current.next;
     }
   }
 
-  splitChild(parent, i) {
-    const order = this.order;
-    const child = parent.children[i];
-    const newChild = new BTreeNode(order, child.leaf);
-    parent.children.splice(i + 1, 0, newChild);
-    parent.keys.splice(i, 0, child.keys[order - 1]);
-    newChild.keys = child.keys.splice(order, order - 1);
+  // Check if a value is present in the linked list
+  contains(value) {
+    let current = this.head;
 
-    if (!child.leaf) {
-      newChild.children = child.children.splice(order, order);
+    while (current !== null) {
+      if (current.value === value) {
+        return true;
+      }
+      current = current.next;
     }
+
+    return false;
   }
 
-  search(node, key) {
-    let i = 0;
-    while (i < node.keys.length && key > node.keys[i]) {
-      i++;
+  // Convert the linked list to an array
+  toArray() {
+    const result = [];
+    let current = this.head;
+
+    while (current !== null) {
+      result.push(current.value);
+      current = current.next;
     }
-    if (node.keys[i] === key) {
-      return node;
-    }
-    if (node.leaf) {
-      return null;
-    }
-    return this.search(node.children[i], key);
+
+    return result;
   }
 }
-const tree = new BTree(3);
-
-tree.insert(5);
-tree.insert(2);
-tree.insert(9);
-tree.insert(1);
-tree.insert(7);
-tree.insert(4);
-
-console.log(tree.search(tree.root, 9)); // BTreeNode { keys: [ 9 ], children: [], leaf: true, order: 3 }
-console.log(tree.search(tree.root, 8)); // null
+const linkedList = new LinkedList();
+linkedList.append(10);
+linkedList.append(20);
+linkedList.prepend(5);
+linkedList.remove(10);
+console.log(linkedList.toArray()); // Output: [5, 20]
+console.log(linkedList.contains(20)); // Output: true
+console.log(linkedList.contains(10)); // Output: false
