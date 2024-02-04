@@ -1,38 +1,27 @@
-class Node {
-  constructor(value, next) {
-    this.value = value;
-    this.next = next;
-  }
+function connectToServer(url) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        resolve(xhr.responseText);
+      } else {
+        reject(Error(xhr.statusText));
+      }
+    };
+    xhr.onerror = function() {
+      reject(Error("Network Error"));
+    };
+    xhr.send();
+  });
 }
 
-function reverseLinkedList(head) {
-  let prev = null;
-  let current = head;
-
-  while (current !== null) {
-    let next = current.next;
-    current.next = prev;
-    prev = current;
-    current = next;
-  }
-
-  return prev;
-}
-// Create a sample linked list: 1 -> 2 -> 3 -> 4 -> null
-const node4 = new Node(4, null);
-const node3 = new Node(3, node4);
-const node2 = new Node(2, node3);
-const node1 = new Node(1, node2);
-
-const reversedList = reverseLinkedList(node1);
-
-// Traverse the reversed linked list and print the values
-let current = reversedList;
-while (current !== null) {
-  console.log(current.value);
-  current = current.next;
-}
-4
-3
-2
-1
+const serverUrl = 'https://api.example.com/data';
+connectToServer(serverUrl)
+  .then(response => {
+    console.log('Response from server:', response);
+    // Process the response data here
+  })
+  .catch(error => {
+    console.error('Error connecting to server:', error);
+  });
