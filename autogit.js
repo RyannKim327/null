@@ -1,17 +1,21 @@
-function factorial(n) {
-  if (n === 0 || n === 1) {
-    return 1;
+function selectionSort(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    let minIndex = i;
+
+    for (let j = i + 1; j < arr.length; j++) {
+      if (arr[j] < arr[minIndex]) {
+        minIndex = j;
+      }
+    }
+
+    // Swap elements
+    const temp = arr[i];
+    arr[i] = arr[minIndex];
+    arr[minIndex] = temp;
   }
 
-  let result = 1;
-  for (let i = 2; i <= n; i++) {
-    result *= i;
-  }
-
-  return result;
+  return arr;
 }
-
-// Example usage
-console.log(factorial(5)); // Output: 120
-console.log(factorial(0)); // Output: 1
-console.log(factorial(1)); // Output: 1
+const unsortedArray = [64, 25, 12, 22, 11];
+const sortedArray = selectionSort(unsortedArray);
+console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
