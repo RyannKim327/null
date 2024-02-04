@@ -1,16 +1,59 @@
-function shellSort(array) {
-  var gap = Math.floor(array.length / 2);
-  while (gap > 0) { // Gap loop
-    for (var i = gap; i < array.length; i++) { // Insertion sort loop
-      var temp = array[i];
-      for (var j = i; j >= gap && array[j - gap] > temp; j -= gap) { // Compare and swap loop
-        array[j] = array[j - gap];
-      }
-      array[j] = temp;
-    }
-    gap = Math.floor(gap / 2);
-  }
-  return array;
+function binarySearch(arr, target, start = 0, end = arr.length - 1) {
+  // To ensure the array is sorted, you can include a sorting step here if needed
+  // If the array is not sorted, binary search won't work correctly.
 }
-var arr = [12, 34, 54, 2, 3];
-console.log(shellSort(arr)); // Output: [2, 3, 12, 34, 54]
+function binarySearch(arr, target, start = 0, end = arr.length - 1) {
+  if (start > end) {
+    return -1;
+  }
+}
+function binarySearch(arr, target, start = 0, end = arr.length - 1) {
+  if (start > end) {
+    return -1;
+  }
+
+  const mid = Math.floor((start + end) / 2);
+}
+function binarySearch(arr, target, start = 0, end = arr.length - 1) {
+  if (start > end) {
+    return -1;
+  }
+
+  const mid = Math.floor((start + end) / 2);
+
+  if (arr[mid] === target) {
+    return mid;
+  }
+}
+function binarySearch(arr, target, start = 0, end = arr.length - 1) {
+  if (start > end) {
+    return -1;
+  }
+
+  const mid = Math.floor((start + end) / 2);
+
+  if (arr[mid] === target) {
+    return mid;
+  } else if (arr[mid] > target) {
+    return binarySearch(arr, target, start, mid - 1); // Search in the left half
+  }
+}
+function binarySearch(arr, target, start = 0, end = arr.length - 1) {
+  if (start > end) {
+    return -1;
+  }
+
+  const mid = Math.floor((start + end) / 2);
+
+  if (arr[mid] === target) {
+    return mid;
+  } else if (arr[mid] > target) {
+    return binarySearch(arr, target, start, mid - 1); // Search in the left half
+  } else {
+    return binarySearch(arr, target, mid + 1, end); // Search in the right half
+  }
+}
+const sortedArray = [1, 3, 5, 7, 9];
+const targetValue = 5;
+const index = binarySearch(sortedArray, targetValue);
+console.log(index); // Output: 2 (index of 5 in the array)
