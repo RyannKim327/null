@@ -1,24 +1,77 @@
-function radixSort(arr) {
-  if (arr.length === 0) return arr;
-  
-  // Find the maximum number and determine the number of digits
-  const max = Math.max(...arr);
-  const maxDigits = Math.floor(Math.log10(max) + 1);
+class TrieNode {
+  constructor() {
+    this.children = new Map();
+    this.isEndOfWord = false;
+  }
 }
-  // Initialize buckets
-  const buckets = Array.from({ length: 10 }, () => []);
-  // Perform radix sort
-  for (let digit = 0; digit < maxDigits; digit++) {
-    for (let num of arr) {
-      const radix = Math.floor((num / Math.pow(10, digit)) % 10);
-      buckets[radix].push(num);
-    }
-
-    arr = [].concat(...buckets);
-    buckets.forEach(bucket => (bucket.length = 0));
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
   }
 
-  return arr;
+  // Method to insert a word into the trie
+  insert(word) {
+    let current = this.root;
+
+    for (let i = 0; i < word.length; i++) {
+      const ch = word[i];
+      let node = current.children.get(ch);
+
+      if (!node) {
+        node = new TrieNode();
+        current.children.set(ch, node);
+      }
+
+      current = node;
+    }
+
+    current.isEndOfWord = true;
+  }
+
+  // Method to search for a word in the trie
+  search(word) {
+    let current = this.root;
+
+    for (let i = 0; i < word.length; i++) {
+      const ch = word[i];
+      const node = current.children.get(ch);
+
+      if (!node) {
+        return false;
+      }
+
+      current = node;
+    }
+
+    return current.isEndOfWord;
+  }
+
+  // Method to check if a given prefix exists in the trie
+  startsWith(prefix) {
+    let current = this.root;
+
+    for (let i = 0; i < prefix.length; i++) {
+      const ch = prefix[i];
+      const node = current.children.get(ch);
+
+      if (!node) {
+        return false;
+      }
+
+      current = node;
+    }
+
+    return true;
+  }
 }
-const numbers = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log(radixSort(numbers)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+const trie = new Trie();
+
+trie.insert("apple");
+trie.insert("abacus");
+trie.insert("banana");
+
+console.log(trie.search("apple")); // true
+console.log(trie.search("app")); // false
+
+console.log(trie.startsWith("app")); // true
+console.log(trie.startsWith("bat")); // false
