@@ -1,95 +1,88 @@
 class Node {
-  constructor(value, priority) {
-    this.value = value;
-    this.priority = priority;
+  constructor(data) {
+    this.data = data;
+    this.next = null;
   }
 }
-class PriorityQueue {
+
+class LinkedList {
   constructor() {
-    this.heap = [];
-  }
-}
-getParentIndex(index) {
-  return Math.floor((index - 1) / 2);
-}
-
-getChildrenIndices(index) {
-  const leftChildIndex = 2 * index + 1;
-  const rightChildIndex = 2 * index + 2;
-  return [leftChildIndex, rightChildIndex];
-}
-enqueue(value, priority) {
-  const newNode = new Node(value, priority);
-  this.heap.push(newNode);
-
-  let currentNodeIndex = this.heap.length - 1;
-  let parentIndex = this.getParentIndex(currentNodeIndex);
-
-  while (
-    currentNodeIndex > 0 &&
-    this.heap[parentIndex].priority > newNode.priority
-  ) {
-    // Swap parent and current node
-    [this.heap[parentIndex], this.heap[currentNodeIndex]] = [
-      this.heap[currentNodeIndex],
-      this.heap[parentIndex],
-    ];
-
-    currentNodeIndex = parentIndex;
-    parentIndex = this.getParentIndex(currentNodeIndex);
-  }
-}
-dequeue() {
-  if (this.heap.length === 0) {
-    return null;
+    this.head = null;
+    this.tail = null;
   }
 
-  if (this.heap.length === 1) {
-    return this.heap.pop().value;
+  append(data) {
+    const newNode = new Node(data);
+
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
   }
 
-  const rootNode = this.heap[0];
-  this.heap[0] = this.heap.pop();
+  prepend(data) {
+    const newNode = new Node(data);
 
-  let currentNodeIndex = 0;
-  let [leftChildIndex, rightChildIndex] = this.getChildrenIndices(
-    currentNodeIndex
-  );
-
-  while (
-    (this.heap[leftChildIndex] &&
-      this.heap[currentNodeIndex].priority >
-        this.heap[leftChildIndex].priority) ||
-    (this.heap[rightChildIndex] &&
-      this.heap[currentNodeIndex].priority >
-        this.heap[rightChildIndex].priority)
-  ) {
-    // Determine the index of the child node to swap
-    const swapIndex =
-      !this.heap[rightChildIndex] ||
-      this.heap[leftChildIndex].priority <
-        this.heap[rightChildIndex].priority
-        ? leftChildIndex
-        : rightChildIndex;
-
-    // Swap current node with the selected child
-    [this.heap[currentNodeIndex], this.heap[swapIndex]] = [
-      this.heap[swapIndex],
-      this.heap[currentNodeIndex],
-    ];
-
-    currentNodeIndex = swapIndex;
-    [leftChildIndex, rightChildIndex] = this.getChildrenIndices(
-      currentNodeIndex
-    );
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      newNode.next = this.head;
+      this.head = newNode;
+    }
   }
 
-  return rootNode.value;
+  delete(data) {
+    if (!this.head) {
+      return;
+    }
+
+    if (this.head.data === data) {
+      this.head = this.head.next;
+      if (this.head === null) {
+        this.tail = null;
+      }
+      return;
+    }
+
+    let current = this.head;
+
+    while (current.next) {
+      if (current.next.data === data) {
+        current.next = current.next.next;
+        if (current.next === null) {
+          this.tail = current;
+        }
+        return;
+      }
+      current = current.next;
+    }
+  }
+
+  print() {
+    let current = this.head;
+    const result = [];
+
+    while (current) {
+      result.push(current.data);
+      current = current.next;
+    }
+
+    console.log(result.join(" -> "));
+  }
 }
-const priorityQueue = new PriorityQueue();
-priorityQueue.enqueue('Task 1', 2);
-priorityQueue.enqueue('Task 2', 1);
-priorityQueue.enqueue('Task 3', 3);
-console.log(priorityQueue.dequeue()); // Output: Task 2
-console.log(priorityQueue.dequeue()); // Output: Task 1
-console.log(priorityQueue.dequeue()); // Output: Task 3
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+
+list.prepend(0);
+
+list.print(); // Output: 0 -> 1 -> 2 -> 3
+
+list.delete(2);
+
+list.print(); // Output: 0 -> 1 -> 3
