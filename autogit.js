@@ -1,25 +1,15 @@
-function countingSort(arr, min, max) {
-  const count = Array(max - min + 1).fill(0);
-  const sortedArr = [];
-
-  for (let i = 0; i < arr.length; i++) {
-    count[arr[i] - min]++;
+function factorial(n) {
+  if (n === 0 || n === 1) {
+    return 1;
   }
-
-  for (let i = min; i <= max; i++) {
-    while (count[i - min] > 0) {
-      sortedArr.push(i);
-      count[i - min]--;
-    }
+  let result = 1;
+  for (let i = 2; i <= n; i++) {
+    result *= i;
   }
-
-  return sortedArr;
+  return result;
 }
 
-// Usage example:
-const array = [4, 2, 5, 1, 3, 5, 2];
-const min = Math.min(...array);
-const max = Math.max(...array);
-
-const sortedArray = countingSort(array, min, max);
-console.log(sortedArray); // Output: [1, 2, 2, 3, 4, 5, 5]
+// Example usage
+console.log(factorial(5)); // Output: 120
+console.log(factorial(0)); // Output: 1
+console.log(factorial(1)); // Output: 1
