@@ -1,21 +1,16 @@
-function binarySearchRecursive(arr, target, start, end) {
-    if (start > end) {
-        return -1;
-    }
-    
-    const mid = Math.floor((start + end) / 2);
+function findMaxSubarray(array) {
+  let maxSoFar = array[0];
+  let maxEndingHere = array[0];
 
-    if (target === arr[mid]) {
-        return mid;
-    } else if (target < arr[mid]) {
-        return binarySearchRecursive(arr, target, start, mid - 1);
-    } else {
-        return binarySearchRecursive(arr, target, mid + 1, end);
-    }
+  for (let i = 1; i < array.length; i++) {
+    maxEndingHere = Math.max(array[i], maxEndingHere + array[i]);
+    maxSoFar = Math.max(maxSoFar, maxEndingHere);
+  }
+
+  return maxSoFar;
 }
 
-const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const target = 7;
-
-const result = binarySearchRecursive(arr, target, 0, arr.length - 1);
-console.log(result);   // Output: 6 (index of target element)
+// Example usage
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const maxSubarraySum = findMaxSubarray(array);
+console.log(maxSubarraySum); // Output: 6
