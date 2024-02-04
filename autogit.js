@@ -1,45 +1,70 @@
-class HashTable {
+class TrieNode {
   constructor() {
-    this.table = {};
-  }
-
-  // Hash function to convert key into a hash value
-  hash(key) {
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) {
-      hash += key.charCodeAt(i);
-    }
-    return hash;
-  }
-
-  // Insert key-value pair into the hash table
-  insert(key, value) {
-    const hashValue = this.hash(key);
-    this.table[hashValue] = value;
-  }
-
-  // Retrieve value based on key from the hash table
-  get(key) {
-    const hashValue = this.hash(key);
-    return this.table[hashValue];
-  }
-
-  // Remove key-value pair from the hash table
-  remove(key) {
-    const hashValue = this.hash(key);
-    delete this.table[hashValue];
+    this.children = {};
+    this.isEndOfWord = false;
   }
 }
 
-// Usage example
-const hashTable = new HashTable();
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
+  }
 
-hashTable.insert("name", "John");
-hashTable.insert("age", 30);
+  insert(word) {
+    let current = this.root;
 
-console.log(hashTable.get("name"));  // Output: John
-console.log(hashTable.get("age"));   // Output: 30
+    for (let i = 0; i < word.length; i++) {
+      const ch = word[i];
+      if (!current.children[ch]) {
+        current.children[ch] = new TrieNode();
+      }
+      current = current.children[ch];
+    }
 
-hashTable.remove("name");
+    current.isEndOfWord = true;
+  }
 
-console.log(hashTable.get("name"));  // Output: undefined
+  search(word) {
+    let current = this.root;
+
+    for (let i = 0; i < word.length; i++) {
+      const ch = word[i];
+      if (!current.children[ch]) {
+        return false;
+      }
+      current = current.children[ch];
+    }
+
+    return current.isEndOfWord;
+  }
+
+  startsWith(prefix) {
+    let current = this.root;
+
+    for (let i = 0; i < prefix.length; i++) {
+      const ch = prefix[i];
+      if (!current.children[ch]) {
+        return false;
+      }
+      current = current.children[ch];
+    }
+
+    return true;
+  }
+}
+const trie = new Trie();
+
+trie.insert("apple");
+trie.insert("banana");
+trie.insert("app");
+trie.insert("application");
+
+console.log(trie.search("app")); // true
+console.log(trie.search("banana")); // true
+console.log(trie.search("application")); // true
+console.log(trie.search("apricot")); // false
+
+console.log(trie.startsWith("app")); // true
+console.log(trie.startsWith("ban")); // true
+console.log(trie.startsWith("appli")); // true
+console.log(trie.startsWith("pie")); // false
