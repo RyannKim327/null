@@ -1,79 +1,36 @@
-function bidirectionalSearch(graph, start, goal) {
-  // Initialize frontier and visited sets for forward and backward searches
-  let forwardFrontier = [start];
-  let backwardFrontier = [goal];
-  const forwardVisited = new Set([start]);
-  const backwardVisited = new Set([goal]);
-  const forwardParent = {};
-  const backwardParent = {};
-  
-  while (forwardFrontier.length && backwardFrontier.length) {
-    // Perform one step of the forward search
-    const currentForward = forwardFrontier.shift();
-    const neighborsForward = graph[currentForward];
-    for (let neighbor of neighborsForward) {
-      if (!forwardVisited.has(neighbor)) {
-        forwardVisited.add(neighbor);
-        forwardParent[neighbor] = currentForward;
-        forwardFrontier.push(neighbor);
-
-        if (backwardVisited.has(neighbor)) {
-          // Path found
-          return reconstructPath(neighbor, forwardParent, backwardParent);
-        }
-      }
-    }
-
-    // Perform one step of the backward search
-    const currentBackward = backwardFrontier.shift();
-    const neighborsBackward = graph[currentBackward];
-    for (let neighbor of neighborsBackward) {
-      if (!backwardVisited.has(neighbor)) {
-        backwardVisited.add(neighbor);
-        backwardParent[neighbor] = currentBackward;
-        backwardFrontier.push(neighbor);
-
-        if (forwardVisited.has(neighbor)) {
-          // Path found
-          return reconstructPath(neighbor, forwardParent, backwardParent);
-        }
-      }
-    }
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
-
-  // No path found
-  return null;
 }
 
-function reconstructPath(node, forwardParent, backwardParent) {
-  const path = [node];
-  let current = node;
-
-  while (forwardParent[current]) {
-    current = forwardParent[current];
-    path.unshift(current);
+function countLeafNodes(root) {
+  if (root === null) {
+    return 0; // Base case: empty tree has zero leaf nodes
   }
 
-  current = node;
-
-  while (backwardParent[current]) {
-    current = backwardParent[current];
-    path.push(current);
+  if (root.left === null && root.right === null) {
+    return 1; // Base case: node with no children is a leaf node
   }
 
-  return path;
+  const leftCount = countLeafNodes(root.left); // Recursively count leaf nodes in the left subtree
+  const rightCount = countLeafNodes(root.right); // Recursively count leaf nodes in the right subtree
+
+  return leftCount + rightCount; // Add the counts from left and right subtrees
 }
 
-// Example usage
-const adjacencyList = {
-  A: ['B', 'C'],
-  B: ['A', 'D'],
-  C: ['A', 'E'],
-  D: ['B', 'F'],
-  E: ['C', 'F'],
-  F: ['D', 'E', 'G'],
-  G: ['F']
-};
+// Example usage:
 
-const path = bidirectionalSearch(adjacencyList, 'A', 'G');
-console.log(path); // Output: ["A", "C", "E", "F", "G"]
+// Create sample binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+
+// Call the function to count leaf nodes
+const leafNodeCount = countLeafNodes(root);
+console.log("Number of leaf nodes:", leafNodeCount);
