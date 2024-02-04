@@ -1,15 +1,38 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  var cleanStr = str.replace(/[\W_]/g, '').toLowerCase();
-  
-  // Reverse the string
-  var reversedStr = cleanStr.split('').reverse().join('');
-  
-  // Compare the original string with the reversed string
-  return cleanStr === reversedStr;
+
+function findMajorityElement(arr) {
+  let majorityElement = null;
+  let count = 0;
+
+  for (let i = 0; i < arr.length; i++) {
+    if (count === 0) {
+      majorityElement = arr[i];
+      count = 1;
+    } else {
+      if (arr[i] === majorityElement) {
+        count++;
+      } else {
+        count--;
+      }
+    }
+  }
+
+  // Verify if the majority element is indeed the majority
+  count = 0;
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === majorityElement) {
+      count++;
+    }
+  }
+
+  if (count > arr.length / 2) {
+    return majorityElement;
+  } else {
+    return "No majority element found.";
+  }
 }
 
-// Example Usage:
-console.log(isPalindrome("racecar")); // true
-console.log(isPalindrome("hello")); // false
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+// Example usage:
+const arr = [2, 2, 1, 1, 1, 2, 2];
+const majorityElement = findMajorityElement(arr);
+console.log(majorityElement); // Output: 2
+
