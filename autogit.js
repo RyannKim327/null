@@ -1,27 +1,56 @@
-function LinkedListNode(value) {
-  this.value = value;
-  this.next = null;
+function buildFailureTable(pattern) {
+  const table = Array(pattern.length).fill(0);
+  let i = 0;
+  
+  for (let j = 1; j < pattern.length;) {
+    if (pattern[i] === pattern[j]) {
+      table[j] = i + 1;
+      i++;
+      j++;
+    } else {
+      if (i !== 0) {
+        i = table[i - 1];
+      } else {
+        table[j] = 0;
+        j++;
+      }
+    }
+  }
+  
+  return table;
 }
 
-function findLinkedListLength(head) {
-  let count = 0;
-  let currentNode = head;
+function stringMatch(text, pattern) {
+  const failureTable = buildFailureTable(pattern);
+  let j = 0;
 
-  while (currentNode !== null) {
-    count++;
-    currentNode = currentNode.next;
+  for (let i = 0; i < text.length;) {
+    if (pattern[j] === text[i]) {
+      i++;
+      j++;
+      
+      if (j === pattern.length) {
+        return i - j; // Match found, return the starting index
+      }
+    } else {
+      if (j !== 0) {
+        j = failureTable[j - 1];
+      } else {
+       i++;
+      }
+    }
   }
 
-  return count;
+  return -1; // Match not found
 }
 
 // Example usage:
-const node1 = new LinkedListNode(1);
-const node2 = new LinkedListNode(2);
-const node3 = new LinkedListNode(3);
+const text = "ABCABCDABABCDABCDABDE";
+const pattern = "ABCDABD";
 
-node1.next = node2;
-node2.next = node3;
-
-const length = findLinkedListLength(node1);
-console.log(length); // Output: 3
+const matchIndex = stringMatch(text, pattern);
+if (matchIndex !== -1) {
+  console.log(`Pattern found at index ${matchIndex}`);
+} else {
+  console.log("Pattern not found");
+}
