@@ -1,22 +1,41 @@
-function selectionSort(array) {
-  const length = array.length;
+function generateBadCharTable(pattern) {
+  const table = new Array(256).fill(pattern.length);
 
-  for (let i = 0; i < length - 1; i++) {
-    let minIndex = i;
-
-    for (let j = i + 1; j < length; j++) {
-      if (array[j] < array[minIndex]) {
-        minIndex = j;
-      }
-    }
-
-    // Swap the minimum element with the current element
-    [array[i], array[minIndex]] = [array[minIndex], array[i]];
+  for (let i = 0; i < pattern.length - 1; i++) {
+    const charCode = pattern.charCodeAt(i);
+    table[charCode] = pattern.length - 1 - i;
   }
 
-  return array;
+  return table;
 }
+function boyerMooreHorspoolSearch(text, pattern) {
+  const badCharTable = generateBadCharTable(pattern);
+  let i = pattern.length - 1;
 
-// Example usage
-const arr = [64, 25, 12, 22, 11];
-console.log(selectionSort(arr)); // [11, 12, 22, 25, 64]
+  while (i < text.length) {
+    let j = pattern.length - 1;
+
+    while (j >= 0 && text[i] === pattern[j]) {
+      i--;
+      j--;
+    }
+
+    if (j === -1) {
+      return i + 1; // Pattern found
+    }
+
+    const charCode = text.charCodeAt(i);
+    i += Math.max(badCharTable[charCode], 1);
+  }
+
+  return -1; // Pattern not found
+}
+const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
+const pattern = "ipsum";
+
+const index = boyerMooreHorspoolSearch(text, pattern);
+if (index !== -1) {
+  console.log(`Pattern found at index ${index}`);
+} else {
+  console.log("Pattern not found");
+}
