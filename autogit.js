@@ -1,19 +1,13 @@
-function bubbleSort(array) {
-  const length = array.length;
-
-  for (let i = 0; i < length - 1; i++) {
-    for (let j = 0; j < length - 1 - i; j++) {
-      if (array[j] > array[j + 1]) {
-        // Swap elements
-        const temp = array[j];
-        array[j] = array[j + 1];
-        array[j + 1] = temp;
-      }
+function isSortedAscending(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false;
     }
   }
-
-  return array;
+  return true;
 }
-const unsortedArray = [5, 3, 8, 4, 2];
-const sortedArray = bubbleSort(unsortedArray);
-console.log(sortedArray); // Output: [2, 3, 4, 5, 8]
+const arr1 = [1, 2, 3, 4, 5];
+console.log(isSortedAscending(arr1));  // Output: true
+
+const arr2 = [5, 4, 3, 2, 1];
+console.log(isSortedAscending(arr2));  // Output: false
