@@ -1,12 +1,16 @@
-function validateEmail(email) {
-  // Regular expression pattern for validating email
-  var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  
-  // Test the email against the pattern
-  return emailPattern.test(email);
+function factorialRecursive(num) {
+  if (num === 0) {
+    return 1;
+  } else {
+    return num * factorialRecursive(num - 1);
+  }
 }
-
-// Usage:
-var email = "example@example.com";
-var isValid = validateEmail(email);
-console.log("Is the email valid? " + isValid);
+console.log(factorialRecursive(5));  // Output: 120
+function factorialIterative(num) {
+  let result = 1;
+  for (let i = 2; i <= num; i++) {
+    result *= i;
+  }
+  return result;
+}
+console.log(factorialIterative(5));  // Output: 120
