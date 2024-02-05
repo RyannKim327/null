@@ -1,16 +1,24 @@
-function factorialRecursive(num) {
-  if (num === 0) {
-    return 1;
-  } else {
-    return num * factorialRecursive(num - 1);
+function interpolationSearch(arr, x, start, end) {
+  if (start <= end && x >= arr[start] && x <= arr[end]) {
+    const pos = start + Math.floor(((x - arr[start]) * (end - start)) / (arr[end] - arr[start]));
+
+    if (arr[pos] === x) {
+      return pos;
+    }
+
+    if (arr[pos] > x) {
+      return interpolationSearch(arr, x, start, pos - 1);
+    }
+
+    if (arr[pos] < x) {
+      return interpolationSearch(arr, x, pos + 1, end);
+    }
   }
+
+  return -1;
 }
-console.log(factorialRecursive(5));  // Output: 120
-function factorialIterative(num) {
-  let result = 1;
-  for (let i = 2; i <= num; i++) {
-    result *= i;
-  }
-  return result;
-}
-console.log(factorialIterative(5));  // Output: 120
+
+// Example usage
+const sortedArray = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
+const valueToFind = 13;
+console.log(interpolationSearch(sortedArray, valueToFind, 0, sortedArray.length - 1)); // Output: 6 (index of valueToFind)
