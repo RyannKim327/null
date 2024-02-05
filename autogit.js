@@ -1,26 +1,90 @@
-function binarySearch(arr, target, start, end) {
-  if (start > end) {
-    return -1;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+    this.height = 1;
   }
+}
 
-  const mid = Math.floor((start + end) / 2);
+class AVLTree {
+  constructor() {
+    this.root = null;
+  }
+}
+function getHeight(node) {
+  if (node === null) return 0;
+  return node.height;
+}
 
-  if (arr[mid] === target) {
-    return mid;
-  } else if (arr[mid] < target) {
-    return binarySearch(arr, target, mid + 1, end);
+function getBalanceFactor(node) {
+  if (node === null) return 0;
+  return getHeight(node.left) - getHeight(node.right);
+}
+function rotateLeft(node) {
+  const rightNode = node.right;
+  node.right = rightNode.left;
+  rightNode.left = node;
+
+  node.height = Math.max(getHeight(node.left), getHeight(node.right)) + 1;
+  rightNode.height = Math.max(getHeight(rightNode.left), getHeight(rightNode.right)) + 1;
+
+  return rightNode;
+}
+function rotateRight(node) {
+  const leftNode = node.left;
+  node.left = leftNode.right;
+  leftNode.right = node;
+
+  node.height = Math.max(getHeight(node.left), getHeight(node.right)) + 1;
+  leftNode.height = Math.max(getHeight(leftNode.left), getHeight(leftNode.right)) + 1;
+
+  return leftNode;
+}
+AVLTree.prototype.insert = function (value) {
+  const newNode = new Node(value);
+
+  if (this.root === null) {
+    this.root = newNode;
   } else {
-    return binarySearch(arr, target, start, mid - 1);
+    this.root = this._insertNode(this.root, newNode);
   }
-}
+};
 
-// Example usage
-const sortedArray = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const targetValue = 12;
-const resultIndex = binarySearch(sortedArray, targetValue, 0, sortedArray.length - 1);
+AVLTree.prototype._insertNode = function (node, newNode) {
+  if (node === null) return newNode;
 
-if (resultIndex !== -1) {
-  console.log(`Element found at index ${resultIndex}`);
-} else {
-  console.log("Element not found");
-}
+  if (newNode.value < node.value) {
+    node.left = this._insertNode(node.left, newNode);
+  } else {
+    node.right = this._insertNode(node.right, newNode);
+  }
+
+  node.height = Math.max(getHeight(node.left), getHeight(node.right)) + 1;
+  const balanceFactor = getBalanceFactor(node);
+
+  if (balanceFactor > 1 && newNode.value < node.left.value) {
+    return rotateRight(node);
+  }
+
+  if (balanceFactor < -1 && newNode.value > node.right.value) {
+    return rotateLeft(node);
+  }
+
+  if (balanceFactor > 1 && newNode.value > node.left.value) {
+    node.left = rotateLeft(node.left);
+    return rotateRight(node);
+  }
+
+  if (balanceFactor < -1 && newNode.value < node.right.value) {
+    node.right = rotateRight(node.right);
+    return rotateLeft(node);
+  }
+
+  return node;
+};
+const avlTree = new AVLTree();
+
+avlTree.insert(10);
+avlTree.insert(20);
+avlTree.insert(30);
