@@ -1,49 +1,50 @@
-// Define a TreeNode class
-class TreeNode {
-  constructor(val) {
-    this.val = val;
-    this.left = null;
-    this.right = null;
+function calculateHash(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash += str.charCodeAt(i);
   }
+  return hash;
 }
-
-// Function to calculate the height of a binary tree
-function getHeight(node) {
-  if (node == null) {
-    return 0;
+function updateHash(hash, oldChar, newChar, patternLength) {
+  hash -= oldChar.charCodeAt(0);
+  hash += newChar.charCodeAt(0);
+  return hash;
+}
+function checkMatch(text, pattern, index) {
+  for (let i = 0; i < pattern.length; i++) {
+    if (text[index + i] !== pattern[i]) {
+      return false;
+    }
   }
-  return 1 + Math.max(getHeight(node.left), getHeight(node.right));
+  return true;
 }
-
-// Function to calculate the diameter of a binary tree
-function getDiameter(root) {
-  if (root == null) {
-    return 0;
+function searchRabinKarp(text, pattern) {
+  const patternHash = calculateHash(pattern);
+  const textLength = text.length;
+  const patternLength = pattern.length;
+  
+  // Calculate the initial hash of the first substring in the text
+  let textHash = calculateHash(text.substring(0, patternLength));
+  
+  // Iterate through the text, checking substrings of length patternLength
+  for (let i = 0; i <= textLength - patternLength; i++) {
+    // If the hash values match, perform an additional check
+    if (textHash === patternHash && checkMatch(text, pattern, i)) {
+      return i; // Return the index when pattern is found
+    }
+    
+    // Update the hash value for the next substring
+    textHash = updateHash(
+      textHash,
+      text[i],
+      text[i + patternLength],
+      patternLength
+    );
   }
-
-  // Calculate the height of the left and right subtrees
-  const leftHeight = getHeight(root.left);
-  const rightHeight = getHeight(root.right);
-
-  // Calculate the diameter of the left and right subtrees recursively
-  const leftDiameter = getDiameter(root.left);
-  const rightDiameter = getDiameter(root.right);
-
-  // Return the maximum of the following values:
-  // 1. Diameter of the left subtree
-  // 2. Diameter of the right subtree
-  // 3. Length of the longest path that passes through the root (leftHeight + rightHeight)
-  return Math.max(leftHeight + rightHeight, Math.max(leftDiameter, rightDiameter));
+  
+  return -1; // Return -1 when pattern is not found
 }
-
-// Example usage:
-// Create a binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-// Calculate the diameter
-const diameter = getDiameter(root);
-console.log("Diameter of the binary tree:", diameter);
+const text = "Hello, world!";
+const pattern = "world";
+const index = searchRabinKarp(text, pattern);
+console.log(index); // Output: 7
