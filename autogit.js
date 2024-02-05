@@ -1,82 +1,26 @@
-// TrieNode class
-class TrieNode {
-  constructor() {
-    this.children = {}; // Mapping of character to TrieNode
-    this.isEndOfWord = false; // Represents if it's the end of a word
+function binarySearch(arr, target, start, end) {
+  if (start > end) {
+    return -1;
+  }
+
+  const mid = Math.floor((start + end) / 2);
+
+  if (arr[mid] === target) {
+    return mid;
+  } else if (arr[mid] < target) {
+    return binarySearch(arr, target, mid + 1, end);
+  } else {
+    return binarySearch(arr, target, start, mid - 1);
   }
 }
 
-// Trie class
-class Trie {
-  constructor() {
-    this.root = new TrieNode();
-  }
+// Example usage
+const sortedArray = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+const targetValue = 12;
+const resultIndex = binarySearch(sortedArray, targetValue, 0, sortedArray.length - 1);
 
-  // Insert a word into the Trie
-  insert(word) {
-    let currentNode = this.root;
-
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-
-      if (!currentNode.children[char]) {
-        currentNode.children[char] = new TrieNode();
-      }
-
-      currentNode = currentNode.children[char];
-    }
-
-    currentNode.isEndOfWord = true;
-  }
-
-  // Search if a word exists in the Trie
-  search(word) {
-    let currentNode = this.root;
-
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-
-      if (currentNode.children[char]) {
-        currentNode = currentNode.children[char];
-      } else {
-        return false;
-      }
-    }
-
-    return currentNode.isEndOfWord;
-  }
-
-  // Check if a given prefix exists in the Trie
-  startsWith(prefix) {
-    let currentNode = this.root;
-
-    for (let i = 0; i < prefix.length; i++) {
-      const char = prefix[i];
-
-      if (currentNode.children[char]) {
-        currentNode = currentNode.children[char];
-      } else {
-        return false;
-      }
-    }
-
-    return true;
-  }
+if (resultIndex !== -1) {
+  console.log(`Element found at index ${resultIndex}`);
+} else {
+  console.log("Element not found");
 }
-
-// Usage
-const trie = new Trie();
-
-trie.insert("apple");
-trie.insert("banana");
-trie.insert("orange");
-
-console.log(trie.search("apple")); // true
-console.log(trie.search("orange")); // true
-console.log(trie.search("banana")); // true
-console.log(trie.search("grape")); // false
-
-console.log(trie.startsWith("app")); // true
-console.log(trie.startsWith("oran")); // true
-console.log(trie.startsWith("ban")); // true
-console.log(trie.startsWith("gr")); // false
