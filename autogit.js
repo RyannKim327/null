@@ -1,90 +1,82 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-        this.height = 1;
-    }
-}
-class AVLTree {
-    constructor() {
-        this.root = null;
-    }
-}
-getHeight(node) {
-    if (node === null) {
-        return 0;
-    }
-    return node.height;
-}
-getBalance(node) {
-    if (node === null) {
-        return 0;
-    }
-    return this.getHeight(node.left) - this.getHeight(node.right);
-}
-rotateRight(y) {
-    let x = y.left;
-    let T2 = x.right;
-
-    x.right = y;
-    y.left = T2;
-
-    y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
-    x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
-
-    return x;
-}
-rotateLeft(x) {
-    let y = x.right;
-    let T2 = y.left;
-
-    y.left = x;
-    x.right = T2;
-
-    x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
-    y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
-
-    return y;
-}
-insert(value) {
-    this.root = this.insertNode(this.root, value);
+// TrieNode class
+class TrieNode {
+  constructor() {
+    this.children = {}; // Mapping of character to TrieNode
+    this.isEndOfWord = false; // Represents if it's the end of a word
+  }
 }
 
-insertNode(node, value) {
-    if (node === null)
-        return new Node(value);
+// Trie class
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
+  }
 
-    if (value < node.value)
-        node.left = this.insertNode(node.left, value);
-    else if (value > node.value)
-        node.right = this.insertNode(node.right, value);
-    else
-        return node;
+  // Insert a word into the Trie
+  insert(word) {
+    let currentNode = this.root;
 
-    node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
 
-    let balance = this.getBalance(node);
+      if (!currentNode.children[char]) {
+        currentNode.children[char] = new TrieNode();
+      }
 
-    if (balance > 1 && value < node.left.value)
-        return this.rotateRight(node);
-
-    if (balance < -1 && value > node.right.value)
-        return this.rotateLeft(node);
-
-    if (balance > 1 && value > node.left.value) {
-        node.left = this.rotateLeft(node.left);
-        return this.rotateRight(node);
+      currentNode = currentNode.children[char];
     }
 
-    if (balance < -1 && value < node.right.value) {
-        node.right = this.rotateRight(node.right);
-        return this.rotateLeft(node);
+    currentNode.isEndOfWord = true;
+  }
+
+  // Search if a word exists in the Trie
+  search(word) {
+    let currentNode = this.root;
+
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+
+      if (currentNode.children[char]) {
+        currentNode = currentNode.children[char];
+      } else {
+        return false;
+      }
     }
 
-    return node;
+    return currentNode.isEndOfWord;
+  }
+
+  // Check if a given prefix exists in the Trie
+  startsWith(prefix) {
+    let currentNode = this.root;
+
+    for (let i = 0; i < prefix.length; i++) {
+      const char = prefix[i];
+
+      if (currentNode.children[char]) {
+        currentNode = currentNode.children[char];
+      } else {
+        return false;
+      }
+    }
+
+    return true;
+  }
 }
-let avlTree = new AVLTree();
-avlTree.insert(10);
-avlTree.insert(20);
-avlTree.insert(30);
+
+// Usage
+const trie = new Trie();
+
+trie.insert("apple");
+trie.insert("banana");
+trie.insert("orange");
+
+console.log(trie.search("apple")); // true
+console.log(trie.search("orange")); // true
+console.log(trie.search("banana")); // true
+console.log(trie.search("grape")); // false
+
+console.log(trie.startsWith("app")); // true
+console.log(trie.startsWith("oran")); // true
+console.log(trie.startsWith("ban")); // true
+console.log(trie.startsWith("gr")); // false
