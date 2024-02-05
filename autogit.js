@@ -1,17 +1,12 @@
-function findLongestCommonPrefix(strings) {
-  if (strings.length === 0) {
-    return "";
-  }
-
-  let prefix = strings[0];
-
-  for (let i = 1; i < strings.length; i++) {
-    while (strings[i].indexOf(prefix) !== 0) {
-      prefix = prefix.substring(0, prefix.length - 1);
-    }
-  }
-
-  return prefix;
+function validateEmail(email) {
+  // Regular expression pattern for validating email
+  var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+  // Test the email against the pattern
+  return emailPattern.test(email);
 }
-const strings = ["flower", "flow", "flight"];
-console.log(findLongestCommonPrefix(strings)); // Output: "fl"
+
+// Usage:
+var email = "example@example.com";
+var isValid = validateEmail(email);
+console.log("Is the email valid? " + isValid);
