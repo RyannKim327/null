@@ -1,50 +1,83 @@
-function calculateHash(str) {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash += str.charCodeAt(i);
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
-  return hash;
 }
-function updateHash(hash, oldChar, newChar, patternLength) {
-  hash -= oldChar.charCodeAt(0);
-  hash += newChar.charCodeAt(0);
-  return hash;
-}
-function checkMatch(text, pattern, index) {
-  for (let i = 0; i < pattern.length; i++) {
-    if (text[index + i] !== pattern[i]) {
-      return false;
+
+class Queue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.size = 0;
+  }
+
+  // Add an element to the back of the queue
+  enqueue(value) {
+    const newNode = new Node(value);
+    if (this.head === null) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
     }
+    this.size++;
   }
-  return true;
-}
-function searchRabinKarp(text, pattern) {
-  const patternHash = calculateHash(pattern);
-  const textLength = text.length;
-  const patternLength = pattern.length;
-  
-  // Calculate the initial hash of the first substring in the text
-  let textHash = calculateHash(text.substring(0, patternLength));
-  
-  // Iterate through the text, checking substrings of length patternLength
-  for (let i = 0; i <= textLength - patternLength; i++) {
-    // If the hash values match, perform an additional check
-    if (textHash === patternHash && checkMatch(text, pattern, i)) {
-      return i; // Return the index when pattern is found
+
+  // Remove and return the element at the front of the queue
+  dequeue() {
+    if (this.head === null) {
+      return null; // Return null if the queue is empty
     }
-    
-    // Update the hash value for the next substring
-    textHash = updateHash(
-      textHash,
-      text[i],
-      text[i + patternLength],
-      patternLength
-    );
+    const removedNode = this.head;
+    this.head = this.head.next;
+    removedNode.next = null;
+    if (this.head === null) {
+      this.tail = null;
+    }
+    this.size--;
+    return removedNode.value;
   }
-  
-  return -1; // Return -1 when pattern is not found
+
+  // Check if the queue is empty
+  isEmpty() {
+    return this.size === 0;
+  }
+
+  // Get the number of elements in the queue
+  getSize() {
+    return this.size;
+  }
+
+  // Peek and return the element at the front of the queue without removing it
+  peek() {
+    return this.head ? this.head.value : null;
+  }
+
+  // Clear the queue
+  clear() {
+    this.head = null;
+    this.tail = null;
+    this.size = 0;
+  }
 }
-const text = "Hello, world!";
-const pattern = "world";
-const index = searchRabinKarp(text, pattern);
-console.log(index); // Output: 7
+const queue = new Queue();
+
+queue.enqueue(10); // Add elements to the queue
+queue.enqueue(20);
+queue.enqueue(30);
+
+console.log(queue.getSize()); // Output: 3
+
+console.log(queue.peek()); // Output: 10
+
+console.log(queue.dequeue()); // Output: 10
+console.log(queue.dequeue()); // Output: 20
+
+console.log(queue.getSize()); // Output: 1
+console.log(queue.isEmpty()); // Output: false
+
+queue.clear(); // Clear the queue
+
+console.log(queue.isEmpty()); // Output: true
