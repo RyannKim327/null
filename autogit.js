@@ -1,84 +1,36 @@
-function rabinKarpSearch(pattern, text) {
-  // ...
+function findMedianSortedArrays(nums1, nums2) {
+  const merged = [];
+  let p1 = 0, p2 = 0;
+
+  while (p1 < nums1.length && p2 < nums2.length) {
+    if (nums1[p1] < nums2[p2]) {
+      merged.push(nums1[p1]);
+      p1++;
+    } else {
+      merged.push(nums2[p2]);
+      p2++;
+    }
+  }
+
+  // Add remaining elements from nums1, if any
+  while (p1 < nums1.length) {
+    merged.push(nums1[p1]);
+    p1++;
+  }
+
+  // Add remaining elements from nums2, if any
+  while (p2 < nums2.length) {
+    merged.push(nums2[p2]);
+    p2++;
+  }
+
+  const length = merged.length;
+  const mid = Math.floor(length / 2);
+
+  return length % 2 === 0 ? (merged[mid - 1] + merged[mid]) / 2 : merged[mid];
 }
-  if (pattern.length === 0 || text.length === 0) {
-    return -1;
-  }
-  const patternLength = pattern.length;
-  const textLength = text.length;
-  const prime1 = 3; // First prime number
-  const prime2 = 5; // Second prime number
-  let patternHash = 0;
-  let windowHash = 0;
-  for (let i = 0; i < patternLength; i++) {
-    patternHash += pattern.charCodeAt(i) * Math.pow(prime1, patternLength - i - 1);
-    windowHash += text.charCodeAt(i) * Math.pow(prime1, patternLength - i - 1);
-  }
-  for (let i = 0; i <= textLength - patternLength; i++) {
-    if (patternHash === windowHash) {
-      let patternFound = true;
 
-      // Verify characters one by one
-      for (let j = 0; j < patternLength; j++) {
-        if (text[i + j] !== pattern[j]) {
-          patternFound = false;
-          break;
-        }
-      }
-
-      if (patternFound) {
-        return i; // Return the starting index of the pattern in the text
-      }
-    }
-
-    // Calculate the next window's hash value
-    // Remove the leftmost character from the hash and add the rightmost character
-    if (i < textLength - patternLength) {
-      windowHash = (windowHash - text.charCodeAt(i) * Math.pow(prime1, patternLength - 1)) * prime1 + text.charCodeAt(i + patternLength);
-    }
-  }
-
-  return -1; // Pattern not found
-function rabinKarpSearch(pattern, text) {
-  if (pattern.length === 0 || text.length === 0) {
-    return -1;
-  }
-
-  const patternLength = pattern.length;
-  const textLength = text.length;
-  const prime1 = 3;
-  const prime2 = 5;
-
-  let patternHash = 0;
-  let windowHash = 0;
-
-  for (let i = 0; i < patternLength; i++) {
-    patternHash += pattern.charCodeAt(i) * Math.pow(prime1, patternLength - i - 1);
-    windowHash += text.charCodeAt(i) * Math.pow(prime1, patternLength - i - 1);
-  }
-
-  for (let i = 0; i <= textLength - patternLength; i++) {
-    if (patternHash === windowHash) {
-      let patternFound = true;
-      for (let j = 0; j < patternLength; j++) {
-        if (text[i + j] !== pattern[j]) {
-          patternFound = false;
-          break;
-        }
-      }
-      if (patternFound) {
-        return i;
-      }
-    }
-    if (i < textLength - patternLength) {
-      windowHash = (windowHash - text.charCodeAt(i) * Math.pow(prime1, patternLength - 1)) * prime1 + text.charCodeAt(i + patternLength);
-    }
-  }
-
-  return -1;
-}
-const text = 'The quick brown fox jumps over the lazy dog';
-const pattern = 'brown';
-const matchIndex = rabinKarpSearch(pattern, text);
-
-console.log(matchIndex); // Output: 10
+// Example usage:
+const nums1 = [1, 3];
+const nums2 = [2, 4];
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.5
