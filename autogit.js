@@ -1,22 +1,42 @@
-function isPrime(number) {
-  // Check if the number is less than 2
-  if (number < 2) {
-    return false;
-  }
-
-  // Check if the number is divisible by any number from 2 to the square root of the number
-  for (let i = 2; i <= Math.sqrt(number); i++) {
-    if (number % i === 0) {
-      return false;
+function buildMaxHeap(arr) {
+    const n = arr.length;
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        heapify(arr, n, i);
     }
-  }
-
-  // If the number is not divisible by any number between 2 and its square root, it is a prime number
-  return true;
 }
 
-// Example usage
-console.log(isPrime(7));    // Output: true
-console.log(isPrime(10));   // Output: false
-console.log(isPrime(23));   // Output: true
-console.log(isPrime(100));  // Output: false
+function heapify(arr, heapSize, rootIdx) {
+    let largest = rootIdx;
+    const left = 2 * rootIdx + 1;
+    const right = 2 * rootIdx + 2;
+
+    if (left < heapSize && arr[left] > arr[largest]) {
+        largest = left;
+    }
+
+    if (right < heapSize && arr[right] > arr[largest]) {
+        largest = right;
+    }
+
+    if (largest !== rootIdx) {
+        [arr[rootIdx], arr[largest]] = [arr[largest], arr[rootIdx]];
+        heapify(arr, heapSize, largest);
+    }
+}
+function heapSort(arr) {
+    const n = arr.length;
+
+    buildMaxHeap(arr);
+
+    for (let i = n - 1; i > 0; i--) {
+        [arr[0], arr[i]] = [arr[i], arr[0]];
+        heapify(arr, i, 0);
+    }
+
+    return arr;
+}
+const array = [4, 10, 3, 5, 1];
+console.log('Original Array:', array);
+console.log('Sorted Array:', heapSort(array));
+Original Array: [4, 10, 3, 5, 1]
+Sorted Array: [1, 3, 4, 5, 10]
