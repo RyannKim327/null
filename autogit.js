@@ -1,39 +1,39 @@
-function ListNode(val, next) {
-  this.val = val;
-  this.next = next;
-}
+function rabinKarpSearch(text, pattern) {
+  const textLength = text.length;
+  const patternLength = pattern.length;
+  const primeNumber = 101; // Choose a prime number for modulo operation
+  const hashPattern = hash(pattern, patternLength, primeNumber);
+  let hashText = hash(text, patternLength, primeNumber);
 
-function isLinkedListPalindrome(head) {
-  if (!head || !head.next) {
-    // Empty or single node list is a palindrome
-    return true;
-  }
-
-  let slow = head,
-    fast = head;
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
-
-  let reverseHead = null,
-    node = slow;
-  while (node) {
-    const temp = node.next;
-    node.next = reverseHead;
-    reverseHead = node;
-    node = temp;
-  }
-
-  let left = head,
-    right = reverseHead;
-  while (right) {
-    if (left.val !== right.val) {
-      return false;
+  for (let i = 0; i <= textLength - patternLength; i++) {
+    if (hashPattern === hashText) {
+      if (text.substring(i, i + patternLength) === pattern) {
+        return i; // Match found, return the starting index
+      }
     }
-    left = left.next;
-    right = right.next;
+    // Recalculate hash value for next substring
+    if (i < textLength - patternLength) {
+      hashText =
+        ((hashText - text.charCodeAt(i) * Math.pow(primeNumber, patternLength - 1)) * primeNumber +
+          text.charCodeAt(i + patternLength)) %
+        primeNumber;
+      if (hashText < 0) {
+        hashText += primeNumber;
+      }
+    }
   }
-
-  return true;
+  return -1; // Match not found
 }
+
+function hash(str, strLength, primeNumber) {
+  let hashValue = 0;
+  for (let i = 0; i < strLength; i++) {
+    hashValue += str.charCodeAt(i) * Math.pow(primeNumber, i);
+  }
+  return hashValue % primeNumber;
+}
+
+// Usage example
+const text = 'ABCDEFGHIJK';
+const pattern = 'DEF';
+console.log(rabinKarpSearch(text, pattern)); // Output: 3 (index where the pattern 'DEF' starts)
