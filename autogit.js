@@ -1,55 +1,85 @@
-function rabinKarp(pattern, text) {
-  const indices = [];
+function biDirectionalSearch(initialState, goalState) {
+  // Create forward and backward queues
+  const forwardQueue = [initialState];
+  const backwardQueue = [goalState];
 
-  if (pattern.length === 0 || text.length === 0) {
-    return indices;
-  }
+  // Initialize visited sets and parent dictionaries
+  const forwardVisited = new Set();
+  const backwardVisited = new Set();
+  const forwardParent = {};
+  const backwardParent = {};
 
-  const prime = 101;
-  const mod = 100000007;
+  // Start the search loop
+  while (forwardQueue.length > 0 && backwardQueue.length > 0) {
+    // Forward search
+    const forwardState = forwardQueue.shift();
+    forwardVisited.add(forwardState);
 
-  let patternHash = 0;
-  let textHash = 0;
-  let h = 1;
+    // Check for a match in backward search
+    if (backwardVisited.has(forwardState)) {
+      // Path found
+      return getPath(forwardParent, backwardParent, forwardState);
+    }
 
-  for (let i = 0; i < pattern.length - 1; i++) {
-    h = (h * prime) % mod;
-  }
-
-  for (let i = 0; i < pattern.length; i++) {
-    patternHash = (patternHash * prime + pattern.charCodeAt(i)) % mod;
-    textHash = (textHash * prime + text.charCodeAt(i)) % mod;
-  }
-
-  for (let i = 0; i <= text.length - pattern.length; i++) {
-    if (patternHash === textHash) {
-      let found = true;
-
-      for (let j = 0; j < pattern.length; j++) {
-        if (pattern[j] !== text[i + j]) {
-          found = false;
-          break;
-        }
-      }
-
-      if (found) {
-        indices.push(i);
+    // Generate next states and update parent dictionary
+    const nextStates = generateNextStates(forwardState);
+    for (const state of nextStates) {
+      if (!forwardVisited.has(state)) {
+        forwardQueue.push(state);
+        forwardParent[state] = forwardState;
       }
     }
 
-    if (i < text.length - pattern.length) {
-      textHash = (prime * (textHash - text.charCodeAt(i) * h) + text.charCodeAt(i + pattern.length)) % mod;
+    // Backward search
+    const backwardState = backwardQueue.shift();
+    backwardVisited.add(backwardState);
 
-      if (textHash < 0) {
-        textHash += mod;
+    // Check for a match in forward search
+    if (forwardVisited.has(backwardState)) {
+      // Path found
+      return getPath(forwardParent, backwardParent, backwardState);
+    }
+
+    // Generate next states and update parent dictionary
+    const prevStates = generatePrevStates(backwardState);
+    for (const state of prevStates) {
+      if (!backwardVisited.has(state)) {
+        backwardQueue.push(state);
+        backwardParent[state] = backwardState;
       }
     }
   }
 
-  return indices;
+  // No path found
+  return null;
 }
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABA";
 
-const indices = rabinKarp(pattern, text);
-console.log(indices); // [0, 10, 14]
+function getPath(forwardParent, backwardParent, state) {
+  const path = [];
+  let currentState = state;
+
+  // Reconstruct the path from the initial state to the goal state
+  while (currentState) {
+    path.push(currentState);
+    currentState = forwardParent[currentState];
+  }
+
+  // Reconstruct the path from the goal state to the initial state
+  currentState = backwardParent[state];
+  while (currentState) {
+    path.unshift(currentState);
+    currentState = backwardParent[currentState];
+  }
+
+  return path;
+}
+
+// Helper function to generate next states
+function generateNextStates(state) {
+  // Implement your logic to generate the next states based on the current state
+}
+
+// Helper function to generate previous states for backward search
+function generatePrevStates(state) {
+  // Implement your logic to generate the previous states based on the current state
+}
