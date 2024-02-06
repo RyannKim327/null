@@ -1,14 +1,15 @@
-function decimalToBinary(decimal) {
-  let binaryDigits = [];
+function countOccurrences(string, word) {
+  const regex = new RegExp(word, 'gi');
+  const matches = string.match(regex);
   
-  while (decimal > 0) {
-    let remainder = decimal % 2;
-    binaryDigits.unshift(remainder);
-    decimal = Math.floor(decimal / 2);
+  if (matches === null) {
+    return 0;
+  } else {
+    return matches.length;
   }
-  
-  return binaryDigits.join('');
 }
-let decimalNumber = 42;
-let binaryNumber = decimalToBinary(decimalNumber);
-console.log(binaryNumber);  // Output: "101010"
+const myString = 'Hello, this is a sample string. This string contains the word string multiple times.';
+const wordToCount = 'string';
+
+const result = countOccurrences(myString, wordToCount);
+console.log(result); // Output: 2
