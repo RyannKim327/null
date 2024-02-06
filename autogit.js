@@ -1,48 +1,53 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
+function computeLPS(pattern) {
+  const lps = [0]; // Initialize LPS array with the first element as 0
+  let len = 0; // Length of the previous longest prefix suffix
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-
-  addNode(value) {
-    const newNode = new Node(value);
-
-    if (!this.head) {
-      this.head = newNode;
+  for (let i = 1; i < pattern.length; ) {
+    if (pattern[i] === pattern[len]) {
+      len++;
+      lps[i] = len;
+      i++;
     } else {
-      let current = this.head;
-
-      while (current.next) {
-        current = current.next;
+      if (len !== 0) {
+        len = lps[len - 1];
+      } else {
+        lps[i] = 0;
+        i++;
       }
-
-      current.next = newNode;
     }
   }
 
-  getLength() {
-    let count = 0;
-    let current = this.head;
-
-    while (current) {
-      count++;
-      current = current.next;
-    }
-
-    return count;
-  }
+  return lps;
 }
+function stringMatch(text, pattern) {
+  const lps = computeLPS(pattern);
+  const matches = [];
 
-// Example usage
-const list = new LinkedList();
-list.addNode(5);
-list.addNode(10);
-list.addNode(15);
+  let i = 0; // Index for text
+  let j = 0; // Index for pattern
 
-console.log(list.getLength()); // Output: 3
+  while (i < text.length) {
+    if (text[i] === pattern[j]) {
+      i++;
+      j++;
+    }
+
+    if (j === pattern.length) {
+      matches.push(i - j);
+      j = lps[j - 1];
+    } else if (i < text.length && text[i] !== pattern[j]) {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
+      }
+    }
+  }
+
+  return matches;
+}
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const matches = stringMatch(text, pattern);
+
+console.log(matches); // Output: [10]
