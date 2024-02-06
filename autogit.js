@@ -1,31 +1,30 @@
-function findMaxSubarraySum(arr) {
-  let maxSum = -Infinity;
-  let currentSum = 0;
-  let start = 0;
-  let end = 0;
-  let startIndex = 0;
-
-  for (let i = 0; i < arr.length; i++) {
-    currentSum += arr[i];
-
-    if (currentSum > maxSum) {
-      maxSum = currentSum;
-      start = startIndex;
-      end = i;
-    }
-
-    if (currentSum < 0) {
-      currentSum = 0;
-      startIndex = i + 1;
+function findCommonElements(array1, array2) {
+  var commonElements = [];
+  
+  for (var i = 0; i < array1.length; i++) {
+    if (array2.includes(array1[i])) {
+      commonElements.push(array1[i]);
     }
   }
-
-  return arr.slice(start, end + 1);
+  
+  return commonElements;
 }
 
-// Example Usage
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const maxSubarray = findMaxSubarraySum(array);
+var array1 = [1, 2, 3, 4, 5];
+var array2 = [4, 5, 6, 7, 8];
+console.log(findCommonElements(array1, array2)); // Output: [4, 5]
+function findCommonElements(array1, array2) {
+  return array1.filter(element => array2.includes(element));
+}
 
-console.log(`Maximum sum subarray: ${maxSubarray}`);
-Maximum sum subarray: 4,-1,2,1
+var array1 = [1, 2, 3, 4, 5];
+var array2 = [4, 5, 6, 7, 8];
+console.log(findCommonElements(array1, array2)); // Output: [4, 5]
+function findCommonElements(array1, array2) {
+  var set1 = new Set(array1);
+  return array2.filter(element => set1.has(element));
+}
+
+var array1 = [1, 2, 3, 4, 5];
+var array2 = [4, 5, 6, 7, 8];
+console.log(findCommonElements(array1, array2)); // Output: [4, 5]
