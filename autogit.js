@@ -1,23 +1,66 @@
-function breadthLimitedSearch(startNode, goalNode, depthLimit) {
-  let queue = [startNode];
-  let visited = new Set();
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;  // reference to the left child node
+    this.right = null; // reference to the right child node
+  }
+}
+class BST {
+  constructor() {
+    this.root = null; // reference to the root node
+  }
 
-  while (queue.length > 0) {
-    let currentNode = queue.shift();
+  insert(value) {
+    const newNode = new Node(value);
 
-    if (currentNode === goalNode) {
-      return currentNode;  // Return the path here if needed
-    }
-
-    if (currentNode.depth < depthLimit) {
-      currentNode.neighbors.forEach(neighbor => {
-        if (!visited.has(neighbor)) {
-          visited.add(neighbor);
-          queue.push(neighbor);
-        }
-      });
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
     }
   }
 
-  return null;  // Goal node not found
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  searchNode(node, value) {
+    if (node === null || node.value === value) {
+      return node;
+    }
+
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    }
+
+    return this.searchNode(node.right, value);
+  }
+
+  // Other operations (e.g., remove, traverse) can be added here
 }
+const bst = new BST();
+
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(3);
+bst.insert(7);
+
+console.log(bst.search(7)); // Node { value: 7, left: null, right: null }
+console.log(bst.search(12)); // null
