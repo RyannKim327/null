@@ -1,18 +1,18 @@
-function depthLimitedSearch(node, goal, depthLimit) {
-  if (node.value === goal) {
-    return node;
+class TreeNode {
+  constructor(val, left = null, right = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
   }
-  
-  if (depthLimit === 0) {
-    return null;
+}
+
+function maxDepth(root) {
+  if (root === null) {
+    return 0;  // If the root is null, the depth is 0
+  } else {
+    const leftDepth = maxDepth(root.left);   // Get the maximum depth of the left subtree
+    const rightDepth = maxDepth(root.right); // Get the maximum depth of the right subtree
+
+    return Math.max(leftDepth, rightDepth) + 1; // Return the maximum depth + 1 for the current node
   }
-  
-  for (let i = 0; i < node.children.length; i++) {
-    const result = depthLimitedSearch(node.children[i], goal, depthLimit - 1);
-    if (result !== null) {
-      return result;
-    }
-  }
-  
-  return null;
 }
