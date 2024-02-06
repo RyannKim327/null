@@ -1,20 +1,26 @@
-function factorial(number) {
-  let result = 1;
+function bubbleSort(arr) {
+  let len = arr.length;
+  let swapped;
   
-  for(let i = 2; i <= number; i++) {
-    result *= i;
-  }
+  do {
+    swapped = false;
+    
+    for (let i = 0; i < len - 1; i++) {
+      if (arr[i] > arr[i + 1]) {
+        // Swap elements
+        let temp = arr[i];
+        arr[i] = arr[i + 1];
+        arr[i + 1] = temp;
+        swapped = true;
+      }
+    }
+    
+    len--;
+  } while (swapped);
   
-  return result;
+  return arr;
 }
 
-console.log(factorial(5)); // Output: 120
-function factorial(number) {
-  if(number <= 1) {
-    return 1;
-  }
-  
-  return number * factorial(number - 1);
-}
-
-console.log(factorial(5)); // Output: 120
+// Example usage:
+let numbers = [5, 3, 8, 4, 2];
+console.log(bubbleSort(numbers)); // Output: [2, 3, 4, 5, 8]
