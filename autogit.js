@@ -1,20 +1,19 @@
-function bubbleSort(arr) {
-  var len = arr.length;
-  var swapped;
+function findFirstRepeatedCharacter(str) {
+  const characters = {};
 
-  do {
-    swapped = false;
-    for (var i = 0; i < len - 1; i++) {
-      if (arr[i] > arr[i + 1]) {
-        var temp = arr[i];
-        arr[i] = arr[i + 1];
-        arr[i + 1] = temp;
-        swapped = true;
-      }
+  for (let char of str) {
+    if (characters[char]) {
+      return char;
     }
-  } while (swapped);
 
-  return arr;
+    characters[char] = true;
+  }
+
+  return null; // Return null if no repeated character found
 }
-var arr = [5, 3, 8, 4, 2];
-console.log(bubbleSort(arr)); // Output: [2, 3, 4, 5, 8]
+
+// Example usage:
+const string = "hello world";
+const firstRepeatedChar = findFirstRepeatedCharacter(string);
+
+console.log(firstRepeatedChar); // Output: 'l'
