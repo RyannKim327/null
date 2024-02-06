@@ -1,4 +1,3 @@
-const array = [1, 2, 3, 4, 5];
-array.reverse();
-
-console.log(array); // Output: [5, 4, 3, 2, 1]
+let str = "Hello, World!";
+let lowerCaseStr = str.toLowerCase();
+console.log(lowerCaseStr); // Output: hello, world!
