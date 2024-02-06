@@ -1,21 +1,19 @@
-function selectionSort(array) {
-  const length = array.length;
-
-  for (let i = 0; i < length - 1; i++) {
-    let minIndex = i;
-
-    for (let j = i + 1; j < length; j++) {
-      if (array[j] < array[minIndex]) {
-        minIndex = j;
-      }
+function findFirstRepeatedChar(str) {
+  const charMap = {};
+  
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    if (charMap[char]) {
+      return char;
     }
 
-    if (minIndex !== i) {
-      [array[i], array[minIndex]] = [array[minIndex], array[i]];
-    }
+    charMap[char] = true;
   }
 
-  return array;
+  return null;
 }
-const myArray = [9, 5, 1, 4, 3, 2, 8, 7, 6];
-console.log(selectionSort(myArray)); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+// Example usage:
+const inputString = 'Hello World';
+const result = findFirstRepeatedChar(inputString);
+console.log(result);  // Output: l
