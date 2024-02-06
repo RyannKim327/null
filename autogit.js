@@ -1,31 +1,54 @@
-function iterativeDepthLimitedSearch(root, goal, depthLimit) {
-  // Create a stack to keep track of nodes to visit
-  const stack = [];
+class SearchNode {
+  constructor(state, score) {
+    this.state = state;
+    this.score = score;
+  }
+}
 
-  // Push the root node to the stack with initial depth
-  stack.push({ node: root, depth: 0 });
-
-  while (stack.length > 0) {
-    // Pop the top node from the stack
-    const { node, depth } = stack.pop();
-
-    // Check if the current node is the goal node
-    if (node === goal) {
-      console.log("Goal found!");
-      return;
-    }
-
-    // Check if the depth limit has been reached
-    if (depth < depthLimit) {
-      // Get the child nodes of the current node
-      const children = node.getChildren();
-
-      // Push the child nodes to the stack with incremented depth
-      for (let i = children.length - 1; i >= 0; i--) {
-        stack.push({ node: children[i], depth: depth + 1 });
+function beamSearch(startState, beamWidth, maxIterations) {
+  let searchNodes = [new SearchNode(startState, 0)];
+  
+  for (let i = 0; i < maxIterations; i++) {
+    const expandedNodes = [];
+    
+    for (const node of searchNodes) {
+      const successors = generateSuccessors(node.state);
+      
+      for (const successor of successors) {
+        const score = calculateScore(successor);
+        expandedNodes.push(new SearchNode(successor, score));
       }
     }
+    
+    expandedNodes.sort((a, b) => b.score - a.score); // Sort in descending order
+    
+    // Prune to keep only the best 'beamWidth' nodes
+    searchNodes = expandedNodes.slice(0, beamWidth);
+    
+    // Termination condition
+    if (isTerminationConditionMet(searchNodes)) {
+      break;
+    }
   }
+  
+  // Extract the best solution(s)
+  const bestSolutions = searchNodes.map(node => node.state);
+  return bestSolutions;
+}
 
-  console.log("Goal not found within depth limit");
+// Helper functions - replace with your own implementation
+
+function generateSuccessors(state) {
+  // Generate and return an array of successor states
+  // based on the current state
+}
+
+function calculateScore(state) {
+  // Calculate and return a score for the given state.
+  // Your scoring logic goes here.
+}
+
+function isTerminationConditionMet(searchNodes) {
+  // Determine the termination condition.
+  // Return true to stop, false to continue the search.
 }
