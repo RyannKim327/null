@@ -1,11 +1,18 @@
-// Make an HTTP GET request to an API endpoint
-fetch('https://api.example.com/data')
-  .then(response => response.json())
-  .then(data => {
-    // Printing the response data to the console
-    console.log(data);
-  })
-  .catch(error => {
-    // Handling any errors
-    console.log('Error:', error);
-  });
+function countOccurrences(str, char) {
+  let count = 0;
+  
+  for (let i = 0; i < str.length; i++) {
+    if (str.charAt(i) === char) {
+      count++;
+    }
+  }
+  
+  return count;
+}
+
+// Example usage
+let str = "Hello, World!";
+let char = "o";
+let occurrences = countOccurrences(str, char);
+
+console.log(`The character "${char}" occurs ${occurrences} times in the string "${str}".`);
