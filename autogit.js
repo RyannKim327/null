@@ -1,18 +1,52 @@
-function findMaxSumSubarray(arr) {
-  if (!arr.length) {
-    return 0;
+class Graph {
+  constructor(numNodes) {
+    this.numNodes = numNodes;
+    this.adjList = new Array(numNodes).fill(null).map(() => []);
   }
 
-  let currentSum = arr[0];
-  let maxSum = arr[0];
-
-  for (let i = 1; i < arr.length; i++) {
-    currentSum = Math.max(arr[i], currentSum + arr[i]);
-    maxSum = Math.max(maxSum, currentSum);
+  addEdge(node1, node2) {
+    this.adjList[node1].push(node2);
   }
 
-  return maxSum;
+  topologicalSortUtil(node, visited, stack) {
+    visited[node] = true;
+
+    // Recur for all the adjacent nodes
+    for (const adjacentNode of this.adjList[node]) {
+      if (!visited[adjacentNode]) {
+        this.topologicalSortUtil(adjacentNode, visited, stack);
+      }
+    }
+
+    // After visiting all adjacent nodes, push the current node to stack
+    stack.push(node);
+  }
+
+  topologicalSort() {
+    const visited = new Array(this.numNodes).fill(false);
+    const stack = [];
+
+    for (let node = 0; node < this.numNodes; node++) {
+      if (!visited[node]) {
+        this.topologicalSortUtil(node, visited, stack);
+      }
+    }
+
+    // Print the order of the nodes
+    while (stack.length > 0) {
+      console.log(stack.pop());
+    }
+  }
 }
-const array = [1, -3, 2, 1, -1];
-const maxSum = findMaxSumSubarray(array);
-console.log(maxSum); // Output: 3
+
+// Example usage
+const graph = new Graph(6);
+graph.addEdge(5, 2);
+graph.addEdge(5, 0);
+graph.addEdge(4, 0);
+graph.addEdge(4, 1);
+graph.addEdge(2, 3);
+graph.addEdge(3, 1);
+
+console.log("Topological Sort:");
+graph.topologicalSort();
