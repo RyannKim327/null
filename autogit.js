@@ -1,29 +1,24 @@
-function findCommonElements(array1, array2) {
-  let commonElements = [];
-  for (let i = 0; i < array1.length; i++) {
-    if (array2.includes(array1[i])) {
-      commonElements.push(array1[i]);
+function longestCommonSubstring(string1, string2) {
+  const matrix = Array(string1.length + 1).fill(0).map(() => Array(string2.length + 1).fill(0));
+  let maxLength = 0;
+  let endIndex = 0;
+
+  for (let i = 1; i <= string1.length; i++) {
+    for (let j = 1; j <= string2.length; j++) {
+      if (string1[i - 1] === string2[j - 1]) {
+        matrix[i][j] = matrix[i - 1][j - 1] + 1;
+
+        if (matrix[i][j] > maxLength) {
+          maxLength = matrix[i][j];
+          endIndex = i - 1;
+        }
+      }
     }
   }
-  return commonElements;
-}
 
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-console.log(findCommonElements(array1, array2)); // Output: [4, 5]
-function findCommonElements(array1, array2) {
-  return array1.filter(element => array2.includes(element));
+  return string1.substr(endIndex - maxLength + 1, maxLength);
 }
-
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-console.log(findCommonElements(array1, array2)); // Output: [4, 5]
-function findCommonElements(array1, array2) {
-  const set1 = new Set(array1);
-  const commonElements = array2.filter(element => set1.has(element));
-  return commonElements;
-}
-
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-console.log(findCommonElements(array1, array2)); // Output: [4, 5]
+const string1 = 'abcdxyz';
+const string2 = 'xyzabcd';
+const result = longestCommonSubstring(string1, string2);
+console.log(result); // Output: "abcd"
