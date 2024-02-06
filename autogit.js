@@ -1,21 +1,28 @@
-function findMedianSortedArrays(nums1, nums2) {
-  const mergedArray = [...nums1, ...nums2].sort((a, b) => a - b);
-  const length = mergedArray.length;
-  const middleIndex = Math.floor(length / 2);
+const axios = require('axios');
 
-  if (length % 2 === 0) {
-    // Even length case
-    const median1 = mergedArray[middleIndex - 1];
-    const median2 = mergedArray[middleIndex];
-    return (median1 + median2) / 2;
-  } else {
-    // Odd length case
-    return mergedArray[middleIndex];
-  }
-}
+// Make a GET request to an API endpoint
+axios.get('https://api.example.com/data')
+  .then(response => {
+    // Handle successful response
+    console.log(response.data);
+  })
+  .catch(error => {
+    // Handle error
+    console.log(error);
+  });
 
-// Example usage
-const nums1 = [1, 3];
-const nums2 = [2, 4, 5];
-const median = findMedianSortedArrays(nums1, nums2);
-console.log(median); // Output: 3
+// Make a POST request to an API endpoint with data
+const postData = {
+  name: 'John Doe',
+  email: 'johndoe@example.com'
+};
+
+axios.post('https://api.example.com/user', postData)
+  .then(response => {
+    // Handle successful response
+    console.log(response.data);
+  })
+  .catch(error => {
+    // Handle error
+    console.log(error);
+  });
