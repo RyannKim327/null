@@ -1,3 +1,8 @@
-let array = [1, 2, 3, 4, 5];
-array.reverse();
-console.log(array); // Output: [5, 4, 3, 2, 1]
+function removeVowels(str) {
+  return str.replace(/[aeiou]/gi, "");
+}
+
+// Usage example
+var inputString = "Hello World!";
+var result = removeVowels(inputString);
+console.log(result); // Output: Hll Wrld!
