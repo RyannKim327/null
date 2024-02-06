@@ -1,35 +1,58 @@
-function breadthFirstSearch(graph, startVertex) {
-  const queue = []; // Initialize an empty queue
-  const visited = new Set(); // Initialize an empty set for visited vertices
+class HashTable {
+  constructor() {
+    this.table = [];
+    this.size = 0;
+  }
+}
+HashTable.prototype.hash = function (key) {
+  let hash = 0;
+  for (let i = 0; i < key.length; i++) {
+    hash += key.charCodeAt(i);
+  }
+  return hash % this.table.length;
+};
+HashTable.prototype.insert = function (key, value) {
+  const index = this.hash(key);
+  if (!this.table[index]) {
+    this.table[index] = [];
+  }
+  this.table[index].push([key, value]);
+  this.size++;
+};
 
-  queue.push(startVertex); // Enqueue the starting vertex
-  visited.add(startVertex); // Mark the starting vertex as visited
-
-  while (queue.length > 0) {
-    const currentVertex = queue.shift(); // Dequeue a vertex from the front of the queue
-
-    // Process the current vertex (e.g., print or store it)
-    console.log(currentVertex);
-
-    const adjacentVertices = graph[currentVertex]; // Get adjacent vertices
-
-    for (let i = 0; i < adjacentVertices.length; i++) {
-      const adjacentVertex = adjacentVertices[i];
-
-      if (!visited.has(adjacentVertex)) {
-        queue.push(adjacentVertex); // Enqueue the adjacent vertex
-        visited.add(adjacentVertex); // Mark the adjacent vertex as visited
+HashTable.prototype.get = function (key) {
+  const index = this.hash(key);
+  if (this.table[index]) {
+    for (let i = 0; i < this.table[index].length; i++) {
+      if (this.table[index][i][0] === key) {
+        return this.table[index][i][1];
       }
     }
   }
-}
-const graph = {
-  A: ['B', 'C'],
-  B: ['D'],
-  C: ['E'],
-  D: [],
-  E: ['F'],
-  F: [],
+  return undefined;
 };
 
-breadthFirstSearch(graph, 'A');
+HashTable.prototype.remove = function (key) {
+  const index = this.hash(key);
+  if (this.table[index]) {
+    for (let i = 0; i < this.table[index].length; i++) {
+      if (this.table[index][i][0] === key) {
+        this.table[index].splice(i, 1);
+        this.size--;
+        break;
+      }
+    }
+  }
+};
+const hashTable = new HashTable();
+hashTable.insert("name", "John");
+hashTable.insert("age", 25);
+hashTable.insert("city", "New York");
+
+console.log(hashTable.get("name")); // Output: John
+console.log(hashTable.get("age")); // Output: 25
+console.log(hashTable.get("city")); // Output: New York
+
+hashTable.remove("age");
+console.log(hashTable.get("age")); // Output: undefined
+console.log(hashTable.size); // Output: 2
