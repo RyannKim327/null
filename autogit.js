@@ -1,45 +1,66 @@
-function findMedianSortedArrays(nums1, nums2) {
-  const mergedArray = mergeSortedArrays(nums1, nums2);
-  const length = mergedArray.length;
-  const mid = Math.floor(length / 2);
-
-  if (length % 2 === 0) {
-    return (mergedArray[mid - 1] + mergedArray[mid]) / 2;
-  } else {
-    return mergedArray[mid];
+class PriorityQueue {
+  constructor() {
+    this.heap = [];
   }
-}
 
-function mergeSortedArrays(nums1, nums2) {
-  let mergedArray = [];
-  let i = 0;
-  let j = 0;
+  insert(element, priority) {
+    const item = { element, priority };
+    this.heap.push(item);
+    this.heapifyUp();
+  }
 
-  while (i < nums1.length && j < nums2.length) {
-    if (nums1[i] <= nums2[j]) {
-      mergedArray.push(nums1[i]);
-      i++;
-    } else {
-      mergedArray.push(nums2[j]);
-      j++;
+  peek() {
+    return this.heap[0]?.element;
+  }
+
+  dequeue() {
+    if (this.heap.length === 0) return null;
+    const maxItem = this.heap[0];
+    const lastItem = this.heap.pop();
+    if (this.heap.length > 0) {
+      this.heap[0] = lastItem;
+      this.heapifyDown();
+    }
+    return maxItem.element;
+  }
+
+  heapifyUp() {
+    let currentIndex = this.heap.length - 1;
+    while (currentIndex > 0) {
+      const parentIndex = Math.floor((currentIndex - 1) / 2);
+      if (this.heap[currentIndex].priority <= this.heap[parentIndex].priority) break;
+      [this.heap[currentIndex], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[currentIndex]];
+      currentIndex = parentIndex;
     }
   }
 
-  while (i < nums1.length) {
-    mergedArray.push(nums1[i]);
-    i++;
-  }
+  heapifyDown() {
+    let currentIndex = 0;
+    while (true) {
+      const leftChildIndex = currentIndex * 2 + 1;
+      const rightChildIndex = currentIndex * 2 + 2;
+      let maxChildIndex = null;
 
-  while (j < nums2.length) {
-    mergedArray.push(nums2[j]);
-    j++;
-  }
+      if (leftChildIndex < this.heap.length) {
+        maxChildIndex = leftChildIndex;
+        if (rightChildIndex < this.heap.length && this.heap[rightChildIndex].priority > this.heap[leftChildIndex].priority) {
+          maxChildIndex = rightChildIndex;
+        }
+      }
 
-  return mergedArray;
+      if (maxChildIndex === null || this.heap[maxChildIndex].priority <= this.heap[currentIndex].priority) break;
+
+      [this.heap[currentIndex], this.heap[maxChildIndex]] = [this.heap[maxChildIndex], this.heap[currentIndex]];
+      currentIndex = maxChildIndex;
+    }
+  }
 }
+const pq = new PriorityQueue();
+pq.insert("Task 1", 3);
+pq.insert("Task 2", 1);
+pq.insert("Task 3", 2);
 
-// Example Usage
-const nums1 = [1, 3, 5];
-const nums2 = [2, 4, 6];
-const median = findMedianSortedArrays(nums1, nums2);
-console.log(median); // Output: 3.5
+console.log(pq.dequeue()); // Output: Task 2
+console.log(pq.dequeue()); // Output: Task 3
+console.log(pq.dequeue()); // Output: Task 1
+console.log(pq.dequeue()); // Output: null
