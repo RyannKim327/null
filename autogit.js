@@ -1,51 +1,31 @@
-function AStar(startNode, goalNode) {
-  const openSet = new FastPriorityQueue((a, b) => a.f < b.f); // Create an empty priority queue
-  openSet.add(startNode); // Add start node to the open set
+function countingSort(arr) {
+  // Find the maximum element in the input array
+  const max = Math.max(...arr);
 
-  while (!openSet.isEmpty()) {
-    const currentNode = openSet.poll(); // Get the node with the lowest "f" value
-    if (currentNode === goalNode) {
-      // Path found
-      return reconstructPath(currentNode);
-    }
+  // Create a count array with size equal to max+1, filled with 0s
+  const count = new Array(max + 1).fill(0);
 
-    currentNode.closed = true; // Mark the current node as visited
-
-    for (let neighbor of getNeighbors(currentNode)) {
-      if (neighbor.closed) {
-        continue; // Skip if neighbor node is already visited
-      }
-
-      const gScore = currentNode.g + getDistance(currentNode, neighbor);
-      let betterPath = false;
-
-      if (!neighbor.visited || gScore < neighbor.g) {
-        // This is the first time visiting the neighbor or found a better path
-        neighbor.visited = true;
-        neighbor.parent = currentNode;
-        neighbor.g = gScore;
-        neighbor.h = getHeuristic(neighbor, goalNode);
-        neighbor.f = neighbor.g + neighbor.h;
-        betterPath = true;
-      }
-
-      if (!openSet.array.includes(neighbor)) {
-        openSet.add(neighbor); // Add neighbor to the open set
-      } else if (betterPath) {
-        openSet.updateItem(neighbor); // Update neighbor's position in the open set
-      }
-    }
+  // Count the occurrences of each element in the input array
+  for (let i = 0; i < arr.length; i++) {
+    count[arr[i]]++;
   }
 
-  // Path not found
-  return null;
+  // Compute the running sum in the count array
+  for (let i = 1; i < count.length; i++) {
+    count[i] += count[i - 1];
+  }
+
+  // Build the sorted output array using the count array
+  const output = new Array(arr.length);
+  for (let i = 0; i < arr.length; i++) {
+    output[count[arr[i]] - 1] = arr[i];
+    count[arr[i]]--;
+  }
+
+  return output;
 }
 
-function reconstructPath(node) {
-  const path = [node];
-  while (node.parent) {
-    node = node.parent;
-    path.unshift(node);
-  }
-  return path;
-}
+// Example usage:
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const sortedArr = countingSort(arr);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
