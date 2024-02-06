@@ -1,47 +1,26 @@
-function countOccurrences(string, word) {
-  // Split the string into an array of words
-  let words = string.split(" ");
+function findFirstNonRepeatingCharacter(str) {
+  // Step 1: Create an empty frequency object
+  const frequency = {};
 
-  // Use the filter() method to create a new array with only the occurrences of the word
-  let occurrences = words.filter((w) => w === word);
-
-  // Return the length of the new array
-  return occurrences.length;
-}
-
-// Example usage
-let str = "Hello, hello, hello, world!";
-let count = countOccurrences(str, "hello");
-console.log(count); // Output: 3
-function countOccurrences(string, word) {
-  // Create a regular expression with the word and 'g' flag for global search
-  let regex = new RegExp(word, "g");
-
-  // Use the match() method to get an array of all occurrences of the word
-  let occurrences = string.match(regex);
-
-  // Return the length of the array
-  return occurrences ? occurrences.length : 0;
-}
-
-// Example usage
-let str = "Hello, hello, hello, world!";
-let count = countOccurrences(str, "hello");
-console.log(count); // Output: 3
-function countOccurrences(string, word) {
-  let occurrences = 0;
-  let index = 0;
-
-  // Loop through the string while there are occurrences of the word
-  while ((index = string.indexOf(word, index)) !== -1) {
-    occurrences++;
-    index += word.length;
+  // Step 2: Iterate to count character frequencies
+  for (const char of str) {
+    // Step 3: Increment or set count for each character
+    frequency[char] = (frequency[char] || 0) + 1;
   }
 
-  return occurrences;
+  // Step 4: Iterate to find the first non-repeating character
+  for (const char of str) {
+    // Step 5: Check the count of each character
+    if (frequency[char] === 1) {
+      return char; // Found the first non-repeating character
+    }
+  }
+
+  // Step 6: No non-repeating character found
+  return null;
 }
 
 // Example usage
-let str = "Hello, hello, hello, world!";
-let count = countOccurrences(str, "hello");
-console.log(count); // Output: 3
+const inputString = "abacddbec";
+const firstNonRepeatingChar = findFirstNonRepeatingCharacter(inputString);
+console.log(firstNonRepeatingChar); // Output: 'e'
