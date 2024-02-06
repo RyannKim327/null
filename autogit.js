@@ -1,23 +1,16 @@
-function binarySearch(arr, target, start = 0, end = arr.length - 1) {
-    while (start <= end) {
-        const mid = Math.floor((start + end) / 2);
+const cron = require('node-cron');
 
-        if (arr[mid] === target) {
-            return mid; // target found
-        }
+// Define the task to be executed
+const task = () => {
+  console.log('This task runs every minute');
+};
 
-        if (target < arr[mid]) {
-            end = mid - 1; // search in left half
-        } else {
-            start = mid + 1; // search in right half
-        }
-    }
+// Schedule the task using cron
+cron.schedule('* * * * *', task);
 
-    return -1; // target not found
-}
+// Additional tasks can be scheduled by defining more functions and using cron.schedule()
+const task2 = () => {
+  console.log('This task runs every hour');
+};
 
-// Example usage:
-const array = [2, 4, 6, 8, 10, 12, 14];
-const target = 8;
-const index = binarySearch(array, target);
-console.log(`Element ${target} found at index ${index}`);
+cron.schedule('0 * * * *', task2);
