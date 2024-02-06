@@ -1,33 +1,19 @@
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
-
-function findMaxDepth(root) {
-  // Base case: if the root is null, return 0
-  if (root === null) {
+function calculateMean(numbers) {
+  // Check if the list is empty
+  if (numbers.length === 0) {
     return 0;
   }
 
-  // Recursive case: calculate the depth of the left and right subtrees
-  const leftDepth = findMaxDepth(root.left);
-  const rightDepth = findMaxDepth(root.right);
+  // Compute the sum of all numbers
+  const sum = numbers.reduce((acc, curr) => acc + curr, 0);
 
-  // Return the maximum depth of the left and right subtrees plus 1 (to account for the current node)
-  return Math.max(leftDepth, rightDepth) + 1;
+  // Calculate the mean by dividing the sum by the number of elements
+  const mean = sum / numbers.length;
+
+  return mean;
 }
 
-// Example usage:
-// Create a binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-// Find the maximum depth
-const maxDepth = findMaxDepth(root);
-console.log("Maximum depth:", maxDepth);
+// Example usage
+const numbers = [3, 5, 7, 11, 13];
+const mean = calculateMean(numbers);
+console.log(mean); // Output: 7.8
