@@ -1,16 +1,32 @@
-const str = 'Hello, world!';
-const substring = 'world';
+function findMajorityElement(arr) {
+  let candidate;
+  let count = 0;
 
-if (str.includes(substring)) {
-  console.log('Substring found!');
-} else {
-  console.log('Substring not found!');
-}
-const str = 'Hello, world!';
-const substring = 'world';
+  for (let num of arr) {
+    if (count === 0) {
+      candidate = num;
+      count = 1;
+    } else if (num === candidate) {
+      count++;
+    } else {
+      count--;
+    }
+  }
 
-if (str.indexOf(substring) !== -1) {
-  console.log('Substring found!');
-} else {
-  console.log('Substring not found!');
+  // Check if the candidate is the majority element
+  count = 0;
+  for (let num of arr) {
+    if (num === candidate) count++;
+  }
+
+  if (count > arr.length / 2) {
+    return candidate;
+  } else {
+    return "No majority element found";
+  }
 }
+
+// Example usage
+const arr = [2, 2, 1, 1, 1, 2, 2];
+const majorityElement = findMajorityElement(arr);
+console.log(majorityElement);
