@@ -1,111 +1,108 @@
-class Node {
-  constructor(value) {
+class SkipNode {
+  constructor(key = null, value = null, level = 0) {
+    this.key = key;
     this.value = value;
-    this.next = null;
+    this.forward = new Array(level + 1);
   }
 }
-
-class LinkedList {
+class SkipList {
   constructor() {
-    this.head = null;
-    this.tail = null;
-  }
-
-  append(value) {
-    const newNode = new Node(value);
-
-    if (!this.head) {
-      // If the list is empty, set the new node as both head and tail
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      // If the list is not empty, append the new node after the tail
-      this.tail.next = newNode;
-      this.tail = newNode;
-    }
-  }
-
-  prepend(value) {
-    const newNode = new Node(value);
-
-    if (!this.head) {
-      // If the list is empty, set the new node as both head and tail
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      // If the list is not empty, prepend the new node before the head
-      newNode.next = this.head;
-      this.head = newNode;
-    }
-  }
-
-  delete(value) {
-    if (!this.head) {
-      // If the list is empty, do nothing
-      return;
-    }
-
-    if (this.head.value === value) {
-      // If the head node matches the value, remove the head node
-      this.head = this.head.next;
-
-      if (!this.head) {
-        // If the list becomes empty, update the tail
-        this.tail = null;
-      }
-
-      return;
-    }
-
-    let current = this.head;
-    while (current.next && current.next.value !== value) {
-      // Find the node with the matching value
-      current = current.next;
-    }
-
-    if (current.next && current.next.value === value) {
-      // If the next node matches the value, remove the node
-      current.next = current.next.next;
-
-      if (!current.next) {
-        // If the last node is removed, update the tail
-        this.tail = current;
-      }
-    }
-  }
-
-  search(value) {
-    let current = this.head;
-    while (current) {
-      // Traverse the list and return the node if the value matches
-      if (current.value === value) {
-        return current;
-      }
-      current = current.next;
-    }
-
-    return null; // Value not found
-  }
-
-  toArray() {
-    const result = [];
-    let current = this.head;
-
-    while (current) {
-      // Convert the linked list to an array
-      result.push(current.value);
-      current = current.next;
-    }
-
-    return result;
+    this.head = new SkipNode();
+    this.level = 0;
   }
 }
-const linkedList = new LinkedList();
+SkipList.prototype.insert = function(key, value) {
+  const update = new Array(this.level + 1);
+  let current = this.head;
 
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
-linkedList.prepend(0);
-linkedList.delete(2);
+  for (let i = this.level; i >= 0; i--) {
+    while (current.forward[i] && current.forward[i].key < key) {
+      current = current.forward[i];
+    }
+    update[i] = current;
+  }
 
-console.log(linkedList.toArray()); // Output: [0, 1, 3]
+  current = current.forward[0];
+
+  if (current && current.key === key) {
+    current.value = value;
+  } else {
+    const level = this.randomLevel();
+    if (level > this.level) {
+      for (let i = this.level + 1; i <= level; i++) {
+        update[i] = this.head;
+      }
+      this.level = level;
+    }
+    const newNode = new SkipNode(key, value, level);
+    for (let i = 0; i <= level; i++) {
+      newNode.forward[i] = update[i].forward[i];
+      update[i].forward[i] = newNode;
+    }
+  }
+};
+SkipList.prototype.search = function(key) {
+  let current = this.head;
+
+  for (let i = this.level; i >= 0; i--) {
+    while (current.forward[i] && current.forward[i].key <= key) {
+      if (current.forward[i].key === key) {
+        return current.forward[i].value;
+      }
+      current = current.forward[i];
+    }
+  }
+
+  return null;
+};
+SkipList.prototype.delete = function(key) {
+  const update = new Array(this.level + 1);
+  let current = this.head;
+
+  for (let i = this.level; i >= 0; i--) {
+    while (current.forward[i] && current.forward[i].key < key) {
+      current = current.forward[i];
+    }
+    update[i] = current;
+  }
+
+  current = current.forward[0];
+
+  if (current && current.key === key) {
+    for (let i = 0; i <= this.level; i++) {
+      if (update[i].forward[i] !== current)
+        break;
+      update[i].forward[i] = current.forward[i];
+    }
+
+    while (this.level > 0 && this.head.forward[this.level] === null) {
+      this.level--;
+    }
+  }
+};
+SkipList.prototype.randomLevel = function() {
+  const p = 0.5;
+  let level = 0;
+  while (Math.random() < p && level < 32) {
+    level++;
+  }
+  return level;
+};
+SkipList.prototype.print = function() {
+  let current = this.head;
+
+  while (current.forward[0]) {
+    console.log(`Key: ${current.forward[0].key}, Value: ${current.forward[0].value}`);
+    current = current.forward[0];
+  }
+};
+const sl = new SkipList();
+sl.insert(5, 'Value 5');
+sl.insert(3, 'Value 3');
+sl.insert(8, 'Value 8');
+sl.insert(1, 'Value 1');
+sl.insert(7, 'Value 7');
+sl.print(); // It will print the key-value pairs in ascending order of the keys
+console.log(sl.search(3)); // Output: Value 3
+sl.delete(1);
+console.log(sl.search(1)); // Output: null
