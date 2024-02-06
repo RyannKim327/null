@@ -1,35 +1,55 @@
-// Define the binary tree node structure
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function computeLPS(pattern) {
+  const len = pattern.length;
+  const lps = new Array(len).fill(0);
+
+  let i = 1;
+  let j = 0;
+
+  while (i < len) {
+    if (pattern[i] === pattern[j]) {
+      lps[i] = j + 1;
+      i++;
+      j++;
+    } else {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        lps[i] = 0;
+        i++;
+      }
+    }
   }
+
+  return lps;
 }
 
-// Function to count leaf nodes in a binary tree
-function countLeafNodes(root) {
-  if (root === null) {
-    return 0; // Empty tree
+function stringMatch(text, pattern) {
+  const tLen = text.length;
+  const pLen = pattern.length;
+  const lps = computeLPS(pattern);
+
+  let i = 0;
+  let j = 0;
+
+  while (i < tLen) {
+    if (text[i] === pattern[j]) {
+      i++;
+      j++;
+
+      if (j === pLen) {
+        console.log('Pattern found at index', i - j);
+        j = lps[j - 1];
+      }
+    } else {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
+      }
+    }
   }
-  
-  if (root.left === null && root.right === null) {
-    return 1; // Leaf node
-  }
-  
-  // Recursive calls for left and right subtrees
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
 }
+const text = 'ABABDABACDABABCABAB';
+const pattern = 'ABABCABAB';
 
-// Create a sample binary tree
-const tree = new Node(1);
-tree.left = new Node(2);
-tree.right = new Node(3);
-tree.left.left = new Node(4);
-tree.left.right = new Node(5);
-tree.right.left = new Node(6);
-tree.right.right = new Node(7);
-
-// Count the number of leaf nodes
-const leafCount = countLeafNodes(tree);
-console.log("Number of leaf nodes:", leafCount);
+stringMatch(text, pattern);
