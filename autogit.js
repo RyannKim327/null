@@ -1,44 +1,88 @@
-function boyerMooreHorspool(haystack, needle) {
-  // Step 2: Preprocessing
-  const needleLength = needle.length;
-  const haystackLength = haystack.length;
+class TreeNode {
+  constructor(data) {
+    this.data = data;
+    this.left = null;
+    this.right = null;
+  }
+}
 
-  // Step 3: Preprocessing Bad Character Table
-  const badCharTable = {};
-
-  for (let i = 0; i < needleLength - 1; i++) {
-    badCharTable[needle[i]] = needleLength - 1 - i;
+class BinaryTree {
+  constructor() {
+    this.root = null;
   }
 
-  // Step 4: Searching
-  let haystackIndex = needleLength - 1;
-
-  while (haystackIndex < haystackLength) {
-    let needleIndex = needleLength - 1;
-
-    while (needleIndex >= 0 && haystack[haystackIndex] === needle[needleIndex]) {
-      haystackIndex--;
-      needleIndex--;
-    }
-
-    if (needleIndex === -1) {
-      return haystackIndex + 1; // Match found
+  insert(data) {
+    const newNode = new TreeNode(data);
+    
+    if (this.root === null) {
+      this.root = newNode;
     } else {
-      const charInHaystack = haystack[haystackIndex];
-      const skipLen = badCharTable[charInHaystack] || needleLength;
-
-      haystackIndex += skipLen;
+      this.insertNode(this.root, newNode);
     }
   }
 
-  return -1; // No match found
-}
-const haystack = "The quick brown fox jumps over the lazy dog";
-const needle = "fox";
+  insertNode(node, newNode) {
+    if (newNode.data < node.data) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+  
+  search(data) {
+    return this.searchNode(this.root, data);
+  }
 
-const result = boyerMooreHorspool(haystack, needle);
-if (result !== -1) {
-  console.log("Match found at index:", result);
-} else {
-  console.log("No match found");
+  searchNode(node, data) {
+    if (node === null) {
+      return false;
+    }
+
+    if (data === node.data) {
+      return true;
+    }
+
+    if (data < node.data) {
+      return this.searchNode(node.left, data);
+    }
+
+    return this.searchNode(node.right, data);
+  }
+
+  inorderTraversal(callback) {
+    this.inorderTraversalNode(this.root, callback);
+  }
+
+  inorderTraversalNode(node, callback) {
+    if (node !== null) {
+      this.inorderTraversalNode(node.left, callback);
+      callback(node);
+      this.inorderTraversalNode(node.right, callback);
+    }
+  }
 }
+
+// Example usage:
+const binaryTree = new BinaryTree();
+
+binaryTree.insert(8);
+binaryTree.insert(3);
+binaryTree.insert(10);
+binaryTree.insert(1);
+binaryTree.insert(6);
+binaryTree.insert(14);
+binaryTree.insert(4);
+binaryTree.insert(7);
+binaryTree.insert(13);
+
+console.log('Inorder Traversal:');
+binaryTree.inorderTraversal(node => console.log(node.data));
+console.log('Is 7 in the binary tree?', binaryTree.search(7));
