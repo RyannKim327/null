@@ -1,17 +1,73 @@
-function isAnagram(str1, str2) {
-  // Remove non-alphabetic characters and convert to lowercase
-  str1 = str1.replace(/[^A-Za-z]/g, "").toLowerCase();
-  str2 = str2.replace(/[^A-Za-z]/g, "").toLowerCase();
+class Graph {
+  constructor() {
+    this.vertices = new Map();
+  }
+  
+  addVertex(vertex) {
+    this.vertices.set(vertex, []);
+  }
+  
+  addEdge(u, v) {
+    this.vertices.get(u).push(v);
+  }
+  
+  dfs(vertex, index, stack, onStack, lowLink, ids, result) {
+    lowLink[vertex] = index;
+    ids[vertex] = index;
+    stack.push(vertex);
+    onStack[vertex] = true;
+    
+    for (const neighbor of this.vertices.get(vertex)) {
+      if (ids[neighbor] === undefined) {
+        this.dfs(neighbor, index + 1, stack, onStack, lowLink, ids, result);
+        lowLink[vertex] = Math.min(lowLink[vertex], lowLink[neighbor]);
+      } else if (onStack[neighbor]) {
+        lowLink[vertex] = Math.min(lowLink[vertex], ids[neighbor]);
+      }
+    }
+    
+    if (lowLink[vertex] === ids[vertex]) {
+      const component = [];
+      let v = null;
+      do {
+        v = stack.pop();
+        onStack[v] = false;
+        component.push(v);
+      } while (v !== vertex);
+      
+      result.push(component);
+    }
+  }
+  
+  findStronglyConnectedComponents() {
+    const lowLink = {};
+    const ids = {};
+    const stack = [];
+    const onStack = {};
+    const result = [];
 
-  // Sort the strings alphabetically
-  const sortedStr1 = str1.split("").sort().join("");
-  const sortedStr2 = str2.split("").sort().join("");
+    let index = 0;
+    for (const vertex of this.vertices.keys()) {
+      if (ids[vertex] === undefined) {
+        this.dfs(vertex, index, stack, onStack, lowLink, ids, result);
+      }
+    }
 
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+    return result;
+  }
 }
+const graph = new Graph();
+graph.addVertex(0);
+graph.addVertex(1);
+graph.addVertex(2);
+graph.addVertex(3);
+graph.addVertex(4);
 
-// Example usage
-const string1 = "listen";
-const string2 = "silent";
-console.log(isAnagram(string1, string2)); // Output: true
+graph.addEdge(0, 1);
+graph.addEdge(1, 2);
+graph.addEdge(2, 0);
+graph.addEdge(2, 3);
+graph.addEdge(3, 4);
+graph.addEdge(4, 3);
+const stronglyConnectedComponents = graph.findStronglyConnectedComponents();
+console.log(stronglyConnectedComponents);
