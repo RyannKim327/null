@@ -1,19 +1,11 @@
-function findFirstRepeatedChar(str) {
-  const charMap = {};
-  
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    if (charMap[char]) {
-      return char;
-    }
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
 
-    charMap[char] = true;
-  }
-
-  return null;
+const index = array.indexOf(elementToRemove);
+if (index > -1) {
+  array.splice(index, 1);
 }
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
 
-// Example usage:
-const inputString = 'Hello World';
-const result = findFirstRepeatedChar(inputString);
-console.log(result);  // Output: l
+const newArray = array.filter((element) => element !== elementToRemove);
