@@ -1,58 +1,31 @@
-// Create a Node class that represents a node in the linked list
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+function findMaxSubarraySum(arr) {
+  let maxSum = -Infinity;
+  let currentSum = 0;
+  let start = 0;
+  let end = 0;
+  let startIndex = 0;
+
+  for (let i = 0; i < arr.length; i++) {
+    currentSum += arr[i];
+
+    if (currentSum > maxSum) {
+      maxSum = currentSum;
+      start = startIndex;
+      end = i;
+    }
+
+    if (currentSum < 0) {
+      currentSum = 0;
+      startIndex = i + 1;
+    }
   }
+
+  return arr.slice(start, end + 1);
 }
 
-// Create a LinkedList class to implement the queue
-class LinkedListQueue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-  }
+// Example Usage
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const maxSubarray = findMaxSubarraySum(array);
 
-  // Add an element to the end of the queue
-  enqueue(value) {
-    const newNode = new Node(value);
-
-    if (this.isEmpty()) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
-    }
-  }
-
-  // Remove and return the first element from the queue
-  dequeue() {
-    if (this.isEmpty()) {
-      return null;
-    }
-
-    const removedNode = this.head;
-    this.head = this.head.next;
-
-    if (this.head === null) {
-      this.tail = null;
-    }
-
-    return removedNode.value;
-  }
-
-  // Check if the queue is empty
-  isEmpty() {
-    return this.head === null;
-  }
-}
-const queue = new LinkedListQueue();
-
-queue.enqueue(10);
-queue.enqueue(20);
-queue.enqueue(30);
-
-console.log(queue.dequeue()); // Output: 10
-console.log(queue.dequeue()); // Output: 20
-console.log(queue.isEmpty()); // Output: false
+console.log(`Maximum sum subarray: ${maxSubarray}`);
+Maximum sum subarray: 4,-1,2,1
