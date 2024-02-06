@@ -1,24 +1,31 @@
-function longestCommonSubstring(string1, string2) {
-  const matrix = Array(string1.length + 1).fill(0).map(() => Array(string2.length + 1).fill(0));
-  let maxLength = 0;
-  let endIndex = 0;
+function interpolationSearch(arr, target, start = 0) {
+  let end = arr.length - 1;
 
-  for (let i = 1; i <= string1.length; i++) {
-    for (let j = 1; j <= string2.length; j++) {
-      if (string1[i - 1] === string2[j - 1]) {
-        matrix[i][j] = matrix[i - 1][j - 1] + 1;
+  while (start <= end) {
+    const estimatedPos =
+      Math.floor(((target - arr[start]) / (arr[end] - arr[start])) * (end - start)) +
+      start;
 
-        if (matrix[i][j] > maxLength) {
-          maxLength = matrix[i][j];
-          endIndex = i - 1;
-        }
-      }
+    if (estimatedPos < start || estimatedPos > end) {
+      return -1;
+    }
+
+    if (arr[estimatedPos] === target) {
+      return estimatedPos;
+    }
+
+    if (arr[estimatedPos] < target) {
+      start = estimatedPos + 1;
+    } else {
+      end = estimatedPos - 1;
     }
   }
 
-  return string1.substr(endIndex - maxLength + 1, maxLength);
+  return -1;
 }
-const string1 = 'abcdxyz';
-const string2 = 'xyzabcd';
-const result = longestCommonSubstring(string1, string2);
-console.log(result); // Output: "abcd"
+
+// Testing the interpolationSearch function
+const arr = [2, 5, 7, 10, 15, 18, 20];
+const target = 10;
+const index = interpolationSearch(arr, target);
+console.log(`Found ${target} at index ${index}`);
