@@ -1,23 +1,51 @@
-function countOccurrences(str, char) {
-  let count = 0;
-  for (let i = 0; i < str.length; i++) {
-    if (str[i] === char) {
-      count++;
-    }
+class Graph {
+  constructor() {
+    this.adjList = new Map();
   }
-  return count;
-}
 
-const str = "javascript";
-const char = "a";
-const occurrences = countOccurrences(str, char);
-console.log(`The character '${char}' occurs ${occurrences} times in the string '${str}'.`);
-function countOccurrences(str, char) {
-  const occurrences = str.split('').filter(c => c === char);
-  return occurrences.length;
+  addVertex(vertex) {
+    this.adjList.set(vertex, []);
+  }
+
+  addEdge(source, destination) {
+    this.adjList.get(source).push(destination);
+  }
 }
-function countOccurrences(str, char) {
-  const regex = new RegExp(char, 'g');
-  const occurrences = str.match(regex);
-  return occurrences ? occurrences.length : 0;
+function topologicalSortUtil(vertex, visited, stack, graph) {
+  visited.add(vertex);
+
+  const neighbors = graph.adjList.get(vertex);
+  for (let neighbor of neighbors) {
+    if (!visited.has(neighbor))
+      topologicalSortUtil(neighbor, visited, stack, graph);
+  }
+
+  stack.push(vertex);
 }
+function topologicalSort(graph) {
+  const visited = new Set();
+  const stack = [];
+
+  for (let vertex of graph.adjList.keys()) {
+    if (!visited.has(vertex))
+      topologicalSortUtil(vertex, visited, stack, graph);
+  }
+
+  return stack.reverse();
+}
+const graph = new Graph();
+graph.addVertex(0);
+graph.addVertex(1);
+graph.addVertex(2);
+graph.addVertex(3);
+graph.addVertex(4);
+graph.addVertex(5);
+graph.addEdge(5, 2);
+graph.addEdge(5, 0);
+graph.addEdge(4, 0);
+graph.addEdge(4, 1);
+graph.addEdge(2, 3);
+graph.addEdge(3, 1);
+
+const sortedVertices = topologicalSort(graph);
+console.log(sortedVertices); // [4, 5, 2, 3, 1, 0]
