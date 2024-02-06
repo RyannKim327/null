@@ -1,35 +1,41 @@
-// Define the binary tree node structure
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.left = null;
-    this.right = null;
+// Define your graph or tree data structure
+
+// Define the depth-limited search algorithm
+function depthLimitedSearch(root, target, depthLimit) {
+  let stack = [];
+  stack.push({ node: root, depth: 0 });
+
+  while (stack.length > 0) {
+    let { node, depth } = stack.pop();
+
+    // Check if the current node is the target
+    if (node === target) {
+      return node;
+    }
+
+    // Expand the node if depth is within the limit
+    if (depth < depthLimit) {
+      // Add child nodes to the stack for exploration
+      let children = node.getChildren(); // Replace with your graph or tree node traversal logic
+      for (let child of children) {
+        stack.push({ node: child, depth: depth + 1 });
+      }
+    }
   }
+
+  // Target not found within the depth limit
+  return null;
 }
 
-// Function to count the number of leaf nodes in a binary tree
-function countLeafNodes(root) {
-  if (root === null) {
-    return 0; // If the tree is empty, there are no leaf nodes
-  }
+// Usage example
+let rootNode = /* Define the root node of your graph or tree */;
+let targetNode = /* Define the target node you're searching for */;
+let depthLimit = /* Specify the depth limit for your search */;
 
-  if (root.left === null && root.right === null) {
-    return 1; // If the node has no children, it's a leaf node
-  }
+let result = depthLimitedSearch(rootNode, targetNode, depthLimit);
 
-  // Recursively traverse the left and right subtrees
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
+if (result === null) {
+  console.log("Target not found within the depth limit.");
+} else {
+  console.log("Target found:", result);
 }
-
-// Example binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
-
-// Call the function and print the result
-const leafNodeCount = countLeafNodes(root);
-console.log("Number of leaf nodes:", leafNodeCount);
