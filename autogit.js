@@ -1,66 +1,51 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;  // reference to the left child node
-    this.right = null; // reference to the right child node
-  }
-}
-class BST {
-  constructor() {
-    this.root = null; // reference to the root node
-  }
+function AStar(startNode, goalNode) {
+  const openSet = new FastPriorityQueue((a, b) => a.f < b.f); // Create an empty priority queue
+  openSet.add(startNode); // Add start node to the open set
 
-  insert(value) {
-    const newNode = new Node(value);
-
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
+  while (!openSet.isEmpty()) {
+    const currentNode = openSet.poll(); // Get the node with the lowest "f" value
+    if (currentNode === goalNode) {
+      // Path found
+      return reconstructPath(currentNode);
     }
-  }
 
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
+    currentNode.closed = true; // Mark the current node as visited
+
+    for (let neighbor of getNeighbors(currentNode)) {
+      if (neighbor.closed) {
+        continue; // Skip if neighbor node is already visited
       }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
+
+      const gScore = currentNode.g + getDistance(currentNode, neighbor);
+      let betterPath = false;
+
+      if (!neighbor.visited || gScore < neighbor.g) {
+        // This is the first time visiting the neighbor or found a better path
+        neighbor.visited = true;
+        neighbor.parent = currentNode;
+        neighbor.g = gScore;
+        neighbor.h = getHeuristic(neighbor, goalNode);
+        neighbor.f = neighbor.g + neighbor.h;
+        betterPath = true;
+      }
+
+      if (!openSet.array.includes(neighbor)) {
+        openSet.add(neighbor); // Add neighbor to the open set
+      } else if (betterPath) {
+        openSet.updateItem(neighbor); // Update neighbor's position in the open set
       }
     }
   }
 
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  searchNode(node, value) {
-    if (node === null || node.value === value) {
-      return node;
-    }
-
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    }
-
-    return this.searchNode(node.right, value);
-  }
-
-  // Other operations (e.g., remove, traverse) can be added here
+  // Path not found
+  return null;
 }
-const bst = new BST();
 
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
-bst.insert(7);
-
-console.log(bst.search(7)); // Node { value: 7, left: null, right: null }
-console.log(bst.search(12)); // null
+function reconstructPath(node) {
+  const path = [node];
+  while (node.parent) {
+    node = node.parent;
+    path.unshift(node);
+  }
+  return path;
+}
