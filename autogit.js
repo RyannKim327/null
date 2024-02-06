@@ -1,56 +1,54 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+// Function to perform Heap Sort
+function heapSort(array) {
+  const arrLength = array.length;
+
+  // Build heap (rearrange array)
+  for (let i = Math.floor(arrLength / 2) - 1; i >= 0; i--) {
+    heapify(array, arrLength, i);
+  }
+
+  // Extract elements from the heap one by one
+  for (let i = arrLength - 1; i > 0; i--) {
+    // Move current root to the end
+    const temp = array[0];
+    array[0] = array[i];
+    array[i] = temp;
+
+    // Heapify the reduced array
+    heapify(array, i, 0);
+  }
+
+  return array;
+}
+
+// To heapify a subtree rooted with node i
+function heapify(array, arrLength, i) {
+  let largest = i; // Initialize largest as root
+  const left = 2 * i + 1; // Left child = 2*i + 1
+  const right = 2 * i + 2; // Right child = 2*i + 2
+
+  // If left child is larger than root
+  if (left < arrLength && array[left] > array[largest]) {
+    largest = left;
+  }
+
+  // If right child is larger than largest so far
+  if (right < arrLength && array[right] > array[largest]) {
+    largest = right;
+  }
+
+  // If largest is not root
+  if (largest !== i) {
+    const temp = array[i];
+    array[i] = array[largest];
+    array[largest] = temp;
+
+    // Recursively heapify the affected sub-tree
+    heapify(array, arrLength, largest);
   }
 }
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-  }
-}
-enqueue(value) {
-  const newNode = new Node(value);
 
-  if (!this.head) {
-    this.head = newNode;
-    this.tail = newNode;
-  } else {
-    this.tail.next = newNode;
-    this.tail = newNode;
-  }
-}
-dequeue() {
-  if (!this.head) {
-    return null;
-  }
-
-  const removedNode = this.head;
-  this.head = this.head.next;
-
-  if (!this.head) {
-    this.tail = null;
-  }
-
-  return removedNode.value;
-}
-peek() {
-  if (!this.head) {
-    return null;
-  }
-
-  return this.head.value;
-}
-const queue = new Queue();
-
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
-
-console.log(queue.peek()); // Output: 1
-
-console.log(queue.dequeue()); // Output: 1
-console.log(queue.dequeue()); // Output: 2
-
-console.log(queue.peek()); // Output: 3
+// Example usage:
+const array = [5, 8, 2, 10, 3, 1];
+console.log("Original Array:", array);
+console.log("Sorted Array:", heapSort(array));
