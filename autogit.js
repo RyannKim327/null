@@ -1,37 +1,15 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function isSortedAscending(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false;
+    }
   }
+  return true;
 }
 
-function countLeafNodes(root) {
-  // Base case: if the root is null, return 0
-  if (root === null) {
-    return 0;
-  }
-  
-  // If node is a leaf (no children), return 1
-  if (root.left === null && root.right === null) {
-    return 1;
-  }
+// Example usage:
+const array1 = [1, 2, 3, 4, 5];
+console.log(isSortedAscending(array1));  // Output: true
 
-  // Recursively count the leaf nodes in the left and right subtrees
-  const leftCount = countLeafNodes(root.left);
-  const rightCount = countLeafNodes(root.right);
-
-  // Return the sum of leaf nodes in the left and right subtrees
-  return leftCount + rightCount;
-}
-// Create a binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-// Count the number of leaf nodes
-const leafNodeCount = countLeafNodes(root);
-console.log("Number of leaf nodes:", leafNodeCount);
-Number of leaf nodes: 5
+const array2 = [1, 3, 2, 4, 5];
+console.log(isSortedAscending(array2));  // Output: false
