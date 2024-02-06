@@ -1,21 +1,60 @@
-function binarySearchRecursive(arr, target, start, end) {
-  if (start > end) {
-    return -1; // Target not found
-  }
-
-  const mid = Math.floor((start + end) / 2);
-
-  if (arr[mid] === target) {
-    return mid; // Target found
-  } else if (target < arr[mid]) {
-    return binarySearchRecursive(arr, target, start, mid - 1); // Search in the left half
-  } else {
-    return binarySearchRecursive(arr, target, mid + 1, end); // Search in the right half
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
 }
+function isLinkedListPalindrome(head) {
+  // Step 1: Find the midpoint of the linked list
+  let slow = head;
+  let fast = head;
+  while (fast !== null && fast.next !== null) {
+    slow = slow.next;
+    fast = fast.next.next;
+  }
 
-// Example usage:
-const array = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const target = 12;
-const index = binarySearchRecursive(array, target, 0, array.length - 1);
-console.log(index); // Output: 5 (index of target in the array)
+  // Step 2: Reverse the second half of the linked list
+  let prev = null;
+  let current = slow;
+  while (current !== null) {
+    const next = current.next;
+    current.next = prev;
+    prev = current;
+    current = next;
+  }
+  let secondHalf = prev;
+
+  // Step 3: Compare the first and second halves of the linked list
+  let firstHalf = head;
+  while (secondHalf !== null) {
+    if (firstHalf.value !== secondHalf.value) {
+      return false;
+    }
+    firstHalf = firstHalf.next;
+    secondHalf = secondHalf.next;
+  }
+  return true;
+}
+// Test case 1
+let node1 = new Node(1);
+let node2 = new Node(2);
+let node3 = new Node(3);
+let node4 = new Node(2);
+let node5 = new Node(1);
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node5;
+console.log(isLinkedListPalindrome(node1)); // true
+
+// Test case 2
+let node6 = new Node(1);
+let node7 = new Node(2);
+let node8 = new Node(3);
+let node9 = new Node(4);
+let node10 = new Node(5);
+node6.next = node7;
+node7.next = node8;
+node8.next = node9;
+node9.next = node10;
+console.log(isLinkedListPalindrome(node6)); // false
