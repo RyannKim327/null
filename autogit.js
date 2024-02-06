@@ -1,12 +1,15 @@
-const cron = require('cron');
-
-// Function to be executed by cron job
-function myFunction() {
-  console.log('Hello, world!');
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  const modifiedStr = str.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
+  
+  // Reverse the modified string
+  const reversedStr = modifiedStr.split('').reverse().join('');
+  
+  // Compare the modified string with its reversed version
+  return modifiedStr === reversedStr;
 }
 
-// Create a cron job that runs every 5 seconds
-const job = new cron.CronJob('*/5 * * * * *', myFunction);
-
-// Start the cron job
-job.start();
+// Test cases
+console.log(isPalindrome("level")); // true
+console.log(isPalindrome("A car, a man, a maraca")); // true
+console.log(isPalindrome("hello")); // false
