@@ -1,20 +1,18 @@
-function insertionSort(arr) {
-  for (let i = 1; i < arr.length; i++) {
-    let currentValue = arr[i];
-    let j = i - 1;
-
-    while (j >= 0 && arr[j] > currentValue) {
-      arr[j + 1] = arr[j];
-      j--;
-    }
-
-    arr[j + 1] = currentValue;
+function depthLimitedSearch(node, goal, depthLimit) {
+  if (node.value === goal) {
+    return node;
   }
   
-  return arr;
+  if (depthLimit === 0) {
+    return null;
+  }
+  
+  for (let i = 0; i < node.children.length; i++) {
+    const result = depthLimitedSearch(node.children[i], goal, depthLimit - 1);
+    if (result !== null) {
+      return result;
+    }
+  }
+  
+  return null;
 }
-
-// Example usage:
-const unsortedArray = [7, 2, 4, 1, 5, 3];
-const sortedArray = insertionSort(unsortedArray);
-console.log(sortedArray);
