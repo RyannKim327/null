@@ -1,58 +1,38 @@
-function computeLPSArray(pattern) {
-  const lps = [0];
-  let len = 0;
-  let i = 1;
+function longestCommonSubstring(str1, str2) {
+  // Create a 2D matrix to store the lengths of common substrings
+  const matrix = Array(str1.length + 1)
+    .fill(0)
+    .map(() => Array(str2.length + 1).fill(0));
 
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[len]) {
-      len++;
-      lps[i] = len;
-      i++;
-    } else {
-      if (len !== 0) {
-        len = lps[len - 1];
+  let maxLength = 0; // Length of the longest common substring
+  let endIndex = 0; // Index where the longest common substring ends
+
+  // Traverse through the strings and fill in the matrix
+  for (let i = 1; i <= str1.length; i++) {
+    for (let j = 1; j <= str2.length; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        matrix[i][j] = matrix[i - 1][j - 1] + 1;
+        if (matrix[i][j] > maxLength) {
+          maxLength = matrix[i][j];
+          endIndex = i - 1;
+        }
       } else {
-        lps[i] = 0;
-        i++;
-      }
-    }
-  }
-  return lps;
-}
-
-function KMPSearch(string, pattern) {
-  const n = string.length;
-  const m = pattern.length;
-
-  const lps = computeLPSArray(pattern);
-
-  let i = 0;
-  let j = 0;
-  const indices = [];
-
-  while (i < n) {
-    if (pattern[j] === string[i]) {
-      i++;
-      j++;
-    }
-
-    if (j === m) {
-      indices.push(i - j);
-      j = lps[j - 1];
-    } else if (i < n && pattern[j] !== string[i]) {
-      if (j !== 0) {
-        j = lps[j - 1];
-      } else {
-        i++;
+        matrix[i][j] = 0;
       }
     }
   }
 
-  return indices;
+  // Extract the longest common substring
+  let longestSubstring = '';
+  if (maxLength > 0) {
+    longestSubstring = str1.substr(endIndex - maxLength + 1, maxLength);
+  }
+
+  return longestSubstring;
 }
 
-// Example usage:
-const string = "ABCABDABCABCA";
-const pattern = "ABC";
-const indices = KMPSearch(string, pattern);
-console.log("Pattern found at indices:", indices);
+// Usage example:
+const str1 = 'abcde';
+const str2 = 'cdeab';
+const longestSubstring = longestCommonSubstring(str1, str2);
+console.log(longestSubstring); // Output: 'cde'
