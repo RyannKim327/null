@@ -1,46 +1,75 @@
-class ListNode {
-  constructor(value) {
+class SkipNode {
+  constructor(value, level) {
     this.value = value;
-    this.next = null;
+    this.next = new Array(level + 1);
   }
 }
-
-class LinkedList {
+class SkipList {
   constructor() {
-    this.head = null;
+    this.head = new SkipNode(-Infinity, 0); // Sentinel node with minimum value
+    this.maxLevel = 0;
   }
 
-  addNode(value) {
-    const newNode = new ListNode(value);
+  randomLevel() {
+    let level = 0;
+    while (Math.random() < 0.5 && level < this.maxLevel + 1) {
+      level++;
+    }
+    return level;
+  }
 
-    if (this.head === null) {
-      this.head = newNode;
-    } else {
-      let currentNode = this.head;
-      while (currentNode.next !== null) {
-        currentNode = currentNode.next;
+  insert(value) {
+    const newNodeLevel = this.randomLevel();
+    const newNode = new SkipNode(value, newNodeLevel);
+
+    // Update the maxLevel if necessary
+    this.maxLevel = Math.max(this.maxLevel, newNodeLevel);
+
+    let current = this.head;
+    for (let i = this.maxLevel; i >= 0; i--) {
+      while (current.next[i] && current.next[i].value < value) {
+        current = current.next[i];
       }
-      currentNode.next = newNode;
+      if (i <= newNodeLevel) {
+        newNode.next[i] = current.next[i];
+        current.next[i] = newNode;
+      }
     }
   }
 
-  getLength() {
-    let currentNode = this.head;
-    let length = 0;
-
-    while (currentNode !== null) {
-      length++;
-      currentNode = currentNode.next;
+  delete(value) {
+    let current = this.head;
+    for (let i = this.maxLevel; i >= 0; i--) {
+      while (current.next[i] && current.next[i].value < value) {
+        current = current.next[i];
+      }
+      if (current.next[i] && current.next[i].value === value) {
+        current.next[i] = current.next[i].next[i];
+      }
     }
+  }
 
-    return length;
+  search(value) {
+    let current = this.head;
+    for (let i = this.maxLevel; i >= 0; i--) {
+      while (current.next[i] && current.next[i].value < value) {
+        current = current.next[i];
+      }
+      if (current.next[i] && current.next[i].value === value) {
+        return true;
+      }
+    }
+    return false;
   }
 }
+const skipList = new SkipList();
+skipList.insert(5);
+skipList.insert(10);
+skipList.insert(2);
 
-// Example usage:
-const list = new LinkedList();
-list.addNode(1);
-list.addNode(2);
-list.addNode(3);
-list.addNode(4);
-console.log(list.getLength()); // Output: 4
+console.log(skipList.search(10)); // true
+console.log(skipList.search(7)); // false
+
+skipList.delete(5);
+console.log(skipList.search(2)); // true
+console.log(skipList.search(5)); // false
