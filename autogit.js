@@ -1,51 +1,41 @@
-class Graph {
-  constructor() {
-    this.adjList = new Map();
-  }
-
-  addVertex(vertex) {
-    this.adjList.set(vertex, []);
-  }
-
-  addEdge(source, destination) {
-    this.adjList.get(source).push(destination);
+class TreeNode {
+  constructor(val, left = null, right = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
   }
 }
-function topologicalSortUtil(vertex, visited, stack, graph) {
-  visited.add(vertex);
 
-  const neighbors = graph.adjList.get(vertex);
-  for (let neighbor of neighbors) {
-    if (!visited.has(neighbor))
-      topologicalSortUtil(neighbor, visited, stack, graph);
+function diameterOfBinaryTree(root) {
+  let diameter = 0;
+
+  function getDepth(node) {
+    if (node === null) {
+      return 0;
+    }
+  
+    const leftDepth = getDepth(node.left);
+    const rightDepth = getDepth(node.right);
+  
+    // Calculate the diameter passing through the current node
+    diameter = Math.max(diameter, leftDepth + rightDepth);
+  
+    // Return the depth of the current node
+    return Math.max(leftDepth, rightDepth) + 1;
   }
-
-  stack.push(vertex);
+  
+  getDepth(root);
+  
+  return diameter;
 }
-function topologicalSort(graph) {
-  const visited = new Set();
-  const stack = [];
 
-  for (let vertex of graph.adjList.keys()) {
-    if (!visited.has(vertex))
-      topologicalSortUtil(vertex, visited, stack, graph);
-  }
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+root.right.left = new TreeNode(6);
+root.right.right = new TreeNode(7);
 
-  return stack.reverse();
-}
-const graph = new Graph();
-graph.addVertex(0);
-graph.addVertex(1);
-graph.addVertex(2);
-graph.addVertex(3);
-graph.addVertex(4);
-graph.addVertex(5);
-graph.addEdge(5, 2);
-graph.addEdge(5, 0);
-graph.addEdge(4, 0);
-graph.addEdge(4, 1);
-graph.addEdge(2, 3);
-graph.addEdge(3, 1);
-
-const sortedVertices = topologicalSort(graph);
-console.log(sortedVertices); // [4, 5, 2, 3, 1, 0]
+console.log(diameterOfBinaryTree(root)); // Output: 5
