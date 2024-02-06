@@ -1,12 +1,20 @@
-let str = "Hello, World!";
-let reversedStr = str.split('').reverse().join('');
-console.log(reversedStr); // Output: "!dlroW ,olleH"
-let str = "Hello, World!";
-let reversedStr = '';
-for (let i = str.length - 1; i >= 0; i--) {
-  reversedStr += str[i];
+function getRandomNumber(min, max) {
+  // Calculate the range
+  const range = max - min;
+
+  // Generate a random number between 0 and 1, and multiply it by the range
+  const randomNum = Math.random() * range;
+
+  // Shift the random number to match the desired range
+  const result = randomNum + min;
+
+  // Round down the result to the nearest whole number using Math.floor()
+  return Math.floor(result);
 }
-console.log(reversedStr); // Output: "!dlroW ,olleH"
-let str = "Hello, World!";
-let reversedStr = Array.from(str).reduce((acc, char) => char + acc, '');
-console.log(reversedStr); // Output: "!dlroW ,olleH"
+
+// Usage example
+const minRange = 1;
+const maxRange = 10;
+
+const randomNumber = getRandomNumber(minRange, maxRange);
+console.log(randomNumber);
