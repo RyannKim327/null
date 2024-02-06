@@ -1,16 +1,23 @@
-const cron = require('cron');
+function breadthLimitedSearch(startNode, goalNode, depthLimit) {
+  let queue = [startNode];
+  let visited = new Set();
 
-// Initialize a CronJob object
-const job = new cron.CronJob('*/5 * * * * *', function() {
-  // This function will run every 5 seconds
-  console.log('Cron job is running!');
-});
+  while (queue.length > 0) {
+    let currentNode = queue.shift();
 
-// Start the CronJob
-job.start();
+    if (currentNode === goalNode) {
+      return currentNode;  // Return the path here if needed
+    }
 
-// Stop the CronJob after 30 seconds
-setTimeout(function() {
-  job.stop();
-  console.log('Cron job has been stopped.');
-}, 30000);
+    if (currentNode.depth < depthLimit) {
+      currentNode.neighbors.forEach(neighbor => {
+        if (!visited.has(neighbor)) {
+          visited.add(neighbor);
+          queue.push(neighbor);
+        }
+      });
+    }
+  }
+
+  return null;  // Goal node not found
+}
