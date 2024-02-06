@@ -1,55 +1,67 @@
-class BeamSearch {
-  constructor(beamWidth, initialState) {
-    this.beamWidth = beamWidth;
-    this.initialState = initialState;
-    // Add any additional member variables here
-  }
+// Merge sort function
+function mergeSort(array) {
+  if (array.length <= 1) return array;
 
-  // Add methods here
-}
-class BeamSearch {
-  // Constructor and member variables here
+  // Create an array of sorted sub-arrays
+  var subArrays = array.map(function (element) {
+    return [element];
+  });
 
-  expand(state) {
-    // Implement the state expansion logic here
-    // Generate all possible successors of the current state
-    // Return an array of the expanded states
-  }
+  // Merge sub-arrays pairwise until we have a sorted array
+  while (subArrays.length > 1) {
+    var temp = [];
 
-  score(state) {
-    // Implement the state scoring logic here
-    // Calculate a score for a given state
-    // Return a numeric score value
-  }
-
-  search() {
-    let candidates = [this.initialState];
-
-    while (candidates[0].isTerminal === false) {
-      const expandedCandidates = [];
-      for (let i = 0; i < candidates.length; i++) {
-        const successorStates = this.expand(candidates[i]);
-        expandedCandidates.push(...successorStates);
+    for (var i = 0; i < subArrays.length; i += 2) {
+      // Merge sub-arrays at index i and i+1
+      if (i + 1 === subArrays.length) {
+        temp.push(subArrays[i]);
+      } else {
+        temp.push(merge(subArrays[i], subArrays[i + 1]));
       }
-
-      const scoredCandidates = expandedCandidates.map((state) => ({
-        state,
-        score: this.score(state),
-      }));
-
-      scoredCandidates.sort((a, b) => b.score - a.score);
-
-      candidates = scoredCandidates
-        .slice(0, this.beamWidth)
-        .map((candidate) => candidate.state);
     }
 
-    // Return the best candidate state or other necessary information
-    return candidates[0];
+    // Replace subArrays with the merged sub-arrays
+    subArrays = temp;
   }
-}
-const initialState = /* Define your initial state */;
 
-const beamSearch = new BeamSearch(5, initialState);
-const bestState = beamSearch.search();
-console.log(bestState);
+  // Return the sorted array
+  return subArrays[0];
+}
+
+// Merge function to merge two sorted arrays
+function merge(left, right) {
+  var merged = [];
+  var leftIndex = 0;
+  var rightIndex = 0;
+
+  // Merge elements from left and right into the merged array in sorted order
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] <= right[rightIndex]) {
+      merged.push(left[leftIndex]);
+      leftIndex++;
+    } else {
+      merged.push(right[rightIndex]);
+      rightIndex++;
+    }
+  }
+
+  // Append any remaining elements from left and right
+  while (leftIndex < left.length) {
+    merged.push(left[leftIndex]);
+    leftIndex++;
+  }
+
+  while (rightIndex < right.length) {
+    merged.push(right[rightIndex]);
+    rightIndex++;
+  }
+
+  return merged;
+}
+
+// Example usage
+var array = [9, 4, 8, 2, 1, 5, 3, 7, 6];
+console.log("Original array: " + array);
+
+var sortedArray = mergeSort(array);
+console.log("Sorted array: " + sortedArray);
