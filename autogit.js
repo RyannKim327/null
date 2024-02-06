@@ -1,83 +1,207 @@
-// Define a class for a linked list node
-class ListNode {
+// Node class represents a node in the AVL tree
+class Node {
   constructor(value) {
     this.value = value;
-    this.next = null;
+    this.left = null;
+    this.right = null;
+    this.height = 1;
   }
 }
 
-// Define a class for a linked list
-class LinkedList {
+// AVLTree class represents the AVL tree
+class AVLTree {
   constructor() {
-    this.head = null;
-    this.tail = null;
+    this.root = null;
   }
 
-  // Add a new node to the end of the linked list
-  append(value) {
-    const newNode = new ListNode(value);
-
-    if (!this.head) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
-    }
+  // Helper function to calculate the height of a node in the tree
+  getHeight(node) {
+    if (node === null) return 0;
+    return node.height;
   }
 
-  // Remove and return the value of the first node in the linked list
-  remove() {
-    if (!this.head) {
-      return null; // Empty list
-    }
+  // Helper function to update the height of a node
+  updateHeight(node) {
+    if (node === null) return;
 
-    const value = this.head.value;
-    this.head = this.head.next;
-
-    if (!this.head) {
-      this.tail = null; // Reset tail if list becomes empty
-    }
-
-    return value;
+    node.height = 1 + Math.max(
+      this.getHeight(node.left),
+      this.getHeight(node.right)
+    );
   }
 
-  // Check if the linked list is empty
-  isEmpty() {
-    return this.head === null;
+  // Helper function to get the balance factor of a node
+  getBalanceFactor(node) {
+    if (node === null) return 0;
+    return this.getHeight(node.left) - this.getHeight(node.right);
+  }
+
+  // Helper function to perform a right rotation on a node
+  rotateRight(z) {
+    const y = z.left;
+    const T3 = y.right;
+
+    // Perform rotation
+    y.right = z;
+    z.left = T3;
+
+    // Update heights
+    this.updateHeight(z);
+    this.updateHeight(y);
+
+    return y;
+  }
+
+  // Helper function to perform a left rotation on a node
+  rotateLeft(z) {
+    const y = z.right;
+    const T2 = y.left;
+
+    // Perform rotation
+    y.left = z;
+    z.right = T2;
+
+    // Update heights
+    this.updateHeight(z);
+    this.updateHeight(y);
+
+    return y;
+  }
+
+  // Insert a value into the AVL tree
+  insert(value) {
+    this.root = this.insertNode(this.root, value);
+  }
+
+  // Helper function to insert a value into the AVL tree recursively
+  insertNode(root, value) {
+    // Perform normal BST insertion
+    if (root === null) return new Node(value);
+    if (value < root.value) root.left = this.insertNode(root.left, value);
+    else if (value > root.value) root.right = this.insertNode(root.right, value);
+    else return root; // Duplicate values are not allowed
+
+    // Update height of current node
+    this.updateHeight(root);
+
+    // Check the balance factor and rebalance if necessary
+    const balanceFactor = this.getBalanceFactor(root);
+
+    // Left Left Case
+    if (balanceFactor > 1 && value < root.left.value)
+      return this.rotateRight(root);
+
+    // Right Right Case
+    if (balanceFactor < -1 && value > root.right.value)
+      return this.rotateLeft(root);
+
+    // Left Right Case
+    if (balanceFactor > 1 && value > root.left.value) {
+      root.left = this.rotateLeft(root.left);
+      return this.rotateRight(root);
+    }
+
+    // Right Left Case
+    if (balanceFactor < -1 && value < root.right.value) {
+      root.right = this.rotateRight(root.right);
+      return this.rotateLeft(root);
+    }
+
+    return root;
+  }
+
+  // Delete a value from the AVL tree
+  delete(value) {
+    this.root = this.deleteNode(this.root, value);
+  }
+
+  // Helper function to delete a value from the AVL tree recursively
+  deleteNode(root, value) {
+    // Perform normal BST deletion
+    if (root === null) return root;
+    if (value < root.value) root.left = this.deleteNode(root.left, value);
+    else if (value > root.value) root.right = this.deleteNode(root.right, value);
+    else {
+      // Node to delete found
+
+      if (root.left === null || root.right === null) {
+        // No child or one child case
+        const child = root.left || root.right;
+        root = child;
+      } else {
+        // Two children case
+        const successor = this.findMinNode(root.right);
+        root.value = successor.value;
+        root.right = this.deleteNode(root.right, successor.value);
+      }
+    }
+
+    if (root === null) return root; // If the tree had only one element
+
+    // Update height of current node
+    this.updateHeight(root);
+
+    // Check the balance factor and rebalance if necessary
+    const balanceFactor = this.getBalanceFactor(root);
+
+    // Left Left Case
+    if (balanceFactor > 1 && this.getBalanceFactor(root.left) >= 0)
+      return this.rotateRight(root);
+
+    // Right Right Case
+    if (balanceFactor < -1 && this.getBalanceFactor(root.right) <= 0)
+      return this.rotateLeft(root);
+
+    // Left Right Case
+    if (balanceFactor > 1 && this.getBalanceFactor(root.left) < 0) {
+      root.left = this.rotateLeft(root.left);
+      return this.rotateRight(root);
+    }
+
+    // Right Left Case
+    if (balanceFactor < -1 && this.getBalanceFactor(root.right) > 0) {
+      root.right = this.rotateRight(root.right);
+      return this.rotateLeft(root);
+    }
+
+    return root;
+  }
+
+  // Helper function to find the node with minimum value
+  findMinNode(root) {
+    let current = root;
+    while (current.left !== null) {
+      current = current.left;
+    }
+    return current;
+  }
+
+  // Perform an in-order traversal of the AVL tree
+  inOrderTraversal(callback) {
+    this.inOrderTraversalRecursion(this.root, callback);
+  }
+
+  // Helper function to perform an in-order traversal recursively
+  inOrderTraversalRecursion(node, callback) {
+    if (node === null) return;
+    this.inOrderTraversalRecursion(node.left, callback);
+    callback(node.value);
+    this.inOrderTraversalRecursion(node.right, callback);
   }
 }
+const avlTree = new AVLTree();
 
-// Define a class for a queue using a linked list
-class Queue {
-  constructor() {
-    this.list = new LinkedList();
-  }
+// Insert values into the AVL tree
+avlTree.insert(10);
+avlTree.insert(20);
+avlTree.insert(30);
+avlTree.insert(40);
+avlTree.insert(50);
 
-  // Add an element to the end of the queue
-  enqueue(value) {
-    this.list.append(value);
-  }
+// Delete a value from the AVL tree
+avlTree.delete(30);
 
-  // Remove and return the element at the front of the queue
-  dequeue() {
-    return this.list.remove();
-  }
-
-  // Check if the queue is empty
-  isEmpty() {
-    return this.list.isEmpty();
-  }
-}
-
-// Example usage
-const queue = new Queue();
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
-
-console.log(queue.dequeue()); // Output: 1
-console.log(queue.dequeue()); // Output: 2
-console.log(queue.isEmpty()); // Output: false
-console.log(queue.dequeue()); // Output: 3
-console.log(queue.isEmpty()); // Output: true
+// Traverse the AVL tree
+avlTree.inOrderTraversal((value) => {
+  console.log(value);
+});
