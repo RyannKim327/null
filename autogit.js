@@ -1,58 +1,56 @@
-class HashTable {
-  constructor() {
-    this.table = [];
-    this.size = 0;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
 }
-HashTable.prototype.hash = function (key) {
-  let hash = 0;
-  for (let i = 0; i < key.length; i++) {
-    hash += key.charCodeAt(i);
+class Queue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
   }
-  return hash % this.table.length;
-};
-HashTable.prototype.insert = function (key, value) {
-  const index = this.hash(key);
-  if (!this.table[index]) {
-    this.table[index] = [];
+}
+enqueue(value) {
+  const newNode = new Node(value);
+
+  if (!this.head) {
+    this.head = newNode;
+    this.tail = newNode;
+  } else {
+    this.tail.next = newNode;
+    this.tail = newNode;
   }
-  this.table[index].push([key, value]);
-  this.size++;
-};
-
-HashTable.prototype.get = function (key) {
-  const index = this.hash(key);
-  if (this.table[index]) {
-    for (let i = 0; i < this.table[index].length; i++) {
-      if (this.table[index][i][0] === key) {
-        return this.table[index][i][1];
-      }
-    }
+}
+dequeue() {
+  if (!this.head) {
+    return null;
   }
-  return undefined;
-};
 
-HashTable.prototype.remove = function (key) {
-  const index = this.hash(key);
-  if (this.table[index]) {
-    for (let i = 0; i < this.table[index].length; i++) {
-      if (this.table[index][i][0] === key) {
-        this.table[index].splice(i, 1);
-        this.size--;
-        break;
-      }
-    }
+  const removedNode = this.head;
+  this.head = this.head.next;
+
+  if (!this.head) {
+    this.tail = null;
   }
-};
-const hashTable = new HashTable();
-hashTable.insert("name", "John");
-hashTable.insert("age", 25);
-hashTable.insert("city", "New York");
 
-console.log(hashTable.get("name")); // Output: John
-console.log(hashTable.get("age")); // Output: 25
-console.log(hashTable.get("city")); // Output: New York
+  return removedNode.value;
+}
+peek() {
+  if (!this.head) {
+    return null;
+  }
 
-hashTable.remove("age");
-console.log(hashTable.get("age")); // Output: undefined
-console.log(hashTable.size); // Output: 2
+  return this.head.value;
+}
+const queue = new Queue();
+
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+
+console.log(queue.peek()); // Output: 1
+
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.dequeue()); // Output: 2
+
+console.log(queue.peek()); // Output: 3
