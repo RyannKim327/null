@@ -1,38 +1,52 @@
-function findLongestIncreasingSubsequence(arr) {
-  const n = arr.length;
-  const lis = Array(n).fill(1); // initialize LIS array with 1s
+function buildPrefixTable(pattern) {
+  const prefixTable = [0];
+  let length = 0;  // length of the previous longest prefix suffix
 
-  // Find the longest increasing subsequence
-  for (let i = 1; i < n; i++) {
-    for (let j = 0; j < i; j++) {
-      if (arr[i] > arr[j] && lis[i] < lis[j] + 1) {
-        lis[i] = lis[j] + 1;
+  for (let i = 1; i < pattern.length; i++) {
+    if (pattern[i] === pattern[length]) {
+      length++;
+      prefixTable[i] = length;
+    } else {
+      if (length !== 0) {
+        length = prefixTable[length - 1];
+        i--;
+      } else {
+        prefixTable[i] = 0;
       }
     }
   }
 
-  // Find the maximum length of LIS
-  let maxLength = 0;
-  for (let i = 0; i < n; i++) {
-    if (maxLength < lis[i]) {
-      maxLength = lis[i];
-    }
-  }
-
-  // Find the longest increasing subsequence
-  const longestSubsequence = [];
-  let length = maxLength;
-  for (let i = n - 1; i >= 0; i--) {
-    if (lis[i] === length) {
-      longestSubsequence.unshift(arr[i]);
-      length--;
-    }
-  }
-
-  return longestSubsequence;
+  return prefixTable;
 }
+function kmpSearch(text, pattern) {
+  const prefixTable = buildPrefixTable(pattern);
+  const matches = [];
 
-// Example usage
-const array = [10, 22, 9, 33, 21, 50, 41, 60, 80];
-const longestSubsequence = findLongestIncreasingSubsequence(array);
-console.log(longestSubsequence); // Output: [10, 22, 33, 50, 60, 80]
+  let i = 0;  // index for text
+  let j = 0;  // index for pattern
+
+  while (i < text.length) {
+    if (pattern[j] === text[i]) {
+      j++;
+      i++;
+    }
+
+    if (j === pattern.length) {
+      matches.push(i - j);
+      j = prefixTable[j - 1];
+    } else if (i < text.length && pattern[j] !== text[i]) {
+      if (j !== 0) {
+        j = prefixTable[j - 1];
+      } else {
+        i++;
+      }
+    }
+  }
+
+  return matches;
+}
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const matches = kmpSearch(text, pattern);
+
+console.log("Pattern found at positions:", matches);
