@@ -1,89 +1,85 @@
-class BTreeNode {
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
+class BinaryTree {
   constructor() {
-    this.keys = [];
-    this.children = [];
-    this.isLeaf = true;
+    this.root = null;
+  }
+
+  // Insert a value into the tree
+  insert(value) {
+    const newNode = new Node(value);
+
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
+
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  // Search for a value in the tree
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  searchNode(node, value) {
+    if (node === null) {
+      return false;
+    }
+
+    if (value === node.value) {
+      return true;
+    }
+
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    }
+
+    return this.searchNode(node.right, value);
+  }
+
+  // Perform a tree traversal (e.g., inorder, preorder, postorder)
+  inorder() {
+    this.inorderTraversal(this.root);
+  }
+
+  inorderTraversal(node) {
+    if (node !== null) {
+      this.inorderTraversal(node.left);
+      console.log(node.value);
+      this.inorderTraversal(node.right);
+    }
   }
 }
+const tree = new BinaryTree();
 
-class BTree {
-  constructor(order) {
-    this.root = new BTreeNode();
-    this.order = order;
-  }
+tree.insert(5);
+tree.insert(3);
+tree.insert(7);
+tree.insert(2);
+tree.insert(4);
 
-  insert(key) {
-    const root = this.root;
-    if (root.keys.length === (2 * this.order) - 1) {
-      const node = new BTreeNode();
-      this.root = node;
-      node.children[0] = root;
-      this.splitChild(node, 0);
-      this.insertNonFull(node, key);
-    } else {
-      this.insertNonFull(root, key);
-    }
-  }
+console.log(tree.search(4)); // Output: true
+console.log(tree.search(6)); // Output: false
 
-  insertNonFull(node, key) {
-    let i = node.keys.length - 1;
-    if (node.isLeaf) {
-      while (i >= 0 && node.keys[i] > key) {
-        node.keys[i + 1] = node.keys[i];
-        i--;
-      }
-      node.keys[i + 1] = key;
-    } else {
-      while (i >= 0 && node.keys[i] > key) {
-        i--;
-      }
-      i++;
-      if (node.children[i].keys.length === (2 * this.order) - 1) {
-        this.splitChild(node, i);
-        if (node.keys[i] < key) {
-          i++;
-        }
-      }
-      this.insertNonFull(node.children[i], key);
-    }
-  }
-
-  splitChild(node, i) {
-    const t = this.order;
-    const y = node.children[i];
-    const z = new BTreeNode();
-    node.children.splice(i + 1, 0, z);
-    node.keys.splice(i, 0, y.keys[t - 1]);
-    z.keys = y.keys.splice(t, y.keys.length - t);
-    if (!y.isLeaf) {
-      z.isLeaf = false;
-      z.children = y.children.splice(t, y.children.length - t);
-    }
-  }
-
-  search(key) {
-    return this.searchNode(this.root, key);
-  }
-
-  searchNode(node, key) {
-    let i = 0;
-    while (i < node.keys.length && key > node.keys[i]) {
-      i++;
-    }
-    if (node.keys[i] === key) {
-      return node;
-    }
-    if (node.isLeaf) {
-      return null;
-    }
-    return this.searchNode(node.children[i], key);
-  }
-}
-const bTree = new BTree(3);
-bTree.insert(10);
-bTree.insert(20);
-bTree.insert(5);
-
-console.log(bTree.search(10)); // BTreeNode { keys: [10], ... }
-console.log(bTree.search(5)); // BTreeNode { keys: [5], ... }
-console.log(bTree.search(15)); // null
+tree.inorder(); // Output: 2 3 4 5 7
