@@ -1,19 +1,53 @@
-function getRandomNumber(min, max) {
-  // Calculate the range of possible values
-  const range = max - min + 1;
-  
-  // Generate a random number between 0 and the range
-  const randomValue = Math.floor(Math.random() * range);
-  
-  // Adjust the random value based on the minimum value
-  const result = randomValue + min;
-  
-  return result;
+function mergeSortIterative(arr) {
+  const tempArray = [...arr];
+  const mergedArray = [];
+  let subarraySize = 1;
+
+  while (subarraySize < arr.length) {
+    let i = 0;
+
+    while (i < arr.length - subarraySize) {
+      const leftStart = i;
+      const rightStart = leftStart + subarraySize;
+      const leftEnd = Math.min(leftStart + subarraySize - 1, arr.length - 1);
+      const rightEnd = Math.min(rightStart + subarraySize - 1, arr.length - 1);
+
+      let leftIndex = leftStart;
+      let rightIndex = rightStart;
+
+      while (leftIndex <= leftEnd && rightIndex <= rightEnd) {
+        if (tempArray[leftIndex] <= tempArray[rightIndex]) {
+          mergedArray.push(tempArray[leftIndex]);
+          leftIndex++;
+        } else {
+          mergedArray.push(tempArray[rightIndex]);
+          rightIndex++;
+        }
+      }
+
+      for (let j = leftIndex; j <= leftEnd; j++) {
+        mergedArray.push(tempArray[j]);
+      }
+
+      for (let j = rightIndex; j <= rightEnd; j++) {
+        mergedArray.push(tempArray[j]);
+      }
+
+      i += subarraySize * 2;
+    }
+
+    for (let j = 0; j < mergedArray.length; j++) {
+      tempArray[j] = mergedArray[j];
+    }
+
+    subarraySize *= 2;
+    mergedArray.length = 0;
+  }
+
+  return tempArray;
 }
 
-// Example usage
-const minRange = 1;   // minimum value
-const maxRange = 10;  // maximum value
-
-const randomNumber = getRandomNumber(minRange, maxRange);
-console.log(randomNumber);  // Outputs a random number between 1 and 10
+// Example usage:
+const arr = [9, 3, 7, 5, 1, 8, 4, 2, 6];
+const sortedArr = mergeSortIterative(arr);
+console.log(sortedArr);
