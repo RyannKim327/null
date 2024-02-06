@@ -1,30 +1,79 @@
-function rabinKarp(pattern, text) {
-  const patternLength = pattern.length;
-  const textLength = text.length;
-  const patternHash = getHash(pattern);
+class Graph {
+  constructor() {
+    this.vertices = new Map();
+  }
 
-  for (let i = 0; i <= textLength - patternLength; i++) {
-    const substring = text.substr(i, patternLength);
-    const currentHash = getHash(substring);
+  addVertex(id) {
+    this.vertices.set(id, {
+      id,
+      index: -1,
+      lowlink: -1,
+      onStack: false,
+      edges: []
+    });
+  }
 
-    if (currentHash === patternHash && substring === pattern) {
-      return i;
+  addEdge(v1, v2) {
+    this.vertices.get(v1).edges.push(v2);
+  }
+}
+function tarjanSCC(graph) {
+  let index = 0;
+  const stack = [];
+  const result = [];
+
+  function strongConnect(vertex) {
+    const v = graph.vertices.get(vertex);
+    v.index = index;
+    v.lowlink = index;
+    index++;
+    stack.push(v.id);
+    v.onStack = true;
+
+    for (const edge of v.edges) {
+      const next = graph.vertices.get(edge);
+
+      if (next.index === -1) {
+        strongConnect(next.id);
+        v.lowlink = Math.min(v.lowlink, next.lowlink);
+      } else if (next.onStack) {
+        v.lowlink = Math.min(v.lowlink, next.index);
+      }
+    }
+
+    if (v.lowlink === v.index) {
+      const component = [];
+      let w;
+      do {
+        w = stack.pop();
+        graph.vertices.get(w).onStack = false;
+        component.push(w);
+      } while (w !== v.id);
+      result.push(component);
     }
   }
 
-  return -1;
-}
-
-function getHash(str) {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash += str.charCodeAt(i);
+  for (const vertex of graph.vertices.keys()) {
+    if (graph.vertices.get(vertex).index === -1) {
+      strongConnect(vertex);
+    }
   }
-  return hash;
-}
 
+  return result;
+}
 // Example usage:
-const text = "The quick brown fox jumps over the lazy dog";
-const pattern = "brown";
-const index = rabinKarp(pattern, text);
-console.log(index); // Output: 10
+const graph = new Graph();
+
+graph.addVertex(0);
+graph.addVertex(1);
+graph.addVertex(2);
+graph.addVertex(3);
+graph.addVertex(4);
+
+graph.addEdge(0, 1);
+graph.addEdge(1, 2);
+graph.addEdge(2, 0);
+graph.addEdge(3, 4);
+
+const result = tarjanSCC(graph);
+console.log(result); // Prints: [[0, 2, 1], [4], [3]]
