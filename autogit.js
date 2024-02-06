@@ -1,46 +1,33 @@
-function findMedianSortedArrays(nums1, nums2) {
-  const mergedArray = mergeArrays(nums1, nums2);
-  const length = mergedArray.length;
+function beamSearch(initialState, beamWidth, terminationConditions, heuristicFn) {
+  let currentCandidates = [initialState];
 
-  if (length % 2 === 1) {
-    return mergedArray[Math.floor(length / 2)];
-  } else {
-    const middleRight = length / 2;
-    const middleLeft = middleRight - 1;
-    return (mergedArray[middleLeft] + mergedArray[middleRight]) / 2;
-  }
-}
+  while (true) {
+    let newCandidates = [];
 
-function mergeArrays(nums1, nums2) {
-  const merged = [];
-  let i = 0;
-  let j = 0;
+    for (let candidate of currentCandidates) {
+      let successorStates = generateSuccessorStates(candidate);
+      let scoredSuccessors = successorStates.map(state => ({ state, score: heuristicFn(state) }));
+      scoredSuccessors.sort((a, b) => b.score - a.score); // Sort in descending order
 
-  while (i < nums1.length && j < nums2.length) {
-    if (nums1[i] < nums2[j]) {
-      merged.push(nums1[i]);
-      i++;
-    } else {
-      merged.push(nums2[j]);
-      j++;
+      for (let i = 0; i < beamWidth && i < scoredSuccessors.length; i++) {
+        let newCandidate = scoredSuccessors[i].state;
+        if (terminationConditions(newCandidate)) {
+          return newCandidate; // Found a solution
+        } else {
+          newCandidates.push(newCandidate);
+        }
+      }
     }
-  }
 
-  while (i < nums1.length) {
-    merged.push(nums1[i]);
-    i++;
+    currentCandidates = newCandidates;
   }
-
-  while (j < nums2.length) {
-    merged.push(nums2[j]);
-    j++;
-  }
-
-  return merged;
 }
 
 // Example usage:
-const nums1 = [1, 3];
-const nums2 = [2, 4, 6];
-const median = findMedianSortedArrays(nums1, nums2);
-console.log(median); // Output: 3
+let initialState = // Define your initial state
+let beamWidth = 5;
+let terminationConditions = // Define your termination conditions
+let heuristicFn = // Define your heuristic function
+
+let bestSolution = beamSearch(initialState, beamWidth, terminationConditions, heuristicFn);
+console.log("Best Solution:", bestSolution);
