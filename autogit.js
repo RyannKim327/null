@@ -1,73 +1,31 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
-class BinarySearchTree {
-  constructor() {
-    this.root = null;
-  }
-}
-class BinarySearchTree {
-  // ...
+function iterativeDepthLimitedSearch(root, goal, depthLimit) {
+  // Create a stack to keep track of nodes to visit
+  const stack = [];
 
-  insert(value) {
-    const newNode = new Node(value);
+  // Push the root node to the stack with initial depth
+  stack.push({ node: root, depth: 0 });
 
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
+  while (stack.length > 0) {
+    // Pop the top node from the stack
+    const { node, depth } = stack.pop();
+
+    // Check if the current node is the goal node
+    if (node === goal) {
+      console.log("Goal found!");
+      return;
     }
-  }
 
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
+    // Check if the depth limit has been reached
+    if (depth < depthLimit) {
+      // Get the child nodes of the current node
+      const children = node.getChildren();
+
+      // Push the child nodes to the stack with incremented depth
+      for (let i = children.length - 1; i >= 0; i--) {
+        stack.push({ node: children[i], depth: depth + 1 });
       }
     }
   }
+
+  console.log("Goal not found within depth limit");
 }
-class BinarySearchTree {
-  // ...
-
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  searchNode(node, value) {
-    if (node === null) {
-      // Value not found
-      return false;
-    }
-
-    if (value === node.value) {
-      // Value found
-      return true;
-    }
-
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else {
-      return this.searchNode(node.right, value);
-    }
-  }
-}
-const bst = new BinarySearchTree();
-bst.insert(8);
-bst.insert(3);
-bst.insert(10);
-
-console.log(bst.search(3)); // true
-console.log(bst.search(5)); // false
