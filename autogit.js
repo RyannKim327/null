@@ -1,31 +1,20 @@
-// Define the tree node structure
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
+function insertionSort(arr) {
+  for (let i = 1; i < arr.length; i++) {
+    let key = arr[i];
+    let j = i - 1;
 
-// Function to find the maximum depth of the binary tree
-function findMaxDepth(root) {
-  if (root === null) {
-    return 0; // Base case: empty tree has depth 0
+    while (j >= 0 && arr[j] > key) {
+      arr[j + 1] = arr[j];
+      j = j - 1;
+    }
+
+    arr[j + 1] = key;
   }
-  
-  // Recursive calls to find the maximum depth of the left and right subtrees
-  const leftDepth = findMaxDepth(root.left);
-  const rightDepth = findMaxDepth(root.right);
-  
-  // Return the maximum depth of the subtrees plus one for the current node
-  return Math.max(leftDepth, rightDepth) + 1;
+
+  return arr;
 }
 
 // Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.right.right = new TreeNode(5);
+const array = [5, 2, 9, 1, 3];
 
-console.log(findMaxDepth(root)); // Output: 3
+console.log(insertionSort(array)); // [1, 2, 3, 5, 9]
