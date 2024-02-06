@@ -1,18 +1,20 @@
-function depthLimitedSearch(node, goal, depthLimit) {
-  if (node === goal) {
-    return true; // Goal found
+function calculateFactorialLoop(num) {
+  if (num === 0 || num === 1) {
+    return 1;
   }
 
-  if (depthLimit <= 0) {
-    return false; // Reached depth limit
+  let factorial = 1;
+  for (let i = 2; i <= num; i++) {
+    factorial *= i;
   }
 
-  // Continue searching recursively in children nodes
-  for (let child of node.children) {
-    if (depthLimitedSearch(child, goal, depthLimit - 1)) {
-      return true; // Goal found in child node
-    }
-  }
-
-  return false; // Goal not found
+  return factorial;
 }
+function calculateFactorialRecursive(num) {
+  if (num === 0 || num === 1) {
+    return 1;
+  }
+  return num * calculateFactorialRecursive(num - 1);
+}
+console.log(calculateFactorialLoop(5)); // Output: 120
+console.log(calculateFactorialRecursive(5)); // Output: 120
