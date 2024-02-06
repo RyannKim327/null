@@ -1,28 +1,17 @@
-class ListNode {
-    constructor(val) {
-        this.val = val;
-        this.next = null;
-    }
+function findMedianSortedArrays(arr1, arr2) {
+  const merged = [...arr1, ...arr2].sort((a, b) => a - b);
+  const length = merged.length;
+
+  if (length % 2 === 1) {
+    return merged[Math.floor(length / 2)];
+  } else {
+    const index1 = Math.floor(length / 2) - 1;
+    const index2 = Math.floor(length / 2);
+    return (merged[index1] + merged[index2]) / 2;
+  }
 }
 
-function getIntersectionNode(headA, headB) {
-    const set = new Set();
-
-    // Traverse through the first linked list and store all node references in the Set
-    let node = headA;
-    while (node) {
-        set.add(node);
-        node = node.next;
-    }
-
-    // Traverse through the second linked list and check for intersection
-    node = headB;
-    while (node) {
-        if (set.has(node)) {
-            return node; // Intersection found
-        }
-        node = node.next;
-    }
-
-    return null; // No intersection found
-}
+// Example usage:
+const arr1 = [1, 3, 5];
+const arr2 = [2, 4, 6];
+console.log(findMedianSortedArrays(arr1, arr2)); // Output: 3.5
