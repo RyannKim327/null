@@ -1,11 +1,19 @@
-function getStringLength(str) {
-  let count = 0;
-  for (let i = 0; str[i] !== undefined; i++) {
-    count++;
-  }
-  return count;
+function reverseStringWords(string) {
+  // Split the string into an array of words
+  var wordsArray = string.split(" ");
+
+  // Reverse the order of the words array
+  var reversedWordsArray = wordsArray.reverse();
+
+  // Join the reversed array back into a string
+  var reversedString = reversedWordsArray.join(" ");
+
+  return reversedString;
 }
 
-const myString = "Hello, world!";
-const length = getStringLength(myString);
-console.log(length); // Output: 13
+// Example usage
+var originalString = "Hello World! How are you?";
+var reversedString = reverseStringWords(originalString);
+
+console.log(reversedString);
+// Output: you? are How World! Hello
