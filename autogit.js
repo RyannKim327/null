@@ -1,59 +1,31 @@
-class TrieNode {
-  constructor() {
-    this.children = new Map();
-    this.isEndOfWord = false;
+class ListNode {
+  constructor(value, next = null) {
+    this.value = value;
+    this.next = next;
   }
 }
-class Trie {
-  constructor() {
-    this.root = new TrieNode();
+
+function findMiddleElement(head) {
+  if (!head) {
+    return null; // Empty list
   }
 
-  // Insert a word into the trie
-  insert(word) {
-    let current = this.root;
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-      if (!current.children.has(char)) {
-        current.children.set(char, new TrieNode());
-      }
-      current = current.children.get(char);
-    }
-    current.isEndOfWord = true;
+  let slowPtr = head;
+  let fastPtr = head;
+
+  while (fastPtr && fastPtr.next) {
+    slowPtr = slowPtr.next;
+    fastPtr = fastPtr.next.next;
   }
 
-  // Search if a word exists in the trie
-  search(word) {
-    let current = this.root;
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-      if (!current.children.has(char)) {
-        return false;
-      }
-      current = current.children.get(char);
-    }
-    return current.isEndOfWord;
-  }
-
-  // Check if a word prefix exists in the trie
-  startsWith(prefix) {
-    let current = this.root;
-    for (let i = 0; i < prefix.length; i++) {
-      const char = prefix[i];
-      if (!current.children.has(char)) {
-        return false;
-      }
-      current = current.children.get(char);
-    }
-    return true;
-  }
+  return slowPtr.value;
 }
-const trie = new Trie();
-trie.insert("hello");
-trie.insert("world");
-console.log(trie.search("hello")); // Output: true
-console.log(trie.search("world")); // Output: true
-console.log(trie.startsWith("hell")); // Output: true
-console.log(trie.startsWith("wor")); // Output: true
-console.log(trie.search("help")); // Output: false
-console.log(trie.startsWith("abc")); // Output: false
+
+// Example usage:
+const list = new ListNode(1);
+list.next = new ListNode(2);
+list.next.next = new ListNode(3);
+list.next.next.next = new ListNode(4);
+list.next.next.next.next = new ListNode(5);
+
+console.log(findMiddleElement(list)); // Output: 3
