@@ -1,42 +1,36 @@
-function buildMaxHeap(arr) {
-    const n = arr.length;
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(arr, n, i);
-    }
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-function heapify(arr, heapSize, rootIdx) {
-    let largest = rootIdx;
-    const left = 2 * rootIdx + 1;
-    const right = 2 * rootIdx + 2;
-
-    if (left < heapSize && arr[left] > arr[largest]) {
-        largest = left;
-    }
-
-    if (right < heapSize && arr[right] > arr[largest]) {
-        largest = right;
-    }
-
-    if (largest !== rootIdx) {
-        [arr[rootIdx], arr[largest]] = [arr[largest], arr[rootIdx]];
-        heapify(arr, heapSize, largest);
-    }
+// Function to calculate the maximum depth of a binary tree
+function findMaxDepth(node) {
+  // Base case: if the current node is null, return 0
+  if (node === null) {
+    return 0;
+  }
+  
+  // Recursively calculate the depth of the left and right subtrees
+  let leftDepth = findMaxDepth(node.left);
+  let rightDepth = findMaxDepth(node.right);
+  
+  // Return the maximum of the left and right subtree depths, plus 1 for the current node
+  return Math.max(leftDepth, rightDepth) + 1;
 }
-function heapSort(arr) {
-    const n = arr.length;
 
-    buildMaxHeap(arr);
+// Example usage:
 
-    for (let i = n - 1; i > 0; i--) {
-        [arr[0], arr[i]] = [arr[i], arr[0]];
-        heapify(arr, i, 0);
-    }
+// Create a binary tree
+let root = new Node(3);
+root.left = new Node(9);
+root.right = new Node(20);
+root.right.left = new Node(15);
+root.right.right = new Node(7);
 
-    return arr;
-}
-const array = [4, 10, 3, 5, 1];
-console.log('Original Array:', array);
-console.log('Sorted Array:', heapSort(array));
-Original Array: [4, 10, 3, 5, 1]
-Sorted Array: [1, 3, 4, 5, 10]
+// Calculate the maximum depth of the binary tree
+let maxDepth = findMaxDepth(root);
+
+console.log('Maximum depth of the binary tree:', maxDepth);
