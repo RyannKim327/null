@@ -1,28 +1,12 @@
-function longestCommonPrefix(strings) {
-  let prefix = '';
-
-  if (strings.length === 0) {
-    return prefix;
+function getStringLength(str) {
+  let count = 0;
+  for (let i = 0; str[i] !== undefined; i++) {
+    count++;
   }
-
-  if (strings.length === 1) {
-    return strings[0];
-  }
-
-  strings.sort();
-
-  for (let i = 0; i < strings[0].length; i++) {
-    if (strings[0][i] === strings[strings.length - 1][i]) {
-      prefix += strings[0][i];
-    } else {
-      return prefix;
-    }
-  }
-
-  return prefix;
+  return count;
 }
-const strings = ['flower', 'flow', 'flight'];
-console.log(longestCommonPrefix(strings));  // Output: fl
 
-const strings2 = ['dog', 'racecar', 'car'];
-console.log(longestCommonPrefix(strings2));  // Output: ''
+// Example usage:
+const str = "Hello, world!";
+const length = getStringLength(str);
+console.log(length); // Output: 13
