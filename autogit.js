@@ -1,66 +1,50 @@
-class PriorityQueue {
-  constructor() {
-    this.heap = [];
-  }
+function bellmanFord(graph, source) {
+  const numNodes = graph.length;
+  const distances = new Array(numNodes).fill(Infinity);
+  const prev = new Array(numNodes).fill(null);
 
-  insert(element, priority) {
-    const item = { element, priority };
-    this.heap.push(item);
-    this.heapifyUp();
-  }
+  distances[source] = 0;
 
-  peek() {
-    return this.heap[0]?.element;
-  }
-
-  dequeue() {
-    if (this.heap.length === 0) return null;
-    const maxItem = this.heap[0];
-    const lastItem = this.heap.pop();
-    if (this.heap.length > 0) {
-      this.heap[0] = lastItem;
-      this.heapifyDown();
-    }
-    return maxItem.element;
-  }
-
-  heapifyUp() {
-    let currentIndex = this.heap.length - 1;
-    while (currentIndex > 0) {
-      const parentIndex = Math.floor((currentIndex - 1) / 2);
-      if (this.heap[currentIndex].priority <= this.heap[parentIndex].priority) break;
-      [this.heap[currentIndex], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[currentIndex]];
-      currentIndex = parentIndex;
-    }
-  }
-
-  heapifyDown() {
-    let currentIndex = 0;
-    while (true) {
-      const leftChildIndex = currentIndex * 2 + 1;
-      const rightChildIndex = currentIndex * 2 + 2;
-      let maxChildIndex = null;
-
-      if (leftChildIndex < this.heap.length) {
-        maxChildIndex = leftChildIndex;
-        if (rightChildIndex < this.heap.length && this.heap[rightChildIndex].priority > this.heap[leftChildIndex].priority) {
-          maxChildIndex = rightChildIndex;
+  for (let i = 0; i < numNodes - 1; i++) {
+    for (let current = 0; current < numNodes; current++) {
+      for (let [adjacent, weight] of graph[current]) {
+        if (distances[current] + weight < distances[adjacent]) {
+          distances[adjacent] = distances[current] + weight;
+          prev[adjacent] = current;
         }
       }
-
-      if (maxChildIndex === null || this.heap[maxChildIndex].priority <= this.heap[currentIndex].priority) break;
-
-      [this.heap[currentIndex], this.heap[maxChildIndex]] = [this.heap[maxChildIndex], this.heap[currentIndex]];
-      currentIndex = maxChildIndex;
     }
   }
-}
-const pq = new PriorityQueue();
-pq.insert("Task 1", 3);
-pq.insert("Task 2", 1);
-pq.insert("Task 3", 2);
 
-console.log(pq.dequeue()); // Output: Task 2
-console.log(pq.dequeue()); // Output: Task 3
-console.log(pq.dequeue()); // Output: Task 1
-console.log(pq.dequeue()); // Output: null
+  // Check for negative cycles
+  for (let current = 0; current < numNodes; current++) {
+    for (let [adjacent, weight] of graph[current]) {
+      if (distances[current] + weight < distances[adjacent]) {
+        throw new Error("Graph contains a negative-weight cycle");
+      }
+    }
+  }
+
+  // Build the shortest path
+  const path = [];
+  let current = numNodes - 1; // Destination node
+  while (current !== null) {
+    path.unshift(current);
+    current = prev[current];
+  }
+
+  return path;
+}
+
+// Example usage:
+const graph = [
+  [[1, 4], [2, 3]],         // Node 0: [1, 4] and [2, 3] are adjacent nodes with their weights
+  [[2, 1], [3, 4], [4, 1]], // Node 1: [2, 1], [3, 4] and [4, 1] are adjacent nodes with their weights
+  [[], [3, 1]],             // Node 2: [3, 1] is an adjacent node with its weight
+  [[4, 2]],                 // Node 3: [4, 2] is an adjacent node with its weight
+  [[1, -2]],                // Node 4: [1, -2] is an adjacent node with its weight
+];
+
+const source = 0;
+const shortestPath = bellmanFord(graph, source);
+console.log("Shortest path:", shortestPath);
