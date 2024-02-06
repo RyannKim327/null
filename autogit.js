@@ -1,20 +1,23 @@
-function findFirstNonRepeatingChar(str) {
-  const charFreq = {};
-
-  // Count character frequencies
-  for (const char of str) {
-    charFreq[char] = (charFreq[char] || 0) + 1;
+function factorialLoop(n) {
+  if (n === 0 || n === 1) {
+    return 1;
   }
-
-  // Find first non-repeating character
-  for (const char of str) {
-    if (charFreq[char] === 1) {
-      return char;
-    }
+  
+  let result = 1;
+  for (let i = 2; i <= n; i++) {
+    result *= i;
   }
-
-  return null; // No non-repeating character found
+  
+  return result;
 }
-console.log(findFirstNonRepeatingChar('aabccd')); // Output: "b"
-console.log(findFirstNonRepeatingChar('aabbcc')); // Output: "c"
-console.log(findFirstNonRepeatingChar('aabb'));   // Output: null
+
+console.log(factorialLoop(5)); // 120
+function factorialRecursion(n) {
+  if (n === 0 || n === 1) {
+    return 1;
+  }
+  
+  return n * factorialRecursion(n - 1);
+}
+
+console.log(factorialRecursion(5)); // 120
