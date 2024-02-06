@@ -1,18 +1,46 @@
-// Import the Axios library
-const axios = require('axios');
+function hasCycle(head) {
+  // The "slow" pointer moves one node at a time
+  let slow = head;
+  // The "fast" pointer moves two nodes at a time
+  let fast = head;
 
-// Define the API endpoint URL
-const apiUrl = 'https://api.example.com/';
+  // Iterate until either "fast" reaches the end of the list (no cycle)
+  // or "fast" meets "slow" (cycle exists)
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
 
-// Make a GET request to the API
-axios.get(apiUrl)
-  .then(response => {
-    // Handle the response data
-    console.log('API Response:', response.data);
-  })
-  .catch(error => {
-    // Handle the error
-    console.error('Error:', error.message);
-  });
-npm install axios
-yarn add axios
+    // If the two pointers meet, a cycle exists
+    if (slow === fast) {
+      return true;
+    }
+  }
+
+  // No cycle found
+  return false;
+}
+const listWithCycle = {
+  value: 1,
+  next: {
+    value: 2,
+    next: {
+      value: 3,
+      next: null
+    }
+  }
+};
+listWithCycle.next.next.next = listWithCycle;
+
+const listWithoutCycle = {
+  value: 1,
+  next: {
+    value: 2,
+    next: {
+      value: 3,
+      next: null
+    }
+  }
+};
+
+console.log(hasCycle(listWithCycle)); // Output: true
+console.log(hasCycle(listWithoutCycle)); // Output: false
