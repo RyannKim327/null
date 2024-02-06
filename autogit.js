@@ -1,16 +1,12 @@
-function findMaxSubarray(arr) {
-  let maxSoFar = arr[0];
-  let maxEndingHere = arr[0];
-
-  for (let i = 1; i < arr.length; i++) {
-    maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
-    maxSoFar = Math.max(maxSoFar, maxEndingHere);
+function getStringLength(str) {
+  let count = 0;
+  for(let i = 0; str[i] !== undefined; i++) {
+    count++;
   }
-
-  return maxSoFar;
+  return count;
 }
 
 // Example usage:
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const maxSum = findMaxSubarray(array);
-console.log(maxSum); // Output: 6
+const myString = "Hello, world!";
+const length = getStringLength(myString);
+console.log(length); // Output: 13
