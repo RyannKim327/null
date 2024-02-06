@@ -1,15 +1,14 @@
-function isPrime(num) {
-  if (num <= 1) {
-    return false;
-  }
+function areAnagrams(str1, str2) {
+  const normalize = (str) => {
+    return str.replace(/[^A-Za-z]/g, '').toLowerCase();
+  };
 
-  for (let i = 2; i <= Math.sqrt(num); i++) {
-    if (num % i === 0) {
-      return false;
-    }
-  }
+  const sortedStr1 = normalize(str1).split('').sort().join('');
+  const sortedStr2 = normalize(str2).split('').sort().join('');
 
-  return true;
+  return sortedStr1 === sortedStr2;
 }
-console.log(isPrime(7));  // Output: true
-console.log(isPrime(16)); // Output: false
+
+// Example usage
+console.log(areAnagrams('listen', 'silent'));  // true
+console.log(areAnagrams('hello', 'world'));    // false
