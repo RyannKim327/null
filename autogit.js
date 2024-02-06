@@ -1,8 +1,32 @@
-function removeVowels(str) {
-  return str.replace(/[aeiou]/gi, '');
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.left = null;
+        this.right = null;
+    }
 }
 
-// Example usage
-const input = 'Hello, World!';
-const result = removeVowels(input);
-console.log(result); // Output: Hll, Wrld!
+// Function to calculate the number of leaf nodes
+function countLeafNodes(root) {
+    if (root === null) {
+        return 0; // Base case: an empty tree has 0 leaf nodes
+    } else if (root.left === null && root.right === null) {
+        return 1; // Base case: a tree with only one node is a leaf
+    } else {
+        return countLeafNodes(root.left) + countLeafNodes(root.right);
+    }
+}
+
+// Example usage:
+// Create a binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
+
+// Calculate the number of leaf nodes
+const leafCount = countLeafNodes(root);
+console.log("Number of leaf nodes:", leafCount);
