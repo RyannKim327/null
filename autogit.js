@@ -1,10 +1,20 @@
-let str = "Hello World! This is a test string.";
-let result = str.replace(/\s/g, ""); // Removes all whitespace characters
-console.log(result);
-let str = "Hello World! This is a test string.";
-let result = str.split(" ").join("");
-console.log(result);
-let str = "Hello World! This is a test string.";
-let result = [...str].filter(char => char !== " ").join("");
-console.log(result);
-HelloWorld!Thisisateststring.
+function countCharacterOccurrence(string, character) {
+  // Initialize a counter variable
+  let count = 0;
+  
+  // Loop through each character in the string
+  for (let i = 0; i < string.length; i++) {
+    // If the current character matches the given character, increment the count
+    if (string[i] === character) {
+      count++;
+    }
+  }
+  
+  return count;
+}
+
+// Example usage:
+const myString = "Hello, world!";
+const myCharacter = "o";
+const occurrenceCount = countCharacterOccurrence(myString, myCharacter);
+console.log(`The character "${myCharacter}" occurs ${occurrenceCount} times in "${myString}".`);
