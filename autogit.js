@@ -1,85 +1,37 @@
-function biDirectionalSearch(initialState, goalState) {
-  // Create forward and backward queues
-  const forwardQueue = [initialState];
-  const backwardQueue = [goalState];
+function countingSort(array) {
+  const len = array.length;
 
-  // Initialize visited sets and parent dictionaries
-  const forwardVisited = new Set();
-  const backwardVisited = new Set();
-  const forwardParent = {};
-  const backwardParent = {};
-
-  // Start the search loop
-  while (forwardQueue.length > 0 && backwardQueue.length > 0) {
-    // Forward search
-    const forwardState = forwardQueue.shift();
-    forwardVisited.add(forwardState);
-
-    // Check for a match in backward search
-    if (backwardVisited.has(forwardState)) {
-      // Path found
-      return getPath(forwardParent, backwardParent, forwardState);
-    }
-
-    // Generate next states and update parent dictionary
-    const nextStates = generateNextStates(forwardState);
-    for (const state of nextStates) {
-      if (!forwardVisited.has(state)) {
-        forwardQueue.push(state);
-        forwardParent[state] = forwardState;
-      }
-    }
-
-    // Backward search
-    const backwardState = backwardQueue.shift();
-    backwardVisited.add(backwardState);
-
-    // Check for a match in forward search
-    if (forwardVisited.has(backwardState)) {
-      // Path found
-      return getPath(forwardParent, backwardParent, backwardState);
-    }
-
-    // Generate next states and update parent dictionary
-    const prevStates = generatePrevStates(backwardState);
-    for (const state of prevStates) {
-      if (!backwardVisited.has(state)) {
-        backwardQueue.push(state);
-        backwardParent[state] = backwardState;
-      }
+  // Find the maximum element in the array to determine the range of counting
+  let max = 0;
+  for (let i = 0; i < len; i++) {
+    if (array[i] > max) {
+      max = array[i];
     }
   }
 
-  // No path found
-  return null;
-}
+  // Create an array of size max+1 and initialize all elements to 0
+  const countingArray = new Array(max + 1).fill(0);
 
-function getPath(forwardParent, backwardParent, state) {
-  const path = [];
-  let currentState = state;
-
-  // Reconstruct the path from the initial state to the goal state
-  while (currentState) {
-    path.push(currentState);
-    currentState = forwardParent[currentState];
+  // Count the occurrences of each element
+  for (let i = 0; i < len; i++) {
+    countingArray[array[i]]++;
   }
 
-  // Reconstruct the path from the goal state to the initial state
-  currentState = backwardParent[state];
-  while (currentState) {
-    path.unshift(currentState);
-    currentState = backwardParent[currentState];
+  // Calculate the cumulative counts
+  for (let i = 1; i <= max; i++) {
+    countingArray[i] += countingArray[i - 1];
   }
 
-  return path;
+  // Create a sorted array using the counting array
+  const sortedArray = new Array(len);
+  for (let i = len - 1; i >= 0; i--) {
+    sortedArray[--countingArray[array[i]]] = array[i];
+  }
+
+  return sortedArray;
 }
 
-// Helper function to generate next states
-function generateNextStates(state) {
-  // Implement your logic to generate the next states based on the current state
-}
-
-// Helper function to generate previous states for backward search
-function generatePrevStates(state) {
-  // Implement your logic to generate the previous states based on the current state
-}
+// Example usage:
+const array = [4, 2, 10, 5, 1, 8];
+const sortedArray = countingSort(array);
+console.log(sortedArray); // Output: [1, 2, 4, 5, 8, 10]
