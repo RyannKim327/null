@@ -1,79 +1,84 @@
-class Graph {
-  constructor() {
-    this.vertices = new Map();
-  }
-
-  addVertex(id) {
-    this.vertices.set(id, {
-      id,
-      index: -1,
-      lowlink: -1,
-      onStack: false,
-      edges: []
-    });
-  }
-
-  addEdge(v1, v2) {
-    this.vertices.get(v1).edges.push(v2);
-  }
+function rabinKarpSearch(pattern, text) {
+  // ...
 }
-function tarjanSCC(graph) {
-  let index = 0;
-  const stack = [];
-  const result = [];
+  if (pattern.length === 0 || text.length === 0) {
+    return -1;
+  }
+  const patternLength = pattern.length;
+  const textLength = text.length;
+  const prime1 = 3; // First prime number
+  const prime2 = 5; // Second prime number
+  let patternHash = 0;
+  let windowHash = 0;
+  for (let i = 0; i < patternLength; i++) {
+    patternHash += pattern.charCodeAt(i) * Math.pow(prime1, patternLength - i - 1);
+    windowHash += text.charCodeAt(i) * Math.pow(prime1, patternLength - i - 1);
+  }
+  for (let i = 0; i <= textLength - patternLength; i++) {
+    if (patternHash === windowHash) {
+      let patternFound = true;
 
-  function strongConnect(vertex) {
-    const v = graph.vertices.get(vertex);
-    v.index = index;
-    v.lowlink = index;
-    index++;
-    stack.push(v.id);
-    v.onStack = true;
+      // Verify characters one by one
+      for (let j = 0; j < patternLength; j++) {
+        if (text[i + j] !== pattern[j]) {
+          patternFound = false;
+          break;
+        }
+      }
 
-    for (const edge of v.edges) {
-      const next = graph.vertices.get(edge);
-
-      if (next.index === -1) {
-        strongConnect(next.id);
-        v.lowlink = Math.min(v.lowlink, next.lowlink);
-      } else if (next.onStack) {
-        v.lowlink = Math.min(v.lowlink, next.index);
+      if (patternFound) {
+        return i; // Return the starting index of the pattern in the text
       }
     }
 
-    if (v.lowlink === v.index) {
-      const component = [];
-      let w;
-      do {
-        w = stack.pop();
-        graph.vertices.get(w).onStack = false;
-        component.push(w);
-      } while (w !== v.id);
-      result.push(component);
+    // Calculate the next window's hash value
+    // Remove the leftmost character from the hash and add the rightmost character
+    if (i < textLength - patternLength) {
+      windowHash = (windowHash - text.charCodeAt(i) * Math.pow(prime1, patternLength - 1)) * prime1 + text.charCodeAt(i + patternLength);
     }
   }
 
-  for (const vertex of graph.vertices.keys()) {
-    if (graph.vertices.get(vertex).index === -1) {
-      strongConnect(vertex);
+  return -1; // Pattern not found
+function rabinKarpSearch(pattern, text) {
+  if (pattern.length === 0 || text.length === 0) {
+    return -1;
+  }
+
+  const patternLength = pattern.length;
+  const textLength = text.length;
+  const prime1 = 3;
+  const prime2 = 5;
+
+  let patternHash = 0;
+  let windowHash = 0;
+
+  for (let i = 0; i < patternLength; i++) {
+    patternHash += pattern.charCodeAt(i) * Math.pow(prime1, patternLength - i - 1);
+    windowHash += text.charCodeAt(i) * Math.pow(prime1, patternLength - i - 1);
+  }
+
+  for (let i = 0; i <= textLength - patternLength; i++) {
+    if (patternHash === windowHash) {
+      let patternFound = true;
+      for (let j = 0; j < patternLength; j++) {
+        if (text[i + j] !== pattern[j]) {
+          patternFound = false;
+          break;
+        }
+      }
+      if (patternFound) {
+        return i;
+      }
+    }
+    if (i < textLength - patternLength) {
+      windowHash = (windowHash - text.charCodeAt(i) * Math.pow(prime1, patternLength - 1)) * prime1 + text.charCodeAt(i + patternLength);
     }
   }
 
-  return result;
+  return -1;
 }
-// Example usage:
-const graph = new Graph();
+const text = 'The quick brown fox jumps over the lazy dog';
+const pattern = 'brown';
+const matchIndex = rabinKarpSearch(pattern, text);
 
-graph.addVertex(0);
-graph.addVertex(1);
-graph.addVertex(2);
-graph.addVertex(3);
-graph.addVertex(4);
-
-graph.addEdge(0, 1);
-graph.addEdge(1, 2);
-graph.addEdge(2, 0);
-graph.addEdge(3, 4);
-
-const result = tarjanSCC(graph);
-console.log(result); // Prints: [[0, 2, 1], [4], [3]]
+console.log(matchIndex); // Output: 10
