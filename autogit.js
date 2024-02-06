@@ -1,34 +1,30 @@
-function binarySearchRecursive(arr, target, start, end) {
-  if (start > end) {
-    // Element not found
-    return -1;
+function findFirstNonRepeatingCharacter(str) {
+  // Create an empty object to store character counts
+  const charCounts = {};
+
+  // Iterate over the string and count each character
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    if (charCounts[char] === undefined) {
+      charCounts[char] = 1;
+    } else {
+      charCounts[char]++;
+    }
   }
 
-  const middle = Math.floor((start + end) / 2);
-
-  if (arr[middle] === target) {
-    // Element found
-    return middle;
+  // Find the first character with a count of 1
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    if (charCounts[char] === 1) {
+      return char;
+    }
   }
 
-  if (arr[middle] > target) {
-    // Make a recursive call for the left half of the subarray
-    return binarySearchRecursive(arr, target, start, middle - 1);
-  } else {
-    // Make a recursive call for the right half of the subarray
-    return binarySearchRecursive(arr, target, middle + 1, end);
-  }
+  // If no such character is found, return null
+  return null;
 }
 
-// Example usage:
-const array = [1, 3, 5, 7, 9];
-const targetElement = 5;
-const startIndex = 0;
-const endIndex = array.length - 1;
-const resultIndex = binarySearchRecursive(array, targetElement, startIndex, endIndex);
-
-if (resultIndex !== -1) {
-  console.log(`Element ${targetElement} found at index ${resultIndex}.`);
-} else {
-  console.log(`Element ${targetElement} not found in the array.`);
-}
+// Example usage
+const str = "abacddbec";
+const firstNonRepeatingChar = findFirstNonRepeatingCharacter(str);
+console.log(firstNonRepeatingChar); // Output: 'e'
