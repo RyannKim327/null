@@ -1,27 +1,17 @@
-function findLongestCommonPrefix(strings) {
-  if (strings.length === 0) {
-    return '';
-  } else if (strings.length === 1) {
-    return strings[0];
-  }
+function isAnagram(str1, str2) {
+  // Convert strings to lowercase and remove non-alphabetic characters
+  str1 = str1.toLowerCase().replace(/[^a-z]/g, '');
+  str2 = str2.toLowerCase().replace(/[^a-z]/g, '');
 
-  let prefix = '';
-  const firstString = strings[0];
+  // Sort the strings alphabetically
+  str1 = str1.split('').sort().join('');
+  str2 = str2.split('').sort().join('');
 
-  for (let i = 0; i < firstString.length; i++) {
-    const char = firstString[i];
-
-    for (let j = 1; j < strings.length; j++) {
-      if (strings[j][i] !== char || i >= strings[j].length) {
-        return prefix;
-      }
-    }
-
-    prefix += char;
-  }
-
-  return prefix;
+  // Compare the sorted strings and return the result
+  return str1 === str2;
 }
-const strings = ['apple', 'app', 'application'];
-const longestCommonPrefix = findLongestCommonPrefix(strings);
-console.log(longestCommonPrefix); // Output: 'app'
+
+// Test the function
+console.log(isAnagram('listen', 'silent')); // Output: true
+console.log(isAnagram('hello', 'world')); // Output: false
+console.log(isAnagram('William Shakespeare', 'I am a weakish speller')); // Output: true
