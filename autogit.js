@@ -1,88 +1,71 @@
-class TreeNode {
-  constructor(data) {
-    this.data = data;
-    this.left = null;
-    this.right = null;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.adjacentNodes = [];
+  }
+
+  addAdjacentNode(node) {
+    this.adjacentNodes.push(node);
   }
 }
-
-class BinaryTree {
+class Stack {
   constructor() {
-    this.root = null;
+    this.stack = [];
   }
 
-  insert(data) {
-    const newNode = new TreeNode(data);
-    
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
+  push(item) {
+    this.stack.push(item);
   }
 
-  insertNode(node, newNode) {
-    if (newNode.data < node.data) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
-  
-  search(data) {
-    return this.searchNode(this.root, data);
+  pop() {
+    return this.stack.pop();
   }
 
-  searchNode(node, data) {
-    if (node === null) {
-      return false;
-    }
+  isEmpty() {
+    return this.stack.length === 0;
+  }
+}
+function depthFirstSearch(startNode, targetValue) {
+  const stack = new Stack();
+  const visited = new Set();
 
-    if (data === node.data) {
+  stack.push(startNode);
+
+  while (!stack.isEmpty()) {
+    const currentNode = stack.pop();
+
+    // Check if the current node is the target
+    if (currentNode.value === targetValue) {
       return true;
     }
 
-    if (data < node.data) {
-      return this.searchNode(node.left, data);
-    }
+    // Mark the current node as visited
+    visited.add(currentNode);
 
-    return this.searchNode(node.right, data);
-  }
-
-  inorderTraversal(callback) {
-    this.inorderTraversalNode(this.root, callback);
-  }
-
-  inorderTraversalNode(node, callback) {
-    if (node !== null) {
-      this.inorderTraversalNode(node.left, callback);
-      callback(node);
-      this.inorderTraversalNode(node.right, callback);
+    // Push all unvisited adjacent nodes into the stack
+    for (const adjacentNode of currentNode.adjacentNodes) {
+      if (!visited.has(adjacentNode)) {
+        stack.push(adjacentNode);
+      }
     }
   }
+
+  return false; // Target value not found
 }
+// Create graph nodes
+const nodeA = new Node('A');
+const nodeB = new Node('B');
+const nodeC = new Node('C');
+const nodeD = new Node('D');
+const nodeE = new Node('E');
+const nodeF = new Node('F');
 
-// Example usage:
-const binaryTree = new BinaryTree();
+// Connect nodes
+nodeA.addAdjacentNode(nodeB);
+nodeA.addAdjacentNode(nodeC);
+nodeB.addAdjacentNode(nodeD);
+nodeB.addAdjacentNode(nodeE);
+nodeC.addAdjacentNode(nodeF);
 
-binaryTree.insert(8);
-binaryTree.insert(3);
-binaryTree.insert(10);
-binaryTree.insert(1);
-binaryTree.insert(6);
-binaryTree.insert(14);
-binaryTree.insert(4);
-binaryTree.insert(7);
-binaryTree.insert(13);
-
-console.log('Inorder Traversal:');
-binaryTree.inorderTraversal(node => console.log(node.data));
-console.log('Is 7 in the binary tree?', binaryTree.search(7));
+console.log(depthFirstSearch(nodeA, 'F')); // Output: true
+console.log(depthFirstSearch(nodeA, 'G')); // Output: false
