@@ -1,15 +1,62 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  const modifiedStr = str.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
-  
-  // Reverse the modified string
-  const reversedStr = modifiedStr.split('').reverse().join('');
-  
-  // Compare the modified string with its reversed version
-  return modifiedStr === reversedStr;
+class TrieNode {
+  constructor() {
+    this.children = new Map();
+    this.isEndOfWord = false;
+  }
 }
 
-// Test cases
-console.log(isPalindrome("level")); // true
-console.log(isPalindrome("A car, a man, a maraca")); // true
-console.log(isPalindrome("hello")); // false
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
+  }
+
+  insert(word) {
+    let current = this.root;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      if (!current.children.has(char)) {
+        current.children.set(char, new TrieNode());
+      }
+      current = current.children.get(char);
+    }
+    current.isEndOfWord = true;
+  }
+
+  search(word) {
+    let current = this.root;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      if (!current.children.has(char)) {
+        return false;
+      }
+      current = current.children.get(char);
+    }
+    return current.isEndOfWord;
+  }
+
+  startsWith(prefix) {
+    let current = this.root;
+    for (let i = 0; i < prefix.length; i++) {
+      const char = prefix[i];
+      if (!current.children.has(char)) {
+        return false;
+      }
+      current = current.children.get(char);
+    }
+    return true;
+  }
+}
+const trie = new Trie();
+
+trie.insert("apple");
+trie.insert("banana");
+trie.insert("orange");
+
+console.log(trie.search("apple")); // true
+console.log(trie.search("orange")); // true
+console.log(trie.search("watermelon")); // false
+
+console.log(trie.startsWith("app")); // true
+console.log(trie.startsWith("ban")); // true
+console.log(trie.startsWith("ora")); // true
+console.log(trie.startsWith("wat")); // false
