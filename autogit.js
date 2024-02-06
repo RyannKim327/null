@@ -1,33 +1,53 @@
-class TreeNode {
-  constructor(val, left, right) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
-  }
-}
-
-function sumBinaryTree(root) {
-  if (root === null) {
-    return 0; // Base case: empty tree has a sum of 0
+function mergeSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
   }
 
-  const leftSum = sumBinaryTree(root.left);
-  const rightSum = sumBinaryTree(root.right);
+  // Split the array into two halves
+  const middle = Math.floor(arr.length / 2);
+  const left = arr.slice(0, middle);
+  const right = arr.slice(middle);
 
-  return root.val + leftSum + rightSum; // Sum of current node and its subtrees
+  // Recursively sort the two halves
+  const sortedLeft = mergeSort(left);
+  const sortedRight = mergeSort(right);
+
+  // Merge the sorted halves
+  return merge(sortedLeft, sortedRight);
 }
 
-// Example tree:       1
-//                   /   \
-//                  2     3
-//                 / \   / \
-//                4   5 6   7
+function merge(left, right) {
+  let mergedArray = [];
+  let leftIndex = 0;
+  let rightIndex = 0;
 
-const tree = new TreeNode(
-  1,
-  new TreeNode(2, new TreeNode(4), new TreeNode(5)),
-  new TreeNode(3, new TreeNode(6), new TreeNode(7))
-);
+  // Merge elements from left and right arrays in sorted order
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] <= right[rightIndex]) {
+      mergedArray.push(left[leftIndex]);
+      leftIndex++;
+    } else {
+      mergedArray.push(right[rightIndex]);
+      rightIndex++;
+    }
+  }
 
-const sum = sumBinaryTree(tree);
-console.log(sum); // Output: 28
+  // Merge any remaining elements from left array
+  while (leftIndex < left.length) {
+    mergedArray.push(left[leftIndex]);
+    leftIndex++;
+  }
+
+  // Merge any remaining elements from right array
+  while (rightIndex < right.length) {
+    mergedArray.push(right[rightIndex]);
+    rightIndex++;
+  }
+
+  return mergedArray;
+}
+
+// Example usage:
+const array = [13, 4, 7, 9, 1, 11, 6];
+const sortedArray = mergeSort(array);
+console.log(sortedArray);
