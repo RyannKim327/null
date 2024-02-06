@@ -1,31 +1,34 @@
-class ListNode {
-  constructor(value, next = null) {
-    this.value = value;
-    this.next = next;
-  }
-}
-
-function findMiddleElement(head) {
-  if (!head) {
-    return null; // Empty list
+function binarySearchRecursive(arr, target, start, end) {
+  if (start > end) {
+    // Element not found
+    return -1;
   }
 
-  let slowPtr = head;
-  let fastPtr = head;
+  const middle = Math.floor((start + end) / 2);
 
-  while (fastPtr && fastPtr.next) {
-    slowPtr = slowPtr.next;
-    fastPtr = fastPtr.next.next;
+  if (arr[middle] === target) {
+    // Element found
+    return middle;
   }
 
-  return slowPtr.value;
+  if (arr[middle] > target) {
+    // Make a recursive call for the left half of the subarray
+    return binarySearchRecursive(arr, target, start, middle - 1);
+  } else {
+    // Make a recursive call for the right half of the subarray
+    return binarySearchRecursive(arr, target, middle + 1, end);
+  }
 }
 
 // Example usage:
-const list = new ListNode(1);
-list.next = new ListNode(2);
-list.next.next = new ListNode(3);
-list.next.next.next = new ListNode(4);
-list.next.next.next.next = new ListNode(5);
+const array = [1, 3, 5, 7, 9];
+const targetElement = 5;
+const startIndex = 0;
+const endIndex = array.length - 1;
+const resultIndex = binarySearchRecursive(array, targetElement, startIndex, endIndex);
 
-console.log(findMiddleElement(list)); // Output: 3
+if (resultIndex !== -1) {
+  console.log(`Element ${targetElement} found at index ${resultIndex}.`);
+} else {
+  console.log(`Element ${targetElement} not found in the array.`);
+}
