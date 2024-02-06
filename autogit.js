@@ -1,26 +1,15 @@
-function findFirstNonRepeatingCharacter(str) {
-  // Step 1: Create an empty frequency object
-  const frequency = {};
+const cron = require('cron');
 
-  // Step 2: Iterate to count character frequencies
-  for (const char of str) {
-    // Step 3: Increment or set count for each character
-    frequency[char] = (frequency[char] || 0) + 1;
-  }
+// Function to be executed by the cron job
+const task = () => {
+  console.log('This task is executed by the cron job!');
+};
 
-  // Step 4: Iterate to find the first non-repeating character
-  for (const char of str) {
-    // Step 5: Check the count of each character
-    if (frequency[char] === 1) {
-      return char; // Found the first non-repeating character
-    }
-  }
+// Create a cron job to run every minute
+const cronJob = new cron.CronJob('*/1 * * * *', task);
 
-  // Step 6: No non-repeating character found
-  return null;
-}
+// Start the cron job
+cronJob.start();
 
-// Example usage
-const inputString = "abacddbec";
-const firstNonRepeatingChar = findFirstNonRepeatingCharacter(inputString);
-console.log(firstNonRepeatingChar); // Output: 'e'
+// Keep the script running
+setInterval(() => {}, 1000);
