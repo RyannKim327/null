@@ -1,20 +1,24 @@
-function insertionSort(arr) {
-  for (let i = 1; i < arr.length; i++) {
-    let key = arr[i];
-    let j = i - 1;
-
-    while (j >= 0 && arr[j] > key) {
-      arr[j + 1] = arr[j];
-      j = j - 1;
-    }
-
-    arr[j + 1] = key;
+function quicksort(arr) {
+  if (arr.length <= 1) {
+    return arr;
   }
-
-  return arr;
+  
+  const pivot = arr[Math.floor(arr.length / 2)];
+  const left = [];
+  const right = [];
+  
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] < pivot) {
+      left.push(arr[i]);
+    } else if (arr[i] > pivot) {
+      right.push(arr[i]);
+    }
+  }
+  
+  return [...quicksort(left), pivot, ...quicksort(right)];
 }
 
 // Example usage:
-const array = [5, 2, 9, 1, 3];
-
-console.log(insertionSort(array)); // [1, 2, 3, 5, 9]
+const unsortedArray = [5, 2, 6, 3, 1, 4];
+const sortedArray = quicksort(unsortedArray);
+console.log(sortedArray); // [1, 2, 3, 4, 5, 6]
