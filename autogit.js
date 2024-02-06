@@ -1,146 +1,136 @@
-// Define the RedBlackTree class
-class RedBlackTree {
+class TreeNode {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+class BinaryTree {
     constructor() {
         this.root = null;
     }
 
-    // Node class for storing tree nodes
-    class Node {
-        constructor(value, color) {
-            this.value = value;
-            this.left = null;
-            this.right = null;
-            this.parent = null;
-            this.color = color; // 'red' or 'black'
-        }
-    }
-
-    // Left rotate helper function
-    leftRotate(node) {
-        const rightChild = node.right;
-        node.right = rightChild.left;
-
-        if (rightChild.left !== null) {
-            rightChild.left.parent = node;
-        }
-
-        rightChild.parent = node.parent;
-
-        if (node.parent === null) {
-            this.root = rightChild;
-        } else if (node === node.parent.left) {
-            node.parent.left = rightChild;
-        } else {
-            node.parent.right = rightChild;
-        }
-
-        rightChild.left = node;
-        node.parent = rightChild;
-    }
-
-    // Right rotate helper function
-    rightRotate(node) {
-        const leftChild = node.left;
-        node.left = leftChild.right;
-
-        if (leftChild.right !== null) {
-            leftChild.right.parent = node;
-        }
-
-        leftChild.parent = node.parent;
-
-        if (node.parent === null) {
-            this.root = leftChild;
-        } else if (node === node.parent.right) {
-            node.parent.right = leftChild;
-        } else {
-            node.parent.left = leftChild;
-        }
-
-        leftChild.right = node;
-        node.parent = leftChild;
-    }
-
-    // Red-black tree insert
     insert(value) {
-        const newNode = new Node(value, 'red');
-        let current = this.root;
-        let parent = null;
+        const newNode = new TreeNode(value);
 
-        while (current !== null) {
-            parent = current;
-
-            if (newNode.value < current.value) {
-                current = current.left;
-            } else {
-                current = current.right;
-            }
-        }
-
-        newNode.parent = parent;
-
-        if (parent === null) {
+        if (this.root === null) {
             this.root = newNode;
-        } else if (newNode.value < parent.value) {
-            parent.left = newNode;
         } else {
-            parent.right = newNode;
+            this.insertNode(this.root, newNode);
         }
-
-        this.fixInsert(newNode);
     }
 
-    // Fix the red-black tree after insertion
-    fixInsert(node) {
-        while (node.parent !== null && node.parent.color === 'red') {
-            if (node.parent === node.parent.parent.left) {
-                const uncle = node.parent.parent.right;
-
-                if (uncle !== null && uncle.color === 'red') {
-                    node.parent.color = 'black';
-                    uncle.color = 'black';
-                    node.parent.parent.color = 'red';
-                    node = node.parent.parent;
-                } else {
-                    if (node === node.parent.right) {
-                        node = node.parent;
-                        this.leftRotate(node);
-                    }
-
-                    node.parent.color = 'black';
-                    node.parent.parent.color = 'red';
-                    this.rightRotate(node.parent.parent);
-                }
+    insertNode(node, newNode) {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
             } else {
-                const uncle = node.parent.parent.left;
-
-                if (uncle !== null && uncle.color === 'red') {
-                    node.parent.color = 'black';
-                    uncle.color = 'black';
-                    node.parent.parent.color = 'red';
-                    node = node.parent.parent;
-                } else {
-                    if (node === node.parent.left) {
-                        node = node.parent;
-                        this.rightRotate(node);
-                    }
-
-                    node.parent.color = 'black';
-                    node.parent.parent.color = 'red';
-                    this.leftRotate(node.parent.parent);
-                }
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
             }
         }
+    }
 
-        this.root.color = 'black';
+    search(value) {
+        return this.searchNode(this.root, value);
+    }
+
+    searchNode(node, value) {
+        if (node === null) {
+            return false;
+        }
+
+        if (node.value === value) {
+            return true;
+        }
+
+        if (value < node.value) {
+            return this.searchNode(node.left, value);
+        }
+
+        return this.searchNode(node.right, value);
+    }
+
+    remove(value) {
+        this.root = this.removeNode(this.root, value);
+    }
+
+    removeNode(node, key) {
+        if (node === null) {
+            return null;
+        }
+
+        if (key < node.value) {
+            node.left = this.removeNode(node.left, key);
+            return node;
+        } else if (key > node.value) {
+            node.right = this.removeNode(node.right, key);
+            return node;
+        } else {
+            if (node.left === null && node.right === null) {
+                node = null;
+                return node;
+            }
+
+            if (node.left === null) {
+                node = node.right;
+                return node;
+            } else if (node.right === null) {
+                node = node.left;
+                return node;
+            }
+
+            const minNode = this.findMinNode(node.right);
+            node.value = minNode.value;
+            node.right = this.removeNode(node.right, minNode.value);
+            return node;
+        }
+    }
+
+    findMinNode(node) {
+        if (node.left === null) {
+            return node;
+        } else {
+            return this.findMinNode(node.left);
+        }
+    }
+
+    display() {
+        if (this.root === null) {
+            console.log("Binary tree is empty.");
+        } else {
+            console.log("Binary tree:");
+            this.displayNode(this.root);
+        }
+    }
+
+    displayNode(node) {
+        if (node !== null) {
+            this.displayNode(node.left);
+            console.log(node.value);
+            this.displayNode(node.right);
+        }
     }
 }
-// Create a red-black tree instance
-const rbTree = new RedBlackTree();
+const binaryTree = new BinaryTree();
 
-// Insert values into the tree
-rbTree.insert(10);
-rbTree.insert(20);
-rbTree.insert(5);
-rbTree.insert(30);
-rbTree.insert(15);
+binaryTree.insert(5);
+binaryTree.insert(3);
+binaryTree.insert(8);
+binaryTree.insert(2);
+binaryTree.insert(4);
+binaryTree.insert(7);
+binaryTree.insert(9);
+
+binaryTree.display(); // Outputs the binary tree in sorted order: 2, 3, 4, 5, 7, 8, 9
+console.log(binaryTree.search(7)); // Outputs: true
+
+binaryTree.remove(5);
+binaryTree.display(); // Outputs the binary tree in sorted order: 2, 3, 4, 7, 8, 9
+console.log(binaryTree.search(5)); // Outputs: false
