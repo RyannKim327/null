@@ -1,39 +1,50 @@
-function heapify(arr, length, i) {
-  let largest = i;
-  let left = 2 * i + 1;
-  let right = 2 * i + 2;
-
-  if (left < length && arr[left] > arr[largest]) {
-    largest = left;
+class Graph {
+  constructor(vertices) {
+    this.vertices = vertices;
+    this.edges = [];
   }
 
-  if (right < length && arr[right] > arr[largest]) {
-    largest = right;
+  addEdge(source, destination, weight) {
+    this.edges.push({ source, destination, weight });
   }
 
-  if (largest !== i) {
-    [arr[i], arr[largest]] = [arr[largest], arr[i]];
-    heapify(arr, length, largest);
+  bellmanFordAlgorithm(source) {
+    const dist = Array(this.vertices).fill(Infinity);
+    dist[source] = 0;
+
+    // Relax edges repeatedly
+    for (let i = 0; i < this.vertices - 1; i++) {
+      for (let j = 0; j < this.edges.length; j++) {
+        const { source, destination, weight } = this.edges[j];
+
+        if (dist[source] !== Infinity && dist[source] + weight < dist[destination]) {
+          dist[destination] = dist[source] + weight;
+        }
+      }
+    }
+
+    // Check for negative weight cycles
+    for (let i = 0; i < this.edges.length; i++) {
+      const { source, destination, weight } = this.edges[i];
+
+      if (dist[source] !== Infinity && dist[source] + weight < dist[destination]) {
+        console.log('Negative weight cycle detected');
+        return;
+      }
+    }
+
+    console.log('Shortest distances:', dist);
   }
 }
-function heapSort(arr) {
-  let length = arr.length;
 
-  // Build the max heap
-  for (let i = Math.floor(length / 2) - 1; i >= 0; i--) {
-    heapify(arr, length, i);
-  }
+// Example usage
+const graph = new Graph(5);
+graph.addEdge(0, 1, 4);
+graph.addEdge(0, 2, 2);
+graph.addEdge(1, 3, 2);
+graph.addEdge(1, 4, 3);
+graph.addEdge(2, 3, 3);
+graph.addEdge(2, 4, 1);
+graph.addEdge(4, 3, -5);
 
-  // Extract elements from the heap one by one (in-place sorting)
-  for (let i = length - 1; i > 0; i--) {
-    [arr[0], arr[i]] = [arr[i], arr[0]];
-    heapify(arr, i, 0);
-  }
-
-  return arr;
-}
-const arr = [4, 10, 3, 5, 1];
-console.log("Original Array:", arr);
-console.log("Sorted Array:", heapSort(arr));
-Original Array: [4, 10, 3, 5, 1]
-Sorted Array: [1, 3, 4, 5, 10]
+graph.bellmanFordAlgorithm(0);
