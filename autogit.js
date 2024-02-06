@@ -1,34 +1,17 @@
-function findLongestCommonSubstring(str1, str2) {
-  // Initialize a 2D array with 0s to store the lengths of common substrings
-  const commonSubstrLengths = Array(str1.length + 1)
-    .fill(0)
-    .map(() => Array(str2.length + 1).fill(0));
+function isAnagram(str1, str2) {
+  // Remove non-alphabetic characters and convert to lowercase
+  str1 = str1.replace(/[^A-Za-z]/g, "").toLowerCase();
+  str2 = str2.replace(/[^A-Za-z]/g, "").toLowerCase();
 
-  // Variables to keep track of the maximum substring length and its ending position
-  let maxLength = 0;
-  let endIndex = 0;
+  // Sort the strings alphabetically
+  const sortedStr1 = str1.split("").sort().join("");
+  const sortedStr2 = str2.split("").sort().join("");
 
-  // Compute the lengths of common substrings
-  for (let i = 1; i <= str1.length; i++) {
-    for (let j = 1; j <= str2.length; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        commonSubstrLengths[i][j] = commonSubstrLengths[i - 1][j - 1] + 1;
-
-        if (commonSubstrLengths[i][j] > maxLength) {
-          maxLength = commonSubstrLengths[i][j];
-          endIndex = i - 1; // Update the ending position of the longest common substring
-        }
-      }
-    }
-  }
-
-  // Extract the longest common substring using the ending position and length
-  const longestCommonSubstr = str1.substr(endIndex - maxLength + 1, maxLength);
-  return longestCommonSubstr;
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
 
 // Example usage
-const str1 = "abcdef";
-const str2 = "defgabc";
-const longestSubstring = findLongestCommonSubstring(str1, str2);
-console.log(longestSubstring); // Output: "def"
+const string1 = "listen";
+const string2 = "silent";
+console.log(isAnagram(string1, string2)); // Output: true
