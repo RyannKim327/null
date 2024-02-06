@@ -1,19 +1,58 @@
-function findSecondLargest(arr) {
-  let max = -Infinity;
-  let secondMax = -Infinity;
+function computeLPSArray(pattern) {
+  const lps = [0];
+  let len = 0;
+  let i = 1;
 
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] > max) {
-      secondMax = max;
-      max = arr[i];
-    } else if (arr[i] < max && arr[i] > secondMax) {
-      secondMax = arr[i];
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[len]) {
+      len++;
+      lps[i] = len;
+      i++;
+    } else {
+      if (len !== 0) {
+        len = lps[len - 1];
+      } else {
+        lps[i] = 0;
+        i++;
+      }
+    }
+  }
+  return lps;
+}
+
+function KMPSearch(string, pattern) {
+  const n = string.length;
+  const m = pattern.length;
+
+  const lps = computeLPSArray(pattern);
+
+  let i = 0;
+  let j = 0;
+  const indices = [];
+
+  while (i < n) {
+    if (pattern[j] === string[i]) {
+      i++;
+      j++;
+    }
+
+    if (j === m) {
+      indices.push(i - j);
+      j = lps[j - 1];
+    } else if (i < n && pattern[j] !== string[i]) {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
+      }
     }
   }
 
-  return secondMax;
+  return indices;
 }
 
 // Example usage:
-const array = [5, 2, 8, 9, 1, 3];
-console.log(findSecondLargest(array)); // Output: 8
+const string = "ABCABDABCABCA";
+const pattern = "ABC";
+const indices = KMPSearch(string, pattern);
+console.log("Pattern found at indices:", indices);
