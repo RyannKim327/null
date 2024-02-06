@@ -1,114 +1,89 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+class BTreeNode {
+  constructor() {
+    this.keys = [];
+    this.children = [];
+    this.isLeaf = true;
   }
 }
 
-class BinarySearchTree {
-  constructor() {
-    this.root = null;
+class BTree {
+  constructor(order) {
+    this.root = new BTreeNode();
+    this.order = order;
   }
 
-  insert(value) {
-    const newNode = new Node(value);
-
-    if (!this.root) {
-      this.root = newNode;
+  insert(key) {
+    const root = this.root;
+    if (root.keys.length === (2 * this.order) - 1) {
+      const node = new BTreeNode();
+      this.root = node;
+      node.children[0] = root;
+      this.splitChild(node, 0);
+      this.insertNonFull(node, key);
     } else {
-      this.insertNode(this.root, newNode);
+      this.insertNonFull(root, key);
     }
   }
 
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (!node.left) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
+  insertNonFull(node, key) {
+    let i = node.keys.length - 1;
+    if (node.isLeaf) {
+      while (i >= 0 && node.keys[i] > key) {
+        node.keys[i + 1] = node.keys[i];
+        i--;
       }
+      node.keys[i + 1] = key;
     } else {
-      if (!node.right) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
+      while (i >= 0 && node.keys[i] > key) {
+        i--;
       }
+      i++;
+      if (node.children[i].keys.length === (2 * this.order) - 1) {
+        this.splitChild(node, i);
+        if (node.keys[i] < key) {
+          i++;
+        }
+      }
+      this.insertNonFull(node.children[i], key);
     }
   }
 
-  search(value) {
-    return this.searchNode(this.root, value);
+  splitChild(node, i) {
+    const t = this.order;
+    const y = node.children[i];
+    const z = new BTreeNode();
+    node.children.splice(i + 1, 0, z);
+    node.keys.splice(i, 0, y.keys[t - 1]);
+    z.keys = y.keys.splice(t, y.keys.length - t);
+    if (!y.isLeaf) {
+      z.isLeaf = false;
+      z.children = y.children.splice(t, y.children.length - t);
+    }
   }
 
-  searchNode(node, value) {
-    if (!node || node.value === value) {
+  search(key) {
+    return this.searchNode(this.root, key);
+  }
+
+  searchNode(node, key) {
+    let i = 0;
+    while (i < node.keys.length && key > node.keys[i]) {
+      i++;
+    }
+    if (node.keys[i] === key) {
       return node;
     }
-
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    }
-
-    return this.searchNode(node.right, value);
-  }
-
-  remove(value) {
-    this.root = this.removeNode(this.root, value);
-  }
-
-  removeNode(node, value) {
-    if (!node) {
+    if (node.isLeaf) {
       return null;
     }
-
-    if (value < node.value) {
-      node.left = this.removeNode(node.left, value);
-      return node;
-    } else if (value > node.value) {
-      node.right = this.removeNode(node.right, value);
-      return node;
-    } else {
-      if (!node.left && !node.right) {
-        node = null;
-        return node;
-      }
-
-      if (!node.left) {
-        node = node.right;
-        return node;
-      } else if (!node.right) {
-        node = node.left;
-        return node;
-      }
-
-      const minNode = this.findMinNode(node.right);
-      node.value = minNode.value;
-      node.right = this.removeNode(node.right, minNode.value);
-      return node;
-    }
-  }
-
-  findMinNode(node) {
-    if (!node || !node.left) {
-      return node;
-    }
-
-    return this.findMinNode(node.left);
+    return this.searchNode(node.children[i], key);
   }
 }
-const bst = new BinarySearchTree();
+const bTree = new BTree(3);
+bTree.insert(10);
+bTree.insert(20);
+bTree.insert(5);
 
-bst.insert(50);
-bst.insert(30);
-bst.insert(70);
-bst.insert(20);
-bst.insert(40);
-bst.insert(60);
-bst.insert(80);
-
-console.log(bst.search(60)); // Node object
-console.log(bst.search(90)); // null
-
-bst.remove(40);
-console.log(bst.search(40)); // null
+console.log(bTree.search(10)); // BTreeNode { keys: [10], ... }
+console.log(bTree.search(5)); // BTreeNode { keys: [5], ... }
+console.log(bTree.search(15)); // null
