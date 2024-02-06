@@ -1,50 +1,38 @@
-class Graph {
-  constructor(vertices) {
-    this.vertices = vertices;
-    this.edges = [];
-  }
-
-  addEdge(source, destination, weight) {
-    this.edges.push({ source, destination, weight });
-  }
-
-  bellmanFordAlgorithm(source) {
-    const dist = Array(this.vertices).fill(Infinity);
-    dist[source] = 0;
-
-    // Relax edges repeatedly
-    for (let i = 0; i < this.vertices - 1; i++) {
-      for (let j = 0; j < this.edges.length; j++) {
-        const { source, destination, weight } = this.edges[j];
-
-        if (dist[source] !== Infinity && dist[source] + weight < dist[destination]) {
-          dist[destination] = dist[source] + weight;
-        }
+function findLCS(str1, str2) {
+  // Create a 2D array to store the lengths of LCS
+  let dp = Array.from({ length: str1.length + 1 }, () => Array(str2.length + 1).fill(0));
+  
+  // Build the LCS array in bottom-up manner
+  for (let i = 1; i <= str1.length; i++) {
+    for (let j = 1; j <= str2.length; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+      } else {
+        dp[i][j] = Math.max(dp[i][j - 1], dp[i - 1][j]);
       }
     }
-
-    // Check for negative weight cycles
-    for (let i = 0; i < this.edges.length; i++) {
-      const { source, destination, weight } = this.edges[i];
-
-      if (dist[source] !== Infinity && dist[source] + weight < dist[destination]) {
-        console.log('Negative weight cycle detected');
-        return;
-      }
-    }
-
-    console.log('Shortest distances:', dist);
   }
+  
+  // Find the longest common subsequence
+  let lcs = '';
+  let i = str1.length, j = str2.length;
+  while (i > 0 && j > 0) {
+    if (str1[i - 1] === str2[j - 1]) {
+      lcs = str1[i - 1] + lcs;
+      i--;
+      j--;
+    } else if (dp[i - 1][j] > dp[i][j - 1]) {
+      i--;
+    } else {
+      j--;
+    }
+  }
+  
+  return lcs;
 }
 
 // Example usage
-const graph = new Graph(5);
-graph.addEdge(0, 1, 4);
-graph.addEdge(0, 2, 2);
-graph.addEdge(1, 3, 2);
-graph.addEdge(1, 4, 3);
-graph.addEdge(2, 3, 3);
-graph.addEdge(2, 4, 1);
-graph.addEdge(4, 3, -5);
-
-graph.bellmanFordAlgorithm(0);
+let str1 = 'AGGTAB';
+let str2 = 'GXTXAYB';
+let lcs = findLCS(str1, str2);
+console.log(lcs);  // Output: GTAB
