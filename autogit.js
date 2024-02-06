@@ -1,34 +1,56 @@
-function countingSort(arr) {
-  // Find the maximum value in the array
-  const maxValue = Math.max(...arr);
-
-  // Create a count array with zeros
-  const count = Array(maxValue + 1).fill(0);
-
-  // Count the occurrences of each element
-  for (let i = 0; i < arr.length; i++) {
-    count[arr[i]]++;
+class Node {
+  constructor(state, parent, g, h) {
+    this.state = state;
+    this.parent = parent;
+    this.g = g;
+    this.h = h;
+    this.f = g + h;
   }
-
-  // Update the count array to store the position of each element
-  for (let i = 1; i < count.length; i++) {
-    count[i] += count[i - 1];
-  }
-
-  // Create a result array
-  const result = Array(arr.length);
-
-  // Place the elements in the result array using the count array
-  for (let i = arr.length - 1; i >= 0; i--) {
-    result[count[arr[i]] - 1] = arr[i];
-    count[arr[i]]--;
-  }
-
-  // Return the sorted result array
-  return result;
 }
+function aStarSearch(start, goal) {
+  const openSet = [new Node(start, null, 0, heuristic(start, goal))];
+  const closedSet = [];
 
-// Example usage
-const arr = [4, 2, 2, 8, 3, 3, 1];
-const sortedArr = countingSort(arr);
-console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
+  while (openSet.length > 0) {
+    // Find the node with the lowest f value in the openSet
+    const currentNode = openSet.reduce((min, node) =>
+      node.f < min.f ? node : min
+    );
+
+    // Check if goal reached
+    if (currentNode.state === goal) {
+      return reconstructPath(currentNode);
+    }
+
+    // Move the current node from openSet to closedSet
+    openSet.splice(openSet.indexOf(currentNode), 1);
+    closedSet.push(currentNode);
+
+    // Generate successors and evaluate them
+    const successors = generateSuccessors(currentNode);
+    for (const successor of successors) {
+      if (closedSet.some(node => node.state === successor.state)) {
+        continue;
+      }
+
+      const g = currentNode.g + 1; // Assumes a uniform cost of 1 between nodes
+      const h = heuristic(successor.state, goal);
+      const f = g + h;
+      const existingNode = openSet.find(node => node.state === successor.state);
+
+      if (existingNode) {
+        if (g < existingNode.g) {
+          existingNode.g = g;
+          existingNode.h = h;
+          existingNode.f = f;
+          existingNode.parent = currentNode;
+        }
+      } else {
+        openSet.push(new Node(successor.state, currentNode, g, h));
+      }
+    }
+  }
+
+  // No path found
+  return null;
+}
