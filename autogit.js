@@ -1,30 +1,35 @@
-function burrowsWheelerTransform(input) {
-  // Step 1: Generate the list of rotations
-  const rotations = [];
-  const length = input.length;
-  for (let i = 0; i < length; i++) {
-    // Rotate the input string and store the result
-    const rotation = input.slice(i) + input.slice(0, i);
-    rotations.push(rotation);
+function findFirstNonRepeatingChar(input) {
+  // Create an empty object to store character counts
+  const charCount = {};
+
+  // Iterate over each character of the string
+  for (let i = 0; i < input.length; i++) {
+    const char = input[i];
+
+    // If the character is seen for the first time, initialize its count to 1
+    if (!charCount[char]) {
+      charCount[char] = 1;
+    }
+    // Otherwise, increment the count
+    else {
+      charCount[char]++;
+    }
   }
 
-  // Step 2: Sort the rotations lexicographically
-  rotations.sort();
+  // Find the first character with count equal to 1
+  for (let i = 0; i < input.length; i++) {
+    const char = input[i];
 
-  // Step 3: Extract the last characters of each rotation to get the transformed string
-  let transformedString = '';
-  for (let i = 0; i < length; i++) {
-    transformedString += rotations[i][length - 1];
+    if (charCount[char] === 1) {
+      return char;
+    }
   }
 
-  // Step 4: Find the index of the original string in the sorted rotations
-  const originalIndex = rotations.indexOf(input);
-
-  // Return the transformed string and the original index
-  return { transformedString, originalIndex };
+  // If there is no non-repeating character, return null
+  return null;
 }
-const input = "your input string";
-const { transformedString, originalIndex } = burrowsWheelerTransform(input);
 
-console.log("Transformed string:", transformedString);
-console.log("Original index:", originalIndex);
+// Example usage:
+const inputString = "aabccd";
+const firstNonRepeatingChar = findFirstNonRepeatingChar(inputString);
+console.log(firstNonRepeatingChar); // Output: "b"
