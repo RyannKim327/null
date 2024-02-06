@@ -1,29 +1,48 @@
-function binarySearch(arr, target) {
-  let left = 0;
-  let right = arr.length - 1;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
+function reverseLinkedList(head) {
+  let prev = null;
+  let current = head;
 
-  while (left <= right) {
-    let mid = Math.floor((left + right) / 2);
-
-    if (arr[mid] === target) {
-      return mid; // Found the target index
-    } else if (arr[mid] < target) {
-      left = mid + 1; // Target is in the right half
-    } else {
-      right = mid - 1; // Target is in the left half
-    }
+  while (current !== null) {
+    let nextNode = current.next;
+    current.next = prev;
+    prev = current;
+    current = nextNode;
   }
 
-  return -1; // Target not found
+  return prev;
+}
+// Create the linked list: 1 -> 2 -> 3 -> null
+const head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+
+console.log("Original Linked List:");
+let current = head;
+while (current !== null) {
+  console.log(current.value);
+  current = current.next;
 }
 
-// Example usage of binarySearch
-const numbers = [1, 3, 5, 7, 9, 11, 13, 15];
-const targetNumber = 9;
-const targetIndex = binarySearch(numbers, targetNumber);
+// Reverse the linked list
+const reversedHead = reverseLinkedList(head);
 
-if (targetIndex !== -1) {
-  console.log(`Found ${targetNumber} at index ${targetIndex}`);
-} else {
-  console.log(`Unable to find ${targetNumber}`);
+console.log("Reversed Linked List:");
+current = reversedHead;
+while (current !== null) {
+  console.log(current.value);
+  current = current.next;
 }
+Original Linked List:
+1
+2
+3
+Reversed Linked List:
+3
+2
+1
