@@ -1,42 +1,34 @@
-function buildHeap(arr) {
-  var heapSize = arr.length;
-  for (var i = Math.floor(heapSize / 2); i >= 0; i--) {
-    heapify(arr, heapSize, i);
-  }
-}
-function heapify(arr, heapSize, i) {
-  var largest = i;
-  var leftChild = 2 * i + 1;
-  var rightChild = 2 * i + 2;
+function countingSort(arr) {
+  // Find the maximum value in the array
+  const maxValue = Math.max(...arr);
 
-  if (leftChild < heapSize && arr[leftChild] > arr[largest]) {
-    largest = leftChild;
+  // Create a count array with zeros
+  const count = Array(maxValue + 1).fill(0);
+
+  // Count the occurrences of each element
+  for (let i = 0; i < arr.length; i++) {
+    count[arr[i]]++;
   }
 
-  if (rightChild < heapSize && arr[rightChild] > arr[largest]) {
-    largest = rightChild;
+  // Update the count array to store the position of each element
+  for (let i = 1; i < count.length; i++) {
+    count[i] += count[i - 1];
   }
 
-  if (largest !== i) {
-    swap(arr, i, largest);
-    heapify(arr, heapSize, largest);
-  }
-}
-function swap(arr, i, j) {
-  var temp = arr[i];
-  arr[i] = arr[j];
-  arr[j] = temp;
-}
-function heapSort(arr) {
-  buildHeap(arr);
-  var heapSize = arr.length;
+  // Create a result array
+  const result = Array(arr.length);
 
-  for (var i = arr.length - 1; i > 0; i--) {
-    swap(arr, 0, i);
-    heapSize--;
-    heapify(arr, heapSize, 0);
+  // Place the elements in the result array using the count array
+  for (let i = arr.length - 1; i >= 0; i--) {
+    result[count[arr[i]] - 1] = arr[i];
+    count[arr[i]]--;
   }
+
+  // Return the sorted result array
+  return result;
 }
-var array = [6, 5, 3, 1, 8, 7, 2, 4];
-heapSort(array);
-console.log(array);  // Output: [1, 2, 3, 4, 5, 6, 7, 8]
+
+// Example usage
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const sortedArr = countingSort(arr);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
