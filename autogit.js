@@ -1,23 +1,11 @@
-// Function to make API request
-async function fetchData(url) {
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.log('Error:', error);
+function getStringLength(str) {
+  let count = 0;
+  for (let i = 0; str[i] !== undefined; i++) {
+    count++;
   }
+  return count;
 }
 
-// Example API endpoint
-const apiUrl = 'https://api.example.com/data';
-
-// Call the API and process the data
-fetchData(apiUrl)
-  .then((data) => {
-    // Do something with the fetched data
-    console.log(data);
-  })
-  .catch((error) => {
-    console.log('Error:', error);
-  });
+const myString = "Hello, world!";
+const length = getStringLength(myString);
+console.log(length); // Output: 13
