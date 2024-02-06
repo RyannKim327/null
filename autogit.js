@@ -1,27 +1,31 @@
-function countingSort(array) {
-  // Step 2: Find the maximum element in the array
-  let maxValue = Math.max(...array);
-
-  // Step 3: Create a count array with length equal to (maxValue + 1) and initialize all values to 0
-  let countArray = new Array(maxValue + 1).fill(0);
-
-  // Step 4: Count the occurrences of each element in the input array
-  for (let i = 0; i < array.length; i++) {
-    countArray[array[i]]++;
-  }
-
-  // Step 5: Generate the sorted array
-  let sortedArray = [];
-  for (let i = 0; i < countArray.length; i++) {
-    while (countArray[i] > 0) {
-      sortedArray.push(i);
-      countArray[i]--;
-    }
-  }
-
-  // Step 6: Return the sorted array
-  return sortedArray;
+let mergedArray = array1.concat(array2);
+mergedArray.sort((a, b) => a - b);
+let length = mergedArray.length;
+let median;
+if (length % 2 === 1) {
+  median = mergedArray[Math.floor(length / 2)];
+} else {
+  let midIndex = length / 2;
+  median = (mergedArray[midIndex - 1] + mergedArray[midIndex]) / 2;
 }
-let array = [4, 2, 2, 8, 3, 3, 1];
-let sortedArray = countingSort(array);
-console.log(sortedArray); // Output: [1, 2, 2, 3, 3, 4, 8]
+function findMedian(array1, array2) {
+  let mergedArray = array1.concat(array2);
+  mergedArray.sort((a, b) => a - b);
+
+  let length = mergedArray.length;
+  let median;
+  if (length % 2 === 1) {
+    median = mergedArray[Math.floor(length / 2)];
+  } else {
+    let midIndex = length / 2;
+    median = (mergedArray[midIndex - 1] + mergedArray[midIndex]) / 2;
+  }
+
+  return median;
+}
+
+// Example usage
+let array1 = [1, 3, 5];
+let array2 = [2, 4, 6];
+let median = findMedian(array1, array2);
+console.log(median); // Output: 3.5
