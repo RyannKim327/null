@@ -1,19 +1,24 @@
-function findMaxSubarraySum(arr) {
-  let maxSoFar = arr[0];  // Maximum sum found so far
-  let maxEndingHere = arr[0];  // Maximum sum ending at the current position
+function countOccurrences(string, word) {
+  // Split the string into an array of words
+  var wordsArray = string.split(" ");
 
-  for (let i = 1; i < arr.length; i++) {
-    // Extend the subarray or start a new one at arr[i]
-    maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
+  // Initialize a counter
+  var count = 0;
 
-    // Update the maximum sum found so far
-    maxSoFar = Math.max(maxSoFar, maxEndingHere);
+  // Iterate over the array of words
+  for (var i = 0; i < wordsArray.length; i++) {
+    // Check if the current word matches the word you want to count occurrences of
+    if (wordsArray[i] === word) {
+      count++;
+    }
   }
 
-  return maxSoFar;
+  return count;
 }
 
-// Example usage:
-const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const maxSum = findMaxSubarraySum(arr);
-console.log(maxSum);  // Output: 6
+// Usage example
+var sentence = "The quick brown fox jumps over the lazy dog. The dog is very lazy indeed.";
+var searchTerm = "lazy";
+var occurrences = countOccurrences(sentence, searchTerm);
+
+console.log("Number of occurrences of the word '" + searchTerm + "': " + occurrences);
