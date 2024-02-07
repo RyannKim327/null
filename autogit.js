@@ -1,36 +1,36 @@
-function longestIncreasingSubsequence(arr) {
-    const n = arr.length;
-    const dp = new Array(n).fill(1);
+function topologicalSort(graph) {
+  const visited = new Set();
+  const stack = [];
 
-    for (let i = 1; i < n; i++) {
-        for (let j = 0; j < i; j++) {
-            if (arr[i] > arr[j] && dp[i] <= dp[j]) {
-                dp[i] = dp[j] + 1;
-            }
-        }
+  function dfs(node) {
+    visited.add(node);
+
+    for (const neighbor of graph[node]) {
+      if (!visited.has(neighbor)) {
+        dfs(neighbor);
+      }
     }
 
-    let maxLength = 1;
-    for (let i = 1; i < n; i++) {
-        if (dp[i] > maxLength) {
-            maxLength = dp[i];
-        }
+    stack.push(node);
+  }
+
+  // Perform DFS on all unvisited nodes
+  for (const node in graph) {
+    if (!visited.has(node)) {
+      dfs(node);
     }
+  }
 
-    const lis = [];
-    let currentLength = maxLength;
-
-    for (let i = n - 1; i >= 0; i--) {
-        if (dp[i] === currentLength) {
-            lis.unshift(arr[i]);
-            currentLength--;
-        }
-    }
-
-    return lis;
+  return stack.reverse(); // Reverse the stack to get the topological order
 }
+const graph = {
+  A: ['B', 'C'],
+  B: ['D'],
+  C: ['D', 'E'],
+  D: ['F'],
+  E: ['F'],
+  F: [],
+};
 
-// Usage example
-const array = [3, 10, 2, 1, 20];
-const lis = longestIncreasingSubsequence(array);
-console.log(lis); // Output: [3, 10, 20]
+const result = topologicalSort(graph);
+console.log(result); // Output: ['A', 'C', 'E', 'B', 'D', 'F']
