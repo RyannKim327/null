@@ -1,22 +1,9 @@
-function binarySearchRecursive(array, target, start, end) {
-  if (start > end) {
-    return -1;
-  }
-
-  const mid = Math.floor((start + end) / 2);
-
-  if (array[mid] === target) {
-    return mid;
-  } else if (array[mid] < target) {
-    return binarySearchRecursive(array, target, mid + 1, end);
-  } else {
-    return binarySearchRecursive(array, target, start, mid - 1);
-  }
+function findCommonElements(arr1, arr2) {
+  return arr1.filter(element => arr2.includes(element));
 }
 
 // Example usage:
-const sortedArray = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
-const target = 16;
-
-const index = binarySearchRecursive(sortedArray, target, 0, sortedArray.length - 1);
-console.log(index); // Output: 4
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
