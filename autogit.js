@@ -1,4 +1,7 @@
-fetch('https://jsonplaceholder.typicode.com/posts/1')
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.error(error));
+function validateEmail(email) {
+  const regexPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regexPattern.test(email);
+}
+const email = "example@email.com";
+const isValid = validateEmail(email);
+console.log(isValid); // Output: true
