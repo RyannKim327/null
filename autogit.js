@@ -1,5 +1,16 @@
-// Prompt user for input
-const userInput = prompt('Enter something:');
+const string = "Hello, world!";
+const substring = "world";
 
-// Display user's input on the console
-console.log('User entered:', userInput);
+// Using includes()
+if (string.includes(substring)) {
+  console.log("Substring is present in the string.");
+} else {
+  console.log("Substring is not present in the string.");
+}
+
+// Using indexOf()
+if (string.indexOf(substring) !== -1) {
+  console.log("Substring is present in the string.");
+} else {
+  console.log("Substring is not present in the string.");
+}
