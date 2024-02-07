@@ -1,29 +1,53 @@
-function binarySearch(arr, target) {
-  let left = 0;
-  let right = arr.length - 1;
+class Stack {
+  constructor() {
+    this.stack = []; // Initialize an empty array as the stack
+  }
 
-  while (left <= right) {
-    let mid = Math.floor((left + right) / 2);
+  // Add an element to the top of the stack
+  push(element) {
+    this.stack.push(element);
+  }
 
-    if (arr[mid] === target) {
-      return mid; // found the target, return its index
-    } else if (arr[mid] < target) {
-      left = mid + 1; // target is in the right half of the array
+  // Remove and return the top element from the stack
+  pop() {
+    if (!this.isEmpty()) {
+      return this.stack.pop();
     } else {
-      right = mid - 1; // target is in the left half of the array
+      console.log('Stack is empty.');
     }
   }
 
-  return -1; // target not found
+  // Return the top element of the stack without removing it
+  peek() {
+    if (!this.isEmpty()) {
+      return this.stack[this.stack.length - 1];
+    } else {
+      console.log('Stack is empty.');
+    }
+  }
+
+  // Check if the stack is empty
+  isEmpty() {
+    return this.stack.length === 0;
+  }
+
+  // Get the number of elements in the stack
+  size() {
+    return this.stack.length;
+  }
+
+  // Print the stack elements
+  print() {
+    console.log(this.stack);
+  }
 }
 
 // Example usage:
-const numbers = [2, 4, 6, 8, 10, 12, 14, 16, 18];
-const target = 10;
-const index = binarySearch(numbers, target);
-
-if (index !== -1) {
-  console.log(`Target found at index ${index}`);
-} else {
-  console.log("Target not found");
-}
+const stack = new Stack();
+stack.push(10);
+stack.push(20);
+stack.push(30);
+stack.print();     // Output: [10, 20, 30]
+console.log(stack.pop());   // Output: 30
+console.log(stack.peek());  // Output: 20
+console.log(stack.size());  // Output: 2
