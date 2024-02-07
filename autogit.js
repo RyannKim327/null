@@ -1,24 +1,20 @@
-const stack = [];
-function push(element) {
-  stack.push(element);
-}
-function pop() {
-  if (stack.length === 0) {
-    return "Stack is empty";
+function findSecondLargest(array) {
+  let max = Math.max(array[0], array[1]);
+  let secondMax = Math.min(array[0], array[1]);
+
+  for (let i = 2; i < array.length; i++) {
+    if (array[i] > max) {
+      secondMax = max;
+      max = array[i];
+    } else if (array[i] > secondMax) {
+      secondMax = array[i];
+    }
   }
-  return stack.pop();
+  
+  return secondMax;
 }
-function peek() {
-  if (stack.length === 0) {
-    return "Stack is empty";
-  }
-  return stack[stack.length - 1];
-}
-push(10);
-push(20);
-push(30);
-console.log(pop()); // Output: 30
-console.log(peek()); // Output: 20
-console.log(pop()); // Output: 20
-console.log(pop()); // Output: 10
-console.log(pop()); // Output: Stack is empty
+
+// Usage example:
+const array = [3, 6, 8, 2, 9, 1, 5];
+const secondLargest = findSecondLargest(array);
+console.log(secondLargest); // Output: 8
