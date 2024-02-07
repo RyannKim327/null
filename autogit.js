@@ -1,10 +1,4 @@
-const array = [10, 5, 20, 15, 8];
-
-const max = Math.max(...array);
-
-console.log(max); // Output: 20
-const array = [10, 5, 20, 15, 8];
-
-const max = Math.max.apply(null, array);
-
-console.log(max); // Output: 20
+var string1 = "Hello";
+var string2 = "World";
+var result = string1 + " " + string2;
+console.log(result); // Output: Hello World
