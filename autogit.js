@@ -1,29 +1,18 @@
-function selectionSort(arr) {
-  const len = arr.length;
-  
-  for (let i = 0; i < len - 1; i++) {
-    let minIndex = i;
+function findMedianSortedArrays(nums1, nums2) {
+  const combined = nums1.concat(nums2);
+  combined.sort((a, b) => a - b);
 
-    for (let j = i + 1; j < len; j++) {
-      if (arr[j] < arr[minIndex]) {
-        minIndex = j;
-      }
-    }
+  const length = combined.length;
+  const middleIndex = Math.floor(length / 2);
 
-    if (minIndex !== i) {
-      // Swap elements
-      const temp = arr[i];
-      arr[i] = arr[minIndex];
-      arr[minIndex] = temp;
-    }
+  if (length % 2 === 1) {
+    return combined[middleIndex];
+  } else {
+    return (combined[middleIndex - 1] + combined[middleIndex]) / 2;
   }
-
-  return arr;
 }
 
-// Test the function
-const arr = [64, 25, 12, 22, 11];
-console.log("Original array:", arr);
-console.log("Sorted array:", selectionSort(arr));
-Original array: [64, 25, 12, 22, 11]
-Sorted array: [11, 12, 22, 25, 64]
+// Example usage:
+const nums1 = [1, 3];
+const nums2 = [2, 4, 5];
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 3
