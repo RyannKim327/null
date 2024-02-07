@@ -1,39 +1,74 @@
-function heapify(arr, length, index) {
-  let largest = index;
-  const left = 2 * index + 1;
-  const right = 2 * index + 2;
+function tarjansAlgorithm(graph) {
+  // Initialize variables
+  let index = 0;
+  const stack = [];
+  const indices = new Map();
+  const lowLinks = new Map();
+  const onStack = new Set();
+  const result = [];
 
-  if (left < length && arr[left] > arr[largest]) {
-    largest = left;
+  // Recursive function to perform depth-first search
+  function strongconnect(node) {
+    // Set the depth index for the current node
+    indices.set(node, index);
+    lowLinks.set(node, index);
+    index++;
+    stack.push(node);
+    onStack.add(node);
+
+    // Check each neighbor of the current node
+    const neighbors = graph[node];
+    for (const neighbor of neighbors) {
+      if (!indices.has(neighbor)) {
+        // Neighbor has not yet been visited
+        strongconnect(neighbor);
+        lowLinks.set(node, Math.min(lowLinks.get(node), lowLinks.get(neighbor)));
+      } else if (onStack.has(neighbor)) {
+        // Neighbor is on the current path and hence in the current strongly connected component
+        lowLinks.set(node, Math.min(lowLinks.get(node), indices.get(neighbor)));
+      }
+    }
+
+    // If node is a root node, pop the stack and generate a new strongly connected component
+    if (lowLinks.get(node) === indices.get(node)) {
+      const component = [];
+
+      let currentNode;
+      do {
+        currentNode = stack.pop();
+        onStack.delete(currentNode);
+        component.push(currentNode);
+      } while (currentNode !== node);
+
+      result.push(component);
+    }
   }
 
-  if (right < length && arr[right] > arr[largest]) {
-    largest = right;
+  // Apply Tarjan's algorithm for each unvisited node
+  const nodes = Object.keys(graph);
+  for (const node of nodes) {
+    if (!indices.has(node)) {
+      strongconnect(node);
+    }
   }
 
-  if (largest !== index) {
-    [arr[index], arr[largest]] = [arr[largest], arr[index]];
-    heapify(arr, length, largest);
-  }
+  // Return the strongly connected components
+  return result;
 }
 
-function buildHeap(arr) {
-  const length = arr.length;
-  const mid = Math.floor(length / 2);
+// Example usage:
+const graph = {
+  A: ['B'],
+  B: ['C', 'E', 'F'],
+  C: ['A', 'D'],
+  D: ['G'],
+  E: ['A', 'F'],
+  F: ['H'],
+  G: ['D', 'H'],
+  H: ['I'],
+  I: ['J'],
+  J: ['G'],
+};
 
-  for (let i = mid; i >= 0; i--) {
-    heapify(arr, length, i);
-  }
-}
-function heapSort(arr) {
-  buildHeap(arr);
-
-  for (let i = arr.length - 1; i > 0; i--) {
-    [arr[0], arr[i]] = [arr[i], arr[0]];
-    heapify(arr, i, 0);
-  }
-
-  return arr;
-}
-const array = [5, 3, 8, 4, 2, 1, 10];
-console.log(heapSort(array)); // Output: [1, 2, 3, 4, 5, 8, 10]
+const stronglyConnectedComponents = tarjansAlgorithm(graph);
+console.log(stronglyConnectedComponents);
