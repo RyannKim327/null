@@ -1,17 +1,12 @@
-function removeVowels(str) {
-  return str.replace(/[aeiou]/gi, '');
+let str = "Hello, World!";
+let reversedStr = str.split('').reverse().join('');
+console.log(reversedStr); // Output: "!dlroW ,olleH"
+let str = "Hello, World!";
+let reversedStr = '';
+for (let i = str.length - 1; i >= 0; i--) {
+  reversedStr += str.charAt(i);
 }
-
-// Example usage
-const input = 'Hello, World!';
-const output = removeVowels(input);
-console.log(output); // Output: "Hll, Wrld!"
-function removeVowels(str) {
-  const vowels = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'];
-  return str.split('').filter(char => !vowels.includes(char)).join('');
-}
-
-// Example usage
-const input = 'Hello, World!';
-const output = removeVowels(input);
-console.log(output); // Output: "Hll, Wrld!"
+console.log(reversedStr); // Output: "!dlroW ,olleH"
+let str = "Hello, World!";
+let reversedStr = str.split('').reduce((rev, char) => char + rev, '');
+console.log(reversedStr); // Output: "!dlroW ,olleH"
