@@ -1,18 +1,16 @@
-// Make a GET request to the Quote API and fetch a random quote
-fetch('https://api.quotable.io/random')
-  .then(response => response.json())
-  .then(data => {
-    // Display the quote and its author on the webpage
-    const quote = data.content;
-    const author = data.author;
-    console.log(`${quote} - ${author}`);
+function isArraySorted(array) {
+  for (let i = 0; i < array.length - 1; i++) {
+    if (array[i] > array[i + 1]) {
+      return false;
+    }
+  }
+  return true;
+}
+const arr1 = [1, 2, 3, 4, 5];
+console.log(isArraySorted(arr1)); // Output: true
 
-    // You can manipulate the DOM to display the quote on a webpage
-    // For example, create a new <p> element and append the quote to it
-    const quoteElement = document.createElement('p');
-    quoteElement.textContent = `${quote} - ${author}`;
-    document.body.appendChild(quoteElement);
-  })
-  .catch(error => {
-    console.log('Error:', error);
-  });
+const arr2 = [5, 4, 3, 2, 1];
+console.log(isArraySorted(arr2)); // Output: false
+
+const arr3 = [1, 3, 2, 4, 5];
+console.log(isArraySorted(arr3)); // Output: false
