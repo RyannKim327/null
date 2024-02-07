@@ -1,24 +1,22 @@
-function shellSort(arr) {
-  const len = arr.length;
-  let gap = Math.floor(len / 2);
-
-  while (gap > 0) {
-    for (let i = gap; i < len; i++) {
-      const temp = arr[i];
-      let j = i;
-
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
-      }
-
-      arr[j] = temp;
-    }
-
-    gap = Math.floor(gap / 2);
+function binarySearchRecursive(arr, target, start, end) {
+  if (start > end) {
+    return -1;
   }
 
-  return arr;
+  let middle = Math.floor((start + end) / 2);
+
+  if (arr[middle] === target) {
+    return middle;
+  }
+
+  if (target < arr[middle]) {
+    return binarySearchRecursive(arr, target, start, middle - 1);
+  } else {
+    return binarySearchRecursive(arr, target, middle + 1, end);
+  }
 }
-const array = [10, 7, 5, 3, 8, 2, 6, 9, 1, 4];
-console.log(shellSort(array)); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+const array = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
+const targetElement = 23;
+const result = binarySearchRecursive(array, targetElement, 0, array.length - 1);
+
+console.log(result); // Output: 5 (index of the target element in the array)
