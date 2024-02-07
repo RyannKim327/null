@@ -1,17 +1,16 @@
-const arr = [1, 2, 3, 2, 4, 3, 5];
-const uniqueArray = arr.filter((value, index) => arr.indexOf(value) === index);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const arr = [1, 2, 3, 2, 4, 3, 5];
-const uniqueArray = Array.from(new Set(arr));
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const arr = [1, 2, 3, 2, 4, 3, 5];
-const uniqueArray = [...new Set(arr)];
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const arr = [1, 2, 3, 2, 4, 3, 5];
-const uniqueArray = [];
-for (const element of arr) {
-  if (!uniqueArray.includes(element)) {
-    uniqueArray.push(element);
+function isSortedAscending(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false; // If any element is greater than the next one, the array is not sorted
+    }
   }
+  return true; // If the loop completes without returning false, the array is sorted
 }
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const arr1 = [1, 2, 3, 4, 5];
+console.log(isSortedAscending(arr1)); // Output: true
+
+const arr2 = [5, 4, 3, 2, 1];
+console.log(isSortedAscending(arr2)); // Output: false
+
+const arr3 = [1, 3, 2, 4, 5];
+console.log(isSortedAscending(arr3)); // Output: false
