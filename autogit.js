@@ -1,46 +1,14 @@
-class Graph {
-  constructor() {
-    this.adjList = new Map();
+function findMaxSubarray(arr) {
+  let maxSum = arr[0];
+  let currentSum = arr[0];
+  
+  for (let i = 1; i < arr.length; i++) {
+    currentSum = Math.max(arr[i], currentSum + arr[i]);
+    maxSum = Math.max(maxSum, currentSum);
   }
-
-  addVertex(vertex) {
-    this.adjList.set(vertex, []);
-  }
-
-  addEdge(source, destination) {
-    this.adjList.get(source).push(destination);
-    this.adjList.get(destination).push(source); // For an undirected graph
-  }
-
-  dfs(startVertex) {
-    const visited = new Set(); // To keep track of visited vertices
-    this._dfsRecursive(startVertex, visited);
-  }
-
-  _dfsRecursive(vertex, visited) {
-    visited.add(vertex);
-    console.log(vertex); // Process the current vertex (in this example, we're just printing it)
-
-    const neighbors = this.adjList.get(vertex);
-    for (const neighbor of neighbors) {
-      if (!visited.has(neighbor)) {
-        this._dfsRecursive(neighbor, visited);
-      }
-    }
-  }
+  
+  return maxSum;
 }
-
-// Example usage:
-const graph = new Graph();
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
-
-graph.addEdge('A', 'B');
-graph.addEdge('B', 'C');
-graph.addEdge('C', 'D');
-graph.addEdge('D', 'E');
-
-graph.dfs('A');
+const array = [1, -3, 2, 1, -1];
+const maxSum = findMaxSubarray(array);
+console.log(maxSum);  // Output: 3 (subarray is [2, 1])
