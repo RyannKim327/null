@@ -1,34 +1,18 @@
-function boyerMooreHorspool(text, pattern) {
-  // Initialization
-  const textLength = text.length;
-  const patternLength = pattern.length;
-  const lastOccurrence = {};
+function countOccurrences(string, character) {
+  let count = 0;
 
-  // Preprocessing: Construct the bad character shift table
-  for (let i = 0; i < patternLength - 1; i++) {
-    lastOccurrence[pattern[i]] = i;
-  }
-
-  // Search for pattern in the text
-  let i = patternLength - 1;
-  while (i < textLength) {
-    let k = 0; // Number of matched characters
-
-    while (k < patternLength && pattern[patternLength - 1 - k] === text[i - k]) {
-      k++;
-    }
-
-    if (k === patternLength) {
-      return i - patternLength + 1; // Pattern found, return the starting index
-    } else {
-      const last = lastOccurrence[text[i]] || -1;
-      i += patternLength - Math.min(k, 1 + last);
+  for (let i = 0; i < string.length; i++) {
+    if (string[i] === character) {
+      count++;
     }
   }
 
-  return -1; // Pattern not found
+  return count;
 }
-const text = "Hello, this is a sample text";
-const pattern = "sample";
-const index = boyerMooreHorspool(text, pattern);
-console.log(index); // Output: 17
+
+// Example usage
+const myString = 'Hello World!';
+const myCharacter = 'o';
+const occurrenceCount = countOccurrences(myString, myCharacter);
+console.log(`The character '${myCharacter}' occurs ${occurrenceCount} times in the string.`);
+The character 'o' occurs 2 times in the string.
