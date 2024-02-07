@@ -1,46 +1,26 @@
-function findKthSmallest(arr, k) {
-  // Sort the array in ascending order
-  arr.sort((a, b) => a - b);
-
-  // Return the kth smallest element
-  return arr[k - 1];
-}
-function findKthSmallest(arr, k) {
-  // Helper function to partition the array
-  function partition(arr, low, high) {
-    const pivot = arr[high];
-    let i = low;
-    for (let j = low; j < high; j++) {
-      if (arr[j] <= pivot) {
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-        i++;
-      }
-    }
-    [arr[i], arr[high]] = [arr[high], arr[i]];
-    return i;
+function largestPrimeFactor(number) {
+  let result = 1;
+  
+  while (number % 2 === 0) {
+    result = 2;
+    number /= 2;
   }
-
-  // Recursive function to find Kth smallest element
-  function quickselect(arr, low, high, k) {
-    if (low === high) {
-      return arr[low];
-    }
-
-    const pivotIndex = partition(arr, low, high);
-
-    if (k === pivotIndex) {
-      return arr[k];
-    } else if (k < pivotIndex) {
-      return quickselect(arr, low, pivotIndex - 1, k);
-    } else {
-      return quickselect(arr, pivotIndex + 1, high, k);
+  
+  for (let factor = 3; factor <= Math.sqrt(number); factor += 2) {
+    while (number % factor === 0) {
+      result = factor;
+      number /= factor;
     }
   }
-
-  // Call the recursive function
-  return quickselect(arr, 0, arr.length - 1, k - 1);
+  
+  if (number > 1) {
+    result = number;
+  }
+  
+  return result;
 }
-const arr = [3, 1, 6, 2, 4, 5];
-const k = 3;
 
-console.log(findKthSmallest(arr, k)); // Output: 3
+// Example usage
+console.log(largestPrimeFactor(24));  // Output: 3
+console.log(largestPrimeFactor(13195));  // Output: 29
+console.log(largestPrimeFactor(600851475143));  // Output: 6857
