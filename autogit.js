@@ -1,19 +1,21 @@
-function countOccurrences(word, sentence) {
-  // Escape special characters in the word
-  const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  
-  // Create a regular expression with the word
-  const regex = new RegExp("\\b" + escapedWord + "\\b", "gi");
-  
-  // Use the match() method to count occurrences
-  const matches = sentence.match(regex);
-  
-  // Return the count of occurrences
-  return matches ? matches.length : 0;
+function selectionSort(array) {
+  const length = array.length;
+  for (let i = 0; i < length - 1; i++) {
+    let min = array[i];
+    let minIndex = i;
+    for (let j = i + 1; j < length; j++) {
+      if (array[j] < min) {
+        min = array[j];
+        minIndex = j;
+      }
+    }
+    if (minIndex !== i) {
+      [array[i], array[minIndex]] = [array[minIndex], array[i]];
+    }
+  }
+  return array;
 }
-
-// Example usage
-const sentence = "How much wood would a woodchuck chuck if a woodchuck could chuck wood?";
-const word = "wood";
-const count = countOccurrences(word, sentence);
-console.log(`The word "${word}" occurs ${count} times in the sentence.`);
+const unsortedArray = [5, 2, 9, 1, 7, 3];
+const sortedArray = selectionSort(unsortedArray);
+console.log(sortedArray);
+// Output: [1, 2, 3, 5, 7, 9]
