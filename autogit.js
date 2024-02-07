@@ -1,26 +1,80 @@
-function largestPrimeFactor(number) {
-  let result = 1;
-  
-  while (number % 2 === 0) {
-    result = 2;
-    number /= 2;
+class ListNode {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
-  
-  for (let factor = 3; factor <= Math.sqrt(number); factor += 2) {
-    while (number % factor === 0) {
-      result = factor;
-      number /= factor;
-    }
+}
+class Queue {
+  constructor() {
+    this.head = null; // pointer to the front of the queue
+    this.tail = null; // pointer to the end of the queue
+    this.size = 0;
   }
-  
-  if (number > 1) {
-    result = number;
+}
+enqueue(value) {
+  const newNode = new ListNode(value);
+  if (this.isEmpty()) {
+    this.head = newNode;
+  } else {
+    this.tail.next = newNode;
   }
-  
-  return result;
+  this.tail = newNode;
+  this.size++;
+}
+dequeue() {
+  if (this.isEmpty()) {
+    return null;
+  }
+  const value = this.head.value;
+  this.head = this.head.next;
+  this.size--;
+  if (this.isEmpty()) {
+    this.tail = null;
+  }
+  return value;
+}
+isEmpty() {
+  return this.size === 0;
+}
+class ListNode {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-// Example usage
-console.log(largestPrimeFactor(24));  // Output: 3
-console.log(largestPrimeFactor(13195));  // Output: 29
-console.log(largestPrimeFactor(600851475143));  // Output: 6857
+class Queue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.size = 0;
+  }
+
+  enqueue(value) {
+    const newNode = new ListNode(value);
+    if (this.isEmpty()) {
+      this.head = newNode;
+    } else {
+      this.tail.next = newNode;
+    }
+    this.tail = newNode;
+    this.size++;
+  }
+  
+  dequeue() {
+    if (this.isEmpty()) {
+      return null;
+    }
+    const value = this.head.value;
+    this.head = this.head.next;
+    this.size--;
+    if (this.isEmpty()) {
+      this.tail = null;
+    }
+    return value;
+  }
+
+  isEmpty() {
+    return this.size === 0;
+  }
+}
