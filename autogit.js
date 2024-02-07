@@ -1,42 +1,36 @@
-function bellmanFord(graph, source) {
-  // Step 1: Initialization
-  const nodes = Object.keys(graph);
-  const distances = {};
+function longestIncreasingSubsequence(arr) {
+    const n = arr.length;
+    const dp = new Array(n).fill(1);
 
-  for (let node of nodes) {
-    distances[node] = Infinity;
-  }
-  distances[source] = 0;
-
-  // Step 2: Relaxation
-  for (let i = 0; i < nodes.length - 1; i++) {
-    for (let node of nodes) {
-      for (let [adjacentNode, weight] of graph[node]) {
-        if (distances[node] + weight < distances[adjacentNode]) {
-          distances[adjacentNode] = distances[node] + weight;
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[i] > arr[j] && dp[i] <= dp[j]) {
+                dp[i] = dp[j] + 1;
+            }
         }
-      }
     }
-  }
 
-  // Step 3: Check for negative-weight cycles
-  for (let node of nodes) {
-    for (let [adjacentNode, weight] of graph[node]) {
-      if (distances[node] + weight < distances[adjacentNode]) {
-        throw new Error("Graph contains a negative-weight cycle");
-      }
+    let maxLength = 1;
+    for (let i = 1; i < n; i++) {
+        if (dp[i] > maxLength) {
+            maxLength = dp[i];
+        }
     }
-  }
 
-  return distances;
+    const lis = [];
+    let currentLength = maxLength;
+
+    for (let i = n - 1; i >= 0; i--) {
+        if (dp[i] === currentLength) {
+            lis.unshift(arr[i]);
+            currentLength--;
+        }
+    }
+
+    return lis;
 }
-const graph = {
-  A: [["B", 4], ["C", 2]],
-  B: [["D", 3]],
-  C: [["B", 1], ["D", 5]],
-  D: []
-};
 
-const source = "A";
-const distances = bellmanFord(graph, source);
-console.log(distances);
+// Usage example
+const array = [3, 10, 2, 1, 20];
+const lis = longestIncreasingSubsequence(array);
+console.log(lis); // Output: [3, 10, 20]
