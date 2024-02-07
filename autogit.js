@@ -1,39 +1,38 @@
-function ListNode(val) {
-  this.val = val;
-  this.next = null;
-}
-function reverseLinkedList(head) {
-  let prev = null;
-  let curr = head;
-  
-  while (curr !== null) {
-    let nextTemp = curr.next;
-    curr.next = prev;
-    prev = curr;
-    curr = nextTemp;
+function findMajorityElement(nums) {
+  let majorityElement = nums[0];
+  let count = 1;
+
+  for (let i = 1; i < nums.length; i++) {
+    if (nums[i] === majorityElement) {
+      count++;
+    } else {
+      count--;
+    }
+
+    if (count === 0) {
+      majorityElement = nums[i];
+      count = 1;
+    }
   }
-  
-  return prev;
-}
-// Example usage:
-let head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
 
-console.log("Original Linked List:");
-let currNode = head;
-while (currNode !== null) {
-  console.log(currNode.val);
-  currNode = currNode.next;
+  // Verify if the majority element occurs more than n/2 times
+  count = 0;
+
+  for (let i = 0; i < nums.length; i++) {
+    if (nums[i] === majorityElement) {
+      count++;
+    }
+
+    if (count > nums.length / 2) {
+      return majorityElement;
+    }
+  }
+
+  // If there is no majority element
+  return null;
 }
 
-head = reverseLinkedList(head);
-
-console.log("Reversed Linked List:");
-currNode = head;
-while (currNode !== null) {
-  console.log(currNode.val);
-  currNode = currNode.next;
-}
+// Example usage
+const nums = [2, 2, 1, 1, 1, 2, 2];
+const majorityElement = findMajorityElement(nums);
+console.log(majorityElement); // Output: 2
