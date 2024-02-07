@@ -7,61 +7,61 @@ class Node {
 class LinkedList {
   constructor() {
     this.head = null;
+    this.tail = null;
+    this.size = 0;
   }
-}
-class LinkedList {
-  // previous code...
 
-  add(value) {
+  enqueue(value) {
     const newNode = new Node(value);
 
-    if (!this.head) {
+    if (this.size === 0) {
       this.head = newNode;
+      this.tail = newNode;
     } else {
-      let current = this.head;
-      while (current.next !== null) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
-
-  // remaining code...
-}
-class LinkedList {
-  // previous code...
-
-  reverse() {
-    let previous = null;
-    let current = this.head;
-    let following = null;
-
-    while (current !== null) {
-      following = current.next;
-      current.next = previous;
-      previous = current;
-      current = following;
+      this.tail.next = newNode;
+      this.tail = newNode;
     }
 
-    this.head = previous;
+    this.size++;
   }
 
-  // remaining code...
+  dequeue() {
+    if (this.size === 0) {
+      return null;
+    }
+
+    const removedNode = this.head;
+
+    if (this.size === 1) {
+      this.head = null;
+      this.tail = null;
+    } else {
+      this.head = this.head.next;
+    }
+
+    this.size--;
+    return removedNode.value;
+  }
 }
-const list = new LinkedList();
-list.add('A');
-list.add('B');
-list.add('C');
-list.add('D');
+class Queue {
+  constructor() {
+    this.linkedList = new LinkedList();
+  }
 
-console.log('Original list:');
-console.log(list);
+  enqueue(value) {
+    this.linkedList.enqueue(value);
+  }
 
-list.reverse();
+  dequeue() {
+    return this.linkedList.dequeue();
+  }
+}
+const queue = new Queue();
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
 
-console.log('Reversed list:');
-console.log(list);
-Original list:
-LinkedList { head: Node { value: 'A', next: Node { value: 'B', next: [Node] } } }
-Reversed list:
-LinkedList { head: Node { value: 'D', next: Node { value: 'C', next: [Node] } } }
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.dequeue()); // Output: 2
+console.log(queue.dequeue()); // Output: 3
+console.log(queue.dequeue()); // Output: null (queue is empty)
