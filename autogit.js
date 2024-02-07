@@ -1,53 +1,58 @@
-class Stack {
-  constructor() {
-    this.items = [];
-  }
-
-  // Add element to the top of the stack
-  push(element) {
-    this.items.push(element);
-  }
-
-  // Remove and return the top element from the stack
-  pop() {
-    if (this.isEmpty()) {
-      return "Underflow";
-    }
-    return this.items.pop();
-  }
-
-  // Return the top element without removing it from the stack
-  peek() {
-    if (this.isEmpty()) {
-      return "No element in the stack";
-    }
-    return this.items[this.items.length - 1];
-  }
-
-  // Check if the stack is empty
-  isEmpty() {
-    return this.items.length === 0;
-  }
-
-  // Return the size of the stack
-  size() {
-    return this.items.length;
-  }
-
-  // Clear the stack
-  clear() {
-    this.items = [];
+class Node {
+  constructor(label) {
+    this.label = label;
+    this.children = {};
+    this.isLeaf = false;
   }
 }
+class SuffixTree {
+  constructor() {
+    this.root = new Node('');
+  }
+}
+class SuffixTree {
+  // previous code...
 
-// Example usage:
-const stack = new Stack();
-stack.push(10);
-stack.push(20);
-stack.push(30);
-console.log(stack.pop());   // Output: 30
-console.log(stack.peek());  // Output: 20
-console.log(stack.size());  // Output: 2
-console.log(stack.isEmpty());  // Output: false
-stack.clear();
-console.log(stack.isEmpty());  // Output: true
+  build(input) {
+    for (let i = 0; i < input.length; i++) {
+      this._addSuffix(input.substring(i));
+    }
+  }
+
+  _addSuffix(suffix) {
+    let currentNode = this.root;
+    for (let i = 0; i < suffix.length; i++) {
+      const char = suffix[i];
+      if (!currentNode.children[char]) {
+        currentNode.children[char] = new Node(suffix.substring(i));
+      }
+      currentNode = currentNode.children[char];
+    }
+    currentNode.isLeaf = true;
+  }
+}
+class SuffixTree {
+  // previous code...
+
+  search(query) {
+    let currentNode = this.root;
+    let i = 0;
+    while (i < query.length) {
+      const char = query[i];
+      if (!currentNode.children[char]) {
+        return false;
+      }
+      const label = currentNode.children[char].label;
+      const len = Math.min(query.length - i, label.length);
+      if (query.substring(i, i + len) !== label.substring(0, len)) {
+        return false;
+      }
+      i += len;
+      if (i === query.length && currentNode.children[char].isLeaf) {
+        return true;
+      }
+      currentNode = currentNode.children[char];
+    }
+    return false;
+  }
+}
