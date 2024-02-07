@@ -1,38 +1,35 @@
-function breadthLimitedSearch(startNode, targetNode, maxDepth) {
-  if (startNode === targetNode) {
-    return startNode;
+position = start + Math.floor((end - start) * (target - array[start]) / (array[end] - array[start]))
+function interpolationSearch(target, array, start, end) {
+  if (start > end || target < array[start] || target > array[end]) {
+    return -1;
   }
 
-  let queue = [{ node: startNode, depth: 0 }];
+  let position = start + Math.floor((end - start) * (target - array[start]) / (array[end] - array[start]));
 
-  while (queue.length > 0) {
-    let { node, depth } = queue.shift();
-
-    if (depth < maxDepth) {
-      // Expand the node's neighbors
-      let neighbors = getNeighbors(node);
-
-      for (let neighbor of neighbors) {
-        if (neighbor === targetNode) {
-          return neighbor;
-        }
-
-        queue.push({ node: neighbor, depth: depth + 1 });
-      }
-    }
+  if (array[position] === target) {
+    return position;
   }
 
-  return null; // Target node not found within the specified depth
+  if (array[position] < target) {
+    return interpolationSearch(target, array, position + 1, end);
+  }
+
+  if (array[position] > target) {
+    return interpolationSearch(target, array, start, position - 1);
+  }
+
+  return -1;
 }
+const array = [1, 3, 5, 7, 9];
+const target = 5;
+const start = 0;
+const end = array.length - 1;
 
-// Example usage
-let startNode = ...; // Define your starting node
-let targetNode = ...; // Define your target node
+const result = interpolationSearch(target, array, start, end);
 
-let resultNode = breadthLimitedSearch(startNode, targetNode, 3);
-
-if (resultNode) {
-  console.log("Target node found:", resultNode);
+if (result === -1) {
+  console.log("Target value not found in the array.");
 } else {
-  console.log("Target node not found within depth limit");
+  console.log(`Target value found at index ${result}.`);
 }
+Target value found at index 2.
