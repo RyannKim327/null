@@ -1,36 +1,33 @@
-function topologicalSort(graph) {
-  const visited = new Set();
-  const stack = [];
-
-  function dfs(node) {
-    visited.add(node);
-
-    for (const neighbor of graph[node]) {
-      if (!visited.has(neighbor)) {
-        dfs(neighbor);
+function shellSort(array) {
+  const len = array.length;
+  let gap = 1;
+  
+  // Calculate the largest gap
+  while (gap < len / 3) {
+    gap = gap * 3 + 1;
+  }
+  
+  // Start Shell sort
+  while (gap > 0) {
+    for (let i = gap; i < len; i++) {
+      const temp = array[i];
+      let j = i;
+      
+      // Insertion sort for gap sequences
+      while (j >= gap && array[j - gap] > temp) {
+        array[j] = array[j - gap];
+        j -= gap;
       }
+      
+      array[j] = temp;
     }
-
-    stack.push(node);
+    
+    gap = Math.floor(gap / 2);
   }
-
-  // Perform DFS on all unvisited nodes
-  for (const node in graph) {
-    if (!visited.has(node)) {
-      dfs(node);
-    }
-  }
-
-  return stack.reverse(); // Reverse the stack to get the topological order
+  
+  return array;
 }
-const graph = {
-  A: ['B', 'C'],
-  B: ['D'],
-  C: ['D', 'E'],
-  D: ['F'],
-  E: ['F'],
-  F: [],
-};
+const unsortedArray = [10, -1, 2, 5, 0, 6, 4, -5];
+const sortedArray = shellSort(unsortedArray);
 
-const result = topologicalSort(graph);
-console.log(result); // Output: ['A', 'C', 'E', 'B', 'D', 'F']
+console.log(sortedArray); // [-5, -1, 0, 2, 4, 5, 6, 10]
