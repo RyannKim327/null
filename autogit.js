@@ -1,17 +1,17 @@
-function getRandomNumber(min, max) {
-  // Calculate the range by subtracting the minimum value from the maximum value
-  var range = max - min;
-  
-  // Generate a random number between 0 and the range
-  var randomNum = Math.random() * range;
-  
-  // Shift the random number to the minimum value
-  randomNum += min;
-  
-  // Return the random number
-  return Math.floor(randomNum);
+function removeVowels(str) {
+  return str.replace(/[aeiou]/gi, '');
 }
 
-// Usage example: generate a random number between 1 and 100
-var randomNumber = getRandomNumber(1, 100);
-console.log(randomNumber);
+// Example usage
+const input = 'Hello, World!';
+const output = removeVowels(input);
+console.log(output); // Output: "Hll, Wrld!"
+function removeVowels(str) {
+  const vowels = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'];
+  return str.split('').filter(char => !vowels.includes(char)).join('');
+}
+
+// Example usage
+const input = 'Hello, World!';
+const output = removeVowels(input);
+console.log(output); // Output: "Hll, Wrld!"
