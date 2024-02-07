@@ -1,114 +1,58 @@
-// Create a Node class to represent each node in the linked list
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
+function mergeSort(arr) {
+  const n = arr.length;
+  const tempArray = new Array(n);
+
+  // Merge subarrays of size 1, 2, 4, 8, 16, ...
+  for (let size = 1; size < n; size *= 2) {
+    for (let leftStart = 0; leftStart < n - 1; leftStart += 2 * size) {
+      const mid = Math.min(leftStart + size - 1, n - 1);
+      const rightEnd = Math.min(leftStart + 2 * size - 1, n - 1);
+      merge(arr, tempArray, leftStart, mid, rightEnd);
+    }
+  }
+
+  return arr;
+}
+
+// Merge two subarrays in sorted order
+function merge(arr, tempArray, leftStart, mid, rightEnd) {
+  let leftEnd = mid;
+  let rightStart = mid + 1;
+
+  let left = leftStart;
+  let right = rightStart;
+  let index = leftStart;
+
+  // Merge the two subarrays into the tempArray
+  while (left <= leftEnd && right <= rightEnd) {
+    if (arr[left] <= arr[right]) {
+      tempArray[index] = arr[left];
+      left++;
+    } else {
+      tempArray[index] = arr[right];
+      right++;
+    }
+    index++;
+  }
+
+  // Copy the remaining elements from the left subarray
+  for (let i = left; i <= leftEnd; i++) {
+    tempArray[index] = arr[i];
+    index++;
+  }
+
+  // Copy the remaining elements from the right subarray
+  for (let i = right; i <= rightEnd; i++) {
+    tempArray[index] = arr[i];
+    index++;
+  }
+
+  // Copy the merged elements back to the original array
+  for (let i = leftStart; i <= rightEnd; i++) {
+    arr[i] = tempArray[i];
   }
 }
 
-// Create a LinkedList class to manage the linked list
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-
-  // Add a new node at the end of the linked list
-  append(data) {
-    const newNode = new Node(data);
-
-    // If linked list is empty, make the new node the head
-    if (!this.head) {
-      this.head = newNode;
-      return;
-    }
-
-    // Traverse to the last node
-    let current = this.head;
-    while (current.next) {
-      current = current.next;
-    }
-
-    // Append the new node to the last node
-    current.next = newNode;
-  }
-
-  // Insert a new node at a specific position in the linked list
-  insertAt(data, position) {
-    const newNode = new Node(data);
-
-    // If position is 0, make the new node the head
-    if (position === 0) {
-      newNode.next = this.head;
-      this.head = newNode;
-      return;
-    }
-
-    // Traverse to the node at position-1
-    let current = this.head;
-    let prev = null;
-    let count = 0;
-
-    while (current && count < position) {
-      prev = current;
-      current = current.next;
-      count++;
-    }
-
-    // Insert the new node at the specified position
-    prev.next = newNode;
-    newNode.next = current;
-  }
-
-  // Remove a node at a specific position from the linked list
-  removeAt(position) {
-    // If position is 0, remove the head node
-    if (position === 0 && this.head) {
-      this.head = this.head.next;
-      return;
-    }
-
-    // Traverse to the node at position-1
-    let current = this.head;
-    let prev = null;
-    let count = 0;
-
-    while (current && count < position) {
-      prev = current;
-      current = current.next;
-      count++;
-    }
-
-    // Remove the node at the specified position
-    if (current) {
-      prev.next = current.next;
-    }
-  }
-
-  // Print the linked list
-  print() {
-    let current = this.head;
-    const result = [];
-
-    while (current) {
-      result.push(current.data);
-      current = current.next;
-    }
-
-    console.log(result.join(" -> "));
-  }
-}
-
-// Usage example
-const linkedList = new LinkedList();
-
-linkedList.append(10);
-linkedList.append(20);
-linkedList.append(30);
-linkedList.append(40);
-
-linkedList.insertAt(15, 1);
-linkedList.insertAt(25, 3);
-
-linkedList.removeAt(2);
-
-linkedList.print(); // Output: 10 -> 15 -> 30 -> 40
+// Example usage
+const numbers = [8, 4, 6, 2, 7, 1, 5, 3];
+console.log(mergeSort(numbers));
