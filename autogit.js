@@ -1,4 +1,6 @@
-var myArray = [1, 2, 3, 4, 5];
-myArray.reverse();
-console.log(myArray);
-[5, 4, 3, 2, 1]
+function validateEmail(email) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+}
+const email = "example@example.com";
+console.log(validateEmail(email)); // Output: true
