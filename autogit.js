@@ -1,41 +1,63 @@
-class SkipListNode {
-  constructor(value, level) {
+class Node {
+  constructor(value) {
     this.value = value;
-    this.next = new Array(level + 1);
+    this.left = null;
+    this.right = null;
+  }
+}
+class BinarySearchTree {
+  constructor() {
+    this.root = null;
+  }
+}
+insert(value) {
+  const newNode = new Node(value);
+
+  if (this.root === null) {
+    this.root = newNode;
+  } else {
+    this.insertNode(this.root, newNode);
   }
 }
 
-class SkipList {
-  constructor(maxLevel) {
-    this.maxLevel = maxLevel;
-    // Initialize skip list with head node
-    this.head = new SkipListNode(undefined, maxLevel);
-    this.level = 0;
+insertNode(node, newNode) {
+  if (newNode.value < node.value) {
+    if (node.left === null) {
+      node.left = newNode;
+    } else {
+      this.insertNode(node.left, newNode);
+    }
+  } else {
+    if (node.right === null) {
+      node.right = newNode;
+    } else {
+      this.insertNode(node.right, newNode);
+    }
   }
-
-  insert(value) {
-    // TODO: Implement insertion logic
-  }
-
-  search(value) {
-    // TODO: Implement search logic
-  }
-
-  delete(value) {
-    // TODO: Implement deletion logic
-  }
-
-  // Other helper methods and display implementation
+}
+search(value) {
+  return this.searchNode(this.root, value);
 }
 
-function randomLevel(maxLevel) {
-  // TODO: Implement random level generation logic
-}
+searchNode(node, value) {
+  if (node === null) {
+    return null;
+  }
 
-// Test the implementation
-const skipList = new SkipList(/* maxLevel */);
-skipList.insert(10);
-skipList.insert(5);
-const searchResult = skipList.search(5);
-console.log(searchResult); // Should print the node containing 5
-skipList.delete(5);
+  if (value < node.value) {
+    return this.searchNode(node.left, value);
+  } else if (value > node.value) {
+    return this.searchNode(node.right, value);
+  } else {
+    return node;
+  }
+}
+const bst = new BinarySearchTree();
+bst.insert(15);
+bst.insert(10);
+bst.insert(20);
+bst.insert(8);
+bst.insert(12);
+
+console.log(bst.search(12));  // Output: Node { value: 12, left: null, right: null }
+console.log(bst.search(17));  // Output: null
