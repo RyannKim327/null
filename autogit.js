@@ -1,21 +1,26 @@
-function findNthNodeFromEnd(head, n) {
-  let pointer1 = head;
-  let pointer2 = head;
-
-  // Move pointer2 n nodes ahead
-  for (let i = 0; i < n; i++) {
-    if (pointer2 === null) {
-      return null; // Invalid input or n exceeds list length
-    }
-    pointer2 = pointer2.next;
+function binarySearch(arr, searchKey, start = 0, end = arr.length - 1) {
+  if (start > end) {
+    return -1;
   }
 
-  // Move both pointers simultaneously until pointer2 reaches the end
-  while (pointer2 !== null) {
-    pointer1 = pointer1.next;
-    pointer2 = pointer2.next;
+  const middle = Math.floor((start + end) / 2);
+
+  if (arr[middle] === searchKey) {
+    return middle;
   }
 
-  // pointer1 will be pointing to the nth node from the end
-  return pointer1;
+  if (arr[middle] > searchKey) {
+    return binarySearch(arr, searchKey, start, middle - 1);
+  }
+
+  return binarySearch(arr, searchKey, middle + 1, end);
+}
+const sortedArray = [1, 3, 5, 7, 9, 11, 13, 15];
+const searchKey = 7;
+
+const index = binarySearch(sortedArray, searchKey);
+if (index !== -1) {
+  console.log(`Found at index ${index}`);
+} else {
+  console.log('Not found');
 }
