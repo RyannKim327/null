@@ -1,71 +1,34 @@
-function selectionSort(array) {
-  // ...
-}
-function selectionSort(array) {
-  const n = array.length;
-  // ...
-}
-function selectionSort(array) {
-  const n = array.length;
-  
-  for (let i = 0; i < n - 1; i++) {
-    let minIndex = i;
-    // ...
-  }
-}
-function selectionSort(array) {
-  const n = array.length;
-  
-  for (let i = 0; i < n - 1; i++) {
-    let minIndex = i;
-    
-    for (let j = i + 1; j < n; j++) {
-      if (array[j] < array[minIndex]) {
-        minIndex = j;
-      }
-    }
-    // ...
-  }
-}
-function selectionSort(array) {
-  const n = array.length;
-  
-  for (let i = 0; i < n - 1; i++) {
-    let minIndex = i;
-    
-    for (let j = i + 1; j < n; j++) {
-      if (array[j] < array[minIndex]) {
-        minIndex = j;
-      }
-    }
-    
-    if (minIndex !== i) {
-      [array[i], array[minIndex]] = [array[minIndex], array[i]];
+function findMajorityElement(arr) {
+  let majority = null;
+  let count = 0;
+
+  for (let num of arr) {
+    if (count === 0) {
+      majority = num;
+      count = 1;
+    } else if (num === majority) {
+      count++;
+    } else {
+      count--;
     }
   }
   
-  return array;
-}
-function selectionSort(array) {
-  const n = array.length;
-  
-  for (let i = 0; i < n - 1; i++) {
-    let minIndex = i;
-    
-    for (let j = i + 1; j < n; j++) {
-      if (array[j] < array[minIndex]) {
-        minIndex = j;
-      }
-    }
-    
-    if (minIndex !== i) {
-      [array[i], array[minIndex]] = [array[minIndex], array[i]];
+  // Verification step (optional)
+  count = 0;
+  for (let num of arr) {
+    if (num === majority) {
+      count++;
     }
   }
   
-  return array;
+  if (count > arr.length / 2) {
+    return majority;
+  } else {
+    return null; // No majority element found
+  }
 }
 
-// Example usage:
-const arr = [64, 25, 12, 22, 11];
-console.log(selectionSort(arr)); // Output: [11, 12, 22, 25, 64]
+// Example usage
+const array = [3, 1, 3, 3, 2];
+const majorityElement = findMajorityElement(array);
+console.log("Majority Element:", majorityElement);
