@@ -1,24 +1,29 @@
-function countOccurrences(str, char) {
-  let count = 0;
-  for (let i = 0; i < str.length; i++) {
-    if (str[i] === char) {
-      count++;
-    }
-  }
-  return count;
+function largestPrimeFactor(number) {
+   // your logic goes here
 }
-
-const myString = "Hello, World!";
-const myChar = "o";
-const occurrences = countOccurrences(myString, myChar);
-console.log(occurrences);  // Output: 2
-function countOccurrences(str, char) {
-  const array = str.split("");
-  const occurrences = array.filter(c => c === char).length;
-  return occurrences;
+let factor = 2;
+while (factor <= number) {
+   // your logic goes here
 }
+while (factor <= number) {
+   if (number % factor === 0) {
+      number /= factor;
+   } else {
+      factor++;
+   }
+}
+return factor;
+function largestPrimeFactor(number) {
+   let factor = 2;
 
-const myString = "Hello, World!";
-const myChar = "o";
-const occurrences = countOccurrences(myString, myChar);
-console.log(occurrences);  // Output: 2
+   while (factor <= number) {
+      if (number % factor === 0) {
+         number /= factor;
+      } else {
+         factor++;
+      }
+   }
+
+   return factor;
+}
+console.log(largestPrimeFactor(13195));  // Output: 29
