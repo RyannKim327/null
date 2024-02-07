@@ -1,16 +1,33 @@
-const string = "Hello, world!";
-const substring = "world";
+// Example graph represented as an adjacency list
+const graph = {
+  'A': ['B', 'C'],
+  'B': ['D', 'E'],
+  'C': ['F'],
+  'D': [],
+  'E': ['F'],
+  'F': []
+};
 
-// Using includes()
-if (string.includes(substring)) {
-  console.log("Substring is present in the string.");
-} else {
-  console.log("Substring is not present in the string.");
+function breadthFirstSearch(graph, startNode) {
+  const queue = [];
+  const visited = {};
+
+  queue.push(startNode);
+
+  while (queue.length > 0) {
+    const currentNode = queue.shift();
+    if (!visited[currentNode]) {
+      visited[currentNode] = true;
+      console.log('Visited node:', currentNode);
+      const adjacentNodes = graph[currentNode];
+      adjacentNodes.forEach((adjNode) => {
+        if (!visited[adjNode]) {
+          queue.push(adjNode);
+        }
+      });
+    }
+  }
 }
 
-// Using indexOf()
-if (string.indexOf(substring) !== -1) {
-  console.log("Substring is present in the string.");
-} else {
-  console.log("Substring is not present in the string.");
-}
+// Usage example
+breadthFirstSearch(graph, 'A');
