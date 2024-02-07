@@ -1,132 +1,56 @@
-class Node {
-  constructor(value = null, level = 0) {
-    this.value = value;
-    this.next = new Array(level + 1);
-  }
-}
-class SkipList {
+class TrieNode {
   constructor() {
-    this.head = new Node();
-    this.maxLevel = 0;
+    this.children = {};
+    this.isEndOfWord = false;
   }
-  
-  // Get a random level for a node
-  randomLevel() {
-    let level = 0;
-    while (Math.random() < 0.5 && level < this.maxLevel + 1) {
-      level++;
+
+  insert(word) {
+    let current = this;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      if (!(char in current.children)) {
+        current.children[char] = new TrieNode();
+      }
+      current = current.children[char];
     }
-    return level;
+    current.isEndOfWord = true;
   }
-  
-  // Insert a value into the skip list
-  insert(value) {
-    const update = new Array(this.maxLevel + 1);
-    let currentNode = this.head;
-    
-    // Search for the position to insert the new node
-    for (let level = this.maxLevel; level >= 0; level--) {
-      while (
-        currentNode.next[level] &&
-        currentNode.next[level].value < value
-      ) {
-        currentNode = currentNode.next[level];
+
+  search(word) {
+    let current = this;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      if (!(char in current.children)) {
+        return false;
       }
-      // Store the rightmost node at each level before inserting
-      update[level] = currentNode;
+      current = current.children[char];
     }
-    
-    const level = this.randomLevel();
-    const newNode = new Node(value, level);
-    
-    // Update the maximum level of the skip list
-    if (level > this.maxLevel) {
-      this.maxLevel = level;
-    }
-    
-    // Insert the new node into the skip list
-    for (let i = 0; i <= level; i++) {
-      newNode.next[i] = update[i].next[i];
-      update[i].next[i] = newNode;
-    }
+    return current.isEndOfWord;
   }
-  
-  // Search for a value in the skip list
-  search(value) {
-    let currentNode = this.head;
-    
-    // Start from the top level and move downwards
-    for (let level = this.maxLevel; level >= 0; level--) {
-      while (
-        currentNode.next[level] &&
-        currentNode.next[level].value <= value
-      ) {
-        if (currentNode.next[level].value === value) {
-          return true; // Found the value
-        }
-        currentNode = currentNode.next[level];
+
+  startsWith(prefix) {
+    let current = this;
+    for (let i = 0; i < prefix.length; i++) {
+      const char = prefix[i];
+      if (!(char in current.children)) {
+        return false;
       }
+      current = current.children[char];
     }
-    
-    return false; // Value not found
-  }
-  
-  // Remove a value from the skip list
-  remove(value) {
-    const update = new Array(this.maxLevel + 1);
-    let currentNode = this.head;
-    
-    // Search for the node to remove
-    for (let level = this.maxLevel; level >= 0; level--) {
-      while (
-        currentNode.next[level] &&
-        currentNode.next[level].value < value
-      ) {
-        currentNode = currentNode.next[level];
-      }
-      // Store the rightmost node at each level before removing
-      update[level] = currentNode;
-    }
-    
-    currentNode = currentNode.next[0];
-    
-    if (currentNode.value === value) {
-      // Remove the node from the skip list
-      for (let i = 0; i <= this.maxLevel; i++) {
-        if (update[i].next[i] !== currentNode) {
-          break;
-        }
-        update[i].next[i] = currentNode.next[i];
-      }
-      
-      // Update the maximum level of the skip list if needed
-      while (
-        this.maxLevel > 0 &&
-        this.head.next[this.maxLevel] === undefined
-      ) {
-        this.maxLevel--;
-      }
-      
-      return true; // Node removed successfully
-    }
-    
-    return false; // Node not found
+    return true;
   }
 }
-// Create a skip list instance
-const skipList = new SkipList();
+const trie = new TrieNode();
 
-// Insert some values
-skipList.insert(3);
-skipList.insert(6);
-skipList.insert(2);
-skipList.insert(7);
-skipList.insert(4);
+// Insert words into the trie
+trie.insert("apple");
+trie.insert("banana");
+trie.insert("car");
 
-// Search for a value
-console.log(skipList.search(6)); // Output: true
-console.log(skipList.search(8)); // Output: false
+// Search for a word
+console.log(trie.search("apple")); // true
+console.log(trie.search("orange")); // false
 
-// Remove a value
-console.log(skipList.remove(6)); // Output: true
-console.log(skipList.search(6)); // Output: false
+// Check if a prefix exists
+console.log(trie.startsWith("app")); // true
+console.log(trie.startsWith("ora")); // false
