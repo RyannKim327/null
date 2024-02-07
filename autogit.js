@@ -1,21 +1,9 @@
-function findNthFromEnd(head, n) {
-  let first = head;
-  let second = head;
+const numbers = [4, 2, 8, 6, 5];
+numbers.sort((a, b) => a - b);
 
-  // Move the first pointer n positions forward
-  for (let i = 0; i < n; i++) {
-    if (first === null) {
-      // The linked list is shorter than n nodes
-      return null;
-    }
-    first = first.next;
-  }
+console.log(numbers); // Output: [2, 4, 5, 6, 8]
+const numbers = [4, 2, 8, 6, 5];
+const sortedNumbers = [...numbers].sort((a, b) => a - b);
 
-  // Move both pointers simultaneously until the first pointer reaches the end
-  while (first !== null) {
-    first = first.next;
-    second = second.next;
-  }
-
-  return second;
-}
+console.log(sortedNumbers); // Output: [2, 4, 5, 6, 8]
+console.log(numbers); // Output: [4, 2, 8, 6, 5]
