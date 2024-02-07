@@ -1,18 +1,72 @@
-function reverseWords(str) {
-  // Step 1: Split the string into an array of words
-  var words = str.split(' ');
-
-  // Step 2: Reverse the order of the array
-  words.reverse();
-
-  // Step 3: Join the elements of the array into a string
-  var reversedStr = words.join(' ');
-
-  return reversedStr;
+class TrieNode {
+  constructor() {
+    this.children = new Map();
+    this.isEndOfWord = false;
+  }
 }
 
-// Example usage
-var originalStr = 'Hello World!';
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
+  }
 
-var reversedStr = reverseWords(originalStr);
-console.log(reversedStr); // Output: "World! Hello"
+  insert(word) {
+    let currentNode = this.root;
+
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+
+      if (!currentNode.children.has(char)) {
+        currentNode.children.set(char, new TrieNode());
+      }
+
+      currentNode = currentNode.children.get(char);
+    }
+
+    // Set the last node as the end of the word
+    currentNode.isEndOfWord = true;
+  }
+
+  search(word) {
+    let currentNode = this.root;
+
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+
+      if (!currentNode.children.has(char)) {
+        return false;
+      }
+
+      currentNode = currentNode.children.get(char);
+    }
+
+    return currentNode.isEndOfWord;
+  }
+
+  startsWith(prefix) {
+    let currentNode = this.root;
+
+    for (let i = 0; i < prefix.length; i++) {
+      const char = prefix[i];
+
+      if (!currentNode.children.has(char)) {
+        return false;
+      }
+
+      currentNode = currentNode.children.get(char);
+    }
+
+    return true;
+  }
+}
+const trie = new Trie();
+
+trie.insert("apple");
+trie.insert("banana");
+trie.insert("peach");
+
+console.log(trie.search("apple")); // true
+console.log(trie.search("banana")); // true
+console.log(trie.search("orange")); // false
+console.log(trie.startsWith("app")); // true
+console.log(trie.startsWith("ora")); // false
