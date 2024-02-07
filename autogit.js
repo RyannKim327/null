@@ -1,41 +1,37 @@
-class Node {
-  constructor(value, children = []) {
-    this.value = value;
-    this.children = children;
-  }
-}
-
-function depthLimitedSearch(root, target, depthLimit) {
-  // Create an empty stack and push the root node
-  const stack = [{ node: root, depth: 0 }];
-
-  while (stack.length > 0) {
-    // Pop the top node from the stack
-    const { node, depth } = stack.pop();
-
-    // Check if the current node's value matches the target
-    if (node.value === target) {
-      return node;
-    }
-
-    // Check if the depth limit is reached
-    if (depth < depthLimit) {
-      // Push the children of the current node onto the stack
-      for (let i = node.children.length - 1; i >= 0; i--) {
-        stack.push({ node: node.children[i], depth: depth + 1 });
+function findLongestCommonSubstring(str1, str2) {
+  const m = str1.length;
+  const n = str2.length;
+  
+  // Create a 2D table to store the lengths of common substrings
+  const table = Array(m + 1).fill(0).map(() => Array(n + 1).fill(0));
+  
+  let maxLength = 0;  // Length of the longest common substring
+  let endIndex = 0;   // Index of the last character of the common substring
+  
+  // Filling the table
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        table[i][j] = table[i - 1][j - 1] + 1;
+        
+        if (table[i][j] > maxLength) {
+          maxLength = table[i][j];
+          endIndex = i - 1;
+        }
+      } else {
+        table[i][j] = 0;
       }
     }
   }
-
-  // Return null if target is not found within the depth limit
-  return null;
+  
+  // Extract the longest common substring from the original strings
+  const longestSubstr = str1.substr(endIndex - maxLength + 1, maxLength);
+  
+  return longestSubstr;
 }
 
 // Example usage
-const tree = new Node(1, [
-  new Node(2, [new Node(4), new Node(5)]),
-  new Node(3, [new Node(6), new Node(7)])
-]);
-
-const targetNode = depthLimitedSearch(tree, 5, 3);
-console.log(targetNode); // Outputs: Node { value: 5, children: [] }
+const str1 = "abcdefg";
+const str2 = "abdfg";
+const longestSubstring = findLongestCommonSubstring(str1, str2);
+console.log(longestSubstring);  // Output: "dfg"
