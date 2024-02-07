@@ -1,35 +1,29 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+function candidateState() {
+  // Define your candidate state representation and functionality
+}
+
+function beamSearch(initialState, beamWidth) {
+  let beam = [initialState];
+
+  while (/* termination condition */) {
+    let candidates = [];
+
+    for (let state of beam) {
+      // Generate successor candidates for each state
+      let successors = state.generateSuccessors();
+
+      for (let successor of successors) {
+        // Evaluate successor qualities and add them to the candidate array
+        candidates.push(successor);
+      }
+    }
+
+    // Sort the candidates based on quality metric
+    candidates.sort((a, b) => a.getQuality() - b.getQuality());
+
+    // Select top candidates based on beam width
+    beam = candidates.slice(0, beamWidth);
   }
-}
-let list = new Node(1);
-list.next = new Node(2);
-list.next.next = new Node(3);
-list.next.next.next = new Node(4);
-function reverseLinkedList(head) {
-  let prev = null;
-  let curr = head;
-  let next = null;
 
-  while (curr !== null) {
-    next = curr.next; // Save next node
-    curr.next = prev; // Reverse pointer
-
-    prev = curr;
-    curr = next;
-  }
-
-  return prev;
+  return beam[0];
 }
-let reversedList = reverseLinkedList(list);
-let node = reversedList;
-while (node !== null) {
-  console.log(node.value);
-  node = node.next;
-}
-4
-3
-2
-1
