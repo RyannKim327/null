@@ -1,29 +1,85 @@
-function bubbleSort(arr) {
-    var len = arr.length;
-    var sorted;
-    
-    for (var i = 0; i < len; i++) {
-        sorted = true;
-        
-        for (var j = 0; j < len - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                // Swap two elements if they are in the wrong order
-                var temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-                
-                sorted = false; // Mark the iteration as unsorted
-            }
-        }
-        
-        if (sorted) {
-            break; // If no swaps are made in an iteration, the array is already sorted
-        }
-    }
-    
-    return arr;
+function fibonacciSearch(array, key, length) {
+  // ...
 }
+function fibonacciSearch(array, key, length) {
+  let fibNums = [0, 1];
+  // ...
+}
+function fibonacciSearch(array, key, length) {
+  let fibNums = [0, 1];
 
-// Example usage:
-var array = [5, 3, 8, 2, 1, 4];
-console.log(bubbleSort(array)); // Output: [1, 2, 3, 4, 5, 8]
+  while (fibNums[fibNums.length - 1] < length) {
+    fibNums.push(fibNums[fibNums.length - 1] + fibNums[fibNums.length - 2]);
+  }
+  // ...
+}
+function fibonacciSearch(array, key, length) {
+  let fibNums = [0, 1];
+
+  while (fibNums[fibNums.length - 1] < length) {
+    fibNums.push(fibNums[fibNums.length - 1] + fibNums[fibNums.length - 2]);
+  }
+
+  let fibIndex = -1;
+  let k = fibNums.length - 1;
+  while (fibNums[k] > length) {
+    k--;
+  }
+
+  fibIndex = k;
+  // ...
+}
+function fibonacciSearch(array, key, length) {
+  // ...
+
+  let offset = -1;
+  let prev = 0;
+  // ...
+}
+function fibonacciSearch(array, key, length) {
+  // ...
+
+  let offset = -1;
+  let prev = 0;
+  
+  while (fibIndex > 1) {
+    let i = Math.min(offset + fibNums[fibIndex - 2], length - 1);
+
+    if (array[i] < key) {
+      fibIndex -= 1;
+      offset = i;
+      prev = array[i];
+    } else if (array[i] > key) {
+      fibIndex -= 2;
+    } else {
+      return i; // Key found at index i
+    }
+  }
+  // ...
+}
+function fibonacciSearch(array, key, length) {
+  // ...
+
+  let offset = -1;
+  let prev = 0;
+
+  while (fibIndex > 1) {
+    let i = Math.min(offset + fibNums[fibIndex - 2], length - 1);
+
+    if (array[i] < key) {
+      fibIndex -= 1;
+      offset = i;
+      prev = array[i];
+    } else if (array[i] > key) {
+      fibIndex -= 2;
+    } else {
+      return i; // Key found at index i
+    }
+  }
+
+  if (prev && array[offset + 1] === key) {
+    return offset + 1;
+  } else {
+    return -1; // Key not found
+  }
+}
