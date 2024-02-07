@@ -1,45 +1,52 @@
-function countingSort(arr) {
-  if (arr.length === 0) {
-    return arr;
+function bellmanFord(graph, source) {
+  const vertices = Object.keys(graph);
+  const distances = {};
+
+  // Step 1: Initialize distances array
+  vertices.forEach((vertex) => {
+    distances[vertex] = Infinity;
+  });
+  distances[source] = 0;
+
+  // Step 2: Relax edges repeatedly
+  for (let i = 0; i < vertices.length - 1; i++) {
+    vertices.forEach((u) => {
+      vertices.forEach((v) => {
+        if (graph[u][v]) {
+          const weight = graph[u][v];
+          if (distances[u] + weight < distances[v]) {
+            distances[v] = distances[u] + weight;
+          }
+        }
+      });
+    });
   }
 
-  // Step 2: Find the minimum and maximum values
-  let min = arr[0];
-  let max = arr[0];
-  for (let i = 1; i < arr.length; i++) {
-    if (arr[i] < min) {
-      min = arr[i];
-    }
-    if (arr[i] > max) {
-      max = arr[i];
-    }
-  }
+  // Step 3: Check for negative cycles
+  vertices.forEach((u) => {
+    vertices.forEach((v) => {
+      if (graph[u][v]) {
+        const weight = graph[u][v];
+        if (distances[u] + weight < distances[v]) {
+          throw new Error("Negative cycle detected!");
+        }
+      }
+    });
+  });
 
-  // Step 3: Create the count array
-  let count = new Array(max - min + 1).fill(0);
-
-  // Step 4: Count the occurrences of each element
-  for (let i = 0; i < arr.length; i++) {
-    count[arr[i] - min]++;
-  }
-
-  // Step 6: Update the count array to be cumulative
-  for (let i = 1; i < count.length; i++) {
-    count[i] += count[i - 1];
-  }
-
-  // Step 7: Place the elements in the sorted order
-  let sortedArray = new Array(arr.length);
-  for (let i = arr.length - 1; i >= 0; i--) {
-    sortedArray[count[arr[i] - min] - 1] = arr[i];
-    count[arr[i] - min]--;
-  }
-
-  // Step 8: Return the sorted array
-  return sortedArray;
+  // Step 4: Return the distances
+  return distances;
 }
 
 // Example usage:
-const arr = [4, 2, 2, 8, 3, 3, 1];
-const sortedArr = countingSort(arr);
-console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
+const graph = {
+  A: { B: -1, C: 4 },
+  B: { C: 3, D: 2, E: 2 },
+  C: {},
+  D: { B: 1, C: 5 },
+  E: { D: -3 },
+};
+
+const source = 'A';
+const distances = bellmanFord(graph, source);
+console.log(distances);
