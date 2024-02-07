@@ -1,38 +1,40 @@
-function interpolationSearch(arr, target, low = 0, high = arr.length - 1) {
-  // ...
+function depthLimitedSearchIterative(root, target, depthLimit) {
+  let stack = [];
+  stack.push({ node: root, depth: 0 });
+
+  while (stack.length > 0) {
+    let { node, depth } = stack.pop();
+
+    if (node === target) {
+      return node; // Target found
+    }
+
+    if (depth < depthLimit) {
+      // Expand the node if depth limit allows
+      let children = expandNode(node);
+      for (let child of children) {
+        stack.push({ node: child, depth: depth + 1 });
+      }
+    }
+  }
+
+  return null; // Target not found within depth limit
 }
-  if (low > high) {
-    return -1;
-  }
-  let pos = low + Math.floor((target - arr[low]) * (high - low) / (arr[high] - arr[low]));
-  if (arr[pos] === target) {
-    return pos;
-  }
-  if (arr[pos] > target) {
-    return interpolationSearch(arr, target, low, pos - 1);
-  }
-  if (arr[pos] < target) {
-    return interpolationSearch(arr, target, pos + 1, high);
-  }
-  return -1;
-function interpolationSearch(arr, target, low = 0, high = arr.length - 1) {
-  if (low > high) {
-    return -1;
-  }
 
-  let pos = low + Math.floor((target - arr[low]) * (high - low) / (arr[high] - arr[low]));
-
-  if (arr[pos] === target) {
-    return pos;
-  }
-
-  if (arr[pos] > target) {
-    return interpolationSearch(arr, target, low, pos - 1);
-  }
-
-  if (arr[pos] < target) {
-    return interpolationSearch(arr, target, pos + 1, high);
-  }
-
-  return -1;
+function expandNode(node) {
+  // Implement your node expansion logic here
+  // This function should return an array of child nodes
+  // that can be reached from the given node.
+  
+  // Example:
+  // If your nodes have 'children' property,
+  // you can use: return node.children;
 }
+
+// Usage example:
+let rootNode = { /* your tree or graph structure here */ };
+let targetNode = { /* target node */ };
+let depthLimit = 5;
+
+let result = depthLimitedSearchIterative(rootNode, targetNode, depthLimit);
+console.log(result); // Prints the target node if found, null otherwise
