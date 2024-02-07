@@ -1,18 +1,19 @@
-function reverseStringWords(str) {
-  // Convert the string into an array of words
-  var wordsArray = str.split(' ');
-
-  // Reverse the order of the array elements
-  var reversedWordsArray = wordsArray.reverse();
-
-  // Join the reversed array elements into a string
-  var reversedString = reversedWordsArray.join(' ');
-
-  return reversedString;
+function bubbleSort(arr) {
+  var len = arr.length;
+  for (var i = 0; i < len; i++) {
+    for (var j = 0; j < len - 1; j++) {
+      if (arr[j] > arr[j + 1]) {
+        // Swap the elements
+        var temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
+      }
+    }
+  }
+  return arr;
 }
 
-// Example usage
-var myString = "Hello World! How are you?";
-var reversedString = reverseStringWords(myString);
-console.log(reversedString);
-you? are How World! Hello
+// Usage example
+var unsortedArray = [5, 3, 8, 4, 2];
+var sortedArray = bubbleSort(unsortedArray);
+console.log(sortedArray);
