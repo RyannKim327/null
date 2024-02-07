@@ -1,25 +1,18 @@
-function countingSort(arr) {
-  const max = Math.max(...arr);
-  const countArray = new Array(max + 1).fill(0);
-  const sortedArray = [];
+function reverseStringWords(str) {
+  // Convert the string into an array of words
+  var wordsArray = str.split(' ');
 
-  // Counting occurrences of each element
-  for (let i = 0; i < arr.length; i++) {
-    countArray[arr[i]]++;
-  }
+  // Reverse the order of the array elements
+  var reversedWordsArray = wordsArray.reverse();
 
-  // Building the sorted array
-  for (let i = 0; i < countArray.length; i++) {
-    while (countArray[i] > 0) {
-      sortedArray.push(i);
-      countArray[i]--;
-    }
-  }
+  // Join the reversed array elements into a string
+  var reversedString = reversedWordsArray.join(' ');
 
-  return sortedArray;
+  return reversedString;
 }
 
 // Example usage
-const arr = [4, 2, 5, 1, 3];
-const sortedArr = countingSort(arr);
-console.log(sortedArr); // [1, 2, 3, 4, 5]
+var myString = "Hello World! How are you?";
+var reversedString = reverseStringWords(myString);
+console.log(reversedString);
+you? are How World! Hello
