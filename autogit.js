@@ -1,79 +1,67 @@
-function badCharacterHeuristic(pattern) {
-  let badCharacters = {};
-
-  for (let i = 0; i < pattern.length - 1; i++) {
-    badCharacters[pattern[i]] = pattern.length - 1 - i;
-  }
-
-  return badCharacters;
+function rabinKarpSearch(pattern, text) {
+    // implementation goes here
 }
-function goodSuffixHeuristic(pattern) {
-  let m = pattern.length;
-  let suffixes = new Array(m + 1).fill(0);
-  let borders = new Array(m + 1).fill(0);
-  let goodSuffixes = {};
-
-  // Preprocessing step 1: Fill suffixes array
-  let j = m; // length of the border
-  borders[m] = j;
-  for (let i = m - 1; i >= 0; i--) {
-    while (j < m && pattern[i] !== pattern[j]) {
-      if (suffixes[j + 1] === 0) {
-        suffixes[j + 1] = j - i;
-      }
-      j = borders[j + 1];
+function calculateHash(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash += str.charCodeAt(i);
     }
-    j--;
-    borders[i] = j;
-  }
-
-  // Preprocessing step 2: Fill suffixes array
-  j = borders[0];
-  for (let i = 0; i <= m; i++) {
-    if (suffixes[i] === 0) {
-      suffixes[i] = j;
-    }
-    if (i === j) {
-      j = borders[j];
-    }
-  }
-
-  // Preprocessing step 3: Fill goodSuffixes object
-  for (let i = 0; i < m; i++) {
-    goodSuffixes[i] = m - suffixes[i + 1];
-  }
-  return goodSuffixes;
+    return hash;
 }
-function boyerMooreSearch(text, pattern) {
-  let n = text.length;
-  let m = pattern.length;
-  let badCharacters = badCharacterHeuristic(pattern);
-  let goodSuffixes = goodSuffixHeuristic(pattern);
-  let occurrences = [];
 
-  let shift = 0;
-  while (shift <= n - m) {
-    let j = m - 1;
-
-    while (j >= 0 && pattern[j] === text[shift + j]) {
-      j--;
+let patternHash = calculateHash(pattern);
+let textHash = calculateHash(text.substr(0, pattern.length));
+for (let i = 0; i <= text.length - pattern.length; i++) {
+    if (patternHash === textHash) {
+        let found = true;
+        // compare characters to verify if the pattern matches the substring
+        for (let j = 0; j < pattern.length; j++) {
+            if (text[i + j] !== pattern[j]) {
+                found = false;
+                break;
+            }
+        }
+        if (found) {
+            return i; // pattern found at index i in the text
+        }
+    }
+    // update the hash value
+    textHash -= text.charCodeAt(i);
+    textHash += text.charCodeAt(i + pattern.length);
+}
+return -1;
+function rabinKarpSearch(pattern, text) {
+    function calculateHash(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash += str.charCodeAt(i);
+        }
+        return hash;
     }
 
-    if (j < 0) {
-      occurrences.push(shift);
-      shift += goodSuffixes[0];
-    } else {
-      let badCharShift = badCharacters[text[shift + j]] || m;
-      let goodSuffixShift = goodSuffixes[j];
+    let patternHash = calculateHash(pattern);
+    let textHash = calculateHash(text.substr(0, pattern.length));
 
-      shift += Math.max(badCharShift, goodSuffixShift);
+    for (let i = 0; i <= text.length - pattern.length; i++) {
+        if (patternHash === textHash) {
+            let found = true;
+            for (let j = 0; j < pattern.length; j++) {
+                if (text[i + j] !== pattern[j]) {
+                    found = false;
+                    break;
+                }
+            }
+            if (found) {
+                return i;
+            }
+        }
+        textHash -= text.charCodeAt(i);
+        textHash += text.charCodeAt(i + pattern.length);
     }
-  }
 
-  return occurrences;
+    return -1;
 }
 let text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
 let pattern = "sit";
-
-let occurrences = boyerMooreSearch(text, pattern);
-console.log("Occurrences found at positions:", occurrences);
+let index = rabinKarpSearch(pattern, text);
+console.log(index); // Output: 19
