@@ -1,22 +1,45 @@
-function areAnagrams(str1, str2) {
-  // Remove non-alphabetic characters and convert to lowercase
-  str1 = str1.replace(/[^A-Za-z]/g, '').toLowerCase();
-  str2 = str2.replace(/[^A-Za-z]/g, '').toLowerCase();
+function isPalindrome(head) {
+  if (!head || !head.next) {
+    // An empty list or a single node is considered a palindrome
+    return true;
+  }
 
-  // Convert strings to arrays, sort them, and join back into strings
-  const sortedStr1 = str1.split('').sort().join('');
-  const sortedStr2 = str2.split('').sort().join('');
+  let slow = head;
+  let fast = head;
+  let prev = null;
 
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+  // Use the two-pointer technique to find the middle node
+  while (fast && fast.next) {
+    fast = fast.next.next;
+
+    // Reverse the first half of the remaining linked list
+    const next = slow.next;
+    slow.next = prev;
+    prev = slow;
+    slow = next;
+  }
+
+  // If the linked list has an odd number of nodes, skip the middle node
+  if (fast) {
+    slow = slow.next;
+  }
+
+  // Compare the first and second halves of the linked list
+  while (prev) {
+    if (prev.val !== slow.val) {
+      // The values don't match, so it's not a palindrome
+      return false;
+    }
+    prev = prev.next;
+    slow = slow.next;
+  }
+
+  // All the values match, so it's a palindrome
+  return true;
 }
-
-// Example usage
-const string1 = "listen";
-const string2 = "silent";
-
-if (areAnagrams(string1, string2)) {
-  console.log("The strings are anagrams.");
-} else {
-  console.log("The strings are not anagrams.");
+class ListNode {
+  constructor(val = 0, next = null) {
+    this.val = val;
+    this.next = next;
+  }
 }
