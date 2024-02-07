@@ -1,5 +1,12 @@
-// Prompt the user for input
-var userInput = prompt("Enter something:");
+function factorial(n) {
+  // Base case: if the number is 0 or 1, return 1
+  if (n === 0 || n === 1) {
+    return 1;
+  }
+  
+  // Recursive case: multiply the number by factorial of (n-1)
+  return n * factorial(n - 1);
+}
 
-// Display the input
-console.log("You entered: " + userInput);
+// Example usage
+console.log(factorial(5)); // Output: 120
