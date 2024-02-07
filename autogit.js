@@ -1,16 +1,71 @@
-function isSortedAscending(arr) {
-  for (let i = 0; i < arr.length - 1; i++) {
-    if (arr[i] > arr[i + 1]) {
-      return false; // If any element is greater than the next one, the array is not sorted
+function selectionSort(array) {
+  // ...
+}
+function selectionSort(array) {
+  const n = array.length;
+  // ...
+}
+function selectionSort(array) {
+  const n = array.length;
+  
+  for (let i = 0; i < n - 1; i++) {
+    let minIndex = i;
+    // ...
+  }
+}
+function selectionSort(array) {
+  const n = array.length;
+  
+  for (let i = 0; i < n - 1; i++) {
+    let minIndex = i;
+    
+    for (let j = i + 1; j < n; j++) {
+      if (array[j] < array[minIndex]) {
+        minIndex = j;
+      }
+    }
+    // ...
+  }
+}
+function selectionSort(array) {
+  const n = array.length;
+  
+  for (let i = 0; i < n - 1; i++) {
+    let minIndex = i;
+    
+    for (let j = i + 1; j < n; j++) {
+      if (array[j] < array[minIndex]) {
+        minIndex = j;
+      }
+    }
+    
+    if (minIndex !== i) {
+      [array[i], array[minIndex]] = [array[minIndex], array[i]];
     }
   }
-  return true; // If the loop completes without returning false, the array is sorted
+  
+  return array;
 }
-const arr1 = [1, 2, 3, 4, 5];
-console.log(isSortedAscending(arr1)); // Output: true
+function selectionSort(array) {
+  const n = array.length;
+  
+  for (let i = 0; i < n - 1; i++) {
+    let minIndex = i;
+    
+    for (let j = i + 1; j < n; j++) {
+      if (array[j] < array[minIndex]) {
+        minIndex = j;
+      }
+    }
+    
+    if (minIndex !== i) {
+      [array[i], array[minIndex]] = [array[minIndex], array[i]];
+    }
+  }
+  
+  return array;
+}
 
-const arr2 = [5, 4, 3, 2, 1];
-console.log(isSortedAscending(arr2)); // Output: false
-
-const arr3 = [1, 3, 2, 4, 5];
-console.log(isSortedAscending(arr3)); // Output: false
+// Example usage:
+const arr = [64, 25, 12, 22, 11];
+console.log(selectionSort(arr)); // Output: [11, 12, 22, 25, 64]
