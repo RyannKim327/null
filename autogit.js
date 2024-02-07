@@ -1,19 +1,5 @@
-function bubbleSort(arr) {
-  var len = arr.length;
-  for (var i = 0; i < len; i++) {
-    for (var j = 0; j < len - 1; j++) {
-      if (arr[j] > arr[j + 1]) {
-        // Swap the elements
-        var temp = arr[j];
-        arr[j] = arr[j + 1];
-        arr[j + 1] = temp;
-      }
-    }
-  }
-  return arr;
-}
+let str = "42";
+let num = parseInt(str);
 
-// Usage example
-var unsortedArray = [5, 3, 8, 4, 2];
-var sortedArray = bubbleSort(unsortedArray);
-console.log(sortedArray);
+console.log(num);  // Output: 42
+console.log(typeof num);  // Output: number
