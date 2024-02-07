@@ -1,33 +1,10 @@
-const graph = {
-  'A': ['B', 'C'],
-  'B': ['C', 'D'],
-  'C': ['E'],
-  'D': ['F'],
-  'E': [],
-  'F': ['G'],
-  'G': []
-};
-function topologicalSortUtil(node, visited, stack) {
-  visited[node] = true;
-
-  for (const neighbor of graph[node]) {
-    if (!visited[neighbor]) {
-      topologicalSortUtil(neighbor, visited, stack);
-    }
-  }
-
-  stack.unshift(node);
+function getRandomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
 }
-function topologicalSort() {
-  const visited = {};
-  const stack = [];
 
-  for (const node in graph) {
-    if (!visited[node]) {
-      topologicalSortUtil(node, visited, stack);
-    }
-  }
+// Example usage
+var minRange = 1;
+var maxRange = 100;
 
-  return stack;
-}
-console.log(topologicalSort());
+var randomNum = getRandomNumber(minRange, maxRange);
+console.log(randomNum);
