@@ -1,19 +1,33 @@
-function bubbleSort(arr) {
-  var len = arr.length;
-  for (var i = 0; i < len - 1; i++) {
-    for (var j = 0; j < len - 1 - i; j++) {
-      if (arr[j] > arr[j + 1]) {
-        // Swap elements
-        var temp = arr[j];
-        arr[j] = arr[j + 1];
-        arr[j + 1] = temp;
-      }
+const graph = {
+  'A': ['B', 'C'],
+  'B': ['C', 'D'],
+  'C': ['E'],
+  'D': ['F'],
+  'E': [],
+  'F': ['G'],
+  'G': []
+};
+function topologicalSortUtil(node, visited, stack) {
+  visited[node] = true;
+
+  for (const neighbor of graph[node]) {
+    if (!visited[neighbor]) {
+      topologicalSortUtil(neighbor, visited, stack);
     }
   }
-  return arr;
-}
 
-// Usage example
-var arr = [5, 3, 8, 4, 2];
-console.log("Before sorting:", arr);
-console.log("After sorting:", bubbleSort(arr));
+  stack.unshift(node);
+}
+function topologicalSort() {
+  const visited = {};
+  const stack = [];
+
+  for (const node in graph) {
+    if (!visited[node]) {
+      topologicalSortUtil(node, visited, stack);
+    }
+  }
+
+  return stack;
+}
+console.log(topologicalSort());
