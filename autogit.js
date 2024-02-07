@@ -1,115 +1,39 @@
-class Node {
-  constructor(value = null, level = 0) {
-    this.value = value;
-    this.forward = new Array(level + 1).fill(null);
+function heapify(arr, length, index) {
+  let largest = index;
+  const left = 2 * index + 1;
+  const right = 2 * index + 2;
+
+  if (left < length && arr[left] > arr[largest]) {
+    largest = left;
+  }
+
+  if (right < length && arr[right] > arr[largest]) {
+    largest = right;
+  }
+
+  if (largest !== index) {
+    [arr[index], arr[largest]] = [arr[largest], arr[index]];
+    heapify(arr, length, largest);
   }
 }
 
-class SkipList {
-  constructor() {
-    this.head = new Node();
-    this.maxLevel = 0;
-  }
+function buildHeap(arr) {
+  const length = arr.length;
+  const mid = Math.floor(length / 2);
 
-  // Insert element into the skip list
-  insert(value) {
-    // ...
-  }
-
-  // Search for an element in the skip list
-  search(value) {
-    // ...
-  }
-
-  // Delete an element from the skip list
-  delete(value) {
-    // ...
-  }
-
-  // Optional: Print the skip list
-  print() {
-    // ...
+  for (let i = mid; i >= 0; i--) {
+    heapify(arr, length, i);
   }
 }
-// Insert element into the skip list
-insert(value) {
-  const update = new Array(this.maxLevel + 1);
-  let node = this.head;
+function heapSort(arr) {
+  buildHeap(arr);
 
-  for (let i = this.maxLevel; i >= 0; i--) {
-    while (node.forward[i] && node.forward[i].value < value) {
-      node = node.forward[i];
-    }
-    update[i] = node;
+  for (let i = arr.length - 1; i > 0; i--) {
+    [arr[0], arr[i]] = [arr[i], arr[0]];
+    heapify(arr, i, 0);
   }
 
-  const newNodeLevel = this.randomLevel();
-  const newNode = new Node(value, newNodeLevel);
-
-  for (let i = 0; i <= newNodeLevel; i++) {
-    newNode.forward[i] = update[i].forward[i];
-    update[i].forward[i] = newNode;
-  }
-
-  if (newNodeLevel > this.maxLevel) {
-    this.maxLevel = newNodeLevel;
-  }
+  return arr;
 }
-
-// Search for an element in the skip list
-search(value) {
-  let node = this.head;
-
-  for (let i = this.maxLevel; i >= 0; i--) {
-    while (node.forward[i] && node.forward[i].value < value) {
-      node = node.forward[i];
-    }
-  }
-
-  node = node.forward[0];
-
-  if (node && node.value === value) {
-    return node;
-  }
-
-  return null;
-}
-
-// Delete an element from the skip list
-delete(value) {
-  const update = new Array(this.maxLevel + 1);
-  let node = this.head;
-
-  for (let i = this.maxLevel; i >= 0; i--) {
-    while (node.forward[i] && node.forward[i].value < value) {
-      node = node.forward[i];
-    }
-    update[i] = node;
-  }
-
-  node = node.forward[0];
-
-  if (node && node.value === value) {
-    for (let i = 0; i <= this.maxLevel; i++) {
-      if (update[i].forward[i] !== node) {
-        break;
-      }
-      update[i].forward[i] = node.forward[i];
-    }
-
-    while (this.maxLevel > 0 && this.head.forward[this.maxLevel] === null) {
-      this.maxLevel--;
-    }
-  }
-}
-const skipList = new SkipList();
-skipList.insert(10);
-skipList.insert(5);
-skipList.insert(15);
-
-console.log(skipList.search(5)); // Node { value: 5, forward: [ null, [Node], null ] }
-console.log(skipList.search(20)); // null
-
-skipList.delete(5);
-
-console.log(skipList.search(5)); // null
+const array = [5, 3, 8, 4, 2, 1, 10];
+console.log(heapSort(array)); // Output: [1, 2, 3, 4, 5, 8, 10]
