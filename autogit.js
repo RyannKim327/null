@@ -1,9 +1,7 @@
-const numbers = [4, 2, 8, 6, 5];
-numbers.sort((a, b) => a - b);
+let array = [1, 2, 3, 4, 5];
 
-console.log(numbers); // Output: [2, 4, 5, 6, 8]
-const numbers = [4, 2, 8, 6, 5];
-const sortedNumbers = [...numbers].sort((a, b) => a - b);
+console.log("Original Array:", array); // Output: Original Array: [1, 2, 3, 4, 5]
 
-console.log(sortedNumbers); // Output: [2, 4, 5, 6, 8]
-console.log(numbers); // Output: [4, 2, 8, 6, 5]
+array.reverse();
+
+console.log("Reversed Array:", array); // Output: Reversed Array: [5, 4, 3, 2, 1]
