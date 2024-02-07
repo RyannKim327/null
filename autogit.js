@@ -1,72 +1,24 @@
-class TrieNode {
-  constructor() {
-    this.children = new Map();
-    this.isEndOfWord = false;
+function findFirstNonRepeatingCharacter(str) {
+  // Create an object to store the frequencies of each character
+  const frequencies = {};
+
+  // Iterate over each character in the string
+  for (const char of str) {
+    // Increment the frequency of the character, or initialize it to 1 if it doesn't exist yet
+    frequencies[char] = frequencies[char] + 1 || 1;
   }
+
+  // Iterate over each character in the string again
+  for (const char of str) {
+    // If the frequency of the character is 1, it is the first non-repeating character
+    if (frequencies[char] === 1) {
+      return char;
+    }
+  }
+
+  // If there are no non-repeating characters, return null
+  return null;
 }
-
-class Trie {
-  constructor() {
-    this.root = new TrieNode();
-  }
-
-  insert(word) {
-    let currentNode = this.root;
-
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-
-      if (!currentNode.children.has(char)) {
-        currentNode.children.set(char, new TrieNode());
-      }
-
-      currentNode = currentNode.children.get(char);
-    }
-
-    // Set the last node as the end of the word
-    currentNode.isEndOfWord = true;
-  }
-
-  search(word) {
-    let currentNode = this.root;
-
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-
-      if (!currentNode.children.has(char)) {
-        return false;
-      }
-
-      currentNode = currentNode.children.get(char);
-    }
-
-    return currentNode.isEndOfWord;
-  }
-
-  startsWith(prefix) {
-    let currentNode = this.root;
-
-    for (let i = 0; i < prefix.length; i++) {
-      const char = prefix[i];
-
-      if (!currentNode.children.has(char)) {
-        return false;
-      }
-
-      currentNode = currentNode.children.get(char);
-    }
-
-    return true;
-  }
-}
-const trie = new Trie();
-
-trie.insert("apple");
-trie.insert("banana");
-trie.insert("peach");
-
-console.log(trie.search("apple")); // true
-console.log(trie.search("banana")); // true
-console.log(trie.search("orange")); // false
-console.log(trie.startsWith("app")); // true
-console.log(trie.startsWith("ora")); // false
+const str = "hello world";
+const firstNonRepeatingChar = findFirstNonRepeatingCharacter(str);
+console.log(firstNonRepeatingChar); // Output: 'h'
