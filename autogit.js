@@ -1,24 +1,36 @@
-function selectionSort(arr) {
-    const len = arr.length;
-
-    for (let i = 0; i < len - 1; i++) {
-        let minIndex = i;
-
-        for (let j = i + 1; j < len; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j;
-            }
-        }
-
-        if (minIndex !== i) {
-            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]]; // Swapping elements
-        }
+// Define a Node class to represent a binary tree node
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-
-    return arr;
 }
 
-// Example usage:
-const array = [64, 25, 12, 22, 11];
-const sortedArray = selectionSort(array);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
+// Function to count the number of leaf nodes in a binary tree
+function countLeafNodes(root) {
+    // Base case: if the node is null, return 0
+    if (root === null) {
+        return 0;
+    }
+    
+    // Base case: if the node is a leaf, return 1
+    if (root.left === null && root.right === null) {
+        return 1;
+    }
+    
+    // Recursive case: count the leaf nodes in the left and right subtrees
+    return countLeafNodes(root.left) + countLeafNodes(root.right);
+}
+
+// Create a binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+
+// Count the number of leaf nodes in the tree
+const leafNodeCount = countLeafNodes(root);
+console.log("Number of leaf nodes:", leafNodeCount);
