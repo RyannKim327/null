@@ -1,22 +1,47 @@
-function binarySearchRecursive(arr, target, start, end) {
-  if (start > end) {
-    return -1;
-  }
-
-  let middle = Math.floor((start + end) / 2);
-
-  if (arr[middle] === target) {
-    return middle;
-  }
-
-  if (target < arr[middle]) {
-    return binarySearchRecursive(arr, target, start, middle - 1);
-  } else {
-    return binarySearchRecursive(arr, target, middle + 1, end);
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
 }
-const array = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
-const targetElement = 23;
-const result = binarySearchRecursive(array, targetElement, 0, array.length - 1);
+class Queue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+  }
+}
+enqueue(value) {
+  const newNode = new Node(value);
+  if (this.tail === null) {
+    this.head = newNode;
+    this.tail = newNode;
+  } else {
+    this.tail.next = newNode;
+    this.tail = newNode;
+  }
+}
+dequeue() {
+  if (this.head === null) {
+    return null;
+  }
+  const removedNode = this.head;
+  this.head = this.head.next;
+  if (this.head === null) {
+    this.tail = null;
+  }
+  return removedNode.value;
+}
+isEmpty() {
+  return this.head === null;
+}
+const queue = new Queue();
 
-console.log(result); // Output: 5 (index of the target element in the array)
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.dequeue()); // Output: 2
+console.log(queue.isEmpty()); // Output: false
+console.log(queue.dequeue()); // Output: 3
+console.log(queue.isEmpty()); // Output: true
