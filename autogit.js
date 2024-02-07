@@ -1,26 +1,18 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+// Function to fetch random cat facts using the Cat Facts API
+async function getRandomCatFact() {
+  try {
+    const response = await fetch('https://cat-fact.herokuapp.com/facts/random?animal_type=cat');
+    const data = await response.json();
+    
+    if (data.text) {
+      console.log(`Random Cat Fact: ${data.text}`);
+    } else {
+      console.log('Failed to fetch a cat fact.');
+    }
+  } catch (error) {
+    console.log('An error occurred while fetching a cat fact:', error.message);
   }
 }
 
-function findMaxDepth(node) {
-  if (node == null) {
-    return 0;
-  } else {
-    let leftDepth = findMaxDepth(node.left);
-    let rightDepth = findMaxDepth(node.right);
-    return Math.max(leftDepth, rightDepth) + 1;
-  }
-}
-
-// Example usage:
-let root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-console.log(findMaxDepth(root)); // Output: 3
+// Call the function to fetch and display a random cat fact
+getRandomCatFact();
