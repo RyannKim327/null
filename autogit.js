@@ -1,6 +1,10 @@
-function validateEmail(email) {
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return regex.test(email);
-}
-const email = "example@example.com";
-console.log(validateEmail(email)); // Output: true
+let string1 = "Hello";
+let string2 = "world";
+let concatenatedString = string1 + " " + string2;
+
+console.log(concatenatedString); // Output: "Hello world"
+let string1 = "Hello";
+let string2 = "world";
+let concatenatedString = string1.concat(" ", string2);
+
+console.log(concatenatedString); // Output: "Hello world"
