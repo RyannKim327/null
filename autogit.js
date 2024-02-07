@@ -1,28 +1,23 @@
-function findFirstNonRepeatingCharacter(str) {
-  // Step 2: Create object to store character counts
-  let charCount = {};
+const axios = require('axios');
 
-  // Step 3: Count characters
-  for (let char of str) {
-    if (charCount[char]) {
-      charCount[char]++;
-    } else {
-      charCount[char] = 1;
-    }
-  }
+// Function to make a GET request to an API
+async function getApiData(apiUrl) {
+   try {
+      // Make the GET request using Axios
+      const response = await axios.get(apiUrl);
 
-  // Step 4: Find first non-repeating character
-  for (let char of str) {
-    if (charCount[char] === 1) {
-      return char;
-    }
-  }
+      // Extract the data from the response
+      const data = response.data;
 
-  // Step 5: Return null if no non-repeating character found
-  return null;
+      // Process the data or perform any desired operations
+      console.log(data);
+
+   } catch (error) {
+      // Handle any errors that occur during the request
+      console.error('Error:', error.message);
+   }
 }
 
-// Example usage
-let str = "aabcbd";
-let firstNonRepeatingChar = findFirstNonRepeatingCharacter(str);
-console.log(firstNonRepeatingChar); // Output: "c"
+// Call the function with the desired API URL
+const apiUrl = 'https://jsonplaceholder.typicode.com/posts';
+getApiData(apiUrl);
