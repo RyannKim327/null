@@ -1,15 +1,14 @@
-const nums1 = [1, 3, 5];
-const nums2 = [2, 4, 6];
+function isPalindrome(str) {
+  // Convert to lowercase and remove non-alphanumeric characters
+  const modifiedStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-const mergedArray = nums1.concat(nums2).sort((a, b) => a - b);
-const middleIdx = Math.floor(mergedArray.length / 2);
+  // Reverse the modified string
+  const reversedStr = modifiedStr.split('').reverse().join('');
 
-let median;
-
-if (mergedArray.length % 2 === 0) {
-  median = (mergedArray[middleIdx - 1] + mergedArray[middleIdx]) / 2;
-} else {
-  median = mergedArray[middleIdx];
+  // Check if the reversed string is the same as the original string
+  return modifiedStr === reversedStr;
 }
 
-console.log('Median:', median);
+// Example usage
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
