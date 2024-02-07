@@ -1,15 +1,3 @@
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
-
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
-
-  return slow;
-}
-// Linked list node definition
 class Node {
   constructor(value) {
     this.value = value;
@@ -17,13 +5,43 @@ class Node {
   }
 }
 
-// Create a linked list
-const head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+  }
 
-// Find the middle element
-const middleElement = findMiddleElement(head);
-console.log(middleElement.value);  // Output: 3
+  append(value) {
+    const newNode = new Node(value);
+
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+  }
+}
+class LinkedList {
+  // existing code...
+
+  length() {
+    let count = 0;
+    let currentNode = this.head;
+
+    while (currentNode !== null) {
+      count++;
+      currentNode = currentNode.next;
+    }
+
+    return count;
+  }
+}
+const linkedList = new LinkedList();
+linkedList.append(1);
+linkedList.append(2);
+linkedList.append(3);
+
+const length = linkedList.length();
+console.log(length); // Output: 3
