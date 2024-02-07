@@ -1,46 +1,61 @@
-function mergeArrays(arr1, arr2) {
-  let merged = [];
-  let i = 0;
-  let j = 0;
+class Stack {
+  constructor() {
+    this.items = [];
+  }
 
-  while (i < arr1.length && j < arr2.length) {
-    if (arr1[i] < arr2[j]) {
-      merged.push(arr1[i]);
-      i++;
-    } else {
-      merged.push(arr2[j]);
-      j++;
+  // Add an element to the top of the stack
+  push(element) {
+    this.items.push(element);
+  }
+
+  // Remove the top element from the stack and return it
+  pop() {
+    if (this.isEmpty()) {
+      return "Underflow";
     }
+    return this.items.pop();
   }
 
-  while (i < arr1.length) {
-    merged.push(arr1[i]);
-    i++;
+  // Return the top element of the stack without removing it
+  peek() {
+    if (this.isEmpty()) {
+      return "No element in the stack";
+    }
+    return this.items[this.items.length - 1];
   }
 
-  while (j < arr2.length) {
-    merged.push(arr2[j]);
-    j++;
+  // Check if the stack is empty
+  isEmpty() {
+    return this.items.length === 0;
   }
 
-  return merged;
+  // Return the size of the stack
+  size() {
+    return this.items.length;
+  }
+
+  // Print the elements of the stack
+  printStack() {
+    let str = "";
+    for (let i = 0; i < this.items.length; i++) {
+      str += this.items[i] + " ";
+    }
+    return str;
+  }
 }
-function findMedian(nums) {
-  const n = nums.length;
 
-  if (n % 2 === 0) {
-    // If the length is even, average the two middle elements
-    const mid = n / 2;
-    return (nums[mid - 1] + nums[mid]) / 2;
-  } else {
-    // If the length is odd, return the middle element
-    return nums[Math.floor(n / 2)];
-  }
-}
-const arr1 = [1, 3, 5];
-const arr2 = [2, 4, 6];
+// Usage
+const stack = new Stack();
+stack.push(10);
+stack.push(20);
+stack.push(30);
 
-const merged = mergeArrays(arr1, arr2);
-const median = findMedian(merged);
+console.log(stack.printStack()); // Output: 10 20 30
 
-console.log(median); // Output: 3.5
+console.log(stack.pop()); // Output: 30
+
+console.log(stack.peek()); // Output: 20
+
+console.log(stack.size()); // Output: 2
+
+console.log(stack.isEmpty()); // Output: false
