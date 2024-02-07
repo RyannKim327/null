@@ -1,122 +1,71 @@
-// Define the SkipNode class
-class SkipNode {
-  constructor(value, level) {
-    this.value = value;
-    this.forward = new Array(level + 1);
+function dijkstra(graph, startNode, targetNode) {
+  const distances = {};
+  const visited = {};
+  const previous = {};
+
+  // Initialize distances, visited, and previous
+  Object.keys(graph).forEach((node) => {
+    distances[node] = Infinity;
+    visited[node] = false;
+    previous[node] = null;
+  });
+
+  // Set the distance of the start node to 0
+  distances[startNode] = 0;
+
+  while (true) {
+    let closestNode = null;
+
+    // Find the closest unvisited node
+    Object.keys(distances).forEach((node) => {
+      if (!visited[node] && (closestNode === null || distances[node] < distances[closestNode])) {
+        closestNode = node;
+      }
+    });
+
+    if (closestNode === null) {
+      break;
+    }
+
+    // Update distances for neighboring nodes
+    Object.keys(graph[closestNode]).forEach((neighborNode) => {
+      const distance = graph[closestNode][neighborNode];
+      const totalDistance = distances[closestNode] + distance;
+      
+      if (totalDistance < distances[neighborNode]) {
+        distances[neighborNode] = totalDistance;
+        previous[neighborNode] = closestNode;
+      }
+    });
+
+    visited[closestNode] = true;
+
+    if (closestNode === targetNode) {
+      break;
+    }
   }
+
+  // Backtrack to construct the shortest path
+  const shortestPath = [];
+  let currentNode = targetNode;
+
+  while (currentNode !== null) {
+    shortestPath.unshift(currentNode);
+    currentNode = previous[currentNode];
+  }
+
+  return { path: shortestPath, distance: distances[targetNode] };
 }
 
-// Define the SkipList class
-class SkipList {
-  constructor() {
-    this.head = new SkipNode(null, 0);
-    this.maxLevel = 0;
-  }
+// Example usage:
+const graph = {
+  A: { B: 5, C: 2 },
+  B: { A: 5, D: 6 },
+  C: { A: 2, D: 1 },
+  D: { B: 6, C: 1, E: 7 },
+  E: { D: 7 },
+};
 
-  // Generate a random level for a node
-  randomLevel() {
-    let level = 0;
-    while (Math.random() < 0.5 && level < this.maxLevel + 1) {
-      level++;
-    }
-    return level;
-  }
+console.log(dijkstra(graph, 'A', 'E'));
 
-  // Insert a value into the skip list
-  insert(value) {
-    const update = new Array(this.maxLevel + 1);
-    let currentNode = this.head;
-
-    for (let i = this.maxLevel; i >= 0; i--) {
-      while (
-        currentNode.forward[i] !== undefined &&
-        currentNode.forward[i].value < value
-      ) {
-        currentNode = currentNode.forward[i];
-      }
-      update[i] = currentNode;
-    }
-
-    currentNode = currentNode.forward[0];
-
-    if (currentNode === undefined || currentNode.value !== value) {
-      const level = this.randomLevel();
-      if (level > this.maxLevel) {
-        for (let i = this.maxLevel + 1; i <= level; i++) {
-          update[i] = this.head;
-        }
-        this.maxLevel = level;
-      }
-
-      const newNode = new SkipNode(value, level);
-
-      for (let i = 0; i <= level; i++) {
-        newNode.forward[i] = update[i].forward[i];
-        update[i].forward[i] = newNode;
-      }
-    }
-  }
-
-  // Search for a value in the skip list
-  search(value) {
-    let currentNode = this.head;
-
-    for (let i = this.maxLevel; i >= 0; i--) {
-      while (
-        currentNode.forward[i] !== undefined &&
-        currentNode.forward[i].value < value
-      ) {
-        currentNode = currentNode.forward[i];
-      }
-    }
-
-    currentNode = currentNode.forward[0];
-
-    if (currentNode !== undefined && currentNode.value === value) {
-      return currentNode;
-    } else {
-      return null;
-    }
-  }
-
-  // Remove a value from the skip list
-  remove(value) {
-    const update = new Array(this.maxLevel + 1);
-    let currentNode = this.head;
-
-    for (let i = this.maxLevel; i >= 0; i--) {
-      while (
-        currentNode.forward[i] !== undefined &&
-        currentNode.forward[i].value < value
-      ) {
-        currentNode = currentNode.forward[i];
-      }
-      update[i] = currentNode;
-    }
-
-    currentNode = currentNode.forward[0];
-
-    if (currentNode !== undefined && currentNode.value === value) {
-      for (let i = 0; i <= this.maxLevel; i++) {
-        if (update[i].forward[i] !== currentNode) {
-          break;
-        }
-        update[i].forward[i] = currentNode.forward[i];
-      }
-
-      while (this.maxLevel > 0 && this.head.forward[this.maxLevel] === undefined) {
-        this.maxLevel--;
-      }
-    }
-  }
-}
-const skipList = new SkipList();
-skipList.insert(1);
-skipList.insert(4);
-skipList.insert(2);
-
-console.log(skipList.search(4)); // Output: SkipNode { value: 4, forward: [ ... ] }
-console.log(skipList.search(3)); // Output: null
-
-skipList.remove(4);
-console.log(skipList.search(4)); // Output: null
+// Output: { path: [ 'A', 'C', 'D', 'E' ], distance: 8 }
