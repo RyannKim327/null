@@ -1,77 +1,61 @@
-class BTreeNode {
-  constructor(leaf = true) {
-    this.keys = [];
-    this.children = [];
-    this.leaf = leaf;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
 }
-
-class BTree {
-  constructor(order) {
-    this.order = order;
-    this.root = new BTreeNode();
+class LinkedList {
+  constructor() {
+    this.head = null;
   }
 
-  insert(key) {
-    const { root, order } = this;
-    if (root.keys.length === (2 * order) - 1) {
-      const newNode = new BTreeNode(false);
-      newNode.children.push(root);
-      this.splitChild(newNode, 0);
-      this.root = newNode;
-      this.insertNonFull(newNode, key);
+  add(value) {
+    if (!this.head) {
+      this.head = new Node(value);
     } else {
-      this.insertNonFull(root, key);
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = new Node(value);
     }
   }
 
-  insertNonFull(node, key) {
-    let i = node.keys.length - 1;
-    if (node.leaf) {
-      node.keys.push();
-      while (i >= 0 && key < node.keys[i]) {
-        node.keys[i + 1] = node.keys[i];
-        i--;
-      }
-      node.keys[i + 1] = key;
-    } else {
-      while (i >= 0 && key < node.keys[i]) {
-        i--;
-      }
-      i++;
-      if (node.children[i].keys.length === (2 * this.order) - 1) {
-        this.splitChild(node, i);
-        if (key > node.keys[i]) {
-          i++;
-        }
-      }
-      this.insertNonFull(node.children[i], key);
-    }
-  }
+  isPalindrome() {
+    let slow = this.head;
+    let fast = this.head;
+    const stack = [];
 
-  splitChild(parent, index) {
-    const { order } = this;
-    const node = parent.children[index];
-    const newNode = new BTreeNode(node.leaf);
-    parent.keys.splice(index, 0, node.keys[order - 1]);
-    parent.children.splice(index + 1, 0, newNode);
-    newNode.keys = node.keys.splice(order, order - 1);
-    if (!node.leaf) {
-      newNode.children = node.children.splice(order, order);
+    while (fast && fast.next) {
+      stack.push(slow.value);
+      slow = slow.next;
+      fast = fast.next.next;
     }
-  }
 
-  search(key, node = this.root) {
-    const i = 0;
-    while (i < node.keys.length && key > node.keys[i]) {
-      i++;
+    if (fast) {
+      slow = slow.next;
     }
-    if (node.keys[i] === key) {
-      return true;
+
+    while (slow) {
+      const top = stack.pop();
+      if (slow.value !== top) {
+        return false;
+      }
+      slow = slow.next;
     }
-    if (node.leaf) {
-      return false;
-    }
-    return this.search(key, node.children[i]);
+
+    return true;
   }
 }
+// Create a linked list
+const list = new LinkedList();
+
+// Add elements to the linked list
+list.add('r');
+list.add('a');
+list.add('d');
+list.add('a');
+list.add('r');
+
+// Check if it's a palindrome
+console.log(list.isPalindrome());  // Output: true
