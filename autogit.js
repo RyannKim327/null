@@ -1,47 +1,26 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
+function findFirstNonRepeatingChar(str) {
+  // Create an object to store character counts
+  const charCount = {};
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-    this.tail = null;
+  // Loop through the string and count characters
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
   }
 
-  append(value) {
-    const newNode = new Node(value);
-
-    if (!this.head) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
+  // Loop through the string again and find the first non-repeating character
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    if (charCount[char] === 1) {
+      return char;
     }
   }
+
+  // If no non-repeating character is found, return null
+  return null;
 }
-class LinkedList {
-  // existing code...
 
-  length() {
-    let count = 0;
-    let currentNode = this.head;
-
-    while (currentNode !== null) {
-      count++;
-      currentNode = currentNode.next;
-    }
-
-    return count;
-  }
-}
-const linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
-
-const length = linkedList.length();
-console.log(length); // Output: 3
+// Example usage
+const str = "abcaebd";
+const firstNonRepeatingChar = findFirstNonRepeatingChar(str);
+console.log(firstNonRepeatingChar); // Output: "c"
