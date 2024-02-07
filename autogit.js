@@ -1,70 +1,29 @@
-function biDirectionalSearch(graph, startNode, endNode) {
-  const queueStart = [];
-  const queueEnd = [];
-  const visitedStart = new Set();
-  const visitedEnd = new Set();
-  const parentsStart = new Map();
-  const parentsEnd = new Map();
-
-  queueStart.push(startNode);
-  visitedStart.add(startNode);
-  parentsStart.set(startNode, null);
-
-  queueEnd.push(endNode);
-  visitedEnd.add(endNode);
-  parentsEnd.set(endNode, null);
-
-  while (queueStart.length > 0 && queueEnd.length > 0) {
-    const currentStart = queueStart.shift();
-    const currentEnd = queueEnd.shift();
-
-    if (visitedEnd.has(currentStart)) {
-      // Path found
-      return buildPath(currentStart, currentEnd, parentsStart, parentsEnd);
+function bubbleSort(arr) {
+    var len = arr.length;
+    var sorted;
+    
+    for (var i = 0; i < len; i++) {
+        sorted = true;
+        
+        for (var j = 0; j < len - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap two elements if they are in the wrong order
+                var temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+                
+                sorted = false; // Mark the iteration as unsorted
+            }
+        }
+        
+        if (sorted) {
+            break; // If no swaps are made in an iteration, the array is already sorted
+        }
     }
-
-    if (visitedStart.has(currentEnd)) {
-      // Path found
-      return buildPath(currentStart, currentEnd, parentsStart, parentsEnd);
-    }
-
-    const neighborsStart = graph[currentStart] || [];
-    for (const neighbor of neighborsStart) {
-      if (!visitedStart.has(neighbor)) {
-        queueStart.push(neighbor);
-        visitedStart.add(neighbor);
-        parentsStart.set(neighbor, currentStart);
-      }
-    }
-
-    const neighborsEnd = graph[currentEnd] || [];
-    for (const neighbor of neighborsEnd) {
-      if (!visitedEnd.has(neighbor)) {
-        queueEnd.push(neighbor);
-        visitedEnd.add(neighbor);
-        parentsEnd.set(neighbor, currentEnd);
-      }
-    }
-  }
-
-  // No path found
-  return null;
+    
+    return arr;
 }
 
-function buildPath(nodeStart, nodeEnd, parentsStart, parentsEnd) {
-  const pathStart = [];
-  let current = nodeStart;
-  while (current !== null) {
-    pathStart.unshift(current);
-    current = parentsStart.get(current);
-  }
-
-  const pathEnd = [];
-  current = nodeEnd;
-  while (current !== null) {
-    pathEnd.push(current);
-    current = parentsEnd.get(current);
-  }
-
-  return pathStart.concat(pathEnd);
-}
+// Example usage:
+var array = [5, 3, 8, 2, 1, 4];
+console.log(bubbleSort(array)); // Output: [1, 2, 3, 4, 5, 8]
