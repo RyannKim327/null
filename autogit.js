@@ -1,17 +1,37 @@
-function findMedianSortedArrays(nums1, nums2) {
-  const merged = nums1.concat(nums2).sort((a, b) => a - b);
-  const length = merged.length;
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
 
-  if (length % 2 === 1) {
-    return merged[Math.floor(length / 2)];
-  } else {
-    const mid = length / 2;
-    return (merged[mid - 1] + merged[mid]) / 2;
-  }
+// Function to count the number of leaf nodes in a binary tree
+function countLeafNodes(node) {
+    if (node === null) {
+        return 0; // Base case: an empty tree has 0 leaf nodes
+    }
+    
+    if (node.left === null && node.right === null) {
+        return 1; // Base case: a node with no children is a leaf node
+    }
+    
+    // Recursively count the leaf nodes in the left and right subtrees
+    return countLeafNodes(node.left) + countLeafNodes(node.right);
 }
 
 // Example usage:
-const nums1 = [1, 3];
-const nums2 = [2, 4];
-const median = findMedianSortedArrays(nums1, nums2);
-console.log(median); // Output: 2.5
+
+// Create a binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
+root.right.right.left = new Node(8);
+
+// Count the number of leaf nodes
+const leafNodeCount = countLeafNodes(root);
+console.log("Number of leaf nodes:", leafNodeCount); // Output: 4
