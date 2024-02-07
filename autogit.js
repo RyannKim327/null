@@ -1,61 +1,65 @@
-class Stack {
+class SuffixTrieNode {
   constructor() {
-    this.items = [];
+    this.children = new Map();
   }
 
-  // Add an element to the top of the stack
-  push(element) {
-    this.items.push(element);
+  addChild(char, node) {
+    this.children.set(char, node);
   }
 
-  // Remove the top element from the stack and return it
-  pop() {
-    if (this.isEmpty()) {
-      return "Underflow";
-    }
-    return this.items.pop();
+  getChild(char) {
+    return this.children.get(char);
   }
 
-  // Return the top element of the stack without removing it
-  peek() {
-    if (this.isEmpty()) {
-      return "No element in the stack";
-    }
-    return this.items[this.items.length - 1];
-  }
-
-  // Check if the stack is empty
-  isEmpty() {
-    return this.items.length === 0;
-  }
-
-  // Return the size of the stack
-  size() {
-    return this.items.length;
-  }
-
-  // Print the elements of the stack
-  printStack() {
-    let str = "";
-    for (let i = 0; i < this.items.length; i++) {
-      str += this.items[i] + " ";
-    }
-    return str;
+  hasChild(char) {
+    return this.children.has(char);
   }
 }
+class SuffixTree {
+  constructor() {
+    this.root = new SuffixTrieNode();
+  }
 
-// Usage
-const stack = new Stack();
-stack.push(10);
-stack.push(20);
-stack.push(30);
+  // Build the suffix tree from a given string
+  buildTree(string) {
+    for (let i = 0; i < string.length; i++) {
+      this._insertSuffix(string.substring(i));
+    }
+  }
 
-console.log(stack.printStack()); // Output: 10 20 30
+  _insertSuffix(suffix) {
+    let currentNode = this.root;
 
-console.log(stack.pop()); // Output: 30
+    for (let i = 0; i < suffix.length; i++) {
+      const char = suffix[i];
+      if (!currentNode.hasChild(char)) {
+        const newNode = new SuffixTrieNode();
+        currentNode.addChild(char, newNode);
+      }
+      currentNode = currentNode.getChild(char);
+    }
+  }
 
-console.log(stack.peek()); // Output: 20
+  // Search for a substring in the suffix tree
+  search(substring) {
+    let currentNode = this.root;
 
-console.log(stack.size()); // Output: 2
+    for (let i = 0; i < substring.length; i++) {
+      const char = substring[i];
+      if (currentNode.hasChild(char)) {
+        currentNode = currentNode.getChild(char);
+      } else {
+        return false;
+      }
+    }
 
-console.log(stack.isEmpty()); // Output: false
+    return true;
+  }
+}
+const suffixTree = new SuffixTree();
+suffixTree.buildTree('banana');
+
+console.log(suffixTree.search('ana')); // Output: true
+console.log(suffixTree.search('nan')); // Output: true
+console.log(suffixTree.search('ban')); // Output: true
+console.log(suffixTree.search('cat')); // Output: false
