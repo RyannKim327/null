@@ -1,10 +1,10 @@
-const sentence = "Hello world, hello universe, hello galaxy.";
-const word = 'hello';
+const array = [10, 5, 20, 15, 8];
 
-// Create a regular expression with the word and the "g" flag to search globally
-const regex = new RegExp(word, 'gi');
+const max = Math.max(...array);
 
-// Use the match() method to find all matches of the word in the sentence and count the occurrences
-const count = (sentence.match(regex) || []).length;
+console.log(max); // Output: 20
+const array = [10, 5, 20, 15, 8];
 
-console.log(`The word "${word}" occurs ${count} times in the sentence.`);
+const max = Math.max.apply(null, array);
+
+console.log(max); // Output: 20
