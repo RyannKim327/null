@@ -1,36 +1,37 @@
-function depthLimitedSearch(node, target, depthLimit) {
-  return DLS(node, target, depthLimit, 0);
-}
+function aStarSearch(startNode, goalNode) {
+  let openSet = new PriorityQueue();
+  openSet.enqueue(startNode);
 
-function DLS(node, target, depthLimit, depth) {
-  if (depth === depthLimit) {
-    // If depth limit reached and node is not the target, return failure
-    return null;
-  }
+  let cameFrom = new Map();
+  let gScore = new Map();
+  let fScore = new Map();
+  gScore.set(startNode, 0);
+  fScore.set(startNode, heuristic(startNode, goalNode));
 
-  if (node === target) {
-    // If node is the target, return it
-    return node;
-  }
+  while (!openSet.isEmpty()) {
+    let currentNode = openSet.dequeue();
 
-  // Recursively explore neighbors
-  for (let neighbor of getNeighbors(node)) {
-    let result = DLS(neighbor, target, depthLimit, depth + 1);
+    if (currentNode === goalNode) {
+      return reconstructPath(cameFrom, currentNode);
+    }
 
-    if (result !== null) {
-      return result;
+    for (let neighbor of getNeighbors(currentNode)) {
+      let tentativeGScore = gScore.get(currentNode) + 1;
+
+      if (!gScore.has(neighbor) || tentativeGScore < gScore.get(neighbor)) {
+        cameFrom.set(neighbor, currentNode);
+        gScore.set(neighbor, tentativeGScore);
+        fScore.set(
+          neighbor,
+          gScore.get(neighbor) + heuristic(neighbor, goalNode)
+        );
+
+        if (!openSet.includes(neighbor)) {
+          openSet.enqueue(neighbor);
+        }
+      }
     }
   }
 
-  // If target not found at this depth, return null
-  return null;
-}
-
-// Helper function to get the neighboring nodes
-function getNeighbors(node) {
-  // Implement your own logic for getting neighbors of a node
-  // This depends on the specific problem or graph representation you're working with
-  // Return an array of neighboring nodes
-  // For example:
-  // return node.neighbors;
+  return null; // No path found
 }
