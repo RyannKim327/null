@@ -1,25 +1,32 @@
-function binarySearch(array, target, start = 0, end = array.length - 1) {
-  if (start > end) {
-    return -1;
+function mergeSort(array) {
+  if (array.length <= 1) {
+    return array;
   }
-  
-  const middle = Math.floor((start + end) / 2);
-  
-  if (array[middle] === target) {
-    return middle;
-  } else if (array[middle] > target) {
-    return binarySearch(array, target, start, middle - 1);
-  } else {
-    return binarySearch(array, target, middle + 1, end);
+
+  const middle = Math.floor(array.length / 2);
+  const left = array.slice(0, middle);
+  const right = array.slice(middle);
+
+  return merge(mergeSort(left), mergeSort(right));
+}
+
+function merge(left, right) {
+  let result = [];
+  let leftIndex = 0;
+  let rightIndex = 0;
+
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] < right[rightIndex]) {
+      result.push(left[leftIndex]);
+      leftIndex++;
+    } else {
+      result.push(right[rightIndex]);
+      rightIndex++;
+    }
   }
-}
-const array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const target = 6;
 
-const resultIndex = binarySearch(array, target);
-
-if (resultIndex !== -1) {
-  console.log(`Target value ${target} found at index ${resultIndex}.`);
-} else {
-  console.log(`Target value ${target} not found in the array.`);
+  return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
 }
+const array = [8, 3, 10, 2, 5];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [2, 3, 5, 8, 10]
