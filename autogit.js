@@ -1,15 +1,35 @@
-function isArraySorted(arr) {
-  for (let i = 0; i < arr.length - 1; i++) {
-    if (arr[i] > arr[i + 1]) {
-      return false;
-    }
-  }
-  return true;
+function removeVowels(str) {
+  return str.replace(/[aeiou]/gi, '');
 }
 
-// Example usage
-const array1 = [1, 2, 3, 4, 5];
-console.log(isArraySorted(array1)); // Output: true
+const inputString = 'This is a sample string.';
+const stringWithoutVowels = removeVowels(inputString);
+console.log(stringWithoutVowels); // Output: Ths s smpl strng.
+function removeVowels(str) {
+  let result = '';
+  const vowels = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'];
 
-const array2 = [1, 3, 2, 4, 5];
-console.log(isArraySorted(array2)); // Output: false
+  for (let i = 0; i < str.length; i++) {
+    if (!vowels.includes(str[i])) {
+      result += str[i];
+    }
+  }
+
+  return result;
+}
+
+const inputString = 'This is a sample string.';
+const stringWithoutVowels = removeVowels(inputString);
+console.log(stringWithoutVowels); // Output: Ths s smpl strng.
+function removeVowels(str) {
+  const vowels = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'];
+
+  const chars = Array.from(str);
+  const filteredChars = chars.filter((char) => !vowels.includes(char));
+
+  return filteredChars.join('');
+}
+
+const inputString = 'This is a sample string.';
+const stringWithoutVowels = removeVowels(inputString);
+console.log(stringWithoutVowels); // Output: Ths s smpl strng.
