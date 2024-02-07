@@ -1,45 +1,59 @@
-class ListNode {
-  constructor(val, next = null) {
-    this.val = val;
-    this.next = next;
+function dijkstra(graph, startNode) {
+  const distances = {};
+  const previous = {};
+  const visited = {};
+  
+  // Helper function to find the node with the smallest distance
+  function findMinDistanceNode() {
+    const unvisitedNodes = Object.keys(distances).filter(node => !visited[node]);
+    return unvisitedNodes.reduce((minNode, node) => {
+      if (distances[node] < distances[minNode]) {
+        return node;
+      } else {
+        return minNode;
+      }
+    });
   }
-}
-function isPalindrome(head) {
-  // Slow and fast pointers to find the middle of the linked list
-  let slow = head;
-  let fast = head;
-
-  // Use a stack to store the first half of the linked list nodes (reversed)
-  const stack = [];
-
-  // Push the elements of the first half into the stack
-  while (fast && fast.next) {
-    stack.push(slow.val);
-    slow = slow.next;
-    fast = fast.next.next;
-  }
-
-  // If fast is not null, the linked list has an odd length
-  // Move slow pointer to skip the middle element
-  if (fast !== null) {
-    slow = slow.next;
-  }
-
-  // Compare the remaining elements of the second half with the stack
-  while (slow !== null) {
-    if (slow.val !== stack.pop()) {
-      return false; // Not a palindrome
+  
+  // Step 2: Initialize the algorithm
+  Object.keys(graph).forEach(node => {
+    distances[node] = Infinity;
+    previous[node] = null;
+  });
+  distances[startNode] = 0;
+  
+  // Step 3: Implement the algorithm
+  let currentNode = findMinDistanceNode();
+  while (currentNode) {
+    const neighbors = graph[currentNode];
+    const distanceToCurrent = distances[currentNode];
+    
+    for (let neighbor in neighbors) {
+      const distance = distanceToCurrent + neighbors[neighbor];
+      if (distance < distances[neighbor]) {
+        distances[neighbor] = distance;
+        previous[neighbor] = currentNode;
+      }
     }
-    slow = slow.next;
+    
+    visited[currentNode] = true;
+    currentNode = findMinDistanceNode();
   }
-
-  return true; // Palindrome
+  
+  // Step 4: Output the result
+  return { distances, previous };
 }
-// Example linked list: 1 -> 2 -> 3 -> 2 -> 1
-const node5 = new ListNode(1);
-const node4 = new ListNode(2, node5);
-const node3 = new ListNode(3, node4);
-const node2 = new ListNode(2, node3);
-const node1 = new ListNode(1, node2);
 
-console.log(isPalindrome(node1)); // Output: true
+// Example usage
+const graph = {
+  A: { B: 5, C: 3 },
+  B: { A: 5, C: 2, D: 1 },
+  C: { A: 3, B: 2, D: 6 },
+  D: { B: 1, C: 6 },
+};
+
+const startNode = 'A';
+const result = dijkstra(graph, startNode);
+
+console.log(result.distances); // { A: 0, B: 5, C: 3, D: 6 }
+console.log(result.previous); // { A: null, B: 'A', C: 'A', D: 'B' }
