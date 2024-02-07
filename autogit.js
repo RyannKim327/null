@@ -1,14 +1,21 @@
-const array = [1, 2, 3, 4, 4, 5, 6, 6];
-const uniqueArray = array.filter((value, index) => array.indexOf(value) === index);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5, 6]
-const array = [1, 2, 3, 4, 4, 5, 6, 6];
-const uniqueArray = [...new Set(array)];
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5, 6]
-const array = [1, 2, 3, 4, 4, 5, 6, 6];
-const uniqueArray = array.reduce((accumulator, currentValue) => {
-  if (!accumulator.includes(currentValue)) {
-    accumulator.push(currentValue);
+function findNthNodeFromEnd(head, n) {
+  let pointer1 = head;
+  let pointer2 = head;
+
+  // Move pointer2 n nodes ahead
+  for (let i = 0; i < n; i++) {
+    if (pointer2 === null) {
+      return null; // Invalid input or n exceeds list length
+    }
+    pointer2 = pointer2.next;
   }
-  return accumulator;
-}, []);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5, 6]
+
+  // Move both pointers simultaneously until pointer2 reaches the end
+  while (pointer2 !== null) {
+    pointer1 = pointer1.next;
+    pointer2 = pointer2.next;
+  }
+
+  // pointer1 will be pointing to the nth node from the end
+  return pointer1;
+}
