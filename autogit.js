@@ -1,42 +1,20 @@
-function tarjansAlgorithm(graph) {
-  const ids = [];
-  const low = [];
-  const stack = [];
-  let id = 0;
-  const components = [];
+function isAnagram(str1, str2) {
+  // Convert the strings to lowercase
+  str1 = str1.toLowerCase();
+  str2 = str2.toLowerCase();
 
-  function dfs(node) {
-    ids[node] = id;
-    low[node] = id;
-    id++;
+  // Remove non-alphabetic characters and spaces
+  str1 = str1.replace(/[^a-z]/g, '');
+  str2 = str2.replace(/[^a-z]/g, '');
 
-    stack.push(node);
+  // Convert strings to arrays, sort, and join
+  const sortedStr1 = str1.split('').sort().join('');
+  const sortedStr2 = str2.split('').sort().join('');
 
-    for (const adjacent of graph[node]) {
-      if (!ids[adjacent]) {
-        dfs(adjacent);
-      }
-      if (stack.includes(adjacent)) {
-        low[node] = Math.min(low[node], low[adjacent]);
-      }
-    }
-
-    if (ids[node] === low[node]) {
-      const component = [];
-      let member;
-      do {
-        member = stack.pop();
-        component.push(member);
-      } while (member !== node);
-      components.push(component);
-    }
-  }
-
-  for (let node = 0; node < graph.length; node++) {
-    if (!ids[node]) {
-      dfs(node);
-    }
-  }
-
-  return components;
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
+
+// Usage example
+console.log(isAnagram('listen', 'silent'));  // true
+console.log(isAnagram('hello', 'world'));    // false
