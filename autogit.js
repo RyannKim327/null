@@ -1,14 +1,38 @@
-function isPalindrome(str) {
-  // remove non-alphanumeric characters and convert to lowercase
-  str = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-
-  // reverse the string
-  var reversedStr = str.split('').reverse().join('');
-
-  // compare the reversed string with the original string
-  return str === reversedStr;
+function interpolationSearch(arr, target, low = 0, high = arr.length - 1) {
+  // ...
 }
+  if (low > high) {
+    return -1;
+  }
+  let pos = low + Math.floor((target - arr[low]) * (high - low) / (arr[high] - arr[low]));
+  if (arr[pos] === target) {
+    return pos;
+  }
+  if (arr[pos] > target) {
+    return interpolationSearch(arr, target, low, pos - 1);
+  }
+  if (arr[pos] < target) {
+    return interpolationSearch(arr, target, pos + 1, high);
+  }
+  return -1;
+function interpolationSearch(arr, target, low = 0, high = arr.length - 1) {
+  if (low > high) {
+    return -1;
+  }
 
-// example usage
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
-console.log(isPalindrome("hello world")); // false
+  let pos = low + Math.floor((target - arr[low]) * (high - low) / (arr[high] - arr[low]));
+
+  if (arr[pos] === target) {
+    return pos;
+  }
+
+  if (arr[pos] > target) {
+    return interpolationSearch(arr, target, low, pos - 1);
+  }
+
+  if (arr[pos] < target) {
+    return interpolationSearch(arr, target, pos + 1, high);
+  }
+
+  return -1;
+}
