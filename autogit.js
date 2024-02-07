@@ -1,34 +1,29 @@
-// Define the URL of the server
-const serverUrl = 'https://example.com/api';
-
-// Define the data to send to the server
-const requestData = {
-  name: 'John Doe',
-  age: 30,
-};
-
-// Define an async function to make the API call
-async function connectToServerAsync() {
-  try {
-    const response = await fetch(serverUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestData),
-    });
-
-    if (!response.ok) {
-      throw new Error('Server returned an error');
-    }
-
-    const jsonResponse = await response.json();
-    console.log(jsonResponse); // Process the server response data here
-
-  } catch (error) {
-    console.error('An error occurred:', error);
+function fibonacciSearch(array, target) {
+  const fibonacci = [0, 1];
+  
+  while (fibonacci[fibonacci.length - 1] < array.length) {
+    fibonacci.push(fibonacci[fibonacci.length - 1] + fibonacci[fibonacci.length - 2]);
   }
-}
 
-// Call the async function
-connectToServerAsync();
+  let offset = 0;
+  let index = fibonacci.length - 1;
+  let prev = 0;
+
+  while (array.length > 0) {
+    const current = offset + index;
+
+    if (target === array[current]) {
+      return current;
+    } else if (target < array[current]) {
+      offset = offset;
+      index = prev;
+      prev = index - prev;
+    } else {
+      offset = current + 1;
+      index = prev;
+      prev = index - prev;
+    }
+  }
+
+  return -1;
+}
