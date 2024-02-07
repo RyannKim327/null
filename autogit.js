@@ -1,63 +1,79 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
-class BinarySearchTree {
-  constructor() {
-    this.root = null;
-  }
-}
-insert(value) {
-  const newNode = new Node(value);
+function bidirectionalSearch(graph, source, target) {
+  let forwardFrontier = [source];
+  let backwardFrontier = [target];
 
-  if (this.root === null) {
-    this.root = newNode;
-  } else {
-    this.insertNode(this.root, newNode);
-  }
-}
+  let forwardExplored = {};
+  let backwardExplored = {};
 
-insertNode(node, newNode) {
-  if (newNode.value < node.value) {
-    if (node.left === null) {
-      node.left = newNode;
-    } else {
-      this.insertNode(node.left, newNode);
+  forwardExplored[source] = null;
+  backwardExplored[target] = null;
+
+  while (forwardFrontier.length > 0 && backwardFrontier.length > 0) {
+    const forwardNode = forwardFrontier.shift();
+    const backwardNode = backwardFrontier.shift();
+
+    forwardExplored[forwardNode] = null;
+    backwardExplored[backwardNode] = null;
+
+    if (backwardNode in forwardExplored) {
+      return getPath(forwardNode, backwardNode, forwardExplored, backwardExplored);
     }
-  } else {
-    if (node.right === null) {
-      node.right = newNode;
-    } else {
-      this.insertNode(node.right, newNode);
+
+    const forwardNeighbors = graph[forwardNode] || [];
+    const backwardNeighbors = graph[backwardNode] || [];
+
+    for (const neighbor of forwardNeighbors) {
+      if (!(neighbor in forwardExplored) && !forwardFrontier.includes(neighbor)) {
+        forwardFrontier.push(neighbor);
+        forwardExplored[neighbor] = forwardNode;
+      }
+    }
+
+    for (const neighbor of backwardNeighbors) {
+      if (!(neighbor in backwardExplored) && !backwardFrontier.includes(neighbor)) {
+        backwardFrontier.push(neighbor);
+        backwardExplored[neighbor] = backwardNode;
+      }
     }
   }
-}
-search(value) {
-  return this.searchNode(this.root, value);
+
+  return null; // No path found
 }
 
-searchNode(node, value) {
-  if (node === null) {
-    return null;
+function getPath(start, end, forwardExplored, backwardExplored) {
+  const path = [];
+  let currentNode = start;
+
+  while (currentNode !== null) {
+    path.push(currentNode);
+    currentNode = forwardExplored[currentNode];
   }
 
-  if (value < node.value) {
-    return this.searchNode(node.left, value);
-  } else if (value > node.value) {
-    return this.searchNode(node.right, value);
-  } else {
-    return node;
-  }
-}
-const bst = new BinarySearchTree();
-bst.insert(15);
-bst.insert(10);
-bst.insert(20);
-bst.insert(8);
-bst.insert(12);
+  path.reverse();
 
-console.log(bst.search(12));  // Output: Node { value: 12, left: null, right: null }
-console.log(bst.search(17));  // Output: null
+  currentNode = backwardExplored[end];
+
+  while (currentNode !== null) {
+    path.push(currentNode);
+    currentNode = backwardExplored[currentNode];
+  }
+
+  return path;
+}
+
+// Example usage:
+const graph = {
+  A: ["B", "C"],
+  B: ["A", "D"],
+  C: ["A", "E"],
+  D: ["B", "F"],
+  E: ["C", "G"],
+  F: ["D"],
+  G: ["E"],
+};
+const source = "A";
+const target = "G";
+
+const path = bidirectionalSearch(graph, source, target);
+
+console.log("Path:", path);
