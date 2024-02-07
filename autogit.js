@@ -1,90 +1,61 @@
-class PriorityQueue {
-  constructor(compare) {
-    this.heap = [];
-    this.compare = compare;
-  }
-}
-class PriorityQueue {
-  // ...
-
-  swap(i, j) {
-    [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
+class HashTable {
+  constructor() {
+    this.size = 100; // Size of the hash table, you can adjust this
+    this.buckets = Array(this.size);
   }
 
-  getParentIndex(index) {
-    return Math.floor((index - 1) / 2);
-  }
-
-  getLeftChildIndex(index) {
-    return 2 * index + 1;
-  }
-
-  getRightChildIndex(index) {
-    return 2 * index + 2;
-  }
-}
-class PriorityQueue {
-  // ...
-  
-  push(element) {
-    this.heap.push(element);
-    let currentIndex = this.heap.length - 1;
-    let parentIndex = this.getParentIndex(currentIndex);
-    while (
-      currentIndex > 0 &&
-      this.compare(this.heap[currentIndex], this.heap[parentIndex]) < 0
-    ) {
-      this.swap(currentIndex, parentIndex);
-      currentIndex = parentIndex;
-      parentIndex = this.getParentIndex(currentIndex);
+  // Hash function to convert a key into an index
+  hash(key) {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash += key.charCodeAt(i);
     }
+    return hash % this.size;
   }
 
-  pop() {
-    if (this.isEmpty()) {
+  // Insert a key-value pair into the hash table
+  insert(key, value) {
+    const index = this.hash(key);
+    if (!this.buckets[index]) {
+      this.buckets[index] = [];
+    }
+    this.buckets[index].push({ key, value });
+  }
+
+  // Get the value associated with a key
+  get(key) {
+    const index = this.hash(key);
+    if (!this.buckets[index]) {
       return null;
     }
-    if (this.heap.length === 1) {
-      return this.heap.pop();
-    }
-    const element = this.heap[0];
-    this.heap[0] = this.heap.pop();
-    let currentIndex = 0;
-    let leftChildIndex = this.getLeftChildIndex(currentIndex);
-    let rightChildIndex = this.getRightChildIndex(currentIndex);
-    while (
-      (leftChildIndex < this.heap.length &&
-        this.compare(this.heap[currentIndex], this.heap[leftChildIndex]) > 0) ||
-      (rightChildIndex < this.heap.length &&
-        this.compare(this.heap[currentIndex], this.heap[rightChildIndex]) > 0)
-    ) {
-      if (
-        rightChildIndex < this.heap.length &&
-        this.compare(this.heap[rightChildIndex], this.heap[leftChildIndex]) < 0
-      ) {
-        this.swap(currentIndex, rightChildIndex);
-        currentIndex = rightChildIndex;
-      } else {
-        this.swap(currentIndex, leftChildIndex);
-        currentIndex = leftChildIndex;
+    for (const entry of this.buckets[index]) {
+      if (entry.key === key) {
+        return entry.value;
       }
-      leftChildIndex = this.getLeftChildIndex(currentIndex);
-      rightChildIndex = this.getRightChildIndex(currentIndex);
     }
-    return element;
-  }
-}
-class PriorityQueue {
-  // ...
-  
-  isEmpty() {
-    return this.heap.length === 0;
+    return null;
   }
 
-  peek() {
-    if (this.isEmpty()) {
-      return null;
+  // Remove a key-value pair from the hash table
+  remove(key) {
+    const index = this.hash(key);
+    if (!this.buckets[index]) {
+      return;
     }
-    return this.heap[0];
+    for (let i = 0; i < this.buckets[index].length; i++) {
+      if (this.buckets[index][i].key === key) {
+        this.buckets[index].splice(i, 1);
+        return;
+      }
+    }
   }
 }
+const hashTable = new HashTable();
+hashTable.insert("name", "John");
+hashTable.insert("age", 30);
+
+console.log(hashTable.get("name")); // Output: John
+console.log(hashTable.get("age")); // Output: 30
+
+hashTable.remove("age");
+console.log(hashTable.get("age")); // Output: null
