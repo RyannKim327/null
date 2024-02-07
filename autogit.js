@@ -1,62 +1,42 @@
-function interpolationSearch(arr, target) {
-  let low = 0;
-  let high = arr.length - 1;
+function bellmanFord(graph, source) {
+  // Step 1: Initialization
+  const nodes = Object.keys(graph);
+  const distances = {};
 
-  while (low <= high && target >= arr[low] && target <= arr[high]) {
-    if (low === high) {
-      if (arr[low] === target) return low;
-      return -1;
+  for (let node of nodes) {
+    distances[node] = Infinity;
+  }
+  distances[source] = 0;
+
+  // Step 2: Relaxation
+  for (let i = 0; i < nodes.length - 1; i++) {
+    for (let node of nodes) {
+      for (let [adjacentNode, weight] of graph[node]) {
+        if (distances[node] + weight < distances[adjacentNode]) {
+          distances[adjacentNode] = distances[node] + weight;
+        }
+      }
     }
-    
-    let pos = Math.floor(
-      low + ((high - low) / (arr[high] - arr[low])) * (target - arr[low])
-    );
-
-    if (arr[pos] === target) return pos;
-
-    if (arr[pos] < target) low = pos + 1;
-    else high = pos - 1;
   }
 
-  return -1;
-}
-const sortedArray = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
-const targetValue = 7;
-const result = interpolationSearch(sortedArray, targetValue);
-
-if (result === -1)
-  console.log("Element not found");
-else
-  console.log(`Element found at index ${result}`);
-function interpolationSearch(arr, target) {
-  let low = 0;
-  let high = arr.length - 1;
-
-  while (low <= high && target >= arr[low] && target <= arr[high]) {
-    if (low === high) {
-      if (arr[low] === target) return low;
-      return -1;
+  // Step 3: Check for negative-weight cycles
+  for (let node of nodes) {
+    for (let [adjacentNode, weight] of graph[node]) {
+      if (distances[node] + weight < distances[adjacentNode]) {
+        throw new Error("Graph contains a negative-weight cycle");
+      }
     }
-
-    let pos = Math.floor(
-      low + ((high - low) / (arr[high] - arr[low])) * (target - arr[low])
-    );
-
-    if (arr[pos] === target) return pos;
-
-    if (arr[pos] < target) low = pos + 1;
-    else high = pos - 1;
   }
 
-  return -1;
+  return distances;
 }
+const graph = {
+  A: [["B", 4], ["C", 2]],
+  B: [["D", 3]],
+  C: [["B", 1], ["D", 5]],
+  D: []
+};
 
-const sortedArray = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
-const targetValue = 7;
-
-const result = interpolationSearch(sortedArray, targetValue);
-
-if (result === -1)
-  console.log("Element not found");
-else
-  console.log(`Element found at index ${result}`);
+const source = "A";
+const distances = bellmanFord(graph, source);
+console.log(distances);
