@@ -1,37 +1,67 @@
 class Node {
   constructor(value) {
     this.value = value;
-    this.left = null;
-    this.right = null;
+    this.next = null;
   }
 }
-
-function findMaxDepth(node) {
-  if (node === null) return 0;
-
-  const leftDepth = findMaxDepth(node.left);
-  const rightDepth = findMaxDepth(node.right);
-
-  return Math.max(leftDepth, rightDepth) + 1;
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
 }
-// Create nodes
-const root = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
-const node4 = new Node(4);
-const node5 = new Node(5);
+class LinkedList {
+  // previous code...
 
-// Connect nodes
-root.left = node2;
-root.right = node3;
-node2.left = node4;
-node2.right = node5;
+  add(value) {
+    const newNode = new Node(value);
 
-// Call the function to find maximum depth
-const maxDepth = findMaxDepth(root);
-console.log("Maximum depth:", maxDepth);
-     1
-   /   \
-  2     3
- / \
-4   5
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next !== null) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
+
+  // remaining code...
+}
+class LinkedList {
+  // previous code...
+
+  reverse() {
+    let previous = null;
+    let current = this.head;
+    let following = null;
+
+    while (current !== null) {
+      following = current.next;
+      current.next = previous;
+      previous = current;
+      current = following;
+    }
+
+    this.head = previous;
+  }
+
+  // remaining code...
+}
+const list = new LinkedList();
+list.add('A');
+list.add('B');
+list.add('C');
+list.add('D');
+
+console.log('Original list:');
+console.log(list);
+
+list.reverse();
+
+console.log('Reversed list:');
+console.log(list);
+Original list:
+LinkedList { head: Node { value: 'A', next: Node { value: 'B', next: [Node] } } }
+Reversed list:
+LinkedList { head: Node { value: 'D', next: Node { value: 'C', next: [Node] } } }
