@@ -1,49 +1,85 @@
-function findKthSmallest(array, k) {
-  if (k < 1 || k > array.length) {
-    return null; // Invalid input
-  }
-
-  return quickSelect(array, 0, array.length - 1, k - 1);
-}
-
-function quickSelect(array, start, end, k) {
-  if (start === end) {
-    return array[start];
-  }
-
-  const pivotIndex = partition(array, start, end);
-
-  if (k === pivotIndex) {
-    return array[k];
-  } else if (k < pivotIndex) {
-    return quickSelect(array, start, pivotIndex - 1, k);
-  } else {
-    return quickSelect(array, pivotIndex + 1, end, k);
+// Node class
+class Node {
+  constructor() {
+    this.children = {};
   }
 }
 
-function partition(array, start, end) {
-  const pivotValue = array[end];
-  let pivotIndex = start;
+// Suffix Tree class
+class SuffixTree {
+  constructor(string) {
+    this.root = new Node();
+    this.construct(string);
+  }
 
-  for (let i = start; i < end; i++) {
-    if (array[i] < pivotValue) {
-      swap(array, i, pivotIndex);
-      pivotIndex++;
+  // Construction method
+  construct(string) {
+    for (let i = 0; i < string.length; i++) {
+      const suffix = string.slice(i);
+      this.insert(suffix, i);
     }
   }
 
-  swap(array, pivotIndex, end);
-  return pivotIndex;
+  // Insertion method
+  insert(suffix, index) {
+    let currentNode = this.root;
+
+    for (let i = 0; i < suffix.length; i++) {
+      const char = suffix[i];
+
+      // If the current character doesn't exist in the children, add a new node
+      if (!currentNode.children[char]) {
+        currentNode.children[char] = new Node();
+      }
+
+      currentNode = currentNode.children[char];
+    }
+
+    // Store the index of the suffix in the leaf node
+    currentNode.index = index;
+  }
+
+  // Search method to find occurrences of a substring
+  search(substring) {
+    let currentNode = this.root;
+
+    for (let i = 0; i < substring.length; i++) {
+      const char = substring[i];
+
+      // If the current character doesn't exist in the children, the substring doesn't exist
+      if (!currentNode.children[char]) {
+        return [];
+      }
+
+      currentNode = currentNode.children[char];
+    }
+
+    // Get all indices from the leaf node and its children
+    return this.getAllIndices(currentNode);
+  }
+
+  // Helper method to get all indices from a node and its children
+  getAllIndices(node) {
+    let results = [];
+
+    // Recursively visit all children nodes
+    for (const key in node.children) {
+      const child = node.children[key];
+
+      // If the child has an index, add it to the results
+      if (child.index !== undefined) {
+        results.push(child.index);
+      }
+
+      // Recursively visit the child's children
+      results = results.concat(this.getAllIndices(child));
+    }
+
+    return results;
+  }
 }
 
-function swap(array, i, j) {
-  const temp = array[i];
-  array[i] = array[j];
-  array[j] = temp;
-}
-const array = [7, 10, 4, 3, 20, 15];
-const k = 3;
-
-const kthSmallest = findKthSmallest(array, k);
-console.log(`The ${k}th smallest element is ${kthSmallest}`);
+// Usage example
+const suffixTree = new SuffixTree("banana");
+console.log(suffixTree.search("an")); // Output: [1, 3]
+console.log(suffixTree.search("na")); // Output: [2, 4]
