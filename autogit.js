@@ -1,12 +1,22 @@
-const array = [1, 5, 10, 3, 7];
-const maxValue = Math.max(...array);
-console.log(maxValue); // Output: 10
-const array = [1, 5, 10, 3, 7];
-let maxValue = array[0]; // assume the first element as the maximum
+function binarySearchRecursive(array, target, start, end) {
+  if (start > end) {
+    return -1;
+  }
 
-for (let i = 1; i < array.length; i++) {
-  if (array[i] > maxValue) {
-    maxValue = array[i]; // found a larger value, update the maximum
+  const mid = Math.floor((start + end) / 2);
+
+  if (array[mid] === target) {
+    return mid;
+  } else if (array[mid] < target) {
+    return binarySearchRecursive(array, target, mid + 1, end);
+  } else {
+    return binarySearchRecursive(array, target, start, mid - 1);
   }
 }
-console.log(maxValue); // Output: 10
+
+// Example usage:
+const sortedArray = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
+const target = 16;
+
+const index = binarySearchRecursive(sortedArray, target, 0, sortedArray.length - 1);
+console.log(index); // Output: 4
