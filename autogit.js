@@ -1,49 +1,20 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
-}
+function findNthNodeFromEnd(head, n) {
+  let slow = head;
+  let fast = head;
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-
-  append(data) {
-    const newNode = new Node(data);
-  
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-  
-      while (current.next) {
-        current = current.next;
-      }
-  
-      current.next = newNode;
+  // Move the fast pointer n positions ahead
+  for (let i = 0; i < n; i++) {
+    if (fast === null) {
+      return null; // n is greater than the length of the linked list
     }
+    fast = fast.next;
   }
 
-  getLength() {
-    let count = 0;
-    let current = this.head;
-  
-    while (current) {
-      count++;
-      current = current.next;
-    }
-  
-    return count;
+  // Move both pointers until the fast pointer reaches the end
+  while (fast !== null) {
+    slow = slow.next;
+    fast = fast.next;
   }
+
+  return slow.value;
 }
-
-// Example usage
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-
-console.log(list.getLength()); // Output: 4
