@@ -1,24 +1,21 @@
-function countOccurrences(string, word) {
-  // Split the string into an array of words
-  var wordsArray = string.split(" ");
+function depthLimitedSearchIterative(root, target, depthLimit) {
+  const stack = [];
+  stack.push({ node: root, depth: 0 });
 
-  // Initialize a counter
-  var count = 0;
+  while (stack.length > 0) {
+    const { node, depth } = stack.pop();
 
-  // Iterate over the array of words
-  for (var i = 0; i < wordsArray.length; i++) {
-    // Check if the current word matches the word you want to count occurrences of
-    if (wordsArray[i] === word) {
-      count++;
+    if (node.value === target) {
+      return node; // Found the target
+    }
+
+    if (depth < depthLimit) {
+      // Add child nodes to the stack
+      for (const child of node.children) {
+        stack.push({ node: child, depth: depth + 1 });
+      }
     }
   }
 
-  return count;
+  return null; // Target not found within depth limit
 }
-
-// Usage example
-var sentence = "The quick brown fox jumps over the lazy dog. The dog is very lazy indeed.";
-var searchTerm = "lazy";
-var occurrences = countOccurrences(sentence, searchTerm);
-
-console.log("Number of occurrences of the word '" + searchTerm + "': " + occurrences);
