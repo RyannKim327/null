@@ -1,36 +1,53 @@
-// Define a Node class to represent a binary tree node
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+function computeLPSArray(pattern) {
+  const lps = [0]; // initialize the prefix table with the first element as 0
+  let len = 0; // length of the previous longest prefix suffix
+
+  let i = 1;
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[len]) {
+      len++;
+      lps[i] = len;
+      i++;
+    } else {
+      if (len !== 0) {
+        len = lps[len - 1];
+      } else {
+        lps[i] = 0;
+        i++;
+      }
     }
+  }
+
+  return lps;
 }
+function KMPSearch(text, pattern) {
+  const result = [];
+  const lps = computeLPSArray(pattern);
+  let i = 0; // index for text
+  let j = 0; // index for pattern
 
-// Function to count the number of leaf nodes in a binary tree
-function countLeafNodes(root) {
-    // Base case: if the node is null, return 0
-    if (root === null) {
-        return 0;
+  while (i < text.length) {
+    if (pattern[j] === text[i]) {
+      i++;
+      j++;
     }
-    
-    // Base case: if the node is a leaf, return 1
-    if (root.left === null && root.right === null) {
-        return 1;
+
+    if (j === pattern.length) {
+      result.push(i - j);
+      j = lps[j - 1];
+    } else if (i < text.length && pattern[j] !== text[i]) {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
+      }
     }
-    
-    // Recursive case: count the leaf nodes in the left and right subtrees
-    return countLeafNodes(root.left) + countLeafNodes(root.right);
+  }
+
+  return result;
 }
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const indices = KMPSearch(text, pattern);
 
-// Create a binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-
-// Count the number of leaf nodes in the tree
-const leafNodeCount = countLeafNodes(root);
-console.log("Number of leaf nodes:", leafNodeCount);
+console.log("Pattern found at indices:", indices);
