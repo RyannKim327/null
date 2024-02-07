@@ -1,18 +1,11 @@
-function largestPrimeFactor(number) {
-  let factor = 2;
+function findMiddleElement(head) {
+  let slow = head;
+  let fast = head;
 
-  while (factor <= Math.sqrt(number)) {
-    if (number % factor === 0) {
-      number = number / factor;
-    } else {
-      factor++;
-    }
+  while (fast && fast.next && fast.next.next) {
+    slow = slow.next;
+    fast = fast.next.next;
   }
 
-  if (number > 1) {
-    return number;
-  }
+  return slow;
 }
-
-// Example usage:
-console.log(largestPrimeFactor(13195));  // Output: 29
