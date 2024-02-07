@@ -1,23 +1,12 @@
-function shellSort(arr) {
-  const length = arr.length;
-  let gap = Math.floor(length / 2);
-  while (gap > 0) {
-    for (let i = gap; i < length; i++) {
-      const temp = arr[i];
-      let j = i;
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
-      }
-      arr[j] = temp;
-    }
-    gap = Math.floor(gap / 2);
-  }
-  return arr;
-}
+const array = [1, 5, 10, 3, 7];
+const maxValue = Math.max(...array);
+console.log(maxValue); // Output: 10
+const array = [1, 5, 10, 3, 7];
+let maxValue = array[0]; // assume the first element as the maximum
 
-// Example usage:
-const unsortedArray = [7, 2, 9, 4, 6, 1, 3, 8, 5];
-const sortedArray = shellSort(unsortedArray);
-console.log(sortedArray);
-[1, 2, 3, 4, 5, 6, 7, 8, 9]
+for (let i = 1; i < array.length; i++) {
+  if (array[i] > maxValue) {
+    maxValue = array[i]; // found a larger value, update the maximum
+  }
+}
+console.log(maxValue); // Output: 10
