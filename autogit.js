@@ -1,16 +1,17 @@
-function findMaxSumSubarray(arr) {
-  let maxSum = arr[0];
-  let currentSum = arr[0];
+function reverseStringWords(str) {
+  // Split the string into an array of words
+  var words = str.split(' ');
 
-  for (let i = 1; i < arr.length; i++) {
-    currentSum = Math.max(arr[i], currentSum + arr[i]);
-    maxSum = Math.max(maxSum, currentSum);
-  }
+  // Reverse the array
+  var reversedWords = words.reverse();
 
-  return maxSum;
+  // Join the array elements back into a single string
+  var reversedString = reversedWords.join(' ');
+
+  return reversedString;
 }
 
-// Example usage:
-const array = [1, -3, 2, 1, -1];
-const maxSum = findMaxSumSubarray(array);
-console.log(maxSum); // Output: 3
+// Example usage
+var originalString = "Hello, how are you?";
+var reversedString = reverseStringWords(originalString);
+console.log(reversedString);
