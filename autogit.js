@@ -1,30 +1,18 @@
-function depthLimitedSearch(startNode, targetNode, depthLimit) {
-  let stack = [];
-  stack.push({ node: startNode, depth: 0 });
+// Make a GET request to the Quote API and fetch a random quote
+fetch('https://api.quotable.io/random')
+  .then(response => response.json())
+  .then(data => {
+    // Display the quote and its author on the webpage
+    const quote = data.content;
+    const author = data.author;
+    console.log(`${quote} - ${author}`);
 
-  while (stack.length > 0) {
-    let { node, depth } = stack.pop();
-
-    if (node === targetNode) {
-      return node; // or return any result you desire
-    }
-
-    if (depth < depthLimit) {
-      // Expand children of the current node
-      let children = expandNode(node); // Implement this function to return an array of adjacent nodes
-      children.forEach((child) => {
-        stack.push({ node: child, depth: depth + 1 });
-      });
-    }
-  }
-
-  return null; // No target node found within the depth limit
-}
-
-// Example usage:
-let startNode = // Your starting node
-let targetNode = // Your target node
-let depthLimit = // Your desired depth limit
-
-let result = depthLimitedSearch(startNode, targetNode, depthLimit);
-console.log(result);
+    // You can manipulate the DOM to display the quote on a webpage
+    // For example, create a new <p> element and append the quote to it
+    const quoteElement = document.createElement('p');
+    quoteElement.textContent = `${quote} - ${author}`;
+    document.body.appendChild(quoteElement);
+  })
+  .catch(error => {
+    console.log('Error:', error);
+  });
