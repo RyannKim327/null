@@ -1,18 +1,29 @@
-// Function to fetch random cat facts using the Cat Facts API
-async function getRandomCatFact() {
-  try {
-    const response = await fetch('https://cat-fact.herokuapp.com/facts/random?animal_type=cat');
-    const data = await response.json();
-    
-    if (data.text) {
-      console.log(`Random Cat Fact: ${data.text}`);
-    } else {
-      console.log('Failed to fetch a cat fact.');
-    }
-  } catch (error) {
-    console.log('An error occurred while fetching a cat fact:', error.message);
+function findMiddleElement(head) {
+  let slow = head;
+  let fast = head;
+
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
+  }
+
+  return slow;
+}
+// Linked list node definition
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
 }
 
-// Call the function to fetch and display a random cat fact
-getRandomCatFact();
+// Create a linked list
+const head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
+
+// Find the middle element
+const middleElement = findMiddleElement(head);
+console.log(middleElement.value);  // Output: 3
