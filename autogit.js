@@ -1,25 +1,17 @@
-function findFirstNonRepeatingChar(string) {
-    const charCount = {};
+function areAnagrams(str1, str2) {
+  // Remove spaces and punctuation, convert to lowercase
+  str1 = str1.replace(/[^\w]/g, '').toLowerCase();
+  str2 = str2.replace(/[^\w]/g, '').toLowerCase();
 
-    // Count the occurrences of each character
-    for (let i = 0; i < string.length; i++) {
-        const char = string[i];
-        charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
-    }
+  // Convert strings to arrays, sort them, and join back into strings
+  const sortedStr1 = str1.split('').sort().join('');
+  const sortedStr2 = str2.split('').sort().join('');
 
-    // Find the first non-repeating character
-    for (let i = 0; i < string.length; i++) {
-        const char = string[i];
-        if (charCount[char] === 1) {
-            return char;
-        }
-    }
-
-    // If no non-repeating characters found, return null or any default value you prefer
-    return null;
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
 
 // Example usage:
-const string = "aabbcdee";
-const firstNonRepeatingChar = findFirstNonRepeatingChar(string);
-console.log(firstNonRepeatingChar); // Output: "c"
+const string1 = "listen";
+const string2 = "silent";
+console.log(areAnagrams(string1, string2)); // Output: true
