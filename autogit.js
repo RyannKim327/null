@@ -1,18 +1,35 @@
-// Define an array of numbers
-const numbers = [2, 4, 6, 8, 10];
-
-// Declare a variable sum and set it to 0
-let sum = 0;
-
-// Iterate over each element in the array
-for (let i = 0; i < numbers.length; i++) {
-  // Add each element to the sum variable
-  sum += numbers[i];
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
+let list = new Node(1);
+list.next = new Node(2);
+list.next.next = new Node(3);
+list.next.next.next = new Node(4);
+function reverseLinkedList(head) {
+  let prev = null;
+  let curr = head;
+  let next = null;
 
-// Calculate the mean by dividing the sum by the length of the array
-const mean = (sum / numbers.length).toFixed(2);
+  while (curr !== null) {
+    next = curr.next; // Save next node
+    curr.next = prev; // Reverse pointer
 
-// Print the mean to the console
-console.log("Mean:", mean);
-Mean: 6.00
+    prev = curr;
+    curr = next;
+  }
+
+  return prev;
+}
+let reversedList = reverseLinkedList(list);
+let node = reversedList;
+while (node !== null) {
+  console.log(node.value);
+  node = node.next;
+}
+4
+3
+2
+1
