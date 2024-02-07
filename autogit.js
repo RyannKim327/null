@@ -1,84 +1,45 @@
-function fibonacciSearch(arr, target, n) {
-  let fib = [0, 1, 1];
-  let k = 2;
-
-  while (fib[k] < n) {
-    k++;
-    fib[k] = fib[k - 1] + fib[k - 2];
+function countingSort(arr) {
+  if (arr.length === 0) {
+    return arr;
   }
-}
-function fibonacciSearch(arr, target, n) {
-  // ...
 
-  let offset = -1;
-  let i = k - 2;
-}
-function fibonacciSearch(arr, target, n) {
-  // ...
-
-  let offset = -1;
-  let i = k - 2;
-
-  while (i > 0) {
-    let idx = Math.min(offset + fib[i], n - 1);
-
-    if (arr[idx] < target) {
-      // If the current element is less than the target, move the Fibonacci
-      // comparison index two steps down and increase the offset.
-      i = i - 1;
-      offset = idx;
-    } else if (arr[idx] > target) {
-      // If the current element is greater than the target, move the  Fibonacci
-      // comparison index one step down.
-      i = i - 2;
-    } else {
-      // If the current element is equal to the target, return the index.
-      return idx;
+  // Step 2: Find the minimum and maximum values
+  let min = arr[0];
+  let max = arr[0];
+  for (let i = 1; i < arr.length; i++) {
+    if (arr[i] < min) {
+      min = arr[i];
+    }
+    if (arr[i] > max) {
+      max = arr[i];
     }
   }
 
-  // If the target is not found, return -1.
-  return -1;
-}
-function fibonacciSearch(arr, target, n) {
-  // ...
+  // Step 3: Create the count array
+  let count = new Array(max - min + 1).fill(0);
 
-  // ...
-
-  // ...
-
-  return -1;
-}
-function fibonacciSearch(arr, target, n) {
-  let fib = [0, 1, 1];
-  let k = 2;
-
-  while (fib[k] < n) {
-    k++;
-    fib[k] = fib[k - 1] + fib[k - 2];
+  // Step 4: Count the occurrences of each element
+  for (let i = 0; i < arr.length; i++) {
+    count[arr[i] - min]++;
   }
 
-  let offset = -1;
-  let i = k - 2;
-
-  while (i > 0) {
-    let idx = Math.min(offset + fib[i], n - 1);
-
-    if (arr[idx] < target) {
-      i = i - 1;
-      offset = idx;
-    } else if (arr[idx] > target) {
-      i = i - 2;
-    } else {
-      return idx;
-    }
+  // Step 6: Update the count array to be cumulative
+  for (let i = 1; i < count.length; i++) {
+    count[i] += count[i - 1];
   }
 
-  return -1;
-}
-let myArray = [1, 3, 4, 6, 7, 8, 10];
-let targetValue = 6;
-let arraySize = myArray.length;
+  // Step 7: Place the elements in the sorted order
+  let sortedArray = new Array(arr.length);
+  for (let i = arr.length - 1; i >= 0; i--) {
+    sortedArray[count[arr[i] - min] - 1] = arr[i];
+    count[arr[i] - min]--;
+  }
 
-let result = fibonacciSearch(myArray, targetValue, arraySize);
-console.log(result); // Output: 3 (index of the target value in the array)
+  // Step 8: Return the sorted array
+  return sortedArray;
+}
+
+// Example usage:
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const sortedArr = countingSort(arr);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
