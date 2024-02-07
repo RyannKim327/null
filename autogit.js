@@ -1,8 +1,16 @@
-let stringNumber = "42";
-let integerNumber = parseInt(stringNumber);
+function largestPrimeFactor(number) {
+  let factor = 2;
+  
+  while (factor <= number) {
+    if (number % factor === 0) {
+      number /= factor;
+    } else {
+      factor++;
+    }
+  }
+  
+  return factor;
+}
 
-console.log(integerNumber); // Output: 42
-let binaryString = "1001";
-let decimalNumber = parseInt(binaryString, 2);
-
-console.log(decimalNumber); // Output: 9
+// Example usage
+console.log(largestPrimeFactor(600851475143));  // Output: 6857
