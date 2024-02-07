@@ -1,18 +1,18 @@
-function findSecondLargest(array) {
-  let largest = -Infinity;
-  let secondLargest = -Infinity;
-
-  for (let i = 0; i < array.length; i++) {
-    if (array[i] > largest) {
-      secondLargest = largest;
-      largest = array[i];
-    } else if (array[i] > secondLargest && array[i] < largest) {
-      secondLargest = array[i];
-    }
-  }
-
-  return secondLargest;
+function reverseStringWords(str) {
+  // Split the string into an array of words
+  var wordsArray = str.split(" ");
+  
+  // Reverse the elements of the array
+  var reversedArray = wordsArray.reverse();
+  
+  // Join the reversed array back into a string
+  var reversedString = reversedArray.join(" ");
+  
+  return reversedString;
 }
-const numbers = [5, 2, 9, 1, 7, 3];
-const secondLargest = findSecondLargest(numbers);
-console.log(secondLargest); // Output: 7
+
+// Example usage
+var originalString = "Hello world! How are you?";
+var reversedString = reverseStringWords(originalString);
+console.log(reversedString);
+you? are How world! Hello
