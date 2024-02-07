@@ -1,58 +1,50 @@
-class Node {
-  constructor(label) {
-    this.label = label;
-    this.children = {};
-    this.isLeaf = false;
-  }
-}
-class SuffixTree {
-  constructor() {
-    this.root = new Node('');
-  }
-}
-class SuffixTree {
-  // previous code...
+function beamSearch(initialInput, beamWidth, maxLength, scoringFunction) {
+  // Initialize the beam with the initial input
+  let beam = [{ sequence: [initialInput], score: 0 }];
 
-  build(input) {
-    for (let i = 0; i < input.length; i++) {
-      this._addSuffix(input.substring(i));
+  for (let step = 0; step < maxLength; step++) {
+    let candidates = [];
+
+    // Generate candidates for each beam
+    for (let i = 0; i < beam.length; i++) {
+      let sequence = beam[i].sequence;
+      let score = beam[i].score;
+
+      // Generate new candidates by extending the current sequence
+      let newCandidates = getNextCandidates(sequence);
+
+      // Calculate scores for the new candidates
+      for (let j = 0; j < newCandidates.length; j++) {
+        let candidate = newCandidates[j];
+        let candidateScore = scoringFunction(candidate);
+
+        // Add the candidate and its score to the list
+        candidates.push({ sequence: sequence.concat(candidate), score: score + candidateScore });
+      }
     }
+
+    // Sort the candidates by their scores in descending order
+    candidates.sort((a, b) => b.score - a.score);
+
+    // Keep the top-k candidates based on the beam width
+    beam = candidates.slice(0, beamWidth);
   }
 
-  _addSuffix(suffix) {
-    let currentNode = this.root;
-    for (let i = 0; i < suffix.length; i++) {
-      const char = suffix[i];
-      if (!currentNode.children[char]) {
-        currentNode.children[char] = new Node(suffix.substring(i));
-      }
-      currentNode = currentNode.children[char];
-    }
-    currentNode.isLeaf = true;
-  }
+  // Return the top-k sequences
+  return beam.map(candidate => candidate.sequence);
 }
-class SuffixTree {
-  // previous code...
 
-  search(query) {
-    let currentNode = this.root;
-    let i = 0;
-    while (i < query.length) {
-      const char = query[i];
-      if (!currentNode.children[char]) {
-        return false;
-      }
-      const label = currentNode.children[char].label;
-      const len = Math.min(query.length - i, label.length);
-      if (query.substring(i, i + len) !== label.substring(0, len)) {
-        return false;
-      }
-      i += len;
-      if (i === query.length && currentNode.children[char].isLeaf) {
-        return true;
-      }
-      currentNode = currentNode.children[char];
-    }
-    return false;
-  }
+// Helper function to generate next candidates
+function getNextCandidates(sequence) {
+  // Implement your logic to generate next candidates based on the current sequence
+  // Return an array of candidates
 }
+
+// Usage example
+let initialInput = 'start';
+let beamWidth = 3;
+let maxLength = 5;
+let scores = [2, 5, 1]; // Dummy scores for simplicity
+
+let result = beamSearch(initialInput, beamWidth, maxLength, scoringFunction);
+console.log(result);
