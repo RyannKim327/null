@@ -1,20 +1,14 @@
-function findNthNodeFromEnd(head, n) {
-  let slow = head;
-  let fast = head;
+function isPalindrome(str) {
+  // remove non-alphanumeric characters and convert to lowercase
+  str = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
 
-  // Move the fast pointer n positions ahead
-  for (let i = 0; i < n; i++) {
-    if (fast === null) {
-      return null; // n is greater than the length of the linked list
-    }
-    fast = fast.next;
-  }
+  // reverse the string
+  var reversedStr = str.split('').reverse().join('');
 
-  // Move both pointers until the fast pointer reaches the end
-  while (fast !== null) {
-    slow = slow.next;
-    fast = fast.next;
-  }
-
-  return slow.value;
+  // compare the reversed string with the original string
+  return str === reversedStr;
 }
+
+// example usage
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
+console.log(isPalindrome("hello world")); // false
