@@ -1,53 +1,16 @@
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function getIntersection(headA, headB) {
+  // Edge cases
+  if (!headA || !headB) return null;
+
+  let p1 = headA;
+  let p2 = headB;
+  
+  while (p1 !== p2) {
+    // Move p1 to the head of the other linked list if it reaches the end
+    p1 = p1 ? p1.next : headB;
+    // Move p2 to the head of the other linked list if it reaches the end
+    p2 = p2 ? p2.next : headA;
   }
+  
+  return p1; // p1 (or p2) will be the intersection node or null
 }
-
-class BinaryTree {
-  constructor() {
-    this.root = null;
-  }
-
-  insert(value) {
-    const newNode = new TreeNode(value);
-
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
-
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
-
-  // Other methods such as search, delete, traverse, etc.
-}
-const tree = new BinaryTree();
-tree.insert(5);
-tree.insert(3);
-tree.insert(7);
-tree.insert(1);
-tree.insert(4);
-tree.insert(6);
-tree.insert(8);
-
-console.log(tree.root); // The root node of the binary tree
-console.log(tree.root.left); // The left child of the root node
-console.log(tree.root.right); // The right child of the root node
