@@ -1,29 +1,42 @@
-function findNthNodeFromEnd(head, n) {
-  let ahead = head;
-  let current = head;
+function tarjansAlgorithm(graph) {
+  const ids = [];
+  const low = [];
+  const stack = [];
+  let id = 0;
+  const components = [];
 
-  // Move the ahead pointer n steps forward
-  while (n > 0) {
-    if (ahead === null) {
-      return null; // Linked list length is less than n
+  function dfs(node) {
+    ids[node] = id;
+    low[node] = id;
+    id++;
+
+    stack.push(node);
+
+    for (const adjacent of graph[node]) {
+      if (!ids[adjacent]) {
+        dfs(adjacent);
+      }
+      if (stack.includes(adjacent)) {
+        low[node] = Math.min(low[node], low[adjacent]);
+      }
     }
-    ahead = ahead.next;
-    n--;
+
+    if (ids[node] === low[node]) {
+      const component = [];
+      let member;
+      do {
+        member = stack.pop();
+        component.push(member);
+      } while (member !== node);
+      components.push(component);
+    }
   }
 
-  // Move both pointers one step at a time
-  while (ahead !== null) {
-    ahead = ahead.next;
-    current = current.next;
+  for (let node = 0; node < graph.length; node++) {
+    if (!ids[node]) {
+      dfs(node);
+    }
   }
 
-  return current;
+  return components;
 }
-const head = { value: 1, next: null };
-const second = { value: 2, next: null };
-const third = { value: 3, next: null };
-
-head.next = second;
-second.next = third;
-
-console.log(findNthNodeFromEnd(head, 2)); // Output: { value: 2, next: { value: 3, next: null } }
