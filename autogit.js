@@ -1,18 +1,35 @@
-function selectionSort(arr) {
-  const length = arr.length;
-  for (let i = 0; i < length - 1; i++) {
-    let minIndex = i;
-    for (let j = i + 1; j < length; j++) {
-      if (arr[j] < arr[minIndex]) {
-        minIndex = j;
-      }
+function findMajorityElement(arr) {
+  let frequencyMap = {};
+  let majorityElement = null;
+  let majorityCount = 0;
+
+  // Count frequency of each element
+  for (let element of arr) {
+    if (frequencyMap[element]) {
+      frequencyMap[element]++;
+    } else {
+      frequencyMap[element] = 1;
     }
-    [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
   }
-  return arr;
+
+  // Find the element with highest frequency count
+  for (let element in frequencyMap) {
+    if (frequencyMap[element] > majorityCount) {
+      majorityElement = element;
+      majorityCount = frequencyMap[element];
+    }
+  }
+
+  // Check if the element is the majority element
+  if (majorityCount > arr.length / 2) {
+    return majorityElement;
+  } else {
+    return "No majority element";
+  }
 }
 
-// Example usage:
-const unsortedArray = [64, 25, 12, 22, 11];
-const sortedArray = selectionSort(unsortedArray);
-console.log(sortedArray);
+// Example usage
+const array = [2, 2, 2, 3, 4, 2, 5, 2, 6];
+const majorityElement = findMajorityElement(array);
+console.log("Majority Element:", majorityElement);
+Majority Element: 2
