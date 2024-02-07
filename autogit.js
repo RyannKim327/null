@@ -1,44 +1,60 @@
-function longestCommonSubsequence(str1, str2) {
-  const m = str1.length;
-  const n = str2.length;
-
-  // Create a matrix to store the lengths of longest common subsequences
-  const dp = Array(m + 1)
-    .fill(0)
-    .map(() => Array(n + 1).fill(0));
-
-  // Build the matrix using dynamic programming
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
+function buildPrefixTable(pattern) {
+  const prefixTable = new Array(pattern.length);
+  prefixTable[0] = 0; // First element is always 0
+  
+  let length = 0; // Length of the previous longest prefix
+  let i = 1;
+  
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[length]) {
+      length++;
+      prefixTable[i] = length;
+      i++;
+    } else {
+      if (length !== 0) {
+        length = prefixTable[length - 1];
       } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+        prefixTable[i] = 0;
+        i++;
       }
     }
   }
-
-  // Retrieve the longest common subsequence
-  const longestSubsequence = [];
-  let i = m,
-    j = n;
-  while (i > 0 && j > 0) {
-    if (str1[i - 1] === str2[j - 1]) {
-      longestSubsequence.unshift(str1[i - 1]);
-      i--;
-      j--;
-    } else if (dp[i - 1][j] > dp[i][j - 1]) {
-      i--;
-    } else {
-      j--;
+  
+  return prefixTable;
+}
+function kmpSearch(text, pattern) {
+  const prefixTable = buildPrefixTable(pattern);
+  
+  let i = 0;  // Index for text
+  let j = 0;  // Index for pattern
+  
+  while (i < text.length) {
+    if (pattern[j] === text[i]) {
+      i++;
+      j++;
+    }
+    
+    if (j === pattern.length) {
+      return i - j;
+    } else if (i < text.length && pattern[j] !== text[i]) {
+      if (j !== 0) {
+        j = prefixTable[j - 1];
+      } else {
+        i++;
+      }
     }
   }
-
-  return longestSubsequence.join('');
+  
+  return -1; // Pattern not found in text
 }
+// Example usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
 
-// Example usage:
-const str1 = 'ABCDGH';
-const str2 = 'AEDFHR';
-const lcs = longestCommonSubsequence(str1, str2);
-console.log(lcs); // Output: ADH
+const index = kmpSearch(text, pattern);
+if (index !== -1) {
+  console.log(`Pattern found at index ${index}`);
+} else {
+  console.log("Pattern not found");
+}
+Pattern found at index 10
