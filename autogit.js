@@ -1,35 +1,69 @@
-position = start + Math.floor((end - start) * (target - array[start]) / (array[end] - array[start]))
-function interpolationSearch(target, array, start, end) {
-  if (start > end || target < array[start] || target > array[end]) {
-    return -1;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
-
-  let position = start + Math.floor((end - start) * (target - array[start]) / (array[end] - array[start]));
-
-  if (array[position] === target) {
-    return position;
-  }
-
-  if (array[position] < target) {
-    return interpolationSearch(target, array, position + 1, end);
-  }
-
-  if (array[position] > target) {
-    return interpolationSearch(target, array, start, position - 1);
-  }
-
-  return -1;
 }
-const array = [1, 3, 5, 7, 9];
-const target = 5;
-const start = 0;
-const end = array.length - 1;
 
-const result = interpolationSearch(target, array, start, end);
+class Queue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+  }
 
-if (result === -1) {
-  console.log("Target value not found in the array.");
-} else {
-  console.log(`Target value found at index ${result}.`);
+  enqueue(value) {
+    const newNode = new Node(value);
+    if (this.isEmpty()) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+  }
+
+  dequeue() {
+    if (this.isEmpty()) {
+      return null;
+    }
+
+    const removedNode = this.head;
+    this.head = this.head.next;
+
+    if (this.isEmpty()) {
+      this.tail = null;
+    }
+
+    return removedNode.value;
+  }
+
+  isEmpty() {
+    return this.head === null;
+  }
+
+  print() {
+    if (this.isEmpty()) {
+      console.log("Queue is empty");
+      return;
+    }
+
+    let currentNode = this.head;
+    let values = [];
+    while (currentNode) {
+      values.push(currentNode.value);
+      currentNode = currentNode.next;
+    }
+    console.log("Queue:", values.join(" -> "));
+  }
 }
-Target value found at index 2.
+const queue = new Queue();
+
+queue.enqueue(10);
+queue.enqueue(20);
+queue.enqueue(30);
+queue.print();  // Queue: 10 -> 20 -> 30
+
+queue.dequeue();
+queue.print();  // Queue: 20 -> 30
+
+console.log(queue.isEmpty());  // false
