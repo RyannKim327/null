@@ -1,53 +1,29 @@
-function findMedianSortedArrays(nums1, nums2) {
-    // Merge the two arrays
-    const merged = merge(nums1, nums2);
-    
-    // Calculate the total length of the merged array
-    const totalLength = merged.length;
-    
-    // Check if the total length is even or odd
-    if (totalLength % 2 === 0) {
-        // If it's even, return the average of the middle two elements
-        const midIndex1 = totalLength / 2 - 1;
-        const midIndex2 = totalLength / 2;
-        return (merged[midIndex1] + merged[midIndex2]) / 2;
-    } else {
-        // If it's odd, return the middle element
-        const midIndex = Math.floor(totalLength / 2);
-        return merged[midIndex];
-    }
-}
+function shellSort(arr) {
+  var len = arr.length;
+  var gap = Math.floor(len / 2);
 
-// Helper function to merge two arrays
-function merge(arr1, arr2) {
-    const merged = [];
-    let i = 0, j = 0;
-    
-    while (i < arr1.length && j < arr2.length) {
-        if (arr1[i] < arr2[j]) {
-            merged.push(arr1[i]);
-            i++;
-        } else {
-            merged.push(arr2[j]);
-            j++;
-        }
+  while (gap > 0) {
+    for (var i = gap; i < len; i++) {
+      var temp = arr[i];
+      var j = i;
+
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
+      }
+
+      arr[j] = temp;
     }
-    
-    while (i < arr1.length) {
-        merged.push(arr1[i]);
-        i++;
-    }
-    
-    while (j < arr2.length) {
-        merged.push(arr2[j]);
-        j++;
-    }
-    
-    return merged;
+
+    gap = Math.floor(gap / 2);
+  }
+
+  return arr;
 }
 
 // Example usage
-const nums1 = [1, 3, 5];
-const nums2 = [2, 4, 6];
-const median = findMedianSortedArrays(nums1, nums2);
-console.log(median); // Output: 3.5
+var array = [8, 3, 11, 1, 7, 5];
+console.log("Before sorting:", array);
+console.log("After sorting:", shellSort(array));
+Before sorting: [8, 3, 11, 1, 7, 5]
+After sorting: [1, 3, 5, 7, 8, 11]
