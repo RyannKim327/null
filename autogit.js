@@ -1,24 +1,15 @@
-function findFirstNonRepeatingCharacter(str) {
-  // Create an object to store the frequencies of each character
-  const frequencies = {};
+function removeVowels(str) {
+  // Use regex to match all vowels (both lowercase and uppercase)
+  const vowels = /[aeiou]/gi;
 
-  // Iterate over each character in the string
-  for (const char of str) {
-    // Increment the frequency of the character, or initialize it to 1 if it doesn't exist yet
-    frequencies[char] = frequencies[char] + 1 || 1;
-  }
+  // Use the replace() method to remove vowels from the string
+  const result = str.replace(vowels, '');
 
-  // Iterate over each character in the string again
-  for (const char of str) {
-    // If the frequency of the character is 1, it is the first non-repeating character
-    if (frequencies[char] === 1) {
-      return char;
-    }
-  }
-
-  // If there are no non-repeating characters, return null
-  return null;
+  return result;
 }
-const str = "hello world";
-const firstNonRepeatingChar = findFirstNonRepeatingCharacter(str);
-console.log(firstNonRepeatingChar); // Output: 'h'
+
+// Example usage
+const input = 'Hello, World!';
+const output = removeVowels(input);
+
+console.log(output); // Output: Hll, Wrld!
