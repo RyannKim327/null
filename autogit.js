@@ -1,24 +1,13 @@
-function quicksort(arr) {
-  if (arr.length <= 1) {
-    return arr;
-  }
-
-  const pivot = arr[Math.floor(arr.length / 2)];
-  const less = [];
-  const greater = [];
-
-  for (const val of arr) {
-    if (val < pivot) {
-      less.push(val);
-    } else if (val > pivot) {
-      greater.push(val);
-    }
-  }
-
-  return [...quicksort(less), pivot, ...quicksort(greater)];
+Area = (base * height) / 2
+// Function to calculate the area of a triangle
+function calculateTriangleArea(base, height) {
+  var area = (base * height) / 2;
+  return area;
 }
 
-// Usage example:
-const array = [5, 2, 9, 1, 7, 6, 3];
-const sortedArray = quicksort(array);
-console.log(sortedArray);
+// Example usage
+var triangleBase = 10;
+var triangleHeight = 5;
+
+var triangleArea = calculateTriangleArea(triangleBase, triangleHeight);
+console.log("The area of the triangle is: " + triangleArea);
