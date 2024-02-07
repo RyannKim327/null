@@ -1,17 +1,30 @@
-function reverseStringWords(str) {
-  // Split the string into an array of words
-  var words = str.split(' ');
-
-  // Reverse the array
-  var reversedWords = words.reverse();
-
-  // Join the array elements back into a single string
-  var reversedString = reversedWords.join(' ');
-
-  return reversedString;
+const graph = {};
+function addEdge(node1, node2) {
+  if (!graph[node1]) graph[node1] = [];
+  if (!graph[node2]) graph[node2] = [];
+  graph[node1].push(node2);
+  graph[node2].push(node1);
 }
+function depthFirstSearch(startNode) {
+  const visited = {};
 
-// Example usage
-var originalString = "Hello, how are you?";
-var reversedString = reverseStringWords(originalString);
-console.log(reversedString);
+  function dfs(node) {
+    visited[node] = true;
+    console.log(node); // Print the visited node
+
+    for (const neighbor of graph[node]) {
+      if (!visited[neighbor]) {
+        dfs(neighbor);
+      }
+    }
+  }
+
+  dfs(startNode);
+}
+addEdge(1, 2);
+addEdge(1, 3);
+addEdge(2, 4);
+addEdge(2, 5);
+addEdge(3, 6);
+addEdge(3, 7);
+depthFirstSearch(1);
