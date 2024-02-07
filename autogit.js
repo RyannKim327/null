@@ -1,85 +1,90 @@
-// Node class
-class Node {
-  constructor() {
-    this.children = {};
+class PriorityQueue {
+  constructor(compare) {
+    this.heap = [];
+    this.compare = compare;
   }
 }
+class PriorityQueue {
+  // ...
 
-// Suffix Tree class
-class SuffixTree {
-  constructor(string) {
-    this.root = new Node();
-    this.construct(string);
+  swap(i, j) {
+    [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
   }
 
-  // Construction method
-  construct(string) {
-    for (let i = 0; i < string.length; i++) {
-      const suffix = string.slice(i);
-      this.insert(suffix, i);
-    }
+  getParentIndex(index) {
+    return Math.floor((index - 1) / 2);
   }
 
-  // Insertion method
-  insert(suffix, index) {
-    let currentNode = this.root;
-
-    for (let i = 0; i < suffix.length; i++) {
-      const char = suffix[i];
-
-      // If the current character doesn't exist in the children, add a new node
-      if (!currentNode.children[char]) {
-        currentNode.children[char] = new Node();
-      }
-
-      currentNode = currentNode.children[char];
-    }
-
-    // Store the index of the suffix in the leaf node
-    currentNode.index = index;
+  getLeftChildIndex(index) {
+    return 2 * index + 1;
   }
 
-  // Search method to find occurrences of a substring
-  search(substring) {
-    let currentNode = this.root;
-
-    for (let i = 0; i < substring.length; i++) {
-      const char = substring[i];
-
-      // If the current character doesn't exist in the children, the substring doesn't exist
-      if (!currentNode.children[char]) {
-        return [];
-      }
-
-      currentNode = currentNode.children[char];
-    }
-
-    // Get all indices from the leaf node and its children
-    return this.getAllIndices(currentNode);
-  }
-
-  // Helper method to get all indices from a node and its children
-  getAllIndices(node) {
-    let results = [];
-
-    // Recursively visit all children nodes
-    for (const key in node.children) {
-      const child = node.children[key];
-
-      // If the child has an index, add it to the results
-      if (child.index !== undefined) {
-        results.push(child.index);
-      }
-
-      // Recursively visit the child's children
-      results = results.concat(this.getAllIndices(child));
-    }
-
-    return results;
+  getRightChildIndex(index) {
+    return 2 * index + 2;
   }
 }
+class PriorityQueue {
+  // ...
+  
+  push(element) {
+    this.heap.push(element);
+    let currentIndex = this.heap.length - 1;
+    let parentIndex = this.getParentIndex(currentIndex);
+    while (
+      currentIndex > 0 &&
+      this.compare(this.heap[currentIndex], this.heap[parentIndex]) < 0
+    ) {
+      this.swap(currentIndex, parentIndex);
+      currentIndex = parentIndex;
+      parentIndex = this.getParentIndex(currentIndex);
+    }
+  }
 
-// Usage example
-const suffixTree = new SuffixTree("banana");
-console.log(suffixTree.search("an")); // Output: [1, 3]
-console.log(suffixTree.search("na")); // Output: [2, 4]
+  pop() {
+    if (this.isEmpty()) {
+      return null;
+    }
+    if (this.heap.length === 1) {
+      return this.heap.pop();
+    }
+    const element = this.heap[0];
+    this.heap[0] = this.heap.pop();
+    let currentIndex = 0;
+    let leftChildIndex = this.getLeftChildIndex(currentIndex);
+    let rightChildIndex = this.getRightChildIndex(currentIndex);
+    while (
+      (leftChildIndex < this.heap.length &&
+        this.compare(this.heap[currentIndex], this.heap[leftChildIndex]) > 0) ||
+      (rightChildIndex < this.heap.length &&
+        this.compare(this.heap[currentIndex], this.heap[rightChildIndex]) > 0)
+    ) {
+      if (
+        rightChildIndex < this.heap.length &&
+        this.compare(this.heap[rightChildIndex], this.heap[leftChildIndex]) < 0
+      ) {
+        this.swap(currentIndex, rightChildIndex);
+        currentIndex = rightChildIndex;
+      } else {
+        this.swap(currentIndex, leftChildIndex);
+        currentIndex = leftChildIndex;
+      }
+      leftChildIndex = this.getLeftChildIndex(currentIndex);
+      rightChildIndex = this.getRightChildIndex(currentIndex);
+    }
+    return element;
+  }
+}
+class PriorityQueue {
+  // ...
+  
+  isEmpty() {
+    return this.heap.length === 0;
+  }
+
+  peek() {
+    if (this.isEmpty()) {
+      return null;
+    }
+    return this.heap[0];
+  }
+}
