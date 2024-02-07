@@ -1,12 +1,23 @@
-Area = (base * height) / 2
-// Function to calculate the area of a triangle
-function calculateTriangleArea(base, height) {
-  var area = (base * height) / 2;
-  return area;
-}
+function longestCommonPrefix(strings) {
+  let prefix = '';
 
-// Example usage
-var base = 5;
-var height = 7;
-var triangleArea = calculateTriangleArea(base, height);
-console.log("The area of the triangle is: " + triangleArea);
+  if (strings === null || strings.length === 0) {
+    return prefix;
+  }
+
+  for (let i = 0; i < strings[0].length; i++) {
+    const char = strings[0][i];
+
+    for (let j = 1; j < strings.length; j++) {
+      if (i >= strings[j].length || strings[j][i] !== char) {
+        return prefix;
+      }
+    }
+
+    prefix += char;
+  }
+
+  return prefix;
+}
+const strings = ['apple', 'app', 'apricot'];
+console.log(longestCommonPrefix(strings)); // Output: 'ap'
