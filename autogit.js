@@ -1,34 +1,20 @@
-function findMajorityElement(arr) {
-  let majority = null;
-  let count = 0;
+function findSecondLargest(arr) {
+  let largest = -Infinity;
+  let secondLargest = -Infinity;
 
-  for (let num of arr) {
-    if (count === 0) {
-      majority = num;
-      count = 1;
-    } else if (num === majority) {
-      count++;
-    } else {
-      count--;
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] > largest) {
+      secondLargest = largest;
+      largest = arr[i];
+    } else if (arr[i] > secondLargest && arr[i] !== largest) {
+      secondLargest = arr[i];
     }
   }
-  
-  // Verification step (optional)
-  count = 0;
-  for (let num of arr) {
-    if (num === majority) {
-      count++;
-    }
-  }
-  
-  if (count > arr.length / 2) {
-    return majority;
-  } else {
-    return null; // No majority element found
-  }
+
+  return secondLargest;
 }
 
-// Example usage
-const array = [3, 1, 3, 3, 2];
-const majorityElement = findMajorityElement(array);
-console.log("Majority Element:", majorityElement);
+// Example usage:
+const array = [5, 2, 9, 1, 7, 6, 3];
+const secondLargest = findSecondLargest(array);
+console.log(secondLargest); // Output: 7
