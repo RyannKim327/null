@@ -1,14 +1,6 @@
-function isPalindrome(str) {
-  // Convert to lowercase and remove non-alphanumeric characters
-  const modifiedStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+const numbers = [4, 2, 8, 5, 1, 3];
 
-  // Reverse the modified string
-  const reversedStr = modifiedStr.split('').reverse().join('');
+numbers.sort((a, b) => a - b);
 
-  // Check if the reversed string is the same as the original string
-  return modifiedStr === reversedStr;
-}
-
-// Example usage
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car")); // false
+console.log(numbers);
+[1, 2, 3, 4, 5, 8]
