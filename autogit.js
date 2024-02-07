@@ -1,17 +1,20 @@
-function getRandomNumber(min, max) {
-  // Generate a random decimal number between 0 and 1
-  const randomDecimal = Math.random();
-
-  // Scale the random decimal number to the given range
-  const randomNumber = randomDecimal * (max - min + 1) + min;
-
-  // Convert the random number to an integer and return it
-  return Math.floor(randomNumber);
+function factorialRecursive(n) {
+  if (n === 0) {
+    return 1;
+  } else {
+    return n * factorialRecursive(n - 1);
+  }
 }
 
-// Usage
-const min = 1;
-const max = 100;
-const randomNum = getRandomNumber(min, max);
+// Usage:
+console.log(factorialRecursive(5)); // Output: 120
+function factorialLoop(n) {
+  let result = 1;
+  for (let i = 2; i <= n; i++) {
+    result *= i;
+  }
+  return result;
+}
 
-console.log(randomNum); // Output a random number between 1 and 100
+// Usage:
+console.log(factorialLoop(5)); // Output: 120
