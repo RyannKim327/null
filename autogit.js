@@ -1,67 +1,70 @@
-function rabinKarpSearch(pattern, text) {
-    // implementation goes here
-}
-function calculateHash(str) {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-        hash += str.charCodeAt(i);
-    }
-    return hash;
-}
+function biDirectionalSearch(graph, startNode, endNode) {
+  const queueStart = [];
+  const queueEnd = [];
+  const visitedStart = new Set();
+  const visitedEnd = new Set();
+  const parentsStart = new Map();
+  const parentsEnd = new Map();
 
-let patternHash = calculateHash(pattern);
-let textHash = calculateHash(text.substr(0, pattern.length));
-for (let i = 0; i <= text.length - pattern.length; i++) {
-    if (patternHash === textHash) {
-        let found = true;
-        // compare characters to verify if the pattern matches the substring
-        for (let j = 0; j < pattern.length; j++) {
-            if (text[i + j] !== pattern[j]) {
-                found = false;
-                break;
-            }
-        }
-        if (found) {
-            return i; // pattern found at index i in the text
-        }
-    }
-    // update the hash value
-    textHash -= text.charCodeAt(i);
-    textHash += text.charCodeAt(i + pattern.length);
-}
-return -1;
-function rabinKarpSearch(pattern, text) {
-    function calculateHash(str) {
-        let hash = 0;
-        for (let i = 0; i < str.length; i++) {
-            hash += str.charCodeAt(i);
-        }
-        return hash;
+  queueStart.push(startNode);
+  visitedStart.add(startNode);
+  parentsStart.set(startNode, null);
+
+  queueEnd.push(endNode);
+  visitedEnd.add(endNode);
+  parentsEnd.set(endNode, null);
+
+  while (queueStart.length > 0 && queueEnd.length > 0) {
+    const currentStart = queueStart.shift();
+    const currentEnd = queueEnd.shift();
+
+    if (visitedEnd.has(currentStart)) {
+      // Path found
+      return buildPath(currentStart, currentEnd, parentsStart, parentsEnd);
     }
 
-    let patternHash = calculateHash(pattern);
-    let textHash = calculateHash(text.substr(0, pattern.length));
-
-    for (let i = 0; i <= text.length - pattern.length; i++) {
-        if (patternHash === textHash) {
-            let found = true;
-            for (let j = 0; j < pattern.length; j++) {
-                if (text[i + j] !== pattern[j]) {
-                    found = false;
-                    break;
-                }
-            }
-            if (found) {
-                return i;
-            }
-        }
-        textHash -= text.charCodeAt(i);
-        textHash += text.charCodeAt(i + pattern.length);
+    if (visitedStart.has(currentEnd)) {
+      // Path found
+      return buildPath(currentStart, currentEnd, parentsStart, parentsEnd);
     }
 
-    return -1;
+    const neighborsStart = graph[currentStart] || [];
+    for (const neighbor of neighborsStart) {
+      if (!visitedStart.has(neighbor)) {
+        queueStart.push(neighbor);
+        visitedStart.add(neighbor);
+        parentsStart.set(neighbor, currentStart);
+      }
+    }
+
+    const neighborsEnd = graph[currentEnd] || [];
+    for (const neighbor of neighborsEnd) {
+      if (!visitedEnd.has(neighbor)) {
+        queueEnd.push(neighbor);
+        visitedEnd.add(neighbor);
+        parentsEnd.set(neighbor, currentEnd);
+      }
+    }
+  }
+
+  // No path found
+  return null;
 }
-let text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
-let pattern = "sit";
-let index = rabinKarpSearch(pattern, text);
-console.log(index); // Output: 19
+
+function buildPath(nodeStart, nodeEnd, parentsStart, parentsEnd) {
+  const pathStart = [];
+  let current = nodeStart;
+  while (current !== null) {
+    pathStart.unshift(current);
+    current = parentsStart.get(current);
+  }
+
+  const pathEnd = [];
+  current = nodeEnd;
+  while (current !== null) {
+    pathEnd.push(current);
+    current = parentsEnd.get(current);
+  }
+
+  return pathStart.concat(pathEnd);
+}
