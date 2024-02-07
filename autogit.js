@@ -1,61 +1,90 @@
-class HashTable {
-  constructor() {
-    this.size = 100; // Size of the hash table, you can adjust this
-    this.buckets = Array(this.size);
-  }
-
-  // Hash function to convert a key into an index
-  hash(key) {
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) {
-      hash += key.charCodeAt(i);
-    }
-    return hash % this.size;
-  }
-
-  // Insert a key-value pair into the hash table
-  insert(key, value) {
-    const index = this.hash(key);
-    if (!this.buckets[index]) {
-      this.buckets[index] = [];
-    }
-    this.buckets[index].push({ key, value });
-  }
-
-  // Get the value associated with a key
-  get(key) {
-    const index = this.hash(key);
-    if (!this.buckets[index]) {
-      return null;
-    }
-    for (const entry of this.buckets[index]) {
-      if (entry.key === key) {
-        return entry.value;
-      }
-    }
-    return null;
-  }
-
-  // Remove a key-value pair from the hash table
-  remove(key) {
-    const index = this.hash(key);
-    if (!this.buckets[index]) {
-      return;
-    }
-    for (let i = 0; i < this.buckets[index].length; i++) {
-      if (this.buckets[index][i].key === key) {
-        this.buckets[index].splice(i, 1);
-        return;
-      }
-    }
+class Node {
+  constructor(state, parent, cost, heuristic) {
+    this.state = state;
+    this.parent = parent;
+    this.cost = cost;
+    this.heuristic = heuristic;
+    this.totalCost = cost + heuristic;
   }
 }
-const hashTable = new HashTable();
-hashTable.insert("name", "John");
-hashTable.insert("age", 30);
 
-console.log(hashTable.get("name")); // Output: John
-console.log(hashTable.get("age")); // Output: 30
+class PriorityQueue {
+  constructor() {
+    this.elements = [];
+  }
 
-hashTable.remove("age");
-console.log(hashTable.get("age")); // Output: null
+  enqueue(node) {
+    let added = false;
+    for (let i = 0; i < this.elements.length; i++) {
+      if (node.totalCost < this.elements[i].totalCost) {
+        this.elements.splice(i, 0, node);
+        added = true;
+        break;
+      }
+    }
+    if (!added) {
+      this.elements.push(node);
+    }
+  }
+
+  dequeue() {
+    return this.elements.shift();
+  }
+
+  isEmpty() {
+    return this.elements.length === 0;
+  }
+}
+
+function aStarSearch(startState, goalState) {
+  const startNode = new Node(startState, null, 0, heuristic(startState, goalState));
+  const priorityQueue = new PriorityQueue();
+  priorityQueue.enqueue(startNode);
+  const visited = new Set();
+
+  while (!priorityQueue.isEmpty()) {
+    const currentNode = priorityQueue.dequeue();
+
+    if (currentNode.state === goalState) {
+      return getPath(currentNode);
+    }
+
+    visited.add(currentNode.state);
+
+    const successorStates = generateSuccessorStates(currentNode.state);
+    successorStates.forEach(successorState => {
+      if (visited.has(successorState)) {
+        return;
+      }
+
+      const cost = currentNode.cost + 1; // Assuming uniform cost for simplicity
+      const heuristicValue = heuristic(successorState, goalState);
+      const successorNode = new Node(successorState, currentNode, cost, heuristicValue);
+
+      priorityQueue.enqueue(successorNode);
+    });
+  }
+
+  return null;
+}
+
+function heuristic(state, goalState) {
+  // Calculate the heuristic value using an appropriate method
+  // For example, you can use Manhattan distance, Euclidean distance, or Hamming distance for puzzle-like problems
+}
+
+function generateSuccessorStates(state) {
+  // Generate all possible successor states from the current state
+  // For example, if the problem is a grid-based pathfinding, you can return the neighboring cells that are accessible
+}
+
+function getPath(node) {
+  // Build and return the path from the start to the given node
+  const path = [];
+  let currentNode = node;
+  while (currentNode !== null) {
+    path.unshift(currentNode.state);
+    currentNode = currentNode.parent;
+  }
+  return path;
+}
