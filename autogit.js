@@ -1,56 +1,44 @@
-class TrieNode {
-  constructor() {
-    this.children = {};
-    this.isEndOfWord = false;
-  }
+function LinkedListNode(value) {
+  this.value = value;
+  this.next = null;
+}
 
-  insert(word) {
-    let current = this;
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-      if (!(char in current.children)) {
-        current.children[char] = new TrieNode();
-      }
-      current = current.children[char];
-    }
-    current.isEndOfWord = true;
-  }
+function LinkedList() {
+  this.head = null;
+}
 
-  search(word) {
-    let current = this;
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-      if (!(char in current.children)) {
-        return false;
-      }
-      current = current.children[char];
+LinkedList.prototype.addNode = function(value) {
+  var node = new LinkedListNode(value);
+  
+  if (!this.head) {
+    this.head = node;
+  } else {
+    var current = this.head;
+    
+    while (current.next) {
+      current = current.next;
     }
-    return current.isEndOfWord;
-  }
-
-  startsWith(prefix) {
-    let current = this;
-    for (let i = 0; i < prefix.length; i++) {
-      const char = prefix[i];
-      if (!(char in current.children)) {
-        return false;
-      }
-      current = current.children[char];
-    }
-    return true;
+    
+    current.next = node;
   }
 }
-const trie = new TrieNode();
 
-// Insert words into the trie
-trie.insert("apple");
-trie.insert("banana");
-trie.insert("car");
+LinkedList.prototype.getLength = function() {
+  var current = this.head;
+  var count = 0;
+  
+  while (current) {
+    count++;
+    current = current.next;
+  }
+  
+  return count;
+}
 
-// Search for a word
-console.log(trie.search("apple")); // true
-console.log(trie.search("orange")); // false
+// Example usage
+var list = new LinkedList();
+list.addNode(1);
+list.addNode(2);
+list.addNode(3);
 
-// Check if a prefix exists
-console.log(trie.startsWith("app")); // true
-console.log(trie.startsWith("ora")); // false
+console.log(list.getLength()); // Output: 3
