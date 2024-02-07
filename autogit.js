@@ -1,21 +1,59 @@
-function binarySearch(arr, target, start = 0, end = arr.length - 1) {
-  while (start <= end) {
-    const middle = Math.floor((start + end) / 2);
-
-    if (arr[middle] === target) {
-      return middle; // found the target
-    } else if (arr[middle] > target) {
-      end = middle - 1; // adjust the end index
-    } else {
-      start = middle + 1; // adjust the start index
-    }
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.children = [];
+  }
+}
+class Queue {
+  constructor() {
+    this.elements = [];
   }
 
-  return -1; // target not found
-}
+  isEmpty() {
+    return this.elements.length === 0;
+  }
 
-// Example usage:
-const array = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const target = 12;
-const index = binarySearch(array, target);
-console.log(index); // Output: 5
+  enqueue(item) {
+    this.elements.push(item);
+  }
+
+  dequeue() {
+    return this.elements.shift();
+  }
+}
+function breadthFirstSearch(root, target) {
+  if (root === null) {
+    return false;
+  }
+
+  const queue = new Queue();
+  queue.enqueue(root);
+
+  while (!queue.isEmpty()) {
+    const current = queue.dequeue();
+
+    // Check if the current node's value matches the target
+    if (current.value === target) {
+      return true;
+    }
+
+    // Enqueue all children of the current node
+    current.children.forEach((child) => {
+      queue.enqueue(child);
+    });
+  }
+
+  return false; // Target not found
+}
+// Create a simple graph with nodes and edges
+const nodeA = new Node("A");
+const nodeB = new Node("B");
+const nodeC = new Node("C");
+const nodeD = new Node("D");
+const nodeE = new Node("E");
+
+nodeA.children.push(nodeB, nodeC);
+nodeB.children.push(nodeD, nodeE);
+
+console.log(breadthFirstSearch(nodeA, "E")); // Output: true
+console.log(breadthFirstSearch(nodeA, "F")); // Output: false
