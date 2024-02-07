@@ -1,17 +1,14 @@
-function areAnagrams(str1, str2) {
-  // Remove spaces and punctuation, convert to lowercase
-  str1 = str1.replace(/[^\w]/g, '').toLowerCase();
-  str2 = str2.replace(/[^\w]/g, '').toLowerCase();
+// Prompt the user for input
+var input = prompt("Enter a number:");
 
-  // Convert strings to arrays, sort them, and join back into strings
-  const sortedStr1 = str1.split('').sort().join('');
-  const sortedStr2 = str2.split('').sort().join('');
+// Convert the input to a number
+var number = parseFloat(input);
 
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+// Check if the input is a valid number
+if (!isNaN(number)) {
+  // Print the square of the number
+  var square = number * number;
+  console.log("The square of " + number + " is " + square);
+} else {
+  console.log("Invalid input. Please enter a number.");
 }
-
-// Example usage:
-const string1 = "listen";
-const string2 = "silent";
-console.log(areAnagrams(string1, string2)); // Output: true
