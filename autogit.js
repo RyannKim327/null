@@ -1,11 +1,15 @@
-function validateEmail(email) {
-  // Regular expression pattern for validating email addresses
-  const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  // Return true if the email matches the pattern, otherwise false
-  return pattern.test(email);
+// Random Sort Algorithm
+function randomSort(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    const randomIndex = Math.floor(Math.random() * arr.length);
+    [arr[i], arr[randomIndex]] = [arr[randomIndex], arr[i]];
+  }
+  return arr;
 }
 
-// Example usage
-console.log(validateEmail("test@example.com")); // true
-console.log(validateEmail("invalidemail")); // false
+// Example usage:
+const numbers = [1, 2, 3, 4, 5];
+console.log("Before random sort:", numbers);
+
+const randomSortedNumbers = randomSort(numbers);
+console.log("After random sort:", randomSortedNumbers);
