@@ -1,71 +1,38 @@
-function dijkstra(graph, startNode, targetNode) {
-  const distances = {};
-  const visited = {};
-  const previous = {};
+function breadthLimitedSearch(startNode, targetNode, maxDepth) {
+  if (startNode === targetNode) {
+    return startNode;
+  }
 
-  // Initialize distances, visited, and previous
-  Object.keys(graph).forEach((node) => {
-    distances[node] = Infinity;
-    visited[node] = false;
-    previous[node] = null;
-  });
+  let queue = [{ node: startNode, depth: 0 }];
 
-  // Set the distance of the start node to 0
-  distances[startNode] = 0;
+  while (queue.length > 0) {
+    let { node, depth } = queue.shift();
 
-  while (true) {
-    let closestNode = null;
+    if (depth < maxDepth) {
+      // Expand the node's neighbors
+      let neighbors = getNeighbors(node);
 
-    // Find the closest unvisited node
-    Object.keys(distances).forEach((node) => {
-      if (!visited[node] && (closestNode === null || distances[node] < distances[closestNode])) {
-        closestNode = node;
+      for (let neighbor of neighbors) {
+        if (neighbor === targetNode) {
+          return neighbor;
+        }
+
+        queue.push({ node: neighbor, depth: depth + 1 });
       }
-    });
-
-    if (closestNode === null) {
-      break;
-    }
-
-    // Update distances for neighboring nodes
-    Object.keys(graph[closestNode]).forEach((neighborNode) => {
-      const distance = graph[closestNode][neighborNode];
-      const totalDistance = distances[closestNode] + distance;
-      
-      if (totalDistance < distances[neighborNode]) {
-        distances[neighborNode] = totalDistance;
-        previous[neighborNode] = closestNode;
-      }
-    });
-
-    visited[closestNode] = true;
-
-    if (closestNode === targetNode) {
-      break;
     }
   }
 
-  // Backtrack to construct the shortest path
-  const shortestPath = [];
-  let currentNode = targetNode;
-
-  while (currentNode !== null) {
-    shortestPath.unshift(currentNode);
-    currentNode = previous[currentNode];
-  }
-
-  return { path: shortestPath, distance: distances[targetNode] };
+  return null; // Target node not found within the specified depth
 }
 
-// Example usage:
-const graph = {
-  A: { B: 5, C: 2 },
-  B: { A: 5, D: 6 },
-  C: { A: 2, D: 1 },
-  D: { B: 6, C: 1, E: 7 },
-  E: { D: 7 },
-};
+// Example usage
+let startNode = ...; // Define your starting node
+let targetNode = ...; // Define your target node
 
-console.log(dijkstra(graph, 'A', 'E'));
+let resultNode = breadthLimitedSearch(startNode, targetNode, 3);
 
-// Output: { path: [ 'A', 'C', 'D', 'E' ], distance: 8 }
+if (resultNode) {
+  console.log("Target node found:", resultNode);
+} else {
+  console.log("Target node not found within depth limit");
+}
