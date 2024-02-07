@@ -1,73 +1,20 @@
-function interpolationSearch(arr, target) {
-  let low = 0;
-  let high = arr.length - 1;
+function insertionSort(arr) {
+  for (let i = 1; i < arr.length; i++) {
+    let key = arr[i];
+    let j = i - 1;
 
-  while (low <= high && target >= arr[low] && target <= arr[high]) {
-    if (low === high) {
-      if (arr[low] === target) {
-        return low;
-      }
-      return -1;
+    while (j >= 0 && arr[j] > key) {
+      arr[j + 1] = arr[j];
+      j--;
     }
 
-    let pos = low + Math.floor(((target - arr[low]) / (arr[high] - arr[low])) * (high - low));
-
-    if (arr[pos] === target) {
-      return pos;
-    }
-
-    if (arr[pos] < target) {
-      low = pos + 1;
-    } else {
-      high = pos - 1;
-    }
+    arr[j + 1] = key;
   }
 
-  return -1;
-}
-const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const target = 12;
-const index = interpolationSearch(arr, target);
-if (index !== -1) {
-  console.log(`Element found at index ${index}.`);
-} else {
-  console.log("Element not found in the array.");
-}
-function interpolationSearch(arr, target) {
-  let low = 0;
-  let high = arr.length - 1;
-
-  while (low <= high && target >= arr[low] && target <= arr[high]) {
-    if (low === high) {
-      if (arr[low] === target) {
-        return low;
-      }
-      return -1;
-    }
-
-    let pos = low + Math.floor(((target - arr[low]) / (arr[high] - arr[low])) * (high - low));
-
-    if (arr[pos] === target) {
-      return pos;
-    }
-
-    if (arr[pos] < target) {
-      low = pos + 1;
-    } else {
-      high = pos - 1;
-    }
-  }
-
-  return -1;
+  return arr;
 }
 
-const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const target = 12;
-
-const index = interpolationSearch(arr, target);
-
-if (index !== -1) {
-  console.log(`Element found at index ${index}.`);
-} else {
-  console.log("Element not found in the array.");
-}
+// Example usage:
+const unsortedArray = [5, 3, 8, 1, 2, 4];
+const sortedArray = insertionSort(unsortedArray);
+console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 8]
