@@ -1,35 +1,21 @@
-function hasCycle(head) {
-  let slow = head;
-  let fast = head;
+function binarySearch(arr, target, start = 0, end = arr.length - 1) {
+  while (start <= end) {
+    const middle = Math.floor((start + end) / 2);
 
-  while (fast !== null && fast.next !== null) {
-    slow = slow.next;
-    fast = fast.next.next;
-
-    if (slow === fast) {
-      return true; // Found a cycle
+    if (arr[middle] === target) {
+      return middle; // found the target
+    } else if (arr[middle] > target) {
+      end = middle - 1; // adjust the end index
+    } else {
+      start = middle + 1; // adjust the start index
     }
   }
 
-  return false; // No cycle found
+  return -1; // target not found
 }
 
-// Example usage
-class ListNode {
-  constructor(value) {
-    this.val = value;
-    this.next = null;
-  }
-}
-
-// Create a linked list with a cycle
-const head = new ListNode(1);
-const node2 = new ListNode(2);
-const node3 = new ListNode(3);
-const node4 = new ListNode(4);
-head.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2; // Creates a cycle
-
-console.log(hasCycle(head)); // Output: true
+// Example usage:
+const array = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+const target = 12;
+const index = binarySearch(array, target);
+console.log(index); // Output: 5
