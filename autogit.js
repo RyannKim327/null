@@ -1,7 +1,9 @@
-function validateEmail(email) {
-  const regexPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return regexPattern.test(email);
-}
-const email = "example@email.com";
-const isValid = validateEmail(email);
-console.log(isValid); // Output: true
+// Defining an array of integers
+var numbers = [5, 2, 9, 1, 6];
+
+// Sorting the array in ascending order
+numbers.sort(function(a, b) {
+  return a - b;
+});
+
+console.log(numbers); // Output: [1, 2, 5, 6, 9]
