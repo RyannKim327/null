@@ -1,14 +1,16 @@
-function countOccurrences(str, char) {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === char) {
-            count++;
-        }
-    }
-    return count;
-}
-const myString = "Hello World";
-const myCharacter = "o";
+const cron = require('node-cron');
 
-const occurrenceCount = countOccurrences(myString, myCharacter);
-console.log(occurrenceCount);  // Output: 2
+// Define the cron job schedule (runs every minute)
+const task = cron.schedule('* * * * *', () => {
+  console.log('Running cron job...');
+  // Your code logic here...
+
+  // Stop the cron job after running for 5 minutes
+  if (task.getTotalRunTime() >= 5 * 60 * 1000) {
+    console.log('Stopping cron job...');
+    task.stop();
+  }
+});
+
+// Start the cron job
+task.start();
