@@ -1,33 +1,19 @@
-// Example graph represented as an adjacency list
-const graph = {
-  'A': ['B', 'C'],
-  'B': ['D', 'E'],
-  'C': ['F'],
-  'D': [],
-  'E': ['F'],
-  'F': []
-};
-
-function breadthFirstSearch(graph, startNode) {
-  const queue = [];
-  const visited = {};
-
-  queue.push(startNode);
-
-  while (queue.length > 0) {
-    const currentNode = queue.shift();
-    if (!visited[currentNode]) {
-      visited[currentNode] = true;
-      console.log('Visited node:', currentNode);
-      const adjacentNodes = graph[currentNode];
-      adjacentNodes.forEach((adjNode) => {
-        if (!visited[adjNode]) {
-          queue.push(adjNode);
-        }
-      });
+function bubbleSort(arr) {
+  var len = arr.length;
+  for (var i = 0; i < len - 1; i++) {
+    for (var j = 0; j < len - 1 - i; j++) {
+      if (arr[j] > arr[j + 1]) {
+        // Swap elements
+        var temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
+      }
     }
   }
+  return arr;
 }
 
 // Usage example
-breadthFirstSearch(graph, 'A');
+var arr = [5, 3, 8, 4, 2];
+console.log("Before sorting:", arr);
+console.log("After sorting:", bubbleSort(arr));
