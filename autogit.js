@@ -1,15 +1,34 @@
-// Random Sort Algorithm
-function randomSort(arr) {
-  for (let i = 0; i < arr.length; i++) {
-    const randomIndex = Math.floor(Math.random() * arr.length);
-    [arr[i], arr[randomIndex]] = [arr[randomIndex], arr[i]];
+// Define the URL of the server
+const serverUrl = 'https://example.com/api';
+
+// Define the data to send to the server
+const requestData = {
+  name: 'John Doe',
+  age: 30,
+};
+
+// Define an async function to make the API call
+async function connectToServerAsync() {
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestData),
+    });
+
+    if (!response.ok) {
+      throw new Error('Server returned an error');
+    }
+
+    const jsonResponse = await response.json();
+    console.log(jsonResponse); // Process the server response data here
+
+  } catch (error) {
+    console.error('An error occurred:', error);
   }
-  return arr;
 }
 
-// Example usage:
-const numbers = [1, 2, 3, 4, 5];
-console.log("Before random sort:", numbers);
-
-const randomSortedNumbers = randomSort(numbers);
-console.log("After random sort:", randomSortedNumbers);
+// Call the async function
+connectToServerAsync();
