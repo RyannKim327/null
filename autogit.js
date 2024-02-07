@@ -1,20 +1,15 @@
-function isPrime(number) {
-  // Check if the number is less than 2
-  if (number < 2) {
-    return false;
-  }
-
-  // Check for divisibility from 2 to the square root of the number
-  for (let i = 2; i <= Math.sqrt(number); i++) {
-    if (number % i === 0) {
-      return false; // Number is divisible, hence not prime
+function isArraySorted(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false;
     }
   }
-
-  return true; // Number is prime
+  return true;
 }
 
-// Testing the function
-console.log(isPrime(7)); // true
-console.log(isPrime(16)); // false
-console.log(isPrime(23)); // true
+// Example usage
+const array1 = [1, 2, 3, 4, 5];
+console.log(isArraySorted(array1)); // Output: true
+
+const array2 = [1, 3, 2, 4, 5];
+console.log(isArraySorted(array2)); // Output: false
