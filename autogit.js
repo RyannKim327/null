@@ -1,80 +1,44 @@
-class ListNode {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-class Queue {
-  constructor() {
-    this.head = null; // pointer to the front of the queue
-    this.tail = null; // pointer to the end of the queue
-    this.size = 0;
-  }
-}
-enqueue(value) {
-  const newNode = new ListNode(value);
-  if (this.isEmpty()) {
-    this.head = newNode;
-  } else {
-    this.tail.next = newNode;
-  }
-  this.tail = newNode;
-  this.size++;
-}
-dequeue() {
-  if (this.isEmpty()) {
-    return null;
-  }
-  const value = this.head.value;
-  this.head = this.head.next;
-  this.size--;
-  if (this.isEmpty()) {
-    this.tail = null;
-  }
-  return value;
-}
-isEmpty() {
-  return this.size === 0;
-}
-class ListNode {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-    this.size = 0;
-  }
-
-  enqueue(value) {
-    const newNode = new ListNode(value);
-    if (this.isEmpty()) {
-      this.head = newNode;
-    } else {
-      this.tail.next = newNode;
+function mergeSortIterative(array) {
+  const length = array.length;
+  const tempArray = new Array(length);
+  
+  for (let blockSize = 1; blockSize < length; blockSize *= 2) {
+    for (let start = 0; start < length - blockSize; start += 2 * blockSize) {
+      const mid = start + blockSize - 1;
+      const end = Math.min(start + 2 * blockSize - 1, length - 1);
+      merge(array, tempArray, start, mid, end);
     }
-    this.tail = newNode;
-    this.size++;
   }
   
-  dequeue() {
-    if (this.isEmpty()) {
-      return null;
-    }
-    const value = this.head.value;
-    this.head = this.head.next;
-    this.size--;
-    if (this.isEmpty()) {
-      this.tail = null;
-    }
-    return value;
-  }
+  return array;
+}
 
-  isEmpty() {
-    return this.size === 0;
+function merge(array, tempArray, start, mid, end) {
+  let i = start;
+  let j = mid + 1;
+  
+  for (let k = start; k <= end; k++) {
+    tempArray[k] = array[k];
+  }
+  
+  for (let k = start; k <= end; k++) {
+    if (i > mid) {
+      array[k] = tempArray[j];
+      j++;
+    } else if (j > end) {
+      array[k] = tempArray[i];
+      i++;
+    } else if (tempArray[j] < tempArray[i]) {
+      array[k] = tempArray[j];
+      j++;
+    } else {
+      array[k] = tempArray[i];
+      i++;
+    }
   }
 }
+const array = [5, 9, 2, 8, 3, 7, 1, 6, 4];
+console.log("Original Array:", array);
+
+const sortedArray = mergeSortIterative(array);
+console.log("Sorted Array:", sortedArray);
