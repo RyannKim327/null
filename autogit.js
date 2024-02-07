@@ -1,10 +1,17 @@
-array.splice(index, 1);
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
+const str = "Hello, World!";
+const substring = "Hello";
 
-let index = array.indexOf(elementToRemove);
-if (index !== -1) {
-  array.splice(index, 1);
+if (str.includes(substring)) {
+  console.log("Substring found!");
+} else {
+  console.log("Substring not found!");
 }
+const str = "Hello, World!";
+const substring = "Hello";
+const regex = new RegExp(substring);
 
-console.log(array); // [1, 2, 4, 5]
+if (regex.test(str)) {
+  console.log("Substring found!");
+} else {
+  console.log("Substring not found!");
+}
