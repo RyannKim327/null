@@ -1,20 +1,12 @@
-function findSecondLargest(array) {
-  let max = Math.max(array[0], array[1]);
-  let secondMax = Math.min(array[0], array[1]);
-
-  for (let i = 2; i < array.length; i++) {
-    if (array[i] > max) {
-      secondMax = max;
-      max = array[i];
-    } else if (array[i] > secondMax) {
-      secondMax = array[i];
-    }
+function factorial(n) {
+  // Base case: if the number is 0 or 1, return 1
+  if (n === 0 || n === 1) {
+    return 1;
   }
   
-  return secondMax;
+  // Recursive case: multiply the number by factorial of (number - 1)
+  return n * factorial(n - 1);
 }
 
-// Usage example:
-const array = [3, 6, 8, 2, 9, 1, 5];
-const secondLargest = findSecondLargest(array);
-console.log(secondLargest); // Output: 8
+// Example usage
+console.log(factorial(5)); // Output: 120
