@@ -1,26 +1,27 @@
-function selectionSort(arr) {
-  var length = arr.length;
+function shellSort(arr) {
+    const n = arr.length;
+    let gap = Math.floor(n / 2);
 
-  for (var i = 0; i < length - 1; i++) {
-    var minIndex = i;
+    while (gap > 0) {
+        for (let i = gap; i < n; i++) {
+            let temp = arr[i];
+            let j = i;
 
-    for (var j = i + 1; j < length; j++) {
-      if (arr[j] < arr[minIndex]) {
-        minIndex = j;
-      }
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
+            }
+
+            arr[j] = temp;
+        }
+
+        gap = Math.floor(gap / 2);
     }
 
-    if (minIndex !== i) {
-      // swap elements
-      var temp = arr[i];
-      arr[i] = arr[minIndex];
-      arr[minIndex] = temp;
-    }
-  }
-
-  return arr;
+    return arr;
 }
 
-// Example usage
-var myArray = [5, 3, 8, 2, 1, 4];
-console.log(selectionSort(myArray)); // Output: [1, 2, 3, 4, 5, 8]
+// Example usage:
+const array = [9, 5, 1, 3, 8, 4, 2, 7, 6];
+const sortedArray = shellSort(array);
+console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
