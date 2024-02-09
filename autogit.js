@@ -1,57 +1,52 @@
-function buildFailureTable(pattern) {
-  const table = [0]; // failure table
+function computeLPSArray(pattern) {
+  const lps = [0];
+  let len = 0;
+  let i = 1;
 
-  let prefixIndex = 0; // index of the prefix
-  let suffixIndex = 1; // index of the suffix
-
-  while (suffixIndex < pattern.length) {
-    if (pattern[prefixIndex] === pattern[suffixIndex]) {
-      // common prefix and suffix
-      table[suffixIndex] = prefixIndex + 1;
-      suffixIndex++;
-      prefixIndex++;
-    } else if (prefixIndex === 0) {
-      // no common prefix and suffix
-      table[suffixIndex] = 0;
-      suffixIndex++;
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[len]) {
+      len++;
+      lps[i] = len;
+      i++;
     } else {
-      // backtrack to find next possible prefix
-      prefixIndex = table[prefixIndex - 1];
-    }
-  }
-
-  return table;
-}
-
-function searchPattern(text, pattern) {
-  const failureTable = buildFailureTable(pattern);
-
-  let textIndex = 0; // index in the text
-  let patternIndex = 0; // index in the pattern
-
-  while (textIndex < text.length) {
-    if (text[textIndex] === pattern[patternIndex]) {
-      if (patternIndex === pattern.length - 1) {
-        // full match found
-        return textIndex - pattern.length + 1;
+      if (len !== 0) {
+        len = lps[len - 1];
+      } else {
+        lps[i] = 0;
+        i++;
       }
-      textIndex++;
-      patternIndex++;
-    } else if (patternIndex > 0) {
-      // backtrack using failure table
-      patternIndex = failureTable[patternIndex - 1];
-    } else {
-      textIndex++;
+    }
+  }
+  
+  return lps;
+}
+function KMP(text, pattern) {
+  const matches = [];
+  const lps = computeLPSArray(pattern);
+  let i = 0;
+  let j = 0;
+
+  while (i < text.length) {
+    if (text[i] === pattern[j]) {
+      i++;
+      j++;
+    }
+
+    if (j === pattern.length) {
+      matches.push(i - j);
+      j = lps[j - 1];
+    } else if (i < text.length && text[i] !== pattern[j]) {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
+      }
     }
   }
 
-  // match not found
-  return -1;
+  return matches;
 }
-
-// Example usage:
-const text = 'ABCABDABCABCDABCDABDE';
-const pattern = 'ABCDABD';
-
-const matchIndex = searchPattern(text, pattern);
-console.log(matchIndex); // Output: 8
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const matches = KMP(text, pattern);
+console.log(matches);
