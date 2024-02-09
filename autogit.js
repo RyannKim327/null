@@ -1,18 +1,24 @@
-class ListNode {
-  constructor(val, next = null) {
-    this.val = val;
-    this.next = next;
+function quicksort(arr) {
+  if (arr.length <= 1) {
+    return arr;
   }
+  
+  const pivot = arr[arr.length - 1];
+  const left = [];
+  const right = [];
+  
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] < pivot) {
+      left.push(arr[i]);
+    } else {
+      right.push(arr[i]);
+    }
+  }
+  
+  return [...quicksort(left), pivot, ...quicksort(right)];
 }
 
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
-
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
-
-  return slow;
-}
+// Example usage:
+const array = [5, 3, 1, 6, 4, 2];
+const sortedArray = quicksort(array);
+console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 6]
