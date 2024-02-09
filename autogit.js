@@ -1,50 +1,14 @@
-// Step 1: Define the graph
-const graph = {
-  'A': { 'B': 5, 'C': 2 },
-  'B': { 'D': 4, 'E': 2 },
-  'C': { 'B': 8, 'E': 7 },
-  'D': { 'E': 6, 'F': 3 },
-  'E': { 'F': 1 },
-  'F': {}
-};
+const numbers = [2, 5, 1, 9, 4];
+const max = Math.max(...numbers);
 
-function dijkstra(graph, source) {
-  const distances = {};
-  const visited = {};
-  const queue = [];
+console.log(max); // Output: 9
+const numbers = [2, 5, 1, 9, 4];
+let max = numbers[0];
 
-  // Step 2: Initialize distances and visited array
-  for (let node in graph) {
-    distances[node] = Infinity;
-    visited[node] = false;
+for (let i = 1; i < numbers.length; i++) {
+  if (numbers[i] > max) {
+    max = numbers[i];
   }
-  distances[source] = 0;
-
-  // Step 3: Implement the Dijkstra's algorithm
-  queue.push(source);
-  while (queue.length) {
-    const currentNode = queue.shift();
-    visited[currentNode] = true;
-
-    for (let neighbor in graph[currentNode]) {
-      const distance = distances[currentNode] + graph[currentNode][neighbor];
-
-      if (distance < distances[neighbor]) {
-        distances[neighbor] = distance;
-      }
-
-      if (!visited[neighbor]) {
-        queue.push(neighbor);
-      }
-    }
-  }
-
-  return distances;
 }
 
-// Step 4: Determine the shortest path
-const sourceNode = 'A';
-const shortestDistances = dijkstra(graph, sourceNode);
-console.log(shortestDistances);
-
-// Output: { A: 0, B: 5, C: 2, D: 9, E: 7, F: 8 }
+console.log(max); // Output: 9
