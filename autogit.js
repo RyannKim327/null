@@ -1,23 +1,48 @@
-function findFirstNonRepeatingChar(str) {
-  const charCount = {};
-
-  // Count the occurrences of each character
-  for (let char of str) {
-    charCount[char] = (charCount[char] || 0) + 1;
+class Graph {
+  constructor(numVertices, edges) {
+    this.numVertices = numVertices;
+    this.edges = edges;
   }
 
-  // Find the first non-repeating character
-  for (let char of str) {
-    if (charCount[char] === 1) {
-      return char;
+  bellmanFord(source) {
+    let dist = new Array(this.numVertices).fill(Infinity);
+    let prev = new Array(this.numVertices).fill(null);
+
+    dist[source] = 0;
+
+    for (let i = 0; i < this.numVertices - 1; i++) {
+      for (let [u, v, weight] of this.edges) {
+        if (dist[u] + weight < dist[v]) {
+          dist[v] = dist[u] + weight;
+          prev[v] = u;
+        }
+      }
     }
+
+    // Check for negative cycles
+    for (let [u, v, weight] of this.edges) {
+      if (dist[u] + weight < dist[v]) {
+        throw new Error("Graph contains a negative cycle");
+      }
+    }
+
+    return { dist, prev };
   }
-  
-  // If no non-repeating character found, return null or any other value you prefer
-  return null;
 }
 
 // Example usage
-const str = "aabbcddxyz";
-const firstNonRepeatingChar = findFirstNonRepeatingChar(str);
-console.log(firstNonRepeatingChar); // Output: "c"
+const numVertices = 4;
+const edges = [
+  [0, 1, 1],
+  [0, 2, 4],
+  [1, 2, 2],
+  [1, 3, 5],
+  [2, 3, 1],
+];
+const graph = new Graph(numVertices, edges);
+
+const source = 0;
+const { dist, prev } = graph.bellmanFord(source);
+
+console.log("Shortest distances:", dist);
+console.log("Predecessors:", prev);
