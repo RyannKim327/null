@@ -1,59 +1,41 @@
-let fib2 = 0;
-let fib1 = 1;
-while (fib1 < arr.length) {
-  const temp = fib1;
-  fib1 = fib1 + fib2;
-  fib2 = temp;
-}
-let offset = -1;
-let index = fib2;
-let mid = Math.min(offset + fib1, arr.length - 1);
-while (arr[mid] !== target && fib1 > 1) {
-  if (arr[mid] < target) {
-    fib1 = fib2;
-    fib2 = fib1 - fib2;
-    offset = index;
-    index = fib2;
-  } else {
-    fib1 = fib1 - fib2;
-    fib2 = fib2 - fib1;
+function failureFunction(pattern) {
+  const table = [0];
+  let prefix = 0;
+  
+  for (let i = 1; i < pattern.length; i++) {
+    if (pattern[i] === pattern[prefix]) {
+      prefix++;
+    } else {
+      prefix = 0;
+    }
+    table[i] = prefix;
   }
-  mid = Math.min(offset + fib1, arr.length - 1);
+
+  return table;
 }
-return arr[mid] === target ? mid : -1;
-function fibonacciSearch(arr, target) {
-    let fib2 = 0;
-    let fib1 = 1;
+function KMP(text, pattern) {
+  const failure = failureFunction(pattern);
+  let textIndex = 0;
+  let patternIndex = 0;
 
-    // Find the smallest Fibonacci number >= array length
-    while (fib1 < arr.length) {
-        const temp = fib1;
-        fib1 = fib1 + fib2;
-        fib2 = temp;
+  while (textIndex < text.length) {
+    if (pattern[patternIndex] === text[textIndex]) {
+      patternIndex++;
+      textIndex++;
+
+      if (patternIndex === pattern.length) {
+        return textIndex - patternIndex; // Match found at this index
+      }
+    } else if (patternIndex > 0) {
+      patternIndex = failure[patternIndex - 1];
+    } else {
+      textIndex++;
     }
+  }
 
-    let offset = -1;
-    let index = fib2;
-    let mid = Math.min(offset + fib1, arr.length - 1);
-
-    // Binary search in the specified range
-    while (arr[mid] !== target && fib1 > 1) {
-        if (arr[mid] < target) {
-            fib1 = fib2;
-            fib2 = fib1 - fib2;
-            offset = index;
-            index = fib2;
-        } else {
-            fib1 = fib1 - fib2;
-            fib2 = fib2 - fib1;
-        }
-        mid = Math.min(offset + fib1, arr.length - 1);
-    }
-
-    return arr[mid] === target ? mid : -1;
+  return -1; // No match found
 }
-const arr = [1, 5, 9, 13, 18, 24, 30];
-const target = 18;
-
-const index = fibonacciSearch(arr, target);
-console.log(index);  // Output: 4 (the index where target is found)
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const index = KMP(text, pattern);
+console.log(index);
