@@ -1,44 +1,23 @@
-class ListNode {
-  constructor(val) {
-    this.val = val;
-    this.next = null;
-  }
-}
-function isPalindrome(head) {
-  let slow = head;
-  let fast = head;
+function findFirstNonRepeatingChar(str) {
+  const charCount = {};
 
-  // Use a fast and slow pointer approach to find the middle of the list
-  while (fast !== null && fast.next !== null) {
-    slow = slow.next;
-    fast = fast.next.next;
+  // Count the occurrences of each character
+  for (let char of str) {
+    charCount[char] = (charCount[char] || 0) + 1;
   }
 
-  // Reverse the second half of the linked list
-  let reversed = null;
-  while (slow !== null) {
-    const next = slow.next;
-    slow.next = reversed;
-    reversed = slow;
-    slow = next;
-  }
-
-  // Compare the first and second halves of the linked list
-  while (reversed !== null) {
-    if (head.val !== reversed.val) {
-      return false;
+  // Find the first non-repeating character
+  for (let char of str) {
+    if (charCount[char] === 1) {
+      return char;
     }
-    head = head.next;
-    reversed = reversed.next;
   }
-
-  return true;
+  
+  // If no non-repeating character found, return null or any other value you prefer
+  return null;
 }
-// Example usage
-const list = new ListNode(1);
-list.next = new ListNode(2);
-list.next.next = new ListNode(3);
-list.next.next.next = new ListNode(2);
-list.next.next.next.next = new ListNode(1);
 
-console.log(isPalindrome(list)); // Output: true
+// Example usage
+const str = "aabbcddxyz";
+const firstNonRepeatingChar = findFirstNonRepeatingChar(str);
+console.log(firstNonRepeatingChar); // Output: "c"
