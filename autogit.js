@@ -1,21 +1,10 @@
-function findFirstNonRepeatingChar(str) {
-  var charCount = {};
-
-  for (var i = 0; i < str.length; i++) {
-    var char = str.charAt(i);
-    charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
-  }
-
-  for (var i = 0; i < str.length; i++) {
-    var char = str.charAt(i);
-    if (charCount[char] === 1) {
-      return char;
-    }
-  }
-
-  return ''; // Return an empty string if no non-repeating character is found
+function calculateTriangleArea(base, height) {
+  var area = (base * height) / 2;
+  return area;
 }
 
-// Example usage:
-var str = "abacabad";
-console.log(findFirstNonRepeatingChar(str)); // Output: "c"
+var base = 5; // triangle's base length
+var height = 10; // triangle's height length
+
+var triangleArea = calculateTriangleArea(base, height);
+console.log("The area of the triangle is: " + triangleArea);
