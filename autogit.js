@@ -1,48 +1,78 @@
-function heapSort(array) {
-  // Build max heap
-  for (let i = Math.floor(array.length / 2) - 1; i >= 0; i--) {
-    heapify(array, array.length, i);
+class SuffixTree {
+  constructor() {
+    // Implementation goes here
   }
 
-  // Heap sort
-  for (let i = array.length - 1; i > 0; i--) {
-    // Swap the root with the last element
-    let temp = array[0];
-    array[0] = array[i];
-    array[i] = temp;
-
-    // Heapify the reduced heap
-    heapify(array, i, 0);
-  }
-
-  return array;
+  // Methods go here
 }
-
-function heapify(array, heapSize, index) {
-  let largest = index;
-  let left = 2 * index + 1;
-  let right = 2 * index + 2;
-
-  // Check if left child is larger than root
-  if (left < heapSize && array[left] > array[largest]) {
-    largest = left;
+constructor() {
+  this.root = {
+    children: {},
+  };
+}
+insert(word) {
+  // Implementation goes here
+}
+for (let i = 0; i < word.length; i++) {
+  // Implementation goes here
+}
+let currentNode = this.root;
+for (let i = 0; i < word.length; i++) {
+  const char = word[i];
+  if (!currentNode.children[char]) {
+    currentNode.children[char] = { children: {} };
+  }
+  currentNode = currentNode.children[char];
+}
+currentNode.children['$'] = { children: {} };
+search(word) {
+  // Implementation goes here
+}
+let currentNode = this.root;
+for (let i = 0; i < word.length; i++) {
+  const char = word[i];
+  if (!currentNode.children[char]) {
+    return false;
+  }
+  currentNode = currentNode.children[char];
+}
+return currentNode.children['$'] !== undefined;
+class SuffixTree {
+  constructor() {
+    this.root = {
+      children: {},
+    };
   }
 
-  // Check if right child is larger than the largest so far
-  if (right < heapSize && array[right] > array[largest]) {
-    largest = right;
+  insert(word) {
+    let currentNode = this.root;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      if (!currentNode.children[char]) {
+        currentNode.children[char] = { children: {} };
+      }
+      currentNode = currentNode.children[char];
+    }
+    currentNode.children['$'] = { children: {} };
   }
 
-  // If the largest is not the root, swap and heapify the affected subtree
-  if (largest !== index) {
-    let temp = array[index];
-    array[index] = array[largest];
-    array[largest] = temp;
-
-    // Recursively heapify the affected subtree
-    heapify(array, heapSize, largest);
+  search(word) {
+    let currentNode = this.root;
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      if (!currentNode.children[char]) {
+        return false;
+      }
+      currentNode = currentNode.children[char];
+    }
+    return currentNode.children['$'] !== undefined;
   }
 }
-const array = [9, 3, 7, 1, 2, 8, 5];
-const sortedArray = heapSort(array);
-console.log(sortedArray);  // Output: [1, 2, 3, 5, 7, 8, 9]
+const suffixTree = new SuffixTree();
+suffixTree.insert('banana');
+suffixTree.insert('apple');
+suffixTree.insert('orange');
+
+console.log(suffixTree.search('ana')); // true
+console.log(suffixTree.search('orange')); // true
+console.log(suffixTree.search('berry')); // false
