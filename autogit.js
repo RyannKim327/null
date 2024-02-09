@@ -1,10 +1,18 @@
-var string1 = "Hello";
-var string2 = "World";
+function reverseString(str) {
+  let reversedStr = '';
+  for (let i = str.length - 1; i >= 0; i--) {
+    reversedStr += str[i];
+  }
+  return reversedStr;
+}
 
-var result = string1 + " " + string2;
-console.log(result); // Output: Hello World
-var string1 = "Hello";
-var string2 = "World";
+const input = 'Hello, World!';
+const reversed = reverseString(input);
+console.log(reversed); // Outputs: '!dlroW ,olleH'
+function reverseString(str) {
+  return str.split('').reverse().join('');
+}
 
-var result = string1.concat(" ", string2);
-console.log(result); // Output: Hello World
+const input = 'Hello, World!';
+const reversed = reverseString(input);
+console.log(reversed); // Outputs: '!dlroW ,olleH'
