@@ -1,47 +1,75 @@
-// Example function to connect to a server using an async task
-async function connectToServer() {
-  // Create an AsyncTask to handle the connection
-  const AsyncTask = Java.use('android.os.AsyncTask');
+class BTreeNode {
+  constructor(order, leaf) {
+    this.order = order; // Maximum number of keys in a node
+    this.keys = []; // Array to store keys
+    this.childPointers = []; // Array to store child pointers
+    this.isLeaf = leaf; // Flag to indicate if node is a leaf or not
+  }
+}
+class BTree {
+  constructor(order) {
+    this.root = null; // Root node of the B-tree
+    this.order = order; // Maximum number of keys in a node
+  }
 
-  const ConnectTask = AsyncTask.extend('android.os.AsyncTask', {
-    doInBackground: function (url) {
-      try {
-        const URL = Java.use('java.net.URL');
-        const HttpURLConnection = Java.use('java.net.HttpURLConnection');
+  // Define other B-tree operations (e.g., insert, delete, search) here
+}
+  insert(key) {
+    if (this.root === null) {
+      // Tree is empty, create a new root node
+      this.root = new BTreeNode(this.order, true);
+      this.root.keys.push(key);
+    } else {
+      if (this.root.keys.length === this.order * 2 - 1) {
+        // Root node is full, split it and create a new root
+        const oldRoot = this.root;
+        this.root = new BTreeNode(this.order, false);
+        this.root.childPointers.push(oldRoot);
+        this.splitChild(this.root, 0);
+        this.insertNonFull(this.root, key);
+      } else {
+        // Root node is not full, insert key recursively
+        this.insertNonFull(this.root, key);
+      }
+    }
+  }
 
-        const urlConnection = URL.$new(url).openConnection();
-        urlConnection.setRequestMethod("GET");
+  insertNonFull(node, key) {
+    let i = node.keys.length - 1;
 
-        const responseCode = urlConnection.getResponseCode();
-        console.log('Response Code:', responseCode);
-
-        // Read the response
-        const InputStream = Java.use('java.io.InputStream');
-        const BufferedReader = Java.use('java.io.BufferedReader');
-        const InputStreamReader = Java.use('java.io.InputStreamReader');
-
-        const inputStream = urlConnection.getInputStream();
-        const reader = BufferedReader.$new(InputStreamReader.$new(inputStream));
-        let line;
-        let response = '';
-
-        while ((line = reader.readLine()) !== null) {
-          response += line;
-        }
-
-        console.log('Response:', response);
-
-      } catch (error) {
-        console.log('Error:', error.toString());
+    if (node.isLeaf) {
+      // Node is a leaf, insert key at the correct position
+      while (i >= 0 && key < node.keys[i]) {
+        i--;
+      }
+      node.keys.splice(i + 1, 0, key);
+    } else {
+      // Node is not a leaf, find the child to insert the key recursively
+      while (i >= 0 && key < node.keys[i]) {
+        i--;
       }
 
-      return null;
+      i++;
+
+      if (node.childPointers[i].keys.length === this.order * 2 - 1) {
+        // Child is full, split it first
+        this.splitChild(node, i);
+        if (key > node.keys[i]) {
+          i++;
+        }
+      }
+      this.insertNonFull(node.childPointers[i], key);
     }
-  });
+  }
+  splitChild(parent, index) {
+    const childNode = parent.childPointers[index];
+    const newNode = new BTreeNode(this.order, childNode.isLeaf);
 
-  // Execute the AsyncTask
-  const connectTask = ConnectTask.$new();
-  connectTask.execute('http://example.com');
-}
+    parent.keys.splice(index, 0, childNode.keys[this.order - 1]);
+    parent.childPointers.splice(index + 1, 0, newNode);
 
-connectToServer();
+    newNode.keys = childNode.keys.splice(this.order, this.order - 1);
+    if (!childNode.isLeaf) {
+      newNode.childPointers = childNode.childPointers.splice(this.order, this.order);
+    }
+  }
