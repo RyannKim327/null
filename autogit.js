@@ -1,58 +1,42 @@
-class BeamSearch {
-  constructor(beamSize, maxSteps, getSuccessors, evaluate) {
-    this.beamSize = beamSize;
-    this.maxSteps = maxSteps;
-    this.getSuccessors = getSuccessors;
-    this.evaluate = evaluate;
+function dijkstra(graph, initialNode) {
+  const distances = {};
+  const visited = {};
+  const queue = new PriorityQueue();
+
+  for (const node in graph) {
+    distances[node] = Infinity;
   }
+  distances[initialNode] = 0;
 
-  search(initialState) {
-    const initialCandidate = {
-      state: initialState,
-      score: 0,
-      path: [],
-    };
+  queue.enqueue(initialNode, 0);
 
-    let candidates = [initialCandidate];
+  while (!queue.isEmpty()) {
+    const { element: currentNode } = queue.dequeue();
+    if (visited[currentNode]) continue;
 
-    for (let step = 0; step < this.maxSteps; step++) {
-      const newCandidates = [];
+    visited[currentNode] = true;
 
-      for (const candidate of candidates) {
-        const successors = this.getSuccessors(candidate.state);
-        for (const successor of successors) {
-          const score = candidate.score + this.evaluate(successor);
-          const newPath = candidate.path.concat(successor);
+    for (const neighbor in graph[currentNode]) {
+      const distance = graph[currentNode][neighbor];
+      const totalDistance = distances[currentNode] + distance;
 
-          newCandidates.push({
-            state: successor,
-            score,
-            path: newPath,
-          });
-        }
+      if (totalDistance < distances[neighbor]) {
+        distances[neighbor] = totalDistance;
+        queue.enqueue(neighbor, totalDistance);
       }
-
-      newCandidates.sort((a, b) => b.score - a.score);
-      candidates = newCandidates.slice(0, this.beamSize);
     }
-
-    return candidates[0].path;
   }
+
+  return distances;
 }
-const getSuccessors = (state) => {
-  // Implement the logic to generate possible successor states based on the current state
-  // Return an array of successor states
+
+// Sample usage
+const graph = {
+  A: { B: 5, C: 2 },
+  B: { A: 5, C: 1, D: 3 },
+  C: { A: 2, B: 1, D: 2 },
+  D: { B: 3, C: 2 },
 };
-const evaluate = (state) => {
-  // Implement the logic to evaluate the desirability of a state
-  // Return a score
-};
-const beamSize = 3;
-const maxSteps = 5;
-
-const beamSearch = new BeamSearch(beamSize, maxSteps, getSuccessors, evaluate);
-
-const initialState = // Set the initial state
-const finalPath = beamSearch.search(initialState);
-
-console.log(finalPath);
+const initialNode = 'A';
+const shortestDistances = dijkstra(graph, initialNode);
+console.log(shortestDistances);
