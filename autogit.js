@@ -1,39 +1,47 @@
-function findMajorityElement(nums) {
-  let majority = nums[0];       // Initialize the majority element
-  let count = 1;                // Initialize the count of majority element occurrences
-
-  for (let i = 1; i < nums.length; i++) {
-    // If count becomes zero, update the majority element
-    if (count === 0) {
-      majority = nums[i];
-      count = 1;
-    } 
-    // If the current element is the same as the majority element, increment count
-    else if (nums[i] === majority) {
-      count++;
-    } 
-    // If the current element is different from the majority element, decrement count
-    else {
-      count--;
-    }
-  }
-
-  // Verify if the majority element appears more than n/2 times
-  let occurrences = 0;
-  for (let i = 0; i < nums.length; i++) {
-    if (nums[i] === majority) {
-      occurrences++;
-    }
-  }
-
-  if (occurrences > nums.length / 2) {
-    return majority;
-  } else {
-    return -1;  // No majority element found
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
 
-// Example usage:
-const nums = [1, 3, 3, 4, 3, 5, 3, 3]; 
-const result = findMajorityElement(nums);
-console.log(result);  // Output: 3
+class BinaryTree {
+  constructor() {
+    this.root = null;
+  }
+  
+  // Recursive function to perform DFS and count leaf nodes
+  countLeafNodes(node) {
+    if (node === null) {
+      return 0;
+    }
+    
+    if (node.left === null && node.right === null) {
+      return 1;
+    }
+    
+    return this.countLeafNodes(node.left) + this.countLeafNodes(node.right);
+  }
+  
+  // Function to initialize the countLeafNodes function
+  getLeafNodeCount() {
+    return this.countLeafNodes(this.root);
+  }
+}
+
+// Usage:
+const tree = new BinaryTree();
+
+// Create the tree
+tree.root = new Node(1);
+tree.root.left = new Node(2);
+tree.root.right = new Node(3);
+tree.root.left.left = new Node(4);
+tree.root.left.right = new Node(5);
+tree.root.right.left = new Node(6);
+tree.root.right.right = new Node(7);
+
+// Get the number of leaf nodes
+const leafNodeCount = tree.getLeafNodeCount();
+console.log("Number of leaf nodes:", leafNodeCount);
