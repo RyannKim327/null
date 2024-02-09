@@ -1,70 +1,62 @@
 class TrieNode {
   constructor() {
+    this.children = {};
     this.isEndOfWord = false;
-    this.children = new Map(); // or use an object: {}
   }
 }
+
 class Trie {
   constructor() {
     this.root = new TrieNode();
   }
 
-  // Method to insert a word into the trie
   insert(word) {
-    let node = this.root;
-    for (let char of word) {
-      if (!node.children.has(char)) {
-        node.children.set(char, new TrieNode());
+    let current = this.root;
+
+    for (let i = 0; i < word.length; i++) {
+      const ch = word[i];
+      if (!current.children[ch]) {
+        current.children[ch] = new TrieNode();
       }
-      node = node.children.get(char);
+      current = current.children[ch];
     }
-    node.isEndOfWord = true;
+
+    current.isEndOfWord = true;
   }
 
-  // Method to search for a word in the trie
   search(word) {
-    let node = this.root;
-    for (let char of word) {
-      if (!node.children.has(char)) {
+    let current = this.root;
+
+    for (let i = 0; i < word.length; i++) {
+      const ch = word[i];
+      if (!current.children[ch]) {
         return false;
       }
-      node = node.children.get(char);
+      current = current.children[ch];
     }
-    return node.isEndOfWord;
+
+    return current.isEndOfWord;
   }
 
-  // Method to delete a word from the trie
-  delete(word) {
-    this._deleteRecursive(word, this.root, 0);
-  }
+  startsWith(prefix) {
+    let current = this.root;
 
-  _deleteRecursive(word, currentNode, index) {
-    if (index === word.length) {
-      currentNode.isEndOfWord = false;
-      return;
+    for (let i = 0; i < prefix.length; i++) {
+      const ch = prefix[i];
+      if (!current.children[ch]) {
+        return false;
+      }
+      current = current.children[ch];
     }
-    const char = word[index];
-    if (!currentNode.children.has(char)) {
-      return;
-    }
-    const nextNode = currentNode.children.get(char);
-    this._deleteRecursive(word, nextNode, index + 1);
 
-    if (Object.keys(nextNode.children).length === 0 && !nextNode.isEndOfWord) {
-      currentNode.children.delete(char);
-    }
+    return true;
   }
 }
 const trie = new Trie();
 trie.insert("apple");
 trie.insert("banana");
-trie.insert("apply"); // Note: "apply" is not the same word as "apple"
-
-console.log(trie.search("apple"));   // Output: true
-console.log(trie.search("banana"));  // Output: true
-console.log(trie.search("apply"));   // Output: true
-console.log(trie.search("appl"));    // Output: false
-console.log(trie.search("orange"));  // Output: false
-
-trie.delete("apple");
-console.log(trie.search("apple"));   // Output: false
+console.log(trie.search("apple")); // true
+console.log(trie.search("banana")); // true
+console.log(trie.search("orange")); // false
+console.log(trie.startsWith("app")); // true
+console.log(trie.startsWith("ora")); // false
