@@ -1,36 +1,33 @@
-const graph = {
-  A: ['B', 'C'],
-  B: ['D'],
-  C: ['D', 'E'],
-  D: ['F'],
-  E: ['F'],
-  F: [],
-};
-function topologicalSort(graph) {
-  const visited = new Set();
-  const stack = [];
+function radixSort(array) {
+  const maxNum = Math.max(...array);
+  const numPasses = Math.floor(Math.log10(maxNum) + 1);
 
-  function dfs(vertex) {
-    visited.add(vertex);
+  // Create 10 buckets
+  const buckets = Array.from({ length: 10 }, () => []);
 
-    const neighbors = graph[vertex];
+  for (let pass = 0; pass < numPasses; pass++) {
+    // Distribute numbers into appropriate buckets
+    for (const num of array) {
+      const digit = getDigit(num, pass);
+      buckets[digit].push(num);
+    }
 
-    neighbors.forEach((neighbor) => {
-      if (!visited.has(neighbor)) {
-        dfs(neighbor);
-      }
-    });
+    // Concatenate numbers from buckets back into the array
+    array = [].concat(...buckets);
 
-    stack.unshift(vertex);
-  }
-
-  for (const vertex in graph) {
-    if (!visited.has(vertex)) {
-      dfs(vertex);
+    // Clear buckets for next pass
+    for (const bucket of buckets) {
+      bucket.length = 0;
     }
   }
 
-  return stack;
+  return array;
 }
-const sorted = topologicalSort(graph);
-console.log(sorted); // Output: ['A', 'C', 'E', 'B', 'D', 'F']
+
+function getDigit(num, pass) {
+  return Math.floor(Math.abs(num) / Math.pow(10, pass)) % 10;
+}
+const unsortedArray = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArray = radixSort(unsortedArray);
+console.log(sortedArray);
+[2, 24, 45, 66, 75, 90, 170, 802]
