@@ -1,12 +1,45 @@
-function getStringLength(str) {
-  var length = 0;
-  while (str[length] !== undefined) {
-    length++;
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
   }
-  return length;
+}
+
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+
+  addToEnd(data) {
+    const newNode = new Node(data);
+
+    if (this.head === null) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next !== null) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
+
+  getLength() {
+    let length = 0;
+    let current = this.head;
+
+    while (current !== null) {
+      length++;
+      current = current.next;
+    }
+
+    return length;
+  }
 }
 
 // Example usage:
-var string = "Hello, world!";
-var length = getStringLength(string);
-console.log(length); // Output: 13
+const linkedList = new LinkedList();
+linkedList.addToEnd(1);
+linkedList.addToEnd(2);
+linkedList.addToEnd(3);
+console.log(linkedList.getLength()); // Output: 3
