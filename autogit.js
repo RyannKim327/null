@@ -1,82 +1,30 @@
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
-class BST {
-  constructor() {
-    this.root = null;
-  }
+function longestCommonSubstring(str1, str2) {
+  let maxLength = 0; // stores the length of longest common substring
+  let endIndex = 0; // stores the index where the longest common substring ends
+  const matrix = Array.from({ length: str1.length + 1 }, () =>
+    Array.from({ length: str2.length + 1 }, () => 0)
+  ); // initialize the matrix with zeros
 
-  insert(value) {
-    const newNode = new TreeNode(value);
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
+  for (let i = 1; i <= str1.length; i++) {
+    for (let j = 1; j <= str2.length; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        matrix[i][j] = matrix[i - 1][j - 1] + 1;
 
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
+        if (matrix[i][j] > maxLength) {
+          maxLength = matrix[i][j];
+          endIndex = i - 1;
+        }
       } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
+        matrix[i][j] = 0;
       }
     }
   }
 
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
-    }
-    if (value === node.value) {
-      return true;
-    }
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else {
-      return this.searchNode(node.right, value);
-    }
-  }
-
-  inorderTraversal(callback) {
-    this.inorderTraversalNode(this.root, callback);
-  }
-
-  inorderTraversalNode(node, callback) {
-    if (node !== null) {
-      this.inorderTraversalNode(node.left, callback);
-      callback(node.value);
-      this.inorderTraversalNode(node.right, callback);
-    }
-  }
+  return str1.substr(endIndex - maxLength + 1, maxLength);
 }
-const bst = new BST();
-bst.insert(8);
-bst.insert(3);
-bst.insert(10);
-bst.insert(1);
-bst.insert(6);
-bst.insert(14);
-bst.insert(4);
-bst.insert(7);
-bst.insert(13);
-const valueExists = bst.search(6);
-console.log(valueExists); // Output: true
-bst.inorderTraversal((value) => {
-  console.log(value);
-});
+
+// Example usage:
+const str1 = "abcdefg";
+const str2 = "defgxyz";
+const longestSubstring = longestCommonSubstring(str1, str2);
+console.log(longestSubstring); // Output: "defg"
