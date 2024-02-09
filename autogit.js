@@ -1,50 +1,47 @@
-class Graph {
-  constructor(vertices) {
-    this.vertices = vertices;
-    this.adjacencyList = new Map();
-    for (const vertex of vertices) {
-      this.adjacencyList.set(vertex, []);
-    }
-  }
+// Example function to connect to a server using an async task
+async function connectToServer() {
+  // Create an AsyncTask to handle the connection
+  const AsyncTask = Java.use('android.os.AsyncTask');
 
-  addEdge(source, destination) {
-    this.adjacencyList.get(source).push(destination);
-  }
+  const ConnectTask = AsyncTask.extend('android.os.AsyncTask', {
+    doInBackground: function (url) {
+      try {
+        const URL = Java.use('java.net.URL');
+        const HttpURLConnection = Java.use('java.net.HttpURLConnection');
 
-  getNeighbors(vertex) {
-    return this.adjacencyList.get(vertex);
-  }
+        const urlConnection = URL.$new(url).openConnection();
+        urlConnection.setRequestMethod("GET");
 
-  // Add any additional methods here as needed
-}
-function topologicalSort(graph) {
-  const visited = new Set();
-  const stack = [];
+        const responseCode = urlConnection.getResponseCode();
+        console.log('Response Code:', responseCode);
 
-  for (const vertex of graph.vertices) {
-    if (!visited.has(vertex)) {
-      dfs(vertex);
-    }
-  }
+        // Read the response
+        const InputStream = Java.use('java.io.InputStream');
+        const BufferedReader = Java.use('java.io.BufferedReader');
+        const InputStreamReader = Java.use('java.io.InputStreamReader');
 
-  function dfs(vertex) {
-    visited.add(vertex);
+        const inputStream = urlConnection.getInputStream();
+        const reader = BufferedReader.$new(InputStreamReader.$new(inputStream));
+        let line;
+        let response = '';
 
-    for (const neighbor of graph.getNeighbors(vertex)) {
-      if (!visited.has(neighbor)) {
-        dfs(neighbor);
+        while ((line = reader.readLine()) !== null) {
+          response += line;
+        }
+
+        console.log('Response:', response);
+
+      } catch (error) {
+        console.log('Error:', error.toString());
       }
+
+      return null;
     }
+  });
 
-    stack.unshift(vertex); // Add the vertex to the beginning of the stack
-  }
-
-  return stack;
+  // Execute the AsyncTask
+  const connectTask = ConnectTask.$new();
+  connectTask.execute('http://example.com');
 }
-const graph = new Graph(['A', 'B', 'C', 'D', 'E']);
-graph.addEdge('A', 'B');
-graph.addEdge('B', 'C');
-graph.addEdge('C', 'D');
-graph.addEdge('D', 'E');
-const orderedVertices = topologicalSort(graph);
-console.log(orderedVertices); // Output: ['A', 'B', 'C', 'D', 'E']
+
+connectToServer();
