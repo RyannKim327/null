@@ -1,23 +1,25 @@
-function bubbleSort(arr) {
-  var len = arr.length;
-
-  for (var i = 0; i < len; i++) {
-    // Last i elements are already in place
-    for (var j = 0; j < len - i - 1; j++) {
-      // Compare adjacent elements
-      if (arr[j] > arr[j + 1]) {
-        // Swap the elements
-        var temp = arr[j];
-        arr[j] = arr[j + 1];
-        arr[j + 1] = temp;
-      }
-    }
+function binarySearchRecursive(arr, target, start, end, notFound) {
+  if (start > end) {
+    return notFound;  // Base case: target not found in array
   }
+  
+  const middle = Math.floor((start + end) / 2);
 
-  return arr;
+  if (arr[middle] === target) {
+    return middle;  // Base case: target found at middle index
+  } else if (arr[middle] > target) {
+    return binarySearchRecursive(arr, target, start, middle - 1, notFound);  // Recursive call for left side of array
+  } else {
+    return binarySearchRecursive(arr, target, middle + 1, end, notFound);  // Recursive call for right side of array
+  }
 }
 
-// Testing the function
-var numbers = [5, 3, 8, 4, 2];
-console.log("Unsorted array:", numbers);
-console.log("Sorted array:", bubbleSort(numbers));
+// Example usage
+const sortedArray = [1, 3, 5, 7, 9, 11];
+const targetElement = 5;
+const startIndex = 0;
+const endIndex = sortedArray.length - 1;
+const notFoundValue = -1;
+
+const index = binarySearchRecursive(sortedArray, targetElement, startIndex, endIndex, notFoundValue);
+console.log("Element found at index:", index);
