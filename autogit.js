@@ -1,51 +1,27 @@
-function buildPrefixTable(pattern) {
-  const prefixTable = [0]; // prefix table, initialized with 0
-  let prefixLength = 0; // length of the current prefix
+function shellSort(arr) {
+  var len = arr.length;
+  var gap = Math.floor(len / 2);
   
-  for (let i = 1; i < pattern.length; i++) {
-    if (pattern[i] === pattern[prefixLength]) {
-      prefixLength++;
-      prefixTable[i] = prefixLength;
-    } else {
-      if (prefixLength !== 0) {
-        // We hit a mismatch, update prefixLength
-        prefixLength = prefixTable[prefixLength - 1];
-        i--; // stay at the same position in the next iteration
-      } else {
-        prefixTable[i] = 0;
+  while (gap > 0) {
+    for (var i = gap; i < len; i++) {
+      var temp = arr[i];
+      var j = i;
+      
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
       }
-    }
-  }
-  
-  return prefixTable;
-}
-function kmpSearch(text, pattern) {
-  const prefixTable = buildPrefixTable(pattern);
-  let textIndex = 0;
-  let patternIndex = 0;
-  
-  while (textIndex < text.length) {
-    if (pattern[patternIndex] === text[textIndex]) {
-      patternIndex++;
-      textIndex++;
+      
+      arr[j] = temp;
     }
     
-    if (patternIndex === pattern.length) {
-      // Pattern found at this index
-      return textIndex - patternIndex;
-    } else if (textIndex < text.length && pattern[patternIndex] !== text[textIndex]) {
-      if (patternIndex !== 0) {
-        patternIndex = prefixTable[patternIndex - 1];
-      } else {
-        textIndex++;
-      }
-    }
+    gap = Math.floor(gap / 2);
   }
   
-  // Pattern not found in the text
-  return -1;
+  return arr;
 }
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const matchIndex = kmpSearch(text, pattern);
-console.log("Pattern found at index:", matchIndex);
+
+// Example usage:
+var array = [8, 4, 1, 6, -2, 9, 0, 3, 5];
+console.log("Unsorted array:", array);
+console.log("Sorted array:", shellSort(array));
