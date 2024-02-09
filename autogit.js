@@ -1,46 +1,22 @@
-function bellmanFord(graph, source) {
-  const vertices = Object.keys(graph);
-  const dist = {};
+function radixSort(arr) {
+  const maxNum = Math.max(...arr);
+  const maxDigits = Math.floor(Math.log10(maxNum) + 1);
 
-  // Step 2: Initialize distances
-  for (const vertex of vertices) {
-    dist[vertex] = Infinity;
-  }
-  dist[source] = 0;
+  let buckets = Array.from({ length: 10 }, () => []);
 
-  // Step 3: Relax edges
-  for (let i = 0; i < vertices.length - 1; i++) {
-    for (const fromVertex of vertices) {
-      for (const { toVertex, weight } of graph[fromVertex]) {
-        if (dist[fromVertex] + weight < dist[toVertex]) {
-          dist[toVertex] = dist[fromVertex] + weight;
-        }
-      }
+  for (let digit = 0; digit < maxDigits; digit++) {
+    for (let number of arr) {
+      const currentDigit = Math.floor((number / 10 ** digit) % 10);
+      buckets[currentDigit].push(number);
     }
+    arr = buckets.flat();
+    buckets = Array.from({ length: 10 }, () => []);
   }
-
-  // Step 4: Check for negative-weight cycles
-  for (const fromVertex of vertices) {
-    for (const { toVertex, weight } of graph[fromVertex]) {
-      if (dist[fromVertex] + weight < dist[toVertex]) {
-        throw new Error('Graph contains negative-weight cycle');
-      }
-    }
-  }
-
-  // Step 5: Return shortest distances
-  return dist;
+  
+  return arr;
 }
 
-// Example usage
-const graph = {
-  A: [{ toVertex: 'B', weight: 3 }, { toVertex: 'C', weight: 5 }],
-  B: [{ toVertex: 'D', weight: 2 }],
-  C: [{ toVertex: 'D', weight: 2 }],
-  D: [{ toVertex: 'E', weight: 4 }],
-  E: [],
-};
-
-const source = 'A';
-const shortestDistances = bellmanFord(graph, source);
-console.log(shortestDistances);
+// Example usage:
+const unsortedArray = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArray = radixSort(unsortedArray);
+console.log(sortedArray);
