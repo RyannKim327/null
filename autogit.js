@@ -1,22 +1,57 @@
-function shellSort(arr) {
-  let len = arr.length;
-  let gap = Math.floor(len / 2);
+function buildFailureTable(pattern) {
+  const table = [0]; // failure table
 
-  while (gap > 0) {
-    for (let i = gap; i < len; i++) {
-      for (let j = i; j >= gap && arr[j - gap] > arr[j]; j -= gap) {
-        // swap elements
-        let temp = arr[j];
-        arr[j] = arr[j - gap];
-        arr[j - gap] = temp;
-      }
+  let prefixIndex = 0; // index of the prefix
+  let suffixIndex = 1; // index of the suffix
+
+  while (suffixIndex < pattern.length) {
+    if (pattern[prefixIndex] === pattern[suffixIndex]) {
+      // common prefix and suffix
+      table[suffixIndex] = prefixIndex + 1;
+      suffixIndex++;
+      prefixIndex++;
+    } else if (prefixIndex === 0) {
+      // no common prefix and suffix
+      table[suffixIndex] = 0;
+      suffixIndex++;
+    } else {
+      // backtrack to find next possible prefix
+      prefixIndex = table[prefixIndex - 1];
     }
-    gap = Math.floor(gap / 2);
   }
 
-  return arr;
+  return table;
+}
+
+function searchPattern(text, pattern) {
+  const failureTable = buildFailureTable(pattern);
+
+  let textIndex = 0; // index in the text
+  let patternIndex = 0; // index in the pattern
+
+  while (textIndex < text.length) {
+    if (text[textIndex] === pattern[patternIndex]) {
+      if (patternIndex === pattern.length - 1) {
+        // full match found
+        return textIndex - pattern.length + 1;
+      }
+      textIndex++;
+      patternIndex++;
+    } else if (patternIndex > 0) {
+      // backtrack using failure table
+      patternIndex = failureTable[patternIndex - 1];
+    } else {
+      textIndex++;
+    }
+  }
+
+  // match not found
+  return -1;
 }
 
 // Example usage:
-const array = [5, 2, 9, 1, 7];
-console.log(shellSort(array)); // Output: [1, 2, 5, 7, 9]
+const text = 'ABCABDABCABCDABCDABDE';
+const pattern = 'ABCDABD';
+
+const matchIndex = searchPattern(text, pattern);
+console.log(matchIndex); // Output: 8
