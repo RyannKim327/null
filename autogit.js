@@ -1,14 +1,21 @@
-const originalString = "Hello World! This is a string with spaces.";
-const stringWithoutSpaces = originalString.replace(/\s/g, "");
-console.log(stringWithoutSpaces);
-const originalString = "Hello World! This is a string with spaces.";
-const stringWithoutSpaces = originalString.split(" ").join("");
-console.log(stringWithoutSpaces);
-const originalString = "Hello World! This is a string with spaces.";
-let stringWithoutSpaces = "";
-for (let i = 0; i < originalString.length; i++) {
-  if (originalString[i] !== " ") {
-    stringWithoutSpaces += originalString[i];
+function largestPrimeFactor(number) {
+  let factor = 2;
+  let maxFactor = 1;
+
+  // Divide the number by 2 until it is no longer divisible
+  while (factor <= number) {
+    if (number % factor === 0) {
+      number /= factor;
+      maxFactor = factor;
+    } else {
+      factor++;
+    }
   }
+
+  return maxFactor;
 }
-console.log(stringWithoutSpaces);
+
+// Example usage
+const number = 84;
+const largestFactor = largestPrimeFactor(number);
+console.log(`The largest prime factor of ${number} is ${largestFactor}`);
