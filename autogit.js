@@ -1,60 +1,39 @@
-/**
- * Node class representing a node in a tree/graph.
- */
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.children = [];
-  }
-}
+function findLongestCommonSubstring(str1, str2) {
+  // Initialize matrix to store lengths of common substrings
+  const matrix = Array(str1.length + 1).fill(0).map(() => Array(str2.length + 1).fill(0));
+  
+  let maxLength = 0;  // Length of longest common substring
+  let endIndex = 0;   // Index of the end of longest common substring
+  
+  // Iterate over each character of str1
+  for (let i = 1; i <= str1.length; i++) {
+    // Iterate over each character of str2
+    for (let j = 1; j <= str2.length; j++) {
+      // If characters match
+      if (str1[i - 1] === str2[j - 1]) {
+        // Add 1 to the length of the common substring ending at (i, j)
+        matrix[i][j] = matrix[i - 1][j - 1] + 1;
 
-/**
- * Perform depth-limited search iteratively.
- * @param {Node} root - The root node to start the search from.
- * @param {number} limit - The maximum depth to search.
- * @returns {Node|null} - The goal node if found, otherwise null.
- */
-function depthLimitedSearchIterative(root, limit) {
-  let stack = [];
-  stack.push({ node: root, depth: 0 });
-
-  while (stack.length > 0) {
-    let { node, depth } = stack.pop();
-
-    if (node.data === goalData) {
-      return node; // Goal node found
-    }
-
-    if (depth < limit) {
-      // Add child nodes to the stack
-      for (let child of node.children) {
-        stack.push({ node: child, depth: depth + 1 });
+        // Check if length exceeds maxLength
+        if (matrix[i][j] > maxLength) {
+          maxLength = matrix[i][j];
+          endIndex = i - 1;  // Update endIndex
+        }
+      } else {
+        matrix[i][j] = 0; // No common substring
       }
     }
   }
-
-  return null; // Goal node not found within depth limit
+  
+  // Extract the longest common substring
+  const longestCommonSubstring = str1.substring(endIndex - maxLength + 1, endIndex + 1);
+  
+  return longestCommonSubstring;
 }
-// Create nodes
-let nodeA = new Node("A");
-let nodeB = new Node("B");
-let nodeC = new Node("C");
-let nodeD = new Node("D");
-let nodeE = new Node("E");
 
-// Build the tree structure
-nodeA.children.push(nodeB, nodeC);
-nodeB.children.push(nodeD);
-nodeC.children.push(nodeE);
+// Example usage:
+const str1 = "abcdxyz";
+const str2 = "xyzabcd";
 
-// Specify the goal data to search for
-let goalData = "E";
-
-// Perform depth-limited search
-let result = depthLimitedSearchIterative(nodeA, 2);
-
-if (result) {
-  console.log(`Goal node (${goalData}) found!`);
-} else {
-  console.log(`Goal node (${goalData}) not found within depth limit.`);
-}
+const longestSubstring = findLongestCommonSubstring(str1, str2);
+console.log("Longest common substring:", longestSubstring); // Output: "abcd"
