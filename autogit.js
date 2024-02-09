@@ -1,25 +1,20 @@
-function breadthLimitedSearch(startNode, targetNode, limit) {
-  const queue = [startNode];
-  const visited = new Set();
+function findMaxSubarraySum(arr) {
+  let currentSum = arr[0];  // Initialize the current sum with the first element of the array
+  let maxSum = arr[0];      // Initialize the maximum sum with the first element of the array
 
-  while (queue.length > 0 && limit >= 0) {
-    const currentNode = queue.shift();
+  // Iterate through the array starting from the second element
+  for (let i = 1; i < arr.length; i++) {
+    // Calculate the current sum by adding the current element to the previous sum or starting a new subarray
+    currentSum = Math.max(arr[i], currentSum + arr[i]);
 
-    if (currentNode === targetNode) {
-      return currentNode;
-    }
-
-    if (!visited.has(currentNode)) {
-      visited.add(currentNode);
-
-      // Add child nodes to the queue
-      currentNode.children.forEach((childNode) => {
-        queue.push(childNode);
-      });
-    }
-
-    limit--;
+    // Update the maximum sum if the current sum is greater
+    maxSum = Math.max(maxSum, currentSum);
   }
 
-  return null;
+  return maxSum;
 }
+
+// Example usage:
+const array = [1, -3, 2, 1, -1];
+const maxSum = findMaxSubarraySum(array);
+console.log(maxSum);  // Output: 3
