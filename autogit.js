@@ -1,27 +1,60 @@
-function depthLimitedSearch(node, target, depthLimit) {
-  if (node.value === target) {
-    return node;
+class Node {
+  constructor(name) {
+    this.name = name;
+    this.edges = [];
   }
 
-  if (depthLimit === 0) {
-    return null;
+  addEdge(node, weight) {
+    this.edges.push({ node, weight });
   }
+}
 
-  for (let i = 0; i < node.children.length; i++) {
-    const result = depthLimitedSearch(node.children[i], target, depthLimit - 1);
-    if (result) {
-      return result;
+// Create nodes and add edges
+const nodeA = new Node('A');
+const nodeB = new Node('B');
+const nodeC = new Node('C');
+
+nodeA.addEdge(nodeB, 4);
+nodeA.addEdge(nodeC, 2);
+nodeB.addEdge(nodeC, 1);
+function dijkstra(startNode) {
+  // Set initial distances from startNode to all other nodes as Infinity
+  const distances = {};
+  for (const node of graph) {
+    distances[node.name] = Infinity;
+  }
+  // Set distance from startNode to itself as 0
+  distances[startNode.name] = 0;
+
+  // Create a priority queue to store the nodes to be processed
+  const queue = [startNode];
+
+  while (queue.length > 0) {
+    // Sort the nodes in the queue based on their distances
+    queue.sort((a, b) => distances[a.name] - distances[b.name]);
+
+    // Get the node with the shortest distance from the startNode
+    const currentNode = queue.shift();
+
+    // Visit all the neighbors of the current node
+    for (const { node, weight } of currentNode.edges) {
+      // Calculate the new distance from startNode to the neighbor node
+      const distance = distances[currentNode.name] + weight;
+
+      // Update the distance if the new distance is shorter
+      if (distance < distances[node.name]) {
+        distances[node.name] = distance;
+
+        // Add the neighbor node to the queue for further processing
+        queue.push(node);
+      }
     }
   }
 
-  return null;
+  return distances;
 }
-const rootNode = { value: 'A', children: [] }; // Replace with the actual tree structure
 
-const result = depthLimitedSearch(rootNode, 'target', 3); // Replace 'target' with the actual target value and 3 with the desired depth limit
-
-if (result) {
-  console.log('Target found:', result);
-} else {
-  console.log('Target not found within depth limit');
-}
+// Usage example
+const graph = [nodeA, nodeB, nodeC];
+const distances = dijkstra(nodeA);
+console.log(distances);
