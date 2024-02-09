@@ -1,26 +1,19 @@
-function quicksort(arr) {
-  if (arr.length <= 1) {
-    return arr;
-  }
-
-  var pivot = arr[Math.floor(arr.length / 2)];
-  var left = [];
-  var middle = [];
-  var right = [];
-
-  for (var i = 0; i < arr.length; i++) {
-    if (arr[i] < pivot) {
-      left.push(arr[i]);
-    } else if (arr[i] > pivot) {
-      right.push(arr[i]);
-    } else {
-      middle.push(arr[i]);
+function selectionSort(arr) {
+  const len = arr.length;
+  for (let i = 0; i < len - 1; i++) {
+    let minIndex = i;
+    for (let j = i + 1; j < len; j++) {
+      if (arr[j] < arr[minIndex]) {
+        minIndex = j;
+      }
+    }
+    if (minIndex !== i) {
+      [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]]; // Swap elements
     }
   }
-
-  return quicksort(left).concat(middle, quicksort(right));
+  return arr;
 }
 
 // Example usage:
-var arr = [5, 8, 3, 1, 9, 2, 7, 6];
-console.log(quicksort(arr)); // Outputs: [1, 2, 3, 5, 6, 7, 8, 9]
+const array = [5, 3, 1, 4, 2];
+console.log(selectionSort(array)); // Output: [1, 2, 3, 4, 5]
