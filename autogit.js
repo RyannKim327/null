@@ -1,50 +1,39 @@
-function mergeSort(arr) {
-  // Base case: if the array is empty or has only one element, it is already sorted
-  if (arr.length <= 1) {
-    return arr;
-  }
+function findMajorityElement(nums) {
+  let majority = nums[0];       // Initialize the majority element
+  let count = 1;                // Initialize the count of majority element occurrences
 
-  // Split the array into two halves
-  const mid = Math.floor(arr.length / 2);
-  const left = mergeSort(arr.slice(0, mid));
-  const right = mergeSort(arr.slice(mid));
-
-  // Merge the two sorted halves
-  return merge(left, right);
-}
-
-function merge(left, right) {
-  const merged = [];
-  let i = 0;
-  let j = 0;
-
-  // Compare elements from both halves and add the smaller value to the merged array
-  while (i < left.length && j < right.length) {
-    if (left[i] < right[j]) {
-      merged.push(left[i]);
-      i++;
-    } else {
-      merged.push(right[j]);
-      j++;
+  for (let i = 1; i < nums.length; i++) {
+    // If count becomes zero, update the majority element
+    if (count === 0) {
+      majority = nums[i];
+      count = 1;
+    } 
+    // If the current element is the same as the majority element, increment count
+    else if (nums[i] === majority) {
+      count++;
+    } 
+    // If the current element is different from the majority element, decrement count
+    else {
+      count--;
     }
   }
 
-  // Add the remaining elements from the left half (if any)
-  while (i < left.length) {
-    merged.push(left[i]);
-    i++;
+  // Verify if the majority element appears more than n/2 times
+  let occurrences = 0;
+  for (let i = 0; i < nums.length; i++) {
+    if (nums[i] === majority) {
+      occurrences++;
+    }
   }
 
-  // Add the remaining elements from the right half (if any)
-  while (j < right.length) {
-    merged.push(right[j]);
-    j++;
+  if (occurrences > nums.length / 2) {
+    return majority;
+  } else {
+    return -1;  // No majority element found
   }
-
-  return merged;
 }
 
 // Example usage:
-const arr = [5, 2, 8, 4, 1, 9, 3];
-const sortedArr = mergeSort(arr);
-console.log(sortedArr);
+const nums = [1, 3, 3, 4, 3, 5, 3, 3]; 
+const result = findMajorityElement(nums);
+console.log(result);  // Output: 3
