@@ -1,62 +1,34 @@
-class TrieNode {
-  constructor() {
-    this.children = {};
-    this.isEndOfWord = false;
+function boyerMooreHorspool(text, pattern) {
+  const skipTable = {};
+
+  function generateSkipTable(pattern) {
+    for (let i = 0; i < pattern.length - 1; i++) {
+      skipTable[pattern[i]] = pattern.length - 1 - i;
+    }
   }
+
+  generateSkipTable(pattern);
+
+  const textLength = text.length;
+  const patternLength = pattern.length;
+
+  let currentIndex = 0;
+
+  while (currentIndex <= textLength - patternLength) {
+    let backwardIndex = patternLength - 1;
+    while (backwardIndex >= 0 && text[currentIndex + backwardIndex] === pattern[backwardIndex]) {
+      backwardIndex--;
+    }
+
+    if (backwardIndex === -1) {
+      // Match found!
+      // Handle the case as desired (e.g., return currentIndex or store the matches)
+    } else {
+      const skipDistance = skipTable[text[currentIndex + patternLength - 1]] || patternLength;
+      currentIndex += skipDistance;
+    }
+  }
+
+  // No match found
+  // Handle the case as desired (e.g., return -1 or an empty array)
 }
-
-class Trie {
-  constructor() {
-    this.root = new TrieNode();
-  }
-
-  insert(word) {
-    let current = this.root;
-
-    for (let i = 0; i < word.length; i++) {
-      const ch = word[i];
-      if (!current.children[ch]) {
-        current.children[ch] = new TrieNode();
-      }
-      current = current.children[ch];
-    }
-
-    current.isEndOfWord = true;
-  }
-
-  search(word) {
-    let current = this.root;
-
-    for (let i = 0; i < word.length; i++) {
-      const ch = word[i];
-      if (!current.children[ch]) {
-        return false;
-      }
-      current = current.children[ch];
-    }
-
-    return current.isEndOfWord;
-  }
-
-  startsWith(prefix) {
-    let current = this.root;
-
-    for (let i = 0; i < prefix.length; i++) {
-      const ch = prefix[i];
-      if (!current.children[ch]) {
-        return false;
-      }
-      current = current.children[ch];
-    }
-
-    return true;
-  }
-}
-const trie = new Trie();
-trie.insert("apple");
-trie.insert("banana");
-console.log(trie.search("apple")); // true
-console.log(trie.search("banana")); // true
-console.log(trie.search("orange")); // false
-console.log(trie.startsWith("app")); // true
-console.log(trie.startsWith("ora")); // false
