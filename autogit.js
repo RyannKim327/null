@@ -1,18 +1,14 @@
-function reverseString(str) {
-  let reversedStr = '';
-  for (let i = str.length - 1; i >= 0; i--) {
-    reversedStr += str[i];
-  }
-  return reversedStr;
+function findKthSmallestElement(arr, k) {
+  // Sort the array in ascending order
+  arr.sort((a, b) => a - b);
+  
+  // Return the kth smallest element
+  return arr[k - 1];
 }
 
-const input = 'Hello, World!';
-const reversed = reverseString(input);
-console.log(reversed); // Outputs: '!dlroW ,olleH'
-function reverseString(str) {
-  return str.split('').reverse().join('');
-}
+// Example usage
+const array = [4, 2, 7, 1, 9, 5];
+const k = 3;
 
-const input = 'Hello, World!';
-const reversed = reverseString(input);
-console.log(reversed); // Outputs: '!dlroW ,olleH'
+const kthSmallestElement = findKthSmallestElement(array, k);
+console.log(`The ${k}th smallest element is: ${kthSmallestElement}`);
