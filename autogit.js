@@ -1,31 +1,101 @@
-class ListNode {
+class Node {
   constructor(value) {
     this.value = value;
-    this.next = null;
+    this.left = null;
+    this.right = null;
+    this.height = 1;
   }
 }
-
-const findMiddleElement = (head) => {
-  // Initialize two pointers
-  let slow = head;
-  let fast = head;
-
-  // Move 'fast' pointer to the end of the list while 'slow' pointer moves half the speed
-  while (fast !== null && fast.next !== null) {
-    slow = slow.next;
-    fast = fast.next.next;
+class AVLTree {
+  constructor() {
+    this.root = null;
   }
-
-  // Return the middle element
-  return slow;
-};
-// Create the linked list: 1 -> 2 -> 3 -> 4 -> 5
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-// Find the middle element
-const middleElement = findMiddleElement(head);
-console.log(middleElement.value); // Output: 3
+  
+  // Insert a value into the AVL tree
+  insert(value) {
+    this.root = this._insertNode(this.root, value);
+  }
+  
+  // Recursive function to insert a value into the AVL tree
+  _insertNode(node, value) {
+    if (node === null) {
+      return new Node(value);
+    }
+    
+    if (value < node.value) {
+      node.left = this._insertNode(node.left, value);
+    } else {
+      node.right = this._insertNode(node.right, value);
+    }
+    
+    // Update the height of the node
+    node.height = 1 + Math.max(this._getHeight(node.left), this._getHeight(node.right));
+    
+    // Perform rotation and balancing
+    node = this._balanceNode(node);
+    
+    return node;
+  }
+  
+  // Get the height of a node
+  _getHeight(node) {
+    if (node === null) {
+      return 0;
+    }
+    return node.height;
+  }
+  
+  // Perform rotation and balancing of a node
+  _balanceNode(node) {
+    // Left rotation
+    if (this._getBalanceFactor(node) > 1) {
+      if (this._getBalanceFactor(node.left) < 0) {
+        node.left = this._rotateLeft(node.left);
+      }
+      node = this._rotateRight(node);
+    }
+    
+    // Right rotation
+    else if (this._getBalanceFactor(node) < -1) {
+      if (this._getBalanceFactor(node.right) > 0) {
+        node.right = this._rotateRight(node.right);
+      }
+      node = this._rotateLeft(node);
+    }
+    
+    return node;
+  }
+  
+  // Get the balance factor of a node
+  _getBalanceFactor(node) {
+    if (node === null) {
+      return 0;
+    }
+    return this._getHeight(node.left) - this._getHeight(node.right);
+  }
+  
+  // Perform a left rotation
+  _rotateLeft(node) {
+    const newRoot = node.right;
+    node.right = newRoot.left;
+    newRoot.left = node;
+    node.height = 1 + Math.max(this._getHeight(node.left), this._getHeight(node.right));
+    newRoot.height = 1 + Math.max(this._getHeight(newRoot.left), this._getHeight(newRoot.right));
+    return newRoot;
+  }
+  
+  // Perform a right rotation
+  _rotateRight(node) {
+    const newRoot = node.left;
+    node.left = newRoot.right;
+    newRoot.right = node;
+    node.height = 1 + Math.max(this._getHeight(node.left), this._getHeight(node.right));
+    newRoot.height = 1 + Math.max(this._getHeight(newRoot.left), this._getHeight(newRoot.right));
+    return newRoot;
+  }
+}
+const avlTree = new AVLTree();
+avlTree.insert(10);
+avlTree.insert(20);
+avlTree.insert(30);
+console.log(avlTree);
