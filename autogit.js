@@ -1,17 +1,30 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  const alphanumericStr = str.replace(/[^A-Za-z0-9]/g, "").toLowerCase();
-
-  // Reverse the string
-  const reversedStr = alphanumericStr.split("").reverse().join("");
-
-  // Compare the original and reversed strings
-  return alphanumericStr === reversedStr;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-// Example usage
-const string1 = "level";
-console.log(isPalindrome(string1)); // Output: true
+function countLeafNodes(root) {
+  if (root === null) {
+    return 0;
+  }
 
-const string2 = "hello";
-console.log(isPalindrome(string2)); // Output: false
+  if (root.left === null && root.right === null) {
+    return 1;
+  }
+
+  return countLeafNodes(root.left) + countLeafNodes(root.right);
+}
+
+// Example usage:
+// Create a binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+
+console.log(countLeafNodes(root)); // Output: 3
