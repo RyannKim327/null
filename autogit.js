@@ -1,5 +1,25 @@
-let str = "123";
-let num = parseInt(str);
+function breadthLimitedSearch(startNode, targetNode, limit) {
+  const queue = [startNode];
+  const visited = new Set();
 
-console.log(num); // Output: 123
-console.log(typeof num); // Output: number
+  while (queue.length > 0 && limit >= 0) {
+    const currentNode = queue.shift();
+
+    if (currentNode === targetNode) {
+      return currentNode;
+    }
+
+    if (!visited.has(currentNode)) {
+      visited.add(currentNode);
+
+      // Add child nodes to the queue
+      currentNode.children.forEach((childNode) => {
+        queue.push(childNode);
+      });
+    }
+
+    limit--;
+  }
+
+  return null;
+}
