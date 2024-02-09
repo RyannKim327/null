@@ -1,12 +1,10 @@
-const array = [1, 2, 3, 3, 4, 4, 5];
-const uniqueArray = Array.from(new Set(array));
+let string1 = 'Hello';
+let string2 = 'World';
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 3, 3, 4, 4, 5];
-const uniqueArray = array.filter((value, index) => array.indexOf(value) === index);
+let result = string1 + ' ' + string2;
+console.log(result); // Output: Hello World
+let string1 = 'Hello';
+let string2 = 'World';
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 3, 3, 4, 4, 5];
-const uniqueArray = Object.keys(array.reduce((acc, value) => ((acc[value] = true), acc), {})).map(Number);
-
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+let result = string1.concat(' ', string2);
+console.log(result); // Output: Hello World
