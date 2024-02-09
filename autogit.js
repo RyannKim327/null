@@ -1,35 +1,38 @@
-function findLongestCommonSubstring(str1, str2) {
-  const m = str1.length;
-  const n = str2.length;
+class ListNode {
+  constructor(val) {
+    this.val = val;
+    this.next = null;
+  }
+}
 
-  // Create a 2D array to store the lengths of common substrings
-  const dp = Array(m + 1)
-    .fill(0)
-    .map(() => Array(n + 1).fill(0));
+function hasCycle(head) {
+  let slow = head;  // Tortoise
+  let fast = head;  // Hare
 
-  let maxLength = 0; // Length of the longest common substring
-  let endIndex = 0; // Index where the longest common substring ends
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
 
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-        if (dp[i][j] > maxLength) {
-          maxLength = dp[i][j];
-          endIndex = i - 1; // Update the index
-        }
-      }
+    // If slow and fast meet at some point, a cycle exists
+    if (slow === fast) {
+      return true;
     }
   }
 
-  // Extract the longest common substring using the endIndex
-  const longestCommonSubstring = str1.substr(endIndex - maxLength + 1, maxLength);
-
-  return longestCommonSubstring;
+  // No cycle found
+  return false;
 }
+// Create a linked list with a cycle
+const node1 = new ListNode(1);
+const node2 = new ListNode(2);
+const node3 = new ListNode(3);
+const node4 = new ListNode(4);
+const node5 = new ListNode(5);
 
-// Example usage
-const str1 = "abcdefg";
-const str2 = "xyzcdefg";
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node5;
+node5.next = node1;  // Cycle created by connecting the last node to the first
 
-console.log(findLongestCommonSubstring(str1, str2)); // Output: "cdefg"
+console.log(hasCycle(node1));  // Output: true
