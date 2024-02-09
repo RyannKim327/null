@@ -1,59 +1,22 @@
-class TrieNode {
-  constructor() {
-    this.isEndOfWord = false;
-    this.children = {};
+function insertionSort(arr) {
+  const n = arr.length;
+
+  for (let i = 1; i < n; i++) {
+    const current = arr[i];
+    let j = i - 1;
+
+    while (j >= 0 && arr[j] > current) {
+      arr[j + 1] = arr[j];
+      j--;
+    }
+
+    arr[j + 1] = current;
   }
+
+  return arr;
 }
 
-class Trie {
-  constructor() {
-    this.root = new TrieNode();
-  }
-
-  insert(word) {
-    let currentNode = this.root;
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-      if (!currentNode.children[char]) {
-        currentNode.children[char] = new TrieNode();
-      }
-      currentNode = currentNode.children[char];
-    }
-    currentNode.isEndOfWord = true;
-  }
-
-  search(word) {
-    let currentNode = this.root;
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-      if (!currentNode.children[char]) {
-        return false;
-      }
-      currentNode = currentNode.children[char];
-    }
-    return currentNode.isEndOfWord;
-  }
-
-  startsWith(prefix) {
-    let currentNode = this.root;
-    for (let i = 0; i < prefix.length; i++) {
-      const char = prefix[i];
-      if (!currentNode.children[char]) {
-        return false;
-      }
-      currentNode = currentNode.children[char];
-    }
-    return true;
-  }
-}
-const trie = new Trie();
-
-trie.insert("apple");
-trie.insert("application");
-trie.insert("apply");
-
-console.log(trie.search("apple")); // Output: true
-console.log(trie.search("app"));   // Output: false
-
-console.log(trie.startsWith("app")); // Output: true
-console.log(trie.startsWith("xyz")); // Output: false
+// Example usage:
+const array = [5, 2, 4, 6, 1, 3];
+const sortedArray = insertionSort(array);
+console.log(sortedArray);
