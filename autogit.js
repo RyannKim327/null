@@ -1,26 +1,35 @@
-function selectionSort(arr) {
-  const len = arr.length;
+function findLongestCommonSubstring(str1, str2) {
+  const m = str1.length;
+  const n = str2.length;
 
-  for (let i = 0; i < len - 1; i++) {
-    let minIndex = i;
+  // Create a 2D array to store the lengths of common substrings
+  const dp = Array(m + 1)
+    .fill(0)
+    .map(() => Array(n + 1).fill(0));
 
-    for (let j = i + 1; j < len; j++) {
-      if (arr[j] < arr[minIndex]) {
-        minIndex = j;
+  let maxLength = 0; // Length of the longest common substring
+  let endIndex = 0; // Index where the longest common substring ends
+
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+        if (dp[i][j] > maxLength) {
+          maxLength = dp[i][j];
+          endIndex = i - 1; // Update the index
+        }
       }
-    }
-
-    if (minIndex !== i) {
-      // Swap elements
-      let temp = arr[i];
-      arr[i] = arr[minIndex];
-      arr[minIndex] = temp;
     }
   }
 
-  return arr;
+  // Extract the longest common substring using the endIndex
+  const longestCommonSubstring = str1.substr(endIndex - maxLength + 1, maxLength);
+
+  return longestCommonSubstring;
 }
 
-// Example usage:
-const numbers = [5, 3, 8, 2, 1, 4];
-console.log(selectionSort(numbers)); // Output: [1, 2, 3, 4, 5, 8]
+// Example usage
+const str1 = "abcdefg";
+const str2 = "xyzcdefg";
+
+console.log(findLongestCommonSubstring(str1, str2)); // Output: "cdefg"
