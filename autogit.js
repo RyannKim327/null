@@ -1,12 +1,15 @@
-function validateEmail(email) {
-  // Regular expression pattern for email validation
-  const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  
-  // Test the email against the pattern
-  return pattern.test(email);
+function maxSubarraySum(arr) {
+  let maxSoFar = arr[0];
+  let maxEndingHere = arr[0];
+
+  for (let i = 1; i < arr.length; i++) {
+    maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
+    maxSoFar = Math.max(maxSoFar, maxEndingHere);
+  }
+
+  return maxSoFar;
 }
 
 // Example usage
-const email = "example@example.com";
-const isValid = validateEmail(email);
-console.log(isValid); // true or false
+const array = [-2, -3, 4, -1, -2, 1, 5, -3];
+console.log(maxSubarraySum(array)); // Output: 7
