@@ -1,23 +1,12 @@
-function bubbleSort(arr) {
-  let len = arr.length;
-  let swapped;
-  
-  do {
-    swapped = false;
-    
-    for (let i = 0; i < len - 1; i++) {
-      if (arr[i] > arr[i + 1]) {
-        let temp = arr[i];
-        arr[i] = arr[i + 1];
-        arr[i + 1] = temp;
-        swapped = true;
-      }
-    }
-  } while (swapped);
-  
-  return arr;
-}
-
-// Example usage
-let array = [5, 2, 8, 1, 4];
-console.log(bubbleSort(array));
+// Make a GET request to an API endpoint
+fetch('https://api.example.com/data')
+  .then(response => response.json())
+  .then(data => {
+    // Do something with the API response data
+    console.log(data);
+    // Display the response on the HTML page
+    document.getElementById('response').innerText = JSON.stringify(data);
+  })
+  .catch(error => {
+    console.log('Error:', error);
+  });
