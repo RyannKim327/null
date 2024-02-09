@@ -1,47 +1,44 @@
-function beamSearch(initialState, scoringFunction, beamWidth) {
-  // Initialize the beam with the initial state
-  let beam = [initialState];
+class ListNode {
+  constructor(val) {
+    this.val = val;
+    this.next = null;
+  }
+}
+function isPalindrome(head) {
+  let slow = head;
+  let fast = head;
 
-  // Iterate until the desired length is reached
-  while (beam[0].length < maxLength) {
-    let nextBeam = [];
-
-    // Expand each state in the beam
-    for (let state of beam) {
-      // Generate possible next states
-      let nextStates = generateNextStates(state);
-
-      // Score the next states using the scoring function
-      let scoredStates = nextStates.map(s => ({
-        state: s,
-        score: scoringFunction(s)
-      }));
-
-      // Sort the scored states based on score (in descending order)
-      scoredStates.sort((a, b) => b.score - a.score);
-
-      // Take the top 'beamWidth' states and add them to the next beam
-      nextBeam.push(...scoredStates.slice(0, beamWidth).map(s => s.state));
-    }
-
-    // Update the current beam with the next beam
-    beam = nextBeam;
+  // Use a fast and slow pointer approach to find the middle of the list
+  while (fast !== null && fast.next !== null) {
+    slow = slow.next;
+    fast = fast.next.next;
   }
 
-  // Return the top state in the final beam
-  return beam[0];
-}
-function scoringFunction(state) {
-  // Calculate the score of the state based on problem-specific criteria
-  // Return the score value
-}
-function generateNextStates(state) {
-  // Generate and return an array of possible next states from the current state
+  // Reverse the second half of the linked list
+  let reversed = null;
+  while (slow !== null) {
+    const next = slow.next;
+    slow.next = reversed;
+    reversed = slow;
+    slow = next;
+  }
+
+  // Compare the first and second halves of the linked list
+  while (reversed !== null) {
+    if (head.val !== reversed.val) {
+      return false;
+    }
+    head = head.next;
+    reversed = reversed.next;
+  }
+
+  return true;
 }
 // Example usage
-let initialState = // Define initial state
-let beamWidth = 3;
+const list = new ListNode(1);
+list.next = new ListNode(2);
+list.next.next = new ListNode(3);
+list.next.next.next = new ListNode(2);
+list.next.next.next.next = new ListNode(1);
 
-let bestState = beamSearch(initialState, scoringFunction, beamWidth);
-
-console.log("Best state:", bestState);
+console.log(isPalindrome(list)); // Output: true
