@@ -1,23 +1,60 @@
-function getNodeFromEnd(list, n) {
-  let p1 = list;
-  let p2 = list;
-
-  // Move p2 n positions ahead
-  for (let i = 0; i < n; i++) {
-    if (p2 === null) {
-      return "List has fewer than n nodes";
-    }
-    p2 = p2.next;
+/**
+ * Node class representing a node in a tree/graph.
+ */
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.children = [];
   }
-
-  // Move both pointers until p2 reaches the end
-  while (p2 !== null) {
-    p1 = p1.next;
-    p2 = p2.next;
-  }
-
-  return p1;
 }
-const head = { value: 1, next: { value: 2, next: { value: 3, next: { value: 4, next: null } } } };
 
-console.log(getNodeFromEnd(head, 2)); // Output: { value: 3, next: { value: 4, next: null } }
+/**
+ * Perform depth-limited search iteratively.
+ * @param {Node} root - The root node to start the search from.
+ * @param {number} limit - The maximum depth to search.
+ * @returns {Node|null} - The goal node if found, otherwise null.
+ */
+function depthLimitedSearchIterative(root, limit) {
+  let stack = [];
+  stack.push({ node: root, depth: 0 });
+
+  while (stack.length > 0) {
+    let { node, depth } = stack.pop();
+
+    if (node.data === goalData) {
+      return node; // Goal node found
+    }
+
+    if (depth < limit) {
+      // Add child nodes to the stack
+      for (let child of node.children) {
+        stack.push({ node: child, depth: depth + 1 });
+      }
+    }
+  }
+
+  return null; // Goal node not found within depth limit
+}
+// Create nodes
+let nodeA = new Node("A");
+let nodeB = new Node("B");
+let nodeC = new Node("C");
+let nodeD = new Node("D");
+let nodeE = new Node("E");
+
+// Build the tree structure
+nodeA.children.push(nodeB, nodeC);
+nodeB.children.push(nodeD);
+nodeC.children.push(nodeE);
+
+// Specify the goal data to search for
+let goalData = "E";
+
+// Perform depth-limited search
+let result = depthLimitedSearchIterative(nodeA, 2);
+
+if (result) {
+  console.log(`Goal node (${goalData}) found!`);
+} else {
+  console.log(`Goal node (${goalData}) not found within depth limit.`);
+}
