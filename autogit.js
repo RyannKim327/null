@@ -1,38 +1,51 @@
-function findLongestIncreasingSubsequence(array) {
-  // Create an array to store the length of the subsequence ending at each index
-  const dp = Array(array.length).fill(1);
-
-  // Iterate over the array to compute the length of the longest increasing subsequence
-  for (let i = 1; i < array.length; i++) {
-    for (let j = 0; j < i; j++) {
-      if (array[i] > array[j]) {
-        dp[i] = Math.max(dp[i], dp[j] + 1);
+function buildPrefixTable(pattern) {
+  const prefixTable = [0]; // prefix table, initialized with 0
+  let prefixLength = 0; // length of the current prefix
+  
+  for (let i = 1; i < pattern.length; i++) {
+    if (pattern[i] === pattern[prefixLength]) {
+      prefixLength++;
+      prefixTable[i] = prefixLength;
+    } else {
+      if (prefixLength !== 0) {
+        // We hit a mismatch, update prefixLength
+        prefixLength = prefixTable[prefixLength - 1];
+        i--; // stay at the same position in the next iteration
+      } else {
+        prefixTable[i] = 0;
       }
     }
   }
-
-  // Find the maximum length in the dp array
-  let maxLength = 0;
-  for (let i = 0; i < dp.length; i++) {
-    if (dp[i] > maxLength) {
-      maxLength = dp[i];
-    }
-  }
-
-  // Find the longest increasing subsequence based on the dp array
-  const result = [];
-  let currentIndex = maxLength - 1;
-  for (let i = array.length - 1; i >= 0; i--) {
-    if (dp[i] === currentIndex + 1) {
-      result[currentIndex] = array[i];
-      currentIndex--;
-    }
-  }
-
-  return result;
+  
+  return prefixTable;
 }
-
-// Usage example:
-const array = [3, 10, 2, 1, 20];
-const longestIncreasingSubsequence = findLongestIncreasingSubsequence(array);
-console.log(longestIncreasingSubsequence);  // Output: [3, 10, 20]
+function kmpSearch(text, pattern) {
+  const prefixTable = buildPrefixTable(pattern);
+  let textIndex = 0;
+  let patternIndex = 0;
+  
+  while (textIndex < text.length) {
+    if (pattern[patternIndex] === text[textIndex]) {
+      patternIndex++;
+      textIndex++;
+    }
+    
+    if (patternIndex === pattern.length) {
+      // Pattern found at this index
+      return textIndex - patternIndex;
+    } else if (textIndex < text.length && pattern[patternIndex] !== text[textIndex]) {
+      if (patternIndex !== 0) {
+        patternIndex = prefixTable[patternIndex - 1];
+      } else {
+        textIndex++;
+      }
+    }
+  }
+  
+  // Pattern not found in the text
+  return -1;
+}
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const matchIndex = kmpSearch(text, pattern);
+console.log("Pattern found at index:", matchIndex);
