@@ -1,22 +1,51 @@
-let str = "A man, a plan, a canal, Panama!";
-str = str.replace(/[^A-Za-z0-9]/g, "").toLowerCase();
-let reversedStr = str.split("").reverse().join("");
-if (str === reversedStr) {
-    console.log("The string is a palindrome.");
-} else {
-    console.log("The string is not a palindrome.");
-}
-function isPalindrome(str) {
-  str = str.replace(/[^A-Za-z0-9]/g, "").toLowerCase();
-  let reversedStr = str.split("").reverse().join("");
-  return str === reversedStr;
+class ListNode {
+  constructor(val){
+    this.val = val;
+    this.next = null;
+  }
 }
 
-let string1 = "A man, a plan, a canal, Panama!";
-console.log(isPalindrome(string1)); // Output: true
+function getIntersectionNode(headA, headB) {
+  if (!headA || !headB) {
+    return null; // No intersection if any of the lists is empty
+  }
+  
+  let lengthA = getLength(headA);
+  let lengthB = getLength(headB);
+  let diff = Math.abs(lengthA - lengthB);
+  
+  if (lengthA > lengthB) {
+    while (diff > 0) {
+      headA = headA.next;
+      diff--;
+    }
+  } else {
+    while (diff > 0) {
+      headB = headB.next;
+      diff--;
+    }
+  }
+  
+  while (headA && headB) {
+    if (headA === headB) {
+      return headA; // Intersection found
+    }
+    
+    headA = headA.next;
+    headB = headB.next;
+  }
+  
+  return null; // No intersection found
+  
+}
 
-let string2 = "hello world";
-console.log(isPalindrome(string2)); // Output: false
-
-let string3 = "racecar";
-console.log(isPalindrome(string3)); // Output: true
+function getLength(node) {
+  let length = 0;
+  
+  while (node) {
+    length++;
+    node = node.next;
+  }
+  
+  return length;
+}
