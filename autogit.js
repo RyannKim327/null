@@ -1,118 +1,59 @@
-class RedBlackTreeNode {
-  constructor(value, color = 'RED') {
+// Node class represents a state in the search space
+class Node {
+  constructor(value, children) {
     this.value = value;
-    this.left = null;
-    this.right = null;
-    this.parent = null;
-    this.color = color;
+    this.children = children;
   }
 }
 
-class RedBlackTree {
-  constructor() {
-    this.root = null;
+// Perform depth-limited search
+function depthLimitedSearch(node, target, depth) {
+  // Base case: target found
+  if (node.value === target) {
+    return node.value;
   }
 
-  insert(value) {
-    const newNode = new RedBlackTreeNode(value);
-    if (!this.root) {
-      this.root = newNode;
-      this.root.color = 'BLACK';
-    } else {
-      let currentNode = this.root;
-      while (currentNode) {
-        if (value < currentNode.value) {
-          if (!currentNode.left) {
-            currentNode.left = newNode;
-            newNode.parent = currentNode;
-            break;
-          }
-          currentNode = currentNode.left;
-        } else {
-          if (!currentNode.right) {
-            currentNode.right = newNode;
-            newNode.parent = currentNode;
-            break;
-          }
-          currentNode = currentNode.right;
-        }
-      }
-      this.balanceTreeAfterInsertion(newNode);
-    }
+  // Base case: maximum depth reached
+  if (depth === 0) {
+    return null;
   }
 
-  balanceTreeAfterInsertion(node) {
-    while (node.parent && node.parent.color === 'RED') {
-      if (node.parent === node.parent.parent.left) {
-        const uncle = node.parent.parent.right;
-        if (uncle && uncle.color === 'RED') {
-          node.parent.color = 'BLACK';
-          uncle.color = 'BLACK';
-          node.parent.parent.color = 'RED';
-          node = node.parent.parent;
-        } else {
-          if (node === node.parent.right) {
-            node = node.parent;
-            this.rotateLeft(node);
-          }
-          node.parent.color = 'BLACK';
-          node.parent.parent.color = 'RED';
-          this.rotateRight(node.parent.parent);
-        }
-      } else {
-        const uncle = node.parent.parent.left;
-        if (uncle && uncle.color === 'RED') {
-          node.parent.color = 'BLACK';
-          uncle.color = 'BLACK';
-          node.parent.parent.color = 'RED';
-          node = node.parent.parent;
-        } else {
-          if (node === node.parent.left) {
-            node = node.parent;
-            this.rotateRight(node);
-          }
-          node.parent.color = 'BLACK';
-          node.parent.parent.color = 'RED';
-          this.rotateLeft(node.parent.parent);
-        }
-      }
+  // Recursive case: traverse the children nodes
+  for (const child of node.children) {
+    const result = depthLimitedSearch(child, target, depth - 1);
+    
+    // Return the result if target found in the subtree
+    if (result !== null) {
+      return result;
     }
-    this.root.color = 'BLACK';
   }
+  
+  // Target not found within depth limit
+  return null;
+}
 
-  rotateLeft(node) {
-    const rightChild = node.right;
-    node.right = rightChild.left;
-    if (rightChild.left) {
-      rightChild.left.parent = node;
-    }
-    rightChild.parent = node.parent;
-    if (!node.parent) {
-      this.root = rightChild;
-    } else if (node === node.parent.left) {
-      node.parent.left = rightChild;
-    } else {
-      node.parent.right = rightChild;
-    }
-    rightChild.left = node;
-    node.parent = rightChild;
-  }
+// Example usage
+const tree = new Node('A', [
+  new Node('B', [
+    new Node('E', []),
+    new Node('F', [])
+  ]),
+  new Node('C', [
+    new Node('G', [])
+  ]),
+  new Node('D', [
+    new Node('H', []),
+    new Node('I', [])
+  ])
+]);
 
-  rotateRight(node) {
-    const leftChild = node.left;
-    node.left = leftChild.right;
-    if (leftChild.right) {
-      leftChild.right.parent = node;
-    }
-    leftChild.parent = node.parent;
-    if (!node.parent) {
-      this.root = leftChild;
-    } else if (node === node.parent.right) {
-      node.parent.right = leftChild;
-    } else {
-      node.parent.left = leftChild;
-    }
-    leftChild.right = node;
-    node.parent = leftChild;
-  }
+const targetValue = 'G';
+const depthLimit = 2;
+
+const result = depthLimitedSearch(tree, targetValue, depthLimit);
+
+if (result !== null) {
+  console.log(`Target '${targetValue}' found at depth ${depthLimit}`);
+} else {
+  console.log(`Target '${targetValue}' not found within depth ${depthLimit}`);
 }
