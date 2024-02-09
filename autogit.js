@@ -1,51 +1,16 @@
-class HashTable {
-  constructor(size = 100) {
-    this.size = size;
-    this.buckets = new Array(size);
+function maxSubarraySum(arr) {
+  let currentSum = 0;
+  let maxSum = -Infinity;
+  
+  for (let i = 0; i < arr.length; i++) {
+    currentSum = Math.max(arr[i], currentSum + arr[i]);
+    maxSum = Math.max(maxSum, currentSum);
   }
-
-  _hash(key) {
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) {
-      hash += key.charCodeAt(i);
-    }
-    return hash % this.size;
-  }
-
-  insert(key, value) {
-    const index = this._hash(key);
-    if (!this.buckets[index]) {
-      this.buckets[index] = {};
-    }
-    this.buckets[index][key] = value;
-  }
-
-  get(key) {
-    const index = this._hash(key);
-    if (!this.buckets[index]) {
-      return undefined;
-    }
-    return this.buckets[index][key];
-  }
-
-  remove(key) {
-    const index = this._hash(key);
-    if (!this.buckets[index]) {
-      return undefined;
-    }
-    const value = this.buckets[index][key];
-    delete this.buckets[index][key];
-    return value;
-  }
+  
+  return maxSum;
 }
-const hashTable = new HashTable();
 
-hashTable.insert("name", "John");
-hashTable.insert("age", 25);
-
-console.log(hashTable.get("name")); // Output: John
-console.log(hashTable.get("age")); // Output: 25
-
-hashTable.remove("age");
-
-console.log(hashTable.get("age")); // Output: undefined
+// Example usage
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const maxSum = maxSubarraySum(array);
+console.log(maxSum); // Output: 6 (subarray: [4, -1, 2, 1])
