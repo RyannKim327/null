@@ -1,14 +1,21 @@
-const numbers = [2, 5, 1, 9, 4];
-const max = Math.max(...numbers);
-
-console.log(max); // Output: 9
-const numbers = [2, 5, 1, 9, 4];
-let max = numbers[0];
-
-for (let i = 1; i < numbers.length; i++) {
-  if (numbers[i] > max) {
-    max = numbers[i];
+function bwtTransform(input) {
+  // Generate all possible rotations
+  let rotations = [];
+  for (let i = 0; i < input.length; i++) {
+    rotations.push(input.slice(i) + input.slice(0, i));
   }
-}
 
-console.log(max); // Output: 9
+  // Sort the rotations
+  rotations.sort();
+
+  // Get the last characters of each rotation
+  let bwt = '';
+  for (let i = 0; i < rotations.length; i++) {
+    bwt += rotations[i][input.length - 1];
+  }
+
+  return bwt;
+}
+let input = 'banana';
+let bwtResult = bwtTransform(input);
+console.log(bwtResult);
