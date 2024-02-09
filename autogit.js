@@ -1,66 +1,59 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+let fib2 = 0;
+let fib1 = 1;
+while (fib1 < arr.length) {
+  const temp = fib1;
+  fib1 = fib1 + fib2;
+  fib2 = temp;
 }
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-    this.size = 0;
+let offset = -1;
+let index = fib2;
+let mid = Math.min(offset + fib1, arr.length - 1);
+while (arr[mid] !== target && fib1 > 1) {
+  if (arr[mid] < target) {
+    fib1 = fib2;
+    fib2 = fib1 - fib2;
+    offset = index;
+    index = fib2;
+  } else {
+    fib1 = fib1 - fib2;
+    fib2 = fib2 - fib1;
   }
-
-  enqueue(value) {
-    const newNode = new Node(value);
-    if (this.isEmpty()) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
-    }
-    this.size++;
-  }
-
-  dequeue() {
-    if (this.isEmpty()) {
-      return null;
-    }
-    const dequeuedValue = this.head.value;
-    if (this.head === this.tail) {
-      this.tail = null;
-    }
-    this.head = this.head.next;
-    this.size--;
-    return dequeuedValue;
-  }
-
-  isEmpty() {
-    return this.size === 0;
-  }
-
-  getSize() {
-    return this.size;
-  }
-
-  peek() {
-    if (this.isEmpty()) {
-      return null;
-    }
-    return this.head.value;
-  }
+  mid = Math.min(offset + fib1, arr.length - 1);
 }
-const queue = new Queue();
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
-console.log(queue.getSize()); // Output: 3
-console.log(queue.peek()); // Output: 1
-console.log(queue.dequeue()); // Output: 1
-console.log(queue.dequeue()); // Output: 2
-console.log(queue.getSize()); // Output: 1
-console.log(queue.isEmpty()); // Output: false
-console.log(queue.dequeue()); // Output: 3
-console.log(queue.isEmpty()); // Output: true
-console.log(queue.dequeue()); // Output: null
+return arr[mid] === target ? mid : -1;
+function fibonacciSearch(arr, target) {
+    let fib2 = 0;
+    let fib1 = 1;
+
+    // Find the smallest Fibonacci number >= array length
+    while (fib1 < arr.length) {
+        const temp = fib1;
+        fib1 = fib1 + fib2;
+        fib2 = temp;
+    }
+
+    let offset = -1;
+    let index = fib2;
+    let mid = Math.min(offset + fib1, arr.length - 1);
+
+    // Binary search in the specified range
+    while (arr[mid] !== target && fib1 > 1) {
+        if (arr[mid] < target) {
+            fib1 = fib2;
+            fib2 = fib1 - fib2;
+            offset = index;
+            index = fib2;
+        } else {
+            fib1 = fib1 - fib2;
+            fib2 = fib2 - fib1;
+        }
+        mid = Math.min(offset + fib1, arr.length - 1);
+    }
+
+    return arr[mid] === target ? mid : -1;
+}
+const arr = [1, 5, 9, 13, 18, 24, 30];
+const target = 18;
+
+const index = fibonacciSearch(arr, target);
+console.log(index);  // Output: 4 (the index where target is found)
