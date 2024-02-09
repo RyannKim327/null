@@ -1,34 +1,25 @@
-function boyerMooreHorspool(text, pattern) {
-  const skipTable = {};
-
-  function generateSkipTable(pattern) {
-    for (let i = 0; i < pattern.length - 1; i++) {
-      skipTable[pattern[i]] = pattern.length - 1 - i;
-    }
+function quicksort(arr) {
+  if (arr.length <= 1) {
+    return arr;
   }
 
-  generateSkipTable(pattern);
+  var pivot = arr[Math.floor(arr.length / 2)];
+  var less = [];
+  var equal = [];
+  var greater = [];
 
-  const textLength = text.length;
-  const patternLength = pattern.length;
-
-  let currentIndex = 0;
-
-  while (currentIndex <= textLength - patternLength) {
-    let backwardIndex = patternLength - 1;
-    while (backwardIndex >= 0 && text[currentIndex + backwardIndex] === pattern[backwardIndex]) {
-      backwardIndex--;
-    }
-
-    if (backwardIndex === -1) {
-      // Match found!
-      // Handle the case as desired (e.g., return currentIndex or store the matches)
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i] < pivot) {
+      less.push(arr[i]);
+    } else if (arr[i] === pivot) {
+      equal.push(arr[i]);
     } else {
-      const skipDistance = skipTable[text[currentIndex + patternLength - 1]] || patternLength;
-      currentIndex += skipDistance;
+      greater.push(arr[i]);
     }
   }
 
-  // No match found
-  // Handle the case as desired (e.g., return -1 or an empty array)
+  return quicksort(less).concat(equal, quicksort(greater));
 }
+var numbers = [5, 8, 1, 3, 9, 2];
+var sortedNumbers = quicksort(numbers);
+console.log(sortedNumbers); // Output: [1, 2, 3, 5, 8, 9]
