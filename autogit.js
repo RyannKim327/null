@@ -1,42 +1,66 @@
-function dijkstra(graph, initialNode) {
-  const distances = {};
-  const visited = {};
-  const queue = new PriorityQueue();
-
-  for (const node in graph) {
-    distances[node] = Infinity;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
-  distances[initialNode] = 0;
-
-  queue.enqueue(initialNode, 0);
-
-  while (!queue.isEmpty()) {
-    const { element: currentNode } = queue.dequeue();
-    if (visited[currentNode]) continue;
-
-    visited[currentNode] = true;
-
-    for (const neighbor in graph[currentNode]) {
-      const distance = graph[currentNode][neighbor];
-      const totalDistance = distances[currentNode] + distance;
-
-      if (totalDistance < distances[neighbor]) {
-        distances[neighbor] = totalDistance;
-        queue.enqueue(neighbor, totalDistance);
-      }
-    }
-  }
-
-  return distances;
 }
+class Queue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.size = 0;
+  }
 
-// Sample usage
-const graph = {
-  A: { B: 5, C: 2 },
-  B: { A: 5, C: 1, D: 3 },
-  C: { A: 2, B: 1, D: 2 },
-  D: { B: 3, C: 2 },
-};
-const initialNode = 'A';
-const shortestDistances = dijkstra(graph, initialNode);
-console.log(shortestDistances);
+  enqueue(value) {
+    const newNode = new Node(value);
+    if (this.isEmpty()) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+    this.size++;
+  }
+
+  dequeue() {
+    if (this.isEmpty()) {
+      return null;
+    }
+    const dequeuedValue = this.head.value;
+    if (this.head === this.tail) {
+      this.tail = null;
+    }
+    this.head = this.head.next;
+    this.size--;
+    return dequeuedValue;
+  }
+
+  isEmpty() {
+    return this.size === 0;
+  }
+
+  getSize() {
+    return this.size;
+  }
+
+  peek() {
+    if (this.isEmpty()) {
+      return null;
+    }
+    return this.head.value;
+  }
+}
+const queue = new Queue();
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+console.log(queue.getSize()); // Output: 3
+console.log(queue.peek()); // Output: 1
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.dequeue()); // Output: 2
+console.log(queue.getSize()); // Output: 1
+console.log(queue.isEmpty()); // Output: false
+console.log(queue.dequeue()); // Output: 3
+console.log(queue.isEmpty()); // Output: true
+console.log(queue.dequeue()); // Output: null
