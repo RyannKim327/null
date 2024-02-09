@@ -1,24 +1,8 @@
-const array = [1, 2, 3, 3, 4, 4, 5];
-const uniqueArray = [...new Set(array)];
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 3, 3, 4, 4, 5];
-const uniqueArray = array.filter((value, index, self) => {
-  return self.indexOf(value) === index;
-});
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 3, 3, 4, 4, 5];
-const uniqueArray = array.reduce((accumulator, currentValue) => {
-  if (!accumulator.includes(currentValue)) {
-    accumulator.push(currentValue);
-  }
-  return accumulator;
-}, []);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 3, 3, 4, 4, 5];
-const uniqueArray = [];
-for (let i = 0; i < array.length; i++) {
-  if (uniqueArray.indexOf(array[i]) === -1) {
-    uniqueArray.push(array[i]);
-  }
-}
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+let str = "42";
+let num = parseInt(str);
+
+console.log(num); // Output: 42
+let binaryStr = "1010";
+let decimalNum = parseInt(binaryStr, 2); // Second argument is 2 for binary
+
+console.log(decimalNum); // Output: 10
