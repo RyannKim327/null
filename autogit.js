@@ -1,23 +1,24 @@
-function findSecondLargest(arr) {
-  if (arr.length < 2) {
-    return "Array should have at least 2 elements";
+const array = [1, 2, 3, 3, 4, 4, 5];
+const uniqueArray = [...new Set(array)];
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 3, 3, 4, 4, 5];
+const uniqueArray = array.filter((value, index, self) => {
+  return self.indexOf(value) === index;
+});
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 3, 3, 4, 4, 5];
+const uniqueArray = array.reduce((accumulator, currentValue) => {
+  if (!accumulator.includes(currentValue)) {
+    accumulator.push(currentValue);
   }
-
-  let max = arr[0];
-  let secondMax = arr[0];
-
-  for (let i = 1; i < arr.length; i++) {
-    if (arr[i] > max) {
-      secondMax = max;
-      max = arr[i];
-    } else if (arr[i] > secondMax && arr[i] !== max) {
-      secondMax = arr[i];
-    }
+  return accumulator;
+}, []);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 3, 3, 4, 4, 5];
+const uniqueArray = [];
+for (let i = 0; i < array.length; i++) {
+  if (uniqueArray.indexOf(array[i]) === -1) {
+    uniqueArray.push(array[i]);
   }
-
-  return secondMax;
 }
-
-// Example usage:
-const array = [5, 2, 8, 9, 1];
-console.log(findSecondLargest(array)); // Output: 8
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
