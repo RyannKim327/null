@@ -1,88 +1,48 @@
-class Node {
-  constructor(value, next = []) {
-    this.value = value;
-    this.next = next;
+// Heapify function to create a max heap
+function heapify(arr, n, i) {
+  let largest = i; // Initialize largest as root
+  let left = 2 * i + 1; // Left child position
+  let right = 2 * i + 2; // Right child position
+
+  // If left child is larger than root
+  if (left < n && arr[left] > arr[largest])
+    largest = left;
+
+  // If right child is larger than largest so far
+  if (right < n && arr[right] > arr[largest])
+    largest = right;
+
+  // If largest is not root
+  if (largest !== i) {
+    // Swapping elements
+    [arr[i], arr[largest]] = [arr[largest], arr[i]];
+
+    // Recursively heapify the affected sub-tree
+    heapify(arr, n, largest);
   }
 }
-class SkipList {
-  constructor() {
-    this.head = new Node(-Infinity);
-    this.levels = 1;
+
+// Heap Sort function
+function heapSort(arr) {
+  const n = arr.length;
+
+  // Build max heap
+  for (let i = Math.floor(n / 2) - 1; i >= 0; i--)
+    heapify(arr, n, i);
+
+  // Heap Sort
+  for (let i = n - 1; i > 0; i--) {
+    // Swap the root node with the last element
+    [arr[0], arr[i]] = [arr[i], arr[0]];
+
+    // Heapify the reduced heap
+    heapify(arr, i, 0);
   }
 
-  insert(value) {
-    const newNode = new Node(value);
-    let current = this.head;
-
-    // Create an update array to store the previous nodes at each level
-    const update = new Array(this.levels);
-
-    // Find the appropriate position to insert the new node at each level
-    for (let level = this.levels - 1; level >= 0; level--) {
-      while (current.next[level] && current.next[level].value < value) {
-        current = current.next[level];
-      }
-      update[level] = current;
-    }
-
-    // Update the next references of nodes to insert the new node
-    for (let level = 0; level <= newNode.next.length; level++) {
-      newNode.next[level] = update[level].next[level];
-      update[level].next[level] = newNode;
-    }
-
-    // Increase the number of levels if needed
-    if (Math.random() < 0.5) {
-      this.levels++;
-      this.head.next.push(null);
-      newNode.next.push(null);
-    }
-  }
-
-  delete(value) {
-    let current = this.head;
-
-    // Find the node to delete
-    for (let level = this.levels - 1; level >= 0; level--) {
-      while (current.next[level] && current.next[level].value < value) {
-        current = current.next[level];
-      }
-    }
-
-    // If the next node is the one to delete, remove it from each level
-    if (current.next[0] && current.next[0].value === value) {
-      for (let level = 0; level <= current.next.length - 1; level++) {
-        if (current.next[level].value === value) {
-          current.next[level] = current.next[level].next[level];
-        }
-      }
-    }
-  }
-
-  search(value) {
-    let current = this.head;
-
-    // Find the node based on its value
-    for (let level = this.levels - 1; level >= 0; level--) {
-      while (current.next[level] && current.next[level].value <= value) {
-        if (current.next[level].value === value) {
-          return true;
-        }
-        current = current.next[level];
-      }
-    }
-
-    return false;
-  }
+  return arr;
 }
-const skipList = new SkipList();
-skipList.insert(1);
-skipList.insert(2);
-skipList.insert(3);
 
-console.log(skipList.search(2)); // Output: true
-console.log(skipList.search(4)); // Output: false
-
-skipList.delete(2);
-
-console.log(skipList.search(2)); // Output: false
+// Example usage:
+const array = [5, 9, 3, 1, 8, 7];
+console.log("Input array:", array);
+console.log("Sorted array:", heapSort(array));
