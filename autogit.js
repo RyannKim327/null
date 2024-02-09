@@ -1,55 +1,26 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
+function selectionSort(arr) {
+  const len = arr.length;
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+  for (let i = 0; i < len - 1; i++) {
+    let minIndex = i;
 
-  push(value) {
-    const newNode = new Node(value);
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
+    for (let j = i + 1; j < len; j++) {
+      if (arr[j] < arr[minIndex]) {
+        minIndex = j;
       }
-      current.next = newNode;
+    }
+
+    if (minIndex !== i) {
+      // Swap elements
+      let temp = arr[i];
+      arr[i] = arr[minIndex];
+      arr[minIndex] = temp;
     }
   }
 
-  isPalindrome() {
-    const values = [];
-    let current = this.head;
-    while (current) {
-      values.push(current.value);
-      current = current.next;
-    }
-
-    let start = 0;
-    let end = values.length - 1;
-    while (start < end) {
-      if (values[start] !== values[end]) {
-        return false;
-      }
-      start++;
-      end--;
-    }
-    return true;
-  }
+  return arr;
 }
 
 // Example usage:
-const linkedList = new LinkedList();
-linkedList.push('a');
-linkedList.push('b');
-linkedList.push('c');
-linkedList.push('b');
-linkedList.push('a');
-
-console.log(linkedList.isPalindrome()); // Output: true
+const numbers = [5, 3, 8, 2, 1, 4];
+console.log(selectionSort(numbers)); // Output: [1, 2, 3, 4, 5, 8]
