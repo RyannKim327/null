@@ -1,17 +1,12 @@
-function findLongestCommonPrefix(strings) {
-  if (strings.length === 0) {
-    return '';
-  }
-
-  let prefix = strings[0];
-  for (let i = 1; i < strings.length; i++) {
-    while (!strings[i].startsWith(prefix)) {
-      prefix = prefix.slice(0, prefix.length - 1);
-    }
-  }
-
-  return prefix;
+function validateEmail(email) {
+  // Regular expression pattern for email validation
+  const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+  // Test the email against the pattern
+  return pattern.test(email);
 }
-const strings = ["apple", "app", "application"];
-const longestCommonPrefix = findLongestCommonPrefix(strings);
-console.log(longestCommonPrefix); // Output: "app"
+
+// Example usage
+const email = "example@example.com";
+const isValid = validateEmail(email);
+console.log(isValid); // true or false
