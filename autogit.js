@@ -1,14 +1,18 @@
-function reverseLinkedList(head) {
-  let current = head;
-  let previous = null;
-  let next = null;
-
-  while (current !== null) {
-    next = current.next;
-    current.next = previous;
-    previous = current;
-    current = next;
+function countOccurrences(str, character) {
+  let count = 0;
+  
+  for (let i = 0; i < str.length; i++) {
+    if (str[i] === character) {
+      count++;
+    }
   }
-
-  return previous; // previous will be the new head of the reversed list
+  
+  return count;
 }
+
+// Example usage
+const myString = 'Hello, world!';
+const myCharacter = 'o';
+
+const occurrences = countOccurrences(myString, myCharacter);
+console.log(`The character "${myCharacter}" occurs ${occurrences} times in the string.`);
