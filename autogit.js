@@ -1,48 +1,35 @@
-class Graph {
-  constructor(numVertices, edges) {
-    this.numVertices = numVertices;
-    this.edges = edges;
+function isPalindromeLinkedList(head) {
+  let slow = head;
+  let fast = head;
+
+  // Find the middle of the linked list
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
   }
 
-  bellmanFord(source) {
-    let dist = new Array(this.numVertices).fill(Infinity);
-    let prev = new Array(this.numVertices).fill(null);
+  // Reverse the second half of the linked list
+  let current = slow;
+  let previous = null;
+  let next = null;
 
-    dist[source] = 0;
-
-    for (let i = 0; i < this.numVertices - 1; i++) {
-      for (let [u, v, weight] of this.edges) {
-        if (dist[u] + weight < dist[v]) {
-          dist[v] = dist[u] + weight;
-          prev[v] = u;
-        }
-      }
-    }
-
-    // Check for negative cycles
-    for (let [u, v, weight] of this.edges) {
-      if (dist[u] + weight < dist[v]) {
-        throw new Error("Graph contains a negative cycle");
-      }
-    }
-
-    return { dist, prev };
+  while (current) {
+    next = current.next;
+    current.next = previous;
+    previous = current;
+    current = next;
   }
+  slow = previous;
+
+  // Compare the first and second half of the linked list
+  fast = head;
+  while (slow) {
+    if (fast.val !== slow.val) {
+      return false;
+    }
+    fast = fast.next;
+    slow = slow.next;
+  }
+
+  return true;
 }
-
-// Example usage
-const numVertices = 4;
-const edges = [
-  [0, 1, 1],
-  [0, 2, 4],
-  [1, 2, 2],
-  [1, 3, 5],
-  [2, 3, 1],
-];
-const graph = new Graph(numVertices, edges);
-
-const source = 0;
-const { dist, prev } = graph.bellmanFord(source);
-
-console.log("Shortest distances:", dist);
-console.log("Predecessors:", prev);
