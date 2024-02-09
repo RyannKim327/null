@@ -1,15 +1,35 @@
-function maxSubarraySum(arr) {
-  let maxSoFar = arr[0];
-  let maxEndingHere = arr[0];
+class Node {
+  constructor(value, children = []) {
+    this.value = value;
+    this.children = children;
+  }
+}
 
-  for (let i = 1; i < arr.length; i++) {
-    maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
-    maxSoFar = Math.max(maxSoFar, maxEndingHere);
+function depthLimitedSearch(root, target, limit) {
+  const stack = [{ node: root, depth: 0 }];
+
+  while (stack.length > 0) {
+    const { node, depth } = stack.pop();
+
+    if (node.value === target) {
+      return node;
+    }
+
+    if (depth < limit) {
+      for (let i = node.children.length - 1; i >= 0; i--) {
+        stack.push({ node: node.children[i], depth: depth + 1 });
+      }
+    }
   }
 
-  return maxSoFar;
+  return null; // Target not found within limit
 }
 
 // Example usage
-const array = [-2, -3, 4, -1, -2, 1, 5, -3];
-console.log(maxSubarraySum(array)); // Output: 7
+const tree = new Node(1, [
+  new Node(2, [new Node(4), new Node(5)]),
+  new Node(3, [new Node(6), new Node(7)])
+]);
+
+const targetNode = depthLimitedSearch(tree, 5, 2);
+console.log(targetNode ? `Target found: ${targetNode.value}` : 'Target not found.');
