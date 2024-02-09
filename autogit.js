@@ -1,41 +1,41 @@
-function heapify(array, length, i) {
-  let largest = i;
-  const left = 2 * i + 1;
-  const right = 2 * i + 2;
-
-  if (left < length && array[left] > array[largest]) {
-    largest = left;
+function longestCommonSubsequence(str1, str2) {
+  const m = str1.length;
+  const n = str2.length;
+  
+  // Create a 2D array of size (m+1)x(n+1) and initialize it with zeros
+  const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+  
+  // Fill the dp array
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+      } else {
+        dp[i][j] = Math.max(dp[i][j - 1], dp[i - 1][j]);
+      }
+    }
   }
-
-  if (right < length && array[right] > array[largest]) {
-    largest = right;
+  
+  // Backtrack to find the longest common subsequence
+  let lcs = '';
+  let i = m, j = n;
+  while (i > 0 && j > 0) {
+    if (str1[i - 1] === str2[j - 1]) {
+      lcs = str1[i - 1] + lcs;
+      i--;
+      j--;
+    } else if (dp[i][j - 1] > dp[i - 1][j]) {
+      j--;
+    } else {
+      i--;
+    }
   }
-
-  if (largest !== i) {
-    [array[i], array[largest]] = [array[largest], array[i]];
-    heapify(array, length, largest);
-  }
+  
+  return lcs;
 }
-function heapSort(array) {
-  const length = array.length;
 
-  for (let i = Math.floor(length / 2) - 1; i >= 0; i--) {
-    heapify(array, length, i);
-  }
+// Example usage:
+const str1 = 'ABCDGH';
+const str2 = 'AEDFHR';
 
-  for (let i = length - 1; i >= 0; i--) {
-    [array[0], array[i]] = [array[i], array[0]];
-    heapify(array, i, 0);
-  }
-
-  return array;
-}
-const arr = [5, 8, 2, 1, 6];
-
-console.log("Original Array:", arr);
-
-const sortedArr = heapSort(arr);
-
-console.log("Sorted Array:", sortedArr);
-Original Array: [5, 8, 2, 1, 6]
-Sorted Array: [1, 2, 5, 6, 8]
+console.log(longestCommonSubsequence(str1, str2)); // Output: ADH
