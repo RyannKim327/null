@@ -1,55 +1,88 @@
-function burrowsWheelerTransform(str) {
-  // Add a sentinel character to the end
-  str = str + "$";
-
-  // Generate all rotations of the string
-  let rotations = [];
-  for (let i = 0; i < str.length; i++) {
-    rotations.push(str.slice(i) + str.slice(0, i));
+class Node {
+  constructor(value, next = []) {
+    this.value = value;
+    this.next = next;
   }
-
-  // Sort the rotations lexicographically
-  rotations.sort();
-
-  // Extract the last characters of each rotation
-  let transformedStr = "";
-  for (let i = 0; i < str.length; i++) {
-    transformedStr += rotations[i][str.length - 1];
-  }
-
-  return transformedStr;
 }
-function inverseBurrowsWheelerTransform(str) {
-  // Initialize an array of empty strings
-  let table = [];
-  for (let i = 0; i < str.length; i++) {
-    table.push("");
+class SkipList {
+  constructor() {
+    this.head = new Node(-Infinity);
+    this.levels = 1;
   }
 
-  // Fill the table with placeholder characters
-  for (let i = 0; i < str.length; i++) {
-    for (let j = 0; j < str.length; j++) {
-      table[j] = str[j] + table[j];
+  insert(value) {
+    const newNode = new Node(value);
+    let current = this.head;
+
+    // Create an update array to store the previous nodes at each level
+    const update = new Array(this.levels);
+
+    // Find the appropriate position to insert the new node at each level
+    for (let level = this.levels - 1; level >= 0; level--) {
+      while (current.next[level] && current.next[level].value < value) {
+        current = current.next[level];
+      }
+      update[level] = current;
     }
-    table.sort();
-  }
 
-  // Find the original string with the sentinel character
-  let originalStr = "";
-  for (let i = 0; i < str.length; i++) {
-    if (table[i].endsWith("$")) {
-      originalStr = table[i];
-      break;
+    // Update the next references of nodes to insert the new node
+    for (let level = 0; level <= newNode.next.length; level++) {
+      newNode.next[level] = update[level].next[level];
+      update[level].next[level] = newNode;
+    }
+
+    // Increase the number of levels if needed
+    if (Math.random() < 0.5) {
+      this.levels++;
+      this.head.next.push(null);
+      newNode.next.push(null);
     }
   }
 
-  // Remove the sentinel character and return the original string
-  return originalStr.slice(0, originalStr.length - 1);
-}
-let inputString = "banana";
-let transformedString = burrowsWheelerTransform(inputString);
-let originalString = inverseBurrowsWheelerTransform(transformedString);
+  delete(value) {
+    let current = this.head;
 
-console.log("Input: " + inputString);
-console.log("Transformed: " + transformedString);
-console.log("Original: " + originalString);
+    // Find the node to delete
+    for (let level = this.levels - 1; level >= 0; level--) {
+      while (current.next[level] && current.next[level].value < value) {
+        current = current.next[level];
+      }
+    }
+
+    // If the next node is the one to delete, remove it from each level
+    if (current.next[0] && current.next[0].value === value) {
+      for (let level = 0; level <= current.next.length - 1; level++) {
+        if (current.next[level].value === value) {
+          current.next[level] = current.next[level].next[level];
+        }
+      }
+    }
+  }
+
+  search(value) {
+    let current = this.head;
+
+    // Find the node based on its value
+    for (let level = this.levels - 1; level >= 0; level--) {
+      while (current.next[level] && current.next[level].value <= value) {
+        if (current.next[level].value === value) {
+          return true;
+        }
+        current = current.next[level];
+      }
+    }
+
+    return false;
+  }
+}
+const skipList = new SkipList();
+skipList.insert(1);
+skipList.insert(2);
+skipList.insert(3);
+
+console.log(skipList.search(2)); // Output: true
+console.log(skipList.search(4)); // Output: false
+
+skipList.delete(2);
+
+console.log(skipList.search(2)); // Output: false
