@@ -1,38 +1,36 @@
-class ListNode {
-  constructor(val) {
-    this.val = val;
-    this.next = null;
+const graph = {
+  A: ['B', 'C'],
+  B: ['D'],
+  C: ['D', 'E'],
+  D: ['F'],
+  E: ['F'],
+  F: [],
+};
+function topologicalSort(graph) {
+  const visited = new Set();
+  const stack = [];
+
+  function dfs(vertex) {
+    visited.add(vertex);
+
+    const neighbors = graph[vertex];
+
+    neighbors.forEach((neighbor) => {
+      if (!visited.has(neighbor)) {
+        dfs(neighbor);
+      }
+    });
+
+    stack.unshift(vertex);
   }
-}
 
-function hasCycle(head) {
-  let slow = head;  // Tortoise
-  let fast = head;  // Hare
-
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
-
-    // If slow and fast meet at some point, a cycle exists
-    if (slow === fast) {
-      return true;
+  for (const vertex in graph) {
+    if (!visited.has(vertex)) {
+      dfs(vertex);
     }
   }
 
-  // No cycle found
-  return false;
+  return stack;
 }
-// Create a linked list with a cycle
-const node1 = new ListNode(1);
-const node2 = new ListNode(2);
-const node3 = new ListNode(3);
-const node4 = new ListNode(4);
-const node5 = new ListNode(5);
-
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node5;
-node5.next = node1;  // Cycle created by connecting the last node to the first
-
-console.log(hasCycle(node1));  // Output: true
+const sorted = topologicalSort(graph);
+console.log(sorted); // Output: ['A', 'C', 'E', 'B', 'D', 'F']
