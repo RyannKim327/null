@@ -1,10 +1,22 @@
-function calculateTriangleArea(base, height) {
-  var area = (base * height) / 2;
-  return area;
+function shellSort(arr) {
+  let len = arr.length;
+  let gap = Math.floor(len / 2);
+
+  while (gap > 0) {
+    for (let i = gap; i < len; i++) {
+      for (let j = i; j >= gap && arr[j - gap] > arr[j]; j -= gap) {
+        // swap elements
+        let temp = arr[j];
+        arr[j] = arr[j - gap];
+        arr[j - gap] = temp;
+      }
+    }
+    gap = Math.floor(gap / 2);
+  }
+
+  return arr;
 }
 
-var base = 5; // triangle's base length
-var height = 10; // triangle's height length
-
-var triangleArea = calculateTriangleArea(base, height);
-console.log("The area of the triangle is: " + triangleArea);
+// Example usage:
+const array = [5, 2, 9, 1, 7];
+console.log(shellSort(array)); // Output: [1, 2, 5, 7, 9]
