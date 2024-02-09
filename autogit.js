@@ -1,30 +1,84 @@
-function findCommonElements(arr1, arr2) {
-  const commonElements = [];
+class Graph {
+  constructor() {
+    this.nodes = {};
+  }
 
-  for (let i = 0; i < arr1.length; i++) {
-    if (arr2.includes(arr1[i])) {
-      commonElements.push(arr1[i]);
+  addNode(node) {
+    this.nodes[node] = [];
+  }
+
+  addEdge(node1, node2) {
+    this.nodes[node1].push(node2);
+    this.nodes[node2].push(node1);
+  }
+}
+
+function biDirectionalSearch(graph, source, target) {
+  // Create visited sets and queues for both searches
+  const sourceVisited = new Set();
+  const targetVisited = new Set();
+  const sourceQueue = [];
+  const targetQueue = [];
+
+  // Initialize starting points for both searches
+  sourceVisited.add(source);
+  targetVisited.add(target);
+  sourceQueue.push(source);
+  targetQueue.push(target);
+
+  while (sourceQueue.length > 0 && targetQueue.length > 0) {
+    // Perform search from the source side
+    const sourceNode = sourceQueue.shift();
+    const sourceNeighbors = graph.nodes[sourceNode];
+
+    for (const neighbor of sourceNeighbors) {
+      if (!sourceVisited.has(neighbor)) {
+        sourceVisited.add(neighbor);
+        sourceQueue.push(neighbor);
+
+        // Check if the node is visited by the target search
+        if (targetVisited.has(neighbor)) {
+          return true; // Intersection found
+        }
+      }
+    }
+
+    // Perform search from the target side
+    const targetNode = targetQueue.shift();
+    const targetNeighbors = graph.nodes[targetNode];
+
+    for (const neighbor of targetNeighbors) {
+      if (!targetVisited.has(neighbor)) {
+        targetVisited.add(neighbor);
+        targetQueue.push(neighbor);
+
+        // Check if the node is visited by the source search
+        if (sourceVisited.has(neighbor)) {
+          return true; // Intersection found
+        }
+      }
     }
   }
 
-  return commonElements;
+  return false; // No intersection found
 }
+const graph = new Graph();
 
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-console.log(findCommonElements(array1, array2)); // Output: [4, 5]
-function findCommonElements(arr1, arr2) {
-  return arr1.filter((value) => arr2.includes(value));
-}
+// Add nodes
+graph.addNode('A');
+graph.addNode('B');
+graph.addNode('C');
+graph.addNode('D');
+graph.addNode('E');
 
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-console.log(findCommonElements(array1, array2)); // Output: [4, 5]
-function findCommonElements(arr1, arr2) {
-  const set = new Set(arr1);
-  return arr2.filter((value) => set.has(value));
-}
+// Add edges
+graph.addEdge('A', 'B');
+graph.addEdge('B', 'C');
+graph.addEdge('C', 'D');
+graph.addEdge('D', 'E');
 
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-console.log(findCommonElements(array1, array2)); // Output: [4, 5]
+const source = 'A';
+const target = 'E';
+
+const hasPath = biDirectionalSearch(graph, source, target);
+console.log(hasPath); // Output: true
