@@ -1,27 +1,22 @@
-function shellSort(arr) {
-  var len = arr.length;
-  var gap = Math.floor(len / 2);
-  
-  while (gap > 0) {
-    for (var i = gap; i < len; i++) {
-      var temp = arr[i];
-      var j = i;
-      
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
-      }
-      
-      arr[j] = temp;
-    }
-    
-    gap = Math.floor(gap / 2);
-  }
-  
-  return arr;
+let str = "A man, a plan, a canal, Panama!";
+str = str.replace(/[^A-Za-z0-9]/g, "").toLowerCase();
+let reversedStr = str.split("").reverse().join("");
+if (str === reversedStr) {
+    console.log("The string is a palindrome.");
+} else {
+    console.log("The string is not a palindrome.");
+}
+function isPalindrome(str) {
+  str = str.replace(/[^A-Za-z0-9]/g, "").toLowerCase();
+  let reversedStr = str.split("").reverse().join("");
+  return str === reversedStr;
 }
 
-// Example usage:
-var array = [8, 4, 1, 6, -2, 9, 0, 3, 5];
-console.log("Unsorted array:", array);
-console.log("Sorted array:", shellSort(array));
+let string1 = "A man, a plan, a canal, Panama!";
+console.log(isPalindrome(string1)); // Output: true
+
+let string2 = "hello world";
+console.log(isPalindrome(string2)); // Output: false
+
+let string3 = "racecar";
+console.log(isPalindrome(string3)); // Output: true
