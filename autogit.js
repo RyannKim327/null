@@ -1,25 +1,41 @@
-function quicksort(arr) {
-  if (arr.length <= 1) {
-    return arr;
+function heapify(array, length, i) {
+  let largest = i;
+  const left = 2 * i + 1;
+  const right = 2 * i + 2;
+
+  if (left < length && array[left] > array[largest]) {
+    largest = left;
   }
 
-  var pivot = arr[Math.floor(arr.length / 2)];
-  var less = [];
-  var equal = [];
-  var greater = [];
-
-  for (var i = 0; i < arr.length; i++) {
-    if (arr[i] < pivot) {
-      less.push(arr[i]);
-    } else if (arr[i] === pivot) {
-      equal.push(arr[i]);
-    } else {
-      greater.push(arr[i]);
-    }
+  if (right < length && array[right] > array[largest]) {
+    largest = right;
   }
 
-  return quicksort(less).concat(equal, quicksort(greater));
+  if (largest !== i) {
+    [array[i], array[largest]] = [array[largest], array[i]];
+    heapify(array, length, largest);
+  }
 }
-var numbers = [5, 8, 1, 3, 9, 2];
-var sortedNumbers = quicksort(numbers);
-console.log(sortedNumbers); // Output: [1, 2, 3, 5, 8, 9]
+function heapSort(array) {
+  const length = array.length;
+
+  for (let i = Math.floor(length / 2) - 1; i >= 0; i--) {
+    heapify(array, length, i);
+  }
+
+  for (let i = length - 1; i >= 0; i--) {
+    [array[0], array[i]] = [array[i], array[0]];
+    heapify(array, i, 0);
+  }
+
+  return array;
+}
+const arr = [5, 8, 2, 1, 6];
+
+console.log("Original Array:", arr);
+
+const sortedArr = heapSort(arr);
+
+console.log("Sorted Array:", sortedArr);
+Original Array: [5, 8, 2, 1, 6]
+Sorted Array: [1, 2, 5, 6, 8]
