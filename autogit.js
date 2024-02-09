@@ -1,8 +1,21 @@
-let str = "42";
-let num = parseInt(str);
+function firstNonRepeatingChar(str) {
+  var charCount = {};
 
-console.log(num); // Output: 42
-let binaryStr = "1010";
-let decimalNum = parseInt(binaryStr, 2); // Second argument is 2 for binary
+  for (var i = 0; i < str.length; i++) {
+    var char = str[i];
+    charCount[char] = (charCount[char] || 0) + 1;
+  }
 
-console.log(decimalNum); // Output: 10
+  for (var j = 0; j < str.length; j++) {
+    var char = str[j];
+    if (charCount[char] === 1) {
+      return char;
+    }
+  }
+
+  return null;
+}
+
+// Example usage:
+var string = "aabbcdeeff";
+console.log(firstNonRepeatingChar(string)); // Output: "c"
