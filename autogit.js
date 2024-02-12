@@ -1,61 +1,46 @@
-function buildPrefixTable(pattern) {
-  const table = [0];
-  let prefixIndex = 0;
-  let suffixIndex = 1;
+function beamSearch(initialState, beamWidth, maxDepth) {
+  let queue = [initialState];
 
-  while (suffixIndex < pattern.length) {
-    if (pattern[prefixIndex] === pattern[suffixIndex]) {
-      table[suffixIndex] = prefixIndex + 1;
-      suffixIndex++;
-      prefixIndex++;
-    } else if (prefixIndex === 0) {
-      table[suffixIndex] = 0;
-      suffixIndex++;
-    } else {
-      prefixIndex = table[prefixIndex - 1];
+  while (queue.length > 0) {
+    // Generate successor states for current states
+    let successors = [];
+    for (let state of queue) {
+      successors.push(...generateSuccessorStates(state));
+    }
+
+    // Score successor states
+    let scoredSuccessors = successors.map(state => ({
+      state,
+      score: scoreState(state)
+    }));
+
+    // Sort scored successors by score (ascending order)
+    scoredSuccessors.sort((a, b) => a.score - b.score);
+
+    // Keep only the best states (beamWidth number of states)
+    queue = scoredSuccessors.slice(0, beamWidth).map(entry => entry.state);
+
+    // Check if goal state reached or maximum depth reached
+    let goalState = queue.find(state => isGoalState(state));
+    if (goalState || queue[0].depth >= maxDepth) {
+      return goalState;
     }
   }
 
-  return table;
+  return null; // No solution found
 }
-function search(text, pattern) {
-  const result = [];
-  const prefixTable = buildPrefixTable(pattern);
 
-  let textIndex = 0;
-  let patternIndex = 0;
-
-  while (textIndex < text.length) {
-    if (pattern[patternIndex] === text[textIndex]) {
-      patternIndex++;
-      textIndex++;
-    }
-
-    if (patternIndex === pattern.length) {
-      result.push(textIndex - patternIndex);
-      patternIndex = prefixTable[patternIndex - 1];
-    } else if (
-      textIndex < text.length &&
-      pattern[patternIndex] !== text[textIndex]
-    ) {
-      if (patternIndex !== 0) {
-        patternIndex = prefixTable[patternIndex - 1];
-      } else {
-        textIndex++;
-      }
-    }
-  }
-
-  return result;
+function generateSuccessorStates(state) {
+  // Implementation of generating successor states based on current state
+  // ...
 }
-const text = 'ABABDABACDABABCABAB';
-const pattern = 'ABABCABAB';
 
-const indices = search(text, pattern);
-
-if (indices.length > 0) {
-  console.log(`Pattern found at index ${indices.join(', ')}`);
-} else {
-  console.log('Pattern not found');
+function scoreState(state) {
+  // Implementation of the scoring function for a state
+  // ...
 }
-Pattern found at index 10
+
+function isGoalState(state) {
+  // Implementation of the goal state condition check
+  // ...
+}
