@@ -1,46 +1,69 @@
 class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
 
-function isPalindrome(head) {
-  // Step 1: Split the linked list into two halves
-  let slow = head;
-  let fast = head;
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
+class BinaryTree {
+  constructor() {
+    this.root = null;
   }
-  
-  // Step 2: Reverse the second half of the linked list
-  let prev = null;
-  while (slow) {
-    const temp = slow.next;
-    slow.next = prev;
-    prev = slow;
-    slow = temp;
+
+  insert(value) {
+    const newNode = new Node(value);
+
+    if (!this.root) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
   }
-  
-  // Step 3: Compare the first and second halves of the linked list
-  let first = head;
-  let second = prev;
-  while (second) {
-    if (first.data !== second.data) {
+
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (!node.left) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (!node.right) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  searchNode(node, value) {
+    if (node === null) {
       return false;
     }
-    first = first.next;
-    second = second.next;
+
+    if (value === node.value) {
+      return true;
+    }
+
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    }
+
+    return this.searchNode(node.right, value);
   }
-  
-  return true;
 }
+const bst = new BinaryTree();
 
-// Example usage:
-const head = new Node('a');
-head.next = new Node('b');
-head.next.next = new Node('b');
-head.next.next.next = new Node('a');
+bst.insert(5);
+bst.insert(3);
+bst.insert(8);
+bst.insert(2);
+bst.insert(4);
 
-console.log(isPalindrome(head)); // Output: true
+console.log(bst.search(4)); // Output: true
+console.log(bst.search(9)); // Output: false
