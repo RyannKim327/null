@@ -1,16 +1,9 @@
-function areAnagrams(str1, str2) {
-  // Remove non-alphabetic characters and convert to lowercase
-  const normalizedStr1 = str1.replace(/[^A-Za-z]/g, '').toLowerCase();
-  const normalizedStr2 = str2.replace(/[^A-Za-z]/g, '').toLowerCase();
-  
-  // Convert strings to arrays, sort them, and join back into strings
-  const sortedStr1 = normalizedStr1.split('').sort().join('');
-  const sortedStr2 = normalizedStr2.split('').sort().join('');
-  
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+function findCommonElements(array1, array2) {
+  return array1.filter(element => array2.includes(element));
 }
 
 // Example usage:
-console.log(areAnagrams('listen', 'silent')); // true
-console.log(areAnagrams('hello', 'world')); // false
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
