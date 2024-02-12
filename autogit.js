@@ -1,8 +1,9 @@
-function removeVowels(str) {
-  return str.replace(/[aeiou]/gi, '');
+function validateEmail(email) {
+    const pattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    return pattern.test(email);
 }
 
 // Example usage
-const text = "Hello World";
-const result = removeVowels(text);
-console.log(result); // Output: Hll Wrld
+const email = "test@example.com";
+const isValid = validateEmail(email);
+console.log(isValid); // Output: true
