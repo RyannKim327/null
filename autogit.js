@@ -1,33 +1,19 @@
-function findCommonElements(arr1, arr2) {
-  let commonElements = [];
-  
-  for (let i = 0; i < arr1.length; i++) {
-    if (arr2.includes(arr1[i])) {
-      commonElements.push(arr1[i]);
-    }
-  }
-  
-  return commonElements;
-}
+let arr = [5, 2, 7, 1, 9];
 
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-console.log(findCommonElements(array1, array2)); // Output: [4, 5]
-function findCommonElements(arr1, arr2) {
-  return arr1.filter(element => arr2.includes(element));
-}
+// Sorting the array in ascending order
+arr.sort(function(a, b) {
+    return a - b;
+});
 
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-console.log(findCommonElements(array1, array2)); // Output: [4, 5]
-function findCommonElements(arr1, arr2) {
-  const set1 = new Set(arr1);
-  return arr2.filter(element => set1.has(element));
-}
+console.log(arr);  // Output: [1, 2, 5, 7, 9]
+let arr = [5, 2, 7, 1, 9];
 
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-console.log(findCommonElements(array1, array2)); // Output: [4, 5]
+// Sorting the array in ascending order
+arr.sort((a, b) => a - b);
+
+console.log(arr);  // Output: [1, 2, 5, 7, 9]
+arr.sort((a, b) => b - a);
+
+console.log(arr);  // Output: [9, 7, 5, 2, 1]
+let arr = [5, 2, 7, 1, 9];
+let sortedArr = [...arr].sort((a, b) => a - b);
