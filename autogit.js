@@ -1,19 +1,8 @@
-function isPalindrome(str) {
-  let left = 0;
-  let right = str.length - 1;
-
-  while (left < right) {
-    if (str[left] !== str[right]) {
-      return false;
-    }
-
-    left++;
-    right--;
-  }
-
-  return true;
-}
-
-// Example usage
-console.log(isPalindrome("racecar")); // Output: true
-console.log(isPalindrome("hello")); // Output: false
+var string1 = "Hello";
+var string2 = " world!";
+var result = string1 + string2;
+console.log(result); // Output: Hello world!
+var string1 = "Hello";
+var string2 = " world!";
+var result = string1.concat(string2);
+console.log(result); // Output: Hello world!
