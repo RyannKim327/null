@@ -1,12 +1,20 @@
-let stringNumber = "42";
-let integerNumber = parseInt(stringNumber);
+function findSecondLargest(array) {
+  let firstLargest = -Infinity;
+  let secondLargest = -Infinity;
 
-console.log(integerNumber); // Output: 42
-let stringNumber = "123abcd";
-let integerNumber = parseInt(stringNumber);
+  for (let i = 0; i < array.length; i++) {
+    if (array[i] > firstLargest) {
+      secondLargest = firstLargest;
+      firstLargest = array[i];
+    } else if (array[i] > secondLargest && array[i] !== firstLargest) {
+      secondLargest = array[i];
+    }
+  }
 
-console.log(integerNumber); // Output: 123
-let hexString = "3F";
-let decimalNumber = parseInt(hexString, 16);
+  return secondLargest;
+}
 
-console.log(decimalNumber); // Output: 63 (converted from hexadecimal to decimal)
+// Example usage:
+const array = [5, 10, 2, 8, 9];
+const secondLargestElement = findSecondLargest(array);
+console.log(secondLargestElement); // Output: 9
