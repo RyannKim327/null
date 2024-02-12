@@ -1,78 +1,52 @@
-class TrieNode {
-  constructor() {
-    this.value = null;
-    this.isEndOfWord = false;
-    this.children = new Map();
+function findMax(arr) {
+  let max = arr[0];
+  for (let i = 1; i < arr.length; i++) {
+    if (arr[i] > max) {
+      max = arr[i];
+    }
+  }
+  return max;
+}
+function radixSort(arr) {
+  const max = findMax(arr);
+
+  // Perform counting sort for each digit
+  for (let exp = 1; max / exp > 0; exp *= 10) {
+    countingSort(arr, exp);
+  }
+
+  return arr;
+}
+function countingSort(arr, exp) {
+  const n = arr.length;
+
+  // Initialize count array and result array
+  const count = new Array(10).fill(0);
+  const output = new Array(n);
+
+  // Store count of occurrences in count[]
+  for (let i = 0; i < n; i++) {
+    const digit = Math.floor(arr[i] / exp) % 10;
+    count[digit]++;
+  }
+
+  // Change count[i] so that count[i] contains the actual
+  // position of this digit in output[]
+  for (let i = 1; i < 10; i++) {
+    count[i] += count[i - 1];
+  }
+
+  // Build the output array
+  for (let i = n - 1; i >= 0; i--) {
+    const digit = Math.floor(arr[i] / exp) % 10;
+    output[count[digit] - 1] = arr[i];
+    count[digit]--;
+  }
+
+  // Copy the output array to arr[] in sorted order
+  for (let i = 0; i < n; i++) {
+    arr[i] = output[i];
   }
 }
-class Trie {
-  constructor() {
-    this.root = new TrieNode();
-  }
-
-  // Method to insert a word into the trie
-  insert(word) {
-    let current = this.root;
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-      if (!current.children.has(char)) {
-        const newNode = new TrieNode();
-        newNode.value = char;
-        current.children.set(char, newNode);
-      }
-      current = current.children.get(char);
-    }
-    current.isEndOfWord = true;
-  }
-
-  // Method to search for a word in the trie
-  search(word) {
-    let current = this.root;
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-      if (!current.children.has(char)) {
-        return false;
-      }
-      current = current.children.get(char);
-    }
-    return current.isEndOfWord;
-  }
-
-  // Method to delete a word from the trie
-  delete(word) {
-    const deleteHelper = (node, index) => {
-      if (index === word.length) {
-        node.isEndOfWord = false;
-        return node.children.size === 0;
-      }
-
-      const char = word[index];
-      const nextNode = node.children.get(char);
-      if (!nextNode) return false;
-
-      const shouldDeleteChild = deleteHelper(nextNode, index + 1);
-      if (shouldDeleteChild) {
-        node.children.delete(char);
-        return node.children.size === 0;
-      }
-
-      return false;
-    };
-
-    deleteHelper(this.root, 0);
-  }
-}
-// Usage
-const trie = new Trie();
-
-trie.insert("apple");
-trie.insert("banana");
-trie.insert("orange");
-
-console.log(trie.search("apple")); // true
-console.log(trie.search("banana")); // true
-console.log(trie.search("orange")); // true
-console.log(trie.search("grape")); // false
-
-trie.delete("apple");
-console.log(trie.search("apple")); // false
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+console.log(radixSort(arr)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
