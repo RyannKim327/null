@@ -1,30 +1,61 @@
-function countingSort(array) {
-  const maxValue = Math.max(...array);
-  
-  // Create the count array and initialize all elements to 0
-  const countArray = new Array(maxValue + 1).fill(0);
-  
-  // Increment the count of each element in the input array
-  for (let i = 0; i < array.length; i++) {
-    countArray[array[i]]++;
-  }
-  
-  // Modify the count array to contain the sum of counts
-  for (let i = 1; i < countArray.length; i++) {
-    countArray[i] += countArray[i - 1];
-  }
-  
-  // Create the output array and place elements in it based on count array
-  const outputArray = new Array(array.length);
-  for (let i = array.length - 1; i >= 0; i--) {
-    outputArray[countArray[array[i]] - 1] = array[i];
-    countArray[array[i]]--;
-  }
-  
-  return outputArray;
+function boyerMooreSearch(text, pattern) {
+  // implementation goes here
 }
+function boyerMooreSearch(text, pattern) {
+  const textLength = text.length;
+  const patternLength = pattern.length;
+  const skipTable = new Map();
+  const matches = [];
+  
+  // implementation continues...
+}
+function boyerMooreSearch(text, pattern) {
+  const textLength = text.length;
+  const patternLength = pattern.length;
+  const skipTable = new Map();
+  const matches = [];
 
-// Example usage:
-const array = [4, 2, 10, 3, 1, 7];
-const sortedArray = countingSort(array);
-console.log(sortedArray); // [1, 2, 3, 4, 7, 10]
+  // Build the skip table
+  for (let i = 0; i < patternLength - 1; i++) {
+    skipTable.set(pattern[i], patternLength - i - 1);
+  }
+  
+  // implementation continues...
+}
+function boyerMooreSearch(text, pattern) {
+  const textLength = text.length;
+  const patternLength = pattern.length;
+  const skipTable = new Map();
+  const matches = [];
+
+  // Build the skip table
+  for (let i = 0; i < patternLength - 1; i++) {
+    skipTable.set(pattern[i], patternLength - i - 1);
+  }
+
+  let currentPosition = patternLength - 1;
+  while (currentPosition <= textLength - 1) {
+    let i = patternLength - 1;
+    let j = currentPosition;
+
+    while (i >= 0 && pattern[i] === text[j]) {
+      i--;
+      j--;
+    }
+
+    if (i === -1) {
+      // Match found
+      matches.push(j + 1);
+      currentPosition += patternLength;
+    } else {
+      const skip = skipTable.get(text[j]) || patternLength;
+      currentPosition += skip;
+    }
+  }
+
+  return matches;
+}
+const text = "abacadabrabracabracadabrabrabracad";
+const pattern = "abracadabra";
+const result = boyerMooreSearch(text, pattern);
+console.log(result); // Output: [10]
