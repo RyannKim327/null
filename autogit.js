@@ -1,11 +1,10 @@
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
-
-  while (fast != null && fast.next != null) {
-    slow = slow.next;
-    fast = fast.next.next;
+function factorial(n) {
+  if (n === 0 || n === 1) {
+    return 1;
+  } else {
+    return n * factorial(n - 1);
   }
-
-  return slow;
 }
+const number = 5;
+const result = factorial(number);
+console.log(`The factorial of ${number} is ${result}.`);
