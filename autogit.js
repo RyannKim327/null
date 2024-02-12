@@ -1,5 +1,24 @@
-var str = "Hello, world! How are you?";
-var result = str.replace(/\s/g, "");
+function getLinkedListLength(head) {
+  let length = 0;
+  let currentNode = head;
 
-console.log(result);
-Hello,world!Howareyou?
+  while (currentNode !== null) {
+    length++;
+    currentNode = currentNode.next;
+  }
+
+  return length;
+}
+const list = {
+  value: 1,
+  next: {
+    value: 2,
+    next: {
+      value: 3,
+      next: null
+    }
+  }
+};
+
+const length = getLinkedListLength(list);
+console.log(length); // Output: 3
