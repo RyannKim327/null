@@ -1,34 +1,23 @@
-// Define the structure for a binary tree node
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
+function findFirstRepeatedCharacter(str) {
+  const charMap = {};
 
-// Function to count the number of leaf nodes in a binary tree
-function countLeafNodes(root) {
-  if (root === null) {
-    return 0;
-  }
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
 
-  if (root.left === null && root.right === null) {
-    return 1; // Node is a leaf node
+    // If the character already exists in the charMap, return it
+    if (charMap[char]) {
+      return char;
+    }
+
+    // Otherwise, mark the character as visited by setting its value to true
+    charMap[char] = true;
   }
 
-  // Recursively count leaf nodes in the left and right subtrees
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
+  // If no repeated character is found, return null
+  return null;
 }
 
 // Example usage
-// Create a binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-// Calculate the number of leaf nodes
-const leafCount = countLeafNodes(root);
-console.log("Number of leaf nodes:", leafCount);
+const input = "hello world";
+const repeatedChar = findFirstRepeatedCharacter(input);
+console.log("First repeated character:", repeatedChar);
