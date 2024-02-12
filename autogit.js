@@ -1,31 +1,25 @@
-function countingSort(arr) {
-  if (arr.length <= 1) {
-    return arr;
-  }
-
-  const min = Math.min(...arr);
-  const max = Math.max(...arr);
-  const count = new Array(max - min + 1).fill(0);
-
-  for (let i = 0; i < arr.length; i++) {
-    count[arr[i] - min]++;
-  }
-
-  for (let i = 1; i < count.length; i++) {
-    count[i] += count[i - 1];
-  }
-
-  const sorted = new Array(arr.length);
-
-  for (let i = arr.length - 1; i >= 0; i--) {
-    sorted[count[arr[i] - min] - 1] = arr[i];
-    count[arr[i] - min]--;
-  }
-
-  return sorted;
+function LinkedListNode(value, next) {
+  this.value = value;
+  this.next = next;
 }
 
-// Example usage:
-const arr = [4, 2, 2, 8, 3, 3, 1];
-const sortedArr = countingSort(arr);
-console.log(sortedArr);
+function getLinkedListLength(head) {
+  let length = 0;
+  let current = head;
+
+  while (current !== null) {
+    length++;
+    current = current.next;
+  }
+
+  return length;
+}
+// Create a linked list: 1 -> 2 -> 3 -> null
+const node3 = new LinkedListNode(3, null);
+const node2 = new LinkedListNode(2, node3);
+const node1 = new LinkedListNode(1, node2);
+
+// Call the function to get the length of the linked list
+const length = getLinkedListLength(node1);
+console.log(`Length of the linked list: ${length}`);
+Length of the linked list: 3
