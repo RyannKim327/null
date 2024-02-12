@@ -1,19 +1,164 @@
-function getRandomNumber(min, max) {
-  // Generate a random decimal between 0 and 1
-  const randomDecimal = Math.random();
-
-  // Scale the random decimal to the range
-  const scaledRandom = randomDecimal * (max - min + 1);
-
-  // Truncate the decimal to get a whole number within the range
-  const randomNumber = Math.floor(scaledRandom) + min;
-
-  return randomNumber;
+function interpolationSearch(arr, target, comparator) {
+  // ...
+}
+function interpolationSearch(arr, target, comparator) {
+  comparator = comparator || defaultComparator;
+  // ...
 }
 
-// Example usage:
-const minRange = 1; // Minimum value of the range
-const maxRange = 100; // Maximum value of the range
+function defaultComparator(a, b) {
+  return a < b ? -1 : a > b ? 1 : 0;
+}
+function interpolationSearch(arr, target, comparator) {
+  comparator = comparator || defaultComparator;
+  let low = 0;
+  let high = arr.length - 1;
+  let position = -1;
+  // ...
+}
+function interpolationSearch(arr, target, comparator) {
+  comparator = comparator || defaultComparator;
+  let low = 0;
+  let high = arr.length - 1;
+  let position = -1;
+  
+  // Search loop
+  while (low <= high) {
+    // ...
+  }
+}
+function interpolationSearch(arr, target, comparator) {
+  comparator = comparator || defaultComparator;
+  let low = 0;
+  let high = arr.length - 1;
+  let position = -1;
+  
+  // Search loop
+  while (low <= high) {
+    const valueRange = comparator(arr[high], arr[low]);
+    const indexRange = high - low;
+    const interpolationRatio = (target - arr[low]) / (arr[high] - arr[low]);
 
-const randomNum = getRandomNumber(minRange, maxRange);
-console.log(randomNum);
+    // Calculate the probable position using interpolation
+    const interpolPos = low + Math.floor(indexRange * interpolationRatio);
+    // ...
+  }
+}
+function interpolationSearch(arr, target, comparator) {
+  comparator = comparator || defaultComparator;
+  let low = 0;
+  let high = arr.length - 1;
+  let position = -1;
+  
+  // Search loop
+  while (low <= high) {
+    const valueRange = comparator(arr[high], arr[low]);
+    const indexRange = high - low;
+    const interpolationRatio = (target - arr[low]) / (arr[high] - arr[low]);
+
+    // Calculate the probable position using interpolation
+    const interpolPos = low + Math.floor(indexRange * interpolationRatio);
+    
+    // If probable position is out of bounds, break
+    if (interpolPos < low || interpolPos > high) {
+      break;
+    }
+    // ...
+  }
+}
+function interpolationSearch(arr, target, comparator) {
+  comparator = comparator || defaultComparator;
+  let low = 0;
+  let high = arr.length - 1;
+  let position = -1;
+  
+  // Search loop
+  while (low <= high) {
+    const valueRange = comparator(arr[high], arr[low]);
+    const indexRange = high - low;
+    const interpolationRatio = (target - arr[low]) / (arr[high] - arr[low]);
+
+    // Calculate the probable position using interpolation
+    const interpolPos = low + Math.floor(indexRange * interpolationRatio);
+    
+    // If probable position is out of bounds, break
+    if (interpolPos < low || interpolPos > high) {
+      break;
+    }
+    
+    // Compare the target value with the element at probable position
+    const cmp = comparator(arr[interpolPos], target);
+    if (cmp === 0) {
+      position = interpolPos;
+      break;
+    }
+    // ...
+  }
+}
+function interpolationSearch(arr, target, comparator) {
+  comparator = comparator || defaultComparator;
+  let low = 0;
+  let high = arr.length - 1;
+  let position = -1;
+  
+  // Search loop
+  while (low <= high) {
+    const valueRange = comparator(arr[high], arr[low]);
+    const indexRange = high - low;
+    const interpolationRatio = (target - arr[low]) / (arr[high] - arr[low]);
+
+    // Calculate the probable position using interpolation
+    const interpolPos = low + Math.floor(indexRange * interpolationRatio);
+    
+    // If probable position is out of bounds, break
+    if (interpolPos < low || interpolPos > high) {
+      break;
+    }
+    
+    // Compare the target value with the element at probable position
+    const cmp = comparator(arr[interpolPos], target);
+    if (cmp === 0) {
+      position = interpolPos;
+      break;
+    } else if (cmp < 0) {
+      low = interpolPos + 1;
+    } else {
+      high = interpolPos - 1;
+    }
+  }
+  // ...
+}
+function interpolationSearch(arr, target, comparator) {
+  comparator = comparator || defaultComparator;
+  let low = 0;
+  let high = arr.length - 1;
+  let position = -1;
+  
+  // Search loop
+  while (low <= high) {
+    const valueRange = comparator(arr[high], arr[low]);
+    const indexRange = high - low;
+    const interpolationRatio = (target - arr[low]) / (arr[high] - arr[low]);
+
+    // Calculate the probable position using interpolation
+    const interpolPos = low + Math.floor(indexRange * interpolationRatio);
+    
+    // If probable position is out of bounds, break
+    if (interpolPos < low || interpolPos > high) {
+      break;
+    }
+    
+    // Compare the target value with the element at probable position
+    const cmp = comparator(arr[interpolPos], target);
+    if (cmp === 0) {
+      position = interpolPos;
+      break;
+    } else if (cmp < 0) {
+      low = interpolPos + 1;
+    } else {
+      high = interpolPos - 1;
+    }
+  }
+  
+  return position;
+}
