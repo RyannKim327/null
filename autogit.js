@@ -1,23 +1,17 @@
-function isPrime(number) {
-    // Check if the number is less than 2
-    if (number < 2) {
-        return false;
-    }
-    
-    // Check if the number is divisible by any number from 2 to its square root
-    for (let i = 2; i <= Math.sqrt(number); i++) {
-        if (number % i === 0) {
-            return false;
-        }
-    }
+const cron = require('cron');
 
-    return true;
-}
+// Define your cron job
+const job = new cron.CronJob('0 0 12 * * *', () => {
+  // This function will be executed every day at 12:00 PM
 
-// Example usage
-let number = 17;
-if (isPrime(number)) {
-    console.log(number + " is a prime number.");
-} else {
-    console.log(number + " is not a prime number.");
-}
+  // Write your logic here
+  console.log('Running task...');
+  // Do something meaningful
+
+}, null, true, 'UTC');
+
+// Start the cron job
+job.start();
+
+// Run indefinitely
+setInterval(() => {}, 1000);
