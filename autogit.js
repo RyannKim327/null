@@ -1,99 +1,77 @@
-// Define the Node class
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
-}
-
-// Define the LinkedList class
-class LinkedList {
+class TrieNode {
   constructor() {
-    this.head = null;
-  }
-
-  // Add a new node to the end of the list
-  append(data) {
-    const newNode = new Node(data);
-
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
-
-  // Insert a new node at a specific position in the list
-  insertAt(data, position) {
-    const newNode = new Node(data);
-
-    if (position === 0) {
-      newNode.next = this.head;
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      let previous = null;
-      let count = 0;
-
-      while (count < position) {
-        previous = current;
-        current = current.next;
-        count++;
-      }
-
-      previous.next = newNode;
-      newNode.next = current;
-    }
-  }
-
-  // Remove a node from the list
-  remove(data) {
-    if (!this.head) {
-      return;
-    }
-
-    if (this.head.data === data) {
-      this.head = this.head.next;
-      return;
-    }
-
-    let current = this.head;
-    let previous = null;
-
-    while (current && current.data !== data) {
-      previous = current;
-      current = current.next;
-    }
-
-    if (current) {
-      previous.next = current.next;
-    }
-  }
-
-  // Display all the nodes in the list
-  display() {
-    if (!this.head) {
-      console.log('List is empty.');
-      return;
-    }
-
-    let current = this.head;
-    while (current) {
-      console.log(current.data);
-      current = current.next;
-    }
+    this.children = new Map();
+    this.isEndOfWord = false;
   }
 }
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
+  }
 
-// Usage example
-const myList = new LinkedList();
-myList.append(10);
-myList.append(20);
-myList.append(30);
-myList.insertAt(15, 1);
-myList.remove(20);
-myList.display();
+  insert(word) {
+    let currentNode = this.root;
+
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      let node = currentNode.children.get(char);
+
+      if (!node) {
+        node = new TrieNode();
+        currentNode.children.set(char, node);
+      }
+
+      currentNode = node;
+    }
+
+    currentNode.isEndOfWord = true;
+  }
+
+  search(word) {
+    let currentNode = this.root;
+
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      const node = currentNode.children.get(char);
+
+      if (!node) {
+        return false;
+      }
+
+      currentNode = node;
+    }
+
+    return currentNode.isEndOfWord;
+  }
+
+  startsWith(prefix) {
+    let currentNode = this.root;
+
+    for (let i = 0; i < prefix.length; i++) {
+      const char = prefix[i];
+      const node = currentNode.children.get(char);
+
+      if (!node) {
+        return false;
+      }
+
+      currentNode = node;
+    }
+
+    return true;
+  }
+}
+const trie = new Trie();
+
+trie.insert("apple");
+trie.insert("banana");
+trie.insert("app");
+
+console.log(trie.search("apple")); // true
+console.log(trie.search("app")); // true
+console.log(trie.search("banana")); // true
+console.log(trie.search("ap")); // false
+
+console.log(trie.startsWith("app")); // true
+console.log(trie.startsWith("ban")); // true
+console.log(trie.startsWith("bat")); // false
