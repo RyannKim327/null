@@ -1,48 +1,63 @@
-// Function to heapify a subtree rooted at index i in an array of size n
-function heapify(arr, n, i) {
-  let largest = i;
-  const leftChild = 2 * i + 1;
-  const rightChild = 2 * i + 2;
-
-  if (leftChild < n && arr[leftChild] > arr[largest]) {
-    largest = leftChild;
+function calculateHash(str, prime, mod) {
+  let hash = 0;
+  
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash * prime + str.charCodeAt(i)) % mod;
   }
-
-  if (rightChild < n && arr[rightChild] > arr[largest]) {
-    largest = rightChild;
-  }
-
-  if (largest !== i) {
-    // Swap root with the largest element
-    [arr[i], arr[largest]] = [arr[largest], arr[i]];
-
-    // Recursively heapify the affected subtree
-    heapify(arr, n, largest);
-  }
+  
+  return hash;
 }
-
-// Main function to perform heap sort
-function heapSort(arr) {
-  const n = arr.length;
-
-  // Build max heap
-  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-    heapify(arr, n, i);
+function areEqual(str1, str2) {
+  if (str1.length !== str2.length) {
+    return false;
   }
-
-  // Extract elements from the heap one by one
-  for (let i = n - 1; i > 0; i--) {
-    // Move current root to the end
-    [arr[0], arr[i]] = [arr[i], arr[0]];
-
-    // Heapify the reduced heap
-    heapify(arr, i, 0);
+  
+  for (let i = 0; i < str1.length; i++) {
+    if (str1[i] !== str2[i]) {
+      return false;
+    }
   }
-
-  return arr;
+  
+  return true;
 }
+function rabinKarpSearch(text, pattern) {
+  const prime = 101; // A prime number for hashing
+  const mod = 1000000007; // A large prime number for modulo
+  
+  const n = text.length;
+  const m = pattern.length;
+  
+  const patternHash = calculateHash(pattern, prime, mod);
+  let textHash = calculateHash(text.substring(0, m), prime, mod);
+  
+  for (let i = 0; i <= n - m; i++) {
+    if (patternHash === textHash && areEqual(pattern, text.substring(i, i + m))) {
+      return i; // pattern found at index i
+    }
+    
+    // Calculate the rolling hash for the next window in the text
+    if (i < n - m) {
+      const prevChar = text.charCodeAt(i);
+      const nextChar = text.charCodeAt(i + m);
+      
+      const power = (prime**(m - 1)) % mod;
+      
+      textHash = (prime * (textHash - prevChar * power) + nextChar) % mod;
+      if (textHash < 0) {
+        textHash += mod;
+      }
+    }
+  }
+  
+  return -1; // pattern not found
+}
+const text = "The quick brown fox jumps over the lazy dog";
+const pattern = "fox";
 
-// Example usage:
-const array = [4, 10, 3, 5, 1];
-const sortedArray = heapSort(array);
-console.log(sortedArray); // Output: [1, 3, 4, 5, 10]
+const index = rabinKarpSearch(text, pattern);
+
+if (index !== -1) {
+  console.log(`Pattern found at index ${index}`);
+} else {
+  console.log("Pattern not found");
+}
