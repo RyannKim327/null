@@ -1,36 +1,10 @@
-function topologicalSort(graph) {
-  const visited = new Map();
-  const stack = [];
-
-  for (const vertex of graph.keys()) {
-    if (!visited.has(vertex)) {
-      dfs(vertex, graph, visited, stack);
-    }
-  }
-
-  return stack.reverse();
-}
-
-function dfs(vertex, graph, visited, stack) {
-  visited.set(vertex, true);
-
-  const neighbors = graph.get(vertex) || [];
-
-  for (const neighbor of neighbors) {
-    if (!visited.has(neighbor)) {
-      dfs(neighbor, graph, visited, stack);
-    }
-  }
-
-  stack.push(vertex);
-}
-const graph = new Map();
-graph.set("A", ["B", "C"]);
-graph.set("B", ["D", "E"]);
-graph.set("C", ["F"]);
-graph.set("D", []);
-graph.set("E", ["F"]);
-graph.set("F", []);
-
-const sortedVertices = topologicalSort(graph);
-console.log(sortedVertices);
+let str = "Hello, world!";
+let newStr = str.replace(/\s/g, '');
+console.log(newStr);
+let str = "Hello, world!";
+let newStr = str.split(' ').join('');
+console.log(newStr);
+let str = "Hello, world!";
+let newStr = str.replace(/ /g, '');
+console.log(newStr);
+Hello,world!
