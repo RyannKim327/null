@@ -1,98 +1,50 @@
-class BinaryHeap {
-  constructor() {
-    this.heap = [];
+function calculateHash(str, prime, modulus) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash * prime + str.charCodeAt(i)) % modulus;
   }
-
-  isEmpty() {
-    return this.heap.length === 0;
-  }
-
-  insert(item) {
-    this.heap.push(item);
-    this.bubbleUp(this.heap.length - 1);
-  }
-
-  bubbleUp(index) {
-    const parentIndex = Math.floor((index - 1) / 2);
-    if (parentIndex >= 0 && this.heap[parentIndex] > this.heap[index]) {
-      this.swap(index, parentIndex);
-      this.bubbleUp(parentIndex);
-    }
-  }
-
-  deleteMin() {
-    if (this.isEmpty()) {
-      return null;
-    }
-
-    const min = this.heap[0];
-    const lastElement = this.heap.pop();
-    if (!this.isEmpty()) {
-      this.heap[0] = lastElement;
-      this.sinkDown(0);
-    }
-    return min;
-  }
-
-  sinkDown(index) {
-    const leftIndex = 2 * index + 1;
-    const rightIndex = 2 * index + 2;
-    let smallest = index;
-
-    if (
-      leftIndex < this.heap.length &&
-      this.heap[leftIndex] < this.heap[smallest]
-    ) {
-      smallest = leftIndex;
-    }
-
-    if (
-      rightIndex < this.heap.length &&
-      this.heap[rightIndex] < this.heap[smallest]
-    ) {
-      smallest = rightIndex;
-    }
-
-    if (smallest !== index) {
-      this.swap(index, smallest);
-      this.sinkDown(smallest);
-    }
-  }
-
-  swap(i, j) {
-    [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
-  }
+  return hash;
 }
-class PriorityQueue {
-  constructor() {
-    this.heap = new BinaryHeap();
+function rabinKarpSearch(text, pattern) {
+  const PRIME = 31;
+  const MODULUS = Math.pow(2, 32);
+  const tLength = text.length;
+  const pLength = pattern.length;
+  
+  if (tLength < pLength) {
+    return -1; // Pattern length exceeds text length, no match possible
   }
-
-  isEmpty() {
-    return this.heap.isEmpty();
+  
+  const pHash = calculateHash(pattern, PRIME, MODULUS);
+  let tHash = calculateHash(text.substring(0, pLength), PRIME, MODULUS);
+  
+  for (let i = 0; i <= tLength - pLength; i++) {
+    if (pHash === tHash) {
+      if (text.substring(i, i + pLength) === pattern) {
+        return i; // Pattern found at index i
+      }
+    }
+    
+    // Calculate hash value for the next window
+    tHash = ((tHash - text.charCodeAt(i) * (PRIME**(pLength - 1))) * PRIME + 
+      text.charCodeAt(i + pLength)) % MODULUS;
+      
+    if (tHash < 0) {
+      // Ensure the hash value remains positive
+      tHash += MODULUS;
+    }
   }
-
-  enqueue(item, priority) {
-    this.heap.insert({ item, priority });
-  }
-
-  dequeue() {
-    const min = this.heap.deleteMin();
-    return min ? min.item : null;
-  }
+  
+  return -1; // Pattern not found in the text
 }
-const pq = new PriorityQueue();
-pq.enqueue("Task 1", 3);
-pq.enqueue("Task 2", 2);
-pq.enqueue("Task 3", 1);
-pq.enqueue("Task 4", 5);
-pq.enqueue("Task 5", 4);
+const text = "ABACADABRACADAABRA";
+const pattern = "ABRA";
 
-while (!pq.isEmpty()) {
-  console.log(pq.dequeue());
+const index = rabinKarpSearch(text, pattern);
+
+if (index !== -1) {
+  console.log(`Pattern found at index ${index}`);
+} else {
+  console.log("Pattern not found");
 }
-Task 3
-Task 2
-Task 1
-Task 5
-Task 4
+Pattern found at index 10
