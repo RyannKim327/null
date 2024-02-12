@@ -1,25 +1,34 @@
-function shellSort(arr) {
-  let gap = Math.floor(arr.length / 2);
+function largestPrimeFactor(number) {
+  let largestFactor = 1;
   
-  while (gap > 0) {
-    for (let i = gap; i < arr.length; i++) {
-      let temp = arr[i];
-      let j = i;
-      
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
-      }
-      
-      arr[j] = temp;
-    }
-    
-    gap = Math.floor(gap / 2);
+  // Divide by 2 repeatedly while divisible
+  while (number % 2 === 0) {
+    largestFactor = 2;
+    number /= 2;
   }
   
-  return arr;
+  // Check odd factors
+  let factor = 3;
+  const maxFactor = Math.sqrt(number);
+  while (factor <= maxFactor) {
+    if (number % factor === 0) {
+      largestFactor = factor;
+      number /= factor;
+    } else {
+      factor += 2; // Consider only odd factors
+    }
+  }
+  
+  // If the number is prime itself
+  if (number > 1) {
+    largestFactor = number;
+  }
+  
+  return largestFactor;
 }
 
-// Example usage:
-const arr = [9, 5, 1, 8, 4, 3, 2, 7, 6];
-console.log(shellSort(arr)); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+// Example usage
+const number = 123456789;
+const largestFactor = largestPrimeFactor(number);
+console.log("Largest prime factor of", number, "is", largestFactor);
+Largest prime factor of 123456789 is 3803
