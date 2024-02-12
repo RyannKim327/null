@@ -1,12 +1,25 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  const cleanStr = str.replace(/\W/g, '').toLowerCase();
-  
-  // Compare the clean string with its reverse
-  return cleanStr === cleanStr.split('').reverse().join('');
+function reverseString(str) {
+  return str.split('').reverse().join('');
 }
 
-// Test cases
-console.log(isPalindrome("racecar")); // true
-console.log(isPalindrome("Hello")); // false
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
+var originalString = "Hello, World!";
+var reversedString = reverseString(originalString);
+console.log(reversedString); // Prints "!dlroW ,olleH"
+function reverseString(str) {
+  var reversedStr = '';
+  for (var i = str.length - 1; i >= 0; i--) {
+    reversedStr += str.charAt(i);
+  }
+  return reversedStr;
+}
+
+var originalString = "Hello, World!";
+var reversedString = reverseString(originalString);
+console.log(reversedString); // Prints "!dlroW ,olleH"
+function reverseString(str) {
+  return [...str].reverse().join('');
+}
+
+var originalString = "Hello, World!";
+var reversedString = reverseString(originalString);
+console.log(reversedString); // Prints "!dlroW ,olleH"
