@@ -1,8 +1,23 @@
-function removeVowels(str) {
-  return str.replace(/[aeiou]/gi, '');
-}
+function breadthLimitedSearch(graph, startNode, goalNode, limit) {
+  let queue = [startNode];
+  let visited = new Set();
 
-// Example usage
-const input = "Hello, World!";
-const result = removeVowels(input);
-console.log(result); // Output: Hll, Wrld!
+  for (let level = 0; level <= limit; level++) {
+    let levelNodes = queue.length;
+
+    for (let i = 0; i < levelNodes; i++) {
+      let node = queue.shift();
+
+      if (node === goalNode) {
+        return node;
+      }
+
+      if (!visited.has(node)) {
+        visited.add(node);
+        queue.push(...graph[node]);
+      }
+    }
+  }
+
+  return null; // Goal node not found within the limit
+}
