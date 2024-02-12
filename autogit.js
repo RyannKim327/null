@@ -1,27 +1,48 @@
-function quicksort(arr) {
-    if (arr.length <= 1) {
-        return arr;
-    }
+// Function to heapify a subtree rooted at index i in an array of size n
+function heapify(arr, n, i) {
+  let largest = i;
+  const leftChild = 2 * i + 1;
+  const rightChild = 2 * i + 2;
 
-    const pivot = arr[Math.floor(arr.length / 2)];
-    const less = [];
-    const equal = [];
-    const greater = [];
+  if (leftChild < n && arr[leftChild] > arr[largest]) {
+    largest = leftChild;
+  }
 
-    for (let element of arr) {
-        if (element < pivot) {
-            less.push(element);
-        } else if (element === pivot) {
-            equal.push(element);
-        } else {
-            greater.push(element);
-        }
-    }
+  if (rightChild < n && arr[rightChild] > arr[largest]) {
+    largest = rightChild;
+  }
 
-    return [...quicksort(less), ...equal, ...quicksort(greater)];
+  if (largest !== i) {
+    // Swap root with the largest element
+    [arr[i], arr[largest]] = [arr[largest], arr[i]];
+
+    // Recursively heapify the affected subtree
+    heapify(arr, n, largest);
+  }
 }
 
-// Testing the quicksort algorithm
-const array = [23, 4, 42, 15, 16, 8];
-const sortedArray = quicksort(array);
-console.log(sortedArray);
+// Main function to perform heap sort
+function heapSort(arr) {
+  const n = arr.length;
+
+  // Build max heap
+  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+    heapify(arr, n, i);
+  }
+
+  // Extract elements from the heap one by one
+  for (let i = n - 1; i > 0; i--) {
+    // Move current root to the end
+    [arr[0], arr[i]] = [arr[i], arr[0]];
+
+    // Heapify the reduced heap
+    heapify(arr, i, 0);
+  }
+
+  return arr;
+}
+
+// Example usage:
+const array = [4, 10, 3, 5, 1];
+const sortedArray = heapSort(array);
+console.log(sortedArray); // Output: [1, 3, 4, 5, 10]
