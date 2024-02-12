@@ -1,15 +1,27 @@
-let str = "42";
-let num = parseInt(str);
+// Example API endpoint
+const apiEndpoint = 'https://api.example.com/data';
 
-console.log(num);  // 42
-console.log(typeof num);  // number
-let str = "42";
-let num = Number(str);
+// Function to make an API request
+async function fetchDataFromAPI() {
+  try {
+    const response = await fetch(apiEndpoint);
+    const data = await response.json();
+    
+    // Do something with the data
+    console.log(data);
+    
+    // Call another function to process the data
+    processAPIResponse(data);
+  } catch (error) {
+    console.error('Failed to fetch data from the API:', error);
+  }
+}
 
-console.log(num);  // 42
-console.log(typeof num);  // number
-let hexStr = "1A";
-let num = parseInt(hexStr, 16);
+// Function to process the API response
+function processAPIResponse(data) {
+  // Process the data here...
+  console.log('Processing API response:', data);
+}
 
-console.log(num);  // 26
-console.log(typeof num);  // number
+// Call the function to fetch data from the API
+fetchDataFromAPI();
