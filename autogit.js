@@ -1,20 +1,12 @@
-function findSecondLargest(array) {
-  let firstLargest = -Infinity;
-  let secondLargest = -Infinity;
-
-  for (let i = 0; i < array.length; i++) {
-    if (array[i] > firstLargest) {
-      secondLargest = firstLargest;
-      firstLargest = array[i];
-    } else if (array[i] > secondLargest && array[i] !== firstLargest) {
-      secondLargest = array[i];
-    }
+function randomSort(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
   }
-
-  return secondLargest;
+  return array;
 }
 
-// Example usage:
-const array = [5, 10, 2, 8, 9];
-const secondLargestElement = findSecondLargest(array);
-console.log(secondLargestElement); // Output: 9
+// Example usage
+const myArray = [1, 2, 3, 4, 5];
+const shuffledArray = randomSort(myArray);
+console.log(shuffledArray);
