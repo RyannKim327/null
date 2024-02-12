@@ -1,59 +1,51 @@
-class PriorityQueue {
+class Graph {
   constructor() {
-    this.heap = [];
-  }
-}
-getParentIndex(index) {
-  return Math.floor((index - 1) / 2);
-}
-getLeftChildIndex(index) {
-  return 2 * index + 1;
-}
-getRightChildIndex(index) {
-  return 2 * index + 2;
-}
-swap(index1, index2) {
-  [this.heap[index1], this.heap[index2]] = [this.heap[index2], this.heap[index1]];
-}
-enqueue(value, priority) {
-  const element = { value, priority };
-  this.heap.push(element);
-  this.bubbleUp();
-}
-bubbleUp() {
-  let index = this.heap.length - 1;
-  while (index > 0) {
-    const parentIndex = this.getParentIndex(index);
-    if (this.heap[index].priority <= this.heap[parentIndex].priority) break;
-    this.swap(index, parentIndex);
-    index = parentIndex;
-  }
-}
-dequeue() {
-  if (this.heap.length === 0) return null;
-  if (this.heap.length === 1) return this.heap.pop().value;
-
-  const maxValue = this.heap[0].value;
-  this.heap[0] = this.heap.pop();
-  this.sinkDown(0);
-  return maxValue;
-}
-sinkDown(index) {
-  const leftChildIndex = this.getLeftChildIndex(index);
-  const rightChildIndex = this.getRightChildIndex(index);
-  const length = this.heap.length;
-  let largestIndex = index;
-
-  if (leftChildIndex < length && this.heap[leftChildIndex].priority > this.heap[largestIndex].priority) {
-    largestIndex = leftChildIndex;
+    this.vertices = [];
+    this.adjList = new Map();
   }
 
-  if (rightChildIndex < length && this.heap[rightChildIndex].priority > this.heap[largestIndex].priority) {
-    largestIndex = rightChildIndex;
+  addVertex(v) {
+    this.vertices.push(v);
+    this.adjList.set(v, []);
   }
 
-  if (largestIndex !== index) {
-    this.swap(index, largestIndex);
-    this.sinkDown(largestIndex);
+  addEdge(v, w) {
+    this.adjList.get(v).push(w);
+    this.adjList.get(w).push(v);
+  }
+
+  breadthFirstSearch(startingNode) {
+    const visited = new Set();
+    const queue = [];
+
+    visited.add(startingNode);
+    queue.push(startingNode);
+
+    while (queue.length > 0) {
+      const currentVertex = queue.shift();
+      console.log(currentVertex); // Process the node (in this case, print its value)
+
+      const neighbors = this.adjList.get(currentVertex);
+      for (const neighbor of neighbors) {
+        if (!visited.has(neighbor)) {
+          queue.push(neighbor);
+          visited.add(neighbor);
+        }
+      }
+    }
   }
 }
+
+// Example usage:
+const graph = new Graph();
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addVertex('E');
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('C', 'E');
+
+graph.breadthFirstSearch('A');
