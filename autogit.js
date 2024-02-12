@@ -1,10 +1,4 @@
-function calculateTriangleArea(base, height) {
-  const area = (base * height) / 2;
-  return area;
-}
+let str = "HELLO, WORLD!";
+let lowercaseStr = str.toLowerCase();
 
-// Example usage
-const base = 5;
-const height = 3;
-const triangleArea = calculateTriangleArea(base, height);
-console.log("The area of the triangle is: " + triangleArea);
+console.log(lowercaseStr); // Output: hello, world!
