@@ -1,34 +1,20 @@
-function findMajorityElement(arr) {
-  let majorityElement = null;
-  let count = 0;
+function longestCommonPrefix(strings) {
+  const n = strings.length;
+  if (n === 0) return '';
 
-  for (let i = 0; i < arr.length; i++) {
-    if (count === 0) {
-      majorityElement = arr[i];
-      count++;
-    } else if (majorityElement === arr[i]) {
-      count++;
-    } else {
-      count--;
+  for (let i = 0; i < strings[0].length; i++) {
+    const char = strings[0][i];
+    for (let j = 1; j < n; j++) {
+      if (i >= strings[j].length || strings[j][i] !== char) {
+        return strings[0].substring(0, i);
+      }
     }
   }
 
-  // Verify if the majority element is actually the majority
-  count = 0;
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] === majorityElement) {
-      count++;
-    }
-  }
-
-  if (count > arr.length / 2) {
-    return majorityElement;
-  } else {
-    return null; // No majority element found
-  }
+  return strings[0];
 }
 
-// Example usage
-const array = [1, 2, 3, 2, 2]; // Majority element: 2
-const majorityElement = findMajorityElement(array);
-console.log(majorityElement); // Output: 2
+// Example usage:
+const strings = ['flower', 'flow', 'flight'];
+const commonPrefix = longestCommonPrefix(strings);
+console.log(commonPrefix); // Output: 'fl'
