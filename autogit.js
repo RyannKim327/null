@@ -1,55 +1,27 @@
-class Stack {
-  constructor() {
-    this.stack = []; // Array to store stack elements
-  }
-  
-  // Add an element to the stack
-  push(element) {
-    this.stack.push(element);
-  }
-  
-  // Remove the top element from the stack and return it
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
+function quicksort(arr) {
+    if (arr.length <= 1) {
+        return arr;
     }
-    return this.stack.pop();
-  }
-  
-  // Get the top element of the stack without removing it
-  peek() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
+
+    const pivot = arr[Math.floor(arr.length / 2)];
+    const less = [];
+    const equal = [];
+    const greater = [];
+
+    for (let element of arr) {
+        if (element < pivot) {
+            less.push(element);
+        } else if (element === pivot) {
+            equal.push(element);
+        } else {
+            greater.push(element);
+        }
     }
-    return this.stack[this.stack.length - 1];
-  }
-  
-  // Check if the stack is empty
-  isEmpty() {
-    return this.stack.length === 0;
-  }
-  
-  // Get the size of the stack
-  size() {
-    return this.stack.length;
-  }
-  
-  // Print the elements of the stack
-  print() {
-    console.log(this.stack);
-  }
+
+    return [...quicksort(less), ...equal, ...quicksort(greater)];
 }
 
-// Example usage
-const stack = new Stack();
-
-stack.push(1);
-stack.push(2);
-stack.push(3);
-
-console.log("Stack size:", stack.size()); // Output: 3
-
-console.log(stack.pop()); // Output: 3
-console.log(stack.peek()); // Output: 2
-
-stack.print(); // Output: [1, 2]
+// Testing the quicksort algorithm
+const array = [23, 4, 42, 15, 16, 8];
+const sortedArray = quicksort(array);
+console.log(sortedArray);
