@@ -1,10 +1,14 @@
-let str = "Hello, world!";
-let newStr = str.replace(/\s/g, '');
-console.log(newStr);
-let str = "Hello, world!";
-let newStr = str.split(' ').join('');
-console.log(newStr);
-let str = "Hello, world!";
-let newStr = str.replace(/ /g, '');
-console.log(newStr);
-Hello,world!
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  const alphanumericStr = str.replace(/[^0-9a-z]/gi, '').toLowerCase();
+
+  // Reverse the string
+  const reversedStr = alphanumericStr.split('').reverse().join('');
+
+  // Compare the reversed string with the original string
+  return alphanumericStr === reversedStr;
+}
+
+// Usage
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // Output: true
+console.log(isPalindrome("race a car")); // Output: false
