@@ -1,12 +1,8 @@
-function randomSort(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
+let array = [1, 2, 3, 4, 5];
+array.reverse();
 
-// Example usage
-const myArray = [1, 2, 3, 4, 5];
-const shuffledArray = randomSort(myArray);
-console.log(shuffledArray);
+console.log(array);  // Output: [5, 4, 3, 2, 1]
+let array = ["apple", "banana", "cherry"];
+array.reverse();
+
+console.log(array);  // Output: ["cherry", "banana", "apple"]
