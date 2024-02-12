@@ -1,46 +1,15 @@
-function beamSearch(initialState, beamWidth, maxDepth) {
-  let queue = [initialState];
+let str = "42";
+let num = parseInt(str);
 
-  while (queue.length > 0) {
-    // Generate successor states for current states
-    let successors = [];
-    for (let state of queue) {
-      successors.push(...generateSuccessorStates(state));
-    }
+console.log(num);  // 42
+console.log(typeof num);  // number
+let str = "42";
+let num = Number(str);
 
-    // Score successor states
-    let scoredSuccessors = successors.map(state => ({
-      state,
-      score: scoreState(state)
-    }));
+console.log(num);  // 42
+console.log(typeof num);  // number
+let hexStr = "1A";
+let num = parseInt(hexStr, 16);
 
-    // Sort scored successors by score (ascending order)
-    scoredSuccessors.sort((a, b) => a.score - b.score);
-
-    // Keep only the best states (beamWidth number of states)
-    queue = scoredSuccessors.slice(0, beamWidth).map(entry => entry.state);
-
-    // Check if goal state reached or maximum depth reached
-    let goalState = queue.find(state => isGoalState(state));
-    if (goalState || queue[0].depth >= maxDepth) {
-      return goalState;
-    }
-  }
-
-  return null; // No solution found
-}
-
-function generateSuccessorStates(state) {
-  // Implementation of generating successor states based on current state
-  // ...
-}
-
-function scoreState(state) {
-  // Implementation of the scoring function for a state
-  // ...
-}
-
-function isGoalState(state) {
-  // Implementation of the goal state condition check
-  // ...
-}
+console.log(num);  // 26
+console.log(typeof num);  // number
