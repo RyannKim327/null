@@ -1,52 +1,48 @@
-function dijkstra(graph, start, end) {
-  const distances = {};
-  const previous = {};
-  const queue = [];
+function findLCS(str1, str2) {
+  // Create a 2D matrix to store the lengths of common subsequences
+  const matrix = Array(str1.length + 1)
+    .fill(0)
+    .map(() => Array(str2.length + 1).fill(0));
 
-  // Step 2: Initialize distances and previous
-  for (let vertex in graph) {
-    distances[vertex] = Infinity;
-    previous[vertex] = null;
-  }
-  distances[start] = 0;
-
-  // Step 5: Enqueue start vertex
-  queue.push({ vertex: start, distance: 0 });
-
-  while (queue.length) {
-    // Step 6a: Dequeue vertex with minimum distance
-    queue.sort((a, b) => a.distance - b.distance);
-    const { vertex: current, distance } = queue.shift();
-
-    // Step 6b: Break loop if end vertex is reached
-    if (current === end) break;
-
-    // Step 6c: Process each neighbor
-    for (let neighbor in graph[current]) {
-      const totalDistance = distance + graph[current][neighbor];
-      
-      if (totalDistance < distances[neighbor]) {
-        distances[neighbor] = totalDistance;
-        previous[neighbor] = current;
-        queue.push({ vertex: neighbor, distance: totalDistance });
+  // Iterate through each character in the strings
+  for (let i = 1; i <= str1.length; i++) {
+    for (let j = 1; j <= str2.length; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        // If the characters match, extend the LCS length by 1
+        matrix[i][j] = matrix[i - 1][j - 1] + 1;
+      } else {
+        // If the characters don't match, take the maximum LCS length
+        // from either skipping a character in str1 or skipping a character in str2
+        matrix[i][j] = Math.max(matrix[i - 1][j], matrix[i][j - 1]);
       }
     }
   }
 
-  // Construct shortest path
-  const path = [];
-  let vertex = end;
+  // Reconstruct the LCS from the matrix
+  let lcs = "";
+  let i = str1.length;
+  let j = str2.length;
 
-  while (vertex !== null) {
-    path.unshift(vertex);
-    vertex = previous[vertex];
+  while (i > 0 && j > 0) {
+    if (str1[i - 1] === str2[j - 1]) {
+      // If the characters match, add it to the LCS and move diagonally up-left
+      lcs = str1[i - 1] + lcs;
+      i--;
+      j--;
+    } else if (matrix[i - 1][j] > matrix[i][j - 1]) {
+      // If the lengths differ, move to the left
+      i--;
+    } else {
+      // If the lengths are the same, move up
+      j--;
+    }
   }
 
-  return { path, distance: distances[end] };
+  return lcs;
 }
-const graph = {
-  A: { B: 5, C: 2 },
-  B: { A: 5, D: 1 },
-  C: { A: 2, D: 6 },
-  D: { B: 1, C: 6 }
-};
+
+// Example usage
+const str1 = "ABCDGH";
+const str2 = "AEDFHR";
+const lcs = findLCS(str1, str2);
+console.log(lcs); // Output: ADH
