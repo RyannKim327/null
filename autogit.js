@@ -1,9 +1,12 @@
-function findCommonElements(array1, array2) {
-  return array1.filter(element => array2.includes(element));
-}
+let stringNumber = "42";
+let integerNumber = parseInt(stringNumber);
 
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
+console.log(integerNumber); // Output: 42
+let stringNumber = "123abcd";
+let integerNumber = parseInt(stringNumber);
+
+console.log(integerNumber); // Output: 123
+let hexString = "3F";
+let decimalNumber = parseInt(hexString, 16);
+
+console.log(decimalNumber); // Output: 63 (converted from hexadecimal to decimal)
