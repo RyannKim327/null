@@ -1,63 +1,43 @@
+function hasCycle(head) {
+  if (!head || !head.next) {
+    // If the list is empty or has only one node, there can't be a cycle
+    return false;
+  }
+
+  let slow = head;
+  let fast = head.next;
+
+  while (fast && fast.next) {
+    if (slow === fast) {
+      // If the slow and fast pointers meet, there is a cycle
+      return true;
+    }
+
+    slow = slow.next;
+    fast = fast.next.next;
+  }
+
+  // If the fast pointer reaches the end (null), there is no cycle
+  return false;
+}
+// Create a sample linked list with a cycle
 class Node {
   constructor(value) {
     this.value = value;
     this.next = null;
   }
 }
-function createLinkedList(values) {
-  let head = null;
-  let tail = null;
 
-  for (let i = 0; i < values.length; i++) {
-    let newNode = new Node(values[i]);
+const head = new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
+const node4 = new Node(4);
+const node5 = new Node(5);
 
-    if (!head) {
-      head = newNode;
-      tail = newNode;
-    } else {
-      tail.next = newNode;
-      tail = newNode;
-    }
-  }
+head.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node5;
+node5.next = node2; // Creates a cycle
 
-  return head;
-}
-function isLinkedListPalindrome(head) {
-  // Step 1: Find the middle of the linked list
-  let slow = head;
-  let fast = head;
-
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
-
-  // Step 2: Reverse the second half of the linked list
-  let prev = null;
-  let curr = slow;
-
-  while (curr) {
-    let nextNode = curr.next;
-    curr.next = prev;
-    prev = curr;
-    curr = nextNode;
-  }
-
-  // Step 3: Compare the first half of the linked list with the reversed second half
-  let firstHalf = head;
-  let secondHalf = prev;
-
-  while (secondHalf) {
-    if (firstHalf.value !== secondHalf.value) {
-      return false;
-    }
-
-    firstHalf = firstHalf.next;
-    secondHalf = secondHalf.next;
-  }
-
-  return true;
-}
-let myList = createLinkedList([1, 2, 3, 2, 1]);
-
-console.log(isLinkedListPalindrome(myList)); // Output: true
+console.log(hasCycle(head)); // Output: true
