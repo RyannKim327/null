@@ -1,17 +1,26 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  const alphanumeric = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+function beamSearch(initialState, beamWidth, maxIterations) {
+  let beam = [{ state: initialState, score: 0 }];
   
-  // Reverse the string
-  const reversed = alphanumeric.split('').reverse().join('');
+  for (let iteration = 0; iteration < maxIterations; iteration++) {
+    let nextBeam = [];
+    
+    for (let i = 0; i < beam.length; i++) {
+      const currentState = beam[i].state;
+      
+      // Generate child states from the current state
+      
+      // Evaluate score for each child state
+      
+      // Add child states and scores to nextBeam
+    }
+    
+    // Sort nextBeam based on scores in descending order
+    nextBeam.sort((a, b) => b.score - a.score);
+    
+    // Prune nextBeam to keep only the top-k states
+    beam = nextBeam.slice(0, beamWidth);
+  }
   
-  // Compare original string with reversed string
-  return alphanumeric === reversed;
+  // Return the best solution from the final beam
+  return beam[0].state;
 }
-
-// Example usage
-const string1 = "A man, a plan, a canal, Panama!";
-console.log(isPalindrome(string1)); // Output: true
-
-const string2 = "Hello, world!";
-console.log(isPalindrome(string2)); // Output: false
