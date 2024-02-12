@@ -1,97 +1,71 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function createBadCharTable(pattern) {
+  const table = {};
+  for (let i = 0; i < pattern.length; i++) {
+    table[pattern[i]] = i;
   }
+  return table;
 }
-class BinarySearchTree {
-  constructor() {
-    this.root = null;
-  }
+function createGoodSuffixTable(pattern) {
+  const table = new Array(pattern.length);
+  const suffix = new Array(pattern.length);
 
-  // Helper method to create a new node
-  createNode(value) {
-    return new Node(value);
-  }
-
-  // Method to insert a value into the tree
-  insert(value) {
-    const newNode = this.createNode(value);
-
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
+  // Fill the suffix array
+  suffix[pattern.length - 1] = pattern.length;
+  for (let i = pattern.length - 2; i >= 0; i--) {
+    let j = i;
+    while (j >= 0 && pattern[j] === pattern[pattern.length - 1 - i + j]) {
+      j--;
     }
+    suffix[i] = i - j;
   }
 
-  // Helper method to recursively insert a value in the tree
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
+  // Case 1: match occurs
+  for (let i = 0; i < pattern.length - 1; i++) {
+    table[i] = pattern.length - suffix[pattern.length - 1 - i];
+  }
+
+  // Case 2: match doesn't occur
+  for (let i = 0; i < pattern.length - 1; i++) {
+    let len = 0;
+    for (let j = pattern.length - 1 - i; j >= 0; j--) {
+      if (suffix[j] === j + 1) {
+        len = j + 1;
       }
     }
+    table[len] = pattern.length - 1 - i + len;
   }
 
-  // Method to search for a value in the tree
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
+  // Case 3: match partially occurs
+  table[pattern.length - 1] = 1;
 
-  // Helper method to recursively search for a value in the tree
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
-    }
-
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else if (value > node.value) {
-      return this.searchNode(node.right, value);
-    }
-
-    return true; // value found
-  }
-
-  // Method to traverse the tree in-order (left, root, right)
-  inOrderTraversal(callback) {
-    this.inOrderTraversalNode(this.root, callback);
-  }
-
-  // Helper method to recursively traverse the tree in-order
-  inOrderTraversalNode(node, callback) {
-    if (node !== null) {
-      this.inOrderTraversalNode(node.left, callback);
-      callback(node.value);
-      this.inOrderTraversalNode(node.right, callback);
-    }
-  }
+  return table;
 }
-// Create a new instance of the binary search tree
-const bst = new BinarySearchTree();
+function boyerMooreSearch(text, pattern) {
+  const m = pattern.length;
+  const n = text.length;
 
-// Insert values into the tree
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
-bst.insert(7);
-bst.insert(12);
-bst.insert(17);
+  const badCharTable = createBadCharTable(pattern);
+  const goodSuffixTable = createGoodSuffixTable(pattern);
 
-// Search for a value in the tree
-console.log(bst.search(7)); // true
-console.log(bst.search(20)); // false
-
-// Traverse the tree in-order
-bst.inOrderTraversal((value) => console.log(value));
+  let i = 0;
+  while (i <= n - m) {
+    let j = m - 1;
+    while (j >= 0 && pattern[j] === text[i + j]) {
+      j--;
+    }
+    if (j < 0) {
+      // Match found
+      return i;
+    } else {
+      const maxShift1 = j - badCharTable[text[i + j]];
+      const maxShift2 = goodSuffixTable[j];
+      i += Math.max(maxShift1, maxShift2);
+    }
+  }
+  // No match found
+  return -1;
+}
+const text = "abracadabra";
+const pattern = "cad";
+const index = boyerMooreSearch(text, pattern);
+console.log(index); // Output: 4
