@@ -1,24 +1,19 @@
-function generateCyclicRotations(str) {
-  const rotations = [str];
-  for (let i = 1; i < str.length; i++) {
-    const rotatedStr = str.slice(-i) + str.slice(0, -i);
-    rotations.push(rotatedStr);
+function isPrime(number) {
+  if (number <= 1) {
+    return false;
   }
-  return rotations;
+  
+  // Check if number is divisible by any number from 2 to square root of number
+  for (let i = 2; i <= Math.sqrt(number); i++) {
+    if (number % i === 0) {
+      return false;
+    }
+  }
+  
+  return true;
 }
-function bwt(str) {
-  const rotations = generateCyclicRotations(str);
-  rotations.sort();
-  return rotations.map(rotation => rotation.slice(-1)).join('');
-}
-function bwt(str) {
-  const rotations = generateCyclicRotations(str);
-  rotations.sort();
-  const transformedStr = rotations.map(rotation => rotation.slice(-1)).join('');
-  const originalIndex = rotations.indexOf(str);
-  return { transformedStr, originalIndex };
-}
-const input = 'banana';
-const result = bwt(input);
-console.log('Transformed string:', result.transformedStr);
-console.log('Original string index:', result.originalIndex);
+
+// Usage examples:
+console.log(isPrime(5));  // true
+console.log(isPrime(10)); // false
+console.log(isPrime(17)); // true
