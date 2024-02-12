@@ -1,48 +1,20 @@
-// AsyncHttpRequest.js
+function findMaxSumSubarray(arr) {
+  let maxSum = arr[0]; // Initialize maxSum with the first element of the array
+  let currentSum = arr[0]; // Initialize currentSum with the first element of the array
 
-// Import necessary classes
-var AsyncTask = Java.use('android.os.AsyncTask');
-var HttpURLConnection = Java.use('java.net.HttpURLConnection');
-var URL = Java.use('java.net.URL');
+  // Iterate through the array starting from the second element
+  for (let i = 1; i < arr.length; i++) {
+    // Calculate the maximum between the current element and the sum of the current element and the previous subarray
+    currentSum = Math.max(arr[i], currentSum + arr[i]);
 
-// Define the async task
-var HttpRequestTask = AsyncTask.$new();
+    // Update the maxSum if the currentSum is greater
+    maxSum = Math.max(maxSum, currentSum);
+  }
 
-// Override doInBackground method
-HttpRequestTask.doInBackground.implementation = function(urls) {
-    try {
-        var url = URL.$new(urls[0]);
-        var connection = url.openConnection();
-        connection.setRequestMethod('GET');
-        connection.setConnectTimeout(5000);
-        connection.connect();
+  return maxSum;
+}
 
-        var responseCode = connection.getResponseCode();
-        var responseMessage = connection.getResponseMessage();
-
-        console.log('Response code: ' + responseCode);
-        console.log('Response message: ' + responseMessage);
-
-        // Read the response
-        var inputStream = connection.getInputStream();
-        var bufferedReader = Java.use('java.io.BufferedReader').$new(Java.use('java.io.InputStreamReader').$new(inputStream));
-        var inputLine;
-        var response = '';
-
-        while ((inputLine = bufferedReader.readLine()) !== null) {
-            response += inputLine;
-        }
-
-        bufferedReader.close();
-
-        console.log('Response body: ' + response);
-
-    } catch (e) {
-        console.log('Error: ' + e);
-    }
-
-    return null;
-};
-
-// Execute the async task
-HttpRequestTask.execute(['http://example.com']);
+// Example usage:
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const maxSum = findMaxSumSubarray(array);
+console.log(maxSum); // Output: 6 (corresponding to the subarray [4, -1, 2, 1])
