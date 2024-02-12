@@ -1,75 +1,30 @@
 class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+  constructor(data) {
+    this.data = data;
+    this.next = null;
   }
 }
 
-class BinaryTree {
-  constructor() {
-    this.root = null;
+function findMiddleElement(head) {
+  if (!head) {
+    return null; // Handle empty linked list
   }
 
-  insert(value) {
-    const newNode = new Node(value);
+  let slow = head;
+  let fast = head;
 
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
   }
 
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
-
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
-    }
-
-    if (value === node.value) {
-      return true;
-    }
-
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else {
-      return this.searchNode(node.right, value);
-    }
-  }
+  return slow.data;
 }
+// Create a linked list: 1 -> 2 -> 3 -> 4 -> 5
+const head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
 
-// Example usage:
-const tree = new BinaryTree();
-
-tree.insert(8);
-tree.insert(3);
-tree.insert(10);
-tree.insert(1);
-tree.insert(6);
-tree.insert(14);
-tree.insert(4);
-tree.insert(7);
-tree.insert(13);
-
-console.log(tree.search(6)); // true
-console.log(tree.search(12)); // false
+console.log(findMiddleElement(head)); // Output: 3
