@@ -1,19 +1,24 @@
-function findSecondLargest(arr) {
-  let largest = arr[0];
-  let secondLargest = -Infinity;
-
-  for (let i = 1; i < arr.length; i++) {
-    if (arr[i] > largest) {
-      secondLargest = largest;
-      largest = arr[i];
-    } else if (arr[i] < largest && arr[i] > secondLargest) {
-      secondLargest = arr[i];
-    }
+function factorialLoop(num) {
+  if (num === 0 || num === 1) {
+    return 1;
   }
-
-  return secondLargest;
+  
+  let result = 1;
+  
+  for (let i = 2; i <= num; i++) {
+    result *= i;
+  }
+  
+  return result;
 }
 
-// Example usage:
-const array = [5, 10, 3, 8, 2];
-console.log(findSecondLargest(array));  // Output: 8
+console.log(factorialLoop(5)); // Output: 120
+function factorialRecursive(num) {
+  if (num === 0 || num === 1) {
+    return 1;
+  }
+  
+  return num * factorialRecursive(num - 1);
+}
+
+console.log(factorialRecursive(5)); // Output: 120
