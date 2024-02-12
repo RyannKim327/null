@@ -1,25 +1,23 @@
-function bubbleSort(arr) {
-  var len = arr.length;
-  var swapped;
+function isPalindrome(str) {
+  // convert the string to lowercase and remove non-alphanumeric characters
+  str = str.toLowerCase().replace(/[^a-z0-9]/g, '');
   
-  do {
-    swapped = false;
-    
-    for (var i = 0; i < len - 1; i++) {
-      if (arr[i] > arr[i + 1]) {
-        var temp = arr[i];
-        arr[i] = arr[i + 1];
-        arr[i + 1] = temp;
-        swapped = true;
-      }
+  let left = 0; // pointer starting from the leftmost character
+  let right = str.length - 1; // pointer starting from the rightmost character
+  
+  while (left < right) {
+    if (str[left] !== str[right]) {
+      return false; // characters don't match, it's not a palindrome
     }
-  } while (swapped);
+    
+    left++; // move the left pointer to the right
+    right--; // move the right pointer to the left
+  }
   
-  return arr;
+  return true; // all characters matched, it's a palindrome
 }
 
-// Usage:
-var unsortedArray = [5, 3, 8, 2, 1, 4];
-var sortedArray = bubbleSort(unsortedArray);
-
-console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 8]
+// Testing the function
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
+console.log(isPalindrome("level")); // true
