@@ -1,47 +1,90 @@
-class Node {
-  constructor(value, children = []) {
-    this.value = value;
-    this.children = children;
+class TrieNode {
+  constructor() {
+    this.children = {};
+    this.isEndOfWord = false;
   }
 }
-
-function depthLimitedSearchIterative(root, targetValue, depthLimit) {
-  const stack = [{ node: root, depth: 0 }];
-
-  while (stack.length > 0) {
-    const { node, depth } = stack.pop();
-
-    // Check if the current node matches the target value
-    if (node.value === targetValue) {
-      return node;
-    }
-
-    // If the current depth hasn't reached the limit, add children to the stack
-    if (depth < depthLimit) {
-      for (const child of node.children) {
-        stack.push({ node: child, depth: depth + 1 });
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
+  }
+  
+  insert(word) {
+    let currentNode = this.root;
+    
+    // Loop through each character of the word
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      
+      // If the character doesn't exist, create a new TrieNode
+      if (!currentNode.children.hasOwnProperty(char)) {
+        currentNode.children[char] = new TrieNode();
       }
+      
+      // Move to the next TrieNode
+      currentNode = currentNode.children[char];
     }
+    
+    // Mark the last TrieNode as the end of a word
+    currentNode.isEndOfWord = true;
   }
-
-  // Return null if targetValue is not found within the depth limit
-  return null;
+  
+  search(word) {
+    let currentNode = this.root;
+    
+    // Loop through each character of the word
+    for (let i = 0; i < word.length; i++) {
+      const char = word[i];
+      
+      // If the character doesn't exist, the word doesn't exist in the Trie
+      if (!currentNode.children.hasOwnProperty(char)) {
+        return false;
+      }
+      
+      // Move to the next TrieNode
+      currentNode = currentNode.children[char];
+    }
+    
+    // Return true if the last TrieNode is the end of a word
+    return currentNode.isEndOfWord;
+  }
+  
+  startsWith(prefix) {
+    let currentNode = this.root;
+    
+    // Loop through each character of the prefix
+    for (let i = 0; i < prefix.length; i++) {
+      const char = prefix[i];
+      
+      // If the character doesn't exist, the prefix doesn't exist in the Trie
+      if (!currentNode.children.hasOwnProperty(char)) {
+        return false;
+      }
+      
+      // Move to the next TrieNode
+      currentNode = currentNode.children[char];
+    }
+    
+    // Return true since the prefix exists in the Trie
+    return true;
+  }
 }
+// Create a new instance of the Trie
+const trie = new Trie();
 
-// Usage example:
-// Create a tree with numeric values
-const root = new Node(1, [
-  new Node(2, [
-    new Node(4),
-    new Node(5),
-  ]),
-  new Node(3, [
-    new Node(6),
-    new Node(7),
-  ]),
-]);
+// Insert words into the Trie
+trie.insert("apple");
+trie.insert("banana");
+trie.insert("orange");
 
-// Perform depth-limited search with a depth limit of 2
-const result = depthLimitedSearchIterative(root, 7, 2);
+// Search for words in the Trie
+console.log(trie.search("apple"));   // true
+console.log(trie.search("banana"));  // true
+console.log(trie.search("orange"));  // true
+console.log(trie.search("pear"));    // false
 
-console.log(result); // Node { value: 7 }
+// Check prefixes in the Trie
+console.log(trie.startsWith("app"));   // true
+console.log(trie.startsWith("ban"));   // true
+console.log(trie.startsWith("oran"));  // true
+console.log(trie.startsWith("pea"));   // false
