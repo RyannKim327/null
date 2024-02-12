@@ -1,90 +1,90 @@
-class Node {
+class LinkedListNode {
   constructor(value) {
     this.value = value;
-    this.left = null;
-    this.right = null;
-    this.height = 1;
+    this.next = null;
   }
 }
-class AVLTree {
+
+class LinkedList {
   constructor() {
-    this.root = null;
+    this.head = null;
+    this.tail = null;
+  }
+
+  // Add a node to the end of the linked list
+  addNode(value) {
+    const newNode = new LinkedListNode(value);
+
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+  }
+
+  // Remove the first node with a given value
+  removeNode(value) {
+    if (!this.head) {
+      return;
+    }
+
+    // If the head node is the one to remove
+    if (this.head.value === value) {
+      this.head = this.head.next;
+
+      // If the list becomes empty, update the tail
+      if (!this.head) {
+        this.tail = null;
+      }
+
+      return;
+    }
+
+    let currentNode = this.head;
+    let prevNode = null;
+
+    // Traverse the list to find the node to remove
+    while (currentNode !== null && currentNode.value !== value) {
+      prevNode = currentNode;
+      currentNode = currentNode.next;
+    }
+
+    // If the node is found, remove it
+    if (currentNode !== null && currentNode.value === value) {
+      prevNode.next = currentNode.next;
+
+      // If the tail node is removed, update the tail
+      if (currentNode === this.tail) {
+        this.tail = prevNode;
+      }
+    }
+  }
+
+  // Print the values of all nodes in the linked list
+  printList() {
+    let currentNode = this.head;
+    const values = [];
+
+    while (currentNode !== null) {
+      values.push(currentNode.value);
+      currentNode = currentNode.next;
+    }
+
+    console.log(values.join(' -> '));
   }
 }
-AVLTree.prototype.height = function(node) {
-  if (node === null) {
-    return 0;
-  }
-  return node.height;
-};
-AVLTree.prototype.balanceFactor = function(node) {
-  return this.height(node.left) - this.height(node.right);
-};
-AVLTree.prototype.rotateRight = function(node) {
-  const newRoot = node.left;
-  node.left = newRoot.right;
-  newRoot.right = node;
 
-  node.height = Math.max(this.height(node.left), this.height(node.right)) + 1;
-  newRoot.height = Math.max(this.height(newRoot.left), node.height) + 1;
+// Example usage:
+const linkedList = new LinkedList();
 
-  return newRoot;
-};
+linkedList.addNode(1);
+linkedList.addNode(2);
+linkedList.addNode(3);
 
-AVLTree.prototype.rotateLeft = function(node) {
-  const newRoot = node.right;
-  node.right = newRoot.left;
-  newRoot.left = node;
+linkedList.printList(); // 1 -> 2 -> 3
 
-  node.height = Math.max(this.height(node.left), this.height(node.right)) + 1;
-  newRoot.height = Math.max(this.height(newRoot.right), node.height) + 1;
+linkedList.removeNode(2);
 
-  return newRoot;
-};
-AVLTree.prototype.insert = function(value) {
-  this.root = this.insertNode(this.root, value);
-};
-
-AVLTree.prototype.insertNode = function(root, value) {
-  if (root === null) {
-    return new Node(value);
-  }
-
-  if (value < root.value) {
-    root.left = this.insertNode(root.left, value);
-  } else {
-    root.right = this.insertNode(root.right, value);
-  }
-
-  root.height = Math.max(this.height(root.left), this.height(root.right)) + 1;
-  const balanceFactor = this.balanceFactor(root);
-
-  // Left-left case
-  if (balanceFactor > 1 && value < root.left.value) {
-    return this.rotateRight(root);
-  }
-
-  // Right-right case
-  if (balanceFactor < -1 && value > root.right.value) {
-    return this.rotateLeft(root);
-  }
-
-  // Left-right case
-  if (balanceFactor > 1 && value > root.left.value) {
-    root.left = this.rotateLeft(root.left);
-    return this.rotateRight(root);
-  }
-
-  // Right-left case
-  if (balanceFactor < -1 && value < root.right.value) {
-    root.right = this.rotateRight(root.right);
-    return this.rotateLeft(root);
-  }
-
-  return root;
-};
-const avlTree = new AVLTree();
-avlTree.insert(10);
-avlTree.insert(20);
-avlTree.insert(30);
-// ... continue inserting more values
+linkedList.printList(); // 1 -> 3
