@@ -1,17 +1,12 @@
-function findMaximumSubarray(arr) {
-  let maxSoFar = arr[0];
-  let maxEndingHere = arr[0];
-
-  for (let i = 1; i < arr.length; i++) {
-    // Calculate the maximum sum ending at the current position
-    maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
-
-    // Update the maximum sum so far
-    maxSoFar = Math.max(maxSoFar, maxEndingHere);
-  }
-
-  return maxSoFar;
+let str = "Hello, world!";
+let reversedStr = str.split("").reverse().join("");
+console.log(reversedStr);
+let str = "Hello, world!";
+let reversedStr = "";
+for (let i = str.length - 1; i >= 0; i--) {
+  reversedStr += str[i];
 }
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const maximumSum = findMaximumSubarray(array);
-console.log(maximumSum); // Output: 6 (subarray: [4, -1, 2, 1])
+console.log(reversedStr);
+let str = "Hello, world!";
+let reversedStr = Array.from(str).reduce((acc, char) => char + acc, '');
+console.log(reversedStr);
