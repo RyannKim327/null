@@ -1,8 +1,12 @@
-let array = [1, 2, 3, 4, 5];
-array.reverse();
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  const cleanStr = str.replace(/\W/g, '').toLowerCase();
+  
+  // Compare the clean string with its reverse
+  return cleanStr === cleanStr.split('').reverse().join('');
+}
 
-console.log(array);  // Output: [5, 4, 3, 2, 1]
-let array = ["apple", "banana", "cherry"];
-array.reverse();
-
-console.log(array);  // Output: ["cherry", "banana", "apple"]
+// Test cases
+console.log(isPalindrome("racecar")); // true
+console.log(isPalindrome("Hello")); // false
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
