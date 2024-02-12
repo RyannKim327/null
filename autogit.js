@@ -1,21 +1,24 @@
-function isPrime(number) {
-  if (number <= 1) {
-    return false;
-  }
+function bubbleSort(array) {
+  const length = array.length;
+  let swapped;
 
-  for (let i = 2; i <= Math.sqrt(number); i++) {
-    if (number % i === 0) {
-      return false;
+  do {
+    swapped = false;
+
+    for (let i = 0; i < length - 1; i++) {
+      if (array[i] > array[i + 1]) {
+        const temp = array[i];
+        array[i] = array[i + 1];
+        array[i + 1] = temp;
+        swapped = true;
+      }
     }
-  }
+  } while (swapped);
 
-  return true;
+  return array;
 }
-const number = 37;
+const numbers = [5, 3, 8, 4, 2];
+console.log(bubbleSort(numbers)); // Output: [2, 3, 4, 5, 8]
 
-if (isPrime(number)) {
-  console.log(`${number} is a prime number.`);
-} else {
-  console.log(`${number} is not a prime number.`);
-}
-37 is a prime number.
+const strings = ['apple', 'banana', 'carrot'];
+console.log(bubbleSort(strings)); // Output: ['apple', 'banana', 'carrot']
