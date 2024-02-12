@@ -1,39 +1,24 @@
-function maxSubarraySum(arr) {
-  let maxSum = -Infinity;
-  let currentSum = 0;
+function shellSort(array) {
+  const length = array.length;
+  let gap = Math.floor(length / 2);
 
-  let startIndex = 0;
-  let endIndex = 0;
-  let tempIndex = 0;
+  while (gap > 0) {
+    for (let i = gap; i < length; i++) {
+      const temp = array[i];
+      let j = i;
 
-  for (let i = 0; i < arr.length; i++) {
-    currentSum += arr[i];
+      while (j >= gap && array[j - gap] > temp) {
+        array[j] = array[j - gap];
+        j -= gap;
+      }
 
-    if (currentSum > maxSum) {
-      maxSum = currentSum;
-      startIndex = tempIndex;
-      endIndex = i;
+      array[j] = temp;
     }
 
-    if (currentSum < 0) {
-      currentSum = 0;
-      tempIndex = i + 1;
-    }
+    gap = Math.floor(gap / 2);
   }
 
-  const maxSubarray = arr.slice(startIndex, endIndex + 1);
-
-  return {
-    maxSum,
-    maxSubarray
-  };
+  return array;
 }
-
-// Example usage:
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const result = maxSubarraySum(array);
-
-console.log('Maximum sum:', result.maxSum);
-console.log('Maximum sum subarray:', result.maxSubarray);
-Maximum sum: 6
-Maximum sum subarray: [4, -1, 2, 1]
+const array = [9, 5, 1, 8, 2, 7, 3];
+console.log(shellSort(array)); // Output: [1, 2, 3, 5, 7, 8, 9]
