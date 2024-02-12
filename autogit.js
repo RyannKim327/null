@@ -1,17 +1,17 @@
-function isAnagram(string1, string2) {
-  // Remove non-alphabetic characters and convert to lowercase
-  string1 = string1.replace(/[^a-z]/gi, '').toLowerCase();
-  string2 = string2.replace(/[^a-z]/gi, '').toLowerCase();
+function findMaximumSubarray(arr) {
+  let maxSoFar = arr[0];
+  let maxEndingHere = arr[0];
 
-  // Convert strings to arrays, sort them, and join again
-  string1 = string1.split('').sort().join('');
-  string2 = string2.split('').sort().join('');
+  for (let i = 1; i < arr.length; i++) {
+    // Calculate the maximum sum ending at the current position
+    maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
 
-  // Compare the sorted strings
-  return string1 === string2;
+    // Update the maximum sum so far
+    maxSoFar = Math.max(maxSoFar, maxEndingHere);
+  }
+
+  return maxSoFar;
 }
-
-// Example usage:
-console.log(isAnagram('listen', 'silent')); // Output: true
-console.log(isAnagram('adder', 'dared'));   // Output: true
-console.log(isAnagram('hello', 'world'));   // Output: false
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const maximumSum = findMaximumSubarray(array);
+console.log(maximumSum); // Output: 6 (subarray: [4, -1, 2, 1])
