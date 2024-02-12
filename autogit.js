@@ -1,24 +1,36 @@
-function bubbleSort(array) {
-  const length = array.length;
-  let swapped;
+function topologicalSort(graph) {
+  const visited = new Map();
+  const stack = [];
 
-  do {
-    swapped = false;
-
-    for (let i = 0; i < length - 1; i++) {
-      if (array[i] > array[i + 1]) {
-        const temp = array[i];
-        array[i] = array[i + 1];
-        array[i + 1] = temp;
-        swapped = true;
-      }
+  for (const vertex of graph.keys()) {
+    if (!visited.has(vertex)) {
+      dfs(vertex, graph, visited, stack);
     }
-  } while (swapped);
+  }
 
-  return array;
+  return stack.reverse();
 }
-const numbers = [5, 3, 8, 4, 2];
-console.log(bubbleSort(numbers)); // Output: [2, 3, 4, 5, 8]
 
-const strings = ['apple', 'banana', 'carrot'];
-console.log(bubbleSort(strings)); // Output: ['apple', 'banana', 'carrot']
+function dfs(vertex, graph, visited, stack) {
+  visited.set(vertex, true);
+
+  const neighbors = graph.get(vertex) || [];
+
+  for (const neighbor of neighbors) {
+    if (!visited.has(neighbor)) {
+      dfs(neighbor, graph, visited, stack);
+    }
+  }
+
+  stack.push(vertex);
+}
+const graph = new Map();
+graph.set("A", ["B", "C"]);
+graph.set("B", ["D", "E"]);
+graph.set("C", ["F"]);
+graph.set("D", []);
+graph.set("E", ["F"]);
+graph.set("F", []);
+
+const sortedVertices = topologicalSort(graph);
+console.log(sortedVertices);
