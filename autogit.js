@@ -1,107 +1,98 @@
-// TrieNode class
-class TrieNode {
+class BinaryHeap {
   constructor() {
-    this.children = new Map(); // Map to store child nodes
-    this.isEndOfWord = false; // Whether current node represents end of a word
-  }
-}
-
-// Trie class
-class Trie {
-  constructor() {
-    this.root = new TrieNode(); // Root node of the trie
+    this.heap = [];
   }
 
-  // Insert a word into the trie
-  insert(word) {
-    let currentNode = this.root;
+  isEmpty() {
+    return this.heap.length === 0;
+  }
 
-    // Iterate through each character of the word
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
+  insert(item) {
+    this.heap.push(item);
+    this.bubbleUp(this.heap.length - 1);
+  }
 
-      // Check if the character already exists in the trie
-      if (!currentNode.children.has(char)) {
-        // Create a new node if not exists
-        currentNode.children.set(char, new TrieNode());
-      }
+  bubbleUp(index) {
+    const parentIndex = Math.floor((index - 1) / 2);
+    if (parentIndex >= 0 && this.heap[parentIndex] > this.heap[index]) {
+      this.swap(index, parentIndex);
+      this.bubbleUp(parentIndex);
+    }
+  }
 
-      // Move to the next node
-      currentNode = currentNode.children.get(char);
+  deleteMin() {
+    if (this.isEmpty()) {
+      return null;
     }
 
-    // Mark the end of the word
-    currentNode.isEndOfWord = true;
+    const min = this.heap[0];
+    const lastElement = this.heap.pop();
+    if (!this.isEmpty()) {
+      this.heap[0] = lastElement;
+      this.sinkDown(0);
+    }
+    return min;
   }
 
-  // Search for a word in the trie
-  search(word) {
-    let currentNode = this.root;
+  sinkDown(index) {
+    const leftIndex = 2 * index + 1;
+    const rightIndex = 2 * index + 2;
+    let smallest = index;
 
-    // Iterate through each character of the word
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-
-      // Check if the character exists in the trie
-      if (!currentNode.children.has(char)) {
-        return false; // Word not found
-      }
-
-      // Move to the next node
-      currentNode = currentNode.children.get(char);
+    if (
+      leftIndex < this.heap.length &&
+      this.heap[leftIndex] < this.heap[smallest]
+    ) {
+      smallest = leftIndex;
     }
 
-    // Return true if the last node represents the end of the word
-    return currentNode.isEndOfWord;
+    if (
+      rightIndex < this.heap.length &&
+      this.heap[rightIndex] < this.heap[smallest]
+    ) {
+      smallest = rightIndex;
+    }
+
+    if (smallest !== index) {
+      this.swap(index, smallest);
+      this.sinkDown(smallest);
+    }
   }
 
-  // Remove a word from the trie
-  remove(word) {
-    const removeHelper = (node, word, index) => {
-      // Base case: empty trie node
-      if (!node) return false;
-
-      // Base case: end of the word
-      if (index === word.length) {
-        if (!node.isEndOfWord) return false;
-
-        // Unmark the end of the word
-        node.isEndOfWord = false;
-
-        // Remove the node if it has no children
-        return node.children.size === 0;
-      }
-
-      const char = word[index];
-
-      // Check if the character exists in the trie
-      const nextNode = node.children.get(char);
-      if (!nextNode) return false;
-
-      // Recursive call to move to the next node
-      const shouldDeleteCurrentNode = removeHelper(nextNode, word, index + 1);
-
-      // Remove the node if required
-      if (shouldDeleteCurrentNode) {
-        node.children.delete(char);
-        return node.children.size === 0;
-      }
-
-      return false;
-    };
-
-    // Start the recursive remove process
-    removeHelper(this.root, word, 0);
+  swap(i, j) {
+    [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
   }
 }
+class PriorityQueue {
+  constructor() {
+    this.heap = new BinaryHeap();
+  }
 
-// Usage
-const trie = new Trie();
-trie.insert('apple');
-trie.insert('banana');
-console.log(trie.search('apple')); // true
-console.log(trie.search('banana')); // true
-console.log(trie.search('orange')); // false
+  isEmpty() {
+    return this.heap.isEmpty();
+  }
 
-trie.remove('banana');
-console.log(trie.search('banana')); // false
+  enqueue(item, priority) {
+    this.heap.insert({ item, priority });
+  }
+
+  dequeue() {
+    const min = this.heap.deleteMin();
+    return min ? min.item : null;
+  }
+}
+const pq = new PriorityQueue();
+pq.enqueue("Task 1", 3);
+pq.enqueue("Task 2", 2);
+pq.enqueue("Task 3", 1);
+pq.enqueue("Task 4", 5);
+pq.enqueue("Task 5", 4);
+
+while (!pq.isEmpty()) {
+  console.log(pq.dequeue());
+}
+Task 3
+Task 2
+Task 1
+Task 5
+Task 4
