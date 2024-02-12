@@ -1,34 +1,31 @@
-function largestPrimeFactor(number) {
-  let largestFactor = 1;
-  
-  // Divide by 2 repeatedly while divisible
-  while (number % 2 === 0) {
-    largestFactor = 2;
-    number /= 2;
-  }
-  
-  // Check odd factors
-  let factor = 3;
-  const maxFactor = Math.sqrt(number);
-  while (factor <= maxFactor) {
-    if (number % factor === 0) {
-      largestFactor = factor;
-      number /= factor;
-    } else {
-      factor += 2; // Consider only odd factors
+function beamSearch(initialState, beamWidth, evaluationFunction, generateCandidatesFunction) {
+  let currentBeam = [initialState];
+
+  while (!terminationConditionMet()) {
+    let newBeam = [];
+
+    for (let i = 0; i < currentBeam.length; i++) {
+      const currentState = currentBeam[i];
+      const candidates = generateCandidatesFunction(currentState);
+
+      candidates.forEach(candidate => {
+        candidate.score = evaluationFunction(candidate);
+        newBeam.push(candidate);
+      });
     }
+
+    newBeam.sort((a, b) => b.score - a.score);
+    currentBeam = newBeam.slice(0, beamWidth);
   }
-  
-  // If the number is prime itself
-  if (number > 1) {
-    largestFactor = number;
-  }
-  
-  return largestFactor;
+
+  return currentBeam;
 }
 
 // Example usage
-const number = 123456789;
-const largestFactor = largestPrimeFactor(number);
-console.log("Largest prime factor of", number, "is", largestFactor);
-Largest prime factor of 123456789 is 3803
+const initialState = { /* Define your initial state */ };
+const beamWidth = 5;
+const evaluationFunction = candidate => { /* Define your scoring function for a candidate */ };
+const generateCandidatesFunction = state => { /* Define your function to generate candidates from a state */ };
+
+const result = beamSearch(initialState, beamWidth, evaluationFunction, generateCandidatesFunction);
+console.log(result);
