@@ -1,15 +1,7 @@
-function getRandomNumber(min, max) {
-  // Calculate the range
-  const range = max - min + 1;
+let str = "Hello, world! How are you?";
 
-  // Generate a random number within the range
-  const randomNumber = Math.floor(Math.random() * range) + min;
+// Remove all spaces using replace() with a regular expression
+let result = str.replace(/\s/g, "");
 
-  return randomNumber;
-}
-
-// Usage example
-const minNumber = 1;
-const maxNumber = 10;
-const generatedNumber = getRandomNumber(minNumber, maxNumber);
-console.log(generatedNumber);
+console.log(result);
+Hello,world!Howareyou?
