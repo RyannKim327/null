@@ -1,51 +1,75 @@
-class TrieNode {
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+class BinaryTree {
   constructor() {
-    this.children = {};
-    this.isEndOfWord = false;
+    this.root = null;
   }
 
-  insert(word) {
-    let current = this;
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-      if (!current.children[char]) {
-        current.children[char] = new TrieNode();
-      }
-      current = current.children[char];
+  insert(value) {
+    const newNode = new Node(value);
+
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
     }
-    current.isEndOfWord = true;
   }
 
-  search(word) {
-    let current = this;
-    for (let i = 0; i < word.length; i++) {
-      const char = word[i];
-      if (!current.children[char]) {
-        return false;
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
       }
-      current = current.children[char];
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
     }
-    return current.isEndOfWord;
   }
 
-  startsWith(prefix) {
-    let current = this;
-    for (let i = 0; i < prefix.length; i++) {
-      const char = prefix[i];
-      if (!current.children[char]) {
-        return false;
-      }
-      current = current.children[char];
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  searchNode(node, value) {
+    if (node === null) {
+      return false;
     }
-    return true;
+
+    if (value === node.value) {
+      return true;
+    }
+
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else {
+      return this.searchNode(node.right, value);
+    }
   }
 }
 
 // Example usage:
-const trie = new TrieNode();
-trie.insert("apple");
-console.log(trie.search("apple")); // true
-console.log(trie.search("app")); // false
-console.log(trie.startsWith("app")); // true
-trie.insert("app");
-console.log(trie.search("app")); // true
+const tree = new BinaryTree();
+
+tree.insert(8);
+tree.insert(3);
+tree.insert(10);
+tree.insert(1);
+tree.insert(6);
+tree.insert(14);
+tree.insert(4);
+tree.insert(7);
+tree.insert(13);
+
+console.log(tree.search(6)); // true
+console.log(tree.search(12)); // false
