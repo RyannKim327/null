@@ -1,25 +1,54 @@
-function reverseString(str) {
-  return str.split('').reverse().join('');
-}
+function buildLPS(pattern) {
+    const lps = [0];
+    let len = 0;
+    let i = 1;
 
-var originalString = "Hello, World!";
-var reversedString = reverseString(originalString);
-console.log(reversedString); // Prints "!dlroW ,olleH"
-function reverseString(str) {
-  var reversedStr = '';
-  for (var i = str.length - 1; i >= 0; i--) {
-    reversedStr += str.charAt(i);
-  }
-  return reversedStr;
-}
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
 
-var originalString = "Hello, World!";
-var reversedString = reverseString(originalString);
-console.log(reversedString); // Prints "!dlroW ,olleH"
-function reverseString(str) {
-  return [...str].reverse().join('');
+    return lps;
 }
+function KMPSearch(text, pattern) {
+    const lps = buildLPS(pattern);
+    const result = [];
+    let i = 0;
+    let j = 0;
 
-var originalString = "Hello, World!";
-var reversedString = reverseString(originalString);
-console.log(reversedString); // Prints "!dlroW ,olleH"
+    while (i < text.length) {
+        if (text[i] === pattern[j]) {
+            i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            result.push(i - j);
+            j = lps[j - 1];
+        } else if (i < text.length && text[i] !== pattern[j]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+
+    return result;
+}
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const indices = KMPSearch(text, pattern);
+
+console.log("Pattern found at indices:", indices);
+Pattern found at indices: [10]
