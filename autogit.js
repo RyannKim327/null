@@ -1,23 +1,19 @@
-function isPalindrome(str) {
-  // convert the string to lowercase and remove non-alphanumeric characters
-  str = str.toLowerCase().replace(/[^a-z0-9]/g, '');
-  
-  let left = 0; // pointer starting from the leftmost character
-  let right = str.length - 1; // pointer starting from the rightmost character
-  
-  while (left < right) {
-    if (str[left] !== str[right]) {
-      return false; // characters don't match, it's not a palindrome
-    }
-    
-    left++; // move the left pointer to the right
-    right--; // move the right pointer to the left
-  }
-  
-  return true; // all characters matched, it's a palindrome
+function getRandomNumber(min, max) {
+  // Generate a random decimal between 0 and 1
+  const randomDecimal = Math.random();
+
+  // Scale the random decimal to the range
+  const scaledRandom = randomDecimal * (max - min + 1);
+
+  // Truncate the decimal to get a whole number within the range
+  const randomNumber = Math.floor(scaledRandom) + min;
+
+  return randomNumber;
 }
 
-// Testing the function
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car")); // false
-console.log(isPalindrome("level")); // true
+// Example usage:
+const minRange = 1; // Minimum value of the range
+const maxRange = 100; // Maximum value of the range
+
+const randomNum = getRandomNumber(minRange, maxRange);
+console.log(randomNum);
