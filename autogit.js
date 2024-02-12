@@ -1,38 +1,17 @@
-// Merge function to merge two sorted arrays
-function merge(left, right) {
-  let mergedArray = [],
-    leftIndex = 0,
-    rightIndex = 0;
-
-  while (leftIndex < left.length && rightIndex < right.length) {
-    if (left[leftIndex] < right[rightIndex]) {
-      mergedArray.push(left[leftIndex]);
-      leftIndex++;
-    } else {
-      mergedArray.push(right[rightIndex]);
-      rightIndex++;
-    }
+function binarySearch(arr, target, start = 0, end = arr.length - 1) {
+  if (start > end) {
+    return -1; // Target element not found
   }
 
-  // Concatenate the remaining elements
-  return mergedArray.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
-}
+  const mid = start + Math.floor((end - start) / 2);
 
-// Merge sort implementation
-function mergeSort(arr) {
-  if (arr.length <= 1) {
-    return arr;
+  if (arr[mid] === target) {
+    return mid; // Target element found at mid index
   }
 
-  const mid = Math.floor(arr.length / 2);
-  const leftArr = arr.slice(0, mid);
-  const rightArr = arr.slice(mid);
+  if (arr[mid] > target) {
+    return binarySearch(arr, target, start, mid - 1); // Recursively search left half
+  }
 
-  return merge(mergeSort(leftArr), mergeSort(rightArr));
+  return binarySearch(arr, target, mid + 1, end); // Recursively search right half
 }
-
-// Testing the implementation
-const array = [8, 5, 3, 9, 1, 6, 0, 2, 4, 7];
-console.log("Original array:", array);
-const sortedArray = mergeSort(array);
-console.log("Sorted array:", sortedArray);
