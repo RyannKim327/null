@@ -1,24 +1,23 @@
-function shellSort(arr) {
-  let len = arr.length;
-  let gap = Math.floor(len / 2);
-  
-  while (gap > 0) {
-    for (let i = gap; i < len; i++) {
-      let temp = arr[i];
-      let j = i;
-      
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
-      }
-      
-      arr[j] = temp;
-    }
-    
-    gap = Math.floor(gap / 2);
+function depthLimitedSearch(node, goal, limit, depth) {
+  if (node === goal) {
+    return true;
   }
-  
-  return arr;
+
+  if (depth > limit) {
+    return false;
+  }
+
+  // Get child nodes of the current node
+  const childNodes = getChildNodes(node);
+
+  for (let i = 0; i < childNodes.length; i++) {
+    const childNode = childNodes[i];
+    const found = depthLimitedSearch(childNode, goal, limit, depth + 1);
+
+    if (found) {
+      return true;
+    }
+  }
+
+  return false;
 }
-let array = [4, 3, 7, 1, 9, 2, 6];
-console.log(shellSort(array)); // Output: [1, 2, 3, 4, 6, 7, 9]
