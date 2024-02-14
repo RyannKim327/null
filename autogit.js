@@ -1,78 +1,84 @@
-function getNeighbors(node) {
-  // return an array of neighboring nodes
+class Graph {
+  constructor(vertices) {
+    this.vertices = vertices;
+    this.adjList = new Map();
+    for (const vertex of vertices) {
+      this.adjList.set(vertex, []);
+    }
+  }
+
+  addEdge(u, v) {
+    this.adjList.get(u).push(v);
+  }
 }
-function bidirectionalSearch(start, goal) {
-   // set up data structures
-   // create two queues/stacks for storing intermediate nodes
-   let beginQueue = [start];
-   let endQueue = [goal];
-   // create two sets for storing visited nodes
-   let beginVisited = new Set([start]);
-   let endVisited = new Set([goal]);
-   // create two dictionaries for storing parents of visited nodes
-   let beginParents = new Map();
-   let endParents = new Map();
-  
-   // search from both ends until queues are empty
-   while (beginQueue.length > 0 && endQueue.length > 0) {
-      // search from the start by expanding the front of the queue
-      let currentBegin = beginQueue.shift();
-      let neighborsBegin = getNeighbors(currentBegin);
-  
-      for (let neighbor of neighborsBegin) {
-         if (!beginVisited.has(neighbor)) {
-             beginQueue.push(neighbor);
-             beginVisited.add(neighbor);
-             beginParents.set(neighbor, currentBegin);
-  
-             // check if this node has been visited from the other end
-             if (endVisited.has(neighbor)) {
-               return getPath(neighbor, beginParents, endParents);
-             }
-         }
+function tarjan(graph) {
+  let index = 0;
+  const stack = [];
+  const visited = new Map();
+  const lowLink = new Map();
+  const onStack = new Map();
+  const components = [];
+
+  for (const vertex of graph.vertices) {
+    visited.set(vertex, false);
+    lowLink.set(vertex, -1);
+    onStack.set(vertex, false);
+  }
+
+  function strongConnect(vertex) {
+    visited.set(vertex, true);
+    lowLink.set(vertex, index);
+    index++;
+    stack.push(vertex);
+    onStack.set(vertex, true);
+
+    const neighbors = graph.adjList.get(vertex);
+    for (const neighbor of neighbors) {
+      if (!visited.get(neighbor)) {
+        strongConnect(neighbor);
+        lowLink.set(vertex, Math.min(lowLink.get(vertex), lowLink.get(neighbor)));
+      } else if (onStack.get(neighbor)) {
+        lowLink.set(vertex, Math.min(lowLink.get(vertex), lowLink.get(neighbor)));
       }
-  
-      // search from the end by expanding the front of the queue
-      let currentEnd = endQueue.shift();
-      let neighborsEnd = getNeighbors(currentEnd);
-  
-      for (let neighbor of neighborsEnd) {
-         if (!endVisited.has(neighbor)) {
-             endQueue.push(neighbor);
-             endVisited.add(neighbor);
-             endParents.set(neighbor, currentEnd);
-  
-             // check if this node has been visited from the other end
-             if (beginVisited.has(neighbor)) {
-               return getPath(neighbor, beginParents, endParents);
-             }
-         }
-      }
-   }
-  
-   // no path found
-   return null;
+    }
+
+    if (lowLink.get(vertex) === index - 1) {
+      const component = [];
+      let v = null;
+      do {
+        v = stack.pop();
+        onStack.set(v, false);
+        component.push(v);
+      } while (v !== vertex);
+      components.push(component);
+    }
+  }
+
+  for (const vertex of graph.vertices) {
+    if (!visited.get(vertex)) {
+      strongConnect(vertex);
+    }
+  }
+
+  return components;
 }
-function getPath(intersectNode, beginParents, endParents) {
-   let path = [];
-  
-   // trace path from start to intersection
-   let current = intersectNode;
-   while (current) {
-      path.push(current);
-      current = beginParents.get(current);
-   }
-  
-   // reverse path from intersection to end
-   current = endParents.get(intersectNode);
-   while (current) {
-      path.unshift(current);
-      current = endParents.get(current);
-   }
-  
-   return path;
-}
-let startNode = // define your start node
-let goalNode = // define your goal node
-let shortestPath = bidirectionalSearch(startNode, goalNode);
-console.log(shortestPath);
+// Create a graph
+const vertices = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+const graph = new Graph(vertices);
+
+// Add edges
+graph.addEdge('A', 'B');
+graph.addEdge('B', 'C');
+graph.addEdge('C', 'A');
+graph.addEdge('C', 'D');
+graph.addEdge('D', 'E');
+graph.addEdge('E', 'F');
+graph.addEdge('F', 'D');
+graph.addEdge('G', 'F');
+graph.addEdge('G', 'G');
+
+// Run Tarjan's algorithm
+const components = tarjan(graph);
+
+// Print the strongly connected components
+console.log(components);
