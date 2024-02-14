@@ -1,22 +1,9 @@
-function isPalindrome(str) {
-  // Convert the string to lowercase and remove non-alphanumeric characters
-  str = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+function validateEmail(email) {
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-  // Compare the characters from start and end, moving towards the center
-  let start = 0;
-  let end = str.length - 1;
-  while (start < end) {
-    if (str[start] !== str[end]) {
-      return false; // Characters don't match, not a palindrome
-    }
-    start++;
-    end--;
-  }
-
-  return true; // All characters matched, it's a palindrome
+  return emailRegex.test(email);
 }
 
-// Example usage
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
-console.log(isPalindrome("race car")); // true
-console.log(isPalindrome("hello world")); // false
+// Example usage:
+console.log(validateEmail('john.doe@example.com')); // true
+console.log(validateEmail('johndoe')); // false
