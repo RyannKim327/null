@@ -1,5 +1,5 @@
 let stringNumber = "42";
-let convertedNumber = parseInt(stringNumber);
+let integerNumber = parseInt(stringNumber);
 
-console.log(convertedNumber); // Output: 42
-console.log(typeof convertedNumber); // Output: number
+console.log(integerNumber); // Output: 42
+console.log(typeof integerNumber); // Output: number
