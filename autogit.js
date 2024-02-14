@@ -1,13 +1,43 @@
-let str = "Hello, World!";
-let reversedStr = str.split('').reverse().join('');
-console.log(reversedStr);
-let str = "Hello, World!";
-let reversedStr = '';
-for (let i = str.length - 1; i >= 0; i--) {
-  reversedStr += str[i];
+function findFirstNonRepeatingChar(str) {
+    // logic goes here
 }
-console.log(reversedStr);
-let str = "Hello, World!";
-let reversedStr = [...str].reverse().join('');
-console.log(reversedStr);
-!dlroW ,olleH
+    var charCount = {};
+    for (var i = 0; i < str.length; i++) {
+        var char = str[i];
+        if (charCount[char]) {
+            charCount[char]++;
+        } else {
+            charCount[char] = 1;
+        }
+    }
+    for (var i = 0; i < str.length; i++) {
+        var char = str[i];
+        if (charCount[char] === 1) {
+            return char;
+        }
+    }
+    return null;
+function findFirstNonRepeatingChar(str) {
+    var charCount = {};
+
+    for (var i = 0; i < str.length; i++) {
+        var char = str[i];
+        if (charCount[char]) {
+            charCount[char]++;
+        } else {
+            charCount[char] = 1;
+        }
+    }
+
+    for (var i = 0; i < str.length; i++) {
+        var char = str[i];
+        if (charCount[char] === 1) {
+            return char;
+        }
+    }
+
+    return null;
+}
+var str = "aabbcde";
+var result = findFirstNonRepeatingChar(str);
+console.log(result); // Output: "c"
