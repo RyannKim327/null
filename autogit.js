@@ -1,9 +1,19 @@
-const axios = require('axios');
+function isPalindrome(str) {
+  let left = 0;
+  let right = str.length - 1;
 
-axios.get('https://api.example.com/data')
-  .then(response => {
-    console.log(response.data);
-  })
-  .catch(error => {
-    console.log(error);
-  });
+  while (left < right) {
+    if (str.charAt(left) !== str.charAt(right)) {
+      return false;
+    }
+
+    left++;
+    right--;
+  }
+
+  return true;
+}
+
+// Example usage
+console.log(isPalindrome("racecar")); // true
+console.log(isPalindrome("hello")); // false
