@@ -1,48 +1,19 @@
-function rabinKarpSearch(text, pattern) {
-  const prime = 101; // Prime number for rolling hash
-  const textLen = text.length;
-  const patternLen = pattern.length;
-  const patternHash = hash(pattern);
+function radixSort(arr) {
+  const maxNum = Math.max(...arr);
+  const maxDigits = Math.floor(Math.log10(maxNum) + 1);
 
-  // Calculate the initial hash value of the text
-  let textHash = hash(text.substr(0, patternLen));
+  for (let i = 0; i < maxDigits; i++) {
+    const buckets = Array.from({ length: 10 }, () => []);
 
-  // Compare hash values and actual characters
-  for (let i = 0; i <= textLen - patternLen; i++) {
-    if (textHash === patternHash && text.substr(i, patternLen) === pattern) {
-      return i; // Match found at index i
+    for (let j = 0; j < arr.length; j++) {
+      const digit = Math.floor((arr[j] / Math.pow(10, i)) % 10);
+      buckets[digit].push(arr[j]);
     }
 
-    // Slide the substring by one character and recalculate the hash value
-    textHash = calculateRollingHash(text, i, patternLen, textHash);
+    arr = [].concat(...buckets);
   }
 
-  return -1; // No match found
+  return arr;
 }
-
-function hash(str) {
-  let hashValue = 0;
-  const strLen = str.length;
-
-  // Calculate the hash value using polynomial rolling hash
-  for (let i = 0; i < strLen; i++) {
-    hashValue += str.charCodeAt(i) * Math.pow(prime, strLen - i - 1);
-  }
-
-  return hashValue;
-}
-
-function calculateRollingHash(text, prevIndex, patternLen, prevHash) {
-  const primePow = Math.pow(prime, patternLen - 1);
-  
-  // Remove the contribution of the previous character and add the contribution of the next character
-  const newHash =
-    (prevHash - text.charCodeAt(prevIndex) * primePow) * prime + text.charCodeAt(prevIndex + patternLen);
-
-  return newHash;
-}
-const text = 'The quick brown fox jumps over the lazy dog';
-const pattern = 'fox';
-
-const index = rabinKarpSearch(text, pattern);
-console.log(index); // Output: 16 (index where the pattern starts)
+const array = [170, 45, 75, 90, 802, 24, 2, 66];
+console.log(radixSort(array)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
