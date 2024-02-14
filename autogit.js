@@ -1,62 +1,49 @@
-function bidirectionalSearch(startNode, goalNode) {
-  const startVisited = new Set();
-  const goalVisited = new Set();
-  const startQueue = [startNode];
-  const goalQueue = [goalNode];
-  const predecessor = new Map();
+function isAnagram(str1, str2) {
+  str1 = str1.toLowerCase().replace(/\s/g, '');
+  str2 = str2.toLowerCase().replace(/\s/g, '');
+}
+function isAnagram(str1, str2) {
+  str1 = str1.toLowerCase().replace(/\s/g, '');
+  str2 = str2.toLowerCase().replace(/\s/g, '');
 
-  while (startQueue.length && goalQueue.length) {
-    const start = startQueue.shift();
-    const goal = goalQueue.shift();
+  if (str1.length !== str2.length) {
+    return false;
+  }
+}
+function isAnagram(str1, str2) {
+  str1 = str1.toLowerCase().replace(/\s/g, '');
+  str2 = str2.toLowerCase().replace(/\s/g, '');
 
-    if (startVisited.has(goal)) {
-      return getPath(predecessor, start, goal);
-    }
-
-    if (goalVisited.has(start)) {
-      return getPath(predecessor, start, goal);
-    }
-
-    for (const neighbor of getNeighbors(start)) {
-      if (!startVisited.has(neighbor)) {
-        startVisited.add(neighbor);
-        startQueue.push(neighbor);
-        predecessor.set(neighbor, start);
-      }
-    }
-
-    for (const neighbor of getNeighbors(goal)) {
-      if (!goalVisited.has(neighbor)) {
-        goalVisited.add(neighbor);
-        goalQueue.push(neighbor);
-        predecessor.set(neighbor, goal);
-      }
-    }
+  if (str1.length !== str2.length) {
+    return false;
   }
 
-  return null;
+  var arr1 = str1.split('');
+  var arr2 = str2.split('');
 }
+function isAnagram(str1, str2) {
+  str1 = str1.toLowerCase().replace(/\s/g, '');
+  str2 = str2.toLowerCase().replace(/\s/g, '');
 
-function getPath(predecessor, start, goal) {
-  const path = [start];
-  let current = goal;
-
-  while (current !== start) {
-    path.push(current);
-    current = predecessor.get(current);
+  if (str1.length !== str2.length) {
+    return false;
   }
 
-  path.push(start);
-  return path.reverse();
+  var arr1 = str1.split('').sort();
+  var arr2 = str2.split('').sort();
 }
+function isAnagram(str1, str2) {
+  str1 = str1.toLowerCase().replace(/\s/g, '');
+  str2 = str2.toLowerCase().replace(/\s/g, '');
 
-// Helper function to get neighbors of a node (replace it with your own adjacency list implementation)
-function getNeighbors(node) {
-  // Return neighbors of the node
+  if (str1.length !== str2.length) {
+    return false;
+  }
+
+  var arr1 = str1.split('').sort().join('');
+  var arr2 = str2.split('').sort().join('');
+
+  return arr1 === arr2;
 }
-
-// Example usage:
-const startNode = // your start node;
-const goalNode = // your goal node;
-const path = bidirectionalSearch(startNode, goalNode);
-console.log(path);
+console.log(isAnagram('listen', 'silent')); // Output: true
+console.log(isAnagram('hello', 'world')); // Output: false
