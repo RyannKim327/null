@@ -1,34 +1,69 @@
-function hasCycle(head) {
-  let slow = head;
-  let fast = head;
+function dijkstra(graph, source) {
+  const distances = {};
+  const visited = new Set();
+  const queue = new PriorityQueue();
 
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
+  // Initialize distances
+  for (const node in graph) {
+    distances[node] = Infinity;
+  }
+  distances[source] = 0;
 
-    if (slow === fast) {
-      return true; // Cycle detected
+  // Enqueue source node
+  queue.enqueue({ node: source, distance: 0 });
+
+  while (!queue.isEmpty()) {
+    const { node, distance } = queue.dequeue();
+
+    // Skip if already visited
+    if (visited.has(node)) {
+      continue;
+    }
+
+    // Mark as visited
+    visited.add(node);
+
+    // Update distances for neighbors
+    for (const neighbor in graph[node]) {
+      const newDistance = distance + graph[node][neighbor];
+
+      if (newDistance < distances[neighbor]) {
+        distances[neighbor] = newDistance;
+        queue.enqueue({ node: neighbor, distance: newDistance });
+      }
     }
   }
 
-  return false; // No cycle found
+  return distances;
 }
-// Define a linked list with a cycle
-class ListNode {
-  constructor(val) {
-    this.val = val;
-    this.next = null;
+
+class PriorityQueue {
+  constructor() {
+    this.queue = [];
+  }
+
+  enqueue(item) {
+    this.queue.push(item);
+    this.queue.sort((a, b) => a.distance - b.distance);
+  }
+
+  dequeue() {
+    return this.queue.shift();
+  }
+
+  isEmpty() {
+    return this.queue.length === 0;
   }
 }
 
-const head = new ListNode(1);
-const second = new ListNode(2);
-const third = new ListNode(3);
-const fourth = new ListNode(4);
+// Example usage
+const graph = {
+  A: { B: 3, C: 1 },
+  B: { A: 3, C: 7, D: 5 },
+  C: { A: 1, B: 7, D: 2 },
+  D: { B: 5, C: 2 },
+};
 
-head.next = second;
-second.next = third;
-third.next = fourth;
-fourth.next = second; // Cycle point to the second node
+const distances = dijkstra(graph, 'A');
 
-console.log(hasCycle(head)); // Output: true
+console.log(distances); // Output: { A: 0, B: 3, C: 1, D: 3 }
