@@ -1,50 +1,22 @@
-function tarjanSCC(graph) {
-  const index = 0;
-  const stack = [];
-  const indexes = [];
-  const lowLinks = [];
-  const onStack = [];
-  const result = [];
+const array = [1, 2, 3, 4, 4, 5, 6, 5];
+const uniqueArray = array.filter((element, index, self) => {
+  return index === self.indexOf(element);
+});
 
-  function strongConnect(v) {
-    indexes[v] = index;
-    lowLinks[v] = index;
-    index++;
-    stack.push(v);
-    onStack[v] = true;
+console.log(uniqueArray);
+// Output: [1, 2, 3, 4, 5, 6]
+const array = [1, 2, 3, 4, 4, 5, 6, 5];
+const uniqueArray = [...new Set(array)];
 
-    const neighbors = graph[v];
-    for (let i = 0; i < neighbors.length; i++) {
-      const w = neighbors[i];
-      if (indexes[w] === -1) {
-        strongConnect(w);
-        lowLinks[v] = Math.min(lowLinks[v], lowLinks[w]);
-      } else if (onStack[w]) {
-        lowLinks[v] = Math.min(lowLinks[v], indexes[w]);
-      }
-    }
-
-    if (lowLinks[v] === indexes[v]) {
-      const component = [];
-      let w;
-      do {
-        w = stack.pop();
-        onStack[w] = false;
-        component.push(w);
-      } while (w !== v);
-      result.push(component);
-    }
+console.log(uniqueArray);
+// Output: [1, 2, 3, 4, 5, 6]
+const array = [1, 2, 3, 4, 4, 5, 6, 5];
+const uniqueArray = array.reduce((accumulator, element) => {
+  if (!accumulator.includes(element)) {
+    accumulator.push(element);
   }
+  return accumulator;
+}, []);
 
-  for (let v = 0; v < graph.length; v++) {
-    if (indexes[v] === undefined) {
-      strongConnect(v);
-    }
-  }
-
-  return result;
-}
-const graph = [[1, 2], [3], [4, 5], [0, 2, 6], [5], [0], [2, 4, 7], [5, 6]];
-const scc = tarjanSCC(graph);
-console.log(scc);
-[ [ 0, 2, 6, 4, 5 ], [ 1, 3 ], [ 7 ] ]
+console.log(uniqueArray);
+// Output: [1, 2, 3, 4, 5, 6]
