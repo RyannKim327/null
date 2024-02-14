@@ -1,56 +1,48 @@
-class Stack {
-  constructor() {
-    this.stack = [];
-  }
+function rabinKarpSearch(text, pattern) {
+  const prime = 101; // Prime number for rolling hash
+  const textLen = text.length;
+  const patternLen = pattern.length;
+  const patternHash = hash(pattern);
 
-  // Push an element onto the stack
-  push(element) {
-    this.stack.push(element);
-  }
+  // Calculate the initial hash value of the text
+  let textHash = hash(text.substr(0, patternLen));
 
-  // Remove and return the top element from the stack
-  pop() {
-    if (!this.isEmpty()) {
-      return this.stack.pop();
-    } else {
-      throw new Error('Stack is empty.');
+  // Compare hash values and actual characters
+  for (let i = 0; i <= textLen - patternLen; i++) {
+    if (textHash === patternHash && text.substr(i, patternLen) === pattern) {
+      return i; // Match found at index i
     }
+
+    // Slide the substring by one character and recalculate the hash value
+    textHash = calculateRollingHash(text, i, patternLen, textHash);
   }
 
-  // Return the top element of the stack without removing it
-  peek() {
-    if (!this.isEmpty()) {
-      return this.stack[this.stack.length - 1];
-    } else {
-      throw new Error('Stack is empty.');
-    }
-  }
-
-  // Check if the stack is empty
-  isEmpty() {
-    return this.stack.length === 0;
-  }
-
-  // Return the size of the stack
-  size() {
-    return this.stack.length;
-  }
-
-  // Print the elements of the stack
-  print() {
-    console.log(this.stack.join(' '));
-  }
+  return -1; // No match found
 }
 
-// Example usage
-const stack = new Stack();
-stack.push(5);
-stack.push(10);
-stack.push(15);
-stack.push(20);
-console.log('Size:', stack.size()); // Output: Size: 4
-stack.print(); // Output: 5 10 15 20
-console.log('Top:', stack.peek()); // Output: Top: 20
-console.log('Popped:', stack.pop()); // Output: Popped: 20
-console.log('Size:', stack.size()); // Output: Size: 3
-stack.print(); // Output: 5 10 15
+function hash(str) {
+  let hashValue = 0;
+  const strLen = str.length;
+
+  // Calculate the hash value using polynomial rolling hash
+  for (let i = 0; i < strLen; i++) {
+    hashValue += str.charCodeAt(i) * Math.pow(prime, strLen - i - 1);
+  }
+
+  return hashValue;
+}
+
+function calculateRollingHash(text, prevIndex, patternLen, prevHash) {
+  const primePow = Math.pow(prime, patternLen - 1);
+  
+  // Remove the contribution of the previous character and add the contribution of the next character
+  const newHash =
+    (prevHash - text.charCodeAt(prevIndex) * primePow) * prime + text.charCodeAt(prevIndex + patternLen);
+
+  return newHash;
+}
+const text = 'The quick brown fox jumps over the lazy dog';
+const pattern = 'fox';
+
+const index = rabinKarpSearch(text, pattern);
+console.log(index); // Output: 16 (index where the pattern starts)
