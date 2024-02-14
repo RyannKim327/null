@@ -1,13 +1,25 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  let modifiedStr = str.toLowerCase().replace(/[\W_]/g, '');
+function shellSort(arr) {
+  const len = arr.length;
+  let gap = Math.floor(len / 2);
 
-  // Reverse the modified string
-  let reversedStr = modifiedStr.split('').reverse().join('');
+  while (gap > 0) {
+    for (let i = gap; i < len; i++) {
+      let temp = arr[i];
+      let j = i;
 
-  // Compare the modified and reversed strings
-  return modifiedStr === reversedStr;
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
+      }
+
+      arr[j] = temp;
+    }
+    gap = Math.floor(gap / 2);
+  }
+  return arr;
 }
-console.log(isPalindrome("racecar"));  // true
-console.log(isPalindrome("hello"));    // false
-console.log(isPalindrome("A man, a plan, a canal, Panama!"));  // true
+
+// Example usage:
+const arrayToSort = [8, 3, 11, 9, 2];
+const sortedArray = shellSort(arrayToSort);
+console.log(sortedArray);
