@@ -1,27 +1,21 @@
-function findFirstNonRepeatingChar(str) {
-  // Create an empty object to store character frequencies
-  const charCount = {};
-
-  // Iterate through each character of the string and count its frequency
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    charCount[char] = (charCount[char] || 0) + 1;
-  }
-
-  // Iterate through each character of the string again
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-
-    // Check if the current character's count is 1, indicating it is non-repeating
-    if (charCount[char] === 1) {
-      return char; // Return the first non-repeating character
-    }
-  }
-
-  return null; // Return null if there is no non-repeating character
+function findKthSmallestWithSorting(arr, k) {
+  arr.sort((a, b) => a - b);
+  return arr[k];
 }
+function findKthSmallestWithMinHeap(arr, k) {
+  // Create a min heap
+  const heap = new MinHeap();
 
-// Example usage:
-const str = "aabbcdeeffggh";
-const result = findFirstNonRepeatingChar(str);
-console.log(result); // Output: "c"
+  // Insert all elements into the min heap
+  for (let i = 0; i < arr.length; i++) {
+    heap.insert(arr[i]);
+  }
+
+  // Extract the minimum k times
+  let result = null;
+  for (let i = 0; i <= k; i++) {
+    result = heap.extractMin();
+  }
+
+  return result;
+}
