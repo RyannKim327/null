@@ -1,56 +1,43 @@
-function mergeSort(arr) {
-  // Base case: if the array is empty or has only one element, it is already sorted
-  if (arr.length <= 1) {
-    return arr;
-  }
-
-  // Find the middle point of the array
-  const middle = Math.floor(arr.length / 2);
-
-  // Divide the array into two halves
-  const left = arr.slice(0, middle);
-  const right = arr.slice(middle);
-
-  // Recursively sort the two halves
-  const sortedLeft = mergeSort(left);
-  const sortedRight = mergeSort(right);
-
-  // Merge the two sorted halves
-  return merge(sortedLeft, sortedRight);
-}
-
-function merge(left, right) {
-  let result = [];
-  let i = 0;
-  let j = 0;
-
-  // Compare elements from both arrays and push the smaller one into the result
-  while (i < left.length && j < right.length) {
-    if (left[i] < right[j]) {
-      result.push(left[i]);
-      i++;
-    } else {
-      result.push(right[j]);
-      j++;
+class TrieNode {
+    constructor() {
+        this.children = {};
+        this.isEndOfWord = false;
     }
-  }
-
-  // Push remaining elements from the left array, if any
-  while (i < left.length) {
-    result.push(left[i]);
-    i++;
-  }
-
-  // Push remaining elements from the right array, if any
-  while (j < right.length) {
-    result.push(right[j]);
-    j++;
-  }
-
-  return result;
 }
+class Trie {
+    constructor() {
+        this.root = new TrieNode();
+    }
 
-// Example usage:
-const arr = [8, 5, 2, 9, 5, 6, 3];
-const sortedArr = mergeSort(arr);
-console.log(sortedArr);
+    insert(word) {
+        let current = this.root;
+        for (let i = 0; i < word.length; i++) {
+            const char = word[i];
+            if (!current.children[char]) {
+                current.children[char] = new TrieNode();
+            }
+            current = current.children[char];
+        }
+        current.isEndOfWord = true;
+    }
+
+    search(word) {
+        let current = this.root;
+        for (let i = 0; i < word.length; i++) {
+            const char = word[i];
+            if (!current.children[char]) {
+                return false;
+            }
+            current = current.children[char];
+        }
+        return current.isEndOfWord;
+    }
+}
+const trie = new Trie();
+trie.insert("apple");
+trie.insert("banana");
+trie.insert("cat");
+console.log(trie.search("apple"));   // Output: true
+console.log(trie.search("banana"));  // Output: true
+console.log(trie.search("cat"));     // Output: true
+console.log(trie.search("dog"));     // Output: false
