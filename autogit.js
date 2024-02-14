@@ -1,13 +1,17 @@
-async function fetchData() {
-  try {
-    const response = await fetch('https://api.example.com/data');
-    const data = await response.json();
+function reverseWords(str) {
+  // Step 1: Split the string into an array of words
+  var words = str.split(" ");
 
-    // Work with the received data
-    console.log(data);
-  } catch (error) {
-    console.log('Error:', error);
-  }
+  // Step 2: Reverse the array of words
+  words.reverse();
+
+  // Step 3: Join the reversed array back into a string
+  var reversedStr = words.join(" ");
+
+  return reversedStr;
 }
 
-fetchData();
+// Example usage
+var originalStr = "Hello, how are you?";
+var reversedStr = reverseWords(originalStr);
+console.log(reversedStr); // Output: "you? are how Hello,"
