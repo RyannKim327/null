@@ -1,25 +1,20 @@
-function selectionSort(arr) {
-  const len = arr.length;
-  
-  for (let i = 0; i < len; i++) {
-    let minIndex = i;
-    
-    for (let j = i + 1; j < len; j++) {
-      if (arr[j] < arr[minIndex]) {
-        minIndex = j;
-      }
-    }
-    
-    // Swap the smallest element with the first element of the unsorted portion
-    if (minIndex !== i) {
-      [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+function findSecondLargest(arr) {
+  let largest = -Infinity;
+  let secondLargest = -Infinity;
+
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] > largest) {
+      secondLargest = largest;
+      largest = arr[i];
+    } else if (arr[i] > secondLargest && arr[i] !== largest) {
+      secondLargest = arr[i];
     }
   }
-  
-  return arr;
+
+  return secondLargest;
 }
 
 // Example usage
-const unsortedArray = [5, 3, 8, 2, 1, 4];
-const sortedArray = selectionSort(unsortedArray);
-console.log(sortedArray);  // Output: [1, 2, 3, 4, 5, 8]
+const array = [5, 9, 3, 6, 1, 8, 2];
+const secondLargest = findSecondLargest(array);
+console.log(secondLargest); // Output: 8
