@@ -1,22 +1,15 @@
-function bellmanFord(graph, source, numVertices) {
-  let distances = Array(numVertices).fill(Infinity);
-  distances[source] = 0;
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  var cleanStr = str.replace(/[\W_]/g, '').toLowerCase();
 
-  for (let i = 0; i < numVertices - 1; i++) {
-    for (let j = 0; j < graph.length; j++) {
-      let [src, dest, weight] = graph[j];
-      if (distances[src] + weight < distances[dest]) {
-        distances[dest] = distances[src] + weight;
-      }
-    }
-  }
+  // Reverse the string
+  var reversedStr = cleanStr.split('').reverse().join('');
 
-  for (let i = 0; i < graph.length; i++) {
-    let [src, dest, weight] = graph[i];
-    if (distances[src] + weight < distances[dest]) {
-      return null; // Negative cycle found
-    }
-  }
-
-  return distances;
+  // Check if the original and reversed strings are equal
+  return cleanStr === reversedStr;
 }
+
+// Examples
+console.log(isPalindrome("level")); // true
+console.log(isPalindrome("Hello World")); // false
+console.log(isPalindrome("A man, a plan, a canal, Panama!")); // true
