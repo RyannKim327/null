@@ -1,49 +1,21 @@
-function isAnagram(str1, str2) {
-  str1 = str1.toLowerCase().replace(/\s/g, '');
-  str2 = str2.toLowerCase().replace(/\s/g, '');
-}
-function isAnagram(str1, str2) {
-  str1 = str1.toLowerCase().replace(/\s/g, '');
-  str2 = str2.toLowerCase().replace(/\s/g, '');
-
-  if (str1.length !== str2.length) {
-    return false;
+function bubbleSort(arr) {
+  let len = arr.length;
+  
+  for (let i = 0; i < len; i++) {
+    for (let j = 0; j < len - 1; j++) {
+      if (arr[j] > arr[j + 1]) {
+        // Swapping elements
+        let temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
+      }
+    }
   }
+  
+  return arr;
 }
-function isAnagram(str1, str2) {
-  str1 = str1.toLowerCase().replace(/\s/g, '');
-  str2 = str2.toLowerCase().replace(/\s/g, '');
 
-  if (str1.length !== str2.length) {
-    return false;
-  }
-
-  var arr1 = str1.split('');
-  var arr2 = str2.split('');
-}
-function isAnagram(str1, str2) {
-  str1 = str1.toLowerCase().replace(/\s/g, '');
-  str2 = str2.toLowerCase().replace(/\s/g, '');
-
-  if (str1.length !== str2.length) {
-    return false;
-  }
-
-  var arr1 = str1.split('').sort();
-  var arr2 = str2.split('').sort();
-}
-function isAnagram(str1, str2) {
-  str1 = str1.toLowerCase().replace(/\s/g, '');
-  str2 = str2.toLowerCase().replace(/\s/g, '');
-
-  if (str1.length !== str2.length) {
-    return false;
-  }
-
-  var arr1 = str1.split('').sort().join('');
-  var arr2 = str2.split('').sort().join('');
-
-  return arr1 === arr2;
-}
-console.log(isAnagram('listen', 'silent')); // Output: true
-console.log(isAnagram('hello', 'world')); // Output: false
+// Example usage
+let array = [5, 8, 2, 1, 6, 3, 7, 4];
+console.log("Before sorting:", array);
+console.log("After sorting:", bubbleSort(array));
