@@ -1,48 +1,20 @@
-class Queue {
-  constructor() {
-    this.items = [];
-  }
+function countOccurrences(word, string) {
+  // Escape special characters in the word for use in a regular expression
+  const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-  enqueue(item) {
-    this.items.push(item);
-  }
+  // Create a regular expression with the word and "g" flag for global search
+  const regex = new RegExp('\\b' + escapedWord + '\\b', 'gi');
 
-  dequeue() {
-    if (this.isEmpty()) {
-      return null;
-    }
-    return this.items.shift();
-  }
+  // Use match() method on the string and count the number of matches
+  const matches = string.match(regex);
+  const count = matches ? matches.length : 0;
 
-  isEmpty() {
-    return this.items.length === 0;
-  }
+  return count;
 }
-const graph = {
-  A: ['B', 'C'],
-  B: ['D'],
-  C: ['E'],
-  D: [],
-  E: []
-};
-function bfs(graph, startNode) {
-  const visited = new Set(); // To keep track of visited nodes
-  const queue = new Queue(); // Initialize the queue
 
-  visited.add(startNode);
-  queue.enqueue(startNode);
+// Example usage
+const sentence = 'She sells seashells by the seashore.';
+const word = 'se';
 
-  while (!queue.isEmpty()) {
-    const currentNode = queue.dequeue();
-    console.log(currentNode); // Process the current node (you can modify this according to your use case)
-
-    const neighbors = graph[currentNode];
-    for (let neighbor of neighbors) {
-      if (!visited.has(neighbor)) {
-        visited.add(neighbor);
-        queue.enqueue(neighbor);
-      }
-    }
-  }
-}
-bfs(graph, 'A');
+const occurrences = countOccurrences(word, sentence);
+console.log(`The word "${word}" appears ${occurrences} time(s) in the sentence.`);
