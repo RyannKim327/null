@@ -1,10 +1,10 @@
-function validateEmail(email) {
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  return emailRegex.test(email);
-}
-const email = "test@example.com";
-if (validateEmail(email)) {
-  console.log("Email is valid");
-} else {
-  console.log("Email is not valid");
-}
+fetch('https://api.example.com/data')
+  .then(response => response.json())
+  .then(data => {
+    // Process the fetched data here
+    console.log(data);
+  })
+  .catch(err => {
+    // Handle any errors that occurred during the fetch
+    console.error('Error:', err);
+  });
