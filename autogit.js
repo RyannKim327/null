@@ -1,10 +1,21 @@
-let str = "123";
-let number = parseInt(str);
+function findNthFromEnd(head, n) {
+  let current = head;
+  let nthNode = head;
 
-console.log(number); // Output: 123
-console.log(typeof number); // Output: number
-let str = "123";
-let number = Number(str);
+  // Move current pointer n positions ahead
+  for (let i = 0; i < n; i++) {
+    if (current === null) {
+      return null; // n is greater than the length of the linked list
+    }
+    current = current.next;
+  }
 
-console.log(number); // Output: 123
-console.log(typeof number); // Output: number
+  // Move both pointers until current reaches the end
+  while (current !== null) {
+    current = current.next;
+    nthNode = nthNode.next;
+  }
+
+  // Return the value of the nthNode from the end
+  return nthNode.value;
+}
