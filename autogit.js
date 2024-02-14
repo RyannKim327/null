@@ -1,84 +1,54 @@
-class Graph {
-  constructor(vertices) {
-    this.vertices = vertices;
-    this.adjList = new Map();
-    for (const vertex of vertices) {
-      this.adjList.set(vertex, []);
-    }
+class HashTable {
+  constructor(size) {
+    this.size = size;
+    this.table = new Array(size);
   }
 
-  addEdge(u, v) {
-    this.adjList.get(u).push(v);
+  // other methods go here
+}
+hash(key) {
+  let hash = 0;
+  for (let i = 0; i < key.length; i++) {
+    hash += key.charCodeAt(i);
+  }
+  return hash % this.size;
+}
+put(key, value) {
+  const index = this.hash(key);
+  if (!this.table[index]) {
+    this.table[index] = [];
+  }
+  this.table[index].push([key, value]);
+}
+
+get(key) {
+  const index = this.hash(key);
+  if (!this.table[index]) {
+    return undefined;
+  }
+  for (let i = 0; i < this.table[index].length; i++) {
+    if (this.table[index][i][0] === key) {
+      return this.table[index][i][1];
+    }
+  }
+  return undefined;
+}
+remove(key) {
+  const index = this.hash(key);
+  if (!this.table[index]) {
+    return;
+  }
+  for (let i = 0; i < this.table[index].length; i++) {
+    if (this.table[index][i][0] === key) {
+      this.table[index].splice(i, 1);
+      return;
+    }
   }
 }
-function tarjan(graph) {
-  let index = 0;
-  const stack = [];
-  const visited = new Map();
-  const lowLink = new Map();
-  const onStack = new Map();
-  const components = [];
-
-  for (const vertex of graph.vertices) {
-    visited.set(vertex, false);
-    lowLink.set(vertex, -1);
-    onStack.set(vertex, false);
-  }
-
-  function strongConnect(vertex) {
-    visited.set(vertex, true);
-    lowLink.set(vertex, index);
-    index++;
-    stack.push(vertex);
-    onStack.set(vertex, true);
-
-    const neighbors = graph.adjList.get(vertex);
-    for (const neighbor of neighbors) {
-      if (!visited.get(neighbor)) {
-        strongConnect(neighbor);
-        lowLink.set(vertex, Math.min(lowLink.get(vertex), lowLink.get(neighbor)));
-      } else if (onStack.get(neighbor)) {
-        lowLink.set(vertex, Math.min(lowLink.get(vertex), lowLink.get(neighbor)));
-      }
-    }
-
-    if (lowLink.get(vertex) === index - 1) {
-      const component = [];
-      let v = null;
-      do {
-        v = stack.pop();
-        onStack.set(v, false);
-        component.push(v);
-      } while (v !== vertex);
-      components.push(component);
-    }
-  }
-
-  for (const vertex of graph.vertices) {
-    if (!visited.get(vertex)) {
-      strongConnect(vertex);
-    }
-  }
-
-  return components;
-}
-// Create a graph
-const vertices = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
-const graph = new Graph(vertices);
-
-// Add edges
-graph.addEdge('A', 'B');
-graph.addEdge('B', 'C');
-graph.addEdge('C', 'A');
-graph.addEdge('C', 'D');
-graph.addEdge('D', 'E');
-graph.addEdge('E', 'F');
-graph.addEdge('F', 'D');
-graph.addEdge('G', 'F');
-graph.addEdge('G', 'G');
-
-// Run Tarjan's algorithm
-const components = tarjan(graph);
-
-// Print the strongly connected components
-console.log(components);
+const myHashTable = new HashTable(10);
+myHashTable.put("name", "John");
+myHashTable.put("age", 25);
+console.log(myHashTable.get("name")); // Output: "John"
+console.log(myHashTable.get("age")); // Output: 25
+myHashTable.remove("age");
+console.log(myHashTable.get("age")); // Output: undefined
