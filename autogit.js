@@ -1,26 +1,29 @@
-function countingSort(array) {
-    const maxValue = Math.max(...array);
-    const countArray = Array(maxValue + 1).fill(0);
+function findFirstNonRepeatingCharacter(str) {
+  // Create a frequency map to store character counts
+  const frequencyMap = {};
 
-    for (let i = 0; i < array.length; i++) {
-        countArray[array[i]]++;
+  // Iterate over each character in the string
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+
+    // Update the character's count in the frequency map
+    frequencyMap[char] = frequencyMap[char] ? frequencyMap[char] + 1 : 1;
+  }
+
+  // Iterate over each character in the string again
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+
+    // Check if the current character's count is 1 in the frequency map
+    if (frequencyMap[char] === 1) {
+      return char; // The first non-repeating character found
     }
+  }
 
-    for (let i = 1; i <= maxValue; i++) {
-        countArray[i] += countArray[i - 1];
-    }
-
-    const sortedArray = Array(array.length);
-
-    for (let i = array.length - 1; i >= 0; i--) {
-        const value = array[i];
-        const count = countArray[value];
-        sortedArray[count - 1] = value;
-        countArray[value]--;
-    }
-
-    return sortedArray;
+  return null; // Returns null if no non-repeating character is found
 }
-const unsortedArray = [9, 3, 1, 5, 2];
-const sortedArray = countingSort(unsortedArray);
-console.log(sortedArray); // Output: [1, 2, 3, 5, 9]
+
+// Usage example
+const str = "aabbccd";
+const firstNonRepeatingChar = findFirstNonRepeatingCharacter(str);
+console.log(firstNonRepeatingChar); // Output: "d"
