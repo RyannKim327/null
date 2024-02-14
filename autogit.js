@@ -1,33 +1,27 @@
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
   }
 }
 
-function findSum(root) {
-  // Base case: if the root is null, return 0
-  if (root === null) {
-    return 0;
+function getMiddleElement(head) {
+  let slow = head;
+  let fast = head;
+
+  while (fast !== null && fast.next !== null) {
+    slow = slow.next;
+    fast = fast.next.next;
   }
 
-  // Recursively calculate the sum of all nodes in the left and right subtrees
-  const leftSum = findSum(root.left);
-  const rightSum = findSum(root.right);
-
-  // Return the sum of the current node's value plus the sums of left and right subtrees
-  return root.value + leftSum + rightSum;
+  return slow.data;
 }
-// Creating a binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-root.right.left = new TreeNode(6);
-root.right.right = new TreeNode(7);
 
-// Finding the sum of all nodes
-const sum = findSum(root);
-console.log("Sum of all nodes:", sum);
+// Example usage:
+const list = new Node(1);
+list.next = new Node(2);
+list.next.next = new Node(3);
+list.next.next.next = new Node(4);
+list.next.next.next.next = new Node(5);
+
+console.log(getMiddleElement(list)); // Output: 3
