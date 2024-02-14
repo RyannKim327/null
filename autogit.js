@@ -1,15 +1,29 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  var cleanStr = str.replace(/[\W_]/g, '').toLowerCase();
+function radixSort(arr) {
+  const max = Math.max(...arr);
+  const maxDigits = countDigits(max);
 
-  // Reverse the string
-  var reversedStr = cleanStr.split('').reverse().join('');
+  for (let digit = 0; digit < maxDigits; digit++) {
+    const buckets = Array.from({ length: 10 }, () => []);
 
-  // Check if the original and reversed strings are equal
-  return cleanStr === reversedStr;
+    for (let i = 0; i < arr.length; i++) {
+      const num = arr[i];
+      const digitValue = getDigit(num, digit);
+      buckets[digitValue].push(num);
+    }
+
+    arr = [].concat(...buckets);
+  }
+
+  return arr;
 }
 
-// Examples
-console.log(isPalindrome("level")); // true
-console.log(isPalindrome("Hello World")); // false
-console.log(isPalindrome("A man, a plan, a canal, Panama!")); // true
+function getDigit(num, pos) {
+  return Math.floor(Math.abs(num) / Math.pow(10, pos)) % 10;
+}
+
+function countDigits(num) {
+  return Math.max(Math.floor(Math.log10(Math.abs(num))), 0) + 1;
+}
+const arr = [54, 79, 28, 40, 56, 92, 17, 3];
+const sortedArr = radixSort(arr);
+console.log(sortedArr); // Output: [3, 17, 28, 40, 54, 56, 79, 92]
