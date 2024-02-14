@@ -1,54 +1,33 @@
-class HashTable {
-  constructor(size) {
-    this.size = size;
-    this.table = new Array(size);
+class TreeNode {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
-
-  // other methods go here
-}
-hash(key) {
-  let hash = 0;
-  for (let i = 0; i < key.length; i++) {
-    hash += key.charCodeAt(i);
-  }
-  return hash % this.size;
-}
-put(key, value) {
-  const index = this.hash(key);
-  if (!this.table[index]) {
-    this.table[index] = [];
-  }
-  this.table[index].push([key, value]);
 }
 
-get(key) {
-  const index = this.hash(key);
-  if (!this.table[index]) {
-    return undefined;
+function findSum(root) {
+  // Base case: if the root is null, return 0
+  if (root === null) {
+    return 0;
   }
-  for (let i = 0; i < this.table[index].length; i++) {
-    if (this.table[index][i][0] === key) {
-      return this.table[index][i][1];
-    }
-  }
-  return undefined;
+
+  // Recursively calculate the sum of all nodes in the left and right subtrees
+  const leftSum = findSum(root.left);
+  const rightSum = findSum(root.right);
+
+  // Return the sum of the current node's value plus the sums of left and right subtrees
+  return root.value + leftSum + rightSum;
 }
-remove(key) {
-  const index = this.hash(key);
-  if (!this.table[index]) {
-    return;
-  }
-  for (let i = 0; i < this.table[index].length; i++) {
-    if (this.table[index][i][0] === key) {
-      this.table[index].splice(i, 1);
-      return;
-    }
-  }
-}
-const myHashTable = new HashTable(10);
-myHashTable.put("name", "John");
-myHashTable.put("age", 25);
-console.log(myHashTable.get("name")); // Output: "John"
-console.log(myHashTable.get("age")); // Output: 25
-myHashTable.remove("age");
-console.log(myHashTable.get("age")); // Output: undefined
+// Creating a binary tree
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+root.right.left = new TreeNode(6);
+root.right.right = new TreeNode(7);
+
+// Finding the sum of all nodes
+const sum = findSum(root);
+console.log("Sum of all nodes:", sum);
