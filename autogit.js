@@ -1,17 +1,32 @@
-function findKthSmallestElement(array, k) {
-  // Sort the array in ascending order
-  array.sort((a, b) => a - b);
-
-  // Return the kth smallest element
-  return array[k - 1];
+class Node {
+  constructor(key, value, color) {
+    this.key = key;
+    this.value = value;
+    this.color = color;
+    this.left = null;
+    this.right = null;
+    this.parent = null;
+  }
 }
+class RedBlackTree {
+  constructor() {
+    this.root = null;
+  }
 
-// Example usage
-const array = [7, 2, 9, 1, 6, 3];
-const k = 3;
-const kthSmallestElement = findKthSmallestElement(array, k);
-console.log(kthSmallestElement);  // Output: 3
-function findKthSmallestElement(array, k) {
-  const sortedArray = array.slice().sort((a, b) => a - b);
-  return sortedArray[k - 1];
+  // Function to insert a key, value pair into the tree
+  insert(key, value) {
+    // ... implementation here
+  }
+
+  // Function to delete a node from the tree by key
+  delete(key) {
+    // ... implementation here
+  }
+
+  // Function to get the value associated with a key
+  get(key) {
+    // ... implementation here
+  }
+
+  // ... other functions such as search, minimum, maximum, etc.
 }
