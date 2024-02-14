@@ -1,13 +1,12 @@
-Area = (base * height) / 2
-// Function to calculate the area of a triangle
-function calculateTriangleArea(base, height) {
-  var area = (base * height) / 2;
-  return area;
+function isAnagram(str1, str2) {
+  const sortedStr1 = str1.toLowerCase().replace(/\s/g, '').split('').sort().join('');
+  const sortedStr2 = str2.toLowerCase().replace(/\s/g, '').split('').sort().join('');
+  return sortedStr1 === sortedStr2;
 }
+const string1 = "listen";
+const string2 = "silent";
+console.log(isAnagram(string1, string2)); // Output: true
 
-// Example usage:
-var base = 5; // length of the base of the triangle
-var height = 3; // height of the triangle
-
-var area = calculateTriangleArea(base, height);
-console.log("The area of the triangle is: " + area);
+const string3 = "hello";
+const string4 = "world";
+console.log(isAnagram(string3, string4)); // Output: false
