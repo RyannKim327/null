@@ -1,43 +1,12 @@
-class TrieNode {
-    constructor() {
-        this.children = {};
-        this.isEndOfWord = false;
-    }
+let str = "Hello, World!";
+let reversedStr = str.split("").reverse().join("");
+console.log(reversedStr);
+let str = "Hello, World!";
+let reversedStr = "";
+for (let i = str.length - 1; i >= 0; i--) {
+  reversedStr += str.charAt(i);
 }
-class Trie {
-    constructor() {
-        this.root = new TrieNode();
-    }
-
-    insert(word) {
-        let current = this.root;
-        for (let i = 0; i < word.length; i++) {
-            const char = word[i];
-            if (!current.children[char]) {
-                current.children[char] = new TrieNode();
-            }
-            current = current.children[char];
-        }
-        current.isEndOfWord = true;
-    }
-
-    search(word) {
-        let current = this.root;
-        for (let i = 0; i < word.length; i++) {
-            const char = word[i];
-            if (!current.children[char]) {
-                return false;
-            }
-            current = current.children[char];
-        }
-        return current.isEndOfWord;
-    }
-}
-const trie = new Trie();
-trie.insert("apple");
-trie.insert("banana");
-trie.insert("cat");
-console.log(trie.search("apple"));   // Output: true
-console.log(trie.search("banana"));  // Output: true
-console.log(trie.search("cat"));     // Output: true
-console.log(trie.search("dog"));     // Output: false
+console.log(reversedStr);
+let str = "Hello, World!";
+let reversedStr = str.split("").reduce((acc, curr) => curr + acc, "");
+console.log(reversedStr);
