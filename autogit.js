@@ -1,16 +1,50 @@
-function isSortedAscending(arr) {
-  const n = arr.length;
-  for (let i = 0; i < n - 1; i++) {
-    if (arr[i] > arr[i + 1]) {
-      return false;
+function tarjanSCC(graph) {
+  const index = 0;
+  const stack = [];
+  const indexes = [];
+  const lowLinks = [];
+  const onStack = [];
+  const result = [];
+
+  function strongConnect(v) {
+    indexes[v] = index;
+    lowLinks[v] = index;
+    index++;
+    stack.push(v);
+    onStack[v] = true;
+
+    const neighbors = graph[v];
+    for (let i = 0; i < neighbors.length; i++) {
+      const w = neighbors[i];
+      if (indexes[w] === -1) {
+        strongConnect(w);
+        lowLinks[v] = Math.min(lowLinks[v], lowLinks[w]);
+      } else if (onStack[w]) {
+        lowLinks[v] = Math.min(lowLinks[v], indexes[w]);
+      }
+    }
+
+    if (lowLinks[v] === indexes[v]) {
+      const component = [];
+      let w;
+      do {
+        w = stack.pop();
+        onStack[w] = false;
+        component.push(w);
+      } while (w !== v);
+      result.push(component);
     }
   }
-  return true;
+
+  for (let v = 0; v < graph.length; v++) {
+    if (indexes[v] === undefined) {
+      strongConnect(v);
+    }
+  }
+
+  return result;
 }
-
-// Example usage
-const array1 = [1, 2, 3, 4, 5];
-console.log(isSortedAscending(array1));  // Output: true
-
-const array2 = [1, 3, 2, 4, 5];
-console.log(isSortedAscending(array2));  // Output: false
+const graph = [[1, 2], [3], [4, 5], [0, 2, 6], [5], [0], [2, 4, 7], [5, 6]];
+const scc = tarjanSCC(graph);
+console.log(scc);
+[ [ 0, 2, 6, 4, 5 ], [ 1, 3 ], [ 7 ] ]
