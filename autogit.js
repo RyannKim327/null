@@ -1,13 +1,28 @@
-var array = [1, 2, 3, 4, 5];
-var elementToRemove = 3;
-var index = array.indexOf(elementToRemove);
-if (index > -1) {
-  array.splice(index, 1);
+const mergedArray = array1.concat(array2).sort((a, b) => a - b);
+const length = mergedArray.length;
+const middle = Math.floor(length / 2);
+
+if (length % 2 === 0) {
+  const median = (mergedArray[middle - 1] + mergedArray[middle]) / 2;
+  console.log(median);
+} else {
+  const median = mergedArray[middle];
+  console.log(median);
 }
-console.log(array); // Output: [1, 2, 4, 5]
-var array = [1, 2, 3, 4, 5];
-var elementToRemove = 3;
-array = array.filter(function(value){
-  return value !== elementToRemove;
-});
-console.log(array); // Output: [1, 2, 4, 5]
+function findMedian(array1, array2) {
+  const mergedArray = array1.concat(array2).sort((a, b) => a - b);
+  const length = mergedArray.length;
+  const middle = Math.floor(length / 2);
+
+  if (length % 2 === 0) {
+    const median = (mergedArray[middle - 1] + mergedArray[middle]) / 2;
+    return median;
+  } else {
+    const median = mergedArray[middle];
+    return median;
+  }
+}
+
+const array1 = [1, 3, 5];
+const array2 = [2, 4, 6];
+console.log(findMedian(array1, array2));
