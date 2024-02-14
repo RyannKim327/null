@@ -1,19 +1,30 @@
-function radixSort(arr) {
-  const maxNum = Math.max(...arr);
-  const maxDigits = Math.floor(Math.log10(maxNum) + 1);
+function breadthLimitedSearch(start, depth) {
+  const queue = [];
+  queue.push({ node: start, depth: 0 });
 
-  for (let i = 0; i < maxDigits; i++) {
-    const buckets = Array.from({ length: 10 }, () => []);
+  while (queue.length > 0) {
+    const { node, depth } = queue.shift(); // Dequeue a node
 
-    for (let j = 0; j < arr.length; j++) {
-      const digit = Math.floor((arr[j] / Math.pow(10, i)) % 10);
-      buckets[digit].push(arr[j]);
+    // Check if the goal is found
+    if (isGoal(node)) {
+      return node;
     }
 
-    arr = [].concat(...buckets);
+    // Enqueue adjacent nodes within depth limit
+    if (depth < depthLimit) {
+      const adjacentNodes = getAdjacentNodes(node);
+      for (const adjacentNode of adjacentNodes) {
+        queue.push({ node: adjacentNode, depth: depth + 1 });
+      }
+    }
   }
 
-  return arr;
+  return null; // No solution found
 }
-const array = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log(radixSort(array)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+
+// Example usage:
+const startNode = /* starting node */;
+const depthLimit = /* desired depth */;
+
+const result = breadthLimitedSearch(startNode, depthLimit);
+console.log(result);
