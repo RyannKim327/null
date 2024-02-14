@@ -5,26 +5,81 @@ class Node {
   }
 }
 
-function findMiddleElement(head) {
-  // Initialize two pointers
-  let slowPtr = head;
-  let fastPtr = head;
-
-  // Traverse the linked list with different speeds until fastPtr reaches the end
-  while (fastPtr !== null && fastPtr.next !== null) {
-    slowPtr = slowPtr.next;
-    fastPtr = fastPtr.next.next;
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
   }
 
-  // Return the value of the middle element
-  return slowPtr.value;
+  append(value) {
+    const newNode = new Node(value);
+
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+  }
+
+  prepend(value) {
+    const newNode = new Node(value);
+
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      newNode.next = this.head;
+      this.head = newNode;
+    }
+  }
+
+  delete(value) {
+    if (!this.head) {
+      return;
+    }
+
+    if (this.head.value === value) {
+      this.head = this.head.next;
+      if (!this.head) {
+        this.tail = null;
+      }
+      return;
+    }
+
+    let currentNode = this.head;
+    while (currentNode.next) {
+      if (currentNode.next.value === value) {
+        currentNode.next = currentNode.next.next;
+        if (!currentNode.next) {
+          this.tail = currentNode;
+        }
+        return;
+      }
+      currentNode = currentNode.next;
+    }
+  }
+  
+  print() {
+    const values = [];
+    let currentNode = this.head;
+    while (currentNode) {
+      values.push(currentNode.value);
+      currentNode = currentNode.next;
+    }
+    console.log(values.join(' -> '));
+  }
 }
 
-// Test the code
-const head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
+// Example usage:
 
-console.log(findMiddleElement(head)); // Output: 3
+const linkedList = new LinkedList();
+linkedList.append(1);
+linkedList.append(2);
+linkedList.prepend(0);
+linkedList.append(3);
+linkedList.print(); // Output: 0 -> 1 -> 2 -> 3
+
+linkedList.delete(1);
+linkedList.print(); // Output: 0 -> 2 -> 3
