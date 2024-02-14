@@ -1,20 +1,23 @@
-function findFirstRepeatedCharacter(str) {
-  const charCount = {};
-  
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    
-    if (charCount[char]) {
-      return char;
-    } else {
-      charCount[char] = true;
-    }
-  }
-  
-  return null; // Return null if no repeated character found
+function removeVowels(str) {
+  return str.replace(/[aeiou]/gi, '');
 }
 
-// Example usage
-const inputString = "hello";
-const repeatedChar = findFirstRepeatedCharacter(inputString);
-console.log("First repeated character:", repeatedChar);
+console.log(removeVowels("Hello, World!"));  // Output: Hll, Wrld!
+function removeVowels(str) {
+  return str.split('').filter(function(char) {
+    return !'aeiouAEIOU'.includes(char);
+  }).join('');
+}
+
+console.log(removeVowels("Hello, World!"));  // Output: Hll, Wrld!
+function removeVowels(str) {
+  var result = '';
+  for (var i = 0; i < str.length; i++) {
+    if (!'aeiouAEIOU'.includes(str[i])) {
+      result += str[i];
+    }
+  }
+  return result;
+}
+
+console.log(removeVowels("Hello, World!"));  // Output: Hll, Wrld!
