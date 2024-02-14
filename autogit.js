@@ -1,23 +1,22 @@
-function removeVowels(str) {
-  return str.replace(/[aeiou]/gi, '');
-}
+function interpolationSearch(arr, target, low = 0) {
+  let high = arr.length - 1;
+  let position;
 
-console.log(removeVowels("Hello, World!"));  // Output: Hll, Wrld!
-function removeVowels(str) {
-  return str.split('').filter(function(char) {
-    return !'aeiouAEIOU'.includes(char);
-  }).join('');
-}
+  while (low <= high && target >= arr[low] && target <= arr[high]) {
+    position = Math.floor(
+      low + ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])
+    );
 
-console.log(removeVowels("Hello, World!"));  // Output: Hll, Wrld!
-function removeVowels(str) {
-  var result = '';
-  for (var i = 0; i < str.length; i++) {
-    if (!'aeiouAEIOU'.includes(str[i])) {
-      result += str[i];
+    if (position < low || position > high || arr[position] === target) {
+      return position;
+    }
+
+    if (arr[position] < target) {
+      low = position + 1;
+    } else {
+      high = position - 1;
     }
   }
-  return result;
-}
 
-console.log(removeVowels("Hello, World!"));  // Output: Hll, Wrld!
+  return -1;
+}
