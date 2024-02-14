@@ -1,46 +1,32 @@
-function fibonacciSearch(arr, key) {
-  let fib2 = 0; // (n-2)th Fibonacci number
-  let fib1 = 1; // (n-1)th Fibonacci number
-  let fib = fib2 + fib1; // nth Fibonacci number
-
-  // Calculate the smallest Fibonacci number greater than or equal to the array length
-  while (fib < arr.length) {
-    fib2 = fib1;
-    fib1 = fib;
-    fib = fib2 + fib1;
-  }
-
-  let offset = -1; // Offset from the start of the array
-  while (fib > 1) {
-    // Check if fib2 is a valid index
-    const i = Math.min(offset + fib2, arr.length - 1);
-
-    if (arr[i] < key) {
-      fib = fib1; // Move 1 Fibonacci step down
-      fib1 = fib2;
-      fib2 = fib - fib1;
-      offset = i;
-    } else if (arr[i] > key) {
-      fib = fib2; // Move 2 Fibonacci steps down
-      fib1 = fib1 - fib2;
-      fib2 = fib - fib1;
-    } else {
-      return i; // Key found at index i
+function countOccurrences(str, char) {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
+            count++;
+        }
     }
-  }
-
-  // Check the last element
-  if (arr[offset + 1] === key) {
-    return offset + 1;
-  }
-
-  // Key not found
-  return -1;
+    return count;
 }
 
-// Example usage
-const arr = [2, 5, 8, 12, 17, 22, 31, 36, 42, 51];
-const key = 17;
-const index = fibonacciSearch(arr, key);
+const str = "Hello, world!";
+const char = "l";
+const occurrences = countOccurrences(str, char);
+console.log(`The character "${char}" occurs ${occurrences} times.`);
+function countOccurrences(str, char) {
+    return str.split(char).length - 1;
+}
 
-console.log(`Key ${key} is found at index ${index}`);
+const str = "Hello, world!";
+const char = "l";
+const occurrences = countOccurrences(str, char);
+console.log(`The character "${char}" occurs ${occurrences} times.`);
+function countOccurrences(str, char) {
+    const regex = new RegExp(char, "g");
+    const matches = str.match(regex);
+    return matches ? matches.length : 0;
+}
+
+const str = "Hello, world!";
+const char = "l";
+const occurrences = countOccurrences(str, char);
+console.log(`The character "${char}" occurs ${occurrences} times.`);
