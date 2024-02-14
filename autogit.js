@@ -1,17 +1,14 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  let cleanedStr = str.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
+function countOccurrences(string, word) {
+  // Use regular expression to match all occurrences of the word
+  var regex = new RegExp('\\b' + word + '\\b', 'gi');
+  
+  // Use match() method to find all matches
+  var matches = string.match(regex);
 
-  // Reverse the string
-  let reversedStr = cleanedStr.split('').reverse().join('');
-
-  // Compare the reversed string with the original string
-  return cleanedStr === reversedStr;
+  // Return the number of matches
+  return matches ? matches.length : 0;
 }
-
-// Example usage
-let str1 = "Madam"; // A valid palindrome
-console.log(isPalindrome(str1)); // Output: true
-
-let str2 = "Hello World"; // Not a palindrome
-console.log(isPalindrome(str2)); // Output: false
+var sentence = "JavaScript is a programming language that is widely used in web development.";
+var word = "is";
+var count = countOccurrences(sentence, word);
+console.log(count);  // Output: 2
