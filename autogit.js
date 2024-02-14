@@ -1,14 +1,13 @@
-fetch('https://api.example.com/data')
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  })
-  .then(data => {
-    // Process the retrieved data
-    console.log(data);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+let str = "Hello, World!";
+let reversedStr = str.split('').reverse().join('');
+console.log(reversedStr);
+let str = "Hello, World!";
+let reversedStr = '';
+for (let i = str.length - 1; i >= 0; i--) {
+  reversedStr += str[i];
+}
+console.log(reversedStr);
+let str = "Hello, World!";
+let reversedStr = [...str].reverse().join('');
+console.log(reversedStr);
+!dlroW ,olleH
