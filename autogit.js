@@ -1,21 +1,13 @@
-function insertionSort(arr) {
-  const length = arr.length;
-  
-  for (let i = 1; i < length; i++) {
-    let current = arr[i];
-    let j = i - 1;
+async function fetchData() {
+  try {
+    const response = await fetch('https://api.example.com/data');
+    const data = await response.json();
 
-    while (j >= 0 && arr[j] > current) {
-      arr[j + 1] = arr[j];
-      j--;
-    }
-
-    arr[j + 1] = current;
+    // Work with the received data
+    console.log(data);
+  } catch (error) {
+    console.log('Error:', error);
   }
-
-  return arr;
 }
 
-// Usage example:
-const numbers = [5, 2, 8, 12, 1, 6];
-console.log(insertionSort(numbers)); // Output: [1, 2, 5, 6, 8, 12]
+fetchData();
