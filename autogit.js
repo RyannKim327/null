@@ -1,27 +1,11 @@
-const connectAsyncTask = async () => {
-  // Perform the async task to connect in the background
-  return new Promise((resolve, reject) => {
-    // Simulating a long-running task with setTimeout
-    setTimeout(() => {
-      // Assuming the connection is successful
-      const isConnected = true;
-      
-      if (isConnected) {
-        resolve('Connection successful');
-      } else {
-        reject('Connection failed');
-      }
-    }, 2000); // Simulating a 2-second connection attempt
-  });
-};
+function getIntersectionNode(headA, headB) {
+  let p1 = headA;
+  let p2 = headB;
 
-// Call the async task
-connectAsyncTask()
-  .then((message) => {
-    console.log(message); // Connection successful
-    // Perform any additional actions after connection
-  })
-  .catch((error) => {
-    console.log(error); // Connection failed
-    // Handle the error or retry the connection
-  });
+  while (p1 !== p2) {
+    p1 = p1 ? p1.next : headB;
+    p2 = p2 ? p2.next : headA;
+  }
+
+  return p1; // Can also return p2, as they are the same at the intersection (or null if lists don't intersect)
+}
