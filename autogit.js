@@ -1,44 +1,30 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
+function findMajorityElement(arr) {
+  const hashMap = {};
+  
+  // Count the frequency of each element
+  for (let num of arr) {
+    hashMap[num] = hashMap[num] + 1 || 1;
   }
-}
-
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-
-  add(data) {
-    const newNode = new Node(data);
-    if (this.head === null) {
-      this.head = newNode;
-    } else {
-      let currentNode = this.head;
-      while (currentNode.next) {
-        currentNode = currentNode.next;
-      }
-      currentNode.next = newNode;
+  
+  let majorityElement = null;
+  let count = 0;
+  
+  // Find the element with the highest frequency
+  for (let num in hashMap) {
+    if (hashMap[num] > count) {
+      majorityElement = num;
+      count = hashMap[num];
     }
   }
-
-  getLength() {
-    let count = 0;
-    let currentNode = this.head;
-    while (currentNode) {
-      count++;
-      currentNode = currentNode.next;
-    }
-    return count;
+  
+  // Check if the majority element satisfies the condition
+  if (count > arr.length / 2) {
+    return majorityElement;
   }
+  
+  return "No majority element found";
 }
 
-// Usage
-const list = new LinkedList();
-list.add(10);
-list.add(20);
-list.add(30);
-list.add(40);
-
-console.log(list.getLength()); // Output: 4
+// Example usage
+const arr = [2, 2, 3, 4, 2, 2, 6];
+console.log(findMajorityElement(arr)); // Output: 2
