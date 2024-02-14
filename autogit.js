@@ -1,28 +1,34 @@
-const fetchUserData = async () => {
-  try {
-    const response = await fetch('http://example.com/api/user');
-    const userData = await response.json();
-    // Process the user data received from the API
+function hasCycle(head) {
+  let slow = head;
+  let fast = head;
 
-    // Example: Log the user data
-    console.log(userData);
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
 
-    // Return the processed user data for further use
-    return userData;
-  } catch (error) {
-    console.error('Error fetching user data:', error);
-    throw error;
+    if (slow === fast) {
+      return true; // Cycle detected
+    }
   }
-};
 
-// Example usage of the async function
-fetchUserData()
-  .then((userData) => {
-    // Use the user data retrieved from the API
-    // Here you can perform further actions with the data
-    console.log('User data:', userData);
-  })
-  .catch((error) => {
-    // Handle any errors that occurred during the API call
-    console.error('Error:', error);
-  });
+  return false; // No cycle found
+}
+// Define a linked list with a cycle
+class ListNode {
+  constructor(val) {
+    this.val = val;
+    this.next = null;
+  }
+}
+
+const head = new ListNode(1);
+const second = new ListNode(2);
+const third = new ListNode(3);
+const fourth = new ListNode(4);
+
+head.next = second;
+second.next = third;
+third.next = fourth;
+fourth.next = second; // Cycle point to the second node
+
+console.log(hasCycle(head)); // Output: true
