@@ -1,57 +1,27 @@
-function boyerMooreHorspool(text, pattern) {
-  const badMatchTable = {};
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  const alphanumericStr = str.replace(/[\W_]/g, '').toLowerCase();
   
-  // Calculate bad character shift values
-  for (let i = 0; i < pattern.length - 1; i++) {
-    badMatchTable[pattern[i]] = pattern.length - 1 - i;
-  }
-}
-let textIndex = pattern.length - 1;
-let patternIndex = pattern.length - 1;
-while (textIndex < text.length) {
-  if (text[textIndex] === pattern[patternIndex]) {
-    if (patternIndex === 0) {
-      // Pattern found starting at textIndex
-      return textIndex;
+  // Set the pointers
+  let start = 0;
+  let end = alphanumericStr.length - 1;
+  
+  // Compare characters until pointers meet or cross each other
+  while (start < end) {
+    // If characters don't match, it's not a palindrome
+    if (alphanumericStr[start] !== alphanumericStr[end]) {
+      return false;
     }
-    textIndex--;
-    patternIndex--;
-  } else {
-    const badMatchShift = badMatchTable[text[textIndex]] || pattern.length;
-    textIndex += Math.max(1, badMatchShift);
-    patternIndex = pattern.length - 1;
+    
+    start++;
+    end--;
   }
+  
+  // All characters matched, it's a palindrome
+  return true;
 }
-return -1;
-function boyerMooreHorspool(text, pattern) {
-  const badMatchTable = {};
 
-  // Calculate bad character shift values
-  for (let i = 0; i < pattern.length - 1; i++) {
-    badMatchTable[pattern[i]] = pattern.length - 1 - i;
-  }
-
-  let textIndex = pattern.length - 1;
-  let patternIndex = pattern.length - 1;
-
-  while (textIndex < text.length) {
-    if (text[textIndex] === pattern[patternIndex]) {
-      if (patternIndex === 0) {
-        // Pattern found starting at textIndex
-        return textIndex;
-      }
-      textIndex--;
-      patternIndex--;
-    } else {
-      const badMatchShift = badMatchTable[text[textIndex]] || pattern.length;
-      textIndex += Math.max(1, badMatchShift);
-      patternIndex = pattern.length - 1;
-    }
-  }
-
-  return -1;
-}
-const text = "This is a sample text.";
-const pattern = "sample";
-const result = boyerMooreHorspool(text, pattern);
-console.log(result); // Output: 10 (index of the pattern in the text)
+// Test cases
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
+console.log(isPalindrome("race car")); // true
+console.log(isPalindrome("Hello, World!")); // false
