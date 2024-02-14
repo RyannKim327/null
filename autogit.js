@@ -1,50 +1,57 @@
-class ListNode {
-  constructor(value) {
-    this.val = value;
-    this.next = null;
+function boyerMooreHorspool(text, pattern) {
+  const badMatchTable = {};
+  
+  // Calculate bad character shift values
+  for (let i = 0; i < pattern.length - 1; i++) {
+    badMatchTable[pattern[i]] = pattern.length - 1 - i;
   }
 }
-
-function getIntersectionNode(headA, headB) {
-  // Get lengths of both linked lists
-  let lenA = getLength(headA);
-  let lenB = getLength(headB);
-
-  // Calculate the difference in lengths
-  let diff = Math.abs(lenA - lenB);
-
-  // Traverse the longer linked list to adjust the starting point
-  if (lenA > lenB) {
-    while (diff > 0) {
-      headA = headA.next;
-      diff--;
+let textIndex = pattern.length - 1;
+let patternIndex = pattern.length - 1;
+while (textIndex < text.length) {
+  if (text[textIndex] === pattern[patternIndex]) {
+    if (patternIndex === 0) {
+      // Pattern found starting at textIndex
+      return textIndex;
     }
+    textIndex--;
+    patternIndex--;
   } else {
-    while (diff > 0) {
-      headB = headB.next;
-      diff--;
+    const badMatchShift = badMatchTable[text[textIndex]] || pattern.length;
+    textIndex += Math.max(1, badMatchShift);
+    patternIndex = pattern.length - 1;
+  }
+}
+return -1;
+function boyerMooreHorspool(text, pattern) {
+  const badMatchTable = {};
+
+  // Calculate bad character shift values
+  for (let i = 0; i < pattern.length - 1; i++) {
+    badMatchTable[pattern[i]] = pattern.length - 1 - i;
+  }
+
+  let textIndex = pattern.length - 1;
+  let patternIndex = pattern.length - 1;
+
+  while (textIndex < text.length) {
+    if (text[textIndex] === pattern[patternIndex]) {
+      if (patternIndex === 0) {
+        // Pattern found starting at textIndex
+        return textIndex;
+      }
+      textIndex--;
+      patternIndex--;
+    } else {
+      const badMatchShift = badMatchTable[text[textIndex]] || pattern.length;
+      textIndex += Math.max(1, badMatchShift);
+      patternIndex = pattern.length - 1;
     }
   }
 
-  // Traverse both lists together until a matching node is found
-  while (headA && headB) {
-    if (headA === headB) {
-      return headA;
-    }
-    headA = headA.next;
-    headB = headB.next;
-  }
-
-  // No intersection found
-  return null;
+  return -1;
 }
-
-function getLength(head) {
-  let length = 0;
-  let currentNode = head;
-  while (currentNode) {
-    length++;
-    currentNode = currentNode.next;
-  }
-  return length;
-}
+const text = "This is a sample text.";
+const pattern = "sample";
+const result = boyerMooreHorspool(text, pattern);
+console.log(result); // Output: 10 (index of the pattern in the text)
