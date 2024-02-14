@@ -1,18 +1,26 @@
-function calculateMean(numbers) {
-  let sum = 0;
+function countingSort(array) {
+    const maxValue = Math.max(...array);
+    const countArray = Array(maxValue + 1).fill(0);
 
-  // Calculate the sum of all numbers
-  for (let i = 0; i < numbers.length; i++) {
-    sum += numbers[i];
-  }
+    for (let i = 0; i < array.length; i++) {
+        countArray[array[i]]++;
+    }
 
-  // Calculate the mean by dividing the sum by the number of elements
-  const mean = sum / numbers.length;
+    for (let i = 1; i <= maxValue; i++) {
+        countArray[i] += countArray[i - 1];
+    }
 
-  return mean;
+    const sortedArray = Array(array.length);
+
+    for (let i = array.length - 1; i >= 0; i--) {
+        const value = array[i];
+        const count = countArray[value];
+        sortedArray[count - 1] = value;
+        countArray[value]--;
+    }
+
+    return sortedArray;
 }
-
-// Example usage
-const numbers = [5, 10, 15, 20, 25];
-const mean = calculateMean(numbers);
-console.log('Mean:', mean);
+const unsortedArray = [9, 3, 1, 5, 2];
+const sortedArray = countingSort(unsortedArray);
+console.log(sortedArray); // Output: [1, 2, 3, 5, 9]
