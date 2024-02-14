@@ -1,13 +1,21 @@
-// Prompt the user for input
-const userInput = prompt('Enter your name:');
+function insertionSort(arr) {
+  const length = arr.length;
+  
+  for (let i = 1; i < length; i++) {
+    let current = arr[i];
+    let j = i - 1;
 
-// Log the user input to the console
-console.log(`Hello, ${userInput}!`);
+    while (j >= 0 && arr[j] > current) {
+      arr[j + 1] = arr[j];
+      j--;
+    }
 
-// Use the user input in a function
-function greetUser(name) {
-  alert(`Welcome, ${name}!`);
+    arr[j + 1] = current;
+  }
+
+  return arr;
 }
 
-// Call the function with the user input
-greetUser(userInput);
+// Usage example:
+const numbers = [5, 2, 8, 12, 1, 6];
+console.log(insertionSort(numbers)); // Output: [1, 2, 5, 6, 8, 12]
