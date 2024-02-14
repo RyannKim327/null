@@ -1,69 +1,30 @@
-class LinkedListNode {
-  constructor(data) {
-    this.data = data;
+class Node {
+  constructor(value) {
+    this.value = value;
     this.next = null;
   }
 }
 
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-    this.size = 0;
+function findMiddleElement(head) {
+  // Initialize two pointers
+  let slowPtr = head;
+  let fastPtr = head;
+
+  // Traverse the linked list with different speeds until fastPtr reaches the end
+  while (fastPtr !== null && fastPtr.next !== null) {
+    slowPtr = slowPtr.next;
+    fastPtr = fastPtr.next.next;
   }
-  
-  enqueue(data) {
-    const newNode = new LinkedListNode(data);
-    if (this.isEmpty()) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
-    }
-    this.size++;
-  }
-  
-  dequeue() {
-    if (this.isEmpty()) {
-      return null;
-    }
-    const data = this.head.data;
-    this.head = this.head.next;
-    if (this.head === null) {
-      this.tail = null;
-    }
-    this.size--;
-    return data;
-  }
-  
-  isEmpty() {
-    return this.size === 0;
-  }
-  
-  getSize() {
-    return this.size;
-  }
-  
-  peek() {
-    if (this.isEmpty()) {
-      return null;
-    }
-    return this.head.data;
-  }
+
+  // Return the value of the middle element
+  return slowPtr.value;
 }
-const queue = new Queue();
 
-console.log(queue.isEmpty());   // Output: true
+// Test the code
+const head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
 
-queue.enqueue(1);                // Enqueue elements
-queue.enqueue(2);
-queue.enqueue(3);
-
-console.log(queue.getSize());    // Output: 3
-console.log(queue.isEmpty());    // Output: false
-console.log(queue.peek());        // Output: 1
-
-console.log(queue.dequeue());    // Output: 1
-console.log(queue.dequeue());    // Output: 2
-console.log(queue.getSize());    // Output: 1
+console.log(findMiddleElement(head)); // Output: 3
