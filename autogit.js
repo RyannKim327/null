@@ -1,27 +1,18 @@
-class ListNode {
-  constructor(val = 0, next = null) {
-    this.val = val;
-    this.next = next;
+function longestCommonPrefix(strings) {
+  if (strings.length === 0) {
+    return '';
   }
-}
-
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
-
-  while (fast !== null && fast.next !== null) {
-    slow = slow.next;
-    fast = fast.next.next;
+  
+  let prefix = strings[0];
+  
+  for (let i = 1; i < strings.length; i++) {
+    while (strings[i].indexOf(prefix) !== 0) {
+      prefix = prefix.slice(0, -1);
+    }
   }
-
-  return slow.val;
+  
+  return prefix;
 }
-
-// Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-console.log(findMiddleElement(head)); // Output: 3
+const strings = ['apple', 'app', 'application'];
+const commonPrefix = longestCommonPrefix(strings);
+console.log(commonPrefix); // Output: 'app'
