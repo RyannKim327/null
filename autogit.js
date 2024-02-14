@@ -1,15 +1,27 @@
-// Prompt the user for input
-var num1 = prompt("Enter the first number: "); // Input for the first number
-var num2 = prompt("Enter the second number: "); // Input for the second number
+function findFirstNonRepeatingChar(str) {
+  // Create an empty object to store character frequencies
+  const charCount = {};
 
-// Convert the user input to numbers
-num1 = parseFloat(num1);
-num2 = parseFloat(num2);
+  // Iterate through each character of the string and count its frequency
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    charCount[char] = (charCount[char] || 0) + 1;
+  }
 
-// Perform a simple calculation
-var sum = num1 + num2;
-var product = num1 * num2;
+  // Iterate through each character of the string again
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
 
-// Display the result
-console.log("The sum of " + num1 + " and " + num2 + " is: " + sum);
-console.log("The product of " + num1 + " and " + num2 + " is: " + product);
+    // Check if the current character's count is 1, indicating it is non-repeating
+    if (charCount[char] === 1) {
+      return char; // Return the first non-repeating character
+    }
+  }
+
+  return null; // Return null if there is no non-repeating character
+}
+
+// Example usage:
+const str = "aabbcdeeffggh";
+const result = findFirstNonRepeatingChar(str);
+console.log(result); // Output: "c"
