@@ -1,20 +1,13 @@
-function findSecondLargest(arr) {
-  let largest = -Infinity;
-  let secondLargest = -Infinity;
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  let modifiedStr = str.toLowerCase().replace(/[\W_]/g, '');
 
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] > largest) {
-      secondLargest = largest;
-      largest = arr[i];
-    } else if (arr[i] > secondLargest && arr[i] !== largest) {
-      secondLargest = arr[i];
-    }
-  }
+  // Reverse the modified string
+  let reversedStr = modifiedStr.split('').reverse().join('');
 
-  return secondLargest;
+  // Compare the modified and reversed strings
+  return modifiedStr === reversedStr;
 }
-
-// Example usage
-const array = [5, 9, 3, 6, 1, 8, 2];
-const secondLargest = findSecondLargest(array);
-console.log(secondLargest); // Output: 8
+console.log(isPalindrome("racecar"));  // true
+console.log(isPalindrome("hello"));    // false
+console.log(isPalindrome("A man, a plan, a canal, Panama!"));  // true
