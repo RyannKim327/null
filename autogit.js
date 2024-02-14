@@ -1,22 +1,45 @@
-function interpolationSearch(arr, target, low = 0) {
-  let high = arr.length - 1;
-  let position;
-
-  while (low <= high && target >= arr[low] && target <= arr[high]) {
-    position = Math.floor(
-      low + ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])
-    );
-
-    if (position < low || position > high || arr[position] === target) {
-      return position;
-    }
-
-    if (arr[position] < target) {
-      low = position + 1;
-    } else {
-      high = position - 1;
-    }
-  }
-
-  return -1;
+function reverseWords(str) {
+  // Split the string into an array of words
+  var words = str.split(' ');
+  
+  // Reverse the array of words
+  var reversedWords = words.reverse();
+  
+  // Join the reversed words into a string
+  var reversedString = reversedWords.join(' ');
+  
+  return reversedString;
 }
+
+var originalString = "Hello world!";
+
+// Call the function and print the result
+console.log(reverseWords(originalString));
+world! Hello
+function reverseWords(str) {
+  // Split the string into an array of words
+  var words = str.split(' ');
+  
+  // Reverse the order of words using a custom reverse function
+  var reversedWords = reverseArray(words);
+  
+  // Join the reversed words into a string
+  var reversedString = reversedWords.join(' ');
+  
+  return reversedString;
+}
+
+// Custom function to reverse an array
+function reverseArray(arr) {
+  var reversedArray = [];
+  for (var i = arr.length - 1; i >= 0; i--) {
+    reversedArray.push(arr[i]);
+  }
+  return reversedArray;
+}
+
+var originalString = "Hello world!";
+
+// Call the function and print the result
+console.log(reverseWords(originalString));
+world! Hello
