@@ -1,10 +1,26 @@
-function factorialRecursive(n) {
-  // Base case: if n is 0 or 1, return 1
-  if (n === 0 || n === 1) {
-    return 1;
+function countingSort(arr) {
+  var max = Math.max(...arr);
+  var min = Math.min(...arr);
+  var count = new Array(max - min + 1).fill(0);
+  var sortedArr = [];
+
+  // Count frequencies of elements
+  for (var i = 0; i < arr.length; i++) {
+    count[arr[i] - min]++;
   }
-  
-  // Recursive case: multiply n by the factorial of n-1
-  return n * factorialRecursive(n - 1);
+
+  // Build the sorted array
+  for (var j = 0; j < count.length; j++) {
+    while (count[j] > 0) {
+      sortedArr.push(j + min);
+      count[j]--;
+    }
+  }
+
+  return sortedArr;
 }
-console.log(factorialRecursive(5)); // Output: 120
+
+// Example usage:
+var arr = [4, 3, 2, 7, 5, 6, 1];
+var sortedArr = countingSort(arr);
+console.log(sortedArr);
