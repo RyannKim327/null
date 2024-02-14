@@ -1,67 +1,27 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
-class BinarySearchTree {
-  constructor() {
-    this.root = null;
-  }
-
-  insert(value) {
-    const newNode = new Node(value);
-
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
-
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
+const connectAsyncTask = async () => {
+  // Perform the async task to connect in the background
+  return new Promise((resolve, reject) => {
+    // Simulating a long-running task with setTimeout
+    setTimeout(() => {
+      // Assuming the connection is successful
+      const isConnected = true;
+      
+      if (isConnected) {
+        resolve('Connection successful');
       } else {
-        this.insertNode(node.left, newNode);
+        reject('Connection failed');
       }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
+    }, 2000); // Simulating a 2-second connection attempt
+  });
+};
 
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
-    }
-
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else if (value > node.value) {
-      return this.searchNode(node.right, value);
-    } else {
-      return true;
-    }
-  }
-}
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
-bst.insert(7);
-bst.insert(12);
-bst.insert(18);
-
-console.log(bst.search(7)); // Output: true
-console.log(bst.search(9)); // Output: false
+// Call the async task
+connectAsyncTask()
+  .then((message) => {
+    console.log(message); // Connection successful
+    // Perform any additional actions after connection
+  })
+  .catch((error) => {
+    console.log(error); // Connection failed
+    // Handle the error or retry the connection
+  });
