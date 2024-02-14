@@ -1,45 +1,55 @@
-function boyerMooreHorspool(text, pattern) {
-  const textLength = text.length;
-  const patternLength = pattern.length;
-  const skipTable = generateSkipTable(pattern);
+function computePrefix(pattern) {
+  const prefix = new Array(pattern.length);
+  prefix[0] = 0;
+  let len = 0;
+  let i = 1;
 
-  function generateSkipTable(pattern) {
-    const skipTable = {};
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[len]) {
+      len++;
+      prefix[i] = len;
+      i++;
+    } else {
+      if (len !== 0) {
+        len = prefix[len - 1];
+      } else {
+        prefix[i] = 0;
+        i++;
+      }
+    }
+  }
+  return prefix;
+}
+function kmpSearch(text, pattern) {
+  const prefix = computePrefix(pattern);
+  const indices = [];
 
-    for (let i = 0; i < patternLength - 1; i++) {
-      skipTable[pattern[i]] = patternLength - i - 1;
+  let i = 0; // index for text
+  let j = 0; // index for pattern
+
+  while (i < text.length) {
+    if (text[i] === pattern[j]) {
+      i++;
+      j++;
     }
 
-    return skipTable;
+    if (j === pattern.length) {
+      // Match found at index i - j
+      indices.push(i - j);
+      j = prefix[j - 1];
+    } else if (i < text.length && text[i] !== pattern[j]) {
+      if (j !== 0) {
+        j = prefix[j - 1];
+      } else {
+        i++;
+      }
+    }
   }
 
-  let currentIndex = 0;
-
-  while (currentIndex <= textLength - patternLength) {
-    let j = patternLength - 1;
-
-    while (j >= 0 && text[currentIndex + j] === pattern[j]) {
-      j--;
-    }
-
-    if (j === -1) {
-      return currentIndex; // Pattern found
-    }
-
-    const skip = skipTable[text[currentIndex + patternLength]] || patternLength;
-    currentIndex += skip;
-  }
-
-  return -1; // Pattern not found
+  return indices;
 }
+const text = "ABCABCABCABCD";
+const pattern = "ABC";
 
-// Example usage:
-const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
-const pattern = "ipsum";
-
-const startIndex = boyerMooreHorspool(text, pattern);
-if (startIndex !== -1) {
-  console.log(`Pattern found at index ${startIndex}.`);
-} else {
-  console.log("Pattern not found.");
-}
+const indices = kmpSearch(text, pattern);
+console.log("Pattern found at indices:", indices);
