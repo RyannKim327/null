@@ -1,60 +1,35 @@
-function buildPrefixTable(pattern) {
-  const table = Array(pattern.length).fill(0);
-  let length = 0;
-  let i = 1;
-
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[length]) {
-      length++;
-      table[i] = length;
-      i++;
-    } else {
-      if (length !== 0) {
-        length = table[length - 1];
-      } else {
-        table[i] = 0;
-        i++;
-      }
-    }
+class Node {
+  constructor(value, left = null, right = null) {
+    this.value = value;
+    this.left = left;
+    this.right = right;
   }
-
-  return table;
 }
 
-function KMP(text, pattern) {
-  const result = [];
-
-  if (!text || !pattern) {
-    return result;
+function sumBinaryTree(root) {
+  if (root === null) {
+    return 0; // Base case: Empty tree has sum 0
   }
 
-  const table = buildPrefixTable(pattern);
-  let i = 0;
-  let j = 0;
+  const leftSum = sumBinaryTree(root.left); // Recursively calculate sum of left subtree
+  const rightSum = sumBinaryTree(root.right); // Recursively calculate sum of right subtree
 
-  while (i < text.length) {
-    if (text[i] === pattern[j]) {
-      i++;
-      j++;
-    }
-
-    if (j === pattern.length) {
-      result.push(i - j);
-      j = table[j - 1];
-    } else if (i < text.length && text[i] !== pattern[j]) {
-      if (j !== 0) {
-        j = table[j - 1];
-      } else {
-        i++;
-      }
-    }
-  }
-
-  return result;
+  return root.value + leftSum + rightSum; // Sum root value with sums of left and right subtrees
 }
 
 // Example usage:
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const indices = KMP(text, pattern);
-console.log(indices); // Output: [10]
+
+//      4
+//     / \
+//    2   6
+//   / \
+//  1   3
+
+const root = new Node(4);
+root.left = new Node(2);
+root.right = new Node(6);
+root.left.left = new Node(1);
+root.left.right = new Node(3);
+
+const sum = sumBinaryTree(root);
+console.log(sum); // Output: 16 (4 + 2 + 6 + 1 + 3 = 16)
