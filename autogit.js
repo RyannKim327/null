@@ -1,85 +1,44 @@
-class Vertex {
-  constructor(name) {
-    this.name = name;
-    this.adjacentEdges = [];
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
   }
 }
 
-class Edge {
-  constructor(source, destination, weight) {
-    this.source = source;
-    this.destination = destination;
-    this.weight = weight;
-  }
-}
-
-class Graph {
+class LinkedList {
   constructor() {
-    this.vertices = [];
+    this.head = null;
   }
 
-  addVertex(name) {
-    this.vertices.push(new Vertex(name));
-  }
-
-  addEdge(source, destination, weight) {
-    const sourceVertex = this.vertices.find((vertex) => vertex.name === source);
-    const destinationVertex = this.vertices.find(
-      (vertex) => vertex.name === destination
-    );
-    sourceVertex.adjacentEdges.push(
-      new Edge(sourceVertex, destinationVertex, weight)
-    );
-  }
-}
-
-function bellmanFord(graph, startVertex) {
-  const dist = {};
-  const vertices = graph.vertices;
-
-  // Initialize distances
-  for (const vertex of vertices) {
-    dist[vertex.name] = Infinity;
-  }
-  dist[startVertex] = 0;
-
-  // Relax edges V-1 times
-  for (let i = 0; i < vertices.length - 1; i++) {
-    for (const vertex of vertices) {
-      for (const edge of vertex.adjacentEdges) {
-        if (dist[edge.source.name] + edge.weight < dist[edge.destination.name]) {
-          dist[edge.destination.name] = dist[edge.source.name] + edge.weight;
-        }
+  add(data) {
+    const newNode = new Node(data);
+    if (this.head === null) {
+      this.head = newNode;
+    } else {
+      let currentNode = this.head;
+      while (currentNode.next) {
+        currentNode = currentNode.next;
       }
+      currentNode.next = newNode;
     }
   }
 
-  // Check for negative weight cycles
-  for (const vertex of vertices) {
-    for (const edge of vertex.adjacentEdges) {
-      if (dist[edge.source.name] + edge.weight < dist[edge.destination.name]) {
-        return false; // Negative weight cycle exists
-      }
+  getLength() {
+    let count = 0;
+    let currentNode = this.head;
+    while (currentNode) {
+      count++;
+      currentNode = currentNode.next;
     }
+    return count;
   }
-
-  return dist;
 }
 
-// Usage example
-const graph = new Graph();
+// Usage
+const list = new LinkedList();
+list.add(10);
+list.add(20);
+list.add(30);
+list.add(40);
 
-graph.addVertex("A");
-graph.addVertex("B");
-graph.addVertex("C");
-graph.addVertex("D");
-
-graph.addEdge("A", "B", 5);
-graph.addEdge("B", "C", 3);
-graph.addEdge("C", "D", 2);
-graph.addEdge("D", "A", -10);
-
-const startVertex = "A";
-const shortestPaths = bellmanFord(graph, startVertex);
-
-console.log(shortestPaths);
+console.log(list.getLength()); // Output: 4
