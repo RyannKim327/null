@@ -1,18 +1,39 @@
-function isAnagram(str1, str2) {
-  // Convert strings to lowercase and remove non-alphabetic characters and whitespace
-  const normalizedStr1 = str1.toLowerCase().replace(/[^a-z0-9]/g, '');
-  const normalizedStr2 = str2.toLowerCase().replace(/[^a-z0-9]/g, '');
+function rabinKarp(text, pattern) {
+  const base = 3; // Choose a base value, often a prime number
+  const patternHash = calculateHash(pattern, base);
+  const patternLength = pattern.length;
+  const textLength = text.length;
 
-  // Sort the characters in the strings
-  const sortedStr1 = normalizedStr1.split('').sort().join('');
-  const sortedStr2 = normalizedStr2.split('').sort().join('');
+  let windowHash = calculateHash(text.slice(0, patternLength), base);
 
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+  // Slide the window over the text
+  for (let i = 0; i <= textLength - patternLength; i++) {
+    // Check if the hash values match, then verify character by character
+    if (windowHash === patternHash && text.slice(i, i + patternLength) === pattern)
+      return i; // Match found at position i
+
+    // Recalculate the hash value for the next window
+    windowHash = calculateNextHash(windowHash, text.charCodeAt(i), text.charCodeAt(i + patternLength), base, patternLength);
+  }
+
+  return -1; // No match found
 }
 
-// Example usage
-const string1 = 'listen';
-const string2 = 'silent';
+function calculateHash(str, base) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash += str.charCodeAt(i) * Math.pow(base, i);
+  }
+  return hash;
+}
 
-console.log(isAnagram(string1, string2)); // Output: true
+function calculateNextHash(currentHash, prevCharAscii, nextCharAscii, base, patternLength) {
+  const nextHash = (currentHash - (prevCharAscii * Math.pow(base, 0))) / base;
+  return nextHash + (nextCharAscii * Math.pow(base, patternLength - 1));
+}
+
+// Example usage:
+const inputString = "ABABDABACDABABCABAB";
+const patternString = "ABABCABAB";
+const matchIndex = rabinKarp(inputString, patternString);
+console.log(matchIndex); // Output: 10 (index position of the first occurrence of the pattern)
