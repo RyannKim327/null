@@ -1,23 +1,48 @@
-function longestCommonPrefix(strs) {
-    if (strs.length === 0) return '';
-    
-    let prefix = '';
-    
-    for (let i = 0; i < strs[0].length; i++) {
-        const char = strs[0][i];
-        
-        for (let j = 1; j < strs.length; j++) {
-            if (i >= strs[j].length || strs[j][i] !== char) {
-                return prefix;
+function dijkstra(graph, startNode) {
+    const distances = {};
+    const visited = {};
+    const unvisited = {};
+
+    Object.keys(graph).forEach(node => {
+        distances[node] = Infinity;
+        unvisited[node] = graph[node];
+    });
+
+    distances[startNode] = 0;
+
+    while (Object.keys(unvisited).length > 0) {
+        const currentNode = findNodeWithShortestDistance(unvisited, distances);
+        const neighbors = unvisited[currentNode];
+
+        Object.keys(neighbors).forEach(neighbor => {
+            const distance = distances[currentNode] + neighbors[neighbor];
+            if (distance < distances[neighbor]) {
+                distances[neighbor] = distance;
             }
-        }
-        
-        prefix += char;
+        });
+
+        visited[currentNode] = unvisited[currentNode];
+        delete unvisited[currentNode];
     }
-    
-    return prefix;
+
+    return distances;
 }
 
-// Example usage:
-const strings = ['apple', 'ape', 'apricot'];
-console.log(longestCommonPrefix(strings)); // Output: 'ap'
+function findNodeWithShortestDistance(nodes, distances) {
+    return Object.keys(nodes).reduce((minNode, node) =>
+        distances[node] < distances[minNode] ? node : minNode
+    );
+}
+
+// Example graph representation:
+const graph = {
+    A: { B: 3, C: 2 },
+    B: { A: 3, C: 4, D: 5 },
+    C: { A: 2, B: 4, D: 1 },
+    D: { B: 5, C: 1 }
+};
+
+const startNode = 'A';
+
+const shortestDistances = dijkstra(graph, startNode);
+console.log(shortestDistances);
