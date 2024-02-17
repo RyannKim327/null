@@ -1,25 +1,18 @@
-function quickSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
+class Node {
+    constructor(start, end) {
+        this.children = {};
+        this.start = start; // start index of the substring represented by this node
+        this.end = end; // end index of the substring represented by this node
     }
-
-    const pivot = arr[0];
-    const left = [];
-    const right = [];
-
-    for (let i = 1; i < arr.length; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
-        }
-    }
-
-    return [...quickSort(left), pivot, ...quickSort(right)];
 }
+class SuffixTree {
+    constructor(text) {
+        this.root = new Node(-1, -1);
+        this.text = text;
+        this.buildTree();
+    }
 
-// Example usage
-const unsortedArray = [5, 3, 8, 4, 2, 1, 9, 7, 6];
-const sortedArray = quickSort(unsortedArray);
-
-console.log(sortedArray);
+    buildTree() {
+        // Implement the Ukkonen's algorithm here to build the suffix tree
+    }
+}
