@@ -1,45 +1,49 @@
-class Node {
-  constructor(name) {
-    this.name = name;
-    this.children = [];
-  }
-
-  addChild(node) {
-    this.children.push(node);
-    return this;
-  }
+function fibonacciSearch(arr, key) {
+    let n = arr.length;
+    
+    let fibMMm2 = 0;
+    let fibMMm1 = 1;
+    let fibM = fibMMm2 + fibMMm1;
+    
+    while (fibM < n) {
+        fibMMm2 = fibMMm1;
+        fibMMm1 = fibM;
+        fibM = fibMMm2 + fibMMm1;
+    }
+    
+    let offset = -1;
+    
+    while (fibM > 1) {
+        let i = Math.min(offset + fibMMm2, n - 1);
+        
+        if (arr[i] < key) {
+            fibM = fibMMm1;
+            fibMMm1 = fibMMm2;
+            fibMMm2 = fibM - fibMMm1;
+            offset = i;
+        } else if (arr[i] > key) {
+            fibM = fibMMm2;
+            fibMMm1 = fibMMm1 - fibMMm2;
+            fibMMm2 = fibM - fibMMm1;
+        } else {
+            return i;
+        }
+    }
+    
+    if (fibMMm1 === 1 && arr[offset+1] === key) {
+        return offset+1;
+    }
+    
+    return -1;
 }
 
-function depthLimitedSearchIterative(root, target, limit) {
-  let stack = [];
-  stack.push({ node: root, depth: 0 });
+// Example Usage
+const arr = [10, 22, 30, 44, 56, 58, 60, 70, 100];
+const key = 60;
+const index = fibonacciSearch(arr, key);
 
-  while (stack.length > 0) {
-    const { node, depth } = stack.pop();
-
-    if (node.name === target) {
-      return node;
-    }
-
-    if (depth < limit) {
-      for (let child of node.children) {
-        stack.push({ node: child, depth: depth + 1 });
-      }
-    }
-  }
-
-  return null;
+if (index != -1) {
+    console.log(`Element found at index ${index}`);
+} else {
+    console.log("Element not found");
 }
-
-// Usage
-let rootNode = new Node("A");
-let nodeB = new Node("B");
-let nodeC = new Node("C");
-let nodeD = new Node("D");
-
-rootNode.addChild(nodeB);
-rootNode.addChild(nodeC);
-nodeB.addChild(nodeD);
-
-let result = depthLimitedSearchIterative(rootNode, "D", 2);
-console.log(result);
