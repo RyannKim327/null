@@ -1,6 +1,6 @@
 class Node {
-    constructor(value) {
-        this.value = value;
+    constructor(data) {
+        this.data = data;
         this.next = null;
     }
 }
@@ -8,57 +8,41 @@ class Node {
 class LinkedList {
     constructor() {
         this.head = null;
-        this.size = 0;
     }
 
-    add(value) {
-        const node = new Node(value);
-        if (!this.head) {
-            this.head = node;
+    addNode(data) {
+        let newNode = new Node(data);
+
+        if (this.head === null) {
+            this.head = newNode;
         } else {
             let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = node;
-        }
-        this.size++;
-    }
 
-    remove(value) {
-        let current = this.head;
-        
-        if (current.value === value) {
-            this.head = current.next;
-            this.size--;
-        } else {
-            let previous = current;
-            while (current.next) {
-                if (current.value === value) {
-                    previous.next = current.next;
-                    this.size--;
-                    break;
-                }
-                previous = current;
+            while (current.next !== null) {
                 current = current.next;
             }
+
+            current.next = newNode;
         }
     }
 
-    print() {
+    getLength() {
         let current = this.head;
-        while (current) {
-            console.log(current.value);
+        let length = 0;
+
+        while (current !== null) {
+            length++;
             current = current.next;
         }
+
+        return length;
     }
 }
 
-// Example usage
-const list = new LinkedList();
-list.add(1);
-list.add(2);
-list.add(3);
-list.print(); // Output: 1 2 3
-list.remove(2);
-list.print(); // Output: 1 3
+// Usage
+let linkedList = new LinkedList();
+linkedList.addNode(1);
+linkedList.addNode(2);
+linkedList.addNode(3);
+
+console.log(linkedList.getLength()); // Output: 3
