@@ -1,55 +1,40 @@
-function kmpSearch(text, pattern) {
+function BoyerMooreHorspool(pattern, text) {
+    const charTable = {};
     const patternLength = pattern.length;
     const textLength = text.length;
 
-    // Generate the lps (longest proper prefix which is also a suffix) array for the pattern
-    const lps = new Array(patternLength).fill(0);
-    let j = 0;
+    // Generate skip table
+    for (let i = 0; i < patternLength - 1; i++) {
+        charTable[pattern[i]] = patternLength - 1 - i;
+    }
 
-    generateLPSArray();
-
-    let i = 0;
+    // Searching
+    let i = patternLength - 1;
     while (i < textLength) {
-        if (pattern[j] === text[i]) {
-            j++;
-            i++;
+        let j = patternLength - 1;
+        while (j >= 0 && text[i] === pattern[j]) {
+            i--;
+            j--;
         }
-
-        if (j === patternLength) {
-            console.log("Pattern found at index " + (i - j));
-            j = lps[j - 1];
-        } else if (i < textLength && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
+        if (j === -1) {
+            // Pattern found
+            return i + 1;
+        } else {
+            i += charTable[text[i]] || patternLength;
         }
     }
 
-    function generateLPSArray() {
-        let len = 0;
-        let i = 1;
-
-        while (i < patternLength) {
-            if (pattern[i] === pattern[len]) {
-                len++;
-                lps[i] = len;
-                i++;
-            } else {
-                if (len !== 0) {
-                    len = lps[len - 1];
-                } else {
-                    lps[i] = len;
-                    i++;
-                }
-            }
-        }
-    }
+    // Pattern not found
+    return -1;
 }
 
 // Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
+const text = "Hello, world! This is a sample text.";
+const pattern = "world";
+const index = BoyerMooreHorspool(pattern, text);
 
-kmpSearch(text, pattern);
+if (index !== -1) {
+    console.log(`Pattern found at index ${index}`);
+} else {
+    console.log("Pattern not found");
+}
