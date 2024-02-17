@@ -1,19 +1,26 @@
-function factorial(n) {
-    if (n === 0) {
-        return 1;
+function binarySearch(arr, target, start = 0, end = arr.length - 1) {
+    if (start > end) {
+        return -1; // If the target is not found
     }
-    return n * factorial(n - 1);
+
+    const mid = Math.floor((start + end) / 2);
+
+    if (arr[mid] === target) {
+        return mid; // If the target is found
+    } else if (arr[mid] < target) {
+        return binarySearch(arr, target, mid + 1, end); // Search the right half
+    } else {
+        return binarySearch(arr, target, start, mid - 1); // Search the left half
+    }
 }
 
-// Calculating the factorial of 5
-console.log(factorial(5)); // Output: 120
-function factorial(n) {
-    let result = 1;
-    for (let i = 1; i <= n; i++) {
-        result *= i;
-    }
-    return result;
-}
+// Example usage
+const sortedArray = [1, 3, 5, 7, 9, 11, 13, 15, 17];
+const target = 7;
+const index = binarySearch(sortedArray, target);
 
-// Calculating the factorial of 5
-console.log(factorial(5)); // Output: 120
+if (index !== -1) {
+    console.log(`Target ${target} found at index ${index}`);
+} else {
+    console.log(`Target ${target} not found in the array`);
+}
