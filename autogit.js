@@ -1,16 +1,7 @@
-function longestCommonPrefix(strs) {
-    if (strs.length === 0) return '';
+let arr = [1, 2, 3, 4, 2, 3, 5];
 
-    let prefix = strs[0];
-    for (let i = 1; i < strs.length; i++) {
-        while (strs[i].indexOf(prefix) !== 0) {
-            prefix = prefix.slice(0, -1);
-        }
-    }
+let uniqueArray = arr.filter((item, index) => {
+    return arr.indexOf(item) === index;
+});
 
-    return prefix;
-}
-
-// Example usage
-const strings = ["flower", "flow", "flight"];
-console.log(longestCommonPrefix(strings)); // Output: "fl"
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
