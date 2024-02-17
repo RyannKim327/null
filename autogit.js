@@ -1,61 +1,15 @@
-// Node class to represent individual nodes in the red-black tree
-class Node {
-    constructor(value, color, left, right, parent) {
-        this.value = value;
-        this.color = color || 'red';
-        this.left = left || null;
-        this.right = right || null;
-        this.parent = parent || null;
+function isSortedAscending(arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;
+        }
     }
+    return true;
 }
 
-// RedBlackTree class to represent the red-black tree data structure
-class RedBlackTree {
-    constructor() {
-        this.root = null;
-    }
+// Test the function
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 1, 2, 4, 5];
 
-    // Helper function to perform left rotation
-    leftRotate(node) {
-        let rightChild = node.right;
-        node.right = rightChild.left;
-        if (rightChild.left !== null) {
-            rightChild.left.parent = node;
-        }
-        rightChild.parent = node.parent;
-        if (node.parent === null) {
-            this.root = rightChild;
-        } else if (node === node.parent.left) {
-            node.parent.left = rightChild;
-        } else {
-            node.parent.right = rightChild;
-        }
-        rightChild.left = node;
-        node.parent = rightChild;
-    }
-
-    // Helper function to perform right rotation
-    rightRotate(node) {
-        let leftChild = node.left;
-        node.left = leftChild.right;
-        if (leftChild.right !== null) {
-            leftChild.right.parent = node;
-        }
-        leftChild.parent = node.parent;
-        if (node.parent === null) {
-            this.root = leftChild;
-        } else if (node === node.parent.right) {
-            node.parent.right = leftChild;
-        } else {
-            node.parent.left = leftChild;
-        }
-        leftChild.right = node;
-        node.parent = leftChild;
-    }
-
-    // Other operations like insertion, deletion, search, Traversal can be added as needed.
-}
-
-// Usage
-const rbt = new RedBlackTree();
-console.log(rbt);
+console.log(isSortedAscending(array1)); // Output: true
+console.log(isSortedAscending(array2)); // Output: false
