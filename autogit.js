@@ -1,57 +1,36 @@
-function bidirectionalSearch(graph, startNode, endNode) {
-    const queueStart = [startNode];
-    const visitedStart = new Set([startNode]);
+function dijkstra(graph, startNode, endNode) {
+  let distances = {};
+  let pq = new PriorityQueue();
+  let visited = new Set();
 
-    const queueEnd = [endNode];
-    const visitedEnd = new Set([endNode]);
+  for (let node in graph) {
+    distances[node] = node === startNode ? 0 : Infinity;
+    pq.enqueue(node, distances[node]);
+  }
 
-    while (queueStart.length > 0 && queueEnd.length > 0) {
-        const currentNodeStart = queueStart.shift();
-        const neighborsStart = graph[currentNodeStart] || [];
+  while (!pq.isEmpty()) {
+    let currentNode = pq.dequeue();
+    if (visited.has(currentNode)) continue;
+    visited.add(currentNode);
 
-        for (const neighbor of neighborsStart) {
-            if (!visitedStart.has(neighbor)) {
-                if (visitedEnd.has(neighbor)) {
-                    return true; // Path found
-                }
-                visitedStart.add(neighbor);
-                queueStart.push(neighbor);
-            }
-        }
+    for (let neighbor in graph[currentNode]) {
+      let distance = distances[currentNode] + graph[currentNode][neighbor];
+      if (distance < distances[neighbor]) {
+        distances[neighbor] = distance;
+        pq.enqueue(neighbor, distance);
+      }
+    }
+  }
 
-        const currentNodeEnd = queueEnd.shift();
-        const neighborsEnd = graph[currentNodeEnd] || [];
-
-        for (const neighbor of neighborsEnd) {
-            if (!visitedEnd.has(neighbor)) {
-                if (visitedStart.has(neighbor)) {
-                    return true; // Path found
-                }
-                visitedEnd.add(neighbor);
-                queueEnd.push(neighbor);
-            }
-        }
-    }
-
-    return false; // No path found
+  return distances[endNode];
 }
 
-// Example usage
-const graph = {
-    A: ['B', 'C'],
-    B: ['A', 'D'],
-    C: ['A', 'E'],
-    D: ['B', 'F'],
-    E: ['C', 'G'],
-    F: ['D'],
-    G: ['E']
+// Sample graph representation
+let graph = {
+  A: { B: 5, C: 3 },
+  B: { A: 5, C: 1, D: 2 },
+  C: { A: 3, B: 1, D: 6 },
+  D: { B: 2, C: 6 }
 };
 
-const startNode = 'A';
-const endNode = 'G';
-
-if (bidirectionalSearch(graph, startNode, endNode)) {
-    console.log(`Path exists between ${startNode} and ${endNode}`);
-} else {
-    console.log(`No path exists between ${startNode} and ${endNode}`);
-}
+console.log(dijkstra(graph, 'A', 'D')); // Output: 4
