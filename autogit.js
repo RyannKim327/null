@@ -1,60 +1,19 @@
-class TrieNode {
-    constructor() {
-        this.children = {};
-        this.isEndOfWord = false;
-    }
-}
-
-class Trie {
-    constructor() {
-        this.root = new TrieNode();
-    }
-
-    insert(word) {
-        let node = this.root;
-        
-        for (let char of word) {
-            if (!node.children[char]) {
-                node.children[char] = new TrieNode();
-            }
-            node = node.children[char];
+function countOccurrences(text, word) {
+    const words = text.split(" ");
+    let count = 0;
+    
+    for (let i = 0; i < words.length; i++) {
+        if (words[i].toLowerCase() === word.toLowerCase()) {
+            count++;
         }
-        
-        node.isEndOfWord = true;
     }
-
-    search(word) {
-        let node = this.root;
-        
-        for (let char of word) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
-        }
-        
-        return node.isEndOfWord;
-    }
-
-    startsWith(prefix) {
-        let node = this.root;
-        
-        for (let char of prefix) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
-        }
-        
-        return true;
-    }
+    
+    return count;
 }
 
 // Example usage
-let trie = new Trie();
-trie.insert('apple');
-trie.insert('app');
-console.log(trie.search('apple')); // Output: true
-console.log(trie.search('app')); // Output: true
-console.log(trie.startsWith('app')); // Output: true
-console.log(trie.startsWith('aps')); // Output: false
+const text = "This is a sample sentence. Sample words can occur multiple times in the sentence.";
+const word = "sample";
+
+const occurrences = countOccurrences(text, word);
+console.log(`The word "${word}" occurs ${occurrences} times in the text.`);
