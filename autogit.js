@@ -1,64 +1,26 @@
-class Node {
-    constructor(value, color) {
-        this.value = value;
-        this.color = color;
-        this.left = null;
-        this.right = null;
-        this.parent = null;
+function isPalindrome(s) {
+    if (s === null) {
+        return false;
     }
+
+    let left = 0;
+    let right = s.length - 1;
+
+    while (left < right) {
+        if (s[left] !== s[right]) {
+            return false;
+        }
+        left++;
+        right--;
+    }
+
+    return true;
 }
 
-class RedBlackTree {
-    constructor() {
-        this.root = null;
-    }
-
-    insert(value) {
-        const newNode = new Node(value, "red");
-        if (!this.root) {
-            this.root = newNode;
-            this.root.color = "black";
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    insertNode(rootNode, newNode) {
-        if (newNode.value < rootNode.value) {
-            if (rootNode.left === null) {
-                rootNode.left = newNode;
-                newNode.parent = rootNode;
-            } else {
-                this.insertNode(rootNode.left, newNode);
-            }
-        } else {
-            if (rootNode.right === null) {
-                rootNode.right = newNode;
-                newNode.parent = rootNode;
-            } else {
-                this.insertNode(rootNode.right, newNode);
-            }
-        }
-    }
-
-    // Other methods like delete, rotate, balance can be added here
-
-    // Print the tree in-order
-    inOrderTraversal(node) {
-        if (node !== null) {
-            this.inOrderTraversal(node.left);
-            console.log(node.value);
-            this.inOrderTraversal(node.right);
-        }
-    }
+// Test the function
+let str = "madam";
+if (isPalindrome(str)) {
+    console.log("The string is a palindrome.");
+} else {
+    console.log("The string is not a palindrome.");
 }
-
-// Usage
-const tree = new RedBlackTree();
-tree.insert(10);
-tree.insert(20);
-tree.insert(5);
-tree.insert(11);
-tree.insert(3);
-
-tree.inOrderTraversal(tree.root);
