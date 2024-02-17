@@ -1,49 +1,49 @@
-function rabinKarpSearch(text, pattern) {
-  const textLength = text.length;
-  const patternLength = pattern.length;
-  const prime = 101; // A prime number to calculate the hash value
-  const base = 256; // The base for the hash function
-
-  // Calculate the initial hash values for the pattern and the first window of the text
-  let hashPattern = 0;
-  let hashWindow = 0;
-  let basePower = 1;
-  for (let i = 0; i < patternLength; i++) {
-    hashPattern = (hashPattern * base + pattern.charCodeAt(i)) % prime;
-    hashWindow = (hashWindow * base + text.charCodeAt(i)) % prime;
-    if (i > 0) {
-      basePower = (basePower * base) % prime;
+function burrowsWheelerTransform(input) {
+    // Generate all possible cyclic rotations of the input string
+    let rotations = [];
+    for (let i = 0; i < input.length; i++) {
+        rotations.push(input.slice(i) + input.slice(0, i));
     }
-  }
 
-  // Slide the window one character at a time and compare hash values
-  for (let i = 0; i <= textLength - patternLength; i++) {
-    if (hashPattern === hashWindow) {
-      let match = true;
-      for (let j = 0; j < patternLength; j++) {
-        if (text[i + j] !== pattern[j]) {
-          match = false;
-          break;
+    // Sort the cyclic rotations lexicographically
+    rotations.sort();
+
+    // Extract the last characters of each cyclic rotation
+    let transformed = rotations.map(rotation => rotation.charAt(rotation.length - 1)).join('');
+
+    // Find the index of the original string in the sorted rotations
+    let originalIndex = rotations.indexOf(input);
+
+    return { transformed, originalIndex };
+}
+
+function inverseBurrowsWheelerTransform(input, originalIndex) {
+    let table = Array(input.length).fill(null).map(() => Array(input.length).fill(null));
+
+    // Fill in the first column of the table with the sorted characters of the transformed string
+    let sortedInput = input.split('').sort();
+    input.split('').forEach((char, index) => {
+        table[index][0] = sortedInput[index];
+    });
+
+    // Fill in the remaining columns of the table
+    for (let i = 1; i < input.length; i++) {
+        for (let j = 0; j < input.length; j++) {
+            table[j][i] = table[j][i - 1] + table[(j + 1) % input.length][i - 1];
         }
-      }
-      if (match) {
-        return i; // Match found
-      }
+        table.sort();
     }
-    // Recalculate the hash value for the new window
-    if (i < textLength - patternLength) {
-      hashWindow = (((hashWindow - text.charCodeAt(i) * basePower) * base + text.charCodeAt(i + patternLength)) % prime + prime) % prime;
-    }
-  }
-  return -1; // No match found
+
+    let original = table[originalIndex].join('');
+
+    return original;
 }
 
-// Test the implementation
-const text = 'abracadabra';
-const pattern = 'cad';
-const index = rabinKarpSearch(text, pattern);
-if (index !== -1) {
-  console.log(`Pattern found at index ${index}`);
-} else {
-  console.log('Pattern not found');
-}
+// Example
+let input = "hello world";
+let { transformed, originalIndex } = burrowsWheelerTransform(input);
+let original = inverseBurrowsWheelerTransform(transformed, originalIndex);
+
+console.log("Original: " + input);
+console.log("Transformed: " + transformed);
+console.log("Decoded: " + original);
