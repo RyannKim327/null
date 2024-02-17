@@ -1,32 +1,49 @@
-function longestIncreasingSubsequence(arr) {
-    let lisLength = [];
-    for (let i = 0; i < arr.length; i++) {
-        lisLength[i] = 1;
-        for (let j = 0; j < i; j++) {
-            if (arr[i] > arr[j] && lisLength[i] < lisLength[j] + 1) {
-                lisLength[i] = lisLength[j] + 1;
-            }
-        }
-    }
-
-    let maxLength = Math.max(...lisLength);
-    let result = [];
-    let index = lisLength.indexOf(maxLength);
-
-    while (maxLength > 0) {
-        result.unshift(arr[index]);
-        maxLength--;
-
-        for (let i = index - 1; i >= 0; i--) {
-            if (lisLength[i] === maxLength && arr[i] < arr[index]) {
-                index = i;
-                break;
-            }
-        }
-    }
-
-    return result;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-let arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
-console.log(longestIncreasingSubsequence(arr)); // Output: [10, 22, 33, 50, 60, 80]
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+
+  addNode(value) {
+    const newNode = new Node(value);
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
+
+  findMiddleElement() {
+    let slowPtr = this.head;
+    let fastPtr = this.head;
+
+    while (fastPtr && fastPtr.next) {
+      slowPtr = slowPtr.next;
+      fastPtr = fastPtr.next.next;
+    }
+
+    return slowPtr.value;
+  }
+}
+
+// Create a linked list
+const linkedList = new LinkedList();
+linkedList.addNode(1);
+linkedList.addNode(2);
+linkedList.addNode(3);
+linkedList.addNode(4);
+linkedList.addNode(5);
+
+// Find the middle element of the linked list
+const middleElement = linkedList.findMiddleElement();
+console.log(middleElement);
