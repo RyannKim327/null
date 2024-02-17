@@ -1,22 +1,64 @@
-function isAnagram(str1, str2) {
-    // Convert strings to lowercase and remove non-alphabetic characters
-    str1 = str1.toLowerCase().replace(/[^a-z]/g, '');
-    str2 = str2.toLowerCase().replace(/[^a-z]/g, '');
+class Graph {
+  constructor() {
+    this.nodes = new Map();
+  }
 
-    // Sort the characters in each string
-    str1 = str1.split('').sort().join('');
-    str2 = str2.split('').sort().join('');
+  addNode(name) {
+    this.nodes.set(name, []);
+  }
 
-    // Compare the sorted strings
-    return str1 === str2;
+  addEdge(startNode, endNode) {
+    if (!this.nodes.has(startNode) || !this.nodes.has(endNode)) {
+      throw new Error('Nodes not found in graph');
+    }
+
+    this.nodes.get(startNode).push(endNode);
+    this.nodes.get(endNode).push(startNode);
+  }
+
+  biDirectionalSearch(startNode, endNode) {
+    let visitedFromStart = new Set([startNode]);
+    let visitedFromEnd = new Set([endNode]);
+    let queueFromStart = [startNode];
+    let queueFromEnd = [endNode];
+
+    while (queueFromStart.length > 0 && queueFromEnd.length > 0) {
+      let currentStart = queueFromStart.shift();
+      let currentEnd = queueFromEnd.shift();
+
+      if (visitedFromEnd.has(currentStart) || visitedFromStart.has(currentEnd)) {
+        return true;
+      }
+
+      for (let neighbor of this.nodes.get(currentStart)) {
+        if (!visitedFromStart.has(neighbor)) {
+          visitedFromStart.add(neighbor);
+          queueFromStart.push(neighbor);
+        }
+      }
+
+      for (let neighbor of this.nodes.get(currentEnd)) {
+        if (!visitedFromEnd.has(neighbor)) {
+          visitedFromEnd.add(neighbor);
+          queueFromEnd.push(neighbor);
+        }
+      }
+    }
+
+    return false;
+  }
 }
 
-// Test the function with sample strings
-const str1 = "listen";
-const str2 = "silent";
+// Example usage
+let graph = new Graph();
+graph.addNode('A');
+graph.addNode('B');
+graph.addNode('C');
+graph.addNode('D');
 
-if (isAnagram(str1, str2)) {
-    console.log(`${str1} and ${str2} are anagrams.`);
-} else {
-    console.log(`${str1} and ${str2} are not anagrams.`);
-}
+graph.addEdge('A', 'B');
+graph.addEdge('B', 'C');
+graph.addEdge('C', 'D');
+
+let result = graph.biDirectionalSearch('A', 'D');
+console.log(result); // Output: true
