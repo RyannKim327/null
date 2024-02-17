@@ -1,56 +1,23 @@
-class Graph {
-  constructor() {
-    this.vertices = {};
-  }
-
-  addVertex(vertex) {
-    if (!this.vertices[vertex]) {
-      this.vertices[vertex] = [];
+function findFirstRepeatedChar(str) {
+  let charMap = {};
+  
+  for (let char of str) {
+    if (charMap[char]) {
+      return char;
+    } else {
+      charMap[char] = true;
     }
   }
-
-  addEdge(vertex1, vertex2) {
-    if (!this.vertices[vertex1] || !this.vertices[vertex2]) {
-      throw new Error("Vertex not found");
-    }
-
-    this.vertices[vertex1].push(vertex2);
-    this.vertices[vertex2].push(vertex1);
-  }
-
-  depthFirstSearch(startingVertex) {
-    const visited = {};
-    const stack = [startingVertex];
-    const result = [];
-
-    while (stack.length > 0) {
-      const currentVertex = stack.pop();
-      
-      if (!visited[currentVertex]) {
-        visited[currentVertex] = true;
-        result.push(currentVertex);
-
-        this.vertices[currentVertex].forEach(neighbor => {
-          if (!visited[neighbor]) {
-            stack.push(neighbor);
-          }
-        });
-      }
-    }
-
-    return result;
-  }
+  
+  return null;
 }
 
 // Example usage
-const graph = new Graph();
-graph.addVertex("A");
-graph.addVertex("B");
-graph.addVertex("C");
-graph.addVertex("D");
-graph.addEdge("A", "B");
-graph.addEdge("A", "C");
-graph.addEdge("B", "D");
-graph.addEdge("C", "D");
+const str = "hello world";
+const firstRepeatedChar = findFirstRepeatedChar(str);
 
-console.log(graph.depthFirstSearch("A")); // Output: ['A', 'C', 'D', 'B']
+if (firstRepeatedChar) {
+  console.log(`The first repeated character in "${str}" is: ${firstRepeatedChar}`);
+} else {
+  console.log("No repeated characters found in the string");
+}
