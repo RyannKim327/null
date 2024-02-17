@@ -1,9 +1,5 @@
-let str = "42";
-let integer = parseInt(str);
-console.log(integer); // Output: 42
-let str = "1010";
-let binaryInteger = parseInt(str, 2);
-console.log(binaryInteger); // Output: 10
-let str = "42";
-let integer = Number(str);
-console.log(integer); // Output: 42
+let numbers = [10, 5, 8, 15, 3];
+
+let max = Math.max.apply(null, numbers);
+
+console.log("Maximum value in the array is: " + max);
