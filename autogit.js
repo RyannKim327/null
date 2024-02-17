@@ -1,9 +1,16 @@
-const axios = require('axios');
+function bubbleSort(arr) {
+    let len = arr.length;
+    for (let i = 0; i < len; i++) {
+        for (let j = 0; j < len - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                let tmp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = tmp;
+            }
+        }
+    }
+    return arr;
+}
 
-axios.get('https://jsonplaceholder.typicode.com/posts/1')
-  .then(response => {
-    console.log(response.data);
-  })
-  .catch(error => {
-    console.error('Error fetching data:', error);
-  });
+const numbers = [5, 3, 8, 4, 2];
+console.log(bubbleSort(numbers));
