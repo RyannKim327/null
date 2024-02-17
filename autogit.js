@@ -1,13 +1,16 @@
-// Function to make a network request to the server
+const url = 'https://api.example.com/data';
+
 async function fetchData() {
-    try {
-        const response = await fetch('https://api.example.com/data');
-        const data = await response.json();
-        console.log(data);
-    } catch (error) {
-        console.error('Error fetching data:', error);
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error('Failed to fetch data');
     }
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error('An error occurred', error);
+  }
 }
 
-// Initiating the network request
 fetchData();
