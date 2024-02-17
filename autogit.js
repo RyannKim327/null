@@ -1,57 +1,47 @@
-function buildKMPTable(pattern) {
-    const table = Array(pattern.length).fill(0);
-    let i = 0;
-    let j = 1;
-
-    while (j < pattern.length) {
-        if (pattern[i] === pattern[j]) {
-            table[j] = i + 1;
-            i++;
-            j++;
-        } else {
-            if (i !== 0) {
-                i = table[i - 1];
-            } else {
-                table[j] = 0;
-                j++;
-            }
-        }
+function dijkstra(graph, startNode) {
+  let distances = {};
+  let visited = {};
+  
+  // Initialize distances with Infinity and startNode with 0
+  for (let node in graph) {
+    distances[node] = Infinity;
+  }
+  distances[startNode] = 0;
+  
+  // Loop as long as there are unvisited nodes
+  while (Object.keys(visited).length < Object.keys(graph).length) {
+    
+    // Find the unvisited node with the smallest distance
+    let currentNode = null;
+    for (let node in distances) {
+      if (!visited[node] && (currentNode === null || distances[node] < distances[currentNode])) {
+        currentNode = node;
+      }
     }
-
-    return table;
-}
-
-function kmpSearch(text, pattern) {
-    const table = buildKMPTable(pattern);
-    let i = 0;
-    let j = 0;
-
-    while (i < text.length) {
-        if (text[i] === pattern[j]) {
-            i++;
-            j++;
-            if (j === pattern.length) {
-                return i - j; // Match found
-            }
-        } else {
-            if (j !== 0) {
-                j = table[j - 1];
-            } else {
-                i++;
-            }
-        }
+    
+    // Visit the current node
+    visited[currentNode] = true;
+    
+    // Update distances to neighboring nodes
+    for (let neighbor in graph[currentNode]) {
+      let distance = distances[currentNode] + graph[currentNode][neighbor];
+      if (distance < distances[neighbor]) {
+        distances[neighbor] = distance;
+      }
     }
-
-    return -1; // No match found
+  }
+  
+  return distances;
 }
 
-// Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const index = kmpSearch(text, pattern);
+// Example graph representation
+let graph = {
+  'A': {'B': 5, 'C': 3},
+  'B': {'A': 5, 'C': 2, 'D': 1},
+  'C': {'A': 3, 'B': 2, 'D': 4},
+  'D': {'B': 1, 'C': 4}
+};
 
-if (index !== -1) {
-    console.log(`Pattern found at index ${index}`);
-} else {
-    console.log("Pattern not found");
-}
+// Find shortest paths from node 'A'
+let shortestPaths = dijkstra(graph, 'A');
+console.log(shortestPaths);
