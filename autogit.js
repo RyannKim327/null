@@ -1,7 +1,19 @@
-let numbers = [4, 2, 5, 1, 3];
-numbers.sort((a, b) => a - b);
+function isPrime(number) {
+    if (number <= 1) {
+        return false;
+    }
+    for (let i = 2; i <= Math.sqrt(number); i++) {
+        if (number % i === 0) {
+            return false;
+        }
+    }
+    return true;
+}
 
-console.log(numbers); // Output: [1, 2, 3, 4, 5]
-numbers.sort((a, b) => b - a);
-
-console.log(numbers); // Output: [5, 4, 3, 2, 1]
+// Example Usage
+const number = 29;
+if (isPrime(number)) {
+    console.log(number + ' is a prime number');
+} else {
+    console.log(number + ' is not a prime number');
+}
