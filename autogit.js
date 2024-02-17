@@ -1,24 +1,14 @@
-function quickSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
-    }
-
-    const pivot = arr[arr.length - 1];
-    const left = [];
-    const right = [];
-
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
-        }
-    }
-
-    return [...quickSort(left), pivot, ...quickSort(right)];
+function calculateMean(numbers) {
+    let sum = 0;
+    numbers.forEach(function(number) {
+        sum += number;
+    });
+    
+    return sum / numbers.length;
 }
 
-// Example usage
-const arr = [5, 2, 7, 1, 3, 8, 4];
-const sortedArr = quickSort(arr);
-console.log(sortedArr);
+// Example list of numbers
+const numbers = [3, 5, 7, 9, 11];
+
+const mean = calculateMean(numbers);
+console.log("Mean:", mean);
