@@ -1,36 +1,34 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
+function interpolationSearch(arr, x) {
+    let low = 0;
+    let high = arr.length - 1;
 
-class BinaryTree {
-    constructor() {
-        this.root = null;
-    }
-
-    sumOfNodes(node) {
-        if (node === null) {
-            return 0;
+    while (low <= high && x >= arr[low] && x <= arr[high]) {
+        if (low === high) {
+            if (arr[low] === x) return low;
+            return -1;
         }
-        return node.value + this.sumOfNodes(node.left) + this.sumOfNodes(node.right);
+
+        let pos = low + Math.floor(((high - low) / (arr[high] - arr[low])) * (x - arr[low]);
+
+        if (arr[pos] === x) return pos;
+
+        if (arr[pos] < x) {
+            low = pos + 1;
+        } else {
+            high = pos - 1;
+        }
     }
 
-    // Helper method to calculate the sum of all nodes in the tree
-    getSumOfAllNodes() {
-        return this.sumOfNodes(this.root);
-    }
+    return -1;
 }
 
 // Example usage
-const tree = new BinaryTree();
-tree.root = new Node(1);
-tree.root.left = new Node(2);
-tree.root.right = new Node(3);
-tree.root.left.left = new Node(4);
-tree.root.left.right = new Node(5);
+const arr = [1, 3, 5, 7, 9, 11, 13, 15];
+const x = 5;
+const index = interpolationSearch(arr, x);
 
-const sum = tree.getSumOfAllNodes();
-console.log("Sum of all nodes in the binary tree:", sum);
+if (index !== -1) {
+    console.log(`Element ${x} found at index ${index}`);
+} else {
+    console.log(`Element ${x} not found`);
+}
