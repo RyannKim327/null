@@ -1,37 +1,37 @@
-function mergeSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
-    }
+function bfs(graph, start) {
+  let visited = {};
+  let queue = [start];
+  let result = [];
 
-    const mid = Math.floor(arr.length / 2);
-    const left = arr.slice(0, mid);
-    const right = arr.slice(mid);
+  while (queue.length > 0) {
+    let node = queue.shift();
+    if (!visited[node]) {
+      visited[node] = true;
+      result.push(node);
 
-    return merge(
-        mergeSort(left),
-        mergeSort(right)
-    );
-}
-
-function merge(left, right) {
-    let result = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
-
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            result.push(left[leftIndex]);
-            leftIndex++;
-        } else {
-            result.push(right[rightIndex]);
-            rightIndex++;
+      let neighbors = graph[node];
+      for (let i = 0; i < neighbors.length; i++) {
+        let neighbor = neighbors[i];
+        if (!visited[neighbor]) {
+          queue.push(neighbor);
         }
+      }
     }
+  }
 
-    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+  return result;
 }
 
-// Example usage:
-const arr = [8, 4, 3, 6, 2, 7, 1, 5];
-const sortedArr = mergeSort(arr);
-console.log(sortedArr);
+// Example usage
+const graph = {
+  'A': ['B', 'C'],
+  'B': ['A', 'D', 'E'],
+  'C': ['A', 'F', 'G'],
+  'D': ['B'],
+  'E': ['B'],
+  'F': ['C'],
+  'G': ['C']
+};
+
+const startNode = 'A';
+console.log(bfs(graph, startNode)); // Output: ['A', 'B', 'C', 'D', 'E', 'F', 'G']
