@@ -1,9 +1,13 @@
-function findSecondLargest(arr) {
-  arr.sort(function(a, b){return b-a});  // Sort the array in descending order
-  return arr[1];                         // Return the element at index 1
+// Function to make a network request to the server
+async function fetchData() {
+    try {
+        const response = await fetch('https://api.example.com/data');
+        const data = await response.json();
+        console.log(data);
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
 }
 
-let array = [5, 10, 3, 8, 1];
-let secondLargest = findSecondLargest(array);
-
-console.log('Second largest element:', secondLargest);
+// Initiating the network request
+fetchData();
