@@ -1,49 +1,27 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+class TreeNode {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-
-  addNode(value) {
-    const newNode = new Node(value);
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
+function maxDepth(root) {
+    if (root === null) {
+        return 0;
     }
-  }
-
-  findMiddleElement() {
-    let slowPtr = this.head;
-    let fastPtr = this.head;
-
-    while (fastPtr && fastPtr.next) {
-      slowPtr = slowPtr.next;
-      fastPtr = fastPtr.next.next;
-    }
-
-    return slowPtr.value;
-  }
+    
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
+    
+    return Math.max(leftDepth, rightDepth) + 1;
 }
 
-// Create a linked list
-const linkedList = new LinkedList();
-linkedList.addNode(1);
-linkedList.addNode(2);
-linkedList.addNode(3);
-linkedList.addNode(4);
-linkedList.addNode(5);
+// Example binary tree
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-// Find the middle element of the linked list
-const middleElement = linkedList.findMiddleElement();
-console.log(middleElement);
+console.log(maxDepth(root)); // Output: 3
