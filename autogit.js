@@ -1,19 +1,22 @@
-function isPrime(number) {
-    if (number <= 1) {
-        return false;
-    }
-    for (let i = 2; i <= Math.sqrt(number); i++) {
-        if (number % i === 0) {
-            return false;
+function firstRepeatedChar(str) {
+    let charMap = {};
+
+    for (let char of str) {
+        if (charMap[char]) {
+            return char;
+        } else {
+            charMap[char] = 1;
         }
     }
-    return true;
+
+    return null;
 }
 
-// Example Usage
-const number = 29;
-if (isPrime(number)) {
-    console.log(number + ' is a prime number');
+let inputString = "hello world";
+let repeatedChar = firstRepeatedChar(inputString);
+
+if (repeatedChar) {
+    console.log(`The first repeated character is: ${repeatedChar}`);
 } else {
-    console.log(number + ' is not a prime number');
+    console.log("No repeated characters found in the string.");
 }
