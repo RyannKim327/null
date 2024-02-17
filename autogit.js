@@ -1,23 +1,19 @@
-function bubbleSort(arr) {
-    let len = arr.length;
-    let swapped;
-
-    do {
-        swapped = false;
-        for (let i = 0; i < len - 1; i++) {
-            if (arr[i] > arr[i + 1]) {
-                let temp = arr[i];
-                arr[i] = arr[i + 1];
-                arr[i + 1] = temp;
-                swapped = true;
-            }
+function countOccurrences(text, word) {
+    let count = 0;
+    let words = text.split(' ');
+    
+    for (let i = 0; i < words.length; i++) {
+        if (words[i].toLowerCase() === word.toLowerCase()) {
+            count++;
         }
-    } while (swapped);
-
-    return arr;
+    }
+    
+    return count;
 }
 
 // Example usage
-let unsortedArray = [64, 34, 25, 12, 22, 11, 90];
-let sortedArray = bubbleSort(unsortedArray);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 34, 64, 90]
+const text = 'JavaScript is a programming language, and JavaScript is popular.';
+const word = 'JavaScript';
+const occurrences = countOccurrences(text, word);
+
+console.log(`The word "${word}" occurs ${occurrences} times in the text.`);
