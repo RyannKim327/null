@@ -1,30 +1,49 @@
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+// Fibonacci search algorithm
+function fibonacciSearch(arr, x) {
+    let fib2 = 0;
+    let fib1 = 1;
+    let fib = fib1 + fib2;
+    const n = arr.length;
+    
+    while (fib < n) {
+        fib2 = fib1;
+        fib1 = fib;
+        fib = fib1 + fib2;
+    }
+    
+    let offset = -1;
+
+    while (fib > 1) {
+        const i = Math.min(offset + fib2, n - 1);
+
+        if (arr[i] < x) {
+            fib = fib1;
+            fib1 = fib2;
+            fib2 = fib - fib1;
+            offset = i;
+        } else if (arr[i] > x) {
+            fib = fib2;
+            fib1 -= fib2;
+            fib2 = fib - fib1;
+        } else {
+            return i;
+        }
+    }
+
+    if (fib1 && arr[offset + 1] === x) {
+        return offset + 1;
+    }
+
+    return -1;
 }
 
-function calculateNodeSum(root) {
-  if (root === null) {
-    return 0;
-  }
+// Example usage
+const sortedArray = [1, 3, 5, 7, 9, 11, 13, 15];
+const elementToSearch = 11;
+const index = fibonacciSearch(sortedArray, elementToSearch);
 
-  let sum = root.value;
-  sum += calculateNodeSum(root.left);
-  sum += calculateNodeSum(root.right);
-
-  return sum;
+if (index !== -1) {
+    console.log(`Element found at index ${index}.`);
+} else {
+    console.log("Element not found in the array.");
 }
-
-// Sample binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-const treeSum = calculateNodeSum(root);
-
-console.log("Sum of all nodes in the binary tree:", treeSum);
