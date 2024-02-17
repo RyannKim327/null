@@ -1,27 +1,16 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+function findMedianSortedArrays(nums1, nums2) {
+    const combined = [...nums1, ...nums2].sort((a, b) => a - b);
+    const length = combined.length;
+
+    if (length % 2 === 0) {
+        const mid = length / 2;
+        return (combined[mid - 1] + combined[mid]) / 2;
+    } else {
+        const mid = Math.floor(length / 2);
+        return combined[mid];
     }
 }
 
-function maxDepth(root) {
-    if (root === null) {
-        return 0;
-    }
-
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
-
-    return 1 + Math.max(leftDepth, rightDepth);
-}
-
-// Example binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-console.log("Max depth of the binary tree is: ", maxDepth(root)); // Output: 3
+const nums1 = [1, 3];
+const nums2 = [2, 4];
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.5
