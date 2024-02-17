@@ -1,13 +1,61 @@
-let array = [1, 2, 3, 4, 5];
-let index = array.indexOf(3); // Find the index of the element you want to remove
-if (index > -1) {
-    array.splice(index, 1); // Remove one element at the index
+// Node class to represent individual nodes in the red-black tree
+class Node {
+    constructor(value, color, left, right, parent) {
+        this.value = value;
+        this.color = color || 'red';
+        this.left = left || null;
+        this.right = right || null;
+        this.parent = parent || null;
+    }
 }
-console.log(array); // Output: [1, 2, 4, 5]
-let array = [1, 2, 3, 4, 5];
-let newArray = array.filter(item => item !== 3); // Remove the element with the value of 3
-console.log(newArray); // Output: [1, 2, 4, 5]
-let array = [1, 2, 3, 4, 5];
-let index = array.indexOf(3); // Find the index of the element you want to remove
-let newArray = array.slice(0, index).concat(array.slice(index + 1)); // Copy elements before and after the element to be removed
-console.log(newArray); // Output: [1, 2, 4, 5]
+
+// RedBlackTree class to represent the red-black tree data structure
+class RedBlackTree {
+    constructor() {
+        this.root = null;
+    }
+
+    // Helper function to perform left rotation
+    leftRotate(node) {
+        let rightChild = node.right;
+        node.right = rightChild.left;
+        if (rightChild.left !== null) {
+            rightChild.left.parent = node;
+        }
+        rightChild.parent = node.parent;
+        if (node.parent === null) {
+            this.root = rightChild;
+        } else if (node === node.parent.left) {
+            node.parent.left = rightChild;
+        } else {
+            node.parent.right = rightChild;
+        }
+        rightChild.left = node;
+        node.parent = rightChild;
+    }
+
+    // Helper function to perform right rotation
+    rightRotate(node) {
+        let leftChild = node.left;
+        node.left = leftChild.right;
+        if (leftChild.right !== null) {
+            leftChild.right.parent = node;
+        }
+        leftChild.parent = node.parent;
+        if (node.parent === null) {
+            this.root = leftChild;
+        } else if (node === node.parent.right) {
+            node.parent.right = leftChild;
+        } else {
+            node.parent.left = leftChild;
+        }
+        leftChild.right = node;
+        node.parent = leftChild;
+    }
+
+    // Other operations like insertion, deletion, search, Traversal can be added as needed.
+}
+
+// Usage
+const rbt = new RedBlackTree();
+console.log(rbt);
