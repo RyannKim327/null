@@ -1,24 +1,46 @@
-function quicksort(arr) {
-    if (arr.length <= 1) {
-        return arr;
-    } else {
-        const pivot = arr[0];
-        const left = [];
-        const right = [];
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.children = [];
+  }
 
-        for (let i = 1; i < arr.length; i++) {
-            if (arr[i] < pivot) {
-                left.push(arr[i]);
-            } else {
-                right.push(arr[i]);
-            }
-        }
-
-        return quicksort(left).concat(pivot, quicksort(right));
-    }
+  addChild(child) {
+    this.children.push(child);
+  }
 }
 
-// Example usage:
-const arr = [5, 2, 9, 3, 7, 6, 1, 8, 4];
-const sortedArr = quicksort(arr);
-console.log(sortedArr);
+function breadthFirstSearch(root) {
+  let queue = [];
+  let result = [];
+  
+  if (root === null) {
+    return result;
+  }
+
+  queue.push(root);
+
+  while (queue.length > 0) {
+    let node = queue.shift();
+    result.push(node.value);
+    
+    for (let child of node.children) {
+      queue.push(child);
+    }
+  }
+
+  return result;
+}
+
+// Example usage
+let nodeA = new Node('A');
+let nodeB = new Node('B');
+let nodeC = new Node('C');
+let nodeD = new Node('D');
+let nodeE = new Node('E');
+
+nodeA.addChild(nodeB);
+nodeA.addChild(nodeC);
+nodeB.addChild(nodeD);
+nodeD.addChild(nodeE);
+
+console.log(breadthFirstSearch(nodeA)); // Output: ['A', 'B', 'C', 'D', 'E']
