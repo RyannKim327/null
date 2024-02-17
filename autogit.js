@@ -1,37 +1,24 @@
-function bfs(graph, start) {
-  let visited = {};
-  let queue = [start];
-  let result = [];
-
-  while (queue.length > 0) {
-    let node = queue.shift();
-    if (!visited[node]) {
-      visited[node] = true;
-      result.push(node);
-
-      let neighbors = graph[node];
-      for (let i = 0; i < neighbors.length; i++) {
-        let neighbor = neighbors[i];
-        if (!visited[neighbor]) {
-          queue.push(neighbor);
-        }
-      }
+function quickSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
     }
-  }
 
-  return result;
+    const pivot = arr[0];
+    const left = [];
+    const right = [];
+
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
+        } else {
+            right.push(arr[i]);
+        }
+    }
+
+    return quickSort(left).concat(pivot, quickSort(right));
 }
 
 // Example usage
-const graph = {
-  'A': ['B', 'C'],
-  'B': ['A', 'D', 'E'],
-  'C': ['A', 'F', 'G'],
-  'D': ['B'],
-  'E': ['B'],
-  'F': ['C'],
-  'G': ['C']
-};
-
-const startNode = 'A';
-console.log(bfs(graph, startNode)); // Output: ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+const arr = [5, 3, 7, 2, 8, 4, 1];
+const sortedArray = quickSort(arr);
+console.log(sortedArray);
