@@ -1,15 +1,43 @@
-function isArraySortedAscending(arr) {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false;
+function mergeSort(arr) {
+  const n = arr.length;
+  const sortedArr = Array(n).fill(0);
+
+  for (let size = 1; size < n; size *= 2) {
+    for (let leftStart = 0; leftStart < n; leftStart += 2 * size) {
+      const leftEnd = Math.min(leftStart + size, n);
+      const rightStart = leftEnd;
+      const rightEnd = Math.min(rightStart + size, n);
+
+      let i = leftStart;
+      let j = rightStart;
+      let k = leftStart;
+
+      while (i < leftEnd && j < rightEnd) {
+        if (arr[i] <= arr[j]) {
+          sortedArr[k++] = arr[i++];
+        } else {
+          sortedArr[k++] = arr[j++];
         }
+      }
+
+      while (i < leftEnd) {
+        sortedArr[k++] = arr[i++];
+      }
+
+      while (j < rightEnd) {
+        sortedArr[k++] = arr[j++];
+      }
     }
-    return true;
+
+    // Copy sorted array back to original array
+    for (let i = 0; i < n; i++) {
+      arr[i] = sortedArr[i];
+    }
+  }
+
+  return arr;
 }
 
-// Test the function
-const arr1 = [1, 2, 3, 4, 5];
-const arr2 = [1, 3, 2, 4, 5];
-
-console.log(isArraySortedAscending(arr1)); // Output: true
-console.log(isArraySortedAscending(arr2)); // Output: false
+// Example usage
+const arr = [8, 3, 1, 7, 0, 10, 2];
+console.log(mergeSort(arr)); // Output: [0, 1, 2, 3, 7, 8, 10]
