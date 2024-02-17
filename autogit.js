@@ -1,7 +1,7 @@
-const cron = require('node-cron');
+function reverseString(str) {
+    return str.split("").reverse().join("");
+}
 
-cron.schedule('* * * * *', () => {
-  const date = new Date();
-  console.log(`Current date and time: ${date}`);
-});
-npm install node-cron
+const originalString = "hello";
+const reversedString = reverseString(originalString);
+console.log(reversedString); // Output: "olleh"
