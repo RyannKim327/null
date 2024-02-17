@@ -1,41 +1,31 @@
-function breadthFirstSearch(graph, startNode, targetNode) {
-    let visited = {};
-    let queue = [startNode];
-    
-    while (queue.length > 0) {
-        let currentNode = queue.shift();
-        
-        if (currentNode === targetNode) {
-            return true;
+function interpolationSearch(array, value) {
+    let low = 0;
+    let high = array.length - 1;
+
+    while (low <= high && value >= array[low] && value <= array[high]) {
+        let position = low + Math.floor(((value - array[low]) * (high - low)) / (array[high] - array[low]));
+
+        if (array[position] === value) {
+            return position;
         }
-        
-        if (!visited[currentNode]) {
-            visited[currentNode] = true;
-            
-            let neighbors = graph[currentNode];
-            for (let i = 0; i < neighbors.length; i++) {
-                let neighbor = neighbors[i];
-                if (!visited[neighbor]) {
-                    queue.push(neighbor);
-                }
-            }
+
+        if (array[position] < value) {
+            low = position + 1;
+        } else {
+            high = position - 1;
         }
     }
-    
-    return false;
+
+    return -1;
 }
 
-// Example graph represented as an adjacency list
-let graph = {
-    'A': ['B', 'C'],
-    'B': ['A', 'D', 'E'],
-    'C': ['A', 'F'],
-    'D': ['B'],
-    'E': ['B', 'F'],
-    'F': ['C', 'E']
-};
+// Example usage
+const array = [1, 3, 5, 7, 9, 11, 13, 15];
+const value = 7;
+const index = interpolationSearch(array, value);
 
-let startNode = 'A';
-let targetNode = 'F';
-
-console.log(breadthFirstSearch(graph, startNode, targetNode)); // Output: true
+if (index !== -1) {
+    console.log(`Element found at index ${index}`);
+} else {
+    console.log("Element not found");
+}
