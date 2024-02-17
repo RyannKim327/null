@@ -1,5 +1,12 @@
-let str1 = "Hello";
-let str2 = "World";
-let result = str1 + " " + str2;
+function isPalindrome(str) {
+    // Remove non-alphanumeric characters and convert to lowercase
+    str = str.toLowerCase().replace(/[\W_]/g, '');
+    
+    // Compare the original string with its reversed version
+    return str === str.split('').reverse().join('');
+}
 
-console.log(result); // Output: Hello World
+// Test the function
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
+console.log(isPalindrome("racecar")); // true
+console.log(isPalindrome("hello")); // false
