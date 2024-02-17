@@ -1,36 +1,44 @@
-function Node(value, children) {
+class Node {
+  constructor(value) {
     this.value = value;
-    this.children = children;
+    this.next = null;
+  }
 }
 
-function depthLimitedSearch(root, target, depth) {
-    let stack = [{ node: root, depth: 0 }];
+function findNthNodeFromEnd(head, n) {
+  let p1 = head;
+  let p2 = head;
 
-    while (stack.length > 0) {
-        let current = stack.pop();
-
-        if (current.node.value === target) {
-            return current.node.value;
-        }
-
-        if (current.depth < depth) {
-            for (let child of current.node.children) {
-                stack.push({ node: child, depth: current.depth + 1 });
-            }
-        }
+  // Move p2 n nodes ahead
+  for (let i = 0; i < n; i++) {
+    if (p2 === null) {
+      return null; // n is greater than the length of the linked list
     }
+    p2 = p2.next;
+  }
 
-    return null;
+  // Move both pointers until p2 reaches the end of the list
+  while (p2 !== null) {
+    p1 = p1.next;
+    p2 = p2.next;
+  }
+
+  return p1;
 }
 
 // Example usage
-let node1 = new Node(1, []);
-let node2 = new Node(2, []);
-let node3 = new Node(3, []);
-let node4 = new Node(4, []);
-let node5 = new Node(5, []);
+// Creating a linked list: 1 -> 2 -> 3 -> 4 -> 5
+let head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
 
-node1.children.push(node2, node3);
-node2.children.push(node4, node5);
+let n = 2; // Find the 2nd node from the end
+let nthNode = findNthNodeFromEnd(head, n);
 
-console.log(depthLimitedSearch(node1, 5, 2)); // Output: 5
+if (nthNode !== null) {
+  console.log(`The ${n}th node from the end is: ${nthNode.value}`);
+} else {
+  console.log(`The length of the linked list is less than ${n}`);
+}
