@@ -1,38 +1,136 @@
-function longestCommonSubsequence(str1, str2) {
-    const m = str1.length;
-    const n = str2.length;
-    
-    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-            } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-            }
-        }
-    }
-
-    let i = m, j = n;
-    let result = '';
-
-    while (i > 0 && j > 0) {
-        if (str1[i - 1] === str2[j - 1]) {
-            result = str1[i - 1] + result;
-            i--;
-            j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--;
-        } else {
-            j--;
-        }
-    }
-
-    return result;
+class Node {
+  constructor(value, color) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+    this.parent = null;
+    this.color = color;  // 0 for black, 1 for red
+  }
 }
 
-// Example usage
-const str1 = 'ABCDGH';
-const str2 = 'AEDFHR';
-console.log(longestCommonSubsequence(str1, str2)); // Output: ADH
+class RedBlackTree {
+  constructor() {
+    this.root = null;
+    this.TNULL = new Node(null, 0);  // Sentinel node representing null
+  }
+
+  // Left Rotation
+  leftRotate(x) {
+    let y = x.right;
+    x.right = y.left;
+    if (y.left != this.TNULL) {
+      y.left.parent = x;
+    }
+    y.parent = x.parent;
+    if (x.parent === null) {
+      this.root = y;
+    } else if (x === x.parent.left) {
+      x.parent.left = y;
+    } else {
+      x.parent.right = y;
+    }
+    y.left = x;
+    x.parent = y;
+  }
+
+  // Right Rotation
+  rightRotate(y) {
+    let x = y.left;
+    y.left = x.right;
+    if (x.right != this.TNULL) {
+      x.right.parent = y;
+    }
+    x.parent = y.parent;
+    if (y.parent === null) {
+      this.root = x;
+    } else if (y === y.parent.right) {
+      y.parent.right = x;
+    } else {
+      y.parent.left = x;
+    }
+    x.right = y;
+    y.parent = x;
+  }
+
+  insert(data) {
+    let newNode = new Node(data, 1);  // New nodes are always red
+    newNode.left = this.TNULL;
+    newNode.right = this.TNULL;
+
+    let current = this.root;
+    let parent = null;
+
+    while (current !== this.TNULL) {
+      parent = current;
+      if (newNode.value < current.value) {
+        current = current.left;
+      } else {
+        current = current.right;
+      }
+    }
+
+    newNode.parent = parent;
+    if (parent === null) {
+      this.root = newNode;
+    } else if (newNode.value < parent.value) {
+      parent.left = newNode;
+    } else {
+      parent.right = newNode;
+    }
+
+    if (newNode.parent === null) {
+      newNode.color = 0;  // root is always black
+      return;
+    }
+
+    if (newNode.parent.parent === null) {
+      return;
+    }
+
+    this.fixInsert(newNode);
+  }
+
+  fixInsert(k) {
+    let u;
+    while (k.parent.color === 1) {
+      if (k.parent === k.parent.parent.right) {
+        u = k.parent.parent.left; // uncle
+        if (u.color === 1) {
+          u.color = 0;
+          k.parent.color = 0;
+          k.parent.parent.color = 1;
+          k = k.parent.parent;
+        } else {
+          if (k === k.parent.left) {
+            k = k.parent;
+            this.rightRotate(k);
+          }
+          k.parent.color = 0;
+          k.parent.parent.color = 1;
+          this.leftRotate(k.parent.parent);
+        }
+      } else {
+        u = k.parent.parent.right; // uncle
+
+        if (u.color === 1) {
+          u.color = 0;
+          k.parent.color = 0;
+          k.parent.parent.color = 1;
+          k = k.parent.parent;
+        } else {
+          if (k === k.parent.right) {
+            k = k.parent;
+            this.leftRotate(k);
+          }
+          k.parent.color = 0;
+          k.parent.parent.color = 1;
+          this.rightRotate(k.parent.parent);
+        }
+      }
+      if (k === this.root) {
+        break;
+      }
+    }
+    this.root.color = 0;  // Always set root to black
+  }
+}
