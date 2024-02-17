@@ -1,29 +1,27 @@
-function largestPrimeFactor(number) {
-    let factors = [];
+function firstNonRepeatingCharacter(str) {
+    let charCount = {};
     
-    for (let i = 2; i <= Math.floor(Math.sqrt(number)); i++) {
-        while (number % i === 0) {
-            factors.push(i);
-            number /= i;
+    // Count occurrences of each character
+    for (let char of str) {
+        charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
+    }
+    
+    // Find the first non-repeating character
+    for (let char of str) {
+        if (charCount[char] === 1) {
+            return char;
         }
     }
     
-    if (number > 1) {
-        factors.push(number);
-    }
-    
-    let primeFactors = factors.filter(factor => {
-        for (let j = 2; j <= Math.sqrt(factor); j++) {
-            if (factor % j === 0) {
-                return false;
-            }
-        }
-        return factor > 1;
-    });
-    
-    return Math.max(...primeFactors);
+    return null; // If no non-repeating character found
 }
 
-// Example usage
-const number = 13195;
-console.log(largestPrimeFactor(number)); // Output: 29
+// Test the function
+let inputString = "aabbccde";
+let result = firstNonRepeatingCharacter(inputString);
+
+if (result) {
+    console.log("First non-repeating character is: " + result);
+} else {
+    console.log("No non-repeating character found");
+}
