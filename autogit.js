@@ -1,87 +1,23 @@
-class BTreeNode {
-    constructor(t, leaf = true) {
-        this.t = t;
-        this.keys = [];
-        this.children = [];
-        this.leaf = leaf;
+function findCommonElements(array1, array2) {
+    // Create an empty array to store common elements
+    let commonElements = [];
+
+    // Iterate through the first array
+    for (let i = 0; i < array1.length; i++) {
+        // Check if the element is present in the second array
+        if (array2.includes(array1[i]) && !commonElements.includes(array1[i])) {
+            // If present and not already added to the common elements array, add it
+            commonElements.push(array1[i]);
+        }
     }
+
+    return commonElements;
 }
 
-class BTree {
-    constructor(t) {
-        this.root = new BTreeNode(t);
-        this.t = t;
-    }
+// Example arrays
+let array1 = [1, 2, 3, 4, 5];
+let array2 = [3, 4, 5, 6, 7];
 
-    search(node, key) {
-        let i = 0;
-        while (i < node.keys.length && key > node.keys[i]) {
-            i++;
-        }
-        if (i < node.keys.length && key === node.keys[i]) {
-            return node;
-        }
-        if (node.leaf) {
-            return null;
-        } else {
-            return this.search(node.children[i], key);
-        }
-    }
-
-    insert(key) {
-        let root = this.root;
-        if (root.keys.length === (2 * this.t) - 1) {
-            let newRoot = new BTreeNode(this.t, false);
-            newRoot.children.push(root);
-            this.splitChild(newRoot, 0);
-            this.root = newRoot;
-            this.insertNonFull(newRoot, key);
-        } else {
-            this.insertNonFull(root, key);
-        }
-    }
-
-    splitChild(node, i) {
-        let t = this.t;
-        let child = node.children[i];
-        let newChild = new BTreeNode(t, child.leaf);
-        node.keys.splice(i, 0, child.keys[t - 1]);
-        node.children.splice(i + 1, 0, newChild);
-        newChild.keys = child.keys.splice(t);
-        if (!child.leaf) {
-            newChild.children = child.children.splice(t);
-        }
-    }
-
-    insertNonFull(node, key) {
-        let i = node.keys.length - 1;
-        if (node.leaf) {
-            while (i >= 0 && key < node.keys[i]) {
-                node.keys[i + 1] = node.keys[i];
-                i--;
-            }
-            node.keys[i + 1] = key;
-        } else {
-            while (i >= 0 && key < node.keys[i]) {
-                i--;
-            }
-            i++;
-            if (node.children[i].keys.length === (2 * this.t) - 1) {
-                this.splitChild(node, i);
-                if (key > node.keys[i]) {
-                    i++;
-                }
-            }
-            this.insertNonFull(node.children[i], key);
-        }
-    }
-}
-
-// Usage
-const btree = new BTree(2); // Create a B-tree with degree 2
-btree.insert(10);
-btree.insert(20);
-btree.insert(5);
-btree.insert(6);
-btree.insert(12);
-console.log(btree.search(btree.root, 5)); // Output: BTreeNode { t: 2, keys: [ 5 ], children: [], leaf: true }
+// Find common elements
+let commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [3, 4, 5]
