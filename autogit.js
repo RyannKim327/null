@@ -1,6 +1,12 @@
-let array = [1, 2, 3, 4, 5];
-let indexToRemove = 2;
+function factorial(n) {
+    if (n === 0) {
+        return 1;
+    } else {
+        return n * factorial(n - 1);
+    }
+}
 
-array.splice(indexToRemove, 1);
-
-console.log(array); // Output: [1, 2, 4, 5]
+// Calculate the factorial of a number
+const number = 5;
+const result = factorial(number);
+console.log(`The factorial of ${number} is ${result}`);
