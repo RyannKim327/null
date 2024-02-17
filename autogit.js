@@ -1,60 +1,57 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
+function bidirectionalSearch(graph, startNode, endNode) {
+    const queueStart = [startNode];
+    const visitedStart = new Set([startNode]);
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+    const queueEnd = [endNode];
+    const visitedEnd = new Set([endNode]);
 
-  add(value) {
-    const newNode = new Node(value);
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
+    while (queueStart.length > 0 && queueEnd.length > 0) {
+        const currentNodeStart = queueStart.shift();
+        const neighborsStart = graph[currentNodeStart] || [];
+
+        for (const neighbor of neighborsStart) {
+            if (!visitedStart.has(neighbor)) {
+                if (visitedEnd.has(neighbor)) {
+                    return true; // Path found
+                }
+                visitedStart.add(neighbor);
+                queueStart.push(neighbor);
+            }
+        }
+
+        const currentNodeEnd = queueEnd.shift();
+        const neighborsEnd = graph[currentNodeEnd] || [];
+
+        for (const neighbor of neighborsEnd) {
+            if (!visitedEnd.has(neighbor)) {
+                if (visitedStart.has(neighbor)) {
+                    return true; // Path found
+                }
+                visitedEnd.add(neighbor);
+                queueEnd.push(neighbor);
+            }
+        }
     }
-  }
 
-  reverse() {
-    let previous = null;
-    let current = this.head;
-    while (current) {
-      const next = current.next;
-      current.next = previous;
-      previous = current;
-      current = next;
-    }
-    this.head = previous;
-  }
-
-  print() {
-    let current = this.head;
-    while (current) {
-      console.log(current.value);
-      current = current.next;
-    }
-  }
+    return false; // No path found
 }
 
 // Example usage
-const list = new LinkedList();
-list.add(1);
-list.add(2);
-list.add(3);
-list.add(4);
+const graph = {
+    A: ['B', 'C'],
+    B: ['A', 'D'],
+    C: ['A', 'E'],
+    D: ['B', 'F'],
+    E: ['C', 'G'],
+    F: ['D'],
+    G: ['E']
+};
 
-console.log("Original list:");
-list.print();
+const startNode = 'A';
+const endNode = 'G';
 
-list.reverse();
-
-console.log("Reversed list:");
-list.print();
+if (bidirectionalSearch(graph, startNode, endNode)) {
+    console.log(`Path exists between ${startNode} and ${endNode}`);
+} else {
+    console.log(`No path exists between ${startNode} and ${endNode}`);
+}
