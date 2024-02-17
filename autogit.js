@@ -1,63 +1,46 @@
-class HashTable {
-  constructor(size) {
-    this.size = size;
-    this.table = new Array(size);
-  }
-
-  _hash(key) {
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) {
-      hash = (hash + key.charCodeAt(i) * i) % this.size;
+function BoyerMooreSearch(text, pattern) {
+    const n = text.length;
+    const m = pattern.length;
+    if (m === 0) return 0;
+    
+    // Preprocess the pattern
+    const charTable = [];
+    const offsetTable = [];
+    for (let i = 0; i < 256; i++) {
+        charTable[i] = m;
     }
-    return hash;
-  }
-
-  set(key, value) {
-    const index = this._hash(key);
-
-    if (!this.table[index]) {
-      this.table[index] = [];
+    for (let i = 0; i < m - 1; i++) {
+        charTable[pattern.charCodeAt(i)] = m - 1 - i;
     }
-
-    this.table[index].push({ key, value });
-  }
-
-  get(key) {
-    const index = this._hash(key);
-
-    if (!this.table[index]) {
-      return undefined;
+    for (let i = 0; i < m; i++) {
+        offsetTable[i] = m;
     }
-
-    for (let entry of this.table[index]) {
-      if (entry.key === key) {
-        return entry.value;
-      }
+    for (let i = 0; i < m - 1; i++) {
+        offsetTable[m - 1 - i] = i;
     }
-
-    return undefined;
-  }
-
-  remove(key) {
-    const index = this._hash(key);
-
-    if (!this.table[index]) {
-      return undefined;
+    
+    // Perform the Boyer-Moore search
+    let i = m - 1;
+    let j = m - 1;
+    while (i < n) {
+        if (text[i] === pattern[j]) {
+            if (j === 0) {
+                return i;
+            } else {
+                i--;
+                j--;
+            }
+        } else {
+            i += Math.max(offsetTable[j], charTable[text.charCodeAt(i)]);
+            j = m - 1;
+        }
     }
-
-    this.table[index] = this.table[index].filter(entry => entry.key !== key);
-  }
+    
+    return -1;
 }
 
 // Example usage
-const ht = new HashTable(10);
-
-ht.set('apple', 'red');
-ht.set('banana', 'yellow');
-ht.set('grape', 'purple');
-
-console.log(ht.get('apple')); // Output: red
-console.log(ht.get('banana')); // Output: yellow
-
-ht.remove('apple');
-console.log(ht.get('apple')); // Output: undefined
+const text = "ABAAABBABBAAAABBBABAAABBABBAAAABBB";
+const pattern = "ABB";
+const index = BoyerMooreSearch(text, pattern);
+console.log("Pattern found at index: " + index);
