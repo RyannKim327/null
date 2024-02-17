@@ -1,20 +1,18 @@
 function isAnagram(str1, str2) {
-    // Convert strings to lowercase and remove non-alphabetic characters
-    str1 = str1.toLowerCase().replace(/[^a-z]/g, '');
-    str2 = str2.toLowerCase().replace(/[^a-z]/g, '');
+    // Remove spaces and punctuation, and convert to lowercase
+    const cleanString = (str) => str.replace(/[^\w]/g, '').toLowerCase();
 
-    // Sort the characters in both strings
-    const sortedStr1 = str1.split('').sort().join('');
-    const sortedStr2 = str2.split('').sort().join('');
+    // Clean and sort the characters in both strings
+    const sortedStr1 = cleanString(str1).split('').sort().join('');
+    const sortedStr2 = cleanString(str2).split('').sort().join('');
 
     // Compare the sorted strings
     return sortedStr1 === sortedStr2;
 }
 
 // Test the function
-const string1 = 'Listen';
-const string2 = 'Silent';
-
+const string1 = "listen";
+const string2 = "silent";
 if (isAnagram(string1, string2)) {
     console.log(`${string1} and ${string2} are anagrams.`);
 } else {
