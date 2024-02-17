@@ -1,33 +1,26 @@
-function beamSearch(graph, startNode, beamWidth) {
-    let queue = [{ node: startNode, path: [startNode], cost: 0 }];
-    
-    while(queue.length > 0 && queue[0].path.length <= graph.length) {
-        let nextQueue = [];
-        
-        for(let item of queue) {
-            let currentNode = item.node;
-            let currentPath = item.path;
-            
-            if (currentPath.length === graph.length) {
-                return currentPath;
-            }
-            
-            for(let neighbor of graph[currentNode]) {
-                let newPath = currentPath.concat(neighbor);
-                let newCost = item.cost + graph[currentNode][neighbor];
-                
-                nextQueue.push({ 
-                    node: neighbor, 
-                    path: newPath, 
-                    cost: newCost 
-                });
-            }
-        }
-        
-        queue = nextQueue
-            .sort((a, b) => a.cost - b.cost)
-            .slice(0, beamWidth);
-    }
-    
-    return null; // Could not find a solution
+// Definition for a binary tree node
+function TreeNode(val) {
+    this.val = val;
+    this.left = this.right = null;
 }
+
+// Function to calculate the maximum depth of a binary tree
+function maxDepth(root) {
+    if (root === null) {
+        return 0;
+    }
+
+    let leftDepth = maxDepth(root.left);
+    let rightDepth = maxDepth(root.right);
+
+    return 1 + Math.max(leftDepth, rightDepth);
+}
+
+// Example binary tree
+let root = new TreeNode(3);
+root.left = new TreeNode(9);
+root.right = new TreeNode(20);
+root.right.left = new TreeNode(15);
+root.right.right = new TreeNode(7);
+
+console.log(maxDepth(root)); // Output: 3
