@@ -1,19 +1,9 @@
-function hasCycle(head) {
-    if (!head || !head.next) {
-        return false;
-    }
-
-    let slow = head;
-    let fast = head.next;
-
-    while (fast && fast.next) {
-        if (slow === fast) {
-            return true;
-        }
-
-        slow = slow.next;
-        fast = fast.next.next;
-    }
-
-    return false;
+function calculateMean(numbers) {
+    const sum = numbers.reduce((total, num) => total + num, 0);
+    return sum / numbers.length;
 }
+
+// Example usage
+const numbers = [1, 2, 3, 4, 5];
+const mean = calculateMean(numbers);
+console.log(`Mean: ${mean}`);
