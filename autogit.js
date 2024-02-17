@@ -1,19 +1,45 @@
-function bubbleSort(arr) {
-    let len = arr.length;
-    for (let i = 0; i < len; i++) {
-        for (let j = 0; j < len - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                // Swap elements
-                let temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
-        }
+function bmHorspoolSearch(text, pattern) {
+    const patternLength = pattern.length;
+    const textLength = text.length;
+
+    if (patternLength === 0) {
+        return -1;
     }
-    return arr;
+
+    const badMatchTable = new Array(256).fill(patternLength);
+
+    for (let i = 0; i < patternLength - 1; i++) {
+        badMatchTable[pattern.charCodeAt(i)] = patternLength - 1 - i;
+    }
+
+    let textIndex = patternLength - 1;
+
+    while (textIndex < textLength) {
+        let patternIndex = patternLength - 1;
+        let matchIndex = textIndex;
+
+        while (patternIndex >= 0 && text[matchIndex] === pattern[patternIndex]) {
+            patternIndex--;
+            matchIndex--;
+        }
+
+        if (patternIndex === -1) {
+            return matchIndex + 1; // Match found
+        }
+
+        textIndex += badMatchTable[text.charCodeAt(textIndex)];
+    }
+
+    return -1; // Match not found
 }
 
-// Example usage
-let unsortedArray = [64, 34, 25, 12, 22, 11, 90];
-let sortedArray = bubbleSort(unsortedArray);
-console.log(sortedArray);
+// Test the function
+const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
+const pattern = "consectetur";
+const matchIndex = bmHorspoolSearch(text, pattern);
+
+if (matchIndex !== -1) {
+    console.log(`Pattern found at index ${matchIndex}`);
+} else {
+    console.log("Pattern not found");
+}
