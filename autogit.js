@@ -1,8 +1,15 @@
-// Make a GET request to a public API
-fetch('https://jsonplaceholder.typicode.com/posts')
-  .then(response => response.json())
-  .then(data => {
-    // Log the data to the console
-    console.log(data);
-  })
-  .catch(error => console.error(error));
+function isPrime(num) {
+    if (num <= 1) {
+        return false;
+    }
+    for (let i = 2; i <= Math.sqrt(num); i++) {
+        if (num % i === 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Test the function
+console.log(isPrime(5)); // true
+console.log(isPrime(10)); // false
