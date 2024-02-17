@@ -1,44 +1,22 @@
-// Heapify function to maintain the max heap property
-function heapify(arr, n, i) {
-    let largest = i;
-    let left = 2 * i + 1;
-    let right = 2 * i + 2;
+function isAnagram(str1, str2) {
+    // Convert strings to lowercase and remove non-alphabetic characters
+    str1 = str1.toLowerCase().replace(/[^a-z]/g, '');
+    str2 = str2.toLowerCase().replace(/[^a-z]/g, '');
 
-    if (left < n && arr[left] > arr[largest]) {
-        largest = left;
-    }
+    // Sort the characters in both strings
+    const sortedStr1 = str1.split('').sort().join('');
+    const sortedStr2 = str2.split('').sort().join('');
 
-    if (right < n && arr[right] > arr[largest]) {
-        largest = right;
-    }
-
-    if (largest !== i) {
-        [arr[i], arr[largest]] = [arr[largest], arr[i]];
-        heapify(arr, n, largest);
-    }
+    // Compare the sorted strings
+    return sortedStr1 === sortedStr2;
 }
 
-// Heap sort function
-function heapSort(arr) {
-    const n = arr.length;
+// Test the function
+const string1 = 'Listen';
+const string2 = 'Silent';
 
-    // Build max heap
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(arr, n, i);
-    }
-
-    // Heap sort
-    for (let i = n - 1; i > 0; i--) {
-        [arr[0], arr[i]] = [arr[i], arr[0]];
-        heapify(arr, i, 0);
-    }
-
-    return arr;
+if (isAnagram(string1, string2)) {
+    console.log(`${string1} and ${string2} are anagrams.`);
+} else {
+    console.log(`${string1} and ${string2} are not anagrams.`);
 }
-
-// Usage
-const arr = [12, 11, 13, 5, 6, 7];
-console.log("Original array:", arr);
-
-const sortedArr = heapSort(arr);
-console.log("Sorted array:", sortedArr);
