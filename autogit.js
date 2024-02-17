@@ -1,35 +1,16 @@
-function interpolationSearch(arr, target) {
-    let low = 0;
-    let high = arr.length - 1;
+function maxSubarraySum(arr) {
+    let maxSum = arr[0];
+    let currentSum = arr[0];
 
-    while (low <= high && target >= arr[low] && target <= arr[high]) {
-        if (low === high) {
-            if (arr[low] === target) return low;
-            return -1;
-        }
-
-        // Interpolation formula
-        let pos = low + Math.floor(((high - low) / (arr[high] - arr[low])) * (target - arr[low]));
-
-        if (arr[pos] === target) {
-            return pos;
-        } else if (arr[pos] < target) {
-            low = pos + 1;
-        } else {
-            high = pos - 1;
-        }
+    for (let i = 1; i < arr.length; i++) {
+        currentSum = Math.max(arr[i], currentSum + arr[i]);
+        maxSum = Math.max(maxSum, currentSum);
     }
 
-    return -1;
+    return maxSum;
 }
 
-// Test the interpolation search function
-const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const target = 12;
-const index = interpolationSearch(arr, target);
-
-if (index !== -1) {
-    console.log(`Element found at index: ${index}`);
-} else {
-    console.log("Element not found");
-}
+// Example
+const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const maxSum = maxSubarraySum(arr);
+console.log(maxSum); // Output should be 6, which corresponds to the maximum sum subarray [4, -1, 2, 1]
