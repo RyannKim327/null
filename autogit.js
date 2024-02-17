@@ -1,16 +1,22 @@
-let str = "Hello, World!";
-let subStr = "Hello";
+function findFirstRepeatedChar(str) {
+    let charMap = {};
 
-if (str.includes(subStr)) {
-    console.log('The string contains the substring');
-} else {
-    console.log('The string does not contain the substring');
+    for (let char of str) {
+        if (charMap[char]) {
+            return char;
+        } else {
+            charMap[char] = 1;
+        }
+    }
+
+    return null;
 }
-let str = "Hello, World!";
-let subStr = "Hello";
 
-if (str.indexOf(subStr) !== -1) {
-    console.log('The string contains the substring');
+let str = "hello world";
+let repeatedChar = findFirstRepeatedChar(str);
+
+if (repeatedChar) {
+    console.log("The first repeated character is: " + repeatedChar);
 } else {
-    console.log('The string does not contain the substring');
+    console.log("No repeated characters found");
 }
