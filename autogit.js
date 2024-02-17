@@ -1,45 +1,60 @@
-function burrowsWheelerTransform(input) {
-    // Generate all cyclic rotations of the input string
-    let rotations = [];
-    for (let i = 0; i < input.length; i++) {
-        let rotation = input.slice(i) + input.slice(0, i);
-        rotations.push(rotation);
+function computeLPSArray(pattern) {
+  let lps = Array(pattern.length).fill(0);
+  let len = 0; // length of the previous longest prefix suffix
+
+  let i = 1;
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[len]) {
+      len++;
+      lps[i] = len;
+      i++;
+    } else {
+      if (len !== 0) {
+        len = lps[len - 1];
+      } else {
+        lps[i] = 0;
+        i++;
+      }
     }
+  }
 
-    // Sort the cyclic rotations lexicographically
-    rotations.sort();
-
-    // Extract the last characters of each rotation to form the BWT
-    let bwt = rotations.map(rotation => rotation.charAt(rotation.length - 1)).join('');
-
-    return bwt;
+  return lps;
 }
 
-function inverseBurrowsWheelerTransform(bwt) {
-    // Reconstruct the sorted strings
-    let sorted = bwt.split('').sort();
+function KMP(text, pattern) {
+  let lps = computeLPSArray(pattern);
+  let i = 0;
+  let j = 0;
+  let matches = [];
 
-    // Initialize an array to store the combined characters
-    let table = new Array(bwt.length).fill('');
-
-    // Fill in the table by combining the sorted array with the BWT string
-    for (let i = 0; i < bwt.length; i++) {
-        for (let j = 0; j < bwt.length; j++) {
-            table[j] = sorted[j] + table[j];
-        }
-        sorted.sort();
+  while (i < text.length) {
+    if (pattern[j] === text[i]) {
+      i++;
+      j++;
     }
 
-    // Find the original string in the table
-    let original = table.find(row => row.endsWith('\0'));
+    if (j === pattern.length) {
+      matches.push(i - j);
+      j = lps[j - 1];
+    } else if (i < text.length && pattern[j] !== text[i]) {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
+      }
+    }
+  }
 
-    return original.slice(0, -1);
+  return matches;
 }
 
-// Test the Burrows-Wheeler Transform algorithm
-let input = "hello world";
-let bwt = burrowsWheelerTransform(input);
-console.log("BWT: " + bwt);
+// Example usage:
+let text = "ABABDABACDABABCABAB";
+let pattern = "ABABCABAB";
+let matches = KMP(text, pattern);
 
-let original = inverseBurrowsWheelerTransform(bwt);
-console.log("Original: " + original);
+if (matches.length > 0) {
+  console.log(`Pattern found at index ${matches}`);
+} else {
+  console.log("Pattern not found");
+}
