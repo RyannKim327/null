@@ -1,11 +1,23 @@
-function isPalindrome(str) {
-    // Remove non-alphanumeric characters and convert the string to lowercase
-    str = str.replace(/[\W_]/g, '').toLowerCase();
+function largestPrimeFactor(number) {
+    let largestPrime = 1;
     
-    // Compare the string with its reverse
-    return str === str.split('').reverse().join('');
+    // Start checking for prime factors from 2
+    for (let i = 2; i <= Math.sqrt(number); i++) {
+        // Check if the number is divisible by i
+        while (number % i === 0) {
+            largestPrime = i;
+            number /= i;
+        }
+    }
+    
+    // If the remaining number is greater than 1, update largestPrime
+    if (number > largestPrime) {
+        largestPrime = number;
+    }
+    
+    return largestPrime;
 }
+let number = 123456789;
+let result = largestPrimeFactor(number);
 
-// Test the function
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // Output: true
-console.log(isPalindrome("hello")); // Output: false
+console.log(`The largest prime factor of ${number} is: ${result}`);
