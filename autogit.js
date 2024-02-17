@@ -1,34 +1,63 @@
-function interpolationSearch(arr, x) {
-    let low = 0;
-    let high = arr.length - 1;
+class TrieNode {
+    constructor() {
+        this.children = {};
+        this.isEndOfWord = false;
+    }
+}
 
-    while (low <= high && x >= arr[low] && x <= arr[high]) {
-        if (low === high) {
-            if (arr[low] === x) return low;
-            return -1;
-        }
-
-        let pos = low + Math.floor(((high - low) / (arr[high] - arr[low])) * (x - arr[low]);
-
-        if (arr[pos] === x) return pos;
-
-        if (arr[pos] < x) {
-            low = pos + 1;
-        } else {
-            high = pos - 1;
-        }
+class Trie {
+    constructor() {
+        this.root = new TrieNode();
     }
 
-    return -1;
+    insert(word) {
+        let node = this.root;
+
+        for (let i = 0; i < word.length; i++) {
+            const char = word[i];
+            if (!node.children[char]) {
+                node.children[char] = new TrieNode();
+            }
+            node = node.children[char];
+        }
+
+        node.isEndOfWord = true;
+    }
+
+    search(word) {
+        let node = this.root;
+
+        for (let i = 0; i < word.length; i++) {
+            const char = word[i];
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+
+        return node.isEndOfWord;
+    }
+
+    startsWith(prefix) {
+        let node = this.root;
+
+        for (let i = 0; i < prefix.length; i++) {
+            const char = prefix[i];
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+
+        return true;
+    }
 }
 
-// Example usage
-const arr = [1, 3, 5, 7, 9, 11, 13, 15];
-const x = 5;
-const index = interpolationSearch(arr, x);
-
-if (index !== -1) {
-    console.log(`Element ${x} found at index ${index}`);
-} else {
-    console.log(`Element ${x} not found`);
-}
+// Usage
+const trie = new Trie();
+trie.insert("apple");
+console.log(trie.search("apple")); // true
+console.log(trie.search("app")); // false
+console.log(trie.startsWith("app")); // true
+trie.insert("app");
+console.log(trie.search("app")); // true
