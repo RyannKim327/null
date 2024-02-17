@@ -1,26 +1,22 @@
-function isPalindrome(s) {
-    if (s === null) {
-        return false;
-    }
-
-    let left = 0;
-    let right = s.length - 1;
-
-    while (left < right) {
-        if (s[left] !== s[right]) {
-            return false;
+function findFirstRepeatedChar(str) {
+    let charSet = new Set();
+    
+    for (let char of str) {
+        if (charSet.has(char)) {
+            return char; // Found the first repeated character
+        } else {
+            charSet.add(char);
         }
-        left++;
-        right--;
     }
-
-    return true;
+    
+    return null; // No repeated characters found
 }
 
-// Test the function
-let str = "madam";
-if (isPalindrome(str)) {
-    console.log("The string is a palindrome.");
+let inputString = "abcaebd";
+let repeatedChar = findFirstRepeatedChar(inputString);
+
+if (repeatedChar) {
+    console.log(`The first repeated character is: ${repeatedChar}`);
 } else {
-    console.log("The string is not a palindrome.");
+    console.log("No repeated characters found in the string.");
 }
