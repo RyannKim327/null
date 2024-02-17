@@ -1,46 +1,35 @@
-function getMax(arr) {
-  let max = arr[0];
-  for (let i = 1; i < arr.length; i++) {
-    if (arr[i] > max) {
-      max = arr[i];
+function interpolationSearch(arr, target) {
+    let low = 0;
+    let high = arr.length - 1;
+
+    while (low <= high && target >= arr[low] && target <= arr[high]) {
+        if (low === high) {
+            if (arr[low] === target) return low;
+            return -1;
+        }
+
+        // Interpolation formula
+        let pos = low + Math.floor(((high - low) / (arr[high] - arr[low])) * (target - arr[low]));
+
+        if (arr[pos] === target) {
+            return pos;
+        } else if (arr[pos] < target) {
+            low = pos + 1;
+        } else {
+            high = pos - 1;
+        }
     }
-  }
-  return max;
+
+    return -1;
 }
 
-function countSort(arr, exp) {
-  const n = arr.length;
-  const output = new Array(n).fill(0);
-  const count = new Array(10).fill(0);
+// Test the interpolation search function
+const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+const target = 12;
+const index = interpolationSearch(arr, target);
 
-  for (let i = 0; i < n; i++) {
-    count[Math.floor(arr[i] / exp) % 10]++;
-  }
-
-  for (let i = 1; i < 10; i++) {
-    count[i] += count[i - 1];
-  }
-
-  for (let i = n - 1; i >= 0; i--) {
-    output[count[Math.floor(arr[i] / exp) % 10] - 1] = arr[i];
-    count[Math.floor(arr[i] / exp) % 10]--;
-  }
-
-  for (let i = 0; i < n; i++) {
-    arr[i] = output[i];
-  }
+if (index !== -1) {
+    console.log(`Element found at index: ${index}`);
+} else {
+    console.log("Element not found");
 }
-
-function radixSort(arr) {
-  const max = getMax(arr);
-  
-  for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
-    countSort(arr, exp);
-  }
-
-  return arr;
-}
-
-// Example usage
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log(radixSort(arr)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
