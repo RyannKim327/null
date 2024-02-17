@@ -1,22 +1,24 @@
-function isAnagram(str1, str2) {
-    // Check if the lengths of the strings are different
-    if (str1.length !== str2.length) {
-        return false;
+function selectionSort(arr) {
+    for (let i = 0; i < arr.length; i++) {
+        let minIndex = i;
+        
+        for (let j = i + 1; j < arr.length; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+        
+        if (minIndex !== i) {
+            let temp = arr[i];
+            arr[i] = arr[minIndex];
+            arr[minIndex] = temp;
+        }
     }
-
-    // Sort the characters of both strings and compare them
-    const sortedStr1 = str1.split('').sort().join('');
-    const sortedStr2 = str2.split('').sort().join('');
-
-    return sortedStr1 === sortedStr2;
+    
+    return arr;
 }
 
-// Test the function
-const string1 = "listen";
-const string2 = "silent";
-
-if (isAnagram(string1, string2)) {
-    console.log(`${string1} and ${string2} are anagrams.`);
-} else {
-    console.log(`${string1} and ${string2} are not anagrams.`);
-}
+// Example usage
+const array = [64, 34, 25, 12, 22, 11, 90];
+console.log("Original array: ", array);
+console.log("Sorted array: ", selectionSort(array));
