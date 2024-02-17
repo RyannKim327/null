@@ -1,11 +1,8 @@
-const url = 'https://jsonplaceholder.typicode.com/posts';
-
-fetch(url)
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  })
-  .then(data => console.log(data))
-  .catch(error => console.error('There was a problem with the fetch operation:', error));
+let str1 = "Hello";
+let str2 = "World";
+let concatenatedString = str1 + " " + str2;
+console.log(concatenatedString); // Output: Hello World
+let str1 = "Hello";
+let str2 = "World";
+let concatenatedString = str1.concat(" ", str2);
+console.log(concatenatedString); // Output: Hello World
