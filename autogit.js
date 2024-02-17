@@ -1,25 +1,17 @@
-let str = "Hello, world!";
-let subStr = "Hello";
+function reverseWords(str) {
+    // Split the string into an array of words
+    let wordsArray = str.split(" ");
 
-if (str.includes(subStr)) {
-    console.log("The string contains the substring");
-} else {
-    console.log("The string does not contain the substring");
-}
-let str = "Hello, world!";
-let subStr = "Hello";
+    // Reverse the array of words
+    let reversedArray = wordsArray.reverse();
 
-if (str.indexOf(subStr) !== -1) {
-    console.log("The string contains the substring");
-} else {
-    console.log("The string does not contain the substring");
-}
-let str = "Hello, world!";
-let subStr = "Hello";
-let regex = new RegExp(subStr);
+    // Join the array back into a string
+    let reversedString = reversedArray.join(" ");
 
-if (regex.test(str)) {
-    console.log("The string contains the substring");
-} else {
-    console.log("The string does not contain the substring");
+    return reversedString;
 }
+
+// Test the function
+let inputString = "Hello World!";
+let reversedString = reverseWords(inputString);
+console.log(reversedString); // Output: "World! Hello"
