@@ -1,16 +1,21 @@
-function findMedianSortedArrays(nums1, nums2) {
-    const combined = [...nums1, ...nums2].sort((a, b) => a - b);
-    const length = combined.length;
+function isAnagram(str1, str2) {
+  // Remove non-alphabetic characters and convert to lowercase
+  const cleanStr1 = str1.replace(/[^A-Za-z]/g, '').toLowerCase();
+  const cleanStr2 = str2.replace(/[^A-Za-z]/g, '').toLowerCase();
 
-    if (length % 2 === 0) {
-        const mid = length / 2;
-        return (combined[mid - 1] + combined[mid]) / 2;
-    } else {
-        const mid = Math.floor(length / 2);
-        return combined[mid];
-    }
+  // Sort the characters
+  const sortedStr1 = cleanStr1.split('').sort().join('');
+  const sortedStr2 = cleanStr2.split('').sort().join('');
+
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
 
-const nums1 = [1, 3];
-const nums2 = [2, 4];
-console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.5
+// Test the function
+const string1 = "listen";
+const string2 = "silent";
+if (isAnagram(string1, string2)) {
+  console.log(`${string1} and ${string2} are anagrams.`);
+} else {
+  console.log(`${string1} and ${string2} are not anagrams.`);
+}
