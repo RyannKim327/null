@@ -1,26 +1,11 @@
-// Definition for a binary tree node
-function TreeNode(val) {
-    this.val = val;
-    this.left = this.right = null;
+function isPalindrome(str) {
+    // Remove non-alphanumeric characters and convert to lowercase
+    const cleanStr = str.replace(/[^a-z0-9]/gi, '').toLowerCase();
+    
+    // Compare the clean string with its reverse
+    return cleanStr === cleanStr.split('').reverse().join('');
 }
 
-// Function to calculate the maximum depth of a binary tree
-function maxDepth(root) {
-    if (root === null) {
-        return 0;
-    }
-
-    let leftDepth = maxDepth(root.left);
-    let rightDepth = maxDepth(root.right);
-
-    return 1 + Math.max(leftDepth, rightDepth);
-}
-
-// Example binary tree
-let root = new TreeNode(3);
-root.left = new TreeNode(9);
-root.right = new TreeNode(20);
-root.right.left = new TreeNode(15);
-root.right.right = new TreeNode(7);
-
-console.log(maxDepth(root)); // Output: 3
+// Test the function
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // Output: true
+console.log(isPalindrome("hello")); // Output: false
