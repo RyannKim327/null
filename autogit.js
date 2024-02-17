@@ -1,47 +1,46 @@
-// Node class represents each node in the linked list
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
+function createBadMatchTable(pattern) {
+    const table = {};
+    const patternLength = pattern.length;
+
+    for (let i = 0; i < patternLength - 1; i++) {
+        table[pattern[i]] = patternLength - 1 - i;
     }
+
+    return table;
 }
 
-// LinkedList class to manage the linked list
-class LinkedList {
-    constructor() {
-        this.head = null;
-    }
+function boyerMooreHorspool(text, pattern) {
+    const textLength = text.length;
+    const patternLength = pattern.length;
+    const badMatchTable = createBadMatchTable(pattern);
 
-    // Method to insert a new node at the end of the linked list
-    append(data) {
-        const newNode = new Node(data);
+    let index = 0;
 
-        if (!this.head) {
-            this.head = newNode;
-            return;
+    while (index <= textLength - patternLength) {
+        let j = patternLength - 1;
+
+        while (j >= 0 && pattern[j] === text[index + j]) {
+            j--;
         }
 
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-
-        current.next = newNode;
-    }
-
-    // Method to print all elements of the linked list
-    print() {
-        let current = this.head;
-        while (current) {
-            console.log(current.data);
-            current = current.next;
+        if (j < 0) {
+            return index; // Match found
+        } else {
+            const shift = badMatchTable[text[index + patternLength - 1]] || patternLength;
+            index += shift;
         }
     }
+
+    return -1; // Match not found
 }
 
 // Example usage
-const linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
-linkedList.print(); // Output: 1, 2, 3
+const text = "hello world";
+const pattern = "world";
+const matchIndex = boyerMooreHorspool(text, pattern);
+
+if (matchIndex !== -1) {
+    console.log(`Match found at index ${matchIndex}`);
+} else {
+    console.log(`Match not found`);
+}
