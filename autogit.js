@@ -1,57 +1,61 @@
-function buildLPSArray(pattern) {
-    let lps = [0];
-    let len = 0;
-    let i = 1;
-    
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+
+class Queue {
+    constructor() {
+        this.head = null;
+        this.tail = null;
+    }
+
+    enqueue(data) {
+        const newNode = new Node(data);
+        if (!this.head) {
+            this.head = newNode;
+            this.tail = newNode;
         } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
+            this.tail.next = newNode;
+            this.tail = newNode;
         }
     }
-    
-    return lps;
-}
 
-function kmpSearch(text, pattern) {
-    const n = text.length;
-    const m = pattern.length;
-    const lps = buildLPSArray(pattern);
-    
-    let i = 0;
-    let j = 0;
-    const indices = [];
-    
-    while (i < n) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
+    dequeue() {
+        if (!this.head) {
+            return null;
         }
-        if (j === m) {
-            indices.push(i - j);
-            j = lps[j - 1];
-        } else if (i < n && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
+
+        const data = this.head.data;
+        this.head = this.head.next;
+        if (!this.head) {
+            this.tail = null;
         }
+
+        return data;
     }
-    
-    return indices;
+
+    isEmpty() {
+        return this.head === null;
+    }
+
+    peek() {
+        if (!this.head) {
+            return null;
+        }
+
+        return this.head.data;
+    }
 }
 
-// Example usage
-const text = "ABCABCDABABCDABCDABDE";
-const pattern = "ABCDABD";
-const result = kmpSearch(text, pattern);
-console.log(result); // [6, 12]
+// Usage example:
+const queue = new Queue();
+
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.peek()); // Output: 2
+console.log(queue.isEmpty()); // Output: false
