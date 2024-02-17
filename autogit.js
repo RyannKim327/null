@@ -1,14 +1,13 @@
-function calculateMean(numbers) {
-    let sum = 0;
-    numbers.forEach(function(number) {
-        sum += number;
-    });
+function findKthSmallest(arr, k) {
+    // Sort the array in ascending order
+    arr.sort((a, b) => a - b);
     
-    return sum / numbers.length;
+    // Return the kth smallest element
+    return arr[k - 1];
 }
 
-// Example list of numbers
-const numbers = [3, 5, 7, 9, 11];
-
-const mean = calculateMean(numbers);
-console.log("Mean:", mean);
+// Example
+const arr = [3, 1, 4, 2, 5];
+const k = 2;
+const result = findKthSmallest(arr, k);
+console.log(`The ${k}th smallest element is: ${result}`);
