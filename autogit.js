@@ -1,28 +1,37 @@
-function findMajorityElement(arr) {
-    let map = {};
-    let majorityElement = null;
-    let maxCount = 0;
+class TreeNode {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+function diameterOfBinaryTree(root) {
+    let diameter = 0;
     
-    for (let num of arr) {
-        map[num] = map[num] ? map[num] + 1 : 1;
-        if (map[num] > maxCount) {
-            majorityElement = num;
-            maxCount = map[num];
+    function depth(node) {
+        if (node === null) {
+            return 0;
         }
+        
+        let leftDepth = depth(node.left);
+        let rightDepth = depth(node.right);
+        
+        diameter = Math.max(diameter, leftDepth + rightDepth);
+        
+        return 1 + Math.max(leftDepth, rightDepth);
     }
     
-    if (maxCount > arr.length / 2) {
-        return majorityElement;
-    } else {
-        return null;
-    }
+    depth(root);
+    
+    return diameter;
 }
 
-const arr = [2, 2, 3, 4, 2, 2, 2];
-const majorityElement = findMajorityElement(arr);
+// Example binary tree
+let root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-if (majorityElement !== null) {
-    console.log(`Majority element is: ${majorityElement}`);
-} else {
-    console.log("No majority element found");
-}
+console.log(diameterOfBinaryTree(root)); // Output: 3
