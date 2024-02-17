@@ -1,38 +1,30 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
-    }
-}
+function firstNonRepeatingCharacter(str) {
+    // Initialize an empty object to store character counts
+    var charCount = {};
 
-function reverseLinkedList(head) {
-    let prev = null;
-    let current = head;
-    let next = null;
-
-    while (current !== null) {
-        next = current.next;
-        current.next = prev;
-        prev = current;
-        current = next;
+    // Iterate over the characters in the string and count how many times each character appears
+    for (var i = 0; i < str.length; i++) {
+        var char = str[i];
+        if (charCount[char]) {
+            charCount[char]++;
+        } else {
+            charCount[char] = 1;
+        }
     }
 
-    return prev;
+    // Find the first character that appears only once
+    for (var j = 0; j < str.length; j++) {
+        var char = str[j];
+        if (charCount[char] === 1) {
+            return char;
+        }
+    }
+
+    // If no non-repeating character is found, return null
+    return null;
 }
 
-// Example usage
-let node1 = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-
-node1.next = node2;
-node2.next = node3;
-
-let reversedHead = reverseLinkedList(node1);
-
-// Print the reversed linked list
-let current = reversedHead;
-while (current !== null) {
-    console.log(current.value);
-    current = current.next;
-}
+// Test the function
+var inputString = "hello";
+var firstNonRepeatingChar = firstNonRepeatingCharacter(inputString);
+console.log("First non-repeating character: " + firstNonRepeatingChar);
