@@ -1,8 +1,8 @@
-let str = "42";
-let int = parseInt(str);
+function reverseString(str) {
+    return str.split('').reverse().join('');
+}
 
-console.log(int); // Output: 42
-let str = "3.14";
-let float = parseFloat(str);
-
-console.log(float); // Output: 3.14
+// Example usage
+const inputString = "Hello, World!";
+const reversedString = reverseString(inputString);
+console.log(reversedString); // Output: "!dlroW ,olleH"
