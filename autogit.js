@@ -1,50 +1,98 @@
-function bellmanFord(graph, source) {
-  let distance = {};
-
-  // Step 1: Initialize distances from the source to all other vertices as Infinity
-  for (let node in graph) {
-    distance[node] = Infinity;
-  }
-
-  distance[source] = 0;
-
-  // Step 2: Relax all edges repeatedly
-  for (let i = 0; i < Object.keys(graph).length - 1; i++) {
-    for (let node in graph) {
-      if (distance[node] === Infinity) continue;
-
-      for (let neighbor in graph[node]) {
-        let newDist = distance[node] + graph[node][neighbor];
-        if (newDist < distance[neighbor]) {
-          distance[neighbor] = newDist;
-        }
-      }
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.left = null;
+        this.right = null;
+        this.height = 1;
     }
-  }
-
-  // Step 3: Check for negative cycles
-  for (let node in graph) {
-    for (let neighbor in graph[node]) {
-      let newDist = distance[node] + graph[node][neighbor];
-      if (newDist < distance[neighbor]) {
-        console.log("Negative cycle detected! Bellman-Ford cannot be used.");
-        return;
-      }
-    }
-  }
-
-  return distance;
 }
 
-// Example graph
-const graph = {
-  A: { B: -1, C: 4 },
-  B: { C: 3, D: 2, E: 2 },
-  C: {},
-  D: { B: 1, C: 5 },
-  E: { D: -3 }
-};
+class AVLTree {
+    constructor() {
+        this.root = null;
+    }
 
-const source = 'A';
-const shortestDistances = bellmanFord(graph, source);
-console.log(shortestDistances);
+    getHeight(node) {
+        if (node == null) {
+            return 0;
+        }
+        return node.height;
+    }
+
+    getBalanceFactor(node) {
+        if (node == null) {
+            return 0;
+        }
+        return this.getHeight(node.left) - this.getHeight(node.right);
+    }
+
+    rightRotate(y) {
+        let x = y.left;
+        let T2 = x.right;
+
+        x.right = y;
+        y.left = T2;
+
+        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
+        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
+
+        return x;
+    }
+
+    leftRotate(x) {
+        let y = x.right;
+        let T2 = y.left;
+
+        y.left = x;
+        x.right = T2;
+
+        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
+        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
+
+        return y;
+    }
+
+    insert(data) {
+        this.root = this._insert(this.root, data);
+    }
+
+    _insert(node, data) {
+        if (node == null) {
+            return new Node(data);
+        }
+
+        if (data < node.data) {
+            node.left = this._insert(node.left, data);
+        } else if (data > node.data) {
+            node.right = this._insert(node.right, data);
+        } else {
+            return node;
+        }
+
+        node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
+
+        let balance = this.getBalanceFactor(node);
+
+        if (balance > 1 && data < node.left.data) {
+            return this.rightRotate(node);
+        }
+
+        if (balance < -1 && data > node.right.data) {
+            return this.leftRotate(node);
+        }
+
+        if (balance > 1 && data > node.left.data) {
+            node.left = this.leftRotate(node.left);
+            return this.rightRotate(node);
+        }
+
+        if (balance < -1 && data < node.right.data) {
+            node.right = this.rightRotate(node.right);
+            return this.leftRotate(node);
+        }
+
+        return node;
+    }
+
+    // Other methods like search, delete, printTree can be added here
+}
