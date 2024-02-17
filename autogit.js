@@ -1,17 +1,50 @@
-function reverseWords(str) {
-    // Split the string into an array of words
-    let wordsArray = str.split(" ");
-
-    // Reverse the array of words
-    let reversedArray = wordsArray.reverse();
-
-    // Join the array back into a string
-    let reversedString = reversedArray.join(" ");
-
-    return reversedString;
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
+    }
 }
 
-// Test the function
-let inputString = "Hello World!";
-let reversedString = reverseWords(inputString);
-console.log(reversedString); // Output: "World! Hello"
+class LinkedList {
+    constructor() {
+        this.head = null;
+    }
+
+    append(data) {
+        const newNode = new Node(data);
+
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+
+        let current = this.head;
+        while (current.next !== null) {
+            current = current.next;
+        }
+
+        current.next = newNode;
+    }
+
+    findMiddleElement() {
+        let slow = this.head;
+        let fast = this.head;
+
+        while (fast && fast.next) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        return slow.data;
+    }
+}
+
+// Test the code
+const linkedList = new LinkedList();
+linkedList.append(1);
+linkedList.append(2);
+linkedList.append(3);
+linkedList.append(4);
+linkedList.append(5);
+
+console.log(linkedList.findMiddleElement()); // Output: 3
