@@ -1,48 +1,47 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.children = [];
-  }
-
-  addChild(child) {
-    this.children.push(child);
-  }
-}
-
-function depthLimitedSearch(root, target, limit) {
-  let stack = [{ node: root, depth: 0 }];
-
-  while (stack.length > 0) {
-    const { node, depth } = stack.pop();
-
-    if (node.value === target) {
-      return node;
+function buildFailureFunction(pattern) {
+    const failure = Array(pattern.length).fill(0);
+    let j = 0;
+    
+    for (let i = 1; i < pattern.length; i++) {
+        while (j > 0 && pattern[i] !== pattern[j]) {
+            j = failure[j - 1];
+        }
+        
+        if (pattern[i] === pattern[j]) {
+            j++;
+        }
+        
+        failure[i] = j;
     }
+    
+    return failure;
+}
 
-    if (depth < limit) {
-      for (let child of node.children) {
-        stack.push({ node: child, depth: depth + 1 });
-      }
+function kmpSearch(text, pattern) {
+    const n = text.length;
+    const m = pattern.length;
+    const failure = buildFailureFunction(pattern);
+    let i = 0;
+    let j = 0;
+    
+    while (i < n) {
+        if (text[i] === pattern[j]) {
+            if (j === m - 1) {
+                return i - j;
+            }
+            i++;
+            j++;
+        } else if (j > 0) {
+            j = failure[j - 1];
+        } else {
+            i++;
+        }
     }
-  }
-
-  return null;
+    
+    return -1;
 }
 
-// Example Usage
-const root = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
-const node4 = new Node(4);
-
-root.addChild(node2);
-root.addChild(node3);
-node3.addChild(node4);
-
-const targetNode = depthLimitedSearch(root, 4, 2);
-
-if (targetNode) {
-  console.log("Node found: ", targetNode.value);
-} else {
-  console.log("Node not found within depth limit.");
-}
+// Example
+const text = "ababcababcabc";
+const pattern = "ababcabc";
+console.log(kmpSearch(text, pattern)); // Output: 5
