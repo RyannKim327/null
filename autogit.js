@@ -1,19 +1,21 @@
-function isPalindrome(str) {
-    str = str.toLowerCase();
-    let i = 0;
-    let j = str.length - 1;
-
-    while (i < j) {
-        if (str[i] !== str[j]) {
-            return false;
-        }
-        i++;
-        j--;
+function depthLimitedSearchIterative(root, target, depthLimit) {
+  let stack = [{ node: root, depth: 0 }];
+  
+  while (stack.length > 0) {
+    let current = stack.pop();
+    let currentNode = current.node;
+    let currentDepth = current.depth;
+    
+    if (currentNode.value === target) {
+      return currentNode;
     }
-
-    return true;
+    
+    if (currentDepth < depthLimit) {
+      currentNode.children.forEach(child => {
+        stack.push({ node: child, depth: currentDepth + 1 });
+      });
+    }
+  }
+  
+  return null; // Target not found within depth limit
 }
-
-// Testing the function
-console.log(isPalindrome("racecar")); // Output: true
-console.log(isPalindrome("hello")); // Output: false
