@@ -1,40 +1,14 @@
-function longestCommonSubsequence(str1, str2) {
-    const m = str1.length;
-    const n = str2.length;
+function isPalindrome(str) {
+    // Remove non-alphanumeric characters and convert to lowercase
+    str = str.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-    const dp = [];
-    for (let i = 0; i <= m; i++) {
-        dp[i] = [];
-        for (let j = 0; j <= n; j++) {
-            if (i === 0 || j === 0) {
-                dp[i][j] = 0;
-            } else if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-            } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-            }
-        }
-    }
+    // Reverse the string
+    let reversed = str.split('').reverse().join('');
 
-    let result = "";
-    let i = m, j = n;
-
-    while (i > 0 && j > 0) {
-        if (str1[i - 1] === str2[j - 1]) {
-            result = str1[i - 1] + result;
-            i--;
-            j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--;
-        } else {
-            j--;
-        }
-    }
-
-    return result;
+    // Check if the original string is equal to the reversed string
+    return str === reversed;
 }
 
-// Example
-const str1 = "AGGTAB";
-const str2 = "GXTXAYB";
-console.log(longestCommonSubsequence(str1, str2)); // Output: GTAB
+// Test the function
+let testString = "A man, a plan, a canal, Panama!";
+console.log(isPalindrome(testString)); // Output: true
