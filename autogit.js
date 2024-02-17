@@ -1,16 +1,24 @@
-const url = 'https://api.example.com/data';
+function findFirstRepeatedChar(str) {
+    const charMap = {};
+    
+    for (let i = 0; i < str.length; i++) {
+        const char = str[i];
+        
+        if (charMap[char]) {
+            return char;
+        }
 
-async function fetchData() {
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error('Failed to fetch data');
+        charMap[char] = true;
     }
-    const data = await response.json();
-    console.log(data);
-  } catch (error) {
-    console.error('An error occurred', error);
-  }
+    
+    return null;
 }
 
-fetchData();
+const str = "hello";
+const repeatedChar = findFirstRepeatedChar(str);
+
+if (repeatedChar) {
+    console.log(`The first repeated character in "${str}" is "${repeatedChar}".`);
+} else {
+    console.log(`No repeated characters found in "${str}".`);
+}
