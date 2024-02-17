@@ -1,105 +1,47 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-        this.height = 1;
-    }
+function createBadMatchTable(pattern) {
+  const table = {};
+  const patternLength = pattern.length;
+  
+  for (let i = 0; i < patternLength - 1; i++) {
+    table[pattern[i]] = patternLength - i - 1;
+  }
+  
+  return table;
 }
 
-class AVLTree {
-    constructor() {
-        this.root = null;
+function boyerMooreHorspool(text, pattern) {
+  const badMatchTable = createBadMatchTable(pattern);
+  const textLength = text.length;
+  const patternLength = pattern.length;
+  let i = patternLength - 1;
+  
+  while (i < textLength) {
+    let j = patternLength - 1;
+    
+    while (j >= 0 && text[i] === pattern[j]) {
+      i--;
+      j--;
     }
-
-    getHeight(node) {
-        if (node === null) {
-            return 0;
-        }
-        return node.height;
+    
+    if (j < 0) {
+      return i + 1; // Match found
+    } else {
+      const badMatchChar = text[i];
+      const shift = badMatchTable[badMatchChar] || patternLength;
+      i += shift;
     }
-
-    getBalanceFactor(node) {
-        return this.getHeight(node.left) - this.getHeight(node.right);
-    }
-
-    updateHeight(node) {
-        node.height = Math.max(this.getHeight(node.left), this.getHeight(node.right)) + 1;
-    }
-
-    rotateRight(y) {
-        let x = y.left;
-        let T2 = x.right;
-
-        x.right = y;
-        y.left = T2;
-
-        this.updateHeight(y);
-        this.updateHeight(x);
-
-        return x;
-    }
-
-    rotateLeft(x) {
-        let y = x.right;
-        let T2 = y.left;
-
-        y.left = x;
-        x.right = T2;
-
-        this.updateHeight(x);
-        this.updateHeight(y);
-
-        return y;
-    }
-
-    insert(value) {
-        this.root = this.insertNode(this.root, value);
-    }
-
-    insertNode(node, value) {
-        if (node === null) {
-            return new Node(value);
-        }
-
-        if (value < node.value) {
-            node.left = this.insertNode(node.left, value);
-        } else if (value > node.value) {
-            node.right = this.insertNode(node.right, value);
-        } else {
-            return node; // Duplicate values not allowed
-        }
-
-        this.updateHeight(node);
-        let balanceFactor = this.getBalanceFactor(node);
-
-        if (balanceFactor > 1 && value < node.left.value) {
-            return this.rotateRight(node);
-        }
-
-        if (balanceFactor < -1 && value > node.right.value) {
-            return this.rotateLeft(node);
-        }
-
-        if (balanceFactor > 1 && value > node.left.value) {
-            node.left = this.rotateLeft(node.left);
-            return this.rotateRight(node);
-        }
-
-        if (balanceFactor < -1 && value < node.right.value) {
-            node.right = this.rotateRight(node.right);
-            return this.rotateLeft(node);
-        }
-
-        return node;
-    }
+  }
+  
+  return -1; // Match not found
 }
 
 // Example usage
-let avlTree = new AVLTree();
-avlTree.insert(10);
-avlTree.insert(20);
-avlTree.insert(30);
-avlTree.insert(15);
+const text = 'Hello, World!';
+const pattern = 'World';
+const index = boyerMooreHorspool(text, pattern);
 
-console.log(avlTree);
+if (index !== -1) {
+  console.log(`Pattern found at index ${index}`);
+} else {
+  console.log('Pattern not found');
+}
