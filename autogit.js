@@ -1,63 +1,57 @@
-// Function to calculate the nth Fibonacci number
-function fibonacci(n) {
-    if (n <= 1) {
-        return n;
+function buildKMPTable(pattern) {
+    const table = Array(pattern.length).fill(0);
+    let i = 0;
+    let j = 1;
+
+    while (j < pattern.length) {
+        if (pattern[i] === pattern[j]) {
+            table[j] = i + 1;
+            i++;
+            j++;
+        } else {
+            if (i !== 0) {
+                i = table[i - 1];
+            } else {
+                table[j] = 0;
+                j++;
+            }
+        }
     }
-    return fibonacci(n - 1) + fibonacci(n - 2);
+
+    return table;
 }
 
-// Fibonacci search algorithm
-function fibonacciSearch(arr, x) {
-    let fib2 = 0; // (m-2)'th Fibonacci number
-    let fib1 = 1; // (m-1)'th Fibonacci number
-    let fib = fib1 + fib2; // m'th Fibonacci number
+function kmpSearch(text, pattern) {
+    const table = buildKMPTable(pattern);
+    let i = 0;
+    let j = 0;
 
-    // Find the smallest Fibonacci number greater than or equal to the length of the array
-    while (fib < arr.length) {
-        fib2 = fib1;
-        fib1 = fib;
-        fib = fib1 + fib2;
-    }
-
-    let offset = -1; // Initialize the offset
-
-    // Compare x with the last element of the Fibonacci series one by one
-    while (fib > 1) {
-        let i = Math.min(offset + fib2, arr.length - 1);
-
-        // if x is greater than the value at index fib2, cut the subarray from offset to i
-        if (arr[i] < x) {
-            fib = fib1;
-            fib1 = fib2;
-            fib2 = fib - fib1;
-            offset = i;
-        }
-        // if x is less than the value at index fib2, cut the subarray after i+1
-        else if (arr[i] > x) {
-            fib = fib2;
-            fib1 = fib1 - fib2;
-            fib2 = fib - fib1;
-        }
-        // Element found
-        else {
-            return i;
+    while (i < text.length) {
+        if (text[i] === pattern[j]) {
+            i++;
+            j++;
+            if (j === pattern.length) {
+                return i - j; // Match found
+            }
+        } else {
+            if (j !== 0) {
+                j = table[j - 1];
+            } else {
+                i++;
+            }
         }
     }
 
-    // If element is not found, return -1
-    if (fib1 && arr[offset + 1] == x) {
-        return offset + 1;
-    }
-
-    return -1;
+    return -1; // No match found
 }
 
 // Example usage
-const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const x = 14;
-const index = fibonacciSearch(arr, x);
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const index = kmpSearch(text, pattern);
+
 if (index !== -1) {
-    console.log(`Element found at index ${index}`);
+    console.log(`Pattern found at index ${index}`);
 } else {
-    console.log(`Element not found`);
+    console.log("Pattern not found");
 }
