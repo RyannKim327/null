@@ -1,35 +1,9 @@
-// Define the graph as an adjacency list
-const graph = {
-  A: ['B', 'C'],
-  B: ['A', 'D', 'E'],
-  C: ['A', 'F'],
-  D: ['B'],
-  E: ['B', 'F'],
-  F: ['C', 'E']
-};
+let arr = [1, 2, 3, 4, 5];
+arr.reverse();
 
-// Breadth-First Search function
-function bfs(graph, startNode) {
-  let visited = {};
-  let queue = [];
+console.log(arr); // Output: [5, 4, 3, 2, 1]
+let arr = [1, 2, 3, 4, 5];
+let reversedArr = arr.slice().reverse();
 
-  queue.push(startNode);
-  visited[startNode] = true;
-
-  while (queue.length > 0) {
-    let currentNode = queue.shift();
-    console.log(currentNode);
-
-    let neighbors = graph[currentNode];
-    for (let i = 0; i < neighbors.length; i++) {
-      let neighbor = neighbors[i];
-      if (!visited[neighbor]) {
-        queue.push(neighbor);
-        visited[neighbor] = true;
-      }
-    }
-  }
-}
-
-// Using BFS from node 'A'
-bfs(graph, 'A');
+console.log(arr); // Output: [1, 2, 3, 4, 5]
+console.log(reversedArr); // Output: [5, 4, 3, 2, 1]
