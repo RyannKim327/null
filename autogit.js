@@ -1,12 +1,48 @@
-const cron = require('node-cron');
+class Node {
+  constructor(state, parent) {
+    this.state = state;
+    this.parent = parent;
+  }
+}
 
-// Define the task to be executed
-const task = () => {
-  console.log('Task executed at: ', new Date());
-};
+function breadthLimitedSearch(initialState, goalState, limit) {
+  let queue = [new Node(initialState, null)];
 
-// Schedule the task to run every minute
-cron.schedule('* * * * *', task);
+  while (queue.length > 0) {
+    let currentNode = queue.shift();
 
-console.log('Cron job scheduled!');
-npm install node-cron
+    if (currentNode.state === goalState) {
+      // Goal state found, return the path
+      return getPath(currentNode);
+    }
+
+    if (currentNode.depth < limit) {
+      // Generate child nodes and add to the queue
+      let childNodes = generateChildNodes(currentNode);
+      queue.push(...childNodes);
+    }
+  }
+
+  return "Goal state not found within the depth limit";
+}
+
+function generateChildNodes(parentNode) {
+  // Implement the logic to generate child nodes here
+  // Example: return an array of nodes representing possible child states
+}
+
+function getPath(node) {
+  let path = [];
+  while (node !== null) {
+    path.unshift(node.state);
+    node = node.parent;
+  }
+  return path;
+}
+
+// Usage
+let initialState = /* Initial state */;
+let goalState = /* Goal state */;
+let limit = /* Depth limit */;
+let result = breadthLimitedSearch(initialState, goalState, limit);
+console.log(result);
