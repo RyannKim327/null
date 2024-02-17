@@ -1,43 +1,72 @@
-class Stack {
+class PriorityQueue {
     constructor() {
-        this.stackArray = [];
+        this.heap = [];
     }
 
-    // Adds element to the top of the stack
-    push(element) {
-        this.stackArray.push(element);
-    }
-
-    // Removes and returns the element at the top of the stack
-    pop() {
-        if (this.isEmpty()) {
-            return "Stack is empty";
-        }
-        return this.stackArray.pop();
-    }
-
-    // Returns the element at the top of the stack without removing it
-    peek() {
-        return this.stackArray[this.stackArray.length - 1];
-    }
-
-    // Returns true if the stack is empty, false otherwise
-    isEmpty() {
-        return this.stackArray.length === 0;
-    }
-
-    // Returns the size of the stack
     size() {
-        return this.stackArray.length;
+        return this.heap.length;
+    }
+
+    isEmpty() {
+        return this.size() === 0;
+    }
+
+    insert(value, priority) {
+        const node = { value, priority };
+        this.heap.push(node);
+        this.percolateUp(this.size() - 1);
+    }
+
+    extractMin() {
+        if (this.isEmpty()) {
+            return null;
+        }
+
+        const minNode = this.heap[0];
+        const lastNode = this.heap.pop();
+
+        if (this.size() > 0) {
+            this.heap[0] = lastNode;
+            this.percolateDown(0);
+        }
+
+        return minNode;
+    }
+
+    percolateUp(index) {
+        let parentIndex = Math.floor((index - 1) / 2);
+
+        while (index > 0 && this.heap[index].priority < this.heap[parentIndex].priority) {
+            [this.heap[index], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[index]];
+            index = parentIndex;
+            parentIndex = Math.floor((index - 1) / 2);
+        }
+    }
+
+    percolateDown(index) {
+        let leftChildIndex = 2 * index + 1;
+        let rightChildIndex = 2 * index + 2;
+        let minIndex = index;
+
+        if (leftChildIndex < this.size() && this.heap[leftChildIndex].priority < this.heap[minIndex].priority) {
+            minIndex = leftChildIndex;
+        }
+
+        if (rightChildIndex < this.size() && this.heap[rightChildIndex].priority < this.heap[minIndex].priority) {
+            minIndex = rightChildIndex;
+        }
+
+        if (minIndex !== index) {
+            [this.heap[minIndex], this.heap[index]] = [this.heap[index], this.heap[minIndex]];
+            this.percolateDown(minIndex);
+        }
     }
 }
 
-// Example Usage
-const stack = new Stack();
-stack.push(1);
-stack.push(2);
-stack.push(3);
-console.log("Top of the stack: ", stack.peek());  // Output: 3
-console.log("Popped element: ", stack.pop());     // Output: 3
-console.log("Size of the stack: ", stack.size()); // Output: 2
-console.log("Is the stack empty: ", stack.isEmpty()); // Output: false
+// Example usage
+const pq = new PriorityQueue();
+pq.insert("Task 1", 4);
+pq.insert("Task 2", 2);
+pq.insert("Task 3", 7);
+
+console.log(pq.extractMin()); // Outputs: { value: 'Task 2', priority: 2 }
