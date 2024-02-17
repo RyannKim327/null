@@ -1,25 +1,38 @@
-function areAnagrams(str1, str2) {
-    // Remove any non-alphabetic characters and convert to lowercase
-    const cleanStr1 = str1.replace(/[^a-zA-Z]/g, '').toLowerCase();
-    const cleanStr2 = str2.replace(/[^a-zA-Z]/g, '').toLowerCase();
+// Helper function to get the digit at a specific position in a number
+function getDigit(num, i) {
+    return Math.floor(Math.abs(num) / Math.pow(10, i)) % 10;
+}
 
-    // Check if the lengths of the cleaned strings are equal
-    if (cleanStr1.length !== cleanStr2.length) {
-        return false;
+// Helper function to find the number of digits in the largest number in an array
+function digitCount(num) {
+    if (num === 0) return 1;
+    return Math.floor(Math.log10(Math.abs(num))) + 1;
+}
+
+// Helper function to find the length of the largest number in an array
+function mostDigits(arr) {
+    let maxDigits = 0;
+    for (let i = 0; i < arr.length; i++) {
+        maxDigits = Math.max(maxDigits, digitCount(arr[i]));
     }
-
-    // Sort the characters in the cleaned strings and compare them
-    const sortedStr1 = cleanStr1.split('').sort().join('');
-    const sortedStr2 = cleanStr2.split('').sort().join('');
-
-    return sortedStr1 === sortedStr2;
+    return maxDigits;
 }
 
-// Test the function
-const str1 = 'listen';
-const str2 = 'silent';
-if (areAnagrams(str1, str2)) {
-    console.log(`${str1} and ${str2} are anagrams.`);
-} else {
-    console.log(`${str1} and ${str2} are not anagrams.`);
+// Radix sort function
+function radixSort(arr) {
+    let maxDigitCount = mostDigits(arr);
+    for (let k = 0; k < maxDigitCount; k++) {
+        let digitBuckets = Array.from({ length: 10 }, () => []);
+        for (let i = 0; i < arr.length; i++) {
+            let digit = getDigit(arr[i], k);
+            digitBuckets[digit].push(arr[i]);
+        }
+        arr = [].concat(...digitBuckets);
+    }
+    return arr;
 }
+
+// Example usage
+const unsortedArray = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArray = radixSort(unsortedArray);
+console.log(sortedArray);
