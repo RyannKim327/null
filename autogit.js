@@ -1,42 +1,65 @@
 class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
 
-class LinkedList {
+class BinaryTree {
     constructor() {
-        this.head = null;
+        this.root = null;
     }
 
-    insert(data) {
-        const newNode = new Node(data);
-
-        if (!this.head) {
-            this.head = newNode;
+    insert(value) {
+        const newNode = new Node(value);
+        if (!this.root) {
+            this.root = newNode;
         } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
+            this.insertNode(this.root, newNode);
         }
     }
 
-    print() {
-        let current = this.head;
-        while (current) {
-            console.log(current.data);
-            current = current.next;
+    insertNode(node, newNode) {
+        if (newNode.value < node.value) {
+            if (!node.left) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (!node.right) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
+        }
+    }
+
+    search(value) {
+        return this.searchNode(this.root, value);
+    }
+
+    searchNode(node, value) {
+        if (!node) {
+            return false;
+        }
+        
+        if (value < node.value) {
+            return this.searchNode(node.left, value);
+        } else if (value > node.value) {
+            return this.searchNode(node.right, value);
+        } else {
+            return true;
         }
     }
 }
 
 // Example usage
-const list = new LinkedList();
-list.insert(1);
-list.insert(2);
-list.insert(3);
-
-list.print();
+const tree = new BinaryTree();
+tree.insert(5);
+tree.insert(3);
+tree.insert(8);
+tree.insert(1);
+console.log(tree.search(1)); // Output: true
+console.log(tree.search(10)); // Output: false
