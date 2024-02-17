@@ -1,26 +1,33 @@
-function longestCommonSubstring(str1, str2) {
-    let longest = 0;
-    let result = '';
-
-    const dp = Array.from(Array(str1.length + 1), () => Array(str2.length + 1).fill(0));
-
-    for (let i = 1; i <= str1.length; i++) {
-        for (let j = 1; j <= str2.length; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-
-                if (dp[i][j] > longest) {
-                    longest = dp[i][j];
-                    result = str1.substring(i - longest, i);
-                }
-            }
-        }
+class Node {
+    constructor(value, children = []) {
+        this.value = value;
+        this.children = children;
     }
-
-    return result;
 }
 
-// Example
-const str1 = "abcdef";
-const str2 = "zxbcdf";
-console.log(longestCommonSubstring(str1, str2)); // Output: "bcdf"
+function breadthLimitedSearch(root, limit) {
+    let queue = [root];
+    let visited = [];
+    
+    while (queue.length > 0 && limit > 0) {
+        let current = queue.shift();
+        visited.push(current.value);
+        
+        if (current.children) {
+            queue.push(...current.children);
+        }
+        
+        limit--;
+    }
+    
+    return visited;
+}
+
+// Example tree structure
+let tree = new Node(1, [
+    new Node(2, [new Node(4), new Node(5)]),
+    new Node(3, [new Node(6), new Node(7)])
+]);
+
+let result = breadthLimitedSearch(tree, 2);
+console.log(result); // Output: [1, 2, 3]
