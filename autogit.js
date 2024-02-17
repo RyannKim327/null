@@ -1,66 +1,47 @@
-class TarjanSCC {
-    constructor(graph) {
-        this.graph = graph;
-        this.index = 0;
-        this.stack = [];
-        this.inStack = new Set();
-        this.lowlink = {};
-        this.indexMap = {};
-        this.sccs = [];
+function rabinKarp(text, pattern) {
+    const BASE = 256; // Base for the hash function
+    const PRIME = 101; // A prime number for the hash function
+    const lenText = text.length;
+    const lenPattern = pattern.length;
+    const basePower = Math.pow(BASE, lenPattern - 1) % PRIME;
+
+    function getHash(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash = (hash * BASE + str.charCodeAt(i)) % PRIME;
+        }
+        return hash;
     }
 
-    findSCCs() {
-        for (let node of this.graph) {
-            if (!(node in this.indexMap)) {
-                this.tarjan(node);
+    const patternHash = getHash(pattern);
+    let textHash = getHash(text.substring(0, lenPattern));
+
+    for (let i = 0; i <= lenText - lenPattern; i++) {
+        if (textHash === patternHash) {
+            // Check character by character for a match
+            let found = true;
+            for (let j = 0; j < lenPattern; j++) {
+                if (text[i + j] !== pattern[j]) {
+                    found = false;
+                    break;
+                }
+            }
+            if (found) {
+                return i; // Return the index of the match
             }
         }
-
-        return this.sccs;
-    }
-
-    tarjan(node) {
-        this.indexMap[node] = this.index;
-        this.lowlink[node] = this.index;
-        this.index++;
-        this.stack.push(node);
-        this.inStack.add(node);
-
-        for (let neighbor of this.graph[node]) {
-            if (!(neighbor in this.indexMap)) {
-                this.tarjan(neighbor);
-                this.lowlink[node] = Math.min(this.lowlink[node], this.lowlink[neighbor]);
-            } else if (this.inStack.has(neighbor)) {
-                this.lowlink[node] = Math.min(this.lowlink[node], this.indexMap[neighbor]);
-            }
-        }
-
-        if (this.lowlink[node] === this.indexMap[node]) {
-            let scc = [];
-            let top = '';
-            do {
-                top = this.stack.pop();
-                this.inStack.delete(top);
-                scc.push(top);
-            } while (top !== node);
-
-            this.sccs.push(scc);
+        // Recalculate hash value for the next window
+        textHash = (BASE * (textHash - text.charCodeAt(i) * basePower) + text.charCodeAt(i + lenPattern)) % PRIME;
+        if (textHash < 0) {
+            textHash += PRIME;
         }
     }
+
+    return -1; // Pattern not found in the text
 }
 
-// Example Usage
-const graph = {
-    0: [1],
-    1: [2],
-    2: [0, 3],
-    3: [4],
-    4: [5, 6],
-    5: [3],
-    6: [7],
-    7: [4, 6]
-};
-
-const tarjanSCC = new TarjanSCC(graph);
-const sccs = tarjanSCC.findSCCs();
-console.log(sccs);
+// Example usage
+const text = "abxabcabcaby";
+const pattern = "abcaby";
+const index = rabinKarp(text, pattern);
+console.log(`Pattern found at index ${index}`);
