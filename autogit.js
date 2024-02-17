@@ -1,49 +1,22 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-
-function isPalindrome(head) {
-  if (!head || !head.next) {
-    return true;
-  }
-
-  let values = [];
-  let slow = head;
-  let fast = head;
-
-  while (fast && fast.next) {
-    values.push(slow.value);
-    slow = slow.next;
-    fast = fast.next.next;
-  }
-
-  if (fast) { // odd number of elements, move slow one step forward
-    slow = slow.next;
-  }
-
-  while (slow) {
-    if (slow.value !== values.pop()) {
-      return false;
+function quickSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
     }
-    slow = slow.next;
-  }
 
-  return true;
+    const pivot = arr[0];
+    const left = [];
+    const right = [];
+
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
+        } else {
+            right.push(arr[i]);
+        }
+    }
+
+    return quickSort(left).concat(pivot, quickSort(right));
 }
 
-// Test if a linked list is a palindrome
-let a = new Node('a');
-let b = new Node('b');
-let c = new Node('c');
-let b2 = new Node('b');
-let a2 = new Node('a');
-
-a.next = b;
-b.next = c;
-c.next = b2;
-b2.next = a2;
-
-console.log(isPalindrome(a)); // Output: true
+const arr = [3, 6, 8, 10, 1, 2, 1];
+console.log(quickSort(arr)); // Outputs [1, 1, 2, 3, 6, 8, 10]
