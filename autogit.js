@@ -1,23 +1,47 @@
-function findFirstRepeatedChar(str) {
-  let charMap = {};
-  
-  for (let char of str) {
-    if (charMap[char]) {
-      return char;
-    } else {
-      charMap[char] = true;
-    }
+class Stack {
+  constructor() {
+    this.items = [];
   }
-  
-  return null;
+
+  push(element) {
+    this.items.push(element);
+  }
+
+  pop() {
+    if (this.isEmpty()) {
+      return "Underflow";
+    }
+    return this.items.pop();
+  }
+
+  peek() {
+    return this.items[this.items.length - 1];
+  }
+
+  isEmpty() {
+    return this.items.length === 0;
+  }
+
+  printStack() {
+    let str = "";
+    for (let i = 0; i < this.items.length; i++) {
+      str += this.items[i] + " ";
+    }
+    return str;
+  }
 }
 
-// Example usage
-const str = "hello world";
-const firstRepeatedChar = findFirstRepeatedChar(str);
+// Usage
+let stack = new Stack();
+stack.push(1);
+stack.push(2);
+stack.push(3);
 
-if (firstRepeatedChar) {
-  console.log(`The first repeated character in "${str}" is: ${firstRepeatedChar}`);
-} else {
-  console.log("No repeated characters found in the string");
-}
+console.log(stack.printStack()); // Output: 1 2 3
+
+console.log(stack.pop()); // Output: 3
+console.log(stack.printStack()); // Output: 1 2
+
+console.log(stack.peek()); // Output: 2
+
+console.log(stack.isEmpty()); // Output: false
