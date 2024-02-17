@@ -1,13 +1,17 @@
-function isSortedAscending(arr) {
-  for (let i = 0; i < arr.length - 1; i++) {
-    if (arr[i] > arr[i + 1]) {
-      return false;
+function bubbleSort(arr) {
+    const n = arr.length;
+    for (let i = 0; i < n - 1; i++) {
+        for (let j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap arr[j] and arr[j+1]
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+            }
+        }
     }
-  }
-  return true;
+    return arr;
 }
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [5, 4, 3, 2, 1];
 
-console.log(isSortedAscending(array1)); // Output: true
-console.log(isSortedAscending(array2)); // Output: false
+// Test the bubble sort function
+const arr = [64, 34, 25, 12, 22, 11, 90];
+console.log("Original array:", arr);
+console.log("Sorted array:", bubbleSort(arr));
