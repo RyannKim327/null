@@ -1,40 +1,37 @@
-class Stack {
-  constructor() {
-    this.stack = [];
-  }
-
-  push(item) {
-    this.stack.push(item);
-  }
-
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
+function mergeSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
     }
-    return this.stack.pop();
-  }
 
-  isEmpty() {
-    return this.stack.length === 0;
-  }
+    const mid = Math.floor(arr.length / 2);
+    const left = arr.slice(0, mid);
+    const right = arr.slice(mid);
 
-  peek() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
-    }
-    return this.stack[this.stack.length - 1];
-  }
+    return merge(
+        mergeSort(left),
+        mergeSort(right)
+    );
 }
 
-// Example usage
-const myStack = new Stack();
-myStack.push(1);
-myStack.push(2);
-myStack.push(3);
+function merge(left, right) {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
 
-console.log(myStack.peek()); // Output: 3
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            result.push(right[rightIndex]);
+            rightIndex++;
+        }
+    }
 
-console.log(myStack.pop()); // Output: 3
-console.log(myStack.pop()); // Output: 2
-console.log(myStack.pop()); // Output: 1
-console.log(myStack.pop()); // Output: "Stack is empty"
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+}
+
+// Example usage:
+const arr = [8, 4, 3, 6, 2, 7, 1, 5];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr);
