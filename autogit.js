@@ -1,43 +1,32 @@
-function fibonacciSearch(arr, x) {
-    let fibM2 = 0;
-    let fibM1 = 1;
-    let fibM = fibM2 + fibM1;
-
-    while (fibM < arr.length) {
-        fibM2 = fibM1;
-        fibM1 = fibM;
-        fibM = fibM2 + fibM1;
-    }
-
-    let offset = -1;
-
-    while (fibM > 1) {
-        let i = Math.min(offset + fibM2, arr.length - 1);
-
-        if (arr[i] < x) {
-            fibM = fibM1;
-            fibM1 = fibM2;
-            fibM2 = fibM - fibM1;
-            offset = i;
-        } else if (arr[i] > x) {
-            fibM = fibM2;
-            fibM1 -= fibM2;
-            fibM2 = fibM - fibM1;
-        } else {
-            return i;
+function longestIncreasingSubsequence(arr) {
+    let lisLength = [];
+    for (let i = 0; i < arr.length; i++) {
+        lisLength[i] = 1;
+        for (let j = 0; j < i; j++) {
+            if (arr[i] > arr[j] && lisLength[i] < lisLength[j] + 1) {
+                lisLength[i] = lisLength[j] + 1;
+            }
         }
     }
 
-    if (fibM1 && arr[offset + 1] === x) {
-        return offset + 1;
+    let maxLength = Math.max(...lisLength);
+    let result = [];
+    let index = lisLength.indexOf(maxLength);
+
+    while (maxLength > 0) {
+        result.unshift(arr[index]);
+        maxLength--;
+
+        for (let i = index - 1; i >= 0; i--) {
+            if (lisLength[i] === maxLength && arr[i] < arr[index]) {
+                index = i;
+                break;
+            }
+        }
     }
 
-    return -1;
+    return result;
 }
 
-// Example:
-const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
-const x = 85;
-
-const index = fibonacciSearch(arr, x);
-console.log(`Element found at index: ${index}`);
+let arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
+console.log(longestIncreasingSubsequence(arr)); // Output: [10, 22, 33, 50, 60, 80]
