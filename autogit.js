@@ -1,12 +1,48 @@
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
+class HashTable {
+  constructor(size = 10) {
+    this.size = size;
+    this.buckets = new Array(size);
+  }
 
-// Find the index of the element to remove
-let index = array.indexOf(elementToRemove);
+  hash(key) {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash += key.charCodeAt(i);
+    }
+    return hash % this.size;
+  }
 
-// If the element is found in the array, remove it
-if (index !== -1) {
-    array.splice(index, 1);
+  set(key, value) {
+    const index = this.hash(key);
+    if (!this.buckets[index]) {
+      this.buckets[index] = [];
+    }
+    this.buckets[index].push([key, value]);
+  }
+
+  get(key) {
+    const index = this.hash(key);
+    if (!this.buckets[index]) return null;
+    for (const pair of this.buckets[index]) {
+      if (pair[0] === key) {
+        return pair[1];
+      }
+    }
+    return null;
+  }
+
+  remove(key) {
+    const index = this.hash(key);
+    if (this.buckets[index]) {
+      this.buckets[index] = this.buckets[index].filter(pair => pair[0] !== key);
+    }
+  }
 }
 
-console.log(array); // Output: [1, 2, 4, 5]
+// Example usage:
+const table = new HashTable();
+table.set("apple", 5);
+table.set("banana", 10);
+console.log(table.get("apple")); // Output: 5
+table.remove("banana");
+console.log(table.get("banana")); // Output: null
