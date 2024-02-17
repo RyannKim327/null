@@ -1,18 +1,56 @@
-function findMedianSortedArrays(nums1, nums2) {
-    const combinedArray = nums1.concat(nums2).sort((a, b) => a - b);
-    const length = combinedArray.length;
-    
-    if (length % 2 !== 0) {
-        // If the combined array has odd length
-        return combinedArray[Math.floor(length / 2)];
-    } else {
-        // If the combined array has even length
-        return (combinedArray[length / 2 - 1] + combinedArray[length / 2]) / 2;
+class Graph {
+  constructor() {
+    this.vertices = {};
+  }
+
+  addVertex(vertex) {
+    if (!this.vertices[vertex]) {
+      this.vertices[vertex] = [];
     }
+  }
+
+  addEdge(vertex1, vertex2) {
+    if (!this.vertices[vertex1] || !this.vertices[vertex2]) {
+      throw new Error("Vertex not found");
+    }
+
+    this.vertices[vertex1].push(vertex2);
+    this.vertices[vertex2].push(vertex1);
+  }
+
+  depthFirstSearch(startingVertex) {
+    const visited = {};
+    const stack = [startingVertex];
+    const result = [];
+
+    while (stack.length > 0) {
+      const currentVertex = stack.pop();
+      
+      if (!visited[currentVertex]) {
+        visited[currentVertex] = true;
+        result.push(currentVertex);
+
+        this.vertices[currentVertex].forEach(neighbor => {
+          if (!visited[neighbor]) {
+            stack.push(neighbor);
+          }
+        });
+      }
+    }
+
+    return result;
+  }
 }
 
 // Example usage
-const nums1 = [1, 3];
-const nums2 = [2, 4];
-const median = findMedianSortedArrays(nums1, nums2);
-console.log(median); // Output: 2.5
+const graph = new Graph();
+graph.addVertex("A");
+graph.addVertex("B");
+graph.addVertex("C");
+graph.addVertex("D");
+graph.addEdge("A", "B");
+graph.addEdge("A", "C");
+graph.addEdge("B", "D");
+graph.addEdge("C", "D");
+
+console.log(graph.depthFirstSearch("A")); // Output: ['A', 'C', 'D', 'B']
