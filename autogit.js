@@ -1,50 +1,78 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
+class PriorityQueue {
+  constructor() {
+    this.heap = [];
+  }
+
+  insert(value, priority) {
+    const node = { value, priority };
+    this.heap.push(node);
+    this.bubbleUp();
+  }
+
+  extractMin() {
+    const min = this.heap[0];
+    const end = this.heap.pop();
+    if (this.heap.length > 0) {
+      this.heap[0] = end;
+      this.sinkDown();
     }
+    return min;
+  }
+
+  bubbleUp() {
+    let index = this.heap.length - 1;
+    const node = this.heap[index];
+
+    while (index > 0) {
+      let parentIndex = Math.floor((index - 1) / 2);
+      let parent = this.heap[parentIndex];
+
+      if (node.priority >= parent.priority) break;
+
+      this.heap[parentIndex] = node;
+      this.heap[index] = parent;
+      index = parentIndex;
+    }
+  }
+
+  sinkDown() {
+    let index = 0;
+    const length = this.heap.length;
+    const node = this.heap[0];
+
+    while (true) {
+      let leftChildIdx = 2 * index + 1;
+      let rightChildIdx = 2 * index + 2;
+      let leftChild, rightChild;
+      let swap = null;
+
+      if (leftChildIdx < length) {
+        leftChild = this.heap[leftChildIdx];
+        if (leftChild.priority < node.priority) {
+          swap = leftChildIdx;
+        }
+      }
+
+      if (rightChildIdx < length) {
+        rightChild = this.heap[rightChildIdx];
+        if ((swap === null && rightChild.priority < node.priority) || (swap !== null && rightChild.priority < leftChild.priority)) {
+          swap = rightChildIdx;
+        }
+      }
+
+      if (swap === null) break;
+
+      this.heap[index] = this.heap[swap];
+      this.heap[swap] = node;
+      index = swap;
+    }
+  }
+
+  isEmpty() {
+    return this.heap.length === 0;
+  }
+
+  size() {
+    return this.heap.length;
+  }
 }
-
-class LinkedList {
-    constructor() {
-        this.head = null;
-    }
-
-    append(data) {
-        const newNode = new Node(data);
-
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-
-        let current = this.head;
-        while (current.next !== null) {
-            current = current.next;
-        }
-
-        current.next = newNode;
-    }
-
-    findMiddleElement() {
-        let slow = this.head;
-        let fast = this.head;
-
-        while (fast && fast.next) {
-            slow = slow.next;
-            fast = fast.next.next;
-        }
-
-        return slow.data;
-    }
-}
-
-// Test the code
-const linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
-linkedList.append(4);
-linkedList.append(5);
-
-console.log(linkedList.findMiddleElement()); // Output: 3
