@@ -1,23 +1,15 @@
-function countingSort(arr) {
-    const max = Math.max(...arr);
-    const countArray = new Array(max + 1).fill(0);
-
-    for (let i = 0; i < arr.length; i++) {
-        countArray[arr[i]]++;
-    }
-
-    let sortedIndex = 0;
-    for (let i = 0; i < countArray.length; i++) {
-        while (countArray[i] > 0) {
-            arr[sortedIndex++] = i;
-            countArray[i]--;
+function countOccurrences(str, char) {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str.charAt(i) === char) {
+            count++;
         }
     }
-
-    return arr;
+    return count;
 }
 
-// Example usage
-const unsortedArray = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
-const sortedArray = countingSort(unsortedArray);
-console.log(sortedArray);
+// Example of using the function
+let myString = 'hello world';
+let charToCount = 'o';
+let occurrences = countOccurrences(myString, charToCount);
+console.log(`The character "${charToCount}" appears ${occurrences} times in the string.`);
