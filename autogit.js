@@ -1,43 +1,37 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
-    }
-}
+function topologicalSort(graph) {
+  const visited = new Set();
+  const stack = [];
 
-class LinkedList {
-    constructor() {
-        this.head = null;
+  function visit(node) {
+    if (visited.has(node)) {
+      return;
     }
 
-    append(data) {
-        const newNode = new Node(data);
+    visited.add(node);
 
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-
-            current.next = newNode;
-        }
+    for (const neighbor of graph[node]) {
+      visit(neighbor);
     }
 
-    print() {
-        let current = this.head;
-        while (current) {
-            console.log(current.data);
-            current = current.next;
-        }
-    }
+    stack.unshift(node);
+  }
+
+  for (const node in graph) {
+    visit(node);
+  }
+
+  return stack;
 }
 
 // Example usage
-const ll = new LinkedList();
-ll.append(1);
-ll.append(2);
-ll.append(3);
+const graph = {
+  'A': ['B', 'C'],
+  'B': ['C', 'D'],
+  'C': ['E'],
+  'D': ['F'],
+  'E': [],
+  'F': []
+};
 
-ll.print(); // Output: 1 2 3
+const result = topologicalSort(graph);
+console.log(result); // ['A', 'B', 'D', 'C', 'E', 'F']
