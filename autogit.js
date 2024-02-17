@@ -1,12 +1,26 @@
-function isPalindrome(str) {
-    // Remove non-alphanumeric characters and convert to lowercase
-    str = str.toLowerCase().replace(/[\W_]/g, '');
-    
-    // Compare the original string with its reversed version
-    return str === str.split('').reverse().join('');
+function shellSort(arr) {
+    let n = arr.length;
+    let gap = Math.floor(n / 2);
+
+    while (gap > 0) {
+        for (let i = gap; i < n; i++) {
+            let temp = arr[i];
+            let j = i;
+
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
+            }
+
+            arr[j] = temp;
+        }
+
+        gap = Math.floor(gap / 2);
+    }
+
+    return arr;
 }
 
-// Test the function
-console.log(isPalindrome('A man, a plan, a canal, Panama')); // Output: true
-console.log(isPalindrome('racecar')); // Output: true
-console.log(isPalindrome('hello')); // Output: false
+// Testing the shellSort function
+let arr = [12, 34, 54, 2, 3];
+console.log(shellSort(arr));
