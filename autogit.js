@@ -1,17 +1,23 @@
-function bubbleSort(arr) {
-    const n = arr.length;
-    for (let i = 0; i < n - 1; i++) {
-        for (let j = 0; j < n - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                // Swap arr[j] and arr[j+1]
-                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-            }
-        }
+function burrowsWheelerTransform(input) {
+    // Generate cyclic permutations of the input string
+    let permutations = [];
+    for (let i = 0; i < input.length; i++) {
+        let rotation = input.slice(i) + input.slice(0, i);
+        permutations.push(rotation);
     }
-    return arr;
+
+    // Sort the permutations lexicographically
+    permutations.sort();
+
+    // Extract the last characters of each permutation
+    let transformed = permutations.map((str) => str.slice(-1));
+
+    // Return the transformed string
+    return transformed.join("");
 }
 
-// Test the bubble sort function
-const arr = [64, 34, 25, 12, 22, 11, 90];
-console.log("Original array:", arr);
-console.log("Sorted array:", bubbleSort(arr));
+// Test the BWT algorithm
+let input = "banana";
+let bwt = burrowsWheelerTransform(input);
+console.log("Input: ", input);
+console.log("BWT: ", bwt);
