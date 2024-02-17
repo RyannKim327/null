@@ -1,37 +1,55 @@
-function findMajorityElement(arr) {
-    let count = 0;
-    let candidate;
-
-    // Find the candidate element
-    for (let num of arr) {
-        if (count === 0) {
-            candidate = num;
-        }
-
-        count += (num === candidate) ? 1 : -1;
+class Graph {
+    constructor() {
+        this.adjList = {};
     }
 
-    // Verify if the candidate is the majority element
-    count = 0;
-    for (let num of arr) {
-        if (num === candidate) {
-            count++;
+    addVertex(vertex) {
+        if (!this.adjList[vertex]) {
+            this.adjList[vertex] = [];
         }
     }
 
-    if (count > arr.length / 2) {
-        return candidate;
-    } else {
-        return -1; // No majority element
+    addEdge(vertex1, vertex2) {
+        this.adjList[vertex1].push(vertex2);
+        this.adjList[vertex2].push(vertex1);
+    }
+
+    depthFirstSearch(start) {
+        const visited = {};
+        const result = [];
+
+        const dfs = (vertex) => {
+            if (!vertex) {
+                return null;
+            }
+
+            visited[vertex] = true;
+            result.push(vertex);
+
+            this.adjList[vertex].forEach(neighbor => {
+                if (!visited[neighbor]) {
+                    dfs(neighbor);
+                }
+            });
+        };
+
+        dfs(start);
+
+        return result;
     }
 }
 
-// Test the function
-const arr = [2, 2, 3, 3, 2, 2, 2, 1, 1];
-const majorityElement = findMajorityElement(arr);
+// Usage
+const graph = new Graph();
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addVertex('E');
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('D', 'E');
 
-if (majorityElement !== -1) {
-    console.log(`The majority element is: ${majorityElement}`);
-} else {
-    console.log(`No majority element found.`);
-}
+const dfsResult = graph.depthFirstSearch('A');
+console.log(dfsResult);
