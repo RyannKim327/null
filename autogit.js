@@ -1,55 +1,46 @@
-class Graph {
-    constructor() {
-        this.adjList = {};
+function getMax(arr) {
+  let max = arr[0];
+  for (let i = 1; i < arr.length; i++) {
+    if (arr[i] > max) {
+      max = arr[i];
     }
-
-    addVertex(vertex) {
-        if (!this.adjList[vertex]) {
-            this.adjList[vertex] = [];
-        }
-    }
-
-    addEdge(vertex1, vertex2) {
-        this.adjList[vertex1].push(vertex2);
-        this.adjList[vertex2].push(vertex1);
-    }
-
-    depthFirstSearch(start) {
-        const visited = {};
-        const result = [];
-
-        const dfs = (vertex) => {
-            if (!vertex) {
-                return null;
-            }
-
-            visited[vertex] = true;
-            result.push(vertex);
-
-            this.adjList[vertex].forEach(neighbor => {
-                if (!visited[neighbor]) {
-                    dfs(neighbor);
-                }
-            });
-        };
-
-        dfs(start);
-
-        return result;
-    }
+  }
+  return max;
 }
 
-// Usage
-const graph = new Graph();
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('D', 'E');
+function countSort(arr, exp) {
+  const n = arr.length;
+  const output = new Array(n).fill(0);
+  const count = new Array(10).fill(0);
 
-const dfsResult = graph.depthFirstSearch('A');
-console.log(dfsResult);
+  for (let i = 0; i < n; i++) {
+    count[Math.floor(arr[i] / exp) % 10]++;
+  }
+
+  for (let i = 1; i < 10; i++) {
+    count[i] += count[i - 1];
+  }
+
+  for (let i = n - 1; i >= 0; i--) {
+    output[count[Math.floor(arr[i] / exp) % 10] - 1] = arr[i];
+    count[Math.floor(arr[i] / exp) % 10]--;
+  }
+
+  for (let i = 0; i < n; i++) {
+    arr[i] = output[i];
+  }
+}
+
+function radixSort(arr) {
+  const max = getMax(arr);
+  
+  for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
+    countSort(arr, exp);
+  }
+
+  return arr;
+}
+
+// Example usage
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+console.log(radixSort(arr)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
