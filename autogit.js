@@ -1,47 +1,34 @@
-function rabinKarp(text, pattern) {
-    const BASE = 256; // Base for the hash function
-    const PRIME = 101; // A prime number for the hash function
-    const lenText = text.length;
-    const lenPattern = pattern.length;
-    const basePower = Math.pow(BASE, lenPattern - 1) % PRIME;
+function mergeSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
+  }
 
-    function getHash(str) {
-        let hash = 0;
-        for (let i = 0; i < str.length; i++) {
-            hash = (hash * BASE + str.charCodeAt(i)) % PRIME;
-        }
-        return hash;
+  const middle = Math.floor(arr.length / 2);
+  const left = arr.slice(0, middle);
+  const right = arr.slice(middle);
+
+  return merge(mergeSort(left), mergeSort(right));
+}
+
+function merge(left, right) {
+  let result = [];
+  let leftIndex = 0;
+  let rightIndex = 0;
+
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] < right[rightIndex]) {
+      result.push(left[leftIndex]);
+      leftIndex++;
+    } else {
+      result.push(right[rightIndex]);
+      rightIndex++;
     }
+  }
 
-    const patternHash = getHash(pattern);
-    let textHash = getHash(text.substring(0, lenPattern));
-
-    for (let i = 0; i <= lenText - lenPattern; i++) {
-        if (textHash === patternHash) {
-            // Check character by character for a match
-            let found = true;
-            for (let j = 0; j < lenPattern; j++) {
-                if (text[i + j] !== pattern[j]) {
-                    found = false;
-                    break;
-                }
-            }
-            if (found) {
-                return i; // Return the index of the match
-            }
-        }
-        // Recalculate hash value for the next window
-        textHash = (BASE * (textHash - text.charCodeAt(i) * basePower) + text.charCodeAt(i + lenPattern)) % PRIME;
-        if (textHash < 0) {
-            textHash += PRIME;
-        }
-    }
-
-    return -1; // Pattern not found in the text
+  return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
 }
 
 // Example usage
-const text = "abxabcabcaby";
-const pattern = "abcaby";
-const index = rabinKarp(text, pattern);
-console.log(`Pattern found at index ${index}`);
+const arr = [5, 3, 8, 2, 1, 4];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr);
