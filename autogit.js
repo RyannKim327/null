@@ -1,46 +1,40 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
+function longestCommonSubsequence(str1, str2) {
+    const m = str1.length;
+    const n = str2.length;
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-
-  add(value) {
-    if (!this.head) {
-      this.head = new Node(value);
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = new Node(value);
-    }
-  }
-
-  findMiddle() {
-    let slow = this.head;
-    let fast = this.head;
-
-    while (fast && fast.next) {
-      slow = slow.next;
-      fast = fast.next.next;
+    const dp = [];
+    for (let i = 0; i <= m; i++) {
+        dp[i] = [];
+        for (let j = 0; j <= n; j++) {
+            if (i === 0 || j === 0) {
+                dp[i][j] = 0;
+            } else if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
     }
 
-    return slow.value;
-  }
+    let result = "";
+    let i = m, j = n;
+
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            result = str1[i - 1] + result;
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
+        }
+    }
+
+    return result;
 }
 
-// Usage
-let ll = new LinkedList();
-ll.add(1);
-ll.add(2);
-ll.add(3);
-ll.add(4);
-ll.add(5);
-
-console.log(ll.findMiddle()); // Output: 3
+// Example
+const str1 = "AGGTAB";
+const str2 = "GXTXAYB";
+console.log(longestCommonSubsequence(str1, str2)); // Output: GTAB
