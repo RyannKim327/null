@@ -1,66 +1,34 @@
-class Graph {
-    constructor(numNodes) {
-        this.graph = Array(numNodes).fill().map(() => []);
+function mergeSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    addEdge(u, v) {
-        this.graph[u].push(v);
-    }
+    const middle = Math.floor(arr.length / 2);
+    const left = arr.slice(0, middle);
+    const right = arr.slice(middle);
 
-    tarjan() {
-        let index = 0;
-        let stack = [];
-        let onStack = Array(this.graph.length).fill(false);
-        let indexMap = Array(this.graph.length).fill(-1);
-        let lowLink = Array(this.graph.length).fill(-1);
-        let result = [];
-
-        const strongConnect = (v) => {
-            indexMap[v] = index;
-            lowLink[v] = index;
-            index++;
-            stack.push(v);
-            onStack[v] = true;
-
-            for (const w of this.graph[v]) {
-                if (indexMap[w] === -1) {
-                    strongConnect(w);
-                    lowLink[v] = Math.min(lowLink[v], lowLink[w]);
-                } else if (onStack[w]) {
-                    lowLink[v] = Math.min(lowLink[v], indexMap[w]);
-                }
-            }
-
-            if (indexMap[v] === lowLink[v]) {
-                let component = [];
-                let w;
-                do {
-                    w = stack.pop();
-                    onStack[w] = false;
-                    component.push(w);
-                } while (w !== v);
-
-                result.push(component);
-            }
-        };
-
-        for (let v = 0; v < this.graph.length; v++) {
-            if (indexMap[v] === -1) {
-                strongConnect(v);
-            }
-        }
-
-        return result;
-    }
+    return merge(mergeSort(left), mergeSort(right));
 }
 
-// Example usage
-const graph = new Graph(5);
-graph.addEdge(0, 1);
-graph.addEdge(1, 2);
-graph.addEdge(2, 0);
-graph.addEdge(1, 3);
-graph.addEdge(3, 4);
+function merge(left, right) {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
 
-const stronglyConnectedComponents = graph.tarjan();
-console.log(stronglyConnectedComponents);
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            result.push(right[rightIndex]);
+            rightIndex++;
+        }
+    }
+
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+}
+
+// Example usage:
+const arr = [5, 3, 8, 4, 2, 1, 9, 6, 7];
+const sortedArray = mergeSort(arr);
+console.log(sortedArray);
