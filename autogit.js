@@ -1,35 +1,39 @@
-function depthLimitedSearch(node, goal, depthLimit) {
-    return dls(node, goal, depthLimit, 0);
+class TreeNode {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
 }
 
-function dls(node, goal, depthLimit, currentDepth) {
-    if (currentDepth > depthLimit) {
-        return null;
+function getHeight(node) {
+    if (node === null) {
+        return 0;
     }
-
-    if (node === goal) {
-        return node;
-    }
-
-    for (let child of getChildren(node)) {
-        let result = dls(child, goal, depthLimit, currentDepth + 1);
-        if (result !== null) {
-            return result;
-        }
-    }
-
-    return null;
+    
+    return 1 + Math.max(getHeight(node.left), getHeight(node.right));
 }
 
-function getChildren(node) {
-    // Implement your function to generate children nodes here
-    return [];
+function diameterOfBinaryTree(root) {
+    if (root === null) {
+        return 0;
+    }
+    
+    const leftHeight = getHeight(root.left);
+    const rightHeight = getHeight(root.right);
+    
+    const leftDiameter = diameterOfBinaryTree(root.left);
+    const rightDiameter = diameterOfBinaryTree(root.right);
+    
+    return Math.max(leftHeight + rightHeight, Math.max(leftDiameter, rightDiameter));
 }
 
-// Sample usage
-let rootNode = 'A';
-let goalNode = 'G';
-let depthLimit = 3;
+// Example usage
+// Create a sample binary tree
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-let result = depthLimitedSearch(rootNode, goalNode, depthLimit);
-console.log(result);
+console.log(diameterOfBinaryTree(root)); // Output: 3
