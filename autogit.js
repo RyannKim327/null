@@ -1,19 +1,7 @@
-function bubbleSort(arr) {
-    let len = arr.length;
-    for (let i = 0; i < len; i++) {
-        for (let j = 0; j < len - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                // Swap elements
-                let temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
-        }
-    }
-    return arr;
-}
+let numbers = [4, 2, 5, 1, 3];
+numbers.sort((a, b) => a - b);
 
-// Example usage
-let array = [64, 34, 25, 12, 22, 11, 90];
-console.log("Original array: " + array);
-console.log("Sorted array: " + bubbleSort(array));
+console.log(numbers); // Output: [1, 2, 3, 4, 5]
+numbers.sort((a, b) => b - a);
+
+console.log(numbers); // Output: [5, 4, 3, 2, 1]
