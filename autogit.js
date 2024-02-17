@@ -1,23 +1,49 @@
-function findCommonElements(array1, array2) {
-    // Create an empty array to store common elements
-    let commonElements = [];
-
-    // Iterate through the first array
-    for (let i = 0; i < array1.length; i++) {
-        // Check if the element is present in the second array
-        if (array2.includes(array1[i]) && !commonElements.includes(array1[i])) {
-            // If present and not already added to the common elements array, add it
-            commonElements.push(array1[i]);
-        }
-    }
-
-    return commonElements;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-// Example arrays
-let array1 = [1, 2, 3, 4, 5];
-let array2 = [3, 4, 5, 6, 7];
+function isPalindrome(head) {
+  if (!head || !head.next) {
+    return true;
+  }
 
-// Find common elements
-let commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [3, 4, 5]
+  let values = [];
+  let slow = head;
+  let fast = head;
+
+  while (fast && fast.next) {
+    values.push(slow.value);
+    slow = slow.next;
+    fast = fast.next.next;
+  }
+
+  if (fast) { // odd number of elements, move slow one step forward
+    slow = slow.next;
+  }
+
+  while (slow) {
+    if (slow.value !== values.pop()) {
+      return false;
+    }
+    slow = slow.next;
+  }
+
+  return true;
+}
+
+// Test if a linked list is a palindrome
+let a = new Node('a');
+let b = new Node('b');
+let c = new Node('c');
+let b2 = new Node('b');
+let a2 = new Node('a');
+
+a.next = b;
+b.next = c;
+c.next = b2;
+b2.next = a2;
+
+console.log(isPalindrome(a)); // Output: true
