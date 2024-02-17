@@ -1,22 +1,48 @@
-function countingSort(array) {
-  const max = Math.max(...array);
-  const counts = new Array(max + 1).fill(0);
-  const sortedArray = [];
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.children = [];
+  }
 
-  array.forEach(num => {
-    counts[num]++;
-  });
-
-  counts.forEach((count, num) => {
-    for (let i = 0; i < count; i++) {
-      sortedArray.push(num);
-    }
-  });
-
-  return sortedArray;
+  addChild(child) {
+    this.children.push(child);
+  }
 }
 
-// Example usage
-const arr = [4, 2, 2, 8, 3, 3, 1];
-const sortedArr = countingSort(arr);
-console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
+function depthLimitedSearch(root, target, limit) {
+  let stack = [{ node: root, depth: 0 }];
+
+  while (stack.length > 0) {
+    const { node, depth } = stack.pop();
+
+    if (node.value === target) {
+      return node;
+    }
+
+    if (depth < limit) {
+      for (let child of node.children) {
+        stack.push({ node: child, depth: depth + 1 });
+      }
+    }
+  }
+
+  return null;
+}
+
+// Example Usage
+const root = new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
+const node4 = new Node(4);
+
+root.addChild(node2);
+root.addChild(node3);
+node3.addChild(node4);
+
+const targetNode = depthLimitedSearch(root, 4, 2);
+
+if (targetNode) {
+  console.log("Node found: ", targetNode.value);
+} else {
+  console.log("Node not found within depth limit.");
+}
