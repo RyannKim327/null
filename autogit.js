@@ -1,24 +1,34 @@
-function quickSort(arr) {
+function mergeSort(arr) {
     if (arr.length <= 1) {
         return arr;
     }
 
-    const pivot = arr[0];
-    const left = [];
-    const right = [];
+    const middle = Math.floor(arr.length / 2);
+    const left = arr.slice(0, middle);
+    const right = arr.slice(middle);
 
-    for (let i = 1; i < arr.length; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
+    return merge(mergeSort(left), mergeSort(right));
+}
+
+function merge(left, right) {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
         } else {
-            right.push(arr[i]);
+            result.push(right[rightIndex]);
+            rightIndex++;
         }
     }
 
-    return quickSort(left).concat(pivot, quickSort(right));
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
 }
 
-// Example usage:
-const array = [3, 6, 8, 10, 1, 2, 1];
-const sortedArray = quickSort(array);
-console.log(sortedArray);
+// Example Usage
+const arr = [3, 5, 1, 4, 2];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr); // Output: [1, 2, 3, 4, 5]
