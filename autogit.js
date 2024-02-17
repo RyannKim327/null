@@ -1,22 +1,43 @@
-function quickSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+
+class LinkedList {
+    constructor() {
+        this.head = null;
     }
 
-    const pivot = arr[0];
-    const left = [];
-    const right = [];
+    append(data) {
+        const newNode = new Node(data);
 
-    for (let i = 1; i < arr.length; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
+        if (!this.head) {
+            this.head = newNode;
         } else {
-            right.push(arr[i]);
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+
+            current.next = newNode;
         }
     }
 
-    return quickSort(left).concat(pivot, quickSort(right));
+    print() {
+        let current = this.head;
+        while (current) {
+            console.log(current.data);
+            current = current.next;
+        }
+    }
 }
 
-const arr = [3, 6, 8, 10, 1, 2, 1];
-console.log(quickSort(arr)); // Outputs [1, 1, 2, 3, 6, 8, 10]
+// Example usage
+const ll = new LinkedList();
+ll.append(1);
+ll.append(2);
+ll.append(3);
+
+ll.print(); // Output: 1 2 3
