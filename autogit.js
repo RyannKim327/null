@@ -1,59 +1,40 @@
-class Node {
-    constructor() {
-        this.children = {};
-    }
-}
+function findMedianSortedArrays(nums1, nums2) {
+    let mergedArray = [];
 
-class SuffixTree {
-    constructor(text) {
-        this.root = new Node();
-        this.text = text;
-        this.buildSuffixTree();
-    }
+    let i = 0, j = 0;
 
-    buildSuffixTree() {
-        for (let i = 0; i < this.text.length; i++) {
-            let suffix = this.text.substring(i);
-            this.insertSuffix(suffix, i);
+    while (i < nums1.length && j < nums2.length) {
+        if (nums1[i] < nums2[j]) {
+            mergedArray.push(nums1[i]);
+            i++;
+        } else {
+            mergedArray.push(nums2[j]);
+            j++;
         }
     }
 
-    insertSuffix(suffix, index) {
-        let node = this.root;
-
-        for (let i = 0; i < suffix.length; i++) {
-            let char = suffix[i];
-
-            if (!node.children[char]) {
-                node.children[char] = new Node();
-            }
-
-            node = node.children[char];
-        }
-
-        // Store the index of the suffix in the leaf node
-        node.index = index;
+    while (i < nums1.length) {
+        mergedArray.push(nums1[i]);
+        i++;
     }
 
-    searchPattern(pattern) {
-        let node = this.root;
+    while (j < nums2.length) {
+        mergedArray.push(nums2[j]);
+        j++;
+    }
 
-        for (let i = 0; i < pattern.length; i++) {
-            let char = pattern[i];
+    const totalLength = nums1.length + nums2.length;
+    const mid = Math.floor(totalLength / 2);
 
-            if (node.children[char]) {
-                node = node.children[char];
-            } else {
-                return null;
-            }
-        }
-
-        return node.index;
+    if (totalLength % 2 === 0) {
+        return (mergedArray[mid - 1] + mergedArray[mid]) / 2;
+    } else {
+        return mergedArray[mid];
     }
 }
 
 // Example usage
-let text = "banana";
-let suffixTree = new SuffixTree(text);
+const nums1 = [1, 3];
+const nums2 = [2, 4];
 
-console.log(suffixTree.searchPattern("ana")); // Output: 1
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.5
