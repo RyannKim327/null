@@ -1,33 +1,54 @@
-class Node {
-    constructor(value, children = []) {
-        this.value = value;
-        this.children = children;
+class TrieNode {
+    constructor() {
+        this.children = {};
+        this.isEndOfWord = false;
     }
 }
 
-function breadthLimitedSearch(root, limit) {
-    let queue = [root];
-    let visited = [];
-    
-    while (queue.length > 0 && limit > 0) {
-        let current = queue.shift();
-        visited.push(current.value);
-        
-        if (current.children) {
-            queue.push(...current.children);
+class Trie {
+    constructor() {
+        this.root = new TrieNode();
+    }
+
+    insert(word) {
+        let node = this.root;
+        for (let char of word) {
+            if (!node.children[char]) {
+                node.children[char] = new TrieNode();
+            }
+            node = node.children[char];
         }
-        
-        limit--;
+        node.isEndOfWord = true;
     }
-    
-    return visited;
+
+    search(word) {
+        let node = this.root;
+        for (let char of word) {
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+        return node.isEndOfWord;
+    }
+
+    startsWith(prefix) {
+        let node = this.root;
+        for (let char of prefix) {
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+        return true;
+    }
 }
 
-// Example tree structure
-let tree = new Node(1, [
-    new Node(2, [new Node(4), new Node(5)]),
-    new Node(3, [new Node(6), new Node(7)])
-]);
-
-let result = breadthLimitedSearch(tree, 2);
-console.log(result); // Output: [1, 2, 3]
+// Usage
+let trie = new Trie();
+trie.insert("apple");
+console.log(trie.search("apple"));    // Output: true
+console.log(trie.search("app"));      // Output: false
+console.log(trie.startsWith("app"));  // Output: true
+trie.insert("app");
+console.log(trie.search("app"));      // Output: true
