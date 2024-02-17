@@ -1,35 +1,41 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
+class TreeNode {
+    constructor(val) {
+        this.val = val;
+        this.left = null;
+        this.right = null;
     }
 }
 
-function hasCycle(head) {
-    let slow = head;
-    let fast = head;
-
-    while (fast && fast.next) {
-        slow = slow.next;
-        fast = fast.next.next;
-
-        if (slow === fast) {
-            return true; // Cycle detected
-        }
+function diameterOfBinaryTree(root) {
+    if (!root) {
+        return 0;
     }
 
-    return false; // No cycle found
+    let diameter = 0;
+
+    function depth(node) {
+        if (!node) {
+            return 0;
+        }
+
+        const leftDepth = depth(node.left);
+        const rightDepth = depth(node.right);
+
+        diameter = Math.max(diameter, leftDepth + rightDepth);
+
+        return 1 + Math.max(leftDepth, rightDepth);
+    }
+
+    depth(root);
+
+    return diameter;
 }
 
 // Example usage
-let node1 = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-let node4 = new Node(4);
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2; // Create a cycle
-
-console.log(hasCycle(node1)); // Output: true
+console.log(diameterOfBinaryTree(root)); // Output should be 3
