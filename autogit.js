@@ -1,28 +1,35 @@
-function isPrime(num) {
-    if (num < 2) return false;
-    for (let i = 2; i <= Math.sqrt(num); i++) {
-        if (num % i === 0) {
-            return false;
-        }
-    }
-    return true;
+function depthLimitedSearch(node, goal, depthLimit) {
+    return dls(node, goal, depthLimit, 0);
 }
 
-function largestPrimeFactor(number) {
-    let maxPrime = 1;
-    for (let i = 2; i <= Math.floor(Math.sqrt(number)); i++) {
-        if (number % i === 0) {
-            if (isPrime(i)) {
-                maxPrime = i;
-            }
-            if (isPrime(number / i)) {
-                maxPrime = number / i;
-            }
+function dls(node, goal, depthLimit, currentDepth) {
+    if (currentDepth > depthLimit) {
+        return null;
+    }
+
+    if (node === goal) {
+        return node;
+    }
+
+    for (let child of getChildren(node)) {
+        let result = dls(child, goal, depthLimit, currentDepth + 1);
+        if (result !== null) {
+            return result;
         }
     }
-    return maxPrime;
+
+    return null;
 }
 
-const number = 13195; // Your number here
-const result = largestPrimeFactor(number);
+function getChildren(node) {
+    // Implement your function to generate children nodes here
+    return [];
+}
+
+// Sample usage
+let rootNode = 'A';
+let goalNode = 'G';
+let depthLimit = 3;
+
+let result = depthLimitedSearch(rootNode, goalNode, depthLimit);
 console.log(result);
