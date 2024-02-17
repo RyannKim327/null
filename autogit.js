@@ -1,49 +1,62 @@
-function mergeSort(arr) {
-    if (arr.length < 2) {
-        return arr;
+function dijkstra(graph, startNode) {
+  const distances = {}; // Stores the shortest distances from the startNode to each node
+  const priorityQueue = new PriorityQueue(); // Priority queue to store nodes by shortest distance
+  const visited = {}; // Keeps track of visited nodes
+
+  // Initialize distances
+  for (let node in graph) {
+    distances[node] = node === startNode ? 0 : Infinity;
+    priorityQueue.enqueue(node, distances[node]);
+  }
+
+  while (!priorityQueue.isEmpty()) {
+    const { node: currentNode, priority: currentDistance } = priorityQueue.dequeue();
+
+    if (visited[currentNode]) continue;
+
+    visited[currentNode] = true;
+
+    for (let neighbor in graph[currentNode]) {
+      let distance = currentDistance + graph[currentNode][neighbor];
+
+      if (distance < distances[neighbor]) {
+        distances[neighbor] = distance;
+        priorityQueue.enqueue(neighbor, distance);
+      }
     }
+  }
 
-    const len = arr.length;
-    const sorted = arr.slice();
-    const buffer = new Array(len);
-
-    for (let size = 1; size < len; size *= 2) {
-        for (let leftStart = 0; leftStart < len; leftStart += 2 * size) {
-            const leftEnd = Math.min(leftStart + size, len);
-            const rightStart = leftEnd;
-            const rightEnd = Math.min(rightStart + size, len);
-
-            let i = leftStart;
-            let j = rightStart;
-            let k = leftStart;
-
-            while (i < leftEnd && j < rightEnd) {
-                if (sorted[i] <= sorted[j]) {
-                    buffer[k++] = sorted[i++];
-                } else {
-                    buffer[k++] = sorted[j++];
-                }
-            }
-
-            while (i < leftEnd) {
-                buffer[k++] = sorted[i++];
-            }
-
-            while (j < rightEnd) {
-                buffer[k++] = sorted[j++];
-            }
-        }
-
-        const temp = sorted;
-        sorted = buffer;
-        buffer = temp;
-    }
-
-    return sorted;
+  return distances;
 }
 
-// Test the mergeSort function
-const unsortedArray = [8, 3, 5, 1, 9, 2, 6, 4, 7];
-console.log("Unsorted array:", unsortedArray);
-const sortedArray = mergeSort(unsortedArray);
-console.log("Sorted array:", sortedArray);
+// Priority Queue implementation
+class PriorityQueue {
+  constructor() {
+    this.queue = [];
+  }
+
+  enqueue(node, priority) {
+    this.queue.push({ node, priority });
+    this.queue.sort((a, b) => a.priority - b.priority);
+  }
+
+  dequeue() {
+    return this.queue.shift();
+  }
+
+  isEmpty() {
+    return this.queue.length === 0;
+  }
+}
+
+// Example graph
+const graph = {
+  A: { B: 1, C: 4 },
+  B: { A: 1, C: 2, D: 5 },
+  C: { A: 4, B: 2, D: 1 },
+  D: { B: 5, C: 1 }
+};
+
+const startNode = 'A';
+const distances = dijkstra(graph, startNode);
+console.log(distances);
