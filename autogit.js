@@ -1,54 +1,47 @@
-class TrieNode {
-    constructor() {
-        this.children = {};
-        this.isEndOfWord = false;
-    }
-}
+function boyerMooreHorspool(text, pattern) {
+    const charTable = {};
 
-class Trie {
-    constructor() {
-        this.root = new TrieNode();
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    let i = patternLength - 1;
+
+    if (i > textLength - 1) {
+        return -1; // pattern is longer than text, no match possible
     }
 
-    insert(word) {
-        let node = this.root;
-        for (let char of word) {
-            if (!node.children[char]) {
-                node.children[char] = new TrieNode();
-            }
-            node = node.children[char];
+    for (let j = 0; j < patternLength - 1; j++) {
+        const char = pattern[j];
+        charTable[char] = patternLength - j - 1;
+    }
+
+    while (i <= textLength - 1) {
+        let k = 0;
+        while (k <= patternLength - 1 && pattern[patternLength - 1 - k] === text[i - k]) {
+            k++;
         }
-        node.isEndOfWord = true;
+
+        if (k === patternLength) {
+            return i - patternLength + 1; // match found
+        } else {
+            const char = text[i];
+            if (charTable[char]) {
+                i += charTable[char];
+            } else {
+                i += patternLength;
+            }
+        }
     }
 
-    search(word) {
-        let node = this.root;
-        for (let char of word) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
-        }
-        return node.isEndOfWord;
-    }
-
-    startsWith(prefix) {
-        let node = this.root;
-        for (let char of prefix) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
-        }
-        return true;
-    }
+    return -1; // no match found
 }
 
 // Usage
-let trie = new Trie();
-trie.insert("apple");
-console.log(trie.search("apple"));    // Output: true
-console.log(trie.search("app"));      // Output: false
-console.log(trie.startsWith("app"));  // Output: true
-trie.insert("app");
-console.log(trie.search("app"));      // Output: true
+const text = "hello world";
+const pattern = "world";
+const index = boyerMojsonMorreHorspool(text, pattern);
+
+if (index !== -1) {
+    console.log("Pattern found at index:", index);
+} else {
+    console.log("Pattern not found in text.");
+}
