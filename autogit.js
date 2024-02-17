@@ -1,16 +1,17 @@
-function bubbleSort(arr) {
-    let len = arr.length;
-    for (let i = 0; i < len; i++) {
-        for (let j = 0; j < len - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                let tmp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = tmp;
-            }
-        }
-    }
-    return arr;
+function isPalindrome(str) {
+    // Remove non-alphanumeric characters and convert to lowercase
+    const cleanedStr = str.toLowerCase().replace(/[\W_]/g, '');
+
+    // Reverse the cleaned string
+    const reversedStr = cleanedStr.split('').reverse().join('');
+
+    // Check if the original string is equal to the reversed string
+    return cleanedStr === reversedStr;
 }
 
-const numbers = [5, 3, 8, 4, 2];
-console.log(bubbleSort(numbers));
+// Test the function
+const testString1 = "A man, a plan, a canal, Panama";
+console.log(isPalindrome(testString1)); // Output: true
+
+const testString2 = "Hello, world!";
+console.log(isPalindrome(testString2)); // Output: false
