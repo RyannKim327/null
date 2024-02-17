@@ -1,34 +1,27 @@
-function mergeSort(arr) {
-  if (arr.length <= 1) {
-    return arr;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
-
-  const middle = Math.floor(arr.length / 2);
-  const left = arr.slice(0, middle);
-  const right = arr.slice(middle);
-
-  return merge(mergeSort(left), mergeSort(right));
 }
 
-function merge(left, right) {
-  let result = [];
-  let leftIndex = 0;
-  let rightIndex = 0;
+function findMiddleElement(head) {
+  let slow = head;
+  let fast = head;
 
-  while (leftIndex < left.length && rightIndex < right.length) {
-    if (left[leftIndex] < right[rightIndex]) {
-      result.push(left[leftIndex]);
-      leftIndex++;
-    } else {
-      result.push(right[rightIndex]);
-      rightIndex++;
-    }
+  while (fast !== null && fast.next !== null) {
+    slow = slow.next;
+    fast = fast.next.next;
   }
 
-  return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+  return slow.value;
 }
 
 // Example usage
-const arr = [5, 3, 8, 2, 1, 4];
-const sortedArr = mergeSort(arr);
-console.log(sortedArr);
+let head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
+
+console.log(findMiddleElement(head)); // Output: 3
