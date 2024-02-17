@@ -1,37 +1,12 @@
-function topologicalSort(graph) {
-  const visited = new Set();
-  const stack = [];
-
-  function visit(node) {
-    if (visited.has(node)) {
-      return;
-    }
-
-    visited.add(node);
-
-    for (const neighbor of graph[node]) {
-      visit(neighbor);
-    }
-
-    stack.unshift(node);
-  }
-
-  for (const node in graph) {
-    visit(node);
-  }
-
-  return stack;
+function isPalindrome(str) {
+    // Remove non-alphanumeric characters and convert to lowercase
+    str = str.toLowerCase().replace(/[\W_]/g, '');
+    
+    // Compare the original string with its reversed version
+    return str === str.split('').reverse().join('');
 }
 
-// Example usage
-const graph = {
-  'A': ['B', 'C'],
-  'B': ['C', 'D'],
-  'C': ['E'],
-  'D': ['F'],
-  'E': [],
-  'F': []
-};
-
-const result = topologicalSort(graph);
-console.log(result); // ['A', 'B', 'D', 'C', 'E', 'F']
+// Test the function
+console.log(isPalindrome('A man, a plan, a canal, Panama')); // Output: true
+console.log(isPalindrome('racecar')); // Output: true
+console.log(isPalindrome('hello')); // Output: false
