@@ -1,15 +1,4 @@
-function isSortedAscending(arr) {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false;
-        }
-    }
-    return true;
-}
+let str = "42";
+let num = parseInt(str);
 
-// Test the function
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 1, 2, 4, 5];
-
-console.log(isSortedAscending(array1)); // Output: true
-console.log(isSortedAscending(array2)); // Output: false
+console.log(num); // Output: 42
