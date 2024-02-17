@@ -1,68 +1,30 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.left = null;
-        this.right = null;
-    }
-}
+function longestCommonSubstring(str1, str2) {
+    const dp = Array.from({ length: str1.length + 1 }, () => Array(str2.length + 1).fill(0));
+    let maxLength = 0;
+    let endIndex = 0;
 
-class BinaryTree {
-    constructor() {
-        this.root = null;
-    }
-
-    insert(data) {
-        let newNode = new Node(data);
-
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    insertNode(node, newNode) {
-        if (newNode.data < node.data) {
-            if (node.left === null) {
-                node.left = newNode;
+    for (let i = 1; i <= str1.length; i++) {
+        for (let j = 1; j <= str2.length; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > maxLength) {
+                    maxLength = dp[i][j];
+                    endIndex = i - 1;
+                }
             } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
+                dp[i][j] = 0;
             }
         }
     }
 
-    search(data) {
-        return this.searchNode(this.root, data);
+    if (maxLength === 0) {
+        return "";
     }
 
-    searchNode(node, data) {
-        if (node === null) {
-            return false;
-        }
-
-        if (data < node.data) {
-            return this.searchNode(node.left, data);
-        } else if (data > node.data) {
-            return this.searchNode(node.right, data);
-        } else {
-            return true;
-        }
-    }
+    return str1.substring(endIndex - maxLength + 1, endIndex + 1);
 }
 
-// Usage example
-let binaryTree = new BinaryTree();
-binaryTree.insert(10);
-binaryTree.insert(5);
-binaryTree.insert(15);
-binaryTree.insert(3);
-binaryTree.insert(7);
-
-console.log(binaryTree.search(7)); // Output: true
-console.log(binaryTree.search(12)); // Output: false
+// Example usage
+const str1 = "abcdef";
+const str2 = "bcdeft";
+console.log(longestCommonSubstring(str1, str2)); // Output: "cde"
