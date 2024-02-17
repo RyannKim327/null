@@ -1,36 +1,27 @@
-function dijkstra(graph, startNode, endNode) {
-  let distances = {};
-  let pq = new PriorityQueue();
-  let visited = new Set();
-
-  for (let node in graph) {
-    distances[node] = node === startNode ? 0 : Infinity;
-    pq.enqueue(node, distances[node]);
-  }
-
-  while (!pq.isEmpty()) {
-    let currentNode = pq.dequeue();
-    if (visited.has(currentNode)) continue;
-    visited.add(currentNode);
-
-    for (let neighbor in graph[currentNode]) {
-      let distance = distances[currentNode] + graph[currentNode][neighbor];
-      if (distance < distances[neighbor]) {
-        distances[neighbor] = distance;
-        pq.enqueue(neighbor, distance);
-      }
-    }
-  }
-
-  return distances[endNode];
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
 }
 
-// Sample graph representation
-let graph = {
-  A: { B: 5, C: 3 },
-  B: { A: 5, C: 1, D: 2 },
-  C: { A: 3, B: 1, D: 6 },
-  D: { B: 2, C: 6 }
-};
+function maxDepth(root) {
+    if (root === null) {
+        return 0;
+    }
 
-console.log(dijkstra(graph, 'A', 'D')); // Output: 4
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
+
+    return 1 + Math.max(leftDepth, rightDepth);
+}
+
+// Example binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+console.log("Max depth of the binary tree is: ", maxDepth(root)); // Output: 3
