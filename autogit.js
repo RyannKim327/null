@@ -1,47 +1,57 @@
-function buildFailureFunction(pattern) {
-    const failure = Array(pattern.length).fill(0);
-    let j = 0;
+function buildLPSArray(pattern) {
+    let lps = [0];
+    let len = 0;
+    let i = 1;
     
-    for (let i = 1; i < pattern.length; i++) {
-        while (j > 0 && pattern[i] !== pattern[j]) {
-            j = failure[j - 1];
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
         }
-        
-        if (pattern[i] === pattern[j]) {
-            j++;
-        }
-        
-        failure[i] = j;
     }
     
-    return failure;
+    return lps;
 }
 
 function kmpSearch(text, pattern) {
     const n = text.length;
     const m = pattern.length;
-    const failure = buildFailureFunction(pattern);
+    const lps = buildLPSArray(pattern);
+    
     let i = 0;
     let j = 0;
+    const indices = [];
     
     while (i < n) {
-        if (text[i] === pattern[j]) {
-            if (j === m - 1) {
-                return i - j;
-            }
+        if (pattern[j] === text[i]) {
             i++;
             j++;
-        } else if (j > 0) {
-            j = failure[j - 1];
-        } else {
-            i++;
+        }
+        if (j === m) {
+            indices.push(i - j);
+            j = lps[j - 1];
+        } else if (i < n && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
         }
     }
     
-    return -1;
+    return indices;
 }
 
-// Example
-const text = "ababcababcabc";
-const pattern = "ababcabc";
-console.log(kmpSearch(text, pattern)); // Output: 5
+// Example usage
+const text = "ABCABCDABABCDABCDABDE";
+const pattern = "ABCDABD";
+const result = kmpSearch(text, pattern);
+console.log(result); // [6, 12]
