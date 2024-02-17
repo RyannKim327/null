@@ -1,5 +1,19 @@
-let numbers = [10, 5, 8, 15, 3];
+function bubbleSort(arr) {
+    let n = arr.length;
+    for (let i = 0; i < n - 1; i++) {
+        for (let j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap arr[j] and arr[j+1]
+                let temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+    return arr;
+}
 
-let max = Math.max.apply(null, numbers);
-
-console.log("Maximum value in the array is: " + max);
+// Test the bubbleSort function
+let arr = [64, 34, 25, 12, 22, 11, 90];
+console.log("Original Array: " + arr);
+console.log("Sorted Array: " + bubbleSort(arr));
