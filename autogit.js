@@ -1,27 +1,21 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+function longestCommonPrefix(strings) {
+    if (strings.length === 0) {
+        return "";
+    }
+
+    let prefix = "";
+    for (let i = 0; i < strings[0].length; i++) {
+        const char = strings[0][i];
+        for (let j = 1; j < strings.length; j++) {
+            if (i >= strings[j].length || strings[j][i] !== char) {
+                return prefix;
+            }
+        }
+        prefix += char;
+    }
+
+    return prefix;
 }
 
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
-
-  while (fast !== null && fast.next !== null) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
-
-  return slow.value;
-}
-
-// Example usage
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-console.log(findMiddleElement(head)); // Output: 3
+const strings = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(strings)); // Output: "fl"
