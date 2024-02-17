@@ -1,21 +1,41 @@
-function bubbleSort(arr) {
-    const n = arr.length;
-    let swapped;
-    do {
-        swapped = false;
-        for (let i = 0; i < n - 1; i++) {
-            if (arr[i] > arr[i + 1]) {
-                const temp = arr[i];
-                arr[i] = arr[i + 1];
-                arr[i + 1] = temp;
-                swapped = true;
-            }
-        }
-    } while (swapped);
-
-    return arr;
+// Definition for a binary tree node
+class TreeNode {
+  constructor(val) {
+    this.val = val;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-const arr = [64, 34, 25, 12, 22, 11, 90];
-console.log("Original array: " + arr);
-console.log("Sorted array: " + bubbleSort(arr));
+// Function to find the height of a tree
+function height(node) {
+  if (node === null) {
+    return 0;
+  }
+  
+  return 1 + Math.max(height(node.left), height(node.right));
+}
+
+// Function to find the diameter of a binary tree
+function diameterOfBinaryTree(root) {
+  if (root === null) {
+    return 0;
+  }
+  
+  const leftHeight = height(root.left);
+  const rightHeight = height(root.right);
+  
+  const leftDiameter = diameterOfBinaryTree(root.left);
+  const rightDiameter = diameterOfBinaryTree(root.right);
+  
+  return Math.max(leftHeight + rightHeight, Math.max(leftDiameter, rightDiameter));
+}
+
+// Example usage
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(diameterOfBinaryTree(root)); // Output the diameter of the binary tree
