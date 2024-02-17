@@ -1,35 +1,38 @@
-// Function to make an HTTP request
-function makeRequest(method, url, data) {
-    return new Promise(function(resolve, reject) {
-        var xhr = new XMLHttpRequest();
-        xhr.open(method, url);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        
-        xhr.onload = function() {
-            if (xhr.status >= 200 && xhr.status < 300) {
-                resolve(xhr.responseText);
+function longestCommonSubsequence(str1, str2) {
+    const m = str1.length;
+    const n = str2.length;
+    
+    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
             } else {
-                reject(xhr.statusText);
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
             }
-        };
-        
-        xhr.onerror = function() {
-            reject(xhr.statusText);
-        };
-        
-        xhr.send(JSON.stringify(data));
-    });
-}
-
-// Usage example
-async function fetchData() {
-    try {
-        const response = await makeRequest('GET', 'https://api.example.com/data', {});
-        console.log(response);
-    } catch (error) {
-        console.error(error);
+        }
     }
+
+    let i = m, j = n;
+    let result = '';
+
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            result = str1[i - 1] + result;
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
+        }
+    }
+
+    return result;
 }
 
-// Call the fetchData function
-fetchData();
+// Example usage
+const str1 = 'ABCDGH';
+const str2 = 'AEDFHR';
+console.log(longestCommonSubsequence(str1, str2)); // Output: ADH
