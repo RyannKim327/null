@@ -1,47 +1,20 @@
-function boyerMooreHorspool(text, pattern) {
-    const charTable = {};
-
-    const patternLength = pattern.length;
-    const textLength = text.length;
-    let i = patternLength - 1;
-
-    if (i > textLength - 1) {
-        return -1; // pattern is longer than text, no match possible
-    }
-
-    for (let j = 0; j < patternLength - 1; j++) {
-        const char = pattern[j];
-        charTable[char] = patternLength - j - 1;
-    }
-
-    while (i <= textLength - 1) {
-        let k = 0;
-        while (k <= patternLength - 1 && pattern[patternLength - 1 - k] === text[i - k]) {
-            k++;
+function insertionSort(arr) {
+    for (let i = 1; i < arr.length; i++) {
+        let currentValue = arr[i];
+        let j = i - 1;
+        
+        while (j >= 0 && arr[j] > currentValue) {
+            arr[j + 1] = arr[j];
+            j--;
         }
-
-        if (k === patternLength) {
-            return i - patternLength + 1; // match found
-        } else {
-            const char = text[i];
-            if (charTable[char]) {
-                i += charTable[char];
-            } else {
-                i += patternLength;
-            }
-        }
+        
+        arr[j + 1] = currentValue;
     }
-
-    return -1; // no match found
+    
+    return arr;
 }
 
-// Usage
-const text = "hello world";
-const pattern = "world";
-const index = boyerMojsonMorreHorspool(text, pattern);
-
-if (index !== -1) {
-    console.log("Pattern found at index:", index);
-} else {
-    console.log("Pattern not found in text.");
-}
+// Example usage
+let unsortedArray = [5, 3, 8, 4, 2, 6, 1, 7];
+let sortedArray = insertionSort(unsortedArray);
+console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 6, 7, 8]
