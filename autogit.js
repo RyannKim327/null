@@ -1,20 +1,40 @@
-function isAnagram(str1, str2) {
-    // Remove spaces and punctuation, and convert to lowercase
-    const cleanString = (str) => str.replace(/[^\w]/g, '').toLowerCase();
+class Stack {
+  constructor() {
+    this.stack = [];
+  }
 
-    // Clean and sort the characters in both strings
-    const sortedStr1 = cleanString(str1).split('').sort().join('');
-    const sortedStr2 = cleanString(str2).split('').sort().join('');
+  push(item) {
+    this.stack.push(item);
+  }
 
-    // Compare the sorted strings
-    return sortedStr1 === sortedStr2;
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
+    }
+    return this.stack.pop();
+  }
+
+  isEmpty() {
+    return this.stack.length === 0;
+  }
+
+  peek() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
+    }
+    return this.stack[this.stack.length - 1];
+  }
 }
 
-// Test the function
-const string1 = "listen";
-const string2 = "silent";
-if (isAnagram(string1, string2)) {
-    console.log(`${string1} and ${string2} are anagrams.`);
-} else {
-    console.log(`${string1} and ${string2} are not anagrams.`);
-}
+// Example usage
+const myStack = new Stack();
+myStack.push(1);
+myStack.push(2);
+myStack.push(3);
+
+console.log(myStack.peek()); // Output: 3
+
+console.log(myStack.pop()); // Output: 3
+console.log(myStack.pop()); // Output: 2
+console.log(myStack.pop()); // Output: 1
+console.log(myStack.pop()); // Output: "Stack is empty"
