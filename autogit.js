@@ -1,11 +1,15 @@
 function factorial(n) {
+    // Base case: if the number is 0, return 1
     if (n === 0) {
         return 1;
-    } else {
+    } 
+    // Recursive case: calculate factorial by calling the function recursively
+    else {
         return n * factorial(n - 1);
     }
 }
 
-// Test the factorial function
+// Test the function with a number
 const number = 5;
-console.log(`Factorial of ${number} is: ${factorial(number)}`);
+const result = factorial(number);
+console.log(`Factorial of ${number} is: ${result}`);
