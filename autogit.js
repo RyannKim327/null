@@ -1,5 +1,4 @@
-// Taking input from user
-let userInput = prompt("Enter something: ");
+let str = "Hello World";
+let lowercaseStr = str.toLowerCase();
 
-// Displaying the user input
-console.log("You entered: " + userInput);
+console.log(lowercaseStr); // Output: "hello world"
