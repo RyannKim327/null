@@ -1,37 +1,43 @@
+function boyerMoore(text, pattern) {
+    const last = buildLast(pattern);
+    let n = text.length;
+    let m = pattern.length;
+    let i, j;
 
-function hash(str, start, end) {
-    let hash = 0;
-    for (let i = start; i < end; i++) {
-        hash += str.charCodeAt(i);
+    if (m > n) {
+        return -1; // Pattern is longer than text, no match possible
     }
-    return hash;
-}
 
-function rabinKarp(text, pattern) {
-    const n = text.length;
-    const m = pattern.length;
-    const patternHash = hash(pattern, 0, m);
-    let textHash = hash(text, 0, m);
-    
-    for (let i = 0; i <= n - m; i++) {
-        if (textHash === patternHash) {
-            let j = 0;
-            for (; j < m; j++) {
-                if (text[i + j] !== pattern[j])
-                    break;
+    for (i = m - 1, j = m - 1; i < n;) {
+        if (text[i] === pattern[j]) {
+            if (j === 0) {
+                return i; // Match found
             }
-            if (j === m) {
-                console.log(`Pattern found at index ${i}`);
-            }
-        }
-
-        if (i < n - m) {
-            textHash = textHash - text.charCodeAt(i) + text.charCodeAt(i + m);
+            i--;
+            j--;
+        } else {
+            i += m - Math.min(j, 1 + last[text[i]]);
+            j = m - 1;
         }
     }
+
+    return -1; // No match
 }
 
-let text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
-let pattern = "ipsum";
+function buildLast(pattern) {
+    const last = {};
+    for (let i = 0; i < pattern.length; i++) {
+        last[pattern[i]] = i;
+    }
+    return last;
+}
 
-rabinKarp(text, pattern);
+// Example usage
+const text = "hello world!";
+const pattern = "world";
+const index = boyerMoore(text, pattern);
+if (index !== -1) {
+    console.log(`Pattern found at index ${index}`);
+} else {
+    console.log("Pattern not found");
+}
