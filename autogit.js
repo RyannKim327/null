@@ -1,63 +1,68 @@
-class PriorityQueue {
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+class BinarySearchTree {
     constructor() {
-        this.elements = [];
+        this.root = null;
     }
 
-    enqueue(element, priority) {
-        this.elements.push({ element, priority });
-        this.elements.sort((a, b) => a.priority - b.priority);
-    }
+    insert(value) {
+        const newNode = new Node(value);
 
-    dequeue() {
-        return this.elements.shift().element;
-    }
-
-    isEmpty() {
-        return this.elements.length === 0;
-    }
-}
-
-function heuristic(node, goal) {
-    // Euclidean distance heuristic
-    return Math.sqrt(Math.pow(goal.x - node.x, 2) + Math.pow(goal.y - node.y, 2));
-}
-
-function aStarSearch(start, goal) {
-    let openSet = new PriorityQueue();
-    openSet.enqueue(start, 0);
-
-    let cameFrom = {};
-    let gScore = {};
-    let fScore = {};
-
-    gScore[start] = 0;
-    fScore[start] = heuristic(start, goal);
-
-    while(!openSet.isEmpty()) {
-        let current = openSet.dequeue();
-
-        if (current === goal) {
-            let path = [];
-            while (current) {
-                path.unshift(current);
-                current = cameFrom[current];
-            }
-            return path;
+        if (!this.root) {
+            this.root = newNode;
+        } else {
+            this.insertNode(this.root, newNode);
         }
+    }
 
-        // Implement neighbors for current node
-
-        for (let neighbor of current.neighbors) {
-            let tentativeGScore = gScore[current] + neighbor.cost;
-            if (tentativeGScore < gScore[neighbor] || !gScore[neighbor]) {
-                cameFrom[neighbor] = current;
-                gScore[neighbor] = tentativeGScore;
-                fScore[neighbor] = gScore[neighbor] + heuristic(neighbor, goal);
-                openSet.enqueue(neighbor, fScore[neighbor]);
+    insertNode(node, newNode) {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
             }
         }
     }
 
-    // No path found
-    return null;
+    search(value) {
+        return this.searchNode(this.root, value);
+    }
+
+    searchNode(node, value) {
+        if (!node) {
+            return false;
+        }
+
+        if (value < node.value) {
+            return this.searchNode(node.left, value);
+        } else if (value > node.value) {
+            return this.searchNode(node.right, value);
+        } else {
+            return true;
+        }
+    }
 }
+
+// Example usage:
+const bst = new BinarySearchTree();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(3);
+bst.insert(7);
+
+console.log(bst.search(7));  // Output: true
+console.log(bst.search(20)); // Output: false
