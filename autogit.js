@@ -1,14 +1,16 @@
-function factorial(n) {
-    // Base case: if n is 0, return 1
-    if (n === 0) {
-        return 1;
-    } else {
-        // Recursive case: return n multiplied by factorial of (n-1)
-        return n * factorial(n - 1);
+function countCharacter(str, char) {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
+            count++;
+        }
     }
+    return count;
 }
 
-// Call the factorial function with a number
-const number = 5;
-const result = factorial(number);
-console.log(`The factorial of ${number} is: ${result}`);
+// Example
+let str = "hello world";
+let char = "l";
+let occurrences = countCharacter(str, char);
+
+console.log(`The character '${char}' occurs ${occurrences} times in the string.`);
