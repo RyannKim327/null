@@ -1,16 +1,17 @@
-function countCharacter(str, char) {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === char) {
-            count++;
+function insertionSort(arr) {
+    for (let i = 1; i < arr.length; i++) {
+        let current = arr[i];
+        let j = i - 1;
+        while (j >= 0 && arr[j] > current) {
+            arr[j + 1] = arr[j];
+            j--;
         }
+        arr[j + 1] = current;
     }
-    return count;
+    return arr;
 }
 
-// Example
-let str = "hello world";
-let char = "l";
-let occurrences = countCharacter(str, char);
-
-console.log(`The character '${char}' occurs ${occurrences} times in the string.`);
+// Example usage
+const array = [5, 3, 8, 2, 1, 4];
+console.log("Original array: ", array);
+console.log("Sorted array: ", insertionSort(array));
