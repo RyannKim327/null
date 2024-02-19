@@ -1,11 +1,3 @@
-function getStringLength(str) {
-    let count = 0;
-    while (str[count] !== undefined) {
-        count++;
-    }
-    return count;
-}
-
-let str = "Hello, World!";
-let length = getStringLength(str);
-console.log(length); // Output: 13
+let arr = [1, 2, 3, 4, 5];
+arr.reverse();
+console.log(arr); // Output: [5, 4, 3, 2, 1]
