@@ -1,22 +1,46 @@
-function countOccurrences(text, word) {
-    // Split the text into an array of words
-    let words = text.split(' ');
-
-    // Initialize a count variable to store the number of occurrences
-    let count = 0;
-
-    // Loop through each word in the array and check if it matches the word
-    words.forEach(function (term) {
-        if (term.toLowerCase() === word.toLowerCase()) {
-            count++;
-        }
-    });
-
-    return count;
+// Node class to represent each node in the linked list
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
+    }
 }
 
-// Test the function
-const text = "Hello world, hello world!";
-const word = "hello";
-const occurrences = countOccurrences(text, word);
-console.log(`The word "${word}" occurs ${occurrences} times in the text.`);
+// Linked list class to manage the list
+class LinkedList {
+    constructor() {
+        this.head = null;
+        this.size = 0;
+    }
+
+    // Method to add a new node to the end of the list
+    add(value) {
+        const newNode = new Node(value);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+        this.size++;
+    }
+
+    // Method to print the linked list
+    print() {
+        let current = this.head;
+        while (current) {
+            console.log(current.value);
+            current = current.next;
+        }
+    }
+}
+
+// Usage example
+const list = new LinkedList();
+list.add(1);
+list.add(2);
+list.add(3);
+list.print();
