@@ -1,43 +1,44 @@
-function boyerMoore(text, pattern) {
-    const last = buildLast(pattern);
-    let n = text.length;
-    let m = pattern.length;
-    let i, j;
+function mergeSort(arr) {
+    if (arr.length < 2) return arr;
 
-    if (m > n) {
-        return -1; // Pattern is longer than text, no match possible
-    }
+    const len = arr.length;
+    const sortedArr = [...arr];
+    const buffer = new Array(len);
 
-    for (i = m - 1, j = m - 1; i < n;) {
-        if (text[i] === pattern[j]) {
-            if (j === 0) {
-                return i; // Match found
-            }
-            i--;
-            j--;
-        } else {
-            i += m - Math.min(j, 1 + last[text[i]]);
-            j = m - 1;
+    for (let size = 1; size < len; size *= 2) {
+        for (let leftStart = 0; leftStart < len; leftStart += 2 * size) {
+            const left = leftStart;
+            const middle = Math.min(left + size, len);
+            const right = Math.min(left + 2 * size, len);
+
+            merge(sortedArr, buffer, left, middle, right);
         }
+
+        // Swap the arrays
+        const temp = sortedArr;
+        sortedArr = buffer;
+        buffer = temp;
     }
 
-    return -1; // No match
+    return sortedArr;
 }
 
-function buildLast(pattern) {
-    const last = {};
-    for (let i = 0; i < pattern.length; i++) {
-        last[pattern[i]] = i;
+function merge(arr, buffer, left, middle, right) {
+    let i = left;
+    let j = middle;
+
+    for (let k = left; k < right; k++) {
+        if (i < middle && (j >= right || arr[i] <= arr[j])) {
+            buffer[k] = arr[i];
+            i++;
+        } else {
+            buffer[k] = arr[j];
+            j++;
+        }
     }
-    return last;
 }
 
 // Example usage
-const text = "hello world!";
-const pattern = "world";
-const index = boyerMoore(text, pattern);
-if (index !== -1) {
-    console.log(`Pattern found at index ${index}`);
-} else {
-    console.log("Pattern not found");
-}
+const arr = [5, 3, 8, 6, 2, 7, 1, 4];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr);
