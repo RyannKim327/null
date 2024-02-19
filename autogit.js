@@ -1,9 +1,13 @@
-function calculateMean(numbers) {
-    const sum = numbers.reduce((acc, val) => acc + val, 0);
-    return sum / numbers.length;
-}
+// URL of the API endpoint
+const apiUrl = 'https://jsonplaceholder.typicode.com/posts';
 
-// Example usage:
-const numbers = [5, 10, 15, 20, 25];
-const mean = calculateMean(numbers);
-console.log("Mean:", mean);
+// Make a GET request to the API
+fetch(apiUrl)
+  .then(response => response.json())
+  .then(data => {
+    // Log the data returned by the API
+    console.log(data);
+  })
+  .catch(error => {
+    console.error('Error fetching data: ', error);
+  });
