@@ -6,27 +6,61 @@ class Node {
     }
 }
 
-function countLeafNodes(root) {
-    if (!root) {
-        return 0;
+class BinarySearchTree {
+    constructor() {
+        this.root = null;
     }
 
-    if (!root.left && !root.right) {
-        return 1; // Leaf node
+    insert(value) {
+        const newNode = new Node(value);
+        
+        if (this.root === null) {
+            this.root = newNode;
+        } else {
+            this.insertNode(this.root, newNode);
+        }
     }
 
-    return countLeafNodes(root.left) + countLeafNodes(root.right);
+    insertNode(node, newNode) {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
+        }
+    }
+
+    search(value) {
+        return this.searchNode(this.root, value);
+    }
+
+    searchNode(node, value) {
+        if (node === null) {
+            return false;
+        } else if (value < node.value) {
+            return this.searchNode(node.left, value);
+        } else if (value > node.value) {
+            return this.searchNode(node.right, value);
+        } else {
+            return true;
+        }
+    }
 }
 
-// Example binary tree
-let root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
-root.right.right.right = new Node(8);
+// Example Usage:
+const bst = new BinarySearchTree();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(3);
+bst.insert(8);
 
-const leafNodeCount = countLeafNodes(root);
-console.log("Number of leaf nodes: " + leafNodeCount);
+console.log(bst.search(15)); // Output: true
+console.log(bst.search(20)); // Output: false
