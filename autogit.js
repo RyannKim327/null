@@ -1,27 +1,55 @@
-class TreeNode {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+class Graph {
+    constructor() {
+        this.vertices = [];
+        this.adjacencyList = {};
+    }
+
+    addVertex(vertex) {
+        if (!this.vertices.includes(vertex)) {
+            this.vertices.push(vertex);
+            this.adjacencyList[vertex] = [];
+        }
+    }
+
+    addEdge(vertex1, vertex2) {
+        if (this.adjacencyList[vertex1] && this.adjacencyList[vertex2]) {
+            this.adjacencyList[vertex1].push(vertex2);
+            this.adjacencyList[vertex2].push(vertex1);
+        }
+    }
+
+    breadthFirstSearch(startingVertex) {
+        const visited = {};
+        const queue = [startingVertex];
+        const result = [];
+
+        visited[startingVertex] = true;
+
+        while (queue.length > 0) {
+            const currentVertex = queue.shift();
+            result.push(currentVertex);
+
+            this.adjacencyList[currentVertex].forEach((neighbor) => {
+                if (!visited[neighbor]) {
+                    visited[neighbor] = true;
+                    queue.push(neighbor);
+                }
+            });
+        }
+
+        return result;
     }
 }
 
-function maxDepth(root) {
-    if (root === null) {
-        return 0;
-    }
+// Example usage:
+const graph = new Graph();
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('C', 'D');
 
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
-
-    return Math.max(leftDepth, rightDepth) + 1;
-}
-
-// Example binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(maxDepth(root)); // Output: 3
+console.log(graph.breadthFirstSearch('A')); // Output: ['A', 'B', 'C', 'D']
