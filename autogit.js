@@ -1,8 +1,4 @@
-let myString = "123";
-let myInteger = parseInt(myString);
+let str = "Hello, World!";
+let newStr = str.replace(/\s/g, ''); // Using regular expression to remove all whitespace characters
 
-console.log(myInteger); // Output: 123
-let myHex = "1A";
-let myNumber = parseInt(myHex, 16);
-
-console.log(myNumber); // Output: 26
+console.log(newStr); // Output: "Hello,World!"
