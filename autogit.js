@@ -1,17 +1,27 @@
-function reverseWords(str) {
-    // Split the string into an array of words
-    var words = str.split(' ');
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Async Task Example</title>
+    <script>
+        function connectAsync() {
+            var xhr = new XMLHttpRequest();
 
-    // Reverse the array
-    words = words.reverse();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == XMLHttpRequest.DONE) {
+                    if (xhr.status == 200) {
+                        console.log(xhr.responseText);
+                    } else {
+                        console.error('Error:', xhr.statusText);
+                    }
+                }
+            };
 
-    // Join the array back into a string
-    var reversedString = words.join(' ');
-
-    return reversedString;
-}
-
-var originalString = "Hello world this is a test";
-var reversedString = reverseWords(originalString);
-
-console.log(reversedString); // Output: "test a is this world Hello"
+            xhr.open('GET', 'https://api.example.com/data', true); // Connecting to a sample API endpoint
+            xhr.send();
+        }
+    </script>
+</head>
+<body>
+    <button onclick="connectAsync()">Connect</button>
+</body>
+</html>
