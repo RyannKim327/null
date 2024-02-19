@@ -1,36 +1,56 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
+function tarjan(graph) {
+  let index = 0;
+  let stack = [];
+  let indexes = new Map();
+  let lowlink = new Map();
+  let result = [];
+
+  function strongConnect(node) {
+    indexes.set(node, index);
+    lowlink.set(node, index);
+    index++;
+    stack.push(node);
+
+    graph[node].forEach(neighbor => {
+      if (!indexes.has(neighbor)) {
+        strongConnect(neighbor);
+        lowlink.set(node, Math.min(lowlink.get(node), lowlink.get(neighbor)));
+      } else if (stack.includes(neighbor)) {
+        lowlink.set(node, Math.min(lowlink.get(node), indexes.get(neighbor)));
+      }
+    });
+
+    if (indexes.get(node) === lowlink.get(node)) {
+      let stronglyConnectedComponent = [];
+      let neighbor = null;
+
+      do {
+        neighbor = stack.pop();
+        stronglyConnectedComponent.push(neighbor);
+      } while (neighbor !== node);
+
+      result.push(stronglyConnectedComponent);
     }
+  }
+
+  Object.keys(graph).forEach(node => {
+    if (!indexes.has(node)) {
+      strongConnect(node);
+    }
+  });
+
+  return result;
 }
 
-function hasCycle(head) {
-    if (!head || !head.next) {
-        return false;
-    }
+// Example graph representation:
+const graph = {
+  'A': ['B'],
+  'B': ['C', 'D'],
+  'C': ['A'],
+  'D': ['E'],
+  'E': ['F'],
+  'F': ['D']
+};
 
-    let slow = head;
-    let fast = head.next;
-
-    while (fast && fast.next) {
-        if (slow === fast) {
-            return true;
-        }
-
-        slow = slow.next;
-        fast = fast.next.next;
-    }
-
-    return false;
-}
-
-// Usage
-const node1 = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
-node1.next = node2;
-node2.next = node3;
-node3.next = node1;
-
-console.log(hasCycle(node1)); // Output: true
+const stronglyConnectedComponents = tarjan(graph);
+console.log(stronglyConnectedComponents);
