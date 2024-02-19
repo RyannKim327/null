@@ -1,17 +1,15 @@
-function reverseWords(str) {
-    // Split the string into an array of words
-    let words = str.split(' ');
-
-    // Reverse the array
-    words.reverse();
-
-    // Join the array back into a string
-    let reversedStr = words.join(' ');
-
-    return reversedStr;
+function isArraySorted(arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;
+        }
+    }
+    return true;
 }
 
-// Test the function
-let originalStr = "Hello world";
-let reversedStr = reverseWords(originalStr);
-console.log(reversedStr); // Output: "world Hello"
+// Example usage
+const sortedArray = [1, 2, 3, 4, 5];
+const unsortedArray = [5, 4, 3, 2, 1];
+
+console.log(isArraySorted(sortedArray)); // Output: true
+console.log(isArraySorted(unsortedArray)); // Output: false
