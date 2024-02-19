@@ -1,16 +1,19 @@
-function findMedianSortedArrays(nums1, nums2) {
-    let combinedArray = [...nums1, ...nums2].sort((a, b) => a - b);
-    let length = combinedArray.length;
-    let mid = Math.floor(length / 2);
-    
-    if (length % 2 === 0) {
-        return (combinedArray[mid - 1] + combinedArray[mid]) / 2;
-    } else {
-        return combinedArray[mid];
+function bubbleSort(arr) {
+    const len = arr.length;
+    for (let i = 0; i < len; i++) {
+        for (let j = 0; j < len - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap elements
+                const temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
     }
+    return arr;
 }
 
-// Example usage
-let nums1 = [1, 3];
-let nums2 = [2];
-console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2
+// Test the bubbleSort function
+const arr = [64, 34, 25, 12, 22, 11, 90];
+console.log("Original array: ", arr);
+console.log("Sorted array: ", bubbleSort(arr));
