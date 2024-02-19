@@ -1,42 +1,17 @@
-function rabinKarp(text, pattern) {
-    const prime = 101; // Prime number for hashing
-    const textLength = text.length;
-    const patternLength = pattern.length;
-    const primePower = Math.pow(prime, patternLength - 1);
+function reverseWords(str) {
+    // Split the string into an array of words
+    let words = str.split(' ');
 
-    // Calculate the hash values for the pattern and the first substring of the text
-    let patternHash = 0;
-    let textHash = 0;
-    for (let i = 0; i < patternLength; i++) {
-        patternHash = (prime * patternHash + pattern.charCodeAt(i)) % primePower;
-        textHash = (prime * textHash + text.charCodeAt(i)) % primePower;
-    }
+    // Reverse the array
+    words.reverse();
 
-    // Iterate through the text to find the pattern
-    for (let i = 0; i <= textLength - patternLength; i++) {
-        if (patternHash === textHash) {
-            let found = true;
-            for (let j = 0; j < patternLength; j++) {
-                if (pattern[j] !== text[i + j]) {
-                    found = false;
-                    break;
-                }
-            }
-            if (found) {
-                console.log("Pattern found at index " + i);
-            }
-        }
+    // Join the array back into a string
+    let reversedStr = words.join(' ');
 
-        if (i < textLength - patternLength) {
-            textHash = (prime * (textHash - text.charCodeAt(i) * primePower) + text.charCodeAt(i + patternLength)) % primePower;
-            if (textHash < 0) {
-                textHash += primePower;
-            }
-        }
-    }
+    return reversedStr;
 }
 
-// Test the rabinKarp function
-const text = "ABCCDDAEFG";
-const pattern = "CDD";
-rabinKarp(text, pattern);
+// Test the function
+let originalStr = "Hello world";
+let reversedStr = reverseWords(originalStr);
+console.log(reversedStr); // Output: "world Hello"
