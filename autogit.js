@@ -1,37 +1,42 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.children = [];
+function rabinKarp(text, pattern) {
+    const prime = 101; // Prime number for hashing
+    const textLength = text.length;
+    const patternLength = pattern.length;
+    const primePower = Math.pow(prime, patternLength - 1);
+
+    // Calculate the hash values for the pattern and the first substring of the text
+    let patternHash = 0;
+    let textHash = 0;
+    for (let i = 0; i < patternLength; i++) {
+        patternHash = (prime * patternHash + pattern.charCodeAt(i)) % primePower;
+        textHash = (prime * textHash + text.charCodeAt(i)) % primePower;
     }
-}
 
-function depthLimitedSearch(root, target, depthLimit) {
-    let stack = [{ node: root, depth: 0 }];
-
-    while (stack.length > 0) {
-        let { node, depth } = stack.pop();
-
-        if (node.value === target) {
-            return node;
+    // Iterate through the text to find the pattern
+    for (let i = 0; i <= textLength - patternLength; i++) {
+        if (patternHash === textHash) {
+            let found = true;
+            for (let j = 0; j < patternLength; j++) {
+                if (pattern[j] !== text[i + j]) {
+                    found = false;
+                    break;
+                }
+            }
+            if (found) {
+                console.log("Pattern found at index " + i);
+            }
         }
 
-        if (depth < depthLimit) {
-            for (let child of node.children) {
-                stack.push({ node: child, depth: depth + 1 });
+        if (i < textLength - patternLength) {
+            textHash = (prime * (textHash - text.charCodeAt(i) * primePower) + text.charCodeAt(i + patternLength)) % primePower;
+            if (textHash < 0) {
+                textHash += primePower;
             }
         }
     }
-
-    return null;
 }
 
-// Usage example
-let node1 = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-let node4 = new Node(4);
-
-node1.children.push(node2, node3);
-node2.children.push(node4);
-
-console.log(depthLimitedSearch(node1, 4, 2)); // Output: Node { value: 4, children: [] }
+// Test the rabinKarp function
+const text = "ABCCDDAEFG";
+const pattern = "CDD";
+rabinKarp(text, pattern);
