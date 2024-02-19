@@ -1,107 +1,44 @@
-class BTreeNode {
-  constructor(t, isLeaf) {
-    this.keys = [];
-    this.children = [];
-    this.isLeaf = isLeaf || false;
-    this.t = t;
+class ListNode {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
 }
 
-class BTree {
-  constructor(t) {
-    this.root = null;
-    this.t = t;
+const getIntersectionNode = (headA, headB) => {
+  if (!headA || !headB) return null;
+
+  let visitedNodes = new Set();
+
+  let currentA = headA;
+  while (currentA) {
+    visitedNodes.add(currentA);
+    currentA = currentA.next;
   }
 
-  splitChild(node, i) {
-    const newChild = new BTreeNode(node.t, node.children[i].isLeaf);
-    const splitChild = node.children[i];
-    node.keys.splice(i, 0, splitChild.keys[node.t - 1]);
-
-    newChild.keys = splitChild.keys.splice(node.t, splitChild.keys.length - 1);
-
-    if (!splitChild.isLeaf) {
-      newChild.children = splitChild.children.splice(node.t, splitChild.children.length - 1);
+  let currentB = headB;
+  while (currentB) {
+    if (visitedNodes.has(currentB)) {
+      return currentB;
     }
-
-    node.children.splice(i + 1, 0, newChild);
+    currentB = currentB.next;
   }
 
-  insert(key) {
-    if (!this.root) {
-      this.root = new BTreeNode(this.t, true);
-      this.root.keys.push(key);
-    } else {
-      let current = this.root;
+  return null;
+};
 
-      if (current.keys.length === 2 * this.t - 1) {
-        const newNode = new BTreeNode(this.t);
-        newNode.children.push(current);
-        this.root = newNode;
-        this.splitChild(newNode, 0);
-        this.insertNonFull(newNode, key);
-      } else {
-        this.insertNonFull(current, key);
-      }
-    }
-  }
+// Example usage
+// Constructing two linked lists
+let linkedListA = new ListNode(1);
+linkedListA.next = new ListNode(2);
+linkedListA.next.next = new ListNode(3);
 
-  insertNonFull(node, key) {
-    let i = node.keys.length - 1;
+let linkedListB = new ListNode(4);
+linkedListB.next = linkedListA.next;
 
-    if (node.isLeaf) {
-      while (i >= 0 && key < node.keys[i]) {
-        node.keys[i + 1] = node.keys[i];
-        i--;
-      }
-
-      node.keys[i + 1] = key;
-    } else {
-      while (i >= 0 && key < node.keys[i]) {
-        i--;
-      }
-
-      i++;
-
-      if (node.children[i].keys.length === 2 * this.t - 1) {
-        this.splitChild(node, i);
-
-        if (key > node.keys[i]) {
-          i++;
-        }
-      }
-
-      this.insertNonFull(node.children[i], key);
-    }
-  }
-
-  search(key) {
-    return this.searchRecursive(this.root, key);
-  }
-
-  searchRecursive(node, key) {
-    let i = 0;
-    while (i < node.keys.length && key > node.keys[i]) {
-      i++;
-    }
-
-    if (node.keys[i] === key) {
-      return node;
-    }
-
-    if (node.isLeaf) {
-      return null;
-    }
-
-    return this.searchRecursive(node.children[i], key);
-  }
+let intersectionNode = getIntersectionNode(linkedListA, linkedListB);
+if (intersectionNode) {
+  console.log("Intersection node value:", intersectionNode.value);
+} else {
+  console.log("No intersection point found.");
 }
-
-// Usage example
-const bTree = new BTree(3);
-bTree.insert(10);
-bTree.insert(20);
-bTree.insert(5);
-bTree.insert(6);
-
-console.log(bTree.search(20));
