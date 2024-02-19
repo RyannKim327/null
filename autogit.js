@@ -1,55 +1,46 @@
-function computeLPSArray(pattern) {
-    let len = 0;
-    let i = 1;
-    const lps = [0];
+class HashTable {
+  constructor(size) {
+    this.size = size;
+    this.table = new Array(size);
+  }
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
+  _hash(key) {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash = (hash + key.charCodeAt(i) * (i + 1)) % this.size;
     }
+    return hash;
+  }
 
-    return lps;
-}
-
-function KMP(text, pattern) {
-    const lps = computeLPSArray(pattern);
-    const result = [];
-    let i = 0;
-    let j = 0;
-
-    while (i < text.length) {
-        if (text[i] === pattern[j]) {
-            i++;
-            j++;
-        }
-
-        if (j === pattern.length) {
-            result.push(i - j);
-            j = lps[j - 1];
-        } else if (i < text.length && text[i] !== pattern[j]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
+  set(key, value) {
+    const index = this._hash(key);
+    if (!this.table[index]) {
+      this.table[index] = {};
     }
+    this.table[index][key] = value;
+  }
 
-    return result;
+  get(key) {
+    const index = this._hash(key);
+    if (this.table[index] && this.table[index][key]) {
+      return this.table[index][key];
+    } else {
+      return undefined;
+    }
+  }
+
+  delete(key) {
+    const index = this._hash(key);
+    if (this.table[index] && this.table[index][key]) {
+      delete this.table[index][key];
+    }
+  }
 }
 
 // Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const matches = KMP(text, pattern);
-console.log(matches);  // Output: [10]
+const hashTable = new HashTable(10);
+hashTable.set("key1", "value1");
+hashTable.set("key2", "value2");
+console.log(hashTable.get("key1")); // Output: value1
+hashTable.delete("key2");
+console.log(hashTable.get("key2")); // Output: undefined
