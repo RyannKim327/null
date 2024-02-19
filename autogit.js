@@ -1,55 +1,42 @@
-// Define a tree node structure
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.children = [];
-  }
+function mergeSort(array) {
+    if (array.length <= 1) {
+        return array;
+    }
 
-  addChild(child) {
-    this.children.push(child);
-  }
+    // Split the input array into smaller arrays
+    let splitArrays = array.map(value => [value]);
+
+    // Merge adjacent arrays until only one array remains
+    while (splitArrays.length > 1) {
+        let mergedArray = [];
+        for (let i = 0; i < splitArrays.length; i += 2) {
+            let merged = merge(splitArrays[i], splitArrays[i + 1]);
+            mergedArray.push(merged);
+        }
+        splitArrays = mergedArray;
+    }
+
+    return splitArrays[0];
 }
 
-// Depth-limited search function
-function depthLimitedSearch(node, value, depthLimit, currentDepth = 0) {
-  if (currentDepth > depthLimit) {
-    return null;
-  }
+function merge(arr1, arr2) {
+    let result = [];
+    let i = 0, j = 0;
 
-  if (node.value === value) {
-    return node;
-  }
-
-  if (node.children.length === 0) {
-    return null;
-  }
-
-  for (let child of node.children) {
-    const result = depthLimitedSearch(child, value, depthLimit, currentDepth + 1);
-    if (result) {
-      return result;
+    while (i < arr1.length && j < arr2.length) {
+        if (arr1[i] < arr2[j]) {
+            result.push(arr1[i]);
+            i++;
+        } else {
+            result.push(arr2[j]);
+            j++;
+        }
     }
-  }
 
-  return null;
+    // Concatenate the remaining elements
+    return result.concat(arr1.slice(i)).concat(arr2.slice(j));
 }
 
 // Example usage
-const root = new Node(1);
-const child1 = new Node(2);
-const child2 = new Node(3);
-const subchild1 = new Node(4);
-const subchild2 = new Node(5);
-
-root.addChild(child1);
-root.addChild(child2);
-child1.addChild(subchild1);
-child2.addChild(subchild2);
-
-const result = depthLimitedSearch(root, 5, 2);
-
-if (result) {
-  console.log("Value found:", result.value);
-} else {
-  console.log("Value not found within depth limit");
-}
+const array = [8, 3, 6, 2, 5, 4, 7, 1];
+console.log(mergeSort(array));
