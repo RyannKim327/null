@@ -1,26 +1,16 @@
-function binarySearchRecursive(arr, target, low, high) {
-    if (low > high) {
-        return -1;
-    }
+function countOccurrences(str, word) {
+    // Use regex to split the string by spaces or punctuation marks
+    const wordsArray = str.split(/\s+|[,;.!?]/);
+    
+    // Use filter to get only the occurrences of the specific word
+    const occurrences = wordsArray.filter(w => w.toLowerCase() === word.toLowerCase());
 
-    let mid = Math.floor((low + high) / 2);
-
-    if (arr[mid] === target) {
-        return mid;
-    } else if (arr[mid] < target) {
-        return binarySearchRecursive(arr, target, mid + 1, high);
-    } else {
-        return binarySearchRecursive(arr, target, low, mid - 1);
-    }
+    // Return the length of the filtered array
+    return occurrences.length;
 }
 
-// Example usage
-const array = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
-const target = 9;
-const index = binarySearchRecursive(array, target, 0, array.length - 1);
-
-if (index !== -1) {
-    console.log(`Element found at index: ${index}`);
-} else {
-    console.log('Element not found');
-}
+// Usage example
+const str = "How much wood would a woodchuck chuck if a woodchuck could chuck wood?";
+const word = "wood";
+const occurrences = countOccurrences(str, word);
+console.log(`The word "${word}" occurs ${occurrences} times in the string.`);
