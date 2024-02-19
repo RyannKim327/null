@@ -1,5 +1,11 @@
-let string1 = "Hello";
-let string2 = "World";
-let concatenatedString = string1 + " " + string2;
+function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+}
 
-console.log(concatenatedString); // Output: Hello World
+const email = "example@example.com";
+if(validateEmail(email)) {
+    console.log("Email is valid");
+} else {
+    console.log("Email is invalid");
+}
