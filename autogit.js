@@ -1,21 +1,34 @@
-function countingSort(arr) {
-    const max = Math.max(...arr);
-    const countArray = new Array(max + 1).fill(0);
-
-    arr.forEach(num => countArray[num]++);
-  
-    let sortedIndex = 0; // Index for sorted array
-    countArray.forEach((count, num) => {
-        while (count > 0) {
-            arr[sortedIndex++] = num;
-            count--;
-        }
-    });
-
-    return arr;
+class Node {
+    constructor() {
+        this.children = {};
+    }
 }
+class SuffixTree {
+    constructor() {
+        this.root = new Node();
+    }
 
-// Example usage
-const unsortedArray = [4, 2, 2, 8, 3, 3, 1];
-const sortedArray = countingSort(unsortedArray);
-console.log(sortedArray); // Output: [1, 2, 2, 3, 3, 4, 8]
+    // Function to add a suffix to the suffix tree
+    addSuffix(suffix) {
+        let currentNode = this.root;
+
+        for (let i = 0; i < suffix.length; i++) {
+            const char = suffix[i];
+
+            if (!currentNode.children[char]) {
+                currentNode.children[char] = new Node();
+            }
+
+            currentNode = currentNode.children[char];
+        }
+    }
+}
+function buildSuffixTree(text) {
+    const suffixTree = new SuffixTree();
+
+    for (let i = 0; i < text.length; i++) {
+        suffixTree.addSuffix(text.slice(i));
+    }
+
+    return suffixTree;
+}
