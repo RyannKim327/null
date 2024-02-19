@@ -1,11 +1,9 @@
-function factorial(n) {
-    if (n === 0) {  // Base case: factorial of 0 is 1
-        return 1;
-    } else {
-        return n * factorial(n - 1);  // Recursive call to calculate factorial
-    }
+function calculateMean(numbers) {
+    const sum = numbers.reduce((acc, val) => acc + val, 0);
+    return sum / numbers.length;
 }
 
-// Call the factorial function with a number
-let number = 5;
-console.log(`Factorial of ${number} is: ${factorial(number)}`);
+// Example usage:
+const numbers = [5, 10, 15, 20, 25];
+const mean = calculateMean(numbers);
+console.log("Mean:", mean);
