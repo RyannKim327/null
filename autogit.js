@@ -1,58 +1,55 @@
-function tarjanSCC(graph) {
-    let index = 0;
-    let stack = [];
-    let indices = {};
-    let lowlinks = {};
-    let onStack = {};
-    let sccs = [];
+function bidirectionalSearch(graph, start, goal) {
+    let forwardQueue = [start];
+    let backwardQueue = [goal];
+    let forwardVisited = new Set();
+    let backwardVisited = new Set();
 
-    function strongconnect(node) {
-        indices[node] = index;
-        lowlinks[node] = index;
-        index++;
-        stack.push(node);
-        onStack[node] = true;
+    while (forwardQueue.length && backwardQueue.length) {
+        let forwardNode = forwardQueue.shift();
+        let backwardNode = backwardQueue.shift();
 
-        for (let neighbor of graph[node]) {
-            if (indices[neighbor] === undefined) {
-                strongconnect(neighbor);
-                lowlinks[node] = Math.min(lowlinks[node], lowlinks[neighbor]);
-            } else if (onStack[neighbor]) {
-                lowlinks[node] = Math.min(lowlinks[node], indices[neighbor]);
+        if (forwardNode === backwardNode || backwardVisited.has(forwardNode)) {
+            return true; // Intersection found
+        }
+
+        forwardVisited.add(forwardNode);
+        backwardVisited.add(backwardNode);
+
+        let forwardNeighbors = graph[forwardNode] || [];
+        let backwardNeighbors = graph[backwardNode] || [];
+
+        for (let neighbor of forwardNeighbors) {
+            if (!forwardVisited.has(neighbor)) {
+                forwardQueue.push(neighbor);
             }
         }
 
-        if (lowlinks[node] === indices[node]) {
-            let scc = [];
-            let currNode;
-            do {
-                currNode = stack.pop();
-                onStack[currNode] = false;
-                scc.push(currNode);
-            } while (currNode !== node);
-            sccs.push(scc);
+        for (let neighbor of backwardNeighbors) {
+            if (!backwardVisited.has(neighbor)) {
+                backwardQueue.push(neighbor);
+            }
         }
     }
 
-    for (let node in graph) {
-        if (indices[node] === undefined) {
-            strongconnect(node);
-        }
-    }
-
-    return sccs;
+    return false; // No path found
 }
-let graph = {
-    0: [1],
-    1: [2],
-    2: [0, 3],
-    3: [4],
-    4: [5],
-    5: [3, 6],
-    6: [7],
-    7: [8],
-    8: [6, 9],
-    9: [7]
+
+// Example graph
+const graph = {
+    A: ['B', 'C'],
+    B: ['A', 'D'],
+    C: ['A', 'E'],
+    D: ['B', 'F'],
+    E: ['C'],
+    F: ['D']
 };
-let stronglyConnectedComponents = tarjanSCC(graph);
-console.log(stronglyConnectedComponents);
+
+// Example start and goal states
+const start = 'A';
+const goal = 'F';
+
+if (bidirectionalSearch(graph, start, goal)) {
+    console.log('Path found!');
+} else {
+    console.log('No path found.');
+}
