@@ -1,64 +1,37 @@
 class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+    constructor(value) {
+        this.value = value;
+        this.children = [];
+    }
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+function depthLimitedSearch(root, target, depthLimit) {
+    let stack = [{ node: root, depth: 0 }];
 
-  addNode(value) {
-    const newNode = new Node(value);
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
+    while (stack.length > 0) {
+        let { node, depth } = stack.pop();
 
-  findNthNodeFromEnd(n) {
-    if (!this.head) {
-      return null;
+        if (node.value === target) {
+            return node;
+        }
+
+        if (depth < depthLimit) {
+            for (let child of node.children) {
+                stack.push({ node: child, depth: depth + 1 });
+            }
+        }
     }
 
-    let fast = this.head;
-    let slow = this.head;
-
-    for (let i = 0; i < n; i++) {
-      if (fast === null) {
-        return null; // n is greater than the size of the list
-      }
-      fast = fast.next;
-    }
-
-    while (fast !== null) {
-      fast = fast.next;
-      slow = slow.next;
-    }
-
-    return slow;
-  }
+    return null;
 }
 
-// Example usage
-const list = new LinkedList();
-list.addNode(1);
-list.addNode(2);
-list.addNode(3);
-list.addNode(4);
-list.addNode(5);
+// Usage example
+let node1 = new Node(1);
+let node2 = new Node(2);
+let node3 = new Node(3);
+let node4 = new Node(4);
 
-const n = 2;
-const nthNodeFromEnd = list.findNthNodeFromEnd(n);
-if (nthNodeFromEnd) {
-  console.log(`The ${n}th node from the end of the list is: ${nthNodeFromEnd.value}`);
-} else {
-  console.log(`The list does not have ${n} nodes.`);
-}
+node1.children.push(node2, node3);
+node2.children.push(node4);
+
+console.log(depthLimitedSearch(node1, 4, 2)); // Output: Node { value: 4, children: [] }
