@@ -1,68 +1,63 @@
-class TrieNode {
+class PriorityQueue {
     constructor() {
-        this.children = {};
-        this.isEndOfWord = false;
+        this.elements = [];
+    }
+
+    enqueue(element, priority) {
+        this.elements.push({ element, priority });
+        this.elements.sort((a, b) => a.priority - b.priority);
+    }
+
+    dequeue() {
+        return this.elements.shift().element;
+    }
+
+    isEmpty() {
+        return this.elements.length === 0;
     }
 }
 
-class Trie {
-    constructor() {
-        this.root = new TrieNode();
-    }
-
-    insert(word) {
-        let currentNode = this.root;
-        
-        for (let i = 0; i < word.length; i++) {
-            const char = word[i];
-            
-            if (!currentNode.children[char]) {
-                currentNode.children[char] = new TrieNode();
-            }
-            
-            currentNode = currentNode.children[char];
-        }
-        
-        currentNode.isEndOfWord = true;
-    }
-
-    search(word) {
-        let currentNode = this.root;
-
-        for (let i = 0; i < word.length; i++) {
-            const char = word[i];
-            
-            if (!currentNode.children[char]) {
-                return false;
-            }
-            
-            currentNode = currentNode.children[char];
-        }
-        
-        return currentNode.isEndOfWord;
-    }
-
-    startsWith(prefix) {
-        let currentNode = this.root;
-
-        for (let i = 0; i < prefix.length; i++) {
-            const char = prefix[i];
-            
-            if (!currentNode.children[char]) {
-                return false;
-            }
-            
-            currentNode = currentNode.children[char];
-        }
-        
-        return true;
-    }
+function heuristic(node, goal) {
+    // Euclidean distance heuristic
+    return Math.sqrt(Math.pow(goal.x - node.x, 2) + Math.pow(goal.y - node.y, 2));
 }
 
-// Usage example
-const trie = new Trie();
-trie.insert("apple");
-trie.insert("application");
-console.log(trie.search("apple")); // Output: true
-console.log(trie.search("app")); // Output: false
-console.log(trie.startsWith("app")); // Output: true
+function aStarSearch(start, goal) {
+    let openSet = new PriorityQueue();
+    openSet.enqueue(start, 0);
+
+    let cameFrom = {};
+    let gScore = {};
+    let fScore = {};
+
+    gScore[start] = 0;
+    fScore[start] = heuristic(start, goal);
+
+    while(!openSet.isEmpty()) {
+        let current = openSet.dequeue();
+
+        if (current === goal) {
+            let path = [];
+            while (current) {
+                path.unshift(current);
+                current = cameFrom[current];
+            }
+            return path;
+        }
+
+        // Implement neighbors for current node
+
+        for (let neighbor of current.neighbors) {
+            let tentativeGScore = gScore[current] + neighbor.cost;
+            if (tentativeGScore < gScore[neighbor] || !gScore[neighbor]) {
+                cameFrom[neighbor] = current;
+                gScore[neighbor] = tentativeGScore;
+                fScore[neighbor] = gScore[neighbor] + heuristic(neighbor, goal);
+                openSet.enqueue(neighbor, fScore[neighbor]);
+            }
+        }
+    }
+
+    // No path found
+    return null;
+}
