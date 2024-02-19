@@ -1,26 +1,26 @@
-function areAnagrams(str1, str2) {
-    // Remove non-alphabetic characters and convert to lowercase
-    str1 = str1.replace(/[^a-zA-Z]/g, '').toLowerCase();
-    str2 = str2.replace(/[^a-zA-Z]/g, '').toLowerCase();
+function binarySearchRecursive(arr, target, low, high) {
+    if (low > high) {
+        return -1;
+    }
 
-    // Convert strings to arrays of characters
-    let arr1 = str1.split('');
-    let arr2 = str2.split('');
+    let mid = Math.floor((low + high) / 2);
 
-    // Sort arrays
-    arr1.sort();
-    arr2.sort();
-
-    // Compare sorted arrays
-    return arr1.join('') === arr2.join('');
+    if (arr[mid] === target) {
+        return mid;
+    } else if (arr[mid] < target) {
+        return binarySearchRecursive(arr, target, mid + 1, high);
+    } else {
+        return binarySearchRecursive(arr, target, low, mid - 1);
+    }
 }
 
 // Example usage
-const string1 = "listen";
-const string2 = "silent";
+const array = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
+const target = 9;
+const index = binarySearchRecursive(array, target, 0, array.length - 1);
 
-if (areAnagrams(string1, string2)) {
-    console.log(`${string1} and ${string2} are anagrams.`);
+if (index !== -1) {
+    console.log(`Element found at index: ${index}`);
 } else {
-    console.log(`${string1} and ${string2} are not anagrams.`);
+    console.log('Element not found');
 }
