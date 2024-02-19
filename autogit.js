@@ -1,58 +1,21 @@
-function buildLPS(pattern) {
-    const lps = [0];
-    let len = 0;
-    let i = 1;
-    
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-    
-    return lps;
-}
-
-function KMP(text, pattern) {
-    const n = text.length;
-    const m = pattern.length;
-    const lps = buildLPS(pattern);
-    
+function isPalindrome(str) {
     let i = 0;
-    let j = 0;
-    const indices = [];
-    
-    while (i < n) {
-        if (text[i] === pattern[j]) {
-            i++;
-            j++;
+    let j = str.length - 1;
+
+    while (i < j) {
+        if (str[i] !== str[j]) {
+            return false;
         }
-        
-        if (j === m) {
-            indices.push(i - j);
-            j = lps[j - 1];
-        } else if (i < n && text[i] !== pattern[j]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
+        i++;
+        j--;
     }
-    
-    return indices;
+
+    return true;
 }
 
-// Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const indices = KMP(text, pattern);
-console.log(indices); // Output: [10]
+// Test the function
+const str1 = "racecar";
+const str2 = "hello";
+
+console.log(isPalindrome(str1)); // true
+console.log(isPalindrome(str2)); // false
