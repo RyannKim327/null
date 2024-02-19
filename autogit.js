@@ -1,55 +1,68 @@
-class Graph {
-    constructor() {
-        this.vertices = [];
-        this.adjacencyList = {};
-    }
-
-    addVertex(vertex) {
-        if (!this.vertices.includes(vertex)) {
-            this.vertices.push(vertex);
-            this.adjacencyList[vertex] = [];
-        }
-    }
-
-    addEdge(vertex1, vertex2) {
-        if (this.adjacencyList[vertex1] && this.adjacencyList[vertex2]) {
-            this.adjacencyList[vertex1].push(vertex2);
-            this.adjacencyList[vertex2].push(vertex1);
-        }
-    }
-
-    breadthFirstSearch(startingVertex) {
-        const visited = {};
-        const queue = [startingVertex];
-        const result = [];
-
-        visited[startingVertex] = true;
-
-        while (queue.length > 0) {
-            const currentVertex = queue.shift();
-            result.push(currentVertex);
-
-            this.adjacencyList[currentVertex].forEach((neighbor) => {
-                if (!visited[neighbor]) {
-                    visited[neighbor] = true;
-                    queue.push(neighbor);
-                }
-            });
-        }
-
-        return result;
-    }
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
 }
 
-// Example usage:
-const graph = new Graph();
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('C', 'D');
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
 
-console.log(graph.breadthFirstSearch('A')); // Output: ['A', 'B', 'C', 'D']
+  add(data) {
+    const newNode = new Node(data);
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
+
+  remove(data) {
+    if (!this.head) {
+      return;
+    }
+
+    if (this.head.data === data) {
+      this.head = this.head.next;
+      return;
+    }
+
+    let current = this.head;
+    let prev = null;
+
+    while (current && current.data !== data) {
+      prev = current;
+      current = current.next;
+    }
+
+    if (current) {
+      prev.next = current.next;
+    }
+  }
+
+  print() {
+    let current = this.head;
+    while (current) {
+      console.log(current.data);
+      current = current.next;
+    }
+  }
+}
+
+// Example usage
+const linkedList = new LinkedList();
+linkedList.add(1);
+linkedList.add(2);
+linkedList.add(3);
+
+linkedList.print();
+
+linkedList.remove(2);
+
+linkedList.print();
