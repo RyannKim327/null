@@ -1,13 +1,14 @@
-// URL of the API endpoint
-const apiUrl = 'https://jsonplaceholder.typicode.com/posts';
+function maxSubarraySum(arr) {
+  let maxEndingHere = arr[0];
+  let maxSoFar = arr[0];
+  
+  for (let i = 1; i < arr.length; i++) {
+    maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
+    maxSoFar = Math.max(maxSoFar, maxEndingHere);
+  }
+  
+  return maxSoFar;
+}
 
-// Make a GET request to the API
-fetch(apiUrl)
-  .then(response => response.json())
-  .then(data => {
-    // Log the data returned by the API
-    console.log(data);
-  })
-  .catch(error => {
-    console.error('Error fetching data: ', error);
-  });
+const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4]; // Example array
+console.log(maxSubarraySum(arr)); // Output: 6 (the maximum sum subarray is [4, -1, 2, 1])
