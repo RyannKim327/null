@@ -1,15 +1,4 @@
-function isArraySorted(arr) {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false;
-        }
-    }
-    return true;
-}
+let str = "Hello,   World!";
+let stringWithoutSpaces = str.replace(/\s/g, '');
 
-// Example usage
-const sortedArray = [1, 2, 3, 4, 5];
-const unsortedArray = [5, 4, 3, 2, 1];
-
-console.log(isArraySorted(sortedArray)); // Output: true
-console.log(isArraySorted(unsortedArray)); // Output: false
+console.log(stringWithoutSpaces); // Output: "Hello,World!"
