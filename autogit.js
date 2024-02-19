@@ -1,18 +1,22 @@
-function bubbleSort(arr) {
-    const n = arr.length;
-    for (let i = 0; i < n; i++) {
-        for (let j = 0; j < n - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                // Swap arr[j] and arr[j+1]
-                const temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
+function firstNonRepeatingChar(str) {
+    const charMap = {};
+
+    // Create a frequency map of characters
+    for (let char of str) {
+        charMap[char] = (charMap[char] || 0) + 1;
+    }
+
+    // Find the first character with frequency 1
+    for (let char of str) {
+        if (charMap[char] === 1) {
+            return char;
         }
     }
-    return arr;
+
+    return null; // Return null if no non-repeating character is found
 }
 
-// Example usage
-const arr = [64, 34, 25, 12, 22, 11, 90];
-console.log(bubbleSort(arr));
+// Example
+const input = "abacabad";
+const result = firstNonRepeatingChar(input);
+console.log(result); // Output: 'c'
