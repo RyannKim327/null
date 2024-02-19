@@ -1,9 +1,4 @@
-const axios = require('axios');
-
-axios.get('https://jsonplaceholder.typicode.com/posts')
-  .then(response => {
-    console.log('Response:', response.data);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+fetch('https://api.example.com/data')
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));
