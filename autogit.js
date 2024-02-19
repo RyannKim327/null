@@ -1,57 +1,55 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+function computeLPSArray(pattern) {
+    let len = 0;
+    let i = 1;
+    const lps = [0];
+
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+
+    return lps;
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+function KMP(text, pattern) {
+    const lps = computeLPSArray(pattern);
+    const result = [];
+    let i = 0;
+    let j = 0;
 
-  addNode(value) {
-    let newNode = new Node(value);
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
+    while (i < text.length) {
+        if (text[i] === pattern[j]) {
+            i++;
+            j++;
+        }
 
-  findNthNodeFromEnd(n) {
-    let slow = this.head;
-    let fast = this.head;
-
-    // Move the fast pointer to the nth node from the beginning
-    for (let i = 0; i < n; i++) {
-      if (fast === null) {
-        return null; // Not enough nodes
-      }
-      fast = fast.next;
+        if (j === pattern.length) {
+            result.push(i - j);
+            j = lps[j - 1];
+        } else if (i < text.length && text[i] !== pattern[j]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
     }
 
-    // Move both pointers until the fast pointer reaches the end
-    while (fast !== null) {
-      slow = slow.next;
-      fast = fast.next;
-    }
-
-    return slow;
-  }
+    return result;
 }
 
-// Test the function
-let linkedList = new LinkedList();
-linkedList.addNode(1);
-linkedList.addNode(2);
-linkedList.addNode(3);
-linkedList.addNode(4);
-linkedList.addNode(5);
-
-let nthNodeFromEnd = linkedList.findNthNodeFromEnd(2);
-console.log(nthNodeFromEnd.value); // Output: 4
+// Example usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const matches = KMP(text, pattern);
+console.log(matches);  // Output: [10]
