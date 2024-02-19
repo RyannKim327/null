@@ -1,18 +1,7 @@
-function largestPrimeFactor(number) {
-    let factor = 2;
-    
-    while (factor <= number) {
-        if (number % factor === 0) {
-            number /= factor;
-        } else {
-            factor++;
-        }
-    }
-    
-    return factor;
+function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// Example usage:
-const number = 84;
-const largestPrime = largestPrimeFactor(number);
-console.log(`The largest prime factor of ${number} is ${largestPrime}`);
+// Generate a random number between 1 and 100
+const randomNumber = getRandomNumber(1, 100);
+console.log(randomNumber);
