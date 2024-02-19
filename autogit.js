@@ -1,68 +1,22 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
+function countOccurrences(text, word) {
+    // Split the text into an array of words
+    let words = text.split(' ');
+
+    // Initialize a count variable to store the number of occurrences
+    let count = 0;
+
+    // Loop through each word in the array and check if it matches the word
+    words.forEach(function (term) {
+        if (term.toLowerCase() === word.toLowerCase()) {
+            count++;
+        }
+    });
+
+    return count;
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-
-  add(data) {
-    const newNode = new Node(data);
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
-
-  remove(data) {
-    if (!this.head) {
-      return;
-    }
-
-    if (this.head.data === data) {
-      this.head = this.head.next;
-      return;
-    }
-
-    let current = this.head;
-    let prev = null;
-
-    while (current && current.data !== data) {
-      prev = current;
-      current = current.next;
-    }
-
-    if (current) {
-      prev.next = current.next;
-    }
-  }
-
-  print() {
-    let current = this.head;
-    while (current) {
-      console.log(current.data);
-      current = current.next;
-    }
-  }
-}
-
-// Example usage
-const linkedList = new LinkedList();
-linkedList.add(1);
-linkedList.add(2);
-linkedList.add(3);
-
-linkedList.print();
-
-linkedList.remove(2);
-
-linkedList.print();
+// Test the function
+const text = "Hello world, hello world!";
+const word = "hello";
+const occurrences = countOccurrences(text, word);
+console.log(`The word "${word}" occurs ${occurrences} times in the text.`);
