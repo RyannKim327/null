@@ -1,46 +1,33 @@
-class HashTable {
-  constructor(size) {
-    this.size = size;
-    this.table = new Array(size);
-  }
+function depthLimitedSearchIterative(startNode, goalNode, depthLimit) {
+    let stack = [{ node: startNode, depth: 0 }];
 
-  _hash(key) {
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) {
-      hash = (hash + key.charCodeAt(i) * (i + 1)) % this.size;
-    }
-    return hash;
-  }
+    while (stack.length > 0) {
+        let current = stack.pop();
+        let currentNode = current.node;
+        let currentDepth = current.depth;
 
-  set(key, value) {
-    const index = this._hash(key);
-    if (!this.table[index]) {
-      this.table[index] = {};
-    }
-    this.table[index][key] = value;
-  }
+        if (currentNode === goalNode) {
+            return currentNode;
+        }
 
-  get(key) {
-    const index = this._hash(key);
-    if (this.table[index] && this.table[index][key]) {
-      return this.table[index][key];
-    } else {
-      return undefined;
+        if (currentDepth < depthLimit) {
+            // Expand node (add child nodes to stack)
+            let childNodes = expandNode(currentNode);
+            for (let i = 0; i < childNodes.length; i++) {
+                stack.push({ node: childNodes[i], depth: currentDepth + 1 });
+            }
+        }
     }
-  }
 
-  delete(key) {
-    const index = this._hash(key);
-    if (this.table[index] && this.table[index][key]) {
-      delete this.table[index][key];
-    }
-  }
+    return null; // Goal node not found within depth limit
+}
+
+// Function to expand a node (dummy function for illustration)
+function expandNode(node) {
+    // Dummy implementation, needs to be replaced with actual code to generate child nodes
+    return [node + 'A', node + 'B', node + 'C'];
 }
 
 // Example usage
-const hashTable = new HashTable(10);
-hashTable.set("key1", "value1");
-hashTable.set("key2", "value2");
-console.log(hashTable.get("key1")); // Output: value1
-hashTable.delete("key2");
-console.log(hashTable.get("key2")); // Output: undefined
+let result = depthLimitedSearchIterative('A', 'ABC', 3);
+console.log(result);
