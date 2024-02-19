@@ -1,26 +1,62 @@
-// Definition for a binary tree node
-function TreeNode(val) {
-    this.val = val;
-    this.left = this.right = null;
+class Graph {
+  constructor() {
+    this.nodes = {};
+  }
+
+  addNode(node) {
+    this.nodes[node] = [];
+  }
+
+  addEdge(node1, node2) {
+    this.nodes[node1].push(node2);
+    this.nodes[node2].push(node1);
+  }
 }
 
-// Function to find the maximum depth of a binary tree
-function maxDepth(root) {
-    if (!root) {
-        return 0;
+function biDirectionalSearch(graph, source, target) {
+  let visitedFromSource = {};
+  let visitedFromTarget = {};
+
+  let queueSource = [source];
+  let queueTarget = [target];
+
+  visitedFromSource[source] = true;
+  visitedFromTarget[target] = true;
+
+  while (queueSource.length > 0 && queueTarget.length > 0) {
+    let currentNodeSource = queueSource.shift();
+    let currentNodeTarget = queueTarget.shift();
+
+    if (visitedFromTarget[currentNodeSource] || visitedFromSource[currentNodeTarget]) {
+      return true;
     }
 
-    let leftDepth = maxDepth(root.left);
-    let rightDepth = maxDepth(root.right);
+    for (let neighbor of graph.nodes[currentNodeSource]) {
+      if (!visitedFromSource[neighbor]) {
+        visitedFromSource[neighbor] = true;
+        queueSource.push(neighbor);
+      }
+    }
 
-    return Math.max(leftDepth, rightDepth) + 1;
+    for (let neighbor of graph.nodes[currentNodeTarget]) {
+      if (!visitedFromTarget[neighbor]) {
+        visitedFromTarget[neighbor] = true;
+        queueTarget.push(neighbor);
+      }
+    }
+  }
+
+  return false;
 }
 
-// Example tree
-let root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+// Example usage
+let graph = new Graph();
+graph.addNode('A');
+graph.addNode('B');
+graph.addNode('C');
+graph.addNode('D');
+graph.addEdge('A', 'B');
+graph.addEdge('B', 'C');
+graph.addEdge('C', 'D');
 
-console.log(maxDepth(root)); // Output: 3
+console.log(biDirectionalSearch(graph, 'A', 'D')); // Output: true
