@@ -1,33 +1,58 @@
-function depthLimitedSearchIterative(startNode, goalNode, depthLimit) {
-    let stack = [{ node: startNode, depth: 0 }];
-
-    while (stack.length > 0) {
-        let current = stack.pop();
-        let currentNode = current.node;
-        let currentDepth = current.depth;
-
-        if (currentNode === goalNode) {
-            return currentNode;
-        }
-
-        if (currentDepth < depthLimit) {
-            // Expand node (add child nodes to stack)
-            let childNodes = expandNode(currentNode);
-            for (let i = 0; i < childNodes.length; i++) {
-                stack.push({ node: childNodes[i], depth: currentDepth + 1 });
+function buildLPS(pattern) {
+    const lps = [0];
+    let len = 0;
+    let i = 1;
+    
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
             }
         }
     }
-
-    return null; // Goal node not found within depth limit
+    
+    return lps;
 }
 
-// Function to expand a node (dummy function for illustration)
-function expandNode(node) {
-    // Dummy implementation, needs to be replaced with actual code to generate child nodes
-    return [node + 'A', node + 'B', node + 'C'];
+function KMP(text, pattern) {
+    const n = text.length;
+    const m = pattern.length;
+    const lps = buildLPS(pattern);
+    
+    let i = 0;
+    let j = 0;
+    const indices = [];
+    
+    while (i < n) {
+        if (text[i] === pattern[j]) {
+            i++;
+            j++;
+        }
+        
+        if (j === m) {
+            indices.push(i - j);
+            j = lps[j - 1];
+        } else if (i < n && text[i] !== pattern[j]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+    
+    return indices;
 }
 
 // Example usage
-let result = depthLimitedSearchIterative('A', 'ABC', 3);
-console.log(result);
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const indices = KMP(text, pattern);
+console.log(indices); // Output: [10]
