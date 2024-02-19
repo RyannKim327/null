@@ -1,45 +1,58 @@
-class Node { 
-    constructor(data) {
-        this.data = data;
-        this.left = null;
-        this.right = null;
-    }
-}
+function tarjanSCC(graph) {
+    let index = 0;
+    let stack = [];
+    let indices = {};
+    let lowlinks = {};
+    let onStack = {};
+    let sccs = [];
 
-class BinaryTree {
-    constructor() {
-        this.root = null;
-    }
-    
-    insert(data) {
-        const newNode = new Node(data);
-        
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-    
-    insertNode(node, newNode) {
-        if (newNode.data < node.data) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
+    function strongconnect(node) {
+        indices[node] = index;
+        lowlinks[node] = index;
+        index++;
+        stack.push(node);
+        onStack[node] = true;
+
+        for (let neighbor of graph[node]) {
+            if (indices[neighbor] === undefined) {
+                strongconnect(neighbor);
+                lowlinks[node] = Math.min(lowlinks[node], lowlinks[neighbor]);
+            } else if (onStack[neighbor]) {
+                lowlinks[node] = Math.min(lowlinks[node], indices[neighbor]);
             }
         }
-    }
-}
 
-// Example usage
-const binaryTree = new BinaryTree();
-binaryTree.insert(10);
-binaryTree.insert(5);
-binaryTree.insert(15);
+        if (lowlinks[node] === indices[node]) {
+            let scc = [];
+            let currNode;
+            do {
+                currNode = stack.pop();
+                onStack[currNode] = false;
+                scc.push(currNode);
+            } while (currNode !== node);
+            sccs.push(scc);
+        }
+    }
+
+    for (let node in graph) {
+        if (indices[node] === undefined) {
+            strongconnect(node);
+        }
+    }
+
+    return sccs;
+}
+let graph = {
+    0: [1],
+    1: [2],
+    2: [0, 3],
+    3: [4],
+    4: [5],
+    5: [3, 6],
+    6: [7],
+    7: [8],
+    8: [6, 9],
+    9: [7]
+};
+let stronglyConnectedComponents = tarjanSCC(graph);
+console.log(stronglyConnectedComponents);
