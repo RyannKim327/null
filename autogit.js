@@ -1,11 +1,14 @@
-function validateEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
+function factorial(n) {
+    // Base case: if n is 0, return 1
+    if (n === 0) {
+        return 1;
+    } else {
+        // Recursive case: return n multiplied by factorial of (n-1)
+        return n * factorial(n - 1);
+    }
 }
 
-const email = "example@example.com";
-if(validateEmail(email)) {
-    console.log("Email is valid");
-} else {
-    console.log("Email is invalid");
-}
+// Call the factorial function with a number
+const number = 5;
+const result = factorial(number);
+console.log(`The factorial of ${number} is: ${result}`);
