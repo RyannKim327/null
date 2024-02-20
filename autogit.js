@@ -1,30 +1,14 @@
-function countingSort(arr) {
-    let max = Math.max(...arr);
-    let min = Math.min(...arr);
-    let range = max - min + 1;
-    let count = new Array(range).fill(0);
-    let output = new Array(arr.length);
+function isPalindrome(str) {
+    // Remove non-alphanumeric characters and convert the string to lowercase
+    const alphanumericStr = str.replace(/[^0-9a-z]/gi, '').toLowerCase();
 
-    for (let i = 0; i < arr.length; i++) {
-        count[arr[i] - min]++;
-    }
+    // Reverse the alphanumeric string
+    const reversedStr = alphanumericStr.split('').reverse().join('');
 
-    for (let i = 1; i < count.length; i++) {
-        count[i] += count[i - 1];
-    }
-
-    for (let i = arr.length - 1; i >= 0; i--) {
-        output[count[arr[i] - min] - 1] = arr[i];
-        count[arr[i] - min]--;
-    }
-
-    for (let i = 0; i < arr.length; i++) {
-        arr[i] = output[i];
-    }
-
-    return arr;
+    // Check if the original string is equal to its reverse
+    return alphanumericStr === reversedStr;
 }
 
-// Example usage
-let arr = [4, 2, 2, 8, 3, 3, 1];
-console.log(countingSort(arr)); // Output: [1, 2, 2, 3, 3, 4, 8]
+// Test the function
+const str = "A man, a plan, a canal, Panama!";
+console.log(isPalindrome(str)); // Output: true
