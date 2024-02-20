@@ -1,45 +1,24 @@
-class Node {
-    constructor(start, end) {
-        this.start = start;
-        this.end = end;
-        this.children = {};
-        this.suffixLink = null;
+function quickSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
     }
+
+    const pivot = arr[0];
+    const left = [];
+    const right = [];
+
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
+        } else {
+            right.push(arr[i]);
+        }
+    }
+
+    return [...quickSort(left), pivot, ...quickSort(right)];
 }
 
-class SuffixTree {
-    constructor(str) {
-        this.root = new Node(-1, -1);
-
-        for (let i = 0; i < str.length; i++) {
-            this.addSuffix(str.substring(i), i);
-        }
-    }
-
-    addSuffix(suffix, startIndex) {
-        let current = this.root;
-        for (let i = 0; i < suffix.length; i++) {
-            let char = suffix[i];
-            if (!(char in current.children)) {
-                current.children[char] = new Node(startIndex + i, startIndex); // Represent suffix by start and end indices
-            }
-            current = current.children[char];
-        }
-    }
-
-    search(substring) {
-        let current = this.root;
-        for (let char of substring) {
-            if (!(char in current.children)) {
-                return false;
-            }
-            current = current.children[char];
-        }
-        return true;
-    }
-}
-
-// Usage
-const suffixTree = new SuffixTree("banana");
-console.log(suffixTree.search("ana")); // true
-console.log(suffixTree.search("zzz")); // false
+// Example usage:
+const arr = [6, 5, 3, 1, 8, 7, 2, 4];
+const sortedArr = quickSort(arr);
+console.log(sortedArr);
