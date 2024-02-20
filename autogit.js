@@ -1,17 +1,17 @@
-function isAnagram(str1, str2) {
-    const sanitizeString = function (str) {
-        return str.toLowerCase().replace(/[^a-z]/g, '').split('').sort().join('');
-    }
+function reverseWords(str) {
+    // Split the string into an array of words
+    let words = str.split(" ");
 
-    return sanitizeString(str1) === sanitizeString(str2);
+    // Reverse the order of the array
+    words = words.reverse();
+
+    // Join the array back into a string
+    let reversedString = words.join(" ");
+
+    return reversedString;
 }
 
 // Test the function
-const string1 = "listen";
-const string2 = "silent";
-
-if (isAnagram(string1, string2)) {
-    console.log(`${string1} and ${string2} are anagrams!`);
-} else {
-    console.log(`${string1} and ${string2} are not anagrams.`);
-}
+let originalString = "Hello world!";
+let reversedString = reverseWords(originalString);
+console.log(reversedString); // Output: "world! Hello"
