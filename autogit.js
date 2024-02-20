@@ -1,16 +1,35 @@
-function maxSubarraySum(arr) {
-    let maxSum = arr[0];
-    let currentSum = arr[0];
-
-    for (let i = 1; i < arr.length; i++) {
-        currentSum = Math.max(arr[i], currentSum + arr[i]);
-        maxSum = Math.max(maxSum, currentSum);
+function mergeSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    return maxSum;
+    const middle = Math.floor(arr.length / 2);
+    const left = arr.slice(0, middle);
+    const right = arr.slice(middle);
+
+    return merge(mergeSort(left), mergeSort(right));
 }
 
-// Example usage
-const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const maxSubarray = maxSubarraySum(arr);
-console.log(maxSubarray); // Output: 6 (corresponding to the subarray [4, -1, 2, 1])
+function merge(left, right) {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            result.push(right[rightIndex]);
+            rightIndex++;
+        }
+    }
+
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+}
+
+// Example usage:
+const arr = [5, 2, 9, 3, 7, 6, 1, 8, 4];
+console.log("Original array: " + arr);
+const sortedArr = mergeSort(arr);
+console.log("Sorted array: " + sortedArr);
