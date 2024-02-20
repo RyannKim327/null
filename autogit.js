@@ -1,40 +1,64 @@
-class HashTable {
-    constructor(size = 10) {
-        this.size = size;
-        this.table = new Array(size).fill(null);
-    }
+function tarjanSCC(graph) {
+    let index = 0;
+    let stack = [];
+    let onStack = new Set();
+    let indexMap = new Map(); // map nodes to their indices
+    let lowlink = new Map();
+    let result = [];
 
-    hashFunction(key) {
-        let hash = 0;
-        for (let i = 0; i < key.length; i++) {
-            hash = (hash + key.charCodeAt(i) * (i + 1)) % this.size;
+    function strongConnect(node) {
+        indexMap.set(node, index);
+        lowlink.set(node, index);
+        index++;
+        stack.push(node);
+        onStack.add(node);
+
+        for (let neighbor of graph[node] || []) {
+            if (!indexMap.has(neighbor)) {
+                strongConnect(neighbor);
+                lowlink.set(node, Math.min(lowlink.get(node), lowlink.get(neighbor)));
+            } else if (onStack.has(neighbor)) {
+                lowlink.set(node, Math.min(lowlink.get(node), indexMap.get(neighbor)));
+            }
         }
-        return hash;
+
+        if (indexMap.get(node) === lowlink.get(node)) {
+            let scc = [];
+            let top = stack.pop();
+            onStack.delete(top);
+            scc.push(top);
+
+            while (top !== node) {
+                top = stack.pop();
+                onStack.delete(top);
+                scc.push(top);
+            }
+            result.push(scc);
+        }
     }
 
-    set(key, value) {
-        const index = this.hashFunction(key);
-        this.table[index] = { key, value };
+    for (let node of Object.keys(graph)) {
+        if (!indexMap.has(node)) {
+            strongConnect(node);
+        }
     }
 
-    get(key) {
-        const index = this.hashFunction(key);
-        return this.table[index];
-    }
-
-    remove(key) {
-        const index = this.hashFunction(key);
-        this.table[index] = null;
-    }
+    return result;
 }
 
 // Example usage
-const ht = new HashTable();
-ht.set("name", "Alice");
-ht.set("age", 30);
+let graph = {
+    'A': ['B'],
+    'B': ['C', 'E'],
+    'C': ['A', 'D'],
+    'D': ['F'],
+    'E': ['F'],
+    'F': ['G'],
+    'G': ['E', 'H'],
+    'H': ['I'],
+    'I': ['J'],
+    'J': [],
+};
 
-console.log(ht.get("name")); // Output: { key: 'name', value: 'Alice' }
-console.log(ht.get("age")); // Output: { key: 'age', value: 30 }
-
-ht.remove("name");
-console.log(ht.get("name")); // Output: null
+let result = tarjanSCC(graph);
+console.log(result);
