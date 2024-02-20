@@ -1,37 +1,40 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
-    }
-}
+function beamSearch(startNode, beamWidth, maxDepth) {
 
-function hasCycle(head) {
-    if (!head || !head.next) {
-        return false;
-    }
-
-    let slow = head;
-    let fast = head.next;
-
-    while (fast && fast.next) {
-        if (slow === fast) {
-            return true;
+    let candidates = [{ node: startNode, score: 0 }];
+    
+    for (let depth = 0; depth < maxDepth; depth++) {
+        let newCandidates = [];
+        
+        for (let candidate of candidates) {
+            for (let childNode of expandNode(candidate.node)) {
+                let score = evaluateNode(childNode);
+                newCandidates.push({ node: childNode, score: candidate.score + score });
+            }
         }
-
-        slow = slow.next;
-        fast = fast.next.next;
+        
+        newCandidates.sort((a, b) => b.score - a.score);
+        candidates = newCandidates.slice(0, beamWidth); // Keep only top beamWidth candidates
     }
-
-    return false;
+    
+    return candidates;
 }
 
-// Example usage
-const node1 = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
+function expandNode(node) {
+    // Expand a given node and return child nodes
+    // Example implementation
+    return [];
+}
 
-node1.next = node2;
-node2.next = node3;
-node3.next = node1; // Adding cycle
+function evaluateNode(node) {
+    // Evaluate a given node and return a score
+    // Example implementation
+    return 0;
+}
 
-console.log(hasCycle(node1)); // Output: true
+// Usage
+let startNode = {}; // Start with an initial node
+let beamWidth = 5;
+let maxDepth = 3;
+
+let result = beamSearch(startNode, beamWidth, maxDepth);
+console.log(result);
