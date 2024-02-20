@@ -1,27 +1,6 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
+let str1 = "Hello";
+let str2 = "World";
 
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
+let result = str1 + " " + str2;
 
-  while (fast !== null && fast.next !== null) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
-
-  return slow.value;
-}
-
-// Example linked list
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-console.log(findMiddleElement(head)); // Output: 3
+console.log(result); // Output: "Hello World"
