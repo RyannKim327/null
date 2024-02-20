@@ -1,56 +1,42 @@
-function buildKMPTable(pattern) {
-  let table = Array(pattern.length).fill(0);
-  let i = 0, j = 1;
-  
-  while (j < pattern.length) {
-    if (pattern[i] === pattern[j]) {
-      table[j] = i + 1;
-      i++;
-      j++;
-    } else {
-      if (i !== 0) {
-        i = table[i - 1];
-      } else {
-        table[j] = 0;
-        j++;
-      }
+function heapSort(arr) {
+    // Build max heap
+    function buildHeap(arr) {
+        const n = arr.length;
+        for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+            heapify(arr, n, i);
+        }
     }
-  }
-  
-  return table;
-}
 
-function kmpSearch(text, pattern) {
-  let kmpTable = buildKMPTable(pattern);
-  let i = 0, j = 0;
-  
-  while (i < text.length) {
-    if (text[i] === pattern[j]) {
-      i++;
-      j++;
-      
-      if (j === pattern.length) {
-        return i - j; // pattern found at index (i - j)
-      }
-    } else {
-      if (j !== 0) {
-        j = kmpTable[j - 1];
-      } else {
-        i++;
-      }
+    // Heapify a subtree rooted with node i which is an index in arr[]
+    function heapify(arr, n, i) {
+        let largest = i; // Initialize largest as root
+        let left = 2 * i + 1;
+        let right = 2 * i + 2;
+
+        if (left < n && arr[left] > arr[largest]) {
+            largest = left;
+        }
+
+        if (right < n && arr[right] > arr[largest]) {
+            largest = right;
+        }
+
+        if (largest !== i) {
+            [arr[i], arr[largest]] = [arr[largest], arr[i]];
+            heapify(arr, n, largest);
+        }
     }
-  }
-  
-  return -1; // pattern not found in text
+
+    buildHeap(arr);
+
+    for (let i = arr.length - 1; i >= 0; i--) {
+        [arr[0], arr[i]] = [arr[i], arr[0]];
+        heapify(arr, i, 0);
+    }
+
+    return arr;
 }
 
-// Example
-let text = "ABABDABACDABABCABAB";
-let pattern = "ABABCABAB";
-let index = kmpSearch(text, pattern);
-
-if (index !== -1) {
-  console.log("Pattern found at index " + index);
-} else {
-  console.log("Pattern not found in text");
-}
+// Usage
+const arr = [12, 11, 13, 5, 6, 7];
+console.log(heapSort(arr));
