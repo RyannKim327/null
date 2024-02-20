@@ -1,10 +1,8 @@
-function calculateMean(numbers) {
-  const sum = numbers.reduce((acc, num) => acc + num, 0);
-  const mean = sum / numbers.length;
-  return mean;
+function reverseString(str) {
+    return str.split('').reverse().join('');
 }
 
 // Example
-const numbers = [1, 2, 3, 4, 5];
-const mean = calculateMean(numbers);
-console.log(mean);
+const originalString = "Hello, World!";
+const reversedString = reverseString(originalString);
+console.log(reversedString); // Output: "!dlroW ,olleH"
