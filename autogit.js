@@ -1,22 +1,47 @@
-function findMajorityElement(arr) {
-    const freqMap = {};
-    
-    for (let num of arr) {
-        freqMap[num] = (freqMap[num] || 0) + 1;
-        
-        if (freqMap[num] > arr.length / 2) {
-            return num;
+function mergeSortIterative(arr) {
+    const arrayLength = arr.length;
+
+    for (let currentSize = 1; currentSize < arrayLength; currentSize *= 2) {
+        for (let leftStart = 0; leftStart < arrayLength - 1; leftStart += 2 * currentSize) {
+            const mid = Math.min(leftStart + currentSize - 1, arrayLength - 1);
+            const rightEnd = Math.min(leftStart + 2 * currentSize - 1, arrayLength - 1);
+            merge(arr, leftStart, mid, rightEnd);
         }
     }
 
-    return null; // No majority element found
+    return arr;
 }
 
-// Example
-const array = [2, 2, 3, 4, 2, 2, 2];
-const majorityElement = findMajorityElement(array);
-if (majorityElement !== null) {
-    console.log(`The majority element is: ${majorityElement}`);
-} else {
-    console.log("No majority element found");
+function merge(arr, leftStart, mid, rightEnd) {
+    const leftArray = arr.slice(leftStart, mid + 1);
+    const rightArray = arr.slice(mid + 1, rightEnd + 1);
+
+    let i = 0, j = 0, k = leftStart;
+    
+    while (i < leftArray.length && j < rightArray.length) {
+        if (leftArray[i] <= rightArray[j]) {
+            arr[k] = leftArray[i];
+            i++;
+        } else {
+            arr[k] = rightArray[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i < leftArray.length) {
+        arr[k] = leftArray[i];
+        i++;
+        k++;
+    }
+
+    while (j < rightArray.length) {
+        arr[k] = rightArray[j];
+        j++;
+        k++;
+    }
 }
+
+// Example usage
+const arr = [38, 27, 43, 3, 9, 82, 10];
+console.log(mergeSortIterative(arr)); // Output: [3, 9, 10, 27, 38, 43, 82]
