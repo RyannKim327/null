@@ -1,21 +1,35 @@
-function isAnagram(str1, str2) {
-    // Remove all non-alphabetic characters and convert the strings to lowercase
-    const cleanStr1 = str1.replace(/[^\w]/g, '').toLowerCase();
-    const cleanStr2 = str2.replace(/[^\w]/g, '').toLowerCase();
+function beamSearch(beamWidth, initialSolutions, expandFunction, scoringFunction, maxDepth) {
+    let beam = initialSolutions;
 
-    // Check if the lengths of the strings are the same
-    if (cleanStr1.length !== cleanStr2.length) {
-        return false;
+    for (let depth = 0; depth < maxDepth; depth++) {
+        let newCandidates = [];
+        
+        for (let candidate of beam) {
+            let expanded = expandFunction(candidate);
+            newCandidates.push(...expanded);
+        }
+
+        newCandidates.sort((a, b) => scoringFunction(b) - scoringFunction(a));
+        beam = newCandidates.slice(0, beamWidth);
     }
 
-    // Sort the characters in the strings and compare them
-    const sortedStr1 = cleanStr1.split('').sort().join('');
-    const sortedStr2 = cleanStr2.split('').sort().join('');
-
-    return sortedStr1 === sortedStr2;
+    return beam[0]; // Return the best solution found
 }
 
-// Test the function
-const string1 = 'listen';
-const string2 = 'silent';
-console.log(isAnagram(string1, string2)); // Output: true
+// Example usage
+let initialSolutions = [{ path: [startNode], cost: 0 }];
+let beamWidth = 3;
+let maxDepth = 5;
+
+let expandFunction = (candidate) => {
+    // Implement logic to expand a candidate solution
+    return [...candidate.path, candidate.path[candidate.path.length - 1] + 1];
+};
+
+let scoringFunction = (candidate) => {
+    // Implement logic to score a candidate solution
+    return -candidate.path.length; // Minimize path length
+};
+
+let bestSolution = beamSearch(beamWidth, initialSolutions, expandFunction, scoringFunction, maxDepth);
+console.log("Best Solution:", bestSolution);
