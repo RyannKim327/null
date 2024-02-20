@@ -1,16 +1,51 @@
-function countOccurrences(str, char) {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === char) {
-            count++;
-        }
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.children = [];
     }
-    return count;
 }
 
-// Example of counting occurrences of character 'a' in a string 'banana'
-let string = 'banana';
-let charToCount = 'a';
-let occurrenceCount = countOccurrences(string, charToCount);
+function bidirectionalSearch(startNode, endNode) {
+    let visitedFromStart = new Set();
+    let visitedFromEnd = new Set();
+    let queueStart = [startNode];
+    let queueEnd = [endNode];
 
-console.log(`The character '${charToCount}' appears ${occurrenceCount} time(s) in the string.`);
+    while (queueStart.length > 0 && queueEnd.length > 0) {
+        let currentStart = queueStart.shift();
+        let currentEnd = queueEnd.shift();
+
+        if (visitedFromStart.has(currentStart.value) || visitedFromEnd.has(currentEnd.value)) {
+            // If nodes meet at some point, return true
+            return true;
+        }
+
+        visitedFromStart.add(currentStart.value);
+        visitedFromEnd.add(currentEnd.value);
+
+        for (let child of currentStart.children) {
+            if (!visitedFromStart.has(child.value)) {
+                queueStart.push(child);
+            }
+        }
+
+        for (let child of currentEnd.children) {
+            if (!visitedFromEnd.has(child.value)) {
+                queueEnd.push(child);
+            }
+        }
+    }
+
+    // If nodes do not meet, return false
+    return false;
+}
+
+// Usage example
+const node1 = new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
+
+node1.children = [node2];
+node2.children = [node3];
+
+console.log(bidirectionalSearch(node1, node3)); // Output: true
