@@ -1,8 +1,4 @@
-function reverseString(str) {
-    return str.split('').reverse().join('');
+function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
 }
-
-// Example
-const originalString = "Hello, World!";
-const reversedString = reverseString(originalString);
-console.log(reversedString); // Output: "!dlroW ,olleH"
