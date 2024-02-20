@@ -1,12 +1,22 @@
-// Prompt user for input
-let userInput = prompt("Enter a number:");
-
-// Convert input to a number
-let number = parseInt(userInput);
-
-// Check if the input is a number
-if (!isNaN(number)) {
-    console.log("The square of the number is: " + (number * number));
-} else {
-    console.log("Invalid input. Please enter a valid number.");
+function firstNonRepeatingCharacter(str) {
+    let charCount = {};
+    
+    // Count the occurrences of each character
+    for (let char of str) {
+        charCount[char] = (charCount[char] || 0) + 1;
+    }
+    
+    // Find the first character with a count of 1
+    for (let char of str) {
+        if (charCount[char] === 1) {
+            return char;
+        }
+    }
+    
+    return null; // Return null if no non-repeating character is found
 }
+
+// Example usage
+const str = "hello";
+const firstNonRepeatingChar = firstNonRepeatingCharacter(str);
+console.log(firstNonRepeatingChar); // Output: "h"
