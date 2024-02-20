@@ -1,77 +1,74 @@
-class PriorityQueue {
-  constructor() {
-    this.heap = [];
+class Node {
+  constructor(state, parent, g, h) {
+    this.state = state;
+    this.parent = parent;
+    this.g = g;
+    this.h = h;
   }
 
-  // Helper functions for getting parent, left child, and right child indices
-  parentIndex(i) { return Math.floor((i - 1) / 2); }
-  leftChildIndex(i) { return 2 * i + 1; }
-  rightChildIndex(i) { return 2* i + 2; }
-
-  // Helper functions for swapping elements in the heap
-  swap(i, j) {
-    [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
-  }
-
-  // Helper function to heapify the heap
-  heapifyUp() {
-    let index = this.heap.length - 1;
-    while (index > 0 && this.heap[index][0] < this.heap[this.parentIndex(index)][0]) {
-      this.swap(index, this.parentIndex(index));
-      index = this.parentIndex(index);
-    }
-  }
-
-  heapifyDown() {
-    let index = 0;
-    while (this.leftChildIndex(index) < this.heap.length) {
-      let smallerChildIndex = this.leftChildIndex(index);
-      if (this.rightChildIndex(index) < this.heap.length && this.heap[this.rightChildIndex(index)][0] < this.heap[smallerChildIndex][0]) {
-        smallerChildIndex = this.rightChildIndex(index);
-      }
-      if (this.heap[index][0] < this.heap[smallerChildIndex][0]) {
-        break;
-      } else {
-        this.swap(index, smallerChildIndex);
-      }
-      index = smallerChildIndex;
-    }
-  }
-
-  // Insert an element into the priority queue
-  insert(item, priority) {
-    this.heap.push([priority, item]);
-    this.heapifyUp();
-  }
-
-  // Remove and return the element with the highest priority
-  extractMin() {
-    if (this.heap.length === 0) {
-      return null;
-    }
-    if (this.heap.length === 1) {
-      return this.heap.pop()[1];
-    }
-
-    const min = this.heap[0][1];
-    this.heap[0] = this.heap.pop();
-    this.heapifyDown();
-    return min;
-  }
-
-  // Check if the priority queue is empty
-  isEmpty() {
-    return this.heap.length === 0;
+  get f() {
+    return this.g + this.h;
   }
 }
 
-// Example Usage
-const priorityQueue = new PriorityQueue();
+function astar(start, goal, h) {
+  let openSet = [new Node(start, null, 0, h(start))];
+  let closedSet = [];
 
-priorityQueue.insert("Task 1", 3);
-priorityQueue.insert("Task 2", 1);
-priorityQueue.insert("Task 3", 2);
+  while (openSet.length > 0) {
+    let currentNode = openSet.reduce((a, b) => a.f < b.f ? a : b);
 
-while (!priorityQueue.isEmpty()) {
-  console.log(priorityQueue.extractMin());
+    if (currentNode.state === goal) {
+      let path = [];
+      while (currentNode !== null) {
+        path.push(currentNode.state);
+        currentNode = currentNode.parent;
+      }
+      return path.reverse();
+    }
+
+    openSet = openSet.filter(node => node !== currentNode);
+    closedSet.push(currentNode);
+
+    const neighbors = getNeighbors(currentNode.state);
+    neighbors.forEach(neighbor => {
+      if (closedSet.find(node => node.state === neighbor)) {
+        return;
+      }
+
+      const g = currentNode.g + 1;
+      const h = heuristic(neighbor, goal);
+      const newNode = new Node(neighbor, currentNode, g, h);
+
+      const openNode = openSet.find(node => node.state === neighbor);
+      if (!openNode || g < openNode.g) {
+        openSet = openSet.filter(node => node.state !== neighbor);
+        openSet.push(newNode);
+      }
+    });
+  }
+
+  return null; // No path found
 }
+
+function heuristic(a, b) {
+  // Manhattan distance heuristic
+  return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+}
+
+function getNeighbors(state) {
+  // Define how to get neighbors of a state
+  return [
+    { x: state.x, y: state.y + 1 },
+    { x: state.x, y: state.y - 1 },
+    { x: state.x + 1, y: state.y },
+    { x: state.x - 1, y: state.y }
+  ];
+}
+
+// Example usage
+const start = { x: 0, y: 0 };
+const goal = { x: 4, y: 4 };
+const path = astar(start, goal, heuristic);
+
+console.log(path);
