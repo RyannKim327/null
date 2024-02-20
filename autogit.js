@@ -1,14 +1,6 @@
-function factorial(num) {
-    if (num < 0) {
-        return -1;
-    } else if (num == 0) {
-        return 1;
-    } else {
-        return (num * factorial(num - 1));
-    }
+function decimalToBinary(decimal) {
+    return (decimal >>> 0).toString(2);
 }
 
-// Calculate the factorial of a number
-const number = 5;
-const result = factorial(number);
-console.log(`The factorial of ${number} is ${result}`);
+// Example usage
+console.log(decimalToBinary(10)); // Output: 1010
