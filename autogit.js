@@ -1,54 +1,16 @@
-// Define a Node class to create individual nodes in the linked list
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
+function maxSubarraySum(arr) {
+    let maxSum = arr[0];
+    let currentSum = arr[0];
+
+    for (let i = 1; i < arr.length; i++) {
+        currentSum = Math.max(arr[i], currentSum + arr[i]);
+        maxSum = Math.max(maxSum, currentSum);
+    }
+
+    return maxSum;
 }
 
-// Define a LinkedList class to manage the linked list
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-
-  // Method to add a new node to the end of the linked list
-  append(data) {
-    let newNode = new Node(data);
-
-    if (!this.head) {
-      this.head = newNode;
-      return;
-    }
-
-    let current = this.head;
-    while (current.next) {
-      current = current.next;
-    }
-
-    current.next = newNode;
-  }
-
-  // Method to find the length of the linked list
-  getLength() {
-    let current = this.head;
-    let length = 0;
-
-    while (current) {
-      length++;
-      current = current.next;
-    }
-
-    return length;
-  }
-}
-
-// Create a linked list and add some nodes to it
-let linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
-
-// Find the length of the linked list
-let length = linkedList.getLength();
-console.log("Length of the linked list: " + length);
+// Example usage
+const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const maxSubarray = maxSubarraySum(arr);
+console.log(maxSubarray); // Output: 6 (corresponding to the subarray [4, -1, 2, 1])
