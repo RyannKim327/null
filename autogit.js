@@ -1,69 +1,37 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-class BinarySearchTree {
-    constructor() {
-        this.root = null;
+function boyerMooreSearch(text, pattern) {
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    if (patternLength === 0) return 0;
+    
+    // Preprocess pattern
+    const rightmost = new Array(256).fill(-1);
+    for (let i = 0; i < patternLength; i++) {
+        rightmost[pattern.charCodeAt(i)] = i;
     }
 
-    insert(value) {
-        const newNode = new Node(value);
-
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    insertNode(node, newNode) {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
+    let skip;
+    for (let i = 0; i <= textLength - patternLength; i += skip) {
+        skip = 0;
+        for (let j = patternLength - 1; j >= 0; j--) {
+            if (pattern[j] !== text[i + j]) {
+                skip = Math.max(1, j - rightmost[text.charCodeAt(i + j)]);
+                break;
             }
         }
-    }
-
-    search(value) {
-        return this.searchNode(this.root, value);
-    }
-
-    searchNode(node, value) {
-        if (node === null) {
-            return false;
-        }
-
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true;
+        if (skip === 0) {
+            return i;
         }
     }
+    return -1;
 }
 
-// Example usage
-const bst = new BinarySearchTree();
-bst.insert(8);
-bst.insert(3);
-bst.insert(10);
-bst.insert(1);
-bst.insert(6);
-bst.insert(14);
+// Test the Boyer-Moore search function
+const text = 'Hello, how are you?';
+const pattern = 'you';
+const index = boyerMooreSearch(text, pattern);
 
-console.log(bst.search(6)); // Output: true
-console.log(bst.search(11)); // Output: false
+if (index !== -1) {
+    console.log(`Pattern found at index ${index}`);
+} else {
+    console.log('Pattern not found');
+}
