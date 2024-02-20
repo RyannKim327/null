@@ -1,30 +1,53 @@
-function quickSort(arr) {
-    // Base case: If the array has 0 or 1 element, it is already sorted
-    if (arr.length <= 1) {
-        return arr;
+// Define the TreeNode class
+class TreeNode {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-
-    // Choose a pivot element (in this case, the last element)
-    const pivot = arr[arr.length - 1];
-
-    // Initialize left and right arrays
-    const left = [];
-    const right = [];
-
-    // Iterate through the array and place elements in the left or right array based on whether they're less than or greater than the pivot
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
-        }
-    }
-
-    // Recursively apply quickSort to the left and right arrays, then concatenate the sorted left array, the pivot, and the sorted right array
-    return [...quickSort(left), pivot, ...quickSort(right)];
 }
 
-// Example usage
-const unsortedArray = [3, 0, 2, 5, -1, 4, 1];
-const sortedArray = quickSort(unsortedArray);
-console.log(sortedArray); // Output: [-1, 0, 1, 2, 3, 4, 5]
+// Function to calculate the height of a binary tree
+function getHeight(node) {
+    if (node === null) {
+        return 0;
+    }
+    
+    // Recursively calculate the height of the left and right subtrees
+    const leftHeight = getHeight(node.left);
+    const rightHeight = getHeight(node.right);
+    
+    // Return the maximum height plus one
+    return Math.max(leftHeight, rightHeight) + 1;
+}
+
+// Function to calculate the diameter of a binary tree
+function getDiameter(node) {
+    if (node === null) {
+        return 0;
+    }
+    
+    // Calculate the height of the left and right subtrees
+    const leftHeight = getHeight(node.left);
+    const rightHeight = getHeight(node.right);
+    
+    // Calculate the diameter passing through the current node
+    const throughRoot = leftHeight + rightHeight + 1;
+    
+    // Calculate the diameter not passing through the current node recursively
+    const leftDiameter = getDiameter(node.left);
+    const rightDiameter = getDiameter(node.right);
+    
+    // Return the maximum of the three diameters
+    return Math.max(throughRoot, leftDiameter, rightDiameter);
+}
+
+// Example binary tree
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+// Calculate and output the diameter of the binary tree
+console.log(getDiameter(root)); // Output: 4
