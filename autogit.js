@@ -1,23 +1,21 @@
-function firstNonRepeatingChar(str) {
-    // Create a map to store the frequency of each character
-    const charCount = new Map();
+function isAnagram(str1, str2) {
+    // Remove all non-alphabetic characters and convert the strings to lowercase
+    const cleanStr1 = str1.replace(/[^\w]/g, '').toLowerCase();
+    const cleanStr2 = str2.replace(/[^\w]/g, '').toLowerCase();
 
-    // Iterate through the string to count the frequency of each character
-    for (let char of str) {
-        charCount.set(char, (charCount.get(char) || 0) + 1);
+    // Check if the lengths of the strings are the same
+    if (cleanStr1.length !== cleanStr2.length) {
+        return false;
     }
 
-    // Find the first non-repeating character in the string
-    for (let char of str) {
-        if (charCount.get(char) === 1) {
-            return char;
-        }
-    }
+    // Sort the characters in the strings and compare them
+    const sortedStr1 = cleanStr1.split('').sort().join('');
+    const sortedStr2 = cleanStr2.split('').sort().join('');
 
-    return null; // Return null if there are no non-repeating characters
+    return sortedStr1 === sortedStr2;
 }
 
 // Test the function
-const str = "hello";
-const result = firstNonRepeatingChar(str);
-console.log(result); // Output: "h"
+const string1 = 'listen';
+const string2 = 'silent';
+console.log(isAnagram(string1, string2)); // Output: true
