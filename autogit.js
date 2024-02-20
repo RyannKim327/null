@@ -1,19 +1,15 @@
-function isPrime(num) {
-    if(num <= 1) {
-        return false;
+function maxSubarraySum(arr) {
+    let maxEndingHere = arr[0];
+    let maxSoFar = arr[0];
+
+    for (let i = 1; i < arr.length; i++) {
+        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
+        maxSoFar = Math.max(maxSoFar, maxEndingHere);
     }
-    for(let i = 2; i < num; i++) {
-        if(num % i === 0) {
-            return false;
-        }
-    }
-    return true;
+
+    return maxSoFar;
 }
 
-// Example usage
-const number = 17;
-if(isPrime(number)) {
-    console.log(`${number} is a prime number`);
-} else {
-    console.log(`${number} is not a prime number`);
-}
+// Test the function
+const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+console.log(maxSubarraySum(arr)); // Output: 6
