@@ -1,11 +1,12 @@
-function validateEmail(email) {
-    const emailRegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailRegExp.test(email);
+function findStringLength(str) {
+    let count = 0;
+    for (let char of str) {
+        count++;
+    }
+    return count;
 }
 
-const email = "example@email.com";
-if (validateEmail(email)) {
-    console.log("Valid email address");
-} else {
-    console.log("Invalid email address");
-}
+let inputString = "Hello, World!";
+let length = findStringLength(inputString);
+
+console.log("Length of the string is: " + length);
