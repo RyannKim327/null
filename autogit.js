@@ -1,40 +1,59 @@
-function heapSort(arr) {
-    function heapify(arr, n, i) {
-        let largest = i;
-        let left = 2 * i + 1;
-        let right = 2 * i + 2;
-        
-        if (left < n && arr[left] > arr[largest]) {
-            largest = left;
+function tarjanStronglyConnectedComponents(graph) {
+    let index = 0;
+    let stack = [];
+    let indices = {};
+    let lowLink = {};
+    let onStack = {};
+    let result = [];
+
+    function strongConnect(node) {
+        indices[node] = index;
+        lowLink[node] = index;
+        index++;
+        stack.push(node);
+        onStack[node] = true;
+
+        for (let neighbor of graph[node]) {
+            if (indices[neighbor] === undefined) {
+                strongConnect(neighbor);
+                lowLink[node] = Math.min(lowLink[node], lowLink[neighbor]);
+            } else if (onStack[neighbor]) {
+                lowLink[node] = Math.min(lowLink[node], indices[neighbor]);
+            }
         }
-        
-        if (right < n && arr[right] > arr[largest]) {
-            largest = right;
-        }
-        
-        if (largest !== i) {
-            [arr[i], arr[largest]] = [arr[largest], arr[i]];
-            heapify(arr, n, largest);
+
+        if (lowLink[node] === indices[node]) {
+            let component = [];
+            let nextNode;
+            do {
+                nextNode = stack.pop();
+                onStack[nextNode] = false;
+                component.push(nextNode);
+            } while (nextNode !== node);
+            result.push(component);
         }
     }
-    
-    function buildMaxHeap(arr) {
-        for (let i = Math.floor(arr.length / 2) - 1; i >= 0; i--) {
-            heapify(arr, arr.length, i);
+
+    for (let node in graph) {
+        if (indices[node] === undefined) {
+            strongConnect(node);
         }
     }
-    
-    buildMaxHeap(arr);
-    
-    for (let i = arr.length - 1; i > 0; i--) {
-        [arr[0], arr[i]] = [arr[i], arr[0]];
-        heapify(arr, i, 0);
-    }
-    
-    return arr;
+
+    return result;
 }
 
 // Example usage
-const arr = [12, 11, 13, 5, 6, 7];
-const sortedArr = heapSort(arr);
-console.log(sortedArr);
+const graph = {
+    0: [1],
+    1: [2],
+    2: [0, 3],
+    3: [4],
+    4: [5, 6],
+    5: [4],
+    6: [7],
+    7: [6]
+};
+
+const scc = tarjanStronglyConnectedComponents(graph);
+console.log(scc);
