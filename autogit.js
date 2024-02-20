@@ -1,8 +1,6 @@
-// Using parseInt()
-let stringNumber = "42";
-let intNumber = parseInt(stringNumber);
-console.log(intNumber); // Output: 42
-
-// Using Number()
-let intNumber2 = Number(stringNumber);
-console.log(intNumber2); // Output: 42
+let arr = [1, 2, 2, 3, 4, 4, 5];
+let uniqueArray = Array.from(new Set(arr));
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+let arr = [1, 2, 2, 3, 4, 4, 5];
+let uniqueArray = arr.filter((value, index, self) => self.indexOf(value) === index);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
