@@ -1,24 +1,50 @@
-function firstNonRepeatingCharacter(str) {
-    let charCount = {};
-
-    // Count the occurrences of each character in the string
-    for (let i = 0; i < str.length; i++) {
-        let char = str[i];
-        charCount[char] = (charCount[char] || 0) + 1;
+function fibonacciSearch(arr, x) {
+    let fib1 = 0;
+    let fib2 = 1;
+    let fibM = fib1 + fib2;
+    
+    let n = arr.length;
+    
+    while (fibM < n) {
+        fib2 = fib1;
+        fib1 = fibM;
+        fibM = fib1 + fib2;
     }
-
-    // Find the first non-repeating character
-    for (let i = 0; i < str.length; i++) {
-        let char = str[i];
-        if (charCount[char] === 1) {
-            return char;
+    
+    let offset = -1;
+    
+    while (fibM > 1) {
+        let i = Math.min(offset + fib2, n - 1);
+        
+        if (arr[i] < x) {
+            fibM = fib1;
+            fib1 = fib2;
+            fib2 = fibM - fib1;
+            offset = i;
+        } else if (arr[i] > x) {
+            fibM = fib2;
+            fib1 = fib1 - fib2;
+            fib2 = fibM - fib1;
+        } else {
+            return i;
         }
     }
-
-    return null; // Return null if no non-repeating character is found
+    
+    if (fib1 && arr[offset + 1] == x) {
+        return offset + 1;
+    }
+    
+    return -1;
 }
 
-// Test the function
-const str = "hello world";
-const firstNonRepeatingChar = firstNonRepeatingCharacter(str);
-console.log(firstNonRepeatingChar);
+// Example Usage
+let arr = [2, 4, 6, 8, 10, 12, 14, 16];
+let x = 10;
+
+let index = fibonacciSearch(arr, x);
+
+if (index != -1) {
+    console.log(`${x} found at index ${index}`);
+} else {
+    console.log(`${x} not found in the array`);
+}
