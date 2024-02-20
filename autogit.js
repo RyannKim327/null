@@ -1,32 +1,37 @@
 class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+    constructor(value) {
+        this.value = value;
+        this.next = null;
+    }
 }
 
-function countLeafNodes(root) {
-  if (root === null) {
-    return 0;
-  }
+function hasCycle(head) {
+    if (!head || !head.next) {
+        return false;
+    }
 
-  if (root.left === null && root.right === null) {
-    return 1;
-  }
+    let slow = head;
+    let fast = head.next;
 
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
+    while (fast && fast.next) {
+        if (slow === fast) {
+            return true;
+        }
+
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+
+    return false;
 }
 
-// Example:
-// Construct a binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
+// Example usage
+const node1 = new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
 
-const leafNodeCount = countLeafNodes(root);
-console.log('Number of leaf nodes:', leafNodeCount);
+node1.next = node2;
+node2.next = node3;
+node3.next = node1; // Adding cycle
+
+console.log(hasCycle(node1)); // Output: true
