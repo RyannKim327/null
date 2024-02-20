@@ -1,15 +1,48 @@
-function isSortedAscending(arr) {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false;
-        }
+class Graph {
+  constructor() {
+    this.graph = {};
+  }
+
+  addNode(node) {
+    if (!this.graph[node]) {
+      this.graph[node] = [];
     }
-    return true;
+  }
+
+  addEdge(node1, node2) {
+    this.addNode(node1);
+    this.addNode(node2);
+    this.graph[node1].push(node2);
+  }
+
+  dfs(startNode) {
+    let visited = {};
+    let result = [];
+
+    const dfsUtil = (node) => {
+      visited[node] = true;
+      result.push(node);
+
+      this.graph[node].forEach((neighbor) => {
+        if (!visited[neighbor]) {
+          dfsUtil(neighbor);
+        }
+      });
+    };
+
+    dfsUtil(startNode);
+
+    return result;
+  }
 }
 
-// Test the function
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [5, 4, 3, 2, 1];
+// Example usage
+const graph = new Graph();
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('B', 'E');
+graph.addEdge('C', 'F');
+graph.addEdge('C', 'G');
 
-console.log(isSortedAscending(array1)); // true
-console.log(isSortedAscending(array2)); // false
+console.log(graph.dfs('A'));
