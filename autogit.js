@@ -1,51 +1,17 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.children = [];
-    }
-}
+function findFirstRepeatedCharacter(str) {
+    let charSet = new Set();
 
-function bidirectionalSearch(startNode, endNode) {
-    let visitedFromStart = new Set();
-    let visitedFromEnd = new Set();
-    let queueStart = [startNode];
-    let queueEnd = [endNode];
-
-    while (queueStart.length > 0 && queueEnd.length > 0) {
-        let currentStart = queueStart.shift();
-        let currentEnd = queueEnd.shift();
-
-        if (visitedFromStart.has(currentStart.value) || visitedFromEnd.has(currentEnd.value)) {
-            // If nodes meet at some point, return true
-            return true;
+    for (let char of str) {
+        if (charSet.has(char)) {
+            return char;
         }
-
-        visitedFromStart.add(currentStart.value);
-        visitedFromEnd.add(currentEnd.value);
-
-        for (let child of currentStart.children) {
-            if (!visitedFromStart.has(child.value)) {
-                queueStart.push(child);
-            }
-        }
-
-        for (let child of currentEnd.children) {
-            if (!visitedFromEnd.has(child.value)) {
-                queueEnd.push(child);
-            }
-        }
+        charSet.add(char);
     }
 
-    // If nodes do not meet, return false
-    return false;
+    return "No repeated character found.";
 }
 
-// Usage example
-const node1 = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
+let inputString = "hello";
+let repeatedCharacter = findFirstRepeatedCharacter(inputString);
 
-node1.children = [node2];
-node2.children = [node3];
-
-console.log(bidirectionalSearch(node1, node3)); // Output: true
+console.log("The first repeated character is: ", repeatedCharacter);
