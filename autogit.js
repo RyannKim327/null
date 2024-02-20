@@ -1,4 +1,9 @@
-let str = "Hello, World!";
-let newStr = str.replace(/\s/g, '');
+function reverseString(str) {
+    return str.split('').reverse().join('');
+}
 
-console.log(newStr); // Output: Hello,World!
+// Example usage
+const originalString = "Hello, world!";
+const reversedString = reverseString(originalString);
+
+console.log(reversedString);  // Output: "!dlrow ,olleH"
