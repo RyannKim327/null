@@ -1,29 +1,19 @@
-function interpolationSearch(arr, x) {
-    let low = 0;
-    let high = arr.length - 1;
+function isAnagram(str1, str2) {
+    // Normalize the strings
+    const normalizeString = str => str.replace(/[^a-z0-9]/gi, '').toLowerCase();
 
-    while (low <= high && x >= arr[low] && x <= arr[high]) {
-        let pos = low + Math.floor(((x - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+    const normalizedStr1 = normalizeString(str1);
+    const normalizedStr2 = normalizeString(str2);
 
-        if (arr[pos] === x) {
-            return pos;
-        } else if (arr[pos] < x) {
-            low = pos + 1;
-        } else {
-            high = pos - 1;
-        }
-    }
-    
-    return -1;
+    // Convert strings to arrays, sort them and join back to string
+    const sortedStr1 = normalizedStr1.split('').sort().join('');
+    const sortedStr2 = normalizedStr2.split('').sort().join('');
+
+    // Check if the sorted strings are equal
+    return sortedStr1 === sortedStr2;
 }
 
-// Example
-const arr = [1, 3, 5, 7, 9, 11, 13, 15];
-const x = 9;
-const result = interpolationSearch(arr, x);
-
-if (result !== -1) {
-    console.log(`Element ${x} found at index ${result}`);
-} else {
-    console.log(`Element ${x} not found in the array`);
-}
+// Test the function
+const string1 = "Listen";
+const string2 = "Silent";
+console.log(isAnagram(string1, string2)); // Output: true
