@@ -1,4 +1,11 @@
-let array = [1, 2, 3, 4, 5];
-array.reverse();
+function getStringLength(str) {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        count++;
+    }
+    return count;
+}
 
-console.log(array); // Output: [5, 4, 3, 2, 1]
+let myString = "Hello, World!";
+let length = getStringLength(myString);
+console.log(length); // Output: 13
