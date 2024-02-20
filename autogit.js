@@ -1,15 +1,4 @@
-function maxSubArray(arr) {
-    let maxEndingHere = arr[0];
-    let maxSoFar = arr[0];
+let originalArray = [1, 2, 3, 4, 5];
+let reversedArray = originalArray.reverse();
 
-    for (let i = 1; i < arr.length; i++) {
-        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
-        maxSoFar = Math.max(maxSoFar, maxEndingHere);
-    }
-
-    return maxSoFar;
-}
-
-const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4]; // Example input array
-const maxSum = maxSubArray(arr);
-console.log("Maximum sum subarray:", maxSum);
+console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
