@@ -1,9 +1,5 @@
-function findSecondLargest(arr) {
-    arr.sort(function(a, b){return b - a});
-    return arr[1];
-}
+// Take user input
+let userInput = prompt("Enter something:");
 
-const arr = [5, 2, 8, 10, 3];
-const secondLargest = findSecondLargest(arr);
-
-console.log(secondLargest); // Output: 8
+// Display input back to the user
+console.log("You entered: " + userInput);
