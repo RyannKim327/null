@@ -1,40 +1,38 @@
-function beamSearch(startNode, beamWidth, maxDepth) {
+function rabinKarp(text, pattern) {
+    const prime = 101; // Prime number to avoid hash collisions
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    const patternHash = hash(pattern, patternLength);
+    let textHash = hash(text, patternLength);
 
-    let candidates = [{ node: startNode, score: 0 }];
-    
-    for (let depth = 0; depth < maxDepth; depth++) {
-        let newCandidates = [];
-        
-        for (let candidate of candidates) {
-            for (let childNode of expandNode(candidate.node)) {
-                let score = evaluateNode(childNode);
-                newCandidates.push({ node: childNode, score: candidate.score + score });
-            }
+    for (let i = 0; i <= textLength - patternLength; i++) {
+        if (patternHash === textHash && text.slice(i, i + patternLength) === pattern) {
+            return i; // Pattern found at index i
         }
-        
-        newCandidates.sort((a, b) => b.score - a.score);
-        candidates = newCandidates.slice(0, beamWidth); // Keep only top beamWidth candidates
+        if (i < textLength - patternLength) {
+            textHash = recalculateHash(text, i, i + patternLength, textHash, patternLength, prime);
+        }
     }
-    
-    return candidates;
+
+    return -1; // Pattern not found
 }
 
-function expandNode(node) {
-    // Expand a given node and return child nodes
-    // Example implementation
-    return [];
+function hash(str, length) {
+    let hashValue = 0;
+    for (let i = 0; i < length; i++) {
+        hashValue += str.charCodeAt(i) * (Math.pow(101, length - i - 1));
+    }
+    return hashValue;
 }
 
-function evaluateNode(node) {
-    // Evaluate a given node and return a score
-    // Example implementation
-    return 0;
+function recalculateHash(str, oldIndex, newIndex, oldHash, patternLength, prime) {
+    let newHash = oldHash - str.charCodeAt(oldIndex);
+    newHash = newHash / prime;
+    newHash += str.charCodeAt(newIndex) * Math.pow(101, patternLength - 1);
+    return newHash;
 }
 
-// Usage
-let startNode = {}; // Start with an initial node
-let beamWidth = 5;
-let maxDepth = 3;
-
-let result = beamSearch(startNode, beamWidth, maxDepth);
-console.log(result);
+// Test
+const text = "ABCCDDAEFG";
+const pattern = "CDD";
+console.log(rabinKarp(text, pattern)); // Output: 3
