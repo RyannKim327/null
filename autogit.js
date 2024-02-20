@@ -1,52 +1,23 @@
-class BinaryHeap {
-    constructor() {
-        this.heap = [];
+function firstNonRepeatingChar(str) {
+    // Create a map to store the frequency of each character
+    const charCount = new Map();
+
+    // Iterate through the string to count the frequency of each character
+    for (let char of str) {
+        charCount.set(char, (charCount.get(char) || 0) + 1);
     }
 
-    insert(value, priority) {
-        const node = { value, priority };
-        this.heap.push(node);
-        this.bubbleUp(this.heap.length - 1);
-    }
-
-    bubbleUp(index) {
-        let parentIndex = Math.floor((index - 1) / 2);
-
-        while (index > 0 && this.heap[index].priority > this.heap[parentIndex].priority) {
-            [this.heap[index], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[index]];
-            index = parentIndex;
-            parentIndex = Math.floor((index - 1) / 2);
+    // Find the first non-repeating character in the string
+    for (let char of str) {
+        if (charCount.get(char) === 1) {
+            return char;
         }
     }
 
-    extractMax() {
-        const max = this.heap[0];
-        const lastNode = this.heap.pop();
-
-        if (this.heap.length > 0) {
-            this.heap[0] = lastNode;
-            this.sinkDown(0);
-        }
-
-        return max.value;
-    }
-
-    sinkDown(index) {
-        let left = 2 * index + 1;
-        let right = 2 * index + 2;
-        let largest = index;
-
-        if (left < this.heap.length && this.heap[left].priority > this.heap[largest].priority) {
-            largest = left;
-        }
-
-        if (right < this.heap.length && this.heap[right].priority > this.heap[largest].priority) {
-            largest = right;
-        }
-
-        if (largest !== index) {
-            [this.heap[index], this.heap[largest]] = [this.heap[largest], this.heap[index]];
-            this.sinkDown(largest);
-        }
-    }
+    return null; // Return null if there are no non-repeating characters
 }
+
+// Test the function
+const str = "hello";
+const result = firstNonRepeatingChar(str);
+console.log(result); // Output: "h"
