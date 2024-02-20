@@ -1,43 +1,65 @@
-function boyerMooreSearch(text, pattern) {
-    const textLength = text.length;
-    const patternLength = pattern.length;
+class PriorityQueue {
+  constructor() {
+    this.heap = [];
+  }
 
-    if (patternLength === 0) {
-        return 0;
+  insert(value, priority) {
+    const item = { value, priority };
+    this.heap.push(item);
+    this.bubbleUp(this.heap.length - 1);
+  }
+
+  extractMin() {
+    const min = this.heap[0];
+    const last = this.heap.pop();
+    if (this.heap.length > 0) {
+      this.heap[0] = last;
+      this.trickleDown(0);
     }
+    return min;
+  }
 
-    const badCharTable = {};
-    const lastIndex = patternLength - 1;
-
-    for (let i = 0; i < lastIndex; i++) {
-        badCharTable[pattern[i]] = lastIndex - i;
+  bubbleUp(index) {
+    while (index > 0) {
+      const parentIndex = Math.floor((index - 1) / 2);
+      if (this.heap[parentIndex].priority <= this.heap[index].priority) {
+        break;
+      }
+      [this.heap[parentIndex], this.heap[index]] = [this.heap[index], this.heap[parentIndex]];
+      index = parentIndex;
     }
+  }
 
-    let skip = 0;
+  trickleDown(index) {
+    while (index < this.heap.length) {
+      const leftChild = index * 2 + 1;
+      const rightChild = index * 2 + 2;
+      let smallest = index;
 
-    while (textLength - skip >= patternLength) {
-        let i = patternLength - 1;
+      if (leftChild < this.heap.length && this.heap[leftChild].priority < this.heap[smallest].priority) {
+        smallest = leftChild;
+      }
 
-        while (text[skip + i] === pattern[i]) {
-            if (i === 0) {
-                return skip;
-            }
-            i--;
-        }
+      if (rightChild < this.heap.length && this.heap[rightChild].priority < this.heap[smallest].priority) {
+        smallest = rightChild;
+      }
 
-        skip += badCharTable[text[skip + lastIndex]] || patternLength;
+      if (smallest === index) {
+        break;
+      }
+
+      [this.heap[index], this.heap[smallest]] = [this.heap[smallest], this.heap[index]];
+      index = smallest;
     }
-
-    return -1;
+  }
 }
 
-// Test the function
-const text = "AABAACAADAABAABA";
-const pattern = "AABA";
-const index = boyerMooreSearch(text, pattern);
+// Example Usage
+const pq = new PriorityQueue();
+pq.insert("Task 1", 3);
+pq.insert("Task 2", 1);
+pq.insert("Task 3", 2);
 
-if (index !== -1) {
-    console.log(`Pattern found at index ${index}`);
-} else {
-    console.log("Pattern not found");
-}
+console.log(pq.extractMin()); // { value: 'Task 2', priority: 1 }
+console.log(pq.extractMin()); // { value: 'Task 3', priority: 2 }
+console.log(pq.extractMin()); // { value: 'Task 1', priority: 3 }
