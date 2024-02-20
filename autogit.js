@@ -1,49 +1,48 @@
-// Function to get the maximum value in an array
-function getMax(arr) {
-    let max = arr[0];
-    for (let i = 1; i < arr.length; i++) {
-        if (arr[i] > max) {
-            max = arr[i];
-        }
-    }
-    return max;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-// Helper function to count sort based on a particular digit
-function countingSort(arr, exp) {
-    let output = new Array(arr.length);
-    let count = new Array(10).fill(0);
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
 
-    for (let i = 0; i < arr.length; i++) {
-        count[Math.floor(arr[i] / exp) % 10]++;
+  addNode(value) {
+    const newNode = new Node(value);
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
+
+  findMiddleElement() {
+    let slow = this.head;
+    let fast = this.head;
+
+    while (fast && fast.next) {
+      slow = slow.next;
+      fast = fast.next.next;
     }
 
-    for (let i = 1; i < 10; i++) {
-        count[i] += count[i - 1];
-    }
-
-    for (let i = arr.length - 1; i >= 0; i--) {
-        output[count[Math.floor(arr[i] / exp) % 10] - 1] = arr[i];
-        count[Math.floor(arr[i] / exp) % 10]--;
-    }
-
-    for (let i = 0; i < arr.length; i++) {
-        arr[i] = output[i];
-    }
+    return slow.value;
+  }
 }
 
-// Radix Sort function
-function radixSort(arr) {
-    let max = getMax(arr);
+// Create a linked list
+const linkedList = new LinkedList();
+linkedList.addNode(1);
+linkedList.addNode(2);
+linkedList.addNode(3);
+linkedList.addNode(4);
+linkedList.addNode(5);
 
-    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
-        countingSort(arr, exp);
-    }
-
-    return arr;
-}
-
-// Example usage
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log('Unsorted array:', arr);
-console.log('Sorted array:', radixSort(arr));
+const middleElement = linkedList.findMiddleElement();
+console.log("Middle Element:", middleElement);
