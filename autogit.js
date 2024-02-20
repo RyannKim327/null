@@ -1,52 +1,22 @@
-class Node {
-    constructor() {
-        this.children = {};
-        this.isEndOfWord = false;
-    }
+function areAnagrams(str1, str2) {
+    // Remove special characters and spaces, and convert to lowercase
+    str1 = str1.replace(/[^\w]/g, '').toLowerCase();
+    str2 = str2.replace(/[^\w]/g, '').toLowerCase();
+
+    // Sort the characters of both strings
+    const sortedStr1 = str1.split('').sort().join('');
+    const sortedStr2 = str2.split('').sort().join('');
+
+    // Compare the sorted strings
+    return sortedStr1 === sortedStr2;
 }
 
-class Trie {
-    constructor() {
-        this.root = new Node();
-    }
+// Test the function
+const string1 = 'listen';
+const string2 = 'silent';
 
-    insert(word) {
-        let current = this.root;
-        for (let char of word) {
-            if (!current.children[char]) {
-                current.children[char] = new Node();
-            }
-            current = current.children[char];
-        }
-        current.isEndOfWord = true;
-    }
-
-    search(word) {
-        let current = this.root;
-        for (let char of word) {
-            if (!current.children[char]) {
-                return false;
-            }
-            current = current.children[char];
-        }
-        return current.isEndOfWord;
-    }
-
-    startsWith(prefix) {
-        let current = this.root;
-        for (let char of prefix) {
-            if (!current.children[char]) {
-                return false;
-            }
-            current = current.children[char];
-        }
-        return true;
-    }
+if (areAnagrams(string1, string2)) {
+    console.log(`${string1} and ${string2} are anagrams.`);
+} else {
+    console.log(`${string1} and ${string2} are not anagrams.`);
 }
-
-// Usage
-const trie = new Trie();
-trie.insert("apple");
-console.log(trie.search("apple")); // Output: true
-console.log(trie.search("app")); // Output: false
-console.log(trie.startsWith("app")); // Output: true
