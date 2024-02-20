@@ -1,66 +1,29 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
-    }
-}
+function interpolationSearch(arr, x) {
+    let low = 0;
+    let high = arr.length - 1;
 
-class Queue {
-    constructor() {
-        this.front = null;
-        this.back = null;
-        this.size = 0;
-    }
+    while (low <= high && x >= arr[low] && x <= arr[high]) {
+        let pos = low + Math.floor(((x - arr[low]) * (high - low)) / (arr[high] - arr[low]));
 
-    enqueue(data) {
-        const node = new Node(data);
-        if (!this.front) {
-            this.front = node;
-            this.back = node;
+        if (arr[pos] === x) {
+            return pos;
+        } else if (arr[pos] < x) {
+            low = pos + 1;
         } else {
-            this.back.next = node;
-            this.back = node;
+            high = pos - 1;
         }
-        this.size++;
     }
-
-    dequeue() {
-        if (!this.front) {
-            return null;
-        }
-
-        const data = this.front.data;
-        this.front = this.front.next;
-        this.size--;
-
-        if (!this.front) {
-            this.back = null;
-        }
-
-        return data;
-    }
-
-    peek() {
-        if (!this.front) {
-            return null;
-        }
-        return this.front.data;
-    }
-
-    isEmpty() {
-        return this.size === 0;
-    }
+    
+    return -1;
 }
 
-// Example usage
-const queue = new Queue();
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
+// Example
+const arr = [1, 3, 5, 7, 9, 11, 13, 15];
+const x = 9;
+const result = interpolationSearch(arr, x);
 
-console.log(queue.peek()); // Output: 1
-
-console.log(queue.dequeue()); // Output: 1
-console.log(queue.dequeue()); // Output: 2
-
-console.log(queue.isEmpty()); // Output: false
+if (result !== -1) {
+    console.log(`Element ${x} found at index ${result}`);
+} else {
+    console.log(`Element ${x} not found in the array`);
+}
