@@ -1,52 +1,25 @@
-function rabinKarp(text, pattern) {
-    const d = 256; // Number of characters in the input alphabet
-    const q = 101; // A prime number
+function isPalindrome(str) {
+    for (let i = 0, j = str.length - 1; i < j; i++, j--) {
+        // Ignore non-alphanumeric characters
+        while (!isAlphaNumeric(str[i])) i++;
+        while (!isAlphaNumeric(str[j])) j--;
 
-    const M = pattern.length;
-    const N = text.length;
-    let i, j;
-    let pHash = 0; // Hash value for pattern
-    let tHash = 0; // Hash value for text
-    let h = 1;
+        // Convert characters to lowercase for comparison
+        let char1 = str[i].toLowerCase();
+        let char2 = str[j].toLowerCase();
 
-    // The value of h would be "pow(d, M-1) % q"
-    for (i = 0; i < M - 1; i++) {
-        h = (h * d) % q;
-    }
-
-    // Calculate the hash value of pattern and the first window of text
-    for (i = 0; i < M; i++) {
-        pHash = (d * pHash + pattern.charCodeAt(i)) % q;
-        tHash = (d * tHash + text.charCodeAt(i)) % q;
-    }
-
-    // Slide the pattern over text
-    for (i = 0; i <= N - M; i++) {
-        // Check hash values of current window of text and pattern
-        if (pHash === tHash) {
-            // If the hash values match, check each character
-            for (j = 0; j < M; j++) {
-                if (text[i + j] !== pattern[j])
-                    break;
-            }
-            if (j === M) {
-                console.log(`Pattern found at index ${i}`);
-            }
-        }
-
-        // Calculate hash value for next window of text
-        if (i < N - M) {
-            tHash = (d * (tHash - text.charCodeAt(i) * h) + text.charCodeAt(i + M)) % q;
-
-            // Make sure the hash value is positive
-            if (tHash < 0) {
-                tHash = (tHash + q);
-            }
+        // If characters don't match, return false
+        if (char1 !== char2) {
+            return false;
         }
     }
+    return true;
 }
 
-// Test the algorithm
-const text = "ABCCDDAEFG";
-const pattern = "CDD";
-rabinKarp(text, pattern);
+function isAlphaNumeric(char) {
+    return /[a-zA-Z0-9]/.test(char);
+}
+
+// Test cases
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // Output: true
+console.log(isPalindrome("race a car")); // Output: false
