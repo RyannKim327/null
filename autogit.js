@@ -1,31 +1,36 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+function isPrime(num) {
+    if (num <= 1) return false;
+    if (num <= 3) return true;
+
+    if (num % 2 === 0 || num % 3 === 0) return false;
+
+    let i = 5;
+    while (i * i <= num) {
+        if (num % i === 0 || num % (i + 2) === 0) return false;
+        i += 6;
+    }
+
+    return true;
 }
 
-function countLeafNodes(root) {
-  if (root === null) {
-    return 0;
-  }
-  
-  if (root.left === null && root.right === null) {
-    return 1;
-  }
-  
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
+function largestPrimeFactor(number) {
+    let factor = 2;
+    let largestPrime = 0;
+
+    while (number > 1) {
+        if (number % factor === 0) {
+            number /= factor;
+            if (isPrime(factor)) {
+                largestPrime = factor;
+            }
+        } else {
+            factor++;
+        }
+    }
+
+    return largestPrime;
 }
 
-// Example usage:
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
-
-const numberOfLeafNodes = countLeafNodes(root);
-console.log(numberOfLeafNodes); // Output: 4
+const number = 13195; // Input number
+const result = largestPrimeFactor(number);
+console.log(`The largest prime factor of ${number} is: ${result}`);
