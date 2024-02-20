@@ -1,46 +1,42 @@
-// Generate a Fibonacci series up to n
-function generateFibonacci(n) {
-    let fib = [0, 1];
-    while (fib[fib.length - 1] < n) {
-        fib.push(fib[fib.length - 1] + fib[fib.length - 2]);
-    }
-    return fib;
+function Node(data) {
+  this.data = data;
+  this.children = [];
 }
 
-// Fibonacci search function
-function fibonacciSearch(arr, key) {
-    let fib = generateFibonacci(arr.length);
+function breadthLimitedSearch(root, target, limit) {
+  let queue = [{ node: root, depth: 0 }];
 
-    let offset = 0;
-    let fbIndex = fib.length - 1;
+  while (queue.length > 0) {
+    let current = queue.shift();
+    let currentNode = current.node;
+    let currentDepth = current.depth;
 
-    while (fbIndex > 1) {
-        let i = Math.min(offset + fib[fbIndex - 2], arr.length - 1);
-
-        if (arr[i] < key) {
-            fbIndex -= 1;
-            offset = i;
-        } else if (arr[i] > key) {
-            fbIndex -= 2;
-        } else {
-            return i;
-        }
+    if (currentNode.data === target) {
+      return currentNode;
     }
 
-    if (arr[offset + 1] == key) {
-        return offset + 1;
+    if (currentDepth < limit) {
+      queue.push(...currentNode.children.map(child => ({ node: child, depth: currentDepth + 1 })));
     }
+  }
 
-    return -1;
+  return null;
 }
 
 // Example usage
-const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17];
-const key = 13;
-const index = fibonacciSearch(arr, key);
+let root = new Node(1);
+let node2 = new Node(2);
+let node3 = new Node(3);
+let node4 = new Node(4);
+let node5 = new Node(5);
 
-if (index !== -1) {
-    console.log(`Element found at index ${index}`);
+root.children.push(node2, node3);
+node2.children.push(node4, node5);
+
+let targetNode = breadthLimitedSearch(root, 5, 2);
+
+if (targetNode) {
+  console.log(`Node found: ${targetNode.data}`);
 } else {
-    console.log("Element not found");
+  console.log('Node not found');
 }
