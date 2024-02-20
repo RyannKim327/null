@@ -1,42 +1,36 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
-    }
-}
+function longestCommonSubsequence(str1, str2) {
+    // create a 2D array to store the lengths of common subsequences
+    const dp = Array(str1.length + 1).fill(null).map(() => Array(str2.length + 1).fill(0));
 
-function findNthFromEnd(head, n) {
-    let firstPointer = head;
-    let secondPointer = head;
-
-    // Move firstPointer forward by n nodes
-    for (let i = 1; i <= n; i++) {
-        if (firstPointer === null) {
-            return null; // Out of bounds
+    // fill the dp array
+    for (let i = 1; i <= str1.length; i++) {
+        for (let j = 1; j <= str2.length; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
         }
-        firstPointer = firstPointer.next;
     }
 
-    // Move both pointers together until firstPointer reaches the end
-    while (firstPointer !== null) {
-        firstPointer = firstPointer.next;
-        secondPointer = secondPointer.next;
+    // construct the longest common subsequence
+    let i = str1.length, j = str2.length;
+    let lcs = '';
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            lcs = str1[i - 1] + lcs;
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
+        }
     }
 
-    return secondPointer;
+    return lcs;
 }
 
-// Example usage
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-let n = 2;
-let result = findNthFromEnd(head, n);
-if (result !== null) {
-    console.log(`The ${n}th node from the end is: ${result.value}`);
-} else {
-    console.log(`Invalid input or out of bounds.`);
-}
+const str1 = 'ABCBDAB';
+const str2 = 'BDCAB';
+console.log(longestCommonSubsequence(str1, str2)); // Output: BCAB
