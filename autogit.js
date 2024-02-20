@@ -1,38 +1,27 @@
-function rabinKarp(text, pattern) {
-    const prime = 101; // Prime number to avoid hash collisions
-    const patternLength = pattern.length;
-    const textLength = text.length;
-    const patternHash = hash(pattern, patternLength);
-    let textHash = hash(text, patternLength);
-
-    for (let i = 0; i <= textLength - patternLength; i++) {
-        if (patternHash === textHash && text.slice(i, i + patternLength) === pattern) {
-            return i; // Pattern found at index i
-        }
-        if (i < textLength - patternLength) {
-            textHash = recalculateHash(text, i, i + patternLength, textHash, patternLength, prime);
-        }
-    }
-
-    return -1; // Pattern not found
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
+function findMiddleElement(head) {
+  let slowPointer = head;
+  let fastPointer = head;
 
-function hash(str, length) {
-    let hashValue = 0;
-    for (let i = 0; i < length; i++) {
-        hashValue += str.charCodeAt(i) * (Math.pow(101, length - i - 1));
-    }
-    return hashValue;
+  while (fastPointer !== null && fastPointer.next !== null) {
+    slowPointer = slowPointer.next;
+    fastPointer = fastPointer.next.next;
+  }
+
+  return slowPointer.value;
 }
+// Create linked list nodes
+let head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
 
-function recalculateHash(str, oldIndex, newIndex, oldHash, patternLength, prime) {
-    let newHash = oldHash - str.charCodeAt(oldIndex);
-    newHash = newHash / prime;
-    newHash += str.charCodeAt(newIndex) * Math.pow(101, patternLength - 1);
-    return newHash;
-}
-
-// Test
-const text = "ABCCDDAEFG";
-const pattern = "CDD";
-console.log(rabinKarp(text, pattern)); // Output: 3
+// Find middle element
+const middleElement = findMiddleElement(head);
+console.log(middleElement); // Output: 3
