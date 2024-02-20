@@ -1,67 +1,20 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-class BinarySearchTree {
-    constructor() {
-        this.root = null;
-    }
-
-    insert(value) {
-        const newNode = new Node(value);
-
-        if(this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    insertNode(node, newNode) {
-        if(newNode.value < node.value) {
-            if(node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if(node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
+function bubbleSort(arr) {
+    let len = arr.length;
+    for (let i = 0; i < len; i++) {
+        for (let j = 0; j < len - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap the elements
+                let temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
             }
         }
     }
-
-    search(value) {
-        return this.searchNode(this.root, value);
-    }
-
-    searchNode(node, value) {
-        if(node === null) {
-            return false;
-        }
-
-        if(value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if(value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true;
-        }
-    }
+    return arr;
 }
 
-// Example usage
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(20);
-bst.insert(3);
-
-console.log(bst.search(5)); // Output: true
-console.log(bst.search(8)); // Output: false
+// Test the bubbleSort function
+let arr = [64, 34, 25, 12, 22, 11, 90];
+console.log("Original array: " + arr);
+let sortedArr = bubbleSort(arr);
+console.log("Sorted array: " + sortedArr);
