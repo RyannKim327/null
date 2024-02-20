@@ -1,18 +1,36 @@
-function bubbleSort(arr) {
-    let len = arr.length;
-    for (let i = 0; i < len; i++) {
-        for (let j = 0; j < len - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                let temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
-        }
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.children = [];
     }
-    return arr;
 }
 
-// Example usage
-let unsortedArray = [5, 3, 8, 2, 1, 4];
-let sortedArray = bubbleSort(unsortedArray);
-console.log(sortedArray);
+function breadthFirstSearch(root) {
+    let queue = [root];
+    let result = [];
+
+    while (queue.length > 0) {
+        let currentNode = queue.shift();
+        result.push(currentNode.value);
+
+        for (let child of currentNode.children) {
+            queue.push(child);
+        }
+    }
+
+    return result;
+}
+
+// Example usage:
+const node1 = new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
+const node4 = new Node(4);
+const node5 = new Node(5);
+
+node1.children.push(node2, node3);
+node2.children.push(node4, node5);
+
+const rootNode = node1;
+
+console.log(breadthFirstSearch(rootNode)); // Output: [1, 2, 3, 4, 5]
