@@ -1,16 +1,19 @@
-let str = "Hello, World!";
-let substr = "Hello";
-
-if (str.includes(substr)) {
-    console.log("String contains the substring");
-} else {
-    console.log("String does not contain the substring");
+class Node {
+    constructor(label) {
+        this.label = label;
+        this.children = {};
+    }
 }
-let str = "Hello, World!";
-let substr = "Hello";
+class SuffixTree {
+    constructor() {
+        this.root = new Node('');
+    }
 
-if (str.indexOf(substr) !== -1) {
-    console.log("String contains the substring");
-} else {
-    console.log("String does not contain the substring");
+    insert(str) {
+        // Insert logic here
+    }
+
+    search(subStr) {
+        // Search logic here
+    }
 }
