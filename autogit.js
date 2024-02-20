@@ -1,59 +1,31 @@
-function tarjanStronglyConnectedComponents(graph) {
-    let index = 0;
-    let stack = [];
-    let indices = {};
-    let lowLink = {};
-    let onStack = {};
-    let result = [];
-
-    function strongConnect(node) {
-        indices[node] = index;
-        lowLink[node] = index;
-        index++;
-        stack.push(node);
-        onStack[node] = true;
-
-        for (let neighbor of graph[node]) {
-            if (indices[neighbor] === undefined) {
-                strongConnect(neighbor);
-                lowLink[node] = Math.min(lowLink[node], lowLink[neighbor]);
-            } else if (onStack[neighbor]) {
-                lowLink[node] = Math.min(lowLink[node], indices[neighbor]);
-            }
-        }
-
-        if (lowLink[node] === indices[node]) {
-            let component = [];
-            let nextNode;
-            do {
-                nextNode = stack.pop();
-                onStack[nextNode] = false;
-                component.push(nextNode);
-            } while (nextNode !== node);
-            result.push(component);
-        }
-    }
-
-    for (let node in graph) {
-        if (indices[node] === undefined) {
-            strongConnect(node);
-        }
-    }
-
-    return result;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-// Example usage
-const graph = {
-    0: [1],
-    1: [2],
-    2: [0, 3],
-    3: [4],
-    4: [5, 6],
-    5: [4],
-    6: [7],
-    7: [6]
-};
+function countLeafNodes(root) {
+  if (root === null) {
+    return 0;
+  }
+  
+  if (root.left === null && root.right === null) {
+    return 1;
+  }
+  
+  return countLeafNodes(root.left) + countLeafNodes(root.right);
+}
 
-const scc = tarjanStronglyConnectedComponents(graph);
-console.log(scc);
+// Example usage:
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
+
+const numberOfLeafNodes = countLeafNodes(root);
+console.log(numberOfLeafNodes); // Output: 4
