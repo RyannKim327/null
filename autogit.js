@@ -1,24 +1,17 @@
-function shellSort(arr) {
-    let len = arr.length;
-    let gap = Math.floor(len/2);
+function isPalindrome(str) {
+    // Remove special characters and spaces from the string
+    const cleanStr = str.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
 
-    while (gap > 0) {
-        for (let i = gap; i < len; i++) {
-            let temp = arr[i];
-            let j = i;
-        
-            while (j >= gap && arr[j - gap] > temp) {
-                arr[j] = arr[j - gap];
-                j -= gap;
-            }
-            arr[j] = temp;
-        }
-        
-        gap = Math.floor(gap/2);
-    }
-    return arr;
+    // Reverse the string
+    const reversedStr = cleanStr.split('').reverse().join('');
+
+    // Check if the original string is equal to its reversed version
+    return cleanStr === reversedStr;
 }
 
-// Example usage
-let arr = [12, 34, 54, 2, 3];
-console.log(shellSort(arr)); // Output: [2, 3, 12, 34, 54]
+// Test the function
+const string1 = "A man, a plan, a canal, Panama";
+console.log(isPalindrome(string1)); // Output: true
+
+const string2 = "hello world";
+console.log(isPalindrome(string2)); // Output: false
