@@ -1,48 +1,46 @@
-function buildPatternTable(pattern) {
-    let patternTable = [0];
-    let prefixIndex = 0;
-    let suffixIndex = 1;
-
-    while (suffixIndex < pattern.length) {
-        if (pattern[suffixIndex] === pattern[prefixIndex]) {
-            prefixIndex++;
-            patternTable[suffixIndex] = prefixIndex;
-            suffixIndex++;
-        } else if (prefixIndex === 0) {
-            patternTable[suffixIndex] = 0;
-            suffixIndex++;
-        } else {
-            prefixIndex = patternTable[prefixIndex - 1];
-        }
-    }
-
-    return patternTable;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.children = [];
+  }
 }
 
-function kmpSearch(text, pattern) {
-    let patternTable = buildPatternTable(pattern);
-    let textIndex = 0;
-    let patternIndex = 0;
+function depthLimitedSearch(root, target, depthLimit) {
+  let stack = [{ node: root, depth: 0 }];
 
-    while (textIndex < text.length) {
-        if (text[textIndex] === pattern[patternIndex]) {
-            if (patternIndex === pattern.length - 1) {
-                return textIndex - patternIndex;
-            }
-            textIndex++;
-            patternIndex++;
-        } else if (patternIndex === 0) {
-            textIndex++;
-        } else {
-            patternIndex = patternTable[patternIndex - 1];
-        }
+  while (stack.length > 0) {
+    let { node, depth } = stack.pop();
+
+    if (node.value === target) {
+      return node;
     }
 
-    return -1;
+    if (depth < depthLimit) {
+      for (let child of node.children) {
+        stack.push({ node: child, depth: depth + 1 });
+      }
+    }
+  }
+
+  return null;
 }
 
-// Example usage
-let text = "ababcabab";
-let pattern = "abab";
-let index = kmpSearch(text, pattern);
-console.log(index); // Output: 4
+// Usage
+// Create a sample tree
+let root = new Node('A');
+let nodeB = new Node('B');
+let nodeC = new Node('C');
+let nodeD = new Node('D');
+let nodeE = new Node('E');
+let nodeF = new Node('F');
+
+root.children = [nodeB, nodeC];
+nodeB.children = [nodeD, nodeE];
+nodeC.children = [nodeF];
+
+let result = depthLimitedSearch(root, 'F', 2);
+if (result) {
+  console.log('Node found:', result);
+} else {
+  console.log('Node not found within the depth limit.');
+}
