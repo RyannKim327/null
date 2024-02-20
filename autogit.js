@@ -1,36 +1,39 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.children = [];
-    }
-}
+function mergeSortIterative(arr) {
+    const merge = (arr, start, mid, end) => {
+        const leftArray = arr.slice(start, mid + 1);
+        const rightArray = arr.slice(mid + 1, end + 1);
 
-function breadthFirstSearch(root) {
-    let queue = [root];
-    let result = [];
+        let i = 0, j = 0, k = start;
 
-    while (queue.length > 0) {
-        let currentNode = queue.shift();
-        result.push(currentNode.value);
+        while (i < leftArray.length && j < rightArray.length) {
+            if (leftArray[i] <= rightArray[j]) {
+                arr[k++] = leftArray[i++];
+            } else {
+                arr[k++] = rightArray[j++];
+            }
+        }
 
-        for (let child of currentNode.children) {
-            queue.push(child);
+        while (i < leftArray.length) {
+            arr[k++] = leftArray[i++];
+        }
+
+        while (j < rightArray.length) {
+            arr[k++] = rightArray[j++];
+        }
+    };
+
+    for (let size = 1; size < arr.length; size *= 2) {
+        for (let start = 0; start < arr.length - 1; start += 2 * size) {
+            const mid = Math.min(start + size - 1, arr.length - 1);
+            const end = Math.min(start + 2 * size - 1, arr.length - 1);
+
+            merge(arr, start, mid, end);
         }
     }
 
-    return result;
+    return arr;
 }
 
-// Example usage:
-const node1 = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
-const node4 = new Node(4);
-const node5 = new Node(5);
-
-node1.children.push(node2, node3);
-node2.children.push(node4, node5);
-
-const rootNode = node1;
-
-console.log(breadthFirstSearch(rootNode)); // Output: [1, 2, 3, 4, 5]
+// Test the mergeSortIterative function
+const arr = [38, 27, 43, 3, 9, 82, 10];
+console.log(mergeSortIterative(arr));
