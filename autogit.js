@@ -1,6 +1,19 @@
-let str = "42";
-let num = parseInt(str);
-console.log(num); // Output: 42
-let str = "42";
-let num = Number(str);
-console.log(num); // Output: 42
+function isPrime(num) {
+    if(num <= 1) {
+        return false;
+    }
+    for(let i = 2; i < num; i++) {
+        if(num % i === 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Example usage
+const number = 17;
+if(isPrime(number)) {
+    console.log(`${number} is a prime number`);
+} else {
+    console.log(`${number} is not a prime number`);
+}
