@@ -1,41 +1,64 @@
-// Define a Node class to represent the nodes of the binary tree
 class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-// Function to find the height of a tree
-function height(node) {
-    if (node === null) {
-        return 0;
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+  
+  append(value) {
+    const newNode = new Node(value);
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
     }
-
-    return 1 + Math.max(height(node.left), height(node.right));
+  }
+  
+  reverse() {
+    let prev = null;
+    let current = this.head;
+    
+    while (current) {
+      let next = current.next;
+      current.next = prev;
+      prev = current
+      current = next;
+    }
+    
+    this.head = prev;
+  }
+  
+  print() {
+    let current = this.head;
+    const values = [];
+    while (current) {
+      values.push(current.value);
+      current = current.next;
+    }
+    console.log(values.join(' -> '));
+  }
 }
 
-// Function to find the diameter of a binary tree
-function diameterOfBinaryTree(root) {
-    if (root === null) {
-        return 0;
-    }
+// Example
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+list.append(4);
 
-    const leftHeight = height(root.left);
-    const rightHeight = height(root.right);
+console.log('Original list:');
+list.print();
 
-    const leftDiameter = diameterOfBinaryTree(root.left);
-    const rightDiameter = diameterOfBinaryTree(root.right);
+list.reverse();
 
-    return Math.max(leftHeight + rightHeight + 1, Math.max(leftDiameter, rightDiameter));
-}
-
-// Example: Create a binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-console.log(diameterOfBinaryTree(root)); // Output the diameter of the binary tree
+console.log('Reversed list:');
+list.print();
