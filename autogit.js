@@ -1,17 +1,22 @@
-function findMedianSortedArrays(nums1, nums2) {
-    const mergedArray = nums1.concat(nums2).sort((a, b) => a - b);
-    const length = mergedArray.length;
-    
-    if (length % 2 !== 0) {
-        return mergedArray[Math.floor(length / 2)];
-    } else {
-        const mid = length / 2;
-        return (mergedArray[mid - 1] + mergedArray[mid]) / 2;
+function firstNonRepeatingCharacter(str) {
+    // Create an empty object to store the frequency of each character
+    const charCounts = {};
+
+    // Iterate over the characters in the string and count their occurrences
+    for (let char of str) {
+        charCounts[char] = (charCounts[char] || 0) + 1;
     }
+
+    // Iterate over the characters again to find the first non-repeating character
+    for (let char of str) {
+        if (charCounts[char] === 1) {
+            return char;
+        }
+    }
+
+    // If no non-repeating character is found, return null
+    return null;
 }
 
-const nums1 = [1, 3];
-const nums2 = [2, 4];
-
-const median = findMedianSortedArrays(nums1, nums2);
-console.log("The median is: ", median);
+// Test the function
+console.log(firstNonRepeatingCharacter("leetcode")); // Output: "l"
