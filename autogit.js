@@ -1,36 +1,66 @@
-class TreeNode {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
     }
 }
 
-function diameterOfBinaryTree(root) {
-    let ans = 0;
-
-    function depth(node) {
-        if (!node) {
-            return 0;
-        }
-
-        let leftDepth = depth(node.left);
-        let rightDepth = depth(node.right);
-        ans = Math.max(ans, leftDepth + rightDepth);
-
-        return Math.max(leftDepth, rightDepth) + 1;
+class Queue {
+    constructor() {
+        this.front = null;
+        this.back = null;
+        this.size = 0;
     }
 
-    depth(root);
+    enqueue(data) {
+        const node = new Node(data);
+        if (!this.front) {
+            this.front = node;
+            this.back = node;
+        } else {
+            this.back.next = node;
+            this.back = node;
+        }
+        this.size++;
+    }
 
-    return ans;
+    dequeue() {
+        if (!this.front) {
+            return null;
+        }
+
+        const data = this.front.data;
+        this.front = this.front.next;
+        this.size--;
+
+        if (!this.front) {
+            this.back = null;
+        }
+
+        return data;
+    }
+
+    peek() {
+        if (!this.front) {
+            return null;
+        }
+        return this.front.data;
+    }
+
+    isEmpty() {
+        return this.size === 0;
+    }
 }
 
 // Example usage
-let root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+const queue = new Queue();
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
 
-console.log(diameterOfBinaryTree(root)); // Output: 3
+console.log(queue.peek()); // Output: 1
+
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.dequeue()); // Output: 2
+
+console.log(queue.isEmpty()); // Output: false
