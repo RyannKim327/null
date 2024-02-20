@@ -1,22 +1,42 @@
-function firstNonRepeatingCharacter(str) {
-    let charCount = {};
-    
-    // Count the occurrences of each character
-    for (let char of str) {
-        charCount[char] = (charCount[char] || 0) + 1;
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
     }
-    
-    // Find the first character with a count of 1
-    for (let char of str) {
-        if (charCount[char] === 1) {
-            return char;
+}
+
+function findNthFromEnd(head, n) {
+    let firstPointer = head;
+    let secondPointer = head;
+
+    // Move firstPointer forward by n nodes
+    for (let i = 1; i <= n; i++) {
+        if (firstPointer === null) {
+            return null; // Out of bounds
         }
+        firstPointer = firstPointer.next;
     }
-    
-    return null; // Return null if no non-repeating character is found
+
+    // Move both pointers together until firstPointer reaches the end
+    while (firstPointer !== null) {
+        firstPointer = firstPointer.next;
+        secondPointer = secondPointer.next;
+    }
+
+    return secondPointer;
 }
 
 // Example usage
-const str = "hello";
-const firstNonRepeatingChar = firstNonRepeatingCharacter(str);
-console.log(firstNonRepeatingChar); // Output: "h"
+let head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
+
+let n = 2;
+let result = findNthFromEnd(head, n);
+if (result !== null) {
+    console.log(`The ${n}th node from the end is: ${result.value}`);
+} else {
+    console.log(`Invalid input or out of bounds.`);
+}
