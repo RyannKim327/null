@@ -1,19 +1,29 @@
-function isAnagram(str1, str2) {
-    // Normalize the strings
-    const normalizeString = str => str.replace(/[^a-z0-9]/gi, '').toLowerCase();
+function binarySearch(arr, target) {
+    let left = 0;
+    let right = arr.length - 1;
 
-    const normalizedStr1 = normalizeString(str1);
-    const normalizedStr2 = normalizeString(str2);
+    while (left <= right) {
+        let mid = Math.floor((left + right) / 2);
 
-    // Convert strings to arrays, sort them and join back to string
-    const sortedStr1 = normalizedStr1.split('').sort().join('');
-    const sortedStr2 = normalizedStr2.split('').sort().join('');
+        if (arr[mid] === target) {
+            return mid;
+        } else if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
 
-    // Check if the sorted strings are equal
-    return sortedStr1 === sortedStr2;
+    return -1;
 }
 
-// Test the function
-const string1 = "Listen";
-const string2 = "Silent";
-console.log(isAnagram(string1, string2)); // Output: true
+// Example usage
+const arr = [1, 3, 5, 7, 9, 11, 13, 15];
+const target = 7;
+const index = binarySearch(arr, target);
+
+if (index !== -1) {
+    console.log(`Element found at index ${index}`);
+} else {
+    console.log(`Element not found`);
+}
