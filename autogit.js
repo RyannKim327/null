@@ -1,63 +1,13 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
+let arr = [1, 2, 3, 4, 5];
+let index = arr.indexOf(3); // Get the index of the element you want to remove
+if (index !== -1) {
+  arr.splice(index, 1); // Remove one element at the index
 }
-
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-
-  add(data) {
-    const newNode = new Node(data);
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
-
-  printList() {
-    let current = this.head;
-    while (current) {
-      console.log(current.data);
-      current = current.next;
-    }
-  }
-
-  reverse() {
-    let prev = null;
-    let current = this.head;
-    let next = null;
-
-    while (current !== null) {
-      next = current.next;
-      current.next = prev;
-      prev = current;
-      current = next;
-    }
-
-    this.head = prev;
-  }
-}
-
-// Example usage
-const list = new LinkedList();
-list.add(1);
-list.add(2);
-list.add(3);
-list.add(4);
-
-console.log("Original list:");
-list.printList();
-
-list.reverse();
-
-console.log("Reversed list:");
-list.printList();
+console.log(arr); // Output: [1, 2, 4, 5]
+let arr = [1, 2, 3, 4, 5];
+let filteredArr = arr.filter(item => item !== 3); // Create a new array excluding the element to remove
+console.log(filteredArr); // Output: [1, 2, 4, 5]
+let arr = [1, 2, 3, 4, 5];
+let elementToRemove = 3;
+let newArr = arr.filter(item => item !== elementToRemove);
+console.log(newArr); // Output: [1, 2, 4, 5]
