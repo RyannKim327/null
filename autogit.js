@@ -1,39 +1,47 @@
-function mergeSortIterative(arr) {
-    const merge = (arr, start, mid, end) => {
-        const leftArray = arr.slice(start, mid + 1);
-        const rightArray = arr.slice(mid + 1, end + 1);
+function rabinKarpSearch(text, pattern) {
+    const prime = 101; // A prime number
+    const textLength = text.length;
+    const patternLength = pattern.length;
+    const targetHash = hash(pattern, patternLength, prime);
+    let textHash = hash(text, patternLength, prime);
 
-        let i = 0, j = 0, k = start;
-
-        while (i < leftArray.length && j < rightArray.length) {
-            if (leftArray[i] <= rightArray[j]) {
-                arr[k++] = leftArray[i++];
-            } else {
-                arr[k++] = rightArray[j++];
-            }
+    for (let i = 0; i <= textLength - patternLength; i++) {
+        if (textHash === targetHash && checkEqual(text, pattern, i)) {
+            return i; // Return the index where the pattern starts
         }
-
-        while (i < leftArray.length) {
-            arr[k++] = leftArray[i++];
-        }
-
-        while (j < rightArray.length) {
-            arr[k++] = rightArray[j++];
-        }
-    };
-
-    for (let size = 1; size < arr.length; size *= 2) {
-        for (let start = 0; start < arr.length - 1; start += 2 * size) {
-            const mid = Math.min(start + size - 1, arr.length - 1);
-            const end = Math.min(start + 2 * size - 1, arr.length - 1);
-
-            merge(arr, start, mid, end);
+        if (i < textLength - patternLength) {
+            textHash = recalculateHash(text, i, patternLength, textHash, prime);
         }
     }
 
-    return arr;
+    return -1; // Pattern not found
 }
 
-// Test the mergeSortIterative function
-const arr = [38, 27, 43, 3, 9, 82, 10];
-console.log(mergeSortIterative(arr));
+function hash(str, length, prime) {
+    let hashValue = 0;
+    for (let i = 0; i < length; i++) {
+        hashValue += str.charCodeAt(i) * Math.pow(prime, i);
+    }
+    return hashValue;
+}
+
+function recalculateHash(str, oldIndex, patternLength, oldHash, prime) {
+    let newHash = (oldHash - str.charCodeAt(oldIndex)) / prime;
+    newHash += str.charCodeAt(oldIndex + patternLength) * Math.pow(prime, patternLength - 1);
+    return newHash;
+}
+
+function checkEqual(text, pattern, startIndex) {
+    for (let i = 0; i < pattern.length; i++) {
+        if (text[startIndex + i] !== pattern[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Example usage
+const text = "ABAAABCDBBABCDDEBCABC";
+const pattern = "BCD";
+const startIndex = rabinKarpSearch(text, pattern);
+console.log(startIndex); // Output: 8
