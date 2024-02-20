@@ -1,27 +1,5 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-function findMiddleElement(head) {
-  let slowPointer = head;
-  let fastPointer = head;
+const cron = require('node-cron');
 
-  while (fastPointer !== null && fastPointer.next !== null) {
-    slowPointer = slowPointer.next;
-    fastPointer = fastPointer.next.next;
-  }
-
-  return slowPointer.value;
-}
-// Create linked list nodes
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-// Find middle element
-const middleElement = findMiddleElement(head);
-console.log(middleElement); // Output: 3
+cron.schedule('* * * * *', () => {
+  console.log('Running a task every minute');
+});
