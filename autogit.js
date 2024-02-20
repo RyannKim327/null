@@ -1,44 +1,70 @@
+// Node class to create nodes of a linked list
 class Node {
-  constructor(data, next = null) {
-    this.data = data;
-    this.next = next;
-  }
+    constructor(value) {
+        this.value = value;
+        this.next = null;
+    }
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+// Function to find the intersection of two linked lists
+function findIntersection(head1, head2) {
+    let list1Nodes = [];
+    let list2Nodes = [];
 
-  append(data) {
-    const newNode = new Node(data);
-    if (!this.head) {
-      this.head = newNode;
-      return;
+    // Store nodes of first linked list in an array
+    while (head1) {
+        list1Nodes.push(head1);
+        head1 = head1.next;
     }
 
-    let current = this.head;
-    while (current.next) {
-      current = current.next;
+    // Store nodes of second linked list in an array
+    while (head2) {
+        list2Nodes.push(head2);
+        head2 = head2.next;
     }
-    current.next = newNode;
-  }
 
-  getLength() {
-    let count = 0;
-    let current = this.head;
-    while (current) {
-      count++;
-      current = current.next;
+    let intersectionNode = null;
+
+    // Compare the arrays to find the intersection
+    for (let node1 of list1Nodes) {
+        for (let node2 of list2Nodes) {
+            if (node1 === node2) {
+                intersectionNode = node1;
+                break;
+            }
+        }
+        if (intersectionNode) {
+            break;
+        }
     }
-    return count;
-  }
+
+    return intersectionNode;
 }
 
-// Example of how to use the LinkedList class
-const linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
+// Create linked list nodes
+let node1 = new Node(1);
+let node2 = new Node(2);
+let node3 = new Node(3);
+let node4 = new Node(4);
 
-console.log(linkedList.getLength()); // Output: 3
+// Construct the first linked list: 1 -> 2 -> 3 -> 4
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+
+let node5 = new Node(5);
+let node6 = new Node(6);
+
+// Construct the second linked list: 5 -> 6 -> 3 -> 4
+node5.next = node6;
+node6.next = node3;
+
+// Find the intersection of the two linked lists
+let intersection = findIntersection(node1, node5);
+
+// Print the value of the intersection node
+if (intersection) {
+    console.log("Intersection Node Value: " + intersection.value);
+} else {
+    console.log("No intersection found.");
+}
