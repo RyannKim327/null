@@ -1,39 +1,34 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
+// Depth-First Search algorithm
+function dfs(graph, startNode) {
+    let visited = new Set();
+    let stack = [startNode];
 
-function hasCycle(head) {
-  if (!head || !head.next) {
-    return false;
-  }
+    while (stack.length > 0) {
+        let currentNode = stack.pop();
 
-  let slow = head;
-  let fast = head;
+        if (!visited.has(currentNode)) {
+            visited.add(currentNode);
+            console.log(currentNode);
 
-  while (fast && fast.next) {
-    slow = slow.next;
-    fast = fast.next.next;
-
-    if (slow === fast) {
-      return true;
+            // Add all unvisited neighbors to the stack
+            for (let neighbor of graph[currentNode]) {
+                if (!visited.has(neighbor)) {
+                    stack.push(neighbor);
+                }
+            }
+        }
     }
-  }
-
-  return false;
 }
 
-// Example usage
-let node1 = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-let node4 = new Node(4);
+// Example adjacency list representation of a graph
+let graph = {
+    1: [2, 3],
+    2: [4, 5],
+    3: [6],
+    4: [],
+    5: [],
+    6: []
+};
 
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2; // cycle
-
-console.log(hasCycle(node1)); // Output: true
+// Start DFS from node 1
+dfs(graph, 1);
