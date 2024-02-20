@@ -1,6 +1,12 @@
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 4, 5, 6, 7];
+function findSecondLargest(arr) {
+    arr.sort(function(a, b) {
+        return b - a;
+    });
+    
+    return arr[1];
+}
 
-const commonElements = array1.filter(element => array2.includes(element));
-
-console.log(commonElements); // Output: [3, 4, 5]
+// Example usage:
+const numbers = [10, 5, 20, 15, 25];
+const secondLargest = findSecondLargest(numbers);
+console.log('Second largest element:', secondLargest);
