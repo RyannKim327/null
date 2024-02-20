@@ -1,46 +1,43 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+function boyerMooreSearch(text, pattern) {
+    const textLength = text.length;
+    const patternLength = pattern.length;
+
+    if (patternLength === 0) {
+        return 0;
+    }
+
+    const badCharTable = {};
+    const lastIndex = patternLength - 1;
+
+    for (let i = 0; i < lastIndex; i++) {
+        badCharTable[pattern[i]] = lastIndex - i;
+    }
+
+    let skip = 0;
+
+    while (textLength - skip >= patternLength) {
+        let i = patternLength - 1;
+
+        while (text[skip + i] === pattern[i]) {
+            if (i === 0) {
+                return skip;
+            }
+            i--;
+        }
+
+        skip += badCharTable[text[skip + lastIndex]] || patternLength;
+    }
+
+    return -1;
 }
 
-function reverseLinkedList(head) {
-  let prev = null;
-  let current = head;
+// Test the function
+const text = "AABAACAADAABAABA";
+const pattern = "AABA";
+const index = boyerMooreSearch(text, pattern);
 
-  while (current !== null) {
-    let next = current.next;
-    current.next = prev;
-    prev = current;
-    current = next;
-  }
-
-  return prev;
-}
-
-// Example usage
-let node1 = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-
-node1.next = node2;
-node2.next = node3;
-
-let head = node1;
-
-console.log("Original linked list:");
-let current = head;
-while (current !== null) {
-  console.log(current.value);
-  current = current.next;
-}
-
-head = reverseLinkedList(head);
-
-console.log("Reversed linked list:");
-current = head;
-while (current !== null) {
-  console.log(current.value);
-  current = current.next;
+if (index !== -1) {
+    console.log(`Pattern found at index ${index}`);
+} else {
+    console.log("Pattern not found");
 }
