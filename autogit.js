@@ -1,5 +1,4 @@
-const cron = require('node-cron');
+let arr = [5, 10, 3, 8, 1];
+let max = Math.max(...arr);
 
-cron.schedule('* * * * *', () => {
-  console.log('Running a task every minute!');
-});
+console.log(max); // Output: 10
