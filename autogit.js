@@ -1,24 +1,52 @@
-function quickSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
-    } else {
-        let pivot = arr[0];
-        let left = [];
-        let right = [];
-        
-        for (let i = 1; i < arr.length; i++) {
-            if (arr[i] < pivot) {
-                left.push(arr[i]);
-            } else {
-                right.push(arr[i]);
-            }
-        }
-        
-        return [...quickSort(left), pivot, ...quickSort(right)];
+class Node {
+    constructor() {
+        this.children = {};
+        this.isEndOfWord = false;
     }
 }
 
-// Example usage
-const array = [3, 6, 8, 10, 1, 2, 1];
-const sortedArray = quickSort(array);
-console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
+class Trie {
+    constructor() {
+        this.root = new Node();
+    }
+
+    insert(word) {
+        let current = this.root;
+        for (let char of word) {
+            if (!current.children[char]) {
+                current.children[char] = new Node();
+            }
+            current = current.children[char];
+        }
+        current.isEndOfWord = true;
+    }
+
+    search(word) {
+        let current = this.root;
+        for (let char of word) {
+            if (!current.children[char]) {
+                return false;
+            }
+            current = current.children[char];
+        }
+        return current.isEndOfWord;
+    }
+
+    startsWith(prefix) {
+        let current = this.root;
+        for (let char of prefix) {
+            if (!current.children[char]) {
+                return false;
+            }
+            current = current.children[char];
+        }
+        return true;
+    }
+}
+
+// Usage
+const trie = new Trie();
+trie.insert("apple");
+console.log(trie.search("apple")); // Output: true
+console.log(trie.search("app")); // Output: false
+console.log(trie.startsWith("app")); // Output: true
