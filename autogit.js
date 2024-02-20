@@ -1,52 +1,45 @@
-class HashTable {
-  constructor(size) {
-    this.size = size;
-    this.table = new Array(size);
-  }
+function createBadMatchTable(pattern) {
+    const table = new Map();
+    const patternLength = pattern.length;
 
-  hashFunction(key) {
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) {
-      hash += key.charCodeAt(i);
+    for (let i = 0; i < patternLength - 1; i++) {
+        table.set(pattern[i], patternLength - 1 - i);
     }
-    return hash % this.size;
-  }
 
-  set(key, value) {
-    const index = this.hashFunction(key);
-    if (!this.table[index]) {
-      this.table[index] = [];
-    }
-    this.table[index].push([key, value]);
-  }
-
-  get(key) {
-    const index = this.hashFunction(key);
-    if (!this.table[index]) {
-      return undefined;
-    }
-    for (const pair of this.table[index]) {
-      if (pair[0] === key) {
-        return pair[1];
-      }
-    }
-    return undefined;
-  }
-
-  remove(key) {
-    const index = this.hashFunction(key);
-    if (!this.table[index]) {
-      return;
-    }
-    const updatedTable = this.table[index].filter(pair => pair[0] !== key);
-    this.table[index] = updatedTable;
-  }
+    return table;
 }
 
-// Example usage
-const myHashTable = new HashTable(10);
-myHashTable.set("apple", 5);
-myHashTable.set("orange", 10);
-console.log(myHashTable.get("apple")); // Output: 5
-myHashTable.remove("apple");
-console.log(myHashTable.get("apple")); // Output: undefined
+function boyerMooreHorspool(text, pattern) {
+    const badMatchTable = createBadMatchTable(pattern);
+    const textLength = text.length;
+    const patternLength = pattern.length;
+    let index = 0;
+
+    while (index <= textLength - patternLength) {
+        let k = 0;
+        while (k < patternLength && pattern[patternLength - 1 - k] === text[index + patternLength - 1 - k]) {
+            k++;
+        }
+
+        if (k === patternLength) {
+            return index;
+        } else {
+            const badMatchChar = text[index + patternLength - 1];
+            const jump = badMatchTable.get(badMatchChar) || patternLength;
+            index += jump;
+        }
+    }
+
+    return -1;
+}
+
+// Test the implementation
+const text = "this is a test";
+const pattern = "test";
+const index = boyerMooreHorspool(text, pattern);
+
+if (index !== -1) {
+    console.log(`Pattern found at index ${index}`);
+} else {
+    console.log("Pattern not found");
+}
