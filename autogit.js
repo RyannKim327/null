@@ -1,49 +1,53 @@
-class Node {
-  constructor(data, next = null) {
-    this.data = data;
-    this.next = next;
-  }
-}
-
-class LinkedList {
+class Graph {
   constructor() {
-    this.head = null;
+    this.adjacencyList = {};
   }
 
-  add(data) {
-    const newNode = new Node(data);
-    if (!this.head) {
-      this.head = newNode;
-      return;
+  addVertex(vertex) {
+    if (!this.adjacencyList[vertex]) {
+      this.adjacencyList[vertex] = [];
     }
-
-    let current = this.head;
-    while (current.next) {
-      current = current.next;
-    }
-
-    current.next = newNode;
   }
 
-  getLength() {
-    let count = 0;
-    let current = this.head;
+  addEdge(v1, v2) {
+    this.adjacencyList[v1].push(v2);
+    this.adjacencyList[v2].push(v1);
+  }
 
-    while (current) {
-      count++;
-      current = current.next;
+  breadthFirstSearch(startingVertex) {
+    const visited = {};
+    const queue = [startingVertex];
+    const result = [];
+
+    visited[startingVertex] = true;
+
+    while (queue.length) {
+      const currentVertex = queue.shift();
+      result.push(currentVertex);
+
+      this.adjacencyList[currentVertex].forEach(neighbor => {
+        if (!visited[neighbor]) {
+          visited[neighbor] = true;
+          queue.push(neighbor);
+        }
+      });
     }
 
-    return count;
+    return result;
   }
 }
 
-// Creating a linked list
-const linkedList = new LinkedList();
-linkedList.add(1);
-linkedList.add(2);
-linkedList.add(3);
+// Example usage
+const graph = new Graph();
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addVertex('E');
 
-// Getting the length of the linked list
-const length = linkedList.getLength();
-console.log(length); // Output: 3
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('C', 'E');
+
+console.log(graph.breadthFirstSearch('A')); // Output: ["A", "B", "C", "D", "E"]
