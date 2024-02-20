@@ -1,64 +1,46 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+function fibonacciSearch(arr, x) {
+    let fibMMm2 = 0;
+    let fibMMm1 = 1;
+    let fibM = fibMMm2 + fibMMm1;
+
+    while (fibM < arr.length) {
+        fibMMm2 = fibMMm1;
+        fibMMm1 = fibM;
+        fibM = fibMMm2 + fibMMm1;
+    }
+
+    let offset = -1;
+
+    while (fibM > 1) {
+        let i = Math.min(offset + fibMMm2, arr.length - 1);
+
+        if (arr[i] < x) {
+            fibM = fibMMm1;
+            fibMMm1 = fibMMm2;
+            fibMMm2 = fibM - fibMMm1;
+            offset = i;
+        } else if (arr[i] > x) {
+            fibM = fibMMm2;
+            fibMMm1 = fibMMm1 - fibMMm2;
+            fibMMm2 = fibM - fibMMm1;
+        } else {
+            return i;
+        }
+    }
+
+    if (fibMMm1 && arr[offset + 1] === x) {
+        return offset + 1;
+    }
+
+    return -1;
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-  
-  append(value) {
-    const newNode = new Node(value);
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
-  
-  reverse() {
-    let prev = null;
-    let current = this.head;
-    
-    while (current) {
-      let next = current.next;
-      current.next = prev;
-      prev = current
-      current = next;
-    }
-    
-    this.head = prev;
-  }
-  
-  print() {
-    let current = this.head;
-    const values = [];
-    while (current) {
-      values.push(current.value);
-      current = current.next;
-    }
-    console.log(values.join(' -> '));
-  }
+const array = [2, 4, 6, 8, 10, 12];
+const x = 6;
+const index = fibonacciSearch(array, x);
+
+if (index !== -1) {
+    console.log(`Element found at index ${index}`);
+} else {
+    console.log("Element not found in the array");
 }
-
-// Example
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-
-console.log('Original list:');
-list.print();
-
-list.reverse();
-
-console.log('Reversed list:');
-list.print();
