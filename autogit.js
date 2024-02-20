@@ -1,63 +1,46 @@
-// TrieNode class
-class TrieNode {
-    constructor() {
-        this.children = {};
-        this.isEndOfWord = false;
+function buildPatternTable(pattern) {
+    let prefixSuffixTable = new Array(pattern.length);
+    let j = 0;
+    prefixSuffixTable[0] = 0;
+
+    for (let i = 1; i < pattern.length; i++) {
+        while (j > 0 && pattern.charAt(i) !== pattern.charAt(j)) {
+            j = prefixSuffixTable[j - 1];
+        }
+        if (pattern.charAt(i) === pattern.charAt(j)) {
+            j++;
+        }
+        prefixSuffixTable[i] = j;
     }
+
+    return prefixSuffixTable;
 }
 
-// Trie class
-class Trie {
-    constructor() {
-        this.root = new TrieNode();
-    }
+function kmpSearch(text, pattern) {
+    let patternTable = buildPatternTable(pattern);
+    let matches = [];
+    let j = 0;
 
-    // Insert a word into the Trie
-    insert(word) {
-        let node = this.root;
-
-        for (let char of word) {
-            if (!node.children[char]) {
-                node.children[char] = new TrieNode();
-            }
-            node = node.children[char];
+    for (let i = 0; i < text.length; i++) {
+        while (j > 0 && text.charAt(i) !== pattern.charAt(j)) {
+            j = patternTable[j - 1];
         }
-
-        node.isEndOfWord = true;
-    }
-
-    // Search for a word in the Trie
-    search(word) {
-        let node = this.root;
-
-        for (let char of word) {
-            if (!node.children[char]) {
-                return false;
+        if (text.charAt(i) === pattern.charAt(j)) {
+            if (j === pattern.length - 1) {
+                matches.push(i - j);
+                j = patternTable[j];
+            } else {
+                j++;
             }
-            node = node.children[char];
         }
-
-        return node.isEndOfWord;
     }
 
-    // Check if a prefix exists in the Trie
-    startsWith(prefix) {
-        let node = this.root;
-
-        for (let char of prefix) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
-        }
-
-        return true;
-    }
+    return matches;
 }
 
 // Example usage
-const trie = new Trie();
-trie.insert("apple");
-console.log(trie.search("apple")); // true
-console.log(trie.search("app")); // false
-console.log(trie.startsWith("app")); // true
+let text = "ABABDABACDABABCABAB";
+let pattern = "ABABCABAB";
+let matches = kmpSearch(text, pattern);
+
+console.log("Pattern found at index:", matches); // Output: Pattern found at index: [10]
