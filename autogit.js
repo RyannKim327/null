@@ -1,15 +1,14 @@
-function isSortedAscending(arr) {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false;
-        }
+function factorial(num) {
+    if (num < 0) {
+        return -1;
+    } else if (num == 0) {
+        return 1;
+    } else {
+        return (num * factorial(num - 1));
     }
-    return true;
 }
 
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 7, 2, 9, 10];
-
-console.log(isSortedAscending(array1)); // Output: true
-console.log(isSortedAscending(array2)); // Output: false
+// Calculate the factorial of a number
+const number = 5;
+const result = factorial(number);
+console.log(`The factorial of ${number} is ${result}`);
