@@ -1,36 +1,24 @@
-function hasCycle(head) {
-    if (!head) {
-        return false;
+function firstNonRepeatingCharacter(str) {
+    let charCount = {};
+
+    // Count the occurrences of each character in the string
+    for (let i = 0; i < str.length; i++) {
+        let char = str[i];
+        charCount[char] = (charCount[char] || 0) + 1;
     }
 
-    let slow = head;
-    let fast = head;
-
-    while (fast && fast.next) {
-        slow = slow.next;
-        fast = fast.next.next;
-
-        if (slow === fast) {
-            return true;
+    // Find the first non-repeating character
+    for (let i = 0; i < str.length; i++) {
+        let char = str[i];
+        if (charCount[char] === 1) {
+            return char;
         }
     }
 
-    return false;
-}
-// Define a simple linked list with a cycle
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
-    }
+    return null; // Return null if no non-repeating character is found
 }
 
-const head = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
-
-head.next = node2;
-node2.next = node3;
-node3.next = head; // Cycle created
-
-console.log(hasCycle(head)); // Output: true
+// Test the function
+const str = "hello world";
+const firstNonRepeatingChar = firstNonRepeatingCharacter(str);
+console.log(firstNonRepeatingChar);
