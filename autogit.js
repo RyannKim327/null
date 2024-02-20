@@ -1,50 +1,46 @@
-function fibonacciSearch(arr, x) {
-    let fib1 = 0;
-    let fib2 = 1;
-    let fibM = fib1 + fib2;
-    
-    let n = arr.length;
-    
-    while (fibM < n) {
-        fib2 = fib1;
-        fib1 = fibM;
-        fibM = fib1 + fib2;
-    }
-    
-    let offset = -1;
-    
-    while (fibM > 1) {
-        let i = Math.min(offset + fib2, n - 1);
-        
-        if (arr[i] < x) {
-            fibM = fib1;
-            fib1 = fib2;
-            fib2 = fibM - fib1;
-            offset = i;
-        } else if (arr[i] > x) {
-            fibM = fib2;
-            fib1 = fib1 - fib2;
-            fib2 = fibM - fib1;
-        } else {
-            return i;
-        }
-    }
-    
-    if (fib1 && arr[offset + 1] == x) {
-        return offset + 1;
-    }
-    
-    return -1;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-// Example Usage
-let arr = [2, 4, 6, 8, 10, 12, 14, 16];
-let x = 10;
+function reverseLinkedList(head) {
+  let prev = null;
+  let current = head;
 
-let index = fibonacciSearch(arr, x);
+  while (current !== null) {
+    let next = current.next;
+    current.next = prev;
+    prev = current;
+    current = next;
+  }
 
-if (index != -1) {
-    console.log(`${x} found at index ${index}`);
-} else {
-    console.log(`${x} not found in the array`);
+  return prev;
+}
+
+// Example usage
+let node1 = new Node(1);
+let node2 = new Node(2);
+let node3 = new Node(3);
+
+node1.next = node2;
+node2.next = node3;
+
+let head = node1;
+
+console.log("Original linked list:");
+let current = head;
+while (current !== null) {
+  console.log(current.value);
+  current = current.next;
+}
+
+head = reverseLinkedList(head);
+
+console.log("Reversed linked list:");
+current = head;
+while (current !== null) {
+  console.log(current.value);
+  current = current.next;
 }
