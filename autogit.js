@@ -1,11 +1,15 @@
-function kthSmallest(arr, k) {
-    arr.sort((a, b) => a - b);
-    return arr[k - 1];
+function countOccurrences(str, char) {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
+            count++;
+        }
+    }
+    return count;
 }
 
 // Example
-const array = [3, 1, 4, 2, 5];
-const k = 3;
-
-const result = kthSmallest(array, k);
-console.log(`The ${k}th smallest element is: ${result}`);
+let str = "Hello, World!";
+let char = "l";
+let occurrences = countOccurrences(str, char);
+console.log(`The character '${char}' occurs ${occurrences} times in the string.`);
