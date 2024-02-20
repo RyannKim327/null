@@ -1,51 +1,33 @@
-class HashTable {
-    constructor(size) {
-        this.size = size;
-        this.table = new Array(size);
+function mergeSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    hash(key) {
-        let hash = 0;
-        for (let i = 0; i < key.length; i++) {
-            hash = (hash + key.charCodeAt(i) * (i + 1)) % this.size;
-        }
-        return hash;
-    }
+    const mid = Math.floor(arr.length / 2);
+    const left = mergeSort(arr.slice(0, mid));
+    const right = mergeSort(arr.slice(mid));
 
-    set(key, value) {
-        const index = this.hash(key);
-        if (!this.table[index]) {
-            this.table[index] = [];
-        }
-        this.table[index].push({ key, value });
-    }
-
-    get(key) {
-        const index = this.hash(key);
-        if (this.table[index]) {
-            for (let i = 0; i < this.table[index].length; i++) {
-                if (this.table[index][i].key === key) {
-                    return this.table[index][i].value;
-                }
-            }
-        }
-        return null;
-    }
-
-    remove(key) {
-        const index = this.hash(key);
-        if (this.table[index]) {
-            this.table[index] = this.table[index].filter(entry => entry.key !== key);
-        }
-    }
+    return merge(left, right);
 }
 
-// Usage
-const hashtable = new HashTable(10);
-hashtable.set('name', 'Alice');
-hashtable.set('age', 30);
+function merge(left, right) {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
 
-console.log(hashtable.get('name')); // Output: Alice
-console.log(hashtable.get('age')); // Output: 30
-hashtable.remove('age');
-console.log(hashtable.get('age')); // Output: null
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            result.push(right[rightIndex]);
+            rightIndex++;
+        }
+    }
+
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+}
+
+// Example usage
+const arr = [5, 3, 8, 2, 1, 7, 4];
+console.log(mergeSort(arr)); // Output: [1, 2, 3, 4, 5, 7, 8]
