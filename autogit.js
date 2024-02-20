@@ -1,5 +1,4 @@
-const numbers = [5, 12, 27, 6, 8, 21];
+let str = "Hello World!";
+let lowerCaseStr = str.toLowerCase();
 
-const maxNumber = Math.max(...numbers);
-
-console.log(maxNumber); // Output: 27
+console.log(lowerCaseStr); // Output: "hello world!"
