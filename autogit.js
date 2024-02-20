@@ -1,33 +1,21 @@
-class Node {
-    constructor() {
-        this.children = {};
-        this.start = null;
-        this.end = null;
-        this.suffixLink = null;
-    }
-}
-class SuffixTree {
-    constructor(text) {
-        this.root = new Node();
-        this.text = text;
-        this.activeNode = this.root;
-        this.activeEdge = 0;
-        this.activeLength = 0;
-        this.remainingSuffixCount = 0;
-    }
-
-    buildSuffixTree() {
-        for (let i = 0; i < this.text.length; i++) {
-            this.addSuffix(i);
+function selectionSort(arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        let minIndex = i;
+        
+        for (let j = i + 1; j < arr.length; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+        
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
         }
     }
-
-    addSuffix(index) {
-        // Implement adding a suffix to the suffix tree
-    }
-
-    // Other helper functions to implement:
-    // - walkDown
-    // - extendSuffixTree
-    // - setSuffixIndex
+    
+    return arr;
 }
+
+// Example usage
+const arr = [64, 34, 25, 12, 22, 11, 90];
+console.log(selectionSort(arr));
