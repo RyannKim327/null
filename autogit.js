@@ -1,15 +1,67 @@
-function countOccurrences(str, char) {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === char) {
-            count++;
-        }
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-    return count;
 }
 
-// Example
-let str = "Hello, World!";
-let char = "l";
-let occurrences = countOccurrences(str, char);
-console.log(`The character '${char}' occurs ${occurrences} times in the string.`);
+class BinarySearchTree {
+    constructor() {
+        this.root = null;
+    }
+
+    insert(value) {
+        const newNode = new Node(value);
+
+        if(this.root === null) {
+            this.root = newNode;
+        } else {
+            this.insertNode(this.root, newNode);
+        }
+    }
+
+    insertNode(node, newNode) {
+        if(newNode.value < node.value) {
+            if(node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if(node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
+        }
+    }
+
+    search(value) {
+        return this.searchNode(this.root, value);
+    }
+
+    searchNode(node, value) {
+        if(node === null) {
+            return false;
+        }
+
+        if(value < node.value) {
+            return this.searchNode(node.left, value);
+        } else if(value > node.value) {
+            return this.searchNode(node.right, value);
+        } else {
+            return true;
+        }
+    }
+}
+
+// Example usage
+const bst = new BinarySearchTree();
+bst.insert(10);
+bst.insert(5);
+bst.insert(20);
+bst.insert(3);
+
+console.log(bst.search(5)); // Output: true
+console.log(bst.search(8)); // Output: false
