@@ -1,4 +1,3 @@
-let numString = "42";
-let numInteger = parseInt(numString);
-
-console.log(numInteger); // Outputs: 42
+let arr = [1, 2, 3, 4, 5];
+arr.reverse();
+console.log(arr); // Output: [5, 4, 3, 2, 1]
