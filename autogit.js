@@ -1,4 +1,4 @@
-function maxSubarraySum(arr) {
+function maxSubArray(arr) {
     let maxEndingHere = arr[0];
     let maxSoFar = arr[0];
 
@@ -10,6 +10,7 @@ function maxSubarraySum(arr) {
     return maxSoFar;
 }
 
-// Test the function
-const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-console.log(maxSubarraySum(arr)); // Output: 6
+// Example usage:
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const maxSum = maxSubArray(array);
+console.log(maxSum); // Output: 6
