@@ -1,19 +1,28 @@
-function isPalindrome(str) {
-  str = str.replace(/[^a-zA-Z0-9]/g, "").toLowerCase(); // Remove non-alphanumeric characters and convert to lowercase
-  let left = 0;
-  let right = str.length - 1;
-
-  while (left < right) {
-    if (str[left] !== str[right]) {
-      return false; // Characters at opposite ends don't match, not a palindrome
+class Node {
+    constructor(value, left = null, right = null) {
+        this.value = value;
+        this.left = left;
+        this.right = right;
     }
-    left++;
-    right--;
-  }
-
-  return true; // If the while loop completes, the string is a palindrome
 }
 
-// Test the function
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // Output: true
-console.log(isPalindrome("race a car")); // Output: false
+function sumBinaryTree(root) {
+    if (!root) {
+        return 0;
+    }
+
+    return root.value + sumBinaryTree(root.left) + sumBinaryTree(root.right);
+}
+
+// Example binary tree
+const tree = new Node(1,
+    new Node(2,
+        new Node(4),
+        new Node(5)),
+    new Node(3,
+        new Node(6),
+        new Node(7))
+);
+
+const sum = sumBinaryTree(tree);
+console.log(sum); // Output: 28
