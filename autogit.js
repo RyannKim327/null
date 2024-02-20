@@ -1,6 +1,10 @@
-let numbers = [5, 2, 8, 1, 4];
-numbers.sort(function(a, b) {
-    return a - b;
-});
+function calculateMean(numbers) {
+  const sum = numbers.reduce((acc, num) => acc + num, 0);
+  const mean = sum / numbers.length;
+  return mean;
+}
 
-console.log(numbers); // Output: [1, 2, 4, 5, 8]
+// Example
+const numbers = [1, 2, 3, 4, 5];
+const mean = calculateMean(numbers);
+console.log(mean);
