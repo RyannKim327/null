@@ -1,53 +1,45 @@
-class Graph {
-  constructor() {
-    this.adjacencyList = {};
-  }
+function createBadCharTable(pattern) {
+    const table = {};
+    const len = pattern.length;
 
-  addVertex(vertex) {
-    if (!this.adjacencyList[vertex]) {
-      this.adjacencyList[vertex] = [];
-    }
-  }
-
-  addEdge(v1, v2) {
-    this.adjacencyList[v1].push(v2);
-    this.adjacencyList[v2].push(v1);
-  }
-
-  breadthFirstSearch(startingVertex) {
-    const visited = {};
-    const queue = [startingVertex];
-    const result = [];
-
-    visited[startingVertex] = true;
-
-    while (queue.length) {
-      const currentVertex = queue.shift();
-      result.push(currentVertex);
-
-      this.adjacencyList[currentVertex].forEach(neighbor => {
-        if (!visited[neighbor]) {
-          visited[neighbor] = true;
-          queue.push(neighbor);
-        }
-      });
+    for (let i = 0; i < len - 1; i++) {
+        table[pattern[i]] = len - i - 1;
     }
 
-    return result;
-  }
+    return table;
 }
 
-// Example usage
-const graph = new Graph();
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
+function boyerMooreSearch(text, pattern) {
+    const badCharTable = createBadCharTable(pattern);
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    let i = patternLength - 1;
+    
+    while (i < textLength) {
+        let j = patternLength - 1;
+        
+        while (j >= 0 && text[i] === pattern[j]) {
+            i--;
+            j--;
+        }
 
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('C', 'E');
+        if (j === -1) {
+            return i + 1;
+        } else {
+            i += Math.max(badCharTable[text[i]] || 1, patternLength - j);
+        }
+    }
 
-console.log(graph.breadthFirstSearch('A')); // Output: ["A", "B", "C", "D", "E"]
+    return -1;
+}
+
+// Test the implementation
+const text = "The quick brown fox jumps over the lazy dog";
+const pattern = "fox";
+const index = boyerMooreSearch(text, pattern);
+
+if (index !== -1) {
+    console.log(`Pattern found at index ${index}`);
+} else {
+    console.log("Pattern not found");
+}
