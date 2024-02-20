@@ -1,37 +1,15 @@
-function boyerMooreSearch(text, pattern) {
-    const patternLength = pattern.length;
-    const textLength = text.length;
-    if (patternLength === 0) return 0;
-    
-    // Preprocess pattern
-    const rightmost = new Array(256).fill(-1);
-    for (let i = 0; i < patternLength; i++) {
-        rightmost[pattern.charCodeAt(i)] = i;
-    }
-
-    let skip;
-    for (let i = 0; i <= textLength - patternLength; i += skip) {
-        skip = 0;
-        for (let j = patternLength - 1; j >= 0; j--) {
-            if (pattern[j] !== text[i + j]) {
-                skip = Math.max(1, j - rightmost[text.charCodeAt(i + j)]);
-                break;
-            }
-        }
-        if (skip === 0) {
-            return i;
+function isSortedAscending(arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;
         }
     }
-    return -1;
+    return true;
 }
 
-// Test the Boyer-Moore search function
-const text = 'Hello, how are you?';
-const pattern = 'you';
-const index = boyerMooreSearch(text, pattern);
+// Example usage
+const unsortedArray = [3, 1, 5, 7, 2];
+const sortedArray = [1, 2, 3, 5, 7];
 
-if (index !== -1) {
-    console.log(`Pattern found at index ${index}`);
-} else {
-    console.log('Pattern not found');
-}
+console.log(isSortedAscending(unsortedArray)); // Output: false
+console.log(isSortedAscending(sortedArray)); // Output: true
