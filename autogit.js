@@ -1,44 +1,49 @@
-class Graph {
-    constructor() {
-        this.adjList = new Map();
-    }
-    
-    addVertex(vertex) {
-        this.adjList.set(vertex, []);
-    }
-    
-    addEdge(vertex1, vertex2) {
-        this.adjList.get(vertex1).push(vertex2);
-        this.adjList.get(vertex2).push(vertex1);
-    }
-    
-    dfs(startingNode) {
-        const visited = new Set();
-        this._dfsHelper(startingNode, visited);
+function burrowsWheelerTransform(input) {
+    // Create an array of rotations of the input string
+    let rotations = [];
+    for (let i = 0; i < input.length; i++) {
+        let rotation = input.slice(i) + input.slice(0, i);
+        rotations.push(rotation);
     }
 
-    _dfsHelper(node, visited) {
-        visited.add(node);
-        console.log(node);
+    // Sort the rotations lexicographically
+    rotations.sort();
 
-        const neighbors = this.adjList.get(node);
+    // Extract the last characters of each rotation to construct the transformed string
+    let transformedString = rotations.map(rotation => rotation[rotation.length - 1]).join('');
 
-        for (const neighbor of neighbors) {
-            if (!visited.has(neighbor)) {
-                this._dfsHelper(neighbor, visited);
-            }
-        }
-    }
+    // Find the original string index in the sorted rotations
+    let originalIndex = rotations.indexOf(input);
+
+    return { transformedString, originalIndex };
 }
 
-const graph = new Graph();
-graph.addVertex(0);
-graph.addVertex(1);
-graph.addVertex(2);
-graph.addVertex(3);
-graph.addEdge(0, 1);
-graph.addEdge(0, 2);
-graph.addEdge(1, 2);
-graph.addEdge(2, 3);
+function burrowsWheelerInverseTransform(transformedString, originalIndex) {
+    let table = [];
+    
+    for (let i = 0; i < transformedString.length; i++) {
+        table.push({ char: transformedString[i], index: i });
+    }
+    
+    table.sort((a, b) => a.char.localeCompare(b.char));
+    
+    let currentIndex = originalIndex;
+    let result = '';
+    
+    for (let i = 0; i < transformedString.length; i++) {
+        let currentChar = table[currentIndex].char;
+        result = currentChar + result;
+        currentIndex = table[currentIndex].index;
+    }
+    
+    return result;
+}
 
-graph.dfs(0);
+// Example usage
+let inputString = 'banana';
+let { transformedString, originalIndex } = burrowsWheelerTransform(inputString);
+let originalString = burrowsWheelerInverseTransform(transformedString, originalIndex);
+
+console.log('Input String: ', inputString);
+console.log('Transformed String: ', transformedString);
+console.log('Original String: ', originalString);
