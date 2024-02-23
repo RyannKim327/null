@@ -1,24 +1,20 @@
-function factorial(n) {
-    if (n === 0 || n === 1) {
-        return 1;
-    } else {
-        return n * factorial(n - 1);
+function firstNonRepeatingCharacter(str) {
+    const charCount = {};
+    
+    for (let char of str) {
+        charCount[char] = (charCount[char] || 0) + 1;
     }
+    
+    for (let char of str) {
+        if (charCount[char] === 1) {
+            return char;
+        }
+    }
+    
+    return null; // If there are no non-repeating characters
 }
 
-// Example usage
-const num = 5;
-const result = factorial(num);
-console.log(`The factorial of ${num} is: ${result}`);
-function factorial(n) {
-    let result = 1;
-    for (let i = 1; i <= n; i++) {
-        result *= i;
-    }
-    return result;
-}
+const str = "hello world";
+const firstNonRepeatingChar = firstNonRepeatingCharacter(str);
 
-// Example usage
-const num = 5;
-const result = factorial(num);
-console.log(`The factorial of ${num} is: ${result}`);
+console.log("First non-repeating character:", firstNonRepeatingChar);
