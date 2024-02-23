@@ -1,34 +1,48 @@
-function breadthLimitedSearch(initialState, goalState, depthLimit) {
-    let queue = [{ state: initialState, level: 0, path: [initialState] }];
-
-    while (queue.length > 0) {
-        let currentNode = queue.shift();
-
-        if (currentNode.state === goalState) {
-            return currentNode.path;
-        }
-
-        if (currentNode.level < depthLimit) {
-            let successors = generateSuccessors(currentNode.state);
-            for (let successor of successors) {
-                queue.push({ state: successor, level: currentNode.level + 1, path: currentNode.path.concat(successor) });
-            }
-        }
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
     }
-
-    return "No solution within the depth limit.";
 }
 
-function generateSuccessors(state) {
-    // Implement your function to generate successors based on the current state
-    // This is a placeholder function for demonstration purposes
-    return [state + 'A', state + 'B'];
+class LinkedList {
+    constructor() {
+        this.head = null;
+    }
+
+    append(data) {
+        const newNode = new Node(data);
+
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+
+        current.next = newNode;
+    }
+
+    getLength() {
+        let current = this.head;
+        let count = 0;
+
+        while (current) {
+            count++;
+            current = current.next;
+        }
+
+        return count;
+    }
 }
 
 // Example usage
-let initialState = 'A';
-let goalState = 'ABC';
-let depthLimit = 3;
+const linkedList = new LinkedList();
+linkedList.append(1);
+linkedList.append(2);
+linkedList.append(3);
 
-let result = breadthLimitedSearch(initialState, goalState, depthLimit);
-console.log(result);
+console.log("Length of linked list: ", linkedList.getLength()); // Output: 3
