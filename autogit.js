@@ -1,60 +1,33 @@
-function tarjanSCC(graph) {
-    let index = 0;
-    let stack = [];
-    let indices = new Map();
-    let lowLinks = new Map();
-    let onStack = new Set();
-    let sccList = [];
-
-    function strongConnect(node) {
-        indices.set(node, index);
-        lowLinks.set(node, index);
-        index++;
-        stack.push(node);
-        onStack.add(node);
-
-        // Check neighbors
-        for (let neighbor of graph[node]) {
-            if (!indices.has(neighbor)) {
-                strongConnect(neighbor);
-                lowLinks.set(node, Math.min(lowLinks.get(node), lowLinks.get(neighbor)));
-            } else if (onStack.has(neighbor)) {
-                lowLinks.set(node, Math.min(lowLinks.get(node), indices.get(neighbor)));
-            }
+// Create a function to make an HTTP request
+function makeHttpRequest() {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    const url = 'https://api.example.com/data';
+    
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          resolve(xhr.responseText);
+        } else {
+          reject(new Error('Request failed'));
         }
+      }
+    };
 
-        // If root node, pop the stack to get the strongly connected components
-        if (lowLinks.get(node) === indices.get(node)) {
-            let scc = [];
-            let poppedNode = null;
-            do {
-                poppedNode = stack.pop();
-                onStack.delete(poppedNode);
-                scc.push(poppedNode);
-            } while (poppedNode != node);
-            sccList.push(scc);
-        }
-    }
-
-    for (let node in graph) {
-        if (!indices.has(node)) {
-            strongConnect(node);
-        }
-    }
-
-    return sccList;
+    xhr.open('GET', url, true);
+    xhr.send();
+  });
 }
 
-// Example usage
-const graph = {
-    0: [1],
-    1: [2],
-    2: [0, 3],
-    3: [4],
-    4: [5, 6],
-    5: [2, 6],
-    6: []
-};
+// Call the function using an async task
+async function connectToServer() {
+  try {
+    const response = await makeHttpRequest();
+    console.log('Response from server:', response);
+  } catch (error) {
+    console.error('Error connecting to server:', error);
+  }
+}
 
-const scc = tarjanSCC(graph);
-console.log(scc);
+// Call the async function to connect to the server
+connectToServer();
