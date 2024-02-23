@@ -1,15 +1,24 @@
-function countOccurrences(str, char) {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str.charAt(i) === char) {
-            count++;
+function findLongestIncreasingSubsequence(arr) {
+    if (arr.length === 0) {
+        return 0;
+    }
+    
+    const n = arr.length;
+    const dp = new Array(n).fill(1);
+    
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[i] > arr[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
         }
     }
-    return count;
+    
+    const maxLength = Math.max(...dp);
+    return maxLength;
 }
 
 // Test the function
-const myString = "Hello, World!";
-const characterToCount = "l";
-const numOccurrences = countOccurrences(myString, characterToCount);
-console.log(`The character "${characterToCount}" appears ${numOccurrences} times in the string.`);
+const arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
+const longestSubsequenceLength = findLongestIncreasingSubsequence(arr);
+console.log("Length of the longest increasing subsequence:", longestSubsequenceLength);
