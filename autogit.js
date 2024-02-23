@@ -1,8 +1,10 @@
-function removeVowels(str) {
-    return str.replace(/[aeiouAEIOU]/g, '');
+let arr = [1, 2, 3, 4, 5];
+let elementToRemove = 3;
+
+let index = arr.indexOf(elementToRemove);
+
+if (index > -1) {
+    arr.splice(index, 1);
 }
 
-// Example usage
-let string = 'Hello, World!';
-let stringWithoutVowels = removeVowels(string);
-console.log(stringWithoutVowels); // Output: 'Hll, Wrld!'
+console.log(arr); // [1, 2, 4, 5]
