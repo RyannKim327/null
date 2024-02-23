@@ -1,14 +1,29 @@
-function countOccurrences(text, word) {
-    // Use a regular expression with the 'g' flag to find all occurrences of the word in the text
-    const regex = new RegExp(word, 'g');
-    const matches = text.match(regex);
+function binarySearch(arr, target) {
+    let left = 0;
+    let right = arr.length - 1;
     
-    // Return the number of matches found
-    return matches ? matches.length : 0;
+    while (left <= right) {
+        let mid = Math.floor((left + right) / 2);
+        
+        if (arr[mid] === target) {
+            return mid;
+        } else if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+    
+    return -1;
 }
 
-const text = "This is a sample sentence, a sample text with the word 'sample' multiple times.";
-const word = "sample";
+// Example usage
+const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
+const target = 13;
+const index = binarySearch(arr, target);
 
-const occurrences = countOccurrences(text, word);
-console.log(`The word '${word}' occurs ${occurrences} times in the text.`);
+if (index !== -1) {
+    console.log(`Target ${target} found at index ${index}.`);
+} else {
+    console.log(`Target ${target} not found.`);
+}
