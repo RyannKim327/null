@@ -1,66 +1,33 @@
-function dijkstra(graph, startNode, endNode) {
-    const distances = {};
-    const priorityQueue = new PriorityQueue();
-    const visited = new Set();
-
-    distances[startNode] = 0;
-    priorityQueue.enqueue(startNode, 0);
-
-    while (!priorityQueue.isEmpty()) {
-        const currentNode = priorityQueue.dequeue().value;
-
-        if (currentNode === endNode) {
-            break;
-        }
-
-        if (!visited.has(currentNode)) {
-            visited.add(currentNode);
-
-            const neighbors = graph[currentNode];
-
-            for (let neighbor in neighbors) {
-                const distance = distances[currentNode] + neighbors[neighbor];
-
-                if (!distances[neighbor] || distance < distances[neighbor]) {
-                    distances[neighbor] = distance;
-                    priorityQueue.enqueue(neighbor, distance);
-                }
-            }
-        }
+function generateRotations(input) {
+    let rotations = [];
+    for (let i = 0; i < input.length; i++) {
+        let rotatedString = input.slice(i) + input.slice(0, i);
+        rotations.push(rotatedString);
     }
-
-    return distances[endNode];
+    return rotations.sort();
 }
-
-class PriorityQueue {
-    constructor() {
-        this.queue = [];
-    }
-
-    enqueue(value, priority) {
-        this.queue.push({ value, priority });
-        this.queue.sort((a, b) => a.priority - b.priority);
-    }
-
-    dequeue() {
-        return this.queue.shift();
-    }
-
-    isEmpty() {
-        return this.queue.length === 0;
-    }
+function burrowsWheelerTransform(input) {
+    let rotations = generateRotations(input);
+    let bwt = rotations.map(rotatedString => rotatedString.slice(-1)).join("");
+    return bwt;
 }
+function inverseBurrowsWheelerTransform(bwt) {
+    let table = Array.from(bwt).map((char, index) => ({ char, index }));
+    table.sort((a, b) => a.char.localeCompare(b.char));
+    
+    let current = table.find(entry => entry.index === 0);
+    let result = "";
+    
+    for (let i = 0; i < bwt.length; i++) {
+        current = table[current.index];
+        result += current.char;
+    }
+    
+    return result;
+}
+let input = "hello";
+let bwtResult = burrowsWheelerTransform(input);
+console.log("BWT Result: " + bwtResult);
 
-// Example graph representation
-const graph = {
-    A: { B: 5, C: 3 },
-    B: { A: 5, C: 1, D: 2 },
-    C: { A: 3, B: 1, D: 6 },
-    D: { B: 2, C: 6 },
-};
-
-const startNode = 'A';
-const endNode = 'D';
-const shortestPathDistance = dijkstra(graph, startNode, endNode);
-
-console.log(`Shortest path distance from ${startNode} to ${endNode}: ${shortestPathDistance}`);
+let originalInput = inverseBurrowsWheelerTransform(bwtResult);
+console.log("Original Input: " + originalInput);
