@@ -1,58 +1,72 @@
-function biDirectionalSearch(graph, startNode, endNode) {
-    // Initialize the start and end queues
-    let startQueue = [startNode];
-    let endQueue = [endNode];
-    
-    // Initialize visited sets for start and end
-    let startVisited = new Set();
-    let endVisited = new Set();
-    
-    // Loop until one of the queues is empty
-    while (startQueue.length > 0 && endQueue.length > 0) {
-        let currentStartNode = startQueue.shift();
-        let currentEndNode = endQueue.shift();
-        
-        // Check if currentStartNode is in endVisited
-        if (endVisited.has(currentStartNode)) {
-            return true; // Path found
-        }
-        
-        // Check if currentEndNode is in startVisited
-        if (startVisited.has(currentEndNode)) {
-            return true; // Path found
-        }
-        
-        // Add currentStartNode neighbors to startQueue
-        for (let neighbor of graph[currentStartNode]) {
-            if (!startVisited.has(neighbor)) {
-                startVisited.add(neighbor);
-                startQueue.push(neighbor);
-            }
-        }
-        
-        // Add currentEndNode neighbors to endQueue
-        for (let neighbor of graph[currentEndNode]) {
-            if (!endVisited.has(neighbor)) {
-                endVisited.add(neighbor);
-                endQueue.push(neighbor);
-            }
-        }
-    }
-    
-    return false; // Path not found
+// Node class to represent a node in the binary search tree
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-// Example graph representation
-const graph = {
-    A: ['B', 'D'],
-    B: ['A', 'C'],
-    C: ['B'],
-    D: ['A', 'E'],
-    E: ['D', 'F'],
-    F: ['E']
-};
+// BinarySearchTree class
+class BinarySearchTree {
+  constructor() {
+    this.root = null;
+  }
 
-// Test bi-directional search
-const startNode = 'A';
-const endNode = 'F';
-console.log(biDirectionalSearch(graph, startNode, endNode)); // Output: true
+  // Method to insert a new value into the binary search tree
+  insert(value) {
+    const newNode = new Node(value);
+
+    if (!this.root) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
+
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (!node.left) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (!node.right) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  // Method to search for a value in the binary search tree
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  searchNode(node, value) {
+    if (!node) {
+      return false;
+    }
+
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else if (value > node.value) {
+      return this.searchNode(node.right, value);
+    } else {
+      return true;
+    }
+  }
+}
+
+// Example usage
+const bst = new BinarySearchTree();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(3);
+bst.insert(8);
+
+console.log(bst.search(5)); // true
+console.log(bst.search(20)); // false
