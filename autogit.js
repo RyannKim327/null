@@ -1,22 +1,15 @@
-function factorial(n) {
-    if (n === 0) {
-        return 1;
-    } else {
-        return n * factorial(n - 1);
-    }
+function calculateMean(numbers) {
+  let sum = 0;
+  
+  for (let i = 0; i < numbers.length; i++) {
+    sum += numbers[i];
+  }
+  
+  let mean = sum / numbers.length;
+  return mean;
 }
 
-// Calculate the factorial of 5
-const result = factorial(5);
-console.log(result); // Output: 120
-function factorial(n) {
-    let result = 1;
-    for (let i = 1; i <= n; i++) {
-        result *= i;
-    }
-    return result;
-}
-
-// Calculate the factorial of 5
-const result = factorial(5);
-console.log(result); // Output: 120
+// Example usage
+const numbers = [1, 2, 3, 4, 5];
+const mean = calculateMean(numbers);
+console.log(mean); // Output: 3
