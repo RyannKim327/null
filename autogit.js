@@ -1,33 +1,44 @@
-function depthLimitedSearchIterative(root, goal, limit) {
-    let stack = [];
-    stack.push({ node: root, depth: 0 });
+class Graph {
+    constructor() {
+        this.adjList = new Map();
+    }
+    
+    addVertex(vertex) {
+        this.adjList.set(vertex, []);
+    }
+    
+    addEdge(vertex1, vertex2) {
+        this.adjList.get(vertex1).push(vertex2);
+        this.adjList.get(vertex2).push(vertex1);
+    }
+    
+    dfs(startingNode) {
+        const visited = new Set();
+        this._dfsHelper(startingNode, visited);
+    }
 
-    while (stack.length > 0) {
-        let current = stack.pop();
-        let currentNode = current.node;
-        let currentDepth = current.depth;
+    _dfsHelper(node, visited) {
+        visited.add(node);
+        console.log(node);
 
-        if (currentNode === goal) {
-            return true;
-        }
+        const neighbors = this.adjList.get(node);
 
-        if (currentDepth < limit) {
-            let children = getChildren(currentNode); // Implement a function to get children of a node
-            
-            for (let child of children) {
-                stack.push({ node: child, depth: currentDepth + 1 });
+        for (const neighbor of neighbors) {
+            if (!visited.has(neighbor)) {
+                this._dfsHelper(neighbor, visited);
             }
         }
     }
-
-    return false;
 }
 
-// Example function to get children of a node
-function getChildren(node) {
-    // Implement logic to get children of a node
-    return [];
-}
+const graph = new Graph();
+graph.addVertex(0);
+graph.addVertex(1);
+graph.addVertex(2);
+graph.addVertex(3);
+graph.addEdge(0, 1);
+graph.addEdge(0, 2);
+graph.addEdge(1, 2);
+graph.addEdge(2, 3);
 
-// Example usage
-// depthLimitedSearchIterative(rootNode, goalNode, depthLimit);
+graph.dfs(0);
