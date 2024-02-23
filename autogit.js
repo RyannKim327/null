@@ -1,33 +1,33 @@
-function generateRotations(input) {
-    let rotations = [];
-    for (let i = 0; i < input.length; i++) {
-        let rotatedString = input.slice(i) + input.slice(0, i);
-        rotations.push(rotatedString);
-    }
-    return rotations.sort();
-}
-function burrowsWheelerTransform(input) {
-    let rotations = generateRotations(input);
-    let bwt = rotations.map(rotatedString => rotatedString.slice(-1)).join("");
-    return bwt;
-}
-function inverseBurrowsWheelerTransform(bwt) {
-    let table = Array.from(bwt).map((char, index) => ({ char, index }));
-    table.sort((a, b) => a.char.localeCompare(b.char));
-    
-    let current = table.find(entry => entry.index === 0);
-    let result = "";
-    
-    for (let i = 0; i < bwt.length; i++) {
-        current = table[current.index];
-        result += current.char;
-    }
-    
-    return result;
-}
-let input = "hello";
-let bwtResult = burrowsWheelerTransform(input);
-console.log("BWT Result: " + bwtResult);
+function depthLimitedSearchIterative(root, goal, limit) {
+    let stack = [];
+    stack.push({ node: root, depth: 0 });
 
-let originalInput = inverseBurrowsWheelerTransform(bwtResult);
-console.log("Original Input: " + originalInput);
+    while (stack.length > 0) {
+        let current = stack.pop();
+        let currentNode = current.node;
+        let currentDepth = current.depth;
+
+        if (currentNode === goal) {
+            return true;
+        }
+
+        if (currentDepth < limit) {
+            let children = getChildren(currentNode); // Implement a function to get children of a node
+            
+            for (let child of children) {
+                stack.push({ node: child, depth: currentDepth + 1 });
+            }
+        }
+    }
+
+    return false;
+}
+
+// Example function to get children of a node
+function getChildren(node) {
+    // Implement logic to get children of a node
+    return [];
+}
+
+// Example usage
+// depthLimitedSearchIterative(rootNode, goalNode, depthLimit);
