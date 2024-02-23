@@ -1,52 +1,67 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
+function dijkstra(graph, startNode) {
+    let distance = {};
+    let visited = {};
+    let queue = new PriorityQueue();
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+    // Initialize distances to all nodes as Infinity, except the start node
+    distance[startNode] = 0;
+    queue.enqueue(startNode, 0);
 
-  addNode(value) {
-    const newNode = new Node(value);
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let currentNode = this.head;
-      while (currentNode.next) {
-        currentNode = currentNode.next;
-      }
-      currentNode.next = newNode;
+    // Initialize distances to all other nodes as Infinity
+    for (let node in graph) {
+        if (node !== startNode) {
+            distance[node] = Infinity;
+        }
     }
-  }
-}
-function convertListToArray(list) {
-  const array = [];
-  let currentNode = list.head;
 
-  while (currentNode) {
-    array.push(currentNode.value);
-    currentNode = currentNode.next;
-  }
+    while (!queue.isEmpty()) {
+        let current = queue.dequeue().element;
 
-  return array;
-}
-function isPalindrome(array) {
-  const reversedArray = array.slice().reverse();
-  return JSON.stringify(array) === JSON.stringify(reversedArray);
-}
-function isLinkedListPalindrome(list) {
-  const array = convertListToArray(list);
-  return isPalindrome(array);
-}
-const linkedList = new LinkedList();
-linkedList.addNode(1);
-linkedList.addNode(2);
-linkedList.addNode(3);
-linkedList.addNode(2);
-linkedList.addNode(1);
+        if (!visited[current]) {
+            for (let neighbor in graph[current]) {
+                let distanceToNeighbor = distance[current] + graph[current][neighbor];
 
-console.log(isLinkedListPalindrome(linkedList)); // Output: true
+                if (distanceToNeighbor < distance[neighbor]) {
+                    distance[neighbor] = distanceToNeighbor;
+                    queue.enqueue(neighbor, distanceToNeighbor);
+                }
+            }
+
+            visited[current] = true;
+        }
+    }
+
+    return distance;
+}
+
+// Min heap priority queue implementation
+class PriorityQueue {
+    constructor() {
+        this.elements = [];
+    }
+
+    enqueue(element, priority) {
+        this.elements.push({ element, priority });
+        this.elements.sort((a, b) => a.priority - b.priority);
+    }
+
+    dequeue() {
+        return this.elements.shift();
+    }
+
+    isEmpty() {
+        return this.elements.length === 0;
+    }
+}
+
+// Example graph
+const graph = {
+    A: { B: 5, C: 3 },
+    B: { A: 5, C: 1, D: 1 },
+    C: { A: 3, B: 1, D: 3 },
+    D: { B: 1, C: 3 },
+};
+
+const startNode = 'A';
+const shortestDistances = dijkstra(graph, startNode);
+console.log(shortestDistances);
