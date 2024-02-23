@@ -1,17 +1,41 @@
-function reverseWords(str) {
-    // Split the string into an array of words
-    let wordsArr = str.split(' ');
+class Graph {
+    constructor() {
+        this.adjList = {};
+    }
 
-    // Reverse the array
-    wordsArr.reverse();
+    addVertex(vertex) {
+        if (!this.adjList[vertex]) {
+            this.adjList[vertex] = [];
+        }
+    }
 
-    // Join the array back into a string
-    let reversedStr = wordsArr.join(' ');
+    addEdge(vertex1, vertex2) {
+        this.addVertex(vertex1);
+        this.addVertex(vertex2);
+        this.adjList[vertex1].push(vertex2);
+        this.adjList[vertex2].push(vertex1);
+    }
 
-    return reversedStr;
+    dfs(startingNode, visited = {}) {
+        visited[startingNode] = true;
+        console.log(startingNode);
+
+        this.adjList[startingNode].forEach((neighbor) => {
+            if (!visited[neighbor]) {
+                this.dfs(neighbor, visited);
+            }
+        });
+    }
 }
 
-// Test the function
-let originalStr = 'Hello world, it is a beautiful day';
-let reversedStr = reverseWords(originalStr);
-console.log(reversedStr); // Output: 'day beautiful a is it world, Hello'
+// Test the DFS algorithm
+const graph = new Graph();
+graph.addEdge(0, 1);
+graph.addEdge(0, 2);
+graph.addEdge(1, 2);
+graph.addEdge(2, 3);
+graph.addEdge(3, 4);
+graph.addEdge(3, 5);
+
+console.log("Depth First Search starting from node 0:");
+graph.dfs(0);
