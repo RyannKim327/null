@@ -1,14 +1,26 @@
-let numbers = [5, 2, 8, 1, 4];
+function binarySearch(arr, target, start = 0, end = arr.length - 1) {
+    if (start > end) {
+        return -1;
+    }
 
-numbers.sort(function(a, b) {
-  return a - b;
-});
+    const mid = Math.floor((start + end) / 2);
 
-console.log(numbers); // Output: [1, 2, 4, 5, 8]
-let numbers = [5, 2, 8, 1, 4];
+    if (arr[mid] === target) {
+        return mid;
+    } else if (arr[mid] > target) {
+        return binarySearch(arr, target, start, mid - 1);
+    } else {
+        return binarySearch(arr, target, mid + 1, end);
+    }
+}
 
-numbers.sort(function(a, b) {
-  return b - a;
-});
+// Example
+const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17];
+const target = 7;
+const result = binarySearch(arr, target);
 
-console.log(numbers); // Output: [8, 5, 4, 2, 1]
+if (result !== -1) {
+    console.log(`Element found at index: ${result}`);
+} else {
+    console.log("Element not found");
+}
