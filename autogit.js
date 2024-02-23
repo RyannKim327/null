@@ -1,15 +1,10 @@
-const url = 'https://api.example.com/data';
-
-fetch(url)
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
+function findStringLength(str) {
+    let count = 0;
+    for (let char of str) {
+        count++;
     }
-    return response.json();
-  })
-  .then(data => {
-    console.log(data);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+    return count;
+}
+
+let myString = "Hello, World!";
+console.log(findStringLength(myString)); // Output: 13
