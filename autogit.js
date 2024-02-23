@@ -1,4 +1,6 @@
-const numbers = [10, 5, 20, 8, 15];
-const maxValue = Math.max(...numbers);
+let array = [1, 2, 3, 4, 5];
 
-console.log("The maximum value in the array is: " + maxValue);
+// Remove the element at index 2
+array.splice(2, 1);
+
+console.log(array); // Output: [1, 2, 4, 5]
