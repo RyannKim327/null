@@ -1,20 +1,19 @@
-function firstNonRepeatingCharacter(str) {
-    const charCount = {};
-    
-    for (let char of str) {
-        charCount[char] = (charCount[char] || 0) + 1;
+function isPrime(number) {
+    if(number <= 1) {
+        return false;
     }
-    
-    for (let char of str) {
-        if (charCount[char] === 1) {
-            return char;
+    for (let i = 2; i <= Math.sqrt(number); i++) {
+        if (number % i === 0) {
+            return false;
         }
     }
-    
-    return null; // If there are no non-repeating characters
+    return true;
 }
 
-const str = "hello world";
-const firstNonRepeatingChar = firstNonRepeatingCharacter(str);
-
-console.log("First non-repeating character:", firstNonRepeatingChar);
+// Test the function
+const number = 17;
+if(isPrime(number)) {
+    console.log(number + " is a prime number.");
+} else {
+    console.log(number + " is not a prime number.");
+}
