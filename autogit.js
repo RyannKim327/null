@@ -1,53 +1,60 @@
-function rabinKarp(text, pattern) {
-    const prime = 101; // A prime number used for hashing
-    const textLength = text.length;
-    const patternLength = pattern.length;
-    const base = 256; // The number of characters in the input alphabet
-
-    let patternHash = 0;
-    let textHash = 0;
-    let h = 1;
-
-    // Calculate the hash value of the pattern and the first window of text
-    for (let i = 0; i < patternLength; i++) {
-        patternHash = (base * patternHash + pattern.charCodeAt(i)) % prime;
-        textHash = (base * textHash + text.charCodeAt(i)) % prime;
-    }
-
-    // Calculate h = base^(patternLength-1) % prime
-    for (let i = 0; i < patternLength - 1; i++) {
-        h = (h * base) % prime;
-    }
-
-    // Slide the pattern over text one by one
-    for (let i = 0; i <= textLength - patternLength; i++) {
-        // If the hash values match, check character by character
-        if (patternHash === textHash) {
-            let match = true;
-            for (let j = 0; j < patternLength; j++) {
-                if (text[i + j] !== pattern[j]) {
-                    match = false;
-                    break;
-                }
-            }
-            if (match) {
-                console.log(`Pattern found at index ${i}`);
-            }
-        }
-
-        // Calculate hash value for the next window of text
-        if (i < textLength - patternLength) {
-            textHash = (base * (textHash - text.charCodeAt(i) * h) + text.charCodeAt(i + patternLength)) % prime;
-
-            // Handle negative hash values
-            if (textHash < 0) {
-                textHash = (textHash + prime);
-            }
-        }
-    }
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-// Test the rabinKarp function
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-rabinKarp(text, pattern);
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+
+  addNode(value) {
+    const newNode = new Node(value);
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
+
+  findNthNodeFromEnd(n) {
+    if (!this.head) {
+      return null;
+    }
+
+    let pointer1 = this.head;
+    let pointer2 = this.head;
+
+    // Move the second pointer to the nth node from the beginning
+    for (let i = 0; i < n; i++) {
+      if (pointer2 === null) {
+        return null; // The list is too short
+      }
+      pointer2 = pointer2.next;
+    }
+
+    // Move both pointers until the second pointer reaches the end
+    while (pointer2.next) {
+      pointer1 = pointer1.next;
+      pointer2 = pointer2.next;
+    }
+
+    return pointer1;
+  }
+}
+
+// Example Usage
+const linkedList = new LinkedList();
+linkedList.addNode(1);
+linkedList.addNode(2);
+linkedList.addNode(3);
+linkedList.addNode(4);
+linkedList.addNode(5);
+
+console.log(linkedList.findNthNodeFromEnd(2)); // This will log the node with value 4
