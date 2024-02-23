@@ -1,61 +1,107 @@
-class Stack {
-  constructor() {
-    this.stack = [];
-  }
-
-  // Push element to the top of the stack
-  push(element) {
-    this.stack.push(element);
-  }
-
-  // Remove and return the element at the top of the stack
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
+class Node {
+    constructor(value, level) {
+        this.value = value;
+        this.forward = new Array(level + 1).fill(null);
     }
-    return this.stack.pop();
-  }
-
-  // Return the element at the top of the stack
-  peek() {
-    return this.stack[this.stack.length - 1];
-  }
-
-  // Check if the stack is empty
-  isEmpty() {
-    return this.stack.length === 0;
-  }
-
-  // Return the size of the stack
-  size() {
-    return this.stack.length;
-  }
-
-  // Print the stack elements
-  print() {
-    console.log(this.stack);
-  }
 }
 
-// Example Usage
-const stack = new Stack();
+class SkipList {
+    constructor(maxLevel, p) {
+        this.maxLevel = maxLevel;
+        this.p = p;
+        this.level = 0;
+        this.head = new Node(-1, maxLevel);
+    }
 
-stack.push(1);
-stack.push(2);
-stack.push(3);
+    randomLevel() {
+        let level = 0;
+        while (Math.random() < this.p && level < this.maxLevel) {
+            level++;
+        }
+        return level;
+    }
 
-stack.print(); // Output: [1, 2, 3]
+    insert(value) {
+        const update = new Array(this.maxLevel + 1).fill(null);
+        let current = this.head;
+        
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+            update[i] = current;
+        }
 
-console.log(stack.pop()); // Output: 3
+        current = current.forward[0];
 
-console.log(stack.peek()); // Output: 2
+        if (current === null || current.value !== value) {
+            const newLevel = this.randomLevel();
+            if (newLevel > this.level) {
+                for (let i = this.level + 1; i <= newLevel; i++) {
+                    update[i] = this.head;
+                }
+                this.level = newLevel;
+            }
 
-console.log(stack.size()); // Output: 2
+            const newNode = new Node(value, newLevel);
+            for (let i = 0; i <= newLevel; i++) {
+                newNode.forward[i] = update[i].forward[i];
+                update[i].forward[i] = newNode;
+            }
+        }
+    }
 
-console.log(stack.isEmpty()); // Output: false
+    search(value) {
+        let current = this.head;
 
-console.log(stack.pop()); // Output: 2
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+        }
 
-console.log(stack.pop()); // Output: 1
+        current = current.forward[0];
 
-console.log(stack.pop()); // Output: Stack is empty
+        if (current !== null && current.value === value) {
+            return current;
+        } else {
+            return null;
+        }
+    }
+
+    delete(value) {
+        const update = new Array(this.maxLevel + 1).fill(null);
+        let current = this.head;
+
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+            update[i] = current;
+        }
+
+        current = current.forward[0];
+
+        if (current !== null && current.value === value) {
+            for (let i = 0; i <= this.level; i++) {
+                if (update[i].forward[i] !== current)
+                    break;
+                update[i].forward[i] = current.forward[i];
+            }
+
+            while (this.level > 0 && this.head.forward[this.level] === null) {
+                this.level--;
+            }
+        }
+    }
+}
+
+// Example usage
+const skipList = new SkipList(4, 0.5);
+skipList.insert(3);
+skipList.insert(6);
+skipList.insert(2);
+skipList.insert(7);
+console.log(skipList.search(3));
+skipList.delete(3);
+console.log(skipList.search(3));
