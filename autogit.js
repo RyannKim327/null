@@ -1,106 +1,53 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.left = null;
-        this.right = null;
-        this.height = 1;
-    }
-}
-
-class AVLTree {
+class Stack {
     constructor() {
-        this.root = null;
+        this.stack = [];
     }
 
-    getHeight(node) {
-        if (node === null) {
-            return 0;
-        }
-        return node.height;
+    // Push element onto the stack
+    push(element) {
+        this.stack.push(element);
     }
 
-    getBalanceFactor(node) {
-        if (node === null) {
-            return 0;
+    // Pop element from the top of the stack
+    pop() {
+        if (this.stack.length === 0) {
+            return "Stack is empty. Cannot pop.";
         }
-        return this.getHeight(node.right) - this.getHeight(node.left);
+        return this.stack.pop();
     }
 
-    rotateRight(y) {
-        let x = y.left;
-        let T = x.right;
-
-        x.right = y;
-        y.left = T;
-
-        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
-        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
-
-        return x;
+    // Peek the top element of the stack
+    peek() {
+        if (this.stack.length === 0) {
+            return "Stack is empty. Cannot peek.";
+        }
+        return this.stack[this.stack.length - 1];
     }
 
-    rotateLeft(x) {
-        let y = x.right;
-        let T = y.left;
-
-        y.left = x;
-        x.right = T;
-
-        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
-        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
-
-        return y;
+    // Check if the stack is empty
+    isEmpty() {
+        return this.stack.length === 0;
     }
 
-    insert(data) {
-        this.root = this._insert(this.root, data);
+    // Get the size of the stack
+    size() {
+        return this.stack.length;
     }
 
-    _insert(node, data) {
-        if (node === null) {
-            return new Node(data);
-        }
-
-        if (data < node.data) {
-            node.left = this._insert(node.left, data);
-        } else if (data > node.data) {
-            node.right = this._insert(node.right, data);
-        } else {
-            return node;
-        }
-
-        node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
-
-        let balanceFactor = this.getBalanceFactor(node);
-
-        if (balanceFactor > 1 && data > node.right.data) {
-            return this.rotateLeft(node);
-        }
-
-        if (balanceFactor < -1 && data < node.left.data) {
-            return this.rotateRight(node);
-        }
-
-        if (balanceFactor > 1 && data < node.right.data) {
-            node.right = this.rotateRight(node.right);
-            return this.rotateLeft(node);
-        }
-
-        if (balanceFactor < -1 && data > node.left.data) {
-            node.left = this.rotateLeft(node.left);
-            return this.rotateRight(node);
-        }
-
-        return node;
+    // Print the stack
+    print() {
+        console.log(this.stack);
     }
-
-    // Implement other methods such as deletion, searching, etc.
 }
 
-// Example usage:
-const avlTree = new AVLTree();
-avlTree.insert(10);
-avlTree.insert(20);
-avlTree.insert(30);
+// Example usage
+const stack = new Stack();
+stack.push(1);
+stack.push(2);
+stack.push(3);
 
-console.log(avlTree.root); // Output the root node of the AVL tree
+console.log(stack.peek()); // Output: 3
+
+console.log(stack.pop()); // Output: 3
+
+stack.print(); // Output: [1, 2]
