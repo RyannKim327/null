@@ -1,15 +1,40 @@
-function maxSubArraySum(arr) {
-    let maxEndingHere = arr[0];
-    let maxSoFar = arr[0];
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.children = [];
+  }
 
-    for (let i = 1; i < arr.length; i++) {
-        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
-        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+  addChild(child) {
+    this.children.push(child);
+  }
+}
+
+function depthLimitedSearch(root, goal, depthLimit) {
+  let stack = [[root, 0]];
+
+  while (stack.length > 0) {
+    let [node, depth] = stack.pop();
+
+    if (node.value === goal) {
+      return node;
     }
 
-    return maxSoFar;
+    if (depth < depthLimit) {
+      for (let child of node.children) {
+        stack.push([child, depth + 1]);
+      }
+    }
+  }
+
+  return null;
 }
 
 // Example usage
-const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-console.log(maxSubArraySum(arr)); // Output should be 6 (corresponding to [4, -1, 2, 1])
+let root = new Node(1);
+let child1 = new Node(2);
+let child2 = new Node(3);
+root.addChild(child1);
+root.addChild(child2);
+
+let result = depthLimitedSearch(root, 3, 2);
+console.log(result); // Output: Node { value: 3, children: [] }
