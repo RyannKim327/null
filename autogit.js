@@ -1,56 +1,49 @@
-function computeLPSArray(pattern) {
-    let lps = new Array(pattern.length).fill(0);
-    let len = 0; 
-    let i = 1;
+function breadthLimitedSearch(root, goal, limit) {
+    let queue = [{ node: root, depth: 0 }];
+    
+    while (queue.length > 0) {
+        let current = queue.shift(); // Dequeue
+        let node = current.node;
+        let depth = current.depth;
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
+        if (node === goal) {
+            return node;
+        }
+        
+        if (depth < limit) {
+            node.children.forEach(child => {
+                queue.push({ node: child, depth: depth + 1 });
+            });
         }
     }
 
-    return lps;
-}
-
-function KMP(text, pattern) {
-    let result = [];
-    let lps = computeLPSArray(pattern);
-    let i = 0;
-    let j = 0;
-
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-
-        if (j === pattern.length) {
-            result.push(i - j);
-            j = lps[j - 1];
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
-    }
-
-    return result;
+    return null; // Goal not found within the limit
 }
 
 // Example usage
-let text = "ABABDABACDABABCABAB";
-let pattern = "ABAB";
-let result = KMP(text, pattern);
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.children = [];
+    }
+}
 
-console.log(result); // Output: [0, 10, 15]
+let root = new Node(1);
+let node2 = new Node(2);
+let node3 = new Node(3);
+let node4 = new Node(4);
+let node5 = new Node(5);
+
+root.children.push(node2, node3);
+node2.children.push(node4);
+node3.children.push(node5);
+
+let goal = node5;
+
+let result = breadthLimitedSearch(root, goal, 2);
+
+if (result) {
+    console.log(`Goal ${goal.value} found within the limit.`);
+} else {
+    console.log(`Goal ${goal.value} not found within the limit.`);
+}
