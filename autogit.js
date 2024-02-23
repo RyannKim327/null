@@ -1,26 +1,62 @@
-function binarySearchRecursive(arr, target, low = 0, high = arr.length - 1) {
-    if (low > high) {
-        return -1;
+function bidirectionalSearch(graph, startNode, goalNode) {
+  let startQueue = [startNode];
+  let goalQueue = [goalNode];
+  let startVisited = new Set();
+  let goalVisited = new Set();
+  
+  startVisited.add(startNode);
+  goalVisited.add(goalNode);
+  
+  while (startQueue.length > 0 && goalQueue.length > 0) {
+    const startCurr = startQueue.shift();
+    const goalCurr = goalQueue.shift();
+    
+    if (goalVisited.has(startCurr)) {
+      // Path found
+      // Return path from startNode to goalNode
+      return getPath(startCurr, goalNode);
     }
     
-    const mid = Math.floor((low + high) / 2);
-    
-    if (arr[mid] === target) {
-        return mid;
-    } else if (arr[mid] > target) {
-        return binarySearchRecursive(arr, target, low, mid - 1);
-    } else {
-        return binarySearchRecursive(arr, target, mid + 1, high);
+    if (startVisited.has(goalCurr)) {
+      // Path found
+      // Return path from startNode to goalNode
+      return getPath(startNode, goalCurr);
     }
+    
+    for (const neighbor of graph[startCurr]) {
+      if (!startVisited.has(neighbor)) {
+        startQueue.push(neighbor);
+        startVisited.add(neighbor);
+      }
+    }
+    
+    for (const neighbor of graph[goalCurr]) {
+      if (!goalVisited.has(neighbor)) {
+        goalQueue.push(neighbor);
+        goalVisited.add(neighbor);
+      }
+    }
+  }
+  
+  return null; // No path found
+}
+
+function getPath(startNode, goalNode) {
+  // Implement function to backtrack and return path from startNode to goalNode
 }
 
 // Example usage
-const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17];
-const target = 11;
-const index = binarySearchRecursive(arr, target);
+const graph = {
+  'A': ['B', 'C'],
+  'B': ['A', 'D', 'E'],
+  'C': ['A', 'F'],
+  'D': ['B'],
+  'E': ['B', 'F'],
+  'F': ['C', 'E']
+};
 
-if (index !== -1) {
-    console.log(`Element found at index: ${index}`);
-} else {
-    console.log(`Element not found`);
-}
+const startNode = 'A';
+const goalNode = 'F';
+
+const path = bidirectionalSearch(graph, startNode, goalNode);
+console.log(path);
