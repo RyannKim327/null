@@ -1,47 +1,45 @@
-function biDirectionalSearch(graph, startNode, endNode) {
-    // Initialize the frontiers for both searches
-    let startFrontier = [startNode];
-    let endFrontier = [endNode];
-
-    // Initialize the explored sets for both searches
-    let startExplored = new Set();
-    let endExplored = new Set();
-
-    // Iterate until the frontiers meet
-    while (startFrontier.length > 0 && endFrontier.length > 0) {
-        // Expand the start frontier
-        let startNext = [];
-        for (let node of startFrontier) {
-            startExplored.add(node);
-            for (let neighbor of graph[node]) {
-                if (!startExplored.has(neighbor)) {
-                    startNext.push(neighbor);
-                }
-                if (endExplored.has(neighbor)) {
-                    // Nodes meet in the middle
-                    return true;
-                }
-            }
+class HashTable {
+    constructor(size) {
+        this.size = size;
+        this.table = new Array(size);
+        for (let i = 0; i < size; i++) {
+            this.table[i] = [];
         }
-        startFrontier = startNext;
-
-        // Expand the end frontier
-        let endNext = [];
-        for (let node of endFrontier) {
-            endExplored.add(node);
-            for (let neighbor of graph[node]) {
-                if (!endExplored.has(neighbor)) {
-                    endNext.push(neighbor);
-                }
-                if (startExplored.has(neighbor)) {
-                    // Nodes meet in the middle
-                    return true;
-                }
-            }
-        }
-        endFrontier = endNext;
     }
-    
-    // No path found
-    return false;
+
+    hash(key) {
+        let hash = 0;
+        for (let i = 0; i < key.length; i++) {
+            hash += key.charCodeAt(i);
+        }
+        return hash % this.size;
+    }
+
+    set(key, value) {
+        const index = this.hash(key);
+        this.table[index].push({ key, value });
+    }
+
+    get(key) {
+        const index = this.hash(key);
+        for (const item of this.table[index]) {
+            if (item.key === key) {
+                return item.value;
+            }
+        }
+        return undefined;
+    }
+
+    remove(key) {
+        const index = this.hash(key);
+        this.table[index] = this.table[index].filter(item => item.key !== key);
+    }
 }
+
+// Example usage
+const ht = new HashTable(10);
+ht.set("apple", "red");
+ht.set("banana", "yellow");
+console.log(ht.get("apple")); // Output: red
+ht.remove("banana");
+console.log(ht.get("banana")); // Output: undefined
