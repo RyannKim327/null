@@ -1,18 +1,33 @@
-function countOccurrences(text, word) {
-    let count = 0;
-    let words = text.split(" ");
-    
-    for (let i = 0; i < words.length; i++) {
-        if (words[i].toLowerCase() === word.toLowerCase()) {
-            count++;
-        }
+// Define the structure of a binary tree node
+class Node {
+    constructor(value, left = null, right = null) {
+        this.value = value;
+        this.left = left;
+        this.right = right;
     }
-    
-    return count;
 }
 
-let text = "Hello world, hello again";
-let word = "hello";
-let occurrences = countOccurrences(text, word);
+// Function to find the sum of all nodes in a binary tree
+function sumBinaryTree(root) {
+    if (root === null) {
+        return 0;
+    }
+    
+    return root.value + sumBinaryTree(root.left) + sumBinaryTree(root.right);
+}
 
-console.log(`The word "${word}" occurs ${occurrences} times in the text.`);
+// Example binary tree
+const tree = new Node(1,
+    new Node(2,
+        new Node(4),
+        new Node(5)
+    ),
+    new Node(3,
+        new Node(6),
+        new Node(7)
+    )
+);
+
+// Calculate the sum of all nodes in the binary tree
+const sum = sumBinaryTree(tree);
+console.log("Sum of all nodes in the binary tree:", sum);
