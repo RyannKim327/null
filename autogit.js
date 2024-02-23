@@ -1,63 +1,34 @@
-class Node {
-    constructor(data, next = null) {
-        this.data = data;
-        this.next = next;
+function breadthLimitedSearch(initialState, goalState, depthLimit) {
+    let queue = [{ state: initialState, level: 0, path: [initialState] }];
+
+    while (queue.length > 0) {
+        let currentNode = queue.shift();
+
+        if (currentNode.state === goalState) {
+            return currentNode.path;
+        }
+
+        if (currentNode.level < depthLimit) {
+            let successors = generateSuccessors(currentNode.state);
+            for (let successor of successors) {
+                queue.push({ state: successor, level: currentNode.level + 1, path: currentNode.path.concat(successor) });
+            }
+        }
     }
+
+    return "No solution within the depth limit.";
 }
 
-class LinkedList {
-    constructor() {
-        this.head = null;
-    }
-
-    reverse() {
-        let prev = null;
-        let current = this.head;
-        let next = null;
-
-        while (current !== null) {
-            next = current.next;
-            current.next = prev;
-            prev = current;
-            current = next;
-        }
-
-        this.head = prev;
-    }
-
-    append(data) {
-        if (this.head === null) {
-            this.head = new Node(data);
-            return;
-        }
-
-        let current = this.head;
-        while (current.next !== null) {
-            current = current.next;
-        }
-
-        current.next = new Node(data);
-    }
-
-    printList() {
-        let current = this.head;
-        while (current !== null) {
-            console.log(current.data);
-            current = current.next;
-        }
-    }
+function generateSuccessors(state) {
+    // Implement your function to generate successors based on the current state
+    // This is a placeholder function for demonstration purposes
+    return [state + 'A', state + 'B'];
 }
 
-// Example usage:
-const linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
+// Example usage
+let initialState = 'A';
+let goalState = 'ABC';
+let depthLimit = 3;
 
-console.log("Original Linked List:");
-linkedList.printList();
-
-linkedList.reverse();
-
-console.log("Reversed Linked List:");
-linkedList.printList();
+let result = breadthLimitedSearch(initialState, goalState, depthLimit);
+console.log(result);
