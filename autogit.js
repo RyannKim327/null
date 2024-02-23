@@ -1,17 +1,11 @@
-function reverseWords(str) {
-    // Split the string into an array of words
-    let words = str.split(' ');
+function isPalindrome(str) {
+    // Remove non-alphanumeric characters and convert the string to lowercase
+    str = str.replace(/[\W_]/g, '').toLowerCase();
 
-    // Reverse the array of words
-    words.reverse();
-
-    // Join the array of words back into a string
-    let reversedStr = words.join(' ');
-
-    return reversedStr;
+    // Compare the string with its reverse
+    return str === str.split('').reverse().join('');
 }
 
-// Usage
-let originalStr = "Hello World";
-let reversedStr = reverseWords(originalStr);
-console.log(reversedStr); // Output: "World Hello"
+// Test the function
+console.log(isPalindrome('racecar')); // Output: true
+console.log(isPalindrome('hello')); // Output: false
