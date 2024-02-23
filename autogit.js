@@ -1,21 +1,24 @@
-function longestCommonPrefix(strings) {
-    if (strings.length === 0) {
-        return "";
+function factorial(n) {
+    if (n === 0) {
+        return 1;
+    } else {
+        return n * factorial(n - 1);
     }
-    
-    const sortedStrings = strings.slice().sort();
-    const firstString = sortedStrings[0];
-    const lastString = sortedStrings[sortedStrings.length - 1];
-    let i = 0;
-    
-    while (i < firstString.length && firstString[i] === lastString[i]) {
-        i++;
-    }
-    
-    return firstString.substring(0, i);
 }
 
-// Example
-const strings = ["flower", "flow", "flight"];
-const result = longestCommonPrefix(strings);
-console.log(result); // Output: "fl"
+// Calculate the factorial of a number
+const number = 5;
+const result = factorial(number);
+console.log(`Factorial of ${number} is: ${result}`);
+function factorial(n) {
+    let result = 1;
+    for (let i = 1; i <= n; i++) {
+        result *= i;
+    }
+    return result;
+}
+
+// Calculate the factorial of a number
+const number = 5;
+const result = factorial(number);
+console.log(`Factorial of ${number} is: ${result}`);
