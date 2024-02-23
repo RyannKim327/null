@@ -1,15 +1,32 @@
-function isPalindrome(str) {
-    // Remove non-alphanumeric characters and convert to lowercase
-    const alphanumericStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
-    
-    // Reverse the string
-    const reversedStr = alphanumericStr.split('').reverse().join('');
-    
-    // Compare the original string with the reversed string
-    return alphanumericStr === reversedStr;
+class ListNode {
+  constructor(val) {
+    this.val = val;
+    this.next = null;
+  }
 }
 
-// Test the function
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // Output: true
-console.log(isPalindrome("racecar")); // Output: true
-console.log(isPalindrome("hello")); // Output: false
+function hasCycle(head) {
+  if (!head || !head.next) {
+    return false;
+  }
+
+  let slow = head;
+  let fast = head.next;
+
+  while (slow !== fast) {
+    if (!fast || !fast.next) {
+      return false;
+    }
+    slow = slow.next;
+    fast = fast.next.next;
+  }
+
+  return true;
+}
+
+// Example usage
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = head; // Create a cycle
+console.log(hasCycle(head)); // Output: true
