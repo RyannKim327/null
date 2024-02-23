@@ -1,35 +1,62 @@
-function topologicalSort(graph) {
-    const visited = new Set();
-    const stack = [];
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.left = null;
+        this.right = null;
+    }
+}
 
-    function dfs(node) {
-        visited.add(node);
+class BinaryTree {
+    constructor() {
+        this.root = null;
+    }
 
-        for (let neighbor of graph[node]) {
-            if (!visited.has(neighbor)) {
-                dfs(neighbor);
+    insert(data) {
+        const newNode = new Node(data);
+        if (this.root === null) {
+            this.root = newNode;
+        } else {
+            this.insertNode(this.root, newNode);
+        }
+    }
+
+    insertNode(node, newNode) {
+        if (newNode.data < node.data) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
             }
         }
-
-        stack.push(node);
     }
 
-    for (let node in graph) {
-        if (!visited.has(node)) {
-            dfs(node);
+    search(node, data) {
+        if (node === null) {
+            return false;
+        }
+
+        if (data < node.data) {
+            return this.search(node.left, data);
+        } else if (data > node.data) {
+            return this.search(node.right, data);
+        } else {
+            return true;
         }
     }
-
-    return stack.reverse();
 }
 
 // Example usage
-const graph = {
-    'A': ['B', 'C'],
-    'B': ['C', 'D'],
-    'C': ['D'],
-    'D': []
-};
+const tree = new BinaryTree();
+tree.insert(10);
+tree.insert(5);
+tree.insert(15);
+tree.insert(8);
 
-const sortedNodes = topologicalSort(graph);
-console.log(sortedNodes);
+console.log(tree.search(tree.root, 8)); // Output: true
+console.log(tree.search(tree.root, 20)); // Output: false
