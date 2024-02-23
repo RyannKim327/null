@@ -1,21 +1,29 @@
-function isPalindrome(str) {
-    let left = 0;
-    let right = str.length - 1;
+function interpolationSearch(arr, x) {
+    let low = 0;
+    let high = arr.length - 1;
+    
+    while (low <= high && x >= arr[low] && x <= arr[high]) {
+        let pos = Math.floor(low + ((x - arr[low]) * (high - low)) / (arr[high] - arr[low]));
 
-    while (left < right) {
-        if (str[left] !== str[right]) {
-            return false;
+        if (arr[pos] === x) {
+            return pos;
+        } else if (arr[pos] < x) {
+            low = pos + 1;
+        } else {
+            high = pos - 1;
         }
-        left++;
-        right--;
     }
 
-    return true;
+    return -1;
 }
 
-// Test the function
-const testString1 = "madam";
-const testString2 = "hello";
+// Example usage
+const sortedArray = [2, 4, 6, 8, 10, 12, 14, 16, 18];
+const target = 10;
+const resultIndex = interpolationSearch(sortedArray, target);
 
-console.log(isPalindrome(testString1)); // Output: true
-console.log(isPalindrome(testString2)); // Output: false
+if (resultIndex !== -1) {
+    console.log(`${target} found at index ${resultIndex}`);
+} else {
+    console.log(`${target} not found in the array`);
+}
