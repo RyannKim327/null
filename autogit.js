@@ -1,24 +1,12 @@
-function countingSort(arr) {
-    let max = Math.max(...arr);
-    let countArr = new Array(max + 1).fill(0);
-    let sortedArr = [];
-
-    // Count occurrences of each element
-    arr.forEach(num => {
-        countArr[num]++;
-    });
-
-    // Build sorted array
-    countArr.forEach((count, num) => {
-        for (let i = 0; i < count; i++) {
-            sortedArr.push(num);
-        }
-    });
-
-    return sortedArr;
+function validateEmail(email) {
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return regex.test(email);
 }
 
-// Example usage
-const unsortedArray = [3, 1, 6, 2, 4, 3, 0];
-const sortedArray = countingSort(unsortedArray);
-console.log(sortedArray);
+// Test the function with an email address
+const email = 'example@email.com';
+if (validateEmail(email)) {
+    console.log('Valid email address');
+} else {
+    console.log('Invalid email address');
+}
