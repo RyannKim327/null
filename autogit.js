@@ -1,49 +1,63 @@
-class Graph {
-    constructor() {
-        this.nodes = [];
-        this.adjList = {};
-    }
-
-    addNode(node) {
-        this.nodes.push(node);
-        this.adjList[node] = [];
-    }
-
-    addEdge(node1, node2) {
-        this.adjList[node1].push(node2);
-        this.adjList[node2].push(node1);
-    }
-
-    depthFirstSearch(startNode) {
-        const visited = {};
-        const result = [];
-
-        const dfs = (node) => {
-            if (!node) return;
-
-            visited[node] = true;
-            result.push(node);
-
-            this.adjList[node].forEach(neighbor => {
-                if (!visited[neighbor]) {
-                    dfs(neighbor);
-                }
-            });
-        };
-
-        dfs(startNode);
-        return result;
+class Node {
+    constructor(data, next = null) {
+        this.data = data;
+        this.next = next;
     }
 }
 
-// Usage
-const graph = new Graph();
-graph.addNode(1);
-graph.addNode(2);
-graph.addNode(3);
-graph.addNode(4);
-graph.addEdge(1, 2);
-graph.addEdge(1, 3);
-graph.addEdge(2, 4);
+class LinkedList {
+    constructor() {
+        this.head = null;
+    }
 
-console.log(graph.depthFirstSearch(1)); // Output: [1, 2, 4, 3]
+    reverse() {
+        let prev = null;
+        let current = this.head;
+        let next = null;
+
+        while (current !== null) {
+            next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
+        }
+
+        this.head = prev;
+    }
+
+    append(data) {
+        if (this.head === null) {
+            this.head = new Node(data);
+            return;
+        }
+
+        let current = this.head;
+        while (current.next !== null) {
+            current = current.next;
+        }
+
+        current.next = new Node(data);
+    }
+
+    printList() {
+        let current = this.head;
+        while (current !== null) {
+            console.log(current.data);
+            current = current.next;
+        }
+    }
+}
+
+// Example usage:
+const linkedList = new LinkedList();
+linkedList.append(1);
+linkedList.append(2);
+linkedList.append(3);
+
+console.log("Original Linked List:");
+linkedList.printList();
+
+linkedList.reverse();
+
+console.log("Reversed Linked List:");
+linkedList.printList();
