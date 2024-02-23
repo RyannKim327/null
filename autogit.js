@@ -1,107 +1,58 @@
 class Node {
-    constructor(value, level) {
-        this.value = value;
-        this.forward = new Array(level + 1).fill(null);
-    }
+  constructor(value) {
+    this.value = value;
+    this.children = [];
+  }
 }
 
-class SkipList {
-    constructor(maxLevel, p) {
-        this.maxLevel = maxLevel;
-        this.p = p;
-        this.level = 0;
-        this.head = new Node(-1, maxLevel);
+function biDirectionalSearch(startNode, goalNode) {
+  let startQueue = [startNode];
+  let goalQueue = [goalNode];
+  let startVisited = new Set();
+  let goalVisited = new Set();
+
+  while (startQueue.length > 0 && goalQueue.length > 0) {
+    const startCurr = startQueue.shift();
+    const goalCurr = goalQueue.shift();
+
+    if (startVisited.has(goalCurr.value)) {
+      console.log("Node found!");
+      return true;
     }
 
-    randomLevel() {
-        let level = 0;
-        while (Math.random() < this.p && level < this.maxLevel) {
-            level++;
-        }
-        return level;
+    if (goalVisited.has(startCurr.value)) {
+      console.log("Node found!");
+      return true;
     }
 
-    insert(value) {
-        const update = new Array(this.maxLevel + 1).fill(null);
-        let current = this.head;
-        
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-            update[i] = current;
-        }
+    startVisited.add(startCurr.value);
+    goalVisited.add(goalCurr.value);
 
-        current = current.forward[0];
-
-        if (current === null || current.value !== value) {
-            const newLevel = this.randomLevel();
-            if (newLevel > this.level) {
-                for (let i = this.level + 1; i <= newLevel; i++) {
-                    update[i] = this.head;
-                }
-                this.level = newLevel;
-            }
-
-            const newNode = new Node(value, newLevel);
-            for (let i = 0; i <= newLevel; i++) {
-                newNode.forward[i] = update[i].forward[i];
-                update[i].forward[i] = newNode;
-            }
-        }
+    for (let child of startCurr.children) {
+      if (!startVisited.has(child.value)) {
+        startQueue.push(child);
+      }
     }
 
-    search(value) {
-        let current = this.head;
-
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-        }
-
-        current = current.forward[0];
-
-        if (current !== null && current.value === value) {
-            return current;
-        } else {
-            return null;
-        }
+    for (let child of goalCurr.children) {
+      if (!goalVisited.has(child.value)) {
+        goalQueue.push(child);
+      }
     }
+  }
 
-    delete(value) {
-        const update = new Array(this.maxLevel + 1).fill(null);
-        let current = this.head;
-
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-            update[i] = current;
-        }
-
-        current = current.forward[0];
-
-        if (current !== null && current.value === value) {
-            for (let i = 0; i <= this.level; i++) {
-                if (update[i].forward[i] !== current)
-                    break;
-                update[i].forward[i] = current.forward[i];
-            }
-
-            while (this.level > 0 && this.head.forward[this.level] === null) {
-                this.level--;
-            }
-        }
-    }
+  console.log("Node not found!");
+  return false;
 }
 
 // Example usage
-const skipList = new SkipList(4, 0.5);
-skipList.insert(3);
-skipList.insert(6);
-skipList.insert(2);
-skipList.insert(7);
-console.log(skipList.search(3));
-skipList.delete(3);
-console.log(skipList.search(3));
+const a = new Node('A');
+const b = new Node('B');
+const c = new Node('C');
+const d = new Node('D');
+
+a.children.push(b, c);
+b.children.push(d);
+c.children.push(d);
+
+biDirectionalSearch(a, d);
