@@ -1,76 +1,64 @@
-class PriorityQueue {
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+
+class Queue {
     constructor() {
-        this.heap = [];
+        this.head = null;
+        this.tail = null;
     }
 
-    enqueue(item, priority) {
-        const node = { item, priority };
-        this.heap.push(node);
-        this.bubbleUp(this.heap.length - 1);
+    enqueue(data) {
+        const newNode = new Node(data);
+        if (!this.head) {
+            this.head = newNode;
+            this.tail = this.head;
+        } else {
+            this.tail.next = newNode;
+            this.tail = newNode;
+        }
     }
 
     dequeue() {
-        const min = this.heap[0];
-        const lastNode = this.heap.pop();
-
-        if (this.heap.length > 0) {
-            this.heap[0] = lastNode;
-            this.trickleDown(0);
+        if (!this.head) {
+            return null;
         }
 
-        return min.item;
-    }
+        const data = this.head.data;
+        this.head = this.head.next;
 
-    bubbleUp(index) {
-        while (index > 0) {
-            const parentIndex = Math.floor((index - 1) / 2);
-            if (this.heap[index].priority < this.heap[parentIndex].priority) {
-                [this.heap[index], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[index]];
-                index = parentIndex;
-            } else {
-                break;
-            }
+        if (!this.head) {
+            this.tail = null;
         }
-    }
 
-    trickleDown(index) {
-        while (index < this.heap.length) {
-            const left = 2 * index + 1;
-            const right = 2 * index + 2;
-            let smallest = index;
-
-            if (left < this.heap.length && this.heap[left].priority < this.heap[smallest].priority) {
-                smallest = left;
-            }
-
-            if (right < this.heap.length && this.heap[right].priority < this.heap[smallest].priority) {
-                smallest = right;
-            }
-
-            if (smallest !== index) {
-                [this.heap[index], this.heap[smallest]] = [this.heap[smallest], this.heap[index]];
-                index = smallest;
-            } else {
-                break;
-            }
-        }
+        return data;
     }
 
     isEmpty() {
-        return this.heap.length === 0;
+        return !this.head;
     }
 
-    size() {
-        return this.heap.length;
+    print() {
+        let current = this.head;
+        const result = [];
+        while (current) {
+            result.push(current.data);
+            current = current.next;
+        }
+        console.log(result.join(' -> '));
     }
 }
 
-// Example usage
-const pq = new PriorityQueue();
-pq.enqueue('Task 1', 2);
-pq.enqueue('Task 2', 1);
-pq.enqueue('Task 3', 3);
+// Example Usage
+const queue = new Queue();
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
 
-while (!pq.isEmpty()) {
-    console.log(pq.dequeue());
-}
+queue.print(); // output: 1 -> 2 - > 3
+
+console.log(queue.dequeue()); // output: 1
+queue.print(); // output: 2 -> 3
