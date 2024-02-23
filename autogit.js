@@ -1,19 +1,39 @@
-function isPrime(number) {
-    if(number <= 1) {
-        return false;
-    }
-    for (let i = 2; i <= Math.sqrt(number); i++) {
-        if (number % i === 0) {
-            return false;
+function findMajorityElement(nums) {
+    let count = 0;
+    let candidate = null;
+
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
         }
+
+        count += (num === candidate) ? 1 : -1;
     }
-    return true;
+
+    return candidate;
 }
 
-// Test the function
-const number = 17;
-if(isPrime(number)) {
-    console.log(number + " is a prime number.");
-} else {
-    console.log(number + " is not a prime number.");
+function isMajorityElement(nums, candidate) {
+    let count = 0;
+    for (const num of nums) {
+        if (num === candidate) {
+            count++;
+        }
+    }
+    
+    return count > nums.length / 2;
 }
+
+function getMajorityElement(nums) {
+    const candidate = findMajorityElement(nums);
+
+    if (isMajorityElement(nums, candidate)) {
+        return candidate;
+    } else {
+        return "No majority element found";
+    }
+}
+
+// Example
+const nums = [2, 2, 1, 1, 1, 2, 2];
+console.log(getMajorityElement(nums)); // Output: 2
