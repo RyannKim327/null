@@ -1,12 +1,46 @@
-let array = [1, 2, 3, 3, 4, 5, 5];
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
+    }
+}
 
-let uniqueArray = array.filter((item, index) => {
-    return array.indexOf(item) === index;
-});
+function findIntersection(list1, list2) {
+    let set = new Set();
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-let array = [1, 2, 3, 3, 4, 5, 5];
+    // Iterate through the first linked list and store nodes in a set
+    let current = list1;
+    while (current !== null) {
+        set.add(current);
+        current = current.next;
+    }
 
-let uniqueArray = [...new Set(array)];
+    // Iterate through the second linked list and check if the node exists in the set
+    current = list2;
+    while (current !== null) {
+        if (set.has(current)) {
+            return current; // Intersection found
+        }
+        current = current.next;
+    }
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+    return null; // No intersection found
+}
+
+// Example
+let commonNode = new Node(8);
+let list1 = new Node(1);
+list1.next = new Node(2);
+list1.next.next = new Node(3);
+list1.next.next.next = commonNode;
+
+let list2 = new Node(4);
+list2.next = new Node(5);
+list2.next.next = commonNode;
+
+let result = findIntersection(list1, list2);
+if (result) {
+    console.log("Intersection Node Value: " + result.value);
+} else {
+    console.log("No intersection found.");
+}
