@@ -1,53 +1,12 @@
-class Stack {
-    constructor() {
-        this.stack = [];
-    }
+function countOccurrences(text, word) {
+    const regex = new RegExp('\\b' + word + '\\b', 'g');
+    const matches = text.match(regex);
 
-    // Push element onto the stack
-    push(element) {
-        this.stack.push(element);
-    }
-
-    // Pop element from the top of the stack
-    pop() {
-        if (this.stack.length === 0) {
-            return "Stack is empty. Cannot pop.";
-        }
-        return this.stack.pop();
-    }
-
-    // Peek the top element of the stack
-    peek() {
-        if (this.stack.length === 0) {
-            return "Stack is empty. Cannot peek.";
-        }
-        return this.stack[this.stack.length - 1];
-    }
-
-    // Check if the stack is empty
-    isEmpty() {
-        return this.stack.length === 0;
-    }
-
-    // Get the size of the stack
-    size() {
-        return this.stack.length;
-    }
-
-    // Print the stack
-    print() {
-        console.log(this.stack);
-    }
+    return matches ? matches.length : 0;
 }
 
-// Example usage
-const stack = new Stack();
-stack.push(1);
-stack.push(2);
-stack.push(3);
+const text = "Hello world, hello friend, hello everyone!";
+const word = "hello";
+const occurrences = countOccurrences(text.toLowerCase(), word.toLowerCase());
 
-console.log(stack.peek()); // Output: 3
-
-console.log(stack.pop()); // Output: 3
-
-stack.print(); // Output: [1, 2]
+console.log(`The word "${word}" occurs ${occurrences} times in the text.`);
