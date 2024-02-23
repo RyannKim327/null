@@ -1,14 +1,64 @@
-function isPalindrome(str) {
-    // Remove non-alphanumeric characters and convert to lowercase
-    const cleanedStr = str.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
-    
-    // Check if the cleaned string is equal to its reverse
-    return cleanedStr === cleanedStr.split('').reverse().join('');
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
+    }
 }
 
-// Test the function
-const str1 = "A man, a plan, a canal, Panama";
-console.log(isPalindrome(str1)); // Output: true
+class Queue {
+    constructor() {
+        this.head = null;
+        this.tail = null;
+        this.size = 0;
+    }
 
-const str2 = "hello world";
-console.log(isPalindrome(str2)); // Output: false
+    enqueue(value) {
+        const newNode = new Node(value);
+        if (!this.head) {
+            this.head = newNode;
+            this.tail = newNode;
+        } else {
+            this.tail.next = newNode;
+            this.tail = newNode;
+        }
+        this.size++;
+    }
+
+    dequeue() {
+        if (!this.head) {
+            return null;
+        }
+        const dequeuedValue = this.head.value;
+        this.head = this.head.next;
+        this.size--;
+        return dequeuedValue;
+    }
+
+    isEmpty() {
+        return this.size === 0;
+    }
+
+    peek() {
+        if (!this.head) {
+            return null;
+        }
+        return this.head.value;
+    }
+
+    print() {
+        let current = this.head;
+        while (current) {
+            console.log(current.value);
+            current = current.next;
+        }
+    }
+}
+
+// Example usage
+const queue = new Queue();
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+queue.print(); // Output: 1, 2, 3
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.peek()); // Output: 2
