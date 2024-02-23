@@ -1,11 +1,11 @@
-function isPalindrome(str) {
-    // Remove non-alphanumeric characters and convert the string to lowercase
-    str = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-    
-    // Compare the string with its reverse
-    return str === str.split('').reverse().join('');
+function findStringLength(str) {
+    let count = 0;
+    for (let i = 0; str[i] !== undefined; i++) {
+        count++;
+    }
+    return count;
 }
 
-// Test the function
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
-console.log(isPalindrome("hello world")); // false
+let myString = "Hello, World!";
+let length = findStringLength(myString);
+console.log(length); // Output: 13
