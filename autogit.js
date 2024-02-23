@@ -1,60 +1,38 @@
 class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+    constructor(name, children = []) {
+        this.name = name;
+        this.children = children;
+    }
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+function depthLimitedSearch(node, target, depth) {
+    let stack = [{ node, depth: 0 }];
 
-  addNode(value) {
-    const newNode = new Node(value);
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
+    while (stack.length > 0) {
+        const { node, depth } = stack.pop();
 
-  findNthNodeFromEnd(n) {
-    if (!this.head) {
-      return null;
+        if (depth <= depth) {
+            if (node.name === target) {
+                return node;
+            }
+
+            for (let child of node.children) {
+                stack.push({ node: child, depth: depth + 1 });
+            }
+        }
     }
 
-    let pointer1 = this.head;
-    let pointer2 = this.head;
-
-    // Move the second pointer to the nth node from the beginning
-    for (let i = 0; i < n; i++) {
-      if (pointer2 === null) {
-        return null; // The list is too short
-      }
-      pointer2 = pointer2.next;
-    }
-
-    // Move both pointers until the second pointer reaches the end
-    while (pointer2.next) {
-      pointer1 = pointer1.next;
-      pointer2 = pointer2.next;
-    }
-
-    return pointer1;
-  }
+    return null;
 }
 
-// Example Usage
-const linkedList = new LinkedList();
-linkedList.addNode(1);
-linkedList.addNode(2);
-linkedList.addNode(3);
-linkedList.addNode(4);
-linkedList.addNode(5);
+// Example usage
+const nodeG = new Node('G');
+const nodeF = new Node('F');
+const nodeE = new Node('E', [nodeF, nodeG]);
+const nodeD = new Node('D');
+const nodeC = new Node('C', [nodeD]);
+const nodeB = new Node('B', [nodeE]);
+const nodeA = new Node('A', [nodeB, nodeC]);
 
-console.log(linkedList.findNthNodeFromEnd(2)); // This will log the node with value 4
+const targetNode = depthLimitedSearch(nodeA, 'G', 2);
+console.log(targetNode);
