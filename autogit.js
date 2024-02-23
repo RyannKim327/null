@@ -1,22 +1,9 @@
-function findFirstRepeatedChar(str) {
-    let charMap = {};
-
-    for (let char of str) {
-        if (charMap[char]) {
-            return char;
-        } else {
-            charMap[char] = 1;
-        }
-    }
-    
-    return null;
+function removeVowels(str) {
+    return str.replace(/[aeiouAEIOU]/g, '');
 }
 
-let str = "hello world";
-let repeatedChar = findFirstRepeatedChar(str);
+// Example usage
+const inputString = "Hello, World!";
+const stringWithoutVowels = removeVowels(inputString);
 
-if (repeatedChar) {
-    console.log("First repeated character: " + repeatedChar);
-} else {
-    console.log("No repeated characters found");
-}
+console.log(stringWithoutVowels); // Output will be: "Hll, Wrld!"
