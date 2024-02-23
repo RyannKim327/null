@@ -1,7 +1,7 @@
-function reverseString(str) {
-    return str.split("").reverse().join("");
-}
+// Original array
+let myArray = [1, 2, 3, 4, 5];
 
-// Example
-const originalString = "Hello, World!";
-console.log(reverseString(originalString)); // Output: "!dlroW ,olleH"
+// Reversed array
+let reversedArray = myArray.reverse();
+
+console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
