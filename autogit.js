@@ -1,65 +1,29 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+function binarySearch(arr, target) {
+    let left = 0;
+    let right = arr.length - 1;
+
+    while (left <= right) {
+        let mid = Math.floor((left + right) / 2);
+
+        if (arr[mid] === target) {
+            return mid;
+        } else if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
     }
+
+    return -1; // Element not found
 }
 
-class BinaryTree {
-    constructor() {
-        this.root = null;
-    }
+// Example usage
+const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
+const target = 13;
+const result = binarySearch(arr, target);
 
-    insert(value) {
-        const newNode = new Node(value);
-
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    insertNode(node, newNode) {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
-
-    search(value) {
-        return this.searchNode(this.root, value);
-    }
-
-    searchNode(node, value) {
-        if (node === null) {
-            return false;
-        }
-
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true;
-        }
-    }
+if (result !== -1) {
+    console.log(`Element found at index: ${result}`);
+} else {
+    console.log("Element not found");
 }
-
-// Usage example
-const tree = new BinaryTree();
-tree.insert(10);
-tree.insert(5);
-tree.insert(15);
-console.log(tree.search(5)); // Output: true
-console.log(tree.search(20)); // Output: false
