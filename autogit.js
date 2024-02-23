@@ -1,29 +1,68 @@
-function binarySearch(arr, target) {
-    let left = 0;
-    let right = arr.length - 1;
-    
-    while (left <= right) {
-        let mid = Math.floor((left + right) / 2);
-        
-        if (arr[mid] === target) {
-            return mid;
-        } else if (arr[mid] < target) {
-            left = mid + 1;
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+class BinarySearchTree {
+    constructor() {
+        this.root = null;
+    }
+
+    insert(data) {
+        const newNode = new Node(data);
+
+        if (this.root === null) {
+            this.root = newNode;
         } else {
-            right = mid - 1;
+            this.insertNode(this.root, newNode);
         }
     }
-    
-    return -1;
+
+    insertNode(node, newNode) {
+        if (newNode.data < node.data) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
+        }
+    }
+
+    search(data) {
+        return this.searchNode(this.root, data);
+    }
+
+    searchNode(node, data) {
+        if (!node) {
+            return null;
+        }
+
+        if (data < node.data) {
+            return this.searchNode(node.left, data);
+        } else if (data > node.data) {
+            return this.searchNode(node.right, data);
+        } else {
+            return node;
+        }
+    }
 }
 
-// Example usage
-const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
-const target = 13;
-const index = binarySearch(arr, target);
+// Example usage:
+const bst = new BinarySearchTree();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(8);
+bst.insert(3);
 
-if (index !== -1) {
-    console.log(`Target ${target} found at index ${index}.`);
-} else {
-    console.log(`Target ${target} not found.`);
-}
+console.log(bst.search(15)); // Output: Node { data: 15, left: null, right: null }
+console.log(bst.search(20)); // Output: null
