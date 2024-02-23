@@ -1,37 +1,32 @@
-// Assume this function is called when you want to establish a connection to an Android device
-function connectToAndroidDevice() {
-    return new Promise((resolve, reject) => {
-        // Perform the connection logic here, for example:
-        // You can use Fetch API or any AJAX library to perform connection tasks
-        // Here is a simple example using Fetch API:
-        fetch('http://example.com/connectToAndroidDevice', {
-            method: 'POST',
-            body: JSON.stringify({}),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => {
-            if (response.ok) {
-                resolve('Connection successful');
-            } else {
-                reject('Failed to connect to Android device');
-            }
-        })
-        .catch(error => {
-            reject('An error occurred while connecting to Android device');
-        });
-    });
-}
-
-// Call the function to connect to the Android device using async/await
-async function establishConnection() {
-    try {
-        const result = await connectToAndroidDevice();
-        console.log(result);
-    } catch (error) {
-        console.error(error);
+function mergeSort(array) {
+    if (array.length <= 1) {
+        return array;
     }
+
+    const middle = Math.floor(array.length / 2);
+    const left = array.slice(0, middle);
+    const right = array.slice(middle);
+
+    return merge(mergeSort(left), mergeSort(right));
 }
 
-establishConnection();
+function merge(left, right) {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            result.push(right[rightIndex]);
+            rightIndex++;
+        }
+    }
+
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+}
+
+const array = [8, 3, 1, 7, 0, 10, 2];
+console.log(mergeSort(array));
