@@ -1,76 +1,67 @@
 class Node {
-    constructor(x, y, parent) {
-        this.x = x;
-        this.y = y;
+    constructor(state, parent, cost) {
+        this.state = state;
         this.parent = parent;
-        this.g = 0;
-        this.h = 0;
-        this.f = 0;
-    }
-
-    isEqual(node) {
-        return this.x === node.x && this.y === node.y;
+        this.cost = cost;
     }
 }
 
-function heuristic(node, goal) {
-    return Math.abs(node.x - goal.x) + Math.abs(node.y - goal.y);
-}
+function beamSearch(initialState, beamWidth, goalTest, actions, takeAction, heuristic) {
+    let frontier = [new Node(initialState, null, 0)];
+    let explored = new Set();
 
-function astar(start, goal, grid) {
-    let openSet = [start];
-    let closedSet = [];
-    
-    while (openSet.length > 0) {
-        let current = openSet[0];
-        let currentIndex = 0;
+    while (frontier.length > 0) {
+        let nextFrontier = [];
 
-        for (let i = 1; i < openSet.length; i++) {
-            if (openSet[i].f < current.f) {
-                current = openSet[i];
-                currentIndex = i;
-            }
-        }
-
-        openSet.splice(currentIndex, 1);
-        closedSet.push(current);
-
-        if (current.isEqual(goal)) {
-            let path = [];
-            let temp = current;
-            while (temp) {
-                path.push(temp);
-                temp = temp.parent;
-            }
-            return path.reverse();
-        }
-
-        let neighbors = [];
-        // Add logic to find neighbors based on your grid
-
-        for (let neighbor of neighbors) {
-            if (closedSet.some(node => node.isEqual(neighbor))) {
-                continue;
-            }
-
-            let gScore = current.g + 1;
-            let betterPath = false;
-
-            if (!openSet.some(node => {
-                if (node.isEqual(neighbor) && gScore < node.g) {
-                    node.g = gScore;
-                    betterPath = true;
-                    return true;
+        for (let node of frontier) {
+            if (goalTest(node.state)) {
+                // Goal state found, backtrack to get the path
+                let path = [];
+                while (node.parent != null) {
+                    path.unshift(node.state);
+                    node = node.parent;
                 }
-                return false;
-            })) {
-                neighbor.g = gScore;
-                neighbor.h = heuristic(neighbor, goal);
-                neighbor.f = neighbor.g + neighbor.h;
-                openSet.push(neighbor);
+                path.unshift(initialState);
+                return path;
+            }
+
+            for (let action of actions(node.state)) {
+                let childState = takeAction(node.state, action);
+                let childNode = new Node(childState, node, node.cost + 1);
+                nextFrontier.push(childNode);
             }
         }
+
+        nextFrontier.sort((a, b) => a.cost + heuristic(a.state) - (b.cost + heuristic(b.state)));
+        frontier = nextFrontier.slice(0, beamWidth);
+
+        // Add explored states to prevent revisiting
+        explored.add(frontier.map(node => node.state).toString());
     }
 
-    return null;
+    return null; // Goal state not found
 }
+
+// Example usage
+let initialState = 1;
+let goalState = 10;
+let beamWidth = 2;
+
+function goalTest(state) {
+    return state === goalState;
+}
+
+function actions(state) {
+    return state + 1 <= goalState ? ['+1'] : [];
+}
+
+function takeAction(state, action) {
+    return state + 1;
+}
+
+function heuristic(state) {
+    return Math.abs(goalState - state);
+}
+
+let path = beamSearch(initialState, beamWidth, goalTest, actions, takeAction, heuristic);
+console.log(path);
