@@ -1,19 +1,10 @@
-// Function to find the median of two sorted arrays
-function findMedianSortedArrays(nums1, nums2) {
-    const combined = nums1.concat(nums2).sort((a, b) => a - b);
-    const length = combined.length;
-    
-    if (length % 2 === 0) {
-        const mid = length / 2;
-        return (combined[mid - 1] + combined[mid]) / 2;
-    } else {
-        const mid = Math.floor(length / 2);
-        return combined[mid];
+function findStringLength(str) {
+    let count = 0;
+    for (let i = 0; str[i] !== undefined; i++) {
+        count++;
     }
+    return count;
 }
 
-// Example usage
-const nums1 = [1, 3];
-const nums2 = [2, 4];
-
-console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.5
+let string = "Hello, World!";
+console.log(findStringLength(string)); // Output: 13
