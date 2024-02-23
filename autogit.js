@@ -1,33 +1,40 @@
-// Define the structure of a binary tree node
-class Node {
-    constructor(value, left = null, right = null) {
-        this.value = value;
-        this.left = left;
-        this.right = right;
+function BoyerMoore(text, pattern) {
+    var m = pattern.length;
+    var n = text.length;
+
+    if (m === 0) return 0;
+
+    var last = {};
+    for (var i = 0; i < m; i++) {
+        last[pattern.charAt(i)] = i;
     }
+
+    var i = m - 1;
+    var k = m - 1;
+
+    while (i < n) {
+        if (text.charAt(i) === pattern.charAt(k)) {
+            if (k === 0) {
+                return i;
+            }
+            i--;
+            k--;
+        } else {
+            i += m - Math.min(k, 1 + last[text.charAt(i)]);
+            k = m - 1;
+        }
+    }
+
+    return -1;
 }
 
-// Function to find the sum of all nodes in a binary tree
-function sumBinaryTree(root) {
-    if (root === null) {
-        return 0;
-    }
-    
-    return root.value + sumBinaryTree(root.left) + sumBinaryTree(root.right);
+// Test the implementation
+var text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+var pattern = "consectetur";
+var index = BoyerMoore(text, pattern);
+
+if (index !== -1) {
+    console.log("Pattern found at index: " + index);
+} else {
+    console.log("Pattern not found in the text.");
 }
-
-// Example binary tree
-const tree = new Node(1,
-    new Node(2,
-        new Node(4),
-        new Node(5)
-    ),
-    new Node(3,
-        new Node(6),
-        new Node(7)
-    )
-);
-
-// Calculate the sum of all nodes in the binary tree
-const sum = sumBinaryTree(tree);
-console.log("Sum of all nodes in the binary tree:", sum);
