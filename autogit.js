@@ -1,37 +1,14 @@
-function heapify(arr, n, i) {
-    let largest = i;
-    let left = 2 * i + 1;
-    let right = 2 * i + 2;
+let numbers = [5, 2, 8, 1, 4];
 
-    if (left < n && arr[left] > arr[largest]) {
-        largest = left;
-    }
+numbers.sort(function(a, b) {
+  return a - b;
+});
 
-    if (right < n && arr[right] > arr[largest]) {
-        largest = right;
-    }
+console.log(numbers); // Output: [1, 2, 4, 5, 8]
+let numbers = [5, 2, 8, 1, 4];
 
-    if (largest !== i) {
-        [arr[i], arr[largest]] = [arr[largest], arr[i]];
-        heapify(arr, n, largest);
-    }
-}
+numbers.sort(function(a, b) {
+  return b - a;
+});
 
-function heapSort(arr) {
-    const n = arr.length;
-
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(arr, n, i);
-    }
-
-    for (let i = n - 1; i > 0; i--) {
-        [arr[0], arr[i]] = [arr[i], arr[0]];
-        heapify(arr, i, 0);
-    }
-
-    return arr;
-}
-
-// Example usage
-const arr = [12, 11, 13, 5, 6, 7];
-console.log(heapSort(arr)); // Output: [5, 6, 7, 11, 12, 13]
+console.log(numbers); // Output: [8, 5, 4, 2, 1]
