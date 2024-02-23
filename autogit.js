@@ -1,40 +1,21 @@
-function BoyerMoore(text, pattern) {
-    var m = pattern.length;
-    var n = text.length;
+function isPalindrome(str) {
+    let i = 0;
+    let j = str.length - 1;
 
-    if (m === 0) return 0;
-
-    var last = {};
-    for (var i = 0; i < m; i++) {
-        last[pattern.charAt(i)] = i;
-    }
-
-    var i = m - 1;
-    var k = m - 1;
-
-    while (i < n) {
-        if (text.charAt(i) === pattern.charAt(k)) {
-            if (k === 0) {
-                return i;
-            }
-            i--;
-            k--;
-        } else {
-            i += m - Math.min(k, 1 + last[text.charAt(i)]);
-            k = m - 1;
+    while (i < j) {
+        if (str[i] !== str[j]) {
+            return false;
         }
+        i++;
+        j--;
     }
 
-    return -1;
+    return true;
 }
 
-// Test the implementation
-var text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
-var pattern = "consectetur";
-var index = BoyerMoore(text, pattern);
+// Test the function
+const str1 = "radar";
+const str2 = "hello";
 
-if (index !== -1) {
-    console.log("Pattern found at index: " + index);
-} else {
-    console.log("Pattern not found in the text.");
-}
+console.log(isPalindrome(str1)); // Output: true
+console.log(isPalindrome(str2)); // Output: false
