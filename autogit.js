@@ -1,48 +1,11 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
-    }
-}
-
-class LinkedList {
-    constructor() {
-        this.head = null;
-    }
-
-    append(data) {
-        const newNode = new Node(data);
-
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-
-        current.next = newNode;
-    }
-
-    getLength() {
-        let current = this.head;
-        let count = 0;
-
-        while (current) {
-            count++;
-            current = current.next;
-        }
-
-        return count;
-    }
+function findKthSmallestElement(arr, k) {
+    arr.sort((a, b) => a - b); // Sort the array in ascending order
+    return arr[k - 1]; // Return the kth smallest element (indexed at k-1)
 }
 
 // Example usage
-const linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
+const arr = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
+const k = 3;
+const kthSmallest = findKthSmallestElement(arr, k);
 
-console.log("Length of linked list: ", linkedList.getLength()); // Output: 3
+console.log(`The ${k}th smallest element in the array is: ${kthSmallest}`);
