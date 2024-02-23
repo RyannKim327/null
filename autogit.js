@@ -1,43 +1,37 @@
-// Beam search implementation
-function beamSearch(initialState, beamWidth, maxIterations) {
-    let candidates = [initialState];
-    
-    for (let i = 0; i < maxIterations; i++) {
-        let nextCandidates = [];
-        
-        for (let candidate of candidates) {
-            let nextSteps = generateNextSteps(candidate);
-            
-            for (let nextStep of nextSteps) {
-                let score = scoreFunction(nextStep);
-                nextCandidates.push({ sequence: nextStep, score });
-            }
-        }
-        
-        nextCandidates.sort((a, b) => b.score - a.score);
-        candidates = nextCandidates.slice(0, beamWidth);
+function buildSkipTable(pattern) {
+  const table = new Array(256).fill(pattern.length);
+
+  for (let i = 0; i < pattern.length - 1; i++) {
+    table[pattern.charCodeAt(i)] = pattern.length - 1 - i;
+  }
+
+  return table;
+}
+function boyerMooreHorspool(text, pattern) {
+  const skipTable = buildSkipTable(pattern);
+  const n = text.length;
+  const m = pattern.length;
+
+  let i = m - 1;
+
+  while (i < n) {
+    let k = 0;
+
+    while (k < m && pattern[m - 1 - k] === text[i - k]) {
+      k++;
     }
-    
-    return candidates;
+
+    if (k === m) {
+      return i - m + 1; // pattern found
+    }
+
+    i += skipTable[text.charCodeAt(i)];
+  }
+
+  return -1; // pattern not found
 }
+const text = "Hello World, Hello!";
+const pattern = "Hello";
+const index = boyerMooreHorspool(text, pattern);
 
-// Helper functions
-function generateNextSteps(sequence) {
-    // Generate all possible next steps from the current sequence
-    // This function depends on the problem you are solving
-    return [];
-}
-
-function scoreFunction(sequence) {
-    // Calculate the score of a given sequence
-    // This function depends on the problem you are solving
-    return 0;
-}
-
-// Example usage
-let initialState = "start";
-let beamWidth = 3;
-let maxIterations = 5;
-
-let result = beamSearch(initialState, beamWidth, maxIterations);
-console.log(result);
+console.log("Pattern found at index:", index);
