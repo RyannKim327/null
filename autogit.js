@@ -1,15 +1,51 @@
-function countOccurrences(str, char) {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === char) {
-            count++;
-        }
-    }
-    return count;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-// Usage example
-const myString = "Hello, World!";
-const myChar = "l";
-const occurrences = countOccurrences(myString, myChar);
-console.log(`The character '${myChar}' occurs ${occurrences} times in the string '${myString}'.`);
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.size = 0;
+  }
+
+  add(value) {
+    const newNode = new Node(value);
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+    this.size++;
+  }
+
+  findMiddle() {
+    let slowPointer = this.head;
+    let fastPointer = this.head;
+
+    while (fastPointer !== null && fastPointer.next !== null) {
+      slowPointer = slowPointer.next;
+      fastPointer = fastPointer.next.next;
+    }
+
+    return slowPointer;
+  }
+}
+
+// Create a linked list
+const linkedList = new LinkedList();
+linkedList.add(1);
+linkedList.add(2);
+linkedList.add(3);
+linkedList.add(4);
+linkedList.add(5);
+
+const middleNode = linkedList.findMiddle();
+console.log(middleNode.value); // Output the middle element
+
