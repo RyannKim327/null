@@ -1,38 +1,29 @@
-function burrowsWheelerTransform(str) {
-    // Create the cyclic permutations of the input string
-    let permutations = [str];
-    for (let i = 1; i < str.length; i++) {
-        permutations.push(str.slice(i) + str.slice(0, i));
-    }
+function binarySearch(arr, target) {
+    let left = 0;
+    let right = arr.length - 1;
 
-    // Sort the cyclic permutations
-    permutations.sort();
+    while (left <= right) {
+        let mid = Math.floor((left + right) / 2);
 
-    // Extract the last characters of each permutation to create the transformed string
-    let transformedStr = '';
-    for (let i = 0; i < permutations.length; i++) {
-        transformedStr += permutations[i].charAt(permutations[i].length - 1);
-    }
-
-    // Find the original string by looking for the transformed string in the sorted permutations
-    let originalStr = '';
-    let index = permutations.indexOf(str);
-    if (index !== -1) {
-        for (let i = 0; i < permutations.length; i++) {
-            originalStr += permutations[i].charAt(0);
+        if (arr[mid] === target) {
+            return mid;
+        } else if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
         }
     }
 
-    return {
-        transformedStr: transformedStr,
-        originalStr: originalStr
-    };
+    return -1;
 }
 
-// Test the Burrows-Wheeler Transform algorithm
-let inputStr = 'hello world';
-let result = burrowsWheelerTransform(inputStr);
+// Example usage
+const sortedArray = [1, 3, 5, 7, 9, 11, 13, 15, 17];
+const targetValue = 7;
+const index = binarySearch(sortedArray, targetValue);
 
-console.log('Original String:', inputStr);
-console.log('Transformed String:', result.transformedStr);
-console.log('Decoded String:', result.originalStr);
+if (index !== -1) {
+    console.log(`Found ${targetValue} at index ${index}`);
+} else {
+    console.log(`${targetValue} not found in the array`);
+}
