@@ -1,55 +1,42 @@
-function computeLPSArray(pattern) {
-    let lps = [0];
-    let len = 0;
-    let i = 1;
-
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-
-    return lps;
-}
-
-function kmpSearch(text, pattern) {
-    const lps = computeLPSArray(pattern);
-    let i = 0;
+function generatePrefixTable(pattern) {
+    const prefix = Array(pattern.length).fill(0);
     let j = 0;
-    const indices = [];
 
-    while (i < text.length) {
-        if (text[i] === pattern[j]) {
-            i++;
+    for (let i = 1; i < pattern.length; i++) {
+        while (j > 0 && pattern[i] !== pattern[j]) {
+            j = prefix[j - 1];
+        }
+        if (pattern[i] === pattern[j]) {
             j++;
         }
+        prefix[i] = j;
+    }
 
+    return prefix;
+}
+function kmpSearch(text, pattern) {
+    const prefixTable = generatePrefixTable(pattern);
+    const result = [];
+
+    let j = 0;
+    for (let i = 0; i < text.length; i++) {
+        while (j > 0 && text[i] !== pattern[j]) {
+            j = prefixTable[j - 1];
+        }
+        if (text[i] === pattern[j]) {
+            j++;
+        }
         if (j === pattern.length) {
-            indices.push(i - j);
-            j = lps[j - 1];
-        } else if (i < text.length && text[i] !== pattern[j]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
+            result.push(i - j + 1);
+            j = prefixTable[j - 1];
         }
     }
 
-    return indices;
+    return result;
 }
-
-// Usage example
 const text = "ABABDABACDABABCABAB";
 const pattern = "ABABCABAB";
-const indices = kmpSearch(text, pattern);
-console.log(indices); // Output: [10]
+
+const result = kmpSearch(text, pattern);
+
+console.log("Pattern found at positions:", result);
