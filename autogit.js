@@ -1,24 +1,14 @@
-function quickSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
-    } else {
-        const pivot = arr[0];
-        const left = [];
-        const right = [];
+// Define the API endpoint URL
+const apiUrl = 'https://jsonplaceholder.typicode.com/users';
 
-        for (let i = 1; i < arr.length; i++) {
-            if (arr[i] < pivot) {
-                left.push(arr[i]);
-            } else {
-                right.push(arr[i]);
-            }
-        }
-
-        return [...quickSort(left), pivot, ...quickSort(right)];
-    }
-}
-
-// Example usage:
-const arr = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
-const sortedArr = quickSort(arr);
-console.log(sortedArr);
+// Fetch data from the API
+fetch(apiUrl)
+  .then(response => response.json())
+  .then(data => {
+    // Log the received data
+    console.log(data);
+  })
+  .catch(error => {
+    // Log any errors that occur during the fetch
+    console.error('Error fetching data:', error);
+  });
