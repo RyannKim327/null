@@ -1,38 +1,55 @@
-class Node {
-    constructor(name, children = []) {
-        this.name = name;
-        this.children = children;
+function rabinKarp(text, pattern) {
+    const d = 256; // Number of characters in the input alphabet
+    const q = 101; // A prime number
+
+    const m = pattern.length;
+    const n = text.length;
+    let i, j;
+    let pHash = 0; // Hash value for the pattern
+    let tHash = 0; // Hash value for the text
+    let h = 1;
+
+    // Calculate the h value: h = d^(m-1) % q
+    for (i = 0; i < m - 1; i++) {
+        h = (h * d) % q;
     }
-}
 
-function depthLimitedSearch(node, target, depth) {
-    let stack = [{ node, depth: 0 }];
+    // Calculate the hash value of the pattern and first window of the text
+    for (i = 0; i < m; i++) {
+        pHash = (d * pHash + pattern.charCodeAt(i)) % q;
+        tHash = (d * tHash + text.charCodeAt(i)) % q;
+    }
 
-    while (stack.length > 0) {
-        const { node, depth } = stack.pop();
+    // Slide the pattern over the text one by one
+    for (i = 0; i <= n - m; i++) {
 
-        if (depth <= depth) {
-            if (node.name === target) {
-                return node;
+        // Check if the hash values match
+        if (pHash === tHash) {
+            // If hash values match, then check character by character
+            for (j = 0; j < m; j++) {
+                if (text[i + j] !== pattern[j]) {
+                    break;
+                }
             }
 
-            for (let child of node.children) {
-                stack.push({ node: child, depth: depth + 1 });
+            if (j === m) {
+                console.log("Pattern found at index " + i);
+            }
+        }
+
+        // Calculate the hash value for the next window of text
+        if (i < n - m) {
+            tHash = (d * (tHash - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % q;
+
+            // Make sure tHash is not negative
+            if (tHash < 0) {
+                tHash = tHash + q;
             }
         }
     }
-
-    return null;
 }
 
-// Example usage
-const nodeG = new Node('G');
-const nodeF = new Node('F');
-const nodeE = new Node('E', [nodeF, nodeG]);
-const nodeD = new Node('D');
-const nodeC = new Node('C', [nodeD]);
-const nodeB = new Node('B', [nodeE]);
-const nodeA = new Node('A', [nodeB, nodeC]);
-
-const targetNode = depthLimitedSearch(nodeA, 'G', 2);
-console.log(targetNode);
+// Test the algorithm with an example
+const text = "ABCCAB";
+const pattern = "CC";
+rabinKarp(text, pattern);
