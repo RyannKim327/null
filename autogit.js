@@ -1,29 +1,14 @@
-function binarySearch(arr, target) {
-    let left = 0;
-    let right = arr.length - 1;
-
-    while (left <= right) {
-        let mid = Math.floor((left + right) / 2);
-
-        if (arr[mid] === target) {
-            return mid;
-        } else if (arr[mid] < target) {
-            left = mid + 1;
-        } else {
-            right = mid - 1;
-        }
+function kthSmallest(arr, k) {
+    if (k < 1 || k > arr.length) {
+        return null;
     }
 
-    return -1; // Element not found
+    arr.sort((a, b) => a - b);
+
+    return arr[k - 1];
 }
 
-// Example usage
-const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
-const target = 13;
-const result = binarySearch(arr, target);
+let arr = [3, 6, 2, 8, 4, 5];
+let k = 3;
 
-if (result !== -1) {
-    console.log(`Element found at index: ${result}`);
-} else {
-    console.log("Element not found");
-}
+console.log(kthSmallest(arr, k)); // Output: 4
