@@ -1,67 +1,23 @@
-class BinaryHeap {
-  constructor() {
-    this.heap = [];
-  }
+function selectionSort(arr) {
+    const n = arr.length;
 
-  enqueue(value) {
-    this.heap.push(value);
-    this.bubbleUp(this.heap.length - 1);
-  }
+    for (let i = 0; i < n - 1; i++) {
+        let minIndex = i;
 
-  bubbleUp(index) {
-    const parentIndex = Math.floor((index - 1) / 2);
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
 
-    if (parentIndex >= 0 && this.heap[parentIndex] > this.heap[index]) {
-      [this.heap[parentIndex], this.heap[index]] = [this.heap[index], this.heap[parentIndex]];
-      this.bubbleUp(parentIndex);
-    }
-  }
-
-  dequeue() {
-    if (this.heap.length === 0) {
-      return null;
+        if (minIndex !== i) {
+            [arr[minIndex], arr[i]] = [arr[i], arr[minIndex]];
+        }
     }
 
-    if (this.heap.length === 1) {
-      return this.heap.pop();
-    }
-
-    const minValue = this.heap[0];
-    this.heap[0] = this.heap.pop();
-    this.bubbleDown(0);
-
-    return minValue;
-  }
-
-  bubbleDown(index) {
-    const leftChildIndex = 2 * index + 1;
-    const rightChildIndex = 2 * index + 2;
-    let minIndex = index;
-
-    if (leftChildIndex < this.heap.length && this.heap[leftChildIndex] < this.heap[minIndex]) {
-      minIndex = leftChildIndex;
-    }
-
-    if (rightChildIndex < this.heap.length && this.heap[rightChildIndex] < this.heap[minIndex]) {
-      minIndex = rightChildIndex;
-    }
-
-    if (minIndex !== index) {
-      [this.heap[minIndex], this.heap[index]] = [this.heap[index], this.heap[minIndex]];
-      this.bubbleDown(minIndex);
-    }
-  }
+    return arr;
 }
 
-// Test the priority queue implementation
-const priorityQueue = new BinaryHeap();
-priorityQueue.enqueue(5);
-priorityQueue.enqueue(2);
-priorityQueue.enqueue(10);
-priorityQueue.enqueue(1);
-
-console.log(priorityQueue.dequeue()); // Output: 1
-console.log(priorityQueue.dequeue()); // Output: 2
-console.log(priorityQueue.dequeue()); // Output: 5
-console.log(priorityQueue.dequeue()); // Output: 10
-console.log(priorityQueue.dequeue()); // Output: null
+// Example usage
+const arr = [64, 25, 12, 22, 11];
+console.log(selectionSort(arr)); // Output: [11, 12, 22, 25, 64]
