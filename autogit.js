@@ -1,39 +1,49 @@
-function hasCycle(head) {
-    if (!head || !head.next) {
-        return false;
-    }
+function buildFailureFunction(pattern) {
+    let f = new Array(pattern.length).fill(0);
+    let j = 0;
 
-    let slow = head;
-    let fast = head.next;
-
-    while (fast && fast.next) {
-        if (slow === fast) {
-            return true;
+    for (let i = 1; i < pattern.length; i++) {
+        while (j > 0 && pattern[i] !== pattern[j]) {
+            j = f[j - 1];
         }
-        slow = slow.next;
-        fast = fast.next.next;
+        if (pattern[i] === pattern[j]) {
+            j++;
+        }
+        f[i] = j;
     }
 
-    return false;
+    return f;
 }
 
-// Define the ListNode class for the linked list
-class ListNode {
-    constructor(val) {
-        this.val = val;
-        this.next = null;
+function kmpSearch(text, pattern) {
+    let f = buildFailureFunction(pattern);
+    let i = 0;
+    let j = 0;
+
+    while (i < text.length) {
+        if (text[i] === pattern[j]) {
+            if (j === pattern.length - 1) {
+                return i - j;
+            }
+            i++;
+            j++;
+        } else if (j > 0) {
+            j = f[j - 1];
+        } else {
+            i++;
+        }
     }
+
+    return -1;
 }
 
-// Example usage:
-const node1 = new ListNode(1);
-const node2 = new ListNode(2);
-const node3 = new ListNode(3);
-const node4 = new ListNode(4);
+// Example usage
+let text = "ababcababcabcabc";
+let pattern = "abcabc";
+let index = kmpSearch(text, pattern);
 
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2; // Pointing back to node2 creates a cycle
-
-console.log(hasCycle(node1)); // Output: true
+if (index !== -1) {
+    console.log(`Pattern found at index ${index}`);
+} else {
+    console.log("Pattern not found");
+}
