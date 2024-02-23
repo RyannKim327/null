@@ -1,6 +1,15 @@
-let array = [1, 2, 3, 4, 5];
+function isArraySorted(arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;
+        }
+    }
+    return true;
+}
 
-// Remove the element at index 2
-array.splice(2, 1);
+// Test the function
+const sortedArray = [1, 2, 3, 4, 5];
+const unsortedArray = [5, 4, 3, 2, 1];
 
-console.log(array); // Output: [1, 2, 4, 5]
+console.log(isArraySorted(sortedArray)); // Output: true
+console.log(isArraySorted(unsortedArray)); // Output: false
