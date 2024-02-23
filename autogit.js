@@ -1,43 +1,35 @@
-function buildBadCharTable(pattern) {
-    const badCharTable = {};
-    const patternLength = pattern.length;
+function topologicalSort(graph) {
+    const visited = new Set();
+    const stack = [];
 
-    for (let i = 0; i < patternLength - 1; i++) {
-        badCharTable[pattern[i]] = patternLength - i - 1;
-    }
+    function dfs(node) {
+        visited.add(node);
 
-    return badCharTable;
-}
-
-function boyerMooreSearch(text, pattern) {
-    const badCharTable = buildBadCharTable(pattern);
-    const textLength = text.length;
-    const patternLength = pattern.length;
-    let skip = 0;
-
-    while (textLength - skip >= patternLength) {
-        let i = patternLength - 1;
-
-        while (text[skip + i] === pattern[i]) {
-            if (i === 0) {
-                return skip;
+        for (let neighbor of graph[node]) {
+            if (!visited.has(neighbor)) {
+                dfs(neighbor);
             }
-            i--;
         }
 
-        skip += badCharTable[text[skip + patternLength - 1]] || patternLength;
+        stack.push(node);
     }
 
-    return -1;
+    for (let node in graph) {
+        if (!visited.has(node)) {
+            dfs(node);
+        }
+    }
+
+    return stack.reverse();
 }
 
 // Example usage
-const text = 'Hello, world! This is a test text for searching.';
-const pattern = 'test';
-const result = boyerMooreSearch(text, pattern);
+const graph = {
+    'A': ['B', 'C'],
+    'B': ['C', 'D'],
+    'C': ['D'],
+    'D': []
+};
 
-if (result !== -1) {
-    console.log(`Pattern found at index ${result}`);
-} else {
-    console.log('Pattern not found in the text');
-}
+const sortedNodes = topologicalSort(graph);
+console.log(sortedNodes);
