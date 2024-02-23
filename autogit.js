@@ -1,46 +1,30 @@
-// Node class to represent a node in the linked list
 class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
 
-// LinkedList class to represent the linked list
-class LinkedList {
-    constructor() {
-        this.head = null;
+function calculateSum(node) {
+    if (node === null) {
+        return 0;
     }
 
-    // Method to add a new node to the end of the linked list
-    addNode(data) {
-        const newNode = new Node(data);
-
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
-        }
-    }
-
-    // Method to print all the nodes in the linked list
-    printList() {
-        let current = this.head;
-        while (current) {
-            console.log(current.data);
-            current = current.next;
-        }
-    }
+    return (
+        node.value +
+        calculateSum(node.left) +
+        calculateSum(node.right)
+    );
 }
 
 // Usage example
-const list = new LinkedList();
-list.addNode(1);
-list.addNode(2);
-list.addNode(3);
+// Construct a binary tree
+let root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
 
-list.printList(); // Output: 1, 2, 3
+// Calculate the sum of all nodes in the binary tree
+let sum = calculateSum(root);
+console.log("Sum of all nodes in the binary tree: " + sum); // Output: 10
