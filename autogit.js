@@ -1,33 +1,25 @@
-// Create a function to make an HTTP request
-function makeHttpRequest() {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    const url = 'https://api.example.com/data';
+function isAnagram(str1, str2) {
+    // Remove any non-alphabetic characters and convert the strings to lowercase
+    const cleanStr1 = str1.replace(/[^A-Za-z]/g, '').toLowerCase();
+    const cleanStr2 = str2.replace(/[^A-Za-z]/g, '').toLowerCase();
     
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          resolve(xhr.responseText);
-        } else {
-          reject(new Error('Request failed'));
-        }
-      }
-    };
-
-    xhr.open('GET', url, true);
-    xhr.send();
-  });
+    // Check if the lengths of the cleaned strings are equal
+    if (cleanStr1.length !== cleanStr2.length) {
+        return false;
+    }
+    
+    // Sort the characters of the cleaned strings and compare them
+    const sortedStr1 = cleanStr1.split('').sort().join('');
+    const sortedStr2 = cleanStr2.split('').sort().join('');
+    
+    return sortedStr1 === sortedStr2;
 }
 
-// Call the function using an async task
-async function connectToServer() {
-  try {
-    const response = await makeHttpRequest();
-    console.log('Response from server:', response);
-  } catch (error) {
-    console.error('Error connecting to server:', error);
-  }
+// Test the function
+const str1 = "listen";
+const str2 = "silent";
+if (isAnagram(str1, str2)) {
+    console.log(`${str1} and ${str2} are anagrams.`);
+} else {
+    console.log(`${str1} and ${str2} are not anagrams.`);
 }
-
-// Call the async function to connect to the server
-connectToServer();
