@@ -1,46 +1,73 @@
-function buildFailureFunction(pattern) {
-    let f = new Array(pattern.length).fill(0);
-    let j = 0;
+function preprocessPattern(pattern) {
+    const patternLength = pattern.length;
+    const badCharTable = {};
+    const goodSuffixTable = new Array(patternLength).fill(0);
 
-    for (let i = 1; i < pattern.length; i++) {
-        while (j > 0 && pattern[i] !== pattern[j]) {
-            j = f[j - 1];
-        }
-        if (pattern[i] === pattern[j]) {
-            j++;
-        }
-        f[i] = j;
+    // Preprocess bad character table
+    for (let i = 0; i < patternLength - 1; i++) {
+        badCharTable[pattern[i]] = patternLength - 1 - i;
     }
 
-    return f;
+    // Preprocess good suffix table
+    const suffixes = new Array(patternLength).fill(0);
+    let lastPrefixPosition = patternLength;
+
+    for (let i = patternLength - 1; i >= 0; i--) {
+        if (isPrefix(pattern, i + 1)) {
+            lastPrefixPosition = i + 1;
+        }
+
+        suffixes[i] = lastPrefixPosition - i + patternLength - 1;
+    }
+
+    for (let i = 0; i < patternLength - 1; i++) {
+        const suffixLen = suffixes[i];
+        goodSuffixTable[suffixLen] = patternLength - 1 - i + suffixLen;
+    }
+
+    return { badCharTable, goodSuffixTable };
 }
 
-function kmpSearch(text, pattern) {
-    let f = buildFailureFunction(pattern);
-    let i = 0;
-    let j = 0;
+function isPrefix(pattern, p) {
+    for (let i = p, j = 0; i < pattern.length; i++, j++) {
+        if (pattern[i] !== pattern[j]) {
+            return false;
+        }
+    }
+    return true;
+}
 
-    while (i < text.length) {
-        if (text[i] === pattern[j]) {
-            if (j === pattern.length - 1) {
-                return i - j;
-            }
-            i++;
-            j++;
-        } else if (j > 0) {
-            j = f[j - 1];
+function boyerMoore(text, pattern) {
+    const { badCharTable, goodSuffixTable } = preprocessPattern(pattern);
+    const patternLength = pattern.length;
+    const textLength = text.length;
+
+    let i = 0;
+    while (i <= textLength - patternLength) {
+        let j = patternLength - 1;
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
+        }
+
+        if (j < 0) {
+            // Pattern found
+            return i;
         } else {
-            i++;
+            const badCharSkip = badCharTable[text[i + j]] || patternLength;
+            const goodSuffixSkip = goodSuffixTable[j];
+
+            i += Math.max(badCharSkip, goodSuffixSkip);
         }
     }
 
+    // Pattern not found
     return -1;
 }
 
-// Example usage
-let text = "ababcababcabcabc";
-let pattern = "abcabc";
-let index = kmpSearch(text, pattern);
+// Test the implementation
+const text = "ABAAABCD";
+const pattern = "ABC";
+const index = boyerMoore(text, pattern);
 
 if (index !== -1) {
     console.log(`Pattern found at index ${index}`);
