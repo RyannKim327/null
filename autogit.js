@@ -1,33 +1,34 @@
-function binarySearchRecursive(arr, target, start = 0, end = arr.length - 1) {
-    // Base case: if start index becomes greater than end index, return -1
-    if (start > end) {
-        return -1;
-    }
-    
-    // Calculate mid index
-    const mid = Math.floor((start + end) / 2);
+function topologicalSort(graph) {
+    const visited = {};
+    const stack = [];
 
-    // If the middle element is the target, return its index
-    if (arr[mid] === target) {
-        return mid;
-    } 
-    // If the target is less than the middle element, search the left half
-    else if (target < arr[mid]) {
-        return binarySearchRecursive(arr, target, start, mid - 1);
-    } 
-    // If the target is greater than the middle element, search the right half
-    else {
-        return binarySearchRecursive(arr, target, mid + 1, end);
+    function dfs(node) {
+        visited[node] = true;
+        for (let neighbor of graph[node]) {
+            if (!visited[neighbor]) {
+                dfs(neighbor);
+            }
+        }
+        stack.push(node);
     }
+
+    for (let node in graph) {
+        if (!visited[node]) {
+            dfs(node);
+        }
+    }
+
+    return stack.reverse();
 }
 
-// Test the binary search algorithm
-const arr = [1, 3, 5, 7, 9, 11, 13, 15];
-const target = 11;
-const index = binarySearchRecursive(arr, target);
+// Example usage:
+const graph = {
+    1: [2, 3],
+    2: [4],
+    3: [4, 5],
+    4: [],
+    5: []
+};
 
-if (index !== -1) {
-    console.log(`Target ${target} found at index ${index}.`);
-} else {
-    console.log(`Target ${target} not found in the array.`);
-}
+const result = topologicalSort(graph);
+console.log(result); // Output: [1, 3, 5, 2, 4]
