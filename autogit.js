@@ -1,10 +1,24 @@
-function findStringLength(str) {
-    let count = 0;
-    for (let char of str) {
-        count++;
+function factorial(n) {
+    if (n === 0 || n === 1) {
+        return 1;
+    } else {
+        return n * factorial(n - 1);
     }
-    return count;
 }
 
-let myString = "Hello, World!";
-console.log(findStringLength(myString)); // Output: 13
+// Example usage
+const num = 5;
+const result = factorial(num);
+console.log(`The factorial of ${num} is: ${result}`);
+function factorial(n) {
+    let result = 1;
+    for (let i = 1; i <= n; i++) {
+        result *= i;
+    }
+    return result;
+}
+
+// Example usage
+const num = 5;
+const result = factorial(num);
+console.log(`The factorial of ${num} is: ${result}`);
