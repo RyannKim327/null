@@ -1,68 +1,49 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.left = null;
-        this.right = null;
+function fibonacciSearch(arr, key) {
+    let fibMMm2 = 0; // (m-2)'th Fibonacci No.
+    let fibMMm1 = 1; // (m-1)'th Fibonacci No.
+    let fibM = fibMMm2 + fibMMm1; // m'th Fibonacci
+
+    let n = arr.length;
+
+    while (fibM < n) {
+        fibMMm2 = fibMMm1;
+        fibMMm1 = fibM;
+        fibM = fibMMm2 + fibMMm1;
     }
+
+    let offset = -1;
+
+    while (fibM > 1) {
+
+        let i = Math.min(offset + fibMMm2, n - 1);
+
+        if (arr[i] < key) {
+            fibM = fibMMm1;
+            fibMMm1 = fibMMm2;
+            fibMMm2 = fibM - fibMMm1;
+            offset = i;
+        }
+        else if (arr[i] > key) {
+            fibM = fibMMm2;
+            fibMMm1 = fibMMm1 - fibMMm2;
+            fibMMm2 = fibM - fibMMm1;
+        }
+        else {
+            return i;
+        }
+    }
+
+    if (fibMMm1 && arr[n-1] === key) {
+        return n-1;
+    }
+
+    return -1;
 }
 
-class BinarySearchTree {
-    constructor() {
-        this.root = null;
-    }
+// Example usage
+let arr = [2, 3, 5, 8, 13, 21, 34, 55, 89];
+let key = 21;
 
-    insert(data) {
-        const newNode = new Node(data);
+let index = fibonacciSearch(arr, key);
 
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    insertNode(node, newNode) {
-        if (newNode.data < node.data) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
-
-    search(data) {
-        return this.searchNode(this.root, data);
-    }
-
-    searchNode(node, data) {
-        if (!node) {
-            return null;
-        }
-
-        if (data < node.data) {
-            return this.searchNode(node.left, data);
-        } else if (data > node.data) {
-            return this.searchNode(node.right, data);
-        } else {
-            return node;
-        }
-    }
-}
-
-// Example usage:
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(8);
-bst.insert(3);
-
-console.log(bst.search(15)); // Output: Node { data: 15, left: null, right: null }
-console.log(bst.search(20)); // Output: null
+console.log(index); // Output: 5
