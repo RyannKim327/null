@@ -1,7 +1,16 @@
-let arr = [1, 2, 3, 4, 2, 3, 5, 6];
+function isPalindrome(str) {
+    // Remove special characters and convert the string to lowercase
+    str = str.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-let uniqueArr = arr.filter((value, index, self) => {
-    return self.indexOf(value) === index;
-});
+    // Reverse the string
+    let reversedStr = str.split('').reverse().join('');
 
-console.log(uniqueArr); // Output: [1, 2, 3, 4, 5, 6]
+    // Check if the original string is equal to the reversed string
+    return str === reversedStr;
+}
+let inputString = "A man, a plan, a canal, Panama!";
+if (isPalindrome(inputString)) {
+    console.log(inputString + " is a palindrome!");
+} else {
+    console.log(inputString + " is not a palindrome.");
+}
