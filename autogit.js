@@ -1,11 +1,9 @@
-function findKthSmallestElement(arr, k) {
-    arr.sort((a, b) => a - b); // Sort the array in ascending order
-    return arr[k - 1]; // Return the k-th smallest element (index k-1)
+// Take user input for a number
+let number = prompt("Enter a number:");
+
+// Check if the number is even or odd
+if (number % 2 === 0) {
+    console.log(`${number} is even.`);
+} else {
+    console.log(`${number} is odd.`);
 }
-
-// Example of how to use the function
-const array = [7, 10, 4, 3, 20, 15];
-const k = 2; // Find the 2nd smallest element
-
-const kthSmallestElement = findKthSmallestElement(array, k);
-console.log(`The ${k}-th smallest element is: ${kthSmallestElement}`);
