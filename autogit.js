@@ -1,13 +1,8 @@
-// Define an array of integers
-let numbers = [5, 2, 8, 1, 4];
-
-// Sort the array in ascending order
-numbers.sort(function(a, b) {
-    return a - b;
-});
-
-// Print the sorted array
-console.log(numbers);
-numbers.sort(function(a, b) {
-    return b - a;
-});
+let str1 = "Hello";
+let str2 = "World";
+let concatenatedString = str1 + " " + str2;
+console.log(concatenatedString); // Output: Hello World
+let str1 = "Hello";
+let str2 = "World";
+let concatenatedString = str1.concat(" ", str2);
+console.log(concatenatedString); // Output: Hello World
