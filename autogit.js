@@ -1,42 +1,55 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.children = [];
-    }
-}
+function computeLPSArray(pattern) {
+    let lps = [0];
+    let len = 0;
+    let i = 1;
 
-function breadthFirstSearch(root) {
-    if (!root) {
-        return;
-    }
-
-    const queue = [root];
-    const visited = new Set();
-
-    while (queue.length > 0) {
-        const currentNode = queue.shift();
-
-        if (!visited.has(currentNode)) {
-            console.log(currentNode.value);
-            visited.add(currentNode);
-
-            for (let child of currentNode.children) {
-                queue.push(child);
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
             }
         }
     }
+
+    return lps;
 }
 
-// Example usage
-const nodeA = new Node('A');
-const nodeB = new Node('B');
-const nodeC = new Node('C');
-const nodeD = new Node('D');
-const nodeE = new Node('E');
-const nodeF = new Node('F');
+function kmpSearch(text, pattern) {
+    const lps = computeLPSArray(pattern);
+    let i = 0;
+    let j = 0;
+    const indices = [];
 
-nodeA.children = [nodeB, nodeC];
-nodeB.children = [nodeD, nodeE];
-nodeC.children = [nodeF];
+    while (i < text.length) {
+        if (text[i] === pattern[j]) {
+            i++;
+            j++;
+        }
 
-breadthFirstSearch(nodeA);
+        if (j === pattern.length) {
+            indices.push(i - j);
+            j = lps[j - 1];
+        } else if (i < text.length && text[i] !== pattern[j]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+
+    return indices;
+}
+
+// Usage example
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const indices = kmpSearch(text, pattern);
+console.log(indices); // Output: [10]
