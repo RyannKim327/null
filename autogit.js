@@ -1,28 +1,39 @@
-function longestCommonSubstring(str1, str2) {
-  let maxLength = 0;
-  let endIndex = 0;
-  const dp = Array.from({ length: str1.length + 1 }, () => Array(str2.length + 1).fill(0));
-
-  for (let i = 1; i <= str1.length; i++) {
-    for (let j = 1; j <= str2.length; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-        if (dp[i][j] > maxLength) {
-          maxLength = dp[i][j];
-          endIndex = i - 1;
-        }
-      }
+function hasCycle(head) {
+    if (!head || !head.next) {
+        return false;
     }
-  }
 
-  if (maxLength === 0) {
-    return '';
-  }
+    let slow = head;
+    let fast = head.next;
 
-  return str1.substring(endIndex - maxLength + 1, endIndex + 1);
+    while (fast && fast.next) {
+        if (slow === fast) {
+            return true;
+        }
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+
+    return false;
 }
 
-// Example usage
-const str1 = 'abcdef';
-const str2 = 'abc';
-console.log(longestCommonSubstring(str1, str2)); // Output: 'abc'
+// Define the ListNode class for the linked list
+class ListNode {
+    constructor(val) {
+        this.val = val;
+        this.next = null;
+    }
+}
+
+// Example usage:
+const node1 = new ListNode(1);
+const node2 = new ListNode(2);
+const node3 = new ListNode(3);
+const node4 = new ListNode(4);
+
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node2; // Pointing back to node2 creates a cycle
+
+console.log(hasCycle(node1)); // Output: true
