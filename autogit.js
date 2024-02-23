@@ -1,62 +1,61 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.left = null;
-        this.right = null;
+class Stack {
+  constructor() {
+    this.stack = [];
+  }
+
+  // Push element to the top of the stack
+  push(element) {
+    this.stack.push(element);
+  }
+
+  // Remove and return the element at the top of the stack
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
     }
+    return this.stack.pop();
+  }
+
+  // Return the element at the top of the stack
+  peek() {
+    return this.stack[this.stack.length - 1];
+  }
+
+  // Check if the stack is empty
+  isEmpty() {
+    return this.stack.length === 0;
+  }
+
+  // Return the size of the stack
+  size() {
+    return this.stack.length;
+  }
+
+  // Print the stack elements
+  print() {
+    console.log(this.stack);
+  }
 }
 
-class BinaryTree {
-    constructor() {
-        this.root = null;
-    }
+// Example Usage
+const stack = new Stack();
 
-    insert(data) {
-        const newNode = new Node(data);
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
+stack.push(1);
+stack.push(2);
+stack.push(3);
 
-    insertNode(node, newNode) {
-        if (newNode.data < node.data) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
+stack.print(); // Output: [1, 2, 3]
 
-    search(node, data) {
-        if (node === null) {
-            return false;
-        }
+console.log(stack.pop()); // Output: 3
 
-        if (data < node.data) {
-            return this.search(node.left, data);
-        } else if (data > node.data) {
-            return this.search(node.right, data);
-        } else {
-            return true;
-        }
-    }
-}
+console.log(stack.peek()); // Output: 2
 
-// Example usage
-const tree = new BinaryTree();
-tree.insert(10);
-tree.insert(5);
-tree.insert(15);
-tree.insert(8);
+console.log(stack.size()); // Output: 2
 
-console.log(tree.search(tree.root, 8)); // Output: true
-console.log(tree.search(tree.root, 20)); // Output: false
+console.log(stack.isEmpty()); // Output: false
+
+console.log(stack.pop()); // Output: 2
+
+console.log(stack.pop()); // Output: 1
+
+console.log(stack.pop()); // Output: Stack is empty
