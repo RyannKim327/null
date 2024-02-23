@@ -1,29 +1,24 @@
-function interpolationSearch(arr, x) {
-    let low = 0;
-    let high = arr.length - 1;
-    
-    while (low <= high && x >= arr[low] && x <= arr[high]) {
-        let pos = Math.floor(low + ((x - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+function quickSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
+    } else {
+        const pivot = arr[0];
+        const left = [];
+        const right = [];
 
-        if (arr[pos] === x) {
-            return pos;
-        } else if (arr[pos] < x) {
-            low = pos + 1;
-        } else {
-            high = pos - 1;
+        for (let i = 1; i < arr.length; i++) {
+            if (arr[i] < pivot) {
+                left.push(arr[i]);
+            } else {
+                right.push(arr[i]);
+            }
         }
+
+        return [...quickSort(left), pivot, ...quickSort(right)];
     }
-
-    return -1;
 }
 
-// Example usage
-const sortedArray = [2, 4, 6, 8, 10, 12, 14, 16, 18];
-const target = 10;
-const resultIndex = interpolationSearch(sortedArray, target);
-
-if (resultIndex !== -1) {
-    console.log(`${target} found at index ${resultIndex}`);
-} else {
-    console.log(`${target} not found in the array`);
-}
+// Example usage:
+const arr = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
+const sortedArr = quickSort(arr);
+console.log(sortedArr);
