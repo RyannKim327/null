@@ -1,9 +1,12 @@
-function reverseString(str) {
-    return str.split("").reverse().join("");
-}
+let array = [1, 2, 3, 3, 4, 5, 5];
 
-// Example usage
-const originalString = "Hello, World!";
-const reversedString = reverseString(originalString);
+let uniqueArray = array.filter((item, index) => {
+    return array.indexOf(item) === index;
+});
 
-console.log(reversedString); // Outputs: "!dlroW ,olleH"
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+let array = [1, 2, 3, 3, 4, 5, 5];
+
+let uniqueArray = [...new Set(array)];
+
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
