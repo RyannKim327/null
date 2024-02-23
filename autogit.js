@@ -1,31 +1,24 @@
-function interpolationSearch(arr, x) {
-    let low = 0;
-    let high = arr.length - 1;
+function countingSort(arr) {
+    let max = Math.max(...arr);
+    let countArr = new Array(max + 1).fill(0);
+    let sortedArr = [];
 
-    while (low <= high && x >= arr[low] && x <= arr[high]) {
-        let pos = Math.floor(low + ((x - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+    // Count occurrences of each element
+    arr.forEach(num => {
+        countArr[num]++;
+    });
 
-        if (arr[pos] === x) {
-            return pos;
+    // Build sorted array
+    countArr.forEach((count, num) => {
+        for (let i = 0; i < count; i++) {
+            sortedArr.push(num);
         }
+    });
 
-        if (arr[pos] < x) {
-            low = pos + 1;
-        } else {
-            high = pos - 1;
-        }
-    }
-
-    return -1;
+    return sortedArr;
 }
 
 // Example usage
-const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const x = 12;
-const index = interpolationSearch(arr, x);
-
-if (index !== -1) {
-    console.log(`Element found at index ${index}`);
-} else {
-    console.log("Element not found");
-}
+const unsortedArray = [3, 1, 6, 2, 4, 3, 0];
+const sortedArray = countingSort(unsortedArray);
+console.log(sortedArray);
