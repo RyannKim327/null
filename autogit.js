@@ -1,28 +1,42 @@
-function radixSort(arr) {
-    const getDigit = (num, place) => Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
+function heapify(arr, n, i) {
+    let largest = i;
+    let left = 2 * i + 1;
+    let right = 2 * i + 2;
 
-    const getMaxDigits = (arr) => Math.max(...arr).toString().length;
+    if (left < n && arr[left] > arr[largest]) {
+        largest = left;
+    }
 
-    const radixSortHelper = (arr) => {
-        const maxDigitCount = getMaxDigits(arr);
-        let result = arr;
+    if (right < n && arr[right] > arr[largest]) {
+        largest = right;
+    }
 
-        for (let k = 0; k < maxDigitCount; k++) {
-            let digitBuckets = Array.from({ length: 10 }, () => []);
-
-            for (let i = 0; i < result.length; i++) {
-                digitBuckets[getDigit(result[i], k)].push(result[i]);
-            }
-
-            result = [].concat(...digitBuckets);
-        }
-
-        return result;
-    };
-
-    return radixSortHelper(arr);
+    if (largest !== i) {
+        [arr[i], arr[largest]] = [arr[largest], arr[i]];
+        heapify(arr, n, largest);
+    }
 }
 
-// Example usage:
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log(radixSort(arr));
+function heapSort(arr) {
+    const n = arr.length;
+
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        heapify(arr, n, i);
+    }
+
+    for (let i = n - 1; i > 0; i--) {
+        [arr[0], arr[i]] = [arr[i], arr[0]];
+        heapify(arr, i, 0);
+    }
+
+    return arr;
+}
+
+const arr = [12, 11, 13, 5, 6, 7];
+console.log("Original array:");
+console.log(arr);
+
+const sortedArr = heapSort(arr);
+
+console.log("Sorted array:");
+console.log(sortedArr);
