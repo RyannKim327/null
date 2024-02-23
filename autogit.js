@@ -1,27 +1,21 @@
-class TreeNode {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+function longestCommonPrefix(strings) {
+    if (strings.length === 0) {
+        return "";
     }
+    
+    const sortedStrings = strings.slice().sort();
+    const firstString = sortedStrings[0];
+    const lastString = sortedStrings[sortedStrings.length - 1];
+    let i = 0;
+    
+    while (i < firstString.length && firstString[i] === lastString[i]) {
+        i++;
+    }
+    
+    return firstString.substring(0, i);
 }
 
-function maxDepth(root) {
-    if (!root) {
-        return 0;
-    }
-
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
-
-    return 1 + Math.max(leftDepth, rightDepth);
-}
-
-// Example binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(maxDepth(root)); // Output: 3
+// Example
+const strings = ["flower", "flow", "flight"];
+const result = longestCommonPrefix(strings);
+console.log(result); // Output: "fl"
