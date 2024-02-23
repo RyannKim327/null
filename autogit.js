@@ -1,21 +1,32 @@
-function isAnagram(str1, str2) {
-    // Remove any non-alphabetic characters and convert to lowercase
-    str1 = str1.replace(/[^A-Za-z]/g, '').toLowerCase();
-    str2 = str2.replace(/[^A-Za-z]/g, '').toLowerCase();
-
-    // Check if the lengths of both strings are equal
-    if (str1.length !== str2.length) {
-        return false;
+function isPrime(num) {
+  if (num < 2) return false;
+  for (let i = 2; i <= Math.sqrt(num); i++) {
+    if (num % i === 0) {
+      return false;
     }
-
-    // Sort the characters of both strings and compare them
-    const sortedStr1 = str1.split('').sort().join('');
-    const sortedStr2 = str2.split('').sort().join('');
-
-    return sortedStr1 === sortedStr2;
+  }
+  return true;
 }
 
-// Test the function
-const string1 = 'listen';
-const string2 = 'silent';
-console.log(isAnagram(string1, string2)); // Output: true
+function largestPrimeFactor(num) {
+  let largestPrime = 0;
+  
+  for (let i = 2; i <= Math.floor(Math.sqrt(num)); i++) {
+    if (num % i === 0) {
+      let factor = num / i;
+      if (isPrime(factor)) {
+        largestPrime = factor;
+        break;
+      }
+      if (isPrime(i)) {
+        largestPrime = i;
+      }
+    }
+  }
+  
+  return largestPrime;
+}
+
+// Example usage
+const num = 13195;
+console.log(largestPrimeFactor(num)); // Output: 29
