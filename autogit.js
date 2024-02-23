@@ -1,5 +1,4 @@
-const array = [10, 5, 20, 15, 30];
+let array = [10, 5, 8, 15, 3];
+let max = Math.max(...array);
 
-const max = Math.max(...array);
-
-console.log(max); // Output: 30
+console.log(max); // Output: 15
