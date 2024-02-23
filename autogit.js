@@ -1,5 +1,15 @@
-let array = [1, 2, 3, 4, 2, 3, 5];
+function isArraySortedAscending(arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;
+        }
+    }
+    return true;
+}
 
-let uniqueArray = Array.from(new Set(array));
+// Example usage
+const sortedArray = [1, 2, 3, 4, 5];
+const unsortedArray = [5, 2, 8, 1, 9];
 
-console.log(uniqueArray); // Output will be [1, 2, 3, 4, 5]
+console.log(isArraySortedAscending(sortedArray)); // Output: true
+console.log(isArraySortedAscending(unsortedArray)); // Output: false
