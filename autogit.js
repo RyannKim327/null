@@ -1,76 +1,14 @@
-function preprocessPattern(pattern) {
-    const patternLength = pattern.length;
-    const badCharTable = {};
-    const goodSuffixTable = new Array(patternLength).fill(0);
-
-    // Preprocess bad character table
-    for (let i = 0; i < patternLength - 1; i++) {
-        badCharTable[pattern[i]] = patternLength - 1 - i;
-    }
-
-    // Preprocess good suffix table
-    const suffixes = new Array(patternLength).fill(0);
-    let lastPrefixPosition = patternLength;
-
-    for (let i = patternLength - 1; i >= 0; i--) {
-        if (isPrefix(pattern, i + 1)) {
-            lastPrefixPosition = i + 1;
-        }
-
-        suffixes[i] = lastPrefixPosition - i + patternLength - 1;
-    }
-
-    for (let i = 0; i < patternLength - 1; i++) {
-        const suffixLen = suffixes[i];
-        goodSuffixTable[suffixLen] = patternLength - 1 - i + suffixLen;
-    }
-
-    return { badCharTable, goodSuffixTable };
+function countOccurrences(text, word) {
+    // Use a regular expression with the 'g' flag to find all occurrences of the word in the text
+    const regex = new RegExp(word, 'g');
+    const matches = text.match(regex);
+    
+    // Return the number of matches found
+    return matches ? matches.length : 0;
 }
 
-function isPrefix(pattern, p) {
-    for (let i = p, j = 0; i < pattern.length; i++, j++) {
-        if (pattern[i] !== pattern[j]) {
-            return false;
-        }
-    }
-    return true;
-}
+const text = "This is a sample sentence, a sample text with the word 'sample' multiple times.";
+const word = "sample";
 
-function boyerMoore(text, pattern) {
-    const { badCharTable, goodSuffixTable } = preprocessPattern(pattern);
-    const patternLength = pattern.length;
-    const textLength = text.length;
-
-    let i = 0;
-    while (i <= textLength - patternLength) {
-        let j = patternLength - 1;
-        while (j >= 0 && pattern[j] === text[i + j]) {
-            j--;
-        }
-
-        if (j < 0) {
-            // Pattern found
-            return i;
-        } else {
-            const badCharSkip = badCharTable[text[i + j]] || patternLength;
-            const goodSuffixSkip = goodSuffixTable[j];
-
-            i += Math.max(badCharSkip, goodSuffixSkip);
-        }
-    }
-
-    // Pattern not found
-    return -1;
-}
-
-// Test the implementation
-const text = "ABAAABCD";
-const pattern = "ABC";
-const index = boyerMoore(text, pattern);
-
-if (index !== -1) {
-    console.log(`Pattern found at index ${index}`);
-} else {
-    console.log("Pattern not found");
-}
+const occurrences = countOccurrences(text, word);
+console.log(`The word '${word}' occurs ${occurrences} times in the text.`);
