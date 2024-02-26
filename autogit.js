@@ -1,46 +1,23 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
+function selectionSort(arr) {
+    const n = arr.length;
+    for (let i = 0; i < n - 1; i++) {
+        let minIndex = i;
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+        if (minIndex !== i) {
+            const temp = arr[i];
+            arr[i] = arr[minIndex];
+            arr[minIndex] = temp;
+        }
+    }
+    return arr;
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-
-  addNode(data) {
-    const newNode = new Node(data);
-
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next !== null) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
-
-  getLength() {
-    let current = this.head;
-    let length = 0;
-
-    while (current !== null) {
-      length++;
-      current = current.next;
-    }
-
-    return length;
-  }
-}
-
-// Usage
-const ll = new LinkedList();
-ll.addNode(1);
-ll.addNode(2);
-ll.addNode(3);
-
-console.log("Length of the linked list:", ll.getLength());
+// Example usage
+const array = [64, 25, 12, 22, 11];
+console.log("Original Array: " + array.join(', '));
+const sortedArray = selectionSort(array);
+console.log("Sorted Array: " + sortedArray.join(', '));
