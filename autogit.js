@@ -1,10 +1,12 @@
-function factorial(n) {
-    if (n === 0) {
-        return 1;
-    } else {
-        return n * factorial(n - 1);
+function getStringLength(str) {
+    let count = 0;
+    while (str[count] !== undefined) {
+        count++;
     }
+    return count;
 }
 
-// Test the factorial function
-console.log(factorial(5)); // Output: 120
+// Test the function
+const myString = "Hello, World!";
+const length = getStringLength(myString);
+console.log(length); // Output: 13
