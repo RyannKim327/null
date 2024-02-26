@@ -1,40 +1,46 @@
-function longestCommonSubsequence(str1, str2) {
-    const m = str1.length;
-    const n = str2.length;
-
-    // Create a 2D array to store the length of the longest common subsequence
-    const dp = Array.from({ length: m + 1 }, () => Array.from({ length: n + 1 }, () => 0));
-
-    // Fill the dp array
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-            } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-            }
-        }
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
     }
-
-    // Reconstruct the longest common subsequence
-    let i = m, j = n;
-    const result = [];
-    while (i > 0 && j > 0) {
-        if (str1[i - 1] === str2[j - 1]) {
-            result.unshift(str1[i - 1]);
-            i--;
-            j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--;
-        } else {
-            j--;
-        }
-    }
-
-    return result.join('');
 }
 
-// Test the function
-const str1 = 'ABAZDC';
-const str2 = 'BACBAD';
-console.log(longestCommonSubsequence(str1, str2)); // Output: 'ABAD'
+class LinkedList {
+    constructor() {
+        this.head = null;
+    }
+
+    addNode(value) {
+        let newNode = new Node(value);
+
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+    }
+
+    getLength() {
+        let current = this.head;
+        let length = 0;
+
+        while (current) {
+            length++;
+            current = current.next;
+        }
+
+        return length;
+    }
+}
+
+// Example usage
+let linkedList = new LinkedList();
+linkedList.addNode(1);
+linkedList.addNode(2);
+linkedList.addNode(3);
+
+console.log("Length of the linked list: " + linkedList.getLength()); // Output: 3
