@@ -1,37 +1,18 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
+function countOccurrences(str, char) {
+    let count = 0;
+    
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
+            count++;
+        }
+    }
+    
+    return count;
 }
 
-function reverseLinkedList(head) {
-  let prev = null;
-  let current = head;
-  
-  while (current !== null) {
-    let next = current.next;
-    current.next = prev;
-    prev = current;
-    current = next;
-  }
-  
-  return prev;
-}
+// Usage example
+const str = "Hello, world!";
+const char = "o";
+const occurrences = countOccurrences(str, char);
 
-// Example usage
-let node1 = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-
-node1.next = node2;
-node2.next = node3;
-
-let reversedHead = reverseLinkedList(node1);
-
-// Print reversed LinkedList
-let current = reversedHead;
-while (current !== null) {
-  console.log(current.data);
-  current = current.next;
-}
+console.log(`The character '${char}' occurs ${occurrences} times in the string.`);
