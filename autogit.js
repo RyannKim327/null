@@ -1,58 +1,25 @@
-class Node {
-    constructor(value, cost, parent) {
-        this.value = value;
-        this.cost = cost;
-        this.parent = parent;
+function countingSort(arr) {
+  const max = Math.max(...arr);
+  const countArr = new Array(max + 1).fill(0);
+  const sortedArr = [];
+
+  // Count frequencies of elements
+  for (let i = 0; i < arr.length; i++) {
+    countArr[arr[i]]++;
+  }
+
+  // Build sorted array
+  for (let i = 0; i < countArr.length; i++) {
+    while (countArr[i] > 0) {
+      sortedArr.push(i);
+      countArr[i]--;
     }
-}
+  }
 
-function beamSearch(initialState, beamWidth, goalTest, successor, heuristic) {
-    let open = [new Node(initialState, 0, null)]; // Initial list of nodes
-    while (open.length > 0) {
-        let nextOpen = [];
-        for (let node of open) {
-            // Check for goal state
-            if (goalTest(node.value)) {
-                let path = [];
-                while (node) {
-                    path.unshift(node.value);
-                    node = node.parent;
-                }
-                return path;
-            }
-
-            // Expand current node
-            let children = successor(node);
-            for (let child of children) {
-                let totalCost = node.cost + heuristic(child);
-                nextOpen.push(new Node(child, totalCost, node));
-            }
-        }
-
-        // Sort by cost and select top nodes based on beam width
-        nextOpen.sort((a, b) => a.cost - b.cost);
-        open = nextOpen.slice(0, beamWidth);
-    }
-
-    return null; // If no path found
+  return sortedArr;
 }
 
 // Example usage
-let initialState = 1;
-let goalState = 10;
-
-function goalTest(state) {
-    return state === goalState;
-}
-
-function successor(node) {
-    let children = [node.value + 1, node.value + 2]; // Example successors
-    return children;
-}
-
-function heuristic(state) {
-    return Math.abs(goalState - state); // Example heuristic
-}
-
-let result = beamSearch(initialState, 3, goalTest, successor, heuristic);
-console.log(result);
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const sortedArr = countingSort(arr);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
