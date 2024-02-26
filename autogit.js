@@ -1,23 +1,46 @@
-function countingSort(arr) {
-    let max = Math.max(...arr);
-    let count = Array(max + 1).fill(0);
-    let result = [];
+function buildPrefixTable(pattern) {
+    let prefixTable = Array(pattern.length).fill(0);
+    let j = 0;
 
-    for (let num of arr) {
-        count[num]++;
+    for (let i = 1; i < pattern.length; i++) {
+        while (j > 0 && pattern[i] !== pattern[j]) {
+            j = prefixTable[j - 1];
+        }
+        if (pattern[i] === pattern[j]) {
+            j++;
+        }
+        prefixTable[i] = j;
     }
 
-    for (let i = 0; i <= max; i++) {
-        while (count[i] > 0) {
-            result.push(i);
-            count[i]--;
+    return prefixTable;
+}
+
+function kmpSearch(text, pattern) {
+    let prefixTable = buildPrefixTable(pattern);
+    let j = 0;
+
+    for (let i = 0; i < text.length; i++) {
+        while (j > 0 && text[i] !== pattern[j]) {
+            j = prefixTable[j - 1];
+        }
+        if (text[i] === pattern[j]) {
+            j++;
+        }
+        if (j === pattern.length) {
+            return i - j + 1; // pattern found at index i - j + 1 in text
         }
     }
 
-    return result;
+    return -1; // pattern not found in text
 }
 
-// Example usage
-const arr = [4, 2, 2, 8, 3, 3, 1];
-const sortedArr = countingSort(arr);
-console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
+// Example Usage
+let text = "ABABDABACDABABCABAB";
+let pattern = "ABABCABAB";
+
+let index = kmpSearch(text, pattern);
+if (index !== -1) {
+    console.log(`Pattern found at index ${index}`);
+} else {
+    console.log("Pattern not found in text");
+}
