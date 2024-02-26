@@ -1,15 +1,35 @@
-function findMedianSortedArrays(nums1, nums2) {
-    let mergedArray = nums1.concat(nums2).sort((a, b) => a - b);
+function findMajorityElement(nums) {
+    let majorityElement = nums[0];
+    let count = 1;
 
-    let length = mergedArray.length;
-    if (length % 2 === 0) {
-        return (mergedArray[length / 2 - 1] + mergedArray[length / 2]) / 2;
+    for (let i = 1; i < nums.length; i++) {
+        if (nums[i] === majorityElement) {
+            count++;
+        } else {
+            count--;
+            if (count === 0) {
+                majorityElement = nums[i];
+                count = 1;
+            }
+        }
+    }
+
+    // At this point, the majority element is stored in `majorityElement`
+    // Now, we need to verify if it is actually the majority element
+    count = 0;
+    for (let i = 0; i < nums.length; i++) {
+        if (nums[i] === majorityElement) {
+            count++;
+        }
+    }
+
+    if (count > nums.length / 2) {
+        return majorityElement;
     } else {
-        return mergedArray[Math.floor(length / 2)];
+        return "No majority element found";
     }
 }
 
-// Example usage
-let nums1 = [1, 3];
-let nums2 = [2];
-console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.0
+// Test the algorithm
+const nums = [2, 2, 1, 1, 1, 2, 2];
+console.log(findMajorityElement(nums)); // Output: 2
