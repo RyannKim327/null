@@ -1,45 +1,22 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-function isPalindrome(head) {
-    let values = [];
-    
-    // Traverse the linked list and store values in an array
-    let current = head;
-    while (current !== null) {
-        values.push(current.value);
-        current = current.next;
-    }
-    
-    // Compare values to check for palindrome
-    let start = 0;
-    let end = values.length - 1;
-    
-    while (start < end) {
-        if (values[start] !== values[end]) {
-            return false;
+function bubbleSort(arr) {
+    const len = arr.length;
+    let swapped;
+    do {
+        swapped = false;
+        for (let i = 0; i < len - 1; i++) {
+            if (arr[i] > arr[i + 1]) {
+                // Swap the elements
+                const temp = arr[i];
+                arr[i] = arr[i + 1];
+                arr[i + 1] = temp;
+                swapped = true;
+            }
         }
-        start++;
-        end--;
-    }
-    
-    return true;
+    } while (swapped);
+
+    return arr;
 }
 
-// Example usage
-let node1 = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-let node2b = new Node(2);
-let node1b = new Node(1);
-
-node1.next = node2;
-node2.next = node3;
-node3.next = node2b;
-node2b.next = node1b;
-
-console.log(isPalindrome(node1)); // Output: true
+// Example usage:
+const arr = [3, 5, 1, 4, 2];
+console.log(bubbleSort(arr)); // Output: [1, 2, 3, 4, 5]
