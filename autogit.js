@@ -1,25 +1,16 @@
+function findMedianSortedArrays(nums1, nums2) {
+    const mergedArray = nums1.concat(nums2).sort((a, b) => a - b);
+    const length = mergedArray.length;
 
-function isPalindrome(str) {
-    let left = 0;
-    let right = str.length - 1;
-
-    while (left < right) {
-        if (str[left] !== str[right]) {
-            return false; // If characters at left and right index don't match, it's not a palindrome
-        }
-
-        left++;
-        right--;
+    if (length % 2 !== 0) {
+        return mergedArray[Math.floor(length / 2)];
+    } else {
+        const mid = length / 2;
+        return (mergedArray[mid - 1] + mergedArray[mid]) / 2;
     }
-    
-    return true;
 }
 
-// Test the function
-const inputString = "racecar";
-if (isPalindrome(inputString)) {
-    console.log(`${inputString} is a palindrome.`);
-} else {
-    console.log(`${inputString} is not a palindrome.`);
-}
-
+// Example usage
+const nums1 = [1, 3];
+const nums2 = [2];
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.0
