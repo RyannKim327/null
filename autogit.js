@@ -1,16 +1,16 @@
-function findMedianSortedArrays(nums1, nums2) {
-    let mergedArray = nums1.concat(nums2).sort((a, b) => a - b);
-    let length = mergedArray.length;
-    
-    if (length % 2 === 0) {
-        return (mergedArray[length / 2 - 1] + mergedArray[length / 2]) / 2;
-    } else {
-        return mergedArray[Math.floor(length / 2)];
+function findMaxSubarray(arr) {
+    let maxEndingHere = arr[0];
+    let maxSoFar = arr[0];
+
+    for (let i = 1; i < arr.length; i++) {
+        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
+        maxSoFar = Math.max(maxSoFar, maxEndingHere);
     }
+
+    return maxSoFar;
 }
 
 // Example usage
-let nums1 = [1, 3];
-let nums2 = [2];
-console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2
-
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const maxSum = findMaxSubarray(array);
+console.log(maxSum); // Output: 6
