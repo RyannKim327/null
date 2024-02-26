@@ -1,36 +1,40 @@
-class Node {
-    constructor(startIndex, endIndex) {
-        this.startIndex = startIndex;
-        this.endIndex = endIndex;
-        this.children = {};
-    }
-}
-class SuffixTree {
-    constructor(str) {
-        this.root = new Node(-1, -1); // Root node with start and end indices -1
-        this.buildSuffixTree(str);
-    }
+function longestCommonSubsequence(str1, str2) {
+    const m = str1.length;
+    const n = str2.length;
 
-    buildSuffixTree(str) {
-        // Implement the logic to build the suffix tree
-    }
+    // Create a 2D array to store the length of the longest common subsequence
+    const dp = Array.from({ length: m + 1 }, () => Array.from({ length: n + 1 }, () => 0));
 
-    // Implement other methods like search, insert, etc.
-}
-buildSuffixTree(str) {
-    for (let i = 0; i < str.length; i++) {
-        this.addSuffix(str.substring(i), i);
-    }
-}
-
-addSuffix(suffix, index) {
-    let currentNode = this.root;
-    for (let i = 0; i < suffix.length; i++) {
-        let char = suffix[i];
-        if (!currentNode.children[char]) {
-            currentNode.children[char] = new Node(index + i, Infinity); // Infinity for end index of leaf nodes
+    // Fill the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
         }
-        currentNode = currentNode.children[char];
     }
-    currentNode.endIndex = index + suffix.length - 1;
+
+    // Reconstruct the longest common subsequence
+    let i = m, j = n;
+    const result = [];
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            result.unshift(str1[i - 1]);
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
+        }
+    }
+
+    return result.join('');
 }
+
+// Test the function
+const str1 = 'ABAZDC';
+const str2 = 'BACBAD';
+console.log(longestCommonSubsequence(str1, str2)); // Output: 'ABAD'
