@@ -1,26 +1,11 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+var xhr = new XMLHttpRequest();
+
+xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+        var response = JSON.parse(xhr.responseText);
+        console.log(response);
     }
-}
+};
 
-function sumOfNodes(root) {
-    if (root === null) {
-        return 0;
-    }
-
-    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
-}
-
-// Example of creating a binary tree
-let root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-// Calculate the sum of all nodes
-const sum = sumOfNodes(root);
-console.log("Sum of all nodes in the binary tree is: " + sum);
+xhr.open('GET', 'https://api.example.com/data', true);
+xhr.send();
