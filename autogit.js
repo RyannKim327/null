@@ -1,16 +1,17 @@
-function findMedianSortedArrays(nums1, nums2) {
-    const merged = [...nums1, ...nums2].sort((a, b) => a - b);
-    const len = merged.length;
-    
-    if (len % 2 === 0) {
-        return (merged[len / 2 - 1] + merged[len / 2]) / 2;
-    } else {
-        return merged[Math.floor(len / 2)];
-    }
+function isPalindrome(str) {
+    // Remove non-alphanumeric characters and convert the string to lowercase
+    const alphanumericStr = str.toLowerCase().replace(/[\W_]/g, '');
+
+    // Reverse the string
+    const reversedStr = alphanumericStr.split('').reverse().join('');
+
+    // Check if the original string is equal to its reverse
+    return alphanumericStr === reversedStr;
 }
 
-// Example usage
-const nums1 = [1, 3];
-const nums2 = [2];
-const median = findMedianSortedArrays(nums1, nums2);
-console.log(median);
+// Test the function
+const str1 = "A man, a plan, a canal, Panama";
+console.log(isPalindrome(str1)); // Output: true
+
+const str2 = "Hello, world!";
+console.log(isPalindrome(str2)); // Output: false
