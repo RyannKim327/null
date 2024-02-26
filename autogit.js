@@ -1,17 +1,45 @@
-function findMedianSortedArrays(nums1, nums2) {
-    const mergedArray = [...nums1, ...nums2].sort((a, b) => a - b);
-    const length = mergedArray.length;
-    
-    if (length % 2 === 0) {
-        // If the merged array has an even length, return the average of the two middle elements
-        return (mergedArray[length / 2 - 1] + mergedArray[length / 2]) / 2;
-    } else {
-        // If the merged array has an odd length, return the middle element
-        return mergedArray[Math.floor(length / 2)];
+function rabinKarp(text, pattern) {
+    const prime = 101; // You can choose any prime number
+    const patternHash = getHash(pattern);
+    const textHash = getHash(text.substring(0, pattern.length));
+
+    for (let i = 0; i <= text.length - pattern.length; i++) {
+        if (patternHash === textHash) {
+            if (text.substring(i, i + pattern.length) === pattern) {
+                return i; // Match found
+            }
+        }
+
+        if (i < text.length - pattern.length) {
+            textHash = recalculateHash(text, i, i + pattern.length, textHash, prime);
+        }
     }
+
+    return -1; // Match not found
 }
 
-// Example usage
-const nums1 = [1, 3];
-const nums2 = [2];
-console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.0
+function getHash(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash += str.charCodeAt(i);
+    }
+    return hash;
+}
+
+function recalculateHash(str, oldIndex, newIndex, oldHash, prime) {
+    let newHash = oldHash - str.charCodeAt(oldIndex);
+    newHash = newHash / prime;
+    newHash += str.charCodeAt(newIndex) * Math.pow(prime, str.length - 1);
+    return newHash;
+}
+
+// Test the Rabin-Karp algorithm
+const text = "hello world";
+const pattern = "world";
+const index = rabinKarp(text, pattern);
+
+if (index !== -1) {
+    console.log("Pattern found at index: " + index);
+} else {
+    console.log("Pattern not found");
+}
