@@ -1,43 +1,25 @@
-function burrowsWheelerTransform(input) {
-    let matrix = [];
+function shellSort(arr) {
+    var n = arr.length;
+    var gap = Math.floor(n/2);
     
-    // Create a matrix with all rotations of the input string
-    for (let i = 0; i < input.length; i++) {
-        matrix.push(input.slice(i) + input.slice(0, i));
+    while(gap > 0) {
+        for (var i = gap; i < n; i++) {
+            var temp = arr[i];
+            var j = i;
+            
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
+            }
+            arr[j] = temp;
+        }
+        
+        gap = Math.floor(gap / 2);
     }
-
-    // Sort the matrix lexicographically
-    matrix.sort();
-
-    // Extract the last characters of each row to get the transformed string
-    let transformedString = matrix.map(row => row.slice(-1)).join('');
-
-    return transformedString;
+    
+    return arr;
 }
 
-function burrowsWheelerInverseTransform(input) {
-    let table = [];
-    for (let i = 0; i < input.length; i++) {
-        table[i] = { original: input[i], index: i };
-    }
-
-    table.sort((a, b) => a.original.localeCompare(b.original));
-
-    let currentIndex = input.indexOf('$');
-    let originalString = '';
-    do {
-        originalString += table[currentIndex].original;
-        currentIndex = table[currentIndex].index;
-    } while (currentIndex != input.indexOf('$'));
-
-    return originalString;
-}
-
-// Test the Burrows-Wheeler Transform
-let inputString = 'Hello World$';
-let transformedString = burrowsWheelerTransform(inputString);
-let originalString = burrowsWheelerInverseTransform(transformedString);
-
-console.log("Original string: " + inputString);
-console.log("Transformed string: " + transformedString);
-console.log("Decoded string: " + originalString);
+var array = [12, 34, 54, 2, 3];
+console.log("Original Array: " + array);
+console.log("Sorted Array: " + shellSort(array));
