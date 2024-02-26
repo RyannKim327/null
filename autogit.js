@@ -1,15 +1,9 @@
-function isSortedAscending(arr) {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false;
-        }
-    }
-    return true;
+function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// Test the function
-const arr1 = [1, 2, 3, 4, 5];
-const arr2 = [5, 4, 3, 2, 1];
-
-console.log(isSortedAscending(arr1)); // Output: true
-console.log(isSortedAscending(arr2)); // Output: false
+// Example usage
+let min = 1;
+let max = 100;
+let randomNumber = getRandomNumber(min, max);
+console.log(randomNumber);
