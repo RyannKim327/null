@@ -1,19 +1,15 @@
-function isPalindrome(str) {
-    let left = 0;
-    let right = str.length - 1;
-
-    while (left < right) {
-        if (str[left] !== str[right]) {
+function isSortedAscending(arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
             return false;
         }
-
-        left++;
-        right--;
     }
-
     return true;
 }
 
-// Test the function
-console.log(isPalindrome("racecar")); // true
-console.log(isPalindrome("hello")); // false
+// Example
+const myArray = [1, 2, 3, 4, 5];
+console.log(isSortedAscending(myArray)); // Output: true
+
+const myArray2 = [5, 2, 3, 4, 1];
+console.log(isSortedAscending(myArray2)); // Output: false
