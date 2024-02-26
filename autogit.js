@@ -1,34 +1,66 @@
-function interpolationSearch(arr, x) {
-    let low = 0;
-    let high = arr.length - 1;
-    
-    while (low <= high && x >= arr[low] && x <= arr[high]) {
-        if (low === high) {
-            if (arr[low] === x) return low;
-            return -1;
+function dijkstra(graph, startNode) {
+  const distances = {};
+  const visited = {};
+  const queue = new PriorityQueue();
+
+  // Initialize distances for all nodes to infinity except the start node
+  for (let node in graph) {
+    distances[node] = node === startNode ? 0 : Infinity;
+    queue.enqueue(node, distances[node]);
+  }
+
+  while (!queue.isEmpty()) {
+    const currentNode = queue.dequeue();
+
+    if (!visited[currentNode]) {
+      visited[currentNode] = true;
+
+      for (let neighbor in graph[currentNode]) {
+        const distance = distances[currentNode] + graph[currentNode][neighbor];
+
+        if (distance < distances[neighbor]) {
+          distances[neighbor] = distance;
+          queue.enqueue(neighbor, distance);
         }
-        
-        let pos = Math.floor(low + ((x - arr[low]) * (high - low)) / (arr[high] - arr[low]));
-        
-        if (arr[pos] === x) return pos;
-        
-        if (arr[pos] < x) {
-            low = pos + 1;
-        } else {
-            high = pos - 1;
-        }
+      }
     }
-    
-    return -1;
+  }
+
+  return distances;
 }
 
-// Test the interpolation search algorithm
-const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const x = 12;
-const index = interpolationSearch(arr, x);
+class PriorityQueue {
+  constructor() {
+    this.values = [];
+  }
 
-if (index !== -1) {
-    console.log(`Element found at index ${index}`);
-} else {
-    console.log(`Element not found`);
+  enqueue(value, priority) {
+    this.values.push({ value, priority });
+    this.sort();
+  }
+
+  dequeue() {
+    return this.values.shift().value;
+  }
+
+  sort() {
+    this.values.sort((a, b) => a.priority - b.priority);
+  }
+
+  isEmpty() {
+    return this.values.length === 0;
+  }
 }
+
+// Example usage
+const graph = {
+  A: { B: 5, C: 1 },
+  B: { A: 5, C: 2, D: 1 },
+  C: { A: 1, B: 2, D: 4 },
+  D: { B: 1, C: 4 },
+};
+
+const startNode = 'A';
+const result = dijkstra(graph, startNode);
+
+console.log(result);
