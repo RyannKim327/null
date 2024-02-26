@@ -1,49 +1,25 @@
-class Node {
-  constructor(state, parent, depth) {
-    this.state = state;
-    this.parent = parent;
-    this.depth = depth;
-  }
-}
-
-function breadthLimitedSearch(startState, isGoalState, getSuccessors, limit) {
-  let queue = [new Node(startState, null, 0)];
-
-  while (queue.length > 0) {
-    let currentNode = queue.shift();
-
-    if (isGoalState(currentNode.state)) {
-      // Goal state found, construct and return the path
-      let path = [];
-      while (currentNode !== null) {
-        path.unshift(currentNode.state);
-        currentNode = currentNode.parent;
-      }
-      return path;
+function countOccurrences(text, word) {
+    // Split the text into an array of words
+    let wordsArray = text.split(/\s+/);
+    
+    // Initialize a counter for the word occurrences
+    let count = 0;
+    
+    // Loop through the words array and count the occurrences of the specified word
+    for (let i = 0; i < wordsArray.length; i++) {
+        if (wordsArray[i].toLowerCase() === word.toLowerCase()) {
+            count++;
+        }
     }
-
-    if (currentNode.depth < limit) {
-      let successors = getSuccessors(currentNode.state);
-      successors.forEach(successor => {
-        queue.push(new Node(successor, currentNode, currentNode.depth + 1));
-      });
-    }
-  }
-
-  return "No solution found within the limit.";
+    
+    return count;
 }
 
-// Example usage
-let startState = 1;
-let goalState = 10;
+// Sample string
+let text = "Hello, Hello world! Hello, and hello again.";
+let word = "hello";
 
-function isGoalState(state) {
-  return state === goalState;
-}
+// Count occurrences of the word in the string
+let occurrences = countOccurrences(text, word);
 
-function getSuccessors(state) {
-  return [state + 1, state + 2];
-}
-
-let path = breadthLimitedSearch(startState, isGoalState, getSuccessors, 3);
-console.log(path);
+console.log(`The word "${word}" occurs ${occurrences} times in the text.`);
