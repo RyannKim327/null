@@ -1,19 +1,25 @@
-function shellSort(arr) {
-    // Start with a big gap, then reduce the gap
-    for (let gap = Math.floor(arr.length / 2); gap > 0; gap = Math.floor(gap / 2)) {
-        // Do a gapped insertion sort for this gap size
-        for (let i = gap; i < arr.length; i++) {
-            let temp = arr[i];
-            let j;
-            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
-                arr[j] = arr[j - gap];
+function selectionSort(arr) {
+    const n = arr.length;
+    
+    for(let i = 0; i < n - 1; i++) {
+        let minIndex = i;
+        for(let j = i+1; j < n; j++) {
+            if(arr[j] < arr[minIndex]) {
+                minIndex = j;
             }
-            arr[j] = temp;
+        }
+        
+        if(minIndex !== i) {
+            const temp = arr[i];
+            arr[i] = arr[minIndex];
+            arr[minIndex] = temp;
         }
     }
+    
     return arr;
 }
 
 // Example usage
-const arr = [12, 34, 54, 2, 3];
-console.log(shellSort(arr)); // Output: [2, 3, 12, 34, 54]
+const array = [64, 34, 25, 12, 22, 11, 90];
+console.log("Original Array: ", array);
+console.log("Sorted Array: ", selectionSort(array));
