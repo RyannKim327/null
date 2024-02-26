@@ -1,30 +1,29 @@
-function findIntersection(headA, headB) {
-    let hash = new Set();
+// Define the async task function
+async function fetchData(url) {
+  try {
+    // Use fetch to make a network request
+    const response = await fetch(url);
     
-    let currA = headA;
-    while (currA) {
-        hash.add(currA);
-        currA = currA.next;
+    // Check if the response is successful
+    if (!response.ok) {
+      throw new Error('Request failed');
     }
     
-    let currB = headB;
-    while (currB) {
-        if (hash.has(currB)) {
-            return currB;
-        }
-        currB = currB.next;
-    }
+    // Parse the response as JSON
+    const data = await response.json();
     
+    // Return the data
+    return data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
     return null;
+  }
 }
-function findIntersection(headA, headB) {
-    let currA = headA;
-    let currB = headB;
-    
-    while (currA !== currB) {
-        currA = currA ? currA.next : headB;
-        currB = currB ? currB.next : headA;
-    }
-    
-    return currA;
-}
+
+// Call the async task function with a sample URL
+const url = 'https://api.example.com/data';
+fetchData(url)
+  .then(data => {
+    // Process the data here
+    console.log('Data received:', data);
+  });
