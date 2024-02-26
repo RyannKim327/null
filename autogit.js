@@ -1,4 +1,19 @@
-let array = [5, 7, 2, 9, 4];
-let max = Math.max.apply(null, array);
+function isPalindrome(str) {
+    let left = 0;
+    let right = str.length - 1;
 
-console.log(max); // Output: 9
+    while (left < right) {
+        if (str[left] !== str[right]) {
+            return false;
+        }
+
+        left++;
+        right--;
+    }
+
+    return true;
+}
+
+// Test the function
+console.log(isPalindrome("racecar")); // true
+console.log(isPalindrome("hello")); // false
