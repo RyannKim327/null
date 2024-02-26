@@ -1,4 +1,9 @@
-fetch('https://jsonplaceholder.typicode.com/todos/1')
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.error('Error:', error));
+function calculateMean(numbers) {
+    const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    const mean = sum / numbers.length;
+    return mean;
+}
+
+const numbers = [1, 2, 3, 4, 5];
+const mean = calculateMean(numbers);
+console.log('Mean:', mean);
