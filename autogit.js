@@ -1,62 +1,15 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
+function isArraySortedAscending(arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;
+        }
     }
+    return true;
 }
 
-class LinkedList {
-    constructor() {
-        this.head = null;
-    }
+// Example usage
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [1, 3, 2, 4, 5];
 
-    addNode(value) {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
-        }
-    }
-
-    reverse() {
-        let prev = null;
-        let current = this.head;
-        let temp = null;
-
-        while (current !== null) {
-            temp = current.next;
-            current.next = prev;
-            prev = current;
-            current = temp;
-        }
-        this.head = prev;
-    }
-
-    printList() {
-        let current = this.head;
-        while (current) {
-            console.log(current.value);
-            current = current.next;
-        }
-    }
-}
-
-// Create a linked list
-const linkedList = new LinkedList();
-linkedList.addNode(1);
-linkedList.addNode(2);
-linkedList.addNode(3);
-linkedList.addNode(4);
-
-console.log("Original Linked List:");
-linkedList.printList();
-
-linkedList.reverse();
-
-console.log("Reversed Linked List:");
-linkedList.printList();
+console.log(isArraySortedAscending(array1)); // Output: true
+console.log(isArraySortedAscending(array2)); // Output: false
