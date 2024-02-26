@@ -1,15 +1,35 @@
-function isSorted(arr) {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false;
-        }
-    }
-    return true;
+// Define the structure for a binary tree node
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-// Example
-const arr1 = [1, 2, 3, 4, 5];
-const arr2 = [5, 4, 3, 2, 1];
+// Function to count the number of leaf nodes in a binary tree
+function countLeafNodes(root) {
+  if (root === null) {
+    return 0;
+  }
+  
+  if (root.left === null && root.right === null) {
+    return 1;
+  } else {
+    return countLeafNodes(root.left) + countLeafNodes(root.right);
+  }
+}
 
-console.log(isSorted(arr1)); // Output: true
-console.log(isSorted(arr2)); // Output: false
+// Example usage
+// Construct a binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
+
+// Call the function to count the number of leaf nodes
+const leafNodeCount = countLeafNodes(root);
+console.log("Number of leaf nodes in the binary tree: ", leafNodeCount);
