@@ -1,63 +1,27 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.left = null;
-    this.right = null;
-  }
+function Node(value, children = []) {
+    this.value = value;
+    this.children = children;
 }
 
-class BinaryTree {
-  constructor() {
-    this.root = null;
-  }
+function breadthLimitedSearch(root, limit) {
+    let queue = [root];
+    let currentLevel = 0;
 
-  insert(data) {
-    const newNode = new Node(data);
+    while (queue.length > 0 && currentLevel < limit) {
+        let currentNode = queue.shift();
 
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
+        console.log(currentNode.value); // Process the current node
+
+        if (currentNode.children) {
+            for (let child of currentNode.children) {
+                queue.push(child);
+            }
+        }
+
+        currentLevel++;
     }
-  }
-
-  insertNode(node, newNode) {
-    if (newNode.data < node.data) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
-
-  search(node, data) {
-    if (node === null) {
-      return false;
-    }
-
-    if (data < node.data) {
-      return this.search(node.left, data);
-    } else if (data > node.data) {
-      return this.search(node.right, data);
-    } else {
-      return true;
-    }
-  }
 }
 
-// Example Usage
-const binaryTree = new BinaryTree();
-
-binaryTree.insert(5);
-binaryTree.insert(3);
-binaryTree.insert(7);
-
-console.log(binaryTree.search(binaryTree.root, 7)); // Output: true
-console.log(binaryTree.search(binaryTree.root, 10)); // Output: false
+// Example usage
+let root = new Node(1, [new Node(2, [new Node(4), new Node(5)]), new Node(3)]);
+breadthLimitedSearch(root, 2);
