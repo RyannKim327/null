@@ -1,15 +1,22 @@
-function findSecondLargest(arr) {
-    // Sort the array in descending order
-    arr.sort(function(a, b) {
-        return b - a;
-    });
+function longestIncreasingSubsequence(arr) {
+    if (arr.length === 0) {
+        return 0;
+    }
 
-    // Return the second element in the sorted array
-    return arr[1];
+    let dp = new Array(arr.length).fill(1);
+    let maxLen = 1;
+
+    for (let i = 1; i < arr.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[i] > arr[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
+        }
+        maxLen = Math.max(maxLen, dp[i]);
+    }
+
+    return maxLen;
 }
 
-// Example usage
-const numbers = [10, 5, 20, 8, 15];
-const secondLargest = findSecondLargest(numbers);
-
-console.log("Second largest element is: " + secondLargest);
+const arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
+console.log(longestIncreasingSubsequence(arr));  // Output: 6
