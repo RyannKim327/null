@@ -1,23 +1,5 @@
-function fetchDataFromAndroid() {
-  return new Promise((resolve, reject) => {
-    // Simulate an asynchronous call to Android
-    setTimeout(() => {
-      // Here you can perform the actual connection to Android using fetch or any other method
-      const response = {
-        data: 'Hello from Android!'
-      };
-      resolve(response);
-    }, 2000); // Simulating a 2-second delay
-  });
-}
+let str1 = "Hello";
+let str2 = "World";
+let result = str1 + " " + str2;
 
-async function connectToAndroid() {
-  try {
-    const response = await fetchDataFromAndroid();
-    console.log('Data received from Android:', response.data);
-  } catch (error) {
-    console.error('Error connecting to Android:', error);
-  }
-}
-
-connectToAndroid();
+console.log(result); // Output: Hello World
