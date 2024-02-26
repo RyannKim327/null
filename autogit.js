@@ -1,47 +1,47 @@
-function fibonacciSearch(arr, value) {
-    let fib2 = 0;
-    let fib1 = 1;
-    let fib = fib1 + fib2;
-    
-    while (fib < arr.length) {
-        fib2 = fib1;
-        fib1 = fib;
-        fib = fib1 + fib2;
-    }
-    
-    let offset = -1;
-    
-    while (fib > 1) {
-        let i = Math.min(offset + fib2, arr.length - 1);
-        
-        if (arr[i] < value) {
-            fib = fib1;
-            fib1 = fib2;
-            fib2 = fib - fib1;
-            offset = i;
-        } else if (arr[i] > value) {
-            fib = fib2;
-            fib1 -= fib2;
-            fib2 = fib - fib1;
-        } else {
-            return i;
+function Node(data) {
+    this.data = data;
+    this.children = [];
+}
+
+function breadthLimitedSearch(root, goal, limit) {
+    let queue = [];
+    queue.push({ node: root, depth: 0 });
+
+    while (queue.length > 0) {
+        let current = queue.shift();
+        let currentNode = current.node;
+        let currentDepth = current.depth;
+
+        if (currentNode.data === goal) {
+            return currentNode;
+        }
+
+        if (currentDepth < limit) {
+            currentNode.children.forEach(child => {
+                queue.push({ node: child, depth: currentDepth + 1 });
+            });
         }
     }
     
-    if (fib1 && arr[offset + 1] === value) {
-        return offset + 1;
-    }
-    
-    return -1;
+    return null; // If goal is not found within the limit
 }
 
-// Example usage
-const arr = [1, 2, 3, 5, 8, 13, 21, 34, 55];
-const value = 13;
-const index = fibonacciSearch(arr, value);
+// Usage example
+let node1 = new Node(1);
+let node2 = new Node(2);
+let node3 = new Node(3);
+let node4 = new Node(4);
+let node5 = new Node(5);
+let node6 = new Node(6);
 
-if (index !== -1) {
-    console.log(`Found ${value} at index ${index}`);
+node1.children.push(node2, node3);
+node2.children.push(node4, node5);
+node3.children.push(node6);
+
+let result = breadthLimitedSearch(node1, 6, 2);
+
+if (result) {
+    console.log("Goal found: " + result.data);
 } else {
-    console.log(`${value} not found in the array`);
+    console.log("Goal not found within the limit");
 }
