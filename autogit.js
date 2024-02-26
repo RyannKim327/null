@@ -1,13 +1,24 @@
-npm install cron
-const cron = require('cron');
+function findMajorityElement(arr) {
+    let countMap = {};
+    let majorityElement = null;
 
-// Define a cron job that runs every minute
-const job = new cron.CronJob('* * * * *', function() {
-  console.log('Running a job every minute!');
-});
+    arr.forEach((element) => {
+        countMap[element] = (countMap[element] || 0) + 1;
+        if (countMap[element] > arr.length / 2) {
+            majorityElement = element;
+            return;
+        }
+    });
 
-// Start the cron job
-job.start();
+    return majorityElement;
+}
 
-console.log('Cron job scheduled to run every minute.');
-node cronExample.js
+// Example usage
+const arr = [2, 3, 2, 2, 4, 2, 2];
+const majorityElement = findMajorityElement(arr);
+
+if (majorityElement) {
+    console.log(`The majority element is: ${majorityElement}`);
+} else {
+    console.log("No majority element found");
+}
