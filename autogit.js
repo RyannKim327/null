@@ -1,12 +1,19 @@
-function factorial(n) {
-    if (n === 0) {
-        return 1;
-    } else {
-        return n * factorial(n - 1);
+function isPrime(number) {
+    if (number <= 1) {
+        return false;
     }
+    for (let i = 2; i < number; i++) {
+        if (number % i === 0) {
+            return false;
+        }
+    }
+    return true;
 }
 
-// Test the factorial function
-const number = 5;
-const result = factorial(number);
-console.log(`The factorial of ${number} is: ${result}`);
+// Test the function
+const number = 17;
+if (isPrime(number)) {
+    console.log(`${number} is a prime number`);
+} else {
+    console.log(`${number} is not a prime number`);
+}
