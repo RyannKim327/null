@@ -1,22 +1,31 @@
-function longestIncreasingSubsequence(arr) {
-    if (arr.length === 0) {
-        return 0;
+class SuffixTreeNode {
+    constructor() {
+        this.children = {};
     }
-
-    let dp = new Array(arr.length).fill(1);
-    let maxLen = 1;
-
-    for (let i = 1; i < arr.length; i++) {
-        for (let j = 0; j < i; j++) {
-            if (arr[i] > arr[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
-            }
-        }
-        maxLen = Math.max(maxLen, dp[i]);
-    }
-
-    return maxLen;
 }
 
-const arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
-console.log(longestIncreasingSubsequence(arr));  // Output: 6
+class SuffixTree {
+    constructor(inputString) {
+        this.root = new SuffixTreeNode();
+        for (let i = 0; i < inputString.length; i++) {
+            this.addSuffix(inputString.substring(i), i);
+        }
+    }
+
+    addSuffix(suffix, index) {
+        let currentNode = this.root;
+        for (let i = 0; i < suffix.length; i++) {
+            let char = suffix[i];
+            if (!currentNode.children[char]) {
+                currentNode.children[char] = new SuffixTreeNode();
+            }
+            currentNode = currentNode.children[char];
+        }
+        // Store the index of the suffix if needed
+        // currentNode.index = index;
+    }
+}
+
+// Example usage
+const suffixTree = new SuffixTree("banana");
+console.log(suffixTree);
