@@ -1,8 +1,10 @@
-function removeVowels(str) {
-    return str.replace(/[aeiouAEIOU]/g, '');
-}
+let str1 = "Hello";
+let str2 = " World";
+let concatenatedString = str1 + str2;
 
-let inputString = "Hello, World!";
-let stringWithoutVowels = removeVowels(inputString);
+console.log(concatenatedString); // Output: "Hello World"
+let str1 = "Hello";
+let str2 = " World";
+let concatenatedString = str1.concat(str2);
 
-console.log(stringWithoutVowels); // Output: "Hll, Wrld!"
+console.log(concatenatedString); // Output: "Hello World"
