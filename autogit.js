@@ -1,44 +1,35 @@
-function findMedianSortedArrays(nums1, nums2) {
-    const mergedArray = mergeArrays(nums1, nums2);
-    const len = mergedArray.length;
-    
-    if (len % 2 === 0) {
-        const mid = len / 2;
-        return (mergedArray[mid - 1] + mergedArray[mid]) / 2;
-    } else {
-        const mid = Math.floor(len / 2);
-        return mergedArray[mid];
+// Define a node structure with state and children
+class Node {
+    constructor(state, children) {
+        this.state = state;
+        this.children = children || [];
     }
 }
 
-function mergeArrays(nums1, nums2) {
-    let merged = [];
-    let i = 0, j = 0;
+// Depth-limited search function
+function depthLimitedSearch(root, goal, limit) {
+    let stack = [];
+    stack.push({ node: root, depth: 0 });
 
-    while (i < nums1.length && j < nums2.length) {
-        if (nums1[i] < nums2[j]) {
-            merged.push(nums1[i]);
-            i++;
-        } else {
-            merged.push(nums2[j]);
-            j++;
+    while (stack.length > 0) {
+        let { node, depth } = stack.pop();
+
+        if (node.state === goal) {
+            return node;
+        }
+
+        if (depth < limit) {
+            node.children.forEach(child => {
+                stack.push({ node: child, depth: depth + 1 });
+            });
         }
     }
 
-    while (i < nums1.length) {
-        merged.push(nums1[i]);
-        i++;
-    }
-
-    while (j < nums2.length) {
-        merged.push(nums2[j]);
-        j++;
-    }
-
-    return merged;
+    return null;
 }
 
-// Test the function
-const nums1 = [1, 3];
-const nums2 = [2];
-console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.0
+// Example usage
+let node1 = new Node('A', [new Node('B', [new Node('D'), new Node('E')]), new Node('C', [new Node('F')])]);
+let result = depthLimitedSearch(node1, 'F', 3);
+
+console.log(result); // Output: Node { state: 'F', children: [] }
