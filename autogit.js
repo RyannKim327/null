@@ -1,27 +1,26 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
+function binarySearchRecursive(arr, target, start = 0, end = arr.length - 1) {
+    if (start > end) {
+        return -1;
+    }
 
-function maxDepth(root) {
-  if (root === null) {
-    return 0;
-  }
+    const mid = Math.floor((start + end) / 2);
 
-  const leftDepth = maxDepth(root.left);
-  const rightDepth = maxDepth(root.right);
-
-  return 1 + Math.max(leftDepth, rightDepth);
+    if (arr[mid] === target) {
+        return mid;
+    } else if (arr[mid] < target) {
+        return binarySearchRecursive(arr, target, mid + 1, end);
+    } else {
+        return binarySearchRecursive(arr, target, start, mid - 1);
+    }
 }
 
 // Example usage
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
+const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+const target = 12;
 
-console.log(maxDepth(root)); // Output: 3
+const index = binarySearchRecursive(arr, target);
+if (index !== -1) {
+    console.log(`Element found at index: ${index}`);
+} else {
+    console.log("Element not found");
+}
