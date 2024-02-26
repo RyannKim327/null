@@ -1,12 +1,14 @@
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
-
-// Find the index of the element to remove
-let index = array.indexOf(elementToRemove);
-
-if (index > -1) {
-  // Remove the element at the specified index
-  array.splice(index, 1);
+function isPalindrome(str) {
+    // Remove non-alphanumeric characters and convert the string to lowercase
+    str = str.replace(/[\W_]/g, '').toLowerCase();
+    
+    // Reverse the string
+    const reversed = str.split('').reverse().join('');
+    
+    // Check if the original string is equal to the reversed string
+    return str === reversed;
 }
 
-console.log(array); // Output: [1, 2, 4, 5]
+// Test the function
+const testStr = "A man, a plan, a canal, Panama";
+console.log(isPalindrome(testStr)); // Output: true
