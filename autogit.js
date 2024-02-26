@@ -1,39 +1,15 @@
-function burrowsWheelerTransform(input) {
-    let suffixes = [];
-    for (let i = 0; i < input.length; i++) {
-        let suffix = input.substring(i) + input.substring(0, i);
-        suffixes.push(suffix);
-    }
-
-    suffixes.sort();
-    let transformed = "";
-    for (let i = 0; i < suffixes.length; i++) {
-        transformed += suffixes[i].charAt(input.length - 1);
-    }
-
-    return transformed;
-}
-
-function burrowsWheelerInverseTransform(input) {
-    let table = [];
-    for (let i = 0; i < input.length; i++) {
-        table.push({ index: i, suffix: "" });
-    }
-
-    for (let i = 0; i < input.length; i++) {
-        for (let j = 0; j < input.length; j++) {
-            table[j].suffix = input.charAt(j) + table[j].suffix;
+function isSortedAscending(arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;
         }
-        table.sort((a, b) => a.suffix.localeCompare(b.suffix));
     }
-
-    return table.find(entry => entry.suffix.endsWith("$")).suffix.slice(0, -1);
+    return true;
 }
 
-// Example usage
-let input = "banana";
-let transformed = burrowsWheelerTransform(input);
-console.log("Transformed: ", transformed);
+// Test the function
+const arr1 = [1, 2, 3, 4, 5];
+const arr2 = [5, 4, 3, 2, 1];
 
-let original = burrowsWheelerInverseTransform(transformed);
-console.log("Original: ", original);
+console.log(isSortedAscending(arr1)); // Output: true
+console.log(isSortedAscending(arr2)); // Output: false
