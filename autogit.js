@@ -1,22 +1,15 @@
-function quicksort(arr) {
-    if (arr.length <= 1) {
-        return arr;
-    }
-
-    const pivot = arr[0];
-    const left = [];
-    const right = [];
-
-    for (let i = 1; i < arr.length; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
+function countOccurrences(str, char) {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
+            count++;
         }
     }
-
-    return [...quicksort(left), pivot, ...quicksort(right)];
+    return count;
 }
 
-const array = [3, 6, 8, 10, 1, 2, 1];
-console.log(quicksort(array)); // Output: [1, 1, 2, 3, 6, 8, 10]
+// Example usage
+let str = "hello world";
+let char = "l";
+let occurrences = countOccurrences(str, char);
+console.log(`The character '${char}' occurs ${occurrences} times in the string.`);
