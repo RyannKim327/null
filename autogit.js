@@ -1,102 +1,76 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
-}
-
-class LinkedList {
-  constructor() {
-    this.head = null;
-    this.size = 0;
-  }
-
-  add(data) {
-    const newNode = new Node(data);
-
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
+class PriorityQueue {
+    constructor() {
+        this.heap = [];
     }
 
-    this.size++;
-  }
-
-  insertAt(data, index) {
-    if (index < 0 || index > this.size) {
-      return console.log("Invalid index");
+    insert(item, priority) {
+        const node = { item, priority };
+        this.heap.push(node);
+        this.bubbleUp(this.heap.length - 1);
     }
 
-    const newNode = new Node(data);
-    let current = this.head;
-    let prev = null;
-    let i = 0;
-
-    if (index === 0) {
-      newNode.next = this.head;
-      this.head = newNode;
-    } else {
-      while (i < index) {
-        i++;
-        prev = current;
-        current = current.next;
-      }
-      newNode.next = current;
-      prev.next = newNode;
+    bubbleUp(index) {
+        let parentIndex = Math.floor((index - 1) / 2);
+        while (index > 0 && this.heap[index].priority < this.heap[parentIndex].priority) {
+            // Swap the current node with its parent
+            [this.heap[index], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[index]];
+            index = parentIndex;
+            parentIndex = Math.floor((index - 1) / 2);
+        }
     }
 
-    this.size++;
-  }
+    extractMin() {
+        if (this.heap.length === 0) {
+            return null;
+        }
 
-  removeFrom(index) {
-    if (index < 0 || index >= this.size) {
-      return console.log("Invalid index");
+        if (this.heap.length === 1) {
+            return this.heap.pop().item;
+        }
+
+        const min = this.heap[0];
+        this.heap[0] = this.heap.pop();
+        this.bubbleDown(0);
+        return min.item;
     }
 
-    let current = this.head;
-    let prev = null;
-    let i = 0;
+    bubbleDown(index) {
+        let leftChildIndex, rightChildIndex, minIndex;
 
-    if (index === 0) {
-      this.head = current.next;
-    } else {
-      while (i < index) {
-        i++;
-        prev = current;
-        current = current.next;
-      }
-      prev.next = current.next;
+        while (true) {
+            leftChildIndex = 2 * index + 1;
+            rightChildIndex = 2 * index + 2;
+            minIndex = index;
+
+            if (leftChildIndex < this.heap.length && this.heap[leftChildIndex].priority < this.heap[minIndex].priority) {
+                minIndex = leftChildIndex;
+            }
+
+            if (rightChildIndex < this.heap.length && this.heap[rightChildIndex].priority < this.heap[minIndex].priority) {
+                minIndex = rightChildIndex;
+            }
+
+            if (minIndex !== index) {
+                // Swap the current node with the smaller child node
+                [this.heap[index], this.heap[minIndex]] = [this.heap[minIndex], this.heap[index]];
+                index = minIndex;
+            } else {
+                break;
+            }
+        }
     }
 
-    this.size--;
-    return current.data;
-  }
-
-  printList() {
-    let current = this.head;
-    let list = [];
-    while(current) {
-      list.push(current.data);
-      current = current.next;
+    isEmpty() {
+        return this.heap.length === 0;
     }
-    console.log(list.join(" -> "));
-  }
 }
 
 // Example usage
-const linkedList = new LinkedList();
-linkedList.add(1);
-linkedList.add(2);
-linkedList.add(3);
-linkedList.printList(); // Output: 1 -> 2 -> 3
+const pq = new PriorityQueue();
+pq.insert("Task 1", 5);
+pq.insert("Task 2", 3);
+pq.insert("Task 3", 8);
 
-linkedList.insertAt(4, 1);
-linkedList.printList(); // Output: 1 -> 4 -> 2 -> 3
-
-linkedList.removeFrom(2);
-linkedList.printList(); // Output: 1 -> 4 -> 3
+console.log(pq.extractMin()); // Task 2
+console.log(pq.extractMin()); // Task 1
+console.log(pq.extractMin()); // Task 3
