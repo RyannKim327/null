@@ -1,29 +1,102 @@
-function binarySearch(arr, target) {
-    let left = 0;
-    let right = arr.length - 1;
+class Node {
+    constructor(x, y, parent = null) {
+        this.x = x;
+        this.y = y;
+        this.parent = parent;
+        this.g = 0;
+        this.h = 0;
+        this.f = 0;
+    }
 
-    while (left <= right) {
-        let mid = Math.floor((left + right) / 2);
+    isEqual(node) {
+        return this.x === node.x && this.y === node.y;
+    }
+}
 
-        if (arr[mid] === target) {
-            return mid;
-        } else if (arr[mid] < target) {
-            left = mid + 1;
-        } else {
-            right = mid - 1;
+function heuristic(node, goal) {
+    return Math.abs(node.x - goal.x) + Math.abs(node.y - goal.y);
+}
+
+function astarSearch(start, goal, grid) {
+    let openList = [start];
+    let closedList = [];
+
+    while (openList.length > 0) {
+        let currentNode = openList[0];
+        let currentIndex = 0;
+
+        for (let i = 1; i < openList.length; i++) {
+            if (openList[i].f < currentNode.f) {
+                currentNode = openList[i];
+                currentIndex = i;
+            }
+        }
+
+        openList.splice(currentIndex, 1);
+        closedList.push(currentNode);
+
+        if (currentNode.isEqual(goal)) {
+            let path = [];
+            let current = currentNode;
+            while (current !== null) {
+                path.push([current.x, current.y]);
+                current = current.parent;
+            }
+            return path.reverse();
+        }
+
+        let children = [];
+        for (let newPosition of [[-1, 0], [0, -1], [1, 0], [0, 1]]) {
+            let nodePosition = { x: currentNode.x + newPosition[0], y: currentNode.y + newPosition[1] };
+
+            if (nodePosition.x > (grid.length - 1) || nodePosition.x < 0 ||
+                nodePosition.y > (grid[0].length - 1) || nodePosition.y < 0) {
+                continue;
+            }
+
+            if (grid[nodePosition.x][nodePosition.y] !== 0) {
+                continue;
+            }
+
+            let newNode = new Node(nodePosition.x, nodePosition.y, currentNode);
+            children.push(newNode);
+        }
+
+        for (let child of children) {
+            if (closedList.some(node => node.isEqual(child))) {
+                continue;
+            }
+
+            child.g = currentNode.g + 1;
+            child.h = heuristic(child, goal);
+            child.f = child.g + child.h;
+
+            if (openList.some(node => node.isEqual(child) && child.g >= node.g)) {
+                continue;
+            }
+
+            openList.push(child);
         }
     }
 
-    return -1; // Target not found
+    return null; // No path found
 }
 
 // Example usage
-const arr = [1, 3, 5, 7, 9, 11, 13];
-const target = 7;
-const result = binarySearch(arr, target);
+const grid = [
+    [0, 0, 0, 0],
+    [0, 1, 1, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0]
+];
 
-if (result !== -1) {
-    console.log(`Target ${target} found at index ${result}`);
+const startNode = new Node(0, 0);
+const goalNode = new Node(3, 3);
+
+const path = astarSearch(startNode, goalNode, grid);
+
+if (path) {
+    console.log("Path found:", path);
 } else {
-    console.log(`Target ${target} not found in the array`);
+    console.log("No path found!");
 }
