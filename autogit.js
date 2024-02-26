@@ -1,12 +1,23 @@
-function findSecondLargest(arr) {
-    arr.sort(function(a, b) {
-        return b - a;
-    });
-    
-    return arr[1]; // Assuming array has at least two elements
+function fetchDataFromAndroid() {
+  return new Promise((resolve, reject) => {
+    // Simulate an asynchronous call to Android
+    setTimeout(() => {
+      // Here you can perform the actual connection to Android using fetch or any other method
+      const response = {
+        data: 'Hello from Android!'
+      };
+      resolve(response);
+    }, 2000); // Simulating a 2-second delay
+  });
 }
 
-// Test the function
-const arr = [5, 2, 8, 1, 9, 4];
-const secondLargest = findSecondLargest(arr);
-console.log("Second largest element is: " + secondLargest);
+async function connectToAndroid() {
+  try {
+    const response = await fetchDataFromAndroid();
+    console.log('Data received from Android:', response.data);
+  } catch (error) {
+    console.error('Error connecting to Android:', error);
+  }
+}
+
+connectToAndroid();
