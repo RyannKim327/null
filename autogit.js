@@ -1,44 +1,50 @@
-function generateFibonacci(n) {
-    let fibArray = [0, 1];
-    while (fibArray[fibArray.length - 1] < n) {
-        fibArray.push(fibArray[fibArray.length - 1] + fibArray[fibArray.length - 2]);
+function boyerMoore(text, pattern) {
+    const textLength = text.length;
+    const patternLength = pattern.length;
+    
+    if (patternLength === 0) {
+        return 0;
     }
-    return fibArray;
-}
-
-function fibonacciSearch(arr, x) {
-    let fibArray = generateFibonacci(arr.length);
-
-    let offset = 0;
-    let i = fibArray.length - 1;
-
-    while (i > 1) {
-        let index = Math.min(offset + fibArray[i - 2], arr.length - 1);
-
-        if (arr[index] < x) {
+    
+    const last = getLastOccurrence(pattern);
+    
+    let i = patternLength - 1;
+    let j = patternLength - 1;
+    
+    while (i < textLength) {
+        if (text[i] === pattern[j]) {
+            if (j === 0) {
+                return i;
+            }
             i--;
-            offset = index;
-        } else if (arr[index] > x) {
-            i -= 2;
+            j--;
         } else {
-            return index;
+            i += patternLength - Math.min(j, 1 + last[text.charCodeAt(i)]);
+            j = patternLength - 1;
         }
     }
-
-    if (arr[offset] === x) {
-        return offset;
-    }
-
+    
     return -1;
 }
 
-// Sample usage
-let arr = [2, 3, 4, 10, 40];
-let x = 10;
-let index = fibonacciSearch(arr, x);
+function getLastOccurrence(pattern) {
+    const last = {};
+    
+    for (let i = 0; i < pattern.length; i++) {
+        last[pattern.charCodeAt(i)] = i;
+    }
+    
+    return last;
+}
 
-if (index !== -1) {
-    console.log(`Element found at index ${index}`);
+// Example Usage
+const text = 'exampletextexample';
+const pattern = 'text';
+
+const result = boyerMoore(text, pattern);
+
+if (result !== -1) {
+    console.log(`Pattern found at index ${result}`);
 } else {
-    console.log("Element not found");
+    console.log('Pattern not found');
 }
