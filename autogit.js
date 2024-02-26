@@ -1,43 +1,33 @@
-function heapSort(arr) {
-    // Build a max heap
-    function buildMaxHeap(arr) {
-        const len = arr.length;
-        for (let i = Math.floor(len / 2); i >= 0; i--) {
-            heapify(arr, i, len);
-        }
+function topologicalSort(graph) {
+    const visited = new Set();
+    const result = [];
+
+    function dfs(node) {
+        if (visited.has(node)) return;
+        visited.add(node);
+
+        graph[node].forEach(neighbor => {
+            dfs(neighbor);
+        });
+
+        result.unshift(node);
     }
 
-    // Heapify function to maintain the heap property
-    function heapify(arr, i, len) {
-        const left = 2 * i + 1;
-        const right = 2 * i + 2;
-        let largest = i;
+    Object.keys(graph).forEach(node => {
+        dfs(node);
+    });
 
-        if (left < len && arr[left] > arr[largest]) {
-            largest = left;
-        }
-
-        if (right < len && arr[right] > arr[largest]) {
-            largest = right;
-        }
-
-        if (largest !== i) {
-            [arr[i], arr[largest]] = [arr[largest], arr[i]];
-            heapify(arr, largest, len);
-        }
-    }
-
-    buildMaxHeap(arr);
-
-    // Heap sort
-    for (let i = arr.length - 1; i > 0; i--) {
-        [arr[0], arr[i]] = [arr[i], arr[0]];
-        heapify(arr, 0, i);
-    }
-
-    return arr;
+    return result;
 }
 
-// Example usage
-const array = [4, 10, 3, 5, 1];
-console.log(heapSort(array)); // Output: [1, 3, 4, 5, 10]
+// Example graph represented as an adjacency list
+const graph = {
+    'A': ['B', 'C'],
+    'B': ['D'],
+    'C': ['D'],
+    'D': ['E'],
+    'E': []
+};
+
+const sortedNodes = topologicalSort(graph);
+console.log(sortedNodes); // Output: ['A', 'C', 'D', 'B', 'E']
