@@ -1,12 +1,7 @@
-function getStringLength(str) {
-    let count = 0;
-    while (str[count] !== undefined) {
-        count++;
-    }
-    return count;
+function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// Test the function
-const myString = "Hello, World!";
-const length = getStringLength(myString);
-console.log(length); // Output: 13
+// Example usage: Generate a random number between 1 and 100
+const randomNumber = getRandomNumber(1, 100);
+console.log(randomNumber);
