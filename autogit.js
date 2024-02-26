@@ -1,20 +1,27 @@
-function checkAnagram(str1, str2) {
-    // Remove any non-alphabetic characters and convert to lowercase
-    str1 = str1.replace(/[^\w]/g, '').toLowerCase();
-    str2 = str2.replace(/[^\w]/g, '').toLowerCase();
-    
-    // Check if the lengths of the two strings are the same
-    if (str1.length !== str2.length) {
-        return false;
-    }
-    
-    // Sort the characters in the strings and compare them
-    const sortedStr1 = str1.split('').sort().join('');
-    const sortedStr2 = str2.split('').sort().join('');
-    
-    return sortedStr1 === sortedStr2;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-// Test the function
-console.log(checkAnagram('listen', 'silent')); // Output: true
-console.log(checkAnagram('hello', 'world')); // Output: false
+function maxDepth(root) {
+  if (root === null) {
+    return 0;
+  }
+
+  const leftDepth = maxDepth(root.left);
+  const rightDepth = maxDepth(root.right);
+
+  return 1 + Math.max(leftDepth, rightDepth);
+}
+
+// Example usage
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+console.log(maxDepth(root)); // Output: 3
