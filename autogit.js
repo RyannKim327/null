@@ -1,51 +1,61 @@
-function generateLpsArray(pattern) {
-    let lps = [0];
-    let len = 0;
-    let i = 1;
-
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-
-    return lps;
-}
-
-function kmpSearch(text, pattern) {
-    const lps = generateLpsArray(pattern);
-    let i = 0;
-    let j = 0;
-
-    while (i < text.length) {
-        if (text[i] === pattern[j]) {
-            i++;
-            j++;
-        }
-
-        if (j === pattern.length) {
-            console.log(`Pattern found at index ${i - j}`);
-            j = lps[j - 1];
-        } else if (i < text.length && text[i] !== pattern[j]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
+class TrieNode {
+    constructor() {
+        this.children = {};
+        this.isEndOfWord = false;
     }
 }
 
-// Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-kmpSearch(text, pattern);
+class Trie {
+    constructor() {
+        this.root = new TrieNode();
+    }
+
+    insert(word) {
+        let node = this.root;
+
+        for (let char of word) {
+            if (!node.children[char]) {
+                node.children[char] = new TrieNode();
+            }
+            node = node.children[char];
+        }
+
+        node.isEndOfWord = true;
+    }
+
+    search(word) {
+        let node = this.root;
+
+        for (let char of word) {
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+
+        return node != null && node.isEndOfWord;
+    }
+
+    startsWith(prefix) {
+        let node = this.root;
+
+        for (let char of prefix) {
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+
+        return node != null;
+    }
+}
+
+// Example Usage
+let trie = new Trie();
+trie.insert("hello");
+trie.insert("world");
+
+console.log(trie.search("hello"));   // Output: true
+console.log(trie.search("world"));   // Output: true
+console.log(trie.search("goodbye")); // Output: false
+console.log(trie.startsWith("hel"));  // Output: true
