@@ -1,34 +1,20 @@
-function interpolationSearch(arr, x) {
-    let low = 0;
-    let high = arr.length - 1;
-
-    while (low <= high && x >= arr[low] && x <= arr[high]) {
-        if (low == high) {
-            if (arr[low] == x) return low;
-            return -1;
-        }
-
-        let pos = low + Math.floor(((x - arr[low]) * (high - low)) / (arr[high] - arr[low]));
-
-        if (arr[pos] == x) return pos;
-
-        if (arr[pos] < x) {
-            low = pos + 1;
-        } else {
-            high = pos - 1;
+function bubbleSort(arr) {
+    let len = arr.length;
+    for (let i = 0; i < len; i++) {
+        for (let j = 0; j < len - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap elements
+                let temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
         }
     }
-
-    return -1;
+    return arr;
 }
 
 // Example usage
-const sortedArray = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
-const elementToSearch = 13;
-const index = interpolationSearch(sortedArray, elementToSearch);
-
-if (index !== -1) {
-    console.log(`Element found at index ${index}`);
-} else {
-    console.log("Element not found");
-}
+let array = [64, 34, 25, 12, 22, 11, 90];
+console.log("Original array: " + array);
+let sortedArray = bubbleSort(array);
+console.log("Sorted array: " + sortedArray);
