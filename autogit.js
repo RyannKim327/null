@@ -1,52 +1,41 @@
-function buildPatternTable(pattern) {
-    let patternTable = [0];
-    let prefixIndex = 0;
-    let suffixIndex = 1;
+function longestCommonSubsequence(str1, str2) {
+    const m = str1.length;
+    const n = str2.length;
 
-    while (suffixIndex < pattern.length) {
-        if (pattern[prefixIndex] === pattern[suffixIndex]) {
-            patternTable[suffixIndex] = prefixIndex + 1;
-            prefixIndex++;
-            suffixIndex++;
-        } else if (prefixIndex === 0) {
-            patternTable[suffixIndex] = 0;
-            suffixIndex++;
-        } else {
-            prefixIndex = patternTable[prefixIndex - 1];
-        }
-    }
-
-    return patternTable;
-}
-
-function kmpSearch(text, pattern) {
-    if (pattern.length === 0) {
-        return 0;
-    }
-
-    let textIndex = 0;
-    let patternIndex = 0;
-    let patternTable = buildPatternTable(pattern);
-
-    while (textIndex < text.length) {
-        if (text[textIndex] === pattern[patternIndex]) {
-            if (patternIndex === pattern.length - 1) {
-                return textIndex - pattern.length + 1;
+    // Create a 2D array to store the lengths of longest common subsequences
+    const dp = [];
+    for (let i = 0; i <= m; i++) {
+        dp[i] = [];
+        for (let j = 0; j <= n; j++) {
+            if (i === 0 || j === 0) {
+                dp[i][j] = 0;
+            } else if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
             }
-            textIndex++;
-            patternIndex++;
-        } else if (patternIndex > 0) {
-            patternIndex = patternTable[patternIndex - 1];
-        } else {
-            textIndex++;
         }
     }
 
-    return -1;
+    // Backtrack to find the longest common subsequence
+    let i = m, j = n;
+    let lcs = '';
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            lcs = str1[i - 1] + lcs;
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
+        }
+    }
+
+    return lcs;
 }
 
-// Example Usage
-let text = "ababcababcabc";
-let pattern = "ababcabc";
-let index = kmpSearch(text, pattern);
-console.log(index);  // Output: 5
+// Test the function
+const str1 = "ABCDGH";
+const str2 = "AEDFHR";
+console.log(longestCommonSubsequence(str1, str2)); // Output: "ADH"
