@@ -1,23 +1,15 @@
-function countOccurrences(str, word) {
-    // Split the string into an array of words
-    let words = str.split(" ");
-    
-    // Initialize a counter to keep track of the occurrences
-    let count = 0;
-    
-    // Iterate over the words array and count occurrences
-    words.forEach(function (element) {
-        if (element.toLowerCase() === word.toLowerCase()) {
-            count++;
-        }
-    });
-    
-    return count;
+function findMedianSortedArrays(nums1, nums2) {
+    let mergedArray = nums1.concat(nums2).sort((a, b) => a - b);
+
+    let length = mergedArray.length;
+    if (length % 2 === 0) {
+        return (mergedArray[length / 2 - 1] + mergedArray[length / 2]) / 2;
+    } else {
+        return mergedArray[Math.floor(length / 2)];
+    }
 }
 
 // Example usage
-let text = "Hello world, hello JavaScript, hello programming.";
-let wordToCount = "hello";
-let occurrences = countOccurrences(text, wordToCount);
-
-console.log(`The word "${wordToCount}" occurs ${occurrences} times in the text.`);
+let nums1 = [1, 3];
+let nums2 = [2];
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.0
