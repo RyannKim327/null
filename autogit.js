@@ -1,4 +1,12 @@
-let str = "Hello, World!";
-let newStr = str.replace(/\s/g, ''); // Using regular expression to remove all spaces
+function factorial(n) {
+    if (n === 0) {
+        return 1;
+    } else {
+        return n * factorial(n - 1);
+    }
+}
 
-console.log(newStr); // Output: "Hello,World!"
+// Example usage
+const number = 5;
+const result = factorial(number);
+console.log(`Factorial of ${number} is: ${result}`);
