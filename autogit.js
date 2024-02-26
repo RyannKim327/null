@@ -1,37 +1,11 @@
-function topologicalSort(graph) {
-    const visited = new Set();
-    const sortedNodes = [];
-
-    function dfs(node) {
-        visited.add(node);
-
-        for (let neighbor of graph[node]) {
-            if (!visited.has(neighbor)) {
-                dfs(neighbor);
-            }
-        }
-
-        sortedNodes.unshift(node);
-    }
-
-    for (let node in graph) {
-        if (!visited.has(node)) {
-            dfs(node);
-        }
-    }
-
-    return sortedNodes;
+function countOccurrences(str, word) {
+    const regex = new RegExp(word, 'g');
+    const matches = str.match(regex);
+    return matches ? matches.length : 0;
 }
 
-// Example usage
-const graph = {
-    'A': ['C'],
-    'B': ['C', 'D'],
-    'C': ['E'],
-    'D': ['F'],
-    'E': [],
-    'F': []
-};
+const text = "Hello world, hello people, hello universe! Hello";
+const word = "hello";
+const occurrences = countOccurrences(text.toLowerCase(), word.toLowerCase());
 
-const sortedNodes = topologicalSort(graph);
-console.log(sortedNodes);
+console.log(`The word "${word}" appears ${occurrences} times in the text.`);
