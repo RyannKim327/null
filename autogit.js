@@ -1,43 +1,48 @@
-function burrowsWheelerTransform(input) {
-    // Create a list of all possible rotations of the input string
-    let rotations = [];
-    for (let i = 0; i < input.length; i++) {
-        let rotation = input.slice(i) + input.slice(0, i);
-        rotations.push(rotation);
-    }
-
-    // Sort the list of rotations
-    rotations.sort();
-
-    // Extract the last characters of each rotation to create the transformed string
-    let transformedString = rotations.map(rotation => rotation[rotation.length - 1]).join('');
-
-    // Find the index of the original string in the sorted rotations to get the original index
-    let originalIndex = rotations.indexOf(input);
-
-    return { transformedString, originalIndex };
+function depthLimitedSearch(node, goal, depthLimit) {
+    return recursiveDLS(node, goal, depthLimit, 0);
 }
 
-function inverseBurrowsWheelerTransform(transformedString, originalIndex) {
-    // Create an empty table to store the sorted characters
-    let table = transformedString.split('').sort();
-
-    // Create an empty array to store the characters of the original string
-    let originalString = new Array(transformedString.length);
-
-    // Fill in the table with the transformed string and sort it at the same time
-    for (let i = 0; i < transformedString.length; i++) {
-        originalString[i] = table[originalIndex];
-        originalIndex = transformedString.indexOf(originalString[i], table.indexOf(originalString[i]) + 1);
+function recursiveDLS(node, goal, depthLimit, currentDepth) {
+    if (currentDepth === depthLimit) {
+        return null; // Return null if depth limit is reached
     }
 
-    return originalString.join('');
+    if (node === goal) {
+        return node; // Return the goal node if found
+    }
+
+    // Perform recursive depth-limited search on children of the current node
+    let children = getChildren(node);
+    
+    for (let i = 0; i < children.length; i++) {
+        let result = recursiveDLS(children[i], goal, depthLimit, currentDepth + 1);
+        if (result !== null) {
+            return result;
+        }
+    }
+
+    return null; // Goal not found within depth limit
 }
 
-// Test the Burrows-Wheeler Transform algorithm
-let input = "banana";
-let { transformedString, originalIndex } = burrowsWheelerTransform(input);
-console.log("Transformed string: ", transformedString);
+// Helper function to get children of a node
+function getChildren(node) {
+    // Implement your logic to get children of a node here
+    // This could be an array of child nodes or any data structure that represents the children of the node
+    return [];
+}
 
-let originalString = inverseBurrowsWheelerTransform(transformedString, originalIndex);
-console.log("Original string: ", originalString);
+// Usage example
+// Define your graph/tree structure and call depthLimitedSearch with the root node, goal node, and depth limit
+let rootNode = {
+    value: 'A',
+    children: [
+        {value: 'B', children: []},
+        {value: 'C', children: []}
+    ]
+};
+
+let goalNode = 'C';
+let depthLimit = 2;
+
+let result = depthLimitedSearch(rootNode, goalNode, depthLimit);
+console.log(result);
