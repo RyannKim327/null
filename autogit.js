@@ -1,10 +1,17 @@
-let str1 = "Hello";
-let str2 = " World";
-let concatenatedString = str1 + str2;
+function insertionSort(arr) {
+    for (let i = 1; i < arr.length; i++) {
+        let currentVal = arr[i];
+        let j = i - 1;
+        while (j >= 0 && arr[j] > currentVal) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = currentVal;
+    }
+    return arr;
+}
 
-console.log(concatenatedString); // Output: "Hello World"
-let str1 = "Hello";
-let str2 = " World";
-let concatenatedString = str1.concat(str2);
-
-console.log(concatenatedString); // Output: "Hello World"
+// Example usage
+let arr = [5, 3, 8, 2, 1, 4];
+console.log("Before sorting:", arr);
+console.log("After sorting:", insertionSort(arr));
