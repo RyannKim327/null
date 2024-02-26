@@ -1,50 +1,14 @@
-function boyerMoore(text, pattern) {
-    const textLength = text.length;
-    const patternLength = pattern.length;
-    
-    if (patternLength === 0) {
-        return 0;
+function findMedianSortedArrays(nums1, nums2) {
+    let mergedArray = nums1.concat(nums2).sort((a, b) => a - b);
+    let length = mergedArray.length;
+  
+    if (length % 2 === 0) {
+        return (mergedArray[length / 2 - 1] + mergedArray[length / 2]) / 2;
+    } else {
+        return mergedArray[Math.floor(length / 2)];
     }
-    
-    const last = getLastOccurrence(pattern);
-    
-    let i = patternLength - 1;
-    let j = patternLength - 1;
-    
-    while (i < textLength) {
-        if (text[i] === pattern[j]) {
-            if (j === 0) {
-                return i;
-            }
-            i--;
-            j--;
-        } else {
-            i += patternLength - Math.min(j, 1 + last[text.charCodeAt(i)]);
-            j = patternLength - 1;
-        }
-    }
-    
-    return -1;
 }
 
-function getLastOccurrence(pattern) {
-    const last = {};
-    
-    for (let i = 0; i < pattern.length; i++) {
-        last[pattern.charCodeAt(i)] = i;
-    }
-    
-    return last;
-}
-
-// Example Usage
-const text = 'exampletextexample';
-const pattern = 'text';
-
-const result = boyerMoore(text, pattern);
-
-if (result !== -1) {
-    console.log(`Pattern found at index ${result}`);
-} else {
-    console.log('Pattern not found');
-}
+let nums1 = [1, 3];
+let nums2 = [2];
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.0
