@@ -1,59 +1,51 @@
-function fibonacciSearch(arr, key) {
-    let fibM2 = 0; // (m-2)'th Fibonacci number
-    let fibM1 = 1; // (m-1)'th Fibonacci number
-    let fibM = fibM2 + fibM1; // m'th Fibonacci number
+class Stack {
+  constructor() {
+    this.stack = [];
+  }
 
-    // Find the smallest Fibonacci Number greater than or equal to the length of the array
-    while (fibM < arr.length) {
-        fibM2 = fibM1;
-        fibM1 = fibM;
-        fibM = fibM2 + fibM1;
+  // Push element to the top of the stack
+  push(element) {
+    this.stack.push(element);
+  }
+
+  // Remove and return the top element of the stack
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
     }
+    return this.stack.pop();
+  }
 
-    let offset = -1;
+  // Return the top element of the stack without removing it
+  peek() {
+    return this.stack[this.stack.length - 1];
+  }
 
-    // while there are elements to be inspected
-    while (fibM > 1) {
-        // check if fibM2 is a valid location
-        const i = Math.min(offset + fibM2, arr.length - 1);
+  // Check if the stack is empty
+  isEmpty() {
+    return this.stack.length === 0;
+  }
 
-        // if key is greater than the value at index fibM2, cut the subarray from offset to i
-        if (arr[i] < key) {
-            fibM = fibM1;
-            fibM1 = fibM2;
-            fibM2 = fibM - fibM1;
-            offset = i;
-        }
+  // Get the size of the stack
+  size() {
+    return this.stack.length;
+  }
 
-        // if key is less than the value at index fibM2, cut the subarray after i + 1
-        else if (arr[i] > key) {
-            fibM = fibM2;
-            fibM1 -= fibM2;
-            fibM2 = fibM - fibM1;
-        }
-
-        // key found
-        else {
-            return i;
-        }
-    }
-
-    // compare the last element with key
-    if (fibM1 && arr[offset + 1] === key) {
-        return offset + 1;
-    }
-
-    // if not found return -1
-    return -1;
+  // Print the stack
+  printStack() {
+    console.log(this.stack);
+  }
 }
 
 // Example usage
-const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const key = 7;
-const index = fibonacciSearch(arr, key);
+const stack = new Stack();
 
-if (index !== -1) {
-    console.log(`Element found at index: ${index}`);
-} else {
-    console.log(`Element not found`);
-}
+stack.push(1);
+stack.push(2);
+stack.push(3);
+stack.printStack(); // Output: [1, 2, 3]
+
+console.log(stack.pop()); // Output: 3
+console.log(stack.peek()); // Output: 2
+console.log(stack.size()); // Output: 2
+console.log(stack.isEmpty()); // Output: false
