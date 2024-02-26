@@ -1,23 +1,27 @@
-function shellSort(arr) {
-    // Start with a large gap, then reduce the gap
-    for (let gap = Math.floor(arr.length / 2); gap > 0; gap = Math.floor(gap / 2)) {
-        // Perform an insertion sort for the elements in each gap
-        for (let i = gap; i < arr.length; i++) {
-            let temp = arr[i];
-            let j = i;
+function beamSearch(startNode, beamWidth, maxDepth, getSuccessors, isGoal) {
+    let beam = [startNode];
+    
+    for (let depth = 0; depth < maxDepth; depth++) {
+        let newBeam = [];
+        
+        for (let node of beam) {
+            let successors = getSuccessors(node);
             
-            while (j >= gap && arr[j - gap] > temp) {
-                arr[j] = arr[j - gap];
-                j -= gap;
+            for (let successor of successors) {
+                newBeam.push(successor);
             }
-            arr[j] = temp;
+        }
+        
+        newBeam.sort((a, b) => a.cost - b.cost);
+        newBeam = newBeam.slice(0, beamWidth);
+        
+        beam = newBeam;
+        
+        let found = beam.find(node => isGoal(node));
+        if (found) {
+            return found;
         }
     }
     
-    return arr;
+    return null;
 }
-
-// Example usage
-let arr = [12, 34, 54, 2, 3];
-console.log("Original Array: " + arr);
-console.log("Sorted Array: " + shellSort(arr));
