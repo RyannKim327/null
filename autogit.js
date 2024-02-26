@@ -1,51 +1,49 @@
-function fibonacciSearch(arr, x) {
-    let fibM2 = 0; // (m-2)'th Fibonacci number
-    let fibM1 = 1; // (m-1)'th Fibonacci number
-    let fibM = fibM2 + fibM1; // m'th Fibonacci number
-
-    // Finding the smallest Fibonacci Number greater than or equal to the length of the array
-    while (fibM < arr.length) {
-        fibM2 = fibM1;
-        fibM1 = fibM;
-        fibM = fibM2 + fibM1;
-    }
-
-    let offset = -1;
-
-    while (fibM > 1) {
-        // Check if fibM2 is a valid index
-        const i = Math.min(offset + fibM2, arr.length - 1);
-
-        // If x is greater than the value at index i, move fibM2 places ahead, else move fibM1 places ahead
-        if (arr[i] < x) {
-            fibM = fibM1;
-            fibM1 = fibM2;
-            fibM2 = fibM - fibM1;
-            offset = i;
-        } else if (arr[i] > x) {
-            fibM = fibM2;
-            fibM1 = fibM1 - fibM2;
-            fibM2 = fibM - fibM1;
-        } else {
-            return i;
-        }
-    }
-
-    // If the element is not found, return -1
-    if (fibM1 && arr[offset + 1] === x) {
-        return offset + 1;
-    }
-
-    return -1;
+class Node {
+  constructor(state, parent, depth) {
+    this.state = state;
+    this.parent = parent;
+    this.depth = depth;
+  }
 }
 
-// Test the function
-const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const x = 16;
-const index = fibonacciSearch(arr, x);
+function breadthLimitedSearch(startState, isGoalState, getSuccessors, limit) {
+  let queue = [new Node(startState, null, 0)];
 
-if (index !== -1) {
-    console.log(`Element found at index ${index}`);
-} else {
-    console.log("Element not found in the array");
+  while (queue.length > 0) {
+    let currentNode = queue.shift();
+
+    if (isGoalState(currentNode.state)) {
+      // Goal state found, construct and return the path
+      let path = [];
+      while (currentNode !== null) {
+        path.unshift(currentNode.state);
+        currentNode = currentNode.parent;
+      }
+      return path;
+    }
+
+    if (currentNode.depth < limit) {
+      let successors = getSuccessors(currentNode.state);
+      successors.forEach(successor => {
+        queue.push(new Node(successor, currentNode, currentNode.depth + 1));
+      });
+    }
+  }
+
+  return "No solution found within the limit.";
 }
+
+// Example usage
+let startState = 1;
+let goalState = 10;
+
+function isGoalState(state) {
+  return state === goalState;
+}
+
+function getSuccessors(state) {
+  return [state + 1, state + 2];
+}
+
+let path = breadthLimitedSearch(startState, isGoalState, getSuccessors, 3);
+console.log(path);
