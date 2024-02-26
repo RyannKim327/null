@@ -1,14 +1,26 @@
-// Fetching data from an API
-fetch('https://api.example.com/data')
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
+class Node {
+    constructor() {
+        this.children = {};
     }
-    return response.json();
-  })
-  .then(data => {
-    console.log(data);
-  })
-  .catch(error => {
-    console.error('There was a problem with your fetch operation:', error);
-  });
+}
+
+class SuffixTree {
+    constructor(inputString) {
+        this.root = new Node();
+        this.buildSuffixTree(inputString);
+    }
+
+    buildSuffixTree(input) {
+        // Implement Ukkonen's algorithm to build the suffix tree
+    }
+
+    search(substring) {
+        // Implement substring search logic
+    }
+
+    // Other operations like finding longest common substring, etc.
+}
+
+// Example usage
+const suffixTree = new SuffixTree("banana");
+console.log(suffixTree.search("ana")); // Output: true
