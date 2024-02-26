@@ -1,48 +1,45 @@
-class Graph {
-    constructor(vertices) {
-        this.adjacencyList = new Map();
-        for (let v of vertices) {
-            this.adjacencyList.set(v, []);
-        }
+function heapSort(arr) {
+    // Build max heap
+    for (let i = Math.floor(arr.length / 2) - 1; i >= 0; i--) {
+        heapify(arr, arr.length, i);
     }
 
-    addEdge(v1, v2) {
-        this.adjacencyList.get(v1).push(v2);
+    // Heap sort
+    for (let i = arr.length - 1; i > 0; i--) {
+        // Swapping root node with the last node
+        let temp = arr[0];
+        arr[0] = arr[i];
+        arr[i] = temp;
+
+        // Heapify the reduced heap
+        heapify(arr, i, 0);
     }
 
-    topologicalSortUtil(v, visited, stack) {
-        visited.add(v);
-        for (let neighbor of this.adjacencyList.get(v)) {
-            if (!visited.has(neighbor)) {
-                this.topologicalSortUtil(neighbor, visited, stack);
-            }
-        }
-        stack.push(v);
+    return arr;
+}
+
+function heapify(arr, n, i) {
+    let largest = i;
+    let left = 2 * i + 1;
+    let right = 2 * i + 2;
+
+    if (left < n && arr[left] > arr[largest]) {
+        largest = left;
     }
 
-    topologicalSort() {
-        let visited = new Set();
-        let stack = [];
+    if (right < n && arr[right] > arr[largest]) {
+        largest = right;
+    }
 
-        for (let v of this.adjacencyList.keys()) {
-            if (!visited.has(v)) {
-                this.topologicalSortUtil(v, visited, stack);
-            }
-        }
+    if (largest !== i) {
+        let temp = arr[i];
+        arr[i] = arr[largest];
+        arr[largest] = temp;
 
-        return stack.reverse();
+        heapify(arr, n, largest);
     }
 }
 
 // Example usage
-let vertices = ['A', 'B', 'C', 'D', 'E', 'F'];
-let g = new Graph(vertices);
-g.addEdge('A', 'C');
-g.addEdge('C', 'E');
-g.addEdge('E', 'F');
-g.addEdge('B', 'D');
-g.addEdge('B', 'E');
-g.addEdge('D', 'F');
-
-let result = g.topologicalSort();
-console.log(result);
+const arr = [12, 11, 13, 5, 6, 7];
+console.log(heapSort(arr));
