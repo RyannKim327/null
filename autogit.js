@@ -1,26 +1,15 @@
-class Node {
-    constructor() {
-        this.children = {};
+function countOccurrences(str, char) {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
+            count++;
+        }
     }
-}
-
-class SuffixTree {
-    constructor(inputString) {
-        this.root = new Node();
-        this.buildSuffixTree(inputString);
-    }
-
-    buildSuffixTree(input) {
-        // Implement Ukkonen's algorithm to build the suffix tree
-    }
-
-    search(substring) {
-        // Implement substring search logic
-    }
-
-    // Other operations like finding longest common substring, etc.
+    return count;
 }
 
 // Example usage
-const suffixTree = new SuffixTree("banana");
-console.log(suffixTree.search("ana")); // Output: true
+const myString = "hello world";
+const charToCount = "o";
+const occurrences = countOccurrences(myString, charToCount);
+console.log(`Number of occurrences of '${charToCount}' in '${myString}': ${occurrences}`);
