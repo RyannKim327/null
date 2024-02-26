@@ -1,7 +1,22 @@
-let numbers = [5, 2, 8, 1, 4];
+function firstRepeatedCharacter(str) {
+    const set = new Set();
+  
+    for (let char of str) {
+        if (set.has(char)) {
+            return char;
+        } else {
+            set.add(char);
+        }
+    }
+  
+    return null; // If no repeated character is found
+}
 
-numbers.sort(function(a, b) {
-    return a - b;
-});
+const inputString = "hello";
+const repeatedChar = firstRepeatedCharacter(inputString);
 
-console.log(numbers); // Output: [1, 2, 4, 5, 8]
+if (repeatedChar) {
+    console.log(`The first repeated character in the string is: ${repeatedChar}`);
+} else {
+    console.log("No repeated character found in the string.");
+}
