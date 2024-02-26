@@ -1,12 +1,4 @@
-function factorial(n) {
-    if (n === 0) {
-        return 1;
-    } else {
-        return n * factorial(n - 1);
-    }
-}
-
-// Example usage
-const number = 5;
-const result = factorial(number);
-console.log(`Factorial of ${number} is: ${result}`);
+let str1 = "Hello";
+let str2 = "World";
+let result = str1 + " " + str2;
+console.log(result); // Output: Hello World
