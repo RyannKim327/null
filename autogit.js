@@ -1,43 +1,77 @@
-function rabinKarpSearch(pattern, text) {
-    const BASE = 26;
-    const PRIME = 101;
-    const patternLength = pattern.length;
-    const textLength = text.length;
-    const patternHash = hash(pattern);
-    let textHash = hash(text.substring(0, patternLength));
+class Queue {
+  constructor() {
+    this.items = [];
+  }
 
-    function hash(str) {
-        let hash = 0;
-        for (let i = 0; i < str.length; i++) {
-            hash = (hash * BASE + str.charCodeAt(i)) % PRIME;
-        }
-        return hash;
-    }
+  enqueue(item) {
+    this.items.push(item);
+  }
 
-    function rehash(text, oldIndex, newIndex) {
-        let oldChar = text.charCodeAt(oldIndex);
-        let newChar = text.charCodeAt(newIndex);
-        textHash = (textHash - Math.pow(BASE, patternLength - 1) * oldChar % PRIME) * BASE + newChar % PRIME;
-        if (textHash < 0) textHash += PRIME;
+  dequeue() {
+    if (this.isEmpty()) {
+      return null;
     }
+    return this.items.shift();
+  }
 
-    for (let i = 0; i <= textLength - patternLength; i++) {
-        if (patternHash === textHash && pattern === text.substring(i, i + patternLength)) {
-            return i;
-        }
-        if (i < textLength - patternLength) {
-            rehash(text, i, i + patternLength);
-        }
-    }
-    return -1;
+  isEmpty() {
+    return this.items.length === 0;
+  }
 }
 
-// Example usage
-const text = "ABABCABABCDABABCABAB";
-const pattern = "ABABCABAB";
-const index = rabinKarpSearch(pattern, text);
-if (index !== -1) {
-    console.log(`Pattern found at index ${index}`);
+function biDirectionalSearch(startNode, goalNode) {
+  let visitedFromStart = new Set();
+  let visitedFromGoal = new Set();
+  let queueFromStart = new Queue();
+  let queueFromGoal = new Queue();
+
+  visitedFromStart.add(startNode);
+  visitedFromGoal.add(goalNode);
+  queueFromStart.enqueue(startNode);
+  queueFromGoal.enqueue(goalNode);
+
+  while (!queueFromStart.isEmpty() && !queueFromGoal.isEmpty()) {
+    let currentStartNode = queueFromStart.dequeue();
+    let currentGoalNode = queueFromGoal.dequeue();
+
+    if (visitedFromGoal.has(currentStartNode) || visitedFromStart.has(currentGoalNode)) {
+      // Nodes meet, path found
+      return true;
+    }
+
+    // Expand nodes and add to the queue
+    let neighborsStart = getNeighbors(currentStartNode);
+    neighborsStart.forEach((neighbor) => {
+      if (!visitedFromStart.has(neighbor)) {
+        visitedFromStart.add(neighbor);
+        queueFromStart.enqueue(neighbor);
+      }
+    });
+
+    let neighborsGoal = getNeighbors(currentGoalNode);
+    neighborsGoal.forEach((neighbor) => {
+      if (!visitedFromGoal.has(neighbor)) {
+        visitedFromGoal.add(neighbor);
+        queueFromGoal.enqueue(neighbor);
+      }
+    });
+  }
+
+  return false; // Path not found
+}
+
+function getNeighbors(node) {
+  // Implement your function to get neighbors of a given node
+  // For example, for a graph/node representation, you can return adjacent nodes
+  // You can adapt this based on the specific problem you are solving
+}
+
+// Usage
+let startNode = 'A'; // Initial state
+let goalNode = 'F'; // Goal state
+
+if (biDirectionalSearch(startNode, goalNode)) {
+  console.log('Path found from ' + startNode + ' to ' + goalNode);
 } else {
-    console.log("Pattern not found");
+  console.log('Path not found from ' + startNode + ' to ' + goalNode);
 }
