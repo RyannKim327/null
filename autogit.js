@@ -1,38 +1,12 @@
-function hasCycle(head) {
-    if (!head || !head.next) {
-        return false;
-    }
+let array = [1, 2, 3, 4, 5];
+let elementToRemove = 3;
 
-    let slow = head;
-    let fast = head.next;
+// Find the index of the element to remove
+let index = array.indexOf(elementToRemove);
 
-    while (fast && fast.next) {
-        if (slow === fast) {
-            return true;
-        }
-        slow = slow.next;
-        fast = fast.next.next;
-    }
-
-    return false;
-}
-// Define a simple Node class for the linked list
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
-    }
+if (index > -1) {
+  // Remove the element at the specified index
+  array.splice(index, 1);
 }
 
-// Create a linked list with a cycle
-let node1 = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-let node4 = new Node(4);
-
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2; // Create a cycle
-
-console.log(hasCycle(node1)); // Output: true
+console.log(array); // Output: [1, 2, 4, 5]
