@@ -1,36 +1,26 @@
-function isPalindrome(str) {
-  // Initialize two pointers, one at the beginning and one at the end of the string
-  let start = 0;
-  let end = str.length - 1;
-
-  // Iterate until the pointers meet
-  while (start < end) {
-    // Skip non-alphanumeric characters from the start
-    if (!str[start].match(/[a-zA-Z0-9]/)) {
-      start++;
-      continue;
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-    
-    // Skip non-alphanumeric characters from the end
-    if (!str[end].match(/[a-zA-Z0-9]/)) {
-      end--;
-      continue;
-    }
-
-    // Compare characters ignoring case
-    if (str[start].toLowerCase() !== str[end].toLowerCase()) {
-      return false;
-    }
-
-    // Move the pointers towards the center
-    start++;
-    end--;
-  }
-
-  // If the loop completes without returning false, the string is a valid palindrome
-  return true;
 }
 
-// Example usage
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // Output: true
-console.log(isPalindrome("race a car")); // Output: false
+function sumOfNodes(root) {
+    if (root === null) {
+        return 0;
+    }
+
+    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
+}
+
+// Example of creating a binary tree
+let root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+// Calculate the sum of all nodes
+const sum = sumOfNodes(root);
+console.log("Sum of all nodes in the binary tree is: " + sum);
