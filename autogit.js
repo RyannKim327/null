@@ -1,46 +1,17 @@
-function biDirectionalSearch(startNode, goalNode) {
-    let forwardVisited = new Set();
-    let backwardVisited = new Set();
-    
-    let forwardQueue = [startNode];
-    let backwardQueue = [goalNode];
-    
-    while (forwardQueue.length > 0 && backwardQueue.length > 0) {
-        // Forward search
-        let currentNodeForward = forwardQueue.shift();
-        forwardVisited.add(currentNodeForward);
-        
-        // Check if intersection
-        if (backwardVisited.has(currentNodeForward)) {
-            // Path found
-            return true;
-        }
-        
-        // Explore neighbors of currentNodeForward
-        for (let neighbor of currentNodeForward.neighbors) {
-            if (!forwardVisited.has(neighbor)) {
-                forwardQueue.push(neighbor);
-            }
-        }
-        
-        // Backward search
-        let currentNodeBackward = backwardQueue.shift();
-        backwardVisited.add(currentNodeBackward);
-        
-        // Check if intersection
-        if (forwardVisited.has(currentNodeBackward)) {
-            // Path found
-            return true;
-        }
-        
-        // Explore neighbors of currentNodeBackward
-        for (let neighbor of currentNodeBackward.neighbors) {
-            if (!backwardVisited.has(neighbor)) {
-                backwardQueue.push(neighbor);
+function bubbleSort(arr) {
+    const n = arr.length;
+    let temp;
+    for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n - 1 - i; j++) {
+            if (arr[j] > arr[j + 1]) {
+                temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
             }
         }
     }
-    
-    // Path not found
-    return false;
+    return arr;
 }
+
+const arr = [64, 34, 25, 12, 22, 11, 90];
+console.log(bubbleSort(arr));
