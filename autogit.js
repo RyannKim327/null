@@ -1,20 +1,24 @@
-function bubbleSort(arr) {
-    const length = arr.length;
-    for (let i = 0; i < length; i++) {
-        for (let j = 0; j < length - 1 - i; j++) {
-            if (arr[j] > arr[j + 1]) {
-                // Swap the elements
-                const temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
+function selectionSort(arr) {
+    const n = arr.length;
+
+    for(let i = 0; i < n-1; i++) {
+        let minIndex = i;
+        for(let j = i+1; j < n; j++) {
+            if(arr[j] < arr[minIndex]) {
+                minIndex = j;
             }
         }
+        if(minIndex !== i) {
+            let temp = arr[i];
+            arr[i] = arr[minIndex];
+            arr[minIndex] = temp;
+        }
     }
+    
     return arr;
 }
 
 // Example usage
-const array = [64, 34, 25, 12, 22, 11, 90];
-console.log("Original array: " + array);
-const sortedArray = bubbleSort(array);
-console.log("Sorted array: " + sortedArray);
+const array = [64, 25, 12, 22, 11];
+console.log("Original array:", array);
+console.log("Sorted array:", selectionSort(array));
