@@ -1,29 +1,25 @@
-function longestIncreasingSubsequence(arr) {
-    const n = arr.length;
-    const dp = new Array(n).fill(1);
+function isPalindrome(s) {
+    // Using two pointers approach without extra space
+    let i = 0;
+    let j = s.length - 1;
 
-    for (let i = 1; i < n; i++) {
-        for (let j = 0; j < i; j++) {
-            if (arr[i] > arr[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
-            }
+    while (i < j) {
+        // Ignore non-alphanumeric characters
+        while (i < j && !s[i].match(/[a-z0-9]/i)) i++;
+        while (i < j && !s[j].match(/[a-z0-9]/i)) j--;
+
+        // Convert characters to lowercase and compare
+        if (s[i].toLowerCase() !== s[j].toLowerCase()) {
+            return false; // Not a palindrome
         }
+
+        i++;
+        j--;
     }
 
-    let maxLength = Math.max(...dp);
-    let result = [];
-    let lastIndex = dp.indexOf(maxLength);
-
-    for (let i = lastIndex; i >= 0; i--) {
-        if (dp[i] === maxLength && (result.length === 0 || arr[i] < result[result.length - 1])) {
-            result.unshift(arr[i]);
-            maxLength--;
-        }
-    }
-
-    return result;
+    return true; // It is a palindrome
 }
 
 // Test the function
-const array = [10, 22, 9, 33, 21, 50, 41, 60, 80];
-console.log('Longest Increasing Subsequence:', longestIncreasingSubsequence(array));
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
