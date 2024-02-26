@@ -1,25 +1,22 @@
-function findFirstRepeatedCharacter(str) {
-    let charMap = {};
-    
-    for (let i = 0; i < str.length; i++) {
-        let char = str[i];
-        
-        if (charMap[char]) {
-            return char;
-        } else {
-            charMap[char] = true;
-        }
-    }
-    
-    return null; // If no repeated characters are found
+function areAnagrams(str1, str2) {
+    // Remove non-alphabetic characters and convert to lowercase
+    str1 = str1.replace(/[^a-zA-Z]/g, '').toLowerCase();
+    str2 = str2.replace(/[^a-zA-Z]/g, '').toLowerCase();
+
+    // Convert strings to arrays, sort them, then convert them back to strings
+    let sortedStr1 = str1.split('').sort().join('');
+    let sortedStr2 = str2.split('').sort().join('');
+
+    // Compare the sorted strings
+    return sortedStr1 === sortedStr2;
 }
 
-// Example usage
-let str = "hello world";
-let firstRepeatedChar = findFirstRepeatedCharacter(str);
+// Test the function
+const str1 = "listen";
+const str2 = "silent";
 
-if (firstRepeatedChar) {
-    console.log("The first repeated character is: " + firstRepeatedChar);
+if (areAnagrams(str1, str2)) {
+    console.log(`${str1} and ${str2} are anagrams.`);
 } else {
-    console.log("No repeated characters found in the string.");
+    console.log(`${str1} and ${str2} are not anagrams.`);
 }
