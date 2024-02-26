@@ -1,66 +1,31 @@
-function buildLPSArray(pattern) {
-    const lps = new Array(pattern.length).fill(0);
-    let len = 0;
-    let i = 1;
+function binarySearch(arr, target) {
+    let left = 0;
+    let right = arr.length - 1;
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
+    while (left <= right) {
+        let mid = Math.floor((left + right) / 2);
+
+        if (arr[mid] === target) {
+            return mid; // Element found, return its index
+        }
+
+        if (arr[mid] < target) {
+            left = mid + 1; // Look in the right half
         } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
+            right = mid - 1; // Look in the left half
         }
     }
 
-    return lps;
-}
-
-function kmpSearch(text, pattern) {
-    const n = text.length;
-    const m = pattern.length;
-    
-    if (m === 0) {
-        return 0;
-    }
-
-    const lps = buildLPSArray(pattern);
-    
-    let i = 0;
-    let j = 0;
-
-    while (i < n) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-        
-        if (j === m) {
-            return i - j;
-        } else if (i < n && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
-    }
-
-    return -1;
+    return -1; // Element not found
 }
 
 // Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const result = kmpSearch(text, pattern);
+const arr = [1, 3, 5, 7, 9, 11, 13, 15];
+const target = 7;
+const index = binarySearch(arr, target);
 
-if (result === -1) {
-    console.log("Pattern not found in the text");
+if (index !== -1) {
+    console.log(`Element found at index ${index}`);
 } else {
-    console.log(`Pattern found at index ${result}`);
+    console.log("Element not found");
 }
