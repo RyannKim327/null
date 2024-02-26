@@ -1,41 +1,11 @@
-function longestCommonSubsequence(str1, str2) {
-    const m = str1.length;
-    const n = str2.length;
-
-    // Create a 2D array to store the lengths of longest common subsequences
-    const dp = [];
-    for (let i = 0; i <= m; i++) {
-        dp[i] = [];
-        for (let j = 0; j <= n; j++) {
-            if (i === 0 || j === 0) {
-                dp[i][j] = 0;
-            } else if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-            } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-            }
-        }
-    }
-
-    // Backtrack to find the longest common subsequence
-    let i = m, j = n;
-    let lcs = '';
-    while (i > 0 && j > 0) {
-        if (str1[i - 1] === str2[j - 1]) {
-            lcs = str1[i - 1] + lcs;
-            i--;
-            j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--;
-        } else {
-            j--;
-        }
-    }
-
-    return lcs;
+function isPalindrome(str) {
+    // Remove non-alphanumeric characters and convert to lowercase
+    const alphanumericStr = str.toLowerCase().replace(/[\W_]/g, '');
+    
+    // Reverse the string and compare with the original string
+    return alphanumericStr === alphanumericStr.split('').reverse().join('');
 }
 
 // Test the function
-const str1 = "ABCDGH";
-const str2 = "AEDFHR";
-console.log(longestCommonSubsequence(str1, str2)); // Output: "ADH"
+const testString = "A man, a plan, a canal, Panama!";
+console.log(isPalindrome(testString)); // Output: true
