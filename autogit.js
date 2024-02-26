@@ -1,17 +1,16 @@
-function insertionSort(arr) {
-    for (let i = 1; i < arr.length; i++) {
-        let currentVal = arr[i];
-        let j = i - 1;
-        while (j >= 0 && arr[j] > currentVal) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
-        arr[j + 1] = currentVal;
+function findMedianSortedArrays(nums1, nums2) {
+    let mergedArray = nums1.concat(nums2).sort((a, b) => a - b);
+    let length = mergedArray.length;
+    
+    if (length % 2 === 0) {
+        return (mergedArray[length / 2 - 1] + mergedArray[length / 2]) / 2;
+    } else {
+        return mergedArray[Math.floor(length / 2)];
     }
-    return arr;
 }
 
 // Example usage
-let arr = [5, 3, 8, 2, 1, 4];
-console.log("Before sorting:", arr);
-console.log("After sorting:", insertionSort(arr));
+let nums1 = [1, 3];
+let nums2 = [2];
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2
+
