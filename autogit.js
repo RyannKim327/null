@@ -1,101 +1,46 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-        this.height = 1;
+function buildBadCharTable(pattern) {
+    const table = new Map();
+    const patternLength = pattern.length;
+
+    for (let i = 0; i < patternLength - 1; i++) {
+        table.set(pattern[i], patternLength - i - 1);
     }
+
+    return table;
 }
-class AVLTree {
-    constructor() {
-        this.root = null;
-    }
 
-    insert(value) {
-        this.root = this._insertRec(this.root, value);
-    }
+function searchBoyerMooreHorspool(text, pattern) {
+    const textLength = text.length;
+    const patternLength = pattern.length;
+    const badCharTable = buildBadCharTable(pattern);
+    let i = patternLength - 1;
 
-    _insertRec(node, value) {
-        if (node === null) {
-            return new Node(value);
+    while (i < textLength) {
+        let j = patternLength - 1;
+        
+        while (j >= 0 && text[i] === pattern[j]) {
+            i--;
+            j--;
         }
 
-        if (value < node.value) {
-            node.left = this._insertRec(node.left, value);
-        } else if (value > node.value) {
-            node.right = this._insertRec(node.right, value);
+        if (j === -1) {
+            return i + 1; // pattern found
         } else {
-            return node; // Duplicate values not allowed
+            i += Math.max(1, badCharTable.get(text[i]) || patternLength);
         }
-
-        node.height = 1 + Math.max(this._getHeight(node.left), this._getHeight(node.right));
-
-        let balance = this._getBalance(node);
-
-        if (balance > 1 && value < node.left.value) {
-            return this._rotateRight(node);
-        }
-
-        if (balance < -1 && value > node.right.value) {
-            return this._rotateLeft(node);
-        }
-
-        if (balance > 1 && value > node.left.value) {
-            node.left = this._rotateLeft(node.left);
-            return this._rotateRight(node);
-        }
-
-        if (balance < -1 && value < node.right.value) {
-            node.right = this._rotateRight(node.right);
-            return this._rotateLeft(node);
-        }
-
-        return node;
     }
 
-    _getHeight(node) {
-        if (node === null) {
-            return 0;
-        }
-        return node.height;
-    }
-
-    _getBalance(node) {
-        if (node === null) {
-            return 0;
-        }
-        return this._getHeight(node.left) - this._getHeight(node.right);
-    }
-
-    _rotateRight(y) {
-        let x = y.left;
-        let T2 = x.right;
-
-        x.right = y;
-        y.left = T2;
-
-        y.height = 1 + Math.max(this._getHeight(y.left), this._getHeight(y.right));
-        x.height = 1 + Math.max(this._getHeight(x.left), this._getHeight(x.right));
-
-        return x;
-    }
-
-    _rotateLeft(x) {
-        let y = x.right;
-        let T2 = y.left;
-
-        y.left = x;
-        x.right = T2;
-
-        x.height = 1 + Math.max(this._getHeight(x.left), this._getHeight(x.right));
-        y.height = 1 + Math.max(this._getHeight(y.left), this._getHeight(y.right));
-
-        return y;
-    }
+    return -1; // pattern not found
 }
 
 // Example usage
-let avlTree = new AVLTree();
-avlTree.insert(10);
-avlTree.insert(20);
-avlTree.insert(30);
+const text = 'Hello, how are you?';
+const pattern = 'how';
+
+const index = searchBoyerMooreHorspool(text, pattern);
+
+if (index !== -1) {
+    console.log(`Pattern found at index ${index}`);
+} else {
+    console.log('Pattern not found');
+}
