@@ -1,37 +1,18 @@
-class TreeNode {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-function diameterOfBinaryTree(root) {
-    let diameter = 0;
-
-    function depth(node) {
-        if (!node) {
-            return 0;
+function countOccurrences(str, char) {
+    let count = 0;
+    
+    for (let i = 0; i < str.length; i++) {
+        if (str.charAt(i) === char) {
+            count++;
         }
-
-        let left = depth(node.left);
-        let right = depth(node.right);
-
-        diameter = Math.max(diameter, left + right);
-
-        return Math.max(left, right) + 1;
     }
-
-    depth(root);
-
-    return diameter;
+    
+    return count;
 }
 
-// Example usage:
-let root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+// Usage
+const myString = "Hello, World!";
+const charToCount = "l";
+const occurrences = countOccurrences(myString, charToCount);
 
-console.log(diameterOfBinaryTree(root)); // Output: 3
+console.log(`The character '${charToCount}' occurs ${occurrences} times in the string.`);
