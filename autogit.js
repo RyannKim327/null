@@ -1,8 +1,50 @@
-function removeVowels(str) {
-    return str.replace(/[aeiouAEIOU]/g, '');
+class Stack {
+  constructor() {
+    this.stack = [];
+  }
+
+  push(element) {
+    this.stack.push(element);
+  }
+
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
+    }
+    return this.stack.pop();
+  }
+
+  peek() {
+    return this.stack[this.stack.length - 1];
+  }
+
+  isEmpty() {
+    return this.stack.length === 0;
+  }
+
+  size() {
+    return this.stack.length;
+  }
+
+  print() {
+    console.log(this.stack);
+  }
 }
 
-let inputString = "Hello, World!";
-let result = removeVowels(inputString);
+// Usage
+const myStack = new Stack();
 
-console.log(result); // Output: "Hll, Wrld!"
+myStack.push(1);
+myStack.push(2);
+myStack.push(3);
+
+myStack.print(); // Output: [1, 2, 3]
+
+console.log(myStack.pop()); // Output: 3
+console.log(myStack.pop()); // Output: 2
+
+console.log(myStack.peek()); // Output: 1
+
+console.log(myStack.size()); // Output: 1
+
+myStack.print(); // Output: [1]
