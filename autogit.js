@@ -1,43 +1,34 @@
 class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
+    constructor(data) {
+        this.data = data;
+        this.next = null;
+    }
 }
 
 class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+    constructor() {
+        this.head = null;
+    }
 
-  // Method to add a node to the end of the linked list
-  append(data) {
-    const newNode = new Node(data);
-    if (!this.head) {
-      this.head = newNode;
-      return;
-    }
-    let current = this.head;
-    while (current.next) {
-      current = current.next;
-    }
-    current.next = newNode;
-  }
+    findMiddleElement() {
+        let slow = this.head;
+        let fast = this.head;
 
-  // Method to print all nodes in the linked list
-  print() {
-    let current = this.head;
-    while (current) {
-      console.log(current.data);
-      current = current.next;
+        while (fast !== null && fast.next !== null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        return slow.data;
     }
-  }
 }
 
-// Usage
+// Example usage
 const linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
+linkedList.head = new Node(1);
+linkedList.head.next = new Node(2);
+linkedList.head.next.next = new Node(3);
+linkedList.head.next.next.next = new Node(4);
+linkedList.head.next.next.next.next = new Node(5);
 
-linkedList.print();
+console.log("Middle element: ", linkedList.findMiddleElement());
