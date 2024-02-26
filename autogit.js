@@ -1,57 +1,24 @@
-// TrieNode class
-class TrieNode {
-    constructor() {
-        this.children = {};
-        this.isEndOfWord = false;
+function selectionSort(arr) {
+    const n = arr.length;
+
+    for (let i = 0; i < n - 1; i++) {
+        let minIndex = i;
+
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+        }
     }
+
+    return arr;
 }
 
-// Trie class
-class Trie {
-    constructor() {
-        this.root = new TrieNode();
-    }
-
-    insert(word) {
-        let node = this.root;
-        for (let char of word) {
-            if (!node.children[char]) {
-                node.children[char] = new TrieNode();
-            }
-            node = node.children[char];
-        }
-        node.isEndOfWord = true;
-    }
-
-    search(word) {
-        let node = this.root;
-        for (let char of word) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
-        }
-        return node.isEndOfWord;
-    }
-
-    startsWith(prefix) {
-        let node = this.root;
-        for (let char of prefix) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
-        }
-        return true;
-    }
-}
-
-// Usage
-const trie = new Trie();
-trie.insert("hello");
-trie.insert("world");
-
-console.log(trie.search("hello")); // true
-console.log(trie.search("hell")); // false
-console.log(trie.startsWith("hel")); // true
-console.log(trie.startsWith("abc")); // false
+// Example usage
+const array = [64, 25, 12, 22, 11];
+console.log("Original Array: ", array);
+console.log("Sorted Array: ", selectionSort(array));
