@@ -1,38 +1,43 @@
-function findMajorityElement(arr) {
-    let count = 0;
-    let candidate = null;
+function burrowsWheelerTransform(input) {
+    let matrix = [];
     
-    for (let i = 0; i < arr.length; i++) {
-        if (count === 0) {
-            candidate = arr[i];
-            count = 1;
-        } else if (candidate === arr[i]) {
-            count++;
-        } else {
-            count--;
-        }
+    // Create a matrix with all rotations of the input string
+    for (let i = 0; i < input.length; i++) {
+        matrix.push(input.slice(i) + input.slice(0, i));
     }
-    
-    // Verify if the candidate is the majority element
-    count = 0;
-    for (let i = 0; i < arr.length; i++) {
-        if (arr[i] === candidate) {
-            count++;
-        }
-    }
-    
-    if (count > arr.length / 2) {
-        return candidate;
-    } else {
-        return null; // No majority element found
-    }
+
+    // Sort the matrix lexicographically
+    matrix.sort();
+
+    // Extract the last characters of each row to get the transformed string
+    let transformedString = matrix.map(row => row.slice(-1)).join('');
+
+    return transformedString;
 }
 
-// Example usage
-const arr = [2, 2, 3, 2, 4, 2, 2];
-const majorityElement = findMajorityElement(arr);
-if (majorityElement !== null) {
-    console.log(`Majority element in the array is: ${majorityElement}`);
-} else {
-    console.log("No majority element found in the array.");
+function burrowsWheelerInverseTransform(input) {
+    let table = [];
+    for (let i = 0; i < input.length; i++) {
+        table[i] = { original: input[i], index: i };
+    }
+
+    table.sort((a, b) => a.original.localeCompare(b.original));
+
+    let currentIndex = input.indexOf('$');
+    let originalString = '';
+    do {
+        originalString += table[currentIndex].original;
+        currentIndex = table[currentIndex].index;
+    } while (currentIndex != input.indexOf('$'));
+
+    return originalString;
 }
+
+// Test the Burrows-Wheeler Transform
+let inputString = 'Hello World$';
+let transformedString = burrowsWheelerTransform(inputString);
+let originalString = burrowsWheelerInverseTransform(transformedString);
+
+console.log("Original string: " + inputString);
+console.log("Transformed string: " + transformedString);
+console.log("Decoded string: " + originalString);
