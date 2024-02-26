@@ -1,15 +1,4 @@
-function longestCommonPrefix(strs) {
-    if (strs.length === 0) return "";
+let str = "Hello, World!";
+let newStr = str.replace(/\s/g, ''); // Using regular expression to remove all spaces
 
-    let prefix = strs[0];
-    for (let i = 1; i < strs.length; i++) {
-        while (strs[i].indexOf(prefix) !== 0) {
-            prefix = prefix.substring(0, prefix.length - 1);
-        }
-    }
-    return prefix;
-}
-
-// Test the function
-const strings = ['flower', 'flow', 'flight'];
-console.log(longestCommonPrefix(strings)); // Output: "fl"
+console.log(newStr); // Output: "Hello,World!"
