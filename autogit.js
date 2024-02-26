@@ -1,22 +1,31 @@
-function isPrime(number) {
-    if (number <= 1) {
-        return false;
-    }
+function longestCommonSubstring(str1, str2) {
+    const len1 = str1.length;
+    const len2 = str2.length;
     
-    // Check for divisibility from 2 to the square root of the number
-    for (let i = 2; i <= Math.sqrt(number); i++) {
-        if (number % i === 0) {
-            return false;
+    const dp = Array(len1 + 1).fill(0).map(() => Array(len2 + 1).fill(0));
+    let longestLength = 0;
+    let endIndex = 0;
+    
+    for (let i = 1; i <= len1; i++) {
+        for (let j = 1; j <= len2; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > longestLength) {
+                    longestLength = dp[i][j];
+                    endIndex = i - 1;
+                }
+            }
         }
     }
     
-    return true;
+    if (longestLength === 0) {
+        return '';
+    }
+    
+    return str1.substring(endIndex - longestLength + 1, endIndex + 1);
 }
 
-// Test the function
-const num = 17;
-if (isPrime(num)) {
-    console.log(`${num} is a prime number`);
-} else {
-    console.log(`${num} is not a prime number`);
-}
+// Example usage
+const str1 = 'abcdef';
+const str2 = 'bcdeft';
+console.log(longestCommonSubstring(str1, str2)); // Output: 'bcde'
