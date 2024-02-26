@@ -1,20 +1,17 @@
-function isAnagram(str1, str2) {
-    if (str1.length !== str2.length) {
-        return false;
-    }
+function calculateTriangleArea(a, b, c) {
+    // Calculate the semi-perimeter
+    let s = (a + b + c) / 2;
 
-    const sortedStr1 = str1.split('').sort().join('');
-    const sortedStr2 = str2.split('').sort().join('');
+    // Calculate the area using Heron's formula
+    let area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
 
-    return sortedStr1 === sortedStr2;
+    // Return the area
+    return area;
 }
 
-// Test the function
-const string1 = 'listen';
-const string2 = 'silent';
-
-if (isAnagram(string1, string2)) {
-    console.log(`${string1} and ${string2} are anagrams.`);
-} else {
-    console.log(`${string1} and ${string2} are not anagrams.`);
-}
+// Example usage
+let a = 3;
+let b = 4;
+let c = 5;
+let area = calculateTriangleArea(a, b, c);
+console.log('The area of the triangle is: ' + area);
