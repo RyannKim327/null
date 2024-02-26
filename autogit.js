@@ -1,76 +1,76 @@
 class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
-    }
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
 }
 
-class Queue {
-    constructor() {
-        this.front = null;
-        this.rear = null;
-        this.size = 0;
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+
+  add(data) {
+    const newNode = new Node(data);
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
+
+  reverse() {
+    let prev = null;
+    let current = this.head;
+    while (current) {
+      const next = current.next;
+      current.next = prev;
+      prev = current;
+      current = next;
+    }
+    this.head = prev;
+  }
+
+  isEqual(otherList) {
+    let currentA = this.head;
+    let currentB = otherList.head;
+
+    while (currentA && currentB) {
+      if (currentA.data !== currentB.data) {
+        return false;
+      }
+      currentA = currentA.next;
+      currentB = currentB.next;
     }
 
-    enqueue(data) {
-        const newNode = new Node(data);
+    return !currentA && !currentB;
+  }
 
-        if (!this.front) {
-            this.front = newNode;
-            this.rear = newNode;
-        } else {
-            this.rear.next = newNode;
-            this.rear = newNode;
-        }
+  isPalindrome() {
+    const reversedList = new LinkedList();
 
-        this.size++;
+    let current = this.head;
+    while (current) {
+      reversedList.add(current.data);
+      current = current.next;
     }
 
-    dequeue() {
-        if (!this.front) return null;
+    reversedList.reverse();
 
-        const data = this.front.data;
-
-        if (this.front === this.rear) {
-            this.front = null;
-            this.rear = null;
-        } else {
-            this.front = this.front.next;
-        }
-
-        this.size--;
-
-        return data;
-    }
-
-    isEmpty() {
-        return this.size === 0;
-    }
-
-    getSize() {
-        return this.size;
-    }
-
-    printQueue() {
-        let current = this.front;
-        while (current) {
-            console.log(current.data);
-            current = current.next;
-        }
-    }
+    return this.isEqual(reversedList);
+  }
 }
 
-// Example usage
-const queue = new Queue();
+// Test the implementation
+const ll = new LinkedList();
+ll.add(1);
+ll.add(2);
+ll.add(3);
+ll.add(2);
+ll.add(1);
 
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
-
-console.log("Dequeuing...", queue.dequeue());
-console.log("Dequeuing...", queue.dequeue());
-
-console.log("Queue size:", queue.getSize());
-console.log("Is queue empty?", queue.isEmpty());
-
-queue.printQueue();
+console.log(ll.isPalindrome()); // Output: true
