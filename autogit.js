@@ -1,14 +1,22 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert the string to lowercase
-  str = str.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
-  
-  // Reverse the string
-  let reversedStr = str.split('').reverse().join('');
-  
-  // Check if the original string is equal to its reverse
-  return str === reversedStr;
+function isPrime(number) {
+    if (number <= 1) {
+        return false;
+    }
+    
+    // Check for divisibility from 2 to the square root of the number
+    for (let i = 2; i <= Math.sqrt(number); i++) {
+        if (number % i === 0) {
+            return false;
+        }
+    }
+    
+    return true;
 }
 
 // Test the function
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // Output: true
-console.log(isPalindrome("hello world")); // Output: false
+const num = 17;
+if (isPrime(num)) {
+    console.log(`${num} is a prime number`);
+} else {
+    console.log(`${num} is not a prime number`);
+}
