@@ -1,29 +1,43 @@
-// Define the async task function
-async function fetchData(url) {
-  try {
-    // Use fetch to make a network request
-    const response = await fetch(url);
-    
-    // Check if the response is successful
-    if (!response.ok) {
-      throw new Error('Request failed');
-    }
-    
-    // Parse the response as JSON
-    const data = await response.json();
-    
-    // Return the data
-    return data;
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    return null;
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
   }
 }
 
-// Call the async task function with a sample URL
-const url = 'https://api.example.com/data';
-fetchData(url)
-  .then(data => {
-    // Process the data here
-    console.log('Data received:', data);
-  });
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+
+  // Method to add a node to the end of the linked list
+  append(data) {
+    const newNode = new Node(data);
+    if (!this.head) {
+      this.head = newNode;
+      return;
+    }
+    let current = this.head;
+    while (current.next) {
+      current = current.next;
+    }
+    current.next = newNode;
+  }
+
+  // Method to print all nodes in the linked list
+  print() {
+    let current = this.head;
+    while (current) {
+      console.log(current.data);
+      current = current.next;
+    }
+  }
+}
+
+// Usage
+const linkedList = new LinkedList();
+linkedList.append(1);
+linkedList.append(2);
+linkedList.append(3);
+
+linkedList.print();
