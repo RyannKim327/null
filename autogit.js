@@ -1,25 +1,79 @@
-function isPalindrome(s) {
-    // Using two pointers approach without extra space
-    let i = 0;
-    let j = s.length - 1;
+class BinaryHeap {
+  constructor() {
+    this.heap = [];
+  }
 
-    while (i < j) {
-        // Ignore non-alphanumeric characters
-        while (i < j && !s[i].match(/[a-z0-9]/i)) i++;
-        while (i < j && !s[j].match(/[a-z0-9]/i)) j--;
+  insert(value) {
+    this.heap.push(value);
+    this.bubbleUp(this.heap.length - 1);
+  }
 
-        // Convert characters to lowercase and compare
-        if (s[i].toLowerCase() !== s[j].toLowerCase()) {
-            return false; // Not a palindrome
-        }
-
-        i++;
-        j--;
+  extractMax() {
+    const max = this.heap[0];
+    const last = this.heap.pop();
+    if (this.heap.length > 0) {
+      this.heap[0] = last;
+      this.sinkDown(0);
     }
+    return max;
+  }
 
-    return true; // It is a palindrome
+  bubbleUp(index) {
+    const value = this.heap[index];
+    while (index > 0) {
+      const parentIndex = Math.floor((index - 1) / 2);
+      const parent = this.heap[parentIndex];
+      if (value <= parent) {
+        break;
+      }
+      this.heap[parentIndex] = value;
+      this.heap[index] = parent;
+      index = parentIndex;
+    }
+  }
+
+  sinkDown(index) {
+    const length = this.heap.length;
+    const value = this.heap[index];
+    while (true) {
+      const leftChildIndex = 2 * index + 1;
+      const rightChildIndex = 2 * index + 2;
+      let leftChild, rightChild;
+      let swap = null;
+
+      if (leftChildIndex < length) {
+        leftChild = this.heap[leftChildIndex];
+        if (leftChild > value) {
+          swap = leftChildIndex;
+        }
+      }
+
+      if (rightChildIndex < length) {
+        rightChild = this.heap[rightChildIndex];
+        if ((swap === null && rightChild > value) || (swap !== null && rightChild > leftChild)) {
+          swap = rightChildIndex;
+        }
+      }
+
+      if (swap === null) {
+        break;
+      }
+
+      this.heap[index] = this.heap[swap];
+      this.heap[swap] = value;
+      index = swap;
+    }
+  }
 }
+// Create a new binary heap priority queue
+const priorityQueue = new BinaryHeap();
 
-// Test the function
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car")); // false
+// Insert elements into the priority queue
+priorityQueue.insert(5);
+priorityQueue.insert(3);
+priorityQueue.insert(10);
+
+// Extract the maximum element from the priority queue
+console.log(priorityQueue.extractMax()); // Output: 10
+console.log(priorityQueue.extractMax()); // Output: 5
+console.log(priorityQueue.extractMax()); // Output: 3
