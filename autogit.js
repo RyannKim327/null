@@ -1,42 +1,39 @@
-function generatePrefixTable(pattern) {
-    const prefix = Array(pattern.length).fill(0);
-    let j = 0;
-
-    for (let i = 1; i < pattern.length; i++) {
-        while (j > 0 && pattern[i] !== pattern[j]) {
-            j = prefix[j - 1];
-        }
-        if (pattern[i] === pattern[j]) {
-            j++;
-        }
-        prefix[i] = j;
+function burrowsWheelerTransform(input) {
+    let suffixes = [];
+    for (let i = 0; i < input.length; i++) {
+        let suffix = input.substring(i) + input.substring(0, i);
+        suffixes.push(suffix);
     }
 
-    return prefix;
-}
-function kmpSearch(text, pattern) {
-    const prefixTable = generatePrefixTable(pattern);
-    const result = [];
-
-    let j = 0;
-    for (let i = 0; i < text.length; i++) {
-        while (j > 0 && text[i] !== pattern[j]) {
-            j = prefixTable[j - 1];
-        }
-        if (text[i] === pattern[j]) {
-            j++;
-        }
-        if (j === pattern.length) {
-            result.push(i - j + 1);
-            j = prefixTable[j - 1];
-        }
+    suffixes.sort();
+    let transformed = "";
+    for (let i = 0; i < suffixes.length; i++) {
+        transformed += suffixes[i].charAt(input.length - 1);
     }
 
-    return result;
+    return transformed;
 }
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
 
-const result = kmpSearch(text, pattern);
+function burrowsWheelerInverseTransform(input) {
+    let table = [];
+    for (let i = 0; i < input.length; i++) {
+        table.push({ index: i, suffix: "" });
+    }
 
-console.log("Pattern found at positions:", result);
+    for (let i = 0; i < input.length; i++) {
+        for (let j = 0; j < input.length; j++) {
+            table[j].suffix = input.charAt(j) + table[j].suffix;
+        }
+        table.sort((a, b) => a.suffix.localeCompare(b.suffix));
+    }
+
+    return table.find(entry => entry.suffix.endsWith("$")).suffix.slice(0, -1);
+}
+
+// Example usage
+let input = "banana";
+let transformed = burrowsWheelerTransform(input);
+console.log("Transformed: ", transformed);
+
+let original = burrowsWheelerInverseTransform(transformed);
+console.log("Original: ", original);
