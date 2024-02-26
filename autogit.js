@@ -1,17 +1,16 @@
-function isPalindrome(str) {
-    // Remove non-alphanumeric characters and convert the string to lowercase
-    const formattedStr = str.replace(/[\W_]/g, '').toLowerCase();
-    
-    // Reverse the string
-    const reversedStr = formattedStr.split('').reverse().join('');
-    
-    // Compare the original string with the reversed string
-    return formattedStr === reversedStr;
+let str = "Hello, world!";
+let substring = "world";
+
+if(str.includes(substring)) {
+    console.log("Substring found in the string!");
+} else {
+    console.log("Substring not found in the string!");
 }
+let str = "Hello, world!";
+let substring = "world";
 
-// Test the function
-const str1 = "A man, a plan, a canal, Panama!";
-console.log(isPalindrome(str1)); // Output: true
-
-const str2 = "hello world";
-console.log(isPalindrome(str2)); // Output: false
+if(str.indexOf(substring) !== -1) {
+    console.log("Substring found in the string!");
+} else {
+    console.log("Substring not found in the string!");
+}
