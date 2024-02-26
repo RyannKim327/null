@@ -1,31 +1,20 @@
-function interpolationSearch(arr, x) {
-    let low = 0;
-    let high = arr.length - 1;
-  
-    while (low <= high && x >= arr[low] && x <= arr[high]) {
-        let pos =
-            low + Math.floor(((high - low) / (arr[high] - arr[low])) * (x - arr[low]));
- 
-        if (arr[pos] === x) {
-            return pos;
+function insertionSort(arr) {
+    for (let i = 1; i < arr.length; i++) {
+        let currentElement = arr[i];
+        let j = i - 1;
+
+        while (j >= 0 && arr[j] > currentElement) {
+            arr[j + 1] = arr[j];
+            j--;
         }
- 
-        if (arr[pos] < x) {
-            low = pos + 1;
-        } else {
-            high = pos - 1;
-        }
+
+        arr[j + 1] = currentElement;
     }
- 
-    return -1;
+
+    return arr;
 }
- 
-// Example
-const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
-const x = 13;
-const index = interpolationSearch(arr, x);
-if (index !== -1) {
-    console.log(`Element found at index ${index}`);
-} else {
-    console.log("Element not found");
-}
+
+// Example usage
+const unsortedArray = [5, 2, 4, 6, 1, 3];
+const sortedArray = insertionSort(unsortedArray);
+console.log(sortedArray);
