@@ -1,11 +1,21 @@
-var xhr = new XMLHttpRequest();
-
-xhr.onreadystatechange = function() {
-    if (xhr.readyState === 4 && xhr.status === 200) {
-        var response = JSON.parse(xhr.responseText);
-        console.log(response);
+function bubbleSort(arr) {
+  let len = arr.length;
+  for (let i = 0; i < len; i++) {
+    for (let j = 0; j < len - i - 1; j++) {
+      if (arr[j] > arr[j + 1]) {
+        // Swap the elements
+        let temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
+      }
     }
-};
+  }
+  return arr;
+}
 
-xhr.open('GET', 'https://api.example.com/data', true);
-xhr.send();
+// Test the bubbleSort function
+let arr = [64, 34, 25, 12, 22, 11, 90];
+console.log("Original array:");
+console.log(arr);
+console.log("Sorted array:");
+console.log(bubbleSort(arr));
