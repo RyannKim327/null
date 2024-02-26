@@ -1,33 +1,39 @@
-function binarySearchRecursive(arr, target, start=0, end=arr.length-1) {
-    // Base case: if the start index is greater than the end index, it means the target is not found
-    if (start > end) {
-        return -1;
-    }
-
-    // Calculate the middle index
-    let mid = Math.floor((start + end) / 2);
-
-    // If the target is found at the middle index, return the index
-    if (arr[mid] === target) {
-        return mid;
-    }
-
-    // If the target is less than the value at the middle index, search the left half of the array
-    if (target < arr[mid]) {
-        return binarySearchRecursive(arr, target, start, mid - 1);
-    }
-
-    // If the target is greater than the value at the middle index, search the right half of the array
-    return binarySearchRecursive(arr, target, mid + 1, end);
+function Node(value, children) {
+    this.value = value;
+    this.children = children || [];
 }
 
-// Example usage
-const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17];
-const target = 11;
-const index = binarySearchRecursive(arr, target);
+function depthLimitedSearch(root, target, depthLimit) {
+    let stack = [{ node: root, depth: 0 }];
 
-if (index !== -1) {
-    console.log(`Element found at index ${index}`);
-} else {
-    console.log("Element not found");
+    while (stack.length > 0) {
+        let { node, depth } = stack.pop();
+
+        if (node.value === target) {
+            return node;
+        }
+
+        if (depth < depthLimit) {
+            for (let child of node.children) {
+                stack.push({ node: child, depth: depth + 1 });
+            }
+        }
+    }
+
+    return null;
 }
+
+// Example Usage
+let tree = new Node(1, [
+    new Node(2, [
+        new Node(4),
+        new Node(5)
+    ]),
+    new Node(3, [
+        new Node(6),
+        new Node(7)
+    ])
+]);
+
+let result = depthLimitedSearch(tree, 6, 2); // Searching for value 6 with depth limit 2
+console.log(result); // Output: Node { value: 6, children: [] }
