@@ -1,15 +1,19 @@
-function isSortedAscending(arr) {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false;
-        }
-    }
-    return true;
+function bwt(text) {
+    let textWithEOF = text + '$';
+    let rotations = rotateText(textWithEOF);
+    rotations.sort();
+    let bwtText = rotations.map(str => str.slice(-1)).join('');
+    return bwtText;
 }
 
-// Example
-const myArray = [1, 2, 3, 4, 5];
-console.log(isSortedAscending(myArray)); // Output: true
-
-const myArray2 = [5, 2, 3, 4, 1];
-console.log(isSortedAscending(myArray2)); // Output: false
+function rotateText(text) {
+    let rotations = [];
+    for (let i = 0; i < text.length; i++) {
+        let rotated = text.slice(i) + text.slice(0, i);
+        rotations.push(rotated);
+    }
+    return rotations;
+}
+let text = "hello world";
+let bwtResult = bwt(text);
+console.log("BWT of '" + text + "': " + bwtResult);
