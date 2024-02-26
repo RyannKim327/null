@@ -1,18 +1,24 @@
-// Define the API endpoint
-const apiUrl = 'https://api.example.com/data';
+function TreeNode(val) {
+  this.val = val;
+  this.left = this.right = null;
+}
 
-// Fetch data from the API
-fetch(apiUrl)
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  })
-  .then(data => {
-    // Process the data
-    console.log(data);
-  })
-  .catch(error => {
-    console.error('Error fetching data:', error);
-  });
+function maxDepth(root) {
+  if (!root) {
+    return 0;
+  }
+
+  const leftDepth = maxDepth(root.left);
+  const rightDepth = maxDepth(root.right);
+
+  return Math.max(leftDepth, rightDepth) + 1;
+}
+
+// Example usage
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(maxDepth(root)); // Output: 3
