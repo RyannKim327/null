@@ -1,79 +1,52 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.left = null;
-        this.right = null;
+function buildPatternTable(pattern) {
+    let patternTable = [0];
+    let prefixIndex = 0;
+    let suffixIndex = 1;
+
+    while (suffixIndex < pattern.length) {
+        if (pattern[prefixIndex] === pattern[suffixIndex]) {
+            patternTable[suffixIndex] = prefixIndex + 1;
+            prefixIndex++;
+            suffixIndex++;
+        } else if (prefixIndex === 0) {
+            patternTable[suffixIndex] = 0;
+            suffixIndex++;
+        } else {
+            prefixIndex = patternTable[prefixIndex - 1];
+        }
     }
+
+    return patternTable;
 }
 
-class BinarySearchTree {
-    constructor() {
-        this.root = null;
+function kmpSearch(text, pattern) {
+    if (pattern.length === 0) {
+        return 0;
     }
 
-    insert(data) {
-        let newNode = new Node(data);
+    let textIndex = 0;
+    let patternIndex = 0;
+    let patternTable = buildPatternTable(pattern);
 
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    insertNode(node, newNode) {
-        if (newNode.data < node.data) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
+    while (textIndex < text.length) {
+        if (text[textIndex] === pattern[patternIndex]) {
+            if (patternIndex === pattern.length - 1) {
+                return textIndex - pattern.length + 1;
             }
+            textIndex++;
+            patternIndex++;
+        } else if (patternIndex > 0) {
+            patternIndex = patternTable[patternIndex - 1];
         } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
+            textIndex++;
         }
     }
 
-    search(node, data) {
-        if (node === null) {
-            return false;
-        } else if (data < node.data) {
-            return this.search(node.left, data);
-        } else if (data > node.data) {
-            return this.search(node.right, data);
-        } else {
-            return true;
-        }
-    }
-
-    inorder(node) {
-        if (node !== null) {
-            this.inorder(node.left);
-            console.log(node.data);
-            this.inorder(node.right);
-        }
-    }
-
-    getRootNode() {
-        return this.root;
-    }
+    return -1;
 }
 
 // Example Usage
-let bst = new BinarySearchTree();
-bst.insert(50);
-bst.insert(30);
-bst.insert(70);
-bst.insert(20);
-bst.insert(40);
-bst.insert(60);
-bst.insert(80);
-
-console.log('Inorder traversal');
-bst.inorder(bst.getRootNode());
-
-console.log('Search for 40:', bst.search(bst.getRootNode(), 40)); // true
-console.log('Search for 100:', bst.search(bst.getRootNode(), 100)); // false
+let text = "ababcababcabc";
+let pattern = "ababcabc";
+let index = kmpSearch(text, pattern);
+console.log(index);  // Output: 5
