@@ -1,44 +1,31 @@
-function fibonacciSearch(arr, key) {
-    let fibM2 = 0;
-    let fibM1 = 1;
-    let fib = fibM2 + fibM1;
+function interpolationSearch(arr, x) {
+    let low = 0;
+    let high = arr.length - 1;
 
-    while (fib < arr.length) {
-        fibM2 = fibM1;
-        fibM1 = fib;
-        fib = fibM2 + fibM1;
-    }
-
-    let offset = -1;
-
-    while (fib > 1) {
-        let i = Math.min(offset + fibM2, arr.length - 1);
-
-        if (arr[i] < key) {
-            fib = fibM1;
-            fibM1 = fibM2;
-            fibM2 = fib - fibM1;
-            offset = i;
-        } else if (arr[i] > key) {
-            fib = fibM2;
-            fibM1 = fibM1 - fibM2;
-            fibM2 = fib - fibM1;
-        } else {
-            return i;
+    while (low <= high && x >= arr[low] && x <= arr[high]) {
+        if (low == high) {
+            if (arr[low] == x) return low;
+            return -1;
         }
-    }
 
-    if (fibM1 && arr[offset + 1] === key) {
-        return offset + 1;
+        let pos = low + Math.floor(((x - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+
+        if (arr[pos] == x) return pos;
+
+        if (arr[pos] < x) {
+            low = pos + 1;
+        } else {
+            high = pos - 1;
+        }
     }
 
     return -1;
 }
 
-// Usage
-const arr = [2, 3, 4, 10, 40];
-const key = 10;
-const index = fibonacciSearch(arr, key);
+// Example usage
+const sortedArray = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
+const elementToSearch = 13;
+const index = interpolationSearch(sortedArray, elementToSearch);
 
 if (index !== -1) {
     console.log(`Element found at index ${index}`);
