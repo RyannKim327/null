@@ -1,34 +1,23 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
-    }
-}
-
-class LinkedList {
-    constructor() {
-        this.head = null;
-    }
-
-    findMiddleElement() {
-        let slow = this.head;
-        let fast = this.head;
-
-        while (fast !== null && fast.next !== null) {
-            slow = slow.next;
-            fast = fast.next.next;
+function countOccurrences(str, word) {
+    // Split the string into an array of words
+    let words = str.split(" ");
+    
+    // Initialize a counter to keep track of the occurrences
+    let count = 0;
+    
+    // Iterate over the words array and count occurrences
+    words.forEach(function (element) {
+        if (element.toLowerCase() === word.toLowerCase()) {
+            count++;
         }
-
-        return slow.data;
-    }
+    });
+    
+    return count;
 }
 
 // Example usage
-const linkedList = new LinkedList();
-linkedList.head = new Node(1);
-linkedList.head.next = new Node(2);
-linkedList.head.next.next = new Node(3);
-linkedList.head.next.next.next = new Node(4);
-linkedList.head.next.next.next.next = new Node(5);
+let text = "Hello world, hello JavaScript, hello programming.";
+let wordToCount = "hello";
+let occurrences = countOccurrences(text, wordToCount);
 
-console.log("Middle element: ", linkedList.findMiddleElement());
+console.log(`The word "${wordToCount}" occurs ${occurrences} times in the text.`);
