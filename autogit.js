@@ -1,27 +1,62 @@
-function depthLimitedSearch(node, depth, currentDepth = 0) {
-    if (currentDepth > depth) {
-        return null; // Reached depth limit, return null
-    }
+function computeLPSArray(pattern) {
+    const lps = Array(pattern.length).fill(0);
+    let len = 0;
+    let i = 1;
 
-    if (isGoal(node)) {
-        return node; // Found the goal state
-    }
-
-    for (let child of expand(node)) {
-        let result = depthLimitedSearch(child, depth, currentDepth + 1);
-        if (result) {
-            return result; // Solution found
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
         }
     }
 
-    return null; // Solution not found at this depth
+    return lps;
 }
 
-// Helper functions for your specific problem domain
-function isGoal(node) {
-    // Implement this function to check if a node is the goal state
+function KMPSearch(text, pattern) {
+    const n = text.length;
+    const m = pattern.length;
+    const lps = computeLPSArray(pattern);
+
+    let i = 0;
+    let j = 0;
+    const indices = [];
+
+    while (i < n) {
+        if (text[i] === pattern[j]) {
+            i++;
+            j++;
+        }
+
+        if (j === m) {
+            indices.push(i - j);
+            j = lps[j - 1];
+        } else if (i < n && text[i] !== pattern[j]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+
+    return indices;
 }
 
-function expand(node) {
-    // Implement this function to generate child nodes from a given node
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const indices = KMPSearch(text, pattern);
+
+if (indices.length > 0) {
+    console.log(`Pattern found at index: ${indices}`);
+} else {
+    console.log("Pattern not found");
 }
