@@ -1,119 +1,63 @@
-class AVLNode {
-    constructor(value) {
-        this.value = value;
-        this.height = 1;
-        this.left = null;
-        this.right = null;
-    }
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-class AVLTree {
-    constructor() {
-        this.root = null;
+class BinaryTree {
+  constructor() {
+    this.root = null;
+  }
+
+  insert(data) {
+    const newNode = new Node(data);
+
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
+
+  insertNode(node, newNode) {
+    if (newNode.data < node.data) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  search(node, data) {
+    if (node === null) {
+      return false;
     }
 
-    getHeight(node) {
-        if (node === null) {
-            return 0;
-        }
-        return node.height;
+    if (data < node.data) {
+      return this.search(node.left, data);
+    } else if (data > node.data) {
+      return this.search(node.right, data);
+    } else {
+      return true;
     }
-
-    getBalanceFactor(node) {
-        if (node === null) {
-            return 0;
-        }
-        return this.getHeight(node.left) - this.getHeight(node.right);
-    }
-
-    rotateRight(y) {
-        let x = y.left;
-        let T2 = x.right;
-
-        x.right = y;
-        y.left = T2;
-
-        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
-        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
-
-        return x;
-    }
-
-    rotateLeft(x) {
-        let y = x.right;
-        let T2 = y.left;
-
-        y.left = x;
-        x.right = T2;
-
-        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
-        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
-
-        return y;
-    }
-
-    insert(value) {
-        this.root = this.insertNode(this.root, value);
-    }
-
-    insertNode(node, value) {
-        if (node === null) {
-            return new AVLNode(value);
-        }
-
-        if (value < node.value) {
-            node.left = this.insertNode(node.left, value);
-        } else if (value > node.value) {
-            node.right = this.insertNode(node.right, value);
-        } else {
-            return node; // Duplicate values are not allowed
-        }
-
-        node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
-
-        let balance = this.getBalanceFactor(node);
-
-        if (balance > 1 && value < node.left.value) {
-            return this.rotateRight(node);
-        }
-
-        if (balance < -1 && value > node.right.value) {
-            return this.rotateLeft(node);
-        }
-
-        if (balance > 1 && value > node.left.value) {
-            node.left = this.rotateLeft(node.left);
-            return this.rotateRight(node);
-        }
-
-        if (balance < -1 && value < node.right.value) {
-            node.right = this.rotateRight(node.right);
-            return this.rotateLeft(node);
-        }
-
-        return node;
-    }
-
-    printInorder(node) {
-        if (node != null) {
-            this.printInorder(node.left);
-            console.log(node.value);
-            this.printInorder(node.right);
-        }
-    }
+  }
 }
-let avlTree = new AVLTree();
-avlTree.insert(10);
-avlTree.insert(20);
-avlTree.insert(30);
-avlTree.insert(40);
-avlTree.insert(50);
-avlTree.insert(25);
 
-avlTree.printInorder(avlTree.root);
-10
-20
-25
-30
-40
-50
+// Example Usage
+const binaryTree = new BinaryTree();
+
+binaryTree.insert(5);
+binaryTree.insert(3);
+binaryTree.insert(7);
+
+console.log(binaryTree.search(binaryTree.root, 7)); // Output: true
+console.log(binaryTree.search(binaryTree.root, 10)); // Output: false
