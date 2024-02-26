@@ -1,29 +1,46 @@
 class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
 }
 
-// Function to calculate the sum of all nodes in a binary tree
-function sumBinaryTree(root) {
-    if (root === null) {
-        return 0;
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+
+  addNode(data) {
+    const newNode = new Node(data);
+
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next !== null) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
+
+  getLength() {
+    let current = this.head;
+    let length = 0;
+
+    while (current !== null) {
+      length++;
+      current = current.next;
     }
 
-    return root.value + sumBinaryTree(root.left) + sumBinaryTree(root.right);
+    return length;
+  }
 }
 
-// Example binary tree
-let root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
+// Usage
+const ll = new LinkedList();
+ll.addNode(1);
+ll.addNode(2);
+ll.addNode(3);
 
-// Calculate the sum of all nodes in the binary tree
-let sum = sumBinaryTree(root);
-console.log("Sum of all nodes in the binary tree: ", sum);
+console.log("Length of the linked list:", ll.getLength());
