@@ -1,24 +1,29 @@
-function longestCommonPrefix(strings) {
-    if (strings.length === 0) {
-        return '';
-    }
-    
-    let prefix = strings[0];
-    
-    for (let i = 1; i < strings.length; i++) {
-        let currentString = strings[i];
-        let j = 0;
-        
-        while (j < prefix.length && j < currentString.length && prefix[j] === currentString[j]) {
-            j++;
+function binarySearch(arr, target) {
+    let left = 0;
+    let right = arr.length - 1;
+
+    while (left <= right) {
+        let mid = Math.floor((left + right) / 2);
+
+        if (arr[mid] === target) {
+            return mid;
+        } else if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
         }
-        
-        prefix = prefix.slice(0, j);
     }
-    
-    return prefix;
+
+    return -1; // Return -1 if target is not found in the array
 }
 
 // Example usage
-const strings = ['flower', 'flour', 'flow'];
-console.log(longestCommonPrefix(strings)); // Output: 'flo'
+const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17];
+const target = 9;
+const index = binarySearch(arr, target);
+
+if (index !== -1) {
+    console.log(`Target ${target} found at index ${index}`);
+} else {
+    console.log(`Target ${target} not found in the array`);
+}
