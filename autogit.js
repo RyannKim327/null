@@ -1,18 +1,26 @@
-function reverseString(str) {
-    // Step 1: Convert string to array
-    var arr = str.split("");
+function binarySearchRecursive(arr, target, start = 0, end = arr.length - 1) {
+    if (start > end) {
+        return -1;
+    }
 
-    // Step 2: Reverse the array
-    var reversedArr = arr.reverse();
+    const mid = Math.floor((start + end) / 2);
 
-    // Step 3: Join the array back to a string
-    var reversedStr = reversedArr.join("");
-
-    return reversedStr;
+    if (arr[mid] === target) {
+        return mid;
+    } else if (arr[mid] < target) {
+        return binarySearchRecursive(arr, target, mid + 1, end);
+    } else {
+        return binarySearchRecursive(arr, target, start, mid - 1);
+    }
 }
 
-// Pass the string you want to reverse to the function
-var originalStr = "Hello, World!";
-var reversedStr = reverseString(originalStr);
+// Example usage
+const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+const target = 12;
+const index = binarySearchRecursive(arr, target);
 
-console.log(reversedStr); // Output: "!dlroW ,olleH"
+if (index !== -1) {
+    console.log(`Element found at index: ${index}`);
+} else {
+    console.log("Element not found");
+}
