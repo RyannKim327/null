@@ -1,25 +1,19 @@
-let string = "Hello, World!";
-let substring = "World";
+function hasCycle(head) {
+    if (!head || !head.next) {
+        return false;
+    }
 
-if (string.includes(substring)) {
-    console.log("Substring found in the string.");
-} else {
-    console.log("Substring not found in the string.");
-}
-let string = "Hello, World!";
-let substring = "World";
+    let slow = head;
+    let fast = head;
 
-if (string.indexOf(substring) !== -1) {
-    console.log("Substring found in the string.");
-} else {
-    console.log("Substring not found in the string.");
-}
-let string = "Hello, World!";
-let substring = "World";
-let regex = new RegExp(substring);
+    while (fast && fast.next) {
+        slow = slow.next;
+        fast = fast.next.next;
 
-if (regex.test(string)) {
-    console.log("Substring found in the string.");
-} else {
-    console.log("Substring not found in the string.");
+        if (slow === fast) {
+            return true;
+        }
+    }
+
+    return false;
 }
