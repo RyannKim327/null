@@ -1,48 +1,29 @@
-function depthLimitedSearch(node, goal, depthLimit) {
-    return recursiveDLS(node, goal, depthLimit, 0);
-}
+function longestIncreasingSubsequence(arr) {
+    const n = arr.length;
+    const dp = new Array(n).fill(1);
 
-function recursiveDLS(node, goal, depthLimit, currentDepth) {
-    if (currentDepth === depthLimit) {
-        return null; // Return null if depth limit is reached
-    }
-
-    if (node === goal) {
-        return node; // Return the goal node if found
-    }
-
-    // Perform recursive depth-limited search on children of the current node
-    let children = getChildren(node);
-    
-    for (let i = 0; i < children.length; i++) {
-        let result = recursiveDLS(children[i], goal, depthLimit, currentDepth + 1);
-        if (result !== null) {
-            return result;
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[i] > arr[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
         }
     }
 
-    return null; // Goal not found within depth limit
+    let maxLength = Math.max(...dp);
+    let result = [];
+    let lastIndex = dp.indexOf(maxLength);
+
+    for (let i = lastIndex; i >= 0; i--) {
+        if (dp[i] === maxLength && (result.length === 0 || arr[i] < result[result.length - 1])) {
+            result.unshift(arr[i]);
+            maxLength--;
+        }
+    }
+
+    return result;
 }
 
-// Helper function to get children of a node
-function getChildren(node) {
-    // Implement your logic to get children of a node here
-    // This could be an array of child nodes or any data structure that represents the children of the node
-    return [];
-}
-
-// Usage example
-// Define your graph/tree structure and call depthLimitedSearch with the root node, goal node, and depth limit
-let rootNode = {
-    value: 'A',
-    children: [
-        {value: 'B', children: []},
-        {value: 'C', children: []}
-    ]
-};
-
-let goalNode = 'C';
-let depthLimit = 2;
-
-let result = depthLimitedSearch(rootNode, goalNode, depthLimit);
-console.log(result);
+// Test the function
+const array = [10, 22, 9, 33, 21, 50, 41, 60, 80];
+console.log('Longest Increasing Subsequence:', longestIncreasingSubsequence(array));
