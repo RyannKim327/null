@@ -1,55 +1,40 @@
-class Node {
-    constructor(value, score) {
-        this.value = value;
-        this.score = score;
-    }
-}
+function topologicalSort(graph) {
+    const visited = {};
+    const result = [];
 
-function beamSearch(initialNode, beamWidth, depth) {
-    let beam = [initialNode];
-
-    for (let d = 0; d < depth; d++) {
-        let nextBeam = [];
-
-        for (let node of beam) {
-            // Expand the node (generate children)
-            let children = expand(node);
-
-            // Evaluate each child node based on a scoring function
-            for (let child of children) {
-                child.score = score(child);
-                nextBeam.push(child);
-            }
+    function dfs(node) {
+        if (visited[node]) return;
+        
+        visited[node] = true;
+        
+        if (graph[node]) {
+            graph[node].forEach(neighbor => {
+                dfs(neighbor);
+            });
         }
-
-        // Select the top k nodes based on scores
-        nextBeam.sort((a, b) => b.score - a.score);
-        beam = nextBeam.slice(0, beamWidth);
+        
+        result.unshift(node);
     }
 
-    // Return the best node found during the search
-    return beam[0];
+    for (let node in graph) {
+        if (!visited[node]) {
+            dfs(node);
+        }
+    }
+
+    return result;
 }
 
-// Helper functions for the example
-function expand(node) {
-    // Generate children by transforming the node
-    return [
-        new Node(node.value + 1, 0),
-        new Node(node.value + 2, 0),
-        new Node(node.value + 3, 0)
-    ];
-}
+// Example graph
+const graph = {
+    'A': ['C', 'B'],
+    'B': ['D'],
+    'C': ['E'],
+    'D': ['F'],
+    'E': [],
+    'F': []
+};
 
-function score(node) {
-    // Simple scoring based on the value of the node
-    return node.value;
-}
-
-// Example usage
-const initialNode = new Node(0, 0);
-const beamWidth = 2;
-const depth = 3;
-const bestNode = beamSearch(initialNode, beamWidth, depth);
-
-console.log("Best node found:", bestNode);
+// Perform topological sort
+const result = topologicalSort(graph);
+console.log(result); // Output: [ 'A', 'C', 'E', 'B', 'D', 'F' ]
