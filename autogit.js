@@ -1,25 +1,14 @@
-function countOccurrences(text, word) {
-    // Split the text into an array of words
-    let wordsArray = text.split(/\s+/);
-    
-    // Initialize a counter for the word occurrences
-    let count = 0;
-    
-    // Loop through the words array and count the occurrences of the specified word
-    for (let i = 0; i < wordsArray.length; i++) {
-        if (wordsArray[i].toLowerCase() === word.toLowerCase()) {
-            count++;
-        }
+// Fetching data from an API
+fetch('https://api.example.com/data')
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
     }
-    
-    return count;
-}
-
-// Sample string
-let text = "Hello, Hello world! Hello, and hello again.";
-let word = "hello";
-
-// Count occurrences of the word in the string
-let occurrences = countOccurrences(text, word);
-
-console.log(`The word "${word}" occurs ${occurrences} times in the text.`);
+    return response.json();
+  })
+  .then(data => {
+    console.log(data);
+  })
+  .catch(error => {
+    console.error('There was a problem with your fetch operation:', error);
+  });
