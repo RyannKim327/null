@@ -1,73 +1,36 @@
-function dijkstra(graph, startNode) {
-    const distances = {};
-    const visited = {};
-    const previous = {};
-    const queue = new PriorityQueue();
+class Node {
+    constructor(startIndex, endIndex) {
+        this.startIndex = startIndex;
+        this.endIndex = endIndex;
+        this.children = {};
+    }
+}
+class SuffixTree {
+    constructor(str) {
+        this.root = new Node(-1, -1); // Root node with start and end indices -1
+        this.buildSuffixTree(str);
+    }
 
-    distances[startNode] = 0;
-    queue.enqueue(startNode, 0);
+    buildSuffixTree(str) {
+        // Implement the logic to build the suffix tree
+    }
 
-    Object.keys(graph).forEach(node => {
-        if (node !== startNode) {
-            distances[node] = Infinity;
-            queue.enqueue(node, Infinity);
+    // Implement other methods like search, insert, etc.
+}
+buildSuffixTree(str) {
+    for (let i = 0; i < str.length; i++) {
+        this.addSuffix(str.substring(i), i);
+    }
+}
+
+addSuffix(suffix, index) {
+    let currentNode = this.root;
+    for (let i = 0; i < suffix.length; i++) {
+        let char = suffix[i];
+        if (!currentNode.children[char]) {
+            currentNode.children[char] = new Node(index + i, Infinity); // Infinity for end index of leaf nodes
         }
-        previous[node] = null;
-    });
-
-    while (!queue.isEmpty()) {
-        const currentNode = queue.dequeue();
-
-        if (currentNode === undefined) break;
-
-        visited[currentNode] = true;
-
-        for (let neighbor in graph[currentNode]) {
-            const distance = distances[currentNode] + graph[currentNode][neighbor];
-
-            if (distance < distances[neighbor]) {
-                distances[neighbor] = distance;
-                previous[neighbor] = currentNode;
-                queue.enqueue(neighbor, distance);
-            }
-        }
+        currentNode = currentNode.children[char];
     }
-
-    return { distances, previous };
+    currentNode.endIndex = index + suffix.length - 1;
 }
-
-class PriorityQueue {
-    constructor() {
-        this.queue = [];
-    }
-
-    enqueue(node, distance) {
-        this.queue.push({ node, distance });
-        this.sort();
-    }
-
-    dequeue() {
-        return this.queue.shift()?.node;
-    }
-
-    sort() {
-        this.queue.sort((a, b) => a.distance - b.distance);
-    }
-
-    isEmpty() {
-        return !this.queue.length;
-    }
-}
-
-// Example graph
-const graph = {
-    A: { B: 4, C: 2 },
-    B: { A: 4, C: 5, D: 10 },
-    C: { A: 2, B: 5, D: 3 },
-    D: { B: 10, C: 3 }
-}
-
-const startNode = 'A';
-const { distances, previous } = dijkstra(graph, startNode);
-console.log("Distances:", distances);
-console.log("Previous nodes:", previous);
