@@ -1,14 +1,20 @@
-function isPalindrome(str) {
-    // Remove special characters and convert string to lowercase
-    str = str.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
+function maxSubArray(arr) {
+    if (!arr.length) {
+        return 0;
+    }
 
-    // Reverse the string
-    var reversedStr = str.split('').reverse().join('');
+    let maxSum = arr[0];
+    let currentSum = arr[0];
 
-    // Check if the original string is equal to its reverse
-    return str === reversedStr;
+    for (let i = 1; i < arr.length; i++) {
+        currentSum = Math.max(arr[i], currentSum + arr[i]);
+        maxSum = Math.max(maxSum, currentSum);
+    }
+
+    return maxSum;
 }
 
-// Test the function
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
-console.log(isPalindrome("Hello, world!")); // false
+// Example
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const result = maxSubArray(array);
+console.log(result); // Output: 6 (the subarray [4, -1, 2, 1] has the maximum sum of 6)
