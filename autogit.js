@@ -1,21 +1,37 @@
-function isPalindrome(str) {
-  let i = 0;
-  let j = str.length - 1;
-
-  while (i < j) {
-    if (str[i] !== str[j]) {
-      return false;
+class TreeNode {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-    i++;
-    j--;
-  }
-
-  return true;
 }
 
-const str = "madam";
-if (isPalindrome(str)) {
-  console.log("The string is a palindrome.");
-} else {
-  console.log("The string is not a palindrome.");
+function diameterOfBinaryTree(root) {
+    let diameter = 0;
+
+    function depth(node) {
+        if (!node) {
+            return 0;
+        }
+
+        let left = depth(node.left);
+        let right = depth(node.right);
+
+        diameter = Math.max(diameter, left + right);
+
+        return Math.max(left, right) + 1;
+    }
+
+    depth(root);
+
+    return diameter;
 }
+
+// Example usage:
+let root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(diameterOfBinaryTree(root)); // Output: 3
