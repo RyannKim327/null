@@ -1,36 +1,55 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
+function buildLPSArray(pattern) {
+    const lps = [0];
+    let len = 0;
+    let i = 1;
 
-function hasCycle(head) {
-  if (!head || !head.next) {
-    return false;
-  }
-
-  let slow = head;
-  let fast = head.next;
-
-  while (fast && fast.next) {
-    if (slow === fast) {
-      return true;
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
     }
-    slow = slow.next;
-    fast = fast.next.next;
-  }
 
-  return false;
+    return lps;
 }
 
-// Example usage
-// Create a linked list with a cycle
-let node1 = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-node1.next = node2;
-node2.next = node3;
-node3.next = node1; // Creating a cycle
+function kmpSearch(text, pattern) {
+    const lps = buildLPSArray(pattern);
+    let i = 0;
+    let j = 0;
+    const indices = [];
 
-console.log(hasCycle(node1)); // Output: true
+    while (i < text.length) {
+        if (text[i] === pattern[j]) {
+            i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            indices.push(i - j);
+            j = lps[j - 1];
+        } else if (i < text.length && text[i] !== pattern[j]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+
+    return indices;
+}
+
+// Example usage:
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = kmpSearch(text, pattern);
+console.log(result); // Output: [10]
