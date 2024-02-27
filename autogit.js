@@ -1,25 +1,23 @@
-// Definition for a binary tree node
-function TreeNode(val) {
-    this.val = val;
-    this.left = this.right = null;
-}
-
-// Function to calculate the sum of all nodes in a binary tree
-function sumOfNodes(root) {
-    if (root === null) {
-        return 0;
+function shellSort(arr) {
+  var n = arr.length;
+  
+  for (var gap = Math.floor(n/2); gap > 0; gap = Math.floor(gap/2)) {
+    for (var i = gap; i < n; i++) {
+      var temp = arr[i];
+      
+      var j;
+      for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
+        arr[j] = arr[j - gap];
+      }
+      
+      arr[j] = temp;
     }
-    
-    return root.val + sumOfNodes(root.left) + sumOfNodes(root.right);
+  }
+  
+  return arr;
 }
 
-// Example tree
-let root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-// Calculate the sum of all nodes
-let sum = sumOfNodes(root);
-console.log("Sum of all nodes in the binary tree: " + sum);
+// Example usage
+var arr = [12, 34, 54, 2, 3];
+console.log("Original Array: ", arr);
+console.log("Sorted Array: ", shellSort(arr));
