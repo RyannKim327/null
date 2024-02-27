@@ -1,45 +1,23 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
+function findFirstRepeatedCharacter(str) {
+    // Create an empty object to keep track of characters we have encountered
+    let charMap = {};
+
+    // Iterate through each character in the string
+    for (let char of str) {
+        // If the character is already in charMap, return it as the first repeated character
+        if (charMap[char]) {
+            return char;
+        } else {
+            // Otherwise, mark the character as encountered by adding it to charMap
+            charMap[char] = true;
+        }
     }
+
+    // If no repeated character is found, return null
+    return null;
 }
 
-class LinkedList {
-    constructor() {
-        this.head = null;
-    }
-
-    findNthFromEnd(n) {
-        let first = this.head;
-        let second = this.head;
-
-        // Move first pointer by n steps
-        for (let i = 0; i < n; i++) {
-            if (first === null) {
-                return null; // List does not have n elements
-            }
-            first = first.next;
-        }
-
-        // Move both pointers simultaneously until first reaches the end
-        while (first !== null) {
-            first = first.next;
-            second = second.next;
-        }
-
-        return second;
-    }
-}
-
-// Example usage
-const linkedList = new LinkedList();
-linkedList.head = new Node(1);
-linkedList.head.next = new Node(2);
-linkedList.head.next.next = new Node(3);
-linkedList.head.next.next.next = new Node(4);
-linkedList.head.next.next.next.next = new Node(5);
-
-const n = 2;
-const nthNodeFromEnd = linkedList.findNthFromEnd(n);
-console.log(`The ${n}th node from the end is: ${nthNodeFromEnd.data}`);
+// Test the function with a sample string
+let str = "abcdeabcd";
+let firstRepeatedChar = findFirstRepeatedCharacter(str);
+console.log("The first repeated character is: " + firstRepeatedChar);
