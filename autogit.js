@@ -1,45 +1,29 @@
-function depthLimitedSearch(node, goal, limit) {
-    if (node.state === goal) {
-        return node;
-    } else if (limit === 0) {
-        return 'cutoff';
-    } else {
-        let cutoffOccurred = false;
+function interpolationSearch(arr, x) {
+    let low = 0;
+    let high = arr.length - 1;
 
-        for (let child of node.children) {
-            let result = depthLimitedSearch(child, goal, limit - 1);
+    while (low <= high && x >= arr[low] && x <= arr[high]) {
+        let pos = Math.floor(low + ((high - low) / (arr[high] - arr[low])) * (x - arr[low]));
 
-            if (result === 'cutoff') {
-                cutoffOccurred = true;
-            } else if (result !== 'failure') {
-                return result;
-            }
+        if (arr[pos] === x) {
+            return pos;
+        } else if (arr[pos] < x) {
+            low = pos + 1;
+        } else {
+            high = pos - 1;
         }
-
-        return cutoffOccurred ? 'cutoff' : 'failure';
     }
+
+    return -1; // Element not found
 }
 
 // Example usage
-class Node {
-    constructor(state, children) {
-        this.state = state;
-        this.children = children;
-    }
+const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+const x = 12;
+const index = interpolationSearch(arr, x);
+
+if (index !== -1) {
+    console.log(`Element found at index ${index}`);
+} else {
+    console.log("Element not found");
 }
-
-// Sample tree structure
-let child1 = new Node('B', []);
-let child2 = new Node('C', []);
-let child3 = new Node('D', []);
-let child4 = new Node('E', []);
-let child5 = new Node('F', []);
-let child6 = new Node('G', []);
-let child7 = new Node('H', []);
-
-let root = new Node('A', [child1, child2, child3, child4]);
-child1.children = [child5, child6];
-child2.children = [child7];
-
-let goalNode = depthLimitedSearch(root, 'H', 3);
-console.log(goalNode);
