@@ -1,23 +1,30 @@
-function isPrime(num) {
-    if (num <= 1) {
-        return false;
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-    if (num <= 3) {
-        return true;
-    }
-    if (num % 2 === 0 || num % 3 === 0) {
-        return false;
-    }
-
-    for (let i = 5; i * i <= num; i += 6) {
-        if (num % i === 0 || num % (i + 2) === 0) {
-            return false;
-        }
-    }
-
-    return true;
 }
 
-// Example usage
-console.log(isPrime(7));  // true
-console.log(isPrime(10)); // false
+function countLeafNodes(root) {
+    if (root === null) {
+        return 0;
+    }
+    
+    if (root.left === null && root.right === null) {
+        return 1;
+    }
+    
+    return countLeafNodes(root.left) + countLeafNodes(root.right);
+}
+
+// Example binary tree
+let root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+// Count the number of leaf nodes in the tree
+const leafNodeCount = countLeafNodes(root);
+console.log("Number of leaf nodes:", leafNodeCount);
