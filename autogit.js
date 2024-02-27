@@ -1,28 +1,20 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+function selectionSort(arr) {
+    const n = arr.length;
+    for (let i = 0; i < n - 1; i++) {
+        let minIndex = i;
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+        }
+    }
+    return arr;
 }
 
-function findMiddleElement(head) {
-  let slowPointer = head;
-  let fastPointer = head;
-
-  while (fastPointer !== null && fastPointer.next !== null) {
-    slowPointer = slowPointer.next;
-    fastPointer = fastPointer.next.next;
-  }
-
-  return slowPointer.value;
-}
-
-// Example linked list
-const head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-// Finding the middle element
-console.log(findMiddleElement(head)); // Output: 3
+// Example usage
+const arr = [64, 25, 12, 22, 11];
+const sortedArr = selectionSort(arr);
+console.log(sortedArr); // [11, 12, 22, 25, 64]
