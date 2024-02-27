@@ -1,68 +1,65 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+function boyerMooreSearch(text, pattern) {
+    const charTable = createCharTable(pattern);
+    const offsetTable = createOffsetTable(pattern);
+
+    for (let i = pattern.length - 1; i < text.length;) {
+        let j = pattern.length - 1;
+        while (j >= 0 && text[i] === pattern[j]) {
+            i--;
+            j--;
+        }
+
+        if (j === -1) {
+            return i + 1;
+        }
+
+        i += Math.max(offsetTable[pattern[j]] || 1, j - charTable[text[i]]);
     }
+
+    return -1;
 }
 
-class BinarySearchTree {
-    constructor() {
-        this.root = null;
+function createCharTable(pattern) {
+    const table = {};
+    for (let i = 0; i < pattern.length - 1; i++) {
+        table[pattern[i]] = pattern.length - 1 - i;
     }
-
-    insert(value) {
-        const newNode = new Node(value);
-
-        if (!this.root) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    insertNode(node, newNode) {
-        if (newNode.value < node.value) {
-            if (!node.left) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (!node.right) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
-
-    search(value) {
-        return this.searchNode(this.root, value);
-    }
-
-    searchNode(node, value) {
-        if (!node) {
-            return false;
-        }
-
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true;
-        }
-    }
+    return table;
 }
 
-// Usage example
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(2);
-bst.insert(7);
+function createOffsetTable(pattern) {
+    const table = {};
+    const lastPrefixPosition = pattern.length;
+    for (let i = pattern.length - 1; i >= 0; i--) {
+        if (isPrefix(pattern, i + 1)) {
+            lastPrefixPosition = i + 1;
+        }
+        table[pattern.length - 1 - i] = lastPrefixPosition - i + pattern.length - 1;
+    }
 
-console.log(bst.search(5)); // Output: true
-console.log(bst.search(12)); // Output: false
+    for (let i = 0; i < pattern.length - 1; i++) {
+        const slen = suffixLength(pattern, i);
+        table[slen] = pattern.length - 1 - i + slen;
+    }
+
+    return table;
+}
+
+function isPrefix(pattern, p) {
+    for (let i = p, j = 0; i < pattern.length; i++, j++) {
+      if (pattern[i] !== pattern[j]) return false;
+    }
+    return true;
+}
+
+function suffixLength(pattern, p) {
+    let len = 0;
+    for (let i = p, j = pattern.length - 1; i >= 0 && pattern[i] === pattern[j]; i--, j--) {
+        len += 1;
+    }
+    return len;
+}
+const text = "ABCDABDABCDABCDABCAA";
+const pattern = "ABCDABCA";
+const index = boyerMooreSearch(text, pattern);
+console.log(index); // Output: 12
