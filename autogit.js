@@ -1,17 +1,15 @@
-function bubbleSort(arr) {
-    let len = arr.length;
-    for (let i = 0; i < len; i++) {
-        for (let j = 0; j < len - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                // Swap elements
-                let temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
-        }
+function maxSubArray(arr) {
+    let maxEndingHere = 0;
+    let maxSoFar = Number.NEGATIVE_INFINITY;
+
+    for (let i = 0; i < arr.length; i++) {
+        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
+        maxSoFar = Math.max(maxSoFar, maxEndingHere);
     }
-    return arr;
+
+    return maxSoFar;
 }
 
-let myArray = [3, 0, 2, 5, -1, 4, 1];
-console.log(bubbleSort(myArray));
+// Example usage
+const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+console.log(maxSubArray(arr)); // Output: 6 (subarray [4, -1, 2, 1])
