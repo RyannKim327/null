@@ -1,18 +1,65 @@
-function hasCycle(head) {
-    if (!head || !head.next) {
-        return false; // If the list is empty or has only one node, there is no cycle
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.left = null;
+        this.right = null;
     }
-
-    let slow = head;
-    let fast = head.next;
-
-    while (slow !== fast) {
-        if (!fast || !fast.next) {
-            return false; // If fast pointer reaches the end, there is no cycle
-        }
-        slow = slow.next;
-        fast = fast.next.next;
-    }
-
-    return true; // If slow and fast pointers meet, there is a cycle
 }
+
+class BinaryTree {
+    constructor() {
+        this.root = null;
+    }
+
+    insert(data) {
+        let newNode = new Node(data);
+
+        if (this.root === null) {
+            this.root = newNode;
+        } else {
+            this.insertNode(this.root, newNode);
+        }
+    }
+
+    insertNode(node, newNode) {
+        if (newNode.data < node.data) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
+        }
+    }
+
+    search(node, data) {
+        if (node === null) {
+            return false;
+        }
+
+        if (data < node.data) {
+            return this.search(node.left, data);
+        } else if (data > node.data) {
+            return this.search(node.right, data);
+        } else {
+            return true;
+        }
+    }
+}
+
+// Usage
+const tree = new BinaryTree();
+
+tree.insert(10);
+tree.insert(5);
+tree.insert(15);
+tree.insert(3);
+tree.insert(7);
+
+console.log(tree.search(tree.root, 5)); // Output: true
+console.log(tree.search(tree.root, 20)); // Output: false
