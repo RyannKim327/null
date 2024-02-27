@@ -1,29 +1,49 @@
-function shellSort(arr) {
-    let n = arr.length;
-  
-    // Start with a big gap, then reduce the gap
-    for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
-        // Perform a gapped insertion sort for this gap size
-        for (let i = gap; i < n; i++) {
-            // Add arr[i] to the elements that have been gap sorted
-            let temp = arr[i];
-  
-            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
-            let j;
-            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
-                arr[j] = arr[j - gap];
-            }
-  
-            // Put arr[i] in its correct location
-            arr[j] = temp;
-        }
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
     }
-    return arr;
+}
+
+class LinkedList {
+    constructor() {
+        this.head = null;
+    }
+
+    append(data) {
+        const newNode = new Node(data);
+
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    findMiddle() {
+        let slow = this.head;
+        let fast = this.head;
+
+        while (fast && fast.next) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        return slow.data;
+    }
 }
 
 // Example usage
-let arr = [12, 34, 54, 2, 3];
-console.log("Original Array:");
-console.log(arr);
-console.log("Array sorted with Shell Sort:");
-console.log(shellSort(arr));
+const linkedList = new LinkedList();
+linkedList.append(1);
+linkedList.append(2);
+linkedList.append(3);
+linkedList.append(4);
+linkedList.append(5);
+
+console.log(linkedList.findMiddle()); // Output: 3
