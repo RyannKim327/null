@@ -1,64 +1,39 @@
 class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
+  constructor(value) {
+    this.value = value;
+    this.children = [];
   }
 }
 
-class LinkedList {
+class DepthFirstSearch {
   constructor() {
-    this.head = null;
+    this.visited = new Set();
   }
 
-  append(data) {
-    const newNode = new Node(data);
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
-
-  reverse() {
-    let prev = null;
-    let current = this.head;
-    let next = null;
-
-    while (current) {
-      next = current.next;
-      current.next = prev;
-      prev = current;
-      current = next;
+  search(node) {
+    if (!node || this.visited.has(node)) {
+      return;
     }
 
-    this.head = prev;
-  }
+    console.log(node.value);
+    this.visited.add(node);
 
-  printList() {
-    let current = this.head;
-    while (current) {
-      console.log(current.data);
-      current = current.next;
+    for (let child of node.children) {
+      this.search(child);
     }
   }
 }
 
-// Create a linked list
-const linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
-linkedList.append(4);
+// Usage
+const rootNode = new Node(1);
+const child1 = new Node(2);
+const child2 = new Node(3);
+const grandChild1 = new Node(4);
+const grandChild2 = new Node(5);
 
-console.log("Original linked list:");
-linkedList.printList();
+rootNode.children.push(child1, child2);
+child1.children.push(grandChild1);
+child2.children.push(grandChild2);
 
-// Reverse the linked list
-linkedList.reverse();
-
-console.log("Reversed linked list:");
-linkedList.printList();
+const dfs = new DepthFirstSearch();
+dfs.search(rootNode);
