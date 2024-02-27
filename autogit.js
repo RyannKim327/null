@@ -1,21 +1,6 @@
-function areAnagrams(str1, str2) {
-    // Remove non-alphabetic characters and convert to lowercase
-    str1 = str1.replace(/[^a-zA-Z]/g, "").toLowerCase();
-    str2 = str2.replace(/[^a-zA-Z]/g, "").toLowerCase();
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
 
-    // Sort the characters of both strings
-    const sortedStr1 = str1.split("").sort().join("");
-    const sortedStr2 = str2.split("").sort().join("");
+const commonElements = array1.filter(element => array2.includes(element));
 
-    // Compare the sorted strings
-    return sortedStr1 === sortedStr2;
-}
-
-// Test the function
-const string1 = "listen";
-const string2 = "silent";
-if (areAnagrams(string1, string2)) {
-    console.log(`${string1} and ${string2} are anagrams.`);
-} else {
-    console.log(`${string1} and ${string2} are not anagrams.`);
-}
+console.log(commonElements); // Output: [3, 4, 5]
