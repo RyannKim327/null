@@ -1,36 +1,87 @@
-// Helper function to get the digit at a specific position in a number
-function getDigit(num, i) {
-    return Math.floor(Math.abs(num) / Math.pow(10, i)) % 10;
-}
+class PriorityQueue {
+  constructor() {
+    this.heap = [];
+  }
 
-// Helper function to get the number of digits in a number
-function digitCount(num) {
-    if (num === 0) return 1;
-    return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
+  enqueue(value, priority) {
+    const node = { value, priority };
+    this.heap.push(node);
+    this.bubbleUp();
+  }
 
-// Helper function to get the number of digits of the largest number in an array
-function mostDigits(arr) {
-    let maxDigits = 0;
-    for (let i = 0; i < arr.length; i++) {
-        maxDigits = Math.max(maxDigits, digitCount(arr[i]));
+  dequeue() {
+    if (this.heap.length === 0) {
+      return null;
     }
-    return maxDigits;
-}
+    const root = this.heap[0];
+    const lastNode = this.heap.pop();
+    if (this.heap.length > 0) {
+      this.heap[0] = lastNode;
+      this.bubbleDown();
+    }
+    return root.value;
+  }
 
-// Radix Sort function
-function radixSort(arr) {
-    const maxDigits = mostDigits(arr);
-    for (let k = 0; k < maxDigits; k++) {
-        let buckets = Array.from({ length: 10 }, () => []);
-        for (let i = 0; i < arr.length; i++) {
-            buckets[getDigit(arr[i], k)].push(arr[i]);
+  bubbleUp() {
+    let index = this.heap.length - 1;
+    const node = this.heap[index];
+    while (index > 0) {
+      const parentIndex = Math.floor((index - 1) / 2);
+      const parent = this.heap[parentIndex];
+      if (node.priority >= parent.priority) {
+        break;
+      }
+      this.heap[parentIndex] = node;
+      this.heap[index] = parent;
+      index = parentIndex;
+    }
+  }
+
+  bubbleDown() {
+    let index = 0;
+    const length = this.heap.length;
+    const node = this.heap[0];
+    while (true) {
+      let leftChildIndex = 2 * index + 1;
+      let rightChildIndex = 2 * index + 2;
+      let leftChild, rightChild;
+      let swap = null;
+
+      if (leftChildIndex < length) {
+        leftChild = this.heap[leftChildIndex];
+        if (leftChild.priority < node.priority) {
+          swap = leftChildIndex;
         }
-        arr = [].concat(...buckets);
+      }
+
+      if (rightChildIndex < length) {
+        rightChild = this.heap[rightChildIndex];
+        if (
+          (swap === null && rightChild.priority < node.priority) ||
+          (swap !== null && rightChild.priority < leftChild.priority)
+        ) {
+          swap = rightChildIndex;
+        }
+      }
+
+      if (swap === null) {
+        break;
+      }
+
+      this.heap[index] = this.heap[swap];
+      this.heap[swap] = node;
+      index = swap;
     }
-    return arr;
+  }
 }
 
-// Test the implementation
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log(radixSort(arr)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+// Example usage
+const pq = new PriorityQueue();
+
+pq.enqueue('Task 1', 3);
+pq.enqueue('Task 2', 1);
+pq.enqueue('Task 3', 2);
+
+console.log(pq.dequeue()); // Output: Task 2
+console.log(pq.dequeue()); // Output: Task 3
+console.log(pq.dequeue()); // Output: Task 1
