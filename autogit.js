@@ -1,46 +1,23 @@
-function bellmanFord(graph, startNode) {
-    let distances = {};
-    let predecessors = {};
-    
-    // Initialize distances and predecessors
-    for (let node in graph) {
-        distances[node] = Infinity;
-        predecessors[node] = null;
+function isPrime(num) {
+    if (num <= 1) {
+        return false;
     }
-    distances[startNode] = 0;
-    
-    // Relax edges repeatedly
-    for (let i = 0; i < Object.keys(graph).length - 1; i++) {
-        for (let node in graph) {
-            for (let neighbor in graph[node]) {
-                if (distances[neighbor] > distances[node] + graph[node][neighbor]) {
-                    distances[neighbor] = distances[node] + graph[node][neighbor];
-                    predecessors[neighbor] = node;
-                }
-            }
+    if (num <= 3) {
+        return true;
+    }
+    if (num % 2 === 0 || num % 3 === 0) {
+        return false;
+    }
+
+    for (let i = 5; i * i <= num; i += 6) {
+        if (num % i === 0 || num % (i + 2) === 0) {
+            return false;
         }
     }
-    
-    // Check for negative cycles
-    for (let node in graph) {
-        for (let neighbor in graph[node]) {
-            if (distances[neighbor] > distances[node] + graph[node][neighbor]) {
-                return "Graph contains negative cycle!";
-            }
-        }
-    }
-    
-    return { distances, predecessors };
+
+    return true;
 }
 
 // Example usage
-const graph = {
-    A: { B: -1, C: 4 },
-    B: { C: 3, D: 2, E: 2 },
-    C: {},
-    D: { B: 1, C: 5 },
-    E: { D: -3 }
-};
-
-const result = bellmanFord(graph, 'A');
-console.log(result);
+console.log(isPrime(7));  // true
+console.log(isPrime(10)); // false
