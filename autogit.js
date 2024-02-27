@@ -6,7 +6,7 @@ function factorial(n) {
     }
 }
 
-// Calculate the factorial of 5
+// Test the factorial function
 const number = 5;
 const result = factorial(number);
-console.log(`The factorial of ${number} is ${result}`);
+console.log(`The factorial of ${number} is: ${result}`);
