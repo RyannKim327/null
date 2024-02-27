@@ -1,29 +1,46 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+function createBadMatchTable(pattern) {
+    const table = {};
+    const len = pattern.length;
+    
+    for (let i = 0; i < len - 1; i++) {
+        table[pattern[i]] = len - i - 1;
+    }
+    
+    return table;
 }
 
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
-
-  while (fast != null && fast.next != null) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
-
-  return slow.value;
+function boyerMooreHorspool(text, pattern) {
+    const badMatchTable = createBadMatchTable(pattern);
+    const n = text.length;
+    const m = pattern.length;
+    let i = m - 1;
+    
+    while (i < n) {
+        let k = 0;
+        
+        while (k < m && pattern[m - 1 - k] === text[i - k]) {
+            k++;
+        }
+        
+        if (k === m) {
+            return i - m + 1;
+        }
+        
+        const char = text[i];
+        const badMatchOffset = badMatchTable[char] || m;
+        i += badMatchOffset;
+    }
+    
+    return -1;
 }
 
-// Create a linked list
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
+// Example usage
+const text = 'hello world';
+const pattern = 'world';
 
-// Call the function to find the middle element
-let middleElement = findMiddleElement(head);
-console.log("Middle element:", middleElement);
+const index = boyerMooreHorspool(text, pattern);
+if (index !== -1) {
+    console.log(`Pattern found at index ${index}`);
+} else {
+    console.log('Pattern not found');
+}
