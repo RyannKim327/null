@@ -1,19 +1,34 @@
-function insertionSort(arr) {
-    for (let i = 1; i < arr.length; i++) {
-        let current = arr[i];
-        let j = i - 1;
-
-        while (j >= 0 && arr[j] > current) {
-            arr[j + 1] = arr[j];
-            j = j - 1;
-        }
-
-        arr[j + 1] = current;
+function mergeSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
     }
+    
+    const middle = Math.floor(arr.length / 2);
+    const left = arr.slice(0, middle);
+    const right = arr.slice(middle);
+    
+    return merge(mergeSort(left), mergeSort(right));
+}
 
-    return arr;
+function merge(left, right) {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+    
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            result.push(right[rightIndex]);
+            rightIndex++;
+        }
+    }
+    
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
 }
 
 // Example usage
-const array = [7, 2, 4, 1, 5, 3];
-console.log(insertionSort(array)); // Output: [1, 2, 3, 4, 5, 7]
+const arr = [5, 3, 8, 2, 1, 4];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr); // Output: [1, 2, 3, 4, 5, 8]
