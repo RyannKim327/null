@@ -1,38 +1,43 @@
-function heapify(arr, n, i) {
-    let largest = i;
-    let left = 2 * i + 1;
-    let right = 2 * i + 2;
-
-    if (left < n && arr[left] > arr[largest]) {
-        largest = left;
-    }
-
-    if (right < n && arr[right] > arr[largest]) {
-        largest = right;
-    }
-
-    if (largest !== i) {
-        [arr[i], arr[largest]] = [arr[largest], arr[i]];
-        heapify(arr, n, largest);
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
     }
 }
 
-function heapSort(arr) {
-    let n = arr.length;
-
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(arr, n, i);
+class LinkedList {
+    constructor() {
+        this.head = null;
     }
 
-    for (let i = n - 1; i > 0; i--) {
-        [arr[0], arr[i]] = [arr[i], arr[0]];
-        heapify(arr, i, 0);
+    addNode(data) {
+        const newNode = new Node(data);
+        if (this.head === null) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next !== null) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
     }
 
-    return arr;
+    getLength() {
+        let count = 0;
+        let current = this.head;
+        while (current !== null) {
+            count++;
+            current = current.next;
+        }
+        return count;
+    }
 }
 
-// Example usage:
-const arr = [12, 11, 13, 5, 6, 7];
-console.log("Original array: " + arr);
-console.log("Sorted array: " + heapSort(arr));
+// Example Usage
+const linkedList = new LinkedList();
+linkedList.addNode(1);
+linkedList.addNode(2);
+linkedList.addNode(3);
+
+console.log(linkedList.getLength()); // Output: 3
