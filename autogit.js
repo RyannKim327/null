@@ -1,40 +1,18 @@
-function boyerMooreHorspool(text, pattern) {
-    const textLength = text.length;
-    const patternLength = pattern.length;
+function countOccurrences(inputString, word) {
+    // Using a regular expression to match the word globally (g) and case insensitive (i)
+    const regex = new RegExp('\\b' + word + '\\b', 'gi');
+    
+    // Using match() method to get an array of all matches
+    const matches = inputString.match(regex);
+    
+    // Counting the number of matches
+    const count = matches ? matches.length : 0;
 
-    if (patternLength === 0) {
-        return -1;
-    }
-
-    const badCharacterTable = new Array(256).fill(patternLength);
-    for (let i = 0; i < patternLength - 1; i++) {
-        badCharacterTable[pattern.charCodeAt(i)] = patternLength - 1 - i;
-    }
-
-    let shift = 0;
-    while (shift <= textLength - patternLength) {
-        let j = patternLength - 1;
-        while (j >= 0 && pattern[j] === text[shift + j]) {
-            j--;
-        }
-
-        if (j < 0) {
-            return shift;
-        }
-
-        shift += badCharacterTable[text.charCodeAt(shift + patternLength - 1)];
-    }
-
-    return -1;
+    return count;
 }
 
-// Example Usage
-const text = "The quick brown fox jumped over the lazy dog";
-const pattern = "brown";
-const index = boyerMooreHorspool(text, pattern);
+const inputString = 'Hello, hello, HELLO, World!';
+const word = 'hello';
+const occurrences = countOccurrences(inputString, word);
 
-if (index !== -1) {
-    console.log(`Pattern found at index ${index}`);
-} else {
-    console.log("Pattern not found");
-}
+console.log(`The word "${word}" occurs ${occurrences} times in the string.`);
