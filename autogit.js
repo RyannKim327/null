@@ -1,15 +1,61 @@
-function maxSubArray(arr) {
-    let maxEndingHere = 0;
-    let maxSoFar = Number.NEGATIVE_INFINITY;
-
-    for (let i = 0; i < arr.length; i++) {
-        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
-        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+class TrieNode {
+    constructor() {
+        this.children = {};
+        this.isEndOfWord = false;
     }
-
-    return maxSoFar;
 }
 
-// Example usage
-const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-console.log(maxSubArray(arr)); // Output: 6 (subarray [4, -1, 2, 1])
+class Trie {
+    constructor() {
+        this.root = new TrieNode();
+    }
+
+    insert(word) {
+        let node = this.root;
+
+        for (let i = 0; i < word.length; i++) {
+            const char = word[i];
+            if (!node.children[char]) {
+                node.children[char] = new TrieNode();
+            }
+            node = node.children[char];
+        }
+
+        node.isEndOfWord = true;
+    }
+
+    search(word) {
+        let node = this.root;
+
+        for (let i = 0; i < word.length; i++) {
+            const char = word[i];
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+
+        return node !== null && node.isEndOfWord;
+    }
+
+    startsWith(prefix) {
+        let node = this.root;
+
+        for (let i = 0; i < prefix.length; i++) {
+            const char = prefix[i];
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+
+        return true;
+    }
+}
+
+// Example Usage
+const trie = new Trie();
+trie.insert("apple");
+console.log(trie.search("apple"));   // Output: true
+console.log(trie.search("app"));     // Output: false
+console.log(trie.startsWith("app")); // Output: true
