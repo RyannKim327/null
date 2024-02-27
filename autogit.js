@@ -1,23 +1,56 @@
-function shellSort(arr) {
-  var n = arr.length;
-  
-  for (var gap = Math.floor(n/2); gap > 0; gap = Math.floor(gap/2)) {
-    for (var i = gap; i < n; i++) {
-      var temp = arr[i];
-      
-      var j;
-      for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
-        arr[j] = arr[j - gap];
-      }
-      
-      arr[j] = temp;
+class Graph {
+    constructor() {
+        this.nodes = {};
     }
-  }
-  
-  return arr;
+
+    addNode(node) {
+        this.nodes[node] = [];
+    }
+
+    addEdge(node1, node2, weight) {
+        this.nodes[node1].push({ node: node2, weight: weight });
+        this.nodes[node2].push({ node: node1, weight: weight });
+    }
+
+    dijkstra(startNode) {
+        let distances = {};
+        let pq = {};
+
+        for (let node in this.nodes) {
+            distances[node] = Infinity;
+            pq[node] = Infinity;
+        }
+
+        distances[startNode] = 0;
+        pq[startNode] = 0;
+
+        while (Object.keys(pq).length !== 0) {
+            let minNode = Object.keys(pq).reduce((a, b) => pq[a] < pq[b] ? a : b);
+            delete pq[minNode];
+
+            for (let neighbor of this.nodes[minNode]) {
+                let totalDistance = distances[minNode] + neighbor.weight;
+                if (totalDistance < distances[neighbor.node]) {
+                    distances[neighbor.node] = totalDistance;
+                    pq[neighbor.node] = totalDistance;
+                }
+            }
+        }
+
+        return distances;
+    }
 }
 
-// Example usage
-var arr = [12, 34, 54, 2, 3];
-console.log("Original Array: ", arr);
-console.log("Sorted Array: ", shellSort(arr));
+// Example usage:
+let g = new Graph();
+g.addNode('A');
+g.addNode('B');
+g.addNode('C');
+g.addNode('D');
+g.addEdge('A', 'B', 1);
+g.addEdge('A', 'C', 4);
+g.addEdge('B', 'C', 2);
+g.addEdge('B', 'D', 5);
+g.addEdge('C', 'D', 1);
+
+console.log(g.dijkstra('A'));
