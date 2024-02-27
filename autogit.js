@@ -1,15 +1,38 @@
-function isArraySortedAscending(arr) {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false;
+function depthLimitedSearch(root, goal, depthLimit) {
+    if (root === goal) {
+        return [root];
+    }
+
+    let stack = [{ node: root, depth: 0, path: [root] }];
+
+    while (stack.length > 0) {
+        let current = stack.pop();
+
+        if (current.node === goal) {
+            return current.path;
+        }
+
+        if (current.depth < depthLimit) {
+            let children = getChildren(current.node);
+            for (let child of children) {
+                stack.push({ node: child, depth: current.depth + 1, path: current.path.concat(child) });
+            }
         }
     }
-    return true;
+
+    return "Goal not found within depth limit";
 }
 
-// Test the function
-const sortedArray = [1, 2, 3, 4, 5];
-const unsortedArray = [5, 4, 3, 2, 1];
+// Helper function to get children of a node (can be implemented based on your specific problem)
+function getChildren(node) {
+    // Implement this function based on your problem
+    return [];
+}
 
-console.log(isArraySortedAscending(sortedArray)); // Output: true
-console.log(isArraySortedAscending(unsortedArray)); // Output: false
+// Example usage
+let root = /* Your root node */;
+let goal = /* Your goal node */;
+let depthLimit = 3;
+
+let result = depthLimitedSearch(root, goal, depthLimit);
+console.log(result);
