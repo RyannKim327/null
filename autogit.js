@@ -1,43 +1,15 @@
-function createBadCharacterTable(pattern) {
-    const table = new Array(256).fill(pattern.length);
-
-    for (let i = 0; i < pattern.length - 1; i++) {
-        table[pattern.charCodeAt(i)] = pattern.length - 1 - i;
-    }
-
-    return table;
-}
-
-function boyerMooreHorspoolSearch(text, pattern) {
-    const badCharacterTable = createBadCharacterTable(pattern);
-    const n = text.length;
-    const m = pattern.length;
-    let i = m - 1;
-
-    while (i < n) {
-        let k = 0;
-
-        while (k < m && pattern[m - 1 - k] === text[i - k]) {
-            k++;
-        }
-
-        if (k === m) {
-            return i - m + 1; // Match found
-        } else {
-            i += badCharacterTable[text.charCodeAt(i)];
+function isArraySortedAscending(arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;
         }
     }
-
-    return -1; // Match not found
+    return true;
 }
 
-// Example usage
-const text = "The quick brown fox jumps over the lazy dog";
-const pattern = "brown";
-const index = boyerMooreHorspoolSearch(text, pattern);
+// Test the function
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [5, 4, 3, 2, 1];
 
-if (index !== -1) {
-    console.log("Pattern found at index: " + index);
-} else {
-    console.log("Pattern not found");
-}
+console.log(isArraySortedAscending(array1)); // Output: true
+console.log(isArraySortedAscending(array2)); // Output: false
