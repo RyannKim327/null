@@ -1,62 +1,48 @@
-// Function to perform bi-directional search
-function biDirectionalSearch(graph, startNode, endNode) {
-    // Initialize forward and backward search queues
-    let forwardQueue = [startNode];
-    let backwardQueue = [endNode];
+class Graph {
+    constructor() {
+        this.adjList = new Map();
+    }
 
-    // Initialize forward and backward visited sets
-    let forwardVisited = new Set();
-    let backwardVisited = new Set();
+    addNode(node) {
+        this.adjList.set(node, []);
+    }
 
-    forwardVisited.add(startNode);
-    backwardVisited.add(endNode);
+    addEdge(node1, node2) {
+        this.adjList.get(node1).push(node2);
+        this.adjList.get(node2).push(node1);
+    }
 
-    // Main loop to perform bi-directional search
-    while (forwardQueue.length > 0 && backwardQueue.length > 0) {
-        // Perform forward search step
-        let currentNodeForward = forwardQueue.shift();
-        for (let neighbor of graph[currentNodeForward]) {
-            if (!forwardVisited.has(neighbor)) {
-                forwardVisited.add(neighbor);
-                forwardQueue.push(neighbor);
-                if (backwardVisited.has(neighbor)) {
-                    return "Path found"; // Intersection point found, path exists
-                }
-            }
-        }
+    depthFirstSearch(startNode) {
+        const visited = new Set();
+        const stack = [startNode];
 
-        // Perform backward search step
-        let currentNodeBackward = backwardQueue.shift();
-        for (let neighbor of graph[currentNodeBackward]) {
-            if (!backwardVisited.has(neighbor)) {
-                backwardVisited.add(neighbor);
-                backwardQueue.push(neighbor);
-                if (forwardVisited.has(neighbor)) {
-                    return "Path found"; // Intersection point found, path exists
+        while (stack.length > 0) {
+            const currentNode = stack.pop();
+
+            if (!visited.has(currentNode)) {
+                visited.add(currentNode);
+                console.log(currentNode);
+
+                const neighbors = this.adjList.get(currentNode);
+                for (let neighbor of neighbors) {
+                    stack.push(neighbor);
                 }
             }
         }
     }
-
-    return "Path not found";
 }
 
-// Example graph representation
-const graph = {
-    A: ['B', 'C'],
-    B: ['A', 'D'],
-    C: ['A', 'E'],
-    D: ['B', 'F'],
-    E: ['C', 'G'],
-    F: ['D', 'H'],
-    G: ['E', 'I'],
-    H: ['F'],
-    I: ['G']
-};
+// Creating a graph
+const graph = new Graph();
+graph.addNode(0);
+graph.addNode(1);
+graph.addNode(2);
+graph.addNode(3);
+graph.addNode(4);
+graph.addEdge(0, 1);
+graph.addEdge(0, 2);
+graph.addEdge(1, 3);
+graph.addEdge(2, 4);
 
-// Define start and end nodes
-const startNode = 'A';
-const endNode = 'I';
-
-// Call bi-directional search function
-console.log(biDirectionalSearch(graph, startNode, endNode));
+// Starting DFS from node 0
+graph.depthFirstSearch(0);
