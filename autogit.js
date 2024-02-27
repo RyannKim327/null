@@ -1,29 +1,23 @@
-class ListNode {
-  constructor(value = 0, next = null) {
-    this.value = value;
-    this.next = next;
-  }
+function longestCommonPrefix(strings) {
+    if (strings.length === 0) {
+        return '';
+    }
+
+    let prefix = '';
+    for (let i = 0; i < strings[0].length; i++) {
+        const char = strings[0][i];
+        for (let j = 1; j < strings.length; j++) {
+            if (i >= strings[j].length || strings[j][i] !== char) {
+                return prefix;
+            }
+        }
+        prefix += char;
+    }
+
+    return prefix;
 }
 
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
-
-  while (fast !== null && fast.next !== null) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
-
-  return slow;
-}
-
-// Example usage
-// Create a linked list: 1 -> 2 -> 3 -> 4 -> 5
-const node5 = new ListNode(5);
-const node4 = new ListNode(4, node5);
-const node3 = new ListNode(3, node4);
-const node2 = new ListNode(2, node3);
-const node1 = new ListNode(1, node2);
-
-const middleNode = findMiddleElement(node1);
-console.log(middleNode.value); // Output: 3
+// Example
+const strings = ['flower', 'flow', 'flight'];
+const result = longestCommonPrefix(strings);
+console.log(result); // Output: "fl"
