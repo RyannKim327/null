@@ -1,17 +1,36 @@
-function bubbleSort(arr) {
-    var len = arr.length;
-    for (var i = 0; i < len; i++) {
-        for (var j = 0; j < len - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                var temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
+function longestCommonSubsequence(str1, str2) {
+    const m = str1.length;
+    const n = str2.length;
+
+    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
             }
         }
     }
-    return arr;
+
+    let lcs = '';
+    let i = m, j = n;
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            lcs = str1[i - 1] + lcs;
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
+        }
+    }
+
+    return lcs;
 }
 
-var arr = [64, 34, 25, 12, 22, 11, 90];
-console.log("Original array: " + arr);
-console.log("Sorted array: " + bubbleSort(arr));
+const str1 = 'ABCDGH';
+const str2 = 'AEDFHR';
+console.log(longestCommonSubsequence(str1, str2)); // Output: ADH
