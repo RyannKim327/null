@@ -1,21 +1,10 @@
-async function connectToAsyncTask() {
-    try {
-        const response = await fetch('https://yourandroidapp.com/async-task', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-        
-        if (!response.ok) {
-            throw new Error('Failed to connect to async task');
-        }
-        
-        const data = await response.json();
-        console.log(data);
-    } catch (error) {
-        console.error('Error connecting to async task:', error);
-    }
+function calculateTriangleArea(base, height) {
+    return 0.5 * base * height;
 }
 
-connectToAsyncTask();
+// Example usage
+const base = 5;
+const height = 3;
+const area = calculateTriangleArea(base, height);
+
+console.log("The area of the triangle is: " + area);
