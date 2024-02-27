@@ -1,44 +1,46 @@
-class Graph {
-  constructor() {
-    this.adjList = {};
+function buildBadCharTable(pattern) {
+  const table = {};
+  const patternLength = pattern.length;
+
+  for (let i = 0; i < patternLength - 1; i++) {
+    table[pattern[i]] = patternLength - i - 1;
   }
-  
-  addVertex(vertex) {
-    if (!this.adjList[vertex]) {
-      this.adjList[vertex] = [];
-    }
-  }
-  
-  addEdge(src, dest) {
-    this.adjList[src].push(dest);
-    this.adjList[dest].push(src); // For undirected graph
-  }
-  
-  depthFirstSearch(startVertex) {
-    const visited = {};
-    
-    const dfs = (vertex) => {
-      visited[vertex] = true;
-      console.log(vertex);
-      
-      this.adjList[vertex].forEach(neighbor => {
-        if (!visited[neighbor]) {
-          dfs(neighbor);
-        }
-      });
-    };
-    
-    dfs(startVertex);
-  }
+
+  return table;
 }
 
-// Example usage
-const graph = new Graph();
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.depthFirstSearch('A');
+function boyerMooreSearch(text, pattern) {
+  const badCharTable = buildBadCharTable(pattern);
+  const patternLength = pattern.length;
+  const textLength = text.length;
+  let shift = 0;
+
+  while (shift <= textLength - patternLength) {
+    let matchIndex = patternLength - 1;
+
+    while (matchIndex >= 0 && pattern[matchIndex] === text[shift + matchIndex]) {
+      matchIndex--;
+    }
+
+    if (matchIndex < 0) {
+      return shift;
+    } else {
+      const badChar = text[shift + matchIndex];
+      const badCharShift = badCharTable[badChar] || patternLength;
+      shift += badCharShift;
+    }
+  }
+
+  return -1;
+}
+
+// Example Usage:
+const text = "ababcababcabc";
+const pattern = "abc";
+const index = boyerMooreSearch(text, pattern);
+
+if (index !== -1) {
+  console.log(`Pattern found at index ${index}`);
+} else {
+  console.log("Pattern not found");
+}
