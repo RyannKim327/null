@@ -1,29 +1,40 @@
-function interpolationSearch(arr, x) {
-    let low = 0;
-    let high = arr.length - 1;
+function boyerMooreHorspool(text, pattern) {
+    const textLength = text.length;
+    const patternLength = pattern.length;
 
-    while (low <= high && x >= arr[low] && x <= arr[high]) {
-        let pos = Math.floor(low + ((high - low) / (arr[high] - arr[low])) * (x - arr[low]));
-
-        if (arr[pos] === x) {
-            return pos;
-        } else if (arr[pos] < x) {
-            low = pos + 1;
-        } else {
-            high = pos - 1;
-        }
+    if (patternLength === 0) {
+        return -1;
     }
 
-    return -1; // Element not found
+    const badCharacterTable = new Array(256).fill(patternLength);
+    for (let i = 0; i < patternLength - 1; i++) {
+        badCharacterTable[pattern.charCodeAt(i)] = patternLength - 1 - i;
+    }
+
+    let shift = 0;
+    while (shift <= textLength - patternLength) {
+        let j = patternLength - 1;
+        while (j >= 0 && pattern[j] === text[shift + j]) {
+            j--;
+        }
+
+        if (j < 0) {
+            return shift;
+        }
+
+        shift += badCharacterTable[text.charCodeAt(shift + patternLength - 1)];
+    }
+
+    return -1;
 }
 
-// Example usage
-const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const x = 12;
-const index = interpolationSearch(arr, x);
+// Example Usage
+const text = "The quick brown fox jumped over the lazy dog";
+const pattern = "brown";
+const index = boyerMooreHorspool(text, pattern);
 
 if (index !== -1) {
-    console.log(`Element found at index ${index}`);
+    console.log(`Pattern found at index ${index}`);
 } else {
-    console.log("Element not found");
+    console.log("Pattern not found");
 }
