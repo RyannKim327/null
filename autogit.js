@@ -1,14 +1,15 @@
-function findKthSmallestElement(arr, k) {
-    arr.sort(function(a, b) {
-        return a - b;
-    });
-
-    return arr[k - 1];
+function isArraySorted(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false;
+    }
+  }
+  return true;
 }
 
-// Test the function
-const array = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
-const k = 3;
-const kthSmallest = findKthSmallestElement(array, k);
+// Example usage
+const arr1 = [1, 2, 3, 4, 5];
+const arr2 = [1, 3, 2, 4, 5];
 
-console.log(`The ${k}th smallest element in the array is: ${kthSmallest}`);
+console.log(isArraySorted(arr1)); // Output: true
+console.log(isArraySorted(arr2)); // Output: false
