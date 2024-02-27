@@ -1,13 +1,27 @@
-function reverseString(str) {
-    // Convert the string to an array, reverse the array, then convert it back to a string
-    return str.split('').reverse().join('');
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
 }
 
-// Test the function
-const originalString = 'Hello, World!';
-const reversedString = reverseString(originalString);
+function maxDepth(root) {
+    if (!root) {
+        return 0;
+    }
 
-console.log('Original string:', originalString);
-console.log('Reversed string:', reversedString);
-Original string: Hello, World!
-Reversed string: !dlroW ,olleH
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
+
+    return 1 + Math.max(leftDepth, rightDepth);
+}
+
+// Example binary tree
+const rootNode = new Node(1);
+rootNode.left = new Node(2);
+rootNode.right = new Node(3);
+rootNode.left.left = new Node(4);
+rootNode.left.right = new Node(5);
+
+console.log("Maximum depth of the binary tree is: ", maxDepth(rootNode));
