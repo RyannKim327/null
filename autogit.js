@@ -1,55 +1,23 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
+function selectionSort(arr) {
+    const n = arr.length;
+    for (let i = 0; i < n - 1; i++) {
+        let minIndex = i;
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+        if (minIndex !== i) {
+            // Swap the elements
+            let temp = arr[i];
+            arr[i] = arr[minIndex];
+            arr[minIndex] = temp;
+        }
     }
+    return arr;
 }
 
-class LinkedList {
-    constructor() {
-        this.head = null;
-    }
-
-    addNode(value) {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
-        }
-    }
-
-    isPalindrome() {
-        let values = [];
-        let current = this.head;
-        while (current) {
-            values.push(current.value);
-            current = current.next;
-        }
-        
-        let left = 0;
-        let right = values.length - 1;
-        while (left < right) {
-            if (values[left] !== values[right]) {
-                return false;
-            }
-            left++;
-            right--;
-        }
-        return true;
-    }
-}
-
-// Test the linked list for palindrome
-const linkedList = new LinkedList();
-linkedList.addNode(1);
-linkedList.addNode(2);
-linkedList.addNode(3);
-linkedList.addNode(2);
-linkedList.addNode(1);
-
-console.log(linkedList.isPalindrome()); // Output: true
+// Example usage
+const array = [64, 25, 12, 22, 11];
+console.log("Original array: " + array);
+console.log("Sorted array: " + selectionSort(array));
