@@ -1,36 +1,76 @@
-function longestCommonSubsequence(str1, str2) {
-    const m = str1.length;
-    const n = str2.length;
-
-    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-            } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-            }
-        }
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
     }
-
-    let lcs = '';
-    let i = m, j = n;
-    while (i > 0 && j > 0) {
-        if (str1[i - 1] === str2[j - 1]) {
-            lcs = str1[i - 1] + lcs;
-            i--;
-            j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--;
-        } else {
-            j--;
-        }
-    }
-
-    return lcs;
 }
 
-const str1 = 'ABCDGH';
-const str2 = 'AEDFHR';
-console.log(longestCommonSubsequence(str1, str2)); // Output: ADH
+class Queue {
+    constructor() {
+        this.front = null;
+        this.rear = null;
+        this.size = 0;
+    }
+
+    isEmpty() {
+        return this.size === 0;
+    }
+
+    enqueue(data) {
+        const newNode = new Node(data);
+        if(this.isEmpty()) {
+            this.front = newNode;
+            this.rear = newNode;
+        } else {
+            this.rear.next = newNode;
+            this.rear = newNode;
+        }
+        this.size++;
+    }
+
+    dequeue() {
+        if(this.isEmpty()) {
+            return null;
+        }
+
+        const data = this.front.data;
+        this.front = this.front.next;
+        this.size--;
+
+        if(this.isEmpty()) {
+            this.rear = null;
+        }
+
+        return data;
+    }
+
+    peek() {
+        if(this.isEmpty()) {
+            return null;
+        }
+
+        return this.front.data;
+    }
+
+    printQueue() {
+        let current = this.front;
+        while(current) {
+            console.log(current.data);
+            current = current.next;
+        }
+    }
+}
+
+// Example usage
+const queue = new Queue();
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+
+console.log(queue.peek()); // Output: 1
+
+queue.dequeue();
+
+console.log(queue.peek()); // Output: 2
+
+queue.printQueue();
