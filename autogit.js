@@ -1,51 +1,19 @@
-// Define the Node class
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
-}
-
-// Define the LinkedList class
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-
-  // Function to add a new node to the linked list
-  addNode(data) {
-    const newNode = new Node(data);
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
+function maxSubarraySum(arr) {
+    if (arr.length === 0) {
+        return 0;
     }
-  }
 
-  // Function to find the middle element of the linked list
-  findMiddleElement() {
-    let slow = this.head;
-    let fast = this.head;
-    
-    while (fast && fast.next) {
-      slow = slow.next;
-      fast = fast.next.next;
+    let maxEndingHere = arr[0];
+    let maxSoFar = arr[0];
+
+    for (let i = 1; i < arr.length; i++) {
+        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
+        maxSoFar = Math.max(maxSoFar, maxEndingHere);
     }
-    
-    return slow.data;
-  }
+
+    return maxSoFar;
 }
 
 // Example usage
-const list = new LinkedList();
-list.addNode(1);
-list.addNode(2);
-list.addNode(3);
-list.addNode(4);
-list.addNode(5);
-
-console.log(list.findMiddleElement()); // Output: 3
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+console.log(maxSubarraySum(array)); // Output: 6
