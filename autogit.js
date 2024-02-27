@@ -1,15 +1,29 @@
-function isArraySortedAscending(arr) {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false;
-        }
-    }
-    return true;
+class ListNode {
+  constructor(value = 0, next = null) {
+    this.value = value;
+    this.next = next;
+  }
 }
 
-// Test the function
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [5, 4, 3, 2, 1];
+function findMiddleElement(head) {
+  let slow = head;
+  let fast = head;
 
-console.log(isArraySortedAscending(array1)); // Output: true
-console.log(isArraySortedAscending(array2)); // Output: false
+  while (fast !== null && fast.next !== null) {
+    slow = slow.next;
+    fast = fast.next.next;
+  }
+
+  return slow;
+}
+
+// Example usage
+// Create a linked list: 1 -> 2 -> 3 -> 4 -> 5
+const node5 = new ListNode(5);
+const node4 = new ListNode(4, node5);
+const node3 = new ListNode(3, node4);
+const node2 = new ListNode(2, node3);
+const node1 = new ListNode(1, node2);
+
+const middleNode = findMiddleElement(node1);
+console.log(middleNode.value); // Output: 3
