@@ -1,38 +1,56 @@
-// Create a function to perform a network request asynchronously
-function connectToAsyncTask() {
-    return new Promise((resolve, reject) => {
-        // Create a new XMLHTTPRequest object
-        const xhr = new XMLHttpRequest();
-
-        // Configure the request
-        xhr.open('GET', 'https://api.example.com/data', true);
-
-        // Set up a callback function to handle the response
-        xhr.onload = function () {
-            if (xhr.status >= 200 && xhr.status < 300) {
-                // Resolve the promise with the response data
-                resolve(xhr.responseText);
-            } else {
-                // Reject the promise with an error message
-                reject(xhr.statusText);
-            }
-        };
-
-        // Handle network errors
-        xhr.onerror = function () {
-            reject(xhr.statusText);
-        };
-
-        // Send the request
-        xhr.send();
-    });
+// Define a Node class for creating nodes
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
 }
 
-// Call the async function and handle the promise
-connectToAsyncTask()
-    .then((response) => {
-        console.log('Async task succeeded:', response);
-    })
-    .catch((error) => {
-        console.error('Async task failed:', error);
-    });
+// Define a LinkedList class
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+
+  // Function to add a new node to the end of the linked list
+  append(data) {
+    let newNode = new Node(data);
+
+    if (!this.head) {
+      this.head = newNode;
+      return;
+    }
+
+    let current = this.head;
+    while (current.next) {
+      current = current.next;
+    }
+
+    current.next = newNode;
+  }
+
+  // Function to calculate the length of the linked list
+  getLength() {
+    let count = 0;
+    let current = this.head;
+
+    while (current) {
+      count++;
+      current = current.next;
+    }
+
+    return count;
+  }
+}
+
+// Create a linked list
+let linkedList = new LinkedList();
+linkedList.append(1);
+linkedList.append(2);
+linkedList.append(3);
+linkedList.append(4);
+linkedList.append(5);
+
+// Calculate the length of the linked list
+let length = linkedList.getLength();
+console.log("Length of the linked list is: " + length);
