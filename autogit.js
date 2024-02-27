@@ -1,12 +1,6 @@
-function findSecondLargest(arr) {
-    arr.sort(function(a, b) {
-        return b - a;
-    });
+let string1 = "Hello";
+let string2 = "World";
 
-    return arr[1];
-}
+let result = string1 + " " + string2;
 
-// Example:
-const myArray = [5, 2, 8, 10, 3];
-const secondLargest = findSecondLargest(myArray);
-console.log("Second Largest Element:", secondLargest);
+console.log(result); // Output: Hello World
