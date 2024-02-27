@@ -1,18 +1,16 @@
-function isPalindrome(str) {
-    // Remove non-alphanumeric characters and convert the string to lowercase
-    const cleanedStr = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-    
-    // Compare characters from start and end of the string
-    for (let i = 0; i < Math.floor(cleanedStr.length / 2); i++) {
-        if (cleanedStr[i] !== cleanedStr[cleanedStr.length - 1 - i]) {
-            return false;
-        }
-    }
-    
-    return true;
-}
+const str = "Hello, world!";
+const substring = "world";
 
-// Test the function
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // Output: true
-console.log(isPalindrome("racecar")); // Output: true
-console.log(isPalindrome("hello")); // Output: false
+if(str.indexOf(substring) !== -1) {
+    console.log("String contains the substring");
+} else {
+    console.log("String does not contain the substring");
+}
+const str = "Hello, world!";
+const substring = "world";
+
+if(str.includes(substring)) {
+    console.log("String contains the substring");
+} else {
+    console.log("String does not contain the substring");
+}
