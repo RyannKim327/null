@@ -1,27 +1,36 @@
-class TreeNode {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+// Merge function to merge two sorted arrays
+function merge(left, right) {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            result.push(right[rightIndex]);
+            rightIndex++;
+        }
     }
+
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
 }
 
-function maxDepth(root) {
-    if (!root) {
-        return 0;
+// Merge sort function
+function mergeSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
+    const middle = Math.floor(arr.length / 2);
+    const left = arr.slice(0, middle);
+    const right = arr.slice(middle);
 
-    return Math.max(leftDepth, rightDepth) + 1;
+    return merge(mergeSort(left), mergeSort(right));
 }
 
-// Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(maxDepth(root)); // Output: 3
+// Test the merge sort algorithm
+const arr = [5, 3, 8, 6, 2, 7, 1, 4];
+console.log("Original array:", arr);
+console.log("Sorted array:", mergeSort(arr));
