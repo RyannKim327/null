@@ -1,14 +1,4 @@
-function kthSmallestElement(array, k) {
-    array.sort(function(a, b) {
-        return a - b;
-    });
+let numbers = [5, 2, 9, 3, 7];
+numbers.sort((a, b) => a - b);
 
-    return array[k - 1];
-}
-
-// Example usage
-const array = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
-const k = 4;
-
-const result = kthSmallestElement(array, k);
-console.log(`The ${k}th smallest element is: ${result}`);
+console.log(numbers); // Output: [2, 3, 5, 7, 9]
