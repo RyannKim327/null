@@ -1,7 +1,16 @@
-const { CronJob } = require('cron');
+// Initial array
+let array = [1, 2, 3, 4, 5];
 
-const job = new CronJob('* * * * *', function() {
-  console.log('This function will be executed every minute.');
-});
+// Element to remove
+let elementToRemove = 3;
 
-job.start();
+// Find the index of the element in the array
+let index = array.indexOf(elementToRemove);
+
+// Check if the element exists in the array
+if (index !== -1) {
+    // Remove the element at the specified index
+    array.splice(index, 1);
+}
+
+console.log(array); // Output: [1, 2, 4, 5]
