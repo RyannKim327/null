@@ -1,62 +1,46 @@
-function tarjanSCC(graph) {
-    const n = graph.length;
-    const stack = [];
-    const visited = new Array(n).fill(false);
-    const ids = new Array(n).fill(-1);
-    const lowLink = new Array(n).fill(-1);
-    const onStack = new Array(n).fill(false);
-    const result = [];
-    let id = 0;
+function generatePrefixTable(pattern) {
+    const prefixTable = [0];
+    let j = 0;
 
-    function dfs(node) {
-        stack.push(node);
-        onStack[node] = true;
-        visited[node] = true;
-        ids[node] = id;
-        lowLink[node] = id;
-        id++;
-
-        for (const neighbor of graph[node]) {
-            if (!visited[neighbor]) {
-                dfs(neighbor);
-            }
-            if (onStack[neighbor]) {
-                lowLink[node] = Math.min(lowLink[node], lowLink[neighbor]);
-            }
+    for (let i = 1; i < pattern.length; i++) {
+        while (j > 0 && pattern[i] !== pattern[j]) {
+            j = prefixTable[j - 1];
         }
-
-        if (ids[node] === lowLink[node]) {
-            const component = [];
-            let poppedNode;
-            do {
-                poppedNode = stack.pop();
-                onStack[poppedNode] = false;
-                component.push(poppedNode);
-            } while (poppedNode !== node);
-            result.push(component);
+        if (pattern[i] === pattern[j]) {
+            j++;
         }
+        prefixTable[i] = j;
     }
 
-    for (let i = 0; i < n; i++) {
-        if (!visited[i]) {
-            dfs(i);
-        }
-    }
-
-    return result;
+    return prefixTable;
 }
 
-// Example graph represented as an adjacency list
-const graph = [
-    [1, 2],
-    [3],
-    [4],
-    [0, 5],
-    [2, 6],
-    [5],
-    [4],
-    [6]
-];
+function kmpSearch(text, pattern) {
+    const prefixTable = generatePrefixTable(pattern);
+    let j = 0;
 
-const scc = tarjanSCC(graph);
-scc.forEach(component => console.log(component));
+    for (let i = 0; i < text.length; i++) {
+        while (j > 0 && text[i] !== pattern[j]) {
+            j = prefixTable[j - 1];
+        }
+        if (text[i] === pattern[j]) {
+            j++;
+        }
+        if (j === pattern.length) {
+            return i - j + 1; // Match found, return the index of the start of the match
+        }
+    }
+
+    return -1; // Match not found
+}
+
+// Example usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const index = kmpSearch(text, pattern);
+
+if (index !== -1) {
+    console.log(`Pattern found at index ${index}`);
+} else {
+    console.log("Pattern not found");
+}
