@@ -1,4 +1,7 @@
-let str = "42";
-let num = parseInt(str);
+// Example array
+let numbers = [10, 5, 20, 15];
 
-console.log(num); // Output: 42
+// Using Math.max() and apply()
+let maxNumber = Math.max.apply(null, numbers);
+
+console.log("Maximum value in the array: " + maxNumber);
