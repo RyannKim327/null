@@ -1,22 +1,31 @@
-function isAnagram(str1, str2) {
-    // Remove non-alphabetic characters and convert to lowercase
-    str1 = str1.replace(/[^\w]/g, '').toLowerCase();
-    str2 = str2.replace(/[^\w]/g, '').toLowerCase();
+function findFirstNonRepeatingChar(str) {
+    // Create an empty object to store character counts
+    let charCount = {};
 
-    // Convert strings to arrays, sort and join them back
-    str1 = str1.split('').sort().join('');
-    str2 = str2.split('').sort().join('');
+    // Loop through the string to count occurrences of each character
+    for (let char of str) {
+        // If the character is not in the charCount object, initialize its count to 1
+        if (!charCount[char]) {
+            charCount[char] = 1;
+        } else {
+            // Increment the count for the character
+            charCount[char]++;
+        }
+    }
 
-    // Check if the sorted strings are equal
-    return str1 === str2;
+    // Loop through the string again to find the first non-repeating character
+    for (let char of str) {
+        if (charCount[char] === 1) {
+            // Return the first non-repeating character
+            return char;
+        }
+    }
+
+    // If no non-repeating character is found, return null
+    return null;
 }
 
 // Test the function
-const string1 = "listen";
-const string2 = "silent";
-
-if (isAnagram(string1, string2)) {
-    console.log(`${string1} and ${string2} are anagrams.`);
-} else {
-    console.log(`${string1} and ${string2} are not anagrams.`);
-}
+const inputString = "leetcode";
+const result = findFirstNonRepeatingChar(inputString);
+console.log(result); // Output: "l"
