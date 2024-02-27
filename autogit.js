@@ -1,46 +1,42 @@
-function createBadMatchTable(pattern) {
-    const table = {};
-    const len = pattern.length;
-    
-    for (let i = 0; i < len - 1; i++) {
-        table[pattern[i]] = len - i - 1;
-    }
-    
-    return table;
+class TreeNode {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-function boyerMooreHorspool(text, pattern) {
-    const badMatchTable = createBadMatchTable(pattern);
-    const n = text.length;
-    const m = pattern.length;
-    let i = m - 1;
-    
-    while (i < n) {
-        let k = 0;
-        
-        while (k < m && pattern[m - 1 - k] === text[i - k]) {
-            k++;
-        }
-        
-        if (k === m) {
-            return i - m + 1;
-        }
-        
-        const char = text[i];
-        const badMatchOffset = badMatchTable[char] || m;
-        i += badMatchOffset;
-    }
-    
-    return -1;
+function height(node) {
+  if (node === null) {
+    return 0;
+  }
+
+  const leftHeight = height(node.left);
+  const rightHeight = height(node.right);
+
+  return 1 + Math.max(leftHeight, rightHeight);
+}
+
+function diameterOfBinaryTree(root) {
+  if (root === null) {
+    return 0;
+  }
+
+  const leftHeight = height(root.left);
+  const rightHeight = height(root.right);
+
+  const leftDiameter = diameterOfBinaryTree(root.left);
+  const rightDiameter = diameterOfBinaryTree(root.right);
+
+  return Math.max(leftHeight + rightHeight, Math.max(leftDiameter, rightDiameter));
 }
 
 // Example usage
-const text = 'hello world';
-const pattern = 'world';
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+root.right.right = new TreeNode(6);
 
-const index = boyerMooreHorspool(text, pattern);
-if (index !== -1) {
-    console.log(`Pattern found at index ${index}`);
-} else {
-    console.log('Pattern not found');
-}
+console.log(diameterOfBinaryTree(root)); // Output: 4
