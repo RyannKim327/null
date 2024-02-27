@@ -1,90 +1,49 @@
-class PriorityQueue {
-  constructor() {
-    this.heap = [];
-  }
+// Heapify function to heapify subtree rooted at index i in array arr of size n
+function heapify(arr, n, i) {
+    let largest = i;
+    let left = 2 * i + 1;
+    let right = 2 * i + 2;
 
-  getParentIndex(index) {
-    return Math.floor((index - 1) / 2);
-  }
-
-  swap(index1, index2) {
-    const temp = this.heap[index1];
-    this.heap[index1] = this.heap[index2];
-    this.heap[index2] = temp;
-  }
-
-  push(value) {
-    this.heap.push(value);
-    this.heapifyUp(this.heap.length - 1);
-  }
-
-  pop() {
-    if (this.heap.length === 0) {
-      return null;
+    if (left < n && arr[left] > arr[largest]) {
+        largest = left;
     }
 
-    const root = this.heap[0];
-    const lastNode = this.heap.pop();
+    if (right < n && arr[right] > arr[largest]) {
+        largest = right;
+    }
+    
+    if (largest !== i) {
+        [arr[i], arr[largest]] = [arr[largest], arr[i]];
+        heapify(arr, n, largest);
+    }
+}
 
-    if (this.heap.length > 0) {
-      this.heap[0] = lastNode;
-      this.heapifyDown(0);
+// Main function to perform heap sort
+function heapSort(arr) {
+    const n = arr.length;
+
+    // Build heap (rearrange array)
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        heapify(arr, n, i);
     }
 
-    return root;
-  }
+    // One by one extract an element from the heap
+    for (let i = n - 1; i >= 0; i--) {
+        // Move current root to end
+        [arr[0], arr[i]] = [arr[i], arr[0]];
 
-  heapifyUp(index) {
-    let currentIndex = index;
-    let parentIndex = this.getParentIndex(currentIndex);
-
-    while (currentIndex > 0 && this.heap[currentIndex] < this.heap[parentIndex]) {
-      this.swap(currentIndex, parentIndex);
-      currentIndex = parentIndex;
-      parentIndex = this.getParentIndex(currentIndex);
-    }
-  }
-
-  heapifyDown(index) {
-    let currentIndex = index;
-    let leftChildIndex = 2 * index + 1;
-    let rightChildIndex = 2 * index + 2;
-    let smallestChildIndex = currentIndex;
-
-    if (leftChildIndex < this.heap.length && this.heap[leftChildIndex] < this.heap[smallestChildIndex]) {
-      smallestChildIndex = leftChildIndex;
+        // call max heapify on the reduced heap
+        heapify(arr, i, 0);
     }
 
-    if (rightChildIndex < this.heap.length && this.heap[rightChildIndex] < this.heap[smallestChildIndex]) {
-      smallestChildIndex = rightChildIndex;
-    }
-
-    if (smallestChildIndex !== currentIndex) {
-      this.swap(currentIndex, smallestChildIndex);
-      this.heapifyDown(smallestChildIndex);
-    }
-  }
-
-  peek() {
-    return this.heap[0];
-  }
-
-  size() {
-    return this.heap.length;
-  }
-
-  isEmpty() {
-    return this.heap.length === 0;
-  }
+    return arr;
 }
 
 // Example usage
-const pq = new PriorityQueue();
+const arr = [12, 11, 13, 5, 6, 7];
+console.log("Original Array:");
+console.log(arr);
 
-pq.push(5);
-pq.push(2);
-pq.push(8);
-
-console.log(pq.pop()); // Output: 2
-console.log(pq.pop()); // Output: 5
-console.log(pq.pop()); // Output: 8
+const sortedArr = heapSort(arr);
+console.log("Sorted Array:");
+console.log(sortedArr);
