@@ -1,7 +1,6 @@
-function getRandomNumber(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+let str1 = "Hello";
+let str2 = "World";
 
-// Generate a random number between 1 and 10
-var randomNumber = getRandomNumber(1, 10);
-console.log(randomNumber);
+let result = str1 + " " + str2;
+
+console.log(result); // Output: Hello World
