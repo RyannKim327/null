@@ -1,12 +1,13 @@
-function factorial(n) {
-    if (n === 0) {
-        return 1;
-    } else {
-        return n * factorial(n - 1);
-    }
+function findSecondLargest(arr) {
+    arr.sort(function(a, b) {
+        return b - a;
+    });
+    
+    return arr[1];
 }
 
-// Test the factorial function
-const number = 5;
-const result = factorial(number);
-console.log(`The factorial of ${number} is: ${result}`);
+// Example usage
+const myArray = [5, 10, 2, 8, 15];
+const secondLargest = findSecondLargest(myArray);
+
+console.log("Second largest element: " + secondLargest);
