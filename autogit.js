@@ -1,28 +1,16 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
+function findMedianSortedArrays(nums1, nums2) {
+    const mergedArray = nums1.concat(nums2).sort((a, b) => a - b);
+    const length = mergedArray.length;
+    
+    if (length % 2 !== 0) {
+        return mergedArray[Math.floor(length / 2)];
+    } else {
+        const mid = length / 2;
+        return (mergedArray[mid - 1] + mergedArray[mid]) / 2;
     }
 }
 
-function findMiddleElement(head) {
-    let slow = head;
-    let fast = head;
+const nums1 = [1, 3];
+const nums2 = [2];
 
-    while (fast !== null && fast.next !== null) {
-        slow = slow.next;
-        fast = fast.next.next;
-    }
-
-    return slow.value;
-}
-
-// Create a linked list for testing
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-// Find the middle element of the linked list
-console.log(findMiddleElement(head)); // Output: 3
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2
