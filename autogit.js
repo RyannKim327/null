@@ -1,13 +1,52 @@
-function findSecondLargest(arr) {
-    arr.sort(function(a, b) {
-        return b - a;
-    });
-    
-    return arr[1];
+class TrieNode {
+    constructor() {
+        this.children = {};
+        this.isEndOfWord = false;
+    }
 }
 
-// Example usage
-const myArray = [5, 10, 2, 8, 15];
-const secondLargest = findSecondLargest(myArray);
+class Trie {
+    constructor() {
+        this.root = new TrieNode();
+    }
 
-console.log("Second largest element: " + secondLargest);
+    insert(word) {
+        let node = this.root;
+        for (let char of word) {
+            if (!node.children[char]) {
+                node.children[char] = new TrieNode();
+            }
+            node = node.children[char];
+        }
+        node.isEndOfWord = true;
+    }
+
+    search(word) {
+        let node = this.root;
+        for (let char of word) {
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+        return node.isEndOfWord;
+    }
+
+    startsWith(prefix) {
+        let node = this.root;
+        for (let char of prefix) {
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+        return true;
+    }
+}
+
+// Example Usage
+let trie = new Trie();
+trie.insert("apple");
+console.log(trie.search("apple"));  // true
+console.log(trie.search("app"));    // false
+console.log(trie.startsWith("app")); // true
