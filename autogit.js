@@ -1,52 +1,39 @@
-class Edge {
-  constructor(start, end, cost) {
-    this.start = start;
-    this.end = end;
-    this.cost = cost;
-  }
-}
+function topologicalSort(graph) {
+    const visited = {};
+    const stack = [];
 
-function bellmanFord(graph, source) {
-  let distances = {};
-  let vertices = Object.keys(graph);
-
-  // Initialize distances
-  for (let vertex of vertices) {
-    distances[vertex] = Infinity;
-  }
-  distances[source] = 0;
-
-  // Relax edges repeatedly
-  for (let i = 0; i < vertices.length - 1; i++) {
-    for (let vertex of vertices) {
-      for (let edge of graph[vertex]) {
-        if (distances[vertex] + edge.cost < distances[edge.end]) {
-           distances[edge.end] = distances[vertex] + edge.cost;
+    // Helper function to perform DFS
+    function dfs(node) {
+        visited[node] = true;
+        if (graph[node]) {
+            for (const neighbor of graph[node]) {
+                if (!visited[neighbor]) {
+                    dfs(neighbor);
+                }
+            }
         }
-      }
+        stack.push(node);
     }
-  }
 
-  // Check for negative-weight cycles
-  for (let vertex of vertices) {
-    for (let edge of graph[vertex]) {
-      if (distances[vertex] + edge.cost < distances[edge.end]) {
-         return "Graph contains negative-weight cycles";
-      }
+    // Perform DFS on each unvisited node
+    for (const node in graph) {
+        if (!visited[node]) {
+            dfs(node);
+        }
     }
-  }
 
-  return distances;
+    // Return the nodes in topologically sorted order
+    return stack.reverse();
 }
 
-// Example usage
-let graph = {
-  A: [new Edge("A", "B", -1), new Edge("A", "C", 4)],
-  B: [new Edge("B", "C", 3), new Edge("B", "D", 2), new Edge("B", "E", 2)],
-  C: [],
-  D: [new Edge("D", "B", 1), new Edge("D", "C", 5)],
-  E: [new Edge("E", "D", -3)]
+// Example graph representation using adjacency list
+const graph = {
+    0: [1, 2],
+    1: [2],
+    2: [],
+    3: [2, 4],
+    4: []
 };
 
-let shortestPaths = bellmanFord(graph, "A");
-console.log(shortestPaths);
+const result = topologicalSort(graph);
+console.log(result);
