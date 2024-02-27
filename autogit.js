@@ -10,34 +10,42 @@ class LinkedList {
     this.head = null;
   }
 
-  addNode(value) {
+  add(value) {
+    const newNode = new Node(value);
     if (!this.head) {
-      this.head = new Node(value);
+      this.head = newNode;
     } else {
       let current = this.head;
       while (current.next) {
         current = current.next;
       }
-      current.next = new Node(value);
+      current.next = newNode;
     }
   }
 
-  getLength() {
+  toArray() {
     let current = this.head;
-    let length = 0;
+    const array = [];
     while (current) {
-      length++;
+      array.push(current.value);
       current = current.next;
     }
-    return length;
+    return array;
+  }
+
+  isPalindrome() {
+    const array = this.toArray();
+    const reversedArray = array.slice().reverse();
+    return JSON.stringify(array) === JSON.stringify(reversedArray);
   }
 }
 
 // Example usage
 const linkedList = new LinkedList();
-linkedList.addNode(1);
-linkedList.addNode(2);
-linkedList.addNode(3);
-linkedList.addNode(4);
+linkedList.add('a');
+linkedList.add('b');
+linkedList.add('c');
+linkedList.add('b');
+linkedList.add('a');
 
-console.log(linkedList.getLength()); // Output: 4
+console.log(linkedList.isPalindrome()); // Output: true
