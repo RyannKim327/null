@@ -1,12 +1,17 @@
-function factorial(n) {
-    if (n === 0) {
-        return 1;
-    } else {
-        return n * factorial(n - 1);
+function bubbleSort(arr) {
+    let len = arr.length;
+    for (let i = 0; i < len; i++) {
+        for (let j = 0; j < len - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap elements
+                let temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
     }
+    return arr;
 }
 
-// Test the function with a sample number
-const number = 5;
-const result = factorial(number);
-console.log(`The factorial of ${number} is: ${result}`);
+let myArray = [3, 0, 2, 5, -1, 4, 1];
+console.log(bubbleSort(myArray));
