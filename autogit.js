@@ -1,11 +1,12 @@
-const axios = require('axios');
+function findSecondLargest(arr) {
+    arr.sort(function(a, b) {
+        return b - a;
+    });
 
-const url = 'https://jsonplaceholder.typicode.com/posts/1';
+    return arr[1];
+}
 
-axios.get(url)
-  .then(response => {
-    console.log(response.data);
-  })
-  .catch(error => {
-    console.error(error);
-  });
+// Example:
+const myArray = [5, 2, 8, 10, 3];
+const secondLargest = findSecondLargest(myArray);
+console.log("Second Largest Element:", secondLargest);
