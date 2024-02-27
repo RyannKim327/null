@@ -1,25 +1,22 @@
-function firstNonRepeatingChar(str) {
-  let charCount = {};
-  
-  // Count occurrences of each character
-  for (let i = 0; i < str.length; i++) {
-    let char = str[i];
-    charCount[char] = (charCount[char] || 0) + 1;
-  }
-  
-  // Find the first non-repeating character
-  for (let i = 0; i < str.length; i++) {
-    let char = str[i];
-    if (charCount[char] === 1) {
-      return char;
+function findFirstRepeatedChar(str) {
+    const charMap = {};
+
+    for (let char of str) {
+        if (charMap[char]) {
+            return char;
+        } else {
+            charMap[char] = true;
+        }
     }
-  }
-  
-  return null; // If no non-repeating character found
+
+    return null;
 }
 
-// Test the function
-let str = "hello world";
-let result = firstNonRepeatingChar(str);
+const inputString = "hello world";
+const repeatedChar = findFirstRepeatedChar(inputString);
 
-console.log("First non-repeating character:", result);
+if (repeatedChar) {
+    console.log(`The first repeated character in the string is: ${repeatedChar}`);
+} else {
+    console.log("No repeated characters found in the string.");
+}
