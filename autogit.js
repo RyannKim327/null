@@ -1,27 +1,62 @@
-class TreeNode {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+function tarjanSCC(graph) {
+    const n = graph.length;
+    const stack = [];
+    const visited = new Array(n).fill(false);
+    const ids = new Array(n).fill(-1);
+    const lowLink = new Array(n).fill(-1);
+    const onStack = new Array(n).fill(false);
+    const result = [];
+    let id = 0;
+
+    function dfs(node) {
+        stack.push(node);
+        onStack[node] = true;
+        visited[node] = true;
+        ids[node] = id;
+        lowLink[node] = id;
+        id++;
+
+        for (const neighbor of graph[node]) {
+            if (!visited[neighbor]) {
+                dfs(neighbor);
+            }
+            if (onStack[neighbor]) {
+                lowLink[node] = Math.min(lowLink[node], lowLink[neighbor]);
+            }
+        }
+
+        if (ids[node] === lowLink[node]) {
+            const component = [];
+            let poppedNode;
+            do {
+                poppedNode = stack.pop();
+                onStack[poppedNode] = false;
+                component.push(poppedNode);
+            } while (poppedNode !== node);
+            result.push(component);
+        }
     }
+
+    for (let i = 0; i < n; i++) {
+        if (!visited[i]) {
+            dfs(i);
+        }
+    }
+
+    return result;
 }
 
-function maxDepth(root) {
-    if (root === null) {
-        return 0;
-    }
-    
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
-    
-    return 1 + Math.max(leftDepth, rightDepth);
-}
+// Example graph represented as an adjacency list
+const graph = [
+    [1, 2],
+    [3],
+    [4],
+    [0, 5],
+    [2, 6],
+    [5],
+    [4],
+    [6]
+];
 
-// Example tree
-let root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log("Maximum depth of the binary tree is: " + maxDepth(root)); // Output: 3
+const scc = tarjanSCC(graph);
+scc.forEach(component => console.log(component));
