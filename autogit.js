@@ -1,33 +1,42 @@
-function findLongestIncreasingSubsequence(arr) {
-    let n = arr.length;
-    let dp = new Array(n).fill(1);
-    let prevIndex = new Array(n).fill(-1);
-    let maxLength = 1;
-    let endIndex = 0;
-
-    for (let i = 1; i < n; i++) {
-        for (let j = 0; j < i; j++) {
-            if (arr[i] > arr[j] && dp[i] < dp[j] + 1) {
-                dp[i] = dp[j] + 1;
-                prevIndex[i] = j;
-            }
-        }
-        if (dp[i] > maxLength) {
-            maxLength = dp[i];
-            endIndex = i;
-        }
-    }
-
-    let longestIncreasingSubsequence = [];
-    let currentIndex = endIndex;
-    while (currentIndex >= 0) {
-        longestIncreasingSubsequence.unshift(arr[currentIndex]);
-        currentIndex = prevIndex[currentIndex];
-    }
-
-    return longestIncreasingSubsequence;
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
 }
 
-// Example usage
-let arr = [3, 10, 2, 1, 20];
-console.log(findLongestIncreasingSubsequence(arr)); // Output: [3, 10, 20]
+function reverseLinkedList(head) {
+  let prev = null;
+  let current = head;
+  let next = null;
+
+  while (current !== null) {
+    next = current.next;
+    current.next = prev;
+    prev = current;
+    current = next;
+  }
+
+  return prev;
+}
+
+// Example: Create a linked list and reverse it
+let head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+
+console.log("Original linked list:");
+let current = head;
+while (current !== null) {
+  console.log(current.data);
+  current = current.next;
+}
+
+head = reverseLinkedList(head);
+
+console.log("Reversed linked list:");
+current = head;
+while (current !== null) {
+  console.log(current.data);
+  current = current.next;
+}
