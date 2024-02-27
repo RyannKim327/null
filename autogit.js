@@ -1,8 +1,4 @@
-let str = "42";
-let num = parseInt(str);
+let str = "Hello World!";
+let lowerCaseStr = str.toLowerCase();
 
-console.log(num); // 42
-let binaryStr = "1010";
-let num = parseInt(binaryStr, 2);
-
-console.log(num); // 10
+console.log(lowerCaseStr);  // Output: "hello world!"
