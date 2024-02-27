@@ -1,15 +1,44 @@
-function isPalindrome(str) {
-    // Remove non-alphanumeric characters and convert to lowercase
-    str = str.replace(/[\W_]/g, '').toLowerCase();
-    
-    // Reverse the string
-    const reversedStr = str.split('').reverse().join('');
-    
-    // Compare the original string with the reversed string
-    return str === reversedStr;
+class Node {
+  constructor(state, parent, cost, heuristic) {
+    this.state = state;
+    this.parent = parent;
+    this.cost = cost;
+    this.heuristic = heuristic;
+  }
+
+  get totalCost() {
+    return this.cost + this.heuristic;
+  }
 }
 
-// Test the function with some examples
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // Output: true
-console.log(isPalindrome("race car")); // Output: true
-console.log(isPalindrome("hello world")); // Output: false
+function beamSearch(initialState, beamWidth, goalTest, heuristicFunction, successorsFunction) {
+  let frontier = [new Node(initialState, null, 0, heuristicFunction(initialState))];
+  let nextFrontier = [];
+
+  while (frontier.length > 0) {
+    for (let node of frontier) {
+      if (goalTest(node.state)) {
+        // We've found a goal state, so we can reconstruct the path from the initial state
+        let path = [];
+        let currentNode = node;
+        while (currentNode !== null) {
+          path.unshift(currentNode.state);
+          currentNode = currentNode.parent;
+        }
+        return path;
+      }
+
+      let successors = successorsFunction(node.state);
+      for (let successor of successors) {
+        let newNode = new Node(successor.state, node, node.cost + successor.cost, heuristicFunction(successor.state));
+        nextFrontier.push(newNode);
+      }
+    }
+
+    nextFrontier.sort((a, b) => a.totalCost - b.totalCost);
+    frontier = nextFrontier.slice(0, beamWidth);
+    nextFrontier = [];
+  }
+
+  return null; // No path found
+}
