@@ -1,13 +1,19 @@
-function isPalindrome(str) {
-    // Remove non-alphanumeric characters from the string and convert it to lowercase
-    const cleanedStr = str.toLowerCase().replace(/[\W_]/g, '');
+function largestPrimeFactor(number) {
+    let factors = [];
+    let i = 2;
     
-    // Compare the cleaned string to its reverse
-    return cleanedStr === cleanedStr.split('').reverse().join('');
+    while (i <= number) {
+        if (number % i === 0) {
+            factors.push(i);
+            number /= i;
+        } else {
+            i++;
+        }
+    }
+    
+    return factors[factors.length - 1];
 }
 
-// Test the function
-const testStr1 = "A man, a plan, a canal, Panama!";
-const testStr2 = "Hello, World!";
-console.log(isPalindrome(testStr1)); // Output: true
-console.log(isPalindrome(testStr2)); // Output: false
+const number = 13195;
+const largestPrime = largestPrimeFactor(number);
+console.log(`The largest prime factor of ${number} is ${largestPrime}`);
