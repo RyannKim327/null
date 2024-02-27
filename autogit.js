@@ -1,4 +1,21 @@
-let str = "42";
-let num = parseInt(str);
+async function connectToAsyncTask() {
+    try {
+        const response = await fetch('https://yourandroidapp.com/async-task', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to connect to async task');
+        }
+        
+        const data = await response.json();
+        console.log(data);
+    } catch (error) {
+        console.error('Error connecting to async task:', error);
+    }
+}
 
-console.log(num);  // Output: 42
+connectToAsyncTask();
