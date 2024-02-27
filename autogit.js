@@ -1,26 +1,64 @@
-function factorial(n) {
-    if (n === 0) {
-        return 1;
-    }
-    
-    return n * factorial(n - 1);
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
 }
 
-// Calculate the factorial of a number
-const number = 5;
-const result = factorial(number);
-console.log(`The factorial of ${number} is: ${result}`);
-function factorial(n) {
-    let result = 1;
-    
-    for (let i = 1; i <= n; i++) {
-        result *= i;
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+
+  append(data) {
+    const newNode = new Node(data);
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
     }
-    
-    return result;
+  }
+
+  reverse() {
+    let prev = null;
+    let current = this.head;
+    let next = null;
+
+    while (current) {
+      next = current.next;
+      current.next = prev;
+      prev = current;
+      current = next;
+    }
+
+    this.head = prev;
+  }
+
+  printList() {
+    let current = this.head;
+    while (current) {
+      console.log(current.data);
+      current = current.next;
+    }
+  }
 }
 
-// Calculate the factorial of a number
-const number = 5;
-const result = factorial(number);
-console.log(`The factorial of ${number} is: ${result}`);
+// Create a linked list
+const linkedList = new LinkedList();
+linkedList.append(1);
+linkedList.append(2);
+linkedList.append(3);
+linkedList.append(4);
+
+console.log("Original linked list:");
+linkedList.printList();
+
+// Reverse the linked list
+linkedList.reverse();
+
+console.log("Reversed linked list:");
+linkedList.printList();
