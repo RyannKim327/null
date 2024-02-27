@@ -1,40 +1,27 @@
-function depthLimitedSearch(node, depthLimit) {
-    return recursiveDLS(node, depthLimit, 0);
-}
+function firstNonRepeatingChar(str) {
+    // Create a map to store the frequency of each character
+    const charCount = new Map();
 
-function recursiveDLS(node, depthLimit, depth) {
-    if (depth === depthLimit) {
-        return null;
-    }
-
-    if (nodeIsGoal(node)) {
-        return node;
-    }
-
-    for (let childNode of expand(node)) {
-        let result = recursiveDLS(childNode, depthLimit, depth + 1);
-        if (result !== null) {
-            return result;
+    // Iterate through the characters in the string and count their frequencies
+    for (let char of str) {
+        if (charCount.has(char)) {
+            charCount.set(char, charCount.get(char) + 1);
+        } else {
+            charCount.set(char, 1);
         }
     }
 
-    return null;
-}
+    // Find the first non-repeating character
+    for (let char of str) {
+        if (charCount.get(char) === 1) {
+            return char;
+        }
+    }
 
-// Helper functions
-function nodeIsGoal(node) {
-    // Check if the node is the goal state
-    return node === goalState;
-}
-
-function expand(node) {
-    // Expand the current node and return the child nodes
-    // Implement your expand logic here
+    return null; // return null if there is no non-repeating character
 }
 
 // Example usage
-let initialState = "A";
-let goalState = "C";
-
-let result = depthLimitedSearch(initialState, 3);
-console.log(result);
+const str = "abacabad";
+const firstNonRepeating = firstNonRepeatingChar(str);
+console.log("First non-repeating character:", firstNonRepeating);
