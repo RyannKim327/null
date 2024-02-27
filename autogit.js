@@ -1,24 +1,30 @@
-function selectionSort(arr) {
-    var minIndex, temp;
-    var n = arr.length;
-    
-    for (var i = 0; i < n - 1; i++) {
-        minIndex = i;
-        for (var j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j;
+function longestCommonSubstring(str1, str2) {
+    const dp = Array.from({ length: str1.length + 1 }, () => Array.from({ length: str2.length + 1 }, () => 0));
+    let maxLength = 0;
+    let endIndex = 0;
+
+    for (let i = 1; i <= str1.length; i++) {
+        for (let j = 1; j <= str2.length; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > maxLength) {
+                    maxLength = dp[i][j];
+                    endIndex = i - 1;
+                }
+            } else {
+                dp[i][j] = 0;
             }
         }
-        
-        temp = arr[i];
-        arr[i] = arr[minIndex];
-        arr[minIndex] = temp;
     }
-    
-    return arr;
+
+    if (maxLength === 0) {
+        return "";
+    }
+
+    return str1.slice(endIndex - maxLength + 1, endIndex + 1);
 }
 
 // Example usage
-var arr = [64, 34, 25, 12, 22, 11, 90];
-console.log("Original array: " + arr);
-console.log("Sorted array: " + selectionSort(arr));
+const str1 = "abcdxyz";
+const str2 = "xyzabcd";
+console.log(longestCommonSubstring(str1, str2)); // Output: "abcd"
