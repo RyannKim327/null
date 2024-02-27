@@ -1,55 +1,50 @@
-function buildLPSArray(pattern) {
-    const lps = [0];
-    let len = 0;
-    let i = 1;
+function breadthFirstSearch(graph, startNode, targetNode) {
+    // Keep track of visited nodes and the queue of nodes to visit
+    let visited = {};
+    let queue = [startNode];
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
+    // Mark the start node as visited
+    visited[startNode] = true;
+
+    // Continue searching until the queue is empty
+    while (queue.length > 0) {
+        let currentNode = queue.shift(); // Get the next node to visit
+
+        // If the current node is the target node, we are done
+        if (currentNode === targetNode) {
+            return true;
+        }
+
+        // Visit all neighboring nodes that have not been visited yet
+        let neighbors = graph[currentNode];
+        for (let i = 0; i < neighbors.length; i++) {
+            let neighbor = neighbors[i];
+            if (!visited[neighbor]) {
+                visited[neighbor] = true;
+                queue.push(neighbor);
             }
         }
     }
 
-    return lps;
+    // If we reach here, the target node is not reachable from the start node
+    return false;
 }
 
-function kmpSearch(text, pattern) {
-    const lps = buildLPSArray(pattern);
-    let i = 0;
-    let j = 0;
-    const indices = [];
+// Example graph represented as an adjacency list
+let graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+};
 
-    while (i < text.length) {
-        if (text[i] === pattern[j]) {
-            i++;
-            j++;
-        }
+let startNode = 'A';
+let targetNode = 'F';
 
-        if (j === pattern.length) {
-            indices.push(i - j);
-            j = lps[j - 1];
-        } else if (i < text.length && text[i] !== pattern[j]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
-    }
-
-    return indices;
+if (breadthFirstSearch(graph, startNode, targetNode)) {
+    console.log(`Path exists between ${startNode} and ${targetNode}`);
+} else {
+    console.log(`No path exists between ${startNode} and ${targetNode}`);
 }
-
-// Example usage:
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const result = kmpSearch(text, pattern);
-console.log(result); // Output: [10]
