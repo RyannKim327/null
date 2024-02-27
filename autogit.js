@@ -1,27 +1,43 @@
 class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-function maxDepth(root) {
-    if (!root) {
-        return 0;
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+
+  addNode(value) {
+    if (!this.head) {
+      this.head = new Node(value);
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = new Node(value);
     }
+  }
 
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
-
-    return 1 + Math.max(leftDepth, rightDepth);
+  getLength() {
+    let current = this.head;
+    let length = 0;
+    while (current) {
+      length++;
+      current = current.next;
+    }
+    return length;
+  }
 }
 
-// Example binary tree
-const rootNode = new Node(1);
-rootNode.left = new Node(2);
-rootNode.right = new Node(3);
-rootNode.left.left = new Node(4);
-rootNode.left.right = new Node(5);
+// Example usage
+const linkedList = new LinkedList();
+linkedList.addNode(1);
+linkedList.addNode(2);
+linkedList.addNode(3);
+linkedList.addNode(4);
 
-console.log("Maximum depth of the binary tree is: ", maxDepth(rootNode));
+console.log(linkedList.getLength()); // Output: 4
