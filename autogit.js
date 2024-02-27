@@ -1,10 +1,24 @@
-const axios = require('axios');
+function quickSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
+    } else {
+        const pivot = arr[0];
+        const left = [];
+        const right = [];
+        
+        for (let i = 1; i < arr.length; i++) {
+            if (arr[i] < pivot) {
+                left.push(arr[i]);
+            } else {
+                right.push(arr[i]);
+            }
+        }
+        
+        return quickSort(left).concat(pivot, quickSort(right));
+    }
+}
 
-// Make a GET request to a random API
-axios.get('https://jsonplaceholder.typicode.com/posts/1')
-  .then(response => {
-    console.log('Response:', response.data);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+// Example usage:
+const arr = [5, 3, 8, 1, 2, 7, 4];
+const sortedArr = quickSort(arr);
+console.log(sortedArr);
