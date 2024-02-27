@@ -1,18 +1,25 @@
-function findMedianSortedArrays(arr1, arr2) {
-    const mergedArray = [...arr1, ...arr2].sort((a, b) => a - b);
-    const totalLength = mergedArray.length;
-    
-    if (totalLength % 2 === 0) {
-        const mid = totalLength / 2;
-        return (mergedArray[mid - 1] + mergedArray[mid]) / 2;
-    } else {
-        const mid = Math.floor(totalLength / 2);
-        return mergedArray[mid];
+function firstNonRepeatingChar(str) {
+  let charCount = {};
+  
+  // Count occurrences of each character
+  for (let i = 0; i < str.length; i++) {
+    let char = str[i];
+    charCount[char] = (charCount[char] || 0) + 1;
+  }
+  
+  // Find the first non-repeating character
+  for (let i = 0; i < str.length; i++) {
+    let char = str[i];
+    if (charCount[char] === 1) {
+      return char;
     }
+  }
+  
+  return null; // If no non-repeating character found
 }
 
-// Example arrays
-const arr1 = [1, 3, 5];
-const arr2 = [2, 4, 6];
+// Test the function
+let str = "hello world";
+let result = firstNonRepeatingChar(str);
 
-console.log(findMedianSortedArrays(arr1, arr2)); // Output: 3.5
+console.log("First non-repeating character:", result);
