@@ -1,25 +1,15 @@
-function selectionSort(arr) {
-    const n = arr.length;
+function isPalindrome(str) {
+    // Remove non-alphanumeric characters and convert to lowercase
+    str = str.replace(/[\W_]/g, '').toLowerCase();
     
-    for (let i = 0; i < n - 1; i++) {
-        let minIndex = i;
-        
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j;
-            }
-        }
-
-        if (minIndex !== i) {
-            const temp = arr[i];
-            arr[i] = arr[minIndex];
-            arr[minIndex] = temp;
-        }
-    }
-
-    return arr;
+    // Reverse the string
+    const reversedStr = str.split('').reverse().join('');
+    
+    // Compare the original string with the reversed string
+    return str === reversedStr;
 }
 
-const arr = [64, 25, 12, 22, 11];
-console.log("Original array: " + JSON.stringify(arr));
-console.log("Sorted array: " + JSON.stringify(selectionSort(arr)));
+// Test the function with some examples
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // Output: true
+console.log(isPalindrome("race car")); // Output: true
+console.log(isPalindrome("hello world")); // Output: false
