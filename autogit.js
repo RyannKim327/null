@@ -1,26 +1,43 @@
-function binarySearchRecursive(arr, target, start = 0, end = arr.length - 1) {
-    if (start > end) {
-        return -1; // Base case: target not found
+function createBadCharacterTable(pattern) {
+    const table = new Array(256).fill(pattern.length);
+
+    for (let i = 0; i < pattern.length - 1; i++) {
+        table[pattern.charCodeAt(i)] = pattern.length - 1 - i;
     }
-    
-    const mid = Math.floor((start + end) / 2);
-    
-    if (arr[mid] === target) {
-        return mid; // Base case: target found
-    } else if (arr[mid] < target) {
-        return binarySearchRecursive(arr, target, mid + 1, end); // Search in the right half
-    } else {
-        return binarySearchRecursive(arr, target, start, mid - 1); // Search in the left half
+
+    return table;
+}
+
+function boyerMooreHorspoolSearch(text, pattern) {
+    const badCharacterTable = createBadCharacterTable(pattern);
+    const n = text.length;
+    const m = pattern.length;
+    let i = m - 1;
+
+    while (i < n) {
+        let k = 0;
+
+        while (k < m && pattern[m - 1 - k] === text[i - k]) {
+            k++;
+        }
+
+        if (k === m) {
+            return i - m + 1; // Match found
+        } else {
+            i += badCharacterTable[text.charCodeAt(i)];
+        }
     }
+
+    return -1; // Match not found
 }
 
 // Example usage
-const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const target = 5;
-const index = binarySearchRecursive(arr, target);
+const text = "The quick brown fox jumps over the lazy dog";
+const pattern = "brown";
+const index = boyerMooreHorspoolSearch(text, pattern);
 
 if (index !== -1) {
-    console.log(`Target ${target} found at index ${index}`);
+    console.log("Pattern found at index: " + index);
 } else {
-    console.log(`Target ${target} not found in the array`);
+    console.log("Pattern not found");
 }
