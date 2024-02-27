@@ -1,65 +1,41 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+function isAnagram(str1, str2) {
+    // Remove any non-alphanumeric characters and convert to lowercase
+    str1 = str1.replace(/[^\w]/g, '').toLowerCase();
+    str2 = str2.replace(/[^\w]/g, '').toLowerCase();
+
+    // Check if the lengths of the strings are equal
+    if (str1.length !== str2.length) {
+        return false;
+    }
+
+    // Create character frequency maps for both strings
+    const charMap1 = createCharMap(str1);
+    const charMap2 = createCharMap(str2);
+
+    // Compare the character maps
+    for (let char in charMap1) {
+        if (charMap1[char] !== charMap2[char]) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+function createCharMap(str) {
+    const charMap = {};
 
-  // Function to add a new node to the linked list
-  addNode(value) {
-    const newNode = new Node(value);
-    if (this.head === null) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next !== null) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
-
-  // Function to reverse the linked list
-  reverse() {
-    let previous = null;
-    let current = this.head;
-    let next = null;
-
-    while (current !== null) {
-      next = current.next;
-      current.next = previous;
-      previous = current;
-      current = next;
+    for (let char of str) {
+        if (charMap.hasOwnProperty(char)) {
+            charMap[char]++;
+        } else {
+            charMap[char] = 1;
+        }
     }
 
-    this.head = previous;
-  }
-
-  // Function to print the linked list
-  printList() {
-    let current = this.head;
-    while (current !== null) {
-      console.log(current.value);
-      current = current.next;
-    }
-  }
+    return charMap;
 }
 
-// Usage
-const list = new LinkedList();
-list.addNode(1);
-list.addNode(2);
-list.addNode(3);
-
-console.log("Original Linked List:");
-list.printList();
-
-list.reverse();
-
-console.log("\nReversed Linked List:");
-list.printList();
+// Test the function
+console.log(isAnagram("listen", "silent")); // true
+console.log(isAnagram("hello", "world"));   // false
