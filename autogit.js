@@ -1,52 +1,47 @@
-class Stack {
-  constructor() {
-    this.items = [];
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.children = [];
   }
 
-  // Push element to the top of the stack
-  push(element) {
-    this.items.push(element);
-  }
-
-  // Pop element from the top of the stack
-  pop() {
-    if (this.isEmpty()) {
-      return "Underflow";
-    }
-    return this.items.pop();
-  }
-
-  // Peek the top element of the stack
-  peek() {
-    return this.items[this.items.length - 1];
-  }
-
-  // Check if the stack is empty
-  isEmpty() {
-    return this.items.length === 0;
-  }
-
-  // Print the elements of the stack
-  printStack() {
-    let str = "";
-    for (let i = 0; i < this.items.length; i++) {
-      str += this.items[i] + " ";
-    }
-    return str;
+  addChild(child) {
+    this.children.push(child);
   }
 }
 
-// Example usage
-let stack = new Stack();
-console.log(stack.isEmpty()); // true
+function depthLimitedSearch(root, limit) {
+  if (!root) {
+    return null;
+  }
 
-stack.push(1);
-stack.push(2);
-stack.push(3);
+  let stack = [];
+  stack.push({ node: root, depth: 0 });
 
-console.log(stack.printStack()); // 1 2 3
+  while (stack.length > 0) {
+    let { node, depth } = stack.pop();
 
-console.log(stack.peek()); // 3
+    if (depth <= limit) {
+      console.log(node.value);
 
-console.log(stack.pop()); // 3
-console.log(stack.printStack()); // 1 2
+      for (let child of node.children) {
+        stack.push({ node: child, depth: depth + 1 });
+      }
+    }
+  }
+
+  return null;
+}
+
+// Usage
+let root = new Node(1);
+let node2 = new Node(2);
+let node3 = new Node(3);
+let node4 = new Node(4);
+
+root.addChild(node2);
+root.addChild(node3);
+node2.addChild(new Node(5));
+node2.addChild(new Node(6));
+node3.addChild(node4);
+
+depthLimitedSearch(root, 2);
