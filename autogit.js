@@ -1,14 +1,34 @@
-npm install suffix-tree
-const SuffixTree = require('suffix-tree');
-const inputString = 'banana';
-const suffixTree = new SuffixTree(inputString);
-suffixTree.build();
-// Find all occurrences of a pattern in the input string
-const pattern = 'ana';
-const occurrences = suffixTree.findIndicesOfPattern(pattern);
-console.log(occurrences); // Output: [1, 3]
+function topologicalSort(graph) {
+    const visited = {};
+    const stack = [];
+  
+    function visit(node) {
+        if (visited[node]) return;
+        visited[node] = true;
+  
+        for (let neighbor of graph[node]) {
+            visit(neighbor);
+        }
+  
+        stack.push(node);
+    }
+  
+    for (let node in graph) {
+        visit(node);
+    }
+  
+    return stack.reverse();
+}
 
-// Find the longest common substring between two strings
-const otherString = 'ananas';
-const longestCommonSubstring = suffixTree.longestCommonSubstring(otherString);
-console.log(longestCommonSubstring); // Output: 'ana'
+// Example usage:
+const graph = {
+    'A': ['C'],
+    'B': ['C', 'D'],
+    'C': ['E'],
+    'D': ['F'],
+    'E': [],
+    'F': []
+};
+
+const result = topologicalSort(graph);
+console.log(result);
