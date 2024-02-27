@@ -1,105 +1,37 @@
-class Node {
-  constructor(value, level) {
-    this.value = value;
-    this.forward = new Array(level + 1).fill(null);
-  }
+function Node(data) {
+    this.data = data;
+    this.children = [];
 }
 
-class SkipList {
-  constructor(maxLevel, probability) {
-    this.maxLevel = maxLevel;
-    this.probability = probability;
-    this.header = new Node(-Infinity, maxLevel);
-    this.level = 0;
-  }
-
-  randomLevel() {
-    let level = 0;
-    while (Math.random() < this.probability && level < this.maxLevel) {
-      level++;
-    }
-    return level;
-  }
-
-  insert(value) {
-    const update = new Array(this.maxLevel + 1).fill(null);
-    let current = this.header;
-
-    for (let i = this.level; i >= 0; i--) {
-      while (current.forward[i] !== null && current.forward[i].value < value) {
-        current = current.forward[i];
-      }
-      update[i] = current;
+function breadthLimitedSearch(root, limit) {
+    if (!root) {
+        return null;
     }
 
-    current = current.forward[0];
+    let queue = [[root, 0]];
 
-    const newLevel = this.randomLevel();
-    if (newLevel > this.level) {
-      for (let i = this.level + 1; i <= newLevel; i++) {
-        update[i] = this.header;
-      }
-      this.level = newLevel;
-    }
+    while (queue.length > 0) {
+        let [node, depth] = queue.shift();
 
-    const newNode = new Node(value, newLevel);
-    for (let i = 0; i <= newLevel; i++) {
-      newNode.forward[i] = update[i].forward[i];
-      update[i].forward[i] = newNode;
-    }
-  }
+        if (depth <= limit) {
+            console.log(node.data);
 
-  search(value) {
-    let current = this.header;
-
-    for (let i = this.level; i >= 0; i--) {
-      while (current.forward[i] !== null && current.forward[i].value < value) {
-        current = current.forward[i];
-      }
-    }
-
-    current = current.forward[0];
-
-    if (current !== null && current.value === value) {
-      return current;
-    } else {
-      return null;
-    }
-  }
-
-  delete(value) {
-    const update = new Array(this.maxLevel + 1).fill(null);
-    let current = this.header;
-
-    for (let i = this.level; i >= 0; i--) {
-      while (current.forward[i] !== null && current.forward[i].value < value) {
-        current = current.forward[i];
-      }
-      update[i] = current;
-    }
-
-    current = current.forward[0];
-
-    if (current !== null && current.value === value) {
-      for (let i = 0; i <= this.level; i++) {
-        if (update[i].forward[i] !== current) {
-          break;
+            for (let child of node.children) {
+                queue.push([child, depth + 1]);
+            }
         }
-        update[i].forward[i] = current.forward[i];
-      }
-
-      while (this.level > 0 && this.header.forward[this.level] === null) {
-        this.level--;
-      }
     }
-  }
 }
 
-// Usage example
-const skipList = new SkipList(4, 0.5);
-skipList.insert(1);
-skipList.insert(3);
-skipList.insert(5);
-console.log(skipList.search(3)); // Node { value: 3, forward: [ [Node], null, null, null, null ] }
-skipList.delete(3);
-console.log(skipList.search(3)); // null
+// Example usage
+let root = new Node(1);
+let node2 = new Node(2);
+let node3 = new Node(3);
+let node4 = new Node(4);
+let node5 = new Node(5);
+
+root.children.push(node2, node3);
+node2.children.push(node4);
+node3.children.push(node5);
+
+breadthLimitedSearch(root, 2);
