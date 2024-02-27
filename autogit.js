@@ -1,6 +1,5 @@
-let arr = [1, 2, 3, 4, 5];
-arr.reverse();
-console.log(arr); // Output: [5, 4, 3, 2, 1]
-let arr = [1, 2, 3, 4, 5];
-let reversedArr = arr.slice().reverse();
-console.log(reversedArr); // Output: [5, 4, 3, 2, 1]
+const cron = require('node-cron');
+
+cron.schedule('* * * * *', () => {
+  console.log('Running a task every minute!');
+});
