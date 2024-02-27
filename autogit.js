@@ -1,61 +1,60 @@
-class TarjansAlgorithm {
-  constructor(graph) {
-    this.graph = graph;
-    this.index = 0;
-    this.stack = [];
-    this.lowLinks = {};
-    this.indexes = {};
-    this.stronglyConnectedComponents = [];
-  }
+function kmpSearch(text, pattern) {
+    const m = pattern.length;
+    const n = text.length;
+    const lps = computeLPSArray(pattern);
+    
+    let i = 0;
+    let j = 0;
+    const indices = [];
 
-  findStronglyConnectedComponents() {
-    for(let node of Object.keys(this.graph)) {
-      if(!this.indexes[node]) {
-        this.strongConnect(node);
-      }
-    }
-    return this.stronglyConnectedComponents;
-  }
+    while (i < n) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
 
-  strongConnect(node) {
-    this.indexes[node] = this.index;
-    this.lowLinks[node] = this.index;
-    this.index++;
-    this.stack.push(node);
-
-    for(let neighbor of this.graph[node]) {
-      if(!this.indexes[neighbor]) {
-        this.strongConnect(neighbor);
-        this.lowLinks[node] = Math.min(this.lowLinks[node], this.lowLinks[neighbor]);
-      } else if(this.stack.includes(neighbor)) {
-        this.lowLinks[node] = Math.min(this.lowLinks[node], this.indexes[neighbor]);
-      }
+        if (j === m) {
+            indices.push(i - j);
+            j = lps[j - 1];
+        } else if (i < n && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
     }
 
-    if(this.lowLinks[node] === this.indexes[node]) {
-      let component = [];
-      let poppedNode;
-      do {
-        poppedNode = this.stack.pop();
-        component.push(poppedNode);
-      } while(poppedNode !== node);
-      this.stronglyConnectedComponents.push(component);
-    }
-  }
+    return indices;
 }
 
-// Example usage:
-const graph = {
-  1: [2],
-  2: [3, 4],
-  3: [1],
-  4: [5],
-  5: [6],
-  6: [4, 7],
-  7: [6, 8],
-  8: [5, 7]
-};
+function computeLPSArray(pattern) {
+    const m = pattern.length;
+    const lps = new Array(m).fill(0);
 
-const tarjan = new TarjansAlgorithm(graph);
-const stronglyConnectedComponents = tarjan.findStronglyConnectedComponents();
-console.log(stronglyConnectedComponents);
+    let len = 0;
+    let i = 1;
+
+    while (i < m) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+
+    return lps;
+}
+
+// Example usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const indices = kmpSearch(text, pattern);
+console.log(indices); // Output: [10]
