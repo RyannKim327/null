@@ -1,4 +1,26 @@
-let str = "Hello World!";
-let lowerCaseStr = str.toLowerCase();
+function factorial(n) {
+    if (n === 0) {
+        return 1;
+    }
+    
+    return n * factorial(n - 1);
+}
 
-console.log(lowerCaseStr);  // Output: "hello world!"
+// Calculate the factorial of a number
+const number = 5;
+const result = factorial(number);
+console.log(`The factorial of ${number} is: ${result}`);
+function factorial(n) {
+    let result = 1;
+    
+    for (let i = 1; i <= n; i++) {
+        result *= i;
+    }
+    
+    return result;
+}
+
+// Calculate the factorial of a number
+const number = 5;
+const result = factorial(number);
+console.log(`The factorial of ${number} is: ${result}`);
