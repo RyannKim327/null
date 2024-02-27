@@ -1,29 +1,7 @@
-function isPrime(num) {
-    if (num <= 1) {
-        return false;
-    }
-    
-    if (num === 2) {
-        return true;
-    }
+const { CronJob } = require('cron');
 
-    if (num % 2 === 0) {
-        return false;
-    }
+const job = new CronJob('* * * * *', function() {
+  console.log('This function will be executed every minute.');
+});
 
-    for (let i = 3; i <= Math.sqrt(num); i += 2) {
-        if (num % i === 0) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-// Test the function
-const number = 17;
-if (isPrime(number)) {
-    console.log(`${number} is a prime number`);
-} else {
-    console.log(`${number} is not a prime number`);
-}
+job.start();
