@@ -1,93 +1,34 @@
-class PriorityQueue {
-  constructor() {
-    this.heap = [];
-  }
+function longestCommonSubstring(str1, str2) {
+    const m = str1.length;
+    const n = str2.length;
 
-  enqueue(item, priority) {
-    const element = { item, priority };
-    this.heap.push(element);
-    this.bubbleUp();
-  }
+    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+    let maxLength = 0;
+    let endIndex = 0;
 
-  dequeue() {
-    if (this.heap.length === 0) {
-      return null;
-    }
-    const min = this.heap[0];
-    const end = this.heap.pop();
-    if (this.heap.length > 0) {
-      this.heap[0] = end;
-      this.sinkDown();
-    }
-    return min.item;
-  }
-
-  bubbleUp() {
-    let index = this.heap.length - 1;
-    const element = this.heap[index];
-    while (index > 0) {
-      let parentIndex = Math.floor((index - 1) / 2);
-      let parent = this.heap[parentIndex];
-      if (element.priority >= parent.priority) break;
-      this.heap[parentIndex] = element;
-      this.heap[index] = parent;
-      index = parentIndex;
-    }
-  }
-
-  sinkDown() {
-    let index = 0;
-    const length = this.heap.length;
-    const element = this.heap[0];
-    while (true) {
-      let leftChildIndex = 2 * index + 1;
-      let rightChildIndex = 2 * index + 2;
-      let leftChild, rightChild;
-      let swap = null;
-      if (leftChildIndex < length) {
-        leftChild = this.heap[leftChildIndex];
-        if (leftChild.priority < element.priority) {
-          swap = leftChildIndex;
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > maxLength) {
+                    maxLength = dp[i][j];
+                    endIndex = i - 1;
+                }
+            } else {
+                dp[i][j] = 0;
+            }
         }
-      }
-      if (rightChildIndex < length) {
-        rightChild = this.heap[rightChildIndex];
-        if (
-          (swap === null && rightChild.priority < element.priority) ||
-          (swap !== null && rightChild.priority < leftChild.priority)
-        ) {
-          swap = rightChildIndex;
-        }
-      }
-      if (swap === null) break;
-      this.heap[index] = this.heap[swap];
-      this.heap[swap] = element;
-      index = swap;
     }
-  }
 
-  peek() {
-    if (this.heap.length === 0) {
-      return null;
+    if (maxLength === 0) {
+        return '';
     }
-    return this.heap[0].item;
-  }
 
-  size() {
-    return this.heap.length;
-  }
-
-  isEmpty() {
-    return this.heap.length === 0;
-  }
+    return str1.substr(endIndex - maxLength + 1, maxLength);
 }
 
-// Example usage:
-const pq = new PriorityQueue();
-pq.enqueue("Task 1", 3);
-pq.enqueue("Task 2", 1);
-pq.enqueue("Task 3", 2);
-
-console.log(pq.dequeue()); // Output: Task 2
-console.log(pq.dequeue()); // Output: Task 3
-console.log(pq.dequeue()); // Output: Task 1
+// Example usage
+const str1 = 'abcdef';
+const str2 = 'zabcde';
+const result = longestCommonSubstring(str1, str2);
+console.log(result); // Output: 'abcde'
