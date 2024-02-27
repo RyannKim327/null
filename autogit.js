@@ -1,37 +1,21 @@
-function Node(data) {
-    this.data = data;
-    this.children = [];
+function areAnagrams(str1, str2) {
+    // Remove non-alphabetic characters and convert to lowercase
+    str1 = str1.replace(/[^a-zA-Z]/g, "").toLowerCase();
+    str2 = str2.replace(/[^a-zA-Z]/g, "").toLowerCase();
+
+    // Sort the characters of both strings
+    const sortedStr1 = str1.split("").sort().join("");
+    const sortedStr2 = str2.split("").sort().join("");
+
+    // Compare the sorted strings
+    return sortedStr1 === sortedStr2;
 }
 
-function breadthLimitedSearch(root, limit) {
-    if (!root) {
-        return null;
-    }
-
-    let queue = [[root, 0]];
-
-    while (queue.length > 0) {
-        let [node, depth] = queue.shift();
-
-        if (depth <= limit) {
-            console.log(node.data);
-
-            for (let child of node.children) {
-                queue.push([child, depth + 1]);
-            }
-        }
-    }
+// Test the function
+const string1 = "listen";
+const string2 = "silent";
+if (areAnagrams(string1, string2)) {
+    console.log(`${string1} and ${string2} are anagrams.`);
+} else {
+    console.log(`${string1} and ${string2} are not anagrams.`);
 }
-
-// Example usage
-let root = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-let node4 = new Node(4);
-let node5 = new Node(5);
-
-root.children.push(node2, node3);
-node2.children.push(node4);
-node3.children.push(node5);
-
-breadthLimitedSearch(root, 2);
