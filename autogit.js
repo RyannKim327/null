@@ -1,16 +1,44 @@
-// API endpoint to fetch random data
-const apiUrl = 'https://jsonplaceholder.typicode.com/posts';
-
-// Function to fetch data from the API
-async function fetchData() {
-  try {
-    const response = await fetch(apiUrl);
-    const data = await response.json();
-    console.log(data);
-  } catch (error) {
-    console.error('Error fetching data:', error);
+class Graph {
+  constructor() {
+    this.adjList = {};
+  }
+  
+  addVertex(vertex) {
+    if (!this.adjList[vertex]) {
+      this.adjList[vertex] = [];
+    }
+  }
+  
+  addEdge(src, dest) {
+    this.adjList[src].push(dest);
+    this.adjList[dest].push(src); // For undirected graph
+  }
+  
+  depthFirstSearch(startVertex) {
+    const visited = {};
+    
+    const dfs = (vertex) => {
+      visited[vertex] = true;
+      console.log(vertex);
+      
+      this.adjList[vertex].forEach(neighbor => {
+        if (!visited[neighbor]) {
+          dfs(neighbor);
+        }
+      });
+    };
+    
+    dfs(startVertex);
   }
 }
 
-// Call the fetchData function to retrieve data from the API
-fetchData();
+// Example usage
+const graph = new Graph();
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.depthFirstSearch('A');
