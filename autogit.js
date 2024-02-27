@@ -1,12 +1,4 @@
-function validateEmail(email) {
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailPattern.test(email);
-}
+let str = "42";
+let num = parseInt(str);
 
-// Example usage
-const email = "example@example.com";
-if (validateEmail(email)) {
-    console.log("Email is valid.");
-} else {
-    console.log("Email is invalid.");
-}
+console.log(num); // Output: 42
