@@ -1,20 +1,22 @@
-function insertionSort(arr) {
-  for (let i = 1; i < arr.length; i++) {
-    let key = arr[i];
-    let j = i - 1;
+function isAnagram(str1, str2) {
+    // Remove non-alphabetic characters and convert to lowercase
+    str1 = str1.replace(/[^a-z]/g, '').toLowerCase();
+    str2 = str2.replace(/[^a-z]/g, '').toLowerCase();
 
-    while (j >= 0 && arr[j] > key) {
-      arr[j + 1] = arr[j];
-      j = j - 1;
-    }
+    // Sort the characters of both strings
+    const sortedStr1 = str1.split('').sort().join('');
+    const sortedStr2 = str2.split('').sort().join('');
 
-    arr[j + 1] = key;
-  }
-
-  return arr;
+    // Compare the sorted strings
+    return sortedStr1 === sortedStr2;
 }
 
-// Example usage
-let array = [12, 11, 13, 5, 6];
-insertionSort(array);
-console.log(array);
+// Test the function
+const string1 = "listen";
+const string2 = "silent";
+
+if (isAnagram(string1, string2)) {
+    console.log(`${string1} and ${string2} are anagrams.`);
+} else {
+    console.log(`${string1} and ${string2} are not anagrams.`);
+}
