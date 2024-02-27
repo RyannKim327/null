@@ -1,6 +1,11 @@
-let str1 = "Hello";
-let str2 = "World";
+const axios = require('axios');
 
-let result = str1 + " " + str2;
+const url = 'https://jsonplaceholder.typicode.com/posts/1';
 
-console.log(result); // Output: Hello World
+axios.get(url)
+  .then(response => {
+    console.log(response.data);
+  })
+  .catch(error => {
+    console.error(error);
+  });
