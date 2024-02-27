@@ -1,27 +1,38 @@
-import android.os.AsyncTask;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-
-public class WebTask extends AsyncTask<Void, Void, Void> {
-
-    private WebView webView;
-
-    public WebTask(WebView webView) {
-        this.webView = webView;
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
     }
+}
 
-    @Override
-    protected Void doInBackground(Void... voids) {
-        // Connect to a website
-        webView.setWebViewClient(new WebViewClient());
-        webView.loadUrl("http://www.example.com");
-
+function getIntersectionNode(headA, headB) {
+    if (!headA || !headB) {
         return null;
     }
 
-    @Override
-    protected void onPostExecute(Void aVoid) {
-        // Run JavaScript function after the website is loaded
-        webView.evaluateJavascript("javascript: document.getElementById('elementId').innerHTML = 'Hello, World!';", null);
+    let nodesA = [];
+    let nodesB = [];
+
+    let currentA = headA;
+    while (currentA) {
+        nodesA.push(currentA);
+        currentA = currentA.next;
     }
+
+    let currentB = headB;
+    while (currentB) {
+        nodesB.push(currentB);
+        currentB = currentB.next;
+    }
+
+    let intersectionNode = null;
+    for (let i = nodesA.length - 1, j = nodesB.length - 1; i >= 0 && j >= 0; i--, j--) {
+        if (nodesA[i] === nodesB[j]) {
+            intersectionNode = nodesA[i];
+        } else {
+            break;
+        }
+    }
+
+    return intersectionNode;
 }
