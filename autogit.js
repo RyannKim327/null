@@ -1,30 +1,34 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+class ListNode {
+    constructor(val, next = null) {
+        this.val = val;
+        this.next = next;
     }
 }
 
-function countLeafNodes(root) {
-    if (root === null) {
-        return 0;
+const getIntersectionNode = (headA, headB) => {
+    const set = new Set();
+    
+    // Traverse the first linked list and store each node's value in a Set
+    let curr = headA;
+    while (curr !== null) {
+        set.add(curr);
+        curr = curr.next;
     }
     
-    if (root.left === null && root.right === null) {
-        return 1;
+    // Traverse the second linked list and check if the value exists in the Set
+    curr = headB;
+    while (curr !== null) {
+        if (set.has(curr)) {
+            return curr;
+        }
+        curr = curr.next;
     }
     
-    return countLeafNodes(root.left) + countLeafNodes(root.right);
-}
+    return null; // No intersection found
+};
 
-// Example binary tree
-let root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-// Count the number of leaf nodes in the tree
-const leafNodeCount = countLeafNodes(root);
-console.log("Number of leaf nodes:", leafNodeCount);
+// Example Usage
+const list1 = new ListNode(4, new ListNode(1, new ListNode(8, new ListNode(4, new ListNode(5))));
+const list2 = new ListNode(5, new ListNode(6, new ListNode(1, new ListNode(8, new ListNode(4, new ListNode(5))));
+const intersectionNode = getIntersectionNode(list1, list2);
+console.log(intersectionNode);
