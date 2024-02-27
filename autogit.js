@@ -1,27 +1,49 @@
-function firstNonRepeatingChar(str) {
-    // Create a map to store the frequency of each character
-    const charCount = new Map();
+function depthLimitedSearch(node, goal, depthLimit) {
+    if (node.state === goal) {
+        return node;
+    }
 
-    // Iterate through the characters in the string and count their frequencies
-    for (let char of str) {
-        if (charCount.has(char)) {
-            charCount.set(char, charCount.get(char) + 1);
-        } else {
-            charCount.set(char, 1);
+    if (depthLimit === 0) {
+        return null;
+    }
+
+    if (!node.children) {
+        return null;
+    }
+
+    for (let i = 0; i < node.children.length; i++) {
+        const result = depthLimitedSearch(node.children[i], goal, depthLimit - 1);
+        if (result) {
+            return result;
         }
     }
 
-    // Find the first non-repeating character
-    for (let char of str) {
-        if (charCount.get(char) === 1) {
-            return char;
-        }
-    }
-
-    return null; // return null if there is no non-repeating character
+    return null;
 }
 
 // Example usage
-const str = "abacabad";
-const firstNonRepeating = firstNonRepeatingChar(str);
-console.log("First non-repeating character:", firstNonRepeating);
+class Node {
+    constructor(state, children) {
+        this.state = state;
+        this.children = children;
+    }
+}
+
+const rootNode = new Node('A', [
+    new Node('B', [
+        new Node('D', []),
+        new Node('E', []),
+    ]),
+    new Node('C', [
+        new Node('F', []),
+        new Node('G', []),
+    ]),
+]);
+
+const goalNode = depthLimitedSearch(rootNode, 'G', 3);
+
+if (goalNode) {
+    console.log('Goal node found:', goalNode.state);
+} else {
+    console.log('Goal node not found within depth limit.');
+}
