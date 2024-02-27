@@ -1,49 +1,61 @@
-function depthLimitedSearch(node, goal, depthLimit) {
-    if (node.state === goal) {
-        return node;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.children = [];
+  }
+
+  addChild(node) {
+    this.children.push(node);
+  }
+}
+
+function biDirectionalSearch(startNode, endNode) {
+  let startQueue = [startNode];
+  let endQueue = [endNode];
+  let startVisited = new Set();
+  let endVisited = new Set();
+
+  startVisited.add(startNode);
+  endVisited.add(endNode);
+
+  while (startQueue.length > 0 && endQueue.length > 0) {
+    let startCurrent = startQueue.shift();
+    let endCurrent = endQueue.shift();
+
+    if (endVisited.has(startCurrent)) {
+      console.log("Path found!");
+      return;
     }
 
-    if (depthLimit === 0) {
-        return null;
+    if (startVisited.has(endCurrent)) {
+      console.log("Path found!");
+      return;
     }
 
-    if (!node.children) {
-        return null;
+    for (let child of startCurrent.children) {
+      if (!startVisited.has(child)) {
+        startVisited.add(child);
+        startQueue.push(child);
+      }
     }
 
-    for (let i = 0; i < node.children.length; i++) {
-        const result = depthLimitedSearch(node.children[i], goal, depthLimit - 1);
-        if (result) {
-            return result;
-        }
+    for (let child of endCurrent.children) {
+      if (!endVisited.has(child)) {
+        endVisited.add(child);
+        endQueue.push(child);
+      }
     }
+  }
 
-    return null;
+  console.log("Path not found!");
 }
 
 // Example usage
-class Node {
-    constructor(state, children) {
-        this.state = state;
-        this.children = children;
-    }
-}
+let node1 = new Node(1);
+let node2 = new Node(2);
+let node3 = new Node(3);
 
-const rootNode = new Node('A', [
-    new Node('B', [
-        new Node('D', []),
-        new Node('E', []),
-    ]),
-    new Node('C', [
-        new Node('F', []),
-        new Node('G', []),
-    ]),
-]);
+node1.addChild(node2);
+node2.addChild(node3);
 
-const goalNode = depthLimitedSearch(rootNode, 'G', 3);
-
-if (goalNode) {
-    console.log('Goal node found:', goalNode.state);
-} else {
-    console.log('Goal node not found within depth limit.');
-}
+biDirectionalSearch(node1, node3);
