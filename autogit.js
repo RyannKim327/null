@@ -1,46 +1,51 @@
-function buildPatternTable(pattern) {
-    let prefixSuffixTable = new Array(pattern.length).fill(0);
-    let j = 0;
-    
-    for (let i = 1; i < pattern.length; i++) {
-        while (j > 0 && pattern.charAt(i) !== pattern.charAt(j)) {
-            j = prefixSuffixTable[j - 1];
-        }
-        if (pattern.charAt(i) === pattern.charAt(j)) {
-            prefixSuffixTable[i] = j + 1;
-            j++;
-        }
+function dijkstra(graph, startNode) {
+  const distances = {};
+  const prev = {};
+  const visited = {};
+  const unvisitedNodes = new Set(Object.keys(graph));
+
+  for (let node in graph) {
+    distances[node] = node === startNode ? 0 : Infinity;
+    prev[node] = null;
+  }
+
+  while (unvisitedNodes.size > 0) {
+    const currentNode = getClosestNode(distances, visited);
+    visited[currentNode] = true;
+    unvisitedNodes.delete(currentNode);
+
+    for (let neighbor in graph[currentNode]) {
+      const distance = distances[currentNode] + graph[currentNode][neighbor];
+      if (distance < distances[neighbor]) {
+        distances[neighbor] = distance;
+        prev[neighbor] = currentNode;
+      }
     }
-    
-    return prefixSuffixTable;
+  }
+
+  return { distances, prev };
 }
 
-function kmpSearch(text, pattern) {
-    let patternTable = buildPatternTable(pattern);
-    let j = 0;
-
-    for (let i = 0; i < text.length; i++) {
-        while (j > 0 && text.charAt(i) !== pattern.charAt(j)) {
-            j = patternTable[j - 1];
-        }
-        if (text.charAt(i) === pattern.charAt(j)) {
-            if (j === pattern.length - 1) {
-                return i - j; // match found
-            }
-            j++;
-        }
+function getClosestNode(distances, visited) {
+  return Object.keys(distances).reduce((minNode, node) => {
+    if (!visited[node] && distances[node] < distances[minNode]) {
+      return node;
     }
-    
-    return -1; // match not found
+    return minNode;
+  }, null);
 }
 
-// Example usage
-let text = 'ABABDABACDABABCABAB';
-let pattern = 'ABABCABAB';
-let index = kmpSearch(text, pattern);
+// Example graph
+const graph = {
+  A: { B: 5, C: 3 },
+  B: { A: 5, C: 1, D: 1 },
+  C: { A: 3, B: 1, D: 3 },
+  D: { B: 1, C: 3 },
+};
 
-if (index !== -1) {
-    console.log(`Pattern found at index ${index}`);
-} else {
-    console.log(`Pattern not found in the text`);
-}
+const startNode = 'A';
+
+const { distances, prev } = dijkstra(graph, startNode);
+
+console.log(distances);
+console.log(prev);
