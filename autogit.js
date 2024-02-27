@@ -1,41 +1,16 @@
-function Node(value) {
-  this.value = value;
-  this.children = [];
-}
+function maxSubarraySum(arr) {
+    let maxEndingHere = arr[0];
+    let maxSoFar = arr[0];
 
-function breadthLimitedSearch(root, limit) {
-  let queue = [root];
-  let level = 0;
-
-  while (queue.length > 0 && level <= limit) {
-    let node = queue.shift();
-    console.log(`Visiting node with value ${node.value}`);
-
-    if (level < limit) {
-      for (let child of node.children) {
-        queue.push(child);
-      }
+    for (let i = 1; i < arr.length; i++) {
+        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
+        maxSoFar = Math.max(maxSoFar, maxEndingHere);
     }
 
-    if (queue.length === 0) {
-      level++;
-      if (level <= limit) {
-        console.log(`Moving to level ${level}`);
-      }
-    }
-  }
+    return maxSoFar;
 }
 
-// Usage example
-let root = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-let node4 = new Node(4);
-let node5 = new Node(5);
-let node6 = new Node(6);
+// Example usage
+const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+console.log(maxSubarraySum(arr)); // Output: 6 (subarray [4, -1, 2, 1])
 
-root.children.push(node2, node3);
-node2.children.push(node4, node5);
-node3.children.push(node6);
-
-breadthLimitedSearch(root, 2);
