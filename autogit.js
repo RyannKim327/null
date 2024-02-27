@@ -1,29 +1,36 @@
-function binarySearch(arr, target) {
-    let left = 0;
-    let right = arr.length - 1;
+// Helper function to get the digit at a specific position in a number
+function getDigit(num, i) {
+    return Math.floor(Math.abs(num) / Math.pow(10, i)) % 10;
+}
 
-    while (left <= right) {
-        let mid = Math.floor((left + right) / 2);
+// Helper function to get the number of digits in a number
+function digitCount(num) {
+    if (num === 0) return 1;
+    return Math.floor(Math.log10(Math.abs(num))) + 1;
+}
 
-        if (arr[mid] === target) {
-            return mid;
-        } else if (arr[mid] < target) {
-            left = mid + 1;
-        } else {
-            right = mid - 1;
-        }
+// Helper function to get the number of digits of the largest number in an array
+function mostDigits(arr) {
+    let maxDigits = 0;
+    for (let i = 0; i < arr.length; i++) {
+        maxDigits = Math.max(maxDigits, digitCount(arr[i]));
     }
-
-    return -1; // If the target is not found in the array
+    return maxDigits;
 }
 
-// Example usage
-const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-const target = 7;
-
-const result = binarySearch(arr, target);
-if (result !== -1) {
-    console.log(`Target ${target} found at index ${result}`);
-} else {
-    console.log(`Target ${target} not found in the array`);
+// Radix Sort function
+function radixSort(arr) {
+    const maxDigits = mostDigits(arr);
+    for (let k = 0; k < maxDigits; k++) {
+        let buckets = Array.from({ length: 10 }, () => []);
+        for (let i = 0; i < arr.length; i++) {
+            buckets[getDigit(arr[i], k)].push(arr[i]);
+        }
+        arr = [].concat(...buckets);
+    }
+    return arr;
 }
+
+// Test the implementation
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+console.log(radixSort(arr)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
