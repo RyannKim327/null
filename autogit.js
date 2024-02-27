@@ -1,12 +1,18 @@
-function validateEmail(email) {
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailPattern.test(email);
-}
+// Define the API endpoint
+const apiUrl = 'https://jsonplaceholder.typicode.com/posts/1';
 
-// Test the function with an email address
-const email = "example@example.com";
-if (validateEmail(email)) {
-    console.log("Valid email address");
-} else {
-    console.log("Invalid email address");
-}
+// Make a GET request to the API
+fetch(apiUrl)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+    // Display the data fetched from the API
+    console.log(data);
+  })
+  .catch(error => {
+    console.error('There was a problem with the fetch operation:', error);
+  });
