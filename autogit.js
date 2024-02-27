@@ -1,26 +1,7 @@
-function binarySearchRecursive(arr, target, start = 0, end = arr.length - 1) {
-    if (start > end) {
-        return -1; // Not found
-    }
-
-    let mid = Math.floor((start + end) / 2);
-
-    if (arr[mid] === target) {
-        return mid; // Found the target
-    } else if (target < arr[mid]) {
-        return binarySearchRecursive(arr, target, start, mid - 1); // Search in the left half
-    } else {
-        return binarySearchRecursive(arr, target, mid + 1, end); // Search in the right half
-    }
+function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// Example usage
-const array = [1, 3, 5, 7, 9, 11, 13, 15];
-const target = 7;
-const index = binarySearchRecursive(array, target);
-
-if (index !== -1) {
-    console.log(`Target ${target} found at index ${index}`);
-} else {
-    console.log(`Target ${target} not found in the array`);
-}
+// Using the function to generate a random number between 1 and 100
+const randomNum = getRandomNumber(1, 100);
+console.log(randomNum);
