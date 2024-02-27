@@ -1,60 +1,13 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+function reverseString(str) {
+    // Convert the string to an array, reverse the array, then convert it back to a string
+    return str.split('').reverse().join('');
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+// Test the function
+const originalString = 'Hello, World!';
+const reversedString = reverseString(originalString);
 
-  addNode(value) {
-    const newNode = new Node(value);
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
-
-  reverse() {
-    let prev = null;
-    let current = this.head;
-    let next = null;
-    while (current !== null) {
-      next = current.next;
-      current.next = prev;
-      prev = current;
-      current = next;
-    }
-    this.head = prev;
-  }
-
-  printList() {
-    let current = this.head;
-    while (current !== null) {
-      console.log(current.value);
-      current = current.next;
-    }
-  }
-}
-
-// Create a linked list
-const linkedList = new LinkedList();
-linkedList.addNode(1);
-linkedList.addNode(2);
-linkedList.addNode(3);
-linkedList.addNode(4);
-
-console.log("Original Linked List:");
-linkedList.printList();
-
-console.log("Reversed Linked List:");
-linkedList.reverse();
-linkedList.printList();
+console.log('Original string:', originalString);
+console.log('Reversed string:', reversedString);
+Original string: Hello, World!
+Reversed string: !dlroW ,olleH
