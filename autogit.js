@@ -1,48 +1,34 @@
-class Graph {
-    constructor() {
-        this.adjList = new Map();
+function mergeSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    addNode(node) {
-        this.adjList.set(node, []);
-    }
+    const mid = Math.floor(arr.length / 2);
+    const left = arr.slice(0, mid);
+    const right = arr.slice(mid);
 
-    addEdge(node1, node2) {
-        this.adjList.get(node1).push(node2);
-        this.adjList.get(node2).push(node1);
-    }
-
-    depthFirstSearch(startNode) {
-        const visited = new Set();
-        const stack = [startNode];
-
-        while (stack.length > 0) {
-            const currentNode = stack.pop();
-
-            if (!visited.has(currentNode)) {
-                visited.add(currentNode);
-                console.log(currentNode);
-
-                const neighbors = this.adjList.get(currentNode);
-                for (let neighbor of neighbors) {
-                    stack.push(neighbor);
-                }
-            }
-        }
-    }
+    return merge(mergeSort(left), mergeSort(right));
 }
 
-// Creating a graph
-const graph = new Graph();
-graph.addNode(0);
-graph.addNode(1);
-graph.addNode(2);
-graph.addNode(3);
-graph.addNode(4);
-graph.addEdge(0, 1);
-graph.addEdge(0, 2);
-graph.addEdge(1, 3);
-graph.addEdge(2, 4);
+function merge(left, right) {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
 
-// Starting DFS from node 0
-graph.depthFirstSearch(0);
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            result.push(right[rightIndex]);
+            rightIndex++;
+        }
+    }
+
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+}
+
+// Example usage
+const arr = [8, 4, 1, 9, 6, 3, 7, 2, 5];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr);
