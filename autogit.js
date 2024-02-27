@@ -1,31 +1,53 @@
-function findFirstNonRepeatingChar(str) {
-    // Create an empty object to store character counts
-    let charCount = {};
-
-    // Loop through the string to count occurrences of each character
-    for (let char of str) {
-        // If the character is not in the charCount object, initialize its count to 1
-        if (!charCount[char]) {
-            charCount[char] = 1;
+function buildPatternTable(pattern) {
+    let patternTable = [0];
+    let prefix = 0;
+    let suffix = 1;
+    
+    while (suffix < pattern.length) {
+        if (pattern[prefix] === pattern[suffix]) {
+            patternTable[suffix] = prefix + 1;
+            prefix++;
+            suffix++;
+        } else if (prefix === 0) {
+            patternTable[suffix] = 0;
+            suffix++;
         } else {
-            // Increment the count for the character
-            charCount[char]++;
+            prefix = patternTable[prefix - 1];
         }
     }
-
-    // Loop through the string again to find the first non-repeating character
-    for (let char of str) {
-        if (charCount[char] === 1) {
-            // Return the first non-repeating character
-            return char;
-        }
-    }
-
-    // If no non-repeating character is found, return null
-    return null;
+    
+    return patternTable;
 }
 
-// Test the function
-const inputString = "leetcode";
-const result = findFirstNonRepeatingChar(inputString);
-console.log(result); // Output: "l"
+function KMP(text, pattern) {
+    let patternTable = buildPatternTable(pattern);
+    let textIndex = 0;
+    let patternIndex = 0;
+
+    while (textIndex < text.length) {
+        if (text[textIndex] === pattern[patternIndex]) {
+            if (patternIndex === pattern.length - 1) {
+                return textIndex - patternIndex;
+            }
+            textIndex++;
+            patternIndex++;
+        } else if (patternIndex > 0) {
+            patternIndex = patternTable[patternIndex - 1];
+        } else {
+            textIndex++;
+        }
+    }
+
+    return -1;
+}
+
+// Example usage
+let text = "ABCABDABCAB";
+let pattern = "ABCAB";
+let result = KMP(text, pattern);
+
+if (result === -1) {
+    console.log("Pattern not found in text");
+} else {
+    console.log(`Pattern found at index ${result}`);
+}
