@@ -1,42 +1,45 @@
-class SuffixTreeNode {
-    constructor() {
-        this.children = {};
+function depthLimitedSearch(node, goal, limit) {
+    if (node.state === goal) {
+        return node;
+    } else if (limit === 0) {
+        return 'cutoff';
+    } else {
+        let cutoffOccurred = false;
+
+        for (let child of node.children) {
+            let result = depthLimitedSearch(child, goal, limit - 1);
+
+            if (result === 'cutoff') {
+                cutoffOccurred = true;
+            } else if (result !== 'failure') {
+                return result;
+            }
+        }
+
+        return cutoffOccurred ? 'cutoff' : 'failure';
     }
 }
 
-class SuffixTree {
-    constructor(text) {
-        this.root = new SuffixTreeNode();
-        for (let i = 0; i < text.length; i++) {
-            this.addSuffix(text.substring(i) + '$');
-        }
-    }
-
-    addSuffix(suffix) {
-        let node = this.root;
-        for (let i = 0; i < suffix.length; i++) {
-            const char = suffix[i];
-            if (!node.children[char]) {
-                node.children[char] = new SuffixTreeNode();
-            }
-            node = node.children[char];
-        }
-    }
-
-    search(pattern) {
-        let node = this.root;
-        for (let i = 0; i < pattern.length; i++) {
-            const char = pattern[i];
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
-        }
-        return true;
+// Example usage
+class Node {
+    constructor(state, children) {
+        this.state = state;
+        this.children = children;
     }
 }
 
-// Usage
-const suffixTree = new SuffixTree("banana");
-console.log(suffixTree.search("ana")); // true
-console.log(suffixTree.search("apple")); // false
+// Sample tree structure
+let child1 = new Node('B', []);
+let child2 = new Node('C', []);
+let child3 = new Node('D', []);
+let child4 = new Node('E', []);
+let child5 = new Node('F', []);
+let child6 = new Node('G', []);
+let child7 = new Node('H', []);
+
+let root = new Node('A', [child1, child2, child3, child4]);
+child1.children = [child5, child6];
+child2.children = [child7];
+
+let goalNode = depthLimitedSearch(root, 'H', 3);
+console.log(goalNode);
