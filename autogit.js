@@ -1,34 +1,43 @@
-function longestCommonSubstring(str1, str2) {
+function longestCommonSubsequence(str1, str2) {
     const m = str1.length;
     const n = str2.length;
-
-    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-    let maxLength = 0;
-    let endIndex = 0;
-
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-                if (dp[i][j] > maxLength) {
-                    maxLength = dp[i][j];
-                    endIndex = i - 1;
-                }
-            } else {
+    
+    const dp = [];
+    for (let i = 0; i <= m; i++) {
+        dp[i] = [];
+        for (let j = 0; j <= n; j++) {
+            if (i === 0 || j === 0) {
                 dp[i][j] = 0;
+            } else if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
             }
         }
     }
-
-    if (maxLength === 0) {
-        return '';
+    
+    let index = dp[m][n];
+    let lcs = Array(index);
+    let i = m, j = n;
+    
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            lcs[index - 1] = str1[i - 1];
+            i--;
+            j--;
+            index--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
+        }
     }
-
-    return str1.substr(endIndex - maxLength + 1, maxLength);
+    
+    return lcs.join('');
 }
 
-// Example usage
-const str1 = 'abcdef';
-const str2 = 'zabcde';
-const result = longestCommonSubstring(str1, str2);
-console.log(result); // Output: 'abcde'
+const str1 = 'AGGTAB';
+const str2 = 'GXTXAYB';
+
+const result = longestCommonSubsequence(str1, str2);
+console.log(result); // Output: GTAB
