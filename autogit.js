@@ -1,80 +1,55 @@
-class ListNode {
-  constructor(val) {
-    this.val = val;
-    this.next = null;
-  }
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
+    }
 }
 
-const getIntersectionNode = (headA, headB) => {
-  if (!headA || !headB) {
-    return null;
-  }
-
-  let lenA = getLength(headA);
-  let lenB = getLength(headB);
-
-  let currA = headA;
-  let currB = headB;
-
-  // Align the pointers to start at the same position
-  while (lenA > lenB) {
-    currA = currA.next;
-    lenA--;
-  }
-
-  while (lenB > lenA) {
-    currB = currB.next;
-    lenB--;
-  }
-
-  // Traverse both lists in parallel
-  while (currA !== currB) {
-    currA = currA.next;
-    currB = currB.next;
-
-    if (currA === null && currB === null) {
-      return null; // No intersection found
+class LinkedList {
+    constructor() {
+        this.head = null;
     }
 
-    if (currA === null) {
-      currA = headB; // Reset currA to headB
+    addNode(value) {
+        const newNode = new Node(value);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
     }
 
-    if (currB === null) {
-      currB = headA; // Reset currB to headA
+    isPalindrome() {
+        let values = [];
+        let current = this.head;
+        while (current) {
+            values.push(current.value);
+            current = current.next;
+        }
+        
+        let left = 0;
+        let right = values.length - 1;
+        while (left < right) {
+            if (values[left] !== values[right]) {
+                return false;
+            }
+            left++;
+            right--;
+        }
+        return true;
     }
-  }
-
-  return currA; // Return the intersection node
-};
-
-const getLength = (head) => {
-  let len = 0;
-  let curr = head;
-
-  while (curr) {
-    len++;
-    curr = curr.next;
-  }
-
-  return len;
-};
-
-// Example usage
-const list1 = new ListNode(4);
-list1.next = new ListNode(1);
-list1.next.next = new ListNode(8);
-list1.next.next.next = new ListNode(4);
-list1.next.next.next.next = new ListNode(5);
-
-const list2 = new ListNode(5);
-list2.next = new ListNode(6);
-list2.next.next = list1.next.next; // Intersection point
-
-const intersection = getIntersectionNode(list1, list2);
-
-if (intersection) {
-  console.log("Intersection found at node with value: " + intersection.val);
-} else {
-  console.log("No intersection found");
 }
+
+// Test the linked list for palindrome
+const linkedList = new LinkedList();
+linkedList.addNode(1);
+linkedList.addNode(2);
+linkedList.addNode(3);
+linkedList.addNode(2);
+linkedList.addNode(1);
+
+console.log(linkedList.isPalindrome()); // Output: true
