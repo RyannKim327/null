@@ -1,8 +1,40 @@
-let str = "42";
-let num = parseInt(str);
+function depthLimitedSearch(node, depthLimit) {
+    return recursiveDLS(node, depthLimit, 0);
+}
 
-console.log(num); // Output: 42
-let str = "3.14";
-let num = parseFloat(str);
+function recursiveDLS(node, depthLimit, depth) {
+    if (depth === depthLimit) {
+        return null;
+    }
 
-console.log(num); // Output: 3.14
+    if (nodeIsGoal(node)) {
+        return node;
+    }
+
+    for (let childNode of expand(node)) {
+        let result = recursiveDLS(childNode, depthLimit, depth + 1);
+        if (result !== null) {
+            return result;
+        }
+    }
+
+    return null;
+}
+
+// Helper functions
+function nodeIsGoal(node) {
+    // Check if the node is the goal state
+    return node === goalState;
+}
+
+function expand(node) {
+    // Expand the current node and return the child nodes
+    // Implement your expand logic here
+}
+
+// Example usage
+let initialState = "A";
+let goalState = "C";
+
+let result = depthLimitedSearch(initialState, 3);
+console.log(result);
