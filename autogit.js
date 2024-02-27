@@ -1,3 +1,8 @@
-let str = "  Hello,   World!   ";
-let result = str.replace(/\s/g, '');
-console.log(result); // Output: "Hello,World!"
+function removeVowels(str) {
+    return str.replace(/[aeiouAEIOU]/g, '');
+}
+
+let inputString = "Hello, World!";
+let result = removeVowels(inputString);
+
+console.log(result);  // Output: "Hll, Wrld!"
