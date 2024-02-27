@@ -1,16 +1,42 @@
-function maxSubarraySum(arr) {
-    let maxEndingHere = arr[0];
-    let maxSoFar = arr[0];
-
-    for (let i = 1; i < arr.length; i++) {
-        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
-        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+class SuffixTreeNode {
+    constructor() {
+        this.children = {};
     }
-
-    return maxSoFar;
 }
 
-// Example usage
-const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-console.log(maxSubarraySum(arr)); // Output: 6 (subarray [4, -1, 2, 1])
+class SuffixTree {
+    constructor(text) {
+        this.root = new SuffixTreeNode();
+        for (let i = 0; i < text.length; i++) {
+            this.addSuffix(text.substring(i) + '$');
+        }
+    }
 
+    addSuffix(suffix) {
+        let node = this.root;
+        for (let i = 0; i < suffix.length; i++) {
+            const char = suffix[i];
+            if (!node.children[char]) {
+                node.children[char] = new SuffixTreeNode();
+            }
+            node = node.children[char];
+        }
+    }
+
+    search(pattern) {
+        let node = this.root;
+        for (let i = 0; i < pattern.length; i++) {
+            const char = pattern[i];
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+        return true;
+    }
+}
+
+// Usage
+const suffixTree = new SuffixTree("banana");
+console.log(suffixTree.search("ana")); // true
+console.log(suffixTree.search("apple")); // false
