@@ -1,17 +1,24 @@
-function reverseWords(str) {
-    // Split the string into an array of words
-    let words = str.split(' ');
-
-    // Reverse the array of words
-    let reversedWords = words.reverse();
-
-    // Join the reversed array back into a string
-    let reversedStr = reversedWords.join(' ');
-
-    return reversedStr;
+function countOccurrences(sentence, word) {
+    // Split the sentence into an array of words
+    var words = sentence.split(" ");
+    
+    // Initialize a counter to keep track of the occurrences
+    var count = 0;
+    
+    // Iterate over the array of words
+    for (var i = 0; i < words.length; i++) {
+        // Check if the word matches the current word in the array
+        if (words[i].toLowerCase() === word.toLowerCase()) {
+            count++;
+        }
+    }
+    
+    // Return the count of occurrences
+    return count;
 }
 
-// Example usage
-let originalStr = "Hello World";
-let reversedStr = reverseWords(originalStr);
-console.log(reversedStr); // Output: "World Hello"
+// Test the function
+var sentence = "How much wood would a woodchuck chuck if a woodchuck could chuck wood";
+var word = "wood";
+var occurrences = countOccurrences(sentence, word);
+console.log("The word '" + word + "' occurs " + occurrences + " times in the sentence.");
