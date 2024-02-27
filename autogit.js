@@ -1,38 +1,25 @@
-function countingSort(arr) {
-    if (arr.length === 0) {
-        return [];
+function selectionSort(arr) {
+    const n = arr.length;
+    
+    for (let i = 0; i < n - 1; i++) {
+        let minIndex = i;
+        
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+
+        if (minIndex !== i) {
+            const temp = arr[i];
+            arr[i] = arr[minIndex];
+            arr[minIndex] = temp;
+        }
     }
 
-    // Find the maximum value in the input array
-    let max = Math.max(...arr);
-
-    // Create a count array to store the count of each element
-    let count = new Array(max + 1).fill(0);
-
-    // Store the count of each element in the input array
-    for (let i = 0; i < arr.length; i++) {
-        count[arr[i]]++;
-    }
-
-    // Modify the count array to store the sum of previous counts
-    for (let i = 1; i < count.length; i++) {
-        count[i] += count[i - 1];
-    }
-
-    // Create a result array to store the sorted elements
-    let result = new Array(arr.length);
-
-    // Place the elements in the result array using the count array
-    for (let i = arr.length - 1; i >= 0; i--) {
-        result[count[arr[i]] - 1] = arr[i];
-        count[arr[i]]--;
-    }
-
-    return result;
+    return arr;
 }
 
-// Test the counting sort algorithm
-let arr = [4, 2, 2, 8, 3, 3, 1];
-console.log("Original array:", arr);
-let sortedArr = countingSort(arr);
-console.log("Sorted array:", sortedArr);
+const arr = [64, 25, 12, 22, 11];
+console.log("Original array: " + JSON.stringify(arr));
+console.log("Sorted array: " + JSON.stringify(selectionSort(arr)));
