@@ -1,46 +1,15 @@
-function generatePrefixTable(pattern) {
-    const prefixTable = [0];
-    let j = 0;
-
-    for (let i = 1; i < pattern.length; i++) {
-        while (j > 0 && pattern[i] !== pattern[j]) {
-            j = prefixTable[j - 1];
-        }
-        if (pattern[i] === pattern[j]) {
-            j++;
-        }
-        prefixTable[i] = j;
+function maxSubarraySum(arr) {
+    let maxEndingHere = arr[0];
+    let maxSoFar = arr[0];
+    
+    for (let i = 1; i < arr.length; i++) {
+        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
+        maxSoFar = Math.max(maxSoFar, maxEndingHere);
     }
-
-    return prefixTable;
-}
-
-function kmpSearch(text, pattern) {
-    const prefixTable = generatePrefixTable(pattern);
-    let j = 0;
-
-    for (let i = 0; i < text.length; i++) {
-        while (j > 0 && text[i] !== pattern[j]) {
-            j = prefixTable[j - 1];
-        }
-        if (text[i] === pattern[j]) {
-            j++;
-        }
-        if (j === pattern.length) {
-            return i - j + 1; // Match found, return the index of the start of the match
-        }
-    }
-
-    return -1; // Match not found
+    
+    return maxSoFar;
 }
 
 // Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const index = kmpSearch(text, pattern);
-
-if (index !== -1) {
-    console.log(`Pattern found at index ${index}`);
-} else {
-    console.log("Pattern not found");
-}
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+console.log(maxSubarraySum(array)); // Output: 6
