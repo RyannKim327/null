@@ -1,8 +1,12 @@
-const removeDuplicates = (arr) => {
-  return arr.filter((item, index) => arr.indexOf(item) === index);
-};
+function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+}
 
-// Example
-const array = [1, 2, 3, 2, 4, 1];
-const uniqueArray = removeDuplicates(array);
-console.log(uniqueArray); // Output: [1, 2, 3, 4]
+// Example usage:
+const email = 'example@email.com';
+if (validateEmail(email)) {
+    console.log('Valid email address');
+} else {
+    console.log('Invalid email address');
+}
