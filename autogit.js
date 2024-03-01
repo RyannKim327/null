@@ -1,36 +1,13 @@
-function mergeSortIterative(arr) {
-    const n = arr.length;
-    const tempArr = new Array(n);
-    for (let size = 1; size < n; size *= 2) {
-        for (let leftStart = 0; leftStart < n; leftStart += 2*size) {
-            const middle = Math.min(leftStart + size, n);
-            const rightStart = Math.min(leftStart + 2*size, n);
-            merge(arr, leftStart, middle, rightStart, tempArr);
+function isArraySorted(arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;
         }
     }
-    return arr;
+    return true;
 }
+const arr1 = [1, 2, 3, 4, 5];
+console.log(isArraySorted(arr1)); // Output: true
 
-function merge(arr, leftStart, middle, rightStart, tempArr) {
-    let leftIdx = leftStart;
-    let rightIdx = middle;
-    
-    for (let i = leftStart; i < rightStart; i++) {
-        if (leftIdx < middle && (rightIdx >= rightStart || arr[leftIdx] <= arr[rightIdx])) {
-            tempArr[i] = arr[leftIdx];
-            leftIdx++;
-        } else {
-            tempArr[i] = arr[rightIdx];
-            rightIdx++;
-        }
-    }
-    
-    for (let i = leftStart; i < rightStart; i++) {
-        arr[i] = tempArr[i];
-    }
-}
-
-// Test the mergeSortIterative function
-const arr = [12, 11, 13, 5, 6, 7];
-console.log("Original array: ", arr);
-console.log("Sorted array: ", mergeSortIterative(arr));
+const arr2 = [5, 4, 3, 2, 1];
+console.log(isArraySorted(arr2)); // Output: false
