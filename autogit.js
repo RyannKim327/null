@@ -1,40 +1,20 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
+function longestCommonPrefix(strings) {
+    if (strings.length === 0) return "";
+
+    let prefix = strings[0];
+
+    for (let i = 1; i < strings.length; i++) {
+        let j = 0;
+        while (j < prefix.length && j < strings[i].length && prefix[j] === strings[i][j]) {
+            j++;
+        }
+        prefix = prefix.slice(0, j);
+        if (prefix === "") break;
     }
+
+    return prefix;
 }
 
-class LinkedList {
-    constructor() {
-        this.head = null;
-    }
-
-    add(data) {
-        const newNode = new Node(data);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
-        }
-    }
-
-    display() {
-        let current = this.head;
-        while (current) {
-            console.log(current.data);
-            current = current.next;
-        }
-    }
-}
-
-// Usage
-const list = new LinkedList();
-list.add(1);
-list.add(2);
-list.add(3);
-list.display();
+// Example usage
+const strings = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(strings)); // Output: "fl"
