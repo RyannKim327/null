@@ -1,40 +1,36 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+function mergeSortIterative(arr) {
+    const n = arr.length;
+    const tempArr = new Array(n);
+    for (let size = 1; size < n; size *= 2) {
+        for (let leftStart = 0; leftStart < n; leftStart += 2*size) {
+            const middle = Math.min(leftStart + size, n);
+            const rightStart = Math.min(leftStart + 2*size, n);
+            merge(arr, leftStart, middle, rightStart, tempArr);
+        }
+    }
+    return arr;
+}
+
+function merge(arr, leftStart, middle, rightStart, tempArr) {
+    let leftIdx = leftStart;
+    let rightIdx = middle;
+    
+    for (let i = leftStart; i < rightStart; i++) {
+        if (leftIdx < middle && (rightIdx >= rightStart || arr[leftIdx] <= arr[rightIdx])) {
+            tempArr[i] = arr[leftIdx];
+            leftIdx++;
+        } else {
+            tempArr[i] = arr[rightIdx];
+            rightIdx++;
+        }
+    }
+    
+    for (let i = leftStart; i < rightStart; i++) {
+        arr[i] = tempArr[i];
     }
 }
 
-function depthFirstSearch(node) {
-    const stack = [];
-    const visited = [];
-
-    stack.push(node);
-
-    while (stack.length > 0) {
-        const currentNode = stack.pop();
-        visited.push(currentNode.value);
-
-        if (currentNode.right) {
-            stack.push(currentNode.right);
-        }
-
-        if (currentNode.left) {
-            stack.push(currentNode.left);
-        }
-    }
-
-    return visited;
-}
-
-// Creating a binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
-
-console.log(depthFirstSearch(root)); // Output: [1, 3, 7, 6, 2, 5, 4]
+// Test the mergeSortIterative function
+const arr = [12, 11, 13, 5, 6, 7];
+console.log("Original array: ", arr);
+console.log("Sorted array: ", mergeSortIterative(arr));
