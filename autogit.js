@@ -1,13 +1,43 @@
-function isArraySorted(arr) {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false;
-        }
-    }
-    return true;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
-const arr1 = [1, 2, 3, 4, 5];
-console.log(isArraySorted(arr1)); // Output: true
 
-const arr2 = [5, 4, 3, 2, 1];
-console.log(isArraySorted(arr2)); // Output: false
+function findNthFromEnd(head, n) {
+  if (!head) {
+    return null;
+  }
+
+  let firstPointer = head;
+  let secondPointer = head;
+
+  // Move the firstPointer n steps forward
+  for (let i = 0; i < n; i++) {
+    if (firstPointer === null) {
+      return null; // The list is shorter than n
+    }
+    firstPointer = firstPointer.next;
+  }
+
+  // Move both pointers until firstPointer reaches the end
+  while (firstPointer !== null) {
+    firstPointer = firstPointer.next;
+    secondPointer = secondPointer.next;
+  }
+
+  return secondPointer;
+}
+
+// Usage example
+// Create a sample linked list
+const head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
+
+const n = 2;
+const result = findNthFromEnd(head, n);
+console.log(result ? result.value : "Node not found");
