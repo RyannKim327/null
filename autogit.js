@@ -1,47 +1,56 @@
-// Define the structure of a binary tree node
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+function computeLPSArray(pattern) {
+    const lps = Array(pattern.length).fill(0);
+    let len = 0;
+    let i = 1;
+
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+
+    return lps;
 }
 
-// Function to find the height of a binary tree
-function height(node) {
-  if (node === null) {
-    return 0;
-  }
-  
-  return 1 + Math.max(height(node.left), height(node.right));
-}
+function KMPSearch(text, pattern) {
+    const lps = computeLPSArray(pattern);
+    const result = [];
+    
+    let i = 0;
+    let j = 0;
 
-// Function to find the diameter of a binary tree
-function diameterOfBinaryTree(root) {
-  if (root === null) {
-    return 0;
-  }
-  
-  // Calculate the height of the left and right subtrees
-  let leftHeight = height(root.left);
-  let rightHeight = height(root.right);
-  
-  // Calculate the diameter passing through the root node
-  let diameterRoot = leftHeight + rightHeight;
-  
-  // Calculate the diameter of the left and right subtrees recursively
-  let leftDiameter = diameterOfBinaryTree(root.left);
-  let rightDiameter = diameterOfBinaryTree(root.right);
-  
-  // Return the maximum of the three diameters
-  return Math.max(diameterRoot, Math.max(leftDiameter, rightDiameter));
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            result.push(i - j);
+            j = lps[j - 1];
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+
+    return result;
 }
 
 // Example usage
-let root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(diameterOfBinaryTree(root)); // Output the diameter of the binary tree
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const indices = KMPSearch(text, pattern);
+console.log("Pattern found at indices: ", indices);
