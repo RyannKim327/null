@@ -1,12 +1,9 @@
-let str1 = "Hello";
-let str2 = "World";
-
-let result = str1 + " " + str2;
-
-console.log(result); // Output: Hello World
-let str1 = "Hello";
-let str2 = "World";
-
-let result = str1.concat(" ", str2);
-
-console.log(result); // Output: Hello World
+class Node {
+    constructor(key, color, left, right, parent) {
+        this.key = key;
+        this.color = color;
+        this.left = left;
+        this.right = right;
+        this.parent = parent;
+    }
+}
