@@ -1,12 +1,8 @@
-function factorial(n) {
-    if (n === 0) {
-        return 1;
-    } else {
-        return n * factorial(n - 1);
-    }
+function decimalToBinary(decimalNumber) {
+    return decimalNumber.toString(2);
 }
 
-// Test the factorial function
-const number = 5;
-const result = factorial(number);
-console.log(`The factorial of ${number} is ${result}`);
+// Example usage
+const decimalNumber = 10;
+const binaryNumber = decimalToBinary(decimalNumber);
+console.log(binaryNumber); // Output: 1010
