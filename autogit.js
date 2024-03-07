@@ -1,8 +1,6 @@
-function decimalToBinary(decimalNumber) {
-    return decimalNumber.toString(2);
-}
+const url = 'https://jsonplaceholder.typicode.com/posts';
 
-// Example usage
-const decimalNumber = 10;
-const binaryNumber = decimalToBinary(decimalNumber);
-console.log(binaryNumber); // Output: 1010
+fetch(url)
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));
