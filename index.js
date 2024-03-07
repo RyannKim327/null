@@ -162,22 +162,16 @@ let run = async () => {
 					console.log("Git Commit")
 					exec(`git commit -m "${m} [User mode]"`, (e) => {
 						if(e) console.error(e)
-						// setTimeout(() => {
-						// 	console.log("Git push")
-						// 	exec(`git push`, (e) => {
-						// 		if(e) console.error(e)
-								console.log("Close")
-								setTimeout(() => {
-									_commitments++
-									commits--
-									if(commits > 0 ){
-										run()
-									}else{
-										console.log("Thank you for spamming hahaha")
-										process.exit(0)
-									}
-							// 	}, 50)
-							// })
+						console.log("Close")
+						setTimeout(() => {
+							_commitments++
+							commits--
+							if(commits > 0 ){
+								run()
+							}else{
+								console.log("Thank you for spamming hahaha")
+								process.exit(0)
+							}
 						}, 50)
 					})
 				}, 50)
