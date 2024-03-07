@@ -1,40 +1,37 @@
-function depthLimitedSearch(root, goal, depthLimit) {
-    let stack = [{ node: root, depth: 0 }];
+function longestCommonSubsequence(str1, str2) {
+    const m = str1.length;
+    const n = str2.length;
 
-    while (stack.length > 0) {
-        let current = stack.pop();
+    const dp = Array.from(Array(m + 1), () => Array(n + 1).fill(0));
 
-        if (current.node === goal) {
-            return current.node;
-        }
-
-        if (current.depth < depthLimit) {
-            // Expand the current node
-            let children = expandNode(current.node);
-            for (let child of children) {
-                stack.push({ node: child, depth: current.depth + 1 });
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
             }
         }
     }
 
-    return null; // Goal not found within depth limit
+    let i = m, j = n;
+    let result = "";
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            result = str1[i - 1] + result;
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
+        }
+    }
+
+    return result;
 }
 
-// Function to expand a node, you need to implement this function based on your problem
-function expandNode(node) {
-    // This is a placeholder function, you need to implement it based on your problem
-    return [];
-}
-
-// Example usage
-let root = /* Your root node */;
-let goal = /* Your goal node */;
-let depthLimit = 3;
-
-let result = depthLimitedSearch(root, goal, depthLimit);
-
-if (result) {
-    console.log("Goal found!");
-} else {
-    console.log("Goal not found within depth limit.");
-}
+const str1 = "ABCDGH";
+const str2 = "AEDFHR";
+const lcs = longestCommonSubsequence(str1, str2);
+console.log("Longest Common Subsequence: ", lcs);
