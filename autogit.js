@@ -1,14 +1,20 @@
-let array = [1, 2, 2, 3, 4, 4, 5];
-let uniqueArray = [...new Set(array)];
-console.log(uniqueArray); // [1, 2, 3, 4, 5]
-let array = [1, 2, 2, 3, 4, 4, 5];
-let uniqueArray = array.filter((item, index) => array.indexOf(item) === index);
-console.log(uniqueArray); // [1, 2, 3, 4, 5]
-let array = [1, 2, 2, 3, 4, 4, 5];
-let uniqueArray = array.reduce((acc, current) => {
-  if (acc.indexOf(current) === -1) {
-    acc.push(current);
-  }
-  return acc;
-}, []);
-console.log(uniqueArray); // [1, 2, 3, 4, 5]
+function bubbleSort(arr) {
+    let len = arr.length;
+    for (let i = 0; i < len; i++) {
+        for (let j = 0; j < len - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap elements
+                let temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+    return arr;
+}
+
+// Example usage
+let arr = [64, 34, 25, 12, 22, 11, 90];
+console.log("Original array: ", arr);
+let sortedArr = bubbleSort(arr);
+console.log("Sorted array: ", sortedArr);
