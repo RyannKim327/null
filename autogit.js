@@ -1,40 +1,53 @@
-function heapSort(arr) {
-    // Build max heap
-    for (let i = Math.floor(arr.length / 2) - 1; i >= 0; i--) {
-        heapify(arr, arr.length, i);
+class Stack {
+  constructor() {
+    this.stack = [];
+  }
+
+  // Push an element onto the stack
+  push(element) {
+    this.stack.push(element);
+  }
+
+  // Pop the top element from the stack
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
     }
+    return this.stack.pop();
+  }
 
-    // Heap sort
-    for (let i = arr.length - 1; i > 0; i--) {
-        // Swap root with current element
-        [arr[0], arr[i]] = [arr[i], arr[0]];
-        
-        // Heapify the reduced heap
-        heapify(arr, i, 0);
+  // Peek the top element of the stack
+  peek() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
     }
+    return this.stack[this.stack.length - 1];
+  }
 
-    return arr;
-}
+  // Check if the stack is empty
+  isEmpty() {
+    return this.stack.length === 0;
+  }
 
-function heapify(arr, n, i) {
-    let largest = i;
-    let left = 2 * i + 1;
-    let right = 2 * i + 2;
+  // Get the size of the stack
+  size() {
+    return this.stack.length;
+  }
 
-    if (left < n && arr[left] > arr[largest]) {
-        largest = left;
-    }
-
-    if (right < n && arr[right] > arr[largest]) {
-        largest = right;
-    }
-
-    if (largest !== i) {
-        [arr[i], arr[largest]] = [arr[largest], arr[i]];
-        heapify(arr, n, largest);
-    }
+  // Print the stack elements
+  print() {
+    console.log(this.stack);
+  }
 }
 
 // Example usage
-const array = [12, 11, 13, 5, 6, 7];
-console.log(heapSort(array)); // Output: [5, 6, 7, 11, 12, 13]
+const myStack = new Stack();
+
+myStack.push(3);
+myStack.push(7);
+myStack.push(10);
+myStack.print(); // Output: [3, 7, 10]
+
+console.log(myStack.pop()); // Output: 10
+console.log(myStack.peek()); // Output: 7
+console.log(myStack.size()); // Output: 2
