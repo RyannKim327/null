@@ -1,102 +1,17 @@
-class Node {
-  constructor(value, level) {
-    this.value = value;
-    this.forward = new Array(level + 1).fill(null);
-  }
-}
-class SkipList {
-  constructor(maxLevel, probability) {
-    this.maxLevel = maxLevel;
-    this.probability = probability;
-    this.head = new Node(-Infinity, maxLevel);
-    this.level = 0;
-  }
-
-  randomLevel() {
-    let level = 0;
-    while (Math.random() < this.probability && level < this.maxLevel) {
-      level++;
-    }
-    return level;
-  }
-
-  insert(value) {
-    let update = new Array(this.maxLevel + 1).fill(null);
-    let current = this.head;
-
-    for (let i = this.level; i >= 0; i--) {
-      while (current.forward[i] !== null && current.forward[i].value < value) {
-        current = current.forward[i];
-      }
-      update[i] = current;
-    }
-
-    let newLevel = this.randomLevel();
-    if (newLevel > this.level) {
-      for (let i = this.level + 1; i <= newLevel; i++) {
-        update[i] = this.head;
-      }
-      this.level = newLevel;
-    }
-
-    let newNode = new Node(value, newLevel);
-    for (let i = 0; i <= newLevel; i++) {
-      newNode.forward[i] = update[i].forward[i];
-      update[i].forward[i] = newNode;
-    }
-  }
-
-  search(value) {
-    let current = this.head;
-    for (let i = this.level; i >= 0; i--) {
-      while (current.forward[i] !== null && current.forward[i].value < value) {
-        current = current.forward[i];
-      }
-    }
-    current = current.forward[0];
-
-    if (current !== null && current.value === value) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  delete(value) {
-    let update = new Array(this.level + 1).fill(null);
-    let current = this.head;
-
-    for (let i = this.level; i >= 0; i--) {
-      while (current.forward[i] !== null && current.forward[i].value < value) {
-        current = current.forward[i];
-      }
-      update[i] = current;
-    }
-
-    current = current.forward[0];
-    if (current !== null && current.value === value) {
-      for (let i = 0; i <= this.level; i++) {
-        if (update[i].forward[i] !== current) {
-          break;
+function insertionSort(arr) {
+    for (let i = 1; i < arr.length; i++) {
+        let currentVal = arr[i];
+        let j = i - 1;
+        while (j >= 0 && arr[j] > currentVal) {
+            arr[j + 1] = arr[j];
+            j = j - 1;
         }
-        update[i].forward[i] = current.forward[i];
-      }
-
-      while (this.level > 0 && this.head.forward[this.level] === null) {
-        this.level--;
-      }
+        arr[j + 1] = currentVal;
     }
-  }
+    return arr;
 }
-// Example usage of SkipList
-let skipList = new SkipList(3, 0.5);
-skipList.insert(3);
-skipList.insert(6);
-skipList.insert(7);
-skipList.insert(9);
 
-console.log(skipList.search(6)); // Output: true
-console.log(skipList.search(8)); // Output: false
-
-skipList.delete(7);
-console.log(skipList.search(7)); // Output: false
+// Example Usage
+const arr = [12, 11, 13, 5, 6];
+const sortedArr = insertionSort(arr);
+console.log(sortedArr); // Output: [5, 6, 11, 12, 13]
