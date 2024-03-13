@@ -1,17 +1,14 @@
-function insertionSort(arr) {
-    for (let i = 1; i < arr.length; i++) {
-        let currentVal = arr[i];
-        let j = i - 1;
-        while (j >= 0 && arr[j] > currentVal) {
-            arr[j + 1] = arr[j];
-            j = j - 1;
-        }
-        arr[j + 1] = currentVal;
-    }
-    return arr;
-}
-
-// Example Usage
-const arr = [12, 11, 13, 5, 6];
-const sortedArr = insertionSort(arr);
-console.log(sortedArr); // Output: [5, 6, 11, 12, 13]
+let array = [1, 2, 2, 3, 4, 4, 5];
+let uniqueArray = [...new Set(array)];
+console.log(uniqueArray); // [1, 2, 3, 4, 5]
+let array = [1, 2, 2, 3, 4, 4, 5];
+let uniqueArray = array.filter((item, index) => array.indexOf(item) === index);
+console.log(uniqueArray); // [1, 2, 3, 4, 5]
+let array = [1, 2, 2, 3, 4, 4, 5];
+let uniqueArray = array.reduce((acc, current) => {
+  if (acc.indexOf(current) === -1) {
+    acc.push(current);
+  }
+  return acc;
+}, []);
+console.log(uniqueArray); // [1, 2, 3, 4, 5]
