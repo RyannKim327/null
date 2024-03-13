@@ -1,12 +1,12 @@
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
-
-// Find the index of the element to remove
-let index = array.indexOf(elementToRemove);
-
-if (index > -1) {
-    // Remove the element at the index
-    array.splice(index, 1);
+function findStringLength(str) {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        count++;
+    }
+    return count;
 }
 
-console.log(array); // Output: [1, 2, 4, 5]
+// Example usage
+const myString = 'Hello, world!';
+const length = findStringLength(myString);
+console.log('Length of the string:', length);
