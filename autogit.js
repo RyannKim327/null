@@ -1,27 +1,53 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
+function rabinKarp(text, pattern) {
+    const base = 256; // Base for the hash function
+    const prime = 101; // Prime number for hashing
 
-function maxDepth(root) {
-  if (root === null) {
-    return 0;
-  }
+    function hash(str) {
+        let hashValue = 0;
+        for (let i = 0; i < str.length; i++) {
+            hashValue = (hashValue * base + str.charCodeAt(i)) % prime;
+        }
+        return hashValue;
+    }
 
-  const leftDepth = maxDepth(root.left);
-  const rightDepth = maxDepth(root.right);
+    const patternHash = hash(pattern);
+    const patternLength = pattern.length;
+    const textLength = text.length;
 
-  return Math.max(leftDepth, rightDepth) + 1;
+    let textHash = hash(text.substring(0, patternLength));
+
+    for (let i = 0; i <= textLength - patternLength; i++) {
+        if (textHash === patternHash) {
+            let found = true;
+            for (let j = 0; j < patternLength; j++) {
+                if (text[i + j] !== pattern[j]) {
+                    found = false;
+                    break;
+                }
+            }
+            if (found) {
+                return i; // Pattern found at index i
+            }
+        }
+
+        // Update rolling hash
+        if (i < textLength - patternLength) {
+            textHash = (textHash - text.charCodeAt(i) * Math.pow(base, patternLength - 1)) % prime;
+            textHash = (textHash * base + text.charCodeAt(i + patternLength)) % prime;
+            textHash = (textHash + prime) % prime; // Ensure the hash value is positive
+        }
+    }
+
+    return -1; // Pattern not found
 }
 
 // Example usage
-const tree = new Node(1);
-tree.left = new Node(2);
-tree.right = new Node(3);
-tree.left.left = new Node(4);
-tree.left.right = new Node(5);
+const text = "hello world";
+const pattern = "world";
+const index = rabinKarp(text, pattern);
 
-console.log(maxDepth(tree)); // Output: 3
+if (index !== -1) {
+    console.log(`Pattern found at index ${index}`);
+} else {
+    console.log("Pattern not found");
+}
