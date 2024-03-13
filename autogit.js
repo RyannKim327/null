@@ -1,41 +1,33 @@
-class Node {
-    constructor(value, left = null, right = null) {
-        this.value = value;
-        this.left = left;
-        this.right = right;
-    }
-}
+function findLIS(arr) {
+    const n = arr.length;
+    const dp = new Array(n).fill(1);
 
-class BinaryTree {
-    constructor(root) {
-        this.root = root;
-    }
-
-    sumAllNodes(node) {
-        if (node === null) {
-            return 0;
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[i] > arr[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
         }
-
-        return node.value + this.sumAllNodes(node.left) + this.sumAllNodes(node.right);
     }
 
-    getSumOfAllNodes() {
-        return this.sumAllNodes(this.root);
+    let maxLength = 0;
+    for (let i = 0; i < n; i++) {
+        maxLength = Math.max(maxLength, dp[i]);
     }
+
+    const result = [];
+    let currentLength = maxLength;
+    for (let i = n - 1; i >= 0; i--) {
+        if (dp[i] === currentLength) {
+            result.unshift(arr[i]);
+            currentLength--;
+        }
+    }
+
+    return result;
 }
 
-// Creating a binary tree
-const node1 = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
-const node4 = new Node(4);
-const node5 = new Node(5);
+const arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
+const lis = findLIS(arr);
 
-node1.left = node2;
-node1.right = node3;
-node2.left = node4;
-node2.right = node5;
-
-const binaryTree = new BinaryTree(node1);
-
-console.log("Sum of all nodes in the binary tree: ", binaryTree.getSumOfAllNodes());
+console.log('Longest Increasing Subsequence:', lis);
