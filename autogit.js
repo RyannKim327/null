@@ -1,48 +1,27 @@
-class Graph {
-    constructor() {
-        this.adjList = new Map();
-    }
-
-    addVertex(v) {
-        this.adjList.set(v, []);
-    }
-
-    addEdge(v, w) {
-        this.adjList.get(v).push(w);
-    }
-
-    depthFirstSearch(startingNode) {
-        let visited = {};
-        this._dfs(startingNode, visited);
-    }
-
-    _dfs(node, visited) {
-        visited[node] = true;
-        console.log(node);
-
-        let neighbors = this.adjList.get(node);
-
-        for (let i = 0; i < neighbors.length; i++) {
-            let currentNode = neighbors[i];
-            if(!visited[currentNode]) {
-                this._dfs(currentNode, visited);
-            }
-        }
+class ListNode {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
     }
 }
 
+function findMiddleElement(head) {
+    let slow = head;
+    let fast = head;
+
+    while (fast != null && fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+
+    return slow;
+}
+
 // Example usage
-const graph = new Graph();
-graph.addVertex(1);
-graph.addVertex(2);
-graph.addVertex(3);
-graph.addVertex(4);
-graph.addVertex(5);
+let head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
 
-graph.addEdge(1, 2);
-graph.addEdge(1, 3);
-graph.addEdge(2, 4);
-graph.addEdge(2, 5);
-
-console.log('Depth First Search:');
-graph.depthFirstSearch(1);
+console.log(findMiddleElement(head).value); // Output will be 3
