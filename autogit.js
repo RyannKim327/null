@@ -1,48 +1,15 @@
-function preprocessPattern(pattern) {
-    const table = {};
-    const patternLength = pattern.length;
-    
-    for (let i = 0; i < patternLength - 1; i++) {
-        table[pattern[i]] = patternLength - i - 1;
-    }
-    
-    return table;
-}
+function maxSubarraySum(arr) {
+    let maxEndingHere = arr[0];
+    let maxSoFar = arr[0];
 
-function boyerMooreSearch(text, pattern) {
-    const table = preprocessPattern(pattern);
-    const textLength = text.length;
-    const patternLength = pattern.length;
-    let i = patternLength - 1;
-    let j = patternLength - 1;
-
-    while (i < textLength) {
-        if (text[i] === pattern[j]) {
-            if (j === 0) {
-                return i;
-            }
-            i--;
-            j--;
-        } else {
-            if (table.hasOwnProperty(text[i])) {
-                i += Math.max(table[text[i]], patternLength - j);
-            } else {
-                i += patternLength;
-            }
-            j = patternLength - 1;
-        }
+    for (let i = 1; i < arr.length; i++) {
+        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
+        maxSoFar = Math.max(maxSoFar, maxEndingHere);
     }
-    
-    return -1;
+
+    return maxSoFar;
 }
 
 // Example usage
-const text = 'This is an example text for searching';
-const pattern = 'example';
-const index = boyerMooreSearch(text, pattern);
-
-if (index !== -1) {
-    console.log(`Pattern found at index ${index}`);
-} else {
-    console.log('Pattern not found');
-}
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+console.log(maxSubarraySum(array)); // Output: 6 (subarray [4, -1, 2, 1])
