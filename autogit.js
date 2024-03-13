@@ -1,41 +1,58 @@
-function swap(arr, a, b) {
-    const temp = arr[a];
-    arr[a] = arr[b];
-    arr[b] = temp;
+class Stack {
+  constructor() {
+    this.stackArray = [];
+  }
+
+  // Add an element to the top of the stack
+  push(element) {
+    this.stackArray.push(element);
+  }
+
+  // Remove and return the top element from the stack
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
+    }
+    return this.stackArray.pop();
+  }
+
+  // Get the top element of the stack without removing it
+  peek() {
+    return this.stackArray[this.stackArray.length - 1];
+  }
+
+  // Check if the stack is empty
+  isEmpty() {
+    return this.stackArray.length === 0;
+  }
+
+  // Get the size of the stack
+  size() {
+    return this.stackArray.length;
+  }
+
+  // Print the stack elements
+  print() {
+    console.log(this.stackArray);
+  }
 }
 
-function partition(arr, left, right) {
-    const pivotValue = arr[right];
-    let partitionIndex = left;
+// Create a new stack
+const stack = new Stack();
 
-    for (let i = left; i < right; i++) {
-        if (arr[i] < pivotValue) {
-            swap(arr, i, partitionIndex);
-            partitionIndex++;
-        }
-    }
-    swap(arr, partitionIndex, right);
-    return partitionIndex;
-}
+// Push elements onto the stack
+stack.push(1);
+stack.push(2);
+stack.push(3);
 
-function quickSelect(arr, k, left = 0, right = arr.length - 1) {
-    if (left === right) {
-        return arr[left];
-    }
+// Print the stack
+stack.print(); // Output: [1, 2, 3]
 
-    const pivotIndex = partition(arr, left, right);
+// Pop an element from the stack
+console.log(stack.pop()); // Output: 3
 
-    if (k === pivotIndex) {
-        return arr[k];
-    } else if (k < pivotIndex) {
-        return quickSelect(arr, k, left, pivotIndex - 1);
-    } else {
-        return quickSelect(arr, k, pivotIndex + 1, right);
-    }
-}
+// Peek at the top element of the stack
+console.log(stack.peek()); // Output: 2
 
-// Example usage
-const array = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
-const k = 5; // find the 5th smallest element
-const kthSmallest = quickSelect(array, k - 1); // k-1 because arrays are zero-based
-console.log(`The ${k}th smallest element is: ${kthSmallest}`);
+// Print the stack
+stack.print(); // Output: [1, 2]
