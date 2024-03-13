@@ -1,20 +1,70 @@
-function bubbleSort(arr) {
-    let len = arr.length;
-    for (let i = 0; i < len; i++) {
-        for (let j = 0; j < len - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                // Swap elements
-                let temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+class BinarySearchTree {
+    constructor() {
+        this.root = null;
+    }
+
+    insert(data) {
+        let newNode = new Node(data);
+
+        if (this.root === null) {
+            this.root = newNode;
+        } else {
+            this.insertNode(this.root, newNode);
+        }
+    }
+
+    insertNode(node, newNode) {
+        if (newNode.data < node.data) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
             }
         }
     }
-    return arr;
+
+    search(data) {
+        return this.searchNode(this.root, data);
+    }
+
+    searchNode(node, data) {
+        if (node === null) {
+            return false;
+        }
+
+        if (data < node.data) {
+            return this.searchNode(node.left, data);
+        } else if (data > node.data) {
+            return this.searchNode(node.right, data);
+        } else {
+            return true;
+        }
+    }
 }
 
-// Example usage
-let arr = [64, 34, 25, 12, 22, 11, 90];
-console.log("Original array: ", arr);
-let sortedArr = bubbleSort(arr);
-console.log("Sorted array: ", sortedArr);
+// Example Usage:
+const bst = new BinarySearchTree();
+
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(3);
+bst.insert(7);
+bst.insert(12);
+
+console.log(bst.search(7)); // Output: true
+console.log(bst.search(20)); // Output: false
