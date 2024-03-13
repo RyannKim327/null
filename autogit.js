@@ -1,83 +1,102 @@
-// Red-Black Tree Node
 class Node {
-    constructor(value, color = 'red') {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-        this.color = color; // "red" or "black"
-    }
+  constructor(value, level) {
+    this.value = value;
+    this.forward = new Array(level + 1).fill(null);
+  }
 }
+class SkipList {
+  constructor(maxLevel, probability) {
+    this.maxLevel = maxLevel;
+    this.probability = probability;
+    this.head = new Node(-Infinity, maxLevel);
+    this.level = 0;
+  }
 
-// Red-Black Tree
-class RedBlackTree {
-    constructor() {
-        this.root = null;
+  randomLevel() {
+    let level = 0;
+    while (Math.random() < this.probability && level < this.maxLevel) {
+      level++;
+    }
+    return level;
+  }
+
+  insert(value) {
+    let update = new Array(this.maxLevel + 1).fill(null);
+    let current = this.head;
+
+    for (let i = this.level; i >= 0; i--) {
+      while (current.forward[i] !== null && current.forward[i].value < value) {
+        current = current.forward[i];
+      }
+      update[i] = current;
     }
 
-    // Left Rotation
-    rotateLeft(node) {
-        const newRoot = node.right;
-        node.right = newRoot.left;
-        newRoot.left = node;
-        newRoot.color = node.color;
-        node.color = 'red';
-        return newRoot;
+    let newLevel = this.randomLevel();
+    if (newLevel > this.level) {
+      for (let i = this.level + 1; i <= newLevel; i++) {
+        update[i] = this.head;
+      }
+      this.level = newLevel;
     }
 
-    // Right Rotation
-    rotateRight(node) {
-        const newRoot = node.left;
-        node.left = newRoot.right;
-        newRoot.right = node;
-        newRoot.color = node.color;
-        node.color = 'red';
-        return newRoot;
+    let newNode = new Node(value, newLevel);
+    for (let i = 0; i <= newLevel; i++) {
+      newNode.forward[i] = update[i].forward[i];
+      update[i].forward[i] = newNode;
+    }
+  }
+
+  search(value) {
+    let current = this.head;
+    for (let i = this.level; i >= 0; i--) {
+      while (current.forward[i] !== null && current.forward[i].value < value) {
+        current = current.forward[i];
+      }
+    }
+    current = current.forward[0];
+
+    if (current !== null && current.value === value) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  delete(value) {
+    let update = new Array(this.level + 1).fill(null);
+    let current = this.head;
+
+    for (let i = this.level; i >= 0; i--) {
+      while (current.forward[i] !== null && current.forward[i].value < value) {
+        current = current.forward[i];
+      }
+      update[i] = current;
     }
 
-    // Check if a node is red
-    isRed(node) {
-        return node ? node.color === 'red' : false;
+    current = current.forward[0];
+    if (current !== null && current.value === value) {
+      for (let i = 0; i <= this.level; i++) {
+        if (update[i].forward[i] !== current) {
+          break;
+        }
+        update[i].forward[i] = current.forward[i];
+      }
+
+      while (this.level > 0 && this.head.forward[this.level] === null) {
+        this.level--;
+      }
     }
-
-    // Red-Black Tree Insertion
-    insert(value) {
-        const insertNode = (node, value) => {
-            if (!node) {
-                return new Node(value, 'red');
-            }
-
-            if (value < node.value) {
-                node.left = insertNode(node.left, value);
-            } else if (value > node.value) {
-                node.right = insertNode(node.right, value);
-            } else {
-                // Duplicate values not allowed
-                return node;
-            }
-
-            // Balance the tree
-            if (this.isRed(node.right) && !this.isRed(node.left)) {
-                node = this.rotateLeft(node);
-            }
-            if (this.isRed(node.left) && this.isRed(node.left.left)) {
-                node = this.rotateRight(node);
-            }
-            if (this.isRed(node.left) && this.isRed(node.right)) {
-                node.left.color = 'black';
-                node.right.color = 'black';
-                node.color = 'red';
-            }
-
-            return node;
-        };
-
-        this.root = insertNode(this.root, value);
-        this.root.color = 'black'; // Root is always black
-    }
+  }
 }
+// Example usage of SkipList
+let skipList = new SkipList(3, 0.5);
+skipList.insert(3);
+skipList.insert(6);
+skipList.insert(7);
+skipList.insert(9);
 
-// Usage
-const rbTree = new RedBlackTree();
-rbTree.insert(10);
-rbTree.insert(20);
-rbTree.insert(30);
+console.log(skipList.search(6)); // Output: true
+console.log(skipList.search(8)); // Output: false
+
+skipList.delete(7);
+console.log(skipList.search(7)); // Output: false
