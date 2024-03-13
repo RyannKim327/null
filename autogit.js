@@ -1,12 +1,17 @@
-// API endpoint
-const apiUrl = 'https://jsonplaceholder.typicode.com/posts';
+function bubbleSort(arr) {
+    let len = arr.length;
+    for (let i = 0; i < len; i++) {
+        for (let j = 0; j < len - 1 - i; j++) {
+            if (arr[j] > arr[j + 1]) {
+                let temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+    return arr;
+}
 
-// Make a GET request to the API
-fetch(apiUrl)
-  .then(response => response.json())
-  .then(data => {
-    console.log(data); // Output the response data to the console
-  })
-  .catch(error => {
-    console.error('Error fetching data:', error);
-  });
+const myArray = [5, 3, 8, 2, 1, 4];
+console.log('Before sorting:', myArray);
+console.log('After sorting:', bubbleSort(myArray));
