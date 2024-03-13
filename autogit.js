@@ -1,15 +1,11 @@
-function maxSubarraySum(arr) {
-    let maxEndingHere = arr[0];
-    let maxSoFar = arr[0];
+const apiUrl = 'https://jsonplaceholder.typicode.com/users';
 
-    for (let i = 1; i < arr.length; i++) {
-        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
-        maxSoFar = Math.max(maxSoFar, maxEndingHere);
-    }
-
-    return maxSoFar;
-}
-
-// Example usage
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-console.log(maxSubarraySum(array)); // Output: 6 (subarray [4, -1, 2, 1])
+fetch(apiUrl)
+  .then(response => response.json())
+  .then(data => {
+    const firstUser = data[0];
+    console.log('First user:', firstUser);
+  })
+  .catch(error => {
+    console.error('Error fetching data:', error);
+  });
