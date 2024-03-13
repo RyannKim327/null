@@ -1,19 +1,6 @@
-function bubbleSort(arr) {
-    let len = arr.length;
-    for (let i = 0; i < len; i++) {
-        for (let j = 0; j < len - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                // Swap elements
-                let temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
-        }
-    }
-    return arr;
-}
-
-// Example usage
-const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
-const sortedArray = bubbleSort(unsortedArray);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 34, 64, 90]
+let numbers = [5, 3, 8, 1, 2, 9, 4, 7, 6];
+numbers.sort((a, b) => a - b);
+console.log(numbers); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+let numbers = [5, 3, 8, 1, 2, 9, 4, 7, 6];
+numbers.sort((a, b) => b - a);
+console.log(numbers); // Output: [9, 8, 7, 6, 5, 4, 3, 2, 1]
