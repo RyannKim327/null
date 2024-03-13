@@ -1,15 +1,27 @@
-function isPalindrome(str) {
-    // Remove non-alphanumeric characters and convert to lowercase
-    const cleanedStr = str.replace(/[\W_]/g, '').toLowerCase();
-    
-    // Compare the cleaned string with its reverse
-    return cleanedStr === cleanedStr.split('').reverse().join('');
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-// Test the function
-const testString = "A man, a plan, a canal, Panama!";
-if (isPalindrome(testString)) {
-    console.log(`${testString} is a palindrome.`);
-} else {
-    console.log(`${testString} is not a palindrome.`);
+function maxDepth(root) {
+  if (root === null) {
+    return 0;
+  }
+
+  const leftDepth = maxDepth(root.left);
+  const rightDepth = maxDepth(root.right);
+
+  return Math.max(leftDepth, rightDepth) + 1;
 }
+
+// Example usage
+const tree = new Node(1);
+tree.left = new Node(2);
+tree.right = new Node(3);
+tree.left.left = new Node(4);
+tree.left.right = new Node(5);
+
+console.log(maxDepth(tree)); // Output: 3
