@@ -1,27 +1,15 @@
-function findMajorityElement(arr) {
-    let counts = {};
+function isPalindrome(str) {
+    // Remove non-alphanumeric characters and convert to lowercase
+    const cleanedStr = str.replace(/[\W_]/g, '').toLowerCase();
     
-    for (let i = 0; i < arr.length; i++) {
-        if (counts[arr[i]] === undefined) {
-            counts[arr[i]] = 1;
-        } else {
-            counts[arr[i]]++;
-        }
-        
-        if (counts[arr[i]] > arr.length / 2) {
-            return arr[i];
-        }
-    }
-    
-    return null;
+    // Compare the cleaned string with its reverse
+    return cleanedStr === cleanedStr.split('').reverse().join('');
 }
 
-// Example usage
-const arr = [2, 1, 2, 2, 3, 2, 4, 2, 2];
-const majorityElement = findMajorityElement(arr);
-
-if (majorityElement !== null) {
-    console.log('The majority element is: ' + majorityElement);
+// Test the function
+const testString = "A man, a plan, a canal, Panama!";
+if (isPalindrome(testString)) {
+    console.log(`${testString} is a palindrome.`);
 } else {
-    console.log('There is no majority element in the array.');
+    console.log(`${testString} is not a palindrome.`);
 }
