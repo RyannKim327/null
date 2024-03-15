@@ -1,54 +1,67 @@
-class HashTable {
-  constructor(size) {
-    this.size = size;
-    this.table = new Array(size);
-  }
+class PriorityQueue {
+    constructor() {
+        this.heap = [];
+    }
 
-  hash(key) {
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) {
-      hash = (hash + key.charCodeAt(i) * (i + 1)) % this.size;
+    insert(element, priority) {
+        const node = { element, priority };
+        this.heap.push(node);
+        this.bubbleUp();
     }
-    return hash;
-  }
 
-  set(key, value) {
-    const index = this.hash(key);
-    if (!this.table[index]) {
-      this.table[index] = [];
+    removeMax() {
+        if (this.heap.length === 0) {
+            return null;
+        }
+        const max = this.heap[0];
+        const lastNode = this.heap.pop();
+        if (this.heap.length > 0) {
+            this.heap[0] = lastNode;
+            this.heapifyDown();
+        }
+        return max;
     }
-    this.table[index].push([key, value]);
-  }
 
-  get(key) {
-    const index = this.hash(key);
-    if (!this.table[index]) {
-      return undefined;
+    bubbleUp() {
+        let index = this.heap.length - 1;
+        while (index > 0) {
+            const parentIndex = Math.floor((index - 1) / 2);
+            if (this.heap[parentIndex].priority >= this.heap[index].priority)
+                break;
+            [this.heap[parentIndex], this.heap[index]] = [this.heap[index], this.heap[parentIndex]];
+            index = parentIndex;
+        }
     }
-    for (let i = 0; i < this.table[index].length; i++) {
-      if (this.table[index][i][0] === key) {
-        return this.table[index][i][1];
-      }
-    }
-    return undefined;
-  }
 
-  remove(key) {
-    const index = this.hash(key);
-    if (!this.table[index]) {
-      return;
+    heapifyDown() {
+        let index = 0;
+        while (true) {
+            let maxIndex = index;
+            let leftChildIndex = 2 * index + 1;
+            let rightChildIndex = 2 * index + 2;
+
+            if (leftChildIndex < this.heap.length && this.heap[leftChildIndex].priority > this.heap[maxIndex].priority) {
+                maxIndex = leftChildIndex;
+            }
+
+            if (rightChildIndex < this.heap.length && this.heap[rightChildIndex].priority > this.heap[maxIndex].priority) {
+                maxIndex = rightChildIndex;
+            }
+
+            if (maxIndex === index) break;
+
+            [this.heap[index], this.heap[maxIndex]] = [this.heap[maxIndex], this.heap[index]];
+            index = maxIndex;
+        }
     }
-    this.table[index] = this.table[index].filter(item => item[0] !== key);
-  }
 }
 
 // Example usage
-const ht = new HashTable(10);
-ht.set("name", "John");
-ht.set("age", 30);
+const pq = new PriorityQueue();
+pq.insert('task1', 10);
+pq.insert('task2', 5);
+pq.insert('task3', 15);
 
-console.log(ht.get("name")); // Output: John
-console.log(ht.get("age")); // Output: 30
-
-ht.remove("age");
-console.log(ht.get("age")); // Output: undefined
+console.log(pq.removeMax()); // { element: 'task3', priority: 15 }
+console.log(pq.removeMax()); // { element: 'task1', priority: 10 }
+console.log(pq.removeMax()); // { element: 'task2', priority: 5 }
