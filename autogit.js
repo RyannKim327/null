@@ -1,18 +1,31 @@
-function shellSort(arr) {
-    let n = arr.length;
-    for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
-        for (let i = gap; i < n; i++) {
-            let temp = arr[i];
-            let j;
-            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
-                arr[j] = arr[j - gap];
-            }
-            arr[j] = temp;
+function interpolationSearch(arr, x) {
+    let low = 0;
+    let high = arr.length - 1;
+
+    while (low <= high && x >= arr[low] && x <= arr[high]) {
+        let pos = low + Math.floor(((x - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+
+        if (arr[pos] === x) {
+            return pos;
+        }
+
+        if (arr[pos] < x) {
+            low = pos + 1;
+        } else {
+            high = pos - 1;
         }
     }
-    return arr;
+
+    return -1; // Element not found
 }
 
-// Test the shellSort function
-let arr = [12, 34, 54, 2, 3];
-console.log(shellSort(arr)); // Output: [2, 3, 12, 34, 54]
+// Example usage
+const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+const x = 12;
+const result = interpolationSearch(arr, x);
+
+if (result !== -1) {
+    console.log(`Element found at index ${result}`);
+} else {
+    console.log("Element not found");
+}
