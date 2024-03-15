@@ -1,44 +1,55 @@
 class Node {
-    constructor(value) {
-        this.value = value;
-        this.children = [];
-    }
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
 }
 
-function depthLimitedSearch(root, target, depthLimit) {
-    let stack = [{node: root, depth: 0}];
-    
-    while (stack.length > 0) {
-        let { node, depth } = stack.pop();
-        
-        if (depth > depthLimit) {
-            continue;
-        }
-        
-        if (node.value === target) {
-            return node;
-        }
-        
-        for (let child of node.children) {
-            stack.push({node: child, depth: depth + 1});
-        }
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+
+  add(data) {
+    const newNode = new Node(data);
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
     }
-    
-    return null;
+  }
+
+  isPalindrome() {
+    let values = [];
+    let current = this.head;
+    while (current) {
+      values.push(current.data);
+      current = current.next;
+    }
+
+    let start = 0;
+    let end = values.length - 1;
+    while (start < end) {
+      if (values[start] !== values[end]) {
+        return false;
+      }
+      start++;
+      end--;
+    }
+    return true;
+  }
 }
 
 // Example usage
-let root = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-let node4 = new Node(4);
+const linkedList = new LinkedList();
+linkedList.add(1);
+linkedList.add(2);
+linkedList.add(3);
+linkedList.add(2);
+linkedList.add(1);
 
-root.children = [node2, node3];
-node2.children = [node4];
-
-let result = depthLimitedSearch(root, 4, 2);
-if (result) {
-    console.log("Node found with value:", result.value);
-} else {
-    console.log("Node not found within depth limit.");
-}
+console.log(linkedList.isPalindrome()); // Output: true
