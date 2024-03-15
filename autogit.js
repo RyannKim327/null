@@ -1,33 +1,41 @@
-// B-tree Node constructor
-function Node(keys, children, isLeaf) {
-    this.keys = keys || [];
-    this.children = children || [];
-    this.isLeaf = isLeaf;
+function longestCommonSubsequence(str1, str2) {
+    const m = str1.length;
+    const n = str2.length;
+
+    // Create a 2D array to store lengths of longest common subsequences
+    const dp = [];
+    for (let i = 0; i <= m; i++) {
+        dp[i] = [];
+        for (let j = 0; j <= n; j++) {
+            if (i === 0 || j === 0) {
+                dp[i][j] = 0;
+            } else if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+    }
+
+    // Find the longest common subsequence
+    let lcs = '';
+    let i = m, j = n;
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            lcs = str1[i - 1] + lcs;
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
+        }
+    }
+
+    return lcs;
 }
 
-// B-tree constructor
-function BTree(order) {
-    this.root = new Node();
-    this.order = order;
-}
-
-BTree.prototype.insert = function(key) {
-    // Implement B-tree insertion algorithm here
-    // Start at the root and traverse the tree to find the correct position for the new key
-    // Split nodes if necessary to maintain B-tree properties
-    // Update the root if necessary
-};
-
-BTree.prototype.search = function(key) {
-    // Implement B-tree search algorithm here
-    // Start at the root and traverse the tree to find the key
-    // Return true if the key is found, false otherwise
-};
-
-// Example usage
-var btree = new BTree(3); // Create a new B-tree with order 3
-btree.insert(5);
-btree.insert(10);
-btree.insert(20);
-console.log(btree.search(10)); // Output: true
-console.log(btree.search(15)); // Output: false
+// Test the function
+const str1 = "AGGTAB";
+const str2 = "GXTXAYB";
+console.log("Longest Common Subsequence: " + longestCommonSubsequence(str1, str2));
