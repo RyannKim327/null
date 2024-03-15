@@ -1,37 +1,52 @@
 class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-function diameterOfBinaryTree(root) {
-    let diameter = 0;
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
 
-    function depth(node) {
-        if (!node) {
-            return 0;
-        }
+  addNode(value) {
+    let newNode = new Node(value);
 
-        let leftDepth = depth(node.left);
-        let rightDepth = depth(node.right);
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
 
-        diameter = Math.max(diameter, leftDepth + rightDepth);
-
-        return 1 + Math.max(leftDepth, rightDepth);
+  findMiddleElement() {
+    if (!this.head) {
+      return null;
     }
 
-    depth(root);
+    let slow = this.head;
+    let fast = this.head;
 
-    return diameter;
+    while (fast && fast.next) {
+      slow = slow.next;
+      fast = fast.next.next;
+    }
+
+    return slow.value;
+  }
 }
 
-// Example usage:
-let root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
+// Usage
+let list = new LinkedList();
+list.addNode(1);
+list.addNode(2);
+list.addNode(3);
+list.addNode(4);
+list.addNode(5);
 
-console.log(diameterOfBinaryTree(root)); // Output: 3
+console.log(list.findMiddleElement()); // Output: 3
