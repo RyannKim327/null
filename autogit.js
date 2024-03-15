@@ -1,53 +1,22 @@
-class HashTable {
-    constructor() {
-        this.table = {};
-    }
+function countOccurrences(str, word) {
+    // Split the string by spaces to get an array of words
+    const words = str.split(' ');
 
-    // Function to insert a key-value pair into the hash table
-    insert(key, value) {
-        this.table[key] = value;
-    }
+    // Initialize a variable to store the count
+    let count = 0;
 
-    // Function to get the value associated with a key
-    get(key) {
-        return this.table[key];
-    }
-
-    // Function to check if a key exists in the hash table
-    contains(key) {
-        return this.table.hasOwnProperty(key);
-    }
-
-    // Function to remove a key-value pair from the hash table
-    remove(key) {
-        if (this.contains(key)) {
-            delete this.table[key];
+    // Loop through the words array and check if each word is equal to the target word
+    words.forEach(function (w) {
+        if (w.toLowerCase() === word.toLowerCase()) {
+            count++;
         }
-    }
+    });
 
-    // Function to get all keys in the hash table
-    getKeys() {
-        return Object.keys(this.table);
-    }
-
-    // Function to get all values in the hash table
-    getValues() {
-        return Object.values(this.table);
-    }
-
-    // Function to get the size of the hash table
-    size() {
-        return Object.keys(this.table).length;
-    }
+    return count;
 }
 
-// Example usage
-const ht = new HashTable();
-ht.insert('name', 'Alice');
-ht.insert('age', 30);
-
-console.log(ht.get('name'));  // Output: Alice
-console.log(ht.size());  // Output: 2
-
-ht.remove('age');
-console.log(ht.contains('age'));  // Output: false
+// Test the function
+const sentence = "JavaScript is a popular programming language, and JavaScript is widely used.";
+const word = "JavaScript";
+const occurrences = countOccurrences(sentence, word);
+console.log(`The word '${word}' appears ${occurrences} times in the sentence.`);
