@@ -1,26 +1,35 @@
-function isAnagram(str1, str2) {
-    // Remove any non-alphanumeric characters and convert the strings to lowercase
-    str1 = str1.replace(/[^\w]/g, '').toLowerCase();
-    str2 = str2.replace(/[^\w]/g, '').toLowerCase();
+function longestCommonSubsequence(str1, str2) {
+    const dp = Array.from({ length: str1.length + 1 }, () =>
+        Array.from({ length: str2.length + 1 }).fill(0)
+    );
 
-    // Check if the length of the strings are different
-    if (str1.length !== str2.length) {
-        return false;
+    for (let i = 1; i <= str1.length; i++) {
+        for (let j = 1; j <= str2.length; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = 1 + dp[i - 1][j - 1];
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
     }
 
-    // Sort the characters of the strings and compare them
-    const sortedStr1 = str1.split('').sort().join('');
-    const sortedStr2 = str2.split('').sort().join('');
+    let i = str1.length, j = str2.length;
+    let lcs = '';
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            lcs = str1[i - 1] + lcs;
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
+        }
+    }
 
-    return sortedStr1 === sortedStr2;
+    return lcs;
 }
 
-// Test the function
-const string1 = "listen";
-const string2 = "silent";
-
-if (isAnagram(string1, string2)) {
-    console.log(`${string1} and ${string2} are anagrams.`);
-} else {
-    console.log(`${string1} and ${string2} are not anagrams.`);
-}
+const str1 = 'AGGTAB';
+const str2 = 'GXTXAYB';
+console.log(longestCommonSubsequence(str1, str2)); // Output: GTAB
