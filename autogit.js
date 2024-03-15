@@ -1,61 +1,54 @@
-class Graph {
-  constructor() {
-    this.nodes = {};
-  }
-
-  addNode(name, neighbors) {
-    this.nodes[name] = neighbors;
-  }
-
-  biDirectionalSearch(startNode, goalNode) {
-    let visitedFromStart = {};
-    let visitedFromGoal = {};
-    let queueFromStart = [startNode];
-    let queueFromGoal = [goalNode];
-
-    visitedFromStart[startNode] = true;
-    visitedFromGoal[goalNode] = true;
-
-    while (queueFromStart.length > 0 && queueFromGoal.length > 0) {
-      const currentStart = queueFromStart.shift();
-      const currentGoal = queueFromGoal.shift();
-
-      if (currentStart in visitedFromGoal || currentStart === goalNode) {
-        console.log("Path found!");
-        return;
-      }
-
-      if (currentGoal in visitedFromStart || currentGoal === startNode) {
-        console.log("Path found!");
-        return;
-      }
-
-      for (let neighbor of this.nodes[currentStart]) {
-        if (!visitedFromStart[neighbor]) {
-          visitedFromStart[neighbor] = true;
-          queueFromStart.push(neighbor);
+function computeLPSArray(pattern) {
+    let lps = new Array(pattern.length).fill(0);
+    let len = 0;
+    let i = 1;
+    
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
         }
-      }
-
-      for (let neighbor of this.nodes[currentGoal]) {
-        if (!visitedFromGoal[neighbor]) {
-          visitedFromGoal[neighbor] = true;
-          queueFromGoal.push(neighbor);
-        }
-      }
     }
-
-    console.log("Path not found.");
-  }
+    
+    return lps;
 }
 
-// Example usage
-const graph = new Graph();
-graph.addNode('A', ['B']);
-graph.addNode('B', ['C', 'D']);
-graph.addNode('C', ['E']);
-graph.addNode('D', ['E']);
-graph.addNode('E', ['F']);
-graph.addNode('F', []);
+function KMPSearch(text, pattern) {
+    let n = text.length;
+    let m = pattern.length;
+    let lps = computeLPSArray(pattern);
+    
+    let i = 0; // index for text
+    let j = 0; // index for pattern
+    
+    while (i < n) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+        
+        if (j === m) {
+            console.log("Pattern found at index " + (i - j));
+            j = lps[j - 1];
+        } else if (i < n && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+}
 
-graph.biDirectionalSearch('A', 'F');
+let text = "ABABDABACDABABCABAB";
+let pattern = "ABABCABAB";
+
+KMPSearch(text, pattern);
