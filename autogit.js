@@ -1,44 +1,7 @@
-function heapSort(arr) {
-    buildMaxHeap(arr);
-
-    for (let i = arr.length - 1; i > 0; i--) {
-        [arr[0], arr[i]] = [arr[i], arr[0]];
-        maxHeapify(arr, 0, i);
-    }
-
-    return arr;
+function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function buildMaxHeap(arr) {
-    const n = arr.length;
-
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        maxHeapify(arr, i, n);
-    }
-}
-
-function maxHeapify(arr, i, n) {
-    const left = 2 * i + 1;
-    const right = 2 * i + 2;
-    let largest = i;
-
-    if (left < n && arr[left] > arr[largest]) {
-        largest = left;
-    }
-
-    if (right < n && arr[right] > arr[largest]) {
-        largest = right;
-    }
-
-    if (largest !== i) {
-        [arr[i], arr[largest]] = [arr[largest], arr[i]];
-        maxHeapify(arr, largest, n);
-    }
-}
-
-// Example usage
-const arr = [12, 11, 13, 5, 6, 7];
-console.log("Original array: ", arr);
-
-const sortedArr = heapSort(arr);
-console.log("Sorted array: ", sortedArr);
+// Example: Generate a random number between 1 and 100
+const randomNumber = getRandomNumber(1, 100);
+console.log(randomNumber);
