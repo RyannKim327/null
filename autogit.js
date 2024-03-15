@@ -1,9 +1,7 @@
-let str = "42";
-let number = parseInt(str);
-console.log(number); // Output: 42
-let str = "1010";
-let binaryNumber = parseInt(str, 2); // converting binary to integer
-console.log(binaryNumber); // Output: 10
-let str = "42";
-let number = Number(str);
-console.log(number); // Output: 42
+function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Generate a random number between 1 and 10
+var randomNumber = getRandomNumber(1, 10);
+console.log(randomNumber);
