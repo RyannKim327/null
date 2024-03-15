@@ -1,53 +1,51 @@
-function buildPatternTable(pattern) {
-    let table = Array(pattern.length).fill(0);
-    let j = 0;
-    
-    for (let i = 1; i < pattern.length; i++) {
-        if (pattern[i] === pattern[j]) {
-            table[i] = j + 1;
-            j++;
-        } else {
-            if (j !== 0) {
-                j = table[j - 1];
-                i--;
-            } else {
-                table[i] = 0;
-            }
+class Graph {
+  constructor() {
+    this.adjacencyList = {};
+  }
+
+  addVertex(vertex) {
+    if (!this.adjacencyList[vertex]) this.adjacencyList[vertex] = [];
+  }
+
+  addEdge(vertex1, vertex2) {
+    this.adjacencyList[vertex1].push(vertex2);
+    this.adjacencyList[vertex2].push(vertex1);
+  }
+
+  depthFirstSearch(startingVertex) {
+    const visited = {};
+    const result = [];
+
+    const dfs = (vertex) => {
+      if (!vertex) return null;
+      visited[vertex] = true;
+      result.push(vertex);
+
+      this.adjacencyList[vertex].forEach((neighbor) => {
+        if (!visited[neighbor]) {
+          return dfs(neighbor);
         }
-    }
-    
-    return table;
+      });
+    };
+
+    dfs(startingVertex);
+
+    return result;
+  }
 }
 
-function knuthMorrisPratt(text, pattern) {
-    let table = buildPatternTable(pattern);
-    
-    let i = 0;
-    let j = 0;
-    let matches = [];
-    
-    while (i < text.length) {
-        if (text[i] === pattern[j]) {
-            i++;
-            j++;
-            if (j === pattern.length) {
-                matches.push(i - j);
-                j = 0;
-            }
-        } else {
-            if (j !== 0) {
-                j = table[j - 1];
-            } else {
-                i++;
-            }
-        }
-    }
-    
-    return matches;
-}
+// Usage
+const graph = new Graph();
 
-// Example usage
-let text = "ABABDABACDABABCABAB";
-let pattern = "ABABCABAB";
-let matches = knuthMorrisPratt(text, pattern);
-console.log(matches);
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addVertex('E');
+
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('C', 'E');
+
+console.log(graph.depthFirstSearch('A'));  // Output: ['A', 'B', 'D', 'C', 'E']
