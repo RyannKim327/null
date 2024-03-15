@@ -1,49 +1,31 @@
-class Node {
-    constructor(data) {
-        this.data = data;
+// Definition for a singly-linked list node
+class ListNode {
+    constructor(value) {
+        this.value = value;
         this.next = null;
     }
 }
 
-class LinkedList {
-    constructor() {
-        this.head = null;
+// Function to find the length of a linked list
+function findLengthOfLinkedList(head) {
+    let length = 0;
+    let current = head;
+
+    while (current !== null) {
+        length++;
+        current = current.next;
     }
 
-    // Function to insert a new node at the end of the linked list
-    insert(data) {
-        const newNode = new Node(data);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
-        }
-    }
-
-    // Function to find the middle element of the linked list
-    findMiddle() {
-        let slow = this.head;
-        let fast = this.head;
-
-        while (fast && fast.next) {
-            slow = slow.next;
-            fast = fast.next.next;
-        }
-
-        return slow.data;
-    }
+    return length;
 }
 
-// Creating a linked list and inserting elements
-let list = new LinkedList();
-list.insert(1);
-list.insert(2);
-list.insert(3);
-list.insert(4);
-list.insert(5);
+// Example linked list
+let head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
 
-console.log(list.findMiddle()); // Output: 3
+// Find the length of the linked list
+const length = findLengthOfLinkedList(head);
+console.log("Length of the linked list: " + length); // Output: Length of the linked list: 5
