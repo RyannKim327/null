@@ -1,26 +1,40 @@
-function binarySearchRecursive(arr, target, start, end) {
-    if (start > end) {
-        return -1; // Element not found
+function heapify(arr, n, i) {
+    let largest = i;
+    let left = 2 * i + 1;
+    let right = 2 * i + 2;
+
+    if (left < n && arr[left] > arr[largest]) {
+        largest = left;
     }
 
-    let mid = Math.floor((start + end) / 2);
+    if (right < n && arr[right] > arr[largest]) {
+        largest = right;
+    }
 
-    if (arr[mid] === target) {
-        return mid; // Element found
-    } else if (arr[mid] < target) {
-        return binarySearchRecursive(arr, target, mid + 1, end); // Search the right half
-    } else {
-        return binarySearchRecursive(arr, target, start, mid - 1); // Search the left half
+    if (largest !== i) {
+        [arr[i], arr[largest]] = [arr[largest], arr[i]];
+        heapify(arr, n, largest);
     }
 }
 
-// Usage
-let arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-let target = 5;
-let index = binarySearchRecursive(arr, target, 0, arr.length - 1);
+function heapSort(arr) {
+    const n = arr.length;
 
-if (index !== -1) {
-    console.log(`Element found at index ${index}`);
-} else {
-    console.log('Element not found');
+    // Build max heap
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        heapify(arr, n, i);
+    }
+
+    // Heap sort
+    for (let i = n - 1; i > 0; i--) {
+        [arr[0], arr[i]] = [arr[i], arr[0]];
+        heapify(arr, i, 0);
+    }
+
+    return arr;
 }
+
+// Test the heap sort implementation
+const arr = [12, 11, 13, 5, 6, 7];
+console.log("Original array: ", arr);
+console.log("Sorted array:", heapSort(arr));
