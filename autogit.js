@@ -1,42 +1,19 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
+function countOccurrences(str, word) {
+    const words = str.split(' ');
+    let count = 0;
+
+    for (let i = 0; i < words.length; i++) {
+        if (words[i].toLowerCase() === word.toLowerCase()) {
+            count++;
+        }
+    }
+
+    return count;
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+// Example usage
+const text = 'Hello world, hello universe';
+const wordToCount = 'hello';
+const occurrences = countOccurrences(text, wordToCount);
 
-  append(data) {
-    const newNode = new Node(data);
-
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
-
-  print() {
-    let current = this.head;
-    while (current) {
-      console.log(current.data);
-      current = current.next;
-    }
-  }
-}
-
-// Example Usage
-const ll = new LinkedList();
-ll.append(1);
-ll.append(2);
-ll.append(3);
-
-ll.print();
+console.log(`The word "${wordToCount}" occurs ${occurrences} times in the text.`);
