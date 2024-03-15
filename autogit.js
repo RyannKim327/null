@@ -1,8 +1,34 @@
-function reverseWords(str) {
-    return str.split(' ').reverse().join(' ');
+function mergeSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
+    }
+
+    const middle = Math.floor(arr.length / 2);
+    const left = arr.slice(0, middle);
+    const right = arr.slice(middle);
+
+    return merge(mergeSort(left), mergeSort(right));
 }
 
-// Example
-const sentence = "Hello, how are you?";
-const reversedSentence = reverseWords(sentence);
-console.log(reversedSentence);  // Output: "you? are how Hello,"
+function merge(left, right) {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            result.push(right[rightIndex]);
+            rightIndex++;
+        }
+    }
+
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+}
+
+// Example usage:
+const unsortedArray = [5, 3, 8, 6, 2, 7, 1, 4];
+const sortedArray = mergeSort(unsortedArray);
+console.log(sortedArray);
