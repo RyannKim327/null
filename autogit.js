@@ -1,29 +1,55 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+function initializeGraph(numVertices) {
+    let graph = [];
+    for (let i = 0; i < numVertices; i++) {
+        graph.push([]);
     }
+    return graph;
 }
 
-// Function to calculate sum of all nodes in a binary tree using depth-first traversal
-function calculateSum(root) {
-    if (root === null) {
-        return 0;
-    }
-
-    return root.value + calculateSum(root.left) + calculateSum(root.right);
+function addEdge(graph, source, destination, weight) {
+    graph[source].push({ node: destination, weight: weight });
 }
 
-// Create a binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
+function bellmanFord(graph, numVertices, source) {
+    let distance = Array(numVertices).fill(Infinity);
+    distance[source] = 0;
 
-// Calculate the sum
-const totalSum = calculateSum(root);
-console.log(totalSum); // Output should be 28 for the provided example tree
+    for (let i = 0; i < numVertices - 1; i++) {
+        for (let j = 0; j < numVertices; j++) {
+            graph[j].forEach(edge => {
+                if (distance[j] + edge.weight < distance[edge.node]) {
+                    distance[edge.node] = distance[j] + edge.weight;
+                }
+            });
+        }
+    }
+
+    for (let i = 0; i < numVertices - 1; i++) {
+        for (let j = 0; j < numVertices; j++) {
+            graph[j].forEach(edge => {
+                if (distance[j] + edge.weight < distance[edge.node]) {
+                    console.log("Negative cycle detected. Algorithm stopped.");
+                    return;
+                }
+            });
+        }
+    }
+
+    return distance;
+}
+
+// Example usage
+let numVertices = 5;
+let graph = initializeGraph(numVertices);
+
+addEdge(graph, 0, 1, -1);
+addEdge(graph, 0, 2, 4);
+addEdge(graph, 1, 2, 3);
+addEdge(graph, 1, 3, 2);
+addEdge(graph, 1, 4, 2);
+addEdge(graph, 3, 2, 5);
+addEdge(graph, 3, 1, 1);
+addEdge(graph, 4, 3, -3);
+
+let distances = bellmanFord(graph, numVertices, 0);
+console.log(distances);
