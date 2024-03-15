@@ -1,31 +1,16 @@
-function interpolationSearch(arr, x) {
-    let low = 0;
-    let high = arr.length - 1;
-
-    while (low <= high && x >= arr[low] && x <= arr[high]) {
-        let pos = low + Math.floor(((x - arr[low]) * (high - low)) / (arr[high] - arr[low]));
-
-        if (arr[pos] === x) {
-            return pos;
-        }
-
-        if (arr[pos] < x) {
-            low = pos + 1;
-        } else {
-            high = pos - 1;
+function largestPrimeFactor(number) {
+    let largestPrime = 1;
+    for (let i = 2; i <= Math.sqrt(number); i++) {
+        while (number % i === 0) {
+            largestPrime = i;
+            number = number / i;
         }
     }
-
-    return -1; // Element not found
+    if (number > 1) {
+        largestPrime = number;
+    }
+    return largestPrime;
 }
 
-// Example usage
-const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const x = 12;
-const result = interpolationSearch(arr, x);
-
-if (result !== -1) {
-    console.log(`Element found at index ${result}`);
-} else {
-    console.log("Element not found");
-}
+let num = 13195;
+console.log("The largest prime factor of " + num + " is " + largestPrimeFactor(num));
