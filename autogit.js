@@ -1,26 +1,31 @@
-function binarySearchRecursive(arr, target, start = 0, end = arr.length - 1) {
-    if (start > end) {
-        return -1;
+function longestIncreasingSubsequence(arr) {
+    const n = arr.length;
+    const dp = new Array(n).fill(1);
+
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[i] > arr[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
+        }
     }
 
-    let mid = Math.floor((start + end) / 2);
-
-    if (arr[mid] === target) {
-        return mid;
-    } else if (arr[mid] < target) {
-        return binarySearchRecursive(arr, target, mid + 1, end);
-    } else {
-        return binarySearchRecursive(arr, target, start, mid - 1);
+    let maxLen = 0;
+    for (let i = 0; i < n; i++) {
+        maxLen = Math.max(maxLen, dp[i]);
     }
+
+    let result = [];
+    let lastIndex = dp.indexOf(maxLen);
+    while (lastIndex >= 0) {
+        result.unshift(arr[lastIndex]);
+        let prevIndex = dp.slice(0, lastIndex).lastIndexOf(maxLen - 1);
+        lastIndex = prevIndex;
+        maxLen--;
+    }
+
+    return result;
 }
 
-// Example usage
-const array = [1, 3, 5, 7, 9, 11, 13, 15];
-const target = 7;
-const index = binarySearchRecursive(array, target);
-
-if (index !== -1) {
-    console.log(`Element found at index: ${index}`);
-} else {
-    console.log(`Element not found in the array`);
-}
+const arr = [3, 10, 2, 1, 20];
+console.log(longestIncreasingSubsequence(arr)); // Output: [3, 10, 20]
