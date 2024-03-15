@@ -1,35 +1,49 @@
-function mergeSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
+class Node {
+    constructor(data, next = null) {
+        this.data = data;
+        this.next = next;
     }
-
-    const middle = Math.floor(arr.length / 2);
-    const left = arr.slice(0, middle);
-    const right = arr.slice(middle);
-
-    return merge(mergeSort(left), mergeSort(right));
 }
 
-function merge(left, right) {
-    let result = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
-
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            result.push(left[leftIndex]);
-            leftIndex++;
-        } else {
-            result.push(right[rightIndex]);
-            rightIndex++;
-        }
+class LinkedList {
+    constructor() {
+        this.head = null;
     }
 
-    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+    reverse() {
+        let prev = null;
+        let current = this.head;
+        let next = null;
+
+        while (current !== null) {
+            next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
+        }
+
+        this.head = prev;
+    }
 }
 
 // Example usage
-const arr = [8, 3, 1, 7, 0, 10, 2];
-console.log("Original array: ", arr);
-const sortedArr = mergeSort(arr);
-console.log("Sorted array: ", sortedArr);
+const linkedList = new LinkedList();
+linkedList.head = new Node(1);
+linkedList.head.next = new Node(2);
+linkedList.head.next.next = new Node(3);
+
+console.log('Original Linked List:');
+let currentNode = linkedList.head;
+while (currentNode !== null) {
+    console.log(currentNode.data);
+    currentNode = currentNode.next;
+}
+
+console.log('Reversed Linked List:');
+linkedList.reverse();
+
+currentNode = linkedList.head;
+while (currentNode !== null) {
+    console.log(currentNode.data);
+    currentNode = currentNode.next;
+}
