@@ -1,62 +1,49 @@
+// Define the Node class
 class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+  constructor(data, next = null) {
+    this.data = data;
+    this.next = next;
   }
 }
 
+// Define the LinkedList class
 class LinkedList {
   constructor() {
     this.head = null;
   }
 
-  reverse() {
-    let prev = null;
-    let current = this.head;
-    let next = null;
-
-    while (current !== null) {
-      next = current.next;
-      current.next = prev;
-      prev = current;
-      current = next;
-    }
-    
-    this.head = prev;
-  }
-
-  addNode(value) {
-    const newNode = new Node(value);
+  // Function to add a new node to the linked list
+  addNode(data) {
+    const newNode = new Node(data);
     if (!this.head) {
       this.head = newNode;
     } else {
       let current = this.head;
-      while (current.next !== null) {
+      while (current.next) {
         current = current.next;
       }
       current.next = newNode;
     }
   }
 
-  printList() {
+  // Function to find the length of the linked list
+  getLength() {
+    let count = 0;
     let current = this.head;
-    while (current !== null) {
-      console.log(current.value);
+    while (current) {
+      count++;
       current = current.next;
     }
+    return count;
   }
 }
 
-// Example usage
-const linkedList = new LinkedList();
-linkedList.addNode(1);
-linkedList.addNode(2);
-linkedList.addNode(3);
+// Create a new linked list
+const ll = new LinkedList();
+ll.addNode(1);
+ll.addNode(2);
+ll.addNode(3);
 
-console.log('Original list:');
-linkedList.printList();
-
-linkedList.reverse();
-
-console.log('Reversed list:');
-linkedList.printList();
+// Find the length of the linked list
+const length = ll.getLength();
+console.log("Length of the linked list: ", length);
