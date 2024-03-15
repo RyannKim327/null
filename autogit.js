@@ -1,49 +1,55 @@
 class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
+  constructor(value, parent, cost) {
+    this.value = value;
+    this.parent = parent;
+    this.cost = cost;
   }
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+function beamSearch(startNode, goalTest, successors, beamWidth) {
+  let openNodes = [startNode];
 
-  addNode(data) {
-    const newNode = new Node(data);
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
+  while (openNodes.length > 0) {
+    let candidates = [];
+
+    for (let node of openNodes) {
+      if (goalTest(node.value)) {
+        return node; // Found goal node
       }
-      current.next = newNode;
-    }
-  }
 
-  findMiddleElement() {
-    let slow = this.head;
-    let fast = this.head;
+      let children = successors(node);
 
-    while (fast && fast.next) {
-      slow = slow.next;
-      fast = fast.next.next;
+      for (let child of children) {
+        candidates.push(child);
+      }
     }
 
-    return slow.data;
+    candidates.sort((a, b) => a.cost - b.cost);
+    openNodes = candidates.slice(0, beamWidth); // Select top candidates based on beam width
   }
+
+  return null; // Goal not found
 }
 
-// Create a linked list
-const list = new LinkedList();
-list.addNode(1);
-list.addNode(2);
-list.addNode(3);
-list.addNode(4);
-list.addNode(5);
+// Example usage
+let startNode = new Node(0, null, 0);
+let goalTest = (value) => value === 5;
+let successors = (node) => [
+  new Node(node.value + 1, node, node.cost + 1),
+  new Node(node.value + 2, node, node.cost + 1),
+];
 
-// Find the middle element
-const middleElement = list.findMiddleElement();
-console.log("Middle Element:", middleElement);
+let beamWidth = 2;
+let result = beamSearch(startNode, goalTest, successors, beamWidth);
+
+if (result) {
+  // Reconstruct path
+  let path = [];
+  while (result) {
+    path.unshift(result.value);
+    result = result.parent;
+  }
+  console.log("Path found:", path);
+} else {
+  console.log("Goal not found");
+}
