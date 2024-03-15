@@ -1,41 +1,25 @@
-function Node(value) {
+class TreeNode {
+  constructor(value) {
     this.value = value;
-    this.children = [];
+    this.left = null;
+    this.right = null;
+  }
 }
 
-function breadthLimitedSearch(root, target, limit) {
-    if (!root) return null;
+function sumBinaryTree(root) {
+  if (root === null) {
+    return 0;
+  }
 
-    let queue = [{ node: root, depth: 0 }];
-
-    while (queue.length > 0) {
-        let current = queue.shift();
-        let node = current.node;
-        let depth = current.depth;
-
-        if (node.value === target) {
-            return node;
-        }
-
-        if (depth < limit) {
-            node.children.forEach(child => {
-                queue.push({ node: child, depth: depth + 1 });
-            });
-        }
-    }
-
-    return null;
+  return root.value + sumBinaryTree(root.left) + sumBinaryTree(root.right);
 }
 
-// Usage
-let rootNode = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-let node4 = new Node(4);
-let node5 = new Node(5);
+// Example binary tree
+let root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-rootNode.children = [node2, node3];
-node2.children = [node4, node5];
-
-let targetNode = breadthLimitedSearch(rootNode, 5, 2);
-console.log(targetNode);
+let sum = sumBinaryTree(root);
+console.log("Sum of all nodes in the binary tree: " + sum); // Output: 15
