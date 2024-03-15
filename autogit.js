@@ -1,19 +1,12 @@
-function hasCycle(head) {
-    if (!head || !head.next) {
-        return false;
-    }
-
-    let slow = head;
-    let fast = head.next;
-
-    while (slow !== fast) {
-        if (!fast || !fast.next) {
-            return false;
-        }
-
-        slow = slow.next;
-        fast = fast.next.next;
-    }
-
-    return true;
+function factorial(n) {
+  if (n === 0) {
+    return 1;
+  } else {
+    return n * factorial(n - 1);
+  }
 }
+
+// Example usage
+const number = 5;
+const result = factorial(number);
+console.log(`Factorial of ${number} is ${result}`);
