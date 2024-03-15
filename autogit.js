@@ -1,9 +1,37 @@
-function calculateTriangleArea(base, height) {
-    return 0.5 * base * height;
+function topologicalSort(graph) {
+  const visited = new Set();
+  const stack = [];
+
+  function dfs(node) {
+    visited.add(node);
+
+    for (let neighbor of graph[node] || []) {
+      if (!visited.has(neighbor)) {
+        dfs(neighbor);
+      }
+    }
+
+    stack.push(node);
+  }
+
+  for (let node in graph) {
+    if (!visited.has(node)) {
+      dfs(node);
+    }
+  }
+
+  return stack.reverse();
 }
 
-// Example usage
-const base = 5;
-const height = 8;
-const area = calculateTriangleArea(base, height);
-console.log("The area of the triangle is: " + area);
+// Example graph representation
+const graph = {
+  0: [1, 2],
+  1: [3],
+  2: [3],
+  3: [4, 5],
+  4: [],
+  5: []
+};
+
+const result = topologicalSort(graph);
+console.log(result); // Output: [0, 2, 1, 3, 5, 4]
