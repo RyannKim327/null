@@ -1,22 +1,35 @@
-function countOccurrences(str, word) {
-    // Split the string by spaces to get an array of words
-    const words = str.split(' ');
+function mergeSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
+    }
 
-    // Initialize a variable to store the count
-    let count = 0;
+    const middle = Math.floor(arr.length / 2);
+    const left = arr.slice(0, middle);
+    const right = arr.slice(middle);
 
-    // Loop through the words array and check if each word is equal to the target word
-    words.forEach(function (w) {
-        if (w.toLowerCase() === word.toLowerCase()) {
-            count++;
-        }
-    });
-
-    return count;
+    return merge(mergeSort(left), mergeSort(right));
 }
 
-// Test the function
-const sentence = "JavaScript is a popular programming language, and JavaScript is widely used.";
-const word = "JavaScript";
-const occurrences = countOccurrences(sentence, word);
-console.log(`The word '${word}' appears ${occurrences} times in the sentence.`);
+function merge(left, right) {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            result.push(right[rightIndex]);
+            rightIndex++;
+        }
+    }
+
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+}
+
+// Example usage
+const arr = [8, 3, 1, 7, 0, 10, 2];
+console.log("Original array: ", arr);
+const sortedArr = mergeSort(arr);
+console.log("Sorted array: ", sortedArr);
