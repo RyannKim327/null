@@ -1,11 +1,5 @@
-function factorial(n) {
-    if (n === 0) {
-        return 1;
-    }
-    return n * factorial(n - 1);
-}
+let str1 = "Hello";
+let str2 = "World";
 
-// Calculate the factorial of a number
-const number = 5;
-const result = factorial(number);
-console.log(`The factorial of ${number} is: ${result}`);
+let concatenatedString = str1 + " " + str2;
+console.log(concatenatedString); // Output: Hello World
