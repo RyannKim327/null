@@ -1,55 +1,57 @@
-class Node {
-  constructor(value, parent, cost) {
-    this.value = value;
-    this.parent = parent;
-    this.cost = cost;
-  }
-}
+function buildPatternTable(pattern) {
+    const table = Array(pattern.length).fill(0);
+    let i = 1, j = 0;
 
-function beamSearch(startNode, goalTest, successors, beamWidth) {
-  let openNodes = [startNode];
-
-  while (openNodes.length > 0) {
-    let candidates = [];
-
-    for (let node of openNodes) {
-      if (goalTest(node.value)) {
-        return node; // Found goal node
-      }
-
-      let children = successors(node);
-
-      for (let child of children) {
-        candidates.push(child);
-      }
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[j]) {
+            table[i] = j + 1;
+            i++;
+            j++;
+        } else {
+            if (j !== 0) {
+                j = table[j - 1];
+            } else {
+                table[i] = 0;
+                i++;
+            }
+        }
     }
 
-    candidates.sort((a, b) => a.cost - b.cost);
-    openNodes = candidates.slice(0, beamWidth); // Select top candidates based on beam width
-  }
+    return table;
+}
 
-  return null; // Goal not found
+function kmpSearch(text, pattern) {
+    if (pattern.length === 0) return 0;
+
+    const patternTable = buildPatternTable(pattern);
+    let i = 0, j = 0;
+
+    while (i < text.length) {
+        if (text[i] === pattern[j]) {
+            if (j === pattern.length - 1) {
+                return i - j;
+            }
+            i++;
+            j++;
+        } else {
+            if (j !== 0) {
+                j = patternTable[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+
+    return -1;  // pattern not found in text
 }
 
 // Example usage
-let startNode = new Node(0, null, 0);
-let goalTest = (value) => value === 5;
-let successors = (node) => [
-  new Node(node.value + 1, node, node.cost + 1),
-  new Node(node.value + 2, node, node.cost + 1),
-];
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
 
-let beamWidth = 2;
-let result = beamSearch(startNode, goalTest, successors, beamWidth);
-
-if (result) {
-  // Reconstruct path
-  let path = [];
-  while (result) {
-    path.unshift(result.value);
-    result = result.parent;
-  }
-  console.log("Path found:", path);
+const index = kmpSearch(text, pattern);
+if (index !== -1) {
+    console.log(`Pattern found at index ${index}`);
 } else {
-  console.log("Goal not found");
+    console.log("Pattern not found in text");
 }
