@@ -1,49 +1,61 @@
-// Define the Node class
 class Node {
-  constructor(data, next = null) {
-    this.data = data;
-    this.next = next;
-  }
+    constructor(value) {
+        this.value = value;
+        this.next = null;
+    }
 }
 
-// Define the LinkedList class
 class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-
-  // Function to add a new node to the linked list
-  addNode(data) {
-    const newNode = new Node(data);
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
+    constructor() {
+        this.head = null;
     }
-  }
 
-  // Function to find the length of the linked list
-  getLength() {
-    let count = 0;
-    let current = this.head;
-    while (current) {
-      count++;
-      current = current.next;
+    add(value) {
+        const newNode = new Node(value);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
     }
-    return count;
-  }
+
+    isPalindrome() {
+        let values = [];
+        let current = this.head;
+
+        while (current) {
+            values.push(current.value);
+            current = current.next;
+        }
+
+        let start = 0;
+        let end = values.length - 1;
+
+        while (start < end) {
+            if (values[start] !== values[end]) {
+                return false;
+            }
+            start++;
+            end--;
+        }
+
+        return true;
+    }
 }
 
-// Create a new linked list
-const ll = new LinkedList();
-ll.addNode(1);
-ll.addNode(2);
-ll.addNode(3);
+// Test the palindrome check
+const list = new LinkedList();
+list.add(1);
+list.add(2);
+list.add(3);
+list.add(2);
+list.add(1);
 
-// Find the length of the linked list
-const length = ll.getLength();
-console.log("Length of the linked list: ", length);
+console.log(list.isPalindrome()); // Output: true
+
+list.add(5);
+console.log(list.isPalindrome()); // Output: false
