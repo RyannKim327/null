@@ -1,55 +1,62 @@
-class Graph {
-  constructor(vertices) {
-    this.V = vertices;
-    this.E = []; // Edges
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
+
+class LinkedList {
+  constructor() {
+    this.head = null;
   }
 
-  addEdge(u, v, w) {
-    this.E.push([u, v, w]);
+  reverse() {
+    let prev = null;
+    let current = this.head;
+    let next = null;
+
+    while (current !== null) {
+      next = current.next;
+      current.next = prev;
+      prev = current;
+      current = next;
+    }
+    
+    this.head = prev;
   }
 
-  bellmanFord(source) {
-    let distance = Array(this.V).fill(Infinity);
-    distance[source] = 0;
-
-    for (let i = 0; i < this.V - 1; i++) {
-      for (let j = 0; j < this.E.length; j++) {
-        let u = this.E[j][0];
-        let v = this.E[j][1];
-        let weight = this.E[j][2];
-        if (distance[u] != Infinity && distance[u] + weight < distance[v]) {
-          distance[v] = distance[u] + weight;
-        }
+  addNode(value) {
+    const newNode = new Node(value);
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next !== null) {
+        current = current.next;
       }
+      current.next = newNode;
     }
+  }
 
-    // Check for negative weight cycles
-    for (let i = 0; i < this.E.length; i++) {
-      let u = this.E[i][0];
-      let v = this.E[i][1];
-      let weight = this.E[i][2];
-      if (distance[u] != Infinity && distance[u] + weight < distance[v]) {
-        console.log("Graph contains negative weight cycle");
-        return;
-      }
-    }
-
-    console.log("Shortest distances from source node " + source + ":");
-    for (let i = 0; i < this.V; i++) {
-      console.log("Node " + i + ": " + distance[i]);
+  printList() {
+    let current = this.head;
+    while (current !== null) {
+      console.log(current.value);
+      current = current.next;
     }
   }
 }
 
-// Usage
-const graph = new Graph(5);
-graph.addEdge(0, 1, -1);
-graph.addEdge(0, 2, 4);
-graph.addEdge(1, 2, 3);
-graph.addEdge(1, 3, 2);
-graph.addEdge(1, 4, 2);
-graph.addEdge(3, 2, 5);
-graph.addEdge(3, 1, 1);
-graph.addEdge(4, 3, -3);
+// Example usage
+const linkedList = new LinkedList();
+linkedList.addNode(1);
+linkedList.addNode(2);
+linkedList.addNode(3);
 
-graph.bellmanFord(0);
+console.log('Original list:');
+linkedList.printList();
+
+linkedList.reverse();
+
+console.log('Reversed list:');
+linkedList.printList();
