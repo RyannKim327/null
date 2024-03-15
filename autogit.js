@@ -1,55 +1,35 @@
-function initializeGraph(numVertices) {
-    let graph = [];
-    for (let i = 0; i < numVertices; i++) {
-        graph.push([]);
+function isAnagram(str1, str2) {
+    // Remove any non-alphabetic characters and convert to lowercase
+    str1 = str1.replace(/[^A-Za-z]/g, '').toLowerCase();
+    str2 = str2.replace(/[^A-Za-z]/g, '').toLowerCase();
+
+    // Check if the strings are of equal length
+    if (str1.length !== str2.length) {
+        return false;
     }
-    return graph;
-}
 
-function addEdge(graph, source, destination, weight) {
-    graph[source].push({ node: destination, weight: weight });
-}
+    // Create character frequency maps for both strings
+    const charMap1 = {};
+    const charMap2 = {};
 
-function bellmanFord(graph, numVertices, source) {
-    let distance = Array(numVertices).fill(Infinity);
-    distance[source] = 0;
+    for (let char of str1) {
+        charMap1[char] = (charMap1[char] || 0) + 1;
+    }
 
-    for (let i = 0; i < numVertices - 1; i++) {
-        for (let j = 0; j < numVertices; j++) {
-            graph[j].forEach(edge => {
-                if (distance[j] + edge.weight < distance[edge.node]) {
-                    distance[edge.node] = distance[j] + edge.weight;
-                }
-            });
+    for (let char of str2) {
+        charMap2[char] = (charMap2[char] || 0) + 1;
+    }
+
+    // Compare the character frequency maps
+    for (let char in charMap1) {
+        if (charMap1[char] !== charMap2[char]) {
+            return false;
         }
     }
 
-    for (let i = 0; i < numVertices - 1; i++) {
-        for (let j = 0; j < numVertices; j++) {
-            graph[j].forEach(edge => {
-                if (distance[j] + edge.weight < distance[edge.node]) {
-                    console.log("Negative cycle detected. Algorithm stopped.");
-                    return;
-                }
-            });
-        }
-    }
-
-    return distance;
+    return true;
 }
 
 // Example usage
-let numVertices = 5;
-let graph = initializeGraph(numVertices);
-
-addEdge(graph, 0, 1, -1);
-addEdge(graph, 0, 2, 4);
-addEdge(graph, 1, 2, 3);
-addEdge(graph, 1, 3, 2);
-addEdge(graph, 1, 4, 2);
-addEdge(graph, 3, 2, 5);
-addEdge(graph, 3, 1, 1);
-addEdge(graph, 4, 3, -3);
-
-let distances = bellmanFord(graph, numVertices, 0);
-console.log(distances);
+console.log(isAnagram("listen", "silent")); // true
+console.log(isAnagram("hello", "world")); // false
