@@ -1,47 +1,37 @@
 class Node {
-  constructor(data) {
-    this.data = data;
-    this.children = [];
-  }
-
-  addChild(child) {
-    this.children.push(child);
-  }
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
 }
 
-function breadthLimitedSearch(root, limit) {
-  let queue = [root];
-  let level = 1;
+function diameterOfBinaryTree(root) {
+    let diameter = 0;
 
-  while (queue.length > 0) {
-    let node = queue.shift();
-    console.log(node.data);
+    function depth(node) {
+        if (!node) {
+            return 0;
+        }
 
-    if (level < limit) {
-      node.children.forEach(child => {
-        queue.push(child);
-      });
+        let leftDepth = depth(node.left);
+        let rightDepth = depth(node.right);
+
+        diameter = Math.max(diameter, leftDepth + rightDepth);
+
+        return 1 + Math.max(leftDepth, rightDepth);
     }
 
-    if (queue.length === 0 && level < limit) {
-      level++;
-      queue = root.children.slice();
-    }
-  }
+    depth(root);
+
+    return diameter;
 }
 
-// Example usage
-let root = new Node('A');
-let nodeB = new Node('B');
-let nodeC = new Node('C');
-let nodeD = new Node('D');
-let nodeE = new Node('E');
-let nodeF = new Node('F');
+// Example usage:
+let root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
 
-root.addChild(nodeB);
-root.addChild(nodeC);
-nodeB.addChild(nodeD);
-nodeB.addChild(nodeE);
-nodeE.addChild(nodeF);
-
-breadthLimitedSearch(root, 2);
+console.log(diameterOfBinaryTree(root)); // Output: 3
