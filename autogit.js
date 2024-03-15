@@ -1,9 +1,18 @@
-const axios = require('axios');
+function shellSort(arr) {
+    let n = arr.length;
+    for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
+        for (let i = gap; i < n; i++) {
+            let temp = arr[i];
+            let j;
+            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
+                arr[j] = arr[j - gap];
+            }
+            arr[j] = temp;
+        }
+    }
+    return arr;
+}
 
-axios.get('https://jsonplaceholder.typicode.com/posts')
-  .then(response => {
-    console.log(response.data);
-  })
-  .catch(error => {
-    console.error('Error fetching data:', error);
-  });
+// Test the shellSort function
+let arr = [12, 34, 54, 2, 3];
+console.log(shellSort(arr)); // Output: [2, 3, 12, 34, 54]
