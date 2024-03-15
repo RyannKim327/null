@@ -1,79 +1,44 @@
-class BinaryHeap {
-    constructor() {
-        this.heap = [];
-    }
-
-    getParentIndex(index) {
-        return Math.floor((index - 1) / 2);
-    }
-
-    getLeftChildIndex(index) {
-        return 2 * index + 1;
-    }
-
-    getRightChildIndex(index) {
-        return 2 * index + 2;
-    }
-
-    insert(value, priority) {
-        const newNode = { value, priority };
-        this.heap.push(newNode);
-        this.heapifyUp();
-    }
-
-    heapifyUp() {
-        let currentIndex = this.heap.length - 1;
-        while (currentIndex > 0) {
-            const parentIndex = this.getParentIndex(currentIndex);
-            if (this.heap[currentIndex].priority < this.heap[parentIndex].priority) {
-                [this.heap[currentIndex], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[currentIndex]];
-                currentIndex = parentIndex;
-            } else {
-                break;
-            }
+function heapSort(arr) {
+    function heapify(arr, n, i) {
+        let largest = i;
+        let left = 2 * i + 1;
+        let right = 2 * i + 2;
+    
+        if (left < n && arr[left] > arr[largest]) {
+            largest = left;
+        }
+    
+        if (right < n && arr[right] > arr[largest]) {
+            largest = right;
+        }
+    
+        if (largest !== i) {
+            [arr[i], arr[largest]] = [arr[largest], arr[i]];
+    
+            heapify(arr, n, largest);
         }
     }
-
-    remove() {
-        if (this.heap.length === 0) {
-            return null;
-        }
-        if (this.heap.length === 1) {
-            return this.heap.pop();
-        }
-
-        const root = this.heap[0];
-        this.heap[0] = this.heap.pop();
-        this.heapifyDown();
-
-        return root;
-    }
-
-    heapifyDown() {
-        let currentIndex = 0;
-        while (this.getLeftChildIndex(currentIndex) < this.heap.length) {
-            const leftChildIndex = this.getLeftChildIndex(currentIndex);
-            const rightChildIndex = this.getRightChildIndex(currentIndex);
-            let nextIndex = leftChildIndex;
-            if (rightChildIndex < this.heap.length && this.heap[rightChildIndex].priority < this.heap[leftChildIndex].priority) {
-                nextIndex = rightChildIndex;
-            }
-            if (this.heap[currentIndex].priority > this.heap[nextIndex].priority) {
-                [this.heap[currentIndex], this.heap[nextIndex]] = [this.heap[nextIndex], this.heap[currentIndex]];
-                currentIndex = nextIndex;
-            } else {
-                break;
-            }
+    
+    function buildMaxHeap(arr, n) {
+        for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+            heapify(arr, n, i);
         }
     }
+    
+    let n = arr.length;
+    
+    buildMaxHeap(arr, n);
+    
+    for (let i = n - 1; i > 0; i--) {
+        [arr[0], arr[i]] = [arr[i], arr[0]];
+    
+        heapify(arr, i, 0);
+    }
+    
+    return arr;
 }
 
-// Example usage:
-const priorityQueue = new BinaryHeap();
-priorityQueue.insert("Task 1", 2);
-priorityQueue.insert("Task 2", 1);
-priorityQueue.insert("Task 3", 3);
-
-console.log(priorityQueue.remove()); // { value: 'Task 2', priority: 1 }
-console.log(priorityQueue.remove()); // { value: 'Task 1', priority: 2 }
-console.log(priorityQueue.remove()); // { value: 'Task 3', priority: 3 }
+// Example Usage
+const arr = [12, 11, 13, 5, 6, 7];
+console.log("Original Array:", arr);
+console.log("Sorted Array:", heapSort(arr));
