@@ -1,31 +1,55 @@
-function longestIncreasingSubsequence(arr) {
-    const n = arr.length;
-    const dp = new Array(n).fill(1);
+class Graph {
+  constructor(vertices) {
+    this.V = vertices;
+    this.E = []; // Edges
+  }
 
-    for (let i = 1; i < n; i++) {
-        for (let j = 0; j < i; j++) {
-            if (arr[i] > arr[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
-            }
+  addEdge(u, v, w) {
+    this.E.push([u, v, w]);
+  }
+
+  bellmanFord(source) {
+    let distance = Array(this.V).fill(Infinity);
+    distance[source] = 0;
+
+    for (let i = 0; i < this.V - 1; i++) {
+      for (let j = 0; j < this.E.length; j++) {
+        let u = this.E[j][0];
+        let v = this.E[j][1];
+        let weight = this.E[j][2];
+        if (distance[u] != Infinity && distance[u] + weight < distance[v]) {
+          distance[v] = distance[u] + weight;
         }
+      }
     }
 
-    let maxLen = 0;
-    for (let i = 0; i < n; i++) {
-        maxLen = Math.max(maxLen, dp[i]);
+    // Check for negative weight cycles
+    for (let i = 0; i < this.E.length; i++) {
+      let u = this.E[i][0];
+      let v = this.E[i][1];
+      let weight = this.E[i][2];
+      if (distance[u] != Infinity && distance[u] + weight < distance[v]) {
+        console.log("Graph contains negative weight cycle");
+        return;
+      }
     }
 
-    let result = [];
-    let lastIndex = dp.indexOf(maxLen);
-    while (lastIndex >= 0) {
-        result.unshift(arr[lastIndex]);
-        let prevIndex = dp.slice(0, lastIndex).lastIndexOf(maxLen - 1);
-        lastIndex = prevIndex;
-        maxLen--;
+    console.log("Shortest distances from source node " + source + ":");
+    for (let i = 0; i < this.V; i++) {
+      console.log("Node " + i + ": " + distance[i]);
     }
-
-    return result;
+  }
 }
 
-const arr = [3, 10, 2, 1, 20];
-console.log(longestIncreasingSubsequence(arr)); // Output: [3, 10, 20]
+// Usage
+const graph = new Graph(5);
+graph.addEdge(0, 1, -1);
+graph.addEdge(0, 2, 4);
+graph.addEdge(1, 2, 3);
+graph.addEdge(1, 3, 2);
+graph.addEdge(1, 4, 2);
+graph.addEdge(3, 2, 5);
+graph.addEdge(3, 1, 1);
+graph.addEdge(4, 3, -3);
+
+graph.bellmanFord(0);
