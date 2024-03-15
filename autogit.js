@@ -1,75 +1,41 @@
-class PriorityQueue {
-    constructor() {
-        this.heap = [];
-    }
-
-    insert(value, priority) {
-        const node = { value, priority };
-        this.heap.push(node);
-        this.heapifyUp();
-    }
-
-    extractMin() {
-        if (this.heap.length === 0) {
-            return null;
-        }
-
-        const minNode = this.heap[0];
-        const lastNode = this.heap.pop();
-
-        if (this.heap.length > 0) {
-            this.heap[0] = lastNode;
-            this.heapifyDown();
-        }
-
-        return minNode.value;
-    }
-
-    heapifyUp() {
-        let index = this.heap.length - 1;
-
-        while (index > 0) {
-            const parentIndex = Math.floor((index - 1) / 2);
-
-            if (this.heap[parentIndex].priority > this.heap[index].priority) {
-                [this.heap[parentIndex], this.heap[index]] = [this.heap[index], this.heap[parentIndex]];
-                index = parentIndex;
-            } else {
-                break;
-            }
-        }
-    }
-
-    heapifyDown() {
-        let index = 0;
-
-        while (true) {
-            const leftChildIndex = 2 * index + 1;
-            const rightChildIndex = 2 * index + 2;
-            let smallestChildIndex = index;
-
-            if (leftChildIndex < this.heap.length && this.heap[leftChildIndex].priority < this.heap[smallestChildIndex].priority) {
-                smallestChildIndex = leftChildIndex;
-            }
-
-            if (rightChildIndex < this.heap.length && this.heap[rightChildIndex].priority < this.heap[smallestChildIndex].priority) {
-                smallestChildIndex = rightChildIndex;
-            }
-
-            if (smallestChildIndex !== index) {
-                [this.heap[index], this.heap[smallestChildIndex]] = [this.heap[smallestChildIndex], this.heap[index]];
-                index = smallestChildIndex;
-            } else {
-                break;
-            }
-        }
-    }
+function Node(value) {
+    this.value = value;
+    this.children = [];
 }
-const pq = new PriorityQueue();
-pq.insert("Task 1", 3);
-pq.insert("Task 2", 1);
-pq.insert("Task 3", 5);
-pq.insert("Task 4", 2);
 
-console.log(pq.extractMin()); // Output: Task 2
-console.log(pq.extractMin()); // Output: Task 4
+function breadthLimitedSearch(root, target, limit) {
+    if (!root) return null;
+
+    let queue = [{ node: root, depth: 0 }];
+
+    while (queue.length > 0) {
+        let current = queue.shift();
+        let node = current.node;
+        let depth = current.depth;
+
+        if (node.value === target) {
+            return node;
+        }
+
+        if (depth < limit) {
+            node.children.forEach(child => {
+                queue.push({ node: child, depth: depth + 1 });
+            });
+        }
+    }
+
+    return null;
+}
+
+// Usage
+let rootNode = new Node(1);
+let node2 = new Node(2);
+let node3 = new Node(3);
+let node4 = new Node(4);
+let node5 = new Node(5);
+
+rootNode.children = [node2, node3];
+node2.children = [node4, node5];
+
+let targetNode = breadthLimitedSearch(rootNode, 5, 2);
+console.log(targetNode);
