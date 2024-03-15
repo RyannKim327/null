@@ -1,41 +1,53 @@
-function biDirectionalSearch(startNode, goalNode) {
-    let startQueue = [startNode];
-    let goalQueue = [goalNode];
-    let startVisited = new Set();
-    let goalVisited = new Set();
+function buildPatternTable(pattern) {
+  const table = [0];
+  let prefixIndex = 0;
+  let suffixIndex = 1;
 
-    startVisited.add(startNode);
-    goalVisited.add(goalNode);
-
-    while (startQueue.length > 0 && goalQueue.length > 0) {
-        // Explore from the start node
-        let currentStart = startQueue.shift();
-        for (let neighbor of currentStart.neighbors) {
-            if (!startVisited.has(neighbor)) {
-                startVisited.add(neighbor);
-                startQueue.push(neighbor);
-
-                // Check if the neighbor is already visited by the goal search
-                if (goalVisited.has(neighbor)) {
-                    return neighbor; // Found a common node
-                }
-            }
-        }
-
-        // Explore from the goal node
-        let currentGoal = goalQueue.shift();
-        for (let neighbor of currentGoal.neighbors) {
-            if (!goalVisited.has(neighbor)) {
-                goalVisited.add(neighbor);
-                goalQueue.push(neighbor);
-
-                // Check if the neighbor is already visited by the start search
-                if (startVisited.has(neighbor)) {
-                    return neighbor; // Found a common node
-                }
-            }
-        }
+  while (suffixIndex < pattern.length) {
+    if (pattern[prefixIndex] === pattern[suffixIndex]) {
+      table[suffixIndex] = prefixIndex + 1;
+      prefixIndex++;
+      suffixIndex++;
+    } else if (prefixIndex === 0) {
+      table[suffixIndex] = 0;
+      suffixIndex++;
+    } else {
+      prefixIndex = table[prefixIndex - 1];
     }
+  }
 
-    return null; // No common node found
+  return table;
+}
+
+function kmpSearch(text, pattern) {
+  const patternTable = buildPatternTable(pattern);
+  let textIndex = 0;
+  let patternIndex = 0;
+
+  while (textIndex < text.length) {
+    if (text[textIndex] === pattern[patternIndex]) {
+      if (patternIndex === pattern.length - 1) {
+        return textIndex - patternIndex;
+      }
+      textIndex++;
+      patternIndex++;
+    } else if (patternIndex > 0) {
+      patternIndex = patternTable[patternIndex - 1];
+    } else {
+      textIndex++;
+    }
+  }
+
+  return -1;
+}
+
+// Example usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+
+const index = kmpSearch(text, pattern);
+if (index !== -1) {
+  console.log(`Pattern found at index ${index}`);
+} else {
+  console.log("Pattern not found");
 }
