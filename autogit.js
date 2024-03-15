@@ -1,55 +1,25 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
+function longestCommonSubstring(str1, str2) {
+    const table = Array(str1.length + 1).fill(0).map(() => Array(str2.length + 1).fill(0));
+    let longest = 0;
+    let endIndex = 0;
+
+    for (let i = 1; i <= str1.length; i++) {
+        for (let j = 1; j <= str2.length; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                table[i][j] = table[i - 1][j - 1] + 1;
+                if (table[i][j] > longest) {
+                    longest = table[i][j];
+                    endIndex = i - 1;
+                }
+            } else {
+                table[i][j] = 0;
+            }
+        }
+    }
+
+    return str1.substring(endIndex - longest + 1, endIndex + 1);
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-
-  add(data) {
-    const newNode = new Node(data);
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
-
-  isPalindrome() {
-    let values = [];
-    let current = this.head;
-    while (current) {
-      values.push(current.data);
-      current = current.next;
-    }
-
-    let start = 0;
-    let end = values.length - 1;
-    while (start < end) {
-      if (values[start] !== values[end]) {
-        return false;
-      }
-      start++;
-      end--;
-    }
-    return true;
-  }
-}
-
-// Example usage
-const linkedList = new LinkedList();
-linkedList.add(1);
-linkedList.add(2);
-linkedList.add(3);
-linkedList.add(2);
-linkedList.add(1);
-
-console.log(linkedList.isPalindrome()); // Output: true
+const str1 = "abcdefg";
+const str2 = "xbcde";
+console.log(longestCommonSubstring(str1, str2)); // Output: "bcde"
