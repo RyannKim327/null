@@ -1,10 +1,9 @@
-function findStringLength(str) {
-    let count = 0;
-    while (str[count] !== undefined) {
-        count++;
-    }
-    return count;
-}
+const axios = require('axios');
 
-const str = "Hello, World!";
-console.log(findStringLength(str)); // Output: 13
+axios.get('https://jsonplaceholder.typicode.com/posts')
+  .then(response => {
+    console.log(response.data);
+  })
+  .catch(error => {
+    console.error('Error fetching data:', error);
+  });
