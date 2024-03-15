@@ -1,12 +1,26 @@
-function calculateStringLength(str) {
-    let count = 0;
-    while (str[count] !== undefined) {
-        count++;
-    }
-    return count;
+// Definition for a binary tree node.
+function TreeNode(val) {
+    this.val = val;
+    this.left = this.right = null;
 }
 
-// Example of how to use the function
-const str = 'Hello, world!';
-const length = calculateStringLength(str);
-console.log('Length of the string:', length); // Output: 13
+function maxDepth(root) {
+    if (root === null) {
+        return 0;
+    }
+
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
+
+    return Math.max(leftDepth, rightDepth) + 1;
+}
+
+// Example usage:
+// Constructing a sample binary tree
+let root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(maxDepth(root)); // Outputs: 3
