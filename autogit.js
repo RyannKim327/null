@@ -1,15 +1,44 @@
-function findKthSmallest(arr, k) {
-    // Sort the array
-    arr.sort(function(a, b) {
-        return a - b;
-    });
+function heapSort(arr) {
+    buildMaxHeap(arr);
 
-    // Return the kth smallest element
-    return arr[k - 1];
+    for (let i = arr.length - 1; i > 0; i--) {
+        [arr[0], arr[i]] = [arr[i], arr[0]];
+        maxHeapify(arr, 0, i);
+    }
+
+    return arr;
+}
+
+function buildMaxHeap(arr) {
+    const n = arr.length;
+
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        maxHeapify(arr, i, n);
+    }
+}
+
+function maxHeapify(arr, i, n) {
+    const left = 2 * i + 1;
+    const right = 2 * i + 2;
+    let largest = i;
+
+    if (left < n && arr[left] > arr[largest]) {
+        largest = left;
+    }
+
+    if (right < n && arr[right] > arr[largest]) {
+        largest = right;
+    }
+
+    if (largest !== i) {
+        [arr[i], arr[largest]] = [arr[largest], arr[i]];
+        maxHeapify(arr, largest, n);
+    }
 }
 
 // Example usage
-const arr = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
-const k = 3;
-const kthSmallest = findKthSmallest(arr, k);
-console.log(`The ${k}th smallest element is: ${kthSmallest}`);
+const arr = [12, 11, 13, 5, 6, 7];
+console.log("Original array: ", arr);
+
+const sortedArr = heapSort(arr);
+console.log("Sorted array: ", sortedArr);
