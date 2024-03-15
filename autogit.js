@@ -1,26 +1,36 @@
-// Definition for a binary tree node.
-function TreeNode(val) {
-    this.val = val;
-    this.left = this.right = null;
-}
+function breadthLimitedSearch(initialNode, goalNode, limit) {
+    let queue = [{ node: initialNode, path: [initialNode] }];
 
-function maxDepth(root) {
-    if (root === null) {
-        return 0;
+    while (queue.length > 0) {
+        let { node, path } = queue.shift();
+
+        if (node === goalNode) {
+            return path;
+        }
+
+        if (path.length < limit) {
+            let children = expandNode(node); // Function to generate child nodes
+
+            children.forEach(child => {
+                queue.push({ node: child, path: path.concat(child) });
+            });
+        }
     }
 
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
-
-    return Math.max(leftDepth, rightDepth) + 1;
+    return "Goal node not found within the limit";
 }
 
-// Example usage:
-// Constructing a sample binary tree
-let root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+function expandNode(node) {
+    // Function to generate child nodes from a given node
+    // You need to implement this based on your specific problem
+    return [];
+}
 
-console.log(maxDepth(root)); // Outputs: 3
+// Example usage
+let initialNode = 1;
+let goalNode = 10;
+let limit = 3;
+
+let result = breadthLimitedSearch(initialNode, goalNode, limit);
+
+console.log(result);
