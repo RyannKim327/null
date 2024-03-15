@@ -1,50 +1,41 @@
-class Stack {
-  constructor() {
-    this.stack = [];
-  }
+function biDirectionalSearch(startNode, goalNode) {
+    let startQueue = [startNode];
+    let goalQueue = [goalNode];
+    let startVisited = new Set();
+    let goalVisited = new Set();
 
-  // Push element onto the stack
-  push(element) {
-    this.stack.push(element);
-  }
+    startVisited.add(startNode);
+    goalVisited.add(goalNode);
 
-  // Pop element from the stack
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
+    while (startQueue.length > 0 && goalQueue.length > 0) {
+        // Explore from the start node
+        let currentStart = startQueue.shift();
+        for (let neighbor of currentStart.neighbors) {
+            if (!startVisited.has(neighbor)) {
+                startVisited.add(neighbor);
+                startQueue.push(neighbor);
+
+                // Check if the neighbor is already visited by the goal search
+                if (goalVisited.has(neighbor)) {
+                    return neighbor; // Found a common node
+                }
+            }
+        }
+
+        // Explore from the goal node
+        let currentGoal = goalQueue.shift();
+        for (let neighbor of currentGoal.neighbors) {
+            if (!goalVisited.has(neighbor)) {
+                goalVisited.add(neighbor);
+                goalQueue.push(neighbor);
+
+                // Check if the neighbor is already visited by the start search
+                if (startVisited.has(neighbor)) {
+                    return neighbor; // Found a common node
+                }
+            }
+        }
     }
-    return this.stack.pop();
-  }
 
-  // Peek at the top element of the stack
-  peek() {
-    return this.stack[this.stack.length - 1];
-  }
-
-  // Check if the stack is empty
-  isEmpty() {
-    return this.stack.length === 0;
-  }
-
-  // Get the size of the stack
-  size() {
-    return this.stack.length;
-  }
-
-  // Print the stack
-  printStack() {
-    console.log(this.stack);
-  }
+    return null; // No common node found
 }
-
-// Example usage
-const stack = new Stack();
-stack.push(1);
-stack.push(2);
-stack.push(3);
-stack.printStack(); // Output: [1, 2, 3]
-
-console.log(stack.pop()); // Output: 3
-console.log(stack.peek()); // Output: 2
-console.log(stack.size()); // Output: 2
-console.log(stack.isEmpty()); // Output: false
