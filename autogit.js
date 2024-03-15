@@ -1,7 +1,42 @@
-function getRandomNumber(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
 }
 
-// Generate a random number between 1 and 10
-var randomNumber = getRandomNumber(1, 10);
-console.log(randomNumber);
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+
+  append(data) {
+    const newNode = new Node(data);
+
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
+
+  print() {
+    let current = this.head;
+    while (current) {
+      console.log(current.data);
+      current = current.next;
+    }
+  }
+}
+
+// Example Usage
+const ll = new LinkedList();
+ll.append(1);
+ll.append(2);
+ll.append(3);
+
+ll.print();
