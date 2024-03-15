@@ -1,35 +1,48 @@
-function isAnagram(str1, str2) {
-    // Remove any non-alphabetic characters and convert to lowercase
-    str1 = str1.replace(/[^A-Za-z]/g, '').toLowerCase();
-    str2 = str2.replace(/[^A-Za-z]/g, '').toLowerCase();
+function fibonacciSearch(arr, x) {
+    let fib2 = 0;
+    let fib1 = 1;
+    let fib = fib1 + fib2;
+    let n = arr.length;
 
-    // Check if the strings are of equal length
-    if (str1.length !== str2.length) {
-        return false;
+    while (fib < n) {
+        fib2 = fib1;
+        fib1 = fib;
+        fib = fib1 + fib2;
     }
 
-    // Create character frequency maps for both strings
-    const charMap1 = {};
-    const charMap2 = {};
+    let offset = -1;
 
-    for (let char of str1) {
-        charMap1[char] = (charMap1[char] || 0) + 1;
-    }
+    while (fib > 1) {
+        let i = Math.min(offset + fib2, n - 1);
 
-    for (let char of str2) {
-        charMap2[char] = (charMap2[char] || 0) + 1;
-    }
-
-    // Compare the character frequency maps
-    for (let char in charMap1) {
-        if (charMap1[char] !== charMap2[char]) {
-            return false;
+        if (arr[i] < x) {
+            fib = fib1;
+            fib1 = fib2;
+            fib2 = fib - fib1;
+            offset = i;
+        } else if (arr[i] > x) {
+            fib = fib2;
+            fib1 -= fib2;
+            fib2 = fib - fib1;
+        } else {
+            return i;
         }
     }
 
-    return true;
+    if (fib1 === 1 && arr[offset + 1] === x) {
+        return offset + 1;
+    }
+
+    return -1;
 }
 
-// Example usage
-console.log(isAnagram("listen", "silent")); // true
-console.log(isAnagram("hello", "world")); // false
+// Test the Fibonacci search algorithm
+const arr = [2, 3, 5, 8, 13, 21, 34, 55, 89];
+const x = 55;
+const index = fibonacciSearch(arr, x);
+
+if (index !== -1) {
+    console.log(`${x} found at index ${index}`);
+} else {
+    console.log(`${x} not found in the array`);
+}
