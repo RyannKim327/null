@@ -1,36 +1,67 @@
-function breadthLimitedSearch(initialNode, goalNode, limit) {
-    let queue = [{ node: initialNode, path: [initialNode] }];
-
-    while (queue.length > 0) {
-        let { node, path } = queue.shift();
-
-        if (node === goalNode) {
-            return path;
-        }
-
-        if (path.length < limit) {
-            let children = expandNode(node); // Function to generate child nodes
-
-            children.forEach(child => {
-                queue.push({ node: child, path: path.concat(child) });
-            });
+function tarjan(vertices) {
+    let index = 0;
+    let stack = [];
+    let result = [];
+    
+    for (let v of vertices) {
+        if (v.index === undefined) {
+            strongConnect(v);
         }
     }
-
-    return "Goal node not found within the limit";
-}
-
-function expandNode(node) {
-    // Function to generate child nodes from a given node
-    // You need to implement this based on your specific problem
-    return [];
+    
+    return result;
+    
+    function strongConnect(v) {
+        v.index = index;
+        v.lowlink = index;
+        index++;
+        stack.push(v);
+        v.onStack = true;
+        
+        for (let w of v.neighbors) {
+            if (w.index === undefined) {
+                strongConnect(w);
+                v.lowlink = Math.min(v.lowlink, w.lowlink);
+            } else if (w.onStack) {
+                v.lowlink = Math.min(v.lowlink, w.index);
+            }
+        }
+        
+        if (v.lowlink === v.index) {
+            let component = [];
+            let w;
+            do {
+                w = stack.pop();
+                w.onStack = false;
+                component.push(w);
+            } while (w !== v);
+            
+            result.push(component);
+        }
+    }
 }
 
 // Example usage
-let initialNode = 1;
-let goalNode = 10;
-let limit = 3;
+class Vertex {
+    constructor() {
+        this.index = undefined;
+        this.lowlink = undefined;
+        this.onStack = false;
+        this.neighbors = [];
+    }
+}
 
-let result = breadthLimitedSearch(initialNode, goalNode, limit);
+let v1 = new Vertex();
+let v2 = new Vertex();
+let v3 = new Vertex();
+let v4 = new Vertex();
 
-console.log(result);
+v1.neighbors = [v2];
+v2.neighbors = [v3];
+v3.neighbors = [v1, v4];
+v4.neighbors = [v2];
+
+let vertices = [v1, v2, v3, v4];
+let sccs = tarjan(vertices);
+
+console.log(sccs);
