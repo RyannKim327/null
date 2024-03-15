@@ -1,46 +1,51 @@
-class Stack {
-  constructor() {
-    this.stack = [];
+function breadthLimitedSearch(root, target, limit) {
+  if (root === null) {
+    return false;
   }
 
-  push(element) {
-    this.stack.push(element);
-  }
+  let queue = [root];
+  let depth = 0;
 
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
+  while (queue.length > 0) {
+    if (depth === limit) {
+      return false;
     }
-    return this.stack.pop();
-  }
 
-  peek() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
+    let currentNode = queue.shift();
+
+    if (currentNode.value === target) {
+      return true;
     }
-    return this.stack[this.stack.length - 1];
-  }
 
-  isEmpty() {
-    return this.stack.length === 0;
-  }
-
-  printStack() {
-    let stackString = "";
-    for (let element of this.stack) {
-      stackString += element + " ";
+    if (currentNode.children) {
+      for (let child of currentNode.children) {
+        queue.push(child);
+      }
     }
-    return stackString.trim();
+
+    depth++;
+  }
+
+  return false;
+}
+
+// Usage
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.children = [];
   }
 }
 
-// Example usage
-const stack = new Stack();
-stack.push(1);
-stack.push(2);
-stack.push(3);
-console.log(stack.printStack()); // Output: 1 2 3
-console.log(stack.pop()); // Output: 3
-console.log(stack.peek()); // Output: 2
-console.log(stack.isEmpty()); // Output: false
-console.log(stack.printStack()); // Output: 1 2
+// Create a tree structure
+let root = new Node(1);
+let node2 = new Node(2);
+let node3 = new Node(3);
+let node4 = new Node(4);
+
+root.children.push(node2);
+root.children.push(node3);
+node2.children.push(node4);
+
+// Search for value 4 with a limit of 2
+console.log(breadthLimitedSearch(root, 4, 2)); // Output: true
