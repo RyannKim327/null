@@ -1,51 +1,46 @@
-class Graph {
+class Stack {
   constructor() {
-    this.adjacencyList = {};
+    this.stack = [];
   }
 
-  addVertex(vertex) {
-    if (!this.adjacencyList[vertex]) this.adjacencyList[vertex] = [];
+  push(element) {
+    this.stack.push(element);
   }
 
-  addEdge(vertex1, vertex2) {
-    this.adjacencyList[vertex1].push(vertex2);
-    this.adjacencyList[vertex2].push(vertex1);
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
+    }
+    return this.stack.pop();
   }
 
-  depthFirstSearch(startingVertex) {
-    const visited = {};
-    const result = [];
+  peek() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
+    }
+    return this.stack[this.stack.length - 1];
+  }
 
-    const dfs = (vertex) => {
-      if (!vertex) return null;
-      visited[vertex] = true;
-      result.push(vertex);
+  isEmpty() {
+    return this.stack.length === 0;
+  }
 
-      this.adjacencyList[vertex].forEach((neighbor) => {
-        if (!visited[neighbor]) {
-          return dfs(neighbor);
-        }
-      });
-    };
-
-    dfs(startingVertex);
-
-    return result;
+  printStack() {
+    let stackString = "";
+    for (let element of this.stack) {
+      stackString += element + " ";
+    }
+    return stackString.trim();
   }
 }
 
-// Usage
-const graph = new Graph();
-
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
-
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('C', 'E');
-
-console.log(graph.depthFirstSearch('A'));  // Output: ['A', 'B', 'D', 'C', 'E']
+// Example usage
+const stack = new Stack();
+stack.push(1);
+stack.push(2);
+stack.push(3);
+console.log(stack.printStack()); // Output: 1 2 3
+console.log(stack.pop()); // Output: 3
+console.log(stack.peek()); // Output: 2
+console.log(stack.isEmpty()); // Output: false
+console.log(stack.printStack()); // Output: 1 2
