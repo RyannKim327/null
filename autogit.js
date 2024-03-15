@@ -1,3 +1,5 @@
-let arr = [1, 2, 3, 4, 5];
-arr.reverse();
-console.log(arr); // Output: [5, 4, 3, 2, 1]
+// Taking input from the user
+var userInput = prompt("Enter something: ");
+
+// Displaying the input on the console
+console.log("User input: " + userInput);
