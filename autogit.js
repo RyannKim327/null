@@ -1,42 +1,27 @@
-function buildPatternTable(pattern) {
-    let prefixSuffixTable = new Array(pattern.length);
-    prefixSuffixTable[0] = 0;
-    let j = 0;
-    for (let i = 1; i < pattern.length; i++) {
-        while (j > 0 && pattern[i] !== pattern[j]) {
-            j = prefixSuffixTable[j - 1];
-        }
-        if (pattern[i] === pattern[j]) {
-            j++;
-        }
-        prefixSuffixTable[i] = j;
+function largestPrimeFactor(number) {
+    let largestPrime = 1;
+    
+    // Check for divisibility by 2
+    while (number % 2 === 0) {
+        largestPrime = 2;
+        number = number / 2;
     }
-    return prefixSuffixTable;
-}
-
-function kmpSearch(text, pattern) {
-    let patternTable = buildPatternTable(pattern);
-    let matches = [];
-    let j = 0;
-
-    for (let i = 0; i < text.length; i++) {
-        while (j > 0 && text[i] !== pattern[j]) {
-            j = patternTable[j - 1];
-        }
-        if (text[i] === pattern[j]) {
-            j++;
-        }
-        if (j === pattern.length) {
-            matches.push(i - j + 1);
-            j = patternTable[j - 1];
+    
+    // Check for divisibility by odd numbers
+    for (let i = 3; i <= Math.sqrt(number); i = i + 2) {
+        while (number % i === 0) {
+            largestPrime = i;
+            number = number / i;
         }
     }
-
-    return matches;
+    
+    // Check if the remaining number is a prime number
+    if (number > 2) {
+        largestPrime = number;
+    }
+    
+    return largestPrime;
 }
 
-// Example usage
-let text = "ABABDABACDABABCABAB";
-let pattern = "ABABCABAB";
-let result = kmpSearch(text, pattern);
-console.log(result); // Output: [10]
+let number = 13195; // Enter the number for which you want to find the largest prime factor
+console.log(largestPrimeFactor(number)); // Prints the largest prime factor of the number
