@@ -1,55 +1,27 @@
-class HashTable {
-    constructor(size) {
-        this.size = size;
-        this.table = new Array(size);
+function binarySearchRecursive(arr, target, low, high) {
+    if (low > high) {
+        return -1; // Target not found
     }
 
-    hashFunction(key) {
-        let hash = 0;
-        for (let i = 0; i < key.length; i++) {
-            hash += key.charCodeAt(i);
-        }
-        return hash % this.size;
-    }
+    // Calculate mid index
+    let mid = Math.floor((low + high) / 2);
 
-    insert(key, value) {
-        const index = this.hashFunction(key);
-        if (!this.table[index]) {
-            this.table[index] = [];
-        }
-        this.table[index].push({ key, value });
-    }
-
-    search(key) {
-        const index = this.hashFunction(key);
-        if (!this.table[index]) {
-            return null;
-        }
-        for (let entry of this.table[index]) {
-            if (entry.key === key) {
-                return entry.value;
-            }
-        }
-        return null;
-    }
-
-    remove(key) {
-        const index = this.hashFunction(key);
-        if (!this.table[index]) {
-            return false;
-        }
-        this.table[index] = this.table[index].filter(entry => entry.key !== key);
-        return true;
+    if (arr[mid] === target) {
+        return mid; // Target found at mid index
+    } else if (arr[mid] < target) {
+        return binarySearchRecursive(arr, target, mid + 1, high); // Search in the right half
+    } else {
+        return binarySearchRecursive(arr, target, low, mid - 1); // Search in the left half
     }
 }
 
-// Usage
-const hashTable = new HashTable(10);
-hashTable.insert("apple", "red");
-hashTable.insert("banana", "yellow");
+// Example usage
+const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17]; // Sorted array
+const target = 9;
+const index = binarySearchRecursive(arr, target, 0, arr.length - 1);
 
-console.log(hashTable.search("apple")); // Output: "red"
-console.log(hashTable.search("banana")); // Output: "yellow"
-
-hashTable.remove("apple");
-console.log(hashTable.search("apple")); // Output: null
+if (index !== -1) {
+    console.log(`Target ${target} found at index ${index}`);
+} else {
+    console.log(`Target ${target} not found in the array`);
+}
