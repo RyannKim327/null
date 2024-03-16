@@ -1,15 +1,26 @@
-function findKthSmallestElement(arr, k) {
-    // Sort the array in ascending order
-    arr.sort(function(a, b) {
-        return a - b;
-    });
+function shellSort(arr) {
+    let n = arr.length;
+    let gap = Math.floor(n / 2);
 
-    // Return the kth smallest element
-    return arr[k - 1];
+    while (gap > 0) {
+        for (let i = gap; i < n; i++) {
+            let temp = arr[i];
+            let j = i;
+
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
+            }
+
+            arr[j] = temp;
+        }
+
+        gap = Math.floor(gap / 2);
+    }
+
+    return arr;
 }
 
 // Example usage
-const arr = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
-const k = 3;
-const kthSmallest = findKthSmallestElement(arr, k);
-console.log(`The ${k}th smallest element in the array is: ${kthSmallest}`);
+let arr = [12, 34, 54, 2, 3];
+console.log(shellSort(arr)); // Output: [2, 3, 12, 34, 54]
