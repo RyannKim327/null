@@ -1,21 +1,22 @@
-function isAnagram(str1, str2) {
-  // Remove special characters and spaces and convert to lowercase
-  str1 = str1.replace(/[^\w]/g, '').toLowerCase();
-  str2 = str2.replace(/[^\w]/g, '').toLowerCase();
-
-  // Check if the lengths are equal
-  if (str1.length !== str2.length) {
-    return false;
-  }
-
-  // Sort the arrays and compare
-  const sortedStr1 = str1.split('').sort().join('');
-  const sortedStr2 = str2.split('').sort().join('');
-
-  return sortedStr1 === sortedStr2;
+function bubbleSort(arr) {
+    let n = arr.length;
+    let swapped;
+    do {
+        swapped = false;
+        for (let i = 0; i < n - 1; i++) {
+            if (arr[i] > arr[i + 1]) {
+                let temp = arr[i];
+                arr[i] = arr[i + 1];
+                arr[i + 1] = temp;
+                swapped = true;
+            }
+        }
+    } while (swapped);
+    
+    return arr;
 }
 
-// Test the function
-const string1 = 'listen';
-const string2 = 'silent';
-console.log(isAnagram(string1, string2)); // Output: true
+// Example
+let arr = [64, 34, 25, 12, 22, 11, 90];
+console.log("Original array: " + arr);
+console.log("Sorted array: " + bubbleSort(arr));
