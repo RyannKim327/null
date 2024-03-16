@@ -1,41 +1,20 @@
-class HashTable {
-    constructor() {
-        this.table = {};
-    }
-
-    // This function hashes the key and returns the hash value
-    hash(key) {
-        let hash = 0;
-        for (let i = 0; i < key.length; i++) {
-            hash += key.charCodeAt(i);
-        }
-        return hash;
-    }
-
-    // This function adds a key-value pair to the hash table
-    put(key, value) {
-        const hashCode = this.hash(key);
-        this.table[hashCode] = value;
-    }
-
-    // This function retrieves a value from the hash table given a key
-    get(key) {
-        const hashCode = this.hash(key);
-        return this.table[hashCode];
-    }
-
-    // This function removes a key-value pair from the hash table
-    remove(key) {
-        const hashCode = this.hash(key);
-        delete this.table[hashCode];
-    }
+// Simulating an async task in Android
+function asyncTask() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve('Connected successfully!');
+    }, 2000);
+  });
 }
 
-// Example usage:
-const myHashTable = new HashTable();
-myHashTable.put("key1", "value1");
-myHashTable.put("key2", "value2");
+async function connectThroughAsyncTask() {
+  try {
+    console.log('Connecting to Android through async task...');
+    const result = await asyncTask();
+    console.log(result);
+  } catch (error) {
+    console.error('Error connecting through async task:', error);
+  }
+}
 
-console.log(myHashTable.get("key1")); // Output: "value1"
-myHashTable.remove("key1");
-console.log(myHashTable.get("key1")); // Output: undefined
+connectThroughAsyncTask();
