@@ -1,18 +1,15 @@
-function bubbleSort(arr) {
-    for (let i = 0; i < arr.length; i++) {
-        for (let j = 0; j < arr.length - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                // Swap arr[j] and arr[j+1]
-                let temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
-        }
-    }
-    return arr;
+function findKthSmallestElement(arr, k) {
+    // Sort the array in ascending order
+    arr.sort(function(a, b) {
+        return a - b;
+    });
+
+    // Return the kth smallest element
+    return arr[k - 1];
 }
 
-const array = [64, 34, 25, 12, 22, 11, 90];
-console.log("Original Array: ", array);
-const sortedArray = bubbleSort(array);
-console.log("Sorted Array: ", sortedArray);
+// Example usage
+const arr = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
+const k = 3;
+const kthSmallest = findKthSmallestElement(arr, k);
+console.log(`The ${k}th smallest element in the array is: ${kthSmallest}`);
