@@ -1,27 +1,75 @@
-function largestPrimeFactor(number) {
-    let largestPrime = 1;
-    
-    // Check for divisibility by 2
-    while (number % 2 === 0) {
-        largestPrime = 2;
-        number = number / 2;
+class PriorityQueue {
+  constructor() {
+    this.heap = [];
+  }
+
+  enqueue(value, priority) {
+    const node = { value, priority };
+    this.heap.push(node);
+    this.bubbleUp(this.heap.length - 1);
+  }
+
+  dequeue() {
+    if (this.isEmpty()) {
+      return null;
+    }
+
+    const minNode = this.heap[0];
+    const lastNode = this.heap.pop();
+    if (this.heap.length > 0) {
+      this.heap[0] = lastNode;
+      this.bubbleDown(0);
     }
     
-    // Check for divisibility by odd numbers
-    for (let i = 3; i <= Math.sqrt(number); i = i + 2) {
-        while (number % i === 0) {
-            largestPrime = i;
-            number = number / i;
-        }
+    return minNode.value;
+  }
+
+  bubbleUp(index) {
+    while (index > 0) {
+      const parentIndex = Math.floor((index - 1) / 2);
+      if (this.heap[index].priority < this.heap[parentIndex].priority) {
+        [this.heap[index], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[index]];
+        index = parentIndex;
+      } else {
+        break;
+      }
     }
-    
-    // Check if the remaining number is a prime number
-    if (number > 2) {
-        largestPrime = number;
+  }
+
+  bubbleDown(index) {
+    while (index < this.heap.length) {
+      const leftChildIndex = 2 * index + 1;
+      const rightChildIndex = 2 * index + 2;
+      let nextIndex = index;
+
+      if (leftChildIndex < this.heap.length && this.heap[leftChildIndex].priority < this.heap[nextIndex].priority) {
+        nextIndex = leftChildIndex;
+      }
+
+      if (rightChildIndex < this.heap.length && this.heap[rightChildIndex].priority < this.heap[nextIndex].priority) {
+        nextIndex = rightChildIndex;
+      }
+
+      if (nextIndex !== index) {
+        [this.heap[index], this.heap[nextIndex]] = [this.heap[nextIndex], this.heap[index]];
+        index = nextIndex;
+      } else {
+        break;
+      }
     }
-    
-    return largestPrime;
+  }
+
+  isEmpty() {
+    return this.heap.length === 0;
+  }
 }
 
-let number = 13195; // Enter the number for which you want to find the largest prime factor
-console.log(largestPrimeFactor(number)); // Prints the largest prime factor of the number
+// Usage
+const pq = new PriorityQueue();
+pq.enqueue('task1', 3);
+pq.enqueue('task2', 1);
+pq.enqueue('task3', 2);
+
+console.log(pq.dequeue()); // task2
+console.log(pq.dequeue()); // task3
+console.log(pq.dequeue()); // task1
