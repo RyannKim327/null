@@ -1,37 +1,47 @@
-// A utility function to get the digit at a given position of a number
-function getDigit(num, i) {
-    return Math.floor(Math.abs(num) / Math.pow(10, i)) % 10;
-}
+function breadthLimitedSearch(root, target, limit) {
+    if (root === null) return false;
 
-// A utility function to get the number of digits in a number
-function digitCount(num) {
-    if (num === 0) return 1;
-    return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
+    let queue = [];
+    let visited = new Set();
 
-// A utility function to get the number of digits in the largest number of an array
-function mostDigits(arr) {
-    let maxDigits = 0;
-    for (let i = 0; i < arr.length; i++) {
-        maxDigits = Math.max(maxDigits, digitCount(arr[i]));
-    }
-    return maxDigits;
-}
+    queue.push({ node: root, depth: 0 });
 
-// Radix Sort function
-function radixSort(arr) {
-    const maxDigits = mostDigits(arr);
-    for (let k = 0; k < maxDigits; k++) {
-        let digitBuckets = Array.from({ length: 10 }, () => []);
-        for (let i = 0; i < arr.length; i++) {
-            let digit = getDigit(arr[i], k);
-            digitBuckets[digit].push(arr[i]);
+    while (queue.length > 0) {
+        let current = queue.shift();
+        let currentNode = current.node;
+        let currentDepth = current.depth;
+
+        if (currentNode === target) {
+            return true;
         }
-        arr = [].concat(...digitBuckets);
+
+        visited.add(currentNode);
+
+        if (currentDepth < limit) {
+            let neighbors = getNeighbors(currentNode);
+            neighbors.forEach(function(neighbor) {
+                if (!visited.has(neighbor)) {
+                    queue.push({ node: neighbor, depth: currentDepth + 1 });
+                }
+            });
+        }
     }
-    return arr;
+
+    return false;
+}
+
+function getNeighbors(node) {
+    // This is where you would define how to get the neighbors of a node
+    // For example, if your tree is represented as an adjacency list, you could do something like this:
+    // return adjacencyList[node];
+
+    return [];
 }
 
 // Example usage
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log(radixSort(arr)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+// Define a simple tree structure
+let root = 'A';
+let target = 'F';
+
+let result = breadthLimitedSearch(root, target, 2); // Search up to a depth of 2
+console.log(result); // Will output true or false based on whether the target was found within the depth limit
