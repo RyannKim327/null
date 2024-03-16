@@ -1,27 +1,17 @@
-function binarySearchRecursive(arr, target, low, high) {
-    if (low > high) {
-        return -1; // Target not found
-    }
+const cron = require('node-cron');
 
-    // Calculate mid index
-    let mid = Math.floor((low + high) / 2);
+// Schedule a job to run every minute
+cron.schedule('* * * * *', () => {
+    console.log('Running a job every minute!');
+});
 
-    if (arr[mid] === target) {
-        return mid; // Target found at mid index
-    } else if (arr[mid] < target) {
-        return binarySearchRecursive(arr, target, mid + 1, high); // Search in the right half
-    } else {
-        return binarySearchRecursive(arr, target, low, mid - 1); // Search in the left half
-    }
-}
+// Schedule a job to run at 12:00 PM every day
+cron.schedule('0 12 * * *', () => {
+    console.log('Running a job at 12:00 PM every day!');
+});
 
-// Example usage
-const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17]; // Sorted array
-const target = 9;
-const index = binarySearchRecursive(arr, target, 0, arr.length - 1);
-
-if (index !== -1) {
-    console.log(`Target ${target} found at index ${index}`);
-} else {
-    console.log(`Target ${target} not found in the array`);
-}
+// Run a job every Friday at 5:30 PM
+cron.schedule('30 17 * * Friday', () => {
+    console.log('Running a job every Friday at 5:30 PM!');
+});
+npm install node-cron
