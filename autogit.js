@@ -1,17 +1,7 @@
-const cron = require('node-cron');
+function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
-// Schedule a job to run every minute
-cron.schedule('* * * * *', () => {
-    console.log('Running a job every minute!');
-});
-
-// Schedule a job to run at 12:00 PM every day
-cron.schedule('0 12 * * *', () => {
-    console.log('Running a job at 12:00 PM every day!');
-});
-
-// Run a job every Friday at 5:30 PM
-cron.schedule('30 17 * * Friday', () => {
-    console.log('Running a job every Friday at 5:30 PM!');
-});
-npm install node-cron
+// Example: Generate a random number between 1 and 100
+var randomNumber = getRandomNumber(1, 100);
+console.log(randomNumber);
