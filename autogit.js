@@ -1,72 +1,48 @@
-class SkipNode {
-    constructor(value, level) {
-        this.value = value;
-        this.forward = new Array(level + 1).fill(null);
-    }
-}
+function bellmanFord(graph, start) {
+    let distances = {};
+    let parents = {};
 
-class SkipList {
-    constructor(maxLevels, probability) {
-        this.maxLevels = maxLevels;
-        this.head = new SkipNode(-1, maxLevels);
-        this.level = 0;
-        this.probability = probability;
+    for (let node in graph) {
+        distances[node] = Infinity;
+        parents[node] = null;
     }
 
-    randomLevel() {
-        let level = 0;
-        while (Math.random() < this.probability && level < this.maxLevels) {
-            level++;
-        }
-        return level;
-    }
+    distances[start] = 0;
 
-    insert(value) {
-        let update = new Array(this.maxLevels + 1).fill(null);
-        let current = this.head;
-
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-            update[i] = current;
-        }
-
-        current = current.forward[0];
-        
-        if (current === null || current.value !== value) {
-            let newLevel = this.randomLevel();
-            if (newLevel > this.level) {
-                for (let i = this.level + 1; i <= newLevel; i++) {
-                    update[i] = this.head;
+    for (let i = 0; i < Object.keys(graph).length - 1; i++) {
+        for (let node in graph) {
+            for (let neighbor in graph[node]) {
+                if (distances[node] + graph[node][neighbor] < distances[neighbor]) {
+                    distances[neighbor] = distances[node] + graph[node][neighbor];
+                    parents[neighbor] = node;
                 }
-                this.level = newLevel;
-            }
-
-            let newNode = new SkipNode(value, newLevel);
-
-            for (let i = 0; i <= newLevel; i++) {
-                newNode.forward[i] = update[i].forward[i];
-                update[i].forward[i] = newNode;
             }
         }
     }
 
-    search(value) {
-        let current = this.head;
-
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
+    // Check for negative cycles
+    for (let node in graph) {
+        for (let neighbor in graph[node]) {
+            if (distances[node] + graph[node][neighbor] < distances[neighbor]) {
+                throw new Error("Graph contains a negative cycle");
             }
         }
-
-        current = current.forward[0];
-
-        if (current !== null && current.value === value) {
-            return true;
-        } else {
-            return false;
-        }
     }
+
+    return { distances, parents };
 }
+
+// Example Usage
+const graph = {
+    A: { B: -1, C: 4 },
+    B: { C: 3, D: 2, E: 2 },
+    C: {},
+    D: { B: 1, C: 5 },
+    E: { D: -3 }
+};
+
+const startNode = 'A';
+const { distances, parents } = bellmanFord(graph, startNode);
+
+console.log(distances); // Shortest distances from startNode
+console.log(parents); // Parents of nodes in shortest paths
