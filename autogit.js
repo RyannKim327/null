@@ -1,51 +1,21 @@
-class Graph {
-  constructor() {
-    this.adjList = new Map();
+function isAnagram(str1, str2) {
+  // Remove special characters and spaces and convert to lowercase
+  str1 = str1.replace(/[^\w]/g, '').toLowerCase();
+  str2 = str2.replace(/[^\w]/g, '').toLowerCase();
+
+  // Check if the lengths are equal
+  if (str1.length !== str2.length) {
+    return false;
   }
 
-  addVertex(vertex) {
-    this.adjList.set(vertex, []);
-  }
+  // Sort the arrays and compare
+  const sortedStr1 = str1.split('').sort().join('');
+  const sortedStr2 = str2.split('').sort().join('');
 
-  addEdge(v, w) {
-    this.adjList.get(v).push(w);
-  }
-
-  dfsUtil(vertex, visited) {
-    visited.add(vertex);
-
-    console.log(vertex);
-
-    let neighbours = this.adjList.get(vertex);
-
-    for (let neighbour of neighbours) {
-      if (!visited.has(neighbour)) {
-        this.dfsUtil(neighbour, visited);
-      }
-    }
-  }
-
-  dfs(startVertex) {
-    let visited = new Set();
-
-    this.dfsUtil(startVertex, visited);
-  }
+  return sortedStr1 === sortedStr2;
 }
 
-// Test the implementation
-
-let graph = new Graph();
-
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
-
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('B', 'E');
-
-console.log('Depth First Traversal:');
-graph.dfs('A');
+// Test the function
+const string1 = 'listen';
+const string2 = 'silent';
+console.log(isAnagram(string1, string2)); // Output: true
