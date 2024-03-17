@@ -1,34 +1,19 @@
-function findLongestIncreasingSubsequence(arr) {
-    const n = arr.length;
-    const dp = new Array(n).fill(1);
-
-    for (let i = 1; i < n; i++) {
-        for (let j = 0; j < i; j++) {
-            if (arr[i] > arr[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
-            }
+function getIntersectionNode(headA, headB) {
+    let set = new Set();
+    
+    // Traverse the first linked list and store nodes in a Set
+    while (headA !== null) {
+        set.add(headA);
+        headA = headA.next;
+    }
+    
+    // Traverse the second linked list and check if each node is in the Set
+    while (headB !== null) {
+        if (set.has(headB)) {
+            return headB; // Found the intersection
         }
+        headB = headB.next;
     }
-
-    let maxLength = 0;
-    for (let i = 0; i < n; i++) {
-        maxLength = Math.max(maxLength, dp[i]);
-    }
-
-    const lis = [];
-    let len = maxLength;
-    for (let i = n - 1; i >= 0 && len > 0; i--) {
-        if (dp[i] === len) {
-            lis.unshift(arr[i]);
-            len--;
-        }
-    }
-
-    return lis;
+    
+    return null; // No intersection found
 }
-
-// Example Usage
-const arr = [3, 4, 2, 8, 10, 5, 1];
-const longestIncreasingSubsequence = findLongestIncreasingSubsequence(arr);
-
-console.log("Longest Increasing Subsequence:", longestIncreasingSubsequence);
