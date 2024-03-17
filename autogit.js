@@ -1,17 +1,10 @@
-function largestPrimeFactor(number) {
-    let factor = 2;
-    
-    while (factor <= Math.sqrt(number)) {
-        if (number % factor === 0) {
-            number /= factor;
-        } else {
-            factor++;
-        }
-    }
-    
-    return number;
+function calculateAreaOfTriangle(base, height) {
+    return 0.5 * base * height;
 }
 
 // Example usage
-const number = 13195;
-console.log(largestPrimeFactor(number)); // Output: 29
+const base = 5;
+const height = 8;
+const area = calculateAreaOfTriangle(base, height);
+
+console.log("The area of the triangle is: " + area);
