@@ -1,46 +1,82 @@
 class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
+  constructor(data, color) {
+    this.data = data;
+    this.color = color;
+    this.left = null;
+    this.right = null;
+    this.parent = null;
   }
 }
-function convertListToArray(head) {
-  let arr = [];
-  while (head !== null) {
-    arr.push(head.value);
-    head = head.next;
+
+class RedBlackTree {
+  constructor() {
+    this.root = null;
   }
-  return arr;
-}
-function isPalindrome(arr) {
-  let left = 0;
-  let right = arr.length - 1;
-  
-  while (left < right) {
-    if (arr[left] !== arr[right]) {
+
+  insert(data) {
+    const newNode = new Node(data, "red");
+    this.root = this.insertNode(this.root, newNode);
+    // Ensure root node is black
+    this.root.color = "black";
+  }
+
+  insertNode(node, newNode) {
+    // If tree is empty, return the new node
+    if (node === null) {
+      return newNode;
+    }
+
+    // Insert new node
+    if (newNode.data < node.data) {
+      node.left = this.insertNode(node.left, newNode);
+      node.left.parent = node;
+    } else if (newNode.data > node.data) {
+      node.right = this.insertNode(node.right, newNode);
+      node.right.parent = node;
+    }
+
+    // Perform rotations and color flips to maintain red-black tree properties
+    if (this.isRed(node.right) && !this.isRed(node.left)) {
+      node = this.rotateLeft(node);
+    }
+    if (this.isRed(node.left) && this.isRed(node.left.left)) {
+      node = this.rotateRight(node);
+    }
+    if (this.isRed(node.left) && this.isRed(node.right)) {
+      this.flipColors(node);
+    }
+
+    return node;
+  }
+
+  isRed(node) {
+    if (node === null) {
       return false;
     }
-    
-    left++;
-    right--;
+    return node.color === "red";
   }
-  
-  return true;
-}
-function isLinkedListPalindrome(head) {
-  const arr = convertListToArray(head);
-  return isPalindrome(arr);
-}
-// Construct a linked list
-const node1 = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
-const node4 = new Node(2);
-const node5 = new Node(1);
 
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node5;
+  rotateLeft(node) {
+    const temp = node.right;
+    node.right = temp.left;
+    temp.left = node;
+    temp.color = node.color;
+    node.color = "red";
+    return temp;
+  }
 
-console.log(isLinkedListPalindrome(node1)); // Output: true
+  rotateRight(node) {
+    const temp = node.left;
+    node.left = temp.right;
+    temp.right = node;
+    temp.color = node.color;
+    node.color = "red";
+    return temp;
+  }
+
+  flipColors(node) {
+    node.color = "red";
+    node.left.color = "black";
+    node.right.color = "black";
+  }
+}
