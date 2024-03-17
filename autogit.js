@@ -1,14 +1,55 @@
-function reverseWords(str) {
-    // Split the string into an array of words
-    let words = str.split(" ");
-    
-    // Reverse the array
-    words.reverse();
+function buildLPS(pattern) {
+    const lps = [0];
+    let len = 0;
+    let i = 1;
 
-    // Join the array back into a string
-    return words.join(" ");
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+
+    return lps;
 }
 
-let originalString = "Hello World";
-let reversedString = reverseWords(originalString);
-console.log(reversedString); // Output: "World Hello"
+function searchKMP(text, pattern) {
+    const lps = buildLPS(pattern);
+    const matches = [];
+
+    let i = 0;
+    let j = 0;
+
+    while (i < text.length) {
+        if (text[i] === pattern[j]) {
+            i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            matches.push(i - j);
+            j = lps[j - 1];
+        } else if (i < text.length && text[i] !== pattern[j]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+
+    return matches;
+}
+
+// Test the KMP Algorithm
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+console.log(searchKMP(text, pattern)); // Output: [10]
