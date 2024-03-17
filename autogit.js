@@ -1,18 +1,19 @@
-function findFirstRepeatedChar(str) {
-    let charSet = new Set();
+function getIntersectionNode(headA, headB) {
+    let set = new Set();
     
-    for (let i = 0; i < str.length; i++) {
-        let char = str[i];
-        if (charSet.has(char)) {
-            return char;
-        }
-        charSet.add(char);
+    let currA = headA;
+    while (currA) {
+        set.add(currA);
+        currA = currA.next;
     }
     
-    return null;
+    let currB = headB;
+    while (currB) {
+        if (set.has(currB)) {
+            return currB;
+        }
+        currB = currB.next;
+    }
+    
+    return null; // If no intersection is found
 }
-
-// Example
-const str = 'abcdeab';
-const repeatedChar = findFirstRepeatedChar(str);
-console.log(repeatedChar); // Output: 'a'
