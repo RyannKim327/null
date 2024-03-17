@@ -1,144 +1,128 @@
-// Define the Node class for the tree
 class Node {
     constructor(value) {
         this.value = value;
         this.left = null;
         this.right = null;
-        this.color = "red"; // Initialize all nodes as red by default
-        this.parent = null;
+        this.height = 1;
     }
 }
 
-// Define the RedBlackTree class
-class RedBlackTree {
+class AVLTree {
     constructor() {
         this.root = null;
     }
 
-    // Helper function to rotate left
-    rotateLeft(node) {
-        const rightChild = node.right;
-        node.right = rightChild.left;
-        if (rightChild.left !== null) {
-            rightChild.left.parent = node;
+    getHeight(node) {
+        if (node === null) {
+            return 0;
         }
-        rightChild.parent = node.parent;
-        if (node.parent === null) {
-            this.root = rightChild;
-        } else if (node === node.parent.left) {
-            node.parent.left = rightChild;
-        } else {
-            node.parent.right = rightChild;
-        }
-        rightChild.left = node;
-        node.parent = rightChild;
+        return node.height;
     }
 
-    // Helper function to rotate right
-    rotateRight(node) {
-        const leftChild = node.left;
-        node.left = leftChild.right;
-        if (leftChild.right !== null) {
-            leftChild.right.parent = node;
+    getBalanceFactor(node) {
+        if (node === null) {
+            return 0;
         }
-        leftChild.parent = node.parent;
-        if (node.parent === null) {
-            this.root = leftChild;
-        } else if (node === node.parent.right) {
-            node.parent.right = leftChild;
-        } else {
-            node.parent.left = leftChild;
-        }
-        leftChild.right = node;
-        node.parent = leftChild;
+        return this.getHeight(node.left) - this.getHeight(node.right);
     }
 
-    // Helper function to fix violations after insertion
-    fixViolation(node) {
-        while (node !== this.root && node.color === "red" && node.parent.color === "red") {
-            let parent = node.parent;
-            let grandparent = parent.parent;
-
-            // Case 1: Parent is a left child of the grandparent
-            if (parent === grandparent.left) {
-                let uncle = grandparent.right;
-                // Case 1a: Uncle is red, recoloring
-                if (uncle !== null && uncle.color === "red") {
-                    grandparent.color = "red";
-                    parent.color = "black";
-                    uncle.color = "black";
-                    node = grandparent;
-                } else {
-                    // Case 1b: Uncle is black
-                    if (node === parent.right) {
-                        this.rotateLeft(parent);
-                        node = parent;
-                        parent = node.parent;
-                    }
-                    this.rotateRight(grandparent);
-                    // Swap the colors of the parent and grandparent
-                    const temp = parent.color;
-                    parent.color = grandparent.color;
-                    grandparent.color = temp;
-                    node = parent;
-                }
-            } else { // Case 2: Parent is a right child of the grandparent
-                let uncle = grandparent.left;
-                // Case 2a: Uncle is red, recoloring
-                if (uncle !== null && uncle.color === "red") {
-                    grandparent.color = "red";
-                    parent.color = "black";
-                    uncle.color = "black";
-                    node = grandparent;
-                } else {
-                    // Case 2b: Uncle is black
-                    if (node === parent.left) {
-                        this.rotateRight(parent);
-                        node = parent;
-                        parent = node.parent;
-                    }
-                    this.rotateLeft(grandparent);
-                    // Swap the colors of the parent and grandparent
-                    const temp = parent.color;
-                    parent.color = grandparent.color;
-                    grandparent.color = temp;
-                    node = parent;
-                }
-            }
-        }
-        this.root.color = "black"; // Ensure the root is always black
+    updateHeight(node) {
+        let leftHeight = this.getHeight(node.left);
+        let rightHeight = this.getHeight(node.right);
+        node.height = 1 + Math.max(leftHeight, rightHeight);
     }
 
-    // Public method to insert a value into the tree
+    rotateRight(y) {
+        let x = y.left;
+        let T = x.right;
+
+        x.right = y;
+        y.left = T;
+
+        this.updateHeight(y);
+        this.updateHeight(x);
+
+        return x;
+    }
+
+    rotateLeft(x) {
+        let y = x.right;
+        let T = y.left;
+
+        y.left = x;
+        x.right = T;
+
+        this.updateHeight(x);
+        this.updateHeight(y);
+
+        return y;
+    }
+
     insert(value) {
-        const newNode = new Node(value);
-        if (this.root === null) {
-            this.root = newNode;
-            this.root.color = "black"; // Root must be black
+        this.root = this.insertRec(this.root, value);
+    }
+
+    insertRec(node, value) {
+        if (node === null) {
+            return new Node(value);
+        }
+
+        if (value < node.value) {
+            node.left = this.insertRec(node.left, value);
+        } else if (value > node.value) {
+            node.right = this.insertRec(node.right, value);
         } else {
-            let current = this.root;
-            let parent = null;
-            while (current !== null) {
-                parent = current;
-                if (newNode.value < current.value) {
-                    current = current.left;
-                } else {
-                    current = current.right;
-                }
-            }
-            newNode.parent = parent;
-            if (newNode.value < parent.value) {
-                parent.left = newNode;
-            } else {
-                parent.right = newNode;
-            }
-            this.fixViolation(newNode); // Fix any violations after insertion
+            return node; // duplicate values are not allowed
+        }
+
+        this.updateHeight(node);
+
+        let balanceFactor = this.getBalanceFactor(node);
+
+        // Left Left Case
+        if (balanceFactor > 1 && value < node.left.value) {
+            return this.rotateRight(node);
+        }
+        
+        // Right Right Case
+        if (balanceFactor < -1 && value > node.right.value) {
+            return this.rotateLeft(node);
+        }
+
+        // Left Right Case
+        if (balanceFactor > 1 && value > node.left.value) {
+            node.left = this.rotateLeft(node.left);
+            return this.rotateRight(node);
+        }
+
+        // Right Left Case
+        if (balanceFactor < -1 && value < node.right.value) {
+            node.right = this.rotateRight(node.right);
+            return this.rotateLeft(node);
+        }
+
+        return node;
+    }
+
+    preorder(node) {
+        if (node !== null) {
+            console.log(node.value);
+            this.preorder(node.left);
+            this.preorder(node.right);
         }
     }
+
+    // Other traversal methods (inorder, postorder) can be implemented similar to preorder
+
+    // You can implement deletion, searching, and other AVL tree operations as needed
 }
 
 // Usage
-const rbTree = new RedBlackTree();
-rbTree.insert(10);
-rbTree.insert(20);
-rbTree.insert(5);
+let avlTree = new AVLTree();
+avlTree.insert(10);
+avlTree.insert(20);
+avlTree.insert(30);
+avlTree.insert(40);
+avlTree.insert(50);
+
+avlTree.preorder(avlTree.root);
