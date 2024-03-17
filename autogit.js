@@ -1,23 +1,21 @@
-function shellSort(arr) {
-    let n = arr.length;
-    let gap = Math.floor(n/2);
-
-    while (gap > 0) {
-        for (let i = gap; i < n; i++) {
-            let temp = arr[i];
-            let j = i;
-            while (j >= gap && arr[j - gap] > temp) {
-                arr[j] = arr[j - gap];
-                j -= gap;
-            }
-            arr[j] = temp;
-        }
-        gap = Math.floor(gap / 2);
+function isPrime(number) {
+    if (number <= 1) {
+        return false;
     }
-    return arr;
+
+    if (number <= 3) {
+        return true;
+    }
+
+    for (let i = 2; i <= Math.sqrt(number); i++) {
+        if (number % i === 0) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
-// Example usage
-let array = [12, 34, 54, 2, 3]; 
-console.log("Original Array: " + array);
-console.log("Sorted Array: " + shellSort(array));
+// Test the function
+console.log(isPrime(7)); // Output: true
+console.log(isPrime(12)); // Output: false
