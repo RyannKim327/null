@@ -1,34 +1,51 @@
-function breadthLimitedSearch(startNode, goalNode, limit) {
-  let queue = [startNode];
-
-  while (queue.length > 0 && limit > 0) {
-    let currentNode = queue.shift();
-
-    if (currentNode === goalNode) {
-      return currentNode;
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
     }
-
-    if (limit > 1) {
-      let childNodes = expandNode(currentNode); // Function to generate child nodes
-      queue.push(...childNodes);
-    }
-
-    limit--;
-  }
-
-  return "Goal node not found within the limit";
 }
 
-// Function to generate child nodes (replace this with actual implementation)
-function expandNode(node) {
-  // Code to generate child nodes from the current node
-  return [];
+class LinkedList {
+    constructor() {
+        this.head = null;
+    }
+
+    addNode(value) {
+        const newNode = new Node(value);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+    }
+
+    toArray() {
+        let current = this.head;
+        let arr = [];
+        while (current) {
+            arr.push(current.value);
+            current = current.next;
+        }
+        return arr;
+    }
+
+    isPalindrome() {
+        const arr = this.toArray();
+        const reversedArr = [...arr].reverse();
+        return JSON.stringify(arr) === JSON.stringify(reversedArr);
+    }
 }
 
-// Example usage
-const startNode = 1;
-const goalNode = 6;
-const limit = 3;
+// Example Usage
+const linkedList = new LinkedList();
+linkedList.addNode(1);
+linkedList.addNode(2);
+linkedList.addNode(3);
+linkedList.addNode(2);
+linkedList.addNode(1);
 
-const result = breadthLimitedSearch(startNode, goalNode, limit);
-console.log(result);
+console.log(linkedList.isPalindrome()); // Output: true
