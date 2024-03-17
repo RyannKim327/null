@@ -1,99 +1,17 @@
-class SkipNode {
-    constructor(value, level) {
-        this.value = value;
-        this.forward = new Array(level + 1).fill(null);
+function insertionSort(arr) {
+    for (let i = 1; i < arr.length; i++) {
+        let currentVal = arr[i];
+        let j = i - 1;
+        while (j >= 0 && arr[j] > currentVal) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = currentVal;
     }
+    return arr;
 }
 
-class SkipList {
-    constructor(maxLevel, p) {
-        this.maxLevel = maxLevel;
-        this.p = p;
-        this.level = 0;
-        this.head = new SkipNode(-Infinity, maxLevel);
-    }
-
-    randomLevel() {
-        let level = 0;
-        while (Math.random() < this.p && level < this.maxLevel) {
-            level++;
-        }
-        return level;
-    }
-
-    insert(value) {
-        let update = new Array(this.maxLevel + 1);
-        let current = this.head;
-
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] != null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-            update[i] = current;
-        }
-
-        current = current.forward[0];
-
-        if (current == null || current.value != value) {
-            let newLevel = this.randomLevel();
-            if (newLevel > this.level) {
-                for (let i = this.level + 1; i <= newLevel; i++) {
-                    update[i] = this.head;
-                }
-                this.level = newLevel;
-            }
-
-            let newNode = new SkipNode(value, newLevel);
-
-            for (let i = 0; i <= newLevel; i++) {
-                newNode.forward[i] = update[i].forward[i];
-                update[i].forward[i] = newNode;
-            }
-        }
-    }
-
-    search(value) {
-        let current = this.head;
-
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] != null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-        }
-
-        current = current.forward[0];
-
-        if (current != null && current.value === value) {
-            return current;
-        } else {
-            return null;
-        }
-    }
-
-    delete(value) {
-        let update = new Array(this.maxLevel + 1);
-        let current = this.head;
-
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] != null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-            update[i] = current;
-        }
-
-        current = current.forward[0];
-
-        if (current != null && current.value === value) {
-            for (let i = 0; i <= this.level; i++) {
-                if (update[i].forward[i] != current) {
-                    break;
-                }
-                update[i].forward[i] = current.forward[i];
-            }
-        }
-
-        while (this.level > 0 && this.head.forward[this.level] == null) {
-            this.level--;
-        }
-    }
-}
+// Example usage:
+let arr = [12, 11, 13, 5, 6];
+console.log("Original array:", arr);
+console.log("Sorted array:", insertionSort(arr));
