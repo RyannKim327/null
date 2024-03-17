@@ -1,19 +1,59 @@
-function bubbleSort(arr) {
-    const n = arr.length;
-    for (let i = 0; i < n - 1; i++) {
-        for (let j = 0; j < n - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                // Swap elements
-                let temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
-        }
-    }
-    return arr;
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
 }
 
-// Example usage
-const array = [64, 34, 25, 12, 22, 11, 90];
-console.log("Original Array: " + array);
-console.log("Sorted Array: " + bubbleSort(array));
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+
+  add(data) {
+    const newNode = new Node(data);
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
+
+  isPalindrome() {
+    let values = [];
+    let current = this.head;
+
+    while (current) {
+      values.push(current.data);
+      current = current.next;
+    }
+
+    let left = 0;
+    let right = values.length - 1;
+
+    while (left < right) {
+      if (values[left] !== values[right]) {
+        return false;
+      }
+      left++;
+      right--;
+    }
+
+    return true;
+  }
+}
+
+// Test the palindrome check
+const linkedList = new LinkedList();
+linkedList.add(1);
+linkedList.add(2);
+linkedList.add(3);
+linkedList.add(2);
+linkedList.add(1);
+
+console.log(linkedList.isPalindrome()); // Output: true
+
