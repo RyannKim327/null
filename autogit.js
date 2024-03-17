@@ -1,26 +1,43 @@
-function binarySearchRecursive(arr, key, low, high) {
-    if (low > high) {
-        return -1;
+class Node {
+    constructor() {
+        this.children = {};
+    }
+}
+
+class SuffixTree {
+    constructor(text) {
+        this.root = new Node();
+        this.buildSuffixTree(text);
     }
 
-    let mid = Math.floor((low + high) / 2);
+    buildSuffixTree(text) {
+        for (let i = 0; i < text.length; i++) {
+            let currentNode = this.root;
+            for (let j = i; j < text.length; j++) {
+                const currentChar = text[j];
+                if (!(currentChar in currentNode.children)) {
+                    currentNode.children[currentChar] = new Node();
+                }
+                currentNode = currentNode.children[currentChar];
+            }
+        }
+    }
 
-    if (arr[mid] === key) {
-        return mid;
-    } else if (arr[mid] > key) {
-        return binarySearchRecursive(arr, key, low, mid - 1);
-    } else {
-        return binarySearchRecursive(arr, key, mid + 1, high);
+    search(pattern) {
+        let currentNode = this.root;
+        for (let i = 0; i < pattern.length; i++) {
+            const currentChar = pattern[i];
+            if (!(currentChar in currentNode.children)) {
+                return false;
+            }
+            currentNode = currentNode.children[currentChar];
+        }
+        return true;
     }
 }
 
 // Example usage
-const array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const searchKey = 5;
-const index = binarySearchRecursive(array, searchKey, 0, array.length - 1);
-
-if (index !== -1) {
-    console.log(`Element found at index ${index}`);
-} else {
-    console.log('Element not found');
-}
+const suffixTree = new SuffixTree("banana");
+console.log(suffixTree.search("ana")); // Output: true
+console.log(suffixTree.search("nan")); // Output: true
+console.log(suffixTree.search("foo")); // Output: false
