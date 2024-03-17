@@ -1,42 +1,29 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
-    }
-}
+function binarySearch(arr, target) {
+    let left = 0;
+    let right = arr.length - 1;
 
-function findNthFromEnd(head, n) {
-    let fast = head;
-    let slow = head;
+    while (left <= right) {
+        let mid = Math.floor((left + right) / 2);
 
-    // Move fast pointer n nodes ahead
-    for (let i = 0; i < n; i++) {
-        if (fast === null) {
-            return null; // List length is less than n
+        if (arr[mid] === target) {
+            return mid; // element found, return its index
+        } else if (arr[mid] < target) {
+            left = mid + 1; // search the right half
+        } else {
+            right = mid - 1; // search the left half
         }
-        fast = fast.next;
     }
 
-    // Move both pointers until fast reaches the end
-    while (fast !== null) {
-        fast = fast.next;
-        slow = slow.next;
-    }
-
-    return slow;
+    return -1; // element not found
 }
 
 // Example usage
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
+const arr = [1, 3, 5, 7, 9, 11, 13, 15];
+const target = 7;
+const index = binarySearch(arr, target);
 
-let n = 2;
-let nthNodeFromEnd = findNthFromEnd(head, n);
-if (nthNodeFromEnd !== null) {
-    console.log(`The ${n}th node from the end is: ${nthNodeFromEnd.data}`);
+if (index !== -1) {
+    console.log(`Element ${target} found at index ${index}.`);
 } else {
-    console.log(`List length is less than ${n}`);
+    console.log(`Element ${target} not found in the array.`);
 }
