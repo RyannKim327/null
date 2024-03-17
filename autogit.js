@@ -1,25 +1,14 @@
-function longestCommonPrefix(strings) {
-    if (!strings || strings.length === 0) {
-        return "";
-    }
-
-    // Find the minimum length string in the array
-    const minLength = Math.min(...strings.map(str => str.length));
-
-    let prefix = "";
-    for (let i = 0; i < minLength; i++) {
-        const char = strings[0][i]; // Get the character at the current position
-
-        // Check if all strings have the same character at the current position
-        if (strings.every(str => str[i] === char)) {
-            prefix += char;
-        } else {
-            break; // Exit the loop if there is a mismatch
-        }
-    }
-
-    return prefix;
+function countOccurrences(str, word) {
+    // Use a regular expression to match the word globally in the string
+    let regex = new RegExp(word, 'g');
+    // Use the match() method to find all occurrences of the word in the string
+    let matches = str.match(regex);
+    // If matches is null, return 0, otherwise return the length of the matches array
+    return matches ? matches.length : 0;
 }
 
-const strings = ["flower", "flour", "fleet"];
-console.log(longestCommonPrefix(strings)); // Output: "fl"
+// Test the function with an example string and word
+let str = "The quick brown fox jumps over the lazy dog. The quick brown fox is quick.";
+let word = "quick";
+let count = countOccurrences(str, word);
+console.log(`The word "${word}" occurs ${count} time(s) in the string.`);
