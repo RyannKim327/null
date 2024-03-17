@@ -1,17 +1,44 @@
-function findCommonElements(arr1, arr2) {
-    let commonElements = [];
+function computePrefixTable(pattern) {
+    let prefixTable = [];
+    let j = 0;
+    prefixTable[0] = 0;
 
-    for (let i = 0; i < arr1.length; i++) {
-        if (arr2.includes(arr1[i]) && !commonElements.includes(arr1[i])) {
-            commonElements.push(arr1[i]);
+    for (let i = 1; i < pattern.length; i++) {
+        while (j > 0 && pattern.charAt(i) !== pattern.charAt(j)) {
+            j = prefixTable[j - 1];
+        }
+        if (pattern.charAt(i) === pattern.charAt(j)) {
+            j++;
+        }
+        prefixTable[i] = j;
+    }
+
+    return prefixTable;
+}
+
+function kmpSearch(text, pattern) {
+    let prefixTable = computePrefixTable(pattern);
+    let matches = [];
+
+    let j = 0;
+    for (let i = 0; i < text.length; i++) {
+        while (j > 0 && text.charAt(i) !== pattern.charAt(j)) {
+            j = prefixTable[j - 1];
+        }
+        if (text.charAt(i) === pattern.charAt(j)) {
+            j++;
+        }
+        if (j === pattern.length) {
+            matches.push(i - j + 1);
+            j = prefixTable[j - 1];
         }
     }
 
-    return commonElements;
+    return matches;
 }
 
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 4, 5, 6, 7];
-
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [3, 4, 5]
+// Example usage:
+let text = "ABCABCDABABCDABCDABDE";
+let pattern = "ABCDABD";
+let matches = kmpSearch(text, pattern);
+console.log(matches);
