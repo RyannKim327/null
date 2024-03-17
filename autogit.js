@@ -1,15 +1,14 @@
-function maxSubarraySum(arr) {
-    let maxEndingHere = arr[0];
-    let maxSoFar = arr[0];
-
-    for (let i = 1; i < arr.length; i++) {
-        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
-        maxSoFar = Math.max(maxSoFar, maxEndingHere);
-    }
-
-    return maxSoFar;
+function isPalindrome(str) {
+    // Remove non-alphanumeric characters and convert the string to lowercase
+    str = str.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
+    
+    // Reverse the string
+    let reversedStr = str.split('').reverse().join('');
+    
+    // Check if the original string is equal to its reversed version
+    return str === reversedStr;
 }
 
 // Test the function
-const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-console.log(maxSubarraySum(arr)); // Output: 6
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // Output: true
+console.log(isPalindrome("hello")); // Output: false
