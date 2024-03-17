@@ -1,11 +1,7 @@
-function customStringLength(str) {
-    let count = 0;
-    while (str[count] !== undefined) {
-        count++;
-    }
-    return count;
+function decimalToBinary(decimalNumber) {
+    return decimalNumber.toString(2);
 }
 
 // Example usage
-let str = "Hello, World!";
-console.log(customStringLength(str)); // Output: 13
+console.log(decimalToBinary(10)); // Output: 1010
+console.log(decimalToBinary(27)); // Output: 11011
