@@ -1,6 +1,6 @@
 class Node {
-    constructor(value) {
-        this.value = value;
+    constructor(data) {
+        this.data = data;
         this.next = null;
     }
 }
@@ -10,42 +10,43 @@ class LinkedList {
         this.head = null;
     }
 
-    reverse() {
-        let prev = null;
-        let current = this.head;
-        let next = null;
+    append(data) {
+        const newNode = new Node(data);
 
-        while (current !== null) {
-            next = current.next;
-            current.next = prev;
-            prev = current;
-            current = next;
+        if (!this.head) {
+            this.head = newNode;
+            return;
         }
 
-        this.head = prev;
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+
+        current.next = newNode;
+    }
+
+    findMiddleElement() {
+        let slowPtr = this.head;
+        let fastPtr = this.head;
+
+        while (fastPtr && fastPtr.next) {
+            slowPtr = slowPtr.next;
+            fastPtr = fastPtr.next.next;
+        }
+
+        return slowPtr ? slowPtr.data : null;
     }
 }
 
 // Create a linked list
 const linkedList = new LinkedList();
-linkedList.head = new Node(1);
-linkedList.head.next = new Node(2);
-linkedList.head.next.next = new Node(3);
-linkedList.head.next.next.next = new Node(4);
+linkedList.append(1);
+linkedList.append(2);
+linkedList.append(3);
+linkedList.append(4);
+linkedList.append(5);
 
-// Print the original list values
-let current = linkedList.head;
-while (current !== null) {
-    console.log(current.value);
-    current = current.next;
-}
-
-// Reverse the linked list
-linkedList.reverse();
-
-// Print the reversed list values
-current = linkedList.head;
-while (current !== null) {
-    console.log(current.value);
-    current = current.next;
-}
+// Find the middle element
+const middleElement = linkedList.findMiddleElement();
+console.log(middleElement); // Output should be 3
