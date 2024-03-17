@@ -1,17 +1,11 @@
-// API endpoint example
-const apiUrl = 'https://api.example.com/data';
+function isPalindrome(str) {
+    // Remove non-alphanumeric characters and convert the string to lowercase
+    str = str.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-// Make a GET request to the API endpoint
-fetch(apiUrl)
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  })
-  .then(data => {
-    console.log(data); // Display the API response data
-  })
-  .catch(error => {
-    console.error('There was a problem with the fetch operation:', error);
-  });
+    // Check if the string is equal to its reversed version
+    return str === str.split('').reverse().join('');
+}
+
+// Test the function
+console.log(isPalindrome('A man, a plan, a canal, Panama')); // Output: true
+console.log(isPalindrome('hello')); // Output: false
