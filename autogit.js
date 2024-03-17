@@ -1,21 +1,8 @@
-function isPrime(number) {
-    if (number <= 1) {
-        return false;
-    }
-    
-    for (let i = 2; i < number; i++) {
-        if (number % i === 0) {
-            return false;
-        }
-    }
-    
-    return true;
-}
+let str = "Hello, World!";
+let subStr = "Hello";
 
-// Test the function
-const num = 17;
-if (isPrime(num)) {
-    console.log(num + " is a prime number");
+if (str.includes(subStr)) {
+    console.log("The string contains the substring.");
 } else {
-    console.log(num + " is not a prime number");
+    console.log("The string does not contain the substring.");
 }
