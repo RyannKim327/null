@@ -1,52 +1,40 @@
-// Function to find the maximum number in an array
-const getMax = (arr) => {
-    let max = arr[0];
-    for (let i = 1; i < arr.length; i++) {
-        if (arr[i] > max) {
-            max = arr[i];
+function longestCommonSubsequence(str1, str2) {
+    const len1 = str1.length;
+    const len2 = str2.length;
+    
+    // Create a 2D array to store the lengths of the common subsequences
+    const dp = new Array(len1 + 1).fill(0).map(() => new Array(len2 + 1).fill(0));
+    
+    // Fill up the dp array using dynamic programming
+    for (let i = 1; i <= len1; i++) {
+        for (let j = 1; j <= len2; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
         }
     }
-    return max;
-};
-
-// Counting sort function for a specific digit at a given place value
-const countingSort = (arr, place) => {
-    const n = arr.length;
-    const output = new Array(n).fill(0);
-    const count = new Array(10).fill(0);
-
-    for (let i = 0; i < n; i++) {
-        const digit = Math.floor(arr[i] / place) % 10;
-        count[digit]++;
+    
+    // Backtrack to find the longest common subsequence
+    let lcs = "";
+    let i = len1, j = len2;
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            lcs = str1[i - 1] + lcs;
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
+        }
     }
+    
+    return lcs;
+}
 
-    for (let i = 1; i < 10; i++) {
-        count[i] += count[i - 1];
-    }
-
-    for (let i = n - 1; i >= 0; i--) {
-        const digit = Math.floor(arr[i] / place) % 10;
-        output[count[digit] - 1] = arr[i];
-        count[digit]--;
-    }
-
-    for (let i = 0; i < n; i++) {
-        arr[i] = output[i];
-    }
-};
-
-// Radix sort function
-const radixSort = (arr) => {
-    const max = getMax(arr);
-
-    for (let place = 1; Math.floor(max / place) > 0; place *= 10) {
-        countingSort(arr, place);
-    }
-
-    return arr;
-};
-
-// Example Usage
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log('Original Array:', arr);
-console.log('Sorted Array:', radixSort(arr));
+// Test the function
+const str1 = "ABCDGH";
+const str2 = "AEDFHR";
+console.log(longestCommonSubsequence(str1, str2)); // Output: ADH
