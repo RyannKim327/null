@@ -1,3 +1,12 @@
-let arr = [1, 2, 3, 4, 5];
-arr.reverse();
-console.log(arr); // Output: [5, 4, 3, 2, 1]
+function findStringLength(str) {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        count++;
+    }
+    return count;
+}
+
+let str = "Hello, World!";
+let length = findStringLength(str);
+
+console.log("Length of the string is: " + length);
