@@ -1,33 +1,57 @@
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+function fibonacciSearch(arr, x) {
+    let fibM2 = 0;  // (m-2)'th Fibonacci number
+    let fibM1 = 1;  // (m-1)'th Fibonacci number
+    let fibM = fibM2 + fibM1;  // m'th Fibonacci number
+
+    let len = arr.length;
+
+    // Find the smallest Fibonacci number greater than or equal to the length of the array
+    while (fibM < len) {
+        fibM2 = fibM1;
+        fibM1 = fibM;
+        fibM = fibM2 + fibM1;
+    }
+
+    let offset = -1;  // Represents the offset from the front
+
+    while (fibM > 1) {
+        // Check if fibM2 is a valid location
+        let i = Math.min(offset + fibM2, len - 1);
+
+        // If x is greater, move fibM2 places ahead
+        if (arr[i] < x) {
+            fibM = fibM1;
+            fibM1 = fibM2;
+            fibM2 = fibM - fibM1;
+            offset = i;
+        }
+        // If x is smaller, move fibM2 places ahead
+        else if (arr[i] > x) {
+            fibM = fibM2;
+            fibM1 = fibM1 - fibM2;
+            fibM2 = fibM - fibM1;
+        }
+        // Element found
+        else {
+            return i;
+        }
+    }
+
+    // If the element is not found
+    if (fibM1 && arr[offset + 1] === x) {
+        return offset + 1;
+    }
+
+    // Element not found
+    return -1;
 }
 
-function height(root) {
-  if (root === null) return 0;
-  return 1 + Math.max(height(root.left), height(root.right));
+// Usage
+const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
+const x = 85;
+const index = fibonacciSearch(arr, x);
+if (index !== -1) {
+    console.log(`Element found at index ${index}`);
+} else {
+    console.log("Element not found in the array");
 }
-
-function diameterOfBinaryTree(root) {
-  if (root === null) return 0;
-
-  const leftHeight = height(root.left);
-  const rightHeight = height(root.right);
-
-  const leftDiameter = diameterOfBinaryTree(root.left);
-  const rightDiameter = diameterOfBinaryTree(root.right);
-
-  return Math.max(leftHeight + rightHeight, Math.max(leftDiameter, rightDiameter));
-}
-
-// Example Usage
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(diameterOfBinaryTree(root)); // Output: 3
