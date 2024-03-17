@@ -1,11 +1,12 @@
-function calculateStringLength(str) {
-    let count = 0;
-    while (str[count] !== undefined) {
-        count++;
-    }
-    return count;
+function stringLength(str) {
+  let count = 0;
+  for (let i = 0; str[i] !== undefined; i++) {
+    count++;
+  }
+  return count;
 }
 
 // Example usage
 const myString = "Hello, World!";
-console.log(calculateStringLength(myString)); // Output: 13
+const length = stringLength(myString);
+console.log(length); // Output: 13
