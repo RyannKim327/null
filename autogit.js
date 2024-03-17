@@ -1,23 +1,21 @@
-function findFirstRepeatedCharacter(str) {
-  let charSet = new Set();
-  
-  for (let char of str) {
-    if (charSet.has(char)) {
-      return char;
-    } else {
-      charSet.add(char);
+function isPrime(number) {
+    if (number <= 1) {
+        return false;
     }
-  }
-  
-  return null; // If no repeated character is found
+    
+    for (let i = 2; i < number; i++) {
+        if (number % i === 0) {
+            return false;
+        }
+    }
+    
+    return true;
 }
 
-// Example usage
-const inputString = "abcdefgabc";
-const repeatedChar = findFirstRepeatedCharacter(inputString);
-
-if (repeatedChar) {
-  console.log(`The first repeated character in "${inputString}" is: ${repeatedChar}`);
+// Test the function
+const num = 17;
+if (isPrime(num)) {
+    console.log(num + " is a prime number");
 } else {
-  console.log(`No repeated characters found in "${inputString}"`);
+    console.log(num + " is not a prime number");
 }
