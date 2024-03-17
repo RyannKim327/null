@@ -1,36 +1,15 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+function maxSubarraySum(arr) {
+    let maxEndingHere = arr[0];
+    let maxSoFar = arr[0];
+
+    for (let i = 1; i < arr.length; i++) {
+        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
+        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+    }
+
+    return maxSoFar;
 }
 
-function countLeafNodes(node) {
-  if (node === null) {
-    return 0;
-  }
-
-  if (node.left === null && node.right === null) {
-    return 1; // node is a leaf node
-  }
-
-  // Recursively count leaf nodes in the left and right subtrees
-  return countLeafNodes(node.left) + 
-         countLeafNodes(node.right);
-}
-
-// Example binary tree
-//        1
-//       / \
-//      2   3
-//     / \
-//    4   5
-let root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-const leafNodeCount = countLeafNodes(root);
-console.log(`Number of leaf nodes in the binary tree: ${leafNodeCount}`);
+// Example usage
+const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+console.log(maxSubarraySum(arr)); // Output: 6
