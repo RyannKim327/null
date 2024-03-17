@@ -1,26 +1,51 @@
-class TreeNode {
+class Node {
     constructor(value) {
         this.value = value;
-        this.left = null;
-        this.right = null;
+        this.next = null;
     }
 }
 
-function sumBinaryTree(root) {
-    if (root === null) {
-        return 0;
+class LinkedList {
+    constructor() {
+        this.head = null;
     }
-    
-    return root.value + sumBinaryTree(root.left) + sumBinaryTree(root.right);
+
+    reverse() {
+        let prev = null;
+        let current = this.head;
+        let next = null;
+
+        while (current !== null) {
+            next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
+        }
+
+        this.head = prev;
+    }
 }
 
-// Example binary tree
-let root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+// Create a linked list
+const linkedList = new LinkedList();
+linkedList.head = new Node(1);
+linkedList.head.next = new Node(2);
+linkedList.head.next.next = new Node(3);
+linkedList.head.next.next.next = new Node(4);
 
-// Calculate sum of all nodes in the binary tree
-let sum = sumBinaryTree(root);
-console.log("Sum of all nodes in the binary tree:", sum);
+// Print the original list values
+let current = linkedList.head;
+while (current !== null) {
+    console.log(current.value);
+    current = current.next;
+}
+
+// Reverse the linked list
+linkedList.reverse();
+
+// Print the reversed list values
+current = linkedList.head;
+while (current !== null) {
+    console.log(current.value);
+    current = current.next;
+}
