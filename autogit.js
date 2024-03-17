@@ -1,61 +1,57 @@
-function tarjanSCC(graph) {
-    let index = 0;
-    let stack = [];
-    let ids = new Map();
-    let lowLinks = new Map();
-    let onStack = new Map();
-    let result = [];
+function dijkstra(graph, startNode) {
+    let distances = {};
+    let visited = {};
+    let queue = new PriorityQueue();
 
-    function strongConnect(node) {
-        ids.set(node, index);
-        lowLinks.set(node, index);
-        index++;
-        stack.push(node);
-        onStack.set(node, true);
+    distances[startNode] = 0;
+    queue.enqueue(startNode, 0);
 
-        for (let neighbor of graph[node]) {
-            if (!ids.has(neighbor)) {
-                strongConnect(neighbor);
-                lowLinks.set(node, Math.min(lowLinks.get(node), lowLinks.get(neighbor)));
-            } else if (onStack.get(neighbor)) {
-                lowLinks.set(node, Math.min(lowLinks.get(node), ids.get(neighbor)));
+    while (!queue.isEmpty()) {
+        let currentNode = queue.dequeue().element;
+        if (!visited[currentNode]) {
+            visited[currentNode] = true;
+
+            for (let neighbor in graph[currentNode]) {
+                let distance = distances[currentNode] + graph[currentNode][neighbor];
+                if (!distances[neighbor] || distance < distances[neighbor]) {
+                    distances[neighbor] = distance;
+                    queue.enqueue(neighbor, distance);
+                }
             }
         }
-
-        if (ids.get(node) === lowLinks.get(node)) {
-            let component = [];
-            let nextNode;
-            do {
-                nextNode = stack.pop();
-                onStack.set(nextNode, false);
-                component.push(nextNode);
-            } while (nextNode !== node);
-            result.push(component);
-        }
     }
 
-    for (let node of Object.keys(graph)) {
-        if (!ids.has(node)) {
-            strongConnect(node);
-        }
-    }
-
-    return result;
+    return distances;
 }
 
-// Example usage
-let graph = {
-    'A': ['B'],
-    'B': ['C', 'E'],
-    'C': ['D', 'F'],
-    'D': ['C', 'H'],
-    'E': ['A', 'F'],
-    'F': ['G'],
-    'G': ['E', 'H'],
-    'H': ['I'],
-    'I': ['J'],
-    'J': ['H']
+class PriorityQueue {
+    constructor() {
+        this.elements = [];
+    }
+
+    enqueue(element, priority) {
+        this.elements.push({ element, priority });
+        this.elements.sort((a, b) => a.priority - b.priority);
+    }
+
+    dequeue() {
+        return this.elements.shift();
+    }
+
+    isEmpty() {
+        return this.elements.length === 0;
+    }
+}
+
+// Example graph
+const graph = {
+    A: { B: 5, C: 2 },
+    B: { A: 5, C: 1, D: 3 },
+    C: { A: 2, B: 1, D: 7 },
+    D: { B: 3, C: 7 }
 };
 
-let scc = tarjanSCC(graph);
-console.log(scc);
+const startNode = 'A';
+const shortestDistances = dijkstra(graph, startNode);
+
+console.log(shortestDistances);
