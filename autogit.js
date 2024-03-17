@@ -1,15 +1,11 @@
-function maxSubarraySum(arr) {
-    let maxEndingHere = arr[0];
-    let maxSoFar = arr[0];
-    
-    for (let i = 1; i < arr.length; i++) {
-        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
-        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+function findStringLength(str) {
+    let count = 0;
+    for (let char of str) {
+        count++;
     }
-    
-    return maxSoFar;
+    return count;
 }
 
-// Test the function
-const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-console.log(maxSubarraySum(arr)); // Output: 6
+let str = "Hello, World!";
+let length = findStringLength(str);
+console.log(length); // Output: 13
