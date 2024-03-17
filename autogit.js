@@ -1,14 +1,31 @@
-let array = ['a', 'b', 'a', 'c', 'b'];
-let uniqueArray = [...new Set(array)];
-console.log(uniqueArray); // Output: ['a', 'b', 'c']
-let array = ['a', 'b', 'a', 'c', 'b'];
-let uniqueArray = array.filter((elem, index, self) => self.indexOf(elem) === index);
-console.log(uniqueArray); // Output: ['a', 'b', 'c']
-let array = ['a', 'b', 'a', 'c', 'b'];
-let uniqueArray = array.reduce((acc, current) => {
-    if (acc.indexOf(current) === -1) {
-        acc.push(current);
+function longestIncreasingSubsequence(arr) {
+    const n = arr.length;
+    const dp = new Array(n).fill(1);
+
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[i] > arr[j] && dp[i] < dp[j] + 1) {
+                dp[i] = dp[j] + 1;
+            }
+        }
     }
-    return acc;
-}, []);
-console.log(uniqueArray); // Output: ['a', 'b', 'c']
+
+    let maxLength = 0;
+    for (let i = 0; i < n; i++) {
+        maxLength = Math.max(maxLength, dp[i]);
+    }
+
+    let currentLength = maxLength;
+    const result = [];
+    for (let i = n - 1; i >= 0 && currentLength > 0; i--) {
+        if (dp[i] === currentLength) {
+            result.unshift(arr[i]);
+            currentLength--;
+        }
+    }
+
+    return result;
+}
+
+const arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
+console.log(longestIncreasingSubsequence(arr));
