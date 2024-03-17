@@ -1,76 +1,54 @@
-class HashTable {
-    constructor(size = 100) {
-        this.size = size;
-        this.storage = new Array(size);
-    }
+function computeLPSArray(pattern) {
+    let lps = [0];
+    let len = 0;
+    let i = 1;
 
-    hash(key) {
-        let hash = 0;
-        for (let i = 0; i < key.length; i++) {
-            hash = (hash + key.charCodeAt(i) * (i + 1)) % this.size;
-        }
-        return hash;
-    }
-
-    set(key, value) {
-        const index = this.hash(key);
-
-        if (!this.storage[index]) {
-            this.storage[index] = [];
-        }
-
-        const bucket = this.storage[index];
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i][0] === key) {
-                bucket[i][1] = value;
-                return;
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
             }
         }
-
-        bucket.push([key, value]);
     }
 
-    get(key) {
-        const index = this.hash(key);
+    return lps;
+}
 
-        if (!this.storage[index]) {
-            return undefined;
+function KMPSearch(text, pattern) {
+    const n = text.length;
+    const m = pattern.length;
+    const lps = computeLPSArray(pattern);
+    let i = 0;
+    let j = 0;
+
+    while (i < n) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
         }
 
-        const bucket = this.storage[index];
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i][0] === key) {
-                return bucket[i][1];
-            }
-        }
-
-        return undefined;
-    }
-
-    remove(key) {
-        const index = this.hash(key);
-
-        if (!this.storage[index]) {
-            return;
-        }
-
-        const bucket = this.storage[index];
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i][0] === key) {
-                bucket.splice(i, 1);
-                return;
+        if (j === m) {
+            console.log("Pattern found at index " + (i - j));
+            j = lps[j - 1];
+        } else if (i < n && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
             }
         }
     }
 }
 
 // Example usage
-const ht = new HashTable();
-ht.set("name", "Alice");
-ht.set("age", 30);
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
 
-console.log(ht.get("name")); // Output: "Alice"
-console.log(ht.get("age")); // Output: 30
-
-ht.remove("age");
-console.log(ht.get("age")); // Output: undefined
+KMPSearch(text, pattern);
