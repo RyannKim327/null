@@ -1,15 +1,12 @@
-function isSortedAscending(arr) {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false;
-        }
-    }
-    return true;
-}
+let numbers = [5, 2, 8, 1, 4];
+numbers.sort(function(a, b) {
+  return a - b;
+});
 
-// Example usage
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [5, 4, 3, 2, 1];
+console.log(numbers); // Output: [1, 2, 4, 5, 8]
+let numbers = [5, 2, 8, 1, 4];
+numbers.sort(function(a, b) {
+  return b - a;
+});
 
-console.log(isSortedAscending(array1)); // Output: true
-console.log(isSortedAscending(array2)); // Output: false
+console.log(numbers); // Output: [8, 5, 4, 2, 1]
