@@ -1,16 +1,5 @@
-function isPrime(num) {
-  if (num <= 1) {
-    return false;
-  }
-  
-  for (let i = 2; i <= Math.sqrt(num); i++) {
-    if (num % i === 0) {
-      return false;
-    }
-  }
-  
-  return num > 1;
-}
+const cron = require('node-cron');
 
-console.log(isPrime(17)); // Output: true
-console.log(isPrime(15)); // Output: false
+cron.schedule('* * * * *', () => {
+  console.log('Running a task every minute');
+});
