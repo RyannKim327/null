@@ -1,45 +1,75 @@
-// Radix Sort function
-function radixSort(arr) {
-    const getMax = (arr) => {
-        let max = 0;
-        for (let num of arr) {
-            max = Math.max(max, num);
-        }
-        return max;
-    };
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
+    }
+}
 
-    const countingSort = (arr, exp) => {
-        const output = new Array(arr.length).fill(0);
-        const count = new Array(10).fill(0);
+class LinkedList {
+    constructor() {
+        this.head = null;
+    }
 
-        for (let i = 0; i < arr.length; i++) {
-            const index = Math.floor(arr[i] / exp) % 10;
-            count[index]++;
-        }
+    append(data) {
+        let newNode = new Node(data);
 
-        for (let i = 1; i < 10; i++) {
-            count[i] += count[i - 1];
+        if (!this.head) {
+            this.head = newNode;
+            return;
         }
 
-        for (let i = arr.length - 1; i >= 0; i--) {
-            const index = Math.floor(arr[i] / exp) % 10;
-            output[count[index] - 1] = arr[i];
-            count[index]--;
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
         }
 
-        for (let i = 0; i < arr.length; i++) {
-            arr[i] = output[i];
+        current.next = newNode;
+    }
+
+    delete(data) {
+        if (!this.head) {
+            return;
         }
-    };
 
-    const max = getMax(arr);
+        if (this.head.data === data) {
+            this.head = this.head.next;
+            return;
+        }
 
-    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
-        countingSort(arr, exp);
+        let current = this.head;
+        while (current.next) {
+            if (current.next.data === data) {
+                current.next = current.next.next;
+                return;
+            }
+            current = current.next;
+        }
+    }
+
+    print() {
+        let current = this.head;
+        while (current) {
+            console.log(current.data);
+            current = current.next;
+        }
     }
 }
 
 // Example usage
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-radixSort(arr);
-console.log(arr);
+let linkedList = new LinkedList();
+linkedList.append(1);
+linkedList.append(2);
+linkedList.append(3);
+
+linkedList.print();
+// Output:
+// 1
+// 2
+// 3
+
+linkedList.delete(2);
+
+linkedList.print();
+// Output:
+// 1
+// 3
