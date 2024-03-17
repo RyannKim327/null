@@ -1,24 +1,33 @@
-function quickSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
+function topologicalSort(graph) {
+    const visited = new Set();
+    const stack = [];
+    
+    function dfs(node) {
+        visited.add(node);
+        graph[node].forEach(neighbor => {
+            if (!visited.has(neighbor)) {
+                dfs(neighbor);
+            }
+        });
+        stack.unshift(node);
     }
-
-    const pivot = arr[0];
-    const left = [];
-    const right = [];
-
-    for (let i = 1; i < arr.length; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
+    
+    for (let node in graph) {
+        if (!visited.has(node)) {
+            dfs(node);
         }
     }
-
-    return [...quickSort(left), pivot, ...quickSort(right)];
+    
+    return stack;
 }
 
 // Example usage
-const arr = [5, 2, 9, 3, 7, 6, 8, 1, 4];
-const sortedArr = quickSort(arr);
-console.log(sortedArr);
+const graph = {
+    'A': ['B', 'C'],
+    'B': ['D'],
+    'C': ['D'],
+    'D': []
+};
+
+const result = topologicalSort(graph);
+console.log(result); // Output: ['A', 'C', 'B', 'D']
