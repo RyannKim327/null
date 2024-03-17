@@ -1,18 +1,23 @@
-function isPrime(num) {
-    if(num <= 1) {
-        return false;
-    }
+function shellSort(arr) {
+  // Start with a big gap, then reduce the gap
+  for (let gap = Math.floor(arr.length / 2); gap > 0; gap = Math.floor(gap / 2)) {
+    // Perform an insertion sort for elements at each gap
+    for (let i = gap; i < arr.length; i++) {
+      let temp = arr[i];
+      let j;
 
-    // Check if num is divisible by any number from 2 to the square root of num
-    for(let i = 2; i <= Math.sqrt(num); i++) {
-        if(num % i === 0) {
-            return false;
-        }
-    }
+      for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
+        arr[j] = arr[j - gap];
+      }
 
-    return true;
+      arr[j] = temp;
+    }
+  }
+
+  return arr;
 }
 
-// Test the function
-console.log(isPrime(17));  // Output: true
-console.log(isPrime(15));  // Output: false
+// Test the shellSort function
+const arr = [12, 34, 54, 2, 3];
+console.log("Original Array: ", arr);
+console.log("Sorted Array: ", shellSort(arr));
