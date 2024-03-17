@@ -1,3 +1,21 @@
-let array = [1, 2, 3, 4, 5];
-array.reverse();
-console.log(array); // Output: [5, 4, 3, 2, 1]
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert the string to lowercase
+  str = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+
+  let left = 0;
+  let right = str.length - 1;
+
+  while (left < right) {
+    if (str[left] !== str[right]) {
+      return false;
+    }
+    left++;
+    right--;
+  }
+
+  return true;
+}
+
+// Test the function
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // Output: true
+console.log(isPalindrome("race a car")); // Output: false
