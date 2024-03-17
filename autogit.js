@@ -1,10 +1,7 @@
-const axios = require('axios');
+function getRandomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
-// Make a GET request to a sample API
-axios.get('https://jsonplaceholder.typicode.com/posts/1')
-  .then(response => {
-    console.log('Response:', response.data);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+// Usage example
+var randomNumber = getRandomNumber(1, 100);
+console.log(randomNumber); // Output a random number between 1 and 100
