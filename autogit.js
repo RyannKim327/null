@@ -1,15 +1,19 @@
-// Array of integers
-let numbers = [5, 2, 9, 1, 5, 6];
+function bubbleSort(arr) {
+    let len = arr.length;
+    for (let i = 0; i < len; i++) {
+        for (let j = 0; j < len - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap elements
+                let temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+    return arr;
+}
 
-// Sorting the array in ascending order
-numbers.sort(function(a, b) {
-  return a - b;
-});
-
-console.log(numbers); // Output: [1, 2, 5, 5, 6, 9]
-// Sorting the array in descending order
-numbers.sort(function(a, b) {
-  return b - a;
-});
-
-console.log(numbers); // Output: [9, 6, 5, 5, 2, 1]
+// Example usage
+let array = [64, 34, 25, 12, 22, 11, 90];
+console.log("Original array: ", array);
+console.log("Sorted array: ", bubbleSort(array));
