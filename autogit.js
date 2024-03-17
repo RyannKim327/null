@@ -1,22 +1,36 @@
-function findFirstRepeatedCharacter(inputString) {
-    const charCount = {};
-    
-    for (let char of inputString) {
-        if (charCount[char]) {
-            return char;
-        }
-        
-        charCount[char] = true;
-    }
-    
-    return null;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-const inputString = "abcdefgah";
-const repeatedChar = findFirstRepeatedCharacter(inputString);
+function countLeafNodes(node) {
+  if (node === null) {
+    return 0;
+  }
 
-if (repeatedChar) {
-    console.log(`The first repeated character in the string "${inputString}" is: ${repeatedChar}`);
-} else {
-    console.log("There are no repeated characters in the string.");
+  if (node.left === null && node.right === null) {
+    return 1; // node is a leaf node
+  }
+
+  // Recursively count leaf nodes in the left and right subtrees
+  return countLeafNodes(node.left) + 
+         countLeafNodes(node.right);
 }
+
+// Example binary tree
+//        1
+//       / \
+//      2   3
+//     / \
+//    4   5
+let root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+const leafNodeCount = countLeafNodes(root);
+console.log(`Number of leaf nodes in the binary tree: ${leafNodeCount}`);
