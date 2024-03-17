@@ -1,67 +1,44 @@
-class Graph {
-    constructor(vertices) {
-        this.vertices = vertices;
-        this.adjList = Array.from({ length: vertices }, () => []);
-    }
-
-    addEdge(u, v) {
-        this.adjList[u].push(v);
-    }
-
-    tarjanSCC() {
-        let index = 0;
-        let stack = [];
-        let onStack = new Array(this.vertices).fill(false);
-        let lowlink = new Array(this.vertices).fill(0);
-        let indexMap = new Array(this.vertices).fill(-1);
-        let result = [];
-
-        function strongConnect(v) {
-            indexMap[v] = index;
-            lowlink[v] = index;
-            index++;
-            stack.push(v);
-            onStack[v] = true;
-
-            for (let w of this.adjList[v]) {
-                if (indexMap[w] === -1) {
-                    strongConnect(w);
-                    lowlink[v] = Math.min(lowlink[v], lowlink[w]);
-                } else if (onStack[w]) {
-                    lowlink[v] = Math.min(lowlink[v], indexMap[w]);
-                }
-            }
-
-            if (lowlink[v] === indexMap[v]) {
-                let scc = [];
-                let w;
-                do {
-                    w = stack.pop();
-                    onStack[w] = false;
-                    scc.push(w);
-                } while (w !== v);
-                result.push(scc);
-            }
-        }
-
-        for (let v = 0; v < this.vertices; v++) {
-            if (indexMap[v] === -1) {
-                strongConnect(v);
-            }
-        }
-
-        return result;
-    }
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-// Example usage
-let g = new Graph(5);
-g.addEdge(0, 1);
-g.addEdge(1, 2);
-g.addEdge(2, 0);
-g.addEdge(1, 3);
-g.addEdge(3, 4);
-g.addEdge(4, 3);
+function getIntersectionNode(headA, headB) {
+  let set = new Set();
+  
+  // Traverse the first linked list and store all nodes in a set
+  let temp = headA;
+  while (temp !== null) {
+    set.add(temp);
+    temp = temp.next;
+  }
+  
+  // Traverse the second linked list and check if each node exists in the set
+  temp = headB;
+  while (temp !== null) {
+    if (set.has(temp)) {
+      return temp;
+    }
+    temp = temp.next;
+  }
+  
+  return null; // Return null if no intersection found
+}
+// Creating linked list 1: 1 -> 2 -> 3
+let node1 = new Node(1);
+let node2 = new Node(2);
+let node3 = new Node(3);
+node1.next = node2;
+node2.next = node3;
 
-let sccs = g.tarjanSCC();
-console.log(sccs);
+// Creating linked list 2: 4 -> 5 -> 3
+let node4 = new Node(4);
+let node5 = new Node(5);
+node4.next = node5;
+node5.next = node3; // Intersection point with linked list 1
+
+// Find intersection node
+let intersectionNode = getIntersectionNode(node1, node4);
+console.log(intersectionNode); // Output: Node { value: 3, next: null }
