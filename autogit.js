@@ -1,29 +1,58 @@
-function binarySearch(arr, target) {
-    let left = 0;
-    let right = arr.length - 1;
+function tarjan(graph) {
+    let index = 0;
+    let stack = [];
+    let onStack = [];
+    let indexMap = new Map();
+    let lowLink = new Map();
+    let result = [];
 
-    while (left <= right) {
-        let mid = Math.floor((left + right) / 2);
+    function strongConnect(node) {
+        indexMap.set(node, index);
+        lowLink.set(node, index);
+        index++;
+        stack.push(node);
+        onStack[node] = true;
 
-        if (arr[mid] === target) {
-            return mid; // element found, return its index
-        } else if (arr[mid] < target) {
-            left = mid + 1; // search the right half
-        } else {
-            right = mid - 1; // search the left half
+        for (let neighbor of graph[node]) {
+            if (!indexMap.has(neighbor)) {
+                strongConnect(neighbor);
+                lowLink.set(node, Math.min(lowLink.get(node), lowLink.get(neighbor)));
+            } else if (onStack[neighbor]) {
+                lowLink.set(node, Math.min(lowLink.get(node), indexMap.get(neighbor)));
+            }
+        }
+
+        if (lowLink.get(node) === indexMap.get(node)) {
+            let component = [];
+            while (true) {
+                let w = stack.pop();
+                onStack[w] = false;
+                component.push(w);
+                if (w === node) break;
+            }
+            result.push(component);
         }
     }
 
-    return -1; // element not found
+    for (let node in graph) {
+        if (!indexMap.has(node)) {
+            strongConnect(node);
+        }
+    }
+
+    return result;
 }
 
 // Example usage
-const arr = [1, 3, 5, 7, 9, 11, 13, 15];
-const target = 7;
-const index = binarySearch(arr, target);
+let graph = {
+    0: [1],
+    1: [2],
+    2: [0, 3],
+    3: [4],
+    4: [5, 6],
+    5: [0],
+    6: [0, 2, 4],
+};
 
-if (index !== -1) {
-    console.log(`Element ${target} found at index ${index}.`);
-} else {
-    console.log(`Element ${target} not found in the array.`);
-}
+let stronglyConnectedComponents = tarjan(graph);
+console.log(stronglyConnectedComponents);
