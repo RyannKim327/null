@@ -1,14 +1,10 @@
-let array = [1, 2, 3, 3, 4, 5, 5];
-let uniqueArray = [...new Set(array)];
-console.log(uniqueArray); // [1, 2, 3, 4, 5]
-let array = [1, 2, 3, 3, 4, 5, 5];
-let uniqueArray = array.filter((item, index) => array.indexOf(item) === index);
-console.log(uniqueArray); // [1, 2, 3, 4, 5]
-let array = [1, 2, 3, 3, 4, 5, 5];
-let uniqueArray = array.reduce((accumulator, currentValue) => {
-    if (!accumulator.includes(currentValue)) {
-        accumulator.push(currentValue);
-    }
-    return accumulator;
-}, []);
-console.log(uniqueArray); // [1, 2, 3, 4, 5]
+function calculateMean(numbers) {
+  const total = numbers.reduce((acc, num) => acc + num, 0);
+  const mean = total / numbers.length;
+  return mean;
+}
+
+// Example usage
+const numbers = [1, 2, 3, 4, 5];
+const mean = calculateMean(numbers);
+console.log("Mean:", mean);
