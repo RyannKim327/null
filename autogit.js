@@ -1,84 +1,58 @@
-class BinaryHeap {
-  constructor() {
-    this.heap = [];
-  }
+function tarjanSCC(graph) {
+    let index = 0;
+    let stack = [];
+    let indices = {};
+    let lowLink = {};
+    let onStack = {};
+    let sccList = [];
 
-  size() {
-    return this.heap.length;
-  }
+    function strongConnect(node) {
+        indices[node] = index;
+        lowLink[node] = index;
+        index++;
+        stack.push(node);
+        onStack[node] = true;
 
-  isEmpty() {
-    return this.size() === 0;
-  }
+        graph[node].forEach(neighbor => {
+            if (indices[neighbor] === undefined) {
+                strongConnect(neighbor);
+                lowLink[node] = Math.min(lowLink[node], lowLink[neighbor]);
+            } else if (onStack[neighbor]) {
+                lowLink[node] = Math.min(lowLink[node], indices[neighbor]);
+            }
+        });
 
-  getParentIndex(index) {
-    return Math.floor((index - 1) / 2);
-  }
-
-  getLeftChildIndex(index) {
-    return 2 * index + 1;
-  }
-
-  getRightChildIndex(index) {
-    return 2 * index + 2;
-  }
-
-  enqueue(value) {
-    this.heap.push(value);
-    this.heapifyUp();
-  }
-
-  dequeue() {
-    if (this.isEmpty()) {
-      return null;
+        if (indices[node] === lowLink[node]) {
+            let component = [];
+            let popNode = null;
+            do {
+                popNode = stack.pop();
+                onStack[popNode] = false;
+                component.push(popNode);
+            } while (popNode !== node);
+            sccList.push(component);
+        }
     }
-    const minValue = this.heap[0];
-    const lastValue = this.heap.pop();
-    if (!this.isEmpty()) {
-      this.heap[0] = lastValue;
-      this.heapifyDown();
-    }
-    return minValue;
-  }
 
-  heapifyUp() {
-    let currentIndex = this.size() - 1;
-    while (currentIndex > 0) {
-      const parentIndex = this.getParentIndex(currentIndex);
-      if (this.heap[currentIndex] < this.heap[parentIndex]) {
-        [this.heap[currentIndex], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[currentIndex]];
-        currentIndex = parentIndex;
-      } else {
-        break;
-      }
-    }
-  }
+    Object.keys(graph).forEach(node => {
+        if (indices[node] === undefined) {
+            strongConnect(node);
+        }
+    });
 
-  heapifyDown() {
-    let currentIndex = 0;
-    while (this.getLeftChildIndex(currentIndex) < this.size()) {
-      const leftChildIndex = this.getLeftChildIndex(currentIndex);
-      const rightChildIndex = this.getRightChildIndex(currentIndex);
-      let smallerChildIndex = leftChildIndex;
-      if (rightChildIndex < this.size() && this.heap[rightChildIndex] < this.heap[leftChildIndex]) {
-        smallerChildIndex = rightChildIndex;
-      }
-      if (this.heap[currentIndex] > this.heap[smallerChildIndex]) {
-        [this.heap[currentIndex], this.heap[smallerChildIndex]] = [this.heap[smallerChildIndex], this.heap[currentIndex]];
-        currentIndex = smallerChildIndex;
-      } else {
-        break;
-      }
-    }
-  }
+    return sccList;
 }
 
-// Example usage
-const pq = new BinaryHeap();
-pq.enqueue(5);
-pq.enqueue(3);
-pq.enqueue(8);
-pq.enqueue(1);
+// Example Usage
+const graph = {
+    0: [1, 2],
+    1: [0],
+    2: [3],
+    3: [4],
+    4: [2, 5],
+    5: [6],
+    6: [5],
+};
 
-console.log(pq.dequeue()); // Output: 1
-console.log(pq.dequeue()); // Output: 3
+const scc = tarjanSCC(graph);
+console.log(scc); // Output: [[6, 5], [4, 3, 2], [1, 0]]
