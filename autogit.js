@@ -1,15 +1,11 @@
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
-
-// Find the index of the element to remove
-let index = array.indexOf(elementToRemove);
-
-// Check if the element exists in the array
-if (index !== -1) {
-    // Remove the element using splice
-    array.splice(index, 1);
-
-    console.log(array); // Output: [1, 2, 4, 5]
-} else {
-    console.log("Element not found in array");
+async function connectToServer() {
+  try {
+    const response = await fetch('https://api.example.com/data');
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
 }
+
+connectToServer();
