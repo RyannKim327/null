@@ -1,13 +1,15 @@
-function findSecondLargest(arr) {
-    arr.sort(function(a, b) {
-        return b - a;
-    });
-    
-    return arr[1];
+let array = [1, 2, 3, 4, 5];
+let elementToRemove = 3;
+
+// Find the index of the element to remove
+let index = array.indexOf(elementToRemove);
+
+// Check if the element exists in the array
+if (index !== -1) {
+    // Remove the element using splice
+    array.splice(index, 1);
+
+    console.log(array); // Output: [1, 2, 4, 5]
+} else {
+    console.log("Element not found in array");
 }
-
-// Example usage
-let array = [5, 2, 9, 1, 7, 6];
-let secondLargest = findSecondLargest(array);
-
-console.log("Second largest element is: " + secondLargest);
