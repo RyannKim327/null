@@ -1,30 +1,22 @@
-// Define the structure of a binary tree node
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+function isAnagram(str1, str2) {
+  // Remove non-alphabetic characters and convert to lowercase
+  str1 = str1.replace(/[^a-zA-Z]/g, "").toLowerCase();
+  str2 = str2.replace(/[^a-zA-Z]/g, "").toLowerCase();
+
+  // Sort characters in the strings
+  const sortedStr1 = str1.split('').sort().join('');
+  const sortedStr2 = str2.split('').sort().join('');
+
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
 
-// Function to calculate the sum of all nodes in a binary tree
-function sumBinaryTree(root) {
-    if (root === null) {
-        return 0;
-    }
+// Test the function
+const string1 = "Listen";
+const string2 = "Silent";
 
-    return root.value + sumBinaryTree(root.left) + sumBinaryTree(root.right);
+if (isAnagram(string1, string2)) {
+  console.log(`${string1} and ${string2} are anagrams.`);
+} else {
+  console.log(`${string1} and ${string2} are not anagrams.`);
 }
-
-// Example binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
-
-// Calculate the sum of all nodes in the binary tree
-const sum = sumBinaryTree(root);
-console.log("Sum of all nodes in the binary tree: " + sum);
