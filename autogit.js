@@ -1,45 +1,38 @@
-function mergeSort(arr) {
-    const n = arr.length;
-    const temp = new Array(n);
-
-    for (let size = 1; size < n; size *= 2) {
-        for (let leftStart = 0; leftStart < n - 1; leftStart += 2 * size) {
-            const leftEnd = Math.min(leftStart + size, n);
-            const rightEnd = Math.min(leftStart + 2 * size, n);
-            merge(arr, leftStart, leftEnd, rightEnd, temp);
-        }
-    }
-
-    return arr;
-}
-
-function merge(arr, leftStart, leftEnd, rightEnd, temp) {
-    let rightStart = leftEnd;
-    let left = leftStart;
-    let right = rightStart;
-    let index = leftStart;
-
-    while (left < leftEnd && right < rightEnd) {
-        if (arr[left] < arr[right]) {
-            temp[index++] = arr[left++];
-        } else {
-            temp[index++] = arr[right++];
-        }
-    }
-
-    while (left < leftEnd) {
-        temp[index++] = arr[left++];
-    }
-
-    while (right < rightEnd) {
-        temp[index++] = arr[right++];
-    }
-
-    for (let i = leftStart; i < rightEnd; i++) {
-        arr[i] = temp[i];
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
 
-// Example usage
-const arr = [38, 27, 43, 3, 9, 82, 10];
-console.log(mergeSort(arr)); // Output: [3, 9, 10, 27, 38, 43, 82]
+function diameterOfBinaryTree(root) {
+    let diameter = 0;
+
+    function dfs(node) {
+        if (!node) return 0;
+
+        // Calculate the depth of left and right subtrees
+        const leftDepth = dfs(node.left);
+        const rightDepth = dfs(node.right);
+
+        // Update the diameter if the sum of left and right depths is greater
+        diameter = Math.max(diameter, leftDepth + rightDepth);
+
+        // Return the depth of the current node
+        return 1 + Math.max(leftDepth, rightDepth);
+    }
+
+    dfs(root);
+
+    return diameter;
+}
+
+// Example usage:
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+console.log(diameterOfBinaryTree(root)); // Output: 3
