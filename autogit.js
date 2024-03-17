@@ -1,36 +1,15 @@
-function findMajorityElement(arr) {
-    let count = 0;
-    let candidate = null;
-
-    for (let num of arr) {
-        if (count === 0) {
-            candidate = num;
-        }
-
-        count += (num === candidate) ? 1 : -1;
-    }
-
-    // Verify if the candidate is the majority element
-    count = 0;
-    for (let num of arr) {
-        if (num === candidate) {
-            count++;
+function isSortedAscending(arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;
         }
     }
-
-    if (count > arr.length / 2) {
-        return candidate;
-    } else {
-        return null;
-    }
+    return true;
 }
 
-// Test the function
-const arr = [2, 2, 3, 4, 2, 2, 2];
-const majorityElement = findMajorityElement(arr);
+// Example usage
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [5, 4, 3, 2, 1];
 
-if (majorityElement !== null) {
-    console.log(`The majority element is: ${majorityElement}`);
-} else {
-    console.log("No majority element found");
-}
+console.log(isSortedAscending(array1)); // Output: true
+console.log(isSortedAscending(array2)); // Output: false
