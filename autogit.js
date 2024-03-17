@@ -1,16 +1,34 @@
-function factorial(n) {
-    // Base case: if n is 0, the factorial is 1
-    if (n === 0) {
-        return 1;
+function breadthLimitedSearch(startNode, goalNode, limit) {
+  let queue = [startNode];
+
+  while (queue.length > 0 && limit > 0) {
+    let currentNode = queue.shift();
+
+    if (currentNode === goalNode) {
+      return currentNode;
     }
-    
-    // Recursive case: multiply n by the factorial of (n-1)
-    else {
-        return n * factorial(n - 1);
+
+    if (limit > 1) {
+      let childNodes = expandNode(currentNode); // Function to generate child nodes
+      queue.push(...childNodes);
     }
+
+    limit--;
+  }
+
+  return "Goal node not found within the limit";
 }
 
-// Call the factorial function with a number to calculate its factorial
-const number = 5;
-const result = factorial(number);
-console.log(`The factorial of ${number} is ${result}`);
+// Function to generate child nodes (replace this with actual implementation)
+function expandNode(node) {
+  // Code to generate child nodes from the current node
+  return [];
+}
+
+// Example usage
+const startNode = 1;
+const goalNode = 6;
+const limit = 3;
+
+const result = breadthLimitedSearch(startNode, goalNode, limit);
+console.log(result);
