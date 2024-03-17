@@ -1,37 +1,49 @@
-function longestCommonSubsequence(str1, str2) {
-    let m = str1.length;
-    let n = str2.length;
-    
-    let dp = new Array(m + 1).fill(null).map(() => new Array(n + 1).fill(0));
-    
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-            } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-            }
+// Get the maximum value in the array
+function getMax(arr) {
+    let max = arr[0];
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] > max) {
+            max = arr[i];
         }
     }
-    
-    let lcs = "";
-    let i = m, j = n;
-    while (i > 0 && j > 0) {
-        if (str1[i - 1] === str2[j - 1]) {
-            lcs = str1[i - 1] + lcs;
-            i--;
-            j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--;
-        } else {
-            j--;
-        }
-    }
-    
-    return lcs;
+    return max;
 }
 
-let str1 = "ABCDGH";
-let str2 = "AEDFHR";
+// Counting sort helper function used by radix sort
+function countingSort(arr, exp) {
+    const output = new Array(arr.length).fill(0);
+    const count = new Array(10).fill(0);
 
-console.log(longestCommonSubsequence(str1, str2)); // Output: "ADH"
+    for (let i = 0; i < arr.length; i++) {
+        count[Math.floor(arr[i] / exp) % 10]++;
+    }
+
+    for (let i = 1; i < 10; i++) {
+        count[i] += count[i - 1];
+    }
+
+    for (let i = arr.length - 1; i >= 0; i--) {
+        output[count[Math.floor(arr[i] / exp) % 10] - 1] = arr[i];
+        count[Math.floor(arr[i] / exp) % 10]--;
+    }
+
+    for (let i = 0; i < arr.length; i++) {
+        arr[i] = output[i];
+    }
+}
+
+// Radix sort algorithm
+function radixSort(arr) {
+    const max = getMax(arr);
+
+    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
+        countingSort(arr, exp);
+    }
+
+    return arr;
+}
+
+// Example usage
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+console.log("Original array:", arr);
+console.log("Sorted array:", radixSort(arr));
