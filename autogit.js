@@ -1,10 +1,8 @@
-function calculateMean(numbers) {
-    const sum = numbers.reduce((total, num) => total + num, 0);
-    const mean = sum / numbers.length;
-    return mean;
+function decimalToBinary(decimal) {
+    return (decimal >>> 0).toString(2);
 }
 
 // Example usage
-const numbers = [1, 2, 3, 4, 5];
-const mean = calculateMean(numbers);
-console.log("Mean:", mean);
+const decimalNumber = 42;
+const binaryNumber = decimalToBinary(decimalNumber);
+console.log(binaryNumber); // Output: 101010
