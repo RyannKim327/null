@@ -1,84 +1,106 @@
-class PriorityQueue {
-    constructor() {
-        this.heap = [];
-    }
-
-    enqueue(value, priority) {
-        const node = { value, priority };
-        this.heap.push(node);
-        this.bubbleUp();
-    }
-
-    bubbleUp() {
-        let index = this.heap.length - 1;
-        const element = this.heap[index];
-
-        while (index > 0) {
-            const parentIndex = Math.floor((index - 1) / 2);
-            const parent = this.heap[parentIndex];
-
-            if (element.priority >= parent.priority) break;
-
-            this.heap[parentIndex] = element;
-            this.heap[index] = parent;
-            index = parentIndex;
-        }
-    }
-
-    dequeue() {
-        const min = this.heap[0];
-        const end = this.heap.pop();
-
-        if (this.heap.length > 0) {
-            this.heap[0] = end;
-            this.sinkDown(0);
-        }
-
-        return min.value;
-    }
-
-    sinkDown(index) {
-        const length = this.heap.length;
-        const element = this.heap[index];
-
-        while (true) {
-            const leftChildIdx = 2 * index + 1;
-            const rightChildIdx = 2 * index + 2;
-            let leftChild, rightChild;
-            let swap = null;
-
-            if (leftChildIdx < length) {
-                leftChild = this.heap[leftChildIdx];
-                if (leftChild.priority < element.priority) {
-                    swap = leftChildIdx;
-                }
-            }
-
-            if (rightChildIdx < length) {
-                rightChild = this.heap[rightChildIdx];
-                if (
-                    (swap === null && rightChild.priority < element.priority) ||
-                    (swap !== null && rightChild.priority < leftChild.priority)
-                ) {
-                    swap = rightChildIdx;
-                }
-            }
-
-            if (swap === null) break;
-
-            this.heap[index] = this.heap[swap];
-            this.heap[swap] = element;
-            index = swap;
-        }
+class Node {
+    constructor(start, end) {
+        this.start = start;
+        this.end = end;
+        this.children = new Map();
+        this.suffixLink = null;
     }
 }
 
-// Example usage
-const pq = new PriorityQueue();
-pq.enqueue("Task 1", 3);
-pq.enqueue("Task 2", 1);
-pq.enqueue("Task 3", 2);
+class SuffixTree {
+    constructor(text) {
+        this.root = new Node(-1, -1);
+        this.text = text;
+        this.activeNode = this.root;
+        this.activeEdge = 0;
+        this.activeLength = 0;
+        this.remainingSuffixCount = 0;
+        this.end = -1;
+        this.splitEnd = null;
+        this.size = 0;
 
-console.log(pq.dequeue()); // Task 2
-console.log(pq.dequeue()); // Task 3
-console.log(pq.dequeue()); // Task 1
+        this.buildSuffixTree();
+    }
+
+    buildSuffixTree() {
+        for (let i = 0; i < this.text.length; i++) {
+            this.extendSuffixTree(i);
+        }
+    }
+
+    extendSuffixTree(pos) {
+        this.end = pos;
+        this.remainingSuffixCount++;
+        this.splitEnd = null;
+
+        while (this.remainingSuffixCount > 0) {
+            if (this.activeLength === 0) {
+                this.activeEdge = pos;
+            }
+
+            if (!this.activeNode.children.has(this.text[this.activeEdge])) {
+                this.activeNode.children.set(this.text[this.activeEdge], new Node(pos, this.text.length));
+                if (this.lastCreatedNode !== null) {
+                    this.lastCreatedNode.suffixLink = this.activeNode;
+                    this.lastCreatedNode = null;
+                }
+            } else {
+                let next = this.activeNode.children.get(this.text[this.activeEdge]);
+                if (this.walkDown(next)) {
+                    continue;
+                }
+
+                if (this.text[next.start + this.activeLength] === this.text[pos]) {
+                    if (this.splitEnd !== null && this.activeNode !== this.root) {
+                        this.splitEnd.end = next.start + this.activeLength - 1;
+                        this.splitEnd.children.set(this.text[pos], new Node(pos, this.text.length));
+                        next.start += this.activeLength;
+                        this.splitEnd.children.set(this.text[next.start], next);
+                    }
+
+                    if (this.lastCreatedNode !== null) {
+                        this.lastCreatedNode.suffixLink = this.activeNode;
+                        this.lastCreatedNode = null;
+                    }
+
+                    this.activeLength++;
+                    break;
+                }
+
+                this.splitEnd = new Node(next.start, next.start + this.activeLength - 1);
+                this.activeNode.children.set(this.text[this.activeEdge], this.splitEnd);
+                this.splitEnd.children.set(this.text[pos], new Node(pos, this.text.length));
+                next.start += this.activeLength;
+                this.splitEnd.children.set(this.text[next.start], next);
+
+                if (this.lastCreatedNode !== null) {
+                    this.lastCreatedNode.suffixLink = this.splitEnd;
+                }
+
+                this.lastCreatedNode = this.splitEnd;
+            }
+
+            this.remainingSuffixCount--;
+            if (this.activeNode === this.root && this.activeLength > 0) {
+                this.activeLength--;
+                this.activeEdge = pos - this.remainingSuffixCount + 1;
+            } else if (this.activeNode !== this.root) {
+                this.activeNode = this.activeNode.suffixLink ? this.activeNode.suffixLink : this.root;
+            }
+        }
+    }
+
+    walkDown(node) {
+        if (this.activeLength >= node.end - node.start) {
+            this.activeEdge += node.end - node.start;
+            this.activeLength -= node.end - node.start;
+            this.activeNode = node;
+            return true;
+        }
+        return false;
+    }
+}
+
+// Usage
+const text = "banana";
+const suffixTree = new SuffixTree(text);
