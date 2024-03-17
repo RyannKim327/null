@@ -1,17 +1,22 @@
-function reverseStringWords(str) {
-    // Split the string into an array of words
-    const wordsArray = str.split(' ');
 
-    // Reverse the array
-    const reversedArray = wordsArray.reverse();
+function findNthFromEnd(head, n) {
+    let ptr1 = head;
+    let ptr2 = head;
 
-    // Join the array back into a string
-    const reversedString = reversedArray.join(' ');
+    // Move ptr2 forward by n nodes
+    for (let i = 0; i < n; i++) {
+        if (ptr2 === null) {
+            return null; // not enough nodes in the list
+        }
+        ptr2 = ptr2.next;
+    }
 
-    return reversedString;
+    // Move ptr1 and ptr2 together until ptr2 reaches the end
+    while (ptr2 !== null) {
+        ptr1 = ptr1.next;
+        ptr2 = ptr2.next;
+    }
+
+    // ptr1 will now point to the nth node from the end
+    return ptr1;
 }
-
-const originalString = "Hello world how are you";
-const reversedString = reverseStringWords(originalString);
-
-console.log(reversedString); // Output: "you are how world Hello"
