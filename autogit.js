@@ -1,27 +1,17 @@
-function shellSort(arr) {
-    let n = arr.length;
-    let gap = Math.floor(n / 2);
+function reverseWords(str) {
+    // Split the string into an array of words
+    let wordsArray = str.split(" ");
 
-    while (gap > 0) {
-        for (let i = gap; i < n; i++) {
-            let temp = arr[i];
-            let j = i;
+    // Reverse the array of words
+    let reversedArray = wordsArray.reverse();
 
-            while (j >= gap && arr[j - gap] > temp) {
-                arr[j] = arr[j - gap];
-                j -= gap;
-            }
+    // Join the array back into a string
+    let reversedString = reversedArray.join(" ");
 
-            arr[j] = temp;
-        }
-
-        gap = Math.floor(gap / 2);
-    }
-
-    return arr;
+    return reversedString;
 }
 
-// Example usage:
-let arr = [12, 34, 54, 2, 3];
-console.log("Before sorting:", arr);
-console.log("After sorting:", shellSort(arr));
+let originalString = "Hello World, how are you?";
+let reversedString = reverseWords(originalString);
+
+console.log(reversedString); // Output: "you? are how World, Hello"
