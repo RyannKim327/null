@@ -1,27 +1,37 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-function maxDepth(node) {
-    if (node === null) {
-        return 0;
+function mergeSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    const leftDepth = maxDepth(node.left);
-    const rightDepth = maxDepth(node.right);
+    const middle = Math.floor(arr.length / 2);
+    const left = arr.slice(0, middle);
+    const right = arr.slice(middle);
 
-    return Math.max(leftDepth, rightDepth) + 1;
+    return merge(
+        mergeSort(left),
+        mergeSort(right)
+    );
 }
 
-// Example binary tree
-let root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
+function merge(left, right) {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
 
-console.log("Maximum depth of the binary tree: ", maxDepth(root));
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            result.push(right[rightIndex]);
+            rightIndex++;
+        }
+    }
+
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+}
+
+// Example usage
+const arr = [8, 3, 2, 7, 4, 6, 8, 2];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr);
