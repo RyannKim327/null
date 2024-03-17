@@ -1,51 +1,53 @@
-function burrowsWheelerTransform(text) {
-    // Add end-of-text marker
-    text += '$';
+// Bellman-Ford Algorithm for finding shortest paths in a graph
 
-    // Generate all rotations of the text
-    let rotations = [];
-    for (let i = 0; i < text.length; i++) {
-        let rotation = text.slice(i) + text.slice(0, i);
-        rotations.push(rotation);
+function bellmanFord(graph, startNode) {
+    let distances = {};
+    let parents = {};
+    
+    // Initialize distances to all nodes as Infinity, except the start node
+    for (let node in graph) {
+        distances[node] = Infinity;
     }
-
-    // Sort the rotations
-    rotations.sort();
-
-    // Extract the last characters of each rotation to form the transformed text
-    let transformedText = rotations.map(rotation => rotation.charAt(rotation.length - 1)).join('');
-
-    return transformedText;
-}
-
-function burrowsWheelerInverseTransform(transformedText) {
-    // Create a matrix to store the sorted rotations
-    let matrix = [];
-    for (let i = 0; i < transformedText.length; i++) {
-        matrix.push([]);
-    }
-
-    // Fill the matrix with the transformed text characters
-    for (let i = 0; i < transformedText.length; i++) {
-        for (let j = 0; j < transformedText.length; j++) {
-            matrix[j][i] = transformedText.charAt(j);
+    distances[startNode] = 0;
+    
+    // Relax edges repeatedly
+    for (let i = 0; i < Object.keys(graph).length - 1; i++) {
+        for (let node in graph) {
+            let neighbors = graph[node];
+            for (let neighbor in neighbors) {
+                if (distances[node] + neighbors[neighbor] < distances[neighbor]) {
+                    distances[neighbor] = distances[node] + neighbors[neighbor];
+                    parents[neighbor] = node;
+                }
+            }
         }
-        transformedText = [...transformedText.slice(-1), ...transformedText.slice(0, -1)].join('');
     }
-
-    // Sort the matrix rows
-    matrix.sort();
-
-    // Extract the row that ends with the end-of-text marker
-    let originalText = matrix.find(row => row[row.length - 1] === '$').slice(0, -1);
-
-    return originalText;
+    
+    // Check for negative cycles
+    for (let node in graph) {
+        let neighbors = graph[node];
+        for (let neighbor in neighbors) {
+            if (distances[node] + neighbors[neighbor] < distances[neighbor]) {
+                console.log('Graph contains negative cycle');
+                return;
+            }
+        }
+    }
+    
+    return { distances, parents };
 }
 
-// Example
-let text = 'hello';
-let transformedText = burrowsWheelerTransform(text);
-console.log('Transformed Text:', transformedText);
+// Example Graph
+let graph = {
+    A: { B: -1, C: 4 },
+    B: { C: 3, D: 2, E: 2 },
+    C: {},
+    D: { B: 1, C: 5 },
+    E: { D: -3 }
+};
 
-let originalText = burrowsWheelerInverseTransform(transformedText);
-console.log('Original Text:', originalText);
+let startNode = 'A';
+
+let result = bellmanFord(graph, startNode);
+console.log(result.distances);
+console.log(result.parents);
