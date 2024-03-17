@@ -1,45 +1,22 @@
-function rabinKarpSearch(text, pattern) {
-    const prime = 101; // Choose a prime number to minimize hash collisions
-    const textLength = text.length;
-    const patternLength = pattern.length;
-    const patternHash = generateHash(pattern, patternLength);
-    let textHash = generateHash(text, patternLength);
+function findCommonElements(array1, array2) {
+    // Create an empty array to store common elements
+    let commonElements = [];
 
-    for (let i = 0; i <= textLength - patternLength; i++) {
-        if (patternHash === textHash && text.substring(i, i + patternLength) === pattern) {
-            return i;
-        }
-
-        if (i < textLength - patternLength) {
-            textHash = recalculateHash(text, i, patternLength, textHash, prime);
+    // Loop through the first array
+    for (let element of array1) {
+        // Check if the element exists in the second array
+        if (array2.includes(element) && !commonElements.includes(element)) {
+            // If the element is common and not already in the commonElements array, add it to the commonElements array
+            commonElements.push(element);
         }
     }
 
-    return -1;
-}
-
-function generateHash(str, length) {
-    let hash = 0;
-    for (let i = 0; i < length; i++) {
-        hash += str.charCodeAt(i) * Math.pow(101, i);
-    }
-    return hash;
-}
-
-function recalculateHash(str, oldIndex, patternLength, oldHash, prime) {
-    let newHash = oldHash - str.charCodeAt(oldIndex);
-    newHash = newHash / prime;
-    newHash += str.charCodeAt(oldIndex + patternLength) * Math.pow(101, patternLength - 1);
-    return newHash;
+    return commonElements;
 }
 
 // Example usage
-const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
-const pattern = "consectetur";
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
+const result = findCommonElements(array1, array2);
 
-const index = rabinKarpSearch(text, pattern);
-if (index !== -1) {
-    console.log(`Pattern found at index ${index}`);
-} else {
-    console.log("Pattern not found");
-}
+console.log(result); // Output: [3, 4, 5]
