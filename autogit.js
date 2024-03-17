@@ -1,38 +1,45 @@
-function rabinKarpSearch(text, pattern) {
-    const base = 256; // Base for the hashing function
-    const prime = 101; // Prime number for hashing
+function mergeSort(arr) {
+    const n = arr.length;
+    const aux = new Array(n);
 
-    const textLength = text.length;
-    const patternLength = pattern.length;
-    const patternHash = hash(pattern, patternLength);
-    let textHash = hash(text, patternLength);
+    for (let size = 1; size < n; size *= 2) {
+        for (let leftStart = 0; leftStart < n - 1; leftStart += 2 * size) {
+            const mid = Math.min(leftStart + size - 1, n - 1);
+            const rightEnd = Math.min(leftStart + 2 * size - 1, n - 1);
 
-    for (let i = 0; i <= textLength - patternLength; i++) {
-        if (textHash === patternHash && text.substring(i, i + patternLength) === pattern) {
-            return i; // Match found at index i
-        }
-        if (i < textLength - patternLength) {
-            textHash = recalculateHash(text, i, patternLength, textHash, base, patternLength, prime);
+            merge(arr, aux, leftStart, mid, rightEnd);
         }
     }
-    return -1; // No match found
+
+    return arr;
 }
 
-function hash(str, length) {
-    let hashValue = 0;
-    for (let i = 0; i < length; i++) {
-        hashValue += str.charCodeAt(i) * Math.pow(256, length - i - 1);
+function merge(arr, aux, leftStart, mid, rightEnd) {
+    let k = leftStart;
+    let i = leftStart;
+    let j = mid + 1;
+
+    while (i <= mid && j <= rightEnd) {
+        if (arr[i] <= arr[j]) {
+            aux[k++] = arr[i++];
+        } else {
+            aux[k++] = arr[j++];
+        }
     }
-    return hashValue;
+    
+    while (i <= mid) {
+        aux[k++] = arr[i++];
+    }
+    
+    while (j <= rightEnd) {
+        aux[k++] = arr[j++];
+    }
+
+    for (let idx = leftStart; idx <= rightEnd; idx++) {
+        arr[idx] = aux[idx];
+    }
 }
 
-function recalculateHash(str, oldIndex, patternLength, oldHash, base, newLength, prime) {
-    let newHash = oldHash - str.charCodeAt(oldIndex) * Math.pow(base, patternLength - 1);
-    newHash = newHash * base + str.charCodeAt(oldIndex + patternLength);
-    return newHash;
-}
-
-// Test the algorithm
-const text = "abracadabra";
-const pattern = "cad";
-console.log(rabinKarpSearch(text, pattern)); // Output: 5
+// Example usage
+const arr = [38, 27, 43, 3, 9, 82, 10];
+console.log(mergeSort(arr)); // Output: [3, 9, 10, 27, 38, 43, 82]
