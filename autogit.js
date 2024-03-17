@@ -1,52 +1,26 @@
-class Graph {
-    constructor() {
-        this.adjList = {};
-    }
+function isAnagram(str1, str2) {
+  // Remove any non-alphabetic characters and convert to lowercase
+  str1 = str1.replace(/[^\w]/g, "").toLowerCase();
+  str2 = str2.replace(/[^\w]/g, "").toLowerCase();
 
-    addVertex(vertex) {
-        if (!this.adjList[vertex]) {
-            this.adjList[vertex] = [];
-        }
-    }
+  // Check if the length of the strings are equal
+  if (str1.length !== str2.length) {
+    return false;
+  }
 
-    addEdge(v1, v2) {
-        this.adjList[v1].push(v2);
-        this.adjList[v2].push(v1); // For undirected graph
-    }
+  // Sort the characters of both strings and compare them
+  var sortedStr1 = str1.split('').sort().join('');
+  var sortedStr2 = str2.split('').sort().join('');
 
-    dfs(start) {
-        const visited = {};
-        this._dfsHelper(start, visited);
-    }
-
-    _dfsHelper(vertex, visited) {
-        visited[vertex] = true;
-        console.log(vertex);
-
-        for (let neighbor of this.adjList[vertex]) {
-            if (!visited[neighbor]) {
-                this._dfsHelper(neighbor, visited);
-            }
-        }
-    }
+  return sortedStr1 === sortedStr2;
 }
 
-// Example usage
-const graph = new Graph();
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
-graph.addVertex('F');
+// Example
+var string1 = "listen";
+var string2 = "silent";
 
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('C', 'E');
-graph.addEdge('D', 'E');
-graph.addEdge('D', 'F');
-graph.addEdge('E', 'F');
-
-console.log('Depth First Search starting from vertex A:');
-graph.dfs('A');
+if (isAnagram(string1, string2)) {
+  console.log(string1 + " and " + string2 + " are anagrams.");
+} else {
+  console.log(string1 + " and " + string2 + " are not anagrams.");
+}
