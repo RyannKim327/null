@@ -1,42 +1,79 @@
-function findMedianSortedArrays(nums1, nums2) {
-  // Merge the two arrays
-  let merged = [];
-  let i = 0, j = 0;
+class PriorityQueue {
+  constructor() {
+    this.heap = [];
+  }
   
-  while (i < nums1.length && j < nums2.length) {
-    if (nums1[i] < nums2[j]) {
-      merged.push(nums1[i]);
-      i++;
-    } else {
-      merged.push(nums2[j]);
-      j++;
+  enqueue(value, priority) {
+    const node = { value, priority };
+    this.heap.push(node);
+    this.bubbleUp();
+  }
+  
+  dequeue() {
+    const min = this.heap[0];
+    const end = this.heap.pop();
+    if (this.heap.length > 0) {
+      this.heap[0] = end;
+      this.bubbleDown();
+    }
+    return min.value;
+  }
+  
+  bubbleUp() {
+    let index = this.heap.length - 1;
+    const node = this.heap[index];
+    
+    while (index > 0) {
+      let parentIndex = Math.floor((index - 1) / 2);
+      let parent = this.heap[parentIndex];
+      
+      if (node.priority >= parent.priority) break;
+      
+      this.heap[parentIndex] = node;
+      this.heap[index] = parent;
+      index = parentIndex;
     }
   }
   
-  while (i < nums1.length) {
-    merged.push(nums1[i]);
-    i++;
-  }
-  
-  while (j < nums2.length) {
-    merged.push(nums2[j]);
-    j++;
-  }
-  
-  // Calculate the median
-  let length = merged.length;
-  if (length % 2 === 0) {
-    return (merged[length / 2 - 1] + merged[length / 2]) / 2;
-  } else {
-    return merged[Math.floor(length / 2)];
+  bubbleDown() {
+    let index = 0;
+    const length = this.heap.length;
+    const node = this.heap[0];
+    
+    while (true) {
+      let leftChildIndex = 2 * index + 1;
+      let rightChildIndex = 2 * index + 2;
+      let leftChild, rightChild;
+      let swap = null;
+      
+      if (leftChildIndex < length) {
+        leftChild = this.heap[leftChildIndex];
+        if (leftChild.priority < node.priority) {
+          swap = leftChildIndex;
+        }
+      }
+      
+      if (rightChildIndex < length) {
+        rightChild = this.heap[rightChildIndex];
+        if ((swap === null && rightChild.priority < node.priority) ||
+            (swap !== null && rightChild.priority < leftChild.priority)) {
+          swap = rightChildIndex;
+        }
+      }
+      
+      if (swap === null) break;
+      
+      this.heap[index] = this.heap[swap];
+      this.heap[swap] = node;
+      index = swap;
+    }
   }
 }
+const pq = new PriorityQueue();
+pq.enqueue('task1', 3);
+pq.enqueue('task2', 1);
+pq.enqueue('task3', 2);
 
-// Test the function
-let nums1 = [1, 3];
-let nums2 = [2];
-console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2
-
-nums1 = [1, 2];
-nums2 = [3, 4];
-console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.5
+console.log(pq.dequeue()); // task2
+console.log(pq.dequeue()); // task3
+console.log(pq.dequeue()); // task1
