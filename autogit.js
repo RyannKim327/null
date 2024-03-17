@@ -1,27 +1,25 @@
-function longestCommonSubstring(str1, str2) {
-    let dp = Array(str1.length + 1).fill(0).map(() => Array(str2.length + 1).fill(0));
-    let maxLength = 0;
-    let endIndex = 0;
-  
-    for (let i = 1; i <= str1.length; i++) {
-        for (let j = 1; j <= str2.length; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
+function firstNonRepeatingCharacter(str) {
+    // Create a map to store the count of each character
+    let charCount = {};
 
-                if (dp[i][j] > maxLength) {
-                    maxLength = dp[i][j];
-                    endIndex = i;
-                }
-            } else {
-                dp[i][j] = 0;
-            }
+    // Iterate through the string to build the character count map
+    for (let char of str) {
+        charCount[char] = (charCount[char] || 0) + 1;
+    }
+
+    // Find the first non-repeating character
+    for (let char of str) {
+        if (charCount[char] === 1) {
+            return char;
         }
     }
 
-    return str1.substring(endIndex - maxLength, endIndex);
+    // If no non-repeating character found, return null or an appropriate message
+    return null;
 }
 
-// Test the function
-let str1 = "ABABC";
-let str2 = "BABC";
-console.log(longestCommonSubstring(str1, str2)); // Output: "BABC"
+// Test the function with a sample string
+const str = "hello world";
+const result = firstNonRepeatingCharacter(str);
+
+console.log("First non-repeating character:", result);
