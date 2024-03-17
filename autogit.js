@@ -1,9 +1,49 @@
-function reverseString(str) {
-    return str.split('').reverse().join('');
+class Node {
+  constructor(data, next = null) {
+    this.data = data;
+    this.next = next;
+  }
 }
 
-// Test the function
-const originalString = 'Hello, World!';
-const reversedString = reverseString(originalString);
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
 
-console.log(reversedString); // Outputs: "!dlroW ,olleH"
+  insertAtEnd(data) {
+    const newNode = new Node(data);
+
+    if (!this.head) {
+      this.head = newNode;
+      return;
+    }
+
+    let current = this.head;
+    while (current.next) {
+      current = current.next;
+    }
+
+    current.next = newNode;
+  }
+
+  getLength() {
+    let length = 0;
+    let current = this.head;
+
+    while (current) {
+      length++;
+      current = current.next;
+    }
+
+    return length;
+  }
+}
+
+// Creating a linked list instance
+const linkedList = new LinkedList();
+linkedList.insertAtEnd(1);
+linkedList.insertAtEnd(2);
+linkedList.insertAtEnd(3);
+
+// Getting the length of the linked list
+console.log(linkedList.getLength()); // Output: 3
