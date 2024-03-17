@@ -1,12 +1,17 @@
-let numbers = [4, 2, 10, 8, 6];
+function countOccurrences(str, char) {
+    let count = 0;
+    
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
+            count++;
+        }
+    }
+    
+    return count;
+}
 
-numbers.sort(function(a, b) {
-    return a - b;
-});
+let myString = "Hello, World!";
+let charToCount = "l";
+let occurrences = countOccurrences(myString, charToCount);
 
-console.log(numbers); // [2, 4, 6, 8, 10]
-numbers.sort(function(a, b) {
-    return b - a;
-});
-
-console.log(numbers); // [10, 8, 6, 4, 2]
+console.log(`The character "${charToCount}" occurs ${occurrences} times in the string.`);
