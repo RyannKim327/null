@@ -1,22 +1,27 @@
-function longestIncreasingSubsequence(arr) {
-    const n = arr.length;
-    if (n === 0) return 0;
-
-    const dp = new Array(n).fill(1);
-    let maxLen = 1;
-
-    for (let i = 1; i < n; i++) {
-        for (let j = 0; j < i; j++) {
-            if (arr[i] > arr[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
-            }
-        }
-        maxLen = Math.max(maxLen, dp[i]);
+class TreeNode {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-
-    return maxLen;
 }
 
-// Test the function
-const arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
-console.log(longestIncreasingSubsequence(arr)); // Output: 6
+function maxDepth(node) {
+    if (node === null) {
+        return 0;
+    }
+    
+    const leftDepth = maxDepth(node.left);
+    const rightDepth = maxDepth(node.right);
+    
+    return 1 + Math.max(leftDepth, rightDepth);
+}
+
+// Example usage:
+const root = new TreeNode(3);
+root.left = new TreeNode(9);
+root.right = new TreeNode(20);
+root.right.left = new TreeNode(15);
+root.right.right = new TreeNode(7);
+
+console.log(maxDepth(root)); // Output: 3
