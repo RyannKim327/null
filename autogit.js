@@ -1,6 +1,17 @@
-var string1 = "Hello";
-var string2 = "World";
+function isPrime(num) {
+    if (num <= 1) {
+        return false;
+    }
+    
+    for (let i = 2; i <= Math.sqrt(num); i++) {
+        if (num % i === 0) {
+            return false;
+        }
+    }
+    
+    return true;
+}
 
-var concatenatedString = string1 + " " + string2;
-
-console.log(concatenatedString); // Output: Hello World
+// Test the function
+console.log(isPrime(7)); // true
+console.log(isPrime(12)); // false
