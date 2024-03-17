@@ -1,51 +1,29 @@
-function rabinKarp(str, pattern) {
-    const base = 256; // Base value for hashing, typically the size of the alphabet
-    const prime = 101; // A prime number to use for hashing calculations
+function binarySearch(arr, target) {
+    let left = 0;
+    let right = arr.length - 1;
 
-    function hash(text, length) {
-        let hashValue = 0;
-        for (let i = 0; i < length; i++) {
-            hashValue = (hashValue * base + text.charCodeAt(i)) % prime;
-        }
-        return hashValue;
-    }
+    while (left <= right) {
+        let mid = left + Math.floor((right - left) / 2);
 
-    function rehash(oldHash, oldChar, newChar, length) {
-        let newHash = (oldHash - oldChar * Math.pow(base, length - 1)) * base + newChar;
-        return newHash % prime;
-    }
-
-    const n = str.length;
-    const m = pattern.length;
-    const patternHash = hash(pattern, m);
-    let textHash = hash(str, m);
-
-    for (let i = 0; i <= n - m; i++) {
-        if (textHash === patternHash && str.substring(i, i + m) === pattern) {
-            return i; // Pattern found at index i
-        }
-        if (i < n - m) {
-            textHash = rehash(
-                textHash,
-                str.charCodeAt(i),
-                str.charCodeAt(i + m),
-                m
-            );
-            if (textHash < 0) {
-                textHash += prime;
-            }
+        if (arr[mid] === target) {
+            return mid;
+        } else if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
         }
     }
 
-    return -1; // Pattern not found
+    return -1; // Element not found
 }
 
-// Usage
-const text = "ABABCABAB";
-const pattern = "BAB";
-const index = rabinKarp(text, pattern);
-if (index !== -1) {
-    console.log("Pattern found at index " + index);
+// Example usage
+const sortedArray = [1, 3, 5, 7, 9, 11, 13, 15];
+const targetElement = 7;
+const resultIndex = binarySearch(sortedArray, targetElement);
+
+if (resultIndex !== -1) {
+    console.log(`Element found at index ${resultIndex}`);
 } else {
-    console.log("Pattern not found");
+    console.log(`Element not found in the array`);
 }
