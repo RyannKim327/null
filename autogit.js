@@ -1,26 +1,9 @@
-function isAnagram(str1, str2) {
-  // Remove any non-alphabetic characters and convert to lowercase
-  str1 = str1.replace(/[^\w]/g, "").toLowerCase();
-  str2 = str2.replace(/[^\w]/g, "").toLowerCase();
-
-  // Check if the length of the strings are equal
-  if (str1.length !== str2.length) {
-    return false;
-  }
-
-  // Sort the characters of both strings and compare them
-  var sortedStr1 = str1.split('').sort().join('');
-  var sortedStr2 = str2.split('').sort().join('');
-
-  return sortedStr1 === sortedStr2;
+function findCommonElements(arr1, arr2) {
+    return arr1.filter(element => arr2.includes(element));
 }
 
-// Example
-var string1 = "listen";
-var string2 = "silent";
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
 
-if (isAnagram(string1, string2)) {
-  console.log(string1 + " and " + string2 + " are anagrams.");
-} else {
-  console.log(string1 + " and " + string2 + " are not anagrams.");
-}
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [3, 4, 5]
