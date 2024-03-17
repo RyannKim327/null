@@ -1,52 +1,64 @@
-class TrieNode {
-    constructor() {
-        this.children = {};
-        this.isEndOfWord = false;
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
     }
 }
 
-class Trie {
+class LinkedList {
     constructor() {
-        this.root = new TrieNode();
+        this.head = null;
     }
-    
-    insert(word) {
-        let node = this.root;
-        for (let char of word) {
-            if (!node.children[char]) {
-                node.children[char] = new TrieNode();
+
+    add(data) {
+        const newNode = new Node(data);
+
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
             }
-            node = node.children[char];
+            current.next = newNode;
         }
-        node.isEndOfWord = true;
     }
-    
-    search(word) {
-        let node = this.root;
-        for (let char of word) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
+
+    reverse() {
+        let prev = null;
+        let current = this.head;
+        let next = null;
+
+        while (current) {
+            next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
         }
-        return node.isEndOfWord;
+
+        this.head = prev;
     }
-    
-    startsWith(prefix) {
-        let node = this.root;
-        for (let char of prefix) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
+
+    printList() {
+        let current = this.head;
+        while (current) {
+            console.log(current.data);
+            current = current.next;
         }
-        return true;
     }
 }
 
-// Usage
-let trie = new Trie();
-trie.insert("apple");
-console.log(trie.search("apple"));   // Output: true
-console.log(trie.search("app"));     // Output: false
-console.log(trie.startsWith("app")); // Output: true
+// Create a linked list
+const list = new LinkedList();
+list.add(1);
+list.add(2);
+list.add(3);
+list.add(4);
+
+console.log("Original List:");
+list.printList();
+
+list.reverse();
+
+console.log("Reversed List:");
+list.printList();
