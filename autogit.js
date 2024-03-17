@@ -1,75 +1,52 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
-    }
-}
-
-class LinkedList {
+class TrieNode {
     constructor() {
-        this.head = null;
-    }
-
-    append(data) {
-        let newNode = new Node(data);
-
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-
-        current.next = newNode;
-    }
-
-    delete(data) {
-        if (!this.head) {
-            return;
-        }
-
-        if (this.head.data === data) {
-            this.head = this.head.next;
-            return;
-        }
-
-        let current = this.head;
-        while (current.next) {
-            if (current.next.data === data) {
-                current.next = current.next.next;
-                return;
-            }
-            current = current.next;
-        }
-    }
-
-    print() {
-        let current = this.head;
-        while (current) {
-            console.log(current.data);
-            current = current.next;
-        }
+        this.children = {};
+        this.isEndOfWord = false;
     }
 }
 
-// Example usage
-let linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
+class Trie {
+    constructor() {
+        this.root = new TrieNode();
+    }
 
-linkedList.print();
-// Output:
-// 1
-// 2
-// 3
+    insert(word) {
+        let node = this.root;
+        for (let char of word) {
+            if (!node.children[char]) {
+                node.children[char] = new TrieNode();
+            }
+            node = node.children[char];
+        }
+        node.isEndOfWord = true;
+    }
 
-linkedList.delete(2);
+    search(word) {
+        let node = this.root;
+        for (let char of word) {
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+        return node.isEndOfWord;
+    }
 
-linkedList.print();
-// Output:
-// 1
-// 3
+    startsWith(prefix) {
+        let node = this.root;
+        for (let char of prefix) {
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+        return true;
+    }
+}
+
+// Example usage:
+let trie = new Trie();
+trie.insert("apple");
+console.log(trie.search("apple"));   // true
+console.log(trie.search("app"));     // false
+console.log(trie.startsWith("app")); // true
