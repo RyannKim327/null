@@ -1,37 +1,59 @@
-// Helper function to find the digit at a specific place value
-function getDigit(num, place) {
-    return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
-}
+function dijkstra(graph, start) {
+  const distances = {};
+  const priorityQueue = new PriorityQueue();
 
-// Helper function to find the number of digits in the largest number in the array
-function digitCount(num) {
-    if (num === 0) return 1;
-    return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
+  for (let vertex in graph) {
+    distances[vertex] = vertex === start ? 0 : Infinity;
+    priorityQueue.enqueue(vertex, distances[vertex]);
+  }
 
-// Helper function to find the number of digits in the largest number in the array
-function mostDigits(arr) {
-    let maxDigits = 0;
-    for (let i = 0; i < arr.length; i++) {
-        maxDigits = Math.max(maxDigits, digitCount(arr[i]));
+  while (!priorityQueue.isEmpty()) {
+    const currentVertex = priorityQueue.dequeue();
+
+    for (let neighbor in graph[currentVertex]) {
+      const distance = distances[currentVertex] + graph[currentVertex][neighbor];
+
+      if (distance < distances[neighbor]) {
+        distances[neighbor] = distance;
+        priorityQueue.enqueue(neighbor, distance);
+      }
     }
-    return maxDigits;
+  }
+
+  return distances;
 }
 
-function radixSort(arr) {
-    const maxDigitCount = mostDigits(arr);
-    for (let k = 0; k < maxDigitCount; k++) {
-        const digitBuckets = Array.from({ length: 10 }, () => []);
-        for (let i = 0; i < arr.length; i++) {
-            const digit = getDigit(arr[i], k);
-            digitBuckets[digit].push(arr[i]);
-        }
-        arr = [].concat(...digitBuckets);
-    }
-    return arr;
+class PriorityQueue {
+  constructor() {
+    this.values = [];
+  }
+
+  enqueue(value, priority) {
+    this.values.push({ value, priority });
+    this.sort();
+  }
+
+  dequeue() {
+    return this.values.shift().value;
+  }
+
+  sort() {
+    this.values.sort((a, b) => a.priority - b.priority);
+  }
+
+  isEmpty() {
+    return this.values.length === 0;
+  }
 }
 
-// Example usage
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedArr = radixSort(arr);
-console.log(sortedArr); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+// Example graph
+const graph = {
+  A: { B: 3, C: 4 },
+  B: { A: 3, C: 1, D: 6 },
+  C: { A: 4, B: 1, D: 2 },
+  D: { B: 6, C: 2 }
+};
+
+const startNode = 'A';
+const shortestDistances = dijkstra(graph, startNode);
+console.log(shortestDistances);
