@@ -1,54 +1,22 @@
-class TarjanSCC {
-    constructor(graph) {
-        this.graph = graph;
-        this.index = 0;
-        this.stack = [];
-        this.ids = new Array(graph.length).fill(-1);
-        this.low = new Array(graph.length).fill(-1);
-        this.onStack = new Array(graph.length).fill(false);
-        this.sccCount = 0;
-        this.scc = [];
+function shellSort(arr) {
+  // Start with a large gap, then reduce the gap
+  for (let gap = Math.floor(arr.length / 2); gap > 0; gap = Math.floor(gap / 2)) {
+    // Perform insertion sort for elements at each gap
+    for (let i = gap; i < arr.length; i++) {
+      let temp = arr[i];
+      let j;
+
+      for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
+        arr[j] = arr[j - gap];
+      }
+
+      arr[j] = temp;
     }
-    
-    findSCC() {
-        for (let i = 0; i < this.graph.length; i++) {
-            if (this.ids[i] === -1) {
-                this.dfs(i);
-            }
-        }
-        
-        return this.scc;
-    }
-    
-    dfs(at) {
-        this.stack.push(at);
-        this.onStack[at] = true;
-        this.ids[at] = this.low[at] = this.index++;
-        
-        for (let to of this.graph[at]) {
-            if (this.ids[to] === -1) {
-                this.dfs(to);
-            }
-            if (this.onStack[to]) {
-                this.low[at] = Math.min(this.low[at], this.low[to]);
-            }
-        }
-        
-        if (this.ids[at] === this.low[at]) {
-            let scc = [];
-            let node = -1;
-            while (node !== at) {
-                node = this.stack.pop();
-                this.onStack[node] = false;
-                scc.push(node);
-            }
-            this.scc.push(scc);
-            this.sccCount++;
-        }
-    }
+  }
+
+  return arr;
 }
 
 // Example usage
-let graph = [[1], [2], [0], [2, 4], [3], [6], [5, 7], [6]];
-let tarjan = new TarjanSCC(graph);
-console.log(tarjan.findSCC());
+const arr = [12, 34, 54, 2, 3];
+console.log(shellSort(arr)); // Output: [2, 3, 12, 34, 54]
