@@ -1,12 +1,22 @@
-function findStringLength(str) {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        count++;
+function findFirstRepeatedCharacter(inputString) {
+    const charCount = {};
+    
+    for (let char of inputString) {
+        if (charCount[char]) {
+            return char;
+        }
+        
+        charCount[char] = true;
     }
-    return count;
+    
+    return null;
 }
 
-let str = "Hello, World!";
-let length = findStringLength(str);
+const inputString = "abcdefgah";
+const repeatedChar = findFirstRepeatedCharacter(inputString);
 
-console.log("Length of the string is: " + length);
+if (repeatedChar) {
+    console.log(`The first repeated character in the string "${inputString}" is: ${repeatedChar}`);
+} else {
+    console.log("There are no repeated characters in the string.");
+}
