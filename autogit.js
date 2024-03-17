@@ -1,10 +1,12 @@
-let str1 = "Hello";
-let str2 = "World";
-let concatenatedString = str1 + " " + str2;
+function factorial(n) {
+    if (n === 0) {
+        return 1;
+    } else {
+        return n * factorial(n - 1);
+    }
+}
 
-console.log(concatenatedString); // Output: Hello World
-let str1 = "Hello";
-let str2 = "World";
-let concatenatedString = `${str1} ${str2}`;
-
-console.log(concatenatedString); // Output: Hello World
+// Test the factorial function
+const num = 5;
+const result = factorial(num);
+console.log(`The factorial of ${num} is ${result}`);
