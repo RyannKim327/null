@@ -1,27 +1,15 @@
-// Define a function that performs a network request asynchronously
-function fetchData() {
-    return new Promise((resolve, reject) => {
-        const url = "https://api.example.com/data";
-        
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw Error(response.statusText);
-                }
-                return response.json();
-            })
-            .then(data => resolve(data))
-            .catch(error => reject(error));
-    });
-}
+// Array of integers
+let numbers = [5, 2, 9, 1, 5, 6];
 
-// Execute the async task when a button is clicked
-document.getElementById("fetchDataButton").addEventListener("click", async () => {
-    try {
-        const data = await fetchData();
-        console.log("Data received:", data);
-        // Perform further operations with the received data
-    } catch (error) {
-        console.error("Error fetching data:", error);
-    }
+// Sorting the array in ascending order
+numbers.sort(function(a, b) {
+  return a - b;
 });
+
+console.log(numbers); // Output: [1, 2, 5, 5, 6, 9]
+// Sorting the array in descending order
+numbers.sort(function(a, b) {
+  return b - a;
+});
+
+console.log(numbers); // Output: [9, 6, 5, 5, 2, 1]
