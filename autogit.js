@@ -1,8 +1,5 @@
-function reverseString(str) {
-    return str.split('').reverse().join('');
-}
+let array = [10, 5, 8, 15, 3];
 
-// Example usage
-const originalString = 'Hello, World!';
-const reversedString = reverseString(originalString);
-console.log(reversedString); // Outputs: '!dlroW ,olleH'
+let max = Math.max(...array);
+
+console.log(max); // Output: 15
