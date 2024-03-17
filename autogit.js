@@ -1,75 +1,52 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
-    }
-}
-
-class Queue {
+class Graph {
     constructor() {
-        this.head = null;
-        this.tail = null;
-        this.size = 0;
+        this.adjList = {};
     }
 
-    enqueue(data) {
-        const newNode = new Node(data);
-
-        if (!this.head) {
-            this.head = newNode;
-            this.tail = newNode;
-        } else {
-            this.tail.next = newNode;
-            this.tail = newNode;
+    addVertex(vertex) {
+        if (!this.adjList[vertex]) {
+            this.adjList[vertex] = [];
         }
-
-        this.size++;
     }
 
-    dequeue() {
-        if (!this.head) {
-            return null;
+    addEdge(v1, v2) {
+        this.adjList[v1].push(v2);
+        this.adjList[v2].push(v1); // For undirected graph
+    }
+
+    dfs(start) {
+        const visited = {};
+        this._dfsHelper(start, visited);
+    }
+
+    _dfsHelper(vertex, visited) {
+        visited[vertex] = true;
+        console.log(vertex);
+
+        for (let neighbor of this.adjList[vertex]) {
+            if (!visited[neighbor]) {
+                this._dfsHelper(neighbor, visited);
+            }
         }
-
-        const data = this.head.data;
-        this.head = this.head.next;
-
-        if (!this.head) {
-            this.tail = null;
-        }
-
-        this.size--;
-
-        return data;
-    }
-
-    isEmpty() {
-        return this.size === 0;
-    }
-
-    getSize() {
-        return this.size;
-    }
-
-    printQueue() {
-        let current = this.head;
-        let result = [];
-
-        while (current) {
-            result.push(current.data);
-            current = current.next;
-        }
-
-        console.log(result.join(' -> '));
     }
 }
 
-// Test the implementation
-const queue = new Queue();
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
-queue.printQueue(); // Output: 1 -> 2 -> 3
+// Example usage
+const graph = new Graph();
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addVertex('E');
+graph.addVertex('F');
 
-queue.dequeue();
-queue.printQueue(); // Output: 2 -> 3
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('C', 'E');
+graph.addEdge('D', 'E');
+graph.addEdge('D', 'F');
+graph.addEdge('E', 'F');
+
+console.log('Depth First Search starting from vertex A:');
+graph.dfs('A');
