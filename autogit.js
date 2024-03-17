@@ -1,7 +1,25 @@
-// Define an array with duplicate elements
-let array = [1, 2, 2, 3, 4, 4, 5];
+function findMajorityElement(arr) {
+    let hash = {};
+    let majorityElement = null;
+    let majorityCount = 0;
 
-// Create a new Set from the array to remove duplicates
-let uniqueArray = [...new Set(array)];
+    // Count occurrences of each element in the array
+    for (let num of arr) {
+        hash[num] = (hash[num] || 0) + 1;
+        if (hash[num] > majorityCount) {
+            majorityElement = num;
+            majorityCount = hash[num];
+        }
+    }
 
-console.log(uniqueArray);
+    // Check if the majority element is indeed the majority
+    if (majorityCount > arr.length / 2) {
+        return majorityElement;
+    } else {
+        return "No majority element found";
+    }
+}
+
+// Example
+const array = [2, 2, 1, 1, 1, 2, 2];
+console.log(findMajorityElement(array)); // Output: 2
