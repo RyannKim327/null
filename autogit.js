@@ -1,125 +1,55 @@
-// Node class to represent each node in the skip list
+// Node class to represent nodes in a linked list
 class Node {
-    constructor(value, level) {
-        this.value = value;
-        this.forward = new Array(level + 1).fill(null);
+    constructor(data) {
+        this.data = data;
+        this.next = null;
     }
 }
 
-// SkipList class
-class SkipList {
-    constructor(maxLevel, p) {
-        this.maxLevel = maxLevel;
-        this.p = p;
-        this.level = 0;
-        this.head = new Node(-1, maxLevel);
+// LinkedList class
+class LinkedList {
+    constructor() {
+        this.head = null;
     }
 
-    randomLevel() {
-        let level = 0;
-        while (Math.random() < this.p && level < this.maxLevel) {
-            level++;
-        }
-        return level;
-    }
+    // Method to add a new node to the end of the linked list
+    addNode(data) {
+        const newNode = new Node(data);
 
-    insert(value) {
-        let update = new Array(this.maxLevel + 1);
-        let current = this.head;
-
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-            update[i] = current;
-        }
-
-        current = current.forward[0];
-
-        if (current === null || current.value !== value) {
-            let newLevel = this.randomLevel();
-
-            if (newLevel > this.level) {
-                for (let i = this.level + 1; i < newLevel + 1; i++) {
-                    update[i] = this.head;
-                }
-                this.level = newLevel;
-            }
-
-            let newNode = new Node(value, newLevel);
-
-            for (let i = 0; i <= newLevel; i++) {
-                newNode.forward[i] = update[i].forward[i];
-                update[i].forward[i] = newNode;
-            }
-
-            console.log("Successfully inserted value:", value);
+        if (!this.head) {
+            this.head = newNode;
         } else {
-            console.log("Value", value, "already exists in the skip list.");
+            let current = this.head;
+
+            while (current.next) {
+                current = current.next;
+            }
+
+            current.next = newNode;
         }
     }
 
-    search(value) {
+    // Method to find and return the length of the linked list
+    getLength() {
         let current = this.head;
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
+        let count = 0;
+
+        while (current) {
+            count++;
+            current = current.next;
         }
 
-        current = current.forward[0];
-
-        if (current !== null && current.value === value) {
-            console.log("Value", value, "found in the skip list.");
-            return current;
-        }
-
-        console.log("Value", value, "not found in the skip list.");
-        return null;
-    }
-
-    delete(value) {
-        let update = new Array(this.maxLevel + 1);
-        let current = this.head;
-
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-            update[i] = current;
-        }
-
-        current = current.forward[0];
-
-        if (current !== null && current.value === value) {
-            for (let i = 0; i <= this.level; i++) {
-                if (update[i].forward[i] !== current) {
-                    break;
-                }
-                update[i].forward[i] = current.forward[i];
-            }
-
-            while (this.level > 0 && this.head.forward[this.level] === null) {
-                this.level--;
-            }
-
-            console.log("Successfully deleted value:", value);
-        } else {
-            console.log("Value", value, "not found in the skip list.");
-        }
+        return count;
     }
 }
 
-// Example usage
-const skipList = new SkipList(3, 0.5);
+// Creating a sample linked list and adding nodes
+const linkedList = new LinkedList();
+linkedList.addNode(1);
+linkedList.addNode(2);
+linkedList.addNode(3);
+linkedList.addNode(4);
 
-skipList.insert(3);
-skipList.insert(6);
-skipList.insert(7);
-skipList.insert(9);
-
-skipList.search(6);
-skipList.search(8);
-
-skipList.delete(6);
-skipList.delete(8);
+// Getting the length of the linked list
+const length = linkedList.getLength();
+console.log("Length of the linked list: ", length);
