@@ -1,37 +1,14 @@
-function mergeSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
-    }
-
-    const middle = Math.floor(arr.length / 2);
-    const left = arr.slice(0, middle);
-    const right = arr.slice(middle);
-
-    return merge(
-        mergeSort(left),
-        mergeSort(right)
-    );
-}
-
-function merge(left, right) {
-    let result = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
-
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            result.push(left[leftIndex]);
-            leftIndex++;
-        } else {
-            result.push(right[rightIndex]);
-            rightIndex++;
-        }
-    }
-
-    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+area = √(s * (s - a) * (s - b) * (s - c))
+s = (a + b + c) / 2
+function calculateTriangleArea(a, b, c) {
+    let s = (a + b + c) / 2;
+    let area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
+    return area;
 }
 
 // Example usage
-const arr = [8, 3, 2, 7, 4, 6, 8, 2];
-const sortedArr = mergeSort(arr);
-console.log(sortedArr);
+let sideA = 5;
+let sideB = 6;
+let sideC = 7;
+let triangleArea = calculateTriangleArea(sideA, sideB, sideC);
+console.log("The area of the triangle is: " + triangleArea);
