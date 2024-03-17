@@ -1,65 +1,43 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.left = null;
-        this.right = null;
+function rabinKarpSearch(text, pattern) {
+    const BASE = 26; // Base for the hash function
+    const PRIME = 101; // Prime number for hashing
+    const textLength = text.length;
+    const patternLength = pattern.length;
+    const patternHash = hashString(pattern, patternLength);
+
+    let textHash = hashString(text, patternLength);
+    for (let i = 0; i <= textLength - patternLength; i++) {
+        if (textHash === patternHash && text.substring(i, i + patternLength) === pattern) {
+            return i; // Pattern found at index i
+        }
+        if (i < textLength - patternLength) {
+            textHash = recalculateHash(text, i, patternLength, textHash, BASE);
+        }
     }
+    return -1; // Pattern not found in text
 }
 
-class BinarySearchTree {
-    constructor() {
-        this.root = null;
+function hashString(str, length) {
+    let hash = 0;
+    for (let i = 0; i < length; i++) {
+        hash += str.charCodeAt(i) * Math.pow(BASE, i);
     }
-
-    insert(data) {
-        let newNode = new Node(data);
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    insertNode(node, newNode) {
-        if (newNode.data < node.data) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
-
-    search(data) {
-        return this.searchNode(this.root, data);
-    }
-
-    searchNode(node, data) {
-        if (node === null) {
-            return false;
-        } else if (data < node.data) {
-            return this.searchNode(node.left, data);
-        } else if (data > node.data) {
-            return this.searchNode(node.right, data);
-        } else {
-            return true;
-        }
-    }
+    return hash;
 }
 
-// Example usage
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(8);
-bst.insert(3);
+function recalculateHash(str, oldIndex, patternLength, oldHash, base) {
+    let newHash = oldHash - str.charCodeAt(oldIndex);
+    newHash = newHash / base;
+    newHash += str.charCodeAt(oldIndex + patternLength) * Math.pow(base, patternLength - 1);
+    return newHash;
+}
 
-console.log(bst.search(8)); // Output: true
-console.log(bst.search(12)); // Output: false
+// Test the algorithm
+const text = "hello world";
+const pattern = "world";
+const index = rabinKarpSearch(text, pattern);
+if (index !== -1) {
+    console.log(`Pattern found at index: ${index}`);
+} else {
+    console.log("Pattern not found in text");
+}
