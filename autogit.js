@@ -1,32 +1,14 @@
-// Define a simple graph as an adjacency list
-const graph = {
-  A: ['B', 'C'],
-  B: ['A', 'D', 'E'],
-  C: ['A', 'F'],
-  D: ['B'],
-  E: ['B', 'F'],
-  F: ['C', 'E']
-};
-
-// Depth-First Search function
-function dfs(node, visited, graph) {
-  if (visited[node]) {
-    return;
-  }
-  
-  visited[node] = true;
-  console.log(node);
-  
-  for (let neighbor of graph[node]) {
-    dfs(neighbor, visited, graph);
-  }
+function calculateFactorial(number) {
+    // Base case: if the number is 0, return 1
+    if (number === 0) {
+        return 1;
+    } else {
+        // Recursive case: calculate factorial by multiplying the number with the factorial of (number - 1)
+        return number * calculateFactorial(number - 1);
+    }
 }
 
-// Main DFS function to start the search
-function dfsMain(startNode, graph) {
-  const visited = {};
-  dfs(startNode, visited, graph);
-}
-
-// Start DFS from node 'A'
-dfsMain('A', graph);
+// Calculate the factorial of a number (e.g., 5)
+const number = 5;
+const factorial = calculateFactorial(number);
+console.log(`Factorial of ${number} is: ${factorial}`);
