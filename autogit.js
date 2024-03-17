@@ -1,40 +1,22 @@
-function heapSort(arr) {
-    buildMaxHeap(arr);
+function findLongestCommonPrefix(strings) {
+    if (strings.length === 0) return '';
 
-    for (let i = arr.length - 1; i > 0; i--) {
-        // Swap the root (max value) of the heap with the last element of the heap
-        [arr[0], arr[i]] = [arr[i], arr[0]];
-        heapify(arr, 0, i);
+    let prefix = '';
+    let firstStr = strings[0];
+
+    for (let i = 0; i < firstStr.length; i++) {
+        let char = firstStr[i];
+        for (let j = 1; j < strings.length; j++) {
+            if (strings[j][i] !== char) {
+                return prefix;
+            }
+        }
+        prefix += char;
     }
 
-    return arr;
-}
-
-function buildMaxHeap(arr) {
-    for (let i = Math.floor(arr.length / 2); i >= 0; i--) {
-        heapify(arr, i, arr.length);
-    }
-}
-
-function heapify(arr, idx, max) {
-    let largest = idx;
-    const left = 2 * idx + 1;
-    const right = 2 * idx + 2;
-
-    if (left < max && arr[left] > arr[largest]) {
-        largest = left;
-    }
-
-    if (right < max && arr[right] > arr[largest]) {
-        largest = right;
-    }
-
-    if (largest !== idx) {
-        [arr[idx], arr[largest]] = [arr[largest], arr[idx]];
-        heapify(arr, largest, max);
-    }
+    return prefix;
 }
 
 // Example usage
-const arr = [12, 11, 13, 5, 6, 7];
-console.log(heapSort(arr)); // Output: [5, 6, 7, 11, 12, 13]
+const strings = ['flower', 'flow', 'flight'];
+console.log(findLongestCommonPrefix(strings)); // Output: 'fl'
