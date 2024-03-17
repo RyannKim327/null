@@ -1,31 +1,42 @@
-function findMajorityElement(nums) {
-    let candidate = null;
-    let count = 0;
+class Stack {
+    constructor() {
+        this.items = [];
+    }
 
-    for (let num of nums) {
-        if (count === 0) {
-            candidate = num;
+    push(element) {
+        this.items.push(element);
+    }
+
+    pop() {
+        if (this.isEmpty()) {
+            return "Underflow";
         }
-
-        count += (num === candidate) ? 1 : -1;
+        return this.items.pop();
     }
 
-    // In case there is no majority element
-    if (count <= 0) {
-        return -1;
+    peek() {
+        return this.items[this.items.length - 1];
     }
 
-    // Validate if the candidate is the majority element
-    count = 0;
-    for (let num of nums) {
-        if (num === candidate) {
-            count++;
+    isEmpty() {
+        return this.items.length === 0;
+    }
+
+    printStack() {
+        let stackStr = "";
+        for (let i = 0; i < this.items.length; i++) {
+            stackStr += this.items[i] + " ";
         }
+        console.log(stackStr);
     }
-
-    return count > nums.length / 2 ? candidate : -1;
 }
 
-// Example
-const nums = [2, 2, 1, 1, 1, 2, 2];
-console.log(findMajorityElement(nums)); // Output: 2
+// Example usage
+let stack = new Stack();
+stack.push(10);
+stack.push(20);
+stack.push(30);
+stack.printStack(); // Output: 10 20 30
+console.log(stack.pop()); // Output: 30
+console.log(stack.peek()); // Output: 20
+stack.printStack(); // Output: 10 20
