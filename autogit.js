@@ -1,64 +1,41 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
-    }
-}
+function longestCommonSubsequence(str1, str2) {
+    const m = str1.length;
+    const n = str2.length;
+    
+    // Initialize a 2D array to store the lengths of LCS
+    const dp = Array.from({ length: m + 1 }, () => Array.from({ length: n + 1 }, () => 0));
 
-class LinkedList {
-    constructor() {
-        this.head = null;
-    }
-
-    add(data) {
-        const newNode = new Node(data);
-
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
+    // Fill the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
             }
-            current.next = newNode;
         }
     }
 
-    reverse() {
-        let prev = null;
-        let current = this.head;
-        let next = null;
-
-        while (current) {
-            next = current.next;
-            current.next = prev;
-            prev = current;
-            current = next;
-        }
-
-        this.head = prev;
-    }
-
-    printList() {
-        let current = this.head;
-        while (current) {
-            console.log(current.data);
-            current = current.next;
+    // Backtrack to find the longest common subsequence
+    let lcs = "";
+    let i = m, j = n;
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            lcs = str1[i - 1] + lcs;
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
         }
     }
+
+    return lcs;
 }
 
-// Create a linked list
-const list = new LinkedList();
-list.add(1);
-list.add(2);
-list.add(3);
-list.add(4);
+// Example usage
+const str1 = "ABCDGH";
+const str2 = "AEDFHR";
 
-console.log("Original List:");
-list.printList();
-
-list.reverse();
-
-console.log("Reversed List:");
-list.printList();
+console.log(longestCommonSubsequence(str1, str2)); // Output: ADH
