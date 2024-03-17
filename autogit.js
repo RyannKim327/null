@@ -1,13 +1,29 @@
-function findKthSmallestElement(arr, k) {
-    // Sort the array in ascending order
-    arr.sort((a, b) => a - b);
-    
-    // Return the kth smallest element
-    return arr[k - 1];
+function binarySearch(arr, target) {
+    let left = 0;
+    let right = arr.length - 1;
+
+    while (left <= right) {
+        let mid = Math.floor((left + right) / 2);
+
+        if (arr[mid] === target) {
+            return mid;
+        } else if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+
+    return -1;
 }
 
 // Example usage
-const array = [3, 1, 4, 1, 5, 9, 2, 6, 5];
-const k = 4;
-const kthSmallest = findKthSmallestElement(array, k);
-console.log(`The ${k}th smallest element in the array is: ${kthSmallest}`);
+const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17];
+const target = 7;
+const index = binarySearch(arr, target);
+
+if (index !== -1) {
+    console.log(`Element found at index: ${index}`);
+} else {
+    console.log("Element not found");
+}
