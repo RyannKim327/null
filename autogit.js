@@ -1,45 +1,17 @@
-class LinkedListNode {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
-    }
+function reverseStringWords(str) {
+    // Split the string into an array of words
+    const wordsArray = str.split(' ');
+
+    // Reverse the array
+    const reversedArray = wordsArray.reverse();
+
+    // Join the array back into a string
+    const reversedString = reversedArray.join(' ');
+
+    return reversedString;
 }
 
-function reverseLinkedList(head) {
-    let prev = null;
-    let current = head;
-    let next = null;
+const originalString = "Hello world how are you";
+const reversedString = reverseStringWords(originalString);
 
-    while (current !== null) {
-        next = current.next;
-        current.next = prev;
-        prev = current;
-        current = next;
-    }
-
-    head = prev;
-    return head;
-}
-
-// Create a linked list
-let head = new LinkedListNode(1);
-head.next = new LinkedListNode(2);
-head.next.next = new LinkedListNode(3);
-head.next.next.next = new LinkedListNode(4);
-
-// Print the original linked list
-let current = head;
-while (current !== null) {
-    console.log(current.data);
-    current = current.next;
-}
-
-// Reverse the linked list
-head = reverseLinkedList(head);
-
-// Print the reversed linked list
-current = head;
-while (current !== null) {
-    console.log(current.data);
-    current = current.next;
-}
+console.log(reversedString); // Output: "you are how world Hello"
