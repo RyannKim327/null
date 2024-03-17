@@ -1,40 +1,15 @@
-function longestCommonSubsequence(str1, str2) {
-    const m = str1.length;
-    const n = str2.length;
+function maxSubArray(arr) {
+    let maxSum = arr[0];
+    let currentSum = arr[0];
   
-    const dp = [];
-    for (let i = 0; i <= m; i++) {
-        dp[i] = Array(n + 1).fill(0);
+    for (let i = 1; i < arr.length; i++) {
+        currentSum = Math.max(arr[i], currentSum + arr[i]);
+        maxSum = Math.max(maxSum, currentSum);
     }
   
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-            } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-            }
-        }
-    }
-  
-    let lcs = '';
-    let i = m, j = n;
-    while (i > 0 && j > 0) {
-        if (str1[i - 1] === str2[j - 1]) {
-            lcs = str1[i - 1] + lcs;
-            i--;
-            j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--;
-        } else {
-            j--;
-        }
-    }
-  
-    return lcs;
+    return maxSum;
 }
 
-const str1 = "ABCBDAB";
-const str2 = "BDCAB";
-const result = longestCommonSubsequence(str1, str2);
-console.log(result); // Output: BCAB
+// Example usage
+const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+console.log(maxSubArray(arr)); // Output: 6 (The maximum sum is 6 which is obtained from subarray [4, -1, 2, 1])
