@@ -1,9 +1,25 @@
-function findCommonElements(arr1, arr2) {
-    return arr1.filter(element => arr2.includes(element));
+function isPrime(num) {
+    if (num < 2) return false;
+    for (let i = 2; i <= Math.sqrt(num); i++) {
+        if (num % i === 0) {
+            return false;
+        }
+    }
+    return true;
 }
 
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 4, 5, 6, 7];
+function largestPrimeFactor(num) {
+    let largestFactor = 1;
+    
+    for (let i = 2; i <= Math.sqrt(num); i++) {
+        if (num % i === 0 && isPrime(i)) {
+            largestFactor = i;
+        }
+    }
+    
+    return largestFactor;
+}
 
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [3, 4, 5]
+const number = 13195; // The number you want to find the largest prime factor of
+const result = largestPrimeFactor(number);
+console.log(result); // Output the largest prime factor
