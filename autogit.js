@@ -1,7 +1,8 @@
-let array = [1, 2, 2, 3, 4, 4, 5];
+function decimalToBinary(decimal) {
+    return (decimal >>> 0).toString(2);
+}
 
-let uniqueArray = array.filter((item, index) => {
-    return array.indexOf(item) === index;
-});
-
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+// Test the function
+const decimalNumber = 42;
+const binaryNumber = decimalToBinary(decimalNumber);
+console.log(`Binary representation of ${decimalNumber} is: ${binaryNumber}`);
