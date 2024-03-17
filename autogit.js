@@ -1,47 +1,45 @@
-class ListNode {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-function findIntersection(list1, list2) {
-    let set = new Set();
-    
-    // Store nodes of list1 in a set
-    let current = list1;
-    while (current) {
-        set.add(current);
-        current = current.next;
-    }
-    
-    // Traverse list2 and check if any node is in set
-    current = list2;
-    while (current) {
-        if (set.has(current)) {
-            return current;
+// Radix Sort function
+function radixSort(arr) {
+    const getMax = (arr) => {
+        let max = 0;
+        for (let num of arr) {
+            max = Math.max(max, num);
         }
-        current = current.next;
+        return max;
+    };
+
+    const countingSort = (arr, exp) => {
+        const output = new Array(arr.length).fill(0);
+        const count = new Array(10).fill(0);
+
+        for (let i = 0; i < arr.length; i++) {
+            const index = Math.floor(arr[i] / exp) % 10;
+            count[index]++;
+        }
+
+        for (let i = 1; i < 10; i++) {
+            count[i] += count[i - 1];
+        }
+
+        for (let i = arr.length - 1; i >= 0; i--) {
+            const index = Math.floor(arr[i] / exp) % 10;
+            output[count[index] - 1] = arr[i];
+            count[index]--;
+        }
+
+        for (let i = 0; i < arr.length; i++) {
+            arr[i] = output[i];
+        }
+    };
+
+    const max = getMax(arr);
+
+    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
+        countingSort(arr, exp);
     }
-    
-    return null; // No intersection found
 }
 
-// Example linked lists
-let node1 = new ListNode(1);
-let node2 = new ListNode(2);
-let node3 = new ListNode(3);
-let node4 = new ListNode(4);
-
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-
-let nodeA = new ListNode('A');
-let nodeB = new ListNode('B');
-
-nodeA.next = nodeB;
-nodeB.next = node3;
-
-let intersectionNode = findIntersection(node1, nodeA);
-console.log('Intersection node value:', intersectionNode.value);
+// Example usage
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+radixSort(arr);
+console.log(arr);
