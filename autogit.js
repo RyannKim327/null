@@ -1,36 +1,61 @@
-function longestCommonSubsequence(str1, str2) {
-    const m = str1.length;
-    const n = str2.length;
+function tarjanSCC(graph) {
+    let index = 0;
+    let stack = [];
+    let ids = new Map();
+    let lowLinks = new Map();
+    let onStack = new Map();
+    let result = [];
 
-    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+    function strongConnect(node) {
+        ids.set(node, index);
+        lowLinks.set(node, index);
+        index++;
+        stack.push(node);
+        onStack.set(node, true);
 
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-            } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+        for (let neighbor of graph[node]) {
+            if (!ids.has(neighbor)) {
+                strongConnect(neighbor);
+                lowLinks.set(node, Math.min(lowLinks.get(node), lowLinks.get(neighbor)));
+            } else if (onStack.get(neighbor)) {
+                lowLinks.set(node, Math.min(lowLinks.get(node), ids.get(neighbor)));
             }
+        }
+
+        if (ids.get(node) === lowLinks.get(node)) {
+            let component = [];
+            let nextNode;
+            do {
+                nextNode = stack.pop();
+                onStack.set(nextNode, false);
+                component.push(nextNode);
+            } while (nextNode !== node);
+            result.push(component);
         }
     }
 
-    let result = '';
-    let i = m, j = n;
-    while (i > 0 && j > 0) {
-        if (str1[i - 1] === str2[j - 1]) {
-            result = str1[i - 1] + result;
-            i--;
-            j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--;
-        } else {
-            j--;
+    for (let node of Object.keys(graph)) {
+        if (!ids.has(node)) {
+            strongConnect(node);
         }
     }
 
     return result;
 }
 
-const str1 = "ABCBDAB";
-const str2 = "BDCAB";
-console.log(longestCommonSubsequence(str1, str2)); // Output: "BCAB"
+// Example usage
+let graph = {
+    'A': ['B'],
+    'B': ['C', 'E'],
+    'C': ['D', 'F'],
+    'D': ['C', 'H'],
+    'E': ['A', 'F'],
+    'F': ['G'],
+    'G': ['E', 'H'],
+    'H': ['I'],
+    'I': ['J'],
+    'J': ['H']
+};
+
+let scc = tarjanSCC(graph);
+console.log(scc);
