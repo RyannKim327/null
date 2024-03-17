@@ -1,27 +1,15 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+function isArraySorted(arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;
+        }
+    }
+    return true;
 }
 
-function findMiddleElement(head) {
-  let slowPointer = head;
-  let fastPointer = head;
+// Example Usage
+const arr1 = [1, 2, 3, 4, 5];
+const arr2 = [5, 4, 3, 2, 1];
 
-  while (fastPointer !== null && fastPointer.next !== null) {
-    slowPointer = slowPointer.next;
-    fastPointer = fastPointer.next.next;
-  }
-
-  return slowPointer.value;
-}
-
-// Create a linked list
-const head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-console.log(findMiddleElement(head)); // Output: 3
+console.log(isArraySorted(arr1)); // Output: true
+console.log(isArraySorted(arr2)); // Output: false
