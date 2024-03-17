@@ -5,48 +5,74 @@ class Node {
     }
 }
 
-class LinkedList {
+class Queue {
     constructor() {
         this.head = null;
+        this.tail = null;
+        this.size = 0;
     }
 
-    append(data) {
-        const newNode = new Node(data);
+    isEmpty() {
+        return this.size === 0;
+    }
 
-        if (!this.head) {
+    enqueue(data) {
+        const newNode = new Node(data);
+        if (this.isEmpty()) {
             this.head = newNode;
-            return;
+            this.tail = newNode;
+        } else {
+            this.tail.next = newNode;
+            this.tail = newNode;
+        }
+        this.size++;
+    }
+
+    dequeue() {
+        if (this.isEmpty()) {
+            return null;
         }
 
+        const data = this.head.data;
+        this.head = this.head.next;
+        this.size--;
+
+        if (this.isEmpty()) {
+            this.tail = null;
+        }
+
+        return data;
+    }
+
+    peek() {
+        if (this.isEmpty()) {
+            return null;
+        }
+        
+        return this.head.data;
+    }
+
+    printQueue() {
         let current = this.head;
-        while (current.next) {
+        while (current) {
+            console.log(current.data);
             current = current.next;
         }
-
-        current.next = newNode;
-    }
-
-    findMiddleElement() {
-        let slowPtr = this.head;
-        let fastPtr = this.head;
-
-        while (fastPtr && fastPtr.next) {
-            slowPtr = slowPtr.next;
-            fastPtr = fastPtr.next.next;
-        }
-
-        return slowPtr ? slowPtr.data : null;
     }
 }
 
-// Create a linked list
-const linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
-linkedList.append(4);
-linkedList.append(5);
+// Example usage
+const queue = new Queue();
 
-// Find the middle element
-const middleElement = linkedList.findMiddleElement();
-console.log(middleElement); // Output should be 3
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+
+console.log('Printing queue:');
+queue.printQueue();
+
+console.log('Dequeuing:', queue.dequeue());
+console.log('Dequeuing:', queue.dequeue());
+
+console.log('Printing queue:');
+queue.printQueue();
