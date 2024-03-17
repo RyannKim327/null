@@ -1,21 +1,27 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert the string to lowercase
-  str = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+function findMajorityElement(arr) {
+    const map = {};
+    const majorityThreshold = Math.floor(arr.length / 2);
 
-  let left = 0;
-  let right = str.length - 1;
+    for (let i = 0; i < arr.length; i++) {
+        if (map[arr[i]]) {
+            map[arr[i]]++;
+        } else {
+            map[arr[i]] = 1;
+        }
 
-  while (left < right) {
-    if (str[left] !== str[right]) {
-      return false;
+        if (map[arr[i]] > majorityThreshold) {
+            return arr[i];
+        }
     }
-    left++;
-    right--;
-  }
 
-  return true;
+    return null;
 }
 
-// Test the function
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // Output: true
-console.log(isPalindrome("race a car")); // Output: false
+// Example usage
+const array = [2, 3, 2, 2, 1, 2, 4, 2, 2];
+const majorityElement = findMajorityElement(array);
+if (majorityElement) {
+    console.log(`The majority element is: ${majorityElement}`);
+} else {
+    console.log("No majority element found");
+}
