@@ -1,18 +1,28 @@
-function isPalindrome(str) {
-  // Remove non-alphanumeric characters and convert to lowercase
-  str = str.toLowerCase().replace(/[\W_]/g, '');
-  
-  // Compare characters from start and end of the string
-  for (let i = 0; i < Math.floor(str.length / 2); i++) {
-    if (str[i] !== str[str.length - 1 - i]) {
-      return false;
-    }
-  }
-  
-  return true;
+function depthLimitedSearch(node, goal, depthLimit) {
+    return recursiveDLS(node, goal, depthLimit);
 }
 
-// Test the function
-console.log(isPalindrome('A man, a plan, a canal, Panama')); // Output: true
-console.log(isPalindrome('racecar')); // Output: true
-console.log(isPalindrome('hello')); // Output: false
+function recursiveDLS(node, goal, depthLimit) {
+    if (node.state === goal) {
+        return node;
+    } else if (depthLimit === 0) {
+        return 'cutoff';
+    } else {
+        let cutoffOccurred = false;
+        for (let child of expandNode(node)) {
+            let result = recursiveDLS(child, goal, depthLimit - 1);
+            if (result === 'cutoff') {
+                cutoffOccurred = true;
+            } else if (result !== 'failure') {
+                return result;
+            }
+        }
+        return cutoffOccurred ? 'cutoff' : 'failure';
+    }
+}
+
+function expandNode(node) {
+    // This function should return an array of child nodes of the given node
+    // based on the valid actions that can be taken from the current node state
+    return [];
+}
