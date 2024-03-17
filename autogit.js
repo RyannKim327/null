@@ -1,12 +1,12 @@
-function factorial(n) {
-    if (n === 0) { // base case
-        return 1;
-    } else {
-        return n * factorial(n - 1); // recursive case
-    }
-}
+let numbers = [5, 2, 8, 10, 3];
+numbers.sort(function(a, b) {
+    return a - b;
+});
 
-// Example usage
-let number = 5;
-let result = factorial(number);
-console.log(`The factorial of ${number} is: ${result}`);
+console.log(numbers); // This will output: [2, 3, 5, 8, 10]
+let numbers = [5, 2, 8, 10, 3];
+numbers.sort(function(a, b) {
+    return b - a;
+});
+
+console.log(numbers); // This will output: [10, 8, 5, 3, 2]
