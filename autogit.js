@@ -1,27 +1,37 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+function depthLimitedSearch(node, goal, depthLimit) {
+    return recursiveDLS(node, goal, depthLimit, 0);
 }
 
-function maxDepth(root) {
-    if (!root) {
-        return 0;
+function recursiveDLS(node, goal, depthLimit, currentDepth) {
+    if (currentDepth > depthLimit) {
+        return null; // Depth limit reached
+    }
+    
+    if (node === goal) {
+        return node; // Goal state found
     }
 
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
+    if(isTerminalState(node)){
+      return null; // This is not a valid state
+    }
 
-    return 1 + Math.max(leftDepth, rightDepth);
+    for (let child of expand(node)) {
+        let result = recursiveDLS(child, goal, depthLimit, currentDepth + 1);
+        if (result !== null) {
+            return result;
+        }
+    }
+
+    return null; // Goal not found within depth limit
 }
 
-// Example usage
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
+// Helper functions
+function isTerminalState(node) {
+    // Add your termincal state check here
+    return false;
+}
 
-console.log(maxDepth(root)); // Output: 3
+function expand(node) {
+    // Add your node expansion logic here
+    return [];
+}
