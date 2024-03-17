@@ -1,15 +1,37 @@
-function maxSubarraySum(arr) {
-    let maxEndingHere = arr[0];
-    let maxSoFar = arr[0];
-
-    for (let i = 1; i < arr.length; i++) {
-        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
-        maxSoFar = Math.max(maxSoFar, maxEndingHere);
-    }
-
-    return maxSoFar;
+class TreeNode {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-// Example usage
-const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-console.log(maxSubarraySum(arr)); // Output: 6
+function diameterOfBinaryTree(root) {
+  let diameter = 0;
+
+  function depth(node) {
+    if (node === null) {
+      return 0;
+    }
+
+    const leftDepth = depth(node.left);
+    const rightDepth = depth(node.right);
+
+    diameter = Math.max(diameter, leftDepth + rightDepth);
+
+    return 1 + Math.max(leftDepth, rightDepth);
+  }
+
+  depth(root);
+
+  return diameter;
+}
+
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(diameterOfBinaryTree(root)); // Output: 3
