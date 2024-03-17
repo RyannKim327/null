@@ -1,12 +1,25 @@
-let numbers = [5, 2, 8, 1, 4];
-numbers.sort(function(a, b) {
-  return a - b;
-});
+function longestCommonPrefix(strings) {
+    if (!strings || strings.length === 0) {
+        return "";
+    }
 
-console.log(numbers); // Output: [1, 2, 4, 5, 8]
-let numbers = [5, 2, 8, 1, 4];
-numbers.sort(function(a, b) {
-  return b - a;
-});
+    // Find the minimum length string in the array
+    const minLength = Math.min(...strings.map(str => str.length));
 
-console.log(numbers); // Output: [8, 5, 4, 2, 1]
+    let prefix = "";
+    for (let i = 0; i < minLength; i++) {
+        const char = strings[0][i]; // Get the character at the current position
+
+        // Check if all strings have the same character at the current position
+        if (strings.every(str => str[i] === char)) {
+            prefix += char;
+        } else {
+            break; // Exit the loop if there is a mismatch
+        }
+    }
+
+    return prefix;
+}
+
+const strings = ["flower", "flour", "fleet"];
+console.log(longestCommonPrefix(strings)); // Output: "fl"
