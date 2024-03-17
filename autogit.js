@@ -1,52 +1,43 @@
-class Graph {
-    constructor() {
-        this.adjList = {};
-    }
+function search(pattern, text) {
+    const prime = 101;
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    const primePower = Math.pow(prime, patternLength - 1);
+    const patternHash = hash(pattern);
+    let textHash = hash(text.substring(0, patternLength));
 
-    addVertex(vertex) {
-        if (!this.adjList[vertex]) {
-            this.adjList[vertex] = [];
+    for (let i = 0; i <= textLength - patternLength; i++) {
+        if (patternHash === textHash && text.substring(i, i + patternLength) === pattern) {
+            return i;
         }
+        textHash = recalculateHash(text, i, patternLength, textHash, primePower);
     }
-
-    addEdge(source, destination) {
-        this.adjList[source].push(destination);
-        // For undirected graph, you may also want to add the reverse edge
-        // this.adjList[destination].push(source);
-    }
-
-    dfs(startVertex) {
-        const visited = {};
-        this._dfsHelper(startVertex, visited);
-    }
-
-    _dfsHelper(vertex, visited) {
-        visited[vertex] = true;
-        console.log(vertex);
-
-        for (const neighbor of this.adjList[vertex]) {
-            if (!visited[neighbor]) {
-                this._dfsHelper(neighbor, visited);
-            }
-        }
-    }
+    return -1;
 }
 
-// Create a graph
-const graph = new Graph();
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
-graph.addVertex('F');
+function hash(str) {
+    let hashValue = 0;
+    for (let i = 0; i < str.length; i++) {
+        hashValue += str.charCodeAt(i) * Math.pow(prime, i);
+    }
+    return hashValue;
+}
 
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('B', 'E');
-graph.addEdge('C', 'F');
+function recalculateHash(text, oldIndex, patternLength, oldHash, primePower) {
+    let newHash = oldHash - text.charCodeAt(oldIndex);
+    newHash = newHash / prime;
+    newHash += text.charCodeAt(oldIndex + patternLength) * primePower;
+    return newHash;
+}
 
-// Perform DFS starting from vertex 'A'
-console.log('DFS traversal:');
-graph.dfs('A');
+// Example usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+
+const index = search(pattern, text);
+
+if (index !== -1) {
+    console.log(`Pattern found at index ${index}`);
+} else {
+    console.log("Pattern not found in the text.");
+}
