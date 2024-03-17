@@ -1,23 +1,37 @@
-function findMajorityElement(arr) {
-    const counts = {};
-
-    for (let num of arr) {
-        counts[num] = counts[num] ? counts[num] + 1 : 1;
-
-        if (counts[num] > arr.length / 2) {
-            return num;
+class SuffixTree {
+    constructor(str) {
+        this.root = {};
+        for (let i = 0; i < str.length; i++) {
+            this.addSuffix(str.substring(i), i);
         }
     }
 
-    return null;
+    addSuffix(suffix, index) {
+        let currentNode = this.root;
+        for (let i = 0; i < suffix.length; i++) {
+            let char = suffix[i];
+            if (!currentNode[char]) {
+                currentNode[char] = {};
+            }
+            currentNode = currentNode[char];
+        }
+        currentNode['$'] = index;
+    }
+
+    search(pattern) {
+        let currentNode = this.root;
+        for (let i = 0; i < pattern.length; i++) {
+            let char = pattern[i];
+            if (!currentNode[char]) {
+                return null;
+            }
+            currentNode = currentNode[char];
+        }
+        return currentNode['$'];
+    }
 }
 
-// Example
-const array = [2, 3, 2, 2, 4, 2, 2];
-const majorityElement = findMajorityElement(array);
-
-if (majorityElement !== null) {
-    console.log(`The majority element is: ${majorityElement}`);
-} else {
-    console.log(`No majority element found`);
-}
+// Example usage
+let text = 'banana';
+let suffixTree = new SuffixTree(text);
+console.log(suffixTree.search('na')); // Outputs 4
