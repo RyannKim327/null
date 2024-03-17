@@ -1,23 +1,37 @@
-function bubbleSort(arr) {
-    let n = arr.length;
-    let swapped;
-    do {
-        swapped = false;
-        for (let i = 0; i < n - 1; i++) {
-            if (arr[i] > arr[i + 1]) {
-                // Swap elements arr[i] and arr[i+1]
-                let temp = arr[i];
-                arr[i] = arr[i + 1];
-                arr[i + 1] = temp;
-                swapped = true;
-            }
-        }
-    } while (swapped);
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
 
-    return arr;
+function hasCycle(head) {
+  if (!head || !head.next) {
+    return false;
+  }
+
+  let slow = head;
+  let fast = head;
+
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
+
+    if (slow === fast) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 // Example usage
-let arr = [64, 34, 25, 12, 22, 11, 90];
-console.log("Original array: ", arr);
-console.log("Sorted array: ", bubbleSort(arr));
+const node1 = new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
+
+node1.next = node2;
+node2.next = node3;
+node3.next = node1; // Create a cycle
+
+console.log(hasCycle(node1)); // Output: true
