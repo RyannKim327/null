@@ -1,73 +1,103 @@
 class Node {
-    constructor(t, isLeaf) {
-        this.t = t;
-        this.keys = [];
-        this.children = [];
-        this.isLeaf = isLeaf;
-    }
+  constructor(value, level) {
+    this.value = value;
+    this.forward = new Array(level + 1).fill(null);
+  }
 }
 
-class BTree {
-    constructor(t) {
-        this.root = new Node(t, true);
-        this.t = t;
+class SkipList {
+  constructor(maxLevel, p) {
+    this.maxLevel = maxLevel;
+    this.p = p;
+    this.header = new Node(-1, maxLevel);
+    this.level = 0;
+  }
+
+  randomLevel() {
+    let level = 0;
+    while (Math.random() < this.p && level < this.maxLevel - 1) {
+      level++;
+    }
+    return level;
+  }
+
+  insert(value) {
+    let update = new Array(this.maxLevel + 1).fill(null);
+    let current = this.header;
+
+    for (let i = this.level; i >= 0; i--) {
+      while (current.forward[i] && current.forward[i].value < value) {
+        current = current.forward[i];
+      }
+      update[i] = current;
     }
 
-    insert(key) {
-        let root = this.root;
-
-        if (root.keys.length === (2 * this.t) - 1) {
-            let newRoot = new Node(this.t, false);
-            newRoot.children.push(root);
-            this.splitChild(newRoot, 0);
-            this.root = newRoot;
-            this.insertNonFull(newRoot, key);
-        } else {
-            this.insertNonFull(root, key);
+    current = current.forward[0];
+    if (!current || current.value !== value) {
+      let newLevel = this.randomLevel();
+      if (newLevel > this.level) {
+        for (let i = this.level + 1; i <= newLevel; i++) {
+          update[i] = this.header;
         }
+        this.level = newLevel;
+      }
+
+      let newNode = new Node(value, newLevel);
+      for (let i = 0; i <= newLevel; i++) {
+        newNode.forward[i] = update[i].forward[i];
+        update[i].forward[i] = newNode;
+      }
+    }
+  }
+
+  search(value) {
+    let current = this.header;
+    for (let i = this.level; i >= 0; i--) {
+      while (current.forward[i] && current.forward[i].value < value) {
+        current = current.forward[i];
+      }
+    }
+    current = current.forward[0];
+    if (current && current.value === value) {
+      return current.value;
+    } else {
+      return null;
+    }
+  }
+
+  delete(value) {
+    let update = new Array(this.maxLevel + 1).fill(null);
+    let current = this.header;
+
+    for (let i = this.level; i >= 0; i--) {
+      while (current.forward[i] && current.forward[i].value < value) {
+        current = current.forward[i];
+      }
+      update[i] = current;
     }
 
-    insertNonFull(node, key) {
-        let i = node.keys.length - 1;
+    current = current.forward[0];
+    if (current && current.value === value) {
+      for (let i = 0; i <= this.level; i++) {
+        if (update[i].forward[i] !== current)
+          break;
+        update[i].forward[i] = current.forward[i];
+      }
 
-        if (node.isLeaf) {
-            while (i >= 0 && key < node.keys[i]) {
-                node.keys[i + 1] = node.keys[i];
-                i--;
-            }
-            node.keys[i + 1] = key;
-        } else {
-            while (i >= 0 && key < node.keys[i]) {
-                i--;
-            }
-            i++;
-            if (node.children[i].keys.length === (2 * this.t) - 1) {
-                this.splitChild(node, i);
-                if (key > node.keys[i]) {
-                    i++;
-                }
-            }
-            this.insertNonFull(node.children[i], key);
-        }
+      while (this.level > 0 && this.header.forward[this.level] === null) {
+        this.level--;
+      }
     }
-
-    splitChild(parent, i) {
-        let t = this.t;
-        let child = parent.children[i];
-        let newChild = new Node(t, child.isLeaf);
-
-        parent.keys.splice(i, 0, child.keys[t - 1]);
-        parent.children.splice(i + 1, 0, newChild);
-
-        newChild.keys = child.keys.splice(t);
-        if (!child.isLeaf) {
-            newChild.children = child.children.splice(t);
-        }
-    }
+  }
 }
 
-// Usage
-let bTree = new BTree(3); // Create a B-tree with degree 3
-bTree.insert(5);
-bTree.insert(10);
-bTree.insert(3);
+// Example usage
+const skipList = new SkipList(3, 0.5);
+skipList.insert(3);
+skipList.insert(6);
+skipList.insert(7);
+skipList.insert(9);
+
+console.log(skipList.search(6)); // Output: 6
+skipList.delete(6);
+console.log(skipList.search(6)); // Output: null
