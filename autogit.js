@@ -1,24 +1,25 @@
-function longestCommonPrefix(strs) {
-    if (strs.length === 0) return '';
+function countingSort(arr) {
+    // Find the maximum value in the input array
+    const max = Math.max(...arr);
 
-    // Find the shortest string in the array
-    let minLen = Math.min(...strs.map(str => str.length));
-    
-    // Iterate through each character of the shortest string
-    for (let i = 0; i < minLen; i++) {
-        // Check if all strings have the same character at index i
-        for (let j = 1; j < strs.length; j++) {
-            if (strs[j][i] !== strs[0][i]) {
-               return strs[0].substring(0, i);
-            }
+    // Create an array to store the count of each unique element
+    const counts = new Array(max + 1).fill(0);
+
+    // Count the occurrences of each element in the input array
+    arr.forEach((num) => counts[num]++);
+
+    // Reconstruct the sorted array
+    let result = [];
+    counts.forEach((count, index) => {
+        for (let i = 0; i < count; i++) {
+            result.push(index);
         }
-    }
-    
-    // If all characters match up to the length of the shortest string, return the shortest string
-    return strs[0].substring(0, minLen);
+    });
+
+    return result;
 }
 
-// Example
-const strings = ['flower', 'flow', 'flight'];
-const result = longestCommonPrefix(strings);
-console.log(result); // Output: 'fl'
+// Test the counting sort algorithm
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const sortedArr = countingSort(arr);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
