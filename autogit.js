@@ -1,51 +1,66 @@
+// Node class to represent the nodes in the binary tree
 class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
-    }
+  constructor(data) {
+    this.data = data;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-class LinkedList {
-    constructor() {
-        this.head = null;
-    }
+// BinaryTree class to represent the binary tree
+class BinaryTree {
+  constructor() {
+    this.root = null;
+  }
 
-    addNode(value) {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
-        }
-    }
+  // Method to insert a new node in the binary tree
+  insert(data) {
+    const newNode = new Node(data);
 
-    toArray() {
-        let current = this.head;
-        let arr = [];
-        while (current) {
-            arr.push(current.value);
-            current = current.next;
-        }
-        return arr;
+    // If the tree is empty, set the new node as the root
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
     }
+  }
 
-    isPalindrome() {
-        const arr = this.toArray();
-        const reversedArr = [...arr].reverse();
-        return JSON.stringify(arr) === JSON.stringify(reversedArr);
+  // Helper method to recursively insert a new node in the binary tree
+  insertNode(node, newNode) {
+    if (newNode.data < node.data) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
     }
+  }
+
+  // Method to perform an in-order traversal of the binary tree
+  inOrderTraversal(node) {
+    if (node !== null) {
+      this.inOrderTraversal(node.left);
+      console.log(node.data);
+      this.inOrderTraversal(node.right);
+    }
+  }
 }
 
-// Example Usage
-const linkedList = new LinkedList();
-linkedList.addNode(1);
-linkedList.addNode(2);
-linkedList.addNode(3);
-linkedList.addNode(2);
-linkedList.addNode(1);
+// Creating an instance of the BinaryTree class
+const binaryTree = new BinaryTree();
 
-console.log(linkedList.isPalindrome()); // Output: true
+// Inserting nodes into the binary tree
+binaryTree.insert(10);
+binaryTree.insert(5);
+binaryTree.insert(15);
+binaryTree.insert(3);
+binaryTree.insert(7);
+
+// Performing an in-order traversal of the binary tree
+binaryTree.inOrderTraversal(binaryTree.root);
