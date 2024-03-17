@@ -1,17 +1,10 @@
-function isAnagram(str1, str2) {
-    const cleanStr = (str) => str.replace(/[^\w]/g, '').toLowerCase();
-    
-    const sortedStr1 = cleanStr(str1).split('').sort().join('');
-    const sortedStr2 = cleanStr(str2).split('').sort().join('');
-    
-    return sortedStr1 === sortedStr2;
+function findKthSmallest(arr, k) {
+    arr.sort((a, b) => a - b);
+    return arr[k - 1];
 }
 
-const string1 = 'listen';
-const string2 = 'silent';
-
-if (isAnagram(string1, string2)) {
-    console.log(`${string1} and ${string2} are anagrams.`);
-} else {
-    console.log(`${string1} and ${string2} are not anagrams.`);
-}
+// Example usage
+const arr = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
+const k = 3;
+const kthSmallest = findKthSmallest(arr, k);
+console.log(`The ${k}th smallest element in the array is: ${kthSmallest}`);
