@@ -1,30 +1,45 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+function preprocessPattern(pattern) {
+    const badCharTable = {};
+    const patternLength = pattern.length;
+
+    for (let i = 0; i < patternLength - 1; i++) {
+        badCharTable[pattern[i]] = patternLength - i - 1;
     }
+
+    return badCharTable;
 }
 
-// Function to calculate the sum of all nodes in a binary tree
-function sumOfNodes(root) {
-    if (root === null) {
-        return 0;
+function boyerMooreHorspool(text, pattern) {
+    const badCharTable = preprocessPattern(pattern);
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    let i = patternLength - 1;
+
+    while (i < textLength) {
+        let j = patternLength - 1;
+        while (j >= 0 && text[i] === pattern[j]) {
+            i--;
+            j--;
+        }
+
+        if (j === -1) {
+            return i + 1; // Match found
+        } else {
+            const shift = badCharTable[text[i]] || patternLength;
+            i += shift;
+        }
     }
-    
-    let sum = root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
-    return sum;
+
+    return -1; // No match found
 }
 
-// Example binary tree
-let root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
+// Example usage
+const text = "This is a sample text for searching";
+const pattern = "sample";
+const index = boyerMooreHorspool(text, pattern);
 
-// Calculate the sum of all nodes
-let result = sumOfNodes(root);
-console.log("Sum of all nodes in the binary tree: " + result);
+if (index !== -1) {
+    console.log("Pattern found at index:", index);
+} else {
+    console.log("Pattern not found");
+}
