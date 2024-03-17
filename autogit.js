@@ -1,10 +1,18 @@
-function findKthSmallest(arr, k) {
-    arr.sort((a, b) => a - b);
-    return arr[k - 1];
+function isPalindrome(str) {
+  // Remove non-alphanumeric characters and convert to lowercase
+  str = str.toLowerCase().replace(/[\W_]/g, '');
+  
+  // Compare characters from start and end of the string
+  for (let i = 0; i < Math.floor(str.length / 2); i++) {
+    if (str[i] !== str[str.length - 1 - i]) {
+      return false;
+    }
+  }
+  
+  return true;
 }
 
-// Example usage
-const array = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
-const k = 4;
-const kthSmallest = findKthSmallest(array, k);
-console.log(kthSmallest); // Output: 3
+// Test the function
+console.log(isPalindrome('A man, a plan, a canal, Panama')); // Output: true
+console.log(isPalindrome('racecar')); // Output: true
+console.log(isPalindrome('hello')); // Output: false
