@@ -1,10 +1,48 @@
-let array = [1, 2, 3, 4, 5];
-// remove element at index 2 (which is 3 in this case)
-array.splice(2, 1);
+function rabinKarp(text, pattern) {
+    const prime = 101; // Prime number for hashing
+    const textSize = text.length;
+    const patternSize = pattern.length;
+    const hashCode = (str) => {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash = (hash * prime + str.charCodeAt(i)) % prime;
+        }
+        return hash;
+    };
 
-console.log(array); // Output: [1, 2, 4, 5]
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
-let newArray = array.filter(item => item !== elementToRemove);
+    const textHash = hashCode(text.substr(0, patternSize));
+    const patternHash = hashCode(pattern);
+    
+    for (let i = 0; i <= textSize - patternSize; i++) {
+        if (textHash === patternHash) {
+            let found = true;
+            for (let j = 0; j < patternSize; j++) {
+                if (text[i + j] !== pattern[j]) {
+                    found = false;
+                    break;
+                }
+            }
+            if (found) {
+                return i; // Pattern found at index i
+            }
+        }
+        if (i < textSize - patternSize) {
+            textHash = (textHash - text.charCodeAt(i) + text.charCodeAt(i + patternSize)) % prime;
+            if (textHash < 0) {
+                textHash += prime;
+            }
+        }
+    }
 
-console.log(newArray); // Output: [1, 2, 4, 5]
+    return -1; // Pattern not found in text
+}
+
+// Example usage
+const text = "ABACADABRAC";
+const pattern = "ABRA";
+const foundIndex = rabinKarp(text, pattern);
+if (foundIndex !== -1) {
+    console.log(`Pattern found at index ${foundIndex}.`);
+} else {
+    console.log("Pattern not found in text.");
+}
