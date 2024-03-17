@@ -1,35 +1,51 @@
-function topologicalSort(graph) {
-    const visited = new Set();
-    const result = [];
+function rabinKarp(str, pattern) {
+    const base = 256; // Base value for hashing, typically the size of the alphabet
+    const prime = 101; // A prime number to use for hashing calculations
 
-    function visit(node) {
-        if (visited.has(node)) return;
-        visited.add(node);
-
-        graph[node].forEach(neighbor => {
-            visit(neighbor);
-        });
-
-        result.unshift(node);
+    function hash(text, length) {
+        let hashValue = 0;
+        for (let i = 0; i < length; i++) {
+            hashValue = (hashValue * base + text.charCodeAt(i)) % prime;
+        }
+        return hashValue;
     }
 
-    for (const node in graph) {
-        visit(node);
+    function rehash(oldHash, oldChar, newChar, length) {
+        let newHash = (oldHash - oldChar * Math.pow(base, length - 1)) * base + newChar;
+        return newHash % prime;
     }
 
-    return result;
+    const n = str.length;
+    const m = pattern.length;
+    const patternHash = hash(pattern, m);
+    let textHash = hash(str, m);
+
+    for (let i = 0; i <= n - m; i++) {
+        if (textHash === patternHash && str.substring(i, i + m) === pattern) {
+            return i; // Pattern found at index i
+        }
+        if (i < n - m) {
+            textHash = rehash(
+                textHash,
+                str.charCodeAt(i),
+                str.charCodeAt(i + m),
+                m
+            );
+            if (textHash < 0) {
+                textHash += prime;
+            }
+        }
+    }
+
+    return -1; // Pattern not found
 }
 
-// Example graph
-const graph = {
-    'A': ['C', 'D'],
-    'B': ['D'],
-    'C': ['E'],
-    'D': ['F'],
-    'E': ['G'],
-    'F': ['G'],
-    'G': []
-};
-
-const sortedNodes = topologicalSort(graph);
-console.log(sortedNodes);
+// Usage
+const text = "ABABCABAB";
+const pattern = "BAB";
+const index = rabinKarp(text, pattern);
+if (index !== -1) {
+    console.log("Pattern found at index " + index);
+} else {
+    console.log("Pattern not found");
+}
