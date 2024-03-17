@@ -1,22 +1,22 @@
+function areAnagrams(str1, str2) {
+    // Convert strings to lowercase and remove non-alphabetic characters
+    str1 = str1.toLowerCase().replace(/[^a-z]/g, '');
+    str2 = str2.toLowerCase().replace(/[^a-z]/g, '');
 
-function findNthFromEnd(head, n) {
-    let ptr1 = head;
-    let ptr2 = head;
+    // Sort the characters in the strings alphabetically
+    str1 = str1.split('').sort().join('');
+    str2 = str2.split('').sort().join('');
 
-    // Move ptr2 forward by n nodes
-    for (let i = 0; i < n; i++) {
-        if (ptr2 === null) {
-            return null; // not enough nodes in the list
-        }
-        ptr2 = ptr2.next;
-    }
+    // Check if the sorted strings are equal
+    return str1 === str2;
+}
 
-    // Move ptr1 and ptr2 together until ptr2 reaches the end
-    while (ptr2 !== null) {
-        ptr1 = ptr1.next;
-        ptr2 = ptr2.next;
-    }
+// Test the function
+const string1 = "Listen";
+const string2 = "Silent";
 
-    // ptr1 will now point to the nth node from the end
-    return ptr1;
+if (areAnagrams(string1, string2)) {
+    console.log(`"${string1}" and "${string2}" are anagrams.`);
+} else {
+    console.log(`"${string1}" and "${string2}" are not anagrams.`);
 }
