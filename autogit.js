@@ -1,6 +1,18 @@
-let numbers = [5, 3, 8, 1, 2];
-numbers.sort((a, b) => a - b);
-console.log(numbers); // Output: [1, 2, 3, 5, 8]
-let numbers = [5, 3, 8, 1, 2];
-numbers.sort((a, b) => b - a);
-console.log(numbers); // Output: [8, 5, 3, 2, 1]
+function reverseWords(str) {
+    // Split the string into an array of words
+    let wordsArray = str.split(' ');
+
+    // Reverse the array
+    let reversedArray = wordsArray.reverse();
+
+    // Join the words back together into a single string
+    let reversedString = reversedArray.join(' ');
+
+    return reversedString;
+}
+
+// Example usage
+let originalString = "Hello World How Are You";
+let reversedString = reverseWords(originalString);
+
+console.log(reversedString); // Output: "You Are How World Hello"
