@@ -1,18 +1,11 @@
-function bubbleSort(arr) {
-    const n = arr.length;
-    for (let i = 0; i < n; i++) {
-        for (let j = 0; j < n - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                // Swap arr[j] and arr[j+1]
-                const temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
-        }
-    }
-    return arr;
+async function fetchDataFromAndroid() {
+  try {
+    const response = await fetch('http://your-android-server-url/data');
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
 }
 
-const array = [64, 34, 25, 12, 22, 11, 90];
-console.log('Original array:', array);
-console.log('Sorted array:', bubbleSort(array));
+fetchDataFromAndroid();
