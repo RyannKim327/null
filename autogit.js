@@ -1,19 +1,26 @@
-function hasCycle(head) {
-    if (!head || !head.next) {
-        return false;
+function binarySearchRecursive(arr, key, low, high) {
+    if (low > high) {
+        return -1;
     }
 
-    let slow = head;
-    let fast = head;
+    let mid = Math.floor((low + high) / 2);
 
-    while (fast && fast.next) {
-        slow = slow.next;
-        fast = fast.next.next;
-
-        if (slow === fast) {
-            return true;
-        }
+    if (arr[mid] === key) {
+        return mid;
+    } else if (arr[mid] > key) {
+        return binarySearchRecursive(arr, key, low, mid - 1);
+    } else {
+        return binarySearchRecursive(arr, key, mid + 1, high);
     }
+}
 
-    return false;
+// Example usage
+const array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const searchKey = 5;
+const index = binarySearchRecursive(array, searchKey, 0, array.length - 1);
+
+if (index !== -1) {
+    console.log(`Element found at index ${index}`);
+} else {
+    console.log('Element not found');
 }
