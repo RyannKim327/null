@@ -1,12 +1,18 @@
-function randomSort(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
+function depthLimitedSearch(node, goal, depthLimit) {
+    if (depthLimit === 0) {
+        return null;  // Return null if depth limit reached
+    }
+    
+    if (node.value === goal) {
+        return node;  // Return the node if it matches the goal
+    }
+    
+    for (let child of node.children) {
+        let result = depthLimitedSearch(child, goal, depthLimit - 1);
+        if (result !== null) {
+            return result;  // Return the result if found in child nodes
+        }
+    }
+    
+    return null;  // Return null if goal not found within depth limit
 }
-
-// Example usage
-const array = [1, 2, 3, 4, 5];
-const shuffledArray = randomSort(array);
-console.log(shuffledArray);
