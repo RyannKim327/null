@@ -1,8 +1,8 @@
-let str = "42";
-let num = parseInt(str);
+function validateEmail(email) {
+  const emailRegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return emailRegExp.test(email);
+}
 
-console.log(num); // Output: 42
-let hexStr = "1A";
-let num = parseInt(hexStr, 16);
-
-console.log(num); // Output: 26
+// Example
+console.log(validateEmail('john.doe@example.com')); // Output: true
+console.log(validateEmail('invalid-email.com'));     // Output: false
