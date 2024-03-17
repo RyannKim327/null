@@ -1,29 +1,15 @@
-function binarySearch(arr, target) {
-    let left = 0;
-    let right = arr.length - 1;
-
-    while (left <= right) {
-        let mid = Math.floor((left + right) / 2);
-
-        if (arr[mid] === target) {
-            return mid;
-        } else if (arr[mid] < target) {
-            left = mid + 1;
-        } else {
-            right = mid - 1;
-        }
-    }
-
-    return -1;
+function isPalindrome(str) {
+    // Remove non-alphanumeric characters and convert to lowercase
+    const cleanedStr = str.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
+    
+    // Compare the original string with its reversed version
+    return cleanedStr === cleanedStr.split('').reverse().join('');
 }
 
-// Example usage
-const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17];
-const target = 7;
-const index = binarySearch(arr, target);
-
-if (index !== -1) {
-    console.log(`Element found at index: ${index}`);
+// Test the function
+const str = "A man, a plan, a canal, Panama!";
+if (isPalindrome(str)) {
+    console.log("It's a palindrome!");
 } else {
-    console.log("Element not found");
+    console.log("It's not a palindrome!");
 }
