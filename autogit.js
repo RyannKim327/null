@@ -1,36 +1,23 @@
-class Graph {
-  constructor() {
-    this.graph = {};
-  }
+function shellSort(arr) {
+    let n = arr.length;
+    let gap = Math.floor(n/2);
 
-  addEdge(node, edge) {
-    if (!this.graph[node]) {
-      this.graph[node] = [];
+    while (gap > 0) {
+        for (let i = gap; i < n; i++) {
+            let temp = arr[i];
+            let j = i;
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
+            }
+            arr[j] = temp;
+        }
+        gap = Math.floor(gap / 2);
     }
-    this.graph[node].push(edge);
-  }
-
-  dfs(node, visited = {}) {
-    if (!node || visited[node]) {
-      return;
-    }
-
-    visited[node] = true;
-    console.log(node);
-
-    this.graph[node].forEach((neighbor) => {
-      this.dfs(neighbor, visited);
-    });
-  }
+    return arr;
 }
 
-const graph = new Graph();
-
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('B', 'E');
-graph.addEdge('C', 'F');
-graph.addEdge('E', 'G');
-
-graph.dfs('A');
+// Example usage
+let array = [12, 34, 54, 2, 3]; 
+console.log("Original Array: " + array);
+console.log("Sorted Array: " + shellSort(array));
