@@ -1,4 +1,4 @@
-let str = "Hello, world!";
-let stringWithoutSpaces = str.replace(/\s/g, '');
+let str = "Hello, World!";
+let lowerCaseStr = str.toLowerCase();
 
-console.log(stringWithoutSpaces); // Output: "Hello,world!"
+console.log(lowerCaseStr); // Output: "hello, world!"
