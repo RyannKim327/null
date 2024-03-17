@@ -1,26 +1,25 @@
-class TreeNode {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+function checkAnagram(str1, str2) {
+    const cleanString = (str) => str.replace(/[^A-Za-z]/g, '').toLowerCase();
+    
+    str1 = cleanString(str1);
+    str2 = cleanString(str2);
+    
+    if (str1.length !== str2.length) {
+        return false;
     }
+    
+    const sortedStr1 = str1.split('').sort().join('');
+    const sortedStr2 = str2.split('').sort().join('');
+    
+    return sortedStr1 === sortedStr2;
 }
 
-function maxDepth(root) {
-    if (root === null) {
-        return 0;
-    } else {
-        const leftDepth = maxDepth(root.left);
-        const rightDepth = maxDepth(root.right);
-        return Math.max(leftDepth, rightDepth) + 1;
-    }
+// Test the function
+const string1 = "listen";
+const string2 = "silent";
+
+if (checkAnagram(string1, string2)) {
+    console.log("The strings are anagrams.");
+} else {
+    console.log("The strings are not anagrams.");
 }
-
-// Example binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(maxDepth(root)); // Output: 3
