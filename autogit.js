@@ -1,37 +1,73 @@
-function depthLimitedSearch(node, goal, depthLimit) {
-    return recursiveDLS(node, goal, depthLimit, 0);
+class Node {
+    constructor(t, isLeaf) {
+        this.t = t;
+        this.keys = [];
+        this.children = [];
+        this.isLeaf = isLeaf;
+    }
 }
 
-function recursiveDLS(node, goal, depthLimit, currentDepth) {
-    if (currentDepth > depthLimit) {
-        return null; // Depth limit reached
-    }
-    
-    if (node === goal) {
-        return node; // Goal state found
+class BTree {
+    constructor(t) {
+        this.root = new Node(t, true);
+        this.t = t;
     }
 
-    if(isTerminalState(node)){
-      return null; // This is not a valid state
-    }
+    insert(key) {
+        let root = this.root;
 
-    for (let child of expand(node)) {
-        let result = recursiveDLS(child, goal, depthLimit, currentDepth + 1);
-        if (result !== null) {
-            return result;
+        if (root.keys.length === (2 * this.t) - 1) {
+            let newRoot = new Node(this.t, false);
+            newRoot.children.push(root);
+            this.splitChild(newRoot, 0);
+            this.root = newRoot;
+            this.insertNonFull(newRoot, key);
+        } else {
+            this.insertNonFull(root, key);
         }
     }
 
-    return null; // Goal not found within depth limit
+    insertNonFull(node, key) {
+        let i = node.keys.length - 1;
+
+        if (node.isLeaf) {
+            while (i >= 0 && key < node.keys[i]) {
+                node.keys[i + 1] = node.keys[i];
+                i--;
+            }
+            node.keys[i + 1] = key;
+        } else {
+            while (i >= 0 && key < node.keys[i]) {
+                i--;
+            }
+            i++;
+            if (node.children[i].keys.length === (2 * this.t) - 1) {
+                this.splitChild(node, i);
+                if (key > node.keys[i]) {
+                    i++;
+                }
+            }
+            this.insertNonFull(node.children[i], key);
+        }
+    }
+
+    splitChild(parent, i) {
+        let t = this.t;
+        let child = parent.children[i];
+        let newChild = new Node(t, child.isLeaf);
+
+        parent.keys.splice(i, 0, child.keys[t - 1]);
+        parent.children.splice(i + 1, 0, newChild);
+
+        newChild.keys = child.keys.splice(t);
+        if (!child.isLeaf) {
+            newChild.children = child.children.splice(t);
+        }
+    }
 }
 
-// Helper functions
-function isTerminalState(node) {
-    // Add your termincal state check here
-    return false;
-}
-
-function expand(node) {
-    // Add your node expansion logic here
-    return [];
-}
+// Usage
+let bTree = new BTree(3); // Create a B-tree with degree 3
+bTree.insert(5);
+bTree.insert(10);
+bTree.insert(3);
