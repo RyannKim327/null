@@ -1,37 +1,22 @@
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
+function isPalindrome(s) {
+    // Convert the string to lowercase and remove non-alphanumeric characters
+    s = s.toLowerCase().replace(/[\W_]/g, '');
+    
+    let start = 0;
+    let end = s.length - 1;
 
-function diameterOfBinaryTree(root) {
-  let diameter = 0;
-
-  function depth(node) {
-    if (node === null) {
-      return 0;
+    // Compare characters from the start and end of the string
+    while (start < end) {
+        if (s[start] !== s[end]) {
+            return false;
+        }
+        start++;
+        end--;
     }
 
-    const leftDepth = depth(node.left);
-    const rightDepth = depth(node.right);
-
-    diameter = Math.max(diameter, leftDepth + rightDepth);
-
-    return 1 + Math.max(leftDepth, rightDepth);
-  }
-
-  depth(root);
-
-  return diameter;
+    return true;
 }
 
-// Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(diameterOfBinaryTree(root)); // Output: 3
+// Test the function with some examples
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // Output: true
+console.log(isPalindrome("race a car")); // Output: false
