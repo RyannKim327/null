@@ -1,15 +1,18 @@
-function countOccurrences(str, char) {
-    let count = 0;
+function findFirstRepeatedChar(str) {
+    let charSet = new Set();
+    
     for (let i = 0; i < str.length; i++) {
-        if (str.charAt(i) === char) {
-            count++;
+        let char = str[i];
+        if (charSet.has(char)) {
+            return char;
         }
+        charSet.add(char);
     }
-    return count;
+    
+    return null;
 }
 
-// Example usage
-const myString = "hello, world!";
-const characterToCount = "o";
-const occurrences = countOccurrences(myString, characterToCount);
-console.log(`"${characterToCount}" appears ${occurrences} times in "${myString}"`);
+// Example
+const str = 'abcdeab';
+const repeatedChar = findFirstRepeatedChar(str);
+console.log(repeatedChar); // Output: 'a'
