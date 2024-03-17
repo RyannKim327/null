@@ -1,22 +1,23 @@
-function isAnagram(str1, str2) {
-    // Clean and lowercase both strings
-    str1 = str1.toLowerCase().replace(/[^a-z]+/g, '');
-    str2 = str2.toLowerCase().replace(/[^a-z]+/g, '');
-
-    // Sort the characters of both strings
-    str1 = str1.split('').sort().join('');
-    str2 = str2.split('').sort().join('');
-
-    // Compare the sorted strings
-    return str1 === str2;
+function countOccurrences(str, word) {
+    // Split the string into an array of words
+    const words = str.split(' ');
+    
+    // Initialize a variable to store the count
+    let count = 0;
+    
+    // Loop through each word in the array and check if it matches the word
+    for (let i = 0; i < words.length; i++) {
+        if (words[i].toLowerCase() === word.toLowerCase()) {
+            count++;
+        }
+    }
+    
+    return count;
 }
 
-// Test the function
-const string1 = "Listen";
-const string2 = "Silent";
+// Example usage
+const text = 'This is a sample text with some sample words in it';
+const word = 'sample';
+const occurrences = countOccurrences(text, word);
 
-if (isAnagram(string1, string2)) {
-    console.log(`${string1} and ${string2} are anagrams.`);
-} else {
-    console.log(`${string1} and ${string2} are not anagrams.`);
-}
+console.log(`The word "${word}" appears ${occurrences} times in the text.`);
