@@ -1,7 +1,5 @@
-function decimalToBinary(decimalNumber) {
-    return decimalNumber.toString(2);
-}
+let arr = [1, 2, 3, 4, 2, 3, 5];
 
-// Example usage
-console.log(decimalToBinary(10)); // Output: 1010
-console.log(decimalToBinary(27)); // Output: 11011
+let uniqueArray = arr.filter((item, index) => arr.indexOf(item) === index);
+
+console.log(uniqueArray);
