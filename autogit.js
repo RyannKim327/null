@@ -1,24 +1,14 @@
-function quickSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
-    } else {
-        const pivot = arr[0];
-        const left = [];
-        const right = [];
-
-        for (let i = 1; i < arr.length; i++) {
-            if (arr[i] < pivot) {
-                left.push(arr[i]);
-            } else {
-                right.push(arr[i]);
-            }
-        }
-
-        return quickSort(left).concat(pivot, quickSort(right));
+let array = [1, 2, 3, 3, 4, 5, 5];
+let uniqueArray = [...new Set(array)];
+console.log(uniqueArray); // [1, 2, 3, 4, 5]
+let array = [1, 2, 3, 3, 4, 5, 5];
+let uniqueArray = array.filter((item, index) => array.indexOf(item) === index);
+console.log(uniqueArray); // [1, 2, 3, 4, 5]
+let array = [1, 2, 3, 3, 4, 5, 5];
+let uniqueArray = array.reduce((accumulator, currentValue) => {
+    if (!accumulator.includes(currentValue)) {
+        accumulator.push(currentValue);
     }
-}
-
-// Example usage:
-const unsortedArray = [5, 3, 10, 1, 6, 4];
-const sortedArray = quickSort(unsortedArray);
-console.log(sortedArray);
+    return accumulator;
+}, []);
+console.log(uniqueArray); // [1, 2, 3, 4, 5]
