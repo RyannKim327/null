@@ -1,17 +1,60 @@
-function reverseWords(str) {
-    // Split the string into an array of words
-    let words = str.split(' ');
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
+}
 
-    // Reverse the array of words
-    words.reverse();
+class Queue {
+  constructor() {
+    this.front = null;
+    this.rear = null;
+    this.size = 0;
+  }
 
-    // Join the array back into a string
-    let reversedStr = words.join(' ');
+  enqueue(data) {
+    const newNode = new Node(data);
+    if (this.rear === null) {
+      this.front = newNode;
+      this.rear = newNode;
+    } else {
+      this.rear.next = newNode;
+      this.rear = newNode;
+    }
+    this.size++;
+  }
 
-    return reversedStr;
+  dequeue() {
+    if (this.front === null) {
+      return null;
+    }
+
+    const data = this.front.data;
+    this.front = this.front.next;
+    if (this.front === null) {
+      this.rear = null;
+    }
+    this.size--;
+    return data;
+  }
+
+  isEmpty() {
+    return this.size === 0;
+  }
+
+  getSize() {
+    return this.size;
+  }
 }
 
 // Example usage
-let originalStr = "Hello World!";
-let reversedStr = reverseWords(originalStr);
-console.log(reversedStr);  // Output: "World! Hello"
+const queue = new Queue();
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.dequeue()); // Output: 2
+
+console.log(queue.isEmpty()); // Output: false
+console.log(queue.getSize()); // Output: 1
