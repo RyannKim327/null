@@ -1,12 +1,17 @@
-function factorial(n) {
-    if (n === 0) {
-        return 1;
-    } else {
-        return n * factorial(n - 1);
+function calculateMean(list) {
+    if (list.length === 0) {
+        return 0;
     }
+
+    const sum = list.reduce((acc, val) => acc + val, 0);
+    const mean = sum / list.length;
+
+    return mean;
 }
 
-// Test the factorial function
-const num = 5;
-const result = factorial(num);
-console.log(`Factorial of ${num} is: ${result}`);
+// Example list of numbers
+const numbers = [1, 2, 3, 4, 5];
+
+// Calculate the mean of the list
+const mean = calculateMean(numbers);
+console.log("Mean:", mean);
