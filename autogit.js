@@ -1,29 +1,39 @@
-function binarySearch(arr, target) {
-  let left = 0;
-  let right = arr.length - 1;
-
-  while (left <= right) {
-    let mid = Math.floor((left + right) / 2);
-
-    if (arr[mid] === target) {
-      return mid;
-    } else if (arr[mid] < target) {
-      left = mid + 1;
-    } else {
-      right = mid - 1;
+// Function to perform beam search
+function beamSearch(startNode, beamWidth, maxDepth, getSuccessors, heuristicFunction) {
+    let currentNodes = [startNode];
+    
+    for (let depth = 0; depth < maxDepth; depth++) {
+        let nextNodes = [];
+        
+        for (let node of currentNodes) {
+            let successors = getSuccessors(node);
+            
+            for (let successor of successors) {
+                successor.parent = node;
+                successor.heuristic = heuristicFunction(successor);
+                nextNodes.push(successor);
+            }
+        }
+        
+        nextNodes.sort((a, b) => a.heuristic - b.heuristic);
+        currentNodes = nextNodes.slice(0, beamWidth);
     }
-  }
-
-  return -1;
+    
+    return currentNodes;
 }
 
 // Example usage
-const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
-const target = 9;
-const result = binarySearch(arr, target);
+let startNode = { state: 'A' };
 
-if (result !== -1) {
-  console.log(`Target ${target} found at index ${result}`);
-} else {
-  console.log(`Target ${target} not found in the array`);
+function getSuccessors(node) {
+    // Implement this function to generate successor nodes for a given node
+    return [{ state: 'B' }, { state: 'C' }];
 }
+
+function heuristicFunction(node) {
+    // Implement this function to calculate a heuristic value for a given node
+    return 0;
+}
+
+let result = beamSearch(startNode, 2, 3, getSuccessors, heuristicFunction);
+console.log(result);
