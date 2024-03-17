@@ -1,57 +1,52 @@
-class Edge {
-    constructor(source, destination, weight) {
-        this.source = source;
-        this.destination = destination;
-        this.weight = weight;
-    }
-}
-
 class Graph {
-    constructor(vertices, edges) {
-        this.vertices = vertices;
-        this.edges = edges;
+    constructor() {
+        this.adjacencyList = {};
     }
 
-    bellmanFord(start) {
-        let dist = {};
-        this.vertices.forEach(vertex => {
-            dist[vertex] = Infinity;
-        });
-        
-        dist[start] = 0;
+    addVertex(vertex) {
+        if (!this.adjacencyList[vertex]) {
+            this.adjacencyList[vertex] = [];
+        }
+    }
 
-        for (let i = 0; i < this.vertices.length - 1; i++) {
-            this.edges.forEach(edge => {
-                if (dist[edge.source] + edge.weight < dist[edge.destination]) {
-                    dist[edge.destination] = dist[edge.source] + edge.weight;
-                }
-            });
+    addEdge(v1, v2) {
+        if (!this.adjacencyList[v1] || !this.adjacencyList[v2]) {
+            throw new Error("Vertex not found in the graph");
         }
 
-        this.edges.forEach(edge => {
-            if (dist[edge.source] + edge.weight < dist[edge.destination]) {
-                console.log("Graph contains negative weight cycle");
-                return;
-            }
-        });
+        this.adjacencyList[v1].push(v2);
+        this.adjacencyList[v2].push(v1);
+    }
 
-        console.log("Shortest distances:");
-        console.log(dist);
+    depthFirstSearch(start) {
+        const visited = {};
+        const result = [];
+
+        const dfs = (vertex) => {
+            if (!vertex) return null;
+            visited[vertex] = true;
+            result.push(vertex);
+
+            this.adjacencyList[vertex].forEach((neighbor) => {
+                if (!visited[neighbor]) {
+                    dfs(neighbor);
+                }
+            });
+        };
+
+        dfs(start);
+
+        return result;
     }
 }
 
-// Example usage
-const vertices = ['A', 'B', 'C', 'D', 'E'];
-const edges = [
-    new Edge('A', 'B', -1),
-    new Edge('A', 'C', 4),
-    new Edge('B', 'C', 3),
-    new Edge('B', 'D', 2),
-    new Edge('D', 'B', 1),
-    new Edge('C', 'D', 5),
-    new Edge('C', 'E', 2),
-    new Edge('D', 'E', 1)
-];
-
-const graph = new Graph(vertices, edges);
-graph.bellmanFord('A');
+// Usage
+const graph = new Graph();
+graph.addVertex("A");
+graph.addVertex("B");
+graph.addVertex("C");
+graph.addVertex("D");
+graph.addEdge("A", "B");
+graph.addEdge("A", "C");
+graph.addEdge("B", "D");
+console.log(graph.depthFirstSearch("A"));
