@@ -1,16 +1,14 @@
-const connectToAsyncTask = async () => {
-  try {
-    const response = await fetch('https://api.example.com/async-task');
+function isPalindrome(str) {
+    // Remove non-alphanumeric characters and convert the string to lowercase
+    const alphanumericStr = str.replace(/[\W_]/g, '').toLowerCase();
+    
+    // Reverse the string
+    const reversedStr = alphanumericStr.split('').reverse().join('');
+    
+    // Check if the original string is equal to the reversed string
+    return alphanumericStr === reversedStr;
+}
 
-    if (response.ok) {
-      const result = await response.json();
-      console.log(result);
-    } else {
-      console.error('Failed to connect to the async task.');
-    }
-  } catch (error) {
-    console.error('An error occurred while connecting to the async task:', error);
-  }
-};
-
-connectToAsyncTask();
+// Test the function
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
+console.log(isPalindrome("Hello, World!")); // false
