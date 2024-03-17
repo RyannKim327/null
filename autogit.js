@@ -1,27 +1,27 @@
-function findMajorityElement(arr) {
-    const map = {};
-    const majorityThreshold = Math.floor(arr.length / 2);
+// Define a function that performs a network request asynchronously
+function fetchData() {
+    return new Promise((resolve, reject) => {
+        const url = "https://api.example.com/data";
+        
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw Error(response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => resolve(data))
+            .catch(error => reject(error));
+    });
+}
 
-    for (let i = 0; i < arr.length; i++) {
-        if (map[arr[i]]) {
-            map[arr[i]]++;
-        } else {
-            map[arr[i]] = 1;
-        }
-
-        if (map[arr[i]] > majorityThreshold) {
-            return arr[i];
-        }
+// Execute the async task when a button is clicked
+document.getElementById("fetchDataButton").addEventListener("click", async () => {
+    try {
+        const data = await fetchData();
+        console.log("Data received:", data);
+        // Perform further operations with the received data
+    } catch (error) {
+        console.error("Error fetching data:", error);
     }
-
-    return null;
-}
-
-// Example usage
-const array = [2, 3, 2, 2, 1, 2, 4, 2, 2];
-const majorityElement = findMajorityElement(array);
-if (majorityElement) {
-    console.log(`The majority element is: ${majorityElement}`);
-} else {
-    console.log("No majority element found");
-}
+});
