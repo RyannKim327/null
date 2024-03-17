@@ -1,25 +1,30 @@
-function isPrime(num) {
-    if (num <= 1) {
-        return false;
+class TreeNode {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-    if (num === 2) {
-        return true;
-    }
-    if (num % 2 === 0) {
-        return false;
-    }
-    for (let i = 3; i <= Math.sqrt(num); i += 2) {
-        if (num % i === 0) {
-            return false;
-        }
-    }
-    return true;
 }
 
-// Test the function
-const number = 17; // Change this number to test
-if (isPrime(number)) {
-    console.log(`${number} is a prime number.`);
-} else {
-    console.log(`${number} is not a prime number.`);
+function sumOfNodes(root) {
+    if (root === null) {
+        return 0;
+    }
+
+    // Recursively calculate the sum of nodes
+    let sum = root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
+
+    return sum;
 }
+
+// Example binary tree
+let root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+root.right.left = new TreeNode(6);
+root.right.right = new TreeNode(7);
+
+let totalSum = sumOfNodes(root);
+console.log("Sum of all nodes in the binary tree: " + totalSum);
