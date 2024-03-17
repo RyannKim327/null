@@ -1,11 +1,11 @@
-async function connectToServer() {
-  try {
-    const response = await fetch('https://api.example.com/data');
-    const data = await response.json();
-    console.log(data);
-  } catch (error) {
-    console.error('An error occurred:', error);
-  }
+function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
 }
 
-connectToServer();
+const email = "example@email.com";
+if (validateEmail(email)) {
+    console.log("Email is valid");
+} else {
+    console.log("Email is not valid");
+}
