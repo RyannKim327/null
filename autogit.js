@@ -1,43 +1,36 @@
-class Node {
-  constructor(value) {
-    this.value = value;
+class ListNode {
+  constructor(val) {
+    this.val = val;
     this.next = null;
   }
 }
 
-function findNthNodeFromEnd(head, n) {
-  let firstPointer = head;
-  let secondPointer = head;
-
-  // Move the first pointer by n steps
-  for (let i = 0; i < n; i++) {
-    if (firstPointer === null) {
-      return null; // Handle the case where n is greater than the length of the linked list
-    }
-    firstPointer = firstPointer.next;
+const getIntersectionNode = (headA, headB) => {
+  if (!headA || !headB) {
+    return null;
   }
 
-  // Move both pointers until the first pointer reaches the end
-  while (firstPointer !== null) {
-    firstPointer = firstPointer.next;
-    secondPointer = secondPointer.next;
+  let pA = headA;
+  let pB = headB;
+
+  while (pA !== pB) {
+    pA = pA ? pA.next : headB;
+    pB = pB ? pB.next : headA;
   }
 
-  return secondPointer;
-}
+  return pA;
+};
+// Create linked list 1: 1 -> 3 -> 5 -> 7 -> 9
+let headA = new ListNode(1);
+headA.next = new ListNode(3);
+headA.next.next = new ListNode(5);
+headA.next.next.next = new ListNode(7);
+headA.next.next.next.next = new ListNode(9);
 
-// Example of creating a linked list and finding the nth node from the end
-const head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
+// Create linked list 2: 2 -> 4 -> 7 -> 9
+let headB = new ListNode(2);
+headB.next = new ListNode(4);
+headB.next.next = headA.next.next.next; // connecting to the intersecting node 7
 
-const n = 2;
-const nthNodeFromEnd = findNthNodeFromEnd(head, n);
-
-if (nthNodeFromEnd !== null) {
-  console.log(`${n}th node from the end is: ${nthNodeFromEnd.value}`);
-} else {
-  console.log(`Could not find the ${n}th node from the end.`);
-}
+let intersectionNode = getIntersectionNode(headA, headB);
+console.log(intersectionNode ? intersectionNode.val : null);
