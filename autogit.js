@@ -1,38 +1,52 @@
-function longestCommonSubsequence(str1, str2) {
-    const m = str1.length;
-    const n = str2.length;
-
-    const dp = new Array(m + 1).fill(null).map(() => new Array(n + 1).fill(0));
-
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-            } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-            }
-        }
+class TrieNode {
+    constructor() {
+        this.children = {};
+        this.isEndOfWord = false;
     }
-
-    let i = m, j = n;
-    let lcs = '';
-
-    while (i > 0 && j > 0) {
-        if (str1[i - 1] === str2[j - 1]) {
-            lcs = str1[i - 1] + lcs;
-            i--;
-            j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--;
-        } else {
-            j--;
-        }
-    }
-
-    return lcs;
 }
 
-const str1 = "AGGTAB";
-const str2 = "GXTXAYB";
+class Trie {
+    constructor() {
+        this.root = new TrieNode();
+    }
+    
+    insert(word) {
+        let node = this.root;
+        for (let char of word) {
+            if (!node.children[char]) {
+                node.children[char] = new TrieNode();
+            }
+            node = node.children[char];
+        }
+        node.isEndOfWord = true;
+    }
+    
+    search(word) {
+        let node = this.root;
+        for (let char of word) {
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+        return node.isEndOfWord;
+    }
+    
+    startsWith(prefix) {
+        let node = this.root;
+        for (let char of prefix) {
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+        return true;
+    }
+}
 
-console.log(longestCommonSubsequence(str1, str2)); // Output: GTAB
+// Usage
+let trie = new Trie();
+trie.insert("apple");
+console.log(trie.search("apple"));   // Output: true
+console.log(trie.search("app"));     // Output: false
+console.log(trie.startsWith("app")); // Output: true
