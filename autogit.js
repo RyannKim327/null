@@ -1,22 +1,45 @@
-function areAnagrams(str1, str2) {
-    // Convert strings to lowercase and remove non-alphabetic characters
-    str1 = str1.toLowerCase().replace(/[^a-z]/g, '');
-    str2 = str2.toLowerCase().replace(/[^a-z]/g, '');
-
-    // Sort the characters in the strings alphabetically
-    str1 = str1.split('').sort().join('');
-    str2 = str2.split('').sort().join('');
-
-    // Check if the sorted strings are equal
-    return str1 === str2;
+class Node {
+    constructor(key, color) {
+        this.key = key;
+        this.left = null;
+        this.right = null;
+        this.parent = null;
+        this.color = color;
+    }
 }
 
-// Test the function
-const string1 = "Listen";
-const string2 = "Silent";
+class RedBlackTree {
+    constructor() {
+        this.root = null;
+    }
 
-if (areAnagrams(string1, string2)) {
-    console.log(`"${string1}" and "${string2}" are anagrams.`);
-} else {
-    console.log(`"${string1}" and "${string2}" are not anagrams.`);
+    insert(key) {
+        const newNode = new Node(key, 'red');
+        if (!this.root) {
+            this.root = newNode;
+            this.root.color = 'black';
+        } else {
+            this._insertNode(this.root, newNode);
+        }
+    }
+
+    _insertNode(node, newNode) {
+        if (newNode.key < node.key) {
+            if (node.left === null) {
+                node.left = newNode;
+                newNode.parent = node;
+            } else {
+                this._insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+                newNode.parent = node;
+            } else {
+                this._insertNode(node.right, newNode);
+            }
+        }
+    }
+
+    // Other operations like rotation and balancing can be implemented here
 }
