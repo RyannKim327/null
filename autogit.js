@@ -1,10 +1,33 @@
-function calculateMean(numbers) {
-  const total = numbers.reduce((acc, num) => acc + num, 0);
-  const mean = total / numbers.length;
-  return mean;
+function merge(left, right) {
+  let result = [];
+  let leftIndex = 0;
+  let rightIndex = 0;
+
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] < right[rightIndex]) {
+      result.push(left[leftIndex]);
+      leftIndex++;
+    } else {
+      result.push(right[rightIndex]);
+      rightIndex++;
+    }
+  }
+
+  return result.concat(left.slice(leftIndex), right.slice(rightIndex));
+}
+
+function mergeSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
+  }
+
+  const middle = Math.floor(arr.length / 2);
+  const left = arr.slice(0, middle);
+  const right = arr.slice(middle);
+
+  return merge(mergeSort(left), mergeSort(right));
 }
 
 // Example usage
-const numbers = [1, 2, 3, 4, 5];
-const mean = calculateMean(numbers);
-console.log("Mean:", mean);
+const arr = [5, 3, 8, 2, 1, 7, 4, 6];
+console.log(mergeSort(arr)); // Output: [1, 2, 3, 4, 5, 6, 7, 8]
