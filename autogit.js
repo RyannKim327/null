@@ -1,4 +1,6 @@
-let str = "Hello, World!";
-let lowerCaseStr = str.toLowerCase();
+var string1 = "Hello";
+var string2 = "World";
 
-console.log(lowerCaseStr); // Output: "hello, world!"
+var concatenatedString = string1 + " " + string2;
+
+console.log(concatenatedString); // Output: Hello World
