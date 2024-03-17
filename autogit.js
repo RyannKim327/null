@@ -1,10 +1,18 @@
-function factorial(n) {
-    if (n === 0) {
-        return 1;
-    } else {
-        return n * factorial(n - 1);
+function findFirstRepeatedChar(str) {
+    let visitedChars = {};
+
+    for (let char of str) {
+        if (visitedChars[char]) {
+            return char;
+        } else {
+            visitedChars[char] = true;
+        }
     }
+
+    return null;
 }
 
-// Test the factorial function
-console.log(factorial(5)); // Output: 120
+// Test the function
+let str = "abcdefghiijk";
+let firstRepeatedChar = findFirstRepeatedChar(str);
+console.log("First repeated character: ", firstRepeatedChar);
