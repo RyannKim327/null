@@ -1,55 +1,16 @@
-function buildLPS(pattern) {
-    const lps = [0];
-    let len = 0;
-    let i = 1;
+const connectToAsyncTask = async () => {
+  try {
+    const response = await fetch('https://api.example.com/async-task');
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
+    if (response.ok) {
+      const result = await response.json();
+      console.log(result);
+    } else {
+      console.error('Failed to connect to the async task.');
     }
+  } catch (error) {
+    console.error('An error occurred while connecting to the async task:', error);
+  }
+};
 
-    return lps;
-}
-
-function searchKMP(text, pattern) {
-    const lps = buildLPS(pattern);
-    const matches = [];
-
-    let i = 0;
-    let j = 0;
-
-    while (i < text.length) {
-        if (text[i] === pattern[j]) {
-            i++;
-            j++;
-        }
-
-        if (j === pattern.length) {
-            matches.push(i - j);
-            j = lps[j - 1];
-        } else if (i < text.length && text[i] !== pattern[j]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
-    }
-
-    return matches;
-}
-
-// Test the KMP Algorithm
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-console.log(searchKMP(text, pattern)); // Output: [10]
+connectToAsyncTask();
