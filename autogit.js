@@ -1,49 +1,43 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
+function boyerMooreHorspool(text, pattern) {
+    const charTable = {};
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    let skip = 0;
+    
+    if (patternLength === 0) return 0;
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-
-  addNode(value) {
-    const newNode = new Node(value);
-
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
-
-  findMiddleElement() {
-    let fast = this.head;
-    let slow = this.head;
-
-    while (fast && fast.next) {
-      slow = slow.next;
-      fast = fast.next.next;
+    // Preprocessing step: Create a bad character table
+    for (let i = 0; i < patternLength - 1; i++) {
+        charTable[pattern[i]] = patternLength - 1 - i;
     }
 
-    return slow.value;
-  }
+    // Boyer-Moore-Horspool algorithm
+    let i = 0;
+    while (i <= textLength - patternLength) {
+        let j = patternLength - 1;
+
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
+        }
+
+        if (j < 0) {
+            return i; // Match found
+        } else {
+            skip = Math.max(1, charTable[text[i + j]] || patternLength);
+            i += skip;
+        }
+    }
+
+    return -1; // No match found
 }
 
-// Usage
-const linkedList = new LinkedList();
-linkedList.addNode(1);
-linkedList.addNode(2);
-linkedList.addNode(3);
-linkedList.addNode(4);
-linkedList.addNode(5);
+// Example usage
+const text = "hello world";
+const pattern = "world";
+const index = boyerMofindMostCommonElement(text, pattern);
 
-const middleElement = linkedList.findMiddleElement();
-console.log(middleElement); // Output: 3
+if (index !== -1) {
+    console.log(`Pattern found at index ${index}`);
+} else {
+    console.log("Pattern not found in the text");
+}
