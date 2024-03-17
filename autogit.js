@@ -1,43 +1,22 @@
-function boyerMooreHorspool(text, pattern) {
-    const charTable = {};
-    const patternLength = pattern.length;
-    const textLength = text.length;
-    let skip = 0;
-    
-    if (patternLength === 0) return 0;
+function findFirstRepeatedChar(str) {
+    let charSet = new Set();
 
-    // Preprocessing step: Create a bad character table
-    for (let i = 0; i < patternLength - 1; i++) {
-        charTable[pattern[i]] = patternLength - 1 - i;
-    }
-
-    // Boyer-Moore-Horspool algorithm
-    let i = 0;
-    while (i <= textLength - patternLength) {
-        let j = patternLength - 1;
-
-        while (j >= 0 && pattern[j] === text[i + j]) {
-            j--;
-        }
-
-        if (j < 0) {
-            return i; // Match found
+    for (let char of str) {
+        if (charSet.has(char)) {
+            return char;
         } else {
-            skip = Math.max(1, charTable[text[i + j]] || patternLength);
-            i += skip;
+            charSet.add(char);
         }
     }
 
-    return -1; // No match found
+    return null; // If no repeated character is found
 }
 
-// Example usage
-const text = "hello world";
-const pattern = "world";
-const index = boyerMofindMostCommonElement(text, pattern);
+const inputString = "hello world";
+const result = findFirstRepeatedChar(inputString);
 
-if (index !== -1) {
-    console.log(`Pattern found at index ${index}`);
+if (result) {
+    console.log(`The first repeated character in the string is: ${result}`);
 } else {
-    console.log("Pattern not found in the text");
+    console.log("No repeated character found in the string.");
 }
