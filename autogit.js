@@ -1,8 +1,7 @@
-function decimalToBinary(decimal) {
-    return (decimal >>> 0).toString(2);
-}
+// Define an array with duplicate elements
+let array = [1, 2, 2, 3, 4, 4, 5];
 
-// Example
-const decimalNumber = 10;
-const binaryNumber = decimalToBinary(decimalNumber);
-console.log(binaryNumber); // Output: 1010
+// Create a new Set from the array to remove duplicates
+let uniqueArray = [...new Set(array)];
+
+console.log(uniqueArray);
