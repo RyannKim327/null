@@ -1,38 +1,54 @@
-function breadthLimitedSearch(root, target, depthLimit) {
-    let queue = [{ node: root, depth: 0 }];
-
-    while (queue.length > 0) {
-        let current = queue.shift();
-
-        if (current.node.value === target) {
-            return current.node;
+// Function to find the maximum number in an array
+function findMax(arr) {
+    let max = arr[0];
+    arr.forEach(num => {
+        if (num > max) {
+            max = num;
         }
-
-        if (current.depth < depthLimit) {
-            current.node.children.forEach(child => {
-                queue.push({ node: child, depth: current.depth + 1 });
-            });
-        }
-    }
-
-    return null;
+    });
+    return max;
 }
 
-// Example Usage
-class TreeNode {
-    constructor(value) {
-        this.value = value;
-        this.children = [];
+// Function to perform counting sort based on the digit placement
+function countingSort(arr, exp) {
+    const n = arr.length;
+    const output = new Array(n).fill(0);
+    const count = new Array(10).fill(0);
+
+    for (let i = 0; i < n; i++) {
+        count[Math.floor(arr[i] / exp) % 10]++;
+    }
+
+    for (let i = 1; i < 10; i++) {
+        count[i] += count[i - 1];
+    }
+
+    for (let i = n - 1; i >= 0; i--) {
+        output[count[Math.floor(arr[i] / exp) % 10] - 1] = arr[i];
+        count[Math.floor(arr[i] / exp) % 10]--;
+    }
+
+    for (let i = 0; i < n; i++) {
+        arr[i] = output[i];
     }
 }
 
-let root = new TreeNode(1);
-let child1 = new TreeNode(2);
-let child2 = new TreeNode(3);
-let child3 = new TreeNode(4);
-let subchild1 = new TreeNode(5);
+// Radix Sort function
+function radixSort(arr) {
+    const max = findMax(arr);
 
-root.children.push(child1, child2, child3);
-child1.children.push(subchild1);
+    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
+        countingSort(arr, exp);
+    }
 
-console.log(breadthLimitedSearch(root, 5, 2));  // Output: TreeNode { value: 5, children: [] }
+    return arr;
+}
+
+// Example usage
+const array = [170, 45, 75, 90, 802, 2, 24, 66];
+console.log("Array before sorting:");
+console.log(array);
+
+const sortedArray = radixSort(array);
+console.log("Array after sorting:");
+console.log(sortedArray);
