@@ -1,28 +1,67 @@
-function quicksort(arr) {
-    if (arr.length <= 1) {
-        return arr;
+class Graph {
+    constructor(vertices) {
+        this.vertices = vertices;
+        this.adjList = Array.from({ length: vertices }, () => []);
     }
 
-    const pivot = arr[Math.floor(arr.length / 2)];
-    const left = [];
-    const right = [];
-
-    for (let i = 0; i < arr.length; i++) {
-        if (i === Math.floor(arr.length / 2)) {
-            continue;
-        }
-
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
-        }
+    addEdge(u, v) {
+        this.adjList[u].push(v);
     }
 
-    return [...quicksort(left), pivot, ...quicksort(right)];
+    tarjanSCC() {
+        let index = 0;
+        let stack = [];
+        let onStack = new Array(this.vertices).fill(false);
+        let lowlink = new Array(this.vertices).fill(0);
+        let indexMap = new Array(this.vertices).fill(-1);
+        let result = [];
+
+        function strongConnect(v) {
+            indexMap[v] = index;
+            lowlink[v] = index;
+            index++;
+            stack.push(v);
+            onStack[v] = true;
+
+            for (let w of this.adjList[v]) {
+                if (indexMap[w] === -1) {
+                    strongConnect(w);
+                    lowlink[v] = Math.min(lowlink[v], lowlink[w]);
+                } else if (onStack[w]) {
+                    lowlink[v] = Math.min(lowlink[v], indexMap[w]);
+                }
+            }
+
+            if (lowlink[v] === indexMap[v]) {
+                let scc = [];
+                let w;
+                do {
+                    w = stack.pop();
+                    onStack[w] = false;
+                    scc.push(w);
+                } while (w !== v);
+                result.push(scc);
+            }
+        }
+
+        for (let v = 0; v < this.vertices; v++) {
+            if (indexMap[v] === -1) {
+                strongConnect(v);
+            }
+        }
+
+        return result;
+    }
 }
 
 // Example usage
-const arr = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
-const sortedArr = quicksort(arr);
-console.log(sortedArr);
+let g = new Graph(5);
+g.addEdge(0, 1);
+g.addEdge(1, 2);
+g.addEdge(2, 0);
+g.addEdge(1, 3);
+g.addEdge(3, 4);
+g.addEdge(4, 3);
+
+let sccs = g.tarjanSCC();
+console.log(sccs);
