@@ -1,11 +1,36 @@
-function isPalindrome(str) {
-    // Remove non-alphanumeric characters and convert the string to lowercase
-    str = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+class Graph {
+  constructor() {
+    this.graph = {};
+  }
 
-    // Check if the string is equal to its reversed version
-    return str === str.split('').reverse().join('');
+  addEdge(node, edge) {
+    if (!this.graph[node]) {
+      this.graph[node] = [];
+    }
+    this.graph[node].push(edge);
+  }
+
+  dfs(node, visited = {}) {
+    if (!node || visited[node]) {
+      return;
+    }
+
+    visited[node] = true;
+    console.log(node);
+
+    this.graph[node].forEach((neighbor) => {
+      this.dfs(neighbor, visited);
+    });
+  }
 }
 
-// Test the function
-console.log(isPalindrome('A man, a plan, a canal, Panama')); // Output: true
-console.log(isPalindrome('hello')); // Output: false
+const graph = new Graph();
+
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('B', 'E');
+graph.addEdge('C', 'F');
+graph.addEdge('E', 'G');
+
+graph.dfs('A');
