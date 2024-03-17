@@ -1,46 +1,23 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
+function firstNonRepeatingCharacter(str) {
+    let charMap = {};
+    
+    // Create a frequency map of characters in the string
+    for (let char of str) {
+        charMap[char] = charMap[char] + 1 || 1;
     }
-}
-
-class LinkedList {
-    constructor() {
-        this.head = null;
-    }
-
-    addNode(data) {
-        const newNode = new Node(data);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
+    
+    // Find the first non-repeating character
+    for (let char of str) {
+        if (charMap[char] === 1) {
+            return char;
         }
     }
-
-    getLength() {
-        let current = this.head;
-        let count = 0;
-
-        while (current) {
-            count++;
-            current = current.next;
-        }
-
-        return count;
-    }
+    
+    // Return null if no non-repeating character is found
+    return null;
 }
 
-// Create a linked list
-const linkedList = new LinkedList();
-linkedList.addNode(1);
-linkedList.addNode(2);
-linkedList.addNode(3);
-linkedList.addNode(4);
-
-console.log("Length of linked list: ", linkedList.getLength());
+// Test the function
+const str = "hello";
+const firstNonRepeatingChar = firstNonRepeatingCharacter(str);
+console.log(firstNonRepeatingChar);
