@@ -1,58 +1,31 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.left = null;
-        this.right = null;
-    }
+// Definition for a binary tree node
+class TreeNode {
+  constructor(val) {
+    this.val = val;
+    this.left = this.right = null;
+  }
 }
 
-class BinaryTree {
-    constructor() {
-        this.root = null;
-    }
+// Function to count the number of leaf nodes in a binary tree
+function countLeafNodes(root) {
+  if (!root) {
+    return 0;
+  }
 
-    insert(data) {
-        const newNode = new Node(data);
+  if (!root.left && !root.right) {
+    return 1; // Leaf node
+  }
 
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    insertNode(node, newNode) {
-        if (newNode.data < node.data) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
-
-    // Traverse the binary tree in-order
-    inOrder(node, callback) {
-        if (node !== null) {
-            this.inOrder(node.left, callback);
-            callback(node.data);
-            this.inOrder(node.right, callback);
-        }
-    }
+  return countLeafNodes(root.left) + countLeafNodes(root.right);
 }
 
-// Usage
-const binaryTree = new BinaryTree();
-binaryTree.insert(5);
-binaryTree.insert(3);
-binaryTree.insert(7);
-binaryTree.insert(8);
-binaryTree.insert(2);
+// Example usage
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+root.right.left = new TreeNode(6);
 
-binaryTree.inOrder(binaryTree.root, (data) => console.log(data));
+const numberOfLeafNodes = countLeafNodes(root);
+console.log(numberOfLeafNodes); // Output: 3
