@@ -1,48 +1,48 @@
-// Define the node class
 class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    constructor(data) {
+        this.data = data;
+        this.next = null;
     }
 }
 
-// Define the binary tree class
-class BinaryTree {
+class LinkedList {
     constructor() {
-        this.root = null;
+        this.head = null;
     }
 
-    // Recursive function to insert a new node in the tree
-    insertNode(currentNode, newNode) {
-        if (newNode.value < currentNode.value) {
-            if (currentNode.left === null) {
-                currentNode.left = newNode;
-            } else {
-                this.insertNode(currentNode.left, newNode);
-            }
-        } else {
-            if (currentNode.right === null) {
-                currentNode.right = newNode;
-            } else {
-                this.insertNode(currentNode.right, newNode);
-            }
+    append(data) {
+        const newNode = new Node(data);
+
+        if (!this.head) {
+            this.head = newNode;
+            return;
         }
+
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+
+        current.next = newNode;
     }
 
-    // Method to insert a new node in the tree
-    insert(value) {
-        const newNode = new Node(value);
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
+    getLength() {
+        let length = 0;
+        let current = this.head;
+
+        while (current) {
+            length++;
+            current = current.next;
         }
+
+        return length;
     }
 }
 
-// Usage
-const tree = new BinaryTree();
-tree.insert(5);
-tree.insert(3);
-tree.insert(8);
+// Example usage
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+
+console.log(list.getLength()); // Output: 3
