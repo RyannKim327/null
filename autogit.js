@@ -1,14 +1,18 @@
-area = √(s * (s - a) * (s - b) * (s - c))
-s = (a + b + c) / 2
-function calculateTriangleArea(a, b, c) {
-    let s = (a + b + c) / 2;
-    let area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
-    return area;
+function countOccurrences(str, char) {
+    let count = 0;
+    
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
+            count++;
+        }
+    }
+    
+    return count;
 }
 
 // Example usage
-let sideA = 5;
-let sideB = 6;
-let sideC = 7;
-let triangleArea = calculateTriangleArea(sideA, sideB, sideC);
-console.log("The area of the triangle is: " + triangleArea);
+const str = "hello world";
+const charToCount = "o";
+const occurrences = countOccurrences(str, charToCount);
+
+console.log(`"${charToCount}" appears ${occurrences} times in "${str}"`);
