@@ -1,41 +1,29 @@
-function longestCommonSubsequence(str1, str2) {
-    const m = str1.length;
-    const n = str2.length;
-    
-    // Initialize a 2D array to store the lengths of LCS
-    const dp = Array.from({ length: m + 1 }, () => Array.from({ length: n + 1 }, () => 0));
+function binarySearch(arr, target) {
+  let left = 0;
+  let right = arr.length - 1;
 
-    // Fill the dp array
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-            } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-            }
-        }
+  while (left <= right) {
+    let mid = Math.floor((left + right) / 2);
+
+    if (arr[mid] === target) {
+      return mid;
+    } else if (arr[mid] < target) {
+      left = mid + 1;
+    } else {
+      right = mid - 1;
     }
+  }
 
-    // Backtrack to find the longest common subsequence
-    let lcs = "";
-    let i = m, j = n;
-    while (i > 0 && j > 0) {
-        if (str1[i - 1] === str2[j - 1]) {
-            lcs = str1[i - 1] + lcs;
-            i--;
-            j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--;
-        } else {
-            j--;
-        }
-    }
-
-    return lcs;
+  return -1;
 }
 
 // Example usage
-const str1 = "ABCDGH";
-const str2 = "AEDFHR";
+const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
+const target = 9;
+const result = binarySearch(arr, target);
 
-console.log(longestCommonSubsequence(str1, str2)); // Output: ADH
+if (result !== -1) {
+  console.log(`Target ${target} found at index ${result}`);
+} else {
+  console.log(`Target ${target} not found in the array`);
+}
