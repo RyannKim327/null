@@ -1,14 +1,48 @@
-function calculateMean(numbers) {
-    const sum = numbers.reduce((acc, val) => acc + val, 0);
-    const mean = sum / numbers.length;
-  
-    return mean;
+function fibonacciSearch(arr, x) {
+    let fibM2 = 0;
+    let fibM1 = 1;
+    let fibM = fibM2 + fibM1;
+    let n = arr.length;
+
+    while (fibM < n) {
+        fibM2 = fibM1;
+        fibM1 = fibM;
+        fibM = fibM2 + fibM1;
+    }
+
+    let offset = -1;
+
+    while (fibM > 1) {
+        let i = Math.min(offset + fibM2, n - 1);
+
+        if (arr[i] < x) {
+            fibM = fibM1;
+            fibM1 = fibM2;
+            fibM2 = fibM - fibM1;
+            offset = i;
+        } else if (arr[i] > x) {
+            fibM = fibM2;
+            fibM1 -= fibM2;
+            fibM2 = fibM - fibM1;
+        } else {
+            return i;
+        }
+    }
+
+    if (fibM1 && arr[offset + 1] == x) {
+        return offset + 1;
+    }
+
+    return -1;
 }
 
-// Example list of numbers
-const numbers = [1, 2, 3, 4, 5];
+// Usage
+let arr = [1, 5, 8, 9, 12, 14, 17, 20, 22];
+let x = 20;
+let index = fibonacciSearch(arr, x);
 
-// Calculate the mean
-const mean = calculateMean(numbers);
-
-console.log("Mean:", mean);
+if (index != -1) {
+    console.log('Element found at index', index);
+} else {
+    console.log('Element not found');
+}
