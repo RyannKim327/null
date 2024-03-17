@@ -1,15 +1,24 @@
-function calculateMean(numbers) {
-    if (numbers.length === 0) {
-        return 0;
+function selectionSort(arr) {
+    const n = arr.length;
+    
+    for (let i = 0; i < n - 1; i++) {
+        let minIndex = i;
+        
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+        
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+        }
     }
-
-    const sum = numbers.reduce((acc, num) => acc + num, 0);
-    const mean = sum / numbers.length;
-
-    return mean;
+    
+    return arr;
 }
 
-// Example usage:
-const numbers = [1, 2, 3, 4, 5];
-const mean = calculateMean(numbers);
-console.log("Mean:", mean);
+// Test the selection sort algorithm
+const array = [64, 34, 25, 12, 22, 11, 90];
+console.log("Original array: " + array);
+console.log("Sorted array: " + selectionSort(array));
