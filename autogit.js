@@ -1,19 +1,32 @@
-function getIntersectionNode(headA, headB) {
-    let set = new Set();
-    
-    // Traverse the first linked list and store nodes in a Set
-    while (headA !== null) {
-        set.add(headA);
-        headA = headA.next;
+class Stack {
+  constructor() {
+    this.stack = [];
+  }
+
+  push(item) {
+    this.stack.push(item);
+  }
+
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack Underflow";
     }
-    
-    // Traverse the second linked list and check if each node is in the Set
-    while (headB !== null) {
-        if (set.has(headB)) {
-            return headB; // Found the intersection
-        }
-        headB = headB.next;
-    }
-    
-    return null; // No intersection found
+    return this.stack.pop();
+  }
+
+  isEmpty() {
+    return this.stack.length === 0;
+  }
 }
+
+// Example Usage:
+const stack = new Stack();
+
+stack.push(1);
+stack.push(2);
+stack.push(3);
+
+console.log(stack.pop()); // Output: 3
+console.log(stack.pop()); // Output: 2
+console.log(stack.pop()); // Output: 1
+console.log(stack.pop()); // Output: Stack Underflow
