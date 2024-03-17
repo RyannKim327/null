@@ -1,3 +1,6 @@
-let arr = [1, 2, 3, 4, 5];
-arr.reverse();
-console.log(arr); // Outputs: [5, 4, 3, 2, 1]
+let str = "42";
+let num = parseInt(str);
+console.log(num); // Output: 42
+let str = "42";
+let num = Number(str);
+console.log(num); // Output: 42
