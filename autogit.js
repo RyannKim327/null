@@ -1,27 +1,26 @@
-function selectionSort(arr) {
-    const n = arr.length;
-    
-    for (let i = 0; i < n - 1; i++) {
-        let minIndex = i;
-        
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j;
-            }
-        }
-        
-        if (minIndex !== i) {
-            // Swap elements
-            let temp = arr[i];
-            arr[i] = arr[minIndex];
-            arr[minIndex] = temp;
-        }
+function countingSort(arr) {
+    let max = Math.max(...arr);
+    let min = Math.min(...arr);
+    let count = new Array(max - min + 1).fill(0);
+    let output = new Array(arr.length);
+
+    arr.forEach(num => {
+        count[num - min]++;
+    });
+
+    for (let i = 1; i < count.length; i++) {
+        count[i] += count[i - 1];
     }
-    
-    return arr;
+
+    for (let i = arr.length - 1; i >= 0; i--) {
+        output[count[arr[i] - min] - 1] = arr[i];
+        count[arr[i] - min]--;
+    }
+
+    return output;
 }
 
 // Example usage
-const arr = [64, 25, 12, 22, 11];
-const sortedArr = selectionSort(arr);
-console.log(sortedArr); // [11, 12, 22, 25, 64]
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const sortedArr = countingSort(arr);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
