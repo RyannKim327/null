@@ -1,27 +1,45 @@
-function shellSort(arr) {
-    let increment = Math.floor(arr.length / 2);
-
-    while (increment > 0) {
-        for (let i = increment; i < arr.length; i++) {
-            let j = i;
-            let temp = arr[i];
-
-            while (j >= increment && arr[j - increment] > temp) {
-                arr[j] = arr[j - increment];
-                j = j - increment;
-            }
-
-            arr[j] = temp;
-        }
-
-        increment = Math.floor(increment / 2);
+// Node class to represent each node in the linked list
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
     }
-
-    return arr;
 }
 
-// Test the shellSort function
-let arr = [12, 34, 54, 2, 3];
-console.log("Original Array: ", arr);
-arr = shellSort(arr);
-console.log("Sorted Array: ", arr);
+// LinkedList class to manage the nodes and operations on the list
+class LinkedList {
+    constructor() {
+        this.head = null;
+    }
+
+    // Method to insert a new node at the end of the list
+    insert(data) {
+        const newNode = new Node(data);
+
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+    }
+
+    // Method to display the elements in the list
+    display() {
+        let current = this.head;
+        while (current) {
+            console.log(current.data);
+            current = current.next;
+        }
+    }
+}
+
+// Example of using the LinkedList class
+const linkedList = new LinkedList();
+linkedList.insert(1);
+linkedList.insert(2);
+linkedList.insert(3);
+linkedList.display();
