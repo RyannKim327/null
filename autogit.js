@@ -1,23 +1,34 @@
-function shellSort(arr) {
-  // Start with a big gap, then reduce the gap
-  for (let gap = Math.floor(arr.length / 2); gap > 0; gap = Math.floor(gap / 2)) {
-    // Perform an insertion sort for elements at each gap
-    for (let i = gap; i < arr.length; i++) {
-      let temp = arr[i];
-      let j;
-
-      for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
-        arr[j] = arr[j - gap];
-      }
-
-      arr[j] = temp;
+function interpolationSearch(arr, x) {
+    let lo = 0;
+    let hi = arr.length - 1;
+    
+    while (lo <= hi && x >= arr[lo] && x <= arr[hi]) {
+        if (lo === hi) {
+            if (arr[lo] === x) return lo;
+            return -1;
+        }
+        
+        let pos = lo + Math.floor(((hi - lo) / (arr[hi] - arr[lo])) * (x - arr[lo]));
+        
+        if (arr[pos] === x) {
+            return pos;
+        } else if (arr[pos] < x) {
+            lo = pos + 1;
+        } else {
+            hi = pos - 1;
+        }
     }
-  }
-
-  return arr;
+    
+    return -1;
 }
 
-// Test the shellSort function
-const arr = [12, 34, 54, 2, 3];
-console.log("Original Array: ", arr);
-console.log("Sorted Array: ", shellSort(arr));
+// Example usage
+const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+const x = 12;
+const index = interpolationSearch(arr, x);
+
+if (index !== -1) {
+    console.log(`${x} found at index ${index}`);
+} else {
+    console.log(`${x} not found in the array`);
+}
