@@ -1,105 +1,52 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.left = null;
-        this.right = null;
-        this.color = 'red'; // New nodes are always colored red to start with
+function rabinKarpSearch(text, pattern) {
+    const prime = 101; // prime number used for hashing
+
+    function calculateHash(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash += str.charCodeAt(i) * Math.pow(prime, i);
+        }
+        return hash;
     }
+
+    function reCalculateHash(oldHash, oldChar, newChar, patternLength) {
+        return (oldHash - oldChar.charCodeAt(0)) / prime + newChar.charCodeAt(0) * Math.pow(prime, patternLength - 1);
+    }
+
+    function checkEqual(str1, start1, end1, str2, start2, end2) {
+        if (end1 - start1 !== end2 - start2) {
+            return false;
+        }
+
+        while (start1 <= end1 && start2 <= end2) {
+            if (str1[start1] !== str2[start2]) {
+                return false;
+            }
+            start1++;
+            start2++;
+        }
+
+        return true;
+    }
+
+    const textLength = text.length;
+    const patternLength = pattern.length;
+    const patternHash = calculateHash(pattern);
+    let textHash = calculateHash(text.substring(0, patternLength));
+
+    for (let i = 0; i <= textLength - patternLength; i++) {
+        if (textHash === patternHash && checkEqual(text, i, i + patternLength - 1, pattern, 0, patternLength - 1)) {
+            return i;
+        }
+
+        if (i < textLength - patternLength) {
+            textHash = reCalculateHash(textHash, text[i], text[i + patternLength], patternLength);
+        }
+    }
+
+    return -1; // pattern not found in text
 }
 
-class RedBlackTree {
-    constructor() {
-        this.root = null;
-    }
-
-    // Utility function to perform left rotation
-    leftRotate(node) {
-        let temp = node.right;
-        node.right = temp.left;
-        temp.left = node;
-        return temp;
-    }
-
-    // Utility function to perform right rotation
-    rightRotate(node) {
-        let temp = node.left;
-        node.left = temp.right;
-        temp.right = node;
-        return temp;
-    }
-
-    // Function to fix violations in the tree after insertion
-    fixViolation(node) {
-        if (node.parent === null) {
-            node.color = 'black'; // Root node always black
-            return node;
-        }
-
-        if (node.parent.color === 'black') {
-            return node;
-        }
-
-        let parent = node.parent;
-        let grandparent = parent.parent;
-        let uncle = grandparent.left === parent ? grandparent.right : grandparent.left;
-
-        if (uncle !== null && uncle.color === 'red') {
-            parent.color = uncle.color = 'black';
-            grandparent.color = 'red';
-            return this.fixViolation(grandparent);
-        }
-
-        if (parent === grandparent.left) {
-            if (node === parent.left) {
-                grandparent = this.rightRotate(grandparent);
-            } else {
-                parent = this.rightRotate(parent);
-                grandparent.left = parent;
-                grandparent = this.leftRotate(grandparent);
-            }
-        } else {
-            if (node === parent.right) {
-                grandparent = this.leftRotate(grandparent);
-            } else {
-                parent = this.leftRotate(parent);
-                grandparent.right = parent;
-                grandparent = this.rightRotate(grandparent);
-            }
-        }
-
-        grandparent.color = 'red';
-        grandparent.left.color = grandparent.right.color = 'black';
-
-        if (grandparent.parent === null) {
-            this.root = grandparent;
-        }
-
-        return grandparent;
-    }
-
-    // Function to insert a node into the tree
-    insert(data) {
-        let node = new Node(data);
-        if (this.root === null) {
-            this.root = node;
-            this.root.color = 'black'; // Root node is always black
-        } else {
-            let current = this.root;
-            let parent = null;
-
-            while (current !== null) {
-                parent = current;
-                current = data < current.data ? current.left : current.right;
-            }
-
-            node.parent = parent;
-            if (data < parent.data) {
-                parent.left = node;
-            } else {
-                parent.right = node;
-            }
-
-            node = this.fixViolation(node); 
-        }
-    }
-}
+let text = "ABCCDDAEFG";
+let pattern = "CDD";
+console.log("Pattern found at index:", rabinKarpSearch(text, pattern));
