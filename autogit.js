@@ -1,53 +1,21 @@
-function biDirectionalSearch(start, end, graph) {
-    let startQueue = [start];
-    let endQueue = [end];
-    let startVisited = new Set();
-    let endVisited = new Set();
-    
-    startVisited.add(start);
-    endVisited.add(end);
-    
-    while (startQueue.length && endQueue.length) {
-        let startNode = startQueue.shift();
-        let endNode = endQueue.shift();
-        
-        if (startVisited.has(endNode) || endVisited.has(startNode)) {
-            return true; // Paths meet
+function findFirstRepeatedChar(str) {
+    const seen = new Set();
+
+    for (const char of str) {
+        if (seen.has(char)) {
+            return char;
         }
-        
-        for (let neighbor of graph[startNode]) {
-            if (!startVisited.has(neighbor)) {
-                startVisited.add(neighbor);
-                startQueue.push(neighbor);
-            }
-        }
-        
-        for (let neighbor of graph[endNode]) {
-            if (!endVisited.has(neighbor)) {
-                endVisited.add(neighbor);
-                endQueue.push(neighbor);
-            }
-        }
+        seen.add(char);
     }
-    
-    return false; // Paths do not meet
+
+    return null; // No repeated character found
 }
 
-// Example graph representation as an adjacency list
-const graph = {
-    0: [1, 2],
-    1: [0, 3, 4],
-    2: [0, 5],
-    3: [1],
-    4: [1],
-    5: [2]
-};
+const inputStr = "hello world";
+const repeatedChar = findFirstRepeatedChar(inputStr);
 
-const startNode = 0;
-const endNode = 5;
-
-if (biDirectionalSearch(startNode, endNode, graph)) {
-    console.log("Paths meet");
+if (repeatedChar) {
+    console.log(`First repeated character in '${inputStr}' is '${repeatedChar}'`);
 } else {
-    console.log("Paths do not meet");
+    console.log("No repeated characters found in the input string.");
 }
