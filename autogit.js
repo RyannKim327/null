@@ -1,12 +1,17 @@
-function stringLength(str) {
-  let count = 0;
-  for (let i = 0; str[i] !== undefined; i++) {
-    count++;
-  }
-  return count;
-}
+// API endpoint example
+const apiUrl = 'https://api.example.com/data';
 
-// Example usage
-const myString = "Hello, World!";
-const length = stringLength(myString);
-console.log(length); // Output: 13
+// Make a GET request to the API endpoint
+fetch(apiUrl)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log(data); // Display the API response data
+  })
+  .catch(error => {
+    console.error('There was a problem with the fetch operation:', error);
+  });
