@@ -1,28 +1,27 @@
-function depthLimitedSearch(node, goal, depthLimit) {
-    return recursiveDLS(node, goal, depthLimit);
-}
-
-function recursiveDLS(node, goal, depthLimit) {
-    if (node.state === goal) {
-        return node;
-    } else if (depthLimit === 0) {
-        return 'cutoff';
-    } else {
-        let cutoffOccurred = false;
-        for (let child of expandNode(node)) {
-            let result = recursiveDLS(child, goal, depthLimit - 1);
-            if (result === 'cutoff') {
-                cutoffOccurred = true;
-            } else if (result !== 'failure') {
-                return result;
-            }
-        }
-        return cutoffOccurred ? 'cutoff' : 'failure';
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
 
-function expandNode(node) {
-    // This function should return an array of child nodes of the given node
-    // based on the valid actions that can be taken from the current node state
-    return [];
+function maxDepth(node) {
+    if (node === null) {
+        return 0;
+    }
+
+    const leftDepth = maxDepth(node.left);
+    const rightDepth = maxDepth(node.right);
+
+    return Math.max(leftDepth, rightDepth) + 1;
 }
+
+// Example binary tree
+let root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+console.log("Maximum depth of the binary tree: ", maxDepth(root));
