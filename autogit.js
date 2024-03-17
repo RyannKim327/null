@@ -1,18 +1,23 @@
-function countOccurrences(str, char) {
-    let count = 0;
-    
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === char) {
-            count++;
-        }
+function findFirstRepeatedCharacter(str) {
+  let charSet = new Set();
+  
+  for (let char of str) {
+    if (charSet.has(char)) {
+      return char;
+    } else {
+      charSet.add(char);
     }
-    
-    return count;
+  }
+  
+  return null; // If no repeated character is found
 }
 
 // Example usage
-const str = "hello world";
-const charToCount = "o";
-const occurrences = countOccurrences(str, charToCount);
+const inputString = "abcdefgabc";
+const repeatedChar = findFirstRepeatedCharacter(inputString);
 
-console.log(`"${charToCount}" appears ${occurrences} times in "${str}"`);
+if (repeatedChar) {
+  console.log(`The first repeated character in "${inputString}" is: ${repeatedChar}`);
+} else {
+  console.log(`No repeated characters found in "${inputString}"`);
+}
