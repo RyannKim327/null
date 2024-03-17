@@ -1,49 +1,51 @@
-class Node {
-  constructor(data, next = null) {
-    this.data = data;
-    this.next = next;
-  }
+function bfs(graph, startNode, endNode) {
+    // Create a queue for BFS
+    let queue = [];
+    queue.push([startNode]);
+
+    // Keep track of visited nodes
+    let visited = new Set();
+
+    // Iterate through the queue
+    while (queue.length > 0) {
+        let path = queue.shift();
+        let node = path[path.length - 1];
+
+        if (node === endNode) {
+            return path;
+        }
+
+        if (!visited.has(node)) {
+            visited.add(node);
+
+            let neighbors = graph[node];
+            for (let neighbor of neighbors) {
+                let newPath = [...path, neighbor];
+                queue.push(newPath);
+            }
+        }
+    }
+
+    // If no path is found
+    return null;
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+// Example graph representation using an adjacency list
+const graph = {
+    A: ['B', 'C'],
+    B: ['A', 'D', 'E'],
+    C: ['A', 'F'],
+    D: ['B'],
+    E: ['B', 'F'],
+    F: ['C', 'E']
+};
 
-  insertAtEnd(data) {
-    const newNode = new Node(data);
+const startNode = 'A';
+const endNode = 'F';
+const shortestPath = bfs(graph, startNode, endNode);
 
-    if (!this.head) {
-      this.head = newNode;
-      return;
-    }
-
-    let current = this.head;
-    while (current.next) {
-      current = current.next;
-    }
-
-    current.next = newNode;
-  }
-
-  getLength() {
-    let length = 0;
-    let current = this.head;
-
-    while (current) {
-      length++;
-      current = current.next;
-    }
-
-    return length;
-  }
+if (shortestPath) {
+    console.log(`Shortest path from ${startNode} to ${endNode}: ${shortestPath.join(' -> ')}`);
+} else {
+    console.log(`No path found from ${startNode} to ${endNode}`);
 }
-
-// Creating a linked list instance
-const linkedList = new LinkedList();
-linkedList.insertAtEnd(1);
-linkedList.insertAtEnd(2);
-linkedList.insertAtEnd(3);
-
-// Getting the length of the linked list
-console.log(linkedList.getLength()); // Output: 3
