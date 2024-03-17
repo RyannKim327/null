@@ -1,55 +1,43 @@
-function rabinKarp(text, pattern) {
-    const textLength = text.length;
-    const patternLength = pattern.length;
-    const base = 26; // Assuming the text and pattern contain only lowercase letters (a-z)
-    const prime = 101; // Can be any prime number
-
-    if (textLength < patternLength) {
-        return -1;
-    }
-
-    // Calculate hash values for pattern and first window of text
-    let patternHash = 0;
-    let textHash = 0;
-    let hashMultiplier = 1;
-    for (let i = 0; i < patternLength; i++) {
-        patternHash = (patternHash * base + pattern.charCodeAt(i)) % prime;
-        textHash = (textHash * base + text.charCodeAt(i)) % prime;
-        if (i > 0) {
-            hashMultiplier = (hashMultiplier * base) % prime;
+function preprocessPattern(pattern) {
+    let prefix = new Array(pattern.length).fill(0);
+    let j = 0;
+    
+    for (let i = 1; i < pattern.length; i++) {
+        while (j > 0 && pattern[i] !== pattern[j]) {
+            j = prefix[j - 1];
         }
-    }
-
-    // Slide the pattern over the text one by one
-    for (let i = 0; i <= textLength - patternLength; i++) {
-        if (patternHash === textHash) {
-            // Check character by character if the hash values match
-            let match = true;
-            for (let j = 0; j < patternLength; j++) {
-                if (text.charAt(i + j) !== pattern.charAt(j)) {
-                    match = false;
-                    break;
-                }
-            }
-            if (match) {
-                return i; // Pattern found at index i
-            }
+        
+        if (pattern[i] === pattern[j]) {
+            j++;
         }
-
-        // Calculate hash value for next window of text
-        if (i < textLength - patternLength) {
-            textHash = (base * (textHash - text.charCodeAt(i) * hashMultiplier) + text.charCodeAt(i + patternLength)) % prime;
-            if (textHash < 0) {
-                textHash += prime;
-            }
-        }
+        
+        prefix[i] = j;
     }
-
-    return -1; // Pattern not found in text
+    
+    return prefix;
 }
 
-// Example usage
-const text = "abcdbcdab";
-const pattern = "bcd";
-const result = rabinKarp(text, pattern);
-console.log(result);
+function kmpSearch(text, pattern) {
+    let prefix = preprocessPattern(pattern);
+    let j = 0;
+
+    for (let i = 0; i < text.length; i++) {
+        while (j > 0 && text[i] !== pattern[j]) {
+            j = prefix[j - 1];
+        }
+
+        if (text[i] === pattern[j]) {
+            j++;
+        }
+
+        if (j === pattern.length) {
+            console.log(`Pattern found at index ${i - j + 1}`);
+            j = prefix[j - 1];
+        }
+    }
+}
+
+// Test the algorithm
+let text = "ABABDABACDABABCABAB";
+let pattern = "ABABCABAB";
+kmpSearch(text, pattern);
