@@ -1,29 +1,30 @@
-function longestCommonSubstring(str1, str2) {
-    const matrix = Array(str1.length + 1).fill(null).map(() => Array(str2.length + 1).fill(0));
-    let longest = 0;
-    let longestIndex = 0;
-
-    for (let i = 1; i <= str1.length; i++) {
-        for (let j = 1; j <= str2.length; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                matrix[i][j] = matrix[i - 1][j - 1] + 1;
-                if (matrix[i][j] > longest) {
-                    longest = matrix[i][j];
-                    longestIndex = i;
-                }
-            } else {
-                matrix[i][j] = 0;
-            }
-        }
+class Node {
+    constructor(order, isLeaf) {
+        this.keys = [];
+        this.children = [];
+        this.isLeaf = isLeaf;
+        this.order = order;
     }
-
-    if (longest === 0) {
-        return '';
-    }
-
-    return str1.slice(longestIndex - longest, longestIndex);
 }
+class BTree {
+    constructor(order) {
+        this.root = new Node(order, true);
+        this.order = order;
+    }
 
-const str1 = 'hello';
-const str2 = 'world';
-console.log(longestCommonSubstring(str1, str2)); // Output: 'l'
+    insert(key) {
+        // Implement insertion logic
+    }
+
+    search(key) {
+        // Implement search logic
+    }
+
+    delete(key) {
+        // Implement deletion logic
+    }
+
+    traverse() {
+        // Implement tree traversal logic
+    }
+}
