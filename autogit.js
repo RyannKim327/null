@@ -1,17 +1,27 @@
-function insertionSort(arr) {
-    for (let i = 1; i < arr.length; i++) {
-        let current = arr[i];
-        let j = i - 1;
-        while (j >= 0 && arr[j] > current) {
-            arr[j + 1] = arr[j];
-            j--;
+function selectionSort(arr) {
+    const n = arr.length;
+    
+    for (let i = 0; i < n - 1; i++) {
+        let minIndex = i;
+        
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
         }
-        arr[j + 1] = current;
+        
+        if (minIndex !== i) {
+            // Swap elements
+            let temp = arr[i];
+            arr[i] = arr[minIndex];
+            arr[minIndex] = temp;
+        }
     }
+    
     return arr;
 }
 
 // Example usage
-let arr = [5, 3, 8, 4, 2];
-console.log("Original array:", arr);
-console.log("Sorted array:", insertionSort(arr));
+const arr = [64, 25, 12, 22, 11];
+const sortedArr = selectionSort(arr);
+console.log(sortedArr); // [11, 12, 22, 25, 64]
