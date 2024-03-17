@@ -1,15 +1,12 @@
-function isArraySorted(arr) {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false;
-        }
-    }
-    return true;
-}
+const cron = require('node-cron');
 
-// Example Usage
-const arr1 = [1, 2, 3, 4, 5];
-const arr2 = [5, 4, 3, 2, 1];
+// Schedule a task to run every minute
+cron.schedule('* * * * *', () => {
+    console.log('Running a task every minute!');
+});
 
-console.log(isArraySorted(arr1)); // Output: true
-console.log(isArraySorted(arr2)); // Output: false
+// Schedule a task to run at 12 PM every day
+cron.schedule('0 12 * * *', () => {
+    console.log('Running a task at 12 PM every day!');
+});
+npm install node-cron
