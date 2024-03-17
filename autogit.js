@@ -1,25 +1,26 @@
-function isPrime(num) {
-    if (num < 2) return false;
-    for (let i = 2; i <= Math.sqrt(num); i++) {
-        if (num % i === 0) {
-            return false;
-        }
+function binarySearchRecursive(arr, target, start = 0, end = arr.length - 1) {
+    if (start > end) {
+        return -1;
     }
-    return true;
+
+    let middle = Math.floor((start + end) / 2);
+
+    if (arr[middle] === target) {
+        return middle;
+    } else if (arr[middle] < target) {
+        return binarySearchRecursive(arr, target, middle + 1, end);
+    } else {
+        return binarySearchRecursive(arr, target, start, middle - 1);
+    }
 }
 
-function largestPrimeFactor(num) {
-    let largestFactor = 1;
-    
-    for (let i = 2; i <= Math.sqrt(num); i++) {
-        if (num % i === 0 && isPrime(i)) {
-            largestFactor = i;
-        }
-    }
-    
-    return largestFactor;
-}
+// Example usage:
+const array = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
+const target = 9;
+const index = binarySearchRecursive(array, target);
 
-const number = 13195; // The number you want to find the largest prime factor of
-const result = largestPrimeFactor(number);
-console.log(result); // Output the largest prime factor
+if (index !== -1) {
+    console.log(`Found at index ${index}`);
+} else {
+    console.log("Element not found");
+}
