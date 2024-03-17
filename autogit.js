@@ -1,57 +1,79 @@
-function fibonacciSearch(arr, x) {
-    let fibM2 = 0;  // (m-2)'th Fibonacci number
-    let fibM1 = 1;  // (m-1)'th Fibonacci number
-    let fibM = fibM2 + fibM1;  // m'th Fibonacci number
+class PriorityQueue {
+  constructor() {
+    this.heap = [];
+  }
 
-    let len = arr.length;
+  getParentIndex(index) {
+    return Math.floor((index - 1) / 2);
+  }
 
-    // Find the smallest Fibonacci number greater than or equal to the length of the array
-    while (fibM < len) {
-        fibM2 = fibM1;
-        fibM1 = fibM;
-        fibM = fibM2 + fibM1;
+  getLeftChildIndex(index) {
+    return 2 * index + 1;
+  }
+
+  getRightChildIndex(index) {
+    return 2 * index + 2;
+  }
+
+  swap(index1, index2) {
+    [this.heap[index1], this.heap[index2]] = [this.heap[index2], this.heap[index1]];
+  }
+
+  insert(value, priority) {
+    const node = { value, priority };
+    this.heap.push(node);
+    this.heapifyUp();
+  }
+
+  heapifyUp() {
+    let index = this.heap.length - 1;
+    while (index > 0) {
+      const parentIndex = this.getParentIndex(index);
+      if (this.heap[parentIndex].priority > this.heap[index].priority) {
+        break;
+      }
+      this.swap(parentIndex, index);
+      index = parentIndex;
     }
+  }
 
-    let offset = -1;  // Represents the offset from the front
-
-    while (fibM > 1) {
-        // Check if fibM2 is a valid location
-        let i = Math.min(offset + fibM2, len - 1);
-
-        // If x is greater, move fibM2 places ahead
-        if (arr[i] < x) {
-            fibM = fibM1;
-            fibM1 = fibM2;
-            fibM2 = fibM - fibM1;
-            offset = i;
-        }
-        // If x is smaller, move fibM2 places ahead
-        else if (arr[i] > x) {
-            fibM = fibM2;
-            fibM1 = fibM1 - fibM2;
-            fibM2 = fibM - fibM1;
-        }
-        // Element found
-        else {
-            return i;
-        }
+  extractMax() {
+    if (this.heap.length === 0) {
+      return null;
     }
-
-    // If the element is not found
-    if (fibM1 && arr[offset + 1] === x) {
-        return offset + 1;
+    if (this.heap.length === 1) {
+      return this.heap.pop();
     }
+    const max = this.heap[0];
+    this.heap[0] = this.heap.pop();
+    this.heapifyDown();
+    return max;
+  }
 
-    // Element not found
-    return -1;
+  heapifyDown() {
+    let index = 0;
+    while (this.getLeftChildIndex(index) < this.heap.length) {
+      let childIndex = this.getLeftChildIndex(index);
+      const rightChildIndex = this.getRightChildIndex(index);
+      if (rightChildIndex < this.heap.length && this.heap[rightChildIndex].priority > this.heap[childIndex].priority) {
+        childIndex = rightChildIndex;
+      }
+      if (this.heap[index].priority >= this.heap[childIndex].priority) {
+        break;
+      }
+      this.swap(index, childIndex);
+      index = childIndex;
+    }
+  }
 }
 
-// Usage
-const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
-const x = 85;
-const index = fibonacciSearch(arr, x);
-if (index !== -1) {
-    console.log(`Element found at index ${index}`);
-} else {
-    console.log("Element not found in the array");
-}
+// Example usage
+const pq = new PriorityQueue();
+pq.insert('task1', 3);
+pq.insert('task2', 5);
+pq.insert('task3', 1);
+
+console.log(pq.extractMax()); // Output: { value: 'task2', priority: 5 }
+console.log(pq.extractMax()); // Output: { value: 'task1', priority: 3 }
+console.log(pq.extractMax()); // Output: { value: 'task3', priority: 1 }
+console.log(pq.extractMax()); // Output: null
