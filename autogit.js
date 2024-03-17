@@ -1,43 +1,62 @@
-class Node {
-    constructor() {
-        this.children = {};
-    }
-}
+function tarjan(graph) {
+    let index = 0;
+    let stack = [];
+    let onStack = [];
+    let indices = {};
+    let lowlinks = [];
+    let components = [];
 
-class SuffixTree {
-    constructor(text) {
-        this.root = new Node();
-        this.buildSuffixTree(text);
-    }
+    function strongConnect(node) {
+        indices[node] = index;
+        lowlinks[node] = index;
+        index++;
+        stack.push(node);
+        onStack[node] = true;
 
-    buildSuffixTree(text) {
-        for (let i = 0; i < text.length; i++) {
-            let currentNode = this.root;
-            for (let j = i; j < text.length; j++) {
-                const currentChar = text[j];
-                if (!(currentChar in currentNode.children)) {
-                    currentNode.children[currentChar] = new Node();
+        graph[node].forEach(neighbor => {
+            if (indices[neighbor] === undefined) {
+                strongConnect(neighbor);
+                lowlinks[node] = Math.min(lowlinks[node], lowlinks[neighbor]);
+            } else if (onStack[neighbor]) {
+                lowlinks[node] = Math.min(lowlinks[node], indices[neighbor]);
+            }
+        });
+
+        if (lowlinks[node] === indices[node]) {
+            let component = [];
+            while (true) {
+                let w = stack.pop();
+                onStack[w] = false;
+                component.push(w);
+                if (w === node) {
+                    break;
                 }
-                currentNode = currentNode.children[currentChar];
             }
+            components.push(component);
         }
     }
 
-    search(pattern) {
-        let currentNode = this.root;
-        for (let i = 0; i < pattern.length; i++) {
-            const currentChar = pattern[i];
-            if (!(currentChar in currentNode.children)) {
-                return false;
-            }
-            currentNode = currentNode.children[currentChar];
+    for (let node in graph) {
+        if (indices[node] === undefined) {
+            strongConnect(node);
         }
-        return true;
     }
+
+    return components;
 }
 
-// Example usage
-const suffixTree = new SuffixTree("banana");
-console.log(suffixTree.search("ana")); // Output: true
-console.log(suffixTree.search("nan")); // Output: true
-console.log(suffixTree.search("foo")); // Output: false
+// Example usage:
+const graph = {
+    0: [1],
+    1: [2],
+    2: [0, 3],
+    3: [4],
+    4: [5],
+    5: [3],
+    6: [5, 7],
+    7: [6, 8],
+    8: [7]
+};
+
+const components = tarjan(graph);
+console.log(components);
