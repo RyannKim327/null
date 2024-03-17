@@ -1,22 +1,32 @@
-function shellSort(arr) {
-  // Start with a large gap, then reduce the gap
-  for (let gap = Math.floor(arr.length / 2); gap > 0; gap = Math.floor(gap / 2)) {
-    // Perform insertion sort for elements at each gap
-    for (let i = gap; i < arr.length; i++) {
-      let temp = arr[i];
-      let j;
+function countingSort(arr) {
+    let max = Math.max(...arr);
+    let count = new Array(max + 1).fill(0);
+    let output = new Array(arr.length);
 
-      for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
-        arr[j] = arr[j - gap];
-      }
-
-      arr[j] = temp;
+    for (let i = 0; i < arr.length; i++) {
+        count[arr[i]]++;
     }
-  }
 
-  return arr;
+    for (let i = 1; i <= max; i++) {
+        count[i] += count[i - 1];
+    }
+
+    for (let i = arr.length - 1; i >= 0; i--) {
+        output[count[arr[i]] - 1] = arr[i];
+        count[arr[i]]--;
+    }
+
+    for (let i = 0; i < arr.length; i++) {
+        arr[i] = output[i];
+    }
+
+    return arr;
 }
 
 // Example usage
-const arr = [12, 34, 54, 2, 3];
-console.log(shellSort(arr)); // Output: [2, 3, 12, 34, 54]
+let arr = [4, 2, 2, 8, 3, 3, 1];
+console.log("Before sorting:");
+console.log(arr);
+countingSort(arr);
+console.log("After sorting:");
+console.log(arr);
