@@ -1,43 +1,45 @@
-function search(pattern, text) {
-    const prime = 101;
-    const patternLength = pattern.length;
-    const textLength = text.length;
-    const primePower = Math.pow(prime, patternLength - 1);
-    const patternHash = hash(pattern);
-    let textHash = hash(text.substring(0, patternLength));
-
-    for (let i = 0; i <= textLength - patternLength; i++) {
-        if (patternHash === textHash && text.substring(i, i + patternLength) === pattern) {
-            return i;
-        }
-        textHash = recalculateHash(text, i, patternLength, textHash, primePower);
+class LinkedListNode {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
     }
-    return -1;
 }
 
-function hash(str) {
-    let hashValue = 0;
-    for (let i = 0; i < str.length; i++) {
-        hashValue += str.charCodeAt(i) * Math.pow(prime, i);
+function reverseLinkedList(head) {
+    let prev = null;
+    let current = head;
+    let next = null;
+
+    while (current !== null) {
+        next = current.next;
+        current.next = prev;
+        prev = current;
+        current = next;
     }
-    return hashValue;
+
+    head = prev;
+    return head;
 }
 
-function recalculateHash(text, oldIndex, patternLength, oldHash, primePower) {
-    let newHash = oldHash - text.charCodeAt(oldIndex);
-    newHash = newHash / prime;
-    newHash += text.charCodeAt(oldIndex + patternLength) * primePower;
-    return newHash;
+// Create a linked list
+let head = new LinkedListNode(1);
+head.next = new LinkedListNode(2);
+head.next.next = new LinkedListNode(3);
+head.next.next.next = new LinkedListNode(4);
+
+// Print the original linked list
+let current = head;
+while (current !== null) {
+    console.log(current.data);
+    current = current.next;
 }
 
-// Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
+// Reverse the linked list
+head = reverseLinkedList(head);
 
-const index = search(pattern, text);
-
-if (index !== -1) {
-    console.log(`Pattern found at index ${index}`);
-} else {
-    console.log("Pattern not found in the text.");
+// Print the reversed linked list
+current = head;
+while (current !== null) {
+    console.log(current.data);
+    current = current.next;
 }
