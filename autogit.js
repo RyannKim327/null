@@ -1,82 +1,58 @@
-class PriorityQueue {
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+class BinaryTree {
     constructor() {
-        this.heap = [];
+        this.root = null;
     }
 
-    enqueue(value, priority) {
-        const node = { value, priority };
-        this.heap.push(node);
-        this._bubbleUp(this.heap.length - 1);
-    }
+    insert(data) {
+        const newNode = new Node(data);
 
-    dequeue() {
-        const min = this.heap[0];
-        const end = this.heap.pop();
-
-        if (this.heap.length > 0) {
-            this.heap[0] = end;
-            this._sinkDown(0);
-        }
-
-        return min;
-    }
-
-    _bubbleUp(index) {
-        const node = this.heap[index];
-
-        while (index > 0) {
-            const parentIndex = Math.floor((index - 1) / 2);
-            const parent = this.heap[parentIndex];
-
-            if (node.priority >= parent.priority) break;
-
-            this.heap[parentIndex] = node;
-            this.heap[index] = parent;
-            index = parentIndex;
+        if (this.root === null) {
+            this.root = newNode;
+        } else {
+            this.insertNode(this.root, newNode);
         }
     }
 
-    _sinkDown(index) {
-        const length = this.heap.length;
-        const node = this.heap[index];
-
-        while (true) {
-            const leftChildIndex = 2 * index + 1;
-            const rightChildIndex = 2 * index + 2;
-            let swap = null;
-
-            if (leftChildIndex < length) {
-                const leftChild = this.heap[leftChildIndex];
-                if (leftChild.priority < node.priority) {
-                    swap = leftChildIndex;
-                }
+    insertNode(node, newNode) {
+        if (newNode.data < node.data) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
             }
-
-            if (rightChildIndex < length) {
-                const rightChild = this.heap[rightChildIndex];
-                if (
-                    (swap === null && rightChild.priority < node.priority) ||
-                    (swap !== null && rightChild.priority < this.heap[swap].priority)
-                ) {
-                    swap = rightChildIndex;
-                }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
             }
+        }
+    }
 
-            if (swap === null) break;
-
-            this.heap[index] = this.heap[swap];
-            this.heap[swap] = node;
-            index = swap;
+    // Traverse the binary tree in-order
+    inOrder(node, callback) {
+        if (node !== null) {
+            this.inOrder(node.left, callback);
+            callback(node.data);
+            this.inOrder(node.right, callback);
         }
     }
 }
 
-// Example usage
-const priorityQueue = new PriorityQueue();
-priorityQueue.enqueue("Task 1", 10);
-priorityQueue.enqueue("Task 2", 5);
-priorityQueue.enqueue("Task 3", 15);
+// Usage
+const binaryTree = new BinaryTree();
+binaryTree.insert(5);
+binaryTree.insert(3);
+binaryTree.insert(7);
+binaryTree.insert(8);
+binaryTree.insert(2);
 
-console.log(priorityQueue.dequeue()); // Output: { value: 'Task 2', priority: 5 }
-console.log(priorityQueue.dequeue()); // Output: { value: 'Task 1', priority: 10 }
-console.log(priorityQueue.dequeue()); // Output: { value: 'Task 3', priority: 15 }
+binaryTree.inOrder(binaryTree.root, (data) => console.log(data));
