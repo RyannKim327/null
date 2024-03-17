@@ -1,19 +1,32 @@
-function bubbleSort(arr) {
-    let swapped;
-    do {
-        swapped = false;
-        for (let i = 0; i < arr.length - 1; i++) {
-            if (arr[i] > arr[i + 1]) {
-                let temp = arr[i];
-                arr[i] = arr[i + 1];
-                arr[i + 1] = temp;
-                swapped = true;
-            }
-        }
-    } while (swapped);
-    return arr;
+// Define a simple graph as an adjacency list
+const graph = {
+  A: ['B', 'C'],
+  B: ['A', 'D', 'E'],
+  C: ['A', 'F'],
+  D: ['B'],
+  E: ['B', 'F'],
+  F: ['C', 'E']
+};
+
+// Depth-First Search function
+function dfs(node, visited, graph) {
+  if (visited[node]) {
+    return;
+  }
+  
+  visited[node] = true;
+  console.log(node);
+  
+  for (let neighbor of graph[node]) {
+    dfs(neighbor, visited, graph);
+  }
 }
 
-// Example usage:
-const array = [5, 3, 8, 2, 1, 4];
-console.log(bubbleSort(array));
+// Main DFS function to start the search
+function dfsMain(startNode, graph) {
+  const visited = {};
+  dfs(startNode, visited, graph);
+}
+
+// Start DFS from node 'A'
+dfsMain('A', graph);
