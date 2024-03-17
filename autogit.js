@@ -1,15 +1,16 @@
-function countOccurrences(str, char) {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === char) {
-            count++;
-        }
+function isPrime(num) {
+  if (num <= 1) {
+    return false;
+  }
+  
+  for (let i = 2; i <= Math.sqrt(num); i++) {
+    if (num % i === 0) {
+      return false;
     }
-    return count;
+  }
+  
+  return num > 1;
 }
 
-// Example usage
-const str = "hello world";
-const char = "o";
-const occurrences = countOccurrences(str, char);
-console.log(`The character "${char}" occurs ${occurrences} times in the string "${str}".`);
+console.log(isPrime(17)); // Output: true
+console.log(isPrime(15)); // Output: false
