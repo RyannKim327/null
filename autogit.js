@@ -1,31 +1,11 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+function validateEmail(email) {
+    const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return re.test(email);
 }
 
-function countLeafNodes(node) {
-    if (!node) {
-        return 0;
-    }
-    
-    if (!node.left && !node.right) {
-        return 1;
-    }
-    
-    return countLeafNodes(node.left) + countLeafNodes(node.right);
+const email = "test@example.com";
+if (validateEmail(email)) {
+    console.log("Email is valid");
+} else {
+    console.log("Email is not valid");
 }
-
-// Example binary tree
-let root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
-
-const leafNodeCount = countLeafNodes(root);
-console.log("Number of leaf nodes: " + leafNodeCount);
