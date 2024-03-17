@@ -1,70 +1,27 @@
-class ListNode {
-    constructor(val) {
-        this.val = val;
-        this.next = null;
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
 
-function getIntersectionNode(headA, headB) {
-    if (!headA || !headB) {
-        return null;
+function maxDepth(root) {
+    if (!root) {
+        return 0;
     }
 
-    let lenA = getLength(headA);
-    let lenB = getLength(headB);
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
 
-    let currA = headA;
-    let currB = headB;
-
-    // Traverse the longer list by the difference in lengths
-    while (lenA > lenB) {
-        currA = currA.next;
-        lenA--;
-    }
-
-    while (lenB > lenA) {
-        currB = currB.next;
-        lenB--;
-    }
-
-    // Traverse both lists in parallel
-    while (currA && currB) {
-        if (currA === currB) {
-            return currA;
-        }
-        currA = currA.next;
-        currB = currB.next;
-    }
-
-    return null;
+    return 1 + Math.max(leftDepth, rightDepth);
 }
 
-function getLength(head) {
-    let length = 0;
-    let current = head;
-    while (current) {
-        length++;
-        current = current.next;
-    }
-    return length;
-}
+// Example usage
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
 
-// Example
-// Intersected linked lists:
-// 1 -> 2 -> 3 -> 4 -> 5 -> 6
-//                   \
-//                    7 -> 8 -> 9
-let headA = new ListNode(1);
-headA.next = new ListNode(2);
-headA.next.next = new ListNode(3);
-headA.next.next.next = new ListNode(4);
-headA.next.next.next.next = new ListNode(5);
-headA.next.next.next.next.next = new ListNode(6);
-
-let headB = new ListNode(7);
-headB.next = new ListNode(8);
-headB.next.next = new ListNode(9);
-headB.next.next.next = headA.next.next.next.next; // Intersection point
-
-let intersectionNode = getIntersectionNode(headA, headB);
-console.log(intersectionNode); // Output: ListNode { val: 5, next: ListNode { val: 6, next: null } }
+console.log(maxDepth(root)); // Output: 3
