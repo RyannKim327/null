@@ -1,27 +1,52 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+function searchRabinKarp(text, pattern) {
+    const prime = 101; // Prime number for hashing
+    const textLength = text.length;
+    const patternLength = pattern.length;
+    const patternHash = hashCode(pattern, 0, patternLength, prime);
+    let rollingHash = hashCode(text, 0, patternLength, prime);
+
+    for (let i = 0; i <= textLength - patternLength; i++) {
+        if (rollingHash === patternHash) {
+            let match = true;
+            for (let j = 0; j < patternLength; j++) {
+                if (pattern[j] !== text[i + j]) {
+                    match = false;
+                    break;
+                }
+            }
+            if (match) {
+                return i; // Pattern found at index i
+            }
+        }
+        if (i < textLength - patternLength) {
+            rollingHash = recalculateHash(text, i, patternLength, prime, rollingHash);
+        }
+    }
+
+    return -1; // Pattern not found
 }
 
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
-
-  while (fast !== null && fast.next !== null) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
-
-  return slow.value;
+function hashCode(str, start, end, prime) {
+    let hash = 0;
+    for (let i = start; i < end; i++) {
+        hash = (hash * prime + str.charCodeAt(i)) % prime;
+    }
+    return hash;
 }
 
-// Example of creating a linked list and finding the middle element
-const head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
+function recalculateHash(str, oldIndex, patternLength, prime, oldHash) {
+    let newHash = (oldHash - str.charCodeAt(oldIndex) + prime) % prime;
+    newHash = (newHash * prime + str.charCodeAt(oldIndex + patternLength)) % prime;
+    return newHash;
+}
 
-console.log("Middle Element: ", findMiddleElement(head));  // Output: 3
+// Test the algorithm
+const text = "abracadabra";
+const pattern = "cad";
+const index = searchRabinKarp(text, pattern);
+
+if (index !== -1) {
+    console.log(`Pattern found at index ${index}`);
+} else {
+    console.log(`Pattern not found`);
+}
