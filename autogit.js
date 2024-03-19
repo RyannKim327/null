@@ -1,21 +1,10 @@
-function isAnagram(str1, str2) {
-    // Remove any non-alphabetic characters and convert the strings to lowercase
-    str1 = str1.replace(/[^\w]/g, '').toLowerCase();
-    str2 = str2.replace(/[^\w]/g, '').toLowerCase();
+const str1 = "Hello";
+const str2 = "World";
+const concatenatedString = str1 + " " + str2;
 
-    // Check if the lengths of the strings are equal
-    if (str1.length !== str2.length) {
-        return false;
-    }
+console.log(concatenatedString); // Output: Hello World
+const str1 = "Hello";
+const str2 = "World";
+const concatenatedString = `${str1} ${str2}`;
 
-    // Sort the characters of the strings and compare them
-    const sortedStr1 = str1.split('').sort().join('');
-    const sortedStr2 = str2.split('').sort().join('');
-
-    return sortedStr1 === sortedStr2;
-}
-
-// Test the function
-const string1 = "listen";
-const string2 = "silent";
-console.log(isAnagram(string1, string2)); // Output: true
+console.log(concatenatedString); // Output: Hello World
