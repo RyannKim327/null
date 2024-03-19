@@ -1,45 +1,24 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
-    }
-}
-
-class LinkedList {
-    constructor() {
-        this.head = null;
+function quickSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    addNode(data) {
-        let newNode = new Node(data);
-        if (!this.head) {
-            this.head = newNode;
+    const pivot = arr[0];
+    const left = [];
+    const right = [];
+
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
         } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
+            right.push(arr[i]);
         }
     }
 
-    getLength() {
-        let current = this.head;
-        let length = 0;
-        while (current) {
-            length++;
-            current = current.next;
-        }
-        return length;
-    }
+    return [...quickSort(left), pivot, ...quickSort(right)];
 }
 
-// Create a linked list
-let list = new LinkedList();
-list.addNode(1);
-list.addNode(2);
-list.addNode(3);
-list.addNode(4);
-
-// Get the length of the linked list
-console.log(list.getLength()); // Output: 4
+// Example usage
+const arr = [5, 3, 8, 1, 2, 7, 4];
+const sortedArr = quickSort(arr);
+console.log(sortedArr);
