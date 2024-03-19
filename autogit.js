@@ -1,68 +1,29 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+function isPrime(number) {
+    if (number <= 1) {
+        return false;
     }
-}
-
-class BinarySearchTree {
-    constructor() {
-        this.root = null;
+    if (number <= 3) {
+        return true;
+    }
+    if (number % 2 === 0 || number % 3 === 0) {
+        return false;
     }
 
-    insert(value) {
-        const newNode = new Node(value);
-
-        if (!this.root) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    insertNode(node, newNode) {
-        if (newNode.value < node.value) {
-            if (!node.left) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (!node.right) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
-
-    search(value) {
-        return this.searchNode(this.root, value);
-    }
-
-    searchNode(node, value) {
-        if (!node) {
+    let i = 5;
+    while (i * i <= number) {
+        if (number % i === 0 || number % (i + 2) === 0) {
             return false;
         }
-
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true;
-        }
+        i += 6;
     }
+
+    return true;
 }
 
-// Example usage:
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
-bst.insert(7);
-
-console.log(bst.search(5)); // true
-console.log(bst.search(8)); // false
+// Test the function
+const number = 17;
+if (isPrime(number)) {
+    console.log(`${number} is a prime number`);
+} else {
+    console.log(`${number} is not a prime number`);
+}
