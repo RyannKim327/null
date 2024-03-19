@@ -1,87 +1,23 @@
-// Red-Black Tree Node
-class Node {
-    constructor(data, color) {
-        this.data = data;
-        this.color = color;
-        this.left = null;
-        this.right = null;
-        this.parent = null;
+function checkAnagram(str1, str2) {
+    // Remove any non-alphabetic characters and convert to lowercase
+    str1 = str1.replace(/[^A-Za-z]/g, '').toLowerCase();
+    str2 = str2.replace(/[^A-Za-z]/g, '').toLowerCase();
+
+    // Check if the lengths are equal
+    if (str1.length !== str2.length) {
+        return false;
     }
+
+    // Sort the characters and compare
+    return str1.split('').sort().join('') === str2.split('').sort().join('');
 }
 
-// Red-Black Tree
-class RedBlackTree {
-    constructor() {
-        this.root = null;
-    }
+// Example usage
+const string1 = 'listen';
+const string2 = 'silent';
 
-    insert(data) {
-        let newNode = new Node(data, "red");
-        this.root = this._insertNode(this.root, newNode);
-        this.root.color = "black"; // Root must be black
-    }
-
-    _insertNode(root, newNode) {
-        if (!root) {
-            return newNode;
-        }
-
-        if (newNode.data < root.data) {
-            root.left = this._insertNode(root.left, newNode);
-            root.left.parent = root;
-        } else if (newNode.data > root.data) {
-            root.right = this._insertNode(root.right, newNode);
-            root.right.parent = root;
-        }
-
-        if (this._isRed(root.right) && !this._isRed(root.left)) {
-            root = this._rotateLeft(root);
-        }
-        if (this._isRed(root.left) && this._isRed(root.left.left)) {
-            root = this._rotateRight(root);
-        }
-        if (this._isRed(root.left) && this._isRed(root.right)) {
-            this._flipColors(root);
-        }
-
-        return root;
-    }
-
-    _isRed(node) {
-        if (!node) {
-            return false;
-        }
-        return node.color === "red";
-    }
-
-    _rotateLeft(node) {
-        let temp = node.right;
-        node.right = temp.left;
-        temp.left = node;
-        temp.color = node.color;
-        node.color = "red";
-        return temp;
-    }
-
-    _rotateRight(node) {
-        let temp = node.left;
-        node.left = temp.right;
-        temp.right = node;
-        temp.color = node.color;
-        node.color = "red";
-        return temp;
-    }
-
-    _flipColors(node) {
-        node.color = "red";
-        node.left.color = "black";
-        node.right.color = "black";
-    }
+if (checkAnagram(string1, string2)) {
+    console.log(`${string1} and ${string2} are anagrams.`);
+} else {
+    console.log(`${string1} and ${string2} are not anagrams.`);
 }
-
-// Usage
-let rbTree = new RedBlackTree();
-rbTree.insert(10);
-rbTree.insert(20);
-rbTree.insert(30);
-rbTree.insert(15);
