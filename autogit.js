@@ -1,17 +1,16 @@
-Area = sqrt(s * (s - a) * (s - b) * (s - c))
-function calculateTriangleArea(a, b, c) {
-    // Calculate semi-perimeter
-    var s = (a + b + c) / 2;
+function maxSubarraySum(arr) {
+    let maxSum = arr[0];
+    let currentSum = arr[0];
 
-    // Calculate area using Heron's formula
-    var area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
+    for (let i = 1; i < arr.length; i++) {
+        currentSum = Math.max(arr[i], currentSum + arr[i]);
+        maxSum = Math.max(maxSum, currentSum);
+    }
 
-    return area;
+    return maxSum;
 }
 
-// Test the function
-var sideA = 5;
-var sideB = 6;
-var sideC = 7;
-var area = calculateTriangleArea(sideA, sideB, sideC);
-console.log("The area of the triangle is: " + area);
+// Example usage
+const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const maxSum = maxSubarraySum(arr); // Output: 6
+console.log(maxSum);
