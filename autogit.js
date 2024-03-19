@@ -1,54 +1,87 @@
-class TrieNode {
-  constructor() {
-    this.children = {};
-    this.isEndOfWord = false;
-  }
+// Red-Black Tree Node
+class Node {
+    constructor(data, color) {
+        this.data = data;
+        this.color = color;
+        this.left = null;
+        this.right = null;
+        this.parent = null;
+    }
 }
 
-class Trie {
-  constructor() {
-    this.root = new TrieNode();
-  }
-
-  insert(word) {
-    let node = this.root;
-    for (let char of word) {
-      if (!node.children[char]) {
-        node.children[char] = new TrieNode();
-      }
-      node = node.children[char];
+// Red-Black Tree
+class RedBlackTree {
+    constructor() {
+        this.root = null;
     }
-    node.isEndOfWord = true;
-  }
 
-  search(word) {
-    let node = this.root;
-    for (let char of word) {
-      if (!node.children[char]) {
-        return false;
-      }
-      node = node.children[char];
+    insert(data) {
+        let newNode = new Node(data, "red");
+        this.root = this._insertNode(this.root, newNode);
+        this.root.color = "black"; // Root must be black
     }
-    return node.isEndOfWord;
-  }
 
-  startsWith(prefix) {
-    let node = this.root;
-    for (let char of prefix) {
-      if (!node.children[char]) {
-        return false;
-      }
-      node = node.children[char];
+    _insertNode(root, newNode) {
+        if (!root) {
+            return newNode;
+        }
+
+        if (newNode.data < root.data) {
+            root.left = this._insertNode(root.left, newNode);
+            root.left.parent = root;
+        } else if (newNode.data > root.data) {
+            root.right = this._insertNode(root.right, newNode);
+            root.right.parent = root;
+        }
+
+        if (this._isRed(root.right) && !this._isRed(root.left)) {
+            root = this._rotateLeft(root);
+        }
+        if (this._isRed(root.left) && this._isRed(root.left.left)) {
+            root = this._rotateRight(root);
+        }
+        if (this._isRed(root.left) && this._isRed(root.right)) {
+            this._flipColors(root);
+        }
+
+        return root;
     }
-    return true;
-  }
+
+    _isRed(node) {
+        if (!node) {
+            return false;
+        }
+        return node.color === "red";
+    }
+
+    _rotateLeft(node) {
+        let temp = node.right;
+        node.right = temp.left;
+        temp.left = node;
+        temp.color = node.color;
+        node.color = "red";
+        return temp;
+    }
+
+    _rotateRight(node) {
+        let temp = node.left;
+        node.left = temp.right;
+        temp.right = node;
+        temp.color = node.color;
+        node.color = "red";
+        return temp;
+    }
+
+    _flipColors(node) {
+        node.color = "red";
+        node.left.color = "black";
+        node.right.color = "black";
+    }
 }
 
-// Example usage
-let trie = new Trie();
-trie.insert("apple");
-console.log(trie.search("apple")); // true
-console.log(trie.search("app")); // false
-console.log(trie.startsWith("app")); // true
-trie.insert("app");
-console.log(trie.search("app")); // true
+// Usage
+let rbTree = new RedBlackTree();
+rbTree.insert(10);
+rbTree.insert(20);
+rbTree.insert(30);
+rbTree.insert(15);
