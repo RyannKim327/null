@@ -1,23 +1,17 @@
-function findFirstRepeatedCharacter(str) {
-    let charSet = new Set();
+Area = sqrt(s * (s - a) * (s - b) * (s - c))
+function calculateTriangleArea(a, b, c) {
+    // Calculate semi-perimeter
+    var s = (a + b + c) / 2;
 
-    for (let char of str) {
-        if (charSet.has(char)) {
-            return char;
-        } else {
-            charSet.add(char);
-        }
-    }
+    // Calculate area using Heron's formula
+    var area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
 
-    return null; // If no repeated character is found
+    return area;
 }
 
-// Example of how to use the function
-const inputString = "abcdefghiijk";
-const firstRepeatedCharacter = findFirstRepeatedCharacter(inputString);
-
-if (firstRepeatedCharacter) {
-    console.log(`The first repeated character in ${inputString} is ${firstRepeatedCharacter}`);
-} else {
-    console.log(`There are no repeated characters in ${inputString}`);
-}
+// Test the function
+var sideA = 5;
+var sideB = 6;
+var sideC = 7;
+var area = calculateTriangleArea(sideA, sideB, sideC);
+console.log("The area of the triangle is: " + area);
