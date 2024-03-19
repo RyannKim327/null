@@ -1,7 +1,10 @@
-const cron = require('node-cron');
+function factorial(num) {
+    if (num === 0) {
+        return 1;
+    } else {
+        return num * factorial(num - 1);
+    }
+}
 
-cron.schedule('*/5 * * * *', () => {
-  console.log('Running a task every 5 minutes');
-});
-npm install node-cron
-node cron-example.js
+// Call the factorial function with a number
+console.log(factorial(5)); // Output: 120
