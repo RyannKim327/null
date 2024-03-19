@@ -1,19 +1,19 @@
-function bubbleSort(arr) {
-    let len = arr.length;
-    for (let i = 0; i < len; i++) {
-        for (let j = 0; j < len - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                // Swap the elements
-                let temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
-        }
-    }
-    return arr;
-}
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
 
-// Example usage
-let unsortedArray = [64, 34, 25, 12, 22, 11, 90];
-let sortedArray = bubbleSort(unsortedArray);
-console.log(sortedArray);
+const commonElements = array1.filter(element => array2.includes(element));
+
+console.log(commonElements); // Output: [3, 4, 5]
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
+
+const set1 = new Set(array1);
+const commonElements = array2.filter(element => set1.has(element));
+
+console.log(commonElements); // Output: [3, 4, 5]
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
+
+const commonElements = array1.filter(element => array2.indexOf(element) !== -1);
+
+console.log(commonElements); // Output: [3, 4, 5]
