@@ -1,27 +1,29 @@
 class Node {
     constructor(value) {
         this.value = value;
-        this.left = null;
-        this.right = null;
+        this.next = null;
     }
 }
 
-function maxDepth(root) {
-    if (root === null) {
-        return 0;
+function findMiddleElement(head) {
+    let slow = head;
+    let fast = head;
+
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next;
+        fast = fast.next.next;
     }
-    
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
-    
-    return 1 + Math.max(leftDepth, rightDepth);
+
+    return slow;
 }
 
-// Example binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
+// Example linked list
+let head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
 
-console.log(maxDepth(root)); // Output: 3
+// Find the middle element
+let middle = findMiddleElement(head);
+console.log(middle.value); // Output: 3
