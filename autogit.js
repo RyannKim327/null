@@ -1,23 +1,27 @@
-function checkAnagram(str1, str2) {
-    // Remove any non-alphabetic characters and convert to lowercase
-    str1 = str1.replace(/[^A-Za-z]/g, '').toLowerCase();
-    str2 = str2.replace(/[^A-Za-z]/g, '').toLowerCase();
-
-    // Check if the lengths are equal
-    if (str1.length !== str2.length) {
-        return false;
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-
-    // Sort the characters and compare
-    return str1.split('').sort().join('') === str2.split('').sort().join('');
 }
 
-// Example usage
-const string1 = 'listen';
-const string2 = 'silent';
-
-if (checkAnagram(string1, string2)) {
-    console.log(`${string1} and ${string2} are anagrams.`);
-} else {
-    console.log(`${string1} and ${string2} are not anagrams.`);
+function maxDepth(root) {
+    if (root === null) {
+        return 0;
+    }
+    
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
+    
+    return 1 + Math.max(leftDepth, rightDepth);
 }
+
+// Example binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+console.log(maxDepth(root)); // Output: 3
