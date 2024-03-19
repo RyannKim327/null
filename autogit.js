@@ -1,17 +1,54 @@
-function reverseWords(str) {
-    // Split the string into an array of words
-    let wordsArray = str.split(" ");
-
-    // Reverse the array of words
-    let reversedWordsArray = wordsArray.reverse();
-
-    // Join the array back into a string
-    let reversedString = reversedWordsArray.join(" ");
-
-    return reversedString;
+class TrieNode {
+  constructor() {
+    this.children = {};
+    this.isEndOfWord = false;
+  }
 }
 
-// Test the function
-let originalString = "Hello World!";
-let reversedString = reverseWords(originalString);
-console.log(reversedString); // Output: "World! Hello"
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
+  }
+
+  insert(word) {
+    let node = this.root;
+    for (let char of word) {
+      if (!node.children[char]) {
+        node.children[char] = new TrieNode();
+      }
+      node = node.children[char];
+    }
+    node.isEndOfWord = true;
+  }
+
+  search(word) {
+    let node = this.root;
+    for (let char of word) {
+      if (!node.children[char]) {
+        return false;
+      }
+      node = node.children[char];
+    }
+    return node.isEndOfWord;
+  }
+
+  startsWith(prefix) {
+    let node = this.root;
+    for (let char of prefix) {
+      if (!node.children[char]) {
+        return false;
+      }
+      node = node.children[char];
+    }
+    return true;
+  }
+}
+
+// Example usage
+let trie = new Trie();
+trie.insert("apple");
+console.log(trie.search("apple")); // true
+console.log(trie.search("app")); // false
+console.log(trie.startsWith("app")); // true
+trie.insert("app");
+console.log(trie.search("app")); // true
