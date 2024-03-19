@@ -1,25 +1,23 @@
-function shellSort(arr) {
-  let gap = Math.floor(arr.length / 2);
+function findFirstRepeatedCharacter(str) {
+    let charSet = new Set();
 
-  while (gap > 0) {
-    for (let i = gap; i < arr.length; i++) {
-      let temp = arr[i];
-      let j = i;
-
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
-      }
-
-      arr[j] = temp;
+    for (let char of str) {
+        if (charSet.has(char)) {
+            return char;
+        } else {
+            charSet.add(char);
+        }
     }
 
-    gap = Math.floor(gap / 2);
-  }
-
-  return arr;
+    return null; // If no repeated character is found
 }
 
-// Example usage
-const arr = [12, 34, 54, 2, 3];
-console.log(shellSort(arr)); // Output: [2, 3, 12, 34, 54]
+// Example of how to use the function
+const inputString = "abcdefghiijk";
+const firstRepeatedCharacter = findFirstRepeatedCharacter(inputString);
+
+if (firstRepeatedCharacter) {
+    console.log(`The first repeated character in ${inputString} is ${firstRepeatedCharacter}`);
+} else {
+    console.log(`There are no repeated characters in ${inputString}`);
+}
