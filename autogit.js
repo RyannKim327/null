@@ -1,13 +1,17 @@
-function findKthSmallest(arr, k) {
-    // Sort the array in ascending order
-    arr.sort((a, b) => a - b);
-    
-    // Return the kth smallest element
-    return arr[k - 1];
+function reverseWords(str) {
+    // Split the string into an array of words
+    let wordsArray = str.split(" ");
+
+    // Reverse the array of words
+    let reversedWordsArray = wordsArray.reverse();
+
+    // Join the array back into a string
+    let reversedString = reversedWordsArray.join(" ");
+
+    return reversedString;
 }
 
-// Example usage
-const array = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
-const k = 4;
-const kthSmallest = findKthSmallest(array, k);
-console.log(`The ${k}th smallest element in the array is: ${kthSmallest}`);
+// Test the function
+let originalString = "Hello World!";
+let reversedString = reverseWords(originalString);
+console.log(reversedString); // Output: "World! Hello"
