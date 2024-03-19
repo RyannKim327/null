@@ -1,34 +1,26 @@
-function mergeSortIterative(arr) {
-    const n = arr.length;
-    const buffer = new Array(n);
-    
-    for (let size = 1; size < n; size *= 2) {
-        for (let start = 0; start < n; start += 2 * size) {
-            const leftStart = start;
-            const leftEnd = Math.min(start + size, n);
-            const rightStart = leftEnd;
-            const rightEnd = Math.min(start + 2 * size, n);
-            
-            let i = leftStart;
-            let j = rightStart;
-            for (let k = leftStart; k < rightEnd; k++) {
-                if (i < leftEnd && (j >= rightEnd || arr[i] <= arr[j])) {
-                    buffer[k] = arr[i];
-                    i++;
-                } else {
-                    buffer[k] = arr[j];
-                    j++;
-                }
-            }
-        }
-        
-        arr = buffer.slice();
+function binarySearchRecursive(arr, target, start = 0, end = arr.length - 1) {
+    if (start > end) {
+        return -1; // Element not found
     }
-    
-    return arr;
+
+    const mid = Math.floor((start + end) / 2);
+
+    if (arr[mid] === target) {
+        return mid; // Element found at index mid
+    } else if (arr[mid] > target) {
+        return binarySearchRecursive(arr, target, start, mid - 1); // Search left half
+    } else {
+        return binarySearchRecursive(arr, target, mid + 1, end); // Search right half
+    }
 }
 
 // Example usage
-const arr = [38, 27, 43, 3, 9, 82, 10];
-const sortedArr = mergeSortIterative(arr);
-console.log(sortedArr);
+const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17];
+const target = 13;
+const index = binarySearchRecursive(arr, target);
+
+if (index !== -1) {
+    console.log(`Element found at index ${index}`);
+} else {
+    console.log("Element not found");
+}
