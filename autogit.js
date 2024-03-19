@@ -1,10 +1,4 @@
-function factorial(num) {
-    if (num === 0) {
-        return 1;
-    } else {
-        return num * factorial(num - 1);
-    }
-}
+let str = "Hello, World! How are you?";
+let stringWithoutSpaces = str.replace(/\s/g, "");
 
-// Call the factorial function with a number
-console.log(factorial(5)); // Output: 120
+console.log(stringWithoutSpaces); // Output: "Hello,World!Howareyou?"
