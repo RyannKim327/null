@@ -1,29 +1,34 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
+function mergeSortIterative(arr) {
+    const n = arr.length;
+    const buffer = new Array(n);
+    
+    for (let size = 1; size < n; size *= 2) {
+        for (let start = 0; start < n; start += 2 * size) {
+            const leftStart = start;
+            const leftEnd = Math.min(start + size, n);
+            const rightStart = leftEnd;
+            const rightEnd = Math.min(start + 2 * size, n);
+            
+            let i = leftStart;
+            let j = rightStart;
+            for (let k = leftStart; k < rightEnd; k++) {
+                if (i < leftEnd && (j >= rightEnd || arr[i] <= arr[j])) {
+                    buffer[k] = arr[i];
+                    i++;
+                } else {
+                    buffer[k] = arr[j];
+                    j++;
+                }
+            }
+        }
+        
+        arr = buffer.slice();
     }
+    
+    return arr;
 }
 
-function findMiddleElement(head) {
-    let slow = head;
-    let fast = head;
-
-    while (fast !== null && fast.next !== null) {
-        slow = slow.next;
-        fast = fast.next.next;
-    }
-
-    return slow;
-}
-
-// Example linked list
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-// Find the middle element
-let middle = findMiddleElement(head);
-console.log(middle.value); // Output: 3
+// Example usage
+const arr = [38, 27, 43, 3, 9, 82, 10];
+const sortedArr = mergeSortIterative(arr);
+console.log(sortedArr);
