@@ -1,48 +1,20 @@
-function kthSmallestElement(arr, k) {
-    arr.sort((a, b) => a - b); // Sort the array in ascending order
-    return arr[k - 1]; // Return the kth smallest element
+function insertionSort(arr) {
+    for (let i = 1; i < arr.length; i++) {
+        let currentElement = arr[i];
+        let j = i - 1;
+
+        while (j >= 0 && arr[j] > currentElement) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+
+        arr[j + 1] = currentElement;
+    }
+
+    return arr;
 }
 
 // Example usage
-const array = [3, 1, 4, 2, 5];
-const k = 2;
-const result = kthSmallestElement(array, k);
-
-console.log(`The ${k}th smallest element is: ${result}`);
-function kthSmallestElement(arr, k) {
-    function partition(arr, left, right) {
-        const pivot = arr[right];
-        let i = left;
-        for (let j = left; j < right; j++) {
-            if (arr[j] <= pivot) {
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-                i++;
-            }
-        }
-        [arr[i], arr[right]] = [arr[right], arr[i]];
-        return i;
-    }
-
-    function quickselect(arr, left, right, k) {
-        if (left === right) return arr[left];
-
-        const pivotIndex = partition(arr, left, right);
-
-        if (pivotIndex === k) {
-            return arr[k];
-        } else if (k < pivotIndex) {
-            return quickselect(arr, left, pivotIndex - 1, k);
-        } else {
-            return quickselect(arr, pivotIndex + 1, right, k);
-        }
-    }
-
-    return quickselect(arr, 0, arr.length - 1, k - 1);
-}
-
-// Example usage
-const array = [3, 1, 4, 2, 5];
-const k = 2;
-const result = kthSmallestElement(array, k);
-
-console.log(`The ${k}th smallest element is: ${result}`);
+const numbers = [5, 2, 4, 6, 1, 3];
+console.log("Original array: ", numbers);
+console.log("Sorted array: ", insertionSort(numbers));
