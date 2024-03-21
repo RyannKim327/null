@@ -1,46 +1,43 @@
 class Stack {
-  constructor() {
-    this.stack = [];
-  }
-
-  // Push element onto the stack
-  push(element) {
-    this.stack.push(element);
-  }
-
-  // Pop element from the stack
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
+    constructor() {
+        this.items = [];
     }
-    return this.stack.pop();
-  }
 
-  // Peek at the top element of the stack
-  peek() {
-    return this.stack[this.stack.length - 1];
-  }
+    push(item) {
+        this.items.push(item);
+    }
 
-  // Check if the stack is empty
-  isEmpty() {
-    return this.stack.length === 0;
-  }
+    pop() {
+        if (this.isEmpty()) {
+            return "Stack is empty";
+        }
+        return this.items.pop();
+    }
 
-  // Print the stack elements
-  printStack() {
-    console.log(this.stack);
-  }
+    peek() {
+        return this.items[this.items.length - 1];
+    }
+
+    isEmpty() {
+        return this.items.length === 0;
+    }
+
+    print() {
+        console.log(this.items);
+    }
 }
 
-// Test the stack implementation
-const stack = new Stack();
-stack.push(1);
-stack.push(2);
-stack.push(3);
+// Example usage
+const myStack = new Stack();
 
-stack.printStack(); // [1, 2, 3]
+myStack.push(1);
+myStack.push(2);
+myStack.push(3);
 
-console.log(stack.pop()); // 3
-console.log(stack.peek()); // 2
+myStack.print(); // Output: [1, 2, 3]
 
-stack.printStack(); // [1, 2]
+console.log(myStack.pop()); // Output: 3
+console.log(myStack.peek()); // Output: 2
+console.log(myStack.isEmpty()); // Output: false
+
+myStack.print(); // Output: [1, 2]
