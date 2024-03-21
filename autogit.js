@@ -1,10 +1,35 @@
-function findKthSmallestElement(arr, k) {
-    arr.sort((a, b) => a - b); // Sort the array in ascending order
-    return arr[k - 1]; // Return the kth smallest element
+function topologicalSort(graph) {
+    const visited = new Set();
+    const stack = [];
+
+    function dfs(node) {
+        visited.add(node);
+        for (let neighbor of graph[node]) {
+            if (!visited.has(neighbor)) {
+                dfs(neighbor);
+            }
+        }
+        stack.push(node);
+    }
+
+    for (let node in graph) {
+        if (!visited.has(node)) {
+            dfs(node);
+        }
+    }
+
+    return stack.reverse();
 }
 
-// Example usage
-const array = [3, 5, 1, 4, 2];
-const k = 3; // Find the 3rd smallest element
-const kthSmallestElement = findKthSmallestElement(array, k);
-console.log(`The ${k}th smallest element is: ${kthSmallestElement}`);
+// Example graph represented as an adjacency list
+const graph = {
+    0: [1, 2],
+    1: [3],
+    2: [3],
+    3: [4, 5],
+    4: [],
+    5: []
+};
+
+const result = topologicalSort(graph);
+console.log(result); // Output: [0, 2, 1, 3, 5, 4]
