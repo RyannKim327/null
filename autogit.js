@@ -1,25 +1,27 @@
-function findIntersection(headA, headB) {
-    let seenNodes = new Set();
-
-    let currentA = headA;
-    while (currentA) {
-        seenNodes.add(currentA);
-        currentA = currentA.next;
+function burrowsWheelerTransform(text) {
+    // Create an array to store all rotations of the text
+    let rotations = [];
+    
+    // Generate all rotations of the text
+    for (let i = 0; i < text.length; i++) {
+        let rotation = text.slice(i) + text.slice(0, i);
+        rotations.push(rotation);
     }
-
-    let currentB = headB;
-    while (currentB) {
-        if (seenNodes.has(currentB)) {
-            return currentB;
-        }
-        currentB = currentB.next;
-    }
-
-    return null; // No intersection found
+    
+    // Sort the rotations lexicographically
+    rotations.sort();
+    
+    // Extract the last characters of each rotation to form the transformed text
+    let transformedText = rotations.map(rotation => rotation.slice(-1)).join('');
+    
+    // Find the index of the original text in the sorted rotations
+    let originalIndex = rotations.indexOf(text);
+    
+    return { transformedText, originalIndex };
 }
-let intersectionNode = findIntersection(headA, headB);
-if (intersectionNode) {
-    console.log("Intersection node value: " + intersectionNode.value);
-} else {
-    console.log("No intersection found.");
-}
+
+// Test the implementation
+const text = "banana";
+const { transformedText, originalIndex } = burrowsWheelerTransform(text);
+console.log("Transformed text:", transformedText);
+console.log("Original text index:", originalIndex);
