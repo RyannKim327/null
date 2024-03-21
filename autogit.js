@@ -1,20 +1,27 @@
-function insertionSort(arr) {
-    for (let i = 1; i < arr.length; i++) {
-        let currentElement = arr[i];
-        let j = i - 1;
+function longestCommonSubstring(str1, str2) {
+    const dp = Array(str1.length + 1).fill(0).map(() => Array(str2.length + 1).fill(0));
+    let maxLength = 0;
+    let endIndex = 0;
 
-        while (j >= 0 && arr[j] > currentElement) {
-            arr[j + 1] = arr[j];
-            j--;
+    for (let i = 1; i <= str1.length; i++) {
+        for (let j = 1; j <= str2.length; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > maxLength) {
+                    maxLength = dp[i][j];
+                    endIndex = i - 1;
+                }
+            } else {
+                dp[i][j] = 0;
+            }
         }
-
-        arr[j + 1] = currentElement;
     }
 
-    return arr;
+    return str1.slice(endIndex - maxLength + 1, endIndex + 1);
 }
 
 // Example usage
-const numbers = [5, 2, 4, 6, 1, 3];
-console.log("Original array: ", numbers);
-console.log("Sorted array: ", insertionSort(numbers));
+const str1 = 'helloworld';
+const str2 = 'hellojsworld';
+const result = longestCommonSubstring(str1, str2);
+console.log(result); // Output: 'hello'
