@@ -1,31 +1,12 @@
-function findMajorityElement(nums) {
-    let count = 0;
-    let candidate = null;
-
-    // Find the candidate
-    for (let num of nums) {
-        if (count === 0) {
-            candidate = num;
-        }
-        count += (num === candidate) ? 1 : -1;
-    }
-
-    // Validate the candidate
-    count = 0;
-    for (let num of nums) {
-        if (num === candidate) {
-            count++;
-        }
-    }
-
-    if (count > nums.length / 2) {
-        return candidate;
+function factorial(number) {
+    if (number === 0) {
+        return 1;
     } else {
-        return null;
+        return number * factorial(number - 1);
     }
 }
 
-// Example Usage
-const nums = [2, 2, 1, 1, 1, 2, 2];
-const majorityElement = findMajorityElement(nums);
-console.log(`The majority element is: ${majorityElement}`);
+// Calculate the factorial of a number
+const number = 5; // Change this to any number you want to calculate the factorial for
+const result = factorial(number);
+console.log(`The factorial of ${number} is: ${result}`);
