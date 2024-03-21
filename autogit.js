@@ -1,44 +1,11 @@
-// Node class to represent each node in the graph
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.children = [];
-    }
+function isPalindrome(str) {
+    // Remove non-alphanumeric characters and convert the string to lowercase
+    const formattedStr = str.toLowerCase().replace(/[\W_]/g, '');
 
-    addChild(node) {
-        this.children.push(node);
-    }
+    // Check if the formatted string is equal to its reverse
+    return formattedStr === formattedStr.split('').reverse().join('');
 }
 
-// Breadth first search function
-function breadthFirstSearch(root, target) {
-    const queue = [root];
-    
-    while (queue.length > 0) {
-        let current = queue.shift();
-        if (current.value === target) {
-            return true;
-        }
-        
-        for (let child of current.children) {
-            queue.push(child);
-        }
-    }
-    
-    return false;
-}
-
-// Create a graph
-const a = new Node('A');
-const b = new Node('B');
-const c = new Node('C');
-const d = new Node('D');
-const e = new Node('E');
-
-a.addChild(b);
-a.addChild(c);
-b.addChild(d);
-c.addChild(e);
-
-// Search for node 'E' starting from node 'A'
-console.log(breadthFirstSearch(a, 'E')); // Output: true
+// Test the function
+const str = "A man, a plan, a canal, Panama";
+console.log(isPalindrome(str)); // Output: true
