@@ -1,29 +1,48 @@
-function binarySearch(arr, target) {
-    let left = 0;
-    let right = arr.length - 1;
-    
-    while (left <= right) {
-        let mid = Math.floor((left + right) / 2);
-        
-        if (arr[mid] === target) {
-            return mid;
-        } else if (arr[mid] < target) {
-            left = mid + 1;
-        } else {
-            right = mid - 1;
-        }
+class ListNode {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
     }
-    
-    return -1;
 }
 
-// Test the binary search function
-const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const target = 5;
-const index = binarySearch(arr, target);
+function getIntersectionNode(headA, headB) {
+    let set = new Set();
 
-if (index !== -1) {
-    console.log(`Element found at index ${index}`);
-} else {
-    console.log(`Element not found`);
+    // Traverse the first linked list and store nodes in the Set
+    let current = headA;
+    while (current) {
+        set.add(current);
+        current = current.next;
+    }
+
+    // Traverse the second linked list and check for intersection
+    current = headB;
+    while (current) {
+        if (set.has(current)) {
+            // Intersection node found
+            return current;
+        }
+        current = current.next;
+    }
+
+    // No intersection found
+    return null;
 }
+
+// Example usage
+// Create linked list 1: 1 -> 2 -> 3 -> 4 -> 5
+let listA = new ListNode(1);
+listA.next = new ListNode(2);
+listA.next.next = new ListNode(3);
+listA.next.next.next = new ListNode(4);
+listA.next.next.next.next = new ListNode(5);
+
+// Create linked list 2: 6 -> 4 -> 5
+let listB = new ListNode(6);
+listB.next = listA.next.next.next;
+listB.next.next = listA.next.next.next.next;
+
+// Find the intersection node
+let intersectionNode = getIntersectionNode(listA, listB);
+
+console.log(intersectionNode); // This will output the intersecting node if it exists
