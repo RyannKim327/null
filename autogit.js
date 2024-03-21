@@ -1,25 +1,59 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+class Graph {
+  constructor() {
+    this.adjList = {};
   }
-}
 
-function sumBinaryTree(root) {
-  if (root === null) {
-    return 0;
+  addVertex(vertex) {
+    if (!this.adjList[vertex]) {
+      this.adjList[vertex] = [];
+    }
   }
-  
-  return root.value + sumBinaryTree(root.left) + sumBinaryTree(root.right);
+
+  addEdge(vertex1, vertex2) {
+    if (!this.adjList[vertex1] || !this.adjList[vertex2]) {
+      throw new Error("Vertex not found");
+    }
+
+    this.adjList[vertex1].push(vertex2);
+    this.adjList[vertex2].push(vertex1); // For undirected graph
+  }
+
+  depthFirstSearch(startVertex) {
+    const visited = {};
+    const stack = [startVertex];
+    const result = [];
+
+    while (stack.length) {
+      const currentVertex = stack.pop();
+
+      if (!visited[currentVertex]) {
+        result.push(currentVertex);
+        visited[currentVertex] = true;
+
+        this.adjList[currentVertex].forEach((neighbor) => {
+          if (!visited[neighbor]) {
+            stack.push(neighbor);
+          }
+        });
+      }
+    }
+
+    return result;
+  }
 }
 
 // Example usage
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
+const graph = new Graph();
 
-const sum = sumBinaryTree(root);
-console.log("Sum of all nodes in the binary tree: ", sum);
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addVertex('E');
+
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('C', 'E');
+
+console.log(graph.depthFirstSearch('A')); // Output: ['A', 'C', 'E', 'B', 'D']
