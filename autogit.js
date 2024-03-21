@@ -1,20 +1,42 @@
-function isAnagram(str1, str2) {
-    // Remove any non-alphabetic characters and convert to lowercase
-    str1 = str1.toLowerCase().replace(/[^a-z]/g, '');
-    str2 = str2.toLowerCase().replace(/[^a-z]/g, '');
-    
-    // Check if the lengths of the two strings are equal
-    if (str1.length !== str2.length) {
-        return false;
+class Node {
+    constructor() {
+        this.children = {};
     }
-    
-    // Sort the characters of each string and compare them
-    let sortedStr1 = str1.split('').sort().join('');
-    let sortedStr2 = str2.split('').sort().join('');
-    
-    return sortedStr1 === sortedStr2;
 }
 
-// Test cases
-console.log(isAnagram("listen", "silent")); // Output: true
-console.log(isAnagram("hello", "world")); // Output: false
+class SuffixTree {
+    constructor(text) {
+        this.root = new Node();
+        for (let i = 0; i < text.length; i++) {
+            this.addSuffix(text.substring(i));
+        }
+    }
+
+    addSuffix(suffix) {
+        let currentNode = this.root;
+        for (let i = 0; i < suffix.length; i++) {
+            const currentChar = suffix[i];
+            if (!currentNode.children[currentChar]) {
+                currentNode.children[currentChar] = new Node();
+            }
+            currentNode = currentNode.children[currentChar];
+        }
+    }
+
+    search(pattern) {
+        let currentNode = this.root;
+        for (let i = 0; i < pattern.length; i++) {
+            const currentChar = pattern[i];
+            if (!currentNode.children[currentChar]) {
+                return false;
+            }
+            currentNode = currentNode.children[currentChar];
+        }
+        return true;
+    }
+}
+
+// Example usage
+const suffixTree = new SuffixTree("banana");
+console.log(suffixTree.search("ana")); // true
+console.log(suffixTree.search("ananas")); // false
