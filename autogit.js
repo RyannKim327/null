@@ -1,21 +1,65 @@
 class Node {
-    constructor(value, left = null, right = null) {
+    constructor(value) {
         this.value = value;
-        this.left = left;
-        this.right = right;
+        this.next = null;
     }
 }
 
-function calculateSumOfNodes(node) {
-    if (node === null) {
-        return 0;
+class LinkedList {
+    constructor() {
+        this.head = null;
     }
-    
-    return node.value + calculateSumOfNodes(node.left) + calculateSumOfNodes(node.right);
+
+    append(value) {
+        const newNode = new Node(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+
+        current.next = newNode;
+    }
+
+    reverse() {
+        let prev = null;
+        let current = this.head;
+        let next = null;
+
+        while (current) {
+            next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
+        }
+
+        this.head = prev;
+    }
+
+    printList() {
+        let current = this.head;
+        while (current) {
+            console.log(current.value);
+            current = current.next;
+        }
+    }
 }
 
-// Example binary tree
-const tree = new Node(1, new Node(2, new Node(4), new Node(5)), new Node(3, new Node(6), new Node(7));
+// Example usage:
+const linkedList = new LinkedList();
+linkedList.append(1);
+linkedList.append(2);
+linkedList.append(3);
+linkedList.append(4);
 
-const sum = calculateSumOfNodes(tree);
-console.log("Sum of all nodes in the binary tree: " + sum);
+console.log("Original Linked List:");
+linkedList.printList();
+
+linkedList.reverse();
+
+console.log("Reversed Linked List:");
+linkedList.printList();
