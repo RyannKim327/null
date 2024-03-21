@@ -1,29 +1,16 @@
-function binarySearch(arr, target) {
-    let left = 0;
-    let right = arr.length - 1;
+function findSecondLargest(arr) {
+    arr.sort(function(a, b) {
+        return b - a;
+    });
 
-    while (left <= right) {
-        let mid = Math.floor((left + right) / 2);
-
-        if (arr[mid] === target) {
-            return mid;
-        } else if (arr[mid] < target) {
-            left = mid + 1;
-        } else {
-            right = mid - 1;
-        }
+    if (arr.length < 2) {
+        return "Array must have at least two elements";
     }
 
-    return -1;
+    return arr[1];
 }
 
-// Example usage
-const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const target = 12;
-const index = binarySearch(arr, target);
-
-if (index !== -1) {
-    console.log(`Element found at index ${index}`);
-} else {
-    console.log("Element not found");
-}
+// Example
+const numbers = [10, 5, 20, 15];
+const secondLargest = findSecondLargest(numbers);
+console.log(secondLargest); // Output: 15
