@@ -1,16 +1,23 @@
-let str = 'Hello, World!';
-let substr = 'World';
-
-if (str.includes(substr)) {
-    console.log('Substring found in the string.');
-} else {
-    console.log('Substring not found in the string.');
+function isPalindrome(str) {
+    if (str.length === 0 || str.length === 1) {
+        return true;
+    }
+    
+    let i = 0;
+    let j = str.length - 1;
+    
+    while (i < j) {
+        if (str[i] !== str[j]) {
+            return false;
+        }
+        
+        i++;
+        j--;
+    }
+    
+    return true;
 }
-let str = 'Hello, World!';
-let substr = 'World';
 
-if (str.indexOf(substr) !== -1) {
-    console.log('Substring found in the string.');
-} else {
-    console.log('Substring not found in the string.');
-}
+// Test cases
+console.log(isPalindrome("racecar")); // Output: true
+console.log(isPalindrome("hello")); // Output: false
