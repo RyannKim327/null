@@ -1,8 +1,11 @@
-npm install suffix-tree
-const suffixTree = require('suffix-tree');
+const fetchAndroidBackendData = async () => {
+    try {
+        const response = await fetch('http://your-android-backend-url/data');
+        const data = await response.json();
+        console.log(data);
+    } catch (error) {
+        console.error('Error fetching data from Android backend:', error);
+    }
+};
 
-// Create a new suffix tree
-const tree = new suffixTree.Tree("banana");
-
-// Print the suffix tree structure
-console.log(tree.root);
+fetchAndroidBackendData();
