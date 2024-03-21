@@ -1,20 +1,11 @@
-function firstNonRepeatingCharacter(str) {
-    let charCount = {};
-
-    for (let char of str) {
-        charCount[char] = (charCount[char] || 0) + 1;
-    }
-
-    for (let char of str) {
-        if (charCount[char] === 1) {
-            return char;
-        }
-    }
-
-    return null; // If no non-repeating character is found
+function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
 }
 
-// Example usage
-const str = "hello world";
-const firstNonRepeatingChar = firstNonRepeatingCharacter(str);
-console.log("The first non-repeating character in the string is: " + firstNonRepeatingChar);
+const email = 'example@email.com';
+if (validateEmail(email)) {
+    console.log('Valid email address');
+} else {
+    console.log('Invalid email address');
+}
