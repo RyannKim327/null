@@ -1,12 +1,31 @@
-let arr = [1, 2, 2, 3, 4, 4, 5];
+function rabinKarpSearch(text, pattern){
+    const prime = 101; // Prime number for hashing
+    const base = 256; // Base for hashing
 
-let uniqueArr = arr.filter((value, index, self) => {
-  return self.indexOf(value) === index;
-});
+    function hash(text){ // Function to hash a string
+        let hashValue = 0;
+        for(let i=0; i<text.length; i++){
+            hashValue = (hashValue * base + text.charCodeAt(i)) % prime;
+        }
+        return hashValue;
+    }
 
-console.log(uniqueArr); // Output: [1, 2, 3, 4, 5]
-let arr = [1, 2, 2, 3, 4, 4, 5];
+    let patternHash = hash(pattern);
+    let textHash = hash(text.substring(0, pattern.length));
 
-let uniqueArr = [...new Set(arr)];
+    for(let i=0; i<=text.length - pattern.length; i++){
+        if(patternHash === textHash){ // If hash matches, compare the strings
+            if(text.substring(i, i + pattern.length) === pattern){
+                console.log(`Pattern found at index ${i}`);
+            }
+        }
+        textHash = (textHash - text.charCodeAt(i) * Math.pow(base, pattern.length-1)) % prime;
+        textHash = (textHash * base + text.charCodeAt(i + pattern.length)) % prime;
+        textHash = (textHash + prime) % prime;
+    }
+}
 
-console.log(uniqueArr); // Output: [1, 2, 3, 4, 5]
+let text = 'ababcababcabcabababcabcbabcbabcbabc';
+let pattern = 'abc';
+
+rabinKarpSearch(text, pattern);
