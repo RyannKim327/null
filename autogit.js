@@ -1,9 +1,20 @@
-function getRandomNumber(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+function firstNonRepeatingCharacter(str) {
+    let charCount = {};
+
+    for (let char of str) {
+        charCount[char] = (charCount[char] || 0) + 1;
+    }
+
+    for (let char of str) {
+        if (charCount[char] === 1) {
+            return char;
+        }
+    }
+
+    return null; // If no non-repeating character is found
 }
 
-// Usage example
-let min = 1;
-let max = 100;
-let randomNumber = getRandomNumber(min, max);
-console.log(randomNumber);
+// Example usage
+const str = "hello world";
+const firstNonRepeatingChar = firstNonRepeatingCharacter(str);
+console.log("The first non-repeating character in the string is: " + firstNonRepeatingChar);
