@@ -1,19 +1,35 @@
-function shellSort(arr) {
-    let len = arr.length;
-    for (let gap = Math.floor(len / 2); gap > 0; gap = Math.floor(gap / 2)) {
-        for (let i = gap; i < len; i++) {
-            let temp = arr[i];
-            let j;
-            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
-                arr[j] = arr[j - gap];
-            }
-            arr[j] = temp;
-        }
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-    return arr;
+}
+
+function diameterOfBinaryTree(root) {
+    let result = { diameter: 0 };
+
+    function height(node) {
+        if (node == null) return 0;
+        let leftHeight = height(node.left);
+        let rightHeight = height(node.right);
+        
+        result.diameter = Math.max(result.diameter, leftHeight + rightHeight);
+        
+        return 1 + Math.max(leftHeight, rightHeight);
+    }
+
+    height(root);
+
+    return result.diameter;
 }
 
 // Example usage
-let arr = [12, 34, 54, 2, 3];
-console.log("Original array: ", arr);
-console.log("Sorted array: ", shellSort(arr));
+let root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.right = new Node(6);
+
+console.log(diameterOfBinaryTree(root)); // Output should be 4
