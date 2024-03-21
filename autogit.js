@@ -1,79 +1,33 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
+function mergeSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
     }
+
+    const middle = Math.floor(arr.length / 2);
+    const left = arr.slice(0, middle);
+    const right = arr.slice(middle);
+
+    return merge(mergeSort(left), mergeSort(right));
 }
 
-class Queue {
-    constructor() {
-        this.head = null;
-        this.tail = null;
-        this.size = 0;
-    }
+function merge(left, right) {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
 
-    enqueue(value) {
-        const newNode = new Node(value);
-        if (this.isEmpty()) {
-            this.head = newNode;
-            this.tail = newNode;
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
         } else {
-            this.tail.next = newNode;
-            this.tail = newNode;
-        }
-        this.size++;
-    }
-
-    dequeue() {
-        if (this.isEmpty()) {
-            return null;
-        }
-
-        const { value } = this.head;
-        this.head = this.head.next;
-        this.size--;
-
-        if (this.size === 0) {
-            this.tail = null;
-        }
-
-        return value;
-    }
-
-    peek() {
-        if (this.isEmpty()) {
-            return null;
-        }
-
-        return this.head.value;
-    }
-
-    isEmpty() {
-        return this.size === 0;
-    }
-
-    printQueue() {
-        let current = this.head;
-        while (current) {
-            console.log(current.value);
-            current = current.next;
+            result.push(right[rightIndex]);
+            rightIndex++;
         }
     }
+
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
 }
 
 // Example usage
-const queue = new Queue();
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
-
-console.log(queue.peek()); // Output: 1
-
-queue.dequeue();
-console.log(queue.peek()); // Output: 2
-
-queue.dequeue();
-console.log(queue.peek()); // Output: 3
-
-queue.dequeue();
-console.log(queue.isEmpty()); // Output: true
+const arr = [8, 3, 1, 7, 0, 10, 2];
+console.log(mergeSort(arr)); // Output: [0, 1, 2, 3, 7, 8, 10]
