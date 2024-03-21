@@ -1,72 +1,22 @@
-class BiDirectionalSearch {
-    constructor(startNode, endNode) {
-        this.startNode = startNode;
-        this.endNode = endNode;
-        this.frontierStart = [startNode];
-        this.frontierEnd = [endNode];
-        this.visitedStart = new Set();
-        this.visitedEnd = new Set();
-    }
-
-    search() {
-        while (this.frontierStart.length > 0 && this.frontierEnd.length > 0) {
-            const result = this.bfs(this.frontierStart, this.visitedStart, this.visitedEnd);
-            if (result) {
-                return result;
-            }
-
-            result = this.bfs(this.frontierEnd, this.visitedEnd, this.visitedStart);
-            if (result) {
-                return result;
-            }
-        }
-
+function calculateMean(numbers) {
+    // Check if the input is valid
+    if (!Array.isArray(numbers) || numbers.length === 0) {
         return null;
     }
 
-    bfs(frontier, visited, targetVisited) {
-        const node = frontier.shift();
+    // Calculate the sum of all numbers
+    const sum = numbers.reduce((acc, curr) => acc + curr, 0);
 
-        if (targetVisited.has(node)) {
-            return node;
-        }
+    // Calculate the mean
+    const mean = sum / numbers.length;
 
-        visited.add(node);
-
-        for (let neighbor of node.neighbors) {
-            if (!visited.has(neighbor)) {
-                frontier.push(neighbor);
-            }
-        }
-
-        return null;
-    }
+    return mean;
 }
 
-// Usage
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.neighbors = [];
-    }
-}
+// Example list of numbers
+const numbers = [5, 10, 15, 20, 25];
 
-const startNode = new Node('A');
-const endNode = new Node('B');
+// Calculate the mean
+const mean = calculateMean(numbers);
 
-startNode.neighbors.push(new Node('C'));
-startNode.neighbors.push(new Node('D'));
-startNode.neighbors.push(new Node('E'));
-
-endNode.neighbors.push(new Node('F'));
-endNode.neighbors.push(new Node('G'));
-endNode.neighbors.push(new Node('C'));
-
-const biDirectionalSearch = new BiDirectionalSearch(startNode, endNode);
-const result = biDirectionalSearch.search();
-
-if (result) {
-    console.log('Path found!');
-} else {
-    console.log('Path not found.');
-}
+console.log('Mean:', mean);
