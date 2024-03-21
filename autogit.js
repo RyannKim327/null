@@ -1,40 +1,58 @@
-function dijkstra(graph, startNode) {
-    const distances = {};
-    const previous = {};
-    const priorityQueue = new PriorityQueue();
-
-    // Initialize distances and previous nodes
-    for (let node in graph) {
-        distances[node] = node === startNode ? 0 : Infinity;
-        previous[node] = null;
-        priorityQueue.enqueue(node, distances[node]);
+class HashTable {
+    constructor(size = 10) {
+        this.size = size;
+        this.table = new Array(size);
     }
 
-    while (!priorityQueue.isEmpty()) {
-        const currentNode = priorityQueue.dequeue();
+    hash(key) {
+        let hash = 0;
+        for (let i = 0; i < key.length; i++) {
+            hash += key.charCodeAt(i);
+        }
+        return hash % this.size;
+    }
 
-        for (let neighbor in graph[currentNode]) {
-            let distance = distances[currentNode] + graph[currentNode][neighbor];
-            if (distance < distances[neighbor]) {
-                distances[neighbor] = distance;
-                previous[neighbor] = currentNode;
-                priorityQueue.enqueue(neighbor, distance);
+    set(key, value) {
+        const index = this.hash(key);
+        if (!this.table[index]) {
+            this.table[index] = [];
+        }
+        this.table[index].push([key, value]);
+    }
+
+    get(key) {
+        const index = this.hash(key);
+        if (!this.table[index]) {
+            return undefined;
+        }
+        for (let i = 0; i < this.table[index].length; i++) {
+            if (this.table[index][i][0] === key) {
+                return this.table[index][i][1];
             }
         }
+        return undefined;
     }
 
-    return { distances, previous };
-}
-
-function shortestPath(graph, startNode, endNode) {
-    const { distances, previous } = dijkstra(graph, startNode);
-    const path = [endNode];
-    let previousNode = previous[endNode];
-    
-    while (previousNode) {
-        path.unshift(previousNode);
-        previousNode = previous[previousNode];
+    remove(key) {
+        const index = this.hash(key);
+        if (!this.table[index]) {
+            return false;
+        }
+        for (let i = 0; i < this.table[index].length; i++) {
+            if (this.table[index][i][0] === key) {
+                this.table[index].splice(i, 1);
+                return true;
+            }
+        }
+        return false;
     }
-
-    return path;
 }
+
+// Example usage
+const ht = new HashTable();
+ht.set("name", "Alice");
+ht.set("age", 30);
+console.log(ht.get("name")); // Output: Alice
+console.log(ht.get("age")); // Output: 30
+ht.remove("age");
+console.log(ht.get("age")); // Output: undefined
