@@ -1,29 +1,14 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+function isSortedAscending(arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;
+        }
     }
+    return true;
 }
 
-function maxDepth(root) {
-    if (root === null) {
-        return 0;
-    }
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [1, 3, 2, 4, 5];
 
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
-
-    return Math.max(leftDepth, rightDepth) + 1;
-}
-
-// Example binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
-
-console.log(maxDepth(root)); // Output: 3
+console.log(isSortedAscending(array1)); // Output: true
+console.log(isSortedAscending(array2)); // Output: false
