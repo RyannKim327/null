@@ -1,47 +1,29 @@
-function bellmanFord(graph, startNode) {
-    let distances = {};
-  
-    // Initialize distances to all nodes as Infinity except the startNode
-    for (let node in graph) {
-        if (node === startNode) {
-            distances[node] = 0;
+function binarySearch(arr, target) {
+    let left = 0;
+    let right = arr.length - 1;
+
+    while (left <= right) {
+        let mid = Math.floor((left + right) / 2);
+
+        if (arr[mid] === target) {
+            return mid;
+        } else if (arr[mid] < target) {
+            left = mid + 1;
         } else {
-            distances[node] = Infinity;
+            right = mid - 1;
         }
     }
 
-    // Relax edges iteratively
-    for (let i = 0; i < Object.keys(graph).length - 1; i++) {
-        for (let node in graph) {
-            for (let neighbor in graph[node]) {
-                if (distances[node] + graph[node][neighbor] < distances[neighbor]) {
-                    distances[neighbor] = distances[node] + graph[node][neighbor];
-                }
-            }
-        }
-    }
-
-    // Check for negative cycles
-    for (let node in graph) {
-        for (let neighbor in graph[node]) {
-            if (distances[node] + graph[node][neighbor] < distances[neighbor]) {
-                console.log("Negative cycle detected, algorithm stopped.");
-                return;
-            }
-        }
-    }
-
-    return distances;
+    return -1;
 }
 
-// Example graph representation as an adjacency list
-let graph = {
-    A: { B: -1, C: 4 },
-    B: { C: 3, D: 2, E: 2 },
-    C: {},
-    D: { B: 1, C: 5 },
-    E: { D: -3 }
-};
+// Example usage
+const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+const target = 12;
+const index = binarySearch(arr, target);
 
-let startNode = 'A';
-console.log(bellmanFord(graph, startNode)); // Output: { A: 0, B: -1, C: 2, D: -2, E: 1 }
+if (index !== -1) {
+    console.log(`Element found at index ${index}`);
+} else {
+    console.log("Element not found");
+}
