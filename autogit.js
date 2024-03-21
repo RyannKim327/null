@@ -1,63 +1,36 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
+class TreeNode {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
 
-class LinkedList {
-    constructor() {
-        this.head = null;
+function diameterOfBinaryTree(root) {
+    let diameter = 0;
+
+    function getHeight(node) {
+        if (node === null) {
+            return 0;
+        }
+
+        let leftHeight = getHeight(node.left);
+        let rightHeight = getHeight(node.right);
+
+        diameter = Math.max(diameter, leftHeight + rightHeight);
+
+        return 1 + Math.max(leftHeight, rightHeight);
     }
 
-    append(data) {
-        const newNode = new Node(data);
+    getHeight(root);
 
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-
-        current.next = newNode;
-    }
-
-    findNthFromEnd(n) {
-        if (n <= 0 || !this.head) {
-            return null;
-        }
-
-        let fast = this.head;
-        let slow = this.head;
-
-        // Move fast pointer to the nth node from the beginning
-        for (let i = 0; i < n; i++) {
-            if (fast === null) {
-                return null;
-            }
-            fast = fast.next;
-        }
-
-        // Move both pointers until the fast pointer reaches the end
-        while (fast !== null) {
-            fast = fast.next;
-            slow = slow.next;
-        }
-
-        return slow.data;
-    }
+    return diameter;
 }
+// Create a binary tree
+let root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-// Usage
-const linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
-linkedList.append(4);
-linkedList.append(5);
-
-console.log(linkedList.findNthFromEnd(2)); // Output: 4
+console.log(diameterOfBinaryTree(root)); // Output: 3
