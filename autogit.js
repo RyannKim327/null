@@ -1,67 +1,47 @@
-// Node class to represent individual elements in the linked list
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
+function buildPatternTable(pattern) {
+    const table = [0];
+    let prefix = 0;
+    
+    for (let i = 1; i < pattern.length; i++) {
+        while (prefix > 0 && pattern.charAt(i) !== pattern.charAt(prefix)) {
+            prefix = table[prefix - 1];
+        }
+        
+        if (pattern.charAt(i) === pattern.charAt(prefix)) {
+            prefix++;
+        }
+        
+        table.push(prefix);
     }
+    
+    return table;
 }
 
-// Queue class that uses a linked list to implement a queue
-class Queue {
-    constructor() {
-        this.head = null;
-        this.tail = null;
-    }
+function kmpSearch(text, pattern) {
+    const patternTable = buildPatternTable(pattern);
+    const occurrences = [];
+    let j = 0;
 
-    // Method to add an element to the queue
-    enqueue(data) {
-        const newNode = new Node(data);
-        if (!this.head) {
-            this.head = newNode;
-            this.tail = newNode;
-        } else {
-            this.tail.next = newNode;
-            this.tail = newNode;
+    for (let i = 0; i < text.length; i++) {
+        while (j > 0 && text.charAt(i) !== pattern.charAt(j)) {
+            j = patternTable[j - 1];
+        }
+
+        if (text.charAt(i) === pattern.charAt(j)) {
+            j++;
+        }
+
+        if (j === pattern.length) {
+            occurrences.push(i - j + 1);
+            j = patternTable[j - 1];
         }
     }
 
-    // Method to remove and return the element at the front of the queue
-    dequeue() {
-        if (!this.head) {
-            return null;
-        }
-
-        const dequeued = this.head;
-        this.head = this.head.next;
-
-        if (!this.head) {
-            this.tail = null;
-        }
-
-        return dequeued.data;
-    }
-
-    // Method to check if the queue is empty
-    isEmpty() {
-        return !this.head;
-    }
-
-    // Method to get the element at the front of the queue without removing it
-    peek() {
-        if (!this.head) {
-            return null;
-        }
-
-        return this.head.data;
-    }
+    return occurrences;
 }
 
-// Example usage of the Queue class
-const queue = new Queue();
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
-
-console.log(queue.dequeue()); // Output: 1
-console.log(queue.peek());    // Output: 2
-console.log(queue.isEmpty()); // Output: false
+// Example
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = kmpSearch(text, pattern);
+console.log(result);
