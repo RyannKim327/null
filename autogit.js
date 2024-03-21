@@ -1,57 +1,61 @@
 function tarjanSCC(graph) {
-    let index = 0;
-    let stack = [];
-    let indexMap = new Map();
-    let lowLinkMap = new Map();
-    let result = [];
-
-    function tarjanDFS(node) {
-        indexMap.set(node, index);
-        lowLinkMap.set(node, index);
-        index++;
-        stack.push(node);
-
-        for (let neighbor of graph[node]) {
-            if (!indexMap.has(neighbor)) {
-                tarjanDFS(neighbor);
-                lowLinkMap.set(node, Math.min(lowLinkMap.get(node), lowLinkMap.get(neighbor)));
-            } else if (stack.includes(neighbor)) {
-                lowLinkMap.set(node, Math.min(lowLinkMap.get(node), indexMap.get(neighbor)));
-            }
-        }
-
-        if (indexMap.get(node) === lowLinkMap.get(node)) {
-            let scc = [];
-            let popNode;
-            do {
-                popNode = stack.pop();
-                scc.push(popNode);
-            } while (popNode !== node);
-            result.push(scc);
-        }
+  let index = 0;
+  let stack = [];
+  let result = [];
+  let onStack = new Set();
+  let indexes = {};
+  let lowLink = {};
+  
+  function strongconnect(node) {
+    indexes[node] = index;
+    lowLink[node] = index;
+    index++;
+    stack.push(node);
+    onStack.add(node);
+    
+    graph[node].forEach(neighbor => {
+      if (indexes[neighbor] === undefined) {
+        strongconnect(neighbor);
+        lowLink[node] = Math.min(lowLink[node], lowLink[neighbor]);
+      } else if (onStack.has(neighbor)) {
+        lowLink[node] = Math.min(lowLink[node], indexes[neighbor]);
+      }
+    });
+    
+    if (lowLink[node] === indexes[node]) {
+      let component = [];
+      let nextNode;
+      
+      do {
+        nextNode = stack.pop();
+        onStack.delete(nextNode);
+        component.push(nextNode);
+      } while (nextNode !== node);
+      
+      result.push(component);
     }
-
-    for (let node in graph) {
-        if (!indexMap.has(node)) {
-            tarjanDFS(node);
-        }
+  }
+  
+  Object.keys(graph).forEach(node => {
+    if (indexes[node] === undefined) {
+      strongconnect(node);
     }
-
-    return result;
+  });
+  
+  return result;
 }
 
-// Example usage:
-const graph = {
-    'A': ['B'],
-    'B': ['C'],
-    'C': ['A', 'D'],
-    'D': ['E'],
-    'E': ['F'],
-    'F': ['D', 'G'],
-    'G': ['H'],
-    'H': ['F', 'I'],
-    'I': []
+// Example graph represented as an adjacency list
+let graph = {
+  0: [1],
+  1: [2],
+  2: [0, 3],
+  3: [4],
+  4: [3, 5],
+  5: [6],
+  6: [4, 7],
+  7: [6, 8],
+  8: [5, 7]
 };
 
-const sccResult = tarjanSCC(graph);
-console.log(sccResult);
+console.log(tarjanSCC(graph));
