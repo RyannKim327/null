@@ -1,6 +1,16 @@
-let array = [1, 2, 3, 4, 1, 2, 5];
+function calculateTriangleArea(a, b, c) {
+    // Calculate the semi-perimeter
+    let s = (a + b + c) / 2;
 
-// Create a Set from the array to remove duplicates
-let uniqueArray = [...new Set(array)];
+    // Calculate the area using Heron's formula
+    let area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+    return area;
+}
+
+// Example usage
+let a = 5;
+let b = 6;
+let c = 7;
+let area = calculateTriangleArea(a, b, c);
+console.log('The area of the triangle is: ' + area);
