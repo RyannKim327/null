@@ -1,50 +1,15 @@
-class Stack {
-    constructor() {
-        this.items = [];
-    }
-
-    // Push element to the top of the stack
-    push(element) {
-        this.items.push(element);
-    }
-
-    // Remove and return the top element from the stack
-    pop() {
-        if (this.isEmpty()) {
-            return "Underflow";
+function countOccurrences(str, char) {
+    let count = 0;
+    for(let i = 0; i < str.length; i++) {
+        if(str[i] === char) {
+            count++;
         }
-        return this.items.pop();
     }
-
-    // Return the top element of the stack
-    peek() {
-        return this.items[this.items.length - 1];
-    }
-
-    // Check if the stack is empty
-    isEmpty() {
-        return this.items.length === 0;
-    }
-
-    // Get the size of the stack
-    size() {
-        return this.items.length;
-    }
-
-    // Print the stack elements
-    print() {
-        console.log(this.items);
-    }
+    return count;
 }
 
 // Example usage
-const stack = new Stack();
-
-stack.push(10);
-stack.push(20);
-stack.push(30);
-
-console.log(stack.pop()); // Output: 30
-console.log(stack.peek()); // Output: 20
-console.log(stack.size()); // Output: 2
-stack.print(); // Output: [10, 20]
+const str = "Hello, World!";
+const charToCount = "o";
+const occurrences = countOccurrences(str, charToCount);
+console.log(`'${charToCount}' occurs ${occurrences} times in '${str}'`);
