@@ -1,16 +1,18 @@
-function calculateMean(numbers) {
-  // Check if the numbers array is not empty
-  if (numbers.length === 0) {
-    return 0;
-  }
+function isPalindrome(str) {
+    let start = 0;
+    let end = str.length - 1;
 
-  const sum = numbers.reduce((acc, num) => acc + num, 0);
-  const mean = sum / numbers.length;
-  
-  return mean;
+    while (start < end) {
+        if (str[start] !== str[end]) {
+            return false;
+        }
+        start++;
+        end--;
+    }
+
+    return true;
 }
 
-// Example usage
-const numbers = [2, 4, 6, 8, 10];
-const mean = calculateMean(numbers);
-console.log(`Mean: ${mean}`);
+// Test the function
+console.log(isPalindrome("madam")); // Output: true
+console.log(isPalindrome("hello")); // Output: false
