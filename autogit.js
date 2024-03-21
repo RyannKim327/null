@@ -1,22 +1,9 @@
-function findFirstRepeatedCharacter(inputString) {
-    const seenCharacters = new Set();
-    
-    for (const char of inputString) {
-        if (seenCharacters.has(char)) {
-            return char;
-        }
-        
-        seenCharacters.add(char);
-    }
-    
-    return null; // if no repeated character is found
+let arr = [1, 2, 3, 4, 5];
+let elementToRemove = 3;
+
+let index = arr.indexOf(elementToRemove);
+if (index > -1) {
+    arr.splice(index, 1);
 }
 
-const input = "hello world";
-const repeatedChar = findFirstRepeatedCharacter(input);
-
-if (repeatedChar) {
-    console.log(`The first repeated character is: ${repeatedChar}`);
-} else {
-    console.log("No repeated character found.");
-}
+console.log(arr); // Output: [1, 2, 4, 5]
