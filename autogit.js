@@ -1,46 +1,17 @@
-function BoyerMooreHorspool(text, pattern) {
-    const table = createHorspoolTable(pattern);
+function areAnagrams(str1, str2) {
+    // Remove any non-alphabetic characters and convert to lowercase
+    const cleanStr1 = str1.replace(/[^\w]/g, '').toLowerCase();
+    const cleanStr2 = str2.replace(/[^\w]/g, '').toLowerCase();
     
-    let i = pattern.length - 1;
-    let j;
-    
-    while (i < text.length) {
-        j = pattern.length - 1;
-        
-        while (j >= 0 && text[i] === pattern[j]) {
-            i--;
-            j--;
-        }
-        
-        if (j === -1) {
-            return i + 1; // Match found
-        }
-        
-        i += Math.max(1, j - table[text[i]]);
-    }
-    
-    return -1; // Match not found
+    // Check if the sorted versions of the strings are equal
+    return cleanStr1.split('').sort().join('') === cleanStr2.split('').sort().join('');
 }
 
-function createHorspoolTable(pattern) {
-    const table = {};
-    const length = pattern.length - 1;
-    
-    for (let i = 0; i < length; i++) {
-        table[pattern[i]] = length - i;
-    }
-    
-    return table;
-}
-
-// Test the algorithm
-const text = "Hello, World!";
-const pattern = "World";
-
-const result = BoyerMooreHorspool(text, pattern);
-
-if (result !== -1) {
-    console.log(`Pattern found at index ${result}`);
+// Test the function
+const string1 = "rail safety";
+const string2 = "fairy tales";
+if (areAnagrams(string1, string2)) {
+    console.log(`${string1} and ${string2} are anagrams.`);
 } else {
-    console.log("Pattern not found");
+    console.log(`${string1} and ${string2} are not anagrams.`);
 }
