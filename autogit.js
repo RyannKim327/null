@@ -1,47 +1,50 @@
-function buildPatternTable(pattern) {
-    const table = [0];
-    let prefix = 0;
-    
-    for (let i = 1; i < pattern.length; i++) {
-        while (prefix > 0 && pattern.charAt(i) !== pattern.charAt(prefix)) {
-            prefix = table[prefix - 1];
+// A* search algorithm
+function astar(start, goal, graph) {
+    let openSet = [start];
+    let cameFrom = {};
+    let gScore = {};
+    let fScore = {};
+
+    gScore[start] = 0;
+    fScore[start] = heuristic(start, goal);
+
+    while (openSet.length > 0) {
+        let current = openSet.reduce((a, b) => (fScore[a] < fScore[b] ? a : b));
+        if (current === goal) {
+            return reconstructPath(cameFrom, current);
         }
+
+        openSet = openSet.filter(node => node !== current);
         
-        if (pattern.charAt(i) === pattern.charAt(prefix)) {
-            prefix++;
-        }
-        
-        table.push(prefix);
-    }
-    
-    return table;
-}
+        for (let neighbor of graph[current]) {
+            let tentative_gScore = gScore[current] + 1;
 
-function kmpSearch(text, pattern) {
-    const patternTable = buildPatternTable(pattern);
-    const occurrences = [];
-    let j = 0;
+            if (!gScore[neighbor] || tentative_gScore < gScore[neighbor]) {
+                cameFrom[neighbor] = current;
+                gScore[neighbor] = tentative_gScore;
+                fScore[neighbor] = gScore[neighbor] + heuristic(neighbor, goal);
 
-    for (let i = 0; i < text.length; i++) {
-        while (j > 0 && text.charAt(i) !== pattern.charAt(j)) {
-            j = patternTable[j - 1];
-        }
-
-        if (text.charAt(i) === pattern.charAt(j)) {
-            j++;
-        }
-
-        if (j === pattern.length) {
-            occurrences.push(i - j + 1);
-            j = patternTable[j - 1];
+                if (!openSet.includes(neighbor)) {
+                    openSet.push(neighbor);
+                }
+            }
         }
     }
 
-    return occurrences;
+    return null;  // Path not found
 }
 
-// Example
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const result = kmpSearch(text, pattern);
-console.log(result);
+// Heuristic function (Euclidean distance)
+function heuristic(node, goal) {
+    return Math.sqrt((node.x - goal.x) ** 2 + (node.y - goal.y) ** 2);
+}
+
+// Reconstruct path
+function reconstructPath(cameFrom, current) {
+    let path = [current];
+    while (cameFrom[current]) {
+        current = cameFrom[current];
+        path.unshift(current);
+    }
+    return path;
+}
