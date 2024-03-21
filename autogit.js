@@ -1,58 +1,48 @@
-class TrieNode {
-    constructor() {
-        this.children = {};
-        this.isEndOfWord = false;
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
     }
 }
 
-class Trie {
+class LinkedList {
     constructor() {
-        this.root = new TrieNode();
+        this.head = null;
     }
 
-    insert(word) {
-        let node = this.root;
-        for (let char of word) {
-            if (!node.children[char]) {
-                node.children[char] = new TrieNode();
+    add(data) {
+        const newNode = new Node(data);
+
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
             }
-            node = node.children[char];
+            current.next = newNode;
         }
-        node.isEndOfWord = true;
     }
 
-    search(word) {
-        let node = this.root;
-        for (let char of word) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
-        }
-        return node.isEndOfWord;
-    }
+    findMiddle() {
+        let slow = this.head;
+        let fast = this.head;
 
-    startsWith(prefix) {
-        let node = this.root;
-        for (let char of prefix) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
+        while (fast && fast.next) {
+            slow = slow.next;
+            fast = fast.next.next;
         }
-        return true;
+
+        return slow.data;
     }
 }
 
-// Usage
-const trie = new Trie();
-trie.insert("hello");
-trie.insert("world");
+// Example usage
+const list = new LinkedList();
+list.add(1);
+list.add(2);
+list.add(3);
+list.add(4);
+list.add(5);
 
-console.log(trie.search("hello")); // true
-console.log(trie.search("world")); // true
-console.log(trie.search("hell")); // false
-
-console.log(trie.startsWith("hell")); // true
-console.log(trie.startsWith("wor")); // true
-console.log(trie.startsWith("abc")); // false
+console.log(list.findMiddle()); // Output: 3
