@@ -1,14 +1,48 @@
-function countOccurrences(str, char) {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str.charAt(i) === char) {
-            count++;
+class Graph {
+    constructor() {
+        this.adjacencyList = {};
+    }
+
+    addVertex(vertex) {
+        if (!this.adjacencyList[vertex]) {
+            this.adjacencyList[vertex] = [];
         }
     }
-    return count;
+
+    addEdge(v1, v2) {
+        this.adjacencyList[v1].push(v2);
+        this.adjacencyList[v2].push(v1);
+    }
+
+    depthFirstSearch(start) {
+        const result = [];
+        const visited = {};
+
+        const dfs = (vertex) => {
+            if (!vertex) return null;
+            visited[vertex] = true;
+            result.push(vertex);
+
+            this.adjacencyList[vertex].forEach((neighbor) => {
+                if (!visited[neighbor]) {
+                    return dfs(neighbor);
+                }
+            });
+        };
+
+        dfs(start);
+
+        return result;
+    }
 }
 
-let str = "hello world";
-let char = "l";
-let result = countOccurrences(str, char);
-console.log(`Character '${char}' occurs ${result} times in the string "${str}"`);
+// Example usage
+const graph = new Graph();
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+console.log(graph.depthFirstSearch('A'));
