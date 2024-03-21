@@ -1,17 +1,17 @@
-const url = "https://api.example.com/data";
+function reverseWords(str) {
+    // Split the string into an array of words
+    var wordsArr = str.split(" ");
 
-async function fetchData() {
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        console.log("Received data:", data);
-        // You can process the retrieved data here
-    } catch (error) {
-        console.error("Error fetching data:", error);
-    }
+    // Reverse the array of words
+    var reversedWordsArr = wordsArr.reverse();
+
+    // Join the array of words back into a string
+    var reversedStr = reversedWordsArr.join(" ");
+
+    return reversedStr;
 }
 
-fetchData();
+// Test the function
+var originalStr = "Hello world!";
+var reversedStr = reverseWords(originalStr);
+console.log(reversedStr); // Output: "world! Hello"
