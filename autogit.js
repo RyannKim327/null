@@ -1,58 +1,43 @@
-class HashTable {
-    constructor(size = 10) {
-        this.size = size;
-        this.table = new Array(size);
+function merge(left, right) {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            result.push(right[rightIndex]);
+            rightIndex++;
+        }
     }
 
-    hash(key) {
-        let hash = 0;
-        for (let i = 0; i < key.length; i++) {
-            hash += key.charCodeAt(i);
-        }
-        return hash % this.size;
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+}
+
+function mergeSortIterative(arr) {
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    set(key, value) {
-        const index = this.hash(key);
-        if (!this.table[index]) {
-            this.table[index] = [];
-        }
-        this.table[index].push([key, value]);
-    }
+    let sortedArr = arr.map(item => [item]);
 
-    get(key) {
-        const index = this.hash(key);
-        if (!this.table[index]) {
-            return undefined;
-        }
-        for (let i = 0; i < this.table[index].length; i++) {
-            if (this.table[index][i][0] === key) {
-                return this.table[index][i][1];
+    while (sortedArr.length > 1) {
+        let nextSortArr = [];
+        for (let i = 0; i < sortedArr.length; i += 2) {
+            if (i + 1 < sortedArr.length) {
+                nextSortArr.push(merge(sortedArr[i], sortedArr[i + 1]));
+            } else {
+                nextSortArr.push(sortedArr[i]);
             }
         }
-        return undefined;
+        sortedArr = nextSortArr;
     }
 
-    remove(key) {
-        const index = this.hash(key);
-        if (!this.table[index]) {
-            return false;
-        }
-        for (let i = 0; i < this.table[index].length; i++) {
-            if (this.table[index][i][0] === key) {
-                this.table[index].splice(i, 1);
-                return true;
-            }
-        }
-        return false;
-    }
+    return sortedArr[0];
 }
 
 // Example usage
-const ht = new HashTable();
-ht.set("name", "Alice");
-ht.set("age", 30);
-console.log(ht.get("name")); // Output: Alice
-console.log(ht.get("age")); // Output: 30
-ht.remove("age");
-console.log(ht.get("age")); // Output: undefined
+const arr = [5, 3, 8, 6, 2, 7, 1, 4];
+console.log(mergeSortIterative(arr));
