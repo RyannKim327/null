@@ -1,48 +1,19 @@
-class Graph {
-    constructor() {
-        this.adjacencyList = {};
+function bubbleSort(arr) {
+  const len = arr.length;
+  for (let i = 0; i < len; i++) {
+    for (let j = 0; j < len - 1; j++) {
+      if (arr[j] > arr[j + 1]) {
+        // Swap elements
+        const temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
+      }
     }
-
-    addVertex(vertex) {
-        if (!this.adjacencyList[vertex]) {
-            this.adjacencyList[vertex] = [];
-        }
-    }
-
-    addEdge(v1, v2) {
-        this.adjacencyList[v1].push(v2);
-        this.adjacencyList[v2].push(v1);
-    }
-
-    depthFirstSearch(start) {
-        const result = [];
-        const visited = {};
-
-        const dfs = (vertex) => {
-            if (!vertex) return null;
-            visited[vertex] = true;
-            result.push(vertex);
-
-            this.adjacencyList[vertex].forEach((neighbor) => {
-                if (!visited[neighbor]) {
-                    return dfs(neighbor);
-                }
-            });
-        };
-
-        dfs(start);
-
-        return result;
-    }
+  }
+  return arr;
 }
 
 // Example usage
-const graph = new Graph();
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-console.log(graph.depthFirstSearch('A'));
+const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
+const sortedArray = bubbleSort(unsortedArray);
+console.log(sortedArray);
