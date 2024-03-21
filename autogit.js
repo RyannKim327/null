@@ -1,21 +1,37 @@
-function selectionSort(arr) {
-    for (let i = 0; i < arr.length; i++) {
-        let minIndex = i;
-        for (let j = i + 1; j < arr.length; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j;
-            }
-        }
-        if (minIndex !== i) {
-            let temp = arr[i];
-            arr[i] = arr[minIndex];
-            arr[minIndex] = temp;
+function mergeSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
+    }
+
+    const middle = Math.floor(arr.length / 2);
+    const left = arr.slice(0, middle);
+    const right = arr.slice(middle);
+
+    return merge(
+        mergeSort(left),
+        mergeSort(right)
+    );
+}
+
+function merge(left, right) {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            result.push(right[rightIndex]);
+            rightIndex++;
         }
     }
-    return arr;
+
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
 }
 
 // Example usage:
-const arr = [64, 25, 12, 22, 11];
-const sortedArr = selectionSort(arr);
-console.log(sortedArr); // Output: [11, 12, 22, 25, 64]
+const arr = [5, 3, 8, 4, 2, 1, 10, 7];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr);
