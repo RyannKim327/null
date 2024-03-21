@@ -1,21 +1,21 @@
-function isAnagram(str1, str2) {
-    // Clean the strings (remove spaces and convert to lowercase)
-    const cleanStr1 = str1.replace(/[^a-z0-9]/gi, '').toLowerCase();
-    const cleanStr2 = str2.replace(/[^a-z0-9]/gi, '').toLowerCase();
-
-    // Check if the lengths of the cleaned strings match
-    if (cleanStr1.length !== cleanStr2.length) {
-        return false;
+class Node {
+    constructor(value, left = null, right = null) {
+        this.value = value;
+        this.left = left;
+        this.right = right;
     }
-
-    // Sort the characters and compare the sorted strings
-    const sortedStr1 = cleanStr1.split('').sort().join('');
-    const sortedStr2 = cleanStr2.split('').sort().join('');
-
-    return sortedStr1 === sortedStr2;
 }
 
-// Test the function
-const str1 = 'listen';
-const str2 = 'silent';
-console.log(isAnagram(str1, str2)); // Output: true
+function calculateSumOfNodes(node) {
+    if (node === null) {
+        return 0;
+    }
+    
+    return node.value + calculateSumOfNodes(node.left) + calculateSumOfNodes(node.right);
+}
+
+// Example binary tree
+const tree = new Node(1, new Node(2, new Node(4), new Node(5)), new Node(3, new Node(6), new Node(7));
+
+const sum = calculateSumOfNodes(tree);
+console.log("Sum of all nodes in the binary tree: " + sum);
