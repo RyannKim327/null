@@ -1,38 +1,27 @@
-// Node class to represent each node in the graph
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.children = [];
-  }
-}
-
-// Depth-first search function
-function depthFirstSearch(node, visited = new Set()) {
-  if (!node) {
-    return;
-  }
-
-  // Visit the current node
-  console.log(node.value);
-  visited.add(node);
-
-  // Visit all the neighbors of the current node
-  for (let child of node.children) {
-    if (!visited.has(child)) {
-      depthFirstSearch(child, visited);
+function binarySearchRecursive(arr, target, start=0, end=arr.length - 1) {
+    if (start > end) {
+        return -1; // Element not found
     }
-  }
+
+    let mid = Math.floor((start + end) / 2);
+
+    if (arr[mid] === target) {
+        return mid; // Element found
+    } else if (arr[mid] < target) {
+        return binarySearchRecursive(arr, target, mid + 1, end); // Search in the right half
+    } else {
+        return binarySearchRecursive(arr, target, start, mid - 1); // Search in the left half
+    }
 }
 
 // Example usage
-const node1 = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
-const node4 = new Node(4);
-const node5 = new Node(5);
+let arr = [1, 3, 5, 7, 9, 11, 13, 15];
+let target = 7;
 
-node1.children = [node2, node3];
-node2.children = [node4];
-node3.children = [node5];
+let index = binarySearchRecursive(arr, target);
 
-depthFirstSearch(node1);
+if (index !== -1) {
+    console.log(`Element found at index ${index}`);
+} else {
+    console.log(`Element not found`);
+}
