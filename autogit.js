@@ -1,4 +1,21 @@
-let array = [1, 2, 3, 4, 5];
-array.reverse();
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
+    }
+}
 
-console.log(array); // Output: [5, 4, 3, 2, 1]
+function reverseLinkedList(head) {
+    let current = head;
+    let prev = null;
+    let next = null;
+
+    while (current !== null) {
+        next = current.next;
+        current.next = prev;
+        prev = current;
+        current = next;
+    }
+
+    return prev;
+}
