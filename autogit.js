@@ -1,14 +1,46 @@
-function isSortedAscending(arr) {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false;
+function fibonacciSearch(arr, x) {
+    let fib2 = 0;
+    let fib1 = 1;
+    let fib = fib1 + fib2;
+
+    while (fib < arr.length) {
+        fib2 = fib1;
+        fib1 = fib;
+        fib = fib1 + fib2;
+    }
+
+    let offset = -1;
+    while (fib > 1) {
+        let i = Math.min(offset + fib2, arr.length - 1);
+
+        if (arr[i] < x) {
+            fib = fib1;
+            fib1 = fib2;
+            fib2 = fib - fib1;
+            offset = i;
+        } else if (arr[i] > x) {
+            fib = fib2;
+            fib1 -= fib2;
+            fib2 = fib - fib1;
+        } else {
+            return i;
         }
     }
-    return true;
+
+    if (fib1 && arr[offset + 1] === x) {
+        return offset + 1;
+    }
+
+    return -1;
 }
 
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [1, 3, 2, 4, 5];
+// Example
+let arr = [2, 4, 7, 10, 13, 18, 23, 27, 31, 36];
+let x = 18;
+let index = fibonacciSearch(arr, x);
 
-console.log(isSortedAscending(array1)); // Output: true
-console.log(isSortedAscending(array2)); // Output: false
+if (index !== -1) {
+    console.log(`${x} found at index ${index}`);
+} else {
+    console.log(`${x} not found in the array`);
+}
