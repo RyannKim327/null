@@ -1,34 +1,52 @@
-// Definition for a binary tree node
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+class TrieNode {
+    constructor() {
+        this.children = {};
+        this.isEndOfWord = false;
+    }
 }
 
-// Function to count the number of leaf nodes in a binary tree
-function countLeafNodes(root) {
-  if (root === null) {
-    return 0;
-  }
+class Trie {
+    constructor() {
+        this.root = new TrieNode();
+    }
 
-  if (root.left === null && root.right === null) {
-    // Node is a leaf node
-    return 1;
-  } else {
-    // Recursively count leaf nodes in the left and right subtrees
-    return countLeafNodes(root.left) + countLeafNodes(root.right);
-  }
+    insert(word) {
+        let node = this.root;
+        for (let char of word) {
+            if (!node.children[char]) {
+                node.children[char] = new TrieNode();
+            }
+            node = node.children[char];
+        }
+        node.isEndOfWord = true;
+    }
+
+    search(word) {
+        let node = this.root;
+        for (let char of word) {
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+        return node.isEndOfWord;
+    }
+
+    startsWith(prefix) {
+        let node = this.root;
+        for (let char of prefix) {
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+        return true;
+    }
 }
 
-// Example binary tree
-let root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-// Count the number of leaf nodes
-let result = countLeafNodes(root);
-console.log(result); // Output: 3
+// Example usage:
+let trie = new Trie();
+trie.insert("apple");
+console.log(trie.search("apple"));   // Output: true
+console.log(trie.search("app"));     // Output: false
+console.log(trie.startsWith("app")); // Output: true
