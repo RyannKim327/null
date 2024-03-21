@@ -1,11 +1,6 @@
-function getStringLength(str) {
-    var count = 0;
-    for (var i = 0; i < str.length; i++) {
-        count++;
-    }
-    return count;
-}
+let str1 = "Hello";
+let str2 = "World";
 
-var str = "Hello, World!";
-var length = getStringLength(str);
-console.log(length); // Output: 13
+let result = str1 + " " + str2;
+
+console.log(result); // Output: Hello World
