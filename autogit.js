@@ -1,24 +1,22 @@
-function countingSort(arr) {
-    let max = Math.max(...arr);
-    let min = Math.min(...arr);
-    let count = Array(max - min + 1).fill(0);
-    let output = [];
+function findIntersection(list1, list2) {
+    let nodeSet = new Set();
+    let intersection = [];
 
-    for (let num of arr) {
-        count[num - min]++;
+    // Traverse the first linked list and store the nodes in a Set
+    let current = list1;
+    while (current) {
+        nodeSet.add(current);
+        current = current.next;
     }
 
-    for (let i = 0; i < count.length; i++) {
-        while (count[i] > 0) {
-            output.push(i + min);
-            count[i]--;
+    // Traverse the second linked list and check if each node is in the Set
+    current = list2;
+    while (current) {
+        if (nodeSet.has(current)) {
+            intersection.push(current);
         }
+        current = current.next;
     }
 
-    return output;
+    return intersection;
 }
-
-// Example usage
-let arr = [4, 2, 2, 8, 3, 3, 1];
-let sortedArray = countingSort(arr);
-console.log(sortedArray); // Output: [1, 2, 2, 3, 3, 4, 8]
