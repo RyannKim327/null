@@ -1,38 +1,21 @@
 function isAnagram(str1, str2) {
-    // Remove any non-alphabetic characters and convert the strings to lowercase
-    str1 = str1.replace(/[^\w]/g, "").toLowerCase();
-    str2 = str2.replace(/[^\w]/g, "").toLowerCase();
+    // Remove non-alphabetic characters and convert to lowercase
+    str1 = str1.replace(/[^a-zA-Z]/g, '').toLowerCase();
+    str2 = str2.replace(/[^a-zA-Z]/g, '').toLowerCase();
 
-    // Check if the strings have the same length
-    if (str1.length !== str2.length) {
-        return false;
-    }
+    // Sort the characters in both strings
+    let sortedStr1 = str1.split('').sort().join('');
+    let sortedStr2 = str2.split('').sort().join('');
 
-    // Create objects to store the character frequencies of each string
-    const charCount1 = {};
-    const charCount2 = {};
-
-    // Count the frequency of each character in the first string
-    for (let char of str1) {
-        charCount1[char] = (charCount1[char] || 0) + 1;
-    }
-
-    // Count the frequency of each character in the second string
-    for (let char of str2) {
-        charCount2[char] = (charCount2[char] || 0) + 1;
-    }
-
-    // Compare the character frequencies of the two strings
-    for (let char in charCount1) {
-        if (charCount1[char] !== charCount2[char]) {
-            return false;
-        }
-    }
-
-    return true;
+    // Compare the sorted strings
+    return sortedStr1 === sortedStr2;
 }
 
 // Test the function
-const str1 = "listen";
-const str2 = "silent";
-console.log(isAnagram(str1, str2)); // Output: true
+let string1 = "listen";
+let string2 = "silent";
+if (isAnagram(string1, string2)) {
+    console.log(`${string1} and ${string2} are anagrams.`);
+} else {
+    console.log(`${string1} and ${string2} are not anagrams.`);
+}
