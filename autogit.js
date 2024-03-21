@@ -1,48 +1,80 @@
-function fibonacciSearch(arr, key) {
-    let fibM2 = 0;
-    let fibM1 = 1;
-    let fibM = fibM2 + fibM1;
+// Represents a directed edge between two nodes with a certain weight
+class Edge {
+    constructor(source, destination, weight) {
+        this.source = source;
+        this.destination = destination;
+        this.weight = weight;
+    }
+}
 
-    while (fibM < arr.length) {
-        fibM2 = fibM1;
-        fibM1 = fibM;
-        fibM = fibM2 + fibM1;
+// Represents a graph with a set of nodes and edges
+class Graph {
+    constructor() {
+        this.nodes = [];
+        this.edges = [];
     }
 
-    let offset = -1;
+    addNode(node) {
+        this.nodes.push(node);
+    }
 
-    while (fibM > 1) {
-        let i = Math.min(offset + fibM2, arr.length - 1);
+    addEdge(edge) {
+        this.edges.push(edge);
+    }
 
-        if (arr[i] < key) {
-            fibM = fibM1;
-            fibM1 = fibM2;
-            fibM2 = fibM - fibM1;
-            offset = i;
-        } else if (arr[i] > key) {
-            fibM = fibM2;
-            fibM1 = fibM1 - fibM2;
-            fibM2 = fibM - fibM1;
-        } else {
-            return i;
+    // Bellman-Ford algorithm implementation
+    bellmanFord(source) {
+        let distances = {};
+
+        // Initialize distances to all nodes as Infinity
+        this.nodes.forEach(node => {
+            distances[node] = Infinity;
+        });
+        distances[source] = 0;
+
+        // Relax edges V-1 times
+        for (let i = 0; i < this.nodes.length - 1; i++) {
+            this.edges.forEach(edge => {
+                let { source, destination, weight } = edge;
+                if (distances[source] + weight < distances[destination]) {
+                    distances[destination] = distances[source] + weight;
+                }
+            });
         }
-    }
 
-    if (fibM1 && arr[offset + 1] === key) {
-        return offset + 1;
-    }
+        // Check for negative weight cycles
+        this.edges.forEach(edge => {
+            let { source, destination, weight } = edge;
+            if (distances[source] + weight < distances[destination]) {
+                console.log("Graph contains negative weight cycle");
+                return;
+            }
+        });
 
-    return -1;
+        return distances;
+    }
 }
 
-// Example usage
-const arr = [2, 3, 5, 8, 13, 21, 34, 55, 89];
-const key = 13;
+// Usage
+let graph = new Graph();
 
-const index = fibonacciSearch(arr, key);
+let nodeA = "A";
+let nodeB = "B";
+let nodeC = "C";
+let nodeD = "D";
 
-if (index !== -1) {
-    console.log(`Element found at index ${index}`);
-} else {
-    console.log(`Element not found`);
-}
+graph.addNode(nodeA);
+graph.addNode(nodeB);
+graph.addNode(nodeC);
+graph.addNode(nodeD);
+
+graph.addEdge(new Edge(nodeA, nodeB, 1));
+graph.addEdge(new Edge(nodeA, nodeC, 4));
+graph.addEdge(new Edge(nodeB, nodeC, -2));
+graph.addEdge(new Edge(nodeC, nodeD, 3));
+graph.addEdge(new Edge(nodeB, nodeD, 2));
+
+let sourceNode = nodeA;
+let distances = graph.bellmanFord(sourceNode);
+
+console.log(distances);
