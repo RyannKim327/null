@@ -1,22 +1,48 @@
-function longestCommonPrefix(strs) {
-    if (!strs || strs.length === 0) {
-        return "";
+function buildPrefixTable(pattern) {
+    let prefixTable = new Array(pattern.length).fill(0);
+    let j = 0;
+
+    for (let i = 1; i < pattern.length; i++) {
+        while (j > 0 && pattern[i] !== pattern[j]) {
+            j = prefixTable[j - 1];
+        }
+
+        if (pattern[i] === pattern[j]) {
+            j++;
+        }
+
+        prefixTable[i] = j;
     }
 
-    const prefix = strs[0];
+    return prefixTable;
+}
 
-    for (let i = 1; i < strs.length; i++) {
-        while (strs[i].indexOf(prefix) !== 0) { // Continue until the prefix is the start of each string
-            prefix = prefix.substring(0, prefix.length - 1);
-            if (prefix === "") {
-                return "";
-            }
+function kmpSearch(text, pattern) {
+    let matches = [];
+    let prefixTable = buildPrefixTable(pattern);
+    let j = 0;
+
+    for (let i = 0; i < text.length; i++) {
+        while (j > 0 && text[i] !== pattern[j]) {
+            j = prefixTable[j - 1];
+        }
+
+        if (text[i] === pattern[j]) {
+            j++;
+        }
+
+        if (j === pattern.length) {
+            matches.push(i - j + 1);
+            j = prefixTable[j - 1];
         }
     }
 
-    return prefix;
+    return matches;
 }
 
-// Test the function
-const strings = ["flower", "flow", "flight"];
-console.log(longestCommonPrefix(strings)); // Output: "fl"
+// Example
+let text = "ABABDABACDABABCABAB";
+let pattern = "ABABCABAB";
+
+let matches = kmpSearch(text, pattern);
+console.log("Pattern found at indices:", matches);
