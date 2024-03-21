@@ -1,27 +1,20 @@
-function burrowsWheelerTransform(text) {
-    // Create an array to store all rotations of the text
-    let rotations = [];
-    
-    // Generate all rotations of the text
-    for (let i = 0; i < text.length; i++) {
-        let rotation = text.slice(i) + text.slice(0, i);
-        rotations.push(rotation);
+function insertionSort(arr) {
+    for (let i = 1; i < arr.length; i++) {
+        let current = arr[i];
+        let j = i - 1;
+        
+        while (j >= 0 && arr[j] > current) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        
+        arr[j + 1] = current;
     }
     
-    // Sort the rotations lexicographically
-    rotations.sort();
-    
-    // Extract the last characters of each rotation to form the transformed text
-    let transformedText = rotations.map(rotation => rotation.slice(-1)).join('');
-    
-    // Find the index of the original text in the sorted rotations
-    let originalIndex = rotations.indexOf(text);
-    
-    return { transformedText, originalIndex };
+    return arr;
 }
 
-// Test the implementation
-const text = "banana";
-const { transformedText, originalIndex } = burrowsWheelerTransform(text);
-console.log("Transformed text:", transformedText);
-console.log("Original text index:", originalIndex);
+// Test the insertion sort algorithm
+let arr = [5, 3, 8, 2, 1, 4];
+console.log("Before sorting:", arr);
+console.log("After sorting:", insertionSort(arr));
