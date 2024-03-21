@@ -1,50 +1,14 @@
-// A* search algorithm
-function astar(start, goal, graph) {
-    let openSet = [start];
-    let cameFrom = {};
-    let gScore = {};
-    let fScore = {};
+function isPalindrome(str) {
+    // Remove non-alphanumeric characters and convert to lowercase
+    str = str.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
 
-    gScore[start] = 0;
-    fScore[start] = heuristic(start, goal);
-
-    while (openSet.length > 0) {
-        let current = openSet.reduce((a, b) => (fScore[a] < fScore[b] ? a : b));
-        if (current === goal) {
-            return reconstructPath(cameFrom, current);
-        }
-
-        openSet = openSet.filter(node => node !== current);
-        
-        for (let neighbor of graph[current]) {
-            let tentative_gScore = gScore[current] + 1;
-
-            if (!gScore[neighbor] || tentative_gScore < gScore[neighbor]) {
-                cameFrom[neighbor] = current;
-                gScore[neighbor] = tentative_gScore;
-                fScore[neighbor] = gScore[neighbor] + heuristic(neighbor, goal);
-
-                if (!openSet.includes(neighbor)) {
-                    openSet.push(neighbor);
-                }
-            }
-        }
-    }
-
-    return null;  // Path not found
+    // Compare the string with its reverse
+    return str === str.split("").reverse().join("");
 }
 
-// Heuristic function (Euclidean distance)
-function heuristic(node, goal) {
-    return Math.sqrt((node.x - goal.x) ** 2 + (node.y - goal.y) ** 2);
-}
+// Test the function
+const str1 = "A man, a plan, a canal, Panama";
+console.log(isPalindrome(str1)); // Output: true
 
-// Reconstruct path
-function reconstructPath(cameFrom, current) {
-    let path = [current];
-    while (cameFrom[current]) {
-        current = cameFrom[current];
-        path.unshift(current);
-    }
-    return path;
-}
+const str2 = "Hello, world!";
+console.log(isPalindrome(str2)); // Output: false
