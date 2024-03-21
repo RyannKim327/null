@@ -1,26 +1,29 @@
-function binarySearchRecursive(arr, target, start, end) {
-    if (start > end) {
-        return -1;
-    }
-
-    const mid = Math.floor(start + (end - start) / 2);
-
-    if (arr[mid] === target) {
-        return mid;
-    } else if (arr[mid] < target) {
-        return binarySearchRecursive(arr, target, mid + 1, end);
-    } else {
-        return binarySearchRecursive(arr, target, start, mid - 1);
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
 
-// Example usage
-const arr = [1, 3, 5, 7, 9, 11, 13, 15];
-const target = 7;
-const index = binarySearchRecursive(arr, target, 0, arr.length - 1);
+function maxDepth(root) {
+    if (root === null) {
+        return 0;
+    }
 
-if (index !== -1) {
-    console.log(`Found ${target} at index ${index}`);
-} else {
-    console.log(`${target} not found in the array`);
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
+
+    return Math.max(leftDepth, rightDepth) + 1;
 }
+
+// Example binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
+
+console.log(maxDepth(root)); // Output: 3
