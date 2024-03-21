@@ -1,13 +1,21 @@
-// Function to generate random number in a specific range
-function getRandomNumber(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
+function shellSort(arr) {
+    let gap = Math.floor(arr.length / 2);
+    while (gap > 0) {
+        for (let i = gap; i < arr.length; i++) {
+            let temp = arr[i];
+            let j = i;
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
+            }
+            arr[j] = temp;
+        }
+        gap = Math.floor(gap / 2);
+    }
+    return arr;
 }
 
-// Specify the range
-const minRange = 1;
-const maxRange = 100;
-
-// Generate a random number between minRange and maxRange
-const randomNumber = getRandomNumber(minRange, maxRange);
-
-console.log(randomNumber); // Output the random number
+// Example usage
+let arr = [12, 34, 54, 2, 3];
+console.log("Original Array: " + arr);
+console.log("Sorted Array: " + shellSort(arr));
