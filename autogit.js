@@ -1,56 +1,67 @@
-function computeLPSArray(pattern) {
-    const lps = new Array(pattern.length).fill(0);
-    let len = 0;
-    let i = 1;
+// Node class to represent individual elements in the linked list
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
+    }
+}
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
+// Queue class that uses a linked list to implement a queue
+class Queue {
+    constructor() {
+        this.head = null;
+        this.tail = null;
+    }
+
+    // Method to add an element to the queue
+    enqueue(data) {
+        const newNode = new Node(data);
+        if (!this.head) {
+            this.head = newNode;
+            this.tail = newNode;
         } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
+            this.tail.next = newNode;
+            this.tail = newNode;
         }
     }
 
-    return lps;
-}
-
-function KMP(text, pattern) {
-    const lps = computeLPSArray(pattern);
-    const result = [];
-
-    let i = 0;
-    let j = 0;
-
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
+    // Method to remove and return the element at the front of the queue
+    dequeue() {
+        if (!this.head) {
+            return null;
         }
 
-        if (j === pattern.length) {
-            result.push(i - j);
-            j = lps[j - 1];
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
+        const dequeued = this.head;
+        this.head = this.head.next;
+
+        if (!this.head) {
+            this.tail = null;
         }
+
+        return dequeued.data;
     }
 
-    return result;
+    // Method to check if the queue is empty
+    isEmpty() {
+        return !this.head;
+    }
+
+    // Method to get the element at the front of the queue without removing it
+    peek() {
+        if (!this.head) {
+            return null;
+        }
+
+        return this.head.data;
+    }
 }
 
-// Example
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const indexes = KMP(text, pattern);
-console.log("Pattern found at indexes:", indexes);
+// Example usage of the Queue class
+const queue = new Queue();
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.peek());    // Output: 2
+console.log(queue.isEmpty()); // Output: false
