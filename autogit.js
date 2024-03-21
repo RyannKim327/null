@@ -1,42 +1,21 @@
-function breadthLimitedSearch(graph, start, goal, limit) {
-  let queue = [[start]];
-  
-  for (let i = 0; i < queue.length; i++) {
-    if (queue[i].length > limit) {
-      return "Goal node not found within the limit";
-    }
-    
-    let currentNode = queue[i][queue[i].length - 1];
-    
-    if (currentNode === goal) {
-      return queue[i];
-    }
-    
-    let neighbors = graph[currentNode];
-    
-    for (let j = 0; j < neighbors.length; j++) {
-      if (!queue[i].includes(neighbors[j])) {
-        queue.push([...queue[i], neighbors[j]]);
-      }
-    }
-  }
-  
-  return "Goal node not found within the limit";
+function areAnagrams(str1, str2) {
+    // Remove non-alphanumeric characters and convert to lowercase
+    const cleanStr1 = str1.replace(/[^a-z0-9]/ig, '').toLowerCase();
+    const cleanStr2 = str2.replace(/[^a-z0-9]/ig, '').toLowerCase();
+
+    // Sort the characters
+    const sortedStr1 = cleanStr1.split('').sort().join('');
+    const sortedStr2 = cleanStr2.split('').sort().join('');
+
+    // Compare the sorted strings
+    return sortedStr1 === sortedStr2;
 }
 
-// Example graph represented as an adjacency list
-const graph = {
-  'A': ['B', 'C'],
-  'B': ['A', 'D', 'E'],
-  'C': ['A', 'F'],
-  'D': ['B'],
-  'E': ['B', 'F'],
-  'F': ['C', 'E']
-};
-
-const startNode = 'A';
-const goalNode = 'F';
-const limit = 4;
-
-const path = breadthLimitedSearch(graph, startNode, goalNode, limit);
-console.log(path);
+// Test the function
+const string1 = "listen";
+const string2 = "silent";
+if(areAnagrams(string1, string2)) {
+    console.log(string1 + " and " + string2 + " are anagrams.");
+} else {
+    console.log(string1 + " and " + string2 + " are not anagrams.");
+}
