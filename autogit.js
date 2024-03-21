@@ -1,8 +1,50 @@
-var array = [1, 2, 3, 4, 5];
-var max = Math.max.apply(null, array);
+class Stack {
+    constructor() {
+        this.items = [];
+    }
 
-console.log(max); // Output: 5
-var array = [1, 2, 3, 4, 5];
-var max = Math.max(...array);
+    // Push element to the top of the stack
+    push(element) {
+        this.items.push(element);
+    }
 
-console.log(max); // Output: 5
+    // Remove and return the top element from the stack
+    pop() {
+        if (this.isEmpty()) {
+            return "Underflow";
+        }
+        return this.items.pop();
+    }
+
+    // Return the top element of the stack
+    peek() {
+        return this.items[this.items.length - 1];
+    }
+
+    // Check if the stack is empty
+    isEmpty() {
+        return this.items.length === 0;
+    }
+
+    // Get the size of the stack
+    size() {
+        return this.items.length;
+    }
+
+    // Print the stack elements
+    print() {
+        console.log(this.items);
+    }
+}
+
+// Example usage
+const stack = new Stack();
+
+stack.push(10);
+stack.push(20);
+stack.push(30);
+
+console.log(stack.pop()); // Output: 30
+console.log(stack.peek()); // Output: 20
+console.log(stack.size()); // Output: 2
+stack.print(); // Output: [10, 20]
