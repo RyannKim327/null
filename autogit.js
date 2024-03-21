@@ -1,37 +1,24 @@
-function badCharHeuristic(pattern) {
-  const badChar = {};
-  const len = pattern.length;
-  
-  for (let i = 0; i < len - 1; i++) {
-    badChar[pattern[i]] = len - i - 1;
-  }
+function findLongestIncreasingSubsequence(arr) {
+    const n = arr.length;
+    const lisLength = new Array(n).fill(1);
 
-  return badChar;
-}
-
-function searchBoyerMooreHorspool(text, pattern) {
-  const n = text.length;
-  const m = pattern.length;
-  const badChar = badCharHeuristic(pattern);
-
-  let s = 0;
-  while (s <= n - m) {
-    let j = m - 1;
-
-    while (j >= 0 && pattern[j] === text[s + j]) {
-      j--;
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[i] > arr[j] && lisLength[i] < lisLength[j] + 1) {
+                lisLength[i] = lisLength[j] + 1;
+            }
+        }
     }
 
-    if (j < 0) {
-      console.log(`Pattern found at index ${s}`);
-      s += (s + m < n) ? m - badChar[text[s + m]] : 1;
-    } else {
-      s += Math.max(1, badChar[text[s + j]] - m + 1 + j);
+    let maxLength = 0;
+    for (let i = 0; i < n; i++) {
+        if (lisLength[i] > maxLength) {
+            maxLength = lisLength[i];
+        }
     }
-  }
+
+    return maxLength;
 }
 
-const text = "ababcababcababc";
-const pattern = "ab";
-
-searchBoyerMooreHorspool(text, pattern);
+const arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
+console.log(findLongestIncreasingSubsequence(arr)); // Output: 6
