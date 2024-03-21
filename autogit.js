@@ -1,35 +1,28 @@
-function topologicalSort(graph) {
-    const visited = new Set();
-    const stack = [];
-
-    function dfs(node) {
-        visited.add(node);
-        for (let neighbor of graph[node]) {
-            if (!visited.has(neighbor)) {
-                dfs(neighbor);
-            }
-        }
-        stack.push(node);
-    }
-
-    for (let node in graph) {
-        if (!visited.has(node)) {
-            dfs(node);
+function firstNonRepeatingCharacter(str) {
+    // Create a map to store the frequency of each character
+    const charCount = new Map();
+    
+    // Count the frequency of each character
+    for (let char of str) {
+        if (charCount.has(char)) {
+            charCount.set(char, charCount.get(char) + 1);
+        } else {
+            charCount.set(char, 1);
         }
     }
-
-    return stack.reverse();
+    
+    // Find the first non-repeating character
+    for (let char of str) {
+        if (charCount.get(char) === 1) {
+            return char;
+        }
+    }
+    
+    // If no non-repeating character is found, return null
+    return null;
 }
 
-// Example graph represented as an adjacency list
-const graph = {
-    0: [1, 2],
-    1: [3],
-    2: [3],
-    3: [4, 5],
-    4: [],
-    5: []
-};
-
-const result = topologicalSort(graph);
-console.log(result); // Output: [0, 2, 1, 3, 5, 4]
+// Example usage
+const str = "aabbccde";
+const firstNonRepeating = firstNonRepeatingCharacter(str);
+console.log(firstNonRepeating);
