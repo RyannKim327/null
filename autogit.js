@@ -1,11 +1,15 @@
-const cron = require('node-cron');
+function isSortedAscending(arr) {
+    for(let i = 0; i < arr.length - 1; i++) {
+        if(arr[i] > arr[i+1]) {
+            return false;
+        }
+    }
+    return true;
+}
 
-// Schedule a task to run every minute
-cron.schedule('* * * * *', () => {
-    console.log('This task runs every minute.');
-});
+// Test the function
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [5, 4, 3, 2, 1];
 
-// Schedule a task to run at 12:00 PM every day
-cron.schedule('0 12 * * *', () => {
-    console.log('This task runs at 12:00 PM every day.');
-});
+console.log(isSortedAscending(array1)); // Output: true
+console.log(isSortedAscending(array2)); // Output: false
