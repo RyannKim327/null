@@ -1,46 +1,54 @@
-function fibonacciSearch(arr, x) {
-    let fib2 = 0;
-    let fib1 = 1;
-    let fib = fib1 + fib2;
+class HashTable {
+  constructor(size) {
+    this.size = size;
+    this.table = new Array(size);
+  }
 
-    while (fib < arr.length) {
-        fib2 = fib1;
-        fib1 = fib;
-        fib = fib1 + fib2;
+  hash(key) {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash += key.charCodeAt(i);
     }
+    return hash % this.size;
+  }
 
-    let offset = -1;
-    while (fib > 1) {
-        let i = Math.min(offset + fib2, arr.length - 1);
-
-        if (arr[i] < x) {
-            fib = fib1;
-            fib1 = fib2;
-            fib2 = fib - fib1;
-            offset = i;
-        } else if (arr[i] > x) {
-            fib = fib2;
-            fib1 -= fib2;
-            fib2 = fib - fib1;
-        } else {
-            return i;
-        }
+  set(key, value) {
+    const index = this.hash(key);
+    if (!this.table[index]) {
+      this.table[index] = [];
     }
+    this.table[index].push([key, value]);
+  }
 
-    if (fib1 && arr[offset + 1] === x) {
-        return offset + 1;
+  get(key) {
+    const index = this.hash(key);
+    if (!this.table[index]) {
+      return undefined;
     }
+    for (let pair of this.table[index]) {
+      if (pair[0] === key) {
+        return pair[1];
+      }
+    }
+    return undefined;
+  }
 
-    return -1;
+  remove(key) {
+    const index = this.hash(key);
+    if (!this.table[index]) {
+      return;
+    }
+    this.table[index] = this.table[index].filter(pair => pair[0] !== key);
+  }
 }
 
-// Example
-let arr = [2, 4, 7, 10, 13, 18, 23, 27, 31, 36];
-let x = 18;
-let index = fibonacciSearch(arr, x);
+// Example usage:
+const ht = new HashTable(5);
+ht.set("apple", 5);
+ht.set("banana", 10);
+ht.set("orange", 15);
 
-if (index !== -1) {
-    console.log(`${x} found at index ${index}`);
-} else {
-    console.log(`${x} not found in the array`);
-}
+console.log(ht.get("apple")); // Output: 5
+console.log(ht.get("banana")); // Output: 10
+ht.remove("banana");
+console.log(ht.get("banana")); // Output: undefined
