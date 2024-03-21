@@ -1,38 +1,25 @@
-function findLongestIncreasingSubsequence(arr) {
-    const n = arr.length;
-    const dp = new Array(n).fill(1);
-
-    for (let i = 1; i < n; i++) {
-        for (let j = 0; j < i; j++) {
-            if (arr[i] > arr[j] && dp[i] < dp[j] + 1) {
-                dp[i] = dp[j] + 1;
-            }
-        }
+class Node {
+    constructor(value, left = null, right = null) {
+        this.value = value;
+        this.left = left;
+        this.right = right;
     }
-
-    let maxLength = 0;
-    let endIndex = 0;
-
-    for (let i = 0; i < n; i++) {
-        if (dp[i] > maxLength) {
-            maxLength = dp[i];
-            endIndex = i;
-        }
-    }
-
-    let result = [];
-    let currentLength = maxLength;
-
-    for (let i = endIndex; i >= 0; i--) {
-        if (dp[i] === currentLength) {
-            result.unshift(arr[i]);
-            currentLength--;
-        }
-    }
-
-    return result;
 }
 
-const arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
-const longestIncreasingSubsequence = findLongestIncreasingSubsequence(arr);
-console.log("Longest increasing subsequence:", longestIncreasingSubsequence);
+function calculateTreeSum(root) {
+    if (!root) {
+        return 0;
+    }
+
+    return root.value + calculateTreeSum(root.left) + calculateTreeSum(root.right);
+}
+
+// Example binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+const sum = calculateTreeSum(root);
+console.log("Sum of all nodes in the binary tree: " + sum);
