@@ -1,26 +1,42 @@
-// Definition for a binary tree node
-function TreeNode(val) {
-    this.val = val;
-    this.left = this.right = null;
-}
-
-// Function to find the maximum depth of a binary tree
-function maxDepth(root) {
-    if (root === null) {
-        return 0;
+function breadthLimitedSearch(graph, start, goal, limit) {
+  let queue = [[start]];
+  
+  for (let i = 0; i < queue.length; i++) {
+    if (queue[i].length > limit) {
+      return "Goal node not found within the limit";
     }
-
-    let leftDepth = maxDepth(root.left);
-    let rightDepth = maxDepth(root.right);
-
-    return Math.max(leftDepth, rightDepth) + 1;
+    
+    let currentNode = queue[i][queue[i].length - 1];
+    
+    if (currentNode === goal) {
+      return queue[i];
+    }
+    
+    let neighbors = graph[currentNode];
+    
+    for (let j = 0; j < neighbors.length; j++) {
+      if (!queue[i].includes(neighbors[j])) {
+        queue.push([...queue[i], neighbors[j]]);
+      }
+    }
+  }
+  
+  return "Goal node not found within the limit";
 }
 
-// Example binary tree
-let root = new TreeNode(3);
-root.left = new TreeNode(9);
-root.right = new TreeNode(20);
-root.right.left = new TreeNode(15);
-root.right.right = new TreeNode(7);
+// Example graph represented as an adjacency list
+const graph = {
+  'A': ['B', 'C'],
+  'B': ['A', 'D', 'E'],
+  'C': ['A', 'F'],
+  'D': ['B'],
+  'E': ['B', 'F'],
+  'F': ['C', 'E']
+};
 
-console.log(maxDepth(root)); // Output: 3
+const startNode = 'A';
+const goalNode = 'F';
+const limit = 4;
+
+const path = breadthLimitedSearch(graph, startNode, goalNode, limit);
+console.log(path);
