@@ -1,21 +1,29 @@
-function shellSort(arr) {
-    let gap = Math.floor(arr.length / 2);
-    while (gap > 0) {
-        for (let i = gap; i < arr.length; i++) {
-            let temp = arr[i];
-            let j = i;
-            while (j >= gap && arr[j - gap] > temp) {
-                arr[j] = arr[j - gap];
-                j -= gap;
-            }
-            arr[j] = temp;
+function binarySearch(arr, target) {
+    let low = 0;
+    let high = arr.length - 1;
+
+    while (low <= high) {
+        let mid = Math.floor((low + high) / 2);
+
+        if (arr[mid] === target) {
+            return mid;
+        } else if (arr[mid] < target) {
+            low = mid + 1;
+        } else {
+            high = mid - 1;
         }
-        gap = Math.floor(gap / 2);
     }
-    return arr;
+
+    return -1; // Return -1 if target is not found
 }
 
 // Example usage
-let arr = [12, 34, 54, 2, 3];
-console.log("Original Array: " + arr);
-console.log("Sorted Array: " + shellSort(arr));
+const arr = [1, 3, 5, 7, 9, 11, 13, 15];
+const target = 7;
+
+const index = binarySearch(arr, target);
+if (index !== -1) {
+    console.log(`Found ${target} at index ${index}`);
+} else {
+    console.log(`${target} not found`);
+}
