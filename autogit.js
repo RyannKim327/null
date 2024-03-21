@@ -1,31 +1,47 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
+function fibonacciSearch(arr, key) {
+    let fibMinus2 = 0;
+    let fibMinus1 = 1;
+    let fib = fibMinus1 + fibMinus2;
 
-function countLeafNodes(root) {
-  if (!root) {
-    return 0;
-  }
+    while (fib < arr.length) {
+        fibMinus2 = fibMinus1;
+        fibMinus1 = fib;
+        fib = fibMinus1 + fibMinus2;
+    }
 
-  if (!root.left && !root.right) {
-    return 1;
-  }
+    let offset = -1;
 
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
+    while (fib > 1) {
+        let i = Math.min(offset + fibMinus2, arr.length - 1);
+
+        if (arr[i] < key) {
+            fib = fibMinus1;
+            fibMinus1 = fibMinus2;
+            fibMinus2 = fib - fibMinus1;
+            offset = i;
+        } else if (arr[i] > key) {
+            fib = fibMinus2;
+            fibMinus1 = fibMinus1 - fibMinus2;
+            fibMinus2 = fib - fibMinus1;
+        } else {
+            return i;
+        }
+    }
+
+    if (fibMinus1 && arr[offset + 1] === key) {
+        return offset + 1;
+    }
+
+    return -1;
 }
 
 // Example usage
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
+const arr = [1, 3, 5, 7, 9, 11, 13, 15];
+const key = 13;
+const index = fibonacciSearch(arr, key);
 
-const numLeafNodes = countLeafNodes(root);
-console.log(numLeafNodes); // Output: 4
+if (index !== -1) {
+    console.log(`Element found at index: ${index}`);
+} else {
+    console.log(`Element not found`);
+}
