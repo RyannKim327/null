@@ -1,59 +1,49 @@
-class Graph {
-  constructor() {
-    this.adjList = {};
-  }
-
-  addVertex(vertex) {
-    if (!this.adjList[vertex]) {
-      this.adjList[vertex] = [];
-    }
-  }
-
-  addEdge(vertex1, vertex2) {
-    if (!this.adjList[vertex1] || !this.adjList[vertex2]) {
-      throw new Error("Vertex not found");
+class Stack {
+    constructor() {
+        this.items = [];
     }
 
-    this.adjList[vertex1].push(vertex2);
-    this.adjList[vertex2].push(vertex1); // For undirected graph
-  }
-
-  depthFirstSearch(startVertex) {
-    const visited = {};
-    const stack = [startVertex];
-    const result = [];
-
-    while (stack.length) {
-      const currentVertex = stack.pop();
-
-      if (!visited[currentVertex]) {
-        result.push(currentVertex);
-        visited[currentVertex] = true;
-
-        this.adjList[currentVertex].forEach((neighbor) => {
-          if (!visited[neighbor]) {
-            stack.push(neighbor);
-          }
-        });
-      }
+    push(element) {
+        this.items.push(element);
     }
 
-    return result;
-  }
+    pop() {
+        if (this.items.length === 0) {
+            return "Underflow";
+        }
+        return this.items.pop();
+    }
+
+    peek() {
+        return this.items[this.items.length - 1];
+    }
+
+    isEmpty() {
+        return this.items.length === 0;
+    }
+
+    printStack() {
+        let str = "";
+        for (let i = 0; i < this.items.length; i++) {
+            str += this.items[i] + " ";
+        }
+        return str;
+    }
 }
 
 // Example usage
-const graph = new Graph();
+let stack = new Stack();
 
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
+console.log(stack.isEmpty()); // true
 
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('C', 'E');
+stack.push(1);
+stack.push(2);
+stack.push(3);
 
-console.log(graph.depthFirstSearch('A')); // Output: ['A', 'C', 'E', 'B', 'D']
+console.log(stack.printStack()); // "1 2 3"
+
+console.log(stack.peek()); // 3
+
+console.log(stack.pop()); // 3
+
+console.log(stack.printStack()); // "1 2"
