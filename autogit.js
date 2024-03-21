@@ -1,22 +1,60 @@
-function isAnagram(str1, str2) {
-  // Remove non-alphabetic characters and convert to lowercase
-  const cleanStr1 = str1.replace(/[^A-Za-z]/g, '').toLowerCase();
-  const cleanStr2 = str2.replace(/[^A-Za-z]/g, '').toLowerCase();
-
-  // Sort the characters of the strings
-  const sortedStr1 = cleanStr1.split('').sort().join('');
-  const sortedStr2 = cleanStr2.split('').sort().join('');
-
-  // Compare the sorted strings
-  return sortedStr1 === sortedStr2;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-// Example of checking if two strings are anagrams
-const string1 = 'listen';
-const string2 = 'silent';
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
 
-if (isAnagram(string1, string2)) {
-  console.log(`${string1} and ${string2} are anagrams.`);
-} else {
-  console.log(`${string1} and ${string2} are not anagrams.`);
+  insert(value) {
+    const newNode = new Node(value);
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
+
+  isPalindrome() {
+    let values = [];
+    let current = this.head;
+
+    // Push values of linked list into an array
+    while (current) {
+      values.push(current.value);
+      current = current.next;
+    }
+
+    // Use two pointers approach to compare values
+    let start = 0;
+    let end = values.length - 1;
+
+    while (start < end) {
+      if (values[start] !== values[end]) {
+        return false;
+      }
+      start++;
+      end--;
+    }
+
+    return true;
+  }
 }
+
+// Example usage
+const linkedList = new LinkedList();
+linkedList.insert(1);
+linkedList.insert(2);
+linkedList.insert(3);
+linkedList.insert(2);
+linkedList.insert(1);
+
+console.log(linkedList.isPalindrome()); // Output: true
