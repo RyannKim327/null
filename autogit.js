@@ -1,16 +1,29 @@
-function calculateTriangleArea(a, b, c) {
-    // Calculate the semi-perimeter
-    let s = (a + b + c) / 2;
+function binarySearch(arr, target) {
+  let left = 0;
+  let right = arr.length - 1;
 
-    // Calculate the area using Heron's formula
-    let area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
+  while (left <= right) {
+    let mid = Math.floor((left + right) / 2);
 
-    return area;
+    if (arr[mid] === target) {
+      return mid;
+    } else if (arr[mid] < target) {
+      left = mid + 1;
+    } else {
+      right = mid - 1;
+    }
+  }
+
+  return -1;
 }
 
 // Example usage
-let a = 5;
-let b = 6;
-let c = 7;
-let area = calculateTriangleArea(a, b, c);
-console.log('The area of the triangle is: ' + area);
+const array = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
+const target = 13;
+const result = binarySearch(array, target);
+
+if (result !== -1) {
+  console.log(`Element found at index: ${result}`);
+} else {
+  console.log("Element not found in the array.");
+}
