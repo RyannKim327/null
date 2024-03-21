@@ -1,8 +1,14 @@
-function removeVowels(str) {
-    return str.replace(/[aeiouAEIOU]/g, ''); // The regular expression [aeiouAEIOU] matches all vowels (both lower and uppercase) globally in the string and replaces them with an empty string.
+function isPalindrome(str) {
+    // Remove non-alphanumeric characters and convert to lowercase
+    const cleanStr = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+    
+    // Reverse the cleaned string
+    const reversedStr = cleanStr.split('').reverse().join('');
+    
+    // Check if the original and reversed strings are the same
+    return cleanStr === reversedStr;
 }
 
-let inputString = "Hello, World!";
-let result = removeVowels(inputString);
-
-console.log(result); // Output: "Hll, Wrld!"
+// Test the function
+const inputString = "A man, a plan, a canal, Panama!";
+console.log(isPalindrome(inputString)); // Output: true
