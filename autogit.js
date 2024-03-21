@@ -1,113 +1,58 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-        this.height = 1;
-    }
+function Node(value) {
+    this.value = value;
+    this.visited = false;
+    this.neighbors = [];
 }
 
-class AVLTree {
-    constructor() {
-        this.root = null;
-    }
-
-    getHeight(node) {
-        if (node === null) {
-            return 0;
+function Graph() {
+    this.nodes = {};
+  
+    this.addNode = function(value) {
+        if (!this.nodes[value]) {
+            this.nodes[value] = new Node(value);
         }
-        return node.height;
-    }
+    };
 
-    getBalanceFactor(node) {
-        if (node === null) {
-            return 0;
-        }
-        return this.getHeight(node.left) - this.getHeight(node.right);
-    }
-
-    updateHeight(node) {
-        if (node === null) {
-            return;
-        }
-        node.height = Math.max(this.getHeight(node.left), this.getHeight(node.right)) + 1;
-    }
-
-    rightRotate(y) {
-        let x = y.left;
-        let T = x.right;
-
-        x.right = y;
-        y.left = T;
-
-        this.updateHeight(y);
-        this.updateHeight(x);
-
-        return x;
-    }
-
-    leftRotate(x) {
-        let y = x.right;
-        let T = y.left;
-
-        y.left = x;
-        x.right = T;
-
-        this.updateHeight(x);
-        this.updateHeight(y);
-
-        return y;
-    }
-
-    insert(value) {
-        this.root = this._insert(this.root, value);
-    }
-
-    _insert(node, value) {
-        if (node === null) {
-            return new Node(value);
-        }
-
-        if (value < node.value) {
-            node.left = this._insert(node.left, value);
-        } else {
-            node.right = this._insert(node.right, value);
-        }
-
-        this.updateHeight(node);
-
-        let balanceFactor = this.getBalanceFactor(node);
-
-        // Left Case
-        if (balanceFactor > 1 && value < node.left.value) {
-            return this.rightRotate(node);
-        }
-
-        // Right Case
-        if (balanceFactor < -1 && value > node.right.value) {
-            return this.leftRotate(node);
-        }
-
-        // Left-Right Case
-        if (balanceFactor > 1 && value > node.left.value) {
-            node.left = this.leftRotate(node.left);
-            return this.rightRotate(node);
-        }
-
-        // Right-Left Case
-        if (balanceFactor < -1 && value < node.right.value) {
-            node.right = this.rightRotate(node.right);
-            return this.leftRotate(node);
-        }
-
-        return node;
-    }
+    this.addEdge = function(from, to) {
+        this.nodes[from].neighbors.push(to);
+    };
 }
 
-// Usage
-const avlTree = new AVLTree();
-avlTree.insert(10);
-avlTree.insert(20);
-avlTree.insert(30);
+function topologicalSortHelper(node, stack) {
+    node.visited = true;
 
-console.log(avlTree);
+    for (let neighbor of node.neighbors) {
+        if (!neighbor.visited) {
+            topologicalSortHelper(neighbor, stack);
+        }
+    }
+
+    stack.push(node.value);
+}
+
+function topologicalSort(graph) {
+    const stack = [];
+  
+    for (let nodeValue in graph.nodes) {
+        const node = graph.nodes[nodeValue];
+        if (!node.visited) {
+            topologicalSortHelper(node, stack);
+        }
+    }
+
+    return stack.reverse();
+}
+
+// Example usage
+const graph = new Graph();
+graph.addNode(1);
+graph.addNode(2);
+graph.addNode(3);
+graph.addNode(4);
+graph.addEdge(1, 2);
+graph.addEdge(1, 3);
+graph.addEdge(2, 4);
+graph.addEdge(3, 4);
+
+const sortedNodes = topologicalSort(graph);
+console.log(sortedNodes); // Output: [1, 3, 2, 4]
