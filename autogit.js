@@ -1,22 +1,44 @@
-const removeDuplicates = (arr) => {
-  return arr.filter((item, index) => arr.indexOf(item) === index);
-};
+class Stack {
+    constructor() {
+        this.stack = [];
+    }
 
-const originalArray = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = removeDuplicates(originalArray);
+    // Push an element onto the stack
+    push(element) {
+        this.stack.push(element);
+    }
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const originalArray = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = [...new Set(originalArray)];
+    // Pop the top element from the stack
+    pop() {
+        if (this.isEmpty()) {
+            return "Stack is empty";
+        }
+        return this.stack.pop();
+    }
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const removeDuplicates = (arr) => {
-  return arr.reduce((unique, item) => {
-    return unique.includes(item) ? unique : [...unique, item];
-  }, []);
-};
+    // Peek at the top element of the stack without removing it
+    peek() {
+        return this.isEmpty() ? "Stack is empty" : this.stack[this.stack.length - 1];
+    }
 
-const originalArray = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = removeDuplicates(originalArray);
+    // Check if the stack is empty
+    isEmpty() {
+        return this.stack.length === 0;
+    }
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+    // Get the size of the stack
+    size() {
+        return this.stack.length;
+    }
+}
+
+// Example usage
+const stack = new Stack();
+stack.push(5);
+stack.push(10);
+stack.push(15);
+
+console.log(stack.peek()); // Output: 15
+console.log(stack.pop()); // Output: 15
+console.log(stack.size()); // Output: 2
+console.log(stack.isEmpty()); // Output: false
