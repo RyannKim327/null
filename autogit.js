@@ -1,8 +1,8 @@
-const removeVowels = (str) => {
-    return str.replace(/[aeiouAEIOU]/g, '');
-};
+npm install suffix-tree
+const suffixTree = require('suffix-tree');
 
-// Example usage
-const inputString = "Hello World";
-const result = removeVowels(inputString);
-console.log(result); // Output: "Hll Wrld"
+// Create a new suffix tree
+const tree = new suffixTree.Tree("banana");
+
+// Print the suffix tree structure
+console.log(tree.root);
