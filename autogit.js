@@ -1,25 +1,29 @@
-class Node {
-    constructor(value, left = null, right = null) {
-        this.value = value;
-        this.left = left;
-        this.right = right;
-    }
-}
-
-function findSumOfNodes(root) {
-    if (root === null) {
-        return 0;
+function binarySearch(arr, target) {
+    let left = 0;
+    let right = arr.length - 1;
+    
+    while (left <= right) {
+        let mid = Math.floor((left + right) / 2);
+        
+        if (arr[mid] === target) {
+            return mid;
+        } else if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
     }
     
-    return root.value + findSumOfNodes(root.left) + findSumOfNodes(root.right);
+    return -1;
 }
 
-// Example binary tree
-let root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
+// Test the binary search function
+const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const target = 5;
+const index = binarySearch(arr, target);
 
-const sum = findSumOfNodes(root);
-console.log("Sum of all nodes in the binary tree:", sum);
+if (index !== -1) {
+    console.log(`Element found at index ${index}`);
+} else {
+    console.log(`Element not found`);
+}
