@@ -1,12 +1,12 @@
-// Define the API endpoint
-const apiUrl = 'https://jsonplaceholder.typicode.com/posts/1';
+let arr = [1, 2, 2, 3, 4, 4, 5];
 
-// Make a fetch request to the API endpoint
-fetch(apiUrl)
-  .then(response => response.json())
-  .then(data => {
-    console.log('API Data:', data);
-  })
-  .catch(error => {
-    console.error('Error fetching data:', error);
-  });
+let uniqueArr = arr.filter((value, index, self) => {
+  return self.indexOf(value) === index;
+});
+
+console.log(uniqueArr); // Output: [1, 2, 3, 4, 5]
+let arr = [1, 2, 2, 3, 4, 4, 5];
+
+let uniqueArr = [...new Set(arr)];
+
+console.log(uniqueArr); // Output: [1, 2, 3, 4, 5]
