@@ -1,37 +1,11 @@
-function mergeSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
+function getStringLength(str) {
+    var count = 0;
+    for (var i = 0; i < str.length; i++) {
+        count++;
     }
-
-    const middle = Math.floor(arr.length / 2);
-    const left = arr.slice(0, middle);
-    const right = arr.slice(middle);
-
-    return merge(
-        mergeSort(left),
-        mergeSort(right)
-    );
+    return count;
 }
 
-function merge(left, right) {
-    let result = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
-
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            result.push(left[leftIndex]);
-            leftIndex++;
-        } else {
-            result.push(right[rightIndex]);
-            rightIndex++;
-        }
-    }
-
-    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
-}
-
-// Example usage
-const arr = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
-const sortedArray = mergeSort(arr);
-console.log(sortedArray);
+var str = "Hello, World!";
+var length = getStringLength(str);
+console.log(length); // Output: 13
