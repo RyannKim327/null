@@ -1,22 +1,8 @@
-function countingSort(arr) {
-    let max = Math.max(...arr);
-    let countArray = new Array(max + 1).fill(0);
-    let sortedArray = [];
+let numbers = [10, 5, 8, 15, 3];
+let max = Math.max(...numbers);
 
-    arr.forEach(num => {
-        countArray[num]++;
-    });
+console.log("The maximum value in the array is: " + max); // Output: The maximum value in the array is: 15
+let numbers = [10, 5, 8, 15, 3];
+let max = numbers.reduce((a, b) => Math.max(a, b));
 
-    countArray.forEach((count, num) => {
-        for (let i = 0; i < count; i++) {
-            sortedArray.push(num);
-        }
-    });
-
-    return sortedArray;
-}
-
-// Example usage
-let arr = [4, 2, 2, 8, 3, 3, 1];
-let sortedArr = countingSort(arr);
-console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
+console.log("The maximum value in the array is: " + max); // Output: The maximum value in the array is: 15
