@@ -1,41 +1,46 @@
-// Function to get the digit at a specific position in a number
-function getDigit(num, i) {
-  return Math.floor(Math.abs(num) / Math.pow(10, i)) % 10;
-}
-
-// Function to count the number of digits in a number
-function digitCount(num) {
-  if (num === 0) return 1;
-  return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
-
-// Function to find the maximum number of digits in the array
-function mostDigits(arr) {
-  let maxDigits = 0;
-  for (let i = 0; i < arr.length; i++) {
-    maxDigits = Math.max(maxDigits, digitCount(arr[i]));
+class Stack {
+  constructor() {
+    this.stack = [];
   }
-  return maxDigits;
-}
 
-// Radix Sort function
-function radixSort(arr) {
-  let maxDigitCount = mostDigits(arr);
+  // Push element onto the stack
+  push(element) {
+    this.stack.push(element);
+  }
 
-  for (let k = 0; k < maxDigitCount; k++) {
-    let digitBuckets = Array.from({ length: 10 }, () => []);
-
-    for (let i = 0; i < arr.length; i++) {
-      let digit = getDigit(arr[i], k);
-      digitBuckets[digit].push(arr[i]);
+  // Pop element from the stack
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
     }
-
-    arr = [].concat(...digitBuckets);
+    return this.stack.pop();
   }
 
-  return arr;
+  // Peek at the top element of the stack
+  peek() {
+    return this.stack[this.stack.length - 1];
+  }
+
+  // Check if the stack is empty
+  isEmpty() {
+    return this.stack.length === 0;
+  }
+
+  // Print the stack elements
+  printStack() {
+    console.log(this.stack);
+  }
 }
 
-// Example usage
-let arr = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log(radixSort(arr));
+// Test the stack implementation
+const stack = new Stack();
+stack.push(1);
+stack.push(2);
+stack.push(3);
+
+stack.printStack(); // [1, 2, 3]
+
+console.log(stack.pop()); // 3
+console.log(stack.peek()); // 2
+
+stack.printStack(); // [1, 2]
