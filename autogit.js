@@ -1,27 +1,32 @@
-function shellSort(arr) {
-    let len = arr.length;
-    let gap = Math.floor(len / 2);
+class Node {
+    constructor(value, next = null) {
+        this.value = value;
+        this.next = next;
+    }
+}
 
-    while (gap > 0) {
-        for (let i = gap; i < len; i++) {
-            let temp = arr[i];
-            let j = i;
+function findMiddleElement(head) {
+    let slow = head;
+    let fast = head;
 
-            while (j >= gap && arr[j - gap] > temp) {
-                arr[j] = arr[j - gap];
-                j -= gap;
-            }
-
-            arr[j] = temp;
-        }
-
-        gap = Math.floor(gap / 2);
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next;
+        fast = fast.next.next;
     }
 
-    return arr;
+    return slow.value;
 }
 
 // Example usage
-const unsortedArray = [8, 3, 11, 6, 2, 1, 0, 9];
-const sortedArray = shellSort(unsortedArray);
-console.log(sortedArray); // Output: [0, 1, 2, 3, 6, 8, 9, 11]
+const node1 = new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
+const node4 = new Node(4);
+const node5 = new Node(5);
+
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node5;
+
+console.log(findMiddleElement(node1)); // Output: 3
