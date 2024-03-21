@@ -1,15 +1,22 @@
-function isPalindrome(str) {
-    // Remove non-alphanumeric characters and convert to lowercase
-    str = str.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
-    
-    // Reverse the string
-    let reversed = str.split('').reverse().join('');
-    
-    // Compare the reversed string with the original string
-    return str === reversed;
+function isAnagram(str1, str2) {
+  // Remove non-alphabetic characters and convert to lowercase
+  const cleanStr1 = str1.replace(/[^A-Za-z]/g, '').toLowerCase();
+  const cleanStr2 = str2.replace(/[^A-Za-z]/g, '').toLowerCase();
+
+  // Sort the characters of the strings
+  const sortedStr1 = cleanStr1.split('').sort().join('');
+  const sortedStr2 = cleanStr2.split('').sort().join('');
+
+  // Compare the sorted strings
+  return sortedStr1 === sortedStr2;
 }
 
-// Test cases
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // Output: true
-console.log(isPalindrome("racecar")); // Output: true
-console.log(isPalindrome("hello")); // Output: false
+// Example of checking if two strings are anagrams
+const string1 = 'listen';
+const string2 = 'silent';
+
+if (isAnagram(string1, string2)) {
+  console.log(`${string1} and ${string2} are anagrams.`);
+} else {
+  console.log(`${string1} and ${string2} are not anagrams.`);
+}
