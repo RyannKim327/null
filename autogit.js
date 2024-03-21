@@ -1,19 +1,59 @@
-function bubbleSort(arr) {
-  const len = arr.length;
-  for (let i = 0; i < len; i++) {
-    for (let j = 0; j < len - 1; j++) {
-      if (arr[j] > arr[j + 1]) {
-        // Swap elements
-        const temp = arr[j];
-        arr[j] = arr[j + 1];
-        arr[j + 1] = temp;
-      }
+// Define a graph class
+class Graph {
+    constructor() {
+        this.adjList = new Map();
     }
-  }
-  return arr;
+
+    addVertex(v) {
+        this.adjList.set(v, []);
+    }
+
+    addEdge(v, w) {
+        this.adjList.get(v).push(w);
+    }
+
+    // Depth-First Search function
+    dfsUtil(v, visited) {
+        visited[v] = true;
+        console.log(v);
+
+        let neighbors = this.adjList.get(v);
+
+        for (let i = 0; i < neighbors.length; i++) {
+            let neighbor = neighbors[i];
+            if (!visited[neighbor]) {
+                this.dfsUtil(neighbor, visited);
+            }
+        }
+    }
+
+    dfs(startingNode) {
+        let visited = [];
+        for (let i = 0; i < this.adjList.size; i++) {
+            visited[i] = false;
+        }
+
+        this.dfsUtil(startingNode, visited);
+    }
 }
 
-// Example usage
-const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
-const sortedArray = bubbleSort(unsortedArray);
-console.log(sortedArray);
+// Create a new graph
+let graph = new Graph();
+
+// Add vertices
+graph.addVertex(0);
+graph.addVertex(1);
+graph.addVertex(2);
+graph.addVertex(3);
+graph.addVertex(4);
+graph.addVertex(5);
+
+// Add edges
+graph.addEdge(0, 1);
+graph.addEdge(0, 2);
+graph.addEdge(1, 3);
+graph.addEdge(1, 4);
+graph.addEdge(2, 5);
+
+// Perform depth-first search starting from vertex 0
+graph.dfs(0);
