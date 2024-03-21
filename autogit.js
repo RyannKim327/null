@@ -1,24 +1,29 @@
-function quicksort(arr) {
-    if (arr.length <= 1) {
-        return arr;
-    } else {
-        const pivot = arr[0];
-        const left = [];
-        const right = [];
+function shellSort(arr) {
+    const n = arr.length;
+    let gap = Math.floor(n / 2);
 
-        for (let i = 1; i < arr.length; i++) {
-            if (arr[i] < pivot) {
-                left.push(arr[i]);
-            } else {
-                right.push(arr[i]);
+    while (gap > 0) {
+        for (let i = gap; i < n; i++) {
+            let temp = arr[i];
+            let j = i;
+
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
             }
+
+            arr[j] = temp;
         }
 
-        return quicksort(left).concat(pivot, quicksort(right));
+        gap = Math.floor(gap / 2);
     }
+
+    return arr;
 }
 
-// Example usage
-const unsortedArray = [5, 2, 9, 3, 7, 6];
-const sortedArray = quicksort(unsortedArray);
-console.log(sortedArray);
+// Example Usage
+const arr = [12, 34, 7, 23, 32, 5, 62];
+console.log("Original Array:");
+console.log(arr);
+console.log("Array after Shell Sort:");
+console.log(shellSort(arr));
