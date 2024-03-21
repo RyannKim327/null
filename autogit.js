@@ -1,20 +1,26 @@
-function insertionSort(array) {
-  for (let i = 1; i < array.length; i++) {
-    let current = array[i];
-    let j = i - 1;
-
-    while (j >= 0 && array[j] > current) {
-      array[j + 1] = array[j];
-      j--;
+function binarySearchRecursive(arr, target, left = 0, right = arr.length - 1) {
+    if (left > right) {
+        return -1;
     }
-
-    array[j + 1] = current;
-  }
-
-  return array;
+    
+    const mid = Math.floor((left + right) / 2);
+    
+    if (arr[mid] === target) {
+        return mid;
+    } else if (arr[mid] < target) {
+        return binarySearchRecursive(arr, target, mid + 1, right);
+    } else {
+        return binarySearchRecursive(arr, target, left, mid - 1);
+    }
 }
 
-// Example usage:
-const unsortedArray = [7, 3, 1, 9, 5];
-const sortedArray = insertionSort(unsortedArray);
-console.log(sortedArray); // Output: [1, 3, 5, 7, 9]
+// Example usage
+const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const target = 5;
+const index = binarySearchRecursive(arr, target);
+
+if (index !== -1) {
+    console.log(`Element found at index ${index}`);
+} else {
+    console.log('Element not found');
+}
