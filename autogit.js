@@ -1,52 +1,14 @@
-class TrieNode {
-    constructor() {
-        this.children = {};
-        this.isEndOfWord = false;
+// Async function to connect to Android device
+async function connectToAndroid() {
+    try {
+        const response = await fetch('https://example.com/android/device');
+        const data = await response.json();
+        
+        console.log('Connected to Android device:', data);
+    } catch (error) {
+        console.error('Error connecting to Android device:', error);
     }
 }
 
-class Trie {
-    constructor() {
-        this.root = new TrieNode();
-    }
-
-    insert(word) {
-        let node = this.root;
-        for (let char of word) {
-            if (!node.children[char]) {
-                node.children[char] = new TrieNode();
-            }
-            node = node.children[char];
-        }
-        node.isEndOfWord = true;
-    }
-
-    search(word) {
-        let node = this.root;
-        for (let char of word) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
-        }
-        return node.isEndOfWord;
-    }
-
-    startsWith(prefix) {
-        let node = this.root;
-        for (let char of prefix) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
-        }
-        return true;
-    }
-}
-
-// Example usage:
-let trie = new Trie();
-trie.insert("apple");
-console.log(trie.search("apple"));   // Output: true
-console.log(trie.search("app"));     // Output: false
-console.log(trie.startsWith("app")); // Output: true
+// Call the function to connect to Android device
+connectToAndroid();
