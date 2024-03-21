@@ -1,53 +1,45 @@
-function mergeSortIterative(arr) {
-    if (arr.length < 2) {
-        return arr;
-    }
-    
-    const n = arr.length;
-    const stepSize = 1;
-    
-    while (stepSize < n) {
-        let left = 0;
-        
-        while (left + stepSize < n) {
-            merge(arr, left, stepSize);
-            left += stepSize * 2;
+function rabinKarp(text, pattern) {
+    const base = 26; // Base for the hash function
+    const prime = 101; // Prime number for hashing
+    const textLength = text.length;
+    const patternLength = pattern.length;
+    const basePower = Math.pow(base, patternLength - 1) % prime;
+
+    // Calculate the hash value of the pattern
+    const patternHash = pattern.split('').reduce((hash, char, index) => {
+        return (hash * base + char.charCodeAt(0)) % prime;
+    }, 0);
+
+    // Calculate the initial hash value of the text
+    let textHash = text.substr(0, patternLength).split('').reduce((hash, char, index) => {
+        return (hash * base + char.charCodeAt(0)) % prime;
+    }, 0);
+
+    // Slide the pattern over the text and compare hash values
+    for (let i = 0; i <= textLength - patternLength; i++) {
+        if (textHash === patternHash) {
+            // Verify the actual characters
+            let found = true;
+            for (let j = 0; j < patternLength; j++) {
+                if (text[i + j] !== pattern[j]) {
+                    found = false;
+                    break;
+                }
+            }
+            if (found) {
+                console.log(`Pattern found at index ${i}`);
+            }
         }
-        
-        stepSize *= 2;
+
+        // Update hash value for the next substring of text
+        if (i < textLength - patternLength) {
+            let oldCharHash = text.charCodeAt(i) * basePower % prime;
+            textHash = (textHash - oldCharHash + prime) * base + text.charCodeAt(i + patternLength) % prime;
+        }
     }
-    
-    return arr;
 }
 
-function merge(arr, left, stepSize) {
-    const mid = left + stepSize;
-    const right = Math.min(left + 2 * stepSize, arr.length);
-    const merged = [];
-    let i = left;
-    let j = mid;
-    
-    while (i < mid && j < right) {
-        if (arr[i] < arr[j]) {
-            merged.push(arr[i]);
-            i++;
-        } else {
-            merged.push(arr[j]);
-            j++;
-        }
-    }
-    
-    while (i < mid) {
-        merged.push(arr[i]);
-        i++;
-    }
-    
-    while (j < right) {
-        merged.push(arr[j]);
-        j++;
-    }
-    
-    for (let k = 0; k < merged.length; k++) {
-        arr[left + k] = merged[k];
-    }
-}
+// Test the algorithm
+const text = "ABCCDDAEFG";
+const pattern = "CDD";
+rabinKarp(text, pattern);
