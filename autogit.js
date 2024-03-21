@@ -1,26 +1,16 @@
-function binarySearchRecursive(arr, target, left = 0, right = arr.length - 1) {
-    if (left > right) {
-        return -1;
-    }
-    
-    const mid = Math.floor((left + right) / 2);
-    
-    if (arr[mid] === target) {
-        return mid;
-    } else if (arr[mid] < target) {
-        return binarySearchRecursive(arr, target, mid + 1, right);
-    } else {
-        return binarySearchRecursive(arr, target, left, mid - 1);
-    }
-}
+const str = 'Hello, World!';
+const substring = 'Hello';
 
-// Example usage
-const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const target = 5;
-const index = binarySearchRecursive(arr, target);
-
-if (index !== -1) {
-    console.log(`Element found at index ${index}`);
+if (str.includes(substring)) {
+  console.log('String contains the substring');
 } else {
-    console.log('Element not found');
+  console.log('String does not contain the substring');
+}
+const str = 'Hello, World!';
+const substring = 'World';
+
+if (str.indexOf(substring) !== -1) {
+  console.log('String contains the substring');
+} else {
+  console.log('String does not contain the substring');
 }
