@@ -1,12 +1,16 @@
-function factorial(number) {
-    if (number === 0) {
-        return 1;
-    } else {
-        return number * factorial(number - 1);
-    }
-}
+let str = 'Hello, World!';
+let substr = 'World';
 
-// Calculate the factorial of a number
-const number = 5; // Change this to any number you want to calculate the factorial for
-const result = factorial(number);
-console.log(`The factorial of ${number} is: ${result}`);
+if (str.includes(substr)) {
+    console.log('Substring found in the string.');
+} else {
+    console.log('Substring not found in the string.');
+}
+let str = 'Hello, World!';
+let substr = 'World';
+
+if (str.indexOf(substr) !== -1) {
+    console.log('Substring found in the string.');
+} else {
+    console.log('Substring not found in the string.');
+}
