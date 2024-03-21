@@ -1,11 +1,10 @@
-function validateEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
+function reverseString(str) {
+    return str.split("").reverse().join("");
 }
 
-const email = 'example@email.com';
-if (validateEmail(email)) {
-    console.log('Valid email address');
-} else {
-    console.log('Invalid email address');
-}
+// Test the reverseString function
+const originalString = "Hello, world!";
+const reversedString = reverseString(originalString);
+
+console.log("Original string:", originalString);
+console.log("Reversed string:", reversedString);
