@@ -1,17 +1,24 @@
-function reverseWords(str) {
-    // Split the string into an array of words
-    let words = str.split(" ");
-    
-    // Reverse the array
-    let reversedWords = words.reverse();
-    
-    // Join the array back into a string
-    let reversedStr = reversedWords.join(" ");
-    
-    return reversedStr;
+function countingSort(arr) {
+    let max = Math.max(...arr);
+    let min = Math.min(...arr);
+    let count = Array(max - min + 1).fill(0);
+    let output = [];
+
+    for (let num of arr) {
+        count[num - min]++;
+    }
+
+    for (let i = 0; i < count.length; i++) {
+        while (count[i] > 0) {
+            output.push(i + min);
+            count[i]--;
+        }
+    }
+
+    return output;
 }
 
-let originalStr = "Hello World Javascript";
-let reversedStr = reverseWords(originalStr);
-
-console.log(reversedStr); // Output: "Javascript World Hello"
+// Example Usage
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const sortedArr = countingSort(arr);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
