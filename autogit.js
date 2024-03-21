@@ -1,6 +1,10 @@
-let array = [1, 2, 3, 4, 5];
-let indexToRemove = 2; // Index of the element you want to remove
+function findKthSmallestElement(arr, k) {
+    arr.sort((a, b) => a - b); // Sort the array in ascending order
+    return arr[k - 1]; // Return the kth smallest element
+}
 
-array.splice(indexToRemove, 1);
-
-console.log(array); // Output: [1, 2, 4, 5]
+// Example usage
+const array = [3, 5, 1, 4, 2];
+const k = 3; // Find the 3rd smallest element
+const kthSmallestElement = findKthSmallestElement(array, k);
+console.log(`The ${k}th smallest element is: ${kthSmallestElement}`);
