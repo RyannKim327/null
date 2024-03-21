@@ -1,16 +1,26 @@
-function kthSmallestElement(array, k) {
-    if (k < 1 || k > array.length) {
-        return null; // Out of bounds
+class Node {
+    constructor() {
+        this.children = {};
+    }
+}
+class SuffixTree {
+    constructor(str) {
+        this.root = new Node();
+        for (let i = 0; i < str.length; i++) {
+            this.addSuffix(str.substring(i));
+        }
     }
 
-    array.sort((a, b) => a - b); // Sort the array in ascending order
-
-    return array[k - 1]; // Return the kth smallest element
+    addSuffix(suffix) {
+        let current = this.root;
+        for (let i = 0; i < suffix.length; i++) {
+            let char = suffix[i];
+            if (!(char in current.children)) {
+                current.children[char] = new Node();
+            }
+            current = current.children[char];
+        }
+    }
 }
-
-// Example usage
-const arr = [3, 1, 4, 1, 5, 9, 2, 6];
-const k = 3;
-const kthSmallest = kthSmallestElement(arr, k);
-
-console.log(`The ${k}th smallest element is: ${kthSmallest}`);
+let inputString = "banana";
+let suffixTree = new SuffixTree(inputString);
