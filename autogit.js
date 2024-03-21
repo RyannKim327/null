@@ -1,9 +1,47 @@
-function calculateTriangleArea(base, height) {
-    return 0.5 * base * height;
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
 }
 
-// Example usage
-const base = 5;
-const height = 8;
-const area = calculateTriangleArea(base, height);
-console.log("The area of the triangle is: " + area);
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+
+  add(data) {
+    const newNode = new Node(data);
+
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
+
+  display() {
+    let current = this.head;
+    let result = '';
+
+    while (current) {
+      result += current.data + ' -> ';
+      current = current.next;
+    }
+
+    result += 'null';
+    console.log(result);
+  }
+}
+
+// Example Usage
+const linkedList = new LinkedList();
+linkedList.add(1);
+linkedList.add(2);
+linkedList.add(3);
+
+linkedList.display(); // Output: 1 -> 2 -> 3 -> null
