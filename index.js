@@ -184,4 +184,12 @@ let run = async () => {
 	}
 }
 
-run()
+console.log(`----- Git Fetch -----`)
+exec("git fetch", (e) => {
+	if(e) return console.error(e)
+	console.log(`----- Git Pull -----`)
+	exec("git pull", (e) => {
+		if(e) return console.error(e)
+		run()
+	})
+})
