@@ -1,21 +1,26 @@
-function firstNonRepeatingChar(str) {
-    let charCount = {};
-    
-    // Count the frequency of each character
-    for (let char of str) {
-        charCount[char] = (charCount[char] || 0) + 1;
+function binarySearchRecursive(arr, target, start, end) {
+    if (start > end) {
+        return -1;
     }
-    
-    // Find the first non-repeating character
-    for (let char of str) {
-        if (charCount[char] === 1) {
-            return char;
-        }
+
+    const mid = Math.floor(start + (end - start) / 2);
+
+    if (arr[mid] === target) {
+        return mid;
+    } else if (arr[mid] < target) {
+        return binarySearchRecursive(arr, target, mid + 1, end);
+    } else {
+        return binarySearchRecursive(arr, target, start, mid - 1);
     }
-    
-    return null; // If no non-repeating character is found
 }
 
-// Test the function
-let str = "hello world";
-console.log(firstNonRepeatingChar(str)); // Output: "h"
+// Example usage
+const arr = [1, 3, 5, 7, 9, 11, 13, 15];
+const target = 7;
+const index = binarySearchRecursive(arr, target, 0, arr.length - 1);
+
+if (index !== -1) {
+    console.log(`Found ${target} at index ${index}`);
+} else {
+    console.log(`${target} not found in the array`);
+}
