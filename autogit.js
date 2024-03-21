@@ -1,49 +1,64 @@
-// Node class for the linked list
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
+function buildLPS(pattern) {
+    const lps = [0];
+    let len = 0;
+    let i = 1;
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+    return lps;
 }
 
-// Linked list class
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+function kmpSearch(text, pattern) {
+    const n = text.length;
+    const m = pattern.length;
 
-  // Function to add a new node to the linked list
-  addNode(data) {
-    const newNode = new Node(data);
-    if (this.head === null) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next !== null) {
-        current = current.next;
-      }
-      current.next = newNode;
+    if (m === 0) {
+        return 0;
     }
-  }
 
-  // Function to find the length of the linked list
-  getLength() {
-    let count = 0;
-    let current = this.head;
-    while (current !== null) {
-      count++;
-      current = current.next;
+    const lps = buildLPS(pattern);
+
+    let i = 0; // index for text
+    let j = 0; // index for pattern
+
+    while (i < n) {
+        if (text[i] === pattern[j]) {
+            i++;
+            j++;
+        }
+
+        if (j === m) {
+            return i - j; // pattern found
+        } else if (i < n && text[i] !== pattern[j]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
     }
-    return count;
-  }
+
+    return -1; // pattern not found
 }
 
-// Create a linked list
-const linkedList = new LinkedList();
-linkedList.addNode(1);
-linkedList.addNode(2);
-linkedList.addNode(3);
+// Example usage
+const text = "abcxabcdabcdabcy";
+const pattern = "abcdabcy";
 
-// Find the length of the linked list
-const length = linkedList.getLength();
-console.log("Length of the linked list: ", length);
+const index = kmpSearch(text, pattern);
+if (index !== -1) {
+    console.log(`Pattern found at index ${index}`);
+} else {
+    console.log("Pattern not found");
+}
