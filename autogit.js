@@ -1,28 +1,44 @@
-class TreeNode {
+// Node class to represent each node in the graph
+class Node {
     constructor(value) {
         this.value = value;
-        this.left = null;
-        this.right = null;
+        this.children = [];
+    }
+
+    addChild(node) {
+        this.children.push(node);
     }
 }
 
-function maxDepth(root) {
-    if (root === null) {
-        return 0;
+// Breadth first search function
+function breadthFirstSearch(root, target) {
+    const queue = [root];
+    
+    while (queue.length > 0) {
+        let current = queue.shift();
+        if (current.value === target) {
+            return true;
+        }
+        
+        for (let child of current.children) {
+            queue.push(child);
+        }
     }
     
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
-    
-    return 1 + Math.max(leftDepth, rightDepth);
+    return false;
 }
 
-// Example usage:
-// Create a binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+// Create a graph
+const a = new Node('A');
+const b = new Node('B');
+const c = new Node('C');
+const d = new Node('D');
+const e = new Node('E');
 
-console.log(maxDepth(root)); // Output: 3
+a.addChild(b);
+a.addChild(c);
+b.addChild(d);
+c.addChild(e);
+
+// Search for node 'E' starting from node 'A'
+console.log(breadthFirstSearch(a, 'E')); // Output: true
