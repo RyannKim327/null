@@ -1,25 +1,16 @@
-class Node {
-    constructor(value, left = null, right = null) {
-        this.value = value;
-        this.left = left;
-        this.right = right;
-    }
-}
-
-function calculateTreeSum(root) {
-    if (!root) {
-        return 0;
+function kthSmallestElement(array, k) {
+    if (k < 1 || k > array.length) {
+        return null; // Out of bounds
     }
 
-    return root.value + calculateTreeSum(root.left) + calculateTreeSum(root.right);
+    array.sort((a, b) => a - b); // Sort the array in ascending order
+
+    return array[k - 1]; // Return the kth smallest element
 }
 
-// Example binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
+// Example usage
+const arr = [3, 1, 4, 1, 5, 9, 2, 6];
+const k = 3;
+const kthSmallest = kthSmallestElement(arr, k);
 
-const sum = calculateTreeSum(root);
-console.log("Sum of all nodes in the binary tree: " + sum);
+console.log(`The ${k}th smallest element is: ${kthSmallest}`);
