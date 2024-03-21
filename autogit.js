@@ -1,23 +1,11 @@
-function isPalindrome(str) {
-    if (str.length === 0 || str.length === 1) {
-        return true;
-    }
-    
-    let i = 0;
-    let j = str.length - 1;
-    
-    while (i < j) {
-        if (str[i] !== str[j]) {
-            return false;
-        }
-        
-        i++;
-        j--;
-    }
-    
-    return true;
-}
-
-// Test cases
-console.log(isPalindrome("racecar")); // Output: true
-console.log(isPalindrome("hello")); // Output: false
+// Make a GET request to an API
+fetch('https://jsonplaceholder.typicode.com/posts')
+  .then(response => response.json())
+  .then(data => {
+    // Log the data received from the API
+    console.log(data);
+  })
+  .catch(error => {
+    // Log any errors that occur during the request
+    console.error('Error:', error);
+  });
