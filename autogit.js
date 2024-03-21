@@ -1,56 +1,32 @@
-class TrieNode {
-    constructor() {
-        this.children = {};
-        this.isEndOfWord = false;
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
 
-class Trie {
-    constructor() {
-        this.root = new TrieNode();
+function countLeafNodes(root) {
+    if (!root) {
+        return 0;
     }
-
-    insert(word) {
-        let node = this.root;
-        for (let char of word) {
-            if (!node.children[char]) {
-                node.children[char] = new TrieNode();
-            }
-            node = node.children[char];
-        }
-        node.isEndOfWord = true;
+    
+    if (!root.left && !root.right) {
+        return 1;
     }
-
-    search(word) {
-        let node = this.root;
-        for (let char of word) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
-        }
-        return node.isEndOfWord;
-    }
-
-    startsWith(prefix) {
-        let node = this.root;
-        for (let char of prefix) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
-        }
-        return true;
-    }
+    
+    return countLeafNodes(root.left) + countLeafNodes(root.right);
 }
-let trie = new Trie();
 
-trie.insert("apple");
-console.log(trie.search("apple"));   // Output: true
-console.log(trie.search("app"));     // Output: false
+// Example binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
+root.right.right.right = new Node(8);
 
-trie.insert("app");
-console.log(trie.search("app"));     // Output: true
-
-console.log(trie.startsWith("app")); // Output: true
-console.log(trie.startsWith("abc")); // Output: false
+const leafNodeCount = countLeafNodes(root);
+console.log("Number of leaf nodes in the binary tree:", leafNodeCount);
