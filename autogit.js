@@ -1,52 +1,27 @@
-class Graph {
-  constructor() {
-    this.adjList = new Map();
-  }
-
-  addNode(v) {
-    this.adjList.set(v, []);
-  }
-
-  addEdge(v, w) {
-    this.adjList.get(v).push(w);
-  }
-
-  bfs(startingNode) {
-    let visited = {};
-    let queue = [];
-
-    visited[startingNode] = true;
-    queue.push(startingNode);
-
-    while (queue.length > 0) {
-      let currentNode = queue.shift();
-      console.log(currentNode);
-
-      let neighbors = this.adjList.get(currentNode);
-
-      for (let i = 0; i < neighbors.length; i++) {
-        let neighbor = neighbors[i];
-        if (!visited[neighbor]) {
-          visited[neighbor] = true;
-          queue.push(neighbor);
-        }
-      }
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
     }
-  }
 }
 
-// Sample Usage
-let g = new Graph();
+function findMiddleElement(head) {
+    let slowPointer = head;
+    let fastPointer = head;
 
-g.addNode("A");
-g.addNode("B");
-g.addNode("C");
-g.addNode("D");
-g.addNode("E");
+    while (fastPointer !== null && fastPointer.next !== null) {
+        slowPointer = slowPointer.next;
+        fastPointer = fastPointer.next.next;
+    }
 
-g.addEdge("A", "B");
-g.addEdge("A", "C");
-g.addEdge("B", "D");
-g.addEdge("C", "E");
+    return slowPointer.data;
+}
 
-g.bfs("A");
+// Test the implementation
+let head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
+
+console.log(findMiddleElement(head)); // Output: 3
