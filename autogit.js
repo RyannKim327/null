@@ -1,15 +1,38 @@
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3; // Element to remove
+function findLongestIncreasingSubsequence(arr) {
+    const n = arr.length;
+    const dp = new Array(n).fill(1);
 
-let index = array.indexOf(elementToRemove);
-if (index > -1) {
-    array.splice(index, 1);
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[i] > arr[j] && dp[i] < dp[j] + 1) {
+                dp[i] = dp[j] + 1;
+            }
+        }
+    }
+
+    let maxLength = 0;
+    let endIndex = 0;
+
+    for (let i = 0; i < n; i++) {
+        if (dp[i] > maxLength) {
+            maxLength = dp[i];
+            endIndex = i;
+        }
+    }
+
+    let result = [];
+    let currentLength = maxLength;
+
+    for (let i = endIndex; i >= 0; i--) {
+        if (dp[i] === currentLength) {
+            result.unshift(arr[i]);
+            currentLength--;
+        }
+    }
+
+    return result;
 }
 
-console.log(array); // Output: [1, 2, 4, 5]
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3; // Element to remove
-
-let newArray = array.filter(item => item !== elementToRemove);
-
-console.log(newArray); // Output: [1, 2, 4, 5]
+const arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
+const longestIncreasingSubsequence = findLongestIncreasingSubsequence(arr);
+console.log("Longest increasing subsequence:", longestIncreasingSubsequence);
