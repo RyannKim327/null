@@ -1,43 +1,21 @@
-class Stack {
-    constructor() {
-        this.items = [];
-    }
+function findMedianSortedArrays(nums1, nums2) {
+    // Concatenate the two arrays and sort them
+    const mergedArray = nums1.concat(nums2).sort((a, b) => a - b);
 
-    push(item) {
-        this.items.push(item);
-    }
+    const n = mergedArray.length;
 
-    pop() {
-        if (this.isEmpty()) {
-            return "Stack is empty";
-        }
-        return this.items.pop();
-    }
-
-    peek() {
-        return this.items[this.items.length - 1];
-    }
-
-    isEmpty() {
-        return this.items.length === 0;
-    }
-
-    print() {
-        console.log(this.items);
+    // Check if the length of the merged arrays is odd or even to find the median
+    if (n % 2 === 0) {
+        // If the length is even, return the average of the two middle elements
+        return (mergedArray[n/2 - 1] + mergedArray[n/2]) / 2;
+    } else {
+        // If the length is odd, return the middle element
+        return mergedArray[Math.floor(n/2)];
     }
 }
 
-// Example usage
-const myStack = new Stack();
+// Example
+const nums1 = [1, 3];
+const nums2 = [2];
 
-myStack.push(1);
-myStack.push(2);
-myStack.push(3);
-
-myStack.print(); // Output: [1, 2, 3]
-
-console.log(myStack.pop()); // Output: 3
-console.log(myStack.peek()); // Output: 2
-console.log(myStack.isEmpty()); // Output: false
-
-myStack.print(); // Output: [1, 2]
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.0
