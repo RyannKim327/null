@@ -1,4 +1,9 @@
-let str = "Hello, World! This is a string with spaces";
-let stringWithoutSpaces = str.replace(/\s/g, '');
+function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
-console.log(stringWithoutSpaces); // Output: "Hello,World!Thisisastringwithspaces"
+// Usage example
+let min = 1;
+let max = 100;
+let randomNumber = getRandomNumber(min, max);
+console.log(randomNumber);
