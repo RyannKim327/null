@@ -1,48 +1,16 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
-    }
-}
+function maxSubarraySum(arr) {
+    let maxSum = arr[0];
+    let currentSum = arr[0];
 
-class LinkedList {
-    constructor() {
-        this.head = null;
+    for (let i = 1; i < arr.length; i++) {
+        currentSum = Math.max(arr[i], currentSum + arr[i]);
+        maxSum = Math.max(maxSum, currentSum);
     }
 
-    add(data) {
-        const newNode = new Node(data);
-
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
-        }
-    }
-
-    findMiddle() {
-        let slow = this.head;
-        let fast = this.head;
-
-        while (fast && fast.next) {
-            slow = slow.next;
-            fast = fast.next.next;
-        }
-
-        return slow.data;
-    }
+    return maxSum;
 }
 
 // Example usage
-const list = new LinkedList();
-list.add(1);
-list.add(2);
-list.add(3);
-list.add(4);
-list.add(5);
-
-console.log(list.findMiddle()); // Output: 3
+const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const result = maxSubarraySum(arr);
+console.log("Maximum sum subarray:", result);
