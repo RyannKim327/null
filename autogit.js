@@ -1,17 +1,23 @@
-function reverseWords(str) {
-    // Split the string into an array of words
-    var words = str.split(' ');
-    
-    // Reverse the array of words
-    var reversedWords = words.reverse();
-    
-    // Join the array back into a string
-    var reversedString = reversedWords.join(' ');
+function longestIncreasingSubsequence(arr) {
+    const n = arr.length;
+    const dp = new Array(n).fill(1);
 
-    return reversedString;
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[i] > arr[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
+        }
+    }
+
+    let maxLength = 0;
+    for (let i = 0; i < n; i++) {
+        maxLength = Math.max(maxLength, dp[i]);
+    }
+
+    return maxLength;
 }
 
-// Example usage
-var originalString = "Hello World";
-var reversedString = reverseWords(originalString);
-console.log(reversedString);  // Output: "World Hello"
+// Test the function
+const arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
+console.log(longestIncreasingSubsequence(arr)); // Output: 6
