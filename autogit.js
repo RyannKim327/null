@@ -1,9 +1,17 @@
-let array = [1, 2, 3, 4, 5];
+function reverseWords(str) {
+    // Split the string into an array of words
+    var words = str.split(' ');
+    
+    // Reverse the array of words
+    var reversedWords = words.reverse();
+    
+    // Join the array back into a string
+    var reversedString = reversedWords.join(' ');
 
-console.log("Original array:", array);
+    return reversedString;
+}
 
-array.reverse();
-
-console.log("Reversed array:", array);
-Original array: [1, 2, 3, 4, 5]
-Reversed array: [5, 4, 3, 2, 1]
+// Example usage
+var originalString = "Hello World";
+var reversedString = reverseWords(originalString);
+console.log(reversedString);  // Output: "World Hello"
