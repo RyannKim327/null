@@ -1,39 +1,28 @@
-function rabinKarpSearch(text, pattern) {
-    const base = 256; // base for the hash function
-    const prime = 101; // prime number for the hash function
-    const patternLength = pattern.length;
-    const textLength = text.length;
-    const patternHash = hash(pattern, 0, patternLength);
-    let textHash = hash(text, 0, patternLength);
+function firstNonRepeatingCharacter(str) {
+    // Create an object to store the count of each character
+    var charCount = {};
 
-    for (let i = 0; i <= textLength - patternLength; i++) {
-        if (patternHash === textHash) {
-            if (text.substring(i, i + patternLength) === pattern) {
-                console.log(`Pattern found at index ${i}`);
-            }
-        }
-
-        if (i < textLength - patternLength) {
-            textHash = (textHash - text.charCodeAt(i) * Math.pow(base, patternLength - 1)) * base + text.charCodeAt(i + patternLength);
-            textHash = textHash % prime;
-            if (textHash < 0) {
-                textHash += prime;
-            }
+    // Count the occurrences of each character in the string
+    for (var i = 0; i < str.length; i++) {
+        var char = str[i];
+        if (charCount[char]) {
+            charCount[char]++;
+        } else {
+            charCount[char] = 1;
         }
     }
-}
 
-function hash(str, start, end) {
-    const base = 256;
-    const prime = 101;
-    let hashValue = 0;
-    for (let i = start; i < end; i++) {
-        hashValue = (hashValue * base + str.charCodeAt(i)) % prime;
+    // Loop through the string to find the first non-repeating character
+    for (var j = 0; j < str.length; j++) {
+        var char = str[j];
+        if (charCount[char] === 1) {
+            return char;
+        }
     }
-    return hashValue;
+
+    return null; // If no non-repeating character is found
 }
 
 // Test the function
-const text = "abacadabrabracabracadabrabrabracad";
-const pattern = "abracadabra";
-rabinKarpSearch(text, pattern);
+var str = "hello world";
+console.log(firstNonRepeatingCharacter(str)); // Output: "h"
