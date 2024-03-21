@@ -1,47 +1,56 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
+class TrieNode {
+    constructor() {
+        this.children = {};
+        this.isEndOfWord = false;
+    }
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-
-  add(data) {
-    const newNode = new Node(data);
-
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
-
-  display() {
-    let current = this.head;
-    let result = '';
-
-    while (current) {
-      result += current.data + ' -> ';
-      current = current.next;
+class Trie {
+    constructor() {
+        this.root = new TrieNode();
     }
 
-    result += 'null';
-    console.log(result);
-  }
+    insert(word) {
+        let node = this.root;
+        for (let char of word) {
+            if (!node.children[char]) {
+                node.children[char] = new TrieNode();
+            }
+            node = node.children[char];
+        }
+        node.isEndOfWord = true;
+    }
+
+    search(word) {
+        let node = this.root;
+        for (let char of word) {
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+        return node.isEndOfWord;
+    }
+
+    startsWith(prefix) {
+        let node = this.root;
+        for (let char of prefix) {
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+        return true;
+    }
 }
+let trie = new Trie();
 
-// Example Usage
-const linkedList = new LinkedList();
-linkedList.add(1);
-linkedList.add(2);
-linkedList.add(3);
+trie.insert("apple");
+console.log(trie.search("apple"));   // Output: true
+console.log(trie.search("app"));     // Output: false
 
-linkedList.display(); // Output: 1 -> 2 -> 3 -> null
+trie.insert("app");
+console.log(trie.search("app"));     // Output: true
+
+console.log(trie.startsWith("app")); // Output: true
+console.log(trie.startsWith("abc")); // Output: false
