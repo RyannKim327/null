@@ -1,33 +1,79 @@
-function interpolationSearch(arr, x) {
-    let low = 0;
-    let high = arr.length - 1;
-    
-    while (low <= high && x >= arr[low] && x <= arr[high]) {
-        if (low === high) {
-            if (arr[low] === x) return low;
-            return -1;
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+class Queue {
+    constructor() {
+        this.head = null;
+        this.tail = null;
+        this.size = 0;
+    }
+
+    enqueue(value) {
+        const newNode = new Node(value);
+        if (this.isEmpty()) {
+            this.head = newNode;
+            this.tail = newNode;
+        } else {
+            this.tail.next = newNode;
+            this.tail = newNode;
+        }
+        this.size++;
+    }
+
+    dequeue() {
+        if (this.isEmpty()) {
+            return null;
         }
 
-        let pos = low + Math.floor(((x - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+        const { value } = this.head;
+        this.head = this.head.next;
+        this.size--;
 
-        if (arr[pos] === x) {
-            return pos;
-        } else if (arr[pos] < x) {
-            low = pos + 1;
-        } else {
-            high = pos - 1;
+        if (this.size === 0) {
+            this.tail = null;
+        }
+
+        return value;
+    }
+
+    peek() {
+        if (this.isEmpty()) {
+            return null;
+        }
+
+        return this.head.value;
+    }
+
+    isEmpty() {
+        return this.size === 0;
+    }
+
+    printQueue() {
+        let current = this.head;
+        while (current) {
+            console.log(current.value);
+            current = current.next;
         }
     }
-    
-    return -1;
 }
 
 // Example usage
-let arr = [1, 3, 5, 7, 9, 11, 13, 15];
-let x = 7;
-let index = interpolationSearch(arr, x);
-if (index !== -1) {
-    console.log(`Element found at index ${index}`);
-} else {
-    console.log("Element not found");
-}
+const queue = new Queue();
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+
+console.log(queue.peek()); // Output: 1
+
+queue.dequeue();
+console.log(queue.peek()); // Output: 2
+
+queue.dequeue();
+console.log(queue.peek()); // Output: 3
+
+queue.dequeue();
+console.log(queue.isEmpty()); // Output: true
