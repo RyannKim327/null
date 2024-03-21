@@ -1,28 +1,5 @@
-function firstNonRepeatingCharacter(str) {
-    // Create a map to store the frequency of each character
-    const charCount = new Map();
-    
-    // Count the frequency of each character
-    for (let char of str) {
-        if (charCount.has(char)) {
-            charCount.set(char, charCount.get(char) + 1);
-        } else {
-            charCount.set(char, 1);
-        }
-    }
-    
-    // Find the first non-repeating character
-    for (let char of str) {
-        if (charCount.get(char) === 1) {
-            return char;
-        }
-    }
-    
-    // If no non-repeating character is found, return null
-    return null;
-}
+const cron = require('node-cron');
 
-// Example usage
-const str = "aabbccde";
-const firstNonRepeating = firstNonRepeatingCharacter(str);
-console.log(firstNonRepeating);
+cron.schedule('* * * * *', () => {
+  console.log('Running a task every minute');
+});
