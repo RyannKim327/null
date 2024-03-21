@@ -1,66 +1,40 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
+function dijkstra(graph, startNode) {
+    const distances = {};
+    const previous = {};
+    const priorityQueue = new PriorityQueue();
 
-class BinaryTree {
-    constructor() {
-        this.root = null;
-    }
-
-    insert(value) {
-        const newNode = new Node(value);
-
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
+    // Initialize distances and previous nodes
+    for (let node in graph) {
+        distances[node] = node === startNode ? 0 : Infinity;
+        previous[node] = null;
+        priorityQueue.enqueue(node, distances[node]);
     }
 
-    insertNode(node, newNode) {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
+    while (!priorityQueue.isEmpty()) {
+        const currentNode = priorityQueue.dequeue();
+
+        for (let neighbor in graph[currentNode]) {
+            let distance = distances[currentNode] + graph[currentNode][neighbor];
+            if (distance < distances[neighbor]) {
+                distances[neighbor] = distance;
+                previous[neighbor] = currentNode;
+                priorityQueue.enqueue(neighbor, distance);
             }
         }
     }
 
-    search(value) {
-        return this.searchNode(this.root, value);
-    }
-
-    searchNode(node, value) {
-        if (node === null) {
-            return false;
-        }
-
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true;
-        }
-    }
+    return { distances, previous };
 }
 
-// Usage example
-const binaryTree = new BinaryTree();
-binaryTree.insert(10);
-binaryTree.insert(5);
-binaryTree.insert(15);
+function shortestPath(graph, startNode, endNode) {
+    const { distances, previous } = dijkstra(graph, startNode);
+    const path = [endNode];
+    let previousNode = previous[endNode];
+    
+    while (previousNode) {
+        path.unshift(previousNode);
+        previousNode = previous[previousNode];
+    }
 
-console.log(binaryTree.search(10)); // Output: true
-console.log(binaryTree.search(20)); // Output: false
+    return path;
+}
