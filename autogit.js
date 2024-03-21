@@ -1,25 +1,98 @@
-function isAnagram(str1, str2) {
-    // Remove any non-alphabetic characters and convert the strings to lowercase
-    str1 = str1.replace(/[^\w]/g, '').toLowerCase();
-    str2 = str2.replace(/[^\w]/g, '').toLowerCase();
-
-    // Check if the lengths of the strings are the same
-    if (str1.length !== str2.length) {
-        return false;
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+        this.height = 1;
     }
-
-    // Sort the characters of each string and compare them
-    const sortedStr1 = str1.split('').sort().join('');
-    const sortedStr2 = str2.split('').sort().join('');
-
-    return sortedStr1 === sortedStr2;
 }
 
-// Test the function
-const string1 = "listen";
-const string2 = "silent";
-if (isAnagram(string1, string2)) {
-    console.log(`${string1} and ${string2} are anagrams.`);
-} else {
-    console.log(`${string1} and ${string2} are not anagrams.`);
+class AVLTree {
+    constructor() {
+        this.root = null;
+    }
+
+    getHeight(node) {
+        if (node === null) {
+            return 0;
+        }
+        return node.height;
+    }
+
+    getBalanceFactor(node) {
+        if (node === null) {
+            return 0;
+        }
+        return this.getHeight(node.left) - this.getHeight(node.right);
+    }
+
+    rotateRight(node) {
+        const newRoot = node.left;
+        const temp = newRoot.right;
+
+        newRoot.right = node;
+        node.left = temp;
+
+        node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
+        newRoot.height = 1 + Math.max(this.getHeight(newRoot.left), this.getHeight(newRoot.right));
+
+        return newRoot;
+    }
+
+    rotateLeft(node) {
+        const newRoot = node.right;
+        const temp = newRoot.left;
+
+        newRoot.left = node;
+        node.right = temp;
+
+        node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
+        newRoot.height = 1 + Math.max(this.getHeight(newRoot.left), this.getHeight(newRoot.right));
+
+        return newRoot;
+    }
+
+    insert(value) {
+        this.root = this.insertRec(this.root, value);
+    }
+
+    insertRec(node, value) {
+        if (node === null) {
+            return new Node(value);
+        }
+
+        if (value < node.value) {
+            node.left = this.insertRec(node.left, value);
+        } else if (value > node.value) {
+            node.right = this.insertRec(node.right, value);
+        } else {
+            return node;
+        }
+
+        node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
+
+        const balanceFactor = this.getBalanceFactor(node);
+
+        if (balanceFactor > 1 && value < node.left.value) {
+            return this.rotateRight(node);
+        }
+
+        if (balanceFactor < -1 && value > node.right.value) {
+            return this.rotateLeft(node);
+        }
+
+        if (balanceFactor > 1 && value > node.left.value) {
+            node.left = this.rotateLeft(node.left);
+            return this.rotateRight(node);
+        }
+
+        if (balanceFactor < -1 && value < node.right.value) {
+            node.right = this.rotateRight(node.right);
+            return this.rotateLeft(node);
+        }
+
+        return node;
+    }
+
+    // Add other operations like delete, search, etc.
 }
