@@ -1,30 +1,53 @@
-function binarySearch(arr, target) {
-    let left = 0;
-    let right = arr.length - 1;
-
-    while (left <= right) {
-        let mid = Math.floor((left + right) / 2);
-
-        if (arr[mid] === target) {
-            return mid;
-        } else if (arr[mid] < target) {
-            left = mid + 1;
-        } else {
-            right = mid - 1;
-        }
+function mergeSortIterative(arr) {
+    if (arr.length < 2) {
+        return arr;
     }
-
-    return -1; // Target not found
+    
+    const n = arr.length;
+    const stepSize = 1;
+    
+    while (stepSize < n) {
+        let left = 0;
+        
+        while (left + stepSize < n) {
+            merge(arr, left, stepSize);
+            left += stepSize * 2;
+        }
+        
+        stepSize *= 2;
+    }
+    
+    return arr;
 }
 
-// Example usage
-const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17];
-const target = 15;
-
-const result = binarySearch(arr, target);
-
-if (result !== -1) {
-    console.log(`Target ${target} found at index ${result}`);
-} else {
-    console.log(`Target ${target} not found`);
+function merge(arr, left, stepSize) {
+    const mid = left + stepSize;
+    const right = Math.min(left + 2 * stepSize, arr.length);
+    const merged = [];
+    let i = left;
+    let j = mid;
+    
+    while (i < mid && j < right) {
+        if (arr[i] < arr[j]) {
+            merged.push(arr[i]);
+            i++;
+        } else {
+            merged.push(arr[j]);
+            j++;
+        }
+    }
+    
+    while (i < mid) {
+        merged.push(arr[i]);
+        i++;
+    }
+    
+    while (j < right) {
+        merged.push(arr[j]);
+        j++;
+    }
+    
+    for (let k = 0; k < merged.length; k++) {
+        arr[left + k] = merged[k];
+    }
 }
