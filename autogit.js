@@ -1,4 +1,9 @@
-let str = "Hello, World! This is a test string.";
-let newStr = str.replace(/\s/g, '');
-
-console.log(newStr);
+let stringWithWhitespace = "  Hello, World!  ";
+let stringWithoutWhitespace = stringWithWhitespace.replace(/\s/g, '');
+console.log(stringWithoutWhitespace); // Output: "Hello,World!"
+let stringWithWhitespace = "  Hello, World!  ";
+let stringWithoutWhitespace = stringWithWhitespace.split(' ').join('');
+console.log(stringWithoutWhitespace); // Output: "Hello,World!"
+let stringWithWhitespace = "  Hello, World!  ";
+let stringWithoutWhitespace = stringWithWhitespace.trim();
+console.log(stringWithoutWhitespace); // Output: "Hello, World!"
