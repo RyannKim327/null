@@ -1,53 +1,33 @@
-function Node(value) {
-    this.value = value;
-    this.children = [];
-}
-
-function breadthLimitedSearch(root, limit) {
-    if (!root) {
-        return null;
-    }
-
-    let queue = [];
-    queue.push(root);
-
-    let currentLevel = 1;
-    let nextLevel = 0;
-    let depth = 0;
-
-    while (queue.length > 0) {
-        let currentNode = queue.shift();
-        currentLevel--;
-
-        if (currentNode) {
-            console.log(currentNode.value);
-
-            if (depth === limit) {
-                continue;
-            }
-
-            for (let i = 0; i < currentNode.children.length; i++) {
-                queue.push(currentNode.children[i]);
-                nextLevel++;
-            }
+function interpolationSearch(arr, x) {
+    let low = 0;
+    let high = arr.length - 1;
+    
+    while (low <= high && x >= arr[low] && x <= arr[high]) {
+        if (low === high) {
+            if (arr[low] === x) return low;
+            return -1;
         }
 
-        if (currentLevel === 0) {
-            currentLevel = nextLevel;
-            nextLevel = 0;
-            depth++;
+        let pos = low + Math.floor(((x - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+
+        if (arr[pos] === x) {
+            return pos;
+        } else if (arr[pos] < x) {
+            low = pos + 1;
+        } else {
+            high = pos - 1;
         }
     }
+    
+    return -1;
 }
 
-// Example usage:
-let root = new Node(1);
-let child1 = new Node(2);
-let child2 = new Node(3);
-let child3 = new Node(4);
-root.children.push(child1, child2);
-child1.children.push(new Node(5));
-child2.children.push(new Node(6), new Node(7));
-child3.children.push(new Node(8), new Node(9), new Node(10));
-
-breadthLimitedSearch(root, 2);
+// Example usage
+let arr = [1, 3, 5, 7, 9, 11, 13, 15];
+let x = 7;
+let index = interpolationSearch(arr, x);
+if (index !== -1) {
+    console.log(`Element found at index ${index}`);
+} else {
+    console.log("Element not found");
+}
