@@ -1,9 +1,22 @@
-let myArray = [1, 2, 3, 4, 5];
-myArray.reverse();
+function findFirstRepeatedCharacter(inputString) {
+    const seenCharacters = new Set();
+    
+    for (const char of inputString) {
+        if (seenCharacters.has(char)) {
+            return char;
+        }
+        
+        seenCharacters.add(char);
+    }
+    
+    return null; // if no repeated character is found
+}
 
-console.log(myArray); // Output: [5, 4, 3, 2, 1]
-let myArray = [1, 2, 3, 4, 5];
-let reversedArray = [...myArray].reverse();
+const input = "hello world";
+const repeatedChar = findFirstRepeatedCharacter(input);
 
-console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
-console.log(myArray); // Output: [1, 2, 3, 4, 5]
+if (repeatedChar) {
+    console.log(`The first repeated character is: ${repeatedChar}`);
+} else {
+    console.log("No repeated character found.");
+}
