@@ -1,33 +1,19 @@
-function mergeSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
-    }
-
-    const middle = Math.floor(arr.length / 2);
-    const left = arr.slice(0, middle);
-    const right = arr.slice(middle);
-
-    return merge(mergeSort(left), mergeSort(right));
-}
-
-function merge(left, right) {
-    let result = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
-
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            result.push(left[leftIndex]);
-            leftIndex++;
-        } else {
-            result.push(right[rightIndex]);
-            rightIndex++;
+function shellSort(arr) {
+    let len = arr.length;
+    for (let gap = Math.floor(len / 2); gap > 0; gap = Math.floor(gap / 2)) {
+        for (let i = gap; i < len; i++) {
+            let temp = arr[i];
+            let j;
+            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
+                arr[j] = arr[j - gap];
+            }
+            arr[j] = temp;
         }
     }
-
-    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+    return arr;
 }
 
 // Example usage
-const arr = [8, 3, 1, 7, 0, 10, 2];
-console.log(mergeSort(arr)); // Output: [0, 1, 2, 3, 7, 8, 10]
+let arr = [12, 34, 54, 2, 3];
+console.log("Original array: ", arr);
+console.log("Sorted array: ", shellSort(arr));
