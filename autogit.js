@@ -1,36 +1,67 @@
-class TreeNode {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-function diameterOfBinaryTree(root) {
-    let diameter = 0;
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
 
-    function getHeight(node) {
-        if (node === null) {
-            return 0;
-        }
+  add(value) {
+    const newNode = new Node(value);
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
 
-        let leftHeight = getHeight(node.left);
-        let rightHeight = getHeight(node.right);
+  reverse() {
+    let prev = null;
+    let current = this.head;
+    let next = null;
 
-        diameter = Math.max(diameter, leftHeight + rightHeight);
-
-        return 1 + Math.max(leftHeight, rightHeight);
+    while (current) {
+      next = current.next;
+      current.next = prev;
+      prev = current;
+      current = next;
     }
 
-    getHeight(root);
+    this.head = prev;
+  }
 
-    return diameter;
+  printList() {
+    let current = this.head;
+    let list = '';
+
+    while (current) {
+      list += current.value + ' -> ';
+      current = current.next;
+    }
+
+    list += 'null';
+    console.log(list);
+  }
 }
-// Create a binary tree
-let root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
 
-console.log(diameterOfBinaryTree(root)); // Output: 3
+const list = new LinkedList();
+list.add(1);
+list.add(2);
+list.add(3);
+list.add(4);
+
+console.log('Original list:');
+list.printList();
+
+list.reverse();
+
+console.log('Reversed list:');
+list.printList();
