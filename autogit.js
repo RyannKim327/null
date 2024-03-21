@@ -1,42 +1,47 @@
-class Node {
-    constructor() {
-        this.children = {};
+function bellmanFord(graph, startNode) {
+    let distances = {};
+  
+    // Initialize distances to all nodes as Infinity except the startNode
+    for (let node in graph) {
+        if (node === startNode) {
+            distances[node] = 0;
+        } else {
+            distances[node] = Infinity;
+        }
     }
+
+    // Relax edges iteratively
+    for (let i = 0; i < Object.keys(graph).length - 1; i++) {
+        for (let node in graph) {
+            for (let neighbor in graph[node]) {
+                if (distances[node] + graph[node][neighbor] < distances[neighbor]) {
+                    distances[neighbor] = distances[node] + graph[node][neighbor];
+                }
+            }
+        }
+    }
+
+    // Check for negative cycles
+    for (let node in graph) {
+        for (let neighbor in graph[node]) {
+            if (distances[node] + graph[node][neighbor] < distances[neighbor]) {
+                console.log("Negative cycle detected, algorithm stopped.");
+                return;
+            }
+        }
+    }
+
+    return distances;
 }
 
-class SuffixTree {
-    constructor(text) {
-        this.root = new Node();
-        for (let i = 0; i < text.length; i++) {
-            this.addSuffix(text.substring(i));
-        }
-    }
+// Example graph representation as an adjacency list
+let graph = {
+    A: { B: -1, C: 4 },
+    B: { C: 3, D: 2, E: 2 },
+    C: {},
+    D: { B: 1, C: 5 },
+    E: { D: -3 }
+};
 
-    addSuffix(suffix) {
-        let currentNode = this.root;
-        for (let i = 0; i < suffix.length; i++) {
-            const currentChar = suffix[i];
-            if (!currentNode.children[currentChar]) {
-                currentNode.children[currentChar] = new Node();
-            }
-            currentNode = currentNode.children[currentChar];
-        }
-    }
-
-    search(pattern) {
-        let currentNode = this.root;
-        for (let i = 0; i < pattern.length; i++) {
-            const currentChar = pattern[i];
-            if (!currentNode.children[currentChar]) {
-                return false;
-            }
-            currentNode = currentNode.children[currentChar];
-        }
-        return true;
-    }
-}
-
-// Example usage
-const suffixTree = new SuffixTree("banana");
-console.log(suffixTree.search("ana")); // true
-console.log(suffixTree.search("ananas")); // false
+let startNode = 'A';
+console.log(bellmanFord(graph, startNode)); // Output: { A: 0, B: -1, C: 2, D: -2, E: 1 }
