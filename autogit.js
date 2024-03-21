@@ -1,32 +1,15 @@
-// Linked list node definition
-function Node(data) {
-  this.data = data;
-  this.next = null;
+let array = [1, 2, 3, 4, 5];
+let elementToRemove = 3; // Element to remove
+
+let index = array.indexOf(elementToRemove);
+if (index > -1) {
+    array.splice(index, 1);
 }
 
-// Function to find the middle element of a linked list
-function findMiddleElement(head) {
-  let count = 0;
-  let current = head;
-  let middle = head;
+console.log(array); // Output: [1, 2, 4, 5]
+let array = [1, 2, 3, 4, 5];
+let elementToRemove = 3; // Element to remove
 
-  while (current !== null) {
-    if (count % 2 !== 0) {
-      middle = middle.next;
-    }
-    current = current.next;
-    count++;
-  }
-  
-  return middle.data;
-}
+let newArray = array.filter(item => item !== elementToRemove);
 
-// Example linked list
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-let middleElement = findMiddleElement(head);
-console.log("Middle Element:", middleElement);
+console.log(newArray); // Output: [1, 2, 4, 5]
