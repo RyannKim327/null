@@ -1,11 +1,22 @@
-function isPalindrome(str) {
-    // Remove special characters and convert to lowercase
-    str = str.toLowerCase().replace(/[\W_]/g, '');
-    
-    // Compare the string with its reverse
-    return str === str.split('').reverse().join('');
+function longestCommonPrefix(strs) {
+    if (!strs || strs.length === 0) {
+        return "";
+    }
+
+    const prefix = strs[0];
+
+    for (let i = 1; i < strs.length; i++) {
+        while (strs[i].indexOf(prefix) !== 0) { // Continue until the prefix is the start of each string
+            prefix = prefix.substring(0, prefix.length - 1);
+            if (prefix === "") {
+                return "";
+            }
+        }
+    }
+
+    return prefix;
 }
 
 // Test the function
-console.log(isPalindrome("A man, a plan, a canal, Panama")); //true
-console.log(isPalindrome("Hello World")); //false
+const strings = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(strings)); // Output: "fl"
