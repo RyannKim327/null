@@ -1,45 +1,109 @@
-// Define a Node class for the linked list
 class Node {
     constructor(value) {
         this.value = value;
-        this.next = null;
+        this.left = null;
+        this.right = null;
+        this.height = 1;
     }
 }
 
-// Function to find the nth node from the end of a linked list
-function findNthNodeFromEnd(head, n) {
-    let pointer1 = head;
-    let pointer2 = head;
+class AVLTree {
+    constructor() {
+        this.root = null;
+    }
 
-    // Move pointer2 to the nth node from the beginning
-    for (let i = 0; i < n; i++) {
-        if (pointer2 === null) {
-            return null; // Invalid input
+    getHeight(node) {
+        if (node === null) {
+            return 0;
         }
-        pointer2 = pointer2.next;
+        return node.height;
     }
 
-    // Move both pointers until pointer2 reaches the end
-    while (pointer2 !== null) {
-        pointer1 = pointer1.next;
-        pointer2 = pointer2.next;
+    getBalanceFactor(node) {
+        return this.getHeight(node.left) - this.getHeight(node.right);
     }
 
-    // At this point, pointer1 is pointing to the nth node from the end
-    return pointer1;
+    updateHeight(node) {
+        node.height = Math.max(this.getHeight(node.left), this.getHeight(node.right)) + 1;
+    }
+
+    rotateRight(y) {
+        let x = y.left;
+        let T = x.right;
+
+        x.right = y;
+        y.left = T;
+
+        this.updateHeight(y);
+        this.updateHeight(x);
+
+        return x;
+    }
+
+    rotateLeft(x) {
+        let y = x.right;
+        let T = y.left;
+
+        y.left = x;
+        x.right = T;
+
+        this.updateHeight(x);
+        this.updateHeight(y);
+
+        return y;
+    }
+
+    insert(value) {
+        this.root = this.insertNode(this.root, value);
+    }
+
+    insertNode(node, value) {
+        if (node === null) {
+            return new Node(value);
+        }
+
+        if (value < node.value) {
+            node.left = this.insertNode(node.left, value);
+        } else if (value > node.value) {
+            node.right = this.insertNode(node.right, value);
+        } else {
+            return node;
+        }
+
+        this.updateHeight(node);
+
+        let balance = this.getBalanceFactor(node);
+
+        // Left Left Case
+        if (balance > 1 && value < node.left.value) {
+            return this.rotateRight(node);
+        }
+
+        // Right Right Case
+        if (balance < -1 && value > node.right.value) {
+            return this.rotateLeft(node);
+        }
+
+        // Left Right Case
+        if (balance > 1 && value > node.left.value) {
+            node.left = this.rotateLeft(node.left);
+            return this.rotateRight(node);
+        }
+
+        // Right Left Case
+        if (balance < -1 && value < node.right.value) {
+            node.right = this.rotateRight(node.right);
+            return this.rotateLeft(node);
+        }
+
+        return node;
+    }
 }
 
-// Example linked list: 1 -> 2 -> 3 -> 4 -> 5 -> null
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
+// Example Usage
+let avlTree = new AVLTree();
+avlTree.insert(10);
+avlTree.insert(20);
+avlTree.insert(30);
 
-let n = 2;
-let nthNodeFromEnd = findNthNodeFromEnd(head, n);
-if (nthNodeFromEnd !== null) {
-    console.log(`Value of the ${n}th node from the end: ${nthNodeFromEnd.value}`);
-} else {
-    console.log(`Invalid input`);
-}
+console.log(avlTree.root);
