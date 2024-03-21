@@ -1,6 +1,4 @@
-const stringWithWhitespace = "   Hello, world!   ";
-const stringWithoutWhitespace = stringWithWhitespace.replace(/\s/g, '');
-console.log(stringWithoutWhitespace); // Output: "Hello,world!"
-const stringWithWhitespace = "   Hello, world!   ";
-const stringWithoutWhitespace = stringWithWhitespace.trim();
-console.log(stringWithoutWhitespace); // Output: "Hello, world!"
+let str = "Hello, World! This is a string with spaces";
+let stringWithoutSpaces = str.replace(/\s/g, '');
+
+console.log(stringWithoutSpaces); // Output: "Hello,World!Thisisastringwithspaces"
