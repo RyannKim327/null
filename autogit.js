@@ -1,33 +1,62 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+function burrowsWheelerTransform(input) {
+    var suffixes = [];
+    var inputLength = input.length;
+
+    for (var i = 0; i < inputLength; i++) {
+        var rotation = input.slice(i) + input.slice(0, i);
+        suffixes.push(rotation);
     }
+
+    suffixes.sort();
+
+    var transformedString = '';
+    
+    for (var j = 0; j < inputLength; j++) {
+        transformedString += suffixes[j][inputLength - 1];
+    }
+
+    return transformedString;
 }
 
-function countLeafNodes(root) {
-    if (root === null) {
-        return 0;
+function inverseBurrowsWheelerTransform(input) {
+    var table = [];
+    for (var i = 0; i < input.length; i++) {
+        table[i] = input.charAt(i);
     }
 
-    if (root.left === null && root.right === null) {
-        return 1; // Found a leaf node
+    table.sort();
+
+    var firstColumn = table.slice();
+    table = table.map(function (value) {
+        return { value: value, index: 0, count: 0 };
+    });
+
+    table.forEach(function (element, index) {
+        element.index = firstColumn.indexOf(element.value);
+        element.count = firstColumn.slice(0, index).filter(function (char) {
+            return char === element.value;
+        }).length;
+    });
+
+    var current = table[0];
+    var inverse = [];
+    for (var i = 0; i < input.length; i++) {
+        inverse.push(current.value);
+        current = table[current.index];
+        current.count++;
+        current = table.find(function (element) {
+            return element.value === current.value && element.count === current.count;
+        });
     }
 
-    let leftCount = countLeafNodes(root.left);
-    let rightCount = countLeafNodes(root.right);
-
-    return leftCount + rightCount;
+    return inverse.slice(1).join('');
 }
 
-// Example binary tree
-let root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
+var input = "hello world";
+var bwtResult = burrowsWheelerTransform(input);
+var originalString = inverseBurrowsWheelerTransform(bwtResult);
 
-console.log("Number of leaf nodes: ", countLeafNodes(root)); // Output: 4
+console.log("Input: " + input);
+console.log("BWT Result: " + bwtResult);
+console.log("Original String: " + originalString);
+
