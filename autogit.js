@@ -1,67 +1,27 @@
 class Node {
     constructor(value) {
         this.value = value;
-        this.left = null;
-        this.right = null;
+        this.next = null;
     }
 }
 
-class BinarySearchTree {
-    constructor() {
-        this.root = null;
+function findMiddleElement(head) {
+    let slowPointer = head;
+    let fastPointer = head;
+
+    while (fastPointer != null && fastPointer.next != null) {
+        slowPointer = slowPointer.next;
+        fastPointer = fastPointer.next.next;
     }
 
-    insert(value) {
-        const newNode = new Node(value);
-
-        if (!this.root) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    insertNode(node, newNode) {
-        if (newNode.value < node.value) {
-            if (!node.left) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (!node.right) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
-
-    search(value) {
-        return this.searchNode(this.root, value);
-    }
-
-    searchNode(node, value) {
-        if (!node) {
-            return false;
-        }
-
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true;
-        }
-    }
+    return slowPointer.value;
 }
 
-// Usage
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(7);
+// Example of creating a linked list
+let head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
 
-console.log(bst.search(7)); // Output: true
-console.log(bst.search(20)); // Output: false
+console.log(findMiddleElement(head)); // Output: 3
