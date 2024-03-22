@@ -1,9 +1,8 @@
-function calculateArea(base, height) {
-    return 0.5 * base * height;
+function decimalToBinary(decimal) {
+    return decimal.toString(2);
 }
 
-// Example usage:
-const base = 5;
-const height = 3;
-const area = calculateArea(base, height);
-console.log("The area of the triangle is: " + area);
+// Example usage
+const decimalNumber = 10;
+const binaryNumber = decimalToBinary(decimalNumber);
+console.log(binaryNumber); // Output: 1010
