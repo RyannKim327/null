@@ -1,18 +1,23 @@
-function countOccurrences(str, word) {
-    let count = 0;
-    const words = str.split(' ');
+function countingSort(arr) {
+    const max = Math.max(...arr);
+    const countArray = new Array(max + 1).fill(0);
 
-    for (let i = 0; i < words.length; i++) {
-        if (words[i].toLowerCase() === word.toLowerCase()) {
-            count++;
+    for (let num of arr) {
+        countArray[num]++;
+    }
+
+    let result = [];
+    for (let i = 0; i < countArray.length; i++) {
+        while (countArray[i] > 0) {
+            result.push(i);
+            countArray[i]--;
         }
     }
 
-    return count;
+    return result;
 }
 
-const text = "This is a sample text with sample words. Sample is the sample word we are counting.";
-const targetWord = "sample";
-const occurrences = countOccurrences(text, targetWord);
-
-console.log(`The word "${targetWord}" occurs ${occurrences} times in the text.`);
+// Example usage
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const sortedArr = countingSort(arr);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
