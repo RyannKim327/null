@@ -1,22 +1,17 @@
-function longestIncreasingSubsequence(arr) {
-    if (arr.length === 0) {
-        return 0;
+// API endpoint URL
+const apiUrl = 'https://jsonplaceholder.typicode.com/posts/1';
+
+// Make a GET request to the API endpoint using fetch
+fetch(apiUrl)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
     }
-
-    let dp = new Array(arr.length).fill(1);
-    let maxLength = 1;
-
-    for (let i = 1; i < arr.length; i++) {
-        for (let j = 0; j < i; j++) {
-            if (arr[i] > arr[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
-            }
-        }
-        maxLength = Math.max(maxLength, dp[i]);
-    }
-
-    return maxLength;
-}
-
-const arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
-console.log(longestIncreasingSubsequence(arr)); // Output: 6
+    return response.json();
+  })
+  .then(data => {
+    console.log(data);
+  })
+  .catch(error => {
+    console.error('There was a problem with the fetch operation:', error);
+  });
