@@ -1,23 +1,13 @@
-function firstRepeatedCharacter(str) {
-    let map = {};
-    
-    for (let char of str) {
-        if (map[char]) {
-            return char;
-        } else {
-            map[char] = 1;
-        }
+function factorial(n) {
+    if (n === 0) {
+        return 1;
+    } else {
+        return n * factorial(n - 1);
     }
-    
-    return null;
 }
 
-// Test the function
-let str = "hello world";
-let repeatedChar = firstRepeatedCharacter(str);
+// To calculate the factorial of a number, call the function like this:
+const number = 5;
+const result = factorial(number);
 
-if (repeatedChar) {
-    console.log("The first repeated character is: " + repeatedChar);
-} else {
-    console.log("No repeated characters found in the string.");
-}
+console.log(`The factorial of ${number} is: ${result}`);
