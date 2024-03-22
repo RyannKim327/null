@@ -1,26 +1,22 @@
-function isPalindrome(str) {
-    if (!str) {
-        return false;
-    }
+function findFirstRepeatedChar(str) {
+    let charSet = new Set();
     
-    let i = 0;
-    let j = str.length - 1;
-    
-    while (i < j) {
-        if (str[i] !== str[j]) {
-            return false;
+    for (let char of str) {
+        if (charSet.has(char)) {
+            return char;
+        } else {
+            charSet.add(char);
         }
-        i++;
-        j--;
     }
     
-    return true;
+    return null; // If no repeated character is found
 }
 
-// Test with a string
-const inputString = "racecar";
-if (isPalindrome(inputString)) {
-    console.log(inputString + " is a palindrome.");
+let str = "hello world";
+let repeatedChar = findFirstRepeatedChar(str);
+
+if (repeatedChar) {
+    console.log("The first repeated character is: " + repeatedChar);
 } else {
-    console.log(inputString + " is not a palindrome.");
+    console.log("There are no repeated characters in the string.");
 }
