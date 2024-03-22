@@ -1,43 +1,37 @@
-// Node class representing a single node in the search tree
-class Node {
-    constructor(value, children) {
-        this.value = value; // Node value
-        this.children = children; // Array of child nodes
+function bmhSearch(text, pattern) {
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    
+    if (patternLength === 0) {
+        return -1;
     }
-}
 
-// Perform a depth-limited search starting from the root node with a given depth limit
-function depthLimitedSearch(root, depthLimit) {
-    let stack = [{ node: root, depth: 0 }];
+    const lastOccurrence = {};
+    for (let i = 0; i < patternLength - 1; i++) {
+        lastOccurrence[pattern[i]] = i;
+    }
 
-    while (stack.length > 0) {
-        let { node, depth } = stack.pop();
+    let i = patternLength - 1;
+    let j = patternLength - 1;
 
-        if (depth <= depthLimit) {
-            // Process the node here
-            console.log("Visiting node with value:", node.value);
-
-            // Add children to stack for further exploration
-            if (node.children) {
-                for (let child of node.children) {
-                    stack.push({ node: child, depth: depth + 1 });
-                }
+    while (i < textLength) {
+        if (text[i] === pattern[j]) {
+            if (j === 0) {
+                return i; // pattern found
             }
+            i--;
+            j--;
+        } else {
+            const charIndex = lastOccurrence[text[i]];
+            i += patternLength - Math.min(j, 1 + charIndex);
+            j = patternLength - 1;
         }
     }
+    
+    return -1; // pattern not found
 }
 
-// Example usage
-// Create a sample tree
-const rootNode = new Node(1, [
-    new Node(2, [
-        new Node(4, []),
-        new Node(5, []),
-    ]),
-    new Node(3, [
-        new Node(6, []),
-    ]),
-]);
-
-// Perform depth-limited search with depth limit of 2
-depthLimitedSearch(rootNode, 2);
+const text = "hello world";
+const pattern = "world";
+const result = bmhSearch(text, pattern);
+console.log(result);
