@@ -1,23 +1,44 @@
-function countingSort(arr) {
-    const max = Math.max(...arr);
-    const countArray = new Array(max + 1).fill(0);
-
-    for (let num of arr) {
-        countArray[num]++;
+function burrowsWheelerTransform(str) {
+    // Generate all possible rotations of the input string
+    let rotations = [];
+    for (let i = 0; i < str.length; i++) {
+        rotations.push(str.substring(i) + str.substring(0, i));
     }
 
-    let result = [];
-    for (let i = 0; i < countArray.length; i++) {
-        while (countArray[i] > 0) {
-            result.push(i);
-            countArray[i]--;
-        }
+    // Sort the rotations lexicographically
+    rotations.sort();
+
+    // Extract the last characters of each rotation to form the Burrows-Wheeler transformed string
+    let bwt = rotations.map((rotation) => rotation.charAt(rotation.length - 1)).join('');
+
+    return bwt;
+}
+
+function burrowsWheelerInverseTransform(bwt) {
+    let table = [];
+    for (let i = 0; i < bwt.length; i++) {
+        table.push({original: '', transformed: ''});
     }
 
-    return result;
+    // Fill the table with sorted transformed and original strings
+    for (let i = 0; i < bwt.length; i++) {
+        table.sort((a, b) => a.original.localeCompare(b.original) || a.transformed.localeCompare(b.transformed));
+        table.forEach((row, j) => {
+            row.original = bwt.charAt(j) + row.original;
+            row.transformed = table[j].original;
+        });
+    }
+
+    // Find the original string
+    let original = table.find((row) => row.transformed.endsWith('$')).original;
+
+    return original.substring(0, original.length - 1);
 }
 
 // Example usage
-const arr = [4, 2, 2, 8, 3, 3, 1];
-const sortedArr = countingSort(arr);
-console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
+let inputString = 'banana$';
+let bwt = burrowsWheelerTransform(inputString);
+console.log('Burrows-Wheeler transformed string:', bwt);
+
+let originalString = burrowsWheelerInverseTransform(bwt);
+console.log('Original string:', originalString);
