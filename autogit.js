@@ -1,16 +1,14 @@
-function isAnagram(str1, str2) {
-    // Remove non-alphabetic characters and convert to lowercase
-    str1 = str1.replace(/[^a-zA-Z]/g, "").toLowerCase();
-    str2 = str2.replace(/[^a-zA-Z]/g, "").toLowerCase();
-
-    // Sort the characters of the strings
-    str1 = str1.split("").sort().join("");
-    str2 = str2.split("").sort().join("");
-
-    // Compare the sorted strings
-    return str1 === str2;
+function factorial(n) {
+    // Base case: factorial of 0 is 1
+    if (n === 0) {
+        return 1;
+    } else {
+        // Recursive case: n! = n * (n-1)!
+        return n * factorial(n - 1);
+    }
 }
 
-// Test the function
-console.log(isAnagram("listen", "silent")); // true
-console.log(isAnagram("hello", "world")); // false
+// Test the function with an example
+const number = 5;
+const result = factorial(number);
+console.log(`Factorial of ${number} is: ${result}`);
