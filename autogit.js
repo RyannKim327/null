@@ -1,6 +1,49 @@
-let myString = "42";
-let myInteger1 = parseInt(myString); // Using parseInt()
-let myInteger2 = Number(myString); // Using Number()
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
+    }
+}
 
-console.log(myInteger1); // Outputs: 42
-console.log(myInteger2); // Outputs: 42
+class LinkedList {
+    constructor() {
+        this.head = null;
+    }
+
+    addNode(value) {
+        const newNode = new Node(value);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+    }
+
+    findMiddle() {
+        let slow = this.head;
+        let fast = this.head;
+
+        while (fast && fast.next) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        return slow.value;
+    }
+}
+
+// Create a linked list
+const linkedList = new LinkedList();
+linkedList.addNode(1);
+linkedList.addNode(2);
+linkedList.addNode(3);
+linkedList.addNode(4);
+linkedList.addNode(5);
+
+// Find the middle element
+const middleElement = linkedList.findMiddle();
+console.log("Middle element:", middleElement);
