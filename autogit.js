@@ -1,27 +1,73 @@
-function longestCommonSubstring(str1, str2) {
-    let dp = Array(str1.length + 1).fill(0).map(() => Array(str2.length + 1).fill(0));
-    let maxLength = 0;
-    let endIndex = 0;
-
-    for (let i = 1; i <= str1.length; i++) {
-        for (let j = 1; j <= str2.length; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-                if (dp[i][j] > maxLength) {
-                    maxLength = dp[i][j];
-                    endIndex = i - 1;
-                }
-            } else {
-                dp[i][j] = 0;
-            }
-        }
-    }
-
-    return str1.substr(endIndex - maxLength + 1, maxLength);
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-// Example
-const str1 = "abcdefg";
-const str2 = "xyzabcde";
-const result = longestCommonSubstring(str1, str2);
-console.log(result); // Output: "abcde"
+class BinaryTree {
+  constructor() {
+    this.root = null;
+    this.leafCount = 0;
+  }
+
+  addNode(value) {
+    const newNode = new Node(value);
+    if (!this.root) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
+
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (!node.left) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (!node.right) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  countLeafNodes() {
+    if (!this.root) {
+      return 0;
+    }
+
+    this.countLeafNodesRecursive(this.root);
+    return this.leafCount;
+  }
+
+  countLeafNodesRecursive(node) {
+    if (!node) {
+      return;
+    }
+
+    if (!node.left && !node.right) {
+      this.leafCount++;
+    }
+
+    this.countLeafNodesRecursive(node.left);
+    this.countLeafNodesRecursive(node.right);
+  }
+}
+
+// Example usage
+const binaryTree = new BinaryTree();
+binaryTree.addNode(10);
+binaryTree.addNode(5);
+binaryTree.addNode(15);
+binaryTree.addNode(3);
+binaryTree.addNode(7);
+binaryTree.addNode(12);
+binaryTree.addNode(18);
+
+console.log("Number of leaf nodes: ", binaryTree.countLeafNodes());
