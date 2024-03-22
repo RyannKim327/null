@@ -1,15 +1,17 @@
-// Define an array of integers
-let numbers = [5, 3, 8, 1, 2];
+function isAnagram(str1, str2) {
+    // Remove any non-alphabetic characters and convert to lowercase
+    str1 = str1.replace(/[^a-z]/g, '').toLowerCase();
+    str2 = str2.replace(/[^a-z]/g, '').toLowerCase();
 
-// Sort the array in ascending order
-numbers.sort(function(a, b) {
-    return a - b;
-});
+    // Convert strings to arrays, sort them, and join back to strings
+    const sortedStr1 = str1.split('').sort().join('');
+    const sortedStr2 = str2.split('').sort().join('');
 
-console.log(numbers); // Output: [1, 2, 3, 5, 8]
-// Sort the array in descending order
-numbers.sort(function(a, b) {
-    return b - a;
-});
+    // Compare the two sorted strings
+    return sortedStr1 === sortedStr2;
+}
 
-console.log(numbers); // Output: [8, 5, 3, 2, 1]
+// Test the function
+const string1 = 'anagram';
+const string2 = 'nag a ram';
+console.log(isAnagram(string1, string2)); // Output: true
