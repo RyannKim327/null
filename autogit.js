@@ -1,5 +1,26 @@
-let array = [10, 5, 20, 15, 8];
+function selectionSort(arr) {
+    const n = arr.length;
+    
+    for (let i = 0; i < n - 1; i++) {
+        let minIndex = i;
+        
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+        
+        if (minIndex !== i) {
+            let temp = arr[i];
+            arr[i] = arr[minIndex];
+            arr[minIndex] = temp;
+        }
+    }
+    
+    return arr;
+}
 
-let max = Math.max(...array);
+const arr = [64, 25, 12, 22, 11];
+const sortedArr = selectionSort(arr);
 
-console.log("The maximum value in the array is: " + max);
+console.log("Sorted array: ", sortedArr);
