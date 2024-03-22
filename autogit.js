@@ -1,19 +1,10 @@
-function bubbleSort(arr) {
-    const n = arr.length;
-    for (let i = 0; i < n - 1; i++) {
-        for (let j = 0; j < n - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                // Swap arr[j] and arr[j + 1]
-                let temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
-        }
-    }
-    return arr;
+function calculateTriangleArea(base, height) {
+    return 0.5 * base * height;
 }
 
 // Example usage
-const unsortedArray = [64, 25, 12, 22, 11];
-const sortedArray = bubbleSort(unsortedArray);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
+let base = 5;
+let height = 10;
+let area = calculateTriangleArea(base, height);
+
+console.log("The area of the triangle is: " + area);
