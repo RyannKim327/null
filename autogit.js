@@ -1,67 +1,10 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+function findCommonElements(arr1, arr2) {
+    return arr1.filter(value => arr2.includes(value));
 }
 
-class BinarySearchTree {
-    constructor() {
-        this.root = null;
-    }
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
 
-    insert(value) {
-        const newNode = new Node(value);
+const commonElements = findCommonElements(array1, array2);
 
-        if (!this.root) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    insertNode(node, newNode) {
-        if (newNode.value < node.value) {
-            if (!node.left) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (!node.right) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
-
-    search(value) {
-        return this.searchNode(this.root, value);
-    }
-
-    searchNode(node, value) {
-        if (!node) {
-            return false;
-        }
-
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true;
-        }
-    }
-}
-const bst = new BinarySearchTree();
-
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
-bst.insert(7);
-
-console.log(bst.search(15)); // Output: true
-console.log(bst.search(8)); // Output: false
+console.log(commonElements); // Output: [3, 4, 5]
