@@ -1,15 +1,21 @@
-function maxSubarraySum(arr) {
-    let maxEndingHere = arr[0];
-    let maxSoFar = arr[0];
+// Define the URL of the API endpoint
+const apiUrl = 'https://jsonplaceholder.typicode.com/posts/1';
 
-    for (let i = 1; i < arr.length; i++) {
-        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
-        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+// Define the function to fetch data from the API asynchronously
+async function fetchData() {
+  try {
+    const response = await fetch(apiUrl);
+    if (response.ok) {
+      const data = await response.json();
+      console.log(data);
+      // You can process the received data here
+    } else {
+      throw new Error('Failed to fetch data');
     }
-
-    return maxSoFar;
+  } catch (error) {
+    console.error(error);
+  }
 }
 
-// Example usage
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-console.log(maxSubarraySum(array)); // Output: 6
+// Call the fetchData function
+fetchData();
