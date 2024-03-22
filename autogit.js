@@ -1,56 +1,37 @@
-function biDirectionalSearch(graph, startNode, endNode) {
-    let queueForward = [startNode];
-    let queueBackward = [endNode];
-    let visitedForward = new Set();
-    let visitedBackward = new Set();
+class TreeNode {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
 
-    visitedForward.add(startNode);
-    visitedBackward.add(endNode);
+function diameterOfBinaryTree(root) {
+    let diameter = 0;
 
-    while (queueForward.length > 0 && queueBackward.length > 0) {
-        let currentNodeForward = queueForward.shift();
-        let currentNodeBackward = queueBackward.shift();
-
-        if (visitedBackward.has(currentNodeForward) ||
-            visitedForward.has(currentNodeBackward)) {
-            return true; // Path found
+    function height(node) {
+        if (!node) {
+            return 0;
         }
 
-        let neighborsForward = graph[currentNodeForward];
-        for (let neighbor of neighborsForward) {
-            if (!visitedForward.has(neighbor)) {
-                visitedForward.add(neighbor);
-                queueForward.push(neighbor);
-            }
-        }
+        let leftHeight = height(node.left);
+        let rightHeight = height(node.right);
 
-        let neighborsBackward = graph[currentNodeBackward];
-        for (let neighbor of neighborsBackward) {
-            if (!visitedBackward.has(neighbor)) {
-                visitedBackward.add(neighbor);
-                queueBackward.push(neighbor);
-            }
-        }
+        diameter = Math.max(diameter, leftHeight + rightHeight);
+
+        return Math.max(leftHeight, rightHeight) + 1;
     }
 
-    return false; // No path found
+    height(root);
+
+    return diameter;
 }
 
-// Example graph representation using an adjacency list
-const graph = {
-    A: ['B'],
-    B: ['A', 'C', 'D'],
-    C: ['B', 'E'],
-    D: ['B'],
-    E: ['C', 'F'],
-    F: ['E']
-};
+// Usage
+let root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-const startNode = 'A';
-const endNode = 'F';
-
-if (biDirectionalSearch(graph, startNode, endNode)) {
-    console.log(`Path found between ${startNode} and ${endNode}`);
-} else {
-    console.log(`No path found between ${startNode} and ${endNode}`);
-}
+console.log(diameterOfBinaryTree(root)); // Output: 3
