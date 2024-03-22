@@ -1,4 +1,26 @@
-fetch('https://jsonplaceholder.typicode.com/posts/1')
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.error('Error:', error));
+function isPrime(number) {
+    if (number <= 1) {
+        return false;
+    }
+
+    if (number <= 3) {
+        return true;
+    }
+
+    if (number % 2 === 0 || number % 3 === 0) {
+        return false;
+    }
+
+    for (let i = 5; i * i <= number; i += 6) {
+        if (number % i === 0 || number % (i + 2) === 0) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+// Test the function with some example numbers
+console.log(isPrime(7)); // true
+console.log(isPrime(11)); // true
+console.log(isPrime(15)); // false
