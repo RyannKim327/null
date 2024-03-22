@@ -1,37 +1,40 @@
-function bmhSearch(text, pattern) {
-    const patternLength = pattern.length;
-    const textLength = text.length;
-    
-    if (patternLength === 0) {
-        return -1;
+function longestCommonSubsequence(str1, str2) {
+    const m = str1.length;
+    const n = str2.length;
+
+    const dp = [];
+    for (let i = 0; i <= m; i++) {
+        dp[i] = Array(n + 1).fill(0);
     }
 
-    const lastOccurrence = {};
-    for (let i = 0; i < patternLength - 1; i++) {
-        lastOccurrence[pattern[i]] = i;
-    }
-
-    let i = patternLength - 1;
-    let j = patternLength - 1;
-
-    while (i < textLength) {
-        if (text[i] === pattern[j]) {
-            if (j === 0) {
-                return i; // pattern found
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
             }
-            i--;
-            j--;
-        } else {
-            const charIndex = lastOccurrence[text[i]];
-            i += patternLength - Math.min(j, 1 + charIndex);
-            j = patternLength - 1;
         }
     }
-    
-    return -1; // pattern not found
+
+    let result = '';
+    let i = m, j = n;
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            result = str1[i - 1] + result;
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
+        }
+    }
+
+    return result;
 }
 
-const text = "hello world";
-const pattern = "world";
-const result = bmhSearch(text, pattern);
-console.log(result);
+// Example usage
+const str1 = "ABCBDAB";
+const str2 = "BDCAB";
+console.log(longestCommonSubsequence(str1, str2)); // Output: "BCAB"
