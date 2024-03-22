@@ -1,61 +1,27 @@
-class TrieNode {
-    constructor() {
-        this.children = {};
-        this.isEndOfWord = false;
+function longestCommonSubstring(str1, str2) {
+    let dp = Array(str1.length + 1).fill(0).map(() => Array(str2.length + 1).fill(0));
+    let maxLength = 0;
+    let endIndex = 0;
+
+    for (let i = 1; i <= str1.length; i++) {
+        for (let j = 1; j <= str2.length; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > maxLength) {
+                    maxLength = dp[i][j];
+                    endIndex = i - 1;
+                }
+            } else {
+                dp[i][j] = 0;
+            }
+        }
     }
+
+    return str1.substr(endIndex - maxLength + 1, maxLength);
 }
 
-class Trie {
-    constructor() {
-        this.root = new TrieNode();
-    }
-
-    insert(word) {
-        let currentNode = this.root;
-
-        for (let i = 0; i < word.length; i++) {
-            const char = word[i];
-            if (!currentNode.children[char]) {
-                currentNode.children[char] = new TrieNode();
-            }
-            currentNode = currentNode.children[char];
-        }
-
-        currentNode.isEndOfWord = true;
-    }
-
-    search(word) {
-        let currentNode = this.root;
-
-        for (let i = 0; i < word.length; i++) {
-            const char = word[i];
-            if (!currentNode.children[char]) {
-                return false;
-            }
-            currentNode = currentNode.children[char];
-        }
-
-        return currentNode.isEndOfWord;
-    }
-
-    startsWith(prefix) {
-        let currentNode = this.root;
-
-        for (let i = 0; i < prefix.length; i++) {
-            const char = prefix[i];
-            if (!currentNode.children[char]) {
-                return false;
-            }
-            currentNode = currentNode.children[char];
-        }
-
-        return true;
-    }
-}
-
-// Example usage
-const trie = new Trie();
-trie.insert("apple");
-console.log(trie.search("apple")); // true
-console.log(trie.search("app")); // false
-console.log(trie.startsWith("app")); // true
+// Example
+const str1 = "abcdefg";
+const str2 = "xyzabcde";
+const result = longestCommonSubstring(str1, str2);
+console.log(result); // Output: "abcde"
