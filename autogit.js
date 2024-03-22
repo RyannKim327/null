@@ -1,58 +1,19 @@
-class Stack {
-    constructor() {
-        this.items = [];
-    }
-
-    // Add element to the top of the stack
-    push(element) {
-        this.items.push(element);
-    }
-
-    // Remove and return the top element from the stack
-    pop() {
-        if (this.items.length === 0) {
-            return "Underflow";
+function bubbleSort(arr) {
+    var len = arr.length;
+    for (var i = 0; i < len; i++) {
+        for (var j = 0; j < len - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap the elements
+                var temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
         }
-        return this.items.pop();
     }
-
-    // Return the top element without removing it
-    peek() {
-        return this.items[this.items.length - 1];
-    }
-
-    // Check if the stack is empty
-    isEmpty() {
-        return this.items.length === 0;
-    }
-
-    // Return the size of the stack
-    size() {
-        return this.items.length;
-    }
-
-    // Print the stack elements
-    printStack() {
-        let str = "";
-        for (let i = 0; i < this.items.length; i++) {
-            str += this.items[i] + " ";
-        }
-        return str;
-    }
+    return arr;
 }
 
-// Example usage of the Stack class
-const stack = new Stack();
-
-console.log(stack.isEmpty()); // true
-
-stack.push(10);
-stack.push(20);
-stack.push(30);
-
-console.log(stack.printStack()); // 10 20 30
-
-console.log(stack.peek()); // 30
-
-console.log(stack.pop()); // 30
-console.log(stack.printStack()); // 10 20
+// Example usage:
+var arr = [64, 34, 25, 12, 22, 11, 90];
+console.log("Before sorting:", arr);
+console.log("After sorting:", bubbleSort(arr));
