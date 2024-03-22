@@ -1,62 +1,84 @@
-function burrowsWheelerTransform(input) {
-    var suffixes = [];
-    var inputLength = input.length;
-
-    for (var i = 0; i < inputLength; i++) {
-        var rotation = input.slice(i) + input.slice(0, i);
-        suffixes.push(rotation);
+class TrieNode {
+    constructor() {
+        this.children = {};
+        this.isEndOfWord = false;
     }
-
-    suffixes.sort();
-
-    var transformedString = '';
-    
-    for (var j = 0; j < inputLength; j++) {
-        transformedString += suffixes[j][inputLength - 1];
-    }
-
-    return transformedString;
 }
 
-function inverseBurrowsWheelerTransform(input) {
-    var table = [];
-    for (var i = 0; i < input.length; i++) {
-        table[i] = input.charAt(i);
+class Trie {
+    constructor() {
+        this.root = new TrieNode();
     }
 
-    table.sort();
-
-    var firstColumn = table.slice();
-    table = table.map(function (value) {
-        return { value: value, index: 0, count: 0 };
-    });
-
-    table.forEach(function (element, index) {
-        element.index = firstColumn.indexOf(element.value);
-        element.count = firstColumn.slice(0, index).filter(function (char) {
-            return char === element.value;
-        }).length;
-    });
-
-    var current = table[0];
-    var inverse = [];
-    for (var i = 0; i < input.length; i++) {
-        inverse.push(current.value);
-        current = table[current.index];
-        current.count++;
-        current = table.find(function (element) {
-            return element.value === current.value && element.count === current.count;
-        });
+    insert(word) {
+        let node = this.root;
+        for (let char of word) {
+            if (!node.children[char]) {
+                node.children[char] = new TrieNode();
+            }
+            node = node.children[char];
+        }
+        node.isEndOfWord = true;
     }
 
-    return inverse.slice(1).join('');
+    search(word) {
+        let node = this.root;
+        for (let char of word) {
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+        return node.isEndOfWord;
+    }
+
+    startsWith(prefix) {
+        let node = this.root;
+        for (let char of prefix) {
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+        return true;
+    }
+
+    delete(word) {
+        const deleteHelper = (node, index) => {
+            if (index === word.length) {
+                if (!node.isEndOfWord) {
+                    return false;
+                }
+                node.isEndOfWord = false;
+                return Object.keys(node.children).length === 0;
+            }
+
+            const char = word.charAt(index);
+            if (!node.children[char]) {
+                return false;
+            }
+
+            const shouldDeleteNode = deleteHelper(node.children[char], index + 1);
+
+            if (shouldDeleteNode) {
+                delete node.children[char];
+                return Object.keys(node.children).length === 0;
+            }
+
+            return false;
+        };
+
+        deleteHelper(this.root, 0);
+    }
 }
 
-var input = "hello world";
-var bwtResult = burrowsWheelerTransform(input);
-var originalString = inverseBurrowsWheelerTransform(bwtResult);
-
-console.log("Input: " + input);
-console.log("BWT Result: " + bwtResult);
-console.log("Original String: " + originalString);
-
+// Usage
+const trie = new Trie();
+trie.insert("apple");
+console.log(trie.search("apple"));   // true
+console.log(trie.search("app"));     // false
+console.log(trie.startsWith("app")); // true
+trie.insert("app");
+console.log(trie.search("app"));     // true
+trie.delete("app");
+console.log(trie.search("app"));     // false
