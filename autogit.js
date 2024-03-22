@@ -1,14 +1,15 @@
-function factorial(n) {
-    // Base case: factorial of 0 is 1
-    if (n === 0) {
-        return 1;
-    } else {
-        // Recursive case: n! = n * (n-1)!
-        return n * factorial(n - 1);
+function maxSubarraySum(arr) {
+    let maxEndingHere = arr[0];
+    let maxSoFar = arr[0];
+
+    for (let i = 1; i < arr.length; i++) {
+        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
+        maxSoFar = Math.max(maxSoFar, maxEndingHere);
     }
+
+    return maxSoFar;
 }
 
-// Test the function with an example
-const number = 5;
-const result = factorial(number);
-console.log(`Factorial of ${number} is: ${result}`);
+// Example usage
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+console.log(maxSubarraySum(array)); // Output: 6
