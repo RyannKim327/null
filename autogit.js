@@ -1,3 +1,4 @@
+// TrieNode class to represent a node in the trie
 class TrieNode {
     constructor() {
         this.children = {};
@@ -5,41 +6,40 @@ class TrieNode {
     }
 }
 
+// Trie class to represent the trie data structure
 class Trie {
     constructor() {
         this.root = new TrieNode();
     }
 
+    // Function to insert a word into the trie
     insert(word) {
-        let current = this.root;
-
+        let node = this.root;
         for (let i = 0; i < word.length; i++) {
-            const ch = word[i];
-            if (!current.children[ch]) {
-                current.children[ch] = new TrieNode();
+            const char = word[i];
+            if (!node.children[char]) {
+                node.children[char] = new TrieNode();
             }
-            current = current.children[ch];
+            node = node.children[char];
         }
-
-        current.isEndOfWord = true;
+        node.isEndOfWord = true;
     }
 
+    // Function to search for a word in the trie
     search(word) {
-        let current = this.root;
-
+        let node = this.root;
         for (let i = 0; i < word.length; i++) {
-            const ch = word[i];
-            if (!current.children[ch]) {
+            const char = word[i];
+            if (!node.children[char]) {
                 return false;
             }
-            current = current.children[ch];
+            node = node.children[char];
         }
-
-        return current.isEndOfWord;
+        return node.isEndOfWord;
     }
 }
 
-// Example usage
+// Usage example
 const trie = new Trie();
 trie.insert("apple");
 console.log(trie.search("apple")); // Output: true
