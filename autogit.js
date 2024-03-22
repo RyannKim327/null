@@ -1,69 +1,67 @@
-function dijkstra(graph, startNode) {
-  const distances = {};
-  const previous = {};
-  const priorityQueue = new PriorityQueue();
-  
-  distances[startNode] = 0;
-  
-  for (let node in graph) {
-    if (node !== startNode) {
-      distances[node] = Infinity;
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-    
-    priorityQueue.enqueue(node, distances[node]);
-    previous[node] = null;
-  }
-  
-  while (!priorityQueue.isEmpty()) {
-    const currentNode = priorityQueue.dequeue();
-    
-    for (let neighbor in graph[currentNode]) {
-      const currDistance = distances[currentNode] + graph[currentNode][neighbor];
-      
-      if (currDistance < distances[neighbor]) {
-        distances[neighbor] = currDistance;
-        previous[neighbor] = currentNode;
-        priorityQueue.enqueue(neighbor, currDistance);
-      }
-    }
-  }
-  
-  return { distances, previous };
 }
 
-class PriorityQueue {
-  constructor() {
-    this.values = [];
-  }
-  
-  enqueue(value, priority) {
-    this.values.push({ value, priority });
-    this.sort();
-  }
-  
-  dequeue() {
-    return this.values.shift().value;
-  }
-  
-  sort() {
-    this.values.sort((a, b) => a.priority - b.priority);
-  }
-  
-  isEmpty() {
-    return this.values.length === 0;
-  }
+class BinarySearchTree {
+    constructor() {
+        this.root = null;
+    }
+
+    insert(value) {
+        const newNode = new Node(value);
+
+        if (!this.root) {
+            this.root = newNode;
+        } else {
+            this.insertNode(this.root, newNode);
+        }
+    }
+
+    insertNode(node, newNode) {
+        if (newNode.value < node.value) {
+            if (!node.left) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (!node.right) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
+        }
+    }
+
+    search(value) {
+        return this.searchNode(this.root, value);
+    }
+
+    searchNode(node, value) {
+        if (!node) {
+            return false;
+        }
+
+        if (value < node.value) {
+            return this.searchNode(node.left, value);
+        } else if (value > node.value) {
+            return this.searchNode(node.right, value);
+        } else {
+            return true;
+        }
+    }
 }
 
-// Example graph
-const graph = {
-  A: { B: 3, C: 4 },
-  B: { A: 3, C: 1, D: 7 },
-  C: { A: 4, B: 1, D: 2 },
-  D: { B: 7, C: 2 }
-};
+// Usage
+const bst = new BinarySearchTree();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(7);
 
-const startNode = 'A';
-const { distances, previous } = dijkstra(graph, startNode);
-
-console.log(distances); // Output the distances from the start node
-console.log(previous); // Output the shortest paths
+console.log(bst.search(7)); // Output: true
+console.log(bst.search(20)); // Output: false
