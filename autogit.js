@@ -1,17 +1,9 @@
-// API endpoint URL
-const apiUrl = 'https://jsonplaceholder.typicode.com/posts/1';
+function calculateArea(base, height) {
+    return 0.5 * base * height;
+}
 
-// Make a GET request to the API endpoint using fetch
-fetch(apiUrl)
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  })
-  .then(data => {
-    console.log(data);
-  })
-  .catch(error => {
-    console.error('There was a problem with the fetch operation:', error);
-  });
+// Example usage:
+const base = 5;
+const height = 3;
+const area = calculateArea(base, height);
+console.log("The area of the triangle is: " + area);
