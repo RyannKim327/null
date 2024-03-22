@@ -1,45 +1,14 @@
-function depthLimitedSearch(node, goal, depthLimit) {
-    return recursiveDLS(node, goal, depthLimit, 0);
+// Function to find common elements in two arrays
+function findCommonElements(arr1, arr2) {
+    return arr1.filter(element => arr2.includes(element));
 }
 
-function recursiveDLS(node, goal, depthLimit, depth) {
-    if (depth > depthLimit) {
-        return false; // return false if depth limit is reached
-    }
-    
-    if (node === goal) {
-        return true; // return true if the goal is found
-    }
-    
-    // Recursively search children nodes
-    if (depth < depthLimit) {
-        for (let child of node.children) {
-            if (recursiveDLS(child, goal, depthLimit, depth + 1)) {
-                return true;
-            }
-        }
-    }
-    
-    return false; // return false if goal not found at this depth
-}
+// Define two arrays
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
 
-// Example usage
-class Node {
-    constructor(value, children = []) {
-        this.value = value;
-        this.children = children;
-    }
-}
+// Find common elements in the two arrays
+const commonElements = findCommonElements(array1, array2);
 
-// Create a tree
-const node1 = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
-const node4 = new Node(4);
-node1.children.push(node2, node3);
-node2.children.push(node4);
-
-// Perform depth-limited search
-const goalNode = node4;
-const depthLimit = 2;
-console.log(depthLimitedSearch(node1, goalNode, depthLimit));
+// Output the common elements
+console.log(commonElements); // Output: [3, 4, 5]
