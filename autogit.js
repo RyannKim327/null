@@ -1,52 +1,46 @@
-// Definition for a binary tree node
-class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+class TrieNode {
+    constructor() {
+        this.children = {};
+        this.isEndOfWord = false;
+    }
 }
 
-// Function to find the height of a binary tree
-function height(node) {
-  if (node === null) {
-    return 0;
-  }
-
-  const leftHeight = height(node.left);
-  const rightHeight = height(node.right);
-
-  return 1 + Math.max(leftHeight, rightHeight);
-}
-
-// Function to find the diameter of a binary tree
-function diameterOfBinaryTree(root) {
-  let diameter = 0;
-
-  function diameterHelper(node) {
-    if (node === null) {
-      return 0;
+class Trie {
+    constructor() {
+        this.root = new TrieNode();
     }
 
-    const leftHeight = height(node.left);
-    const rightHeight = height(node.right);
+    insert(word) {
+        let current = this.root;
 
-    diameter = Math.max(diameter, leftHeight + rightHeight);
+        for (let i = 0; i < word.length; i++) {
+            const ch = word[i];
+            if (!current.children[ch]) {
+                current.children[ch] = new TrieNode();
+            }
+            current = current.children[ch];
+        }
 
-    diameterHelper(node.left);
-    diameterHelper(node.right);
-  }
+        current.isEndOfWord = true;
+    }
 
-  diameterHelper(root);
+    search(word) {
+        let current = this.root;
 
-  return diameter;
+        for (let i = 0; i < word.length; i++) {
+            const ch = word[i];
+            if (!current.children[ch]) {
+                return false;
+            }
+            current = current.children[ch];
+        }
+
+        return current.isEndOfWord;
+    }
 }
 
 // Example usage
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(diameterOfBinaryTree(root)); // Output: 3
+const trie = new Trie();
+trie.insert("apple");
+console.log(trie.search("apple")); // Output: true
+console.log(trie.search("app")); // Output: false
