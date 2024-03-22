@@ -1,41 +1,56 @@
-class Node {
-  constructor(value, children) {
-    this.value = value;
-    this.children = children;
-  }
-}
+function biDirectionalSearch(graph, startNode, endNode) {
+    let queueForward = [startNode];
+    let queueBackward = [endNode];
+    let visitedForward = new Set();
+    let visitedBackward = new Set();
 
-function depthLimitedSearch(root, target, depthLimit) {
-  if (!root) return null;
+    visitedForward.add(startNode);
+    visitedBackward.add(endNode);
 
-  let stack = [{ node: root, depth: 0 }];
+    while (queueForward.length > 0 && queueBackward.length > 0) {
+        let currentNodeForward = queueForward.shift();
+        let currentNodeBackward = queueBackward.shift();
 
-  while (stack.length > 0) {
-    let { node, depth } = stack.pop();
+        if (visitedBackward.has(currentNodeForward) ||
+            visitedForward.has(currentNodeBackward)) {
+            return true; // Path found
+        }
 
-    if (node.value === target) {
-      return node;
+        let neighborsForward = graph[currentNodeForward];
+        for (let neighbor of neighborsForward) {
+            if (!visitedForward.has(neighbor)) {
+                visitedForward.add(neighbor);
+                queueForward.push(neighbor);
+            }
+        }
+
+        let neighborsBackward = graph[currentNodeBackward];
+        for (let neighbor of neighborsBackward) {
+            if (!visitedBackward.has(neighbor)) {
+                visitedBackward.add(neighbor);
+                queueBackward.push(neighbor);
+            }
+        }
     }
 
-    if (depth < depthLimit) {
-      for (let child of node.children) {
-        stack.push({ node: child, depth: depth + 1 });
-      }
-    }
-  }
-
-  return null;
+    return false; // No path found
 }
 
-// Example usage
-const node1 = new Node(1, []);
-const node2 = new Node(2, []);
-const node3 = new Node(3, []);
-const node4 = new Node(4, []);
-const node5 = new Node(5, []);
+// Example graph representation using an adjacency list
+const graph = {
+    A: ['B'],
+    B: ['A', 'C', 'D'],
+    C: ['B', 'E'],
+    D: ['B'],
+    E: ['C', 'F'],
+    F: ['E']
+};
 
-node1.children = [node2, node3];
-node2.children = [node4, node5];
+const startNode = 'A';
+const endNode = 'F';
 
-const result = depthLimitedSearch(node1, 5, 2);
-console.log(result ? result.value : "Node not found");
+if (biDirectionalSearch(graph, startNode, endNode)) {
+    console.log(`Path found between ${startNode} and ${endNode}`);
+} else {
+    console.log(`No path found between ${startNode} and ${endNode}`);
+}
