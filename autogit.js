@@ -1,14 +1,27 @@
-function isPalindrome(str) {
-    // Remove non-alphanumeric characters and convert the string to lowercase
-    const cleanStr = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-    
-    // Reverse the string
-    const reversedStr = cleanStr.split('').reverse().join('');
-    
-    // Check if the reversed string is equal to the original string
-    return cleanStr === reversedStr;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-// Test the function
-const testString = "A man, a plan, a canal, Panama!";
-console.log(isPalindrome(testString)); // Output: true
+function findMiddleElement(head) {
+  let slowPointer = head;
+  let fastPointer = head;
+
+  while (fastPointer !== null && fastPointer.next !== null) {
+    slowPointer = slowPointer.next;
+    fastPointer = fastPointer.next.next;
+  }
+
+  return slowPointer.value;
+}
+
+// Example linked list creation
+let head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
+
+console.log(findMiddleElement(head)); // Output: 3
