@@ -1,41 +1,33 @@
 class Node {
-    constructor() {
-        this.children = {};
-        this.suffixLink = null;
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
-class SuffixTree {
-    constructor(input) {
-        this.root = new Node();
-        this.input = input;
-        this.buildSuffixTree();
+
+function countLeafNodes(root) {
+    if (root === null) {
+        return 0;
     }
 
-    buildSuffixTree() {
-        for (let i = 0; i < this.input.length; i++) {
-            this.addSuffix(this.input.substring(i));
-        }
+    if (root.left === null && root.right === null) {
+        return 1; // Found a leaf node
     }
 
-    addSuffix(suffix) {
-        let current = this.root;
-        for (let i = 0; i < suffix.length; i++) {
-            let char = suffix.charAt(i);
-            if (!current.children[char]) {
-                current.children[char] = new Node();
-            }
-            current = current.children[char];
-        }
-    }
+    let leftCount = countLeafNodes(root.left);
+    let rightCount = countLeafNodes(root.right);
+
+    return leftCount + rightCount;
 }
-searchSubString(substring) {
-    let current = this.root;
-    for (let i = 0; i < substring.length; i++) {
-        let char = substring.charAt(i);
-        if (!current.children[char]) {
-            return false;
-        }
-        current = current.children[char];
-    }
-    return true;
-}
+
+// Example binary tree
+let root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
+
+console.log("Number of leaf nodes: ", countLeafNodes(root)); // Output: 4
