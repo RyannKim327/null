@@ -1,18 +1,27 @@
-function maxSubArray(arr) {
-    let currentMax = arr[0];
-    let globalMax = arr[0];
-    
-    for (let i = 1; i < arr.length; i++) {
-        currentMax = Math.max(arr[i], currentMax + arr[i]);
-        
-        if (currentMax > globalMax) {
-            globalMax = currentMax;
-        }
-    }
-    
-    return globalMax;
+// Definition for a binary tree node.
+function TreeNode(val) {
+    this.val = val;
+    this.left = this.right = null;
 }
 
-// Example usage
-const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-console.log(maxSubArray(arr)); // Output: 6
+// Function to find the maximum depth of a binary tree
+function maxDepth(root) {
+    if (!root) {
+        return 0;
+    }
+
+    let leftDepth = maxDepth(root.left);
+    let rightDepth = maxDepth(root.right);
+
+    return Math.max(leftDepth, rightDepth) + 1;
+}
+
+// Example: Construct a binary tree
+let root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+// Find the maximum depth of the binary tree
+console.log(maxDepth(root));  // Output: 3
