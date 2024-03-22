@@ -1,8 +1,15 @@
-let numString = "42";
-let num = parseInt(numString);
+function isSortedAscending(arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;
+        }
+    }
+    return true;
+}
 
-console.log(num); // Output: 42
-let numString = "10";
-let num = parseInt(numString, 10);
+// Example usage
+let arr1 = [1, 2, 3, 4, 5];
+console.log(isSortedAscending(arr1)); // Output: true
 
-console.log(num); // Output: 10
+let arr2 = [5, 4, 3, 2, 1];
+console.log(isSortedAscending(arr2)); // Output: false
