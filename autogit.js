@@ -1,84 +1,34 @@
-class TrieNode {
-    constructor() {
-        this.children = {};
-        this.isEndOfWord = false;
+function mergeSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
     }
+
+    const middle = Math.floor(arr.length / 2);
+    const left = arr.slice(0, middle);
+    const right = arr.slice(middle);
+
+    return merge(mergeSort(left), mergeSort(right));
 }
 
-class Trie {
-    constructor() {
-        this.root = new TrieNode();
-    }
+function merge(left, right) {
+    let result = [];
+    let l = 0;
+    let r = 0;
 
-    insert(word) {
-        let node = this.root;
-        for (let char of word) {
-            if (!node.children[char]) {
-                node.children[char] = new TrieNode();
-            }
-            node = node.children[char];
+    while (l < left.length && r < right.length) {
+        if (left[l] < right[r]) {
+            result.push(left[l]);
+            l++;
+        } else {
+            result.push(right[r]);
+            r++;
         }
-        node.isEndOfWord = true;
     }
 
-    search(word) {
-        let node = this.root;
-        for (let char of word) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
-        }
-        return node.isEndOfWord;
-    }
-
-    startsWith(prefix) {
-        let node = this.root;
-        for (let char of prefix) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
-        }
-        return true;
-    }
-
-    delete(word) {
-        const deleteHelper = (node, index) => {
-            if (index === word.length) {
-                if (!node.isEndOfWord) {
-                    return false;
-                }
-                node.isEndOfWord = false;
-                return Object.keys(node.children).length === 0;
-            }
-
-            const char = word.charAt(index);
-            if (!node.children[char]) {
-                return false;
-            }
-
-            const shouldDeleteNode = deleteHelper(node.children[char], index + 1);
-
-            if (shouldDeleteNode) {
-                delete node.children[char];
-                return Object.keys(node.children).length === 0;
-            }
-
-            return false;
-        };
-
-        deleteHelper(this.root, 0);
-    }
+    return result.concat(left.slice(l)).concat(right.slice(r));
 }
 
-// Usage
-const trie = new Trie();
-trie.insert("apple");
-console.log(trie.search("apple"));   // true
-console.log(trie.search("app"));     // false
-console.log(trie.startsWith("app")); // true
-trie.insert("app");
-console.log(trie.search("app"));     // true
-trie.delete("app");
-console.log(trie.search("app"));     // false
+// Example usage:
+const arr = [8, 3, 1, 6, 4, 7, 2, 5];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr); // Output: [1, 2, 3, 4, 5, 6, 7, 8]
