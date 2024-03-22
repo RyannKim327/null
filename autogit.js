@@ -1,8 +1,16 @@
-// Define an array
-let array = [1, 2, 3, 4, 5];
+let str = "Hello, world!";
+let substring = "world";
 
-// Reverse the array
-array.reverse();
+// Using includes() method
+if (str.includes(substring)) {
+    console.log("String contains the substring");
+} else {
+    console.log("String does not contain the substring");
+}
 
-// Output the reversed array
-console.log(array); // Output: [5, 4, 3, 2, 1]
+// Using indexOf() method
+if (str.indexOf(substring) !== -1) {
+    console.log("String contains the substring");
+} else {
+    console.log("String does not contain the substring");
+}
