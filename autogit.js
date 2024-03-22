@@ -1,26 +1,43 @@
-function isPrime(number) {
-    if (number <= 1) {
-        return false;
-    }
+function bellmanFord(graph, source) {
+  let distances = {};
+  let predecessors = {};
 
-    if (number <= 3) {
-        return true;
-    }
+  for (let node in graph) {
+    distances[node] = node === source ? 0 : Infinity;
+    predecessors[node] = null;
+  }
 
-    if (number % 2 === 0 || number % 3 === 0) {
-        return false;
-    }
-
-    for (let i = 5; i * i <= number; i += 6) {
-        if (number % i === 0 || number % (i + 2) === 0) {
-            return false;
+  for (let i = 0; i < Object.keys(graph).length - 1; i++) {
+    for (let u in graph) {
+      for (let v in graph[u]) {
+        if (distances[u] + graph[u][v] < distances[v]) {
+          distances[v] = distances[u] + graph[u][v];
+          predecessors[v] = u;
         }
+      }
     }
+  }
 
-    return true;
+  for (let u in graph) {
+    for (let v in graph[u]) {
+      if (distances[u] + graph[u][v] < distances[v]) {
+        return "Graph contains a negative-weight cycle";
+      }
+    }
+  }
+
+  return { distances, predecessors };
 }
 
-// Test the function with some example numbers
-console.log(isPrime(7)); // true
-console.log(isPrime(11)); // true
-console.log(isPrime(15)); // false
+// Example graph
+let graph = {
+  A: { B: -1, C: 4 },
+  B: { C: 3, D: 2, E: 2 },
+  C: {},
+  D: { B: 1, C: 5 },
+  E: { D: -3 }
+};
+
+let sourceNode = 'A';
+let result = bellmanFord(graph, sourceNode);
+console.log(result);
