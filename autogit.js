@@ -1,27 +1,9 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
+let arr = [1, 2, 3, 4, 5];
+arr.reverse();
 
-function findMiddleElement(head) {
-  let slowPointer = head;
-  let fastPointer = head;
+console.log(arr); // Output: [5, 4, 3, 2, 1]
+let arr = [1, 2, 3, 4, 5];
+let reversedArr = arr.slice().reverse();
 
-  while (fastPointer !== null && fastPointer.next !== null) {
-    slowPointer = slowPointer.next;
-    fastPointer = fastPointer.next.next;
-  }
-
-  return slowPointer.value;
-}
-
-// Example linked list creation
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-console.log(findMiddleElement(head)); // Output: 3
+console.log(arr); // Output: [1, 2, 3, 4, 5]
+console.log(reversedArr); // Output: [5, 4, 3, 2, 1]
