@@ -1,44 +1,43 @@
-function burrowsWheelerTransform(str) {
-    // Generate all possible rotations of the input string
-    let rotations = [];
-    for (let i = 0; i < str.length; i++) {
-        rotations.push(str.substring(i) + str.substring(0, i));
+// Node class representing a single node in the search tree
+class Node {
+    constructor(value, children) {
+        this.value = value; // Node value
+        this.children = children; // Array of child nodes
     }
-
-    // Sort the rotations lexicographically
-    rotations.sort();
-
-    // Extract the last characters of each rotation to form the Burrows-Wheeler transformed string
-    let bwt = rotations.map((rotation) => rotation.charAt(rotation.length - 1)).join('');
-
-    return bwt;
 }
 
-function burrowsWheelerInverseTransform(bwt) {
-    let table = [];
-    for (let i = 0; i < bwt.length; i++) {
-        table.push({original: '', transformed: ''});
+// Perform a depth-limited search starting from the root node with a given depth limit
+function depthLimitedSearch(root, depthLimit) {
+    let stack = [{ node: root, depth: 0 }];
+
+    while (stack.length > 0) {
+        let { node, depth } = stack.pop();
+
+        if (depth <= depthLimit) {
+            // Process the node here
+            console.log("Visiting node with value:", node.value);
+
+            // Add children to stack for further exploration
+            if (node.children) {
+                for (let child of node.children) {
+                    stack.push({ node: child, depth: depth + 1 });
+                }
+            }
+        }
     }
-
-    // Fill the table with sorted transformed and original strings
-    for (let i = 0; i < bwt.length; i++) {
-        table.sort((a, b) => a.original.localeCompare(b.original) || a.transformed.localeCompare(b.transformed));
-        table.forEach((row, j) => {
-            row.original = bwt.charAt(j) + row.original;
-            row.transformed = table[j].original;
-        });
-    }
-
-    // Find the original string
-    let original = table.find((row) => row.transformed.endsWith('$')).original;
-
-    return original.substring(0, original.length - 1);
 }
 
 // Example usage
-let inputString = 'banana$';
-let bwt = burrowsWheelerTransform(inputString);
-console.log('Burrows-Wheeler transformed string:', bwt);
+// Create a sample tree
+const rootNode = new Node(1, [
+    new Node(2, [
+        new Node(4, []),
+        new Node(5, []),
+    ]),
+    new Node(3, [
+        new Node(6, []),
+    ]),
+]);
 
-let originalString = burrowsWheelerInverseTransform(bwt);
-console.log('Original string:', originalString);
+// Perform depth-limited search with depth limit of 2
+depthLimitedSearch(rootNode, 2);
