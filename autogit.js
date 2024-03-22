@@ -1,9 +1,18 @@
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
+function countOccurrences(str, word) {
+    let count = 0;
+    const words = str.split(' ');
 
-let index = array.indexOf(elementToRemove);
-if (index > -1) {
-    array.splice(index, 1);
+    for (let i = 0; i < words.length; i++) {
+        if (words[i].toLowerCase() === word.toLowerCase()) {
+            count++;
+        }
+    }
+
+    return count;
 }
 
-console.log(array); // Output: [1, 2, 4, 5]
+const text = "This is a sample text with sample words. Sample is the sample word we are counting.";
+const targetWord = "sample";
+const occurrences = countOccurrences(text, targetWord);
+
+console.log(`The word "${targetWord}" occurs ${occurrences} times in the text.`);
