@@ -1,14 +1,12 @@
-function findSecondLargest(arr) {
-    // Sort the array in descending order
-    arr.sort(function(a, b) {
-        return b - a;
-    });
-
-    // Return the element at index 1
-    return arr[1];
+function findStringLength(inputString) {
+    let count = 0;
+    for (let i = 0; inputString[i] !== undefined; i++) {
+        count++;
+    }
+    return count;
 }
 
 // Example usage
-const arr = [10, 5, 20, 8, 15];
-const secondLargest = findSecondLargest(arr);
-console.log("Second largest element:", secondLargest);
+const str = "Hello, World!";
+const length = findStringLength(str);
+console.log(length); // Output: 13
