@@ -1,10 +1,8 @@
-function calculateTriangleArea(base, height) {
-    return 0.5 * base * height;
+function removeVowels(str) {
+    return str.replace(/[aeiouAEIOU]/g, '');
 }
 
 // Example usage
-let base = 5;
-let height = 10;
-let area = calculateTriangleArea(base, height);
-
-console.log("The area of the triangle is: " + area);
+const text = "Hello, World!";
+const textWithoutVowels = removeVowels(text);
+console.log(textWithoutVowels);  // Output: "Hll, Wrld!"
