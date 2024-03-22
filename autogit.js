@@ -1,8 +1,9 @@
-function decimalToBinary(decimal) {
-    return decimal.toString(2);
+let array = [1, 2, 3, 4, 5];
+let elementToRemove = 3;
+
+let index = array.indexOf(elementToRemove);
+if (index > -1) {
+    array.splice(index, 1);
 }
 
-// Example usage
-const decimalNumber = 10;
-const binaryNumber = decimalToBinary(decimalNumber);
-console.log(binaryNumber); // Output: 1010
+console.log(array); // Output: [1, 2, 4, 5]
