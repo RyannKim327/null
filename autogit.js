@@ -1,47 +1,62 @@
-function beamSearch(startNode, beamWidth, maxDepth, getSuccessors, isGoal) {
-    let currentLevel = [startNode];
-    let nextLevel = [];
+// Function to perform Tarjan's algorithm for finding strongly connected components
+function tarjanSCC(graph) {
+    // Initialize variables
+    let index = 0;
+    let stack = [];
+    let indices = {};
+    let lowlinks = {};
+    let onStack = {};
+    let result = [];
 
-    for (let i = 0; i < maxDepth; i++) {
-        for (let node of currentLevel) {
-            let successors = getSuccessors(node);
+    // Helper function to perform depth-first search
+    function strongConnect(node) {
+        indices[node] = index;
+        lowlinks[node] = index;
+        index++;
+        stack.push(node);
+        onStack[node] = true;
 
-            for (let successor of successors) {
-                if (isGoal(successor)) {
-                    return successor;
-                }
-
-                nextLevel.push(successor);
+        for (let neighbor of graph[node]) {
+            if (indices[neighbor] === undefined) {
+                strongConnect(neighbor);
+                lowlinks[node] = Math.min(lowlinks[node], lowlinks[neighbor]);
+            } else if (onStack[neighbor]) {
+                lowlinks[node] = Math.min(lowlinks[node], indices[neighbor]);
             }
         }
 
-        nextLevel.sort((a, b) => heuristic(b) - heuristic(a));
-        currentLevel = nextLevel.slice(0, beamWidth);
-        nextLevel = [];
+        if (lowlinks[node] === indices[node]) {
+            let component = [];
+            let member;
+            do {
+                member = stack.pop();
+                onStack[member] = false;
+                component.push(member);
+            } while (member !== node);
+            result.push(component);
+        }
     }
 
-    return null;
+    // Perform Tarjan's algorithm for each node in the graph
+    for (let node in graph) {
+        if (indices[node] === undefined) {
+            strongConnect(node);
+        }
+    }
+
+    return result;
 }
 
-// Example usage
-let startNode = { value: 0 };
-let beamWidth = 2;
-let maxDepth = 3;
+// Example graph
+const graph = {
+    1: [2],
+    2: [3, 4],
+    3: [1],
+    4: [5],
+    5: [2, 6],
+    6: [5]
+};
 
-function getSuccessors(node) {
-    // Generate successors of the current node
-    return [{ value: node.value + 1 }, { value: node.value - 1 }];
-}
-
-function isGoal(node) {
-    // Check if the node is the goal node
-    return node.value === 5;
-}
-
-function heuristic(node) {
-    // Define a heuristic function to determine the priority of the nodes
-    return Math.abs(node.value - 5);
-}
-
-let result = beamSearch(startNode, beamWidth, maxDepth, getSuccessors, isGoal);
-console.log(result);
+// Find strongly connected components using Tarjan's algorithm
+const scc = tarjanSCC(graph);
+console.log(scc);
