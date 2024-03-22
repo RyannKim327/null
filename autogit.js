@@ -1,48 +1,16 @@
-// Heap Sort implementation in JavaScript
-function heapSort(arr) {
-    function maxHeapify(arr, n, i) {
-        let largest = i;
-        let left = 2 * i + 1;
-        let right = 2 * i + 2;
+function isAnagram(str1, str2) {
+    // Remove non-alphabetic characters and convert to lowercase
+    str1 = str1.replace(/[^a-zA-Z]/g, "").toLowerCase();
+    str2 = str2.replace(/[^a-zA-Z]/g, "").toLowerCase();
 
-        if (left < n && arr[left] > arr[largest]) {
-            largest = left;
-        }
+    // Sort the characters of the strings
+    str1 = str1.split("").sort().join("");
+    str2 = str2.split("").sort().join("");
 
-        if (right < n && arr[right] > arr[largest]) {
-            largest = right;
-        }
-
-        if (largest !== i) {
-            [arr[i], arr[largest]] = [arr[largest], arr[i]];
-            maxHeapify(arr, n, largest);
-        }
-    }
-
-    function buildMaxHeap(arr) {
-        const n = arr.length;
-
-        for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-            maxHeapify(arr, n, i);
-        }
-    }
-
-    function sort(arr) {
-        const n = arr.length;
-
-        buildMaxHeap(arr);
-
-        for (let i = n - 1; i > 0; i--) {
-            [arr[0], arr[i]] = [arr[i], arr[0]];
-            maxHeapify(arr, i, 0);
-        }
-    }
-
-    sort(arr);
-    return arr;
+    // Compare the sorted strings
+    return str1 === str2;
 }
 
-// Example Usage
-const array = [12, 11, 13, 5, 6, 7];
-console.log("Original Array: ", array);
-console.log("Sorted Array: ", heapSort(array.slice()));
+// Test the function
+console.log(isAnagram("listen", "silent")); // true
+console.log(isAnagram("hello", "world")); // false
