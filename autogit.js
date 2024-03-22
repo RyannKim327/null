@@ -1,5 +1,6 @@
-let str1 = "Hello";
-let str2 = "World";
-let result = str1 + " " + str2;
+let myString = "42";
+let myInteger1 = parseInt(myString); // Using parseInt()
+let myInteger2 = Number(myString); // Using Number()
 
-console.log(result); // Output: "Hello World"
+console.log(myInteger1); // Outputs: 42
+console.log(myInteger2); // Outputs: 42
