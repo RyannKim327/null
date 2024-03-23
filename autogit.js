@@ -1,17 +1,20 @@
-function bubbleSort(arr) {
-    let n = arr.length;
-    for (let i = 0; i < n-1; i++) {
-        for (let j = 0; j < n-i-1; j++) {
-            if (arr[j] > arr[j+1]) {
-                let temp = arr[j];
-                arr[j] = arr[j+1];
-                arr[j+1] = temp;
-            }
-        }
+function quickSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
     }
-    return arr;
+
+    const pivot = arr[0];
+    const left = [];
+    const right = [];
+
+    for (let i = 1; i < arr.length; i++) {
+        arr[i] < pivot ? left.push(arr[i]) : right.push(arr[i]);
+    }
+
+    return [...quickSort(left), pivot, ...quickSort(right)];
 }
 
-let arr = [64, 34, 25, 12, 22, 11, 90];
-console.log("Original array: ", arr);
-console.log("Sorted array: ", bubbleSort(arr));
+// Example usage:
+const arr = [5, 2, 9, 3, 6, 1, 8, 7, 4];
+const sortedArray = quickSort(arr);
+console.log(sortedArray);
