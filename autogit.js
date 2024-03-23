@@ -1,45 +1,58 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-
-function isPalindrome(head) {
-  let values = [];
+function dijkstra(graph, startNode) {
+  const distances = {};
+  const visited = {};
+  const parents = {};
   
-  // Traverse the linked list and store values in an array
-  let current = head;
-  while (current !== null) {
-    values.push(current.value);
-    current = current.next;
+  for (let node in graph) {
+    distances[node] = Infinity;
+    parents[node] = null;
   }
   
-  let start = 0;
-  let end = values.length - 1;
-
-  // Compare values using two pointers
-  while (start < end) {
-    if (values[start] !== values[end]) {
-      return false;
+  distances[startNode] = 0;
+  
+  while (true) {
+    let closestNode = null;
+    let shortestDistance = Infinity;
+    
+    for (let node in graph) {
+      if (!visited[node] && distances[node] < shortestDistance) {
+        closestNode = node;
+        shortestDistance = distances[node];
+      }
     }
-    start++;
-    end--;
+    
+    if (closestNode === null) {
+      break;
+    }
+    
+    for (let neighbor in graph[closestNode]) {
+      const distance = distances[closestNode] + graph[closestNode][neighbor];
+      
+      if (distance < distances[neighbor]) {
+        distances[neighbor] = distance;
+        parents[neighbor] = closestNode;
+      }
+    }
+    
+    visited[closestNode] = true;
   }
-
-  return true;
+  
+  return {
+    distances: distances,
+    parents: parents
+  };
 }
 
-// Test the isPalindrome function
-let node1 = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-let node4 = new Node(2);
-let node5 = new Node(1);
+// Example graph
+const graph = {
+  A: { B: 5, C: 3 },
+  B: { A: 5, C: 1, D: 2 },
+  C: { A: 3, B: 1, D: 4 },
+  D: { B: 2, C: 4 }
+};
 
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node5;
+const startNode = 'A';
+const result = dijkstra(graph, startNode);
 
-console.log(isPalindrome(node1)); // Output: true
+console.log('Shortest distances:', result.distances);
+console.log('Parents:', result.parents);
