@@ -1,26 +1,3 @@
-function shellSort(arr) {
-    let n = arr.length;
-    let gap = Math.floor(n / 2);
-
-    while (gap > 0) {
-        for (let i = gap; i < n; i++) {
-            let temp = arr[i];
-            let j = i;
-
-            while (j >= gap && arr[j - gap] > temp) {
-                arr[j] = arr[j - gap];
-                j -= gap;
-            }
-
-            arr[j] = temp;
-        }
-
-        gap = Math.floor(gap / 2);
-    }
-
-    return arr;
-}
-
-// Example usage
-let arr = [12, 34, 54, 2, 3];
-console.log(shellSort(arr)); // Output: [2, 3, 12, 34, 54]
+let arr = [1, 2, 3, 4, 5];
+arr.reverse();
+console.log(arr); // Output: [5, 4, 3, 2, 1]
