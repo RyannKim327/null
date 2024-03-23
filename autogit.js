@@ -1,6 +1,36 @@
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 4, 5, 6, 7];
+// Definition for a binary tree node
+function TreeNode(val) {
+    this.val = val;
+    this.left = this.right = null;
+}
 
-const commonElements = array1.filter(element => array2.includes(element));
+function diameterOfBinaryTree(root) {
+    let diameter = 0;
 
-console.log(commonElements); // Output: [3, 4, 5]
+    function depth(node) {
+        if (!node) {
+            return 0;
+        }
+
+        const leftDepth = depth(node.left);
+        const rightDepth = depth(node.right);
+
+        // Update the diameter if needed
+        diameter = Math.max(diameter, leftDepth + rightDepth);
+
+        return 1 + Math.max(leftDepth, rightDepth);
+    }
+
+    depth(root);
+
+    return diameter;
+}
+
+// Usage example
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(diameterOfBinaryTree(root)); // Output: 3
