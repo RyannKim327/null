@@ -1,18 +1,23 @@
-function countOccurrences(str, char) {
-    let count = 0;
-
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === char) {
-            count++;
-        }
+// Implement the Burrows-Wheeler Transform (BWT) algorithm
+function burrowsWheelerTransform(input) {
+    // Add the input string to a matrix
+    let matrix = [];
+    for (let i = 0; i < input.length; i++) {
+        let str = input.slice(i) + input.slice(0, i);
+        matrix.push(str);
     }
-
-    return count;
+    
+    // Sort the matrix in lexicographical order
+    matrix.sort();
+    
+    // Extract the last characters of each row to form the transformed string
+    let transformedString = matrix.map(row => row[row.length - 1]).join('');
+    
+    return transformedString;
 }
 
-// Example usage
-let myString = "hello world";
-let charToCount = "l";
-let occurrences = countOccurrences(myString, charToCount);
-
-console.log(`The character "${charToCount}" occurs ${occurrences} times in the string "${myString}"`);
+// Test the implementation
+let inputString = "hello";
+let bwtResult = burrowsWheelerTransform(inputString);
+console.log("Input String:", inputString);
+console.log("Burrows-Wheeler Transform Result:", bwtResult);
