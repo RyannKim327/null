@@ -1,48 +1,49 @@
-class BeamSearch {
-    constructor(beamWidth) {
-        this.beamWidth = beamWidth;
+function fibonacciSearch(arr, key) {
+    let fibM2 = 0;
+    let fibM1 = 1;
+    let fibM = fibM2 + fibM1;
+
+    let len = arr.length;
+
+    while (fibM < len) {
+        fibM2 = fibM1;
+        fibM1 = fibM;
+        fibM = fibM2 + fibM1;
     }
 
-    search(startNode, maxDepth, goalTest, successorFn, heuristicFn) {
-        let currentBeam = [startNode];
-        let nextBeam = [];
+    let offset = -1;
 
-        for (let depth = 0; depth < maxDepth; depth++) {
-            for (let node of currentBeam) {
-                if (goalTest(node)) {
-                    return node;
-                }
+    while (fibM > 1) {
+        let i = Math.min(offset + fibM2, len - 1);
 
-                let successors = successorFn(node);
-                for (let successor of successors) {
-                    successor.f = node.f + heuristicFn(successor);
-                    nextBeam.push(successor);
-                }
-            }
-
-            nextBeam.sort((a, b) => a.f - b.f);
-            currentBeam = nextBeam.slice(0, this.beamWidth);
-            nextBeam = [];
+        if (arr[i] < key) {
+            fibM = fibM1;
+            fibM1 = fibM2;
+            fibM2 = fibM - fibM1;
+            offset = i;
+        } else if (arr[i] > key) {
+            fibM = fibM2;
+            fibM1 = fibM1 - fibM2;
+            fibM2 = fibM - fibM1;
+        } else {
+            return i;
         }
-
-        return null;
     }
+
+    if (fibM1 && arr[offset + 1] === key) {
+        return offset + 1;
+    }
+
+    return -1;
 }
 
-// Usage example
-const beamSearch = new BeamSearch(3);
+// Usage
+const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const key = 6;
+const index = fibonacciSearch(arr, key);
 
-function goalTest(node) {
-    return node === 5;
+if (index !== -1) {
+    console.log(`Element found at index ${index}`);
+} else {
+    console.log(`Element not found`);
 }
-
-function successorFn(node) {
-    return [node + 1, node + 2, node + 3];
-}
-
-function heuristicFn(node) {
-    return Math.abs(node - 5);
-}
-
-const result = beamSearch.search(0, 10, goalTest, successorFn, heuristicFn);
-console.log(result);
