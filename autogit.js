@@ -1,12 +1,15 @@
-function factorial(num) {
-    if (num === 0) {
-        return 1;
-    } else {
-        return num * factorial(num - 1);
+function isArraySorted(arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;
+        }
     }
+    return true;
 }
 
-// Example usage
-const number = 5;
-const result = factorial(number);
-console.log(`Factorial of ${number} is: ${result}`);
+// Test the function
+const arr1 = [1, 2, 3, 4, 5];
+console.log(isArraySorted(arr1)); // Output: true
+
+const arr2 = [5, 4, 3, 2, 1];
+console.log(isArraySorted(arr2)); // Output: false
