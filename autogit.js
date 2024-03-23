@@ -1,12 +1,4 @@
-const axios = require('axios');
+let str = "Hello, World!";
+let lowercaseStr = str.toLowerCase();
 
-async function fetchData() {
-  try {
-    const response = await axios.get('https://api.example.com/data');
-    console.log(response.data);
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-fetchData();
+console.log(lowercaseStr); // Output: "hello, world!"
