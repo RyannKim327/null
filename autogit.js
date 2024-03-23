@@ -1,15 +1,7 @@
-let arr = [1, 2, 3, 3, 4, 5, 5];
-let uniqueArr = Array.from(new Set(arr));
-console.log(uniqueArr); // Output: [1, 2, 3, 4, 5]
-let arr = [1, 2, 3, 3, 4, 5, 5];
-let uniqueArr = arr.filter((item, index) => arr.indexOf(item) === index);
-console.log(uniqueArr); // Output: [1, 2, 3, 4, 5]
-let arr = [1, 2, 3, 3, 4, 5, 5];
-let uniqueArr = arr.reduce((acc, current) => {
-    if (!acc.includes(current)) {
-        acc.push(current);
-    }
-    return acc;
-}, []);
+function getRandomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
-console.log(uniqueArr); // Output: [1, 2, 3, 4, 5]
+// Generate a random number between 1 and 100
+const randomNumber = getRandomNumber(1, 100);
+console.log(randomNumber);
