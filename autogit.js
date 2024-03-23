@@ -1,16 +1,9 @@
-// Replace 'API_URL' with the actual API URL you want to fetch data from
-const apiUrl = 'API_URL';
+function calculateTriangleArea(base, height) {
+    return 0.5 * base * height;
+}
 
-fetch(apiUrl)
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  })
-  .then(data => {
-    console.log(data); // Do something with the data received from the API
-  })
-  .catch(error => {
-    console.error('There was a problem with your fetch operation:', error);
-  });
+// Example usage:
+const base = 5;
+const height = 8;
+const area = calculateTriangleArea(base, height);
+console.log("The area of the triangle is: " + area);
