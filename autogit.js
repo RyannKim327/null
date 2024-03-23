@@ -1,37 +1,58 @@
-class TreeNode {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+function bidirectionalSearch(graph, startNode, endNode) {
+    let forwardQueue = [startNode];
+    let backwardQueue = [endNode];
+    let visitedForward = new Set();
+    let visitedBackward = new Set();
+
+    visitedForward.add(startNode);
+    visitedBackward.add(endNode);
+
+    while (forwardQueue.length > 0 && backwardQueue.length > 0) {
+        let forwardNode = forwardQueue.shift();
+        let backwardNode = backwardQueue.shift();
+
+        if (visitedBackward.has(forwardNode)) {
+            return true; // Path found
+        }
+
+        if (visitedForward.has(backwardNode)) {
+            return true; // Path found
+        }
+
+        for (let neighbor of graph[forwardNode]) {
+            if (!visitedForward.has(neighbor)) {
+                forwardQueue.push(neighbor);
+                visitedForward.add(neighbor);
+            }
+        }
+
+        for (let neighbor of graph[backwardNode]) {
+            if (!visitedBackward.has(neighbor)) {
+                backwardQueue.push(neighbor);
+                visitedBackward.add(neighbor);
+            }
+        }
     }
-}
 
-function height(node) {
-    if (node === null) {
-        return 0;
-    }
-    return 1 + Math.max(height(node.left), height(node.right));
-}
-
-function diameterOfBinaryTree(root) {
-    if (root === null) {
-        return 0;
-    }
-
-    const leftHeight = height(root.left);
-    const rightHeight = height(root.right);
-
-    const leftDiameter = diameterOfBinaryTree(root.left);
-    const rightDiameter = diameterOfBinaryTree(root.right);
-
-    return Math.max(leftHeight + rightHeight + 1, leftDiameter, rightDiameter);
+    return false; // No path found
 }
 
 // Usage
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+const graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D'],
+    'C': ['A', 'E'],
+    'D': ['B', 'F'],
+    'E': ['C', 'G'],
+    'F': ['D'],
+    'G': ['E']
+};
 
-console.log(diameterOfBinaryTree(root)); // Output: 4
+const startNode = 'A';
+const endNode = 'G';
+
+if (bidirectionalSearch(graph, startNode, endNode)) {
+    console.log("Path found");
+} else {
+    console.log("Path not found");
+}
