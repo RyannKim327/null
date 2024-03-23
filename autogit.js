@@ -1,13 +1,20 @@
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
+function longestCommonPrefix(strs) {
+    if (strs.length === 0) return "";
 
-// Find the index of the element to remove
-let index = array.indexOf(elementToRemove);
-
-// Check if the element exists in the array
-if (index !== -1) {
-    // Remove the element using splice
-    array.splice(index, 1);
+    const shortest = strs.reduce((shortest, str) => str.length < shortest.length ? str : shortest, strs[0]);
+    
+    for (let i = 0; i < shortest.length; i++) {
+        for (const str of strs) {
+            if (str[i] !== shortest[i]) {
+                return shortest.substring(0, i);
+            }
+        }
+    }
+    
+    return shortest;
 }
 
-console.log(array); // Array without the removed element
+// Example usage
+const strings = ["flower", "flow", "flight"];
+const prefix = longestCommonPrefix(strings);
+console.log(prefix); // Output: "fl"
