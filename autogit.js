@@ -1,24 +1,12 @@
-function isPrime(num) {
-    if (num <= 1) {
-        return false;
+function factorial(num) {
+    if (num === 0) {
+        return 1;
+    } else {
+        return num * factorial(num - 1);
     }
-    if (num <= 3) {
-        return true;
-    }
-
-    if (num % 2 === 0 || num % 3 === 0) {
-        return false;
-    }
-
-    for (let i = 5; i * i <= num; i += 6) {
-        if (num % i === 0 || num % (i + 2) === 0) {
-            return false;
-        }
-    }
-
-    return true;
 }
 
-// Test the function
-console.log(isPrime(5)); // true
-console.log(isPrime(10)); // false
+// Example usage
+const number = 5;
+const result = factorial(number);
+console.log(`Factorial of ${number} is: ${result}`);
