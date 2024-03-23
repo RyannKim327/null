@@ -1,25 +1,32 @@
-function longestIncreasingSubsequence(arr) {
-    let n = arr.length;
-    let lisLength = new Array(n).fill(1);
-
-    for (let i = 1; i < n; i++) {
-        for (let j = 0; j < i; j++) {
-            if (arr[i] > arr[j] && lisLength[i] < lisLength[j] + 1) {
-                lisLength[i] = lisLength[j] + 1;
-            }
-        }
+function boyerMooreSearch(text, pattern) {
+    const textLength = text.length;
+    const patternLength = pattern.length;
+    const skipTable = new Array(256).fill(patternLength);
+    
+    // Preprocess skip_table
+    for (let i = 0; i < patternLength - 1; i++) {
+        skipTable[pattern.charCodeAt(i)] = patternLength - 1 - i;
     }
 
-    let maxLength = 0;
-    for (let i = 0; i < n; i++) {
-        if (lisLength[i] > maxLength) {
-            maxLength = lisLength[i];
+    let i = patternLength - 1;
+    while (i < textLength) {
+        let j = patternLength - 1;
+        let k = i;
+        while (j >= 0 && text[k] === pattern[j]) {
+            j--;
+            k--;
         }
+        if (j < 0) {
+            return k + 1; // Pattern found
+        }
+        i += skipTable[text.charCodeAt(i)];
     }
 
-    return maxLength;
+    return -1; // Pattern not found
 }
 
-// Example usage
-let arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
-console.log(longestIncreasingSubsequence(arr)); // Output: 6
+// Test the function
+const text = "ABAABABACDBABABCABABCABAB";
+const pattern = "ABABCABAB";
+const index = boyerMooreSearch(text, pattern);
+console.log("Pattern found at index:", index);
