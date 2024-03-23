@@ -1,48 +1,29 @@
-function Node(value, children = []) {
-    this.value = value;
-    this.children = children;
-}
+function binarySearch(arr, target) {
+    let left = 0;
+    let right = arr.length - 1;
 
-function breadthLimitedSearch(root, target, limit) {
-    let queue = [{
-        node: root,
-        depth: 0
-    }];
+    while (left <= right) {
+        let mid = Math.floor((left + right) / 2);
 
-    while (queue.length > 0) {
-        let current = queue.shift();
-        let node = current.node;
-        let depth = current.depth;
-
-        if (depth > limit) {
-            continue; // Skip nodes beyond the limit
-        }
-
-        if (node.value === target) {
-            return node;
-        }
-
-        for (let child of node.children) {
-            queue.push({
-                node: child,
-                depth: depth + 1
-            });
+        if (arr[mid] === target) {
+            return mid;
+        } else if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
         }
     }
 
-    return null; // Target not found within the limit
+    return -1; // Return -1 if the target is not found
 }
 
-// Example usage:
-// Create a tree
-let nodeA = new Node("A");
-let nodeB = new Node("B");
-let nodeC = new Node("C");
-let nodeD = new Node("D");
-let nodeE = new Node("E");
-nodeA.children = [nodeB, nodeC];
-nodeB.children = [nodeD, nodeE];
+// Example usage
+const arr = [1, 3, 5, 7, 9, 11, 13, 15];
+const target = 7;
+const result = binarySearch(arr, target);
 
-// Search for node with value "C" with limit 2
-let result = breadthLimitedSearch(nodeA, "C", 2);
-console.log(result); // Should output the node with value "C"
+if (result !== -1) {
+    console.log(`Target ${target} found at index ${result}.`);
+} else {
+    console.log(`Target ${target} not found in the array.`);
+}
