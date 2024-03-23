@@ -1,43 +1,23 @@
-function depthLimitedSearch(node, goal, depthLimit) {
-    return recursiveDLS(node, goal, depthLimit, 0);
-}
+function findFirstRepeatedChar(str) {
+    let charSet = new Set();
 
-function recursiveDLS(node, goal, depthLimit, depth) {
-    if (depth > depthLimit) {
-        return null; // return null if depth limit exceeded
-    }
-
-    if (node === goal) {
-        return node;
-    }
-
-    if (depth === depthLimit) {
-        return null;
-    }
-
-    for (let child of expandNode(node)) {
-        let result = recursiveDLS(child, goal, depthLimit, depth + 1);
-        if (result !== null) {
-            return result;
+    for (let char of str) {
+        if (charSet.has(char)) {
+            return char;
+        } else {
+            charSet.add(char);
         }
     }
 
     return null;
 }
 
-function expandNode(node) {
-    // Implement function to expand node and return child nodes here
-    return [];
-}
-
 // Example usage
-let initialNode = 0;
-let goalNode = 10;
-let depthLimit = 5;
-let result = depthLimitedSearch(initialNode, goalNode, depthLimit);
+let inputString = "hello world";
+let repeatedChar = findFirstRepeatedChar(inputString);
 
-if (result !== null) {
-    console.log(`Goal node ${goalNode} found within depth limit ${depthLimit}`);
+if (repeatedChar) {
+    console.log("The first repeated character in the string is:", repeatedChar);
 } else {
-    console.log(`Goal node ${goalNode} not found within depth limit ${depthLimit}`);
+    console.log("There are no repeated characters in the string.");
 }
