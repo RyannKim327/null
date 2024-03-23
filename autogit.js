@@ -1,21 +1,27 @@
-// Define a function to connect to Android native function
-async function connectToAndroidNativeFunction() {
-    return new Promise((resolve, reject) => {
-        // Perform the asynchronous task to connect to Android native function
-        // For example, make a network request or call a native function
-        // In this example, we are simulating a network request using setTimeout
-        setTimeout(() => {
-            // Simulating a successful connection
-            resolve("Connected to Android native function successfully");
-        }, 2000);
-    });
+class Node {
+    constructor(value, left = null, right = null) {
+        this.value = value;
+        this.left = left;
+        this.right = right;
+    }
 }
 
-// Call the connectToAndroidNativeFunction function
-connectToAndroidNativeFunction()
-    .then((result) => {
-        console.log(result);
-    })
-    .catch((error) => {
-        console.error(error);
-    });
+function sumBinaryTree(root) {
+    if (root === null) {
+        return 0;
+    }
+    
+    return root.value + sumBinaryTree(root.left) + sumBinaryTree(root.right);
+}
+
+// Example binary tree
+const tree = new Node(1,
+                      new Node(2,
+                               new Node(3),
+                               new Node(4)),
+                      new Node(5,
+                               new Node(6),
+                               new Node(7)));
+
+const sum = sumBinaryTree(tree);
+console.log("Sum of all nodes in the binary tree: " + sum);
