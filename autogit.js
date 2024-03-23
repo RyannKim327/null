@@ -1,45 +1,17 @@
-function findMedianSortedArrays(nums1, nums2) {
-    const mergedArray = mergeArrays(nums1, nums2);
-
-    const totalLength = mergedArray.length;
-    const mid = Math.floor(totalLength / 2);
-
-    if (totalLength % 2 === 0) {
-        return (mergedArray[mid - 1] + mergedArray[mid]) / 2;
-    } else {
-        return mergedArray[mid];
-    }
-}
-
-function mergeArrays(nums1, nums2) {
-    let i = 0;
-    let j = 0;
-    const merged = [];
-
-    while (i < nums1.length && j < nums2.length) {
-        if (nums1[i] < nums2[j]) {
-            merged.push(nums1[i]);
-            i++;
-        } else {
-            merged.push(nums2[j]);
-            j++;
+function longestCommonPrefix(strs) {
+    if (strs.length === 0) return '';
+    
+    let prefix = strs[0];
+    
+    for (let i = 1; i < strs.length; i++) {
+        while (strs[i].indexOf(prefix) !== 0) {
+            prefix = prefix.substring(0, prefix.length - 1);
         }
     }
-
-    while (i < nums1.length) {
-        merged.push(nums1[i]);
-        i++;
-    }
-
-    while (j < nums2.length) {
-        merged.push(nums2[j]);
-        j++;
-    }
-
-    return merged;
+    
+    return prefix;
 }
 
-const nums1 = [1, 3];
-const nums2 = [2];
-
-console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.0
+// Example Usage
+let strings = ['flower', 'flow', 'flight'];
+console.log(longestCommonPrefix(strings)); // Output: "fl"
