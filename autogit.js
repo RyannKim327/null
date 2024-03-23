@@ -1,50 +1,51 @@
-// Node class to create nodes of linked list
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
+function buildPatternTable(pattern) {
+    const table = [0];
+    let prefix = 0;
+    
+    for (let i = 1; i < pattern.length; i++) {
+        if (pattern[i] === pattern[prefix]) {
+            prefix++;
+            table[i] = prefix;
+        } else {
+            prefix = 0;
+            table[i] = prefix;
+        }
     }
+    
+    return table;
 }
 
-// Function to check if a linked list is palindrome
-function isPalindromeLinkedList(head) {
-    let currentNode = head;
-    let values = [];
-
-    // Traverse the linked list and store the values in an array
-    while (currentNode !== null) {
-        values.push(currentNode.value);
-        currentNode = currentNode.next;
-    }
-
-    // Create a reverse copy of the array
-    let reverseValues = values.slice().reverse();
-
-    // Compare original array with reverse copy
-    for (let i = 0; i < values.length; i++) {
-        if (values[i] !== reverseValues[i]) {
-            return false;
+function KMP(text, pattern) {
+    const patternTable = buildPatternTable(pattern);
+    let textIndex = 0;
+    let patternIndex = 0;
+    
+    while (textIndex < text.length) {
+        if (text[textIndex] === pattern[patternIndex]) {
+            if (patternIndex === pattern.length - 1) {
+                return textIndex - pattern.length + 1;
+            }
+            patternIndex++;
+            textIndex++;
+        } else {
+            if (patternIndex !== 0) {
+                patternIndex = patternTable[patternIndex - 1];
+            } else {
+                textIndex++;
+            }
         }
     }
 
-    return true;
+    return -1;
 }
 
-// Example linked list
-const node1 = new Node('r');
-const node2 = new Node('a');
-const node3 = new Node('c');
-const node4 = new Node('e');
-const node5 = new Node('c');
-const node6 = new Node('a');
-const node7 = new Node('r');
+// Example
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const index = KMP(text, pattern);
 
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node5;
-node5.next = node6;
-node6.next = node7;
-
-// Check if the linked list is a palindrome
-console.log(isPalindromeLinkedList(node1)); // Output: true
+if (index !== -1) {
+    console.log(`Pattern found at index ${index}`);
+} else {
+    console.log("Pattern not found");
+}
