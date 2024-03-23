@@ -1,43 +1,53 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.children = [];
-    }
-}
+function tarjanStronglyConnectedComponents(graph) {
+    const stack = [];
+    const result = [];
+    let index = 0;
 
-function depthLimitedSearch(node, goal, depth) {
-    if (depth === 0) {
-        return null; // If reached max depth, return null
-    }
+    const recursiveTarjan = (node) => {
+        node.index = index;
+        node.lowLink = index;
+        index++;
+        stack.push(node);
+        node.onStack = true;
 
-    if (node.value === goal) {
-        return node; // If goal found, return the node
-    }
+        node.neighbors.forEach((neighbor) => {
+            if (neighbor.index === undefined) {
+                recursiveTarjan(neighbor);
+                node.lowLink = Math.min(node.lowLink, neighbor.lowLink);
+            } else if (neighbor.onStack) {
+                node.lowLink = Math.min(node.lowLink, neighbor.index);
+            }
+        });
 
-    for (let child of node.children) {
-        let result = depthLimitedSearch(child, goal, depth - 1);
-        if (result !== null) {
-            return result; // If goal found in child node, return the node
+        if (node.lowLink === node.index) {
+            const component = [];
+            let popNode;
+            do {
+                popNode = stack.pop();
+                popNode.onStack = false;
+                component.push(popNode);
+            } while (popNode !== node);
+            result.push(component);
         }
-    }
+    };
 
-    return null; // Return null if goal not found within the given depth
+    graph.forEach((node) => {
+        if (node.index === undefined) {
+            recursiveTarjan(node);
+        }
+    });
+
+    return result;
 }
+const nodeA = { neighbors: [] };
+const nodeB = { neighbors: [] };
+const nodeC = { neighbors: [] };
 
-// Example usage
-// Create a tree
-let rootNode = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-let node4 = new Node(4);
+nodeA.neighbors.push(nodeB);
+nodeB.neighbors.push(nodeC);
+nodeC.neighbors.push(nodeA);
 
-rootNode.children = [node2, node3];
-node2.children = [node4];
+const graph = [nodeA, nodeB, nodeC];
 
-// Perform depth-limited search starting from root node
-let result = depthLimitedSearch(rootNode, 4, 3);
-if (result !== null) {
-    console.log("Goal found at node with value: " + result.value);
-} else {
-    console.log("Goal not found within the specified depth.");
-}
+const stronglyConnectedComponents = tarjanStronglyConnectedComponents(graph);
+console.log(stronglyConnectedComponents);
