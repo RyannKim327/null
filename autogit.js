@@ -1,10 +1,8 @@
-function decimalToBinary(decimal) {
-    return decimal.toString(2);
-}
+let str = "42";
+let num = parseInt(str);
 
-// Example usage
-const decimalNumber = 42;
-const binaryNumber = decimalToBinary(decimalNumber);
+console.log(num); // Output: 42
+let str = "42.5";
+let num = parseFloat(str);
 
-console.log(`Decimal: ${decimalNumber}`);
-console.log(`Binary: ${binaryNumber}`);
+console.log(num); // Output: 42.5
