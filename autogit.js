@@ -1,23 +1,27 @@
-// Implement the Burrows-Wheeler Transform (BWT) algorithm
-function burrowsWheelerTransform(input) {
-    // Add the input string to a matrix
-    let matrix = [];
-    for (let i = 0; i < input.length; i++) {
-        let str = input.slice(i) + input.slice(0, i);
-        matrix.push(str);
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
     }
-    
-    // Sort the matrix in lexicographical order
-    matrix.sort();
-    
-    // Extract the last characters of each row to form the transformed string
-    let transformedString = matrix.map(row => row[row.length - 1]).join('');
-    
-    return transformedString;
 }
 
-// Test the implementation
-let inputString = "hello";
-let bwtResult = burrowsWheelerTransform(inputString);
-console.log("Input String:", inputString);
-console.log("Burrows-Wheeler Transform Result:", bwtResult);
+function findMiddleElement(head) {
+    let slow = head;
+    let fast = head;
+    
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+    
+    return slow.value;
+}
+
+// Example of creating a linked list and finding the middle element
+let head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
+
+console.log(findMiddleElement(head)); // Output: 3
