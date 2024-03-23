@@ -1,28 +1,41 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+function depthLimitedSearch(node, goal, depthLimit) {
+    return recursiveDLS(node, goal, depthLimit, 0);
 }
 
-// Function to find the maximum depth of a binary tree
-function maxDepth(root) {
-    if (root === null) {
-        return 0;
+function recursiveDLS(node, goal, depthLimit, depth) {
+    if (depth > depthLimit) {
+        return false;
     }
 
-    let leftDepth = maxDepth(root.left);
-    let rightDepth = maxDepth(root.right);
+    if (node === goal) {
+        return true;
+    }
 
-    return Math.max(leftDepth, rightDepth) + 1;
+    if (depth === depthLimit) {
+        return false;
+    }
+
+    for (let child of expand(node)) {
+        if (recursiveDLS(child, goal, depthLimit, depth + 1)) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
-// Example binary tree
-let root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
+function expand(node) {
+    // Implement your own function to generate child nodes here
+    return [];
+}
 
-console.log("Maximum depth of the binary tree is: " + maxDepth(root));
+// Example usage
+const initialNode = /* define your initial node */;
+const goalNode = /* define your goal node */;
+const maxDepth = 10;
+
+if (depthLimitedSearch(initialNode, goalNode, maxDepth)) {
+    console.log("Goal found within depth limit");
+} else {
+    console.log("Goal not found within depth limit");
+}
