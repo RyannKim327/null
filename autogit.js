@@ -1,48 +1,43 @@
-function breadthLimitedSearch(root, target, limit) {
-    let queue = [[root, 0]];
-    
-    while (queue.length > 0) {
-        let [node, depth] = queue.shift();
-        
-        if (node === target) {
-            console.log("Target found at depth: " + depth);
-            return node;
-        }
-        
-        if (depth < limit) {
-            for (let child of getChildren(node)) {
-                queue.push([child, depth + 1]);
-            }
-        }
+// Heapify a subtree rooted at index i in the array arr of size n
+function heapify(arr, n, i) {
+    let largest = i;
+    const left = 2 * i + 1;
+    const right = 2 * i + 2;
+
+    if (left < n && arr[left] > arr[largest]) {
+        largest = left;
     }
-    
-    console.log("Target not found within depth limit");
-    return null;
+
+    if (right < n && arr[right] > arr[largest]) {
+        largest = right;
+    }
+
+    if (largest !== i) {
+        [arr[i], arr[largest]] = [arr[largest], arr[i]];
+        heapify(arr, n, largest);
+    }
 }
 
-function getChildren(node) {
-    // Implement your function to get children of a node here
-    // This function should return an array of children nodes
-    // For example:
-    // return node.children;
+// Perform heap sort on the array arr
+function heapSort(arr) {
+    const n = arr.length;
+
+    // Build max heap
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        heapify(arr, n, i);
+    }
+
+    // Extract elements from the heap one by one
+    for (let i = n - 1; i > 0; i--) {
+        [arr[0], arr[i]] = [arr[i], arr[0]];
+        heapify(arr, i, 0);
+    }
+
+    return arr;
 }
 
-// Example Usage
-let rootNode = {
-    value: 1,
-    children: [
-        {
-            value: 2,
-            children: []
-        },
-        {
-            value: 3,
-            children: []
-        }
-    ]
-};
-
-let targetNode = 3;
-let limit = 2;
-
-breadthLimitedSearch(rootNode, targetNode, limit);
+// Usage
+const arr = [12, 11, 13, 5, 6, 7];
+console.log("Original array: " + arr);
+const sortedArr = heapSort(arr);
+console.log("Sorted array: " + sortedArr);
