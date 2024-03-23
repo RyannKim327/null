@@ -1,13 +1,9 @@
-function factorial(n) {
-    if (n === 0) {
-        return 1;
-    } else {
-        return n * factorial(n - 1);
+fetch('https://api.example.com/data')
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
     }
-}
-
-// To calculate the factorial of a number, call the function like this:
-const number = 5;
-const result = factorial(number);
-
-console.log(`The factorial of ${number} is: ${result}`);
+    return response.json();
+  })
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));
