@@ -1,63 +1,16 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
+// Replace 'API_URL' with the actual API URL you want to fetch data from
+const apiUrl = 'API_URL';
 
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-    this.size = 0;
-  }
-
-  enqueue(value) {
-    const newNode = new Node(value);
-    if (this.size === 0) {
-      this.head = newNode;
-    } else {
-      this.tail.next = newNode;
+fetch(apiUrl)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
     }
-    this.tail = newNode;
-    this.size++;
-  }
-
-  dequeue() {
-    if (this.size === 0) {
-      return null;
-    }
-
-    const dequeuedValue = this.head.value;
-    this.head = this.head.next;
-    this.size--;
-
-    if (this.size === 0) {
-      this.tail = null;
-    }
-
-    return dequeuedValue;
-  }
-
-  isEmpty() {
-    return this.size === 0;
-  }
-
-  peek() {
-    if (this.size === 0) {
-      return null;
-    }
-    return this.head.value;
-  }
-}
-
-// Example usage
-const queue = new Queue();
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
-
-console.log(queue.dequeue()); // Output: 1
-console.log(queue.dequeue()); // Output: 2
-console.log(queue.peek()); // Output: 3
-console.log(queue.isEmpty()); // Output: false
+    return response.json();
+  })
+  .then(data => {
+    console.log(data); // Do something with the data received from the API
+  })
+  .catch(error => {
+    console.error('There was a problem with your fetch operation:', error);
+  });
