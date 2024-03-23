@@ -1,27 +1,19 @@
-function largestPrimeFactor(number) {
-    let factors = [];
-    
-    // Extract all factors, including duplicate factors
-    for (let i = 2; i <= number; i++) {
-        while (number % i === 0) {
-            factors.push(i);
-            number /= i;
+function isPrime(number) {
+    if (number <= 1) {
+        return false;
+    }
+    for (let i = 2; i < number; i++) {
+        if (number % i === 0) {
+            return false;
         }
     }
-
-    // Extract prime factors from factors array
-    let primeFactors = factors.filter(factor => {
-        for (let i = 2; i < factor; i++) {
-            if (factor % i === 0) {
-                return false;
-            }
-        }
-        return factor > 1;
-    });
-
-    return Math.max(...primeFactors);
+    return true;
 }
 
-// Test with a number
-let number = 315;
-console.log("Largest prime factor of " + number + " is " + largestPrimeFactor(number));
+// Test the function
+const number = 17;
+if (isPrime(number)) {
+    console.log(number + ' is a prime number.');
+} else {
+    console.log(number + ' is not a prime number.');
+}
