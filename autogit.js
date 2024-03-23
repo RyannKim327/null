@@ -1,39 +1,26 @@
-class ListNode {
-  constructor(val) {
-    this.val = val;
-    this.next = null;
-  }
-}
+function shellSort(arr) {
+    let n = arr.length;
+    let gap = Math.floor(n / 2);
 
-function hasCycle(head) {
-  if (!head || !head.next) {
-    return false;
-  }
+    while (gap > 0) {
+        for (let i = gap; i < n; i++) {
+            let temp = arr[i];
+            let j = i;
 
-  let slow = head;
-  let fast = head.next;
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
+            }
 
-  while (slow !== fast) {
-    if (!fast || !fast.next) {
-      return false;
+            arr[j] = temp;
+        }
+
+        gap = Math.floor(gap / 2);
     }
-    slow = slow.next;
-    fast = fast.next.next;
-  }
 
-  return true;
+    return arr;
 }
 
 // Example usage
-// Creating a linked list with a cycle
-let head = new ListNode(1);
-let node2 = new ListNode(2);
-let node3 = new ListNode(3);
-let node4 = new ListNode(4);
-
-head.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2; // creating a cycle
-
-console.log(hasCycle(head)); // Output: true
+let arr = [12, 34, 54, 2, 3];
+console.log(shellSort(arr)); // Output: [2, 3, 12, 34, 54]
