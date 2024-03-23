@@ -1,36 +1,77 @@
-// Definition for a binary tree node
-function TreeNode(val) {
-    this.val = val;
-    this.left = this.right = null;
+// Node class to represent each element of the queue
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
 }
 
-function diameterOfBinaryTree(root) {
-    let diameter = 0;
+// Queue class with linked list implementation
+class Queue {
+  constructor() {
+    this.front = null;
+    this.rear = null;
+    this.size = 0;
+  }
 
-    function depth(node) {
-        if (!node) {
-            return 0;
-        }
+  isEmpty() {
+    return this.size === 0;
+  }
 
-        const leftDepth = depth(node.left);
-        const rightDepth = depth(node.right);
-
-        // Update the diameter if needed
-        diameter = Math.max(diameter, leftDepth + rightDepth);
-
-        return 1 + Math.max(leftDepth, rightDepth);
+  enqueue(data) {
+    const newNode = new Node(data);
+    if (this.isEmpty()) {
+      this.front = newNode;
+    } else {
+      this.rear.next = newNode;
     }
+    this.rear = newNode;
+    this.size++;
+  }
 
-    depth(root);
+  dequeue() {
+    if (this.isEmpty()) {
+      return null;
+    }
+    const data = this.front.data;
+    this.front = this.front.next;
+    this.size--;
+    if (this.isEmpty()) {
+      this.rear = null;
+    }
+    return data;
+  }
 
-    return diameter;
+  peek() {
+    if (this.isEmpty()) {
+      return null;
+    }
+    return this.front.data;
+  }
+
+  printQueue() {
+    if (this.isEmpty()) {
+      console.log("Queue is empty");
+    } else {
+      let current = this.front;
+      while (current !== null) {
+        console.log(current.data);
+        current = current.next;
+      }
+    }
+  }
 }
 
-// Usage example
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+// Example Usage
+const queue = new Queue();
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
 
-console.log(diameterOfBinaryTree(root)); // Output: 3
+queue.printQueue(); // Output: 1, 2, 3
+
+console.log(queue.dequeue()); // Output: 1
+
+console.log(queue.peek()); // Output: 2
+
+queue.printQueue(); // Output: 2, 3
