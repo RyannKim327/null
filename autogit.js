@@ -1,38 +1,25 @@
-class TreeNode {
-  constructor(val) {
-    this.val = val;
-    this.left = null;
-    this.right = null;
-  }
+function longestIncreasingSubsequence(arr) {
+    let n = arr.length;
+    let lisLength = new Array(n).fill(1);
+
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[i] > arr[j] && lisLength[i] < lisLength[j] + 1) {
+                lisLength[i] = lisLength[j] + 1;
+            }
+        }
+    }
+
+    let maxLength = 0;
+    for (let i = 0; i < n; i++) {
+        if (lisLength[i] > maxLength) {
+            maxLength = lisLength[i];
+        }
+    }
+
+    return maxLength;
 }
 
-function height(node) {
-  if (node === null) {
-    return 0;
-  }
-  
-  return 1 + Math.max(height(node.left), height(node.right));
-}
-
-function diameterOfBinaryTree(root) {
-  if (root === null) {
-    return 0;
-  }
-  
-  const leftHeight = height(root.left);
-  const rightHeight = height(root.right);
-  
-  const leftDiameter = diameterOfBinaryTree(root.left);
-  const rightDiameter = diameterOfBinaryTree(root.right);
-  
-  return Math.max(leftHeight + rightHeight, Math.max(leftDiameter, rightDiameter));
-}
-
-// Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(diameterOfBinaryTree(root)); // Output: 3
+// Example usage
+let arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
+console.log(longestIncreasingSubsequence(arr)); // Output: 6
