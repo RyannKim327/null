@@ -1,49 +1,52 @@
-function bellmanFord(graph, source) {
-    const distances = {};
-    const predecessors = {};
-
-    // Initialize distances and predecessors
-    for (let node in graph) {
-        distances[node] = Infinity;
-        predecessors[node] = null;
+class HashTable {
+    constructor(size) {
+        this.size = size;
+        this.table = new Array(size);
     }
-    distances[source] = 0;
 
-    // Relax edges |V| - 1 times
-    const nodes = Object.keys(graph);
-    for (let i = 0; i < nodes.length - 1; i++) {
-        for (let node of nodes) {
-            for (let neighbor in graph[node]) {
-                const newDistance = distances[node] + graph[node][neighbor];
-                if (newDistance < distances[neighbor]) {
-                    distances[neighbor] = newDistance;
-                    predecessors[neighbor] = node;
+    _hash(key) {
+        let hash = 0;
+        for (let i = 0; i < key.length; i++) {
+            hash = (hash + key.charCodeAt(i) * 13) % this.size;
+        }
+        return hash;
+    }
+
+    set(key, value) {
+        const index = this._hash(key);
+        if (!this.table[index]) {
+            this.table[index] = [];
+        }
+        this.table[index].push([key, value]);
+    }
+
+    get(key) {
+        const index = this._hash(key);
+        if (this.table[index]) {
+            for (let i = 0; i < this.table[index].length; i++) {
+                if (this.table[index][i][0] === key) {
+                    return this.table[index][i][1];
                 }
             }
         }
+        return undefined;
     }
 
-    // Check for negative weight cycles
-    for (let node of nodes) {
-        for (let neighbor in graph[node]) {
-            if (distances[node] + graph[node][neighbor] < distances[neighbor]) {
-                return "Graph contains a negative weight cycle";
-            }
+    remove(key) {
+        const index = this._hash(key);
+        if (this.table[index]) {
+            this.table[index] = this.table[index].filter(item => item[0] !== key);
         }
     }
-
-    return { distances, predecessors };
 }
+const myHashTable = new HashTable(10);
 
-// Example graph with edge weights
-const graph = {
-    A: { B: -1, C: 4 },
-    B: { C: 3, D: 2, E: 2 },
-    C: {},
-    D: { B: 1, C: 5 },
-    E: { D: -3 }
-};
+myHashTable.set("name", "Alice");
+myHashTable.set("age", 30);
 
-const sourceNode = 'A';
-const result = bellmanFord(graph, sourceNode);
-console.log(result);
+console.log(myHashTable.get("name")); // Output: Alice
+console.log(myHashTable.get("age")); // Output: 30
+
+myHashTable.remove("age");
+
+console.log(myHashTable.get("age")); // Output: undefined
