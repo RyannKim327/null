@@ -1,15 +1,43 @@
-function isSortedAscending(arr) {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false;
-        }
-    }
-    return true;
+function depthLimitedSearch(node, goal, depthLimit) {
+    return recursiveDLS(node, goal, depthLimit, 0);
 }
 
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [10, 5, 3, 2, 1];
+function recursiveDLS(node, goal, depthLimit, depth) {
+    if (depth > depthLimit) {
+        return null; // return null if depth limit exceeded
+    }
 
-console.log(isSortedAscending(array1)); // Output: true
-console.log(isSortedAscending(array2)); // Output: false
+    if (node === goal) {
+        return node;
+    }
+
+    if (depth === depthLimit) {
+        return null;
+    }
+
+    for (let child of expandNode(node)) {
+        let result = recursiveDLS(child, goal, depthLimit, depth + 1);
+        if (result !== null) {
+            return result;
+        }
+    }
+
+    return null;
+}
+
+function expandNode(node) {
+    // Implement function to expand node and return child nodes here
+    return [];
+}
+
+// Example usage
+let initialNode = 0;
+let goalNode = 10;
+let depthLimit = 5;
+let result = depthLimitedSearch(initialNode, goalNode, depthLimit);
+
+if (result !== null) {
+    console.log(`Goal node ${goalNode} found within depth limit ${depthLimit}`);
+} else {
+    console.log(`Goal node ${goalNode} not found within depth limit ${depthLimit}`);
+}
