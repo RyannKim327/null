@@ -1,17 +1,60 @@
-function bubbleSort(arr) {
-    var len = arr.length;
-    for (var i = 0; i < len; i++) {
-        for (var j = 0; j < len - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                var temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
+function biDirectionalSearch(graph, startNode, endNode) {
+    let forwardQueue = [startNode];
+    let backwardQueue = [endNode];
+
+    let forwardVisited = new Set();
+    forwardVisited.add(startNode);
+
+    let backwardVisited = new Set();
+    backwardVisited.add(endNode);
+
+    while (forwardQueue.length > 0 && backwardQueue.length > 0) {
+        // Search from start node
+        let currentNodeForward = forwardQueue.shift();
+        for (let neighbor of graph[currentNodeForward]) {
+            if (!forwardVisited.has(neighbor)) {
+                forwardVisited.add(neighbor);
+                forwardQueue.push(neighbor);
+            }
+
+            if (backwardVisited.has(neighbor)) {
+                return true; // Path found
+            }
+        }
+
+        // Search from end node
+        let currentNodeBackward = backwardQueue.shift();
+        for (let neighbor of graph[currentNodeBackward]) {
+            if (!backwardVisited.has(neighbor)) {
+                backwardVisited.add(neighbor);
+                backwardQueue.push(neighbor);
+            }
+
+            if (forwardVisited.has(neighbor)) {
+                return true; // Path found
             }
         }
     }
-    return arr;
+
+    return false; // Path not found
 }
 
-var array = [6, 4, 3, 1, 8, 7, 2, 5];
-console.log("Unsorted array:", array);
-console.log("Sorted array:", bubbleSort(array));
+// Example usage
+const graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D'],
+    'C': ['A', 'E'],
+    'D': ['B', 'F'],
+    'E': ['C', 'G'],
+    'F': ['D'],
+    'G': ['E']
+};
+
+const startNode = 'A';
+const endNode = 'G';
+
+if (biDirectionalSearch(graph, startNode, endNode)) {
+    console.log(`Path exists between ${startNode} and ${endNode}`);
+} else {
+    console.log(`No path exists between ${startNode} and ${endNode}`);
+}
