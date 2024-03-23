@@ -1,58 +1,25 @@
-function bidirectionalSearch(graph, startNode, endNode) {
-    let forwardQueue = [startNode];
-    let backwardQueue = [endNode];
-    let visitedForward = new Set();
-    let visitedBackward = new Set();
-
-    visitedForward.add(startNode);
-    visitedBackward.add(endNode);
-
-    while (forwardQueue.length > 0 && backwardQueue.length > 0) {
-        let forwardNode = forwardQueue.shift();
-        let backwardNode = backwardQueue.shift();
-
-        if (visitedBackward.has(forwardNode)) {
-            return true; // Path found
-        }
-
-        if (visitedForward.has(backwardNode)) {
-            return true; // Path found
-        }
-
-        for (let neighbor of graph[forwardNode]) {
-            if (!visitedForward.has(neighbor)) {
-                forwardQueue.push(neighbor);
-                visitedForward.add(neighbor);
-            }
-        }
-
-        for (let neighbor of graph[backwardNode]) {
-            if (!visitedBackward.has(neighbor)) {
-                backwardQueue.push(neighbor);
-                visitedBackward.add(neighbor);
-            }
-        }
+function countingSort(arr) {
+  let max = Math.max(...arr);
+  let min = Math.min(...arr);
+  let range = max - min + 1;
+  let count = Array(range).fill(0);
+  let output = [];
+  
+  arr.forEach(num => {
+    count[num - min]++;
+  });
+  
+  count.forEach((count, i) => {
+    while (count > 0) {
+      output.push(i + min);
+      count--;
     }
-
-    return false; // No path found
+  });
+  
+  return output;
 }
 
-// Usage
-const graph = {
-    'A': ['B', 'C'],
-    'B': ['A', 'D'],
-    'C': ['A', 'E'],
-    'D': ['B', 'F'],
-    'E': ['C', 'G'],
-    'F': ['D'],
-    'G': ['E']
-};
-
-const startNode = 'A';
-const endNode = 'G';
-
-if (bidirectionalSearch(graph, startNode, endNode)) {
-    console.log("Path found");
-} else {
-    console.log("Path not found");
-}
+// Example usage
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const sortedArr = countingSort(arr);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
