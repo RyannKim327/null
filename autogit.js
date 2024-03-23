@@ -1,50 +1,33 @@
-class Stack {
-  constructor() {
-    this.stack = [];
-  }
-
-  // Push element onto the stack
-  push(element) {
-    this.stack.push(element);
-  }
-
-  // Pop element from the stack
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-    return this.stack.pop();
-  }
-
-  // Peek at the top element of the stack
-  peek() {
-    return this.isEmpty() ? "Stack is empty" : this.stack[this.stack.length - 1];
-  }
-
-  // Check if the stack is empty
-  isEmpty() {
-    return this.stack.length === 0;
-  }
-
-  // Get the size of the stack
-  size() {
-    return this.stack.length;
-  }
-
-  // Print the stack elements
-  print() {
-    console.log(this.stack);
-  }
 }
 
-// Example usage
-const stack = new Stack();
-stack.push(1);
-stack.push(2);
-stack.push(3);
-stack.print(); // Output: [1, 2, 3]
-console.log(stack.pop()); // Output: 3
-console.log(stack.peek()); // Output: 2
-console.log(stack.size()); // Output: 2
-stack.print(); // Output: [1, 2]
-console.log(stack.isEmpty()); // Output: false
+function countLeafNodes(node) {
+    if (node === null) {
+        return 0;
+    }
+
+    if (node.left === null && node.right === null) {
+        return 1;
+    }
+
+    return countLeafNodes(node.left) + countLeafNodes(node.right);
+}
+
+// Example binary tree
+//        1
+//       / \
+//      2   3
+//     / \
+//    4   5
+let root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+console.log("Number of leaf nodes: " + countLeafNodes(root)); // Output: 3
