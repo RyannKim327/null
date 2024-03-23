@@ -1,12 +1,17 @@
-function factorial(n) {
-    if (n === 0) {
-        return 1;
-    } else {
-        return n * factorial(n - 1);
-    }
+function reverseWords(str) {
+    // Split the string into an array of words
+    let words = str.split(' ');
+
+    // Reverse the array
+    let reversedWords = words.reverse();
+
+    // Join the array back into a string
+    let reversedStr = reversedWords.join(' ');
+
+    return reversedStr;
 }
 
-// Calculate the factorial of 5
-const number = 5;
-const result = factorial(number);
-console.log(`Factorial of ${number} is: ${result}`);
+// Example usage
+let originalString = "Hello World!";
+let reversedString = reverseWords(originalString);
+console.log(reversedString); // Output: "World! Hello"
