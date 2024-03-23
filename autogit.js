@@ -1,36 +1,56 @@
-function Node(value, children) {
-    this.value = value;
-    this.children = children || [];
-}
+class Graph {
+  constructor() {
+    this.adjacencyList = {};
+  }
 
-function breadthLimitedSearch(root, target, limit) {
-    let queue = [{ node: root, depth: 0 }];
-
-    while (queue.length > 0) {
-        let current = queue.shift();
-        let node = current.node;
-        let depth = current.depth;
-
-        if (node.value === target) {
-            return `Found ${target} at depth ${depth}`;
-        }
-
-        if (depth < limit) {
-            for (let child of node.children) {
-                queue.push({ node: child, depth: depth + 1 });
-            }
-        }
+  addVertex(vertex) {
+    if (!this.adjacencyList[vertex]) {
+      this.adjacencyList[vertex] = [];
     }
+  }
 
-    return `Target ${target} not found within depth limit ${limit}`;
+  addEdge(vertex1, vertex2) {
+    this.adjacencyList[vertex1].push(vertex2);
+    this.adjacencyList[vertex2].push(vertex1);
+  }
+
+  depthFirstSearch(startingVertex) {
+    const visited = {};
+    const result = [];
+
+    const dfs = (vertex) => {
+      if (!vertex) {
+        return null;
+      }
+
+      visited[vertex] = true;
+      result.push(vertex);
+
+      this.adjacencyList[vertex].forEach((neighbor) => {
+        if (!visited[neighbor]) {
+          dfs(neighbor);
+        }
+      });
+    };
+
+    dfs(startingVertex);
+
+    return result;
+  }
 }
 
-// Usage example
-let nodeD = new Node('D');
-let nodeE = new Node('E');
-let nodeB = new Node('B', [nodeD, nodeE]);
-let nodeF = new Node('F');
-let nodeC = new Node('C', [nodeF]);
-let nodeA = new Node('A', [nodeB, nodeC]);
+// Example usage
+const graph = new Graph();
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addVertex('E');
 
-console.log(breadthLimitedSearch(nodeA, 'F', 2));
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('D', 'E');
+graph.addEdge('C', 'E');
+
+console.log(graph.depthFirstSearch('A'));
