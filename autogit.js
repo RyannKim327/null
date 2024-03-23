@@ -1,41 +1,63 @@
-function depthLimitedSearch(node, goal, depthLimit) {
-    return recursiveDLS(node, goal, depthLimit, 0);
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-function recursiveDLS(node, goal, depthLimit, depth) {
-    if (depth > depthLimit) {
-        return false;
+class Queue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.size = 0;
+  }
+
+  enqueue(value) {
+    const newNode = new Node(value);
+    if (this.size === 0) {
+      this.head = newNode;
+    } else {
+      this.tail.next = newNode;
+    }
+    this.tail = newNode;
+    this.size++;
+  }
+
+  dequeue() {
+    if (this.size === 0) {
+      return null;
     }
 
-    if (node === goal) {
-        return true;
+    const dequeuedValue = this.head.value;
+    this.head = this.head.next;
+    this.size--;
+
+    if (this.size === 0) {
+      this.tail = null;
     }
 
-    if (depth === depthLimit) {
-        return false;
+    return dequeuedValue;
+  }
+
+  isEmpty() {
+    return this.size === 0;
+  }
+
+  peek() {
+    if (this.size === 0) {
+      return null;
     }
-
-    for (let child of expand(node)) {
-        if (recursiveDLS(child, goal, depthLimit, depth + 1)) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-function expand(node) {
-    // Implement your own function to generate child nodes here
-    return [];
+    return this.head.value;
+  }
 }
 
 // Example usage
-const initialNode = /* define your initial node */;
-const goalNode = /* define your goal node */;
-const maxDepth = 10;
+const queue = new Queue();
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
 
-if (depthLimitedSearch(initialNode, goalNode, maxDepth)) {
-    console.log("Goal found within depth limit");
-} else {
-    console.log("Goal not found within depth limit");
-}
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.dequeue()); // Output: 2
+console.log(queue.peek()); // Output: 3
+console.log(queue.isEmpty()); // Output: false
