@@ -1,20 +1,24 @@
-function quickSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
+function isPrime(num) {
+    if (num <= 1) {
+        return false;
+    }
+    if (num <= 3) {
+        return true;
     }
 
-    const pivot = arr[0];
-    const left = [];
-    const right = [];
-
-    for (let i = 1; i < arr.length; i++) {
-        arr[i] < pivot ? left.push(arr[i]) : right.push(arr[i]);
+    if (num % 2 === 0 || num % 3 === 0) {
+        return false;
     }
 
-    return [...quickSort(left), pivot, ...quickSort(right)];
+    for (let i = 5; i * i <= num; i += 6) {
+        if (num % i === 0 || num % (i + 2) === 0) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
-// Example usage:
-const arr = [5, 2, 9, 3, 6, 1, 8, 7, 4];
-const sortedArray = quickSort(arr);
-console.log(sortedArray);
+// Test the function
+console.log(isPrime(5)); // true
+console.log(isPrime(10)); // false
