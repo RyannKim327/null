@@ -1,60 +1,48 @@
-function biDirectionalSearch(graph, startNode, endNode) {
-    let forwardQueue = [startNode];
-    let backwardQueue = [endNode];
-
-    let forwardVisited = new Set();
-    forwardVisited.add(startNode);
-
-    let backwardVisited = new Set();
-    backwardVisited.add(endNode);
-
-    while (forwardQueue.length > 0 && backwardQueue.length > 0) {
-        // Search from start node
-        let currentNodeForward = forwardQueue.shift();
-        for (let neighbor of graph[currentNodeForward]) {
-            if (!forwardVisited.has(neighbor)) {
-                forwardVisited.add(neighbor);
-                forwardQueue.push(neighbor);
-            }
-
-            if (backwardVisited.has(neighbor)) {
-                return true; // Path found
-            }
-        }
-
-        // Search from end node
-        let currentNodeBackward = backwardQueue.shift();
-        for (let neighbor of graph[currentNodeBackward]) {
-            if (!backwardVisited.has(neighbor)) {
-                backwardVisited.add(neighbor);
-                backwardQueue.push(neighbor);
-            }
-
-            if (forwardVisited.has(neighbor)) {
-                return true; // Path found
-            }
-        }
+class BeamSearch {
+    constructor(beamWidth) {
+        this.beamWidth = beamWidth;
     }
 
-    return false; // Path not found
+    search(startNode, maxDepth, goalTest, successorFn, heuristicFn) {
+        let currentBeam = [startNode];
+        let nextBeam = [];
+
+        for (let depth = 0; depth < maxDepth; depth++) {
+            for (let node of currentBeam) {
+                if (goalTest(node)) {
+                    return node;
+                }
+
+                let successors = successorFn(node);
+                for (let successor of successors) {
+                    successor.f = node.f + heuristicFn(successor);
+                    nextBeam.push(successor);
+                }
+            }
+
+            nextBeam.sort((a, b) => a.f - b.f);
+            currentBeam = nextBeam.slice(0, this.beamWidth);
+            nextBeam = [];
+        }
+
+        return null;
+    }
 }
 
-// Example usage
-const graph = {
-    'A': ['B', 'C'],
-    'B': ['A', 'D'],
-    'C': ['A', 'E'],
-    'D': ['B', 'F'],
-    'E': ['C', 'G'],
-    'F': ['D'],
-    'G': ['E']
-};
+// Usage example
+const beamSearch = new BeamSearch(3);
 
-const startNode = 'A';
-const endNode = 'G';
-
-if (biDirectionalSearch(graph, startNode, endNode)) {
-    console.log(`Path exists between ${startNode} and ${endNode}`);
-} else {
-    console.log(`No path exists between ${startNode} and ${endNode}`);
+function goalTest(node) {
+    return node === 5;
 }
+
+function successorFn(node) {
+    return [node + 1, node + 2, node + 3];
+}
+
+function heuristicFn(node) {
+    return Math.abs(node - 5);
+}
+
+const result = beamSearch.search(0, 10, goalTest, successorFn, heuristicFn);
+console.log(result);
