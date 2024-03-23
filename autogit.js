@@ -1,44 +1,46 @@
-function rabinKarpSearch(text, pattern) {
-    const prime = 101; // A prime number for hash calculation
-    const patternLength = pattern.length;
-    const textLength = text.length;
-    const patternHash = hash(pattern, patternLength);
-    let textHash = hash(text, patternLength);
-
-    for (let i = 0; i <= textLength - patternLength; i++) {
-        if (patternHash === textHash && text.slice(i, i + patternLength) === pattern) {
-            return i; // Pattern found at index i
+function buildPatternTable(pattern) {
+    let prefixSuffixTable = new Array(pattern.length).fill(0);
+    let j = 0;
+    
+    for (let i = 1; i < pattern.length; i++) {
+        while (j > 0 && pattern.charAt(i) !== pattern.charAt(j)) {
+            j = prefixSuffixTable[j - 1];
         }
-        if (i < textLength - patternLength) {
-            textHash = recalculateHash(text, i, i + patternLength, textHash, patternLength, prime);
+        if (pattern.charAt(i) === pattern.charAt(j)) {
+            j++;
+        }
+        prefixSuffixTable[i] = j;
+    }
+
+    return prefixSuffixTable;
+}
+
+function kmpSearch(text, pattern) {
+    let patternTable = buildPatternTable(pattern);
+    let j = 0;
+
+    for (let i = 0; i < text.length; i++) {
+        while (j > 0 && text.charAt(i) !== pattern.charAt(j)) {
+            j = patternTable[j - 1];
+        }
+        if (text.charAt(i) === pattern.charAt(j)) {
+            j++;
+        }
+        if (j === pattern.length) {
+            return i - j + 1;  // match found, return the starting index
         }
     }
 
-    return -1; // Pattern not found
+    return -1;  // no match found
 }
 
-function hash(str, length) {
-    let hashValue = 0;
-    for (let i = 0; i < length; i++) {
-        hashValue += str.charCodeAt(i) * Math.pow(prime, i);
-    }
-    return hashValue;
-}
+// Example usage
+let text = "ABCABCDABABCDABCDABDE";
+let pattern = "ABCDABD";
+let matchIndex = kmpSearch(text, pattern);
 
-function recalculateHash(str, oldIndex, newIndex, oldHash, patternLength, prime) {
-    let newHash = oldHash - str.charCodeAt(oldIndex);
-    newHash = newHash / prime;
-    newHash += str.charCodeAt(newIndex) * Math.pow(prime, patternLength - 1);
-    return newHash;
-}
-
-// Test the algorithm
-const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
-const pattern = "sit";
-const index = rabinKarpSearch(text, pattern);
-
-if (index !== -1) {
-    console.log(`Pattern found at index ${index}`);
+if (matchIndex === -1) {
+    console.log("Pattern not found in text");
 } else {
-    console.log("Pattern not found");
+    console.log(`Pattern found at index ${matchIndex}`);
 }
