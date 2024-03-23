@@ -1,56 +1,50 @@
-function burrowsWheelerTransform(input) {
-    var matrix = [];
-    var rotated = input;
-    
-    // Create a matrix of rotated strings
-    for (var i = 0; i < input.length; i++) {
-        matrix.push(rotated);
-        rotated = rotated[rotated.length - 1] + rotated.substring(0, rotated.length - 1);
+// Node class to create nodes of linked list
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
     }
-    
-    // Sort the matrix lexicographically
-    matrix.sort();
-    
-    // Extract the last characters of each rotated string
-    var result = '';
-    for (var j = 0; j < matrix.length; j++) {
-        result += matrix[j][matrix[j].length - 1];
-    }
-    
-    return result;
 }
 
-function burrowsWheelerInverseTransform(input) {
-    var table = [];
-    
-    // Create a table with index
-    for (var i = 0; i < input.length; i++) {
-        table.push({ char: input[i], index: i });
+// Function to check if a linked list is palindrome
+function isPalindromeLinkedList(head) {
+    let currentNode = head;
+    let values = [];
+
+    // Traverse the linked list and store the values in an array
+    while (currentNode !== null) {
+        values.push(currentNode.value);
+        currentNode = currentNode.next;
     }
-    
-    // Sort the table
-    table.sort((a, b) => {
-        if (a.char === b.char) {
-            return a.index - b.index;
+
+    // Create a reverse copy of the array
+    let reverseValues = values.slice().reverse();
+
+    // Compare original array with reverse copy
+    for (let i = 0; i < values.length; i++) {
+        if (values[i] !== reverseValues[i]) {
+            return false;
         }
-        return a.char.localeCompare(b.char);
-    });
-    
-    // Follow the chain to get the original string
-    var result = '';
-    var currentIndex = 0;
-    for (var j = 0; j < input.length; j++) {
-        var currentChar = table[currentIndex].char;
-        result = currentChar + result;
-        currentIndex = table[currentIndex].index;
     }
-    
-    return result;
+
+    return true;
 }
 
-// Example usage
-var inputString = "hello world";
-var bwt = burrowsWheelerTransform(inputString);
-console.log("Burrows-Wheeler Transform: " + bwt);
-var inverseBwt = burrowsWheelerInverseTransform(bwt);
-console.log("Inverse Burrows-Wheeler Transform: " + inverseBwt);
+// Example linked list
+const node1 = new Node('r');
+const node2 = new Node('a');
+const node3 = new Node('c');
+const node4 = new Node('e');
+const node5 = new Node('c');
+const node6 = new Node('a');
+const node7 = new Node('r');
+
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node5;
+node5.next = node6;
+node6.next = node7;
+
+// Check if the linked list is a palindrome
+console.log(isPalindromeLinkedList(node1)); // Output: true
