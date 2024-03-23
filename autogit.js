@@ -1,32 +1,43 @@
-function boyerMooreSearch(text, pattern) {
-    const textLength = text.length;
-    const patternLength = pattern.length;
-    const skipTable = new Array(256).fill(patternLength);
-    
-    // Preprocess skip_table
-    for (let i = 0; i < patternLength - 1; i++) {
-        skipTable[pattern.charCodeAt(i)] = patternLength - 1 - i;
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.children = [];
     }
-
-    let i = patternLength - 1;
-    while (i < textLength) {
-        let j = patternLength - 1;
-        let k = i;
-        while (j >= 0 && text[k] === pattern[j]) {
-            j--;
-            k--;
-        }
-        if (j < 0) {
-            return k + 1; // Pattern found
-        }
-        i += skipTable[text.charCodeAt(i)];
-    }
-
-    return -1; // Pattern not found
 }
 
-// Test the function
-const text = "ABAABABACDBABABCABABCABAB";
-const pattern = "ABABCABAB";
-const index = boyerMooreSearch(text, pattern);
-console.log("Pattern found at index:", index);
+function depthLimitedSearch(node, goal, depth) {
+    if (depth === 0) {
+        return null; // If reached max depth, return null
+    }
+
+    if (node.value === goal) {
+        return node; // If goal found, return the node
+    }
+
+    for (let child of node.children) {
+        let result = depthLimitedSearch(child, goal, depth - 1);
+        if (result !== null) {
+            return result; // If goal found in child node, return the node
+        }
+    }
+
+    return null; // Return null if goal not found within the given depth
+}
+
+// Example usage
+// Create a tree
+let rootNode = new Node(1);
+let node2 = new Node(2);
+let node3 = new Node(3);
+let node4 = new Node(4);
+
+rootNode.children = [node2, node3];
+node2.children = [node4];
+
+// Perform depth-limited search starting from root node
+let result = depthLimitedSearch(rootNode, 4, 3);
+if (result !== null) {
+    console.log("Goal found at node with value: " + result.value);
+} else {
+    console.log("Goal not found within the specified depth.");
+}
