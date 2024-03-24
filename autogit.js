@@ -1,55 +1,33 @@
-class TrieNode {
-  constructor() {
-    this.children = {};
-    this.isEndOfWord = false;
-  }
+function mergeSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
+    }
+
+    const mid = Math.floor(arr.length / 2);
+    const left = arr.slice(0, mid);
+    const right = arr.slice(mid);
+
+    return merge(mergeSort(left), mergeSort(right));
 }
 
-class Trie {
-  constructor() {
-    this.root = new TrieNode();
-  }
+function merge(left, right) {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
 
-  insert(word) {
-    let node = this.root;
-    for (let i = 0; i < word.length; i++) {
-      let char = word[i];
-      if (!node.children[char]) {
-        node.children[char] = new TrieNode();
-      }
-      node = node.children[char];
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            result.push(right[rightIndex]);
+            rightIndex++;
+        }
     }
-    node.isEndOfWord = true;
-  }
 
-  search(word) {
-    let node = this.root;
-    for (let i = 0; i < word.length; i++) {
-      let char = word[i];
-      if (!node.children[char]) {
-        return false;
-      }
-      node = node.children[char];
-    }
-    return node.isEndOfWord;
-  }
-
-  startsWith(prefix) {
-    let node = this.root;
-    for (let i = 0; i < prefix.length; i++) {
-      let char = prefix[i];
-      if (!node.children[char]) {
-        return false;
-      }
-      node = node.children[char];
-    }
-    return true;
-  }
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
 }
 
-// Usage
-const trie = new Trie();
-trie.insert("apple");
-console.log(trie.search("apple")); // true
-console.log(trie.search("app")); // false
-console.log(trie.startsWith("app")); // true
+// Example usage
+const arr = [5, 3, 8, 6, 2];
+console.log(mergeSort(arr)); // Output: [2, 3, 5, 6, 8]
