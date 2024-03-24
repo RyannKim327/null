@@ -1,52 +1,24 @@
-function getLongestPrefixSuffix(pattern) {
-    let lps = new Array(pattern.length).fill(0);
-    let len = 0;
-    let i = 1;
+function selectionSort(arr) {
+    const n = arr.length;
     
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
+    for (let i = 0; i < n - 1; i++) {
+        let minIndex = i;
+        
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
             }
+        }
+        
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
         }
     }
     
-    return lps;
+    return arr;
 }
 
-function kmpSearch(text, pattern) {
-    let m = text.length;
-    let n = pattern.length;
-    let lps = getLongestPrefixSuffix(pattern);
-    let i = 0; // index for text
-    let j = 0; // index for pattern
-    
-    while (i < m) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-        if (j === n) {
-            console.log("Pattern found at index " + (i - j));
-            j = lps[j - 1];
-        } else if (i < m && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
-    }
-}
-
-// Example usage
-let text = "ABABDABACDABABCABAB";
-let pattern = "ABABCABAB";
-kmpSearch(text, pattern);
+// Test the selection sort function
+const arr = [64, 25, 12, 22, 11];
+console.log("Original array: " + arr);
+console.log("Sorted array: " + selectionSort(arr));
