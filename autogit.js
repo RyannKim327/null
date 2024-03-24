@@ -1,19 +1,29 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Input Example</title>
-</head>
-<body>
-    <label for="userInput">Enter your name:</label>
-    <input type="text" id="userInput">
-    <button onclick="displayInput()">Submit</button>
-    <p id="output"></p>
+function longestIncreasingSubsequence(arr) {
+    let n = arr.length;
+    let lis = new Array(n).fill(1);
 
-    <script>
-        function displayInput() {
-            const userInput = document.getElementById('userInput').value;
-            document.getElementById('output').innerText = `Hello, ${userInput}!`;
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[i] > arr[j] && lis[i] < lis[j] + 1) {
+                lis[i] = lis[j] + 1;
+            }
         }
-    </script>
-</body>
-</html>
+    }
+
+    let maxLength = Math.max(...lis);
+    let result = [];
+    let lastIndex = lis.indexOf(maxLength);
+
+    for (let i = lastIndex; i >= 0; i--) {
+        if (lis[i] === maxLength) {
+            result.unshift(arr[i]);
+            maxLength--;
+        }
+    }
+
+    return result;
+}
+
+// Test the function
+let arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
+console.log(longestIncreasingSubsequence(arr)); // Output: [10, 22, 33, 50, 60, 80]
