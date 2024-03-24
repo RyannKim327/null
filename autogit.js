@@ -1,9 +1,50 @@
-let numbers = [1, 2, 3, 4, 5];
-
-const indexToRemove = numbers.indexOf(3); // Find the index of the element you want to remove
-
-if (indexToRemove > -1) {
-    numbers.splice(indexToRemove, 1); // Remove 1 element at the index
+// Define the node structure for the linked list
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
+    }
 }
 
-console.log(numbers); // Output: [1, 2, 4, 5]
+// Define the LinkedList class
+class LinkedList {
+    constructor() {
+        this.head = null;
+    }
+
+    // Function to add a new node to the end of the linked list
+    addNode(data) {
+        const newNode = new Node(data);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+    }
+
+    // Function to get the length of the linked list
+    getLength() {
+        let length = 0;
+        let current = this.head;
+        while (current) {
+            length++;
+            current = current.next;
+        }
+        return length;
+    }
+}
+
+// Create a linked list and add some nodes
+const linkedList = new LinkedList();
+linkedList.addNode(1);
+linkedList.addNode(2);
+linkedList.addNode(3);
+linkedList.addNode(4);
+
+// Get the length of the linked list
+const length = linkedList.getLength();
+console.log("Length of the linked list: " + length);
