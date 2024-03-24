@@ -1,45 +1,78 @@
-function radixSort(arr) {
-  const getMax = (arr) => {
-    let max = 0;
-    for (let num of arr) {
-      if (num > max) {
-        max = num;
-      }
-    }
-    return max;
-  };
-
-  const countingSort = (arr, exp) => {
-    const output = new Array(arr.length).fill(0);
-    const count = new Array(10).fill(0);
-
-    for (let i = 0; i < arr.length; i++) {
-      count[Math.floor(arr[i] / exp) % 10]++;
+class BinaryHeap {
+    constructor() {
+        this.heap = [];
     }
 
-    for (let i = 1; i < 10; i++) {
-      count[i] += count[i - 1];
+    enqueue(value, priority) {
+        const node = { value, priority };
+        this.heap.push(node);
+        this.bubbleUp();
     }
 
-    for (let i = arr.length - 1; i >= 0; i--) {
-      output[count[Math.floor(arr[i] / exp) % 10] - 1] = arr[i];
-      count[Math.floor(arr[i] / exp) % 10]--;
+    dequeue() {
+        const minNode = this.heap[0];
+        const lastNode = this.heap.pop();
+        if (this.heap.length > 0) {
+            this.heap[0] = lastNode;
+            this.trickleDown();
+        }
+        return minNode;
     }
 
-    for (let i = 0; i < arr.length; i++) {
-      arr[i] = output[i];
+    bubbleUp() {
+        let index = this.heap.length - 1;
+        const node = this.heap[index];
+        while (index > 0) {
+            let parentIndex = Math.floor((index - 1) / 2);
+            let parent = this.heap[parentIndex];
+            if (node.priority >= parent.priority) break;
+            this.heap[parentIndex] = node;
+            this.heap[index] = parent;
+            index = parentIndex;
+        }
     }
-  };
 
-  const max = getMax(arr);
+    trickleDown() {
+        let index = 0;
+        const node = this.heap[0];
+        while (true) {
+            let leftChildIndex = 2 * index + 1;
+            let rightChildIndex = 2 * index + 2;
+            let leftChild, rightChild;
+            let swap = null;
 
-  for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
-    countingSort(arr, exp);
-  }
+            if (leftChildIndex < this.heap.length) {
+                leftChild = this.heap[leftChildIndex];
+                if (leftChild.priority < node.priority) {
+                    swap = leftChildIndex;
+                }
+            }
 
-  return arr;
+            if (rightChildIndex < this.heap.length) {
+                rightChild = this.heap[rightChildIndex];
+                if (
+                    (swap === null && rightChild.priority < node.priority) ||
+                    (swap !== null && rightChild.priority < leftChild.priority)
+                ) {
+                    swap = rightChildIndex;
+                }
+            }
+
+            if (swap === null) break;
+
+            this.heap[index] = this.heap[swap];
+            this.heap[swap] = node;
+            index = swap;
+        }
+    }
 }
 
-// Example usage
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log(radixSort(arr)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+// Usage
+const priorityQueue = new BinaryHeap();
+priorityQueue.enqueue("Task 1", 3);
+priorityQueue.enqueue("Task 2", 1);
+priorityQueue.enqueue("Task 3", 2);
+
+console.log(priorityQueue.dequeue()); // Output: { value: 'Task 2', priority: 1 }
+console.log(priorityQueue.dequeue()); // Output: { value: 'Task 3', priority: 2 }
+console.log(priorityQueue.dequeue()); // Output: { value: 'Task 1', priority: 3 }
