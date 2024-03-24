@@ -1,58 +1,55 @@
-function computeLPSArray(pattern) {
-    let lps = [0];
-    let len = 0;
-    let i = 1;
-
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.children = [];
     }
 
-    return lps;
+    addChild(node) {
+        this.children.push(node);
+    }
 }
 
-function KMPSearch(text, pattern) {
-    let M = pattern.length;
-    let N = text.length;
+function depthLimitedSearch(node, target, depthLimit, currentDepth = 0) {
+    if (currentDepth > depthLimit) {
+        return false; // return false if the current depth exceeds the limit
+    }
 
-    let lps = computeLPSArray(pattern);
-    let i = 0;
-    let j = 0;
-    let indices = [];
+    if (node.value === target) {
+        return true; // return true if the target value is found
+    }
 
-    while (i < N) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
+    if (node.children.length === 0) {
+        return false; // return false if there are no children to explore
+    }
 
-        if (j === M) {
-            indices.push(i - j);
-            j = lps[j - 1];
-        } else if (i < N && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
+    for (let child of node.children) {
+        if (depthLimitedSearch(child, target, depthLimit, currentDepth + 1)) {
+            return true; // return true if the target value is found in any child node
         }
     }
 
-    return indices;
+    return false; // return false if the target value is not found at this level or in any of the child nodes
 }
 
 // Example usage
-let text = "ABCABABDABCABCDABCD";
-let pattern = "ABCD";
-let indices = KMPSearch(text, pattern);
-console.log("Pattern found at indices:", indices);  // [12]
+const rootNode = new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
+const node4 = new Node(4);
+const node5 = new Node(5);
+
+rootNode.addChild(node2);
+rootNode.addChild(node3);
+node2.addChild(node4);
+node2.addChild(node5);
+
+const target = 5;
+const depthLimit = 2;
+
+const result = depthLimitedSearch(rootNode, target, depthLimit);
+
+if (result) {
+    console.log(`Target ${target} found within depth limit of ${depthLimit}.`);
+} else {
+    console.log(`Target ${target} not found within depth limit of ${depthLimit}.`);
+}
