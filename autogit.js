@@ -1,22 +1,11 @@
-function firstNonRepeatingCharacter(str) {
-    const charCount = {};
-    
-    // Count the frequency of each character in the string
-    for (let char of str) {
-        charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
-    }
-    
-    // Find the first non-repeating character
-    for (let char of str) {
-        if (charCount[char] === 1) {
-            return char;
-        }
-    }
-    
-    return null; // Return null if there are no non-repeating characters
+function isPalindrome(str) {
+    // Remove non-alphanumeric characters and convert to lowercase
+    str = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+    // Compare the original string with its reverse
+    return str === str.split('').reverse().join('');
 }
 
-// Example
-const str = "hello world";
-const firstNonRepeatingChar = firstNonRepeatingCharacter(str);
-console.log("First non-repeating character:", firstNonRepeatingChar);
+// Test the function
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // Output: true
+console.log(isPalindrome("Hello World")); // Output: false
