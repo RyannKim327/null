@@ -1,70 +1,32 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+function countingSort(arr) {
+    const max = Math.max(...arr);
+    const min = Math.min(...arr);
+    const range = max - min + 1;
+
+    const countArr = new Array(range).fill(0);
+    const outputArr = new Array(arr.length);
+
+    for (let i = 0; i < arr.length; i++) {
+        countArr[arr[i] - min]++;
     }
+
+    for (let i = 1; i < range; i++) {
+        countArr[i] += countArr[i - 1];
+    }
+
+    for (let i = arr.length - 1; i >= 0; i--) {
+        outputArr[countArr[arr[i] - min] - 1] = arr[i];
+        countArr[arr[i] - min]--;
+    }
+
+    for (let i = 0; i < arr.length; i++) {
+        arr[i] = outputArr[i];
+    }
+
+    return arr;
 }
 
-class BinaryTree {
-    constructor() {
-        this.root = null;
-    }
-
-    insert(value) {
-        const newNode = new Node(value);
-
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    insertNode(node, newNode) {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
-
-    search(value) {
-        return this.searchNode(this.root, value);
-    }
-
-    searchNode(node, value) {
-        if (node === null) {
-            return false;
-        }
-        
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true;
-        }
-    }
-
-}
-
-// Example Usage:
-
-const tree = new BinaryTree();
-tree.insert(5);
-tree.insert(3);
-tree.insert(7);
-tree.insert(2);
-tree.insert(4);
-
-console.log(tree.search(2)); // Output: true
-console.log(tree.search(6)); // Output: false
+// Example usage
+const arr = [4, 2, 2, 8, 3, 3, 1];
+console.log("Original array: " + arr);
+console.log("Sorted array: " + countingSort(arr));
