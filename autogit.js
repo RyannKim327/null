@@ -1,55 +1,17 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
-    }
-}
+function calculateTriangleArea(a, b, c) {
+    // Calculate the semi-perimeter
+    let s = (a + b + c) / 2;
 
-class LinkedList {
-    constructor() {
-        this.head = null;
-    }
+    // Calculate the area using Heron's formula
+    let area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
 
-    reverse() {
-        let prev = null;
-        let current = this.head;
-        let next = null;
-
-        while (current !== null) {
-            next = current.next;
-            current.next = prev;
-            prev = current;
-            current = next;
-        }
-
-        this.head = prev;
-    }
-
-    addToHead(value) {
-        let newNode = new Node(value);
-        newNode.next = this.head;
-        this.head = newNode;
-    }
-
-    printList() {
-        let current = this.head;
-        while (current !== null) {
-            console.log(current.value);
-            current = current.next;
-        }
-    }
+    return area;
 }
 
 // Example usage
-let linkedList = new LinkedList();
-linkedList.addToHead(3);
-linkedList.addToHead(2);
-linkedList.addToHead(1);
+let sideA = 5;
+let sideB = 6;
+let sideC = 7;
 
-console.log("Original Linked List:");
-linkedList.printList();
-
-linkedList.reverse();
-
-console.log("\nReversed Linked List:");
-linkedList.printList();
+let area = calculateTriangleArea(sideA, sideB, sideC);
+console.log('The area of the triangle is: ' + area);
