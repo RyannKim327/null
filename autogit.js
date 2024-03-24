@@ -1,19 +1,55 @@
-function longestCommonPrefix(strings) {
-    if (strings.length === 0) return "";
-
-    let prefix = "";
-    for (let i = 0; i < strings[0].length; i++) {
-        const char = strings[0][i];
-        for (let j = 1; j < strings.length; j++) {
-            if (strings[j][i] !== char) {
-                return prefix;
+function computeLPSArray(pattern) {
+    let lps = new Array(pattern.length).fill(0);
+    let len = 0;
+    let i = 1;
+    
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
             }
         }
-        prefix += char;
     }
-    return prefix;
+    
+    return lps;
 }
 
-// Test the function
-const strings = ["flower", "flow", "flight"];
-console.log(longestCommonPrefix(strings)); // Output: "fl"
+function kmpSearch(text, pattern) {
+    let lps = computeLPSArray(pattern);
+    let i = 0;
+    let j = 0;
+    let matches = [];
+    
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+        
+        if (j === pattern.length) {
+            matches.push(i - j);
+            j = lps[j - 1];
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+    
+    return matches;
+}
+
+// Example usage
+let text = "ABABDABACDABABCABAB";
+let pattern = "ABABCABAB";
+let result = kmpSearch(text, pattern);
+console.log(result);
