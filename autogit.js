@@ -1,45 +1,57 @@
-// Node class to represent each element in the linked list
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
+function buildKMPTable(pattern) {
+    let table = Array(pattern.length).fill(0);
+    let i = 1, j = 0;
+
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[j]) {
+            table[i] = j + 1;
+            i++;
+            j++;
+        } else {
+            if (j !== 0) {
+                j = table[j - 1];
+            } else {
+                table[i] = 0;
+                i++;
+            }
+        }
+    }
+
+    return table;
 }
 
-// LinkedList class to implement the linked list
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+function KMPSearch(text, pattern) {
+    let table = buildKMPTable(pattern);
+    let i = 0, j = 0;
+    const indices = [];
 
-  // Method to add a new node to the linked list
-  addNode(data) {
-    const newNode = new Node(data);
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
+    while (i < text.length) {
+        if (text[i] === pattern[j]) {
+            i++;
+            j++;
+            if (j === pattern.length) {
+                indices.push(i - j);
+                j = table[j - 1];
+            }
+        } else {
+            if (j !== 0) {
+                j = table[j - 1];
+            } else {
+                i++;
+            }
+        }
     }
-  }
 
-  // Method to print all nodes in the linked list
-  printList() {
-    let current = this.head;
-    while (current) {
-      console.log(current.data);
-      current = current.next;
-    }
-  }
+    return indices;
 }
 
-// Usage example
-const linkedList = new LinkedList();
-linkedList.addNode(1);
-linkedList.addNode(2);
-linkedList.addNode(3);
+// Example of using the KMP algorithm
+let text = "ABABDABACDABABCABAB";
+let pattern = "ABABCABAB";
+let indices = KMPSearch(text, pattern);
 
-linkedList.printList();
+if (indices.length === 0) {
+    console.log("Pattern not found in the text.");
+} else {
+    console.log("Pattern found at index(es): " + indices.join(", "));
+}
