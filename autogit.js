@@ -1,24 +1,15 @@
-function quickSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
-    }
+function validateEmail(email) {
+    // Regular expression pattern for validating email addresses
+    const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-    const pivot = arr[0];
-    const left = [];
-    const right = [];
-
-    for (let i = 1; i < arr.length; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
-        }
-    }
-
-    return [...quickSort(left), pivot, ...quickSort(right)];
+    // Use the test() method to check if the email address matches the pattern
+    return pattern.test(email);
 }
 
-// Example usage
-const arr = [5, 3, 8, 4, 2, 7, 1];
-const sortedArr = quickSort(arr);
-console.log(sortedArr);
+// Test the function with an example email address
+const email = 'example@example.com';
+if (validateEmail(email)) {
+    console.log('Email address is valid.');
+} else {
+    console.log('Email address is invalid.');
+}
