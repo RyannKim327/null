@@ -1,17 +1,28 @@
-function calculateTriangleArea(a, b, c) {
-    // Calculate the semi-perimeter
-    let s = (a + b + c) / 2;
+function radixSort(arr) {
+    // Find the maximum number to know number of digits
+    const maxNum = Math.max(...arr);
+    let divisor = 1;
+    
+    while (divisor < maxNum) {
+        let buckets = Array.from({ length: 10 }, () => []);
 
-    // Calculate the area using Heron's formula
-    let area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
+        // Place each number in the corresponding bucket based on the current digit
+        for (let num of arr) {
+            const digit = Math.floor(num / divisor) % 10;
+            buckets[digit].push(num);
+        }
 
-    return area;
+        // Flatten the buckets into a new array
+        arr = [].concat(...buckets);
+        
+        // Move to the next digit
+        divisor *= 10;
+    }
+
+    return arr;
 }
 
 // Example usage
-let sideA = 5;
-let sideB = 6;
-let sideC = 7;
-
-let area = calculateTriangleArea(sideA, sideB, sideC);
-console.log('The area of the triangle is: ' + area);
+const unsortedArray = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArray = radixSort(unsortedArray);
+console.log(sortedArray);
