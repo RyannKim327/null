@@ -1,30 +1,10 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
+// Define an array of numbers
+const numbers = [10, 5, 20, 8, 15];
 
-function countLeafNodes(root) {
-  if (root === null) {
-    return 0;
-  }
-  
-  if (root.left === null && root.right === null) {
-    return 1;
-  }
-  
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
-}
+// Sort the array in descending order
+numbers.sort((a, b) => b - a);
 
-// Example binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
+// Access the element at index 1 to get the second largest element
+const secondLargest = numbers[1];
 
-const numberOfLeafNodes = countLeafNodes(root);
-console.log(numberOfLeafNodes); // Output: 3
+console.log("Second largest element:", secondLargest);
