@@ -1,43 +1,28 @@
-class HashTable {
-  constructor(size = 10) {
-    this.size = size;
-    this.buckets = new Array(size).fill(null).map(() => []);
-  }
-
-  hash(key) {
-    let hashValue = 0;
-    for (let i = 0; i < key.length; i++) {
-      hashValue += key.charCodeAt(i);
+function quickSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
     }
-    return hashValue % this.size;
-  }
 
-  set(key, value) {
-    const index = this.hash(key);
-    this.buckets[index].push({ key, value });
-  }
+    const pivot = arr[Math.floor(arr.length / 2)];
+    const left = [];
+    const right = [];
 
-  get(key) {
-    const index = this.hash(key);
-    for (const item of this.buckets[index]) {
-      if (item.key === key) {
-        return item.value;
-      }
+    for (let i = 0; i < arr.length; i++) {
+        if (i === Math.floor(arr.length / 2)) {
+            continue;
+        }
+
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
+        } else {
+            right.push(arr[i]);
+        }
     }
-    return null;
-  }
 
-  remove(key) {
-    const index = this.hash(key);
-    this.buckets[index] = this.buckets[index].filter(item => item.key !== key);
-  }
+    return [...quickSort(left), pivot, ...quickSort(right)];
 }
 
-// Example usage
-const hashTable = new HashTable();
-hashTable.set("apple", 1);
-hashTable.set("banana", 2);
-console.log(hashTable.get("apple")); // Output: 1
-console.log(hashTable.get("banana")); // Output: 2
-hashTable.remove("apple");
-console.log(hashTable.get("apple")); // Output: null
+// Example usage:
+const arr = [3, 6, 8, 10, 1, 2, 1];
+const sortedArr = quickSort(arr);
+console.log(sortedArr); // Output: [1, 1, 2, 3, 6, 8, 10]
