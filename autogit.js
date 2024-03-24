@@ -1,51 +1,55 @@
-function biDirectionalSearch(graph, startNode, goalNode) {
-    let forwardQueue = [startNode];
-    let backwardQueue = [goalNode];
-    let forwardVisited = new Set();
-    let backwardVisited = new Set();
+function rabinKarp(pattern, text) {
+    const d = 256; // Number of characters in the input alphabet
+    const q = 101; // A prime number
 
-    forwardVisited.add(startNode);
-    backwardVisited.add(goalNode);
+    const M = pattern.length;
+    const N = text.length;
 
-    while (forwardQueue.length > 0 && backwardQueue.length > 0) {
-        let currentNodeForward = forwardQueue.shift();
-        let currentNodeBackward = backwardQueue.shift();
+    let p = 0; // hash value for pattern
+    let t = 0; // hash value for text
+    let h = 1;
 
-        if (currentNodeForward === currentNodeBackward) {
-            return true; // Paths meet in the middle
-        }
+    // Calculate h = pow(d, M-1)%q
+    for (let i = 0; i < M - 1; i++) {
+        h = (h * d) % q;
+    }
 
-        let neighborsForward = graph[currentNodeForward] || [];
-        let neighborsBackward = graph[currentNodeBackward] || [];
+    // Calculate the hash value of pattern and the first window of text
+    for (let i = 0; i < M; i++) {
+        p = (d * p + pattern.charCodeAt(i)) % q;
+        t = (d * t + text.charCodeAt(i)) % q;
+    }
 
-        for (let neighbor of neighborsForward) {
-            if (!forwardVisited.has(neighbor)) {
-                forwardVisited.add(neighbor);
-                forwardQueue.push(neighbor);
+    // Slide the pattern over the text one by one
+    for (let i = 0; i <= N - M; i++) {
+        // Check the hash values of current window of text and pattern.
+        // If the hash values match, then check each character.
+        if (p === t) {
+            let match = true;
+            for (let j = 0; j < M; j++) {
+                if (text[i + j] !== pattern[j]) {
+                    match = false;
+                    break;
+                }
+            }
+            if (match) {
+                console.log("Pattern found at index " + i);
             }
         }
 
-        for (let neighbor of neighborsBackward) {
-            if (!backwardVisited.has(neighbor)) {
-                backwardVisited.add(neighbor);
-                backwardQueue.push(neighbor);
+        // Calculate hash value for next window of text: Remove leading digit, add trailing digit
+        if (i < N - M) {
+            t = (d * (t - text.charCodeAt(i) * h) + text.charCodeAt(i + M)) % q;
+
+            // Make sure hash value is non-negative
+            if (t < 0) {
+                t = (t + q);
             }
         }
     }
-
-    return false; // No path found
 }
 
-// Example graph representation
-const graph = {
-    A: ['B'],
-    B: ['C', 'D'],
-    C: ['E'],
-    D: ['E'],
-    E: []
-};
-
-const startNode = 'A';
-const goalNode = 'E';
-
-console.log(biDirectionalSearch(graph, startNode, goalNode)); // Output: true
+// Test the implementation
+const text = "AABAACAADAABAABA";
+const pattern = "AABA";
+rabinKarp(pattern, text);
