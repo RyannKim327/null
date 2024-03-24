@@ -1,47 +1,79 @@
+// Node class to represent each element in the linked list
 class Node {
-    constructor() {
-        this.children = {};
+    constructor(data) {
+        this.data = data;
+        this.next = null;
     }
 }
 
-class SuffixTree {
-    constructor(input) {
-        this.root = new Node();
-        this.input = input;
-        this.buildTree();
+// Queue class with linked list implementation
+class Queue {
+    constructor() {
+        this.front = null;
+        this.rear = null;
+        this.size = 0;
     }
 
-    buildTree() {
-        for (let i = 0; i < this.input.length; i++) {
-            this.addSuffix(this.input.substring(i));
+    // Method to add an element to the back of the queue
+    enqueue(data) {
+        const newNode = new Node(data);
+
+        if (!this.rear) {
+            this.front = newNode;
+            this.rear = newNode;
+        } else {
+            this.rear.next = newNode;
+            this.rear = newNode;
         }
+
+        this.size++;
     }
 
-    addSuffix(suffix) {
-        let current = this.root;
-        for (let i = 0; i < suffix.length; i++) {
-            let char = suffix[i];
-            if (!(char in current.children)) {
-                current.children[char] = new Node();
-            }
-            current = current.children[char];
+    // Method to remove and return the element from the front of the queue
+    dequeue() {
+        if (!this.front) {
+            return null;
         }
+
+        const data = this.front.data;
+        this.front = this.front.next;
+
+        if (!this.front) {
+            this.rear = null;
+        }
+
+        this.size--;
+
+        return data;
     }
 
-    search(substring) {
-        let current = this.root;
-        for (let i = 0; i < substring.length; i++) {
-            let char = substring[i];
-            if (!(char in current.children)) {
-                return false;
-            }
-            current = current.children[char];
+    // Method to check if the queue is empty
+    isEmpty() {
+        return this.size === 0;
+    }
+
+    // Method to get the size of the queue
+    getSize() {
+        return this.size;
+    }
+
+    // Method to peek at the element at the front of the queue without removing it
+    peek() {
+        if (!this.front) {
+            return null;
         }
-        return true;
+
+        return this.front.data;
     }
 }
 
 // Example usage
-const suffixTree = new SuffixTree("banana");
-console.log(suffixTree.search("ana"));  // Output: true
-console.log(suffixTree.search("xyz"));  // Output: false
+const queue = new Queue();
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.peek()); // Output: 2
+console.log(queue.getSize()); // Output: 2
+console.log(queue.isEmpty()); // Output: false
