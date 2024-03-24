@@ -1,23 +1,15 @@
-function selectionSort(arr) {
-    const len = arr.length;
-    for (let i = 0; i < len - 1; i++) {
-        let minIndex = i;
-        for (let j = i + 1; j < len; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j;
-            }
-        }
-        if (minIndex !== i) {
-            let temp = arr[i];
-            arr[i] = arr[minIndex];
-            arr[minIndex] = temp;
-        }
-    }
-    return arr;
+let array = [1, 2, 3, 4, 5];
+let indexToRemove = 2;
+
+array.splice(indexToRemove, 1);
+
+console.log(array); // Output: [1, 2, 4, 5]
+let array = [1, 2, 3, 4, 5];
+let elementToRemove = 3;
+let indexToRemove = array.indexOf(elementToRemove);
+
+if (indexToRemove > -1) {
+    array.splice(indexToRemove, 1);
 }
 
-// Example usage:
-const arr = [64, 25, 12, 22, 11];
-console.log('Unsorted array:', arr);
-const sortedArr = selectionSort(arr);
-console.log('Sorted array:', sortedArr);
+console.log(array); // Output: [1, 2, 4, 5]
