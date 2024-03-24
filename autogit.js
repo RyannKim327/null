@@ -1,6 +1,3 @@
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 4, 5, 6, 7];
-
-const commonElements = array1.filter(element => array2.includes(element));
-
-console.log(commonElements); // Output: [3, 4, 5]
+let arr = [1, 2, 3, 4, 5];
+arr.reverse();
+console.log(arr); // Output: [5, 4, 3, 2, 1]
