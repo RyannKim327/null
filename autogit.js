@@ -1,48 +1,69 @@
 class Node {
-    constructor(value, parent, cost) {
+    constructor(value) {
         this.value = value;
-        this.parent = parent;
-        this.cost = cost;
+        this.left = null;
+        this.right = null;
     }
 }
 
-function beamSearch(start, goal, getNeighbors, beamWidth) {
-    let openSet = [new Node(start, null, 0)];
-    
-    while (openSet.length > 0) {
-        let candidates = [];
-        
-        for (let node of openSet) {
-            if (node.value === goal) {
-                let path = [];
-                while (node !== null) {
-                    path.unshift(node.value);
-                    node = node.parent;
-                }
-                return path;
+class BST {
+    constructor() {
+        this.root = null;
+    }
+
+    insert(value) {
+        const newNode = new Node(value);
+
+        if (!this.root) {
+            this.root = newNode;
+        } else {
+            this.insertNode(this.root, newNode);
+        }
+    }
+
+    insertNode(node, newNode) {
+        if (newNode.value < node.value) {
+            if (!node.left) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
             }
-            
-            let neighbors = getNeighbors(node.value);
-            for (let neighbor of neighbors) {
-                let cost = node.cost + 1; // Assuming all edges have a cost of 1
-                candidates.push(new Node(neighbor, node, cost));
+        } else {
+            if (!node.right) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
             }
         }
-        
-        candidates.sort((a, b) => a.cost - b.cost);
-        openSet = candidates.slice(0, beamWidth);
     }
-    
-    return null; // If the goal is not found
+
+    search(value) {
+        return this.searchNode(this.root, value);
+    }
+
+    searchNode(node, value) {
+        if (!node) {
+            return false;
+        }
+
+        if (value < node.value) {
+            return this.searchNode(node.left, value);
+        } else if (value > node.value) {
+            return this.searchNode(node.right, value);
+        } else {
+            return true;
+        }
+    }
 }
 
-// Example usage
-function getNeighbors(node) {
-    // Implement getting neighbors for a given node
-    return [node + 1, node - 1];
-}
+// Example usage:
+const bst = new BST();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(3);
+bst.insert(7);
+bst.insert(12);
 
-let startNode = 1;
-let goalNode = 5;
-let path = beamSearch(startNode, goalNode, getNeighbors, 2);
-console.log(path);
+console.log(bst.search(7)); // Output: true
+console.log(bst.search(11)); // Output: false
