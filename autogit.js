@@ -1,6 +1,8 @@
-let str = "Hello World";
-
-// Using regular expression to remove spaces
-let stringWithoutSpaces = str.replace(/\s/g, '');
-
-console.log(stringWithoutSpaces); // Output: "HelloWorld"
+let str1 = "Hello";
+let str2 = "World";
+let result = str1 + " " + str2;
+console.log(result); // Output: Hello World
+let str1 = "Hello";
+let str2 = "World";
+let result = str1.concat(" ", str2);
+console.log(result); // Output: Hello World
