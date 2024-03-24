@@ -1,28 +1,32 @@
-function quickSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
+class ListNode {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
     }
-
-    const pivot = arr[Math.floor(arr.length / 2)];
-    const left = [];
-    const right = [];
-
-    for (let i = 0; i < arr.length; i++) {
-        if (i === Math.floor(arr.length / 2)) {
-            continue;
-        }
-
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
-        }
-    }
-
-    return [...quickSort(left), pivot, ...quickSort(right)];
 }
+function findMiddleElement(head) {
+    let slow = head;
+    let fast = head;
 
-// Example usage:
-const arr = [3, 6, 8, 10, 1, 2, 1];
-const sortedArr = quickSort(arr);
-console.log(sortedArr); // Output: [1, 1, 2, 3, 6, 8, 10]
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+
+    return slow;
+}
+// Create a sample linked list: 1 -> 2 -> 3 -> 4 -> 5
+const node1 = new ListNode(1);
+const node2 = new ListNode(2);
+const node3 = new ListNode(3);
+const node4 = new ListNode(4);
+const node5 = new ListNode(5);
+
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node5;
+
+// Find the middle element
+const middleElement = findMiddleElement(node1);
+console.log('Middle element:', middleElement.value);
