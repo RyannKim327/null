@@ -1,32 +1,58 @@
-// Helper function to get the digit at a specific position in a number
-const getDigit = (num, pos) => Math.floor(Math.abs(num) / Math.pow(10, pos)) % 10;
+function computeLPSArray(pattern) {
+    let lps = [0];
+    let len = 0;
+    let i = 1;
 
-// Helper function to get the number of digits in the largest number in the array
-const digitCount = (num) => (num === 0) ? 1 : Math.floor(Math.log10(Math.abs(num))) + 1;
-
-// Helper function to get the maximum number of digits in the array
-const mostDigits = (arr) => {
-  let maxDigits = 0;
-  for (let i = 0; i < arr.length; i++) {
-    maxDigits = Math.max(maxDigits, digitCount(arr[i]));
-  }
-  return maxDigits;
-};
-
-// Radix sort implementation
-const radixSort = (arr) => {
-  const maxDigitCount = mostDigits(arr);
-  for (let k = 0; k < maxDigitCount; k++) {
-    let digitBuckets = Array.from({length: 10}, () => []);
-    for (let i = 0; i < arr.length; i++) {
-      let digit = getDigit(arr[i], k);
-      digitBuckets[digit].push(arr[i]);
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
     }
-    arr = [].concat(...digitBuckets);
-  }
-  return arr;
-};
+
+    return lps;
+}
+
+function KMPSearch(text, pattern) {
+    let M = pattern.length;
+    let N = text.length;
+
+    let lps = computeLPSArray(pattern);
+    let i = 0;
+    let j = 0;
+    let indices = [];
+
+    while (i < N) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j === M) {
+            indices.push(i - j);
+            j = lps[j - 1];
+        } else if (i < N && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+
+    return indices;
+}
 
 // Example usage
-const numbers = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log(radixSort(numbers)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+let text = "ABCABABDABCABCDABCD";
+let pattern = "ABCD";
+let indices = KMPSearch(text, pattern);
+console.log("Pattern found at indices:", indices);  // [12]
