@@ -1,23 +1,14 @@
-function breadthLimitedSearch(root, target, depthLimit) {
-    if (!root) {
-        return null;
+var numbers = [10, 5, 8, 15, 3];
+var max = Math.max.apply(null, numbers);
+
+console.log("Maximum value in the array is: " + max);
+var numbers = [10, 5, 8, 15, 3];
+var max = numbers[0];
+
+for (var i = 1; i < numbers.length; i++) {
+    if (numbers[i] > max) {
+        max = numbers[i];
     }
-    
-    let queue = [{ node: root, depth: 0 }];
-
-    while (queue.length > 0) {
-        const { node, depth } = queue.shift();
-
-        if (node.value === target) {
-            return node;
-        }
-
-        if (depth < depthLimit) {
-            for (let child of node.children) {
-                queue.push({ node: child, depth: depth + 1 });
-            }
-        }
-    }
-
-    return null;
 }
+
+console.log("Maximum value in the array is: " + max);
