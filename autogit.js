@@ -1,12 +1,24 @@
-function findSecondLargest(arr) {
-    arr.sort(function(a, b) {
-        return b - a;
-    });
-    return arr[1];
+function quickSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
+    }
+
+    const pivot = arr[0];
+    const left = [];
+    const right = [];
+
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
+        } else {
+            right.push(arr[i]);
+        }
+    }
+
+    return [...quickSort(left), pivot, ...quickSort(right)];
 }
 
 // Example usage
-const arr = [4, 6, 1, 9, 3, 7];
-const secondLargest = findSecondLargest(arr);
-
-console.log("Second largest element: ", secondLargest);
+const arr = [5, 3, 8, 4, 2, 7, 1];
+const sortedArr = quickSort(arr);
+console.log(sortedArr);
