@@ -1,37 +1,25 @@
-function height(node) {
-    if (node === null) {
-        return 0;
-    }
-    return 1 + Math.max(height(node.left), height(node.right));
-}
-function diameterOfBinaryTree(root) {
-    if (root === null) {
-        return 0;
+function burrowsWheelerTransform(inputString) {
+    const inputStringWithEOF = inputString + '$';
+    const rotations = [];
+
+    for (let i = 0; i < inputStringWithEOF.length; i++) {
+        const rotation = inputStringWithEOF.slice(i) + inputStringWithEOF.slice(0, i);
+        rotations.push(rotation);
     }
 
-    const leftHeight = height(root.left);
-    const rightHeight = height(root.right);
+    rotations.sort();
 
-    const leftDiameter = diameterOfBinaryTree(root.left);
-    const rightDiameter = diameterOfBinaryTree(root.right);
-
-    return Math.max(leftHeight + rightHeight, Math.max(leftDiameter, rightDiameter));
-}
-// Binary Tree Node
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    let transformedString = "";
+    for (let rotation of rotations) {
+        transformedString += rotation.slice(-1);
     }
+
+    return transformedString;
 }
 
-// Constructing a sample binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
+// Example usage
+const inputString = "banana";
+const bwtResult = burrowsWheelerTransform(inputString);
+console.log("Burrows-Wheeler transformed string: ", bwtResult);
 
-// Calculate and output the diameter of the tree
-console.log("The diameter of the binary tree is: ", diameterOfBinaryTree(root));
+// Output: "Burrows-Wheeler transformed string:  annb$aa"
