@@ -1,63 +1,41 @@
-// Node class to represent each node in the binary tree
 class Node {
-    constructor(data) {
-        this.data = data;
-        this.left = null;
-        this.right = null;
+    constructor(value) {
+        this.value = value;
+        this.children = [];
     }
 }
 
-// BinarySearchTree class to represent the binary tree
-class BinarySearchTree {
-    constructor() {
-        // root of the binary tree
-        this.root = null;
+function depthLimitedSearch(root, limit) {
+    if (!root) {
+        return null;
     }
-    
-    // function to insert a new node with given data
-    insert(data) {
-        const newNode = new Node(data);
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-    
-    // recursive function to insert a new node in the binary tree
-    insertNode(node, newNode) {
-        if (newNode.data < node.data) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
+
+    let stack = [{ node: root, depth: 0 }];
+
+    while (stack.length > 0) {
+        let current = stack.pop();
+        let node = current.node;
+        let depth = current.depth;
+
+        console.log(`Visiting node ${node.value} at depth ${depth}`);
+
+        if (depth < limit) {
+            for (let child of node.children) {
+                stack.push({ node: child, depth: depth + 1 });
             }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
-    
-    // function to traverse the binary tree in inorder (left -> root -> right) fashion
-    inorder(node) {
-        if (node !== null) {
-            this.inorder(node.left);
-            console.log(node.data);
-            this.inorder(node.right);
         }
     }
 }
 
-// Usage
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(20);
-bst.insert(3);
-bst.insert(8);
+// Usage example
+const rootNode= new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
+const node4 = new Node(4);
+const node5 = new Node(5);
 
-// Print the binary tree in inorder traversal
-bst.inorder(bst.root);
+rootNode.children = [node2, node3];
+node2.children = [node4];
+node3.children = [node5];
+
+depthLimitedSearch(rootNode, 2);
