@@ -1,22 +1,15 @@
-function longestCommonPrefix(strings) {
-    if (strings.length === 0) {
-        return "";
-    }
-
-    let prefix = "";
-    let firstStr = strings[0];
-
-    for (let i = 0; i < firstStr.length; i++) {
-        for (let j = 1; j < strings.length; j++) {
-            if (strings[j][i] !== firstStr[i]) {
-                return prefix;
-            }
+function countOccurrence(str, char) {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str.charAt(i) === char) {
+            count++;
         }
-        prefix += firstStr[i];
     }
-
-    return prefix;
+    return count;
 }
 
-const strings = ["apple", "appetizer", "application"];
-console.log(longestCommonPrefix(strings)); // Output: "app"
+// Example Usage
+let myString = "hello world";
+let charToCount = "l";
+let result = countOccurrence(myString, charToCount);
+console.log(`The character "${charToCount}" occurs ${result} times in the string.`);
