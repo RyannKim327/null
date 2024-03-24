@@ -1,15 +1,21 @@
-let array = [1, 2, 3, 4, 5];
-let indexToRemove = 2;
-
-array.splice(indexToRemove, 1);
-
-console.log(array); // Output: [1, 2, 4, 5]
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
-let indexToRemove = array.indexOf(elementToRemove);
-
-if (indexToRemove > -1) {
-    array.splice(indexToRemove, 1);
+function selectionSort(arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        let minIndex = i;
+        for (let j = i + 1; j < arr.length; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+        if (i !== minIndex) {
+            let temp = arr[i];
+            arr[i] = arr[minIndex];
+            arr[minIndex] = temp;
+        }
+    }
+    return arr;
 }
 
-console.log(array); // Output: [1, 2, 4, 5]
+// Example usage
+const array = [64, 34, 25, 12, 22, 11, 90];
+console.log('Before sorting:', array);
+console.log('After sorting:', selectionSort(array));
