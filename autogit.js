@@ -1,29 +1,56 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
+function computeLPSArray(pattern) {
+    const lps = [];
+    lps[0] = 0;
+    let len = 0;
+    let i = 1;
+
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
     }
+
+    return lps;
 }
-const getIntersectionNode = (headA, headB) => {
-    let ptrA = headA;
-    let ptrB = headB;
 
-    while (ptrA !== ptrB) {
-        ptrA = ptrA ? ptrA.next : headB;
-        ptrB = ptrB ? ptrB.next : headA;
+function KMPSearch(text, pattern) {
+    const lps = computeLPSArray(pattern);
+    let i = 0;
+    let j = 0;
+    const indices = [];
+
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            indices.push(i - j);
+            j = lps[j - 1];
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
     }
 
-    return ptrA;
-};
-const listA = new Node(4);
-listA.next = new Node(1);
-listA.next.next = new Node(8);
-listA.next.next.next = new Node(4);
-listA.next.next.next.next = new Node(5);
+    return indices;
+}
 
-const listB = new Node(5);
-listB.next = new Node(6);
-listB.next.next = listA.next.next;
-
-const intersectionNode = getIntersectionNode(listA, listB);
-console.log(intersectionNode.value); // Output: 8
+// Example usage:
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const indices = KMPSearch(text, pattern);
+console.log(indices); // Output: [10]
