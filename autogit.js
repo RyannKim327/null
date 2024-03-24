@@ -1,18 +1,44 @@
-function bubbleSort(arr) {
-    let n = arr.length;
-    for (let i = 0; i < n - 1; i++) {
-        for (let j = 0; j < n - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                let temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
-        }
+class Stack {
+    constructor() {
+        this.stack = [];
     }
-    return arr;
+
+    push(item) {
+        this.stack.push(item);
+    }
+
+    pop() {
+        if (this.isEmpty()) {
+            return "Stack is empty";
+        }
+        return this.stack.pop();
+    }
+
+    peek() {
+        return this.stack[this.stack.length - 1];
+    }
+
+    isEmpty() {
+        return this.stack.length === 0;
+    }
+
+    size() {
+        return this.stack.length;
+    }
+
+    printStack() {
+        console.log(this.stack);
+    }
 }
 
-// Example usage
-let arr = [64, 34, 25, 12, 22, 11, 90];
-console.log("Unsorted array:", arr);
-console.log("Sorted array:", bubbleSort(arr));
+// Example usage:
+const stack = new Stack();
+stack.push(1);
+stack.push(2);
+stack.push(3);
+stack.printStack(); // Output: [1, 2, 3]
+
+console.log(stack.pop()); // Output: 3
+console.log(stack.peek()); // Output: 2
+console.log(stack.size()); // Output: 2
+console.log(stack.isEmpty()); // Output: false
