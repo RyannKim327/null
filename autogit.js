@@ -1,10 +1,12 @@
-array.splice(index, 1);
-let fruits = ['apple', 'banana', 'orange', 'mango'];
-
-// Remove 'banana' from the array
-let index = fruits.indexOf('banana');
-if (index > -1) {
-    fruits.splice(index, 1);
+function findSecondLargest(arr) {
+    arr.sort(function(a, b) {
+        return b - a;
+    });
+    return arr[1];
 }
 
-console.log(fruits); // Output: ['apple', 'orange', 'mango']
+// Example usage
+const arr = [4, 6, 1, 9, 3, 7];
+const secondLargest = findSecondLargest(arr);
+
+console.log("Second largest element: ", secondLargest);
