@@ -1,141 +1,51 @@
-class Node {
-    constructor(value, color = 'red') {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-        this.parent = null;
-        this.color = color;
+// Function to perform Burrows-Wheeler Transform
+function burrowsWheelerTransform(input) {
+    // Create an array to store all rotations of the input string
+    let rotations = [];
+    
+    // Generate all rotations of the input string
+    for (let i = 0; i < input.length; i++) {
+        rotations.push(input.slice(i) + input.slice(0, i));
     }
+    
+    // Sort the rotations lexicographically
+    rotations.sort();
+    
+    // Extract the last characters of each rotation to create the transformed string
+    let bwt = rotations.map(rot => rot.slice(-1)).join('');
+    
+    return bwt;
 }
 
-class RedBlackTree {
-    constructor() {
-        this.root = null;
+// Function to perform Inverse Burrows-Wheeler Transform
+function inverseBurrowsWheelerTransform(bwt) {
+    // Create an array to store the list of rotations
+    let table = [];
+    
+    // Fill the table with empty strings
+    for (let i = 0; i < bwt.length; i++) {
+        table[i] = '';
     }
-
-    insert(value) {
-        const newNode = new Node(value);
-
-        if (!this.root) {
-            this.root = newNode;
-            this.root.color = 'black';
-            return this.root;
-        }
-
-        let current = this.root;
-        while (current) {
-            if (value < current.value) {
-                if (!current.left) {
-                    current.left = newNode;
-                    newNode.parent = current;
-                    break;
-                } else {
-                    current = current.left;
-                }
-            } else {
-                if (!current.right) {
-                    current.right = newNode;
-                    newNode.parent = current;
-                    break;
-                } else {
-                    current = current.right;
-                }
-            }
-        }
-        
-        this.fixTreeAfterInsert(newNode);
+    
+    // Fill the table by combining bwt string and sorting
+    for (let i = 0; i < bwt.length; i++) {
+        table = table.map((str, index) => bwt[index] + str).sort();
     }
-
-    fixTreeAfterInsert(node) {
-        while (node !== this.root && node.parent.color === 'red') {
-            let parent = node.parent;
-            let grandparent = parent.parent;
-
-            if (parent === grandparent.left) {
-                const uncle = grandparent.right;
-
-                if (uncle && uncle.color === 'red') {
-                    parent.color = 'black';
-                    uncle.color = 'black';
-                    grandparent.color = 'red';
-                    node = grandparent;
-                } else {
-                    if (node === parent.right) {
-                        this.rotateLeft(parent);
-                        node = parent;
-                        parent = node.parent;
-                    }
-
-                    parent.color = 'black';
-                    grandparent.color = 'red';
-                    this.rotateRight(grandparent);
-                }
-            } else {
-                const uncle = grandparent.left;
-
-                if (uncle && uncle.color === 'red') {
-                    parent.color = 'black';
-                    uncle.color = 'black';
-                    grandparent.color = 'red';
-                    node = grandparent;
-                } else {
-                    if (node === parent.left) {
-                        this.rotateRight(parent);
-                        node = parent;
-                        parent = node.parent;
-                    }
-
-                    parent.color = 'black';
-                    grandparent.color = 'red';
-                    this.rotateLeft(grandparent);
-                }
-            }
-        }
-
-        this.root.color = 'black';
-    }
-
-    rotateLeft(node) {
-        const temp = node.right;
-        node.right = temp.left;
-
-        if (temp.left) {
-            temp.left.parent = node;
-        }
-
-        temp.parent = node.parent;
-
-        if (!node.parent) {
-            this.root = temp;
-        } else if (node === node.parent.left) {
-            node.parent.left = temp;
-        } else {
-            node.parent.right = temp;
-        }
-
-        temp.left = node;
-        node.parent = temp;
-    }
-
-    rotateRight(node) {
-        const temp = node.left;
-        node.left = temp.right;
-
-        if (temp.right) {
-            temp.right.parent = node;
-        }
-
-        temp.parent = node.parent;
-
-        if (!node.parent) {
-            this.root = temp;
-        } else if (node === node.parent.right) {
-            node.parent.right = temp;
-        } else {
-            node.parent.left = temp;
-        }
-
-        temp.right = node;
-        node.parent = temp;
-    }
+    
+    // Find the row that ends with the end-of-file character
+    let row = table.find(str => str.endsWith('$'));
+    
+    // Extract the original string from the row
+    let original = row.slice(0, -1);
+    
+    return original;
 }
+
+// Test the Burrows-Wheeler Transform algorithm
+let inputString = 'banana$';
+let bwtTransformed = burrowsWheelerTransform(inputString);
+let inverseTransformed = inverseBurrowsWheelerTransform(bwtTransformed);
+
+console.log('Original String:', inputString);
+console.log('Burrows-Wheeler Transformed String:', bwtTransformed);
+console.log('Inverse Burrows-Wheeler Transformed String:', inverseTransformed);
