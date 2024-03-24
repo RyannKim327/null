@@ -1,15 +1,52 @@
-const apiUrl = 'https://api.example.com/data';
-
-fetch(apiUrl)
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
+class Graph {
+    constructor() {
+        this.adjList = {};
     }
-    return response.json();
-  })
-  .then(data => {
-    console.log(data);
-  })
-  .catch(error => {
-    console.error('There was a problem with the fetch operation:', error);
-  });
+
+    addVertex(vertex) {
+        if (!this.adjList[vertex]) {
+            this.adjList[vertex] = [];
+        }
+    }
+
+    addEdge(vertex1, vertex2) {
+        this.adjList[vertex1].push(vertex2);
+        this.adjList[vertex2].push(vertex1);
+    }
+
+    bfs(startingNode) {
+        let visited = {};
+        let queue = [];
+        let result = [];
+
+        visited[startingNode] = true;
+        queue.push(startingNode);
+
+        while (queue.length) {
+            let currentNode = queue.shift();
+            result.push(currentNode);
+
+            this.adjList[currentNode].forEach(neighbor => {
+                if (!visited[neighbor]) {
+                    visited[neighbor] = true;
+                    queue.push(neighbor);
+                }
+            });
+        }
+
+        return result;
+    }
+}
+
+// Example Usage
+const graph = new Graph();
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('C', 'D');
+
+console.log(graph.bfs('A')); // ['A', 'B', 'C', 'D']
