@@ -1,52 +1,84 @@
 class Node {
-  constructor(value) {
-    this.value = value;
-    this.children = [];
-  }
+    constructor(value, color) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+        this.color = color;
+    }
 }
 
-function breadthLimitedSearch(root, target, depthLimit) {
-  if (root === null || depthLimit < 0) {
-    return null;
-  }
-
-  let queue = [root];
-  let currentDepth = 0;
-
-  while (queue.length > 0) {
-    const nodesAtCurrentDepth = queue.length;
-
-    for (let i = 0; i < nodesAtCurrentDepth; i++) {
-      const node = queue.shift();
-
-      if (node.value === target) {
-        return node;
-      }
-
-      if (currentDepth < depthLimit) {
-        queue.push(...node.children);
-      }
+class RedBlackTree {
+    constructor() {
+        this.root = null;
     }
 
-    currentDepth++;
-  }
+    insert(value) {
+        this.root = this._insertRecursive(this.root, value);
+        this.root.color = 'black';
+    }
 
-  return null; // Node not found within the depth limit
+    _insertRecursive(node, value) {
+        if (node === null) {
+            return new Node(value, 'red');
+        }
+
+        if (value < node.value) {
+            node.left = this._insertRecursive(node.left, value);
+        } else if (value > node.value) {
+            node.right = this._insertRecursive(node.right, value);
+        }
+
+        if (this._isRed(node.right) && !this._isRed(node.left)) {
+            node = this._rotateLeft(node);
+        }
+
+        if (this._isRed(node.left) && this._isRed(node.left.left)) {
+            node = this._rotateRight(node);
+        }
+
+        if (this._isRed(node.left) && this._isRed(node.right)) {
+            this._flipColors(node);
+        }
+
+        return node;
+    }
+
+    _isRed(node) {
+        if (node === null) {
+            return false;
+        }
+        return node.color === 'red';
+    }
+
+    _rotateLeft(node) {
+        const temp = node.right;
+        node.right = temp.left;
+        temp.left = node;
+        temp.color = node.color;
+        node.color = 'red';
+        return temp;
+    }
+
+    _rotateRight(node) {
+        const temp = node.left;
+        node.left = temp.right;
+        temp.right = node;
+        temp.color = node.color;
+        node.color = 'red';
+        return temp;
+    }
+
+    _flipColors(node) {
+        node.color = 'red';
+        node.left.color = 'black';
+        node.right.color = 'black';
+    }
 }
 
-// Example usage:
-const rootNode = new Node(1);
-const childNode1 = new Node(2);
-const childNode2 = new Node(3);
-const childNode3 = new Node(4);
+// Usage
+const tree = new RedBlackTree();
+tree.insert(10);
+tree.insert(20);
+tree.insert(5);
 
-rootNode.children.push(childNode1, childNode2);
-childNode1.children.push(childNode3);
-
-const targetNode = breadthLimitedSearch(rootNode, 4, 2); // Search for value 4 within depth limit 2
-
-if (targetNode) {
-  console.log("Node found:", targetNode);
-} else {
-  console.log("Node not found within the specified depth limit.");
-}
+console.log(tree);
