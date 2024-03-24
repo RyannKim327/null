@@ -1,14 +1,68 @@
-function findSecondLargest(arr) {
-    // Sort the array in descending order
-    arr.sort(function(a, b) {
-        return b - a;
-    });
-    
-    // Return the second element
-    return arr[1];
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
 }
 
-// Test the function
-const arr = [5, 10, 2, 8, 15];
-const secondLargest = findSecondLargest(arr);
-console.log("Second largest element in the array is: ", secondLargest);
+class BinaryTree {
+    constructor() {
+        this.root = null;
+    }
+
+    insert(value) {
+        const newNode = new Node(value);
+
+        if (this.root === null) {
+            this.root = newNode;
+        } else {
+            this.insertNode(this.root, newNode);
+        }
+    }
+
+    insertNode(node, newNode) {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
+        }
+    }
+
+    search(value) {
+        return this.searchNode(this.root, value);
+    }
+
+    searchNode(node, value) {
+        if (node === null) {
+            return false;
+        }
+
+        if (value < node.value) {
+            return this.searchNode(node.left, value);
+        } else if (value > node.value) {
+            return this.searchNode(node.right, value);
+        } else {
+            return true;
+        }
+    }
+}
+
+// Example usage:
+const binaryTree = new BinaryTree();
+binaryTree.insert(5);
+binaryTree.insert(3);
+binaryTree.insert(8);
+binaryTree.insert(1);
+binaryTree.insert(4);
+
+console.log(binaryTree.search(4)); // Output: true
+console.log(binaryTree.search(6)); // Output: false
