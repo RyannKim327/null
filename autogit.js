@@ -1,38 +1,50 @@
+// Node class to represent each node in the linked list
 class Node {
-    constructor(value) {
-        this.value = value;
+    constructor(data) {
+        this.data = data;
         this.next = null;
     }
 }
 
-function findNthNodeFromEnd(head, n) {
-    let firstPointer = head;
-    let secondPointer = head;
+// LinkedList class to implement the linked list
+class LinkedList {
+    constructor() {
+        this.head = null;
+    }
 
-    // Move the firstPointer to nth node from the beginning
-    for (let i = 0; i < n; i++) {
-        if (firstPointer === null) {
-            return null; // N is greater than the length of the linked list
+    // Method to add a new node to the linked list
+    addNode(data) {
+        const newNode = new Node(data);
+
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
         }
-        firstPointer = firstPointer.next;
     }
 
-    // Move both pointers one node at a time until firstPointer reaches the end
-    while (firstPointer !== null) {
-        firstPointer = firstPointer.next;
-        secondPointer = secondPointer.next;
+    // Method to display the linked list
+    display() {
+        let current = this.head;
+        while (current) {
+            console.log(current.data);
+            current = current.next;
+        }
     }
-
-    return secondPointer;
 }
 
-// Example usage
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
+// Creating a new linked list
+const linkedList = new LinkedList();
 
-let n = 2;
-let nthNodeFromEnd = findNthNodeFromEnd(head, n);
-console.log(`${n}th node from the end: ${nthNodeFromEnd.value}`);
+// Adding nodes to the linked list
+linkedList.addNode(1);
+linkedList.addNode(2);
+linkedList.addNode(3);
+linkedList.addNode(4);
+
+// Displaying the linked list
+linkedList.display();
