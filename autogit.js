@@ -1,23 +1,57 @@
-function longestIncreasingSubsequence(arr) {
-    const n = arr.length;
-    const dp = Array(n).fill(1);
+class HashTable {
+  constructor(size) {
+    this.size = size;
+    this.data = new Array(size);
+  }
 
-    for (let i = 1; i < n; i++) {
-        for (let j = 0; j < i; j++) {
-            if (arr[i] > arr[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
-            }
+  _hash(key) {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash = (hash + key.charCodeAt(i) * i) % this.size;
+    }
+    return hash;
+  }
+
+  set(key, value) {
+    const address = this._hash(key);
+    if (!this.data[address]) {
+      this.data[address] = [];
+    }
+    this.data[address].push([key, value]);
+  }
+
+  get(key) {
+    const address = this._hash(key);
+    const bucket = this.data[address];
+    if (bucket) {
+      for (let i = 0; i < bucket.length; i++) {
+        if (bucket[i][0] === key) {
+          return bucket[i][1];
         }
+      }
     }
+    return undefined;
+  }
 
-    let max = 0;
-    for (let i = 0; i < n; i++) {
-        max = Math.max(max, dp[i]);
+  keys() {
+    const keysArray = [];
+    for (let i = 0; i < this.data.length; i++) {
+      if (this.data[i]) {
+        for (let j = 0; j < this.data[i].length; j++) {
+          keysArray.push(this.data[i][j][0]);
+        }
+      }
     }
-
-    return max;
+    return keysArray;
+  }
 }
 
 // Example usage:
-const arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
-console.log(longestIncreasingSubsequence(arr)); // Output should be 6
+const hashTable = new HashTable(50);
+hashTable.set("apple", 10);
+hashTable.set("banana", 20);
+hashTable.set("orange", 30);
+
+console.log(hashTable.get("banana")); // Output: 20
+
+console.log(hashTable.keys()); // Output: ["apple", "banana", "orange"]
