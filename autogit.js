@@ -1,37 +1,46 @@
-// Helper function to get the digit at a certain position in a number
-const getDigit = (num, i) => Math.floor(Math.abs(num) / Math.pow(10, i)) % 10;
-
-// Helper function to find the number of digits in the largest number in a list
-const digitCount = num => (num === 0 ? 1 : Math.floor(Math.log10(Math.abs(num))) + 1);
-
-// Helper function to find the number of digits in the largest number in an array of numbers
-const mostDigits = nums => {
-  let maxDigits = 0;
-  for (let i = 0; i < nums.length; i++) {
-    maxDigits = Math.max(maxDigits, digitCount(nums[i]));
-  }
-  return maxDigits;
-};
-
-// Radix Sort function
-const radixSort = nums => {
-  const maxDigitCount = mostDigits(nums);
-  
-  for (let k = 0; k < maxDigitCount; k++) {
-    const digitBuckets = Array.from({ length: 10 }, () => []);
-    
-    for (let i = 0; i < nums.length; i++) {
-      const digit = getDigit(nums[i], k);
-      digitBuckets[digit].push(nums[i]);
+function depthLimitedSearch(node, goal, depth) {
+    if (depth === 0) {
+        return null;
     }
     
-    nums = [].concat(...digitBuckets);
-  }
-  
-  return nums;
-};
+    if (node === goal) {
+        return node;
+    }
+    
+    for (let child of node.children) {
+        let result = depthLimitedSearch(child, goal, depth - 1);
+        if (result !== null) {
+            return result;
+        }
+    }
+    
+    return null;
+}
 
-// Testing the radixSort function
-const unsortedNumbers = [170, 45, 75, 90, 802, 2, 24, 66];
-const sortedNumbers = radixSort(unsortedNumbers);
-console.log(sortedNumbers); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+// Define your node class
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.children = [];
+    }
+    
+    addChild(child) {
+        this.children.push(child);
+    }
+}
+
+// Create a sample node tree
+let nodeA = new Node('A');
+let nodeB = new Node('B');
+let nodeC = new Node('C');
+let nodeD = new Node('D');
+let nodeE = new Node('E');
+
+nodeA.addChild(nodeB);
+nodeA.addChild(nodeC);
+nodeB.addChild(nodeD);
+nodeB.addChild(nodeE);
+
+// Use the depthLimitedSearch function
+let result = depthLimitedSearch(nodeA, 'E', 3);
+console.log(result ? `Node found: ${result.value}` : 'Node not found');
