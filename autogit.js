@@ -1,9 +1,17 @@
-const array = [1, 2, 3, 4, 1, 2, 5];
-const uniqueArray = array.filter((item, index) => array.indexOf(item) === index);
-console.log(uniqueArray); // [1, 2, 3, 4, 5]
-const array = [1, 2, 3, 4, 1, 2, 5];
-const uniqueArray = [...new Set(array)];
-console.log(uniqueArray); // [1, 2, 3, 4, 5]
-const array = [1, 2, 3, 4, 1, 2, 5];
-const uniqueArray = array.reduce((unique, item) => unique.includes(item) ? unique : [...unique, item], []);
-console.log(uniqueArray); // [1, 2, 3, 4, 5]
+// URL of the API
+const apiUrl = 'https://jsonplaceholder.typicode.com/posts';
+
+// Make a GET request to the API
+fetch(apiUrl)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log(data);
+  })
+  .catch(error => {
+    console.error('There was a problem with the fetch operation:', error);
+  });
