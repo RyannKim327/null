@@ -6,22 +6,27 @@ class Node {
     }
 }
 
-const maxDepth = (root) => {
-    if (!root) {
+// Function to count the number of leaf nodes in a binary tree
+function countLeafNodes(root) {
+    if (root === null) {
         return 0;
     }
+    if (root.left === null && root.right === null) {
+        return 1;
+    } else {
+        return countLeafNodes(root.left) + countLeafNodes(root.right);
+    }
+}
 
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
+// Create a sample binary tree
+let root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
 
-    return 1 + Math.max(leftDepth, rightDepth);
-};
-
-// Example Usage
-const rootNode = new Node(1);
-rootNode.left = new Node(2);
-rootNode.right = new Node(3);
-rootNode.left.left = new Node(4);
-rootNode.right.right = new Node(5);
-
-console.log("Maximum depth of binary tree:", maxDepth(rootNode)); // Output: 3
+// Count the number of leaf nodes
+const leafNodeCount = countLeafNodes(root);
+console.log("Number of leaf nodes in the binary tree: " + leafNodeCount);
