@@ -1,4 +1,15 @@
-let myString = "42";
-let myInteger = parseInt(myString);
+function countCharOccurrences(str, char) {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
+            count++;
+        }
+    }
+    return count;
+}
 
-console.log(myInteger);  // Output: 42
+// Example usage
+const str = "Hello, World!";
+const char = "l";
+const count = countCharOccurrences(str, char);
+console.log(`The character "${char}" occurs ${count} times in the string "${str}".`);
