@@ -1,15 +1,30 @@
-function isPalindrome(str) {
-    // Remove special characters, spaces, and convert to lowercase
-    let cleanStr = str.toLowerCase().replace(/[\W_]/g, '');
-
-    // Reverse the string
-    let reversedStr = cleanStr.split('').reverse().join('');
-
-    // Check if the original string is equal to the reversed string
-    return cleanStr === reversedStr;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-// Test the function
-console.log(isPalindrome("Racecar")); // Output: true
-console.log(isPalindrome("Hello")); // Output: false
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // Output: true
+function countLeafNodes(root) {
+  if (root === null) {
+    return 0;
+  }
+  
+  if (root.left === null && root.right === null) {
+    return 1;
+  }
+  
+  return countLeafNodes(root.left) + countLeafNodes(root.right);
+}
+
+// Example binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+
+const numberOfLeafNodes = countLeafNodes(root);
+console.log(numberOfLeafNodes); // Output: 3
