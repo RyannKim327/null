@@ -1,42 +1,29 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.children = [];
-    }
-    
-    addChild(node) {
-        this.children.push(node);
-    }
-}
+function binarySearch(arr, target) {
+    let left = 0;
+    let right = arr.length - 1;
 
-function breadthFirstSearch(root) {
-    let queue = [root];
-    let visited = new Set();
-    
-    while (queue.length > 0) {
-        let current = queue.shift();
-        
-        if (!visited.has(current)) {
-            console.log(current.value);
-            visited.add(current);
-            
-            current.children.forEach(child => {
-                if (!visited.has(child)) {
-                    queue.push(child);
-                }
-            });
+    while (left <= right) {
+        let mid = Math.floor((left + right) / 2);
+
+        if (arr[mid] === target) {
+            return mid;
+        } else if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
         }
     }
+
+    return -1; // If the target is not found in the array
 }
 
 // Example usage
-let rootNode = new Node(1);
-let childNode1 = new Node(2);
-let childNode2 = new Node(3);
-let childNode3 = new Node(4);
+const arr = [1, 3, 5, 7, 9, 11, 13];
+const target = 7;
+const result = binarySearch(arr, target);
 
-rootNode.addChild(childNode1);
-rootNode.addChild(childNode2);
-childNode1.addChild(childNode3);
-
-breadthFirstSearch(rootNode);
+if (result !== -1) {
+    console.log(`Target ${target} found at index ${result}`);
+} else {
+    console.log(`Target ${target} not found in the array`);
+}
