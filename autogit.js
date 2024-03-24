@@ -1,60 +1,43 @@
-function dijkstra(graph, source) {
-    const distances = {};
-    const visited = {};
-    const priorityQueue = new PriorityQueue();
+class HashTable {
+  constructor(size = 10) {
+    this.size = size;
+    this.buckets = new Array(size).fill(null).map(() => []);
+  }
 
-    distances[source] = 0;
-    priorityQueue.enqueue(source, 0);
-
-    while (!priorityQueue.isEmpty()) {
-        const { node, distance } = priorityQueue.dequeue();
-
-        if (visited[node]) continue;
-
-        visited[node] = true;
-
-        for (let neighbor in graph[node]) {
-            let newDistance = distance + graph[node][neighbor];
-            if (newDistance < (distances[neighbor] || Infinity)) {
-                distances[neighbor] = newDistance;
-                priorityQueue.enqueue(neighbor, newDistance);
-            }
-        }
+  hash(key) {
+    let hashValue = 0;
+    for (let i = 0; i < key.length; i++) {
+      hashValue += key.charCodeAt(i);
     }
+    return hashValue % this.size;
+  }
 
-    return distances;
-}
+  set(key, value) {
+    const index = this.hash(key);
+    this.buckets[index].push({ key, value });
+  }
 
-class PriorityQueue {
-    constructor() {
-        this.values = [];
+  get(key) {
+    const index = this.hash(key);
+    for (const item of this.buckets[index]) {
+      if (item.key === key) {
+        return item.value;
+      }
     }
+    return null;
+  }
 
-    enqueue(val, priority) {
-        this.values.push({ val, priority });
-        this.sort();
-    }
-
-    dequeue() {
-        return this.values.shift();
-    }
-
-    sort() {
-        this.values.sort((a, b) => a.priority - b.priority);
-    }
-
-    isEmpty() {
-        return this.values.length === 0;
-    }
+  remove(key) {
+    const index = this.hash(key);
+    this.buckets[index] = this.buckets[index].filter(item => item.key !== key);
+  }
 }
 
 // Example usage
-const graph = {
-    A: { B: 1, C: 4 },
-    B: { A: 1, C: 2, D: 5 },
-    C: { A: 4, B: 2, D: 1 },
-    D: { B: 5, C: 1 }
-};
-
-const distances = dijkstra(graph, 'A');
-console.log(distances); // Output: { A: 0, B: 1, C: 3, D: 4 }
+const hashTable = new HashTable();
+hashTable.set("apple", 1);
+hashTable.set("banana", 2);
+console.log(hashTable.get("apple")); // Output: 1
+console.log(hashTable.get("banana")); // Output: 2
+hashTable.remove("apple");
+console.log(hashTable.get("apple")); // Output: null
