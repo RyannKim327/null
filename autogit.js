@@ -1,50 +1,24 @@
-function computeLPSArray(pattern) {
-    const lps = new Array(pattern.length).fill(0);
-    let len = 0;
-    let i = 1;
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
+function shellSort(arr) {
+    let n = arr.length;
+    let gap = Math.floor(n / 2);
+  
+    while (gap > 0) {
+        for (let i = gap; i < n; i++) {
+            let temp = arr[i];
+            let j = i;
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
             }
+            arr[j] = temp;
         }
+        gap = Math.floor(gap / 2);
     }
-    return lps;
+  
+    return arr;
 }
 
-function kmpSearch(text, pattern) {
-    const lps = computeLPSArray(pattern);
-    const result = [];
-    let i = 0;
-    let j = 0;
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-        if (j === pattern.length) {
-            result.push(i - j);
-            j = lps[j - 1];
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
-    }
-    return result;
-}
-
-// Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const indices = kmpSearch(text, pattern);
-console.log("Pattern found at indices:", indices);
+// Example usage:
+const arrayToSort = [12, 34, 7, 23, 32, 5, 62];
+console.log("Original array:", arrayToSort);
+console.log("Sorted array:", shellSort(arrayToSort));
