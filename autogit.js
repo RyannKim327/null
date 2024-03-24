@@ -1,11 +1,4 @@
-const axios = require('axios');
+let str = "   Hello,    World!   ";
+let stripped = str.replace(/\s/g, ''); // Removes all whitespace characters
 
-const url = 'https://jsonplaceholder.typicode.com/posts/1';
-
-axios.get(url)
-  .then(response => {
-    console.log('Response:', response.data);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+console.log(stripped); // Output: "Hello,World!"
