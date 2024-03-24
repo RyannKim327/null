@@ -1,34 +1,6 @@
-function interpolationSearch(arr, x) {
-    let low = 0;
-    let high = arr.length - 1;
+const cron = require('node-cron');
 
-    while (low <= high && x >= arr[low] && x <= arr[high]) {
-        if (low === high) {
-            if (arr[low] === x) return low;
-            return -1;
-        }
-
-        let pos = low + Math.floor(((high - low) / (arr[high] - arr[low])) * (x - arr[low]));
-
-        if (arr[pos] === x) return pos;
-        
-        if (arr[pos] < x) {
-            low = pos + 1;
-        } else {
-            high = pos - 1;
-        }
-    }
-
-    return -1;
-}
-
-// Example usage
-const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const x = 5;
-const index = interpolationSearch(arr, x);
-
-if (index !== -1) {
-    console.log(`${x} found at index ${index}.`);
-} else {
-    console.log(`${x} not found in the array.`);
-}
+cron.schedule('30 10 * * *', () => {
+  console.log('Running a task at 10:30 AM every day!');
+});
+npm install node-cron
