@@ -1,16 +1,19 @@
-function largestPrimeFactor(number) {
-    let divisor = 2;
-    while (number > 1) {
-        if (number % divisor === 0) {
-            number /= divisor;
-        } else {
-            divisor++;
+function insertionSort(arr) {
+    for (let i = 1; i < arr.length; i++) {
+        let currentVal = arr[i];
+        let j = i - 1;
+        while (j >= 0 && arr[j] > currentVal) {
+            arr[j + 1] = arr[j];
+            j--;
         }
+        arr[j + 1] = currentVal;
     }
-    return divisor;
+    return arr;
 }
 
-const number = 13195; // Change this to your desired number
-const largestFactor = largestPrimeFactor(number);
+// Example usage:
+const arr = [5, 3, 8, 2, 1, 4];
+console.log("Original array:", arr);
 
-console.log(`The largest prime factor of ${number} is ${largestFactor}`);
+const sortedArr = insertionSort(arr);
+console.log("Sorted array:", sortedArr);
