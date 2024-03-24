@@ -1,45 +1,40 @@
-class HashTable {
-    constructor(size) {
-        this.size = size;
-        this.buckets = new Array(size);
+function heapSort(array) {
+    function heapify(array, n, i) {
+        let largest = i;
+        let left = 2 * i + 1;
+        let right = 2 * i + 2;
+
+        if (left < n && array[left] > array[largest]) {
+            largest = left;
+        }
+
+        if (right < n && array[right] > array[largest]) {
+            largest = right;
+        }
+
+        if (largest !== i) {
+            [array[i], array[largest]] = [array[largest], array[i]];
+            heapify(array, n, largest);
+        }
     }
 
-    hash(key) {
-        let hash = 0;
-        for (let i = 0; i < key.length; i++) {
-            hash += key.charCodeAt(i);
-        }
-        return hash % this.size;
+    const n = array.length;
+
+    // Build heap
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        heapify(array, n, i);
     }
 
-    set(key, value) {
-        const index = this.hash(key);
-        if (!this.buckets[index]) {
-            this.buckets[index] = [];
-        }
-        this.buckets[index].push({ key, value });
+    // Extract elements one by one
+    for (let i = n - 1; i > 0; i--) {
+        [array[0], array[i]] = [array[i], array[0]]; // Swap root with last element
+        heapify(array, i, 0); // Heapify root element
     }
 
-    get(key) {
-        const index = this.hash(key);
-        const bucket = this.buckets[index];
-        if (!bucket) {
-            return null;
-        }
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i].key === key) {
-                return bucket[i].value;
-            }
-        }
-        return null;
-    }
+    return array;
 }
 
-// Example Usage
-const ht = new HashTable(10);
-ht.set('apple', 5);
-ht.set('banana', 10);
-
-console.log(ht.get('apple')); // Output: 5
-console.log(ht.get('banana')); // Output: 10
-console.log(ht.get('cherry')); // Output: null
+// Example usage
+const array = [12, 11, 13, 5, 6, 7];
+console.log("Original array: ", array);
+console.log("Sorted array: ", heapSort(array));
