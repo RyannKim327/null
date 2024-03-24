@@ -1,18 +1,19 @@
-async function connectToDevice() {
-  try {
-    const response = await fetch('http://your-android-device-ip:port/connect', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ key: 'value' })
-    });
-
-    const data = await response.json();
-    console.log(data);
-  } catch (error) {
-    console.error('Error connecting to Android device:', error);
-  }
+function isPrime(number) {
+    if (number <= 1) {
+        return false;
+    }
+    for (let i = 2; i < number; i++) {
+        if (number % i === 0) {
+            return false;
+        }
+    }
+    return true;
 }
 
-connectToDevice();
+// Test the function
+const num = 17;
+if (isPrime(num)) {
+    console.log(num + " is a prime number.");
+} else {
+    console.log(num + " is not a prime number.");
+}
