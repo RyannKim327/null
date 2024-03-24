@@ -1,28 +1,48 @@
-function radixSort(arr) {
-    // Find the maximum number to know number of digits
-    const maxNum = Math.max(...arr);
-    let divisor = 1;
-    
-    while (divisor < maxNum) {
-        let buckets = Array.from({ length: 10 }, () => []);
+class Graph {
+  constructor() {
+    this.adjacencyList = {};
+  }
 
-        // Place each number in the corresponding bucket based on the current digit
-        for (let num of arr) {
-            const digit = Math.floor(num / divisor) % 10;
-            buckets[digit].push(num);
-        }
-
-        // Flatten the buckets into a new array
-        arr = [].concat(...buckets);
-        
-        // Move to the next digit
-        divisor *= 10;
+  addVertex(vertex) {
+    if (!this.adjacencyList[vertex]) {
+      this.adjacencyList[vertex] = [];
     }
+  }
 
-    return arr;
+  addEdge(v1, v2) {
+    this.adjacencyList[v1].push(v2);
+    this.adjacencyList[v2].push(v1);
+  }
+
+  depthFirstSearch(start) {
+    const visited = {};
+    const result = [];
+    const adjacencyList = this.adjacencyList;
+
+    (function dfs(vertex) {
+      if (!vertex) return null;
+      visited[vertex] = true;
+      result.push(vertex);
+      adjacencyList[vertex].forEach(neighbor => {
+        if (!visited[neighbor]) {
+          return dfs(neighbor);
+        }
+      });
+    })(start);
+
+    return result;
+  }
 }
 
-// Example usage
-const unsortedArray = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedArray = radixSort(unsortedArray);
-console.log(sortedArray);
+const graph = new Graph();
+graph.addVertex("A");
+graph.addVertex("B");
+graph.addVertex("C");
+graph.addVertex("D");
+graph.addVertex("E");
+graph.addEdge("A", "B");
+graph.addEdge("A", "C");
+graph.addEdge("B", "D");
+graph.addEdge("C", "E");
+
+console.log(graph.depthFirstSearch("A")); // Output: [ 'A', 'B', 'D', 'C', 'E' ]
