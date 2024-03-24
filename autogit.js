@@ -1,26 +1,54 @@
-function binarySearchRecursive(arr, target, start = 0, end = arr.length - 1) {
-    if (start > end) {
-        return -1; // Base case: target not found
-    }
+class Graph {
+  constructor() {
+    this.adjacencyList = {};
+  }
 
-    const mid = Math.floor((start + end) / 2);
-
-    if (arr[mid] === target) {
-        return mid; // Base case: target found
-    } else if (arr[mid] < target) {
-        return binarySearchRecursive(arr, target, mid + 1, end); // Search right half
-    } else {
-        return binarySearchRecursive(arr, target, start, mid - 1); // Search left half
+  addVertex(vertex) {
+    if (!this.adjacencyList[vertex]) {
+      this.adjacencyList[vertex] = [];
     }
+  }
+
+  addEdge(vertex1, vertex2) {
+    this.adjacencyList[vertex1].push(vertex2);
+    this.adjacencyList[vertex2].push(vertex1);
+  }
+
+  depthFirstSearch(startingVertex) {
+    const visited = {};
+    const result = [];
+
+    const dfs = (vertex) => {
+      if (!vertex) {
+        return null;
+      }
+      visited[vertex] = true;
+      result.push(vertex);
+
+      this.adjacencyList[vertex].forEach(neighbor => {
+        if (!visited[neighbor]) {
+          return dfs(neighbor);
+        }
+      });
+    };
+
+    dfs(startingVertex);
+
+    return result;
+  }
 }
 
 // Example usage
-const array = [1, 3, 5, 7, 9, 11, 13, 15, 17];
-const target = 9;
-const index = binarySearchRecursive(array, target);
+const graph = new Graph();
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addVertex('E');
 
-if (index !== -1) {
-    console.log(`Element found at index: ${index}`);
-} else {
-    console.log(`Element not found`);
-}
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('C', 'E');
+
+console.log(graph.depthFirstSearch('A')); // Output: [ 'A', 'B', 'D', 'C', 'E' ]
