@@ -1,52 +1,48 @@
-// Define the structure for a node in the binary tree
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+// Heap Sort Algorithm
+function heapSort(arr) {
+    buildMaxHeap(arr);
+
+    for (let i = arr.length - 1; i > 0; i--) {
+        [arr[0], arr[i]] = [arr[i], arr[0]]; // Swap root with last element
+        maxHeapify(arr, 0, i);
+    }
+
+    return arr;
+}
+
+function buildMaxHeap(arr) {
+    for (let i = Math.floor(arr.length / 2); i >= 0; i--) {
+        maxHeapify(arr, i, arr.length);
     }
 }
 
-// Define the binary tree class
-class BinaryTree {
-    constructor() {
-        this.root = null;
-    }
+function maxHeapify(arr, i, max) {
+    let index, leftChild, rightChild;
 
-    // Helper function to insert a value into the binary tree
-    insert(value) {
-        const newNode = new Node(value);
+    while (i < max) {
+        index = i;
+        leftChild = 2 * i + 1;
+        rightChild = leftChild + 1;
 
-        if (!this.root) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
+        if (leftChild < max && arr[leftChild] > arr[index]) {
+            index = leftChild;
         }
-    }
 
-    insertNode(node, newNode) {
-        if (newNode.value < node.value) {
-            if (!node.left) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (!node.right) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
+        if (rightChild < max && arr[rightChild] > arr[index]) {
+            index = rightChild;
         }
+
+        if (index === i) {
+            return;
+        }
+
+        [arr[i], arr[index]] = [arr[index], arr[i]];
+        i = index;
     }
 }
 
-// Usage
-const tree = new BinaryTree();
-tree.insert(5);
-tree.insert(3);
-tree.insert(8);
-tree.insert(2);
-tree.insert(4);
+// Example usage
+const unsortedArray = [4, 10, 3, 5, 1];
+const sortedArray = heapSort(unsortedArray);
 
-console.log(tree.root);
+console.log(sortedArray); // Output: [1, 3, 4, 5, 10]
