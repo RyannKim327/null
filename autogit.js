@@ -1,57 +1,50 @@
-function biDirectionalSearch(graph, startNode, endNode) {
-    // Initialize frontiers and explored sets for both directions
-    let startFrontier = [startNode];
-    let endFrontier = [endNode];
-    let startExplored = new Set();
-    let endExplored = new Set();
-
-    while (startFrontier.length > 0 && endFrontier.length > 0) {
-        // Search from the start node
-        let startNext = [];
-        for (let node of startFrontier) {
-            startExplored.add(node);
-            if (endExplored.has(node)) {
-                return 'Path found'; // Path found
-            }
-            for (let neighbor of graph[node]) {
-                if (!startExplored.has(neighbor)) {
-                    startNext.push(neighbor);
-                }
-            }
-        }
-        startFrontier = startNext;
-
-        // Search from the end node
-        let endNext = [];
-        for (let node of endFrontier) {
-            endExplored.add(node);
-            if (startExplored.has(node)) {
-                return 'Path found'; // Path found
-            }
-            for (let neighbor of graph[node]) {
-                if (!endExplored.has(neighbor)) {
-                    endNext.push(neighbor);
-                }
-            }
-        }
-        endFrontier = endNext;
+// Node class to represent a node in the linked list
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
     }
-
-    return 'No path found';
 }
 
-// Example graph representation as adjacency list
-const graph = {
-    A: ['B', 'C'],
-    B: ['A', 'D', 'E'],
-    C: ['A', 'F', 'G'],
-    D: ['B'],
-    E: ['B'],
-    F: ['C'],
-    G: ['C'],
-};
+// LinkedList class to represent the linked list
+class LinkedList {
+    constructor() {
+        this.head = null;
+    }
 
-const startNode = 'A';
-const endNode = 'G';
+    // Method to add a new node to the linked list
+    add(data) {
+        const newNode = new Node(data);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+    }
 
-console.log(biDirectionalSearch(graph, startNode, endNode));
+    // Method to find the length of the linked list
+    getLength() {
+        let current = this.head;
+        let length = 0;
+        while (current) {
+            length++;
+            current = current.next;
+        }
+        return length;
+    }
+}
+
+// Create a linked list
+const linkedList = new LinkedList();
+linkedList.add(1);
+linkedList.add(2);
+linkedList.add(3);
+linkedList.add(4);
+
+// Get the length of the linked list
+const length = linkedList.getLength();
+console.log("Length of the linked list:", length);
