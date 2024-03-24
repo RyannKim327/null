@@ -1,45 +1,45 @@
-// Heapify function to build Max Heap
-function heapify(arr, n, i) {
-    let largest = i;
-    let left = 2 * i + 1;
-    let right = 2 * i + 2;
-
-    if (left < n && arr[left] > arr[largest]) {
-        largest = left;
+class HashTable {
+    constructor(size) {
+        this.size = size;
+        this.buckets = new Array(size);
     }
 
-    if (right < n && arr[right] > arr[largest]) {
-        largest = right;
+    hash(key) {
+        let hash = 0;
+        for (let i = 0; i < key.length; i++) {
+            hash += key.charCodeAt(i);
+        }
+        return hash % this.size;
     }
 
-    if (largest !== i) {
-        [arr[i], arr[largest]] = [arr[largest], arr[i]];
-        heapify(arr, n, largest);
+    set(key, value) {
+        const index = this.hash(key);
+        if (!this.buckets[index]) {
+            this.buckets[index] = [];
+        }
+        this.buckets[index].push({ key, value });
+    }
+
+    get(key) {
+        const index = this.hash(key);
+        const bucket = this.buckets[index];
+        if (!bucket) {
+            return null;
+        }
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i].key === key) {
+                return bucket[i].value;
+            }
+        }
+        return null;
     }
 }
 
-// Heap Sort algorithm
-function heapSort(arr) {
-    const n = arr.length;
+// Example Usage
+const ht = new HashTable(10);
+ht.set('apple', 5);
+ht.set('banana', 10);
 
-    // Build max heap
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(arr, n, i);
-    }
-
-    // Extract elements from the heap one by one
-    for (let i = n - 1; i > 0; i--) {
-        // Move current root to end
-        [arr[0], arr[i]] = [arr[i], arr[0]];
-
-        // call max heapify on the reduced heap
-        heapify(arr, i, 0);
-    }
-
-    return arr;
-}
-
-// Example usage
-const arr = [12, 11, 13, 5, 6, 7];
-const sortedArr = heapSort(arr);
-console.log("Sorted array: ", sortedArr);
+console.log(ht.get('apple')); // Output: 5
+console.log(ht.get('banana')); // Output: 10
+console.log(ht.get('cherry')); // Output: null
