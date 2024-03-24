@@ -1,7 +1,11 @@
-function getRandomNumber(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+Area = 1/2 * base * height
+function calculateTriangleArea(base, height) {
+    return 0.5 * base * height;
 }
 
-// Generate a random number between 1 and 10
-var randomNumber = getRandomNumber(1, 10);
-console.log(randomNumber);
+// Example usage
+let base = 5;
+let height = 7;
+let area = calculateTriangleArea(base, height);
+
+console.log("The area of the triangle is: " + area);
