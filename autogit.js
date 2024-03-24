@@ -1,50 +1,18 @@
-function dijkstra(graph, source) {
-    const distance = {};
-    const visited = {};
+function reverseWords(str) {
+    // Split the string into an array of words
+    let words = str.split(" ");
     
-    for (let node in graph) {
-        distance[node] = Infinity;
-        visited[node] = false;
-    }
+    // Reverse the array
+    let reversedWords = words.reverse();
     
-    distance[source] = 0;
+    // Join the reversed array back into a string
+    let reversedStr = reversedWords.join(" ");
     
-    for (let i = 0; i < Object.keys(graph).length - 1; i++) {
-        let u = minDistanceNode(distance, visited);
-        visited[u] = true;
-        
-        for (let v in graph[u]) {
-            if (!visited[v] && distance[u] + graph[u][v] < distance[v]) {
-                distance[v] = distance[u] + graph[u][v];
-            }
-        }
-    }
-    
-    return distance;
+    return reversedStr;
 }
 
-function minDistanceNode(distance, visited) {
-    let min = Infinity;
-    let minNode = null;
-    
-    for (let node in distance) {
-        if (!visited[node] && distance[node] < min) {
-            min = distance[node];
-            minNode = node;
-        }
-    }
-    
-    return minNode;
-}
+// Test the function
+let originalStr = "Hello World How Are You";
+let reversedStr = reverseWords(originalStr);
 
-// Example
-const graph = {
-    'A': { 'B': 1, 'C': 4 },
-    'B': { 'A': 1, 'C': 2, 'D': 5 },
-    'C': { 'A': 4, 'B': 2, 'D': 1 },
-    'D': { 'B': 5, 'C': 1 }
-};
-
-const sourceNode = 'A';
-const shortestDistances = dijkstra(graph, sourceNode);
-console.log(shortestDistances);
+console.log(reversedStr); // Output: "You Are How World Hello"
