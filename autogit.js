@@ -1,31 +1,23 @@
-const url = "https://api.example.com/data";
+function quickSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
+    }
 
-function fetchData() {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    
-    xhr.open("GET", url, true);
-    
-    xhr.onload = function () {
-      if (xhr.status >= 200 && xhr.status < 300) {
-        resolve(xhr.responseText);
-      } else {
-        reject(xhr.statusText);
-      }
-    };
-    
-    xhr.onerror = function () {
-      reject(xhr.statusText);
-    };
-    
-    xhr.send();
-  });
+    const pivot = arr[0];
+    const left = [];
+    const right = [];
+
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
+        } else {
+            right.push(arr[i]);
+        }
+    }
+
+    return quickSort(left).concat(pivot, quickSort(right));
 }
 
-fetchData()
-  .then((data) => {
-    console.log(data);
-  })
-  .catch((error) => {
-    console.error("Error fetching data: ", error);
-  });
+const arr = [5, 3, 7, 2, 8, 4, 1, 6];
+const sortedArr = quickSort(arr);
+console.log(sortedArr);
