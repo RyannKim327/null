@@ -1,46 +1,43 @@
-function depthLimitedSearch(node, goal, depth) {
-    if (depth === 0) {
-        return null;
-    }
-    
-    if (node === goal) {
-        return node;
-    }
-    
-    for (let child of node.children) {
-        let result = depthLimitedSearch(child, goal, depth - 1);
-        if (result !== null) {
-            return result;
-        }
-    }
-    
-    return null;
-}
-
-// Define your node class
 class Node {
     constructor(value) {
         this.value = value;
-        this.children = [];
-    }
-    
-    addChild(child) {
-        this.children.push(child);
+        this.next = null;
     }
 }
 
-// Create a sample node tree
-let nodeA = new Node('A');
-let nodeB = new Node('B');
-let nodeC = new Node('C');
-let nodeD = new Node('D');
-let nodeE = new Node('E');
+function findIntersection(list1, list2) {
+    let set = new Set();
+    
+    // Traverse list1 and store nodes in a Set
+    let current = list1;
+    while (current) {
+        set.add(current);
+        current = current.next;
+    }
+    
+    // Traverse list2 and check for nodes in the Set
+    current = list2;
+    while (current) {
+        if (set.has(current)) {
+            return current;
+        }
+        current = current.next;
+    }
+    
+    return null; // No intersection found
+}
 
-nodeA.addChild(nodeB);
-nodeA.addChild(nodeC);
-nodeB.addChild(nodeD);
-nodeB.addChild(nodeE);
+// Example
+let commonNode = new Node(10);
 
-// Use the depthLimitedSearch function
-let result = depthLimitedSearch(nodeA, 'E', 3);
-console.log(result ? `Node found: ${result.value}` : 'Node not found');
+let list1 = new Node(2);
+list1.next = new Node(4);
+list1.next.next = new Node(6);
+list1.next.next.next = commonNode;
+
+let list2 = new Node(1);
+list2.next = new Node(3);
+list2.next.next = commonNode;
+
+let intersection = findIntersection(list1, list2);
+console.log("Intersection node value:", intersection.value);
