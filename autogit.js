@@ -1,8 +1,9 @@
-function reverseString(str) {
-    return str.split('').reverse().join('');
+function countOccurrences(str, word) {
+    return str.split(word).length - 1;
 }
 
-const originalString = 'Hello, World!';
-const reversedString = reverseString(originalString);
+const sentence = "apple banana apple orange apple";
+const wordToCount = "apple";
 
-console.log(reversedString); // Output: '!dlroW ,olleH'
+const occurrences = countOccurrences(sentence, wordToCount);
+console.log(`The word "${wordToCount}" appears ${occurrences} times in the sentence.`);
