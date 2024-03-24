@@ -1,30 +1,49 @@
-function longestCommonSubstring(str1, str2) {
-    const dp = Array(str1.length + 1).fill().map(() => Array(str2.length + 1).fill(0));
-    let maxLen = 0;
-    let endIndex = 0;
+class Node {
+    constructor(value, color) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+        this.parent = null;
+        this.color = color; // 0 for black, 1 for red
+    }
+}
 
-    for (let i = 1; i <= str1.length; i++) {
-        for (let j = 1; j <= str2.length; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-                if (dp[i][j] > maxLen) {
-                    maxLen = dp[i][j];
-                    endIndex = i - 1;
-                }
-            } else {
-                dp[i][j] = 0;
-            }
+class RedBlackTree {
+    constructor() {
+        this.root = null;
+    }
+
+    insert(value) {
+        let newNode = new Node(value, 1); // new node is initially red
+        if (this.root === null) {
+            this.root = newNode;
+            this.root.color = 0; // change color to black
+        } else {
+            this.insertNode(this.root, newNode);
         }
     }
 
-    if (maxLen === 0) {
-        return "";
+    insertNode(root, newNode) {
+        if (newNode.value < root.value) {
+            if (root.left === null) {
+                root.left = newNode;
+                newNode.parent = root;
+            } else {
+                this.insertNode(root.left, newNode);
+            }
+        } else {
+            if (root.right === null) {
+                root.right = newNode;
+                newNode.parent = root;
+            } else {
+                this.insertNode(root.right, newNode);
+            }
+        }
     }
-
-    return str1.slice(endIndex - maxLen + 1, endIndex + 1);
 }
 
-const str1 = "abcdef";
-const str2 = "xbcdeft";
-
-console.log(longestCommonSubstring(str1, str2)); // Output: "bcd"
+// Test the Red-Black Tree
+let rbTree = new RedBlackTree();
+rbTree.insert(10);
+rbTree.insert(20);
+rbTree.insert(5);
