@@ -1,17 +1,15 @@
-function reverseWords(str) {
-    // Split the string into an array of words
-    var wordsArray = str.split(" ");
-    
-    // Reverse the array
-    wordsArray.reverse();
-    
-    // Join the array back into a string
-    var reversedStr = wordsArray.join(" ");
-    
-    return reversedStr;
+function maxSubArray(arr) {
+    let maxEndingHere = arr[0];
+    let maxSoFar = arr[0];
+
+    for (let i = 1; i < arr.length; i++) {
+        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
+        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+    }
+
+    return maxSoFar;
 }
 
-// Test the function
-var originalStr = "Hello World";
-var reversedStr = reverseWords(originalStr);
-console.log(reversedStr); // Output: "World Hello"
+const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const maxSum = maxSubArray(arr);
+console.log("Maximum sum subarray:", maxSum);
