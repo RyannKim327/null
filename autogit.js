@@ -1,38 +1,17 @@
-function burrowsWheelerTransform(text) {
-    let rotations = [];
-    
-    // Generate all possible rotations of the input text
-    for (let i = 0; i < text.length; i++) {
-        let rotation = text.slice(i) + text.slice(0, i);
-        rotations.push(rotation);
-    }
-    
-    // Sort the rotations lexicographically
-    rotations.sort();
-    
-    // Construct the Burrows-Wheeler Transform by taking the last characters of each rotation
-    let transformedText = rotations.map(rotation => rotation.slice(-1)).join('');
-    
-    return transformedText;
+function reverseWords(str) {
+    // Split the string into words
+    let words = str.split(' ');
+
+    // Reverse the array of words
+    let reversedWords = words.reverse();
+
+    // Join the reversed array of words back into a string
+    let reversedStr = reversedWords.join(' ');
+
+    return reversedStr;
 }
 
-function burrowsWheelerInverseTransform(transformedText) {
-    let table = [];
-    
-    // Generate the table of rotations (rows)
-    for (let i = 0; i < transformedText.length; i++) {
-        let row = Array.from(transformedText).sort().join('');
-        table.push(row);
-        transformedText = row;
-    }
-    
-    return table.find(row => row.endsWith('$')).replace('$', '');
-}
-
-// Test the Burrows-Wheeler Transform algorithm
-let text = "hello";
-let transformedText = burrowsWheelerTransform(text);
-console.log("Transformed text:", transformedText);
-
-let originalText = burrowsWheelerInverseTransform(transformedText);
-console.log("Original text:", originalText);
+// Example usage
+let originalStr = "Hello world!";
+let reversedStr = reverseWords(originalStr);
+console.log(reversedStr); // Output: "world! Hello"
