@@ -1,47 +1,49 @@
-function buildPatternTable(pattern) {
-    let patternTable = [0];
-    let prefixIndex = 0;
-    let suffixIndex = 1;
-
-    while (suffixIndex < pattern.length) {
-        if (pattern[prefixIndex] === pattern[suffixIndex]) {
-            patternTable[suffixIndex] = prefixIndex + 1;
-            prefixIndex++;
-            suffixIndex++;
-        } else if (prefixIndex === 0) {
-            patternTable[suffixIndex] = 0;
-            suffixIndex++;
-        } else {
-            prefixIndex = patternTable[prefixIndex - 1];
-        }
+class Graph {
+    constructor() {
+        this.adjList = new Map();
     }
 
-    return patternTable;
-}
+    addVertex(v) {
+        this.adjList.set(v, []);
+    }
 
-function kmpSearch(text, pattern) {
-    let patternTable = buildPatternTable(pattern);
-    let textIndex = 0;
-    let patternIndex = 0;
+    addEdge(v, w) {
+        this.adjList.get(v).push(w);
+        this.adjList.get(w).push(v);
+    }
 
-    while (textIndex < text.length) {
-        if (text[textIndex] === pattern[patternIndex]) {
-            if (patternIndex === pattern.length - 1) {
-                return textIndex - pattern.length + 1;
+    dfsUtil(v, visited) {
+        visited[v] = true;
+        console.log(v);
+
+        let neighbors = this.adjList.get(v);
+        for (let neighbor of neighbors) {
+            if (!visited[neighbor]) {
+                this.dfsUtil(neighbor, visited);
             }
-            textIndex++;
-            patternIndex++;
-        } else if (patternIndex > 0) {
-            patternIndex = patternTable[patternIndex - 1];
-        } else {
-            textIndex++;
         }
     }
 
-    return -1;
+    dfs(startingVertex) {
+        let visited = {};
+        for (let vertex of this.adjList.keys()) {
+            visited[vertex] = false;
+        }
+
+        this.dfsUtil(startingVertex, visited);
+    }
 }
 
-// Example usage
-let text = "ababcababcabc";
-let pattern = "abc";
-console.log(kmpSearch(text, pattern)); // Output: 2
+let g = new Graph();
+let vertices = ['A', 'B', 'C', 'D', 'E', 'F'];
+for (let vertex of vertices) {
+    g.addVertex(vertex);
+}
+
+g.addEdge('A', 'B');
+g.addEdge('A', 'C');
+g.addEdge('B', 'D');
+g.addEdge('B', 'E');
+g.addEdge('C', 'F');
+
+g.dfs('A');
