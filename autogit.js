@@ -1,56 +1,33 @@
-function computeLPSArray(pattern) {
-    const lps = [];
-    lps[0] = 0;
-    let len = 0;
-    let i = 1;
+function countingSort(arr, maxValue) {
+    var count = [];
+    var sortedIndex = 0;
+    var arrLen = arr.length;
+    var countLen = maxValue + 1;
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
+    // Initialize the count array with 0
+    for (var i = 0; i < countLen; i++) {
+        count[i] = 0;
+    }
+
+    // Count the occurrences of each element
+    for (var i = 0; i < arrLen; i++) {
+        count[arr[i]]++;
+    }
+
+    // Update the count array to keep track of the actual position of each element
+    for (var i = 0; i < countLen; i++) {
+        while (count[i] > 0) {
+            arr[sortedIndex] = i;
+            sortedIndex++;
+            count[i]--;
         }
     }
 
-    return lps;
+    return arr;
 }
 
-function KMPSearch(text, pattern) {
-    const lps = computeLPSArray(pattern);
-    let i = 0;
-    let j = 0;
-    const indices = [];
-
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-
-        if (j === pattern.length) {
-            indices.push(i - j);
-            j = lps[j - 1];
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
-    }
-
-    return indices;
-}
-
-// Example usage:
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const indices = KMPSearch(text, pattern);
-console.log(indices); // Output: [10]
+// Example usage
+var arr = [4, 2, 2, 8, 3, 3, 1];
+var maxValue = 8;
+var sortedArr = countingSort(arr, maxValue);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
