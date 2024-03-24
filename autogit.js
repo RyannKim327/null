@@ -1,12 +1,9 @@
-function factorial(n) {
-    if (n === 0) {
-        return 1;
-    }
-    return n * factorial(n - 1);
-}
+const axios = require('axios');
 
-// Calculate the factorial of 5
-const number = 5;
-const result = factorial(number);
-
-console.log(`The factorial of ${number} is ${result}`);
+axios.get('https://jsonplaceholder.typicode.com/posts/1')
+  .then(function (response) {
+    console.log(response.data);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
