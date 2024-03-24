@@ -1,11 +1,45 @@
-// Define an array of integers
-const numbers = [5, 2, 8, 1, 4];
+// Node class to represent each element in the linked list
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
+}
 
-// Sort the array in ascending order
-numbers.sort((a, b) => a - b);
+// LinkedList class to implement the linked list
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
 
-console.log(numbers); // Output: [1, 2, 4, 5, 8]
-// Sort the array in descending order
-numbers.sort((a, b) => b - a);
+  // Method to add a new node to the linked list
+  addNode(data) {
+    const newNode = new Node(data);
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
 
-console.log(numbers); // Output: [8, 5, 4, 2, 1]
+  // Method to print all nodes in the linked list
+  printList() {
+    let current = this.head;
+    while (current) {
+      console.log(current.data);
+      current = current.next;
+    }
+  }
+}
+
+// Usage example
+const linkedList = new LinkedList();
+linkedList.addNode(1);
+linkedList.addNode(2);
+linkedList.addNode(3);
+
+linkedList.printList();
