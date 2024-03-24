@@ -1,24 +1,23 @@
-function selectionSort(arr) {
-    const n = arr.length;
-    
-    for (let i = 0; i < n - 1; i++) {
-        let minIndex = i;
-        
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j;
-            }
-        }
-        
-        if (minIndex !== i) {
-            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+function findCommonElements(arr1, arr2) {
+    let commonElements = [];
+  
+    // Loop through the first array
+    for (let i = 0; i < arr1.length; i++) {
+        // Check if the current element is present in the second array
+        if (arr2.includes(arr1[i])) {
+            // If it is, add it to the commonElements array
+            commonElements.push(arr1[i]);
         }
     }
-    
-    return arr;
+  
+    // Return the array containing the common elements
+    return commonElements;
 }
 
-// Test the selection sort function
-const arr = [64, 25, 12, 22, 11];
-console.log("Original array: " + arr);
-console.log("Sorted array: " + selectionSort(arr));
+// Example arrays
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
+
+// Find common elements in the arrays
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [3, 4, 5]
