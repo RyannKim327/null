@@ -1,11 +1,20 @@
-function isPalindrome(str) {
-    // Remove non-alphanumeric characters and convert the string to lowercase
-    str = str.replace(/[\W_]/g, '').toLowerCase();
+function insertionSort(arr) {
+    for (let i = 1; i < arr.length; i++) {
+        let current = arr[i];
+        let j = i - 1;
+        
+        while (j >= 0 && arr[j] > current) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        
+        arr[j + 1] = current;
+    }
     
-    // Compare the original string with its reversed version
-    return str === str.split('').reverse().join('');
+    return arr;
 }
 
-// Test the function
-console.log(isPalindrome('racecar')); // Output: true
-console.log(isPalindrome('hello')); // Output: false
+// Example usage
+let arr = [5, 2, 4, 6, 1, 3];
+console.log("Before sorting:", arr);
+console.log("After sorting:", insertionSort(arr));
