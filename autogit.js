@@ -1,17 +1,15 @@
-function isAnagram(str1, str2) {
-  const sanitizeString = function (str) {
-    return str.toLowerCase().replace(/[^a-z]/g, '').split('').sort().join('');
-  }
+function maxSubarraySum(arr) {
+    let maxEndingHere = arr[0];
+    let maxSoFar = arr[0];
 
-  return sanitizeString(str1) === sanitizeString(str2);
+    for (let i = 1; i < arr.length; i++) {
+        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
+        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+    }
+
+    return maxSoFar;
 }
 
-// Test the function
-const string1 = "listen";
-const string2 = "silent";
-
-if (isAnagram(string1, string2)) {
-  console.log(`${string1} and ${string2} are anagrams.`);
-} else {
-  console.log(`${string1} and ${string2} are not anagrams.`);
-}
+// Example usage
+const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+console.log(maxSubarraySum(arr)); // Output: 6
