@@ -3,75 +3,20 @@ class PriorityQueue {
         this.heap = [];
     }
 
-    push(value, priority) {
-        const node = { value, priority };
-        this.heap.push(node);
-        this.bubbleUp();
+    parent(i) {
+        return Math.floor((i - 1) / 2);
     }
 
-    pop() {
-        const max = this.heap[0];
-        const end = this.heap.pop();
-        if (this.heap.length > 0) {
-            this.heap[0] = end;
-            this.sinkDown();
-        }
-        return max;
+    leftChild(i) {
+        return 2 * i + 1;
     }
 
-    bubbleUp() {
-        let index = this.heap.length - 1;
-        const node = this.heap[index];
-
-        while (index > 0) {
-            let parentIndex = Math.floor((index - 1) / 2);
-            let parent = this.heap[parentIndex];
-
-            if (node.priority <= parent.priority) break;
-
-            this.heap[parentIndex] = node;
-            this.heap[index] = parent;
-            index = parentIndex;
-        }
+    rightChild(i) {
+        return 2 * i + 2;
     }
 
-    sinkDown() {
-        let index = 0;
-        const length = this.heap.length;
-        const node = this.heap[0];
-
-        while (true) {
-            let leftChildIdx = 2 * index + 1;
-            let rightChildIdx = 2 * index + 2;
-            let swap = null;
-
-            if (leftChildIdx < length) {
-                let leftChild = this.heap[leftChildIdx];
-                if (leftChild.priority > node.priority) {
-                    swap = leftChildIdx;
-                }
-            }
-
-            if (rightChildIdx < length) {
-                let rightChild = this.heap[rightChildIdx];
-                if (
-                    (swap === null && rightChild.priority > node.priority) ||
-                    (swap !== null && rightChild.priority > this.heap[swap].priority)
-                ) {
-                    swap = rightChildIdx;
-                }
-            }
-
-            if (swap === null) break;
-
-            this.heap[index] = this.heap[swap];
-            this.heap[swap] = node;
-            index = swap;
-        }
-    }
-
-    peek() {
-        return this.heap[0];
+    swap(i, j) {
+        [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
     }
 
     size() {
@@ -79,16 +24,72 @@ class PriorityQueue {
     }
 
     isEmpty() {
-        return this.heap.length === 0;
+        return this.size() === 0;
+    }
+
+    peek() {
+        if (this.isEmpty()) {
+            return null;
+        }
+        return this.heap[0];
+    }
+
+    push(val) {
+        this.heap.push(val);
+        this.heapifyUp(this.size() - 1);
+    }
+
+    pop() {
+        if (this.isEmpty()) {
+            return null;
+        }
+        
+        const root = this.heap[0];
+        if (this.size() > 1) {
+            this.heap[0] = this.heap.pop();
+            this.heapifyDown(0);
+        } else {
+            this.heap.pop();
+        }
+
+        return root;
+    }
+
+    heapifyUp(i) {
+        let currentIndex = i;
+        while (currentIndex > 0 && this.heap[currentIndex] < this.heap[this.parent(currentIndex)]) {
+            this.swap(currentIndex, this.parent(currentIndex));
+            currentIndex = this.parent(currentIndex);
+        }
+    }
+
+    heapifyDown(i) {
+        let currentIndex = i;
+        let leftChildIndex = this.leftChild(currentIndex);
+        let rightChildIndex = this.rightChild(currentIndex);
+        let smallest = currentIndex;
+
+        if (leftChildIndex < this.size() && this.heap[leftChildIndex] < this.heap[smallest]) {
+            smallest = leftChildIndex;
+        }
+
+        if (rightChildIndex < this.size() && this.heap[rightChildIndex] < this.heap[smallest]) {
+            smallest = rightChildIndex;
+        }
+
+        if (smallest !== currentIndex) {
+            this.swap(currentIndex, smallest);
+            this.heapifyDown(smallest);
+        }
     }
 }
 
-// Example Usage
+// Example usage
 const pq = new PriorityQueue();
-pq.push("A", 1);
-pq.push("B", 2);
-pq.push("C", 3);
+pq.push(3);
+pq.push(2);
+pq.push(1);
 
-console.log(pq.pop()); // Output: { value: 'C', priority: 3 }
-console.log(pq.pop()); // Output: { value: 'B', priority: 2 }
-console.log(pq.pop()); // Output: { value: 'A', priority: 1 }
+console.log(pq.pop()); // Output: 1
+console.log(pq.pop()); // Output: 2
+console.log(pq.pop()); // Output: 3
