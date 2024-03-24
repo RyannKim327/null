@@ -1,22 +1,23 @@
-function binarySearchRecursive(arr, target, start = 0, end = arr.length - 1) {
-    if (start > end) {
-        return -1;
+function findFirstRepeatedChar(inputString) {
+    const charMap = {};
+    
+    for (let char of inputString) {
+        if (charMap[char]) {
+            return char;
+        } else {
+            charMap[char] = true;
+        }
     }
-
-    let mid = Math.floor((start + end) / 2);
-
-    if (arr[mid] === target) {
-        return mid;
-    } else if (arr[mid] < target) {
-        return binarySearchRecursive(arr, target, mid + 1, end);
-    } else {
-        return binarySearchRecursive(arr, target, start, mid - 1);
-    }
+    
+    return null; // If no repeated character is found
 }
 
 // Example usage
-const arr = [1, 3, 5, 7, 9, 11, 13, 15];
-const target = 7;
-const index = binarySearchRecursive(arr, target);
+const inputString = "abcdebf";
+const firstRepeatedChar = findFirstRepeatedChar(inputString);
 
-console.log(index); // Output: 3
+if (firstRepeatedChar) {
+    console.log(`The first repeated character is: ${firstRepeatedChar}`);
+} else {
+    console.log("No repeated character found in the string.");
+}
