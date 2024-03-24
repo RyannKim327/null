@@ -1,31 +1,29 @@
-// Function to check if a number is prime
-function isPrime(num) {
-    for (var i = 2; i <= Math.sqrt(num); i++) {
-        if (num % i === 0) {
-            return false;
+function binarySearch(arr, target) {
+    let left = 0;
+    let right = arr.length - 1;
+
+    while (left <= right) {
+        let mid = Math.floor((left + right) / 2);
+
+        if (arr[mid] === target) {
+            return mid;
+        } else if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
         }
     }
-    return true;
+
+    return -1; // return -1 if the target is not found in the array
 }
 
-// Function to find the largest prime factor of a number
-function largestPrimeFactor(number) {
-    let largestPrime = 1;
-    for (let i = 2; i <= Math.floor(Math.sqrt(number)); i++) {
-        if (number % i === 0) {
-            // Check if both factors are prime
-            if (isPrime(i)) {
-                largestPrime = i;
-            }
-            let factor = number / i;
-            if (isPrime(factor)) {
-                largestPrime = factor;
-            }
-        }
-    }
-    return largestPrime;
-}
+// Example usage:
+const array = [1, 3, 5, 7, 9, 11, 13, 15, 17];
+const target = 7;
 
-// Test the function with a number
-const number = 315;
-console.log(`The largest prime factor of ${number} is: ${largestPrimeFactor(number)}`);
+const index = binarySearch(array, target);
+if (index !== -1) {
+    console.log(`Target ${target} found at index ${index}`);
+} else {
+    console.log(`Target ${target} not found in the array`);
+}
