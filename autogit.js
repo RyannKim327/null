@@ -1,26 +1,31 @@
-function binarySearchRecursive(arr, target, low = 0, high = arr.length - 1) {
-    if (low > high) {
-        return -1; // target not found
+// Function to check if a number is prime
+function isPrime(num) {
+    for (var i = 2; i <= Math.sqrt(num); i++) {
+        if (num % i === 0) {
+            return false;
+        }
     }
-
-    const mid = Math.floor((low + high) / 2);
-
-    if (arr[mid] === target) {
-        return mid; // target found
-    } else if (target < arr[mid]) {
-        return binarySearchRecursive(arr, target, low, mid - 1);
-    } else {
-        return binarySearchRecursive(arr, target, mid + 1, high);
-    }
+    return true;
 }
 
-// Example usage
-const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17];
-const target = 9;
-const index = binarySearchRecursive(arr, target);
-
-if (index !== -1) {
-    console.log(`Target ${target} found at index ${index}.`);
-} else {
-    console.log(`Target ${target} not found in the array.`);
+// Function to find the largest prime factor of a number
+function largestPrimeFactor(number) {
+    let largestPrime = 1;
+    for (let i = 2; i <= Math.floor(Math.sqrt(number)); i++) {
+        if (number % i === 0) {
+            // Check if both factors are prime
+            if (isPrime(i)) {
+                largestPrime = i;
+            }
+            let factor = number / i;
+            if (isPrime(factor)) {
+                largestPrime = factor;
+            }
+        }
+    }
+    return largestPrime;
 }
+
+// Test the function with a number
+const number = 315;
+console.log(`The largest prime factor of ${number} is: ${largestPrimeFactor(number)}`);
