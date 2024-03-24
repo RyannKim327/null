@@ -1,66 +1,26 @@
-function astar(start, goal, graph, heuristic) {
-  let openSet = [start];
-  let cameFrom = {};
-  let gScore = {};
-  let fScore = {};
-
-  gScore[start] = 0;
-  fScore[start] = heuristic(start, goal);
-
-  while (openSet.length > 0) {
-    openSet.sort((node1, node2) => fScore[node1] - fScore[node2]);
-    let current = openSet.shift();
-
-    if (current === goal) {
-      return reconstructPath(cameFrom, current);
+function binarySearchRecursive(arr, target, start = 0, end = arr.length - 1) {
+    if (start > end) {
+        return -1; // Base case: target not found
     }
 
-    for (let neighbor of graph[current]) {
-      let tentativeGScore = gScore[current] + 1;
+    const mid = Math.floor((start + end) / 2);
 
-      if (tentativeGScore < (gScore[neighbor] || Infinity)) {
-        cameFrom[neighbor] = current;
-        gScore[neighbor] = tentativeGScore;
-        fScore[neighbor] = gScore[neighbor] + heuristic(neighbor, goal);
-
-        if (!openSet.includes(neighbor)) {
-          openSet.push(neighbor);
-        }
-      }
+    if (arr[mid] === target) {
+        return mid; // Base case: target found
+    } else if (arr[mid] < target) {
+        return binarySearchRecursive(arr, target, mid + 1, end); // Search right half
+    } else {
+        return binarySearchRecursive(arr, target, start, mid - 1); // Search left half
     }
-  }
-
-  return null;
-}
-
-function reconstructPath(cameFrom, current) {
-  let totalPath = [current];
-
-  while (cameFrom[current]) {
-    current = cameFrom[current];
-    totalPath.unshift(current);
-  }
-
-  return totalPath;
 }
 
 // Example usage
-let graph = {
-  A: ['B', 'C'],
-  B: ['C', 'D'],
-  C: ['D'],
-  D: ['E'],
-  E: []
-};
+const array = [1, 3, 5, 7, 9, 11, 13, 15, 17];
+const target = 9;
+const index = binarySearchRecursive(array, target);
 
-function heuristic(node, goal) {
-  // Simple heuristic function (Euclidean distance)
-  let dx = Math.abs(node[0] - goal[0]);
-  let dy = Math.abs(node[1] - goal[1]);
-  return Math.sqrt(dx * dx + dy * dy);
+if (index !== -1) {
+    console.log(`Element found at index: ${index}`);
+} else {
+    console.log(`Element not found`);
 }
-
-let start = 'A';
-let goal = 'E';
-let path = astar(start, goal, graph, heuristic);
-console.log(path);
