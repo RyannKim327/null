@@ -1,8 +1,6 @@
-function removeVowels(str) {
-    return str.replace(/[aeiouAEIOU]/g, '');
-}
+const cron = require('node-cron');
 
-// Example usage
-let myString = "Hello, World!";
-let result = removeVowels(myString);
-console.log(result); // Output: "Hll, Wrld!"
+// Schedule a task to run every minute
+cron.schedule('* * * * *', () => {
+    console.log('Running a task every minute!');
+});
