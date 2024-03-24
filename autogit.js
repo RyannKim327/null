@@ -1,24 +1,31 @@
-function quickSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
-    }
-
-    const pivot = arr[0];
-    const left = [];
-    const right = [];
-
-    for (let i = 1; i < arr.length; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
+function depthLimitedSearchIterative(node, depthLimit) {
+    let stack = [[node, 0]]; // [currentNode, currentDepth]
+    
+    while (stack.length > 0) {
+        let [currentNode, currentDepth] = stack.pop();
+        
+        if (currentDepth <= depthLimit) {
+            if (isGoalNode(currentNode)) {
+                return currentNode; // Found the goal node
+            }
+            
+            // Expand current node
+            let children = expandNode(currentNode);
+            for (let child of children) {
+                stack.push([child, currentDepth + 1]);
+            }
         }
     }
-
-    return [...quickSort(left), pivot, ...quickSort(right)];
+    
+    return null; // Goal node not found within depth limit
 }
 
-// Example usage
-const array = [10, 5, 2, 3, 7, 13, 1, 6];
-const sortedArray = quickSort(array);
-console.log(sortedArray);
+// Helper function to check if a node is the goal node
+function isGoalNode(node) {
+    // Implement your goal node check logic here
+}
+
+// Helper function to expand a node and get its children
+function expandNode(node) {
+    // Implement your node expansion logic here
+}
