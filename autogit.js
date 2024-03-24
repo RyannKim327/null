@@ -1,14 +1,27 @@
-function decimalToBinary(decimal) {
-    // Check if the input is a valid number
-    if (isNaN(decimal) || decimal < 0 || !Number.isInteger(decimal)) {
-        return "Invalid input. Please enter a positive integer.";
+function findFirstNonRepeatingChar(str) {
+    let charMap = {};
+  
+    // Create a map to store the count of each character in the string
+    for (let char of str) {
+        charMap[char] = (charMap[char] || 0) + 1;
     }
-    
-    // Convert decimal to binary
-    let binary = (decimal >>> 0).toString(2);
-    
-    return binary;
+  
+    // Find the first character with count 1 in the map
+    for (let char of str) {
+        if (charMap[char] === 1) {
+            return char;
+        }
+    }
+  
+    return null; // Return null if there is no non-repeating character
 }
 
-// Example usage
-console.log(decimalToBinary(10)); // Output: 1010
+// Test the function
+let str = "hello world";
+let firstNonRepeatingChar = findFirstNonRepeatingChar(str);
+
+if (firstNonRepeatingChar) {
+    console.log(`The first non-repeating character in "${str}" is: ${firstNonRepeatingChar}`);
+} else {
+    console.log("There is no non-repeating character in the string.");
+}
