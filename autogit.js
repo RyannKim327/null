@@ -1,25 +1,49 @@
-function burrowsWheelerTransform(inputString) {
-    const inputStringWithEOF = inputString + '$';
-    const rotations = [];
+// Definition for a binary tree node
+function TreeNode(val) {
+    this.val = val;
+    this.left = this.right = null;
+}
 
-    for (let i = 0; i < inputStringWithEOF.length; i++) {
-        const rotation = inputStringWithEOF.slice(i) + inputStringWithEOF.slice(0, i);
-        rotations.push(rotation);
+function diameterOfBinaryTree(root) {
+    // Helper function to calculate the height of a node
+    function getHeight(node) {
+        if (!node) return 0;
+        return 1 + Math.max(getHeight(node.left), getHeight(node.right));
+    }
+    
+    let diameter = 0;
+
+    // Helper function to calculate the diameter of the binary tree
+    function calculateDiameter(node) {
+        if (!node) return 0;
+
+        // Calculate the height of the left and right subtrees
+        let leftHeight = getHeight(node.left);
+        let rightHeight = getHeight(node.right);
+
+        // Calculate the diameter passing through the current node
+        let currentDiameter = leftHeight + rightHeight;
+
+        // Update the global diameter if the current one is greater
+        diameter = Math.max(diameter, currentDiameter);
+
+        // Recursively calculate the diameter of left and right subtrees
+        calculateDiameter(node.left);
+        calculateDiameter(node.right);
+
+        return currentDiameter;
     }
 
-    rotations.sort();
-
-    let transformedString = "";
-    for (let rotation of rotations) {
-        transformedString += rotation.slice(-1);
-    }
-
-    return transformedString;
+    calculateDiameter(root);
+    
+    return diameter;
 }
 
 // Example usage
-const inputString = "banana";
-const bwtResult = burrowsWheelerTransform(inputString);
-console.log("Burrows-Wheeler transformed string: ", bwtResult);
+let root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-// Output: "Burrows-Wheeler transformed string:  annb$aa"
+console.log(diameterOfBinaryTree(root)); // Output the diameter of the binary tree
