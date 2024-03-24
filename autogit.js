@@ -1,51 +1,57 @@
-class Node {
-    constructor() {
-        this.children = {};
-    }
-}
+function biDirectionalSearch(graph, startNode, endNode) {
+    // Initialize frontiers and explored sets for both directions
+    let startFrontier = [startNode];
+    let endFrontier = [endNode];
+    let startExplored = new Set();
+    let endExplored = new Set();
 
-class SuffixTree {
-    constructor(str) {
-        this.root = new Node();
-        this.buildSuffixTree(str);
-    }
-
-    buildSuffixTree(str) {
-        for (let i = 0; i < str.length; i++) {
-            this.addSuffix(str.substring(i));
-        }
-    }
-
-    addSuffix(suffix) {
-        let node = this.root;
-        for (let i = 0; i < suffix.length; i++) {
-            let char = suffix[i];
-            if (!node.children[char]) {
-                node.children[char] = new Node();
+    while (startFrontier.length > 0 && endFrontier.length > 0) {
+        // Search from the start node
+        let startNext = [];
+        for (let node of startFrontier) {
+            startExplored.add(node);
+            if (endExplored.has(node)) {
+                return 'Path found'; // Path found
             }
-            node = node.children[char];
-        }
-    }
-
-    search(pattern) {
-        let node = this.root;
-        let i = 0;
-
-        while (i < pattern.length) {
-            let char = pattern[i];
-            if (node.children[char]) {
-                node = node.children[char];
-                i++;
-            } else {
-                return false;
+            for (let neighbor of graph[node]) {
+                if (!startExplored.has(neighbor)) {
+                    startNext.push(neighbor);
+                }
             }
         }
+        startFrontier = startNext;
 
-        return true;
+        // Search from the end node
+        let endNext = [];
+        for (let node of endFrontier) {
+            endExplored.add(node);
+            if (startExplored.has(node)) {
+                return 'Path found'; // Path found
+            }
+            for (let neighbor of graph[node]) {
+                if (!endExplored.has(neighbor)) {
+                    endNext.push(neighbor);
+                }
+            }
+        }
+        endFrontier = endNext;
     }
+
+    return 'No path found';
 }
 
-// Example usage
-const suffixTree = new SuffixTree("banana");
-console.log(suffixTree.search("ana")); // Output: true
-console.log(suffixTree.search("xyz")); // Output: false
+// Example graph representation as adjacency list
+const graph = {
+    A: ['B', 'C'],
+    B: ['A', 'D', 'E'],
+    C: ['A', 'F', 'G'],
+    D: ['B'],
+    E: ['B'],
+    F: ['C'],
+    G: ['C'],
+};
+
+const startNode = 'A';
+const endNode = 'G';
+
+console.log(biDirectionalSearch(graph, startNode, endNode));
