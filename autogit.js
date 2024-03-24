@@ -1,83 +1,57 @@
-class PriorityQueue {
-  constructor() {
-    this.nodes = [];
-  }
+function buildPatternTable(pattern) {
+    let table = [0];
+    let i = 1;
+    let j = 0;
 
-  enqueue(node, priority) {
-    this.nodes.push({ node, priority });
-    this.sort();
-  }
-
-  dequeue() {
-    return this.nodes.shift();
-  }
-
-  sort() {
-    this.nodes.sort((a, b) => a.priority - b.priority);
-  }
-
-  isEmpty() {
-    return this.nodes.length === 0;
-  }
-}
-
-function dijkstra(graph, startNode) {
-  const distances = {};
-  const previous = {};
-  const priorityQueue = new PriorityQueue();
-  
-  distances[startNode] = 0;
-  priorityQueue.enqueue(startNode, 0);
-
-  for (let node in graph) {
-    if (node !== startNode) {
-      distances[node] = Infinity;
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[j]) {
+            table[i] = j + 1;
+            i++;
+            j++;
+        } else {
+            if (j !== 0) {
+                j = table[j - 1];
+            } else {
+                table[i] = 0;
+                i++;
+            }
+        }
     }
-    
-    previous[node] = null;
-  }
 
-  while (!priorityQueue.isEmpty()) {
-    let { node: currentNode } = priorityQueue.dequeue();
+    return table;
+}
 
-    for (let neighbor in graph[currentNode]) {
-      let currentDistance = distances[currentNode];
-      let edgeWeight = graph[currentNode][neighbor];
-      let distance = currentDistance + edgeWeight;
+function kmpSearch(text, pattern) {
+    let table = buildPatternTable(pattern);
+    let i = 0;
+    let j = 0;
 
-      if (distance < distances[neighbor]) {
-        distances[neighbor] = distance;
-        previous[neighbor] = currentNode;
-        priorityQueue.enqueue(neighbor, distance);
-      }
+    while (i < text.length) {
+        if (text[i] === pattern[j]) {
+            if (j === pattern.length - 1) {
+                return i - j;
+            } else {
+                i++;
+                j++;
+            }
+        } else {
+            if (j !== 0) {
+                j = table[j - 1];
+            } else {
+                i++;
+            }
+        }
     }
-  }
 
-  return { distances, previous };
+    return -1;
 }
+let text = "ABABDABACDABABCABAB";
+let pattern = "ABABCABAB";
 
-// Example graph
-const graph = {
-  A: { B: 1, C: 4 },
-  B: { A: 1, C: 2, D: 5 },
-  C: { A: 4, B: 2, D: 1 },
-  D: { B: 5, C: 1 },
-};
+let index = kmpSearch(text, pattern);
 
-const startNode = 'A';
-const { distances, previous } = dijkstra(graph, startNode);
-
-console.log("Distances from node", startNode);
-for (let node in distances) {
-  console.log(`${node}: ${distances[node]}`);
-}
-
-console.log("\nShortest paths:");
-for (let node in previous) {
-  let path = [];
-  for (let current = node; current; current = previous[current]) {
-    path.unshift(current);
-  }
-  const distance = distances[node];
-  console.log(`${node} (${distance}): ${path.join(' -> ')}`);
+if (index !== -1) {
+    console.log("Pattern found at index: " + index);
+} else {
+    console.log("Pattern not found");
 }
