@@ -1,16 +1,23 @@
-let array = [1, 2, 3, 4, 5];
-let index = array.indexOf(3); // Find the index of the element you want to remove
-if (index > -1) {
-    array.splice(index, 1); // Remove the element at the found index
+function quickSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
+    }
+
+    const pivot = arr[0];
+    const left = [];
+    const right = [];
+
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
+        } else {
+            right.push(arr[i]);
+        }
+    }
+
+    return quickSort(left).concat(pivot, quickSort(right));
 }
-console.log(array); // Output: [1, 2, 4, 5]
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
-array = array.filter(item => item !== elementToRemove);
-console.log(array); // Output: [1, 2, 4, 5]
-let array = [1, 2, 3, 4, 5];
-let index = array.indexOf(3); // Find the index of the element you want to remove
-if (index > -1) {
-    array = array.slice(0, index).concat(array.slice(index + 1)); // Create a new array without the element at the found index
-}
-console.log(array); // Output: [1, 2, 4, 5]
+
+const array = [3, 6, 8, 10, 1, 2, 1];
+const sortedArray = quickSort(array);
+console.log(sortedArray);
