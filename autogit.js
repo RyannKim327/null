@@ -1,59 +1,41 @@
-// Node class to represent a node in the red-black tree
+function hasCycle(head) {
+    if (!head || !head.next) {
+        return false;
+    }
+
+    let slow = head;
+    let fast = head.next;
+
+    while (fast && fast.next) {
+        if (slow === fast) {
+            return true;
+        }
+
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+
+    return false;
+}
+// Define the Node class
 class Node {
-    constructor(value, color) {
+    constructor(value) {
         this.value = value;
-        this.color = color;
-        this.left = null;
-        this.right = null;
-        this.parent = null;
+        this.next = null;
     }
 }
 
-// RedBlackTree class to represent the red-black tree
-class RedBlackTree {
-    constructor() {
-        this.root = null;
-        this.nil = new Node(null, 'black');
-    }
+// Create a linked list
+let node1 = new Node(1);
+let node2 = new Node(2);
+let node3 = new Node(3);
+let node4 = new Node(4);
 
-    // Insert a new value into the red-black tree
-    insert(value) {
-        let newNode = new Node(value, 'red');
-        if (!this.root) {
-            this.root = newNode;
-            this.root.color = 'black';
-        } else {
-            this._insertNode(this.root, newNode);
-        }
-    }
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+// Uncomment the line below to create a cycle
+// node4.next = node2;
 
-    // Helper function to insert a node recursively
-    _insertNode(root, newNode) {
-        if (newNode.value < root.value) {
-            if (root.left === null) {
-                root.left = newNode;
-                newNode.parent = root;
-            } else {
-                this._insertNode(root.left, newNode);
-            }
-        } else {
-            if (root.right === null) {
-                root.right = newNode;
-                newNode.parent = root;
-            } else {
-                this._insertNode(root.right, newNode);
-            }
-        }
-    }
-
-    // Other methods such as rotate, balance, etc. can be added here
-}
-
-// Create a new RedBlackTree instance
-const rbTree = new RedBlackTree();
-
-// Insert values into the red-black tree
-rbTree.insert(10);
-rbTree.insert(20);
-rbTree.insert(5);
-rbTree.insert(15);
+// Check if the linked list contains a cycle
+console.log(hasCycle(node1)); // Output: false
