@@ -1,44 +1,63 @@
-function mergeSortIterative(arr) {
-    const n = arr.length;
-    const temp = new Array(n);
-    
-    for (let size = 1; size < n; size *= 2) {
-        for (let leftStart = 0; leftStart < n - 1; leftStart += 2 * size) {
-            let mid = Math.min(leftStart + size, n);
-            let rightEnd = Math.min(leftStart + 2 * size, n);
-            merge(arr, leftStart, mid, rightEnd, temp);
-        }
-    }
-    
-    return arr;
-}
+function computeLPSArray(pattern) {
+    const lps = Array(pattern.length).fill(0);
+    let len = 0;
+    let i = 1;
 
-function merge(arr, leftStart, mid, rightEnd, temp) {
-    let left = leftStart;
-    let right = mid;
-    let index = leftStart;
-    
-    while (left < mid && right < rightEnd) {
-        if (arr[left] <= arr[right]) {
-            temp[index++] = arr[left++];
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
         } else {
-            temp[index++] = arr[right++];
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
         }
     }
-    
-    while (left < mid) {
-        temp[index++] = arr[left++];
-    }
-    
-    while (right < rightEnd) {
-        temp[index++] = arr[right++];
-    }
-    
-    for (let i = leftStart; i < rightEnd; i++) {
-        arr[i] = temp[i];
-    }
+
+    return lps;
 }
 
-// Example usage
-const arr = [38, 27, 43, 3, 9, 82, 10];
-console.log(mergeSortIterative(arr));
+function KMPSearch(text, pattern) {
+    const n = text.length;
+    const m = pattern.length;
+    const lps = computeLPSArray(pattern);
+    const results = [];
+
+    let i = 0;
+    let j = 0;
+
+    while (i < n) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j === m) {
+            results.push(i - j);
+            j = lps[j - 1];
+        } else if (i < n && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+
+    return results;
+}
+
+// Test the KMP algorithm
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const matches = KMPSearch(text, pattern);
+
+if (matches.length > 0) {
+    console.log("Pattern found at index: " + matches[0]);
+} else {
+    console.log("Pattern not found in the text.");
+}
