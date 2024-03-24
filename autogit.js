@@ -1,11 +1,19 @@
-function factorial(n) {
-    if (n === 0) {
-        return 1;
-    }
-    return n * factorial(n - 1);
-}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Input Example</title>
+</head>
+<body>
+    <label for="userInput">Enter your name:</label>
+    <input type="text" id="userInput">
+    <button onclick="displayInput()">Submit</button>
+    <p id="output"></p>
 
-// Calculate the factorial of a number
-const number = 5;
-const result = factorial(number);
-console.log(`The factorial of ${number} is: ${result}`);
+    <script>
+        function displayInput() {
+            const userInput = document.getElementById('userInput').value;
+            document.getElementById('output').innerText = "Hello, " + userInput + "!";
+        }
+    </script>
+</body>
+</html>
