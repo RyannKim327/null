@@ -1,25 +1,15 @@
-function longestCommonSubstring(str1, str2) {
-    const dp = Array.from({ length: str1.length + 1 }, () => Array(str2.length + 1).fill(0));
-    let maxLength = 0;
-    let endIndex = 0;
+function isPalindrome(str) {
+    // Remove special characters, spaces, and convert to lowercase
+    let cleanStr = str.toLowerCase().replace(/[\W_]/g, '');
 
-    for (let i = 1; i <= str1.length; i++) {
-        for (let j = 1; j <= str2.length; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-                if (dp[i][j] > maxLength) {
-                    maxLength = dp[i][j];
-                    endIndex = i - 1;
-                }
-            }
-        }
-    }
+    // Reverse the string
+    let reversedStr = cleanStr.split('').reverse().join('');
 
-    return str1.substring(endIndex - maxLength + 1, endIndex + 1);
+    // Check if the original string is equal to the reversed string
+    return cleanStr === reversedStr;
 }
 
-// Example usage
-const str1 = "abcdefg";
-const str2 = "zbcdf";
-const result = longestCommonSubstring(str1, str2);
-console.log(result);  // Output: "bcd"
+// Test the function
+console.log(isPalindrome("Racecar")); // Output: true
+console.log(isPalindrome("Hello")); // Output: false
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // Output: true
