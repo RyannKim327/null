@@ -1,52 +1,68 @@
-class TrieNode {
-    constructor() {
-        this.children = {};
-        this.isEndOfWord = false;
-    }
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-class Trie {
-    constructor() {
-        this.root = new TrieNode();
+class BinarySearchTree {
+  constructor() {
+    this.root = null;
+  }
+
+  insert(value) {
+    const newNode = new Node(value);
+    
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
+  }
+
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  searchNode(node, value) {
+    if (node === null) {
+      return false;
     }
 
-    insert(word) {
-        let node = this.root;
-        for (let char of word) {
-            if (!node.children[char]) {
-                node.children[char] = new TrieNode();
-            }
-            node = node.children[char];
-        }
-        node.isEndOfWord = true;
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else if (value > node.value) {
+      return this.searchNode(node.right, value);
+    } else {
+      return true;
     }
-
-    search(word) {
-        let node = this.root;
-        for (let char of word) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
-        }
-        return node.isEndOfWord;
-    }
-
-    startsWith(prefix) {
-        let node = this.root;
-        for (let char of prefix) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
-        }
-        return true;
-    }
+  }
 }
 
-// Example usage
-let trie = new Trie();
-trie.insert("apple");
-console.log(trie.search("apple")); // Output: true
-console.log(trie.search("app"));   // Output: false
-console.log(trie.startsWith("app")); // Output: true
+// Example Usage
+const bst = new BinarySearchTree();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(3);
+bst.insert(7);
+
+console.log(bst.search(7)); // Output: true
+console.log(bst.search(12)); // Output: false
