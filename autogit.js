@@ -1,6 +1,11 @@
-let array = [1, 2, 3, 4, 5];
-let indexToRemove = 2; // Index of the element to remove
+function isPalindrome(str) {
+    // Remove non-alphanumeric characters and convert to lowercase
+    const cleanStr = str.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
+    
+    // Compare the clean string with its reverse
+    return cleanStr === cleanStr.split('').reverse().join('');
+}
 
-array.splice(indexToRemove, 1);
-
-console.log(array); // Output: [1, 2, 4, 5]
+// Example usage
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
+console.log(isPalindrome("Hello, World!")); // false
