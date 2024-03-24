@@ -1,19 +1,26 @@
-function isPalindrome(str) {
-    // Remove non-alphanumeric characters and convert to lowercase
-    let formattedStr = str.replace(/[\W_]/g, '').toLowerCase();
+function dijkstra(graph, source) {
+  const distances = {};
+  const priorityQueue = new MinHeap();
 
-    // Check if the string is a palindrome
-    for (let i = 0; i < formattedStr.length / 2; i++) {
-        if (formattedStr[i] !== formattedStr[formattedStr.length - 1 - i]) {
-            return false;
-        }
+  // Initialize distances
+  for (let node in graph) {
+    distances[node] = node === source ? 0 : Infinity;
+    priorityQueue.insert(node, distances[node]);
+  }
+
+  while (!priorityQueue.isEmpty()) {
+    const currentNode = priorityQueue.extractMin();
+
+    for (let neighbor in graph[currentNode]) {
+      const edgeWeight = graph[currentNode][neighbor];
+      const newDistance = distances[currentNode] + edgeWeight;
+
+      if (newDistance < distances[neighbor]) {
+        distances[neighbor] = newDistance;
+        priorityQueue.insert(neighbor, newDistance);
+      }
     }
-    return true;
+  }
+
+  return distances;
 }
-
-// Test the function
-const str1 = "A man, a plan, a canal, Panama";
-console.log(isPalindrome(str1)); // Output: true
-
-const str2 = "hello world";
-console.log(isPalindrome(str2)); // Output: false
