@@ -1,84 +1,45 @@
+// Node class to create nodes for the linked list
 class Node {
-    constructor(value, color) {
+    constructor(value) {
         this.value = value;
-        this.left = null;
-        this.right = null;
-        this.color = color;
+        this.next = null;
     }
 }
 
-class RedBlackTree {
-    constructor() {
-        this.root = null;
-    }
+// Function to find the nth node from the end of the linked list
+function findNthNodeFromEnd(head, n) {
+    let slow = head;
+    let fast = head;
 
-    insert(value) {
-        this.root = this._insertRecursive(this.root, value);
-        this.root.color = 'black';
-    }
-
-    _insertRecursive(node, value) {
-        if (node === null) {
-            return new Node(value, 'red');
+    // Move the fast pointer n steps ahead
+    for (let i = 0; i < n; i++) {
+        if (fast === null) {
+            return null; // If the linked list is shorter than n nodes
         }
-
-        if (value < node.value) {
-            node.left = this._insertRecursive(node.left, value);
-        } else if (value > node.value) {
-            node.right = this._insertRecursive(node.right, value);
-        }
-
-        if (this._isRed(node.right) && !this._isRed(node.left)) {
-            node = this._rotateLeft(node);
-        }
-
-        if (this._isRed(node.left) && this._isRed(node.left.left)) {
-            node = this._rotateRight(node);
-        }
-
-        if (this._isRed(node.left) && this._isRed(node.right)) {
-            this._flipColors(node);
-        }
-
-        return node;
+        fast = fast.next;
     }
 
-    _isRed(node) {
-        if (node === null) {
-            return false;
-        }
-        return node.color === 'red';
+    // Move the slow and fast pointers together until fast reaches the end
+    while (fast !== null) {
+        slow = slow.next;
+        fast = fast.next;
     }
 
-    _rotateLeft(node) {
-        const temp = node.right;
-        node.right = temp.left;
-        temp.left = node;
-        temp.color = node.color;
-        node.color = 'red';
-        return temp;
-    }
-
-    _rotateRight(node) {
-        const temp = node.left;
-        node.left = temp.right;
-        temp.right = node;
-        temp.color = node.color;
-        node.color = 'red';
-        return temp;
-    }
-
-    _flipColors(node) {
-        node.color = 'red';
-        node.left.color = 'black';
-        node.right.color = 'black';
-    }
+    return slow;
 }
 
-// Usage
-const tree = new RedBlackTree();
-tree.insert(10);
-tree.insert(20);
-tree.insert(5);
+// Example usage
+let head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
 
-console.log(tree);
+let n = 2; // Find the 2nd node from the end
+let nthNodeFromEnd = findNthNodeFromEnd(head, n);
+
+if (nthNodeFromEnd) {
+    console.log(`The ${n}th node from the end is: ${nthNodeFromEnd.value}`);
+} else {
+    console.log(`The linked list is shorter than ${n} nodes.`);
+}
