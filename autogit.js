@@ -1,52 +1,48 @@
-class TrieNode {
-    constructor() {
-        this.children = {};
-        this.isEndOfWord = false;
+function bellmanFord(graph, start) {
+    let distances = {};
+    let predecessors = {};
+    
+    // Initialize distances and predecessors
+    for (let node in graph) {
+        distances[node] = Infinity;
+        predecessors[node] = null;
     }
+    distances[start] = 0;
+    
+    // Relax edges repeatedly
+    for (let i = 0; i < Object.keys(graph).length - 1; i++) {
+        for (let node in graph) {
+            for (let neighbor in graph[node]) {
+                if (distances[node] + graph[node][neighbor] < distances[neighbor]) {
+                    distances[neighbor] = distances[node] + graph[node][neighbor];
+                    predecessors[neighbor] = node;
+                }
+            }
+        }
+    }
+    
+    // Check for negative cycles
+    for (let node in graph) {
+        for (let neighbor in graph[node]) {
+            if (distances[node] + graph[node][neighbor] < distances[neighbor]) {
+                console.log("Graph contains negative cycle");
+                return;
+            }
+        }
+    }
+    
+    return { distances, predecessors };
 }
 
-class Trie {
-    constructor() {
-        this.root = new TrieNode();
-    }
+// Example usage
+const graph = {
+    A: { B: -1, C: 4 },
+    B: { C: 3, D: 2, E: 2 },
+    C: {},
+    D: { B: 1, C: 5 },
+    E: { D: -3 }
+};
 
-    insert(word) {
-        let node = this.root;
-        for (let char of word) {
-            if (!node.children[char]) {
-                node.children[char] = new TrieNode();
-            }
-            node = node.children[char];
-        }
-        node.isEndOfWord = true;
-    }
-
-    search(word) {
-        let node = this.root;
-        for (let char of word) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
-        }
-        return node !== null && node.isEndOfWord;
-    }
-
-    startsWith(prefix) {
-        let node = this.root;
-        for (let char of prefix) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
-        }
-        return true;
-    }
-}
-
-// Example usage:
-let trie = new Trie();
-trie.insert("apple");
-console.log(trie.search("apple"));   // Output: true
-console.log(trie.search("app"));     // Output: false
-console.log(trie.startsWith("app")); // Output: true
+const { distances, predecessors } = bellmanFord(graph, 'A');
+console.log(distances);
+console.log(predecessors);
