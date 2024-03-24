@@ -1,17 +1,18 @@
-function insertionSort(arr) {
-    for (let i = 1; i < arr.length; i++) {
-        let current = arr[i];
-        let j = i - 1;
-        while (j >= 0 && arr[j] > current) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
-        arr[j + 1] = current;
-    }
-    return arr;
+async function connectToDevice() {
+  try {
+    const response = await fetch('http://your-android-device-ip:port/connect', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ key: 'value' })
+    });
+
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error('Error connecting to Android device:', error);
+  }
 }
 
-// Example usage
-const array = [5, 3, 8, 2, 1, 4];
-console.log("Original array:", array);
-console.log("Sorted array:", insertionSort(array));
+connectToDevice();
