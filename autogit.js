@@ -1,26 +1,39 @@
-function binarySearch(arr, target, start = 0, end = arr.length - 1) {
-    if (start > end) {
-        return -1; // Element not found
-    }
-    
-    let mid = Math.floor((start + end) / 2);
-    
-    if (arr[mid] === target) {
-        return mid; // Element found
-    } else if (arr[mid] > target) {
-        return binarySearch(arr, target, start, mid - 1); // Search left half
-    } else {
-        return binarySearch(arr, target, mid + 1, end); // Search right half
-    }
+function makeAsyncRequest(url, method, data) {
+    return new Promise(function(resolve, reject) {
+        var xhr = new XMLHttpRequest();
+        xhr.open(method, url, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onload = function() {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                resolve(xhr.response);
+            } else {
+                reject({
+                    status: xhr.status,
+                    statusText: xhr.statusText
+                });
+            }
+        };
+        xhr.onerror = function() {
+            reject({
+                status: xhr.status,
+                statusText: xhr.statusText
+            });
+        };
+        xhr.send(JSON.stringify(data));
+    });
 }
 
 // Example usage
-const arr = [1, 3, 5, 7, 9, 11, 13];
-const target = 7;
-const index = binarySearch(arr, target);
+var apiUrl = 'https://api.example.com/data';
+var requestData = {
+    param1: 'value1',
+    param2: 'value2'
+};
 
-if (index !== -1) {
-    console.log(`Element found at index: ${index}`);
-} else {
-    console.log("Element not found");
-}
+makeAsyncRequest(apiUrl, 'POST', requestData)
+    .then(function(response) {
+        console.log('Request successful: ', response);
+    })
+    .catch(function(error) {
+        console.error('Error occurred: ', error);
+    });
