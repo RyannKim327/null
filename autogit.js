@@ -1,80 +1,57 @@
-function boyerMoore(text, pattern) {
-    function buildBadCharTable(pattern) {
-        const table = {};
+function buildLPSArray(pattern) {
+    const lps = [0];
+    let len = 0;
+    let i = 1;
 
-        for (let i = 0; i < pattern.length - 1; i++) {
-            table[pattern[i]] = pattern.length - i - 1;
-        }
-        
-        return table;
-    }
-
-    function buildGoodSuffixTable(pattern) {
-        const table = new Array(pattern.length);
-        const suffix = new Array(pattern.length).fill(0);
-        
-        let j = 0;
-        
-        for (let i = pattern.length - 1; i >= 0; i--) {
-            if (pattern[i] === pattern[j]) {
-                suffix[i] = j + 1;
-                j++;
-            } else {
-                suffix[i] = 0;
-                j = 0;
-            }
-        }
-
-        for (let i = 0; i < pattern.length; i++) {
-            table[i] = pattern.length - suffix[i];
-        }
-
-        for (let i = 0; i < pattern.length - 1; i++) {
-            const suffixLen = suffix.length - suffix[i];
-            if (suffix[i] === i + 1) {
-                for (let j = 0; j < suffixLen; j++) {
-                    if (!table[j] || table[j] > suffixLen) {
-                        table[j] = suffixLen;
-                    }
-                }
-            }
-        }
-
-        return table;
-    }
-
-    const badCharTable = buildBadCharTable(pattern);
-    const goodSuffixTable = buildGoodSuffixTable(pattern);
-    const n = text.length;
-    const m = pattern.length;
-    
-    let i = 0;
-
-    while (i <= n - m) {
-        let j = m - 1;
-        while (j >= 0 && pattern[j] === text[i + j]) {
-            j--;
-        }
-        
-        if (j < 0) {
-            return i;
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
         } else {
-            const badCharSkip = badCharTable[text[i + j]] || m;
-            const goodSuffixSkip = goodSuffixTable[j];
-            i += Math.max(badCharSkip, goodSuffixSkip);
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
         }
     }
 
-    return -1;
+    return lps;
 }
 
-// Example
-const text = "exampletextforexample";
-const pattern = "example";
-const index = boyerMoore(text, pattern);
+function KMPSearch(text, pattern) {
+    const lps = buildLPSArray(pattern);
 
-if (index !== -1) {
-    console.log(`Pattern found at index ${index}`);
-} else {
-    console.log("Pattern not found");
+    let i = 0;
+    let j = 0;
+
+    const indices = [];
+
+    while (i < text.length) {
+        if (text[i] === pattern[j]) {
+            i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            indices.push(i - j);
+            j = lps[j - 1];
+        } else if (i < text.length && text[i] !== pattern[j]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+
+    return indices;
 }
+
+// Usage example
+const text = 'ABABDABACDABABCABAB';
+const pattern = 'ABABCABAB';
+const indices = KMPSearch(text, pattern);
+console.log(indices);
