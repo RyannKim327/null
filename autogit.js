@@ -1,42 +1,15 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+function maxSubarraySum(arr) {
+    let maxEndingHere = arr[0];
+    let maxSoFar = arr[0];
+
+    for (let i = 1; i < arr.length; i++) {
+        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
+        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+    }
+
+    return maxSoFar;
 }
 
-function reverseLinkedList(head) {
-  let prev = null;
-  let current = head;
-  let next = null;
-
-  while (current !== null) {
-    next = current.next;
-    current.next = prev;
-    prev = current;
-    current = next;
-  }
-
-  return prev; // Update the head of the reversed list
-}
-
-// Example usage
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-
-console.log("Original Linked List:");
-let current = head;
-while (current !== null) {
-  console.log(current.value);
-  current = current.next;
-}
-
-head = reverseLinkedList(head);
-
-console.log("\nReversed Linked List:");
-current = head;
-while (current !== null) {
-  console.log(current.value);
-  current = current.next;
-}
+// Example
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+console.log(maxSubarraySum(array)); // Output: 6 (The subarray [4, -1, 2, 1] has the maximum sum of 6)
