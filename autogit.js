@@ -1,58 +1,37 @@
-function mergeSortIterative(arr) {
-  if (arr.length < 2) {
-    return arr;
-  }
-  
-  const len = arr.length;
-  let step = 1;
-  
-  while (step < len) {
-    let left = 0;
-    
-    while (left + step < len) {
-      mergeArrays(arr, left, step);
-      left += step * 2;
+function isPrime(num) {
+    if (num <= 1) return false;
+    if (num <= 3) return true;
+
+    if (num % 2 === 0 || num % 3 === 0) return false;
+
+    let i = 5;
+    while (i * i <= num) {
+        if (num % i === 0 || num % (i + 2) === 0) {
+            return false;
+        }
+        i += 6;
     }
-    
-    step *= 2;
-  }
-  
-  return arr;
+
+    return true;
 }
 
-function mergeArrays(arr, start, step) {
-  const mid = start + step;
-  const end = Math.min(start + 2 * step, arr.length);
-  const temp = [];
-  
-  let i = start;
-  let j = mid;
-  
-  while (i < mid && j < end) {
-    if (arr[i] < arr[j]) {
-      temp.push(arr[i]);
-      i++;
-    } else {
-      temp.push(arr[j]);
-      j++;
+function largestPrimeFactor(number) {
+    let largest = 0;
+
+    for (let i = 2; i <= Math.sqrt(number); i++) {
+        if (number % i === 0) {
+            if (isPrime(i)) {
+                largest = i;
+            }
+            if (isPrime(number / i)) {
+                largest = Math.max(largest, number / i);
+            }
+        }
     }
-  }
-  
-  while (i < mid) {
-    temp.push(arr[i]);
-    i++;
-  }
-  
-  while (j < end) {
-    temp.push(arr[j]);
-    j++;
-  }
-  
-  for (let k = start; k < end; k++) {
-    arr[k] = temp[k - start];
-  }
+
+    return largest;
 }
 
-// Example
-const arr = [5, 3, 8, 6, 2, 7, 1, 4];
-console.log(mergeSortIterative(arr)); // Output: [1, 2, 3, 4, 5, 6, 7, 8]
+const number = 13195; // Example number
+const largestPrime = largestPrimeFactor(number);
+console.log("The largest prime factor of", number, "is", largestPrime);
