@@ -1,9 +1,17 @@
-function findCommonElements(arr1, arr2) {
-    return arr1.filter(element => arr2.includes(element));
+function findKthSmallestElement(arr, k) {
+    if (k <= 0 || k > arr.length) {
+        return null;
+    }
+
+    // Sort the array in ascending order
+    arr.sort((a, b) => a - b);
+
+    return arr[k - 1];
 }
 
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 4, 5, 6, 7];
+// Example usage
+const array = [3, 1, 4, 1, 5, 9, 2, 6, 5];
+const k = 3;
+const kthElement = findKthSmallestElement(array, k);
 
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [3, 4, 5]
+console.log(`The ${k}th smallest element in the array is: ${kthElement}`);
