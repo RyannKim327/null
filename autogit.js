@@ -1,47 +1,60 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
+function tarjanSCC(graph) {
+    let index = 0;
+    let stack = [];
+    let indices = {};
+    let lowlinks = {};
+    let onStack = {};
+    let result = [];
+
+    function strongConnect(node) {
+        indices[node] = index;
+        lowlinks[node] = index;
+        index++;
+        stack.push(node);
+        onStack[node] = true;
+
+        for (let neighbor of graph[node]) {
+            if (!(neighbor in indices)) {
+                strongConnect(neighbor);
+                lowlinks[node] = Math.min(lowlinks[node], lowlinks[neighbor]);
+            } else if (onStack[neighbor]) {
+                lowlinks[node] = Math.min(lowlinks[node], indices[neighbor]);
+            }
+        }
+
+        if (lowlinks[node] === indices[node]) {
+            let component = [];
+            let nextNode = null;
+            do {
+                nextNode = stack.pop();
+                onStack[nextNode] = false;
+                component.push(nextNode);
+            } while (nextNode !== node);
+            result.push(component);
+        }
     }
-}
 
-function reverseLinkedList(head) {
-    let prev = null;
-    let current = head;
-    let next = null;
-
-    while (current !== null) {
-        next = current.next;
-        current.next = prev;
-        prev = current;
-        current = next;
+    for (let node in graph) {
+        if (!(node in indices)) {
+            strongConnect(node);
+        }
     }
 
-    return prev;
+    return result;
 }
 
-// Example usage
-let node1 = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
+// Example usage:
+let graph = {
+    'A': ['B'],
+    'B': ['C', 'E'],
+    'C': ['A', 'D'],
+    'D': ['E'],
+    'E': ['F'],
+    'F': ['G'],
+    'G': ['D', 'H'],
+    'H': ['I'],
+    'I': ['J', 'G']
+};
 
-node1.next = node2;
-node2.next = node3;
-
-let head = node1;
-
-console.log("Original linked list:");
-let current = head;
-while (current !== null) {
-    console.log(current.value);
-    current = current.next;
-}
-
-head = reverseLinkedList(head);
-
-console.log("\nReversed linked list:");
-current = head;
-while (current !== null) {
-    console.log(current.value);
-    current = current.next;
-}
+let scc = tarjanSCC(graph);
+console.log(scc);
