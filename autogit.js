@@ -1,52 +1,39 @@
-class Graph {
-    constructor() {
-        this.adjList = {};
+
+function isAnagram(str1, str2) {
+  // Remove spaces and convert to lowercase
+  str1 = str1.replace(/ /g, '').toLowerCase();
+  str2 = str2.replace(/ /g, '').toLowerCase();
+
+  // Check if the lengths of the strings are equal
+  if (str1.length !== str2.length) {
+    return false;
+  }
+
+  // Create objects to store character frequency for each string
+  let charFreq1 = {};
+  let charFreq2 = {};
+
+  // Count frequency of characters in str1
+  for (let char of str1) {
+    charFreq1[char] = (charFreq1[char] || 0) + 1;
+  }
+
+  // Count frequency of characters in str2
+  for (let char of str2) {
+    charFreq2[char] = (charFreq2[char] || 0) + 1;
+  }
+
+  // Compare character frequencies in both strings
+  for (let key in charFreq1) {
+    if (charFreq1[key] !== charFreq2[key]) {
+      return false;
     }
+  }
 
-    addVertex(vertex) {
-        if (!this.adjList[vertex]) {
-            this.adjList[vertex] = [];
-        }
-    }
-
-    addEdge(vertex1, vertex2) {
-        this.adjList[vertex1].push(vertex2);
-        this.adjList[vertex2].push(vertex1);
-    }
-
-    bfs(startingNode) {
-        let visited = {};
-        let queue = [];
-        let result = [];
-
-        visited[startingNode] = true;
-        queue.push(startingNode);
-
-        while (queue.length) {
-            let currentNode = queue.shift();
-            result.push(currentNode);
-
-            this.adjList[currentNode].forEach(neighbor => {
-                if (!visited[neighbor]) {
-                    visited[neighbor] = true;
-                    queue.push(neighbor);
-                }
-            });
-        }
-
-        return result;
-    }
+  return true;
 }
 
-// Example Usage
-const graph = new Graph();
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('C', 'D');
+// Test the function
+console.log(isAnagram('listen', 'silent')); // Output: true
+console.log(isAnagram('hello', 'world')); // Output: false
 
-console.log(graph.bfs('A')); // ['A', 'B', 'C', 'D']
