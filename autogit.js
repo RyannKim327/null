@@ -1,19 +1,26 @@
-function isPrime(number) {
-    if (number <= 1) {
-        return false;
-    }
-    for (let i = 2; i < number; i++) {
-        if (number % i === 0) {
-            return false;
+function selectionSort(arr) {
+    const len = arr.length;
+    for (let i = 0; i < len - 1; i++) {
+        let minIndex = i;
+        for (let j = i + 1; j < len; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+
+        if (minIndex !== i) {
+            // Swap the elements
+            const temp = arr[i];
+            arr[i] = arr[minIndex];
+            arr[minIndex] = temp;
         }
     }
-    return true;
+
+    return arr;
 }
 
-// Test the function
-const num = 17;
-if (isPrime(num)) {
-    console.log(num + " is a prime number.");
-} else {
-    console.log(num + " is not a prime number.");
-}
+// Test the selectionSort function
+const arr = [64, 25, 12, 22, 11];
+console.log("Original array: ", arr);
+const sortedArr = selectionSort(arr);
+console.log("Sorted array: ", sortedArr);
