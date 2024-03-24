@@ -1,24 +1,11 @@
-function shellSort(arr) {
-    let n = arr.length;
-    let gap = Math.floor(n / 2);
-  
-    while (gap > 0) {
-        for (let i = gap; i < n; i++) {
-            let temp = arr[i];
-            let j = i;
-            while (j >= gap && arr[j - gap] > temp) {
-                arr[j] = arr[j - gap];
-                j -= gap;
-            }
-            arr[j] = temp;
-        }
-        gap = Math.floor(gap / 2);
+function factorial(n) {
+    if (n === 0) {
+        return 1;
+    } else {
+        return n * factorial(n - 1);
     }
-  
-    return arr;
 }
 
-// Example usage:
-const arrayToSort = [12, 34, 7, 23, 32, 5, 62];
-console.log("Original array:", arrayToSort);
-console.log("Sorted array:", shellSort(arrayToSort));
+// Use the function to calculate the factorial of a number
+const number = 5;
+console.log(`Factorial of ${number} is: ${factorial(number)}`);
