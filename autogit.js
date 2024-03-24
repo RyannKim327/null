@@ -1,49 +1,44 @@
-function depthLimitedSearch(node, goal, depth) {
-    if (depth === 0) {
-        return null;
+class Stack {
+    constructor() {
+        this.stack = [];
     }
 
-    if (node === goal) {
-        return node;
+    push(element) {
+        this.stack.push(element);
     }
 
-    for (let childNode of node.children) {
-        let result = depthLimitedSearch(childNode, goal, depth - 1);
-        if (result) {
-            return result;
+    pop() {
+        if (this.isEmpty()) {
+            return "Stack is empty";
         }
+        return this.stack.pop();
     }
 
-    return null;
-}
+    isEmpty() {
+        return this.stack.length === 0;
+    }
 
-// Example usage:
-class Node {
-    constructor(value, children = []) {
-        this.value = value;
-        this.children = children;
+    peek() {
+        return this.stack[this.stack.length - 1];
+    }
+
+    size() {
+        return this.stack.length;
     }
 }
 
-// Create a tree
-const rootNode = new Node('A', [
-    new Node('B', [
-        new Node('D'),
-        new Node('E')
-    ]),
-    new Node('C', [
-        new Node('F'),
-        new Node('G')
-    ])
-]);
+// Example usage
+const stack = new Stack();
 
-const goalNode = 'F';
-const depth = 2;
+stack.push(1);
+stack.push(2);
+stack.push(3);
 
-const result = depthLimitedSearch(rootNode, goalNode, depth);
-
-if (result) {
-    console.log(`Goal node ${goalNode} found within depth limit ${depth}.`);
-} else {
-    console.log(`Goal node ${goalNode} not found within depth limit ${depth}.`);
-}
+console.log(stack.pop()); // Output: 3
+console.log(stack.peek()); // Output: 2
+console.log(stack.size()); // Output: 2
+console.log(stack.isEmpty()); // Output: false
+console.log(stack.pop()); // Output: 2
+console.log(stack.pop()); // Output: 1
+console.log(stack.isEmpty()); // Output: true
+console.log(stack.pop()); // Output: "Stack is empty"
