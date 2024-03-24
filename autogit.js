@@ -1,29 +1,32 @@
-function binarySearch(arr, target) {
-    let left = 0;
-    let right = arr.length - 1;
+function longestCommonSubstring(str1, str2) {
+    const m = str1.length;
+    const n = str2.length;
+    let maxLength = 0;
+    let endIndex = 0;
+    const dp = Array.from({ length: m + 1 }, () => Array.from({ length: n + 1 }, () => 0));
 
-    while (left <= right) {
-        let mid = Math.floor((left + right) / 2);
-
-        if (arr[mid] === target) {
-            return mid;
-        } else if (arr[mid] < target) {
-            left = mid + 1;
-        } else {
-            right = mid - 1;
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > maxLength) {
+                    maxLength = dp[i][j];
+                    endIndex = i - 1;
+                }
+            } else {
+                dp[i][j] = 0;
+            }
         }
     }
 
-    return -1; // If the target is not found in the array
+    if (maxLength === 0) {
+        return "";
+    }
+
+    return str1.substr(endIndex - maxLength + 1, maxLength);
 }
 
-// Example usage
-const arr = [1, 3, 6, 9, 12, 15, 18, 21];
-const target = 9;
-const resultIndex = binarySearch(arr, target);
-
-if (resultIndex !== -1) {
-    console.log(`The target ${target} was found at index ${resultIndex}.`);
-} else {
-    console.log(`The target ${target} was not found in the array.`);
-}
+// Test the function
+const str1 = "hellojavascript";
+const str2 = "ilovejavascript";
+console.log(longestCommonSubstring(str1, str2)); // Output: "javascript"
