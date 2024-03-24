@@ -1,30 +1,16 @@
-// Node definition for the binary tree
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+const str = "Hello, World!";
+const substring = "World";
+
+if (str.includes(substring)) {
+    console.log("The string contains the substring.");
+} else {
+    console.log("The string does not contain the substring.");
 }
+const str = "Hello, World!";
+const substring = "World";
 
-// Function to find the sum of all nodes in a binary tree
-function sumBinaryTree(root) {
-    if (root === null) {
-        return 0;
-    }
-
-    return root.value + sumBinaryTree(root.left) + sumBinaryTree(root.right);
+if (str.indexOf(substring) !== -1) {
+    console.log("The string contains the substring.");
+} else {
+    console.log("The string does not contain the substring.");
 }
-
-// Example binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
-
-// Calculate the sum of all nodes in the binary tree
-const sum = sumBinaryTree(root);
-console.log("Sum of all nodes in the binary tree:", sum);
