@@ -1,101 +1,29 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-        this.height = 1;
-    }
-}
-class AVLTree {
-    constructor() {
-        this.root = null;
-    }
+function interpolationSearch(array, target) {
+    let low = 0;
+    let high = array.length - 1;
 
-    // Helper function to get the height of a node
-    getHeight(node) {
-        if (node === null) {
-            return 0;
-        }
-        return node.height;
-    }
+    while (low <= high && target >= array[low] && target <= array[high]) {
+        let pos = low + Math.floor(((target - array[low]) * (high - low)) / (array[high] - array[low]));
 
-    // Helper function to update the height of a node
-    updateHeight(node) {
-        node.height = Math.max(this.getHeight(node.left), this.getHeight(node.right)) + 1;
-    }
-
-    // Helper function to get the balance factor of a node
-    getBalanceFactor(node) {
-        if (node === null) {
-            return 0;
-        }
-        return this.getHeight(node.left) - this.getHeight(node.right);
-    }
-
-    // Helper function to perform left rotation
-    leftRotate(node) {
-        const newRoot = node.right;
-        node.right = newRoot.left;
-        newRoot.left = node;
-        this.updateHeight(node);
-        this.updateHeight(newRoot);
-        return newRoot;
-    }
-
-    // Helper function to perform right rotation
-    rightRotate(node) {
-        const newRoot = node.left;
-        node.left = newRoot.right;
-        newRoot.right = node;
-        this.updateHeight(node);
-        this.updateHeight(newRoot);
-        return newRoot;
-    }
-
-    // Helper function to balance the AVL tree
-    balanceTree(node) {
-        const balanceFactor = this.getBalanceFactor(node);
-
-        if (balanceFactor > 1) {
-            if (this.getBalanceFactor(node.left) < 0) {
-                node.left = this.leftRotate(node.left);
-            }
-            return this.rightRotate(node);
-        }
-        if (balanceFactor < -1) {
-            if (this.getBalanceFactor(node.right) > 0) {
-                node.right = this.rightRotate(node.right);
-            }
-            return this.leftRotate(node);
-        }
-        return node;
-    }
-
-    // Insert a value into the AVL tree
-    insert(value) {
-        this.root = this._insert(this.root, value);
-    }
-
-    _insert(node, value) {
-        if (node === null) {
-            return new Node(value);
-        }
-
-        if (value < node.value) {
-            node.left = this._insert(node.left, value);
+        if (array[pos] === target) {
+            return pos;
+        } else if (array[pos] < target) {
+            low = pos + 1;
         } else {
-            node.right = this._insert(node.right, value);
+            high = pos - 1;
         }
-
-        this.updateHeight(node);
-        node = this.balanceTree(node);
-
-        return node;
     }
+
+    return -1; // return -1 if target is not found in the array
 }
-const avlTree = new AVLTree();
-avlTree.insert(10);
-avlTree.insert(5);
-avlTree.insert(15);
-avlTree.insert(3);
-avlTree.insert(7);
+
+// Example usage
+const array = [1, 3, 5, 7, 9, 11, 13, 15];
+const target = 7;
+const index = interpolationSearch(array, target);
+
+if (index !== -1) {
+    console.log(`Found ${target} at index ${index}`);
+} else {
+    console.log(`${target} not found in the array`);
+}
