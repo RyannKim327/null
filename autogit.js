@@ -1,21 +1,49 @@
-function bwt(input) {
-    let rotations = generateCyclicRotations(input);
-    rotations.sort();
-    let transformedString = rotations.map(rot => rot.charAt(rot.length - 1)).join('');
-    return transformedString;
-}
-
-function generateCyclicRotations(input) {
-    let rotations = [];
-    for (let i = 0; i < input.length; i++) {
-        let rotation = input.slice(i) + input.slice(0, i);
-        rotations.push(rotation);
+function buildPrefixTable(pattern) {
+    const table = Array(pattern.length).fill(0);
+    let j = 0;
+    
+    for (let i = 1; i < pattern.length; i++) {
+        while (j > 0 && pattern[i] !== pattern[j]) {
+            j = table[j - 1];
+        }
+        
+        if (pattern[i] === pattern[j]) {
+            j++;
+        }
+        
+        table[i] = j;
     }
-    return rotations;
+    
+    return table;
 }
+function kmpSearch(text, pattern) {
+    const table = buildPrefixTable(pattern);
+    let i = 0;
+    let j = 0;
+    const result = [];
 
-// Test the BWT function
-let inputString = "banana";
-let bwtResult = bwt(inputString);
-console.log("Original String:", inputString);
-console.log("BWT Result:", bwtResult);
+    while (i < text.length) {
+        if (text[i] === pattern[j]) {
+            i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            result.push(i - j);
+            j = table[j - 1];
+        } else if (i < text.length && text[i] !== pattern[j]) {
+            if (j !== 0) {
+                j = table[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+
+    return result;
+}
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const matches = kmpSearch(text, pattern);
+
+console.log(matches);
