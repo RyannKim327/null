@@ -1,15 +1,13 @@
-function maxSubarraySum(arr) {
-    let maxEndingHere = arr[0];
-    let maxSoFar = arr[0];
+function mean(numbers) {
+  if (numbers.length === 0) {
+    return null; // Handle edge case for empty list
+  }
 
-    for (let i = 1; i < arr.length; i++) {
-        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
-        maxSoFar = Math.max(maxSoFar, maxEndingHere);
-    }
-
-    return maxSoFar;
+  const sum = numbers.reduce((acc, val) => acc + val, 0);
+  return sum / numbers.length;
 }
 
 // Example usage
-const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-console.log(maxSubarraySum(arr)); // Output: 6
+const numbers = [1, 2, 3, 4, 5];
+const average = mean(numbers);
+console.log(average); // Output: 3
