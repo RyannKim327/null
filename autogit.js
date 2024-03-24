@@ -1,29 +1,41 @@
-function interpolationSearch(array, target) {
-    let low = 0;
-    let high = array.length - 1;
-
-    while (low <= high && target >= array[low] && target <= array[high]) {
-        let pos = low + Math.floor(((target - array[low]) * (high - low)) / (array[high] - array[low]));
-
-        if (array[pos] === target) {
-            return pos;
-        } else if (array[pos] < target) {
-            low = pos + 1;
-        } else {
-            high = pos - 1;
-        }
+class Stack {
+    constructor() {
+        this.stack = [];
     }
 
-    return -1; // return -1 if target is not found in the array
+    push(item) {
+        this.stack.push(item);
+    }
+
+    pop() {
+        if (this.isEmpty()) {
+            return "Stack is empty";
+        }
+        return this.stack.pop();
+    }
+
+    peek() {
+        if (this.isEmpty()) {
+            return "Stack is empty";
+        }
+        return this.stack[this.stack.length - 1];
+    }
+
+    isEmpty() {
+        return this.stack.length === 0;
+    }
+
+    print() {
+        console.log(this.stack);
+    }
 }
 
 // Example usage
-const array = [1, 3, 5, 7, 9, 11, 13, 15];
-const target = 7;
-const index = interpolationSearch(array, target);
-
-if (index !== -1) {
-    console.log(`Found ${target} at index ${index}`);
-} else {
-    console.log(`${target} not found in the array`);
-}
+const stack = new Stack();
+stack.push(1);
+stack.push(2);
+stack.push(3);
+stack.print(); // Output: [1, 2, 3]
+console.log(stack.pop()); // Output: 3
+console.log(stack.peek()); // Output: 2
+stack.print(); // Output: [1, 2]
