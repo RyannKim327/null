@@ -1,8 +1,8 @@
-let myString = 'Hello, World!';
-let substring = 'Hello';
+let str = "42";
+let num = parseInt(str);
 
-if (myString.includes(substring)) {
-    console.log('The string contains the substring.');
-} else {
-    console.log('The string does not contain the substring.');
-}
+console.log(num); // Output: 42
+let str = "42";
+let num = +str;
+
+console.log(num); // Output: 42
