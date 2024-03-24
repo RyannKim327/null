@@ -1,12 +1,21 @@
-function getStringLength(str) {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        count++;
+function isPrime(num) {
+    if(num <= 1) {
+        return false;
     }
-    return count;
+    
+    for(let i = 2; i <= Math.sqrt(num); i++) {
+        if(num % i === 0) {
+            return false;
+        }
+    }
+    
+    return true;
 }
 
 // Test the function
-const str = 'Hello, World!';
-const length = getStringLength(str);
-console.log(length); // Output: 13
+const number = 17;
+if(isPrime(number)) {
+    console.log(`${number} is a prime number.`);
+} else {
+    console.log(`${number} is not a prime number.`);
+}
