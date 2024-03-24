@@ -1,40 +1,26 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
+function binarySearchRecursive(arr, target, left = 0, right = arr.length - 1) {
+    if (left > right) {
+        return -1;
+    }
+
+    const mid = Math.floor((left + right) / 2);
+
+    if (arr[mid] === target) {
+        return mid;
+    } else if (arr[mid] < target) {
+        return binarySearchRecursive(arr, target, mid + 1, right);
+    } else {
+        return binarySearchRecursive(arr, target, left, mid - 1);
     }
 }
 
-function hasCycle(head) {
-    if (!head || !head.next) {
-        return false;
-    }
+// Example usage
+const array = [1, 3, 5, 7, 9, 11, 13, 15, 17];
+const target = 9;
+const resultIndex = binarySearchRecursive(array, target);
 
-    let slow = head;
-    let fast = head;
-
-    while (fast && fast.next) {
-        slow = slow.next;
-        fast = fast.next.next;
-
-        if (slow === fast) {
-            return true;
-        }
-    }
-
-    return false;
+if (resultIndex !== -1) {
+    console.log(`Element found at index: ${resultIndex}`);
+} else {
+    console.log("Element not found in the array");
 }
-
-// Example usage:
-const node1 = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
-const node4 = new Node(4);
-
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-// Uncomment the line below to create a cycle in the linked list
-// node4.next = node2;
-
-console.log(hasCycle(node1)); // Output: false
