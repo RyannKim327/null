@@ -1,52 +1,71 @@
-function dijkstra(graph, startNode) {
-  let distances = {};
-  let visited = {};
-  let queue = [];
-  
-  // Initialize distances with Infinity for all nodes except the startNode
-  for (let node in graph) {
-    distances[node] = node === startNode ? 0 : Infinity;
-    queue.push(node);
-  }
-  
-  while (queue.length) {
-    let currentNode = minDistanceNode(distances, queue);
-    queue = queue.filter(node => node !== currentNode);
-    
-    for (let neighbor in graph[currentNode]) {
-      let distance = distances[currentNode] + graph[currentNode][neighbor];
-      if (distance < distances[neighbor]) {
-        distances[neighbor] = distance;
-      }
+// Define the structure of a node in the binary search tree
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-  }
-  
-  return distances;
 }
 
-function minDistanceNode(distances, queue) {
-  let minDistance = Infinity;
-  let minNode = null;
-  
-  queue.forEach(node => {
-    if (distances[node] < minDistance) {
-      minDistance = distances[node];
-      minNode = node;
+// Define the binary search tree class
+class BinarySearchTree {
+    constructor() {
+        this.root = null;
     }
-  });
-  
-  return minNode;
+
+    // Method to insert a new value into the binary search tree
+    insert(value) {
+        const newNode = new Node(value);
+
+        if (this.root === null) {
+            this.root = newNode;
+        } else {
+            this._insertNode(this.root, newNode);
+        }
+    }
+
+    _insertNode(node, newNode) {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this._insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this._insertNode(node.right, newNode);
+            }
+        }
+    }
+
+    // Method to search for a value in the binary search tree
+    search(value) {
+        return this._searchNode(this.root, value);
+    }
+
+    _searchNode(node, value) {
+        if (node === null) {
+            return false;
+        }
+
+        if (value < node.value) {
+            return this._searchNode(node.left, value);
+        } else if (value > node.value) {
+            return this._searchNode(node.right, value);
+        } else {
+            return true;
+        }
+    }
 }
 
-// Example usage:
-let graph = {
-  A: { B: 2, C: 5 },
-  B: { A: 2, C: 1 },
-  C: { A: 5, B: 1 }
-};
+// Example usage
+const bst = new BinarySearchTree();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(8);
 
-let startNode = 'A';
-let shortestDistances = dijkstra(graph, startNode);
-
-console.log(shortestDistances);
-
+console.log(bst.search(5)); // Output: true
+console.log(bst.search(12)); // Output: false
