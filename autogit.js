@@ -1,8 +1,17 @@
 function reverseWords(str) {
-  return str.split(' ').reverse().join(' ');
+    // Split the string into an array of words
+    var wordsArray = str.split(" ");
+    
+    // Reverse the array
+    wordsArray.reverse();
+    
+    // Join the array back into a string
+    var reversedStr = wordsArray.join(" ");
+    
+    return reversedStr;
 }
 
-// Example usage
-const originalString = 'Hello World';
-const reversedString = reverseWords(originalString);
-console.log(reversedString);  // Output: 'World Hello'
+// Test the function
+var originalStr = "Hello World";
+var reversedStr = reverseWords(originalStr);
+console.log(reversedStr); // Output: "World Hello"
