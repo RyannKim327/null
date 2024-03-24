@@ -1,48 +1,39 @@
-function bellmanFord(graph, start) {
-    let distances = {};
-    let predecessors = {};
-    
-    // Initialize distances and predecessors
-    for (let node in graph) {
-        distances[node] = Infinity;
-        predecessors[node] = null;
+function heapify(arr, n, i) {
+    let largest = i;
+    const left = 2 * i + 1;
+    const right = 2 * i + 2;
+
+    if (left < n && arr[left] > arr[largest]) {
+        largest = left;
     }
-    distances[start] = 0;
-    
-    // Relax edges repeatedly
-    for (let i = 0; i < Object.keys(graph).length - 1; i++) {
-        for (let node in graph) {
-            for (let neighbor in graph[node]) {
-                if (distances[node] + graph[node][neighbor] < distances[neighbor]) {
-                    distances[neighbor] = distances[node] + graph[node][neighbor];
-                    predecessors[neighbor] = node;
-                }
-            }
-        }
+
+    if (right < n && arr[right] > arr[largest]) {
+        largest = right;
     }
-    
-    // Check for negative cycles
-    for (let node in graph) {
-        for (let neighbor in graph[node]) {
-            if (distances[node] + graph[node][neighbor] < distances[neighbor]) {
-                console.log("Graph contains negative cycle");
-                return;
-            }
-        }
+
+    if (largest !== i) {
+        [arr[i], arr[largest]] = [arr[largest], arr[i]];
+        heapify(arr, n, largest);
     }
-    
-    return { distances, predecessors };
 }
 
-// Example usage
-const graph = {
-    A: { B: -1, C: 4 },
-    B: { C: 3, D: 2, E: 2 },
-    C: {},
-    D: { B: 1, C: 5 },
-    E: { D: -3 }
-};
+function heapSort(arr) {
+    const n = arr.length;
 
-const { distances, predecessors } = bellmanFord(graph, 'A');
-console.log(distances);
-console.log(predecessors);
+    // Build heap (rearrange array)
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        heapify(arr, n, i);
+    }
+
+    // One by one extract an element from heap
+    for (let i = n - 1; i > 0; i--) {
+        [arr[0], arr[i]] = [arr[i], arr[0]];
+        heapify(arr, i, 0);
+    }
+
+    return arr;
+}
+
+// Example usage:
+const arr = [12, 11, 13, 5, 6, 7];
+console.log(heapSort(arr)); // Output: [5, 6, 7, 11, 12, 13]
