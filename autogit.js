@@ -1,29 +1,26 @@
-function isPrime(number) {
-    if (number <= 1) {
+function isAnagram(str1, str2) {
+    // Remove any non-alphabetic characters and convert to lowercase
+    str1 = str1.replace(/[^a-zA-Z]/g, '').toLowerCase();
+    str2 = str2.replace(/[^a-zA-Z]/g, '').toLowerCase();
+
+    // Check if the lengths of the two strings are the same
+    if (str1.length !== str2.length) {
         return false;
     }
 
-    if (number <= 3) {
-        return true;
-    }
+    // Sort the characters of both strings and compare them
+    const sortedStr1 = str1.split('').sort().join('');
+    const sortedStr2 = str2.split('').sort().join('');
 
-    if (number % 2 === 0 || number % 3 === 0) {
-        return false;
-    }
-
-    for (let i = 5; i * i <= number; i += 6) {
-        if (number % i === 0 || number % (i + 2) === 0) {
-            return false;
-        }
-    }
-
-    return true;
+    return sortedStr1 === sortedStr2;
 }
 
 // Test the function
-const num = 17;
-if (isPrime(num)) {
-    console.log(`${num} is a prime number.`);
+const string1 = "listen";
+const string2 = "silent";
+
+if (isAnagram(string1, string2)) {
+    console.log(`${string1} and ${string2} are anagrams.`);
 } else {
-    console.log(`${num} is not a prime number.`);
+    console.log(`${string1} and ${string2} are not anagrams.`);
 }
