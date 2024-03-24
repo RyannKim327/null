@@ -1,26 +1,18 @@
-function dijkstra(graph, source) {
-  const distances = {};
-  const priorityQueue = new MinHeap();
+area = √(s(s - a)(s - b)(s - c))
+function calculateTriangleArea(a, b, c) {
+    // Calculate the semi-perimeter
+    const s = (a + b + c) / 2;
 
-  // Initialize distances
-  for (let node in graph) {
-    distances[node] = node === source ? 0 : Infinity;
-    priorityQueue.insert(node, distances[node]);
-  }
+    // Calculate the area using Heron's formula
+    const area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
 
-  while (!priorityQueue.isEmpty()) {
-    const currentNode = priorityQueue.extractMin();
-
-    for (let neighbor in graph[currentNode]) {
-      const edgeWeight = graph[currentNode][neighbor];
-      const newDistance = distances[currentNode] + edgeWeight;
-
-      if (newDistance < distances[neighbor]) {
-        distances[neighbor] = newDistance;
-        priorityQueue.insert(neighbor, newDistance);
-      }
-    }
-  }
-
-  return distances;
+    return area;
 }
+
+// Example usage
+const sideA = 3;
+const sideB = 4;
+const sideC = 5;
+
+const area = calculateTriangleArea(sideA, sideB, sideC);
+console.log("The area of the triangle is: " + area);
