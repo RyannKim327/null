@@ -1,10 +1,21 @@
-function reverseString(str) {
-    return str.split('').reverse().join('');
+function isPalindrome(str) {
+    let left = 0;
+    let right = str.length - 1;
+    
+    while (left < right) {
+        if (str[left] !== str[right]) {
+            return false;
+        }
+        left++;
+        right--;
+    }
+    
+    return true;
 }
 
-// Example
-const originalString = 'Hello, World!';
-const reversedString = reverseString(originalString);
-
-console.log("Original string: " + originalString);
-console.log("Reversed string: " + reversedString);
+const testString = "racecar";
+if (isPalindrome(testString)) {
+    console.log(`${testString} is a palindrome.`);
+} else {
+    console.log(`${testString} is not a palindrome.`);
+}
