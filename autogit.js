@@ -1,21 +1,39 @@
-function bubbleSort(arr) {
-    let len = arr.length;
-    let swapped;
-    do {
-        swapped = false;
-        for (let i = 0; i < len - 1; i++) {
-            if (arr[i] > arr[i + 1]) {
-                let tmp = arr[i];
-                arr[i] = arr[i + 1];
-                arr[i + 1] = tmp;
-                swapped = true;
-            }
+class BeamSearch {
+  constructor(beamWidth, maxDepth, evaluateFn) {
+    this.beamWidth = beamWidth;
+    this.maxDepth = maxDepth;
+    this.evaluateFn = evaluateFn;
+  }
+
+  search(startState) {
+    let beam = [[startState, 0]]; // Initialize beam with start state
+    for (let depth = 0; depth < this.maxDepth; depth++) {
+      let newBeam = [];
+      for (let [state, score] of beam) {
+        let children = this.generateChildren(state);
+        for (let child of children) {
+          let childScore = this.evaluateFn(child);
+          newBeam.push([child, score + childScore]);
         }
-    } while (swapped);
-    
-    return arr;
+      }
+      newBeam.sort((a, b) => b[1] - a[1]); // Sort by score in descending order
+      beam = newBeam.slice(0, this.beamWidth); // Keep only top beamWidth states
+    }
+    return beam;
+  }
+
+  generateChildren(state) {
+    // Generate children of a given state (can be customized based on the problem)
+    return [];
+  }
 }
 
 // Example usage
-let arr = [64, 34, 25, 12, 22, 11, 90];
-console.log(bubbleSort(arr)); // Output: [11, 12, 22, 25, 34, 64, 90]
+let beamSearch = new BeamSearch(3, 4, (state) => {
+  // Evaluation function to score a state (can be customized based on the problem)
+  return state;
+});
+
+let startState = 'A';
+let result = beamSearch.search(startState);
+console.log(result);
