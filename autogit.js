@@ -1,41 +1,26 @@
-class Stack {
-    constructor() {
-        this.stack = [];
+// Burrows-Wheeler Transform implementation
+function burrowsWheelerTransform(input) {
+    // Generate a list of all rotations of the input string
+    let rotations = [];
+    for (let i = 0; i < input.length; i++) {
+        rotations.push(input.slice(i) + input.slice(0, i));
     }
 
-    push(item) {
-        this.stack.push(item);
-    }
+    // Sort the rotations lexicographically
+    rotations.sort();
 
-    pop() {
-        if (this.isEmpty()) {
-            return "Stack is empty";
-        }
-        return this.stack.pop();
-    }
+    // Extract the last characters of each rotation to form the Burrows-Wheeler transformed string
+    let transformed = rotations.map(rotation => rotation.slice(-1)).join("");
 
-    peek() {
-        if (this.isEmpty()) {
-            return "Stack is empty";
-        }
-        return this.stack[this.stack.length - 1];
-    }
+    // Find the index of the original string in the sorted rotations to get the index of the original string in the transformed string
+    let originalIndex = rotations.indexOf(input);
 
-    isEmpty() {
-        return this.stack.length === 0;
-    }
-
-    print() {
-        console.log(this.stack);
-    }
+    return { transformed, originalIndex };
 }
 
 // Example usage
-const stack = new Stack();
-stack.push(1);
-stack.push(2);
-stack.push(3);
-stack.print(); // Output: [1, 2, 3]
-console.log(stack.pop()); // Output: 3
-console.log(stack.peek()); // Output: 2
-stack.print(); // Output: [1, 2]
+let inputString = "banana";
+let { transformed, originalIndex } = burrowsWheelerTransform(inputString);
+console.log("Original String: " + inputString);
+console.log("Transformed String: " + transformed);
+console.log("Original Index: " + originalIndex);
