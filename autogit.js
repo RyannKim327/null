@@ -1,68 +1,82 @@
 class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    constructor(data) {
+        this.data = data;
+        this.next = null;
     }
 }
 
-class BinaryTree {
+class Queue {
     constructor() {
-        this.root = null;
+        this.front = null;
+        this.rear = null;
+        this.size = 0;
     }
 
-    insert(value) {
-        const newNode = new Node(value);
+    isEmpty() {
+        return this.size === 0;
+    }
 
-        if (this.root === null) {
-            this.root = newNode;
+    enqueue(data) {
+        const newNode = new Node(data);
+        
+        if (this.isEmpty()) {
+            this.front = newNode;
         } else {
-            this.insertNode(this.root, newNode);
+            this.rear.next = newNode;
         }
+        
+        this.rear = newNode;
+        this.size++;
     }
 
-    insertNode(node, newNode) {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
+    dequeue() {
+        if (this.isEmpty()) {
+            return null;
         }
+
+        const data = this.front.data;
+        this.front = this.front.next;
+        this.size--;
+
+        if (this.isEmpty()) {
+            this.rear = null;
+        }
+
+        return data;
     }
 
-    search(value) {
-        return this.searchNode(this.root, value);
+    peek() {
+        if (this.isEmpty()) {
+            return null;
+        }
+
+        return this.front.data;
     }
 
-    searchNode(node, value) {
-        if (node === null) {
-            return false;
+    print() {
+        let current = this.front;
+        let values = [];
+
+        while (current !== null) {
+            values.push(current.data);
+            current = current.next;
         }
 
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true;
-        }
+        console.log(values.join(' -> '));
     }
 }
 
 // Example usage:
-const binaryTree = new BinaryTree();
-binaryTree.insert(5);
-binaryTree.insert(3);
-binaryTree.insert(8);
-binaryTree.insert(1);
-binaryTree.insert(4);
+const queue = new Queue();
 
-console.log(binaryTree.search(4)); // Output: true
-console.log(binaryTree.search(6)); // Output: false
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+
+console.log(queue.peek()); // Output: 1
+
+queue.print(); // Output: 1 -> 2 -> 3
+
+queue.dequeue();
+
+queue.print(); // Output: 2 -> 3
