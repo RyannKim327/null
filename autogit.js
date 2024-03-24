@@ -1,19 +1,8 @@
-function insertionSort(arr) {
-    for (let i = 1; i < arr.length; i++) {
-        let currentVal = arr[i];
-        let j = i - 1;
-        
-        while (j >= 0 && arr[j] > currentVal) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
-        
-        arr[j + 1] = currentVal;
-    }
-    
-    return arr;
+// Function to generate a random number within a range
+function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// Example usage
-let arr = [5, 3, 8, 4, 2];
-console.log(insertionSort(arr)); // Output: [2, 3, 4, 5, 8]
+// Example: Generate a random number between 1 and 100
+let randomNum = getRandomNumber(1, 100);
+console.log(randomNum);
