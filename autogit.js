@@ -1,78 +1,26 @@
-class BinaryHeap {
-    constructor() {
-        this.heap = [];
+function binarySearchRecursive(arr, target, low = 0, high = arr.length - 1) {
+    if (low > high) {
+        return -1; // target not found
     }
 
-    enqueue(value, priority) {
-        const node = { value, priority };
-        this.heap.push(node);
-        this.bubbleUp();
-    }
+    const mid = Math.floor((low + high) / 2);
 
-    dequeue() {
-        const minNode = this.heap[0];
-        const lastNode = this.heap.pop();
-        if (this.heap.length > 0) {
-            this.heap[0] = lastNode;
-            this.trickleDown();
-        }
-        return minNode;
-    }
-
-    bubbleUp() {
-        let index = this.heap.length - 1;
-        const node = this.heap[index];
-        while (index > 0) {
-            let parentIndex = Math.floor((index - 1) / 2);
-            let parent = this.heap[parentIndex];
-            if (node.priority >= parent.priority) break;
-            this.heap[parentIndex] = node;
-            this.heap[index] = parent;
-            index = parentIndex;
-        }
-    }
-
-    trickleDown() {
-        let index = 0;
-        const node = this.heap[0];
-        while (true) {
-            let leftChildIndex = 2 * index + 1;
-            let rightChildIndex = 2 * index + 2;
-            let leftChild, rightChild;
-            let swap = null;
-
-            if (leftChildIndex < this.heap.length) {
-                leftChild = this.heap[leftChildIndex];
-                if (leftChild.priority < node.priority) {
-                    swap = leftChildIndex;
-                }
-            }
-
-            if (rightChildIndex < this.heap.length) {
-                rightChild = this.heap[rightChildIndex];
-                if (
-                    (swap === null && rightChild.priority < node.priority) ||
-                    (swap !== null && rightChild.priority < leftChild.priority)
-                ) {
-                    swap = rightChildIndex;
-                }
-            }
-
-            if (swap === null) break;
-
-            this.heap[index] = this.heap[swap];
-            this.heap[swap] = node;
-            index = swap;
-        }
+    if (arr[mid] === target) {
+        return mid; // target found
+    } else if (target < arr[mid]) {
+        return binarySearchRecursive(arr, target, low, mid - 1);
+    } else {
+        return binarySearchRecursive(arr, target, mid + 1, high);
     }
 }
 
-// Usage
-const priorityQueue = new BinaryHeap();
-priorityQueue.enqueue("Task 1", 3);
-priorityQueue.enqueue("Task 2", 1);
-priorityQueue.enqueue("Task 3", 2);
+// Example usage
+const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17];
+const target = 9;
+const index = binarySearchRecursive(arr, target);
 
-console.log(priorityQueue.dequeue()); // Output: { value: 'Task 2', priority: 1 }
-console.log(priorityQueue.dequeue()); // Output: { value: 'Task 3', priority: 2 }
-console.log(priorityQueue.dequeue()); // Output: { value: 'Task 1', priority: 3 }
+if (index !== -1) {
+    console.log(`Target ${target} found at index ${index}.`);
+} else {
+    console.log(`Target ${target} not found in the array.`);
+}
