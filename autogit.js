@@ -1,12 +1,15 @@
-function findSecondLargest(arr) {
-    arr.sort(function(a, b) {
-        return b - a;
-    });
-    
-    return arr[1];
+function isArraySortedAscending(arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;
+        }
+    }
+    return true;
 }
 
 // Example usage
-const numbers = [10, 5, 20, 15];
-const secondLargest = findSecondLargest(numbers);
-console.log("Second largest element:", secondLargest);
+const arr1 = [1, 2, 3, 4, 5];
+const arr2 = [5, 4, 3, 2, 1];
+
+console.log(isArraySortedAscending(arr1)); // Output: true
+console.log(isArraySortedAscending(arr2)); // Output: false
