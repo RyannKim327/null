@@ -1,3 +1,8 @@
-let userInput = prompt("Enter something:"); // prompt for user input
+function reverseWords(str) {
+  return str.split(' ').reverse().join(' ');
+}
 
-console.log("You entered: " + userInput); // display the user input
+// Example usage
+const originalString = 'Hello World';
+const reversedString = reverseWords(originalString);
+console.log(reversedString);  // Output: 'World Hello'
