@@ -1,8 +1,12 @@
-let str1 = "Hello";
-let str2 = "World";
-let result = str1 + " " + str2;
-console.log(result); // Output: Hello World
-let str1 = "Hello";
-let str2 = "World";
-let result = str1.concat(" ", str2);
-console.log(result); // Output: Hello World
+function findStringLength(str) {
+    let length = 0;
+    while(str[length] !== undefined) {
+        length++;
+    }
+    return length;
+}
+
+// Example usage
+const str = "Hello, World!";
+const length = findStringLength(str);
+console.log("Length of the string is: ", length);
