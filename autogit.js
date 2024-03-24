@@ -1,55 +1,54 @@
-function tarjan(graph) {
-    let index = 0;
-    let stack = [];
-    let result = [];
+// Define a Graph class to represent the graph
+class Graph {
+    constructor() {
+        this.adjList = new Map();
+    }
 
-    function strongconnect(node) {
-        node.index = index;
-        node.lowlink = index;
-        index++;
-        stack.push(node);
-        node.onStack = true;
+    addVertex(v) {
+        this.adjList.set(v, []);
+    }
 
-        for (let neighbor of graph[node]) {
-            if (neighbor.index === undefined) {
-                strongconnect(neighbor);
-                node.lowlink = Math.min(node.lowlink, neighbor.lowlink);
-            } else if (neighbor.onStack) {
-                node.lowlink = Math.min(node.lowlink, neighbor.index);
+    addEdge(v, w) {
+        this.adjList.get(v).push(w);
+    }
+
+    // Depth-first search algorithm
+    dfs(start) {
+        let visited = {};
+        this._dfsHelper(start, visited);
+    }
+
+    _dfsHelper(v, visited) {
+        visited[v] = true;
+        console.log(v);
+
+        let neighbors = this.adjList.get(v);
+
+        for (let neighbor of neighbors) {
+            if (!visited[neighbor]) {
+                this._dfsHelper(neighbor, visited);
             }
         }
-
-        if (node.lowlink === node.index) {
-            let component = [];
-            let currentNode;
-            do {
-                currentNode = stack.pop();
-                currentNode.onStack = false;
-                component.push(currentNode);
-            } while (currentNode !== node);
-            result.push(component);
-        }
     }
-
-    for (let node of Object.keys(graph)) {
-        if (graph[node].index === undefined) {
-            strongconnect(node);
-        }
-    }
-
-    return result;
 }
 
-// Example usage
-let graph = {
-    0: [1],
-    1: [2],
-    2: [0, 3],
-    3: [4],
-    4: [5, 6],
-    5: [0],
-    6: [4]
-};
+// Create a new graph
+let graph = new Graph();
 
-let components = tarjan(graph);
-console.log(components);
+graph.addVertex(0);
+graph.addVertex(1);
+graph.addVertex(2);
+graph.addVertex(3);
+graph.addVertex(4);
+graph.addVertex(5);
+graph.addVertex(6);
+
+graph.addEdge(0, 1);
+graph.addEdge(0, 2);
+graph.addEdge(1, 3);
+graph.addEdge(1, 4);
+graph.addEdge(2, 5);
+graph.addEdge(2, 6);
+
+// Perform DFS from vertex 0
+graph.dfs(0);
