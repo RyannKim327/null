@@ -1,45 +1,53 @@
-// Node class to create nodes for the linked list
+// Node class to represent each node in the graph
 class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
-    }
+  constructor(name) {
+    this.name = name;
+    this.children = [];
+  }
+
+  addChild(child) {
+    this.children.push(child);
+  }
 }
 
-// Function to find the nth node from the end of the linked list
-function findNthNodeFromEnd(head, n) {
-    let slow = head;
-    let fast = head;
+// Breadth-limited search function
+function breadthLimitedSearch(root, limit, target) {
+  let queue = [root];
+  let depth = 0;
 
-    // Move the fast pointer n steps ahead
-    for (let i = 0; i < n; i++) {
-        if (fast === null) {
-            return null; // If the linked list is shorter than n nodes
-        }
-        fast = fast.next;
+  while (queue.length > 0 && depth < limit) {
+    let node = queue.shift();
+    console.log("Visiting node: " + node.name);
+
+    if (node.name === target) {
+      return node;
     }
 
-    // Move the slow and fast pointers together until fast reaches the end
-    while (fast !== null) {
-        slow = slow.next;
-        fast = fast.next;
+    for (let i = 0; i < node.children.length; i++) {
+      queue.push(node.children[i]);
     }
 
-    return slow;
+    depth++;
+  }
+
+  return null;
 }
 
 // Example usage
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
+let a = new Node('A');
+let b = new Node('B');
+let c = new Node('C');
+let d = new Node('D');
+let e = new Node('E');
 
-let n = 2; // Find the 2nd node from the end
-let nthNodeFromEnd = findNthNodeFromEnd(head, n);
+a.addChild(b);
+a.addChild(c);
+b.addChild(d);
+c.addChild(e);
 
-if (nthNodeFromEnd) {
-    console.log(`The ${n}th node from the end is: ${nthNodeFromEnd.value}`);
+let result = breadthLimitedSearch(a, 3, 'E');
+if (result !== null) {
+  console.log("Found target node: " + result.name);
 } else {
-    console.log(`The linked list is shorter than ${n} nodes.`);
+  console.log("Target node not found within the depth limit.");
 }
