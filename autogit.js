@@ -1,20 +1,15 @@
-function findMajorityElement(arr) {
-    let counts = {};
-    
-    for (let i = 0; i < arr.length; i++) {
-        let num = arr[i];
-        counts[num] = counts[num] ? counts[num] + 1 : 1; // Increment count of the number
-    }
-    
-    for (let key in counts) {
-        if (counts[key] > arr.length / 2) {
-            return key;
-        }
-    }
-    
-    return "No majority element found";
-}
+const apiUrl = 'https://api.example.com/data';
 
-// Example usage
-const array = [2, 8, 7, 2, 2, 5, 2, 2, 9];
-console.log("Majority element: ", findMajorityElement(array));
+fetch(apiUrl)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log(data);
+  })
+  .catch(error => {
+    console.error('There was a problem with the fetch operation:', error);
+  });
