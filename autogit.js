@@ -1,48 +1,67 @@
 class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
 
-class LinkedList {
+class BinaryTree {
     constructor() {
-        this.head = null;
+        this.root = null;
     }
 
-    addNode(data) {
-        const newNode = new Node(data);
+    insert(value) {
+        const newNode = new Node(value);
 
-        if (this.head === null) {
-            this.head = newNode;
+        if (!this.root) {
+            this.root = newNode;
         } else {
-            let current = this.head;
-            while (current.next !== null) {
-                current = current.next;
-            }
-            current.next = newNode;
+            this.insertNode(this.root, newNode);
         }
     }
 
-    findMiddleElement() {
-        let slow = this.head;
-        let fast = this.head;
+    insertNode(node, newNode) {
+        if (newNode.value < node.value) {
+            if (!node.left) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (!node.right) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
+        }
+    }
 
-        while (fast !== null && fast.next !== null) {
-            slow = slow.next;
-            fast = fast.next.next;
+    search(value) {
+        return this.searchNode(this.root, value);
+    }
+
+    searchNode(node, value) {
+        if (!node) {
+            return false;
         }
 
-        return slow.data;
+        if (value === node.value) {
+            return true;
+        }
+
+        if (value < node.value) {
+            return this.searchNode(node.left, value);
+        } else {
+            return this.searchNode(node.right, value);
+        }
     }
 }
 
-const linkedList = new LinkedList();
-linkedList.addNode(1);
-linkedList.addNode(2);
-linkedList.addNode(3);
-linkedList.addNode(4);
-linkedList.addNode(5);
-
-const middleElement = linkedList.findMiddleElement();
-console.log(middleElement);
+// Usage
+const tree = new BinaryTree();
+tree.insert(10);
+tree.insert(5);
+tree.insert(15);
+console.log(tree.search(5)); // true
+console.log(tree.search(20)); // false
