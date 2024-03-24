@@ -1,54 +1,62 @@
-// Suffix tree node
-class Node {
-    constructor() {
-        this.children = {};
-    }
-}
+function tarjanStronglyConnectedComponents(graph) {
+  let index = 0;
+  let stack = [];
+  let indices = {};
+  let lowLink = {};
+  let onStack = {};
 
-// Suffix tree
-class SuffixTree {
-    constructor() {
-        this.root = new Node();
-    }
+  let result = [];
 
-    // Function to insert a suffix into the tree
-    insertSuffix(suffix) {
-        let node = this.root;
-        for (let i = 0; i < suffix.length; i++) {
-            const char = suffix[i];
-            if (!node.children[char]) {
-                node.children[char] = new Node();
-            }
-            node = node.children[char];
-        }
-    }
+  function strongConnect(node) {
+    indices[node] = index;
+    lowLink[node] = index;
+    index++;
+    stack.push(node);
+    onStack[node] = true;
 
-    // Function to build the suffix tree from a given string
-    buildSuffixTree(inputString) {
-        for (let i = 0; i < inputString.length; i++) {
-            this.insertSuffix(inputString.substring(i));
-        }
-    }
+    graph[node].forEach(neighbor => {
+      if (indices[neighbor] === undefined) {
+        strongConnect(neighbor);
+        lowLink[node] = Math.min(lowLink[node], lowLink[neighbor]);
+      } else if (onStack[neighbor]) {
+        lowLink[node] = Math.min(lowLink[node], indices[neighbor]);
+      }
+    });
 
-    // Function to search for a suffix in the tree
-    search(suffix) {
-        let node = this.root;
-        for (let i = 0; i < suffix.length; i++) {
-            const char = suffix[i];
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
-        }
-        return true;
+    if (indices[node] === lowLink[node]) {
+      let component = [];
+      let tempNode = null;
+      do {
+        tempNode = stack.pop();
+        onStack[tempNode] = false;
+        component.push(tempNode);
+      } while (tempNode !== node);
+
+      result.push(component);
     }
+  }
+
+  Object.keys(graph).forEach(node => {
+    if (indices[node] === undefined) {
+      strongConnect(node);
+    }
+  });
+
+  return result;
 }
 
 // Example usage
-const suffixTree = new SuffixTree();
-const inputString = "banana";
-suffixTree.buildSuffixTree(inputString);
+const graph = {
+  0: [1],
+  1: [2],
+  2: [0, 3],
+  3: [4],
+  4: [5, 7],
+  5: [6],
+  6: [4],
+  7: [3, 8],
+  8: [7]
+};
 
-console.log(suffixTree.search("ana")); // Output: true
-console.log(suffixTree.search("nan")); // Output: false
-console.log(suffixTree.search("xyz")); // Output: false
+const stronglyConnectedComponents = tarjanStronglyConnectedComponents(graph);
+console.log(stronglyConnectedComponents);
