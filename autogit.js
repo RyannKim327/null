@@ -1,63 +1,25 @@
-function computeLPSArray(pattern) {
-    const lps = Array(pattern.length).fill(0);
-    let len = 0;
-    let i = 1;
+function longestCommonSubstring(str1, str2) {
+    const dp = Array.from({ length: str1.length + 1 }, () => Array(str2.length + 1).fill(0));
+    let maxLength = 0;
+    let endIndex = 0;
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
+    for (let i = 1; i <= str1.length; i++) {
+        for (let j = 1; j <= str2.length; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > maxLength) {
+                    maxLength = dp[i][j];
+                    endIndex = i - 1;
+                }
             }
         }
     }
 
-    return lps;
+    return str1.substring(endIndex - maxLength + 1, endIndex + 1);
 }
 
-function KMPSearch(text, pattern) {
-    const n = text.length;
-    const m = pattern.length;
-    const lps = computeLPSArray(pattern);
-    const results = [];
-
-    let i = 0;
-    let j = 0;
-
-    while (i < n) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-
-        if (j === m) {
-            results.push(i - j);
-            j = lps[j - 1];
-        } else if (i < n && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
-    }
-
-    return results;
-}
-
-// Test the KMP algorithm
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const matches = KMPSearch(text, pattern);
-
-if (matches.length > 0) {
-    console.log("Pattern found at index: " + matches[0]);
-} else {
-    console.log("Pattern not found in the text.");
-}
+// Example usage
+const str1 = "abcdefg";
+const str2 = "zbcdf";
+const result = longestCommonSubstring(str1, str2);
+console.log(result);  // Output: "bcd"
