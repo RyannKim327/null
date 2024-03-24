@@ -1,50 +1,47 @@
-class Graph {
-    constructor(numOfVertices) {
-        this.numOfVertices = numOfVertices;
-        this.adjacencyList = new Map();
+class Node {
+    constructor() {
+        this.children = {};
+    }
+}
+
+class SuffixTree {
+    constructor(input) {
+        this.root = new Node();
+        this.input = input;
+        this.buildTree();
     }
 
-    addEdge(source, destination) {
-        if (!this.adjacencyList.has(source)) {
-            this.adjacencyList.set(source, []);
+    buildTree() {
+        for (let i = 0; i < this.input.length; i++) {
+            this.addSuffix(this.input.substring(i));
         }
-        this.adjacencyList.get(source).push(destination);
     }
 
-    topologicalSortUtil(vertex, visited, stack) {
-        visited[vertex] = true;
-        if (this.adjacencyList.has(vertex)) {
-            for (let neighbor of this.adjacencyList.get(vertex)) {
-                if (!visited[neighbor]) {
-                    this.topologicalSortUtil(neighbor, visited, stack);
-                }
+    addSuffix(suffix) {
+        let current = this.root;
+        for (let i = 0; i < suffix.length; i++) {
+            let char = suffix[i];
+            if (!(char in current.children)) {
+                current.children[char] = new Node();
             }
+            current = current.children[char];
         }
-        stack.push(vertex);
     }
 
-    topologicalSort() {
-        let visited = new Array(this.numOfVertices).fill(false);
-        let stack = [];
-
-        for (let i = 0; i < this.numOfVertices; i++) {
-            if (!visited[i]) {
-                this.topologicalSortUtil(i, visited, stack);
+    search(substring) {
+        let current = this.root;
+        for (let i = 0; i < substring.length; i++) {
+            let char = substring[i];
+            if (!(char in current.children)) {
+                return false;
             }
+            current = current.children[char];
         }
-
-        return stack.reverse();
+        return true;
     }
 }
 
 // Example usage
-const graph = new Graph(6);
-graph.addEdge(5, 2);
-graph.addEdge(5, 0);
-graph.addEdge(4, 0);
-graph.addEdge(4, 1);
-graph.addEdge(2, 3);
-graph.addEdge(3, 1);
-
-const result = graph.topologicalSort();
-console.log(result);
+const suffixTree = new SuffixTree("banana");
+console.log(suffixTree.search("ana"));  // Output: true
+console.log(suffixTree.search("xyz"));  // Output: false
