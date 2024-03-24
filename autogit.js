@@ -1,8 +1,3 @@
-function removeVowels(str) {
-    return str.replace(/[aeiouAEIOU]/g, '');
-}
-
-const inputString = 'Hello, World!';
-const result = removeVowels(inputString);
-
-console.log(result); // Output: "Hll, Wrld!"
+let str = "Hello World";
+let lowerCaseStr = str.toLowerCase();
+console.log(lowerCaseStr); // Output: hello world
