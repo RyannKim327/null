@@ -1,48 +1,66 @@
-function mergeSort(arr) {
-    const n = arr.length;
-    const tempArray = new Array(n);
-    let size = 1;
-
-    while (size < n) {
-        let left = 0;
-        while (left < n - 1) {
-            const mid = Math.min(left + size - 1, n - 1);
-            const right = Math.min(left + 2 * size - 1, n - 1);
-            merge(arr, left, mid, right, tempArray);
-            left += 2 * size;
-        }
-        size *= 2;
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-
-    return arr;
 }
 
-function merge(arr, left, mid, right, tempArr) {
-    let i = left;
-    let j = mid + 1;
-    let k = 0;
+class BinaryTree {
+    constructor() {
+        this.root = null;
+    }
 
-    while (i <= mid && j <= right) {
-        if (arr[i] < arr[j]) {
-            tempArr[k++] = arr[i++];
+    insert(value) {
+        const newNode = new Node(value);
+        if (!this.root) {
+            this.root = newNode;
         } else {
-            tempArr[k++] = arr[j++];
+            this.insertNode(this.root, newNode);
         }
     }
 
-    while (i <= mid) {
-        tempArr[k++] = arr[i++];
+    insertNode(node, newNode) {
+        if (newNode.value < node.value) {
+            if (!node.left) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (!node.right) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
+        }
     }
 
-    while (j <= right) {
-        tempArr[k++] = arr[j++];
+    search(value) {
+        return this.searchNode(this.root, value);
     }
 
-    for (let p = 0; p < k; p++) {
-        arr[left + p] = tempArr[p];
+    searchNode(node, value) {
+        if (node === null) {
+            return false;
+        }
+
+        if (value < node.value) {
+            return this.searchNode(node.left, value);
+        } else if (value > node.value) {
+            return this.searchNode(node.right, value);
+        } else {
+            return true;
+        }
     }
 }
 
-// Example usage
-const arr = [38, 27, 43, 3, 9, 82, 10];
-console.log(mergeSort(arr)); // Output: [3, 9, 10, 27, 38, 43, 82]
+// Usage
+const tree = new BinaryTree();
+tree.insert(5);
+tree.insert(3);
+tree.insert(8);
+tree.insert(2);
+
+console.log(tree.search(3)); // true
+console.log(tree.search(6)); // false
