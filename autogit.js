@@ -1,16 +1,21 @@
-function kthSmallestElement(arr, k) {
-    if(k < 1 || k > arr.length) {
-        return "Invalid input: k is out of range";
+function firstNonRepeatingCharacter(str) {
+    // Create a frequency map of characters in the string
+    const charMap = {};
+    for (let char of str) {
+        charMap[char] = (charMap[char] || 0) + 1;
     }
-    
-    arr.sort(function(a, b) {
-        return a - b;
-    });
-    
-    return arr[k - 1];
+
+    // Find the first non-repeating character
+    for (let char of str) {
+        if (charMap[char] === 1) {
+            return char;
+        }
+    }
+
+    return null; // Return null if no non-repeating character is found
 }
 
-// Example usage
-let array = [3, 1, 4, 1, 5, 9, 2, 6, 5];
-let k = 3;
-console.log(kthSmallestElement(array, k)); // Output: 3
+// Test the function
+const str = "aabbccde";
+const firstNonRepeatingChar = firstNonRepeatingCharacter(str);
+console.log("First non-repeating character:", firstNonRepeatingChar);
