@@ -1,48 +1,42 @@
-class Graph {
-  constructor() {
-    this.adjacencyList = {};
-  }
-
-  addVertex(vertex) {
-    if (!this.adjacencyList[vertex]) {
-      this.adjacencyList[vertex] = [];
+// Node class for the suffix tree
+class Node {
+    constructor() {
+        this.children = {}; // Mapping of characters to child nodes
+        this.start = null; // Start index of the substring
+        this.end = null; // End index of the substring
+        this.suffixLink = null; // Suffix link to another node
     }
-  }
-
-  addEdge(v1, v2) {
-    this.adjacencyList[v1].push(v2);
-    this.adjacencyList[v2].push(v1);
-  }
-
-  depthFirstSearch(start) {
-    const visited = {};
-    const result = [];
-    const adjacencyList = this.adjacencyList;
-
-    (function dfs(vertex) {
-      if (!vertex) return null;
-      visited[vertex] = true;
-      result.push(vertex);
-      adjacencyList[vertex].forEach(neighbor => {
-        if (!visited[neighbor]) {
-          return dfs(neighbor);
-        }
-      });
-    })(start);
-
-    return result;
-  }
 }
 
-const graph = new Graph();
-graph.addVertex("A");
-graph.addVertex("B");
-graph.addVertex("C");
-graph.addVertex("D");
-graph.addVertex("E");
-graph.addEdge("A", "B");
-graph.addEdge("A", "C");
-graph.addEdge("B", "D");
-graph.addEdge("C", "E");
+// Suffix tree class
+class SuffixTree {
+    constructor(text) {
+        this.root = new Node();
+        this.text = text;
+        this.buildSuffixTree();
+    }
 
-console.log(graph.depthFirstSearch("A")); // Output: [ 'A', 'B', 'D', 'C', 'E' ]
+    // Function to build the suffix tree
+    buildSuffixTree() {
+        for (let i = 0; i < this.text.length; i++) {
+            this.addSuffix(this.text.substring(i), i);
+        }
+    }
+
+    // Function to add a suffix to the suffix tree
+    addSuffix(suffix, startIndex) {
+        let currentNode = this.root;
+        for (let i = 0; i < suffix.length; i++) {
+            if (!currentNode.children[suffix[i]]) {
+                currentNode.children[suffix[i]] = new Node();
+            }
+            currentNode = currentNode.children[suffix[i]];
+        }
+        currentNode.start = startIndex;
+        currentNode.end = this.text.length - 1;
+    }
+}
+
+// Usage
+const text = "banana";
+const suffixTree = new SuffixTree(text);
