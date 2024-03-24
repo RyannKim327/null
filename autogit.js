@@ -1,31 +1,27 @@
-function depthLimitedSearchIterative(node, depthLimit) {
-    let stack = [[node, 0]]; // [currentNode, currentDepth]
-    
-    while (stack.length > 0) {
-        let [currentNode, currentDepth] = stack.pop();
-        
-        if (currentDepth <= depthLimit) {
-            if (isGoalNode(currentNode)) {
-                return currentNode; // Found the goal node
-            }
-            
-            // Expand current node
-            let children = expandNode(currentNode);
-            for (let child of children) {
-                stack.push([child, currentDepth + 1]);
-            }
-        }
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-    
-    return null; // Goal node not found within depth limit
 }
 
-// Helper function to check if a node is the goal node
-function isGoalNode(node) {
-    // Implement your goal node check logic here
-}
+const maxDepth = (root) => {
+    if (!root) {
+        return 0;
+    }
 
-// Helper function to expand a node and get its children
-function expandNode(node) {
-    // Implement your node expansion logic here
-}
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
+
+    return 1 + Math.max(leftDepth, rightDepth);
+};
+
+// Example Usage
+const rootNode = new Node(1);
+rootNode.left = new Node(2);
+rootNode.right = new Node(3);
+rootNode.left.left = new Node(4);
+rootNode.right.right = new Node(5);
+
+console.log("Maximum depth of binary tree:", maxDepth(rootNode)); // Output: 3
