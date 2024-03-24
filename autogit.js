@@ -1,74 +1,86 @@
-function biDirectionalSearch(graph, startNode, targetNode) {
-    let startQueue = [startNode];
-    let targetQueue = [targetNode];
-    let startVisited = {};
-    let targetVisited = {};
-
-    startPath = {};
-    targetPath = {};
-
-    while (startQueue.length > 0 && targetQueue.length > 0) {
-        let startCurrentNode = startQueue.shift();
-        let targetCurrentNode = targetQueue.shift();
-
-        if (startVisited[startCurrentNode] || targetVisited[targetCurrentNode]) {
-            // Paths meet in the middle
-            return getPath(startPath, targetPath, startCurrentNode, targetCurrentNode);
-        }
-
-        startVisited[startCurrentNode] = true;
-        targetVisited[targetCurrentNode] = true;
-
-        for (let neighbor of graph[startCurrentNode]) {
-            if (!startVisited[neighbor]) {
-                startPath[neighbor] = startCurrentNode;
-                startQueue.push(neighbor);
-            }
-        }
-
-        for (let neighbor of graph[targetCurrentNode]) {
-            if (!targetVisited[neighbor]) {
-                targetPath[neighbor] = targetCurrentNode;
-                targetQueue.push(neighbor);
-            }
-        }
+class BTreeNode {
+    constructor(degree, leaf) {
+        this.degree = degree;
+        this.leaf = leaf;
+        this.keys = [];
+        this.children = [];
     }
-
-    return null; // No path found
 }
 
-function getPath(startPath, targetPath, startNode, targetNode) {
-    let path = [];
-    let currentNode = startNode;
-
-    while (currentNode !== undefined) {
-        path.push(currentNode);
-        currentNode = startPath[currentNode];
+class BTree {
+    constructor(degree) {
+        this.root = new BTreeNode(degree, true);
+        this.degree = degree;
     }
 
-    currentNode = targetPath[targetNode];
-    while (currentNode !== undefined) {
-        path.unshift(currentNode);
-        currentNode = targetPath[currentNode];
+    splitChild(parent, index) {
+        let newChild = new BTreeNode(this.degree, true);
+        let child = parent.children[index];
+        
+        newChild.keys = child.keys.splice(this.degree);
+        
+        if (!child.leaf) {
+            newChild.children = child.children.splice(this.degree + 1);
+        }
+        
+        parent.keys.splice(index, 0, child.keys.pop());
+        parent.children.splice(index + 1, 0, newChild);
     }
 
-    path.push(targetNode);
+    insert(key) {
+        let root = this.root;
+        if (root.keys.length === (2 * this.degree) - 1) {
+            let newRoot = new BTreeNode(this.degree, false);
+            newRoot.children.push(root);
+            this.root = newRoot;
+            this.splitChild(newRoot, 0);
+            this.insertNonFull(newRoot, key);
+        } else {
+            this.insertNonFull(root, key);
+        }
+    }
 
-    return path;
+    insertNonFull(node, key) {
+        let i = node.keys.length - 1;
+        
+        if (node.leaf) {
+            while (i >= 0 && key < node.keys[i]) {
+                node.keys[i + 1] = node.keys[i];
+                i--;
+            }
+            node.keys[i + 1] = key;
+        } else {
+            while (i >= 0 && key < node.keys[i]) {
+                i--;
+            }
+            
+            i++;
+            if (node.children[i].keys.length === (2 * this.degree) - 1) {
+                this.splitChild(node, i);
+                if (key > node.keys[i]) {
+                    i++;
+                }
+            }
+            this.insertNonFull(node.children[i], key);
+        }
+    }
+
+    search(key) {
+        return this.searchRecursive(this.root, key);
+    }
+
+    searchRecursive(node, key) {
+        let i = 0;
+        while (i < node.keys.length && key > node.keys[i]) {
+            i++;
+        }
+        
+        if (node.keys[i] === key) {
+            return `Key ${key} found in the B-tree`;
+        } else if (node.leaf) {
+            return `Key ${key} not found in the B-tree`;
+        } else {
+            return this.searchRecursive(node.children[i], key);
+        }
+    }
 }
-
-// Example graph representation
-const graph = {
-    A: ['B'],
-    B: ['C', 'D'],
-    C: ['E'],
-    D: ['F'],
-    E: [],
-    F: ['G'],
-    G: []
-};
-
-const startNode = 'A';
-const targetNode = 'G';
-
-console.log(biDirectionalSearch(graph, startNode, targetNode)); // Output: ['A', 'B', 'D', 'F', 'G']
