@@ -1,4 +1,14 @@
-let str = "   Hello, World!   ";
-let trimmedStr = str.replace(/\s/g, "");
+function calculateStringLength(str) {
+    let length = 0;
+    for (let i = 0; ; i++) {
+        if (str[i] === undefined) {
+            break;
+        }
+        length++;
+    }
+    return length;
+}
 
-console.log(trimmedStr); // Output: "Hello,World!"
+// Example usage
+const str = "Hello, World!";
+console.log(calculateStringLength(str)); // Output: 13
