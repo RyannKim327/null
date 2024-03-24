@@ -1,6 +1,6 @@
 class Node {
-    constructor(data) {
-        this.data = data;
+    constructor(value) {
+        this.value = value;
         this.next = null;
     }
 }
@@ -10,51 +10,46 @@ class LinkedList {
         this.head = null;
     }
 
-    addNode(data) {
-        const newNode = new Node(data);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
-        }
-    }
-
     reverse() {
         let prev = null;
         let current = this.head;
-        while (current) {
-            const next = current.next;
+        let next = null;
+
+        while (current !== null) {
+            next = current.next;
             current.next = prev;
             prev = current;
             current = next;
         }
+
         this.head = prev;
+    }
+
+    addToHead(value) {
+        let newNode = new Node(value);
+        newNode.next = this.head;
+        this.head = newNode;
     }
 
     printList() {
         let current = this.head;
-        while (current) {
-            console.log(current.data);
+        while (current !== null) {
+            console.log(current.value);
             current = current.next;
         }
     }
 }
 
-// Create a linked list
-const list = new LinkedList();
-list.addNode(1);
-list.addNode(2);
-list.addNode(3);
-list.addNode(4);
+// Example usage
+let linkedList = new LinkedList();
+linkedList.addToHead(3);
+linkedList.addToHead(2);
+linkedList.addToHead(1);
 
-console.log("Original list:");
-list.printList();
+console.log("Original Linked List:");
+linkedList.printList();
 
-list.reverse();
+linkedList.reverse();
 
-console.log("\nReversed list:");
-list.printList();
+console.log("\nReversed Linked List:");
+linkedList.printList();
