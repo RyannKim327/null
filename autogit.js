@@ -1,27 +1,16 @@
-function firstNonRepeatingCharacter(str) {
-    let charMap = {};
-    
-    // Build character frequency map
-    for(let char of str) {
-        charMap[char] = (charMap[char] || 0) + 1;
-    }
-    
-    // Find the first non-repeating character
-    for(let char of str) {
-        if(charMap[char] === 1) {
-            return char;
-        }
-    }
-    
-    return null; // Return null if no non-repeating character found
-}
+let mainString = "Hello, World!";
+let subString = "Hello";
 
-// Example usage
-const input = "abacddbeff";
-const result = firstNonRepeatingCharacter(input);
-
-if(result) {
-    console.log("First non-repeating character:", result);
+if (mainString.includes(subString)) {
+    console.log("Substring found in the main string.");
 } else {
-    console.log("No non-repeating character found.");
+    console.log("Substring not found in the main string.");
+}
+let mainString = "Hello, World!";
+let subString = "Hello";
+
+if (mainString.indexOf(subString) !== -1) {
+    console.log("Substring found in the main string.");
+} else {
+    console.log("Substring not found in the main string.");
 }
