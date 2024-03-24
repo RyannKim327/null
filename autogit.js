@@ -1,17 +1,42 @@
-function findCommonElements(array1, array2) {
-  let commonElements = [];
-  
-  for (let i = 0; i < array1.length; i++) {
-    if (array2.includes(array1[i])) {
-      commonElements.push(array1[i]);
-    }
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
   }
-  
-  return commonElements;
 }
 
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 4, 5, 6, 7];
+function reverseLinkedList(head) {
+  let prev = null;
+  let current = head;
+  let next = null;
 
-const result = findCommonElements(array1, array2);
-console.log(result); // Output: [3, 4, 5]
+  while (current !== null) {
+    next = current.next;
+    current.next = prev;
+    prev = current;
+    current = next;
+  }
+
+  return prev; // Update the head of the reversed list
+}
+
+// Example usage
+let head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+
+console.log("Original Linked List:");
+let current = head;
+while (current !== null) {
+  console.log(current.value);
+  current = current.next;
+}
+
+head = reverseLinkedList(head);
+
+console.log("\nReversed Linked List:");
+current = head;
+while (current !== null) {
+  console.log(current.value);
+  current = current.next;
+}
