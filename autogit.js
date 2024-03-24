@@ -1,32 +1,54 @@
-function mergeSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
+function rabinKarpSearch(text, pattern) {
+    const prime = 101; // A prime number to use in the hashing function
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    
+    let patternHash = 0;
+    let textHash = 0;
+    let base = 1;
+    let foundIndexes = [];
+    
+    // Calculate the base value to be used in the hashing function
+    for (let i = 0; i < patternLength - 1; i++) {
+        base = (base * 256) % prime;
     }
 
-    const mid = Math.floor(arr.length / 2);
-    const left = arr.slice(0, mid);
-    const right = arr.slice(mid);
+    // Calculate the hash values for the pattern and the initial window of the text
+    for (let i = 0; i < patternLength; i++) {
+        patternHash = (256 * patternHash + pattern.charCodeAt(i)) % prime;
+        textHash = (256 * textHash + text.charCodeAt(i)) % prime;
+    }
 
-    return merge(mergeSort(left), mergeSort(right));
-}
+    // Slide the window of the text and compare the hash values
+    for (let i = 0; i <= textLength - patternLength; i++) {
+        if (patternHash === textHash) {
+            let j;
+            for (j = 0; j < patternLength; j++) {
+                if (text[i + j] !== pattern[j]) {
+                    break;
+                }
+            }
 
-function merge(left, right) {
-    let result = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
+            if (j === patternLength) {
+                foundIndexes.push(i);
+            }
+        }
 
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            result.push(left[leftIndex]);
-            leftIndex++;
-        } else {
-            result.push(right[rightIndex]);
-            rightIndex++;
+        // Calculate the hash value for the next window of the text
+        if (i < textLength - patternLength) {
+            textHash = (256 * (textHash - text.charCodeAt(i) * base) + text.charCodeAt(i + patternLength)) % prime;
+            if (textHash < 0) {
+                textHash += prime;
+            }
         }
     }
 
-    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+    return foundIndexes;
 }
 
-const arr = [8, 4, 1, 7, 3, 5, 2, 6];
-console.log(mergeSort(arr));
+// Example usage
+const text = "ABABCABABCDABCABCDABCDABDE";
+const pattern = "ABCD";
+
+const indexes = rabinKarpSearch(text, pattern);
+console.log("Found at indexes:", indexes);
