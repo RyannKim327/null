@@ -1,24 +1,44 @@
-function firstNonRepeatingCharacter(str) {
-    // Create a map to store the frequency of each character
-    const charMap = new Map();
-    
-    // Iterate through the string to populate the charMap
-    for (let char of str) {
-        charMap.set(char, (charMap.get(char) || 0) + 1);
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
     }
-    
-    // Iterate through the string to find the first non-repeating character
-    for (let char of str) {
-        if (charMap.get(char) === 1) {
-            return char;
-        }
-    }
-    
-    return null; // If there is no non-repeating character
 }
 
-// Test the function
-const str = "hello world";
-const firstNonRepeatingChar = firstNonRepeatingCharacter(str);
+function reverseLinkedList(head) {
+    let prev = null;
+    let current = head;
+    let next = null;
 
-console.log("First non-repeating character:", firstNonRepeatingChar);
+    while (current !== null) {
+        next = current.next;
+        current.next = prev;
+        prev = current;
+        current = next;
+    }
+
+    return prev;
+}
+
+// Example linked list: 1 -> 2 -> 3 -> 4 -> 5
+const head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
+
+console.log("Original linked list:");
+let current = head;
+while (current !== null) {
+    console.log(current.value);
+    current = current.next;
+}
+
+const reversedHead = reverseLinkedList(head);
+
+console.log("Reversed linked list:");
+current = reversedHead;
+while (current !== null) {
+    console.log(current.value);
+    current = current.next;
+}
