@@ -1,17 +1,12 @@
-// URL of the API
-const apiUrl = 'https://jsonplaceholder.typicode.com/posts';
+function validateEmail(email) {
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return regex.test(email);
+}
 
-// Make a GET request to the API
-fetch(apiUrl)
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  })
-  .then(data => {
-    console.log(data);
-  })
-  .catch(error => {
-    console.error('There was a problem with the fetch operation:', error);
-  });
+// Example usage
+const email = 'example@email.com';
+if (validateEmail(email)) {
+    console.log('Valid email address');
+} else {
+    console.log('Invalid email address');
+}
