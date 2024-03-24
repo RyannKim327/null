@@ -1,6 +1,8 @@
-let str = "123";
-let num = parseInt(str);
-console.log(num); // Output: 123
-let str = "456";
-let num = +str;
-console.log(num); // Output: 456
+fetch('https://jsonplaceholder.typicode.com/posts')
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+  })
+  .catch(error => {
+    console.error('Error fetching data:', error);
+  });
