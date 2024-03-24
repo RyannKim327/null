@@ -1,39 +1,52 @@
-class BeamSearch {
-  constructor(beamWidth, maxDepth, evaluateFn) {
-    this.beamWidth = beamWidth;
-    this.maxDepth = maxDepth;
-    this.evaluateFn = evaluateFn;
-  }
-
-  search(startState) {
-    let beam = [[startState, 0]]; // Initialize beam with start state
-    for (let depth = 0; depth < this.maxDepth; depth++) {
-      let newBeam = [];
-      for (let [state, score] of beam) {
-        let children = this.generateChildren(state);
-        for (let child of children) {
-          let childScore = this.evaluateFn(child);
-          newBeam.push([child, score + childScore]);
+function getLongestPrefixSuffix(pattern) {
+    let lps = new Array(pattern.length).fill(0);
+    let len = 0;
+    let i = 1;
+    
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
         }
-      }
-      newBeam.sort((a, b) => b[1] - a[1]); // Sort by score in descending order
-      beam = newBeam.slice(0, this.beamWidth); // Keep only top beamWidth states
     }
-    return beam;
-  }
+    
+    return lps;
+}
 
-  generateChildren(state) {
-    // Generate children of a given state (can be customized based on the problem)
-    return [];
-  }
+function kmpSearch(text, pattern) {
+    let m = text.length;
+    let n = pattern.length;
+    let lps = getLongestPrefixSuffix(pattern);
+    let i = 0; // index for text
+    let j = 0; // index for pattern
+    
+    while (i < m) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+        if (j === n) {
+            console.log("Pattern found at index " + (i - j));
+            j = lps[j - 1];
+        } else if (i < m && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
 }
 
 // Example usage
-let beamSearch = new BeamSearch(3, 4, (state) => {
-  // Evaluation function to score a state (can be customized based on the problem)
-  return state;
-});
-
-let startState = 'A';
-let result = beamSearch.search(startState);
-console.log(result);
+let text = "ABABDABACDABABCABAB";
+let pattern = "ABABCABAB";
+kmpSearch(text, pattern);
