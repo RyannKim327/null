@@ -1,13 +1,8 @@
-function mean(numbers) {
-  if (numbers.length === 0) {
-    return null; // Handle edge case for empty list
-  }
+let myString = 'Hello, World!';
+let substring = 'Hello';
 
-  const sum = numbers.reduce((acc, val) => acc + val, 0);
-  return sum / numbers.length;
+if (myString.includes(substring)) {
+    console.log('The string contains the substring.');
+} else {
+    console.log('The string does not contain the substring.');
 }
-
-// Example usage
-const numbers = [1, 2, 3, 4, 5];
-const average = mean(numbers);
-console.log(average); // Output: 3
