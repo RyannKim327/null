@@ -1,19 +1,54 @@
-function calculateMean(numbers) {
-    // Check if the input is an array
-    if (!Array.isArray(numbers)) {
-        return "Input is not an array";
+function fibonacciSearch(arr, key) {
+    // Initialize Fibonacci numbers
+    let fibN2 = 0; // (n-2)'th Fibonacci number
+    let fibN1 = 1; // (n-1)'th Fibonacci number
+    let fibN = fibN2 + fibN1; // n'th Fibonacci number
+
+    // Find the smallest Fibonacci number greater than or equal to the array length
+    while (fibN < arr.length) {
+        fibN2 = fibN1;
+        fibN1 = fibN;
+        fibN = fibN2 + fibN1;
     }
 
-    // Calculate the sum of all numbers in the array
-    const sum = numbers.reduce((acc, num) => acc + num, 0);
+    // Initialize offset
+    let offset = -1;
 
-    // Calculate the mean by dividing the sum by the total number of elements
-    const mean = sum / numbers.length;
+    // Perform the search
+    while (fibN > 1) {
+        // Calculate the next indices
+        const next = Math.min(offset + fibN2, arr.length - 1);
 
-    return mean;
+        // If key is greater than the value at index next, cut the array from offset to next
+        if (arr[next] < key) {
+            fibN = fibN1;
+            fibN1 = fibN2;
+            fibN2 = fibN - fibN1;
+            offset = next;
+        } 
+        // If key is less than the value at index next, cut the array after next + 1
+        else if (arr[next] > key) {
+            fibN = fibN2;
+            fibN1 = fibN1 - fibN2;
+            fibN2 = fibN - fibN1;
+        } 
+        // If key is found
+        else {
+            return next;
+        }
+    }
+
+    // If key is not found
+    return -1;
 }
 
 // Example usage
-const numbers = [1, 2, 3, 4, 5];
-const mean = calculateMean(numbers);
-console.log(mean); // Output: 3
+const arr = [2, 3, 5, 7, 9, 13, 21, 34, 55];
+const key = 13;
+
+const index = fibonacciSearch(arr, key);
+if (index !== -1) {
+    console.log(`Element found at index: ${index}`);
+} else {
+    console.log("Element not found in the array");
+}
