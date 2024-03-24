@@ -1,14 +1,16 @@
-// Define an array of integers
-let numbers = [5, 3, 8, 1, 2, 4];
+let str = 'Hello, world!';
+let substring = 'world';
 
-// Sort the array in ascending order
-numbers.sort(function(a, b) {
-  return a - b;
-});
+if (str.includes(substring)) {
+    console.log('The string contains the substring');
+} else {
+    console.log('The string does not contain the substring');
+}
+let str = 'Hello, world!';
+let substring = 'WORLD';
 
-// Print the sorted array
-console.log(numbers);
-// Sort the array in descending order
-numbers.sort(function(a, b) {
-  return b - a;
-});
+if (str.toLowerCase().includes(substring.toLowerCase())) {
+    console.log('The string contains the substring');
+} else {
+    console.log('The string does not contain the substring');
+}
