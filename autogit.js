@@ -1,12 +1,27 @@
-let arr = [1, 2, 3, 4, 5];
-arr.reverse();
-console.log(arr); // Output: [5, 4, 3, 2, 1]
-let arr = [1, 2, 3, 4, 5];
-let reversedArr = [];
-for (let i = arr.length - 1; i >= 0; i--) {
-  reversedArr.push(arr[i]);
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
 }
-console.log(reversedArr); // Output: [5, 4, 3, 2, 1]
-let arr = [1, 2, 3, 4, 5];
-let reversedArr = arr.reduce((acc, val) => [val, ...acc], []);
-console.log(reversedArr); // Output: [5, 4, 3, 2, 1]
+
+function maxDepth(root) {
+    if (root === null) {
+        return 0;
+    }
+
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
+
+    return 1 + Math.max(leftDepth, rightDepth);
+}
+
+// Example binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+console.log(maxDepth(root)); // Output: 3
