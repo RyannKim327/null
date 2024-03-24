@@ -1,50 +1,24 @@
-// Node class to represent a node in the linked list
-class Node {
-    constructor(data, next = null) {
-        this.data = data;
-        this.next = next;
+function firstNonRepeatingCharacter(str) {
+    // Create a map to store the frequency of each character
+    const charMap = new Map();
+    
+    // Iterate through the string to populate the charMap
+    for (let char of str) {
+        charMap.set(char, (charMap.get(char) || 0) + 1);
     }
+    
+    // Iterate through the string to find the first non-repeating character
+    for (let char of str) {
+        if (charMap.get(char) === 1) {
+            return char;
+        }
+    }
+    
+    return null; // If there is no non-repeating character
 }
 
-// LinkedList class to manage the linked list
-class LinkedList {
-    constructor() {
-        this.head = null;
-    }
+// Test the function
+const str = "hello world";
+const firstNonRepeatingChar = firstNonRepeatingCharacter(str);
 
-    // Insert a new node at the beginning of the linked list
-    insertFirst(data) {
-        this.head = new Node(data, this.head);
-    }
-
-    // Insert a new node at the end of the linked list
-    insertLast(data) {
-        let newNode = new Node(data);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Print all the elements of the linked list
-    printList() {
-        let current = this.head;
-        while (current) {
-            console.log(current.data);
-            current = current.next;
-        }
-    }
-}
-
-// Usage example
-const linkedList = new LinkedList();
-linkedList.insertFirst(5);
-linkedList.insertFirst(10);
-linkedList.insertLast(15);
-linkedList.printList();
+console.log("First non-repeating character:", firstNonRepeatingChar);
