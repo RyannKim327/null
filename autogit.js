@@ -1,15 +1,17 @@
-function validateEmail(email) {
-    // Regular expression pattern for validating email addresses
-    const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+function isPrime(num) {
+    if (num <= 1) {
+        return false;
+    }
 
-    // Use the test() method to check if the email address matches the pattern
-    return pattern.test(email);
+    for (let i = 2; i <= Math.sqrt(num); i++) {
+        if (num % i === 0) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
-// Test the function with an example email address
-const email = 'example@example.com';
-if (validateEmail(email)) {
-    console.log('Email address is valid.');
-} else {
-    console.log('Email address is invalid.');
-}
+// Test the function
+console.log(isPrime(7)); // Output: true
+console.log(isPrime(10)); // Output: false
