@@ -1,14 +1,41 @@
-var numbers = [10, 5, 8, 15, 3];
-var max = Math.max.apply(null, numbers);
+class Stack {
+    constructor() {
+        this.stack = [];
+    }
 
-console.log("Maximum value in the array is: " + max);
-var numbers = [10, 5, 8, 15, 3];
-var max = numbers[0];
+    push(value) {
+        this.stack.push(value);
+    }
 
-for (var i = 1; i < numbers.length; i++) {
-    if (numbers[i] > max) {
-        max = numbers[i];
+    pop() {
+        if (this.isEmpty()) {
+            return "Stack is empty";
+        }
+        return this.stack.pop();
+    }
+
+    peek() {
+        if (this.isEmpty()) {
+            return "Stack is empty";
+        }
+        return this.stack[this.stack.length - 1];
+    }
+
+    isEmpty() {
+        return this.stack.length === 0;
+    }
+
+    print() {
+        console.log(this.stack);
     }
 }
 
-console.log("Maximum value in the array is: " + max);
+// Usage
+const stack = new Stack();
+stack.push(1);
+stack.push(2);
+stack.push(3);
+stack.print(); // Output: [1, 2, 3]
+console.log(stack.pop()); // Output: 3
+console.log(stack.peek()); // Output: 2
+stack.print(); // Output: [1, 2]
