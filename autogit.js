@@ -1,27 +1,17 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+function reverseWords(str) {
+    // Split the string into an array of words
+    var words = str.split(" ");
+    
+    // Reverse the array
+    var reversedWords = words.reverse();
+    
+    // Join the array back into a string
+    var reversedStr = reversedWords.join(" ");
+    
+    return reversedStr;
 }
 
-function maxDepth(root) {
-    if (root === null) {
-        return 0;
-    }
-
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
-
-    return 1 + Math.max(leftDepth, rightDepth);
-}
-
-// Example binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-console.log(maxDepth(root)); // Output: 3
+// Test the function
+var originalStr = "Hello world, how are you?";
+var reversedStr = reverseWords(originalStr);
+console.log(reversedStr); // Output: "you? are how world, Hello"
