@@ -1,55 +1,56 @@
 class Node {
-    constructor(value) {
-        this.value = value;
-        this.children = [];
-    }
-
-    addChild(node) {
-        this.children.push(node);
-    }
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-function depthLimitedSearch(node, target, depthLimit, currentDepth = 0) {
-    if (currentDepth > depthLimit) {
-        return false; // return false if the current depth exceeds the limit
-    }
+function findIntersection(list1, list2) {
+  let set = new Set();
+  let intersection = null;
 
-    if (node.value === target) {
-        return true; // return true if the target value is found
-    }
+  // Traverse through the first linked list and store values in a set
+  let current = list1;
+  while (current !== null) {
+    set.add(current.value);
+    current = current.next;
+  }
 
-    if (node.children.length === 0) {
-        return false; // return false if there are no children to explore
+  // Traverse through the second linked list and check for intersection
+  current = list2;
+  while (current !== null) {
+    if (set.has(current.value)) {
+      intersection = current;
+      break;
     }
+    current = current.next;
+  }
 
-    for (let child of node.children) {
-        if (depthLimitedSearch(child, target, depthLimit, currentDepth + 1)) {
-            return true; // return true if the target value is found in any child node
-        }
-    }
-
-    return false; // return false if the target value is not found at this level or in any of the child nodes
+  return intersection;
 }
 
-// Example usage
-const rootNode = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
-const node4 = new Node(4);
-const node5 = new Node(5);
+// Example linked list nodes
+let node1 = new Node(1);
+let node2 = new Node(2);
+let node3 = new Node(3);
+let node4 = new Node(4);
 
-rootNode.addChild(node2);
-rootNode.addChild(node3);
-node2.addChild(node4);
-node2.addChild(node5);
+// Creating linked lists
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
 
-const target = 5;
-const depthLimit = 2;
+let list1 = node1;
 
-const result = depthLimitedSearch(rootNode, target, depthLimit);
+let nodeA = new Node(8);
+let nodeB = new Node(3);
 
-if (result) {
-    console.log(`Target ${target} found within depth limit of ${depthLimit}.`);
-} else {
-    console.log(`Target ${target} not found within depth limit of ${depthLimit}.`);
-}
+nodeA.next = nodeB;
+nodeB.next = node3;
+
+let list2 = nodeA;
+
+// Find intersection of two linked lists
+let intersectionNode = findIntersection(list1, list2);
+
+console.log(intersectionNode); // Output: Node { value: 3, next: Node { value: 4, next: null } }
