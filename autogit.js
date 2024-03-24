@@ -1,13 +1,3 @@
-function findStringLength(str) {
-    let length = 0;
-    for (let i = 0; i < str.length; i++) {
-        length++;
-    }
-    return length;
-}
-
-// Example usage
-const string = "Hello, World!";
-const length = findStringLength(string);
-
-console.log("Length of the string: " + length);
+let arr = [1, 2, 3, 4, 5];
+arr.reverse();
+console.log(arr); // Output: [5, 4, 3, 2, 1]
