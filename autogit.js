@@ -1,31 +1,43 @@
-function longestIncreasingSubsequence(arr) {
-    let maxLength = 1;
-    let lengths = new Array(arr.length);
-    lengths.fill(1);
-    
-    for (let i = 1; i < arr.length; i++) {
-        for (let j = 0; j < i; j++) {
-            if (arr[i] > arr[j] && lengths[i] < lengths[j] + 1) {
-                lengths[i] = lengths[j] + 1;
-                maxLength = Math.max(maxLength, lengths[i]);
+function depthLimitedSearch(node, goal, depthLimit) {
+    return recursiveDLS(node, goal, depthLimit);
+}
+
+function recursiveDLS(node, goal, depthLimit) {
+    if (node.state === goal) {
+        return node;
+    } else if (depthLimit == 0) {
+        return "cutoff";
+    } else {
+        let cutoffOccurred = false;
+
+        for (let child of node.children) {
+            const result = recursiveDLS(child, goal, depthLimit - 1);
+            if (result === "cutoff") {
+                cutoffOccurred = true;
+            } else if (result !== "failure") {
+                return result;
             }
         }
+
+        return cutoffOccurred ? "cutoff" : "failure";
     }
-    
-    let result = [];
-    let maxIndex = lengths.indexOf(maxLength);
-    result.unshift(arr[maxIndex]);
-    
-    for (let i = maxIndex - 1; i >= 0; i--) {
-        if (arr[i] < arr[maxIndex] && lengths[i] === lengths[maxIndex] - 1) {
-            result.unshift(arr[i]);
-            maxIndex = i;
-        }
-    }
-    
-    return result;
 }
 
 // Example usage
-const arr = [3, 10, 2, 1, 20];
-console.log(longestIncreasingSubsequence(arr)); // Output: [3, 10, 20]
+class Node {
+    constructor(state, children) {
+        this.state = state;
+        this.children = children || [];
+    }
+}
+
+// Define a tree structure
+const nodeF = new Node("F");
+const nodeE = new Node("E", [nodeF]);
+const nodeD = new Node("D");
+const nodeC = new Node("C", [nodeE]);
+const nodeB = new Node("B", [nodeD]);
+const nodeA = new Node("A", [nodeB, nodeC]);
+
+const result = depthLimitedSearch(nodeA, "F", 2);
+console.log(result);
