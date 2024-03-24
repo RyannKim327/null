@@ -1,32 +1,9 @@
-function areAnagrams(str1, str2) {
-    // Remove any non-alphabetic characters and convert to lowercase
-    str1 = str1.replace(/[^\w]/g, "").toLowerCase();
-    str2 = str2.replace(/[^\w]/g, "").toLowerCase();
+let numbers = [1, 2, 3, 4, 5];
 
-    // Check if the lengths of the two strings are equal
-    if (str1.length !== str2.length) {
-        return false;
-    }
+const indexToRemove = numbers.indexOf(3); // Find the index of the element you want to remove
 
-    // Create character frequency object for str1
-    const charMap = {};
-    for (let char of str1) {
-        charMap[char] = charMap[char] + 1 || 1;
-    }
-
-    // Check character frequency for str2
-    for (let char of str2) {
-        if (!charMap[char]) {
-            return false;
-        } else {
-            charMap[char]--;
-        }
-    }
-
-    return true;
+if (indexToRemove > -1) {
+    numbers.splice(indexToRemove, 1); // Remove 1 element at the index
 }
 
-// Test the function
-const str1 = "listen";
-const str2 = "silent";
-console.log(areAnagrams(str1, str2)); // Output: true
+console.log(numbers); // Output: [1, 2, 4, 5]
