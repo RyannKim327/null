@@ -1,18 +1,20 @@
-area = √(s(s - a)(s - b)(s - c))
-function calculateTriangleArea(a, b, c) {
-    // Calculate the semi-perimeter
-    const s = (a + b + c) / 2;
+function findLongestIncreasingSubsequence(arr) {
+    if (arr.length === 0) return 0;
 
-    // Calculate the area using Heron's formula
-    const area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
+    let dp = new Array(arr.length).fill(1);
+    let max = 1;
 
-    return area;
+    for (let i = 1; i < arr.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[i] > arr[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+                max = Math.max(max, dp[i]);
+            }
+        }
+    }
+
+    return max;
 }
 
-// Example usage
-const sideA = 3;
-const sideB = 4;
-const sideC = 5;
-
-const area = calculateTriangleArea(sideA, sideB, sideC);
-console.log("The area of the triangle is: " + area);
+let arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
+console.log(findLongestIncreasingSubsequence(arr)); // Output: 6
