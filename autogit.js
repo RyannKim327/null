@@ -1,6 +1,11 @@
-const cron = require('node-cron');
+function validateEmail(email) {
+    // Regular expression for validating email addresses
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    // Test the email against the regular expression
+    return regex.test(email);
+}
 
-cron.schedule('30 10 * * *', () => {
-  console.log('Running a task at 10:30 AM every day!');
-});
-npm install node-cron
+// Test the function with an email address
+const email = "example@example.com";
+console.log(validateEmail(email)); // Output: true
