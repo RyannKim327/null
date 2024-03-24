@@ -1,43 +1,19 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
+function bubbleSort(arr) {
+    let len = arr.length;
+    for (let i = 0; i < len; i++) {
+        for (let j = 0; j < len - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap elements
+                let temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
     }
-}
-function reverseLinkedList(head) {
-    let prev = null;
-    let current = head;
-    let next = null;
-
-    while (current) {
-        next = current.next;
-        current.next = prev;
-        prev = current;
-        current = next;
-    }
-
-    return prev;
-}
-let node1 = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-
-node1.next = node2;
-node2.next = node3;
-
-// Print the original linked list
-let current = node1;
-while (current) {
-    console.log(current.value);
-    current = current.next;
+    return arr;
 }
 
-// Reverse the linked list
-let reversedHead = reverseLinkedList(node1);
-
-// Print the reversed linked list
-current = reversedHead;
-while (current) {
-    console.log(current.value);
-    current = current.next;
-}
+// Example usage
+const arr = [64, 34, 25, 12, 22, 11, 90];
+console.log("Unsorted array:", arr);
+console.log("Sorted array:", bubbleSort(arr));
