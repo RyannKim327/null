@@ -1,26 +1,15 @@
-function quickSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
-    } else {
-        var left = [];
-        var right = [];
-        var newArr = [];
-        var pivot = arr.pop();
-        var length = arr.length;
-
-        for (var i = 0; i < length; i++) {
-            if (arr[i] <= pivot) {
-                left.push(arr[i]);
-            } else {
-                right.push(arr[i]);
-            }
+function countOccurrences(str, char) {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
+            count++;
         }
-
-        return newArr.concat(quickSort(left), pivot, quickSort(right));
     }
+    return count;
 }
 
-var array = [3, 0, 2, 5, -1, 4, 1];
-console.log("Original array: " + array);
-var sortedArray = quickSort(array);
-console.log("Sorted array: " + sortedArray);
+let myString = "hello world";
+let myCharacter = "l";
+let occurrences = countOccurrences(myString, myCharacter);
+
+console.log(`The character '${myCharacter}' occurs ${occurrences} times in the string.`);
