@@ -1,21 +1,21 @@
-// API endpoint
-const apiUrl = 'https://api.openweathermap.org/data/2.5/weather';
-const apiKey = 'YOUR_API_KEY'; // You need to replace this with your own API key
+function firstNonRepeatingCharacter(str) {
+    let charCount = {};
+    
+    // Count the frequency of each character
+    for (let char of str) {
+        charCount[char] = (charCount[char] || 0) + 1;
+    }
+    
+    // Find the first non-repeating character
+    for (let char of str) {
+        if (charCount[char] === 1) {
+            return char;
+        }
+    }
+    
+    return null; // Return null if there is no non-repeating character
+}
 
-// City name
-const city = 'London';
-
-// Fetch data from the API
-fetch(`${apiUrl}?q=${city}&appid=${apiKey}`)
-  .then(response => response.json())
-  .then(data => {
-    console.log(data);
-    // You can now do whatever you want with the data, for example:
-    const temperature = data.main.temp;
-    const description = data.weather[0].description;
-    console.log(`Temperature in ${city}: ${temperature} Kelvin`);
-    console.log(`Weather description in ${city}: ${description}`);
-  })
-  .catch(error => {
-    console.error('Error fetching data:', error);
-  });
+// Test the function
+let str = "aabbcde";
+console.log(firstNonRepeatingCharacter(str)); // Output: "c"
