@@ -1,11 +1,17 @@
-Area = 1/2 * base * height
-function calculateTriangleArea(base, height) {
-    return 0.5 * base * height;
+function findFirstRepeatedChar(str) {
+    let charSet = new Set();
+    
+    for (let char of str) {
+        if (charSet.has(char)) {
+            return char;
+        } else {
+            charSet.add(char);
+        }
+    }
+    
+    return null;  // no repeated character found
 }
 
-// Example usage
-let base = 5;
-let height = 7;
-let area = calculateTriangleArea(base, height);
-
-console.log("The area of the triangle is: " + area);
+let str = "abcdefgabc";
+let repeatedChar = findFirstRepeatedChar(str);
+console.log("First repeated character:", repeatedChar);
