@@ -1,41 +1,18 @@
-class Stack {
-    constructor() {
-        this.stack = [];
-    }
-
-    push(value) {
-        this.stack.push(value);
-    }
-
-    pop() {
-        if (this.isEmpty()) {
-            return "Stack is empty";
+function bubbleSort(arr) {
+    for (let i = 0; i < arr.length; i++) {
+        for (let j = 0; j < arr.length - 1 - i; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap the elements
+                let temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
         }
-        return this.stack.pop();
     }
-
-    peek() {
-        if (this.isEmpty()) {
-            return "Stack is empty";
-        }
-        return this.stack[this.stack.length - 1];
-    }
-
-    isEmpty() {
-        return this.stack.length === 0;
-    }
-
-    print() {
-        console.log(this.stack);
-    }
+    
+    return arr;
 }
 
-// Usage
-const stack = new Stack();
-stack.push(1);
-stack.push(2);
-stack.push(3);
-stack.print(); // Output: [1, 2, 3]
-console.log(stack.pop()); // Output: 3
-console.log(stack.peek()); // Output: 2
-stack.print(); // Output: [1, 2]
+// Example usage
+const array = [64, 34, 25, 12, 22, 11, 90];
+console.log(bubbleSort(array));
