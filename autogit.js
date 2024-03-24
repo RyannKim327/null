@@ -1,33 +1,52 @@
-function findLongestIncreasingSubsequence(arr) {
-    let n = arr.length;
-    
-    let dp = new Array(n).fill(1);
-    let maxLength = 1;
+function rabinKarp(text, pattern) {
+    const base = 256; // No. of characters in the character set (ASCII)
+    const prime = 101; // A prime number to use for hashing
 
-    for(let i = 1; i < n; i++) {
-        for(let j = 0; j < i; j++) {
-            if(arr[i] > arr[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    let patternHash = 0; // Hash of the pattern
+    let textHash = 0; // Hash of the current substring in the text
+
+    // Calculate the hash of the pattern and the first substring of text
+    for (let i = 0; i < patternLength; i++) {
+        patternHash = (base * patternHash + pattern.charCodeAt(i)) % prime;
+        textHash = (base * textHash + text.charCodeAt(i)) % prime;
+    }
+
+    // Calculate base^patternLength
+    let basePower = 1;
+    for (let i = 0; i < patternLength - 1; i++) {
+        basePower = (base * basePower) % prime;
+    }
+
+    // Slide the pattern over the text one by one
+    for (let i = 0; i <= textLength - patternLength; i++) {
+        // Check if hashes match
+        if (patternHash === textHash) {
+            let match = true;
+            // Check character by character
+            for (let j = 0; j < patternLength; j++) {
+                if (text[i + j] !== pattern[j]) {
+                    match = false;
+                    break;
+                }
+            }
+            if (match) {
+                console.log(`Pattern found at index ${i}`);
             }
         }
-        maxLength = Math.max(maxLength, dp[i]);
-    }
 
-    let result = [];
-    let endIndex = dp.indexOf(maxLength);
-    result.unshift(arr[endIndex]);
-
-    for(let i = endIndex - 1; i >= 0; i--) {
-        if(arr[i] < arr[endIndex] && dp[i] === dp[endIndex] - 1) {
-            result.unshift(arr[i]);
-            endIndex = i;
+        // Calculate hash for the next substring
+        if (i < textLength - patternLength) {
+            textHash = (base * (textHash - text.charCodeAt(i) * basePower) + text.charCodeAt(i + patternLength)) % prime;
+            if (textHash < 0) {
+                textHash += prime;
+            }
         }
     }
-
-    return result;
 }
 
-// Example
-let arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
-let lis = findLongestIncreasingSubsequence(arr);
-console.log(lis);
+// Test the algorithm
+const text = "AABAACAADAABAABA";
+const pattern = "AABA";
+rabinKarp(text, pattern);
