@@ -1,54 +1,38 @@
-function buildPatternTable(pattern) {
-    const patternTable = [0];
-    let prefixIndex = 0;
-    let suffixIndex = 1;
+function boyerMooreHorspool(text, pattern) {
+    const alphabet = 256;
+    const patternLength = pattern.length;
+    const textLength = text.length;
 
-    while (suffixIndex < pattern.length) {
-        if (pattern[suffixIndex] === pattern[prefixIndex]) {
-            patternTable[suffixIndex] = prefixIndex + 1;
-            prefixIndex++;
-            suffixIndex++;
-        } else if (prefixIndex === 0) {
-            patternTable[suffixIndex] = 0;
-            suffixIndex++;
+    if (patternLength === 0) {
+        return -1; // Pattern is empty
+    }
+
+    const badCharacterShift = new Array(alphabet).fill(patternLength);
+
+    // Preprocess bad character shift table
+    for (let i = 0; i < patternLength - 1; i++) {
+        badCharacterShift[pattern.charCodeAt(i)] = patternLength - i - 1;
+    }
+
+    let i = patternLength - 1; // Index for text
+    let j = patternLength - 1; // Index for pattern
+
+    while (i < textLength) {
+        if (text.charAt(i) === pattern.charAt(j)) {
+            if (j === 0) return i; // Match found
+            i--;
+            j--;
         } else {
-            prefixIndex = patternTable[prefixIndex - 1];
+            i += Math.max(badCharacterShift[text.charCodeAt(i)], 1 + patternLength - j);
+            j = patternLength - 1;
         }
     }
 
-    return patternTable;
-}
-
-function kmpSearch(text, pattern) {
-    const patternTable = buildPatternTable(pattern);
-    const matches = [];
-
-    let textIndex = 0;
-    let patternIndex = 0;
-
-    while (textIndex < text.length) {
-        if (text[textIndex] === pattern[patternIndex]) {
-            if (patternIndex === pattern.length - 1) {
-                matches.push(textIndex - pattern.length + 1);
-                patternIndex = 0;
-                textIndex++;
-            } else {
-                textIndex++;
-                patternIndex++;
-            }
-        } else if (patternIndex > 0) {
-            patternIndex = patternTable[patternIndex - 1];
-        } else {
-            patternIndex = 0;
-            textIndex++;
-        }
-    }
-
-    return matches;
+    return -1; // Pattern not found in text
 }
 
 // Example usage
-const text = 'ababcababcabc';
-const pattern = 'ababc';
-const result = kmpSearch(text, pattern);
-console.log(result);
+const text = "The quick brown fox jumps over the lazy dog";
+const pattern = "fox";
+const index = boyerMooreHorspool(text, pattern);
+console.log(index); // Output: 16
