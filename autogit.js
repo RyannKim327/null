@@ -1,53 +1,28 @@
-function computeLPSArray(pattern) {
-    let lps = [];
-    let len = 0;
-    lps[0] = 0;
-    
-    for (let i = 1; i < pattern.length; i++) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-                i--;
-            } else {
-                lps[i] = 0;
+function findLIS(arr) {
+    if (arr.length === 0) return 0;
+
+    const n = arr.length;
+    const dp = new Array(n);
+    dp.fill(1);
+
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[i] > arr[j] && dp[i] < dp[j] + 1) {
+                dp[i] = dp[j] + 1;
             }
         }
     }
-    return lps;
-}
 
-function KMP(text, pattern) {
-    let lps = computeLPSArray(pattern);
-    let j = 0;
-    
-    for (let i = 0; i < text.length; i++) {
-        if (text[i] === pattern[j]) {
-            j++;
-        } else {
-            if (j !== 0) {
-                j = lps[j - 1];
-                i--;
-            }
-        }
-        
-        if (j === pattern.length) {
-            return i - j + 1;
+    let maxLength = 0;
+    for (let i = 0; i < n; i++) {
+        if (dp[i] > maxLength) {
+            maxLength = dp[i];
         }
     }
-    
-    return -1;
+
+    return maxLength;
 }
 
-// Example usage
-let text = "ABABDABACDABABCABAB";
-let pattern = "ABABCABAB";
-let index = KMP(text, pattern);
-
-if (index !== -1) {
-    console.log("Pattern found at index " + index);
-} else {
-    console.log("Pattern not found");
-}
+const arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
+const lisLength = findLIS(arr);
+console.log("Length of Longest Increasing Subsequence:", lisLength);
