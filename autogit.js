@@ -1,17 +1,23 @@
-function reverseWords(str) {
-    // Split the string into an array of words
-    let wordsArray = str.split(" ");
-    
-    // Reverse the order of the array
-    wordsArray = wordsArray.reverse();
-    
-    // Join the array back into a string
-    let reversedStr = wordsArray.join(" ");
-    
-    return reversedStr;
+function quickSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
+    }
+
+    const pivot = arr[arr.length - 1];
+    const left = [];
+    const right = [];
+
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
+        } else {
+            right.push(arr[i]);
+        }
+    }
+
+    return [...quickSort(left), pivot, ...quickSort(right)];
 }
 
-// Test the function
-let originalStr = "Hello world, how are you?";
-let reversedStr = reverseWords(originalStr);
-console.log(reversedStr); // Output: "you? are how world, Hello"
+const arr = [3, 6, 8, 10, 1, 2, 1];
+const sortedArr = quickSort(arr);
+console.log(sortedArr); // Output: [1, 1, 2, 3, 6, 8, 10]
