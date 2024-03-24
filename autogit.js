@@ -1,29 +1,33 @@
-function binarySearch(arr, target) {
-    let left = 0;
-    let right = arr.length - 1;
+function mergeSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
+    }
 
-    while (left <= right) {
-        let mid = Math.floor((left + right) / 2);
+    const middle = Math.floor(arr.length / 2);
+    const left = arr.slice(0, middle);
+    const right = arr.slice(middle);
 
-        if (arr[mid] === target) {
-            return mid;
-        } else if (arr[mid] < target) {
-            left = mid + 1;
+    return merge(mergeSort(left), mergeSort(right));
+}
+
+function merge(left, right) {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
         } else {
-            right = mid - 1;
+            result.push(right[rightIndex]);
+            rightIndex++;
         }
     }
 
-    return -1; // If the target is not found in the array
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
 }
 
 // Example usage
-const arr = [1, 3, 5, 7, 9, 11, 13];
-const target = 7;
-const result = binarySearch(arr, target);
-
-if (result !== -1) {
-    console.log(`Target ${target} found at index ${result}`);
-} else {
-    console.log(`Target ${target} not found in the array`);
-}
+const arr = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
+console.log(mergeSort(arr));
