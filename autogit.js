@@ -1,35 +1,59 @@
-function bmhSearch(text, pattern) {
-    const charTable = {};
-    const patternLength = pattern.length;
+// Node class to represent a node in the red-black tree
+class Node {
+    constructor(value, color) {
+        this.value = value;
+        this.color = color;
+        this.left = null;
+        this.right = null;
+        this.parent = null;
+    }
+}
 
-    // Fill the character table with the shift values
-    for (let i = 0; i < patternLength - 1; i++) {
-        charTable[pattern[i]] = patternLength - 1 - i;
+// RedBlackTree class to represent the red-black tree
+class RedBlackTree {
+    constructor() {
+        this.root = null;
+        this.nil = new Node(null, 'black');
     }
 
-    let i = patternLength - 1;
-    while (i < text.length) {
-        let k = 0;
-        while (k < patternLength && pattern[patternLength - 1 - k] === text[i - k]) {
-            k++;
-        }
-        if (k === patternLength) {
-            return i - patternLength + 1; // Pattern found
+    // Insert a new value into the red-black tree
+    insert(value) {
+        let newNode = new Node(value, 'red');
+        if (!this.root) {
+            this.root = newNode;
+            this.root.color = 'black';
         } else {
-            i += charTable[text[i]] || patternLength;
+            this._insertNode(this.root, newNode);
         }
     }
 
-    return -1; // Pattern not found
+    // Helper function to insert a node recursively
+    _insertNode(root, newNode) {
+        if (newNode.value < root.value) {
+            if (root.left === null) {
+                root.left = newNode;
+                newNode.parent = root;
+            } else {
+                this._insertNode(root.left, newNode);
+            }
+        } else {
+            if (root.right === null) {
+                root.right = newNode;
+                newNode.parent = root;
+            } else {
+                this._insertNode(root.right, newNode);
+            }
+        }
+    }
+
+    // Other methods such as rotate, balance, etc. can be added here
 }
 
-// Example usage:
-const text = "Hello, this is a sample text for testing the BMH algorithm.";
-const pattern = "sample";
-const foundIndex = bmhSearch(text, pattern);
+// Create a new RedBlackTree instance
+const rbTree = new RedBlackTree();
 
-if (foundIndex !== -1) {
-    console.log(`Pattern found at index ${foundIndex}.`);
-} else {
-    console.log("Pattern not found in the text.");
-}
+// Insert values into the red-black tree
+rbTree.insert(10);
+rbTree.insert(20);
+rbTree.insert(5);
+rbTree.insert(15);
