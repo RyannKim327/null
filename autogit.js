@@ -1,21 +1,68 @@
-function calculateMean(numbers) {
-    // Check if the input is a valid array
-    if (!Array.isArray(numbers) || numbers.length === 0) {
-        return 0;
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
     }
-
-    // Calculate the sum of all the numbers in the array
-    const sum = numbers.reduce((acc, num) => acc + num, 0);
-
-    // Calculate the mean by dividing the sum by the number of elements
-    const mean = sum / numbers.length;
-
-    return mean;
 }
 
-// Example list of numbers
-const numbers = [2, 4, 6, 8, 10];
+class Queue {
+    constructor() {
+        this.head = null;
+        this.tail = null;
+        this.size = 0;
+    }
 
-// Calculate the mean of the list of numbers
-const mean = calculateMean(numbers);
-console.log("Mean:", mean);
+    enqueue(value) {
+        const newNode = new Node(value);
+        if (!this.head) {
+            this.head = newNode;
+            this.tail = newNode;
+        } else {
+            this.tail.next = newNode;
+            this.tail = newNode;
+        }
+        this.size++;
+    }
+
+    dequeue() {
+        if (!this.head) {
+            return null;
+        }
+
+        const dequeuedValue = this.head.value;
+        this.head = this.head.next;
+        this.size--;
+
+        if (!this.head) {
+            this.tail = null;
+        }
+
+        return dequeuedValue;
+    }
+
+    peek() {
+        if (!this.head) {
+            return null;
+        }
+
+        return this.head.value;
+    }
+
+    isEmpty() {
+        return this.size === 0;
+    }
+
+    getSize() {
+        return this.size;
+    }
+}
+
+// Example usage
+const queue = new Queue();
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+
+console.log(queue.dequeue()); // 1
+console.log(queue.peek()); // 2
+console.log(queue.getSize()); // 2
