@@ -1,14 +1,21 @@
-function isPalindrome(str) {
-    // Remove non-alphanumeric characters and convert to lowercase
-    str = str.toLowerCase().replace(/[\W_]/g, '');
+function reverseString(str) {
+    // Step 1: Convert the string to an array
+    var strArray = str.split('');
     
-    // Reverse the string
-    let reversedStr = str.split('').reverse().join('');
+    // Step 2: Reverse the order of the elements in the array
+    var reversedArray = strArray.reverse();
     
-    // Check if the original string is equal to the reversed string
-    return str === reversedStr;
+    // Step 3: Join the elements back together to form a reversed string
+    var reversedStr = reversedArray.join('');
+    
+    return reversedStr;
 }
 
 // Test the function
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
-console.log(isPalindrome("hello")); // false
+var originalStr = "Hello, World!";
+var reversedStr = reverseString(originalStr);
+
+console.log("Original string: " + originalStr);
+console.log("Reversed string: " + reversedStr);
+Original string: Hello, World!
+Reversed string: !dlroW ,olleH
