@@ -1,43 +1,70 @@
-// Function to find the maximum number in an array
-function getMax(arr) {
-    let max = arr[0];
-    for (let i = 1; i < arr.length; i++) {
-        if (arr[i] > max) {
-            max = arr[i];
-        }
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
     }
-    return max;
 }
 
-// Helper function to get the digit at a particular position
-function getDigit(num, i) {
-    return Math.floor(Math.abs(num) / Math.pow(10, i)) % 10;
-}
-
-// Function to get the number of digits in the maximum number
-function digitCount(num) {
-    if (num === 0) return 1;
-    return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
-
-// Radix sort function
-function radixSort(arr) {
-    const maxDigitCount = digitCount(getMax(arr));
-
-    for (let k = 0; k < maxDigitCount; k++) {
-        let digitBuckets = Array.from({ length: 10 }, () => []);
-
-        for (let i = 0; i < arr.length; i++) {
-            let digit = getDigit(arr[i], k);
-            digitBuckets[digit].push(arr[i]);
-        }
-        
-        arr = [].concat(...digitBuckets);
+class Queue {
+    constructor() {
+        this.front = null;
+        this.rear = null;
+        this.size = 0;
     }
 
-    return arr;
+    isEmpty() {
+        return this.size === 0;
+    }
+
+    enqueue(value) {
+        const newNode = new Node(value);
+        if (this.isEmpty()) {
+            this.front = newNode;
+            this.rear = newNode;
+        } else {
+            this.rear.next = newNode;
+            this.rear = newNode;
+        }
+        this.size++;
+    }
+
+    dequeue() {
+        if (this.isEmpty()) {
+            return null;
+        }
+        const value = this.front.value;
+        this.front = this.front.next;
+        this.size--;
+        if (this.size === 0) {
+            this.rear = null;
+        }
+        return value;
+    }
+
+    peek() {
+        if (this.isEmpty()) {
+            return null;
+        }
+        return this.front.value;
+    }
+
+    printQueue() {
+        let current = this.front;
+        while (current) {
+            console.log(current.value);
+            current = current.next;
+        }
+    }
 }
 
-// Example usage
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log(radixSort(arr)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+// Example usage:
+const queue = new Queue();
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+
+console.log("Queue elements:");
+queue.printQueue();
+
+console.log("Dequeued element: ", queue.dequeue());
+console.log("Peeked element: ", queue.peek());
