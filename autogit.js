@@ -1,33 +1,43 @@
-function countingSort(arr, maxValue) {
-    var count = [];
-    var sortedIndex = 0;
-    var arrLen = arr.length;
-    var countLen = maxValue + 1;
+function boyerMooreSearch(text, pattern) {
+    const last = buildLastTable(pattern);
+    let n = text.length;
+    let m = pattern.length;
+    let i = m - 1;
+    let j = m - 1;
 
-    // Initialize the count array with 0
-    for (var i = 0; i < countLen; i++) {
-        count[i] = 0;
-    }
-
-    // Count the occurrences of each element
-    for (var i = 0; i < arrLen; i++) {
-        count[arr[i]]++;
-    }
-
-    // Update the count array to keep track of the actual position of each element
-    for (var i = 0; i < countLen; i++) {
-        while (count[i] > 0) {
-            arr[sortedIndex] = i;
-            sortedIndex++;
-            count[i]--;
+    while (i < n) {
+        if (text[i] === pattern[j]) {
+            if (j === 0) {
+                return i;
+            }
+            i--;
+            j--;
+        } else {
+            i += m - Math.min(j, 1 + last[text[i]]);
+            j = m - 1;
         }
     }
 
-    return arr;
+    return -1; // Pattern not found
 }
 
-// Example usage
-var arr = [4, 2, 2, 8, 3, 3, 1];
-var maxValue = 8;
-var sortedArr = countingSort(arr, maxValue);
-console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
+function buildLastTable(pattern) {
+    const last = {};
+    for (let i = 0; i < 256; i++) {
+        last[String.fromCharCode(i)] = -1;
+    }
+    for (let i = 0; i < pattern.length; i++) {
+        last[pattern[i]] = i;
+    }
+    return last;
+}
+
+// Example Usage
+const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
+const pattern = "consectetur";
+const index = boyerMooreSearch(text, pattern);
+if (index !== -1) {
+    console.log(`Pattern found at index ${index}`);
+} else {
+    console.log("Pattern not found");
+}
