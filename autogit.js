@@ -1,37 +1,15 @@
-function hasCycle(head) {
-    if (!head || !head.next) {
-        return false; // Empty list or list with only one node
-    }
-
-    let slow = head;
-    let fast = head.next;
-
-    while (fast && fast.next) {
-        if (slow === fast) {
-            return true; // Cycle detected
+function largestPrimeFactor(num) {
+    let factor = 2;
+    while (factor <= num) {
+        if (num % factor === 0) {
+            num /= factor;
+        } else {
+            factor++;
         }
-
-        slow = slow.next;
-        fast = fast.next.next;
     }
-
-    return false; // No cycle found
+    return factor;
 }
 
-// Example usage:
-class ListNode {
-    constructor(val) {
-        this.val = val;
-        this.next = null;
-    }
-}
-
-// Create a linked list with a cycle
-let head = new ListNode(1);
-let second = new ListNode(2);
-let third = new ListNode(3);
-head.next = second;
-second.next = third;
-third.next = head; // Creating a cycle
-
-console.log(hasCycle(head)); // Outputs: true
+const number = 13195; // The number for which you want to find the largest prime factor
+const largestPrime = largestPrimeFactor(number);
+console.log("The largest prime factor of", number, "is", largestPrime);
