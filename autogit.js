@@ -1,35 +1,42 @@
-function topologicalSort(graph) {
-    const visited = new Set();
-    const stack = [];
-
-    function visit(node) {
-        if (visited.has(node)) return;
-
-        visited.add(node);
-
-        graph[node].forEach(neighbor => {
-            visit(neighbor);
-        });
-
-        stack.push(node);
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.children = [];
     }
-
-    for (let node in graph) {
-        visit(node);
+    
+    addChild(node) {
+        this.children.push(node);
     }
+}
 
-    return stack.reverse();
+function breadthFirstSearch(root) {
+    let queue = [root];
+    let visited = new Set();
+    
+    while (queue.length > 0) {
+        let current = queue.shift();
+        
+        if (!visited.has(current)) {
+            console.log(current.value);
+            visited.add(current);
+            
+            current.children.forEach(child => {
+                if (!visited.has(child)) {
+                    queue.push(child);
+                }
+            });
+        }
+    }
 }
 
 // Example usage
-const graph = {
-    0: [1, 2],
-    1: [3],
-    2: [3],
-    3: [4, 5],
-    4: [],
-    5: []
-};
+let rootNode = new Node(1);
+let childNode1 = new Node(2);
+let childNode2 = new Node(3);
+let childNode3 = new Node(4);
 
-const sortedNodes = topologicalSort(graph);
-console.log(sortedNodes);
+rootNode.addChild(childNode1);
+rootNode.addChild(childNode2);
+childNode1.addChild(childNode3);
+
+breadthFirstSearch(rootNode);
