@@ -1,40 +1,22 @@
-function heapSort(array) {
-    function heapify(array, n, i) {
-        let largest = i;
-        let left = 2 * i + 1;
-        let right = 2 * i + 2;
-
-        if (left < n && array[left] > array[largest]) {
-            largest = left;
-        }
-
-        if (right < n && array[right] > array[largest]) {
-            largest = right;
-        }
-
-        if (largest !== i) {
-            [array[i], array[largest]] = [array[largest], array[i]];
-            heapify(array, n, largest);
-        }
+function binarySearchRecursive(arr, target, start = 0, end = arr.length - 1) {
+    if (start > end) {
+        return -1;
     }
 
-    const n = array.length;
+    let mid = Math.floor((start + end) / 2);
 
-    // Build heap
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(array, n, i);
+    if (arr[mid] === target) {
+        return mid;
+    } else if (arr[mid] < target) {
+        return binarySearchRecursive(arr, target, mid + 1, end);
+    } else {
+        return binarySearchRecursive(arr, target, start, mid - 1);
     }
-
-    // Extract elements one by one
-    for (let i = n - 1; i > 0; i--) {
-        [array[0], array[i]] = [array[i], array[0]]; // Swap root with last element
-        heapify(array, i, 0); // Heapify root element
-    }
-
-    return array;
 }
 
 // Example usage
-const array = [12, 11, 13, 5, 6, 7];
-console.log("Original array: ", array);
-console.log("Sorted array: ", heapSort(array));
+const arr = [1, 3, 5, 7, 9, 11, 13, 15];
+const target = 7;
+const index = binarySearchRecursive(arr, target);
+
+console.log(index); // Output: 3
