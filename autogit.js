@@ -1,27 +1,15 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+function countCharOccurrences(str, char) {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
+            count++;
+        }
+    }
+    return count;
 }
 
-function maxDepth(root) {
-  if (!root) {
-    return 0;
-  }
-  
-  const leftDepth = maxDepth(root.left);
-  const rightDepth = maxDepth(root.right);
-  
-  return 1 + Math.max(leftDepth, rightDepth);
-}
-
-// Usage example:
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-console.log(maxDepth(root)); // Output: 3
+// Test the function
+const text = "hello world";
+const charToCount = "o";
+const occurrences = countCharOccurrences(text, charToCount);
+console.log(`The character '${charToCount}' occurs ${occurrences} times in the text.`);
