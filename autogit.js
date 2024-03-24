@@ -1,30 +1,51 @@
-// Define the Node class for a linked list
 class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
+    constructor() {
+        this.children = {};
     }
 }
 
-// Function to find the length of a linked list
-function findLengthOfLinkedList(head) {
-    let length = 0;
-    let current = head;
-
-    while (current !== null) {
-        length++;
-        current = current.next;
+class SuffixTree {
+    constructor(str) {
+        this.root = new Node();
+        this.buildSuffixTree(str);
     }
 
-    return length;
+    buildSuffixTree(str) {
+        for (let i = 0; i < str.length; i++) {
+            this.addSuffix(str.substring(i));
+        }
+    }
+
+    addSuffix(suffix) {
+        let node = this.root;
+        for (let i = 0; i < suffix.length; i++) {
+            let char = suffix[i];
+            if (!node.children[char]) {
+                node.children[char] = new Node();
+            }
+            node = node.children[char];
+        }
+    }
+
+    search(pattern) {
+        let node = this.root;
+        let i = 0;
+
+        while (i < pattern.length) {
+            let char = pattern[i];
+            if (node.children[char]) {
+                node = node.children[char];
+                i++;
+            } else {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
 
-// Define your linked list
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-
-// Find the length of the linked list
-let length = findLengthOfLinkedList(head);
-console.log("Length of linked list: " + length);
+// Example usage
+const suffixTree = new SuffixTree("banana");
+console.log(suffixTree.search("ana")); // Output: true
+console.log(suffixTree.search("xyz")); // Output: false
