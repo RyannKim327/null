@@ -1,54 +1,39 @@
-class Graph {
-  constructor() {
-    this.adjacencyList = {};
-  }
-
-  addVertex(vertex) {
-    if (!this.adjacencyList[vertex]) {
-      this.adjacencyList[vertex] = [];
+function preProcessPattern(pattern) {
+    const table = new Array(256).fill(pattern.length);
+    for (let i = 0; i < pattern.length - 1; i++) {
+        table[pattern.charCodeAt(i)] = pattern.length - 1 - i;
     }
-  }
+    return table;
+}
 
-  addEdge(vertex1, vertex2) {
-    this.adjacencyList[vertex1].push(vertex2);
-    this.adjacencyList[vertex2].push(vertex1);
-  }
+function boyerMooreHorspool(text, pattern) {
+    const textLength = text.length;
+    const patternLength = pattern.length;
 
-  depthFirstSearch(startingVertex) {
-    const visited = {};
-    const result = [];
+    const skipTable = preProcessPattern(pattern);
 
-    const dfs = (vertex) => {
-      if (!vertex) {
-        return null;
-      }
-      visited[vertex] = true;
-      result.push(vertex);
-
-      this.adjacencyList[vertex].forEach(neighbor => {
-        if (!visited[neighbor]) {
-          return dfs(neighbor);
+    let i = 0;
+    while (i <= textLength - patternLength) {
+        let j = patternLength - 1;
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
         }
-      });
-    };
-
-    dfs(startingVertex);
-
-    return result;
-  }
+        if (j < 0) {
+            return i; // pattern found at index i in the text
+        } else {
+            i += skipTable[text.charCodeAt(i + patternLength - 1)];
+        }
+    }
+    return -1; // pattern not found in text
 }
 
 // Example usage
-const graph = new Graph();
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
+const text = "exampletextforexamplesearching";
+const pattern = "search";
+const index = boyerMooreHorspool(text, pattern);
 
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('C', 'E');
-
-console.log(graph.depthFirstSearch('A')); // Output: [ 'A', 'B', 'D', 'C', 'E' ]
+if (index !== -1) {
+    console.log(`Pattern found at index ${index}`);
+} else {
+    console.log("Pattern not found");
+}
