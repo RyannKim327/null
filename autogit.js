@@ -1,106 +1,29 @@
 class Node {
-    constructor(data) {
-        this.data = data;
-        this.left = null;
-        this.right = null;
-        this.height = 1;
+    constructor(value) {
+        this.value = value;
+        this.next = null;
     }
 }
+const getIntersectionNode = (headA, headB) => {
+    let ptrA = headA;
+    let ptrB = headB;
 
-class AVLTree {
-    constructor() {
-        this.root = null;
+    while (ptrA !== ptrB) {
+        ptrA = ptrA ? ptrA.next : headB;
+        ptrB = ptrB ? ptrB.next : headA;
     }
 
-    getHeight(node) {
-        if (node === null) {
-            return 0;
-        }
-        return node.height;
-    }
+    return ptrA;
+};
+const listA = new Node(4);
+listA.next = new Node(1);
+listA.next.next = new Node(8);
+listA.next.next.next = new Node(4);
+listA.next.next.next.next = new Node(5);
 
-    getBalanceFactor(node) {
-        if (node === null) {
-            return 0;
-        }
-        return this.getHeight(node.left) - this.getHeight(node.right);
-    }
+const listB = new Node(5);
+listB.next = new Node(6);
+listB.next.next = listA.next.next;
 
-    updateHeight(node) {
-        node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
-    }
-
-    rotateRight(y) {
-        const x = y.left;
-        const T2 = x.right;
-
-        x.right = y;
-        y.left = T2;
-
-        this.updateHeight(y);
-        this.updateHeight(x);
-
-        return x;
-    }
-
-    rotateLeft(x) {
-        const y = x.right;
-        const T2 = y.left;
-
-        y.left = x;
-        x.right = T2;
-
-        this.updateHeight(x);
-        this.updateHeight(y);
-
-        return y;
-    }
-
-    insert(data) {
-        this.root = this._insert(this.root, data);
-    }
-
-    _insert(node, data) {
-        if (node === null) {
-            return new Node(data);
-        }
-
-        if (data < node.data) {
-            node.left = this._insert(node.left, data);
-        } else {
-            node.right = this._insert(node.right, data);
-        }
-
-        this.updateHeight(node);
-
-        const balanceFactor = this.getBalanceFactor(node);
-
-        if (balanceFactor > 1 && data < node.left.data) {
-            return this.rotateRight(node);
-        }
-
-        if (balanceFactor < -1 && data > node.right.data) {
-            return this.rotateLeft(node);
-        }
-
-        if (balanceFactor > 1 && data > node.left.data) {
-            node.left = this.rotateLeft(node.left);
-            return this.rotateRight(node);
-        }
-
-        if (balanceFactor < -1 && data < node.right.data) {
-            node.right = this.rotateRight(node.right);
-            return this.rotateLeft(node);
-        }
-
-        return node;
-    }
-
-    // Other methods like remove, search, and traversal can be implemented here
-}
-
-// Usage
-const avlTree = new AVLTree();
-avlTree.insert(10);
-avlTree.insert(20);
-avlTree.insert(30);
+const intersectionNode = getIntersectionNode(listA, listB);
+console.log(intersectionNode.value); // Output: 8
