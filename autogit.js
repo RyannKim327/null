@@ -1,39 +1,46 @@
-function preProcessPattern(pattern) {
-    const table = new Array(256).fill(pattern.length);
-    for (let i = 0; i < pattern.length - 1; i++) {
-        table[pattern.charCodeAt(i)] = pattern.length - 1 - i;
-    }
-    return table;
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
 }
 
-function boyerMooreHorspool(text, pattern) {
-    const textLength = text.length;
-    const patternLength = pattern.length;
+function reverseLinkedList(head) {
+  let prev = null;
+  let current = head;
+  let next = null;
 
-    const skipTable = preProcessPattern(pattern);
+  while (current !== null) {
+    next = current.next;
+    current.next = prev;
+    prev = current;
+    current = next;
+  }
 
-    let i = 0;
-    while (i <= textLength - patternLength) {
-        let j = patternLength - 1;
-        while (j >= 0 && pattern[j] === text[i + j]) {
-            j--;
-        }
-        if (j < 0) {
-            return i; // pattern found at index i in the text
-        } else {
-            i += skipTable[text.charCodeAt(i + patternLength - 1)];
-        }
-    }
-    return -1; // pattern not found in text
+  // Update the head of the reversed list
+  head = prev;
+
+  return head;
 }
 
-// Example usage
-const text = "exampletextforexamplesearching";
-const pattern = "search";
-const index = boyerMooreHorspool(text, pattern);
+// Sample linked list creation
+let head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
 
-if (index !== -1) {
-    console.log(`Pattern found at index ${index}`);
-} else {
-    console.log("Pattern not found");
+console.log("Original linked list:");
+let temp = head;
+while (temp !== null) {
+  console.log(temp.data);
+  temp = temp.next;
+}
+
+head = reverseLinkedList(head);
+
+console.log("Reversed linked list:");
+temp = head;
+while (temp !== null) {
+  console.log(temp.data);
+  temp = temp.next;
 }
