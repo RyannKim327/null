@@ -1,15 +1,11 @@
-function countOccurrence(str, char) {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str.charAt(i) === char) {
-            count++;
-        }
-    }
-    return count;
+function validateEmail(email) {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
 }
 
-// Example Usage
-let myString = "hello world";
-let charToCount = "l";
-let result = countOccurrence(myString, charToCount);
-console.log(`The character "${charToCount}" occurs ${result} times in the string.`);
+const email = "example@example.com";
+if (validateEmail(email)) {
+    console.log("Email is valid");
+} else {
+    console.log("Email is invalid");
+}
