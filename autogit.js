@@ -1,47 +1,42 @@
-function rabinKarpSearch(text, pattern) {
-    const base = 26; // Assuming lowercase English alphabets
-    const prime = 101; // Random prime number
-
+function createBadCharTable(pattern) {
+    const table = {};
     const patternLength = pattern.length;
+    
+    for (let i = 0; i < patternLength - 1; i++) {
+        table[pattern[i]] = patternLength - 1 - i;
+    }
+    
+    return table;
+}
+
+function searchBMH(text, pattern) {
+    const badCharTable = createBadCharTable(pattern);
     const textLength = text.length;
-    const patternHash = hash(pattern, base, prime);
-    let textHash = hash(text.substring(0, patternLength), base, prime);
-
-    for (let i = 0; i <= textLength - patternLength; i++) {
-        if (textHash === patternHash && text.substring(i, i + patternLength) === pattern) {
-            return i;
+    const patternLength = pattern.length;
+    let shift = 0;
+    
+    while (shift <= textLength - patternLength) {
+        let j = patternLength - 1;
+        
+        while (j >= 0 && pattern[j] === text[shift + j]) {
+            j -= 1;
         }
-        if (i < textLength - patternLength) {
-            // Recalculate the hash value for the next substring
-            textHash = recalculateHash(text, base, prime, i, patternLength, textHash);
+        
+        if (j < 0) {
+            return shift;
+        } else {
+            shift += badCharTable[text[shift + patternLength - 1]] || patternLength;
         }
     }
-
-    return -1; // Pattern not found
+    
+    return -1;
 }
 
-function hash(str, base, prime) {
-    let hashValue = 0;
-    for (let i = 0; i < str.length; i++) {
-        hashValue = (hashValue * base + str.charCodeAt(i)) % prime;
-    }
-    return hashValue;
-}
+// Example usage
+const text = "hello world";
+const pattern = "world";
+const index = searchBMH(text, pattern);
 
-function recalculateHash(text, base, prime, oldIndex, patternLength, oldHash) {
-    let newHash = oldHash - text.charCodeAt(oldIndex);
-    newHash = (newHash * base + text.charCodeAt(oldIndex + patternLength)) % prime;
-    if (newHash < 0) {
-        newHash += prime;
-    }
-    return newHash;
-}
-
-// Example
-const text = "abcdbcd";
-const pattern = "bcd";
-
-const index = rabinKarpSearch(text, pattern);
 if (index !== -1) {
     console.log(`Pattern found at index ${index}`);
 } else {
