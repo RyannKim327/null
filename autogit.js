@@ -1,48 +1,18 @@
-function fibonacciSearch(arr, key) {
-    let fibN2 = 0;
-    let fibN1 = 1;
-    let fibN = fibN1 + fibN2;
+function reverseWords(str) {
+    // Split the string into an array of words
+    var words = str.split(" ");
 
-    // Calculate the smallest Fibonacci number greater than or equal to the length of the array
-    while (fibN < arr.length) {
-        fibN2 = fibN1;
-        fibN1 = fibN;
-        fibN = fibN1 + fibN2;
-    }
+    // Reverse the array
+    words.reverse();
 
-    let offset = -1;
+    // Join the array back into a string
+    var reversedStr = words.join(" ");
 
-    while (fibN > 1) {
-        let i = Math.min(offset + fibN2, arr.length - 1);
-
-        if (arr[i] < key) {
-            fibN = fibN1;
-            fibN1 = fibN2;
-            fibN2 = fibN - fibN1;
-            offset = i;
-        } else if (arr[i] > key) {
-            fibN = fibN2;
-            fibN1 = fibN1 - fibN2;
-            fibN2 = fibN - fibN1;
-        } else {
-            return i;
-        }
-    }
-
-    if (fibN1 && arr[offset + 1] == key) {
-        return offset + 1;
-    }
-
-    return -1;
+    return reversedStr;
 }
 
 // Example usage
-const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const key = 12;
-const index = fibonacciSearch(arr, key);
+var originalStr = "Hello world how are you";
+var reversedStr = reverseWords(originalStr);
 
-if (index != -1) {
-    console.log(`Element found at index: ${index}`);
-} else {
-    console.log("Element not found in the array");
-}
+console.log(reversedStr); // Output: "you are how world Hello"
