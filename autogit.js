@@ -1,17 +1,14 @@
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = array.filter((value, index, self) => self.indexOf(value) === index);
+function isPalindrome(str) {
+    // Remove non-alphanumeric characters and convert to lowercase
+    str = str.toLowerCase().replace(/[\W_]/g, '');
+    
+    // Reverse the string
+    let reversedStr = str.split('').reverse().join('');
+    
+    // Check if the original string is equal to the reversed string
+    return str === reversedStr;
+}
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = Array.from(new Set(array));
-
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = array.reduce((accumulator, currentValue) => {
-    if (!accumulator.includes(currentValue)) {
-        accumulator.push(currentValue);
-    }
-    return accumulator;
-}, []);
-
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+// Test the function
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
+console.log(isPalindrome("hello")); // false
