@@ -1,41 +1,17 @@
-function hasCycle(head) {
-    if (!head || !head.next) {
-        return false;
-    }
+// API endpoint URL
+const apiUrl = 'https://randomuser.me/api/';
 
-    let slow = head;
-    let fast = head.next;
-
-    while (fast && fast.next) {
-        if (slow === fast) {
-            return true;
-        }
-
-        slow = slow.next;
-        fast = fast.next.next;
-    }
-
-    return false;
-}
-// Define the Node class
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-// Create a linked list
-let node1 = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-let node4 = new Node(4);
-
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-// Uncomment the line below to create a cycle
-// node4.next = node2;
-
-// Check if the linked list contains a cycle
-console.log(hasCycle(node1)); // Output: false
+// Make a fetch request to the API
+fetch(apiUrl)
+  .then(response => response.json())
+  .then(data => {
+    const user = data.results[0];
+    
+    // Display the user data
+    console.log('Name: ' + user.name.first + ' ' + user.name.last);
+    console.log('Email: ' + user.email);
+    console.log('Location: ' + user.location.city + ', ' + user.location.country);
+  })
+  .catch(error => {
+    console.error('Error fetching data: ', error);
+  });
