@@ -1,16 +1,12 @@
-function countCharOccurrences(str, char) {
+function getStringLength(str) {
     let count = 0;
-    
     for (let i = 0; i < str.length; i++) {
-        if (str[i] === char) {
-            count++;
-        }
+        count++;
     }
-    
     return count;
 }
 
-// Example usage
-let str = "hello world";
-let char = "o";
-console.log(countCharOccurrences(str, char)); // Output: 2
+// Test the function
+const str = 'Hello, World!';
+const length = getStringLength(str);
+console.log(length); // Output: 13
