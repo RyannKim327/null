@@ -1,6 +1,5 @@
-const cron = require('node-cron');
+let str1 = "Hello";
+let str2 = "world";
 
-// Schedule a task to run every minute
-cron.schedule('* * * * *', () => {
-    console.log('Running a task every minute!');
-});
+let result = str1 + " " + str2;
+console.log(result); // This will output "Hello world"
