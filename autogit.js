@@ -1,35 +1,19 @@
-function findMajorityElement(arr) {
-    let candidate = null;
-    let count = 0;
-
-    for (let num of arr) {
-        if (count === 0) {
-            candidate = num;
-            count++;
-        } else {
-            if (num === candidate) {
-                count++;
-            } else {
-                count--;
+function bubbleSort(arr) {
+    let len = arr.length;
+    for (let i = 0; i < len; i++) {
+        for (let j = 0; j < len - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap elements
+                let temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
             }
         }
     }
-
-    // Verify if the candidate is the majority element
-    count = 0;
-    for (let num of arr) {
-        if (num === candidate) {
-            count++;
-        }
-    }
-
-    if (count > arr.length / 2) {
-        return candidate;
-    } else {
-        return "No majority element found";
-    }
+    return arr;
 }
 
 // Example usage
-const arr = [2, 2, 1, 1, 1, 2, 2];
-console.log(findMajorityElement(arr)); // Output: 2
+const arr = [64, 34, 25, 12, 22, 11, 90];
+const sortedArr = bubbleSort(arr);
+console.log(sortedArr);
