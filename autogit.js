@@ -1,8 +1,19 @@
-let str = "42";
-let num = parseInt(str);
+function hasCycle(head) {
+    if (!head || !head.next) {
+        return false;
+    }
 
-console.log(num); // Output: 42
-let str = "42";
-let num = +str;
+    let slow = head;
+    let fast = head;
 
-console.log(num); // Output: 42
+    while (fast && fast.next) {
+        slow = slow.next;
+        fast = fast.next.next;
+
+        if (slow === fast) {
+            return true;
+        }
+    }
+
+    return false;
+}
