@@ -1,17 +1,53 @@
-function isAnagram(str1, str2) {
-    //Remove non-alphabetic characters and convert to lowercase
-    const cleanStr1 = str1.toLowerCase().replace(/[^a-z]/g, '').split('').sort().join('');
-    const cleanStr2 = str2.toLowerCase().replace(/[^a-z]/g, '').split('').sort().join('');
-
-    //Check if the sorted strings are equal
-    return cleanStr1 === cleanStr2;
+function computeLPSArray(pattern) {
+    let lps = [];
+    let len = 0;
+    lps[0] = 0;
+    
+    for (let i = 1; i < pattern.length; i++) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+                i--;
+            } else {
+                lps[i] = 0;
+            }
+        }
+    }
+    return lps;
 }
 
-// Test the function
-const string1 = "Listen";
-const string2 = "Silent";
-if (isAnagram(string1, string2)) {
-    console.log("The strings are anagrams.");
+function KMP(text, pattern) {
+    let lps = computeLPSArray(pattern);
+    let j = 0;
+    
+    for (let i = 0; i < text.length; i++) {
+        if (text[i] === pattern[j]) {
+            j++;
+        } else {
+            if (j !== 0) {
+                j = lps[j - 1];
+                i--;
+            }
+        }
+        
+        if (j === pattern.length) {
+            return i - j + 1;
+        }
+    }
+    
+    return -1;
+}
+
+// Example usage
+let text = "ABABDABACDABABCABAB";
+let pattern = "ABABCABAB";
+let index = KMP(text, pattern);
+
+if (index !== -1) {
+    console.log("Pattern found at index " + index);
 } else {
-    console.log("The strings are not anagrams.");
+    console.log("Pattern not found");
 }
