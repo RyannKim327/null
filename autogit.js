@@ -1,42 +1,41 @@
-class Node {
-  constructor(value, children = []) {
-    this.value = value;
-    this.children = children;
-  }
-}
+function rabinKarpSearch(text, pattern) {
+    const prime = 101; // A prime number used for hashing
+    const textSize = text.length;
+    const patternSize = pattern.length;
+    const primeToPatternSize = Math.pow(prime, patternSize);
 
-function breadthLimitedSearch(root, limit) {
-  let queue = [root];
+    let textHash = 0; 
+    let patternHash = 0;
 
-  while (queue.length > 0 && limit >= 0) {
-    let currentNode = queue.shift();
-
-    if (currentNode.value === "goal") {
-      return currentNode;
+    // Calculate initial hash values for text and pattern
+    for (let i = 0; i < patternSize; i++) {
+        textHash = textHash * prime + text.charCodeAt(i);
+        patternHash = patternHash * prime + pattern.charCodeAt(i);
     }
 
-    if (currentNode.children) {
-      for (let child of currentNode.children) {
-        queue.push(child);
-      }
+    for (let i = 0; i <= textSize - patternSize; i++) {
+        if (textHash === patternHash) {
+            let found = true;
+            for (let j = 0; j < patternSize; j++) {
+                if (text[i + j] !== pattern[j]) {
+                    found = false;
+                    break;
+                }
+            }
+            if (found) {
+                console.log(`Pattern found at index ${i}`);
+            }
+        }
+
+        // Update hash value for next window of text
+        if (i < textSize - patternSize) {
+            textHash = textHash - text.charCodeAt(i) * primeToPatternSize; 
+            textHash = textHash * prime + text.charCodeAt(i + patternSize);
+        }
     }
-
-    limit--;
-  }
-
-  return null; // Goal not found within the limit
 }
 
-// Example Usage
-let tree = new Node("A", [
-  new Node("B", [
-    new Node("D", [new Node("G")]),
-    new Node("E"),
-  ]),
-  new Node("C", [
-    new Node("F", [new Node("H")]),
-  ]),
-]);
-
-let result = breadthLimitedSearch(tree, 3);
-console.log(result);
+// Test the function
+const text = "ABCCDDAEFG";
+const pattern = "CDD";
+rabinKarpSearch(text, pattern);
