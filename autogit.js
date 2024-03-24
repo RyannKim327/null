@@ -1,15 +1,35 @@
-let numbers = [1, 2, 3, 4, 5];
+function bmhSearch(text, pattern) {
+    const charTable = {};
+    const patternLength = pattern.length;
 
-// Remove element at index 2 (which is 3)
-numbers.splice(2, 1);
+    // Fill the character table with the shift values
+    for (let i = 0; i < patternLength - 1; i++) {
+        charTable[pattern[i]] = patternLength - 1 - i;
+    }
 
-console.log(numbers); // Output: [1, 2, 4, 5]
-let numbers = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
+    let i = patternLength - 1;
+    while (i < text.length) {
+        let k = 0;
+        while (k < patternLength && pattern[patternLength - 1 - k] === text[i - k]) {
+            k++;
+        }
+        if (k === patternLength) {
+            return i - patternLength + 1; // Pattern found
+        } else {
+            i += charTable[text[i]] || patternLength;
+        }
+    }
 
-let index = numbers.indexOf(elementToRemove);
-if (index !== -1) {
-    numbers.splice(index, 1);
+    return -1; // Pattern not found
 }
 
-console.log(numbers); // Output: [1, 2, 4, 5]
+// Example usage:
+const text = "Hello, this is a sample text for testing the BMH algorithm.";
+const pattern = "sample";
+const foundIndex = bmhSearch(text, pattern);
+
+if (foundIndex !== -1) {
+    console.log(`Pattern found at index ${foundIndex}.`);
+} else {
+    console.log("Pattern not found in the text.");
+}
