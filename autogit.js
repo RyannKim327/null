@@ -1,26 +1,13 @@
-function countingSort(arr) {
-    let max = Math.max(...arr);
-    let min = Math.min(...arr);
-    let count = Array(max - min + 1).fill(0);
-    let output = Array(arr.length);
+npm install suffix-tree
+const SuffixTree = require('suffix-tree');
 
-    for (let i = 0; i < arr.length; i++) {
-        count[arr[i] - min]++;
-    }
+// Create a new suffix tree
+const tree = new SuffixTree('banana');
 
-    for (let i = 1; i < count.length; i++) {
-        count[i] += count[i - 1];
-    }
+// Find the index of a substring in the suffix tree
+const index = tree.find('ana');
+console.log(index); // Output: 1
 
-    for (let i = arr.length - 1; i >= 0; i--) {
-        output[count[arr[i] - min] - 1] = arr[i];
-        count[arr[i] - min]--;
-    }
-
-    return output;
-}
-
-// Example usage
-let arr = [4, 2, 2, 8, 3, 3, 1];
-let sortedArr = countingSort(arr);
-console.log(sortedArr);  // Output: [1, 2, 2, 3, 3, 4, 8]
+// Check if a substring exists in the suffix tree
+const exists = tree.contains('nan');
+console.log(exists); // Output: true
