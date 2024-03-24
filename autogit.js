@@ -1,15 +1,40 @@
-function countOccurrences(str, word) {
-    // Split the string by the word
-    var words = str.split(word);
-    
-    // Calculate the number of occurrences
-    var count = words.length - 1;
-    
-    return count;
+// Definition for singly-linked list.
+function ListNode(val) {
+    this.val = val;
+    this.next = null;
 }
 
-// Test the function
-var str = "apple banana orange apple kiwi apple";
-var word = "apple";
-var occurrences = countOccurrences(str, word);
-console.log("Number of occurrences of '" + word + "': " + occurrences);
+// Function to find the intersection of two linked lists
+function getIntersectionNode(headA, headB) {
+    const listA = [];
+    const listB = [];
+  
+    // Traverse linked list A and store nodes in listA
+    while (headA) {
+        listA.push(headA);
+        headA = headA.next;
+    }
+
+    // Traverse linked list B and store nodes in listB
+    while (headB) {
+        listB.push(headB);
+        headB = headB.next;
+    }
+
+    let intersectionNode = null;
+
+    // Compare the two arrays to find the intersection
+    for (let nodeA of listA) {
+        for (let nodeB of listB) {
+            if (nodeA === nodeB) {
+                intersectionNode = nodeA;
+                break;
+            }
+        }
+        if (intersectionNode) {
+            break;
+        }
+    }
+
+    return intersectionNode;
+}
