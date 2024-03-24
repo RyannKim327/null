@@ -1,37 +1,34 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
+function interpolationSearch(arr, x) {
+    let low = 0;
+    let high = arr.length - 1;
 
-function treeDiameter(root) {
-    let diameter = 0;
-
-    function depth(node) {
-        if (!node) {
-            return 0;
+    while (low <= high && x >= arr[low] && x <= arr[high]) {
+        if (low === high) {
+            if (arr[low] === x) return low;
+            return -1;
         }
 
-        let leftDepth = depth(node.left);
-        let rightDepth = depth(node.right);
+        let pos = low + Math.floor(((x - arr[low]) * (high - low)) / (arr[high] - arr[low]));
 
-        diameter = Math.max(diameter, leftDepth + rightDepth);
+        if (arr[pos] === x) return pos;
 
-        return 1 + Math.max(leftDepth, rightDepth);
+        if (arr[pos] < x) {
+            low = pos + 1;
+        } else {
+            high = pos - 1;
+        }
     }
 
-    depth(root);
-
-    return diameter;
+    return -1;
 }
 
 // Example usage
-let root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
+const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+const x = 10;
+const index = interpolationSearch(arr, x);
 
-console.log(treeDiameter(root)); // Output: 3
+if (index !== -1) {
+    console.log(`${x} found at index: ${index}`);
+} else {
+    console.log(`${x} not found in the array`);
+}
