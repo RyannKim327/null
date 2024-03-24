@@ -1,68 +1,29 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
+function binarySearch(arr, target) {
+    let left = 0;
+    let right = arr.length - 1;
 
-class BinaryTree {
-  constructor() {
-    this.root = null;
-  }
+    while (left <= right) {
+        let mid = Math.floor((left + right) / 2);
 
-  insert(value) {
-    let newNode = new Node(value);
-
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
-
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
-
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  searchNode(node, value) {
-    if (node === null) {
-      return false;
+        if (arr[mid] === target) {
+            return mid;
+        } else if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
     }
 
-    if (node.value === value) {
-      return true;
-    } else if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else {
-      return this.searchNode(node.right, value);
-    }
-  }
+    return -1; // If the target is not found in the array
 }
 
 // Example usage
-let tree = new BinaryTree();
-tree.insert(8);
-tree.insert(3);
-tree.insert(10);
-tree.insert(1);
-tree.insert(6);
+const arr = [1, 3, 6, 9, 12, 15, 18, 21];
+const target = 9;
+const resultIndex = binarySearch(arr, target);
 
-console.log(tree.search(6)); // Output: true
-console.log(tree.search(9)); // Output: false
+if (resultIndex !== -1) {
+    console.log(`The target ${target} was found at index ${resultIndex}.`);
+} else {
+    console.log(`The target ${target} was not found in the array.`);
+}
