@@ -1,33 +1,11 @@
-function mergeSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
-    }
+const cron = require('node-cron');
 
-    const mid = Math.floor(arr.length / 2);
-    const left = arr.slice(0, mid);
-    const right = arr.slice(mid);
-
-    return merge(mergeSort(left), mergeSort(right));
+// Define a function to be executed on schedule
+function myScheduledFunction() {
+  console.log('Running scheduled function at:', new Date());
 }
 
-function merge(left, right) {
-    let result = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
+// Schedule the function to run every minute
+cron.schedule('* * * * *', myScheduledFunction);
 
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            result.push(left[leftIndex]);
-            leftIndex++;
-        } else {
-            result.push(right[rightIndex]);
-            rightIndex++;
-        }
-    }
-
-    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
-}
-
-// Example usage
-const arr = [5, 3, 8, 6, 2];
-console.log(mergeSort(arr)); // Output: [2, 3, 5, 6, 8]
+console.log('Cron job scheduled. Waiting for executions...');
