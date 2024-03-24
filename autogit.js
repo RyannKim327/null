@@ -1,41 +1,35 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.children = [];
+function topologicalSort(graph) {
+    const visited = new Set();
+    const stack = [];
+
+    function visit(node) {
+        if (visited.has(node)) return;
+
+        visited.add(node);
+
+        graph[node].forEach(neighbor => {
+            visit(neighbor);
+        });
+
+        stack.push(node);
     }
+
+    for (let node in graph) {
+        visit(node);
+    }
+
+    return stack.reverse();
 }
 
-function depthLimitedSearch(root, limit) {
-    if (!root) {
-        return null;
-    }
+// Example usage
+const graph = {
+    0: [1, 2],
+    1: [3],
+    2: [3],
+    3: [4, 5],
+    4: [],
+    5: []
+};
 
-    let stack = [{ node: root, depth: 0 }];
-
-    while (stack.length > 0) {
-        let current = stack.pop();
-        let node = current.node;
-        let depth = current.depth;
-
-        console.log(`Visiting node ${node.value} at depth ${depth}`);
-
-        if (depth < limit) {
-            for (let child of node.children) {
-                stack.push({ node: child, depth: depth + 1 });
-            }
-        }
-    }
-}
-
-// Usage example
-const rootNode= new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
-const node4 = new Node(4);
-const node5 = new Node(5);
-
-rootNode.children = [node2, node3];
-node2.children = [node4];
-node3.children = [node5];
-
-depthLimitedSearch(rootNode, 2);
+const sortedNodes = topologicalSort(graph);
+console.log(sortedNodes);
