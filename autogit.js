@@ -1,45 +1,60 @@
-// Node class to represent each node in the linked list
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
-    }
-}
+function tarjanSCC(graph) {
+    let index = 0;
+    let stack = [];
+    let ids = {};
+    let lowLinks = {};
+    let onStack = {};
+    let result = [];
 
-// LinkedList class to manage the linked list operations
-class LinkedList {
-    constructor() {
-        this.head = null;
-    }
+    function dfs(node) {
+        ids[node] = index;
+        lowLinks[node] = index;
+        index++;
+        stack.push(node);
+        onStack[node] = true;
 
-    // Method to add a new node to the end of the linked list
-    addNode(data) {
-        const newNode = new Node(data);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
+        // Visit the neighbors of the current node
+        graph[node].forEach(neighbor => {
+            if (ids[neighbor] === undefined) {
+                dfs(neighbor);
+                lowLinks[node] = Math.min(lowLinks[node], lowLinks[neighbor]);
+            } else if (onStack[neighbor]) {
+                lowLinks[node] = Math.min(lowLinks[node], ids[neighbor]);
             }
-            current.next = newNode;
+        });
+
+        // If node is the root of a SCC
+        if (ids[node] === lowLinks[node]) {
+            let scc = [];
+            let popNode;
+            do {
+                popNode = stack.pop();
+                onStack[popNode] = false;
+                scc.push(popNode);
+            } while (popNode !== node);
+            result.push(scc);
         }
     }
 
-    // Method to print the linked list
-    printList() {
-        let current = this.head;
-        while (current) {
-            console.log(current.data);
-            current = current.next;
+    // Visit each node in the graph
+    Object.keys(graph).forEach(node => {
+        if (ids[node] === undefined) {
+            dfs(node);
         }
-    }
+    });
+
+    return result;
 }
 
 // Example usage
-const linkedList = new LinkedList();
-linkedList.addNode(1);
-linkedList.addNode(2);
-linkedList.addNode(3);
+const exampleGraph = {
+    0: [1],
+    1: [2],
+    2: [0, 3, 4],
+    3: [2, 4],
+    4: [5],
+    5: [4]
+};
 
-linkedList.printList();
+const scc = tarjanSCC(exampleGraph);
+console.log(scc);
