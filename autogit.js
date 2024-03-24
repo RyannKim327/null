@@ -1,30 +1,62 @@
-function longestCommonSubstring(str1, str2) {
-    const dp = Array.from({ length: str1.length + 1 }, () => Array(str2.length + 1).fill(0));
-    let maxLength = 0;
-    let endIndex = 0;
+class TarjanSCC {
+    constructor(graph) {
+        this.graph = graph;
+        this.index = 0;
+        this.stack = [];
+        this.lowLinks = new Map();
+        this.indexes = new Map();
+        this.sccs = [];
+    }
 
-    for (let i = 1; i <= str1.length; i++) {
-        for (let j = 1; j <= str2.length; j++) {
-            if (str1.charAt(i - 1) === str2.charAt(j - 1)) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-                if (dp[i][j] > maxLength) {
-                    maxLength = dp[i][j];
-                    endIndex = i - 1;
-                }
-            } else {
-                dp[i][j] = 0;
+    findSCCs() {
+        for (let node of this.graph) {
+            if (!this.indexes.has(node)) {
+                this.strongConnect(node);
             }
         }
+        return this.sccs;
     }
 
-    if (maxLength === 0) {
-        return '';
-    }
+    strongConnect(node) {
+        this.indexes.set(node, this.index);
+        this.lowLinks.set(node, this.index);
+        this.index++;
+        this.stack.push(node);
 
-    return str1.substring(endIndex - maxLength + 1, endIndex + 1);
+        for (let neighbor of this.graph[node]) {
+            if (!this.indexes.has(neighbor)) {
+                this.strongConnect(neighbor);
+                this.lowLinks.set(node, Math.min(this.lowLinks.get(node), this.lowLinks.get(neighbor)));
+            } else if (this.stack.includes(neighbor)) {
+                this.lowLinks.set(node, Math.min(this.lowLinks.get(node), this.indexes.get(neighbor)));
+            }
+        }
+
+        if (this.lowLinks.get(node) === this.indexes.get(node)) {
+            let scc = [];
+            let top;
+            do {
+                top = this.stack.pop();
+                scc.push(top);
+            } while (top !== node);
+            this.sccs.push(scc);
+        }
+    }
 }
 
-// Example
-const str1 = 'abcdef';
-const str2 = 'bcdeft';
-console.log(longestCommonSubstring(str1, str2)); // Output: 'cdef'
+// Example graph representation (adjacency list)
+const graph = {
+    0: [1],
+    1: [2],
+    2: [0, 3],
+    3: [4],
+    4: [5, 7],
+    5: [6],
+    6: [4],
+    7: [5, 8],
+    8: [7]
+};
+
+const tarjan = new TarjanSCC(graph);
+const sccs = tarjan.findSCCs();
+console.log(sccs);
