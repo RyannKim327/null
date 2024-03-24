@@ -1,60 +1,48 @@
-function tarjan(graph) {
-  let index = 0;
-  let stack = [];
-  let onStack = [];
-  let indexMap = {};
-  let lowLink = {};
-  let result = [];
+function fibonacciSearch(arr, key) {
+    let fibN2 = 0;
+    let fibN1 = 1;
+    let fibN = fibN1 + fibN2;
 
-  function strongConnect(node) {
-    indexMap[node] = index;
-    lowLink[node] = index;
-    index++;
-    stack.push(node);
-    onStack[node] = true;
-
-    for (let neighbor of graph[node]) {
-      if (indexMap[neighbor] === undefined) {
-        strongConnect(neighbor);
-        lowLink[node] = Math.min(lowLink[node], lowLink[neighbor]);
-      } else if (onStack[neighbor]) {
-        lowLink[node] = Math.min(lowLink[node], indexMap[neighbor]);
-      }
+    // Calculate the smallest Fibonacci number greater than or equal to the length of the array
+    while (fibN < arr.length) {
+        fibN2 = fibN1;
+        fibN1 = fibN;
+        fibN = fibN1 + fibN2;
     }
 
-    if (lowLink[node] === indexMap[node]) {
-      let component = [];
-      let top;
-      do {
-        top = stack.pop();
-        onStack[top] = false;
-        component.push(top);
-      } while (top !== node);
-      result.push(component);
-    }
-  }
+    let offset = -1;
 
-  for (let node in graph) {
-    if (indexMap[node] === undefined) {
-      strongConnect(node);
-    }
-  }
+    while (fibN > 1) {
+        let i = Math.min(offset + fibN2, arr.length - 1);
 
-  return result;
+        if (arr[i] < key) {
+            fibN = fibN1;
+            fibN1 = fibN2;
+            fibN2 = fibN - fibN1;
+            offset = i;
+        } else if (arr[i] > key) {
+            fibN = fibN2;
+            fibN1 = fibN1 - fibN2;
+            fibN2 = fibN - fibN1;
+        } else {
+            return i;
+        }
+    }
+
+    if (fibN1 && arr[offset + 1] == key) {
+        return offset + 1;
+    }
+
+    return -1;
 }
 
 // Example usage
-const graph = {
-  0: [1],
-  1: [2],
-  2: [0, 3],
-  3: [4],
-  4: [5, 7],
-  5: [6],
-  6: [4],
-  7: [8],
-  8: [7],
-};
+const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+const key = 12;
+const index = fibonacciSearch(arr, key);
 
-const SCCs = tarjan(graph);
-console.log(SCCs);
+if (index != -1) {
+    console.log(`Element found at index: ${index}`);
+} else {
+    console.log("Element not found in the array");
+}
