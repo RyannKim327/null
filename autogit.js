@@ -1,48 +1,25 @@
-// Heap Sort Algorithm
-function heapSort(arr) {
-    buildMaxHeap(arr);
-
-    for (let i = arr.length - 1; i > 0; i--) {
-        [arr[0], arr[i]] = [arr[i], arr[0]]; // Swap root with last element
-        maxHeapify(arr, 0, i);
+function quickSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    return arr;
-}
+    const pivot = arr[Math.floor(arr.length / 2)];
+    const left = [];
+    const right = [];
 
-function buildMaxHeap(arr) {
-    for (let i = Math.floor(arr.length / 2); i >= 0; i--) {
-        maxHeapify(arr, i, arr.length);
+    for (let i = 0; i < arr.length; i++) {
+        if (i === Math.floor(arr.length / 2)) {
+            continue;
+        }
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
+        } else {
+            right.push(arr[i]);
+        }
     }
+
+    return [...quickSort(left), pivot, ...quickSort(right)];
 }
 
-function maxHeapify(arr, i, max) {
-    let index, leftChild, rightChild;
-
-    while (i < max) {
-        index = i;
-        leftChild = 2 * i + 1;
-        rightChild = leftChild + 1;
-
-        if (leftChild < max && arr[leftChild] > arr[index]) {
-            index = leftChild;
-        }
-
-        if (rightChild < max && arr[rightChild] > arr[index]) {
-            index = rightChild;
-        }
-
-        if (index === i) {
-            return;
-        }
-
-        [arr[i], arr[index]] = [arr[index], arr[i]];
-        i = index;
-    }
-}
-
-// Example usage
-const unsortedArray = [4, 10, 3, 5, 1];
-const sortedArray = heapSort(unsortedArray);
-
-console.log(sortedArray); // Output: [1, 3, 4, 5, 10]
+const arr = [3, 6, 8, 10, 1, 2, 1];
+console.log(quickSort(arr));
