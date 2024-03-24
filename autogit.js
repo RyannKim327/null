@@ -1,10 +1,11 @@
-function factorial(n) {
-    if (n === 0) {
-        return 1;
-    }
-    return n * factorial(n - 1);
-}
+// Define an array of integers
+const numbers = [5, 2, 8, 1, 4];
 
-// Example usage
-const num = 5;
-console.log(`Factorial of ${num} is ${factorial(num)}`);
+// Sort the array in ascending order
+numbers.sort((a, b) => a - b);
+
+console.log(numbers); // Output: [1, 2, 4, 5, 8]
+// Sort the array in descending order
+numbers.sort((a, b) => b - a);
+
+console.log(numbers); // Output: [8, 5, 4, 2, 1]
