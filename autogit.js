@@ -1,11 +1,6 @@
-function factorial(n) {
-    if (n === 0) {
-        return 1;
-    } else {
-        return n * factorial(n - 1);
-    }
-}
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
 
-// Use the function to calculate the factorial of a number
-const number = 5;
-console.log(`Factorial of ${number} is: ${factorial(number)}`);
+const commonElements = array1.filter(element => array2.includes(element));
+
+console.log(commonElements); // Output: [3, 4, 5]
