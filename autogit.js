@@ -1,20 +1,47 @@
-function findLongestIncreasingSubsequence(arr) {
-    if (arr.length === 0) return 0;
-
-    let dp = new Array(arr.length).fill(1);
-    let max = 1;
-
-    for (let i = 1; i < arr.length; i++) {
-        for (let j = 0; j < i; j++) {
-            if (arr[i] > arr[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
-                max = Math.max(max, dp[i]);
-            }
-        }
+// Linked List Node
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
     }
-
-    return max;
 }
 
-let arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
-console.log(findLongestIncreasingSubsequence(arr)); // Output: 6
+// Function to check if a linked list is a palindrome
+function isPalindrome(head) {
+    let values = [];
+    let currentNode = head;
+
+    // Traverse the linked list and store node values in an array
+    while (currentNode) {
+        values.push(currentNode.data);
+        currentNode = currentNode.next;
+    }
+
+    // Use two-pointer technique to check if the array is a palindrome
+    let left = 0;
+    let right = values.length - 1;
+
+    while (left < right) {
+        if (values[left] !== values[right]) {
+            return false;
+        }
+        left++;
+        right--;
+    }
+
+    return true;
+}
+
+// Example linked list
+let node1 = new Node(1);
+let node2 = new Node(2);
+let node3 = new Node(3);
+let node4 = new Node(2);
+let node5 = new Node(1);
+
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node5;
+
+console.log(isPalindrome(node1)); // Output: true
