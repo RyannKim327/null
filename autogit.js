@@ -6,62 +6,32 @@ class Node {
     }
 }
 
-class BinaryTree {
-    constructor() {
-        this.root = null;
-    }
+function treeDiameter(root) {
+    let diameter = 0;
 
-    insert(value) {
-        const newNode = new Node(value);
-
-        if (!this.root) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    insertNode(node, newNode) {
-        if (newNode.value < node.value) {
-            if (!node.left) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (!node.right) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
-
-    search(value) {
-        return this.searchNode(this.root, value);
-    }
-
-    searchNode(node, value) {
+    function depth(node) {
         if (!node) {
-            return false;
+            return 0;
         }
 
-        if (value === node.value) {
-            return true;
-        }
+        let leftDepth = depth(node.left);
+        let rightDepth = depth(node.right);
 
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else {
-            return this.searchNode(node.right, value);
-        }
+        diameter = Math.max(diameter, leftDepth + rightDepth);
+
+        return 1 + Math.max(leftDepth, rightDepth);
     }
+
+    depth(root);
+
+    return diameter;
 }
 
-// Usage
-const tree = new BinaryTree();
-tree.insert(10);
-tree.insert(5);
-tree.insert(15);
-console.log(tree.search(5)); // true
-console.log(tree.search(20)); // false
+// Example usage
+let root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+console.log(treeDiameter(root)); // Output: 3
