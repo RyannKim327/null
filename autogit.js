@@ -1,5 +1,8 @@
-let str1 = "Hello";
-let str2 = "world";
+let numbers = [1, 5, 3, 9, 2, 7];
+let max = Math.max.apply(null, numbers);
 
-let result = str1 + " " + str2;
-console.log(result); // This will output "Hello world"
+console.log("The maximum value in the array is: " + max);
+let numbers = [1, 5, 3, 9, 2, 7];
+let max = Math.max(...numbers);
+
+console.log("The maximum value in the array is: " + max);
