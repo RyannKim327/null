@@ -1,7 +1,8 @@
-let numbers = [5, 3, 8, 1, 2, 9, 4, 7, 6];
+function removeVowels(str) {
+    return str.replace(/[aeiouAEIOU]/g, '');
+}
 
-numbers.sort(function(a, b) {
-    return a - b;
-});
+let originalString = "Hello, World!";
+let newString = removeVowels(originalString);
 
-console.log(numbers); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+console.log(newString); // Output: "Hll, Wrld!"
