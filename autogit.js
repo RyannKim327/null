@@ -1,44 +1,28 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
+function longestCommonSubstring(s1, s2) {
+    const m = s1.length;
+    const n = s2.length;
+    
+    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+    
+    let maxLen = 0;
+    let endIndex = 0;
+    
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (s1[i - 1] === s2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > maxLen) {
+                    maxLen = dp[i][j];
+                    endIndex = i - 1;
+                }
+            }
+        }
     }
+    
+    return s1.substring(endIndex - maxLen + 1, endIndex + 1);
 }
 
-function reverseLinkedList(head) {
-    let prev = null;
-    let current = head;
-    let next = null;
-
-    while (current !== null) {
-        next = current.next;
-        current.next = prev;
-        prev = current;
-        current = next;
-    }
-
-    return prev;
-}
-
-// Example linked list: 1 -> 2 -> 3 -> 4 -> 5
-const head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-console.log("Original linked list:");
-let current = head;
-while (current !== null) {
-    console.log(current.value);
-    current = current.next;
-}
-
-const reversedHead = reverseLinkedList(head);
-
-console.log("Reversed linked list:");
-current = reversedHead;
-while (current !== null) {
-    console.log(current.value);
-    current = current.next;
-}
+// Example usage
+const s1 = "abcdef";
+const s2 = "bcdeft";
+console.log(longestCommonSubstring(s1, s2)); // Output: "cdef"
