@@ -1,86 +1,32 @@
-class BTreeNode {
-    constructor(degree, leaf) {
-        this.degree = degree;
-        this.leaf = leaf;
-        this.keys = [];
-        this.children = [];
+function areAnagrams(str1, str2) {
+    // Remove any non-alphabetic characters and convert to lowercase
+    str1 = str1.replace(/[^\w]/g, "").toLowerCase();
+    str2 = str2.replace(/[^\w]/g, "").toLowerCase();
+
+    // Check if the lengths of the two strings are equal
+    if (str1.length !== str2.length) {
+        return false;
     }
+
+    // Create character frequency object for str1
+    const charMap = {};
+    for (let char of str1) {
+        charMap[char] = charMap[char] + 1 || 1;
+    }
+
+    // Check character frequency for str2
+    for (let char of str2) {
+        if (!charMap[char]) {
+            return false;
+        } else {
+            charMap[char]--;
+        }
+    }
+
+    return true;
 }
 
-class BTree {
-    constructor(degree) {
-        this.root = new BTreeNode(degree, true);
-        this.degree = degree;
-    }
-
-    splitChild(parent, index) {
-        let newChild = new BTreeNode(this.degree, true);
-        let child = parent.children[index];
-        
-        newChild.keys = child.keys.splice(this.degree);
-        
-        if (!child.leaf) {
-            newChild.children = child.children.splice(this.degree + 1);
-        }
-        
-        parent.keys.splice(index, 0, child.keys.pop());
-        parent.children.splice(index + 1, 0, newChild);
-    }
-
-    insert(key) {
-        let root = this.root;
-        if (root.keys.length === (2 * this.degree) - 1) {
-            let newRoot = new BTreeNode(this.degree, false);
-            newRoot.children.push(root);
-            this.root = newRoot;
-            this.splitChild(newRoot, 0);
-            this.insertNonFull(newRoot, key);
-        } else {
-            this.insertNonFull(root, key);
-        }
-    }
-
-    insertNonFull(node, key) {
-        let i = node.keys.length - 1;
-        
-        if (node.leaf) {
-            while (i >= 0 && key < node.keys[i]) {
-                node.keys[i + 1] = node.keys[i];
-                i--;
-            }
-            node.keys[i + 1] = key;
-        } else {
-            while (i >= 0 && key < node.keys[i]) {
-                i--;
-            }
-            
-            i++;
-            if (node.children[i].keys.length === (2 * this.degree) - 1) {
-                this.splitChild(node, i);
-                if (key > node.keys[i]) {
-                    i++;
-                }
-            }
-            this.insertNonFull(node.children[i], key);
-        }
-    }
-
-    search(key) {
-        return this.searchRecursive(this.root, key);
-    }
-
-    searchRecursive(node, key) {
-        let i = 0;
-        while (i < node.keys.length && key > node.keys[i]) {
-            i++;
-        }
-        
-        if (node.keys[i] === key) {
-            return `Key ${key} found in the B-tree`;
-        } else if (node.leaf) {
-            return `Key ${key} not found in the B-tree`;
-        } else {
-            return this.searchRecursive(node.children[i], key);
-        }
-    }
-}
+// Test the function
+const str1 = "listen";
+const str2 = "silent";
+console.log(areAnagrams(str1, str2)); // Output: true
