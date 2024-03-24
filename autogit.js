@@ -1,59 +1,46 @@
-class HashTable {
-    constructor(size) {
-        this.size = size;
-        this.table = new Array(size);
+function fibonacci_search(arr, x) {
+    let fib_n2 = 0;
+    let fib_n1 = 1;
+    let fib = fib_n2 + fib_n1;
+
+    while (fib < arr.length) {
+        fib_n2 = fib_n1;
+        fib_n1 = fib;
+        fib = fib_n2 + fib_n1;
     }
 
-    hash(key) {
-        let hash = 0;
-        for (let i = 0; i < key.length; i++) {
-            hash += key.charCodeAt(i) * (i + 1);
+    let offset = -1;
+
+    while (fib > 1) {
+        let i = Math.min(offset + fib_n2, arr.length - 1);
+
+        if (arr[i] < x) {
+            fib = fib_n1;
+            fib_n1 = fib_n2;
+            fib_n2 = fib - fib_n1;
+            offset = i;
+        } else if (arr[i] > x) {
+            fib = fib_n2;
+            fib_n1 = fib_n1 - fib_n2;
+            fib_n2 = fib - fib_n1;
+        } else {
+            return i;
         }
-        return hash % this.size;
     }
 
-    set(key, value) {
-        const index = this.hash(key);
-        if (!this.table[index]) {
-            this.table[index] = [];
-        }
-        this.table[index].push([key, value]);
+    if (fib_n1 && arr[offset + 1] === x) {
+        return offset + 1;
     }
 
-    get(key) {
-        const index = this.hash(key);
-        if (!this.table[index]) {
-            return undefined;
-        }
-        for (const entry of this.table[index]) {
-            if (entry[0] === key) {
-                return entry[1];
-            }
-        }
-        return undefined;
-    }
-
-    remove(key) {
-        const index = this.hash(key);
-        if (!this.table[index]) {
-            return false;
-        }
-        const entryIndex = this.table[index].findIndex(entry => entry[0] === key);
-        if (entryIndex === -1) {
-            return false;
-        }
-        this.table[index].splice(entryIndex, 1);
-        return true;
-    }
+    return -1;
 }
 
-// Example usage
-const myHashTable = new HashTable(10);
-myHashTable.set("name", "Alice");
-myHashTable.set("age", 30);
+const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const x = 5;
+const index = fibonacci_search(arr, x);
 
-console.log(myHashTable.get("name")); // Output: Alice
-console.log(myHashTable.get("age")); // Output: 30
-
-myHashTable.remove("age");
-console.log(myHashTable.get("age")); // Output: undefined
+if (index !== -1) {
+    console.log(`Element found at index ${index}`);
+} else {
+    console.log("Element not found");
+}
