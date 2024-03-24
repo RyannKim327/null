@@ -1,5 +1,15 @@
-let array = [1, 2, 3, 4, 1, 2, 5];
+function isSorted(arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;
+        }
+    }
+    return true;
+}
 
-let uniqueArray = Array.from(new Set(array));
+// Test the function
+const arr1 = [1, 2, 3, 4, 5];
+const arr2 = [5, 4, 3, 2, 1];
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+console.log(isSorted(arr1)); // Output: true
+console.log(isSorted(arr2)); // Output: false
