@@ -1,79 +1,31 @@
-class TrieNode {
-    constructor() {
-        this.children = {};
-        this.isEndOfWord = false;
-    }
-}
-
-class Trie {
-    constructor() {
-        this.root = new TrieNode();
-    }
-
-    insert(word) {
-        let node = this.root;
-        for (let char of word) {
-            if (!node.children[char]) {
-                node.children[char] = new TrieNode();
+function longestIncreasingSubsequence(arr) {
+    let maxLength = 1;
+    let lengths = new Array(arr.length);
+    lengths.fill(1);
+    
+    for (let i = 1; i < arr.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[i] > arr[j] && lengths[i] < lengths[j] + 1) {
+                lengths[i] = lengths[j] + 1;
+                maxLength = Math.max(maxLength, lengths[i]);
             }
-            node = node.children[char];
         }
-        node.isEndOfWord = true;
     }
-
-    search(word) {
-        let node = this.root;
-        for (let char of word) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
+    
+    let result = [];
+    let maxIndex = lengths.indexOf(maxLength);
+    result.unshift(arr[maxIndex]);
+    
+    for (let i = maxIndex - 1; i >= 0; i--) {
+        if (arr[i] < arr[maxIndex] && lengths[i] === lengths[maxIndex] - 1) {
+            result.unshift(arr[i]);
+            maxIndex = i;
         }
-        return node.isEndOfWord;
     }
-
-    startsWith(prefix) {
-        let node = this.root;
-        for (let char of prefix) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
-        }
-        return true;
-    }
-
-    delete(word) {
-        let deleteHelper = (node, word, index) => {
-            if (index === word.length) {
-                if (!node.isEndOfWord) {
-                    return false;
-                }
-                node.isEndOfWord = false;
-                return Object.keys(node.children).length === 0;
-            }
-            let char = word[index];
-            if (!node.children[char]) {
-                return false;
-            }
-            let shouldDeleteNode = deleteHelper(node.children[char], word, index + 1);
-            if (shouldDeleteNode) {
-                delete node.children[char];
-                return Object.keys(node.children).length === 0;
-            }
-            return false;
-        };
-
-        deleteHelper(this.root, word, 0);
-    }
+    
+    return result;
 }
 
 // Example usage
-let trie = new Trie();
-trie.insert("apple");
-console.log(trie.search("apple")); // true
-console.log(trie.search("app")); // false
-trie.insert("app");
-console.log(trie.search("app")); // true
-trie.delete("app");
-console.log(trie.search("app")); // false
+const arr = [3, 10, 2, 1, 20];
+console.log(longestIncreasingSubsequence(arr)); // Output: [3, 10, 20]
