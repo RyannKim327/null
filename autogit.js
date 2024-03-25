@@ -1,23 +1,11 @@
-function countingSort(arr) {
-    let max = Math.max(...arr);
-    let countArray = new Array(max + 1).fill(0);
-    let sortedArray = [];
-
-    for (let i = 0; i < arr.length; i++) {
-        countArray[arr[i]]++;
+function calculateStringLength(str) {
+    let count = 0;
+    while (str[count] !== undefined) {
+        count++;
     }
-
-    for (let i = 0; i < countArray.length; i++) {
-        while (countArray[i] > 0) {
-            sortedArray.push(i);
-            countArray[i]--;
-        }
-    }
-
-    return sortedArray;
+    return count;
 }
 
-// Example usage
-let unsortedArray = [4, 2, 2, 8, 3, 3, 1];
-let sortedArray = countingSort(unsortedArray);
-console.log(sortedArray); // Output: [1, 2, 2, 3, 3, 4, 8]
+const myString = "Hello, World!";
+const length = calculateStringLength(myString);
+console.log("Length of the string is: " + length); // Output: Length of the string is: 13
