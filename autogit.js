@@ -1,33 +1,16 @@
-function breadthFirstSearch(graph, startNode) {
-    let visited = {};
-    let queue = [];
-
-    queue.push(startNode);
-    visited[startNode] = true;
-
-    while (queue.length > 0) {
-        let currentNode = queue.shift();
-        console.log("Visiting node: ", currentNode);
-
-        let neighbors = graph[currentNode];
-        for (let i = 0; i < neighbors.length; i++) {
-            let neighbor = neighbors[i];
-            if (!visited[neighbor]) {
-                visited[neighbor] = true;
-                queue.push(neighbor);
-            }
+function majorityElement(nums) {
+    let count = {};
+    
+    for (let num of nums) {
+        count[num] = (count[num] || 0) + 1;
+        if (count[num] > nums.length / 2) {
+            return num;
         }
     }
+    
+    return null;
 }
 
-// Example graph represented as an adjacency list
-let graph = {
-    'A': ['B', 'C'],
-    'B': ['A', 'D', 'E'],
-    'C': ['A', 'F'],
-    'D': ['B'],
-    'E': ['B', 'F'],
-    'F': ['C', 'E']
-};
-
-breadthFirstSearch(graph, 'A');
+// Example
+const array = [2, 3, 2, 2, 4, 2, 2, 3, 2];
+console.log(majorityElement(array)); // Output: 2
