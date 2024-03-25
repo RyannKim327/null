@@ -1,72 +1,45 @@
-class BinaryHeap {
-    constructor() {
-        this.heap = [];
+function bellmanFord(graph, source) {
+    let distance = {};
+    
+    // Initialize distances from source to all other vertices as infinity
+    for (let node in graph) {
+        distance[node] = Infinity;
     }
+    distance[source] = 0;
 
-    enqueue(value) {
-        this.heap.push(value);
-        this.bubbleUp();
-    }
-
-    bubbleUp() {
-        let index = this.heap.length - 1;
-        while (index > 0) {
-            let parentIndex = Math.floor((index - 1) / 2);
-            if (this.heap[index] >= this.heap[parentIndex]) {
-                break;
+    // Relax all edges repeatedly
+    for (let i = 0; i < Object.keys(graph).length - 1; i++) {
+        for (let u in graph) {
+            for (let v in graph[u]) {
+                if (distance[u] + graph[u][v] < distance[v]) {
+                    distance[v] = distance[u] + graph[u][v];
+                }
             }
-            [this.heap[index], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[index]];
-            index = parentIndex;
         }
     }
 
-    dequeue() {
-        if (this.heap.length === 0) {
-            return null;
-        }
-        if (this.heap.length === 1) {
-            return this.heap.pop();
-        }
-
-        const minValue = this.heap[0];
-        this.heap[0] = this.heap.pop();
-        this.heapify(0);
-
-        return minValue;
-    }
-
-    heapify(index) {
-        let left = 2 * index + 1;
-        let right = 2 * index + 2;
-        let smallest = index;
-
-        if (left < this.heap.length && this.heap[left] < this.heap[smallest]) {
-            smallest = left;
-        }
-        if (right < this.heap.length && this.heap[right] < this.heap[smallest]) {
-            smallest = right;
-        }
-        if (smallest !== index) {
-            [this.heap[index], this.heap[smallest]] = [this.heap[smallest], this.heap[index]];
-            this.heapify(smallest);
+    // Check for negative weight cycles
+    for (let u in graph) {
+        for (let v in graph[u]) {
+            if (distance[u] + graph[u][v] < distance[v]) {
+                console.log("Graph contains negative weight cycle");
+                return;
+            }
         }
     }
 
-    isEmpty() {
-        return this.heap.length === 0;
-    }
-
-    size() {
-        return this.heap.length;
-    }
+    return distance;
 }
 
-// Example Usage:
-const pq = new BinaryHeap();
-pq.enqueue(3);
-pq.enqueue(1);
-pq.enqueue(5);
-pq.enqueue(2);
+// Example usage
+let graph = {
+    'A': {'B': -1, 'C': 4},
+    'B': {'C': 3, 'D': 2, 'E': 2},
+    'C': {},
+    'D': {'B': 1, 'C': 5},
+    'E': {'D': -3}
+};
+let source = 'A';
 
-console.log(pq.dequeue()); // Output: 1
-console.log(pq.dequeue()); // Output: 2
+let shortestDistances = bellmanFord(graph, source);
+console.log(shortestDistances);
