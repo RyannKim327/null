@@ -1,64 +1,16 @@
-function tarjan(graph) {
-    let index = 0;
-    let stack = [];
-    let indexes = {};
-    let lowlinks = {};
-    let onStack = {};
-
-    let result = [];
-
-    function strongConnect(node) {
-        indexes[node] = index;
-        lowlinks[node] = index;
-        index++;
-        stack.push(node);
-        onStack[node] = true;
-
-        for (let neighbor of graph[node]) {
-            if (indexes[neighbor] === undefined) {
-                strongConnect(neighbor);
-                lowlinks[node] = Math.min(lowlinks[node], lowlinks[neighbor]);
-            } else if (onStack[neighbor]) {
-                lowlinks[node] = Math.min(lowlinks[node], indexes[neighbor]);
+function bubbleSort(arr) {
+    const len = arr.length;
+    for (let i = 0; i < len; i++) {
+        for (let j = 0; j < len - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap the elements
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
             }
         }
-
-        if (lowlinks[node] === indexes[node]) {
-            let component = [];
-            let item = stack.pop();
-            onStack[item] = false;
-            component.push(item);
-
-            while (item !== node) {
-                item = stack.pop();
-                onStack[item] = false;
-                component.push(item);
-            }
-
-            result.push(component);
-        }
     }
-
-    for (let node in graph) {
-        if (indexes[node] === undefined) {
-            strongConnect(node);
-        }
-    }
-
-    return result;
+    return arr;
 }
 
-// Example graph representation
-const graph = {
-    'A': ['B'],
-    'B': ['C', 'E'],
-    'C': ['A', 'D'],
-    'D': ['F'],
-    'E': ['D'],
-    'F': ['G'],
-    'G': ['H'],
-    'H': ['F'],
-};
-
-const components = tarjan(graph);
-console.log(components);
+// Example usage
+const array = [64, 34, 25, 12, 22, 11, 90];
+console.log(bubbleSort(array)); // Output: [11, 12, 22, 25, 34, 64, 90]
