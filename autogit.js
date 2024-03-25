@@ -1,8 +1,18 @@
-function removeDuplicates(arr) {
-    return arr.filter((item, index) => arr.indexOf(item) === index);
+function findCommonElements(arr1, arr2) {
+    let commonElements = [];
+    
+    arr1.forEach(element => {
+        if (arr2.includes(element)) {
+            commonElements.push(element);
+        }
+    });
+    
+    return commonElements;
 }
 
-let array = [1, 2, 3, 4, 2, 1];
-let uniqueArray = removeDuplicates(array);
+// Example
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4]
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [3, 4, 5]
