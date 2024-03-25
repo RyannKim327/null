@@ -1,27 +1,23 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
+function countingSort(arr) {
+    let max = Math.max(...arr);
+    let countArray = new Array(max + 1).fill(0);
+    let sortedArray = [];
 
-function findMiddleElement(head) {
-  let slowPointer = head;
-  let fastPointer = head;
+    for (let i = 0; i < arr.length; i++) {
+        countArray[arr[i]]++;
+    }
 
-  while (fastPointer !== null && fastPointer.next !== null) {
-    slowPointer = slowPointer.next;
-    fastPointer = fastPointer.next.next;
-  }
+    for (let i = 0; i < countArray.length; i++) {
+        while (countArray[i] > 0) {
+            sortedArray.push(i);
+            countArray[i]--;
+        }
+    }
 
-  return slowPointer.value;
+    return sortedArray;
 }
 
 // Example usage
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-console.log(findMiddleElement(head)); // Output: 3
+let unsortedArray = [4, 2, 2, 8, 3, 3, 1];
+let sortedArray = countingSort(unsortedArray);
+console.log(sortedArray); // Output: [1, 2, 2, 3, 3, 4, 8]
