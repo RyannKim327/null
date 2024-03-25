@@ -1,36 +1,39 @@
-class BeamSearch {
-    constructor(beamWidth, maxSteps) {
-        this.beamWidth = beamWidth;
-        this.maxSteps = maxSteps;
-    }
+function bellmanFord(edges, N, start) {
+    let dist = Array(N).fill(Infinity);
+    dist[start] = 0;
 
-    search(startState, getNextStates, evaluate) {
-        let beams = [{ state: startState, score: 0, path: [startState]}];
-
-        for (let step = 0; step < this.maxSteps; step++) {
-            let nextBeams = [];
-            for (let beam of beams) {
-                let nextStates = getNextStates(beam.state);
-                for (let nextState of nextStates) {
-                    let score = beam.score + evaluate(nextState);
-                    nextBeams.push({ state: nextState, score: score, path: beam.path.concat([nextState]) });
-                }
+    for (let i = 0; i < N - 1; i++) {
+        for (const edge of edges) {
+            const [src, dest, weight] = edge;
+            if (dist[src] + weight < dist[dest]) {
+                dist[dest] = dist[src] + weight;
             }
-
-            nextBeams.sort((a, b) => b.score - a.score);
-            beams = nextBeams.slice(0, this.beamWidth);
         }
-
-        return beams[0].path;
     }
+
+    for (const edge of edges) {
+        const [src, dest, weight] = edge;
+        if (dist[src] + weight < dist[dest]) {
+            return "Graph contains negative weight cycle";
+        }
+    }
+
+    return dist;
 }
 
-// Usage example
-const beamSearch = new BeamSearch(3, 5);
+// Example
+const edges = [
+    [0, 1, -1],
+    [0, 2, 4],
+    [1, 2, 3],
+    [1, 3, 2],
+    [1, 4, 2],
+    [3, 2, 5],
+    [3, 1, 1],
+    [4, 3, -3]
+];
+const N = 5;
+const start = 0;
 
-const startState = 1;
-const getNextStates = (state) => [state + 1, state + 2];
-const evaluate = (state) => -Math.abs(state - 10); // Example evaluation function that tries to get closer to 10
-
-const resultPath = beamSearch.search(startState, getNextStates, evaluate);
-console.log(resultPath);
+const shortestPaths = bellmanFord(edges, N, start);
+console.log(shortestPaths);
