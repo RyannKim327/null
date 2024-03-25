@@ -1,14 +1,27 @@
-function findKthSmallest(arr, k) {
-    arr.sort(function(a, b) {
-        return a - b;
-    });
-    
-    return arr[k - 1];
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-// Example
-const array = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
-const k = 3;
-const kthSmallest = findKthSmallest(array, k);
+function findMiddleElement(head) {
+  let slowPointer = head;
+  let fastPointer = head;
 
-console.log(`The ${k}th smallest element in the array is: ${kthSmallest}`);
+  while (fastPointer !== null && fastPointer.next !== null) {
+    slowPointer = slowPointer.next;
+    fastPointer = fastPointer.next.next;
+  }
+
+  return slowPointer.value;
+}
+
+// Example usage
+let head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
+
+console.log(findMiddleElement(head)); // Output: 3
