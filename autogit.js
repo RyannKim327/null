@@ -1,9 +1,4 @@
-function removeVowels(inputString) {
-  // Use a regular expression to match all vowels (both upper and lower case)
-  return inputString.replace(/[aeiouAEIOU]/g, '');
-}
+let arr = [5, 2, 9, 12, 4, 7];
+let max = Math.max.apply(null, arr);
 
-// Test the function
-const inputStr = "Hello World";
-const result = removeVowels(inputStr);
-console.log(result); // Output: "Hll Wrld"
+console.log("The maximum value in the array is: " + max);
