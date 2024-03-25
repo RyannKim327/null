@@ -1,20 +1,53 @@
-function insertionSort(arr) {
-    for (let i = 1; i < arr.length; i++) {
-        let currentValue = arr[i];
-        let j = i - 1;
+class Stack {
+  constructor() {
+    this.stackArray = [];
+  }
 
-        while (j >= 0 && arr[j] > currentValue) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
+  // Pushes an element onto the stack
+  push(element) {
+    this.stackArray.push(element);
+  }
 
-        arr[j + 1] = currentValue;
+  // Pops the top element from the stack
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
     }
+    return this.stackArray.pop();
+  }
 
-    return arr;
+  // Returns the top element of the stack without removing it
+  peek() {
+    return this.isEmpty() ? "Stack is empty" : this.stackArray[this.stackArray.length - 1];
+  }
+
+  // Returns true if the stack is empty
+  isEmpty() {
+    return this.stackArray.length === 0;
+  }
+
+  // Returns the size of the stack
+  size() {
+    return this.stackArray.length;
+  }
+
+  // Prints the elements of the stack
+  printStack() {
+    console.log(this.stackArray);
+  }
 }
 
 // Example usage
-let array = [5, 2, 4, 6, 1, 3];
-console.log("Before sorting: " + array);
-console.log("After sorting: " + insertionSort(array));
+const stack = new Stack();
+
+stack.push(1);
+stack.push(2);
+stack.push(3);
+
+stack.printStack(); // Output: [1, 2, 3]
+
+console.log(stack.peek()); // Output: 3
+
+console.log(stack.pop()); // Output: 3
+
+stack.printStack(); // Output: [1, 2]
