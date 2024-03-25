@@ -1,15 +1,8 @@
-function countOccurrences(str, char) {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str.charAt(i) === char) {
-            count++;
-        }
-    }
-    return count;
-}
+let str = "123";
+let num = parseInt(str); // Converts the string "123" to the integer 123
 
-// Usage example
-const myString = "Hello, World!";
-const charToCount = "o";
-const occurrences = countOccurrences(myString, charToCount);
-console.log(`The character "${charToCount}" occurs ${occurrences} times in the string.`);
+console.log(num); // Output: 123
+let str = "456";
+let num = +str; // Converts the string "456" to the integer 456
+
+console.log(num); // Output: 456
