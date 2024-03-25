@@ -1,45 +1,64 @@
-// Node class to represent each element in the linked list
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
+function tarjan(graph) {
+    let index = 0;
+    let stack = [];
+    let indexes = {};
+    let lowlinks = {};
+    let onStack = {};
+
+    let result = [];
+
+    function strongConnect(node) {
+        indexes[node] = index;
+        lowlinks[node] = index;
+        index++;
+        stack.push(node);
+        onStack[node] = true;
+
+        for (let neighbor of graph[node]) {
+            if (indexes[neighbor] === undefined) {
+                strongConnect(neighbor);
+                lowlinks[node] = Math.min(lowlinks[node], lowlinks[neighbor]);
+            } else if (onStack[neighbor]) {
+                lowlinks[node] = Math.min(lowlinks[node], indexes[neighbor]);
+            }
+        }
+
+        if (lowlinks[node] === indexes[node]) {
+            let component = [];
+            let item = stack.pop();
+            onStack[item] = false;
+            component.push(item);
+
+            while (item !== node) {
+                item = stack.pop();
+                onStack[item] = false;
+                component.push(item);
+            }
+
+            result.push(component);
+        }
+    }
+
+    for (let node in graph) {
+        if (indexes[node] === undefined) {
+            strongConnect(node);
+        }
+    }
+
+    return result;
 }
 
-// Linked list class
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+// Example graph representation
+const graph = {
+    'A': ['B'],
+    'B': ['C', 'E'],
+    'C': ['A', 'D'],
+    'D': ['F'],
+    'E': ['D'],
+    'F': ['G'],
+    'G': ['H'],
+    'H': ['F'],
+};
 
-  // Method to add a new node to the linked list
-  add(data) {
-    const newNode = new Node(data);
-
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
-
-  // Method to print all elements of the linked list
-  print() {
-    let current = this.head;
-    while (current) {
-      console.log(current.data);
-      current = current.next;
-    }
-  }
-}
-
-// Example usage
-const list = new LinkedList();
-list.add(1);
-list.add(2);
-list.add(3);
-list.print();
+const components = tarjan(graph);
+console.log(components);
