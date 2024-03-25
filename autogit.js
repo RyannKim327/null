@@ -1,41 +1,22 @@
-function buildBadCharacterTable(pattern) {
-    const table = {};
+function longestCommonPrefix(strs) {
+    if (strs.length === 0) return '';
 
-    for (let i = 0; i < pattern.length - 1; i++) {
-        table[pattern[i]] = pattern.length - 1 - i;
-    }
-
-    return table;
-}
-
-function boyerMoore(text, pattern) {
-    const badCharacterTable = buildBadCharacterTable(pattern);
-    const n = text.length;
-    const m = pattern.length;
-    const result = [];
-
-    let i = 0;
-    while (i <= n - m) {
-        let j = m - 1;
-
-        while (j >= 0 && pattern[j] === text[i + j]) {
-            j--;
-        }
-
-        if (j < 0) {
-            result.push(i);
-            i += (i + m < n) ? m - badCharacterTable[text[i + m]] : 1;
-        } else {
-            i += Math.max(1, j - badCharacterTable[text[i + j]]);
+    // Find the minimum length string in the array
+    let minLen = Math.min(...strs.map(str => str.length));
+    
+    // Iterate through all characters of the first string
+    for (let i = 0; i < minLen; i++) {
+        const char = strs[0][i];
+        
+        // Check if the character is the same in all strings
+        if (strs.some(str => str[i] !== char)) {
+            return strs[0].substring(0, i);
         }
     }
-
-    return result;
+    
+    return strs[0].substring(0, minLen);
 }
 
-// Example
-const text = "ababcababcabc";
-const pattern = "abc";
-const occurrences = boyerMoore(text, pattern);
-
-console.log("Pattern occurs at indices: ", occurrences); // Output: Pattern occurs at indices:  [2, 6, 10]
+// Test the function
+const strings = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(strings)); // Output: "fl"
