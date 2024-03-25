@@ -1,16 +1,8 @@
-// Define the URL of the server
-const url = 'https://api.example.com/data';
+let str = "42";
+let num = parseInt(str);
 
-// Define the function to connect to the server asynchronously
-const fetchData = async () => {
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-    console.log(data);
-  } catch (error) {
-    console.error('Error fetching data:', error);
-  }
-};
+console.log(num); // Output: 42
+let hexStr = "1A";
+let hexNum = parseInt(hexStr, 16);
 
-// Call the fetchData function to initiate the connection
-fetchData();
+console.log(hexNum); // Output: 26
