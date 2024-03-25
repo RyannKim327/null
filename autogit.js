@@ -1,39 +1,56 @@
-class SuffixTree {
-    constructor(str) {
-        this.root = {};
-        this.buildSuffixTree(str);
-    }
+function astarSearch(start, goal, graph) {
+    let openSet = [start];
+    let cameFrom = {};
+    
+    let gScore = {};
+    let fScore = {};
 
-    buildSuffixTree(str) {
-        for (let i = 0; i < str.length; i++) {
-            this.addSuffix(str.slice(i), i);
+    // Initialize scores for the start node
+    gScore[start] = 0;
+    fScore[start] = heuristic(start, goal);
+
+    while (openSet.length > 0) {
+        let current = getLowestFScoreNode(openSet, fScore);
+        
+        if (current === goal) {
+            return reconstructPath(cameFrom, current);
         }
-    }
 
-    addSuffix(suffix, index) {
-        let current = this.root;
-        for (let i = 0; i < suffix.length; i++) {
-            if (!current[suffix[i]]) {
-                current[suffix[i]] = {};
+        openSet = openSet.filter(node => node !== current);
+        
+        let neighbors = graph[current];
+        for (let neighbor of neighbors) {
+            let tentativeGScore = gScore[current] + 1; // Assuming all edges have the same weight
+
+            if (!gScore[neighbor] || tentativeGScore < gScore[neighbor]) {
+                cameFrom[neighbor] = current;
+                gScore[neighbor] = tentativeGScore;
+                fScore[neighbor] = gScore[neighbor] + heuristic(neighbor, goal);
+
+                if (!openSet.includes(neighbor)) {
+                    openSet.push(neighbor);
+                }
             }
-            current = current[suffix[i]];
         }
-        current['*'] = index; // Mark end of suffix with *
     }
 
-    search(query) {
-        let current = this.root;
-        for (let i = 0; i < query.length; i++) {
-            if (!current[query[i]]) {
-                return null;
-            }
-            current = current[query[i]];
-        }
-        return current['*'];
-    }
+    return null; // No path found
 }
 
-// Example usage
-const suffixTree = new SuffixTree("banana");
-console.log(suffixTree.search("ana")); // Output: 1
-console.log(suffixTree.search("ananas")); // Output: null
+function heuristic(node, goal) {
+    // Simple Manhattan distance heuristic
+    return Math.abs(node.x - goal.x) + Math.abs(node.y - goal.y);
+}
+
+function getLowestFScoreNode(openSet, fScore) {
+    return openSet.reduce((minNode, node) => fScore[node] < fScore[minNode] ? node : minNode, openSet[0]);
+}
+
+function reconstructPath(cameFrom, current) {
+    let totalPath = [current];
+    while (cameFrom[current]) {
+        current = cameFrom[current];
+        totalPath.unshift(current);
+    }
+    return totalPath;
+}
