@@ -1,36 +1,53 @@
-function findMajorityElement(arr) {
-    let count = 0;
-    let candidate = null;
-
-    for (let num of arr) {
-        if (count == 0) {
-            candidate = num;
-            count = 1;
-        } else if (num === candidate) {
-            count++;
-        } else {
-            count--;
-        }
-    }
-
-    // Check if the candidate is the majority element
-    count = 0;
-    for (let num of arr) {
-        if (num === candidate) {
-            count++;
-        }
-    }
-
-    if (count > arr.length / 2) {
-        return candidate;
-    } else {
-        return -1; // No majority element found
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
     }
 }
 
-// Test the function
-const arr1 = [2, 2, 1, 1, 1, 2, 2];
-console.log(findMajorityElement(arr1)); // Output: 2
+class LinkedList {
+    constructor() {
+        this.head = null;
+    }
 
-const arr2 = [3, 3, 4, 2, 4, 4, 2];
-console.log(findMajorityElement(arr2)); // Output: -1 (No majority element)
+    append(data) {
+        const newNode = new Node(data);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+    }
+
+    findNthFromEnd(n) {
+        let pointer1 = this.head;
+        let pointer2 = this.head;
+        for (let i = 0; i < n; i++) {
+            if (pointer2 === null) {
+                return null; // List is too short
+            }
+            pointer2 = pointer2.next;
+        }
+        while (pointer2.next) {
+            pointer1 = pointer1.next;
+            pointer2 = pointer2.next;
+        }
+        return pointer1.data;
+    }
+}
+
+// Test
+const ll = new LinkedList();
+ll.append(1);
+ll.append(2);
+ll.append(3);
+ll.append(4);
+ll.append(5);
+
+const n = 2; // Find the 2nd node from the end
+const nthFromEnd = ll.findNthFromEnd(n);
+console.log(`${n}th node from the end is: ${nthFromEnd}`);
