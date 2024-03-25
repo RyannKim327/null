@@ -1,68 +1,58 @@
-class TreeNode {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-class BinaryTree {
+class TrieNode {
     constructor() {
-        this.root = null;
-    }
-
-    insert(value) {
-        const newNode = new TreeNode(value);
-
-        if (!this.root) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    insertNode(node, newNode) {
-        if (newNode.value < node.value) {
-            if (!node.left) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (!node.right) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
-
-    search(value) {
-        return this.searchNode(this.root, value);
-    }
-
-    searchNode(node, value) {
-        if (!node) {
-            return false;
-        }
-
-        if (node.value === value) {
-            return true;
-        }
-
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else {
-            return this.searchNode(node.right, value);
-        }
+        this.children = {};
+        this.isEndOfWord = false;
     }
 }
 
-// Example usage:
-const binaryTree = new BinaryTree();
-binaryTree.insert(5);
-binaryTree.insert(3);
-binaryTree.insert(8);
+class Trie {
+    constructor() {
+        this.root = new TrieNode();
+    }
 
-console.log(binaryTree.search(3)); // Output: true
-console.log(binaryTree.search(6)); // Output: false
+    insert(word) {
+        let node = this.root;
+        
+        for (let char of word) {
+            if (!node.children[char]) {
+                node.children[char] = new TrieNode();
+            }
+            node = node.children[char];
+        }
+        
+        node.isEndOfWord = true;
+    }
+
+    search(word) {
+        let node = this.root;
+        
+        for (let char of word) {
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+        
+        return node.isEndOfWord;
+    }
+
+    startsWith(prefix) {
+        let node = this.root;
+        
+        for (let char of prefix) {
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+        
+        return true;
+    }
+}
+
+// Example Usage
+let trie = new Trie();
+trie.insert("apple");
+console.log(trie.search("apple"));   // Output: true
+console.log(trie.search("app"));     // Output: false
+console.log(trie.startsWith("app")); // Output: true
