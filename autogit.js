@@ -1,77 +1,34 @@
-// Define a function to initialize an empty graph with vertices and edges
-function Graph() {
-    this.vertices = [];
-    this.edges = [];
-}
+function findLongestIncreasingSubsequence(arr) {
+    const n = arr.length;
+    const lis = new Array(n).fill(1);
 
-// Define a function to add a vertex to the graph
-Graph.prototype.addVertex = function(vertex) {
-    this.vertices.push(vertex);
-    this.edges[vertex] = [];
-}
-
-// Define a function to add an edge to the graph
-Graph.prototype.addEdge = function(src, dest, weight) {
-    this.edges[src].push({ dest: dest, weight: weight });
-}
-
-// Define the Bellman-Ford algorithm function for finding the shortest paths
-function bellmanFord(graph, start) {
-    let distance = {};
-    let predecessor = {};
-    
-    // Initialize distances from start node
-    graph.vertices.forEach((vertex) => {
-        distance[vertex] = Infinity;
-        predecessor[vertex] = undefined;
-    });
-    distance[start] = 0;
-    
-    // Relax edges repeatedly
-    for (let i = 0; i < graph.vertices.length - 1; i++) {
-        graph.vertices.forEach((vertex) => {
-            graph.edges[vertex].forEach((edge) => {
-                let newDistance = distance[vertex] + edge.weight;
-                if (newDistance < distance[edge.dest]) {
-                    distance[edge.dest] = newDistance;
-                    predecessor[edge.dest] = vertex;
-                }
-            });
-        });
-    }
-    
-    // Check for negative-weight cycles
-    graph.vertices.forEach((vertex) => {
-        graph.edges[vertex].forEach((edge) => {
-            if (distance[vertex] + edge.weight < distance[edge.dest]) {
-                console.log("Negative weight cycle detected!");
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[i] > arr[j] && lis[i] < lis[j] + 1) {
+                lis[i] = lis[j] + 1;
             }
-        });
-    });
-    
-    return { distance, predecessor };
+        }
+    }
+
+    let maxLength = 0;
+    for (let i = 0; i < n; i++) {
+        if (lis[i] > maxLength) {
+            maxLength = lis[i];
+        }
+    }
+
+    const longestIncreasingSubsequence = [];
+    let seqLength = maxLength;
+    for (let i = n - 1; i >= 0 && seqLength > 0; i--) {
+        if (lis[i] === seqLength) {
+            longestIncreasingSubsequence.unshift(arr[i]);
+            seqLength--;
+        }
+    }
+
+    return longestIncreasingSubsequence;
 }
-// Create a new graph
-let graph = new Graph();
 
-// Add vertices to the graph
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-
-// Add edges with weights to the graph
-graph.addEdge('A', 'B', 2);
-graph.addEdge('A', 'C', 4);
-graph.addEdge('B', 'C', 1);
-graph.addEdge('B', 'D', 7);
-graph.addEdge('C', 'D', 3);
-
-// Specify the start node
-let startNode = 'A';
-
-// Run the Bellman-Ford algorithm to find the shortest paths
-let result = bellmanFord(graph, startNode);
-
-console.log("Shortest distances from node " + startNode + ": ", result.distance);
-console.log("Predecessors: ", result.predecessor);
+const arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
+const longestIncreasingSubsequence = findLongestIncreasingSubsequence(arr);
+console.log("Longest Increasing Subsequence:", longestIncreasingSubsequence);
