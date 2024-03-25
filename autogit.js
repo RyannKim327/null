@@ -1,49 +1,17 @@
-function fibonacciSearch(arr, x) {
-    let fib1 = 0;
-    let fib2 = 1;
-    let fib3 = fib1 + fib2;
+function isAnagram(str1, str2) {
+  // Remove spaces and punctuation, convert to lowercase, and sort the characters
+  const cleanStr1 = str1.replace(/[^\w]/g, '').toLowerCase().split('').sort().join('');
+  const cleanStr2 = str2.replace(/[^\w]/g, '').toLowerCase().split('').sort().join('');
 
-    let n = arr.length;
-
-    while (fib3 < n) {
-        fib1 = fib2;
-        fib2 = fib3;
-        fib3 = fib1 + fib2;
-    }
-
-    let offset = -1;
-
-    while (fib3 > 1) {
-        let i = Math.min(offset + fib1, n - 1);
-
-        if (arr[i] < x) {
-            fib3 = fib2;
-            fib2 = fib1;
-            fib1 = fib3 - fib2;
-            offset = i;
-        } else if (arr[i] > x) {
-            fib3 = fib1;
-            fib2 = fib2 - fib1;
-            fib1 = fib3 - fib2;
-        } else {
-            return i;
-        }
-    }
-
-    if (fib2 && arr[offset + 1] == x) {
-        return offset + 1;
-    }
-
-    return -1;
+  // Check if the sorted strings are equal
+  return cleanStr1 === cleanStr2;
 }
 
-let arr = [1, 4, 8, 12, 20, 30, 40, 50];
-let x = 12;
-
-let result = fibonacciSearch(arr, x);
-
-if (result == -1) {
-    console.log("Element not found");
+// Test the function
+const str1 = "listen";
+const str2 = "silent";
+if (isAnagram(str1, str2)) {
+  console.log(`${str1} and ${str2} are anagrams.`);
 } else {
-    console.log("Element found at index: " + result);
+  console.log(`${str1} and ${str2} are not anagrams.`);
 }
