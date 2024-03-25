@@ -1,22 +1,13 @@
-function firstNonRepeatingCharacter(str) {
-    let charCount = {};
-    
-    // Count occurrences of each character
-    for (let char of str) {
-        charCount[char] = (charCount[char] || 0) + 1;
+fetch('https://api.example.com/data')
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
     }
-
-    // Find the first non-repeating character
-    for (let char of str) {
-        if (charCount[char] === 1) {
-            return char;
-        }
-    }
-
-    return null; // Return null if no non-repeating character is found
-}
-
-// Test the function
-let str = "aabbccdeeffg";
-let result = firstNonRepeatingCharacter(str);
-console.log(result); // Output: "d"
+    return response.json();
+  })
+  .then(data => {
+    console.log(data);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
