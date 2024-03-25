@@ -1,50 +1,24 @@
-function createBadMatchTable(pattern) {
-    const table = {};
-    const { length } = pattern;
-
-    for (let i = 0; i < length - 1; i++) {
-        table[pattern[i]] = length - i - 1;
+function quickSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    return table;
-}
+    const pivot = arr[0];
+    const left = [];
+    const right = [];
 
-function boyerMooreHorspool(text, pattern) {
-    const badMatchTable = createBadMatchTable(pattern);
-    const { length: textLength } = text;
-    const { length: patternLength } = pattern;
-
-    let i = patternLength - 1;
-
-    while (i < textLength) {
-        let j = patternLength - 1;
-        while (j >= 0 && text[i] === pattern[j]) {
-            i--;
-            j--;
-        }
-
-        if (j === -1) {
-            return i + 1; // match found
-        }
-
-        if (badMatchTable.hasOwnProperty(text[i])) {
-            i += Math.max(badMatchTable[text[i]], patternLength - j);
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
         } else {
-            i += patternLength;
+            right.push(arr[i]);
         }
     }
 
-    return -1; // no match found
+    return [...quickSort(left), pivot, ...quickSort(right)];
 }
 
 // Example usage
-const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
-const pattern = "consectetur";
-
-const index = boyerMojsonareHorspool(text, pattern);
-
-if (index !== -1) {
-    console.log(`Pattern found at index: ${index}`);
-} else {
-    console.log("Pattern not found");
-}
+const arr = [5, 2, 9, 3, 7, 6, 1, 8, 4];
+const sortedArr = quickSort(arr);
+console.log(sortedArr);  // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
