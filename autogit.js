@@ -1,18 +1,38 @@
-function findCommonElements(arr1, arr2) {
-    let commonElements = [];
-    
-    arr1.forEach(element => {
-        if (arr2.includes(element)) {
-            commonElements.push(element);
+function topologicalSort(graph) {
+    const visited = new Set();
+    const stack = [];
+
+    function dfs(node) {
+        visited.add(node);
+        if (graph[node]) {
+            graph[node].forEach(neighbor => {
+                if (!visited.has(neighbor)) {
+                    dfs(neighbor);
+                }
+            });
         }
-    });
-    
-    return commonElements;
+        stack.push(node);
+    }
+
+    for (const node in graph) {
+        if (!visited.has(node)) {
+            dfs(node);
+        }
+    }
+
+    return stack.reverse();
 }
 
-// Example
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 4, 5, 6, 7];
+// Example Usage
+const graph = {
+    'A': ['C', 'D'],
+    'B': ['D'],
+    'C': ['E'],
+    'D': ['E', 'F'],
+    'E': ['G'],
+    'F': ['G'],
+    'G': []
+};
 
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [3, 4, 5]
+const result = topologicalSort(graph);
+console.log(result); // Output: ['A', 'B', 'D', 'F', 'C', 'E', 'G']
