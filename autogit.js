@@ -1,19 +1,53 @@
-function bubbleSort(arr) {
-    let len = arr.length;
-    for (let i = 0; i < len; i++) {
-        for (let j = 0; j < len - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                // Swap elements
-                let temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
+function rabinKarpSearch(text, pattern) {
+    const d = 256; // Number of characters in the input alphabet
+    const q = 101; // A prime number
+
+    const M = pattern.length;
+    const N = text.length;
+    let p = 0; // Hash value for pattern
+    let t = 0; // Hash value for text
+    let h = 1;
+
+    // The value of h would be "pow(d, M-1)%q"
+    for (let i = 0; i < M - 1; i++) {
+        h = (h * d) % q;
+    }
+
+    // Calculate the hash value of pattern and the first window of text
+    for (let i = 0; i < M; i++) {
+        p = (d * p + pattern.charCodeAt(i)) % q;
+        t = (d * t + text.charCodeAt(i)) % q;
+    }
+
+    // Slide the pattern over text one by one
+    for (let i = 0; i <= N - M; i++) {
+        // Check the hash values of current window of text and pattern
+        if (p === t) {
+            let match = true;
+            for (let j = 0; j < M; j++) {
+                if (text[i + j] !== pattern[j]) {
+                    match = false;
+                    break;
+                }
+            }
+            if (match) {
+                console.log("Pattern found at index " + i);
+            }
+        }
+
+        // Calculate hash value for next window of text
+        if (i < N - M) {
+            t = (d * (t - text.charCodeAt(i) * h) + text.charCodeAt(i + M)) % q;
+
+            // Make sure t is positive
+            if (t < 0) {
+                t = t + q;
             }
         }
     }
-    return arr;
 }
 
-// Example usage
-let arr = [64, 34, 25, 12, 22, 11, 90];
-console.log("Original array: ", arr);
-console.log("Sorted array: ", bubbleSort(arr));
+let text = "AABAACAADAABAABA";
+let pattern = "AABA";
+
+rabinKarpSearch(text, pattern);
