@@ -1,40 +1,31 @@
-function breadthLimitedSearch(graph, startNode, limit) {
-    if (!graph || !startNode || limit <= 0) {
-        return null;
-    }
-
-    let visited = new Set();
-    let queue = [[startNode, 0]];
-
-    while (queue.length > 0) {
-        let [node, depth] = queue.shift();
-
-        if (depth <= limit) {
-            if (!visited.has(node)) {
-                visited.add(node);
-                console.log(`Visiting node: ${node}`);
-
-                if (graph[node]) {
-                    for (let neighbor of graph[node]) {
-                        if (!visited.has(neighbor)) {
-                            queue.push([neighbor, depth + 1]);
-                        }
-                    }
-                }
-            }
-        }
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
 
-// Example graph
-const graph = {
-    A: ['B', 'C'],
-    B: ['A', 'D', 'E'],
-    C: ['A', 'F'],
-    D: ['B'],
-    E: ['B'],
-    F: ['C']
-};
+function countLeafNodes(node) {
+    if (node === null) {
+        return 0;
+    }
+    
+    if (node.left === null && node.right === null) {
+        return 1;
+    }
+    
+    return countLeafNodes(node.left) + countLeafNodes(node.right);
+}
 
-// Perform breadth-limited search starting from node 'A' with limit 2
-breadthLimitedSearch(graph, 'A', 2);
+// Example binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
+
+const leafNodeCount = countLeafNodes(root);
+console.log("Number of leaf nodes: ", leafNodeCount); // Output: 4
