@@ -1,110 +1,38 @@
-class SkipListNode {
-  constructor(value, level) {
-    this.value = value;
-    this.forward = new Array(level + 1).fill(null);
-  }
+// Helper function to get the digit at a specific position in a number
+function getDigit(num, i) {
+    return Math.floor(Math.abs(num) / Math.pow(10, i)) % 10;
 }
 
-class SkipList {
-  constructor(maxLevel, probability) {
-    this.maxLevel = maxLevel;
-    this.probability = probability;
-    this.header = new SkipListNode(null, maxLevel);
-    this.level = 0;
-  }
+// Helper function to return the number of digits in a number
+function digitCount(num) {
+    if (num === 0) return 1;
+    return Math.floor(Math.log10(Math.abs(num))) + 1;
+}
 
-  randomLevel() {
-    let level = 0;
-    while (Math.random() < this.probability && level < this.maxLevel) {
-      level++;
+// Helper function to return the number of digits of the largest number in an array
+function mostDigits(nums) {
+    let maxDigits = 0;
+    for (let i = 0; i < nums.length; i++) {
+        maxDigits = Math.max(maxDigits, digitCount(nums[i]));
     }
-    return level;
-  }
+    return maxDigits;
+}
 
-  insert(value) {
-    const update = new Array(this.maxLevel + 1).fill(null);
-    let current = this.header;
-
-    for (let i = this.level; i >= 0; i--) {
-      while (current.forward[i] != null && current.forward[i].value < value) {
-        current = current.forward[i];
-      }
-      update[i] = current;
-    }
-
-    current = current.forward[0];
-
-    if (current == null || current.value != value) {
-      const newLevel = this.randomLevel();
-      const newNode = new SkipListNode(value, newLevel);
-
-      if (newLevel > this.level) {
-        for (let i = this.level + 1; i <= newLevel; i++) {
-          update[i] = this.header;
+// Radix sort implementation
+function radixSort(nums) {
+    const maxDigitCount = mostDigits(nums);
+    for (let k = 0; k < maxDigitCount; k++) {
+        const digitBuckets = Array.from({ length: 10 }, () => []);
+        for (let i = 0; i < nums.length; i++) {
+            const digit = getDigit(nums[i], k);
+            digitBuckets[digit].push(nums[i]);
         }
-        this.level = newLevel;
-      }
-
-      for (let i = 0; i <= newLevel; i++) {
-        newNode.forward[i] = update[i].forward[i];
-        update[i].forward[i] = newNode;
-      }
+        nums = [].concat(...digitBuckets);
     }
-  }
-
-  search(value) {
-    let current = this.header;
-
-    for (let i = this.level; i >= 0; i--) {
-      while (current.forward[i] != null && current.forward[i].value < value) {
-        current = current.forward[i];
-      }
-    }
-
-    current = current.forward[0];
-
-    if (current != null && current.value === value) {
-      return current;
-    }
-
-    return null;
-  }
-
-  delete(value) {
-    const update = new Array(this.maxLevel + 1).fill(null);
-    let current = this.header;
-
-    for (let i = this.level; i >= 0; i--) {
-      while (current.forward[i] != null && current.forward[i].value < value) {
-        current = current.forward[i];
-      }
-      update[i] = current;
-    }
-
-    current = current.forward[0];
-
-    if (current != null && current.value === value) {
-      for (let i = 0; i <= this.level; i++) {
-        if (update[i].forward[i] != current)
-          break;
-        update[i].forward[i] = current.forward[i];
-      }
-
-      while (this.level > 0 && this.header.forward[this.level] == null) {
-        this.level--;
-      }
-    }
-  }
+    return nums;
 }
 
-// Example usage:
-const skipList = new SkipList(5, 0.5);
-skipList.insert(3);
-skipList.insert(6);
-skipList.insert(2);
-skipList.insert(9);
-
-console.log(skipList.search(6)); // Outputs: SkipListNode { value: 6, forward: [ null, SkipListNode ] }
-
-skipList.delete(6);
-console.log(skipList.search(6)); // Outputs: null
+// Example usage
+const unsortedArray = [23, 345, 5467, 12, 2345, 9852];
+const sortedArray = radixSort(unsortedArray);
+console.log(sortedArray); // Output: [12, 23, 345, 2345, 5467, 9852]
