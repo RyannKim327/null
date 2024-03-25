@@ -1,56 +1,44 @@
-function astarSearch(start, goal, graph) {
-    let openSet = [start];
-    let cameFrom = {};
+function buildMaxHeap(arr) {
+    let n = arr.length;
     
-    let gScore = {};
-    let fScore = {};
-
-    // Initialize scores for the start node
-    gScore[start] = 0;
-    fScore[start] = heuristic(start, goal);
-
-    while (openSet.length > 0) {
-        let current = getLowestFScoreNode(openSet, fScore);
-        
-        if (current === goal) {
-            return reconstructPath(cameFrom, current);
-        }
-
-        openSet = openSet.filter(node => node !== current);
-        
-        let neighbors = graph[current];
-        for (let neighbor of neighbors) {
-            let tentativeGScore = gScore[current] + 1; // Assuming all edges have the same weight
-
-            if (!gScore[neighbor] || tentativeGScore < gScore[neighbor]) {
-                cameFrom[neighbor] = current;
-                gScore[neighbor] = tentativeGScore;
-                fScore[neighbor] = gScore[neighbor] + heuristic(neighbor, goal);
-
-                if (!openSet.includes(neighbor)) {
-                    openSet.push(neighbor);
-                }
-            }
-        }
+    for (let i = Math.floor(n/2) - 1; i >= 0; i--) {
+        heapify(arr, n, i);
     }
-
-    return null; // No path found
 }
 
-function heuristic(node, goal) {
-    // Simple Manhattan distance heuristic
-    return Math.abs(node.x - goal.x) + Math.abs(node.y - goal.y);
-}
-
-function getLowestFScoreNode(openSet, fScore) {
-    return openSet.reduce((minNode, node) => fScore[node] < fScore[minNode] ? node : minNode, openSet[0]);
-}
-
-function reconstructPath(cameFrom, current) {
-    let totalPath = [current];
-    while (cameFrom[current]) {
-        current = cameFrom[current];
-        totalPath.unshift(current);
+function heapify(arr, n, i) {
+    let largest = i;
+    let left = 2*i + 1;
+    let right = 2*i + 2;
+    
+    if (left < n && arr[left] > arr[largest]) {
+        largest = left;
     }
-    return totalPath;
+    
+    if (right < n && arr[right] > arr[largest]) {
+        largest = right;
+    }
+    
+    if (largest !== i) {
+        [arr[i], arr[largest]] = [arr[largest], arr[i]];
+        heapify(arr, n, largest);
+    }
 }
+
+function heapSort(arr) {
+    let n = arr.length;
+    
+    buildMaxHeap(arr);
+    
+    for (let i = n - 1; i > 0; i--) {
+        [arr[0], arr[i]] = [arr[i], arr[0]];
+        heapify(arr, i, 0);
+    }
+    
+    return arr;
+}
+
+// Example Usage
+let arr = [12, 11, 13, 5, 6, 7];
+console.log("Original array: " + arr);
+console.log("Sorted array: " + heapSort(arr));
