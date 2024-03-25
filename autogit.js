@@ -1,38 +1,49 @@
-// Helper function to get the digit at a specific position in a number
-function getDigit(num, i) {
-    return Math.floor(Math.abs(num) / Math.pow(10, i)) % 10;
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
 }
 
-// Helper function to return the number of digits in a number
-function digitCount(num) {
-    if (num === 0) return 1;
-    return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
 
-// Helper function to return the number of digits of the largest number in an array
-function mostDigits(nums) {
-    let maxDigits = 0;
-    for (let i = 0; i < nums.length; i++) {
-        maxDigits = Math.max(maxDigits, digitCount(nums[i]));
+  append(data) {
+    const newNode = new Node(data);
+    if (!this.head) {
+      this.head = newNode;
+      return;
     }
-    return maxDigits;
-}
-
-// Radix sort implementation
-function radixSort(nums) {
-    const maxDigitCount = mostDigits(nums);
-    for (let k = 0; k < maxDigitCount; k++) {
-        const digitBuckets = Array.from({ length: 10 }, () => []);
-        for (let i = 0; i < nums.length; i++) {
-            const digit = getDigit(nums[i], k);
-            digitBuckets[digit].push(nums[i]);
-        }
-        nums = [].concat(...digitBuckets);
+    let current = this.head;
+    while (current.next) {
+      current = current.next;
     }
-    return nums;
+    current.next = newNode;
+  }
+
+  findMiddle() {
+    let slow = this.head;
+    let fast = this.head;
+
+    while (fast && fast.next) {
+      slow = slow.next;
+      fast = fast.next.next;
+    }
+
+    return slow.data;
+  }
 }
 
-// Example usage
-const unsortedArray = [23, 345, 5467, 12, 2345, 9852];
-const sortedArray = radixSort(unsortedArray);
-console.log(sortedArray); // Output: [12, 23, 345, 2345, 5467, 9852]
+// Creating a linked list
+const linkedList = new LinkedList();
+linkedList.append(1);
+linkedList.append(2);
+linkedList.append(3);
+linkedList.append(4);
+linkedList.append(5);
+
+// Finding the middle element
+const middleElement = linkedList.findMiddle();
+console.log(middleElement); // Output: 3
