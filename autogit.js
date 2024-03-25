@@ -1,24 +1,40 @@
-function factorial(n) {
-    if (n === 0) {
-        return 1;
-    } else {
-        return n * factorial(n - 1);
+function breadthLimitedSearch(graph, startNode, limit) {
+    if (!graph || !startNode || limit <= 0) {
+        return null;
+    }
+
+    let visited = new Set();
+    let queue = [[startNode, 0]];
+
+    while (queue.length > 0) {
+        let [node, depth] = queue.shift();
+
+        if (depth <= limit) {
+            if (!visited.has(node)) {
+                visited.add(node);
+                console.log(`Visiting node: ${node}`);
+
+                if (graph[node]) {
+                    for (let neighbor of graph[node]) {
+                        if (!visited.has(neighbor)) {
+                            queue.push([neighbor, depth + 1]);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
-// Calculate the factorial of a number, for example: 5
-const number = 5;
-const result = factorial(number);
-console.log(`The factorial of ${number} is: ${result}`);
-function factorial(n) {
-    let result = 1;
-    for (let i = 1; i <= n; i++) {
-        result *= i;
-    }
-    return result;
-}
+// Example graph
+const graph = {
+    A: ['B', 'C'],
+    B: ['A', 'D', 'E'],
+    C: ['A', 'F'],
+    D: ['B'],
+    E: ['B'],
+    F: ['C']
+};
 
-// Calculate the factorial of a number, for example: 5
-const number = 5;
-const result = factorial(number);
-console.log(`The factorial of ${number} is: ${result}`);
+// Perform breadth-limited search starting from node 'A' with limit 2
+breadthLimitedSearch(graph, 'A', 2);
