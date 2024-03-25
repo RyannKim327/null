@@ -1,12 +1,14 @@
-function validateEmail(email) {
-  const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  return pattern.test(email);
+function countOccurrences(str, word) {
+    // Split the string by the word
+    var wordsArray = str.split(word);
+    
+    // Count the number of occurrences of the word
+    return wordsArray.length - 1;
 }
 
-// Test the function
-const email = "example@example.com";
-if (validateEmail(email)) {
-  console.log("Email is valid");
-} else {
-  console.log("Email is not valid");
-}
+// Usage example
+var text = "The quick brown fox jumps over the lazy dog. The dog barks loudly.";
+var wordToCount = "the";
+var count = countOccurrences(text.toLowerCase(), wordToCount.toLowerCase());
+
+console.log(`${wordToCount} occurs ${count} times in the text.`);
