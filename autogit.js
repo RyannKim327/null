@@ -1,4 +1,17 @@
-let str = "  Hello,  World!  ";
-let trimmedStr = str.replace(/\s/g, '');
+function isPalindrome(str) {
+    let i = 0;
+    let j = str.length - 1;
+    
+    while (i < j) {
+        if (str[i] !== str[j]) {
+            return false;
+        }
+        i++;
+        j--;
+    }
 
-console.log(trimmedStr); // Output: "Hello,World!"
+    return true;
+}
+
+const input = "madam"; // Example input
+console.log(isPalindrome(input)); // Output: true
