@@ -1,35 +1,58 @@
-function Node(value) {
-  this.value = value;
-  this.children = [];
+// Node class to represent each state in the search algorithm
+class Node {
+    constructor(state, cost, heuristic) {
+        this.state = state;
+        this.cost = cost;
+        this.heuristic = heuristic;
+    }
 }
 
-function depthLimitedSearch(root, limit) {
-  let stack = [{node: root, depth: 0}];
+// Beam search algorithm
+function beamSearch(initialState, beamWidth, goalTest, getSuccessors) {
+    let currentNodes = [new Node(initialState, 0, heuristic(initialState))];
 
-  while (stack.length > 0) {
-    let {node, depth} = stack.pop();
+    while (currentNodes.length > 0) {
+        let nextNodes = [];
 
-    if (depth >= limit) {
-      continue;
+        for (let node of currentNodes) {
+            if (goalTest(node.state)) {
+                return node.state;
+            }
+
+            let successors = getSuccessors(node.state);
+            successors.forEach(successor => {
+                let newNode = new Node(successor.state, node.cost + successor.cost, heuristic(successor.state));
+                nextNodes.push(newNode);
+            });
+        }
+
+        nextNodes.sort((a, b) => (a.cost + a.heuristic) - (b.cost + b.heuristic));
+        currentNodes = nextNodes.slice(0, beamWidth);
     }
 
-    console.log(node.value);
-
-    for (let child of node.children) {
-      stack.push({node: child, depth: depth + 1});
-    }
-  }
+    return null;
 }
 
-// Example Usage
-let root = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-let node4 = new Node(4);
-let node5 = new Node(5);
+// Example heuristic function
+function heuristic(state) {
+    // Implement your heuristic function here
+    return 0;
+}
 
-root.children.push(node2, node3);
-node2.children.push(node4);
-node3.children.push(node5);
+// Example goal test function
+function goalTest(state) {
+    // Implement your goal test function here
+    return false;
+}
 
-depthLimitedSearch(root, 2);
+// Example getSuccessors function
+function getSuccessors(state) {
+    // Implement your getSuccessors function here
+    return [];
+}
+
+// Usage example
+const initialState = {/* Initial state here */};
+const beamWidth = 2;
+const goalState = beamSearch(initialState, beamWidth, goalTest, getSuccessors);
+console.log(goalState);
