@@ -1,53 +1,46 @@
-class Stack {
-  constructor() {
-    this.stackArray = [];
-  }
-
-  // Pushes an element onto the stack
-  push(element) {
-    this.stackArray.push(element);
-  }
-
-  // Pops the top element from the stack
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
+// Node class to represent each element in the linked list
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
     }
-    return this.stackArray.pop();
-  }
+}
 
-  // Returns the top element of the stack without removing it
-  peek() {
-    return this.isEmpty() ? "Stack is empty" : this.stackArray[this.stackArray.length - 1];
-  }
+// Linked List class to manage the linked list
+class LinkedList {
+    constructor() {
+        this.head = null;
+    }
 
-  // Returns true if the stack is empty
-  isEmpty() {
-    return this.stackArray.length === 0;
-  }
+    // Method to insert a new node at the end of the linked list
+    insert(data) {
+        const newNode = new Node(data);
 
-  // Returns the size of the stack
-  size() {
-    return this.stackArray.length;
-  }
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+    }
 
-  // Prints the elements of the stack
-  printStack() {
-    console.log(this.stackArray);
-  }
+    // Method to display all elements in the linked list
+    display() {
+        let current = this.head;
+        while (current) {
+            console.log(current.data);
+            current = current.next;
+        }
+    }
 }
 
 // Example usage
-const stack = new Stack();
+const linkedList = new LinkedList();
+linkedList.insert(1);
+linkedList.insert(2);
+linkedList.insert(3);
 
-stack.push(1);
-stack.push(2);
-stack.push(3);
-
-stack.printStack(); // Output: [1, 2, 3]
-
-console.log(stack.peek()); // Output: 3
-
-console.log(stack.pop()); // Output: 3
-
-stack.printStack(); // Output: [1, 2]
+linkedList.display();
