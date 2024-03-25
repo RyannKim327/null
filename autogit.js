@@ -1,9 +1,13 @@
-function findCommonElements(arr1, arr2) {
-    return arr1.filter(element => arr2.includes(element));
-}
+const axios = require('axios');
 
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 4, 5, 6, 7];
+// Mock API endpoint
+const apiUrl = 'https://jsonplaceholder.typicode.com/posts/1';
 
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [3, 4, 5]
+// Make a GET request using Axios
+axios.get(apiUrl)
+    .then(response => {
+        console.log('Response:', response.data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
