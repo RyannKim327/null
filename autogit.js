@@ -1,17 +1,8 @@
-function largestPrimeFactor(number) {
-    let factor = 2;
-    
-    while (factor <= number) {
-        if (number % factor === 0) {
-            number /= factor;
-        } else {
-            factor++;
-        }
-    }
-    
-    return factor;
+function decimalToBinary(decimal) {
+    return decimal.toString(2);
 }
 
 // Example usage
-const number = 315;
-console.log(largestPrimeFactor(number)); // Output: 7
+const decimalNumber = 10;
+const binaryNumber = decimalToBinary(decimalNumber);
+console.log(binaryNumber); // Output: 1010
