@@ -1,45 +1,33 @@
-function bellmanFord(graph, source) {
-    let distance = {};
-    
-    // Initialize distances from source to all other vertices as infinity
-    for (let node in graph) {
-        distance[node] = Infinity;
-    }
-    distance[source] = 0;
+function breadthFirstSearch(graph, startNode) {
+    let visited = {};
+    let queue = [];
 
-    // Relax all edges repeatedly
-    for (let i = 0; i < Object.keys(graph).length - 1; i++) {
-        for (let u in graph) {
-            for (let v in graph[u]) {
-                if (distance[u] + graph[u][v] < distance[v]) {
-                    distance[v] = distance[u] + graph[u][v];
-                }
+    queue.push(startNode);
+    visited[startNode] = true;
+
+    while (queue.length > 0) {
+        let currentNode = queue.shift();
+        console.log("Visiting node: ", currentNode);
+
+        let neighbors = graph[currentNode];
+        for (let i = 0; i < neighbors.length; i++) {
+            let neighbor = neighbors[i];
+            if (!visited[neighbor]) {
+                visited[neighbor] = true;
+                queue.push(neighbor);
             }
         }
     }
-
-    // Check for negative weight cycles
-    for (let u in graph) {
-        for (let v in graph[u]) {
-            if (distance[u] + graph[u][v] < distance[v]) {
-                console.log("Graph contains negative weight cycle");
-                return;
-            }
-        }
-    }
-
-    return distance;
 }
 
-// Example usage
+// Example graph represented as an adjacency list
 let graph = {
-    'A': {'B': -1, 'C': 4},
-    'B': {'C': 3, 'D': 2, 'E': 2},
-    'C': {},
-    'D': {'B': 1, 'C': 5},
-    'E': {'D': -3}
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
 };
-let source = 'A';
 
-let shortestDistances = bellmanFord(graph, source);
-console.log(shortestDistances);
+breadthFirstSearch(graph, 'A');
