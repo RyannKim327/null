@@ -1,8 +1,45 @@
-let str = "123";
-let num = parseInt(str); // Converts the string "123" to the integer 123
+function getMax(arr) {
+    let max = arr[0];
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] > max) {
+            max = arr[i];
+        }
+    }
+    return max;
+}
 
-console.log(num); // Output: 123
-let str = "456";
-let num = +str; // Converts the string "456" to the integer 456
+function countSort(arr, exp) {
+    let output = new Array(arr.length);
+    let count = new Array(10).fill(0);
 
-console.log(num); // Output: 456
+    for (let i = 0; i < arr.length; i++) {
+        count[Math.floor(arr[i] / exp) % 10]++;
+    }
+
+    for (let i = 1; i < 10; i++) {
+        count[i] += count[i - 1];
+    }
+
+    for (let i = arr.length - 1; i >= 0; i--) {
+        output[count[Math.floor(arr[i] / exp) % 10] - 1] = arr[i];
+        count[Math.floor(arr[i] / exp) % 10]--;
+    }
+
+    for (let i = 0; i < arr.length; i++) {
+        arr[i] = output[i];
+    }
+}
+
+function radixSort(arr) {
+    let max = getMax(arr);
+
+    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
+        countSort(arr, exp);
+    }
+
+    return arr;
+}
+
+// Example usage
+let arr = [170, 45, 75, 90, 802, 24, 2, 66];
+console.log(radixSort(arr)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
