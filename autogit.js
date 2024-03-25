@@ -1,49 +1,19 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
+function bubbleSort(arr) {
+    let len = arr.length;
+    for (let i = 0; i < len; i++) {
+        for (let j = 0; j < len - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap elements
+                let temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+    return arr;
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-
-  append(data) {
-    const newNode = new Node(data);
-    if (!this.head) {
-      this.head = newNode;
-      return;
-    }
-    let current = this.head;
-    while (current.next) {
-      current = current.next;
-    }
-    current.next = newNode;
-  }
-
-  findMiddle() {
-    let slow = this.head;
-    let fast = this.head;
-
-    while (fast && fast.next) {
-      slow = slow.next;
-      fast = fast.next.next;
-    }
-
-    return slow.data;
-  }
-}
-
-// Creating a linked list
-const linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
-linkedList.append(4);
-linkedList.append(5);
-
-// Finding the middle element
-const middleElement = linkedList.findMiddle();
-console.log(middleElement); // Output: 3
+// Example usage
+let arr = [64, 34, 25, 12, 22, 11, 90];
+console.log("Original array: ", arr);
+console.log("Sorted array: ", bubbleSort(arr));
