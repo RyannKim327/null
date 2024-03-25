@@ -1,17 +1,14 @@
-function findMedianSortedArrays(nums1, nums2) {
-    const mergedArray = [...nums1, ...nums2].sort((a, b) => a - b);
-    const length = mergedArray.length;
-
-    if (length % 2 !== 0) {
-        return mergedArray[Math.floor(length / 2)];
-    } else {
-        const mid = length / 2;
-        return (mergedArray[mid - 1] + mergedArray[mid]) / 2;
-    }
+function findKthSmallest(arr, k) {
+    arr.sort(function(a, b) {
+        return a - b;
+    });
+    
+    return arr[k - 1];
 }
 
-// Example usage
-const nums1 = [1, 3];
-const nums2 = [2];
-const median = findMedianSortedArrays(nums1, nums2);
-console.log(median); // Output: 2.0
+// Example
+const array = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
+const k = 3;
+const kthSmallest = findKthSmallest(array, k);
+
+console.log(`The ${k}th smallest element in the array is: ${kthSmallest}`);
