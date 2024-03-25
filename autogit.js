@@ -1,46 +1,111 @@
-// Node class to represent each element in the linked list
+// Node class to represent each node in the skip list
 class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
+    constructor(value, level) {
+        this.value = value; // Node value
+        this.next = new Array(level + 1).fill(null); // Array to store references to the next nodes
     }
 }
 
-// Linked List class to manage the linked list
-class LinkedList {
-    constructor() {
-        this.head = null;
+// SkipList class to represent the skip list data structure
+class SkipList {
+    constructor(maxLevel, probability) {
+        this.maxLevel = maxLevel; // Maximum level of the skip list
+        this.probability = probability; // Probability factor for determining node levels
+        this.level = 0; // Current level of the skip list
+        this.head = new Node(-Infinity, maxLevel); // Dummy head node
     }
 
-    // Method to insert a new node at the end of the linked list
-    insert(data) {
-        const newNode = new Node(data);
-
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
+    // Generate a random level for a new node
+    randomLevel() {
+        let level = 0;
+        while (Math.random() < this.probability && level < this.maxLevel) {
+            level++;
         }
+        return level;
     }
 
-    // Method to display all elements in the linked list
-    display() {
+    // Insert a new value into the skip list
+    insert(value) {
+        let update = new Array(this.maxLevel + 1).fill(null);
         let current = this.head;
-        while (current) {
-            console.log(current.data);
-            current = current.next;
+
+        for (let i = this.level; i >= 0; i--) {
+            while (current.next[i] !== null && current.next[i].value < value) {
+                current = current.next[i];
+            }
+            update[i] = current;
+        }
+
+        current = current.next[0];
+
+        if (current === null || current.value !== value) {
+            let newLevel = this.randomLevel();
+            if (newLevel > this.level) {
+                for (let i = this.level + 1; i <= newLevel; i++) {
+                    update[i] = this.head;
+                }
+                this.level = newLevel;
+            }
+
+            const newNode = new Node(value, newLevel);
+            for (let i = 0; i <= newLevel; i++) {
+                newNode.next[i] = update[i].next[i];
+                update[i].next[i] = newNode;
+            }
+        }
+    }
+
+    // Search for a value in the skip list
+    search(value) {
+        let current = this.head;
+        for (let i = this.level; i >= 0; i--) {
+            while (current.next[i] !== null && current.next[i].value < value) {
+                current = current.next[i];
+            }
+        }
+        current = current.next[0];
+
+        if (current !== null && current.value === value) {
+            return true;
+        }
+        return false;
+    }
+
+    // Delete a value from the skip list
+    delete(value) {
+        let update = new Array(this.maxLevel + 1).fill(null);
+        let current = this.head;
+
+        for (let i = this.level; i >= 0; i--) {
+            while (current.next[i] !== null && current.next[i].value < value) {
+                current = current.next[i];
+            }
+            update[i] = current;
+        }
+
+        current = current.next[0];
+
+        if (current !== null && current.value === value) {
+            for (let i = 0; i <= this.level; i++) {
+                if (update[i].next[i] !== current) {
+                    break;
+                }
+                update[i].next[i] = current.next[i];
+            }
+
+            while (this.level > 0 && this.head.next[this.level] === null) {
+                this.level--;
+            }
         }
     }
 }
 
-// Example usage
-const linkedList = new LinkedList();
-linkedList.insert(1);
-linkedList.insert(2);
-linkedList.insert(3);
-
-linkedList.display();
+// Usage example
+const skipList = new SkipList(4, 0.5);
+skipList.insert(3);
+skipList.insert(6);
+skipList.insert(7);
+console.log(skipList.search(3)); // Output: true
+console.log(skipList.search(5)); // Output: false
+skipList.delete(3);
+console.log(skipList.search(3)); // Output: false
