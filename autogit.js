@@ -1,9 +1,9 @@
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
-
-let index = array.indexOf(elementToRemove);
-if (index > -1) {
-    array.splice(index, 1);
+function removeVowels(inputString) {
+  // Use a regular expression to match all vowels (both upper and lower case)
+  return inputString.replace(/[aeiouAEIOU]/g, '');
 }
 
-console.log(array); // Output: [1, 2, 4, 5]
+// Test the function
+const inputStr = "Hello World";
+const result = removeVowels(inputStr);
+console.log(result); // Output: "Hll Wrld"
