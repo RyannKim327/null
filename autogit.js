@@ -1,38 +1,45 @@
-function topologicalSort(graph) {
-    const visited = new Set();
-    const stack = [];
-
-    function dfs(node) {
-        visited.add(node);
-        if (graph[node]) {
-            graph[node].forEach(neighbor => {
-                if (!visited.has(neighbor)) {
-                    dfs(neighbor);
-                }
-            });
-        }
-        stack.push(node);
-    }
-
-    for (const node in graph) {
-        if (!visited.has(node)) {
-            dfs(node);
-        }
-    }
-
-    return stack.reverse();
+// Node class to represent each element in the linked list
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
 }
 
-// Example Usage
-const graph = {
-    'A': ['C', 'D'],
-    'B': ['D'],
-    'C': ['E'],
-    'D': ['E', 'F'],
-    'E': ['G'],
-    'F': ['G'],
-    'G': []
-};
+// Linked list class
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
 
-const result = topologicalSort(graph);
-console.log(result); // Output: ['A', 'B', 'D', 'F', 'C', 'E', 'G']
+  // Method to add a new node to the linked list
+  add(data) {
+    const newNode = new Node(data);
+
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
+
+  // Method to print all elements of the linked list
+  print() {
+    let current = this.head;
+    while (current) {
+      console.log(current.data);
+      current = current.next;
+    }
+  }
+}
+
+// Example usage
+const list = new LinkedList();
+list.add(1);
+list.add(2);
+list.add(3);
+list.print();
