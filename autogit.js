@@ -1,34 +1,46 @@
-function findLongestIncreasingSubsequence(arr) {
-    const n = arr.length;
-    const lis = new Array(n).fill(1);
-
-    for (let i = 1; i < n; i++) {
-        for (let j = 0; j < i; j++) {
-            if (arr[i] > arr[j] && lis[i] < lis[j] + 1) {
-                lis[i] = lis[j] + 1;
-            }
-        }
+// Node class to represent each node in the linked list
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
     }
-
-    let maxLength = 0;
-    for (let i = 0; i < n; i++) {
-        if (lis[i] > maxLength) {
-            maxLength = lis[i];
-        }
-    }
-
-    const longestIncreasingSubsequence = [];
-    let seqLength = maxLength;
-    for (let i = n - 1; i >= 0 && seqLength > 0; i--) {
-        if (lis[i] === seqLength) {
-            longestIncreasingSubsequence.unshift(arr[i]);
-            seqLength--;
-        }
-    }
-
-    return longestIncreasingSubsequence;
 }
 
-const arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
-const longestIncreasingSubsequence = findLongestIncreasingSubsequence(arr);
-console.log("Longest Increasing Subsequence:", longestIncreasingSubsequence);
+// LinkedList class to represent the linked list
+class LinkedList {
+    constructor() {
+        this.head = null;
+    }
+
+    // Method to add a new node to the end of the linked list
+    addNode(data) {
+        const newNode = new Node(data);
+
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+    }
+
+    // Method to print all nodes in the linked list
+    printList() {
+        let current = this.head;
+        while (current) {
+            console.log(current.data);
+            current = current.next;
+        }
+    }
+}
+
+// Usage
+const linkedList = new LinkedList();
+linkedList.addNode(1);
+linkedList.addNode(2);
+linkedList.addNode(3);
+
+linkedList.printList();
