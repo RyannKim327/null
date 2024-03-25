@@ -1,43 +1,48 @@
-function Node(value) {
-    this.value = value;
-    this.children = [];
-}
+function dijkstra(graph, start) {
+    const distances = {};
+    const visited = {};
+    const pq = new PriorityQueue();
 
-function breadthLimitedSearch(root, targetValue, limit) {
-    let queue = [{ node: root, depth: 0 }];
+    graph.nodes.forEach(node => {
+        distances[node] = node === start ? 0 : Infinity;
+        pq.enqueue(node, distances[node]);
+    });
 
-    while (queue.length > 0) {
-        let currentNode = queue.shift();
-        let node = currentNode.node;
-        let depth = currentNode.depth;
+    while (!pq.isEmpty()) {
+        const current = pq.dequeue();
 
-        if (node.value === targetValue) {
-            return node;
-        }
+        visited[current] = true;
 
-        if (depth < limit) {
-            for (let i = 0; i < node.children.length; i++) {
-                queue.push({ node: node.children[i], depth: depth + 1 });
+        graph.edges[current].forEach(neighbor => {
+            if (!visited[neighbor]) {
+                const newDistance = distances[current] + graph.weights[`${current}-${neighbor}`];
+                if (newDistance < distances[neighbor]) {
+                    distances[neighbor] = newDistance;
+                    pq.enqueue(neighbor, newDistance);
+                }
             }
-        }
+        });
     }
 
-    return null;
+    return distances;
 }
 
-// Usage example
-let root = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-let node4 = new Node(4);
-let node5 = new Node(5);
+// Priority Queue implementation
+class PriorityQueue {
+    constructor() {
+        this.items = [];
+    }
 
-root.children = [node2, node3];
-node2.children = [node4, node5];
+    enqueue(item, priority) {
+        this.items.push({ item, priority });
+        this.items.sort((a, b) => a.priority - b.priority);
+    }
 
-let result = breadthLimitedSearch(root, 5, 2);
-if (result) {
-    console.log(`Node with value 5 found: ${result}`);
-} else {
-    console.log('Node not found within the specified limit');
+    dequeue() {
+        return this.items.shift().item;
+    }
+
+    isEmpty() {
+        return this.items.length === 0;
+    }
 }
