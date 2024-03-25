@@ -1,32 +1,66 @@
-function longestCommonSubstring(str1, str2) {
-    let m = str1.length;
-    let n = str2.length;
-    let longestSubstringLength = 0;
-    let endIndex = 0;
-
-    // Create a 2D array to store the lengths of longest common suffixes
-    let dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-                if (dp[i][j] > longestSubstringLength) {
-                    longestSubstringLength = dp[i][j];
-                    endIndex = i - 1;
-                }
-            }
-        }
-    }
-
-    if (longestSubstringLength === 0) {
-        return "";
-    }
-
-    return str1.substr(endIndex - longestSubstringLength + 1, longestSubstringLength);
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-// Test the function
-let str1 = "abcdefgh";
-let str2 = "xbcdzabcde";
-console.log(longestCommonSubstring(str1, str2)); // Output: "bcde"
+class BinaryTree {
+  constructor() {
+    this.root = null;
+  }
+
+  insert(value) {
+    const newNode = new Node(value);
+
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this._insertNode(this.root, newNode);
+    }
+  }
+
+  _insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this._insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this._insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  search(value) {
+    return this._searchNode(this.root, value);
+  }
+
+  _searchNode(node, value) {
+    if (node === null) {
+      return false;
+    }
+
+    if (value < node.value) {
+      return this._searchNode(node.left, value);
+    } else if (value > node.value) {
+      return this._searchNode(node.right, value);
+    } else {
+      return true;
+    }
+  }
+}
+
+// Usage
+const tree = new BinaryTree();
+tree.insert(10);
+tree.insert(5);
+tree.insert(15);
+
+console.log(tree.search(5)); // Output: true
+console.log(tree.search(20)); // Output: false
