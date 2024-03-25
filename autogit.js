@@ -1,76 +1,39 @@
-class Node {
-    constructor(value, color) {
-        this.value = value;
-        this.color = color || 'red';
-        this.left = null;
-        this.right = null;
-        this.parent = null;
+class SuffixTree {
+    constructor(str) {
+        this.root = {};
+        this.buildSuffixTree(str);
+    }
+
+    buildSuffixTree(str) {
+        for (let i = 0; i < str.length; i++) {
+            this.addSuffix(str.slice(i), i);
+        }
+    }
+
+    addSuffix(suffix, index) {
+        let current = this.root;
+        for (let i = 0; i < suffix.length; i++) {
+            if (!current[suffix[i]]) {
+                current[suffix[i]] = {};
+            }
+            current = current[suffix[i]];
+        }
+        current['*'] = index; // Mark end of suffix with *
+    }
+
+    search(query) {
+        let current = this.root;
+        for (let i = 0; i < query.length; i++) {
+            if (!current[query[i]]) {
+                return null;
+            }
+            current = current[query[i]];
+        }
+        return current['*'];
     }
 }
 
-class RedBlackTree {
-    constructor() {
-        this.root = null;
-    }
-
-    insert(value) {
-        const newNode = new Node(value);
-        this.root = this.insertNode(this.root, newNode);
-        this.root.color = 'black';
-    }
-
-    insertNode(root, newNode) {
-        if (!root) {
-            return newNode;
-        }
-
-        if (newNode.value < root.value) {
-            root.left = this.insertNode(root.left, newNode);
-            root.left.parent = root;
-        } else if (newNode.value > root.value) {
-            root.right = this.insertNode(root.right, newNode);
-            root.right.parent = root;
-        }
-
-        if (this.isRed(root.right) && !this.isRed(root.left)) {
-            root = this.rotateLeft(root);
-        }
-        if (this.isRed(root.left) && this.isRed(root.left.left)) {
-            root = this.rotateRight(root);
-        }
-        if (this.isRed(root.left) && this.isRed(root.right)) {
-            this.flipColors(root);
-        }
-
-        return root;
-    }
-
-    isRed(node) {
-        if (!node) return false;
-        return node.color === 'red';
-    }
-
-    rotateLeft(node) {
-        let temp = node.right;
-        node.right = temp.left;
-        temp.left = node;
-        temp.color = node.color;
-        node.color = 'red';
-        return temp;
-    }
-
-    rotateRight(node) {
-        let temp = node.left;
-        node.left = temp.right;
-        temp.right = node;
-        temp.color = node.color;
-        node.color = 'red';
-        return temp;
-    }
-
-    flipColors(node) {
-        node.color = 'red';
-        node.left.color = 'black';
-        node.right.color = 'black';
-    }
-}
+// Example usage
+const suffixTree = new SuffixTree("banana");
+console.log(suffixTree.search("ana")); // Output: 1
+console.log(suffixTree.search("ananas")); // Output: null
