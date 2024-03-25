@@ -1,24 +1,55 @@
-function quickSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
+class HashTable {
+  constructor(size) {
+    this.size = size;
+    this.data = new Array(size);
+  }
+
+  _hash(key) {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash = (hash + key.charCodeAt(i) * i) % this.size;
     }
+    return hash;
+  }
 
-    const pivot = arr[0];
-    const left = [];
-    const right = [];
+  set(key, value) {
+    const index = this._hash(key);
+    if (!this.data[index]) {
+      this.data[index] = [];
+    }
+    this.data[index].push([key, value]);
+  }
 
-    for (let i = 1; i < arr.length; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
+  get(key) {
+    const index = this._hash(key);
+    if (this.data[index]) {
+      for (let i = 0; i < this.data[index].length; i++) {
+        if (this.data[index][i][0] === key) {
+          return this.data[index][i][1];
         }
+      }
     }
+    return undefined;
+  }
 
-    return [...quickSort(left), pivot, ...quickSort(right)];
+  keys() {
+    const keysArray = [];
+    for (let i = 0; i < this.data.length; i++) {
+      if (this.data[i]) {
+        for (let j = 0; j < this.data[i].length; j++) {
+          keysArray.push(this.data[i][j][0]);
+        }
+      }
+    }
+    return keysArray;
+  }
 }
 
-// Example usage
-const arr = [5, 2, 9, 3, 7, 6, 1, 8, 4];
-const sortedArr = quickSort(arr);
-console.log(sortedArr);  // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+// Example usage:
+const myHashTable = new HashTable(50);
+myHashTable.set("apple", 10);
+myHashTable.set("banana", 20);
+myHashTable.set("cherry", 30);
+
+console.log(myHashTable.get("apple")); // Output: 10
+console.log(myHashTable.keys()); // Output: ["apple", "banana", "cherry"]
