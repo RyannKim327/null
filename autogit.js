@@ -1,42 +1,39 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
-    }
+function depthLimitedSearch(node, goal, depthLimit) {
+    return dls(node, goal, depthLimit, 0);
 }
 
-class LinkedList {
-    constructor() {
-        this.head = null;
+function dls(node, goal, depthLimit, currentDepth) {
+    if (currentDepth > depthLimit) {
+        return false;
     }
 
-    append(data) {
-        const newNode = new Node(data);
+    if (node === goal) {
+        return true;
+    }
 
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
+    if (currentDepth == depthLimit) {
+        return false;
+    }
+
+    for (let child of expand(node)) {
+        if (dls(child, goal, depthLimit, currentDepth + 1)) {
+            return true;
         }
     }
 
-    print() {
-        let current = this.head;
-        while (current) {
-            console.log(current.data);
-            current = current.next;
-        }
-    }
+    return false;
+}
+
+function expand(node) {
+    // Implement your own function to generate child nodes based on the current node
+    // This is just a placeholder function
+    return [];
 }
 
 // Example usage
-const linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
+const startNode = 0;
+const goalNode = 10;
+const depthLimit = 4;
 
-linkedList.print();
+const result = depthLimitedSearch(startNode, goalNode, depthLimit);
+console.log(result);
