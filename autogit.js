@@ -1,41 +1,71 @@
 class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
+    constructor(degree, isLeaf) {
+        this.keys = [];
+        this.children = [];
+        this.isLeaf = isLeaf || true;
+        this.degree = degree || 2;
     }
 }
 
-function hasCycle(head) {
-    if (!head || !head.next) {
-        return false;
+class BTree {
+    constructor(degree) {
+        this.root = new Node(degree, true);
+        this.degree = degree;
     }
 
-    let slow = head;
-    let fast = head;
+    insert(key) {
+        if (this.root.keys.length === this.degree * 2 - 1) {
+            let newRoot = new Node(this.degree, false);
+            newRoot.children.push(this.root);
+            this.root = newRoot;
+            this.splitChild(newRoot, 0);
+        }
+        this.insertNonFull(this.root, key);
+    }
 
-    while (fast && fast.next) {
-        slow = slow.next;
-        fast = fast.next.next;
-
-        if (slow === fast) {
-            return true;
+    insertNonFull(node, key) {
+        let i = node.keys.length - 1;
+        if (node.isLeaf) {
+            node.keys.push('');
+            while (i >= 0 && key < node.keys[i]) {
+                node.keys[i + 1] = node.keys[i];
+                i--;
+            }
+            node.keys[i + 1] = key;
+        } else {
+            while (i >= 0 && key < node.keys[i]) {
+                i--;
+            }
+            i++;
+            if (node.children[i].keys.length === this.degree * 2 - 1) {
+                this.splitChild(node, i);
+                if (key > node.keys[i]) {
+                    i++;
+                }
+            }
+            this.insertNonFull(node.children[i], key);
         }
     }
 
-    return false;
+    splitChild(parent, index) {
+        let degree = this.degree;
+        let child = parent.children[index];
+        let newChild = new Node(degree, child.isLeaf);
+        parent.children.splice(index + 1, 0, newChild);
+        parent.keys.splice(index, 0, child.keys[degree - 1]);
+
+        newChild.keys = child.keys.splice(degree);
+        if (!child.isLeaf) {
+            newChild.children = child.children.splice(degree);
+        }
+    }
 }
 
 // Example usage
-const node1 = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
-const node4 = new Node(4);
-const node5 = new Node(5);
+let bTree = new BTree(2); // Initialize a B-tree of degree 2
+bTree.insert(10);
+bTree.insert(20);
+bTree.insert(5);
+bTree.insert(6);
 
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node5;
-node5.next = node2; // creates a cycle
-
-console.log(hasCycle(node1)); // Output: true
+console.log(bTree.root); // Display the B-tree root node
