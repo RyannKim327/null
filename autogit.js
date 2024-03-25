@@ -1,17 +1,23 @@
-function isPalindrome(str) {
-    let i = 0;
-    let j = str.length - 1;
-    
-    while (i < j) {
-        if (str[i] !== str[j]) {
-            return false;
-        }
-        i++;
-        j--;
+function quickSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    return true;
+    const pivot = arr[0];
+    const left = [];
+    const right = [];
+
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
+        } else {
+            right.push(arr[i]);
+        }
+    }
+
+    return quickSort(left).concat(pivot, quickSort(right));
 }
 
-const input = "madam"; // Example input
-console.log(isPalindrome(input)); // Output: true
+const array = [3, 5, 2, 8, 1, 4, 7, 6];
+const sortedArray = quickSort(array);
+console.log(sortedArray);
