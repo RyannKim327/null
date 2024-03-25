@@ -1,58 +1,19 @@
-// Node class to represent each state in the search algorithm
-class Node {
-    constructor(state, cost, heuristic) {
-        this.state = state;
-        this.cost = cost;
-        this.heuristic = heuristic;
+function findMedianSortedArrays(nums1, nums2) {
+    const combinedArray = [...nums1, ...nums2].sort((a, b) => a - b);
+    const n = combinedArray.length;
+    
+    if (n % 2 === 0) {
+        // If the combined array has an even number of elements, median is average of two middle elements
+        const midIndex = n / 2;
+        return (combinedArray[midIndex - 1] + combinedArray[midIndex]) / 2;
+    } else {
+        // If the combined array has an odd number of elements, median is the middle element
+        const midIndex = Math.floor(n / 2);
+        return combinedArray[midIndex];
     }
 }
 
-// Beam search algorithm
-function beamSearch(initialState, beamWidth, goalTest, getSuccessors) {
-    let currentNodes = [new Node(initialState, 0, heuristic(initialState))];
+const nums1 = [1, 3];
+const nums2 = [2, 4];
 
-    while (currentNodes.length > 0) {
-        let nextNodes = [];
-
-        for (let node of currentNodes) {
-            if (goalTest(node.state)) {
-                return node.state;
-            }
-
-            let successors = getSuccessors(node.state);
-            successors.forEach(successor => {
-                let newNode = new Node(successor.state, node.cost + successor.cost, heuristic(successor.state));
-                nextNodes.push(newNode);
-            });
-        }
-
-        nextNodes.sort((a, b) => (a.cost + a.heuristic) - (b.cost + b.heuristic));
-        currentNodes = nextNodes.slice(0, beamWidth);
-    }
-
-    return null;
-}
-
-// Example heuristic function
-function heuristic(state) {
-    // Implement your heuristic function here
-    return 0;
-}
-
-// Example goal test function
-function goalTest(state) {
-    // Implement your goal test function here
-    return false;
-}
-
-// Example getSuccessors function
-function getSuccessors(state) {
-    // Implement your getSuccessors function here
-    return [];
-}
-
-// Usage example
-const initialState = {/* Initial state here */};
-const beamWidth = 2;
-const goalState = beamSearch(initialState, beamWidth, goalTest, getSuccessors);
-console.log(goalState);
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.5
