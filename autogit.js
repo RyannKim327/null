@@ -1,63 +1,130 @@
-function tarjanStronglyConnectedComponents(graph) {
-    let index = 0;
-    let stack = [];
-    let indices = new Array(graph.length).fill(-1);
-    let lowlinks = new Array(graph.length).fill(0);
-    let onStack = new Array(graph.length).fill(false);
-    let result = [];
+class BinaryHeap {
+  constructor() {
+    this.heap = [];
+  }
 
-    function dfs(node) {
-        indices[node] = index;
-        lowlinks[node] = index;
-        index++;
-        stack.push(node);
-        onStack[node] = true;
+  swap(index1, index2) {
+    [this.heap[index1], this.heap[index2]] = [this.heap[index2], this.heap[index1]];
+  }
 
-        for (let neighbor of graph[node]) {
-            if (indices[neighbor] === -1) {
-                dfs(neighbor);
-                lowlinks[node] = Math.min(lowlinks[node], lowlinks[neighbor]);
-            } else if (onStack[neighbor]) {
-                lowlinks[node] = Math.min(lowlinks[node], indices[neighbor]);
-            }
-        }
+  getParentIndex(index) {
+    return Math.floor((index - 1) / 2);
+  }
 
-        if (lowlinks[node] === indices[node]) {
-            let scc = [];
-            let poppedNode;
-            do {
-                poppedNode = stack.pop();
-                onStack[poppedNode] = false;
-                scc.push(poppedNode);
-            } while (poppedNode !== node);
-            result.push(scc);
-        }
+  getLeftChildIndex(index) {
+    return 2 * index + 1;
+  }
+
+  getRightChildIndex(index) {
+    return 2 * index + 2;
+  }
+
+  enqueue(value) {
+    this.heap.push(value);
+    this.heapifyUp();
+  }
+
+  heapifyUp() {
+    let currentIndex = this.heap.length - 1;
+
+    while (currentIndex > 0) {
+      const parentIndex = this.getParentIndex(currentIndex);
+
+      if (this.heap[currentIndex] < this.heap[parentIndex]) {
+        this.swap(currentIndex, parentIndex);
+        currentIndex = parentIndex;
+      } else {
+        break;
+      }
+    }
+  }
+
+  dequeue() {
+    if (this.heap.length === 0) {
+      return null;
     }
 
-    for (let i = 0; i < graph.length; i++) {
-        if (indices[i] === -1) {
-            dfs(i);
-        }
+    if (this.heap.length === 1) {
+      return this.heap.pop();
     }
 
-    return result;
+    const minValue = this.heap[0];
+    this.heap[0] = this.heap.pop();
+    this.heapifyDown();
+
+    return minValue;
+  }
+
+  heapifyDown() {
+    let currentIndex = 0;
+
+    while (this.getLeftChildIndex(currentIndex) < this.heap.length) {
+      const leftChildIndex = this.getLeftChildIndex(currentIndex);
+      const rightChildIndex = this.getRightChildIndex(currentIndex);
+      let smallerChildIndex = leftChildIndex;
+
+      if (rightChildIndex < this.heap.length && this.heap[rightChildIndex] < this.heap[leftChildIndex]) {
+        smallerChildIndex = rightChildIndex;
+      }
+
+      if (this.heap[currentIndex] > this.heap[smallerChildIndex]) {
+        this.swap(currentIndex, smallerChildIndex);
+        currentIndex = smallerChildIndex;
+      } else {
+        break;
+      }
+    }
+  }
+
+  peek() {
+    if (this.heap.length === 0) {
+      return null;
+    }
+
+    return this.heap[0];
+  }
+
+  size() {
+    return this.heap.length;
+  }
+
+  isEmpty() {
+    return this.heap.length === 0;
+  }
 }
 
-// Example
-const graph = [
-    [1],
-    [2, 4],
-    [0, 3],
-    [2],
-    [5],
-    [4, 6],
-    [5, 7],
-    [6, 10],
-    [2, 8],
-    [9],
-    [8, 11],
-    [10]
-];
+// Priority Queue class that utilizes BinaryHeap
+class PriorityQueue {
+  constructor() {
+    this.binaryHeap = new BinaryHeap();
+  }
 
-const scc = tarjanStronglyConnectedComponents(graph);
-console.log(scc);
+  enqueue(value) {
+    this.binaryHeap.enqueue(value);
+  }
+
+  dequeue() {
+    return this.binaryHeap.dequeue();
+  }
+
+  peek() {
+    return this.binaryHeap.peek();
+  }
+
+  size() {
+    return this.binaryHeap.size();
+  }
+
+  isEmpty() {
+    return this.binaryHeap.isEmpty();
+  }
+}
+
+// Example Usage
+const pq = new PriorityQueue();
+pq.enqueue(5);
+pq.enqueue(2);
+pq.enqueue(10);
+console.log(pq.dequeue()); // 2
+console.log(pq.dequeue()); // 5
+console.log(pq.dequeue()); // 10
