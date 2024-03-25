@@ -1,6 +1,16 @@
-function decimalToBinary(decimal) {
-    return (decimal >>> 0).toString(2);
-}
+// Define the URL of the server
+const url = 'https://api.example.com/data';
 
-// Example
-console.log(decimalToBinary(10)); // Output: "1010"
+// Define the function to connect to the server asynchronously
+const fetchData = async () => {
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+};
+
+// Call the fetchData function to initiate the connection
+fetchData();
