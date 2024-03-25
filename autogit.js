@@ -1,41 +1,26 @@
-function rabinKarpSearch(text, pattern) {
-    const prime = 101; // Prime number for hashing
-
-    function hash(str) {
-        let hash = 0;
-        for (let i = 0; i < str.length; i++) {
-            hash += str.charCodeAt(i) * Math.pow(prime, i);
-        }
-        return hash;
+function binarySearchRecursive(arr, target, start = 0, end = arr.length - 1) {
+    // Base case: If start index is greater than end index, target is not in the array
+    if (start > end) {
+        return -1;
     }
 
-    function reHash(oldHash, oldChar, newChar, patternLength) {
-        return (oldHash - oldChar.charCodeAt(0)) / prime + newChar.charCodeAt(0) * Math.pow(prime, patternLength - 1);
+    // Calculate the middle index
+    const mid = Math.floor((start + end) / 2);
+
+    // If the middle element is the target, return its index
+    if (arr[mid] === target) {
+        return mid;
+    // If the middle element is greater than the target, search the left half of the array
+    } else if (arr[mid] > target) {
+        return binarySearchRecursive(arr, target, start, mid - 1);
+    // If the middle element is less than the target, search the right half of the array
+    } else {
+        return binarySearchRecursive(arr, target, mid + 1, end);
     }
-
-    const textLength = text.length;
-    const patternLength = pattern.length;
-    const patternHash = hash(pattern);
-    let textHash = hash(text.slice(0, patternLength));
-
-    for (let i = 0; i <= textLength - patternLength; i++) {
-        if (textHash === patternHash && text.slice(i, i + patternLength) === pattern) {
-            return i; // Pattern found at index i
-        }
-        if (i < textLength - patternLength) {
-            textHash = reHash(textHash, text[i], text[i + patternLength], patternLength);
-        }
-    }
-
-    return -1; // Pattern not found in text
 }
 
-// Example usage
-const text = 'ABAAABCD';
-const pattern = 'ABC';
-const index = rabinKarpSearch(text, pattern);
-if (index !== -1) {
-    console.log(`Pattern found at index ${index}`);
-} else {
-    console.log('Pattern not found in text');
-}
+// Usage
+const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17];
+const target = 9;
+const result = binarySearchRecursive(arr, target);
+console.log(result); // Output: 4
