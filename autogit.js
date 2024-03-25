@@ -1,22 +1,61 @@
-function bubbleSort(arr) {
-    let len = arr.length;
-    let swapped;
-    do {
-        swapped = false;
-        for (let i = 0; i < len - 1; i++) {
-            if (arr[i] > arr[i + 1]) {
-                let temp = arr[i];
-                arr[i] = arr[i + 1];
-                arr[i + 1] = temp;
-                swapped = true;
+function buildPatternTable(pattern) {
+    let prefixSuffixTable = [0];
+    let j = 0;
+
+    for (let i = 1; i < pattern.length; i++) {
+        if (pattern[i] === pattern[j]) {
+            j++;
+            prefixSuffixTable[i] = j;
+        } else {
+            if (j !== 0) {
+                j = prefixSuffixTable[j - 1];
+                i--;
+            } else {
+                prefixSuffixTable[i] = 0;
             }
         }
-        len--;
-    } while (swapped);
-    return arr;
+    }
+
+    return prefixSuffixTable;
 }
 
-// Example usage
-let myArray = [4, 2, 7, 1, 5, 3];
-console.log("Original array:", myArray);
-console.log("Sorted array:", bubbleSort(myArray));
+function kmpSearch(text, pattern) {
+    if (!text || !pattern) {
+        return -1;
+    }
+
+    const lps = buildPatternTable(pattern);
+    let i = 0;
+    let j = 0;
+
+    while (i < text.length) {
+        if (text[i] === pattern[j]) {
+            i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            return i - j;
+        } else if (i < text.length && text[i] !== pattern[j]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+
+    return -1;
+}
+
+// Usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+
+const pos = kmpSearch(text, pattern);
+
+if (pos !== -1) {
+    console.log(`Pattern found at index ${pos}`);
+} else {
+    console.log(`Pattern not found`);
+}
