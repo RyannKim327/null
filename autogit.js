@@ -1,11 +1,33 @@
-let numbers = [5, 2, 8, 1, 4];
-numbers.sort(function(a, b) {
-    return a - b;
-});
+function BFS(graph, startNode) {
+    let visited = {};
+    let queue = [];
 
-console.log(numbers); // Output: [1, 2, 4, 5, 8]
-numbers.sort(function(a, b) {
-    return b - a;
-});
+    visited[startNode] = true;
+    queue.push(startNode);
 
-console.log(numbers); // Output: [8, 5, 4, 2, 1]
+    while (queue.length > 0) {
+        let currentNode = queue.shift();
+        console.log(currentNode);
+
+        let neighbors = graph[currentNode];
+        for (let i = 0; i < neighbors.length; i++) {
+            let neighbor = neighbors[i];
+            if (!visited[neighbor]) {
+                visited[neighbor] = true;
+                queue.push(neighbor);
+            }
+        }
+    }
+}
+
+// Example graph
+const graph = {
+    A: ['B', 'C'],
+    B: ['A', 'D', 'E'],
+    C: ['A', 'F'],
+    D: ['B'],
+    E: ['B', 'F'],
+    F: ['C', 'E']
+};
+
+BFS(graph, 'A');
