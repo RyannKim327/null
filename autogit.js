@@ -1,34 +1,30 @@
-function interpolationSearch(array, target) {
-    let low = 0;
-    let high = array.length - 1;
+function longestCommonSubstring(str1, str2) {
+    let matrix = Array(str1.length + 1).fill(null).map(() => Array(str2.length + 1).fill(0));
+    let longest = 0;
+    let longestIndex = 0;
 
-    while (low <= high && target >= array[low] && target <= array[high]) {
-        if (low == high) {
-            if (array[low] === target) return low;
-            return -1;
-        }
-
-        let pos = low + Math.floor(((target - array[low]) * (high - low) / (array[high] - array[low])));
-
-        if (array[pos] === target) {
-            return pos;
-        } else if (array[pos] < target) {
-            low = pos + 1;
-        } else {
-            high = pos - 1;
+    for (let i = 1; i <= str1.length; i++) {
+        for (let j = 1; j <= str2.length; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                matrix[i][j] = matrix[i - 1][j - 1] + 1;
+                if (matrix[i][j] > longest) {
+                    longest = matrix[i][j];
+                    longestIndex = i;
+                }
+            } else {
+                matrix[i][j] = 0;
+            }
         }
     }
 
-    return -1;
+    if (longest === 0) {
+        return '';
+    }
+
+    return str1.substr(longestIndex - longest, longest);
 }
 
-// Test the interpolation search
-const array = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const target = 16;
-const index = interpolationSearch(array, target);
+let str1 = 'abcdefg';
+let str2 = 'xyzabcd';
 
-if (index !== -1) {
-    console.log(`Element found at index ${index}`);
-} else {
-    console.log("Element not found");
-}
+console.log(longestCommonSubstring(str1, str2)); // Output: 'abcd'
