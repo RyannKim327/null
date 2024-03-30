@@ -1,42 +1,22 @@
-function bellmanFord(graph, source) {
-    let distances = {};
+function isAnagram(str1, str2) {
+    const cleanStr1 = str1.replace(/[^\w]/g, "").toLowerCase();
+    const cleanStr2 = str2.replace(/[^\w]/g, "").toLowerCase();
 
-    for (let node in graph) {
-        distances[node] = Infinity;
-    }
-    distances[source] = 0;
-
-    for (let i = 0; i < Object.keys(graph).length - 1; i++) {
-        for (let u in graph) {
-            for (let v in graph[u]) {
-                if (distances[u] + graph[u][v] < distances[v]) {
-                    distances[v] = distances[u] + graph[u][v];
-                }
-            }
-        }
+    if (cleanStr1.length !== cleanStr2.length) {
+        return false;
     }
 
-    for (let u in graph) {
-        for (let v in graph[u]) {
-            if (distances[u] + graph[u][v] < distances[v]) {
-                // Negative weight cycle detected
-                return "Graph contains negative weight cycle";
-            }
-        }
-    }
+    const sortedStr1 = cleanStr1.split('').sort().join('');
+    const sortedStr2 = cleanStr2.split('').sort().join('');
 
-    return distances;
+    return sortedStr1 === sortedStr2;
 }
 
-// Example graph
-let graph = {
-    A: { B: -1, C: 4 },
-    B: { C: 3, D: 2, E: 2 },
-    C: {},
-    D: { B: 1, C: 5 },
-    E: { D: -3 }
-};
-
-let sourceNode = 'A';
-let shortestDistances = bellmanFord(graph, sourceNode);
-console.log(shortestDistances);
+// Test the function
+const string1 = "Listen";
+const string2 = "Silent";
+if (isAnagram(string1, string2)) {
+    console.log(`${string1} and ${string2} are anagrams.`);
+} else {
+    console.log(`${string1} and ${string2} are not anagrams.`);
+}
