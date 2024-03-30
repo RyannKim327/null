@@ -1,11 +1,18 @@
-const axios = require('axios');
+function countOccurrences(str, char) {
+  let count = 0;
+  
+  for (let i = 0; i < str.length; i++) {
+    if (str[i] === char) {
+      count++;
+    }
+  }
+  
+  return count;
+}
 
-const url = 'https://jsonplaceholder.typicode.com/posts/1';
+// Example usage
+let myString = "Hello, World!";
+let charToCount = "o";
+let occurrences = countOccurrences(myString, charToCount);
 
-axios.get(url)
-  .then(response => {
-    console.log('Response:', response.data);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+console.log(`'${charToCount}' occurs ${occurrences} times in '${myString}'`);
