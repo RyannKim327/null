@@ -1,7 +1,6 @@
-let array = [1, 2, 3, 4, 1, 2, 5, 6, 3];
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
 
-let uniqueArray = array.filter((item, index) => {
-    return array.indexOf(item) === index;
-});
+const commonElements = array1.filter(element => array2.includes(element));
 
-console.log(uniqueArray);
+console.log(commonElements); // Output: [3, 4, 5]
