@@ -1,15 +1,43 @@
-const apiUrl = 'https://api.spacexdata.com/v4/launches/upcoming';
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
+    }
+}
 
-fetch(apiUrl)
-  .then(response => response.json())
-  .then(data => {
-    data.forEach(launch => {
-      console.log(`Mission Name: ${launch.name}`);
-      console.log(`Rocket Name: ${launch.rocket}`);
-      console.log(`Launch Date: ${new Date(launch.date_utc).toUTCString()}`);
-      console.log('------------------------------------------');
-    });
-  })
-  .catch(error => {
-    console.log('An error occurred while fetching data:', error);
-  });
+class LinkedList {
+    constructor() {
+        this.head = null;
+    }
+
+    addNode(data) {
+        const newNode = new Node(data);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+    }
+
+    getLength() {
+        let length = 0;
+        let current = this.head;
+        while (current) {
+            length++;
+            current = current.next;
+        }
+        return length;
+    }
+}
+
+// Usage
+const linkedList = new LinkedList();
+linkedList.addNode(1);
+linkedList.addNode(2);
+linkedList.addNode(3);
+
+console.log(linkedList.getLength()); // Output: 3
