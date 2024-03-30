@@ -1,15 +1,19 @@
-const apiUrl = 'https://api.example.com/data';
-
-fetch(apiUrl)
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
+function isPrime(num) {
+    if (num <= 1) {
+        return false;
     }
-    return response.json();
-  })
-  .then(data => {
-    console.log(data);
-  })
-  .catch(error => {
-    console.error('There was a problem with the fetch operation:', error);
-  });
+    for (let i = 2; i <= Math.sqrt(num); i++) {
+        if (num % i === 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Example usage
+const num = 23;
+if (isPrime(num)) {
+    console.log(num + " is a prime number.");
+} else {
+    console.log(num + " is not a prime number.");
+}
