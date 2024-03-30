@@ -1,25 +1,21 @@
-function isPalindrome(str) {
-    if (!str) {
-        return false;
+function findLIS(nums) {
+    if (nums.length === 0) {
+        return 0;
     }
 
-    let left = 0;
-    let right = str.length - 1;
+    const dp = new Array(nums.length).fill(1);
 
-    while (left < right) {
-        if (str[left] !== str[right]) {
-            return false;
+    for (let i = 1; i < nums.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[i] > nums[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
         }
-        left++;
-        right--;
     }
 
-    return true;
+    return Math.max(...dp);
 }
 
-// Test the function
-const palindromeString = "racecar";
-const nonPalindromeString = "hello";
-
-console.log(isPalindrome(palindromeString)); // Output: true
-console.log(isPalindrome(nonPalindromeString)); // Output: false
+// Example usage:
+const nums = [10, 22, 9, 33, 21, 50, 41, 60, 80];
+console.log(findLIS(nums)); // Output: 6
