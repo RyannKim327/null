@@ -1,15 +1,16 @@
-const url = 'https://jsonplaceholder.typicode.com/posts/1';
+function findMedianSortedArrays(nums1, nums2) {
+    const combinedArray = nums1.concat(nums2).sort((a, b) => a - b);
+    const totalLength = combinedArray.length;
 
-fetch(url)
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
+    if (totalLength % 2 === 0) {
+        return (combinedArray[totalLength / 2 - 1] + combinedArray[totalLength / 2]) / 2;
+    } else {
+        return combinedArray[(totalLength - 1) / 2];
     }
-    return response.json();
-  })
-  .then(data => {
-    console.log(data);
-  })
-  .catch(error => {
-    console.error('There was a problem with your fetch operation:', error);
-  });
+}
+
+// Example usage
+const nums1 = [1, 3, 5];
+const nums2 = [2, 4, 6];
+const median = findMedianSortedArrays(nums1, nums2);
+console.log(median); // Output: 3.5
