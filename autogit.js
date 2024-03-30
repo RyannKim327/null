@@ -1,47 +1,88 @@
-function mergeSort(arr) {
-    const n = arr.length;
-    const tempArray = new Array(n);
+function biDirectionalSearch(startNode, goalNode) {
+    // Define the forward and backward search queues
+    let forwardQueue = [startNode];
+    let backwardQueue = [goalNode];
 
-    // Divide the array into subarrays of size 1, then merge them
-    for (let size = 1; size < n; size *= 2) {
-        for (let leftStart = 0; leftStart < n - 1; leftStart += 2 * size) {
-            const mid = Math.min(leftStart + size - 1, n - 1);
-            const rightEnd = Math.min(leftStart + 2 * size - 1, n - 1);
+    // Keep track of visited nodes from both directions
+    let forwardVisited = new Set();
+    let backwardVisited = new Set();
 
-            merge(arr, tempArray, leftStart, mid, rightEnd);
+    while (forwardQueue.length > 0 && backwardQueue.length > 0) {
+        // Perform forward search
+        let currentNodeForward = forwardQueue.shift();
+        forwardVisited.add(currentNodeForward);
+
+        // Perform backward search
+        let currentNodeBackward = backwardQueue.shift();
+        backwardVisited.add(currentNodeBackward);
+
+        // Check if the two searches meet
+        if (forwardVisited.has(currentNodeBackward)) {
+            // Path found, combine the paths from both directions
+            let path1 = getPath(currentNodeForward, startNode);
+            let path2 = getPath(currentNodeBackward, goalNode).reverse();
+            return path1.concat(path2);
+        }
+
+        // Expand neighbors for forward search
+        let neighborsForward = getNeighbors(currentNodeForward);
+        for (let neighbor of neighborsForward) {
+            if (!forwardVisited.has(neighbor)) {
+                forwardQueue.push(neighbor);
+                forwardVisited.add(neighbor);
+            }
+        }
+
+        // Expand neighbors for backward search
+        let neighborsBackward = getNeighbors(currentNodeBackward);
+        for (let neighbor of neighborsBackward) {
+            if (!backwardVisited.has(neighbor)) {
+                backwardQueue.push(neighbor);
+                backwardVisited.add(neighbor);
+            }
         }
     }
 
-    return arr;
+    // No path found
+    return null;
 }
 
-function merge(arr, tempArray, leftStart, mid, rightEnd) {
-    let i = leftStart;
-    let j = mid + 1;
-    let k = leftStart;
-
-    while (i <= mid && j <= rightEnd) {
-        if (arr[i] <= arr[j]) {
-            tempArray[k++] = arr[i++];
-        } else {
-            tempArray[k++] = arr[j++];
-        }
+// Helper function to get the path from start to current node
+function getPath(currentNode, startNode) {
+    let path = [];
+    while (currentNode != startNode) {
+        path.unshift(currentNode);
+        currentNode = currentNode.parent;
     }
+    path.unshift(startNode);
+    return path;
+}
 
-    while (i <= mid) {
-        tempArray[k++] = arr[i++];
-    }
-
-    while (j <= rightEnd) {
-        tempArray[k++] = arr[j++];
-    }
-
-    // Copy the merged elements back to the original array
-    for (i = leftStart; i <= rightEnd; i++) {
-        arr[i] = tempArray[i];
-    }
+// Helper function to get neighbors of a node (customize this to fit your graph)
+function getNeighbors(node) {
+    // Implement this function based on your graph structure
+    return node.neighbors;
 }
 
 // Example usage
-const arr = [38, 27, 43, 3, 9, 82, 10];
-console.log(mergeSort(arr.slice()));
+class Node {
+    constructor(value, neighbors) {
+        this.value = value;
+        this.neighbors = neighbors;
+    }
+}
+
+const node1 = new Node(1, []);
+const node2 = new Node(2, []);
+const node3 = new Node(3, []);
+const node4 = new Node(4, []);
+const node5 = new Node(5, []);
+
+node1.neighbors = [node2];
+node2.neighbors = [node3];
+node3.neighbors = [node4, node5];
+node4.neighbors = [node5];
+node5.neighbors = [];
+
+const path = biDirectionalSearch(node1, node5);
+console.log(path);
