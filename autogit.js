@@ -1,35 +1,21 @@
-function longestIncreasingSubsequence(arr) {
-    const n = arr.length;
-    const dp = new Array(n).fill(1);
+function isPalindrome(str) {
+    let left = 0;
+    let right = str.length - 1;
 
-    for (let i = 1; i < n; i++) {
-        for (let j = 0; j < i; j++) {
-            if (arr[i] > arr[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
-            }
+    while (left < right) {
+        if (str[left] !== str[right]) {
+            return false;
         }
+        left++;
+        right--;
     }
 
-    let maxLength = 0;
-    for (let i = 0; i < n; i++) {
-        if (dp[i] > maxLength) {
-            maxLength = dp[i];
-        }
-    }
-
-    const longestIncreasingSubsequence = [];
-    let currentLength = maxLength;
-    for (let i = n - 1; i >= 0; i--) {
-        if (dp[i] === currentLength) {
-            longestIncreasingSubsequence.unshift(arr[i]);
-            currentLength--;
-        }
-    }
-
-    return longestIncreasingSubsequence;
+    return true;
 }
 
 // Example usage
-const arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
-const result = longestIncreasingSubsequence(arr);
-console.log(result); // Output: [10, 22, 33, 50, 60, 80]
+const str1 = "racecar";
+console.log(isPalindrome(str1)); // Output: true
+
+const str2 = "hello";
+console.log(isPalindrome(str2)); // Output: false
