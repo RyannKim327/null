@@ -1,5 +1,25 @@
-const cron = require('node-cron');
+function isPalindrome(str) {
+    if (!str) {
+        return false;
+    }
 
-cron.schedule('* * * * *', () => {
-  console.log('Running a task every minute');
-});
+    let left = 0;
+    let right = str.length - 1;
+
+    while (left < right) {
+        if (str[left] !== str[right]) {
+            return false;
+        }
+        left++;
+        right--;
+    }
+
+    return true;
+}
+
+// Test the function
+const palindromeString = "racecar";
+const nonPalindromeString = "hello";
+
+console.log(isPalindrome(palindromeString)); // Output: true
+console.log(isPalindrome(nonPalindromeString)); // Output: false
