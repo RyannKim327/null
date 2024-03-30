@@ -1,52 +1,48 @@
-function heapSort(array) {
-    buildMaxHeap(array);
-
-    for (let i = array.length - 1; i > 0; i--) {
-        // Swap the root (maximum value) of the heap with the last element of the array
-        let temp = array[0];
-        array[0] = array[i];
-        array[i] = temp;
-
-        // Restore the max heap property
-        maxHeapify(array, 0, i);
-    }
-
-    return array;
-}
-
-function buildMaxHeap(array) {
-    for (let i = Math.floor(array.length / 2); i >= 0; i--) {
-        maxHeapify(array, i, array.length);
+// Node class to represent the nodes in the search tree
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.children = [];
     }
 }
 
-function maxHeapify(array, i, heapSize) {
-    let largest = i;
-    let left = 2 * i + 1;
-    let right = 2 * i + 2;
+// Function to perform breadth-limited search
+function breadthLimitedSearch(root, limit, target) {
+    let queue = [root];
+    let depth = 0;
 
-    if (left < heapSize && array[left] > array[largest]) {
-        largest = left;
+    while (queue.length > 0 && depth <= limit) {
+        let node = queue.shift();
+
+        if (node.value === target) {
+            return node;
+        }
+
+        if (node.children) {
+            for (let child of node.children) {
+                queue.push(child);
+            }
+        }
+
+        if (queue[0] === undefined) {
+            queue = [];
+            depth++;
+            queue.push(root);
+        }
     }
 
-    if (right < heapSize && array[right] > array[largest]) {
-        largest = right;
-    }
-
-    if (largest !== i) {
-        // Swap array[i] and array[largest]
-        let temp = array[i];
-        array[i] = array[largest];
-        array[largest] = temp;
-
-        // Recursively heapify the affected sub-tree
-        maxHeapify(array, largest, heapSize);
-    }
+    return null;
 }
 
-const array = [12, 11, 13, 5, 6, 7];
-console.log("Before sorting:");
-console.log(array);
+// Example usage
+let root = new Node(1);
+root.children = [new Node(2), new Node(3), new Node(4)];
+root.children[0].children = [new Node(5), new Node(6)];
+root.children[1].children = [new Node(7), new Node(8)];
 
-console.log("\nAfter sorting:");
-console.log(heapSort(array));
+let result = breadthLimitedSearch(root, 2, 8);
+if (result) {
+    console.log("Node found: " + result.value);
+} else {
+    console.log("Node not found.");
+}
