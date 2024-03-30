@@ -1,48 +1,38 @@
-function computePrefixFunction(pattern) {
-    const prefixFunc = [0];
-    let k = 0;
-    for (let q = 1; q < pattern.length; q++) {
-        while (k > 0 && pattern[k] !== pattern[q]) {
-            k = prefixFunc[k - 1];
-        }
-        if (pattern[k] === pattern[q]) {
-            k++;
-        }
-        prefixFunc[q] = k;
+function heapSort(arr) {
+    // build heap (rearrange array)
+    for (let i = Math.floor(arr.length / 2) - 1; i >= 0; i--) {
+        heapify(arr, arr.length, i);
     }
-    return prefixFunc;
-}
 
-function kmpStringSearch(text, pattern) {
-    const n = text.length;
-    const m = pattern.length;
-    const prefixFunc = computePrefixFunction(pattern);
-    let q = 0;
-    const indices = [];
-  
-    for (let i = 0; i < n; i++) {
-        while (q > 0 && pattern[q] !== text[i]) {
-            q = prefixFunc[q - 1];
-        }
-        if (pattern[q] === text[i]) {
-            q++;
-        }
-        if (q === m) {
-            indices.push(i - m + 1); // Match found at index (i - m + 1)
-            q = prefixFunc[q - 1];
-        }
+    // extract elements from the heap one by one
+    for (let i = arr.length - 1; i > 0; i--) {
+        // move current root to end
+        [arr[0], arr[i]] = [arr[i], arr[0]];
+        // call max heapify on the reduced heap
+        heapify(arr, i, 0);
     }
-  
-    return indices;
+    return arr;
 }
 
-// Test
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const indices = kmpStringSearch(text, pattern);
+function heapify(arr, n, i) {
+    let largest = i;
+    let left = 2 * i + 1;
+    let right = 2 * i + 2;
 
-if (indices.length > 0) {
-    console.log(`Pattern found at indices: ${indices}`);
-} else {
-    console.log('Pattern not found in the text.');
+    if (left < n && arr[left] > arr[largest]) {
+        largest = left;
+    }
+
+    if (right < n && arr[right] > arr[largest]) {
+        largest = right;
+    }
+
+    if (largest !== i) {
+        [arr[i], arr[largest]] = [arr[largest], arr[i]];
+        heapify(arr, n, largest);
+    }
 }
+
+// Example usage:
+const arr = [12, 11, 13, 5, 6, 7];
+console.log(heapSort(arr)); // Output: [ 5, 6, 7, 11, 12, 13 ]
