@@ -1,17 +1,18 @@
-function insertionSort(arr) {
-    for (let i = 1; i < arr.length; i++) {
-        let current = arr[i];
-        let j = i - 1;
-        while (j >= 0 && arr[j] > current) {
-            arr[j + 1] = arr[j];
-            j = j - 1;
+function largestPrimeFactor(number) {
+    let prime = 2;
+    
+    while (prime <= number) {
+        if (number % prime === 0) {
+            number /= prime;
+        } else {
+            prime++;
         }
-        arr[j + 1] = current;
     }
-    return arr;
+    
+    return prime;
 }
 
-// Example usage
-const arr = [5, 2, 4, 6, 1, 3];
-console.log("Original array:", arr);
-console.log("Sorted array:", insertionSort(arr));
+// Example
+const number = 13195;
+const largestPrime = largestPrimeFactor(number);
+console.log("The largest prime factor of", number, "is", largestPrime);
