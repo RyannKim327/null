@@ -1,7 +1,15 @@
-function getRandomNumber(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+function countOccurrence(str, char) {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str.charAt(i) === char) {
+            count++;
+        }
+    }
+    return count;
 }
 
-// Example usage: Generate a random number between 1 and 100
-let randomNumber = getRandomNumber(1, 100);
-console.log(randomNumber);
+// Example usage
+const str = "Hello, World!";
+const char = "o";
+const occurrenceCount = countOccurrence(str, char);
+console.log(`The character "${char}" occurs ${occurrenceCount} times in the string "${str}".`);
