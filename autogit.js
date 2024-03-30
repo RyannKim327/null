@@ -1,15 +1,42 @@
-function isSortedAscending(arr) {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false;
+function depthLimitedSearch(node, goal, depthLimit) {
+    if (node.state === goal) {
+        return node;
+    }
+
+    if (depthLimit <= 0) {
+        return null;
+    }
+
+    for (let child of expand(node)) {
+        let result = depthLimitedSearch(child, goal, depthLimit - 1);
+        if (result !== null) {
+            return result;
         }
     }
-    return true;
+
+    return null;
 }
 
-// Example
-const myArray = [1, 2, 3, 4, 5];
-console.log(isSortedAscending(myArray)); // Output: true
+// Example Node class and expand function for demonstration purposes
+class Node {
+    constructor(state) {
+        this.state = state;
+    }
+}
 
-const unsortedArray = [5, 3, 1, 4, 2];
-console.log(isSortedAscending(unsortedArray)); // Output: false
+function expand(node) {
+    // Expand the node (generate child nodes)
+    // This is where you would typically generate child nodes based on the current node
+    return [];
+}
+
+// Example Usage
+let rootNode = new Node('A');
+let goalNode = new Node('G');
+let result = depthLimitedSearch(rootNode, goalNode, 3);
+
+if (result !== null) {
+    console.log('Goal node found!');
+} else {
+    console.log('Goal node not found within depth limit.');
+}
