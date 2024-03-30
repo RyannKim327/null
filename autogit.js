@@ -1,26 +1,21 @@
-const str = 'Hello, world!';
-const substring = 'world';
+function bubbleSort(arr) {
+    let len = arr.length;
+    let swapped;
+    do {
+        swapped = false;
+        for (let i = 0; i < len - 1; i++) {
+            if (arr[i] > arr[i + 1]) {
+                let temp = arr[i];
+                arr[i] = arr[i + 1];
+                arr[i + 1] = temp;
+                swapped = true;
+            }
+        }
+    } while (swapped);
 
-if (str.includes(substring)) {
-  console.log('String contains the substring');
-} else {
-  console.log('String does not contain the substring');
+    return arr;
 }
-const str = 'Hello, world!';
-const substring = 'world';
 
-if (str.indexOf(substring) !== -1) {
-  console.log('String contains the substring');
-} else {
-  console.log('String does not contain the substring');
-}
-const str = 'Hello, world!';
-const substring = 'world';
-
-const regex = new RegExp(substring);
-
-if (regex.test(str)) {
-  console.log('String contains the substring');
-} else {
-  console.log('String does not contain the substring');
-}
+// Example usage:
+const numbers = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
+console.log(bubbleSort(numbers));
