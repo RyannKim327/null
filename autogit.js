@@ -1,38 +1,35 @@
-function depthLimitedSearch(node, goal, depth) {
-    if (depth === 0) {
-        return null;
-    }
-
-    if (node === goal) {
-        return node;
-    }
-
-    for (let child of getChildren(node)) {
-        let result = depthLimitedSearch(child, goal, depth - 1);
-        if (result) {
-            return result;
-        }
-    }
-
-    return null;
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
 }
 
-function getChildren(node) {
-    // This function should return an array of child nodes of the given node.
-    // You can customize this function based on your specific problem.
-    // For demonstration purposes, we will assume getChildren returns an empty array.
-    return [];
+function hasCycle(head) {
+  let slow = head;
+  let fast = head;
+
+  while (fast !== null && fast.next !== null) {
+    slow = slow.next;
+    fast = fast.next.next;
+
+    if (slow === fast) {
+      return true; // Cycle detected
+    }
+  }
+
+  return false; // No cycle found
 }
 
-// Usage
-let rootNode = /* set your root node */;
-let goalNode = /* set your goal node */;
-let depthLimit = 5;
+// Example usage
+let node1 = new Node(1);
+let node2 = new Node(2);
+let node3 = new Node(3);
+let node4 = new Node(4);
 
-let result = depthLimitedSearch(rootNode, goalNode, depthLimit);
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+//node4.next = node2; // Uncomment to create a cycle
 
-if (result) {
-    console.log('Goal node found!');
-} else {
-    console.log('Goal node not found within the depth limit.');
-}
+console.log(hasCycle(node1)); // Output: false
