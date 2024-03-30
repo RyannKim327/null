@@ -1,96 +1,37 @@
-// Node class for skip list node
-class Node {
-    constructor(value, level) {
-        this.value = value;
-        this.next = Array(level).fill(null);
+// Define a function for depth-limited search
+function depthLimitedSearch(root, goal, depthLimit) {
+    let stack = [{ node: root, depth: 0 }];
+
+    while (stack.length > 0) {
+        let currentNode = stack.pop();
+        let node = currentNode.node;
+        let depth = currentNode.depth;
+
+        if (node === goal) {
+            return node; // Goal node found
+        }
+
+        if (depth < depthLimit) {
+            // Add child nodes to the stack
+            let children = getChildren(node);
+            children.forEach(child => {
+                stack.push({ node: child, depth: depth + 1 });
+            });
+        }
     }
+
+    return null; // Goal node not found within depth limit
 }
 
-// Skip list class
-class SkipList {
-    constructor(maxLevel, probability) {
-        this.maxLevel = maxLevel;
-        this.probability = probability;
-        this.level = 0;
-        this.head = new Node(-1, maxLevel);
-    }
-
-    // Generate random level for new node
-    randomLevel() {
-        let level = 0;
-        while (Math.random() < this.probability && level < this.maxLevel - 1) {
-            level++;
-        }
-        return level;
-    }
-
-    // Insert a value into the skip list
-    insert(value) {
-        let newLevel = this.randomLevel();
-        let newNode = new Node(value, newLevel);
-        let current = this.head;
-        
-        for (let i = this.level; i >= 0; i--) {
-            while (current.next[i] && current.next[i].value < value) {
-                current = current.next[i];
-            }
-            if (i <= newLevel) {
-                newNode.next[i] = current.next[i];
-                current.next[i] = newNode;
-            }
-        }
-
-        this.level = Math.max(this.level, newLevel);
-    }
-
-    // Search for a value in the skip list
-    search(value) {
-        let current = this.head;
-        
-        for (let i = this.level; i >= 0; i--) {
-            while (current.next[i] && current.next[i].value < value) {
-                current = current.next[i];
-            }
-        }
-        
-        current = current.next[0];
-        if (current && current.value === value) {
-            return true;
-        }
-        
-        return false;
-    }
-
-    // Remove a value from the skip list
-    remove(value) {
-        let current = this.head;
-        let removed = false;
-        
-        for (let i = this.level; i >= 0; i--) {
-            while (current.next[i] && current.next[i].value < value) {
-                current = current.next[i];
-            }
-            if (current.next[i] && current.next[i].value === value) {
-                current.next[i] = current.next[i].next[i];
-                removed = true;
-            }
-        }
-        
-        if (removed) {
-            while (this.level > 0 && !this.head.next[this.level]) {
-                this.level--;
-            }
-        }
-    }
+// Define a helper function to get children of a node
+function getChildren(node) {
+    // Implement logic to get children of a node
 }
 
 // Example usage
-const skipList = new SkipList(5, 0.5);
-skipList.insert(3);
-skipList.insert(6);
-skipList.insert(2);
-skipList.insert(9);
+let rootNode = // Set the root node
+let goalNode = // Set the goal node
+let depthLimit = 3;
 
-console.log(skipList.search(6)); // Output: true
-skipList.remove(6);
-console.log(skipList.search(6)); // Output: false
+let result = depthLimitedSearch(rootNode, goalNode, depthLimit);
+console.log(result);
