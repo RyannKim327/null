@@ -1,44 +1,54 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.children = [];
+function buildPatternTable(pattern) {
+    const patternTable = [0];
+    let prefixIndex = 0;
+    let suffixIndex = 1;
+
+    while (suffixIndex < pattern.length) {
+        if (pattern[prefixIndex] === pattern[suffixIndex]) {
+            patternTable[suffixIndex] = prefixIndex + 1;
+            prefixIndex++;
+            suffixIndex++;
+        } else if (prefixIndex === 0) {
+            patternTable[suffixIndex] = 0;
+            suffixIndex++;
+        } else {
+            prefixIndex = patternTable[prefixIndex - 1];
+        }
     }
+
+    return patternTable;
 }
 
-function depthLimitedSearch(root, targetValue, depthLimit) {
-    let stack = [{
-        node: root,
-        depth: 0
-    }];
+function kmpSearch(text, pattern) {
+    const patternTable = buildPatternTable(pattern);
 
-    while (stack.length > 0) {
-        let current = stack.pop();
+    let textIndex = 0;
+    let patternIndex = 0;
 
-        if (current.node.value === targetValue) {
-            return current.node;
-        }
-
-        if (current.depth < depthLimit) {
-            for (let child of current.node.children) {
-                stack.push({
-                    node: child,
-                    depth: current.depth + 1
-                });
+    while (textIndex < text.length) {
+        if (text[textIndex] === pattern[patternIndex]) {
+            if (patternIndex === pattern.length - 1) {
+                return textIndex - pattern.length + 1;
             }
+            textIndex++;
+            patternIndex++;
+        } else if (patternIndex > 0) {
+            patternIndex = patternTable[patternIndex - 1];
+        } else {
+            textIndex++;
         }
     }
 
-    return null;
+    return -1; // Pattern not found
 }
 
-// Usage example
-let root = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-let node4 = new Node(4);
+// Example usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const index = kmpSearch(text, pattern);
 
-root.children = [node2, node3];
-node2.children = [node4];
-
-console.log(depthLimitedSearch(root, 4, 2)); // Output: Node { value: 4, children: [] }
-console.log(depthLimitedSearch(root, 5, 2)); // Output: null
+if (index !== -1) {
+    console.log(`Pattern found at index ${index}`);
+} else {
+    console.log("Pattern not found");
+}
