@@ -1,35 +1,15 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
-}
-
-function hasCycle(head) {
-  let slow = head;
-  let fast = head;
-
-  while (fast !== null && fast.next !== null) {
-    slow = slow.next;
-    fast = fast.next.next;
-
-    if (slow === fast) {
-      return true; // Cycle detected
+function isArraySortedAscending(arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;
+        }
     }
-  }
-
-  return false; // No cycle found
+    return true;
 }
 
 // Example usage
-let node1 = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-let node4 = new Node(4);
+const sortedArray = [1, 2, 3, 4, 5];
+const unsortedArray = [5, 4, 3, 2, 1];
 
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-//node4.next = node2; // Uncomment to create a cycle
-
-console.log(hasCycle(node1)); // Output: false
+console.log(isArraySortedAscending(sortedArray));  // Output: true
+console.log(isArraySortedAscending(unsortedArray));  // Output: false
