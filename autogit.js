@@ -1,20 +1,20 @@
-function findSecondLargest(arr) {
-    let max = arr[0];
-    let secondMax = -Infinity;
+function isAnagram(str1, str2) {
+  // Removing non-alphanumeric characters and converting to lowercase
+  str1 = str1.replace(/[\W_]/g, "").toLowerCase();
+  str2 = str2.replace(/[\W_]/g, "").toLowerCase();
 
-    for (let i = 1; i < arr.length; i++) {
-        if (arr[i] > max) {
-            secondMax = max;
-            max = arr[i];
-        } else if (arr[i] > secondMax && arr[i] < max) {
-            secondMax = arr[i];
-        }
-    }
+  // Check if the strings are of the same length
+  if (str1.length !== str2.length) {
+    return false;
+  }
 
-    return secondMax;
+  // Compare the sorted characters of the strings
+  const sortedStr1 = str1.split("").sort().join("");
+  const sortedStr2 = str2.split("").sort().join("");
+
+  return sortedStr1 === sortedStr2;
 }
 
-// Example usage
-const arr = [3, 7, 1, 9, 5];
-const secondLargest = findSecondLargest(arr);
-console.log("Second Largest Element:", secondLargest);
+// Test the function
+console.log(isAnagram("listen", "silent")); // Output: true
+console.log(isAnagram("hello", "world")); // Output: false
