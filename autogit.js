@@ -1,18 +1,20 @@
-function largestPrimeFactor(number) {
-    let prime = 2;
+function firstNonRepeatingChar(str) {
+    let charMap = {};
     
-    while (prime <= number) {
-        if (number % prime === 0) {
-            number /= prime;
-        } else {
-            prime++;
+    for (let char of str) {
+        charMap[char] = (charMap[char] || 0) + 1;
+    }
+    
+    for (let char of str) {
+        if (charMap[char] === 1) {
+            return char;
         }
     }
     
-    return prime;
+    return null;
 }
 
-// Example
-const number = 13195;
-const largestPrime = largestPrimeFactor(number);
-console.log("The largest prime factor of", number, "is", largestPrime);
+// Test the function
+const str = "hello world";
+const firstNonRepeating = firstNonRepeatingChar(str);
+console.log(firstNonRepeating); // Output: "h"
