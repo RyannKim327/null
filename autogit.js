@@ -1,50 +1,30 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
-    }
-}
-class LinkedList {
-    constructor() {
-        this.head = null;
-    }
+function binarySearch(arr, target) {
+    let left = 0;
+    let right = arr.length - 1;
 
-    add(data) {
-        const newNode = new Node(data);
-        if (!this.head) {
-            this.head = newNode;
+    while (left <= right) {
+        let mid = Math.floor((left + right) / 2);
+
+        if (arr[mid] === target) {
+            return mid;
+        } else if (arr[mid] < target) {
+            left = mid + 1;
         } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
+            right = mid - 1;
         }
     }
 
-    toArray() {
-        const array = [];
-        let current = this.head;
-        while (current) {
-            array.push(current.data);
-            current = current.next;
-        }
-        return array;
-    }
+    return -1;
 }
-function isPalindrome(array) {
-    const reversedArray = [...array].reverse();
-    return JSON.stringify(array) === JSON.stringify(reversedArray);
-}
-function isLinkedListPalindrome(list) {
-    const array = list.toArray();
-    return isPalindrome(array);
-}
-const linkedList = new LinkedList();
-linkedList.add(1);
-linkedList.add(2);
-linkedList.add(3);
-linkedList.add(2);
-linkedList.add(1);
 
-console.log(isLinkedListPalindrome(linkedList)); // Output: true
+// Example usage
+const sortedArray = [2, 4, 6, 8, 10, 12, 14, 16];
+const targetValue = 10;
+
+const index = binarySearch(sortedArray, targetValue);
+
+if (index !== -1) {
+    console.log(`Element found at index: ${index}`);
+} else {
+    console.log(`Element not found in the array.`);
+}
