@@ -1,35 +1,45 @@
-function topologicalSort(graph) {
-    const visited = {};
-    const stack = [];
-    
-    function dfs(node) {
-        visited[node] = true;
-        
-        for (let neighbor of graph[node]) {
-            if (!visited[neighbor]) {
-                dfs(neighbor);
-            }
-        }
-        
-        stack.unshift(node);
+// Heapify function to maintain the max-heap property
+function heapify(arr, n, i) {
+    let largest = i;
+    let left = 2 * i + 1;
+    let right = 2 * i + 2;
+
+    if (left < n && arr[left] > arr[largest]) {
+        largest = left;
     }
-    
-    for (let node in graph) {
-        if (!visited[node]) {
-            dfs(node);
-        }
+
+    if (right < n && arr[right] > arr[largest]) {
+        largest = right;
     }
-    
-    return stack;
+
+    if (largest !== i) {
+        [arr[i], arr[largest]] = [arr[largest], arr[i]];
+        heapify(arr, n, largest);
+    }
 }
 
-// Example graph represented as an adjacency list
-const graph = {
-    1: [2, 3],
-    2: [4],
-    3: [4, 5],
-    4: [],
-    5: []
-};
+// Heap sort function
+function heapSort(arr) {
+    let n = arr.length;
 
-console.log(topologicalSort(graph)); // Output: [1, 3, 5, 2, 4]
+    // Build max heap
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        heapify(arr, n, i);
+    }
+
+    // Extract elements one by one
+    for (let i = n - 1; i > 0; i--) {
+        // Move current root to end
+        [arr[0], arr[i]] = [arr[i], arr[0]];
+
+        // call max heapify on the reduced heap
+        heapify(arr, i, 0);
+    }
+
+    return arr;
+}
+
+// Example usage:
+const arr = [12, 11, 13, 5, 6, 7];
+console.log("Array before sorting:", arr);
+console.log("Array after sorting:", heapSort(arr));
