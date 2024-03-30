@@ -1,18 +1,6 @@
-function largestPrimeFactor(number) {
-    let largestPrime = 2;
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
 
-    while (number > largestPrime) {
-        if (number % largestPrime === 0) {
-            number /= largestPrime;
-        } else {
-            largestPrime++;
-        }
-    }
+const commonElements = array1.filter(element => array2.includes(element));
 
-    return largestPrime;
-}
-
-// Example usage
-const number = 13195; // Change this number to find the largest prime factor of a different number
-const result = largestPrimeFactor(number);
-console.log(result);
+console.log(commonElements); // Output: [3, 4, 5]
