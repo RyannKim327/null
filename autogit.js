@@ -1,33 +1,50 @@
-function longestCommonSubstring(str1, str2) {
-    const dp = Array(str1.length + 1).fill(0).map(() => Array(str2.length + 1).fill(0));
-    let maxLength = 0;
-    let endPosStr1 = 0;
+class Node {
+    constructor() {
+        this.children = {};
+    }
+}
 
-    for (let i = 1; i <= str1.length; i++) {
-        for (let j = 1; j <= str2.length; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
+class SuffixTree {
+    constructor(str) {
+        this.root = new Node();
 
-                if (dp[i][j] > maxLength) {
-                    maxLength = dp[i][j];
-                    endPosStr1 = i - 1;
-                }
-            } else {
-                dp[i][j] = 0;
-            }
+        for (let i = 0; i < str.length; i++) {
+            this.addSuffix(str.substring(i));
         }
     }
 
-    if (maxLength === 0) {
-        return "";
+    addSuffix(suffix) {
+        let node = this.root;
+
+        for (let i = 0; i < suffix.length; i++) {
+            let char = suffix[i];
+
+            if (!node.children[char]) {
+                node.children[char] = new Node();
+            }
+
+            node = node.children[char];
+        }
     }
 
-    return str1.substring(endPosStr1 - maxLength + 1, endPosStr1 + 1);
+    search(pattern) {
+        let node = this.root;
+
+        for (let i = 0; i < pattern.length; i++) {
+            let char = pattern[i];
+
+            if (!node.children[char]) {
+                return false;
+            }
+
+            node = node.children[char];
+        }
+
+        return true;
+    }
 }
 
 // Example usage
-const str1 = "programming";
-const str2 = "programmer";
-
-const result = longestCommonSubstring(str1, str2);
-console.log(result); // Output: "program"
+const suffixTree = new SuffixTree("banana");
+console.log(suffixTree.search("ana")); // Output: true
+console.log(suffixTree.search("app")); // Output: false
