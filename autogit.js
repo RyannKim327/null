@@ -1,14 +1,20 @@
-const arr = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArr = [...new Set(arr)];
-console.log(uniqueArr); // Output: [1, 2, 3, 4, 5]
-const arr = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArr = arr.filter((item, index) => arr.indexOf(item) === index);
-console.log(uniqueArr); // Output: [1, 2, 3, 4, 5]
-const arr = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArr = arr.reduce((acc, current) => {
-    if (acc.indexOf(current) === -1) {
-        acc.push(current);
+function findSecondLargest(arr) {
+    let max = arr[0];
+    let secondMax = -Infinity;
+
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] > max) {
+            secondMax = max;
+            max = arr[i];
+        } else if (arr[i] > secondMax && arr[i] < max) {
+            secondMax = arr[i];
+        }
     }
-    return acc;
-}, []);
-console.log(uniqueArr); // Output: [1, 2, 3, 4, 5]
+
+    return secondMax;
+}
+
+// Example usage
+const arr = [3, 7, 1, 9, 5];
+const secondLargest = findSecondLargest(arr);
+console.log("Second Largest Element:", secondLargest);
