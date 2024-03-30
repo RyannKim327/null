@@ -1,26 +1,60 @@
-function binarySearchRecursive(arr, target, start=0, end=arr.length-1) {
-    if (start > end) {
-        return -1; // target not found
-    }
-
-    let mid = Math.floor((start + end) / 2);
-
-    if (arr[mid] === target) {
-        return mid; // target found
-    } else if (arr[mid] < target) {
-        return binarySearchRecursive(arr, target, mid + 1, end); // search in the right half
-    } else {
-        return binarySearchRecursive(arr, target, start, mid - 1); // search in the left half
-    }
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.children = [];
+  }
 }
 
-// Example usage
-const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const target = 7;
-const index = binarySearchRecursive(arr, target);
+function bidirectionalSearch(startNode, endNode) {
+  let startQueue = [startNode];
+  let endQueue = [endNode];
 
-if (index !== -1) {
-    console.log(`Target ${target} found at index ${index}`);
-} else {
-    console.log(`Target ${target} not found`);
+  let startVisited = new Set();
+  let endVisited = new Set();
+
+  startVisited.add(startNode);
+  endVisited.add(endNode);
+
+  while (startQueue.length > 0 && endQueue.length > 0) {
+    let currentStart = startQueue.shift();
+    let currentEnd = endQueue.shift();
+
+    if (endVisited.has(currentStart)) {
+      console.log("Nodes meet in the middle!");
+      return true;
+    }
+
+    if (startVisited.has(currentEnd)) {
+      console.log("Nodes meet in the middle!");
+      return true;
+    }
+
+    for (let child of currentStart.children) {
+      if (!startVisited.has(child)) {
+        startVisited.add(child);
+        startQueue.push(child);
+      }
+    }
+
+    for (let child of currentEnd.children) {
+      if (!endVisited.has(child)) {
+        endVisited.add(child);
+        endQueue.push(child);
+      }
+    }
+  }
+
+  return false;
 }
+
+// Example usage:
+let nodeA = new Node('A');
+let nodeB = new Node('B');
+let nodeC = new Node('C');
+let nodeD = new Node('D');
+
+nodeA.children.push(nodeB);
+nodeB.children.push(nodeC);
+nodeC.children.push(nodeD);
+
+console.log(bidirectionalSearch(nodeA, nodeD));
