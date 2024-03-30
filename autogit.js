@@ -1,16 +1,37 @@
-function findMedianSortedArrays(nums1, nums2) {
-    const combinedArray = nums1.concat(nums2).sort((a, b) => a - b);
-    const totalLength = combinedArray.length;
+function isPrime(num) {
+    if (num <= 1) return false;
+    if (num <= 3) return true;
 
-    if (totalLength % 2 === 0) {
-        return (combinedArray[totalLength / 2 - 1] + combinedArray[totalLength / 2]) / 2;
-    } else {
-        return combinedArray[(totalLength - 1) / 2];
+    if (num % 2 === 0 || num % 3 === 0) return false;
+
+    for (let i = 5; i * i <= num; i += 6) {
+        if (num % i === 0 || num % (i + 2) === 0) {
+            return false;
+        }
     }
+
+    return true;
 }
 
-// Example usage
-const nums1 = [1, 3, 5];
-const nums2 = [2, 4, 6];
-const median = findMedianSortedArrays(nums1, nums2);
-console.log(median); // Output: 3.5
+function largestPrimeFactor(num) {
+    let largestPrime = 1;
+
+    for (let i = 2; i <= Math.floor(Math.sqrt(num)); i++) {
+        if (num % i === 0) {
+            if (isPrime(i)) {
+                largestPrime = i;
+            }
+
+            const factor = num / i;
+            if (isPrime(factor) && factor > largestPrime) {
+                largestPrime = factor;
+            }
+        }
+    }
+
+    return largestPrime;
+}
+
+// Test the function with a number
+const number = 360;
+console.log(`The largest prime factor of ${number} is: ${largestPrimeFactor(number)}`);
