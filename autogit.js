@@ -1,37 +1,48 @@
-function depthLimitedSearch(node, depth, maxDepth) {
-    if (depth > maxDepth) {
-        return null; // Reached maximum depth, stop searching
+function computePrefixFunction(pattern) {
+    const prefixFunc = [0];
+    let k = 0;
+    for (let q = 1; q < pattern.length; q++) {
+        while (k > 0 && pattern[k] !== pattern[q]) {
+            k = prefixFunc[k - 1];
+        }
+        if (pattern[k] === pattern[q]) {
+            k++;
+        }
+        prefixFunc[q] = k;
     }
+    return prefixFunc;
+}
 
-    if (isGoalState(node)) {
-        return node; // Found goal state
-    }
-
-    for (let child of expand(node)) {
-        let result = depthLimitedSearch(child, depth + 1, maxDepth);
-        if (result !== null) {
-            return result; // Goal state found in child nodes
+function kmpStringSearch(text, pattern) {
+    const n = text.length;
+    const m = pattern.length;
+    const prefixFunc = computePrefixFunction(pattern);
+    let q = 0;
+    const indices = [];
+  
+    for (let i = 0; i < n; i++) {
+        while (q > 0 && pattern[q] !== text[i]) {
+            q = prefixFunc[q - 1];
+        }
+        if (pattern[q] === text[i]) {
+            q++;
+        }
+        if (q === m) {
+            indices.push(i - m + 1); // Match found at index (i - m + 1)
+            q = prefixFunc[q - 1];
         }
     }
-
-    return null; // Goal state not found within depth limit
+  
+    return indices;
 }
 
-// Example helper functions
-function isGoalState(node) {
-    // Check if the node is the goal state
-    return node === "goal";
+// Test
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const indices = kmpStringSearch(text, pattern);
+
+if (indices.length > 0) {
+    console.log(`Pattern found at indices: ${indices}`);
+} else {
+    console.log('Pattern not found in the text.');
 }
-
-function expand(node) {
-    // Generate child nodes from the current node
-    return ["child1", "child2"]; // Example child nodes
-}
-
-// Initial state for the search
-let initialState = "start";
-
-// Perform depth-limited search with initial state, depth 0 and maximum depth 3
-let result = depthLimitedSearch(initialState, 0, 3);
-
-console.log("Result: ", result);
