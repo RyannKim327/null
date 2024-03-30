@@ -1,38 +1,20 @@
-function longestIncreasingSubsequence(arr) {
-    const n = arr.length;
-    const dp = new Array(n).fill(1);
-
-    for (let i = 1; i < n; i++) {
-        for (let j = 0; j < i; j++) {
-            if (arr[i] > arr[j] && dp[i] < dp[j] + 1) {
-                dp[i] = dp[j] + 1;
+function selectionSort(arr) {
+    const len = arr.length;
+    for (let i = 0; i < len - 1; i++) {
+        let minIndex = i;
+        for (let j = i + 1; j < len; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
             }
         }
-    }
-
-    let maxLength = 0;
-    for (let i = 0; i < n; i++) {
-        if (dp[i] > maxLength) {
-            maxLength = dp[i];
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
         }
     }
-
-    let result = [];
-    let currentMaxLength = maxLength;
-    for (let i = n - 1; i >= 0; i--) {
-        if (dp[i] === currentMaxLength) {
-            result.unshift(arr[i]);
-            currentMaxLength--;
-        }
-    }
-
-    return {
-        length: maxLength,
-        sequence: result
-    };
+    return arr;
 }
 
-// Example usage
-const arr = [3, 10, 2, 1, 20];
-const lisResult = longestIncreasingSubsequence(arr);
-console.log(lisResult);
+// Example usage:
+const arr = [64, 25, 12, 22, 11];
+console.log("Original Array:", arr);
+console.log("Sorted Array:", selectionSort(arr.slice()));
