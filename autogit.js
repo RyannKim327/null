@@ -1,65 +1,46 @@
+function depthLimitedSearch(node, goal, depthLimit) {
+    return recursiveDLS(node, goal, depthLimit, 0);
+}
+
+function recursiveDLS(node, goal, depthLimit, depth) {
+    if (depth > depthLimit) {
+        return false;
+    }
+
+    if (node === goal) {
+        return true;
+    }
+
+    if (depth === depthLimit) {
+        return false;
+    }
+
+    for (let child of node.children) {
+        if (recursiveDLS(child, goal, depthLimit, depth + 1)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+// Usage example
 class Node {
     constructor(value) {
         this.value = value;
-        this.left = null;
-        this.right = null;
+        this.children = [];
     }
 }
 
-class BinarySearchTree {
-    constructor() {
-        this.root = null;
-    }
+// Construct a tree
+const root = new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
+root.children = [node2, node3];
+const node4 = new Node(4);
+node2.children = [node4];
+const node5 = new Node(5);
+node4.children = [node5];
 
-    insert(value) {
-        const newNode = new Node(value);
-        
-        if (!this.root) {
-            this.root = newNode;
-            return this;
-        }
-
-        let currentNode = this.root;
-        while (true) {
-            if (value < currentNode.value) {
-                if (!currentNode.left) {
-                    currentNode.left = newNode;
-                    return this;
-                }
-                currentNode = currentNode.left;
-            } else {
-                if (!currentNode.right) {
-                    currentNode.right = newNode;
-                    return this;
-                }
-                currentNode = currentNode.right;
-            }
-        }
-    }
-
-    search(value) {
-        let currentNode = this.root;
-        while (currentNode) {
-            if (value === currentNode.value) {
-                return true;
-            } else if (value < currentNode.value) {
-                currentNode = currentNode.left;
-            } else {
-                currentNode = currentNode.right;
-            }
-        }
-        return false;
-    }
-}
-
-// Example usage
-const bst = new BinarySearchTree();
-
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
-bst.insert(7);
-
-console.log(bst.search(10)); // Output: true
-console.log(bst.search(20)); // Output: false
+console.log(depthLimitedSearch(root, node5, 2)); // Output: false
+console.log(depthLimitedSearch(root, node5, 3)); // Output: true
