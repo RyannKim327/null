@@ -1,8 +1,5 @@
-let str = "42";
-let num = parseInt(str);
+const cron = require('node-cron');
 
-console.log(num); // 42
-let str = "42";
-let num = Number(str);
-
-console.log(num); // 42
+cron.schedule('* * * * *', () => {
+  console.log('Running a task every minute');
+});
