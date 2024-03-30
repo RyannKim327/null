@@ -1,11 +1,19 @@
-let fruits = ['apple', 'banana', 'cherry', 'orange'];
+function maxSubarray(arr) {
+    if (arr.length === 0) {
+        return 0;
+    }
 
-// Find the index of the element you want to remove
-let index = fruits.indexOf('banana');
+    let maxEndingHere = arr[0];
+    let maxSoFar = arr[0];
 
-// Remove the element at that index
-if (index > -1) {
-    fruits.splice(index, 1);
+    for (let i = 1; i < arr.length; i++) {
+        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
+        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+    }
+
+    return maxSoFar;
 }
 
-console.log(fruits); // Output: ['apple', 'cherry', 'orange']
+// Example usage
+const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+console.log(maxSubarray(arr)); // Output: 6
