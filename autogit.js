@@ -1,72 +1,47 @@
-// Node class to represent each element in the queue
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+function mergeSort(arr) {
+    const n = arr.length;
+    const tempArray = new Array(n);
+
+    // Divide the array into subarrays of size 1, then merge them
+    for (let size = 1; size < n; size *= 2) {
+        for (let leftStart = 0; leftStart < n - 1; leftStart += 2 * size) {
+            const mid = Math.min(leftStart + size - 1, n - 1);
+            const rightEnd = Math.min(leftStart + 2 * size - 1, n - 1);
+
+            merge(arr, tempArray, leftStart, mid, rightEnd);
+        }
+    }
+
+    return arr;
 }
 
-// Queue class to implement the queue using linked list
-class Queue {
-  constructor() {
-    this.front = null;
-    this.rear = null;
-    this.size = 0;
-  }
+function merge(arr, tempArray, leftStart, mid, rightEnd) {
+    let i = leftStart;
+    let j = mid + 1;
+    let k = leftStart;
 
-  // Method to add an element to the queue
-  enqueue(value) {
-    let newNode = new Node(value);
-    if (!this.front) {
-      this.front = newNode;
-      this.rear = newNode;
-    } else {
-      this.rear.next = newNode;
-      this.rear = newNode;
+    while (i <= mid && j <= rightEnd) {
+        if (arr[i] <= arr[j]) {
+            tempArray[k++] = arr[i++];
+        } else {
+            tempArray[k++] = arr[j++];
+        }
     }
-    this.size++;
-  }
 
-  // Method to remove an element from the queue
-  dequeue() {
-    if (!this.front) {
-      return null;
+    while (i <= mid) {
+        tempArray[k++] = arr[i++];
     }
-    let removedValue = this.front.value;
-    this.front = this.front.next;
-    if (!this.front) {
-      this.rear = null;
+
+    while (j <= rightEnd) {
+        tempArray[k++] = arr[j++];
     }
-    this.size--;
-    return removedValue;
-  }
 
-  // Method to check if the queue is empty
-  isEmpty() {
-    return this.size === 0;
-  }
-
-  // Method to get the size of the queue
-  getSize() {
-    return this.size;
-  }
-
-  // Method to get the front element of the queue
-  getFront() {
-    if (!this.front) {
-      return null;
+    // Copy the merged elements back to the original array
+    for (i = leftStart; i <= rightEnd; i++) {
+        arr[i] = tempArray[i];
     }
-    return this.front.value;
-  }
 }
 
-// Example usage:
-const queue = new Queue();
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
-
-console.log(queue.dequeue()); // Output: 1
-console.log(queue.getFront()); // Output: 2
-console.log(queue.getSize()); // Output: 2
-console.log(queue.isEmpty()); // Output: false
+// Example usage
+const arr = [38, 27, 43, 3, 9, 82, 10];
+console.log(mergeSort(arr.slice()));
