@@ -1,20 +1,35 @@
-function isAnagram(str1, str2) {
-    // Remove any special characters, spaces, and convert to lowercase
-    str1 = str1.replace(/[^\w]/g, '').toLowerCase();
-    str2 = str2.replace(/[^\w]/g, '').toLowerCase();
+function longestIncreasingSubsequence(arr) {
+    const n = arr.length;
+    const dp = new Array(n).fill(1);
 
-    // Check if the lengths of the two strings are equal
-    if (str1.length !== str2.length) {
-        return false;
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[i] > arr[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
+        }
     }
 
-    // Sort the characters in the strings and compare them
-    const sortedStr1 = str1.split('').sort().join('');
-    const sortedStr2 = str2.split('').sort().join('');
+    let maxLength = 0;
+    for (let i = 0; i < n; i++) {
+        if (dp[i] > maxLength) {
+            maxLength = dp[i];
+        }
+    }
 
-    return sortedStr1 === sortedStr2;
+    const longestIncreasingSubsequence = [];
+    let currentLength = maxLength;
+    for (let i = n - 1; i >= 0; i--) {
+        if (dp[i] === currentLength) {
+            longestIncreasingSubsequence.unshift(arr[i]);
+            currentLength--;
+        }
+    }
+
+    return longestIncreasingSubsequence;
 }
 
-// Test the function
-console.log(isAnagram('listen', 'silent')); // Output: true
-console.log(isAnagram('hello', 'world')); // Output: false
+// Example usage
+const arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
+const result = longestIncreasingSubsequence(arr);
+console.log(result); // Output: [10, 22, 33, 50, 60, 80]
