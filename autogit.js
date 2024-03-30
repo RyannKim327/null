@@ -1,30 +1,3 @@
-function depthLimitedSearch(node, goal, depthLimit) {
-    return recursiveDLS(node, goal, depthLimit, 0);
-}
-
-function recursiveDLS(node, goal, depthLimit, depth) {
-    if (depth > depthLimit) {
-        return false;
-    }
-
-    if (node === goal) {
-        return true;
-    }
-
-    if (depth === depthLimit) {
-        return false;
-    }
-
-    for (let child of node.children) {
-        if (recursiveDLS(child, goal, depthLimit, depth + 1)) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-// Usage example
 class Node {
     constructor(value) {
         this.value = value;
@@ -32,15 +5,40 @@ class Node {
     }
 }
 
-// Construct a tree
-const root = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
-root.children = [node2, node3];
-const node4 = new Node(4);
-node2.children = [node4];
-const node5 = new Node(5);
-node4.children = [node5];
+function depthLimitedSearch(root, goal, depthLimit) {
+    let stack = [{ node: root, depth: 0 }];
 
-console.log(depthLimitedSearch(root, node5, 2)); // Output: false
-console.log(depthLimitedSearch(root, node5, 3)); // Output: true
+    while (stack.length > 0) {
+        let { node, depth } = stack.pop();
+
+        if (node.value === goal) {
+            return node;
+        }
+
+        if (depth < depthLimit) {
+            for (let child of node.children) {
+                stack.push({ node: child, depth: depth + 1 });
+            }
+        }
+    }
+
+    return null;
+}
+
+// Usage example
+// Create a sample tree
+let rootNode = new Node(1);
+let child1 = new Node(2);
+let child2 = new Node(3);
+let child3 = new Node(4);
+rootNode.children = [child1, child2, child3];
+let child4 = new Node(5);
+let child5 = new Node(6);
+child1.children = [child4, child5];
+
+let result = depthLimitedSearch(rootNode, 5, 2);
+if (result) {
+    console.log("Goal node found: " + result.value);
+} else {
+    console.log("Goal node not found within the depth limit");
+}
