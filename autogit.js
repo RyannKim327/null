@@ -1,49 +1,34 @@
-function rabinKarp(text, pattern) {
-    const prime = 101; // A prime number for hashing
-    const n = text.length;
-    const m = pattern.length;
-    const patternHash = hash(pattern, m);
-    let textHash = hash(text, m);
+function interpolationSearch(array, target) {
+    let low = 0;
+    let high = array.length - 1;
 
-    for (let i = 0; i <= n - m; i++) {
-        if (patternHash === textHash) {
-            let found = true;
-            for (let j = 0; j < m; j++) {
-                if (pattern[j] !== text[i + j]) {
-                    found = false;
-                    break;
-                }
-            }
-            if (found) {
-                return i; // Pattern found at index i
-            }
+    while (low <= high && target >= array[low] && target <= array[high]) {
+        if (low == high) {
+            if (array[low] === target) return low;
+            return -1;
         }
 
-        if (i < n - m) {
-            textHash = rehash(text, i, m, textHash, prime);
+        let pos = low + Math.floor(((target - array[low]) * (high - low) / (array[high] - array[low])));
+
+        if (array[pos] === target) {
+            return pos;
+        } else if (array[pos] < target) {
+            low = pos + 1;
+        } else {
+            high = pos - 1;
         }
     }
 
-    return -1; // Pattern not found
+    return -1;
 }
 
-function hash(str, len) {
-    let hash = 0;
-    for (let i = 0; i < len; i++) {
-        hash += str.charCodeAt(i) * Math.pow(101, len - i - 1);
-    }
-    return hash;
-}
+// Test the interpolation search
+const array = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+const target = 16;
+const index = interpolationSearch(array, target);
 
-function rehash(str, oldIndex, len, oldHash, prime) {
-    let newHash = oldHash - str.charCodeAt(oldIndex);
-    newHash = newHash / 101;
-    newHash += str.charCodeAt(oldIndex + len) * Math.pow(101, len - 1);
-    return newHash;
+if (index !== -1) {
+    console.log(`Element found at index ${index}`);
+} else {
+    console.log("Element not found");
 }
-
-// Example usage
-const text = "ABCCDDAEFG";
-const pattern = "CDD";
-const index = rabinKarp(text, pattern);
-console.log(`Pattern found at index: ${index}`);
