@@ -1,50 +1,47 @@
-class Graph {
-    constructor() {
-        this.adjacencyList = {};
+function fibonacciSearch(arr, x) {
+  let fibM2 = 0;
+  let fibM1 = 1;
+  let fibM = fibM2 + fibM1;
+
+  while (fibM < arr.length) {
+    fibM2 = fibM1;
+    fibM1 = fibM;
+    fibM = fibM2 + fibM1;
+  }
+
+  let offset = -1;
+
+  while (fibM > 1) {
+    let i = Math.min(offset + fibM2, arr.length - 1);
+
+    if (arr[i] < x) {
+      fibM = fibM1;
+      fibM1 = fibM2;
+      fibM2 = fibM - fibM1;
+      offset = i;
+    } else if (arr[i] > x) {
+      fibM = fibM2;
+      fibM1 = fibM1 - fibM2;
+      fibM2 = fibM - fibM1;
+    } else {
+      return i;
     }
+  }
 
-    addVertex(vertex) {
-        if (!this.adjacencyList[vertex]) {
-            this.adjacencyList[vertex] = [];
-        }
-    }
+  if (fibM1 && arr[offset + 1] === x) {
+    return offset + 1;
+  }
 
-    addEdge(vertex1, vertex2) {
-        this.adjacencyList[vertex1].push(vertex2);
-        this.adjacencyList[vertex2].push(vertex1);
-    }
-
-    bfs(startingNode) {
-        let queue = [startingNode];
-        let visited = {};
-        let result = [];
-
-        visited[startingNode] = true;
-
-        while (queue.length) {
-            const currentVertex = queue.shift();
-            result.push(currentVertex);
-
-            this.adjacencyList[currentVertex].forEach(neighbor => {
-                if (!visited[neighbor]) {
-                    visited[neighbor] = true;
-                    queue.push(neighbor);
-                }
-            });
-        }
-
-        return result;
-    }
+  return -1;
 }
 
-// Usage example
-const graph = new Graph();
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
+// Usage
+const arr = [1, 3, 5, 8, 13, 21, 34, 55, 89];
+const x = 55;
+const index = fibonacciSearch(arr, x);
 
-console.log(graph.bfs('A')); // Output: ['A', 'B', 'C', 'D']
+if (index !== -1) {
+  console.log(`Element found at index ${index}`);
+} else {
+  console.log("Element not found");
+}
