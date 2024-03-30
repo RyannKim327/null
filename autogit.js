@@ -1,40 +1,37 @@
-function boyerMooreHorspool(text, pattern) {
-    const patternLength = pattern.length;
+function boyerMooreSearch(text, pattern) {
     const textLength = text.length;
+    const patternLength = pattern.length;
+    const charTable = new Array(256).fill(patternLength);
 
-    if (patternLength === 0) {
-        return -1; // Edge case: empty pattern
-    }
-
-    const badMatchTable = new Array(256).fill(patternLength);
-
+    // Populate charTable with values based on the pattern
     for (let i = 0; i < patternLength - 1; i++) {
-        // Calculate the bad match table
-        badMatchTable[pattern.charCodeAt(i)] = patternLength - 1 - i;
+        charTable[pattern.charCodeAt(i)] = patternLength - 1 - i;
     }
 
+    // Perform the search
     let i = patternLength - 1;
+    let j = patternLength - 1;
+
     while (i < textLength) {
-        let j = patternLength - 1;
-        while (j >= 0 && text.charAt(i) === pattern.charAt(j)) {
+        if (text[i] === pattern[j]) {
+            if (j === 0) {
+                return i;
+            }
             i--;
             j--;
-        }
-
-        if (j === -1) {
-            return i + 1; // Match found
         } else {
-            i += Math.max(badMatchTable[text.charCodeAt(i)], 1);
+            i += patternLength - j + Math.min(j, charTable[text.charCodeAt(i)]);
+            j = patternLength - 1;
         }
     }
-    
-    return -1; // No match found
+
+    return -1;
 }
 
-// Example:
-const text = "Hello, how are you?";
-const pattern = "are";
-const index = boyerMooreHorspool(text, pattern);
+// Example usage
+const text = "hello world";
+const pattern = "world";
+const index = boyerMooreSearch(text, pattern);
 
 if (index !== -1) {
     console.log(`Pattern found at index ${index}`);
