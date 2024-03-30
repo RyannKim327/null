@@ -1,40 +1,20 @@
-function boyerMooreSearch(text, pattern) {
-    const textLength = text.length;
-    const patternLength = pattern.length;
-    const charTable = new Array(256).fill(patternLength);
+function insertionSort(arr) {
+    for (let i = 1; i < arr.length; i++) {
+        let current = arr[i];
+        let j = i - 1;
 
-    // Populate charTable with values based on the pattern
-    for (let i = 0; i < patternLength - 1; i++) {
-        charTable[pattern.charCodeAt(i)] = patternLength - 1 - i;
-    }
-
-    // Perform the search
-    let i = patternLength - 1;
-    let j = patternLength - 1;
-
-    while (i < textLength) {
-        if (text[i] === pattern[j]) {
-            if (j === 0) {
-                return i;
-            }
-            i--;
+        while (j >= 0 && arr[j] > current) {
+            arr[j + 1] = arr[j];
             j--;
-        } else {
-            i += patternLength - j + Math.min(j, charTable[text.charCodeAt(i)]);
-            j = patternLength - 1;
         }
+
+        arr[j + 1] = current;
     }
 
-    return -1;
+    return arr;
 }
 
 // Example usage
-const text = "hello world";
-const pattern = "world";
-const index = boyerMooreSearch(text, pattern);
-
-if (index !== -1) {
-    console.log(`Pattern found at index ${index}`);
-} else {
-    console.log("Pattern not found");
-}
+const array = [5, 2, 4, 6, 1, 3];
+const sortedArray = insertionSort(array);
+console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 6]
