@@ -1,56 +1,33 @@
-class Node {
-  constructor(state, parent, cost = 0, estimatedCost = 0) {
-    this.state = state;
-    this.parent = parent;
-    this.cost = cost;
-    this.estimatedCost = estimatedCost;
+// Define the structure of a binary tree node
+class TreeNode {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
 
-function astarSearch(initialState, goalState, heuristic) {
-  let openList = [new Node(initialState, null, 0, heuristic(initialState))];
-  let closedList = [];
-
-  while (openList.length > 0) {
-    openList.sort((a, b) => a.cost + a.estimatedCost - (b.cost + b.estimatedCost));
-    let currentNode = openList.shift();
-
-    if (currentNode.state === goalState) {
-      let path = [];
-      while (currentNode !== null) {
-        path.unshift(currentNode.state);
-        currentNode = currentNode.parent;
-      }
-      return path;
-    }
-
-    closedList.push(currentNode.state);
-
-    let successors = generateSuccessors(currentNode.state);
-    successors.forEach(successor => {
-      if (!closedList.includes(successor)) {
-        let newCost = currentNode.cost + 1;
-        let newEstimatedCost = heuristic(successor);
-        let newNode = new Node(successor, currentNode, newCost, newEstimatedCost);
-        openList.push(newNode);
-      }
-    });
+// Function to count the number of leaf nodes in a binary tree
+function countLeafNodes(root) {
+  if (root === null) {
+    return 0;
   }
 
-  return null;
+  if (root.left === null && root.right === null) {
+    return 1;
+  }
+
+  return countLeafNodes(root.left) + countLeafNodes(root.right);
 }
 
-function heuristic(state) {
-  // Define your heuristic function here (e.g., Manhattan distance, Euclidean distance)
-}
+// Example binary tree
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+root.right.left = new TreeNode(6);
 
-function generateSuccessors(state) {
-  // Generate successors for the current state (e.g., possible moves from a given position)
-}
-
-// Example usage:
-let initialState = /* initial state */;
-let goalState = /* goal state */;
-let path = astarSearch(initialState, goalState, heuristic);
-
-console.log(path);
+// Count the number of leaf nodes in the binary tree
+const numOfLeafNodes = countLeafNodes(root);
+console.log(`Number of leaf nodes: ${numOfLeafNodes}`);
