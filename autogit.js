@@ -1,62 +1,38 @@
-class Graph {
-  constructor() {
-    this.nodes = [];
-    this.adjList = {};
-  }
+function longestIncreasingSubsequence(arr) {
+    const n = arr.length;
+    const dp = new Array(n).fill(1);
 
-  addNode(node) {
-    this.nodes.push(node);
-    this.adjList[node] = [];
-  }
-
-  addEdge(node1, node2) {
-    this.adjList[node1].push(node2);
-    this.adjList[node2].push(node1);
-  }
-
-  breadthFirstSearch(startNode, endNode) {
-    let visited = {};
-    let queue = [];
-    let path = [];
-  
-    queue.push(startNode);
-    visited[startNode] = true;
-  
-    while (queue.length > 0) {
-      let currentNode = queue.shift();
-      path.push(currentNode);
-  
-      if (currentNode === endNode) {
-        return path;
-      }
-  
-      this.adjList[currentNode].forEach(neighbor => {
-        if (!visited[neighbor]) {
-          visited[neighbor] = true;
-          queue.push(neighbor);
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[i] > arr[j] && dp[i] < dp[j] + 1) {
+                dp[i] = dp[j] + 1;
+            }
         }
-      });
     }
-  
-    return "Path not found";
-  }
+
+    let maxLength = 0;
+    for (let i = 0; i < n; i++) {
+        if (dp[i] > maxLength) {
+            maxLength = dp[i];
+        }
+    }
+
+    let result = [];
+    let currentMaxLength = maxLength;
+    for (let i = n - 1; i >= 0; i--) {
+        if (dp[i] === currentMaxLength) {
+            result.unshift(arr[i]);
+            currentMaxLength--;
+        }
+    }
+
+    return {
+        length: maxLength,
+        sequence: result
+    };
 }
 
 // Example usage
-const graph = new Graph();
-graph.addNode("A");
-graph.addNode("B");
-graph.addNode("C");
-graph.addNode("D");
-graph.addNode("E");
-
-graph.addEdge("A", "B");
-graph.addEdge("A", "C");
-graph.addEdge("B", "D");
-graph.addEdge("C", "D");
-graph.addEdge("C", "E");
-graph.addEdge("D", "E");
-
-const startNode = "A";
-const endNode = "E";
-console.log(graph.breadthFirstSearch(startNode, endNode));
+const arr = [3, 10, 2, 1, 20];
+const lisResult = longestIncreasingSubsequence(arr);
+console.log(lisResult);
