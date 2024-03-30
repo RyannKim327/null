@@ -1,28 +1,56 @@
-function longestCommonSubstring(str1, str2) {
-    const m = str1.length;
-    const n = str2.length;
-
-    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-    let maxLength = 0;
-    let end = 0;
-
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-                if (dp[i][j] > maxLength) {
-                    maxLength = dp[i][j];
-                    end = i - 1;
-                }
-            } else {
-                dp[i][j] = 0;
-            }
-        }
-    }
-
-    return str1.slice(end - maxLength + 1, end + 1);
+class Node {
+  constructor(state, parent, cost = 0, estimatedCost = 0) {
+    this.state = state;
+    this.parent = parent;
+    this.cost = cost;
+    this.estimatedCost = estimatedCost;
+  }
 }
 
-const str1 = "abcdef";
-const str2 = "bcdeft";
-console.log(longestCommonSubstring(str1, str2)); // Output will be "cdef"
+function astarSearch(initialState, goalState, heuristic) {
+  let openList = [new Node(initialState, null, 0, heuristic(initialState))];
+  let closedList = [];
+
+  while (openList.length > 0) {
+    openList.sort((a, b) => a.cost + a.estimatedCost - (b.cost + b.estimatedCost));
+    let currentNode = openList.shift();
+
+    if (currentNode.state === goalState) {
+      let path = [];
+      while (currentNode !== null) {
+        path.unshift(currentNode.state);
+        currentNode = currentNode.parent;
+      }
+      return path;
+    }
+
+    closedList.push(currentNode.state);
+
+    let successors = generateSuccessors(currentNode.state);
+    successors.forEach(successor => {
+      if (!closedList.includes(successor)) {
+        let newCost = currentNode.cost + 1;
+        let newEstimatedCost = heuristic(successor);
+        let newNode = new Node(successor, currentNode, newCost, newEstimatedCost);
+        openList.push(newNode);
+      }
+    });
+  }
+
+  return null;
+}
+
+function heuristic(state) {
+  // Define your heuristic function here (e.g., Manhattan distance, Euclidean distance)
+}
+
+function generateSuccessors(state) {
+  // Generate successors for the current state (e.g., possible moves from a given position)
+}
+
+// Example usage:
+let initialState = /* initial state */;
+let goalState = /* goal state */;
+let path = astarSearch(initialState, goalState, heuristic);
+
+console.log(path);
