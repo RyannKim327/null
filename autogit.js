@@ -1,49 +1,29 @@
-class Node {
-  constructor(value, parent, score) {
-    this.value = value;
-    this.parent = parent;
-    this.score = score;
-  }
-}
+function largestPrimeFactor(number) {
+    let maxPrime = -1;
 
-function beamSearch(root, beamWidth, maxDepth, evaluate) {
-  let candidates = [root];
-
-  for (let depth = 0; depth < maxDepth; depth++) {
-    let newCandidates = [];
-
-    for (let candidate of candidates) {
-      if (depth === maxDepth - 1 || candidate.value === 'goal') {
-        return candidate;
-      }
-
-      let children = expand(candidate, evaluate);
-      newCandidates.push(...children);
+    // Divide by 2 until the number becomes odd
+    while (number % 2 === 0) {
+        maxPrime = 2;
+        number = number / 2;
     }
 
-    newCandidates.sort((a, b) => b.score - a.score);
-    candidates = newCandidates.slice(0, beamWidth);
-  }
+    // Find the largest prime factor
+    for (let i = 3; i <= Math.sqrt(number); i = i + 2) {
+        while (number % i === 0) {
+            maxPrime = i;
+            number = number / i;
+        }
+    }
 
-  return null;
+    // If the number itself is prime
+    if (number > 2) {
+        maxPrime = number;
+    }
+
+    return maxPrime;
 }
 
-function expand(node, evaluate) {
-  // Simulating expansion of the current node
-  const children = [];
-  for (let i = 0; i < 3; i++) {
-    let childValue = Math.random() > 0.5 ? 'good' : 'bad';
-    let childScore = evaluate(childValue);
-    children.push(new Node(childValue, node, childScore));
-  }
-  return children;
-}
+const number = 600851475143;
+const largestPrime = largestPrimeFactor(number);
 
-// Example usage:
-const root = new Node('start', null, 0);
-const beamWidth = 2;
-const maxDepth = 3;
-const evaluate = (value) => (value === 'good' ? 1 : 0);
-
-const result = beamSearch(root, beamWidth, maxDepth, evaluate);
-console.log(result);
+console.log("Largest Prime Factor of", number, "is", largestPrime);
