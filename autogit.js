@@ -1,51 +1,28 @@
-function rabinKarp(text, pattern) {
-    const prime = 101; // A prime number to use in the hashing function
-    const numChars = 256; // Assuming ASCII character set
-
-    const textLength = text.length;
-    const patternLength = pattern.length; 
-
-    // Calculate the (numChars ^ patternLength) % prime
-    let h = 1;
-    for (let i = 0; i < patternLength - 1; i++) {
-        h = (h * numChars) % prime;
-    }
-
-    // Calculate hash value for pattern and the first window of text
-    let patternHash = 0;
-    let textHash = 0;
-    for (let i = 0; i < patternLength; i++) {
-        patternHash = (numChars * patternHash + pattern.charCodeAt(i)) % prime;
-        textHash = (numChars * textHash + text.charCodeAt(i)) % prime;
-    }
-
-    // Slide the pattern over the text and compare hashes
-    for (let i = 0; i <= textLength - patternLength; i++) {
-        if (patternHash === textHash) {
-            // Check character by character if pattern matches the text substring
-            let match = true;
-            for (let j = 0; j < patternLength; j++) {
-                if (pattern[j] !== text[i + j]) {
-                    match = false;
-                    break;
-                }
+function shellSort(arr) {
+    var n = arr.length;
+    
+    // Start with a big gap, then reduce the gap
+    for (var gap = Math.floor(n/2); gap > 0; gap = Math.floor(gap/2)) {
+        // Do a gapped insertion sort for this gap size
+        for (var i = gap; i < n; i++) {
+            // Add arr[i] to the elements that have been gap sorted
+            // Save arr[i] in temp and make a hole at position i
+            var temp = arr[i];
+            
+            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+            var j;
+            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
+                arr[j] = arr[j - gap];
             }
-
-            if (match) {
-                console.log("Pattern found at index: ", i);
-            }
-        }
-
-        if (i < textLength - patternLength) {
-            textHash = (numChars * (textHash - text.charCodeAt(i) * h) + text.charCodeAt(i + patternLength)) % prime;
-            if (textHash < 0) {
-                textHash += prime;
-            }
+            
+            // Put temp (the original arr[i]) in its correct location
+            arr[j] = temp;
         }
     }
+    return arr;
 }
 
-// Test the function
-const text = "AABAACAADAABAABA";
-const pattern = "AABA";
-rabinKarp(text, pattern);
+// Example usage
+var array = [12, 34, 54, 2, 3];
+console.log("Original Array: " + array);
+console.log("Sorted Array: " + shellSort(array));
