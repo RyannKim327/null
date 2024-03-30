@@ -1,22 +1,34 @@
-function isAnagram(str1, str2) {
-    const cleanStr1 = str1.replace(/[^\w]/g, "").toLowerCase();
-    const cleanStr2 = str2.replace(/[^\w]/g, "").toLowerCase();
+function mergeSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
+    }
+    
+    const middle = Math.floor(arr.length / 2);
+    const left = arr.slice(0, middle);
+    const right = arr.slice(middle);
+    
+    return merge(mergeSort(left), mergeSort(right));
+}
 
-    if (cleanStr1.length !== cleanStr2.length) {
-        return false;
+function merge(left, right) {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            result.push(right[rightIndex]);
+            rightIndex++;
+        }
     }
 
-    const sortedStr1 = cleanStr1.split('').sort().join('');
-    const sortedStr2 = cleanStr2.split('').sort().join('');
-
-    return sortedStr1 === sortedStr2;
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
 }
 
-// Test the function
-const string1 = "Listen";
-const string2 = "Silent";
-if (isAnagram(string1, string2)) {
-    console.log(`${string1} and ${string2} are anagrams.`);
-} else {
-    console.log(`${string1} and ${string2} are not anagrams.`);
-}
+// Example usage
+const arr = [8, 3, 9, 5, 1, 2, 7, 4, 6];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr);
