@@ -1,39 +1,77 @@
-function badCharHeuristic(pattern) {
-    const badChar = {};
-    const patternLength = pattern.length;
-
-    for (let i = 0; i < patternLength - 1; i++) {
-        badChar[pattern[i]] = patternLength - i - 1;
+class BTreeNode {
+    constructor(t, leaf = true) {
+        this.t = t; // Minimum degree
+        this.keys = [];
+        this.children = [];
+        this.leaf = leaf;
     }
-
-    return badChar;
 }
 
-function searchBoyerMoore(text, pattern) {
-    const textLength = text.length;
-    const patternLength = pattern.length;
-    const badChar = badCharHeuristic(pattern);
+class BTree {
+    constructor(t) {
+        this.t = t;
+        this.root = new BTreeNode(t, true);
+    }
 
-    let shift = 0;
-
-    while (shift <= textLength - patternLength) {
-        let j = patternLength - 1;
-
-        while (j >= 0 && pattern[j] === text[shift + j]) {
-            j--;
-        }
-
-        if (j < 0) {
-            console.log(`Pattern found at index ${shift}`);
-            shift += badChar[text[shift + patternLength]] || 1;
+    insert(key) {
+        let root = this.root;
+        if (root.keys.length === 2 * this.t - 1) {
+            let newNode = new BTreeNode(this.t, false);
+            newNode.children.push(root);
+            this.splitChild(newNode, 0);
+            this.root = newNode;
+            this.insertNonFull(newNode, key);
         } else {
-            shift += Math.max(1, j - (pattern.lastIndexOf(text[shift + j]) || -1));
+            this.insertNonFull(root, key);
         }
     }
+
+    insertNonFull(node, key) {
+        let i = node.keys.length - 1;
+        if (node.leaf) {
+            while (i >= 0 && key < node.keys[i]) {
+                node.keys[i + 1] = node.keys[i];
+                i--;
+            }
+            node.keys[i + 1] = key;
+        } else {
+            while (i >= 0 && key < node.keys[i]) {
+                i--;
+            }
+            i++;
+            if (node.children[i].keys.length === 2 * this.t - 1) {
+                this.splitChild(node, i);
+                if (key > node.keys[i]) {
+                    i++;
+                }
+            }
+            this.insertNonFull(node.children[i], key);
+        }
+    }
+
+    splitChild(parent, index) {
+        let t = this.t;
+        let child = parent.children[index];
+        let newNode = new BTreeNode(t, child.leaf);
+        parent.keys.splice(index, 0, child.keys[t - 1]);
+        parent.children.splice(index + 1, 0, newNode);
+        newNode.keys = child.keys.splice(t, t - 1);
+        if (!child.leaf) {
+            newNode.children = child.children.splice(t, t);
+        }
+    }
+
+    search(key, node = this.root) {
+        let i = 0;
+        while (i < node.keys.length && key > node.keys[i]) {
+            i++;
+        }
+        if (node.keys[i] === key) {
+            return true;
+        }
+        if (node.leaf) {
+            return false;
+        }
+        return this.search(key, node.children[i]);
+    }
 }
-
-// Test the Boyer-Moore algorithm
-const text = "exampletextforexamplesearchingexample";
-const pattern = "example";
-
-searchBoyerMoore(text, pattern);
