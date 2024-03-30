@@ -1,77 +1,37 @@
-class BTreeNode {
-    constructor(t, leaf = true) {
-        this.t = t; // Minimum degree
-        this.keys = [];
-        this.children = [];
-        this.leaf = leaf;
+function depthLimitedSearch(node, depth, maxDepth) {
+    if (depth > maxDepth) {
+        return null; // Reached maximum depth, stop searching
     }
+
+    if (isGoalState(node)) {
+        return node; // Found goal state
+    }
+
+    for (let child of expand(node)) {
+        let result = depthLimitedSearch(child, depth + 1, maxDepth);
+        if (result !== null) {
+            return result; // Goal state found in child nodes
+        }
+    }
+
+    return null; // Goal state not found within depth limit
 }
 
-class BTree {
-    constructor(t) {
-        this.t = t;
-        this.root = new BTreeNode(t, true);
-    }
-
-    insert(key) {
-        let root = this.root;
-        if (root.keys.length === 2 * this.t - 1) {
-            let newNode = new BTreeNode(this.t, false);
-            newNode.children.push(root);
-            this.splitChild(newNode, 0);
-            this.root = newNode;
-            this.insertNonFull(newNode, key);
-        } else {
-            this.insertNonFull(root, key);
-        }
-    }
-
-    insertNonFull(node, key) {
-        let i = node.keys.length - 1;
-        if (node.leaf) {
-            while (i >= 0 && key < node.keys[i]) {
-                node.keys[i + 1] = node.keys[i];
-                i--;
-            }
-            node.keys[i + 1] = key;
-        } else {
-            while (i >= 0 && key < node.keys[i]) {
-                i--;
-            }
-            i++;
-            if (node.children[i].keys.length === 2 * this.t - 1) {
-                this.splitChild(node, i);
-                if (key > node.keys[i]) {
-                    i++;
-                }
-            }
-            this.insertNonFull(node.children[i], key);
-        }
-    }
-
-    splitChild(parent, index) {
-        let t = this.t;
-        let child = parent.children[index];
-        let newNode = new BTreeNode(t, child.leaf);
-        parent.keys.splice(index, 0, child.keys[t - 1]);
-        parent.children.splice(index + 1, 0, newNode);
-        newNode.keys = child.keys.splice(t, t - 1);
-        if (!child.leaf) {
-            newNode.children = child.children.splice(t, t);
-        }
-    }
-
-    search(key, node = this.root) {
-        let i = 0;
-        while (i < node.keys.length && key > node.keys[i]) {
-            i++;
-        }
-        if (node.keys[i] === key) {
-            return true;
-        }
-        if (node.leaf) {
-            return false;
-        }
-        return this.search(key, node.children[i]);
-    }
+// Example helper functions
+function isGoalState(node) {
+    // Check if the node is the goal state
+    return node === "goal";
 }
+
+function expand(node) {
+    // Generate child nodes from the current node
+    return ["child1", "child2"]; // Example child nodes
+}
+
+// Initial state for the search
+let initialState = "start";
+
+// Perform depth-limited search with initial state, depth 0 and maximum depth 3
+let result = depthLimitedSearch(initialState, 0, 3);
+
+console.log("Result: ", result);
