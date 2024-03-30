@@ -1,15 +1,26 @@
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
+function binarySearchRecursive(arr, target, start=0, end=arr.length-1) {
+    if (start > end) {
+        return -1; // target not found
+    }
 
-// Find the index of the element to be removed
-let index = array.indexOf(elementToRemove);
+    let mid = Math.floor((start + end) / 2);
 
-// Check if the element exists in the array
+    if (arr[mid] === target) {
+        return mid; // target found
+    } else if (arr[mid] < target) {
+        return binarySearchRecursive(arr, target, mid + 1, end); // search in the right half
+    } else {
+        return binarySearchRecursive(arr, target, start, mid - 1); // search in the left half
+    }
+}
+
+// Example usage
+const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const target = 7;
+const index = binarySearchRecursive(arr, target);
+
 if (index !== -1) {
-    // Remove the element at the specified index
-    array.splice(index, 1);
-    console.log("Element removed:", elementToRemove);
-    console.log("Array after removal:", array);
+    console.log(`Target ${target} found at index ${index}`);
 } else {
-    console.log("Element not found in the array.");
+    console.log(`Target ${target} not found`);
 }
