@@ -1,64 +1,28 @@
-function kmpSearch(text, pattern) {
-    let m = pattern.length;
-    let n = text.length;
-
-    if (m === 0) return 0;
-
-    let lps = computeLPSArray(pattern);
-    let i = 0; // index for text[]
-    let j = 0; // index for pattern[]
-
-    while (i < n) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-
-        if (j === m) {
-            return i - j;
-        } else if (i < n && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
+function quickSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    return -1; // pattern not found
-}
+    const pivot = arr[Math.floor(arr.length / 2)];
+    const left = [];
+    const right = [];
 
-function computeLPSArray(pattern) {
-    let m = pattern.length;
-    let lps = new Array(m).fill(0);
-    let len = 0;
-    let i = 1;
+    for (let i = 0; i < arr.length; i++) {
+        if (i === Math.floor(arr.length / 2)) {
+            continue;
+        }
 
-    while (i < m) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
         } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
+            right.push(arr[i]);
         }
     }
 
-    return lps;
+    return [...quickSort(left), pivot, ...quickSort(right)];
 }
 
-// Example usage
-let text = "ABABCABABCDABABCABAB";
-let pattern = "ABABCABAB";
-let index = kmpSearch(text, pattern);
-
-if (index !== -1) {
-    console.log(`Pattern found at index ${index}`);
-} else {
-    console.log(`Pattern not found`);
-}
+// Example usage:
+const unsortedArray = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
+const sortedArray = quickSort(unsortedArray);
+console.log(sortedArray);
