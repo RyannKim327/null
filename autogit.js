@@ -1,88 +1,42 @@
-function biDirectionalSearch(startNode, goalNode) {
-    // Define the forward and backward search queues
-    let forwardQueue = [startNode];
-    let backwardQueue = [goalNode];
+function bellmanFord(graph, source) {
+    let distances = {};
 
-    // Keep track of visited nodes from both directions
-    let forwardVisited = new Set();
-    let backwardVisited = new Set();
+    for (let node in graph) {
+        distances[node] = Infinity;
+    }
+    distances[source] = 0;
 
-    while (forwardQueue.length > 0 && backwardQueue.length > 0) {
-        // Perform forward search
-        let currentNodeForward = forwardQueue.shift();
-        forwardVisited.add(currentNodeForward);
-
-        // Perform backward search
-        let currentNodeBackward = backwardQueue.shift();
-        backwardVisited.add(currentNodeBackward);
-
-        // Check if the two searches meet
-        if (forwardVisited.has(currentNodeBackward)) {
-            // Path found, combine the paths from both directions
-            let path1 = getPath(currentNodeForward, startNode);
-            let path2 = getPath(currentNodeBackward, goalNode).reverse();
-            return path1.concat(path2);
-        }
-
-        // Expand neighbors for forward search
-        let neighborsForward = getNeighbors(currentNodeForward);
-        for (let neighbor of neighborsForward) {
-            if (!forwardVisited.has(neighbor)) {
-                forwardQueue.push(neighbor);
-                forwardVisited.add(neighbor);
-            }
-        }
-
-        // Expand neighbors for backward search
-        let neighborsBackward = getNeighbors(currentNodeBackward);
-        for (let neighbor of neighborsBackward) {
-            if (!backwardVisited.has(neighbor)) {
-                backwardQueue.push(neighbor);
-                backwardVisited.add(neighbor);
+    for (let i = 0; i < Object.keys(graph).length - 1; i++) {
+        for (let u in graph) {
+            for (let v in graph[u]) {
+                if (distances[u] + graph[u][v] < distances[v]) {
+                    distances[v] = distances[u] + graph[u][v];
+                }
             }
         }
     }
 
-    // No path found
-    return null;
-}
-
-// Helper function to get the path from start to current node
-function getPath(currentNode, startNode) {
-    let path = [];
-    while (currentNode != startNode) {
-        path.unshift(currentNode);
-        currentNode = currentNode.parent;
+    for (let u in graph) {
+        for (let v in graph[u]) {
+            if (distances[u] + graph[u][v] < distances[v]) {
+                // Negative weight cycle detected
+                return "Graph contains negative weight cycle";
+            }
+        }
     }
-    path.unshift(startNode);
-    return path;
+
+    return distances;
 }
 
-// Helper function to get neighbors of a node (customize this to fit your graph)
-function getNeighbors(node) {
-    // Implement this function based on your graph structure
-    return node.neighbors;
-}
+// Example graph
+let graph = {
+    A: { B: -1, C: 4 },
+    B: { C: 3, D: 2, E: 2 },
+    C: {},
+    D: { B: 1, C: 5 },
+    E: { D: -3 }
+};
 
-// Example usage
-class Node {
-    constructor(value, neighbors) {
-        this.value = value;
-        this.neighbors = neighbors;
-    }
-}
-
-const node1 = new Node(1, []);
-const node2 = new Node(2, []);
-const node3 = new Node(3, []);
-const node4 = new Node(4, []);
-const node5 = new Node(5, []);
-
-node1.neighbors = [node2];
-node2.neighbors = [node3];
-node3.neighbors = [node4, node5];
-node4.neighbors = [node5];
-node5.neighbors = [];
-
-const path = biDirectionalSearch(node1, node5);
-console.log(path);
+let sourceNode = 'A';
+let shortestDistances = bellmanFord(graph, sourceNode);
+console.log(shortestDistances);
