@@ -1,42 +1,52 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
+function heapSort(array) {
+    buildMaxHeap(array);
+
+    for (let i = array.length - 1; i > 0; i--) {
+        // Swap the root (maximum value) of the heap with the last element of the array
+        let temp = array[0];
+        array[0] = array[i];
+        array[i] = temp;
+
+        // Restore the max heap property
+        maxHeapify(array, 0, i);
+    }
+
+    return array;
+}
+
+function buildMaxHeap(array) {
+    for (let i = Math.floor(array.length / 2); i >= 0; i--) {
+        maxHeapify(array, i, array.length);
     }
 }
 
-class LinkedList {
-    constructor() {
-        this.head = null;
+function maxHeapify(array, i, heapSize) {
+    let largest = i;
+    let left = 2 * i + 1;
+    let right = 2 * i + 2;
+
+    if (left < heapSize && array[left] > array[largest]) {
+        largest = left;
     }
 
-    append(data) {
-        const newNode = new Node(data);
-
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
-        }
+    if (right < heapSize && array[right] > array[largest]) {
+        largest = right;
     }
 
-    printList() {
-        let current = this.head;
-        while (current) {
-            console.log(current.data);
-            current = current.next;
-        }
+    if (largest !== i) {
+        // Swap array[i] and array[largest]
+        let temp = array[i];
+        array[i] = array[largest];
+        array[largest] = temp;
+
+        // Recursively heapify the affected sub-tree
+        maxHeapify(array, largest, heapSize);
     }
 }
 
-// Example Usage
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
+const array = [12, 11, 13, 5, 6, 7];
+console.log("Before sorting:");
+console.log(array);
 
-list.printList();
+console.log("\nAfter sorting:");
+console.log(heapSort(array));
