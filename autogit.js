@@ -1,25 +1,15 @@
-function findFirstNonRepeatingChar(str) {
-    // Create an object to store the frequency of each character
-    const charFrequency = {};
+const url = 'https://jsonplaceholder.typicode.com/posts/1';
 
-    // Iterate through the string and count the frequency of each character
-    for (let char of str) {
-        charFrequency[char] = (charFrequency[char] || 0) + 1;
+fetch(url)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
     }
-
-    // Iterate through the string again and find the first non-repeating character
-    for (let char of str) {
-        if (charFrequency[char] === 1) {
-            return char;
-        }
-    }
-
-    // If no non-repeating character is found, return null
-    return null;
-}
-
-// Test the function
-const str = "hello world";
-const firstNonRepeatingChar = findFirstNonRepeatingChar(str);
-
-console.log(`The first non-repeating character in "${str}" is "${firstNonRepeatingChar}"`);
+    return response.json();
+  })
+  .then(data => {
+    console.log(data);
+  })
+  .catch(error => {
+    console.error('There was a problem with your fetch operation:', error);
+  });
