@@ -1,15 +1,44 @@
-function isArraySortedAscending(arr) {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false;
-        }
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.children = [];
     }
-    return true;
 }
 
-// Example usage
-const sortedArray = [1, 2, 3, 4, 5];
-const unsortedArray = [5, 4, 3, 2, 1];
+function depthLimitedSearch(root, targetValue, depthLimit) {
+    let stack = [{
+        node: root,
+        depth: 0
+    }];
 
-console.log(isArraySortedAscending(sortedArray));  // Output: true
-console.log(isArraySortedAscending(unsortedArray));  // Output: false
+    while (stack.length > 0) {
+        let current = stack.pop();
+
+        if (current.node.value === targetValue) {
+            return current.node;
+        }
+
+        if (current.depth < depthLimit) {
+            for (let child of current.node.children) {
+                stack.push({
+                    node: child,
+                    depth: current.depth + 1
+                });
+            }
+        }
+    }
+
+    return null;
+}
+
+// Usage example
+let root = new Node(1);
+let node2 = new Node(2);
+let node3 = new Node(3);
+let node4 = new Node(4);
+
+root.children = [node2, node3];
+node2.children = [node4];
+
+console.log(depthLimitedSearch(root, 4, 2)); // Output: Node { value: 4, children: [] }
+console.log(depthLimitedSearch(root, 5, 2)); // Output: null
