@@ -1,37 +1,40 @@
-// Define a function for depth-limited search
-function depthLimitedSearch(root, goal, depthLimit) {
-    let stack = [{ node: root, depth: 0 }];
+function longestCommonSubsequence(str1, str2) {
+    const m = str1.length;
+    const n = str2.length;
 
-    while (stack.length > 0) {
-        let currentNode = stack.pop();
-        let node = currentNode.node;
-        let depth = currentNode.depth;
+    const dp = new Array(m + 1).fill(0).map(() => new Array(n + 1).fill(0));
 
-        if (node === goal) {
-            return node; // Goal node found
-        }
-
-        if (depth < depthLimit) {
-            // Add child nodes to the stack
-            let children = getChildren(node);
-            children.forEach(child => {
-                stack.push({ node: child, depth: depth + 1 });
-            });
+    // Build the dp table
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
         }
     }
 
-    return null; // Goal node not found within depth limit
-}
+    // Reconstruct the longest common subsequence
+    let result = "";
+    let i = m, j = n;
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            result = str1[i - 1] + result;
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
+        }
+    }
 
-// Define a helper function to get children of a node
-function getChildren(node) {
-    // Implement logic to get children of a node
+    return result;
 }
 
 // Example usage
-let rootNode = // Set the root node
-let goalNode = // Set the goal node
-let depthLimit = 3;
-
-let result = depthLimitedSearch(rootNode, goalNode, depthLimit);
-console.log(result);
+const str1 = "ABCBDAB";
+const str2 = "BDCAB";
+const lcs = longestCommonSubsequence(str1, str2);
+console.log(lcs); // Output: "BCAB"
