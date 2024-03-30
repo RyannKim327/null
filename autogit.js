@@ -1,61 +1,49 @@
-// Definition for singly-linked list.
-function ListNode(val) {
-    this.val = val;
-    this.next = null;
+class Node {
+  constructor(value, parent, score) {
+    this.value = value;
+    this.parent = parent;
+    this.score = score;
+  }
 }
 
-// Function to find the intersection point of two linked lists
-function getIntersectionNode(headA, headB) {
-    let lenA = getLength(headA);
-    let lenB = getLength(headB);
+function beamSearch(root, beamWidth, maxDepth, evaluate) {
+  let candidates = [root];
 
-    let currentA = headA;
-    let currentB = headB;
+  for (let depth = 0; depth < maxDepth; depth++) {
+    let newCandidates = [];
 
-    // Traverse the longer list by the difference in lengths
-    if (lenA > lenB) {
-        for (let i = 0; i < lenA - lenB; i++) {
-            currentA = currentA.next;
-        }
-    } else if (lenB > lenA) {
-        for (let i = 0; i < lenB - lenA; i++) {
-            currentB = currentB.next;
-        }
+    for (let candidate of candidates) {
+      if (depth === maxDepth - 1 || candidate.value === 'goal') {
+        return candidate;
+      }
+
+      let children = expand(candidate, evaluate);
+      newCandidates.push(...children);
     }
 
-    // Iterate over both lists in parallel to find the intersection point
-    while (currentA !== currentB) {
-        currentA = currentA.next;
-        currentB = currentB.next;
-    }
+    newCandidates.sort((a, b) => b.score - a.score);
+    candidates = newCandidates.slice(0, beamWidth);
+  }
 
-    return currentA; // Returns the intersection node or null if there is no intersection
+  return null;
 }
 
-// Function to get the length of a linked list
-function getLength(head) {
-    let current = head;
-    let length = 0;
-
-    while (current !== null) {
-        length++;
-        current = current.next;
-    }
-
-    return length;
+function expand(node, evaluate) {
+  // Simulating expansion of the current node
+  const children = [];
+  for (let i = 0; i < 3; i++) {
+    let childValue = Math.random() > 0.5 ? 'good' : 'bad';
+    let childScore = evaluate(childValue);
+    children.push(new Node(childValue, node, childScore));
+  }
+  return children;
 }
 
-// Example usage
-let commonNode = new ListNode(5);
-commonNode.next = new ListNode(10);
+// Example usage:
+const root = new Node('start', null, 0);
+const beamWidth = 2;
+const maxDepth = 3;
+const evaluate = (value) => (value === 'good' ? 1 : 0);
 
-let list1 = new ListNode(1);
-list1.next = new ListNode(2);
-list1.next.next = commonNode;
-
-let list2 = new ListNode(3);
-list2.next = new ListNode(4);
-list2.next.next = commonNode;
-
-let intersectionNode = getIntersectionNode(list1, list2);
-console.log(intersectionNode.val); // Output: 5
+const result = beamSearch(root, beamWidth, maxDepth, evaluate);
+console.log(result);
