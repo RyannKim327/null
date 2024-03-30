@@ -1,8 +1,15 @@
-function decimalToBinary(decimal) {
-    return decimal.toString(2);
-}
+const apiUrl = 'https://api.example.com/data';
 
-// Example usage
-const decimalNumber = 10;
-const binaryNumber = decimalToBinary(decimalNumber);
-console.log(binaryNumber); // Output: 1010
+fetch(apiUrl)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log(data);
+  })
+  .catch(error => {
+    console.error('There was a problem with the fetch operation:', error);
+  });
