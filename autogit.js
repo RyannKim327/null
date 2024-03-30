@@ -1,6 +1,8 @@
-let numbers = [4, 2, 8, 5, 1];
-numbers.sort(function(a, b) {
-    return a - b;
-});
+function reverseString(str) {
+  return str.split("").reverse().join("");
+}
 
-console.log(numbers); // Output: [1, 2, 4, 5, 8]
+// Example usage
+const originalString = "Hello, World!";
+const reversedString = reverseString(originalString);
+console.log(reversedString); // Outputs: "!dlroW ,olleH"
