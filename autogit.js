@@ -1,27 +1,20 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+function longestCommonPrefix(strs) {
+    if (strs.length === 0) return '';
+
+    let prefix = '';
+    for (let i = 0; i < strs[0].length; i++) {
+        const char = strs[0][i];
+        for (let j = 1; j < strs.length; j++) {
+            if (i >= strs[j].length || strs[j][i] !== char) {
+                return prefix;
+            }
+        }
+        prefix += char;
+    }
+
+    return prefix;
 }
 
-function findMiddleElement(head) {
-  let slowPtr = head;
-  let fastPtr = head;
-
-  while (fastPtr !== null && fastPtr.next !== null) {
-    slowPtr = slowPtr.next;
-    fastPtr = fastPtr.next.next;
-  }
-
-  return slowPtr.value;
-}
-
-// Example linked list
-const head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-console.log(findMiddleElement(head)); // Output: 3
+// Example
+const strs = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(strs)); // Output: "fl"
