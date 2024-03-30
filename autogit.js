@@ -1,34 +1,10 @@
-function mergeSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
-    }
-
-    const middle = Math.floor(arr.length / 2);
-    const left = arr.slice(0, middle);
-    const right = arr.slice(middle);
-
-    return merge(mergeSort(left), mergeSort(right));
+Area = 0.5 * base * height
+function calculateTriangleArea(base, height) {
+    return 0.5 * base * height;
 }
 
-function merge(left, right) {
-    let result = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
-    
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            result.push(left[leftIndex]);
-            leftIndex++;
-        } else {
-            result.push(right[rightIndex]);
-            rightIndex++;
-        }
-    }
-
-    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
-}
-
-// Usage
-const arr = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
-const sortedArr = mergeSort(arr);
-console.log(sortedArr);
+// Example usage
+var base = 5;
+var height = 10;
+var area = calculateTriangleArea(base, height);
+console.log("The area of the triangle is: " + area);
