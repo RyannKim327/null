@@ -1,43 +1,72 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
-    }
-}
+function dijkstra(graph, startNode) {
+    const distances = {};
+    const previous = {};
+    const priorityQueue = new PriorityQueue();
 
-class LinkedList {
-    constructor() {
-        this.head = null;
+    for (let node in graph) {
+        distances[node] = node === startNode ? 0 : Infinity;
+        priorityQueue.enqueue(node, distances[node]);
     }
 
-    addNode(data) {
-        const newNode = new Node(data);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
+    while (!priorityQueue.isEmpty()) {
+        const currentNode = priorityQueue.dequeue();
+
+        for (let neighbor in graph[currentNode]) {
+            const distance = distances[currentNode] + graph[currentNode][neighbor];
+            if (distance < distances[neighbor]) {
+                distances[neighbor] = distance;
+                previous[neighbor] = currentNode;
+                priorityQueue.changePriority(neighbor, distance);
             }
-            current.next = newNode;
         }
     }
 
-    getLength() {
-        let length = 0;
-        let current = this.head;
-        while (current) {
-            length++;
-            current = current.next;
-        }
-        return length;
+    return { distances, previous };
+}
+
+class PriorityQueue {
+    constructor() {
+        this.queue = [];
+    }
+
+    enqueue(element, priority) {
+        this.queue.push({ element, priority });
+        this.sort();
+    }
+
+    dequeue() {
+        return this.queue.shift().element;
+    }
+
+    changePriority(element, priority) {
+        this.queue = this.queue.map(item => {
+            if (item.element === element) {
+                return { element, priority };
+            }
+            return item;
+        });
+        this.sort();
+    }
+
+    sort() {
+        this.queue.sort((a, b) => a.priority - b.priority);
+    }
+
+    isEmpty() {
+        return this.queue.length === 0;
     }
 }
 
-// Usage
-const linkedList = new LinkedList();
-linkedList.addNode(1);
-linkedList.addNode(2);
-linkedList.addNode(3);
+// Example graph
+const graph = {
+    A: { B: 5, C: 3 },
+    B: { A: 5, C: 1, D: 1 },
+    C: { A: 3, B: 1, D: 3 },
+    D: { B: 1, C: 3 }
+};
 
-console.log(linkedList.getLength()); // Output: 3
+const startNode = 'A';
+const { distances, previous } = dijkstra(graph, startNode);
+
+console.log("Distances:", distances);
+console.log("Previous nodes:", previous);
