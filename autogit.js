@@ -1,36 +1,65 @@
-function longestCommonSubsequence(str1, str2) {
-    let m = str1.length;
-    let n = str2.length;
-    
-    let dp = Array.from(Array(m+1), () => Array(n+1).fill(0));
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
 
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i-1] === str2[j-1]) {
-                dp[i][j] = dp[i-1][j-1] + 1;
+class BinarySearchTree {
+    constructor() {
+        this.root = null;
+    }
+
+    insert(value) {
+        const newNode = new Node(value);
+        
+        if (!this.root) {
+            this.root = newNode;
+            return this;
+        }
+
+        let currentNode = this.root;
+        while (true) {
+            if (value < currentNode.value) {
+                if (!currentNode.left) {
+                    currentNode.left = newNode;
+                    return this;
+                }
+                currentNode = currentNode.left;
             } else {
-                dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+                if (!currentNode.right) {
+                    currentNode.right = newNode;
+                    return this;
+                }
+                currentNode = currentNode.right;
             }
         }
     }
-    
-    let result = '';
-    let i = m, j = n;
-    while (i > 0 && j > 0) {
-        if (str1[i-1] === str2[j-1]) {
-            result = str1[i-1] + result;
-            i--; j--;
-        } else if (dp[i-1][j] > dp[i][j-1]) {
-            i--;
-        } else {
-            j--;
+
+    search(value) {
+        let currentNode = this.root;
+        while (currentNode) {
+            if (value === currentNode.value) {
+                return true;
+            } else if (value < currentNode.value) {
+                currentNode = currentNode.left;
+            } else {
+                currentNode = currentNode.right;
+            }
         }
+        return false;
     }
-    
-    return result;
 }
 
-// Test the function
-const str1 = 'AGGTAB';
-const str2 = 'GXTXAYB';
-console.log(longestCommonSubsequence(str1, str2)); // Output: GTAB
+// Example usage
+const bst = new BinarySearchTree();
+
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(3);
+bst.insert(7);
+
+console.log(bst.search(10)); // Output: true
+console.log(bst.search(20)); // Output: false
