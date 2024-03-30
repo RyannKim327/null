@@ -1,39 +1,64 @@
-function depthLimitedSearch(startNode, goalNode, depthLimit) {
-    let stack = [{ node: startNode, depth: 0 }];
-    
-    while (stack.length > 0) {
-        let { node, depth } = stack.pop();
-        
-        if (node === goalNode) {
-            return node;
+function kmpSearch(text, pattern) {
+    let m = pattern.length;
+    let n = text.length;
+
+    if (m === 0) return 0;
+
+    let lps = computeLPSArray(pattern);
+    let i = 0; // index for text[]
+    let j = 0; // index for pattern[]
+
+    while (i < n) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
         }
-        
-        if (depth < depthLimit) {
-            let children = expandNode(node);
-            
-            for (let child of children) {
-                stack.push({ node: child, depth: depth + 1 });
+
+        if (j === m) {
+            return i - j;
+        } else if (i < n && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
             }
         }
     }
-    
-    return null;
+
+    return -1; // pattern not found
 }
 
-// Helper function to expand a node (dummy implementation)
-function expandNode(node) {
-    return [node + 1, node + 2]; // Dummy implementation: Returns children nodes
+function computeLPSArray(pattern) {
+    let m = pattern.length;
+    let lps = new Array(m).fill(0);
+    let len = 0;
+    let i = 1;
+
+    while (i < m) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+
+    return lps;
 }
 
 // Example usage
-const start = 0;
-const goal = 10;
-const depthLimit = 3;
+let text = "ABABCABABCDABABCABAB";
+let pattern = "ABABCABAB";
+let index = kmpSearch(text, pattern);
 
-const result = depthLimitedSearch(start, goal, depthLimit);
-
-if (result !== null) {
-    console.log(`Goal node ${goal} found within depth limit ${depthLimit}`);
+if (index !== -1) {
+    console.log(`Pattern found at index ${index}`);
 } else {
-    console.log(`Goal node ${goal} not found within depth limit ${depthLimit}`);
+    console.log(`Pattern not found`);
 }
