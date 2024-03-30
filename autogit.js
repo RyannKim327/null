@@ -1,38 +1,16 @@
-class Stack {
-    constructor() {
-        this.items = [];
-    }
+// Define an array of integers
+const numbers = [5, 2, 8, 1, 4];
 
-    push(element) {
-        this.items.push(element);
-    }
+// Sort the array in ascending order
+numbers.sort((a, b) => a - b);
 
-    pop() {
-        if (this.isEmpty()) {
-            return "Underflow";
-        }
-        return this.items.pop();
-    }
+// Print the sorted array
+console.log(numbers); // Output: [1, 2, 4, 5, 8]
+// Define an array of integers
+const numbers = [5, 2, 8, 1, 4];
 
-    peek() {
-        return this.items[this.items.length - 1];
-    }
+// Sort the array in descending order
+numbers.sort((a, b) => b - a);
 
-    isEmpty() {
-        return this.items.length === 0;
-    }
-
-    printStack() {
-        console.log(this.items);
-    }
-}
-
-// Example usage
-const stack = new Stack();
-stack.push(1);
-stack.push(2);
-stack.push(3);
-stack.printStack(); // Output: [1, 2, 3]
-console.log(stack.pop()); // Output: 3
-console.log(stack.peek()); // Output: 2
-stack.printStack(); // Output: [1, 2]
+// Print the sorted array
+console.log(numbers); // Output: [8, 5, 4, 2, 1]
