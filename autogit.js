@@ -1,4 +1,8 @@
-fetch('https://jsonplaceholder.typicode.com/posts/1')
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.error('Error:', error));
+let str1 = "Hello";
+let str2 = "World";
+let combinedString = str1 + " " + str2;
+console.log(combinedString); // Output: Hello World
+let str1 = "Hello";
+let str2 = "World";
+let combinedString = str1.concat(" ", str2);
+console.log(combinedString); // Output: Hello World
