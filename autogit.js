@@ -1,21 +1,4 @@
-function largestPrimeFactor(num) {
-    let factors = [];
-    
-    for (let i = 2; i <= Math.floor(Math.sqrt(num)); i++) {
-        while (num % i === 0) {
-            factors.push(i);
-            num /= i;
-        }
-    }
-    
-    if (num !== 1) {
-        factors.push(num);
-    }
+let arr = [10, 5, 8, 15, 3];
+let max = Math.max(...arr);
 
-    return Math.max(...factors);
-}
-
-// Example usage
-const number = 13195;
-const largestPrime = largestPrimeFactor(number);
-console.log(`The largest prime factor of ${number} is ${largestPrime}`);
+console.log(max); // Output: 15
