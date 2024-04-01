@@ -1,4 +1,4 @@
-class Node {
+class TreeNode {
     constructor(value) {
         this.value = value;
         this.left = null;
@@ -6,63 +6,33 @@ class Node {
     }
 }
 
-class BinarySearchTree {
-    constructor() {
-        this.root = null;
-    }
+function findDiameter(root) {
+    let diameter = 0;
 
-    insert(value) {
-        const newNode = new Node(value);
-
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    insertNode(node, newNode) {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
-
-    search(value) {
-        return this.searchNode(this.root, value);
-    }
-
-    searchNode(node, value) {
+    function height(node) {
         if (node === null) {
-            return false;
+            return 0;
         }
 
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true;
-        }
+        let leftHeight = height(node.left);
+        let rightHeight = height(node.right);
+
+        diameter = Math.max(diameter, leftHeight + rightHeight);
+        return 1 + Math.max(leftHeight, rightHeight);
     }
+
+    height(root);
+
+    return diameter;
 }
 
-// Example usage
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
-bst.insert(7);
+// Example binary tree
+let root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+root.right.left = new TreeNode(6);
+root.right.right = new TreeNode(7);
 
-console.log(bst.search(7)); // true
-console.log(bst.search(20)); // false
+console.log(findDiameter(root)); // Output should be 4
