@@ -1,24 +1,11 @@
-function findFirstRepeatedChar(str) {
-    const charMap = {};
+function isPalindrome(str) {
+    // Convert the string to lowercase and remove non-alphanumeric characters
+    str = str.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-    for (let i = 0; i < str.length; i++) {
-        const char = str[i];
-
-        if (charMap[char]) {
-            return char;
-        }
-
-        charMap[char] = true;
-    }
-
-    return null; // Return null if no repeated characters found
+    // Compare the string with its reverse
+    return str === str.split('').reverse().join('');
 }
 
-const inputString = "abcdefghija";
-const repeatedChar = findFirstRepeatedChar(inputString);
-
-if (repeatedChar) {
-    console.log(`The first repeated character is: ${repeatedChar}`);
-} else {
-    console.log("No repeated characters found.");
-}
+// Test the function
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // Output: true
+console.log(isPalindrome("Hello World")); // Output: false
