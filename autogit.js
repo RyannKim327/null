@@ -1,8 +1,4 @@
-function removeVowels(str) {
-    return str.replace(/[aeiouAEIOU]/g, '');
-}
+let str = "Hello, World! This is a test string.";
+let stringWithoutSpaces = str.replace(/\s/g, '');
 
-// Test the function
-const input = "Hello, World!";
-const result = removeVowels(input);
-console.log(result); // Output: "Hll, Wrld!"
+console.log(stringWithoutSpaces); // Output: "Hello,World!Thisisateststring."
