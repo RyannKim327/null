@@ -1,8 +1,24 @@
-function decimalToBinary(decimalNumber) {
-    return decimalNumber.toString(2);
+function findFirstRepeatedChar(str) {
+    const charMap = {};
+
+    for (let i = 0; i < str.length; i++) {
+        const char = str[i];
+
+        if (charMap[char]) {
+            return char;
+        }
+
+        charMap[char] = true;
+    }
+
+    return null; // Return null if no repeated characters found
 }
 
-// Example usage
-const decimalNumber = 10;
-const binaryNumber = decimalToBinary(decimalNumber);
-console.log(binaryNumber); // Output: "1010"
+const inputString = "abcdefghija";
+const repeatedChar = findFirstRepeatedChar(inputString);
+
+if (repeatedChar) {
+    console.log(`The first repeated character is: ${repeatedChar}`);
+} else {
+    console.log("No repeated characters found.");
+}
