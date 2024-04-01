@@ -1,15 +1,60 @@
-function maxSubArraySum(arr) {
-    let maxEndingHere = arr[0];
-    let maxSoFar = arr[0];
+class Graph {
+  constructor() {
+    this.adjacencyList = {};
+  }
 
-    for (let i = 1; i < arr.length; i++) {
-        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
-        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+  addVertex(vertex) {
+    if (!this.adjacencyList[vertex]) {
+      this.adjacencyList[vertex] = [];
     }
+  }
 
-    return maxSoFar;
+  addEdge(vertex1, vertex2) {
+    this.adjacencyList[vertex1].push(vertex2);
+    this.adjacencyList[vertex2].push(vertex1);
+  }
+
+  depthFirstSearch(start) {
+    const visited = {};
+    const result = [];
+
+    const dfs = (vertex) => {
+      if (!vertex) {
+        return null;
+      }
+
+      visited[vertex] = true;
+      result.push(vertex);
+
+      this.adjacencyList[vertex].forEach(neighbor => {
+        if (!visited[neighbor]) {
+          return dfs(neighbor);
+        }
+      });
+    };
+
+    dfs(start);
+
+    return result;
+  }
 }
 
-const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4]; // Example array
-const maxSum = maxSubArraySum(arr);
-console.log(maxSum); // Output: 6 (corresponding to [4, -1, 2, 1])
+// Example usage:
+const graph = new Graph();
+
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addVertex('E');
+graph.addVertex('F');
+
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('C', 'E');
+graph.addEdge('D', 'E');
+graph.addEdge('D', 'F');
+graph.addEdge('E', 'F');
+
+console.log(graph.depthFirstSearch('A')); // Output: ['A', 'B', 'D', 'E', 'C', 'F']
