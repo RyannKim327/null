@@ -1,41 +1,117 @@
-function burrowsWheelerTransform(input) {
-    // Generate all cyclic rotations of the input string
-    let rotations = [];
-    for (let i = 0; i < input.length; i++) {
-        rotations.push(input.slice(i) + input.slice(0, i));
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.left = null;
+        this.right = null;
+        this.height = 1;
+    }
+}
+
+class AVLTree {
+    constructor() {
+        this.root = null;
     }
 
-    // Sort the rotations lexicographically
-    rotations.sort();
-
-    // Extract the last characters of each rotation
-    let bwt = rotations.map(rotation => rotation.slice(-1)).join('');
-
-    return bwt;
-}
-
-function reverseBurrowsWheelerTransform(bwt) {
-    // Create a table of all rotations of the BWT
-    let table = new Array(bwt.length);
-    for (let i = 0; i < bwt.length; i++) {
-        table[i] = bwt;
-        bwt = sortString(bwt);
+    getHeight(node) {
+        return node ? node.height : 0;
     }
 
-    // Find the original string by searching for the string that ends with a '\0' character
-    let original = table.find(row => row.endsWith('\0'));
+    getBalanceFactor(node) {
+        return this.getHeight(node.left) - this.getHeight(node.right);
+    }
 
-    return original.slice(0, -1);
+    rotateRight(node) {
+        const newRoot = node.left;
+        const temp = newRoot.right;
+
+        newRoot.right = node;
+        node.left = temp;
+
+        node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
+        newRoot.height = 1 + Math.max(this.getHeight(newRoot.left), this.getHeight(newRoot.right));
+
+        return newRoot;
+    }
+
+    rotateLeft(node) {
+        const newRoot = node.right;
+        const temp = newRoot.left;
+
+        newRoot.left = node;
+        node.right = temp;
+
+        node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
+        newRoot.height = 1 + Math.max(this.getHeight(newRoot.left), this.getHeight(newRoot.right));
+
+        return newRoot;
+    }
+
+    insert(node, data) {
+        if (!node) {
+            return new Node(data);
+        }
+
+        if (data < node.data) {
+            node.left = this.insert(node.left, data);
+        } else if (data > node.data) {
+            node.right = this.insert(node.right, data);
+        } else {
+            return node; // duplicate data not allowed
+        }
+
+        node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
+
+        const balance = this.getBalanceFactor(node);
+
+        // Left Left Case
+        if (balance > 1 && data < node.left.data) {
+            return this.rotateRight(node);
+        }
+
+        // Right Right Case
+        if (balance < -1 && data > node.right.data) {
+            return this.rotateLeft(node);
+        }
+
+        // Left Right Case
+        if (balance > 1 && data > node.left.data) {
+            node.left = this.rotateLeft(node.left);
+            return this.rotateRight(node);
+        }
+
+        // Right Left Case
+        if (balance < -1 && data < node.right.data) {
+            node.right = this.rotateRight(node.right);
+            return this.rotateLeft(node);
+        }
+
+        return node;
+    }
+
+    insertData(data) {
+        this.root = this.insert(this.root, data);
+    }
+
+    printInOrder(node) {
+        if (node) {
+            this.printInOrder(node.left);
+            console.log(node.data);
+            this.printInOrder(node.right);
+        }
+    }
+
+    printTree() {
+        this.printInOrder(this.root);
+    }
 }
 
-function sortString(str) {
-    return str.split('').sort().join('');
-}
+// Example Usage:
+const avlTree = new AVLTree();
+avlTree.insertData(10);
+avlTree.insertData(20);
+avlTree.insertData(30);
+avlTree.insertData(40);
+avlTree.insertData(50);
+avlTree.insertData(25);
 
-// Example Usage
-let input = "hello";
-let bwt = burrowsWheelerTransform(input);
-console.log("Burrows-Wheeler Transform of 'hello':", bwt);
-
-let original = reverseBurrowsWheelerTransform(bwt);
-console.log("Original string:", original);
+avlTree.printTree();
