@@ -1,37 +1,20 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+function insertionSort(arr) {
+    for (let i = 1; i < arr.length; i++) {
+        let current = arr[i];
+        let j = i - 1;
+        
+        while (j >= 0 && arr[j] > current) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        
+        arr[j + 1] = current;
     }
+    
+    return arr;
 }
 
-function sumBinaryTree(root) {
-    if (!root) {
-        return 0;
-    }
-
-    let sum = root.value;
-
-    if (root.left) {
-        sum += sumBinaryTree(root.left);
-    }
-
-    if (root.right) {
-        sum += sumBinaryTree(root.right);
-    }
-
-    return sum;
-}
-
-// Example binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
-
-const totalSum = sumBinaryTree(root);
-console.log(totalSum);
+// Example usage
+let unsortedArray = [5, 3, 8, 6, 2];
+let sortedArray = insertionSort(unsortedArray);
+console.log(sortedArray); // Output: [2, 3, 5, 6, 8]
