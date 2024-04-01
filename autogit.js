@@ -1,43 +1,51 @@
-function boyerMooreHorspool(text, pattern) {
-    const patternLength = pattern.length;
-    const textLength = text.length;
-
-    if (patternLength === 0) {
-        return 0; // Empty pattern always matches at position 0
+class Graph {
+    constructor() {
+        this.adjacencyList = {};
     }
 
-    const badCharacterTable = new Array(256).fill(patternLength);
-    
-    for (let i = 0; i < patternLength - 1; i++) {
-        badCharacterTable[pattern.charCodeAt(i)] = patternLength - 1 - i;
-    }
-
-    let i = patternLength - 1;
-    let j = 0;
-
-    while (i < textLength) {
-        if (text.charAt(i) === pattern.charAt(j)) {
-            if (j === 0) {
-                return i; // Match found
-            }
-            i--;
-            j--;
-        } else {
-            i += Math.max(badCharacterTable[text.charCodeAt(i)], patternLength - 1 - j);
-            j = patternLength - 1;
+    addVertex(vertex) {
+        if (!this.adjacencyList[vertex]) {
+            this.adjacencyList[vertex] = [];
         }
     }
 
-    return -1; // No match found
+    addEdge(v1, v2) {
+        this.adjacencyList[v1].push(v2);
+        this.adjacencyList[v2].push(v1);
+    }
+
+    depthFirstSearch(startingNode) {
+        const result = [];
+        const visited = {};
+
+        const dfs = (vertex) => {
+            if (!vertex) return null;
+            
+            visited[vertex] = true;
+            result.push(vertex);
+
+            this.adjacencyList[vertex].forEach(neighbor => {
+                if (!visited[neighbor]) {
+                    return dfs(neighbor);
+                }
+            });
+        };
+
+        dfs(startingNode);
+
+        return result;
+    }
 }
 
-// Test the algorithm
-const text = "This is a sample text for testing.";
-const pattern = "sample";
-const index = boyerMooreHorspool(text, pattern);
+// Example usage
+const graph = new Graph();
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('C', 'D');
 
-if (index !== -1) {
-    console.log(`Pattern found at position ${index}`);
-} else {
-    console.log("Pattern not found");
-}
+console.log(graph.depthFirstSearch('A')); // Output: ['A', 'B', 'D', 'C']
