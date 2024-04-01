@@ -1,16 +1,8 @@
-function removeDuplicates(array) {
-    let uniqueArray = [];
-    
-    array.forEach((element) => {
-        if (!uniqueArray.includes(element)) {
-            uniqueArray.push(element);
-        }
-    });
-    
-    return uniqueArray;
+function decimalToBinary(decimalNumber) {
+    return decimalNumber.toString(2);
 }
 
-let originalArray = [1, 2, 2, 3, 4, 4, 5];
-let newArray = removeDuplicates(originalArray);
-
-console.log(newArray); // Output: [1, 2, 3, 4, 5]
+// Example usage
+const decimalNumber = 10;
+const binaryNumber = decimalToBinary(decimalNumber);
+console.log(binaryNumber); // Output: "1010"
