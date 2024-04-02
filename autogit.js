@@ -1,11 +1,14 @@
-function isPalindrome(str) {
-    // Convert the string to lowercase and remove non-alphanumeric characters
-    str = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+function findSecondLargest(arr) {
+    // Sort the array in descending order
+    arr.sort(function(a, b) {
+        return b - a;
+    });
 
-    // Compare the string with its reverse
-    return str === str.split('').reverse().join('');
+    // Return the second element (at index 1)
+    return arr[1];
 }
 
 // Test the function
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // Output: true
-console.log(isPalindrome("Hello World")); // Output: false
+const array = [5, 10, 3, 8, 1];
+const secondLargest = findSecondLargest(array);
+console.log("Second Largest Element:", secondLargest);
