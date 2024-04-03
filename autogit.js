@@ -1,15 +1,23 @@
-function isArraySorted(arr) {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false;
-        }
+function burrowsWheelerTransform(inputString) {
+    // Add EOF (End-of-File) marker to the input string
+    inputString += '$';
+    
+    // Generate all possible rotations of the input string
+    let rotations = [];
+    for (let i = 0; i < inputString.length; i++) {
+        rotations.push(inputString.slice(i) + inputString.slice(0, i));
     }
-    return true;
+    
+    // Sort the rotations lexicographically
+    rotations.sort();
+    
+    // Extract the last characters of each sorted rotation
+    let transformedString = rotations.map(rotation => rotation.slice(-1)).join('');
+    
+    return transformedString;
 }
 
-// Example usage
-const arr1 = [1, 2, 3, 4, 5];
-const arr2 = [5, 4, 3, 2, 1];
-
-console.log(isArraySorted(arr1)); // Output: true
-console.log(isArraySorted(arr2)); // Output: false
+// Test the implementation
+let inputString = 'banana';
+let transformedString = burrowsWheelerTransform(inputString);
+console.log(transformedString);
