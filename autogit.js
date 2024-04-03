@@ -1,46 +1,18 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
-    }
-}
+function countOccurrences(text, word) {
+    let count = 0;
+    const words = text.split(' ');
 
-class LinkedList {
-    constructor() {
-        this.head = null;
-    }
-
-    addNode(data) {
-        const newNode = new Node(data);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
-        }
-    }
-
-    getLength() {
-        let count = 0;
-        let current = this.head;
-        while (current) {
+    for (let i = 0; i < words.length; i++) {
+        if (words[i] === word) {
             count++;
-            current = current.next;
         }
-        return count;
     }
+
+    return count;
 }
 
-// Creating a linked list
-const linkedList = new LinkedList();
-linkedList.addNode(1);
-linkedList.addNode(2);
-linkedList.addNode(3);
-linkedList.addNode(4);
-linkedList.addNode(5);
+const text = "apple banana apple orange apple mango";
+const wordToCount = "apple";
+const occurrences = countOccurrences(text, wordToCount);
 
-const length = linkedList.getLength();
-console.log("Length of the Linked List:", length);
+console.log(`The word "${wordToCount}" appears ${occurrences} times in the text.`);
