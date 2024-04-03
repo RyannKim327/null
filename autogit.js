@@ -1,43 +1,21 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
+function areAnagrams(str1, str2) {
+    // Remove non-alphabetic characters and convert to lowercase
+    str1 = str1.replace(/[^a-z]/g, '').toLowerCase();
+    str2 = str2.replace(/[^a-z]/g, '').toLowerCase();
+
+    // Sort the characters in both strings
+    const sortedStr1 = str1.split('').sort().join('');
+    const sortedStr2 = str2.split('').sort().join('');
+
+    // Compare the sorted strings
+    return sortedStr1 === sortedStr2;
 }
 
-function findNthNodeFromEnd(head, n) {
-  let firstPointer = head;
-  let secondPointer = head;
-
-  // Move the firstPointer n nodes ahead
-  for (let i = 0; i < n; i++) {
-    if (firstPointer === null) {
-      return null; // If the list has fewer than n nodes
-    }
-    firstPointer = firstPointer.next;
-  }
-
-  // Move both pointers one node at a time
-  while (firstPointer !== null) {
-    firstPointer = firstPointer.next;
-    secondPointer = secondPointer.next;
-  }
-
-  return secondPointer;
-}
-
-// Example usage
-// Constructing a simple linked list: 1 -> 2 -> 3 -> 4 -> 5
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-let n = 2;
-let nthNodeFromEnd = findNthNodeFromEnd(head, n);
-if (nthNodeFromEnd !== null) {
-  console.log(`The ${n}th node from the end is: ${nthNodeFromEnd.data}`);
+// Test the function
+const string1 = "Astronomer";
+const string2 = "Moon starer";
+if (areAnagrams(string1, string2)) {
+    console.log(`${string1} and ${string2} are anagrams.`);
 } else {
-  console.log(`The list has fewer than ${n} nodes.`);
+    console.log(`${string1} and ${string2} are not anagrams.`);
 }
