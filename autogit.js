@@ -1,58 +1,59 @@
-function buildPatternTable(pattern) {
-  const table = [0];
-  let prefixLength = 0;
-  let i = 1;
+class HashTable {
+  constructor(size) {
+    this.size = size;
+    this.table = new Array(size);
+  }
 
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[prefixLength]) {
-      prefixLength++;
-      table[i] = prefixLength;
-      i++;
-    } else {
-      if (prefixLength !== 0) {
-        prefixLength = table[prefixLength - 1];
-      } else {
-        table[i] = 0;
-        i++;
+  hash(key) {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash = (hash + key.charCodeAt(i) * i) % this.size;
+    }
+    return hash;
+  }
+
+  set(key, value) {
+    const index = this.hash(key);
+    if (!this.table[index]) {
+      this.table[index] = [];
+    }
+    this.table[index].push([key, value]);
+  }
+
+  get(key) {
+    const index = this.hash(key);
+    if (!this.table[index]) {
+      return undefined;
+    }
+    for (let i = 0; i < this.table[index].length; i++) {
+      if (this.table[index][i][0] === key) {
+        return this.table[index][i][1];
+      }
+    }
+    return undefined;
+  }
+
+  remove(key) {
+    const index = this.hash(key);
+    if (!this.table[index]) {
+      return;
+    }
+    for (let i = 0; i < this.table[index].length; i++) {
+      if (this.table[index][i][0] === key) {
+        this.table[index].splice(i, 1);
+        return;
       }
     }
   }
-
-  return table;
 }
 
-function kmpSearch(text, pattern) {
-  const patternTable = buildPatternTable(pattern);
-  let i = 0;
-  let j = 0;
+// Usage
+const hashTable = new HashTable(10);
+hashTable.set('apple', 5);
+hashTable.set('banana', 10);
 
-  while (i < text.length) {
-    if (text[i] === pattern[j]) {
-      if (j === pattern.length - 1) {
-        return i - j;
-      }
-      i++;
-      j++;
-    } else {
-      if (j > 0) {
-        j = patternTable[j - 1];
-      } else {
-        i++;
-      }
-    }
-  }
+console.log(hashTable.get('apple')); // Output: 5
+console.log(hashTable.get('banana')); // Output: 10
 
-  return -1;
-}
-
-// Example usage
-const text = 'ABABDABACDABABCABAB';
-const pattern = 'ABABCABAB';
-
-const index = kmpSearch(text, pattern);
-
-if (index !== -1) {
-  console.log(`Pattern found at index ${index}`);
-} else {
-  console.log('Pattern not found');
-}
+hashTable.remove('apple');
+console.log(hashTable.get('apple')); // Output: undefined
