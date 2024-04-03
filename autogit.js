@@ -1,31 +1,34 @@
-function longestCommonSubstring(str1, str2) {
-    let dp = Array(str1.length + 1).fill(0).map(() => Array(str2.length + 1).fill(0));
-    let maxLength = 0;
-    let endIndex = 0;
+function mergeSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
+    }
 
-    for (let i = 1; i <= str1.length; i++) {
-        for (let j = 1; j <= str2.length; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-                if (dp[i][j] > maxLength) {
-                    maxLength = dp[i][j];
-                    endIndex = i - 1;
-                }
-            } else {
-                dp[i][j] = 0;
-            }
+    const mid = Math.floor(arr.length / 2);
+    const left = arr.slice(0, mid);
+    const right = arr.slice(mid);
+
+    return merge(mergeSort(left), mergeSort(right));
+}
+
+function merge(left, right) {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            result.push(right[rightIndex]);
+            rightIndex++;
         }
     }
 
-    if (maxLength === 0) {
-        return "";
-    }
-
-    return str1.substring(endIndex - maxLength + 1, endIndex + 1);
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
 }
 
-// Example
-const str1 = "abcdefg";
-const str2 = "bcdefgh";
-const commonSubstring = longestCommonSubstring(str1, str2);
-console.log(commonSubstring); // Output: "cdef"
+// Example usage
+const arr = [38, 27, 43, 3, 9, 82, 10];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr);
