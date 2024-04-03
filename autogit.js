@@ -1,39 +1,45 @@
-class BTreeNode {
-    constructor(keys, children) {
-        this.keys = keys || [];
-        this.children = children || [];
-    }
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-class BTree {
-    constructor(order) {
-        this.order = order;
-        this.root = null;
-    }
+class BinaryTree {
+  constructor() {
+    this.root = null;
+  }
 
-    search(key) {
-        // Implement search algorithm here
+  insert(value) {
+    const newNode = new Node(value);
+    
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
     }
+  }
 
-    insert(key) {
-        // Implement insertion algorithm here
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
     }
-
-    delete(key) {
-        // Implement deletion algorithm here
-    }
-
-    splitNode(node, index) {
-        // Implement split operation here
-    }
-
-    mergeNodes(node1, node2, parent) {
-        // Implement merge operation here
-    }
+  }
 }
 
-// Example usage
-const btree = new BTree(3); // B-tree of order 3
-btree.insert(5);
-btree.insert(10);
-btree.insert(3);
+// Usage
+const binaryTree = new BinaryTree();
+binaryTree.insert(5);
+binaryTree.insert(3);
+binaryTree.insert(7);
