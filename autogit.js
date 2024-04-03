@@ -1,57 +1,29 @@
-function biDirectionalSearch(graph, startNode, endNode) {
-    let visitedForward = new Set();
-    let visitedBackward = new Set();
-    
-    let queueForward = [startNode];
-    let queueBackward = [endNode];
-    
-    while (queueForward.length > 0 && queueBackward.length > 0) {
-        let currentNodeForward = queueForward.shift();
-        
-        if (visitedBackward.has(currentNodeForward)) {
-            // Found a common node
-            return true;
-        }
-        
-        visitedForward.add(currentNodeForward);
-        
-        for (let neighbor of graph[currentNodeForward]) {
-            if (!visitedForward.has(neighbor)) {
-                queueForward.push(neighbor);
-            }
-        }
-        
-        let currentNodeBackward = queueBackward.shift();
-        
-        if (visitedForward.has(currentNodeBackward)) {
-            // Found a common node
-            return true;
-        }
-        
-        visitedBackward.add(currentNodeBackward);
-        
-        for (let neighbor of graph[currentNodeBackward]) {
-            if (!visitedBackward.has(neighbor)) {
-                queueBackward.push(neighbor);
-            }
+function binarySearch(arr, target) {
+    let start = 0;
+    let end = arr.length - 1;
+
+    while (start <= end) {
+        let mid = Math.floor((start + end) / 2);
+
+        if (arr[mid] === target) {
+            return mid;
+        } else if (arr[mid] < target) {
+            start = mid + 1;
+        } else {
+            end = mid - 1;
         }
     }
-    
-    // No common node found
-    return false;
+
+    return -1;
 }
 
 // Example usage
-const graph = {
-    A: ['B', 'C'],
-    B: ['A', 'D'],
-    C: ['A', 'E'],
-    D: ['B', 'F'],
-    E: ['C', 'G'],
-    F: ['D'],
-    G: ['E']
-};
+const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17];
+const target = 7;
+const index = binarySearch(arr, target);
 
-const startNode = 'A';
-const endNode = 'G';
-console.log(biDirectionalSearch(graph, startNode, endNode)); // Output: true
+if (index !== -1) {
+    console.log(`Element found at index ${index}`);
+} else {
+    console.log("Element not found");
+}
