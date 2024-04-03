@@ -1,6 +1,6 @@
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 4, 5, 6, 7];
+let str = "Hello, World! This is a test string with spaces.";
 
-const commonElements = array1.filter(element => array2.includes(element));
+// Using regular expression to remove all spaces
+let strWithoutSpaces = str.replace(/\s/g, '');
 
-console.log(commonElements); // Output: [3, 4, 5]
+console.log(strWithoutSpaces);
