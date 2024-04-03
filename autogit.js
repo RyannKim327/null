@@ -1,4 +1,11 @@
-let str = "Hello, World!";
-let lowercaseStr = str.toLowerCase();
+async function fetchData() {
+  try {
+    const response = await fetch('https://api.example.com/data');
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error('Error fetching data: ', error);
+  }
+}
 
-console.log(lowercaseStr); // Outputs: "hello, world!"
+fetchData();
