@@ -1,14 +1,10 @@
-function isPalindrome(str) {
-    // Remove non-alphanumeric characters and convert to lowercase
-    let cleanedStr = str.toLowerCase().replace(/[\W_]/g, '');
-    
-    // Reverse the string
-    let reversedStr = cleanedStr.split('').reverse().join('');
-    
-    // Check if the original and reversed strings are the same
-    return cleanedStr === reversedStr;
-}
+let numbers = [5, 10, 3, 8, 15];
 
-// Test the function
-let str = "A man, a plan, a canal, Panama";
-console.log(isPalindrome(str)); // Output: true
+let max = Math.max(...numbers);
+
+console.log("The maximum value in the array is: " + max);
+let numbers = [5, 10, 3, 8, 15];
+
+let max = numbers.reduce((a, b) => Math.max(a, b));
+
+console.log("The maximum value in the array is: " + max);
