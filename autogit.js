@@ -1,6 +1,47 @@
-let array1 = [1, 2, 3, 4, 5];
-let array2 = [4, 5, 6, 7, 8];
+class Graph {
+    constructor() {
+        this.adjList = new Map();
+    }
 
-let commonElements = array1.filter(element => array2.includes(element));
+    addVertex(vertex) {
+        this.adjList.set(vertex, []);
+    }
 
-console.log(commonElements); // Output: [4, 5]
+    addEdge(v, w) {
+        this.adjList.get(v).push(w);
+    }
+
+    depthFirstSearch(startingNode) {
+        let visited = {};
+        this._dfs(startingNode, visited);
+    }
+
+    _dfs(vertex, visited) {
+        visited[vertex] = true;
+        console.log(vertex);
+        
+        let neighbors = this.adjList.get(vertex);
+
+        for (let neighbor of neighbors) {
+            if (!visited[neighbor]) {
+                this._dfs(neighbor, visited);
+            }
+        }
+    }
+}
+
+// Example usage
+let graph = new Graph();
+let nodes = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+for (let node of nodes) {
+    graph.addVertex(node);
+}
+
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('B', 'E');
+graph.addEdge('C', 'F');
+
+graph.depthFirstSearch('A');
