@@ -1,38 +1,24 @@
-// Define the structure of a binary tree node
-class TreeNode {
-    constructor(val) {
-        this.val = val;
-        this.left = null;
-        this.right = null;
+function quickSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
     }
+
+    const pivot = arr[0];
+    const left = [];
+    const right = [];
+
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
+        } else {
+            right.push(arr[i]);
+        }
+    }
+
+    return quickSort(left).concat(pivot, quickSort(right));
 }
 
-// Function to find the maximum depth of a binary tree
-const maxDepth = (node) => {
-    if (!node) return 0;
-    return 1 + Math.max(maxDepth(node.left), maxDepth(node.right));
-};
-
-// Function to find the diameter of a binary tree
-const diameterOfBinaryTree = (root) => {
-    if (!root) return 0;
-
-    const leftDiameter = diameterOfBinaryTree(root.left);
-    const rightDiameter = diameterOfBinaryTree(root.right);
-
-    const leftMaxDepth = maxDepth(root.left);
-    const rightMaxDepth = maxDepth(root.right);
-
-    return Math.max(leftMaxDepth + rightMaxDepth, Math.max(leftDiameter, rightDiameter));
-};
-
-// Sample binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-root.right.right = new TreeNode(6);
-
-// Calculate and log the diameter of the binary tree
-console.log(diameterOfBinaryTree(root)); // Output: 4
+// Example usage
+const array = [3, 5, 2, 8, 1, 4, 7, 6];
+const sortedArray = quickSort(array);
+console.log(sortedArray);  // Output: [1, 2, 3, 4, 5, 6, 7, 8]
