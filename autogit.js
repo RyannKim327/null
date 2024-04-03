@@ -1,69 +1,69 @@
-class Graph {
-  constructor() {
-    this.nodes = new Set();
-    this.edges = {};
-  }
+function boyerMooreSearch(text, pattern) {
+  const badChar = {};
+  const goodSuffix = {};
 
-  addNode(node) {
-    this.nodes.add(node);
-    this.edges[node] = [];
-  }
+  function preprocessPattern(pattern) {
+    const m = pattern.length;
 
-  addEdge(node1, node2) {
-    this.edges[node1].push(node2);
-    this.edges[node2].push(node1);
-  }
-
-  getNeighbors(node) {
-    return this.edges[node];
-  }
-}
-
-function biDirectionalSearch(graph, start, goal) {
-  let startQueue = [start];
-  let goalQueue = [goal];
-  let startVisited = new Set([start]);
-  let goalVisited = new Set([goal]);
-
-  while (startQueue.length > 0 && goalQueue.length > 0) {
-    let startNode = startQueue.shift();
-    let goalNode = goalQueue.shift();
-
-    if (startVisited.has(goalNode) || goalVisited.has(startNode)) {
-      return true; // Path found
+    for (let i = 0; i < m; i++) {
+      badChar[pattern[i]] = i;
     }
 
-    let startNeighbors = graph.getNeighbors(startNode);
-    let goalNeighbors = graph.getNeighbors(goalNode);
+    for (let i = 0; i <= m; i++) {
+      let [suffix, prefix] = computeSuffixPrefix(pattern.slice(i));
+      goodSuffix[i] = { suffix, prefix };
+    }
+  }
 
-    for (let neighbor of startNeighbors) {
-      if (!startVisited.has(neighbor)) {
-        startVisited.add(neighbor);
-        startQueue.push(neighbor);
+  function computeSuffixPrefix(str) {
+    const m = str.length;
+    const suffix = new Array(m).fill(0);
+    const prefix = new Array(m).fill(false);
+
+    for (let i = 0; i < m; i++) {
+      let j = i, k = 0;
+
+      while (j >= 0 && str[j] === str[m - 1 - k]) {
+        j--;
+        k++;
+        suffix[k] = j + 1;
+      }
+
+      if (j === -1) prefix[k] = true;
+    }
+
+    return [suffix, prefix];
+  }
+
+  function search(text, pattern) {
+    const n = text.length;
+    const m = pattern.length;
+
+    let i = 0;
+    while (i <= n - m) {
+      let j = m - 1;
+
+      while (j >= 0 && pattern[j] === text[i + j]) {
+        j--;
+      }
+
+      if (j < 0) {
+        console.log(`Pattern found at index ${i}`);
+        i += goodSuffix[0].suffix;
+      } else {
+        const badCharShift = Math.max(1, j - badChar[text[i + j]]);
+        const goodSuffixShift = goodSuffix[j + 1].suffix;
+
+        i += Math.max(badCharShift, goodSuffixShift);
       }
     }
-
-    for (let neighbor of goalNeighbors) {
-      if (!goalVisited.has(neighbor)) {
-        goalVisited.add(neighbor);
-        goalQueue.push(neighbor);
-      }
-    }
   }
 
-  return false; // Path not found
+  preprocessPattern(pattern);
+  search(text, pattern);
 }
 
-// Usage
-const graph = new Graph();
-graph.addNode('A');
-graph.addNode('B');
-graph.addNode('C');
-graph.addEdge('A', 'B');
-graph.addEdge('B', 'C');
-
-const start = 'A';
-const goal = 'C';
-
-const result = biDirectionalSearch(graph, start, goal);
-console.log(result ? 'Path found' : 'Path not found');
+// Example usage
+const text = "ABAAABCD";
+const pattern = "ABC";
+boyerMooreSearch(text, pattern);
