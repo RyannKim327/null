@@ -1,38 +1,22 @@
-// Function to get the digit at position for a number
-function getDigit(num, position) {
-    return Math.floor(Math.abs(num) / Math.pow(10, position)) % 10;
+function isAnagram(str1, str2) {
+    // Remove non-alphabetic characters and convert to lowercase
+    str1 = str1.replace(/[^A-Za-z]/g, '').toLowerCase();
+    str2 = str2.replace(/[^A-Za-z]/g, '').toLowerCase();
+
+    // Split the strings into arrays of characters, sort, and join back into strings
+    const sortedStr1 = str1.split('').sort().join('');
+    const sortedStr2 = str2.split('').sort().join('');
+
+    // Compare the two sorted strings
+    return sortedStr1 === sortedStr2;
 }
 
-// Function to count the number of digits in a number
-function digitCount(num) {
-    if (num === 0) return 1;
-    return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
+// Test the function
+const string1 = "listen";
+const string2 = "silent";
 
-// Function to find the maximum number of digits in a list of numbers
-function mostDigits(nums) {
-    let maxDigits = 0;
-    for (let i = 0; i < nums.length; i++) {
-        maxDigits = Math.max(maxDigits, digitCount(nums[i]));
-    }
-    return maxDigits;
+if (isAnagram(string1, string2)) {
+    console.log(`${string1} and ${string2} are anagrams.`);
+} else {
+    console.log(`${string1} and ${string2} are not anagrams.`);
 }
-
-// Radix Sort function
-function radixSort(nums) {
-    let maxDigitCount = mostDigits(nums);
-    for (let k = 0; k < maxDigitCount; k++) {
-        let digitBuckets = Array.from({ length: 10 }, () => []);
-        for (let i = 0; i < nums.length; i++) {
-            let digit = getDigit(nums[i], k);
-            digitBuckets[digit].push(nums[i]);
-        }
-        nums = [].concat(...digitBuckets);
-    }
-    return nums;
-}
-
-// Example Usage
-const unsortedArray = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedArray = radixSort(unsortedArray);
-console.log(sortedArray); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
