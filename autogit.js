@@ -1,13 +1,46 @@
-let array = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
-
-// Find the index of the element to remove
-let index = array.indexOf(elementToRemove);
-
-// Check if the element exists in the array
-if (index > -1) {
-    // Use the splice() method to remove the element
-    array.splice(index, 1);
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
+    }
 }
 
-console.log(array); // Output: [1, 2, 4, 5]
+class LinkedList {
+    constructor() {
+        this.head = null;
+    }
+
+    addNode(data) {
+        const newNode = new Node(data);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+    }
+
+    getLength() {
+        let count = 0;
+        let current = this.head;
+        while (current) {
+            count++;
+            current = current.next;
+        }
+        return count;
+    }
+}
+
+// Creating a linked list
+const linkedList = new LinkedList();
+linkedList.addNode(1);
+linkedList.addNode(2);
+linkedList.addNode(3);
+linkedList.addNode(4);
+linkedList.addNode(5);
+
+const length = linkedList.getLength();
+console.log("Length of the Linked List:", length);
