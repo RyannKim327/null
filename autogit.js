@@ -1,8 +1,12 @@
-let str1 = "Hello";
-let str2 = "World";
-let concatenatedString = str1 + " " + str2;
-console.log(concatenatedString); // Output: Hello World
-let str1 = "Hello";
-let str2 = "World";
-let concatenatedString = str1.concat(" ", str2);
-console.log(concatenatedString); // Output: Hello World
+function validateEmail(email) {
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailPattern.test(email);
+}
+
+// Example usage
+const email = "example@example.com";
+if (validateEmail(email)) {
+    console.log("Email address is valid");
+} else {
+    console.log("Email address is invalid");
+}
