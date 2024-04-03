@@ -1,37 +1,45 @@
-// Helper function to get the digit at a specific position
-function getDigit(num, i) {
-    return Math.floor(Math.abs(num) / Math.pow(10, i)) % 10;
-}
+class Stack {
+  constructor() {
+    this.stack = [];
+  }
 
-// Helper function to count the number of digits in a number
-function digitCount(num) {
-    if (num === 0) return 1;
-    return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
+  // Add an element to the top of the stack
+  push(element) {
+    this.stack.push(element);
+  }
 
-// Helper function to find the number of digits in the largest number in an array
-function mostDigits(arr) {
-    let maxDigits = 0;
-    for (let i = 0; i < arr.length; i++) {
-        maxDigits = Math.max(maxDigits, digitCount(arr[i]));
+  // Remove and return the element at the top of the stack
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
     }
-    return maxDigits;
-}
+    return this.stack.pop();
+  }
 
-// Radix Sort implementation
-function radixSort(arr) {
-    const maxDigitCount = mostDigits(arr);
-    for (let k = 0; k < maxDigitCount; k++) {
-        const buckets = Array.from({ length: 10 }, () => []);
-        for (let i = 0; i < arr.length; i++) {
-            const digit = getDigit(arr[i], k);
-            buckets[digit].push(arr[i]);
-        }
-        arr = [].concat(...buckets);
+  // Return the element at the top of the stack without removing it
+  peek() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
     }
-    return arr;
+    return this.stack[this.stack.length - 1];
+  }
+
+  // Check if the stack is empty
+  isEmpty() {
+    return this.stack.length === 0;
+  }
+
+  // Return the size of the stack
+  size() {
+    return this.stack.length;
+  }
 }
 
 // Example usage
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log(radixSort(arr)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+const stack = new Stack();
+stack.push(1);
+stack.push(2);
+console.log(stack.peek()); // Output: 2
+console.log(stack.pop()); // Output: 2
+console.log(stack.pop()); // Output: 1
+console.log(stack.pop()); // Output: Stack is empty
