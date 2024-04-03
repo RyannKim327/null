@@ -1,29 +1,22 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
+function isPalindrome(str) {
+    let left = 0;
+    let right = str.length - 1;
+    
+    while(left < right) {
+        if(str[left] !== str[right]) {
+            return false;
+        }
+        left++;
+        right--;
+    }
+    
+    return true;
 }
 
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
-
-  while (fast !== null && fast.next !== null) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
-
-  return slow.data;
+// Test the function
+const testStr = "racecar";
+if(isPalindrome(testStr)) {
+    console.log(`${testStr} is a palindrome`);
+} else {
+    console.log(`${testStr} is not a palindrome`);
 }
-
-// Creating a linked list
-const head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-// Finding the middle element of the linked list
-const middleElement = findMiddleElement(head);
-console.log(middleElement);
