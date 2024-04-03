@@ -1,11 +1,8 @@
-function validateEmail(email) {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-}
+let str = "123";
+let num = parseInt(str);
 
-const email = "example@example.com";
-if (validateEmail(email)) {
-    console.log("Valid email address");
-} else {
-    console.log("Invalid email address");
-}
+console.log(num); // Output: 123
+let str = "10";
+let num = parseInt(str, 2); // Parsing a binary number
+
+console.log(num); // Output: 2
