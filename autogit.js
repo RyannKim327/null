@@ -1,46 +1,36 @@
-// Node class
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
-    }
-}
+function longestCommonSubsequence(str1, str2) {
+    const m = str1.length;
+    const n = str2.length;
 
-// Function to find the nth node from the end of a linked list
-function findNthFromEnd(head, n) {
-    let pointer1 = head;
-    let pointer2 = head;
-    
-    // Move pointer2 to nth node from the start
-    for (let i = 0; i < n; i++) {
-        if (pointer2 === null) {
-            return null; // n is greater than the length of the list
+    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
         }
-        pointer2 = pointer2.next;
     }
-    
-    // Move both pointers until pointer2 reaches the end of the list
-    while (pointer2 !== null) {
-        pointer1 = pointer1.next;
-        pointer2 = pointer2.next;
+
+    let i = m, j = n;
+    const result = [];
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            result.unshift(str1[i - 1]);
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
+        }
     }
-    
-    return pointer1;
+
+    return result.join('');
 }
 
-// Create a linked list
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-// Find the 2nd node from the end
-let n = 2;
-let nthNode = findNthFromEnd(head, n);
-
-if (nthNode !== null) {
-    console.log(`The ${n}th node from the end is: ${nthNode.data}`);
-} else {
-    console.log(`There are less than ${n} nodes in the linked list.`);
-}
+const str1 = 'ABCDGH';
+const str2 = 'AEDFHR';
+console.log(longestCommonSubsequence(str1, str2));
