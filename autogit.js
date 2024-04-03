@@ -1,72 +1,66 @@
-// Define a node class for the binary search tree
 class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    constructor(data) {
+        this.data = data;
+        this.next = null;
     }
 }
 
-// Define the binary search tree class
-class BinarySearchTree {
+class LinkedList {
     constructor() {
-        this.root = null;
+        this.head = null;
     }
 
-    // Insert a new value into the binary search tree
-    insert(value) {
-        const newNode = new Node(value);
+    add(data) {
+        const newNode = new Node(data);
 
-        if (this.root === null) {
-            this.root = newNode;
+        if (!this.head) {
+            this.head = newNode;
         } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    insertNode(node, newNode) {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
             }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
+            current.next = newNode;
+        }
+    }
+
+    remove(data) {
+        if (!this.head) {
+            return;
+        }
+        
+        if (this.head.data === data) {
+            this.head = this.head.next;
+            return;
+        }
+
+        let current = this.head;
+        let prev = current;
+        while (current) {
+            if (current.data === data) {
+                prev.next = current.next;
+                return;
             }
+            prev = current;
+            current = current.next;
         }
     }
 
-    // Search for a value in the binary search tree
-    search(value) {
-        return this.searchNode(this.root, value);
-    }
-
-    searchNode(node, value) {
-        if (node === null) {
-            return false;
-        }
-
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true;
+    print() {
+        let current = this.head;
+        while (current) {
+            console.log(current.data);
+            current = current.next;
         }
     }
 }
 
-// Example usage
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(20);
+// Example usage:
+const linkedList = new LinkedList();
+linkedList.add(1);
+linkedList.add(2);
+linkedList.add(3);
+linkedList.print();
 
-console.log(bst.search(10)); // true
-console.log(bst.search(5));  // true
-console.log(bst.search(8));  // false
+linkedList.remove(2);
+linkedList.print();
