@@ -1,47 +1,38 @@
-class Node {
-    constructor(value) {
-        this.value = value;
+// Define the structure of a binary tree node
+class TreeNode {
+    constructor(val) {
+        this.val = val;
         this.left = null;
         this.right = null;
     }
 }
 
-function diameterOfBinaryTree(root) {
-    let diameter = 0;
+// Function to find the maximum depth of a binary tree
+const maxDepth = (node) => {
+    if (!node) return 0;
+    return 1 + Math.max(maxDepth(node.left), maxDepth(node.right));
+};
 
-    function dfs(node) {
-        if (!node) {
-            return 0;
-        }
+// Function to find the diameter of a binary tree
+const diameterOfBinaryTree = (root) => {
+    if (!root) return 0;
 
-        let leftHeight = dfs(node.left);
-        let rightHeight = dfs(node.right);
+    const leftDiameter = diameterOfBinaryTree(root.left);
+    const rightDiameter = diameterOfBinaryTree(root.right);
 
-        // Update the diameter if necessary
-        diameter = Math.max(diameter, leftHeight + rightHeight);
+    const leftMaxDepth = maxDepth(root.left);
+    const rightMaxDepth = maxDepth(root.right);
 
-        return 1 + Math.max(leftHeight, rightHeight);
-    }
+    return Math.max(leftMaxDepth + rightMaxDepth, Math.max(leftDiameter, rightDiameter));
+};
 
-    dfs(root);
+// Sample binary tree
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+root.right.right = new TreeNode(6);
 
-    return diameter;
-}
-
-// Usage
-/*
-    Construct a sample binary tree:
-            1
-           / \
-          2   3
-         / \
-        4   5
-    The diameter of this tree is 3 (the path 4-2-1-3)
-*/
-let root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-console.log(diameterOfBinaryTree(root)); // Output: 3
+// Calculate and log the diameter of the binary tree
+console.log(diameterOfBinaryTree(root)); // Output: 4
