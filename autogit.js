@@ -1,18 +1,15 @@
-function isPalindrome(str) {
-    let left = 0;
-    let right = str.length - 1;
-
-    while (left < right) {
-        if (str[left] !== str[right]) {
-            return false; // Characters at the left and right don't match, not a palindrome
+function countOccurrences(str, char) {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
+            count++;
         }
-        left++;
-        right--;
     }
-
-    return true; // All characters matched, it's a palindrome
+    return count;
 }
 
-// Test the function
-console.log(isPalindrome("racecar")); // Output: true
-console.log(isPalindrome("hello")); // Output: false
+// Example usage
+const myString = 'hello world';
+const charToCount = 'o';
+const occurrences = countOccurrences(myString, charToCount);
+console.log(`The character '${charToCount}' occurs ${occurrences} times in the string.`);
