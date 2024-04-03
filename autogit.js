@@ -1,45 +1,17 @@
-class Stack {
-  constructor() {
-    this.stack = [];
-  }
-
-  // Add an element to the top of the stack
-  push(element) {
-    this.stack.push(element);
-  }
-
-  // Remove and return the element at the top of the stack
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
+function bubbleSort(arr) {
+    var len = arr.length;
+    for (var i = 0; i < len; i++) {
+        for (var j = 0; j < len - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                var temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
     }
-    return this.stack.pop();
-  }
-
-  // Return the element at the top of the stack without removing it
-  peek() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
-    }
-    return this.stack[this.stack.length - 1];
-  }
-
-  // Check if the stack is empty
-  isEmpty() {
-    return this.stack.length === 0;
-  }
-
-  // Return the size of the stack
-  size() {
-    return this.stack.length;
-  }
+    return arr;
 }
 
-// Example usage
-const stack = new Stack();
-stack.push(1);
-stack.push(2);
-console.log(stack.peek()); // Output: 2
-console.log(stack.pop()); // Output: 2
-console.log(stack.pop()); // Output: 1
-console.log(stack.pop()); // Output: Stack is empty
+var arr = [64, 34, 25, 12, 22, 11, 90];
+console.log("Array before sorting: " + arr);
+console.log("Array after sorting: " + bubbleSort(arr));
