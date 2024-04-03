@@ -1,27 +1,46 @@
-function shellSort(arr) {
-    const n = arr.length;
-    let gap = Math.floor(n / 2);
-    
-    while (gap > 0) {
-        for (let i = gap; i < n; i++) {
-            let temp = arr[i];
-            let j = i;
-            
-            while (j >= gap && arr[j - gap] > temp) {
-                arr[j] = arr[j - gap];
-                j -= gap;
-            }
-            
-            arr[j] = temp;
-        }
-        
-        gap = Math.floor(gap / 2);
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
+}
+
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+
+  append(data) {
+    const newNode = new Node(data);
+    if (!this.head) {
+      this.head = newNode;
+      return;
     }
     
-    return arr;
+    let current = this.head;
+    while (current.next) {
+      current = current.next;
+    }
+    current.next = newNode;
+  }
+
+  getLength() {
+    let length = 0;
+    let current = this.head;
+    
+    while (current) {
+      length++;
+      current = current.next;
+    }
+    
+    return length;
+  }
 }
 
 // Example usage
-const unsortedArray = [12, 34, 54, 2, 3];
-const sortedArray = shellSort(unsortedArray);
-console.log(sortedArray);
+const linkedList = new LinkedList();
+linkedList.append(1);
+linkedList.append(2);
+linkedList.append(3);
+
+console.log(linkedList.getLength()); // Output: 3
