@@ -1,14 +1,39 @@
-function factorial(n) {
-    // Base case: if the number is 0, return 1
-    if (n === 0) {
-        return 1;
-    } else {
-        // Recursive case: calculate the factorial of (n-1) and multiply it by n
-        return n * factorial(n - 1);
+class BTreeNode {
+    constructor(keys, children) {
+        this.keys = keys || [];
+        this.children = children || [];
     }
 }
 
-// Call the function with the number for which you want to calculate the factorial
-let number = 5;
-let result = factorial(number);
-console.log(`The factorial of ${number} is ${result}`);
+class BTree {
+    constructor(order) {
+        this.order = order;
+        this.root = null;
+    }
+
+    search(key) {
+        // Implement search algorithm here
+    }
+
+    insert(key) {
+        // Implement insertion algorithm here
+    }
+
+    delete(key) {
+        // Implement deletion algorithm here
+    }
+
+    splitNode(node, index) {
+        // Implement split operation here
+    }
+
+    mergeNodes(node1, node2, parent) {
+        // Implement merge operation here
+    }
+}
+
+// Example usage
+const btree = new BTree(3); // B-tree of order 3
+btree.insert(5);
+btree.insert(10);
+btree.insert(3);
