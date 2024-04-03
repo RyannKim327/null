@@ -1,23 +1,63 @@
-function burrowsWheelerTransform(inputString) {
-    // Add EOF (End-of-File) marker to the input string
-    inputString += '$';
-    
-    // Generate all possible rotations of the input string
-    let rotations = [];
-    for (let i = 0; i < inputString.length; i++) {
-        rotations.push(inputString.slice(i) + inputString.slice(0, i));
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
     }
-    
-    // Sort the rotations lexicographically
-    rotations.sort();
-    
-    // Extract the last characters of each sorted rotation
-    let transformedString = rotations.map(rotation => rotation.slice(-1)).join('');
-    
-    return transformedString;
 }
 
-// Test the implementation
-let inputString = 'banana';
-let transformedString = burrowsWheelerTransform(inputString);
-console.log(transformedString);
+class LinkedList {
+    constructor() {
+        this.head = null;
+    }
+
+    add(data) {
+        const newNode = new Node(data);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+    }
+
+    reverse() {
+        let prev = null;
+        let current = this.head;
+        let next = null;
+
+        while (current !== null) {
+            next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
+        }
+
+        this.head = prev;
+    }
+
+    print() {
+        let current = this.head;
+        while (current) {
+            console.log(current.data);
+            current = current.next;
+        }
+    }
+}
+
+// Create a linked list
+const list = new LinkedList();
+list.add(1);
+list.add(2);
+list.add(3);
+list.add(4);
+
+console.log("Original linked list:");
+list.print();
+
+list.reverse();
+
+console.log("\nReversed linked list:");
+list.print();
