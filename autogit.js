@@ -1,48 +1,21 @@
-class Graph {
-    constructor() {
-        this.adjList = new Map();
-    }
-
-    addVertex(vertex) {
-        if (!this.adjList.has(vertex)) {
-            this.adjList.set(vertex, []);
-        }
-    }
-
-    addEdge(source, destination) {
-        this.adjList.get(source).push(destination);
-        this.adjList.get(destination).push(source);
-    }
-
-    depthFirstSearch(startingNode) {
-        let visited = {};
-        this._dfs(startingNode, visited);
-    }
-
-    _dfs(node, visited) {
-        visited[node] = true;
-        console.log(node);
-
-        for (let neighbor of this.adjList.get(node)) {
-            if (!visited[neighbor]) {
-                this._dfs(neighbor, visited);
+function bubbleSort(arr) {
+    const n = arr.length;
+    
+    for (let i = 0; i < n - 1; i++) {
+        for (let j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap arr[j] and arr[j + 1]
+                let temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
             }
         }
     }
+    
+    return arr;
 }
 
-// Create a graph
-let graph = new Graph();
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addVertex('E');
-
-graph.addEdge('A', 'B');
-graph.addEdge('B', 'C');
-graph.addEdge('C', 'D');
-graph.addEdge('D', 'E');
-
-console.log('Depth-first traversal:');
-graph.depthFirstSearch('A');
+// Example usage
+const array = [64, 34, 25, 12, 22, 11, 90];
+console.log("Original Array: ", array);
+console.log("Sorted Array: ", bubbleSort(array));
