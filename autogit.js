@@ -1,22 +1,42 @@
-function isAnagram(str1, str2) {
-    // Remove non-alphabetic characters and convert to lowercase
-    str1 = str1.replace(/[^A-Za-z]/g, '').toLowerCase();
-    str2 = str2.replace(/[^A-Za-z]/g, '').toLowerCase();
-
-    // Split the strings into arrays of characters, sort, and join back into strings
-    const sortedStr1 = str1.split('').sort().join('');
-    const sortedStr2 = str2.split('').sort().join('');
-
-    // Compare the two sorted strings
-    return sortedStr1 === sortedStr2;
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
+    }
 }
 
-// Test the function
-const string1 = "listen";
-const string2 = "silent";
+function getIntersectionNode(headA, headB) {
+    if (!headA || !headB) {
+        return null;
+    }
 
-if (isAnagram(string1, string2)) {
-    console.log(`${string1} and ${string2} are anagrams.`);
-} else {
-    console.log(`${string1} and ${string2} are not anagrams.`);
+    let set = new Set();
+
+    let temp = headA;
+    while (temp) {
+        set.add(temp);
+        temp = temp.next;
+    }
+
+    temp = headB;
+    while (temp) {
+        if (set.has(temp)) {
+            return temp;
+        }
+        temp = temp.next;
+    }
+
+    return null;
 }
+
+// Example usage:
+const commonNode = new Node(5);
+const headA = new Node(1);
+headA.next = new Node(3);
+headA.next.next = commonNode;
+
+const headB = new Node(2);
+headB.next = commonNode;
+
+const result = getIntersectionNode(headA, headB);
+console.log(result); // Output: Node { value: 5, next: null }
