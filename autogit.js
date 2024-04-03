@@ -1,8 +1,13 @@
-let numberString = "42";
-let number = parseInt(numberString);
+let array = [1, 2, 3, 4, 5];
+let elementToRemove = 3;
 
-console.log(number); // Output: 42
-let binaryString = "1010";
-let decimalNumber = parseInt(binaryString, 2);
+// Find the index of the element to remove
+let index = array.indexOf(elementToRemove);
 
-console.log(decimalNumber); // Output: 10
+// Check if the element exists in the array
+if (index > -1) {
+    // Use the splice() method to remove the element
+    array.splice(index, 1);
+}
+
+console.log(array); // Output: [1, 2, 4, 5]
