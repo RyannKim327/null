@@ -1,31 +1,13 @@
-function shellSort(arr) {
-  const length = arr.length;
-  let gap = 1;
-
-  while (gap < length / 3) {
-    gap = gap * 3 + 1;
-  }
-
-  while (gap > 0) {
-    for (let i = gap; i < length; i++) {
-      let temp = arr[i];
-      let j = i;
-
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
-      }
-
-      arr[j] = temp;
+function calculateMean(numbers) {
+    if (numbers.length === 0) {
+        return 0; // handle empty list
     }
 
-    gap = (gap - 1) / 3;
-  }
-
-  return arr;
+    let sum = numbers.reduce((a, b) => a + b, 0);
+    return sum / numbers.length;
 }
 
 // Example usage
-const unsortedArray = [12, 34, 54, 2, 3];
-const sortedArray = shellSort(unsortedArray);
-console.log(sortedArray);  // Output: [2, 3, 12, 34, 54]
+const numbers = [2, 4, 6, 8, 10];
+const mean = calculateMean(numbers);
+console.log(mean); // Output: 6
