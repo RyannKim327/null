@@ -1,67 +1,17 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+const str = 'Hello, world!';
+const subStr = 'world';
+
+if (str.includes(subStr)) {
+  console.log('Substring found!');
+} else {
+  console.log('Substring not found!');
 }
+const str = 'Hello, world!';
+const subStr = 'world';
+const regex = new RegExp(subStr);
 
-class BinarySearchTree {
-    constructor() {
-        this.root = null;
-    }
-
-    insert(value) {
-        const newNode = new Node(value);
-
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    insertNode(node, newNode) {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
-
-    search(value) {
-        return this.searchNode(this.root, value);
-    }
-
-    searchNode(node, value) {
-        if (node === null) {
-            return false;
-        }
-
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true;
-        }
-    }
+if (str.match(regex)) {
+  console.log('Substring found!');
+} else {
+  console.log('Substring not found!');
 }
-
-// Example usage
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(8);
-
-console.log(bst.search(5)); // Output: true
-console.log(bst.search(20)); // Output: false
