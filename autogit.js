@@ -1,18 +1,18 @@
-function bubbleSort(arr) {
-    let len = arr.length;
-    for (let i = 0; i < len; i++) {
-        for (let j = 0; j < len - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                let temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
-        }
-    }
-    return arr;
+function countOccurrences(str, word) {
+    // Split the input string by spaces to get an array of words
+    let wordsArr = str.split(' ');
+
+    // Use the filter method to create a new array with only the occurrences of the word
+    let filteredWords = wordsArr.filter(function (w) {
+        return w.toLowerCase() === word.toLowerCase();
+    });
+
+    // Return the length of the filtered array, which is the number of occurrences of the word
+    return filteredWords.length;
 }
 
-// Example usage
-let array = [64, 34, 25, 12, 22, 11, 90];
-let sortedArray = bubbleSort(array);
-console.log(sortedArray);
+// Test the function
+let str = "JavaScript is a powerful programming language. JavaScript is used for web development.";
+let word = "JavaScript";
+let occurrences = countOccurrences(str, word);
+console.log(`The word "${word}" appears ${occurrences} times in the string.`);
