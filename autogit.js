@@ -4,11 +4,14 @@ class Graph {
     }
 
     addVertex(vertex) {
-        this.adjList.set(vertex, []);
+        if (!this.adjList.has(vertex)) {
+            this.adjList.set(vertex, []);
+        }
     }
 
-    addEdge(v, w) {
-        this.adjList.get(v).push(w);
+    addEdge(source, destination) {
+        this.adjList.get(source).push(destination);
+        this.adjList.get(destination).push(source);
     }
 
     depthFirstSearch(startingNode) {
@@ -16,13 +19,11 @@ class Graph {
         this._dfs(startingNode, visited);
     }
 
-    _dfs(vertex, visited) {
-        visited[vertex] = true;
-        console.log(vertex);
-        
-        let neighbors = this.adjList.get(vertex);
+    _dfs(node, visited) {
+        visited[node] = true;
+        console.log(node);
 
-        for (let neighbor of neighbors) {
+        for (let neighbor of this.adjList.get(node)) {
             if (!visited[neighbor]) {
                 this._dfs(neighbor, visited);
             }
@@ -30,18 +31,18 @@ class Graph {
     }
 }
 
-// Example usage
+// Create a graph
 let graph = new Graph();
-let nodes = ['A', 'B', 'C', 'D', 'E', 'F'];
-
-for (let node of nodes) {
-    graph.addVertex(node);
-}
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addVertex('E');
 
 graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('B', 'E');
-graph.addEdge('C', 'F');
+graph.addEdge('B', 'C');
+graph.addEdge('C', 'D');
+graph.addEdge('D', 'E');
 
+console.log('Depth-first traversal:');
 graph.depthFirstSearch('A');
