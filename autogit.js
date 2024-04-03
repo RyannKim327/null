@@ -1,21 +1,33 @@
-function insertionSort(arr) {
-    for (let i = 1; i < arr.length; i++) {
-        let current = arr[i];
-        let j = i - 1;
+function countingSort(arr) {
+    // Find the max value in the input array
+    let max = Math.max(...arr);
 
-        while (j >= 0 && arr[j] > current) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
+    // Create a count array to store the count of each element
+    let count = new Array(max + 1).fill(0);
 
-        arr[j + 1] = current;
+    // Count the occurrences of each element
+    for (let i = 0; i < arr.length; i++) {
+        count[arr[i]]++;
     }
 
-    return arr;
+    // Modify the count array to store the actual position of the element in the output array
+    for (let i = 1; i <= max; i++) {
+        count[i] += count[i - 1];
+    }
+
+    // Create an output array to store the sorted elements
+    let output = new Array(arr.length);
+
+    // Build the output array
+    for (let i = arr.length - 1; i >= 0; i--) {
+        output[count[arr[i]] - 1] = arr[i];
+        count[arr[i]]--;
+    }
+
+    return output;
 }
 
-// Usage
-const unsortedArray = [5, 2, 4, 6, 1, 3];
-const sortedArray = insertionSort(unsortedArray);
-
-console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 6]
+// Example usage:
+const unsortedArray = [4, 2, 2, 8, 3, 3, 1];
+const sortedArray = countingSort(unsortedArray);
+console.log(sortedArray); // Output: [1, 2, 2, 3, 3, 4, 8]
