@@ -1,35 +1,15 @@
-function hashString(str) {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-        hash += str.charCodeAt(i);
-    }
-    return hash;
-}
-
-function rabinKarpSearch(text, pattern) {
-    const patternHash = hashString(pattern);
-    const patternLength = pattern.length;
-    const textLength = text.length;
-
-    for (let i = 0; i <= textLength - patternLength; i++) {
-        const substring = text.substr(i, patternLength);
-        const substringHash = hashString(substring);
-
-        if (patternHash === substringHash && pattern === substring) {
-            return i; // Return the index of the match
+function isSortedAscending(arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;
         }
     }
-
-    return -1; // Return -1 if no match is found
+    return true;
 }
 
-// Example usage
-const text = "hello world";
-const pattern = "world";
-const result = rabinKarpSearch(text, pattern);
+// Example usage:
+const arr1 = [1, 2, 3, 4, 5];
+console.log(isSortedAscending(arr1)); // Output: true
 
-if (result !== -1) {
-    console.log(`Pattern found at index ${result}`);
-} else {
-    console.log(`Pattern not found`);
-}
+const arr2 = [5, 4, 3, 2, 1];
+console.log(isSortedAscending(arr2)); // Output: false
