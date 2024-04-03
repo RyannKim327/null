@@ -1,138 +1,38 @@
-class Node {
-    constructor(value, color) {
-        this.value = value;
-        this.color = color;
-        this.left = null;
-        this.right = null;
-        this.parent = null;
-    }
+function Node(value, children) {
+    this.value = value;
+    this.children = children;
 }
 
-class RedBlackTree {
-    constructor() {
-        this.root = null;
-    }
+function depthLimitedSearch(root, targetValue, depthLimit) {
+    let stack = [{ node: root, depth: 0 }];
 
-    insert(value) {
-        let newNode = new Node(value, "red");
-        if (!this.root) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
+    while (stack.length > 0) {
+        const { node, depth } = stack.pop();
+
+        if (node.value === targetValue) {
+            return node;
         }
-        this.fixTree(newNode);
-    }
 
-    insertNode(root, newNode) {
-        if (newNode.value < root.value) {
-            if (root.left === null) {
-                root.left = newNode;
-                newNode.parent = root;
-            } else {
-                this.insertNode(root.left, newNode);
-            }
-        } else {
-            if (root.right === null) {
-                root.right = newNode;
-                newNode.parent = root;
-            } else {
-                this.insertNode(root.right, newNode);
+        if (depth < depthLimit) {
+            for (let child of node.children) {
+                stack.push({ node: child, depth: depth + 1 });
             }
         }
     }
 
-    fixTree(node) {
-        while (node !== this.root && node.parent.color === "red") {
-            if (node.parent === node.parent.parent.left) {
-                let uncle = node.parent.parent.right;
-                
-                if (uncle && uncle.color === "red") {
-                    node.parent.color = "black";
-                    uncle.color = "black";
-                    node.parent.parent.color = "red";
-                    node = node.parent.parent;
-                } else {
-                    if (node === node.parent.right) {
-                        node = node.parent;
-                        this.rotateLeft(node);
-                    }
-                    
-                    node.parent.color = "black";
-                    node.parent.parent.color = "red";
-                    this.rotateRight(node.parent.parent);
-                }
-            } else {
-                let uncle = node.parent.parent.left;
-                
-                if (uncle && uncle.color === "red") {
-                    node.parent.color = "black";
-                    uncle.color = "black";
-                    node.parent.parent.color = "red";
-                    node = node.parent.parent;
-                } else {
-                    if (node === node.parent.left) {
-                        node = node.parent;
-                        this.rotateRight(node);
-                    }
-                    
-                    node.parent.color = "black";
-                    node.parent.parent.color = "red";
-                    this.rotateLeft(node.parent.parent);
-                }
-            }
-        }
-        
-        this.root.color = "black";
-    }
-
-    rotateLeft(node) {
-        let temp = node.right;
-        node.right = temp.left;
-        
-        if (temp.left !== null) {
-            temp.left.parent = node;
-        }
-        
-        temp.parent = node.parent;
-        
-        if (node.parent === null) {
-            this.root = temp;
-        } else if (node === node.parent.left) {
-            node.parent.left = temp;
-        } else {
-            node.parent.right = temp;
-        }
-        
-        temp.left = node;
-        node.parent = temp;
-    }
-
-    rotateRight(node) {
-        let temp = node.left;
-        node.left = temp.right;
-        
-        if (temp.right !== null) {
-            temp.right.parent = node;
-        }
-        
-        temp.parent = node.parent;
-        
-        if (node.parent === null) {
-            this.root = temp;
-        } else if (node === node.parent.right) {
-            node.parent.right = temp;
-        } else {
-            node.parent.left = temp;
-        }
-        
-        temp.right = node;
-        node.parent = temp;
-    }
+    return null;
 }
 
-// Usage
-let rbTree = new RedBlackTree();
-rbTree.insert(10);
-rbTree.insert(20);
-rbTree.insert(30);
-rbTree.insert(15);
+// Example usage
+const targetValue = 5;
+const depthLimit = 2;
+const node7 = new Node(7, []);
+const node6 = new Node(6, []);
+const node5 = new Node(5, []);
+const node4 = new Node(4, []);
+const node3 = new Node(3, [node6, node7]);
+const node2 = new Node(2, [node4, node5]);
+const node1 = new Node(1, [node2, node3]);
+
+const result = depthLimitedSearch(node1, targetValue, depthLimit);
+console.log(result ? `Found target value ${targetValue}` : `Target value ${targetValue} not found within depth limit`);
