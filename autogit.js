@@ -1,18 +1,41 @@
-function hasCycle(head) {
-    if (!head || !head.next) {
-        return false;
+class HashTable {
+  constructor() {
+    this.table = {};
+  }
+
+  // Hash function to calculate the hash value
+  hash(key) {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash += key.charCodeAt(i);
     }
+    return hash % 31; // Modulo by a prime number to reduce collisions
+  }
 
-    let slow = head;
-    let fast = head.next;
+  // Insert key-value pair into the hash table
+  insert(key, value) {
+    const index = this.hash(key);
+    this.table[index] = value;
+  }
 
-    while (fast && fast.next) {
-        if (slow === fast) {
-            return true;
-        }
-        slow = slow.next;
-        fast = fast.next.next;
-    }
+  // Get value based on key
+  get(key) {
+    const index = this.hash(key);
+    return this.table[index];
+  }
 
-    return false;
+  // Remove key-value pair from the hash table
+  remove(key) {
+    const index = this.hash(key);
+    delete this.table[index];
+  }
 }
+
+// Example usage
+const hashTable = new HashTable();
+hashTable.insert('foo', 'bar');
+hashTable.insert('hello', 'world');
+console.log(hashTable.get('foo')); // Output: bar
+console.log(hashTable.get('hello')); // Output: world
+hashTable.remove('hello');
+console.log(hashTable.get('hello')); // Output: undefined
