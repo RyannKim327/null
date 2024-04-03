@@ -1,16 +1,57 @@
-let str = "Hello, world!";
-let substr = "world";
-
-if (str.indexOf(substr) !== -1) {
-    console.log("Substring found in the string.");
-} else {
-    console.log("Substring not found in the string.");
+// TrieNode class
+class TrieNode {
+  constructor() {
+    this.children = {};
+    this.isEndOfWord = false;
+  }
 }
-let str = "Hello, world!";
-let substr = "world";
 
-if (str.includes(substr)) {
-    console.log("Substring found in the string.");
-} else {
-    console.log("Substring not found in the string.");
+// Trie class
+class Trie {
+  constructor() {
+    this.root = new TrieNode();
+  }
+
+  // Insert a word into the trie
+  insert(word) {
+    let node = this.root;
+    for (let char of word) {
+      if (!node.children[char]) {
+        node.children[char] = new TrieNode();
+      }
+      node = node.children[char];
+    }
+    node.isEndOfWord = true;
+  }
+
+  // Search for a word in the trie
+  search(word) {
+    let node = this.root;
+    for (let char of word) {
+      if (!node.children[char]) {
+        return false;
+      }
+      node = node.children[char];
+    }
+    return node.isEndOfWord;
+  }
+
+  // Check if a word prefix exists in the trie
+  startsWith(prefix) {
+    let node = this.root;
+    for (let char of prefix) {
+      if (!node.children[char]) {
+        return false;
+      }
+      node = node.children[char];
+    }
+    return true;
+  }
 }
+
+// Example usage
+const trie = new Trie();
+trie.insert("apple");
+console.log(trie.search("apple")); // Output: true
+console.log(trie.search("app")); // Output: false
+console.log(trie.startsWith("app")); // Output: true
