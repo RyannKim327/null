@@ -1,41 +1,17 @@
-class HashTable {
-  constructor() {
-    this.table = {};
-  }
-
-  // Hash function to calculate the hash value
-  hash(key) {
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) {
-      hash += key.charCodeAt(i);
-    }
-    return hash % 31; // Modulo by a prime number to reduce collisions
-  }
-
-  // Insert key-value pair into the hash table
-  insert(key, value) {
-    const index = this.hash(key);
-    this.table[index] = value;
-  }
-
-  // Get value based on key
-  get(key) {
-    const index = this.hash(key);
-    return this.table[index];
-  }
-
-  // Remove key-value pair from the hash table
-  remove(key) {
-    const index = this.hash(key);
-    delete this.table[index];
+async function fetchData(url) {
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
   }
 }
 
-// Example usage
-const hashTable = new HashTable();
-hashTable.insert('foo', 'bar');
-hashTable.insert('hello', 'world');
-console.log(hashTable.get('foo')); // Output: bar
-console.log(hashTable.get('hello')); // Output: world
-hashTable.remove('hello');
-console.log(hashTable.get('hello')); // Output: undefined
+// Replace 'https://api.example.com/data' with the actual API endpoint
+const apiUrl = 'https://api.example.com/data';
+fetchData(apiUrl)
+  .then(data => {
+    console.log('Received data:', data);
+    // Use the data as needed
+  });
