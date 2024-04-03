@@ -1,18 +1,47 @@
-function countOccurrences(text, word) {
-    let count = 0;
-    const words = text.split(' ');
-
-    for (let i = 0; i < words.length; i++) {
-        if (words[i] === word) {
-            count++;
-        }
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-
-    return count;
 }
 
-const text = "apple banana apple orange apple mango";
-const wordToCount = "apple";
-const occurrences = countOccurrences(text, wordToCount);
+function diameterOfBinaryTree(root) {
+    let diameter = 0;
 
-console.log(`The word "${wordToCount}" appears ${occurrences} times in the text.`);
+    function dfs(node) {
+        if (!node) {
+            return 0;
+        }
+
+        let leftHeight = dfs(node.left);
+        let rightHeight = dfs(node.right);
+
+        // Update the diameter if necessary
+        diameter = Math.max(diameter, leftHeight + rightHeight);
+
+        return 1 + Math.max(leftHeight, rightHeight);
+    }
+
+    dfs(root);
+
+    return diameter;
+}
+
+// Usage
+/*
+    Construct a sample binary tree:
+            1
+           / \
+          2   3
+         / \
+        4   5
+    The diameter of this tree is 3 (the path 4-2-1-3)
+*/
+let root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+console.log(diameterOfBinaryTree(root)); // Output: 3
