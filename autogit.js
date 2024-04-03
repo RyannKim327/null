@@ -1,23 +1,29 @@
-function bubbleSort(arr) {
-    const n = arr.length;
-    let swapped;
-    do {
-        swapped = false;
-        for (let i = 0; i < n - 1; i++) {
-            if (arr[i] > arr[i + 1]) {
-                // Swap elements
-                const temp = arr[i];
-                arr[i] = arr[i + 1];
-                arr[i + 1] = temp;
-                swapped = true;
-            }
-        }
-    } while (swapped);
+function binarySearch(arr, target) {
+    let left = 0;
+    let right = arr.length - 1;
 
-    return arr;
+    while (left <= right) {
+        let mid = Math.floor((left + right) / 2);
+
+        if (arr[mid] === target) {
+            return mid;
+        } else if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+
+    return -1; // Return -1 if the target is not found
 }
 
-// Test the bubble sort function
-const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
-const sortedArray = bubbleSort(unsortedArray);
-console.log(sortedArray);
+// Usage example
+const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+const target = 12;
+const index = binarySearch(arr, target);
+
+if (index !== -1) {
+    console.log(`Element found at index: ${index}`);
+} else {
+    console.log(`Element not found`);
+}
