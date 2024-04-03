@@ -1,53 +1,70 @@
-function computeLPSArray(pattern) {
-    const lps = [0];
-    let len = 0;
-    for (let i = 1; i < pattern.length; ) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-    return lps;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-function KMPSearch(text, pattern) {
-    const n = text.length;
-    const m = pattern.length;
+class BinaryTree {
+  constructor() {
+    this.root = null;
+  }
 
-    const lps = computeLPSArray(pattern);
-
-    let i = 0; // index for text
-    let j = 0; // index for pattern
-
-    while (i < n) {
-        if (text[i] === pattern[j]) {
-            i++;
-            j++;
-        }
-
-        if (j === m) {
-            console.log("Found pattern at index " + (i - j));
-            j = lps[j - 1];
-        } else if (i < n && text[i] !== pattern[j]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i = i + 1;
-            }
-        }
+  insert(value) {
+    const newNode = new Node(value);
+    
+    if (!this.root) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
     }
+  }
+
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (!node.left) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (!node.right) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  searchNode(node, value) {
+    if (!node) {
+      return false;
+    }
+
+    if (value === node.value) {
+      return true;
+    }
+
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else {
+      return this.searchNode(node.right, value);
+    }
+  }
 }
 
-// Test the algorithm
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
+// Example usage
+const tree = new BinaryTree();
+tree.insert(8);
+tree.insert(3);
+tree.insert(10);
+tree.insert(1);
+tree.insert(6);
 
-KMPSearch(text, pattern);
+console.log(tree.search(6)); // Output: true
+console.log(tree.search(9)); // Output: false
