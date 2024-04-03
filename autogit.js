@@ -1,49 +1,67 @@
-// Node class to represent individual nodes in the linked list
 class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
 
-// LinkedList class to represent the linked list
-class LinkedList {
+class BinarySearchTree {
     constructor() {
-        this.head = null;
+        this.root = null;
     }
 
-    // Method to add a new node to the linked list
-    append(data) {
-        const newNode = new Node(data);
+    insert(value) {
+        const newNode = new Node(value);
 
-        if (!this.head) {
-            this.head = newNode;
+        if (this.root === null) {
+            this.root = newNode;
         } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
+            this.insertNode(this.root, newNode);
         }
     }
 
-    // Method to print the linked list
-    printList() {
-        let current = this.head;
-        while (current) {
-            console.log(current.data);
-            current = current.next;
+    insertNode(node, newNode) {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
+        }
+    }
+
+    search(value) {
+        return this.searchNode(this.root, value);
+    }
+
+    searchNode(node, value) {
+        if (node === null) {
+            return false;
+        }
+
+        if (value < node.value) {
+            return this.searchNode(node.left, value);
+        } else if (value > node.value) {
+            return this.searchNode(node.right, value);
+        } else {
+            return true;
         }
     }
 }
 
-// Creating an instance of the LinkedList
-const linkedList = new LinkedList();
+// Example usage
+const bst = new BinarySearchTree();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(8);
 
-// Appending nodes to the linked list
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
-
-// Printing the linked list
-linkedList.printList();
+console.log(bst.search(5)); // Output: true
+console.log(bst.search(20)); // Output: false
