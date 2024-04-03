@@ -1,46 +1,35 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
+function mergeSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
+    }
+
+    const middle = Math.floor(arr.length / 2);
+    const left = arr.slice(0, middle);
+    const right = arr.slice(middle);
+
+    return merge(mergeSort(left), mergeSort(right));
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+function merge(left, right) {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
 
-  append(data) {
-    const newNode = new Node(data);
-    if (!this.head) {
-      this.head = newNode;
-      return;
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            result.push(right[rightIndex]);
+            rightIndex++;
+        }
     }
-    
-    let current = this.head;
-    while (current.next) {
-      current = current.next;
-    }
-    current.next = newNode;
-  }
 
-  getLength() {
-    let length = 0;
-    let current = this.head;
-    
-    while (current) {
-      length++;
-      current = current.next;
-    }
-    
-    return length;
-  }
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
 }
 
-// Example usage
-const linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
-
-console.log(linkedList.getLength()); // Output: 3
+// Usage
+const arr = [8, 3, 9, 4, 1, 6, 7, 5, 2];
+console.log("Original array:", arr);
+const sortedArr = mergeSort(arr);
+console.log("Sorted array:", sortedArr);
