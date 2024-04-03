@@ -1,86 +1,72 @@
-// Define the Node class
+// Define a node class for the binary search tree
 class Node {
-    constructor(value, level) {
+    constructor(value) {
         this.value = value;
-        this.next = new Array(level + 1).fill(null);
+        this.left = null;
+        this.right = null;
     }
 }
 
-// Define the SkipList class
-class SkipList {
-    constructor(maxLevel, p) {
-        this.maxLevel = maxLevel;
-        this.p = p;
-        this.head = new Node(-1, maxLevel);
-        this.level = 0;
+// Define the binary search tree class
+class BinarySearchTree {
+    constructor() {
+        this.root = null;
     }
 
-    // Generate a random level for a new node
-    randomLevel() {
-        let level = 0;
-        while (Math.random() < this.p && level < this.maxLevel) {
-            level++;
-        }
-        return level;
-    }
-
-    // Insert a new value into the skip list
+    // Insert a new value into the binary search tree
     insert(value) {
-        let update = new Array(this.maxLevel + 1).fill(null);
-        let current = this.head;
+        const newNode = new Node(value);
 
-        for (let i = this.level; i >= 0; i--) {
-            while (current.next[i] !== null && current.next[i].value < value) {
-                current = current.next[i];
-            }
-            update[i] = current;
+        if (this.root === null) {
+            this.root = newNode;
+        } else {
+            this.insertNode(this.root, newNode);
         }
+    }
 
-        current = current.next[0];
-
-        if (current === null || current.value !== value) {
-            let newLevel = this.randomLevel();
-
-            if (newLevel > this.level) {
-                for (let i = this.level + 1; i <= newLevel; i++) {
-                    update[i] = this.head;
-                }
-                this.level = newLevel;
+    insertNode(node, newNode) {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
             }
-
-            let newNode = new Node(value, newLevel);
-
-            for (let i = 0; i <= newLevel; i++) {
-                newNode.next[i] = update[i].next[i];
-                update[i].next[i] = newNode;
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
             }
         }
     }
 
-    // Search for a value in the skip list
+    // Search for a value in the binary search tree
     search(value) {
-        let current = this.head;
-        for (let i = this.level; i >= 0; i--) {
-            while (current.next[i] !== null && current.next[i].value < value) {
-                current = current.next[i];
-            }
+        return this.searchNode(this.root, value);
+    }
+
+    searchNode(node, value) {
+        if (node === null) {
+            return false;
         }
-        
-        current = current.next[0];
-        if (current !== null && current.value === value) {
+
+        if (value < node.value) {
+            return this.searchNode(node.left, value);
+        } else if (value > node.value) {
+            return this.searchNode(node.right, value);
+        } else {
             return true;
         }
-        
-        return false;
     }
 }
 
-// Testing the SkipList implementation
-let skipList = new SkipList(3, 0.5);
-skipList.insert(3);
-skipList.insert(6);
-skipList.insert(7);
-skipList.insert(9);
+// Example usage
+const bst = new BinarySearchTree();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(20);
 
-console.log(skipList.search(6));  // Output: true
-console.log(skipList.search(8));  // Output: false
+console.log(bst.search(10)); // true
+console.log(bst.search(5));  // true
+console.log(bst.search(8));  // false
