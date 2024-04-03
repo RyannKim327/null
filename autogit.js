@@ -1,20 +1,15 @@
-function bubbleSort(arr) {
-    let n = arr.length;
-
-    for (let i = 0; i < n; i++) {
-        for (let j = 0; j < n - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                let temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
-        }
-    }
-
-    return arr;
+function isPalindrome(str) {
+    // Remove special characters and convert to lowercase
+    str = str.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
+    
+    // Reverse the string
+    const reversed = str.split('').reverse().join('');
+    
+    // Check if the original string is equal to the reversed string
+    return str === reversed;
 }
 
-// Example usage
-const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
-const sortedArray = bubbleSort(unsortedArray);
-console.log(sortedArray);
+// Test the function with some examples
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
+console.log(isPalindrome("racecar")); // true
+console.log(isPalindrome("hello")); // false
