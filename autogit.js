@@ -1,20 +1,20 @@
-function insertionSort(arr) {
-    for (let i = 1; i < arr.length; i++) {
-        let current = arr[i];
-        let j = i - 1;
-        
-        while (j >= 0 && arr[j] > current) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
-        
-        arr[j + 1] = current;
-    }
-    
-    return arr;
+const url = "http://example.com/api/data";
+
+function fetchData() {
+  fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Process the retrieved data here
+      console.log(data);
+    })
+    .catch(error => {
+      console.error("There was a problem with the fetch operation:", error);
+    });
 }
 
-// Example usage:
-const arr = [5, 2, 4, 6, 1, 3];
-const sortedArr = insertionSort(arr);
-console.log(sortedArr); // Output: [1, 2, 3, 4, 5, 6]
+fetchData();
