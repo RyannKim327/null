@@ -1,16 +1,33 @@
-function binarySearch(arr, target) {
-    let start = 0;
-    let end = arr.length - 1;
+function buildPrefixTable(pattern) {
+    const prefixTable = new Array(pattern.length).fill(0);
+    let j = 0;
+    
+    for (let i = 1; i < pattern.length; i++) {
+        while (j > 0 && pattern[i] !== pattern[j]) {
+            j = prefixTable[j - 1];
+        }
+        if (pattern[i] === pattern[j]) {
+            j++;
+        }
+        prefixTable[i] = j;
+    }
+    
+    return prefixTable;
+}
 
-    while (start <= end) {
-        let mid = Math.floor((start + end) / 2);
+function kmpSearch(text, pattern) {
+    const prefixTable = buildPrefixTable(pattern);
+    let j = 0;
 
-        if (arr[mid] === target) {
-            return mid;
-        } else if (arr[mid] < target) {
-            start = mid + 1;
-        } else {
-            end = mid - 1;
+    for (let i = 0; i < text.length; i++) {
+        while (j > 0 && text[i] !== pattern[j]) {
+            j = prefixTable[j - 1];
+        }
+        if (text[i] === pattern[j]) {
+            j++;
+        }
+        if (j === pattern.length) {
+            return i - j + 1;
         }
     }
 
@@ -18,12 +35,12 @@ function binarySearch(arr, target) {
 }
 
 // Example usage
-const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17];
-const target = 7;
-const index = binarySearch(arr, target);
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const index = kmpSearch(text, pattern);
 
 if (index !== -1) {
-    console.log(`Element found at index ${index}`);
+    console.log(`Pattern found at index ${index}`);
 } else {
-    console.log("Element not found");
+    console.log("Pattern not found in text");
 }
