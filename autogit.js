@@ -1,17 +1,18 @@
-function bubbleSort(arr) {
-    var len = arr.length;
-    for (var i = 0; i < len; i++) {
-        for (var j = 0; j < len - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                var temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
+function isPalindrome(str) {
+    let left = 0;
+    let right = str.length - 1;
+
+    while (left < right) {
+        if (str[left] !== str[right]) {
+            return false; // Characters at the left and right don't match, not a palindrome
         }
+        left++;
+        right--;
     }
-    return arr;
+
+    return true; // All characters matched, it's a palindrome
 }
 
-var arr = [64, 34, 25, 12, 22, 11, 90];
-console.log("Array before sorting: " + arr);
-console.log("Array after sorting: " + bubbleSort(arr));
+// Test the function
+console.log(isPalindrome("racecar")); // Output: true
+console.log(isPalindrome("hello")); // Output: false
