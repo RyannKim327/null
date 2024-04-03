@@ -1,24 +1,22 @@
-function shellSort(arr) {
-    var len = arr.length;
-    var gap = Math.floor(len / 2);
-
-    while (gap > 0) {
-        for (var i = gap; i < len; i++) {
-            var temp = arr[i];
-            var j = i;
-            while (j >= gap && arr[j - gap] > temp) {
-                arr[j] = arr[j - gap];
-                j -= gap;
-            }
-            arr[j] = temp;
+function countingSort(array) {
+    const max = Math.max(...array);
+    const countArray = new Array(max + 1).fill(0);
+    
+    array.forEach(num => {
+        countArray[num]++;
+    });
+    
+    let sortedIndex = 0;
+    countArray.forEach((count, num) => {
+        while (count > 0) {
+            array[sortedIndex++] = num;
+            count--;
         }
-        gap = Math.floor(gap / 2);
-    }
-    return arr;
+    });
+
+    return array;
 }
 
-// Example usage
-var arr = [12, 34, 54, 2, 3];
-console.log("Original array: " + arr);
-var sortedArr = shellSort(arr);
-console.log("Sorted array: " + sortedArr);
+// Example usage:
+const array = [4, 2, 2, 8, 3, 3, 1];
+console.log(countingSort(array)); // Output: [1, 2, 2, 3, 3, 4, 8]
