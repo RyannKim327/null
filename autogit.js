@@ -1,34 +1,48 @@
-function mergeSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
+// Definition for a singly-linked list node
+class ListNode {
+    constructor(val) {
+        this.val = val;
+        this.next = null;
     }
-
-    const mid = Math.floor(arr.length / 2);
-    const left = arr.slice(0, mid);
-    const right = arr.slice(mid);
-
-    return merge(mergeSort(left), mergeSort(right));
 }
 
-function merge(left, right) {
-    let result = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
+// Function to check if a linked list is a palindrome
+function isPalindrome(head) {
+    let arr = [];
+    let currentNode = head;
 
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            result.push(left[leftIndex]);
-            leftIndex++;
-        } else {
-            result.push(right[rightIndex]);
-            rightIndex++;
+    // Traverse the linked list and store node values in an array
+    while (currentNode) {
+        arr.push(currentNode.val);
+        currentNode = currentNode.next;
+    }
+
+    // Use two pointers to check if the array is a palindrome
+    let start = 0;
+    let end = arr.length - 1;
+
+    while (start < end) {
+        if (arr[start] !== arr[end]) {
+            return false;
         }
+
+        start++;
+        end--;
     }
 
-    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+    return true;
 }
 
-// Example usage
-const arr = [38, 27, 43, 3, 9, 82, 10];
-const sortedArr = mergeSort(arr);
-console.log(sortedArr);
+// Example linked list
+const node1 = new ListNode(1);
+const node2 = new ListNode(2);
+const node3 = new ListNode(3);
+const node4 = new ListNode(2);
+const node5 = new ListNode(1);
+
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node5;
+
+console.log(isPalindrome(node1)); // Output: true
