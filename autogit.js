@@ -1,32 +1,18 @@
-function topologicalSort(graph) {
-  const visited = {};
-  const stack = [];
-  
-  function visit(node) {
-    if (visited[node]) return;
-    visited[node] = true;
-    
-    graph[node].forEach(neighbor => {
-      visit(neighbor);
-    });
-    
-    stack.push(node);
-  }
-  
-  Object.keys(graph).forEach(node => visit(node));
-  
-  return stack.reverse();
+function bubbleSort(arr) {
+    let len = arr.length;
+    for (let i = 0; i < len; i++) {
+        for (let j = 0; j < len - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                let temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+    return arr;
 }
 
 // Example usage
-const graph = {
-  'A': ['C', 'B'],
-  'B': ['D'],
-  'C': ['E'],
-  'D': [],
-  'E': ['F'],
-  'F': []
-};
-
-const sortedNodes = topologicalSort(graph);
-console.log(sortedNodes);
+let array = [64, 34, 25, 12, 22, 11, 90];
+let sortedArray = bubbleSort(array);
+console.log(sortedArray);
