@@ -1,53 +1,38 @@
-class Graph {
-    constructor() {
-        this.nodes = [];
-        this.adjList = {};
-    }
-
-    addNode(node) {
-        this.nodes.push(node);
-        this.adjList[node] = [];
-    }
-
-    addEdge(node1, node2) {
-        this.adjList[node1].push(node2);
-        this.adjList[node2].push(node1); // Assuming an undirected graph
-    }
-
-    dfs(startNode) {
-        const visited = {};
-        const result = [];
-
-        const dfsRec = (node) => {
-            if (!node) return;
-
-            visited[node] = true;
-            result.push(node);
-
-            this.adjList[node].forEach(neighbor => {
-                if (!visited[neighbor]) {
-                    dfsRec(neighbor);
-                }
-            });
-        };
-
-        dfsRec(startNode);
-
-        return result;
-    }
+// Function to get the digit at position for a number
+function getDigit(num, position) {
+    return Math.floor(Math.abs(num) / Math.pow(10, position)) % 10;
 }
 
-// Example usage
-const graph = new Graph();
-graph.addNode('A');
-graph.addNode('B');
-graph.addNode('C');
-graph.addNode('D');
-graph.addNode('E');
+// Function to count the number of digits in a number
+function digitCount(num) {
+    if (num === 0) return 1;
+    return Math.floor(Math.log10(Math.abs(num))) + 1;
+}
 
-graph.addEdge('A', 'B');
-graph.addEdge('B', 'C');
-graph.addEdge('C', 'D');
-graph.addEdge('D', 'E');
+// Function to find the maximum number of digits in a list of numbers
+function mostDigits(nums) {
+    let maxDigits = 0;
+    for (let i = 0; i < nums.length; i++) {
+        maxDigits = Math.max(maxDigits, digitCount(nums[i]));
+    }
+    return maxDigits;
+}
 
-console.log(graph.dfs('A')); // Output: ['A', 'B', 'C', 'D', 'E']
+// Radix Sort function
+function radixSort(nums) {
+    let maxDigitCount = mostDigits(nums);
+    for (let k = 0; k < maxDigitCount; k++) {
+        let digitBuckets = Array.from({ length: 10 }, () => []);
+        for (let i = 0; i < nums.length; i++) {
+            let digit = getDigit(nums[i], k);
+            digitBuckets[digit].push(nums[i]);
+        }
+        nums = [].concat(...digitBuckets);
+    }
+    return nums;
+}
+
+// Example Usage
+const unsortedArray = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArray = radixSort(unsortedArray);
+console.log(sortedArray); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
