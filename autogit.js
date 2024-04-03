@@ -1,59 +1,31 @@
-class HashTable {
-  constructor(size) {
-    this.size = size;
-    this.table = new Array(size);
+function shellSort(arr) {
+  const length = arr.length;
+  let gap = 1;
+
+  while (gap < length / 3) {
+    gap = gap * 3 + 1;
   }
 
-  hash(key) {
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) {
-      hash = (hash + key.charCodeAt(i) * i) % this.size;
-    }
-    return hash;
-  }
+  while (gap > 0) {
+    for (let i = gap; i < length; i++) {
+      let temp = arr[i];
+      let j = i;
 
-  set(key, value) {
-    const index = this.hash(key);
-    if (!this.table[index]) {
-      this.table[index] = [];
-    }
-    this.table[index].push([key, value]);
-  }
-
-  get(key) {
-    const index = this.hash(key);
-    if (!this.table[index]) {
-      return undefined;
-    }
-    for (let i = 0; i < this.table[index].length; i++) {
-      if (this.table[index][i][0] === key) {
-        return this.table[index][i][1];
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
       }
+
+      arr[j] = temp;
     }
-    return undefined;
+
+    gap = (gap - 1) / 3;
   }
 
-  remove(key) {
-    const index = this.hash(key);
-    if (!this.table[index]) {
-      return;
-    }
-    for (let i = 0; i < this.table[index].length; i++) {
-      if (this.table[index][i][0] === key) {
-        this.table[index].splice(i, 1);
-        return;
-      }
-    }
-  }
+  return arr;
 }
 
-// Usage
-const hashTable = new HashTable(10);
-hashTable.set('apple', 5);
-hashTable.set('banana', 10);
-
-console.log(hashTable.get('apple')); // Output: 5
-console.log(hashTable.get('banana')); // Output: 10
-
-hashTable.remove('apple');
-console.log(hashTable.get('apple')); // Output: undefined
+// Example usage
+const unsortedArray = [12, 34, 54, 2, 3];
+const sortedArray = shellSort(unsortedArray);
+console.log(sortedArray);  // Output: [2, 3, 12, 34, 54]
