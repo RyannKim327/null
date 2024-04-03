@@ -1,30 +1,35 @@
-function longestCommonSubstring(str1, str2) {
-    const dp = Array(str1.length + 1).fill(0).map(() => Array(str2.length + 1).fill(0));
-    let maxLength = 0;
-    let endIndex = 0;
-
-    for (let i = 1; i <= str1.length; i++) {
-        for (let j = 1; j <= str2.length; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-                if (dp[i][j] > maxLength) {
-                    maxLength = dp[i][j];
-                    endIndex = i - 1;
-                }
-            } else {
-                dp[i][j] = 0;
-            }
-        }
-    }
-
-    if (maxLength === 0) {
-        return "";
-    }
-
-    return str1.slice(endIndex - maxLength + 1, endIndex + 1);
+// Define the structure of a binary tree node
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-// Test the function
-const str1 = "abcdefg";
-const str2 = "bcdefgh";
-console.log(longestCommonSubstring(str1, str2)); // Output: "bcdef"
+// Function to count the number of leaf nodes in a binary tree
+function countLeafNodes(node) {
+  if (node === null) {
+    return 0;
+  }
+  
+  if (node.left === null && node.right === null) {
+    return 1; // Node is a leaf node
+  }
+  
+  // Recursively count leaf nodes in the left and right subtrees
+  return countLeafNodes(node.left) + countLeafNodes(node.right);
+}
+
+// Example binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+root.right.left = new Node(6);
+root.right.right = new Node(7);
+
+// Count the number of leaf nodes in the binary tree
+const leafNodesCount = countLeafNodes(root);
+console.log('Number of leaf nodes in the binary tree:', leafNodesCount);
