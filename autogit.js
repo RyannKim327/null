@@ -1,13 +1,17 @@
-// Define the URL of the API
-const url = 'https://jsonplaceholder.typicode.com/posts';
+function countOccurrences(str, char) {
+    let count = 0;
 
-// Fetch data from the API
-fetch(url)
-  .then(response => response.json())
-  .then(data => {
-    console.log(data); // Output the data to the console
-    // You can now work with the data retrieved from the API
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
+            count++;
+        }
+    }
+
+    return count;
+}
+
+// Testing the function
+const testStr = "hello world";
+const charToCount = "l";
+const result = countOccurrences(testStr, charToCount);
+console.log(`The character "${charToCount}" occurs ${result} times in the string "${testStr}".`);
