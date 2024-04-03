@@ -1,46 +1,36 @@
-function buildPrefixTable(pattern) {
-    const prefixTable = new Array(pattern.length).fill(0);
-    let j = 0;
+function longestCommonSubsequence(str1, str2) {
+    let m = str1.length;
+    let n = str2.length;
     
-    for (let i = 1; i < pattern.length; i++) {
-        while (j > 0 && pattern[i] !== pattern[j]) {
-            j = prefixTable[j - 1];
+    let dp = Array.from({ length: m + 1 }, () => Array.from({ length: n + 1 }, () => 0));
+    
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
         }
-        if (pattern[i] === pattern[j]) {
-            j++;
-        }
-        prefixTable[i] = j;
     }
     
-    return prefixTable;
-}
-
-function kmpSearch(text, pattern) {
-    const prefixTable = buildPrefixTable(pattern);
-    let j = 0;
-
-    for (let i = 0; i < text.length; i++) {
-        while (j > 0 && text[i] !== pattern[j]) {
-            j = prefixTable[j - 1];
-        }
-        if (text[i] === pattern[j]) {
-            j++;
-        }
-        if (j === pattern.length) {
-            return i - j + 1;
+    let lcs = '';
+    let i = m, j = n;
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            lcs = str1[i - 1] + lcs;
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
         }
     }
-
-    return -1;
+    
+    return lcs;
 }
 
-// Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const index = kmpSearch(text, pattern);
-
-if (index !== -1) {
-    console.log(`Pattern found at index ${index}`);
-} else {
-    console.log("Pattern not found in text");
-}
+let str1 = 'ABCDGH';
+let str2 = 'AEDFHR';
+console.log(longestCommonSubsequence(str1, str2));
