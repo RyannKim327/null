@@ -1,69 +1,44 @@
-function boyerMooreSearch(text, pattern) {
-  const badChar = {};
-  const goodSuffix = {};
+function boyerMooreHorspool(text, pattern) {
+    const textLength = text.length;
+    const patternLength = pattern.length;
+    
+    if(patternLength === 0) {
+        return -1;
+    }
+    
+    const badCharacterTable = new Array(256).fill(patternLength);
+    const lastOccurrence = {};
 
-  function preprocessPattern(pattern) {
-    const m = pattern.length;
-
-    for (let i = 0; i < m; i++) {
-      badChar[pattern[i]] = i;
+    for(let i = 0; i < patternLength - 1; i++) {
+        badCharacterTable[pattern.charCodeAt(i)] = patternLength - i - 1;
     }
 
-    for (let i = 0; i <= m; i++) {
-      let [suffix, prefix] = computeSuffixPrefix(pattern.slice(i));
-      goodSuffix[i] = { suffix, prefix };
-    }
-  }
-
-  function computeSuffixPrefix(str) {
-    const m = str.length;
-    const suffix = new Array(m).fill(0);
-    const prefix = new Array(m).fill(false);
-
-    for (let i = 0; i < m; i++) {
-      let j = i, k = 0;
-
-      while (j >= 0 && str[j] === str[m - 1 - k]) {
-        j--;
-        k++;
-        suffix[k] = j + 1;
-      }
-
-      if (j === -1) prefix[k] = true;
+    for(let i = 0; i < patternLength; i++) {
+        lastOccurrence[pattern[i]] = i;
     }
 
-    return [suffix, prefix];
-  }
+    let i = patternLength - 1;
 
-  function search(text, pattern) {
-    const n = text.length;
-    const m = pattern.length;
+    while(i < textLength) {
+        let j = patternLength - 1;
+        
+        while(j >= 0 && text[i] === pattern[j]) {
+            i--;
+            j--;
+        }
 
-    let i = 0;
-    while (i <= n - m) {
-      let j = m - 1;
-
-      while (j >= 0 && pattern[j] === text[i + j]) {
-        j--;
-      }
-
-      if (j < 0) {
-        console.log(`Pattern found at index ${i}`);
-        i += goodSuffix[0].suffix;
-      } else {
-        const badCharShift = Math.max(1, j - badChar[text[i + j]]);
-        const goodSuffixShift = goodSuffix[j + 1].suffix;
-
-        i += Math.max(badCharShift, goodSuffixShift);
-      }
+        if(j < 0) {
+            return i + 1;
+        } else {
+            i += Math.max(badCharacterTable[text.charCodeAt(i)], j - lastOccurrence[text[i]]);
+        }
     }
-  }
 
-  preprocessPattern(pattern);
-  search(text, pattern);
+    return -1;
 }
 
 // Example usage
-const text = "ABAAABCD";
-const pattern = "ABC";
-boyerMooreSearch(text, pattern);
+const text = "hello world";
+const pattern = "world";
+const result = boyerMocheckForSubstrreHorspool(text, pattern);
+console.log(`Pattern found at index: ${result}`);
