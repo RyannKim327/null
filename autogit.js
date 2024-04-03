@@ -1,74 +1,45 @@
-class BTreeNode {
-    constructor(t, leaf) {
-        this.t = t;
-        this.leaf = leaf;
-        this.keys = [];
-        this.children = [];
-    }
-}
-
-class BTree {
-    constructor(t) {
-        this.root = new BTreeNode(t, true);
-        this.t = t;
-    }
-
-    insert(key) {
-        let root = this.root;
-        if (root.keys.length === (2 * this.t) - 1) {
-            let newRoot = new BTreeNode(this.t, false);
-            newRoot.children.push(root);
-            this.splitChild(newRoot, 0);
-            this.insertNonFull(newRoot, key);
-            this.root = newRoot;
-        } else {
-            this.insertNonFull(root, key);
-        }
-    }
-
-    insertNonFull(node, key) {
-        let i = node.keys.length - 1;
-        if (node.leaf) {
-            while (i >= 0 && key < node.keys[i]) {
-                node.keys[i + 1] = node.keys[i];
-                i--;
-            }
-            node.keys[i + 1] = key;
-        } else {
-            while (i >= 0 && key < node.keys[i]) {
-                i--;
-            }
-            i++;
-            if (node.children[i].keys.length === (2 * this.t) - 1) {
-                this.splitChild(node, i);
-                if (key > node.keys[i]) {
-                    i++;
+function bellmanFord(graph, source) {
+    const vertices = Object.keys(graph);
+    const distances = {};
+    
+    // Step 2: Initialize distances
+    vertices.forEach(vertex => {
+        distances[vertex] = vertex === source ? 0 : Infinity;
+    });
+    
+    // Step 3: Relax edges V-1 times
+    for (let i = 0; i < vertices.length - 1; i++) {
+        vertices.forEach(vertex => {
+            graph[vertex].forEach(edge => {
+                const { target, weight } = edge;
+                if (distances[vertex] + weight < distances[target]) {
+                    distances[target] = distances[vertex] + weight;
                 }
+            });
+        });
+    }
+    
+    // Step 4: Check for negative weight cycles
+    vertices.forEach(vertex => {
+        graph[vertex].forEach(edge => {
+            const { target, weight } = edge;
+            if (distances[vertex] + weight < distances[target]) {
+                console.log("Negative weight cycle found!");
             }
-            this.insertNonFull(node.children[i], key);
-        }
-    }
+        });
+    });
 
-    splitChild(parent, index) {
-        let t = this.t;
-        let child = parent.children[index];
-        let newChild = new BTreeNode(t, child.leaf);
-        parent.keys.splice(index, 0, child.keys[t - 1]);
-        parent.children.splice(index + 1, 0, newChild);
-        newChild.keys = child.keys.splice(t, t - 1);
-        if (!child.leaf) {
-            newChild.children = child.children.splice(t, t);
-        }
-    }
+    return distances;
 }
 
-// Example Usage
-let bTree = new BTree(3);
+// Example graph representation
+const graph = {
+    A: [{ target: 'B', weight: -1 }, { target: 'C', weight: 4 }],
+    B: [{ target: 'C', weight: 3 }, { target: 'D', weight: 2 }, { target: 'E', weight: 2 }],
+    C: [],
+    D: [{ target: 'B', weight: 1 }, { target: 'C', weight: 5 }],
+    E: [{ target: 'D', weight: -3 }]
+};
 
-bTree.insert(10);
-bTree.insert(20);
-bTree.insert(5);
-bTree.insert(6);
-bTree.insert(12);
-
-console.log(bTree.root);
+const distances = bellmanFord(graph, 'A');
+console.log(distances);
