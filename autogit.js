@@ -1,47 +1,49 @@
-function Node(value) {
-    this.value = value;
-    this.children = [];
+// Node class to represent individual nodes in the linked list
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
+    }
 }
 
-function breadthLimitedSearch(root, targetValue, limit) {
-    if (!root) {
-        return null;
+// LinkedList class to represent the linked list
+class LinkedList {
+    constructor() {
+        this.head = null;
     }
 
-    let queue = [root];
-    let depth = 0;
+    // Method to add a new node to the linked list
+    append(data) {
+        const newNode = new Node(data);
 
-    while (queue.length > 0) {
-        if (depth === limit) {
-            return null;
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
         }
-
-        let currentNode = queue.shift();
-
-        if (currentNode.value === targetValue) {
-            return currentNode;
-        }
-
-        for (let i = 0; i < currentNode.children.length; i++) {
-            queue.push(currentNode.children[i]);
-        }
-
-        depth++;
     }
 
-    return null;
+    // Method to print the linked list
+    printList() {
+        let current = this.head;
+        while (current) {
+            console.log(current.data);
+            current = current.next;
+        }
+    }
 }
 
-// Example usage:
-let rootNode = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-let node4 = new Node(4);
-let node5 = new Node(5);
+// Creating an instance of the LinkedList
+const linkedList = new LinkedList();
 
-rootNode.children.push(node2, node3);
-node2.children.push(node4);
-node3.children.push(node5);
+// Appending nodes to the linked list
+linkedList.append(1);
+linkedList.append(2);
+linkedList.append(3);
 
-console.log(breadthLimitedSearch(rootNode, 5, 2)); // Outputs the node with value 5
-console.log(breadthLimitedSearch(rootNode, 6, 2)); // Outputs null
+// Printing the linked list
+linkedList.printList();
