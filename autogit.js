@@ -1,63 +1,37 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
-    }
+// Helper function to get the digit at a specific position
+function getDigit(num, pos) {
+    return Math.floor(Math.abs(num) / Math.pow(10, pos)) % 10;
 }
 
-class LinkedList {
-    constructor() {
-        this.head = null;
-    }
-
-    add(data) {
-        const newNode = new Node(data);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
-        }
-    }
-
-    reverse() {
-        let prev = null;
-        let current = this.head;
-        let next = null;
-
-        while (current !== null) {
-            next = current.next;
-            current.next = prev;
-            prev = current;
-            current = next;
-        }
-
-        this.head = prev;
-    }
-
-    print() {
-        let current = this.head;
-        while (current) {
-            console.log(current.data);
-            current = current.next;
-        }
-    }
+// Helper function to determine the number of digits in the largest number in the array
+function digitCount(num) {
+    if (num === 0) return 1;
+    return Math.floor(Math.log10(Math.abs(num))) + 1;
 }
 
-// Create a linked list
-const list = new LinkedList();
-list.add(1);
-list.add(2);
-list.add(3);
-list.add(4);
+// Helper function to determine the number of digits in the largest number in an array of numbers
+function mostDigits(arr) {
+    let maxDigits = 0;
+    for (let i = 0; i < arr.length; i++) {
+        maxDigits = Math.max(maxDigits, digitCount(arr[i]));
+    }
+    return maxDigits;
+}
 
-console.log("Original linked list:");
-list.print();
+// Radix sort function
+function radixSort(arr) {
+    const maxDigitCount = mostDigits(arr);
+    for (let k = 0; k < maxDigitCount; k++) {
+        let digitBuckets = Array.from({ length: 10 }, () => []);
+        for (let i = 0; i < arr.length; i++) {
+            let digit = getDigit(arr[i], k);
+            digitBuckets[digit].push(arr[i]);
+        }
+        arr = [].concat(...digitBuckets);
+    }
+    return arr;
+}
 
-list.reverse();
-
-console.log("\nReversed linked list:");
-list.print();
+// Test the radix sort function
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+console.log(radixSort(arr)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
