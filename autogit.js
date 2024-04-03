@@ -1,3 +1,16 @@
-let arr = [1, 2, 3, 4, 5];
-arr.reverse();
-console.log(arr);
+const str = 'Hello, World!';
+const subStr = 'Hello';
+
+if (str.includes(subStr)) {
+    console.log('Substring found!');
+} else {
+    console.log('Substring not found!');
+}
+const str = 'Hello, World!';
+const subStr = 'Hello';
+
+if (str.indexOf(subStr) !== -1) {
+    console.log('Substring found!');
+} else {
+    console.log('Substring not found!');
+}
