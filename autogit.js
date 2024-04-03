@@ -1,42 +1,26 @@
-class ListNode {
-  constructor(val) {
-    this.val = val;
-    this.next = null;
-  }
+function countingSort(arr, max) {
+    const countArr = new Array(max + 1).fill(0);
+    const sortedArr = [];
+
+    // Count occurrences of each element
+    for (let i = 0; i < arr.length; i++) {
+        countArr[arr[i]]++;
+    }
+
+    // Build the sorted array using the count array
+    for (let i = 0; i < countArr.length; i++) {
+        while (countArr[i] > 0) {
+            sortedArr.push(i);
+            countArr[i]--;
+        }
+    }
+
+    return sortedArr;
 }
 
-const getIntersectionNode = (headA, headB) => {
-  const set = new Set();
-
-  let current = headA;
-  while (current) {
-    set.add(current);
-    current = current.next;
-  }
-
-  current = headB;
-  while (current) {
-    if (set.has(current)) {
-      return current;
-    }
-    current = current.next;
-  }
-  
-  return null;
-};
-
 // Example usage
-// Construct two intersecting linked lists
-const node1 = new ListNode(1);
-const node2 = new ListNode(2);
-const node3 = new ListNode(3);
-node1.next = node2;
-node2.next = node3;
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const max = Math.max(...arr);
+const sortedArr = countingSort(arr, max);
 
-const node4 = new ListNode(4);
-node4.next = node2;
-
-// Find intersection node
-const intersection = getIntersectionNode(node1, node4);
-
-console.log("Intersection node value:", intersection.val);
+console.log(sortedArr);
