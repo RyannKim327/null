@@ -1,35 +1,57 @@
-function mergeSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
-    }
-
-    const middle = Math.floor(arr.length / 2);
-    const left = arr.slice(0, middle);
-    const right = arr.slice(middle);
-
-    return merge(mergeSort(left), mergeSort(right));
-}
-
-function merge(left, right) {
-    let result = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
-
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            result.push(left[leftIndex]);
-            leftIndex++;
-        } else {
-            result.push(right[rightIndex]);
-            rightIndex++;
+function biDirectionalSearch(graph, startNode, endNode) {
+    let visitedForward = new Set();
+    let visitedBackward = new Set();
+    
+    let queueForward = [startNode];
+    let queueBackward = [endNode];
+    
+    while (queueForward.length > 0 && queueBackward.length > 0) {
+        let currentNodeForward = queueForward.shift();
+        
+        if (visitedBackward.has(currentNodeForward)) {
+            // Found a common node
+            return true;
+        }
+        
+        visitedForward.add(currentNodeForward);
+        
+        for (let neighbor of graph[currentNodeForward]) {
+            if (!visitedForward.has(neighbor)) {
+                queueForward.push(neighbor);
+            }
+        }
+        
+        let currentNodeBackward = queueBackward.shift();
+        
+        if (visitedForward.has(currentNodeBackward)) {
+            // Found a common node
+            return true;
+        }
+        
+        visitedBackward.add(currentNodeBackward);
+        
+        for (let neighbor of graph[currentNodeBackward]) {
+            if (!visitedBackward.has(neighbor)) {
+                queueBackward.push(neighbor);
+            }
         }
     }
-
-    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+    
+    // No common node found
+    return false;
 }
 
-// Usage
-const arr = [8, 3, 9, 4, 1, 6, 7, 5, 2];
-console.log("Original array:", arr);
-const sortedArr = mergeSort(arr);
-console.log("Sorted array:", sortedArr);
+// Example usage
+const graph = {
+    A: ['B', 'C'],
+    B: ['A', 'D'],
+    C: ['A', 'E'],
+    D: ['B', 'F'],
+    E: ['C', 'G'],
+    F: ['D'],
+    G: ['E']
+};
+
+const startNode = 'A';
+const endNode = 'G';
+console.log(biDirectionalSearch(graph, startNode, endNode)); // Output: true
