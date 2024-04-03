@@ -1,25 +1,18 @@
-function reverseString(str) {
-    return str.split("").reverse().join("");
-}
+function largestPrimeFactor(number) {
+    let largestPrime = 2;
 
-const originalString = "Hello, World!";
-const reversedString = reverseString(originalString);
-console.log(reversedString); // Output: "!dlroW ,olleH"
-function reverseString(str) {
-    let reversedString = "";
-    for (let i = str.length - 1; i >= 0; i--) {
-        reversedString += str[i];
+    while (number > largestPrime) {
+        if (number % largestPrime === 0) {
+            number /= largestPrime;
+        } else {
+            largestPrime++;
+        }
     }
-    return reversedString;
+
+    return largestPrime;
 }
 
-const originalString = "Hello, World!";
-const reversedString = reverseString(originalString);
-console.log(reversedString); // Output: "!dlroW ,olleH"
-function reverseString(str) {
-    return str.split("").reduce((reversed, char) => char + reversed, "");
-}
+const number = 600851475143;
+const largestPrime = largestPrimeFactor(number);
 
-const originalString = "Hello, World!";
-const reversedString = reverseString(originalString);
-console.log(reversedString); // Output: "!dlroW ,olleH"
+console.log("The largest prime factor of", number, "is", largestPrime);
