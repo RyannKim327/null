@@ -1,29 +1,51 @@
-function binarySearch(arr, target) {
-    let left = 0;
-    let right = arr.length - 1;
+function biDirectionalSearch(graph, startNode, goalNode) {
+    let startQueue = [startNode];
+    let goalQueue = [goalNode];
+    let startVisited = new Set();
+    let goalVisited = new Set();
 
-    while (left <= right) {
-        let mid = Math.floor((left + right) / 2);
+    startVisited.add(startNode);
+    goalVisited.add(goalNode);
 
-        if (arr[mid] === target) {
-            return mid;
-        } else if (arr[mid] < target) {
-            left = mid + 1;
-        } else {
-            right = mid - 1;
+    while (startQueue.length > 0 && goalQueue.length > 0) {
+        let startCurrentNode = startQueue.shift();
+        let goalCurrentNode = goalQueue.shift();
+
+        if (startVisited.has(goalCurrentNode) || goalVisited.has(startCurrentNode)) {
+            console.log("Path found!");
+            return true;
+        }
+
+        let startNeighbors = graph[startCurrentNode] || [];
+        let goalNeighbors = graph[goalCurrentNode] || [];
+
+        for (let neighbor of startNeighbors) {
+            if (!startVisited.has(neighbor)) {
+                startQueue.push(neighbor);
+                startVisited.add(neighbor);
+            }
+        }
+
+        for (let neighbor of goalNeighbors) {
+            if (!goalVisited.has(neighbor)) {
+                goalQueue.push(neighbor);
+                goalVisited.add(neighbor);
+            }
         }
     }
 
-    return -1; // Return -1 if the target is not found
+    console.log("Path not found!");
+    return false;
 }
 
-// Usage example
-const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const target = 12;
-const index = binarySearch(arr, target);
+// Example graph
+const graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+};
 
-if (index !== -1) {
-    console.log(`Element found at index: ${index}`);
-} else {
-    console.log(`Element not found`);
-}
+biDirectionalSearch(graph, 'A', 'F');
