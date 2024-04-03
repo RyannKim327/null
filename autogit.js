@@ -1,62 +1,69 @@
-// Node class to represent each element in the linked list
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
-    }
+function preprocessBadCharacterTable(pattern) {
+  const table = {};
+  const length = pattern.length;
+
+  for (let i = 0; i < length - 1; i++) {
+    table[pattern[i]] = length - i - 1;
+  }
+
+  return table;
 }
 
-// Queue class to implement the queue using linked list
-class Queue {
-    constructor() {
-        this.front = null;
-        this.rear = null;
+function preprocessGoodSuffixTable(pattern) {
+  const table = new Array(pattern.length).fill(0);
+  const length = pattern.length;
+
+  let suffix = length;
+  let g = length - 1;
+
+  for (let i = length - 2; i >= 0; i--) {
+    if (i > g && table[i + length - 1 - suffix] < i - g) {
+      table[i] = table[i + length - 1 -suffix];
+    } else {
+      if (i < g) {
+        suffix = i;
+        g = i;
+      }
+
+      while (g >= 0 && pattern[g] === pattern[g + length - 1 - suffix]) {
+        g--;
+      }
+
+      table[i] = suffix - g;
+    }
+  }
+
+  return table;
+}
+
+function boyerMoore(text, pattern) {
+  const badCharacterTable = preprocessBadCharacterTable(pattern);
+  const goodSuffixTable = preprocessGoodSuffixTable(pattern);
+
+  const textLength = text.length;
+  const patternLength = pattern.length;
+
+  let shift = 0;
+
+  while (shift <= textLength - patternLength) {
+    let j = patternLength - 1;
+
+    while (j >= 0 && pattern[j] === text[shift + j]) {
+      j--;
     }
 
-    // Method to add an element to the end of the queue
-    enqueue(data) {
-        const newNode = new Node(data);
-        
-        if (!this.front) {
-            this.front = newNode;
-            this.rear = newNode;
-        } else {
-            this.rear.next = newNode;
-            this.rear = newNode;
-        }
+    if (j < 0) {
+      console.log(`Pattern found at index ${shift}`);
+      shift += goodSuffixTable[0];
+    } else {
+      const badCharacterShift = badCharacterTable[text[shift + j]] || patternLength;
+      const goodSuffixShift = goodSuffixTable[j];
+      shift += Math.max(badCharacterShift, goodSuffixShift);
     }
-
-    // Method to remove and return the element at the front of the queue
-    dequeue() {
-        if (!this.front) {
-            return null;
-        }
-        
-        const removedNode = this.front;
-        this.front = this.front.next;
-
-        if (!this.front) {
-            this.rear = null;
-        }
-
-        return removedNode.data;
-    }
-
-    // Method to check if the queue is empty
-    isEmpty() {
-        return !this.front;
-    }
+  }
 }
 
 // Example usage
-const myQueue = new Queue();
-
-myQueue.enqueue(1);
-myQueue.enqueue(2);
-myQueue.enqueue(3);
-
-console.log(myQueue.dequeue()); // Output: 1
-console.log(myQueue.dequeue()); // Output: 2
-console.log(myQueue.isEmpty()); // Output: false
-console.log(myQueue.dequeue()); // Output: 3
-console.log(myQueue.isEmpty()); // Output: true
+const text = "ABAAABCD";
+const pattern = "ABC";
+boyerMoore(text, pattern);
