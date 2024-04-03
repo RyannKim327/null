@@ -1,12 +1,23 @@
-function validateEmail(email) {
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailPattern.test(email);
+function factorial(n) {
+    if (n === 0) {
+        return 1;
+    }
+    return n * factorial(n - 1);
 }
 
-// Example usage
-const email = "example@example.com";
-if (validateEmail(email)) {
-    console.log("Email address is valid");
-} else {
-    console.log("Email address is invalid");
+// Calculate factorial of a number
+const number = 5;
+const result = factorial(number);
+console.log(`Factorial of ${number} is: ${result}`);
+function factorial(n) {
+    let result = 1;
+    for (let i = 1; i <= n; i++) {
+        result *= i;
+    }
+    return result;
 }
+
+// Calculate factorial of a number
+const number = 5;
+const result = factorial(number);
+console.log(`Factorial of ${number} is: ${result}`);
