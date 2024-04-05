@@ -1,22 +1,55 @@
-function countingSort(array) {
-    const max = Math.max(...array);
-    const countArray = new Array(max + 1).fill(0);
+function buildLPS(pattern) {
+    const lps = new Array(pattern.length).fill(0);
+    let len = 0;
+    let i = 1;
     
-    array.forEach(num => {
-        countArray[num]++;
-    });
-    
-    let sortedIndex = 0;
-    countArray.forEach((count, num) => {
-        while (count > 0) {
-            array[sortedIndex++] = num;
-            count--;
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
         }
-    });
-
-    return array;
+    }
+    
+    return lps;
 }
 
-// Example usage:
-const array = [4, 2, 2, 8, 3, 3, 1];
-console.log(countingSort(array)); // Output: [1, 2, 2, 3, 3, 4, 8]
+function KMP(text, pattern) {
+    const lps = buildLPS(pattern);
+    const matches = [];
+    let i = 0;
+    let j = 0;
+    
+    while (i < text.length) {
+        if (text[i] === pattern[j]) {
+            i++;
+            j++;
+        }
+        
+        if (j === pattern.length) {
+            matches.push(i - j);
+            j = lps[j - 1];
+        } else if (i < text.length && text[i] !== pattern[j]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+    
+    return matches;
+}
+
+// Example usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = KMP(text, pattern);
+console.log(result); // Output: [10]
