@@ -1,16 +1,45 @@
-function maxSubarraySum(arr) {
-    let maxEndingHere = arr[0];
-    let maxSoFar = arr[0];
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
+    }
+}
 
-    for (let i = 1; i < arr.length; i++) {
-        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
-        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+class LinkedList {
+    constructor() {
+        this.head = null;
     }
 
-    return maxSoFar;
+    append(data) {
+        const newNode = new Node(data);
+
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+
+        current.next = newNode;
+    }
+
+    print() {
+        let current = this.head;
+
+        while (current) {
+            console.log(current.data);
+            current = current.next;
+        }
+    }
 }
 
 // Example usage
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const maxSum = maxSubarraySum(array);
-console.log(maxSum);  // Output: 6
+const linkedList = new LinkedList();
+linkedList.append(1);
+linkedList.append(2);
+linkedList.append(3);
+
+linkedList.print(); // Output: 1, 2, 3
