@@ -1,28 +1,27 @@
-function largestPrimeFactor(number) {
-    let largestPrime = 1;
+function shellSort(arr) {
+    let n = arr.length;
     
-    // Divide by 2 as long as the number is divisible by 2
-    while (number % 2 === 0) {
-        largestPrime = 2;
-        number = number / 2;
-    }
-    
-    // Check for other prime factors starting from 3
-    for (let i = 3; i <= Math.sqrt(number); i = i + 2) {
-        while (number % i === 0) {
-            largestPrime = i;
-            number = number / i;
+    // Start with a big gap, then reduce the gap
+    for (let gap = Math.floor(n/2); gap > 0; gap = Math.floor(gap/2)) {
+        
+        // Perform an insertion sort for elements at each gap
+        for (let i = gap; i < n; i++) {
+            let temp = arr[i];
+            
+            // Move elements that are greater than temp in the gap
+            let j;
+            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
+                arr[j] = arr[j - gap];
+            }
+            
+            arr[j] = temp;
         }
     }
     
-    // If the remaining number is greater than 2, it's a prime factor
-    if (number > 2) {
-        largestPrime = number;
-    }
-    
-    return largestPrime;
+    return arr;
 }
 
-// You can test the function with a given number
-const number = 13195; // e.g., for number 13195
-console.log(largestPrimeFactor(number)); // Output: 29
+// Usage
+let array = [12, 7, 36, 2, 42, 10, 25];
+console.log("Original Array:", array);
+console.log("Sorted Array:", shellSort(array));
