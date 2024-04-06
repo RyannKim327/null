@@ -1,9 +1,16 @@
-function removeVowels(str) {
-    return str.replace(/[aeiouAEIOU]/g, ''); // Using regular expression to match all vowels (both upper and lower case) and replacing them with an empty string
+function findKthSmallestElement(arr, k) {
+    if (k < 1 || k > arr.length) {
+        return null;
+    }
+
+    arr.sort((a, b) => a - b);
+    
+    return arr[k - 1];
 }
 
-// Example usage
-const stringWithVowels = 'Hello, World!';
-const stringWithoutVowels = removeVowels(stringWithVowels);
+// Example
+const array = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
+const k = 3;
+const kthSmallest = findKthSmallestElement(array, k);
 
-console.log(stringWithoutVowels); // Output: 'Hll, Wrld!'
+console.log(`The ${k}th smallest element is: ${kthSmallest}`);
