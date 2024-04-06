@@ -1,9 +1,7 @@
-const axios = require('axios');
+// Define an array of numbers
+const numbers = [3, 7, 2, 9, 1, 5];
 
-axios.get('https://jsonplaceholder.typicode.com/posts/1')
-  .then(response => {
-    console.log(response.data);
-  })
-  .catch(error => {
-    console.error('Error fetching data:', error);
-  });
+// Find the maximum value in the array
+const max = Math.max(...numbers);
+
+console.log("The maximum value in the array is: " + max);
