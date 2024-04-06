@@ -1,82 +1,41 @@
-// Suffix Tree Node definition
-class Node {
-    constructor() {
-        this.children = {};
-        this.startIndex = null;
-        this.endIndex = null;
-    }
+// Helper function to get the digit of a number at a specific place value
+function getDigit(num, place) {
+    return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
 }
 
-// Suffix Tree definition
-class SuffixTree {
-    constructor(text) {
-        this.root = new Node();
-        this.text = text;
-        this.buildSuffixTree();
-    }
-
-    buildSuffixTree() {
-        for (let i = 0; i < this.text.length; i++) {
-            this.addSuffix(this.text.substring(i));
-        }
-    }
-
-    addSuffix(suffix) {
-        let currentNode = this.root;
-
-        for (let i = 0; i < suffix.length; i++) {
-            const currentChar = suffix[i];
-            if (!(currentChar in currentNode.children)) {
-                currentNode.children[currentChar] = new Node();
-                currentNode.children[currentChar].startIndex = this.text.indexOf(suffix.substring(i));
-                currentNode.children[currentChar].endIndex = this.text.indexOf(suffix);
-                return;
-            } else {
-                let childNode = currentNode.children[currentChar];
-                let j = 0;
-
-                while (j < suffix.length && j < this.text.length) {
-                    if (this.text[childNode.startIndex + j] !== suffix[j]) {
-                        // Split the current node
-                        const newNode = new Node();
-                        newNode.startIndex = childNode.startIndex + j;
-                        newNode.endIndex = childNode.endIndex;
-
-                        // Update the child node
-                        childNode.endIndex = childNode.startIndex + j - 1;
-
-                        // Add the new node as a child
-                        childNode.children[this.text[newNode.startIndex]] = newNode;
-
-                        // Create a new child for the current character
-                        const newChild = new Node();
-                        newChild.startIndex = this.text.indexOf(suffix.substring(i + j));
-                        newChild.endIndex = this.text.indexOf(suffix);
-                        newNode.children[this.text[newChild.startIndex]] = newChild;
-
-                        return;
-                    }
-
-                    j++;
-                }
-
-                if (j === suffix.length && j < this.text.length) {
-                    // Continue traversal
-                    currentNode = childNode;
-                } else if (j < suffix.length && j === this.text.length) {
-                    // Add the remaining characters as children
-                    const newChild = new Node();
-                    newChild.startIndex = this.text.indexOf(suffix.substring(i + j));
-                    newChild.endIndex = this.text.indexOf(suffix);
-                    childNode.children[this.text[newChild.startIndex]] = newChild;
-                    return;
-                }
-            }
-        }
-    }
+// Helper function to get the number of digits in a number
+function digitCount(num) {
+    if (num === 0) return 1;
+    return Math.floor(Math.log10(Math.abs(num))) + 1;
 }
 
-// Test the Suffix Tree
-const suffixTree = new SuffixTree("banana");
+// Helper function to get the maximum number of digits in an array of numbers
+function mostDigits(nums) {
+    let maxDigits = 0;
+    for (let i = 0; i < nums.length; i++) {
+        maxDigits = Math.max(maxDigits, digitCount(nums[i]));
+    }
+    return maxDigits;
+}
 
-console.log(suffixTree.root.children); // Output the root node's children
+function radixSort(arr) {
+    const maxDigitCount = mostDigits(arr);
+
+    for (let k = 0; k < maxDigitCount; k++) {
+        let digitBuckets = Array.from({ length: 10 }, () => []);
+
+        for (let i = 0; i < arr.length; i++) {
+            let digit = getDigit(arr[i], k);
+            digitBuckets[digit].push(arr[i]);
+        }
+
+        arr = [].concat(...digitBuckets);
+    }
+
+    return arr;
+}
+
+// Example usage
+const unsortedArray = [123, 456, 789, 321, 654, 987, 741];
+const sortedArray = radixSort(unsortedArray);
+console.log(sortedArray);
