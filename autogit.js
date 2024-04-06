@@ -1,68 +1,49 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+function fibonacciSearch(arr, x) {
+    let fibMMm2 = 0; // (m-2)'th Fibonacci number
+    let fibMMm1 = 1; // (m-1)'th Fibonacci number
+    let fibM = fibMMm2 + fibMMm1; // m'th Fibonacci number
+     
+    let n = arr.length;
+
+    while (fibM < n) {
+        fibMMm2 = fibMMm1;
+        fibMMm1 = fibM;
+        fibM = fibMMm2 + fibMMm1;
     }
+
+    let offset = -1;
+
+    while (fibM > 1) {
+        let i = Math.min(offset + fibMMm2, n - 1);
+
+        if (arr[i] < x) {
+            fibM = fibMMm1;
+            fibMMm1 = fibMMm2;
+            fibMMm2 = fibM - fibMMm1;
+            offset = i;
+        } else if (arr[i] > x) {
+            fibM = fibMMm2;
+            fibMMm1 -= fibMMm2;
+            fibMMm2 = fibM - fibMMm1;
+        } else {
+            return i;
+        }
+    }
+
+    if (fibMMm1 && arr[n-1] === x) {
+        return n-1;
+    }
+
+    return -1;
 }
 
-class BinarySearchTree {
-    constructor() {
-        this.root = null;
-    }
+// Example usage
+const array = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+const x = 12;
+const index = fibonacciSearch(array, x);
 
-    insert(value) {
-        const newNode = new Node(value);
-
-        if (!this.root) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    insertNode(node, newNode) {
-        if (newNode.value < node.value) {
-            if (!node.left) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (!node.right) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
-
-    search(value) {
-        return this.searchNode(this.root, value);
-    }
-
-    searchNode(node, value) {
-        if (!node) {
-            return false;
-        }
-
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true;
-        }
-    }
+if (index !== -1) {
+    console.log(`Element found at index ${index}`);
+} else {
+    console.log(`Element not found in array`);
 }
-
-// Example Usage
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
-bst.insert(7);
-
-console.log(bst.search(5)); // Output: true
-console.log(bst.search(12)); // Output: false
