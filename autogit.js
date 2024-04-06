@@ -1,12 +1,9 @@
-function validateEmail(email) {
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailPattern.test(email);
+function findKthSmallest(arr, k) {
+    arr.sort((a, b) => a - b);
+    return arr[k - 1];
 }
 
-// Example usage
-const email = "test@example.com";
-if (validateEmail(email)) {
-    console.log("Valid email address");
-} else {
-    console.log("Invalid email address");
-}
+const array = [3, 1, 4, 1, 5, 9, 2, 6];
+const k = 4;
+const kthSmallest = findKthSmallest(array, k);
+console.log(`The ${k}th smallest element is: ${kthSmallest}`);
