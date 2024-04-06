@@ -1,49 +1,23 @@
-class Stack {
-  constructor() {
-    this.items = [];
-  }
-
-  // Push element to the top of the stack
-  push(element) {
-    this.items.push(element);
-  }
-
-  // Remove and return the top element from the stack
-  pop() {
-    if (this.isEmpty()) {
-      return "Underflow";
+function selectionSort(arr) {
+    const len = arr.length;
+    for (let i = 0; i < len; i++) {
+        let minIndex = i;
+        for (let j = i + 1; j < len; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+        if (minIndex !== i) {
+            let temp = arr[i];
+            arr[i] = arr[minIndex];
+            arr[minIndex] = temp;
+        }
     }
-    return this.items.pop();
-  }
-
-  // Return the top element from the stack without removing it
-  peek() {
-    return this.items[this.items.length - 1];
-  }
-
-  // Check if the stack is empty
-  isEmpty() {
-    return this.items.length === 0;
-  }
-
-  // Get the size of the stack
-  size() {
-    return this.items.length;
-  }
+    return arr;
 }
 
-// Example Usage
-const stack = new Stack();
-
-stack.push(10);
-stack.push(20);
-stack.push(30);
-
-console.log(stack.peek()); // Output: 30
-
-console.log(stack.pop()); // Output: 30
-console.log(stack.pop()); // Output: 20
-
-console.log(stack.size()); // Output: 1
-
-console.log(stack.isEmpty()); // Output: false
+// Example usage
+const arr = [64, 25, 12, 22, 11];
+console.log("Original array: ", arr);
+const sortedArr = selectionSort(arr);
+console.log("Sorted array: ", sortedArr);
