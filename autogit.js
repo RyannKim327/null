@@ -1,8 +1,16 @@
-let str = "42";
-let num = parseInt(str);
+function findMedianSortedArrays(nums1, nums2) {
+    const mergedArray = [...nums1, ...nums2].sort((a, b) => a - b);
+    const length = mergedArray.length;
+    const mid = Math.floor(length / 2);
 
-console.log(num); // Output: 42
-let hexStr = "1A";
-let hexNum = parseInt(hexStr, 16);
+    if (length % 2 === 0) {
+        return (mergedArray[mid - 1] + mergedArray[mid]) / 2;
+    } else {
+        return mergedArray[mid];
+    }
+}
 
-console.log(hexNum); // Output: 26
+// Example usage
+const nums1 = [1, 3];
+const nums2 = [2];
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.0
