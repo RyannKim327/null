@@ -1,25 +1,12 @@
-function selectionSort(arr) {
-    const length = arr.length;
-  
-    for (let i = 0; i < length - 1; i++) {
-        let minIndex = i;
-      
-        for (let j = i + 1; j < length; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j;
-            }
-        }
-      
-        if (minIndex !== i) {
-            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
-        }
-    }
-
-    return arr;
+function validateEmail(email) {
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailPattern.test(email);
 }
 
 // Example usage
-const arr = [64, 25, 12, 22, 11];
-console.log("Original array: ", arr);
-const sortedArr = selectionSort(arr);
-console.log("Sorted array: ", sortedArr);
+const email = "test@example.com";
+if (validateEmail(email)) {
+    console.log("Valid email address");
+} else {
+    console.log("Invalid email address");
+}
