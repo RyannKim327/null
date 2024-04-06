@@ -1,16 +1,68 @@
-function findKthSmallestElement(arr, k) {
-    if (k < 1 || k > arr.length) {
-        return null;
+function tarjanStronglyConnectedComponents(graph) {
+    let index = 0;
+    let stack = [];
+    let onStack = new Set();
+    let indexMap = new Map();
+    let lowLinkMap = new Map();
+    let result = [];
+
+    function strongConnect(node) {
+        indexMap.set(node, index);
+        lowLinkMap.set(node, index);
+        index++;
+        stack.push(node);
+        onStack.add(node);
+
+        for (let neighbor of graph[node]) {
+            if (!indexMap.has(neighbor)) {
+                strongConnect(neighbor);
+                lowLinkMap.set(
+                    node,
+                    Math.min(lowLinkMap.get(node), lowLinkMap.get(neighbor))
+                );
+            } else if (onStack.has(neighbor)) {
+                lowLinkMap.set(
+                    node,
+                    Math.min(lowLinkMap.get(node), indexMap.get(neighbor))
+                );
+            }
+        }
+
+        if (indexMap.get(node) === lowLinkMap.get(node)) {
+            let component = [];
+            let popNode = stack.pop();
+            onStack.delete(popNode);
+            component.push(popNode);
+            
+            while (popNode !== node) {
+                popNode = stack.pop();
+                onStack.delete(popNode);
+                component.push(popNode);
+            }
+
+            result.push(component);
+        }
     }
 
-    arr.sort((a, b) => a - b);
-    
-    return arr[k - 1];
+    for (let node in graph) {
+        if (!indexMap.has(node)) {
+            strongConnect(node);
+        }
+    }
+
+    return result;
 }
 
-// Example
-const array = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
-const k = 3;
-const kthSmallest = findKthSmallestElement(array, k);
+// Example graph representation using adjacency list
+const graph = {
+    0: [1],
+    1: [2],
+    2: [0, 3],
+    3: [4],
+    4: [5, 6],
+    5: [0],
+    6: [4]
+};
 
-console.log(`The ${k}th smallest element is: ${kthSmallest}`);
+const scc = tarjanStronglyConnectedComponents(graph);
+console.log(scc);
