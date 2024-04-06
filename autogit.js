@@ -1,11 +1,6 @@
-const axios = require('axios');
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
 
-const apiUrl = 'https://jsonplaceholder.typicode.com/posts/1';
+const commonElements = array1.filter(element => array2.includes(element));
 
-axios.get(apiUrl)
-  .then(response => {
-    console.log('Response:', response.data);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+console.log(commonElements); // Output: [3, 4, 5]
