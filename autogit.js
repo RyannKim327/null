@@ -1,34 +1,51 @@
-function mergeSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
+// Class representing a graph
+class Graph {
+    constructor() {
+        this.adjList = new Map();
     }
 
-    const mid = Math.floor(arr.length / 2);
-    const left = arr.slice(0, mid);
-    const right = arr.slice(mid);
+    addVertex(vertex) {
+        this.adjList.set(vertex, []);
+    }
 
-    return merge(mergeSort(left), mergeSort(right));
-}
+    addEdge(vertex1, vertex2) {
+        this.adjList.get(vertex1).push(vertex2);
+        this.adjList.get(vertex2).push(vertex1); // for undirected graph
+    }
 
-function merge(left, right) {
-    let result = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
+    breadthFirstSearch(startingNode) {
+        let visited = {};
+        let queue = [];
 
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            result.push(left[leftIndex]);
-            leftIndex++;
-        } else {
-            result.push(right[rightIndex]);
-            rightIndex++;
+        visited[startingNode] = true;
+        queue.push(startingNode);
+
+        while (queue.length > 0) {
+            let currentNode = queue.shift();
+            let neighbors = this.adjList.get(currentNode);
+
+            for (let neighbor of neighbors) {
+                if (!visited[neighbor]) {
+                    visited[neighbor] = true;
+                    queue.push(neighbor);
+                }
+            }
         }
     }
-
-    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
 }
 
-// Example usage
-const arr = [4, 3, 2, 5, 1];
-const sortedArr = mergeSort(arr);
-console.log(sortedArr); // Outputs: [1, 2, 3, 4, 5]
+// Usage
+const graph = new Graph();
+
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addVertex('E');
+
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('C', 'E');
+
+graph.breadthFirstSearch('A');
