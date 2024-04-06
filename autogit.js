@@ -1,62 +1,20 @@
-function tarjanSCC(graph) {
-    const n = graph.length;
-    let index = 0;
-    const stack = [];
-    const onStack = new Array(n).fill(false);
-    const lowlink = new Array(n).fill(0);
-    const indexMap = new Array(n).fill(-1);
-    const result = [];
-
-    function strongConnect(node) {
-        lowlink[node] = index;
-        indexMap[node] = index;
-        index++;
-        stack.push(node);
-        onStack[node] = true;
-        
-        for (const neighbor of graph[node]) {
-            if (indexMap[neighbor] === -1) {
-                strongConnect(neighbor);
-                lowlink[node] = Math.min(lowlink[node], lowlink[neighbor]);
-            } else if (onStack[neighbor]) {
-                lowlink[node] = Math.min(lowlink[node], indexMap[neighbor]);
-            }
-        }
-
-        if (lowlink[node] === indexMap[node]) {
-            const component = [];
-            let w;
-            do {
-                w = stack.pop();
-                onStack[w] = false;
-                component.push(w);
-            } while (w !== node);
-            result.push(component);
-        }
+function insertionSort(arr) {
+  for (let i = 1; i < arr.length; i++) {
+    let current = arr[i];
+    let j = i - 1;
+    
+    while (j >= 0 && arr[j] > current) {
+      arr[j + 1] = arr[j];
+      j--;
     }
-
-    for (let i = 0; i < n; i++) {
-        if (indexMap[i] === -1) {
-            strongConnect(i);
-        }
-    }
-
-    return result;
+    
+    arr[j + 1] = current;
+  }
+  
+  return arr;
 }
 
-// Example usage:
-const graph = [
-    [1],
-    [2, 4],
-    [3, 6],
-    [2, 7],
-    [0, 5],
-    [4],
-    [3, 7],
-    [6, 9],
-    [7],
-    [8]
-];
-
-const scc = tarjanSCC(graph);
-console.log(scc);
+// Test the insertion sort algorithm
+let array = [5, 2, 4, 6, 1, 3];
+console.log("Before sorting:", array);
+console.log("After sorting:", insertionSort(array));
