@@ -1,54 +1,10 @@
-function kmpSearch(text, pattern) {
-    let lps = computeLPSArray(pattern);
-    let i = 0, j = 0;
-    const indexes = [];
-
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-
-        if (j === pattern.length) {
-            indexes.push(i - j);
-            j = lps[j - 1];
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
-    }
-
-    return indexes;
-}
-
-function computeLPSArray(pattern) {
-    const lps = new Array(pattern.length).fill(0);
-    let len = 0;
-    let i = 1;
-
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-
-    return lps;
-}
-
-// Example Usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const indexes = kmpSearch(text, pattern);
-console.log("Pattern found at indexes:", indexes);
+// Fetch data from a public API
+fetch('https://jsonplaceholder.typicode.com/posts')
+  .then(response => response.json())
+  .then(data => {
+    // Display the fetched data in the console
+    console.log(data);
+  })
+  .catch(error => {
+    console.error('Error fetching data:', error);
+  });
