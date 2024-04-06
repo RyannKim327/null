@@ -1,46 +1,42 @@
 class Node {
-    constructor(value) {
-        this.value = value;
-        this.children = [];
+    constructor() {
+        this.children = {};
     }
 }
 
-function depthLimitedSearch(node, target, depth) {
-    if (node.value === target) {
-        return node;
-    }
-    
-    if (depth === 0) {
-        return null;
-    }
-    
-    for (let child of node.children) {
-        let result = depthLimitedSearch(child, target, depth - 1);
-        if (result) {
-            return result;
+class SuffixTree {
+    constructor(str) {
+        this.root = new Node();
+        for (let i = 0; i < str.length; i++) {
+            this.addSuffix(str.substring(i));
         }
     }
-    
-    return null;
+
+    addSuffix(suffix) {
+        let node = this.root;
+        for (let i = 0; i < suffix.length; i++) {
+            let char = suffix[i];
+            if (!node.children[char]) {
+                node.children[char] = new Node();
+            }
+            node = node.children[char];
+        }
+    }
+
+    search(pattern) {
+        let node = this.root;
+        for (let i = 0; i < pattern.length; i++) {
+            let char = pattern[i];
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+        return true;
+    }
 }
 
-// Sample usage
-let root = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-let node4 = new Node(4);
-let node5 = new Node(5);
-
-root.children.push(node2, node3);
-node2.children.push(node4);
-node3.children.push(node5);
-
-let targetValue = 5;
-let maxDepth = 2;
-let result = depthLimitedSearch(root, targetValue, maxDepth);
-
-if (result) {
-    console.log(`Target value ${targetValue} found at depth ${maxDepth}.`);
-} else {
-    console.log(`Target value ${targetValue} not found within depth ${maxDepth}.`);
-}
+// Example Usage
+let suffixTree = new SuffixTree("banana");
+console.log(suffixTree.search("ana")); // Output: true
+console.log(suffixTree.search("xyz")); // Output: false
