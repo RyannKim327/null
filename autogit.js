@@ -1,41 +1,12 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
-    }
+function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-class LinkedList {
-    constructor() {
-        this.head = null;
-    }
+// Specify the range
+var min = 1;
+var max = 100;
 
-    add(data) {
-        const newNode = new Node(data);
+// Generate a random number between min and max
+var randomNumber = getRandomNumber(min, max);
 
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
-        }
-    }
-
-    display() {
-        let current = this.head;
-        while (current) {
-            console.log(current.data);
-            current = current.next;
-        }
-    }
-}
-
-// Usage
-const linkedList = new LinkedList();
-linkedList.add(1);
-linkedList.add(2);
-linkedList.add(3);
-linkedList.display();
+console.log(randomNumber);
