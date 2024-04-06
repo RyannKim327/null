@@ -1,37 +1,28 @@
-function mergeSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
-    }
+function depthLimitedSearch(root, depthLimit) {
+    let stack = [{ node: root, depth: 0 }];
 
-    const middle = Math.floor(arr.length / 2);
-    const left = arr.slice(0, middle);
-    const right = arr.slice(middle);
+    while (stack.length > 0) {
+        let { node, depth } = stack.pop();
 
-    return merge(
-        mergeSort(left),
-        mergeSort(right)
-    );
-}
-
-function merge(left, right) {
-    let result = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
-
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            result.push(left[leftIndex]);
-            leftIndex++;
-        } else {
-            result.push(right[rightIndex]);
-            rightIndex++;
+        if (depth > depthLimit) {
+            continue;
         }
+
+        // Perform your search logic on the current node here
+
+        if (node.isGoalState()) {
+            console.log("Goal node found!");
+            return node;
+        }
+
+        node.getSuccessorNodes().forEach(successor => {
+            stack.push({ node: successor, depth: depth + 1 });
+        });
     }
 
-    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+    console.log(`Goal node not found within depth limit of ${depthLimit}`);
+    return null;
 }
 
-// Example usage
-const arr = [8, 3, 1, 7, 0, 10, 2];
-const sortedArr = mergeSort(arr);
-console.log(sortedArr);
+// Usage example
+// depthLimitedSearch(rootNode, 5); // Perform depth-limited search with depth limit of 5
