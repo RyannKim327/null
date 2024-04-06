@@ -1,12 +1,5 @@
-function getRandomNumber(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+// Ask the user for their name
+var name = prompt("Please enter your name:");
 
-// Specify the range
-var min = 1;
-var max = 100;
-
-// Generate a random number between min and max
-var randomNumber = getRandomNumber(min, max);
-
-console.log(randomNumber);
+// Display a greeting using the user's input
+alert("Hello, " + name + "! Welcome to our website.");
