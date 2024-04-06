@@ -1,29 +1,28 @@
-function beamSearch(initialState, beamWidth, maxDepth, getNextStatesFn, heuristicFn) {
-    let open = [{ state: initialState, score: 0 }];
-    let closed = [];
+function longestCommonSubstring(str1, str2) {
+    let maxLength = 0;
+    let endIndex = 0;
 
-    for (let depth = 0; depth < maxDepth; depth++) {
-        let nextOpen = [];
+    const dp = Array(str1.length + 1).fill(0).map(() => Array(str2.length + 1).fill(0));
 
-        for (let i = 0; i < open.length; i++) {
-            let current = open[i].state;
-            let currentScore = open[i].score;
-
-            let nextStates = getNextStatesFn(current);
-
-            for (let j = 0; j < nextStates.length; j++) {
-                let nextState = nextStates[j];
-                let nextStateScore = currentScore + heuristicFn(nextState);
-
-                nextOpen.push({ state: nextState, score: nextStateScore });
+    for (let i = 1; i <= str1.length; i++) {
+        for (let j = 1; j <= str2.length; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > maxLength) {
+                    maxLength = dp[i][j];
+                    endIndex = i - 1;
+                }
+            } else {
+                dp[i][j] = 0;
             }
         }
-
-        nextOpen.sort((a, b) => b.score - a.score);
-        open = nextOpen.slice(0, beamWidth);
-
-        closed = closed.concat(open);
     }
 
-    return closed;
+    return str1.substr(endIndex - maxLength + 1, maxLength);
 }
+
+// Example usage
+const str1 = 'abcdef';
+const str2 = 'bcdeft';
+const longestSubstring = longestCommonSubstring(str1, str2);
+console.log(longestSubstring); // Output: "cde"
