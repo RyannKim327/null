@@ -1,60 +1,71 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
+class Edge {
+    constructor(source, destination, weight) {
+        this.source = source;
+        this.destination = destination;
+        this.weight = weight;
     }
 }
 
-class LinkedList {
-    constructor() {
-        this.head = null;
+class Graph {
+    constructor(vertices, edges) {
+        this.vertices = vertices;
+        this.edges = edges;
     }
 
-    addNode(value) {
-        const node = new Node(value);
-        if (!this.head) {
-            this.head = node;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
+    bellmanFord(source) {
+        let distances = {};
+        let predecessors = {};
+
+        // Step 1: Initialize distances and predecessors
+        this.vertices.forEach(vertex => {
+            distances[vertex] = Infinity;
+            predecessors[vertex] = null;
+            distances[source] = 0;
+        });
+
+        // Step 2: Relax edges repeatedly
+        for (let i = 0; i < this.vertices.length - 1; i++) {
+            this.edges.forEach(edge => {
+                let u = edge.source;
+                let v = edge.destination;
+                let weight = edge.weight;
+                if (distances[u] + weight < distances[v]) {
+                    distances[v] = distances[u] + weight;
+                    predecessors[v] = u;
+                }
+            });
+        }
+
+        // Step 3: Check for negative-weight cycles
+        this.edges.forEach(edge => {
+            let u = edge.source;
+            let v = edge.destination;
+            let weight = edge.weight;
+            if (distances[u] + weight < distances[v]) {
+                console.log("Graph contains a negative-weight cycle");
+                return;
             }
-            current.next = node;
-        }
-    }
+        });
 
-    findNthNodeFromEnd(n) {
-        let firstPointer = this.head;
-        let secondPointer = this.head;
-
-        // Move the first pointer to the nth node from the beginning
-        for (let i = 0; i < n; i++) {
-            if (firstPointer === null) {
-                return null; // Return null if n is greater than the length of the linked list
-            }
-            firstPointer = firstPointer.next;
-        }
-
-        // Move both pointers simultaneously until the first pointer reaches the end
-        while (firstPointer !== null) {
-            firstPointer = firstPointer.next;
-            secondPointer = secondPointer.next;
-        }
-
-        return secondPointer;
+        return { distances, predecessors };
     }
 }
-const linkedList = new LinkedList();
-linkedList.addNode(1);
-linkedList.addNode(2);
-linkedList.addNode(3);
-linkedList.addNode(4);
-linkedList.addNode(5);
-const n = 2; // Specify the value of n
-const nthNodeFromEnd = linkedList.findNthNodeFromEnd(n);
 
-if (nthNodeFromEnd) {
-    console.log(`The ${n}th node from the end is: ${nthNodeFromEnd.value}`);
-} else {
-    console.log(`Could not find the ${n}th node from the end.`);
-}
+// Example usage
+const vertices = ['A', 'B', 'C', 'D', 'E'];
+const edges = [
+    new Edge('A', 'B', -1),
+    new Edge('A', 'C', 4),
+    new Edge('B', 'C', 3),
+    new Edge('B', 'D', 2),
+    new Edge('D', 'B', 1),
+    new Edge('C', 'D', 5),
+    new Edge('D', 'E', 3)
+];
+
+const graph = new Graph(vertices, edges);
+const source = 'A';
+const { distances, predecessors } = graph.bellmanFord(source);
+
+console.log("Distances:", distances);
+console.log("Predecessors:", predecessors);
