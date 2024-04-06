@@ -1,16 +1,54 @@
-function removeDuplicates(arr) {
-  return arr.filter((item, index) => arr.indexOf(item) === index);
+function kmpSearch(text, pattern) {
+    let lps = computeLPSArray(pattern);
+    let i = 0, j = 0;
+    const indexes = [];
+
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            indexes.push(i - j);
+            j = lps[j - 1];
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+
+    return indexes;
 }
 
-let arrayWithDuplicates = [1, 2, 3, 4, 2, 3, 5];
-let uniqueArray = removeDuplicates(arrayWithDuplicates);
+function computeLPSArray(pattern) {
+    const lps = new Array(pattern.length).fill(0);
+    let len = 0;
+    let i = 1;
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-function removeDuplicates(arr) {
-  return Array.from(new Set(arr));
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+
+    return lps;
 }
 
-let arrayWithDuplicates = [1, 2, 3, 4, 2, 3, 5];
-let uniqueArray = removeDuplicates(arrayWithDuplicates);
-
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+// Example Usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const indexes = kmpSearch(text, pattern);
+console.log("Pattern found at indexes:", indexes);
