@@ -1,49 +1,48 @@
-function fibonacciSearch(arr, x) {
-    let fibMMm2 = 0; // (m-2)'th Fibonacci number
-    let fibMMm1 = 1; // (m-1)'th Fibonacci number
-    let fibM = fibMMm2 + fibMMm1; // m'th Fibonacci number
-     
-    let n = arr.length;
+function boyerMoore(text, pattern) {
+    let last = buildLast(pattern);
+    let n = text.length;
+    let m = pattern.length;
+    let i = m - 1; // text index
+    let j = m - 1; // pattern index
 
-    while (fibM < n) {
-        fibMMm2 = fibMMm1;
-        fibMMm1 = fibM;
-        fibM = fibMMm2 + fibMMm1;
-    }
-
-    let offset = -1;
-
-    while (fibM > 1) {
-        let i = Math.min(offset + fibMMm2, n - 1);
-
-        if (arr[i] < x) {
-            fibM = fibMMm1;
-            fibMMm1 = fibMMm2;
-            fibMMm2 = fibM - fibMMm1;
-            offset = i;
-        } else if (arr[i] > x) {
-            fibM = fibMMm2;
-            fibMMm1 -= fibMMm2;
-            fibMMm2 = fibM - fibMMm1;
+    while (i < n) {
+        if (text[i] === pattern[j]) {
+            if (j === 0) {
+                return i; // pattern found
+            }
+            i--;
+            j--;
         } else {
-            return i;
+            i += m - Math.min(j, 1 + last[text.charCodeAt(i)]);
+            j = m - 1;
         }
     }
 
-    if (fibMMm1 && arr[n-1] === x) {
-        return n-1;
-    }
-
-    return -1;
+    return -1; // pattern not found
 }
 
-// Example usage
-const array = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const x = 12;
-const index = fibonacciSearch(array, x);
+function buildLast(pattern) {
+    const last = {};
+    const m = pattern.length;
+
+    for (let i = 0; i < 256; i++) {
+        last[i] = -1; // initialize all characters to -1
+    }
+
+    for (let i = 0; i < m; i++) {
+        last[pattern.charCodeAt(i)] = i;
+    }
+
+    return last;
+}
+
+// Test the implementation
+let text = "ABAAABCD";
+let pattern = "ABC";
+let index = boyerMoore(text, pattern);
 
 if (index !== -1) {
-    console.log(`Element found at index ${index}`);
+    console.log(`Pattern found at index ${index}`);
 } else {
-    console.log(`Element not found in array`);
+    console.log("Pattern not found in the text");
 }
