@@ -1,39 +1,39 @@
-function Node(value) {
-    this.value = value;
-    this.children = [];
-}
+function topologicalSort(graph) {
+    const visited = new Set();
+    const stack = [];
+    const sortedNodes = [];
 
-function breadthLimitedSearch(root, target, limit) {
-    let queue = [];
-    queue.push({ node: root, depth: 0 });
-
-    while (queue.length > 0) {
-        let current = queue.shift();
-
-        if (current.node.value === target) {
-            return current.node;
+    function visit(node) {
+        if (visited.has(node)) return;
+        visited.add(node);
+        
+        for (let neighbor of graph[node]) {
+            visit(neighbor);
         }
-
-        if (current.depth < limit) {
-            current.node.children.forEach(child => {
-                queue.push({ node: child, depth: current.depth + 1 });
-            });
-        }
+        
+        stack.push(node);
     }
 
-    return null;
+    for (let node in graph) {
+        visit(node);
+    }
+
+    while (stack.length > 0) {
+        sortedNodes.unshift(stack.pop());
+    }
+
+    return sortedNodes;
 }
 
-// Usage example
-let root = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-let node4 = new Node(4);
-let node5 = new Node(5);
+// Example graph
+const graph = {
+    'A': ['B', 'C'],
+    'B': ['C', 'D'],
+    'C': ['E'],
+    'D': ['F'],
+    'E': ['F'],
+    'F': []
+};
 
-root.children = [node2, node3];
-node2.children = [node4];
-node3.children = [node5];
-
-let result = breadthLimitedSearch(root, 5, 2);
+const result = topologicalSort(graph);
 console.log(result);
