@@ -1,48 +1,34 @@
-function boyerMoore(text, pattern) {
-    let last = buildLast(pattern);
-    let n = text.length;
-    let m = pattern.length;
-    let i = m - 1; // text index
-    let j = m - 1; // pattern index
+function mergeSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
+    }
 
-    while (i < n) {
-        if (text[i] === pattern[j]) {
-            if (j === 0) {
-                return i; // pattern found
-            }
-            i--;
-            j--;
+    const mid = Math.floor(arr.length / 2);
+    const left = arr.slice(0, mid);
+    const right = arr.slice(mid);
+
+    return merge(mergeSort(left), mergeSort(right));
+}
+
+function merge(left, right) {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
         } else {
-            i += m - Math.min(j, 1 + last[text.charCodeAt(i)]);
-            j = m - 1;
+            result.push(right[rightIndex]);
+            rightIndex++;
         }
     }
 
-    return -1; // pattern not found
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
 }
 
-function buildLast(pattern) {
-    const last = {};
-    const m = pattern.length;
-
-    for (let i = 0; i < 256; i++) {
-        last[i] = -1; // initialize all characters to -1
-    }
-
-    for (let i = 0; i < m; i++) {
-        last[pattern.charCodeAt(i)] = i;
-    }
-
-    return last;
-}
-
-// Test the implementation
-let text = "ABAAABCD";
-let pattern = "ABC";
-let index = boyerMoore(text, pattern);
-
-if (index !== -1) {
-    console.log(`Pattern found at index ${index}`);
-} else {
-    console.log("Pattern not found in the text");
-}
+// Example usage
+const arr = [4, 3, 2, 5, 1];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr); // Outputs: [1, 2, 3, 4, 5]
