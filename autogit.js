@@ -1,3 +1,22 @@
-let arr = [1, 2, 3, 4, 5];
-arr.reverse();
-console.log(arr); // Output: [5, 4, 3, 2, 1]
+function depthLimitedSearch(root, goal, depthLimit) {
+    let stack = [{ node: root, depth: 0 }];
+    
+    while (stack.length > 0) {
+        let current = stack.pop();
+        let node = current.node;
+        let depth = current.depth;
+        
+        if (node === goal) {
+            return node;
+        }
+        
+        if (depth < depthLimit) {
+            let children = getChildren(node); // Function to get children of the current node
+            for (let child of children) {
+                stack.push({ node: child, depth: depth + 1 });
+            }
+        }
+    }
+    
+    return null; // Goal not found within depth limit
+}
