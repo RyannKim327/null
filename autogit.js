@@ -1,22 +1,13 @@
-function depthLimitedSearch(root, goal, depthLimit) {
-    let stack = [{ node: root, depth: 0 }];
-    
-    while (stack.length > 0) {
-        let current = stack.pop();
-        let node = current.node;
-        let depth = current.depth;
-        
-        if (node === goal) {
-            return node;
-        }
-        
-        if (depth < depthLimit) {
-            let children = getChildren(node); // Function to get children of the current node
-            for (let child of children) {
-                stack.push({ node: child, depth: depth + 1 });
-            }
-        }
+function findSecondLargest(arr) {
+    arr.sort(function(a, b){return b - a});
+    let uniqueArr = [...new Set(arr)]; // Remove duplicates
+    if (uniqueArr.length < 2) {
+        return "Array does not have a second largest element";
+    } else {
+        return uniqueArr[1];
     }
-    
-    return null; // Goal not found within depth limit
 }
+
+// Test the function
+let array = [10, 5, 20, 8, 15];
+console.log(findSecondLargest(array)); // Output: 15
