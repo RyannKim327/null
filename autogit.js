@@ -1,45 +1,38 @@
 class Node {
-  constructor(data) {
-    this.data = data;
+  constructor(value) {
+    this.value = value;
     this.next = null;
   }
 }
-class LinkedList {
-  constructor() {
-    this.head = null;
+
+function findNthNodeFromEnd(head, n) {
+  let leftPointer = head;
+  let rightPointer = head;
+
+  // Move rightPointer forward by n steps
+  for (let i = 0; i < n; i++) {
+    if (rightPointer === null) {
+      return null; // Indicates that n is greater than the number of nodes in the list
+    }
+    rightPointer = rightPointer.next;
   }
 
-  append(data) {
-    const newNode = new Node(data);
-    if (!this.head) {
-      this.head = newNode;
-      return;
-    }
-
-    let current = this.head;
-    while (current.next) {
-      current = current.next;
-    }
-    current.next = newNode;
+  // Move both pointers simultaneously
+  while (rightPointer !== null) {
+    leftPointer = leftPointer.next;
+    rightPointer = rightPointer.next;
   }
 
-  findMiddleElement() {
-    let slow = this.head;
-    let fast = this.head;
-
-    while (fast && fast.next) {
-      slow = slow.next;
-      fast = fast.next.next;
-    }
-
-    return slow.data;
-  }
+  // leftPointer now points to the nth node from the end of the list
+  return leftPointer.value;
 }
-const linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
-linkedList.append(4);
-linkedList.append(5);
-const middleElement = linkedList.findMiddleElement();
-console.log(middleElement); // Output the middle element of the linked list
+
+// Example linked list: 1 -> 2 -> 3 -> 4 -> 5
+let head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
+
+// Find the 2nd node from the end
+console.log(findNthNodeFromEnd(head, 2)); // Output: 4
