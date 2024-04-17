@@ -1,52 +1,27 @@
-class Stack {
-  constructor() {
-    this.stack = [];
-  }
-
-  push(item) {
-    this.stack.push(item);
-  }
-
-  pop() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
+function isSorted(arr) {
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] < arr[i - 1]) {
+            return false;
+        }
     }
-    return this.stack.pop();
-  }
-
-  peek() {
-    if (this.isEmpty()) {
-      return "Stack is empty";
-    }
-    return this.stack[this.stack.length - 1];
-  }
-
-  isEmpty() {
-    return this.stack.length === 0;
-  }
-
-  clear() {
-    this.stack = [];
-  }
-
-  size() {
-    return this.stack.length;
-  }
+    return true;
 }
 
-// Example Usage
-const stack = new Stack();
+function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+}
 
-stack.push(1);
-stack.push(2);
-stack.push(3);
+function bogosort(arr) {
+    while (!isSorted(arr)) {
+        shuffle(arr);
+    }
+    return arr;
+}
 
-console.log(stack.peek()); // Output: 3
-
-console.log(stack.pop()); // Output: 3
-
-console.log(stack.size()); // Output: 2
-
-stack.clear();
-
-console.log(stack.isEmpty()); // Output: true
+let array = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
+console.log("Before sorting:", array);
+array = bogosort(array);
+console.log("After sorting:", array);
