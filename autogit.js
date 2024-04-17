@@ -1,22 +1,46 @@
-function isAnagram(str1, str2) {
-    // Remove non-alphabetic characters and convert to lowercase
-    str1 = str1.replace(/[^a-z]/g, '').toLowerCase();
-    str2 = str2.replace(/[^a-z]/g, '').toLowerCase();
+function buildBadCharTable(pattern) {
+    const table = {};
+    const patternLength = pattern.length;
+  
+    for (let i = 0; i < patternLength - 1; i++) {
+        table[pattern[i]] = patternLength - 1 - i;
+    }
 
-    // Sort the characters in the strings
-    str1 = str1.split('').sort().join('');
-    str2 = str2.split('').sort().join('');
-
-    // Compare the sorted strings
-    return str1 === str2;
+    return table;
 }
 
-// Test the function
-const string1 = 'debit card';
-const string2 = 'bad credit';
+function boyerMooreHorspool(text, pattern) {
+    const textLength = text.length;
+    const patternLength = pattern.length;
+    const badCharTable = buildBadCharTable(pattern);
 
-if (isAnagram(string1, string2)) {
-    console.log(`${string1} and ${string2} are anagrams.`);
+    let shift = 0;
+
+    while (shift <= textLength - patternLength) {
+        let j = patternLength - 1;
+
+        while (j >= 0 && pattern[j] === text[shift + j]) {
+            j--;
+        }
+
+        if (j < 0) {
+            return shift; // match found
+        } else {
+            const badCharShift = badCharTable[text[shift + j]] || patternLength;
+            shift += badCharShift;
+        }
+    }
+
+    return -1; // no match found
+}
+
+// Example usage:
+const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
+const pattern = "consectetur";
+const index = boyerMooreHorspool(text, pattern);
+
+if (index !== -1) {
+    console.log(`Pattern found at index ${index}`);
 } else {
-    console.log(`${string1} and ${string2} are not anagrams.`);
+    console.log("Pattern not found in the text");
 }
