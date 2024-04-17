@@ -1,68 +1,29 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.left = null;
-    this.right = null;
-  }
+function binarySearch(arr, target) {
+    let start = 0;
+    let end = arr.length - 1;
+    
+    while (start <= end) {
+        let mid = Math.floor((start + end) / 2);
+        
+        if (arr[mid] === target) {
+            return mid;
+        } else if (arr[mid] < target) {
+            start = mid + 1;
+        } else {
+            end = mid - 1;
+        }
+    }
+    
+    return -1; // Target not found
 }
 
-class BinarySearchTree {
-  constructor() {
-    this.root = null;
-  }
+// Example usage
+const sortedArray = [1, 3, 5, 7, 9, 11, 13, 15];
+const target = 7;
+const index = binarySearch(sortedArray, target);
 
-  insert(data) {
-    const newNode = new Node(data);
-
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
-
-  insertNode(node, newNode) {
-    if (newNode.data < node.data) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
-
-  search(data) {
-    return this.searchNode(this.root, data);
-  }
-
-  searchNode(node, data) {
-    if (node === null) {
-      return false;
-    }
-
-    if (data < node.data) {
-      return this.searchNode(node.left, data);
-    } else if (data > node.data) {
-      return this.searchNode(node.right, data);
-    } else {
-      return true;
-    }
-  }
+if (index !== -1) {
+    console.log(`Target found at index ${index}`);
+} else {
+    console.log(`Target not found`);
 }
-
-// Example Usage
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
-bst.insert(7);
-
-console.log(bst.search(7));  // Output: true
-console.log(bst.search(20)); // Output: false
