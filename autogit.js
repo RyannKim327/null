@@ -1,23 +1,44 @@
-function findCommonElements(arr1, arr2) {
-    // Create an empty array to store common elements
-    let commonElements = [];
-
-    // Iterate over each element in the first array
-    for (let i = 0; i < arr1.length; i++) {
-        // Check if the element exists in the second array
-        if (arr2.includes(arr1[i]) && !commonElements.includes(arr1[i])) {
-            // Add the element to the common elements array
-            commonElements.push(arr1[i]);
-        }
-    }
-
-    return commonElements;
+// Node class representing a single element in the linked list
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
 }
 
-// Example arrays
-let array1 = [1, 2, 3, 4, 5];
-let array2 = [3, 4, 5, 6, 7];
+// Linked list class
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
 
-// Find common elements in the arrays
-let commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [3, 4, 5]
+  // Function to check if the linked list is a palindrome
+  isPalindrome() {
+    // Convert the linked list into an array
+    let currentNode = this.head;
+    let arr = [];
+    while (currentNode !== null) {
+      arr.push(currentNode.data);
+      currentNode = currentNode.next;
+    }
+
+    // Check if the array is a palindrome
+    for (let i = 0; i < Math.floor(arr.length / 2); i++) {
+      if (arr[i] !== arr[arr.length - 1 - i]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+}
+
+// Example linked list
+const linkedList = new LinkedList();
+linkedList.head = new Node(1);
+linkedList.head.next = new Node(2);
+linkedList.head.next.next = new Node(2);
+linkedList.head.next.next.next = new Node(1);
+
+// Check if the linked list is a palindrome
+console.log(linkedList.isPalindrome()); // Output: true
