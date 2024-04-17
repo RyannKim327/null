@@ -1,6 +1,20 @@
-let str = "  Hello,   World!  ";
+function isValidPalindrome(str) {
+    let start = 0;
+    let end = str.length - 1;
 
-// Using regular expression to remove whitespace
-let newStr = str.replace(/\s/g, '');
+    while (start < end) {
+        if (str[start] !== str[end]) {
+            return false;
+        }
+        start++;
+        end--;
+    }
 
-console.log(newStr); // Output: "Hello,World!"
+    return true;
+}
+
+const string1 = "racecar";
+const string2 = "hello";
+
+console.log(isValidPalindrome(string1)); // Output: true
+console.log(isValidPalindrome(string2)); // Output: false
