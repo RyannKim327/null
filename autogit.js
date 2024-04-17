@@ -1,52 +1,37 @@
-function buildFailureArray(pattern) {
-    const failure = new Array(pattern.length).fill(0);
-    let j = 0;
-    
-    for (let i = 1; i < pattern.length; i++) {
-        if (pattern[i] === pattern[j]) {
-            j++;
-            failure[i] = j;
-        } else {
-            if (j !== 0) {
-                j = failure[j - 1];
-                i--;
-            }
-        }
-    }
-    
-    return failure;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-function kmpSearch(text, pattern) {
-    const failure = buildFailureArray(pattern);
-    let i = 0;
-    let j = 0;
-    
-    while (i < text.length) {
-        if (text[i] === pattern[j]) {
-            if (j === pattern.length - 1) {
-                return i - j;
-            }
-            i++;
-            j++;
-        } else {
-            if (j !== 0) {
-                j = failure[j - 1];
-            } else {
-                i++;
-            }
-        }
+function diameterOfBinaryTree(root) {
+  let maxDiameter = 0;
+
+  function depth(node) {
+    if (!node) {
+      return 0;
     }
-    
-    return -1;
+
+    const leftDepth = depth(node.left);
+    const rightDepth = depth(node.right);
+
+    maxDiameter = Math.max(maxDiameter, leftDepth + rightDepth);
+
+    return 1 + Math.max(leftDepth, rightDepth);
+  }
+
+  depth(root);
+
+  return maxDiameter;
 }
 
-// Test the KMP algorithm
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const index = kmpSearch(text, pattern);
-if (index !== -1) {
-    console.log(`Pattern found at index ${index}`);
-} else {
-    console.log("Pattern not found in text");
-}
+// Example binary tree
+const root = new Node(1);
+root.left = new Node(2);
+root.right = new Node(3);
+root.left.left = new Node(4);
+root.left.right = new Node(5);
+
+console.log(diameterOfBinaryTree(root)); // Output: 3
