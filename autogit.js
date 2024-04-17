@@ -1,48 +1,58 @@
-function burrowsWheelerTransform(input) {
-    // Create a matrix to store all possible rotations of the input string
-    let rotations = [];
-    for (let i = 0; i < input.length; i++) {
-        rotations.push(input.slice(i) + input.slice(0, i));
-    }
-
-    // Sort the rotations lexicographically
-    rotations.sort();
-
-    // Extract the last characters of each rotation to form the transformed string
-    let transformedString = rotations.map(rotation => rotation.slice(-1)).join('');
-
-    // Find the index of the original input in the sorted rotations
-    let originalIndex = rotations.indexOf(input);
-
-    return { transformedString, originalIndex };
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
 }
 
-function inverseBurrowsWheelerTransform(transformedString, originalIndex) {
-    let length = transformedString.length;
-    let table = [];
-  
-    for (let i = 0; i < length; i++) {
-        table[i] = [transformedString[i], i];
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+
+  addNode(data) {
+    const newNode = new Node(data);
+
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
     }
-  
-    table.sort();
-  
-    let result = "";
-    let row = table[originalIndex];
-  
-    for (let i = 0; i < length; i++) {
-        result = row[0] + result;
-        row = table[row[1]];
+  }
+
+  findNthNodeFromEnd(n) {
+    let firstPointer = this.head;
+    let secondPointer = this.head;
+    
+    // Move the first pointer ahead by n nodes
+    for (let i = 0; i < n; i++) {
+      if (!firstPointer) {
+        return null; // If n is greater than the length of the list, return null
+      }
+      firstPointer = firstPointer.next;
     }
-  
-    return result;
+
+    while (firstPointer) {
+      firstPointer = firstPointer.next;
+      secondPointer = secondPointer.next;
+    }
+
+    return secondPointer;
+  }
 }
 
-// Example usage
-let input = "hello world";
-let { transformedString, originalIndex } = burrowsWheelerTransform(input);
-console.log("Burrows-Wheeler Transform: " + transformedString);
-console.log("Original Index: " + originalIndex);
+// Example Usage
+const list = new LinkedList();
+list.addNode(1);
+list.addNode(2);
+list.addNode(3);
+list.addNode(4);
+list.addNode(5);
 
-let originalInput = inverseBurrowsWheelerTransform(transformedString, originalIndex);
-console.log("Inverse Burrows-Wheeler Transform: " + originalInput);
+const n = 2;
+const nthNodeFromEnd = list.findNthNodeFromEnd(n);
+console.log(`${n}th node from the end of the list is: ${nthNodeFromEnd.data}`);
