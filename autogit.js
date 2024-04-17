@@ -1,60 +1,61 @@
-// Define the Red-Black Tree Node class
-class Node {
-  constructor(data, color) {
-    this.data = data;
-    this.left = null;
-    this.right = null;
-    this.parent = null;
-    this.color = color; // 'R' for red, 'B' for black
-  }
-}
+function tarjan(graph) {
+    let index = 0;
+    let stack = [];
+    let indices = new Map();
+    let lowLinks = new Map();
+    let onStack = new Set();
+    let result = [];
 
-// Define the Red-Black Tree class
-class RedBlackTree {
-  constructor() {
-    this.root = null;
-  }
+    function strongConnect(node) {
+        indices.set(node, index);
+        lowLinks.set(node, index);
+        index++;
+        stack.push(node);
+        onStack.add(node);
 
-  // Helper function to perform a left rotation
-  leftRotate(node) {
-    const temp = node.right;
-    node.right = temp.left;
-    if (temp.left !== null) {
-      temp.left.parent = node;
-    }
-    temp.parent = node.parent;
-    if (node.parent === null) {
-      this.root = temp;
-    } else if (node === node.parent.left) {
-      node.parent.left = temp;
-    } else {
-      node.parent.right = temp;
-    }
-    temp.left = node;
-    node.parent = temp;
-  }
+        for (let neighbor of graph[node]) {
+            if (!indices.has(neighbor)) {
+                strongConnect(neighbor);
+                lowLinks.set(node, Math.min(lowLinks.get(node), lowLinks.get(neighbor)));
+            } else if (onStack.has(neighbor)) {
+                lowLinks.set(node, Math.min(lowLinks.get(node), indices.get(neighbor)));
+            }
+        }
 
-  // Helper function to perform a right rotation
-  rightRotate(node) {
-    const temp = node.left;
-    node.left = temp.right;
-    if (temp.right !== null) {
-      temp.right.parent = node;
+        if (lowLinks.get(node) === indices.get(node)) {
+            let component = [];
+            let member;
+            do {
+                member = stack.pop();
+                onStack.delete(member);
+                component.push(member);
+            } while (member !== node);
+            result.push(component);
+        }
     }
-    temp.parent = node.parent;
-    if (node.parent === null) {
-      this.root = temp;
-    } else if (node === node.parent.right) {
-      node.parent.right = temp;
-    } else {
-      node.parent.left = temp;
-    }
-    temp.right = node;
-    node.parent = temp;
-  }
 
-  // Add your insert, delete, search, and other helper functions here as needed
+    for (let node of Object.keys(graph)) {
+        if (!indices.has(node)) {
+            strongConnect(node);
+        }
+    }
+
+    return result;
 }
 
 // Example usage:
-const rbTree = new RedBlackTree();
+let graph = {
+    'A': ['B'],
+    'B': ['C'],
+    'C': ['A', 'D'],
+    'D': ['E'],
+    'E': ['C'],
+    'F': ['G'],
+    'G': ['H'],
+    'H': ['F', 'I'],
+    'I': ['J'],
+    'J': ['H']
+};
+
+let scc = tarjan(graph);
+console.log(scc);
