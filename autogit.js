@@ -1,16 +1,7 @@
-function findSecondLargest(arr) {
-    let sortedArr = arr.sort((a, b) => b - a); // Sort the array in descending order
-    let uniqueArr = sortedArr.filter((value, index, self) => self.indexOf(value) === index); // Remove duplicates
-
-    if (uniqueArr.length < 2) {
-        return "Array does not have a second largest element";
-    }
-
-    return uniqueArr[1]; // Return the second element in the sorted, deduplicated array
+function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// Example
-let arr = [5, 2, 8, 10, 3, 1];
-let secondLargest = findSecondLargest(arr);
-
-console.log("Second largest element in the array is: " + secondLargest);
+// Example: Generate a random number between 1 and 100
+let randomNum = getRandomNumber(1, 100);
+console.log(randomNum);
