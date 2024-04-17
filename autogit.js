@@ -1,62 +1,46 @@
-// Define a node for the binary tree
 class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
 }
 
-// Define the binary tree class
-class BinaryTree {
-    constructor() {
-        this.root = null;
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+
+  addNode(data) {
+    const newNode = new Node(data);
+    if (!this.head) {
+      this.head = newNode;
+      return;
     }
 
-    // Insert a new value into the binary tree
-    insert(value) {
-        const newNode = new Node(value);
+    let current = this.head;
+    while (current.next) {
+      current = current.next;
+    }
+    current.next = newNode;
+  }
 
-        if (!this.root) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
+  getLength() {
+    let current = this.head;
+    let count = 0;
+
+    while (current) {
+      count++;
+      current = current.next;
     }
 
-    insertNode(node, newNode) {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
-
-    // Perform an in-order traversal of the binary tree
-    inOrderTraversal(node = this.root) {
-        if (node !== null) {
-            this.inOrderTraversal(node.left);
-            console.log(node.value);
-            this.inOrderTraversal(node.right);
-        }
-    }
+    return count;
+  }
 }
 
-// Create a new binary tree and insert some values
-const binaryTree = new BinaryTree();
-binaryTree.insert(5);
-binaryTree.insert(3);
-binaryTree.insert(8);
-binaryTree.insert(2);
-binaryTree.insert(4);
+// Example usage
+const linkedList = new LinkedList();
+linkedList.addNode(1);
+linkedList.addNode(2);
+linkedList.addNode(3);
 
-// Perform an in-order traversal to display the values
-binaryTree.inOrderTraversal();
+console.log("Length of linked list:", linkedList.getLength()); // Output: 3
