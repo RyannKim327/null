@@ -1,36 +1,41 @@
-function hasCycle(head) {
-    if (!head || !head.next) {
-        return false;
+function bfs(graph, startNode, targetNode) {
+  let queue = [startNode];
+  let visited = new Set();
+
+  while (queue.length > 0) {
+    let currentNode = queue.shift();
+
+    if (currentNode === targetNode) {
+      return true; // Target node found
     }
 
-    let slow = head;
-    let fast = head.next;
+    if (!visited.has(currentNode)) {
+      visited.add(currentNode);
 
-    while (fast && fast.next) {
-        if (slow === fast) {
-            return true; // Cycle detected
+      let neighbors = graph[currentNode];
+      
+      if (neighbors) {
+        for (let neighbor of neighbors) {
+          queue.push(neighbor);
         }
-        slow = slow.next;
-        fast = fast.next.next;
+      }
     }
+  }
 
-    return false; // No cycle detected
-}
-// Define the ListNode class
-class ListNode {
-    constructor(val) {
-        this.val = val;
-        this.next = null;
-    }
+  return false; // Target node not found
 }
 
-// Create a linked list with a cycle
-let node1 = new ListNode(1);
-let node2 = new ListNode(2);
-let node3 = new ListNode(3);
-node1.next = node2;
-node2.next = node3;
-node3.next = node1; // Create a cycle
+// Example usage:
+const graph = {
+  A: ['B', 'C'],
+  B: ['A', 'D', 'E'],
+  C: ['A', 'F'],
+  D: ['B'],
+  E: ['B', 'F'],
+  F: ['C', 'E']
+};
 
-let hasCycleResult = hasCycle(node1);
-console.log(hasCycleResult); // Output: true, the linked list contains a cycle
+const startNode = 'A';
+const targetNode = 'F';
+
+console.log(bfs(graph, startNode, targetNode));
