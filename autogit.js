@@ -1,13 +1,23 @@
-function factorial(n) {
-    // Base case: If the number is 0, return 1
-    if (n === 0) {
-        return 1;
-    } 
-    // Recursive case: Calculate factorial of n-1 and multiply by n
-    else {
-        return n * factorial(n - 1);
+function findFirstRepeatedCharacter(str) {
+    let charMap = {};
+
+    for (let char of str) {
+        if (charMap[char]) {
+            return char;
+        } else {
+            charMap[char] = 1;
+        }
     }
+
+    return null;
 }
 
-// Test the factorial function
-console.log(factorial(5)); // Output: 120 (5! = 5*4*3*2*1 = 120)
+// Example usage
+const inputString = "hello world";
+const repeatedChar = findFirstRepeatedCharacter(inputString);
+
+if (repeatedChar) {
+    console.log(`The first repeated character in "${inputString}" is "${repeatedChar}".`);
+} else {
+    console.log(`No repeated characters found in "${inputString}".`);
+}
