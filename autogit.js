@@ -1,41 +1,31 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
+function findMajorityElement(arr) {
+    let count = 0;
+    let candidate;
+
+    for (let num of arr) {
+        if (count === 0) {
+            candidate = num;
+        }
+
+        count += (num === candidate) ? 1 : -1;
+    }
+
+    // Validate the candidate
+    count = 0;
+    for (let num of arr) {
+        if (num === candidate) {
+            count++;
+        }
+    }
+
+    if (count > arr.length / 2) {
+        return candidate;
+    } else {
+        return "No majority element found";
     }
 }
 
-function isPalindrome(head) {
-    let curr = head;
-    let values = [];
-
-    // Push values of linked list into an array
-    while (curr !== null) {
-        values.push(curr.value);
-        curr = curr.next;
-    }
-
-    // Create a copy of the array and reverse it
-    let reversedValues = values.slice().reverse();
-
-    // Check if the original and reversed arrays are the same
-    return JSON.stringify(values) === JSON.stringify(reversedValues);
-}
-
-// Example LinkedList
-const node1 = new Node('r');
-const node2 = new Node('a');
-const node3 = new Node('c');
-const node4 = new Node('e');
-const node5 = new Node('c');
-const node6 = new Node('a');
-const node7 = new Node('r');
-
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node5;
-node5.next = node6;
-node6.next = node7;
-
-console.log(isPalindrome(node1)); // Output: true
+// Example usage
+const array = [2, 2, 3, 4, 2, 2, 5, 2, 2];
+const majorityElement = findMajorityElement(array);
+console.log("Majority Element:", majorityElement);
