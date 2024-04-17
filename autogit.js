@@ -1,4 +1,4 @@
-class TreeNode {
+class Node {
   constructor(value) {
     this.value = value;
     this.left = null;
@@ -6,26 +6,62 @@ class TreeNode {
   }
 }
 
-function countLeafNodes(root) {
-  if (root === null) {
-    return 0;
+class BinaryTree {
+  constructor() {
+    this.root = null;
   }
-  
-  if (root.left === null && root.right === null) {
-    return 1;
+
+  insert(value) {
+    const newNode = new Node(value);
+
+    if (!this.root) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
+    }
   }
-  
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
+
+  insertNode(node, newNode) {
+    if (newNode.value < node.value) {
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  search(value) {
+    return this.searchNode(this.root, value);
+  }
+
+  searchNode(node, value) {
+    if (!node) {
+      return false;
+    }
+
+    if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else if (value > node.value) {
+      return this.searchNode(node.right, value);
+    } else {
+      return true;
+    }
+  }
 }
+const binaryTree = new BinaryTree();
 
-// Example usage:
-// Construct a binary tree
-let root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-root.right.left = new TreeNode(6);
-root.right.right = new TreeNode(7);
+binaryTree.insert(5);
+binaryTree.insert(3);
+binaryTree.insert(8);
+binaryTree.insert(2);
+binaryTree.insert(4);
 
-console.log(countLeafNodes(root)); // Output: 4
+console.log(binaryTree.search(4)); // Output: true
+console.log(binaryTree.search(6)); // Output: false
