@@ -1,12 +1,15 @@
-function validateEmail(email) {
-    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return regex.test(email);
+function findSecondLargest(arr) {
+    arr.sort(function(a, b) {
+        return b - a;
+    });
+
+    var uniqueArr = arr.filter(function(item, index) {
+        return arr.indexOf(item) === index;
+    });
+
+    return uniqueArr[1];
 }
 
-// Usage
-const email = "example@example.com";
-if (validateEmail(email)) {
-    console.log("Email is valid");
-} else {
-    console.log("Email is not valid");
-}
+var arr = [5, 2, 8, 10, 7, 3];
+var secondLargest = findSecondLargest(arr);
+console.log(secondLargest); // Output: 8
