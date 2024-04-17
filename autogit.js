@@ -1,6 +1,44 @@
-let str1 = "Hello";
-let str2 = "World";
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
+    }
+}
 
-let result = str1 + " " + str2;
+class LinkedList {
+    constructor() {
+        this.head = null;
+    }
 
-console.log(result); // Output: Hello World
+    append(data) {
+        const newNode = new Node(data);
+
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+
+        current.next = newNode;
+    }
+
+    print() {
+        let current = this.head;
+        while (current) {
+            console.log(current.data);
+            current = current.next;
+        }
+    }
+}
+
+// Usage
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+
+list.print(); // Output: 1, 2, 3
