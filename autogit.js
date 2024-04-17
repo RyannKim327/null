@@ -1,35 +1,33 @@
-function BoyerMooreHorspool(text, pattern) {
-    const textLength = text.length;
-    const patternLength = pattern.length;
-    const skipTable = new Array(256).fill(patternLength);
-    
-    for (let i = 0; i < patternLength - 1; i++) {
-        skipTable[pattern.charCodeAt(i)] = patternLength - i - 1;
+function longestIncreasingSubsequence(arr) {
+    const n = arr.length;
+    const dp = new Array(n).fill(1);
+
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[i] > arr[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
+        }
     }
 
-    let i = patternLength - 1;
-    while (i < textLength) {
-        let j = patternLength -1;
-        while (j >= 0 && text[i] === pattern[j]) {
-            j--;
-            i--;
-        }
-        if (j === -1) {
-            return i + 1;
-        }
-        i += Math.max(patternLength - j, skipTable[text.charCodeAt(i)]);
+    let maxLength = 0;
+    for (let i = 0; i < n; i++) {
+        maxLength = Math.max(maxLength, dp[i]);
     }
 
-    return -1;
+    let result = [];
+    let currentLength = maxLength;
+    for (let i = dp.length - 1; i >= 0; i--) {
+        if (dp[i] === currentLength) {
+            result.unshift(arr[i]);
+            currentLength--;
+        }
+    }
+
+    return result;
 }
 
 // Example usage
-const text = "ABCDEFBCG";
-const pattern = "BCG";
-
-const index = BoyerMooreHorspool(text, pattern);
-if (index !== -1) {
-    console.log(`Pattern found at index ${index}`);
-} else {
-    console.log(`Pattern not found`);
-}
+const arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
+const lis = longestIncreasingSubsequence(arr);
+console.log('Longest Increasing Subsequence:', lis);
