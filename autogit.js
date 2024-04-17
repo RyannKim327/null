@@ -1,19 +1,43 @@
-function bubbleSort(arr) {
-    let len = arr.length;
-    for (let i = 0; i < len; i++) {
-        for (let j = 0; j < len - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                let temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
+function burrowsWheelerTransform(input) {
+    // Generate all possible rotations of the input string
+    let rotations = [];
+    for (let i = 0; i < input.length; i++) {
+        rotations.push(input.slice(i) + input.slice(0, i));
+    }
+
+    // Sort the rotations lexicographically
+    rotations.sort();
+
+    // Extract the last characters of each rotation
+    let transformed = rotations.map(rotation => rotation.slice(-1)).join('');
+
+    return transformed;
+}
+
+function inverseBurrowsWheelerTransform(input) {
+    // Transform the input string into a matrix of characters
+    let matrix = input.split('').map(char => [char, '']);
+    
+    // Sort the matrix lexicographically by the first column
+    matrix.sort();
+    
+    // Perform the inverse transformation
+    let result = '';
+    for (let i = 0; i < input.length; i++) {
+        result = matrix.map(row => row[0]).join('');
+        matrix = matrix.map(row => [row[0], row[1]]).sort();
+        for (let j = 0; j < matrix.length; j++) {
+            matrix[j][1] = result[j];
         }
     }
 
-    return arr;
+    return result;
 }
 
 // Example usage
-const arr = [64, 34, 25, 12, 22, 11, 90];
-console.log("Original array: ", arr);
-console.log("Sorted array: ", bubbleSort(arr));
+let input = 'banana';
+let transformed = burrowsWheelerTransform(input);
+console.log('Transformed: ' + transformed);
+
+let original = inverseBurrowsWheelerTransform(transformed);
+console.log('Original: ' + original);
