@@ -1,61 +1,42 @@
-class PriorityQueue {
-  constructor() {
-    this.elements = [];
-  }
-
-  isEmpty() {
-    return this.elements.length === 0;
-  }
-
-  enqueue(element, priority) {
-    this.elements.push({ element, priority });
-    this.elements.sort((a, b) => a.priority - b.priority);
-  }
-
-  dequeue() {
-    return this.elements.shift().element;
-  }
+class TreeNode {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
 }
 
-function dijkstra(graph, startNode) {
-  const distances = {};
-  const visited = {};
-  const pq = new PriorityQueue();
-
-  distances[startNode] = 0;
-  pq.enqueue(startNode, 0);
-
-  while (!pq.isEmpty()) {
-    const currentNode = pq.dequeue();
-
-    if (visited[currentNode]) {
-      continue;
+function height(node) {
+    if (node === null) {
+        return 0;
     }
+    
+    const leftHeight = height(node.left);
+    const rightHeight = height(node.right);
+    
+    return 1 + Math.max(leftHeight, rightHeight);
+}
 
-    visited[currentNode] = true;
-
-    for (let neighbor in graph[currentNode]) {
-      const cost = graph[currentNode][neighbor];
-      const totalCost = distances[currentNode] + cost;
-
-      if (distances[neighbor] === undefined || distances[neighbor] > totalCost) {
-        distances[neighbor] = totalCost;
-        pq.enqueue(neighbor, totalCost);
-      }
+function diameterOfBinaryTree(root) {
+    if (root === null) {
+        return 0;
     }
-  }
-
-  return distances;
+    
+    const leftHeight = height(root.left);
+    const rightHeight = height(root.right);
+    
+    const leftDiameter = diameterOfBinaryTree(root.left);
+    const rightDiameter = diameterOfBinaryTree(root.right);
+    
+    return Math.max(leftHeight + rightHeight, Math.max(leftDiameter, rightDiameter));
 }
 
 // Example usage
-const graph = {
-  A: { B: 1, C: 4 },
-  B: { A: 1, C: 2, D: 5 },
-  C: { A: 4, B: 2, D: 1 },
-  D: { B: 5, C: 1 },
-};
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+root.right.right = new TreeNode(6);
 
-const startNode = 'A';
-const distances = dijkstra(graph, startNode);
-console.log(distances);
+console.log(diameterOfBinaryTree(root)); // Output: 4
