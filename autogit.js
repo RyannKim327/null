@@ -1,33 +1,11 @@
-// Define a graph using an adjacency list
-const graph = {
-  A: ['B', 'C'],
-  B: ['A', 'D', 'E'],
-  C: ['A', 'F'],
-  D: ['B'],
-  E: ['B', 'F'],
-  F: ['C', 'E']
-};
+const cron = require('node-cron');
 
-function breadthFirstSearch(graph, startNode) {
-  const visited = {};
-  const queue = [startNode];
+// Run a task every day at 8:00 AM
+cron.schedule('0 8 * * *', () => {
+    console.log('Running task at 8:00 AM');
+});
 
-  while (queue.length > 0) {
-    const currentNode = queue.shift();
-    if (!visited[currentNode]) {
-      visited[currentNode] = true;
-      console.log(currentNode);
-
-      const neighbors = graph[currentNode];
-      for (let i = 0; i < neighbors.length; i++) {
-        const neighbor = neighbors[i];
-        if (!visited[neighbor]) {
-          queue.push(neighbor);
-        }
-      }
-    }
-  }
-}
-
-// Example usage
-breadthFirstSearch(graph, 'A');
+// Run a task every Sunday at 10:00 PM
+cron.schedule('0 22 * * 0', () => {
+    console.log('Running task at 10:00 PM on Sundays');
+});
