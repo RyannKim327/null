@@ -1,34 +1,32 @@
-function mergeSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
-    }
-
-    const mid = Math.floor(arr.length / 2);
-    const left = arr.slice(0, mid);
-    const right = arr.slice(mid);
-
-    return merge(mergeSort(left), mergeSort(right));
+// Definition for a binary tree node
+function TreeNode(val) {
+    this.val = val;
+    this.left = this.right = null;
 }
 
-function merge(left, right) {
-    let result = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
-
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            result.push(left[leftIndex]);
-            leftIndex++;
-        } else {
-            result.push(right[rightIndex]);
-            rightIndex++;
-        }
+// Function to find the number of leaf nodes in a binary tree
+function countLeafNodes(root) {
+    if (root === null) {
+        return 0;
     }
-
-    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+    
+    if (root.left === null && root.right === null) {
+        return 1;
+    }
+    
+    return countLeafNodes(root.left) + countLeafNodes(root.right);
 }
 
-// Example usage:
-const unsortedArray = [9, 2, 5, 6, 4, 3, 7, 10, 1, 8];
-const sortedArray = mergeSort(unsortedArray);
-console.log(sortedArray);
+// Example usage
+// Construct a binary tree
+let root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+root.right.left = new TreeNode(6);
+root.right.right = new TreeNode(7);
+
+// Calculate the number of leaf nodes
+const leafNodesCount = countLeafNodes(root);
+console.log("Number of leaf nodes in the binary tree:", leafNodesCount);
