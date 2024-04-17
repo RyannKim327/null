@@ -1,18 +1,24 @@
-function areAnagrams(str1, str2) {
-    // Remove any non-alphabetic characters and convert the strings to lowercase
-    str1 = str1.replace(/[^a-zA-Z]/g, '').toLowerCase();
-    str2 = str2.replace(/[^a-zA-Z]/g, '').toLowerCase();
+function binarySearch(arr, target) {
+    let left = 0;
+    let right = arr.length - 1;
 
-    // Sort the characters of the strings and compare them
-    return str1.split('').sort().join('') === str2.split('').sort().join('');
+    while (left <= right) {
+        let mid = Math.floor((left + right) / 2);
+
+        if (arr[mid] === target) {
+            return mid;
+        } else if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+
+    return -1; // Not found
 }
 
-// Test the function
-const string1 = 'listen';
-const string2 = 'silent';
-
-if (areAnagrams(string1, string2)) {
-    console.log(`${string1} and ${string2} are anagrams.`);
-} else {
-    console.log(`${string1} and ${string2} are not anagrams.`);
-}
+// Example usage
+const arr = [1, 3, 5, 7, 9, 11, 13, 15];
+const target = 7;
+const index = binarySearch(arr, target);
+console.log(index); // Output: 3
