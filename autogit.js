@@ -1,9 +1,20 @@
-function calculateMean(numbers) {
-  const sum = numbers.reduce((acc, num) => acc + num, 0);
-  const mean = sum / numbers.length;
-  return mean;
+function isPalindrome(str) {
+    str = str.toLowerCase().replace(/[\W_]/g, ''); // Remove non-alphanumeric characters and convert to lowercase
+
+    let left = 0;
+    let right = str.length - 1;
+
+    while (left < right) {
+        if (str[left] !== str[right]) {
+            return false; // Characters at positions left and right do not match
+        }
+        left++;
+        right--;
+    }
+
+    return true; // All characters match, so the string is a palindrome
 }
 
-const numbers = [3, 6, 9, 12, 15];
-const mean = calculateMean(numbers);
-console.log(mean);
+// Test the function
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // Output: true
+console.log(isPalindrome("race a car")); // Output: false
