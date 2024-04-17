@@ -1,43 +1,34 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
+function isPrime(num) {
+    if (num <= 1) return false;
+    if (num <= 3) return true;
+
+    if (num % 2 === 0 || num % 3 === 0) return false;
+
+    let i = 5;
+    while (i * i <= num) {
+        if (num % i === 0 || num % (i + 2) === 0) {
+            return false;
+        }
+        i += 6;
     }
+
+    return true;
 }
 
-class LinkedList {
-    constructor() {
-        this.head = null;
-    }
-
-    append(data) {
-        const newNode = new Node(data);
-
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    print() {
-        let current = this.head;
-        while (current) {
-            console.log(current.data);
-            current = current.next;
+function largestPrimeFactor(number) {
+    let largestPrime = 0;
+    for (let i = 2; i <= Math.sqrt(number); i++) {
+        if (number % i === 0) {
+            if (isPrime(i)) {
+                largestPrime = i;
+            }
+            if (isPrime(number / i)) {
+                largestPrime = Math.max(largestPrime, number / i);
+            }
         }
     }
+    return largestPrime;
 }
 
-// Usage
-const linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
-
-linkedList.print();  // Output: 1, 2, 3
+const number = 13195; // Change this to the number you want to find the largest prime factor of
+console.log(largestPrimeFactor(number));
