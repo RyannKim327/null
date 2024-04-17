@@ -1,43 +1,41 @@
 class Node {
-    constructor(data) {
-        this.data = data;
+    constructor(value) {
+        this.value = value;
         this.next = null;
     }
 }
 
-class LinkedList {
-    constructor() {
-        this.head = null;
+function isPalindrome(head) {
+    let curr = head;
+    let values = [];
+
+    // Push values of linked list into an array
+    while (curr !== null) {
+        values.push(curr.value);
+        curr = curr.next;
     }
 
-    // Method to add a new node to the end of the linked list
-    append(data) {
-        let newNode = new Node(data);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
+    // Create a copy of the array and reverse it
+    let reversedValues = values.slice().reverse();
 
-    // Method to print all the elements in the linked list
-    print() {
-        let current = this.head;
-        while (current) {
-            console.log(current.data);
-            current = current.next;
-        }
-    }
+    // Check if the original and reversed arrays are the same
+    return JSON.stringify(values) === JSON.stringify(reversedValues);
 }
 
-// Example usage
-const linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
+// Example LinkedList
+const node1 = new Node('r');
+const node2 = new Node('a');
+const node3 = new Node('c');
+const node4 = new Node('e');
+const node5 = new Node('c');
+const node6 = new Node('a');
+const node7 = new Node('r');
 
-linkedList.print();
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node5;
+node5.next = node6;
+node6.next = node7;
+
+console.log(isPalindrome(node1)); // Output: true
