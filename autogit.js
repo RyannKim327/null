@@ -1,46 +1,67 @@
-// Linked List Node class definition
 class Node {
     constructor(data) {
         this.data = data;
-        this.next = null;
+        this.left = null;
+        this.right = null;
     }
 }
 
-// Function to find the intersection of two linked lists
-const findIntersection = (headA, headB) => {
-    let set = new Set();
-    let result = [];
-
-    // Traverse the first linked list and store elements in Set
-    let current = headA;
-    while (current) {
-        set.add(current.data);
-        current = current.next;
+class BinarySearchTree {
+    constructor() {
+        this.root = null;
     }
 
-    // Traverse the second linked list and check for intersection
-    current = headB;
-    while (current) {
-        if (set.has(current.data)) {
-            result.push(current.data);
+    insert(data) {
+        let newNode = new Node(data);
+
+        if (this.root === null) {
+            this.root = newNode;
+        } else {
+            this.insertNode(this.root, newNode);
         }
-        current = current.next;
     }
 
-    return result;
-};
+    insertNode(node, newNode) {
+        if (newNode.data < node.data) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
+        }
+    }
 
-// Creating linked lists for testing
-let listA = new Node(3);
-listA.next = new Node(6);
-listA.next.next = new Node(9);
-listA.next.next.next = new Node(15);
-listA.next.next.next.next = new Node(30);
+    search(data) {
+        return this.searchNode(this.root, data);
+    }
 
-let listB = new Node(10);
-listB.next = listA.next.next.next;
+    searchNode(node, data) {
+        if (node === null) {
+            return false;
+        }
 
-// Finding the intersection of two linked lists
-const intersection = findIntersection(listA, listB);
+        if (data < node.data) {
+            return this.searchNode(node.left, data);
+        } else if (data > node.data) {
+            return this.searchNode(node.right, data);
+        } else {
+            return true;
+        }
+    }
+}
 
-console.log('Intersection of the two linked lists:', intersection); // Output will be [9, 15, 30]
+// Example usage
+let bst = new BinarySearchTree();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(3);
+
+console.log(bst.search(5)); // Output: true
+console.log(bst.search(8)); // Output: false
