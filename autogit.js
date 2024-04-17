@@ -1,18 +1,31 @@
-function isPalindrome(str) {
-    let left = 0;
-    let right = str.length - 1;
+function isPalindrome(s) {
+    let i = 0;
+    let j = s.length - 1;
 
-    while (left < right) {
-        if (str[left] !== str[right]) {
+    while (i < j) {
+        // Skip non-alphanumeric characters from left
+        if (!/[a-zA-Z0-9]/.test(s[i])) {
+            i++;
+            continue;
+        }
+
+        // Skip non-alphanumeric characters from right
+        if (!/[a-zA-Z0-9]/.test(s[j])) {
+            j--;
+            continue;
+        }
+
+        if (s[i].toLowerCase() !== s[j].toLowerCase()) {
             return false;
         }
-        left++;
-        right--;
+
+        i++;
+        j--;
     }
 
     return true;
 }
 
-// Test the function
-console.log(isPalindrome("racecar")); // Output: true
-console.log(isPalindrome("hello")); // Output: false
+// Test palindrome function
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // Output: true
+console.log(isPalindrome("race a car")); // Output: false
