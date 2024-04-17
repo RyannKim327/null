@@ -1,69 +1,29 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
+function countingSort(arr) {
+    const max = Math.max(...arr);
+    const countArray = new Array(max + 1).fill(0);
 
-class BinaryTree {
-    constructor() {
-        this.root = null;
+    // Count occurrences of each element
+    for (let i = 0; i < arr.length; i++) {
+        countArray[arr[i]]++;
     }
 
-    insert(value) {
-        const newNode = new Node(value);
-
-        if (!this.root) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
+    // Modify countArray to store actual position of elements
+    for (let i = 1; i < countArray.length; i++) {
+        countArray[i] += countArray[i - 1];
     }
 
-    insertNode(node, newNode) {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
+    const sortedArray = new Array(arr.length);
+
+    // Build the sorted array
+    for (let i = arr.length - 1; i >= 0; i--) {
+        sortedArray[countArray[arr[i]] - 1] = arr[i];
+        countArray[arr[i]]--;
     }
 
-    search(value) {
-        return this.searchNode(this.root, value);
-    }
-
-    searchNode(node, value) {
-        if (!node) {
-            return false;
-        }
-
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true;
-        }
-    }
+    return sortedArray;
 }
 
 // Example usage
-const tree = new BinaryTree();
-
-tree.insert(5);
-tree.insert(3);
-tree.insert(7);
-tree.insert(2);
-tree.insert(4);
-
-console.log(tree.search(3)); // Outputs: true
-console.log(tree.search(6)); // Outputs: false
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const sortedArr = countingSort(arr);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
