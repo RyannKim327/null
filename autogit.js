@@ -1,16 +1,16 @@
-function largestPrimeFactor(number) {
-    let i = 2;
-    while (i <= Math.sqrt(number)) {
-        if (number % i === 0) {
-            number = number / i;
-        } else {
-            i++;
-        }
-    }
-    return number;
-}
+const fetchData = async () => {
+  try {
+    const response = await fetch('https://api.example.com/data');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+};
 
-const num = 600851475143;
-const largestPrime = largestPrimeFactor(num);
-
-console.log(`The largest prime factor of ${num} is: ${largestPrime}`);
+fetchData()
+  .then(data => {
+    console.log('Received data:', data);
+    // Do something with the data
+  })
+  .catch(error => console.error('Error processing data:', error));
