@@ -1,33 +1,34 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+function mergeSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
+    }
+
+    const mid = Math.floor(arr.length / 2);
+    const left = arr.slice(0, mid);
+    const right = arr.slice(mid);
+
+    return merge(mergeSort(left), mergeSort(right));
 }
 
-function countLeafNodes(root) {
-  if (root === null) {
-    return 0;
-  }
+function merge(left, right) {
+    let result = [];
+    let i = 0;
+    let j = 0;
 
-  if (root.left === null && root.right === null) {
-    return 1;
-  }
+    while (i < left.length && j < right.length) {
+        if (left[i] < right[j]) {
+            result.push(left[i]);
+            i++;
+        } else {
+            result.push(right[j]);
+            j++;
+        }
+    }
 
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
+    return result.concat(left.slice(i)).concat(right.slice(j));
 }
 
-// Example binary tree
-let root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
-root.right.right.right = new Node(8);
-
-// Count the number of leaf nodes
-const leafNodeCount = countLeafNodes(root);
-console.log(`Number of leaf nodes in the binary tree: ${leafNodeCount}`);
+// Example usage
+const arr = [6, 5, 3, 1, 8, 7, 2, 4];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr);
