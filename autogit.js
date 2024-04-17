@@ -1,16 +1,12 @@
-function insertionSort(arr) {
-    for (let i = 1; i < arr.length; i++) {
-        let current = arr[i];
-        let j = i - 1;
-        while (j >= 0 && arr[j] > current) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
-        arr[j + 1] = current;
-    }
-    return arr;
+function validateEmail(email) {
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return regex.test(email);
 }
 
-// Example usage
-const nums = [5, 3, 8, 1, 2, 7];
-console.log(insertionSort(nums)); // Output: [1, 2, 3, 5, 7, 8]
+// Usage
+const email = "example@example.com";
+if (validateEmail(email)) {
+    console.log("Email is valid");
+} else {
+    console.log("Email is not valid");
+}
