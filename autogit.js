@@ -1,14 +1,15 @@
-function isPalindrome(str) {
-    // Remove non-alphanumeric characters and convert to lowercase
-    const cleanStr = str.replace(/[\W_]/g, '').toLowerCase();
-    
-    // Compare the original string with its reverse
-    return cleanStr === cleanStr.split('').reverse().join('');
+function findMiddleElement(head) {
+    if (head === null) {
+        return null;
+    }
+
+    let slow = head;
+    let fast = head;
+
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+
+    return slow;
 }
-
-// Test the function
-const str1 = "A man, a plan, a canal, Panama";
-const str2 = "hello";
-
-console.log(isPalindrome(str1)); // Output: true
-console.log(isPalindrome(str2)); // Output: false
