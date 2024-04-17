@@ -1,19 +1,14 @@
-function isValidPalindrome(str) {
-    let left = 0;
-    let right = str.length - 1;
-
-    // Keep moving pointers towards the center while characters are equal
-    while (left < right) {
-        if (str.charAt(left) !== str.charAt(right)) {
-            return false; // If characters don't match, it's not a palindrome
+function isSortedAscending(arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;
         }
-        left++;
-        right--;
     }
-
-    return true; // If all characters match, it's a palindrome
+    return true;
 }
 
-// Test the function
-console.log(isValidPalindrome("racecar")); // Output: true
-console.log(isValidPalindrome("hello")); // Output: false
+const arr1 = [1, 2, 3, 4, 5];
+const arr2 = [1, 3, 2, 4, 5];
+
+console.log(isSortedAscending(arr1)); // Output: true
+console.log(isSortedAscending(arr2)); // Output: false
