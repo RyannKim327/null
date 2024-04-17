@@ -1,7 +1,12 @@
-function getRandomNumber(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+let array = [1, 2, 2, 3, 4, 4, 5];
 
-// Example: Generate a random number between 1 and 100
-let randomNum = getRandomNumber(1, 100);
-console.log(randomNum);
+let uniqueArray = array.filter((value, index, self) => {
+    return self.indexOf(value) === index;
+});
+
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+let array = [1, 2, 2, 3, 4, 4, 5];
+
+let uniqueArray = Array.from(new Set(array));
+
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
