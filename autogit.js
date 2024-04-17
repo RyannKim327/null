@@ -1,23 +1,32 @@
-function isPrime(number) {
-    if (number <= 1) {
-        return false;
+function mergeSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
     }
-    
-    // Check for divisibility from 2 to the square root of the number
-    for (let i = 2; i <= Math.sqrt(number); i++) {
-        if (number % i === 0) {
-            return false;
-        }
-    }
-    
-    // If no number divided the input number, then it's a prime number
-    return true;
+
+    const middle = Math.floor(arr.length / 2);
+    const left = arr.slice(0, middle);
+    const right = arr.slice(middle);
+
+    return merge(mergeSort(left), mergeSort(right));
 }
 
-// Test the function
-const number = 11;
-if (isPrime(number)) {
-    console.log(`${number} is a prime number.`);
-} else {
-    console.log(`${number} is not a prime number.`);
+function merge(left, right) {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            result.push(right[rightIndex]);
+            rightIndex++;
+        }
+    }
+
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
 }
+
+const arr = [5, 3, 8, 2, 1, 7, 4, 6];
+console.log(mergeSort(arr)); // Output: [1, 2, 3, 4, 5, 6, 7, 8]
