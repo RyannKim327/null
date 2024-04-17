@@ -1,8 +1,10 @@
-const arrayWithDuplicates = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = Array.from(new Set(arrayWithDuplicates));
+const axios = require('axios');
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const arrayWithDuplicates = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = arrayWithDuplicates.filter((item, index) => arrayWithDuplicates.indexOf(item) === index);
-
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+// Make a GET request to a URL
+axios.get('https://jsonplaceholder.typicode.com/posts')
+  .then(response => {
+    console.log(response.data);
+  })
+  .catch(error => {
+    console.error(error);
+  });
