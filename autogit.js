@@ -1,35 +1,54 @@
-function areAnagrams(str1, str2) {
-    // Remove any non-alphabetic characters and convert to lowercase
-    const cleanStr1 = str1.replace(/[^\w]/g, '').toLowerCase();
-    const cleanStr2 = str2.replace(/[^\w]/g, '').toLowerCase();
-    
-    // Check if the lengths of the strings are equal
-    if (cleanStr1.length !== cleanStr2.length) {
-        return false;
-    }
-    
-    // Create character count objects for each string
-    const charCount1 = {};
-    const charCount2 = {};
-    
-    for (let char of cleanStr1) {
-        charCount1[char] = (charCount1[char] || 0) + 1;
-    }
-    
-    for (let char of cleanStr2) {
-        charCount2[char] = (charCount2[char] || 0) + 1;
-    }
-    
-    // Compare character counts
-    for (let key in charCount1) {
-        if (charCount1[key] !== charCount2[key]) {
-            return false;
-        }
-    }
-    
-    return true;
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-// Test the function
-console.log(areAnagrams("listen", "silent")); // Output: true
-console.log(areAnagrams("hello", "world")); // Output: false
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+
+  addNode(value) {
+    const newNode = new Node(value);
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
+
+  findNthNodeFromEnd(n) {
+    let firstPointer = this.head;
+    let secondPointer = this.head;
+    
+    for (let i = 0; i < n; i++) {
+      if (secondPointer === null) {
+        return null; // n is greater than the number of nodes in the list
+      }
+      secondPointer = secondPointer.next;
+    }
+    
+    while (secondPointer !== null) {
+      firstPointer = firstPointer.next;
+      secondPointer = secondPointer.next;
+    }
+    
+    return firstPointer;
+  }
+}
+
+// Example usage:
+const list = new LinkedList();
+list.addNode(1);
+list.addNode(2);
+list.addNode(3);
+list.addNode(4);
+list.addNode(5);
+
+console.log(list.findNthNodeFromEnd(2)); // Output: Node { value: 4, next: Node { value: 5, next: null } }
