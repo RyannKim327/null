@@ -1,46 +1,35 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
-}
-
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-
-  addNode(data) {
-    const newNode = new Node(data);
-    if (!this.head) {
-      this.head = newNode;
-      return;
+function BoyerMooreHorspool(text, pattern) {
+    const textLength = text.length;
+    const patternLength = pattern.length;
+    const skipTable = new Array(256).fill(patternLength);
+    
+    for (let i = 0; i < patternLength - 1; i++) {
+        skipTable[pattern.charCodeAt(i)] = patternLength - i - 1;
     }
 
-    let current = this.head;
-    while (current.next) {
-      current = current.next;
-    }
-    current.next = newNode;
-  }
-
-  getLength() {
-    let current = this.head;
-    let count = 0;
-
-    while (current) {
-      count++;
-      current = current.next;
+    let i = patternLength - 1;
+    while (i < textLength) {
+        let j = patternLength -1;
+        while (j >= 0 && text[i] === pattern[j]) {
+            j--;
+            i--;
+        }
+        if (j === -1) {
+            return i + 1;
+        }
+        i += Math.max(patternLength - j, skipTable[text.charCodeAt(i)]);
     }
 
-    return count;
-  }
+    return -1;
 }
 
 // Example usage
-const linkedList = new LinkedList();
-linkedList.addNode(1);
-linkedList.addNode(2);
-linkedList.addNode(3);
+const text = "ABCDEFBCG";
+const pattern = "BCG";
 
-console.log("Length of linked list:", linkedList.getLength()); // Output: 3
+const index = BoyerMooreHorspool(text, pattern);
+if (index !== -1) {
+    console.log(`Pattern found at index ${index}`);
+} else {
+    console.log(`Pattern not found`);
+}
