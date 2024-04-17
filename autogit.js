@@ -1,8 +1,8 @@
-const arrayWithDuplicates = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = [...new Set(arrayWithDuplicates)];
+function removeVowels(str) {
+    return str.replace(/[aeiouAEIOU]/g, '');
+}
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const arrayWithDuplicates = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = arrayWithDuplicates.filter((value, index, self) => self.indexOf(value) === index);
+let input = "Hello World!";
+let result = removeVowels(input);
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+console.log(result); // Output: "Hll Wrld!"
