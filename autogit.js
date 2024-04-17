@@ -1,45 +1,68 @@
-function findMedianSortedArrays(nums1, nums2) {
-    const mergedArray = mergeArrays(nums1, nums2);
-
-    const length = mergedArray.length;
-    const middleIndex = Math.floor(length / 2);
-
-    if (length % 2 === 0) {
-        return (mergedArray[middleIndex - 1] + mergedArray[middleIndex]) / 2;
-    } else {
-        return mergedArray[middleIndex];
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
 
-function mergeArrays(nums1, nums2) {
-    const mergedArray = [];
-    let i = 0;
-    let j = 0;
+class BinarySearchTree {
+    constructor() {
+        this.root = null;
+    }
 
-    while (i < nums1.length && j < nums2.length) {
-        if (nums1[i] < nums2[j]) {
-            mergedArray.push(nums1[i]);
-            i++;
+    insert(value) {
+        const newNode = new Node(value);
+
+        if (this.root === null) {
+            this.root = newNode;
         } else {
-            mergedArray.push(nums2[j]);
-            j++;
+            this.insertNode(this.root, newNode);
         }
     }
 
-    while (i < nums1.length) {
-        mergedArray.push(nums1[i]);
-        i++;
+    insertNode(node, newNode) {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
+        }
     }
 
-    while (j < nums2.length) {
-        mergedArray.push(nums2[j]);
-        j++;
+    search(value) {
+        return this.searchNode(this.root, value);
     }
 
-    return mergedArray;
+    searchNode(node, value) {
+        if (node === null) {
+            return false;
+        }
+
+        if (value < node.value) {
+            return this.searchNode(node.left, value);
+        } else if (value > node.value) {
+            return this.searchNode(node.right, value);
+        } else {
+            return true;
+        }
+    }
 }
-const nums1 = [1, 3];
-const nums2 = [2, 4];
 
-const median = findMedianSortedArrays(nums1, nums2);
-console.log(median); // Output: 2.5
+// Example usage
+const bst = new BinarySearchTree();
+bst.insert(5);
+bst.insert(3);
+bst.insert(7);
+bst.insert(1);
+bst.insert(4);
+
+console.log(bst.search(4)); // Output: true
+console.log(bst.search(6)); // Output: false
