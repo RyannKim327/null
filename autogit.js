@@ -1,80 +1,9 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
-    }
+let array = [1, 2, 3, 4, 5];
+let elementToRemove = 3;
+
+let index = array.indexOf(elementToRemove);
+if (index > -1) {
+    array.splice(index, 1);
 }
 
-class Queue {
-    constructor() {
-        this.head = null;
-        this.tail = null;
-        this.size = 0;
-    }
-
-    enqueue(data) {
-        const newNode = new Node(data);
-
-        if (!this.head) {
-            this.head = newNode;
-            this.tail = newNode;
-        } else {
-            this.tail.next = newNode;
-            this.tail = newNode;
-        }
-
-        this.size++;
-    }
-
-    dequeue() {
-        if (!this.head) {
-            return null;
-        }
-
-        const data = this.head.data;
-        this.head = this.head.next;
-
-        if (!this.head) {
-            this.tail = null;
-        }
-
-        this.size--;
-
-        return data;
-    }
-
-    peek() {
-        if (!this.head) {
-            return null;
-        }
-
-        return this.head.data;
-    }
-
-    isEmpty() {
-        return this.size === 0;
-    }
-
-    print() {
-        let current = this.head;
-        const result = [];
-
-        while (current) {
-            result.push(current.data);
-            current = current.next;
-        }
-
-        console.log(result.join(' -> '));
-    }
-}
-
-// Example usage
-const queue = new Queue();
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
-queue.print(); // Output: 1 -> 2 -> 3
-queue.dequeue();
-queue.print(); // Output: 2 -> 3
-console.log(queue.peek()); // Output: 2
-console.log(queue.isEmpty()); // Output: false
+console.log(array); // Output: [1, 2, 4, 5]
