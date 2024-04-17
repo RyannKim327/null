@@ -1,44 +1,29 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
-    }
-}
-
-function findIntersection(list1, list2) {
-    let seenNodes = new Set();
+function interpolationSearch(arr, x) {
+    let low = 0;
+    let high = arr.length - 1;
     
-    while (list1) {
-        seenNodes.add(list1);
-        list1 = list1.next;
-    }
-    
-    while (list2) {
-        if (seenNodes.has(list2)) {
-            return list2;
+    while (low <= high && x >= arr[low] && x <= arr[high]) {
+        let pos = low + Math.floor(((x - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+        
+        if (arr[pos] === x) {
+            return pos;
+        } else if (arr[pos] < x) {
+            low = pos + 1;
+        } else {
+            high = pos - 1;
         }
-        list2 = list2.next;
     }
     
-    return null;
+    return -1;
 }
 
-// Example usage:
-// Construct two linked lists
-let commonNode = new Node(8);
-let list1 = new Node(3);
-list1.next = new Node(6);
-list1.next.next = new Node(9);
-list1.next.next.next = commonNode;
+// Example usage
+let arr = [1, 3, 5, 7, 9, 11, 13, 15];
+let x = 9;
+let result = interpolationSearch(arr, x);
 
-let list2 = new Node(2);
-list2.next = commonNode;
-
-// Find the intersection of the two lists
-const intersection = findIntersection(list1, list2);
-
-if (intersection) {
-    console.log("Intersection found at node with data: " + intersection.data);
+if (result !== -1) {
+    console.log(`${x} found at index ${result}`);
 } else {
-    console.log("No intersection found");
+    console.log(`${x} not found`);
 }
