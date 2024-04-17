@@ -1,32 +1,17 @@
-function findLongestIncreasingSubsequence(arr) {
-    const n = arr.length;
-    const dp = new Array(n).fill(1);
+function findCommonElements(array1, array2) {
+    let commonElements = [];
 
-    for (let i = 1; i < n; i++) {
-        for (let j = 0; j < i; j++) {
-            if (arr[i] > arr[j] && dp[i] < dp[j] + 1) {
-                dp[i] = dp[j] + 1;
-            }
+    for (let i = 0; i < array1.length; i++) {
+        if (array2.includes(array1[i]) && !commonElements.includes(array1[i])) {
+            commonElements.push(array1[i]);
         }
     }
 
-    let maxLength = Math.max(...dp);
-    let result = [];
-    let maxIndex = dp.indexOf(maxLength);
-
-    result.unshift(arr[maxIndex]);
-    
-    for (let i = maxIndex - 1; i >= 0; i--) {
-        if (arr[i] < arr[maxIndex] && dp[i] === dp[maxIndex] - 1) {
-            result.unshift(arr[i]);
-            maxIndex = i;
-        }
-    }
-
-    return result;
+    return commonElements;
 }
 
-// Example usage
-const arr = [3, 10, 2, 1, 20];
-const longestIncreasingSubsequence = findLongestIncreasingSubsequence(arr);
-console.log("Longest Increasing Subsequence: ", longestIncreasingSubsequence);
+// Example
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
+const result = findCommonElements(array1, array2);
+console.log(result); // Output: [3, 4, 5]
