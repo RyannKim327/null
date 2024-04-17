@@ -1,45 +1,29 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
+function burrowsWheelerTransform(input) {
+    // Add EOF (end of file) character to input
+    input += '$';
 
-function isPalindromeLinkedList(head) {
-  let values = [];
-  let current = head;
-
-  // Store node values in an array
-  while (current !== null) {
-    values.push(current.value);
-    current = current.next;
-  }
-
-  let left = 0;
-  let right = values.length - 1;
-
-  // Compare values at left and right pointers
-  while (left < right) {
-    if (values[left] !== values[right]) {
-      return false;
+    // Generate all possible rotations of input
+    let rotations = [];
+    for (let i = 0; i < input.length; i++) {
+        rotations.push(input.slice(i) + input.slice(0, i));
     }
-    left++;
-    right--;
-  }
 
-  return true;
+    // Sort the rotations lexicographically
+    rotations.sort();
+
+    // Extract the last characters of each rotation to form the Burrows-Wheeler transformed string
+    let transformedString = rotations.map(rotation => rotation.slice(-1)).join('');
+
+    // Find the index of the original input in the sorted rotations
+    let originalIndex = rotations.indexOf(input);
+
+    return { transformedString, originalIndex };
 }
 
-// Test the implementation
-let node1 = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-let node4 = new Node(2);
-let node5 = new Node(1);
+// Example usage
+let input = "hello world";
+let result = burrowsWheelerTransform(input);
 
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node5;
-
-console.log(isPalindromeLinkedList(node1)); // Output: true
+console.log("Original Input: " + input);
+console.log("Burrows-Wheeler Transformed String: " + result.transformedString);
+console.log("Original Index: " + result.originalIndex);
