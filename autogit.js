@@ -1,37 +1,43 @@
-function breadthFirstSearch(graph, startNode, targetNode) {
-    let queue = [startNode];
-    let visited = new Set();
-    
-    while (queue.length > 0) {
-        let currentNode = queue.shift();
-        
-        if (currentNode === targetNode) {
-            return true;
-        }
-        
-        if (!visited.has(currentNode)) {
-            visited.add(currentNode);
-            
-            graph[currentNode].forEach(neighbor => {
-                queue.push(neighbor);
-            });
-        }
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
     }
-    
-    return false;
 }
 
-// Example graph representation
-const graph = {
-    A: ["B", "C"],
-    B: ["A", "D", "E"],
-    C: ["A", "F"],
-    D: ["B"],
-    E: ["B", "F"],
-    F: ["C", "E"]
-};
+class LinkedList {
+    constructor() {
+        this.head = null;
+    }
 
-const startNode = "A";
-const targetNode = "F";
+    append(data) {
+        const newNode = new Node(data);
 
-console.log(breadthFirstSearch(graph, startNode, targetNode)); // Output: true
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    print() {
+        let current = this.head;
+        while (current) {
+            console.log(current.data);
+            current = current.next;
+        }
+    }
+}
+
+// Usage
+const linkedList = new LinkedList();
+linkedList.append(1);
+linkedList.append(2);
+linkedList.append(3);
+
+linkedList.print();  // Output: 1, 2, 3
