@@ -1,15 +1,14 @@
-function countOccurrences(str, char) {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === char) {
-            count++;
-        }
-    }
-    return count;
+function factorial(n) {
+  if (n === 0) {
+    // Base case: 0! = 1
+    return 1;
+  } else {
+    // Recursive case: n! = n * (n-1)!
+    return n * factorial(n - 1);
+  }
 }
 
-// Example usage
-const myString = "hello world";
-const characterToCount = "l";
-const result = countOccurrences(myString, characterToCount);
-console.log(`The character "${characterToCount}" occurs ${result} times in the string "${myString}".`);
+// Usage example
+const number = 5;
+const result = factorial(number);
+console.log(`The factorial of ${number} is: ${result}`);
