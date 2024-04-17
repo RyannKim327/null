@@ -1,32 +1,43 @@
-function longestIncreasingSubsequence(arr) {
-    // Create an array to store the length of the longest increasing subsequence ending at each index
-    const dp = new Array(arr.length).fill(1);
-
-    for (let i = 1; i < arr.length; i++) {
-        for (let j = 0; j < i; j++) {
-            if (arr[j] < arr[i]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
+// Beam search implementation
+function beamSearch(initialState, beamWidth, maxDepth, evaluateFn) {
+    let beams = [{ state: initialState, cost: 0 }];
+    
+    for (let d = 0; d < maxDepth; d++) {
+        let newBeams = [];
+        for (let beam of beams) {
+            let successors = generateSuccessors(beam.state);
+            for (let succ of successors) {
+                let cost = beam.cost + evaluateFn(succ);
+                newBeams.push({ state: succ, cost });
             }
         }
+        newBeams.sort((a, b) => a.cost - b.cost);
+        beams = newBeams.slice(0, beamWidth);
     }
-
-    // Find the maximum value in the dp array
-    let maxLen = Math.max(...dp);
-
-    // Find the longest increasing subsequence using the dp array
-    let subsequence = [];
-    let endIndex = dp.indexOf(maxLen);
-    subsequence.unshift(arr[endIndex]);
-    for (let i = endIndex - 1; i >= 0; i--) {
-        if (dp[i] + 1 == dp[endIndex] && arr[i] < arr[endIndex]) {
-            subsequence.unshift(arr[i]);
-            endIndex = i;
-        }
-    }
-
-    return subsequence;
+    
+    return beams;
 }
 
-// Example
-const array = [10, 22, 9, 33, 21, 50, 41, 60, 80];
-console.log(longestIncreasingSubsequence(array)); // Output: [10, 22, 33, 50, 60, 80]
+// Function to generate successor states
+function generateSuccessors(state) {
+    // Implement your logic here to generate successor states
+    return [];
+}
+
+// Example evaluation function
+function evaluateState(state) {
+    // Implement your logic here to evaluate a state
+    return 0;
+}
+
+// Example usage
+let initialState = {};
+let beamWidth = 3;
+let maxDepth = 5;
+let result = beamSearch(initialState, beamWidth, maxDepth, evaluateState);
+
+// Print the results
+console.log("Beam search results:");
+result.forEach((item, idx) => {
+    console.log(`#${idx + 1}: State ${JSON.stringify(item.state)}, Cost ${item.cost}`);
+});
