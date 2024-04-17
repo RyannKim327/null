@@ -1,38 +1,16 @@
-function mergeSort(arr) {
-    const len = arr.length;
-    const aux = new Array(len);
-    
-    for (let size = 1; size < len; size *= 2) {
-        for (let leftStart = 0; leftStart < len; leftStart += 2 * size) {
-            const mid = Math.min(leftStart + size, len);
-            const rightStart = Math.min(leftStart + 2 * size, len);
-            merge(arr, aux, leftStart, mid, rightStart);
+function insertionSort(arr) {
+    for (let i = 1; i < arr.length; i++) {
+        let current = arr[i];
+        let j = i - 1;
+        while (j >= 0 && arr[j] > current) {
+            arr[j + 1] = arr[j];
+            j--;
         }
+        arr[j + 1] = current;
     }
-    
     return arr;
 }
 
-function merge(arr, aux, leftStart, mid, rightStart) {
-    let left = leftStart;
-    let right = mid;
-    
-    for (let i = leftStart; i < rightStart; i++) {
-        if (left < mid && (right >= rightStart || arr[left] <= arr[right])) {
-            aux[i] = arr[left];
-            left++;
-        } else {
-            aux[i] = arr[right];
-            right++;
-        }
-    }
-    
-    for (let i = leftStart; i < rightStart; i++) {
-        arr[i] = aux[i];
-    }
-}
-
-// Test the merge sort function
-const arr = [5, 3, 8, 6, 2, 7, 1, 4];
-const sortedArr = mergeSort(arr);
-console.log(sortedArr);
+// Usage
+const array = [5, 2, 4, 6, 1, 3];
+console.log(insertionSort(array)); // Output: [1, 2, 3, 4, 5, 6]
