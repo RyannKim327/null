@@ -1,39 +1,35 @@
-// Define a graph as an adjacency list
-const graph = {
-  A: ['B', 'C'],
-  B: ['A', 'D', 'E'],
-  C: ['A', 'F'],
-  D: ['B'],
-  E: ['B', 'F'],
-  F: ['C', 'E'],
-};
+function findMajorityElement(arr) {
+    let candidate = null;
+    let count = 0;
 
-function breadthFirstSearch(graph, startNode) {
-  const visited = {}; // Keep track of visited nodes
-  const queue = [startNode]; // Initialize a queue with the start node
-  const result = []; // Store the visited nodes in the order they were visited
-
-  while (queue.length > 0) {
-    const currentNode = queue.shift(); // Dequeue the current node
-
-    if (!visited[currentNode]) {
-      visited[currentNode] = true;
-      result.push(currentNode);
-
-      const neighbors = graph[currentNode];
-
-      for (let i = 0; i < neighbors.length; i++) {
-        const neighbor = neighbors[i];
-
-        if (!visited[neighbor]) {
-          queue.push(neighbor); // Enqueue the neighbor if it hasn't been visited
+    // Find a candidate
+    for (let num of arr) {
+        if (count === 0) {
+            candidate = num;
         }
-      }
+        count += (num === candidate) ? 1 : -1;
     }
-  }
 
-  return result;
+    // Check if the candidate is the majority element
+    count = 0;
+    for (let num of arr) {
+        if (num === candidate) {
+            count++;
+        }
+    }
+
+    if (count > arr.length / 2) {
+        return candidate;
+    } else {
+        return -1; // No majority element
+    }
 }
 
-const result = breadthFirstSearch(graph, 'A');
-console.log(result); // Output: [ 'A', 'B', 'C', 'D', 'E', 'F' ]
+const array = [2, 2, 2, 3, 4, 2, 2];
+const majorityElement = findMajorityElement(array);
+
+if (majorityElement !== -1) {
+    console.log(`Majority element in the array is: ${majorityElement}`);
+} else {
+    console.log("No majority element found in the array.");
+}
