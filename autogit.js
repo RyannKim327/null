@@ -1,49 +1,14 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.children = [];
-  }
-
-  addChild(node) {
-    this.children.push(node);
-  }
+function isPalindrome(str) {
+    // Remove non-alphanumeric characters and convert to lowercase
+    const alphanumericStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+    
+    // Check if the string is equal to its reverse
+    return alphanumericStr === alphanumericStr.split('').reverse().join('');
 }
 
-function depthLimitedSearch(node, target, depthLimit, currentDepth = 0) {
-  if (currentDepth > depthLimit) {
-    return null; // Maximum depth reached
-  }
+// Test the function
+const str1 = "A man, a plan, a canal, Panama!";
+console.log(isPalindrome(str1)); // true
 
-  if (node.value === target) {
-    return node; // Target found
-  }
-
-  for (const child of node.children) {
-    const result = depthLimitedSearch(child, target, depthLimit, currentDepth + 1);
-    if (result) {
-      return result;
-    }
-  }
-
-  return null; // Target not found within depth limit
-}
-
-// Example usage
-const root = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
-const node4 = new Node(4);
-
-root.addChild(node2);
-root.addChild(node3);
-node2.addChild(node4);
-
-const target = 4;
-const depthLimit = 2;
-const result = depthLimitedSearch(root, target, depthLimit);
-
-if (result) {
-  console.log(`Target ${target} found within depth limit ${depthLimit}`);
-} else {
-  console.log(`Target ${target} not found within depth limit ${depthLimit}`);
-}
+const str2 = "Hello, World!";
+console.log(isPalindrome(str2)); // false
