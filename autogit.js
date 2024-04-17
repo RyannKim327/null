@@ -1,24 +1,8 @@
-function quickSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
-    }
+// Sample array of integers
+let numbers = [5, 3, 8, 1, 2];
 
-    const pivot = arr[0];
-    const left = [];
-    const right = [];
+// Use the sort method to sort the array
+numbers.sort((a, b) => a - b);
 
-    for (let i = 1; i < arr.length; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
-        }
-    }
-
-    return [...quickSort(left), pivot, ...quickSort(right)];
-}
-
-// Test the quickSort function
-const arr = [3, 6, 8, 10, 1, 2, 1];
-const sortedArr = quickSort(arr);
-console.log(sortedArr);
+// Print the sorted array
+console.log(numbers); // Output: [1, 2, 3, 5, 8]
