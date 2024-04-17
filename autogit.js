@@ -1,27 +1,20 @@
-function findFirstNonRepeatingCharacter(str) {
-    let charCount = {};
-  
-    // Count the frequency of each character in the string
-    for (let char of str) {
-        charCount[char] = (charCount[char] || 0) + 1;
-    }
-  
-    // Find the first non-repeating character
-    for (let char of str) {
-        if (charCount[char] === 1) {
-            return char;
+function longestIncreasingSubsequence(nums) {
+    if (nums.length === 0) return 0;
+
+    const dp = new Array(nums.length).fill(1);
+    let maxLen = 1;
+
+    for (let i = 1; i < nums.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[i] > nums[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
         }
+        maxLen = Math.max(maxLen, dp[i]);
     }
-  
-    return null; // Return null if no non-repeating character is found
+
+    return maxLen;
 }
 
-// Example usage
-const str = "aabcccdeeffgh";
-const firstNonRepeatingChar = findFirstNonRepeatingCharacter(str);
-
-if (firstNonRepeatingChar) {
-    console.log("The first non-repeating character is:", firstNonRepeatingChar);
-} else {
-    console.log("No non-repeating character found in the string.");
-}
+const nums = [10, 22, 9, 33, 21, 50, 41, 60, 80];
+console.log(longestIncreasingSubsequence(nums)); // Output: 6
