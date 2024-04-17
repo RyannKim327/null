@@ -1,35 +1,12 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-
-function hasCycle(head) {
-  let slow = head;
-  let fast = head;
-
-  while (fast !== null && fast.next !== null) {
-    slow = slow.next;
-    fast = fast.next.next;
-
-    if (slow === fast) {
-      return true; // Cycle detected
+function calculateStringLength(str) {
+    let count = 0;
+    for (let char of str) {
+        count++;
     }
-  }
-
-  return false; // No cycle found
+    return count;
 }
 
-// Example of creating a linked list with a cycle
-let node1 = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-let node4 = new Node(4);
+let myString = "Hello, World!";
+let length = calculateStringLength(myString);
 
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2; // Create a cycle: 4 -> 2
-
-console.log(hasCycle(node1)); // Output: true
+console.log("Length of the string is: " + length);
