@@ -1,11 +1,11 @@
-const cron = require('node-cron');
+function factorial(n) {
+    if (n === 0) {
+        return 1;
+    }
+    return n * factorial(n - 1);
+}
 
-// Run a task every day at 8:00 AM
-cron.schedule('0 8 * * *', () => {
-    console.log('Running task at 8:00 AM');
-});
-
-// Run a task every Sunday at 10:00 PM
-cron.schedule('0 22 * * 0', () => {
-    console.log('Running task at 10:00 PM on Sundays');
-});
+// Example usage
+const number = 5;
+const result = factorial(number);
+console.log(`The factorial of ${number} is: ${result}`);
