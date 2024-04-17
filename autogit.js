@@ -1,40 +1,15 @@
-function boyerMooreHorspool(text, pattern) {
-    const map = new Map();
-    const patternLength = pattern.length;
-    const textLength = text.length;
-
-    // Preprocessing: Create a shift map
-    for (let i = 0; i < patternLength - 1; i++) {
-        map.set(pattern[i], patternLength - i - 1);
-    }
-
-    // Searching
-    let i = patternLength - 1;
-    while (i < textLength) {
-        let j = patternLength - 1;
-        while (j >= 0 && text[i] === pattern[j]) {
-            i--;
-            j--;
-        }
-        
-        if (j === -1) {
-            return i + 1; // Match found
-        } else {
-            const shift = map.get(text[i] || pattern[0]) || patternLength;
-            i += shift;
+function isSortedAscending(arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;
         }
     }
-
-    return -1; // No match found
+    return true;
 }
 
 // Example usage
-const text = "hello world";
-const pattern = "world";
-const result = boyerMojsonreHorspool(text, pattern);
+const arr1 = [1, 2, 3, 4, 5];
+console.log(isSortedAscending(arr1)); // Output: true
 
-if (result !== -1) {
-    console.log(`Pattern found at index ${result}`);
-} else {
-    console.log("Pattern not found");
-}
+const arr2 = [5, 4, 3, 2, 1];
+console.log(isSortedAscending(arr2)); // Output: false
