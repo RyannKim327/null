@@ -1,62 +1,57 @@
-function dijkstra(graph, startNode) {
-    let distances = {};
-    let visited = {};
-    let pq = new PriorityQueue();
+// Define Fibonacci search function
+function fibonacciSearch(arr, x) {
+    let fibM2 = 0; // (m-2)'th Fibonacci number
+    let fibM1 = 1; // (m-1)'th Fibonacci number
+    let fibM = fibM2 + fibM1; // m'th Fibonacci number
 
-    distances[startNode] = 0;
-    pq.enqueue(startNode, 0);
+    // finding the smallest Fibonacci number greater than or equal to the length of the array
+    while (fibM < arr.length) {
+        fibM2 = fibM1;
+        fibM1 = fibM;
+        fibM = fibM2 + fibM1;
+    }
 
-    while (!pq.isEmpty()) {
-        const {node, distance} = pq.dequeue();
+    let offset = -1; // offset index from where to start comparison
 
-        if (!visited[node]) {
-            visited[node] = true;
+    while (fibM > 1) {
+        // check if fibM2 is a valid location
+        let i = Math.min(offset + fibM2, arr.length - 1);
 
-            let neighbors = graph[node];
-
-            for (let neighbor in neighbors) {
-                let distanceToNeighbor = distances[node] + neighbors[neighbor];
-
-                if (distances[neighbor] === undefined || distances[neighbor] > distanceToNeighbor) {
-                    distances[neighbor] = distanceToNeighbor;
-                    pq.enqueue(neighbor, distanceToNeighbor);
-                }
-            }
+        // if x is greater than the value at index i, move the offset by fibM1 places and update the Fibonacci numbers
+        if (arr[i] < x) {
+            fibM = fibM1;
+            fibM1 = fibM2;
+            fibM2 = fibM - fibM1;
+            offset = i;
+        }
+        // if x is smaller than the value at index i, move the offset to the left by fibM2 places and update the Fibonacci numbers
+        else if (arr[i] > x) {
+            fibM = fibM2;
+            fibM1 = fibM1 - fibM2;
+            fibM2 = fibM - fibM1;
+        }
+        // if x is found at index i, return the index
+        else {
+            return i;
         }
     }
 
-    return distances;
-}
-
-class PriorityQueue {
-    constructor() {
-        this.heap = [];
+    // if x is not found in the array, return -1
+    if (fibM1 && arr[offset + 1] == x){
+        return offset + 1;
     }
 
-    enqueue(node, priority) {
-        this.heap.push({node, priority});
-        this.heap.sort((a, b) => a.priority - b.priority);
-    }
-
-    dequeue() {
-        return this.heap.shift();
-    }
-
-    isEmpty() {
-        return this.heap.length === 0;
-    }
+    // element not found, return -1
+    return -1;
 }
 
 // Example usage
-const graph = {
-    A: { B: 5, C: 1 },
-    B: { A: 5, C: 2, D: 1 },
-    C: { A: 1, B: 2, D: 4, E: 8 },
-    D: { B: 1, C: 4, E: 3 },
-    E: { C: 8, D: 3 }
-};
+const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
+const x = 13;
+const index = fibonacciSearch(arr, x);
 
-const startNode = 'A';
-const shortestDistances = dijkstra(graph, startNode);
-
-console.log(shortestDistances);
+if (index !== -1) {
+    console.log(`${x} found at index ${index}`);
+} else {
+    console.log(`${x} not found in the array`);
+}
