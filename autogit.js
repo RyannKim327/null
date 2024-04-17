@@ -1,17 +1,25 @@
-function reverseWords(str) {
-    // Split the string into an array of words
-    let wordsArray = str.split(" ");
-    
-    // Reverse the array
-    let reversedArray = wordsArray.reverse();
-    
-    // Join the reversed array back into a string
-    let reversedStr = reversedArray.join(" ");
-    
-    return reversedStr;
+// Definition for a binary tree node.
+function TreeNode(val) {
+    this.val = val;
+    this.left = this.right = null;
+}
+
+function maxDepth(root) {
+    if (root === null) {
+        return 0;
+    }
+
+    let leftDepth = maxDepth(root.left);
+    let rightDepth = maxDepth(root.right);
+
+    return Math.max(leftDepth, rightDepth) + 1;
 }
 
 // Example usage
-let originalStr = "Hello world how are you";
-let reversedStr = reverseWords(originalStr);
-console.log(reversedStr); // Output: "you are how world Hello"
+let root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(maxDepth(root)); // Output: 3
