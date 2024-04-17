@@ -1,31 +1,18 @@
-function findMajorityElement(arr) {
+function countOccurrences(str, char) {
     let count = 0;
-    let candidate;
 
-    for (let num of arr) {
-        if (count === 0) {
-            candidate = num;
-        }
-
-        count += (num === candidate) ? 1 : -1;
-    }
-
-    // Validate the candidate
-    count = 0;
-    for (let num of arr) {
-        if (num === candidate) {
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
             count++;
         }
     }
 
-    if (count > arr.length / 2) {
-        return candidate;
-    } else {
-        return "No majority element found";
-    }
+    return count;
 }
 
 // Example usage
-const array = [2, 2, 3, 4, 2, 2, 5, 2, 2];
-const majorityElement = findMajorityElement(array);
-console.log("Majority Element:", majorityElement);
+const myString = "hello world";
+const charToCount = "o";
+const occurrences = countOccurrences(myString, charToCount);
+
+console.log(`The character "${charToCount}" occurs ${occurrences} times in the string "${myString}".`);
