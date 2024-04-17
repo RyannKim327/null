@@ -1,41 +1,8 @@
-// Depth-Limited Search Algorithm
-function depthLimitedSearch(node, goal, depthLimit) {
-    return depthLimitedSearchRecursive(node, goal, depthLimit, 0);
-}
+const numbers = [5, 2, 8, 3, 1, 4];
+numbers.sort((a, b) => a - b);
 
-function depthLimitedSearchRecursive(node, goal, depthLimit, currentDepth) {
-    if (currentDepth > depthLimit) {
-        return null;
-    }
+console.log(numbers); // Output: [1, 2, 3, 4, 5, 8]
+const numbers = [5, 2, 8, 3, 1, 4];
+numbers.sort((a, b) => b - a);
 
-    if (node === goal) {
-        return node;
-    }
-
-    if (!node.children) {
-        return null;
-    }
-
-    for (let child of node.children) {
-        let result = depthLimitedSearchRecursive(child, goal, depthLimit, currentDepth + 1);
-        if (result) {
-            return result;
-        }
-    }
-
-    return null;
-}
-
-// Example Usage
-let nodeA = { value: 'A', children: [] };
-let nodeB = { value: 'B', children: [] };
-let nodeC = { value: 'C', children: [] };
-let nodeD = { value: 'D', children: [] };
-let nodeE = { value: 'E', children: [nodeB, nodeC] };
-let nodeF = { value: 'F', children: [nodeD, nodeE] };
-
-nodeA.children = [nodeF];
-
-let goalNode = depthLimitedSearch(nodeA, nodeD, 3);
-
-console.log(goalNode); // Output: { value: 'D', children: [] }
+console.log(numbers); // Output: [8, 5, 4, 3, 2, 1]
