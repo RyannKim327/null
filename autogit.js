@@ -1,9 +1,12 @@
-function getRandomNumber(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+function findSecondLargest(arr) {
+    arr.sort(function(a, b) {
+        return b - a;
+    });
+
+    return arr[1];
 }
 
 // Example usage
-const min = 1;
-const max = 100;
-const randomNumber = getRandomNumber(min, max);
-console.log(randomNumber);
+const arr = [3, 8, 1, 9, 5, 12];
+const secondLargest = findSecondLargest(arr);
+console.log('Second largest element:', secondLargest);
