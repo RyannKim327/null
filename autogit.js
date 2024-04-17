@@ -1,34 +1,19 @@
-function mergeSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
-    }
+function findMajorityElement(arr) {
+    let count = 0;
+    let candidate = null;
 
-    const mid = Math.floor(arr.length / 2);
-    const left = arr.slice(0, mid);
-    const right = arr.slice(mid);
-
-    return merge(mergeSort(left), mergeSort(right));
-}
-
-function merge(left, right) {
-    let result = [];
-    let i = 0;
-    let j = 0;
-
-    while (i < left.length && j < right.length) {
-        if (left[i] < right[j]) {
-            result.push(left[i]);
-            i++;
-        } else {
-            result.push(right[j]);
-            j++;
+    for (let num of arr) {
+        if (count === 0) {
+            candidate = num;
         }
+
+        count += (num === candidate) ? 1 : -1;
     }
 
-    return result.concat(left.slice(i)).concat(right.slice(j));
+    return candidate;
 }
 
-// Example usage
-const arr = [6, 5, 3, 1, 8, 7, 2, 4];
-const sortedArr = mergeSort(arr);
-console.log(sortedArr);
+// Example
+const array = [2, 2, 3, 2, 4, 2, 2];
+const majorityElement = findMajorityElement(array);
+console.log("Majority Element:", majorityElement);
