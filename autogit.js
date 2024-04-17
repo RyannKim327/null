@@ -1,56 +1,15 @@
-function computeLPSArray(pattern) {
-    const lps = [0];
-    let len = 0;
-    let i = 1;
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
+function findMedianSortedArrays(nums1, nums2) {
+    const merged = [...nums1, ...nums2].sort((a, b) => a - b);
+    const length = merged.length;
+
+    if (length % 2 === 0) {
+        return (merged[length / 2 - 1] + merged[length / 2]) / 2;
+    } else {
+        return merged[Math.floor(length / 2)];
     }
-    return lps;
 }
 
-function KMPSearch(text, pattern) {
-    const n = text.length;
-    const m = pattern.length;
-
-    const lps = computeLPSArray(pattern);
-
-    let i = 0;
-    let j = 0;
-    const indices = [];
-
-    while (i < n) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-
-        if (j === m) {
-            indices.push(i - j);
-            j = lps[j - 1];
-        } else if (i < n && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
-    }
-
-    return indices;
-}
-
-const text = "ABCABCDABABCDABCDABDE";
-const pattern = "ABCDABD";
-const foundIndices = KMPSearch(text, pattern);
-console.log("Pattern found at indices:", foundIndices);
+const nums1 = [1, 3];
+const nums2 = [2];
+const median = findMedianSortedArrays(nums1, nums2);
+console.log(median);
