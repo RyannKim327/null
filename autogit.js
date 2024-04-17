@@ -1,37 +1,28 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
+function binarySearch(arr, target) {
+    let low = 0;
+    let high = arr.length - 1;
 
-function diameterOfBinaryTree(root) {
-  let maxDiameter = 0;
-
-  function depth(node) {
-    if (!node) {
-      return 0;
+    while (low <= high) {
+        let mid = Math.floor((low + high) / 2);
+        if (arr[mid] === target) {
+            return mid;
+        } else if (arr[mid] < target) {
+            low = mid + 1;
+        } else {
+            high = mid - 1;
+        }
     }
 
-    const leftDepth = depth(node.left);
-    const rightDepth = depth(node.right);
-
-    maxDiameter = Math.max(maxDiameter, leftDepth + rightDepth);
-
-    return 1 + Math.max(leftDepth, rightDepth);
-  }
-
-  depth(root);
-
-  return maxDiameter;
+    return -1; // return -1 if target is not found
 }
 
-// Example binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
+// Example usage:
+const arr = [1, 3, 5, 7, 9, 11, 13];
+const target = 7;
+const index = binarySearch(arr, target);
 
-console.log(diameterOfBinaryTree(root)); // Output: 3
+if (index !== -1) {
+    console.log(`Target ${target} found at index ${index}.`);
+} else {
+    console.log(`Target ${target} not found in the array.`);
+}
