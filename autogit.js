@@ -1,44 +1,16 @@
-function heapify(arr, n, i) {
-    let largest = i;
-    let left = 2 * i + 1;
-    let right = 2 * i + 2;
-
-    if (left < n && arr[left] > arr[largest]) {
-        largest = left;
-    }
-
-    if (right < n && arr[right] > arr[largest]) {
-        largest = right;
-    }
-
-    if (largest !== i) {
-        [arr[i], arr[largest]] = [arr[largest], arr[i]];
-        heapify(arr, n, largest);
-    }
+function countOccurrences(str, word) {
+    // Create a regular expression to match the word globally
+    const regex = new RegExp("\\b" + word + "\\b", "g");
+    
+    // Use the match() method with the regular expression on the input string
+    const matches = str.match(regex);
+    
+    // If matches is null, return 0, otherwise, return the length of the matches array
+    return matches ? matches.length : 0;
 }
 
-function heapSort(arr) {
-    const n = arr.length;
-
-    // Build max heap
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(arr, n, i);
-    }
-
-    // Heap sort
-    for (let i = n - 1; i > 0; i--) {
-        [arr[0], arr[i]] = [arr[i], arr[0]];
-        heapify(arr, i, 0);
-    }
-
-    return arr;
-}
-
-// Example usage
-const arr = [12, 11, 13, 5, 6, 7];
-console.log("Original Array:");
-console.log(arr);
-
-const sortedArr = heapSort(arr);
-console.log("Sorted Array:");
-console.log(sortedArr);
+// Test the function
+const inputString = "apple orange banana apple banana apple";
+const wordToCount = "apple";
+const occurrences = countOccurrences(inputString, wordToCount);
+console.log(`The word "${wordToCount}" appears ${occurrences} times in the input string.`);
