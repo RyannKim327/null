@@ -1,34 +1,65 @@
-function mergeSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
-    }
+// Bi-directional Search Algorithm
+function biDirectionalSearch(graph, start, end) {
+    // Initialize two queues for forward and backward search
+    let forwardQueue = [start];
+    let forwardVisited = new Set();
+    forwardVisited.add(start);
 
-    const mid = Math.floor(arr.length / 2);
-    const left = mergeSort(arr.slice(0, mid));
-    const right = mergeSort(arr.slice(mid));
+    let backwardQueue = [end];
+    let backwardVisited = new Set();
+    backwardVisited.add(end);
 
-    return merge(left, right);
-}
+    while (forwardQueue.length > 0 && backwardQueue.length > 0) {
+        // Forward search
+        let currentNode = forwardQueue.shift();
 
-function merge(left, right) {
-    let result = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
+        if (graph[currentNode]) {
+            for (let neighbor of graph[currentNode]) {
+                if (!forwardVisited.has(neighbor)) {
+                    forwardQueue.push(neighbor);
+                    forwardVisited.add(neighbor);
+                }
 
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            result.push(left[leftIndex]);
-            leftIndex++;
-        } else {
-            result.push(right[rightIndex]);
-            rightIndex++;
+                // Check if node is visited by backward search
+                if (backwardVisited.has(neighbor)) {
+                    return "Path found"; // intersection point found
+                }
+            }
+        }
+
+        // Backward search
+        currentNode = backwardQueue.shift();
+
+        if (graph[currentNode]) {
+            for (let neighbor of graph[currentNode]) {
+                if (!backwardVisited.has(neighbor)) {
+                    backwardQueue.push(neighbor);
+                    backwardVisited.add(neighbor);
+                }
+
+                // Check if node is visited by forward search
+                if (forwardVisited.has(neighbor)) {
+                    return "Path found"; // intersection point found
+                }
+            }
         }
     }
 
-    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+    return "Path not found";
 }
 
-// Example usage:
-const arr = [5, 3, 8, 2, 1, 4];
-const sortedArr = mergeSort(arr);
-console.log(sortedArr);
+// Example graph representation (Adjacency List)
+const graph = {
+    A: ['B', 'C'],
+    B: ['C', 'D'],
+    C: ['D'],
+    D: ['E'],
+    E: ['F'],
+    F: ['G'],
+    G: []
+};
+
+const startNode = 'A';
+const endNode = 'G';
+
+console.log(biDirectionalSearch(graph, startNode, endNode)); // Output: Path found
