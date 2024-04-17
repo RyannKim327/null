@@ -1,15 +1,15 @@
-function countOccurrences(str, char) {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === char) {
-            count++;
-        }
-    }
-    return count;
-}
+let arr = [1, 2, 3, 4, 1, 2, 5];
 
-let str = "hello world";
-let char = "o";
-let occurrences = countOccurrences(str, char);
+let uniqueArr = arr.filter((item, index) => arr.indexOf(item) === index);
 
-console.log(`The character "${char}" occurs ${occurrences} times in the string "${str}".`);
+console.log(uniqueArr); // Output: [1, 2, 3, 4, 5]
+let arr = [1, 2, 3, 4, 1, 2, 5];
+
+let uniqueArr = [...new Set(arr)];
+
+console.log(uniqueArr); // Output: [1, 2, 3, 4, 5]
+let arr = [1, 2, 3, 4, 1, 2, 5];
+
+let uniqueArr = arr.reduce((unique, item) => unique.includes(item) ? unique : [...unique, item], []);
+
+console.log(uniqueArr); // Output: [1, 2, 3, 4, 5]
