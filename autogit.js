@@ -1,65 +1,53 @@
-class Node {
-    constructor(state, cost, heuristic, parent) {
-        this.state = state;
-        this.cost = cost;
-        this.heuristic = heuristic;
-        this.parent = parent;
-        this.totalCost = cost + heuristic;
+function dijkstra(graph, startNode) {
+    const distances = {};
+    const visited = {};
+    let currentNode = startNode;
+
+    // Initialize distances with Infinity for all nodes except the startNode
+    for (let node in graph) {
+        distances[node] = node === startNode ? 0 : Infinity;
     }
-}
 
-function aStarSearch(startNode, goalNode, heuristicFunction) {
-    let openList = [new Node(startNode, 0, heuristicFunction(startNode), null)];
-    let closedList = new Set();
+    while (currentNode) {
+        const neighbors = graph[currentNode];
 
-    while (openList.length > 0) {
-        openList.sort((a, b) => a.totalCost - b.totalCost);
-        let currentNode = openList.shift();
+        for (let neighbor in neighbors) {
+            const distance = distances[currentNode] + neighbors[neighbor];
 
-        if (currentNode.state === goalNode) {
-            // Reconstruct path
-            let path = [];
-            while (currentNode !== null) {
-                path.unshift(currentNode.state);
-                currentNode = currentNode.parent;
+            if (distance < distances[neighbor]) {
+                distances[neighbor] = distance;
             }
-            return path;
         }
 
-        closedList.add(currentNode.state);
-
-        let neighbors = getNeighbors(currentNode.state);
-        neighbors.forEach(neighbor => {
-            if (!closedList.has(neighbor)) {
-                let cost = currentNode.cost + 1; // Assuming all edge costs are 1
-                let heuristic = heuristicFunction(neighbor);
-                let newNode = new Node(neighbor, cost, heuristic, currentNode);
-
-                let existingNode = openList.find(node => node.state === neighbor);
-                if (!existingNode || newNode.totalCost < existingNode.totalCost) {
-                    openList = openList.filter(node => node.state !== neighbor);
-                    openList.push(newNode);
-                }
-            }
-        });
+        visited[currentNode] = true;
+        currentNode = getClosestNode(distances, visited);
     }
 
-    return null; // No path found
+    return distances;
 }
 
-function getNeighbors(state) {
-    // Implement your function to get neighbors based on the problem
-    // For example, return all adjacent nodes in a grid
+function getClosestNode(distances, visited) {
+    let minDistance = Infinity;
+    let closestNode = null;
+
+    for (let node in distances) {
+        if (!visited[node] && distances[node] < minDistance) {
+            minDistance = distances[node];
+            closestNode = node;
+        }
+    }
+
+    return closestNode;
 }
 
-function heuristicFunction(node) {
-    // Implement your heuristic function
-    // Return the estimated cost from the given node to the goal node
-}
+// Example graph representation
+const graph = {
+    A: { B: 1, C: 4 },
+    B: { A: 1, C: 2, D: 5 },
+    C: { A: 4, B: 2, D: 1 },
+    D: { B: 5, C: 1 }
+};
 
-// Example Usage
-let startNode = 'A';
-let goalNode = 'G';
-
-let path = aStarSearch(startNode, goalNode, heuristicFunction);
-console.log(path);
+const startNode = 'A';
+const distances = dijkstra(graph, startNode);
+console.log(distances);
