@@ -1,28 +1,15 @@
-function interpolationSearch(arr, x) {
-    let low = 0;
-    let high = arr.length - 1;
-
-    while (low <= high && x >= arr[low] && x <= arr[high]) {
-        if (low === high) {
-            if (arr[low] === x) return low;
-            return -1;
-        }
-
-        let pos = low + Math.floor(((high - low) / (arr[high] - arr[low])) * (x - arr[low]));
-
-        if (arr[pos] === x) return pos;
-        if (arr[pos] < x) {
-            low = pos + 1;
-        } else {
-            high = pos - 1;
-        }
+function isSortedAscending(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false;
     }
-
-    return -1;
+  }
+  return true;
 }
 
-// Example usage
-const arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
-const x = 23;
-const index = interpolationSearch(arr, x);
-console.log(index);
+// Test the function
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [2, 4, 6, 1, 3];
+
+console.log(isSortedAscending(array1)); // Output: true
+console.log(isSortedAscending(array2)); // Output: false
