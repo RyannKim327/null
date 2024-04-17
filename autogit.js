@@ -1,41 +1,43 @@
-function boyerMooreSearch(text, pattern) {
-    const textLength = text.length;
-    const patternLength = pattern.length;
-
-    if (patternLength === 0) {
-        return -1;
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
     }
-
-    const lastOccurrence = {};
-    for (let i = 0; i < patternLength; i++) {
-        lastOccurrence[pattern[i]] = i;
-    }
-
-    let i = patternLength - 1;
-    let j = patternLength - 1;
-
-    while (i < textLength) {
-        if (text[i] === pattern[j]) {
-            if (j === 0) {
-                return i;
-            }
-            i--;
-            j--;
-        } else {
-            i += patternLength - Math.min(j, 1 + lastOccurrence[text[i]]);
-            j = patternLength - 1;
-        }
-    }
-
-    return -1;
 }
 
-// Test the Boyer-Moore search algorithm
-const text = "hello world";
-const pattern = "world";
-const index = boyerMooreSearch(text, pattern);
-if (index !== -1) {
-    console.log(`Pattern found at index: ${index}`);
+function findNthNodeFromEnd(head, n) {
+    let firstPointer = head;
+    let secondPointer = head;
+
+    // Move the first pointer forward by n nodes
+    for (let i = 0; i < n; i++) {
+        if (firstPointer === null) {
+            return null; // The linked list is not long enough
+        }
+        firstPointer = firstPointer.next;
+    }
+
+    // Move both pointers until the first pointer reaches the end
+    while (firstPointer !== null) {
+        firstPointer = firstPointer.next;
+        secondPointer = secondPointer.next;
+    }
+
+    return secondPointer;
+}
+
+// Example usage
+let head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
+
+let n = 2; // Find the 2nd node from the end
+let nthNodeFromEnd = findNthNodeFromEnd(head, n);
+
+if (nthNodeFromEnd !== null) {
+    console.log(`The ${n}th node from the end is: ${nthNodeFromEnd.value}`);
 } else {
-    console.log("Pattern not found");
+    console.log(`The linked list is not long enough to find the ${n}th node from the end.`);
 }
