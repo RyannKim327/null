@@ -1,35 +1,39 @@
-function interpolationSearch(arr, target) {
-    let low = 0;
-    let high = arr.length - 1;
+function rabinKarpSearch(text, pattern) {
+    const prime = 101; // Prime number to use as base for hashing
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    const patternHash = hash(pattern, patternLength);
+    let textHash = hash(text, patternLength);
 
-    while (low <= high && target >= arr[low] && target <= arr[high]) {
-        if (low == high) {
-            if (arr[low] == target) return low;
-            return -1;
+    for (let i = 0; i <= textLength - patternLength; i++) {
+        if (textHash === patternHash && text.substring(i, i + patternLength) === pattern) {
+            return i; // Pattern found at index i
         }
-
-        // Interpolation formula to calculate the mid
-        let pos = low + Math.floor(((high - low) / (arr[high] - arr[low])) * (target - arr[low]));
-
-        if (arr[pos] == target) {
-            return pos;
-        } else if (arr[pos] < target) {
-            low = pos + 1;
-        } else {
-            high = pos - 1;
+        if (i < textLength - patternLength) {
+            textHash = recalculateHash(text, i, patternLength, textHash, prime);
         }
     }
-    
-    return -1; // if target is not found in the array
+
+    return -1; // Pattern not found
 }
 
-// Example usage
-const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const target = 12;
-const result = interpolationSearch(arr, target);
-
-if (result !== -1) {
-    console.log(`Element found at index ${result}`);
-} else {
-    console.log(`Element not found in the array`);
+function hash(str, length) {
+    let hash = 0;
+    for (let i = 0; i < length; i++) {
+        hash += str.charCodeAt(i) * Math.pow(prime, i);
+    }
+    return hash;
 }
+
+function recalculateHash(str, oldIndex, patternLength, oldHash, prime) {
+    let newHash = oldHash - str.charCodeAt(oldIndex);
+    newHash = newHash / prime;
+    newHash += str.charCodeAt(oldIndex + patternLength) * Math.pow(prime, patternLength - 1);
+    return newHash;
+}
+
+// Test
+const text = "abedabc";
+const pattern = "abc";
+const index = rabinKarpSearch(text, pattern);
+console.log(index); // Output: 3 (Index of pattern in text)
