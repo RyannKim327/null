@@ -1,57 +1,16 @@
-// TrieNode class
-class TrieNode {
-    constructor() {
-        this.children = {};
-        this.isEndOfWord = false;
-    }
-}
-
-// Trie class
-class Trie {
-    constructor() {
-        this.root = new TrieNode();
-    }
-
-    // Method to insert a word into the trie
-    insert(word) {
-        let node = this.root;
-        for (let char of word) {
-            if (!node.children[char]) {
-                node.children[char] = new TrieNode();
-            }
-            node = node.children[char];
+function insertionSort(arr) {
+    for (let i = 1; i < arr.length; i++) {
+        let current = arr[i];
+        let j = i - 1;
+        while (j >= 0 && arr[j] > current) {
+            arr[j + 1] = arr[j];
+            j--;
         }
-        node.isEndOfWord = true;
+        arr[j + 1] = current;
     }
-
-    // Method to search for a word in the trie
-    search(word) {
-        let node = this.root;
-        for (let char of word) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
-        }
-        return node.isEndOfWord;
-    }
-
-    // Method to check if a word prefix exists in the trie
-    startsWith(prefix) {
-        let node = this.root;
-        for (let char of prefix) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
-        }
-        return true;
-    }
+    return arr;
 }
 
 // Example usage
-const trie = new Trie();
-trie.insert('apple');
-console.log(trie.search('apple')); // Output: true
-console.log(trie.search('app')); // Output: false
-console.log(trie.startsWith('app')); // Output: true
+const nums = [5, 3, 8, 1, 2, 7];
+console.log(insertionSort(nums)); // Output: [1, 2, 3, 5, 7, 8]
