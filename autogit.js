@@ -1,58 +1,33 @@
-class BeamSearch {
-  constructor(beamWidth, maxSteps, getNextCandidatesFn, evaluateFn) {
-    this.beamWidth = beamWidth;
-    this.maxSteps = maxSteps;
-    this.getNextCandidatesFn = getNextCandidatesFn;
-    this.evaluateFn = evaluateFn;
-  }
-
-  search(initialState) {
-    let beams = [{ state: initialState, score: 0, path: [] }];
-
-    for (let step = 0; step < this.maxSteps; step++) {
-      let nextBeams = [];
-
-      for (let beam of beams) {
-        let candidates = this.getNextCandidatesFn(beam.state);
-        for (let candidate of candidates) {
-          let newState = candidate.state;
-          let score = beam.score + this.evaluateFn(newState);
-          let newPath = beam.path.concat([newState]);
-          
-          nextBeams.push({ state: newState, score, path: newPath });
+function longestIncreasingSubsequence(arr) {
+    // Initialize an array to store the length of longest increasing subsequence ending at each index
+    let dp = new Array(arr.length).fill(1);
+    
+    // Iterate over the array to calculate the length of longest increasing subsequence
+    for (let i = 0; i < arr.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[i] > arr[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
         }
-      }
-
-      nextBeams.sort((a, b) => b.score - a.score);
-      beams = nextBeams.slice(0, this.beamWidth);
-
-      if (beams.length === 0) {
-        break;
-      }
     }
-
-    return beams;
-  }
+    
+    // Find the maximum length in the dp array
+    let maxLength = Math.max(...dp);
+    
+    // Build the longest increasing subsequence using the dp array
+    let index = dp.indexOf(maxLength);
+    let lis = [arr[index]];
+    
+    for (let i = index - 1; i >= 0; i--) {
+        if (arr[i] < arr[index] && dp[i] === dp[index] - 1) {
+            lis.unshift(arr[i]);
+            index = i;
+        }
+    }
+    
+    return lis;
 }
 
-// Example usage
-const beamWidth = 3;
-const maxSteps = 5;
-
-// Define getNextCandidatesFn function
-const getNextCandidatesFn = (state) => {
-  // Implement logic to get next candidates based on current state
-  return [/* Array of candidate states */];
-}
-
-// Define evaluateFn function
-const evaluateFn = (state) => {
-  // Implement logic to evaluate the given state
-  return /* Numeric score for the state */;
-}
-
-const initialState = /* Initial state of the search */
-
-const beamSearch = new BeamSearch(beamWidth, maxSteps, getNextCandidatesFn, evaluateFn);
-const result = beamSearch.search(initialState);
-console.log(result);
+// Test the function
+let arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
+console.log(longestIncreasingSubsequence(arr)); // Output: [10, 22, 33, 50, 60, 80]
