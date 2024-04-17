@@ -1,67 +1,50 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-class BinarySearchTree {
+class HashTable {
     constructor() {
-        this.root = null;
+        this.table = {};
     }
-
-    insert(data) {
-        let newNode = new Node(data);
-
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
+    
+    // Function to generate a hash key
+    hashCode(key) {
+        let hash = 0;
+        for (let i = 0; i < key.length; i++) {
+            hash = (hash + key.charCodeAt(i) * 31) % 1013; // prime number to reduce collisions
         }
+        return hash;
     }
-
-    insertNode(node, newNode) {
-        if (newNode.data < node.data) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
+    
+    // Function to insert a key-value pair into the hash table
+    put(key, value) {
+        const hashedKey = this.hashCode(key);
+        this.table[hashedKey] = value;
     }
-
-    search(data) {
-        return this.searchNode(this.root, data);
+    
+    // Function to get the value associated with a key in the hash table
+    get(key) {
+        const hashedKey = this.hashCode(key);
+        return this.table[hashedKey];
     }
-
-    searchNode(node, data) {
-        if (node === null) {
-            return false;
-        }
-
-        if (data < node.data) {
-            return this.searchNode(node.left, data);
-        } else if (data > node.data) {
-            return this.searchNode(node.right, data);
-        } else {
-            return true;
-        }
+    
+    // Function to check if a key exists in the hash table
+    contains(key) {
+        const hashedKey = this.hashCode(key);
+        return this.table.hasOwnProperty(hashedKey);
+    }
+    
+    // Function to remove a key-value pair from the hash table
+    remove(key) {
+        const hashedKey = this.hashCode(key);
+        delete this.table[hashedKey];
     }
 }
+const myHashTable = new HashTable();
 
-// Example usage
-let bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
+myHashTable.put('name', 'Alice');
+myHashTable.put('age', 30);
 
-console.log(bst.search(5)); // Output: true
-console.log(bst.search(8)); // Output: false
+console.log(myHashTable.get('name')); // Output: Alice
+
+console.log(myHashTable.contains('age')); // Output: true
+
+myHashTable.remove('age');
+
+console.log(myHashTable.contains('age')); // Output: false
