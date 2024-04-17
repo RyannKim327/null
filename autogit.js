@@ -1,49 +1,40 @@
-function computeLPSArray(pattern, lps) {
-    let len = 0;
-    lps[0] = 0;
-    let i = 1;
-    
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
 
-function KMPSearch(text, pattern) {
-    const lps = new Array(pattern.length).fill(0);
-    computeLPSArray(pattern, lps);
+class BinaryTree {
+    constructor() {
+        this.root = null;
+    }
 
-    let i = 0; // index for text[]
-    let j = 0; // index for pattern[]
-    
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
+    getLeafNodeCount() {
+        return this.countLeafNodes(this.root);
+    }
+
+    countLeafNodes(node) {
+        if (node === null) {
+            return 0;
         }
-        if (j === pattern.length) {
-            console.log("Pattern found at index " + (i - j));
-            j = lps[j - 1];
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i = i + 1;
-            }
+        if (node.left === null && node.right === null) {
+            return 1;
         }
+        return this.countLeafNodes(node.left) + this.countLeafNodes(node.right);
     }
 }
 
-let text = "ABABDABACDABABCABAB";
-let pattern = "ABABCABAB";
-KMPSearch(text, pattern);
+// Example tree
+const tree = new BinaryTree();
+
+tree.root = new Node(1);
+tree.root.left = new Node(2);
+tree.root.right = new Node(3);
+tree.root.left.left = new Node(4);
+tree.root.left.right = new Node(5);
+tree.root.right.left = new Node(6);
+tree.root.right.right = new Node(7);
+
+console.log(tree.getLeafNodeCount()); // Output: 4
