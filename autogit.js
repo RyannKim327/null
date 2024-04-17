@@ -1,46 +1,34 @@
-// Node class to create individual nodes in the linked list
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
+function isPrime(num) {
+    if (num < 2) return false;
+    for (let i = 2; i <= Math.sqrt(num); i++) {
+        if (num % i === 0) {
+            return false;
+        }
     }
+    return true;
 }
 
-// Linked List class to create the linked list
-class LinkedList {
-    constructor() {
-        this.head = null;
-    }
+function largestPrimeFactor(number) {
+    let largestPrime = 2;
 
-    // Method to add a node to the end of the linked list
-    append(data) {
-        const newNode = new Node(data);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Method to print all the nodes in the linked list
-    printList() {
-        let current = this.head;
-        while (current) {
-            console.log(current.data);
-            current = current.next;
+    for (let i = 2; i <= Math.sqrt(number); i++) {
+        if (number % i === 0) {
+            let factor = number / i;
+            
+            if (isPrime(factor)) {
+                largestPrime = factor;
+                break;
+            }
+            
+            if (isPrime(i)) {
+                largestPrime = i;
+            }
         }
     }
+
+    return largestPrime;
 }
 
-// Example of how to use the Linked List class
-const linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
-
-linkedList.printList();
+// Example usage
+const number = 13195;
+console.log(`Largest prime factor of ${number} is: ${largestPrimeFactor(number)}`);
