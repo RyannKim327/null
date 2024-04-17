@@ -1,60 +1,22 @@
-// Class representing a graph
-class Graph {
-  constructor() {
-    this.adjList = {};
-  }
+function isAnagram(str1, str2) {
+    // Remove non-alphabetic characters and convert to lowercase
+    str1 = str1.replace(/[^a-z]/g, '').toLowerCase();
+    str2 = str2.replace(/[^a-z]/g, '').toLowerCase();
 
-  // Add a vertex to the graph
-  addVertex(vertex) {
-    if (!this.adjList[vertex]) {
-      this.adjList[vertex] = [];
-    }
-  }
+    // Sort the characters in the strings
+    str1 = str1.split('').sort().join('');
+    str2 = str2.split('').sort().join('');
 
-  // Add an edge between two vertices
-  addEdge(v1, v2) {
-    this.adjList[v1].push(v2);
-    this.adjList[v2].push(v1);
-  }
-
-  // Depth-first search algorithm
-  dfs(start) {
-    let visited = {};
-    this._dfsHelper(start, visited);
-  }
-
-  // Helper function to perform DFS recursively
-  _dfsHelper(vertex, visited) {
-    if (!visited[vertex]) {
-      visited[vertex] = true;
-      console.log(vertex);
-
-      this.adjList[vertex].forEach(neighbor => {
-        if (!visited[neighbor]) {
-          this._dfsHelper(neighbor, visited);
-        }
-      });
-    }
-  }
+    // Compare the sorted strings
+    return str1 === str2;
 }
 
-// Create a graph
-const graph = new Graph();
+// Test the function
+const string1 = 'debit card';
+const string2 = 'bad credit';
 
-// Add vertices to the graph
-graph.addVertex(0);
-graph.addVertex(1);
-graph.addVertex(2);
-graph.addVertex(3);
-graph.addVertex(4);
-graph.addVertex(5);
-
-// Add edges to the graph
-graph.addEdge(0, 1);
-graph.addEdge(0, 2);
-graph.addEdge(1, 3);
-graph.addEdge(1, 4);
-graph.addEdge(2, 5);
-
-// Perform Depth-first search starting from vertex 0
-graph.dfs(0);
+if (isAnagram(string1, string2)) {
+    console.log(`${string1} and ${string2} are anagrams.`);
+} else {
+    console.log(`${string1} and ${string2} are not anagrams.`);
+}
