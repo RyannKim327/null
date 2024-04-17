@@ -1,44 +1,26 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-
-function hasCycle(head) {
-  if (!head || !head.next) {
-    return false;
-  }
-
-  let slow = head;
-  let fast = head.next;
-
-  while (fast && fast.next) {
-    if (slow === fast) {
-      return true;
+function binarySearchRecursive(arr, target, start = 0, end = arr.length - 1) {
+    if (start > end) {
+        return -1; // target not found
     }
-    
-    slow = slow.next;
-    fast = fast.next.next;
-  }
 
-  return false;
+    const mid = Math.floor((start + end) / 2);
+
+    if (arr[mid] === target) {
+        return mid; // target found
+    } else if (arr[mid] < target) {
+        return binarySearchRecursive(arr, target, mid + 1, end); // search right half
+    } else {
+        return binarySearchRecursive(arr, target, start, mid - 1); // search left half
+    }
 }
-// Create a linked list with a cycle
-let node1 = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-node1.next = node2;
-node2.next = node3;
-node3.next = node1; // Cycle
 
-console.log(hasCycle(node1)); // Output: true
+// Example usage
+const arr = [1, 3, 5, 7, 9, 11, 13, 15];
+const target = 11;
+const index = binarySearchRecursive(arr, target);
 
-// Create a linked list without a cycle
-let newNode1 = new Node(1);
-let newNode2 = new Node(2);
-let newNode3 = new Node(3);
-newNode1.next = newNode2;
-newNode2.next = newNode3;
-
-console.log(hasCycle(newNode1)); // Output: false
+if (index !== -1) {
+    console.log(`Target ${target} found at index ${index}`);
+} else {
+    console.log(`Target ${target} not found`);
+}
