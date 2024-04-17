@@ -1,14 +1,14 @@
-function isPalindrome(str) {
-    // Remove non-alphanumeric characters and convert the string to lowercase
-    let cleanStr = str.replace(/[^0-9a-z]/gi, '').toLowerCase();
-    
-    // Reverse the cleaned string
-    let reversedStr = cleanStr.split('').reverse().join('');
-    
-    // Compare the cleaned string with its reverse
-    return cleanStr === reversedStr;
+function factorial(n) {
+    // Base case: if n is 0 or 1, return 1
+    if (n === 0 || n === 1) {
+        return 1;
+    } else {
+        // Recursive case: return n times the factorial of (n-1)
+        return n * factorial(n - 1);
+    }
 }
 
-// Test the function
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
-console.log(isPalindrome("Hello World")); // false
+// Call the factorial function with the number for which you want to calculate the factorial
+const n = 5;
+const result = factorial(n);
+console.log(`The factorial of ${n} is: ${result}`);
