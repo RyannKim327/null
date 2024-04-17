@@ -1,28 +1,20 @@
-function binarySearch(arr, target) {
-    let low = 0;
-    let high = arr.length - 1;
-
-    while (low <= high) {
-        let mid = Math.floor((low + high) / 2);
-        if (arr[mid] === target) {
-            return mid;
-        } else if (arr[mid] < target) {
-            low = mid + 1;
-        } else {
-            high = mid - 1;
-        }
+function findCommonElements(arr1, arr2) {
+  let commonElements = [];
+  
+  // Iterate through the first array
+  for (let element of arr1) {
+    // Check if the element is present in the second array
+    if (arr2.includes(element) && !commonElements.includes(element)) {
+      commonElements.push(element);
     }
-
-    return -1; // return -1 if target is not found
+  }
+  
+  return commonElements;
 }
 
-// Example usage:
-const arr = [1, 3, 5, 7, 9, 11, 13];
-const target = 7;
-const index = binarySearch(arr, target);
+// Example arrays
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
 
-if (index !== -1) {
-    console.log(`Target ${target} found at index ${index}.`);
-} else {
-    console.log(`Target ${target} not found in the array.`);
-}
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
