@@ -1,32 +1,31 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+function longestCommonSubstring(str1, str2) {
+    let matrix = Array(str1.length + 1).fill(0).map(() => Array(str2.length + 1).fill(0));
+    let longest = 0;
+    let longestIndex = 0;
+
+    for (let i = 1; i <= str1.length; i++) {
+        for (let j = 1; j <= str2.length; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                matrix[i][j] = matrix[i - 1][j - 1] + 1;
+                if (matrix[i][j] > longest) {
+                    longest = matrix[i][j];
+                    longestIndex = i;
+                }
+            } else {
+                matrix[i][j] = 0;
+            }
+        }
+    }
+
+    if (longest === 0) {
+        return '';
+    }
+
+    return str1.slice(longestIndex - longest, longestIndex);
 }
 
-function countLeafNodes(node) {
-  if (node === null) {
-    return 0;
-  }
-  
-  if (node.left === null && node.right === null) {
-    // Leaf node
-    return 1;
-  }
-  
-  return countLeafNodes(node.left) + countLeafNodes(node.right);
-}
-
-// Example binary tree
-let root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
-
-const leafNodesCount = countLeafNodes(root);
-console.log("Number of leaf nodes: ", leafNodesCount);
+// Example usage
+let str1 = "abcdefg";
+let str2 = "zbcdf";
+let result = longestCommonSubstring(str1, str2);
+console.log(result); // Output: "bcd"
