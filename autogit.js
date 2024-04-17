@@ -1,68 +1,57 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+function computeLPSArray(pattern, m, lps) {
+    let len = 0;
+    lps[0] = 0;
+    let i = 1;
+    while (i < m) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
     }
 }
 
-class BinarySearchTree {
-    constructor() {
-        this.root = null;
-    }
+function KMPSearch(text, pattern) {
+    const n = text.length;
+    const m = pattern.length;
 
-    insert(value) {
-        const newNode = new Node(value);
+    const lps = new Array(m).fill(0);
+    computeLPSArray(pattern, m, lps);
 
-        if (!this.root) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
+    let i = 0;
+    let j = 0;
+    const indices = [];
+
+    while (i < n) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
         }
-    }
 
-    insertNode(node, newNode) {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
+        if (j === m) {
+            indices.push(i - j);
+            j = lps[j - 1];
+        } else if (i < n && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1];
             } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
+                i++;
             }
         }
     }
 
-    search(value) {
-        return this.searchNode(this.root, value);
-    }
-
-    searchNode(node, value) {
-        if (!node) {
-            return false;
-        }
-
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true;
-        }
-    }
+    return indices;
 }
 
 // Example usage
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
-bst.insert(7);
-
-console.log(bst.search(7)); // Output: true
-console.log(bst.search(12)); // Output: false
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const indices = KMPSearch(text, pattern);
+console.log(indices);
