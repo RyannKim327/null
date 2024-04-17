@@ -1,16 +1,15 @@
-const str = "Hello, World!";
-const subStr = "Hello";
-
-if (str.includes(subStr)) {
-  console.log('String contains the substring');
-} else {
-  console.log('String does not contain the substring');
+function countOccurrences(str, char) {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
+            count++;
+        }
+    }
+    return count;
 }
-const str = "Hello, World!";
-const subStr = "Hello";
 
-if (str.indexOf(subStr) !== -1) {
-  console.log('String contains the substring');
-} else {
-  console.log('String does not contain the substring');
-}
+// Example usage
+const myString = "hello world";
+const characterToCount = "l";
+const result = countOccurrences(myString, characterToCount);
+console.log(`The character "${characterToCount}" occurs ${result} times in the string "${myString}".`);
