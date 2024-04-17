@@ -1,43 +1,43 @@
 class Node {
-    constructor(value) {
-        this.value = value;
+    constructor(data) {
+        this.data = data;
         this.next = null;
     }
 }
 
-function findNthNodeFromEnd(head, n) {
-    let firstPointer = head;
-    let secondPointer = head;
+class LinkedList {
+    constructor() {
+        this.head = null;
+    }
 
-    // Move the first pointer forward by n nodes
-    for (let i = 0; i < n; i++) {
-        if (firstPointer === null) {
-            return null; // The linked list is not long enough
+    // Method to add a new node to the end of the linked list
+    append(data) {
+        let newNode = new Node(data);
+        if (!this.head) {
+            this.head = newNode;
+            return;
         }
-        firstPointer = firstPointer.next;
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
     }
 
-    // Move both pointers until the first pointer reaches the end
-    while (firstPointer !== null) {
-        firstPointer = firstPointer.next;
-        secondPointer = secondPointer.next;
+    // Method to print all the elements in the linked list
+    print() {
+        let current = this.head;
+        while (current) {
+            console.log(current.data);
+            current = current.next;
+        }
     }
-
-    return secondPointer;
 }
 
 // Example usage
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
+const linkedList = new LinkedList();
+linkedList.append(1);
+linkedList.append(2);
+linkedList.append(3);
 
-let n = 2; // Find the 2nd node from the end
-let nthNodeFromEnd = findNthNodeFromEnd(head, n);
-
-if (nthNodeFromEnd !== null) {
-    console.log(`The ${n}th node from the end is: ${nthNodeFromEnd.value}`);
-} else {
-    console.log(`The linked list is not long enough to find the ${n}th node from the end.`);
-}
+linkedList.print();
