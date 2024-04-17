@@ -1,25 +1,17 @@
 function reverseString(str) {
-    return str.split('').reverse().join('');
+    // Convert the string to an array of characters
+    var arr = str.split("");
+    
+    // Reverse the array
+    var reversedArr = arr.reverse();
+    
+    // Join the characters back together to create a new string
+    var reversedStr = reversedArr.join("");
+    
+    return reversedStr;
 }
 
-// Example
-const reversed = reverseString('hello');
-console.log(reversed); // Output: 'olleh'
-function reverseString(str) {
-    let reversed = '';
-    for (let i = str.length - 1; i >= 0; i--) {
-        reversed += str[i];
-    }
-    return reversed;
-}
-
-// Example
-const reversed = reverseString('hello');
-console.log(reversed); // Output: 'olleh'
-function reverseString(str) {
-    return str.split('').reduce((reversed, char) => char + reversed, '');
-}
-
-// Example
-const reversed = reverseString('hello');
-console.log(reversed); // Output: 'olleh'
+// Example usage
+var originalStr = "Hello, World!";
+var reversedStr = reverseString(originalStr);
+console.log(reversedStr); // Outputs: "!dlroW ,olleH"
