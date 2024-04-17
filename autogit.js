@@ -1,38 +1,61 @@
 class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
-    }
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
 }
 
-function isPalindromeLinkedList(head) {
-    let current = head;
-    let array = [];
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
 
-    // Traverse the linked list and push each node's value into the array
-    while (current !== null) {
-        array.push(current.value);
+  add(data) {
+    const newNode = new Node(data);
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
         current = current.next;
+      }
+      current.next = newNode;
     }
+  }
 
-    // Create a reversed copy of the array
-    let reversedArray = array.slice().reverse();
+  reverse() {
+    let prev = null;
+    let current = this.head;
+    let next = null;
 
-    // Compare the original array with the reversed copy
-    for (let i = 0; i < array.length; i++) {
-        if (array[i] !== reversedArray[i]) {
-            return false;
-        }
+    while (current !== null) {
+      next = current.next;
+      current.next = prev;
+      prev = current;
+      current = next;
     }
+    this.head = prev;
+  }
 
-    return true;
+  printList() {
+    let current = this.head;
+    while (current !== null) {
+      console.log(current.data + ' ');
+      current = current.next;
+    }
+  }
 }
 
-// Example linked list: 1 -> 2 -> 3 -> 2 -> 1
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(2);
-head.next.next.next.next = new Node(1);
+// Example usage
+const list = new LinkedList();
+list.add(1);
+list.add(2);
+list.add(3);
 
-console.log(isPalindromeLinkedList(head)); // Output: true
+console.log('Original List:');
+list.printList();
+
+list.reverse();
+
+console.log('Reversed List:');
+list.printList();
