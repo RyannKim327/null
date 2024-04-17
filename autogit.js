@@ -1,4 +1,4 @@
-let str = "Hello World";
-let lowerCaseStr = str.toLowerCase();
+let originalString = "Hello, World!";
+let lowercaseString = originalString.toLowerCase();
 
-console.log(lowerCaseStr); // Output: "hello world"
+console.log(lowercaseString); // Output: hello, world!
