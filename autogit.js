@@ -1,43 +1,15 @@
-function burrowsWheelerTransform(input) {
-    // Generate all possible rotations of the input string
-    let rotations = [];
-    for (let i = 0; i < input.length; i++) {
-        rotations.push(input.slice(i) + input.slice(0, i));
-    }
-
-    // Sort the rotations lexicographically
-    rotations.sort();
-
-    // Extract the last characters of each rotation
-    let transformed = rotations.map(rotation => rotation.slice(-1)).join('');
-
-    return transformed;
-}
-
-function inverseBurrowsWheelerTransform(input) {
-    // Transform the input string into a matrix of characters
-    let matrix = input.split('').map(char => [char, '']);
-    
-    // Sort the matrix lexicographically by the first column
-    matrix.sort();
-    
-    // Perform the inverse transformation
-    let result = '';
-    for (let i = 0; i < input.length; i++) {
-        result = matrix.map(row => row[0]).join('');
-        matrix = matrix.map(row => [row[0], row[1]]).sort();
-        for (let j = 0; j < matrix.length; j++) {
-            matrix[j][1] = result[j];
+function largestPrimeFactor(number) {
+    let i = 2;
+    while (i <= number) {
+        if (number % i === 0) {
+            number /= i;
+        } else {
+            i++;
         }
     }
-
-    return result;
+    return i;
 }
 
-// Example usage
-let input = 'banana';
-let transformed = burrowsWheelerTransform(input);
-console.log('Transformed: ' + transformed);
-
-let original = inverseBurrowsWheelerTransform(transformed);
-console.log('Original: ' + original);
+const number = 600851475143; // The number you want to find the largest prime factor of
+const largestFactor = largestPrimeFactor(number);
+console.log(`The largest prime factor of ${number} is ${largestFactor}`);
