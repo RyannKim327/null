@@ -1,47 +1,44 @@
-function fibonacciSearch(arr, key) {
-    let fibNum2 = 0;
-    let fibNum1 = 1;
-    let fibNum = fibNum1 + fibNum2;
+function fibonacciSearch(arr, x) {
+    let fib1 = 0;
+    let fib2 = 1;
+    let fibM = fib1 + fib2;
 
-    while (fibNum < arr.length) {
-        fibNum2 = fibNum1;
-        fibNum1 = fibNum;
-        fibNum = fibNum1 + fibNum2;
+    let length = arr.length;
+
+    while (fibM < length) {
+        fib1 = fib2;
+        fib2 = fibM;
+        fibM = fib1 + fib2;
     }
 
     let offset = -1;
 
-    while (fibNum > 1) {
-        let i = Math.min(offset + fibNum2, arr.length - 1);
-
-        if (arr[i] < key) {
-            fibNum = fibNum1;
-            fibNum1 = fibNum2;
-            fibNum2 = fibNum - fibNum1;
+    while (fibM > 1) {
+        let i = Math.min(offset + fib1, length - 1);
+        if (arr[i] < x) {
+            fibM = fib2;
+            fib2 = fib1;
+            fib1 = fibM - fib2;
             offset = i;
-        } else if (arr[i] > key) {
-            fibNum = fibNum2;
-            fibNum1 = fibNum1 - fibNum2;
-            fibNum2 = fibNum - fibNum1;
+        } else if (arr[i] > x) {
+            fibM = fib1;
+            fib2 -= fib1;
+            fib1 = fibM - fib2;
         } else {
             return i;
         }
     }
 
-    if (fibNum1 && arr[offset + 1] == key) {
+    if (fib2 && arr[offset + 1] == x) {
         return offset + 1;
     }
 
     return -1;
 }
 
-// Example usage
-const arr = [2, 3, 5, 8, 13, 21, 34, 55, 89];
-const key = 21;
-const index = fibonacciSearch(arr, key);
+// Test the function
+let arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+let x = 14;
+let index = fibonacciSearch(arr, x);
 
-if (index !== -1) {
-    console.log(`Element found at index: ${index}`);
-} else {
-    console.log(`Element not found`);
-}
+console.log(index);
