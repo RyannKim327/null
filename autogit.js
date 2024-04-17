@@ -1,15 +1,45 @@
-function countOccurrences(str, char) {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === char) {
-            count++;
-        }
-    }
-    return count;
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
 }
 
-// Example usage
-const myString = "hello, world!";
-const myChar = "l";
-const occurrences = countOccurrences(myString, myChar);
-console.log(`The character '${myChar}' occurs ${occurrences} times in the string.`);
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+
+  addNode(data) {
+    const newNode = new Node(data);
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
+
+  getLength() {
+    let current = this.head;
+    let count = 0;
+
+    while (current) {
+      count++;
+      current = current.next;
+    }
+
+    return count;
+  }
+}
+
+// Usage
+const linkedList = new LinkedList();
+linkedList.addNode(1);
+linkedList.addNode(2);
+linkedList.addNode(3);
+
+console.log(linkedList.getLength()); // Output: 3
