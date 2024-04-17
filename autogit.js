@@ -1,16 +1,68 @@
-function countOccurrences(str, word) {
-    // Create a regular expression to match the word globally
-    const regex = new RegExp("\\b" + word + "\\b", "g");
-    
-    // Use the match() method with the regular expression on the input string
-    const matches = str.match(regex);
-    
-    // If matches is null, return 0, otherwise, return the length of the matches array
-    return matches ? matches.length : 0;
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
 }
 
-// Test the function
-const inputString = "apple orange banana apple banana apple";
-const wordToCount = "apple";
-const occurrences = countOccurrences(inputString, wordToCount);
-console.log(`The word "${wordToCount}" appears ${occurrences} times in the input string.`);
+class BinarySearchTree {
+    constructor() {
+        this.root = null;
+    }
+
+    insert(value) {
+        const newNode = new Node(value);
+
+        if (!this.root) {
+            this.root = newNode;
+        } else {
+            this.insertNode(this.root, newNode);
+        }
+    }
+
+    insertNode(node, newNode) {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
+        }
+    }
+
+    search(value) {
+        return this.searchNode(this.root, value);
+    }
+
+    searchNode(node, value) {
+        if (!node) {
+            return false;
+        }
+
+        if (value < node.value) {
+            return this.searchNode(node.left, value);
+        } else if (value > node.value) {
+            return this.searchNode(node.right, value);
+        } else {
+            return true;
+        }
+    }
+}
+
+// Example usage
+const bst = new BinarySearchTree();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(3);
+bst.insert(7);
+
+console.log(bst.search(5)); // Output: true
+console.log(bst.search(12)); // Output: false
