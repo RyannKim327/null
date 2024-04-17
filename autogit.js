@@ -1,65 +1,36 @@
-// Bi-directional Search Algorithm
-function biDirectionalSearch(graph, start, end) {
-    // Initialize two queues for forward and backward search
-    let forwardQueue = [start];
-    let forwardVisited = new Set();
-    forwardVisited.add(start);
-
-    let backwardQueue = [end];
-    let backwardVisited = new Set();
-    backwardVisited.add(end);
-
-    while (forwardQueue.length > 0 && backwardQueue.length > 0) {
-        // Forward search
-        let currentNode = forwardQueue.shift();
-
-        if (graph[currentNode]) {
-            for (let neighbor of graph[currentNode]) {
-                if (!forwardVisited.has(neighbor)) {
-                    forwardQueue.push(neighbor);
-                    forwardVisited.add(neighbor);
-                }
-
-                // Check if node is visited by backward search
-                if (backwardVisited.has(neighbor)) {
-                    return "Path found"; // intersection point found
-                }
-            }
-        }
-
-        // Backward search
-        currentNode = backwardQueue.shift();
-
-        if (graph[currentNode]) {
-            for (let neighbor of graph[currentNode]) {
-                if (!backwardVisited.has(neighbor)) {
-                    backwardQueue.push(neighbor);
-                    backwardVisited.add(neighbor);
-                }
-
-                // Check if node is visited by forward search
-                if (forwardVisited.has(neighbor)) {
-                    return "Path found"; // intersection point found
-                }
-            }
-        }
+function hasCycle(head) {
+    if (!head || !head.next) {
+        return false;
     }
 
-    return "Path not found";
+    let slow = head;
+    let fast = head.next;
+
+    while (fast && fast.next) {
+        if (slow === fast) {
+            return true; // Cycle detected
+        }
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+
+    return false; // No cycle detected
+}
+// Define the ListNode class
+class ListNode {
+    constructor(val) {
+        this.val = val;
+        this.next = null;
+    }
 }
 
-// Example graph representation (Adjacency List)
-const graph = {
-    A: ['B', 'C'],
-    B: ['C', 'D'],
-    C: ['D'],
-    D: ['E'],
-    E: ['F'],
-    F: ['G'],
-    G: []
-};
+// Create a linked list with a cycle
+let node1 = new ListNode(1);
+let node2 = new ListNode(2);
+let node3 = new ListNode(3);
+node1.next = node2;
+node2.next = node3;
+node3.next = node1; // Create a cycle
 
-const startNode = 'A';
-const endNode = 'G';
-
-console.log(biDirectionalSearch(graph, startNode, endNode)); // Output: Path found
+let hasCycleResult = hasCycle(node1);
+console.log(hasCycleResult); // Output: true, the linked list contains a cycle
