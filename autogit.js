@@ -1,36 +1,49 @@
-function breadthFirstSearch(graph, startNode, targetNode) {
-  let visited = new Set();
-  let queue = [startNode];
-  
-  while (queue.length > 0) {
-    let currentNode = queue.shift();
-    if (currentNode === targetNode) {
-      return true;
-    }
-    
-    if (!visited.has(currentNode)) {
-      visited.add(currentNode);
-      let neighbors = graph[currentNode];
-      for (let neighbor of neighbors) {
-        queue.push(neighbor);
-      }
-    }
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.children = [];
   }
-  
-  return false;
+
+  addChild(node) {
+    this.children.push(node);
+  }
 }
 
-// Example graph
-let graph = {
-  'A': ['B', 'C'],
-  'B': ['A', 'D', 'E'],
-  'C': ['A', 'F'],
-  'D': ['B'],
-  'E': ['B', 'F'],
-  'F': ['C', 'E']
-};
+function depthLimitedSearch(node, target, depthLimit, currentDepth = 0) {
+  if (currentDepth > depthLimit) {
+    return null; // Maximum depth reached
+  }
 
-let startNode = 'A';
-let targetNode = 'F';
+  if (node.value === target) {
+    return node; // Target found
+  }
 
-console.log(breadthFirstSearch(graph, startNode, targetNode)); // Output: true
+  for (const child of node.children) {
+    const result = depthLimitedSearch(child, target, depthLimit, currentDepth + 1);
+    if (result) {
+      return result;
+    }
+  }
+
+  return null; // Target not found within depth limit
+}
+
+// Example usage
+const root = new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
+const node4 = new Node(4);
+
+root.addChild(node2);
+root.addChild(node3);
+node2.addChild(node4);
+
+const target = 4;
+const depthLimit = 2;
+const result = depthLimitedSearch(root, target, depthLimit);
+
+if (result) {
+  console.log(`Target ${target} found within depth limit ${depthLimit}`);
+} else {
+  console.log(`Target ${target} not found within depth limit ${depthLimit}`);
+}
