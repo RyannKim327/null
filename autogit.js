@@ -1,52 +1,59 @@
-function rabinKarp(text, pattern) {
-    const prime = 101; // Prime number used for hashing
-    const patternLength = pattern.length;
-    const textLength = text.length;
-    const patternHash = hashCode(pattern, patternLength);
-    let textHash = hashCode(text, patternLength);
+function KMPSearch(text, pattern) {
+    function computeLPSArray(pattern) {
+        const lps = [0];
+        let len = 0;
+        let i = 1;
 
-    for (let i = 0; i <= textLength - patternLength; i++) {
-        if (patternHash === textHash) {
-            let found = true;
-            for (let j = 0; j < patternLength; j++) {
-                if (pattern[j] !== text[i + j]) {
-                    found = false;
-                    break;
+        while (i < pattern.length) {
+            if (pattern[i] === pattern[len]) {
+                len++;
+                lps[i] = len;
+                i++;
+            } else {
+                if (len !== 0) {
+                    len = lps[len - 1];
+                } else {
+                    lps[i] = 0;
+                    i++;
                 }
             }
-            if (found) {
-                return i; // Pattern found at index i
+        }
+
+        return lps;
+    }
+
+    const n = text.length;
+    const m = pattern.length;
+    const lps = computeLPSArray(pattern);
+
+    let i = 0;
+    let j = 0;
+    const indices = [];
+
+    while (i < n) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j === m) {
+            indices.push(i - j);
+            j = lps[j - 1];
+        } else if (i < n && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
             }
         }
-        if (i < textLength - patternLength) {
-            textHash = rehash(text, i, patternLength, textHash, prime);
-        }
     }
 
-    return -1; // Pattern not found
+    return indices;
 }
 
-function hashCode(str, length) {
-    let hash = 0;
-    for (let i = 0; i < length; i++) {
-        hash += str.charCodeAt(i) * Math.pow(101, length - i - 1);
-    }
-    return hash;
-}
-
-function rehash(str, oldIndex, patternLength, oldHash, prime) {
-    let newHash = oldHash - str.charCodeAt(oldIndex);
-    newHash = newHash / 101;
-    newHash += str.charCodeAt(oldIndex + patternLength) * Math.pow(101, patternLength - 1);
-    return newHash;
-}
-
-// Usage
+// Example usage
 const text = "ABABDABACDABABCABAB";
 const pattern = "ABABCABAB";
-const index = rabinKarp(text, pattern);
-if (index !== -1) {
-    console.log(`Pattern found at index ${index}`);
-} else {
-    console.log("Pattern not found in text");
-}
+const indices = KMPSearch(text, pattern);
+
+console.log("Pattern found at indices:", indices);
