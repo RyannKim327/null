@@ -1,20 +1,20 @@
-function longestIncreasingSubsequence(nums) {
-    if (nums.length === 0) return 0;
-
-    const dp = new Array(nums.length).fill(1);
-    let maxLen = 1;
-
-    for (let i = 1; i < nums.length; i++) {
-        for (let j = 0; j < i; j++) {
-            if (nums[i] > nums[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
-            }
+function insertionSort(arr) {
+    for (let i = 1; i < arr.length; i++) {
+        let current = arr[i];
+        let j = i - 1;
+        
+        while (j >= 0 && arr[j] > current) {
+            arr[j + 1] = arr[j];
+            j--;
         }
-        maxLen = Math.max(maxLen, dp[i]);
+        
+        arr[j + 1] = current;
     }
-
-    return maxLen;
+    
+    return arr;
 }
 
-const nums = [10, 22, 9, 33, 21, 50, 41, 60, 80];
-console.log(longestIncreasingSubsequence(nums)); // Output: 6
+// Usage
+let array = [5, 2, 4, 6, 1, 3];
+console.log("Unsorted array: " + array);
+console.log("Sorted array: " + insertionSort(array));
