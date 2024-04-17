@@ -1,41 +1,69 @@
-function bfs(graph, startNode, targetNode) {
-  let queue = [startNode];
-  let visited = new Set();
-
-  while (queue.length > 0) {
-    let currentNode = queue.shift();
-
-    if (currentNode === targetNode) {
-      return true; // Target node found
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-
-    if (!visited.has(currentNode)) {
-      visited.add(currentNode);
-
-      let neighbors = graph[currentNode];
-      
-      if (neighbors) {
-        for (let neighbor of neighbors) {
-          queue.push(neighbor);
-        }
-      }
-    }
-  }
-
-  return false; // Target node not found
 }
 
-// Example usage:
-const graph = {
-  A: ['B', 'C'],
-  B: ['A', 'D', 'E'],
-  C: ['A', 'F'],
-  D: ['B'],
-  E: ['B', 'F'],
-  F: ['C', 'E']
-};
+class BinaryTree {
+    constructor() {
+        this.root = null;
+    }
 
-const startNode = 'A';
-const targetNode = 'F';
+    insert(value) {
+        const newNode = new Node(value);
 
-console.log(bfs(graph, startNode, targetNode));
+        if (!this.root) {
+            this.root = newNode;
+        } else {
+            this.insertNode(this.root, newNode);
+        }
+    }
+
+    insertNode(node, newNode) {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
+        }
+    }
+
+    search(value) {
+        return this.searchNode(this.root, value);
+    }
+
+    searchNode(node, value) {
+        if (!node) {
+            return false;
+        }
+
+        if (value < node.value) {
+            return this.searchNode(node.left, value);
+        } else if (value > node.value) {
+            return this.searchNode(node.right, value);
+        } else {
+            return true;
+        }
+    }
+}
+
+// Example usage
+const tree = new BinaryTree();
+
+tree.insert(5);
+tree.insert(3);
+tree.insert(7);
+tree.insert(2);
+tree.insert(4);
+
+console.log(tree.search(3)); // Outputs: true
+console.log(tree.search(6)); // Outputs: false
