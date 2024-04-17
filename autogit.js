@@ -1,16 +1,37 @@
-// Function to make a GET request to an API endpoint
-async function fetchData(url) {
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-        console.log(data);
-    } catch (error) {
-        console.error("Error fetching data:", error);
+function breadthFirstSearch(graph, startNode, targetNode) {
+    let queue = [startNode];
+    let visited = new Set();
+    
+    while (queue.length > 0) {
+        let currentNode = queue.shift();
+        
+        if (currentNode === targetNode) {
+            return true;
+        }
+        
+        if (!visited.has(currentNode)) {
+            visited.add(currentNode);
+            
+            graph[currentNode].forEach(neighbor => {
+                queue.push(neighbor);
+            });
+        }
     }
+    
+    return false;
 }
 
-// URL to connect to an API running on an Android device
-const androidApiUrl = "http://10.0.2.2:8080/api/data";
+// Example graph representation
+const graph = {
+    A: ["B", "C"],
+    B: ["A", "D", "E"],
+    C: ["A", "F"],
+    D: ["B"],
+    E: ["B", "F"],
+    F: ["C", "E"]
+};
 
-// Call the fetchData function with the Android API URL
-fetchData(androidApiUrl);
+const startNode = "A";
+const targetNode = "F";
+
+console.log(breadthFirstSearch(graph, startNode, targetNode)); // Output: true
