@@ -1,30 +1,56 @@
-function longestCommonSubstring(str1, str2) {
-    const m = str1.length;
-    const n = str2.length;
-    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-    let longest = 0;
-    let endIndex = 0;
+function createLPSArray(pattern) {
+    let lps = new Array(pattern.length).fill(0);
+    let len = 0;
+    let i = 1;
 
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-                if (dp[i][j] > longest) {
-                    longest = dp[i][j];
-                    endIndex = i - 1;
-                }
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
             }
         }
     }
 
-    if (longest === 0) {
-        return '';
+    return lps;
+}
+
+function KMP(text, pattern) {
+    let lps = createLPSArray(pattern);
+    let i = 0;
+    let j = 0;
+    let indices = [];
+
+    while (i < text.length) {
+        if (text[i] === pattern[j]) {
+            i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            indices.push(i - j);
+            j = lps[j - 1];
+        } else if (i < text.length && text[i] !== pattern[j]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
     }
 
-    return str1.substring(endIndex - longest + 1, endIndex + 1);
+    return indices;
 }
 
 // Example Usage
-const str1 = 'abcdef';
-const str2 = 'bcdeft';
-console.log(longestCommonSubstring(str1, str2)); // Output: "cde"
+let text = "ABABDABACDABABCABAB";
+let pattern = "ABABCABAB";
+
+let indices = KMP(text, pattern);
+console.log("Pattern found at indices:", indices);
