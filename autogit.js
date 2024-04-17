@@ -1,22 +1,24 @@
-function longestCommonPrefix(strings) {
-    if (strings.length === 0) {
-        return '';
+function firstNonRepeatingCharacter(str) {
+    let charCount = {};
+    
+    // Count the occurrences of each character in the string
+    for (let char of str) {
+        charCount[char] = charCount[char] ? charCount[char] + 1 : 1;
     }
-
-    // Find the shortest string in the array
-    let shortest = strings.reduce((a, b) => a.length <= b.length ? a : b);
-
-    for (let i = 0; i < shortest.length; i++) {
-        for (let str of strings) {
-            if (str[i] !== shortest[i]) {
-                return shortest.slice(0, i);
-            }
+    
+    // Find the first non-repeating character
+    for (let char of str) {
+        if (charCount[char] === 1) {
+            return char;
         }
     }
-
-    return shortest;
+    
+    // Return null if there is no non-repeating character
+    return null;
 }
 
-// Example
-const strings = ['flower', 'flight', 'flour'];
-console.log(longestCommonPrefix(strings)); // Output: 'fl'
+// Test the function
+const inputString = "aabccdeff";
+const firstNonRepeatingChar = firstNonRepeatingCharacter(inputString);
+
+console.log("First non-repeating character:", firstNonRepeatingChar);
