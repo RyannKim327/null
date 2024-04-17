@@ -1,44 +1,37 @@
-function fibonacciSearch(arr, x) {
-    let fib1 = 0;
-    let fib2 = 1;
-    let fibM = fib1 + fib2;
-
-    let length = arr.length;
-
-    while (fibM < length) {
-        fib1 = fib2;
-        fib2 = fibM;
-        fibM = fib1 + fib2;
+function mergeSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
     }
-
-    let offset = -1;
-
-    while (fibM > 1) {
-        let i = Math.min(offset + fib1, length - 1);
-        if (arr[i] < x) {
-            fibM = fib2;
-            fib2 = fib1;
-            fib1 = fibM - fib2;
-            offset = i;
-        } else if (arr[i] > x) {
-            fibM = fib1;
-            fib2 -= fib1;
-            fib1 = fibM - fib2;
-        } else {
-            return i;
-        }
-    }
-
-    if (fib2 && arr[offset + 1] == x) {
-        return offset + 1;
-    }
-
-    return -1;
+    
+    const middle = Math.floor(arr.length / 2);
+    const left = arr.slice(0, middle);
+    const right = arr.slice(middle);
+    
+    return merge(
+        mergeSort(left),
+        mergeSort(right)
+    );
 }
 
-// Test the function
-let arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-let x = 14;
-let index = fibonacciSearch(arr, x);
+function merge(left, right) {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+    
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            result.push(right[rightIndex]);
+            rightIndex++;
+        }
+    }
+    
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+}
 
-console.log(index);
+// Example usage
+const arr = [8, 3, 1, 5, 4, 7, 2, 6];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr); // Output: [1, 2, 3, 4, 5, 6, 7, 8]
