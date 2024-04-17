@@ -1,20 +1,22 @@
-function reverseString(str) {
-    return str.split('').reverse().join('');
-}
-
-const originalString = 'Hello, World!';
-const reversedString = reverseString(originalString);
-
-console.log(reversedString); // Output: '!dlroW ,olleH'
-function reverseString(str) {
-    let reversedStr = '';
-    for (let i = str.length - 1; i >= 0; i--) {
-        reversedStr += str[i];
+function longestCommonPrefix(strings) {
+    if (strings.length === 0) {
+        return '';
     }
-    return reversedStr;
+
+    // Find the shortest string in the array
+    let shortest = strings.reduce((a, b) => a.length <= b.length ? a : b);
+
+    for (let i = 0; i < shortest.length; i++) {
+        for (let str of strings) {
+            if (str[i] !== shortest[i]) {
+                return shortest.slice(0, i);
+            }
+        }
+    }
+
+    return shortest;
 }
 
-const originalString = 'Hello, World!';
-const reversedString = reverseString(originalString);
-
-console.log(reversedString); // Output: '!dlroW ,olleH'
+// Example
+const strings = ['flower', 'flight', 'flour'];
+console.log(longestCommonPrefix(strings)); // Output: 'fl'
