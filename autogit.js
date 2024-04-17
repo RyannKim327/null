@@ -1,32 +1,41 @@
-function findMajorityElement(arr) {
-    let map = new Map();
+function mergeSortIterative(arr) {
+    if (arr.length < 2) {
+        return arr;
+    }
     
-    for (let num of arr) {
-        if (map.has(num)) {
-            map.set(num, map.get(num) + 1);
-        } else {
-            map.set(num, 1);
+    const len = arr.length;
+    const step = 1;
+    let left, right, merged;
+    
+    for (step; step < len; step *= 2) {
+        for (let start = 0; start < len; start += 2 * step) {
+            left = arr.slice(start, start + step);
+            right = arr.slice(start + step, start + 2 * step);
+            merged = merge(left, right);
+            arr = arr.slice(0, start).concat(merged, arr.slice(start + 2 * step));
         }
     }
     
-    let majorityElement = null;
-    let majorityCount = 0;
-    
-    for (let [key, value] of map.entries()) {
-        if (value > arr.length / 2) {
-            majorityElement = key;
-            majorityCount = value;
-            break;
-        }
-    }
-    
-    if (majorityElement !== null) {
-        return majorityElement;
-    } else {
-        return "No majority element found";
-    }
+    return arr;
 }
 
-let arr = [2, 2, 3, 4, 2, 2, 2];
-let majorityElement = findMajorityElement(arr);
-console.log("Majority Element: " + majorityElement);
+function merge(left, right) {
+    let result = [];
+    let il = 0, ir = 0;
+    
+    while (il < left.length && ir < right.length) {
+        if (left[il] < right[ir]) {
+            result.push(left[il++]);
+        } else {
+            result.push(right[ir++]);
+        }
+    }
+    
+    return result.concat(left.slice(il)).concat(right.slice(ir));
+}
+
+// Example usage
+const arr = [38, 27, 43, 3, 9, 82, 10];
+console.log("Original array:", arr);
+const sortedArr = mergeSortIterative(arr);
+console.log("Sorted array:", sortedArr);
