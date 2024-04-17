@@ -1,27 +1,17 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+function reverseWords(str) {
+    // split the string into an array of words
+    let words = str.split(' ');
+    
+    // reverse the array
+    let reversedWords = words.reverse();
+    
+    // join the array back into a string
+    let reversedStr = reversedWords.join(' ');
+    
+    return reversedStr;
 }
 
-function maxDepth(node) {
-  if (node === null) {
-    return 0;
-  } else {
-    const leftDepth = maxDepth(node.left);
-    const rightDepth = maxDepth(node.right);
-
-    return 1 + Math.max(leftDepth, rightDepth);
-  }
-}
-
-// Example binary tree
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-console.log("Maximum depth of the binary tree is: " + maxDepth(root));
+// Test the function
+let str = "Hello World!";
+let reversedStr = reverseWords(str);
+console.log(reversedStr); // Output: "World! Hello"
