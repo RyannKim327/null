@@ -1,41 +1,148 @@
-function preProcessPattern(pattern) {
-    const table = new Array(256).fill(pattern.length);
-    for (let i = 0; i < pattern.length - 1; i++) {
-        table[pattern.charCodeAt(i)] = pattern.length - 1 - i;
+class Node {
+    constructor(value, color) {
+        this.value = value;
+        this.color = color;
+        this.left = null;
+        this.right = null;
+        this.parent = null;
     }
-    return table;
 }
 
-function boyerMooreSearch(text, pattern) {
-    const patternLength = pattern.length;
-    const textLength = text.length;
-    const jumpTable = preProcessPattern(pattern);
-    
-    let i = patternLength - 1; // Index for pattern
-    let j = patternLength - 1; // Index for text
+class RedBlackTree {
+    constructor() {
+        this.root = null;
+    }
 
-    while (i < textLength) {
-        if (pattern[j] === text[i]) {
-            if (j === 0) {
-                return i; // Match found
-            }
-            i--;
-            j--;
-        } else {
-            i = i + patternLength - Math.min(j, 1 + jumpTable[text.charCodeAt(i)]);
-            j = patternLength - 1;
+    // Helper functions for rotating nodes
+    leftRotate(node) {
+        let child = node.right;
+        node.right = child.left;
+
+        if (child.left !== null)
+            child.left.parent = node;
+
+        child.parent = node.parent;
+
+        if (node.parent === null)
+            this.root = child;
+        else if (node === node.parent.left)
+            node.parent.left = child;
+        else
+            node.parent.right = child;
+
+        child.left = node;
+        node.parent = child;
+    }
+
+    rightRotate(node) {
+        let child = node.left;
+        node.left = child.right;
+
+        if (child.right !== null)
+            child.right.parent = node;
+
+        child.parent = node.parent;
+
+        if (node.parent === null)
+            this.root = child;
+        else if (node === node.parent.right)
+            node.parent.right = child;
+        else
+            node.parent.left = child;
+
+        child.right = node;
+        node.parent = child;
+    }
+
+    // Insertion method
+    insert(value) {
+        let newNode = new Node(value, "red");
+        
+        if (this.root === null) {
+            this.root = newNode;
+            this.root.color = "black";
+            return;
         }
+
+        let current = this.root;
+        let parent = null;
+
+        while (current !== null) {
+            parent = current;
+
+            if (value < current.value)
+                current = current.left;
+            else
+                current = current.right;
+        }
+
+        newNode.parent = parent;
+
+        if (value < parent.value)
+            parent.left = newNode;
+        else
+            parent.right = newNode;
+
+        this.fixInsert(newNode);
     }
 
-    return -1; // No match found
+    // Fix the red-black tree rules after node insertion
+    fixInsert(node) {
+        while (node !== this.root && node.color !== "black" && node.parent.color === "red") {
+            let parent = node.parent;
+            let grandparent = node.parent.parent;
+
+            if (parent === grandparent.left) {
+                let uncle = grandparent.right;
+
+                if (uncle !== null && uncle.color === "red") {
+                    grandparent.color = "red";
+                    parent.color = "black";
+                    uncle.color = "black";
+                    node = grandparent;
+                } else {
+                    if (node === parent.right) {
+                        this.leftRotate(parent);
+                        node = parent;
+                        parent = node.parent;
+                    }
+
+                    this.rightRotate(grandparent);
+                    let tempColor = parent.color;
+                    parent.color = grandparent.color;
+                    grandparent.color = tempColor;
+                    node = parent;
+                }
+            } else {
+                let uncle = grandparent.left;
+
+                if (uncle !== null && uncle.color === "red") {
+                    grandparent.color = "red";
+                    parent.color = "black";
+                    uncle.color = "black";
+                    node = grandparent;
+                } else {
+                    if (node === parent.left) {
+                        this.rightRotate(parent);
+                        node = parent;
+                        parent = node.parent;
+                    }
+
+                    this.leftRotate(grandparent);
+                    let tempColor = parent.color;
+                    parent.color = grandparent.color;
+                    grandparent.color = tempColor;
+                    node = parent;
+                }
+            }
+        }
+
+        this.root.color = "black";
+    }
 }
 
-// Example Usage
-const text = "hello world";
-const pattern = "world";
-const index = boyerMooreSearch(text, pattern);
-if (index !== -1) {
-    console.log(`Pattern found at index: ${index}`);
-} else {
-    console.log("Pattern not found");
-}
+// Example usage
+const rbTree = new RedBlackTree();
+rbTree.insert(10);
+rbTree.insert(20);
+rbTree.insert(5);
