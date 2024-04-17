@@ -1,18 +1,18 @@
-function countOccurrences(text, word) {
-    let count = 0;
-    const words = text.split(" ");
-    
-    for (let i = 0; i < words.length; i++) {
-        if (words[i].toLowerCase() === word.toLowerCase()) {
-            count++;
-        }
-    }
-    
-    return count;
+function areAnagrams(str1, str2) {
+    const sanitizeString = (str) => str.toLowerCase().replace(/[^a-z]/g, '');
+  
+    const sortedStr1 = sanitizeString(str1).split('').sort().join('');
+    const sortedStr2 = sanitizeString(str2).split('').sort().join('');
+  
+    return sortedStr1 === sortedStr2;
 }
 
-const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eget consectetur dui. Nam pharetra velit at justo suscipit, eu malesuada sapien ullamcorper. Sed ultricies cursus eros, vel gravida lorem feugiat vel. Nulla facilisi pharetra.";
-const word = "consectetur";
+// Test the function
+const string1 = "listen";
+const string2 = "silent";
 
-const occurrences = countOccurrences(text, word);
-console.log(`The word "${word}" occurs ${occurrences} times in the text.`);
+if (areAnagrams(string1, string2)) {
+    console.log(`${string1} and ${string2} are anagrams.`);
+} else {
+    console.log(`${string1} and ${string2} are not anagrams.`);
+}
