@@ -1,26 +1,65 @@
-function binarySearchRecursive(arr, target, start = 0, end = arr.length - 1) {
-    if (start > end) {
-        return -1; // target not found
-    }
-
-    const mid = Math.floor((start + end) / 2);
-
-    if (arr[mid] === target) {
-        return mid; // target found
-    } else if (arr[mid] < target) {
-        return binarySearchRecursive(arr, target, mid + 1, end); // search right half
-    } else {
-        return binarySearchRecursive(arr, target, start, mid - 1); // search left half
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
     }
 }
 
-// Example usage
-const arr = [1, 3, 5, 7, 9, 11, 13, 15];
-const target = 11;
-const index = binarySearchRecursive(arr, target);
+class Queue {
+    constructor() {
+        this.head = null;
+        this.tail = null;
+        this.size = 0;
+    }
 
-if (index !== -1) {
-    console.log(`Target ${target} found at index ${index}`);
-} else {
-    console.log(`Target ${target} not found`);
+    enqueue(value) {
+        const newNode = new Node(value);
+
+        if (!this.head) {
+            this.head = newNode;
+            this.tail = newNode;
+        } else {
+            this.tail.next = newNode;
+            this.tail = newNode;
+        }
+
+        this.size++;
+    }
+
+    dequeue() {
+        if (!this.head) {
+            return null;
+        }
+
+        const value = this.head.value;
+        this.head = this.head.next;
+        this.size--;
+
+        if (!this.head) {
+            this.tail = null;
+        }
+
+        return value;
+    }
+
+    getSize() {
+        return this.size;
+    }
+
+    isEmpty() {
+        return this.size === 0;
+    }
 }
+
+// Example Usage
+const queue = new Queue();
+
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.dequeue()); // Output: 2
+
+console.log(queue.getSize()); // Output: 1
+console.log(queue.isEmpty()); // Output: false
