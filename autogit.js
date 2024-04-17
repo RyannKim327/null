@@ -1,63 +1,45 @@
-class Graph {
-  constructor() {
-    this.vertices = {};
-  }
-
-  addVertex(vertex) {
-    this.vertices[vertex] = [];
-  }
-  
-  addEdge(vertex1, vertex2) {
-    this.vertices[vertex1].push(vertex2);
-    this.vertices[vertex2].push(vertex1);
-  }
+function Node(value) {
+    this.value = value;
+    this.children = [];
 }
 
-function biDirectionalSearch(graph, start, goal) {
-  let visitedFromStart = new Set();
-  let visitedFromGoal = new Set();
-  let queueStart = [start];
-  let queueGoal = [goal];
-  
-  while (queueStart.length > 0 && queueGoal.length > 0) {
-    let currVertexStart = queueStart.shift();
-    let currVertexGoal = queueGoal.shift();
+function breadthLimitedSearch(root, targetValue, limit) {
+    let queue = [root];
     
-    visitedFromStart.add(currVertexStart);
-    visitedFromGoal.add(currVertexGoal);
-    
-    if (visitedFromGoal.has(currVertexStart) || visitedFromStart.has(currVertexGoal)) {
-      // Path found
-      return true;
+    while (queue.length > 0 && limit > 0) {
+        let node = queue.shift();
+        
+        if (node.value === targetValue) {
+            return node;
+        }
+        
+        limit--;
+
+        for (let i = 0; i < node.children.length; i++) {
+            queue.push(node.children[i]);
+        }
     }
     
-    for (let neighbor of graph.vertices[currVertexStart]) {
-      if (!visitedFromStart.has(neighbor)) {
-        queueStart.push(neighbor);
-      }
-    }
-    
-    for (let neighbor of graph.vertices[currVertexGoal]) {
-      if (!visitedFromGoal.has(neighbor)) {
-        queueGoal.push(neighbor);
-      }
-    }
-  }
-  
-  return false;
+    return null;
 }
 
 // Example usage
-let graph = new Graph();
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addEdge('A', 'B');
-graph.addEdge('B', 'C');
-graph.addEdge('C', 'D');
+let root = new Node(1);
+let node2 = new Node(2);
+let node3 = new Node(3);
+let node4 = new Node(4);
+let node5 = new Node(5);
 
-let start = 'A';
-let goal = 'D';
-let pathExists = biDirectionalSearch(graph, start, goal);
-console.log(pathExists); // Output should be true
+root.children.push(node2, node3);
+node2.children.push(node4, node5);
+
+let targetValue = 4;
+let limit = 3;
+
+let resultNode = breadthLimitedSearch(root, targetValue, limit);
+
+if (resultNode) {
+    console.log(`Node with value ${targetValue} found within the limit.`);
+} else {
+    console.log(`Node with value ${targetValue} not found within the limit.`);
+}
