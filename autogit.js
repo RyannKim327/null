@@ -1,53 +1,37 @@
-function mergeSortIterative(arr) {
-    if (arr.length <= 1) {
-        return arr;
-    }
+function findMedianSortedArrays(nums1, nums2) {
+    const mergedArray = [];
+    let i = 0, j = 0;
 
-    let len = arr.length;
-    let width = 1;
-    let sortedArr = arr.slice();
-
-    while (width < len) {
-        for (let i = 0; i < len; i += width * 2) {
-            merge(sortedArr, i, Math.min(i + width, len), Math.min(i + width * 2, len));
-        }
-        width *= 2;
-    }
-
-    return sortedArr;
-}
-
-function merge(arr, start, mid, end) {
-    let result = [];
-    let leftIndex = start;
-    let rightIndex = mid;
-
-    while (leftIndex < mid && rightIndex < end) {
-        if (arr[leftIndex] < arr[rightIndex]) {
-            result.push(arr[leftIndex]);
-            leftIndex++;
+    while (i < nums1.length && j < nums2.length) {
+        if (nums1[i] <= nums2[j]) {
+            mergedArray.push(nums1[i]);
+            i++;
         } else {
-            result.push(arr[rightIndex]);
-            rightIndex++;
+            mergedArray.push(nums2[j]);
+            j++;
         }
     }
 
-    while (leftIndex < mid) {
-        result.push(arr[leftIndex]);
-        leftIndex++;
+    while (i < nums1.length) {
+        mergedArray.push(nums1[i]);
+        i++;
     }
 
-    while (rightIndex < end) {
-        result.push(arr[rightIndex]);
-        rightIndex++;
+    while (j < nums2.length) {
+        mergedArray.push(nums2[j]);
+        j++;
     }
 
-    for (let i = start; i < end; i++) {
-        arr[i] = result[i - start];
+    const totalLength = mergedArray.length;
+    const mid = Math.floor(totalLength / 2);
+
+    if (totalLength % 2 === 0) {
+        return (mergedArray[mid - 1] + mergedArray[mid]) / 2;
+    } else {
+        return mergedArray[mid];
     }
 }
 
-// Test the algorithm
-let arr = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
-let sortedArr = mergeSortIterative(arr);
-console.log(sortedArr); // Output: [1, 1, 2, 3, 3, 4, 5, 5, 5, 6, 9]
+const nums1 = [1, 3];
+const nums2 = [2];
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.0
