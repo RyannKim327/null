@@ -1,16 +1,6 @@
-function bubbleSort(arr) {
-    let len = arr.length;
-    for (let i = 0; i < len; i++) {
-        for (let j = 0; j < len - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                let temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
-        }
-    }
-    return arr;
-}
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
 
-let numbers = [5, 3, 8, 2, 1, 4];
-console.log(bubbleSort(numbers)); // Outputs: [1, 2, 3, 4, 5, 8]
+const commonElements = array1.filter(element => array2.includes(element));
+
+console.log(commonElements);
