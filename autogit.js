@@ -1,16 +1,8 @@
-const fetchData = async () => {
-  try {
-    const response = await fetch('https://api.example.com/data');
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching data:', error);
-  }
-};
+var numbers = [3, 6, 2, 8, 4, 10];
+var max = Math.max.apply(null, numbers);
 
-fetchData()
-  .then(data => {
-    console.log('Received data:', data);
-    // Do something with the data
-  })
-  .catch(error => console.error('Error processing data:', error));
+console.log("The maximum value in the array is: " + max);
+var numbers = [3, 6, 2, 8, 4, 10];
+var max = Math.max(...numbers);
+
+console.log("The maximum value in the array is: " + max);
