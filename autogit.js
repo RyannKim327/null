@@ -1,32 +1,61 @@
-function depthLimitedSearch(root, goal, depthLimit) {
-    let stack = [{ node: root, depth: 0 }];
-    
-    while(stack.length > 0) {
-        let current = stack.pop();
-        
-        if (current.node === goal) {
-            return current.node; // goal found
-        }
-        
-        if (current.depth < depthLimit) {
-            let children = current.node.getChildren(); // Assume node.getChildren() returns an array of child nodes
-            
-            for (let i = children.length - 1; i >= 0; i--) {
-                stack.push({ node: children[i], depth: current.depth + 1 });
+class Edge {
+    constructor(src, dest, weight) {
+        this.src = src;
+        this.dest = dest;
+        this.weight = weight;
+    }
+}
+
+class Graph {
+    constructor(numVertices, edges) {
+        this.numVertices = numVertices;
+        this.edges = edges;
+    }
+
+    bellmanFord(source) {
+        let distance = new Array(this.numVertices).fill(Infinity);
+        distance[source] = 0;
+
+        for (let i = 0; i < this.numVertices - 1; i++) {
+            for (let j = 0; j < this.edges.length; j++) {
+                let edge = this.edges[j];
+                if (distance[edge.src] + edge.weight < distance[edge.dest]) {
+                    distance[edge.dest] = distance[edge.src] + edge.weight;
+                }
             }
         }
+
+        for (let j = 0; j < this.edges.length; j++) {
+            let edge = this.edges[j];
+            if (distance[edge.src] + edge.weight < distance[edge.dest]) {
+                console.log("Negative weight cycle detected, Bellman-Ford algorithm failed.");
+                return;
+            }
+        }
+
+        return distance;
     }
-    
-    return null; // goal not found within depth limit
 }
+
 // Example usage
-let rootNode = new Node('A');
-let goalNode = new Node('C');
+const numVertices = 5;
+const edges = [
+    new Edge(0, 1, -1),
+    new Edge(0, 2, 4),
+    new Edge(1, 2, 3),
+    new Edge(1, 3, 2),
+    new Edge(1, 4, 2),
+    new Edge(3, 2, 5),
+    new Edge(3, 1, 1),
+    new Edge(4, 3, -3)
+];
 
-rootNode.addChild(new Node('B'));
-rootNode.children[0].addChild(new Node('D'));
-rootNode.children[0].addChild(new Node('E'));
-rootNode.children[0].children[0].addChild(goalNode);
+const graph = new Graph(numVertices, edges);
+const sourceNode = 0;
+const shortestPaths = graph.bellmanFord(sourceNode);
 
-let result = depthLimitedSearch(rootNode, goalNode, 3);
-console.log(result);
+console.log("Shortest paths from node", sourceNode + ":");
+
+for (let i = 0; i < shortestPaths.length; i++) {
+    console.log("Node", i, ":", shortestPaths[i]);
+}
