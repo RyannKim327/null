@@ -1,16 +1,15 @@
-let str = "Hello, world!";
-let substring = "world";
+function maxSubarraySum(arr) {
+    let maxEndingHere = arr[0];
+    let maxSoFar = arr[0];
 
-if (str.includes(substring)) {
-    console.log("The string contains the substring.");
-} else {
-    console.log("The string does not contain the substring.");
-}
-let str = "Hello, world!";
-let substring = "world";
+    for (let i = 1; i < arr.length; i++) {
+        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
+        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+    }
 
-if (str.indexOf(substring) !== -1) {
-    console.log("The string contains the substring.");
-} else {
-    console.log("The string does not contain the substring.");
+    return maxSoFar;
 }
+
+// Example usage
+const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+console.log(maxSubarraySum(arr)); // Output: 6 (the maximum sum subarray is [4, -1, 2, 1])
