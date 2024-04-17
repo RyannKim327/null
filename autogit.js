@@ -1,15 +1,41 @@
-function calculateMean(numbers) {
-    let sum = 0;
-    for (let i = 0; i < numbers.length; i++) {
-        sum += numbers[i];
+function boyerMooreSearch(text, pattern) {
+    const textLength = text.length;
+    const patternLength = pattern.length;
+
+    if (patternLength === 0) {
+        return -1;
     }
-    return sum / numbers.length;
+
+    const lastOccurrence = {};
+    for (let i = 0; i < patternLength; i++) {
+        lastOccurrence[pattern[i]] = i;
+    }
+
+    let i = patternLength - 1;
+    let j = patternLength - 1;
+
+    while (i < textLength) {
+        if (text[i] === pattern[j]) {
+            if (j === 0) {
+                return i;
+            }
+            i--;
+            j--;
+        } else {
+            i += patternLength - Math.min(j, 1 + lastOccurrence[text[i]]);
+            j = patternLength - 1;
+        }
+    }
+
+    return -1;
 }
 
-// Example list of numbers
-let numbers = [5, 10, 15, 20, 25];
-
-// Calculate the mean of the list
-let mean = calculateMean(numbers);
-
-console.log("Mean: " + mean);
+// Test the Boyer-Moore search algorithm
+const text = "hello world";
+const pattern = "world";
+const index = boyerMooreSearch(text, pattern);
+if (index !== -1) {
+    console.log(`Pattern found at index: ${index}`);
+} else {
+    console.log("Pattern not found");
+}
