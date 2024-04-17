@@ -1,18 +1,28 @@
-function findKthSmallestElement(arr, k) {
-    if (arr.length < k) {
-        return null; // If k is greater than the array length
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
     }
-
-    // Sort the array in ascending order
-    arr.sort((a, b) => a - b);
-
-    // Return the kth smallest element
-    return arr[k - 1];
 }
 
-// Example usage
-const arr = [3, 1, 4, 1, 5, 9, 2, 6];
-const k = 4;
-const kthSmallestElement = findKthSmallestElement(arr, k);
+function findMiddleElement(head) {
+    let slow = head;
+    let fast = head;
 
-console.log(`The ${k}th smallest element is: ${kthSmallestElement}`);
+    while (fast != null && fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+
+    return slow.value;
+}
+
+// Example Linked List: 1 -> 2 -> 3 -> 4 -> 5 -> 6
+let head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
+head.next.next.next.next.next = new Node(6);
+
+console.log(findMiddleElement(head)); // Output: 4
