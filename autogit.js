@@ -1,47 +1,45 @@
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
+function findMedianSortedArrays(nums1, nums2) {
+    const mergedArray = mergeArrays(nums1, nums2);
+
+    const length = mergedArray.length;
+    const middleIndex = Math.floor(length / 2);
+
+    if (length % 2 === 0) {
+        return (mergedArray[middleIndex - 1] + mergedArray[middleIndex]) / 2;
+    } else {
+        return mergedArray[middleIndex];
     }
 }
 
-class LinkedList {
-    constructor() {
-        this.head = null;
-    }
+function mergeArrays(nums1, nums2) {
+    const mergedArray = [];
+    let i = 0;
+    let j = 0;
 
-    addNode(data) {
-        const newNode = new Node(data);
-
-        if (!this.head) {
-            this.head = newNode;
+    while (i < nums1.length && j < nums2.length) {
+        if (nums1[i] < nums2[j]) {
+            mergedArray.push(nums1[i]);
+            i++;
         } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
+            mergedArray.push(nums2[j]);
+            j++;
         }
     }
 
-    getLength() {
-        let current = this.head;
-        let length = 0;
-
-        while (current) {
-            length++;
-            current = current.next;
-        }
-
-        return length;
+    while (i < nums1.length) {
+        mergedArray.push(nums1[i]);
+        i++;
     }
+
+    while (j < nums2.length) {
+        mergedArray.push(nums2[j]);
+        j++;
+    }
+
+    return mergedArray;
 }
+const nums1 = [1, 3];
+const nums2 = [2, 4];
 
-// Example usage
-const linkedList = new LinkedList();
-linkedList.addNode(1);
-linkedList.addNode(2);
-linkedList.addNode(3);
-linkedList.addNode(4);
-
-console.log(linkedList.getLength()); // Output: 4
+const median = findMedianSortedArrays(nums1, nums2);
+console.log(median); // Output: 2.5
