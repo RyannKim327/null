@@ -1,20 +1,37 @@
-function isPalindrome(str) {
-    str = str.toLowerCase().replace(/[\W_]/g, ''); // Remove non-alphanumeric characters and convert to lowercase
-
-    let left = 0;
-    let right = str.length - 1;
-
-    while (left < right) {
-        if (str[left] !== str[right]) {
-            return false; // Characters at positions left and right do not match
-        }
-        left++;
-        right--;
+function buildBadCharTable(pattern) {
+    const table = {};
+    
+    for (let i = 0; i < pattern.length - 1; i++) {
+        table[pattern[i]] = pattern.length - 1 - i;
     }
-
-    return true; // All characters match, so the string is a palindrome
+    
+    return table;
 }
 
-// Test the function
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // Output: true
-console.log(isPalindrome("race a car")); // Output: false
+function boyerMooreSearch(text, pattern) {
+    const badCharTable = buildBadCharTable(pattern);
+    const n = text.length;
+    const m = pattern.length;
+    
+    let i = 0;
+    
+    while (i <= n - m) {
+        let j = m - 1;
+        
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
+        }
+        
+        if (j < 0) {
+            console.log(`Pattern found at index ${i}`);
+            i += m;
+        } else {
+            const badChar = badCharTable[text[i + j]] || m;
+            i += badChar;
+        }
+    }
+}
+const text = "ABAAABCDBBABCDDEBCABC";
+const pattern = "ABC";
+
+boyerMooreSearch(text, pattern);
