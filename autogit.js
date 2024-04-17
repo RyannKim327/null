@@ -1,37 +1,30 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
+function longestCommonSubstring(str1, str2) {
+    const m = str1.length;
+    const n = str2.length;
+    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+    let longest = 0;
+    let endIndex = 0;
 
-function diameterOfBinaryTree(root) {
-    if (!root) return 0;
-
-    let diameter = 0;
-
-    function depth(node) {
-        if (!node) return 0;
-
-        const leftDepth = depth(node.left);
-        const rightDepth = depth(node.right);
-
-        diameter = Math.max(diameter, leftDepth + rightDepth);
-
-        return Math.max(leftDepth, rightDepth) + 1;
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > longest) {
+                    longest = dp[i][j];
+                    endIndex = i - 1;
+                }
+            }
+        }
     }
 
-    depth(root);
+    if (longest === 0) {
+        return '';
+    }
 
-    return diameter;
+    return str1.substring(endIndex - longest + 1, endIndex + 1);
 }
 
-// Example usage:
-const root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-
-console.log(diameterOfBinaryTree(root)); // Output: 3
+// Example Usage
+const str1 = 'abcdef';
+const str2 = 'bcdeft';
+console.log(longestCommonSubstring(str1, str2)); // Output: "cde"
