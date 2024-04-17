@@ -1,15 +1,53 @@
-function isArraySortedAscending(arr) {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false;
+function burrowsWheelerTransform(input) {
+    let matrix = [];
+    
+    for (let i = 0; i < input.length; i++) {
+        matrix.push(input.slice(i) + input.slice(0, i));
+    }
+    
+    matrix.sort();
+    
+    let transformedString = "";
+    let index = 0;
+    
+    for (let i = 0; i < matrix.length; i++) {
+        transformedString += matrix[i][matrix[i].length - 1];
+        if (matrix[i] === input) {
+            index = i;
         }
     }
-    return true;
+    
+    return {transformedString, index};
 }
 
-// Example usage
-const arr1 = [1, 2, 3, 4, 5];
-const arr2 = [5, 4, 3, 2, 1];
+function burrowsWheelerInverseTransform(transformedString, index) {
+    let matrix = [];
+    
+    for (let i = 0; i < transformedString.length; i++) {
+        let temp = [];
+        for (let j = 0; j < transformedString.length; j++) {
+            temp[j] = transformedString[j];
+        }
+        matrix.push(temp);
+        transformedString = temp[0] + transformedString.slice(0, -1);
+    }
+    
+    matrix.sort();
+    
+    let originalString = "";
+    
+    for (let i = 0; i < matrix.length; i++) {
+        originalString += matrix[i][index];
+    }
+    
+    return originalString;
+}
 
-console.log(isArraySortedAscending(arr1)); // Output: true
-console.log(isArraySortedAscending(arr2)); // Output: false
+// Example
+let inputString = "hello world";
+let {transformedString, index} = burrowsWheelerTransform(inputString);
+let originalString = burrowsWheelerInverseTransform(transformedString, index);
+
+console.log("Input String:", inputString);
+console.log("Transformed String:", transformedString);
+console.log("Original String:", originalString);
