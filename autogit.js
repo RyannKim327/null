@@ -1,31 +1,42 @@
-function depthLimitedSearch(node, goal, depthLimit) {
-    return recursiveDLS(node, goal, depthLimit);
-}
-
-function recursiveDLS(node, goal, depthLimit) {
-    if (node.state === goal) {
-        return node;
-    } else if (depthLimit === 0) {
-        return "cutoff";
-    } else {
-        let cutoffOccurred = false;
-        let children = generateChildren(node);
-        for (let i = 0; i < children.length; i++) {
-            let result = recursiveDLS(children[i], goal, depthLimit - 1);
-            if (result === "cutoff") {
-                cutoffOccurred = true;
-            } else if (result !== "failure") {
-                return result;
-            }
-        }
-        return cutoffOccurred ? "cutoff" : "failure";
+function preprocessPattern(pattern) {
+    const table = new Array(256).fill(pattern.length);
+    
+    for (let i = 0; i < pattern.length - 1; i++) {
+        table[pattern.charCodeAt(i)] = pattern.length - 1 - i;
     }
+    
+    return table;
 }
+function boyerMooreHorspool(text, pattern) {
+    const table = preprocessPattern(pattern);
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    
+    let i = 0;
+    
+    while (i <= textLength - patternLength) {
+        let j = patternLength - 1;
 
-function generateChildren(node) {
-    // Replace this function with your own function to generate children of a node
-    return [];
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
+        }
+        
+        if (j < 0) {
+            return i;
+        } else {
+            i += table[text.charCodeAt(i + patternLength - 1)];
+        }
+    }
+    
+    return -1; // pattern not found
 }
+const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
+const pattern = "consectetur";
 
-// Example usage
-// Define your node structure and goal state, then call depthLimitedSearch function with root node, goal state, and depth limit
+const index = boyerMooreHorspool(text, pattern);
+
+if (index !== -1) {
+    console.log(`Pattern found at index ${index}`);
+} else {
+    console.log("Pattern not found in text");
+}
