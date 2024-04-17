@@ -1,11 +1,11 @@
-function findSecondLargest(arr) {
-    arr.sort(function(a, b) {
-        return b - a;
-    });
-    return arr[1];
+async function fetchData() {
+  try {
+    const response = await fetch('https://api.example.com/data');
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
 }
 
-// Example
-const numbers = [10, 5, 20, 8, 15];
-const secondLargest = findSecondLargest(numbers);
-console.log("Second largest element: ", secondLargest);
+fetchData();
