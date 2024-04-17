@@ -1,59 +1,53 @@
-class TarjanSCC {
-    constructor(graph) {
-        this.graph = graph;
-        this.n = graph.length;
-        this.index = 0;
-        this.lowLink = new Array(this.n).fill(-1);
-        this.ids = new Array(this.n).fill(-1);
-        this.onStack = new Array(this.n).fill(false);
-        this.stack = [];
-        this.sccCount = 0;
-        this.sccs = [];
-    }
+function buildPatternTable(pattern) {
+    const patternTable = [0];
+    let prefix = 0;
+    let suffix = 1;
 
-    findSCCs() {
-        for (let i = 0; i < this.n; i++) {
-            if (this.ids[i] === -1) {
-                this.dfs(i);
-            }
-        }
-        return this.sccs;
-    }
-
-    dfs(at) {
-        this.lowLink[at] = this.index;
-        this.ids[at] = this.index;
-        this.index++;
-        this.stack.push(at);
-        this.onStack[at] = true;
-
-        // Visit all neighbors
-        for (let to of this.graph[at]) {
-            if (this.ids[to] === -1) {
-                this.dfs(to);
-            }
-            if (this.onStack[to]) {
-                this.lowLink[at] = Math.min(this.lowLink[at], this.lowLink[to]);
-            }
-        }
-
-        if (this.lowLink[at] === this.ids[at]) {
-            // Start a new strongly connected component
-            let component = [];
-            let node = -1;
-            while (node !== at) {
-                node = this.stack.pop();
-                this.onStack[node] = false;
-                component.push(node);
-            }
-            this.sccs.push(component);
-            this.sccCount++;
+    while (suffix < pattern.length) {
+        if (pattern[prefix] === pattern[suffix]) {
+            patternTable[suffix] = prefix + 1;
+            prefix++;
+            suffix++;
+        } else if (prefix === 0) {
+            patternTable[suffix] = 0;
+            suffix++;
+        } else {
+            prefix = patternTable[prefix - 1];
         }
     }
+
+    return patternTable;
 }
 
-// Example Usage
-const graph = [[1], [2], [0], [4], [3]];
-const tarjan = new TarjanSCC(graph);
-const sccs = tarjan.findSCCs();
-console.log(sccs);
+function kmpSearch(text, pattern) {
+    const patternTable = buildPatternTable(pattern);
+    let textIndex = 0;
+    let patternIndex = 0;
+
+    while (textIndex < text.length) {
+        if (text[textIndex] === pattern[patternIndex]) {
+            if (patternIndex === pattern.length - 1) {
+                return textIndex - pattern.length + 1;
+            }
+            textIndex++;
+            patternIndex++;
+        } else if (patternIndex > 0) {
+            patternIndex = patternTable[patternIndex - 1];
+        } else {
+            textIndex++;
+        }
+    }
+
+    return -1;
+}
+
+// Example usage
+const text = "ababcababcabc";
+const pattern = "ababc";
+const matchIndex = kmpSearch(text, pattern);
+
+if (matchIndex !== -1) {
+    console.log(`Pattern found at index ${matchIndex}`);
+} else {
+    console.log("Pattern not found");
+}
