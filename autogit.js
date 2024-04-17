@@ -1,67 +1,25 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+function isPrime(num) {
+    if (num <= 1) {
+        return false;
+    }
+    
+    if (num <= 3) {
+        return true;
+    }
+    
+    for (let i = 2; i <= Math.sqrt(num); i++) {
+        if (num % i === 0) {
+            return false;
+        }
+    }
+    
+    return true;
 }
 
-class BinaryTree {
-  constructor() {
-    this.root = null;
-  }
-
-  insert(value) {
-    const newNode = new Node(value);
-
-    if (!this.root) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  }
-
-  insertNode(node, newNode) {
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
-    }
-  }
-
-  search(value) {
-    return this.searchNode(this.root, value);
-  }
-
-  searchNode(node, value) {
-    if (!node) {
-      return false;
-    }
-
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else if (value > node.value) {
-      return this.searchNode(node.right, value);
-    } else {
-      return true;
-    }
-  }
+// Test the function
+const number = 17;
+if (isPrime(number)) {
+    console.log(`${number} is a prime number.`);
+} else {
+    console.log(`${number} is not a prime number.`);
 }
-const binaryTree = new BinaryTree();
-
-binaryTree.insert(5);
-binaryTree.insert(3);
-binaryTree.insert(8);
-binaryTree.insert(2);
-binaryTree.insert(4);
-
-console.log(binaryTree.search(4)); // Output: true
-console.log(binaryTree.search(6)); // Output: false
