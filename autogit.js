@@ -1,34 +1,49 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
-}
-
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-
-  findMiddleElement() {
-    let slow = this.head;
-    let fast = this.head;
-
-    while (fast && fast.next) {
-      slow = slow.next;
-      fast = fast.next.next;
+function burrowsWheelerTransform(input) {
+    // Create an array of all possible rotations of the input string
+    let rotations = [];
+    for (let i = 0; i < input.length; i++) {
+        rotations.push(input.slice(i) + input.slice(0, i));
     }
 
-    return slow.data;
-  }
+    // Sort the rotations lexicographically
+    rotations.sort();
+
+    // Extract the last characters of each rotation to form the transformed string
+    let transformedString = rotations.map(rotation => rotation.slice(-1)).join('');
+
+    // Find the index of the original input in the sorted rotations
+    let originalIndex = rotations.indexOf(input);
+
+    return { transformedString, originalIndex };
 }
 
-// Example usage
-const linkedList = new LinkedList();
-linkedList.head = new Node(1);
-linkedList.head.next = new Node(2);
-linkedList.head.next.next = new Node(3);
-linkedList.head.next.next.next = new Node(4);
-linkedList.head.next.next.next.next = new Node(5);
+function inverseBurrowsWheelerTransform(transformedString, originalIndex) {
+    let table = new Array(transformedString.length);
+    for (let i = 0; i < table.length; i++) {
+        table[i] = { char: transformedString[i], index: i };
+    }
 
-console.log(linkedList.findMiddleElement()); // Output: 3
+    table.sort((a, b) => {
+        if (a.char === b.char) {
+            return a.index - b.index;
+        }
+        return a.char.localeCompare(b.char);
+    });
+
+    let output = '';
+    let current = table[originalIndex];
+    for (let i = 0; i < table.length; i++) {
+        output += current.char;
+        current = table[current.index];
+    }
+
+    return output;
+}
+
+// Usage example
+let inputString = 'banana';
+let { transformedString, originalIndex } = burrowsWheelerTransform(inputString);
+console.log('Transformed String:', transformedString);
+
+let originalString = inverseBurrowsWheelerTransform(transformedString, originalIndex);
+console.log('Original String:', originalString);
