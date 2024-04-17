@@ -1,17 +1,7 @@
-function reverseWords(str) {
-    // split the string into an array of words
-    let words = str.split(' ');
-    
-    // reverse the array
-    let reversedWords = words.reverse();
-    
-    // join the array back into a string
-    let reversedStr = reversedWords.join(' ');
-    
-    return reversedStr;
-}
+// Sample array
+const numbers = [10, 5, 8, 15, 3, 20];
 
-// Test the function
-let str = "Hello World!";
-let reversedStr = reverseWords(str);
-console.log(reversedStr); // Output: "World! Hello"
+// Using Math.max() with spread operator
+const maxNumber = Math.max(...numbers);
+
+console.log("The maximum value in the array is: " + maxNumber);
