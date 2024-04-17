@@ -1,12 +1,42 @@
-let array = [1, 2, 2, 3, 4, 4, 5];
+// Linked list node
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
 
-let uniqueArray = array.filter((value, index, self) => {
-    return self.indexOf(value) === index;
-});
+// Function to check if a linked list is a palindrome
+function isPalindrome(head) {
+  let values = [];
+  let current = head;
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-let array = [1, 2, 2, 3, 4, 4, 5];
+  // Traverse the linked list and push node values to an array
+  while (current !== null) {
+    values.push(current.value);
+    current = current.next;
+  }
 
-let uniqueArray = Array.from(new Set(array));
+  // Create a reversed copy of the array
+  let reversed = values.slice().reverse();
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+  // Compare the original array with the reversed array
+  for (let i = 0; i < values.length; i++) {
+    if (values[i] !== reversed[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+// Example linked list
+const node1 = new Node('a');
+const node2 = new Node('b');
+const node3 = new Node('a');
+
+node1.next = node2;
+node2.next = node3;
+
+// Check if the linked list is a palindrome
+console.log(isPalindrome(node1)); // Output: true
