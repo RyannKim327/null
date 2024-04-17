@@ -1,24 +1,20 @@
-function bubbleSort(arr) {
-    let len = arr.length;
-    let swapped;
+function longestCommonPrefix(strings) {
+    if (strings.length === 0) return '';
 
-    do {
-        swapped = false;
-        for (let i = 0; i < len - 1; i++) {
-            if (arr[i] > arr[i + 1]) {
-                let temp = arr[i];
-                arr[i] = arr[i + 1];
-                arr[i + 1] = temp;
-                swapped = true;
-            }
+    let prefix = '';
+    for (let i = 0; i < strings[0].length; i++) {
+        const char = strings[0][i];
+        if (strings.every(str => str[i] === char)) {
+            prefix += char;
+        } else {
+            break;
         }
-    } while (swapped);
+    }
 
-    return arr;
+    return prefix;
 }
 
-// Example usage
-const unsortedArray = [4, 2, 7, 1, 3];
-const sortedArray = bubbleSort(unsortedArray);
-
-console.log(sortedArray); // Output: [1, 2, 3, 4, 7]
+// Example Usage
+const strings = ['apple', 'app', 'ape'];
+const commonPrefix = longestCommonPrefix(strings);
+console.log(commonPrefix); // Output: 'ap'
