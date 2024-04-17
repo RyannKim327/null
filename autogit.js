@@ -1,13 +1,19 @@
-function calculateMean(numbers) {
-    let sum = 0;
-    for (let i = 0; i < numbers.length; i++) {
-        sum += numbers[i];
+function bubbleSort(arr) {
+    let len = arr.length;
+    for (let i = 0; i < len; i++) {
+        for (let j = 0; j < len - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap elements
+                let temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
     }
-    
-    return sum / numbers.length;
+    return arr;
 }
 
 // Example usage
-const numbers = [1, 2, 3, 4, 5];
-const mean = calculateMean(numbers);
-console.log('Mean:', mean);
+let array = [64, 34, 25, 12, 22, 11, 90];
+console.log("Original array:", array);
+console.log("Sorted array:", bubbleSort(array));
