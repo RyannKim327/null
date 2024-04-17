@@ -1,28 +1,40 @@
-function shellSort(arr) {
-  var len = arr.length,
-      gap = Math.floor(len / 2);
+function heapify(arr, n, i) {
+    let largest = i;
+    let left = 2 * i + 1;
+    let right = 2 * i + 2;
 
-  while (gap > 0) {
-    for (var i = gap; i < len; i++) {
-      var temp = arr[i];
-      var j = i;
-
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
-      }
-
-      arr[j] = temp;
+    if (left < n && arr[left] > arr[largest]) {
+        largest = left;
     }
 
-    gap = Math.floor(gap / 2);
-  }
+    if (right < n && arr[right] > arr[largest]) {
+        largest = right;
+    }
 
-  return arr;
+    if (largest !== i) {
+        [arr[i], arr[largest]] = [arr[largest], arr[i]];
+        heapify(arr, n, largest);
+    }
+}
+
+function heapSort(arr) {
+    const n = arr.length;
+
+    // Build max heap
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        heapify(arr, n, i);
+    }
+
+    // Heap sort
+    for (let i = n - 1; i > 0; i--) {
+        [arr[0], arr[i]] = [arr[i], arr[0]];
+        heapify(arr, i, 0);
+    }
+
+    return arr;
 }
 
 // Example usage
-var arr = [5, 3, 8, 2, 1, 4];
-console.log("Before sorting: ", arr);
-shellSort(arr);
-console.log("After sorting: ", arr);
+const arr = [12, 11, 13, 5, 6, 7];
+console.log("Original array: ", arr);
+console.log("Sorted array: ", heapSort(arr));
