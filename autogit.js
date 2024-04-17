@@ -1,56 +1,35 @@
-function initializeGraph(numNodes) {
-    let graph = [];
-    for (let i = 0; i < numNodes; i++) {
-        graph.push([]);
+function isAnagram(str1, str2) {
+    // Remove non-alphabetic characters and convert to lowercase
+    str1 = str1.replace(/[^a-z]/ig, '').toLowerCase();
+    str2 = str2.replace(/[^a-z]/ig, '').toLowerCase();
+
+    // Check if string lengths are the same
+    if (str1.length !== str2.length) {
+        return false;
     }
-    return graph;
-}
 
-function addEdge(graph, source, destination, weight) {
-    graph[source].push({ node: destination, weight: weight });
-}
+    // Create character frequency objects
+    const charFreq1 = {};
+    const charFreq2 = {};
 
-function bellmanFord(graph, source) {
-    let numNodes = graph.length;
-    let distances = Array(numNodes).fill(Infinity);
-    distances[source] = 0;
+    for (let char of str1) {
+        charFreq1[char] = (charFreq1[char] || 0) + 1;
+    }
 
-    for (let i = 0; i < numNodes - 1; i++) {
-        for (let j = 0; j < numNodes; j++) {
-            for (let k = 0; k < graph[j].length; k++) {
-                let edge = graph[j][k];
-                if (distances[j] + edge.weight < distances[edge.node]) {
-                    distances[edge.node] = distances[j] + edge.weight;
-                }
-            }
+    for (let char of str2) {
+        charFreq2[char] = (charFreq2[char] || 0) + 1;
+    }
+
+    // Compare character frequency objects
+    for (let char in charFreq1) {
+        if (charFreq1[char] !== charFreq2[char]) {
+            return false;
         }
     }
 
-    for (let j = 0; j < numNodes; j++) {
-        for (let k = 0; k < graph[j].length; k++) {
-            let edge = graph[j][k];
-            if (distances[j] + edge.weight < distances[edge.node]) {
-                console.log("Negative cycle detected");
-                return;
-            }
-        }
-    }
-
-    return distances;
+    return true;
 }
 
-// Example usage
-let numNodes = 5;
-let graph = initializeGraph(numNodes);
-
-addEdge(graph, 0, 1, 5);
-addEdge(graph, 0, 4, 9);
-addEdge(graph, 1, 2, 2);
-addEdge(graph, 2, 3, 3);
-addEdge(graph, 3, 0, 7);
-addEdge(graph, 3, 1, 1);
-addEdge(graph, 4, 3, 4);
-
-let sourceNode = 0;
-let shortestDistances = bellmanFord(graph, sourceNode);
-console.log("Shortest distances from node " + sourceNode + ": ", shortestDistances);
+// Test the function
+console.log(isAnagram("listen", "silent")); // Output: true
+console.log(isAnagram("hello", "world")); // Output: false
