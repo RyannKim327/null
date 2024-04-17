@@ -1,15 +1,55 @@
-function maxSubarraySum(arr) {
-    let maxEndingHere = arr[0];
-    let maxSoFar = arr[0];
+// Example helper function to generate successors of a state
+function expandState(state) {
+    // Your implementation to generate successors of a given state
+    return successors;
+}
 
-    for (let i = 1; i < arr.length; i++) {
-        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
-        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+// Example heuristic function to evaluate a state
+function evaluateState(state) {
+    // Your implementation to evaluate a given state
+    return evaluation;
+}
+
+// Beam search algorithm implementation
+function beamSearch(initialState, beamWidth, maxIterations) {
+    let frontiers = [{ state: initialState, evaluation: evaluateState(initialState) }];
+
+    for (let iteration = 0; iteration < maxIterations; iteration++) {
+        let nextFrontiers = [];
+
+        for (let frontier of frontiers) {
+            let successors = expandState(frontier.state);
+            for (let successor of successors) {
+                let evaluation = evaluateState(successor);
+                nextFrontiers.push({ state: successor, evaluation: evaluation });
+            }
+        }
+
+        nextFrontiers.sort((a, b) => a.evaluation - b.evaluation);
+        frontiers = nextFrontiers.slice(0, beamWidth);
+
+        // Check for goal state
+        for (let frontier of frontiers) {
+            if (isGoalState(frontier.state)) {
+                return frontier.state; // Goal state found
+            }
+        }
     }
 
-    return maxSoFar;
+    return null; // Goal state not found within maxIterations
 }
 
 // Example usage
-const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-console.log(maxSubarraySum(arr)); // Output: 6 (the maximum sum subarray is [4, -1, 2, 1])
+const initialState = {
+    // Your initial state representation
+};
+
+const beamWidth = 5;
+const maxIterations = 100;
+const goalState = beamSearch(initialState, beamWidth, maxIterations);
+
+if (goalState) {
+    console.log("Goal state found:", goalState);
+} else {
+    console.log("Goal state not found within maxIterations");
+}
