@@ -1,15 +1,21 @@
-function maxSubarraySum(arr) {
-    let maxEndingHere = arr[0];
-    let maxSoFar = arr[0];
-
+function insertionSort(arr) {
     for (let i = 1; i < arr.length; i++) {
-        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
-        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+        let current = arr[i];
+        let j = i - 1;
+
+        while (j >= 0 && arr[j] > current) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        
+        arr[j + 1] = current;
     }
 
-    return maxSoFar;
+    return arr;
 }
 
 // Example usage
-const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-console.log(maxSubarraySum(arr)); // Output: 6
+let arr = [5, 3, 8, 1, 2];
+console.log("Before sorting:", arr);
+arr = insertionSort(arr);
+console.log("After sorting:", arr);
