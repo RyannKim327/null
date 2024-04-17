@@ -1,54 +1,40 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
+function boyerMooreHorspool(text, pattern) {
+    const map = new Map();
+    const patternLength = pattern.length;
+    const textLength = text.length;
+
+    // Preprocessing: Create a shift map
+    for (let i = 0; i < patternLength - 1; i++) {
+        map.set(pattern[i], patternLength - i - 1);
+    }
+
+    // Searching
+    let i = patternLength - 1;
+    while (i < textLength) {
+        let j = patternLength - 1;
+        while (j >= 0 && text[i] === pattern[j]) {
+            i--;
+            j--;
+        }
+        
+        if (j === -1) {
+            return i + 1; // Match found
+        } else {
+            const shift = map.get(text[i] || pattern[0]) || patternLength;
+            i += shift;
+        }
+    }
+
+    return -1; // No match found
 }
 
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
+// Example usage
+const text = "hello world";
+const pattern = "world";
+const result = boyerMojsonreHorspool(text, pattern);
 
-  addNode(value) {
-    const newNode = new Node(value);
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
-
-  findNthNodeFromEnd(n) {
-    let firstPointer = this.head;
-    let secondPointer = this.head;
-    
-    for (let i = 0; i < n; i++) {
-      if (secondPointer === null) {
-        return null; // n is greater than the number of nodes in the list
-      }
-      secondPointer = secondPointer.next;
-    }
-    
-    while (secondPointer !== null) {
-      firstPointer = firstPointer.next;
-      secondPointer = secondPointer.next;
-    }
-    
-    return firstPointer;
-  }
+if (result !== -1) {
+    console.log(`Pattern found at index ${result}`);
+} else {
+    console.log("Pattern not found");
 }
-
-// Example usage:
-const list = new LinkedList();
-list.addNode(1);
-list.addNode(2);
-list.addNode(3);
-list.addNode(4);
-list.addNode(5);
-
-console.log(list.findNthNodeFromEnd(2)); // Output: Node { value: 4, next: Node { value: 5, next: null } }
