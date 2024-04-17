@@ -1,11 +1,9 @@
-function isPalindrome(str) {
-    // Remove non-alphanumeric characters and convert the string to lowercase
-    str = str.replace(/[\W_]/g, '').toLowerCase();
-
-    // Compare the original string with its reverse
-    return str === str.split('').reverse().join('');
+function calculateMean(numbers) {
+  const sum = numbers.reduce((acc, num) => acc + num, 0);
+  const mean = sum / numbers.length;
+  return mean;
 }
 
-// Test the function
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // Output: true
-console.log(isPalindrome("hello")); // Output: false
+const numbers = [3, 6, 9, 12, 15];
+const mean = calculateMean(numbers);
+console.log(mean);
