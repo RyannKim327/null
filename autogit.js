@@ -1,37 +1,55 @@
-function longestCommonSubsequence(str1, str2) {
-    const m = str1.length;
-    const n = str2.length;
+function calculateLPSArray(pattern) {
+    let lps = Array(pattern.length).fill(0);
+    let len = 0;
+    let i = 1;
 
-    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
             } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                lps[i] = 0;
+                i++;
             }
         }
     }
 
-    let i = m, j = n;
-    let lcs = '';
+    return lps;
+}
 
-    while (i > 0 && j > 0) {
-        if (str1[i - 1] === str2[j - 1]) {
-            lcs = str1[i - 1] + lcs;
-            i--;
-            j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--;
-        } else {
-            j--;
+function KMPSearch(text, pattern) {
+    const lps = calculateLPSArray(pattern);
+    let i = 0; // pointer for text
+    let j = 0; // pointer for pattern
+    const matches = [];
+
+    while (i < text.length) {
+        if (text[i] === pattern[j]) {
+            i++;
+            j++;
+        }
+        
+        if (j === pattern.length) {
+            matches.push(i - j);
+            j = lps[j - 1];
+        } else if (i < text.length && text[i] !== pattern[j]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
         }
     }
 
-    return lcs;
+    return matches;
 }
 
-const str1 = "ABCDGH";
-const str2 = "AEDFHR";
-console.log(longestCommonSubsequence(str1, str2)); // Output: "ADH"
+// Example Usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = KMPSearch(text, pattern);
+console.log(result); // Output: [10]
