@@ -1,60 +1,61 @@
-function tarjanSCC(graph) {
-    // Initialize the variables
-    let index = 0;
-    let stack = [];
-    let indices = {};
-    let lowlinks = {};
-    let onStack = {};
-    let SCCs = [];
-
-    // Recursive function to find SCCs
-    function strongConnect(v) {
-        indices[v] = index;
-        lowlinks[v] = index;
-        index++;
-        stack.push(v);
-        onStack[v] = true;
-
-        graph[v].forEach(w => {
-            if (indices[w] === undefined) {
-                strongConnect(w);
-                lowlinks[v] = Math.min(lowlinks[v], lowlinks[w]);
-            } else if (onStack[w]) {
-                lowlinks[v] = Math.min(lowlinks[v], indices[w]);
+function KMPSearch(pattern, text) {
+    if (pattern.length === 0) {
+        return 0; // Pattern is empty, return 0
+    }
+    
+    // Step 1: Compute the prefix function
+    let lps = computeLPSArray(pattern);
+    
+    // Step 2: Search for the pattern in the text using the KMP algorithm
+    let i = 0; // Index for text[]
+    let j = 0; // Index for pattern[]
+    
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+        
+        if (j === pattern.length) {
+            return i - j; // Pattern found
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1]; // Skip matching characters using LPS
+            } else {
+                i++;
             }
-        });
-
-        if (lowlinks[v] === indices[v]) {
-            let SCC = [];
-            let w;
-            do {
-                w = stack.pop();
-                onStack[w] = false;
-                SCC.push(w);
-            } while (w !== v);
-
-            SCCs.push(SCC);
         }
     }
-
-    // Iterate over all vertices to find SCCs
-    graph.forEach((_, i) => {
-        if (indices[i] === undefined) {
-            strongConnect(i);
-        }
-    });
-
-    return SCCs;
+    
+    return -1; // Pattern not found
 }
 
-// Example usage
-const graph = [
-    [1],     // Vertex 0 has an edge to vertex 1
-    [2, 3],  // Vertex 1 has edges to vertices 2 and 3
-    [0],     // Vertex 2 has an edge to vertex 0
-    [4],     // Vertex 3 has an edge to vertex 4
-    [3]      // Vertex 4 has an edge to vertex 3
-];
+function computeLPSArray(pattern) {
+    let len = 0; // Length of the previous longest prefix suffix
+    let lps = [0]; // Array to store the LPS values
+    
+    for (let i = 1; i < pattern.length; i++) {
+        while (len > 0 && pattern[len] !== pattern[i]) {
+            len = lps[len - 1];
+        }
+        
+        if (pattern[len] === pattern[i]) {
+            len++;
+        }
+        
+        lps[i] = len;
+    }
 
-const SCCs = tarjanSCC(graph);
-console.log(SCCs);
+    return lps;
+}
+
+// Test the KMPSearch function
+let text = "ABABDABACDABABCABAB";
+let pattern = "ABABCABAB";
+let index = KMPSearch(pattern, text);
+
+if (index !== -1) {
+    console.log(`Pattern found at index ${index}`);
+} else {
+    console.log("Pattern not found in text");
+}
