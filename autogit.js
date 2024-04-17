@@ -1,20 +1,14 @@
-function longestCommonPrefix(strings) {
-    if (strings.length === 0) return "";
+function findKthSmallest(arr, k) {
+    // Sort the array in ascending order
+    arr.sort((a, b) => a - b);
     
-    let prefix = "";
-    for (let i = 0; i < strings[0].length; i++) {
-        for (let j = 1; j < strings.length; j++) {
-            if (strings[j][i] !== strings[0][i]) {
-                return prefix;
-            }
-        }
-        prefix += strings[0][i];
-    }
-  
-    return prefix;
+    // Return the kth smallest element
+    return arr[k - 1];
 }
 
 // Example usage
-const strings = ["leetcode", "leet", "lee", "le"];
-const result = longestCommonPrefix(strings);
-console.log(result); // Output: "le"
+const arr = [3, 1, 4, 2, 5];
+const k = 2;
+
+const kthSmallest = findKthSmallest(arr, k);
+console.log(`The ${k}th smallest element is: ${kthSmallest}`);
