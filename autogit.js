@@ -1,40 +1,36 @@
-function heapify(arr, n, i) {
-    let largest = i;
-    let left = 2 * i + 1;
-    let right = 2 * i + 2;
-
-    if (left < n && arr[left] > arr[largest]) {
-        largest = left;
-    }
-
-    if (right < n && arr[right] > arr[largest]) {
-        largest = right;
-    }
-
-    if (largest !== i) {
-        [arr[i], arr[largest]] = [arr[largest], arr[i]];
-        heapify(arr, n, largest);
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
     }
 }
 
-function heapSort(arr) {
-    const n = arr.length;
-
-    // Build max heap
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(arr, n, i);
+function hasCycle(head) {
+    if (head === null || head.next === null) {
+        return false;
     }
 
-    // Heap sort
-    for (let i = n - 1; i > 0; i--) {
-        [arr[0], arr[i]] = [arr[i], arr[0]];
-        heapify(arr, i, 0);
+    let slow = head;
+    let fast = head.next;
+
+    while (fast !== null && fast.next !== null) {
+        if (slow === fast) {
+            return true;
+        }
+        slow = slow.next;
+        fast = fast.next.next;
     }
 
-    return arr;
+    return false;
 }
 
-// Example usage
-const arr = [12, 11, 13, 5, 6, 7];
-console.log("Original array: ", arr);
-console.log("Sorted array: ", heapSort(arr));
+// Usage example
+let node1 = new Node(1);
+let node2 = new Node(2);
+let node3 = new Node(3);
+
+node1.next = node2;
+node2.next = node3;
+node3.next = node1; // Creates a cycle
+
+console.log(hasCycle(node1)); // Output: true
