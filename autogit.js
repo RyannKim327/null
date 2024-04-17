@@ -1,8 +1,13 @@
-function reverseString(str) {
-    return str.split('').reverse().join('');
+// Create an array
+let fruits = ["apple", "banana", "orange", "grape"];
+
+// Find the index of the element you want to remove
+let index = fruits.indexOf("orange");
+
+// Remove the element at the specified index
+if (index > -1) {
+    fruits.splice(index, 1);
 }
 
-// Example usage
-let originalString = 'Hello, World!';
-let reversedString = reverseString(originalString);
-console.log(reversedString);  // Output: !dlroW ,olleH
+// Now fruits array will be ["apple", "banana", "grape"]
+console.log(fruits);
