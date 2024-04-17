@@ -1,25 +1,46 @@
-function shellSort(arr) {
-    const n = arr.length;
-    let gap = Math.floor(n / 2);
-
-    while (gap > 0) {
-        for (let i = gap; i < n; i++) {
-            let temp = arr[i];
-            let j = i;
-
-            while (j >= gap && arr[j - gap] > temp) {
-                arr[j] = arr[j - gap];
-                j -= gap;
+function beamSearch(initialState, beamWidth, maxDepth, scoringFn) {
+    let candidates = [{ state: initialState, score: 0 }];
+    
+    for (let depth = 0; depth < maxDepth; depth++) {
+        let newCandidates = [];
+        
+        for (let candidate of candidates) {
+            let state = candidate.state;
+            
+            // Expand the current state
+            let nextStates = expand(state);
+            
+            // Evaluate each next state and score them
+            for (let nextState of nextStates) {
+                let score = scoringFn(nextState);
+                newCandidates.push({ state: nextState, score: candidate.score + score });
             }
-            arr[j] = temp;
         }
-        gap = Math.floor(gap / 2);
+        
+        // Sort the new candidates by score and keep only top k
+        newCandidates.sort((a, b) => b.score - a.score);
+        candidates = newCandidates.slice(0, beamWidth);
     }
-
-    return arr;
+    
+    return candidates[0].state;
 }
 
-// Example usage:
-const arr = [12, 34, 54, 2, 3];
-console.log("Original array: ", arr);
-console.log("Sorted array: ", shellSort(arr));
+// Example scoring function
+function scoringFn(state) {
+    // Implement your scoring logic here
+    return 1;
+}
+
+// Example expand function
+function expand(state) {
+    // Implement your state expansion logic here
+    return [];
+}
+
+// Usage
+const initialState = "A";
+const beamWidth = 2;
+const maxDepth = 3;
+const finalState = beamSearch(initialState, beamWidth, maxDepth, scoringFn);
+
+console.log("Final state:", finalState);
