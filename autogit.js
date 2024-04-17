@@ -1,29 +1,52 @@
-function binarySearch(arr, target) {
-    let left = 0;
-    let right = arr.length - 1;
+class TrieNode {
+    constructor() {
+        this.children = {};
+        this.isEndOfWord = false;
+    }
+}
 
-    while (left <= right) {
-        let mid = Math.floor((left + right) / 2);
-
-        if (arr[mid] === target) {
-            return mid;
-        } else if (arr[mid] < target) {
-            left = mid + 1;
-        } else {
-            right = mid - 1;
-        }
+class Trie {
+    constructor() {
+        this.root = new TrieNode();
     }
 
-    return -1; // If the target is not found in the array
+    insert(word) {
+        let node = this.root;
+        for (let char of word) {
+            if (!node.children[char]) {
+                node.children[char] = new TrieNode();
+            }
+            node = node.children[char];
+        }
+        node.isEndOfWord = true;
+    }
+
+    search(word) {
+        let node = this.root;
+        for (let char of word) {
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+        return node.isEndOfWord;
+    }
+
+    startsWith(prefix) {
+        let node = this.root;
+        for (let char of prefix) {
+            if (!node.children[char]) {
+                return false;
+            }
+            node = node.children[char];
+        }
+        return true;
+    }
 }
 
 // Example usage
-const arr = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
-const target = 9;
-const index = binarySearch(arr, target);
-
-if (index !== -1) {
-    console.log(`Target ${target} found at index ${index}`);
-} else {
-    console.log(`Target ${target} not found in the array`);
-}
+let trie = new Trie();
+trie.insert("apple");
+console.log(trie.search("apple"));   // Output: true
+console.log(trie.search("app"));     // Output: false
+console.log(trie.startsWith("app")); // Output: true
