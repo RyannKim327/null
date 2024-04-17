@@ -1,30 +1,12 @@
-function BoyerMooreSearch(text, pattern) {
-    const textLength = text.length;
-    const patternLength = pattern.length;
+// Prompt the user to enter a number
+let number = prompt("Enter a number:");
 
-    // Build bad character heuristic
-    const badChar = new Array(256).fill(-1);
-    for (let i = 0; i < patternLength; i++) {
-        badChar[pattern.charCodeAt(i)] = i;
-    }
+// Convert the input to a number
+number = parseInt(number);
 
-    // Search for the pattern in the text
-    let shift = 0;
-    while (shift <= textLength - patternLength) {
-        let j = patternLength - 1;
-        while (j >= 0 && pattern[j] === text[shift + j]) {
-            j--;
-        }
-        if (j < 0) {
-            console.log(`Pattern found at index ${shift}`);
-            shift += (shift + patternLength < textLength) ? patternLength - badChar[text.charCodeAt(shift + patternLength)] : 1;
-        } else {
-            shift += Math.max(1, j - badChar[text.charCodeAt(shift + j)]);
-        }
-    }
+// Check if the number is even or odd
+if (number % 2 === 0) {
+    console.log(`${number} is even.`);
+} else {
+    console.log(`${number} is odd.`);
 }
-
-// Test the Boyer-Moore algorithm
-const text = "ABAAABCD";
-const pattern = "ABC";
-BoyerMooreSearch(text, pattern);
