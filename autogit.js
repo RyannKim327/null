@@ -1,38 +1,36 @@
-function interpolationSearch(arr, x) {
-    let low = 0;
-    let high = arr.length - 1;
-
-    while (low <= high && x >= arr[low] && x <= arr[high]) {
-        if (low === high) {
-            if (arr[low] === x) {
-                return low;
-            }
-            return -1;
-        }
-
-        let pos = low + Math.floor(((x - arr[low]) * (high - low)) / (arr[high] - arr[low]));
-
-        if (arr[pos] === x) {
-            return pos;
-        }
-
-        if (arr[pos] < x) {
-            low = pos + 1;
-        } else {
-            high = pos - 1;
-        }
+function breadthFirstSearch(graph, startNode, targetNode) {
+  let visited = new Set();
+  let queue = [startNode];
+  
+  while (queue.length > 0) {
+    let currentNode = queue.shift();
+    if (currentNode === targetNode) {
+      return true;
     }
-
-    return -1;
+    
+    if (!visited.has(currentNode)) {
+      visited.add(currentNode);
+      let neighbors = graph[currentNode];
+      for (let neighbor of neighbors) {
+        queue.push(neighbor);
+      }
+    }
+  }
+  
+  return false;
 }
 
-// Test the interpolation search algorithm
-const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
-const x = 12;
-const index = interpolationSearch(arr, x);
+// Example graph
+let graph = {
+  'A': ['B', 'C'],
+  'B': ['A', 'D', 'E'],
+  'C': ['A', 'F'],
+  'D': ['B'],
+  'E': ['B', 'F'],
+  'F': ['C', 'E']
+};
 
-if (index !== -1) {
-    console.log(`Element found at index ${index}`);
-} else {
-    console.log('Element not found');
-}
+let startNode = 'A';
+let targetNode = 'F';
+
+console.log(breadthFirstSearch(graph, startNode, targetNode)); // Output: true
