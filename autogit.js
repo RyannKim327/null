@@ -1,61 +1,60 @@
+// Define the Red-Black Tree Node class
 class Node {
-  constructor(data) {
+  constructor(data, color) {
     this.data = data;
-    this.next = null;
+    this.left = null;
+    this.right = null;
+    this.parent = null;
+    this.color = color; // 'R' for red, 'B' for black
   }
 }
 
-class LinkedList {
+// Define the Red-Black Tree class
+class RedBlackTree {
   constructor() {
-    this.head = null;
+    this.root = null;
   }
 
-  add(data) {
-    const newNode = new Node(data);
-    if (!this.head) {
-      this.head = newNode;
+  // Helper function to perform a left rotation
+  leftRotate(node) {
+    const temp = node.right;
+    node.right = temp.left;
+    if (temp.left !== null) {
+      temp.left.parent = node;
+    }
+    temp.parent = node.parent;
+    if (node.parent === null) {
+      this.root = temp;
+    } else if (node === node.parent.left) {
+      node.parent.left = temp;
     } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
+      node.parent.right = temp;
     }
+    temp.left = node;
+    node.parent = temp;
   }
 
-  reverse() {
-    let prev = null;
-    let current = this.head;
-    let next = null;
-
-    while (current !== null) {
-      next = current.next;
-      current.next = prev;
-      prev = current;
-      current = next;
+  // Helper function to perform a right rotation
+  rightRotate(node) {
+    const temp = node.left;
+    node.left = temp.right;
+    if (temp.right !== null) {
+      temp.right.parent = node;
     }
-    this.head = prev;
+    temp.parent = node.parent;
+    if (node.parent === null) {
+      this.root = temp;
+    } else if (node === node.parent.right) {
+      node.parent.right = temp;
+    } else {
+      node.parent.left = temp;
+    }
+    temp.right = node;
+    node.parent = temp;
   }
 
-  printList() {
-    let current = this.head;
-    while (current !== null) {
-      console.log(current.data + ' ');
-      current = current.next;
-    }
-  }
+  // Add your insert, delete, search, and other helper functions here as needed
 }
 
-// Example usage
-const list = new LinkedList();
-list.add(1);
-list.add(2);
-list.add(3);
-
-console.log('Original List:');
-list.printList();
-
-list.reverse();
-
-console.log('Reversed List:');
-list.printList();
+// Example usage:
+const rbTree = new RedBlackTree();
