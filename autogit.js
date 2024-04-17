@@ -1,70 +1,43 @@
-class Graph {
-  constructor() {
-    this.nodes = new Map();
-  }
-
-  addNode(node) {
-    this.nodes.set(node, []);
-  }
-
-  addEdge(node1, node2) {
-    this.nodes.get(node1).push(node2);
-    this.nodes.get(node2).push(node1);
-  }
-
-  biDirectionalSearch(startNode, targetNode) {
-    let visitedFromStart = new Set();
-    let visitedFromTarget = new Set();
-    let queueStart = [startNode];
-    let queueTarget = [targetNode];
-
-    visitedFromStart.add(startNode);
-    visitedFromTarget.add(targetNode);
-
-    while (queueStart.length > 0 && queueTarget.length > 0) {
-      let currentStart = queueStart.shift();
-      let currentTarget = queueTarget.shift();
-
-      if (visitedFromTarget.has(currentStart)) {
-        console.log("Path found");
-        return;
-      }
-
-      if (visitedFromStart.has(currentTarget)) {
-        console.log("Path found");
-        return;
-      }
-
-      for (let neighbor of this.nodes.get(currentStart)) {
-        if (!visitedFromStart.has(neighbor)) {
-          visitedFromStart.add(neighbor);
-          queueStart.push(neighbor);
-        }
-      }
-
-      for (let neighbor of this.nodes.get(currentTarget)) {
-        if (!visitedFromTarget.has(neighbor)) {
-          visitedFromTarget.add(neighbor);
-          queueTarget.push(neighbor);
-        }
-      }
+class Stack {
+    constructor() {
+        this.stack = [];
     }
 
-    console.log("Path not found");
-  }
+    push(element) {
+        this.stack.push(element);
+    }
+
+    pop() {
+        if (this.isEmpty()) {
+            return "Stack is empty";
+        }
+        return this.stack.pop();
+    }
+
+    peek() {
+        if (this.isEmpty()) {
+            return "Stack is empty";
+        }
+        return this.stack[this.stack.length - 1];
+    }
+
+    isEmpty() {
+        return this.stack.length === 0;
+    }
+
+    size() {
+        return this.stack.length;
+    }
 }
 
 // Example usage
-const graph = new Graph();
-graph.addNode(0);
-graph.addNode(1);
-graph.addNode(2);
-graph.addNode(3);
-graph.addNode(4);
+const stack = new Stack();
 
-graph.addEdge(0, 1);
-graph.addEdge(0, 2);
-graph.addEdge(1, 3);
-graph.addEdge(2, 4);
+stack.push(1);
+stack.push(2);
+stack.push(3);
 
-graph.biDirectionalSearch(0, 4);
+console.log("Current top of the stack:", stack.peek()); // Outputs: 3
+console.log("Pop element from the stack:", stack.pop()); // Outputs: 3
+console.log("Stack size:", stack.size()); // Outputs: 2
+console.log("Is stack empty?", stack.isEmpty()); // Outputs: false
