@@ -1,66 +1,39 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+// Define a graph as an adjacency list
+const graph = {
+  A: ['B', 'C'],
+  B: ['A', 'D', 'E'],
+  C: ['A', 'F'],
+  D: ['B'],
+  E: ['B', 'F'],
+  F: ['C', 'E'],
+};
+
+function breadthFirstSearch(graph, startNode) {
+  const visited = {}; // Keep track of visited nodes
+  const queue = [startNode]; // Initialize a queue with the start node
+  const result = []; // Store the visited nodes in the order they were visited
+
+  while (queue.length > 0) {
+    const currentNode = queue.shift(); // Dequeue the current node
+
+    if (!visited[currentNode]) {
+      visited[currentNode] = true;
+      result.push(currentNode);
+
+      const neighbors = graph[currentNode];
+
+      for (let i = 0; i < neighbors.length; i++) {
+        const neighbor = neighbors[i];
+
+        if (!visited[neighbor]) {
+          queue.push(neighbor); // Enqueue the neighbor if it hasn't been visited
+        }
+      }
     }
+  }
+
+  return result;
 }
 
-class BinaryTree {
-    constructor() {
-        this.root = null;
-    }
-
-    insert(value) {
-        const newNode = new Node(value);
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    insertNode(node, newNode) {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
-
-    search(value) {
-        return this.searchNode(this.root, value);
-    }
-
-    searchNode(node, value) {
-        if (node === null) {
-            return false;
-        }
-
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true;
-        }
-    }
-}
-
-const tree = new BinaryTree();
-tree.insert(5);
-tree.insert(3);
-tree.insert(7);
-tree.insert(1);
-tree.insert(4);
-
-console.log(tree.search(1)); // true
-console.log(tree.search(6)); // false
+const result = breadthFirstSearch(graph, 'A');
+console.log(result); // Output: [ 'A', 'B', 'C', 'D', 'E', 'F' ]
