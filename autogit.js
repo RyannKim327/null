@@ -1,15 +1,52 @@
-let arr = [1, 2, 3, 4, 1, 2, 5];
+class Stack {
+  constructor() {
+    this.stack = [];
+  }
 
-let uniqueArr = arr.filter((item, index) => arr.indexOf(item) === index);
+  push(item) {
+    this.stack.push(item);
+  }
 
-console.log(uniqueArr); // Output: [1, 2, 3, 4, 5]
-let arr = [1, 2, 3, 4, 1, 2, 5];
+  pop() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
+    }
+    return this.stack.pop();
+  }
 
-let uniqueArr = [...new Set(arr)];
+  peek() {
+    if (this.isEmpty()) {
+      return "Stack is empty";
+    }
+    return this.stack[this.stack.length - 1];
+  }
 
-console.log(uniqueArr); // Output: [1, 2, 3, 4, 5]
-let arr = [1, 2, 3, 4, 1, 2, 5];
+  isEmpty() {
+    return this.stack.length === 0;
+  }
 
-let uniqueArr = arr.reduce((unique, item) => unique.includes(item) ? unique : [...unique, item], []);
+  clear() {
+    this.stack = [];
+  }
 
-console.log(uniqueArr); // Output: [1, 2, 3, 4, 5]
+  size() {
+    return this.stack.length;
+  }
+}
+
+// Example Usage
+const stack = new Stack();
+
+stack.push(1);
+stack.push(2);
+stack.push(3);
+
+console.log(stack.peek()); // Output: 3
+
+console.log(stack.pop()); // Output: 3
+
+console.log(stack.size()); // Output: 2
+
+stack.clear();
+
+console.log(stack.isEmpty()); // Output: true
