@@ -1,58 +1,38 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.next = null;
-    }
-}
+function interpolationSearch(arr, x) {
+    let low = 0;
+    let high = arr.length - 1;
 
-// Function to check if a linked list is a palindrome
-function isPalindrome(head) {
-    let values = [];
-    let slow = head;
-    let fast = head;
-
-    // Extract values of the linked list into an array
-    while (fast && fast.next) {
-        values.push(slow.value);
-        slow = slow.next;
-        fast = fast.next.next;
-    }
-
-    // Handle odd number of nodes
-    if (fast) {
-        slow = slow.next;
-    }
-
-    // Reverse the second half of the linked list
-    let secondHalf = null;
-    while (slow) {
-        let temp = slow.next;
-        slow.next = secondHalf;
-        secondHalf = slow;
-        slow = temp;
-    }
-
-    // Compare the first half and the reversed second half
-    while (secondHalf) {
-        if (values.pop() !== secondHalf.value) {
-            return false;
+    while (low <= high && x >= arr[low] && x <= arr[high]) {
+        if (low === high) {
+            if (arr[low] === x) {
+                return low;
+            }
+            return -1;
         }
-        secondHalf = secondHalf.next;
+
+        let pos = low + Math.floor(((x - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+
+        if (arr[pos] === x) {
+            return pos;
+        }
+
+        if (arr[pos] < x) {
+            low = pos + 1;
+        } else {
+            high = pos - 1;
+        }
     }
 
-    return true;
+    return -1;
 }
 
-// Example usage
-let a = new Node('r');
-let b = new Node('a');
-let c = new Node('d');
-let d = new Node('a');
-let e = new Node('r');
+// Test the interpolation search algorithm
+const arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+const x = 12;
+const index = interpolationSearch(arr, x);
 
-a.next = b;
-b.next = c;
-c.next = d;
-d.next = e;
-
-console.log(isPalindrome(a)); // Output: true
+if (index !== -1) {
+    console.log(`Element found at index ${index}`);
+} else {
+    console.log('Element not found');
+}
