@@ -5,40 +5,40 @@ class Node {
     }
 }
 
-class LinkedList {
-    constructor() {
-        this.head = null;
+function findIntersection(list1, list2) {
+    let seenNodes = new Set();
+    
+    while (list1) {
+        seenNodes.add(list1);
+        list1 = list1.next;
     }
-
-    addNode(data) {
-        const node = new Node(data);
-        
-        if (this.head === null) {
-            this.head = node;
-        } else {
-            let current = this.head;
-            while (current.next !== null) {
-                current = current.next;
-            }
-            current.next = node;
+    
+    while (list2) {
+        if (seenNodes.has(list2)) {
+            return list2;
         }
+        list2 = list2.next;
     }
-
-    getLength() {
-        let count = 0;
-        let current = this.head;
-        while (current !== null) {
-            count++;
-            current = current.next;
-        }
-        return count;
-    }
+    
+    return null;
 }
 
-// Example usage
-const linkedList = new LinkedList();
-linkedList.addNode(1);
-linkedList.addNode(2);
-linkedList.addNode(3);
+// Example usage:
+// Construct two linked lists
+let commonNode = new Node(8);
+let list1 = new Node(3);
+list1.next = new Node(6);
+list1.next.next = new Node(9);
+list1.next.next.next = commonNode;
 
-console.log(linkedList.getLength()); // Output: 3
+let list2 = new Node(2);
+list2.next = commonNode;
+
+// Find the intersection of the two lists
+const intersection = findIntersection(list1, list2);
+
+if (intersection) {
+    console.log("Intersection found at node with data: " + intersection.data);
+} else {
+    console.log("No intersection found");
+}
