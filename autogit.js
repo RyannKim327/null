@@ -1,12 +1,24 @@
-function validateEmail(email) {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailPattern.test(email);
+function quickSort(array) {
+    if (array.length <= 1) {
+        return array;
+    } else {
+        const pivot = array[0];
+        const left = [];
+        const right = [];
+        
+        for (let i = 1; i < array.length; i++) {
+            if (array[i] < pivot) {
+                left.push(array[i]);
+            } else {
+                right.push(array[i]);
+            }
+        }
+        
+        return quickSort(left).concat(pivot, quickSort(right));
+    }
 }
 
-// Usage
-const email = "example@example.com";
-if (validateEmail(email)) {
-    console.log("Email is valid");
-} else {
-    console.log("Email is invalid");
-}
+// Example usage:
+const unsortedArray = [5, 3, 8, 1, 2, 7, 4];
+const sortedArray = quickSort(unsortedArray);
+console.log(sortedArray);
