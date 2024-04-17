@@ -1,109 +1,48 @@
 class Node {
-    constructor(value, level) {
+    constructor(value) {
         this.value = value;
-        this.forward = new Array(level + 1).fill(null);
+        this.next = null;
     }
 }
 
-class SkipList {
-    constructor(maxLevel, probability) {
-        this.maxLevel = maxLevel;
-        this.probability = probability;
-        this.level = 0;
-        this.head = new Node(-1, maxLevel);
+function reverseLinkedList(head) {
+    let prev = null;
+    let current = head;
+    let next = null;
+
+    while (current !== null) {
+        next = current.next;
+        current.next = prev;
+        prev = current;
+        current = next;
     }
 
-    randomLevel() {
-        let level = 0;
-        while (Math.random() < this.probability && level < this.maxLevel) {
-            level++;
-        }
-        return level;
-    }
+    return prev;
+}
 
-    insert(value) {
-        const update = new Array(this.maxLevel + 1);
-        let current = this.head;
-
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-            update[i] = current;
-        }
-
-        current = current.forward[0];
-
-        if (current === null || current.value !== value) {
-            const newLevel = this.randomLevel();
-
-            if (newLevel > this.level) {
-                for (let i = this.level + 1; i <= newLevel; i++) {
-                    update[i] = this.head;
-                }
-                this.level = newLevel;
-            }
-
-            const newNode = new Node(value, newLevel);
-            for (let i = 0; i <= newLevel; i++) {
-                newNode.forward[i] = update[i].forward[i];
-                update[i].forward[i] = newNode;
-            }
-        }
-    }
-
-    search(value) {
-        let current = this.head;
-
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-        }
-
-        current = current.forward[0];
-
-        if (current !== null && current.value === value) {
-            return current.value;
-        } else {
-            return null;
-        }
-    }
-
-    remove(value) {
-        const update = new Array(this.maxLevel + 1);
-        let current = this.head;
-
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-            update[i] = current;
-        }
-
-        current = current.forward[0];
-
-        if (current !== null && current.value === value) {
-            for (let i = 0; i <= this.level; i++) {
-                if (update[i].forward[i] !== current) {
-                    break;
-                }
-                update[i].forward[i] = current.forward[i];
-            }
-
-            while (this.level > 0 && this.head.forward[this.level] === null) {
-                this.level--;
-            }
-        }
+// Helper function to print the linked list
+function printLinkedList(head) {
+    let current = head;
+    while (current !== null) {
+        console.log(current.value);
+        current = current.next;
     }
 }
 
-// Example usage:
-const skipList = new SkipList(3, 0.5);
-skipList.insert(3);
-skipList.insert(6);
-skipList.insert(7);
-skipList.insert(9);
-console.log(skipList.search(6)); // Output: 6
-skipList.remove(6);
-console.log(skipList.search(6)); // Output: null
+// Test the reverseLinkedList function
+let n1 = new Node(1);
+let n2 = new Node(2);
+let n3 = new Node(3);
+let n4 = new Node(4);
+
+n1.next = n2;
+n2.next = n3;
+n3.next = n4;
+
+console.log("Original Linked List:");
+printLinkedList(n1);
+
+let reversedHead = reverseLinkedList(n1);
+
+console.log("\nReversed Linked List:");
+printLinkedList(reversedHead);
