@@ -1,7 +1,34 @@
-let numbers = [5, 2, 8, 1, 3];
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
+}
 
-numbers.sort(function(a, b) {
-    return a - b;
-});
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
 
-console.log(numbers); // Output: [1, 2, 3, 5, 8]
+  findMiddleElement() {
+    let slow = this.head;
+    let fast = this.head;
+
+    while (fast && fast.next) {
+      slow = slow.next;
+      fast = fast.next.next;
+    }
+
+    return slow.data;
+  }
+}
+
+// Example usage
+const linkedList = new LinkedList();
+linkedList.head = new Node(1);
+linkedList.head.next = new Node(2);
+linkedList.head.next.next = new Node(3);
+linkedList.head.next.next.next = new Node(4);
+linkedList.head.next.next.next.next = new Node(5);
+
+console.log(linkedList.findMiddleElement()); // Output: 3
