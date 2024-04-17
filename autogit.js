@@ -1,34 +1,41 @@
-function isPrime(num) {
-    if (num <= 1) return false;
-    if (num <= 3) return true;
-
-    if (num % 2 === 0 || num % 3 === 0) return false;
-
-    let i = 5;
-    while (i * i <= num) {
-        if (num % i === 0 || num % (i + 2) === 0) {
-            return false;
-        }
-        i += 6;
-    }
-
-    return true;
-}
-
-function largestPrimeFactor(number) {
-    let largestPrime = 0;
-    for (let i = 2; i <= Math.sqrt(number); i++) {
-        if (number % i === 0) {
-            if (isPrime(i)) {
-                largestPrime = i;
-            }
-            if (isPrime(number / i)) {
-                largestPrime = Math.max(largestPrime, number / i);
+function longestCommonSubsequence(str1, str2) {
+    const m = str1.length;
+    const n = str2.length;
+    
+    // Create a matrix to store the lengths of longest common subsequences of substrings
+    const dp = new Array(m + 1).fill(null).map(() => new Array(n + 1).fill(0));
+    
+    // Fill the matrix based on the characters in the strings
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
             }
         }
     }
-    return largestPrime;
+    
+    // Reconstruct the longest common subsequence
+    let lcs = "";
+    let i = m, j = n;
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            lcs = str1[i - 1] + lcs;
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
+        }
+    }
+    
+    return lcs;
 }
 
-const number = 13195; // Change this to the number you want to find the largest prime factor of
-console.log(largestPrimeFactor(number));
+// Example
+const str1 = "ABCDGH";
+const str2 = "AEDFHR";
+const lcs = longestCommonSubsequence(str1, str2);
+console.log("Longest Common Subsequence: ", lcs);
