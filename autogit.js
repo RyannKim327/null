@@ -1,13 +1,15 @@
-// Create an array
-let fruits = ["apple", "banana", "orange", "grape"];
-
-// Find the index of the element you want to remove
-let index = fruits.indexOf("orange");
-
-// Remove the element at the specified index
-if (index > -1) {
-    fruits.splice(index, 1);
+function isPalindrome(str) {
+    // Remove non-alphanumeric characters and convert to lowercase
+    const cleanStr = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+    
+    // Compare the clean string with its reverse
+    return cleanStr === cleanStr.split('').reverse().join('');
 }
 
-// Now fruits array will be ["apple", "banana", "grape"]
-console.log(fruits);
+// Test the function
+const str = "A man, a plan, a canal, Panama!";
+if (isPalindrome(str)) {
+    console.log(`${str} is a palindrome.`);
+} else {
+    console.log(`${str} is not a palindrome.`);
+}
