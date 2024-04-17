@@ -1,58 +1,33 @@
-class Node {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
-}
-
-class LinkedList {
-  constructor() {
-    this.head = null;
-  }
-
-  addNode(data) {
-    const newNode = new Node(data);
-
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
+function longestIncreasingSubsequence(arr) {
+    const n = arr.length;
+    const dp = new Array(n).fill(1);
+  
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[i] > arr[j] && dp[i] < dp[j] + 1) {
+                dp[i] = dp[j] + 1;
+            }
+        }
     }
-  }
 
-  findNthNodeFromEnd(n) {
-    let firstPointer = this.head;
-    let secondPointer = this.head;
-    
-    // Move the first pointer ahead by n nodes
+    let maxLength = 0;
     for (let i = 0; i < n; i++) {
-      if (!firstPointer) {
-        return null; // If n is greater than the length of the list, return null
-      }
-      firstPointer = firstPointer.next;
+        if (dp[i] > maxLength) {
+            maxLength = dp[i];
+        }
+    }
+  
+    let result = [];
+    let lastIndex = dp.indexOf(maxLength);
+    for (let i = lastIndex; i >= 0; i--) {
+        if (dp[i] === maxLength) {
+            result.unshift(arr[i]);
+            maxLength--;
+        }
     }
 
-    while (firstPointer) {
-      firstPointer = firstPointer.next;
-      secondPointer = secondPointer.next;
-    }
-
-    return secondPointer;
-  }
+    return result;
 }
 
-// Example Usage
-const list = new LinkedList();
-list.addNode(1);
-list.addNode(2);
-list.addNode(3);
-list.addNode(4);
-list.addNode(5);
-
-const n = 2;
-const nthNodeFromEnd = list.findNthNodeFromEnd(n);
-console.log(`${n}th node from the end of the list is: ${nthNodeFromEnd.data}`);
+const arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
+console.log(longestIncreasingSubsequence(arr)); // Output: [ 10, 22, 33, 50, 60, 80 ]
