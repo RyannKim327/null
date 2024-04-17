@@ -1,32 +1,45 @@
-function mergeSort(arr) {
-    if (arr.length <= 1) {
-        return arr;
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
+}
+class LinkedList {
+  constructor() {
+    this.head = null;
+  }
+
+  append(data) {
+    const newNode = new Node(data);
+    if (!this.head) {
+      this.head = newNode;
+      return;
     }
 
-    const middle = Math.floor(arr.length / 2);
-    const left = arr.slice(0, middle);
-    const right = arr.slice(middle);
+    let current = this.head;
+    while (current.next) {
+      current = current.next;
+    }
+    current.next = newNode;
+  }
 
-    return merge(mergeSort(left), mergeSort(right));
-}
+  findMiddleElement() {
+    let slow = this.head;
+    let fast = this.head;
 
-function merge(left, right) {
-    let result = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
-
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            result.push(left[leftIndex]);
-            leftIndex++;
-        } else {
-            result.push(right[rightIndex]);
-            rightIndex++;
-        }
+    while (fast && fast.next) {
+      slow = slow.next;
+      fast = fast.next.next;
     }
 
-    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+    return slow.data;
+  }
 }
-
-const arr = [5, 3, 8, 2, 1, 7, 4, 6];
-console.log(mergeSort(arr)); // Output: [1, 2, 3, 4, 5, 6, 7, 8]
+const linkedList = new LinkedList();
+linkedList.append(1);
+linkedList.append(2);
+linkedList.append(3);
+linkedList.append(4);
+linkedList.append(5);
+const middleElement = linkedList.findMiddleElement();
+console.log(middleElement); // Output the middle element of the linked list
