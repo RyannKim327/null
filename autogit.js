@@ -1,108 +1,69 @@
-class Node {
-    constructor(value, level) {
-        this.value = value;
-        this.next = Array(level + 1).fill(null);
+function dijkstra(graph, startNode) {
+  let distances = {};
+  let visited = {};
+  let queue = new PriorityQueue();
+
+  distances[startNode] = 0;
+  queue.enqueue(startNode, 0);
+
+  for (let node in graph) {
+    if (node !== startNode) {
+      distances[node] = Infinity;
     }
+    visited[node] = null;
+  }
+
+  while (!queue.isEmpty()) {
+    let currentNode = queue.dequeue().data;
+    let currentDistance = distances[currentNode];
+
+    for (let neighbor in graph[currentNode]) {
+      let neighborDistance = currentDistance + graph[currentNode][neighbor];
+
+      if (neighborDistance < distances[neighbor]) {
+        distances[neighbor] = neighborDistance;
+        queue.enqueue(neighbor, neighborDistance);
+        visited[neighbor] = currentNode;
+      }
+    }
+
+    visited[currentNode] = null;
+  }
+
+  return distances;
 }
 
-class SkipList {
-    constructor(maxLevels, probability) {
-        this.MAX_LEVELS = maxLevels;
-        this.PROBABILITY = probability;
-        this.level = 0;
-        this.head = new Node(-1, this.MAX_LEVELS);
-    }
+class PriorityQueue {
+  constructor() {
+    this.values = [];
+  }
 
-    randomLevel() {
-        let level = 0;
-        while (Math.random() < this.PROBABILITY && level < this.MAX_LEVELS) {
-            level++;
-        }
-        return level;
-    }
+  enqueue(node, priority) {
+    this.values.push({ node, priority });
+    this.sort();
+  }
 
-    insert(value) {
-        const update = Array(this.MAX_LEVELS).fill(null);
-        let current = this.head;
+  dequeue() {
+    return this.values.shift();
+  }
 
-        for (let i = this.level; i >= 0; i--) {
-            while (current.next[i] !== null && current.next[i].value < value) {
-                current = current.next[i];
-            }
-            update[i] = current;
-        }
+  sort() {
+    this.values.sort((a, b) => a.priority - b.priority);
+  }
 
-        current = current.next[0];
-
-        if (current === null || current.value !== value) {
-            const newLevel = this.randomLevel();
-
-            if (newLevel > this.level) {
-                for (let i = this.level + 1; i < newLevel + 1; i++) {
-                    update[i] = this.head;
-                }
-                this.level = newLevel;
-            }
-
-            const newNode = new Node(value, newLevel);
-
-            for (let i = 0; i <= newLevel; i++) {
-                newNode.next[i] = update[i].next[i];
-                update[i].next[i] = newNode;
-            }
-        }
-    }
-
-    search(value) {
-        let current = this.head;
-
-        for (let i = this.level; i >= 0; i--) {
-            while (current.next[i] !== null && current.next[i].value < value) {
-                current = current.next[i];
-            }
-        }
-
-        current = current.next[0];
-
-        if (current !== null && current.value === value) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    remove(value) {
-        const update = Array(this.MAX_LEVELS).fill(null);
-        let current = this.head;
-
-        for (let i = this.level; i >= 0; i--) {
-            while (current.next[i] !== null && current.next[i].value < value) {
-                current = current.next[i];
-            }
-            update[i] = current;
-        }
-
-        current = current.next[0];
-
-        if (current !== null && current.value === value) {
-            for (let i = 0; i <= this.level; i++) {
-                if (update[i].next[i] !== current) break;
-                update[i].next[i] = current.next[i];
-            }
-
-            while (this.level > 0 && this.head.next[this.level] === null) {
-                this.level--;
-            }
-        }
-    }
+  isEmpty() {
+    return this.values.length === 0;
+  }
 }
 
-// Example Usage
-const skipList = new SkipList(4, 0.5);
-skipList.insert(3);
-skipList.insert(6);
-skipList.insert(7);
-skipList.insert(9);
-console.log(skipList.search(6));  // Output: true
-skipList.remove(6);
-console.log(skipList.search(6));  // Output: false
+// Example graph
+const graph = {
+  A: { B: 4, C: 2 },
+  B: { A: 4, C: 5, D: 10 },
+  C: { A: 2, B: 5, D: 3 },
+  D: { B: 10, C: 3 },
+};
+
+const startNode = 'A';
+const distances = dijkstra(graph, startNode);
+console.log(distances);
