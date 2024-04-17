@@ -1,61 +1,68 @@
-function tarjan(graph) {
-    let index = 0;
-    let stack = [];
-    let indices = new Map();
-    let lowLinks = new Map();
-    let onStack = new Set();
-    let result = [];
+class Node {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.f = 0;
+        this.g = 0;
+        this.h = 0;
+        this.neighbors = [];
+        this.parent = null;
+    }
 
-    function strongConnect(node) {
-        indices.set(node, index);
-        lowLinks.set(node, index);
-        index++;
-        stack.push(node);
-        onStack.add(node);
+    cost(node) {
+        // For simplicity, we assume that the cost to move from one node to another is 1
+        return 1;
+    }
+}
 
-        for (let neighbor of graph[node]) {
-            if (!indices.has(neighbor)) {
-                strongConnect(neighbor);
-                lowLinks.set(node, Math.min(lowLinks.get(node), lowLinks.get(neighbor)));
-            } else if (onStack.has(neighbor)) {
-                lowLinks.set(node, Math.min(lowLinks.get(node), indices.get(neighbor)));
+function heuristic(node, goal) {
+    // Manhattan distance heuristic
+    return Math.abs(node.x - goal.x) + Math.abs(node.y - goal.y);
+}
+
+function aStar(grid, start, goal) {
+    let openSet = [start];
+    let closedSet = [];
+
+    while (openSet.length > 0) {
+        let current = openSet[0];
+        for (let i = 1; i < openSet.length; i++) {
+            if (openSet[i].f < current.f || (openSet[i].f === current.f && openSet[i].h < current.h)) {
+                current = openSet[i];
             }
         }
 
-        if (lowLinks.get(node) === indices.get(node)) {
-            let component = [];
-            let member;
-            do {
-                member = stack.pop();
-                onStack.delete(member);
-                component.push(member);
-            } while (member !== node);
-            result.push(component);
+        // Goal reached
+        if (current === goal) {
+            let path = [];
+            let temp = current;
+            while (temp) {
+                path.push(temp);
+                temp = temp.parent;
+            }
+            return path.reverse();
+        }
+
+        // Remove current node from open set and add it to the closed set
+        openSet = openSet.filter(node => node !== current);
+        closedSet.push(current);
+
+        for (let neighbor of current.neighbors) {
+            if (!closedSet.includes(neighbor)) {
+                let tempG = current.g + current.cost(neighbor);
+                if (!openSet.includes(neighbor) || tempG < neighbor.g) {
+                    neighbor.g = tempG;
+                    neighbor.h = heuristic(neighbor, goal);
+                    neighbor.f = neighbor.g + neighbor.h;
+                    neighbor.parent = current;
+
+                    if (!openSet.includes(neighbor)) {
+                        openSet.push(neighbor);
+                    }
+                }
+            }
         }
     }
 
-    for (let node of Object.keys(graph)) {
-        if (!indices.has(node)) {
-            strongConnect(node);
-        }
-    }
-
-    return result;
+    return null;  // No path found
 }
-
-// Example usage:
-let graph = {
-    'A': ['B'],
-    'B': ['C'],
-    'C': ['A', 'D'],
-    'D': ['E'],
-    'E': ['C'],
-    'F': ['G'],
-    'G': ['H'],
-    'H': ['F', 'I'],
-    'I': ['J'],
-    'J': ['H']
-};
-
-let scc = tarjan(graph);
-console.log(scc);
