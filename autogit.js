@@ -1,45 +1,44 @@
-function Node(value) {
-    this.value = value;
-    this.children = [];
-}
-
-function breadthLimitedSearch(root, targetValue, limit) {
-    let queue = [root];
-    
-    while (queue.length > 0 && limit > 0) {
-        let node = queue.shift();
-        
-        if (node.value === targetValue) {
-            return node;
-        }
-        
-        limit--;
-
-        for (let i = 0; i < node.children.length; i++) {
-            queue.push(node.children[i]);
-        }
+class Stack {
+    constructor() {
+        this.stack = [];
     }
-    
-    return null;
+
+    push(element) {
+        this.stack.push(element);
+    }
+
+    pop() {
+        if (this.isEmpty()) {
+            return "Stack is empty";
+        }
+        return this.stack.pop();
+    }
+
+    peek() {
+        return this.stack[this.stack.length - 1];
+    }
+
+    isEmpty() {
+        return this.stack.length === 0;
+    }
+
+    size() {
+        return this.stack.length;
+    }
+
+    printStack() {
+        console.log(this.stack);
+    }
 }
 
-// Example usage
-let root = new Node(1);
-let node2 = new Node(2);
-let node3 = new Node(3);
-let node4 = new Node(4);
-let node5 = new Node(5);
+// Example Usage
+const stack = new Stack();
+stack.push(5);
+stack.push(10);
+stack.push(15);
+stack.printStack(); // Output: [5, 10, 15]
 
-root.children.push(node2, node3);
-node2.children.push(node4, node5);
-
-let targetValue = 4;
-let limit = 3;
-
-let resultNode = breadthLimitedSearch(root, targetValue, limit);
-
-if (resultNode) {
-    console.log(`Node with value ${targetValue} found within the limit.`);
-} else {
-    console.log(`Node with value ${targetValue} not found within the limit.`);
-}
+console.log(stack.pop()); // Output: 15
+console.log(stack.peek()); // Output: 10
+console.log(stack.size()); // Output: 2
+console.log(stack.isEmpty()); // Output: false
