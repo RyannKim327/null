@@ -1,10 +1,17 @@
-function countOccurrences(str, word) {
-    const regex = new RegExp(word, 'g');
-    const matches = str.match(regex);
-    return matches ? matches.length : 0;
+function countOccurrences(str, char) {
+    let count = 0;
+
+    for (let i = 0; i < str.length; i++) {
+        if (str.charAt(i) === char) {
+            count++;
+        }
+    }
+
+    return count;
 }
 
-const str = 'Hello world! Hello everyone!';
-const word = 'Hello';
-const count = countOccurrences(str, word);
-console.log(`The word "${word}" appears ${count} times in the string.`);
+// Example usage
+let myString = "hello world";
+let charToCount = "l";
+let occurrences = countOccurrences(myString, charToCount);
+console.log(`The character "${charToCount}" occurs ${occurrences} times in the string "${myString}"`);
