@@ -1,6 +1,14 @@
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 4, 5, 6, 7];
+function findKthSmallestElement(arr, k) {
+    // Sort the array in ascending order
+    arr.sort((a, b) => a - b);
+    
+    // Return the kth smallest element
+    return arr[k - 1];
+}
 
-const commonElements = array1.filter(element => array2.includes(element));
+// Test the function
+const arr = [3, 1, 4, 1, 5, 9, 2, 6];
+const k = 4;
+const kthSmallestElement = findKthSmallestElement(arr, k);
 
-console.log(commonElements);
+console.log(`The ${k}th smallest element in the array is: ${kthSmallestElement}`);
