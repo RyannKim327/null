@@ -1,30 +1,62 @@
 class Node {
     constructor(data) {
         this.data = data;
-        this.left = null;
-        this.right = null;
+        this.next = null;
     }
 }
 
-function countLeafNodes(root) {
-    if (root === null) {
-        return 0;
+class LinkedList {
+    constructor() {
+        this.head = null;
     }
 
-    if (root.left === null && root.right === null) {
-        return 1;
+    addNode(data) {
+        const newNode = new Node(data);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
     }
 
-    return countLeafNodes(root.left) + countLeafNodes(root.right);
+    display() {
+        let current = this.head;
+        while (current) {
+            console.log(current.data);
+            current = current.next;
+        }
+    }
+
+    reverse() {
+        let prev = null;
+        let current = this.head;
+        let next = null;
+
+        while (current !== null) {
+            next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
+        }
+        this.head = prev;
+    }
 }
 
-// Example binary tree
-let root = new Node(1);
-root.left = new Node(2);
-root.right = new Node(3);
-root.left.left = new Node(4);
-root.left.right = new Node(5);
-root.right.left = new Node(6);
-root.right.right = new Node(7);
+// Example Usage
+const linkedList = new LinkedList();
+linkedList.addNode(1);
+linkedList.addNode(2);
+linkedList.addNode(3);
+linkedList.addNode(4);
 
-console.log("Number of leaf nodes: ", countLeafNodes(root)); // Output: 4
+console.log("Original Linked List:");
+linkedList.display();
+
+linkedList.reverse();
+
+console.log("Reversed Linked List:");
+linkedList.display();
