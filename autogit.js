@@ -1,14 +1,14 @@
 function isPalindrome(str) {
     // Remove non-alphanumeric characters and convert the string to lowercase
-    const cleanStr = str.toLowerCase().replace(/[\W_]/g, '');
+    let cleanStr = str.replace(/[^0-9a-z]/gi, '').toLowerCase();
     
-    // Compare the clean string with its reverse
-    return cleanStr === cleanStr.split('').reverse().join('');
+    // Reverse the cleaned string
+    let reversedStr = cleanStr.split('').reverse().join('');
+    
+    // Compare the cleaned string with its reverse
+    return cleanStr === reversedStr;
 }
 
 // Test the function
-const str1 = "level";
-console.log(isPalindrome(str1));  // Output: true
-
-const str2 = "hello";
-console.log(isPalindrome(str2));  // Output: false
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
+console.log(isPalindrome("Hello World")); // false
