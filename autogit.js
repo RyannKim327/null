@@ -1,16 +1,10 @@
-function calculateTriangleArea(sideA, sideB, sideC) {
-    // Calculate the semi-perimeter of the triangle
-    var s = (sideA + sideB + sideC) / 2;
-
-    // Calculate the area using Heron's formula
-    var area = Math.sqrt(s * (s - sideA) * (s - sideB) * (s - sideC));
-
-    return area;
+function kthSmallestElement(arr, k) {
+    arr.sort((a, b) => a - b);
+    return arr[k - 1];
 }
 
-// Example usage
-var sideA = 3;
-var sideB = 4;
-var sideC = 5;
-var area = calculateTriangleArea(sideA, sideB, sideC);
-console.log("The area of the triangle is: " + area);
+const array = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
+const k = 3;
+
+const kthSmallest = kthSmallestElement(array, k);
+console.log(`The ${k}th smallest element is: ${kthSmallest}`);
