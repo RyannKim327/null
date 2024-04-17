@@ -1,33 +1,47 @@
-function longestIncreasingSubsequence(arr) {
-    // Initialize an array to store the length of longest increasing subsequence ending at each index
-    let dp = new Array(arr.length).fill(1);
-    
-    // Iterate over the array to calculate the length of longest increasing subsequence
-    for (let i = 0; i < arr.length; i++) {
-        for (let j = 0; j < i; j++) {
-            if (arr[i] > arr[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
-            }
+function fibonacciSearch(arr, key) {
+    let fibNum2 = 0;
+    let fibNum1 = 1;
+    let fibNum = fibNum1 + fibNum2;
+
+    while (fibNum < arr.length) {
+        fibNum2 = fibNum1;
+        fibNum1 = fibNum;
+        fibNum = fibNum1 + fibNum2;
+    }
+
+    let offset = -1;
+
+    while (fibNum > 1) {
+        let i = Math.min(offset + fibNum2, arr.length - 1);
+
+        if (arr[i] < key) {
+            fibNum = fibNum1;
+            fibNum1 = fibNum2;
+            fibNum2 = fibNum - fibNum1;
+            offset = i;
+        } else if (arr[i] > key) {
+            fibNum = fibNum2;
+            fibNum1 = fibNum1 - fibNum2;
+            fibNum2 = fibNum - fibNum1;
+        } else {
+            return i;
         }
     }
-    
-    // Find the maximum length in the dp array
-    let maxLength = Math.max(...dp);
-    
-    // Build the longest increasing subsequence using the dp array
-    let index = dp.indexOf(maxLength);
-    let lis = [arr[index]];
-    
-    for (let i = index - 1; i >= 0; i--) {
-        if (arr[i] < arr[index] && dp[i] === dp[index] - 1) {
-            lis.unshift(arr[i]);
-            index = i;
-        }
+
+    if (fibNum1 && arr[offset + 1] == key) {
+        return offset + 1;
     }
-    
-    return lis;
+
+    return -1;
 }
 
-// Test the function
-let arr = [10, 22, 9, 33, 21, 50, 41, 60, 80];
-console.log(longestIncreasingSubsequence(arr)); // Output: [10, 22, 33, 50, 60, 80]
+// Example usage
+const arr = [2, 3, 5, 8, 13, 21, 34, 55, 89];
+const key = 21;
+const index = fibonacciSearch(arr, key);
+
+if (index !== -1) {
+    console.log(`Element found at index: ${index}`);
+} else {
+    console.log(`Element not found`);
+}
