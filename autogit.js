@@ -1,36 +1,15 @@
-async function fetchData(url) {
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-    console.log(data);
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
-
-// Call the fetchData function with the URL of the server
-fetchData('https://example.com/api/data');
-import android.os.Bundle;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import androidx.appcompat.app.AppCompatActivity;
-
-public class MainActivity extends AppCompatActivity {
-
-    private WebView webView;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        webView = findViewById(R.id.webView);
-        WebSettings webSettings = webView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-
-        webView.setWebChromeClient(new WebChromeClient());
-
-        webView.loadUrl("file:///android_asset/index.html");
+function isArraySortedAscending(arr) {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false;
     }
+  }
+  return true;
 }
+
+// Example
+const arr1 = [1, 2, 3, 4, 5];
+const arr2 = [3, 2, 1];
+
+console.log(isArraySortedAscending(arr1)); // Output: true
+console.log(isArraySortedAscending(arr2)); // Output: false
