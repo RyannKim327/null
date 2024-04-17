@@ -1,8 +1,15 @@
-// Define an array of integers
-const numbers = [4, 2, 8, 5, 1];
+function isArraySortedAscending(arr) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;
+        }
+    }
+    return true;
+}
 
-// Sort the array in ascending order
-numbers.sort((a, b) => a - b);
+// Example usage
+const arr1 = [1, 2, 3, 4, 5];
+const arr2 = [1, 3, 2, 4, 5];
 
-// Print the sorted array
-console.log(numbers); // Output: [1, 2, 4, 5, 8]
+console.log(isArraySortedAscending(arr1)); // Output: true
+console.log(isArraySortedAscending(arr2)); // Output: false
