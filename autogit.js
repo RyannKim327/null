@@ -1,38 +1,38 @@
-function generateFibonacci(n) {
-    let fib = [0, 1];
-    while (fib[fib.length - 1] < n) {
-        fib.push(fib[fib.length - 1] + fib[fib.length - 2]);
-    }
-    return fib;
-}
-
-function fibonacciSearch(arr, key) {
-    const n = arr.length;
-    let fib = generateFibonacci(n);
-    let offset = 0;
+function mergeSort(arr) {
+    const len = arr.length;
+    const aux = new Array(len);
     
-    for (let i = fib.length - 1; i > 1; i--) {
-        const index = Math.min(offset + fib[i - 2], n - 1);
-        
-        if (arr[index] < key) {
-            offset = index;
-        } else if (arr[index] > key) {
-            // Do nothing, continue with the loop
-        } else {
-            return index;
+    for (let size = 1; size < len; size *= 2) {
+        for (let leftStart = 0; leftStart < len; leftStart += 2 * size) {
+            const mid = Math.min(leftStart + size, len);
+            const rightStart = Math.min(leftStart + 2 * size, len);
+            merge(arr, aux, leftStart, mid, rightStart);
         }
     }
     
-    return -1; // Element not found
+    return arr;
 }
 
-// Example usage
-const arr = [1, 3, 5, 8, 13, 21, 34, 55, 89];
-const key = 13;
-const index = fibonacciSearch(arr, key);
-
-if (index !== -1) {
-    console.log(`Element found at index ${index}`);
-} else {
-    console.log(`Element not found in the array`);
+function merge(arr, aux, leftStart, mid, rightStart) {
+    let left = leftStart;
+    let right = mid;
+    
+    for (let i = leftStart; i < rightStart; i++) {
+        if (left < mid && (right >= rightStart || arr[left] <= arr[right])) {
+            aux[i] = arr[left];
+            left++;
+        } else {
+            aux[i] = arr[right];
+            right++;
+        }
+    }
+    
+    for (let i = leftStart; i < rightStart; i++) {
+        arr[i] = aux[i];
+    }
 }
+
+// Test the merge sort function
+const arr = [5, 3, 8, 6, 2, 7, 1, 4];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr);
