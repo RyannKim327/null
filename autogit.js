@@ -1,48 +1,45 @@
-class BeamSearch {
-    constructor(beamWidth, maxSteps, scoringFunction) {
-        this.beamWidth = beamWidth;
-        this.maxSteps = maxSteps;
-        this.scoringFunction = scoringFunction;
-    }
-
-    search(initialState) {
-        let beams = [{ state: initialState, score: 0, path: [] }];
-
-        for (let step = 0; step < this.maxSteps; step++) {
-            let nextBeams = [];
-
-            for (let beam of beams) {
-                let successors = this.generateSuccessors(beam.state);
-                for (let successor of successors) {
-                    let score = this.scoringFunction(successor);
-                    let newPath = beam.path.concat([successor]);
-                    nextBeams.push({ state: successor, score: beam.score + score, path: newPath });
-                }
-            }
-
-            nextBeams.sort((a, b) => b.score - a.score);
-            beams = nextBeams.slice(0, this.beamWidth);
+function getMax(arr) {
+    let max = arr[0];
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] > max) {
+            max = arr[i];
         }
+    }
+    return max;
+}
 
-        return beams;
+function countSort(arr, exp) {
+    const output = new Array(arr.length);
+    const count = new Array(10).fill(0);
+
+    for (let i = 0; i < arr.length; i++) {
+        count[Math.floor(arr[i] / exp) % 10]++;
     }
 
-    generateSuccessors(state) {
-        // Generate successor states based on the current state
-        // This is where you would implement your specific problem logic
-        return [];
+    for (let i = 1; i < 10; i++) {
+        count[i] += count[i - 1];
+    }
+
+    for (let i = arr.length - 1; i >= 0; i--) {
+        output[count[Math.floor(arr[i] / exp) % 10] - 1] = arr[i];
+        count[Math.floor(arr[i] / exp) % 10]--;
+    }
+
+    for (let i = 0; i < arr.length; i++) {
+        arr[i] = output[i];
     }
 }
 
-// Example scoring function
-function scoringFunction(state) {
-    // This is where you would implement your specific scoring logic
-    return 1;
+function radixSort(arr) {
+    const max = getMax(arr);
+
+    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
+        countSort(arr, exp);
+    }
+
+    return arr;
 }
 
 // Example usage
-const beamSearch = new BeamSearch(3, 5, scoringFunction);
-const initialState = { value: 0 };
-const results = beamSearch.search(initialState);
-
-console.log(results);
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+console.log(radixSort(arr)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
