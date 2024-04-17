@@ -1,36 +1,28 @@
-class Node {
-    constructor(value) {
-        this.value = value;
-        this.children = [];
-    }
-}
+function interpolationSearch(arr, x) {
+    let low = 0;
+    let high = arr.length - 1;
 
-function depthLimitedSearch(root, limit) {
-    const stack = [{ node: root, depth: 0 }];
-    
-    while (stack.length > 0) {
-        const { node, depth } = stack.pop();
-        
-        if (depth <= limit) {
-            console.log(node.value); // Output the value of the current node
-            
-            // Add child nodes to the stack
-            for (let i = node.children.length - 1; i >= 0; i--) {
-                stack.push({ node: node.children[i], depth: depth + 1 });
-            }
+    while (low <= high && x >= arr[low] && x <= arr[high]) {
+        if (low === high) {
+            if (arr[low] === x) return low;
+            return -1;
+        }
+
+        let pos = low + Math.floor(((high - low) / (arr[high] - arr[low])) * (x - arr[low]));
+
+        if (arr[pos] === x) return pos;
+        if (arr[pos] < x) {
+            low = pos + 1;
+        } else {
+            high = pos - 1;
         }
     }
+
+    return -1;
 }
 
 // Example usage
-const root = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
-const node4 = new Node(4);
-
-root.children.push(node2, node3);
-node2.children.push(new Node(5), new Node(6));
-node3.children.push(new Node(7));
-node4.children.push(new Node(8));
-
-depthLimitedSearch(root, 2); // Perform depth-limited search with limit 2 starting from root
+const arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
+const x = 23;
+const index = interpolationSearch(arr, x);
+console.log(index);
