@@ -1,27 +1,8 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
+const removeDuplicates = (arr) => {
+  return arr.filter((item, index) => arr.indexOf(item) === index);
+};
 
-function findMiddleElement(head) {
-  let slow = head;
-  let fast = head;
+const arrWithDuplicates = [1, 2, 2, 3, 4, 4, 5];
+const arrWithoutDuplicates = removeDuplicates(arrWithDuplicates);
 
-  while (fast !== null && fast.next !== null) {
-    slow = slow.next;
-    fast = fast.next.next;
-  }
-
-  return slow.value;
-}
-
-// Example usage:
-let head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = new Node(4);
-head.next.next.next.next = new Node(5);
-
-console.log(findMiddleElement(head)); // Output: 3 (middle element)
+console.log(arrWithoutDuplicates); // Output: [1, 2, 3, 4, 5]
