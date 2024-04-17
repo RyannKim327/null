@@ -1,12 +1,9 @@
-// Prompt the user to enter a number
-let number = prompt("Enter a number:");
-
-// Convert the input to a number
-number = parseInt(number);
-
-// Check if the number is even or odd
-if (number % 2 === 0) {
-    console.log(`${number} is even.`);
-} else {
-    console.log(`${number} is odd.`);
+function findCommonElements(array1, array2) {
+    return array1.filter(element => array2.includes(element));
 }
+
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
+
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [3, 4, 5]
