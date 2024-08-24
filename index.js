@@ -52,16 +52,21 @@ let run = async () => {
             setTimeout(() => {
               _commitments++;
               commits--;
-              if (commits > 0) {
-                run();
-              } else {
-                console.log("Thank you for spamming hahaha");
-                exec(`git push`, (e) => {
-                  if (e) return console.error(`ERR: ${e}`);
-                  console.log("Pushing");
-                });
-                process.exit(0);
-              }
+              // if (commits > 0) {
+              // run();
+              // } else {
+              console.log("Thank you for spamming hahaha");
+              exec(`git push`, (e) => {
+                if (e) return console.error(`ERR: ${e}`);
+                console.log("Pushing");
+                if (commits > 0) {
+                  run();
+                } else {
+                  console.log("Thankies");
+                }
+              });
+              // process.exit(0);
+              // }
             }, 50);
           });
         }, 50);
@@ -80,6 +85,9 @@ exec("git fetch", (e) => {
   console.log(`----- Git Pull -----`);
   exec("git pull", (e) => {
     if (e) return console.error(e);
-    run();
+    exec("git config credential.helper cache", (e) => {
+      if (e) return console.error(`ERR [Helper]: ${e}`);
+      run();
+    });
   });
 });
