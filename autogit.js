@@ -1,7 +1,12 @@
-# List of numbers
-numbers = [1, 2, 3, 4, 5]
+import schedule
+import time
 
-# Calculate the mean
-mean = sum(numbers) / len(numbers)
+def job():
+    print("Task is running...")
 
-print("Mean:", mean)
+schedule.every().day.at("08:00").do(job)
+schedule.every().wednesday.at("13:00").do(job)
+
+while True:
+    schedule.run_pending()
+    time.sleep(1)
