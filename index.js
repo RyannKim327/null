@@ -56,7 +56,10 @@ let run = async () => {
                 run();
               } else {
                 console.log("Thank you for spamming hahaha");
-                exec(`git push`);
+                exec(`git push`, (e) => {
+                  if (e) return console.error(`ERR: ${e}`);
+                  console.log("Pushing");
+                });
                 process.exit(0);
               }
             }, 50);
