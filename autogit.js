@@ -1,11 +1,21 @@
-def largest_prime_factor(n):
-    i = 2
-    while i * i <= n:
-        if n % i:
-            i += 1
+def first_non_repeating_character(input_string):
+    char_count = {}
+    
+    # Count frequency of each character
+    for char in input_string:
+        if char in char_count:
+            char_count[char] += 1
         else:
-            n //= i
-    return n
+            char_count[char] = 1
+    
+    # Find the first non-repeating character
+    for char in input_string:
+        if char_count[char] == 1:
+            return char
+    
+    return None  # Return None if no non-repeating character is found
 
-number = 56
-print(f"The largest prime factor of {number} is: {largest_prime_factor(number)}")
+# Example usage
+input_string = "hello world"
+result = first_non_repeating_character(input_string)
+print("The first non-repeating character is:", result)
