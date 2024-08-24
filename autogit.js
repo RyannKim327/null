@@ -1,35 +1,33 @@
-def boyer_moore(text, pattern):
-    m = len(pattern)
-    n = len(text)
+def longest_increasing_subsequence(arr):
+    n = len(arr)
+    if n == 0:
+        return 0
 
-    if m == 0:
-        return -1
+    # Initialize an array to store the length of the longest increasing subsequence ending at each index
+    lis = [1] * n
 
-    skip = []
-    for _ in range(256):
-        skip.append(m)
-    
-    for i in range(m - 1):
-        skip[ord(pattern[i])] = m - 1 - i
+    # Compute the length of the longest increasing subsequence for each index
+    for i in range(1, n):
+        for j in range(0, i):
+            if arr[i] > arr[j]:
+                lis[i] = max(lis[i], lis[j] + 1)
 
-    i = m - 1
-    while i < n:
-        j = m - 1
-        while text[i] == pattern[j]:
-            if j == 0:
-                return i
-            i -= 1
-            j -= 1
-        i += max(skip[ord(text[i])], 1)
+    # Find the maximum length of the longest increasing subsequence
+    max_length = max(lis)
 
-    return -1
+    # Reconstruct the longest increasing subsequence
+    result = []
+    current_length = max_length
+    for i in range(n - 1, -1, -1):
+        if lis[i] == current_length:
+            result.append(arr[i])
+            current_length -= 1
+            if current_length == 0:
+                break
 
-# Example usage
-text = "ABAAABCD"
-pattern = "ABC"
-result = boyer_moore(text, pattern)
+    result.reverse()
+    return result
 
-if result != -1:
-    print("Pattern found at index:", result)
-else:
-    print("Pattern not found")
+# Test the function
+arr = [10, 22, 9, 33, 21, 50, 41, 60, 80]
+print(longest_increasing_subsequence(arr))  # Output: [10, 22, 33, 50, 60, 80]

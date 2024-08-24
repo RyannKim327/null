@@ -55,7 +55,7 @@ let run = async () => {
               // if (commits > 0) {
               // run();
               // } else {
-              console.log("Thank you for spamming hahaha");
+              // console.log("Thank you for spamming hahaha");
               exec(`git push`, (e) => {
                 if (e) return console.error(`ERR: ${e}`);
                 console.log("Pushing");
