@@ -1,33 +1,40 @@
-def longest_increasing_subsequence(arr):
-    n = len(arr)
-    if n == 0:
-        return 0
+def compute_lps_array(pattern):
+    j = 0
+    lps = [0] * len(pattern)
+    i = 1
+    while i < len(pattern):
+        if pattern[i] == pattern[j]:
+            j += 1
+            lps[i] = j
+            i += 1
+        else:
+            if j != 0:
+                j = lps[j-1]
+            else:
+                lps[i] = 0
+                i += 1
+    return lps
 
-    # Initialize an array to store the length of the longest increasing subsequence ending at each index
-    lis = [1] * n
+def kmp_search(text, pattern):
+    lps = compute_lps_array(pattern)
+    i = 0  # index for text
+    j = 0  # index for pattern
+    while i < len(text):
+        if text[i] == pattern[j]:
+            i += 1
+            j += 1
 
-    # Compute the length of the longest increasing subsequence for each index
-    for i in range(1, n):
-        for j in range(0, i):
-            if arr[i] > arr[j]:
-                lis[i] = max(lis[i], lis[j] + 1)
+        if j == len(pattern):
+            print("Pattern found at index " + str(i - j))
+            j = lps[j - 1]
 
-    # Find the maximum length of the longest increasing subsequence
-    max_length = max(lis)
+        elif i < len(text) and text[i] != pattern[j]:
+            if j != 0:
+                j = lps[j - 1]
+            else:
+                i += 1
 
-    # Reconstruct the longest increasing subsequence
-    result = []
-    current_length = max_length
-    for i in range(n - 1, -1, -1):
-        if lis[i] == current_length:
-            result.append(arr[i])
-            current_length -= 1
-            if current_length == 0:
-                break
-
-    result.reverse()
-    return result
-
-# Test the function
-arr = [10, 22, 9, 33, 21, 50, 41, 60, 80]
-print(longest_increasing_subsequence(arr))  # Output: [10, 22, 33, 50, 60, 80]
+# Example usage
+text = "ABABDABACDABABCABAB"
+pattern = "ABABCABAB"
+kmp_search(text, pattern)
