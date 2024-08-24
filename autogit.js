@@ -1,21 +1,9 @@
-def first_non_repeating_character(input_string):
-    char_count = {}
-    
-    # Count frequency of each character
-    for char in input_string:
-        if char in char_count:
-            char_count[char] += 1
-        else:
-            char_count[char] = 1
-    
-    # Find the first non-repeating character
-    for char in input_string:
-        if char_count[char] == 1:
-            return char
-    
-    return None  # Return None if no non-repeating character is found
+def calculate_mean(numbers):
+    sum_numbers = sum(numbers)
+    mean = sum_numbers / len(numbers)
+    return mean
 
-# Example usage
-input_string = "hello world"
-result = first_non_repeating_character(input_string)
-print("The first non-repeating character is:", result)
+# Example list of numbers
+numbers = [1, 2, 3, 4, 5]
+mean_value = calculate_mean(numbers)
+print("Mean:", mean_value)
