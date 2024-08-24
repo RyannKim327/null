@@ -1,9 +1,9 @@
-const axios = require('axios');
+let arr = [1, 2, 3, 4, 5];
 
-axios.get('https://jsonplaceholder.typicode.com/posts/1')
-  .then(response => {
-    console.log(response.data);
-  })
-  .catch(error => {
-    console.error(error);
-  });
+for (let i = 0; i < Math.floor(arr.length / 2); i++) {
+    let temp = arr[i];
+    arr[i] = arr[arr.length - 1 - i];
+    arr[arr.length - 1 - i] = temp;
+}
+
+console.log(arr); // Output: [5, 4, 3, 2, 1]
