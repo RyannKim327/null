@@ -1,43 +1,11 @@
-class Node:
-    def __init__(self):
-        self.children = {}
-        self.start = None
-        self.end = None
+import random
 
-class SuffixTree:
-    def __init__(self, text):
-        self.root = Node()
-        self.text = text
-        self.build_suffix_tree()
+# Define the range for the random number
+start_range = 1
+end_range = 100
 
-    def build_suffix_tree(self):
-        for i in range(len(self.text)):
-            self.add_suffix(self.text[i:], i)
+# Generate a random number within the specified range
+random_number = random.randint(start_range, end_range)
 
-    def add_suffix(self, suffix, start):
-        current_node = self.root
-
-        for i in range(len(suffix)):
-            if suffix[i] not in current_node.children:
-                current_node.children[suffix[i]] = Node()
-
-            current_node = current_node.children[suffix[i]]
-
-        current_node.start = start
-        current_node.end = len(self.text) - 1
-
-    def search(self, pattern):
-        current_node = self.root
-
-        for char in pattern:
-            if char not in current_node.children:
-                return False
-            current_node = current_node.children[char]
-
-        return True
-
-# Usage
-text = "banana"
-tree = SuffixTree(text)
-print(tree.search("ana"))  # Output: True
-print(tree.search("app"))  # Output: False
+# Print the random number
+print("Random number:", random_number)
