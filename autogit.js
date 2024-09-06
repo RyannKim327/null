@@ -1,38 +1,12 @@
-string = "Hello, World!"
-substring = "Hello"
+// Define an array
+let array = [1, 2, 3, 4, 5];
 
-if substring in string:
-    print("Substring found in the string")
-else:
-    print("Substring not found in the string")
-String string = "Hello, World!";
-String substring = "Hello";
+// Find the index of the element you want to remove
+let index = array.indexOf(3);
 
-if (string.contains(substring)) {
-    System.out.println("Substring found in the string");
-} else {
-    System.out.println("Substring not found in the string");
+// Remove the element at that index
+if (index > -1) {
+    array.splice(index, 1);
 }
-let string = "Hello, World!";
-let substring = "Hello";
 
-if (string.includes(substring)) {
-    console.log("Substring found in the string");
-} else {
-    console.log("Substring not found in the string");
-}
-#include <iostream>
-#include <string>
-
-int main() {
-    std::string str = "Hello, World!";
-    std::string substr = "Hello";
-    
-    if (str.find(substr) != std::string::npos) {
-        std::cout << "Substring found in the string\n";
-    } else {
-        std::cout << "Substring not found in the string\n";
-    }
-    
-    return 0;
-}
+console.log(array); // Output: [1, 2, 4, 5]
