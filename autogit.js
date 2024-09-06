@@ -1,8 +1,7 @@
-# Define an array
-arr = [10, 5, 8, 20, 15]
+# Concatenating two strings in Python
+string1 = "Hello, "
+string2 = "world!"
 
-# Find the maximum value in the array
-max_value = max(arr)
-
-# Print the maximum value
-print("Maximum value in the array is:", max_value)
+concatenated_string = string1 + string2
+print(concatenated_string)
+Hello, world!
