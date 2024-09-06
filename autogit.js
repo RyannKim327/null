@@ -1,24 +1,34 @@
-def first_non_repeating_char(s):
-    char_count = {}
-    
-    # Count the frequency of each character
-    for char in s:
-        if char in char_count:
-            char_count[char] += 1
-        else:
-            char_count[char] = 1
-            
-    # Find the first non-repeating character
-    for char in s:
-        if char_count[char] == 1:
-            return char
-    
-    return None
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end_of_word = False
 
-# Test the function
-string = "hello world"
-result = first_non_repeating_char(string)
-if result:
-    print("The first non-repeating character is:", result)
-else:
-    print("No non-repeating characters found in the string.")
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word):
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.is_end_of_word = True
+
+    def search(self, word):
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+        return node.is_end_of_word
+
+# Example usage
+trie = Trie()
+words = ["apple", "banana", "orange", "applause"]
+
+for word in words:
+    trie.insert(word)
+
+print(trie.search("apple"))  # Output: True
+print(trie.search("app"))    # Output: False
