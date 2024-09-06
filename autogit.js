@@ -1,11 +1,6 @@
-import random
+sentence = "This is a sentence with a word. The word will be counted here."
+word_to_count = "word"
 
-# Define the range for the random number
-start_range = 1
-end_range = 100
+count = sentence.lower().count(word_to_count)
 
-# Generate a random number within the specified range
-random_number = random.randint(start_range, end_range)
-
-# Print the random number
-print("Random number:", random_number)
+print(f"The word '{word_to_count}' appears {count} times in the sentence.")
