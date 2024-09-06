@@ -1,58 +1,38 @@
+string = "Hello, World!"
+substring = "Hello"
+
+if substring in string:
+    print("Substring found in the string")
+else:
+    print("Substring not found in the string")
+String string = "Hello, World!";
+String substring = "Hello";
+
+if (string.contains(substring)) {
+    System.out.println("Substring found in the string");
+} else {
+    System.out.println("Substring not found in the string");
+}
+let string = "Hello, World!";
+let substring = "Hello";
+
+if (string.includes(substring)) {
+    console.log("Substring found in the string");
+} else {
+    console.log("Substring not found in the string");
+}
 #include <iostream>
-using namespace std;
-
-// Define the Node structure
-struct Node {
-    int data;
-    Node* next;
-    
-    Node(int val) {
-        data = val;
-        next = NULL;
-    }
-};
-
-// Function to reverse the linked list
-Node* reverseList(Node* head) {
-    Node* prev = NULL;
-    Node* current = head;
-    Node* next = NULL;
-    
-    while (current != NULL) {
-        next = current->next;
-        current->next = prev;
-        prev = current;
-        current = next;
-    }
-    
-    return prev;
-}
-
-// Function to print the linked list
-void printList(Node* head) {
-    Node* temp = head;
-    while (temp != NULL) {
-        cout << temp->data << " ";
-        temp = temp->next;
-    }
-    cout << endl;
-}
+#include <string>
 
 int main() {
-    // Create a sample linked list
-    Node* head = new Node(1);
-    head->next = new Node(2);
-    head->next->next = new Node(3);
-    head->next->next->next = new Node(4);
+    std::string str = "Hello, World!";
+    std::string substr = "Hello";
     
-    cout << "Original linked list: ";
-    printList(head);
-    
-    // Reverse the linked list
-    head = reverseList(head);
-    
-    cout << "Reversed linked list: ";
-    printList(head);
+    if (str.find(substr) != std::string::npos) {
+        std::cout << "Substring found in the string\n";
+    } else {
+        std::cout << "Substring not found in the string\n";
+    }
     
     return 0;
 }
