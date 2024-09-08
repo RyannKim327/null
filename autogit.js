@@ -1,33 +1,29 @@
-class Stack:
-    def __init__(self):
-        self.stack = []
+def heapify(arr, n, i):
+    largest = i
+    left = 2 * i + 1
+    right = 2 * i + 2
 
-    def push(self, item):
-        self.stack.append(item)
+    if left < n and arr[i] < arr[left]:
+        largest = left
 
-    def pop(self):
-        if not self.is_empty():
-            return self.stack.pop()
-        else:
-            return None
+    if right < n and arr[largest] < arr[right]:
+        largest = right
 
-    def peek(self):
-        if not self.is_empty():
-            return self.stack[-1]
-        else:
-            return None
+    if largest != i:
+        arr[i], arr[largest] = arr[largest], arr[i]
+        heapify(arr, n, largest)
 
-    def is_empty(self):
-        return len(self.stack) == 0
+def heap_sort(arr):
+    n = len(arr)
 
-    def size(self):
-        return len(self.stack)
-stack = Stack()
-stack.push(1)
-stack.push(2)
-stack.push(3)
+    for i in range(n // 2 - 1, -1, -1):
+        heapify(arr, n, i)
 
-print(stack.pop())  # Output: 3
-print(stack.peek())  # Output: 2
-print(stack.size())  # Output: 2
-print(stack.is_empty())  # Output: False
+    for i in range(n - 1, 0, -1):
+        arr[i], arr[0] = arr[0], arr[i]  
+        heapify(arr, i, 0)
+
+# Example usage:
+arr = [12, 11, 13, 5, 6, 7]
+heap_sort(arr)
+print("Sorted array is", arr)
