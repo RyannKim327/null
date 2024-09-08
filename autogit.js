@@ -1,29 +1,25 @@
-def heapify(arr, n, i):
-    largest = i
-    left = 2 * i + 1
-    right = 2 * i + 2
+from collections import deque
 
-    if left < n and arr[i] < arr[left]:
-        largest = left
+# Define a graph as an adjacency list
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': ['F'],
+    'F': []
+}
 
-    if right < n and arr[largest] < arr[right]:
-        largest = right
+def breadth_first_search(graph, start):
+    visited = set()
+    queue = deque([start])
+    
+    while queue:
+        node = queue.popleft()
+        if node not in visited:
+            print(node)
+            visited.add(node)
+            queue.extend([neighbor for neighbor in graph[node] if neighbor not in visited])
 
-    if largest != i:
-        arr[i], arr[largest] = arr[largest], arr[i]
-        heapify(arr, n, largest)
-
-def heap_sort(arr):
-    n = len(arr)
-
-    for i in range(n // 2 - 1, -1, -1):
-        heapify(arr, n, i)
-
-    for i in range(n - 1, 0, -1):
-        arr[i], arr[0] = arr[0], arr[i]  
-        heapify(arr, i, 0)
-
-# Example usage:
-arr = [12, 11, 13, 5, 6, 7]
-heap_sort(arr)
-print("Sorted array is", arr)
+# Usage
+breadth_first_search(graph, 'A')
