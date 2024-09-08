@@ -1,53 +1,33 @@
-#include <iostream>
+class Stack:
+    def __init__(self):
+        self.stack = []
 
-using namespace std;
+    def push(self, item):
+        self.stack.append(item)
 
-class Node {
-public:
-    int data;
-    Node* next;
-    
-    Node(int value) : data(value), next(nullptr) {}
-};
+    def pop(self):
+        if not self.is_empty():
+            return self.stack.pop()
+        else:
+            return None
 
-class LinkedList {
-private:
-    Node* head;
-    
-public:
-    LinkedList() : head(nullptr) {}
-    
-    void insert(int value) {
-        Node* newNode = new Node(value);
-        if (head == nullptr) {
-            head = newNode;
-        } else {
-            Node* current = head;
-            while (current->next != nullptr) {
-                current = current->next;
-            }
-            current->next = newNode;
-        }
-    }
-    
-    void display() {
-        Node* current = head;
-        while (current != nullptr) {
-            cout << current->data << " ";
-            current = current->next;
-        }
-        cout << endl;
-    }
-};
+    def peek(self):
+        if not self.is_empty():
+            return self.stack[-1]
+        else:
+            return None
 
-int main() {
-    LinkedList list;
+    def is_empty(self):
+        return len(self.stack) == 0
 
-    list.insert(1);
-    list.insert(2);
-    list.insert(3);
-    
-    list.display();
+    def size(self):
+        return len(self.stack)
+stack = Stack()
+stack.push(1)
+stack.push(2)
+stack.push(3)
 
-    return 0;
-}
+print(stack.pop())  # Output: 3
+print(stack.peek())  # Output: 2
+print(stack.size())  # Output: 2
+print(stack.is_empty())  # Output: False
