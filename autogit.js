@@ -1,25 +1,24 @@
-from collections import deque
+arr = [1, 2, 3, 2, 4, 3, 5]
+arr = list(set(arr))
+print(arr)
+let arr = [1, 2, 3, 2, 4, 3, 5];
+arr = [...new Set(arr)];
+console.log(arr);
+import java.util.ArrayList;
+import java.util.Arrays;
 
-# Define a graph as an adjacency list
-graph = {
-    'A': ['B', 'C'],
-    'B': ['D', 'E'],
-    'C': ['F'],
-    'D': [],
-    'E': ['F'],
-    'F': []
+public class Main {
+    public static void main(String[] args) {
+        Integer[] arr = {1, 2, 3, 2, 4, 3, 5};
+        ArrayList<Integer> uniqueList = new ArrayList<>();
+
+        for (Integer num : arr) {
+            if (!uniqueList.contains(num)) {
+                uniqueList.add(num);
+            }
+        }
+
+        Integer[] uniqueArr = uniqueList.toArray(new Integer[0]);
+        System.out.println(Arrays.toString(uniqueArr));
+    }
 }
-
-def breadth_first_search(graph, start):
-    visited = set()
-    queue = deque([start])
-    
-    while queue:
-        node = queue.popleft()
-        if node not in visited:
-            print(node)
-            visited.add(node)
-            queue.extend([neighbor for neighbor in graph[node] if neighbor not in visited])
-
-# Usage
-breadth_first_search(graph, 'A')
