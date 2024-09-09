@@ -1,13 +1,8 @@
-def insertion_sort(arr):
-    for i in range(1, len(arr)):
-        key = arr[i]
-        j = i - 1
-        while j >= 0 and key < arr[j]:
-            arr[j + 1] = arr[j]
-            j -= 1
-        arr[j + 1] = key
+def kth_smallest_element(arr, k):
+    sorted_arr = sorted(arr)  # Sort the array in ascending order
+    return sorted_arr[k-1]    # Return the kth smallest element
 
 # Example usage
-arr = [12, 11, 13, 5, 6]
-insertion_sort(arr)
-print("Sorted array is:", arr)
+arr = [4, 2, 8, 1, 5, 7]
+k = 3
+print(kth_smallest_element(arr, k))  # Output: 4
