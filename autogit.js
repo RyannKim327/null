@@ -1,8 +1,17 @@
-def kth_smallest_element(arr, k):
-    sorted_arr = sorted(arr)  # Sort the array in ascending order
-    return sorted_arr[k-1]    # Return the kth smallest element
+def is_palindrome(input_string):
+    # Removing special characters and spaces
+    input_string = ''.join(e for e in input_string if e.isalnum())
+    input_string = input_string.lower()
 
-# Example usage
-arr = [4, 2, 8, 1, 5, 7]
-k = 3
-print(kth_smallest_element(arr, k))  # Output: 4
+    # Checking if the string is a palindrome
+    if input_string == input_string[::-1]:
+        return True
+    else:
+        return False
+
+# Test the function
+input_string = "A man, a plan, a canal, Panama"
+if is_palindrome(input_string):
+    print("The string is a palindrome.")
+else:
+    print("The string is not a palindrome.")
