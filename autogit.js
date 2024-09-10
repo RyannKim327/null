@@ -1,14 +1,43 @@
-def findMedianSortedArrays(nums1, nums2):
-    m = len(nums1)
-    n = len(nums2)
-    nums = sorted(nums1 + nums2)
+def breadth_limited_search(graph, start, goal, limit):
+    if start == goal:
+        return [start]
 
-    if (m + n) % 2 == 0:
-        return (nums[(m + n) // 2 - 1] + nums[(m + n) // 2]) / 2
-    else:
-        return nums[(m + n) // 2]
+    visited = []
+    queue = [[start]]
 
-# Test the function
-nums1 = [1, 3]
-nums2 = [2]
-print(findMedianSortedArrays(nums1, nums2))  # Output: 2.0
+    while queue:
+        path = queue.pop(0)
+        node = path[-1]
+
+        if node not in visited:
+            neighbors = graph[node]
+
+            for neighbor in neighbors:
+                new_path = list(path)
+                new_path.append(neighbor)
+                queue.append(new_path)
+                
+                if neighbor == goal:
+                    if len(new_path) <= limit:
+                        return new_path
+
+            visited.append(node)
+
+    return None
+
+# Example usage
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
+
+start_node = 'A'
+goal_node = 'F'
+limit = 3
+
+result = breadth_limited_search(graph, start_node, goal_node, limit)
+print(result)
