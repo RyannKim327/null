@@ -1,33 +1,37 @@
-def bidirectional_search(graph, start, goal):
-    # Initialize forward and backward queues
-    forward_queue = [start]
-    backward_queue = [goal]
-    
-    # Initialize visited sets
-    forward_visited = set([start])
-    backward_visited = set([goal])
+def build_bad_character_table(pattern):
+    bad_char_table = [-1] * 256
+    for i in range(len(pattern)):
+        bad_char_table[ord(pattern[i])] = i
+    return bad_char_table
 
-    while forward_queue and backward_queue:
-        # Perform forward search
-        node = forward_queue.pop(0)
-        for neighbor in graph[node]:
-            if neighbor not in forward_visited:
-                forward_visited.add(neighbor)
-                forward_queue.append(neighbor)
-                
-            # Check if forward and backward searches meet
-            if neighbor in backward_visited:
-                return "Path found"
+def boyer_moore_horspool(text, pattern):
+    m = len(pattern)
+    n = len(text)
 
-        # Perform backward search
-        node = backward_queue.pop(0)
-        for neighbor in graph[node]:
-            if neighbor not in backward_visited:
-                backward_visited.add(neighbor)
-                backward_queue.append(neighbor)
-                
-            # Check if forward and backward searches meet
-            if neighbor in forward_visited:
-                return "Path found"
+    if m > n:
+        return -1
 
-    return "No path found"
+    bad_char_table = build_bad_character_table(pattern)
+    shift = 0
+
+    while shift <= n - m:
+        j = m - 1
+
+        while j >= 0 and pattern[j] == text[shift + j]:
+            j -= 1
+
+        if j < 0:
+            return shift
+
+        shift += max(1, j - bad_char_table[ord(text[shift + j])])
+
+    return -1
+
+# Example usage
+text = "ABAAABCD"
+pattern = "ABC"
+result = boyer_moore_horspool(text, pattern)
+if result != -1:
+    print("Pattern found at index:", result)
+else:
+    print("Pattern not found")
