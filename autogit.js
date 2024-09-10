@@ -1,43 +1,42 @@
-def breadth_limited_search(graph, start, goal, limit):
-    if start == goal:
-        return [start]
+def fibonacci_search(arr, x):
+    fib_m_minus_2 = 0
+    fib_m_minus_1 = 1
+    fib_m = fib_m_minus_1 + fib_m_minus_2
 
-    visited = []
-    queue = [[start]]
+    while fib_m < len(arr):
+        fib_m_minus_2 = fib_m_minus_1
+        fib_m_minus_1 = fib_m
+        fib_m = fib_m_minus_1 + fib_m_minus_2
 
-    while queue:
-        path = queue.pop(0)
-        node = path[-1]
+    offset = -1
 
-        if node not in visited:
-            neighbors = graph[node]
+    while fib_m > 1:
+        i = min(offset + fib_m_minus_2, len(arr) - 1)
 
-            for neighbor in neighbors:
-                new_path = list(path)
-                new_path.append(neighbor)
-                queue.append(new_path)
-                
-                if neighbor == goal:
-                    if len(new_path) <= limit:
-                        return new_path
+        if arr[i] < x:
+            fib_m = fib_m_minus_1
+            fib_m_minus_1 = fib_m_minus_2
+            fib_m_minus_2 = fib_m - fib_m_minus_1
+            offset = i
 
-            visited.append(node)
+        elif arr[i] > x:
+            fib_m = fib_m_minus_2
+            fib_m_minus_1 = fib_m_minus_1 - fib_m_minus_2
+            fib_m_minus_2 = fib_m - fib_m_minus_1
 
-    return None
+        else:
+            return i
+
+    if fib_m_minus_1 and arr[offset+1] == x:
+        return offset + 1
+
+    return -1
 
 # Example usage
-graph = {
-    'A': ['B', 'C'],
-    'B': ['A', 'D', 'E'],
-    'C': ['A', 'F'],
-    'D': ['B'],
-    'E': ['B', 'F'],
-    'F': ['C', 'E']
-}
-
-start_node = 'A'
-goal_node = 'F'
-limit = 3
-
-result = breadth_limited_search(graph, start_node, goal_node, limit)
-print(result)
+arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100]
+x = 85
+result = fibonacci_search(arr, x)
+if result != -1:
+    print("Element found at index:", result)
+else:
+    print("Element not found.")
