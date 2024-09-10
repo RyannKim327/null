@@ -1,29 +1,33 @@
-def heapify(arr, n, i):
-    largest = i
-    left = 2 * i + 1
-    right = 2 * i + 2
+def bidirectional_search(graph, start, goal):
+    # Initialize forward and backward queues
+    forward_queue = [start]
+    backward_queue = [goal]
+    
+    # Initialize visited sets
+    forward_visited = set([start])
+    backward_visited = set([goal])
 
-    if left < n and arr[i] < arr[left]:
-        largest = left
+    while forward_queue and backward_queue:
+        # Perform forward search
+        node = forward_queue.pop(0)
+        for neighbor in graph[node]:
+            if neighbor not in forward_visited:
+                forward_visited.add(neighbor)
+                forward_queue.append(neighbor)
+                
+            # Check if forward and backward searches meet
+            if neighbor in backward_visited:
+                return "Path found"
 
-    if right < n and arr[largest] < arr[right]:
-        largest = right
+        # Perform backward search
+        node = backward_queue.pop(0)
+        for neighbor in graph[node]:
+            if neighbor not in backward_visited:
+                backward_visited.add(neighbor)
+                backward_queue.append(neighbor)
+                
+            # Check if forward and backward searches meet
+            if neighbor in forward_visited:
+                return "Path found"
 
-    if largest != i:
-        arr[i], arr[largest] = arr[largest], arr[i]
-        heapify(arr, n, largest)
-
-def heapSort(arr):
-    n = len(arr)
-
-    for i in range(n // 2 - 1, -1, -1):
-        heapify(arr, n, i)
-
-    for i in range(n - 1, 0, -1):
-        arr[i], arr[0] = arr[0], arr[i]
-        heapify(arr, i, 0)
-
-# Usage
-arr = [12, 11, 13, 5, 6, 7]
-heapSort(arr)
-print("Sorted array is", arr)
+    return "No path found"
