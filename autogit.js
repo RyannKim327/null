@@ -1,39 +1,12 @@
-from queue import PriorityQueue
+import schedule
+import time
 
-class BeamNode:
-    def __init__(self, state, path_cost, prev_node):
-        self.state = state
-        self.path_cost = path_cost
-        self.prev_node = prev_node
+def job():
+    print("Task is running...")
 
-    def __lt__(self, other):
-        return self.path_cost < other.path_cost
+# Schedule the task to run every minute
+schedule.every().minute.do(job)
 
-def expand_node(node):
-    successors = []
-    # Generate successor nodes by applying actions to the current state
-    # Add them to the list of successors
-    return successors
-
-def beam_search(initial_state, beam_width):
-    frontier = PriorityQueue()
-    frontier.put(BeamNode(initial_state, 0, None))
-    
-    while not frontier.empty():
-        top_nodes = []
-        for _ in range(beam_width):
-            if frontier.empty():
-                break
-            top_nodes.append(frontier.get())
-        
-        new_frontier = PriorityQueue()
-        for node in top_nodes:
-            if is_goal_state(node.state):
-                return node
-            successors = expand_node(node)
-            for successor in successors:
-                new_frontier.put(successor)
-        
-        frontier = new_frontier
-    
-    return None
+while True:
+    schedule.run_pending()
+    time.sleep(1)
