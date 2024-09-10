@@ -1,42 +1,14 @@
-def fibonacci_search(arr, x):
-    fib_m_minus_2 = 0
-    fib_m_minus_1 = 1
-    fib_m = fib_m_minus_1 + fib_m_minus_2
+def selection_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        min_idx = i
+        for j in range(i+1, n):
+            if arr[j] < arr[min_idx]:
+                min_idx = j
+        arr[i], arr[min_idx] = arr[min_idx], arr[i]
+    return arr
 
-    while fib_m < len(arr):
-        fib_m_minus_2 = fib_m_minus_1
-        fib_m_minus_1 = fib_m
-        fib_m = fib_m_minus_1 + fib_m_minus_2
-
-    offset = -1
-
-    while fib_m > 1:
-        i = min(offset + fib_m_minus_2, len(arr) - 1)
-
-        if arr[i] < x:
-            fib_m = fib_m_minus_1
-            fib_m_minus_1 = fib_m_minus_2
-            fib_m_minus_2 = fib_m - fib_m_minus_1
-            offset = i
-
-        elif arr[i] > x:
-            fib_m = fib_m_minus_2
-            fib_m_minus_1 = fib_m_minus_1 - fib_m_minus_2
-            fib_m_minus_2 = fib_m - fib_m_minus_1
-
-        else:
-            return i
-
-    if fib_m_minus_1 and arr[offset+1] == x:
-        return offset + 1
-
-    return -1
-
-# Example usage
-arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100]
-x = 85
-result = fibonacci_search(arr, x)
-if result != -1:
-    print("Element found at index:", result)
-else:
-    print("Element not found.")
+# Example usage:
+arr = [64, 25, 12, 22, 11]
+sorted_arr = selection_sort(arr)
+print("Sorted array:", sorted_arr)
