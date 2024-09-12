@@ -1,23 +1,14 @@
-# Rabin-Karp Algorithm for string searching
+def bubble_sort(arr):
+    n = len(arr)
+    
+    for i in range(n):
+        for j in range(0, n-i-1):
+            if arr[j] > arr[j+1]:
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+    
+    return arr
 
-def rabin_karp(text, pattern):
-    text_len = len(text)
-    pattern_len = len(pattern)
-
-    # Calculate the hash value of pattern and the first window of text
-    pattern_hash = sum(ord(pattern[i]) for i in range(pattern_len))
-    window_hash = sum(ord(text[i]) for i in range(pattern_len))
-
-    for i in range(text_len - pattern_len + 1):
-        # Check if the hash values match, and if the substrings match
-        if pattern_hash == window_hash and text[i:i + pattern_len] == pattern:
-            print("Pattern found at index:", i)
-
-        # Update the rolling hash value for the next window
-        if i < text_len - pattern_len:
-            window_hash = window_hash - ord(text[i]) + ord(text[i + pattern_len])
-
-# Test the algorithm
-text = "ABCCDDAEFGD"
-pattern = "CDD"
-rabin_karp(text, pattern)
+# Example usage
+arr = [64, 34, 25, 12, 22, 11, 90]
+sorted_arr = bubble_sort(arr)
+print("Sorted array is:", sorted_arr)
