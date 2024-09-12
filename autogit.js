@@ -1,41 +1,35 @@
-class TrieNode:
-    def __init__(self):
-        self.children = {}
-        self.is_end_of_word = False
+def build_bad_match_table(pattern):
+    table = {}
+    pattern_length = len(pattern)
+    for i in range(pattern_length - 1):
+        table[pattern[i]] = pattern_length - i - 1
+    return table
 
-class Trie:
-    def __init__(self):
-        self.root = TrieNode()
+def boyer_moore_horspool(text, pattern):
+    bad_match_table = build_bad_match_table(pattern)
+    text_length = len(text)
+    pattern_length = len(pattern)
+    i = pattern_length - 1
 
-    def insert(self, word):
-        node = self.root
-        for char in word:
-            if char not in node.children:
-                node.children[char] = TrieNode()
-            node = node.children[char]
-        node.is_end_of_word = True
+    while i < text_length:
+        j = pattern_length - 1
+        while j >= 0 and text[i] == pattern[j]:
+            i -= 1
+            j -= 1
+        if j == -1:
+            return i + 1
+        if text[i] in bad_match_table:
+            i += bad_match_table[text[i]]
+        else:
+            i += pattern_length
 
-    def search(self, word):
-        node = self.root
-        for char in word:
-            if char not in node.children:
-                return False
-            node = node.children[char]
-        return node.is_end_of_word
+    return -1
 
-    def startsWith(self, prefix):
-        node = self.root
-        for char in prefix:
-            if char not in node.children:
-                return False
-            node = node.children[char]
-        return True
-
-# Example Usage
-trie = Trie()
-trie.insert("apple")
-trie.insert("app")
-print(trie.search("apple"))  # Output: True
-print(trie.search("app"))    # Output: True
-print(trie.search("ap"))     # Output: False
-print(trie.startsWith("app")) # Output: True
+# Test
+text = "the quick brown fox jumps over the lazy dog"
+pattern = "fox"
+result = boyer_moore_horspool(text, pattern)
+if result != -1:
+    print(f"Pattern found at index: {result}")
+else:
+    print("Pattern not found")
