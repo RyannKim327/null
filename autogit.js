@@ -1,38 +1,38 @@
-class HashTable:
-    def __init__(self):
-        self.size = 10
-        self.table = [None] * self.size
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.next = None
 
-    def hash_function(self, key):
-        return hash(key) % self.size
+def is_palindrome(head):
+    stack = []
+    current = head
 
-    def insert(self, key, value):
-        index = self.hash_function(key)
-        if self.table[index] is None:
-            self.table[index] = [(key, value)]
-        else:
-            self.table[index].append((key, value))
+    while current is not None:
+        stack.append(current.value)
+        current = current.next
 
-    def get(self, key):
-        index = self.hash_function(key)
-        if self.table[index] is not None:
-            for k, v in self.table[index]:
-                if k == key:
-                    return v
-        return None
+    current = head
 
-    def delete(self, key):
-        index = self.hash_function(key)
-        if self.table[index] is not None:
-            for i, (k, v) in enumerate(self.table[index]):
-                if k == key:
-                    del self.table[index][i]
+    while current is not None:
+        if current.value != stack.pop():
+            return False
+        current = current.next
 
-# Example usage
-hash_table = HashTable()
-hash_table.insert('key1', 'value1')
-hash_table.insert('key2', 'value2')
+    return True
 
-print(hash_table.get('key1'))  # Output: value1
-hash_table.delete('key1')
-print(hash_table.get('key1'))  # Output: None
+# Example linked list
+node1 = Node(1)
+node2 = Node(2)
+node3 = Node(3)
+node4 = Node(2)
+node5 = Node(1)
+
+node1.next = node2
+node2.next = node3
+node3.next = node4
+node4.next = node5
+
+if is_palindrome(node1):
+    print("Linked list is a palindrome")
+else:
+    print("Linked list is not a palindrome")
