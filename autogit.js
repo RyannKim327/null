@@ -1,17 +1,12 @@
-def findMedianSortedArrays(nums1, nums2):
-    merged = sorted(nums1 + nums2)
-    n = len(merged)
+class TreeNode:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
 
-    if n % 2 == 0:
-        return (merged[n // 2 - 1] + merged[n // 2]) / 2
-    else:
-        return merged[n // 2]
-
-# Input arrays
-nums1 = [1, 3]
-nums2 = [2]
-
-# Finding the median
-median = findMedianSortedArrays(nums1, nums2)
-
-print("Median of the two sorted arrays is:", median)
+def count_leaf_nodes(node):
+    if node is None:
+        return 0
+    if node.left is None and node.right is None:
+        return 1
+    return count_leaf_nodes(node.left) + count_leaf_nodes(node.right)
