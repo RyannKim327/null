@@ -1,12 +1,12 @@
-class TreeNode:
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
+def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        for j in range(0, n-i-1):
+            if arr[j] > arr[j+1]:
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+    return arr
 
-def count_leaf_nodes(node):
-    if node is None:
-        return 0
-    if node.left is None and node.right is None:
-        return 1
-    return count_leaf_nodes(node.left) + count_leaf_nodes(node.right)
+# Example usage
+arr = [64, 34, 25, 12, 22, 11, 90]
+sorted_arr = bubble_sort(arr)
+print("Sorted array:", sorted_arr)
