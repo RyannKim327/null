@@ -1,12 +1,36 @@
-def bubble_sort(arr):
-    n = len(arr)
-    for i in range(n):
-        for j in range(0, n-i-1):
-            if arr[j] > arr[j+1]:
-                arr[j], arr[j+1] = arr[j+1], arr[j]
-    return arr
+import android.os.AsyncTask
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
 
-# Example usage
-arr = [64, 34, 25, 12, 22, 11, 90]
-sorted_arr = bubble_sort(arr)
-print("Sorted array:", sorted_arr)
+class AsyncHttpRequest : AsyncTask<String, Void, String>() {
+    override fun doInBackground(vararg urls: String): String {
+        val urlString = urls[0]
+        var result = ""
+        
+        val url = URL(urlString)
+        val connection = url.openConnection() as HttpURLConnection
+        
+        try {
+            val reader = BufferedReader(InputStreamReader(connection.inputStream))
+            var line: String?
+            while (reader.readLine().also { line = it } != null) {
+                result += line
+            }
+        } finally {
+            connection.disconnect()
+        }
+        
+        return result
+    }
+
+    override fun onPostExecute(result: String?) {
+        // Handle the result here
+    }
+}
+
+// To use the async task:
+val url = "https://example.com/api"
+val asyncRequest = AsyncHttpRequest()
+asyncRequest.execute(url)
