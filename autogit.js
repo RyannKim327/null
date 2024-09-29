@@ -1,33 +1,35 @@
-def build_lps(pattern):
+def build_bad_char_table(pattern):
+    table = {}
+    for i in range(len(pattern) - 1):
+        table[pattern[i]] = len(pattern) - i - 1
+    return table
+
+def horspool_search(text, pattern):
     m = len(pattern)
-    lps = [0] * m
-    j = 0
-
-    for i in range(1, m):
-        while j > 0 and pattern[i] != pattern[j]:
-            j = lps[j - 1]
-        if pattern[i] == pattern[j]:
-            j += 1
-        lps[i] = j
-
-    return lps
-
-def kmp_search(text, pattern):
     n = len(text)
-    m = len(pattern)
-    lps = build_lps(pattern)
-    j = 0
+    if m > n:
+        return -1  # Pattern is longer than the text
 
-    for i in range(n):
-        while j > 0 and text[i] != pattern[j]:
-            j = lps[j - 1]
-        if text[i] == pattern[j]:
-            if j == m - 1:
-                print("Pattern found at index", i - m + 1)
-                j = lps[j]
-            else:
-                j += 1
+    skip_table = build_bad_char_table(pattern)
+    i = m - 1
+    while i < n:
+        k = 0
+        while k < m and pattern[m - 1 - k] == text[i - k]:
+            k += 1
+        if k == m:
+            return i - m + 1  # Pattern found
+        if text[i] in skip_table:
+            i += skip_table[text[i]]
+        else:
+            i += m
 
-text = "ababcababcabccabababca"
-pattern = "ababca"
-kmp_search(text, pattern)
+    return -1  # Pattern not found
+
+# Example usage
+text = "hello world"
+pattern = "world"
+index = horspool_search(text, pattern)
+if index != -1:
+    print("Pattern found at index:", index)
+else:
+    print("Pattern not found")
