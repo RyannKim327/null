@@ -1,38 +1,43 @@
-class Node:
-    def __init__(self, value):
-        self.value = value
-        self.next = None
+def bidirectional_search(graph, start, goal):
+    # Initialize data structures for start and end points
+    start_queue = [start]
+    end_queue = [goal]
+    
+    start_visited = {start: None}
+    end_visited = {goal: None}
+    
+    # Perform bidirectional search
+    while start_queue and end_queue:
+        # Expand frontier from start point
+        current_start = start_queue.pop(0)
+        for neighbor in graph[current_start]:
+            if neighbor not in start_visited:
+                start_queue.append(neighbor)
+                start_visited[neighbor] = current_start
+            if neighbor in end_visited:
+                return combine_paths(start_visited, end_visited, neighbor)
+        
+        # Expand frontier from end point
+        current_end = end_queue.pop(0)
+        for neighbor in graph[current_end]:
+            if neighbor not in end_visited:
+                end_queue.append(neighbor)
+                end_visited[neighbor] = current_end
+            if neighbor in start_visited:
+                return combine_paths(start_visited, end_visited, neighbor)
+    
+    return None
 
-def is_palindrome(head):
-    stack = []
-    current = head
-
-    while current is not None:
-        stack.append(current.value)
-        current = current.next
-
-    current = head
-
-    while current is not None:
-        if current.value != stack.pop():
-            return False
-        current = current.next
-
-    return True
-
-# Example linked list
-node1 = Node(1)
-node2 = Node(2)
-node3 = Node(3)
-node4 = Node(2)
-node5 = Node(1)
-
-node1.next = node2
-node2.next = node3
-node3.next = node4
-node4.next = node5
-
-if is_palindrome(node1):
-    print("Linked list is a palindrome")
-else:
-    print("Linked list is not a palindrome")
+def combine_paths(start_visited, end_visited, meeting_node):
+    path = []
+    start_node = meeting_node
+    while start_node is not None:
+        path.insert(0, start_node)
+        start_node = start_visited[start_node]
+    
+    end_node = end_visited[meeting_node]
+    while end_node is not None:
+        path.append(end_node)
+        end_node = end_visited[end_node]
+    
+    return path
