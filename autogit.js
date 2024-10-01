@@ -1,21 +1,10 @@
-// Define an array of integers
-int[] numbers = {4, 2, 7, 1, 5};
+def reverse_string(input_string):
+    reversed_string = ""
+    for i in range(len(input_string) - 1, -1, -1):
+        reversed_string += input_string[i]
+    return reversed_string
 
-// Sort the array in ascending order
-Arrays.sort(numbers);
-
-// Print the sorted array
-System.out.println("Sorted array in ascending order:");
-for (int number : numbers) {
-    System.out.print(number + " ");
-}
-
-// Sort the array in descending order
-Arrays.sort(numbers);
-Arrays.sort(numbers, Collections.reverseOrder());
-
-// Print the sorted array
-System.out.println("\nSorted array in descending order:");
-for (int number : numbers) {
-    System.out.print(number + " ");
-}
+# Test the function
+input_string = "Hello, World!"
+reversed_string = reverse_string(input_string)
+print(reversed_string)
