@@ -1,14 +1,12 @@
-# Define a function to calculate the mean
-def calculate_mean(numbers):
-    if len(numbers) == 0:
-        return 0
-    return sum(numbers) / len(numbers)
+# Define an array of integers
+arr = [5, 2, 8, 1, 3]
 
-# Example list of numbers
-numbers = [1, 2, 3, 4, 5]
+# Sort the array in ascending order
+sorted_arr = sorted(arr)
+print(sorted_arr)
+# Define an array of integers
+arr = [5, 2, 8, 1, 3]
 
-# Calculate the mean
-mean = calculate_mean(numbers)
-
-# Print the mean
-print("Mean:", mean)
+# Sort the array in ascending order in-place
+arr.sort()
+print(arr)
