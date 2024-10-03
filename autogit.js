@@ -1,33 +1,135 @@
-def counting_sort(arr, exp):
-    n = len(arr)
-    output = [0] * n
-    count = [0] * 10
+#include <iostream>
+#include <algorithm>
 
-    for i in range(n):
-        index = arr[i] // exp
-        count[index % 10] += 1
+class Node {
+public:
+    int key;
+    Node* left;
+    Node* right;
+    int height;
+    
+    Node(int k) {
+        key = k;
+        left = right = nullptr;
+        height = 1;
+    }
+};
 
-    for i in range(1, 10):
-        count[i] += count[i - 1]
+class AVLTree {
+private:
+    Node* root;
+    
+    int getHeight(Node* n) {
+        if (n == nullptr) {
+            return 0;
+        }
+        return n->height;
+    }
+    
+    int getBalanceFactor(Node* n) {
+        if (n == nullptr) {
+            return 0;
+        }
+        return getHeight(n->left) - getHeight(n->right);
+    }
+    
+    Node* rotateRight(Node* y) {
+        Node* x = y->left;
+        Node* T = x->right;
+        
+        x->right = y;
+        y->left = T;
+        
+        y->height = std::max(getHeight(y->left), getHeight(y->right)) + 1;
+        x->height = std::max(getHeight(x->left), getHeight(x->right)) + 1;
+        
+        return x;
+    }
+    
+    Node* rotateLeft(Node* x) {
+        Node* y = x->right;
+        Node* T = y->left;
+        
+        y->left = x;
+        x->right = T;
+        
+        x->height = std::max(getHeight(x->left), getHeight(x->right)) + 1;
+        y->height = std::max(getHeight(y->left), getHeight(y->right)) + 1;
+        
+        return y;
+    }
+    
+    Node* insertHelper(Node* root, int key) {
+        if (root == nullptr) {
+            return new Node(key);
+        }
+        
+        if (key < root->key) {
+            root->left = insertHelper(root->left, key);
+        } else if (key > root->key) {
+            root->right = insertHelper(root->right, key);
+        } else {
+            return root;
+        }
+        
+        root->height = 1 + std::max(getHeight(root->left), getHeight(root->right));
+        
+        int balance = getBalanceFactor(root);
+        
+        if (balance > 1 && key < root->left->key) {
+            return rotateRight(root);
+        }
+        
+        if (balance < -1 && key > root->right->key) {
+            return rotateLeft(root);
+        }
+        
+        if (balance > 1 && key > root->left->key) {
+            root->left = rotateLeft(root->left);
+            return rotateRight(root);
+        }
+        
+        if (balance < -1 && key < root->right->key) {
+            root->right = rotateRight(root->right);
+            return rotateLeft(root);
+        }
+        
+        return root;
+    }
+    
+    void inorderHelper(Node* root) {
+        if (root == nullptr) {
+            return;
+        }
+        
+        inorderHelper(root->left);
+        std::cout << root->key << " ";
+        inorderHelper(root->right);
+    }
+    
+public:
+    AVLTree() {
+        root = nullptr;
+    }
+    
+    void insert(int key) {
+        root = insertHelper(root, key);
+    }
+    
+    void inorder() {
+        inorderHelper(root);
+        std::cout << std::endl;
+    }
+};
 
-    i = n - 1
-    while i >= 0:
-        index = arr[i] // exp
-        output[count[index % 10] - 1] = arr[i]
-        count[index % 10] -= 1
-        i -= 1
-
-    for i in range(n):
-        arr[i] = output[i]
-
-def radix_sort(arr):
-    max_num = max(arr)
-
-    exp = 1
-    while max_num // exp > 0:
-        counting_sort(arr, exp)
-        exp *= 10
-
-arr = [170, 45, 75, 90, 802, 24, 2, 66]
-radix_sort(arr)
-print("Sorted array is:", arr)
+int main() {
+    AVLTree avl;
+    
+    avl.insert(10);
+    avl.insert(20);
+    avl.insert(30);
+    
+    avl.inorder();
+    
+    return 0;
+}
