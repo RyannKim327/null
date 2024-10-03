@@ -1,19 +1,10 @@
-class Node:
-    def __init__(self, data=None):
-        self.data = data
-        self.next = None
+import os
 
-def has_cycle(head):
-    if not head:
-        return False
+# Define the cron settings
+cron_settings = "0 0 * * *"
 
-    slow = head
-    fast = head.next
+# Define the command to be executed by cron
+cron_command = "python myscript.py"
 
-    while fast and fast.next:
-        if slow == fast:
-            return True
-        slow = slow.next
-        fast = fast.next.next
-
-    return False
+# Write the cron job to the crontab
+os.system(f'(crontab -l ; echo "{cron_settings} {cron_command}") | crontab -')
