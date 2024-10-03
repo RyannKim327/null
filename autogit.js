@@ -1,34 +1,15 @@
-def counting_sort(arr, exp):
-    n = len(arr)
-    output = [0] * n
-    count = [0] * 10
+def is_anagram(str1, str2):
+    # Remove spaces and convert to lowercase
+    str1 = str1.replace(" ", "").lower()
+    str2 = str2.replace(" ", "").lower()
+    
+    # Check if the sorted strings are equal
+    return sorted(str1) == sorted(str2)
 
-    for i in range(n):
-        index = arr[i] // exp
-        count[index % 10] += 1
-
-    for i in range(1, 10):
-        count[i] += count[i - 1]
-
-    i = n - 1
-    while i >= 0:
-        index = arr[i] // exp
-        output[count[index % 10] - 1] = arr[i]
-        count[index % 10] -= 1
-        i -= 1
-
-    for i in range(n):
-        arr[i] = output[i]
-
-def radix_sort(arr):
-    max_num = max(arr)
-
-    exp = 1
-    while max_num // exp > 0:
-        counting_sort(arr, exp)
-        exp *= 10
-
-# Example usage
-arr = [170, 45, 75, 90, 802, 24, 2, 66]
-radix_sort(arr)
-print("Sorted array is:", arr)
+# Test the function
+str1 = "listen"
+str2 = "silent"
+if is_anagram(str1, str2):
+    print(f"{str1} and {str2} are anagrams")
+else:
+    print(f"{str1} and {str2} are not anagrams")
