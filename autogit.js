@@ -1,10 +1,33 @@
-import os
+def counting_sort(arr, exp):
+    n = len(arr)
+    output = [0] * n
+    count = [0] * 10
 
-# Define the cron settings
-cron_settings = "0 0 * * *"
+    for i in range(n):
+        index = arr[i] // exp
+        count[index % 10] += 1
 
-# Define the command to be executed by cron
-cron_command = "python myscript.py"
+    for i in range(1, 10):
+        count[i] += count[i - 1]
 
-# Write the cron job to the crontab
-os.system(f'(crontab -l ; echo "{cron_settings} {cron_command}") | crontab -')
+    i = n - 1
+    while i >= 0:
+        index = arr[i] // exp
+        output[count[index % 10] - 1] = arr[i]
+        count[index % 10] -= 1
+        i -= 1
+
+    for i in range(n):
+        arr[i] = output[i]
+
+def radix_sort(arr):
+    max_num = max(arr)
+
+    exp = 1
+    while max_num // exp > 0:
+        counting_sort(arr, exp)
+        exp *= 10
+
+arr = [170, 45, 75, 90, 802, 24, 2, 66]
+radix_sort(arr)
+print("Sorted array is:", arr)
