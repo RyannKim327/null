@@ -1,4 +1,34 @@
-arr = [10, 5, 7, 3, 15, 9]
-max_value = max(arr)
-print("Maximum value in the array:", max_value)
-Maximum value in the array: 15
+def counting_sort(arr, exp):
+    n = len(arr)
+    output = [0] * n
+    count = [0] * 10
+
+    for i in range(n):
+        index = arr[i] // exp
+        count[index % 10] += 1
+
+    for i in range(1, 10):
+        count[i] += count[i - 1]
+
+    i = n - 1
+    while i >= 0:
+        index = arr[i] // exp
+        output[count[index % 10] - 1] = arr[i]
+        count[index % 10] -= 1
+        i -= 1
+
+    for i in range(n):
+        arr[i] = output[i]
+
+def radix_sort(arr):
+    max_num = max(arr)
+
+    exp = 1
+    while max_num // exp > 0:
+        counting_sort(arr, exp)
+        exp *= 10
+
+# Example usage
+arr = [170, 45, 75, 90, 802, 24, 2, 66]
+radix_sort(arr)
+print("Sorted array is:", arr)
