@@ -1,16 +1,32 @@
-import math
+class Node:
+    def __init__(self, key):
+        self.left = None
+        self.right = None
+        self.val = key
 
-n = 5
-factorial = math.factorial(n)
-
-print("Factorial of", n, "is", factorial)
-def factorial(n):
-    if n == 0:
-        return 1
+def insert(root, key):
+    if root is None:
+        return Node(key)
     else:
-        return n * factorial(n-1)
+        if root.val < key:
+            root.right = insert(root.right, key)
+        else:
+            root.left = insert(root.left, key)
+    return root
 
-n = 5
-result = factorial(n)
+def inorder_traversal(root):
+    if root:
+        inorder_traversal(root.left)
+        print(root.val)
+        inorder_traversal(root.right)
 
-print("Factorial of", n, "is", result)
+# Example usage
+root = None
+root = insert(root, 5)
+insert(root, 3)
+insert(root, 7)
+insert(root, 1)
+insert(root, 4)
+
+print("Inorder traversal:")
+inorder_traversal(root)
