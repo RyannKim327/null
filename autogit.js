@@ -1,34 +1,16 @@
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.next = None
+import math
 
-class LinkedList:
-    def __init__(self):
-        self.head = None
+n = 5
+factorial = math.factorial(n)
 
-    def append(self, data):
-        new_node = Node(data)
-        if not self.head:
-            self.head = new_node
-            return
-        current = self.head
-        while current.next:
-            current = current.next
-        current.next = new_node
+print("Factorial of", n, "is", factorial)
+def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)
 
-    def display(self):
-        current = self.head
-        while current:
-            print(current.data, end=' ')
-            current = current.next
-        print()
+n = 5
+result = factorial(n)
 
-# Example usage:
-llist = LinkedList()
-llist.append(1)
-llist.append(2)
-llist.append(3)
-llist.append(4)
-
-llist.display()
+print("Factorial of", n, "is", result)
