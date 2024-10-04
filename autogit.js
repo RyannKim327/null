@@ -1,13 +1,11 @@
-def largest_prime_factor(n):
-    i = 2
-    while i * i <= n:
-        if n % i:
-            i += 1
-        else:
-            n //= i
-    return n
+def quicksort(arr):
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    return quicksort(left) + middle + quicksort(right)
 
-number = 56
-largest_prime = largest_prime_factor(number)
-
-print("The largest prime factor of", number, "is", largest_prime)
+arr = [3, 6, 8, 10, 1, 2, 1]
+print(quicksort(arr))
