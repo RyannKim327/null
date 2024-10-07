@@ -1,17 +1,15 @@
-function findCommonElements(arr1, arr2) {
-    const commonElements = [];
+let array = [1, 2, 3, 4, 5];
+let indexToRemove = 2;
 
-    arr1.forEach((element) => {
-        if (arr2.includes(element)) {
-            commonElements.push(element);
-        }
-    });
+array.splice(indexToRemove, 1);
 
-    return commonElements;
+console.log(array); // Output: [1, 2, 4, 5]
+let array = [1, 2, 3, 4, 5];
+let elementToRemove = 3;
+let indexToRemove = array.indexOf(elementToRemove);
+
+if (indexToRemove > -1) {
+    array.splice(indexToRemove, 1);
 }
 
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 4, 5, 6, 7];
-
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [3, 4, 5]
+console.log(array); // Output: [1, 2, 4, 5]
