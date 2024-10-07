@@ -1,11 +1,8 @@
-Node findMiddle(Node head) {
-    Node slowPtr = head;
-    Node fastPtr = head;
-
-    while (fastPtr != null && fastPtr.next != null) {
-        slowPtr = slowPtr.next;
-        fastPtr = fastPtr.next.next;
+boolean isSorted(int[] arr) {
+    for (int i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false; // Array is not sorted in ascending order
+        }
     }
-
-    return slowPtr;
+    return true; // Array is sorted in ascending order
 }
