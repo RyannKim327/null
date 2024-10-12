@@ -1,29 +1,25 @@
-def heapify(arr, n, i):
-    largest = i
-    left = 2 * i + 1
-    right = 2 * i + 2
-
-    if left < n and arr[largest] < arr[left]:
-        largest = left
-
-    if right < n and arr[largest] < arr[right]:
-        largest = right
-
-    if largest != i:
-        arr[i], arr[largest] = arr[largest], arr[i]
-        heapify(arr, n, largest)
-
-def heap_sort(arr):
-    n = len(arr)
-
-    for i in range(n // 2 - 1, -1, -1):
-        heapify(arr, n, i)
-
-    for i in range(n - 1, 0, -1):
-        arr[0], arr[i] = arr[i], arr[0]
-        heapify(arr, i, 0)
+# Rabin-Karp Algorithm for String Searching
+def rabin_karp(text, pattern):
+    n = len(text)
+    m = len(pattern)
+    pattern_hash = hash(pattern)
+    text_hash = hash(text[:m])
+    
+    for i in range(n - m + 1):
+        if i > 0:
+            # Update rolling hash
+            text_hash = (text_hash - ord(text[i - 1])) // 10 + ord(text[i + m - 1]) * 10 ** (m - 1)
+            
+        if text_hash == pattern_hash:
+            if text[i:i+m] == pattern:
+                return i
+    return -1
 
 # Example usage
-arr = [12, 11, 13, 5, 6, 7]
-heap_sort(arr)
-print("Sorted array is:", arr)
+text = "ABABCABABCD"
+pattern = "ABCD"
+result = rabin_karp(text, pattern)
+if result != -1:
+    print("Pattern found at index:", result)
+else:
+    print("Pattern not found")
