@@ -1,25 +1,22 @@
-# Rabin-Karp Algorithm for String Searching
-def rabin_karp(text, pattern):
-    n = len(text)
-    m = len(pattern)
-    pattern_hash = hash(pattern)
-    text_hash = hash(text[:m])
-    
-    for i in range(n - m + 1):
-        if i > 0:
-            # Update rolling hash
-            text_hash = (text_hash - ord(text[i - 1])) // 10 + ord(text[i + m - 1]) * 10 ** (m - 1)
-            
-        if text_hash == pattern_hash:
-            if text[i:i+m] == pattern:
-                return i
-    return -1
+from queue import PriorityQueue
 
-# Example usage
-text = "ABABCABABCD"
-pattern = "ABCD"
-result = rabin_karp(text, pattern)
-if result != -1:
-    print("Pattern found at index:", result)
-else:
-    print("Pattern not found")
+def beam_search(initial_state, branching_factor, beam_width, scoring_function):
+    beam = PriorityQueue()
+    beam.put((scoring_function(initial_state), initial_state))
+
+    while not beam.empty():
+        candidates = []
+        for _ in range(branching_factor):
+            if beam.empty():
+                break
+            _, state = beam.get()
+            if is_goal(state):
+                return state
+            next_states = generate_next_states(state)
+            for next_state in next_states:
+                candidates.append((scoring_function(next_state), next_state))
+        candidates.sort(key=lambda x: x[0], reverse=True)
+        for i in range(min(beam_width, len(candidates))):
+            beam.put(candidates[i])
+
+    return None
