@@ -1,25 +1,32 @@
-def binary_search(arr, target):
-    left = 0
-    right = len(arr) - 1
+class Stack:
+    def __init__(self):
+        self.stack = []
 
-    while left <= right:
-        mid = left + (right - left) // 2
+    def is_empty(self):
+        return len(self.stack) == 0
 
-        if arr[mid] == target:
-            return mid
-        elif arr[mid] < target:
-            left = mid + 1
-        else:
-            right = mid - 1
+    def push(self, item):
+        self.stack.append(item)
 
-    return -1
+    def pop(self):
+        if self.is_empty():
+            return None
+        return self.stack.pop()
 
-# Example usage
-arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-target = 7
-result = binary_search(arr, target)
+    def peek(self):
+        if self.is_empty():
+            return None
+        return self.stack[-1]
 
-if result != -1:
-    print(f"Element found at index {result}")
-else:
-    print("Element not found")
+    def size(self):
+        return len(self.stack)
+
+# Testing the stack implementation
+stack = Stack()
+stack.push(1)
+stack.push(2)
+stack.push(3)
+
+print(stack.pop())  # 3
+print(stack.peek())  # 2
+print(stack.size())  # 2
