@@ -1,9 +1,32 @@
-def kth_smallest(arr, k):
-    arr.sort()
-    return arr[k - 1]
+def preprocess(pattern):
+    table = {}
+    m = len(pattern)
+    for i in range(m - 1):
+        table[pattern[i]] = m - 1 - i
+    return table
 
-# Example usage
-arr = [3, 5, 2, 9, 7, 8]
-k = 3
-result = kth_smallest(arr, k)
-print(f"The {k}th smallest element in the array is {result}")
+def boyer_moore_horspool(text, pattern):
+    n = len(text)
+    m = len(pattern)
+    if m == 0:
+        return 0
+    
+    table = preprocess(pattern)
+    i = m - 1
+    while i < n:
+        k = 0
+        while k < m and text[i - k] == pattern[m - 1 - k]:
+            k += 1
+        if k == m:
+            return i - m + 1
+        else:
+            i += table.get(text[i], m)
+    return -1
+
+text = "hello world"
+pattern = "world"
+index = boyer_moore_horspool(text, pattern)
+if index != -1:
+    print("Pattern found at index:", index)
+else:
+    print("Pattern not found")
