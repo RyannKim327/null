@@ -1,32 +1,25 @@
-class Stack:
-    def __init__(self):
-        self.stack = []
+def longest_increasing_subsequence(arr):
+    n = len(arr)
+    lis = [1] * n
 
-    def is_empty(self):
-        return len(self.stack) == 0
+    for i in range(1, n):
+        for j in range(0, i):
+            if arr[i] > arr[j] and lis[i] < lis[j] + 1:
+                lis[i] = lis[j] + 1
 
-    def push(self, item):
-        self.stack.append(item)
+    max_length = max(lis)
+    idx = lis.index(max_length)
 
-    def pop(self):
-        if self.is_empty():
-            return None
-        return self.stack.pop()
+    seq = [arr[idx]]
+    max_length -= 1
 
-    def peek(self):
-        if self.is_empty():
-            return None
-        return self.stack[-1]
+    for i in range(idx - 1, -1, -1):
+        if lis[i] == max_length:
+            seq = [arr[i]] + seq
+            max_length -= 1
 
-    def size(self):
-        return len(self.stack)
+    return seq
 
-# Testing the stack implementation
-stack = Stack()
-stack.push(1)
-stack.push(2)
-stack.push(3)
-
-print(stack.pop())  # 3
-print(stack.peek())  # 2
-print(stack.size())  # 2
+# Test the function
+arr = [10, 22, 9, 33, 21, 50, 41, 60, 80]
+print(longest_increasing_subsequence(arr))
