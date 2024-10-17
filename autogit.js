@@ -1,30 +1,43 @@
-class SuffixTree:
-    def __init__(self):
-        self.root = {}
-    
-    def insert_suffix(self, suffix):
-        node = self.root
-        for char in suffix:
-            if char not in node:
-                node[char] = {}
-            node = node[char]
-    
-    def build_tree(self, text):
-        for i in range(len(text)):
-            self.insert_suffix(text[i:])
-    
-    def search(self, pattern):
-        node = self.root
-        for char in pattern:
-            if char not in node:
-                return False
-            node = node[char]
-        return True
+def fibonacci_search(arr, key):
+    fib_m_minus_2 = 0
+    fib_m_minus_1 = 1
+    fib_m = fib_m_minus_1 + fib_m_minus_2
 
-# Example usage
-text = "banana"
-suffix_tree = SuffixTree()
-suffix_tree.build_tree(text)
+    while fib_m < len(arr):
+        fib_m_minus_2 = fib_m_minus_1
+        fib_m_minus_1 = fib_m
+        fib_m = fib_m_minus_1 + fib_m_minus_2
 
-print(suffix_tree.search("an"))  # Output: True
-print(suffix_tree.search("abc"))  # Output: False
+    offset = -1
+
+    while fib_m > 1:
+        i = min(offset + fib_m_minus_2, len(arr) - 1)
+
+        if arr[i] < key:
+            fib_m = fib_m_minus_1
+            fib_m_minus_1 = fib_m_minus_2
+            fib_m_minus_2 = fib_m - fib_m_minus_1
+            offset = i
+
+        elif arr[i] > key:
+            fib_m = fib_m_minus_2
+            fib_m_minus_1 = fib_m_minus_1 - fib_m_minus_2
+            fib_m_minus_2 = fib_m - fib_m_minus_1
+
+        else:
+            return i
+
+    if fib_m_minus_1 and arr[offset + 1] == key:
+        return offset + 1
+
+    return -1
+
+# Test the Fibonacci search algorithm
+arr = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+key = 6
+index = fibonacci_search(arr, key)
+
+if index != -1:
+    print(f"Element found at index {index}")
+else:
+    print("Element not found")
