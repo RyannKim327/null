@@ -1,19 +1,30 @@
-def are_anagrams(str1, str2):
-    # Remove spaces and punctuation, convert to lowercase
-    str1 = ''.join(e for e in str1 if e.isalnum()).lower()
-    str2 = ''.join(e for e in str2 if e.isalnum()).lower()
+class SuffixTree:
+    def __init__(self):
+        self.root = {}
+    
+    def insert_suffix(self, suffix):
+        node = self.root
+        for char in suffix:
+            if char not in node:
+                node[char] = {}
+            node = node[char]
+    
+    def build_tree(self, text):
+        for i in range(len(text)):
+            self.insert_suffix(text[i:])
+    
+    def search(self, pattern):
+        node = self.root
+        for char in pattern:
+            if char not in node:
+                return False
+            node = node[char]
+        return True
 
-    # Sort the strings
-    sorted_str1 = sorted(str1)
-    sorted_str2 = sorted(str2)
+# Example usage
+text = "banana"
+suffix_tree = SuffixTree()
+suffix_tree.build_tree(text)
 
-    # Compare the sorted strings
-    return sorted_str1 == sorted_str2
-
-# Test the function
-str1 = "Listen"
-str2 = "Silent"
-if are_anagrams(str1, str2):
-    print(f"{str1} and {str2} are anagrams.")
-else:
-    print(f"{str1} and {str2} are not anagrams.")
+print(suffix_tree.search("an"))  # Output: True
+print(suffix_tree.search("abc"))  # Output: False
