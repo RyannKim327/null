@@ -32,10 +32,11 @@ let run = async () => {
         result += datas[i] + "\n";
       }
     }
+    const msg = mm2[Math.floor(Math.random() * mm2.length)];
 
     fs.writeFileSync(
       "Auto git.txt",
-      mm2[Math.floor(Math.random() * mm2.length)],
+      msg,
       "utf-8",
     );
     fs.writeFileSync("autogit.js", result, "utf-8");
@@ -46,16 +47,12 @@ let run = async () => {
         if (e) console.error(e);
         setTimeout(() => {
           console.log("Git Commit");
-          exec(`git commit -m "${m} [User mode]"`, (e) => {
+          exec(`git commit -m "${m} [${msg}]"`, (e) => {
             if (e) console.error(e);
             console.log("Close");
             setTimeout(() => {
               _commitments++;
               commits--;
-              // if (commits > 0) {
-              // run();
-              // } else {
-              // console.log("Thank you for spamming hahaha");
               exec(`git push`, (e) => {
                 if (e) return console.error(`ERR: ${e}`);
                 console.log("Pushing");
@@ -65,8 +62,6 @@ let run = async () => {
                   console.log("Thankies");
                 }
               });
-              // process.exit(0);
-              // }
             }, 50);
           });
         }, 50);
