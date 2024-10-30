@@ -1,49 +1,64 @@
-class PriorityQueue:
-    def __init__(self):
-        self.heap = []
+#include <iostream>
+using namespace std;
+
+#define MAX_SIZE 100
+
+class Stack {
+private:
+    int arr[MAX_SIZE];
+    int top;
+
+public:
+    Stack() {
+        top = -1;
+    }
+
+    bool isEmpty() {
+        return top == -1;
+    }
+
+    bool isFull() {
+        return top == MAX_SIZE - 1;
+    }
+
+    void push(int val) {
+        if (isFull()) {
+            cout << "Stack Overflow" << endl;
+            return;
+        }
+        arr[++top] = val;
+        cout << val << " pushed to stack" << endl;
+    }
+
+    void pop() {
+        if (isEmpty()) {
+            cout << "Stack Underflow" << endl;
+            return;
+        }
+        cout << arr[top--] << " popped from stack" << endl;
+    }
+
+    int peek() {
+        if (isEmpty()) {
+            cout << "Stack is empty" << endl;
+            return -1;
+        }
+        return arr[top];
+    }
+};
+
+int main() {
+    Stack stk;
+    stk.push(10);
+    stk.push(20);
+    stk.push(30);
     
-    def parent(self, i):
-        return (i - 1) // 2
+    cout << "Top element is: " << stk.peek() << endl;
 
-    def left_child(self, i):
-        return 2 * i + 1
+    stk.pop();
+    stk.pop();
 
-    def right_child(self, i):
-        return 2 * i + 2
+    cout << "Top element is: " << stk.peek() << endl;
 
-    def insert(self, val):
-        self.heap.append(val)
-        self.heapify_up(len(self.heap) - 1)
-
-    def pop(self):
-        if len(self.heap) == 0:
-            return None
-        
-        if len(self.heap) == 1:
-            return self.heap.pop()
-
-        root = self.heap[0]
-        self.heap[0] = self.heap.pop()
-        self.heapify_down(0)
-        
-        return root
-
-    def heapify_up(self, i):
-        while i != 0 and self.heap[self.parent(i)] > self.heap[i]:
-            self.heap[i], self.heap[self.parent(i)] = self.heap[self.parent(i)], self.heap[i]
-            i = self.parent(i)
-
-    def heapify_down(self, i):
-        smallest = i
-        l = self.left_child(i)
-        r = self.right_child(i)
-
-        if l < len(self.heap) and self.heap[l] < self.heap[smallest]:
-            smallest = l
-
-        if r < len(self.heap) and self.heap[r] < self.heap[smallest]:
-            smallest = r
-
-        if smallest != i:
-            self.heap[i], self.heap[smallest] = self.heap[smallest], self.heap[i]
-            self.heapify_down(smallest)
+    return 0;
+}
