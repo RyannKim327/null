@@ -1,12 +1,32 @@
-def burrows_wheeler_transform(input_str):
-    input_str += '$'  # Add special end-of-string marker
-    rotations = [input_str[i:] + input_str[:i] for i in range(len(input_str))]  # Generate all rotations of the input string
-    rotations.sort()  # Sort the rotations lexicographically
-    bwt_str = ''.join([rotation[-1] for rotation in rotations])  # Construct the Burrows-Wheeler Transform string
-    return bwt_str
-input_str = "banana"
-bwt_str = burrows_wheeler_transform(input_str)
-print("Input String:", input_str)
-print("Burrows-Wheeler Transform:", bwt_str)
-Input String: banana
-Burrows-Wheeler Transform: annb$aa
+from collections import defaultdict
+
+def topological_sort_util(node, visited, stack, graph):
+    visited[node] = True
+    
+    for neighbor in graph[node]:
+        if not visited[neighbor]:
+            topological_sort_util(neighbor, visited, stack, graph)
+
+    stack.append(node)
+
+def topological_sort(graph):
+    visited = defaultdict(bool)
+    stack = []
+
+    for node in graph:
+        if not visited[node]:
+            topological_sort_util(node, visited, stack, graph)
+
+    return stack[::-1]
+
+# Example usage
+graph = {
+    'A': ['B', 'D'],
+    'B': ['C'],
+    'C': [],
+    'D': ['E'],
+    'E': ['C']
+}
+
+result = topological_sort(graph)
+print(result)
