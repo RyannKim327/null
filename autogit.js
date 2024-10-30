@@ -1,49 +1,59 @@
-#include <iostream>
-
-struct Node {
-    int data;
-    Node* next;
+class PriorityQueue:
+    def __init__(self):
+        self.heap = []
     
-    Node(int value) : data(value), next(nullptr) {}
-};
+    def parent(self, i):
+        return (i - 1) // 2
 
-class LinkedList {
-private:
-    Node* head;
+    def left_child(self, i):
+        return 2 * i + 1
 
-public:
-    LinkedList() : head(nullptr) {}
+    def right_child(self, i):
+        return 2 * i + 2
 
-    void append(int value) {
-        Node* newNode = new Node(value);
-        if (head == nullptr) {
-            head = newNode;
-        } else {
-            Node* current = head;
-            while (current->next != nullptr) {
-                current = current->next;
-            }
-            current->next = newNode;
-        }
-    }
+    def swap(self, i, j):
+        self.heap[i], self.heap[j] = self.heap[j], self.heap[i]
 
-    void display() {
-        Node* current = head;
-        while (current != nullptr) {
-            std::cout << current->data << " ";
-            current = current->next;
-        }
-        std::cout << std::endl;
-    }
-};
+    def heapify_up(self, i):
+        while i > 0 and self.heap[i] < self.heap[self.parent(i)]:
+            self.swap(i, self.parent(i))
+            i = self.parent(i)
 
-int main() {
-    LinkedList list;
-    list.append(1);
-    list.append(2);
-    list.append(3);
+    def heapify_down(self, i):
+        smallest = i
+        left = self.left_child(i)
+        right = self.right_child(i)
 
-    list.display();
+        if left < len(self.heap) and self.heap[left] < self.heap[smallest]:
+            smallest = left
 
-    return 0;
-}
+        if right < len(self.heap) and self.heap[right] < self.heap[smallest]:
+            smallest = right
+
+        if smallest != i:
+            self.swap(i, smallest)
+            self.heapify_down(smallest)
+
+    def insert(self, value):
+        self.heap.append(value)
+        self.heapify_up(len(self.heap) - 1)
+
+    def pop(self):
+        if len(self.heap) == 0:
+            return None
+
+        root = self.heap[0]
+        self.heap[0] = self.heap[-1]
+        self.heap.pop()
+        self.heapify_down(0)
+
+        return root
+
+# Example usage:
+pq = PriorityQueue()
+pq.insert(5)
+pq.insert(2)
+pq.insert(8)
+print(pq.pop())  # Output: 2
+print(pq.pop())  # Output: 5
+print(pq.pop())  # Output: 8
