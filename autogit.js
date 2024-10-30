@@ -1,64 +1,49 @@
 #include <iostream>
-using namespace std;
 
-#define MAX_SIZE 100
+struct Node {
+    int data;
+    Node* next;
+    
+    Node(int value) : data(value), next(nullptr) {}
+};
 
-class Stack {
+class LinkedList {
 private:
-    int arr[MAX_SIZE];
-    int top;
+    Node* head;
 
 public:
-    Stack() {
-        top = -1;
-    }
+    LinkedList() : head(nullptr) {}
 
-    bool isEmpty() {
-        return top == -1;
-    }
-
-    bool isFull() {
-        return top == MAX_SIZE - 1;
-    }
-
-    void push(int val) {
-        if (isFull()) {
-            cout << "Stack Overflow" << endl;
-            return;
+    void append(int value) {
+        Node* newNode = new Node(value);
+        if (head == nullptr) {
+            head = newNode;
+        } else {
+            Node* current = head;
+            while (current->next != nullptr) {
+                current = current->next;
+            }
+            current->next = newNode;
         }
-        arr[++top] = val;
-        cout << val << " pushed to stack" << endl;
     }
 
-    void pop() {
-        if (isEmpty()) {
-            cout << "Stack Underflow" << endl;
-            return;
+    void display() {
+        Node* current = head;
+        while (current != nullptr) {
+            std::cout << current->data << " ";
+            current = current->next;
         }
-        cout << arr[top--] << " popped from stack" << endl;
-    }
-
-    int peek() {
-        if (isEmpty()) {
-            cout << "Stack is empty" << endl;
-            return -1;
-        }
-        return arr[top];
+        std::cout << std::endl;
     }
 };
 
 int main() {
-    Stack stk;
-    stk.push(10);
-    stk.push(20);
-    stk.push(30);
-    
-    cout << "Top element is: " << stk.peek() << endl;
+    LinkedList list;
+    list.append(1);
+    list.append(2);
+    list.append(3);
 
-    stk.pop();
-    stk.pop();
-
-    cout << "Top element is: " << stk.peek() << endl;
+    list.display();
 
     return 0;
 }
