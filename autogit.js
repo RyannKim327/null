@@ -1,59 +1,36 @@
-class PriorityQueue:
-    def __init__(self):
-        self.heap = []
-    
-    def parent(self, i):
-        return (i - 1) // 2
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
 
-    def left_child(self, i):
-        return 2 * i + 1
+def find_nth_from_end(head, n):
+    first = head
+    second = head
 
-    def right_child(self, i):
-        return 2 * i + 2
-
-    def swap(self, i, j):
-        self.heap[i], self.heap[j] = self.heap[j], self.heap[i]
-
-    def heapify_up(self, i):
-        while i > 0 and self.heap[i] < self.heap[self.parent(i)]:
-            self.swap(i, self.parent(i))
-            i = self.parent(i)
-
-    def heapify_down(self, i):
-        smallest = i
-        left = self.left_child(i)
-        right = self.right_child(i)
-
-        if left < len(self.heap) and self.heap[left] < self.heap[smallest]:
-            smallest = left
-
-        if right < len(self.heap) and self.heap[right] < self.heap[smallest]:
-            smallest = right
-
-        if smallest != i:
-            self.swap(i, smallest)
-            self.heapify_down(smallest)
-
-    def insert(self, value):
-        self.heap.append(value)
-        self.heapify_up(len(self.heap) - 1)
-
-    def pop(self):
-        if len(self.heap) == 0:
+    # Move the first pointer to the nth node from the beginning
+    for _ in range(n):
+        if first is None:
             return None
+        first = first.next
 
-        root = self.heap[0]
-        self.heap[0] = self.heap[-1]
-        self.heap.pop()
-        self.heapify_down(0)
+    # Move both pointers until the first pointer reaches the end of the list
+    while first is not None:
+        first = first.next
+        second = second.next
 
-        return root
+    return second.data if second is not None else None
 
-# Example usage:
-pq = PriorityQueue()
-pq.insert(5)
-pq.insert(2)
-pq.insert(8)
-print(pq.pop())  # Output: 2
-print(pq.pop())  # Output: 5
-print(pq.pop())  # Output: 8
+# Example usage
+# Create a linked list: 1 -> 2 -> 3 -> 4 -> 5
+head = Node(1)
+head.next = Node(2)
+head.next.next = Node(3)
+head.next.next.next = Node(4)
+head.next.next.next.next = Node(5)
+
+n = 2
+result = find_nth_from_end(head, n)
+if result is not None:
+    print(f"The {n}th node from the end is: {result}")
+else:
+    print("Node not found")
