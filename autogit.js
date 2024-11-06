@@ -1,32 +1,32 @@
-from collections import defaultdict
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end_of_word = False
 
-def topological_sort_util(node, visited, stack, graph):
-    visited[node] = True
-    
-    for neighbor in graph[node]:
-        if not visited[neighbor]:
-            topological_sort_util(neighbor, visited, stack, graph)
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
 
-    stack.append(node)
+    def insert(self, word):
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.is_end_of_word = True
 
-def topological_sort(graph):
-    visited = defaultdict(bool)
-    stack = []
+    def search(self, word):
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+        return node.is_end_of_word
 
-    for node in graph:
-        if not visited[node]:
-            topological_sort_util(node, visited, stack, graph)
-
-    return stack[::-1]
-
-# Example usage
-graph = {
-    'A': ['B', 'D'],
-    'B': ['C'],
-    'C': [],
-    'D': ['E'],
-    'E': ['C']
-}
-
-result = topological_sort(graph)
-print(result)
+# Usage
+trie = Trie()
+trie.insert("hello")
+trie.insert("world")
+print(trie.search("hello"))  # Output: True
+print(trie.search("world"))  # Output: True
+print(trie.search("goodbye"))  # Output: False
