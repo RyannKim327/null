@@ -1,20 +1,35 @@
-// Definition for a binary tree node
-class TreeNode {
-public:
-    int val;
-    TreeNode* left;
-    TreeNode* right;
-    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
-};
+from collections import deque
 
-int maxDepth(TreeNode* root) {
-    if (root == NULL) {
-        return 0;
-    }
+def breadth_limited_search(root, goal, limit):
+    visited = set()
+    queue = deque([(root, 0)])
 
-    int leftDepth = maxDepth(root->left);
-    int rightDepth = maxDepth(root->right);
+    while queue:
+        node, depth = queue.popleft()
+        
+        if node == goal:
+            return node
+        
+        if depth < limit:
+            visited.add(node)
+            for neighbor in get_neighbors(node):
+                if neighbor not in visited:
+                    queue.append((neighbor, depth + 1))
 
-    // Return the maximum depth of the left and right subtrees plus 1
-    return 1 + max(leftDepth, rightDepth);
-}
+    return None
+
+# Example function to get neighbors of a node
+def get_neighbors(node):
+    # Implement logic to get neighbors of a node here
+    return []
+
+# Example usage
+root_node = "A"
+goal_node = "D"
+limit = 2
+result = breadth_limited_search(root_node, goal_node, limit)
+
+if result:
+    print(f"Goal node {goal_node} found!")
+else:
+    print(f"Goal node {goal_node} not found within limit of {limit}.")
