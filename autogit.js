@@ -1,37 +1,30 @@
-class TreeNode:
-    def __init__(self, key):
-        self.left = None
-        self.right = None
-        self.val = key
+def beam_search(k, initial_sequence, max_length):
+    beam = [(initial_sequence, 0)]  # Initialize the beam with the initial sequence and score 0
+    
+    for _ in range(max_length):
+        new_beam = []
+        for seq, score in beam:
+            # Generate new candidate sequences by expanding the current sequence
+            candidates = generate_candidates(seq)
+            for candidate in candidates:
+                candidate_score = score_candidate(candidate)
+                new_beam.append((candidate, score + candidate_score))
+        
+        # Keep only the top k sequences based on their scores
+        beam = sorted(new_beam, key=lambda x: x[1], reverse=True)[:k]
+    
+    return max(beam, key=lambda x: x[1])[0]  # Return the sequence with the highest score
 
-def insert(node, key):
-    if node is None:
-        return TreeNode(key)
-    else:
-        if key < node.val:
-            node.left = insert(node.left, key)
-        else:
-            node.right = insert(node.right, key)
-    return node
+# Example functions for generating candidates and scoring them
+def generate_candidates(sequence):
+    return [sequence + 'a', sequence + 'b']
 
-def search(node, key):
-    if node is None or node.val == key:
-        return node
-    if node.val < key:
-        return search(node.right, key)
-    return search(node.left, key)
+def score_candidate(candidate):
+    return len(candidate)
 
-root = None
-keys = [8, 3, 10, 1, 6, 14, 4, 7, 13]
-
-for key in keys:
-    root = insert(root, key)
-
-# Search for a key in the BST
-key_to_search = 6
-result = search(root, key_to_search)
-
-if result:
-    print(f"Key {key_to_search} found in the tree.")
-else:
-    print(f"Key {key_to_search} not found in the tree.")
+# Usage
+k = 3
+initial_sequence = 'abc'
+max_length = 5
+result = beam_search(k, initial_sequence, max_length)
+print(result)
