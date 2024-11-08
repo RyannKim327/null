@@ -1,7 +1,8 @@
-s = "Hello, World!"
-s_without_spaces = s.replace(" ", "")
-print(s_without_spaces)
-import re
-s = "Hello, World!"
-s_without_spaces = re.sub(r'\s+', '', s)
-print(s_without_spaces)
+let str = "Hello, World!";
+let subStr = "World";
+
+if (str.includes(subStr)) {
+    console.log("The string contains the substring.");
+} else {
+    console.log("The string does not contain the substring.");
+}
