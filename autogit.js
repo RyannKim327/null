@@ -1,43 +1,30 @@
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.left = None
-        self.right = None
+def rabin_karp(pattern, text):
+    p_len = len(pattern)
+    t_len = len(text)
 
-class BinaryTree:
-    def __init__(self):
-        self.root = None
+    if p_len > t_len:
+        return None
 
-    def insert(self, data):
-        if self.root is None:
-            self.root = Node(data)
-        else:
-            self._insert_recursive(self.root, data)
+    # Calculate hash value for pattern and the first window in the text
+    pattern_hash = hash(pattern)
+    text_hash = hash(text[:p_len])
 
-    def _insert_recursive(self, node, data):
-        if data < node.data:
-            if node.left is None:
-                node.left = Node(data)
-            else:
-                self._insert_recursive(node.left, data)
-        else:
-            if node.right is None:
-                node.right = Node(data)
-            else:
-                self._insert_recursive(node.right, data)
+    for i in range(t_len - p_len + 1):
+        # Compare hash values, do full comparison if hash values match
+        if pattern_hash == text_hash and pattern == text[i:i + p_len]:
+            return i
 
-    def inorder_traversal(self, node):
-        if node:
-            self.inorder_traversal(node.left)
-            print(node.data)
-            self.inorder_traversal(node.right)
+        # Update the hash value for the next window
+        if i < t_len - p_len:
+            text_hash = hash(text[i + 1:i + p_len + 1])
 
-# Usage
-tree = BinaryTree()
-tree.insert(5)
-tree.insert(3)
-tree.insert(8)
-tree.insert(2)
-tree.insert(4)
+    return None
 
-tree.inorder_traversal(tree.root)
+# Example usage
+text = "ABABCABABCD"
+pattern = "ABCD"
+result = rabin_karp(pattern, text)
+if result is not None:
+    print(f"Pattern found at index {result}")
+else:
+    print("Pattern not found")
