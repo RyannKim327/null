@@ -1,12 +1,12 @@
-function validateEmail(email) {
-    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return regex.test(email);
-}
+def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        for j in range(0, n-i-1):
+            if arr[j] > arr[j+1]:
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+    return arr
 
-// Example usage
-const email = "example@example.com";
-if (validateEmail(email)) {
-    console.log("Email is valid");
-} else {
-    console.log("Email is invalid");
-}
+# Test the bubble sort algorithm
+array = [64, 34, 25, 12, 22, 11, 90]
+sorted_array = bubble_sort(array)
+print("Sorted array is:", sorted_array)
