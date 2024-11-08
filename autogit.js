@@ -1,7 +1,12 @@
-# Define an array
-arr = [5, 10, 15, 20, 25]
+def count_word_occurrences(text, word):
+    words = text.split()
+    count = 0
+    for w in words:
+        if w == word:
+            count += 1
+    return count
 
-# Find the maximum value in the array
-max_value = max(arr)
-
-print("Maximum value in the array is:", max_value)
+text = "This is a sample text with some sample words in it."
+word = "sample"
+occurrences = count_word_occurrences(text, word)
+print(f"The word '{word}' occurs {occurrences} times in the text.")
