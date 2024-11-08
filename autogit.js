@@ -1,39 +1,37 @@
-class HashTable:
-    def __init__(self, size):
-        self.size = size
-        self.table = [[] for _ in range(size)]
+class Node:
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end
+        self.children = {}
+class Node:
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end
+        self.children = {}
 
-    def _hash_function(self, key):
-        return hash(key) % self.size
-
-    def insert(self, key, value):
-        index = self._hash_function(key)
-        for entry in self.table[index]:
-            if entry[0] == key:
-                entry[1] = value
-                return
-        self.table[index].append([key, value])
-
-    def get(self, key):
-        index = self._hash_function(key)
-        for entry in self.table[index]:
-            if entry[0] == key:
-                return entry[1]
-        raise KeyError(f"Key not found: {key}")
-
-    def delete(self, key):
-        index = self._hash_function(key)
-        for i, entry in enumerate(self.table[index]):
-            if entry[0] == key:
-                del self.table[index][i]
-                return
-        raise KeyError(f"Key not found: {key}")
+def build_suffix_tree(text):
+    root = Node(None, None)
+    for i in range(len(text)):
+        current = root
+        for j in range(i, len(text)):
+            if text[j] not in current.children:
+                current.children[text[j]] = Node(j, len(text)-1)
+                break
+            else:
+                child = current.children[text[j]]
+                k = child.start
+                while k <= child.end and text[k] == text[j]:
+                    k += 1
+                    j += 1
+                if k <= child.end:
+                    new_node = Node(child.start, k-1)
+                    child.start = k
+                    new_node.children[text[k]] = Node(k, child.end)
+                    child.end = k - 1
+                    child.children[text[k]] = new_node
+                current = child
+    return root
 
 # Example usage
-ht = HashTable(10)
-ht.insert('name', 'Alice')
-print(ht.get('name'))  # Output: Alice
-ht.insert('name', 'Bob')
-print(ht.get('name'))  # Output: Bob
-ht.delete('name')
-print(ht.get('name'))  # Raises KeyError
+text = "banana"
+suffix_tree = build_suffix_tree(text)
