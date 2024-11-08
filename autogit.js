@@ -1,12 +1,7 @@
-def bubble_sort(arr):
-    n = len(arr)
-    for i in range(n):
-        for j in range(0, n-i-1):
-            if arr[j] > arr[j+1]:
-                arr[j], arr[j+1] = arr[j+1], arr[j]
-    return arr
+# Define an array
+arr = [5, 10, 15, 20, 25]
 
-# Test the bubble sort algorithm
-array = [64, 34, 25, 12, 22, 11, 90]
-sorted_array = bubble_sort(array)
-print("Sorted array is:", sorted_array)
+# Find the maximum value in the array
+max_value = max(arr)
+
+print("Maximum value in the array is:", max_value)
