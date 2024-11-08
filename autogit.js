@@ -1,37 +1,43 @@
 class Node:
-    def __init__(self, start, end):
-        self.start = start
-        self.end = end
-        self.children = {}
-class Node:
-    def __init__(self, start, end):
-        self.start = start
-        self.end = end
-        self.children = {}
+    def __init__(self, data):
+        self.data = data
+        self.left = None
+        self.right = None
 
-def build_suffix_tree(text):
-    root = Node(None, None)
-    for i in range(len(text)):
-        current = root
-        for j in range(i, len(text)):
-            if text[j] not in current.children:
-                current.children[text[j]] = Node(j, len(text)-1)
-                break
+class BinaryTree:
+    def __init__(self):
+        self.root = None
+
+    def insert(self, data):
+        if self.root is None:
+            self.root = Node(data)
+        else:
+            self._insert_recursive(self.root, data)
+
+    def _insert_recursive(self, node, data):
+        if data < node.data:
+            if node.left is None:
+                node.left = Node(data)
             else:
-                child = current.children[text[j]]
-                k = child.start
-                while k <= child.end and text[k] == text[j]:
-                    k += 1
-                    j += 1
-                if k <= child.end:
-                    new_node = Node(child.start, k-1)
-                    child.start = k
-                    new_node.children[text[k]] = Node(k, child.end)
-                    child.end = k - 1
-                    child.children[text[k]] = new_node
-                current = child
-    return root
+                self._insert_recursive(node.left, data)
+        else:
+            if node.right is None:
+                node.right = Node(data)
+            else:
+                self._insert_recursive(node.right, data)
 
-# Example usage
-text = "banana"
-suffix_tree = build_suffix_tree(text)
+    def inorder_traversal(self, node):
+        if node:
+            self.inorder_traversal(node.left)
+            print(node.data)
+            self.inorder_traversal(node.right)
+
+# Usage
+tree = BinaryTree()
+tree.insert(5)
+tree.insert(3)
+tree.insert(8)
+tree.insert(2)
+tree.insert(4)
+
+tree.inorder_traversal(tree.root)
