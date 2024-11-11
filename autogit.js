@@ -1,12 +1,20 @@
-def count_word_occurrences(text, word):
-    words = text.split()
-    count = 0
-    for w in words:
-        if w == word:
-            count += 1
-    return count
+def longest_common_prefix(strs):
+    if not strs:
+        return ""
+    
+    min_len = min(len(s) for s in strs)
+    prefix = ""
+    
+    for i in range(min_len):
+        char = strs[0][i]
+        if all(s[i] == char for s in strs):
+            prefix += char
+        else:
+            break
+    
+    return prefix
 
-text = "This is a sample text with some sample words in it."
-word = "sample"
-occurrences = count_word_occurrences(text, word)
-print(f"The word '{word}' occurs {occurrences} times in the text.")
+# Example usage
+strings = ["flower", "flow", "flight"]
+result = longest_common_prefix(strings)
+print(result)  # Output: "fl"
