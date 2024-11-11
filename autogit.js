@@ -1,13 +1,23 @@
-def max_subarray_sum(arr):
-    max_sum = float('-inf')
-    current_sum = 0
+class Node:
+    def __init__(self, key):
+        self.left = None
+        self.right = None
+        self.val = key
 
-    for num in arr:
-        current_sum = max(num, current_sum + num)
-        max_sum = max(max_sum, current_sum)
-
-    return max_sum
+def maxDepth(node):
+    if node is None:
+        return 0
+    else:
+        left_depth = maxDepth(node.left)
+        right_depth = maxDepth(node.right)
+        
+        return max(left_depth, right_depth) + 1
 
 # Example usage
-arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
-print(max_subarray_sum(arr))  # Output: 6
+root = Node(1)
+root.left = Node(2)
+root.right = Node(3)
+root.left.left = Node(4)
+root.left.right = Node(5)
+
+print("Maximum depth of the binary tree is:", maxDepth(root))
