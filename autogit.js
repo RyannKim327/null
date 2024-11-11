@@ -1,55 +1,31 @@
-import heapq
+from collections import defaultdict
 
-def astar_search(graph, start, goal):
-    open_list = []
-    closed_set = set()
-    heapq.heappush(open_list, (0, start))
-    
-    while open_list:
-        _, current = heapq.heappop(open_list)
-        
-        if current == goal:
-            # Path found, reconstruct and return it
-            path = []
-            while current:
-                path.insert(0, current)
-                current = graph[current][1]
-            return path
-        
-        closed_set.add(current)
-        
-        for neighbor in graph[current][0]:
-            if neighbor in closed_set:
-                continue
-                
-            tentative_g = graph[current][2] + graph[current][0][neighbor]
-            if (tentative_g, neighbor) not in open_list:
-                heapq.heappush(open_list, (tentative_g + heuristic(neighbor, goal), neighbor))
-                graph[neighbor][2] = tentative_g
-                graph[neighbor][1] = current
-                
-    return None
+def topologicalSortUtil(node, visited, stack, graph):
+    visited[node] = True
+    for neighbor in graph[node]:
+        if not visited[neighbor]:
+            topologicalSortUtil(neighbor, visited, stack, graph)
+    stack.append(node)
 
-# Example heuristic function (Euclidean distance)
-def heuristic(node, goal):
-    x1, y1 = node
-    x2, y2 = goal
-    return ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
+def topologicalSort(graph):
+    visited = {node: False for node in graph}
+    stack = []
 
-# Example graph representation
+    for node in graph:
+        if not visited[node]:
+            topologicalSortUtil(node, visited, stack, graph)
+
+    stack.reverse()
+    return stack
+
+# Example graph for testing the algorithm
 graph = {
-    (0, 0): ({(0, 1): 1, (1, 0): 1}, None, 0),
-    (0, 1): ({(0, 0): 1, (0, 2): 1, (1, 1): 1}, None, 0),
-    (0, 2): ({(0, 1): 1, (1, 2): 1}, None, 0),
-    (1, 0): ({(0, 0): 1, (1, 1): 1}, None, 0),
-    (1, 1): ({(0, 1): 1, (1, 0): 1, (1, 2): 1, (2, 1): 1}, None, 0),
-    (1, 2): ({(0, 2): 1, (1, 1): 1}, None, 0),
-    (2, 1): ({(1, 1): 1, (2, 2): 1}, None, 0),
-    (2, 2): ({(1, 2): 1}, None, 0)
+    0: [1, 2],
+    1: [3],
+    2: [3],
+    3: [4],
+    4: []
 }
 
-start = (0, 0)
-goal = (2, 2)
-
-path = astar_search(graph, start, goal)
-print(path)
+topologically_sorted = topologicalSort(graph)
+print("Topological sort result:", topologically_sorted)
