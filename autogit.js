@@ -1,10 +1,14 @@
-def factorial(n):
-    if n == 0:
-        return 1
-    else:
-        return n * factorial(n - 1)
+def calculate_mean(numbers):
+    if len(numbers) == 0:
+        return None
 
-# Example usage
-number = 5
-result = factorial(number)
-print(f"The factorial of {number} is: {result}")
+    total_sum = sum(numbers)
+    count = len(numbers)
+    mean = total_sum / count
+
+    return mean
+
+# Test the function
+numbers = [1, 2, 3, 4, 5]
+mean = calculate_mean(numbers)
+print("Mean:", mean)
