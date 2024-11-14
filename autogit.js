@@ -1,14 +1,13 @@
-def calculate_mean(numbers):
-    if len(numbers) == 0:
-        return None
+import schedule
+import time
 
-    total_sum = sum(numbers)
-    count = len(numbers)
-    mean = total_sum / count
+def job():
+    print("This is a cron job running at scheduled intervals")
 
-    return mean
+# Schedule the job to run every minute
+schedule.every().minute.do(job)
 
-# Test the function
-numbers = [1, 2, 3, 4, 5]
-mean = calculate_mean(numbers)
-print("Mean:", mean)
+while True:
+    schedule.run_pending()
+    time.sleep(1)
+pip install schedule
