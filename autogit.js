@@ -1,13 +1,8 @@
-import schedule
-import time
+string_with_whitespace = "  Hello,  World!  "
+string_without_whitespace = string_with_whitespace.replace(" ", "")
+print(string_without_whitespace)
+import re
 
-def job():
-    print("This is a cron job running at scheduled intervals")
-
-# Schedule the job to run every minute
-schedule.every().minute.do(job)
-
-while True:
-    schedule.run_pending()
-    time.sleep(1)
-pip install schedule
+string_with_whitespace = "  Hello,  World!  "
+string_without_whitespace = re.sub(r'\s+', '', string_with_whitespace)
+print(string_without_whitespace)
