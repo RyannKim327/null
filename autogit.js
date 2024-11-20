@@ -1,46 +1,44 @@
-def tarjan(graph):
-    index_counter = [0]
-    stack = []
-    lowlinks = {}
-    index = {}
-    result = []
+def fibonacci_search(arr, x):
+    fib_m_minus_2 = 0
+    fib_m_minus_1 = 1
+    fib_m = fib_m_minus_1 + fib_m_minus_2
+    n = len(arr)
 
-    def strongconnect(node):
-        index[node] = index_counter[0]
-        lowlinks[node] = index_counter[0]
-        index_counter[0] += 1
-        stack.append(node)
+    while fib_m < n:
+        fib_m_minus_2 = fib_m_minus_1
+        fib_m_minus_1 = fib_m
+        fib_m = fib_m_minus_1 + fib_m_minus_2
 
-        for neighbor in graph[node]:
-            if neighbor not in index:
-                strongconnect(neighbor)
-                lowlinks[node] = min(lowlinks[node], lowlinks[neighbor])
-            elif neighbor in stack:
-                lowlinks[node] = min(lowlinks[node], index[neighbor])
+    offset = -1
 
-        if lowlinks[node] == index[node]:
-            component = []
-            while True:
-                neighbor = stack.pop()
-                component.append(neighbor)
-                if neighbor == node:
-                    break
-            result.append(component)
+    while fib_m > 1:
+        i = min(offset + fib_m_minus_2, n - 1)
 
-    for node in graph:
-        if node not in index:
-            strongconnect(node)
+        if arr[i] < x:
+            fib_m = fib_m_minus_1
+            fib_m_minus_1 = fib_m_minus_2
+            fib_m_minus_2 = fib_m - fib_m_minus_1
+            offset = i
 
-    return result
+        elif arr[i] > x:
+            fib_m = fib_m_minus_2
+            fib_m_minus_1 = fib_m_minus_1 - fib_m_minus_2
+            fib_m_minus_2 = fib_m - fib_m_minus_1
 
-# Example of using Tarjan's algorithm on a graph represented as an adjacency list
-graph = {
-    'A': ['B'],
-    'B': ['C'],
-    'C': ['A', 'D'],
-    'D': ['E'],
-    'E': ['F'],
-    'F': ['D']
-}
+        else:
+            return i
 
-print(tarjan(graph))
+    if fib_m_minus_1 and arr[offset + 1] == x:
+        return offset + 1
+
+    return -1
+
+# Example usage:
+arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100]
+x = 85
+index = fibonacci_search(arr, x)
+
+if index != -1:
+    print("Element found at index:", index)
+else:
+    print("Element not found")
