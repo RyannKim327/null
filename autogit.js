@@ -1,16 +1,46 @@
-def is_palindrome(s):
-    # Remove spaces and special characters and convert to lowercase
-    s = ''.join(e for e in s if e.isalnum()).lower()
-    
-    # Reverse the string
-    reversed_s = s[::-1]
-    
-    # Compare the original string with the reversed string
-    return s == reversed_s
+def tarjan(graph):
+    index_counter = [0]
+    stack = []
+    lowlinks = {}
+    index = {}
+    result = []
 
-# Test the function
-string = "A man, a plan, a canal, Panama!"
-if is_palindrome(string):
-    print("The string is a palindrome.")
-else:
-    print("The string is not a palindrome.")
+    def strongconnect(node):
+        index[node] = index_counter[0]
+        lowlinks[node] = index_counter[0]
+        index_counter[0] += 1
+        stack.append(node)
+
+        for neighbor in graph[node]:
+            if neighbor not in index:
+                strongconnect(neighbor)
+                lowlinks[node] = min(lowlinks[node], lowlinks[neighbor])
+            elif neighbor in stack:
+                lowlinks[node] = min(lowlinks[node], index[neighbor])
+
+        if lowlinks[node] == index[node]:
+            component = []
+            while True:
+                neighbor = stack.pop()
+                component.append(neighbor)
+                if neighbor == node:
+                    break
+            result.append(component)
+
+    for node in graph:
+        if node not in index:
+            strongconnect(node)
+
+    return result
+
+# Example of using Tarjan's algorithm on a graph represented as an adjacency list
+graph = {
+    'A': ['B'],
+    'B': ['C'],
+    'C': ['A', 'D'],
+    'D': ['E'],
+    'E': ['F'],
+    'F': ['D']
+}
+
+print(tarjan(graph))
