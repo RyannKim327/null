@@ -1,10 +1,15 @@
-def factorial(n):
-    if n == 0:
-        return 1
-    else:
-        return n * factorial(n-1)
+def longest_common_prefix(strs):
+    if not strs:
+        return ""
+    
+    shortest = min(strs, key=len)
+    for i, char in enumerate(shortest):
+        for other in strs:
+            if other[i] != char:
+                return shortest[:i]
+    
+    return shortest
 
-# Test the function
-number = 5
-result = factorial(number)
-print(f"The factorial of {number} is {result}")
+# Example usage
+strings = ["flower", "flow", "flight"]
+print(longest_common_prefix(strings))  # Output: "fl"
