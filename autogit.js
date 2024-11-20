@@ -1,12 +1,16 @@
-def count_occurrences(s, char):
-    count = 0
-    for c in s:
-        if c == char:
-            count += 1
-    return count
+def is_palindrome(s):
+    # Remove spaces and special characters and convert to lowercase
+    s = ''.join(e for e in s if e.isalnum()).lower()
+    
+    # Reverse the string
+    reversed_s = s[::-1]
+    
+    # Compare the original string with the reversed string
+    return s == reversed_s
 
 # Test the function
-string = "hello, world!"
-character = "o"
-result = count_occurrences(string, character)
-print(f"The character '{character}' occurs {result} times in the string.")
+string = "A man, a plan, a canal, Panama!"
+if is_palindrome(string):
+    print("The string is a palindrome.")
+else:
+    print("The string is not a palindrome.")
