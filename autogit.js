@@ -1,22 +1,23 @@
-def dfs(graph, start, visited=None):
-    if visited is None:
-        visited = set()
-        
-    visited.add(start)
-    print(start)
+function reverseArray(arr) {
+    let left = 0;
+    let right = arr.length - 1;
 
-    for neighbor in graph[start]:
-        if neighbor not in visited:
-            dfs(graph, neighbor, visited)
+    while (left < right) {
+        // Swap elements at left and right indices
+        let temp = arr[left];
+        arr[left] = arr[right];
+        arr[right] = temp;
 
-# Example usage:
-graph = {
-    'A': ['B', 'C'],
-    'B': ['A', 'D', 'E'],
-    'C': ['A', 'F'],
-    'D': ['B'],
-    'E': ['B', 'F'],
-    'F': ['C', 'E']
+        // Move the left index to the right and the right index to the left
+        left++;
+        right--;
+    }
+
+    return arr;
 }
 
-dfs(graph, 'A')
+let array = [1, 2, 3, 4, 5];
+console.log("Original Array: " + array);
+
+let reversedArray = reverseArray(array);
+console.log("Reversed Array: " + reversedArray);
