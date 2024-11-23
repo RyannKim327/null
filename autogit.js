@@ -1,20 +1,19 @@
-def shell_sort(arr):
-    n = len(arr)
-    gap = n // 2
+def check_anagrams(str1, str2):
+    # Remove spaces and convert to lowercase
+    str1 = str1.replace(" ", "").lower()
+    str2 = str2.replace(" ", "").lower()
+    
+    # Check if lengths are the same
+    if len(str1) != len(str2):
+        return False
+    
+    # Sort the characters of both strings and compare
+    return sorted(str1) == sorted(str2)
 
-    while gap > 0:
-        for i in range(gap, n):
-            temp = arr[i]
-            j = i
-            while j >= gap and arr[j - gap] > temp:
-                arr[j] = arr[j - gap]
-                j -= gap
-            arr[j] = temp
-        gap //= 2
-
-    return arr
-
-# Test the shell sort function
-arr = [64, 34, 25, 12, 22, 11, 90]
-sorted_arr = shell_sort(arr)
-print("Sorted array:", sorted_arr)
+# Test the function
+str1 = "listen"
+str2 = "silent"
+if check_anagrams(str1, str2):
+    print(f"{str1} and {str2} are anagrams.")
+else:
+    print(f"{str1} and {str2} are not anagrams.")
