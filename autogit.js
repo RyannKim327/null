@@ -1,14 +1,42 @@
-import requests
+def kmp_search(text, pattern):
+    L = len(pattern)
+    table = [0] * L
+    j = 0
 
-# Define the API endpoint
-url = "https://api.example.com"
+    compute_prefix_table(pattern, L, table)
 
-# Make a GET request to the API
-response = requests.get(url)
+    i = 0
+    while i < len(text):
+        if pattern[j] == text[i]:
+            i += 1
+            j += 1
 
-# Check if the request was successful
-if response.status_code == 200:
-    # Print the response from the API
-    print(response.json())
-else:
-    print("Error: Unable to connect to the API")
+            if j == L:
+                print("Pattern found at index " + str(i - j))
+                j = table[j - 1]
+        else:
+            if j != 0:
+                j = table[j - 1]
+            else:
+                i += 1
+
+def compute_prefix_table(pattern, L, table):
+    length = 0
+    table[0] = 0
+    i = 1
+
+    while i < L:
+        if pattern[length] == pattern[i]:
+            length += 1
+            table[i] = length
+            i += 1
+        else:
+            if length != 0:
+                length = table[length - 1]
+            else:
+                table[i] = 0
+                i += 1
+
+text = "ABABDABACDABABCABAB"
+pattern = "ABABCABAB"
+kmp_search(text, pattern)
