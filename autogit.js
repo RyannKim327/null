@@ -1,81 +1,36 @@
-#include <iostream>
+class Graph:
+    def __init__(self, vertices):
+        self.V = vertices
+        self.graph = []
 
-class Node {
-public:
-    int data;
-    Node* next;
+    def add_edge(self, u, v, w):
+        self.graph.append([u, v, w])
 
-    Node(int data) {
-        this->data = data;
-        next = nullptr;
-    }
-};
+    def bellman_ford(self, src):
+        dist = [float('inf')] * self.V
+        dist[src] = 0
 
-class Queue {
-private:
-    Node* front;
-    Node* rear;
+        for _ in range(self.V - 1):
+            for u, v, w in self.graph:
+                if dist[u] != float('inf') and dist[u] + w < dist[v]:
+                    dist[v] = dist[u] + w
 
-public:
-    Queue() {
-        front = rear = nullptr;
-    }
+        for u, v, w in self.graph:
+            if dist[u] != float('inf') and dist[u] + w < dist[v]:
+                print("Graph contains negative weight cycle")
+                return
 
-    void enqueue(int data) {
-        Node* newNode = new Node(data);
+        for i in range(self.V):
+            print(f"Distance from {src} to {i} is {dist[i]}")
 
-        if (isEmpty()) {
-            front = rear = newNode;
-        } else {
-            rear->next = newNode;
-            rear = newNode;
-        }
+g = Graph(5)
+g.add_edge(0, 1, -1)
+g.add_edge(0, 2, 4)
+g.add_edge(1, 2, 3)
+g.add_edge(1, 3, 2)
+g.add_edge(1, 4, 2)
+g.add_edge(3, 2, 5)
+g.add_edge(3, 1, 1)
+g.add_edge(4, 3, -3)
 
-        std::cout << data << " enqueued to queue." << std::endl;
-    }
-
-    void dequeue() {
-        if (isEmpty()) {
-            std::cout << "Queue is empty." << std::endl;
-            return;
-        }
-
-        Node* temp = front;
-        front = front->next;
-
-        if (front == nullptr) {
-            rear = nullptr;
-        }
-
-        std::cout << temp->data << " dequeued from queue." << std::endl;
-        delete temp;
-    }
-
-    bool isEmpty() {
-        return front == nullptr;
-    }
-
-    int peek() {
-        if (!isEmpty()) {
-            return front->data;
-        } else {
-            std::cout << "Queue is empty." << std::endl;
-            return -1;
-        }
-    }
-};
-
-int main() {
-    Queue queue;
-    
-    queue.enqueue(10);
-    queue.enqueue(20);
-    queue.enqueue(30);
-    
-    std::cout << "Front element: " << queue.peek() << std::endl;
-
-    queue.dequeue();
-    std::cout << "Front element after dequeue: " << queue.peek() << std::endl;
-
-    return 0;
-}
+g.bellman_ford(0)
