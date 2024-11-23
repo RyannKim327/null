@@ -1,29 +1,27 @@
-import heapq
+def longest_common_substring(str1, str2):
+    m = len(str1)
+    n = len(str2)
 
-def beam_search(initial_state, beam_width, max_steps, get_next_states, evaluate):
-    beam = [(initial_state, 0)]
-    
-    for _ in range(max_steps):
-        next_beam = []
-        for state, score in beam:
-            for next_state in get_next_states(state):
-                next_score = score + evaluate(next_state)
-                heapq.heappush(next_beam, (next_state, next_score))
-        
-        beam = heapq.nlargest(beam_width, next_beam, key=lambda x: x[1])
-    
-    return beam
+    # Create a 2D table to store the lengths of longest common suffixes of substrings
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
 
-# Example usage
-def get_next_states(state):
-    return [state + 1, state - 1]
+    max_length = 0
+    end_index = 0
 
-def evaluate(state):
-    return -abs(state - 10)
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if str1[i - 1] == str2[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1] + 1
+                if dp[i][j] > max_length:
+                    max_length = dp[i][j]
+                    end_index = i
+            else:
+                dp[i][j] = 0
 
-initial_state = 5
-beam_width = 2
-max_steps = 3
+    start_index = end_index - max_length
+    return str1[start_index:end_index]
 
-result = beam_search(initial_state, beam_width, max_steps, get_next_states, evaluate)
-print(result)
+# Example
+str1 = "abcdef"
+str2 = "bcdf"
+print(longest_common_substring(str1, str2))
