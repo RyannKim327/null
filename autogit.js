@@ -1,13 +1,13 @@
 def is_palindrome(s):
-    # Remove spaces and convert the string to lowercase
-    s = s.replace(" ", "").lower()
+    # Convert the string to lowercase and remove non-alphanumeric characters
+    s = ''.join(e for e in s if e.isalnum()).lower()
     
     # Check if the string is equal to its reverse
     return s == s[::-1]
 
 # Test the function
-s = "A man a plan a canal Panama"
+s = "A man, a plan, a canal, Panama"
 if is_palindrome(s):
-    print(f"'{s}' is a palindrome!")
+    print("The string is a palindrome.")
 else:
-    print(f"'{s}' is not a palindrome.")
+    print("The string is not a palindrome.")
