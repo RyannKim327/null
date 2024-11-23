@@ -1,17 +1,19 @@
-import re
-
-def validate_email(email):
-    # Regular expression pattern for validating email addresses
-    pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+class HashTable:
+    def __init__(self, size):
+        self.size = size
+        self.table = [None] * size
+        
+    def hash_function(self, key):
+        return len(key) % self.size
     
-    if re.match(pattern, email):
-        return True
-    else:
-        return False
+    def insert(self, key, value):
+        index = self.hash_function(key)
+        self.table[index] = value
+        
+    def search(self, key):
+        index = self.hash_function(key)
+        return self.table[index]
 
-# Test the function with an email address
-email = "example@email.com"
-if validate_email(email):
-    print(f"{email} is a valid email address.")
-else:
-    print(f"{email} is not a valid email address.")
+    def delete(self, key):
+        index = self.hash_function(key)
+        self.table[index] = None
