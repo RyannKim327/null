@@ -1,10 +1,5 @@
-def is_palindrome(s):
-    s = ''.join(e for e in s if e.isalnum()).lower()
-    return s == s[::-1]
+# Convert a string to an integer
+str_num = "42"
+int_num = int(str_num)
 
-# Test the function
-s = "A man, a plan, a canal: Panama"
-if is_palindrome(s):
-    print("The string is a palindrome.")
-else:
-    print("The string is not a palindrome.")
+print(int_num)  # Output: 42
