@@ -1,20 +1,25 @@
-def shell_sort(arr):
-    n = len(arr)
-    gap = n // 2
+import heapq
 
-    while gap > 0:
-        for i in range(gap, n):
-            temp = arr[i]
-            j = i
-            while j >= gap and arr[j - gap] > temp:
-                arr[j] = arr[j - gap]
-                j -= gap
-            arr[j] = temp
-        gap //= 2
+class PriorityQueue:
+    def __init__(self):
+        self._data = []
+        self._index = 0
 
-    return arr
+    def push(self, item, priority):
+        heapq.heappush(self._data, (priority, self._index, item))
+        self._index += 1
 
-# Test the shell sort algorithm
-arr = [12, 34, 54, 2, 3]
-sorted_arr = shell_sort(arr)
-print("Sorted array:", sorted_arr)
+    def pop(self):
+        return heapq.heappop(self._data)[-1]
+
+    def is_empty(self):
+        return len(self._data) == 0
+
+# Example usage
+priority_queue = PriorityQueue()
+priority_queue.push('task1', 5)
+priority_queue.push('task2', 3)
+priority_queue.push('task3', 7)
+
+while not priority_queue.is_empty():
+    print(priority_queue.pop())
