@@ -1,18 +1,19 @@
-def longest_common_prefix(strings):
-    if not strings:
-        return ""
+def is_anagram(str1, str2):
+    # Remove spaces and convert to lowercase
+    str1 = str1.replace(" ", "").lower()
+    str2 = str2.replace(" ", "").lower()
+    
+    # Check if the strings have the same length
+    if len(str1) != len(str2):
+        return False
+    
+    # Sort the characters in both strings and compare
+    return sorted(str1) == sorted(str2)
 
-    prefix = strings[0]
-
-    for string in strings[1:]:
-        i = 0
-        while i < len(prefix) and i < len(string) and prefix[i] == string[i]:
-            i += 1
-        prefix = prefix[:i]
-
-    return prefix
-
-# Example
-strings = ["flower", "flow", "flight"]
-result = longest_common_prefix(strings)
-print(result)  # Output: "fl"
+# Test the function
+str1 = "listen"
+str2 = "silent"
+if is_anagram(str1, str2):
+    print(f"{str1} and {str2} are anagrams.")
+else:
+    print(f"{str1} and {str2} are not anagrams.")
