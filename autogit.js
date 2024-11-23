@@ -1,20 +1,10 @@
-class ListNode:
-    def __init__(self, val=0, next=None):
-        self.val = val
-        self.next = next
+import random
 
-def getIntersectionNode(headA, headB):
-    node_set = set()
-    
-    curr = headA
-    while curr:
-        node_set.add(curr)
-        curr = curr.next
-    
-    curr = headB
-    while curr:
-        if curr in node_set:
-            return curr
-        curr = curr.next
-    
-    return None
+# Define the range for the random number
+start_range = 1
+end_range = 100
+
+# Generate a random number within the specified range
+random_number = random.randint(start_range, end_range)
+
+print("Random number within the range [{}, {}]: {}".format(start_range, end_range, random_number))
