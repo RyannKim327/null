@@ -1,42 +1,35 @@
+def merge_sort(arr):
+    if len(arr) <= 1:
+        return arr
+    
+    mid = len(arr) // 2
+    left_half = arr[:mid]
+    right_half = arr[mid:]
+    
+    left_half = merge_sort(left_half)
+    right_half = merge_sort(right_half)
+    
+    return merge(left_half, right_half)
 
-#include <iostream>
+def merge(left, right):
+    merged = []
+    left_idx = 0
+    right_idx = 0
+    
+    while left_idx < len(left) and right_idx < len(right):
+        if left[left_idx] < right[right_idx]:
+            merged.append(left[left_idx])
+            left_idx += 1
+        else:
+            merged.append(right[right_idx])
+            right_idx += 1
+    
+    merged += left[left_idx:]
+    merged += right[right_idx:]
+    
+    return merged
 
-struct Node {
-    int data;
-    Node* next;
-};
-
-bool hasCycle(Node* head) {
-    if (head == nullptr || head->next == nullptr) {
-        return false;
-    }
-
-    Node* slow = head;
-    Node* fast = head->next;
-
-    while (fast != slow) {
-        if (fast == nullptr || fast->next == nullptr) {
-            return false;
-        }
-        slow = slow->next;
-        fast = fast->next->next;
-    }
-
-    return true;
-}
-
-int main() {
-    // Create a linked list with a cycle
-    Node* head = new Node{1, nullptr};
-    head->next = new Node{2, nullptr};
-    head->next->next = new Node{3, nullptr};
-    head->next->next->next = head->next; // Create a cycle
-
-    if (hasCycle(head)) {
-        std::cout << "Linked list contains a cycle" << std::endl;
-    } else {
-        std::cout << "Linked list does not contain a cycle" << std::endl;
-    }
-
-    return 0;
-}
+# Example usage
+arr = [38, 27, 43, 3, 9, 82, 10]
+sorted_arr = merge_sort(arr)
+print(sorted_arr)
