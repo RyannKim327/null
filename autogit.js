@@ -1,32 +1,81 @@
-class Node:
-    def __init__(self, value):
-        self.value = value
-        self.next = None
+#include <iostream>
 
-def has_cycle(head):
-    if head is None:
-        return False
+class Node {
+public:
+    int data;
+    Node* next;
 
-    slow = head
-    fast = head.next
+    Node(int data) {
+        this->data = data;
+        next = nullptr;
+    }
+};
 
-    while fast is not None and fast.next is not None:
-        if slow == fast:
-            return True
-        slow = slow.next
-        fast = fast.next.next
+class Queue {
+private:
+    Node* front;
+    Node* rear;
 
-    return False
+public:
+    Queue() {
+        front = rear = nullptr;
+    }
 
-# Example usage
-node1 = Node(1)
-node2 = Node(2)
-node3 = Node(3)
-node4 = Node(4)
+    void enqueue(int data) {
+        Node* newNode = new Node(data);
 
-node1.next = node2
-node2.next = node3
-node3.next = node4
-node4.next = node2  # creating a cycle
+        if (isEmpty()) {
+            front = rear = newNode;
+        } else {
+            rear->next = newNode;
+            rear = newNode;
+        }
 
-print(has_cycle(node1))  # Output: True
+        std::cout << data << " enqueued to queue." << std::endl;
+    }
+
+    void dequeue() {
+        if (isEmpty()) {
+            std::cout << "Queue is empty." << std::endl;
+            return;
+        }
+
+        Node* temp = front;
+        front = front->next;
+
+        if (front == nullptr) {
+            rear = nullptr;
+        }
+
+        std::cout << temp->data << " dequeued from queue." << std::endl;
+        delete temp;
+    }
+
+    bool isEmpty() {
+        return front == nullptr;
+    }
+
+    int peek() {
+        if (!isEmpty()) {
+            return front->data;
+        } else {
+            std::cout << "Queue is empty." << std::endl;
+            return -1;
+        }
+    }
+};
+
+int main() {
+    Queue queue;
+    
+    queue.enqueue(10);
+    queue.enqueue(20);
+    queue.enqueue(30);
+    
+    std::cout << "Front element: " << queue.peek() << std::endl;
+
+    queue.dequeue();
+    std::cout << "Front element after dequeue: " << queue.peek() << std::endl;
+
+    return 0;
+}
