@@ -1,33 +1,8 @@
-class Node:
-    def __init__(self, key):
-        self.left = None
-        self.right = None
-        self.val = key
+from suffix_tree import Tree
 
-def insert(root, key):
-    if root is None:
-        return Node(key)
-    else:
-        if root.val < key:
-            root.right = insert(root.right, key)
-        else:
-            root.left = insert(root.left, key)
-    return root
+# Create an instance of the Suffix Tree
+tree = Tree("banana")
 
-def inorder_traversal(node):
-    if node:
-        inorder_traversal(node.left)
-        print(node.val)
-        inorder_traversal(node.right)
-
-# Example Usage
-root = None
-root = insert(root, 50)
-insert(root, 30)
-insert(root, 20)
-insert(root, 40)
-insert(root, 70)
-insert(root, 60)
-insert(root, 80)
-
-inorder_traversal(root)
+# Search for a substring in the Suffix Tree
+indexes = tree.search('na')
+print("Substring 'na' found at indexes:", indexes)
