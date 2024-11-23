@@ -1,13 +1,14 @@
-def is_prime(num):
-    if num <= 1:
-        return False
-    for i in range(2, int(num**0.5) + 1):
-        if num % i == 0:
-            return False
-    return True
+import requests
 
-num = 17  # Change this to the number you want to check
-if is_prime(num):
-    print(f"{num} is a prime number")
+# Define the API endpoint
+url = "https://api.example.com"
+
+# Make a GET request to the API
+response = requests.get(url)
+
+# Check if the request was successful
+if response.status_code == 200:
+    # Print the response from the API
+    print(response.json())
 else:
-    print(f"{num} is not a prime number")
+    print("Error: Unable to connect to the API")
