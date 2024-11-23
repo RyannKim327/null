@@ -1,14 +1,12 @@
-import requests
+from crontab import CronTab
 
-# API endpoint URL
-url = 'https://jsonplaceholder.typicode.com/posts/1'
+# Create a new crontab object
+cron = CronTab(user=True)
 
-# Making a GET request to the API
-response = requests.get(url)
+# Create a new job and set the schedule
+job = cron.new(command='echo "Hello, World"', comment='my_job')
+job.minute.on(0)
+job.hour.on(12)
 
-# Checking if the request was successful
-if response.status_code == 200:
-    # Printing the response content
-    print(response.json())
-else:
-    print('An error occurred with status code:', response.status_code)
+# Write the job to the crontab
+cron.write()
