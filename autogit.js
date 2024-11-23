@@ -1,11 +1,24 @@
-# Define a list of numbers
-numbers = [2, 4, 6, 8, 10]
+from collections import deque
 
-# Calculate the sum of all numbers in the list
-sum_of_numbers = sum(numbers)
+def breadth_first_search(graph, start_node):
+    visited = set()
+    queue = deque([start_node])
+    
+    while queue:
+        node = queue.popleft()
+        if node not in visited:
+            print(node)  # Visit the node
+            visited.add(node)
+            queue.extend([neighbor for neighbor in graph[node] if neighbor not in visited])
 
-# Calculate the mean by dividing the sum by the total number of elements
-mean = sum_of_numbers / len(numbers)
+# Example graph represented as adjacency list
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': ['F'],
+    'F': []
+}
 
-# Print the mean
-print("Mean of the list is:", mean)
+breadth_first_search(graph, 'A')
