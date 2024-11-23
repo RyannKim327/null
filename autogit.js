@@ -1,13 +1,20 @@
-def findMedianSortedArrays(nums1, nums2):
-    new_array = sorted(nums1 + nums2)
-    length = len(new_array)
-    if length % 2 == 0:
-        median = (new_array[length // 2 - 1] + new_array[length // 2]) / 2
-    else:
-        median = new_array[length // 2]
-    return median
+def shell_sort(arr):
+    n = len(arr)
+    gap = n // 2
 
-# Example
-nums1 = [1, 3]
-nums2 = [2]
-print(findMedianSortedArrays(nums1, nums2))  # Output: 2.0
+    while gap > 0:
+        for i in range(gap, n):
+            temp = arr[i]
+            j = i
+            while j >= gap and arr[j - gap] > temp:
+                arr[j] = arr[j - gap]
+                j -= gap
+            arr[j] = temp
+        gap //= 2
+
+    return arr
+
+# Test the shell sort algorithm
+arr = [12, 34, 54, 2, 3]
+sorted_arr = shell_sort(arr)
+print("Sorted array:", sorted_arr)
