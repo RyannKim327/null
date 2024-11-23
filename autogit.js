@@ -1,35 +1,13 @@
-import android.os.AsyncTask
-import java.io.IOException
-import java.net.HttpURLConnection
-import java.net.URL
+def findMedianSortedArrays(nums1, nums2):
+    new_array = sorted(nums1 + nums2)
+    length = len(new_array)
+    if length % 2 == 0:
+        median = (new_array[length // 2 - 1] + new_array[length // 2]) / 2
+    else:
+        median = new_array[length // 2]
+    return median
 
-class ConnectAsyncTask : AsyncTask<String, Void, String>() {
-
-    override fun doInBackground(vararg urls: String): String {
-        val urlString = urls[0]
-        val url = URL(urlString)
-        
-        return try {
-            val urlConnection = url.openConnection() as HttpURLConnection
-            urlConnection.requestMethod = "GET"
-            urlConnection.connect()
-            
-            if (urlConnection.responseCode != HttpURLConnection.HTTP_OK) {
-                throw IOException("HTTP error code: ${urlConnection.responseCode}")
-            }
-            
-            val inputStream = urlConnection.inputStream
-            val response = inputStream.bufferedReader().use { it.readText() }
-            
-            inputStream.close()
-            response
-        } catch (e: IOException) {
-            e.printStackTrace()
-            "Error: ${e.message}"
-        }
-    }
-
-    override fun onPostExecute(result: String) {
-        // Handle the result here
-    }
-}
+# Example
+nums1 = [1, 3]
+nums2 = [2]
+print(findMedianSortedArrays(nums1, nums2))  # Output: 2.0
