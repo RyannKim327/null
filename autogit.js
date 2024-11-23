@@ -1,20 +1,18 @@
-def largest_prime_factor(n):
-    largest_factor = 1
+def counting_sort(arr):
+    max_val = max(arr)
+    min_val = min(arr)
+    count_arr = [0] * (max_val - min_val + 1)
 
-    while n % 2 == 0:
-        largest_factor = 2
-        n = n // 2
+    for num in arr:
+        count_arr[num - min_val] += 1
 
-    for i in range(3, int(n**0.5) + 1, 2):
-        while n % i == 0:
-            largest_factor = i
-            n = n // i
+    sorted_arr = []
+    for i in range(len(count_arr)):
+        sorted_arr.extend([i + min_val] * count_arr[i])
 
-    if n > 2:
-        largest_factor = n
+    return sorted_arr
 
-    return largest_factor
-
-number = 56
-result = largest_prime_factor(number)
-print("Largest prime factor of", number, "is:", result)
+# Example usage
+arr = [4, 2, 2, 8, 3, 3, 1]
+sorted_arr = counting_sort(arr)
+print(sorted_arr)
