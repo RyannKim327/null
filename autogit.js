@@ -1,12 +1,10 @@
-Initialize:
-    max_so_far = 0
-    max_ending_here = 0
+def is_palindrome(s):
+    s = ''.join(e for e in s if e.isalnum()).lower()
+    return s == s[::-1]
 
-Loop for each element of the array:
-    max_ending_here = max_ending_here + array[i]
-    if max_ending_here < 0:
-        max_ending_here = 0
-    if max_so_far < max_ending_here:
-        max_so_far = max_ending_here
-
-Return max_so_far
+# Test the function
+s = "A man, a plan, a canal: Panama"
+if is_palindrome(s):
+    print("The string is a palindrome.")
+else:
+    print("The string is not a palindrome.")
