@@ -1,35 +1,16 @@
-def counting_sort(arr, exp):
-    n = len(arr)
-    output = [0] * n
-    count = [0] * 10
+from collections import Counter
 
-    for i in range(n):
-        index = arr[i] // exp
-        count[index % 10] += 1
-
-    for i in range(1, 10):
-        count[i] += count[i - 1]
-
-    i = n - 1
-    while i >= 0:
-        index = arr[i] // exp
-        output[count[index % 10] - 1] = arr[i]
-        count[index % 10] -= 1
-        i -= 1
-
-    for i in range(n):
-        arr[i] = output[i]
-
-def radix_sort(arr):
-    max_num = max(arr)
-    exp = 1
-    while max_num // exp > 0:
-        counting_sort(arr, exp)
-        exp *= 10
-
-    return arr
+def find_majority_element(arr):
+    counts = Counter(arr)
+    for num, count in counts.items():
+        if count > len(arr) // 2:
+            return num
+    return None
 
 # Example usage
-arr = [170, 45, 75, 90, 802, 24, 2, 66]
-sorted_arr = radix_sort(arr)
-print(sorted_arr)
+arr = [2, 2, 3, 4, 2, 2, 2]
+result = find_majority_element(arr)
+if result:
+    print(f"The majority element is: {result}")
+else:
+    print("No majority element found.")
