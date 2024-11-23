@@ -1,33 +1,28 @@
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.next = None
+s = "123"
+integer_value = int(s)
+print(integer_value)
+String s = "123";
+int intValue = Integer.parseInt(s);
+System.out.println(intValue);
+let s = "123";
+let intValue = parseInt(s);
+console.log(intValue);
+#include <iostream>
+#include <string>
+#include <cstdlib>
 
-class LinkedList:
-    def __init__(self):
-        self.head = None
+int main() {
+    std::string s = "123";
+    int intValue = std::stoi(s);
+    std::cout << intValue << std::endl;
+    return 0;
+}
+using System;
 
-    def append(self, data):
-        new_node = Node(data)
-        if self.head is None:
-            self.head = new_node
-            return
-        last_node = self.head
-        while last_node.next:
-            last_node = last_node.next
-        last_node.next = new_node
-
-    def get_length(self):
-        current = self.head
-        length = 0
-        while current:
-            length += 1
-            current = current.next
-        return length
-
-# Example Usage
-llist = LinkedList()
-llist.append(1)
-llist.append(2)
-llist.append(3)
-print("Length of the linked list:", llist.get_length())
+class Program {
+    static void Main() {
+        string s = "123";
+        int intValue = int.Parse(s);
+        Console.WriteLine(intValue);
+    }
+}
