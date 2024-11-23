@@ -1,15 +1,23 @@
-import requests
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
 
-# Define the API endpoint URL
-url = 'https://api.example.com/data'
+def find_middle_element(head):
+    slow_ptr = head
+    fast_ptr = head
 
-# Make a GET request to the API endpoint
-response = requests.get(url)
+    while fast_ptr is not None and fast_ptr.next is not None:
+        slow_ptr = slow_ptr.next
+        fast_ptr = fast_ptr.next.next
 
-# Check if the request was successful
-if response.status_code == 200:
-    # Extract and print the JSON data from the response
-    data = response.json()
-    print(data)
-else:
-    print('Error: Failed to retrieve data from the API')
+    return slow_ptr.data
+
+# Create a linked list
+head = Node(1)
+head.next = Node(2)
+head.next.next = Node(3)
+head.next.next.next = Node(4)
+head.next.next.next.next = Node(5)
+
+print(find_middle_element(head))  # Output: 3
