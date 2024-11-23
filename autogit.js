@@ -1,23 +1,53 @@
 class Node:
-    def __init__(self, data):
-        self.data = data
-        self.next = None
+    def __init__(self, key):
+        self.val = key
+        self.left = None
+        self.right = None
 
-def find_middle_element(head):
-    slow_ptr = head
-    fast_ptr = head
+class Tree:
+    def __init__(self):
+        self.root = None
 
-    while fast_ptr is not None and fast_ptr.next is not None:
-        slow_ptr = slow_ptr.next
-        fast_ptr = fast_ptr.next.next
+    def insert(self, key):
+        if self.root is None:
+            self.root = Node(key)
+        else:
+            self._insert_recursive(self.root, key)
 
-    return slow_ptr.data
+    def _insert_recursive(self, node, key):
+        if key < node.val:
+            if node.left is None:
+                node.left = Node(key)
+            else:
+                self._insert_recursive(node.left, key)
+        else:
+            if node.right is None:
+                node.right = Node(key)
+            else:
+                self._insert_recursive(node.right, key)
 
-# Create a linked list
-head = Node(1)
-head.next = Node(2)
-head.next.next = Node(3)
-head.next.next.next = Node(4)
-head.next.next.next.next = Node(5)
+    def search(self, key):
+        return self._search_recursive(self.root, key)
 
-print(find_middle_element(head))  # Output: 3
+    def _search_recursive(self, node, key):
+        if node is None:
+            return False
+        if node.val == key:
+            return True
+        elif key < node.val:
+            return self._search_recursive(node.left, key)
+        else:
+            return self._search_recursive(node.right, key)
+
+# Example Usage
+bst = Tree()
+bst.insert(5)
+bst.insert(3)
+bst.insert(7)
+bst.insert(2)
+bst.insert(4)
+bst.insert(6)
+bst.insert(8)
+
+print(bst.search(6))  # Output: True
+print(bst.search(10))  # Output: False
