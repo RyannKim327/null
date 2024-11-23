@@ -1,43 +1,35 @@
-def breadth_limited_search(graph, start, goal, limit):
-    visited = []
-    queue = [[start]]
-    
-    if start == goal:
-        return [start]
-    
-    while queue:
-        path = queue.pop(0)
-        node = path[-1]
-        if node not in visited:
-            neighbors = graph[node]
-            for neighbor in neighbors:
-                new_path = list(path)
-                new_path.append(neighbor)
-                queue.append(new_path)
-                if neighbor == goal:
-                    return new_path
-            visited.append(node)
-        if len(path) >= limit:
-            continue
-    return None
+# Define a function to run the Bellman-Ford algorithm
+def bellman_ford(graph, start):
+    # Step 1: Initialize distances from the start node to all other nodes as infinity
+    distances = {node: float('inf') for node in graph}
+    distances[start] = 0
 
-# Example graph
+    # Step 2: Relax edges repeatedly
+    for _ in range(len(graph) - 1):
+        for node in graph:
+            for neighbor in graph[node]:
+                if distances[node] + graph[node][neighbor] < distances[neighbor]:
+                    distances[neighbor] = distances[node] + graph[node][neighbor]
+
+    # Step 3: Check for negative cycles
+    for node in graph:
+        for neighbor in graph[node]:
+            if distances[node] + graph[node][neighbor] < distances[neighbor]:
+                print("Graph contains negative cycle")
+                return
+
+    return distances
+
+# Define a sample graph
 graph = {
-    'A': ['B', 'C'],
-    'B': ['A', 'D', 'E'],
-    'C': ['A', 'F'],
-    'D': ['B'],
-    'E': ['B', 'F'],
-    'F': ['C', 'E']
+    'A': {'B': -1, 'C': 4},
+    'B': {'C': 3, 'D': 2, 'E': 2},
+    'C': {},
+    'D': {'B': 1, 'C': 5},
+    'E': {'D': -3}
 }
 
-start = 'A'
-goal = 'F'
-limit = 3
-
-result = breadth_limited_search(graph, start, goal, limit)
-
-if result:
-    print(f"Path found: {result}")
-else:
-    print("No path found within the limit.")
+# Find shortest paths using Bellman-Ford algorithm
+start_node = 'A'
+shortest_paths = bellman_ford(graph, start_node)
+print(shortest_paths)
