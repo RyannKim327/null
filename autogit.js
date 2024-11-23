@@ -1,75 +1,18 @@
-#include <iostream>
-using namespace std;
+1. Initialize an array to hold the stack elements (e.g., stackArray)
+2. Initialize a variable to keep track of the top element of the stack (e.g., top = -1)
+3. Define a function push(element) to add an element to the top of the stack:
+    - Increment top
+    - stackArray[top] = element
+4. Define a function pop() to remove and return the element at the top of the stack:
+    - element = stackArray[top]
+    - Decrement top
+    - return element
+5. Define a function isEmpty() to check if the stack is empty:
+    - return top == -1
+6. Define a function isFull() to check if the stack is full:
+    - return top == size - 1 (assuming size is the maximum size of the stack)
 
-// Node structure for the linked list
-struct Node {
-    int data;
-    Node *next;
-    Node(int x) : data(x), next(nullptr) {}
-};
-
-// Queue class
-class Queue {
-private:
-    Node *front, *rear;
-
-public:
-    Queue() : front(nullptr), rear(nullptr) {}
-
-    bool isEmpty() {
-        return front == nullptr;
-    }
-
-    void enqueue(int value) {
-        Node *temp = new Node(value);
-        if (isEmpty()) {
-            front = rear = temp;
-        } else {
-            rear->next = temp;
-            rear = temp;
-        }
-    }
-
-    void dequeue() {
-        if (isEmpty()) {
-            cout << "Queue is empty. Cannot dequeue." << endl;
-            return;
-        }
-        Node *temp = front;
-        front = front->next;
-        delete temp;
-        if (front == nullptr) {
-            rear = nullptr;
-        }
-    }
-
-    int frontValue() {
-        if (isEmpty()) {
-            cout << "Queue is empty." << endl;
-            return -1;
-        }
-        return front->data;
-    }
-
-    void display() {
-        Node *temp = front;
-        while (temp != nullptr) {
-            cout << temp->data << " ";
-            temp = temp->next;
-        }
-        cout << endl;
-    }
-};
-
-int main() {
-    Queue q;
-    q.enqueue(1);
-    q.enqueue(2);
-    q.enqueue(3);
-    q.display(); // Output: 1 2 3
-    q.dequeue();
-    q.display(); // Output: 2 3
-    cout << "Front element: " << q.frontValue() << endl; // Output: 2
-
-    return 0;
-}
+// Example usage
+push(5)
+push(10)
+pop() // Returns 10
