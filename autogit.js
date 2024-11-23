@@ -1,18 +1,24 @@
-# Define an array of integers
-arr = [5, 2, 8, 1, 3]
+from collections import deque
 
-# Sort the array in ascending order
-sorted_arr = sorted(arr)
+def bfs(graph, start):
+    visited = set()
+    queue = deque([start])
+    
+    while queue:
+        node = queue.popleft()
+        if node not in visited:
+            visited.add(node)
+            print(node)
+            queue.extend([neighbor for neighbor in graph[node] if neighbor not in visited])
+            
+# Example graph represented as an adjacency list
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
 
-# Print the sorted array
-print(sorted_arr)
-# Sort the array in descending order
-sorted_arr_desc = sorted(arr, reverse=True)
-
-# Print the array sorted in descending order
-print(sorted_arr_desc)
-# Sort the array in-place in ascending order
-arr.sort()
-
-# Print the array sorted in ascending order
-print(arr)
+bfs(graph, 'A')
