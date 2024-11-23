@@ -1,42 +1,35 @@
-# Define Node class
-class Node:
-    def __init__(self, state, parent=None, cost=0, heuristic=0):
-        self.state = state
-        self.parent = parent
-        self.cost = cost
-        self.heuristic = heuristic
+def counting_sort(arr, exp):
+    n = len(arr)
+    output = [0] * n
+    count = [0] * 10
 
-# A* search function
-def astar_search(start_state, goal_state, heuristic_func):
-    start_node = Node(start_state)
-    start_node.heuristic = heuristic_func(start_state, goal_state)
-    
-    open_list = [start_node]
-    closed_list = []
-    
-    while open_list:
-        current_node = min(open_list, key=lambda x: x.cost + x.heuristic)
-        open_list.remove(current_node)
-        closed_list.append(current_node)
-        
-        if current_node.state == goal_state:
-            path = []
-            while current_node:
-                path.insert(0, current_node.state)
-                current_node = current_node.parent
-            return path
-        
-        for neighbor_state in get_neighbors(current_node.state):
-            neighbor_node = Node(neighbor_state, parent=current_node)
-            neighbor_node_cost = current_node.cost + cost_func(current_node.state, neighbor_state)
-            neighbor_node.heuristic = heuristic_func(neighbor_state, goal_state)
-            
-            if any(node for node in open_list if node.state == neighbor_state and node.cost <= neighbor_node_cost):
-                continue
-            
-            if any(node for node in closed_list if node.state == neighbor_state and node.cost <= neighbor_node_cost):
-                continue
-            
-            open_list.append(neighbor_node)
-    
-    return None
+    for i in range(n):
+        index = arr[i] // exp
+        count[index % 10] += 1
+
+    for i in range(1, 10):
+        count[i] += count[i - 1]
+
+    i = n - 1
+    while i >= 0:
+        index = arr[i] // exp
+        output[count[index % 10] - 1] = arr[i]
+        count[index % 10] -= 1
+        i -= 1
+
+    for i in range(n):
+        arr[i] = output[i]
+
+def radix_sort(arr):
+    max_num = max(arr)
+    exp = 1
+    while max_num // exp > 0:
+        counting_sort(arr, exp)
+        exp *= 10
+
+    return arr
+
+# Example usage
+arr = [170, 45, 75, 90, 802, 24, 2, 66]
+sorted_arr = radix_sort(arr)
+print(sorted_arr)
