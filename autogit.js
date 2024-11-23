@@ -1,31 +1,26 @@
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.left = None
-        self.right = None
+# Definition for a binary tree node
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
 
-def height(node):
-    if node is None:
+def sum_of_nodes(root):
+    if root is None:
         return 0
-    return 1 + max(height(node.left), height(node.right))
 
-def diameter(node):
-    if node is None:
-        return 0
-    
-    left_height = height(node.left)
-    right_height = height(node.right)
-    
-    left_diameter = diameter(node.left)
-    right_diameter = diameter(node.right)
-    
-    return max(left_height + right_height + 1, max(left_diameter, right_diameter))
+    return root.val + sum_of_nodes(root.left) + sum_of_nodes(root.right)
 
-# Sample binary tree creation
-root = Node(1)
-root.left = Node(2)
-root.right = Node(3)
-root.left.left = Node(4)
-root.left.right = Node(5)
+# Example usage
+# Construct a sample binary tree
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(5)
+root.right.left = TreeNode(6)
+root.right.right = TreeNode(7)
 
-print("The diameter of the binary tree is:", diameter(root))
+# Calculate the sum of all nodes
+total_sum = sum_of_nodes(root)
+print("Sum of all nodes in the binary tree:", total_sum)
