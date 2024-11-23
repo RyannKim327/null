@@ -1,9 +1,18 @@
-def is_sorted_ascending(arr):
-    return all(arr[i] <= arr[i + 1] for i in range(len(arr) - 1))
+def find_first_repeated_char(input_str):
+    chars_seen = set()
+    
+    for char in input_str:
+        if char in chars_seen:
+            return char
+        else:
+            chars_seen.add(char)
+    
+    return None
 
-# Test the function
-arr = [1, 2, 3, 4, 5]
-if is_sorted_ascending(arr):
-    print("Array is sorted in ascending order")
+input_str = "abcdefgah"
+result = find_first_repeated_char(input_str)
+
+if result:
+    print("First repeated character in the string is:", result)
 else:
-    print("Array is not sorted in ascending order")
+    print("No repeated characters found in the string.")
