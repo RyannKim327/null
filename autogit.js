@@ -1,10 +1,15 @@
-import random
-
-# Define the range for the random number
-start_range = 1
-end_range = 100
-
-# Generate a random number within the specified range
-random_number = random.randint(start_range, end_range)
-
-print("Random number within the range [{}, {}]: {}".format(start_range, end_range, random_number))
+def depth_limited_search_iterative(node, goal_state, max_depth):
+    stack = [(node, 0)]
+    
+    while stack:
+        current_node, depth = stack.pop()
+        
+        if current_node.state == goal_state:
+            return current_node
+        
+        if depth < max_depth:
+            children = current_node.expand()
+            for child in reversed(children):
+                stack.append((child, depth + 1))
+    
+    return None
