@@ -1,23 +1,17 @@
-class Node:
-    def __init__(self, key):
-        self.left = None
-        self.right = None
-        self.val = key
+import re
 
-def count_leaf_nodes(node):
-    if node is None:
-        return 0
-    if node.left is None and node.right is None:
-        return 1
-    return count_leaf_nodes(node.left) + count_leaf_nodes(node.right)
+def validate_email(email):
+    # Regular expression pattern for validating email addresses
+    pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    
+    if re.match(pattern, email):
+        return True
+    else:
+        return False
 
-# Example binary tree
-root = Node(1)
-root.left = Node(2)
-root.right = Node(3)
-root.left.left = Node(4)
-root.left.right = Node(5)
-root.right.left = Node(6)
-root.right.right = Node(7)
-
-print("Number of leaf nodes in the binary tree:", count_leaf_nodes(root))
+# Test the function with an email address
+email = "example@email.com"
+if validate_email(email):
+    print(f"{email} is a valid email address.")
+else:
+    print(f"{email} is not a valid email address.")
