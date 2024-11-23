@@ -1,26 +1,11 @@
-def binary_search(arr, target):
-    low = 0
-    high = len(arr) - 1
+def is_palindrome(s):
+    s = ''.join(e for e in s if e.isalnum()).lower()
+    return s == s[::-1]
 
-    while low <= high:
-        mid = (low + high) // 2
-        mid_val = arr[mid]
-
-        if mid_val == target:
-            return mid
-        elif mid_val < target:
-            low = mid + 1
-        else:
-            high = mid - 1
-
-    return -1
-
-# Example usage
-arr = [1, 3, 5, 7, 9, 11, 13]
-target = 7
-result = binary_search(arr, target)
-
-if result != -1:
-    print(f"Target {target} found at index {result}")
+# Test the function
+input_string = "A man, a plan, a canal, Panama"
+result = is_palindrome(input_string)
+if result:
+    print("The input string is a palindrome.")
 else:
-    print(f"Target {target} not found")
+    print("The input string is not a palindrome.")
