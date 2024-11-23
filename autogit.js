@@ -1,42 +1,69 @@
-# Define a Node class representing each state in the search space
-class Node:
-    def __init__(self, state, parent=None, action=None, cost=0, heuristic=0):
-        self.state = state         # State of the node
-        self.parent = parent       # Parent node
-        self.action = action       # Action that led to this node
-        self.cost = cost           # Cost to reach this node from the initial state
-        self.heuristic = heuristic # Heuristic value of the node
+#include <iostream>
 
-    def total_cost(self):
-        return self.cost + self.heuristic
+struct Node {
+    int key;
+    Node* left;
+    Node* right;
+    
+    Node(int k) : key(k), left(nullptr), right(nullptr) {}
+};
 
-# A* search algorithm
-def astar_search(initial_state, goal_test, successors, heuristic):
-    open_list = [Node(initial_state, None, None, 0, heuristic(initial_state))]
-    closed_list = []
+class BinaryTree {
+private:
+    Node* root;
 
-    while open_list:
-        current_node = min(open_list, key=lambda node: node.total_cost())
-        open_list.remove(current_node)
+    Node* insertRec(Node* root, int key) {
+        if (root == nullptr) {
+            return new Node(key);
+        }
+        
+        if (key < root->key) {
+            root->left = insertRec(root->left, key);
+        } else if (key > root->key) {
+            root->right = insertRec(root->right, key);
+        }
+        
+        return root;
+    }
 
-        if goal_test(current_node.state):
-            path = []
-            while current_node:
-                path.insert(0, (current_node.state, current_node.action))
-                current_node = current_node.parent
-            return path
+    Node* searchRec(Node* root, int key) {
+        if (root == nullptr || root->key == key) {
+            return root;
+        }
+        
+        if (key < root->key) {
+            return searchRec(root->left, key);
+        }
+        
+        return searchRec(root->right, key);
+    }
 
-        for action, successor_state, step_cost in successors(current_node.state):
-            new_cost = current_node.cost + step_cost
-            new_node = Node(successor_state, current_node, action, new_cost, heuristic(successor_state))
+public:
+    BinaryTree() : root(nullptr) {}
 
-            if new_node in closed_list:
-                continue
+    void insert(int key) {
+        root = insertRec(root, key);
+    }
 
-            if new_node not in open_list or new_node.total_cost() < [node.total_cost() for node in open_list if node == new_node][0]:
-                open_list = [node for node in open_list if node != new_node]
-                open_list.append(new_node)
+    Node* search(int key) {
+        return searchRec(root, key);
+    }
+};
 
-        closed_list.append(current_node)
+int main() {
+    BinaryTree tree;
 
-    return None
+    tree.insert(5);
+    tree.insert(3);
+    tree.insert(7);
+    
+    // Search for a key
+    Node* result = tree.search(3);
+    if (result != nullptr) {
+        std::cout << "Key found in the tree" << std::endl;
+    } else {
+        std::cout << "Key not found in the tree" << std::endl;
+    }
+
+    return 0;
+}
