@@ -1,37 +1,26 @@
-def merge_sort(arr):
-    if len(arr) > 1:
-        mid = len(arr) // 2
-        L = arr[:mid]
-        R = arr[mid:]
+def binary_search(arr, target):
+    low = 0
+    high = len(arr) - 1
 
-        merge_sort(L)
-        merge_sort(R)
+    while low <= high:
+        mid = (low + high) // 2
+        mid_val = arr[mid]
 
-        i = j = k = 0
+        if mid_val == target:
+            return mid
+        elif mid_val < target:
+            low = mid + 1
+        else:
+            high = mid - 1
 
-        while i < len(L) and j < len(R):
-            if L[i] < R[j]:
-                arr[k] = L[i]
-                i += 1
-            else:
-                arr[k] = R[j]
-                j += 1
-            k += 1
-
-        while i < len(L):
-            arr[k] = L[i]
-            i += 1
-            k += 1
-
-        while j < len(R):
-            arr[k] = R[j]
-            j += 1
-            k += 1
-
-    return arr
+    return -1
 
 # Example usage
-arr = [38, 27, 43, 3, 9, 82, 10]
-print("Original array:", arr)
-sorted_arr = merge_sort(arr)
-print("Sorted array:", sorted_arr)
+arr = [1, 3, 5, 7, 9, 11, 13]
+target = 7
+result = binary_search(arr, target)
+
+if result != -1:
+    print(f"Target {target} found at index {result}")
+else:
+    print(f"Target {target} not found")
