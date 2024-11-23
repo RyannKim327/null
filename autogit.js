@@ -1,50 +1,37 @@
-#include <iostream>
+from collections import deque
 
-struct Node {
-    int data;
-    Node* next;
-    
-    Node(int data) : data(data), next(nullptr) {}
-};
+def breadth_limited_search(graph, start, goal, limit):
+    queue = deque([(start, [start])])
 
-Node* reverseLinkedList(Node* head) {
-    Node* prev = nullptr;
-    Node* current = head;
-    Node* next = nullptr;
+    while queue:
+        node, path = queue.popleft()
+        
+        if node == goal:
+            return path
+        
+        if len(path) < limit:
+            for neighbor in graph[node]:
+                if neighbor not in path:
+                    queue.append((neighbor, path + [neighbor]))
     
-    while (current != nullptr) {
-        next = current->next;
-        current->next = prev;
-        prev = current;
-        current = next;
-    }
-    
-    head = prev;
-    
-    return head;
+    return None
+
+# Example usage
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': ['F'],
+    'F': []
 }
 
-void printList(Node* node) {
-    while (node != nullptr) {
-        std::cout << node->data << " ";
-        node = node->next;
-    }
-    std::cout << std::endl;
-}
+start_node = 'A'
+goal_node = 'F'
+limit = 3
 
-int main() {
-    Node* head = new Node(1);
-    head->next = new Node(2);
-    head->next->next = new Node(3);
-    head->next->next->next = new Node(4);
-    
-    std::cout << "Original Linked List:" << std::endl;
-    printList(head);
-    
-    head = reverseLinkedList(head);
-    
-    std::cout << "Reversed Linked List:" << std::endl;
-    printList(head);
-    
-    return 0;
-}
+result = breadth_limited_search(graph, start_node, goal_node, limit)
+if result:
+    print("Path found:", result)
+else:
+    print("Path not found within the limit.")
