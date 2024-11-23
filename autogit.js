@@ -1,38 +1,35 @@
-import random
+def merge_sort(arr):
+    if len(arr) <= 1:
+        return arr
 
-def partition(arr, low, high):
-    pivot = arr[high]
-    i = low
-    for j in range(low, high):
-        if arr[j] <= pivot:
-            arr[i], arr[j] = arr[j], arr[i]
-            i += 1
-    arr[i], arr[high] = arr[high], arr[i]
-    return i
+    mid = len(arr) // 2
+    left_half = arr[:mid]
+    right_half = arr[mid:]
 
-def quickselect(arr, k, low, high):
-    if low == high:
-        return arr[low]
+    # Recursively split and merge both halves
+    left_half = merge_sort(left_half)
+    right_half = merge_sort(right_half)
 
-    pivot_index = random.randint(low, high)
-    arr[high], arr[pivot_index] = arr[pivot_index], arr[high]
+    return merge(left_half, right_half)
 
-    pivot_index = partition(arr, low, high)
+def merge(left, right):
+    merged = []
+    left_idx = right_idx = 0
 
-    if k < pivot_index:
-        return quickselect(arr, k, low, pivot_index - 1)
-    elif k > pivot_index:
-        return quickselect(arr, k, pivot_index + 1, high)
-    else:
-        return arr[k]
+    while left_idx < len(left) and right_idx < len(right):
+        if left[left_idx] < right[right_idx]:
+            merged.append(left[left_idx])
+            left_idx += 1
+        else:
+            merged.append(right[right_idx])
+            right_idx += 1
 
-def find_kth_smallest(arr, k):
-    if k < 1 or k > len(arr):
-        return None
-    return quickselect(arr, k - 1, 0, len(arr) - 1)
+    merged += left[left_idx:]
+    merged += right[right_idx:]
 
-# Example usage
-arr = [3, 1, 4, 1, 5, 9, 2, 6]
-k = 3
-result = find_kth_smallest(arr, k)
-print(f"The {k}th smallest element is: {result}")
+    return merged
+
+# Example Usage
+arr = [38, 27, 43, 3, 9, 82, 10]
+sorted_arr = merge_sort(arr)
+print(sorted_arr)
