@@ -1,42 +1,24 @@
-def rabin_karp_search(text, pattern):
-    d = 256  # Number of characters in the input alphabet
-    q = 101  # A prime number for hashing
+import heapq
 
-    M = len(pattern)
-    N = len(text)
-    pattern_hash = 0
-    text_hash = 0
-    h = 1
+def find_kth_smallest(arr, k):
+    if k < 1 or k > len(arr):
+        return None
 
-    # Calculate h = d^(M-1) % q
-    for i in range(M - 1):
-        h = (h * d) % q
+    heap = arr[:k]
+    heapq._heapify_max(heap)  # convert list to max heap
 
-    # Calculate the initial hash values for pattern and window of text
-    for i in range(M):
-        pattern_hash = (d * pattern_hash + ord(pattern[i])) % q
-        text_hash = (d * text_hash + ord(text[i])) % q
+    for num in arr[k:]:
+        if num < heap[0]:
+            heapq._heapreplace_max(heap, num)
 
-    # Slide the pattern over text one by one
-    for i in range(N - M + 1):
-        # Check if the hash value of pattern and current window of text matches
-        if pattern_hash == text_hash:
-            # Check character by character if the strings match
-            match = True
-            for j in range(M):
-                if text[i + j] != pattern[j]:
-                    match = False
-                    break
-            if match:
-                print("Pattern found at index", i)
+    return heap[0]
 
-        # Calculate hash value for next window of text
-        if i < N - M:
-            text_hash = (d * (text_hash - ord(text[i]) * h) + ord(text[i + M])) % q
-            if text_hash < 0:
-                text_hash = text_hash + q
+# Test the function
+arr = [7, 10, 4, 3, 20, 15]
+k = 3
+result = find_kth_smallest(arr, k)
 
-# Test the Rabin-Karp search algorithm
-text = "ABCCDDAEFG"
-pattern = "CDD"
-rabin_karp_search(text, pattern)
+if result is not None:
+    print(f"The {k}th smallest element in the array is: {result}")
+else:
+    print("Invalid value of k")
