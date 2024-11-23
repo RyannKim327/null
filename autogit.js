@@ -1,70 +1,42 @@
-#include <iostream>
+# Define a Node class representing each state in the search space
+class Node:
+    def __init__(self, state, parent=None, action=None, cost=0, heuristic=0):
+        self.state = state         # State of the node
+        self.parent = parent       # Parent node
+        self.action = action       # Action that led to this node
+        self.cost = cost           # Cost to reach this node from the initial state
+        self.heuristic = heuristic # Heuristic value of the node
 
-using namespace std;
+    def total_cost(self):
+        return self.cost + self.heuristic
 
-// Linked list node structure
-struct Node {
-    int data;
-    Node* next;
-    
-    Node(int d) : data(d), next(nullptr) {}
-};
+# A* search algorithm
+def astar_search(initial_state, goal_test, successors, heuristic):
+    open_list = [Node(initial_state, None, None, 0, heuristic(initial_state))]
+    closed_list = []
 
-class Queue {
-private:
-    Node* front;
-    Node* rear;
+    while open_list:
+        current_node = min(open_list, key=lambda node: node.total_cost())
+        open_list.remove(current_node)
 
-public:
-    Queue() : front(nullptr), rear(nullptr) {}
+        if goal_test(current_node.state):
+            path = []
+            while current_node:
+                path.insert(0, (current_node.state, current_node.action))
+                current_node = current_node.parent
+            return path
 
-    // Function to add element to the queue
-    void enqueue(int data) {
-        Node* newNode = new Node(data);
-        
-        if (rear == nullptr) {
-            front = newNode;
-            rear = newNode;
-        } else {
-            rear->next = newNode;
-            rear = newNode;
-        }
-        
-        cout << data << " enqueued to queue" << endl;
-    }
+        for action, successor_state, step_cost in successors(current_node.state):
+            new_cost = current_node.cost + step_cost
+            new_node = Node(successor_state, current_node, action, new_cost, heuristic(successor_state))
 
-    // Function to remove element from the queue
-    int dequeue() {
-        if (front == nullptr) {
-            cout << "Queue is empty" << endl;
-            return -1;
-        }
+            if new_node in closed_list:
+                continue
 
-        int data = front->data;
-        Node* temp = front;
-        front = front->next;
+            if new_node not in open_list or new_node.total_cost() < [node.total_cost() for node in open_list if node == new_node][0]:
+                open_list = [node for node in open_list if node != new_node]
+                open_list.append(new_node)
 
-        if (front == nullptr) {
-            rear = nullptr;
-        }
+        closed_list.append(current_node)
 
-        delete temp;
-
-        cout << data << " dequeued from queue" << endl;
-
-        return data;
-    }
-};
-
-int main() {
-    Queue q;
-
-    q.enqueue(10);
-    q.enqueue(20);
-    q.enqueue(30);
-
-    q.dequeue();
-    q.dequeue();
-
-    return 0;
-}
+    return None
