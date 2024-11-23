@@ -1,8 +1,16 @@
-def reverse_words(input_string):
-    words = input_string.split()
-    reversed_words = " ".join(reversed(words))
-    return reversed_words
+let str = "Hello, World!";
+let substring = "Hello";
 
-input_string = "Hello World! This is a test."
-reversed_string = reverse_words(input_string)
-print(reversed_string)
+if (str.indexOf(substring) !== -1) {
+    console.log("Substring found!");
+} else {
+    console.log("Substring not found!");
+}
+let str = "Hello, World!";
+let substring = "Hello";
+
+if (str.includes(substring)) {
+    console.log("Substring found!");
+} else {
+    console.log("Substring not found!");
+}
