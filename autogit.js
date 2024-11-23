@@ -1,19 +1,29 @@
-def find_second_largest(arr):
-    if len(arr) < 2:
-        return "Array must have at least 2 elements"
+def boyer_moore_horspool(text, pattern):
+    m = len(pattern)
+    n = len(text)
+    if m == 0:
+        return -1
 
-    max_num = float('-inf')
-    second_max = float('-inf')
+    skip = [m] * 256
+    for i in range(m - 1):
+        skip[ord(pattern[i])] = m - i - 1
 
-    for num in arr:
-        if num > max_num:
-            second_max = max_num
-            max_num = num
-        elif num > second_max and num != max_num:
-            second_max = num
+    j = 0
+    while j <= n - m:
+        i = m - 1
+        while i >= 0 and pattern[i] == text[i + j]:
+            i -= 1
+        if i == -1:
+            return j
+        j += skip[ord(text[j + m - 1])]
 
-    return second_max
+    return -1
 
-# Sample array
-arr = [5, 3, 8, 1, 9, 4, 7, 2, 6]
-print("Second largest element is:", find_second_largest(arr))
+# Test the implementation
+text = "exampletextforexample"
+pattern = "example"
+result = boyer_moore_horspool(text, pattern)
+if result != -1:
+    print("Pattern found at index:", result)
+else:
+    print("Pattern not found")
