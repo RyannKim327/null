@@ -1,23 +1,22 @@
-class Node:
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
+import tweepy
 
-def count_leaf_nodes(node):
-    if node is None:
-        return 0
-    if node.left is None and node.right is None:
-        return 1
-    return count_leaf_nodes(node.left) + count_leaf_nodes(node.right)
+# API credentials
+CONSUMER_KEY = 'your_consumer_key'
+CONSUMER_SECRET = 'your_consumer_secret'
+ACCESS_TOKEN = 'your_access_token'
+ACCESS_TOKEN_SECRET = 'your_access_token_secret'
 
-# Example binary tree
-root = Node(1)
-root.left = Node(2)
-root.right = Node(3)
-root.left.left = Node(4)
-root.left.right = Node(5)
-root.right.left = Node(6)
-root.right.right = Node(7)
+def authenticate():
+    auth = tweepy.OAuth1Handler(CONSUMER_KEY, CONSUMER_SECRET)
+    auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
+    api = tweepy.API(auth)
+    return api
 
-print("Number of leaf nodes:", count_leaf_nodes(root))
+def fetch_tweets(query, count=10):
+    api = authenticate()
+    tweets = api.search_tweets(q=query, count=count)
+    for tweet in tweets:
+        print(tweet.text)
+
+if __name__ == '__main__':
+    fetch_tweets('python', 5)
