@@ -1,37 +1,75 @@
-from collections import deque
+#include <iostream>
+using namespace std;
 
-def breadth_limited_search(graph, start, goal, limit):
-    queue = deque([(start, [start])])
+// Node structure for the linked list
+struct Node {
+    int data;
+    Node *next;
+    Node(int x) : data(x), next(nullptr) {}
+};
 
-    while queue:
-        node, path = queue.popleft()
-        
-        if node == goal:
-            return path
-        
-        if len(path) < limit:
-            for neighbor in graph[node]:
-                if neighbor not in path:
-                    queue.append((neighbor, path + [neighbor]))
-    
-    return None
+// Queue class
+class Queue {
+private:
+    Node *front, *rear;
 
-# Example usage
-graph = {
-    'A': ['B', 'C'],
-    'B': ['D', 'E'],
-    'C': ['F'],
-    'D': [],
-    'E': ['F'],
-    'F': []
+public:
+    Queue() : front(nullptr), rear(nullptr) {}
+
+    bool isEmpty() {
+        return front == nullptr;
+    }
+
+    void enqueue(int value) {
+        Node *temp = new Node(value);
+        if (isEmpty()) {
+            front = rear = temp;
+        } else {
+            rear->next = temp;
+            rear = temp;
+        }
+    }
+
+    void dequeue() {
+        if (isEmpty()) {
+            cout << "Queue is empty. Cannot dequeue." << endl;
+            return;
+        }
+        Node *temp = front;
+        front = front->next;
+        delete temp;
+        if (front == nullptr) {
+            rear = nullptr;
+        }
+    }
+
+    int frontValue() {
+        if (isEmpty()) {
+            cout << "Queue is empty." << endl;
+            return -1;
+        }
+        return front->data;
+    }
+
+    void display() {
+        Node *temp = front;
+        while (temp != nullptr) {
+            cout << temp->data << " ";
+            temp = temp->next;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    Queue q;
+    q.enqueue(1);
+    q.enqueue(2);
+    q.enqueue(3);
+    q.display(); // Output: 1 2 3
+    q.dequeue();
+    q.display(); // Output: 2 3
+    cout << "Front element: " << q.frontValue() << endl; // Output: 2
+
+    return 0;
 }
-
-start_node = 'A'
-goal_node = 'F'
-limit = 3
-
-result = breadth_limited_search(graph, start_node, goal_node, limit)
-if result:
-    print("Path found:", result)
-else:
-    print("Path not found within the limit.")
