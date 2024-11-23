@@ -1,31 +1,32 @@
-def heapify(arr, n, i):
-    largest = i
-    l = 2 * i + 1
-    r = 2 * i + 2
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.next = None
 
-    if l < n and arr[l] > arr[largest]:
-        largest = l
+def has_cycle(head):
+    if head is None:
+        return False
 
-    if r < n and arr[r] > arr[largest]:
-        largest = r
+    slow = head
+    fast = head.next
 
-    if largest != i:
-        arr[i], arr[largest] = arr[largest], arr[i]
-        heapify(arr, n, largest)
+    while fast is not None and fast.next is not None:
+        if slow == fast:
+            return True
+        slow = slow.next
+        fast = fast.next.next
 
-def heap_sort(arr):
-    n = len(arr)
+    return False
 
-    for i in range(n // 2 - 1, -1, -1):
-        heapify(arr, n, i)
+# Example usage
+node1 = Node(1)
+node2 = Node(2)
+node3 = Node(3)
+node4 = Node(4)
 
-    for i in range(n - 1, 0, -1):
-        arr[i], arr[0] = arr[0], arr[i]
-        heapify(arr, i, 0)
+node1.next = node2
+node2.next = node3
+node3.next = node4
+node4.next = node2  # creating a cycle
 
-    return arr
-
-# Test the heap sort algorithm
-arr = [12, 11, 13, 5, 6, 7]
-sorted_arr = heap_sort(arr)
-print("Sorted array is", sorted_arr)
+print(has_cycle(node1))  # Output: True
