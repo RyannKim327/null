@@ -1,16 +1,25 @@
-def count_word_occurrences(sentence, word):
-    words = sentence.split()
-    count = 0
+def depth_limited_search(node, goal, depth_limit):
+    return recursive_dls(node, goal, depth_limit)
 
-    for w in words:
-        if w == word:
-            count += 1
+def recursive_dls(node, goal, depth_limit):
+    if node == goal:
+        return node
+    elif depth_limit == 0:
+        return None
+    else:
+        for child in expand(node):
+            result = recursive_dls(child, goal, depth_limit - 1)
+            if result:
+                return result
+    return None
 
-    return count
+def expand(node):
+    # Implement your node expansion logic here
+    pass
 
-# Example usage
-sentence = "Hello world, hello sun, hello moon!"
-word = "hello"
-result = count_word_occurrences(sentence.lower(), word.lower())
-
-print(f"The word '{word}' occurs {result} times in the sentence.")
+# Usage example
+node = initial_node
+goal = desired_goal
+depth_limit = 10
+result = depth_limited_search(node, goal, depth_limit)
+print(result)
