@@ -1,11 +1,13 @@
-function findCommonElements(array1, array2):
-    commonElements = []
-    for element in array1:
-        if element in array2:
-            commonElements.append(element)
-    return commonElements
+def is_prime(num):
+    if num <= 1:
+        return False
+    for i in range(2, int(num**0.5) + 1):
+        if num % i == 0:
+            return False
+    return True
 
-array1 = [1, 2, 3, 4, 5]
-array2 = [3, 4, 5, 6, 7]
-result = findCommonElements(array1, array2)
-print(result)
+num = 17  # Change this to the number you want to check
+if is_prime(num):
+    print(f"{num} is a prime number")
+else:
+    print(f"{num} is not a prime number")
