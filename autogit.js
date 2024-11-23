@@ -1,34 +1,25 @@
-def bad_character_table(pattern):
-    table = {}
-    for i in range(len(pattern)-1):
-        table[pattern[i]] = i
-    return table
+def binary_search(arr, target):
+    left = 0
+    right = len(arr) - 1
 
-def good_suffix_table(pattern):
-    table = [-1] * len(pattern)
-    for i in range(len(pattern) - 1):
-        j = i
-        while j >= 0 and pattern[j:] == pattern[len(pattern) - 1 - i:len(pattern) - 1]:
-            table[len(pattern) - 1 - i] = j
-            j -= 1
-    return table
+    while left <= right:
+        mid = (left + right) // 2
 
-def boyer_moore(text, pattern):
-    bad_char = bad_character_table(pattern)
-    good_suff = good_suffix_table(pattern)
-    n, m = len(text), len(pattern)
-    i = 0
-    while i <= n - m:
-        j = m - 1
-        while j >= 0 and pattern[j] == text[i + j]:
-            j -= 1
-        if j < 0:
-            print("Pattern found at index", i)
-            i += (m - good_suff[0] if i + m < n else 1)
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] < target:
+            left = mid + 1
         else:
-            char_offset = j - bad_char.get(text[i + j], -1)
-            i += max(1, char_offset, m - good_suff[j])
+            right = mid - 1
 
-text = "AABAACAADAABAAABAA"
-pattern = "AABA"
-boyer_moore(text, pattern)
+    return -1
+
+# Example usage
+arr = [1, 3, 5, 7, 9, 11, 13, 15]
+target = 9
+result = binary_search(arr, target)
+
+if result != -1:
+    print(f"Target found at index {result}")
+else:
+    print("Target not found in the array")
