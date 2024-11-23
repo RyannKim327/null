@@ -1,19 +1,20 @@
-class HashTable:
-    def __init__(self, size):
-        self.size = size
-        self.table = [None] * size
-        
-    def hash_function(self, key):
-        return len(key) % self.size
-    
-    def insert(self, key, value):
-        index = self.hash_function(key)
-        self.table[index] = value
-        
-    def search(self, key):
-        index = self.hash_function(key)
-        return self.table[index]
+def largest_prime_factor(n):
+    largest_factor = 1
 
-    def delete(self, key):
-        index = self.hash_function(key)
-        self.table[index] = None
+    while n % 2 == 0:
+        largest_factor = 2
+        n = n // 2
+
+    for i in range(3, int(n**0.5) + 1, 2):
+        while n % i == 0:
+            largest_factor = i
+            n = n // i
+
+    if n > 2:
+        largest_factor = n
+
+    return largest_factor
+
+number = 56
+result = largest_prime_factor(number)
+print("Largest prime factor of", number, "is:", result)

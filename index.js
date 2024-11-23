@@ -49,7 +49,7 @@ let run = async () => {
             setTimeout(() => {
               _commitments++;
               commits--;
-              if (commits <= 0 || commits % 10 == 0)
+              if (commits <= 0 || commits % 10 == 0) {
                 exec(`git push`, (e) => {
                   if (e) return console.error(`ERR: ${e}`);
                   console.log("Pushing");
@@ -59,6 +59,11 @@ let run = async () => {
                     console.log("Thankies");
                   }
                 });
+              } else {
+                if (commits > 0) {
+                  run();
+                }
+              }
             }, 50);
           });
         }, 50);
