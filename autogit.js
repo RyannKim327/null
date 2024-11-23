@@ -1,22 +1,36 @@
-import tweepy
+# Sorting an array of integers in Python
+arr = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]
+arr.sort()
+print(arr)
+// Sorting an array of integers in JavaScript
+let arr = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5];
+arr.sort((a, b) => a - b);
+console.log(arr);
+// Sorting an array of integers in Java
+import java.util.Arrays;
 
-# API credentials
-CONSUMER_KEY = 'your_consumer_key'
-CONSUMER_SECRET = 'your_consumer_secret'
-ACCESS_TOKEN = 'your_access_token'
-ACCESS_TOKEN_SECRET = 'your_access_token_secret'
+int[] arr = {3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5};
+Arrays.sort(arr);
+System.out.println(Arrays.toString(arr));
+// Sorting an array of integers in C++
+#include <algorithm>
+#include <iostream>
 
-def authenticate():
-    auth = tweepy.OAuth1Handler(CONSUMER_KEY, CONSUMER_SECRET)
-    auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
-    api = tweepy.API(auth)
-    return api
+int main() {
+    int arr[] = {3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    
+    std::sort(arr, arr + n);
+    
+    for (int i = 0; i < n; i++) {
+        std::cout << arr[i] << " ";
+    }
+    
+    return 0;
+}
+// Sorting an array of integers in C#
+using System;
 
-def fetch_tweets(query, count=10):
-    api = authenticate()
-    tweets = api.search_tweets(q=query, count=count)
-    for tweet in tweets:
-        print(tweet.text)
-
-if __name__ == '__main__':
-    fetch_tweets('python', 5)
+int[] arr = {3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5};
+Array.Sort(arr);
+Console.WriteLine(string.Join(" ", arr));
