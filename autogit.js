@@ -1,28 +1,12 @@
-s = "123"
-integer_value = int(s)
-print(integer_value)
-String s = "123";
-int intValue = Integer.parseInt(s);
-System.out.println(intValue);
-let s = "123";
-let intValue = parseInt(s);
-console.log(intValue);
-#include <iostream>
-#include <string>
-#include <cstdlib>
+def is_ascending(arr):
+    for i in range(len(arr) - 1):
+        if arr[i] > arr[i + 1]:
+            return False
+    return True
 
-int main() {
-    std::string s = "123";
-    int intValue = std::stoi(s);
-    std::cout << intValue << std::endl;
-    return 0;
-}
-using System;
+# Test the function
+array1 = [1, 2, 3, 4, 5]
+array2 = [5, 4, 3, 2, 1]
 
-class Program {
-    static void Main() {
-        string s = "123";
-        int intValue = int.Parse(s);
-        Console.WriteLine(intValue);
-    }
-}
+print(is_ascending(array1))  # Output: True
+print(is_ascending(array2))  # Output: False
