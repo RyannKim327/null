@@ -1,22 +1,13 @@
-def binary_search_recursive(arr, target, low, high):
-    if high < low:
-        return -1
+# Define an array of integers
+arr = [5, 2, 8, 1, 3]
 
-    mid = low + (high - low) // 2
+# Sort the array in ascending order
+arr.sort()
 
-    if arr[mid] == target:
-        return mid
-    elif arr[mid] < target:
-        return binary_search_recursive(arr, target, mid + 1, high)
-    else:
-        return binary_search_recursive(arr, target, low, mid - 1)
+# Print the sorted array
+print(arr)
+# Sort the array in descending order
+arr.sort(reverse=True)
 
-# Example usage
-arr = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
-target = 7
-result = binary_search_recursive(arr, target, 0, len(arr) - 1)
-
-if result != -1:
-    print(f"Element found at index {result}")
-else:
-    print("Element not found")
+# Print the sorted array in descending order
+print(arr)
