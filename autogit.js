@@ -1,39 +1,34 @@
-from collections import deque
+class Node:
+    def __init__(self, data=None):
+        self.data = data
+        self.next = None
 
-def breadth_limited_search(graph, start, goal, depth_limit):
-    queue = deque([(start, 0)])
-    
-    while queue:
-        node, depth = queue.popleft()
-        
-        if node == goal:
-            return True
-        
-        if depth < depth_limit:
-            neighbors = graph.get(node, [])
-            for neighbor in neighbors:
-                queue.append((neighbor, depth + 1))
-    
-    return False
+class LinkedList:
+    def __init__(self):
+        self.head = None
+
+    def append(self, data):
+        new_node = Node(data)
+        if self.head is None:
+            self.head = new_node
+            return
+        last = self.head
+        while last.next:
+            last = last.next
+        last.next = new_node
+
+    def length(self):
+        count = 0
+        current = self.head
+        while current:
+            count += 1
+            current = current.next
+        return count
 
 # Example usage
-graph = {
-    'A': ['B', 'C'],
-    'B': ['D', 'E'],
-    'C': ['F'],
-    'D': [],
-    'E': ['G'],
-    'F': ['H'],
-    'G': [],
-    'H': ['I'],
-    'I': []
-}
+linked_list = LinkedList()
+linked_list.append(1)
+linked_list.append(2)
+linked_list.append(3)
 
-start_node = 'A'
-goal_node = 'I'
-depth_limit = 3
-
-if breadth_limited_search(graph, start_node, goal_node, depth_limit):
-    print("Goal found within depth limit.")
-else:
-    print("Goal not found within depth limit.")
+print("Length of linked list:", linked_list.length())
