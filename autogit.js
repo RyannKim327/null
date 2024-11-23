@@ -1,41 +1,35 @@
-string = "Hello, World!"
-substring = "Hello"
+import heapq
 
-if substring in string:
-    print("Substring found!")
-string = "Hello, World!"
-substring = "Hello"
+def beam_search(initial_state, beam_width, max_steps):
+    beam = [(0, [initial_state])]
+    
+    for _ in range(max_steps):
+        new_beam = []
+        for score, sequence in beam:
+            if is_terminal(sequence):
+                continue
 
-if string.find(substring) != -1:
-    print("Substring found!")
-String string = "Hello, World!";
-String substring = "Hello";
+            next_states = generate_next_states(sequence)
+            for state, state_score in next_states:
+                new_seq = sequence + [state]
+                new_score = score + state_score
+                heapq.heappush(new_beam, (new_score, new_seq))
 
-if (string.contains(substring)) {
-    System.out.println("Substring found!");
-}
-let string = "Hello, World!";
-let substring = "Hello";
+        beam = heapq.nlargest(beam_width, new_beam)
 
-if (string.includes(substring)) {
-    console.log("Substring found!");
-}
-let string = "Hello, World!";
-let substring = "Hello";
+    return beam
 
-if (string.indexOf(substring) !== -1) {
-    console.log("Substring found!");
-}
-#include <iostream>
-#include <string>
+# Example helper functions
+def is_terminal(sequence):
+    return False
 
-int main() {
-    std::string str = "Hello, World!";
-    std::string substr = "Hello";
+def generate_next_states(sequence):
+    return [(1, 1), (2, 2)]
 
-    if (str.find(substr) != std::string::npos) {
-        std::cout << "Substring found!" << std::endl;
-    }
+initial_state = 0
+beam_width = 2
+max_steps = 3
 
-    return 0;
-}
+result = beam_search(initial_state, beam_width, max_steps)
+for score, sequence in result:
+    print(score, sequence)
