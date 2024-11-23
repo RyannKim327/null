@@ -1,68 +1,38 @@
-#include <iostream>
-#include <vector>
+import random
 
-using namespace std;
+def partition(arr, low, high):
+    pivot = arr[high]
+    i = low
+    for j in range(low, high):
+        if arr[j] <= pivot:
+            arr[i], arr[j] = arr[j], arr[i]
+            i += 1
+    arr[i], arr[high] = arr[high], arr[i]
+    return i
 
-void merge(vector<int>& arr, int l, int m, int r) {
-    int n1 = m - l + 1;
-    int n2 = r - m;
+def quickselect(arr, k, low, high):
+    if low == high:
+        return arr[low]
 
-    vector<int> L(n1);
-    vector<int> R(n2);
+    pivot_index = random.randint(low, high)
+    arr[high], arr[pivot_index] = arr[pivot_index], arr[high]
 
-    for (int i = 0; i < n1; i++) {
-        L[i] = arr[l + i];
-    }
-    for (int j = 0; j < n2; j++) {
-        R[j] = arr[m + 1 + j];
-    }
+    pivot_index = partition(arr, low, high)
 
-    int i = 0, j = 0, k = l;
-    while (i < n1 && j < n2) {
-        if (L[i] <= R[j]) {
-            arr[k] = L[i];
-            i++;
-        } else {
-            arr[k] = R[j];
-            j++;
-        }
-        k++;
-    }
+    if k < pivot_index:
+        return quickselect(arr, k, low, pivot_index - 1)
+    elif k > pivot_index:
+        return quickselect(arr, k, pivot_index + 1, high)
+    else:
+        return arr[k]
 
-    while (i < n1) {
-        arr[k] = L[i];
-        i++;
-        k++;
-    }
+def find_kth_smallest(arr, k):
+    if k < 1 or k > len(arr):
+        return None
+    return quickselect(arr, k - 1, 0, len(arr) - 1)
 
-    while (j < n2) {
-        arr[k] = R[j];
-        j++;
-        k++;
-    }
-}
-
-void mergeSort(vector<int>& arr) {
-    int n = arr.size();
-    for (int curr_size = 1; curr_size <= n - 1; curr_size = 2 * curr_size) {
-        for (int left_start = 0; left_start < n - 1; left_start += 2 * curr_size) {
-            int mid = min(left_start + curr_size - 1, n - 1);
-            int right_end = min(left_start + 2 * curr_size - 1, n - 1);
-            merge(arr, left_start, mid, right_end);
-        }
-    }
-}
-
-int main() {
-    vector<int> arr = {12, 11, 13, 5, 6, 7};
-
-    mergeSort(arr);
-
-    cout << "Sorted array: ";
-    for (int num : arr) {
-        cout << num << " ";
-    }
-    cout << endl;
-
-    return 0;
-}
+# Example usage
+arr = [3, 1, 4, 1, 5, 9, 2, 6]
+k = 3
+result = find_kth_smallest(arr, k)
+print(f"The {k}th smallest element is: {result}")
