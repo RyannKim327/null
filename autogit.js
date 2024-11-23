@@ -1,21 +1,23 @@
-def counting_sort(arr):
-    max_num = max(arr)
-    count = [0] * (max_num + 1)
-    output = [0] * len(arr)
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
 
-    for num in arr:
-        count[num] += 1
+def count_leaf_nodes(node):
+    if node is None:
+        return 0
+    if node.left is None and node.right is None:
+        return 1
+    return count_leaf_nodes(node.left) + count_leaf_nodes(node.right)
 
-    for i in range(1, len(count)):
-        count[i] += count[i - 1]
+# Example binary tree
+root = Node(1)
+root.left = Node(2)
+root.right = Node(3)
+root.left.left = Node(4)
+root.left.right = Node(5)
+root.right.left = Node(6)
+root.right.right = Node(7)
 
-    for num in arr:
-        output[count[num] - 1] = num
-        count[num] -= 1
-
-    return output
-
-# Example usage
-arr = [4, 2, 2, 8, 3, 3, 1]
-sorted_arr = counting_sort(arr)
-print(sorted_arr)
+print("Number of leaf nodes:", count_leaf_nodes(root))
