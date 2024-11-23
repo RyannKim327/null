@@ -1,9 +1,15 @@
-// Check if a string contains a specific substring
-String str = "Hello, World!";
-String substring = "Hello";
+import requests
 
-if(str.contains(substring)) {
-    System.out.println("The string contains the substring");
-} else {
-    System.out.println("The string does not contain the substring");
-}
+# Define the API endpoint URL
+url = 'https://api.example.com/data'
+
+# Make a GET request to the API endpoint
+response = requests.get(url)
+
+# Check if the request was successful
+if response.status_code == 200:
+    # Extract and print the JSON data from the response
+    data = response.json()
+    print(data)
+else:
+    print('Error: Failed to retrieve data from the API')
