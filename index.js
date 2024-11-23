@@ -2,8 +2,8 @@ const fs = require("fs");
 const { exec } = require("child_process");
 const date = require("./date");
 const axios = require("axios");
-let commits = Math.floor(Math.random() * 10) + 1;
-// commits += 50
+let commits = Math.floor(Math.random() * 100) + 1;
+commits += commits;
 let _commitments = 1;
 console.log(`You send git ${commits} commits`);
 
@@ -34,11 +34,7 @@ let run = async () => {
     }
     const msg = mm2[Math.floor(Math.random() * mm2.length)];
 
-    fs.writeFileSync(
-      "Auto git.txt",
-      msg,
-      "utf-8",
-    );
+    fs.writeFileSync("Auto git.txt", msg, "utf-8");
     fs.writeFileSync("autogit.js", result, "utf-8");
     setTimeout(() => {
       console.log(`-----${_commitments}-----`);
