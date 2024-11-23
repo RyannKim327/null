@@ -1,23 +1,103 @@
-def binary_search_recursive(arr, target, low, high):
-    if low > high:
-        return -1
-    
-    mid = (low + high) // 2
+class Node:
+    def __init__(self, key, color='Red'):
+        self.key = key
+        self.left = None
+        self.right = None
+        self.parent = None
+        self.color = color
 
-    if arr[mid] == target:
-        return mid
-    elif arr[mid] > target:
-        return binary_search_recursive(arr, target, low, mid - 1)
-    else:
-        return binary_search_recursive(arr, target, mid + 1, high)
+class RedBlackTree:
+    def __init__(self):
+        self.NULL_LEAF = Node(None, color='Black')
+        self.NULL_LEAF.left = None
+        self.NULL_LEAF.right = None
+        self.root = self.NULL_LEAF
 
-# Example Usage
-arr = [1, 3, 5, 7, 9, 11, 13, 15]
-target = 7
+    def insert(self, key):
+        new_node = Node(key)
+        new_node.left = self.NULL_LEAF
+        new_node.right = self.NULL_LEAF
 
-result = binary_search_recursive(arr, target, 0, len(arr) - 1)
+        parent = None
+        current = self.root
+        while current != self.NULL_LEAF:
+            parent = current
+            if new_node.key < current.key:
+                current = current.left
+            else:
+                current = current.right
 
-if result != -1:
-    print(f"Element found at index {result}")
-else:
-    print("Element not found")
+        new_node.parent = parent
+
+        if parent is None:
+            self.root = new_node
+        elif new_node.key < parent.key:
+            parent.left = new_node
+        else:
+            parent.right = new_node
+
+        new_node.color = 'Red'
+        self.fix_violation(new_node)
+
+    def fix_violation(self, node):
+        while node != self.root and node.parent.color == 'Red':
+            if node.parent == node.parent.parent.left:
+                uncle = node.parent.parent.right
+                if uncle.color == 'Red':
+                    node.parent.color = 'Black'
+                    uncle.color = 'Black'
+                    node.parent.parent.color = 'Red'
+                    node = node.parent.parent
+                else:
+                    if node == node.parent.right:
+                        node = node.parent
+                        self.left_rotate(node)
+                    node.parent.color = 'Black'
+                    node.parent.parent.color = 'Red'
+                    self.right_rotate(node.parent.parent)
+            else:
+                uncle = node.parent.parent.left
+                if uncle.color == 'Red':
+                    node.parent.color = 'Black'
+                    uncle.color = 'Black'
+                    node.parent.parent.color = 'Red'
+                    node = node.parent.parent
+                else:
+                    if node == node.parent.left:
+                        node = node.parent
+                        self.right_rotate(node)
+                    node.parent.color = 'Black'
+                    node.parent.parent.color = 'Red'
+                    self.left_rotate(node.parent.parent)
+        self.root.color = 'Black'
+
+    def left_rotate(self, x):
+        y = x.right
+        x.right = y.left
+        if y.left != self.NULL_LEAF:
+            y.left.parent = x
+        y.parent = x.parent
+        if x.parent is None:
+            self.root = y
+        elif x == x.parent.left:
+            x.parent.left = y
+        else:
+            x.parent.right = y
+        y.left = x
+        x.parent = y
+
+    def right_rotate(self, x):
+        y = x.left
+        x.left = y.right
+        if y.right != self.NULL_LEAF:
+            y.right.parent = x
+        y.parent = x.parent
+        if x.parent is None:
+            self.root = y
+        elif x == x.parent.right:
+            x.parent.right = y
+        else:
+            x.parent.left = y
+        y.right = x
+        x.parent = y
+
