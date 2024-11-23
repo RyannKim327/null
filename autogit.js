@@ -1,29 +1,35 @@
-def boyer_moore_horspool(text, pattern):
-    m = len(pattern)
-    n = len(text)
-    if m == 0:
-        return -1
+import android.os.AsyncTask
+import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.URL
 
-    skip = [m] * 256
-    for i in range(m - 1):
-        skip[ord(pattern[i])] = m - i - 1
+class ConnectAsyncTask : AsyncTask<String, Void, String>() {
 
-    j = 0
-    while j <= n - m:
-        i = m - 1
-        while i >= 0 and pattern[i] == text[i + j]:
-            i -= 1
-        if i == -1:
-            return j
-        j += skip[ord(text[j + m - 1])]
+    override fun doInBackground(vararg urls: String): String {
+        val urlString = urls[0]
+        val url = URL(urlString)
+        
+        return try {
+            val urlConnection = url.openConnection() as HttpURLConnection
+            urlConnection.requestMethod = "GET"
+            urlConnection.connect()
+            
+            if (urlConnection.responseCode != HttpURLConnection.HTTP_OK) {
+                throw IOException("HTTP error code: ${urlConnection.responseCode}")
+            }
+            
+            val inputStream = urlConnection.inputStream
+            val response = inputStream.bufferedReader().use { it.readText() }
+            
+            inputStream.close()
+            response
+        } catch (e: IOException) {
+            e.printStackTrace()
+            "Error: ${e.message}"
+        }
+    }
 
-    return -1
-
-# Test the implementation
-text = "exampletextforexample"
-pattern = "example"
-result = boyer_moore_horspool(text, pattern)
-if result != -1:
-    print("Pattern found at index:", result)
-else:
-    print("Pattern not found")
+    override fun onPostExecute(result: String) {
+        // Handle the result here
+    }
+}
