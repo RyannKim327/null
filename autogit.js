@@ -1,23 +1,18 @@
-from collections import defaultdict
+# Define an array of integers
+arr = [5, 2, 8, 1, 3]
 
-def first_non_repeating_char(input_string):
-    char_count = defaultdict(int)
-    
-    # Count the frequency of each character
-    for char in input_string:
-        char_count[char] += 1
-    
-    # Find the first non-repeating character
-    for char in input_string:
-        if char_count[char] == 1:
-            return char
-    
-    return None
+# Sort the array in ascending order
+sorted_arr = sorted(arr)
 
-# Test the function
-input_string = "hello world"
-result = first_non_repeating_char(input_string)
-if result:
-    print(f"The first non-repeating character is: {result}")
-else:
-    print("No non-repeating character found.")
+# Print the sorted array
+print(sorted_arr)
+# Sort the array in descending order
+sorted_arr_desc = sorted(arr, reverse=True)
+
+# Print the array sorted in descending order
+print(sorted_arr_desc)
+# Sort the array in-place in ascending order
+arr.sort()
+
+# Print the array sorted in ascending order
+print(arr)
