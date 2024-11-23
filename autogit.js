@@ -1,36 +1,31 @@
-def bidirectional_search(start, goal):
-    forward_queue = [start]
-    backward_queue = [goal]
-    forward_visited = {start}
-    backward_visited = {goal}
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.left = None
+        self.right = None
 
-    while forward_queue and backward_queue:
-        current_node = forward_queue.pop(0)
-        if current_node in backward_visited:
-            return "Path found"
+def height(node):
+    if node is None:
+        return 0
+    return 1 + max(height(node.left), height(node.right))
 
-        for neighbor in get_neighbors(current_node):
-            if neighbor not in forward_visited:
-                forward_visited.add(neighbor)
-                forward_queue.append(neighbor)
+def diameter(node):
+    if node is None:
+        return 0
+    
+    left_height = height(node.left)
+    right_height = height(node.right)
+    
+    left_diameter = diameter(node.left)
+    right_diameter = diameter(node.right)
+    
+    return max(left_height + right_height + 1, max(left_diameter, right_diameter))
 
-        current_node = backward_queue.pop(0)
-        if current_node in forward_visited:
-            return "Path found"
+# Sample binary tree creation
+root = Node(1)
+root.left = Node(2)
+root.right = Node(3)
+root.left.left = Node(4)
+root.left.right = Node(5)
 
-        for neighbor in get_neighbors(current_node):
-            if neighbor not in backward_visited:
-                backward_visited.add(neighbor)
-                backward_queue.append(neighbor)
-
-    return "No path found"
-
-def get_neighbors(node):
-    # Implement this function to get the neighbors of a given node
-    pass
-
-# Example usage
-start = "A"
-goal = "Z"
-result = bidirectional_search(start, goal)
-print(result)
+print("The diameter of the binary tree is:", diameter(root))
