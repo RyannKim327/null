@@ -1,18 +1,33 @@
-def counting_sort(arr):
-    max_val = max(arr)
-    min_val = min(arr)
-    count_arr = [0] * (max_val - min_val + 1)
+class Node:
+    def __init__(self, key):
+        self.left = None
+        self.right = None
+        self.val = key
 
-    for num in arr:
-        count_arr[num - min_val] += 1
+def insert(root, key):
+    if root is None:
+        return Node(key)
+    else:
+        if root.val < key:
+            root.right = insert(root.right, key)
+        else:
+            root.left = insert(root.left, key)
+    return root
 
-    sorted_arr = []
-    for i in range(len(count_arr)):
-        sorted_arr.extend([i + min_val] * count_arr[i])
+def inorder_traversal(node):
+    if node:
+        inorder_traversal(node.left)
+        print(node.val)
+        inorder_traversal(node.right)
 
-    return sorted_arr
+# Example Usage
+root = None
+root = insert(root, 50)
+insert(root, 30)
+insert(root, 20)
+insert(root, 40)
+insert(root, 70)
+insert(root, 60)
+insert(root, 80)
 
-# Example usage
-arr = [4, 2, 2, 8, 3, 3, 1]
-sorted_arr = counting_sort(arr)
-print(sorted_arr)
+inorder_traversal(root)
