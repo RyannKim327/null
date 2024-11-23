@@ -1,10 +1,9 @@
-def reverse_words_in_string(input_string):
-    words = input_string.split()
-    reversed_words = words[::-1]
-    reversed_string = ' '.join(reversed_words)
-    return reversed_string
+// Check if a string contains a specific substring in JavaScript
+const str = "Hello, World!";
+const subStr = "Hello";
 
-# Example usage
-input_string = "Hello, world! This is a test."
-reversed_string = reverse_words_in_string(input_string)
-print(reversed_string)
+if (str.includes(subStr)) {
+    console.log("Substring found!");
+} else {
+    console.log("Substring not found!");
+}
