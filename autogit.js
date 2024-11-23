@@ -1,22 +1,33 @@
-# Define the string
-my_string = "Hello, world! Hello, Python! Hello, programming!"
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
 
-# Define the word to count
-word_to_count = "Hello"
+class LinkedList:
+    def __init__(self):
+        self.head = None
 
-# Count the number of occurrences of the word in the string
-count = my_string.count(word_to_count)
+    def append(self, data):
+        new_node = Node(data)
+        if self.head is None:
+            self.head = new_node
+            return
+        last_node = self.head
+        while last_node.next:
+            last_node = last_node.next
+        last_node.next = new_node
 
-print("Number of occurrences of '", word_to_count, "':", count)
-import re
+    def get_length(self):
+        current = self.head
+        length = 0
+        while current:
+            length += 1
+            current = current.next
+        return length
 
-# Define the string
-my_string = "Hello, world! Hello, Python! Hello, programming!"
-
-# Define the word to count
-word_to_count = "Hello"
-
-# Count the number of occurrences of the word in the string using regular expressions
-count = len(re.findall(r'\b%s\b' % word_to_count, my_string))
-
-print("Number of occurrences of '", word_to_count, "':", count)
+# Example Usage
+llist = LinkedList()
+llist.append(1)
+llist.append(2)
+llist.append(3)
+print("Length of the linked list:", llist.get_length())
