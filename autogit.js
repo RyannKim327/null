@@ -1,29 +1,14 @@
-class Node:
-    def __init__(self, key):
-        self.left = None
-        self.right = None
-        self.val = key
+def selection_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        min_idx = i
+        for j in range(i+1, n):
+            if arr[j] < arr[min_idx]:
+                min_idx = j
+        arr[i], arr[min_idx] = arr[min_idx], arr[i]
+    return arr
 
-def insert(root, key):
-    if root is None:
-        return Node(key)
-    else:
-        if root.val < key:
-            root.right = insert(root.right, key)
-        else:
-            root.left = insert(root.left, key)
-    return root
-
-def inorder_traversal(root):
-    if root:
-        inorder_traversal(root.left)
-        print(root.val)
-        inorder_traversal(root.right)
-
-# Example usage:
-root = None
-keys = [8, 3, 10, 1, 6, 14, 4, 7, 13]
-for key in keys:
-    root = insert(root, key)
-
-inorder_traversal(root)
+# Example Usage
+arr = [64, 25, 12, 22, 11]
+sorted_arr = selection_sort(arr)
+print("Sorted array is:", sorted_arr)
