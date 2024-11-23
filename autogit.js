@@ -1,18 +1,25 @@
-def find_first_repeated_char(input_str):
-    chars_seen = set()
-    
-    for char in input_str:
-        if char in chars_seen:
-            return char
+def interpolation_search(arr, x):
+    low = 0
+    high = len(arr) - 1
+
+    while low <= high and x >= arr[low] and x <= arr[high]:
+        pos = low + (high - low) * (x - arr[low]) // (arr[high] - arr[low])
+
+        if arr[pos] == x:
+            return pos
+        elif arr[pos] < x:
+            low = pos + 1
         else:
-            chars_seen.add(char)
-    
-    return None
+            high = pos - 1
 
-input_str = "abcdefgah"
-result = find_first_repeated_char(input_str)
+    return -1
 
-if result:
-    print("First repeated character in the string is:", result)
+# Test the interpolation search algorithm
+arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+x = 10
+result = interpolation_search(arr, x)
+
+if result != -1:
+    print(f"Element found at index {result}")
 else:
-    print("No repeated characters found in the string.")
+    print("Element not found")
