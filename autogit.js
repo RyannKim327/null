@@ -1,24 +1,50 @@
-from collections import deque
+def boyer_moore(text, pattern):
+    def bad_character_table(pattern):
+        table = {}
+        for i in range(len(pattern) - 1):
+            table[pattern[i]] = len(pattern) - 1 - i
+        return table
 
-def breadth_first_search(graph, start_node):
-    visited = set()
-    queue = deque([start_node])
-    
-    while queue:
-        node = queue.popleft()
-        if node not in visited:
-            print(node)  # Visit the node
-            visited.add(node)
-            queue.extend([neighbor for neighbor in graph[node] if neighbor not in visited])
+    def good_suffix_table(pattern):
+        table = [0] * (len(pattern) + 1)
+        i = len(pattern)
+        j = len(pattern) + 1
+        table[i] = j
 
-# Example graph represented as adjacency list
-graph = {
-    'A': ['B', 'C'],
-    'B': ['D', 'E'],
-    'C': ['F'],
-    'D': [],
-    'E': ['F'],
-    'F': []
-}
+        while i > 0:
+            while j <= len(pattern) and pattern[i - 1] != pattern[j - 1]:
+                if table[j] == 0:
+                    table[j] = j - i
+                j = table[j]
 
-breadth_first_search(graph, 'A')
+            i -= 1
+            j -= 1
+            table[i] = j
+
+        return table
+
+    bad_char = bad_character_table(pattern)
+    good_suffix = good_suffix_table(pattern)
+    i = 0
+
+    while i <= len(text) - len(pattern):
+        j = len(pattern) - 1
+
+        while j >= 0 and pattern[j] == text[i + j]:
+            j -= 1
+
+        if j < 0:
+            print("Pattern found at index", i)
+            i += good_suffix[0]
+        else:
+            if text[i + j] in bad_char:
+                i += max(good_suffix[j+1], j - bad_char[text[i + j]])
+            else:
+                i += good_suffix[j]
+
+    return -1
+
+# Usage
+text = "ABAAABCD"
+pattern = "ABC"
+boyer_moore(text, pattern)
