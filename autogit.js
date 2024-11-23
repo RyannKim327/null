@@ -1,13 +1,9 @@
-def count_character_occurrences(string, char):
-    count = 0
-    for c in string:
-        if c == char:
-            count += 1
-    return count
-
-# Test the function
-test_string = "hello, world!"
-char_to_count = "o"
-occurrences = count_character_occurrences(test_string, char_to_count)
-
-print(f"The character '{char_to_count}' appears {occurrences} times in the string.")
+string_with_whitespace = "  Hello,  World!  "
+string_without_whitespace = string_with_whitespace.replace(" ", "")
+print(string_without_whitespace)
+Hello,World!
+import re
+string_with_whitespace = "  Hello,  World!  "
+string_without_whitespace = re.sub(r'\s+', '', string_with_whitespace)
+print(string_without_whitespace)
+Hello,World!
