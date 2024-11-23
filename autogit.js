@@ -1,10 +1,18 @@
-# Replace whitespace characters with an empty string
-my_string = "  Hello,  World!  "
-new_string = my_string.replace(" ", "")
-print(new_string)
-import re
+// Define the node structure for the linked list
+struct Node {
+    int data;
+    struct Node* next;
+};
 
-# Using regular expression to remove whitespace
-my_string = "  Hello,  World!  "
-new_string = re.sub(r'\s+', '', my_string)
-print(new_string)
+// Function to find the length of a linked list
+int findListLength(struct Node* head) {
+    int length = 0;
+    struct Node* current = head;
+
+    while (current != NULL) {
+        length++;
+        current = current->next;
+    }
+
+    return length;
+}
