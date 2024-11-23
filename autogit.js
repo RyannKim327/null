@@ -1,12 +1,10 @@
-def is_ascending(arr):
-    for i in range(len(arr) - 1):
-        if arr[i] > arr[i + 1]:
-            return False
-    return True
+array = [3, 7, 2, 8, 1]
+max_value = max(array)
+print("Maximum value in the array:", max_value)
+Maximum value in the array: 8
+import numpy as np
 
-# Test the function
-array1 = [1, 2, 3, 4, 5]
-array2 = [5, 4, 3, 2, 1]
-
-print(is_ascending(array1))  # Output: True
-print(is_ascending(array2))  # Output: False
+array = np.array([3, 7, 2, 8, 1])
+max_value = np.max(array)
+print("Maximum value in the array:", max_value)
+Maximum value in the array: 8
