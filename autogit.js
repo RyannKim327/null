@@ -1,13 +1,21 @@
-def is_prime(number):
-    if number <= 1:
-        return False
-    for i in range(2, int(number**0.5) + 1):
-        if number % i == 0:
-            return False
-    return True
+def counting_sort(arr):
+    max_val = max(arr)
+    count = [0] * (max_val + 1)
+    output = [0] * len(arr)
+    
+    for num in arr:
+        count[num] += 1
+    
+    for i in range(1, len(count)):
+        count[i] += count[i - 1]
+    
+    for num in reversed(arr):
+        output[count[num] - 1] = num
+        count[num] -= 1
+    
+    return output
 
-number = 17
-if is_prime(number):
-    print(f"{number} is a prime number")
-else:
-    print(f"{number} is not a prime number")
+# Example usage
+arr = [4, 2, 2, 8, 3, 3, 1]
+sorted_arr = counting_sort(arr)
+print(sorted_arr)
