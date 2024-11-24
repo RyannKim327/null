@@ -1,44 +1,34 @@
-import heapq
+# Node class to represent each element in the linked list
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
 
-def heuristic(node, goal):
-    # Calculate the heuristic value using Euclidean distance
-    return ((node[0] - goal[0])**2 + (node[1] - goal[1])**2)**0.5
+# Linked list class to manage the nodes and provide operations
+class LinkedList:
+    def __init__(self):
+        self.head = None
 
-def astar_search(graph, start, goal):
-    open_set = []
-    closed_set = set()
-    heapq.heappush(open_set, (0, start, []))  # (f_cost, node, path)
+    def append(self, data):
+        new_node = Node(data)
+        if self.head is None:
+            self.head = new_node
+            return
+        last_node = self.head
+        while last_node.next:
+            last_node = last_node.next
+        last_node.next = new_node
 
-    while open_set:
-        f_cost, current_node, path = heapq.heappop(open_set)
+    def print_list(self):
+        current_node = self.head
+        while current_node:
+            print(current_node.data, end=' ')
+            current_node = current_node.next
+        print()
 
-        if current_node == goal:
-            return path + [current_node]
-
-        if current_node in closed_set:
-            continue
-
-        closed_set.add(current_node)
-
-        for neighbor, cost in graph[current_node].items():
-            new_path = path + [current_node]
-            g_cost = f_cost - heuristic(current_node, goal) + cost
-            h_cost = heuristic(neighbor, goal)
-            f_cost = g_cost + h_cost
-            heapq.heappush(open_set, (f_cost, neighbor, new_path))
-
-    return None
-
-# Example usage
-graph = {
-    'A': {'B': 1, 'C': 4},
-    'B': {'A': 1, 'D': 2},
-    'C': {'A': 4, 'D': 5},
-    'D': {'B': 2, 'C': 5}
-}
-
-start = 'A'
-goal = 'D'
-
-path = astar_search(graph, start, goal)
-print("Shortest path:", path)
+# Usage example
+llist = LinkedList()
+llist.append(1)
+llist.append(2)
+llist.append(3)
+llist.print_list()
