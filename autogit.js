@@ -1,27 +1,39 @@
-def findMedianSortedArrays(nums1, nums2):
-    merged_array = []
-    i, j = 0, 0
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end_of_word = False
 
-    while i < len(nums1) and j < len(nums2):
-        if nums1[i] < nums2[j]:
-            merged_array.append(nums1[i])
-            i += 1
-        else:
-            merged_array.append(nums2[j])
-            j += 1
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
 
-    merged_array += nums1[i:]
-    merged_array += nums2[j:]
+    def insert(self, word):
+        current = self.root
+        for char in word:
+            if char not in current.children:
+                current.children[char] = TrieNode()
+            current = current.children[char]
+        current.is_end_of_word = True
 
-    total_length = len(merged_array)
-    if total_length % 2 == 0:
-        mid = total_length // 2
-        return (merged_array[mid - 1] + merged_array[mid]) / 2
-    else:
-        return merged_array[total_length // 2]
+    def search(self, word):
+        current = self.root
+        for char in word:
+            if char not in current.children:
+                return False
+            current = current.children[char]
+        return current.is_end_of_word
+
+    def starts_with(self, prefix):
+        current = self.root
+        for char in prefix:
+            if char not in current.children:
+                return False
+            current = current.children[char]
+        return True
 
 # Example usage
-nums1 = [1, 3]
-nums2 = [2]
-result = findMedianSortedArrays(nums1, nums2)
-print(result)
+trie = Trie()
+trie.insert("apple")
+print(trie.search("apple"))  # Output: True
+print(trie.search("app"))    # Output: False
+print(trie.starts_with("app"))  # Output: True
