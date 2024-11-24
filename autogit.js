@@ -1,62 +1,44 @@
-def bad_character_table(pattern):
-    table = {}
-    for i in range(len(pattern)-1):
-        table[pattern[i]] = len(pattern) - 1 - i
-    return table
+import heapq
 
-def good_suffix_table(pattern):
-    table = [0] * (len(pattern) + 1)
-    last_prefix_position = len(pattern)
-    
-    for i in reversed(range(len(pattern) + 1)):
-        if is_prefix(pattern, i):
-            last_prefix_position = i
-        table[len(pattern) - i] = last_prefix_position - i + len(pattern)
-    
-    for i in range(len(pattern) - 1):
-        suffix_len = longest_suffix_length(pattern, i)
-        table[suffix_len] = len(pattern) - 1 - i + suffix_len
-        
-    return table
+def heuristic(node, goal):
+    # Calculate the heuristic value using Euclidean distance
+    return ((node[0] - goal[0])**2 + (node[1] - goal[1])**2)**0.5
 
-def is_prefix(pattern, i):
-    j = 0
-    while i < len(pattern):
-        if pattern[i] != pattern[j]:
-            return False
-        i += 1
-        j += 1
-    return True
+def astar_search(graph, start, goal):
+    open_set = []
+    closed_set = set()
+    heapq.heappush(open_set, (0, start, []))  # (f_cost, node, path)
 
-def longest_suffix_length(pattern, i):
-    length = 0
-    j = i
-    k = len(pattern) - 1
-    while j >= 0 and pattern[j] == pattern[k]:
-        length += 1
-        j -= 1
-        k -= 1
-    return length
+    while open_set:
+        f_cost, current_node, path = heapq.heappop(open_set)
 
-def boyer_moore_search(text, pattern):
-    bad_char = bad_character_table(pattern)
-    good_suffix = good_suffix_table(pattern)
-    n = len(text)
-    m = len(pattern)
-    i = 0
-    
-    while i <= n - m:
-        j = m - 1
-        while j >= 0 and pattern[j] == text[i + j]:
-            j -= 1
-        if j < 0:
-            print("Pattern occurs at index", i)
-            i += good_suffix[0]
-        else:
-            shift = max(good_suffix[j + 1], j - bad_char.get(text[i + j], -1))
-            i += shift
+        if current_node == goal:
+            return path + [current_node]
 
-# Test the algorithm
-text = "ABAAABCD"
-pattern = "ABC"
-boyer_moore_search(text, pattern)
+        if current_node in closed_set:
+            continue
+
+        closed_set.add(current_node)
+
+        for neighbor, cost in graph[current_node].items():
+            new_path = path + [current_node]
+            g_cost = f_cost - heuristic(current_node, goal) + cost
+            h_cost = heuristic(neighbor, goal)
+            f_cost = g_cost + h_cost
+            heapq.heappush(open_set, (f_cost, neighbor, new_path))
+
+    return None
+
+# Example usage
+graph = {
+    'A': {'B': 1, 'C': 4},
+    'B': {'A': 1, 'D': 2},
+    'C': {'A': 4, 'D': 5},
+    'D': {'B': 2, 'C': 5}
+}
+
+start = 'A'
+goal = 'D'
+
+path = astar_search(graph, start, goal)
+print("Shortest path:", path)
