@@ -1,60 +1,32 @@
-#include <iostream>
-#include <stack>
+class Node:
+    def __init__(self, key):
+        self.left = None
+        self.right = None
+        self.val = key
 
-using namespace std;
+def insert(root, key):
+    if root is None:
+        return Node(key)
+    else:
+        if root.val < key:
+            root.right = insert(root.right, key)
+        else:
+            root.left = insert(root.left, key)
+    return root
 
-struct Node {
-    int data;
-    Node* next;
-    
-    Node(int value) : data(value), next(nullptr) {}
-};
+def inorder_traversal(root):
+    if root:
+        inorder_traversal(root.left)
+        print(root.val)
+        inorder_traversal(root.right)
 
-bool isPalindrome(Node* head) {
-    if (head == nullptr || head->next == nullptr) {
-        // An empty list or a list with one node is considered a palindrome
-        return true;
-    }
+# Usage
+root = Node(5)
+insert(root, 3)
+insert(root, 8)
+insert(root, 2)
+insert(root, 4)
+insert(root, 6)
+insert(root, 9)
 
-    Node* slow = head;
-    Node* fast = head;
-    stack<int> firstHalf;
-
-    while (fast != nullptr && fast->next != nullptr) {
-        firstHalf.push(slow->data);
-        slow = slow->next;
-        fast = fast->next->next;
-    }
-
-    // Handle odd number of nodes
-    if (fast != nullptr) {
-        slow = slow->next;
-    }
-
-    while (slow != nullptr) {
-        if (slow->data != firstHalf.top()) {
-            return false;
-        }
-        firstHalf.pop();
-        slow = slow->next;
-    }
-
-    return true;
-}
-
-int main() {
-    // Create a linked list: 1->2->3->2->1
-    Node* head = new Node(1);
-    head->next = new Node(2);
-    head->next->next = new Node(3);
-    head->next->next->next = new Node(2);
-    head->next->next->next->next = new Node(1);
-
-    if (isPalindrome(head)) {
-        cout << "Linked list is a palindrome." << endl;
-    } else {
-        cout << "Linked list is not a palindrome." << endl;
-    }
-
-    return 0;
-}
+inorder_traversal(root)
