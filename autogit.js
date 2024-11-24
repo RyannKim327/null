@@ -1,24 +1,50 @@
-def counting_sort(arr):
-    max_val = max(arr)
-    count = [0] * (max_val + 1)
-    output = [0] * len(arr)
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
 
-    for i in arr:
-        count[i] += 1
+class LinkedList:
+    def __init__(self):
+        self.head = None
+    
+    def append(self, data):
+        new_node = Node(data)
+        if self.head is None:
+            self.head = new_node
+            return
+        last = self.head
+        while last.next:
+            last = last.next
+        last.next = new_node
+    
+    def find_nth_from_end(self, n):
+        first = self.head
+        second = self.head
+        for _ in range(n):
+            if first is None:
+                return None
+            first = first.next
+        
+        while first:
+            first = first.next
+            second = second.next
+        
+        if second:
+            return second.data
+        else:
+            return None
 
-    for i in range(1, len(count)):
-        count[i] += count[i - 1]
+# Example usage
+llist = LinkedList()
+llist.append(1)
+llist.append(2)
+llist.append(3)
+llist.append(4)
+llist.append(5)
 
-    for i in range(len(arr) - 1, -1, -1):
-        output[count[arr[i]] - 1] = arr[i]
-        count[arr[i]] -= 1
-
-    for i in range(len(arr)):
-        arr[i] = output[i]
-
-    return arr
-
-# Test the counting sort algorithm
-arr = [4, 2, 2, 8, 3, 3, 1]
-sorted_arr = counting_sort(arr)
-print("Sorted array is:", sorted_arr)
+n = 2
+result = llist.find_nth_from_end(n)
+if result:
+    print(f"The {n}th node from the end of the linked list is: {result}")
+else:
+    print("The linked list is too short.")
