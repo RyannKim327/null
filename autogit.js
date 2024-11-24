@@ -1,21 +1,11 @@
-import heapq
+def is_palindrome(s):
+    s = s.lower()  # Convert the string to lowercase
+    s = ''.join(e for e in s if e.isalnum())  # Remove non-alphanumeric characters
+    return s == s[::-1]
 
-def dijkstra(graph, start):
-    distances = {node: float('infinity') for node in graph}
-    distances[start] = 0
-    pq = [(0, start)]
-    
-    while pq:
-        current_dist, current_node = heapq.heappop(pq)
-
-        if current_dist > distances[current_node]:
-            continue
-
-        for neighbor, weight in graph[current_node].items():
-            distance = current_dist + weight
-
-            if distance < distances[neighbor]:
-                distances[neighbor] = distance
-                heapq.heappush(pq, (distance, neighbor))
-
-    return distances
+# Test the function
+input_string = "A man, a plan, a canal: Panama"
+if is_palindrome(input_string):
+    print("Palindrome")
+else:
+    print("Not a palindrome")
