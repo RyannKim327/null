@@ -1,50 +1,57 @@
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.next = None
+from collections import defaultdict
 
-class LinkedList:
-    def __init__(self):
-        self.head = None
-    
-    def append(self, data):
-        new_node = Node(data)
-        if self.head is None:
-            self.head = new_node
-            return
-        last = self.head
-        while last.next:
-            last = last.next
-        last.next = new_node
-    
-    def find_nth_from_end(self, n):
-        first = self.head
-        second = self.head
-        for _ in range(n):
-            if first is None:
-                return None
-            first = first.next
-        
-        while first:
-            first = first.next
-            second = second.next
-        
-        if second:
-            return second.data
-        else:
-            return None
+def tarjan_strongly_connected_components(graph):
+    index_counter = [0]
+    stack = []
+    low_links = {}
+    index = {}
+    result = []
 
-# Example usage
-llist = LinkedList()
-llist.append(1)
-llist.append(2)
-llist.append(3)
-llist.append(4)
-llist.append(5)
+    def strongconnect(node):
+        index[node] = index_counter[0]
+        low_links[node] = index_counter[0]
+        index_counter[0] += 1
+        stack.append(node)
 
-n = 2
-result = llist.find_nth_from_end(n)
-if result:
-    print(f"The {n}th node from the end of the linked list is: {result}")
-else:
-    print("The linked list is too short.")
+        for neighbor in graph[node]:
+            if neighbor not in index:
+                strongconnect(neighbor)
+                low_links[node] = min(low_links[node], low_links[neighbor])
+            elif neighbor in stack:
+                low_links[node] = min(low_links[node], index[neighbor])
+
+        if low_links[node] == index[node]:
+            connected_component = []
+            while True:
+                successor = stack.pop()
+                connected_component.append(successor)
+                if successor == node:
+                    break
+            result.append(connected_component)
+
+    for node in graph:
+        if node not in index:
+            strongconnect(node)
+
+    return result
+
+# Example graph as an adjacency list
+graph = {
+    0: [1],
+    1: [2],
+    2: [0, 3],
+    3: [4],
+    4: [3, 5],
+    5: [6],
+    6: [7],
+    7: [8],
+    8: [6, 9],
+    9: [10, 11],
+    10: [9],
+    11: [12],
+    12: [8, 13],
+    13: [5, 14],
+    14: [13]
+}
+
+print(tarjan_strongly_connected_components(graph))
