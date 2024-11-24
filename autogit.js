@@ -1,22 +1,14 @@
-def binary_search_recursive(arr, start, end, target):
-    if start > end:
-        return -1
-    
-    mid = start + (end - start) // 2
-    
-    if arr[mid] == target:
-        return mid
-    elif arr[mid] < target:
-        return binary_search_recursive(arr, mid + 1, end, target)
+import re
+
+def validate_email(email):
+    regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    if re.match(regex, email):
+        return True
     else:
-        return binary_search_recursive(arr, start, mid - 1, target)
+        return False
 
-# Example Usage
-arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
-target = 12
-result = binary_search_recursive(arr, 0, len(arr) - 1, target)
-
-if result != -1:
-    print("Element found at index:", result)
+email = "example@email.com"
+if validate_email(email):
+    print("Email is valid")
 else:
-    print("Element not found")
+    print("Email is invalid")
