@@ -1,24 +1,21 @@
-from collections import defaultdict, deque
+import heapq
 
-def bfs(graph, start):
-    visited = set()
-    queue = deque([start])
-    visited.add(start)
+def dijkstra(graph, start):
+    distances = {node: float('infinity') for node in graph}
+    distances[start] = 0
+    pq = [(0, start)]
+    
+    while pq:
+        current_dist, current_node = heapq.heappop(pq)
 
-    while queue:
-        node = queue.popleft()
-        print(node)
+        if current_dist > distances[current_node]:
+            continue
 
-        for neighbor in graph[node]:
-            if neighbor not in visited:
-                queue.append(neighbor)
-                visited.add(neighbor)
+        for neighbor, weight in graph[current_node].items():
+            distance = current_dist + weight
 
-# Example graph representation using a dictionary
-graph = defaultdict(list)
-graph[0] = [1, 2]
-graph[1] = [2]
-graph[2] = [0, 3]
-graph[3] = [3]
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                heapq.heappush(pq, (distance, neighbor))
 
-bfs(graph, 2)
+    return distances
