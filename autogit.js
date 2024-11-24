@@ -1,27 +1,37 @@
-def interpolation_search(arr, x):
-    lo = 0
-    hi = len(arr) - 1
-    
-    while lo <= hi and x >= arr[lo] and x <= arr[hi]:
-        pos = lo + ((hi - lo) // (arr[hi] - arr[lo])) * (x - arr[lo])
-        
-        if arr[pos] == x:
-            return pos
-        
-        if arr[pos] < x:
-            lo = pos + 1
-        else:
-            hi = pos - 1
-    
-    return -1
+# Define a function to implement the Bellman-Ford algorithm
+def bellman_ford(graph, start):
+    # Initialize distances to all nodes as infinity
+    distances = {node: float('infinity') for node in graph}
+    distances[start] = 0
 
-# Test the interpolation search algorithm
-arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
-x = 10
+    # Relax edges repeatedly
+    for _ in range(len(graph) - 1):
+        for node in graph:
+            for neighbor in graph[node]:
+                if distances[node] + graph[node][neighbor] < distances[neighbor]:
+                    distances[neighbor] = distances[node] + graph[node][neighbor]
 
-result = interpolation_search(arr, x)
+    # Check for negative cycles
+    for node in graph:
+        for neighbor in graph[node]:
+            if distances[node] + graph[node][neighbor] < distances[neighbor]:
+                raise ValueError("Graph contains a negative cycle")
 
-if result != -1:
-    print(f"Element found at index {result}")
-else:
-    print("Element not found")
+    return distances
+
+# Example graph representation
+graph = {
+    'A': {'B': -1, 'C': 4},
+    'B': {'C': 3, 'D': 2, 'E': 2},
+    'C': {},
+    'D': {'B': 1, 'C': 5},
+    'E': {'D': -3}
+}
+
+# Call the Bellman-Ford algorithm function
+start_node = 'A'
+shortest_distances = bellman_ford(graph, start_node)
+
+# Print the shortest distances from the start node
+for node, distance in shortest_distances.items():
+    print(f"Shortest distance from {start_node} to {node}: {distance}")
