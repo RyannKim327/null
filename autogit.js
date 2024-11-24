@@ -1,57 +1,38 @@
-from collections import defaultdict
+def build_lps(pattern):
+    m = len(pattern)
+    lps = [0] * m
+    j = 0
 
-def tarjan_strongly_connected_components(graph):
-    index_counter = [0]
-    stack = []
-    low_links = {}
-    index = {}
-    result = []
+    for i in range(1, m):
+        while j > 0 and pattern[i] != pattern[j]:
+            j = lps[j - 1]
+        if pattern[i] == pattern[j]:
+            j += 1
+        lps[i] = j
 
-    def strongconnect(node):
-        index[node] = index_counter[0]
-        low_links[node] = index_counter[0]
-        index_counter[0] += 1
-        stack.append(node)
+    return lps
 
-        for neighbor in graph[node]:
-            if neighbor not in index:
-                strongconnect(neighbor)
-                low_links[node] = min(low_links[node], low_links[neighbor])
-            elif neighbor in stack:
-                low_links[node] = min(low_links[node], index[neighbor])
+def kmp_search(text, pattern):
+    n = len(text)
+    m = len(pattern)
+    lps = build_lps(pattern)
+    j = 0
 
-        if low_links[node] == index[node]:
-            connected_component = []
-            while True:
-                successor = stack.pop()
-                connected_component.append(successor)
-                if successor == node:
-                    break
-            result.append(connected_component)
+    for i in range(n):
+        while j > 0 and text[i] != pattern[j]:
+            j = lps[j - 1]
+        if text[i] == pattern[j]:
+            j += 1
+        if j == m:
+            return i - m + 1
+    return -1
 
-    for node in graph:
-        if node not in index:
-            strongconnect(node)
+# Example usage
+text = "ABABDABACDABABCABAB"
+pattern = "ABABCABAB"
+index = kmp_search(text, pattern)
 
-    return result
-
-# Example graph as an adjacency list
-graph = {
-    0: [1],
-    1: [2],
-    2: [0, 3],
-    3: [4],
-    4: [3, 5],
-    5: [6],
-    6: [7],
-    7: [8],
-    8: [6, 9],
-    9: [10, 11],
-    10: [9],
-    11: [12],
-    12: [8, 13],
-    13: [5, 14],
-    14: [13]
-}
-
-print(tarjan_strongly_connected_components(graph))
+if index != -1:
+    print("Pattern found at index:", index)
+else:
+    print("Pattern not found")
