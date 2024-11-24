@@ -1,22 +1,55 @@
-def binary_search(arr, target, left, right):
-    if right >= left:
-        mid = left + (right - left) // 2
+class PriorityQueue:
+    def __init__(self):
+        self.heap = []
 
-        if arr[mid] == target:
-            return mid
-        elif arr[mid] > target:
-            return binary_search(arr, target, left, mid - 1)
-        else:
-            return binary_search(arr, target, mid + 1, right)
-    else:
-        return -1
+    def parent(self, i):
+        return (i - 1) // 2
 
-# Example usage
-arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-target = 7
-result = binary_search(arr, target, 0, len(arr) - 1)
+    def insert(self, key):
+        self.heap.append(key)
+        self.heapify_up(len(self.heap) - 1)
 
-if result != -1:
-    print(f"Element found at index {result}.")
-else:
-    print("Element not found.")
+    def extract_min(self):
+        if len(self.heap) == 0:
+            return None
+
+        min_value = self.heap[0]
+        last_value = self.heap.pop()
+
+        if len(self.heap) > 0:
+            self.heap[0] = last_value
+            self.heapify_down(0)
+
+        return min_value
+
+    def heapify_up(self, i):
+        while i > 0 and self.heap[i] < self.heap[self.parent(i)]:
+            self.heap[i], self.heap[self.parent(i)] = (
+                self.heap[self.parent(i)],
+                self.heap[i],
+            )
+            i = self.parent(i)
+
+    def heapify_down(self, i):
+        left = 2 * i + 1
+        right = 2 * i + 2
+        smallest = i
+
+        if left < len(self.heap) and self.heap[left] < self.heap[i]:
+            smallest = left
+
+        if right < len(self.heap) and self.heap[right] < self.heap[smallest]:
+            smallest = right
+
+        if smallest != i:
+            self.heap[i], self.heap[smallest] = self.heap[smallest], self.heap[i]
+            self.heapify_down(smallest)
+
+# Example Usage
+pq = PriorityQueue()
+pq.insert(5)
+pq.insert(2)
+pq.insert(10)
+print(pq.extract_min())  # 2
+print(pq.extract_min())  # 5
+print(pq.extract_min())  # 10
