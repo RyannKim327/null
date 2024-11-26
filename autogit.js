@@ -1,16 +1,7 @@
-def burrows_wheeler_transform(text):
-    # Create a list of all rotations of the text
-    rotations = [text[i:] + text[:i] for i in range(len(text))]
-    
-    # Sort the rotations lexicographically
-    rotations.sort()
-    
-    # Extract the last characters of each rotation to form the Burrows-Wheeler transformed text
-    bwt_transform = ''.join(rotation[-1] for rotation in rotations)
-    
-    return bwt_transform
+my_list = [1, 2, 3, 1, 2, 4, 5, 6, 5]
 
-# Test the implementation
-text = 'banana'
-bwt_result = burrows_wheeler_transform(text)
-print("Burrows-Wheeler Transform of '{}' is '{}'".format(text, bwt_result))
+# Removing duplicates
+unique_list = list(set(my_list))
+
+print(unique_list)
+[1, 2, 3, 4, 5, 6]
