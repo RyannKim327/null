@@ -1,12 +1,40 @@
-import requests
+import queue
 
-url = 'https://jsonplaceholder.typicode.com/posts'
+def beam_search(graph, start, beam_width):
+    queue = [(start, [start], 0)]
+    
+    while queue:
+        beam = []
+        for i in range(min(len(queue), beam_width)):
+            node, path, cost = queue.pop(0)
+            if node not in path:
+                for neighbor in graph[node]:
+                    new_path = path + [neighbor]
+                    new_cost = cost + graph[node][neighbor]
+                    beam.append((neighbor, new_path, new_cost))
+        
+        beam = sorted(beam, key=lambda x: x[2])
+        
+        if any(True for x in beam if x[0] not in x[1]):
+            queue = beam[:beam_width]
 
-response = requests.get(url)
+        if len(queue) == 0:
+            break
+    
+    return min(queue, key=lambda x: x[2])
 
-if response.status_code == 200:
-    data = response.json()
-    for post in data:
-        print(post)
-else:
-    print('Error fetching data from API')
+# Example graph
+graph = {
+    'A': {'B': 1, 'C': 2},
+    'B': {'C': 1, 'D': 2},
+    'C': {'D': 1},
+    'D': {'E': 3},
+    'E': {}
+}
+
+start_node = 'A'
+beam_width = 2
+result = beam_search(graph, start_node, beam_width)
+
+print("Optimal path:", result[1])
+print("Total cost:", result[2])
