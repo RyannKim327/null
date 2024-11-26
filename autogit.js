@@ -1,32 +1,24 @@
-class Node:
-    def __init__(self, key):
-        self.left = None
-        self.right = None
-        self.val = key
+def counting_sort(arr):
+    max_val = max(arr)
+    count_arr = [0] * (max_val + 1)
+    sorted_arr = [0] * len(arr)
+    
+    # Count the occurrences of each element in the array
+    for num in arr:
+        count_arr[num] += 1
+    
+    # Calculate the cumulative count of elements
+    for i in range(1, len(count_arr)):
+        count_arr[i] += count_arr[i - 1]
+    
+    # Build the sorted array
+    for num in arr:
+        sorted_arr[count_arr[num] - 1] = num
+        count_arr[num] -= 1
+    
+    return sorted_arr
 
-def insert(root, key):
-    if root is None:
-        return Node(key)
-    else:
-        if root.val < key:
-            root.right = insert(root.right, key)
-        else:
-            root.left = insert(root.left, key)
-    return root
-
-def inorder_traversal(root):
-    if root:
-        inorder_traversal(root.left)
-        print(root.val)
-        inorder_traversal(root.right)
-
-# Usage
-root = Node(5)
-insert(root, 3)
-insert(root, 8)
-insert(root, 2)
-insert(root, 4)
-insert(root, 6)
-insert(root, 9)
-
-inorder_traversal(root)
+# Test the counting sort algorithm
+arr = [4, 2, 2, 8, 3, 3, 1]
+sorted_arr = counting_sort(arr)
+print("Sorted array:", sorted_arr)
