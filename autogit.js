@@ -1,12 +1,18 @@
-def largest_prime_factor(n):
-    i = 2
-    while i * i <= n:
-        if n % i:
-            i += 1
-        else:
-            n //= i
-    return n
+def is_palindrome(s):
+    s = s.lower()  # Convert string to lowercase for case-insensitive comparison
+    i, j = 0, len(s) - 1
+    
+    while i < j:
+        if s[i] != s[j]:
+            return False
+        i += 1
+        j -= 1
+    
+    return True
 
-number = 1234567890  # Enter the number for which you want to find the largest prime factor
-result = largest_prime_factor(number)
-print(result)
+# Test the function
+s = "racecar"
+if is_palindrome(s):
+    print(f"{s} is a palindrome")
+else:
+    print(f"{s} is not a palindrome")
