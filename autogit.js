@@ -1,39 +1,43 @@
-def find_majority_element(nums):
-    candidate = None
-    count = 0
+class BinaryHeapPriorityQueue:
+    def __init__(self):
+        self.heap = []
 
-    for num in nums:
-        if count == 0:
-            candidate = num
-            count = 1
-        elif num == candidate:
-            count += 1
-        else:
-            count -= 1
+    def size(self):
+        return len(self.heap)
 
-    return candidate
+    def is_empty(self):
+        return len(self.heap) == 0
 
-def check_majority_element(nums, candidate):
-    count = 0
+    def push(self, priority, item):
+        self.heap.append((priority, item))
+        self._percolate_up(len(self.heap) - 1)
 
-    for num in nums:
-        if num == candidate:
-            count += 1
+    def pop(self):
+        if self.is_empty():
+            raise IndexError("pop from an empty priority queue")
+        if len(self.heap) == 1:
+            return self.heap.pop()[1]
 
-    if count > len(nums) // 2:
-        return candidate
-    else:
-        return None
+        top = self.heap[0]
+        self.heap[0] = self.heap.pop()
+        self._percolate_down(0)
+        return top[1]
 
-# Example usage
-nums = [2, 2, 1, 1, 1, 2, 2]
-majority_candidate = find_majority_element(nums)
+    def _percolate_up(self, i):
+        while i > 0:
+            parent = (i - 1) // 2
+            if self.heap[i][0] < self.heap[parent][0]:
+                self.heap[i], self.heap[parent] = self.heap[parent], self.heap[i]
+                i = parent
+            else:
+                break
 
-if majority_candidate is not None:
-    result = check_majority_element(nums, majority_candidate)
-    if result is None:
-        print("No majority element found")
-    else:
-        print("Majority element is:", result)
-else:
-    print("No majority element found")
+    def _percolate_down(self, i):
+        while 2 * i + 1 < len(self.heap):
+            left = 2 * i + 1
+            right = 2 * i + 2 if 2 * i + 2 < len(self.heap) and self.heap[2 * i + 2][0] < self.heap[left][0] else left
+            if self.heap[right][0] < self.heap[i][0]:
+                self.heap[i], self.heap[right] = self.heap[right], self.heap[i]
+                i = right
+            else:
+                break
