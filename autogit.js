@@ -1,13 +1,23 @@
-def count_characters(string, char):
-    count = 0
-    for c in string:
-        if c == char:
-            count += 1
-    return count
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
 
-# Example
-my_string = "Hello, World!"
-character_to_count = "o"
-result = count_characters(my_string, character_to_count)
+def max_depth(node):
+    if node is None:
+        return 0
+    else:
+        left_depth = max_depth(node.left)
+        right_depth = max_depth(node.right)
 
-print(f"The character '{character_to_count}' appears {result} times in the string.")
+        return max(left_depth, right_depth) + 1
+
+# Example binary tree
+root = Node(1)
+root.left = Node(2)
+root.right = Node(3)
+root.left.left = Node(4)
+root.left.right = Node(5)
+
+print("Maximum depth of the binary tree is:", max_depth(root))
