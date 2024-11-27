@@ -1,34 +1,42 @@
-def longest_common_subsequence(str1, str2):
-    m = len(str1)
-    n = len(str2)
-    
-    # Initialize a 2D table to store the lengths of longest common subsequences
-    dp = [[0]*(n+1) for _ in range(m+1)]
-    
-    # Fill the DP table
-    for i in range(1, m+1):
-        for j in range(1, n+1):
-            if str1[i-1] == str2[j-1]:
-                dp[i][j] = dp[i-1][j-1] + 1
-            else:
-                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
-    
-    # Reconstruct the longest common subsequence
-    lcs = ""
-    i, j = m, n
-    while i > 0 and j > 0:
-        if str1[i-1] == str2[j-1]:
-            lcs = str1[i-1] + lcs
-            i -= 1
-            j -= 1
-        elif dp[i-1][j] > dp[i][j-1]:
-            i -= 1
-        else:
-            j -= 1
-    
-    return lcs
+import android.os.AsyncTask
+import java.net.HttpURLConnection
+import java.net.URL
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
-# Example usage
-str1 = "abcde"
-str2 = "ace"
-print(longest_common_subsequence(str1, str2))  # Output: "ace"
+
+class MyAsyncTask : AsyncTask<String, Void, String>() {
+
+    override fun doInBackground(vararg urls: String?): String {
+        var response = ""
+        for (url in urls) {
+            response = makeHttpRequest(url!!)
+        }
+        return response
+    }
+
+    private fun makeHttpRequest(stringUrl: String): String {
+        var result = ""
+        val url = URL(stringUrl)
+        val connection = url.openConnection() as HttpURLConnection
+        try {
+            val inputStream = connection.inputStream
+            val reader = BufferedReader(InputStreamReader(inputStream))
+            var line: String?
+            while (reader.readLine().also { line = it } != null) {
+                result += line
+            }
+        } finally {
+            connection.disconnect()
+        }
+        return result
+    }
+
+    override fun onPostExecute(result: String?) {
+        // Handle the HTTP response here
+    }
+}
+
+// Usage
+val asyncTask = MyAsyncTask()
+asyncTask.execute("http://www.example.com")
