@@ -1,19 +1,15 @@
-class ListNode:
-    def __init__(self, x):
-        self.val = x
-        self.next = None
+def check_anagrams(str1, str2):
+    # Remove spaces and punctuation, convert to lowercase, and sort the characters
+    str1_sorted = sorted(''.join(e for e in str1 if e.isalnum()).lower())
+    str2_sorted = sorted(''.join(e for e in str2 if e.isalnum()).lower())
+    
+    # Check if the sorted strings are equal
+    return str1_sorted == str2_sorted
 
-def hasCycle(head):
-    if not head or not head.next:
-        return False
-
-    slow = head
-    fast = head.next
-
-    while slow != fast:
-        if not fast or not fast.next:
-            return False
-        slow = slow.next
-        fast = fast.next.next
-
-    return True
+# Test
+str1 = "Listen"
+str2 = "Silent"
+if check_anagrams(str1, str2):
+    print(f"{str1} and {str2} are anagrams.")
+else:
+    print(f"{str1} and {str2} are not anagrams.")
