@@ -1,50 +1,37 @@
-class PriorityQueue:
+class Node:
+    def __init__(self, key):
+        self.key = key
+        self.left = None
+        self.right = None
+
+class BinarySearchTree:
     def __init__(self):
-        self.heap = []
+        self.root = None
 
-    def parent(self, i):
-        return (i-1) // 2
+    def insert(self, key):
+        if self.root is None:
+            self.root = Node(key)
+        else:
+            self._insert_recursive(self.root, key)
 
-    def left_child(self, i):
-        return 2*i + 1
+    def _insert_recursive(self, node, key):
+        if key < node.key:
+            if node.left is None:
+                node.left = Node(key)
+            else:
+                self._insert_recursive(node.left, key)
+        elif key > node.key:
+            if node.right is None:
+                node.right = Node(key)
+            else:
+                self._insert_recursive(node.right, key)
 
-    def right_child(self, i):
-        return 2*i + 2
+    def search(self, key):
+        return self._search_recursive(self.root, key)
 
-    def insert(self, priority):
-        self.heap.append(priority)
-        self.heapify_up(len(self.heap) - 1)
-
-    def heapify_up(self, i):
-        while i != 0 and self.heap[self.parent(i)] < self.heap[i]:
-            self.heap[i], self.heap[self.parent(i)] = self.heap[self.parent(i)], self.heap[i]
-            i = self.parent(i)
-
-    def extract_max(self):
-        max_priority = self.heap[0]
-        self.heap[0] = self.heap[-1]
-        self.heap.pop()
-        self.heapify_down(0)
-        return max_priority
-
-    def heapify_down(self, i):
-        max_index = i
-        left = self.left_child(i)
-        if left < len(self.heap) and self.heap[left] > self.heap[max_index]:
-            max_index = left
-        right = self.right_child(i)
-        if right < len(self.heap) and self.heap[right] > self.heap[max_index]:
-            max_index = right
-        if i != max_index:
-            self.heap[i], self.heap[max_index] = self.heap[max_index], self.heap[i]
-            self.heapify_down(max_index)
-
-# Example usage
-pq = PriorityQueue()
-pq.insert(5)
-pq.insert(2)
-pq.insert(10)
-pq.insert(7)
-
-print(pq.extract_max())  # Output: 10
-print(pq.extract_max())  # Output: 7
+    def _search_recursive(self, node, key):
+        if node is None or node.key == key:
+            return node
+        if key < node.key:
+            return self._search_recursive(node.left, key)
+        return self._search_recursive(node.right, key)
