@@ -1,26 +1,19 @@
-graph = {
-    'A': ['B', 'C'],
-    'B': ['A', 'D', 'E'],
-    'C': ['A', 'F'],
-    'D': ['B'],
-    'E': ['B', 'F'],
-    'F': ['C', 'E']
-}
-def bfs(graph, start):
-    visited = []
-    queue = [start]
+def are_anagrams(str1, str2):
+    # Remove spaces and convert to lowercase
+    str1 = str1.replace(" ", "").lower()
+    str2 = str2.replace(" ", "").lower()
 
-    while queue:
-        node = queue.pop(0)
-        if node not in visited:
-            visited.append(node)
-            neighbors = graph[node]
+    # Check if the lengths of the strings are the same
+    if len(str1) != len(str2):
+        return False
 
-            for neighbor in neighbors:
-                queue.append(neighbor)
+    # Sort the characters in both strings and compare
+    return sorted(str1) == sorted(str2)
 
-    return visited
-
-# Example usage
-result = bfs(graph, 'A')
-print(result)
+# Test the function
+str1 = "listen"
+str2 = "silent"
+if are_anagrams(str1, str2):
+    print("The strings are anagrams!")
+else:
+    print("The strings are not anagrams.")
