@@ -1,8 +1,12 @@
-def count_occurrences(text, word):
-    return text.lower().count(word.lower())
+def count_char_occurrence(input_string, char_to_count):
+    count = 0
+    for char in input_string:
+        if char == char_to_count:
+            count += 1
+    return count
 
-text = "This is a sample text with sample words in it. Sample"
-word = "sample"
-
-occurrences = count_occurrences(text, word)
-print(f"The word '{word}' occurs {occurrences} times in the text.")
+# Test the function
+input_string = "Hello, World!"
+char_to_count = "o"
+occurrence_count = count_char_occurrence(input_string, char_to_count)
+print(f"The character '{char_to_count}' occurs {occurrence_count} times in the string.")
