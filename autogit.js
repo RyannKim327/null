@@ -1,23 +1,39 @@
-def max_subarray_sum(arr):
-    max_ending_here = max_so_far = arr[0]
-    start = end = 0
-    temp_start = 0
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
 
-    for i in range(1, len(arr)):
-        if arr[i] > arr[i] + max_ending_here:
-            temp_start = i
-            max_ending_here = arr[i]
-        else:
-            max_ending_here += arr[i]
+class LinkedList:
+    def __init__(self):
+        self.head = None
 
-        if max_ending_here > max_so_far:
-            start = temp_start
-            end = i
-            max_so_far = max_ending_here
+    def reverse_list(self):
+        prev = None
+        current = self.head
+        while current:
+            next_node = current.next
+            current.next = prev
+            prev = current
+            current = next_node
+        self.head = prev
 
-    return arr[start:end+1], max_so_far
+    def print_list(self):
+        temp = self.head
+        while temp:
+            print(temp.data, end=" ")
+            temp = temp.next
 
-arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
-subarray, max_sum = max_subarray_sum(arr)
-print("Maximum sum subarray is:", subarray)
-print("Maximum sum is:", max_sum)
+# Sample usage
+llist = LinkedList()
+llist.head = Node(1)
+llist.head.next = Node(2)
+llist.head.next.next = Node(3)
+llist.head.next.next.next = Node(4)
+
+print("Original list:")
+llist.print_list()
+
+llist.reverse_list()
+
+print("\nReversed list:")
+llist.print_list()
