@@ -1,13 +1,14 @@
-def quicksort(arr):
-    if len(arr) <= 1:
-        return arr
-    else:
-        pivot = arr[0]
-        less = [x for x in arr[1:] if x <= pivot]
-        greater = [x for x in arr[1:] if x > pivot]
-        return quicksort(less) + [pivot] + quicksort(greater)
+// Function to calculate the area of a triangle
+function calculateTriangleArea(base, height) {
+    return (base * height) / 2;
+}
 
-# Example usage:
-arr = [3, 6, 8, 10, 1, 2, 1]
-sorted_arr = quicksort(arr)
-print(sorted_arr)
+// Input values for base and height
+let base = 5;  // Replace with actual base value
+let height = 8;  // Replace with actual height value
+
+// Calculate the area of the triangle
+let area = calculateTriangleArea(base, height);
+
+// Output the result
+console.log("The area of the triangle is: " + area);
