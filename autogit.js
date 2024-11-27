@@ -1,16 +1,26 @@
-def are_anagrams(str1, str2):
-    # Remove spaces and convert to lowercase
-    str1 = str1.replace(" ", "").lower()
-    str2 = str2.replace(" ", "").lower()
+from collections import deque
 
-    # Check if the sorted strings are equal
-    return sorted(str1) == sorted(str2)
+def bfs(graph, start):
+    visited = set()
+    queue = deque([start])
+    
+    while queue:
+        node = queue.popleft()
+        if node not in visited:
+            visited.add(node)
+            print(node)
+            for neighbor in graph[node]:
+                if neighbor not in visited:
+                    queue.append(neighbor)
 
-# Test the function
-str1 = "Listen"
-str2 = "Silent"
+# Example usage
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
 
-if are_anagrams(str1, str2):
-    print(f"{str1} and {str2} are anagrams.")
-else:
-    print(f"{str1} and {str2} are not anagrams.")
+bfs(graph, 'A')
