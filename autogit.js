@@ -1,15 +1,13 @@
-import android.os.AsyncTask
-import java.net.URL
+def quicksort(arr):
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    return quicksort(left) + middle + quicksort(right)
 
-class ConnectAsyncTask : AsyncTask<String, Void, String>() {
-
-    override fun doInBackground(vararg urls: String): String {
-        val url = URL(urls[0])
-        val connection = url.openConnection() as HttpURLConnection
-        return connection.inputStream.bufferedReader().use { it.readText() }
-    }
-
-    override fun onPostExecute(result: String) {
-        // Process the result here
-    }
-}
+# Example usage
+arr = [3, 6, 8, 10, 1, 2, 1]
+sorted_arr = quicksort(arr)
+print(sorted_arr)
