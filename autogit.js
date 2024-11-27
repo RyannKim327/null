@@ -1,76 +1,31 @@
-#include <iostream>
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.next = None
 
-struct Node {
-    int data;
-    Node* next;
-    Node(int val) : data(val), next(nullptr) {}
-};
+def reverse_linked_list(head):
+    prev = None
+    current = head
 
-bool isPalindrome(Node* head) {
-    if (!head || !head->next) {
-        return true; // An empty list or single node list is considered a palindrome
-    }
+    while current is not None:
+        next_node = current.next
+        current.next = prev
+        prev = current
+        current = next_node
 
-    Node* slow = head;
-    Node* fast = head;
-    Node* prev = nullptr;
+    return prev
 
-    while (fast && fast->next) {
-        prev = slow;
-        slow = slow->next;
-        fast = fast->next->next;
-    }
+# Example usage
+node1 = Node(1)
+node2 = Node(2)
+node3 = Node(3)
 
-    prev->next = nullptr; // Split the list into two halves
+node1.next = node2
+node2.next = node3
 
-    // Reverse the second half of the list
-    Node* prevNode = nullptr;
-    Node* currentNode = slow;
-    Node* nextNode;
+new_head = reverse_linked_list(node1)
 
-    while (currentNode) {
-        nextNode = currentNode->next;
-        currentNode->next = prevNode;
-        prevNode = currentNode;
-        currentNode = nextNode;
-    }
-
-    Node* p1 = head;
-    Node* p2 = prevNode;
-
-    while (p1 && p2) {
-        if (p1->data != p2->data) {
-            return false; // Not a palindrome
-        }
-        p1 = p1->next;
-        p2 = p2->next;
-    }
-
-    // Reconstruct the original linked list
-    prev = nullptr;
-    currentNode = prevNode;
-    while (currentNode) {
-        nextNode = currentNode->next;
-        currentNode->next = prev;
-        prev = currentNode;
-        currentNode = nextNode;
-    }
-
-    return true; // Palindrome
-}
-
-int main() {
-    Node* head = new Node(1);
-    head->next = new Node(2);
-    head->next->next = new Node(3);
-    head->next->next->next = new Node(2);
-    head->next->next->next->next = new Node(1);
-
-    if (isPalindrome(head)) {
-        std::cout << "Linked list is a palindrome" << std::endl;
-    } else {
-        std::cout << "Linked list is not a palindrome" << std::endl;
-    }
-
-    return 0;
-}
+current = new_head
+while current is not None:
+    print(current.value)
+    current = current.next
