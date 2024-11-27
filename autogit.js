@@ -1,12 +1,14 @@
-def bubble_sort(arr):
+def selection_sort(arr):
     n = len(arr)
     for i in range(n):
-        for j in range(0, n-i-1):
-            if arr[j] > arr[j+1]:
-                arr[j], arr[j+1] = arr[j+1], arr[j]
+        min_index = i
+        for j in range(i+1, n):
+            if arr[j] < arr[min_index]:
+                min_index = j
+        arr[i], arr[min_index] = arr[min_index], arr[i]
     return arr
 
-# Example usage
-arr = [64, 34, 25, 12, 22, 11, 90]
-sorted_arr = bubble_sort(arr)
-print("Sorted array:", sorted_arr)
+# Example Usage
+arr = [64, 25, 12, 22, 11]
+sorted_arr = selection_sort(arr)
+print("Sorted array is:", sorted_arr)
