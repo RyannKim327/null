@@ -1,11 +1,25 @@
-def is_palindrome(s):
-    s = s.lower()  # Convert the string to lowercase
-    s = ''.join(e for e in s if e.isalnum())  # Remove non-alphanumeric characters
-    return s == s[::-1]  # Check if the string is equal to its reverse
+class Node:
+    def __init__(self, key):
+        self.left = None
+        self.right = None
+        self.val = key
 
-# Test the function
-s = "A man, a plan, a canal, Panama"
-if is_palindrome(s):
-    print("It's a palindrome!")
-else:
-    print("It's not a palindrome.")
+def count_leaf_nodes(node):
+    if node is None:
+        return 0
+    if node.left is None and node.right is None:
+        return 1
+    return count_leaf_nodes(node.left) + count_leaf_nodes(node.right)
+
+# Sample binary tree
+root = Node(1)
+root.left = Node(2)
+root.right = Node(3)
+root.left.left = Node(4)
+root.left.right = Node(5)
+root.right.left = Node(6)
+root.right.right = Node(7)
+
+leaf_node_count = count_leaf_nodes(root)
+print("Number of leaf nodes:", leaf_node_count)
+
