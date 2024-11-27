@@ -1,21 +1,23 @@
-def depth_first_search(graph, start, visited=None):
-    if visited is None:
-        visited = set()
-    visited.add(start)
-    print(start)
-    for neighbor in graph[start]:
-        if neighbor not in visited:
-            depth_first_search(graph, neighbor, visited)
+import requests
 
-# Example graph as an adjacency list
-graph = {
-    'A': ['B', 'C'],
-    'B': ['A', 'D', 'E'],
-    'C': ['A', 'F'],
-    'D': ['B'],
-    'E': ['B', 'F'],
-    'F': ['C', 'E']
+# Define the API endpoint URL
+url = 'https://api.example.com/data'
+
+# Set your API key here
+api_key = 'API_KEY'
+
+# Set any required parameters
+params = {
+    'param1': 'value1',
+    'param2': 'value2'
 }
 
-start_node = 'A'
-depth_first_search(graph, start_node)
+# Make a GET request to the API endpoint
+response = requests.get(url, params=params, headers={'Authorization': f'Bearer {api_key}'})
+
+# Check if the request was successful
+if response.status_code == 200:
+    # Print the response data
+    print(response.json())
+else:
+    print('Error occurred:', response.status_code, response.text)
