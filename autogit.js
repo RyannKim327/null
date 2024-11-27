@@ -1,15 +1,10 @@
-^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$
-import re
+import statistics
 
-def validate_email(email):
-    pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-    if re.match(pattern, email):
-        return True
-    else:
-        return False
+# List of numbers
+num_list = [1, 2, 3, 4, 5]
 
-email = "test@example.com"
-if validate_email(email):
-    print("Email is valid.")
-else:
-    print("Email is invalid.")
+# Calculate the mean
+mean = statistics.mean(num_list)
+
+# Print the mean
+print("Mean:", mean)
