@@ -1,71 +1,76 @@
-import random
+#include <iostream>
 
-class Node:
-    def __init__(self, value=None):
-        self.value = value
-        self.forward = []
+struct Node {
+    int data;
+    Node* next;
+    Node(int val) : data(val), next(nullptr) {}
+};
 
-class SkipList:
-    def __init__(self, max_levels, p):
-        self.max_levels = max_levels
-        self.p = p
-        self.header = Node()
-        self.header.forward = [None] * self.max_levels
-        self.level = 0
+bool isPalindrome(Node* head) {
+    if (!head || !head->next) {
+        return true; // An empty list or single node list is considered a palindrome
+    }
 
-    def random_level(self):
-        level = 0
-        while random.random() < self.p and level < self.max_levels - 1:
-            level += 1
-        return level
+    Node* slow = head;
+    Node* fast = head;
+    Node* prev = nullptr;
 
-    def insert(self, value):
-        update = [None] * self.max_levels
-        current = self.header
+    while (fast && fast->next) {
+        prev = slow;
+        slow = slow->next;
+        fast = fast->next->next;
+    }
 
-        for i in range(self.level, -1, -1):
-            while current.forward[i] and current.forward[i].value < value:
-                current = current.forward[i]
-            update[i] = current
+    prev->next = nullptr; // Split the list into two halves
 
-        level = self.random_level()
-        if level > self.level:
-            for i in range(self.level + 1, level + 1):
-                update[i] = self.header
-            self.level = level
+    // Reverse the second half of the list
+    Node* prevNode = nullptr;
+    Node* currentNode = slow;
+    Node* nextNode;
 
-        new_node = Node(value)
-        new_node.forward = [None] * (level + 1)
+    while (currentNode) {
+        nextNode = currentNode->next;
+        currentNode->next = prevNode;
+        prevNode = currentNode;
+        currentNode = nextNode;
+    }
 
-        for i in range(level + 1):
-            new_node.forward[i] = update[i].forward[i]
-            update[i].forward[i] = new_node
+    Node* p1 = head;
+    Node* p2 = prevNode;
 
-    def search(self, value):
-        current = self.header
-        for i in range(self.level, -1, -1):
-            while current.forward[i] and current.forward[i].value < value:
-                current = current.forward[i]
-        current = current.forward[0]
+    while (p1 && p2) {
+        if (p1->data != p2->data) {
+            return false; // Not a palindrome
+        }
+        p1 = p1->next;
+        p2 = p2->next;
+    }
 
-        if current and current.value == value:
-            return True
-        return False
+    // Reconstruct the original linked list
+    prev = nullptr;
+    currentNode = prevNode;
+    while (currentNode) {
+        nextNode = currentNode->next;
+        currentNode->next = prev;
+        prev = currentNode;
+        currentNode = nextNode;
+    }
 
-    def display(self):
-        for i in range(self.level, -1, -1):
-            current = self.header
-            while current.forward[i]:
-                print(current.forward[i].value, end=" ")
-                current = current.forward[i]
-            print()
+    return true; // Palindrome
+}
 
-# Example usage
-skip_list = SkipList(max_levels=5, p=0.5)
-skip_list.insert(3)
-skip_list.insert(6)
-skip_list.insert(7)
-skip_list.insert(9)
-print(skip_list.search(6))  # Output: True
-print(skip_list.search(8))  # Output: False
-skip_list.display()
+int main() {
+    Node* head = new Node(1);
+    head->next = new Node(2);
+    head->next->next = new Node(3);
+    head->next->next->next = new Node(2);
+    head->next->next->next->next = new Node(1);
+
+    if (isPalindrome(head)) {
+        std::cout << "Linked list is a palindrome" << std::endl;
+    } else {
+        std::cout << "Linked list is not a palindrome" << std::endl;
+    }
+
+    return 0;
+}
