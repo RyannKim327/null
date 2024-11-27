@@ -1,12 +1,9 @@
-def insertion_sort(arr):
-    for i in range(1, len(arr)):
-        key = arr[i]
-        j = i - 1
-        while j >= 0 and key < arr[j]:
-            arr[j + 1] = arr[j]
-            j -= 1
-        arr[j + 1] = key
+def calculate_mean(numbers):
+    return sum(numbers) / len(numbers)
 
-arr = [12, 11, 13, 5, 6]
-insertion_sort(arr)
-print("Sorted array is:", arr)
+# Example list of numbers
+numbers = [1, 2, 3, 4, 5]
+
+# Calculate the mean
+mean = calculate_mean(numbers)
+print("Mean:", mean)
