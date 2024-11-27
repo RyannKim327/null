@@ -1,22 +1,25 @@
-def max_subarray_sum(arr):
-    max_ending_here = max_so_far = arr[0]
-    start = end = 0
-    temp_start = 0
-    
-    for i in range(1, len(arr)):
-        if arr[i] > arr[i] + max_ending_here:
-            temp_start = i
-            max_ending_here = arr[i]
-        else:
-            max_ending_here += arr[i]
-        
-        if max_ending_here > max_so_far:
-            start = temp_start
-            end = i
-            max_so_far = max_ending_here
-            
-    return arr[start:end+1]
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
 
-# Test the function
-arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
-print("Maximum sum subarray:", max_subarray_sum(arr))
+def find_middle_element(head):
+    slow_ptr = head
+    fast_ptr = head
+
+    while fast_ptr is not None and fast_ptr.next is not None:
+        slow_ptr = slow_ptr.next
+        fast_ptr = fast_ptr.next.next
+
+    return slow_ptr.data
+
+# Create a sample linked list
+head = Node(1)
+head.next = Node(2)
+head.next.next = Node(3)
+head.next.next.next = Node(4)
+head.next.next.next.next = Node(5)
+
+# Find the middle element of the linked list
+middle_element = find_middle_element(head)
+print("Middle element of the linked list is:", middle_element)
