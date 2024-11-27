@@ -1,23 +1,13 @@
-import requests
+def quicksort(arr):
+    if len(arr) <= 1:
+        return arr
+    else:
+        pivot = arr[0]
+        less = [x for x in arr[1:] if x <= pivot]
+        greater = [x for x in arr[1:] if x > pivot]
+        return quicksort(less) + [pivot] + quicksort(greater)
 
-# Define the API endpoint URL
-url = 'https://api.example.com/data'
-
-# Set your API key here
-api_key = 'API_KEY'
-
-# Set any required parameters
-params = {
-    'param1': 'value1',
-    'param2': 'value2'
-}
-
-# Make a GET request to the API endpoint
-response = requests.get(url, params=params, headers={'Authorization': f'Bearer {api_key}'})
-
-# Check if the request was successful
-if response.status_code == 200:
-    # Print the response data
-    print(response.json())
-else:
-    print('Error occurred:', response.status_code, response.text)
+# Example usage:
+arr = [3, 6, 8, 10, 1, 2, 1]
+sorted_arr = quicksort(arr)
+print(sorted_arr)
