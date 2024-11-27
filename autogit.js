@@ -1,16 +1,12 @@
-function longestCommonPrefix(strings):
-    if length(strings) == 0:
-        return ""
+def insertion_sort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and key < arr[j]:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
 
-    prefix = strings[0]
-
-    for string in strings[1:]:
-        i = 0
-        while i < min(len(prefix), len(string)) and prefix[i] == string[i]:
-            i += 1
-        prefix = prefix[:i]
-
-        if prefix == "":
-            break
-
-    return prefix
+arr = [12, 11, 13, 5, 6]
+insertion_sort(arr)
+print("Sorted array is:", arr)
