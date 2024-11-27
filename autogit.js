@@ -1,12 +1,12 @@
-def largest_prime_factor(n):
-    i = 2
-    while i * i <= n:
-        if n % i:
-            i += 1
-        else:
-            n //= i
-    return n
+def is_sorted_ascending(arr):
+    for i in range(len(arr) - 1):
+        if arr[i] > arr[i+1]:
+            return False
+    return True
 
-num = __your_number__
-result = largest_prime_factor(num)
-print("The largest prime factor of", num, "is:", result)
+# Test the function
+arr1 = [1, 2, 3, 4, 5]
+arr2 = [5, 4, 3, 2, 1]
+
+print(is_sorted_ascending(arr1))  # True
+print(is_sorted_ascending(arr2))  # False
