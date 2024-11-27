@@ -1,42 +1,30 @@
-import android.os.AsyncTask
-import java.net.HttpURLConnection
-import java.net.URL
-import java.io.BufferedReader
-import java.io.InputStreamReader
+def interpolation_search(arr, x):
+    low = 0
+    high = len(arr) - 1
 
+    while low <= high and x >= arr[low] and x <= arr[high]:
+        if low == high:
+            if arr[low] == x:
+                return low
+            return -1
+        
+        pos = low + ((high - low) // (arr[high] - arr[low])) * (x - arr[low])
 
-class MyAsyncTask : AsyncTask<String, Void, String>() {
+        if arr[pos] == x:
+            return pos
+        elif arr[pos] < x:
+            low = pos + 1
+        else:
+            high = pos - 1
+    
+    return -1
 
-    override fun doInBackground(vararg urls: String?): String {
-        var response = ""
-        for (url in urls) {
-            response = makeHttpRequest(url!!)
-        }
-        return response
-    }
+# Example usage
+arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+x = 10
+result = interpolation_search(arr, x)
 
-    private fun makeHttpRequest(stringUrl: String): String {
-        var result = ""
-        val url = URL(stringUrl)
-        val connection = url.openConnection() as HttpURLConnection
-        try {
-            val inputStream = connection.inputStream
-            val reader = BufferedReader(InputStreamReader(inputStream))
-            var line: String?
-            while (reader.readLine().also { line = it } != null) {
-                result += line
-            }
-        } finally {
-            connection.disconnect()
-        }
-        return result
-    }
-
-    override fun onPostExecute(result: String?) {
-        // Handle the HTTP response here
-    }
-}
-
-// Usage
-val asyncTask = MyAsyncTask()
-asyncTask.execute("http://www.example.com")
+if result != -1:
+    print(f"Element found at index {result}")
+else:
+    print("Element not found")
