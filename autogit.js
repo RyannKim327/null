@@ -1,21 +1,43 @@
-function isPrime(number) {
-    if (number < 2) {
-        return false;
-    }
-    
-    for (let i = 2; i <= Math.sqrt(number); i++) {
-        if (number % i === 0) {
-            return false;
-        }
-    }
-    
-    return true;
-}
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end_of_word = False
 
-// Test the function
-const number = 17;
-if (isPrime(number)) {
-    console.log(`${number} is a prime number.`);
-} else {
-    console.log(`${number} is not a prime number.`);
-}
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word):
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.is_end_of_word = True
+
+    def search(self, word):
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+        
+        return node.is_end_of_word
+
+    def starts_with(self, prefix):
+        node = self.root
+        for char in prefix:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+        
+        return True
+
+# Usage
+trie = Trie()
+trie.insert("apple")
+trie.insert("app")
+print(trie.search("apple"))  # Output: True
+print(trie.search("app"))    # Output: True
+print(trie.search("ap"))     # Output: False
+print(trie.starts_with("ap"))  # Output: True
