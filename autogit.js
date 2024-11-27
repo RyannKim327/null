@@ -1,19 +1,25 @@
-def are_anagrams(str1, str2):
-    # Remove spaces and convert to lowercase
-    str1 = str1.replace(" ", "").lower()
-    str2 = str2.replace(" ", "").lower()
+# Node structure for the linked list
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
 
-    # Check if the lengths of the strings are the same
-    if len(str1) != len(str2):
-        return False
+# Function to calculate the length of the linked list
+def get_linked_list_length(head):
+    current = head
+    length = 0
 
-    # Sort the characters in both strings and compare
-    return sorted(str1) == sorted(str2)
+    while current is not None:
+        length += 1
+        current = current.next
 
-# Test the function
-str1 = "listen"
-str2 = "silent"
-if are_anagrams(str1, str2):
-    print("The strings are anagrams!")
-else:
-    print("The strings are not anagrams.")
+    return length
+
+# Sample linked list
+head = Node(1)
+head.next = Node(2)
+head.next.next = Node(3)
+head.next.next.next = Node(4)
+
+# Get the length of the linked list
+print(get_linked_list_length(head))  # Output: 4
