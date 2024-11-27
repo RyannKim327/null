@@ -1,14 +1,17 @@
-def selection_sort(arr):
-    n = len(arr)
-    for i in range(n):
-        min_idx = i
-        for j in range(i+1, n):
-            if arr[j] < arr[min_idx]:
-                min_idx = j
-        arr[i], arr[min_idx] = arr[min_idx], arr[i]
-    return arr
+def counting_sort(arr):
+    max_val = max(arr)
+    counts = [0] * (max_val + 1)
+
+    for num in arr:
+        counts[num] += 1
+
+    sorted_arr = []
+    for i in range(len(counts)):
+        sorted_arr += [i] * counts[i]
+
+    return sorted_arr
 
 # Example usage
-arr = [64, 25, 12, 22, 11]
-sorted_arr = selection_sort(arr)
-print("Sorted array is:", sorted_arr)
+arr = [4, 2, 2, 8, 3, 3, 1]
+sorted_arr = counting_sort(arr)
+print(sorted_arr)
