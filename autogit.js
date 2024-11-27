@@ -1,12 +1,48 @@
-def count_char_occurrence(input_string, char_to_count):
-    count = 0
-    for char in input_string:
-        if char == char_to_count:
-            count += 1
-    return count
+def breadth_limited_search(graph, start, goal, limit):
+    if start == goal:
+        return [start]
+    
+    visited = []
+    queue = [[start]]
+    
+    while queue:
+        path = queue.pop(0)
+        node = path[-1]
+        
+        if node not in visited:
+            neighbors = graph[node]
+            
+            for neighbor in neighbors:
+                new_path = list(path)
+                new_path.append(neighbor)
+                queue.append(new_path)
+                
+                if neighbor == goal:
+                    return new_path
+            
+            visited.append(node)
+        
+        if len(path) >= limit:
+            continue
+    
+    return None
 
-# Test the function
-input_string = "Hello, World!"
-char_to_count = "o"
-occurrence_count = count_char_occurrence(input_string, char_to_count)
-print(f"The character '{char_to_count}' occurs {occurrence_count} times in the string.")
+# Example usage
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': [],
+    'F': []
+}
+
+start = 'A'
+goal = 'F'
+limit = 3
+
+result = breadth_limited_search(graph, start, goal, limit)
+if result:
+    print("Path found:", result)
+else:
+    print("Path not found within the depth limit.")
