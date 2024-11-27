@@ -1,15 +1,11 @@
-def check_anagrams(str1, str2):
-    # Remove spaces and punctuation, convert to lowercase, and sort the characters
-    str1_sorted = sorted(''.join(e for e in str1 if e.isalnum()).lower())
-    str2_sorted = sorted(''.join(e for e in str2 if e.isalnum()).lower())
-    
-    # Check if the sorted strings are equal
-    return str1_sorted == str2_sorted
+def is_palindrome(s):
+    s = s.lower()  # Convert the string to lowercase
+    s = ''.join(e for e in s if e.isalnum())  # Remove non-alphanumeric characters
+    return s == s[::-1]  # Check if the string is equal to its reverse
 
-# Test
-str1 = "Listen"
-str2 = "Silent"
-if check_anagrams(str1, str2):
-    print(f"{str1} and {str2} are anagrams.")
+# Test the function
+s = "A man, a plan, a canal, Panama"
+if is_palindrome(s):
+    print("It's a palindrome!")
 else:
-    print(f"{str1} and {str2} are not anagrams.")
+    print("It's not a palindrome.")
