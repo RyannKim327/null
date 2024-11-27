@@ -1,1 +1,9 @@
-string_without_whitespace = your_string.replace(" ", "")
+const axios = require('axios');
+
+axios.get('https://jsonplaceholder.typicode.com/posts')
+  .then(function (response) {
+    console.log(response.data);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
