@@ -1,21 +1,40 @@
-def partition(arr, low, high):
-    pivot = arr[high]
-    i = low - 1
-    for j in range(low, high):
-        if arr[j] < pivot:
-            i += 1
-            arr[i], arr[j] = arr[j], arr[i]
-    arr[i+1], arr[high] = arr[high], arr[i+1]
-    return i + 1
+from collections import deque
 
-def quickSort(arr, low, high):
-    if low < high:
-        pi = partition(arr, low, high)
-        quickSort(arr, low, pi-1)
-        quickSort(arr, pi+1, high)
+def bi_directional_search(graph, start, goal):
+    start_queue = deque([(start, [start])])
+    goal_queue = deque([(goal, [goal])])
+    
+    while start_queue and goal_queue:
+        start_node, start_path = start_queue.popleft()
+        goal_node, goal_path = goal_queue.popleft()
+        
+        if start_node in goal_path:
+            return start_path + goal_path[::-1][1:]
+        
+        if goal_node in start_path:
+            return start_path + goal_path[::-1][1:]
+        
+        for neighbor in graph[start_node]:
+            if neighbor not in start_path:
+                start_queue.append((neighbor, start_path + [neighbor]))
+        
+        for neighbor in graph[goal_node]:
+            if neighbor not in goal_path:
+                goal_queue.append((neighbor, goal_path + [neighbor]))
 
-# Example usage
-arr = [10, 7, 8, 9, 1, 5]
-n = len(arr)
-quickSort(arr, 0, n-1)
-print("Sorted array is:", arr)
+# Example graph representation
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D'],
+    'C': ['A', 'E'],
+    'D': ['B', 'F'],
+    'E': ['C', 'G'],
+    'F': ['D'],
+    'G': ['E']
+}
+
+start_node = 'A'
+goal_node = 'G'
+
+path = bi_directional_search(graph, start_node, goal_node)
+print(path)
