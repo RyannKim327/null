@@ -1,39 +1,14 @@
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.next = None
+def selection_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        min_idx = i
+        for j in range(i+1, n):
+            if arr[j] < arr[min_idx]:
+                min_idx = j
+        arr[i], arr[min_idx] = arr[min_idx], arr[i]
+    return arr
 
-class LinkedList:
-    def __init__(self):
-        self.head = None
-
-    def reverse_list(self):
-        prev = None
-        current = self.head
-        while current:
-            next_node = current.next
-            current.next = prev
-            prev = current
-            current = next_node
-        self.head = prev
-
-    def print_list(self):
-        temp = self.head
-        while temp:
-            print(temp.data, end=" ")
-            temp = temp.next
-
-# Sample usage
-llist = LinkedList()
-llist.head = Node(1)
-llist.head.next = Node(2)
-llist.head.next.next = Node(3)
-llist.head.next.next.next = Node(4)
-
-print("Original list:")
-llist.print_list()
-
-llist.reverse_list()
-
-print("\nReversed list:")
-llist.print_list()
+# Example usage
+arr = [64, 25, 12, 22, 11]
+sorted_arr = selection_sort(arr)
+print("Sorted array is:", sorted_arr)
