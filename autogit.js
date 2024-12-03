@@ -1,50 +1,48 @@
-class Node:
-    def __init__(self, value):
-        self.value = value
-        self.next = None
+import heapq
 
-class LinkedList:
-    def __init__(self):
-        self.head = None
+def beam_search(initial_state, beam_width, max_length):
+    visited = []
+    queue = [(0, [initial_state])]
+    
+    while queue:
+        score, path = heapq.heappop(queue)
+        current_state = path[-1]
+        
+        if len(path) > max_length:
+            visited.append((score, path))
+            continue
+        
+        if is_goal_state(current_state):
+            visited.append((score, path))
+            continue
+        
+        for action in get_possible_actions(current_state):
+            new_state = apply_action(current_state, action)
+            new_score = calculate_score(new_state)
+            new_path = path + [new_state]
+            heapq.heappush(queue, (new_score, new_path))
+        
+        queue = queue[:beam_width]
+    
+    return visited
 
-    def append(self, value):
-        new_node = Node(value)
-        if self.head is None:
-            self.head = new_node
-            return
-        last = self.head
-        while last.next:
-            last = last.next
-        last.next = new_node
+# Sample functions for demonstration purposes
+def is_goal_state(state):
+    return False
 
-    def print_list(self):
-        current = self.head
-        while current:
-            print(current.value, end=" ")
-            current = current.next
-        print()
+def get_possible_actions(state):
+    return []
 
-    def reverse(self): 
-        prev = None
-        current = self.head
-        while current:
-            next_node = current.next
-            current.next = prev
-            prev = current
-            current = next_node
-        self.head = prev
+def apply_action(state, action):
+    return state
 
-# Test the code
-llist = LinkedList()
-llist.append(1)
-llist.append(2)
-llist.append(3)
-llist.append(4)
+def calculate_score(state):
+    return 0
 
-print("Original linked list:")
-llist.print_list()
+# Example usage
+initial_state = 1
+beam_width = 3
+max_length = 10
 
-llist.reverse()
-
-print("Reversed linked list:")
-llist.print_list()
+results = beam_search(initial_state, beam_width, max_length)
+print(results)
