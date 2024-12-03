@@ -1,25 +1,34 @@
-def longest_common_substring(str1, str2):
-    m = len(str1)
-    n = len(str2)
-    
-    # Initialize a matrix to store the lengths of the longest common suffix
-    dp = [[0] * (n+1) for _ in range(m+1)]
-    
-    max_len = 0
-    end_index = 0
-    
-    for i in range(1, m+1):
-        for j in range(1, n+1):
-            if str1[i-1] == str2[j-1]:
-                dp[i][j] = dp[i-1][j-1] + 1
-                if dp[i][j] > max_len:
-                    max_len = dp[i][j]
-                    end_index = i
-    
-    return str1[end_index-max_len:end_index]
+def merge_sort(arr):
+    if len(arr) <= 1:
+        return arr
+
+    middle = len(arr) // 2
+    left = arr[:middle]
+    right = arr[middle:]
+
+    left = merge_sort(left)
+    right = merge_sort(right)
+
+    return merge(left, right)
+
+def merge(left, right):
+    result = []
+    left_index = right_index = 0
+
+    while left_index < len(left) and right_index < len(right):
+        if left[left_index] < right[right_index]:
+            result.append(left[left_index])
+            left_index += 1
+        else:
+            result.append(right[right_index])
+            right_index += 1
+
+    result.extend(left[left_index:])
+    result.extend(right[right_index:])
+
+    return result
 
 # Example usage
-str1 = "ABCXYZ"
-str2 = "DEFGXYZ"
-result = longest_common_substring(str1, str2)
-print(result)  # Output: "XYZ"
+arr = [64, 34, 25, 12, 22, 11, 90]
+sorted_arr = merge_sort(arr)
+print(sorted_arr)
