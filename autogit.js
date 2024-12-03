@@ -1,27 +1,21 @@
-# Definition for a binary tree node
-class Node:
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
+def find_majority_element(arr):
+    count = {}
+    for num in arr:
+        if num in count:
+            count[num] += 1
+        else:
+            count[num] = 1
 
-# Function to find the sum of all nodes in a binary tree
-def sum_of_nodes(node):
-    if node is None:
-        return 0
+    majority_element = max(count, key=count.get)
+    if count[majority_element] > len(arr) // 2:
+        return majority_element
+    else:
+        return None
 
-    return node.value + sum_of_nodes(node.left) + sum_of_nodes(node.right)
-
-# Example usage
-# Construct a binary tree
-root = Node(1)
-root.left = Node(2)
-root.right = Node(3)
-root.left.left = Node(4)
-root.left.right = Node(5)
-root.right.left = Node(6)
-root.right.right = Node(7)
-
-# Get the sum of all nodes in the binary tree
-result = sum_of_nodes(root)
-print("Sum of all nodes in the binary tree is:", result)
+# Test the function
+arr = [2, 2, 3, 4, 2, 2, 5, 2, 2]
+result = find_majority_element(arr)
+if result:
+    print("Majority element is:", result)
+else:
+    print("No majority element found")
