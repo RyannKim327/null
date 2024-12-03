@@ -1,14 +1,11 @@
-def largest_prime_factor(num):
-    largest_factor = 1
-    i = 2
-    while i <= num:
-        if num % i == 0:
-            num = num // i
-            largest_factor = i
-        else:
-            i += 1
-    return largest_factor
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
 
-num = 13195  # Insert the number for which you want to find the largest prime factor
-result = largest_prime_factor(num)
-print("The largest prime factor of {} is: {}".format(num, result))
+def sum_of_nodes(root):
+    if root is None:
+        return 0
+    
+    return root.value + sum_of_nodes(root.left) + sum_of_nodes(root.right)
