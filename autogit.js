@@ -1,15 +1,44 @@
-def count_word_occurrences(string, word):
-    words = string.split()
-    count = 0
+def fibonacci_search(arr, x):
+    fib_minus_2 = 0
+    fib_minus_1 = 1
+    fib = fib_minus_1 + fib_minus_2
 
-    for w in words:
-        if w == word:
-            count += 1
+    while fib < len(arr):
+        fib_minus_2 = fib_minus_1
+        fib_minus_1 = fib
+        fib = fib_minus_1 + fib_minus_2
 
-    return count
+    offset = -1
 
-# Example usage
-text = "This is a sample string with some sample words in it."
-word_to_count = "sample"
-occurrences = count_word_occurrences(text, word_to_count)
-print(f"The word '{word_to_count}' occurs {occurrences} times in the text.")
+    while fib > 1:
+        i = min(offset + fib_minus_2, len(arr) - 1)
+
+        if arr[i] < x:
+            fib = fib_minus_1
+            fib_minus_1 = fib_minus_2
+            fib_minus_2 = fib - fib_minus_1
+            offset = i
+
+        elif arr[i] > x:
+            fib = fib_minus_2
+            fib_minus_1 = fib_minus_1 - fib_minus_2
+            fib_minus_2 = fib - fib_minus_1
+
+        else:
+            return i
+
+    if fib_minus_1 and offset < len(arr) - 1 and arr[offset + 1] == x:
+        return offset + 1
+
+    return -1
+
+# Usage
+arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100]
+x = 85
+
+result = fibonacci_search(arr, x)
+
+if result != -1:
+    print(f"Element found at index {result}")
+else:
+    print("Element not found")
