@@ -1,22 +1,46 @@
-import android.os.AsyncTask;
-import android.widget.Toast;
+#include <iostream>
 
-public class MyAsyncTask extends AsyncTask<Void, Void, String> {
+struct Node {
+    int data;
+    Node* next;
+};
 
-    @Override
-    protected String doInBackground(Void... voids) {
-        try {
-            // Connect to a server or perform any background task here
-            Thread.sleep(2000); // Simulating a task that takes 2 seconds
-            return "Connected successfully";
-        } catch (Exception e) {
-            return "Failed to connect";
-        }
+Node* reverseLinkedList(Node* head) {
+    Node* prev = nullptr;
+    Node* current = head;
+    Node* next = nullptr;
+
+    while (current != nullptr) {
+        next = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
     }
 
-    @Override
-    protected void onPostExecute(String result) {
-        super.onPostExecute(result);
-        Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+    return prev;
+}
+
+void printLinkedList(Node* head) {
+    Node* temp = head;
+    while (temp != nullptr) {
+        std::cout << temp->data << " ";
+        temp = temp->next;
     }
+    std::cout << std::endl;
+}
+
+int main() {
+    Node* head = new Node{1, nullptr};
+    head->next = new Node{2, nullptr};
+    head->next->next = new Node{3, nullptr};
+
+    std::cout << "Original linked list: ";
+    printLinkedList(head);
+
+    head = reverseLinkedList(head);
+
+    std::cout << "Reversed linked list: ";
+    printLinkedList(head);
+
+    return 0;
 }
