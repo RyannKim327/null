@@ -1,10 +1,32 @@
-import requests
+def counting_sort(arr, exp):
+    n = len(arr)
+    output = [0] * n
+    count = [0] * 10
+    
+    for i in range(n):
+        index = arr[i] // exp
+        count[index % 10] += 1
+    
+    for i in range(1, 10):
+        count[i] += count[i - 1]
+    
+    i = n - 1
+    while i >= 0:
+        index = arr[i] // exp
+        output[count[index % 10] - 1] = arr[i]
+        count[index % 10] -= 1
+        i -= 1
+    
+    for i in range(n):
+        arr[i] = output[i]
 
-url = "https://api.example.com/data"
-response = requests.get(url)
+def radix_sort(arr):
+    max_num = max(arr)
+    exp = 1
+    while max_num // exp > 0:
+        counting_sort(arr, exp)
+        exp *= 10
 
-if response.status_code == 200:
-    data = response.json()
-    print(data)
-else:
-    print("Error: Unable to fetch data from API")
+arr = [170, 45, 75, 90, 802, 24, 2, 66]
+radix_sort(arr)
+print("Sorted array is:", arr)
