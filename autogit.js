@@ -1,17 +1,14 @@
-# Define the string and the word you want to count
-string = "This is a sample string with some sample words in it."
-word = "sample"
+def largest_prime_factor(num):
+    largest_factor = 1
+    i = 2
+    while i <= num:
+        if num % i == 0:
+            num = num // i
+            largest_factor = i
+        else:
+            i += 1
+    return largest_factor
 
-# Split the string into individual words
-words_list = string.split()
-
-# Initialize a counter variable to store the count
-count = 0
-
-# Loop through the words in the list and check if each word matches the target word
-for w in words_list:
-    if w == word:
-        count += 1
-
-# Print the count of occurrences of the word
-print("The word '{}' appears {} times in the string.".format(word, count))
+num = 13195  # Insert the number for which you want to find the largest prime factor
+result = largest_prime_factor(num)
+print("The largest prime factor of {} is: {}".format(num, result))
