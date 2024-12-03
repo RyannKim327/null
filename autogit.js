@@ -1,29 +1,50 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.next = None
 
-std::vector<int> findCommonElements(std::vector<int> arr1, std::vector<int> arr2) {
-    std::vector<int> commonElements;
-    
-    for (int i = 0; i < arr1.size(); i++) {
-        if (std::find(arr2.begin(), arr2.end(), arr1[i]) != arr2.end()) {
-            commonElements.push_back(arr1[i]);
-        }
-    }
-    
-    return commonElements;
-}
+class LinkedList:
+    def __init__(self):
+        self.head = None
 
-int main() {
-    std::vector<int> array1 = {1, 2, 3, 4, 5};
-    std::vector<int> array2 = {3, 4, 5, 6, 7};
-    
-    std::vector<int> result = findCommonElements(array1, array2);
-    
-    std::cout << "Common elements: ";
-    for (int element : result) {
-        std::cout << element << " ";
-    }
-    
-    return 0;
-}
+    def append(self, value):
+        new_node = Node(value)
+        if self.head is None:
+            self.head = new_node
+            return
+        last = self.head
+        while last.next:
+            last = last.next
+        last.next = new_node
+
+    def print_list(self):
+        current = self.head
+        while current:
+            print(current.value, end=" ")
+            current = current.next
+        print()
+
+    def reverse(self): 
+        prev = None
+        current = self.head
+        while current:
+            next_node = current.next
+            current.next = prev
+            prev = current
+            current = next_node
+        self.head = prev
+
+# Test the code
+llist = LinkedList()
+llist.append(1)
+llist.append(2)
+llist.append(3)
+llist.append(4)
+
+print("Original linked list:")
+llist.print_list()
+
+llist.reverse()
+
+print("Reversed linked list:")
+llist.print_list()
