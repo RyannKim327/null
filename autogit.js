@@ -1,94 +1,40 @@
-class Node:
-    def __init__(self, key):
-        self.key = key
-        self.left = None
-        self.right = None
-        self.height = 1
-
-
-class AVLTree:
-    def insert(self, root, key):
-        if not root:
-            return Node(key)
-        elif key < root.key:
-            root.left = self.insert(root.left, key)
+def compute_lps(pattern):
+    m = len(pattern)
+    lps = [0] * m
+    j = 0
+    i = 1
+    while i < m:
+        if pattern[i] == pattern[j]:
+            j += 1
+            lps[i] = j
+            i += 1
         else:
-            root.right = self.insert(root.right, key)
+            if j != 0:
+                j = lps[j - 1]
+            else:
+                lps[i] = 0
+                i += 1
+    return lps
 
-        root.height = 1 + max(self.get_height(root.left), self.get_height(root.right))
+def kmp_search(text, pattern):
+    n = len(text)
+    m = len(pattern)
+    lps = compute_lps(pattern)
+    i = 0
+    j = 0
+    while i < n:
+        if text[i] == pattern[j]:
+            i += 1
+            j += 1
+        if j == m:
+            print("Pattern found at index", i - j)
+            j = lps[j - 1]
+        elif i < n and text[i] != pattern[j]:
+            if j != 0:
+                j = lps[j - 1]
+            else:
+                i += 1
 
-        balance = self.get_balance(root)
-
-        # Left Left Case
-        if balance > 1 and key < root.left.key:
-            return self.rotate_right(root)
-
-        # Right Right Case
-        if balance < -1 and key > root.right.key:
-            return self.rotate_left(root)
-
-        # Left Right Case
-        if balance > 1 and key > root.left.key:
-            root.left = self.rotate_left(root.left)
-            return self.rotate_right(root)
-
-        # Right Left Case
-        if balance < -1 and key < root.right.key:
-            root.right = self.rotate_right(root.right)
-            return self.rotate_left(root)
-
-        return root
-
-    def rotate_right(self, z):
-        y = z.left
-        T = y.right
-
-        y.right = z
-        z.left = T
-
-        z.height = 1 + max(self.get_height(z.left), self.get_height(z.right))
-        y.height = 1 + max(self.get_height(y.left), self.get_height(y.right))
-
-        return y
-
-    def rotate_left(self, z):
-        y = z.right
-        T = y.left
-
-        y.left = z
-        z.right = T
-
-        z.height = 1 + max(self.get_height(z.left), self.get_height(z.right))
-        y.height = 1 + max(self.get_height(y.left), self.get_height(y.right))
-
-        return y
-
-    def get_height(self, root):
-        if not root:
-            return 0
-        return root.height
-
-    def get_balance(self, root):
-        if not root:
-            return 0
-        return self.get_height(root.left) - self.get_height(root.right)
-
-    def pre_order_traversal(self, root):
-        if not root:
-            return
-        print(root.key, end=" ")
-        self.pre_order_traversal(root.left)
-        self.pre_order_traversal(root.right)
-
-
-if __name__ == "__main__":
-    avl = AVLTree()
-    root = None
-
-    keys = [10, 20, 30, 15, 5]
-
-    for key in keys:
-        root = avl.insert(root, key)
-
-    print("Pre-order traversal of the constructed AVL tree is:")
-    avl.pre_order_traversal(root)
+text = "ABABDABACDABABCABAB"
+pattern = "ABABCABAB"
+kmp_search(text, pattern)
