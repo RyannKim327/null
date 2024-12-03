@@ -1,55 +1,35 @@
-#include <iostream>
-#define MAX_SIZE 100
+from collections import defaultdict
 
-class Stack {
-private:
-    int arr[MAX_SIZE];
-    int top;
+def topological_sort(graph):
+    in_degree = defaultdict(int)
+    result = []
 
-public:
-    Stack() {
-        top = -1;
-    }
+    # Calculate in-degree for each node
+    for node in graph:
+        for neighbor in graph[node]:
+            in_degree[neighbor] += 1
 
-    void push(int val) {
-        if (top >= MAX_SIZE - 1) {
-            std::cout << "Stack overflow" << std::endl;
-            return;
-        }
-        arr[++top] = val;
-    }
+    # Perform topological sort
+    stack = [node for node in graph if in_degree[node] == 0]
+    while stack:
+        node = stack.pop()
+        result.append(node)
+        for neighbor in graph[node]:
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                stack.append(neighbor)
 
-    int pop() {
-        if (top < 0) {
-            std::cout << "Stack underflow" << std::endl;
-            return -1;
-        }
-        return arr[top--];
-    }
+    if len(result) == len(graph):
+        return result
+    else:
+        raise ValueError("Graph has a cycle")
 
-    int peek() {
-        if (top < 0) {
-            std::cout << "Stack is empty" << std::endl;
-            return -1;
-        }
-        return arr[top];
-    }
-
-    bool isEmpty() {
-        return top < 0;
-    }
-};
-
-int main() {
-    Stack stack;
-    stack.push(1);
-    stack.push(2);
-    stack.push(3);
-
-    std::cout << stack.pop() << std::endl;
-    std::cout << stack.pop() << std::endl;
-
-    std::cout << "Is stack empty? " << (stack.isEmpty() ? "Yes" : "No") << std::endl;
-
-    return 0;
+# Example usage
+graph = {
+    0: [1, 2],
+    1: [3],
+    2: [3],
+    3: [4],
+    4: []
 }
+print(topological_sort(graph))
