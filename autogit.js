@@ -1,72 +1,12 @@
-#include <iostream>
+def quicksort(arr):
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    return quicksort(left) + middle + quicksort(right)
 
-struct Node {
-    int data;
-    Node* next;
-};
-
-class Queue {
-private:
-    Node* front;
-    Node* rear;
-
-public:
-    Queue() {
-        front = nullptr;
-        rear = nullptr;
-    }
-
-    void enqueue(int data) {
-        Node* newNode = new Node();
-        newNode->data = data;
-        newNode->next = nullptr;
-
-        if (rear == nullptr) {
-            front = newNode;
-            rear = newNode;
-        } else {
-            rear->next = newNode;
-            rear = newNode;
-        }
-    }
-
-    void dequeue() {
-        if (front == nullptr) {
-            std::cout << "Queue is empty." << std::endl;
-            return;
-        }
-
-        Node* temp = front;
-        front = front->next;
-        delete temp;
-
-        if (front == nullptr) {
-            rear = nullptr;
-        }
-    }
-
-    void display() {
-        Node* current = front;
-        while (current != nullptr) {
-            std::cout << current->data << " ";
-            current = current->next;
-        }
-        std::cout << std::endl;
-    }
-};
-
-int main() {
-    Queue q;
-    
-    q.enqueue(10);
-    q.enqueue(20);
-    q.enqueue(30);
-    
-    q.display();
-    
-    q.dequeue();
-    q.display();
-    
-    return 0;
-}
-
+# Example usage
+arr = [3, 6, 8, 10, 1, 2, 1]
+print(quicksort(arr))
