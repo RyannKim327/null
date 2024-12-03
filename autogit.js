@@ -1,22 +1,14 @@
-def binary_search(arr, target, low, high):
-    if low > high:
-        return -1
+import re
 
-    mid = (low + high) // 2
-
-    if arr[mid] == target:
-        return mid
-    elif arr[mid] < target:
-        return binary_search(arr, target, mid + 1, high)
+def validate_email(email):
+    pattern = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+    if re.match(pattern, email):
+        return True
     else:
-        return binary_search(arr, target, low, mid - 1)
+        return False
 
-# Example usage:
-arr = [1, 3, 5, 7, 9, 11, 13, 15]
-target = 7
-index = binary_search(arr, target, 0, len(arr) - 1)
-
-if index != -1:
-    print(f"Element found at index: {index}")
+email = "example@email.com"
+if validate_email(email):
+    print("Valid email address")
 else:
-    print("Element not found")
+    print("Invalid email address")
