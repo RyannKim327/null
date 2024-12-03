@@ -1,42 +1,17 @@
-def fibonacci_search(arr, x):
-    fib_n2 = 0
-    fib_n1 = 1
-    fib = fib_n1 + fib_n2
+import os
 
-    while fib < len(arr):
-        fib_n2 = fib_n1
-        fib_n1 = fib
-        fib = fib_n1 + fib_n2
+def run_my_task():
+    # Your task logic here
+    print("Task executed at scheduled time")
 
-    offset = -1
+# Cron expression for running the task every day at 3:00 PM
+cron_expression = "0 15 * * *"
 
-    while fib > 1:
-        i = min(offset + fib_n2, len(arr) - 1)
+# Write out current cron job
+current_cron = os.popen('crontab -l').read()
 
-        if arr[i] < x:
-            fib = fib_n1
-            fib_n1 = fib_n2
-            fib_n2 = fib - fib_n1
-            offset = i
-        elif arr[i] > x:
-            fib = fib_n2
-            fib_n1 = fib_n1 - fib_n2
-            fib_n2 = fib - fib_n1
-        else:
-            return i
+# Append new cron job to the existing cron jobs
+new_cron = current_cron + '{} /usr/bin/python3 /path/to/your/script.py\n'.format(cron_expression)
 
-    if fib_n1 and arr[offset] == x:
-        return offset
-
-    return -1
-
-# Example usage:
-arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100]
-x = 35
-
-result = fibonacci_search(arr, x)
-
-if result != -1:
-    print(f"Element found at index {result}")
-else:
-    print("Element not found")
+# Load the new cron configuration
+os.system('(crontab -l ; echo "{}") | crontab -'.format(new_cron))
