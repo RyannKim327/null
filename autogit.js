@@ -1,44 +1,72 @@
-def fibonacci_search(arr, x):
-    fib_minus_2 = 0
-    fib_minus_1 = 1
-    fib = fib_minus_1 + fib_minus_2
+#include <iostream>
 
-    while fib < len(arr):
-        fib_minus_2 = fib_minus_1
-        fib_minus_1 = fib
-        fib = fib_minus_1 + fib_minus_2
+struct Node {
+    int data;
+    Node* next;
+};
 
-    offset = -1
+class Queue {
+private:
+    Node* front;
+    Node* rear;
 
-    while fib > 1:
-        i = min(offset + fib_minus_2, len(arr) - 1)
+public:
+    Queue() {
+        front = nullptr;
+        rear = nullptr;
+    }
 
-        if arr[i] < x:
-            fib = fib_minus_1
-            fib_minus_1 = fib_minus_2
-            fib_minus_2 = fib - fib_minus_1
-            offset = i
+    void enqueue(int data) {
+        Node* newNode = new Node();
+        newNode->data = data;
+        newNode->next = nullptr;
 
-        elif arr[i] > x:
-            fib = fib_minus_2
-            fib_minus_1 = fib_minus_1 - fib_minus_2
-            fib_minus_2 = fib - fib_minus_1
+        if (rear == nullptr) {
+            front = newNode;
+            rear = newNode;
+        } else {
+            rear->next = newNode;
+            rear = newNode;
+        }
+    }
 
-        else:
-            return i
+    void dequeue() {
+        if (front == nullptr) {
+            std::cout << "Queue is empty." << std::endl;
+            return;
+        }
 
-    if fib_minus_1 and offset < len(arr) - 1 and arr[offset + 1] == x:
-        return offset + 1
+        Node* temp = front;
+        front = front->next;
+        delete temp;
 
-    return -1
+        if (front == nullptr) {
+            rear = nullptr;
+        }
+    }
 
-# Usage
-arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100]
-x = 85
+    void display() {
+        Node* current = front;
+        while (current != nullptr) {
+            std::cout << current->data << " ";
+            current = current->next;
+        }
+        std::cout << std::endl;
+    }
+};
 
-result = fibonacci_search(arr, x)
+int main() {
+    Queue q;
+    
+    q.enqueue(10);
+    q.enqueue(20);
+    q.enqueue(30);
+    
+    q.display();
+    
+    q.dequeue();
+    q.display();
+    
+    return 0;
+}
 
-if result != -1:
-    print(f"Element found at index {result}")
-else:
-    print("Element not found")
