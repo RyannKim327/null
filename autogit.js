@@ -1,31 +1,12 @@
-class Stack:
-    def __init__(self):
-        self.stack = []
+def largest_prime_factor(n):
+    i = 2
+    while i * i <= n:
+        if n % i:
+            i += 1
+        else:
+            n //= i
+    return n
 
-    def is_empty(self):
-        return len(self.stack) == 0
-
-    def push(self, item):
-        self.stack.append(item)
-
-    def pop(self):
-        if self.is_empty():
-            return None
-        return self.stack.pop()
-
-    def peek(self):
-        if self.is_empty():
-            return None
-        return self.stack[-1]
-
-    def size(self):
-        return len(self.stack)
-
-# Example usage
-stack = Stack()
-stack.push(1)
-stack.push(2)
-stack.push(3)
-print(stack.pop())  # 3
-print(stack.peek())  # 2
-print(stack.size())  # 2
+number = 1234567890
+result = largest_prime_factor(number)
+print(result)
