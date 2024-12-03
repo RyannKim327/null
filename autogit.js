@@ -1,14 +1,35 @@
-arr = [1, 2, 3, 4, 5]
-element_to_remove = 3
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
 
-if element_to_remove in arr:
-    arr.remove(element_to_remove)
+def height(node):
+    if node is None:
+        return 0
+    else:
+        left_height = height(node.left)
+        right_height = height(node.right)
+        return 1 + max(left_height, right_height)
 
-print(arr)
-arr = [1, 2, 3, 4, 5]
-index_to_remove = 2
+def diameter(node):
+    if node is None:
+        return 0
 
-if index_to_remove < len(arr):
-    arr.pop(index_to_remove)
+    left_height = height(node.left)
+    right_height = height(node.right)
 
-print(arr)
+    left_diameter = diameter(node.left)
+    right_diameter = diameter(node.right)
+
+    return max(left_height + right_height + 1, max(left_diameter, right_diameter))
+
+# Example usage
+# Create a binary tree
+root = Node(1)
+root.left = Node(2)
+root.right = Node(3)
+root.left.left = Node(4)
+root.left.right = Node(5)
+
+print(diameter(root))
