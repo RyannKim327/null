@@ -1,49 +1,44 @@
-from collections import deque
+def preprocess_pattern(pattern):
+    table = {}
+    m = len(pattern)
+    
+    for i in range(m - 1):
+        table[pattern[i]] = m - 1 - i
+    
+    return table
 
-def bi_directional_search(graph, start, goal):
-    # Initialize the frontiers for forward and backward search
-    forward_frontier = deque([start])
-    backward_frontier = deque([goal])
+def boyer_moore_horspool(text, pattern):
+    n = len(text)
+    m = len(pattern)
+    
+    if m == 0:
+        return 0
+    
+    skip_table = preprocess_pattern(pattern)
+    
+    i = 0
+    while i <= n - m:
+        j = m - 1
+        
+        while j >= 0 and pattern[j] == text[i + j]:
+            j -= 1
+        
+        if j == -1:
+            return i
+        
+        if text[i + m - 1] in skip_table:
+            i += skip_table[text[i + m - 1]]
+        else:
+            i += m
+    
+    return -1
 
-    # Initialize sets to keep track of visited nodes for both directions
-    forward_visited = set([start])
-    backward_visited = set([goal])
+# Example usage
+text = "ABAAABCD"
+pattern = "ABC"
+index = boyer_moore_horspool(text, pattern)
 
-    # Main loop
-    while forward_frontier and backward_frontier:
-        # Perform forward search step
-        current_node = forward_frontier.popleft()
-        for neighbor in graph[current_node]:
-            if neighbor not in forward_visited:
-                if neighbor in backward_visited:
-                    return "Path found"  # You can return or store the path here
-                forward_frontier.append(neighbor)
-                forward_visited.add(neighbor)
-
-        # Perform backward search step
-        current_node = backward_frontier.popleft()
-        for neighbor in graph[current_node]:
-            if neighbor not in backward_visited:
-                if neighbor in forward_visited:
-                    return "Path found"  # You can return or store the path here
-                backward_frontier.append(neighbor)
-                backward_visited.add(neighbor)
-
-    return "No path found"
-
-# Example graph represented as an adjacency list
-graph = {
-    'A': ['B', 'C'],
-    'B': ['A', 'D', 'E'],
-    'C': ['A', 'F'],
-    'D': ['B'],
-    'E': ['B', 'F'],
-    'F': ['C', 'E', 'G'],
-    'G': ['F']
-}
-
-start_node = 'A'
-goal_node = 'G'
-
-result = bi_directional_search(graph, start_node, goal_node)
-print(result)
+if index != -1:
+    print("Pattern found at index:", index)
+else:
+    print("Pattern not found")
