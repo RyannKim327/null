@@ -1,32 +1,30 @@
-my_string = "Hello, World!"
-lowercase_string = my_string.lower()
-print(lowercase_string)
-String myString = "Hello, World!";
-String lowercaseString = myString.toLowerCase();
-System.out.println(lowercaseString);
-let myString = "Hello, World!";
-let lowercaseString = myString.toLowerCase();
-console.log(lowercaseString);
-#include <iostream>
-#include <algorithm>
-#include <string>
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
 
-using namespace std;
+def diameter(node):
+    if node is None:
+        return 0
+    left_height = height(node.left)
+    right_height = height(node.right)
+    
+    left_diameter = diameter(node.left)
+    right_diameter = diameter(node.right)
+    
+    return max(left_height + right_height + 1, max(left_diameter, right_diameter))
 
-int main() {
-    string myString = "Hello, World!";
-    transform(myString.begin(), myString.end(), myString.begin(), ::tolower);
-    cout << myString << endl;
-    return 0;
-}
-using System;
+def height(node):
+    if node is None:
+        return 0
+    return 1 + max(height(node.left), height(node.right))
 
-class Program
-{
-    static void Main()
-    {
-        string myString = "Hello, World!";
-        string lowercaseString = myString.ToLower();
-        Console.WriteLine(lowercaseString);
-    }
-}
+# Example usage
+root = Node(1)
+root.left = Node(2)
+root.right = Node(3)
+root.left.left = Node(4)
+root.left.right = Node(5)
+
+print("Diameter of the tree is", diameter(root))
