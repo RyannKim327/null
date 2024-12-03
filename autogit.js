@@ -1,62 +1,29 @@
-import random
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
-class Node:
-    def __init__(self, key, value, level):
-        self.key = key
-        self.value = value
-        self.forward = [None] * (level + 1)
-
-class SkipList:
-    def __init__(self, max_level):
-        self.max_level = max_level
-        self.header = self.create_node(float('-inf'), None, max_level)
-        
-    def create_node(self, key, value, level):
-        return Node(key, value, level)
+std::vector<int> findCommonElements(std::vector<int> arr1, std::vector<int> arr2) {
+    std::vector<int> commonElements;
     
-    def random_level(self):
-        level = 1
-        while random.random() < 0.5 and level < self.max_level:
-            level += 1
-        return level
+    for (int i = 0; i < arr1.size(); i++) {
+        if (std::find(arr2.begin(), arr2.end(), arr1[i]) != arr2.end()) {
+            commonElements.push_back(arr1[i]);
+        }
+    }
     
-    def insert(self, key, value):
-        update = [None] * (self.max_level + 1)
-        current = self.header
-        
-        for i in range(self.max_level, -1, -1):
-            while current.forward[i] and current.forward[i].key < key:
-                current = current.forward[i]
-            update[i] = current
-        
-        level = self.random_level()
-        new_node = self.create_node(key, value, level)
-        
-        for i in range(level + 1):
-            new_node.forward[i] = update[i].forward[i]
-            update[i].forward[i] = new_node
-            
-    def search(self, key):
-        current = self.header
-        for i in range(self.max_level, -1, -1):
-            while current.forward[i] and current.forward[i].key < key:
-                current = current.forward[i]
-        current = current.forward[0]
-        if current and current.key == key:
-            return current.value
-        return None
+    return commonElements;
+}
 
-    def delete(self, key):
-        update = [None] * (self.max_level + 1)
-        current = self.header
-        
-        for i in range(self.max_level, -1, -1):
-            while current.forward[i] and current.forward[i].key < key:
-                current = current.forward[i]
-            update[i] = current
-        
-        current = current.forward[0]
-        
-        if current and current.key == key:
-            for i in range(len(current.forward)):
-                update[i].forward[i] = current.forward[i]
+int main() {
+    std::vector<int> array1 = {1, 2, 3, 4, 5};
+    std::vector<int> array2 = {3, 4, 5, 6, 7};
+    
+    std::vector<int> result = findCommonElements(array1, array2);
+    
+    std::cout << "Common elements: ";
+    for (int element : result) {
+        std::cout << element << " ";
+    }
+    
+    return 0;
+}
