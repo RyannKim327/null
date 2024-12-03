@@ -1,44 +1,38 @@
-def preprocess_pattern(pattern):
-    table = {}
-    m = len(pattern)
+def astar_search(initial_state, goal_state):
+    priority_queue = []
+    heapq.heappush(priority_queue, (0, initial_state))
     
-    for i in range(m - 1):
-        table[pattern[i]] = m - 1 - i
+    while priority_queue:
+        node = heapq.heappop(priority_queue)[1]
+        
+        if node == goal_state:
+            return node # found goal state
+        
+        # Expand node and calculate costs for successors
+        for successor in get_successors(node):
+            # Calculate f-cost
+            g_cost = calculate_g_cost(successor)
+            h_cost = heuristic_cost(successor, goal_state)
+            f_cost = g_cost + h_cost
+            
+            heapq.heappush(priority_queue, (f_cost, successor))
     
-    return table
+    return None # goal not found
 
-def boyer_moore_horspool(text, pattern):
-    n = len(text)
-    m = len(pattern)
-    
-    if m == 0:
-        return 0
-    
-    skip_table = preprocess_pattern(pattern)
-    
-    i = 0
-    while i <= n - m:
-        j = m - 1
-        
-        while j >= 0 and pattern[j] == text[i + j]:
-            j -= 1
-        
-        if j == -1:
-            return i
-        
-        if text[i + m - 1] in skip_table:
-            i += skip_table[text[i + m - 1]]
-        else:
-            i += m
-    
-    return -1
+# Define other necessary functions
+def get_successors(node):
+    # Generate successors of a node
+    pass
+
+def calculate_g_cost(node):
+    # Calculate the cost of the path from the start state to node
+    pass
+
+def heuristic_cost(node, goal):
+    # Calculate heuristic cost from node to goal state
+    pass
 
 # Example usage
-text = "ABAAABCD"
-pattern = "ABC"
-index = boyer_moore_horspool(text, pattern)
-
-if index != -1:
-    print("Pattern found at index:", index)
-else:
-    print("Pattern not found")
+initial_state = ...
+goal_state = ...
+result = astar_search(initial_state, goal_state)
