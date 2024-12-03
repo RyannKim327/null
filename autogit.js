@@ -1,3 +1,10 @@
-my_array = [1, 2, 3, 3, 4, 5, 2, 6]
-unique_array = list(set(my_array))
-print(unique_array)
+def calculate_string_length(input_string):
+    count = 0
+    for char in input_string:
+        count += 1
+    return count
+
+# Test the function
+input_string = "Hello, World!"
+length = calculate_string_length(input_string)
+print("Length of the string:", length)
