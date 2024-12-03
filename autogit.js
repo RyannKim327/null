@@ -1,17 +1,22 @@
-import os
+class TreeNode:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
 
-def run_my_task():
-    # Your task logic here
-    print("Task executed at scheduled time")
+def sum_of_nodes(node):
+    if node is None:
+        return 0
+        
+    return node.value + sum_of_nodes(node.left) + sum_of_nodes(node.right)
 
-# Cron expression for running the task every day at 3:00 PM
-cron_expression = "0 15 * * *"
+# Example usage
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(5)
+root.right.left = TreeNode(6)
+root.right.right = TreeNode(7)
 
-# Write out current cron job
-current_cron = os.popen('crontab -l').read()
-
-# Append new cron job to the existing cron jobs
-new_cron = current_cron + '{} /usr/bin/python3 /path/to/your/script.py\n'.format(cron_expression)
-
-# Load the new cron configuration
-os.system('(crontab -l ; echo "{}") | crontab -'.format(new_cron))
+print(sum_of_nodes(root))  # Output: 28
