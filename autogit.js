@@ -1,48 +1,29 @@
-import heapq
+def longest_common_substring(s1, s2):
+    m = len(s1)
+    n = len(s2)
+    longest_length = 0
+    ending_index = 0
 
-def beam_search(initial_state, beam_width, max_length):
-    visited = []
-    queue = [(0, [initial_state])]
-    
-    while queue:
-        score, path = heapq.heappop(queue)
-        current_state = path[-1]
-        
-        if len(path) > max_length:
-            visited.append((score, path))
-            continue
-        
-        if is_goal_state(current_state):
-            visited.append((score, path))
-            continue
-        
-        for action in get_possible_actions(current_state):
-            new_state = apply_action(current_state, action)
-            new_score = calculate_score(new_state)
-            new_path = path + [new_state]
-            heapq.heappush(queue, (new_score, new_path))
-        
-        queue = queue[:beam_width]
-    
-    return visited
+    # Create a 2D array to store the lengths of the longest common suffixes
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
 
-# Sample functions for demonstration purposes
-def is_goal_state(state):
-    return False
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if s1[i - 1] == s2[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1] + 1
+                if dp[i][j] > longest_length:
+                    longest_length = dp[i][j]
+                    ending_index = i
+            else:
+                dp[i][j] = 0
 
-def get_possible_actions(state):
-    return []
+    if longest_length == 0:
+        return ""
 
-def apply_action(state, action):
-    return state
+    start_index = ending_index - longest_length
+    return s1[start_index:ending_index]
 
-def calculate_score(state):
-    return 0
-
-# Example usage
-initial_state = 1
-beam_width = 3
-max_length = 10
-
-results = beam_search(initial_state, beam_width, max_length)
-print(results)
+# Test the function
+s1 = "abcdefg"
+s2 = "xyzabcde"
+print(longest_common_substring(s1, s2))  # Output: "abcde"
