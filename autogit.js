@@ -1,22 +1,23 @@
-class TreeNode:
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
+def binary_search(arr, target):
+    low = 0
+    high = len(arr) - 1
 
-def sum_of_nodes(node):
-    if node is None:
-        return 0
-        
-    return node.value + sum_of_nodes(node.left) + sum_of_nodes(node.right)
+    while low <= high:
+        mid = (low + high) // 2
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] < target:
+            low = mid + 1
+        else:
+            high = mid - 1
+
+    return -1
 
 # Example usage
-root = TreeNode(1)
-root.left = TreeNode(2)
-root.right = TreeNode(3)
-root.left.left = TreeNode(4)
-root.left.right = TreeNode(5)
-root.right.left = TreeNode(6)
-root.right.right = TreeNode(7)
-
-print(sum_of_nodes(root))  # Output: 28
+arr = [1, 3, 5, 7, 9, 11, 13, 15, 17]
+target = 9
+result = binary_search(arr, target)
+if result != -1:
+    print(f"Element found at index {result}")
+else:
+    print("Element not found")
