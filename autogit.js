@@ -1,26 +1,27 @@
-def is_anagram(str1, str2):
-    # Convert both strings to lowercase
-    str1 = str1.lower()
-    str2 = str2.lower()
+# Definition for a binary tree node
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
 
-    # Remove spaces and special characters
-    str1 = ''.join(e for e in str1 if e.isalnum())
-    str2 = ''.join(e for e in str2 if e.isalnum())
+# Function to find the sum of all nodes in a binary tree
+def sum_of_nodes(node):
+    if node is None:
+        return 0
 
-    # Sort both strings
-    str1_sorted = sorted(str1)
-    str2_sorted = sorted(str2)
+    return node.value + sum_of_nodes(node.left) + sum_of_nodes(node.right)
 
-    # Compare the sorted strings
-    if str1_sorted == str2_sorted:
-        return True
-    else:
-        return False
+# Example usage
+# Construct a binary tree
+root = Node(1)
+root.left = Node(2)
+root.right = Node(3)
+root.left.left = Node(4)
+root.left.right = Node(5)
+root.right.left = Node(6)
+root.right.right = Node(7)
 
-# Test the function
-string1 = "Listen"
-string2 = "Silent"
-if is_anagram(string1, string2):
-    print(f"{string1} and {string2} are anagrams.")
-else:
-    print(f"{string1} and {string2} are not anagrams.")
+# Get the sum of all nodes in the binary tree
+result = sum_of_nodes(root)
+print("Sum of all nodes in the binary tree is:", result)
