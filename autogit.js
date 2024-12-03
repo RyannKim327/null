@@ -1,30 +1,12 @@
-class Node:
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
+from cron import Cron
 
-def max_depth(node):
-    if node is None:
-        return 0
-    else:
-        left_depth = max_depth(node.left)
-        right_depth = max_depth(node.right)
+def my_task():
+    print("Task executed at", datetime.datetime.now())
 
-        return max(left_depth, right_depth) + 1
+my_cron = Cron()
+my_cron.schedule("*/1 * * * *", my_task)  # Run every minute
 
-# Example binary tree
-#      1
-#     / \
-#    2   3
-#   /
-#  4
-# \
-#  5
-root = Node(1)
-root.left = Node(2)
-root.right = Node(3)
-root.left.left = Node(4)
-root.left.left.right = Node(5)
-
-print("Maximum depth of the binary tree:", max_depth(root))
+try:
+    my_cron.run()
+except KeyboardInterrupt:
+    my_cron.stop()
