@@ -1,33 +1,22 @@
-def count_sort(arr, exp):
-    n = len(arr)
-    output = [0] * n
-    count = [0] * 10
+def binary_search(arr, low, high, target):
+    if high >= low:
+        mid = low + (high - low) // 2
 
-    for i in range(n):
-        index = arr[i] // exp
-        count[index % 10] += 1
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] > target:
+            return binary_search(arr, low, mid - 1, target)
+        else:
+            return binary_search(arr, mid + 1, high, target)
+    else:
+        return -1
 
-    for i in range(1, 10):
-        count[i] += count[i - 1]
+# Example usage
+arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+target = 5
+result = binary_search(arr, 0, len(arr)-1, target)
 
-    i = n - 1
-    while i >= 0:
-        index = arr[i] // exp
-        output[count[index % 10] - 1] = arr[i]
-        count[index % 10] -= 1
-        i -= 1
-
-    for i in range(n):
-        arr[i] = output[i]
-
-def radix_sort(arr):
-    max_num = max(arr)
-    exp = 1
-
-    while max_num // exp > 0:
-        count_sort(arr, exp)
-        exp *= 10
-
-arr = [170, 45, 75, 90, 802, 24, 2, 66]
-radix_sort(arr)
-print("Sorted array:", arr)
+if result != -1:
+    print("Element is present at index", result)
+else:
+    print("Element is not present in array")
