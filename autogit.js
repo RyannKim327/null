@@ -1,34 +1,45 @@
-def merge_sort(arr):
-    if len(arr) <= 1:
-        return arr
+class PriorityQueue:
+    def __init__(self):
+        self.heap = []
 
-    middle = len(arr) // 2
-    left = arr[:middle]
-    right = arr[middle:]
+    def insert(self, item):
+        self.heap.append(item)
+        self._heapify_up(len(self.heap) - 1)
 
-    left = merge_sort(left)
-    right = merge_sort(right)
+    def extract_min(self):
+        if len(self.heap) == 0:
+            return None
+        
+        min_item = self.heap[0]
+        last_item = self.heap.pop()
+        if len(self.heap) > 0:
+            self.heap[0] = last_item
+            self._heapify_down(0)
+        
+        return min_item
 
-    return merge(left, right)
+    def _heapify_up(self, index):
+        while index > 0:
+            parent_index = (index - 1) // 2
+            if self.heap[index] < self.heap[parent_index]:
+                self.heap[index], self.heap[parent_index] = self.heap[parent_index], self.heap[index]
+                index = parent_index
+            else:
+                break
 
-def merge(left, right):
-    result = []
-    left_index = right_index = 0
+    def _heapify_down(self, index):
+        while True:
+            left_child_index = 2 * index + 1
+            right_child_index = 2 * index + 2
+            min_index = index
 
-    while left_index < len(left) and right_index < len(right):
-        if left[left_index] < right[right_index]:
-            result.append(left[left_index])
-            left_index += 1
-        else:
-            result.append(right[right_index])
-            right_index += 1
+            if left_child_index < len(self.heap) and self.heap[left_child_index] < self.heap[min_index]:
+                min_index = left_child_index
+            if right_child_index < len(self.heap) and self.heap[right_child_index] < self.heap[min_index]:
+                min_index = right_child_index
 
-    result.extend(left[left_index:])
-    result.extend(right[right_index:])
-
-    return result
-
-# Example usage
-arr = [64, 34, 25, 12, 22, 11, 90]
-sorted_arr = merge_sort(arr)
-print(sorted_arr)
+            if min_index != index:
+                self.heap[index], self.heap[min_index] = self.heap[min_index], self.heap[index]
+                index = min_index
+            else:
+                break
