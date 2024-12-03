@@ -1,30 +1,17 @@
-class Node:
-    def __init__(self, key):
-        self.left = None
-        self.right = None
-        self.val = key
+# Define the string and the word you want to count
+string = "This is a sample string with some sample words in it."
+word = "sample"
 
-def insert(root, key):
-    if root is None:
-        return Node(key)
-    else:
-        if root.val < key:
-            root.right = insert(root.right, key)
-        else:
-            root.left = insert(root.left, key)
-    return root
+# Split the string into individual words
+words_list = string.split()
 
-def inorder_traversal(root):
-    if root:
-        inorder_traversal(root.left)
-        print(root.val)
-        inorder_traversal(root.right)
+# Initialize a counter variable to store the count
+count = 0
 
-# Example usage:
-root = None
-keys = [5, 3, 7, 2, 4, 6, 8]
+# Loop through the words in the list and check if each word matches the target word
+for w in words_list:
+    if w == word:
+        count += 1
 
-for key in keys:
-    root = insert(root, key)
-
-inorder_traversal(root)
+# Print the count of occurrences of the word
+print("The word '{}' appears {} times in the string.".format(word, count))
