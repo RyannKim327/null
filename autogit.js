@@ -1,28 +1,30 @@
 class Node:
-    def __init__(self):
-        self.outgoing_edges = {}  # Outgoing edges from this node
-        self.suffix_link = None
+    def __init__(self, key):
+        self.left = None
+        self.right = None
+        self.val = key
 
-class SuffixTree:
-    def __init__(self, s):
-        self.root = Node()
-        self.active_node = self.root
-        self.active_edge = 0
-        self.active_length = 0
-        self.remaining_suffixes = 0
-        self.end = [-1]
-        self.s = s
-        self.build_suffix_tree()
-    
-    def build_suffix_tree(self):
-        # Implement Ukkonen's algorithm to build the tree
-        pass
+def insert(root, key):
+    if root is None:
+        return Node(key)
+    else:
+        if root.val < key:
+            root.right = insert(root.right, key)
+        else:
+            root.left = insert(root.left, key)
+    return root
 
-    def search_substring(self, substr):
-        # Implement a method to search for a substring in the suffix tree
-        pass
+def inorder_traversal(root):
+    if root:
+        inorder_traversal(root.left)
+        print(root.val)
+        inorder_traversal(root.right)
 
-# Example usage
-s = "banana"
-tree = SuffixTree(s)
-tree.search_substring("ana")
+# Example usage:
+root = None
+keys = [5, 3, 7, 2, 4, 6, 8]
+
+for key in keys:
+    root = insert(root, key)
+
+inorder_traversal(root)
