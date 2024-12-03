@@ -1,17 +1,8 @@
-def is_palindrome(s):
-    left, right = 0, len(s) - 1
-    
-    while left < right:
-        if s[left] != s[right]:
-            return False
-        left += 1
-        right -= 1
-    
-    return True
+from crontab import CronTab
 
-# Test the function
-s = "madam"
-if is_palindrome(s):
-    print("The string is a palindrome.")
-else:
-    print("The string is not a palindrome.")
+cron = CronTab(user=True)  # Access the cron table of the current user
+
+job = cron.new(command='echo "Hello, World!"')
+job.minute.every(1)  # Run the job every minute
+
+cron.write()  # Write the changes to the user's crontab
