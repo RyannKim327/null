@@ -1,10 +1,23 @@
-def factorial(n):
-    if n == 0:
-        return 1
-    else:
-        return n * factorial(n-1)
+struct Node {
+    int data;
+    struct Node* next;
+};
 
-# Testing the factorial function
-number = 5
-result = factorial(number)
-print(f"The factorial of {number} is {result}")
+bool hasCycle(struct Node* head) {
+    if (head == NULL) {
+        return false;
+    }
+
+    struct Node* slow = head;
+    struct Node* fast = head->next;
+
+    while (fast != NULL && fast->next != NULL) {
+        if (slow == fast) {
+            return true; // Loop detected
+        }
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+
+    return false; // No loop found
+}
