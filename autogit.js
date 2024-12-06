@@ -1,31 +1,29 @@
-class Node:
-    def __init__(self, val):
-        self.val = val
-        self.left = None
-        self.right = None
+class BTreeNode:
+    def __init__(self, leaf=True):
+        self.keys = []
+        self.children = []
+        self.leaf = leaf
 
-def diameter_of_binary_tree(root):
-    def height(node):
-        nonlocal diameter
+class BTree:
+    def __init__(self, t):
+        self.root = BTreeNode(True)
+        self.t = t
+
+    def search(self, key, node=None):
         if not node:
-            return 0
-        left_height = height(node.left)
-        right_height = height(node.right)
+            node = self.root
+        # Implement search logic here
 
-        # update the diameter if necessary
-        diameter = max(diameter, left_height + right_height)
+    def insert(self, key):
+        # Implement insert logic here
 
-        return 1 + max(left_height, right_height)
+    def delete(self, key):
+        # Implement delete logic here
 
-    diameter = 0
-    height(root)
-    return diameter
-
-# Example usage
-root = Node(1)
-root.left = Node(2)
-root.right = Node(3)
-root.left.left = Node(4)
-root.left.right = Node(5)
-
-print("The diameter of the binary tree is:", diameter_of_binary_tree(root))
+# Test B-tree implementation
+btree = BTree(3)
+btree.insert(2)
+btree.insert(4)
+btree.insert(6)
+btree.insert(8)
+print(btree.search(6))
