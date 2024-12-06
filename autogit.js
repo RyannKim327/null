@@ -1,29 +1,27 @@
-class BTreeNode:
-    def __init__(self, leaf=True):
-        self.keys = []
-        self.children = []
-        self.leaf = leaf
+def longest_increasing_subsequence(nums):
+    n = len(nums)
+    if n == 0:
+        return 0
 
-class BTree:
-    def __init__(self, t):
-        self.root = BTreeNode(True)
-        self.t = t
+    lis = [1] * n
 
-    def search(self, key, node=None):
-        if not node:
-            node = self.root
-        # Implement search logic here
+    for i in range(1, n):
+        for j in range(i):
+            if nums[i] > nums[j]:
+                lis[i] = max(lis[i], lis[j] + 1)
 
-    def insert(self, key):
-        # Implement insert logic here
+    max_length = max(lis)
+    subsequence = []
+    idx = lis.index(max_length)
+    subsequence.append(nums[idx])
 
-    def delete(self, key):
-        # Implement delete logic here
+    for i in range(idx - 1, -1, -1):
+        if nums[i] < nums[idx] and lis[i] == lis[idx] - 1:
+            subsequence.insert(0, nums[i])
+            idx = i
 
-# Test B-tree implementation
-btree = BTree(3)
-btree.insert(2)
-btree.insert(4)
-btree.insert(6)
-btree.insert(8)
-print(btree.search(6))
+    return subsequence
+
+# Example usage
+nums = [10, 22, 9, 33, 21, 50, 41, 60, 80]
+print(longest_increasing_subsequence(nums))
