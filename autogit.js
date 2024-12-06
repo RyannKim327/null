@@ -1,23 +1,31 @@
-struct Node {
-    int data;
-    struct Node* next;
-};
+class Node:
+    def __init__(self, val):
+        self.val = val
+        self.left = None
+        self.right = None
 
-bool hasCycle(struct Node* head) {
-    if (head == NULL) {
-        return false;
-    }
+def diameter_of_binary_tree(root):
+    def height(node):
+        nonlocal diameter
+        if not node:
+            return 0
+        left_height = height(node.left)
+        right_height = height(node.right)
 
-    struct Node* slow = head;
-    struct Node* fast = head->next;
+        # update the diameter if necessary
+        diameter = max(diameter, left_height + right_height)
 
-    while (fast != NULL && fast->next != NULL) {
-        if (slow == fast) {
-            return true; // Loop detected
-        }
-        slow = slow->next;
-        fast = fast->next->next;
-    }
+        return 1 + max(left_height, right_height)
 
-    return false; // No loop found
-}
+    diameter = 0
+    height(root)
+    return diameter
+
+# Example usage
+root = Node(1)
+root.left = Node(2)
+root.right = Node(3)
+root.left.left = Node(4)
+root.left.right = Node(5)
+
+print("The diameter of the binary tree is:", diameter_of_binary_tree(root))
