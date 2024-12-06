@@ -1,12 +1,8 @@
-def largest_prime_factor(number):
-    i = 2
-    while i * i <= number:
-        if number % i:
-            i += 1
-        else:
-            number //= i
-    return number
+my_string = "Hello, World"
+new_string = my_string.replace(" ", "")
+print(new_string)
+import re
 
-number = 56
-largest_prime_factor = largest_prime_factor(number)
-print(f"The largest prime factor of {number} is {largest_prime_factor}")
+my_string = "Hello, World"
+new_string = re.sub(r'\s+', '', my_string)
+print(new_string)
