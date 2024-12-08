@@ -1,24 +1,42 @@
-def findMedianSortedArrays(nums1, nums2):
-    merged = []
-    i, j = 0, 0
+import android.os.AsyncTask;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
-    while i < len(nums1) and j < len(nums2):
-        if nums1[i] < nums2[j]:
-            merged.append(nums1[i])
-            i += 1
-        else:
-            merged.append(nums2[j])
-            j += 1
+public class MyAsyncTask extends AsyncTask<String, Void, String> {
 
-    merged += nums1[i:]
-    merged += nums2[j:]
+    @Override
+    protected String doInBackground(String... params) {
+        StringBuilder result = new StringBuilder();
+        
+        try {
+            URL url = new URL(params[0]);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
 
-    n = len(merged)
-    if n % 2 == 0:
-        return (merged[n//2 - 1] + merged[n//2]) / 2
-    else:
-        return merged[n//2]
+            InputStream inputStream = conn.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
 
-nums1 = [1, 3]
-nums2 = [2]
-print(findMedianSortedArrays(nums1, nums2))  # Output: 2.0
+            while ((line = reader.readLine()) != null) {
+                result.append(line);
+            }
+
+            reader.close();
+            inputStream.close();
+            conn.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return result.toString();
+    }
+
+    @Override
+    protected void onPostExecute(String result) {
+        // Handle the result here, such as updating UI with the response data
+    }
+}
