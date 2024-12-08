@@ -1,32 +1,19 @@
-def bmh_search(text, pattern):
-    m = len(pattern)
-    n = len(text)
-    
-    if m == 0:
-        return 0
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
 
-    skip = {}
-    for i in range(m):
-        skip[pattern[i]] = m - i - 1
-    
-    i = m - 1
-    while i < n:
-        k = 0
-        while k < m and pattern[m-1-k] == text[i-k]:
-            k += 1
-        if k == m:
-            return i - m + 1
-        else:
-            skip_val = skip.get(text[i], m)
-            i += skip_val
+def has_cycle(head):
+    if head is None or head.next is None:
+        return False
 
-    return -1
+    slow = head
+    fast = head.next
 
-text = "Hello, how are you doing today?"
-pattern = "doing"
-index = bmh_search(text, pattern)
+    while fast is not None and fast.next is not None:
+        if slow == fast:
+            return True
+        slow = slow.next
+        fast = fast.next.next
 
-if index != -1:
-    print(f"Pattern found at index {index}")
-else:
-    print("Pattern not found")
+    return False
