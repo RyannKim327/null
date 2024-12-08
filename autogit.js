@@ -1,25 +1,32 @@
-class HashTable:
-    def __init__(self, size):
-        self.size = size
-        self.table = [[] for _ in range(size)]
+def bmh_search(text, pattern):
+    m = len(pattern)
+    n = len(text)
+    
+    if m == 0:
+        return 0
 
-    def hash_function(self, key):
-        return hash(key) % self.size
+    skip = {}
+    for i in range(m):
+        skip[pattern[i]] = m - i - 1
+    
+    i = m - 1
+    while i < n:
+        k = 0
+        while k < m and pattern[m-1-k] == text[i-k]:
+            k += 1
+        if k == m:
+            return i - m + 1
+        else:
+            skip_val = skip.get(text[i], m)
+            i += skip_val
 
-    def insert(self, key, value):
-        index = self.hash_function(key)
-        self.table[index].append((key, value))
+    return -1
 
-    def search(self, key):
-        index = self.hash_function(key)
-        for k, v in self.table[index]:
-            if k == key:
-                return v
-        return None
+text = "Hello, how are you doing today?"
+pattern = "doing"
+index = bmh_search(text, pattern)
 
-    def delete(self, key):
-        index = self.hash_function(key)
-        for i, (k, v) in enumerate(self.table[index]):
-            if k == key:
-                del self.table[index][i]
-                return
+if index != -1:
+    print(f"Pattern found at index {index}")
+else:
+    print("Pattern not found")
