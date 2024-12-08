@@ -1,37 +1,24 @@
-import heapq
+def findMedianSortedArrays(nums1, nums2):
+    merged = []
+    i, j = 0, 0
 
-def dijkstra(graph, start):
-    distances = {node: float('infinity') for node in graph}
-    distances[start] = 0
-    visited = set()
-    queue = [(0, start)]
+    while i < len(nums1) and j < len(nums2):
+        if nums1[i] < nums2[j]:
+            merged.append(nums1[i])
+            i += 1
+        else:
+            merged.append(nums2[j])
+            j += 1
 
-    while queue:
-        current_distance, current_node = heapq.heappop(queue)
+    merged += nums1[i:]
+    merged += nums2[j:]
 
-        if current_node in visited:
-            continue
+    n = len(merged)
+    if n % 2 == 0:
+        return (merged[n//2 - 1] + merged[n//2]) / 2
+    else:
+        return merged[n//2]
 
-        visited.add(current_node)
-
-        for neighbor, weight in graph[current_node].items():
-            distance = current_distance + weight
-
-            if distance < distances[neighbor]:
-                distances[neighbor] = distance
-                heapq.heappush(queue, (distance, neighbor))
-
-    return distances
-
-# Example usage
-graph = {
-    'A': {'B': 1, 'C': 4},
-    'B': {'A': 1, 'C': 2, 'D': 5},
-    'C': {'A': 4, 'B': 2, 'D': 1},
-    'D': {'B': 5, 'C': 1}
-}
-
-start_node = 'A'
-
-shortest_distances = dijkstra(graph, start_node)
-print(shortest_distances)
+nums1 = [1, 3]
+nums2 = [2]
+print(findMedianSortedArrays(nums1, nums2))  # Output: 2.0
