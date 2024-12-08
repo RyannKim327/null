@@ -1,19 +1,37 @@
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.next = None
+import heapq
 
-def has_cycle(head):
-    if head is None or head.next is None:
-        return False
+def dijkstra(graph, start):
+    distances = {node: float('infinity') for node in graph}
+    distances[start] = 0
+    visited = set()
+    queue = [(0, start)]
 
-    slow = head
-    fast = head.next
+    while queue:
+        current_distance, current_node = heapq.heappop(queue)
 
-    while fast is not None and fast.next is not None:
-        if slow == fast:
-            return True
-        slow = slow.next
-        fast = fast.next.next
+        if current_node in visited:
+            continue
 
-    return False
+        visited.add(current_node)
+
+        for neighbor, weight in graph[current_node].items():
+            distance = current_distance + weight
+
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                heapq.heappush(queue, (distance, neighbor))
+
+    return distances
+
+# Example usage
+graph = {
+    'A': {'B': 1, 'C': 4},
+    'B': {'A': 1, 'C': 2, 'D': 5},
+    'C': {'A': 4, 'B': 2, 'D': 1},
+    'D': {'B': 5, 'C': 1}
+}
+
+start_node = 'A'
+
+shortest_distances = dijkstra(graph, start_node)
+print(shortest_distances)
