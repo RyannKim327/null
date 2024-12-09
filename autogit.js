@@ -1,42 +1,51 @@
-def bi_directional_search(graph, start, goal):
-    start_queue = [start]  # Queue for start node
-    goal_queue = [goal]    # Queue for goal node
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
 
-    start_visited = set()  # Set to store visited nodes from start
-    goal_visited = set()   # Set to store visited nodes from goal
+class LinkedList:
+    def __init__(self):
+        self.head = None
 
-    while start_queue and goal_queue:
-        # Search from start node
-        curr_start = start_queue.pop(0)
-        start_visited.add(curr_start)
-        if curr_start in goal_visited:
-            return "Path found"
+    def append(self, data):
+        new_node = Node(data)
+        if self.head is None:
+            self.head = new_node
+            return
+        last = self.head
+        while last.next:
+            last = last.next
+        last.next = new_node
 
-        for neighbor in graph[curr_start]:
-            if neighbor not in start_visited:
-                start_queue.append(neighbor)
+    def reverse(self):
+        prev = None
+        current = self.head
+        while current:
+            next_node = current.next
+            current.next = prev
+            prev = current
+            current = next_node
+        self.head = prev
 
-        # Search from goal node
-        curr_goal = goal_queue.pop(0)
-        goal_visited.add(curr_goal)
-        if curr_goal in start_visited:
-            return "Path found"
+    def print_list(self):
+        temp = self.head
+        while temp:
+            print(temp.data, end=' ')
+            temp = temp.next
+        print()
 
-        for neighbor in graph[curr_goal]:
-            if neighbor not in goal_visited:
-                goal_queue.append(neighbor)
+# Creating a linked list
+llist = LinkedList()
+llist.append(1)
+llist.append(2)
+llist.append(3)
+llist.append(4)
 
-    return "Path not found"
+print("Original linked list:")
+llist.print_list()
 
-# Example usage
-graph = {
-    'A': ['B', 'C'],
-    'B': ['A', 'D', 'E'],
-    'C': ['A', 'F'],
-    'D': ['B'],
-    'E': ['B', 'F'],
-    'F': ['C', 'E']
-}
+# Reversing the linked list
+llist.reverse()
 
-result = bi_directional_search(graph, 'A', 'F')
-print(result)
+print("Reversed linked list:")
+llist.print_list()
