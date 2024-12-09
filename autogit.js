@@ -1,23 +1,12 @@
-def binary_search(arr, low, high, target):
-    if high >= low:
-        mid = low + (high - low) // 2
+import requests
 
-        if arr[mid] == target:
-            return mid
-        elif arr[mid] > target:
-            return binary_search(arr, low, mid - 1, target)
-        else:
-            return binary_search(arr, mid + 1, high, target)
-    else:
-        return -1
+url = "https://jsonplaceholder.typicode.com/posts"
+response = requests.get(url)
 
-# Example usage:
-arr = [2, 3, 4, 10, 40]
-target = 10
-
-result = binary_search(arr, 0, len(arr) - 1, target)
-
-if result != -1:
-    print("Element is present at index", result)
+if response.status_code == 200:
+    data = response.json()
+    for post in data:
+        print(post['title'])
 else:
-    print("Element is not present in array")
+    print("Failed to fetch data from API")
+
