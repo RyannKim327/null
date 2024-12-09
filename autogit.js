@@ -1,41 +1,19 @@
-import android.os.AsyncTask
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
+def majority_element(arr):
+    counts = {}
+    majority_threshold = len(arr) // 2
 
-class NetworkTask : AsyncTask<String, Void, String>() {
+    for num in arr:
+        counts[num] = counts.get(num, 0) + 1
+        if counts[num] > majority_threshold:
+            return num
 
-    override fun doInBackground(vararg params: String?): String {
-        val urlString = params[0]
-        val url = URL(urlString)
-        val connection = url.openConnection() as HttpURLConnection
+    return None
 
-        try {
-            val inputStream = connection.inputStream
-            val bufferedReader = BufferedReader(InputStreamReader(inputStream))
-            val stringBuilder = StringBuilder()
-            var line: String?
+# Example usage:
+arr = [1, 2, 3, 2, 2, 2, 5, 4, 2]
+majority_elem = majority_element(arr)
 
-            while (bufferedReader.readLine().also { line = it } != null) {
-                stringBuilder.append(line)
-            }
-
-            return stringBuilder.toString()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return "Error: ${e.message}"
-        } finally {
-            connection.disconnect()
-        }
-    }
-
-    override fun onPostExecute(result: String?) {
-        // Handle the result here
-    }
-}
-
-// To execute the async task
-val url = "https://api.example.com/data"
-val task = NetworkTask()
-task.execute(url)
+if majority_elem is not None:
+    print(f"The majority element is: {majority_elem}")
+else:
+    print("There is no majority element in the array.")
