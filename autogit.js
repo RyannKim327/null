@@ -1,41 +1,28 @@
-function interpolationSearch(arr, x):
-    low = 0
-    high = arr.length - 1
+# Define the Node class for the binary tree
+class Node:
+    def __init__(self, key):
+        self.left = None
+        self.right = None
+        self.val = key
 
-    while low <= high and x >= arr[low] and x <= arr[high]:
-        pos = low + (((high - low) // (arr[high] - arr[low])) * (x - arr[low]))
+# Function to count the number of leaf nodes in a binary tree
+def count_leaf_nodes(node):
+    if node is None:
+        return 0
+    if node.left is None and node.right is None:
+        return 1
+    return count_leaf_nodes(node.left) + count_leaf_nodes(node.right)
 
-        if arr[pos] == x:
-            return pos
-        
-        if arr[pos] < x:
-            low = pos + 1
-        else:
-            high = pos - 1
+# Define the binary tree
+root = Node(1)
+root.left = Node(2)
+root.right = Node(3)
+root.left.left = Node(4)
+root.left.right = Node(5)
+root.right.left = Node(6)
+root.right.right = Node(7)
 
-    return -1
-def interpolation_search(arr, x):
-    low = 0
-    high = len(arr) - 1
+# Call the function to count the number of leaf nodes
+num_leaf_nodes = count_leaf_nodes(root)
 
-    while low <= high and x >= arr[low] and x <= arr[high]:
-        pos = low + ((high - low) // (arr[high] - arr[low])) * (x - arr[low])
-
-        if arr[pos] == x:
-            return pos
-        
-        if arr[pos] < x:
-            low = pos + 1
-        else:
-            high = pos - 1
-
-    return -1
-
-arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-x = 4
-result = interpolation_search(arr, x)
-
-if result != -1:
-    print(f"Element found at index: {result}")
-else:
-    print("Element not found")
+print("Number of leaf nodes in the binary tree:", num_leaf_nodes)
