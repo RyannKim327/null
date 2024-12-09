@@ -1,26 +1,21 @@
-# Node class to represent individual nodes in the linked list
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.next = None
+def counting_sort(arr):
+    max_val = max(arr)
+    counts = [0] * (max_val + 1)
+    sorted_arr = [0] * len(arr)
 
-# Function to find the length of a linked list
-def find_length(head):
-    length = 0
-    current = head
+    for num in arr:
+        counts[num] += 1
 
-    while current is not None:
-        length += 1
-        current = current.next
+    for i in range(1, max_val + 1):
+        counts[i] += counts[i - 1]
 
-    return length
+    for num in reversed(arr):
+        sorted_arr[counts[num] - 1] = num
+        counts[num] -= 1
+
+    return sorted_arr
 
 # Example usage
-# Create a linked list
-head = Node(1)
-head.next = Node(2)
-head.next.next = Node(3)
-head.next.next.next = Node(4)
-
-# Find the length of the linked list
-print("Length of the linked list is:", find_length(head))
+arr = [4, 2, 2, 8, 3, 3, 1]
+sorted_arr = counting_sort(arr)
+print(sorted_arr)
