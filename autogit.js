@@ -1,35 +1,32 @@
-from collections import defaultdict
+import numpy as np
 
-def topological_sort(graph):
-    indegree = {node: 0 for node in graph}
-    for node in graph:
-        for neighbor in graph[node]:
-            indegree[neighbor] += 1
+def beam_search(start, max_width, get_next_states, score_fn):
+    beams = [(start, 0)]
     
-    queue = [node for node in graph if indegree[node] == 0]
-    result = []
+    for _ in range(max_width):
+        next_beams = []
+        for beam, score in beams:
+            states = get_next_states(beam)
+            for next_state in states:
+                next_score = score_fn(next_state)
+                next_beams.append((next_state, score + next_score))
+        
+        next_beams.sort(key=lambda x: x[1], reverse=True)
+        beams = next_beams[:max_width]
     
-    while queue:
-        node = queue.pop(0)
-        result.append(node)
-        for neighbor in graph[node]:
-            indegree[neighbor] -= 1
-            if indegree[neighbor] == 0:
-                queue.append(neighbor)
-    
-    if len(result) == len(graph):
-        return result
-    else:
-        return None
+    return beams
 
 # Example usage
-graph = {
-    'A': ['C', 'D'],
-    'B': ['D'],
-    'C': ['E'],
-    'D': ['F'],
-    'E': [],
-    'F': []
-}
+def get_next_states(state):
+    return [state + 1, state + 2]
 
-print(topological_sort(graph))
+def score_fn(state):
+    return state
+
+start_state = 0
+max_width = 3
+best_beams = beam_search(start_state, max_width, get_next_states, score_fn)
+
+print("Best beams:")
+for state, score in best_beams:
+    print(f"State: {state}, Score: {score}")
