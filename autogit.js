@@ -1,21 +1,35 @@
-def findMedianSortedArrays(nums1, nums2):
-    # Merge the two sorted arrays
-    merged = sorted(nums1 + nums2)
-    
-    # Calculate the total number of elements
-    total_elements = len(merged)
-    
-    # Calculate the index of the middle element
-    mid = total_elements // 2
-    
-    if total_elements % 2 == 1:
-        # Odd number of elements
-        return merged[mid]
-    else:
-        # Even number of elements
-        return (merged[mid - 1] + merged[mid]) / 2
+from collections import defaultdict
 
-# Example usage
-nums1 = [1, 3]
-nums2 = [2]
-print(findMedianSortedArrays(nums1, nums2))  # Output: 2.0
+class Graph:
+    def __init__(self):
+        self.graph = defaultdict(list)
+
+    def add_edge(self, u, v):
+        self.graph[u].append(v)
+
+    def topological_sort_util(self, v, visited, stack):
+        visited[v] = True
+        for i in self.graph[v]:
+            if not visited[i]:
+                self.topological_sort_util(i, visited, stack)
+        stack.append(v)
+
+    def topological_sort(self):
+        visited = [False] * len(self.graph)
+        stack = []
+        for i in range(len(self.graph)):
+            if not visited[i]:
+                self.topological_sort_util(i, visited, stack)
+        return stack[::-1]
+
+# Test the implementation
+g = Graph()
+g.add_edge(5, 2)
+g.add_edge(5, 0)
+g.add_edge(4, 0)
+g.add_edge(4, 1)
+g.add_edge(2, 3)
+g.add_edge(3, 1)
+
+result = g.topological_sort()
+print(result)
