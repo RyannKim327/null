@@ -1,21 +1,41 @@
-def counting_sort(arr):
-    max_val = max(arr)
-    counts = [0] * (max_val + 1)
-    sorted_arr = [0] * len(arr)
+import android.os.AsyncTask
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
 
-    for num in arr:
-        counts[num] += 1
+class NetworkTask : AsyncTask<String, Void, String>() {
 
-    for i in range(1, max_val + 1):
-        counts[i] += counts[i - 1]
+    override fun doInBackground(vararg params: String?): String {
+        val urlString = params[0]
+        val url = URL(urlString)
+        val connection = url.openConnection() as HttpURLConnection
 
-    for num in reversed(arr):
-        sorted_arr[counts[num] - 1] = num
-        counts[num] -= 1
+        try {
+            val inputStream = connection.inputStream
+            val bufferedReader = BufferedReader(InputStreamReader(inputStream))
+            val stringBuilder = StringBuilder()
+            var line: String?
 
-    return sorted_arr
+            while (bufferedReader.readLine().also { line = it } != null) {
+                stringBuilder.append(line)
+            }
 
-# Example usage
-arr = [4, 2, 2, 8, 3, 3, 1]
-sorted_arr = counting_sort(arr)
-print(sorted_arr)
+            return stringBuilder.toString()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return "Error: ${e.message}"
+        } finally {
+            connection.disconnect()
+        }
+    }
+
+    override fun onPostExecute(result: String?) {
+        // Handle the result here
+    }
+}
+
+// To execute the async task
+val url = "https://api.example.com/data"
+val task = NetworkTask()
+task.execute(url)
