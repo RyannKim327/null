@@ -1,20 +1,32 @@
-def bwt(input_string):
-    rotations = [input_string[i:] + input_string[:i] for i in range(len(input_string))]
-    sorted_rotations = sorted(rotations)
-    bwt_result = ''.join(rotation[-1] for rotation in sorted_rotations)
-    return bwt_result
+import heapq
 
-def ibwt(input_string):
-    table = [''] * len(input_string)
-    for i in range(len(input_string)):
-        table = sorted([input_string[i] + table[i] for i in range(len(input_string))])
-    return next(row for row in table if row.endswith('$'))
+def dijkstra(graph, source):
+    pq = [(0, source)]
+    distances = {node: float('infinity') for node in graph}
+    distances[source] = 0
+
+    while pq:
+        curr_distance, curr_node = heapq.heappop(pq)
+        
+        if curr_distance > distances[curr_node]:
+            continue
+        
+        for neighbor, weight in graph[curr_node].items():
+            distance = curr_distance + weight
+            
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                heapq.heappush(pq, (distance, neighbor))
+    
+    return distances
 
 # Example usage
-input_string = "banana"
-encoded = bwt(input_string)
-decoded = ibwt(encoded)
+graph = {
+    'A': {'B': 2, 'C': 1},
+    'B': {'A': 2, 'C': 2},
+    'C': {'A': 1, 'B': 2}
+}
+source_node = 'A'
+shortest_distances = dijkstra(graph, source_node)
 
-print("Original String:", input_string)
-print("Encoded String:", encoded)
-print("Decoded String:", decoded)
+print(shortest_distances)
