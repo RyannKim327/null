@@ -1,44 +1,28 @@
-def fibonacci_search(arr, x):
-    # Initialize Fibonacci numbers
-    fib_m_2 = 0
-    fib_m_1 = 1
-    fib = fib_m_1 + fib_m_2
+def longest_common_subsequence(s1, s2):
+    m, n = len(s1), len(s2)
+    dp = [[0] * (n+1) for _ in range(m+1)]
 
-    # Find the smallest Fibonacci number greater than or equal to length of array
-    while fib < len(arr):
-        fib_m_2 = fib_m_1
-        fib_m_1 = fib
-        fib = fib_m_1 + fib_m_2
+    for i in range(1, m+1):
+        for j in range(1, n+1):
+            if s1[i-1] == s2[j-1]:
+                dp[i][j] = dp[i-1][j-1] + 1
+            else:
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
-    offset = -1
-
-    while fib > 1:
-        i = min(offset+fib_m_2, len(arr)-1)
-
-        if arr[i] < x:
-            fib = fib_m_1
-            fib_m_1 = fib_m_2
-            fib_m_2 = fib - fib_m_1
-            offset = i
-
-        elif arr[i] > x:
-            fib = fib_m_2
-            fib_m_1 = fib_m_1 - fib_m_2
-            fib_m_2 = fib - fib_m_1
-
+    result = ""
+    i, j = m, n
+    while i > 0 and j > 0:
+        if s1[i-1] == s2[j-1]:
+            result = s1[i-1] + result
+            i -= 1
+            j -= 1
+        elif dp[i-1][j] > dp[i][j-1]:
+            i -= 1
         else:
-            return i
+            j -= 1
 
-    if fib_m_1 and arr[offset+1] == x:
-        return offset+1
+    return result
 
-    return -1
-
-# Example usage
-arr = [2, 3, 5, 8, 13, 21, 34, 55, 89]
-x = 55
-index = fibonacci_search(arr, x)
-if index != -1:
-    print("Element found at index:", index)
-else:
-    print("Element not found")
+s1 = "ABCDGH"
+s2 = "AEDFHR"
+print(longest_common_subsequence(s1, s2))  # Output: "ADH"
