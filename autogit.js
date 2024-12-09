@@ -1,62 +1,38 @@
-class BTreeNode:
-    def __init__(self, is_leaf=True):
-        self.is_leaf = is_leaf
-        self.keys = []
-        self.children = []
+class Graph:
+    def __init__(self, vertices):
+        self.V = vertices
+        self.graph = []
 
-class BTree:
-    def __init__(self, degree):
-        self.root = BTreeNode(is_leaf=True)
-        self.degree = degree
+    def add_edge(self, u, v, w):
+        self.graph.append([u, v, w])
 
-    def insert(self, key):
-        if len(self.root.keys) == (2 * self.degree) - 1:
-            new_root = BTreeNode(is_leaf=False)
-            new_root.children.append(self.root)
-            self._split_child(new_root, 0)
-            self.root = new_root
-        self._insert_non_full(self.root, key)
+    def bellman_ford(self, src):
+        dist = [float("Inf")] * self.V
+        dist[src] = 0
 
-    def _insert_non_full(self, node, key):
-        i = len(node.keys) - 1
-        if node.is_leaf:
-            node.keys.append(None)
-            while i >= 0 and key < node.keys[i]:
-                node.keys[i + 1] = node.keys[i]
-                i -= 1
-            node.keys[i + 1] = key
-        else:
-            while i >= 0 and key < node.keys[i]:
-                i -= 1
-            i += 1
-            if len(node.children[i].keys) == (2 * self.degree) - 1:
-                self._split_child(node, i)
-                if key > node.keys[i]:
-                    i += 1
-            self._insert_non_full(node.children[i], key)
+        for _ in range(self.V - 1):
+            for u, v, w in self.graph:
+                if dist[u] != float("Inf") and dist[u] + w < dist[v]:
+                    dist[v] = dist[u] + w
 
-    def _split_child(self, parent, index):
-        child = parent.children[index]
-        new_child = BTreeNode(is_leaf=child.is_leaf)
-        mid = len(child.keys) // 2
-        new_child.keys = child.keys[mid+1:]
-        child.keys = child.keys[:mid]
-        if not child.is_leaf:
-            new_child.children = child.children[mid+1:]
-            child.children = child.children[:mid+1]
-        parent.keys.append(child.keys[mid])
-        parent.children.insert(index + 1, new_child)
+        for u, v, w in self.graph:
+            if dist[u] != float("Inf") and dist[u] + w < dist[v]:
+                print("Graph contains negative weight cycle")
+                return
 
-    def search(self, key):
-        return self._search(self.root, key)
+        print("Vertex Distance from Source")
+        for i in range(self.V):
+            print(f"{i}\t\t{dist[i]}")
 
-    def _search(self, node, key):
-        i = 0
-        while i < len(node.keys) and key > node.keys[i]:
-            i += 1
-        if i < len(node.keys) and key == node.keys[i]:
-            return True
-        if node.is_leaf:
-            return False
-        else:
-            return self._search(node.children[i], key)
+# Example Usage
+g = Graph(5)
+g.add_edge(0, 1, -1)
+g.add_edge(0, 2, 4)
+g.add_edge(1, 2, 3)
+g.add_edge(1, 3, 2)
+g.add_edge(1, 4, 2)
+g.add_edge(3, 2, 5)
+g.add_edge(3, 1, 1)
+g.add_edge(4, 3, -3)
+
+g.bellman_ford(0)
