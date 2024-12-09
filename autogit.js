@@ -1,17 +1,31 @@
-def longest_common_prefix(strings):
-    if not strings:
-        return ""
-    
-    prefix = ""
-    for i in range(len(strings[0])):
-        char = strings[0][i]
-        for string in strings[1:]:
-            if i >= len(string) or string[i] != char:
-                return prefix
-        prefix += char
-    
-    return prefix
+def depth_limited_search(initial_state, goal_state, max_depth):
+    stack = [(initial_state, 0)]
 
-# Test the function
-strings = ["flower", "flow", "flight"]
-print(longest_common_prefix(strings))  # Output: "fl"
+    while stack:
+        state, depth = stack.pop()
+        
+        if state == goal_state:
+            return state
+        
+        if depth < max_depth:
+            children = generate_children(state)
+            
+            for child in children:
+                stack.append((child, depth + 1))
+    
+    return None
+
+def generate_children(state):
+    # Implement this function to generate child states from the given state
+    pass
+
+# Usage
+initial_state = ...
+goal_state = ...
+max_depth = 10
+
+result = depth_limited_search(initial_state, goal_state, max_depth)
+if result:
+    print("Goal state found:", result)
+else:
+    print("Goal state not found within depth limit.")
