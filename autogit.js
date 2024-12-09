@@ -1,7 +1,14 @@
-function sumOfNodes(node):
-    if node is null:
-        return 0
-    return node.value + sumOfNodes(node.left) + sumOfNodes(node.right)
+string = "Hello, World!"
+substring = "Hello"
 
-# Assuming your binary tree is initialized as "tree"
-sum = sumOfNodes(tree.root)
+if substring in string:
+    print("Substring found in the string")
+else:
+    print("Substring not found in the string")
+string = "Hello, World!"
+substring = "Hello"
+
+if string.find(substring) != -1:
+    print("Substring found in the string")
+else:
+    print("Substring not found in the string")
