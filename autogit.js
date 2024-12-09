@@ -1,11 +1,25 @@
-# Define an array of integers
-arr = [4, 2, 7, 1, 9, 5]
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.left = None
+        self.right = None
 
-# Sort the array in ascending order
-sorted_arr = sorted(arr)
+def sum_nodes(root):
+    if root is None:
+        return 0
+    return root.data + sum_nodes(root.left) + sum_nodes(root.right)
 
-print(sorted_arr)
-# Sort the array in descending order
-sorted_arr_desc = sorted(arr, reverse=True)
+# Example binary tree:
+#        1
+#       / \
+#      2   3
+#     / \
+#    4   5
+root = Node(1)
+root.left = Node(2)
+root.right = Node(3)
+root.left.left = Node(4)
+root.left.right = Node(5)
 
-print(sorted_arr_desc)
+total_sum = sum_nodes(root)
+print("Sum of all nodes in the binary tree:", total_sum)
