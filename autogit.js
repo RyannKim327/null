@@ -1,6 +1,31 @@
-arr = [1, 2, 3, 3, 4, 5, 5, 6]
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
 
-# Using set to remove duplicate elements
-arr = list(set(arr))
+def height(node):
+    if node is None:
+        return 0
+    return 1 + max(height(node.left), height(node.right))
 
-print(arr)
+def diameter(node):
+    if node is None:
+        return 0
+    
+    left_height = height(node.left)
+    right_height = height(node.right)
+    
+    left_diameter = diameter(node.left)
+    right_diameter = diameter(node.right)
+    
+    return max(left_height + right_height + 1, max(left_diameter, right_diameter))
+
+# Example usage
+root = Node(1)
+root.left = Node(2)
+root.right = Node(3)
+root.left.left = Node(4)
+root.left.right = Node(5)
+
+print(diameter(root))  # Output the diameter of the binary tree
