@@ -1,28 +1,44 @@
-def heapify(arr, n, i):
-    largest = i  
-    l = 2 * i + 1  
-    r = 2 * i + 2  
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
 
-    if l < n and arr[i] < arr[l]:
-        largest = l
+class LinkedList:
+    def __init__(self):
+        self.head = None
 
-    if r < n and arr[largest] < arr[r]:
-        largest = r
+    def reverse(self):
+        prev = None
+        current = self.head
+        while current is not None:
+            next_node = current.next
+            current.next = prev
+            prev = current
+            current = next_node
+        self.head = prev
 
-    if largest != i:
-        arr[i], arr[largest] = arr[largest], arr[i]
-        heapify(arr, n, largest)
+    def push(self, new_data):
+        new_node = Node(new_data)
+        new_node.next = self.head
+        self.head = new_node
 
-def heapSort(arr):
-    n = len(arr)
+    def print_list(self):
+        temp = self.head
+        while temp:
+            print(temp.data, end=" ")
+            temp = temp.next
 
-    for i in range(n // 2 - 1, -1, -1):
-        heapify(arr, n, i)
+# Example usage:
+llist = LinkedList()
+llist.push(20)
+llist.push(4)
+llist.push(15)
+llist.push(85)
 
-    for i in range(n - 1, 0, -1):
-        arr[i], arr[0] = arr[0], arr[i]
-        heapify(arr, i, 0)
+print("Given linked list:")
+llist.print_list()
 
-arr = [12, 11, 13, 5, 6, 7]
-heapSort(arr)
-print("Sorted array is", arr)
+llist.reverse()
+
+print("\nReversed linked list:")
+llist.print_list()
