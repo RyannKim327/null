@@ -1,50 +1,38 @@
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.next = None
+import heapq
 
-class LinkedList:
-    def __init__(self):
-        self.head = None
+def beam_search(start_state, beam_width, max_depth, evaluate_fn):
+    # Initialize the beam queue with the start state
+    beam_queue = [(evaluate_fn(start_state), start_state)]
 
-    def append(self, data):
-        new_node = Node(data)
-        if self.head is None:
-            self.head = new_node
-            return
-        last_node = self.head
-        while last_node.next:
-            last_node = last_node.next
-        last_node.next = new_node
+    for _ in range(max_depth):
+        new_beam = []
 
-    def reverse(self):
-        prev = None
-        current = self.head
-        while current:
-            next_node = current.next
-            current.next = prev
-            prev = current
-            current = next_node
-        self.head = prev
+        for score, state in beam_queue:
+            if len(new_beam) >= beam_width:
+                break
 
-    def print_list(self):
-        current = self.head
-        while current:
-            print(current.data, end=' ')
-            current = current.next
-        print()
+            # Generate successor states
+            successors = generate_successors(state)
+
+            for successor in successors:
+                new_score = evaluate_fn(successor)
+                heapq.heappush(new_beam, (new_score, successor))
+
+        beam_queue = heapq.nlargest(beam_width, new_beam)
+
+    return beam_queue
+
+# Define a dummy evaluation function
+def evaluate_fn(state):
+    return state[0]
+
+# Define a dummy successor generation function
+def generate_successors(state):
+    return [(state[0] + 1, state[1]), (state[0] + 2, state[1])]
 
 # Example usage
-llist = LinkedList()
-llist.append(1)
-llist.append(2)
-llist.append(3)
-llist.append(4)
-
-print("Original linked list:")
-llist.print_list()
-
-llist.reverse()
-
-print("Reversed linked list:")
-llist.print_list()
+start_state = (0, 0)
+beam_width = 2
+max_depth = 3
+result = beam_search(start_state, beam_width, max_depth, evaluate_fn)
+print(result)
