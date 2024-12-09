@@ -1,10 +1,7 @@
-def are_anagrams(str1, str2):
-    return sorted(str1) == sorted(str2)
+string = "Hello, world!"
+substring = "Hello"
 
-str1 = "listen"
-str2 = "silent"
-
-if are_anagrams(str1, str2):
-    print("The strings are anagrams!")
+if substring in string:
+    print("Substring found in the string.")
 else:
-    print("The strings are not anagrams.")
+    print("Substring not found in the string.")
