@@ -1,14 +1,9 @@
-string = "Hello, World!"
-substring = "Hello"
+let fruits = ['apple', 'banana', 'orange', 'kiwi'];
 
-if substring in string:
-    print("Substring found in the string")
-else:
-    print("Substring not found in the string")
-string = "Hello, World!"
-substring = "Hello"
+// Remove 'orange' from the array
+let index = fruits.indexOf('orange');
+if (index > -1) {
+  fruits.splice(index, 1);
+}
 
-if string.find(substring) != -1:
-    print("Substring found in the string")
-else:
-    print("Substring not found in the string")
+console.log(fruits); // Output: ['apple', 'banana', 'kiwi']
