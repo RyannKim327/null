@@ -1,36 +1,42 @@
-from collections import defaultdict
+def compute_lps_array(pattern):
+    M = len(pattern)
+    lps = [0] * M
+    j = 0
 
-class Graph:
-    def __init__(self):
-        self.graph = defaultdict(list)
-    
-    def addEdge(self, u, v):
-        self.graph[u].append(v)
-    
-    def topologicalSortUtil(self, v, visited, stack):
-        visited[v] = True
-        for i in self.graph[v]:
-            if not visited[i]:
-                self.topologicalSortUtil(i, visited, stack)
-        stack.append(v)
-    
-    def topologicalSort(self):
-        visited = [False] * len(self.graph)
-        stack = []
-        
-        for i in range(len(self.graph)):
-            if not visited[i]:
-                self.topologicalSortUtil(i, visited, stack)
-        
-        return stack[::-1]
+    for i in range(1, M):
+        if pattern[i] == pattern[j]:
+            j += 1
+            lps[i] = j
+        else:
+            if j != 0:
+                j = lps[j - 1]
+                i -= 1
 
-# Example Usage
-g = Graph()
-g.addEdge(5, 2)
-g.addEdge(5, 0)
-g.addEdge(4, 0)
-g.addEdge(4, 1)
-g.addEdge(2, 3)
-g.addEdge(3, 1)
+    return lps
 
-print(g.topologicalSort())
+
+def kmp_search(text, pattern):
+    N = len(text)
+    M = len(pattern)
+    lps = compute_lps_array(pattern)
+    i = 0
+    j = 0
+
+    while i < N:
+        if pattern[j] == text[i]:
+            i += 1
+            j += 1
+
+            if j == M:
+                print("Pattern found at index", i - j)
+                j = lps[j - 1]
+        else:
+            if j != 0:
+                j = lps[j - 1]
+            else:
+                i += 1
+
+
+text = "ABABDABACDABABCABAB"
+pattern = "ABABCABAB"
+kmp_search(text, pattern)
