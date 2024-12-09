@@ -1,28 +1,27 @@
-from collections import deque
+import math
 
-# Define the graph as an adjacency list
-graph = {
-    'A': ['B', 'C'],
-    'B': ['A', 'D', 'E'],
-    'C': ['A', 'F'],
-    'D': ['B'],
-    'E': ['B', 'F'],
-    'F': ['C', 'E']
-}
+def is_prime(n):
+    if n < 2:
+        return False
+    for i in range(2, int(math.sqrt(n)) + 1):
+        if n % i == 0:
+            return False
+    return True
 
-def bfs(graph, start):
-    visited = set()
-    queue = deque([start])
-    visited.add(start)
+def find_factors(n):
+    factors = []
+    for i in range(2, int(math.sqrt(n)) + 1):
+        if n % i == 0:
+            factors.append(i)
+            factors.append(n // i)
+    return factors
 
-    while queue:
-        node = queue.popleft()
-        print(node, end=' ')
+def find_largest_prime_factor(n):
+    factors = find_factors(n)
+    prime_factors = [factor for factor in factors if is_prime(factor)]
+    largest_prime_factor = max(prime_factors)
+    return largest_prime_factor
 
-        for neighbor in graph[node]:
-            if neighbor not in visited:
-                queue.append(neighbor)
-                visited.add(neighbor)
-
-# Start BFS from node 'A'
-bfs(graph, 'A')
+number = 1234567890
+largest_prime_factor = find_largest_prime_factor(number)
+print(f"The largest prime factor of {number} is {largest_prime_factor}")
