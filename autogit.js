@@ -1,8 +1,28 @@
-# Define an array
-array = [3, 7, 2, 9, 4, 1]
+from collections import deque
 
-# Find the maximum value in the array
-max_value = max(array)
+# Define the graph as an adjacency list
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
 
-# Print the maximum value
-print("Maximum value in the array:", max_value)
+def bfs(graph, start):
+    visited = set()
+    queue = deque([start])
+    visited.add(start)
+
+    while queue:
+        node = queue.popleft()
+        print(node, end=' ')
+
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                queue.append(neighbor)
+                visited.add(neighbor)
+
+# Start BFS from node 'A'
+bfs(graph, 'A')
