@@ -1,15 +1,12 @@
-from collections import Counter
-
-def majority_element(arr):
-    n = len(arr)
-    count = Counter(arr)
+def max_subarray_sum(arr):
+    max_ending_here = max_so_far = arr[0]
     
-    for key, value in count.items():
-        if value > n / 2:
-            return key
+    for x in arr[1:]:
+        max_ending_here = max(x, max_ending_here + x)
+        max_so_far = max(max_so_far, max_ending_here)
     
-    return None
+    return max_so_far
 
 # Example usage
-arr = [1, 2, 2, 2, 3, 2, 4, 2, 2]
-print(majority_element(arr))
+arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+print(max_subarray_sum(arr))  # Output: 6
