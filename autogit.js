@@ -1,19 +1,21 @@
-def majority_element(arr):
-    counts = {}
-    majority_threshold = len(arr) // 2
+def findMedianSortedArrays(nums1, nums2):
+    # Merge the two sorted arrays
+    merged = sorted(nums1 + nums2)
+    
+    # Calculate the total number of elements
+    total_elements = len(merged)
+    
+    # Calculate the index of the middle element
+    mid = total_elements // 2
+    
+    if total_elements % 2 == 1:
+        # Odd number of elements
+        return merged[mid]
+    else:
+        # Even number of elements
+        return (merged[mid - 1] + merged[mid]) / 2
 
-    for num in arr:
-        counts[num] = counts.get(num, 0) + 1
-        if counts[num] > majority_threshold:
-            return num
-
-    return None
-
-# Example usage:
-arr = [1, 2, 3, 2, 2, 2, 5, 4, 2]
-majority_elem = majority_element(arr)
-
-if majority_elem is not None:
-    print(f"The majority element is: {majority_elem}")
-else:
-    print("There is no majority element in the array.")
+# Example usage
+nums1 = [1, 3]
+nums2 = [2]
+print(findMedianSortedArrays(nums1, nums2))  # Output: 2.0
