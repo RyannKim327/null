@@ -1,31 +1,42 @@
-class Node:
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
+def bi_directional_search(graph, start, goal):
+    start_queue = [start]  # Queue for start node
+    goal_queue = [goal]    # Queue for goal node
 
-def height(node):
-    if node is None:
-        return 0
-    return 1 + max(height(node.left), height(node.right))
+    start_visited = set()  # Set to store visited nodes from start
+    goal_visited = set()   # Set to store visited nodes from goal
 
-def diameter(node):
-    if node is None:
-        return 0
-    
-    left_height = height(node.left)
-    right_height = height(node.right)
-    
-    left_diameter = diameter(node.left)
-    right_diameter = diameter(node.right)
-    
-    return max(left_height + right_height + 1, max(left_diameter, right_diameter))
+    while start_queue and goal_queue:
+        # Search from start node
+        curr_start = start_queue.pop(0)
+        start_visited.add(curr_start)
+        if curr_start in goal_visited:
+            return "Path found"
+
+        for neighbor in graph[curr_start]:
+            if neighbor not in start_visited:
+                start_queue.append(neighbor)
+
+        # Search from goal node
+        curr_goal = goal_queue.pop(0)
+        goal_visited.add(curr_goal)
+        if curr_goal in start_visited:
+            return "Path found"
+
+        for neighbor in graph[curr_goal]:
+            if neighbor not in goal_visited:
+                goal_queue.append(neighbor)
+
+    return "Path not found"
 
 # Example usage
-root = Node(1)
-root.left = Node(2)
-root.right = Node(3)
-root.left.left = Node(4)
-root.left.right = Node(5)
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
 
-print(diameter(root))  # Output the diameter of the binary tree
+result = bi_directional_search(graph, 'A', 'F')
+print(result)
