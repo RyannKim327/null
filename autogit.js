@@ -1,32 +1,29 @@
-# Definition for a binary tree node
-class TreeNode:
-    def __init__(self, val=0, left=None, right=None):
-        self.val = val
-        self.left = left
-        self.right = right
-
-def diameterOfBinaryTree(root):
-    if not root:
-        return 0
+def find_majority_element(arr):
+    counts = {}
     
-    def height(node):
-        nonlocal diameter
-        if not node:
-            return 0
-        left_height = height(node.left)
-        right_height = height(node.right)
-        diameter = max(diameter, left_height + right_height)
-        return 1 + max(left_height, right_height)
-        
-    diameter = 0
-    height(root)
-    return diameter
+    for num in arr:
+        if num in counts:
+            counts[num] += 1
+        else:
+            counts[num] = 1
+    
+    majority_element = None
+    max_count = 0
+    for key, value in counts.items():
+        if value > len(arr) // 2:
+            majority_element = key
+            max_count = value
+            break
 
-# Example usage
-root = TreeNode(1)
-root.left = TreeNode(2)
-root.right = TreeNode(3)
-root.left.left = TreeNode(4)
-root.left.right = TreeNode(5)
+    if majority_element is not None:
+        return majority_element
+    else:
+        return None
 
-print(diameterOfBinaryTree(root))  # Output: 3
+# Example usage:
+arr = [1, 2, 2, 2, 3, 2, 2, 1, 2]
+result = find_majority_element(arr)
+if result is not None:
+    print(f"The majority element is: {result}")
+else:
+    print("No majority element found.")
