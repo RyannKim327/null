@@ -1,24 +1,34 @@
-def first_non_repeating_character(input_string):
-    char_count = {}
+def merge_sort(arr):
+    if len(arr) <= 1:
+        return arr
     
-    # Count the occurrences of each character
-    for char in input_string:
-        if char in char_count:
-            char_count[char] += 1
+    mid = len(arr) // 2
+    left_half = arr[:mid]
+    right_half = arr[mid:]
+
+    left_half = merge_sort(left_half)
+    right_half = merge_sort(right_half)
+
+    return merge(left_half, right_half)
+
+def merge(left, right):
+    result = []
+    left_idx, right_idx = 0, 0
+
+    while left_idx < len(left) and right_idx < len(right):
+        if left[left_idx] < right[right_idx]:
+            result.append(left[left_idx])
+            left_idx += 1
         else:
-            char_count[char] = 1
-    
-    # Find the first non-repeating character
-    for char in input_string:
-        if char_count[char] == 1:
-            return char
-    
-    return None
+            result.append(right[right_idx])
+            right_idx += 1
+
+    result.extend(left[left_idx:])
+    result.extend(right[right_idx:])
+
+    return result
 
 # Example usage
-input_string = "aabbccddee"
-result = first_non_repeating_character(input_string)
-if result:
-    print("First non-repeating character:", result)
-else:
-    print("No non-repeating character found in the string.")
+arr = [38, 27, 43, 3, 9, 82, 10]
+sorted_arr = merge_sort(arr)
+print(sorted_arr)
