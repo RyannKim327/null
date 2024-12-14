@@ -1,45 +1,22 @@
-#include <iostream>
-#include <vector>
-
-const int degree = 3; // B-tree degree
-
-struct Node {
-    bool leaf;
-    int key_count;
-    std::vector<int> keys;
-    std::vector<Node*> children;
-};
-
-Node* createNode(bool leaf) {
-    Node* node = new Node;
-    node->leaf = leaf;
-    node->key_count = 0;
-    node->keys.resize(2*degree - 1);
-    node->children.resize(2*degree);
-    return node;
-}
-
-void insert(Node* root, int key) {
-    // Implement insertion logic here
-}
-
-bool search(Node* root, int key) {
-    // Implement search logic here
-    return false;
-}
-
-int main() {
-    Node* root = createNode(true);
+def binary_search_recursive(arr, target, low, high):
+    if low > high:
+        return -1
     
-    insert(root, 10);
-    insert(root, 20);
-    insert(root, 5);
+    mid = (low + high) // 2
     
-    if (search(root, 20)) {
-        std::cout << "Key found!" << std::endl;
-    } else {
-        std::cout << "Key not found!" << std::endl;
-    }
+    if arr[mid] == target:
+        return mid
+    elif arr[mid] < target:
+        return binary_search_recursive(arr, target, mid + 1, high)
+    else:
+        return binary_search_recursive(arr, target, low, mid - 1)
 
-    return 0;
-}
+# Example usage
+arr = [1, 3, 5, 7, 9, 11, 13]
+target = 7
+result = binary_search_recursive(arr, target, 0, len(arr) - 1)
+
+if result != -1:
+    print(f"Element found at index {result}")
+else:
+    print("Element not found")
