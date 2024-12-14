@@ -1,32 +1,18 @@
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.next = None
+def longest_increasing_subsequence(array):
+    if not array:
+        return 0
 
-class LinkedList:
-    def __init__(self):
-        self.head = None
+    n = len(array)
+    lis = [1] * n
 
-    def append(self, data):
-        new_node = Node(data)
-        if self.head is None:
-            self.head = new_node
-            return
-        last_node = self.head
-        while last_node.next:
-            last_node = last_node.next
-        last_node.next = new_node
+    for i in range(1, n):
+        for j in range(i):
+            if array[i] > array[j]:
+                lis[i] = max(lis[i], lis[j] + 1)
 
-    def print_list(self):
-        current_node = self.head
-        while current_node:
-            print(current_node.data)
-            current_node = current_node.next
+    return max(lis)
 
-# Example usage
-llist = LinkedList()
-llist.append(1)
-llist.append(2)
-llist.append(3)
-
-llist.print_list()
+# Example
+array = [10, 22, 9, 33, 21, 50, 41, 60, 80]
+result = longest_increasing_subsequence(array)
+print("Length of Longest Increasing Subsequence is:", result)
