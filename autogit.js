@@ -1,20 +1,12 @@
-def shell_sort(arr):
-    n = len(arr)
-    gap = n // 2
+# Function to count occurrences of a character in a string
+def count_occurrences(s, char):
+    count = 0
+    for c in s:
+        if c == char:
+            count += 1
+    return count
 
-    while gap > 0:
-        for i in range(gap, n):
-            temp = arr[i]
-            j = i
-            while j >= gap and arr[j - gap] > temp:
-                arr[j] = arr[j - gap]
-                j -= gap
-            arr[j] = temp
-        gap //= 2
-
-    return arr
-
-# Example usage
-arr = [12, 34, 54, 2, 3]
-sorted_arr = shell_sort(arr)
-print("Sorted array:", sorted_arr)
+# Test the function
+s = "hello, world!"
+char = 'o'
+print(count_occurrences(s, char))  # Output: 2
