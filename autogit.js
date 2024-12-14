@@ -1,10 +1,5 @@
-# Remove spaces using replace()
-string_with_spaces = "Hello, world! This has spaces."
-string_without_spaces = string_with_spaces.replace(" ", "")
-print(string_without_spaces)
-import re
+decimal_num = 10
+binary_num = bin(decimal_num)
 
-# Remove spaces using regex
-string_with_spaces = "Hello, world! This has spaces."
-string_without_spaces = re.sub(r'\s+', '', string_with_spaces)
-print(string_without_spaces)
+print(f"The binary representation of {decimal_num} is: {binary_num}")
+The binary representation of 10 is: 0b1010
