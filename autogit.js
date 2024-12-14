@@ -1,41 +1,27 @@
-class Graph:
-    def __init__(self, vertices):
-        self.V = vertices
-        self.graph = []
+def bi_directional_search(graph, start, goal):
+    forward_queue = [start]
+    backward_queue = [goal]
+    
+    forward_visited = {start}
+    backward_visited = {goal}
+    
+    while forward_queue and backward_queue:
+        # Perform forward search
+        current_node = forward_queue.pop(0)
+        for neighbor in graph[current_node]:
+            if neighbor in backward_visited:
+                return "Path found"
+            if neighbor not in forward_visited:
+                forward_visited.add(neighbor)
+                forward_queue.append(neighbor)
+        
+        # Perform backward search
+        current_node = backward_queue.pop(0)
+        for neighbor in graph[current_node]:
+            if neighbor in forward_visited:
+                return "Path found"
+            if neighbor not in backward_visited:
+                backward_visited.add(neighbor)
+                backward_queue.append(neighbor)
 
-    def add_edge(self, u, v, w):
-        self.graph.append([u, v, w])
-
-    def bellman_ford(self, src):
-        dist = [float("Inf")] * self.V
-        dist[src] = 0
-
-        for _ in range(self.V - 1):
-            for u, v, w in self.graph:
-                if dist[u] != float("Inf") and dist[u] + w < dist[v]:
-                    dist[v] = dist[u] + w
-
-        for u, v, w in self.graph:
-            if dist[u] != float("Inf") and dist[u] + w < dist[v]:
-                print("Graph contains negative weight cycle")
-                return
-
-        self.print_solution(dist)
-
-    def print_solution(self, dist):
-        print("Vertex Distance from Source")
-        for i in range(len(dist)):
-            print(f"{i}\t\t{dist[i]}")
-
-
-g = Graph(5)
-g.add_edge(0, 1, -1)
-g.add_edge(0, 2, 4)
-g.add_edge(1, 2, 3)
-g.add_edge(1, 3, 2)
-g.add_edge(1, 4, 2)
-g.add_edge(3, 2, 5)
-g.add_edge(3, 1, 1)
-g.add_edge(4, 3, -3)
-
-g.bellman_ford(0)
+    return "Path not found"
