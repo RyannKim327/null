@@ -1,14 +1,24 @@
-import re
+def first_non_repeating_character(input_string):
+    char_count = {}
+    
+    # Count the occurrences of each character
+    for char in input_string:
+        if char in char_count:
+            char_count[char] += 1
+        else:
+            char_count[char] = 1
+    
+    # Find the first non-repeating character
+    for char in input_string:
+        if char_count[char] == 1:
+            return char
+    
+    return None
 
-def validate_email(email):
-    pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
-    if re.match(pattern, email):
-        return True
-    else:
-        return False
-
-email = "test@example.com"
-if validate_email(email):
-    print("Valid email address")
+# Example usage
+input_string = "aabbccddee"
+result = first_non_repeating_character(input_string)
+if result:
+    print("First non-repeating character:", result)
 else:
-    print("Invalid email address")
+    print("No non-repeating character found in the string.")
