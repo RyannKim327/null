@@ -1,29 +1,20 @@
-class TreeNode:
-    def __init__(self, value=0, left=None, right=None):
-        self.value = value
-        self.left = left
-        self.right = right
+def shell_sort(arr):
+    n = len(arr)
+    gap = n // 2
 
-def max_depth(root):
-    if root is None:
-        return 0
-    else:
-        left_depth = max_depth(root.left)
-        right_depth = max_depth(root.right)
-        return max(left_depth, right_depth) + 1
+    while gap > 0:
+        for i in range(gap, n):
+            temp = arr[i]
+            j = i
+            while j >= gap and arr[j - gap] > temp:
+                arr[j] = arr[j - gap]
+                j -= gap
+            arr[j] = temp
+        gap //= 2
+
+    return arr
 
 # Example usage
-# Constructing a binary tree
-#        1
-#       / \
-#      2   3
-#     / \
-#    4   5
-
-root = TreeNode(1)
-root.left = TreeNode(2)
-root.right = TreeNode(3)
-root.left.left = TreeNode(4)
-root.left.right = TreeNode(5)
-
-print("Maximum depth of the binary tree is:", max_depth(root))
+arr = [12, 34, 54, 2, 3]
+sorted_arr = shell_sort(arr)
+print("Sorted array:", sorted_arr)
