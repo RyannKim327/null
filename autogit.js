@@ -1,31 +1,37 @@
-import sys
+class Graph:
+    def __init__(self, vertices):
+        self.V = vertices
+        self.graph = []
 
-def dijkstra(graph, source):
-    nodes = set(graph.keys())
-    dist = {node: float('inf') for node in nodes}
-    dist[source] = 0
-    
-    while nodes:
-        min_node = min(nodes, key=lambda x: dist[x])
-        nodes.remove(min_node)
-        
-        for neighbor in graph[min_node]:
-            new_dist = dist[min_node] + graph[min_node][neighbor]
-            if new_dist < dist[neighbor]:
-                dist[neighbor] = new_dist
-    
-    return dist
+    def add_edge(self, u, v, w):
+        self.graph.append([u, v, w])
 
-# Example graph
-graph = {
-    'A': {'B': 5, 'C': 3},
-    'B': {'A': 5, 'C': 2, 'D': 1},
-    'C': {'A': 3, 'B': 2, 'D': 4},
-    'D': {'B': 1, 'C': 4}
-}
+    def bellman_ford(self, src):
+        dist = [float("inf")] * self.V
+        dist[src] = 0
 
-source = 'A'
-shortest_paths = dijkstra(graph, source)
+        for _ in range(self.V - 1):
+            for u, v, w in self.graph:
+                if dist[u] != float("inf") and dist[u] + w < dist[v]:
+                    dist[v] = dist[u] + w
 
-for node in shortest_paths:
-    print(f'Shortest path from {source} to {node}: {shortest_paths[node]}')
+        for u, v, w in self.graph:
+            if dist[u] != float("inf") and dist[u] + w < dist[v]:
+                print("Graph contains negative weight cycle")
+                return
+
+        print("Vertex Distance from Source")
+        for i in range(self.V):
+            print(f"{i}\t\t{dist[i]}")
+
+# Example
+g = Graph(5)
+g.add_edge(0, 1, -1)
+g.add_edge(0, 2, 4)
+g.add_edge(1, 2, 3)
+g.add_edge(1, 3, 2)
+g.add_edge(3, 1, 1)
+g.add_edge(3, 2, 5)
+g.add_edge(1, 4, 2)
+g.add_edge(4, 3, -3)
+g.bellman_ford(0)
