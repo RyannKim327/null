@@ -1,60 +1,45 @@
-import random
-
 class Node:
-    def __init__(self, data=None, next=None, down=None):
+    def __init__(self, data):
         self.data = data
-        self.next = next
-        self.down = down
+        self.next = None
 
-class SkipList:
+class Queue:
     def __init__(self):
-        self.head = Node()
-    
-    def search(self, target):
-        node = self.head
-        while node:
-            while node.next and node.next.data < target:
-                node = node.next
-            if node.next and node.next.data == target:
-                return True
-            node = node.down
-        return False
-    
-    def insert(self, target):
-        path = []
-        node = self.head
-        while node:
-            while node.next and node.next.data < target:
-                node = node.next
-            path.append(node)
-            node = node.down
-        
-        insert_above = True
-        down_node = None
-        while insert_above and path:
-            insert_node = path.pop()
-            insert_node.next = Node(data=target, next=insert_node.next, down=down_node)
-            down_node = insert_node.next
-            insert_above = (random.random() < 0.5)
-        
-        if insert_above:
-            self.head = Node(down=self.head, next=Node(data=target, next=None, down=down_node))
-    
-    def delete(self, target):
-        node = self.head
-        while node:
-            while node.next and node.next.data < target:
-                node = node.next
-            if node.next and node.next.data == target:
-                node.next = node.next.next
-            node = node.down
+        self.front = None
+        self.rear = None
 
-# Example usage
-skip_list = SkipList()
-skip_list.insert(3)
-skip_list.insert(6)
-skip_list.insert(7)
-print(skip_list.search(3))  # Output: True
-print(skip_list.search(5))  # Output: False
-skip_list.delete(6)
-print(skip_list.search(6))  # Output: False
+    def is_empty(self):
+        return self.front is None
+
+    def enqueue(self, data):
+        new_node = Node(data)
+        if self.rear is None:
+            self.front = new_node
+            self.rear = new_node
+        else:
+            self.rear.next = new_node
+            self.rear = new_node
+
+    def dequeue(self):
+        if self.is_empty():
+            return None
+        data = self.front.data
+        self.front = self.front.next
+        if self.front is None:
+            self.rear = None
+        return data
+
+    def peek(self):
+        if self.is_empty():
+            return None
+        return self.front.data
+
+# Example Usage
+q = Queue()
+q.enqueue(1)
+q.enqueue(2)
+q.enqueue(3)
+
+print(q.dequeue())  # Output: 1
+print(q.dequeue())  # Output: 2
+print(q.peek())     # Output: 3
