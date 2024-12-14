@@ -1,15 +1,20 @@
-def is_anagram(str1, str2):
-    # Remove spaces and convert to lowercase
-    str1 = str1.replace(" ", "").lower()
-    str2 = str2.replace(" ", "").lower()
+Node findNthFromEnd(Node head, int n) {
+    Node slow = head;
+    Node fast = head;
 
-    # Check if the sorted version of the strings are equal
-    return sorted(str1) == sorted(str2)
+    // Move the fast pointer to the nth node from the beginning
+    for (int i = 0; i < n; i++) {
+        if (fast == null) {
+            return null;  // The list is shorter than n
+        }
+        fast = fast.next;
+    }
 
-# Test the function
-string1 = "listen"
-string2 = "silent"
-if is_anagram(string1, string2):
-    print("The strings are anagrams.")
-else:
-    print("The strings are not anagrams.")
+    // Move both pointers until the fast pointer reaches the end
+    while (fast != null) {
+        slow = slow.next;
+        fast = fast.next;
+    }
+
+    return slow;  // slow is now pointing to the nth node from the end
+}
