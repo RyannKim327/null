@@ -1,13 +1,32 @@
-def max_subarray_sum(arr):
-    max_sum = arr[0]
-    current_sum = arr[0]
-    
-    for num in arr[1:]:
-        current_sum = max(num, current_sum + num)
-        max_sum = max(max_sum, current_sum)
-    
-    return max_sum
+# Definition for a binary tree node
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
 
-# Test the function
-arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
-print("Maximum sum of subarray:", max_subarray_sum(arr))
+def diameterOfBinaryTree(root):
+    if not root:
+        return 0
+    
+    def height(node):
+        nonlocal diameter
+        if not node:
+            return 0
+        left_height = height(node.left)
+        right_height = height(node.right)
+        diameter = max(diameter, left_height + right_height)
+        return 1 + max(left_height, right_height)
+        
+    diameter = 0
+    height(root)
+    return diameter
+
+# Example usage
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(5)
+
+print(diameterOfBinaryTree(root))  # Output: 3
