@@ -1,37 +1,16 @@
-from collections import deque
-
-def breadth_limited_search(graph, start, goal, limit):
-    queue = deque([(start, 0)])
+def longest_common_prefix(strs):
+    if not strs:
+        return ""
     
-    while queue:
-        node, depth = queue.popleft()
-        
-        if node == goal:
-            return True
-        
-        if depth < limit:
-            for neighbor in graph[node]:
-                queue.append((neighbor, depth + 1))
+    min_str = min(strs, key=len)
     
-    return False
+    for i, char in enumerate(min_str):
+        for other in strs:
+            if other[i] != char:
+                return min_str[:i]
+    
+    return min_str
 
-# Example graph represented as an adjacency list
-graph = {
-    'A': ['B', 'C'],
-    'B': ['D'],
-    'C': ['E'],
-    'D': ['F'],
-    'E': [],
-    'F': []
-}
-
-start_node = 'A'
-goal_node = 'F'
-limit = 2
-
-result = breadth_limited_search(graph, start_node, goal_node, limit)
-
-if result:
-    print("Goal node found within the depth limit.")
-else:
-    print("Goal node not found within the depth limit.")
+# Example usage
+strings = ["flower", "flow", "flight"]
+print(longest_common_prefix(strings))  # Output: "fl"
