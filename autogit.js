@@ -1,22 +1,14 @@
-def are_anagrams(str1, str2):
-    # Convert strings to lowercase and remove spaces
-    str1 = str1.lower().replace(" ", "")
-    str2 = str2.lower().replace(" ", "")
-    
-    # Sort characters in the strings
-    sorted_str1 = sorted(str1)
-    sorted_str2 = sorted(str2)
-    
-    # Check if the sorted strings are equal
-    if sorted_str1 == sorted_str2:
-        return True
-    else:
-        return False
+def first_repeated_char(input_string):
+    char_set = set()
+    for char in input_string:
+        if char in char_set:
+            return char
+        char_set.add(char)
+    return None
 
-# Test the function
-string1 = "Listen"
-string2 = "Silent"
-if are_anagrams(string1, string2):
-    print(f"{string1} and {string2} are anagrams.")
+input_string = "abcdefga"
+result = first_repeated_char(input_string)
+if result:
+    print("First repeated character is:", result)
 else:
-    print(f"{string1} and {string2} are not anagrams.")
+    print("No repeated characters found.")
