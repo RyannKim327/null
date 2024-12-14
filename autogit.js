@@ -1,22 +1,28 @@
-def binary_search_recursive(arr, target, low, high):
-    if low > high:
-        return -1
-    
-    mid = (low + high) // 2
-    
-    if arr[mid] == target:
-        return mid
-    elif arr[mid] < target:
-        return binary_search_recursive(arr, target, mid + 1, high)
-    else:
-        return binary_search_recursive(arr, target, low, mid - 1)
+def rabin_karp(text, pattern):
+    n = len(text)
+    m = len(pattern)
+    q = 101  # Prime number for hashing
+    d = 256  # Number of characters in the input alphabet
 
-# Example usage
-arr = [1, 3, 5, 7, 9, 11, 13]
-target = 7
-result = binary_search_recursive(arr, target, 0, len(arr) - 1)
+    h = pow(d, m-1, q)
+    p = 0
+    t = 0
+    result = []
 
-if result != -1:
-    print(f"Element found at index {result}")
-else:
-    print("Element not found")
+    # Compute the hash value of the pattern and first window of text
+    for i in range(m):
+        p = (d*p + ord(pattern[i])) % q
+        t = (d*t + ord(text[i])) % q
+
+    # Slide the pattern over the text one by one
+    for i in range(n-m+1):
+        if p == t:  # Check hash values
+            if pattern == text[i:i+m]:  # Check for false positives
+                result.append(i)
+
+        if i < n-m:
+            t = (d*(t - ord(text[i])*h) + ord(text[i+m])) % q
+            if t < 0:
+                t = t + q
+
+    return result
