@@ -1,28 +1,34 @@
-// Node structure for the binary tree
-class Node:
-    constructor(value):
-        this.value = value
-        this.left = null
-        this.right = null
+def merge_sort(arr):
+    if len(arr) <= 1:
+        return arr
 
-// Function to count the number of leaf nodes in a binary tree
-function countLeafNodes(node):
-    if node is null:
-        return 0
+    # Divide the list into two halves
+    mid = len(arr) // 2
+    left_half = arr[:mid]
+    right_half = arr[mid:]
 
-    if node.left is null and node.right is null:  // Leaf node
-        return 1
+    left_half = merge_sort(left_half)
+    right_half = merge_sort(right_half)
 
-    return countLeafNodes(node.left) + countLeafNodes(node.right)
+    return merge(left_half, right_half)
 
-// Example:
-root = new Node(1)
-root.left = new Node(2)
-root.right = new Node(3)
-root.left.left = new Node(4)
-root.left.right = new Node(5)
-root.right.left = new Node(6)
-root.right.right = new Node(7)
+def merge(left, right):
+    result = []
+    left_idx = right_idx = 0
 
-leafNodeCount = countLeafNodes(root)
-print("Number of leaf nodes:", leafNodeCount)
+    while left_idx < len(left) and right_idx < len(right):
+        if left[left_idx] < right[right_idx]:
+            result.append(left[left_idx])
+            left_idx += 1
+        else:
+            result.append(right[right_idx])
+            right_idx += 1
+
+    result.extend(left[left_idx:])
+    result.extend(right[right_idx:])
+    return result
+
+# Example usage
+arr = [38, 27, 43, 3, 9, 82, 10]
+sorted_arr = merge_sort(arr)
+print(sorted_arr)
