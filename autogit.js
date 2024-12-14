@@ -1,7 +1,12 @@
-str_with_whitespace = "  Hello, World!  "
-str_without_whitespace = str_with_whitespace.replace(" ", "")
-print(str_without_whitespace)
-import re
-str_with_whitespace = "  Hello, World!  "
-str_without_whitespace = re.sub(r"\s+", "", str_with_whitespace)
-print(str_without_whitespace)
+def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        for j in range(0, n-i-1):
+            if arr[j] > arr[j+1]:
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+
+# Example usage
+arr = [64, 34, 25, 12, 22, 11, 90]
+bubble_sort(arr)
+
+print("Sorted array is:", arr)
