@@ -1,11 +1,4 @@
-import schedule
-import time
-
-def job():
-    print("Task executed at " + str(time.time()))
-
-schedule.every(10).seconds.do(job)
-
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+my_string = "  Hello, World!  "
+result = my_string.strip()
+print(result)
+Hello, World!
