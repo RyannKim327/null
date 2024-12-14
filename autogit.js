@@ -1,28 +1,37 @@
-def merge_sort(arr):
-    def merge(left, right):
-        result = []
-        i = j = 0
-        while i < len(left) and j < len(right):
-            if left[i] < right[j]:
-                result.append(left[i])
-                i += 1
-            else:
-                result.append(right[j])
-                j += 1
-        result.extend(left[i:])
-        result.extend(right[j:])
-        return result
+from collections import deque
 
-    if len(arr) <= 1:
-        return arr
+def breadth_limited_search(graph, start, goal, limit):
+    queue = deque([(start, 0)])
+    
+    while queue:
+        node, depth = queue.popleft()
+        
+        if node == goal:
+            return True
+        
+        if depth < limit:
+            for neighbor in graph[node]:
+                queue.append((neighbor, depth + 1))
+    
+    return False
 
-    queue = [[item] for item in arr]
-    while len(queue) > 1:
-        queue.append(merge(queue.pop(0), queue.pop(0)))
+# Example graph represented as an adjacency list
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D'],
+    'C': ['E'],
+    'D': ['F'],
+    'E': [],
+    'F': []
+}
 
-    return queue[0]
+start_node = 'A'
+goal_node = 'F'
+limit = 2
 
-# Example usage
-arr = [7, 2, 5, 3, 1, 6, 4]
-sorted_arr = merge_sort(arr)
-print(sorted_arr)
+result = breadth_limited_search(graph, start_node, goal_node, limit)
+
+if result:
+    print("Goal node found within the depth limit.")
+else:
+    print("Goal node not found within the depth limit.")
