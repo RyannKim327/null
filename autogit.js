@@ -1,22 +1,42 @@
-def binary_search_recursive(arr, low, high, target):
-    if low <= high:
-        mid = low + (high - low) // 2
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end_of_word = False
 
-        if arr[mid] == target:
-            return mid
-        elif arr[mid] < target:
-            return binary_search_recursive(arr, mid + 1, high, target)
-        else:
-            return binary_search_recursive(arr, low, mid - 1, target)
-    else:
-        return -1
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word):
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.is_end_of_word = True
+
+    def search(self, word):
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+        return node.is_end_of_word
+
+    def starts_with(self, prefix):
+        node = self.root
+        for char in prefix:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+        return True
 
 # Example usage
-arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-target = 7
-result = binary_search_recursive(arr, 0, len(arr) - 1, target)
-
-if result != -1:
-    print(f"Element found at index {result}")
-else:
-    print("Element not found")
+trie = Trie()
+trie.insert("apple")
+trie.insert("app")
+print(trie.search("apple"))  # Output: True
+print(trie.search("app"))    # Output: True
+print(trie.search("banana")) # Output: False
+print(trie.starts_with("ban"))  # Output: False
+print(trie.starts_with("app"))  # Output: True
