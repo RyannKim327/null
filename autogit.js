@@ -1,34 +1,44 @@
-def merge_sort(arr):
-    if len(arr) <= 1:
-        return arr
+def bi_directional_search(graph, start_node, end_node):
+    # Queue for forward search
+    queue_forward = [start_node]
+    visited_forward = set([start_node])
 
-    # Divide the list into two halves
-    mid = len(arr) // 2
-    left_half = arr[:mid]
-    right_half = arr[mid:]
+    # Queue for backward search
+    queue_backward = [end_node]
+    visited_backward = set([end_node])
 
-    left_half = merge_sort(left_half)
-    right_half = merge_sort(right_half)
+    while queue_forward and queue_backward:
+        # Forward search
+        current_node_forward = queue_forward.pop(0)
+        for neighbor in graph[current_node_forward]:
+            if neighbor not in visited_forward:
+                visited_forward.add(neighbor)
+                queue_forward.append(neighbor)
 
-    return merge(left_half, right_half)
+        # Backward search
+        current_node_backward = queue_backward.pop(0)
+        for neighbor in graph[current_node_backward]:
+            if neighbor in visited_forward:
+                return "Path found"
 
-def merge(left, right):
-    result = []
-    left_idx = right_idx = 0
+            if neighbor not in visited_backward:
+                visited_backward.add(neighbor)
+                queue_backward.append(neighbor)
 
-    while left_idx < len(left) and right_idx < len(right):
-        if left[left_idx] < right[right_idx]:
-            result.append(left[left_idx])
-            left_idx += 1
-        else:
-            result.append(right[right_idx])
-            right_idx += 1
+    return "Path not found"
 
-    result.extend(left[left_idx:])
-    result.extend(right[right_idx:])
-    return result
+# Example graph
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
 
-# Example usage
-arr = [38, 27, 43, 3, 9, 82, 10]
-sorted_arr = merge_sort(arr)
-print(sorted_arr)
+start_node = 'A'
+end_node = 'F'
+
+result = bi_directional_search(graph, start_node, end_node)
+print(result)
