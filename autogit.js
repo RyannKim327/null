@@ -1,44 +1,13 @@
-def bi_directional_search(graph, start_node, end_node):
-    # Queue for forward search
-    queue_forward = [start_node]
-    visited_forward = set([start_node])
+def are_anagrams(str1, str2):
+    str1 = str1.lower().replace(" ", "").replace(",", "").replace(".", "")
+    str2 = str2.lower().replace(" ", "").replace(",", "").replace(".", "")
 
-    # Queue for backward search
-    queue_backward = [end_node]
-    visited_backward = set([end_node])
+    return sorted(str1) == sorted(str2)
 
-    while queue_forward and queue_backward:
-        # Forward search
-        current_node_forward = queue_forward.pop(0)
-        for neighbor in graph[current_node_forward]:
-            if neighbor not in visited_forward:
-                visited_forward.add(neighbor)
-                queue_forward.append(neighbor)
-
-        # Backward search
-        current_node_backward = queue_backward.pop(0)
-        for neighbor in graph[current_node_backward]:
-            if neighbor in visited_forward:
-                return "Path found"
-
-            if neighbor not in visited_backward:
-                visited_backward.add(neighbor)
-                queue_backward.append(neighbor)
-
-    return "Path not found"
-
-# Example graph
-graph = {
-    'A': ['B', 'C'],
-    'B': ['A', 'D', 'E'],
-    'C': ['A', 'F'],
-    'D': ['B'],
-    'E': ['B', 'F'],
-    'F': ['C', 'E']
-}
-
-start_node = 'A'
-end_node = 'F'
-
-result = bi_directional_search(graph, start_node, end_node)
-print(result)
+# Test the function
+str1 = "Listen"
+str2 = "Silent"
+if are_anagrams(str1, str2):
+    print(f"'{str1}' and '{str2}' are anagrams.")
+else:
+    print(f"'{str1}' and '{str2}' are not anagrams.")
