@@ -1,37 +1,42 @@
-import heapq
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
 
-def dijkstra(graph, start):
-    distances = {node: float('infinity') for node in graph}
-    distances[start] = 0
+def nth_node_from_end(head, n):
+    main_ptr = head
+    ref_ptr = head
 
-    queue = [(0, start)]
+    # Move ref_ptr n steps ahead
+    for i in range(n):
+        if ref_ptr is None:
+            return None  # n is greater than the length of the linked list
+        ref_ptr = ref_ptr.next
 
-    while queue:
-        current_distance, current_node = heapq.heappop(queue)
+    # Move both pointers until ref_ptr reaches the end
+    while ref_ptr is not None:
+        main_ptr = main_ptr.next
+        ref_ptr = ref_ptr.next
 
-        if current_distance > distances[current_node]:
-            continue
+    return main_ptr
 
-        for neighbor, weight in graph[current_node].items():
-            distance = current_distance + weight
+# Helper function to print the linked list
+def print_list(node):
+    while node:
+        print(node.data, end=' ')
+        node = node.next
+    print()
 
-            if distance < distances[neighbor]:
-                distances[neighbor] = distance
-                heapq.heappush(queue, (distance, neighbor))
+# Example usage
+head = Node(1)
+head.next = Node(2)
+head.next.next = Node(3)
+head.next.next.next = Node(4)
+head.next.next.next.next = Node(5)
 
-    return distances
-
-# Example graph
-graph = {
-    'A': {'B': 3, 'C': 2},
-    'B': {'C': 1, 'D': 5},
-    'C': {'D': 1},
-    'D': {}
-}
-
-start_node = 'A'
-shortest_distances = dijkstra(graph, start_node)
-
-print("Shortest distances from node", start_node)
-for node, distance in shortest_distances.items():
-    print(node, ":", distance)
+n = 2
+result = nth_node_from_end(head, n)
+if result:
+    print(f"The {n}th node from the end of the linked list is: {result.data}")
+else:
+    print("The value of 'n' is greater than the length of the linked list.")
