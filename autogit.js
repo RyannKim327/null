@@ -1,15 +1,28 @@
-import re
+def merge_sort(arr):
+    def merge(left, right):
+        result = []
+        i = j = 0
+        while i < len(left) and j < len(right):
+            if left[i] < right[j]:
+                result.append(left[i])
+                i += 1
+            else:
+                result.append(right[j])
+                j += 1
+        result.extend(left[i:])
+        result.extend(right[j:])
+        return result
 
-def validate_email(email):
-    pattern = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
-    if re.match(pattern, email):
-        return True
-    else:
-        return False
+    if len(arr) <= 1:
+        return arr
 
-# Test the function
-email = "example@example.com"
-if validate_email(email):
-    print("Email is valid")
-else:
-    print("Email is not valid")
+    queue = [[item] for item in arr]
+    while len(queue) > 1:
+        queue.append(merge(queue.pop(0), queue.pop(0)))
+
+    return queue[0]
+
+# Example usage
+arr = [7, 2, 5, 3, 1, 6, 4]
+sorted_arr = merge_sort(arr)
+print(sorted_arr)
