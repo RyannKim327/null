@@ -1,12 +1,31 @@
-def bubble_sort(arr):
-    n = len(arr)
-    for i in range(n):
-        for j in range(0, n-i-1):
-            if arr[j] > arr[j+1]:
-                arr[j], arr[j+1] = arr[j+1], arr[j]
+class Node:
+    def __init__(self, start, end, parent=None):
+        self.start = start
+        self.end = end
+        self.parent = parent
+        self.children = {}
+
+
+def build_suffix_tree(text):
+    root = Node(None, None)
+    for i in range(len(text)):
+        current = root
+        for j in range(i, len(text)):
+            if text[j] not in current.children:
+                current.children[text[j]] = Node(j, None, parent=current)
+            current = current.children[text[j]]
+        current.end = i
+    return root
+
+
+def traverse(node, text):
+    if node.start is not None:
+        print(text[node.start:node.end+1])
+    for child in node.children.values():
+        traverse(child, text)
+
 
 # Example usage
-arr = [64, 34, 25, 12, 22, 11, 90]
-bubble_sort(arr)
-
-print("Sorted array is:", arr)
+text = "banana"
+tree = build_suffix_tree(text)
+traverse(tree, text)
