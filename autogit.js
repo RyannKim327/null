@@ -1,14 +1,9 @@
-def first_repeated_char(input_string):
-    char_set = set()
-    for char in input_string:
-        if char in char_set:
-            return char
-        char_set.add(char)
-    return None
+const axios = require('axios');
 
-input_string = "abcdefga"
-result = first_repeated_char(input_string)
-if result:
-    print("First repeated character is:", result)
-else:
-    print("No repeated characters found.")
+axios.get('https://api.example.com/data')
+  .then(response => {
+    console.log(response.data);
+  })
+  .catch(error => {
+    console.error('Error fetching data:', error);
+  });
