@@ -1,16 +1,29 @@
-function findCommonElements(array1, array2) {
-    let commonElements = [];
+def interpolation_search(arr, x):
+    lo = 0
+    hi = len(arr) - 1
 
-    for each element in array1 {
-        if array2 contains element {
-            commonElements.add(element);
-        }
-    }
+    while lo <= hi and x >= arr[lo] and x <= arr[hi]:
+        if lo == hi:
+            if arr[lo] == x:
+                return lo
+            return -1
 
-    return commonElements;
-}
+        pos = lo + int(((float(hi - lo) / (arr[hi] - arr[lo])) * (x - arr[lo])))
 
-let array1 = [1, 2, 3, 4, 5];
-let array2 = [3, 4, 5, 6, 7];
-let result = findCommonElements(array1, array2);
-print(result); // Output: [3, 4, 5]
+        if arr[pos] == x:
+            return pos
+        elif arr[pos] < x:
+            lo = pos + 1
+        else:
+            hi = pos - 1
+
+    return -1
+
+# Example usage
+arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+x = 10
+result = interpolation_search(arr, x)
+if result != -1:
+    print("Element found at index:", result)
+else:
+    print("Element not found")
