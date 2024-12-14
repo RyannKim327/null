@@ -1,14 +1,10 @@
-def burrows_wheeler_transform(input_string):
-    rotations = [input_string[i:] + input_string[:i] for i in range(len(input_string))]
-    sorted_rotations = sorted(rotations)
-    bwt = ''.join(rotation[-1] for rotation in sorted_rotations)
+# Remove spaces using replace()
+string_with_spaces = "Hello, world! This has spaces."
+string_without_spaces = string_with_spaces.replace(" ", "")
+print(string_without_spaces)
+import re
 
-    original_index = sorted_rotations.index(input_string)
-
-    return bwt, original_index
-
-# Example usage
-input_string = "banana"
-transformed_string, original_index = burrows_wheeler_transform(input_string)
-print("Transformed string:", transformed_string)
-print("Original index:", original_index)
+# Remove spaces using regex
+string_with_spaces = "Hello, world! This has spaces."
+string_without_spaces = re.sub(r'\s+', '', string_with_spaces)
+print(string_without_spaces)
