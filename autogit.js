@@ -1,45 +1,26 @@
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.next = None
+def longest_increasing_subsequence(arr):
+    n = len(arr)
+    lis = [1] * n
 
-class Queue:
-    def __init__(self):
-        self.front = None
-        self.rear = None
+    for i in range(1, n):
+        for j in range(0, i):
+            if arr[i] > arr[j]:
+                lis[i] = max(lis[i], lis[j] + 1)
 
-    def is_empty(self):
-        return self.front is None
+    max_length = max(lis)
+    subsequence = []
+    index = lis.index(max_length)
 
-    def enqueue(self, data):
-        new_node = Node(data)
-        if self.rear is None:
-            self.front = new_node
-            self.rear = new_node
-        else:
-            self.rear.next = new_node
-            self.rear = new_node
+    while max_length > 0:
+        subsequence.insert(0, arr[index])
+        max_length -= 1
+        for i in range(index - 1, -1, -1):
+            if lis[i] == max_length and arr[i] < arr[index]:
+                index = i
+                break
 
-    def dequeue(self):
-        if self.is_empty():
-            return None
-        data = self.front.data
-        self.front = self.front.next
-        if self.front is None:
-            self.rear = None
-        return data
+    return subsequence
 
-    def peek(self):
-        if self.is_empty():
-            return None
-        return self.front.data
-
-# Example Usage
-q = Queue()
-q.enqueue(1)
-q.enqueue(2)
-q.enqueue(3)
-
-print(q.dequeue())  # Output: 1
-print(q.dequeue())  # Output: 2
-print(q.peek())     # Output: 3
+# Test the function
+arr = [10, 22, 9, 33, 21, 50, 41, 60, 80]
+print(longest_increasing_subsequence(arr))
