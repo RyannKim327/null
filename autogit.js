@@ -1,37 +1,6 @@
-class Graph:
-    def __init__(self, vertices):
-        self.V = vertices
-        self.graph = []
-
-    def add_edge(self, u, v, w):
-        self.graph.append([u, v, w])
-
-    def bellman_ford(self, src):
-        dist = [float("inf")] * self.V
-        dist[src] = 0
-
-        for _ in range(self.V - 1):
-            for u, v, w in self.graph:
-                if dist[u] != float("inf") and dist[u] + w < dist[v]:
-                    dist[v] = dist[u] + w
-
-        for u, v, w in self.graph:
-            if dist[u] != float("inf") and dist[u] + w < dist[v]:
-                print("Graph contains negative weight cycle")
-                return
-
-        print("Vertex Distance from Source")
-        for i in range(self.V):
-            print(f"{i}\t\t{dist[i]}")
-
-# Example
-g = Graph(5)
-g.add_edge(0, 1, -1)
-g.add_edge(0, 2, 4)
-g.add_edge(1, 2, 3)
-g.add_edge(1, 3, 2)
-g.add_edge(3, 1, 1)
-g.add_edge(3, 2, 5)
-g.add_edge(1, 4, 2)
-g.add_edge(4, 3, -3)
-g.bellman_ford(0)
+def is_palindrome(s):
+    s = s.lower()  # convert string to lowercase for case-insensitive comparison
+    s = "".join(c for c in s if c.isalnum())  # remove non-alphanumeric characters
+    return s == s[::-1]
+print(is_palindrome("A man, a plan, a canal, Panama"))  # Output: True
+print(is_palindrome("Hello world"))  # Output: False
