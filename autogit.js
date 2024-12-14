@@ -1,42 +1,32 @@
-class TrieNode:
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+class LinkedList:
     def __init__(self):
-        self.children = {}
-        self.is_end_of_word = False
+        self.head = None
 
-class Trie:
-    def __init__(self):
-        self.root = TrieNode()
+    def append(self, data):
+        new_node = Node(data)
+        if self.head is None:
+            self.head = new_node
+            return
+        last_node = self.head
+        while last_node.next:
+            last_node = last_node.next
+        last_node.next = new_node
 
-    def insert(self, word):
-        node = self.root
-        for char in word:
-            if char not in node.children:
-                node.children[char] = TrieNode()
-            node = node.children[char]
-        node.is_end_of_word = True
-
-    def search(self, word):
-        node = self.root
-        for char in word:
-            if char not in node.children:
-                return False
-            node = node.children[char]
-        return node.is_end_of_word
-
-    def starts_with(self, prefix):
-        node = self.root
-        for char in prefix:
-            if char not in node.children:
-                return False
-            node = node.children[char]
-        return True
+    def print_list(self):
+        current_node = self.head
+        while current_node:
+            print(current_node.data)
+            current_node = current_node.next
 
 # Example usage
-trie = Trie()
-trie.insert("apple")
-trie.insert("app")
-print(trie.search("apple"))  # Output: True
-print(trie.search("app"))    # Output: True
-print(trie.search("banana")) # Output: False
-print(trie.starts_with("ban"))  # Output: False
-print(trie.starts_with("app"))  # Output: True
+llist = LinkedList()
+llist.append(1)
+llist.append(2)
+llist.append(3)
+
+llist.print_list()
