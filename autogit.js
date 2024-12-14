@@ -1,29 +1,22 @@
-def find_majority_element(arr):
-    counts = {}
+def are_anagrams(str1, str2):
+    # Convert strings to lowercase and remove spaces
+    str1 = str1.lower().replace(" ", "")
+    str2 = str2.lower().replace(" ", "")
     
-    for num in arr:
-        if num in counts:
-            counts[num] += 1
-        else:
-            counts[num] = 1
+    # Sort characters in the strings
+    sorted_str1 = sorted(str1)
+    sorted_str2 = sorted(str2)
     
-    majority_element = None
-    max_count = 0
-    for key, value in counts.items():
-        if value > len(arr) // 2:
-            majority_element = key
-            max_count = value
-            break
-
-    if majority_element is not None:
-        return majority_element
+    # Check if the sorted strings are equal
+    if sorted_str1 == sorted_str2:
+        return True
     else:
-        return None
+        return False
 
-# Example usage:
-arr = [1, 2, 2, 2, 3, 2, 2, 1, 2]
-result = find_majority_element(arr)
-if result is not None:
-    print(f"The majority element is: {result}")
+# Test the function
+string1 = "Listen"
+string2 = "Silent"
+if are_anagrams(string1, string2):
+    print(f"{string1} and {string2} are anagrams.")
 else:
-    print("No majority element found.")
+    print(f"{string1} and {string2} are not anagrams.")
