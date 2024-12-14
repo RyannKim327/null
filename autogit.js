@@ -1,44 +1,28 @@
-def fibonacci_search(arr, x):
-    # Create Fibonacci series
-    fib_M_minus_2 = 0
-    fib_M_minus_1 = 1
-    fib_M = fib_M_minus_1 + fib_M_minus_2
+// Node structure for the binary tree
+class Node:
+    constructor(value):
+        this.value = value
+        this.left = null
+        this.right = null
 
-    while fib_M < len(arr):
-        fib_M_minus_2 = fib_M_minus_1
-        fib_M_minus_1 = fib_M
-        fib_M = fib_M_minus_1 + fib_M_minus_2
+// Function to count the number of leaf nodes in a binary tree
+function countLeafNodes(node):
+    if node is null:
+        return 0
 
-    offset = -1
+    if node.left is null and node.right is null:  // Leaf node
+        return 1
 
-    while fib_M > 1:
-        i = min(offset + fib_M_minus_2, len(arr) - 1)
+    return countLeafNodes(node.left) + countLeafNodes(node.right)
 
-        if arr[i] < x:
-            fib_M = fib_M_minus_1
-            fib_M_minus_1 = fib_M_minus_2
-            fib_M_minus_2 = fib_M - fib_M_minus_1
-            offset = i
+// Example:
+root = new Node(1)
+root.left = new Node(2)
+root.right = new Node(3)
+root.left.left = new Node(4)
+root.left.right = new Node(5)
+root.right.left = new Node(6)
+root.right.right = new Node(7)
 
-        elif arr[i] > x:
-            fib_M = fib_M_minus_2
-            fib_M_minus_1 = fib_M_minus_1 - fib_M_minus_2
-            fib_M_minus_2 = fib_M - fib_M_minus_1
-
-        else:
-            return i
-
-    if fib_M_minus_1 and arr[offset + 1] == x:
-        return offset + 1
-
-    return -1
-
-# Test the Fibonacci search algorithm
-arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100]
-x = 85
-
-index = fibonacci_search(arr, x)
-if index != -1:
-    print("Element found at index:", index)
-else:
-    print("Element not found")
+leafNodeCount = countLeafNodes(root)
+print("Number of leaf nodes:", leafNodeCount)
