@@ -1,16 +1,22 @@
-def selection_sort(arr):
-    n = len(arr)
-    
-    for i in range(n):
-        min_index = i
-        for j in range(i+1, n):
-            if arr[j] < arr[min_index]:
-                min_index = j
-        arr[i], arr[min_index] = arr[min_index], arr[i]
-    
-    return arr
+def binary_search_recursive(arr, low, high, target):
+    if low <= high:
+        mid = low + (high - low) // 2
 
-# Test the selection sort algorithm
-arr = [64, 25, 12, 22, 11]
-sorted_arr = selection_sort(arr)
-print("Sorted array is:", sorted_arr)
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] < target:
+            return binary_search_recursive(arr, mid + 1, high, target)
+        else:
+            return binary_search_recursive(arr, low, mid - 1, target)
+    else:
+        return -1
+
+# Example usage
+arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+target = 7
+result = binary_search_recursive(arr, 0, len(arr) - 1, target)
+
+if result != -1:
+    print(f"Element found at index {result}")
+else:
+    print("Element not found")
