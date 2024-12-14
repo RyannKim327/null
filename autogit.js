@@ -1,16 +1,15 @@
-def longest_common_prefix(strs):
-    if not strs:
-        return ""
-    
-    min_str = min(strs, key=len)
-    
-    for i, char in enumerate(min_str):
-        for other in strs:
-            if other[i] != char:
-                return min_str[:i]
-    
-    return min_str
+def insertion_sort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and key < arr[j]:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
 
 # Example usage
-strings = ["flower", "flow", "flight"]
-print(longest_common_prefix(strings))  # Output: "fl"
+arr = [12, 11, 13, 5, 6]
+insertion_sort(arr)
+print("Sorted array:")
+for i in range(len(arr)):
+    print(arr[i])
