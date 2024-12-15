@@ -1,108 +1,64 @@
-import random
-import math
+def boyer_moore(text, pattern):
+    def pre_process(pattern):
+        m = len(pattern)
+        bad_char = [-1] * 256  # Initialize bad character array
+        for i in range(m):
+            bad_char[ord(pattern[i])] = i
+        return bad_char
 
-class Node:
-    def __init__(self, value, level):
-        self.value = value
-        self.forward = [None] * (level + 1)
+    def good_suffix_table(pattern):
+        m = len(pattern)
+        table = [0] * m
+        table[m - 1] = m
+        length = suffix_length(pattern)
 
-class SkipList:
-    def __init__(self, max_levels, probability):
-        self.max_levels = max_levels
-        self.probability = probability
-        self.header = Node(-1, max_levels)
-        self.level = 0
+        for i in range(m - 2, -1, -1):
+            if length[i] == i + 1:
+                table[m - 1] = i + 1
 
-    def random_level(self):
-        level = 0
-        while random.random() < self.probability and level < self.max_levels:
-            level += 1
-        return level
+        for i in range(m - 1):
+            table[m - length[i] - 1] = m - 1 - i
 
-    def insert(self, value):
-        update = [None] * (self.max_levels + 1)
-        current = self.header
+        return table
 
-        for i in range(self.level, -1, -1):
-            while current.forward[i] and current.forward[i].value < value:
-                current = current.forward[i]
-            update[i] = current
+    def suffix_length(pattern):
+        m = len(pattern)
+        length = [0] * m
+        length[m - 1] = m
+        g = m - 1
+        f = 0
 
-        level = self.random_level()
+        for i in range(m - 2, -1, -1):
+            if i > g and length[i + m - 1 - f] < i - g:
+                length[i] = length[i + m - 1 - f]
+            else:
+                if i < g:
+                    g = i
+                f = i
+                while g >= 0 and pattern[g] == pattern[g + m - 1 - f]:
+                    g -= 1
+                length[i] = f - g
 
-        if level > self.level:
-            for i in range(self.level + 1, level + 1):
-                update[i] = self.header
-            self.level = level
+        return length
 
-        new_node = Node(value, level)
+    n = len(text)
+    m = len(pattern)
+    bc_table = pre_process(pattern)
+    gs_table = good_suffix_table(pattern)
 
-        for i in range(level + 1):
-            new_node.forward[i] = update[i].forward[i]
-            update[i].forward[i] = new_node
-
-    def search(self, value):
-        current = self.header
-        for i in range(self.level, -1, -1):
-            while current.forward[i] and current.forward[i].value < value:
-                current = current.forward[i]
-
-        current = current.forward[0]
-
-        if current and current.value == value:
-            return True
+    i = 0
+    while i <= n - m:
+        j = m - 1
+        while j >= 0 and pattern[j] == text[i + j]:
+            j -= 1
+        if j < 0:
+            print("Pattern found at index", i)
+            i += gs_table[0]
         else:
-            return False
+            bc_shift = j - bc_table[ord(text[i + j])]
+            gs_shift = gs_table[j]
+            i += max(bc_shift, gs_shift)
 
-    def delete(self, value):
-        update = [None] * (self.max_levels + 1)
-        current = self.header
-
-        for i in range(self.level, -1, -1):
-            while current.forward[i] and current.forward[i].value < value:
-                current = current.forward[i]
-            update[i] = current
-
-        current = current.forward[0]
-
-        if current and current.value == value:
-            for i in range(self.level + 1):
-                if update[i].forward[i] != current:
-                    break
-                update[i].forward[i] = current.forward[i]
-
-            while self.level > 0 and self.header.forward[self.level] is None:
-                self.level -= 1
-        else:
-            print("Element not found")
-
-    def print_list(self):
-        print("Skip List:")
-        for i in range(self.level + 1):
-            node = self.header.forward[i]
-            print("Level {}: ".format(i), end="")
-            while node:
-                print(node.value, end=" ")
-                node = node.forward[i]
-            print("")
-
-
-# Test the SkipList implementation
-skip_list = SkipList(3, 0.5)
-skip_list.insert(3)
-skip_list.insert(6)
-skip_list.insert(7)
-skip_list.insert(9)
-skip_list.insert(12)
-skip_list.insert(19)
-skip_list.insert(17)
-skip_list.insert(26)
-skip_list.insert(21)
-skip_list.insert(25)
-skip_list.print_list()
-
-print("Is 19 in the list? ", skip_list.search(19))
-skip_list.delete(19)
-skip_list.print_list()
-
-print("Is 19 in the list? ", skip_list.search(19))
+text = "ABAAABCD"
+pattern = "ABC"
+boyer_moore(text, pattern)
