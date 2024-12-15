@@ -1,24 +1,22 @@
-def binary_search(arr, target):
-    left, right = 0, len(arr) - 1
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
 
-    while left <= right:
-        mid = (left + right) // 2
+def max_depth(node):
+    if node is None:
+        return 0
+    else:
+        left_depth = max_depth(node.left)
+        right_depth = max_depth(node.right)
+        return max(left_depth, right_depth) + 1
 
-        if arr[mid] == target:
-            return mid
-        elif arr[mid] < target:
-            left = mid + 1
-        else:
-            right = mid - 1
+# Example of creating a binary tree
+root = Node(1)
+root.left = Node(2)
+root.right = Node(3)
+root.left.left = Node(4)
+root.left.right = Node(5)
 
-    return -1
-
-# Example of how to use the binary search function
-arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-target = 6
-result = binary_search(arr, target)
-
-if result != -1:
-    print("Element found at index:", result)
-else:
-    print("Element not found")
+print("Maximum depth of the binary tree is:", max_depth(root))
