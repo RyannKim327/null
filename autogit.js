@@ -1,19 +1,53 @@
-def are_anagrams(str1, str2):
-    # Remove spaces and convert to lowercase
-    str1 = str1.replace(" ", "").lower()
-    str2 = str2.replace(" ", "").lower()
+#include <iostream>
+using namespace std;
 
-    # Check if the lengths of the two strings are the same
-    if len(str1) != len(str2):
-        return False
-    
-    # Sort the characters of both strings and compare
-    return sorted(str1) == sorted(str2)
+struct Node {
+    int data;
+    Node* next;
+    Node(int val) : data(val), next(nullptr) {}
+};
 
-# Test the function with two strings
-str1 = "Listen"
-str2 = "Silent"
-if are_anagrams(str1, str2):
-    print("The strings are anagrams.")
-else:
-    print("The strings are not anagrams.")
+Node* getIntersectionNode(Node* headA, Node* headB) {
+    if (!headA || !headB) {
+        return nullptr;
+    }
+
+    Node* tailA = headA;
+    Node* tailB = headB;
+    int lenA = 1;
+    int lenB = 1;
+
+    while (tailA->next) {
+        tailA = tailA->next;
+        lenA++;
+    }
+
+    while (tailB->next) {
+        tailB = tailB->next;
+        lenB++;
+    }
+
+    if (tailA != tailB) {
+        return nullptr; // Lists do not intersect
+    }
+
+    Node* currA = headA;
+    Node* currB = headB;
+
+    while (lenA > lenB) {
+        currA = currA->next;
+        lenA--;
+    }
+
+    while (lenB > lenA) {
+        currB = currB->next;
+        lenB--;
+    }
+
+    while (currA != currB) {
+        currA = currA->next;
+        currB = currB->next;
+    }
+
+    return currA;
+}
