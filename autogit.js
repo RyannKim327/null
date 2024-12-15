@@ -1,20 +1,24 @@
-def is_prime(n):
-    if n <= 1:
-        return False
-    if n <= 3:
-        return True
-    if n % 2 == 0 or n % 3 == 0:
-        return False
-    i = 5
-    while i * i <= n:
-        if n % i == 0 or n % (i + 2) == 0:
-            return False
-        i += 6
-    return True
+class TreeNode:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
 
-# Test the function
-num = 17
-if is_prime(num):
-    print(num, "is a prime number")
-else:
-    print(num, "is not a prime number")
+def sum_of_nodes(root):
+    if root is None:
+        return 0
+    
+    return root.value + sum_of_nodes(root.left) + sum_of_nodes(root.right)
+
+# Example tree
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(5)
+root.right.left = TreeNode(6)
+root.right.right = TreeNode(7)
+
+# Calculate the sum of all nodes in the tree
+total_sum = sum_of_nodes(root)
+print(total_sum)
