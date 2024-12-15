@@ -1,36 +1,24 @@
-from collections import defaultdict
+def binary_search(arr, target):
+    left, right = 0, len(arr) - 1
 
-class Graph:
-    def __init__(self):
-        self.graph = defaultdict(list)
+    while left <= right:
+        mid = (left + right) // 2
 
-    def add_edge(self, u, v):
-        self.graph[u].append(v)
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
 
-    def bfs(self, start):
-        visited = [False] * (max(self.graph) + 1)
-        queue = []
+    return -1
 
-        queue.append(start)
-        visited[start] = True
+# Example of how to use the binary search function
+arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+target = 6
+result = binary_search(arr, target)
 
-        while queue:
-            node = queue.pop(0)
-            print(node, end=' ')
-
-            for neighbor in self.graph[node]:
-                if not visited[neighbor]:
-                    queue.append(neighbor)
-                    visited[neighbor] = True
-
-# Usage
-g = Graph()
-g.add_edge(0, 1)
-g.add_edge(0, 2)
-g.add_edge(1, 2)
-g.add_edge(2, 0)
-g.add_edge(2, 3)
-g.add_edge(3, 3)
-
-print("Breadth First Traversal starting from vertex 2:")
-g.bfs(2)
+if result != -1:
+    print("Element found at index:", result)
+else:
+    print("Element not found")
