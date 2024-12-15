@@ -1,14 +1,25 @@
-def binary_search(arr, target):
-    left, right = 0, len(arr) - 1
+# Definition for a binary tree node
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
 
-    while left <= right:
-        mid = (left + right) // 2
+def max_depth(root):
+    if root is None:
+        return 0
+    else:
+        left_depth = max_depth(root.left)
+        right_depth = max_depth(root.right)
+        
+        return max(left_depth, right_depth) + 1
 
-        if arr[mid] == target:
-            return mid
-        elif arr[mid] < target:
-            left = mid + 1
-        else:
-            right = mid - 1
+# Example Usage
+# Construct a sample binary tree
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(5)
 
-    return -1
+print("Maximum depth of the binary tree is:", max_depth(root))
