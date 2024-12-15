@@ -1,26 +1,36 @@
-def longest_increasing_subsequence(arr):
-    n = len(arr)
-    lis = [1] * n
+from collections import defaultdict
 
-    for i in range(1, n):
-        for j in range(0, i):
-            if arr[i] > arr[j]:
-                lis[i] = max(lis[i], lis[j] + 1)
+class Graph:
+    def __init__(self):
+        self.graph = defaultdict(list)
 
-    max_length = max(lis)
-    subsequence = []
-    index = lis.index(max_length)
+    def add_edge(self, u, v):
+        self.graph[u].append(v)
 
-    while max_length > 0:
-        subsequence.insert(0, arr[index])
-        max_length -= 1
-        for i in range(index - 1, -1, -1):
-            if lis[i] == max_length and arr[i] < arr[index]:
-                index = i
-                break
+    def bfs(self, start):
+        visited = [False] * (max(self.graph) + 1)
+        queue = []
 
-    return subsequence
+        queue.append(start)
+        visited[start] = True
 
-# Test the function
-arr = [10, 22, 9, 33, 21, 50, 41, 60, 80]
-print(longest_increasing_subsequence(arr))
+        while queue:
+            node = queue.pop(0)
+            print(node, end=' ')
+
+            for neighbor in self.graph[node]:
+                if not visited[neighbor]:
+                    queue.append(neighbor)
+                    visited[neighbor] = True
+
+# Usage
+g = Graph()
+g.add_edge(0, 1)
+g.add_edge(0, 2)
+g.add_edge(1, 2)
+g.add_edge(2, 0)
+g.add_edge(2, 3)
+g.add_edge(3, 3)
+
+print("Breadth First Traversal starting from vertex 2:")
+g.bfs(2)
