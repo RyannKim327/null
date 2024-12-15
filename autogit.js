@@ -1,25 +1,19 @@
-# Definition for a binary tree node
-class TreeNode:
-    def __init__(self, val=0, left=None, right=None):
-        self.val = val
-        self.left = left
-        self.right = right
+def are_anagrams(str1, str2):
+    # Remove spaces and convert to lowercase
+    str1 = str1.replace(" ", "").lower()
+    str2 = str2.replace(" ", "").lower()
 
-def max_depth(root):
-    if root is None:
-        return 0
-    else:
-        left_depth = max_depth(root.left)
-        right_depth = max_depth(root.right)
-        
-        return max(left_depth, right_depth) + 1
+    # Check if the lengths of the two strings are the same
+    if len(str1) != len(str2):
+        return False
+    
+    # Sort the characters of both strings and compare
+    return sorted(str1) == sorted(str2)
 
-# Example Usage
-# Construct a sample binary tree
-root = TreeNode(1)
-root.left = TreeNode(2)
-root.right = TreeNode(3)
-root.left.left = TreeNode(4)
-root.left.right = TreeNode(5)
-
-print("Maximum depth of the binary tree is:", max_depth(root))
+# Test the function with two strings
+str1 = "Listen"
+str2 = "Silent"
+if are_anagrams(str1, str2):
+    print("The strings are anagrams.")
+else:
+    print("The strings are not anagrams.")
