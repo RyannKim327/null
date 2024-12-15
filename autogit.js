@@ -1,24 +1,14 @@
-class TreeNode:
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
+def binary_search(arr, target):
+    left, right = 0, len(arr) - 1
 
-def sum_of_nodes(root):
-    if root is None:
-        return 0
-    
-    return root.value + sum_of_nodes(root.left) + sum_of_nodes(root.right)
+    while left <= right:
+        mid = (left + right) // 2
 
-# Example tree
-root = TreeNode(1)
-root.left = TreeNode(2)
-root.right = TreeNode(3)
-root.left.left = TreeNode(4)
-root.left.right = TreeNode(5)
-root.right.left = TreeNode(6)
-root.right.right = TreeNode(7)
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
 
-# Calculate the sum of all nodes in the tree
-total_sum = sum_of_nodes(root)
-print(total_sum)
+    return -1
