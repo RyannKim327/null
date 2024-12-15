@@ -1,13 +1,32 @@
-def max_sum_subarray(arr):
-    max_sum = arr[0]
-    current_sum = arr[0]
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.left = None
+        self.right = None
 
-    for num in arr[1:]:
-        current_sum = max(num, current_sum + num)
-        max_sum = max(max_sum, current_sum)
+def height(node):
+    if node is None:
+        return 0
+    else:
+        return 1 + max(height(node.left), height(node.right))
 
-    return max_sum
+def diameter(root):
+    if root is None:
+        return 0
+    
+    lheight = height(root.left)
+    rheight = height(root.right)
+    
+    ldiameter = diameter(root.left)
+    rdiameter = diameter(root.right)
+    
+    return max(lheight + rheight + 1, max(ldiameter, rdiameter))
 
-# Test the function
-arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
-print(max_sum_subarray(arr))  # Output should be 6 (The subarray [4, -1, 2, 1] has the maximum sum)
+# Example usage:
+root = Node(1)
+root.left = Node(2)
+root.right = Node(3)
+root.left.left = Node(4)
+root.left.right = Node(5)
+
+print("Diameter of the binary tree is", diameter(root))
