@@ -1,21 +1,13 @@
-def dfs(graph, start, visited=None):
-    if visited is None:
-        visited = set()
-    visited.add(start)
-    print(start)
+# Create an array
+arr = [1, 2, 3, 4, 5]
 
-    for neighbor in graph[start]:
-        if neighbor not in visited:
-            dfs(graph, neighbor, visited)
+# Element to be removed
+element_to_remove = 3
 
-# Example graph as an adjacency list
-graph = {
-    'A': ['B', 'C'],
-    'B': ['D', 'E'],
-    'C': ['F'],
-    'D': [],
-    'E': ['F'],
-    'F': []
-}
+# Find the index of the element to be removed
+index_to_remove = arr.index(element_to_remove)
 
-dfs(graph, 'A')
+# Remove the element at the index
+arr.pop(index_to_remove)
+
+print(arr)  # Output: [1, 2, 4, 5]
