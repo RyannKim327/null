@@ -1,29 +1,21 @@
-# Remove an element from a Python list
-my_list = [1, 2, 3, 4, 5]
-element_to_remove = 3
-my_list.remove(element_to_remove)
-print(my_list)
-// Remove an element from a JavaScript array
-let myArray = [1, 2, 3, 4, 5];
-let elementToRemove = 3;
-let index = myArray.indexOf(elementToRemove);
-if (index > -1) {
-    myArray.splice(index, 1);
-}
-console.log(myArray);
-// Remove an element from a Java array
-int[] myArray = {1, 2, 3, 4, 5};
-int elementToRemove = 3;
-int index = -1;
-for (int i = 0; i < myArray.length; i++) {
-    if (myArray[i] == elementToRemove) {
-        index = i;
-        break;
-    }
-}
-if (index > -1) {
-    int[] newArray = new int[myArray.length - 1];
-    System.arraycopy(myArray, 0, newArray, 0, index);
-    System.arraycopy(myArray, index + 1, newArray, index, myArray.length - index - 1);
-    System.out.println(Arrays.toString(newArray));
-}
+def rabin_karp_search(text, pattern):
+    p_len = len(pattern)
+    t_len = len(text)
+    p_hash = hash(pattern)
+    t_hash = hash(text[:p_len])
+
+    for i in range(t_len - p_len + 1):
+        if p_hash == t_hash and text[i:i+p_len] == pattern:
+            return i
+        if i < t_len - p_len:
+            t_hash = (t_hash - ord(text[i])) // 256 + ord(text[i + p_len]) * 256 ** (p_len - 1)
+    return -1
+
+# Example usage
+text = "abcdeabcfg"
+pattern = "abc"
+result = rabin_karp_search(text, pattern)
+if result != -1:
+    print("Pattern found at index:", result)
+else:
+    print("Pattern not found")
