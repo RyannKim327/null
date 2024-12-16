@@ -1,10 +1,9 @@
-import math
+def kth_smallest(arr, k):
+    arr.sort()
+    return arr[k-1]
 
-# Get the number from the user
-number = int(input("Enter a number: "))
-
-# Calculate the factorial of the number
-factorial = math.factorial(number)
-
-# Print the factorial
-print(f"The factorial of {number} is: {factorial}")
+# Example usage
+arr = [3, 1, 4, 1, 5, 9, 2, 6]
+k = 3
+kth_element = kth_smallest(arr, k)
+print(kth_element)
