@@ -1,38 +1,15 @@
-#include <iostream>
+import requests
 
-// Definition for a binary tree node
-struct TreeNode {
-    int val;
-    TreeNode* left;
-    TreeNode* right;
-    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
-};
+city = "London"
+api_key = "YOUR_API_KEY"
+url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
 
-// Function to count the number of leaf nodes in a binary tree
-int countLeafNodes(TreeNode* root) {
-    if (root == NULL) {
-        return 0;
-    }
-    
-    if (root->left == NULL && root->right == NULL) {
-        return 1;
-    }
-    
-    return countLeafNodes(root->left) + countLeafNodes(root->right);
-}
+response = requests.get(url)
+data = response.json()
 
-int main() {
-    // Example binary tree
-    TreeNode* root = new TreeNode(1);
-    root->left = new TreeNode(2);
-    root->right = new TreeNode(3);
-    root->left->left = new TreeNode(4);
-    root->left->right = new TreeNode(5);
-    
-    // Count the number of leaf nodes
-    int leafNodes = countLeafNodes(root);
-    
-    std::cout << "Number of leaf nodes: " << leafNodes << std::endl;
-    
-    return 0;
-}
+if data["cod"] == 200:
+    temp = data["main"]["temp"]
+    weather_desc = data["weather"][0]["description"]
+    print(f"The current temperature in {city} is {temp}°C with {weather_desc}.")
+else:
+    print("Error fetching weather data.")
