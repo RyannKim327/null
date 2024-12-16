@@ -1,42 +1,24 @@
-def bi_directional_search(graph, start, goal):
-    forward_queue = [start]
-    backward_queue = [goal]
-
-    forward_visited = {start}
-    backward_visited = {goal}
-
-    while forward_queue and backward_queue:
-        if len(forward_queue) <= len(backward_queue):
-            current = forward_queue.pop(0)
-            if current in backward_visited:
-                return True
-            for neighbor in graph[current]:
-                if neighbor not in forward_visited:
-                    forward_visited.add(neighbor)
-                    forward_queue.append(neighbor)
+def first_non_repeating_char(input_string):
+    char_freq = {}
+    
+    # Count the frequency of each character
+    for char in input_string:
+        if char in char_freq:
+            char_freq[char] += 1
         else:
-            current = backward_queue.pop(0)
-            if current in forward_visited:
-                return True
-            for neighbor in graph[current]:
-                if neighbor not in backward_visited:
-                    backward_visited.add(neighbor)
-                    backward_queue.append(neighbor)
+            char_freq[char] = 1
+    
+    # Find the first non-repeating character
+    for char in input_string:
+        if char_freq[char] == 1:
+            return char
+    
+    return None
 
-    return False
-
-# Example usage
-graph = {
-    'A': ['B', 'C'],
-    'B': ['A', 'D', 'E'],
-    'C': ['A', 'F'],
-    'D': ['B'],
-    'E': ['B', 'F'],
-    'F': ['C', 'E']
-}
-
-start = 'A'
-goal = 'F'
-
-result = bi_directional_search(graph, start, goal)
-print(result)
+# Test the function
+input_string = "hello world"
+result = first_non_repeating_char(input_string)
+if result:
+    print("The first non-repeating character is:", result)
+else:
+    print("No non-repeating character found in the input string.")
