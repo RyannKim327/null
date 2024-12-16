@@ -1,9 +1,21 @@
-let arr = [1, 2, 3, 4, 5];
-let elemToRemove = 3;
+import heapq
 
-let index = arr.indexOf(elemToRemove);
-if (index > -1) {
-    arr.splice(index, 1);
-}
+def dijkstra(graph, start):
+    distances = {node: float('infinity') for node in graph}
+    distances[start] = 0
+    priority_queue = [(0, start)]
 
-console.log(arr); // Output: [1, 2, 4, 5]
+    while priority_queue:
+        current_distance, current_node = heapq.heappop(priority_queue)
+
+        if current_distance > distances[current_node]:
+            continue
+
+        for neighbor, weight in graph[current_node].items():
+            distance = current_distance + weight
+
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                heapq.heappush(priority_queue, (distance, neighbor))
+
+    return distances
