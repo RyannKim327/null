@@ -1,21 +1,13 @@
-function depthLimitedSearch(node, depthLimit)
-    return recursiveDLS(node, depthLimit)
+def is_prime(num):
+    if num < 2:
+        return False
+    for i in range(2, int(num ** 0.5) + 1):
+        if num % i == 0:
+            return False
+    return True
 
-function recursiveDLS(node, depthLimit)
-    if node is a goal state
-        return node
-    else if depthLimit is 0
-        return "cutoff"
-    else
-        cutoffOccurred = false
-        for each child of node
-            result = recursiveDLS(child, depthLimit - 1)
-            if result is "cutoff"
-                cutoffOccurred = true
-            else if result is not "failure"
-                return result
-        
-        if cutoffOccurred
-            return "cutoff"
-        else
-            return "failure"
+num = 17  # Change this to the number you want to check
+if is_prime(num):
+    print(num, "is a prime number.")
+else:
+    print(num, "is not a prime number.")
