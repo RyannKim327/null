@@ -1,27 +1,29 @@
-import heapq
-
-class PriorityQueue:
-    def __init__(self):
-        self.heap = []
-
-    def push(self, item, priority):
-        heapq.heappush(self.heap, (priority, item))
-
-    def pop(self):
-        if self.heap:
-            return heapq.heappop(self.heap)[1]
-        else:
-            raise IndexError("pop from an empty priority queue")
-
-    def __len__(self):
-        return len(self.heap)
-
-# Example usage:
-pq = PriorityQueue()
-pq.push('task1', 5)
-pq.push('task2', 1)
-pq.push('task3', 3)
-
-print(pq.pop())  # Output: 'task2'
-print(pq.pop())  # Output: 'task3'
-print(pq.pop())  # Output: 'task1'
+# Remove an element from a Python list
+my_list = [1, 2, 3, 4, 5]
+element_to_remove = 3
+my_list.remove(element_to_remove)
+print(my_list)
+// Remove an element from a JavaScript array
+let myArray = [1, 2, 3, 4, 5];
+let elementToRemove = 3;
+let index = myArray.indexOf(elementToRemove);
+if (index > -1) {
+    myArray.splice(index, 1);
+}
+console.log(myArray);
+// Remove an element from a Java array
+int[] myArray = {1, 2, 3, 4, 5};
+int elementToRemove = 3;
+int index = -1;
+for (int i = 0; i < myArray.length; i++) {
+    if (myArray[i] == elementToRemove) {
+        index = i;
+        break;
+    }
+}
+if (index > -1) {
+    int[] newArray = new int[myArray.length - 1];
+    System.arraycopy(myArray, 0, newArray, 0, index);
+    System.arraycopy(myArray, index + 1, newArray, index, myArray.length - index - 1);
+    System.out.println(Arrays.toString(newArray));
+}
