@@ -1,13 +1,31 @@
-def quicksort(arr):
-    if len(arr) <= 1:
-        return arr
-    else:
-        pivot = arr[0]
-        less_than_pivot = [x for x in arr[1:] if x <= pivot]
-        greater_than_pivot = [x for x in arr[1:] if x > pivot]
-        return quicksort(less_than_pivot) + [pivot] + quicksort(greater_than_pivot)
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
 
-# Example Usage
-arr = [3, 6, 8, 10, 1, 2, 1]
-sorted_arr = quicksort(arr)
-print(sorted_arr)
+def height(node):
+    if node is None:
+        return 0
+    return 1 + max(height(node.left), height(node.right))
+
+def diameter(node):
+    if node is None:
+        return 0
+    
+    left_height = height(node.left)
+    right_height = height(node.right)
+    
+    left_diameter = diameter(node.left)
+    right_diameter = diameter(node.right)
+    
+    return max(left_height + right_height + 1, max(left_diameter, right_diameter))
+
+# Example usage:
+root = Node(1)
+root.left = Node(2)
+root.right = Node(3)
+root.left.left = Node(4)
+root.left.right = Node(5)
+
+print("Diameter of the binary tree is:", diameter(root))
