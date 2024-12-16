@@ -1,13 +1,19 @@
-fetch('https://api.example.com/data')
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  })
-  .then(data => {
-    console.log(data);
-  })
-  .catch(error => {
-    console.error('There was a problem with your fetch operation:', error);
-  });
+function largestPrimeFactor(number):
+    maxPrime = -1
+    
+    while number % 2 == 0:
+        maxPrime = 2
+        number = number / 2
+    
+    for i from 3 to sqrt(number) step 2:
+        while number % i == 0:
+            maxPrime = i
+            number = number / i
+    
+    if number > 2:
+        maxPrime = number
+
+    return maxPrime
+
+number = 13195
+print("The largest prime factor of", number, "is", largestPrimeFactor(number))
