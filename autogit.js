@@ -1,12 +1,42 @@
-def bubble_sort(arr):
-    n = len(arr)
-    for i in range(n):
-        for j in range(0, n-i-1):
-            if arr[j] > arr[j+1]:
-                arr[j], arr[j+1] = arr[j+1], arr[j]
-    return arr
+def bi_directional_search(graph, start, goal):
+    forward_queue = [start]
+    backward_queue = [goal]
+
+    forward_visited = {start}
+    backward_visited = {goal}
+
+    while forward_queue and backward_queue:
+        if len(forward_queue) <= len(backward_queue):
+            current = forward_queue.pop(0)
+            if current in backward_visited:
+                return True
+            for neighbor in graph[current]:
+                if neighbor not in forward_visited:
+                    forward_visited.add(neighbor)
+                    forward_queue.append(neighbor)
+        else:
+            current = backward_queue.pop(0)
+            if current in forward_visited:
+                return True
+            for neighbor in graph[current]:
+                if neighbor not in backward_visited:
+                    backward_visited.add(neighbor)
+                    backward_queue.append(neighbor)
+
+    return False
 
 # Example usage
-arr = [64, 34, 25, 12, 22, 11, 90]
-sorted_arr = bubble_sort(arr)
-print("Sorted array:", sorted_arr)
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
+
+start = 'A'
+goal = 'F'
+
+result = bi_directional_search(graph, start, goal)
+print(result)
