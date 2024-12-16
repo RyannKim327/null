@@ -1,9 +1,34 @@
-def is_palindrome(s):
-    return s == s[::-1]
+def longest_common_subsequence(str1, str2):
+    m = len(str1)
+    n = len(str2)
+    
+    # Create a 2D list to store the lengths of longest common subsequences
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+    
+    # Fill the dp table
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if str1[i - 1] == str2[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1] + 1
+            else:
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
+    
+    # Reconstruct the longest common subsequence
+    lcs = ""
+    i, j = m, n
+    while i > 0 and j > 0:
+        if str1[i - 1] == str2[j - 1]:
+            lcs = str1[i - 1] + lcs
+            i -= 1
+            j -= 1
+        elif dp[i - 1][j] > dp[i][j - 1]:
+            i -= 1
+        else:
+            j -= 1
+    
+    return lcs
 
 # Test the function
-input_string = "madam"
-if is_palindrome(input_string):
-    print(f"{input_string} is a palindrome")
-else:
-    print(f"{input_string} is not a palindrome")
+str1 = "ABCDGH"
+str2 = "AEDFHR"
+print(longest_common_subsequence(str1, str2))  # Output: "ADH"
