@@ -1,53 +1,32 @@
-#include <iostream>
-using namespace std;
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
 
-struct Node {
-    int data;
-    Node* next;
-    Node(int val) : data(val), next(nullptr) {}
-};
+def find_nth_from_end(head, n):
+    first = head
+    second = head
+    for i in range(n):
+        if first is None:
+            return None
+        first = first.next
 
-Node* getIntersectionNode(Node* headA, Node* headB) {
-    if (!headA || !headB) {
-        return nullptr;
-    }
+    while first is not None:
+        first = first.next
+        second = second.next
 
-    Node* tailA = headA;
-    Node* tailB = headB;
-    int lenA = 1;
-    int lenB = 1;
+    return second.data
 
-    while (tailA->next) {
-        tailA = tailA->next;
-        lenA++;
-    }
+# Example Usage
+head = Node(1)
+head.next = Node(2)
+head.next.next = Node(3)
+head.next.next.next = Node(4)
+head.next.next.next.next = Node(5)
 
-    while (tailB->next) {
-        tailB = tailB->next;
-        lenB++;
-    }
-
-    if (tailA != tailB) {
-        return nullptr; // Lists do not intersect
-    }
-
-    Node* currA = headA;
-    Node* currB = headB;
-
-    while (lenA > lenB) {
-        currA = currA->next;
-        lenA--;
-    }
-
-    while (lenB > lenA) {
-        currB = currB->next;
-        lenB--;
-    }
-
-    while (currA != currB) {
-        currA = currA->next;
-        currB = currB->next;
-    }
-
-    return currA;
-}
+n = 2
+result = find_nth_from_end(head, n)
+if result is not None:
+    print(f'The {n}th node from the end is: {result}')
+else:
+    print(f'List is not long enough to find {n}th node from the end.')
