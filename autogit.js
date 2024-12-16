@@ -1,19 +1,13 @@
-def find_majority_element(arr):
-    count = 0
-    candidate = None
+import schedule
+import time
 
-    for num in arr:
-        if count == 0:
-            candidate = num
-            count = 1
-        elif num == candidate:
-            count += 1
-        else:
-            count -= 1
+def job():
+    print("Task executed")
 
-    return candidate
+# Schedules a job that runs every hour
+schedule.every().hour.do(job)
 
-# Example
-arr = [2, 2, 1, 1, 1, 2, 2]
-majority_element = find_majority_element(arr)
-print("Majority element:", majority_element)
+# Keeps the script running so that scheduled tasks can be executed
+while True:
+    schedule.run_pending()
+    time.sleep(1)
