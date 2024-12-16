@@ -1,15 +1,12 @@
-# Function to check if a number is prime
-def is_prime(number):
-    if number <= 1:
-        return False
-    for i in range(2, int(number ** 0.5) + 1):
-        if number % i == 0:
-            return False
-    return True
+def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        for j in range(0, n-i-1):
+            if arr[j] > arr[j+1]:
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+    return arr
 
-# Test the function
-number = 17  # Enter the number you want to check for primality
-if is_prime(number):
-    print(f"{number} is a prime number")
-else:
-    print(f"{number} is not a prime number")
+# Example usage
+arr = [64, 34, 25, 12, 22, 11, 90]
+sorted_arr = bubble_sort(arr)
+print("Sorted array:", sorted_arr)
