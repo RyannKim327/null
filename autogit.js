@@ -1,10 +1,10 @@
-def is_palindrome(s):
-    s = s.lower()  # Convert the string to lowercase for case-insensitive comparison
-    return s == s[::-1]
+def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)
 
-# Test the function
-input_string = "Rotor"
-if is_palindrome(input_string):
-    print("The string is a palindrome.")
-else:
-    print("The string is not a palindrome.")
+# Test the factorial function
+number = 5
+result = factorial(number)
+print(f"The factorial of {number} is {result}")
