@@ -1,6 +1,5 @@
-import re
+import random
 
-input_string = "Hello, World! This is a test string."
-output_string = re.sub(r'\s+', '', input_string)
-
-print(output_string)
+# Generate a random number between 1 and 100
+random_number = random.randint(1, 100)
+print(random_number)
