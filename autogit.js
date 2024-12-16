@@ -1,32 +1,12 @@
-class Node:
-    def __init__(self, value):
-        self.left = None
-        self.right = None
-        self.value = value
+def is_sorted_ascending(arr):
+    for i in range(len(arr) - 1):
+        if arr[i] > arr[i + 1]:
+            return False
+    return True
 
-def diameter(node):
-    if node is None:
-        return 0
+# Example usage
+arr1 = [1, 2, 3, 4, 5]
+arr2 = [5, 4, 3, 2, 1]
 
-    left_height = height(node.left)
-    right_height = height(node.right)
-
-    left_diameter = diameter(node.left)
-    right_diameter = diameter(node.right)
-
-    return max(left_height + right_height + 1, max(left_diameter, right_diameter))
-
-def height(node):
-    if node is None:
-        return 0
-
-    return 1 + max(height(node.left), height(node.right))
-
-# Constructing a sample binary tree
-root = Node(1)
-root.left = Node(2)
-root.right = Node(3)
-root.left.left = Node(4)
-root.left.right = Node(5)
-
-print("Diameter of the binary tree is:", diameter(root))
+print(is_sorted_ascending(arr1))  # Output: True
+print(is_sorted_ascending(arr2))  # Output: False
