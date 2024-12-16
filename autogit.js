@@ -1,29 +1,42 @@
-def heapify(arr, n, i):
-    largest = i
-    left = 2 * i + 1
-    right = 2 * i + 2
+def fibonacci_search(arr, x):
+    # Initialize Fibonacci numbers
+    fib1 = 0
+    fib2 = 1
+    fib3 = fib1 + fib2
 
-    if left < n and arr[i] < arr[left]:
-        largest = left
+    while fib3 < len(arr):
+        fib1 = fib2
+        fib2 = fib3
+        fib3 = fib1 + fib2
 
-    if right < n and arr[largest] < arr[right]:
-        largest = right
+    offset = -1
 
-    if largest != i:
-        arr[i], arr[largest] = arr[largest], arr[i]
-        heapify(arr, n, largest)
+    while fib3 > 1:
+        i = min(offset + fib1, len(arr) - 1)
 
-def heap_sort(arr):
-    n = len(arr)
+        if arr[i] < x:
+            fib3 = fib2
+            fib2 = fib1
+            fib1 = fib3 - fib2
+            offset = i
+        elif arr[i] > x:
+            fib3 = fib1
+            fib2 -= fib1
+            fib1 = fib3 - fib2
+        else:
+            return i
 
-    for i in range(n // 2 - 1, -1, -1):
-        heapify(arr, n, i)
+    if fib2 and arr[offset+1] == x:
+        return offset+1
 
-    for i in range(n - 1, 0, -1):
-        arr[i], arr[0] = arr[0], arr[i]
-        heapify(arr, i, 0)
+    return -1
 
-# Example usage
-arr = [12, 11, 13, 5, 6, 7]
-heap_sort(arr)
-print("Sorted array is", arr)
+# Test the function
+arr = [2, 3, 5, 6, 8, 10, 13, 15, 18, 20]
+x = 15
+result = fibonacci_search(arr, x)
+
+if result != -1:
+    print("Element found at index:", result)
+else:
+    print("Element not found in the array.")
