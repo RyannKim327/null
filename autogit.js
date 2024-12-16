@@ -1,13 +1,15 @@
-def is_prime(num):
-    if num < 2:
+# Function to check if a number is prime
+def is_prime(number):
+    if number <= 1:
         return False
-    for i in range(2, int(num ** 0.5) + 1):
-        if num % i == 0:
+    for i in range(2, int(number ** 0.5) + 1):
+        if number % i == 0:
             return False
     return True
 
-num = 17  # Change this to the number you want to check
-if is_prime(num):
-    print(num, "is a prime number.")
+# Test the function
+number = 17  # Enter the number you want to check for primality
+if is_prime(number):
+    print(f"{number} is a prime number")
 else:
-    print(num, "is not a prime number.")
+    print(f"{number} is not a prime number")
