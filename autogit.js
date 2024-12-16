@@ -1,43 +1,39 @@
-def build_bad_match_table(pattern):
-    bad_match_table = {}
-    pattern_length = len(pattern)
-    
-    for i in range(pattern_length - 1):
-        bad_match_table[pattern[i]] = pattern_length - i - 1
-    
-    return bad_match_table
+class HashTable:
+    def __init__(self, size):
+        self.size = size
+        self.table = [[] for _ in range(size)]
 
-def boyer_moore_horspool(text, pattern):
-    bad_match_table = build_bad_match_table(pattern)
-    text_length = len(text)
-    pattern_length = len(pattern)
-    
-    if pattern_length > text_length:
-        return -1
-    
-    skip = 0
-    while text_length - skip >= pattern_length:
-        match = True
-        for i in range(pattern_length - 1, -1, -1):
-            if pattern[i] != text[skip + i]:
-                if text[skip + i] in bad_match_table:
-                    skip += bad_match_table[text[skip + i]]
-                else:
-                    skip += pattern_length
-                match = False
-                break
-        
-        if match:
-            return skip
-        
-    return -1
+    def _hash_function(self, key):
+        return hash(key) % self.size
+
+    def add(self, key, value):
+        hash_key = self._hash_function(key)
+        for pair in self.table[hash_key]:
+            if pair[0] == key:
+                pair[1] = value
+                return
+        self.table[hash_key].append([key, value])
+
+    def get(self, key):
+        hash_key = self._hash_function(key)
+        for pair in self.table[hash_key]:
+            if pair[0] == key:
+                return pair[1]
+        return None
+
+    def remove(self, key):
+        hash_key = self._hash_function(key)
+        for i, pair in enumerate(self.table[hash_key]):
+            if pair[0] == key:
+                del self.table[hash_key][i]
+                return
 
 # Example usage
-text = "This is an example text for string searching"
-pattern = "example"
-result = boyer_moore_horspool(text, pattern)
+hash_table = HashTable(10)
+hash_table.add('key1', 'value1')
+hash_table.add('key2', 'value2')
 
-if result != -1:
-    print(f"Pattern found at index {result}")
-else:
-    print("Pattern not found")
+print(hash_table.get('key1'))  # Output: value1
+
+hash_table.remove('key1')
+print(hash_table.get('key1'))  # Output: None
