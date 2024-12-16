@@ -1,34 +1,57 @@
-def longest_common_subsequence(str1, str2):
-    m = len(str1)
-    n = len(str2)
+// Define the ListNode class
+class ListNode {
+    int val;
+    ListNode next;
     
-    # Create a 2D list to store the lengths of longest common subsequences
-    dp = [[0] * (n + 1) for _ in range(m + 1)]
-    
-    # Fill the dp table
-    for i in range(1, m + 1):
-        for j in range(1, n + 1):
-            if str1[i - 1] == str2[j - 1]:
-                dp[i][j] = dp[i - 1][j - 1] + 1
-            else:
-                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
-    
-    # Reconstruct the longest common subsequence
-    lcs = ""
-    i, j = m, n
-    while i > 0 and j > 0:
-        if str1[i - 1] == str2[j - 1]:
-            lcs = str1[i - 1] + lcs
-            i -= 1
-            j -= 1
-        elif dp[i - 1][j] > dp[i][j - 1]:
-            i -= 1
-        else:
-            j -= 1
-    
-    return lcs
+    ListNode(int x) { 
+        val = x; 
+    }
+}
 
-# Test the function
-str1 = "ABCDGH"
-str2 = "AEDFHR"
-print(longest_common_subsequence(str1, str2))  # Output: "ADH"
+// Function to check if a linked list is a palindrome
+public boolean isPalindrome(ListNode head) {
+    if(head == null || head.next == null) {
+        return true;
+    }
+    
+    // Find the middle of the linked list
+    ListNode slow = head;
+    ListNode fast = head;
+    
+    while(fast.next != null && fast.next.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+    
+    // Reverse the second half of the linked list
+    ListNode secondHalf = reverseList(slow.next);
+    
+    // Compare the first and second halves
+    ListNode p1 = head;
+    ListNode p2 = secondHalf;
+    
+    while(p2 != null) {
+        if(p1.val != p2.val) {
+            return false;
+        }
+        p1 = p1.next;
+        p2 = p2.next;
+    }
+    
+    return true;
+}
+
+// Function to reverse a linked list
+public ListNode reverseList(ListNode head) {
+    ListNode prev = null;
+    ListNode curr = head;
+    
+    while(curr != null) {
+        ListNode next = curr.next;
+        curr.next = prev;
+        prev = curr;
+        curr = next;
+    }
+    
+    return prev;
+}
