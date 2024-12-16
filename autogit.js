@@ -1,57 +1,29 @@
-#include <iostream>
-#define MAX_SIZE 100
+def heapify(arr, n, i):
+    largest = i
+    left = 2*i + 1
+    right = 2*i + 2
 
-class Stack {
-private:
-    int arr[MAX_SIZE];
-    int top;
+    if left < n and arr[left] > arr[largest]:
+        largest = left
 
-public:
-    Stack() {
-        top = -1;
-    }
+    if right < n and arr[right] > arr[largest]:
+        largest = right
 
-    void push(int val) {
-        if (top >= MAX_SIZE - 1) {
-            std::cout << "Stack Overflow\n";
-            return;
-        }
-        arr[++top] = val;
-    }
+    if largest != i:
+        arr[i], arr[largest] = arr[largest], arr[i]
+        heapify(arr, n, largest)
 
-    int pop() {
-        if (top < 0) {
-            std::cout << "Stack Underflow\n";
-            return -9999; // Return some error value
-        }
-        return arr[top--];
-    }
+def heap_sort(arr):
+    n = len(arr)
 
-    int peek() {
-        if (top < 0) {
-            std::cout << "Stack is empty\n";
-            return -9999; // Return some error value
-        }
-        return arr[top];
-    }
+    for i in range(n//2 - 1, -1, -1):
+        heapify(arr, n, i)
 
-    bool isEmpty() {
-        return top < 0;
-    }
-};
+    for i in range(n-1, 0, -1):
+        arr[i], arr[0] = arr[0], arr[i]
+        heapify(arr, i, 0)
 
-int main() {
-    Stack stack;
-    stack.push(5);
-    stack.push(10);
-    stack.push(15);
-
-    std::cout << "Top element: " << stack.peek() << std::endl;
-
-    std::cout << "Popped element: " << stack.pop() << std::endl;
-    std::cout << "Popped element: " << stack.pop() << std::endl;
-
-    std::cout << "Is stack empty? " << (stack.isEmpty() ? "Yes" : "No") << std::endl;
-
-    return 0;
-}
+# Example usage
+arr = [12, 11, 13, 5, 6, 7]
+heap_sort(arr)
+print("Sorted array is", arr)
