@@ -1,42 +1,22 @@
-def fibonacci_search(arr, x):
-    # Initialize Fibonacci numbers
-    fib1 = 0
-    fib2 = 1
-    fib3 = fib1 + fib2
+// Definition for a singly-linked list node
+class ListNode {
+    int val;
+    ListNode next;
+    ListNode(int x) { val = x; }
+}
 
-    while fib3 < len(arr):
-        fib1 = fib2
-        fib2 = fib3
-        fib3 = fib1 + fib2
+public ListNode findMiddleElement(ListNode head) {
+    if (head == null) {
+        return null;
+    }
 
-    offset = -1
+    ListNode slow_ptr = head;
+    ListNode fast_ptr = head;
 
-    while fib3 > 1:
-        i = min(offset + fib1, len(arr) - 1)
+    while (fast_ptr != null && fast_ptr.next != null) {
+        slow_ptr = slow_ptr.next;
+        fast_ptr = fast_ptr.next.next;
+    }
 
-        if arr[i] < x:
-            fib3 = fib2
-            fib2 = fib1
-            fib1 = fib3 - fib2
-            offset = i
-        elif arr[i] > x:
-            fib3 = fib1
-            fib2 -= fib1
-            fib1 = fib3 - fib2
-        else:
-            return i
-
-    if fib2 and arr[offset+1] == x:
-        return offset+1
-
-    return -1
-
-# Test the function
-arr = [2, 3, 5, 6, 8, 10, 13, 15, 18, 20]
-x = 15
-result = fibonacci_search(arr, x)
-
-if result != -1:
-    print("Element found at index:", result)
-else:
-    print("Element not found in the array.")
+    return slow_ptr;
+}
