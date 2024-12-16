@@ -1,23 +1,27 @@
-def binary_search(arr, target):
-    low = 0
-    high = len(arr) - 1
+import heapq
 
-    while low <= high:
-        mid = (low + high) // 2
-        if arr[mid] == target:
-            return mid
-        elif arr[mid] < target:
-            low = mid + 1
+class PriorityQueue:
+    def __init__(self):
+        self.heap = []
+
+    def push(self, item, priority):
+        heapq.heappush(self.heap, (priority, item))
+
+    def pop(self):
+        if self.heap:
+            return heapq.heappop(self.heap)[1]
         else:
-            high = mid - 1
+            raise IndexError("pop from an empty priority queue")
 
-    return -1
+    def __len__(self):
+        return len(self.heap)
 
-# Example usage
-arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-target = 5
-result = binary_search(arr, target)
-if result != -1:
-    print(f"Element found at index {result}")
-else:
-    print("Element not found")
+# Example usage:
+pq = PriorityQueue()
+pq.push('task1', 5)
+pq.push('task2', 1)
+pq.push('task3', 3)
+
+print(pq.pop())  # Output: 'task2'
+print(pq.pop())  # Output: 'task3'
+print(pq.pop())  # Output: 'task1'
