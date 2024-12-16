@@ -1,15 +1,20 @@
-import requests
+def is_prime(num):
+    if num <= 1:
+        return False
+    elif num <= 3:
+        return True
+    elif num % 2 == 0 or num % 3 == 0:
+        return False
+    i = 5
+    while i * i <= num:
+        if num % i == 0 or num % (i + 2) == 0:
+            return False
+        i += 6
+    return True
 
-city = "London"
-api_key = "YOUR_API_KEY"
-url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
-
-response = requests.get(url)
-data = response.json()
-
-if data["cod"] == 200:
-    temp = data["main"]["temp"]
-    weather_desc = data["weather"][0]["description"]
-    print(f"The current temperature in {city} is {temp}°C with {weather_desc}.")
+# Test the function
+num = 29
+if is_prime(num):
+    print(f"{num} is a prime number.")
 else:
-    print("Error fetching weather data.")
+    print(f"{num} is not a prime number.")
