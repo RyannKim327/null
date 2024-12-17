@@ -1,11 +1,8 @@
-int countLeafNodes(Node* root) {
-    if (root == NULL) {
-        return 0;
-    }
-    
-    if (root->left == NULL && root->right == NULL) {
-        return 1;
-    }
-    
-    return countLeafNodes(root->left) + countLeafNodes(root->right);
-}
+def remove_vowels(input_str):
+    vowels = "AEIOUaeiou"
+    return "".join(char for char in input_str if char not in vowels)
+
+# Example usage
+input_str = "Hello, World!"
+output_str = remove_vowels(input_str)
+print(output_str)  # Output: "Hll, Wrld!"
