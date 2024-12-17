@@ -1,38 +1,19 @@
-import heapq
+def are_anagrams(str1, str2):
+    # Remove spaces and convert strings to lowercase
+    str1 = str1.replace(" ", "").lower()
+    str2 = str2.replace(" ", "").lower()
 
-def dijkstra(graph, start):
-    # Initialize distances to all nodes as infinity
-    distances = {node: float('inf') for node in graph}
-    distances[start] = 0
+    # Check if the lengths of the strings are equal
+    if len(str1) != len(str2):
+        return False
 
-    queue = [(0, start)]
+    # Sort the characters in the strings and compare them
+    return sorted(str1) == sorted(str2)
 
-    while queue:
-        current_distance, current_node = heapq.heappop(queue)
-
-        if current_distance > distances[current_node]:
-            continue
-
-        for neighbor, weight in graph[current_node].items():
-            distance = current_distance + weight
-
-            if distance < distances[neighbor]:
-                distances[neighbor] = distance
-                heapq.heappush(queue, (distance, neighbor))
-
-    return distances
-
-# Example usage:
-graph = {
-    'A': {'B': 5, 'C': 3},
-    'B': {'A': 5, 'C': 1, 'D': 1},
-    'C': {'A': 3, 'B': 1, 'D': 3},
-    'D': {'B': 1, 'C': 3}
-}
-
-start_node = 'A'
-shortest_distances = dijkstra(graph, start_node)
-
-print("Shortest distances from node {}:".format(start_node))
-for node, distance in shortest_distances.items():
-    print("Node: {}, Distance: {}".format(node, distance))
+# Test the function
+string1 = "Listen"
+string2 = "Silent"
+if are_anagrams(string1, string2):
+    print(f"{string1} and {string2} are anagrams.")
+else:
+    print(f"{string1} and {string2} are not anagrams.")
