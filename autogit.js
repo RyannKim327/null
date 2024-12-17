@@ -1,39 +1,14 @@
-from collections import defaultdict
+def find_first_repeated_char(input_string):
+    seen = {}
+    for char in input_string:
+        if char in seen:
+            return char
+        seen[char] = True
+    return None
 
-class Graph:
-    def __init__(self):
-        self.graph = defaultdict(list)
-
-    def addEdge(self, u, v):
-        self.graph[u].append(v)
-
-    def topologicalSortUtil(self, v, visited, stack):
-        visited[v] = True
-
-        for i in self.graph[v]:
-            if not visited[i]:
-                self.topologicalSortUtil(i, visited, stack)
-
-        stack.append(v)
-
-    def topologicalSort(self):
-        visited = {node: False for node in self.graph}
-        stack = []
-
-        for node in self.graph:
-            if not visited[node]:
-                self.topologicalSortUtil(node, visited, stack)
-
-        return stack[::-1]
-
-# Example usage
-g = Graph()
-g.addEdge(5, 2)
-g.addEdge(5, 0)
-g.addEdge(4, 0)
-g.addEdge(4, 1)
-g.addEdge(2, 3)
-g.addEdge(3, 1)
-
-print("Topological Sort:")
-print(g.topologicalSort())
+input_string = "abcdefgha"
+result = find_first_repeated_char(input_string)
+if result:
+    print("First repeated character is:", result)
+else:
+    print("No repeated characters found in the string.")
