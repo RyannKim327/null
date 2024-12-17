@@ -1,46 +1,32 @@
-#include <iostream>
-using namespace std;
+def heapify(arr, n, i):
+    largest = i
+    left = 2*i + 1
+    right = 2*i + 2
 
-// Node structure
-struct Node {
-    int data;
-    Node* next;
-};
+    if left < n and arr[i] < arr[left]:
+        largest = left
 
-// Function to find the length of a linked list
-int findLength(Node* head) {
-    int length = 0;
-    Node* current = head;
+    if right < n and arr[largest] < arr[right]:
+        largest = right
 
-    while (current != NULL) {
-        length++;
-        current = current->next;
-    }
+    if largest != i:
+        arr[i], arr[largest] = arr[largest], arr[i]
+        heapify(arr, n, largest)
 
-    return length;
-}
+def build_max_heap(arr):
+    n = len(arr)
+    start_idx = n // 2 - 1
 
-// Main function
-int main() {
-    // Create a sample linked list
-    Node* head = new Node();
-    head->data = 1;
-    
-    Node* second = new Node();
-    second->data = 2;
-    
-    Node* third = new Node();
-    third->data = 3;
-    
-    // Connect the nodes
-    head->next = second;
-    second->next = third;
-    third->next = NULL;
+    for i in range(start_idx, -1, -1):
+        heapify(arr, n, i)
+def heap_sort(arr):
+    n = len(arr)
 
-    // Find the length of the linked list
-    int length = findLength(head);
+    build_max_heap(arr)
 
-    cout << "Length of the linked list: " << length << endl;
-
-    return 0;
-}
+    for i in range(n-1, 0, -1):
+        arr[i], arr[0] = arr[0], arr[i]
+        heapify(arr, i, 0)
+arr = [12, 11, 13, 5, 6, 7]
+heap_sort(arr)
+print("Sorted array is", arr)
