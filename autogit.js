@@ -1,8 +1,6 @@
-# Sample string with spaces
-sample_string = "Hello, world! This is a sample string with spaces."
+def calculate_mean(numbers):
+    return sum(numbers) / len(numbers)
 
-# Remove spaces from the string
-result_string = sample_string.replace(" ", "")
-
-print(result_string)
-Hello,world!Thisisasamplestringwithspaces.
+numbers = [1, 2, 3, 4, 5]
+mean = calculate_mean(numbers)
+print("Mean:", mean)
