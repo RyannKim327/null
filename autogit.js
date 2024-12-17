@@ -1,14 +1,39 @@
-Initialize:
-    max_so_far = 0
-    max_ending_here = 0
+from collections import defaultdict
 
-Loop for each element in the array:
-    max_ending_here = max_ending_here + array[i]
-    
-    if max_ending_here < 0:
-        max_ending_here = 0
-    
-    if max_so_far < max_ending_here:
-        max_so_far = max_ending_here
+class Graph:
+    def __init__(self):
+        self.graph = defaultdict(list)
 
-Return max_so_far
+    def addEdge(self, u, v):
+        self.graph[u].append(v)
+
+    def topologicalSortUtil(self, v, visited, stack):
+        visited[v] = True
+
+        for i in self.graph[v]:
+            if not visited[i]:
+                self.topologicalSortUtil(i, visited, stack)
+
+        stack.append(v)
+
+    def topologicalSort(self):
+        visited = {node: False for node in self.graph}
+        stack = []
+
+        for node in self.graph:
+            if not visited[node]:
+                self.topologicalSortUtil(node, visited, stack)
+
+        return stack[::-1]
+
+# Example usage
+g = Graph()
+g.addEdge(5, 2)
+g.addEdge(5, 0)
+g.addEdge(4, 0)
+g.addEdge(4, 1)
+g.addEdge(2, 3)
+g.addEdge(3, 1)
+
+print("Topological Sort:")
+print(g.topologicalSort())
