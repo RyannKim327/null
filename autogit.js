@@ -1,45 +1,23 @@
-class Node:
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
+def binary_search(arr, target):
+    left, right = 0, len(arr) - 1
 
-class BinaryTree:
-    def __init__(self):
-        self.root = None
-
-    def insert(self, value):
-        if self.root is None:
-            self.root = Node(value)
+    while left <= right:
+        mid = left + (right - left) // 2
+        
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] < target:
+            left = mid + 1
         else:
-            self._insert_recursive(self.root, value)
+            right = mid - 1
 
-    def _insert_recursive(self, current_node, value):
-        if value < current_node.value:
-            if current_node.left is None:
-                current_node.left = Node(value)
-            else:
-                self._insert_recursive(current_node.left, value)
-        elif value > current_node.value:
-            if current_node.right is None:
-                current_node.right = Node(value)
-            else:
-                self._insert_recursive(current_node.right, value)
-        else:
-            # Value already exists in the tree
-            pass
+    return -1
 
-    def inorder_traversal(self, node):
-        if node:
-            self.inorder_traversal(node.left)
-            print(node.value)
-            self.inorder_traversal(node.right)
-# Example Usage
-tree = BinaryTree()
-tree.insert(5)
-tree.insert(3)
-tree.insert(8)
-tree.insert(1)
-tree.insert(4)
-
-tree.inorder_traversal(tree.root)
+# Example usage
+arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+target = 5
+result = binary_search(arr, target)
+if result != -1:
+    print(f"Element found at index: {result}")
+else:
+    print("Element not found")
