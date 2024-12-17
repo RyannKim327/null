@@ -1,12 +1,15 @@
-def quicksort(arr):
-    if len(arr) <= 1:
-        return arr
-    pivot = arr[len(arr) // 2]
-    left = [x for x in arr if x < pivot]
-    middle = [x for x in arr if x == pivot]
-    right = [x for x in arr if x > pivot]
-    return quicksort(left) + middle + quicksort(right)
+class Node:
+    def __init__(self, is_leaf=True):
+        self.is_leaf = is_leaf
+        self.keys = []
+        self.children = []
+class BTree:
+    def __init__(self, t):
+        self.root = Node(is_leaf=True)
+        self.t = t
 
-# Example
-arr = [3, 6, 8, 10, 1, 2, 1]
-print(quicksort(arr))
+    def insert(self, value):
+        # Implement insertion logic here
+
+    def search(self, value):
+        # Implement search logic here
