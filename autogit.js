@@ -1,8 +1,17 @@
-def kth_smallest_element(arr, k):
-    arr.sort()
-    return arr[k-1]
+def longest_common_prefix(strings):
+    if not strings:
+        return ""
 
-# Example usage
-arr = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]
-k = 4
-print(f"The {k}th smallest element in the array is: {kth_smallest_element(arr, k)}")
+    prefix = strings[0]
+
+    for string in strings[1:]:
+        i = 0
+        while i < len(prefix) and i < len(string) and prefix[i] == string[i]:
+            i += 1
+        prefix = prefix[:i]
+
+    return prefix
+
+# Example
+strings = ["flower", "flow", "flight"]
+print(longest_common_prefix(strings))  # Output: "fl"
