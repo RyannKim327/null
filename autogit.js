@@ -1,13 +1,22 @@
-def insertion_sort(arr):
-    for i in range(1, len(arr)):
-        key = arr[i]
-        j = i - 1
-        while j >= 0 and key < arr[j]:
-            arr[j + 1] = arr[j]
-            j -= 1
-        arr[j + 1] = key
+def is_palindrome(s):
+    start = 0
+    end = len(s) - 1
 
-# Example usage:
-arr = [12, 11, 13, 5, 6]
-insertion_sort(arr)
-print("Sorted array:", arr)
+    while start < end:
+        # Skip non-alphanumeric characters
+        if not s[start].isalnum():
+            start += 1
+        elif not s[end].isalnum():
+            end -= 1
+        # Compare characters ignoring case
+        elif s[start].lower() != s[end].lower():
+            return False
+        else:
+            start += 1
+            end -= 1
+
+    return True
+
+# Test the function
+s = "A man, a plan, a canal, Panama!"
+print(is_palindrome(s))  # Output: True
