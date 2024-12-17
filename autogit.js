@@ -1,17 +1,45 @@
-def longest_common_prefix(strings):
-    if not strings:
-        return ""
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
 
-    prefix = strings[0]
+class BinaryTree:
+    def __init__(self):
+        self.root = None
 
-    for string in strings[1:]:
-        i = 0
-        while i < len(prefix) and i < len(string) and prefix[i] == string[i]:
-            i += 1
-        prefix = prefix[:i]
+    def insert(self, value):
+        if self.root is None:
+            self.root = Node(value)
+        else:
+            self._insert_recursive(self.root, value)
 
-    return prefix
+    def _insert_recursive(self, current_node, value):
+        if value < current_node.value:
+            if current_node.left is None:
+                current_node.left = Node(value)
+            else:
+                self._insert_recursive(current_node.left, value)
+        elif value > current_node.value:
+            if current_node.right is None:
+                current_node.right = Node(value)
+            else:
+                self._insert_recursive(current_node.right, value)
+        else:
+            # Value already exists in the tree
+            pass
 
-# Example
-strings = ["flower", "flow", "flight"]
-print(longest_common_prefix(strings))  # Output: "fl"
+    def inorder_traversal(self, node):
+        if node:
+            self.inorder_traversal(node.left)
+            print(node.value)
+            self.inorder_traversal(node.right)
+# Example Usage
+tree = BinaryTree()
+tree.insert(5)
+tree.insert(3)
+tree.insert(8)
+tree.insert(1)
+tree.insert(4)
+
+tree.inorder_traversal(tree.root)
