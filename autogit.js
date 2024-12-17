@@ -1,8 +1,8 @@
-def remove_vowels(input_str):
-    vowels = "AEIOUaeiou"
-    return "".join(char for char in input_str if char not in vowels)
+# Sample string with spaces
+sample_string = "Hello, world! This is a sample string with spaces."
 
-# Example usage
-input_str = "Hello, World!"
-output_str = remove_vowels(input_str)
-print(output_str)  # Output: "Hll, Wrld!"
+# Remove spaces from the string
+result_string = sample_string.replace(" ", "")
+
+print(result_string)
+Hello,world!Thisisasamplestringwithspaces.
