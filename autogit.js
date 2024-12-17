@@ -1,11 +1,19 @@
-def reverse_words(input_string):
-    # Split the input string into individual words
-    words = input_string.split()
+def second_largest(arr):
+    if len(arr) < 2:
+        return "Array must have at least 2 elements"
     
-    # Reverse the order of words in the list
-    reversed_words = words[::-1]
+    largest = second_largest = float('-inf')
     
-    # Join the words back together to form a new string
-    reversed_string = ' '.join(reversed_words)
-    
-    return reversed_string
+    for num in arr:
+        if num > largest:
+            second_largest = largest
+            largest = num
+        elif num > second_largest and num < largest:
+            second_largest = num
+            
+    return second_largest
+
+# Example usage
+arr = [3, 8, 1, 15, 7, 10]
+result = second_largest(arr)
+print("Second largest element in the array is:", result)
