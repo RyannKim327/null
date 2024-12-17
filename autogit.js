@@ -1,23 +1,12 @@
-def binary_search(arr, target):
-    left, right = 0, len(arr) - 1
+def quicksort(arr):
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    return quicksort(left) + middle + quicksort(right)
 
-    while left <= right:
-        mid = left + (right - left) // 2
-        
-        if arr[mid] == target:
-            return mid
-        elif arr[mid] < target:
-            left = mid + 1
-        else:
-            right = mid - 1
-
-    return -1
-
-# Example usage
-arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-target = 5
-result = binary_search(arr, target)
-if result != -1:
-    print(f"Element found at index: {result}")
-else:
-    print("Element not found")
+# Example
+arr = [3, 6, 8, 10, 1, 2, 1]
+print(quicksort(arr))
