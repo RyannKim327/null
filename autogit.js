@@ -1,7 +1,9 @@
-# Define an array
-my_array = [1, 2, 3, 4, 5]
+const axios = require('axios');
 
-# Remove the element 3 from the array
-my_array.remove(3)
-
-print(my_array)  # Output: [1, 2, 4, 5]
+axios.get('https://jsonplaceholder.typicode.com/posts')
+  .then(function (response) {
+    console.log(response.data);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
