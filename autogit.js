@@ -1,14 +1,16 @@
-import re
+def check_anagram(str1, str2):
+    str1 = str1.replace(" ", "").lower()
+    str2 = str2.replace(" ", "").lower()
 
-def validate_email(email):
-    pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
-    if re.match(pattern, email):
+    if sorted(str1) == sorted(str2):
         return True
     else:
         return False
 
-email = "example@example.com"
-if validate_email(email):
-    print("Valid email address")
+# Test the function
+str1 = "listen"
+str2 = "silent"
+if check_anagram(str1, str2):
+    print(f"{str1} and {str2} are anagrams.")
 else:
-    print("Invalid email address")
+    print(f"{str1} and {str2} are not anagrams.")
