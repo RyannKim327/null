@@ -1,47 +1,28 @@
-def compute_lps_array(pat):
-    m = len(pat)
-    lps = [0] * m
-    length = 0
-    i = 1
-    while i < m:
-        if pat[i] == pat[length]:
-            length += 1
-            lps[i] = length
-            i += 1
-        else:
-            if length != 0:
-                length = lps[length - 1]
-            else:
-                lps[i] = 0
-                i += 1
-    return lps
+from collections import defaultdict
 
-def kmp_search(txt, pat):
-    n = len(txt)
-    m = len(pat)
+def topological_sort(graph):
+    indegree = {node: 0 for node in graph}
+    for node in graph:
+        for neighbor in graph[node]:
+            indegree[neighbor] += 1
     
-    if n == 0 or m == 0:
+    queue = [node for node in indegree if indegree[node] == 0]
+    result = []
+    
+    while queue:
+        node = queue.pop(0)
+        result.append(node)
+        for neighbor in graph[node]:
+            indegree[neighbor] -= 1
+            if indegree[neighbor] == 0:
+                queue.append(neighbor)
+    
+    if len(result) != len(graph):
+        # Graph has a cycle
         return []
     
-    lps = compute_lps_array(pat)
-    res = []
-    i = 0
-    j = 0
-    while i < n:
-        if pat[j] == txt[i]:
-            i += 1
-            j += 1
-        if j == m:
-            res.append(i - j)
-            j = lps[j - 1]
-        elif i < n and pat[j] != txt[i]:
-            if j != 0:
-                j = lps[j - 1]
-            else:
-                i += 1
-    return res
+    return result
 
-# Test the KMP algorithm
-txt = "ABABDABACDABABCABAB"
-pat = "ABABCABAB"
-print(kmp_search(txt, pat))
+# Example usage
+graph = {'A': ['B', 'C'], 'B': ['C'], 'C': ['D'], 'D': []}
+print(topological_sort(graph))
