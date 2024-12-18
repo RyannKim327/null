@@ -1,11 +1,8 @@
-def factorial(n):
-    if n == 0:
-        return 1
-    else:
-        result = 1
-        for i in range(1, n + 1):
-            result *= i
-        return result
+def calculate_mean(numbers):
+    total = sum(numbers)
+    mean = total / len(numbers)
+    return mean
 
-number = 5
-print("Factorial of", number, "is", factorial(number))
+numbers = [1, 2, 3, 4, 5]
+result = calculate_mean(numbers)
+print("The mean of the numbers is:", result)
