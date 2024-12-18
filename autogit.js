@@ -1,37 +1,38 @@
-from collections import deque
-
-def breadth_limited_search(graph, start, goal, depth_limit):
-    queue = deque([(start, [start])])
+// Definition for singly-linked list
+class Node {
+    int val;
+    Node next;
     
-    while queue:
-        node, path = queue.popleft()
-        
-        if node == goal:
-            return path
-        
-        if len(path) < depth_limit:
-            for neighbor in graph[node]:
-                if neighbor not in path:
-                    queue.append((neighbor, path + [neighbor]))
-    
-    return None
-
-# Example graph
-graph = {
-    'A': ['B', 'C'],
-    'B': ['A', 'D', 'E'],
-    'C': ['A', 'F'],
-    'D': ['B'],
-    'E': ['B', 'F'],
-    'F': ['C', 'E']
+    Node(int val) {
+        this.val = val;
+        this.next = null;
+    }
 }
 
-start = 'A'
-goal = 'F'
-depth_limit = 3
+boolean hasCycle(Node head) {
+    if (head == null || head.next == null) {
+        return false;
+    }
+    
+    Node slow = head;
+    Node fast = head.next;
+    
+    while (fast != null && fast.next != null) {
+        if (slow == fast) {
+            return true; // Cycle detected
+        }
+        
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+    
+    return false; // No cycle found
+}
 
-result = breadth_limited_search(graph, start, goal, depth_limit)
-if result:
-    print("Path found:", result)
-else:
-    print("Path not found within depth limit.")
+// Usage
+Node head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = head; // Create a cycle
+
+System.out.println(hasCycle(head)); // Output will be true
