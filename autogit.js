@@ -1,34 +1,18 @@
-def merge_sort(arr):
-    if len(arr) <= 1:
-        return arr
+def longest_increasing_subsequence(arr):
+    n = len(arr)
+    lis = [1] * n
 
-    mid = len(arr) // 2
-    left = arr[:mid]
-    right = arr[mid:]
+    for i in range(1, n):
+        for j in range(i):
+            if arr[i] > arr[j] and lis[i] < lis[j] + 1:
+                lis[i] = lis[j] + 1
 
-    left = merge_sort(left)
-    right = merge_sort(right)
+    max_length = 0
+    for length in lis:
+        max_length = max(max_length, length)
 
-    return merge(left, right)
+    return max_length
 
-def merge(left, right):
-    result = []
-    i = j = 0
-
-    while i < len(left) and j < len(right):
-        if left[i] < right[j]:
-            result.append(left[i])
-            i += 1
-        else:
-            result.append(right[j])
-            j += 1
-
-    result += left[i:]
-    result += right[j:]
-
-    return result
-
-# Example usage:
-arr = [38, 27, 43, 3, 9, 82, 10]
-sorted_arr = merge_sort(arr)
-print(sorted_arr)
+# Example usage
+arr = [10, 22, 9, 33, 21, 50, 41, 60, 80]
+print("Length of longest increasing subsequence:", longest_increasing_subsequence(arr))
