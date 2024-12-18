@@ -1,19 +1,14 @@
-def find_majority_element(arr):
-    count = 0
-    candidate = None
-    
-    for num in arr:
-        if count == 0:
-            candidate = num
-            count = 1
-        elif num == candidate:
-            count += 1
-        else:
-            count -= 1
-    
-    return candidate
+import re
 
-# Example usage
-arr = [2, 2, 3, 2, 4, 2, 2]
-majority_element = find_majority_element(arr)
-print("Majority element is:", majority_element)
+def validate_email(email):
+    pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    if re.match(pattern, email):
+        return True
+    else:
+        return False
+
+email = "example@example.com"
+if validate_email(email):
+    print("Valid email address")
+else:
+    print("Invalid email address")
