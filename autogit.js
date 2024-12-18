@@ -1,12 +1,12 @@
-def count_occurrences(string, character):
-    count = 0
-    for char in string:
-        if char == character:
-            count += 1
-    return count
+def max_subarray_sum(arr):
+    max_ending_here = max_so_far = arr[0]
 
-# Test the function
-string = "hello world"
-character = "l"
-occurrences = count_occurrences(string, character)
-print(f"The character '{character}' occurs {occurrences} times in the string.")
+    for x in arr[1:]:
+        max_ending_here = max(x, max_ending_here + x)
+        max_so_far = max(max_so_far, max_ending_here)
+
+    return max_so_far
+
+# Example usage
+arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+print(max_subarray_sum(arr))
