@@ -1,38 +1,17 @@
-// Definition for singly-linked list
-class Node {
-    int val;
-    Node next;
+def first_repeated_char(input_string):
+    char_count = {}
     
-    Node(int val) {
-        this.val = val;
-        this.next = null;
-    }
-}
+    for char in input_string:
+        if char in char_count:
+            return char
+        char_count[char] = 1
+    
+    return None
 
-boolean hasCycle(Node head) {
-    if (head == null || head.next == null) {
-        return false;
-    }
-    
-    Node slow = head;
-    Node fast = head.next;
-    
-    while (fast != null && fast.next != null) {
-        if (slow == fast) {
-            return true; // Cycle detected
-        }
-        
-        slow = slow.next;
-        fast = fast.next.next;
-    }
-    
-    return false; // No cycle found
-}
-
-// Usage
-Node head = new Node(1);
-head.next = new Node(2);
-head.next.next = new Node(3);
-head.next.next.next = head; // Create a cycle
-
-System.out.println(hasCycle(head)); // Output will be true
+# Test the function
+input_string = "hello"
+result = first_repeated_char(input_string)
+if result:
+    print(f"The first repeated character in the string is: {result}")
+else:
+    print("No repeated characters found")
