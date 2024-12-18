@@ -1,21 +1,41 @@
-def counting_sort(arr):
-    max_val = max(arr)
-    count_arr = [0] * (max_val + 1)
-    sorted_arr = [0] * len(arr)
+import heapq
 
-    for num in arr:
-        count_arr[num] += 1
+class BeamSearch:
+    def __init__(self, beam_width):
+        self.beam_width = beam_width
+        self.beam = []
 
-    for i in range(1, len(count_arr)):
-        count_arr[i] += count_arr[i-1]
+    def search(self, start_state, max_steps):
+        self.beam = [(0, [start_state])]
 
-    for num in arr:
-        sorted_arr[count_arr[num] - 1] = num
-        count_arr[num] -= 1
+        for _ in range(max_steps):
+            new_beam = []
 
-    return sorted_arr
+            for score, path in self.beam:
+                next_states = get_next_states(path[-1])
+                
+                for next_state in next_states:
+                    new_path = path + [next_state]
+                    new_score = score + score_func(new_path)
+                    heapq.heappush(new_beam, (new_score, new_path))
 
-# Example usage
-arr = [4, 2, 2, 8, 3, 3, 1]
-sorted_arr = counting_sort(arr)
-print(sorted_arr)
+            self.beam = heapq.nlargest(self.beam_width, new_beam)
+
+        return self.beam
+
+def get_next_states(state):
+    # Implement the logic to get next possible states from the current state
+    next_states = [...]
+    return next_states
+
+def score_func(path):
+    # Implement the scoring function for a given path
+    score = ...
+    return score
+
+# Usage
+beam_search = BeamSearch(3)
+start_state = ...
+max_steps = 5
+result = beam_search.search(start_state, max_steps)
+print(result)
