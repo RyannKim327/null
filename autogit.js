@@ -1,28 +1,37 @@
 from collections import defaultdict
 
-def topological_sort(graph):
-    indegree = {node: 0 for node in graph}
-    for node in graph:
-        for neighbor in graph[node]:
-            indegree[neighbor] += 1
+class Graph:
+    def __init__(self):
+        self.graph = defaultdict(list)
     
-    queue = [node for node in indegree if indegree[node] == 0]
-    result = []
+    def add_edge(self, u, v):
+        self.graph[u].append(v)
     
-    while queue:
-        node = queue.pop(0)
-        result.append(node)
-        for neighbor in graph[node]:
-            indegree[neighbor] -= 1
-            if indegree[neighbor] == 0:
-                queue.append(neighbor)
+    def topological_sort_util(self, v, visited, stack):
+        visited[v] = True
+        for i in self.graph[v]:
+            if not visited[i]:
+                self.topological_sort_util(i, visited, stack)
+        stack.append(v)
     
-    if len(result) != len(graph):
-        # Graph has a cycle
-        return []
-    
-    return result
+    def topological_sort(self):
+        visited = [False] * len(self.graph)
+        stack = []
+        
+        for i in range(len(self.graph)):
+            if not visited[i]:
+                self.topological_sort_util(i, visited, stack)
+        
+        return stack[::-1]
 
-# Example usage
-graph = {'A': ['B', 'C'], 'B': ['C'], 'C': ['D'], 'D': []}
-print(topological_sort(graph))
+# Usage example
+g = Graph()
+g.add_edge(5, 2)
+g.add_edge(5, 0)
+g.add_edge(4, 0)
+g.add_edge(4, 1)
+g.add_edge(2, 3)
+g.add_edge(3, 1)
+
+sorted_vertices = g.topological_sort()
+print("Topological Sort:", sorted_vertices)
