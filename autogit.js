@@ -1,16 +1,21 @@
-// Function to reverse the order of elements in an array
-function reverseArray(array) {
-    let reversedArray = [];
-    
-    for (let i = array.length - 1; i >= 0; i--) {
-        reversedArray.push(array[i]);
-    }
-    
-    return reversedArray;
-}
+def countingSort(arr):
+    max_val = max(arr)
+    count = [0] * (max_val + 1)
+    output = [0] * len(arr)
 
-// Example usage
-let originalArray = [1, 2, 3, 4, 5];
-let reversedArray = reverseArray(originalArray);
+    for num in arr:
+        count[num] += 1
 
-console.log(reversedArray);
+    for i in range(1, max_val + 1):
+        count[i] += count[i - 1]
+
+    for num in arr:
+        output[count[num] - 1] = num
+        count[num] -= 1
+
+    return output
+
+# Example Usage
+arr = [4, 2, 2, 8, 3, 3, 1]
+sorted_arr = countingSort(arr)
+print("Sorted array is:", sorted_arr)
