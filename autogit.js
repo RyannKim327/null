@@ -1,47 +1,22 @@
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.next = None
+def binary_search_recursive(arr, left, right, target):
+    if right >= left:
+        mid = left + (right - left) // 2
 
-class LinkedList:
-    def __init__(self):
-        self.head = None
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] > target:
+            return binary_search_recursive(arr, left, mid - 1, target)
+        else:
+            return binary_search_recursive(arr, mid + 1, right, target)
+    else:
+        return -1
 
-    def push(self, data):
-        new_node = Node(data)
-        new_node.next = self.head
-        self.head = new_node
+# Example usage
+arr = [2, 3, 6, 8, 10, 14, 16]
+target = 10
+result = binary_search_recursive(arr, 0, len(arr) - 1, target)
 
-    def reverse(self):
-        prev = None
-        current = self.head
-        while current:
-            next_node = current.next
-            current.next = prev
-            prev = current
-            current = next_node
-        self.head = prev
-
-    def print_list(self):
-        temp = self.head
-        while temp:
-            print(temp.data, end=' ')
-            temp = temp.next
-        print()
-
-# Create a linked list
-llist = LinkedList()
-llist.push(5)
-llist.push(4)
-llist.push(3)
-llist.push(2)
-llist.push(1)
-
-print("Original linked list:")
-llist.print_list()
-
-# Reverse the linked list
-llist.reverse()
-
-print("Reversed linked list:")
-llist.print_list()
+if result != -1:
+    print("Element is present at index", str(result))
+else:
+    print("Element is not present in the array")
