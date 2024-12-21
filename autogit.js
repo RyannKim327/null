@@ -1,14 +1,20 @@
-def selection_sort(arr):
-    n = len(arr)
-    for i in range(n):
-        min_idx = i
-        for j in range(i+1, n):
-            if arr[j] < arr[min_idx]:
-                min_idx = j
-        arr[i], arr[min_idx] = arr[min_idx], arr[i]
-    return arr
+s = "Hello, World!"
+lowercase_s = s.lower()
+print(lowercase_s)
+let s = "Hello, World!";
+let lowercase_s = s.toLowerCase();
+console.log(lowercase_s);
+String s = "Hello, World!";
+String lowercase_s = s.toLowerCase();
+System.out.println(lowercase_s);
+#include <iostream>
+#include <algorithm>
+#include <cctype>
+#include <string>
 
-# Example usage
-arr = [64, 25, 12, 22, 11]
-sorted_arr = selection_sort(arr)
-print("Sorted array is:", sorted_arr)
+int main() {
+    std::string s = "Hello, World!";
+    std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+    std::cout << s << std::endl;
+    return 0;
+}
