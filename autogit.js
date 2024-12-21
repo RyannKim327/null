@@ -1,22 +1,13 @@
-def binary_search_recursive(arr, left, right, target):
-    if right >= left:
-        mid = left + (right - left) // 2
+def is_prime(num):
+    if num < 2:
+        return False
+    for i in range(2, int(num ** 0.5) + 1):
+        if num % i == 0:
+            return False
+    return True
 
-        if arr[mid] == target:
-            return mid
-        elif arr[mid] > target:
-            return binary_search_recursive(arr, left, mid - 1, target)
-        else:
-            return binary_search_recursive(arr, mid + 1, right, target)
-    else:
-        return -1
-
-# Example usage
-arr = [2, 3, 6, 8, 10, 14, 16]
-target = 10
-result = binary_search_recursive(arr, 0, len(arr) - 1, target)
-
-if result != -1:
-    print("Element is present at index", str(result))
+num = 13  # change this to the number you want to check
+if is_prime(num):
+    print(f"{num} is a prime number")
 else:
-    print("Element is not present in the array")
+    print(f"{num} is not a prime number")
