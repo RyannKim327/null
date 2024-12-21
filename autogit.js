@@ -1,27 +1,14 @@
-from collections import deque
+# Function to count occurrences of a word in a string
+def count_word_occurrences(input_string, target_word):
+    words = input_string.split()
+    count = 0
+    for word in words:
+        if word == target_word:
+            count += 1
+    return count
 
-def breadth_first_search(graph, start_node):
-    visited = set()
-    queue = deque([start_node])
-
-    while queue:
-        current_node = queue.popleft()
-        if current_node not in visited:
-            print(current_node)
-            visited.add(current_node)
-            for neighbor in graph[current_node]:
-                if neighbor not in visited:
-                    queue.append(neighbor)
-
-# Example graph
-graph = {
-    'A': ['B', 'C'],
-    'B': ['A', 'D', 'E'],
-    'C': ['A', 'F'],
-    'D': ['B'],
-    'E': ['B', 'F'],
-    'F': ['C', 'E']
-}
-
-start_node = 'A'
-breadth_first_search(graph, start_node)
+# Test the function
+input_string = "apple banana apple orange apple"
+target_word = "apple"
+occurrences = count_word_occurrences(input_string, target_word)
+print("Number of occurrences of '" + target_word + "':", occurrences)
