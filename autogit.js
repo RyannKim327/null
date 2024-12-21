@@ -1,9 +1,10 @@
-def find_string_length(string):
-    count = 0
-    for char in string:
-        count += 1
-    return count
+import requests
 
-# Test the function
-string = "Hello, World!"
-print(find_string_length(string))  # Output: 13
+url = "https://jsonplaceholder.typicode.com/posts/1"
+response = requests.get(url)
+
+if response.status_code == 200:
+    data = response.json()
+    print(data)
+else:
+    print("Failed to retrieve data. Status code:", response.status_code)
