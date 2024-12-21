@@ -1,13 +1,16 @@
-def quicksort(arr):
-    if len(arr) <= 1:
-        return arr
-    else:
-        pivot = arr[0]
-        less = [x for x in arr[1:] if x <= pivot]
-        greater = [x for x in arr[1:] if x > pivot]
-        return quicksort(less) + [pivot] + quicksort(greater)
+// Function to reverse the order of elements in an array
+function reverseArray(array) {
+    let reversedArray = [];
+    
+    for (let i = array.length - 1; i >= 0; i--) {
+        reversedArray.push(array[i]);
+    }
+    
+    return reversedArray;
+}
 
-# Example usage
-arr = [3, 6, 8, 10, 1, 2, 1]
-sorted_arr = quicksort(arr)
-print(sorted_arr)
+// Example usage
+let originalArray = [1, 2, 3, 4, 5];
+let reversedArray = reverseArray(originalArray);
+
+console.log(reversedArray);
