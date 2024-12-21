@@ -1,9 +1,19 @@
-# Define an array
-arr = [37, 10, 25, 46, 18]
+def count_word_occurrences(text, word):
+    # Split the string into words
+    words = text.split()
+    
+    # Initialize a counter for the word occurrences
+    count = 0
+    
+    # Iterate over the words and count occurrences
+    for w in words:
+        if w == word:
+            count += 1
+    
+    return count
 
-# Find the maximum value in the array
-max_val = max(arr)
-
-# Print the maximum value
-print("Maximum value in the array:", max_val)
-Maximum value in the array: 46
+# Example usage
+text = "hello world hello"
+word = "hello"
+count = count_word_occurrences(text, word)
+print(count)  # Output: 2
