@@ -1,20 +1,24 @@
-s = "Hello, World!"
-lowercase_s = s.lower()
-print(lowercase_s)
-let s = "Hello, World!";
-let lowercase_s = s.toLowerCase();
-console.log(lowercase_s);
-String s = "Hello, World!";
-String lowercase_s = s.toLowerCase();
-System.out.println(lowercase_s);
-#include <iostream>
-#include <algorithm>
-#include <cctype>
-#include <string>
+def first_non_repeating_char(input_string):
+    char_count = {}
+    
+    # Get the frequency of each character in the input string
+    for char in input_string:
+        if char in char_count:
+            char_count[char] += 1
+        else:
+            char_count[char] = 1
 
-int main() {
-    std::string s = "Hello, World!";
-    std::transform(s.begin(), s.end(), s.begin(), ::tolower);
-    std::cout << s << std::endl;
-    return 0;
-}
+    # Find the first non-repeating character
+    for char in input_string:
+        if char_count[char] == 1:
+            return char
+
+    return None
+
+# Test the function
+input_string = "hello world"
+result = first_non_repeating_char(input_string)
+if result:
+    print("The first non-repeating character is:", result)
+else:
+    print("No non-repeating character found in the string.")
