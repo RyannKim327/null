@@ -1,21 +1,80 @@
-def counting_sort(arr):
-    max_value = max(arr)
-    counts = [0] * (max_value + 1)
-    output = [0] * len(arr)
+#include <iostream>
 
-    for num in arr:
-        counts[num] += 1
+// Define a node structure for the linked list
+struct Node {
+    int data;
+    Node* next;
+};
 
-    for i in range(1, len(counts)):
-        counts[i] += counts[i - 1]
+// Define a Queue class
+class Queue {
+private:
+    Node *front, *rear;
 
-    for num in reversed(arr):
-        output[counts[num] - 1] = num
-        counts[num] -= 1
+public:
+    Queue() {
+        front = rear = NULL;
+    }
 
-    return output
+    // Method to add an element to the queue
+    void enqueue(int element) {
+        Node* newNode = new Node;
+        newNode->data = element;
+        newNode->next = NULL;
 
-# Example Usage
-arr = [4, 2, 2, 8, 3, 3, 1]
-sorted_arr = counting_sort(arr)
-print(sorted_arr)
+        if (rear == NULL) {
+            front = rear = newNode;
+        } else {
+            rear->next = newNode;
+            rear = newNode;
+        }
+
+        std::cout << element << " enqueued to queue." << std::endl;
+    }
+
+    // Method to remove an element from the queue
+    int dequeue() {
+        if (front == NULL) {
+            std::cout << "Queue is empty." << std::endl;
+            return -1;
+        }
+
+        Node* temp = front;
+        int data = temp->data;
+        front = front->next;
+
+        if (front == NULL) {
+            rear = NULL;
+        }
+
+        delete temp;
+
+        return data;
+    }
+
+    // Method to print the front element of the queue
+    int peek() {
+        if (front == NULL) {
+            std::cout << "Queue is empty." << std::endl;
+            return -1;
+        }
+
+        return front->data;
+    }
+};
+
+int main() {
+    Queue q;
+
+    q.enqueue(10);
+    q.enqueue(20);
+    q.enqueue(30);
+
+    std::cout << "Front element: " << q.peek() << std::endl;
+
+    std::cout << q.dequeue() << " dequeued from queue." << std::endl;
+
+    std::cout << "Front element: " << q.peek() << std::endl;
+
+    return 0;
+}
