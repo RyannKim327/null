@@ -1,80 +1,32 @@
-#include <iostream>
+import android.os.AsyncTask
+import java.net.HttpURLConnection
+import java.net.URL
 
-// Define a node structure for the linked list
-struct Node {
-    int data;
-    Node* next;
-};
+class MyAsyncTask : AsyncTask<String, Void, String>() {
 
-// Define a Queue class
-class Queue {
-private:
-    Node *front, *rear;
-
-public:
-    Queue() {
-        front = rear = NULL;
+    override fun doInBackground(vararg params: String): String {
+        var result = ""
+        try {
+            val url = URL(params[0])
+            val urlConnection = url.openConnection() as HttpURLConnection
+            try {
+                val inputStream = urlConnection.inputStream.bufferedReader()
+                result = inputStream.use { it.readText() }
+            } finally {
+                urlConnection.disconnect()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return result
     }
 
-    // Method to add an element to the queue
-    void enqueue(int element) {
-        Node* newNode = new Node;
-        newNode->data = element;
-        newNode->next = NULL;
-
-        if (rear == NULL) {
-            front = rear = newNode;
-        } else {
-            rear->next = newNode;
-            rear = newNode;
-        }
-
-        std::cout << element << " enqueued to queue." << std::endl;
+    override fun onPostExecute(result: String) {
+        // Handle the result here
     }
-
-    // Method to remove an element from the queue
-    int dequeue() {
-        if (front == NULL) {
-            std::cout << "Queue is empty." << std::endl;
-            return -1;
-        }
-
-        Node* temp = front;
-        int data = temp->data;
-        front = front->next;
-
-        if (front == NULL) {
-            rear = NULL;
-        }
-
-        delete temp;
-
-        return data;
-    }
-
-    // Method to print the front element of the queue
-    int peek() {
-        if (front == NULL) {
-            std::cout << "Queue is empty." << std::endl;
-            return -1;
-        }
-
-        return front->data;
-    }
-};
-
-int main() {
-    Queue q;
-
-    q.enqueue(10);
-    q.enqueue(20);
-    q.enqueue(30);
-
-    std::cout << "Front element: " << q.peek() << std::endl;
-
-    std::cout << q.dequeue() << " dequeued from queue." << std::endl;
-
-    std::cout << "Front element: " << q.peek() << std::endl;
-
-    return 0;
 }
+
+// To use the AsyncTask in your activity or fragment:
+val url = "https://api.example.com/data"
+val task = MyAsyncTask()
+task.execute(url)
