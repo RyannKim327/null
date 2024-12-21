@@ -1,5 +1,10 @@
-# Remove all spaces from a string in Python
-original_string = "Hello, World! This is a test."
-no_spaces_string = original_string.replace(" ", "")
-print(no_spaces_string)
-Hello,World!Thisisatest.
+# Convert a string to lowercase in Python
+my_string = "Hello, World!"
+lowercase_string = my_string.lower()
+
+print(lowercase_string)  # Output: hello, world!
+// Convert a string to lowercase in JavaScript
+let myString = "Hello, World!";
+let lowercaseString = myString.toLowerCase();
+
+console.log(lowercaseString);  // Output: hello, world!
