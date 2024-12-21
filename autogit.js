@@ -1,22 +1,15 @@
-class Node:
-    def __init__(self, key):
-        self.left = None
-        self.right = None
-        self.val = key
+import requests
 
-def count_leaf_nodes(node):
-    if node is None:
-        return 0
-    if node.left is None and node.right is None:
-        return 1
-    else:
-        return count_leaf_nodes(node.left) + count_leaf_nodes(node.right)
+api_key = 'YOUR_API_KEY'
+city = 'London'
+url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}'
 
-# Driver code
-root = Node(1)
-root.left = Node(2)
-root.right = Node(3)
-root.left.left = Node(4)
-root.left.right = Node(5)
+response = requests.get(url)
+data = response.json()
 
-print("Number of leaf nodes in the binary tree:", count_leaf_nodes(root))
+if response.status_code == 200:
+    print(f"Weather in {data['name']}: {data['weather'][0]['description']}")
+    print(f"Temperature: {data['main']['temp']} Kelvin")
+    print(f"Humidity: {data['main']['humidity']}%")
+else:
+    print("Error fetching data from API.")
