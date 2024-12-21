@@ -1,21 +1,27 @@
-def countingSort(arr):
-    max_val = max(arr)
-    count = [0] * (max_val + 1)
-    output = [0] * len(arr)
+from collections import deque
 
-    for num in arr:
-        count[num] += 1
+def breadth_first_search(graph, start_node):
+    visited = set()
+    queue = deque([start_node])
 
-    for i in range(1, max_val + 1):
-        count[i] += count[i - 1]
+    while queue:
+        current_node = queue.popleft()
+        if current_node not in visited:
+            print(current_node)
+            visited.add(current_node)
+            for neighbor in graph[current_node]:
+                if neighbor not in visited:
+                    queue.append(neighbor)
 
-    for num in arr:
-        output[count[num] - 1] = num
-        count[num] -= 1
+# Example graph
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
 
-    return output
-
-# Example Usage
-arr = [4, 2, 2, 8, 3, 3, 1]
-sorted_arr = countingSort(arr)
-print("Sorted array is:", sorted_arr)
+start_node = 'A'
+breadth_first_search(graph, start_node)
