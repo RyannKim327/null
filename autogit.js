@@ -1,19 +1,47 @@
-Algorithm:
-1. Initialize two pointers, slow_ptr and fast_ptr, to the start of the linked list.
-2. Move slow_ptr by one step and fast_ptr by two steps in each iteration.
-3. If there is a cycle in the linked list, the two pointers will meet at some point.
-4. If they meet, it means that the linked list contains a cycle; otherwise, if fast_ptr reaches the end of the list, there is no cycle.
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
 
-Pseudocode:
-function has_cycle(head):
-    slow_ptr = head
-    fast_ptr = head
+class LinkedList:
+    def __init__(self):
+        self.head = None
 
-    while fast_ptr is not null and fast_ptr.next is not null:
-        slow_ptr = slow_ptr.next
-        fast_ptr = fast_ptr.next.next
+    def push(self, data):
+        new_node = Node(data)
+        new_node.next = self.head
+        self.head = new_node
 
-        if slow_ptr is equal to fast_ptr:
-            return true
+    def reverse(self):
+        prev = None
+        current = self.head
+        while current:
+            next_node = current.next
+            current.next = prev
+            prev = current
+            current = next_node
+        self.head = prev
 
-    return false
+    def print_list(self):
+        temp = self.head
+        while temp:
+            print(temp.data, end=' ')
+            temp = temp.next
+        print()
+
+# Create a linked list
+llist = LinkedList()
+llist.push(5)
+llist.push(4)
+llist.push(3)
+llist.push(2)
+llist.push(1)
+
+print("Original linked list:")
+llist.print_list()
+
+# Reverse the linked list
+llist.reverse()
+
+print("Reversed linked list:")
+llist.print_list()
