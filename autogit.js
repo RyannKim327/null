@@ -1,24 +1,10 @@
-def first_non_repeating_char(input_string):
-    char_count = {}
-    
-    # Get the frequency of each character in the input string
-    for char in input_string:
-        if char in char_count:
-            char_count[char] += 1
-        else:
-            char_count[char] = 1
-
-    # Find the first non-repeating character
-    for char in input_string:
-        if char_count[char] == 1:
-            return char
-
-    return None
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")  # Convert the string to lowercase and remove spaces
+    return s == s[::-1]
 
 # Test the function
-input_string = "hello world"
-result = first_non_repeating_char(input_string)
-if result:
-    print("The first non-repeating character is:", result)
+string = "A man a plan a canal Panama"
+if is_palindrome(string):
+    print("Palindrome")
 else:
-    print("No non-repeating character found in the string.")
+    print("Not a palindrome")
