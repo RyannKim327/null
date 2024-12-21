@@ -1,5 +1,9 @@
-# Taking input from the user
-user_input = input("Enter something: ")
+# Define an array
+arr = [37, 10, 25, 46, 18]
 
-# Printing the user input
-print("You entered:", user_input)
+# Find the maximum value in the array
+max_val = max(arr)
+
+# Print the maximum value
+print("Maximum value in the array:", max_val)
+Maximum value in the array: 46
