@@ -1,23 +1,9 @@
-def find_majority_element(nums):
-    candidate = None
-    count = 0
+import subprocess
 
-    for num in nums:
-        if count == 0:
-            candidate = num
-            count = 1
-        elif num == candidate:
-            count += 1
-        else:
-            count -= 1
+# Execute a shell command using cron
+command = 'echo "Hello, world!"'  # Example command
+cron_expression = '* * * * *'  # Run every minute
 
-    count_candidate = nums.count(candidate)
-
-    if count_candidate > len(nums) // 2:
-        return candidate
-    else:
-        return None
-
-# Test the function
-nums = [3, 3, 4, 2, 4, 4, 2, 4, 4]
-print(find_majority_element(nums))  # Output: 4
+# Create a cron job to run the command
+cron_job = f'echo "{cron_expression} {command}" | crontab -'
+subprocess.call(cron_job, shell=True)
