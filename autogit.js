@@ -1,10 +1,14 @@
-import requests
+def selection_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        min_index = i
+        for j in range(i+1, n):
+            if arr[j] < arr[min_index]:
+                min_index = j
+        arr[i], arr[min_index] = arr[min_index], arr[i]
+    return arr
 
-url = "https://jsonplaceholder.typicode.com/posts/1"
-response = requests.get(url)
-
-if response.status_code == 200:
-    data = response.json()
-    print(data)
-else:
-    print("Failed to retrieve data. Status code:", response.status_code)
+# Example usage
+arr = [64, 25, 12, 22, 11]
+sorted_arr = selection_sort(arr)
+print("Sorted array is:", sorted_arr)
