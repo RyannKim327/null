@@ -1,28 +1,24 @@
-def dfs(graph, start):
-    stack = [start]
-    visited = set()
+def countingSort(arr):
+    max_val = max(arr)
+    min_val = min(arr)
+    range_val = max_val - min_val + 1
 
-    while stack:
-        node = stack.pop()
-        if node not in visited:
-            print(node)
-            visited.add(node)
-            for neighbor in graph[node]:
-                if neighbor not in visited:
-                    stack.append(neighbor)
+    count = [0] * range_val
+    output = [0] * len(arr)
 
-# Example graph representation as an adjacency list
-graph = {
-    'A': ['B', 'C'],
-    'B': ['A', 'D', 'E'],
-    'C': ['A', 'F'],
-    'D': ['B'],
-    'E': ['B', 'F'],
-    'F': ['C', 'E']
-}
+    for num in arr:
+        count[num - min_val] += 1
 
-# Starting node for the search
-start_node = 'A'
+    for i in range(1, len(count)):
+        count[i] += count[i - 1]
 
-# Call the depth-first search function
-dfs(graph, start_node)
+    for i in range(len(arr) - 1, -1, -1):
+        output[count[arr[i] - min_val] - 1] = arr[i]
+        count[arr[i] - min_val] -= 1
+
+    for i in range(len(arr)):
+        arr[i] = output[i]
+
+arr = [4, 2, 2, 8, 3, 3, 1]
+countingSort(arr)
+print("Sorted array is:", arr)
