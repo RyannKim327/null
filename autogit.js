@@ -1,13 +1,16 @@
-def insertion_sort(arr):
-    for i in range(1, len(arr)):
-        key = arr[i]
-        j = i - 1
-        while j >= 0 and key < arr[j]:
-            arr[j + 1] = arr[j]
-            j -= 1
-        arr[j + 1] = key
+# Define a string with spaces
+string_with_spaces = "Hello, world! This is a test string."
 
-# Example usage:
-arr = [12, 11, 13, 5, 6]
-insertion_sort(arr)
-print("Sorted array is:", arr)
+# Remove spaces using the replace() method
+string_without_spaces = string_with_spaces.replace(" ", "")
+
+print(string_without_spaces)
+import re
+
+# Define a string with spaces
+string_with_spaces = "Hello, world! This is a test string."
+
+# Remove spaces using regular expression
+string_without_spaces = re.sub(r'\s+', '', string_with_spaces)
+
+print(string_without_spaces)
