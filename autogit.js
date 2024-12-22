@@ -1,32 +1,28 @@
-def heapify(arr, n, i):
-    largest = i
-    l = 2 * i + 1
-    r = 2 * i + 2
+def dfs(graph, start):
+    stack = [start]
+    visited = set()
 
-    if l < n and arr[i] < arr[l]:
-        largest = l
+    while stack:
+        node = stack.pop()
+        if node not in visited:
+            print(node)
+            visited.add(node)
+            for neighbor in graph[node]:
+                if neighbor not in visited:
+                    stack.append(neighbor)
 
-    if r < n and arr[largest] < arr[r]:
-        largest = r
+# Example graph representation as an adjacency list
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
 
-    if largest != i:
-        arr[i], arr[largest] = arr[largest], arr[i]
-        heapify(arr, n, largest)
+# Starting node for the search
+start_node = 'A'
 
-def heapSort(arr):
-    n = len(arr)
-
-    # Build a max heap
-    for i in range(n // 2 - 1, -1, -1):
-        heapify(arr, n, i)
-
-    # Extract elements one by one
-    for i in range(n - 1, 0, -1):
-        arr[i], arr[0] = arr[0], arr[i]
-        heapify(arr, i, 0)
-
-# Example Usage
-arr = [12, 11, 13, 5, 6, 7]
-heapSort(arr)
-print("Sorted array is:")
-print(arr)
+# Call the depth-first search function
+dfs(graph, start_node)
