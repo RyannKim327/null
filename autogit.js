@@ -1,55 +1,21 @@
-def tarjan_scc(graph):
+def burrows_wheeler_transform(text):
+    text += '$'  # Add a unique delimiter
+    rotations = [text[i:] + text[:i] for i in range(len(text))]  # Create all rotations of the text
+    rotations.sort()  # Sort the rotations lexicographically
+    bwt = ''.join(rotation[-1] for rotation in rotations)  # Construct the Burrows-Wheeler Transform
+    return bwt, rotations.index(text)  # Return the transformed text and the index of the original text in the sorted rotations
 
-    def dfs(node):
-        nonlocal index, stack, lowlink, on_stack
+def inverse_burrows_wheeler_transform(bwt, idx):
+    table = sorted(bwt)  # Create the initial table by sorting the BWT
+    n = len(bwt)
+    for _ in range(n - 1):
+        table = sorted([bwt[i] + table[i] for i in range(n)])  # Update the table iteratively
 
-        index += 1
-        lowlink[node] = index
-        stack.append(node)
-        on_stack.add(node)
+    text = table[idx]  # Retrieve the original text from the table
+    return text.rstrip('$')  # Remove the added delimiter
 
-        for neighbor in graph[node]:
-            if lowlink[neighbor] == -1:
-                dfs(neighbor)
-                lowlink[node] = min(lowlink[node], lowlink[neighbor])
-            elif neighbor in on_stack:
-                lowlink[node] = min(lowlink[node], lowlink[neighbor])
-
-        if lowlink[node] == index:
-            scc = []
-            while True:
-                neighbor = stack.pop()
-                on_stack.remove(neighbor)
-                scc.append(neighbor)
-                if neighbor == node:
-                    break
-            strongly_connected_components.append(scc)
-
-    index = -1
-    stack = []
-    lowlink = [-1] * len(graph)
-    on_stack = set()
-    strongly_connected_components = []
-
-    for node in range(len(graph)):
-        if lowlink[node] == -1:
-            dfs(node)
-
-    return strongly_connected_components
-
-# Example graph represented as adjacency list
-graph = {
-    0: [1],
-    1: [2],
-    2: [3],
-    3: [0, 4],
-    4: [5],
-    5: [6],
-    6: [4, 7],
-    7: [8],
-    8: [9],
-    9: [6]
-}
-
-sccs = tarjan_scc(graph)
-print(sccs)
+# Example
+text = "banana"
+bwt, idx = burrows_wheeler_transform(text)
+print("Burrows-Wheeler Transform:", bwt)
+print("Original text:", inverse_burrows_wheeler_transform(bwt, idx))
