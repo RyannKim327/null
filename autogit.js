@@ -1,14 +1,26 @@
-def selection_sort(arr):
-    n = len(arr)
-    for i in range(n):
-        min_idx = i
-        for j in range(i+1, n):
-            if arr[j] < arr[min_idx]:
-                min_idx = j
-        arr[i], arr[min_idx] = arr[min_idx], arr[i]
-    return arr
-
-# Example usage
-arr = [64, 25, 12, 22, 11]
-sorted_arr = selection_sort(arr)
-print("Sorted array is:", sorted_arr)
+def find_intersection(list1, list2):
+    set1 = set()
+    set2 = set()
+    
+    # Store elements of list1 in set1
+    current = list1.head
+    while current:
+        set1.add(current.data)
+        current = current.next
+    
+    # Store elements of list2 in set2
+    current = list2.head
+    while current:
+        set2.add(current.data)
+        current = current.next
+    
+    intersection_list = LinkedList()
+    
+    # Traverse list1 and list2 to find intersection elements
+    current = list1.head
+    while current:
+        if current.data in set2:
+            intersection_list.append(current.data)
+        current = current.next
+    
+    return intersection_list
