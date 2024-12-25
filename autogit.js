@@ -1,136 +1,25 @@
-#include <iostream>
-#include <algorithm>
+def counting_sort(arr):
+    max_val = max(arr)
+    counts = [0] * (max_val + 1)
 
-class AVLNode {
-public:
-    int key;
-    int height;
-    AVLNode* left;
-    AVLNode* right;
+    # Count occurrences of each element
+    for num in arr:
+        counts[num] += 1
 
-    AVLNode(int k) : key(k), height(1), left(nullptr), right(nullptr) {}
-};
+    # Calculate cumulative counts
+    for i in range(1, len(counts)):
+        counts[i] += counts[i - 1]
 
-class AVLTree {
-public:
-    AVLNode* root;
+    output = [0] * len(arr)
 
-    AVLTree() : root(nullptr) {}
+    # Build the output array
+    for num in arr:
+        output[counts[num] - 1] = num
+        counts[num] -= 1
 
-    int height(AVLNode* node) {
-        if (node == nullptr) {
-            return 0;
-        }
-        return node->height;
-    }
+    return output
 
-    int getBalance(AVLNode* node) {
-        if (node == nullptr) {
-            return 0;
-        }
-        return height(node->left) - height(node->right);
-    }
-
-    AVLNode* rightRotate(AVLNode* y) {
-        AVLNode* x = y->left;
-        AVLNode* T2 = x->right;
-
-        x->right = y;
-        y->left = T2;
-
-        y->height = std::max(height(y->left), height(y->right)) + 1;
-        x->height = std::max(height(x->left), height(x->right)) + 1;
-
-        return x;
-    }
-
-    AVLNode* leftRotate(AVLNode* x) {
-        AVLNode* y = x->right;
-        AVLNode* T2 = y->left;
-
-        y->left = x;
-        x->right = T2;
-
-        x->height = std::max(height(x->left), height(x->right)) + 1;
-        y->height = std::max(height(y->left), height(y->right)) + 1;
-
-        return y;
-    }
-
-    AVLNode* insert(AVLNode* node, int key) {
-        if (node == nullptr) {
-            return new AVLNode(key);
-        }
-
-        if (key < node->key) {
-            node->left = insert(node->left, key);
-        } else if (key >= node->key) {
-            node->right = insert(node->right, key);
-        } else {
-            return node; // keys must be unique
-        }
-
-        node->height = 1 + std::max(height(node->left), height(node->right));
-
-        int balance = getBalance(node);
-
-        // Left Left case
-        if (balance > 1 && key < node->left->key) {
-            return rightRotate(node);
-        }
-
-        // Right Right case
-        if (balance < -1 && key > node->right->key) {
-            return leftRotate(node);
-        }
-
-        // Left Right case
-        if (balance > 1 && key > node->left->key) {
-            node->left = leftRotate(node->left);
-            return rightRotate(node);
-        }
-
-        // Right Left case
-        if (balance < -1 && key < node->right->key) {
-            node->right = rightRotate(node->right);
-            return leftRotate(node);
-        }
-
-        return node;
-    }
-
-    void insert(int key) {
-        root = insert(root, key);
-    }
-
-    void printTree(AVLNode* node) {
-        if (node == nullptr) {
-            return;
-        }
-
-        printTree(node->left);
-        std::cout << node->key << " ";
-        printTree(node->right);
-    }
-
-    void printTree() {
-        printTree(root);
-        std::cout << std::endl;
-    }
-};
-
-int main() {
-    AVLTree avlTree;
-
-    avlTree.insert(10);
-    avlTree.insert(20);
-    avlTree.insert(30);
-    avlTree.insert(40);
-    avlTree.insert(50);
-    avlTree.insert(25);
-
-    std::cout << "AVL Tree: ";
-	avlTree.printTree();
-
-    return 0;
-}
+# Example usage
+arr = [4, 2, 2, 8, 3, 3, 1]
+sorted_arr = counting_sort(arr)
+print(sorted_arr)
