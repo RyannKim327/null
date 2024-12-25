@@ -1,10 +1,10 @@
-const endpoint = 'https://api.example.com/data';
-fetch(endpoint)
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  })
-  .then(data => console.log(data))
-  .catch(error => console.error('There was a problem with the fetch operation:', error));
+import math
+
+# Taking input from the user
+num = int(input("Enter a number to calculate the factorial: "))
+
+# Calculate the factorial of the number
+factorial = math.factorial(num)
+
+# Print the factorial
+print(f"The factorial of {num} is: {factorial}")
