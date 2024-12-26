@@ -1,14 +1,13 @@
-def max_subarray_sum(arr):
-    max_sum = arr[0]
-    current_sum = arr[0]
+from cron import CronTab
 
-    for i in range(1, len(arr)):
-        current_sum = max(arr[i], current_sum + arr[i])
-        max_sum = max(max_sum, current_sum)
+# Create a new CronTab object
+cron = CronTab()
 
-    return max_sum
+# Define a new cron job
+job = cron.new(command='echo "Hello, World"', comment='Print Hello, World')
 
-# Example usage
-arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
-result = max_subarray_sum(arr)
-print("Maximum sum of subarray is:", result)
+# Schedule the job to run every minute
+job.minute.every(1)
+
+# Write the cron job to the user's crontab file
+cron.write()
