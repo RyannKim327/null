@@ -1,13 +1,20 @@
-from cron import CronTab
+def depth_limited_search(node, goal, depth_limit):
+    return recursive_dls(node, goal, depth_limit)
 
-# Create a new CronTab object
-cron = CronTab()
-
-# Define a new cron job
-job = cron.new(command='echo "Hello, World"', comment='Print Hello, World')
-
-# Schedule the job to run every minute
-job.minute.every(1)
-
-# Write the cron job to the user's crontab file
-cron.write()
+def recursive_dls(node, goal, depth_limit):
+    if node.state == goal:
+        return node
+    elif depth_limit == 0:
+        return 'cutoff'
+    else:
+        cutoff_occurred = False
+        for child in node.expand():
+            result = recursive_dls(child, goal, depth_limit - 1)
+            if result == 'cutoff':
+                cutoff_occurred = True
+            elif result is not None:
+                return result
+        if cutoff_occurred:
+            return 'cutoff'
+        else:
+            return None
