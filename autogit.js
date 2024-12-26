@@ -1,30 +1,5 @@
-# Definition for a binary tree node
-class TreeNode:
-    def __init__(self, val=0, left=None, right=None):
-        self.val = val
-        self.left = left
-        self.right = right
+let arr = [10, 5, 8, 20, 3];
 
-def diameterOfBinaryTree(root):
-    def depth(node):
-        if not node:
-            return 0
-        left_depth = depth(node.left)
-        right_depth = depth(node.right)
-        diameter[0] = max(diameter[0], left_depth + right_depth)
-        return 1 + max(left_depth, right_depth)
+let max = Math.max(...arr);
 
-    if not root:
-        return 0
-    diameter = [0]
-    depth(root)
-    return diameter[0]
-
-# Example usage
-root = TreeNode(1)
-root.left = TreeNode(2)
-root.right = TreeNode(3)
-root.left.left = TreeNode(4)
-root.left.right = TreeNode(5)
-
-print(diameterOfBinaryTree(root)) # Output should be 3
+console.log("Maximum value in the array: " + max);
