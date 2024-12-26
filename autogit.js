@@ -1,64 +1,14 @@
-class Node:
-    def __init__(self, key):
-        self.key = key
-        self.left = None
-        self.right = None
+def max_subarray_sum(arr):
+    max_sum = arr[0]
+    current_sum = arr[0]
 
-class BinaryTree:
-    def __init__(self):
-        self.root = None
+    for i in range(1, len(arr)):
+        current_sum = max(arr[i], current_sum + arr[i])
+        max_sum = max(max_sum, current_sum)
 
-    def insert(self, key):
-        if not self.root:
-            self.root = Node(key)
-        else:
-            self._insert_recursive(self.root, key)
+    return max_sum
 
-    def _insert_recursive(self, current, key):
-        if key < current.key:
-            if current.left is None:
-                current.left = Node(key)
-            else:
-                self._insert_recursive(current.left, key)
-        else:
-            if current.right is None:
-                current.right = Node(key)
-            else:
-                self._insert_recursive(current.right, key)
-
-    def search(self, key):
-        return self._search_recursive(self.root, key)
-
-    def _search_recursive(self, current, key):
-        if not current:
-            return False
-        if current.key == key:
-            return True
-        if key < current.key:
-            return self._search_recursive(current.left, key)
-        else:
-            return self._search_recursive(current.right, key)
-
-    def inorder_traversal(self):
-        nodes = []
-        self._inorder_recursive(self.root, nodes)
-        return nodes
-
-    def _inorder_recursive(self, current, nodes):
-        if current:
-            self._inorder_recursive(current.left, nodes)
-            nodes.append(current.key)
-            self._inorder_recursive(current.right, nodes)
-
-# Example usage:
-bt = BinaryTree()
-bt.insert(5)
-bt.insert(3)
-bt.insert(7)
-bt.insert(2)
-bt.insert(4)
-
-print(bt.search(2))  # Output: True
-print(bt.search(6))  # Output: False
-
-print(bt.inorder_traversal())  # Output: [2, 3, 4, 5, 7]
+# Example usage
+arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+result = max_subarray_sum(arr)
+print("Maximum sum of subarray is:", result)
