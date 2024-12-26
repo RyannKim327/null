@@ -1,34 +1,21 @@
-def longest_common_subsequence(s1, s2):
-    m = len(s1)
-    n = len(s2)
+def longest_increasing_subsequence(arr):
+    n = len(arr)
+    lis = [1]*n
+    
+    for i in range(1, n):
+        for j in range(0, i):
+            if arr[i] > arr[j]:
+                lis[i] = max(lis[i], lis[j] + 1)
+    
+    max_length = max(lis)
+    result = []
+    for i in range(n - 1, -1, -1):
+        if lis[i] == max_length:
+            result.insert(0, arr[i])
+            max_length -= 1
 
-    # Create a 2D array to store the length of the longest common subsequence
-    dp = [[0] * (n + 1) for _ in range(m + 1)]
-
-    # Fill the dp array
-    for i in range(1, m + 1):
-        for j in range(1, n + 1):
-            if s1[i - 1] == s2[j - 1]:
-                dp[i][j] = dp[i - 1][j - 1] + 1
-            else:
-                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
-
-    # Reconstruct the longest common subsequence
-    lcs = []
-    i, j = m, n
-    while i > 0 and j > 0:
-        if s1[i - 1] == s2[j - 1]:
-            lcs.append(s1[i - 1])
-            i -= 1
-            j -= 1
-        elif dp[i - 1][j] > dp[i][j - 1]:
-            i -= 1
-        else:
-            j -= 1
-
-    return ''.join(reversed(lcs))
+    return result
 
 # Example usage
-s1 = "abcde"
-s2 = "ace"
-print(longest_common_subsequence(s1, s2))  # Output: "ace"
+arr = [10, 22, 9, 33, 21, 50, 41, 60, 80]
+print(longest_increasing_subsequence(arr))
