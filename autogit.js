@@ -1,9 +1,7 @@
-# Define a string with spaces
-my_string = "Hello, world! This is a test string."
+# Define a list of numbers
+numbers = [1, 2, 3, 4, 5]
 
-# Remove spaces from the string using replace() function
-my_string_without_spaces = my_string.replace(" ", "")
+# Calculate the mean
+mean = sum(numbers) / len(numbers)
 
-# Print the string without spaces
-print(my_string_without_spaces)
-Hello,world!Thisisateststring.
+print("Mean:", mean)
