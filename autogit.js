@@ -1,50 +1,30 @@
-// Node definition for a binary tree
-class Node {
-    public int data;
-    public Node left, right;
+# Definition for a binary tree node
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
 
-    public Node(int item) {
-        data = item;
-        left = right = null;
-    }
-}
+def diameterOfBinaryTree(root):
+    def depth(node):
+        if not node:
+            return 0
+        left_depth = depth(node.left)
+        right_depth = depth(node.right)
+        diameter[0] = max(diameter[0], left_depth + right_depth)
+        return 1 + max(left_depth, right_depth)
 
-class BinaryTree {
-    Node root;
+    if not root:
+        return 0
+    diameter = [0]
+    depth(root)
+    return diameter[0]
 
-    // Helper function to find the height of a binary tree
-    int height(Node node) {
-        if (node == null)
-            return 0;
+# Example usage
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(5)
 
-        int leftHeight = height(node.left);
-        int rightHeight = height(node.right);
-
-        return 1 + Math.max(leftHeight, rightHeight);
-    }
-
-    // Function to find the diameter of a binary tree
-    int diameter(Node node) {
-        if (node == null)
-            return 0;
-
-        int leftHeight = height(node.left);
-        int rightHeight = height(node.right);
-
-        int leftDiameter = diameter(node.left);
-        int rightDiameter = diameter(node.right);
-
-        return Math.max(leftHeight + rightHeight + 1, Math.max(leftDiameter, rightDiameter));
-    }
-
-    public static void main(String[] args) {
-        BinaryTree tree = new BinaryTree();
-        tree.root = new Node(1);
-        tree.root.left = new Node(2);
-        tree.root.right = new Node(3);
-        tree.root.left.left = new Node(4);
-        tree.root.left.right = new Node(5);
-
-        System.out.println("Diameter of binary tree is: " + tree.diameter(tree.root));
-    }
-}
+print(diameterOfBinaryTree(root)) # Output should be 3
