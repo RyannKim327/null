@@ -1,39 +1,24 @@
-def burrows_wheeler_transform(text):
-    # Generate all cyclic rotations of the input text
-    rotations = [text[i:] + text[:i] for i in range(len(text))]
+def countingSort(arr):
+    max_val = max(arr)
+    min_val = min(arr)
+    range_of_elements = max_val - min_val + 1
 
-    # Sort the rotations lexicographically
-    sorted_rotations = sorted(rotations)
+    count_array = [0] * range_of_elements
+    output_array = [0] * len(arr)
 
-    # Extract the last characters of each sorted rotation to get the transformed text
-    transformed_text = ''.join(rotation[-1] for rotation in sorted_rotations)
+    for num in arr:
+        count_array[num - min_val] += 1
 
-    # Find the index of the original text in the sorted rotations
-    original_index = sorted_rotations.index(text)
+    for i in range(1, len(count_array)):
+        count_array[i] += count_array[i - 1]
 
-    return transformed_text, original_index
+    for i in range(len(arr) - 1, -1, -1):
+        output_array[count_array[arr[i] - min_val] - 1] = arr[i]
+        count_array[arr[i] - min_val] -= 1
 
-def inverse_burrows_wheeler_transform(transformed_text, original_index):
-    table = sorted(transformed_text)
+    for i in range(len(arr)):
+        arr[i] = output_array[i]
 
-    first_col_ind = [i for i in range(len(transformed_text))]
-    first_col_ind.sort(key=lambda x: transformed_text[x])
-
-    current_ind = first_col_ind[original_index]
-    result = []
-
-    for i in range(len(transformed_text)):
-        result.append(table[current_ind])
-        current_ind = first_col_ind[current_ind]
-
-    return ''.join(result)
-
-# Test the Burrows-Wheeler Transform algorithm
-text = "hello"
-transformed_text, original_index = burrows_wheeler_transform(text)
-print("Burrows-Wheeler Transform of 'hello':", transformed_text)
-print("Original text index in the sorted rotations:", original_index)
-
-# Test the Inverse Burrows-Wheeler Transform algorithm
-original_text = inverse_burrows_wheeler_transform(transformed_text, original_index)
-print("Inverse Burrows-Wheeler Transform of the transformed text:", original_text)
+arr = [4, 2, 2, 8, 3, 3, 1]
+countingSort(arr)
+print("Sorted array is:", arr)
