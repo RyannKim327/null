@@ -1,3 +1,5 @@
-arr = [1, 2, 3, 3, 4, 5, 5]
-unique_arr = list(set(arr))
-print(unique_arr)
+function isArraySortedAscending(arr):
+    for i from 0 to length of arr - 2:
+        if arr[i] > arr[i + 1]:
+            return false
+    return true
