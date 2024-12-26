@@ -1,14 +1,13 @@
-def selection_sort(arr):
-    n = len(arr)
-    for i in range(n):
-        min_index = i
-        for j in range(i+1, n):
-            if arr[j] < arr[min_index]:
-                min_index = j
-        arr[i], arr[min_index] = arr[min_index], arr[i]
-    return arr
-
-# Example usage:
-arr = [64, 25, 12, 22, 11]
-sorted_arr = selection_sort(arr)
-print("Sorted array is:", sorted_arr)
+def depth_limited_search(state, depth_limit):
+    if is_goal_state(state):
+        return state
+    
+    if depth_limit == 0:
+        return None
+    
+    for next_state in generate_next_states(state):
+        result = depth_limited_search(next_state, depth_limit - 1)
+        if result is not None:
+            return result
+    
+    return None
