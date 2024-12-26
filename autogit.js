@@ -1,7 +1,6 @@
-# Define a list of numbers
-numbers = [1, 2, 3, 4, 5]
+import random
 
-# Calculate the mean
-mean = sum(numbers) / len(numbers)
+# Generate a random number between 1 and 100
+random_number = random.randint(1, 100)
 
-print("Mean:", mean)
+print(random_number)
