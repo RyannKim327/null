@@ -1,18 +1,38 @@
-def is_prime(num):
-    if num <= 1:
-        return False
-    if num == 2:
-        return True
-    if num % 2 == 0:
-        return False
-    max_divisor = int(num ** 0.5) + 1
-    for i in range(3, max_divisor, 2):
-        if num % i == 0:
-            return False
-    return True
+class HashTable:
+    def __init__(self, size):
+        self.size = size
+        self.table = [None] * size
 
-num = 17
-if is_prime(num):
-    print(f"{num} is a prime number")
-else:
-    print(f"{num} is not a prime number")
+    def _hash_function(self, key):
+        return hash(key) % self.size
+
+    def insert(self, key, value):
+        index = self._hash_function(key)
+        if self.table[index] is None:
+            self.table[index] = [(key, value)]
+        else:
+            self.table[index].append((key, value))
+
+    def search(self, key):
+        index = self._hash_function(key)
+        if self.table[index] is not None:
+            for k, v in self.table[index]:
+                if k == key:
+                    return v
+        return None
+
+    def delete(self, key):
+        index = self._hash_function(key)
+        if self.table[index] is not None:
+            for i, (k, v) in enumerate(self.table[index]):
+                if k == key:
+                    del self.table[index][i]
+                    return
+
+# Example usage
+ht = HashTable(10)
+ht.insert('key1', 'value1')
+ht.insert('key2', 'value2')
+print(ht.search('key1'))  # Output: value1
+ht.delete('key2')
+print(ht.search('key2'))  # Output: None
