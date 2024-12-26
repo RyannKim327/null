@@ -1,23 +1,24 @@
-def shell_sort(arr):
-    n = len(arr)
-    gap = n // 2
+def find_majority_element(nums):
+    majority_element = None
+    count = 0
 
-    while gap > 0:
-        for i in range(gap, n):
-            temp = arr[i]
-            j = i
+    for num in nums:
+        if count == 0:
+            majority_element = num
+            count = 1
+        elif num == majority_element:
+            count += 1
+        else:
+            count -= 1
 
-            while j >= gap and arr[j - gap] > temp:
-                arr[j] = arr[j - gap]
-                j -= gap
+    # Verify if majority_element appears more than n/2 times
+    count = sum(1 for num in nums if num == majority_element)
+    if count > len(nums) / 2:
+        return majority_element
+    else:
+        return None  # No majority element found
 
-            arr[j] = temp
-
-        gap //= 2
-
-    return arr
-
-# Test the implementation
-arr = [12, 34, 54, 2, 3]
-sorted_arr = shell_sort(arr)
-print("Sorted array is:", sorted_arr)
+# Example usage
+nums = [2, 2, 1, 1, 1, 2, 2]
+result = find_majority_element(nums)
+print(result)  # Output: 2
