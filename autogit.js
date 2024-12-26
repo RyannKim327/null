@@ -1,11 +1,10 @@
-def count_occurrences(string, char):
-    count = 0
-    for c in string:
-        if c == char:
-            count += 1
-    return count
+# Define an array of integers
+arr = [5, 2, 9, 1, 5]
 
-# Test
-string = "hello, world!"
-char = "o"
-print(count_occurrences(string, char))  # Output: 2
+# Sort the array in ascending order
+sorted_arr = sorted(arr)
+print("Sorted Array in ascending order:", sorted_arr)
+
+# Sort the array in descending order
+sorted_arr_desc = sorted(arr, reverse=True)
+print("Sorted Array in descending order:", sorted_arr_desc)
