@@ -1,38 +1,19 @@
-class HashTable:
-    def __init__(self, size):
-        self.size = size
-        self.table = [None] * size
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
 
-    def _hash_function(self, key):
-        return hash(key) % self.size
+def has_cycle(head):
+    if not head or not head.next:
+        return False
 
-    def insert(self, key, value):
-        index = self._hash_function(key)
-        if self.table[index] is None:
-            self.table[index] = [(key, value)]
-        else:
-            self.table[index].append((key, value))
+    tortoise = head
+    hare = head.next
 
-    def search(self, key):
-        index = self._hash_function(key)
-        if self.table[index] is not None:
-            for k, v in self.table[index]:
-                if k == key:
-                    return v
-        return None
+    while tortoise != hare:
+        if not hare or not hare.next:
+            return False
+        tortoise = tortoise.next
+        hare = hare.next.next
 
-    def delete(self, key):
-        index = self._hash_function(key)
-        if self.table[index] is not None:
-            for i, (k, v) in enumerate(self.table[index]):
-                if k == key:
-                    del self.table[index][i]
-                    return
-
-# Example usage
-ht = HashTable(10)
-ht.insert('key1', 'value1')
-ht.insert('key2', 'value2')
-print(ht.search('key1'))  # Output: value1
-ht.delete('key2')
-print(ht.search('key2'))  # Output: None
+    return True
