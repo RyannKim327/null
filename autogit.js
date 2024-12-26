@@ -1,5 +1,8 @@
-function isArraySortedAscending(arr):
-    for i from 0 to length of arr - 2:
-        if arr[i] > arr[i + 1]:
-            return false
-    return true
+def calculate_mean(numbers):
+    mean = sum(numbers) / len(numbers)
+    return mean
+
+# Example list of numbers
+numbers = [1, 2, 3, 4, 5]
+mean = calculate_mean(numbers)
+print("Mean:", mean)
