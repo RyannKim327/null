@@ -1,24 +1,23 @@
-def countingSort(arr):
-    max_val = max(arr)
-    min_val = min(arr)
-    range_of_elements = max_val - min_val + 1
+def shell_sort(arr):
+    n = len(arr)
+    gap = n // 2
 
-    count_array = [0] * range_of_elements
-    output_array = [0] * len(arr)
+    while gap > 0:
+        for i in range(gap, n):
+            temp = arr[i]
+            j = i
 
-    for num in arr:
-        count_array[num - min_val] += 1
+            while j >= gap and arr[j - gap] > temp:
+                arr[j] = arr[j - gap]
+                j -= gap
 
-    for i in range(1, len(count_array)):
-        count_array[i] += count_array[i - 1]
+            arr[j] = temp
 
-    for i in range(len(arr) - 1, -1, -1):
-        output_array[count_array[arr[i] - min_val] - 1] = arr[i]
-        count_array[arr[i] - min_val] -= 1
+        gap //= 2
 
-    for i in range(len(arr)):
-        arr[i] = output_array[i]
+    return arr
 
-arr = [4, 2, 2, 8, 3, 3, 1]
-countingSort(arr)
-print("Sorted array is:", arr)
+# Test the implementation
+arr = [12, 34, 54, 2, 3]
+sorted_arr = shell_sort(arr)
+print("Sorted array is:", sorted_arr)
