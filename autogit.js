@@ -1,4 +1,7 @@
-fetch('https://jsonplaceholder.typicode.com/posts/1')
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.error('Error:', error));
+my_string = "   Hello,   World!   "
+new_string = my_string.replace(" ", "")
+print(new_string)  # Output: "Hello,World!"
+import re
+my_string = "   Hello,   World!   "
+new_string = re.sub(r'\s+', '', my_string)
+print(new_string)  # Output: "Hello,World!"
