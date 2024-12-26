@@ -1,13 +1,14 @@
-def calculate_mean(numbers):
-    if len(numbers) == 0:
-        return 0  # handle edge case for empty list
-    else:
-        mean = sum(numbers) / len(numbers)
-        return mean
+def selection_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        min_index = i
+        for j in range(i+1, n):
+            if arr[j] < arr[min_index]:
+                min_index = j
+        arr[i], arr[min_index] = arr[min_index], arr[i]
+    return arr
 
-# Example list of numbers
-numbers = [1, 2, 3, 4, 5]
-
-# Calculate the mean
-mean = calculate_mean(numbers)
-print("Mean:", mean)
+# Example usage:
+arr = [64, 25, 12, 22, 11]
+sorted_arr = selection_sort(arr)
+print("Sorted array is:", sorted_arr)
