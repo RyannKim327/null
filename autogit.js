@@ -1,10 +1,15 @@
-# Define an array of integers
-arr = [5, 2, 9, 1, 5]
-
-# Sort the array in ascending order
-sorted_arr = sorted(arr)
-print("Sorted Array in ascending order:", sorted_arr)
-
-# Sort the array in descending order
-sorted_arr_desc = sorted(arr, reverse=True)
-print("Sorted Array in descending order:", sorted_arr_desc)
+def depth_limited_search_iterative(problem, limit):
+    stack = [(problem.get_start_state(), 0)]
+    
+    while stack:
+        state, depth = stack.pop()
+        
+        if problem.is_goal_state(state):
+            return state
+        
+        if depth < limit:
+            successors = problem.get_successors(state)
+            for successor in successors:
+                stack.append((successor, depth + 1))
+    
+    return None
