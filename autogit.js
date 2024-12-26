@@ -1,22 +1,9 @@
-import math
+# Define a string with spaces
+my_string = "Hello, world! This is a test string."
 
-def is_prime(number):
-    if number <= 1:
-        return False
-    if number == 2:
-        return True
-    if number % 2 == 0:
-        return False
-    
-    max_divisor = math.isqrt(number) + 1
-    for i in range(3, max_divisor, 2):
-        if number % i == 0:
-            return False
-    return True
+# Remove spaces from the string using replace() function
+my_string_without_spaces = my_string.replace(" ", "")
 
-# Test the function
-number = 17
-if is_prime(number):
-    print(f"{number} is a prime number")
-else:
-    print(f"{number} is not a prime number")
+# Print the string without spaces
+print(my_string_without_spaces)
+Hello,world!Thisisateststring.
