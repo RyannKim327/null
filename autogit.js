@@ -1,20 +1,25 @@
-def depth_limited_search(node, goal, depth_limit):
-    return recursive_dls(node, goal, depth_limit)
-
-def recursive_dls(node, goal, depth_limit):
-    if node.state == goal:
-        return node
-    elif depth_limit == 0:
-        return 'cutoff'
-    else:
-        cutoff_occurred = False
-        for child in node.expand():
-            result = recursive_dls(child, goal, depth_limit - 1)
-            if result == 'cutoff':
-                cutoff_occurred = True
-            elif result is not None:
-                return result
-        if cutoff_occurred:
-            return 'cutoff'
-        else:
-            return None
+def partition(arr, low, high):
+    i = (low - 1)         
+    pivot = arr[high]    
+  
+    for j in range(low, high):
+        if arr[j] <= pivot:
+            i = i + 1
+            arr[i], arr[j] = arr[j], arr[i]
+  
+    arr[i + 1], arr[high] = arr[high], arr[i + 1]
+    return i + 1
+  
+def quick_sort(arr, low, high):
+    if low < high:
+        pi = partition(arr, low, high)
+  
+        quick_sort(arr, low, pi - 1)
+        quick_sort(arr, pi + 1, high)
+  
+arr = [10, 7, 8, 9, 1, 5]
+n = len(arr)
+quick_sort(arr, 0, n - 1)
+print("Sorted array is:")
+for i in range(n):
+    print("%d" % arr[i])
