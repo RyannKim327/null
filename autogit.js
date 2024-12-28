@@ -1,35 +1,28 @@
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.next = None
+^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$
+import re
 
-def has_cycle(head):
-    if not head:
+def validate_email(email):
+    pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    if re.match(pattern, email):
+        return True
+    else:
         return False
 
-    slow = head
-    fast = head
-
-    while fast.next and fast.next.next:
-        slow = slow.next
-        fast = fast.next.next
-        if slow == fast:
-            return True
-
-    return False
-
-# Usage example
-node1 = Node(1)
-node2 = Node(2)
-node3 = Node(3)
-node4 = Node(4)
-
-node1.next = node2
-node2.next = node3
-node3.next = node4
-node4.next = node2  # Creating a cycle
-
-if has_cycle(node1):
-    print("Linked list contains a cycle")
+# Test the function
+email = "someone@example.com"
+if validate_email(email):
+    print("Email is valid")
 else:
-    print("Linked list does not contain a cycle")
+    print("Email is not valid")
+function validateEmail(email) {
+    let pattern = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+    return pattern.test(email);
+}
+
+// Test the function
+let email = "someone@example.com";
+if (validateEmail(email)) {
+    console.log("Email is valid");
+} else {
+    console.log("Email is not valid");
+}
