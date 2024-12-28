@@ -1,32 +1,45 @@
-def beam_search(initial_state, beam_width, max_steps, scoring_function, expand_function):
-    beam = [(initial_state, scoring_function(initial_state))]
+import queue
+
+def beam_search(start_state, beam_width, max_depth, heuristic_function):
+    initial_node = (start_state, 0, [])
+    candidate_nodes = queue.PriorityQueue()
+    candidate_nodes.put(initial_node)
     
-    for _ in range(max_steps):
-        new_beam = []
-        for state, score in beam:
-            expansions = expand_function(state)
-            for child_state in expansions:
-                child_score = scoring_function(child_state)
-                new_beam.append((child_state, score + child_score))
+    while not candidate_nodes.empty():
+        current_node = candidate_nodes.get()
+        current_state, current_cost, current_path = current_node
         
-        beam = sorted(new_beam, key=lambda x: x[1], reverse=True)[:beam_width]
-    
-    return max(beam, key=lambda x: x[1])[0]
+        if len(current_path) == max_depth:
+            return current_path
+        
+        for action in get_possible_actions(current_state):
+            next_state = apply_action(current_state, action)
+            next_cost = current_cost + cost_function(current_state, action)
+            next_path = current_path + [action]
+            heuristic_value = heuristic_function(next_state)
+            next_node = (next_state, next_cost, next_path)
+            candidate_nodes.put((heuristic_value, next_node))
+            
+        # Keep only the top 'beam_width' elements in the queue
+        if candidate_nodes.qsize() > beam_width:
+            for _ in range(candidate_nodes.qsize() - beam_width):
+                candidate_nodes.get()
+                
+    return None
 
-# Example usage of beam search
-# Define your scoring function and expand function accordingly
+# Helper functions
+def get_possible_actions(state):
+    # Return a list of possible actions based on the current state
+    pass
 
-initial_state = "A"
-beam_width = 3
-max_steps = 5
+def apply_action(state, action):
+    # Apply the given action to the current state and return the new state
+    pass
 
-def scoring_function(state):
-    # Your scoring function logic here
-    return 1
+def cost_function(state, action):
+    # Calculate the cost of taking the given action from the current state
+    pass
 
-def expand_function(state):
-    # Your expand function logic here
-    return ["B", "C"]
-
-best_state = beam_search(initial_state, beam_width, max_steps, scoring_function, expand_function)
-print("Best state found:", best_state)
+def heuristic_function(state):
+    # Calculate the heuristic value of the state (estimate of remaining cost)
+    pass
