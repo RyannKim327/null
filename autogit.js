@@ -1,11 +1,24 @@
-def burrows_wheeler_transform(text):
-    text = text + "$"  # Adding an end of text symbol
-    rotations = [text[i:] + text[:i] for i in range(len(text))]  # Generating all rotations of the text
-    rotations.sort()  # Sorting the rotations
-    bwt_text = "".join(rotation[-1] for rotation in rotations)  # Taking the last character of each rotation
-    return bwt_text
+public class BubbleSort {
+    public static void main(String[] args) {
+        int[] arr = {64, 34, 25, 12, 22, 11, 90};
+        bubbleSort(arr);
+        System.out.println("Sorted array:");
+        for (int i : arr) {
+            System.out.print(i + " ");
+        }
+    }
 
-# Example usage
-text = "banana"
-bwt_result = burrows_wheeler_transform(text)
-print("Burrows-Wheeler Transform of '{}' is '{}'".format(text, bwt_result))
+    static void bubbleSort(int[] arr) {
+        int n = arr.length;
+        for (int i = 0; i < n-1; i++) {
+            for (int j = 0; j < n-i-1; j++) {
+                if (arr[j] > arr[j+1]) {
+                    // swap arr[j+1] and arr[j]
+                    int temp = arr[j];
+                    arr[j] = arr[j+1];
+                    arr[j+1] = temp;
+                }
+            }
+        }
+    }
+}
