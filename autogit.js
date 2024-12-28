@@ -1,12 +1,11 @@
-def is_sorted_ascending(arr):
-    for i in range(len(arr) - 1):
-        if arr[i] > arr[i + 1]:
-            return False
-    return True
+def burrows_wheeler_transform(text):
+    text = text + "$"  # Adding an end of text symbol
+    rotations = [text[i:] + text[:i] for i in range(len(text))]  # Generating all rotations of the text
+    rotations.sort()  # Sorting the rotations
+    bwt_text = "".join(rotation[-1] for rotation in rotations)  # Taking the last character of each rotation
+    return bwt_text
 
 # Example usage
-arr = [1, 2, 3, 4, 5]
-if is_sorted_ascending(arr):
-    print("The array is sorted in ascending order.")
-else:
-    print("The array is not sorted in ascending order.")
+text = "banana"
+bwt_result = burrows_wheeler_transform(text)
+print("Burrows-Wheeler Transform of '{}' is '{}'".format(text, bwt_result))
