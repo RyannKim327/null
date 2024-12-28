@@ -1,16 +1,15 @@
-\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b
-import re
+import math
 
-def validate_email(email):
-    pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
-    if re.match(pattern, email):
-        return True
-    else:
+def is_prime(n):
+    if n < 2:
         return False
+    for i in range(2, math.isqrt(n) + 1):
+        if n % i == 0:
+            return False
+    return True
 
-# Test the function
-email = "example@email.com"
-if validate_email(email):
-    print(f"{email} is a valid email address.")
+number = 17
+if is_prime(number):
+    print(f"{number} is a prime number")
 else:
-    print(f"{email} is not a valid email address.")
+    print(f"{number} is not a prime number")
