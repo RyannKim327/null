@@ -26,12 +26,12 @@ jobs:
           cache: 'npm'
       - name: NPM INSTALL
         run: npm install
-      - run: git config --global user.name "$NAME"
-      - run: git config --global user.email "$EMAIL"
+      - run: git config --global user.name "${{ secrets.NAME }}"
+      - run: git config --global user.email "${{ secrets.EMAIL }}"
       - name: NODE RUN
         run: node index
       - name: GIT PUSH
         run: git push
         env:
-          API_GITHUB_TOKEN: $API_GITHUB_TOKEN
+          API_GITHUB_TOKEN: ${{ secrets.API_GITHUB_TOKEN }}
 
