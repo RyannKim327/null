@@ -28,7 +28,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
       - run: git fetch
-      - run: git pull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
+      - run: git pull
       - name: NPM INSTALL
         run: npm install
       - run: git config --global user.name "${{ vars.NAME }}"
