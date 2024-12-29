@@ -1,43 +1,36 @@
-import heapq
-
-def beam_search(start_state, beam_width, max_depth, heuristic_fn):
-    visited = set()
-    queue = [(heuristic_fn(start_state), 0, [start_state])]
+def astar(start, goal):
+    open_list = [start]  # nodes to be evaluated
+    closed_list = []  # nodes already evaluated
     
-    while queue:
-        score, depth, path = heapq.heappop(queue)
-        state = path[-1]
+    while open_list:
+        current_node = min(open_list, key=lambda node: node.f)
+        open_list.remove(current_node)
         
-        if state in visited:
-            continue
+        if current_node == goal:
+            return reconstruct_path(current_node)
         
-        visited.add(state)
+        closed_list.append(current_node)
         
-        if depth == max_depth:
-            return path
-        
-        next_states = generate_next_states(state)
-        
-        for next_state in next_states:
-            new_path = path + [next_state]
-            new_score = heuristic_fn(next_state)
-            
-            heapq.heappush(queue, (new_score, depth + 1, new_path))
-            queue = queue[:beam_width]
+        for neighbor in get_neighbors(current_node):
+            if neighbor in closed_list:
+                continue
+
+            neighbor.g = current_node.g + distance(current_node, neighbor)
+            neighbor.h = heuristic(neighbor, goal)
+            neighbor.f = neighbor.g + neighbor.h
+
+            if neighbor in open_list:
+                existing_neighbor = open_list[open_list.index(neighbor)]
+                if neighbor.g >= existing_neighbor.g:
+                    continue
+
+            open_list.append(neighbor)
     
-    return None
+    return None  # No path found
 
-# Example heuristic function
-def heuristic_fn(state):
-    return 0  # Implement your own heuristic function
-
-def generate_next_states(state):
-    # Implement this function to generate possible next states
-    
-# Example usage
-start_state = "example_start_state"
-beam_width = 3
-max_depth = 5
-final_path = beam_search(start_state, beam_width, max_depth, heuristic_fn)
-
-print(final_path)
+def reconstruct_path(node):
+    path = [node]
+    while node.parent:
+        node = node.parent
+        path.insert(0, node)
+    return path
