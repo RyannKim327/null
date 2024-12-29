@@ -1,15 +1,40 @@
-def longest_common_prefix(strs):
-    if not strs:
-        return ""
+#include <iostream>
 
-    min_len = min(map(len, strs))
-    for i in range(min_len):
-        for j in range(1, len(strs)):
-            if strs[j][i] != strs[0][i]:
-                return strs[0][:i]
+struct Node {
+    int data;
+    Node* next;
+};
 
-    return strs[0][:min_len]
+bool hasCycle(Node* head) {
+    if (head == nullptr || head->next == nullptr) {
+        return false;
+    }
 
-# Example
-strings = ["leetcode", "leet", "leeds"]
-print(longest_common_prefix(strings))  # Output: "lee"
+    Node* slow = head;
+    Node* fast = head->next;
+
+    while (fast != nullptr && fast->next != nullptr) {
+        if (slow == fast) {
+            return true; // cycle detected
+        }
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+
+    return false; // no cycle detected
+}
+
+int main() {
+    Node* head = new Node{1, nullptr};
+    head->next = new Node{2, nullptr};
+    head->next->next = new Node{3, nullptr};
+    head->next->next->next = head->next; // create a cycle
+
+    if (hasCycle(head)) {
+        std::cout << "Linked list contains a cycle." << std::endl;
+    } else {
+        std::cout << "Linked list does not contain a cycle." << std::endl;
+    }
+
+    return 0;
+}
