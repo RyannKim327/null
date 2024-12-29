@@ -1,31 +1,13 @@
-import heapq
+def is_prime(num):
+    if num < 2:
+        return False
+    for i in range(2, int(num ** 0.5) + 1):
+        if num % i == 0:
+            return False
+    return True
 
-def dijkstra(graph, source):
-    distance = {node: float('infinity') for node in graph}
-    distance[source] = 0
-    pq = [(0, source)]
-    
-    while pq:
-        dist, current = heapq.heappop(pq)
-        
-        if dist > distance[current]:
-            continue
-        
-        for neighbor, weight in graph[current].items():
-            new_dist = dist + weight
-            if new_dist < distance[neighbor]:
-                distance[neighbor] = new_dist
-                heapq.heappush(pq, (new_dist, neighbor))
-    
-    return distance
-
-# Example usage
-graph = {
-    'A': {'B': 2, 'C': 5},
-    'B': {'A': 2, 'C': 1},
-    'C': {'A': 5, 'B': 1}
-}
-
-source_node = 'A'
-shortest_distances = dijkstra(graph, source_node)
-print(shortest_distances)
+number = 29  # Change this to the number you want to check
+if is_prime(number):
+    print(f"{number} is a prime number")
+else:
+    print(f"{number} is not a prime number")
