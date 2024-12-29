@@ -1,16 +1,10 @@
-import math
-
-def is_prime(n):
-    if n < 2:
-        return False
-    for i in range(2, int(math.sqrt(n)) + 1):
-        if n % i == 0:
-            return False
-    return True
-
-# Test the function
-number = 17
-if is_prime(number):
-    print(f"{number} is a prime number.")
-else:
-    print(f"{number} is not a prime number.")
+string1 = "Hello, "
+string2 = "world!"
+result = string1 + string2
+print(result)
+Hello, world!
+var string1 = "Hello, ";
+var string2 = "world!";
+var result = string1 + string2;
+console.log(result);
+Hello, world!
