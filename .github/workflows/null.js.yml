@@ -5,7 +5,7 @@ name: Node.js CI
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -28,7 +28,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
       - run: git fetch
-      - run: git pull
+      - run: git pull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
       - name: NPM INSTALL
         run: npm install
       - run: git config --global user.name "${{ vars.NAME }}"
