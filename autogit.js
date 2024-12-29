@@ -1,7 +1,19 @@
-def decimal_to_binary(decimal_num):
-    return bin(decimal_num).replace("0b", "")
+def shell_sort(arr):
+    n = len(arr)
+    gap = n // 2
 
-decimal_num = 10
-binary_num = decimal_to_binary(decimal_num)
+    while gap > 0:
+        for i in range(gap, n):
+            temp = arr[i]
+            j = i
+            while j >= gap and arr[j - gap] > temp:
+                arr[j] = arr[j - gap]
+                j -= gap
+            arr[j] = temp
+        gap //= 2
 
-print(f"The binary representation of {decimal_num} is: {binary_num}")
+    return arr
+
+# Test the shell sort function
+arr = [12, 34, 54, 2, 3]
+print("Sorted array:", shell_sort(arr))
