@@ -1,49 +1,26 @@
-class TreeNode:
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
+str1 = "Hello"
+str2 = "World"
+concatenated_string = str1 + str2
+print(concatenated_string)
+String str1 = "Hello";
+String str2 = "World";
+String concatenatedString = str1 + str2;
+System.out.println(concatenatedString);
+let str1 = "Hello";
+let str2 = "World";
+let concatenatedString = str1 + str2;
+console.log(concatenatedString);
+#include <iostream>
+#include <string>
 
-class BinarySearchTree:
-    def __init__(self):
-        self.root = None
-
-    def insert(self, value):
-        if self.root is None:
-            self.root = TreeNode(value)
-        else:
-            self._insert_recursively(self.root, value)
-
-    def _insert_recursively(self, node, value):
-        if value < node.value:
-            if node.left is None:
-                node.left = TreeNode(value)
-            else:
-                self._insert_recursively(node.left, value)
-        else:
-            if node.right is None:
-                node.right = TreeNode(value)
-            else:
-                self._insert_recursively(node.right, value)
-
-    def search(self, value):
-        return self._search_recursively(self.root, value)
-
-    def _search_recursively(self, node, value):
-        if node is None:
-            return False
-        if node.value == value:
-            return True
-        elif value < node.value:
-            return self._search_recursively(node.left, value)
-        else:
-            return self._search_recursively(node.right, value)
-
-# Usage
-bst = BinarySearchTree()
-bst.insert(5)
-bst.insert(3)
-bst.insert(7)
-
-print(bst.search(3))  # Output: True
-print(bst.search(10))  # Output: False
+int main() {
+    std::string str1 = "Hello";
+    std::string str2 = "World";
+    std::string concatenatedString = str1 + str2;
+    std::cout << concatenatedString << std::endl;
+    return 0;
+}
+str1 = "Hello"
+str2 = "World"
+concatenated_string = str1 + str2
+puts concatenated_string
