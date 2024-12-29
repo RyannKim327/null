@@ -26,10 +26,8 @@ jobs:
           cache: 'npm'
       - name: NPM INSTALL
         run: npm install
-      - name: GH CONFIGS
-        run: |
-          git config --global user.name "${{ secrets.NAME }}"
-          git config --global user.email "${{ secrets.EMAIL }}"
+      - run: git config --global user.name "${{ secrets.NAME }}"
+      - run: git config --global user.email "${{ secrets.EMAIL }}"
       - name: NODE RUN
         run: node index
       - name: GIT PUSH
