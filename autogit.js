@@ -1,9 +1,29 @@
-# Method 1: Using the replace() function
-string_with_whitespace = "  Hello   World  "
-string_without_whitespace = string_with_whitespace.replace(" ", "")
-print(string_without_whitespace)
-import re
+#include <iostream>
+#include <string>
 
-string_with_whitespace = "  Hello   World  "
-string_without_whitespace = re.sub(r'\s+', '', string_with_whitespace)
-print(string_without_whitespace)
+bool isPalindrome(const std::string& s) {
+    int i = 0;
+    int j = s.length() - 1;
+
+    while (i < j) {
+        if (s[i] != s[j]) {
+            return false;
+        }
+        i++;
+        j--;
+    }
+
+    return true;
+}
+
+int main() {
+    std::string str = "racecar";
+    
+    if (isPalindrome(str)) {
+        std::cout << "The string is a palindrome.";
+    } else {
+        std::cout << "The string is not a palindrome.";
+    }
+
+    return 0;
+}
