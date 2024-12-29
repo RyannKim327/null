@@ -1,89 +1,19 @@
 #include <iostream>
+#include <algorithm>
 
-using namespace std;
-
-// Node class
-class Node {
-public:
-    int data;
-    Node* next;
-
-    Node(int value) {
-        data = value;
-        next = nullptr;
-    }
-};
-
-// Queue class
-class Queue {
-private:
-    Node* front;
-    Node* rear;
-
-public:
-    Queue() {
-        front = nullptr;
-        rear = nullptr;
-    }
-
-    bool isEmpty() {
-        return front == nullptr;
-    }
-
-    void enqueue(int value) {
-        Node* newNode = new Node(value);
-
-        if (isEmpty()) {
-            front = newNode;
-            rear = newNode;
-        } else {
-            rear->next = newNode;
-            rear = newNode;
-        }
-
-        cout << value << " enqueued to queue.\n";
-    }
-
-    void dequeue() {
-        if (isEmpty()) {
-            cout << "Queue is empty. Cannot dequeue.\n";
-        } else {
-            Node* temp = front;
-            front = front->next;
-            cout << temp->data << " dequeued from queue.\n";
-            delete temp;
-        }
-    }
-
-    void display() {
-        Node* current = front;
-
-        if (isEmpty()) {
-            cout << "Queue is empty.\n";
-        } else {
-            cout << "Queue elements: ";
-            while (current != nullptr) {
-                cout << current->data << " ";
-                current = current->next;
-            }
-            cout << endl;
-        }
-    }
-};
+int findKthSmallest(int arr[], int n, int k) {
+    std::nth_element(arr, arr + k - 1, arr + n);
+    return arr[k - 1];
+}
 
 int main() {
-    Queue queue;
+    int arr[] = {4, 2, 7, 1, 5, 3};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    int k = 3; // Find the 3rd smallest element
 
-    queue.enqueue(10);
-    queue.enqueue(20);
-    queue.enqueue(30);
+    int kthSmallest = findKthSmallest(arr, n, k);
 
-    queue.display();
-
-    queue.dequeue();
-    queue.dequeue();
-
-    queue.display();
+    std::cout << "The " << k << "th smallest element is: " << kthSmallest << std::endl;
 
     return 0;
 }
