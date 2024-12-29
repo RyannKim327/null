@@ -1,36 +1,24 @@
-def astar(start, goal):
-    open_list = [start]  # nodes to be evaluated
-    closed_list = []  # nodes already evaluated
-    
-    while open_list:
-        current_node = min(open_list, key=lambda node: node.f)
-        open_list.remove(current_node)
-        
-        if current_node == goal:
-            return reconstruct_path(current_node)
-        
-        closed_list.append(current_node)
-        
-        for neighbor in get_neighbors(current_node):
-            if neighbor in closed_list:
-                continue
+import android.os.AsyncTask
+import java.net.HttpURLConnection
+import java.net.URL
 
-            neighbor.g = current_node.g + distance(current_node, neighbor)
-            neighbor.h = heuristic(neighbor, goal)
-            neighbor.f = neighbor.g + neighbor.h
+class ConnectAsyncTask : AsyncTask<String, Void, String>() {
 
-            if neighbor in open_list:
-                existing_neighbor = open_list[open_list.index(neighbor)]
-                if neighbor.g >= existing_neighbor.g:
-                    continue
+    override fun doInBackground(vararg params: String): String {
+        val urlString = params[0]
+        val url = URL(urlString)
+        val urlConnection = url.openConnection() as HttpURLConnection
 
-            open_list.append(neighbor)
-    
-    return None  # No path found
+        try {
+            val inputStream = urlConnection.inputStream
+            val response = inputStream.bufferedReader().use { it.readText() }
+            return response
+        } finally {
+            urlConnection.disconnect()
+        }
+    }
 
-def reconstruct_path(node):
-    path = [node]
-    while node.parent:
-        node = node.parent
-        path.insert(0, node)
-    return path
+    override fun onPostExecute(result: String) {
+        // Handle the result here
+    }
+}
