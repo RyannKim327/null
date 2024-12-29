@@ -1,39 +1,23 @@
-class TrieNode:
-    def __init__(self):
-        self.children = {}
-        self.is_end_of_word = False
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
 
-class Trie:
-    def __init__(self):
-        self.root = TrieNode()
+def maxDepth(node):
+    if node is None:
+        return 0
+    else:
+        left_depth = maxDepth(node.left)
+        right_depth = maxDepth(node.right)
 
-    def insert(self, word):
-        node = self.root
-        for char in word:
-            if char not in node.children:
-                node.children[char] = TrieNode()
-            node = node.children[char]
-        node.is_end_of_word = True
+        return max(left_depth, right_depth) + 1
 
-    def search(self, word):
-        node = self.root
-        for char in word:
-            if char not in node.children:
-                return False
-            node = node.children[char]
-        return node.is_end_of_word
-
-    def startsWith(self, prefix):
-        node = self.root
-        for char in prefix:
-            if char not in node.children:
-                return False
-            node = node.children[char]
-        return True
-
-# Usage
-trie = Trie()
-trie.insert("apple")
-print(trie.search("apple"))  # Output: True
-print(trie.search("app"))    # Output: False
-print(trie.startsWith("app"))  # Output: True
+# Example usage:
+# root = Node(1)
+# root.left = Node(2)
+# root.right = Node(3)
+# root.left.left = Node(4)
+# root.left.right = Node(5)
+# depth = maxDepth(root)
+# print("The maximum depth of the binary tree is:", depth)
