@@ -1,27 +1,20 @@
-from collections import deque
+def shell_sort(arr):
+    n = len(arr)
+    gap = n // 2
 
-def breadth_first_search(graph, start):
-    visited = set()
-    queue = deque([start])
+    while gap > 0:
+        for i in range(gap, n):
+            temp = arr[i]
+            j = i
+            while j >= gap and arr[j - gap] > temp:
+                arr[j] = arr[j - gap]
+                j -= gap
+            arr[j] = temp
+        gap //= 2
 
-    while queue:
-        node = queue.popleft()
-        if node not in visited:
-            visited.add(node)
-            print(node)
+    return arr
 
-            for neighbor in graph[node]:
-                if neighbor not in visited:
-                    queue.append(neighbor)
-
-# Example graph in the form of an adjacency list
-graph = {
-    'A': ['B', 'C'],
-    'B': ['D', 'E'],
-    'C': ['F'],
-    'D': [],
-    'E': ['F'],
-    'F': []
-}
-
-breadth_first_search(graph, 'A')
+# Example usage
+arr = [12, 34, 54, 2, 3]
+sorted_arr = shell_sort(arr)
+print("Sorted array:", sorted_arr)
