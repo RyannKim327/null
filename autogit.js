@@ -1,20 +1,12 @@
-def shell_sort(arr):
-    n = len(arr)
-    gap = n // 2
+def is_sorted_ascending(arr):
+    for i in range(1, len(arr)):
+        if arr[i] < arr[i - 1]:
+            return False
+    return True
 
-    while gap > 0:
-        for i in range(gap, n):
-            temp = arr[i]
-            j = i
-            while j >= gap and arr[j - gap] > temp:
-                arr[j] = arr[j - gap]
-                j -= gap
-            arr[j] = temp
-        gap //= 2
+# Test the function
+arr1 = [1, 2, 3, 4, 5]
+arr2 = [5, 4, 3, 2, 1]
 
-    return arr
-
-# Example usage
-arr = [12, 34, 54, 2, 3]
-sorted_arr = shell_sort(arr)
-print("Sorted array:", sorted_arr)
+print(is_sorted_ascending(arr1))  # Output: True
+print(is_sorted_ascending(arr2))  # Output: False
