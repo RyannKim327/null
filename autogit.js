@@ -1,20 +1,23 @@
-import tweepy
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
+ 
+def maxDepth(node):
+    if node is None:
+        return 0
+    else:
+        left_depth = maxDepth(node.left)
+        right_depth = maxDepth(node.right)
+ 
+        return max(left_depth, right_depth) + 1
 
-# Setup Twitter API credentials
-consumer_key = 'your_consumer_key'
-consumer_secret = 'your_consumer_secret'
-access_token = 'your_access_token'
-access_token_secret = 'your_access_token_secret'
-
-# Authenticate with Twitter API
-auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(access_token, access_token_secret)
-api = tweepy.API(auth)
-
-# Fetch tweets from user's timeline
-user = api.get_user(screen_name='twitterusername')
-tweets = api.user_timeline(screen_name=user.screen_name, count=10)
-
-# Print tweets
-for tweet in tweets:
-    print(tweet.text)
+# Example binary tree
+root = Node(1)
+root.left = Node(2)
+root.right = Node(3)
+root.left.left = Node(4)
+root.left.right = Node(5)
+ 
+print("Maximum depth of the binary tree is:", maxDepth(root))
