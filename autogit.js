@@ -1,13 +1,7 @@
-// Function to reverse a string
-string reverseString(string str) {
-    int n = str.size();
-    for (int i = 0; i < n / 2; i++) {
-        swap(str[i], str[n - i - 1]);
-    }
-    return str;
-}
+def decimal_to_binary(decimal_num):
+    return bin(decimal_num).replace("0b", "")
 
-// Example usage
-string str = "Hello, World!";
-string reversedStr = reverseString(str);
-cout << "Reversed string: " << reversedStr << endl;
+decimal_num = 10
+binary_num = decimal_to_binary(decimal_num)
+
+print(f"The binary representation of {decimal_num} is: {binary_num}")
