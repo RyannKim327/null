@@ -5,7 +5,7 @@ name: Node.js CI
 
 on:
   schedule:
-    - cron: '10 0 * * *'
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 jobs:
@@ -25,11 +25,14 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: "npm install"
-    - run: |
-       git config --global user.name "RyannKim327"
-       git config --global user.email "rksesgundo123@gmail.com"
+    - name: NPM INSTALL
+      run: "npm install"
+    - name: GH CONFIGS
+      run: |
+        git config --global user.name "${{ secrets.NAME }}"
+        git config --global user.email "${{ secrets.EMAIL }}"
     - run: node index
-    - run: git push
+    - name: push
+        run: git push
       env:
         API_GITHUB_TOKEN: ${{ secrets.API_GITHUB_TOKEN }}
