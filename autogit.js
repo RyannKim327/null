@@ -1,16 +1,13 @@
-def selection_sort(arr):
-    n = len(arr)
-    
-    for i in range(n):
-        min_idx = i
-        for j in range(i+1, n):
-            if arr[j] < arr[min_idx]:
-                min_idx = j
-        arr[i], arr[min_idx] = arr[min_idx], arr[i]
-    
-    return arr
+// Function to reverse a string
+string reverseString(string str) {
+    int n = str.size();
+    for (int i = 0; i < n / 2; i++) {
+        swap(str[i], str[n - i - 1]);
+    }
+    return str;
+}
 
-# Example usage:
-arr = [64, 25, 12, 22, 11]
-sorted_arr = selection_sort(arr)
-print("Sorted array:", sorted_arr)
+// Example usage
+string str = "Hello, World!";
+string reversedStr = reverseString(str);
+cout << "Reversed string: " << reversedStr << endl;
