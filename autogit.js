@@ -1,17 +1,10 @@
-def counting_sort(arr):
-    max_val = max(arr)
-    count = [0] * (max_val + 1)
+def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)
 
-    for num in arr:
-        count[num] += 1
-
-    sorted_arr = []
-    for i in range(len(count)):
-        sorted_arr += [i] * count[i]
-
-    return sorted_arr
-
-# Example usage
-arr = [4, 2, 2, 8, 3, 3, 1]
-sorted_arr = counting_sort(arr)
-print(sorted_arr)
+# Test the factorial function
+number = 5
+result = factorial(number)
+print(f'The factorial of {number} is: {result}')
