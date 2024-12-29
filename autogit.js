@@ -1,22 +1,9 @@
-class Node:
-    def __init__(self, value):
-        self.value = value
-        self.next = None
+# Method 1: Using the replace() function
+string_with_whitespace = "  Hello   World  "
+string_without_whitespace = string_with_whitespace.replace(" ", "")
+print(string_without_whitespace)
+import re
 
-def find_intersection(head1, head2):
-    node_set = set()
-    
-    # Traverse the first linked list and store all nodes in a set
-    current = head1
-    while current:
-        node_set.add(current)
-        current = current.next
-    
-    # Traverse the second linked list and check for intersection with the nodes in the set
-    current = head2
-    while current:
-        if current in node_set:
-            return current
-        current = current.next
-    
-    return None
+string_with_whitespace = "  Hello   World  "
+string_without_whitespace = re.sub(r'\s+', '', string_with_whitespace)
+print(string_without_whitespace)
