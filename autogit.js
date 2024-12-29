@@ -1,47 +1,26 @@
-class Node:
-    def __init__(self, value):
-        self.value = value
-        self.next = None
+def interpolation_search(arr, x):
+    n = len(arr)
+    low = 0
+    high = n - 1
 
-def find_intersection(head1, head2):
-    seen = set()
-    
-    # Traverse the first linked list and store nodes in a set
-    current = head1
-    while current:
-        seen.add(current)
-        current = current.next
-    
-    # Traverse the second linked list and check for intersection
-    current = head2
-    while current:
-        if current in seen:
-            return current
-        current = current.next
-    
-    return None
+    while low <= high and x >= arr[low] and x <= arr[high]:
+        pos = low + ((x - arr[low]) * (high - low)) // (arr[high] - arr[low])
+
+        if arr[pos] == x:
+            return pos
+        elif arr[pos] < x:
+            low = pos + 1
+        else:
+            high = pos - 1
+
+    return -1
 
 # Example usage
-# Create two linked lists
-# list1: 3 -> 7 -> 8 -> 10
-node1 = Node(3)
-node2 = Node(7)
-node3 = Node(8)
-node4 = Node(10)
-node1.next = node2
-node2.next = node3
-node3.next = node4
-head1 = node1
+arr = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+x = 10
+result = interpolation_search(arr, x)
 
-# list2: 99 -> 1 -> 8 -> 10
-node5 = Node(99)
-node6 = Node(1)
-node5.next = node6
-node6.next = node3
-head2 = node5
-
-intersection_node = find_intersection(head1, head2)
-if intersection_node:
-    print("Intersection found at node with value:", intersection_node.value)
+if result != -1:
+    print(f"Element found at index {result}")
 else:
-    print("No intersection found")
+    print("Element not found")
