@@ -15,8 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        node-version: [22.x]
 
     steps:
     - uses: actions/checkout@v4
@@ -36,4 +35,5 @@ jobs:
     - name: GIT PUSH
         run: git push
         env:
-          API_GITHUB_TOKEN: ${{ secrets.API_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.API_GITHUB_TOKEN }}
+
