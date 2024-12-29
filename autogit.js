@@ -1,31 +1,89 @@
-class BTreeNode {
-    vector<int> keys;
-    vector<BTreeNode*> children;
-    bool isLeaf;
-    int numKeys;
+#include <iostream>
+
+using namespace std;
+
+// Node class
+class Node {
+public:
+    int data;
+    Node* next;
+
+    Node(int value) {
+        data = value;
+        next = nullptr;
+    }
 };
-void insert(int key) {
-    // Insert the key into the B-tree
-}
 
-void splitChild(int childIndex, BTreeNode* parentNode) {
-    // Split the child node at the given index
-}
-bool search(int key) {
-    // Search for the key in the B-tree
-    return false;
-}
-void balanceTree() {
-    // Balance the B-tree after insertion or deletion
-}
+// Queue class
+class Queue {
+private:
+    Node* front;
+    Node* rear;
 
-void mergeNodes(BTreeNode* node1, BTreeNode* node2) {
-    // Merge two sibling nodes
-}
-void deleteKey(int key) {
-    // Delete the key from the B-tree
-}
+public:
+    Queue() {
+        front = nullptr;
+        rear = nullptr;
+    }
 
-void removeKey(int key) {
-    // Remove the key from the node
+    bool isEmpty() {
+        return front == nullptr;
+    }
+
+    void enqueue(int value) {
+        Node* newNode = new Node(value);
+
+        if (isEmpty()) {
+            front = newNode;
+            rear = newNode;
+        } else {
+            rear->next = newNode;
+            rear = newNode;
+        }
+
+        cout << value << " enqueued to queue.\n";
+    }
+
+    void dequeue() {
+        if (isEmpty()) {
+            cout << "Queue is empty. Cannot dequeue.\n";
+        } else {
+            Node* temp = front;
+            front = front->next;
+            cout << temp->data << " dequeued from queue.\n";
+            delete temp;
+        }
+    }
+
+    void display() {
+        Node* current = front;
+
+        if (isEmpty()) {
+            cout << "Queue is empty.\n";
+        } else {
+            cout << "Queue elements: ";
+            while (current != nullptr) {
+                cout << current->data << " ";
+                current = current->next;
+            }
+            cout << endl;
+        }
+    }
+};
+
+int main() {
+    Queue queue;
+
+    queue.enqueue(10);
+    queue.enqueue(20);
+    queue.enqueue(30);
+
+    queue.display();
+
+    queue.dequeue();
+    queue.dequeue();
+
+    queue.display();
+
+    return 0;
 }
