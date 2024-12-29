@@ -1,16 +1,9 @@
-def bubble_sort(arr):
-    n = len(arr)
-    for i in range(n):
-        swapped = False
-        for j in range(0, n-i-1):
-            if arr[j] > arr[j+1]:
-                arr[j], arr[j+1] = arr[j+1], arr[j]
-                swapped = True
-        if not swapped:
-            break
-    return arr
+def find_kth_smallest(arr, k):
+    sorted_arr = sorted(arr)  # Sort the array in ascending order
+    return sorted_arr[k-1]  # Return the kth smallest element
 
 # Example usage
-arr = [64, 34, 25, 12, 22, 11, 90]
-sorted_arr = bubble_sort(arr)
-print("Sorted array:", sorted_arr)
+arr = [4, 2, 7, 1, 5, 9, 3]
+k = 3
+result = find_kth_smallest(arr, k)
+print(f"The {k}th smallest element is: {result}")
