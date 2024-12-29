@@ -25,7 +25,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run |
+    - run: |
        git config --global user.name "RyannKim327"
        git config --global user.email "rksesgundo123@gmail.com"
     - run: node index
