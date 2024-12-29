@@ -1,14 +1,12 @@
-def bubble_sort(arr):
-    n = len(arr)
-    
-    for i in range(n):
-        for j in range(0, n-i-1):
-            if arr[j] > arr[j+1]:
-                arr[j], arr[j+1] = arr[j+1], arr[j]
-    
-    return arr
+def remove_vowels(input_string):
+    vowels = "aeiouAEIOU"
+    output_string = ""
+    for char in input_string:
+        if char not in vowels:
+            output_string += char
+    return output_string
 
-# Example usage
-arr = [64, 34, 25, 12, 22, 11, 90]
-sorted_arr = bubble_sort(arr)
-print("Sorted array is:", sorted_arr)
+# Test the function
+input_string = "Hello, World!"
+output_string = remove_vowels(input_string)
+print(output_string)
