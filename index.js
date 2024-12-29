@@ -2,8 +2,8 @@ const fs = require("fs");
 const { exec } = require("child_process");
 const date = require("./date");
 const axios = require("axios");
-let commits = 2; //Math.floor(Math.random() * 50) + 1;
-// commits += commits;
+let commits = Math.floor(Math.random() * 50) + 1;
+commits += commits;
 let _commitments = 1;
 console.log(`You send git ${commits} commits`);
 
