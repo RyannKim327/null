@@ -1,57 +1,34 @@
-def merge(arr, l, m, r):
-    n1 = m - l + 1
-    n2 = r - m
-
-    L = [0] * n1
-    R = [0] * n2
-
-    for i in range(n1):
-        L[i] = arr[l + i]
-
-    for j in range(n2):
-        R[j] = arr[m + 1 + j]
-
-    i = 0
-    j = 0
-    k = l
-
-    while i < n1 and j < n2:
-        if L[i] <= R[j]:
-            arr[k] = L[i]
-            i += 1
-        else:
-            arr[k] = R[j]
-            j += 1
-        k += 1
-
-    while i < n1:
-        arr[k] = L[i]
-        i += 1
-        k += 1
-
-    while j < n2:
-        arr[k] = R[j]
-        j += 1
-        k += 1
-
 def merge_sort(arr):
-    n = len(arr)
-    curr_size = 1
+    if len(arr) <= 1:
+        return arr
 
-    while curr_size < n - 1:
-        l = 0
-        while l < n - 1:
-            m = min(l + curr_size - 1, n - 1)
-            r = min(l + 2*curr_size - 1, n - 1)
+    middle = len(arr) // 2
+    left = arr[:middle]
+    right = arr[middle:]
 
-            merge(arr, l, m, r)
-            l += 2 * curr_size
+    left = merge_sort(left)
+    right = merge_sort(right)
 
-        curr_size = 2 * curr_size
+    return merge(left, right)
 
-    return arr
+def merge(left, right):
+    result = []
+    left_index = right_index = 0
 
-arr = [12, 11, 13, 5, 6, 7]
-print("Original array:", arr)
+    while left_index < len(left) and right_index < len(right):
+        if left[left_index] < right[right_index]:
+            result.append(left[left_index])
+            left_index += 1
+        else:
+            result.append(right[right_index])
+            right_index += 1
+
+    result.extend(left[left_index:])
+    result.extend(right[right_index:])
+
+    return result
+
+# Example usage
+arr = [38, 27, 43, 3, 9, 82, 10]
 sorted_arr = merge_sort(arr)
-print("Sorted array:", sorted_arr)
+print(sorted_arr)
