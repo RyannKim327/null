@@ -1,34 +1,95 @@
-import heapq
+class Node:
+    def __init__(self, key):
+        self.key = key
+        self.left = None
+        self.right = None
+        self.height = 1
 
-def dijkstra(graph, start):
-    distances = {node: float('infinity') for node in graph}
-    distances[start] = 0
-    queue = [(0, start)]
+class AVLTree:
+    def __init__(self):
+        self.root = None
 
-    while queue:
-        current_distance, current_node = heapq.heappop(queue)
+    def insert(self, key):
+        self.root = self._insert(self.root, key)
 
-        if current_distance > distances[current_node]:
-            continue
+    def _insert(self, node, key):
+        if not node:
+            return Node(key)
+        elif key < node.key:
+            node.left = self._insert(node.left, key)
+        else:
+            node.right = self._insert(node.right, key)
 
-        for neighbor, weight in graph[current_node].items():
-            distance = current_distance + weight
+        node.height = 1 + max(self._get_height(node.left), self._get_height(node.right))
 
-            if distance < distances[neighbor]:
-                distances[neighbor] = distance
-                heapq.heappush(queue, (distance, neighbor))
+        balance = self._get_balance(node)
 
-    return distances
+        # Left Left Case
+        if balance > 1 and key < node.left.key:
+            return self._right_rotate(node)
+        # Right Right Case
+        if balance < -1 and key > node.right.key:
+            return self._left_rotate(node)
+        # Left Right Case
+        if balance > 1 and key > node.left.key:
+            node.left = self._left_rotate(node.left)
+            return self._right_rotate(node)
+        # Right Left Case
+        if balance < -1 and key < node.right.key:
+            node.right = self._right_rotate(node.right)
+            return self._left_rotate(node)
 
-# Example graph
-graph = {
-    'A': {'B': 1, 'C': 4},
-    'B': {'A': 1, 'C': 2, 'D': 5},
-    'C': {'A': 4, 'B': 2, 'D': 1},
-    'D': {'B': 5, 'C': 1}
-}
+        return node
 
-start_node = 'A'
-shortest_distances = dijkstra(graph, start_node)
+    def _get_height(self, node):
+        if not node:
+            return 0
+        return node.height
 
-print(shortest_distances)
+    def _get_balance(self, node):
+        if not node:
+            return 0
+        return self._get_height(node.left) - self._get_height(node.right)
+
+    def _left_rotate(self, z):
+        y = z.right
+        T2 = y.left
+
+        y.left = z
+        z.right = T2
+
+        z.height = 1 + max(self._get_height(z.left), self._get_height(z.right))
+        y.height = 1 + max(self._get_height(y.left), self._get_height(y.right))
+
+        return y
+
+    def _right_rotate(self, z):
+        y = z.left
+        T3 = y.right
+
+        y.right = z
+        z.left = T3
+
+        z.height = 1 + max(self._get_height(z.left), self._get_height(z.right))
+        y.height = 1 + max(self._get_height(y.left), self._get_height(y.right))
+
+        return y
+
+    def inorder_traversal(self):
+        self._inorder_traversal(self.root)
+    
+    def _inorder_traversal(self, node):
+        if node:
+            self._inorder_traversal(node.left)
+            print(node.key, end=" ")
+            self._inorder_traversal(node.right)
+
+# Usage
+avl_tree = AVLTree()
+avl_tree.insert(10)
+avl_tree.insert(20)
+avl_tree.insert(30)
+avl_tree.insert(40)
+avl_tree.insert(50)
+
+avl_tree.inorder_traversal()
