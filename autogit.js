@@ -1,6 +1,15 @@
-def decimal_to_binary(n):
-    return bin(n).replace("0b", "")
+def longest_common_prefix(strs):
+    if not strs:
+        return ""
 
-decimal_number = 27
-binary_number = decimal_to_binary(decimal_number)
-print(f"The binary representation of {decimal_number} is: {binary_number}")
+    min_len = min(map(len, strs))
+    for i in range(min_len):
+        for j in range(1, len(strs)):
+            if strs[j][i] != strs[0][i]:
+                return strs[0][:i]
+
+    return strs[0][:min_len]
+
+# Example
+strings = ["leetcode", "leet", "leeds"]
+print(longest_common_prefix(strings))  # Output: "lee"
