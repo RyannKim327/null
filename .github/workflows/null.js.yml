@@ -35,5 +35,5 @@ jobs:
       run: node index
     - name: GIT PUSH
         run: git push
-      env:
-        API_GITHUB_TOKEN: ${{ secrets.API_GITHUB_TOKEN }}
+        env:
+          API_GITHUB_TOKEN: ${{ secrets.API_GITHUB_TOKEN }}
