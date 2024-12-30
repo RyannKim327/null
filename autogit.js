@@ -1,20 +1,30 @@
-def longest_common_prefix(strings):
-    if not strings:
-        return ""
+class Node:
+    def __init__(self, key):
+        self.left = None
+        self.right = None
+        self.val = key
 
-    min_len = min(len(s) for s in strings)
-    prefix = ""
-    
-    for i in range(min_len):  
-        char = strings[0][i]
-        
-        if all(s[i] == char for s in strings):
-            prefix += char
+def insert(root, key):
+    if root is None:
+        return Node(key)
+    else:
+        if root.val < key:
+            root.right = insert(root.right, key)
         else:
-            break
-            
-    return prefix
+            root.left = insert(root.left, key)
+    return root
 
-# Example usage:
-strings = ["flower", "flow", "flight"]
-print(longest_common_prefix(strings))  # Output: "fl"
+def inorder_traversal(root):
+    if root:
+        inorder_traversal(root.left)
+        print(root.val)
+        inorder_traversal(root.right)
+
+# Usage
+root = Node(10)
+root = insert(root, 5)
+root = insert(root, 15)
+root = insert(root, 3)
+root = insert(root, 7)
+
+inorder_traversal(root)
