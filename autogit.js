@@ -1,17 +1,23 @@
-def longest_common_prefix(strings):
-    if not strings:
-        return ""
-    
-    prefix = strings[0]
-    
-    for i in range(1, len(strings)):
-        while strings[i].find(prefix) != 0:
-            prefix = prefix[:-1]
-            if not prefix:
-                return ""
-    
-    return prefix
+class Node:
+    def __init__(self, data=None):
+        self.data = data
+        self.next = None
 
-# Example
-strings = ["flower", "flow", "flight"]
-print(longest_common_prefix(strings))  # Output: "fl"
+def find_middle_element(head):
+    slow_ptr = head
+    fast_ptr = head
+    
+    while fast_ptr is not None and fast_ptr.next is not None:
+        slow_ptr = slow_ptr.next
+        fast_ptr = fast_ptr.next.next
+    
+    return slow_ptr.data
+
+# Example of how to use it
+head = Node(1)
+head.next = Node(2)
+head.next.next = Node(3)
+head.next.next.next = Node(4)
+head.next.next.next.next = Node(5)
+
+print(find_middle_element(head))  # Output: 3
