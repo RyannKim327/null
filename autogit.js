@@ -1,39 +1,18 @@
-import heapq
+def depth_limited_search(root, depth_limit):
+    stack = [(root, 0)]
 
-def astar_search(graph, start, goal):
-    open_list = []
-    closed_set = set()
+    while stack:
+        node, depth = stack.pop()
 
-    # Priority queue for open list
-    heapq.heappush(open_list, (0, start))
-    
-    while open_list:
-        cost, current_node = heapq.heappop(open_list)
-        
-        if current_node == goal:
-            return path
-        
-        closed_set.add(current_node)
-        
-        for neighbor, weight in graph[current_node].items():
-            if neighbor not in closed_set:
-                heapq.heappush(open_list, (cost + weight, neighbor))
+        if depth > depth_limit:
+            continue
+
+        # Check if the node meets the search criteria
+        if node_is_goal(node):
+            return node
+
+        # Generate child nodes and add them to the stack
+        for child in generate_child_nodes(node):
+            stack.append((child, depth + 1))
 
     return None
-
-# Example usage
-graph = {
-    'A': {'B': 1, 'C': 4},
-    'B': {'D': 3, 'E': 2},
-    'C': {'F': 5},
-    'D': {'G': 1},
-    'E': {'G': 3},
-    'F': {'G': 2},
-    'G': {}
-}
-
-start = 'A'
-goal = 'G'
-
-result = astar_search(graph, start, goal)
-print(result)
