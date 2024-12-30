@@ -1,21 +1,27 @@
-def majority_element(arr):
-    counts = {}
-    for num in arr:
-        if num in counts:
-            counts[num] += 1
-        else:
-            counts[num] = 1
+class TreeNode:
+    def __init__(self, value=0, left=None, right=None):
+        self.value = value
+        self.left = left
+        self.right = right
 
-    majority_count = len(arr) // 2 + 1
-    for num, count in counts.items():
-        if count >= majority_count:
-            return num
-    return None
+def sum_of_nodes(root):
+    if root is None:
+        return 0
 
-# Example usage
-arr = [2, 2, 1, 1, 1, 2, 2]
-result = majority_element(arr)
-if result:
-    print(f"The majority element in the array is: {result}")
-else:
-    print("There is no majority element in the array.")
+    return root.value + sum_of_nodes(root.left) + sum_of_nodes(root.right)
+
+# Example binary tree
+#        1
+#       / \
+#      2   3
+#     / \
+#    4   5
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(5)
+
+# Calculate sum of all nodes
+total_sum = sum_of_nodes(root)
+print("Sum of all nodes in the binary tree:", total_sum)
