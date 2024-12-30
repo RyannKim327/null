@@ -1,33 +1,17 @@
-from collections import defaultdict
-
-def topologicalSortUtil(node, visited, stack, graph):
-    visited[node] = True
+def longest_common_prefix(strings):
+    if not strings:
+        return ""
     
-    for neighbor in graph[node]:
-        if not visited[neighbor]:
-            topologicalSortUtil(neighbor, visited, stack, graph)
+    prefix = strings[0]
     
-    stack.append(node)
-
-def topologicalSort(graph):
-    visited = {node: False for node in graph}
-    stack = []
+    for i in range(1, len(strings)):
+        while strings[i].find(prefix) != 0:
+            prefix = prefix[:-1]
+            if not prefix:
+                return ""
     
-    for node in graph:
-        if not visited[node]:
-            topologicalSortUtil(node, visited, stack, graph)
-    
-    stack.reverse()
-    return stack
+    return prefix
 
-# Example graph represented as an adjacency list
-graph = {
-    'A': ['C'],
-    'B': ['C', 'D'],
-    'C': ['E'],
-    'D': ['F'],
-    'E': [],
-    'F': []
-}
-
-print(topologicalSort(graph))
+# Example
+strings = ["flower", "flow", "flight"]
+print(longest_common_prefix(strings))  # Output: "fl"
