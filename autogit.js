@@ -1,11 +1,14 @@
-def remove_vowels(input_string):
-    vowels = "aeiouAEIOU"
-    output_string = ""
-    for char in input_string:
-        if char not in vowels:
-            output_string += char
-    return output_string
+import re
 
-input_string = "Hello, World!"
-result = remove_vowels(input_string)
-print(result)  # Output: "Hll, Wrld!"
+def validate_email(email):
+    pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    if re.match(pattern, email):
+        return True
+    else:
+        return False
+
+email = "example@example.com"
+if validate_email(email):
+    print("Email address is valid")
+else:
+    print("Email address is not valid")
