@@ -1,53 +1,36 @@
-def build_bad_char_table(pattern):
-    table = {}
-    for i in range(len(pattern)):
-        table[pattern[i]] = len(pattern) - i - 1
-    return table
+def merge_sort(arr):
+    if len(arr) <= 1:
+        return arr
 
-def build_good_suffix_table(pattern):
-    table = [0] * len(pattern)
-    i = len(pattern)
-    j = len(pattern) + 1
-    k = j
-    while i > 0:
-        while j <= len(pattern) and pattern[i - 1] != pattern[j - 1]:
-            if table[j - 1] == 0:
-                table[j - 1] = j - i
-            j = table[j - 1] + j
-        i -= 1
-        j = k - 1
-        k = j
-    j = 0
-    for i in range(len(pattern) - 1, -1, -1):
-        if table[i] == 0:
-            table[i] = j
-        if i == j:
-            j = j + 1
-    return table
+    mid = len(arr) // 2
+    left = arr[:mid]
+    right = arr[mid:]
 
-def boyer_moore(text, pattern):
-    bad_char_table = build_bad_char_table(pattern)
-    good_suffix_table = build_good_suffix_table(pattern)
-    i = len(pattern) - 1
-    while i < len(text):
-        j = len(pattern) - 1
-        while j >= 0 and text[i] == pattern[j]:
-            i -= 1
-            j -= 1
-        if j == -1:
-            return i + 1
-        bc = bad_char_table.get(text[i], len(pattern))
-        gs = good_suffix_table[j]
+    left = merge_sort(left)
+    right = merge_sort(right)
 
-        i += max(bc, gs)
-        
-    return -1
+    return merge(left, right)
 
-# Test the implementation
-text = "THIS IS A TEST TEXT"
-pattern = "TEST"
-result = boyer_moore(text, pattern)
-if result != -1:
-    print(f"Pattern found at index {result}")
-else:
-    print("Pattern not found in the text")
+
+def merge(left, right):
+    merged = []
+    left_idx = 0
+    right_idx = 0
+
+    while left_idx < len(left) and right_idx < len(right):
+        if left[left_idx] < right[right_idx]:
+            merged.append(left[left_idx])
+            left_idx += 1
+        else:
+            merged.append(right[right_idx])
+            right_idx += 1
+
+    merged += left[left_idx:]
+    merged += right[right_idx:]
+
+    return merged
+
+# Test the merge sort algorithm
+arr = [38, 27, 43, 3, 9, 82, 10]
+sorted_arr = merge_sort(arr)
+print(sorted_arr)
