@@ -1,32 +1,18 @@
-// Node definition
-class Node {
-    public int data;
-    public Node next;
+class ListNode:
+    def __init__(self, x):
+        self.val = x
+        self.next = None
 
-    public Node(int data) {
-        this.data = data;
-        this.next = null;
-    }
-}
+def getIntersectionNode(headA, headB):
+    if not headA or not headB:
+        return None
 
-// Function to find the nth node from the end of a linked list
-public Node findNthNodeFromEnd(Node head, int n) {
-    Node first = head;
-    Node second = head;
+    a, b = headA, headB
+    while a != b:
+        a = a.next if a else headB
+        b = b.next if b else headA
 
-    // Move the 'first' pointer to the n-th node from the beginning
-    for(int i = 0; i < n; i++) {
-        if(first == null) {
-            return null; // List size is less than n
-        }
-        first = first.next;
-    }
+        if a == b:
+            return a
 
-    // Move the 'first' and 'second' pointers simultaneously
-    while(first != null) {
-        first = first.next;
-        second = second.next;
-    }
-
-    return second;
-}
+    return None
