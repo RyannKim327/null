@@ -1,15 +1,19 @@
-int findSecondLargest(int arr[], int size) {
-    int largest = INT_MIN;
-    int secondLargest = INT_MIN;
+def is_palindrome(s):
+    # Convert the string to lowercase
+    s = s.lower()
     
-    for (int i = 0; i < size; i++) {
-        if (arr[i] > largest) {
-            secondLargest = largest;
-            largest = arr[i];
-        } else if (arr[i] > secondLargest && arr[i] != largest) {
-            secondLargest = arr[i];
-        }
-    }
+    # Remove spaces and special characters from the string
+    s = ''.join(e for e in s if e.isalnum())
     
-    return secondLargest;
-}
+    # Check if the string is a palindrome
+    for i in range(len(s) // 2):
+        if s[i] != s[len(s) - i - 1]:
+            return False
+    return True
+
+# Test the function
+string = "A man, a plan, a canal, Panama"
+if is_palindrome(string):
+    print("The string is a palindrome.")
+else:
+    print("The string is not a palindrome.")
