@@ -1,25 +1,32 @@
-class HashTable:
-    def __init__(self):
-        self.size = 10
-        self.table = [None] * self.size
+#include <iostream>
+using namespace std;
 
-    def hash_function(self, key):
-        return len(key) % self.size
+void bubbleSort(int arr[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
 
-    def put(self, key, value):
-        index = self.hash_function(key)
-        self.table[index] = value
-
-    def get(self, key):
-        index = self.hash_function(key)
-        return self.table[index]
-
-    def remove(self, key):
-        index = self.hash_function(key)
-        self.table[index] = None
-
-# Example usage
-hash_table = HashTable()
-hash_table.put("key1", "value1")
-print(hash_table.get("key1"))  # Output: "value1"
-hash_table.remove("key1")
+int main() {
+    int arr[] = {64, 34, 25, 12, 22, 11, 90};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    cout << "Array before sorting: ";
+    for (int i = 0; i < n; i++) {
+        cout << arr[i] << " ";
+    }
+    
+    bubbleSort(arr, n);
+    
+    cout << "\nArray after sorting: ";
+    for (int i = 0; i < n; i++) {
+        cout << arr[i] << " ";
+    }
+    
+    return 0;
+}
