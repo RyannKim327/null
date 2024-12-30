@@ -1,22 +1,13 @@
-def bubble_sort(arr):
-    n = len(arr)
+def are_anagrams(str1, str2):
+    str1_clean = ''.join(sorted(filter(str.isalnum, str1.lower())))
+    str2_clean = ''.join(sorted(filter(str.isalnum, str2.lower())))
     
-    for i in range(n):
-        # Flag to check if any swapping is done in this pass
-        swapped = False
-        
-        for j in range(0, n-i-1):
-            if arr[j] > arr[j+1]:
-                arr[j], arr[j+1] = arr[j+1], arr[j]
-                swapped = True
-                
-        # If no two elements were swapped in the inner loop, then the array is already sorted
-        if not swapped:
-            break
-            
-    return arr
+    return str1_clean == str2_clean
 
-# Example usage
-arr = [64, 34, 25, 12, 22, 11, 90]
-sorted_arr = bubble_sort(arr)
-print("Sorted array:", sorted_arr)
+# Test the function
+str1 = "Listen"
+str2 = "Silent"
+if are_anagrams(str1, str2):
+    print(f"{str1} and {str2} are anagrams.")
+else:
+    print(f"{str1} and {str2} are not anagrams.")
