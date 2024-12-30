@@ -1,8 +1,10 @@
-# Define a list of numbers
-numbers = [2, 4, 6, 8, 10]
+# Method 1: Using replace() function
+text = "  Hello,   World!  "
+cleaned_text = text.replace(" ", "")
+print(cleaned_text)
+import re
 
-# Calculate the mean
-mean = sum(numbers) / len(numbers)
-
-# Print the mean
-print("Mean:", mean)
+# Method 2: Using Regular Expressions
+text = "  Hello,   World!  "
+cleaned_text = re.sub(r'\s+', '', text)
+print(cleaned_text)
