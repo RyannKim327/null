@@ -1,29 +1,18 @@
-import heapq
+def reverse_array(arr):
+    left = 0
+    right = len(arr) - 1
+    
+    while left < right:
+        # Swap elements
+        arr[left], arr[right] = arr[right], arr[left]
+        
+        # Move pointers
+        left += 1
+        right -= 1
+    
+    return arr
 
-def dijkstra(graph, source):
-    distances = {node: float('infinity') for node in graph}
-    distances[source] = 0
-    queue = [(0, source)]
-    while queue:
-        current_distance, current_node = heapq.heappop(queue)
-        if current_distance > distances[current_node]:
-            continue
-        for neighbor, weight in graph[current_node].items():
-            distance = current_distance + weight
-            if distance < distances[neighbor]:
-                distances[neighbor] = distance
-                heapq.heappush(queue, (distance, neighbor))
-    return distances
-
-# Example usage
-graph = {
-    'A': {'B': 1, 'C': 4},
-    'B': {'A': 1, 'C': 2, 'D': 5},
-    'C': {'A': 4, 'B': 2, 'D': 1},
-    'D': {'B': 5, 'C': 1}
-}
-
-source_node = 'A'
-distances = dijkstra(graph, source_node)
-
-print(distances)
+# Test the function
+my_array = [1, 2, 3, 4, 5]
+reversed_array = reverse_array(my_array)
+print(reversed_array)
