@@ -1,22 +1,10 @@
-def binary_search_recursive(arr, target, low, high):
-    if low > high:
-        return -1
-    
-    mid = (low + high) // 2
-    
-    if arr[mid] == target:
-        return mid
-    elif arr[mid] > target:
-        return binary_search_recursive(arr, target, low, mid - 1)
-    else:
-        return binary_search_recursive(arr, target, mid + 1, high)
+def is_anagram(str1, str2):
+    return sorted(str1) == sorted(str2)
 
-# Example usage
-arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-target = 7
-result = binary_search_recursive(arr, target, 0, len(arr) - 1)
+str1 = "listen"
+str2 = "silent"
 
-if result != -1:
-    print(f'Target found at index {result}')
+if is_anagram(str1, str2):
+    print("The strings are anagrams.")
 else:
-    print('Target not found in the array')
+    print("The strings are not anagrams.")
