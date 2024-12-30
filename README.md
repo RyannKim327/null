@@ -3,4 +3,8 @@
 
 ---
 ### Introduction
-> This is just a dump project, nothing special here.
+> This is a automated process of Git commit contribution powered by github actions
+
+---
+### Credits
+1. Jay Patrick Cano
