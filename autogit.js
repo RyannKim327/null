@@ -1,7 +1,12 @@
-# Creating an array with duplicate elements
-my_array = [1, 2, 3, 4, 2, 3, 5]
+def calculate_mean(numbers):
+    total = sum(numbers)
+    mean = total / len(numbers)
+    return mean
 
-# Removing duplicates
-my_array = list(set(my_array))
+# Example list of numbers
+numbers = [1, 2, 3, 4, 5]
 
-print(my_array)
+# Calculate the mean
+mean = calculate_mean(numbers)
+
+print("Mean:", mean)
