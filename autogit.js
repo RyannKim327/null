@@ -1,38 +1,29 @@
-class TreeNode:
-    def __init__(self, value=0, left=None, right=None):
-        self.value = value
-        self.left = left
-        self.right = right
+s = "123"  # your string
+num = int(s)  # convert string to integer
+print(num)
+String s = "123";  // your string
+int num = Integer.parseInt(s);  // convert string to integer
+System.out.println(num);
+var s = "123";  // your string
+var num = parseInt(s);  // convert string to integer
+console.log(num);
+#include <iostream>
+#include <string>
+#include <sstream>
 
-def diameter_of_binary_tree(root):
-    if not root:
-        return 0
+int main() {
+    std::string s = "123";  // your string
+    int num;
+    std::istringstream(s) >> num;  // convert string to integer
+    std::cout << num << std::endl;
+    return 0;
+}
+using System;
 
-    def height(node):
-        if not node:
-            return 0
-        left_height = height(node.left)
-        right_height = height(node.right)
-        return 1 + max(left_height, right_height)
-
-    def diameter_helper(node):
-        if not node:
-            return 0
-        left_height = height(node.left)
-        right_height = height(node.right)
-        
-        left_diameter = diameter_helper(node.left)
-        right_diameter = diameter_helper(node.right)
-        
-        return max(left_height + right_height, max(left_diameter, right_diameter))
-    
-    return diameter_helper(root)
-
-# Example usage
-root = TreeNode(1)
-root.left = TreeNode(2)
-root.right = TreeNode(3)
-root.left.left = TreeNode(4)
-root.left.right = TreeNode(5)
-
-print(diameter_of_binary_tree(root))  # Output: 4
+class MainClass {
+    public static void Main (string[] args) {
+        string s = "123";  // your string
+        int num = Convert.ToInt32(s);  // convert string to integer
+        Console.WriteLine(num);
+    }
+}
