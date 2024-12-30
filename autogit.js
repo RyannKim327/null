@@ -1,12 +1,21 @@
-import schedule
-import time
+def majority_element(arr):
+    counts = {}
+    for num in arr:
+        if num in counts:
+            counts[num] += 1
+        else:
+            counts[num] = 1
 
-def job():
-    print("This job is executed every minute")
+    majority_count = len(arr) // 2 + 1
+    for num, count in counts.items():
+        if count >= majority_count:
+            return num
+    return None
 
-# Schedule a job to run every minute
-schedule.every().minute.do(job)
-
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+# Example usage
+arr = [2, 2, 1, 1, 1, 2, 2]
+result = majority_element(arr)
+if result:
+    print(f"The majority element in the array is: {result}")
+else:
+    print("There is no majority element in the array.")
