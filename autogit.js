@@ -1,20 +1,18 @@
-def are_anagrams(str1, str2):
-    # Remove spaces and convert to lowercase
-    str1 = str1.replace(" ", "").lower()
-    str2 = str2.replace(" ", "").lower()
+import math
 
-    # Check if lengths are different
-    if len(str1) != len(str2):
-        return False
+# Calculate the factorial of a number
+num = 5
+factorial = math.factorial(num)
 
-    # Sort the characters in both strings and compare
-    return sorted(str1) == sorted(str2)
+print(f'The factorial of {num} is: {factorial}')
+# Custom function to calculate the factorial of a number
+def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)
 
-# Test the function
-string1 = "Listen"
-string2 = "Silent"
+num = 5
+result = factorial(num)
 
-if are_anagrams(string1, string2):
-    print("The strings are anagrams.")
-else:
-    print("The strings are not anagrams.")
+print(f'The factorial of {num} is: {result}')
