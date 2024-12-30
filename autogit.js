@@ -1,29 +1,21 @@
-s = "123"  # your string
-num = int(s)  # convert string to integer
-print(num)
-String s = "123";  // your string
-int num = Integer.parseInt(s);  // convert string to integer
-System.out.println(num);
-var s = "123";  // your string
-var num = parseInt(s);  // convert string to integer
-console.log(num);
-#include <iostream>
-#include <string>
-#include <sstream>
+class TreeNode:
+    value
+    left
+    right
 
-int main() {
-    std::string s = "123";  // your string
-    int num;
-    std::istringstream(s) >> num;  // convert string to integer
-    std::cout << num << std::endl;
-    return 0;
-}
-using System;
+function findSumOfNodes(node):
+    if node is null:
+        return 0
+    
+    sum = node.value + findSumOfNodes(node.left) + findSumOfNodes(node.right)
+    return sum
 
-class MainClass {
-    public static void Main (string[] args) {
-        string s = "123";  // your string
-        int num = Convert.ToInt32(s);  // convert string to integer
-        Console.WriteLine(num);
-    }
-}
+# Example usage
+root = new TreeNode(1)
+root.left = new TreeNode(2)
+root.right = new TreeNode(3)
+root.left.left = new TreeNode(4)
+root.left.right = new TreeNode(5)
+
+totalSum = findSumOfNodes(root)
+print(totalSum)
