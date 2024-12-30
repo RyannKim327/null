@@ -1,53 +1,12 @@
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.next = None
+import schedule
+import time
 
-class Queue:
-    def __init__(self):
-        self.front = None
-        self.rear = None
+def job():
+    print("This job is executed every minute")
 
-    def enqueue(self, data):
-        new_node = Node(data)
-        
-        if not self.rear:
-            self.front = new_node
-            self.rear = new_node
-        else:
-            self.rear.next = new_node
-            self.rear = new_node
+# Schedule a job to run every minute
+schedule.every().minute.do(job)
 
-    def dequeue(self):
-        if not self.front:
-            print("Queue is empty.")
-            return None
-
-        temp = self.front
-        self.front = self.front.next
-        if not self.front:
-            self.rear = None
-
-        return temp.data
-
-    def is_empty(self):
-        return self.front is None
-
-    def print_queue(self):
-        current = self.front
-        while current:
-            print(current.data, end=" ")
-            current = current.next
-        print()
-
-# Usage example
-queue = Queue()
-queue.enqueue(1)
-queue.enqueue(2)
-queue.enqueue(3)
-queue.print_queue()
-
-print(queue.dequeue())
-print(queue.dequeue())
-
-queue.print_queue()
+while True:
+    schedule.run_pending()
+    time.sleep(1)
