@@ -1,53 +1,25 @@
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.next = None
+class TreeNode:
+    def __init__(self, value=0, left=None, right=None):
+        self.value = value
+        self.left = left
+        self.right = right
 
-class LinkedList:
-    def __init__(self):
-        self.head = None
+def sum_of_all_nodes(root):
+    if root is None:
+        return 0
 
-    def reverse(self):
-        prev = None
-        current = self.head
+    return root.value + sum_of_all_nodes(root.left) + sum_of_all_nodes(root.right)
 
-        while current is not None:
-            next_node = current.next
-            current.next = prev
-            prev = current
-            current = next_node
+# Example usage:
+# Construct a binary tree
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(5)
+root.right.left = TreeNode(6)
+root.right.right = TreeNode(7)
 
-        self.head = prev
-
-    def append(self, data):
-        new_node = Node(data)
-        if self.head is None:
-            self.head = new_node
-            return
-        last = self.head
-        while last.next:
-            last = last.next
-        last.next = new_node
-
-    def print_list(self):
-        temp = self.head
-        while temp:
-            print(temp.data, end=" ")
-            temp = temp.next
-        print()
-
-# Create a sample linked list
-llist = LinkedList()
-llist.append(1)
-llist.append(2)
-llist.append(3)
-llist.append(4)
-
-print("Original Linked List:")
-llist.print_list()
-
-# Reverse the linked list
-llist.reverse()
-
-print("Reversed Linked List:")
-llist.print_list()
+# Calculate the sum of all nodes
+result = sum_of_all_nodes(root)
+print("Sum of all nodes in the binary tree:", result)
