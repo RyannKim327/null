@@ -1,19 +1,20 @@
-string_value = "42"
-integer_value = int(string_value)
-print(integer_value)
-let stringValue = "42";
-let intValue = parseInt(stringValue);
-console.log(intValue);
-String stringValue = "42";
-int intValue = Integer.parseInt(stringValue);
-System.out.println(intValue);
-#include <iostream>
-#include <string>
-using namespace std;
+def are_anagrams(str1, str2):
+    # Remove spaces and convert to lowercase
+    str1 = str1.replace(" ", "").lower()
+    str2 = str2.replace(" ", "").lower()
 
-int main() {
-    string stringValue = "42";
-    int intValue = stoi(stringValue);
-    cout << intValue << endl;
-    return 0;
-}
+    # Check if lengths are different
+    if len(str1) != len(str2):
+        return False
+
+    # Sort the characters in both strings and compare
+    return sorted(str1) == sorted(str2)
+
+# Test the function
+string1 = "Listen"
+string2 = "Silent"
+
+if are_anagrams(string1, string2):
+    print("The strings are anagrams.")
+else:
+    print("The strings are not anagrams.")
