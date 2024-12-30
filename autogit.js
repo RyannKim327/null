@@ -1,18 +1,34 @@
 import heapq
 
-def find_kth_smallest(arr, k):
-    # Create a min-heap using the elements of the array
-    heap = arr[:]
-    heapq.heapify(heap)
+def dijkstra(graph, start):
+    pq = []
+    distances = {vertex: float('infinity') for vertex in graph}
+    distances[start] = 0
+    heapq.heappush(pq, (0, start))
 
-    # Pop elements from the heap until the kth smallest element is reached
-    for _ in range(k):
-        result = heapq.heappop(heap)
+    while pq:
+        current_dist, current_vertex = heapq.heappop(pq)
 
-    return result
+        if current_dist > distances[current_vertex]:
+            continue
 
-# Example usage
-arr = [7, 10, 4, 3, 20, 15]
-k = 3
-kth_smallest = find_kth_smallest(arr, k)
-print(f"The {k}th smallest element in the array is: {kth_smallest}")
+        for neighbor, weight in graph[current_vertex].items():
+            distance = current_dist + weight
+
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                heapq.heappush(pq, (distance, neighbor))
+
+    return distances
+
+# Example graph representation
+graph = {
+    'A': {'B': 5, 'C': 3},
+    'B': {'A': 5, 'C': 1, 'D': 2},
+    'C': {'A': 3, 'B': 1, 'D': 4},
+    'D': {'B': 2, 'C': 4}
+}
+
+start_vertex = 'A'
+shortest_distances = dijkstra(graph, start_vertex)
+print(shortest_distances)
