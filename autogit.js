@@ -1,18 +1,43 @@
-def depth_limited_search(root, depth_limit):
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.children = []
+
+def depth_limited_search(root, goal, depth_limit):
+    if root is None:
+        return False
+
     stack = [(root, 0)]
 
     while stack:
         node, depth = stack.pop()
 
-        if depth > depth_limit:
-            continue
+        if node.value == goal:
+            return True
 
-        # Check if the node meets the search criteria
-        if node_is_goal(node):
-            return node
+        if depth < depth_limit:
+            for child in node.children:
+                stack.append((child, depth + 1))
 
-        # Generate child nodes and add them to the stack
-        for child in generate_child_nodes(node):
-            stack.append((child, depth + 1))
+    return False
 
-    return None
+# Example usage
+# Create a tree structure
+root = Node(1)
+node2 = Node(2)
+node3 = Node(3)
+node4 = Node(4)
+node5 = Node(5)
+
+root.children = [node2, node3]
+node2.children = [node4, node5]
+
+# Run depth-limited search
+goal = 4
+depth_limit = 2
+result = depth_limited_search(root, goal, depth_limit)
+
+if result:
+    print(f"Goal {goal} found within depth limit {depth_limit}.")
+else:
+    print(f"Goal {goal} not found within depth limit {depth_limit}.")
