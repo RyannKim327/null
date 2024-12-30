@@ -1,36 +1,34 @@
-def merge_sort(arr):
-    if len(arr) > 1:
-        mid = len(arr) // 2
-        left_half = arr[:mid]
-        right_half = arr[mid:]
+class Node:
+    def __init__(self, data=None):
+        self.data = data
+        self.next = None
 
-        merge_sort(left_half)
-        merge_sort(right_half)
+class LinkedList:
+    def __init__(self):
+        self.head = None
 
-        i = j = k = 0
+    def append(self, data):
+        new_node = Node(data)
+        if self.head is None:
+            self.head = new_node
+            return
+        last = self.head
+        while last.next:
+            last = last.next
+        last.next = new_node
 
-        while i < len(left_half) and j < len(right_half):
-            if left_half[i] < right_half[j]:
-                arr[k] = left_half[i]
-                i += 1
-            else:
-                arr[k] = right_half[j]
-                j += 1
-            k += 1
+    def get_length(self):
+        current = self.head
+        count = 0
+        while current:
+            count += 1
+            current = current.next
+        return count
 
-        while i < len(left_half):
-            arr[k] = left_half[i]
-            i += 1
-            k += 1
+# Example
+llist = LinkedList()
+llist.append(1)
+llist.append(2)
+llist.append(3)
 
-        while j < len(right_half):
-            arr[k] = right_half[j]
-            j += 1
-            k += 1
-
-    return arr
-
-# Example usage
-arr = [38, 27, 43, 3, 9, 82, 10]
-sorted_arr = merge_sort(arr)
-print(sorted_arr)
+print("Length of linked list:", llist.get_length())
