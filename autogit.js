@@ -1,10 +1,32 @@
-def mean(numbers):
-    return sum(numbers) / len(numbers)
+// Node definition
+class Node {
+    public int data;
+    public Node next;
 
-# Example list of numbers
-numbers = [1, 2, 3, 4, 5]
+    public Node(int data) {
+        this.data = data;
+        this.next = null;
+    }
+}
 
-# Calculate the mean
-mean_value = mean(numbers)
+// Function to find the nth node from the end of a linked list
+public Node findNthNodeFromEnd(Node head, int n) {
+    Node first = head;
+    Node second = head;
 
-print("Mean:", mean_value)
+    // Move the 'first' pointer to the n-th node from the beginning
+    for(int i = 0; i < n; i++) {
+        if(first == null) {
+            return null; // List size is less than n
+        }
+        first = first.next;
+    }
+
+    // Move the 'first' and 'second' pointers simultaneously
+    while(first != null) {
+        first = first.next;
+        second = second.next;
+    }
+
+    return second;
+}
