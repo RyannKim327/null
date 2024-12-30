@@ -1,16 +1,18 @@
-import math
+// Node definition
+struct Node {
+    int data;
+    struct Node* next;
+};
 
-def is_prime(number):
-    if number < 2:
-        return False
-    for i in range(2, int(math.sqrt(number)) + 1):
-        if number % i == 0:
-            return False
-    return True
+// Function to find the length of a linked list
+int findLinkedListLength(struct Node* head) {
+    int length = 0;
+    struct Node* current = head;
 
-number = 23
+    while (current != NULL) {
+        length++;
+        current = current->next;
+    }
 
-if is_prime(number):
-    print(number, "is a prime number")
-else:
-    print(number, "is not a prime number")
+    return length;
+}
