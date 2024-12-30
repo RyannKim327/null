@@ -1,48 +1,42 @@
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.next = None
+import android.os.AsyncTask;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.io.IOException;
 
-class LinkedList:
-    def __init__(self):
-        self.head = None
+public class ConnectTask extends AsyncTask<String, Void, String> {
 
-    def append(self, data):
-        new_node = Node(data)
-        if self.head is None:
-            self.head = new_node
-            return
-        last_node = self.head
-        while last_node.next:
-            last_node = last_node.next
-        last_node.next = new_node
+    @Override
+    protected String doInBackground(String... params) {
+        String url = params[0];
+        HttpURLConnection urlConnection = null;
+        StringBuilder result = new StringBuilder();
 
-    def find_nth_from_end(self, n):
-        length = 0
-        current = self.head
-        while current:
-            length += 1
-            current = current.next
+        try {
+            URL urlObject = new URL(url);
+            urlConnection = (HttpURLConnection) urlObject.openConnection();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
 
-        if n > length:
-            return None
+            String line;
+            while ((line = reader.readLine()) != null) {
+                result.append(line);
+            }
 
-        target = length - n
-        current = self.head
-        for i in range(target):
-            current = current.next
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+        }
 
-        return current.data
+        return result.toString();
+    }
 
-# Create a linked list
-llist = LinkedList()
-llist.append(1)
-llist.append(2)
-llist.append(3)
-llist.append(4)
-llist.append(5)
-
-# Find the 2nd node from the end
-n = 2
-result = llist.find_nth_from_end(n)
-print(f'The {n}th node from the end is {result}')
+    @Override
+    protected void onPostExecute(String result) {
+        // Handle the result from the server here
+        // This method is executed on the main UI thread after the asynchronous task is completed
+    }
+}
