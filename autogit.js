@@ -1,40 +1,24 @@
-import android.os.AsyncTask;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+def binary_search(arr, target):
+    low = 0
+    high = len(arr) - 1
 
-public class MyAsyncTask extends AsyncTask<String, Void, String> {
+    while low <= high:
+        mid = (low + high) // 2
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] < target:
+            low = mid + 1
+        else:
+            high = mid - 1
 
-    @Override
-    protected String doInBackground(String... params) {
-        try {
-            URL url = new URL(params[0]);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.connect();
+    return -1  # Target not found
 
-            // Read the response
-            InputStream inputStream = connection.getInputStream();
-            StringBuilder response = new StringBuilder();
-            int data;
-            while ((data = inputStream.read()) != -1) {
-                response.append((char) data);
-            }
+# Example usage
+arr = [2, 4, 6, 8, 10, 12, 14, 16]
+target = 10
+result = binary_search(arr, target)
 
-            return response.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
-    protected void onPostExecute(String result) {
-        if (result != null) {
-            // Handle the result
-        } else {
-            // Handle the error
-        }
-    }
-}
+if result != -1:
+    print(f"Target element found at index {result}")
+else:
+    print("Target element not found in the list")
