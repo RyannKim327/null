@@ -1,17 +1,12 @@
-#include <iostream>
+def largest_prime_factor(n):
+    i = 2
+    while i * i <= n:
+        if n % i:
+            i += 1
+        else:
+            n //= i
+    return n
 
-int factorial(int n) {
-    if (n == 0) {
-        return 1;
-    } else {
-        return n * factorial(n - 1);
-    }
-}
-
-int main() {
-    int n;
-    std::cout << "Enter a number: ";
-    std::cin >> n;
-    std::cout << "Factorial of " << n << " is " << factorial(n) << std::endl;
-    return 0;
-}
+number = 315
+result = largest_prime_factor(number)
+print("The largest prime factor of", number, "is:", result)
