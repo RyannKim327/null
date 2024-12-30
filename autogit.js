@@ -1,14 +1,30 @@
-import re
+from collections import deque
 
-def validate_email(email):
-    pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
-    if re.match(pattern, email):
-        return True
-    else:
-        return False
+def bfs(graph, start_node):
+    visited = set()
+    queue = deque([start_node])
 
-email = "example@example.com"
-if validate_email(email):
-    print("Email address is valid")
-else:
-    print("Email address is not valid")
+    while queue:
+        node = queue.popleft()
+        if node not in visited:
+            visited.add(node)
+            print(node)
+
+            for neighbor in graph[node]:
+                if neighbor not in visited:
+                    queue.append(neighbor)
+
+# Example graph in the form of an adjacency list
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
+
+# Starting node
+start_node = 'A'
+
+bfs(graph, start_node)
