@@ -1,11 +1,11 @@
-def count_char_occurrences(input_string, char):
-    count = 0
-    for c in input_string:
-        if c == char:
-            count += 1
-    return count
+from cron import Cron
 
-# Test the function
-input_string = "hello, world!"
-char = "o"
-print(f"The character '{char}' occurs {count_char_occurrences(input_string, char)} times in the string.")
+def my_task():
+    print("Executing my task")
+
+# Define a cron schedule to run the task every minute
+cron = Cron()
+cron.schedule("*/1 * * * *", my_task)
+
+# Run the cron job
+cron.run_forever()
