@@ -1,18 +1,11 @@
-import math
+def remove_vowels(input_string):
+    vowels = "aeiouAEIOU"
+    output_string = ""
+    for char in input_string:
+        if char not in vowels:
+            output_string += char
+    return output_string
 
-# Calculate the factorial of a number
-num = 5
-factorial = math.factorial(num)
-
-print(f'The factorial of {num} is: {factorial}')
-# Custom function to calculate the factorial of a number
-def factorial(n):
-    if n == 0:
-        return 1
-    else:
-        return n * factorial(n-1)
-
-num = 5
-result = factorial(num)
-
-print(f'The factorial of {num} is: {result}')
+input_string = "Hello, World!"
+result = remove_vowels(input_string)
+print(result)  # Output: "Hll, Wrld!"
