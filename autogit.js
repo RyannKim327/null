@@ -1,42 +1,53 @@
-def preprocess(pattern):
-    M = len(pattern)
-    lps = [0] * M
-    i, j = 1, 0
+def build_bad_char_table(pattern):
+    table = {}
+    for i in range(len(pattern)):
+        table[pattern[i]] = len(pattern) - i - 1
+    return table
 
-    while i < M:
-        if pattern[i] == pattern[j]:
-            j += 1
-            lps[i] = j
-            i += 1
-        else:
-            if j != 0:
-                j = lps[j - 1]
-            else:
-                lps[i] = 0
-                i += 1
+def build_good_suffix_table(pattern):
+    table = [0] * len(pattern)
+    i = len(pattern)
+    j = len(pattern) + 1
+    k = j
+    while i > 0:
+        while j <= len(pattern) and pattern[i - 1] != pattern[j - 1]:
+            if table[j - 1] == 0:
+                table[j - 1] = j - i
+            j = table[j - 1] + j
+        i -= 1
+        j = k - 1
+        k = j
+    j = 0
+    for i in range(len(pattern) - 1, -1, -1):
+        if table[i] == 0:
+            table[i] = j
+        if i == j:
+            j = j + 1
+    return table
 
-    return lps
+def boyer_moore(text, pattern):
+    bad_char_table = build_bad_char_table(pattern)
+    good_suffix_table = build_good_suffix_table(pattern)
+    i = len(pattern) - 1
+    while i < len(text):
+        j = len(pattern) - 1
+        while j >= 0 and text[i] == pattern[j]:
+            i -= 1
+            j -= 1
+        if j == -1:
+            return i + 1
+        bc = bad_char_table.get(text[i], len(pattern))
+        gs = good_suffix_table[j]
 
-def kmp_search(text, pattern):
-    N, M = len(text), len(pattern)
-    lps = preprocess(pattern)
-    i, j = 0, 0
+        i += max(bc, gs)
+        
+    return -1
 
-    while i < N:
-        if text[i] == pattern[j]:
-            i += 1
-            j += 1
-
-            if j == M:
-                print("Pattern found at index", i - j)
-                j = lps[j - 1]
-        else:
-            if j != 0:
-                j = lps[j - 1]
-            else:
-                i += 1
-
-# Test the KMP algorithm
-text = "ABABDABACDABABCABAB"
-pattern = "ABABCABAB"
-kmp_search(text, pattern)
+# Test the implementation
+text = "THIS IS A TEST TEXT"
+pattern = "TEST"
+result = boyer_moore(text, pattern)
+if result != -1:
+    print(f"Pattern found at index {result}")
+else:
+    print("Pattern not found in the text")
