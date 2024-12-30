@@ -1,103 +1,34 @@
-class AVLNode:
-    def __init__(self, key):
-        self.key = key
-        self.left = None
-        self.right = None
-        self.height = 1
+def precompute_table(pattern):
+    table = {}
+    skip = len(pattern) - 1
+    for i in range(len(pattern) - 1):
+        table[pattern[i]] = skip
+    return table
 
-class AVLTree:
-    def __init__(self):
-        self.root = None
+def boyer_moore_horspool(text, pattern):
+    n = len(text)
+    m = len(pattern)
+    if m == 0:
+        return 0
 
-    def height(self, node):
-        if not node:
-            return 0
-        return node.height
-
-    def update_height(self, node):
-        node.height = 1 + max(self.height(node.left), self.height(node.right))
-
-    def balance_factor(self, node):
-        if not node:
-            return 0
-        return self.height(node.left) - self.height(node.right)
-
-    def rotate_right(self, y):
-        x = y.left
-        T = x.right
-
-        x.right = y
-        y.left = T
-
-        self.update_height(y)
-        self.update_height(x)
-
-        return x
-
-    def rotate_left(self, x):
-        y = x.right
-        T = y.left
-
-        y.left = x
-        x.right = T
-
-        self.update_height(x)
-        self.update_height(y)
-
-        return y
-
-    def insert(self, node, key):
-        if not node:
-            return AVLNode(key)
-        
-        if key < node.key:
-            node.left = self.insert(node.left, key)
+    table = precompute_table(pattern)
+    i = m - 1
+    while i < n:
+        k = 0
+        while k < m and pattern[m - 1 - k] == text[i - k]:
+            k += 1
+        if k == m:
+            return i - m + 1
+        if text[i] in table:
+            i += table[text[i]]
         else:
-            node.right = self.insert(node.right, key)
-        
-        self.update_height(node)
+            i += m
+    return -1
 
-        balance = self.balance_factor(node)
-        
-        if balance > 1:
-            if key < node.left.key:
-                return self.rotate_right(node)
-            else:
-                node.left = self.rotate_left(node.left)
-                return self.rotate_right(node)
-        
-        if balance < -1:
-            if key > node.right.key:
-                return self.rotate_left(node)
-            else:
-                node.right = self.rotate_right(node.right)
-                return self.rotate_left(node)
-        
-        return node
-
-    def insert_key(self, key):
-        self.root = self.insert(self.root, key)
-
-    def pre_order_traversal(self, node):
-        if node:
-            print(node.key, end=' ')
-            self.pre_order_traversal(node.left)
-            self.pre_order_traversal(node.right)
-
-    def inorder_traversal(self, node):
-        if node:
-            self.inorder_traversal(node.left)
-            print(node.key, end=' ')
-            self.inorder_traversal(node.right)
-
-avl_tree = AVLTree()
-avl_tree.insert_key(10)
-avl_tree.insert_key(20)
-avl_tree.insert_key(15)
-
-print("Pre-order traversal of the AVL tree:")
-avl_tree.pre_order_traversal(avl_tree.root)
-print()
-
-print("Inorder traversal of the AVL tree:")
-avl_tree.inorder_traversal(avl_tree.root)
+text = "ABAAABCD"
+pattern = "ABC"
+index = boyer_moore_horspool(text, pattern)
+if index != -1:
+    print("Pattern found at index:", index)
+else:
+    print("Pattern not found")
