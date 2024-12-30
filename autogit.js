@@ -1,27 +1,25 @@
-def depth_limited_search(node, goal, depth_limit):
-    if node == goal:
-        return [node]
-    if depth_limit == 0:
-        return None
+def binary_search(arr, target):
+    low = 0
+    high = len(arr) - 1
 
-    for child in get_children(node):
-        result = depth_limited_search(child, goal, depth_limit - 1)
-        if result:
-            return [node] + result
+    while low <= high:
+        mid = (low + high) // 2
+        mid_val = arr[mid]
 
-    return None
+        if mid_val == target:
+            return mid
+        elif mid_val < target:
+            low = mid + 1
+        else:
+            high = mid - 1
 
-def get_children(node):
-    # Your function to get the children of a node goes here
-    pass
+    return -1
 
-# Example usage
-start_node = 'A'
-goal_node = 'D'
-depth_limit = 3
-result = depth_limited_search(start_node, goal_node, depth_limit)
-
-if result:
-    print("Path found:", result)
+# Example Usage
+arr = [1, 3, 5, 7, 9, 11, 13, 15]
+target = 9
+result = binary_search(arr, target)
+if result != -1:
+    print(f"Element found at index {result}")
 else:
-    print("Path not found within depth limit.")
+    print("Element not found")
