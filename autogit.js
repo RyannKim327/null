@@ -1,30 +1,36 @@
-from collections import deque
+class Node:
+    def __init__(self, data=None):
+        self.data = data
+        self.next = None
 
-def bfs(graph, start_node):
-    visited = set()
-    queue = deque([start_node])
+class LinkedList:
+    def __init__(self):
+        self.head = None
 
-    while queue:
-        node = queue.popleft()
-        if node not in visited:
-            visited.add(node)
-            print(node)
+    def append(self, data):
+        new_node = Node(data)
+        if self.head is None:
+            self.head = new_node
+            return
+        last_node = self.head
+        while last_node.next:
+            last_node = last_node.next
+        last_node.next = new_node
 
-            for neighbor in graph[node]:
-                if neighbor not in visited:
-                    queue.append(neighbor)
+    def length(self):
+        current = self.head
+        count = 0
+        while current:
+            count += 1
+            current = current.next
+        return count
 
-# Example graph in the form of an adjacency list
-graph = {
-    'A': ['B', 'C'],
-    'B': ['A', 'D', 'E'],
-    'C': ['A', 'F'],
-    'D': ['B'],
-    'E': ['B', 'F'],
-    'F': ['C', 'E']
-}
+# Creating a linked list
+llist = LinkedList()
+llist.append(1)
+llist.append(2)
+llist.append(3)
+llist.append(4)
+llist.append(5)
 
-# Starting node
-start_node = 'A'
-
-bfs(graph, start_node)
+print("Length of the linked list is:", llist.length())
