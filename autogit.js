@@ -1,14 +1,28 @@
-def is_prime(num):
-    if num <= 1:
-        return False
-    for i in range(2, int(num ** 0.5) + 1):
-        if num % i == 0:
-            return False
-    return True
+function longestCommonPrefix(strings) {
+    if (strings.length == 0) {
+        return "";
+    }
+    
+    let prefix = strings[0];
+    
+    for (let i = 1; i < strings.length; i++) {
+        let currentString = strings[i];
+        let j = 0;
+        
+        while (j < prefix.length && j < currentString.length && prefix[j] == currentString[j]) {
+            j++;
+        }
+        
+        prefix = prefix.slice(0, j);
+        
+        if (prefix === "") {
+            break; // No common prefix
+        }
+    }
+    
+    return prefix;
+}
 
-# Test the function
-num = 17
-if is_prime(num):
-    print(f"{num} is a prime number")
-else:
-    print(f"{num} is not a prime number")
+let strings = ["apple", "apply", "appreciate"];
+let result = longestCommonPrefix(strings);
+console.log(result); // Output: "app"
