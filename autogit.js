@@ -1,27 +1,16 @@
-def burrows_wheeler_transform(text):
-    text += '$'  # Add a unique delimiter symbol
-    rotations = [text[i:] + text[:i] for i in range(len(text))]  # Generate cyclic rotations of the text
-    sorted_rotations = sorted(rotations)  # Sort the cyclic rotations lexicographically
-    bwt = ''.join(rotation[-1] for rotation in sorted_rotations)  # Take the last character of each sorted rotation
-    return bwt
+# Define an array of integers
+arr = [5, 2, 8, 1, 3]
 
-def inverse_burrows_wheeler_transform(bwt):
-    table = sorted(bwt)
-    first_column = [char for char in bwt]
-    next_column = [None] * len(bwt)
+# Sort the array
+arr.sort()
 
-    for i in range(len(bwt)):
-        # Create the next column based on the previous column
-        next_column = sorted([char + next_char for char, next_char in zip(first_column, next_column)])
+# Print the sorted array
+print(arr)
+# Define an array of integers
+arr = [5, 2, 8, 1, 3]
 
-    last_column = next_column[table.index('$')]  # Find the original string
-    return last_column[:-1]  # Remove the delimiter
+# Create a new sorted array
+sorted_arr = sorted(arr)
 
-
-# Example usage
-text = "banana"
-bwt_text = burrows_wheeler_transform(text)
-print("Burrows-Wheeler Transform:", bwt_text)
-
-original_text = inverse_burrows_wheeler_transform(bwt_text)
-print("Original Text:", original_text)
+# Print the sorted array
+print(sorted_arr)
