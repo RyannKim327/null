@@ -1,8 +1,25 @@
-// Define an array of integers
-const numbers = [4, 2, 7, 1, 5];
+class HashTable:
+    def __init__(self):
+        self.size = 10
+        self.table = [None] * self.size
 
-// Sort the array in ascending order
-numbers.sort((a, b) => a - b);
+    def hash_function(self, key):
+        return len(key) % self.size
 
-// Print the sorted array
-console.log(numbers);
+    def put(self, key, value):
+        index = self.hash_function(key)
+        self.table[index] = value
+
+    def get(self, key):
+        index = self.hash_function(key)
+        return self.table[index]
+
+    def remove(self, key):
+        index = self.hash_function(key)
+        self.table[index] = None
+
+# Example usage
+hash_table = HashTable()
+hash_table.put("key1", "value1")
+print(hash_table.get("key1"))  # Output: "value1"
+hash_table.remove("key1")
