@@ -1,32 +1,21 @@
-#include <iostream>
-using namespace std;
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
 
-void bubbleSort(int arr[], int n) {
-    for (int i = 0; i < n - 1; i++) {
-        for (int j = 0; j < n - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                int temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
-        }
-    }
-}
+def find_nth_from_end(head, n):
+    ptr1 = head
+    ptr2 = head
 
-int main() {
-    int arr[] = {64, 34, 25, 12, 22, 11, 90};
-    int n = sizeof(arr) / sizeof(arr[0]);
-    cout << "Array before sorting: ";
-    for (int i = 0; i < n; i++) {
-        cout << arr[i] << " ";
-    }
-    
-    bubbleSort(arr, n);
-    
-    cout << "\nArray after sorting: ";
-    for (int i = 0; i < n; i++) {
-        cout << arr[i] << " ";
-    }
-    
-    return 0;
-}
+    # Move ptr2 to the nth node from beginning
+    for _ in range(n):
+        if ptr2 is None:
+            return None
+        ptr2 = ptr2.next
+
+    # Move ptr1 and ptr2 simultaneously until ptr2 reaches the end
+    while ptr2 is not None:
+        ptr1 = ptr1.next
+        ptr2 = ptr2.next
+
+    return ptr1
