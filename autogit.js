@@ -1,25 +1,36 @@
-class TreeNode:
-    def __init__(self, value=0, left=None, right=None):
-        self.value = value
-        self.left = left
-        self.right = right
-
-def sum_of_all_nodes(root):
-    if root is None:
+def boyer_moore_search(text, pattern):
+    m = len(pattern)
+    n = len(text)
+    if m == 0:
         return 0
+    
+    last_occurrence = {}
+    for i in range(m):
+        last_occurrence[pattern[i]] = i
+    
+    i = m - 1
+    j = m - 1
+    while i < n:
+        if text[i] == pattern[j]:
+            if j == 0:
+                return i
+            else:
+                i -= 1
+                j -= 1
+        else:
+            if text[i] in last_occurrence:
+                lo = last_occurrence[text[i]]
+            else:
+                lo = -1
+            i = i + m - min(j, 1 + lo)
+            j = m - 1
+    
+    return -1
 
-    return root.value + sum_of_all_nodes(root.left) + sum_of_all_nodes(root.right)
-
-# Example usage:
-# Construct a binary tree
-root = TreeNode(1)
-root.left = TreeNode(2)
-root.right = TreeNode(3)
-root.left.left = TreeNode(4)
-root.left.right = TreeNode(5)
-root.right.left = TreeNode(6)
-root.right.right = TreeNode(7)
-
-# Calculate the sum of all nodes
-result = sum_of_all_nodes(root)
-print("Sum of all nodes in the binary tree:", result)
+text = "hello world"
+pattern = "world"
+result = boyer_moore_search(text, pattern)
+if result != -1:
+    print(f"Pattern found at index {result}")
+else:
+    print("Pattern not found")
