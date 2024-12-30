@@ -1,12 +1,25 @@
-def bubble_sort(arr):
-    n = len(arr)
-    for i in range(n):
-        for j in range(0, n-i-1):
-            if arr[j] > arr[j+1]:
-                arr[j], arr[j+1] = arr[j+1], arr[j]
-    return arr
+class TreeNode:
+    def __init__(self, value=0, left=None, right=None):
+        self.value = value
+        self.left = left
+        self.right = right
 
-# Example usage
-arr = [64, 34, 25, 12, 22, 11, 90]
-sorted_arr = bubble_sort(arr)
-print("Sorted array:", sorted_arr)
+def maxDepth(root):
+    if root is None:
+        return 0
+    else:
+        left_depth = maxDepth(root.left)
+        right_depth = maxDepth(root.right)
+        
+        return max(left_depth, right_depth) + 1
+
+# Example usage:
+# Construct a binary tree
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(5)
+root.right.right = TreeNode(6)
+
+print("Maximum depth of the binary tree is:", maxDepth(root))
