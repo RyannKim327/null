@@ -1,34 +1,13 @@
-from collections import deque
-
-def breadth_limited_search(start_state, goal_state, depth_limit):
-    queue = deque([(start_state, 0)])  # Initialize the queue with initial state and depth 0
-
-    while queue:
-        node, depth = queue.popleft()
-
-        if node == goal_state:
-            return node  # If goal state is found, return the path
-
-        if depth < depth_limit:
-            # Generate child nodes of the current node
-            child_nodes = generate_child_nodes(node)
-
-            for child_node in child_nodes:
-                queue.append((child_node, depth + 1))
-
-    return None  # If goal state is not found within depth limit, return None
-
-def generate_child_nodes(node):
-    # Implement the logic to generate child nodes based on the current node
-    pass
+def insertion_sort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and key < arr[j]:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
 
 # Example usage
-start_state = ...
-goal_state = ...
-depth_limit = ...
-result = breadth_limited_search(start_state, goal_state, depth_limit)
-
-if result:
-    print("Goal state found!")
-else:
-    print("Goal state not found within depth limit.")
+arr = [12, 11, 13, 5, 6]
+insertion_sort(arr)
+print("Sorted array is:", arr)
