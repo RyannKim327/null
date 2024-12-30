@@ -1,25 +1,42 @@
-class TreeNode:
-    def __init__(self, value=0, left=None, right=None):
-        self.value = value
-        self.left = left
-        self.right = right
+def preprocess(pattern):
+    M = len(pattern)
+    lps = [0] * M
+    i, j = 1, 0
 
-def maxDepth(root):
-    if root is None:
-        return 0
-    else:
-        left_depth = maxDepth(root.left)
-        right_depth = maxDepth(root.right)
-        
-        return max(left_depth, right_depth) + 1
+    while i < M:
+        if pattern[i] == pattern[j]:
+            j += 1
+            lps[i] = j
+            i += 1
+        else:
+            if j != 0:
+                j = lps[j - 1]
+            else:
+                lps[i] = 0
+                i += 1
 
-# Example usage:
-# Construct a binary tree
-root = TreeNode(1)
-root.left = TreeNode(2)
-root.right = TreeNode(3)
-root.left.left = TreeNode(4)
-root.left.right = TreeNode(5)
-root.right.right = TreeNode(6)
+    return lps
 
-print("Maximum depth of the binary tree is:", maxDepth(root))
+def kmp_search(text, pattern):
+    N, M = len(text), len(pattern)
+    lps = preprocess(pattern)
+    i, j = 0, 0
+
+    while i < N:
+        if text[i] == pattern[j]:
+            i += 1
+            j += 1
+
+            if j == M:
+                print("Pattern found at index", i - j)
+                j = lps[j - 1]
+        else:
+            if j != 0:
+                j = lps[j - 1]
+            else:
+                i += 1
+
+# Test the KMP algorithm
+text = "ABABDABACDABABCABAB"
+pattern = "ABABCABAB"
+kmp_search(text, pattern)
