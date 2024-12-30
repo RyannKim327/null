@@ -1,12 +1,6 @@
-// Define the main string
-var mainString = "Hello, World!";
+# Replace spaces with an empty string
+new_string = your_string.replace(" ", "")
+import re
 
-// Define the substring to search for
-var subString = "World";
-
-// Check if the main string contains the substring
-if (mainString.indexOf(subString) !== -1) {
-    console.log("The string contains the substring.");
-} else {
-    console.log("The string does not contain the substring.");
-}
+# Use regular expression to remove all whitespace characters
+new_string = re.sub(r"\s", "", your_string)
