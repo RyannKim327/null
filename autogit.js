@@ -1,28 +1,27 @@
-function longestCommonPrefix(strings) {
-    if (strings.length == 0) {
-        return "";
-    }
-    
-    let prefix = strings[0];
-    
-    for (let i = 1; i < strings.length; i++) {
-        let currentString = strings[i];
-        let j = 0;
-        
-        while (j < prefix.length && j < currentString.length && prefix[j] == currentString[j]) {
-            j++;
-        }
-        
-        prefix = prefix.slice(0, j);
-        
-        if (prefix === "") {
-            break; // No common prefix
-        }
-    }
-    
-    return prefix;
-}
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
 
-let strings = ["apple", "apply", "appreciate"];
-let result = longestCommonPrefix(strings);
-console.log(result); // Output: "app"
+def find_middle_element(head):
+    if head is None:
+        return None
+
+    slow_ptr = head
+    fast_ptr = head
+
+    while fast_ptr is not None and fast_ptr.next is not None:
+        slow_ptr = slow_ptr.next
+        fast_ptr = fast_ptr.next.next
+
+    return slow_ptr.data
+
+# Example of using the find_middle_element function
+# Construct a sample linked list
+head = Node(1)
+head.next = Node(2)
+head.next.next = Node(3)
+head.next.next.next = Node(4)
+head.next.next.next.next = Node(5)
+
+print("Middle element of the linked list is:", find_middle_element(head))
