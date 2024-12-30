@@ -1,8 +1,25 @@
-def is_palindrome(s):
-    s = s.lower()  # Convert the string to lowercase
-    s = ''.join([c for c in s if c.isalnum()])  # Remove non-alphanumeric characters
-    return s == s[::-1]  # Check if the string is equal to its reverse
+def interpolation_search(arr, x):
+    lo = 0
+    hi = len(arr) - 1
 
-# Test the function
-s = "A man, a plan, a canal, Panama!"
-print(is_palindrome(s))  # Output: True
+    while lo <= hi and x >= arr[lo] and x <= arr[hi]:
+        pos = lo + ((hi - lo) // (arr[hi] - arr[lo])) * (x - arr[lo])
+
+        if arr[pos] == x:
+            return pos
+        elif arr[pos] < x:
+            lo = pos + 1
+        else:
+            hi = pos - 1
+
+    return -1
+
+# Example usage
+arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+x = 6
+result = interpolation_search(arr, x)
+
+if result != -1:
+    print(f"Element found at index {result}")
+else:
+    print("Element not found")
