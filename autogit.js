@@ -1,23 +1,14 @@
-class Node:
-    def __init__(self, data=None):
-        self.data = data
-        self.next = None
+// Define an array
+var originalArray = [1, 2, 3, 4, 5];
 
-def find_middle_element(head):
-    slow_ptr = head
-    fast_ptr = head
-    
-    while fast_ptr is not None and fast_ptr.next is not None:
-        slow_ptr = slow_ptr.next
-        fast_ptr = fast_ptr.next.next
-    
-    return slow_ptr.data
+// Create a new array to store the reversed elements
+var reversedArray = [];
 
-# Example of how to use it
-head = Node(1)
-head.next = Node(2)
-head.next.next = Node(3)
-head.next.next.next = Node(4)
-head.next.next.next.next = Node(5)
+// Iterate through the original array in reverse order
+for (var i = originalArray.length - 1; i >= 0; i--) {
+    // Append each element from the original array to the new array
+    reversedArray.push(originalArray[i]);
+}
 
-print(find_middle_element(head))  # Output: 3
+// Print the reversed array
+console.log(reversedArray);
