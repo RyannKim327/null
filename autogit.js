@@ -1,38 +1,114 @@
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.next = None
+#include <iostream>
+#include <algorithm>
 
-class Queue:
-    def __init__(self):
-        self.head = None
-        self.tail = None
+struct Node {
+    int key;
+    Node *left;
+    Node *right;
+    int height;
+};
 
-    def enqueue(self, data):
-        new_node = Node(data)
-        if self.head is None:
-            self.head = new_node
-            self.tail = new_node
-        else:
-            self.tail.next = new_node
-            self.tail = new_node
+int height(Node *N) {
+    if (N == nullptr)
+        return 0;
+    return N->height;
+}
 
-    def dequeue(self):
-        if self.head is None:
-            return None
-        data = self.head.data
-        self.head = self.head.next
-        if self.head is None:
-            self.tail = None
-        return data
+int getBalance(Node *N) {
+    if (N == nullptr)
+        return 0;
+    return height(N->left) - height(N->right);
+}
 
-# Example usage
-q = Queue()
-q.enqueue(1)
-q.enqueue(2)
-q.enqueue(3)
+Node* newNode(int key) {
+    Node* node = new Node();
+    node->key = key;
+    node->left = nullptr;
+    node->right = nullptr;
+    node->height = 1;
+    return(node);
+}
 
-print(q.dequeue())  # Output: 1
-print(q.dequeue())  # Output: 2
-print(q.dequeue())  # Output: 3
-print(q.dequeue())  # Output: None
+Node *rightRotate(Node *y) {
+    Node *x = y->left;
+    Node *T2 = x->right;
+
+    x->right = y;
+    y->left = T2;
+
+    y->height = std::max(height(y->left), height(y->right)) + 1;
+    x->height = std::max(height(x->left), height(x->right)) + 1;
+
+    return x;
+}
+
+Node *leftRotate(Node *x) {
+    Node *y = x->right;
+    Node *T2 = y->left;
+
+    y->left = x;
+    x->right = T2;
+
+    x->height = std::max(height(x->left), height(x->right)) + 1;
+    y->height = std::max(height(y->left), height(y->right)) + 1;
+
+    return y;
+}
+
+Node* insert(Node* node, int key) {
+    if (node == nullptr)
+        return newNode(key);
+
+    if (key < node->key)
+        node->left = insert(node->left, key);
+    else if (key > node->key)
+        node->right = insert(node->right, key);
+    else
+        return node;
+
+    node->height = 1 + std::max(height(node->left), height(node->right));
+
+    int balance = getBalance(node);
+
+    if (balance > 1 && key < node->left->key)
+        return rightRotate(node);
+
+    if (balance < -1 && key > node->right->key)
+        return leftRotate(node);
+
+    if (balance > 1 && key > node->left->key) {
+        node->left = leftRotate(node->left);
+        return rightRotate(node);
+    }
+
+    if (balance < -1 && key < node->right->key) {
+        node->right = rightRotate(node->right);
+        return leftRotate(node);
+    }
+
+    return node;
+}
+
+void preOrder(Node *root) {
+    if (root != nullptr) {
+        std::cout << root->key << " ";
+        preOrder(root->left);
+        preOrder(root->right);
+    }
+}
+
+int main() {
+    Node *root = nullptr;
+
+    root = insert(root, 10);
+    root = insert(root, 20);
+    root = insert(root, 30);
+    root = insert(root, 40);
+    root = insert(root, 50);
+    root = insert(root, 25);
+
+    std::cout << "Preorder traversal of the constructed AVL tree is:\n";
+    preOrder(root);
+
+    return 0;
+}
