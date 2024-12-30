@@ -1,14 +1,40 @@
-// Define an array
-var originalArray = [1, 2, 3, 4, 5];
+import android.os.AsyncTask;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
-// Create a new array to store the reversed elements
-var reversedArray = [];
+public class MyAsyncTask extends AsyncTask<String, Void, String> {
 
-// Iterate through the original array in reverse order
-for (var i = originalArray.length - 1; i >= 0; i--) {
-    // Append each element from the original array to the new array
-    reversedArray.push(originalArray[i]);
+    @Override
+    protected String doInBackground(String... params) {
+        try {
+            URL url = new URL(params[0]);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
+
+            // Read the response
+            InputStream inputStream = connection.getInputStream();
+            StringBuilder response = new StringBuilder();
+            int data;
+            while ((data = inputStream.read()) != -1) {
+                response.append((char) data);
+            }
+
+            return response.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    protected void onPostExecute(String result) {
+        if (result != null) {
+            // Handle the result
+        } else {
+            // Handle the error
+        }
+    }
 }
-
-// Print the reversed array
-console.log(reversedArray);
