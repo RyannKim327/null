@@ -1,21 +1,24 @@
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.next = None
+def counting_sort(arr):
+    max_num = max(arr)
+    min_num = min(arr)
+    range_of_elements = max_num - min_num + 1
 
-def find_nth_from_end(head, n):
-    ptr1 = head
-    ptr2 = head
+    count = [0] * range_of_elements
+    output = [0] * len(arr)
+    
+    for num in arr:
+        count[num - min_num] += 1
 
-    # Move ptr2 to the nth node from beginning
-    for _ in range(n):
-        if ptr2 is None:
-            return None
-        ptr2 = ptr2.next
+    for i in range(1, len(count)):
+        count[i] += count[i - 1]
+    
+    for num in reversed(arr):
+        output[count[num - min_num] - 1] = num
+        count[num - min_num] -= 1
 
-    # Move ptr1 and ptr2 simultaneously until ptr2 reaches the end
-    while ptr2 is not None:
-        ptr1 = ptr1.next
-        ptr2 = ptr2.next
+    return output
 
-    return ptr1
+# Testing the counting sort algorithm
+arr = [4, 2, 2, 8, 3, 3, 1]
+sorted_arr = counting_sort(arr)
+print("Sorted array is:", sorted_arr)
