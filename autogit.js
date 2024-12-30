@@ -1,16 +1,17 @@
-# Define an array of integers
-arr = [5, 2, 8, 1, 3]
+#include <iostream>
 
-# Sort the array
-arr.sort()
+int factorial(int n) {
+    if (n == 0) {
+        return 1;
+    } else {
+        return n * factorial(n - 1);
+    }
+}
 
-# Print the sorted array
-print(arr)
-# Define an array of integers
-arr = [5, 2, 8, 1, 3]
-
-# Create a new sorted array
-sorted_arr = sorted(arr)
-
-# Print the sorted array
-print(sorted_arr)
+int main() {
+    int n;
+    std::cout << "Enter a number: ";
+    std::cin >> n;
+    std::cout << "Factorial of " << n << " is " << factorial(n) << std::endl;
+    return 0;
+}
