@@ -1,52 +1,77 @@
-class TarjanSCC:
-    def __init__(self, graph):
-        self.graph = graph
-        self.visited = set()
-        self.stack = []
-        self.low_link = {}
-        self.ids = {}
-        self.scc = []
-        self.id_count = 0
+#include <iostream>
+using namespace std;
 
-    def tarjan_scc(self):
-        def dfs(node):
-            self.low_link[node] = self.id_count
-            self.ids[node] = self.id_count
-            self.id_count += 1
-            self.stack.append(node)
-            self.visited.add(node)
+// Define the node structure
+struct Node {
+    int data;
+    Node* next;
+};
 
-            for neighbor in self.graph[node]:
-                if neighbor not in self.ids:
-                    dfs(neighbor)
-                if neighbor in self.visited:
-                    self.low_link[node] = min(self.low_link[node], self.low_link[neighbor])
+// Define the queue structure
+struct Queue {
+    Node* front;
+    Node* rear;
+};
 
-            if self.low_link[node] == self.ids[node]:
-                component = []
-                while True:
-                    neighbor = self.stack.pop()
-                    component.append(neighbor)
-                    self.visited.remove(neighbor)
-                    if neighbor == node:
-                        break
-                self.scc.append(component)
-
-        for node in self.graph:
-            if node not in self.ids:
-                dfs(node)
-
-        return self.scc
-
-# Example usage
-graph = {
-    0: [1],
-    1: [2],
-    2: [0, 3],
-    3: [4],
-    4: [5, 2]
+// Function to create a new node
+Node* createNode(int value) {
+    Node* newNode = new Node;
+    newNode->data = value;
+    newNode->next = nullptr;
+    return newNode;
 }
 
-tarjan = TarjanSCC(graph)
-scc = tarjan.tarjan_scc()
-print(scc)
+// Function to initialize the queue
+Queue* initQueue() {
+    Queue* queue = new Queue;
+    queue->front = nullptr;
+    queue->rear = nullptr;
+    return queue;
+}
+
+// Function to add an element to the rear of the queue
+void enqueue(Queue* queue, int value) {
+    Node* newNode = createNode(value);
+    if(queue->rear == nullptr) {
+        queue->front = newNode;
+        queue->rear = newNode;
+    } else {
+        queue->rear->next = newNode;
+        queue->rear = newNode;
+    }
+}
+
+// Function to remove an element from the front of the queue
+int dequeue(Queue* queue) {
+    if(queue->front == nullptr) {
+        cout << "Queue is empty. Cannot dequeue.\n";
+        return -1;
+    }
+    Node* temp = queue->front;
+    int value = temp->data;
+    queue->front = queue->front->next;
+    if(queue->front == nullptr) {
+        queue->rear = nullptr;
+    }
+    delete temp;
+    return value;
+}
+
+// Function to check if the queue is empty
+bool isEmpty(Queue* queue) {
+    return (queue->front == nullptr);
+}
+
+int main() {
+    Queue* queue = initQueue();
+
+    enqueue(queue, 1);
+    enqueue(queue, 2);
+    enqueue(queue, 3);
+
+    while(!isEmpty(queue)) {
+        cout << dequeue(queue) << " ";
+    }
+
+    return 0;
+}
