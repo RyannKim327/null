@@ -1,36 +1,29 @@
-def merge_sort(arr):
-    if len(arr) <= 1:
-        return arr
+def heapify(arr, n, i):
+    largest = i
+    l = 2*i + 1
+    r = 2*i + 2
 
-    mid = len(arr) // 2
-    left = arr[:mid]
-    right = arr[mid:]
+    if l < n and arr[i] < arr[l]:
+        largest = l
 
-    left = merge_sort(left)
-    right = merge_sort(right)
+    if r < n and arr[largest] < arr[r]:
+        largest = r
 
-    return merge(left, right)
+    if largest != i:
+        arr[i], arr[largest] = arr[largest], arr[i]
+        heapify(arr, n, largest)
 
+def heap_sort(arr):
+    n = len(arr)
 
-def merge(left, right):
-    merged = []
-    left_idx = 0
-    right_idx = 0
+    for i in range(n // 2 - 1, -1, -1):
+        heapify(arr, n, i)
 
-    while left_idx < len(left) and right_idx < len(right):
-        if left[left_idx] < right[right_idx]:
-            merged.append(left[left_idx])
-            left_idx += 1
-        else:
-            merged.append(right[right_idx])
-            right_idx += 1
+    for i in range(n-1, 0, -1):
+        arr[i], arr[0] = arr[0], arr[i]
+        heapify(arr, i, 0)
 
-    merged += left[left_idx:]
-    merged += right[right_idx:]
-
-    return merged
-
-# Test the merge sort algorithm
-arr = [38, 27, 43, 3, 9, 82, 10]
-sorted_arr = merge_sort(arr)
-print(sorted_arr)
+# Example usage
+arr = [12, 11, 13, 5, 6, 7]
+heap_sort(arr)
+print("Sorted array is:", arr)
