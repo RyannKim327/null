@@ -1,34 +1,10 @@
-class Node:
-    def __init__(self, data=None):
-        self.data = data
-        self.next = None
+import random
 
-class LinkedList:
-    def __init__(self):
-        self.head = None
+# Define the range for the random number
+start_range = 1
+end_range = 100
 
-    def append(self, data):
-        new_node = Node(data)
-        if self.head is None:
-            self.head = new_node
-            return
-        last = self.head
-        while last.next:
-            last = last.next
-        last.next = new_node
+# Generate a random number in the specified range
+random_number = random.randint(start_range, end_range)
 
-    def get_length(self):
-        current = self.head
-        count = 0
-        while current:
-            count += 1
-            current = current.next
-        return count
-
-# Example
-llist = LinkedList()
-llist.append(1)
-llist.append(2)
-llist.append(3)
-
-print("Length of linked list:", llist.get_length())
+print("Random number within the specified range:", random_number)
