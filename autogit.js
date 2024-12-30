@@ -1,43 +1,31 @@
 class Node:
-    def __init__(self, value):
-        self.value = value
-        self.children = []
+    def __init__(self, data):
+        self.data = data
+        self.next = None
 
-def depth_limited_search(root, goal, depth_limit):
-    if root is None:
-        return False
+def find_middle_element(head):
+    slow_ptr = head
+    fast_ptr = head
 
-    stack = [(root, 0)]
+    while fast_ptr is not None and fast_ptr.next is not None:
+        slow_ptr = slow_ptr.next
+        fast_ptr = fast_ptr.next.next
 
-    while stack:
-        node, depth = stack.pop()
+    return slow_ptr.data
 
-        if node.value == goal:
-            return True
+# Example usage:
 
-        if depth < depth_limit:
-            for child in node.children:
-                stack.append((child, depth + 1))
-
-    return False
-
-# Example usage
-# Create a tree structure
-root = Node(1)
+node1 = Node(1)
 node2 = Node(2)
 node3 = Node(3)
 node4 = Node(4)
 node5 = Node(5)
 
-root.children = [node2, node3]
-node2.children = [node4, node5]
+node1.next = node2
+node2.next = node3
+node3.next = node4
+node4.next = node5
 
-# Run depth-limited search
-goal = 4
-depth_limit = 2
-result = depth_limited_search(root, goal, depth_limit)
+head = node1
 
-if result:
-    print(f"Goal {goal} found within depth limit {depth_limit}.")
-else:
-    print(f"Goal {goal} not found within depth limit {depth_limit}.")
+print(find_middle_element(head))  # Output: 3
