@@ -1,29 +1,16 @@
-def heapify(arr, n, i):
-    largest = i
-    l = 2*i + 1
-    r = 2*i + 2
-
-    if l < n and arr[i] < arr[l]:
-        largest = l
-
-    if r < n and arr[largest] < arr[r]:
-        largest = r
-
-    if largest != i:
-        arr[i], arr[largest] = arr[largest], arr[i]
-        heapify(arr, n, largest)
-
-def heap_sort(arr):
-    n = len(arr)
-
-    for i in range(n // 2 - 1, -1, -1):
-        heapify(arr, n, i)
-
-    for i in range(n-1, 0, -1):
-        arr[i], arr[0] = arr[0], arr[i]
-        heapify(arr, i, 0)
-
-# Example usage
-arr = [12, 11, 13, 5, 6, 7]
-heap_sort(arr)
-print("Sorted array is:", arr)
+string1 = "Hello"
+string2 = "World"
+concatenated_string = string1 + string2
+print(concatenated_string)
+let string1 = "Hello";
+let string2 = "World";
+let concatenatedString  = string1 + string2;
+console.log(concatenatedString);
+String string1 = "Hello";
+String string2 = "World";
+String concatenatedString = string1 + string2;
+System.out.println(concatenatedString);
+string string1 = "Hello";
+string string2 = "World";
+string concatenatedString = string1 + string2;
+Console.WriteLine(concatenatedString);
