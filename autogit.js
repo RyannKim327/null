@@ -1,50 +1,53 @@
-def compute_lps_array(pattern):
-    lps = [0] * len(pattern)
-    j = 0
-    i = 1
-    
-    while i < len(pattern):
-        if pattern[i] == pattern[j]:
-            j += 1
-            lps[i] = j
-            i += 1
-        else:
-            if j != 0:
-                j = lps[j-1]
-            else:
-                lps[i] = 0
-                i += 1
-    
-    return lps
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
 
-def kmp_search(text, pattern):
-    n = len(text)
-    m = len(pattern)
-    
-    lps = compute_lps_array(pattern)
-    
-    i = 0
-    j = 0
-    positions = []
-    
-    while i < n:
-        if text[i] == pattern[j]:
-            i += 1
-            j += 1
-            
-            if j == m:
-                positions.append(i - j)
-                j = lps[j - 1]
-        else:
-            if j != 0:
-                j = lps[j - 1]
-            else:
-                i += 1
+class LinkedList:
+    def __init__(self):
+        self.head = None
 
-    return positions
+    def reverse(self):
+        prev = None
+        current = self.head
 
-# Example
-text = "ABABDABACDABABCABAB"
-pattern = "ABABCABAB"
-positions = kmp_search(text, pattern)
-print("Pattern found at positions:", positions)
+        while current is not None:
+            next_node = current.next
+            current.next = prev
+            prev = current
+            current = next_node
+
+        self.head = prev
+
+    def append(self, data):
+        new_node = Node(data)
+        if self.head is None:
+            self.head = new_node
+            return
+        last = self.head
+        while last.next:
+            last = last.next
+        last.next = new_node
+
+    def print_list(self):
+        temp = self.head
+        while temp:
+            print(temp.data, end=" ")
+            temp = temp.next
+        print()
+
+# Create a sample linked list
+llist = LinkedList()
+llist.append(1)
+llist.append(2)
+llist.append(3)
+llist.append(4)
+
+print("Original Linked List:")
+llist.print_list()
+
+# Reverse the linked list
+llist.reverse()
+
+print("Reversed Linked List:")
+llist.print_list()
