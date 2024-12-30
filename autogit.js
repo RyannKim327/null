@@ -1,28 +1,45 @@
-void reverseArray(int arr[], int size) {
-    int start = 0;
-    int end = size - 1;
-    while (start < end) {
-        // Swap elements at start and end
-        int temp = arr[start];
-        arr[start] = arr[end];
-        arr[end] = temp;
-        
-        // Move start and end pointers towards the center
-        start++;
-        end--;
+#include <iostream>
+#include <stack>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+};
+
+bool isPalindrome(Node* head) {
+    stack<int> s;
+    Node* curr = head;
+
+    // Traverse the linked list and store values in a stack
+    while (curr != NULL) {
+        s.push(curr->data);
+        curr = curr->next;
     }
+
+    // Traverse the linked list again and compare elements with stack
+    curr = head;
+    while (curr != NULL) {
+        int top = s.top();
+        s.pop();
+
+        if (curr->data != top) {
+            return false;
+        }
+
+        curr = curr->next;
+    }
+
+    return true;
 }
 
 int main() {
-    int arr[] = {1, 2, 3, 4, 5};
-    int size = sizeof(arr) / sizeof(arr[0]);
-    
-    reverseArray(arr, size);
-    
-    // Print the reversed array
-    for (int i = 0; i < size; i++) {
-        cout << arr[i] << " ";
+    Node* head = new Node{1, new Node{2, new Node{3, new Node{2, new Node{1, NULL}}}}};
+    if (isPalindrome(head)) {
+        cout << "The linked list is a palindrome." << endl;
+    } else {
+        cout << "The linked list is not a palindrome." << endl;
     }
-    
+
     return 0;
 }
