@@ -1,38 +1,35 @@
-def depth_limited_search_iterative(start_state, goal_state, depth_limit):
-    stack = [(start_state, 0)]
+def bad_character_table(pattern):
+    table = {}
+    pattern_length = len(pattern)
+    for i in range(pattern_length - 1):
+        table[pattern[i]] = pattern_length - 1 - i
+    return table
+
+def boyer_moore_horspool(text, pattern):
+    text_length = len(text)
+    pattern_length = len(pattern)
+    if text_length < pattern_length:
+        return -1
+
+    bad_char_table = bad_character_table(pattern)
     
-    while stack:
-        current_state, depth = stack.pop()
-        
-        if current_state == goal_state:
-            return True
-        
-        if depth < depth_limit:
-            # Generate child states
-            child_states = generate_child_states(current_state)
-            
-            for child_state in child_states:
-                stack.append((child_state, depth + 1))
-    
-    return False
+    i = 0
+    while i <= text_length - pattern_length:
+        j = pattern_length - 1
+        while j >= 0 and pattern[j] == text[i + j]:
+            j -= 1
+        if j == -1:
+            return i
+        else:
+            shift = bad_char_table.get(text[i + j], pattern_length)
+            i += shift
 
-def generate_child_states(state):
-    # Implement a function to generate child states based on the current state
-    # This function should return a list of child states
-    
-    # Example implementation:
-    # children = []
-    # # Generate child states here
-    # return children
+    return -1
 
-# Example usage
-start_state = "A"
-goal_state = "F"
-depth_limit = 3
-
-result = depth_limited_search_iterative(start_state, goal_state, depth_limit)
-
-if result:
-    print("Goal state found within depth limit.")
+text = "ABAAABCDBBABCDDEBCABC"
+pattern = "BCD"
+result = boyer_moore_horspool(text, pattern)
+if result != -1:
+    print(f"Pattern found at index {result}")
 else:
-    print("Goal state not found within depth limit.")
+    print("Pattern not found")
