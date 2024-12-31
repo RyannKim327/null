@@ -1,37 +1,35 @@
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.next = None
+class Stack:
+    def __init__(self):
+        self.stack = []
 
-def find_nth_from_end(head, n):
-    ptr1 = head
-    ptr2 = head
+    def is_empty(self):
+        return len(self.stack) == 0
 
-    # Move ptr2 forward by n nodes
-    for _ in range(n):
-        if ptr2 is None:
-            return None
-        ptr2 = ptr2.next
+    def push(self, item):
+        self.stack.append(item)
 
-    # Move both pointers forward until ptr2 reaches the end
-    while ptr2 is not None:
-        ptr1 = ptr1.next
-        ptr2 = ptr2.next
+    def pop(self):
+        if not self.is_empty():
+            return self.stack.pop()
+        else:
+            return "Stack is empty"
 
-    return ptr1
+    def peek(self):
+        if not self.is_empty():
+            return self.stack[-1]
+        else:
+            return "Stack is empty"
 
-# Create a sample linked list
-head = Node(1)
-head.next = Node(2)
-head.next.next = Node(3)
-head.next.next.next = Node(4)
-head.next.next.next.next = Node(5)
+    def size(self):
+        return len(self.stack)
 
-# Find the nth node from the end of the linked list
-n = 2
-result = find_nth_from_end(head, n)
+# Example usage:
+stack = Stack()
+stack.push(1)
+stack.push(2)
+stack.push(3)
 
-if result is not None:
-    print(f"The {n}th node from the end is: {result.data}")
-else:
-    print(f"Linked list doesn't have {n} nodes.")
+print(stack.peek())  # Output: 3
+print(stack.pop())   # Output: 3
+print(stack.pop())   # Output: 2
+print(stack.size())  # Output: 1
