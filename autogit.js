@@ -1,21 +1,16 @@
-def shell_sort(arr):
-    n = len(arr)
-    gap = n // 2
+def burrows_wheeler_transform(text):
+    text = text + "$"  # Add a special character to the end of the text
+    n = len(text)
+    
+    rotations = [text[i:n] + text[0:i] for i in range(n)]  # Generate all cyclic rotations of the text
+    rotations.sort()  # Sort the rotations
+    
+    transformed_text = ''.join(rotation[-1] for rotation in rotations)  # Extract the last characters of the rotations
+    
+    return transformed_text, rotations.index(text)
 
-    while gap > 0:
-        for i in range(gap, n):
-            temp = arr[i]
-            j = i
-            while j >= gap and arr[j - gap] > temp:
-                arr[j] = arr[j - gap]
-                j -= gap
-            arr[j] = temp
-        gap //= 2
-
-    return arr
-
-# Test the shell_sort function
-arr = [12, 34, 54, 2, 3]
-print("Original Array:", arr)
-sorted_arr = shell_sort(arr)
-print("Sorted Array:", sorted_arr)
+# Example usage
+text = "banana"
+transformed_text, index = burrows_wheeler_transform(text)
+print("Transformed text:", transformed_text)
+print("Index of original text:", index)
