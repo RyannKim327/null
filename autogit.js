@@ -1,34 +1,13 @@
-str = "Hello, World!"
-lowercase_str = str.lower()
-print(lowercase_str)
-var str = "Hello, World!";
-var lowercase_str = str.toLowerCase();
-console.log(lowercase_str);
-String str = "Hello, World!";
-String lowercaseStr = str.toLowerCase();
-System.out.println(lowercaseStr);
-#include <iostream>
-#include <algorithm>
-#include <string>
+def burrows_wheeler_transform(text):
+    text += "$"  # Add a unique character not present in the text
+    rotations = [text[i:] + text[:i] for i in range(len(text))]  # Generate rotations of the text
+    rotations.sort()  # Sort the rotations lexicographically
+    transformed_text = "".join(rotation[-1] for rotation in rotations)  # Extract the last character of each rotation
+    index = rotations.index(text)  # Find the index of the original text in the sorted rotations
+    return transformed_text, index
 
-int main() {
-    std::string str = "Hello, World!";
-    std::transform(str.begin(), str.end(), str.begin(),
-                   [](unsigned char c){ return std::tolower(c); });
-    std::cout << str << std::endl;
-    return 0;
-}
-using System;
-
-class Program
-{
-    static void Main()
-    {
-        string str = "Hello, World!";
-        string lowercaseStr = str.ToLower();
-        Console.WriteLine(lowercaseStr);
-    }
-}
-$str = "Hello, World!";
-$lowercase_str = strtolower($str);
-echo $lowercase_str;
+# Example usage
+text = "banana"
+transformed_text, index = burrows_wheeler_transform(text)
+print("Transformed text:", transformed_text)
+print("Index of original text:", index)
