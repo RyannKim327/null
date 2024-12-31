@@ -1,12 +1,18 @@
-def is_palindrome(s):
-    # Remove non-alphanumeric characters and convert to lowercase
-    cleaned_string = ''.join(c.lower() for c in s if c.isalnum())
-    # Compare cleaned string with its reverse
-    return cleaned_string == cleaned_string[::-1]
+// Function to find common elements in two arrays
+function findCommonElements(array1, array2) {
+    let commonElements = [];
+  
+    for (let i = 0; i < array1.length; i++) {
+        if (array2.indexOf(array1[i]) !== -1 && commonElements.indexOf(array1[i]) === -1) {
+            commonElements.push(array1[i]);
+        }
+    }
+  
+    return commonElements;
+}
 
-# Test the function
-input_string = "A man, a plan, a canal, Panama!"
-if is_palindrome(input_string):
-    print("The string is a palindrome.")
-else:
-    print("The string is not a palindrome.")
+// Test the function
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
+const result = findCommonElements(array1, array2);
+console.log(result); // Output: [3, 4, 5]
