@@ -1,20 +1,12 @@
-def longest_common_prefix(strs):
-    if not strs:
-        return ""
-
-    strs.sort()
-    first_str = strs[0]
-    last_str = strs[-1]
-
-    prefix = ""
-    for i in range(min(len(first_str), len(last_str))):
-        if first_str[i] == last_str[i]:
-            prefix += first_str[i]
-        else:
-            break
-
-    return prefix
+def find_common_elements(arr1, arr2):
+    common_elements = []
+    for element in arr1:
+        if element in arr2 and element not in common_elements:
+            common_elements.append(element)
+    return common_elements
 
 # Example usage
-strings = ["flower", "flow", "flight"]
-print(longest_common_prefix(strings))  # Output: "fl"
+array1 = [1, 2, 3, 4, 5]
+array2 = [3, 4, 5, 6, 7]
+result = find_common_elements(array1, array2)
+print(result)
