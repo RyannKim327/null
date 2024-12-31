@@ -1,33 +1,35 @@
-class Node:
-    def __init__(self, key):
-        self.left = None
-        self.right = None
-        self.val = key
+from collections import defaultdict
 
-def insert(root, key):
-    if root is None:
-        return Node(key)
-    else:
-        if root.val < key:
-            root.right = insert(root.right, key)
-        else:
-            root.left = insert(root.left, key)
-    return root
+def topological_sort(graph):
+    in_degree = {node: 0 for node in graph}
+    for node in graph:
+        for neighbor in graph[node]:
+            in_degree[neighbor] += 1
 
-def inorder_traversal(root):
-    if root:
-        inorder_traversal(root.left)
-        print(root.val)
-        inorder_traversal(root.right)
+    queue = [node for node in graph if in_degree[node] == 0]
+    result = []
 
-# Usage
-root = None
-root = insert(root, 50)
-insert(root, 30)
-insert(root, 20)
-insert(root, 40)
-insert(root, 70)
-insert(root, 60)
-insert(root, 80)
+    while queue:
+        node = queue.pop(0)
+        result.append(node)
+        for neighbor in graph[node]:
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
 
-inorder_traversal(root)
+    if len(result) != len(graph):
+        raise ValueError("The graph contains a cycle")
+
+    return result
+
+# Example graph
+graph = {
+    1: [2, 3],
+    2: [3, 4],
+    3: [5],
+    4: [5],
+    5: []
+}
+
+sorted_nodes = topological_sort(graph)
+print(sorted_nodes)
