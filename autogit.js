@@ -1,30 +1,9 @@
-class Node:
-    def __init__(self, key):
-        self.left = None
-        self.right = None
-        self.val = key
-
-def insert(root, key):
-    if root is None:
-        return Node(key)
+def factorial(n):
+    if n == 0:
+        return 1
     else:
-        if root.val < key:
-            root.right = insert(root.right, key)
-        else:
-            root.left = insert(root.left, key)
-    return root
+        return n * factorial(n-1)
 
-def inorder_traversal(root):
-    if root:
-        inorder_traversal(root.left)
-        print(root.val)
-        inorder_traversal(root.right)
-
-# Example usage
-root = None
-keys = [20, 10, 30, 15, 25, 5]
-
-for key in keys:
-    root = insert(root, key)
-
-inorder_traversal(root)
+num = 5
+result = factorial(num)
+print(f'The factorial of {num} is: {result}')
