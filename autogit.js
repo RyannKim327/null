@@ -1,5 +1,7 @@
-# Removing whitespace from a string in Python
-string_with_whitespace = "  Hello, World!  "
-string_without_whitespace = string_with_whitespace.strip()
+# Original array with duplicate elements
+original_array = [1, 2, 3, 4, 2, 3, 5, 6]
 
-print(string_without_whitespace)  # Output: "Hello, World!"
+# Removing duplicates
+unique_array = list(set(original_array))
+
+print(unique_array)
