@@ -1,34 +1,55 @@
-def longest_common_subsequence(str1, str2):
-    m = len(str1)
-    n = len(str2)
+// Definition of a binary tree node
+class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+    
+    // Constructor
+    TreeNode(int value) {
+        this.val = value;
+        this.left = null;
+        this.right = null;
+    }
+}
 
-    # Create a 2D list to store the lengths of longest common subsequences
-    lcs = [[0] * (n + 1) for i in range(m + 1)]
+// Function to find the height of a binary tree
+int getHeight(TreeNode root) {
+    if (root == null) {
+        return 0;
+    }
+    
+    int leftHeight = getHeight(root.left);
+    int rightHeight = getHeight(root.right);
+    
+    return 1 + Math.max(leftHeight, rightHeight);
+}
 
-    # Build the lcs matrix
-    for i in range(1, m + 1):
-        for j in range(1, n + 1):
-            if str1[i - 1] == str2[j - 1]:
-                lcs[i][j] = lcs[i - 1][j - 1] + 1
-            else:
-                lcs[i][j] = max(lcs[i - 1][j], lcs[i][j - 1])
+// Function to find the diameter of a binary tree
+int findDiameter(TreeNode root) {
+    if (root == null) {
+        return 0;
+    }
+    
+    int leftHeight = getHeight(root.left);
+    int rightHeight = getHeight(root.right);
+    
+    // Calculate the diameter passing through the root
+    int rootDiameter = leftHeight + rightHeight + 1;
+    
+    // Calculate the diameters of left and right subtrees
+    int leftDiameter = findDiameter(root.left);
+    int rightDiameter = findDiameter(root.right);
+    
+    // Return the maximum of the three diameters
+    return Math.max(rootDiameter, Math.max(leftDiameter, rightDiameter));
+}
 
-    # Find the longest common subsequence by tracing back the lcs matrix
-    subsequence = ""
-    i, j = m, n
-    while i > 0 and j > 0:
-        if str1[i - 1] == str2[j - 1]:
-            subsequence = str1[i - 1] + subsequence
-            i -= 1
-            j -= 1
-        elif lcs[i - 1][j] > lcs[i][j - 1]:
-            i -= 1
-        else:
-            j -= 1
+// Example usage
+TreeNode root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-    return subsequence
-
-# Example usage
-str1 = "ABCBDAB"
-str2 = "BDCAB"
-print(longest_common_subsequence(str1, str2))  # Output: "BCAB"
+int diameter = findDiameter(root);
+print("Diameter of the binary tree: " + diameter);
