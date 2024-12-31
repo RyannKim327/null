@@ -1,36 +1,57 @@
-def depth_limited_search(graph, start, goal, depth_limit):
-    stack = [(start, [start])]
-    
-    while stack:
-        (node, path) = stack.pop()
-        
-        if node == goal:
-            return path
-        
-        if len(path) < depth_limit:
-            for neighbor in graph[node]:
-                if neighbor not in path:
-                    stack.append((neighbor, path + [neighbor]))
-    
-    return None
+class KeyValuePair:
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
 
-# Example graph
-graph = {
-    'A': ['B', 'C'],
-    'B': ['D', 'E'],
-    'C': ['F'],
-    'D': [],
-    'E': [],
-    'F': [],
-}
+class HashTable:
+    def __init__(self, size):
+        self.size = size
+        self.table = [None] * size
 
-start_node = 'A'
-goal_node = 'F'
-depth_limit = 3
+    def _hash(self, key):
+        return hash(key) % self.size
 
-result = depth_limited_search(graph, start_node, goal_node, depth_limit)
+    def add(self, key, value):
+        index = self._hash(key)
+        if self.table[index] is None:
+            self.table[index] = KeyValuePair(key, value)
+        else:
+            # Handle collision (e.g., using chaining)
+            # You can use a linked list, array, or any other data structure to handle collisions
+            # For simplicity, we will use a list here
+            if not isinstance(self.table[index], list):
+                self.table[index] = [self.table[index]]
+            self.table[index].append(KeyValuePair(key, value))
 
-if result:
-    print("Path found:", result)
-else:
-    print("Path not found within depth limit.")
+    def get(self, key):
+        index = self._hash(key)
+        if self.table[index] is None:
+            return None
+        if isinstance(self.table[index], list):
+            for item in self.table[index]:
+                if item.key == key:
+                    return item.value
+            return None
+        return self.table[index].value
+
+    def remove(self, key):
+        index = self._hash(key)
+        if self.table[index] is None:
+            return
+        if isinstance(self.table[index], list):
+            for i, item in enumerate(self.table[index]):
+                if item.key == key:
+                    del self.table[index][i]
+                    break
+        else:
+            if self.table[index].key == key:
+                self.table[index] = None
+
+# Usage example
+hash_table = HashTable(10)
+hash_table.add('key1', 'value1')
+hash_table.add('key2', 'value2')
+print(hash_table.get('key1'))  # Output: value1
+print(hash_table.get('non-existent'))  # Output: None
+hash_table.remove('key1')
+print(hash_table.get('key1'))  # Output: None
