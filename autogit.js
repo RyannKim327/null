@@ -1,34 +1,34 @@
-class Stack:
-    def __init__(self):
-        self.stack = []
+def preprocess(pattern):
+    skip_table = {}
+    pattern_len = len(pattern)
+    
+    for i in range(pattern_len - 1):
+        skip_table[pattern[i]] = pattern_len - i - 1
+    
+    return skip_table
 
-    def isEmpty(self):
-        return len(self.stack) == 0
+def boyer_moore_horspool(text, pattern):
+    text_len = len(text)
+    pattern_len = len(pattern)
+    skip_table = preprocess(pattern)
+    
+    i = pattern_len - 1
+    while i < text_len:
+        j = pattern_len - 1
+        while text[i] == pattern[j]:
+            if j == 0:
+                return i
+            i -= 1
+            j -= 1
+        i += skip_table.get(text[i], pattern_len)
+    
+    return -1
 
-    def push(self, item):
-        self.stack.append(item)
-
-    def pop(self):
-        if not self.isEmpty():
-            return self.stack.pop()
-        else:
-            return "Stack is empty"
-
-    def peek(self):
-        if not self.isEmpty():
-            return self.stack[-1]
-        else:
-            return "Stack is empty"
-
-    def size(self):
-        return len(self.stack)
-
-# Example usage:
-stack = Stack()
-stack.push(1)
-stack.push(2)
-stack.push(3)
-
-print(stack.pop())  # Output: 3
-print(stack.peek())  # Output: 2
-print(stack.size())  # Output: 2
+# Test the algorithm
+text = "hello world this is a test"
+pattern = "world"
+result = boyer_moore_horspool(text, pattern)
+if result != -1:
+    print("Pattern found at index:", result)
+else:
+    print("Pattern not found")
