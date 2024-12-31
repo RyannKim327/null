@@ -1,7 +1,8 @@
-# Original array with duplicate elements
-original_array = [1, 2, 3, 4, 2, 3, 5, 6]
+def remove_vowels(input_string):
+    vowels = "aeiouAEIOU"
+    output_string = "".join([char for char in input_string if char not in vowels])
+    return output_string
 
-# Removing duplicates
-unique_array = list(set(original_array))
-
-print(unique_array)
+input_string = "Hello, World!"
+result = remove_vowels(input_string)
+print(result)
