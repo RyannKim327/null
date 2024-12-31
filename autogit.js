@@ -1,18 +1,45 @@
-def common_prefix(strings):
-    if not strings:
-        return ""
+def merge_sort(arr):
+    if len(arr) > 1:
+        size = 1
+        while size < len(arr):
+            left = 0
+            while left < len(arr)-1:
+                mid = left + size - 1
+                right = min(left + 2*size - 1, len(arr)-1)
+                merge(arr, left, mid, right)
+                left += 2*size
+            size = 2*size
 
-    longest_prefix = strings[0]
-
-    for string in strings[1:]:
-        i = 0
-        while i < len(longest_prefix) and i < len(string) and longest_prefix[i] == string[i]:
+def merge(arr, left, mid, right):
+    n1 = mid - left + 1
+    n2 = right - mid
+    L = [arr[left + i] for i in range(n1)]
+    R = [arr[mid + 1 + i] for i in range(n2)]
+    
+    i = 0
+    j = 0
+    k = left
+    
+    while i < n1 and j < n2:
+        if L[i] <= R[j]:
+            arr[k] = L[i]
             i += 1
-        longest_prefix = longest_prefix[:i]
+        else:
+            arr[k] = R[j]
+            j += 1
+        k += 1
+    
+    while i < n1:
+        arr[k] = L[i]
+        i += 1
+        k += 1
+        
+    while j < n2:
+        arr[k] = R[j]
+        j += 1
+        k += 1
 
-    return longest_prefix
-
-# Example usage:
-strings = ["apple", "appetizer", "application"]
-result = common_prefix(strings)
-print("Longest common prefix:", result)
+# Example usage
+arr = [38, 27, 43, 3, 9, 82, 10]
+merge_sort(arr)
+print("Sorted array:", arr)
