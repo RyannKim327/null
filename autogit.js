@@ -1,14 +1,20 @@
-def is_prime(num):
-    if num < 2:
-        return False
-    for i in range(2, int(num ** 0.5) + 1):
-        if num % i == 0:
-            return False
-    return True
+def shell_sort(arr):
+    n = len(arr)
+    gap = n // 2
 
-# Test the function
-num = 29
-if is_prime(num):
-    print(f"{num} is a prime number.")
-else:
-    print(f"{num} is not a prime number.")
+    while gap > 0:
+        for i in range(gap, n):
+            temp = arr[i]
+            j = i
+            while j >= gap and arr[j - gap] > temp:
+                arr[j] = arr[j - gap]
+                j -= gap
+            arr[j] = temp
+        gap //= 2
+
+    return arr
+
+# Example usage
+arr = [12, 34, 54, 2, 3]
+sorted_arr = shell_sort(arr)
+print("Sorted array is:", sorted_arr)
