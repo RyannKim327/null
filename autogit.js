@@ -1,14 +1,37 @@
-import requests
+def fibonacci_search(arr, element):
+    fib_m_minus_2 = 0
+    fib_m_minus_1 = 1
+    fib_m = fib_m_minus_1 + fib_m_minus_2
+    while fib_m < len(arr):
+        fib_m_minus_2 = fib_m_minus_1
+        fib_m_minus_1 = fib_m
+        fib_m = fib_m_minus_1 + fib_m_minus_2
 
-api_key = 'YOUR_API_KEY'
-city = 'New York'
+    offset = -1
+    while fib_m > 1:
+        i = min(offset+fib_m_minus_2, len(arr)-1)
+        if arr[i] < element:
+            fib_m = fib_m_minus_1
+            fib_m_minus_1 = fib_m_minus_2
+            fib_m_minus_2 = fib_m - fib_m_minus_1
+            offset = i
+        elif arr[i] > element:
+            fib_m = fib_m_minus_2
+            fib_m_minus_1 = fib_m_minus_1 - fib_m_minus_2
+            fib_m_minus_2 = fib_m - fib_m_minus_1
+        else:
+            return i
 
-url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}'
-response = requests.get(url)
-data = response.json()
+    if fib_m_minus_1 and arr[min(offset+1, len(arr)-1)] == element:
+        return offset+1
 
-if data['cod'] == 200:
-    temp = data['main']['temp']
-    print(f'The current temperature in {city} is {temp} Kelvin.')
+    return -1
+
+# Test the function
+arr = [2, 3, 5, 8, 13, 21, 34, 55, 89]
+element = 21
+result = fibonacci_search(arr, element)
+if result != -1:
+    print("Element found at index:", result)
 else:
-    print(f'Error: {data["message"]}')
+    print("Element not found")
