@@ -1,37 +1,23 @@
 class Node:
-    def __init__(self, data):
-        self.data = data
-        self.next = None
+    def __init__(self, state, depth):
+        self.state = state
+        self.depth = depth
 
-def get_nth_from_end(head, n):
-    length = 0
-    current = head
+def depth_limited_search(root, depth_limit):
+    stack = [root]
 
-    # Calculate the length of the linked list
-    while current:
-        length += 1
-        current = current.next
-
-    # Position of the nth node from the end
-    position = length - n
-
-    # Reset the current pointer to the head
-    current = head
-
-    # Traverse to the nth node from the end
-    for i in range(position):
-        current = current.next
-
-    return current.data
-
-# Example of how to use the function
-# Create a sample linked list
-head = Node(1)
-head.next = Node(2)
-head.next.next = Node(3)
-head.next.next.next = Node(4)
-head.next.next.next.next = Node(5)
-
-n = 2
-result = get_nth_from_end(head, n)
-print(f"The {n}th node from the end is: {result}")
+    while stack:
+        current_node = stack.pop()
+        
+        if current_node.depth < depth_limit:
+            # Generate child nodes for expansion
+            # For example, child_nodes = generate_child_nodes(current_node)
+            
+            # Add child nodes to the stack
+            # stack.extend(child_nodes)
+            
+            # Add a condition to check if the goal state is reached
+            # For example, if current_node.state == goal_state:
+            #     return True
+            
+    return False
