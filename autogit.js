@@ -1,23 +1,87 @@
-def longestIncreasingSubsequence(arr):
-    n = len(arr)
-    lis = [1] * n
+#include <iostream>
 
-    for i in range(1, n):
-        for j in range(i):
-            if arr[i] > arr[j]:
-                lis[i] = max(lis[i], lis[j] + 1)
+// Node struct representing each node in the linked list
+struct Node {
+    int data;
+    Node* next;
+    
+    Node(int value) : data(value), next(nullptr) {}
+};
 
-    max_length = max(lis)
-    sequence = []
-    end_index = lis.index(max_length)
+// LinkedList class to manage the nodes
+class LinkedList {
+private:
+    Node* head;
 
-    for i in range(end_index, -1, -1):
-        if lis[i] == max_length:
-            sequence.insert(0, arr[i])
-            max_length -= 1
+public:
+    LinkedList() : head(nullptr) {}
 
-    return sequence
+    // Function to insert a new node at the beginning of the list
+    void insertAtBeginning(int value) {
+        Node* newNode = new Node(value);
+        newNode->next = head;
+        head = newNode;
+    }
 
-# Example Usage
-arr = [10, 22, 9, 33, 21, 50, 41, 60, 80]
-print(longestIncreasingSubsequence(arr))
+    // Function to display the elements in the list
+    void display() {
+        Node* current = head;
+        while (current != nullptr) {
+            std::cout << current->data << " ";
+            current = current->next;
+        }
+        std::cout << std::endl;
+    }
+
+    // Function to delete a node from the list
+    void deleteNode(int value) {
+        Node* current = head;
+        Node* prev = nullptr;
+
+        while (current != nullptr && current->data != value) {
+            prev = current;
+            current = current->next;
+        }
+
+        if (current == nullptr) {
+            std::cout << value << " not found in the list." << std::endl;
+            return;
+        }
+
+        if (prev == nullptr) {
+            head = current->next;
+        } else {
+            prev->next = current->next;
+        }
+
+        delete current;
+    }
+
+    // Destructor to free memory allocated by the nodes
+    ~LinkedList() {
+        Node* current = head;
+        Node* next = nullptr;
+
+        while (current != nullptr) {
+            next = current->next;
+            delete current;
+            current = next;
+        }
+    }
+};
+
+int main() {
+    LinkedList list;
+
+    list.insertAtBeginning(3);
+    list.insertAtBeginning(2);
+    list.insertAtBeginning(1);
+
+    list.display(); // Output: 1 2 3
+
+    list.deleteNode(2);
+
+    list.display(); // Output: 1 3
+
+    return 0;
+}
