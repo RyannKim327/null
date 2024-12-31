@@ -1,52 +1,50 @@
-#include <iostream>
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
 
-struct Node {
-    int data;
-    Node* next;
-};
+class Queue:
+    def __init__(self):
+        self.head = None
+        self.tail = None
 
-Node* reverseLinkedList(Node* head) {
-    Node* prev = NULL;
-    Node* current = head;
-    Node* next = NULL;
+    def enqueue(self, data):
+        new_node = Node(data)
+        if self.tail is None:
+            self.head = new_node
+            self.tail = new_node
+        else:
+            self.tail.next = new_node
+            self.tail = new_node
 
-    while (current != NULL) {
-        next = current->next;
-        current->next = prev;
-        prev = current;
-        current = next;
-    }
+    def dequeue(self):
+        if self.head is None:
+            return None
+        data = self.head.data
+        self.head = self.head.next
+        if self.head is None:
+            self.tail = None
+        return data
 
-    head = prev;
+    def is_empty(self):
+        return self.head is None
 
-    return head;
-}
+    def print_queue(self):
+        current = self.head
+        while current:
+            print(current.data, end=' ')
+            current = current.next
+        print()
 
-void printLinkedList(Node* head) {
-    Node* temp = head;
-    while (temp != NULL) {
-        std::cout << temp->data << " ";
-        temp = temp->next;
-    }
-    std::cout << std::endl;
-}
+# Example usage
+queue = Queue()
+queue.enqueue(1)
+queue.enqueue(2)
+queue.enqueue(3)
 
-int main() {
-    Node* head = new Node();
-    head->data = 1;
-    head->next = new Node();
-    head->next->data = 2;
-    head->next->next = new Node();
-    head->next->next->data = 3;
-    head->next->next->next = NULL;
+queue.print_queue()  # Output: 1 2 3
 
-    std::cout << "Original Linked List: ";
-    printLinkedList(head);
+print(queue.dequeue())  # Output: 1
+print(queue.dequeue())  # Output: 2
 
-    head = reverseLinkedList(head);
-
-    std::cout << "Reversed Linked List: ";
-    printLinkedList(head);
-
-    return 0;
-}
+queue.print_queue()  # Output: 3
