@@ -1,38 +1,38 @@
-class Node:
-    def __init__(self, state, depth, parent=None):
-        self.state = state
-        self.depth = depth
-        self.parent = parent
+from queue import PriorityQueue
 
-def depth_limited_search(node, goal_state, max_depth):
-    if node.depth > max_depth:
-        return None
-    if node.state == goal_state:
-        return node
-    for child_state in get_children(node.state):
-        child_node = Node(child_state, node.depth + 1, node)
-        result = depth_limited_search(child_node, goal_state, max_depth)
-        if result is not None:
-            return result
-    return None
+def astar_search(start, goal, graph):
+    frontier = PriorityQueue()
+    frontier.put(start, 0)
+    
+    came_from = {}
+    cost_so_far = {}
+    
+    came_from[start] = None
+    cost_so_far[start] = 0
+    
+    while not frontier.empty():
+        current = frontier.get()
+        
+        if current == goal:
+            break
+        
+        for next in graph.neighbors(current):
+            new_cost = cost_so_far[current] + graph.cost(current, next)
+            if next not in cost_so_far or new_cost < cost_so_far[next]:
+                cost_so_far[next] = new_cost
+                priority = new_cost + heuristic(goal, next)
+                frontier.put(next, priority)
+                came_from[next] = current
+    
+    path = reconstruct_path(came_from, start, goal)
+    return path
 
-def get_children(state):
-    # Implement your code here to generate and return child states
-    return []
-
-# Usage example:
-initial_state = "A"
-goal_state = "Z"
-max_depth = 5
-initial_node = Node(initial_state, 0)
-result_node = depth_limited_search(initial_node, goal_state, max_depth)
-
-if result_node is not None:
-    path = [result_node.state]
-    while result_node.parent is not None:
-        result_node = result_node.parent
-        path.append(result_node.state)
+def reconstruct_path(came_from, start, goal):
+    current = goal
+    path = []
+    while current != start:
+        path.append(current)
+        current = came_from[current]
+    path.append(start)
     path.reverse()
-    print("Path found:", path)
-else:
-    print("Goal state not found within max depth")
+    return path
