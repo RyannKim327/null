@@ -1,14 +1,38 @@
-// Define two arrays
-array1 = [1, 2, 3, 4, 5]
-array2 = [3, 4, 5, 6, 7]
+from collections import defaultdict
 
-// Initialize an empty list to hold common elements
-common_elements = []
+class Graph:
+    def __init__(self):
+        self.graph = defaultdict(list)
 
-// Loop through array1 and check for common elements with array2
-for element in array1:
-    if element in array2:
-        common_elements.append(element)
+    def addEdge(self, u, v):
+        self.graph[u].append(v)
 
-// Print the common elements
-print("Common elements:", common_elements)
+    def topologicalSortUtil(self, v, visited, stack):
+        visited[v] = True
+
+        for i in self.graph[v]:
+            if visited[i] == False:
+                self.topologicalSortUtil(i, visited, stack)
+
+        stack.append(v)
+
+    def topologicalSort(self):
+        visited = [False] * len(self.graph)
+        stack = []
+
+        for i in range(len(self.graph)):
+            if visited[i] == False:
+                self.topologicalSortUtil(i, visited, stack)
+
+        return stack[::-1]
+
+g = Graph()
+g.addEdge(5, 2)
+g.addEdge(5, 0)
+g.addEdge(4, 0)
+g.addEdge(4, 1)
+g.addEdge(2, 3)
+g.addEdge(3, 1)
+
+print("Topological sorting of the graph:")
+print(g.topologicalSort())
