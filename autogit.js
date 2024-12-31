@@ -1,39 +1,13 @@
-def boyer_moore_horspool(text, pattern):
-    pattern_length = len(pattern)
-    text_length = len(text)
-
-    if pattern_length == 0:
-        return 0
-
-    bad_character_table = {}
+def findMedianSortedArrays(nums1, nums2):
+    merged = sorted(nums1 + nums2)
+    n = len(merged)
     
-    # Preprocessing the bad character table
-    for i in range(pattern_length - 1):
-        bad_character_table[pattern[i]] = pattern_length - 1 - i
+    if n % 2 == 0:
+        return (merged[n // 2 - 1] + merged[n // 2]) / 2
+    else:
+        return merged[n // 2]
 
-    idx = 0
-    while idx <= text_length - pattern_length:
-        j = pattern_length - 1
-
-        while j >= 0 and pattern[j] == text[idx + j]:
-            j -= 1
-
-        if j < 0:
-            return idx
-
-        if text[idx + pattern_length - 1] in bad_character_table:
-            idx += bad_character_table[text[idx + pattern_length - 1]]
-        else:
-            idx += pattern_length
-
-    return -1
-
-# Test the implementation
-text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-pattern = "consectetur"
-result = boyer_moore_horspool(text, pattern)
-
-if result != -1:
-    print(f"Pattern found at index {result}")
-else:
-    print("Pattern not found")
+# Example
+nums1 = [1, 3]
+nums2 = [2]
+print(findMedianSortedArrays(nums1, nums2))  # Output: 2.0
