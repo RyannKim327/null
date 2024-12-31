@@ -1,20 +1,22 @@
-def shellSort(arr):
-    n = len(arr)
-    gap = n // 2
+def binary_search(arr, low, high, target):
+    if high >= low:
+        mid = low + (high - low) // 2
 
-    while gap > 0:
-        for i in range(gap, n):
-            temp = arr[i]
-            j = i
-            while j >= gap and arr[j - gap] > temp:
-                arr[j] = arr[j - gap]
-                j -= gap
-            arr[j] = temp
-        gap //= 2
-
-    return arr
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] > target:
+            return binary_search(arr, low, mid - 1, target)
+        else:
+            return binary_search(arr, mid + 1, high, target)
+    else:
+        return -1
 
 # Example usage
-arr = [12, 34, 54, 2, 3]
-sorted_arr = shellSort(arr)
-print(sorted_arr)
+arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+target = 6
+result = binary_search(arr, 0, len(arr) - 1, target)
+
+if result != -1:
+    print("Element is present at index", str(result))
+else:
+    print("Element is not present in array")
