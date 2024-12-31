@@ -1,13 +1,5 @@
-def quicksort(arr):
-    if len(arr) <= 1:
-        return arr
-    else:
-        pivot = arr[0]
-        less = [x for x in arr[1:] if x <= pivot]
-        greater = [x for x in arr[1:] if x > pivot]
-        return quicksort(less) + [pivot] + quicksort(greater)
+# Removing whitespace from a string in Python
+string_with_whitespace = "  Hello, World!  "
+string_without_whitespace = string_with_whitespace.strip()
 
-# Example usage
-arr = [3, 6, 8, 10, 1, 2, 1]
-sorted_arr = quicksort(arr)
-print(sorted_arr)
+print(string_without_whitespace)  # Output: "Hello, World!"
