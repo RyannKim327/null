@@ -1,23 +1,19 @@
-import heapq
+def find_majority_element(arr):
+    count = 0
+    candidate = None
 
-class PriorityQueue:
-    def __init__(self):
-        self.heap = []
-        self.index = 0
+    for num in arr:
+        if count == 0:
+            candidate = num
+            count = 1
+        elif candidate == num:
+            count += 1
+        else:
+            count -= 1
 
-    def push(self, priority, item):
-        heapq.heappush(self.heap, (priority, self.index, item))
-        self.index += 1
-
-    def pop(self):
-        return heapq.heappop(self.heap)[-1]
+    return candidate
 
 # Example usage
-pq = PriorityQueue()
-pq.push(3, 'task3')
-pq.push(1, 'task1')
-pq.push(2, 'task2')
-
-print(pq.pop())  # Output: task1
-print(pq.pop())  # Output: task2
-print(pq.pop())  # Output: task3
+arr = [1, 2, 2, 2, 3, 2, 4, 2, 2]
+majority_element = find_majority_element(arr)
+print(f"The majority element is: {majority_element}")
