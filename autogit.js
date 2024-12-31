@@ -1,19 +1,12 @@
-bool hasCycle(Node *head) {
-    if (head == NULL || head->next == NULL) {
-        return false;
-    }
+import requests
 
-    Node *slow = head;
-    Node *fast = head;
+# Make a GET request to a public API
+response = requests.get("https://api.publicapis.org/random")
 
-    while (fast != NULL && fast->next != NULL) {
-        slow = slow->next;
-        fast = fast->next->next;
-
-        if (slow == fast) {
-            return true;
-        }
-    }
-
-    return false;
-}
+# Check if the request was successful (status code 200)
+if response.status_code == 200:
+    # Extract and print the response data
+    data = response.json()
+    print(data)
+else:
+    print("Failed to fetch data from API")
