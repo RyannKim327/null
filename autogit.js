@@ -1,17 +1,19 @@
-def is_prime(num):
-    if num <= 1:
-        return False
-    if num == 2:
-        return True
-    if num % 2 == 0:
-        return False
-    for i in range(3, int(num**0.5) + 1, 2):
-        if num % i == 0:
-            return False
-    return True
-
-number = 17
-if is_prime(number):
-    print(f"{number} is a prime number")
-else:
-    print(f"{number} is not a prime number")
+my_array = [1, 2, 3, 4, 5]
+reversed_array = my_array[::-1]
+print(reversed_array)
+let myArray = [1, 2, 3, 4, 5];
+let reversedArray = myArray.reverse();
+console.log(reversedArray);
+import java.util.Arrays;
+public class ReverseArray {
+    public static void main(String[] args) {
+        int[] myArray = {1, 2, 3, 4, 5};
+        int[] reversedArray = new int[myArray.length];
+        
+        for (int i = 0; i < myArray.length; i++) {
+            reversedArray[i] = myArray[myArray.length - 1 - i];
+        }
+        
+        System.out.println(Arrays.toString(reversedArray));
+    }
+}
