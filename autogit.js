@@ -1,77 +1,73 @@
-class SuffixTreeNode:
-    def __init__(self):
-        self.children = {}
-        self.suffix_link = None
-        self.start = -1
-        self.end = -1
+#include <iostream>
 
-class SuffixTree:
-    def __init__(self, text):
-        self.root = SuffixTreeNode()
-        self.root.suffix_link = self.root
-        self.text = text
-        self.active_node = self.root
-        self.active_edge = 0
-        self.active_length = 0
-        self.remaining_suffix_count = 0
-        self.split_end = None
-        self.last_new_node = None
-        self.active_edge = -1
+// Define the structure of a node
+struct Node {
+    int data;
+    Node* next;
+};
 
-    def extend_suffix_tree(self, pos):
-        self.remaining_suffix_count += 1
-        self.last_new_node = None
-        self.split_end = None
-        while self.remaining_suffix_count > 0:
-            if self.active_length == 0:
-                self.active_edge = pos
+// Define the structure of a queue
+class Queue {
+private:
+    Node* front;
+    Node* rear;
+public:
+    Queue() {
+        front = NULL;
+        rear = NULL;
+    }
 
-            if self.active_node.children.get(self.text[self.active_edge]) is None:
-                self.active_node.children[self.text[self.active_edge]] = SuffixTreeNode()
-                if self.last_new_node is not None:
-                    self.last_new_node.suffix_link = self.active_node
-                    self.last_new_node = None
+    // Function to check if the queue is empty
+    bool isEmpty() {
+        return front == NULL;
+    }
 
-            next_char = self.text[pos]
-            next_node = self.active_node.children[self.text[self.active_edge]]
-            edge_length = next_node.end - next_node.start
+    // Function to add an element to the queue
+    void enqueue(int data) {
+        Node* newNode = new Node();
+        newNode->data = data;
+        newNode->next = NULL;
+        if (isEmpty()) {
+            front = newNode;
+            rear = newNode;
+        } else {
+            rear->next = newNode;
+            rear = newNode;
+        }
+    }
 
-            if self.active_length >= edge_length:
-                self.active_edge += edge_length
-                self.active_length -= edge_length
-                self.active_node = next_node
-                continue
+    // Function to remove an element from the queue
+    void dequeue() {
+        if (isEmpty()) {
+            std::cout << "Queue is empty. Cannot dequeue.\n";
+            return;
+        }
+        Node* temp = front;
+        front = front->next;
+        delete temp;
+    }
 
-            if self.text[next_node.start + self.active_length] == next_char:
-                self.active_length += 1
-                if self.last_new_node is not None and self.active_node != self.root:
-                    self.last_new_node.suffix_link = self.active_node
-                    self.last_new_node = None
-                break
+    // Function to get the front element of the queue
+    int peek() {
+        if (isEmpty()) {
+            std::cout << "Queue is empty.\n";
+            return -1;
+        }
+        return front->data;
+    }
+};
 
-            self.split_end = next_node.start + self.active_length - 1
-            split_node = SuffixTreeNode()
-            split_node.start = next_node.start
-            split_node.end = self.split_end
-            next_node.start += self.active_length
-            split_node.children[next_char] = SuffixTreeNode()
-            next_node.children[self.text[next_node.start]] = split_node
+int main() {
+    Queue q;
 
-            if self.last_new_node is not None:
-                self.last_new_node.suffix_link = split_node
+    q.enqueue(10);
+    q.enqueue(20);
+    q.enqueue(30);
 
-            self.last_new_node = split_node
+    std::cout << "Front element: " << q.peek() << std::endl;
 
-            if self.active_node == self.root:
-                self.active_length -= 1
-                self.active_edge = pos - self.remaining_suffix_count + 1
-            else:
-                self.active_node = self.active_node.suffix_link
-            self.remaining_suffix_count -= 1
+    q.dequeue();
+    std::cout << "Front element after dequeue: " << q.peek() << std::endl;
 
-        if self.last_new_node is not None:
-            self.last_new_node.suffix_link = self.active_node
-
-    def build_suffix_tree(self):
-        for i in range(len(self.text)):
-            self.extend_suffix_tree(i)
+    return 0;
+}
