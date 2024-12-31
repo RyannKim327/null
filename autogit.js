@@ -1,12 +1,8 @@
-def count_word_occurrences(text, word):
-    words = text.split()
-    count = 0
-    for w in words:
-        if w == word:
-            count += 1
-    return count
+# Given array with duplicate elements
+arr = [1, 2, 3, 4, 2, 3, 1, 5]
 
-text = "apple banana orange apple mango apple"
-word = "apple"
-occurrences = count_word_occurrences(text, word)
-print(f"The word '{word}' appears {occurrences} times in the text.")
+# Convert array to a set to remove duplicates
+arr = list(set(arr))
+
+print(arr)
+[1, 2, 3, 4, 5]
