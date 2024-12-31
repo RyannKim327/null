@@ -1,40 +1,31 @@
-from collections import defaultdict
-
-class Graph:
+class TrieNode:
     def __init__(self):
-        self.graph = defaultdict(list)
+        self.children = {}
+        self.is_end_of_word = False
 
-    def add_edge(self, u, v):
-        self.graph[u].append(v)
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
 
-    def topological_sort_util(self, v, visited, stack):
-        visited[v] = True
+    def insert(self, word):
+        current = self.root
+        for char in word:
+            if char not in current.children:
+                current.children[char] = TrieNode()
+            current = current.children[char]
+        current.is_end_of_word = True
 
-        for i in self.graph[v]:
-            if not visited[i]:
-                self.topological_sort_util(i, visited, stack)
+    def search(self, word):
+        current = self.root
+        for char in word:
+            if char not in current.children:
+                return False
+            current = current.children[char]
+        return current.is_end_of_word
 
-        stack.append(v)
-
-    def topological_sort(self):
-        visited = [False] * len(self.graph)
-        stack = []
-
-        for i in range(len(self.graph)):
-            if not visited[i]:
-                self.topological_sort_util(i, visited, stack)
-
-        return stack[::-1]
-
-# Create a graph
-g = Graph()
-g.add_edge(5, 2)
-g.add_edge(5, 0)
-g.add_edge(4, 0)
-g.add_edge(4, 1)
-g.add_edge(2, 3)
-g.add_edge(3, 1)
-
-# Perform topological sort
-result = g.topological_sort()
-print("Topological sort order:", result)
+# Example usage
+trie = Trie()
+trie.insert("apple")
+trie.insert("app")
+print(trie.search("apple"))  # Output: True
+print(trie.search("apples")) # Output: False
