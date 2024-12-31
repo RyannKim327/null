@@ -1,17 +1,36 @@
-def longest_increasing_subsequence(arr):
-    if not arr:
-        return 0
-
+def counting_sort(arr, exp):
     n = len(arr)
-    lis = [1] * n
+    output = [0] * n
+    count = [0] * 10
 
-    for i in range(1, n):
-        for j in range(0, i):
-            if arr[i] > arr[j]:
-                lis[i] = max(lis[i], lis[j] + 1)
+    for i in range(n):
+        index = arr[i] // exp
+        count[index % 10] += 1
 
-    return max(lis)
+    for i in range(1, 10):
+        count[i] += count[i - 1]
+
+    i = n - 1
+    while i >= 0:
+        index = arr[i] // exp
+        output[count[index % 10] - 1] = arr[i]
+        count[index % 10] -= 1
+        i -= 1
+
+    for i in range(n):
+        arr[i] = output[i]
+
+def radix_sort(arr):
+    max_num = max(arr)
+
+    exp = 1
+    while max_num // exp > 0:
+        counting_sort(arr, exp)
+        exp *= 10
+
+    return arr
 
 # Example usage
-arr = [10, 22, 9, 33, 21, 50, 41, 60, 80]
-print("Length of the Longest Increasing Subsequence is", longest_increasing_subsequence(arr))
+arr = [170, 45, 75, 90, 802, 24, 2, 66]
+sorted_arr = radix_sort(arr)
+print(sorted_arr)
