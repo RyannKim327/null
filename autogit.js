@@ -1,47 +1,45 @@
-from queue import PriorityQueue
+def build_lps(pattern):
+    m = len(pattern)
+    lps = [0] * m
+    length = 0
 
-def beam_search(start_node, beam_width, max_depth):
-    frontier = PriorityQueue()
-    frontier.put((0, [start_node]))
+    i = 1
+    while i < m:
+        if pattern[i] == pattern[length]:
+            length += 1
+            lps[i] = length
+            i += 1
+        else:
+            if length != 0:
+                length = lps[length - 1]
+            else:
+                lps[i] = 0
+                i += 1
 
-    while not frontier.empty():
-        current_cost, current_path = frontier.get()
+    return lps
 
-        if len(current_path) == max_depth:
-            return current_path
+def kmp_search(text, pattern):
+    n = len(text)
+    m = len(pattern)
+    lps = build_lps(pattern)
 
-        current_node = current_path[-1]
-        children = expand(current_node)
+    i = 0  # index for text[]
+    j = 0  # index for pattern[]
 
-        for child in children:
-            new_cost = current_cost + cost(current_node, child)
-            new_path = current_path + [child]
-            frontier.put((new_cost, new_path))
+    while i < n:
+        if pattern[j] == text[i]:
+            i += 1
+            j += 1
 
-        # Keep only the top beam_width paths
-        top_paths = []
-        for _ in range(beam_width):
-            if frontier.empty():
-                break
-            top_paths.append(frontier.get())
+        if j == m:
+            print("Pattern found at index", i - j)
+            j = lps[j - 1]
+        elif i < n and pattern[j] != text[i]:
+            if j != 0:
+                j = lps[j - 1]
+            else:
+                i += 1
 
-        frontier.queue.clear()
-        for path in top_paths:
-            frontier.put(path)
-
-    return None
-
-# Define your expand and cost functions here
-def expand(node):
-    pass
-
-def cost(node1, node2):
-    pass
-
-# Example usage
-start_node = 1
-beam_width = 3
-max_depth = 5
-
-result = beam_search(start_node, beam_width, max_depth)
-print(result)
+text = "ABABDABACDABABCABAB"
+pattern = "ABABCABAB"
+kmp_search(text, pattern)
