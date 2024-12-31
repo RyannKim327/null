@@ -1,51 +1,12 @@
-class Node:
-    def __init__(self, value):
-        self.value = value
-        self.next = None
+# Initialize a string
+my_string = "Hello, World!"
 
-class Queue:
-    def __init__(self):
-        self.front = None
-        self.rear = None
+# Define the character you want to count
+character = "o"
 
-    def enqueue(self, value):
-        new_node = Node(value)
-        if self.rear is None:
-            self.front = new_node
-            self.rear = new_node
-        else:
-            self.rear.next = new_node
-            self.rear = new_node
+# Count the occurrence of the character in the string
+count = my_string.count(character)
 
-    def dequeue(self):
-        if self.front is None:
-            print("Queue is empty")
-            return None
-        else:
-            front_value = self.front.value
-            self.front = self.front.next
-            if self.front is None:
-                self.rear = None
-            return front_value
-
-    def isEmpty(self):
-        return self.front is None
-
-    def peek(self):
-        if self.front is None:
-            print("Queue is empty")
-            return None
-        else:
-            return self.front.value
-
-# Example usage
-q = Queue()
-q.enqueue(1)
-q.enqueue(2)
-q.enqueue(3)
-
-print(q.dequeue())  # Output: 1
-print(q.dequeue())  # Output: 2
-
-q.enqueue(4)
-print(q.peek())  # Output: 3
+# Print the result
+print(f"The character '{character}' occurs {count} times in the string.")
+The character 'o' occurs 2 times in the string.
