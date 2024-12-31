@@ -1,29 +1,21 @@
-def boyer_moore(text, pattern):
-    m = len(pattern)
-    n = len(text)
-    if m == 0:
-        return 0
-    skip = []
-    for _ in range(256):
-        skip.append(m)
-    for i in range(m - 1):
-        skip[ord(pattern[i])] = m - 1 - i
-    i = m - 1
-    while i < n:
-        j = m - 1
-        k = i
-        while j >= 0 and text[k] == pattern[j]:
-            j -= 1
-            k -= 1
-        if j == -1:
-            return k + 1
-        i += skip[ord(text[i])]
-    return -1
+function isPalindrome(str) {
+    // Removing non-alphanumeric characters and converting to lowercase
+    str = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+    
+    // Comparing characters from both ends
+    for (let i = 0; i < str.length / 2; i++) {
+        if (str[i] !== str[str.length - 1 - i]) {
+            return false;
+        }
+    }
+    
+    return true;
+}
 
-text = "AABAACAADAABAABA"
-pattern = "AABA"
-index = boyer_moore(text, pattern)
-if index != -1:
-    print("Pattern found at index:", index)
-else:
-    print("Pattern not found")
+// Test the function
+const inputString = "A man, a plan, a canal, Panama";
+if (isPalindrome(inputString)) {
+    console.log(`${inputString} is a palindrome.`);
+} else {
+    console.log(`${inputString} is not a palindrome.`);
+}
