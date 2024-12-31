@@ -1,37 +1,29 @@
-def fibonacci_search(arr, element):
-    fib_m_minus_2 = 0
-    fib_m_minus_1 = 1
-    fib_m = fib_m_minus_1 + fib_m_minus_2
-    while fib_m < len(arr):
-        fib_m_minus_2 = fib_m_minus_1
-        fib_m_minus_1 = fib_m
-        fib_m = fib_m_minus_1 + fib_m_minus_2
-
-    offset = -1
-    while fib_m > 1:
-        i = min(offset+fib_m_minus_2, len(arr)-1)
-        if arr[i] < element:
-            fib_m = fib_m_minus_1
-            fib_m_minus_1 = fib_m_minus_2
-            fib_m_minus_2 = fib_m - fib_m_minus_1
-            offset = i
-        elif arr[i] > element:
-            fib_m = fib_m_minus_2
-            fib_m_minus_1 = fib_m_minus_1 - fib_m_minus_2
-            fib_m_minus_2 = fib_m - fib_m_minus_1
-        else:
-            return i
-
-    if fib_m_minus_1 and arr[min(offset+1, len(arr)-1)] == element:
-        return offset+1
-
+def boyer_moore(text, pattern):
+    m = len(pattern)
+    n = len(text)
+    if m == 0:
+        return 0
+    skip = []
+    for _ in range(256):
+        skip.append(m)
+    for i in range(m - 1):
+        skip[ord(pattern[i])] = m - 1 - i
+    i = m - 1
+    while i < n:
+        j = m - 1
+        k = i
+        while j >= 0 and text[k] == pattern[j]:
+            j -= 1
+            k -= 1
+        if j == -1:
+            return k + 1
+        i += skip[ord(text[i])]
     return -1
 
-# Test the function
-arr = [2, 3, 5, 8, 13, 21, 34, 55, 89]
-element = 21
-result = fibonacci_search(arr, element)
-if result != -1:
-    print("Element found at index:", result)
+text = "AABAACAADAABAABA"
+pattern = "AABA"
+index = boyer_moore(text, pattern)
+if index != -1:
+    print("Pattern found at index:", index)
 else:
-    print("Element not found")
+    print("Pattern not found")
