@@ -1,18 +1,52 @@
-// Function to find common elements in two arrays
-function findCommonElements(array1, array2) {
-    let commonElements = [];
-  
-    for (let i = 0; i < array1.length; i++) {
-        if (array2.indexOf(array1[i]) !== -1 && commonElements.indexOf(array1[i]) === -1) {
-            commonElements.push(array1[i]);
-        }
+#include <iostream>
+
+struct Node {
+    int data;
+    Node* next;
+};
+
+Node* reverseLinkedList(Node* head) {
+    Node* prev = NULL;
+    Node* current = head;
+    Node* next = NULL;
+
+    while (current != NULL) {
+        next = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
     }
-  
-    return commonElements;
+
+    head = prev;
+
+    return head;
 }
 
-// Test the function
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 4, 5, 6, 7];
-const result = findCommonElements(array1, array2);
-console.log(result); // Output: [3, 4, 5]
+void printLinkedList(Node* head) {
+    Node* temp = head;
+    while (temp != NULL) {
+        std::cout << temp->data << " ";
+        temp = temp->next;
+    }
+    std::cout << std::endl;
+}
+
+int main() {
+    Node* head = new Node();
+    head->data = 1;
+    head->next = new Node();
+    head->next->data = 2;
+    head->next->next = new Node();
+    head->next->next->data = 3;
+    head->next->next->next = NULL;
+
+    std::cout << "Original Linked List: ";
+    printLinkedList(head);
+
+    head = reverseLinkedList(head);
+
+    std::cout << "Reversed Linked List: ";
+    printLinkedList(head);
+
+    return 0;
+}
