@@ -1,35 +1,13 @@
-#include <iostream>
+def max_subarray(arr):
+    max_current = max_global = arr[0]
+    
+    for i in range(1, len(arr)):
+        max_current = max(arr[i], max_current + arr[i])
+        max_global = max(max_global, max_current)
+    
+    return max_global
 
-struct Node {
-    int data;
-    Node* next;
-    
-    Node(int value) : data(value), next(nullptr) {}
-};
-
-int LinkedListLength(Node* head) {
-    int length = 0;
-    Node* current = head;
-    
-    while (current != nullptr) {
-        length++;
-        current = current->next;
-    }
-    
-    return length;
-}
-
-int main() {
-    // Create a linked list
-    Node* head = new Node(1);
-    head->next = new Node(2);
-    head->next->next = new Node(3);
-    head->next->next->next = new Node(4);
-    
-    // Calculate the length of the linked list
-    int length = LinkedListLength(head);
-    
-    std::cout << "Length of the linked list: " << length << std::endl;
-    
-    return 0;
-}
+# Example Usage
+arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+result = max_subarray(arr)
+print("Maximum sum subarray is:", result)
