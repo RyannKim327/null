@@ -1,21 +1,23 @@
-function isPalindrome(str) {
-    // Removing non-alphanumeric characters and converting to lowercase
-    str = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-    
-    // Comparing characters from both ends
-    for (let i = 0; i < str.length / 2; i++) {
-        if (str[i] !== str[str.length - 1 - i]) {
-            return false;
-        }
-    }
-    
-    return true;
-}
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
 
-// Test the function
-const inputString = "A man, a plan, a canal, Panama";
-if (isPalindrome(inputString)) {
-    console.log(`${inputString} is a palindrome.`);
-} else {
-    console.log(`${inputString} is not a palindrome.`);
-}
+def sum_tree_nodes(root):
+    if root is None:
+        return 0
+    return root.val + sum_tree_nodes(root.left) + sum_tree_nodes(root.right)
+
+# Example usage:
+# Construct a sample binary tree
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(5)
+root.right.left = TreeNode(6)
+root.right.right = TreeNode(7)
+
+total_sum = sum_tree_nodes(root)
+print(total_sum)  # Output: 28
