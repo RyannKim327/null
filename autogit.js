@@ -1,32 +1,17 @@
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.next = None
+def counting_sort(arr):
+    max_val = max(arr)
+    counts = [0] * (max_val + 1)
 
-def is_palindrome(head):
-    stack = []
-    current = head
+    for num in arr:
+        counts[num] += 1
 
-    while current is not None:
-        stack.append(current.data)
-        current = current.next
+    sorted_arr = []
+    for i in range(len(counts)):
+        sorted_arr.extend([i] * counts[i])
 
-    current = head
-    while current is not None:
-        if current.data != stack.pop():
-            return False
-        current = current.next
+    return sorted_arr
 
-    return True
-
-# Example linked list
-head = Node(1)
-head.next = Node(2)
-head.next.next = Node(3)
-head.next.next.next = Node(2)
-head.next.next.next.next = Node(1)
-
-if is_palindrome(head):
-    print("The linked list is a palindrome.")
-else:
-    print("The linked list is not a palindrome.")
+# Example
+arr = [4, 2, 2, 8, 3, 3, 1]
+sorted_arr = counting_sort(arr)
+print(sorted_arr)
