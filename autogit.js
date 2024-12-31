@@ -1,16 +1,12 @@
-import math
+def count_word_occurrences(text, word):
+    words = text.split()
+    count = 0
+    for w in words:
+        if w == word:
+            count += 1
+    return count
 
-def largest_prime_factor(n):
-    largest_prime = 2
-    
-    while n > largest_prime:
-        if n % largest_prime == 0:
-            n //= largest_prime
-        else:
-            largest_prime += 1
-    
-    return largest_prime
-
-number = 56
-result = largest_prime_factor(number)
-print(f"The largest prime factor of {number} is: {result}")
+text = "apple banana orange apple mango apple"
+word = "apple"
+occurrences = count_word_occurrences(text, word)
+print(f"The word '{word}' appears {occurrences} times in the text.")
