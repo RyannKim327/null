@@ -1,39 +1,14 @@
-def build_lps(pattern):
-    m = len(pattern)
-    lps = [0] * m
-    j = 0
+def is_prime(num):
+    if num < 2:
+        return False
+    for i in range(2, int(num ** 0.5) + 1):
+        if num % i == 0:
+            return False
+    return True
 
-    for i in range(1, m):
-        while j > 0 and pattern[i] != pattern[j]:
-            j = lps[j - 1]
-        if pattern[i] == pattern[j]:
-            j += 1
-        lps[i] = j
-
-    return lps
-
-def kmp_search(text, pattern):
-    n = len(text)
-    m = len(pattern)
-    lps = build_lps(pattern)
-    j = 0
-
-    for i in range(n):
-        while j > 0 and text[i] != pattern[j]:
-            j = lps[j - 1]
-        if text[i] == pattern[j]:
-            j += 1
-        if j == m:
-            return i - m + 1
-    
-    return -1
-
-# Example
-text = "ABABDABACDABABCABAB"
-pattern = "ABABCABAB"
-result = kmp_search(text, pattern)
-
-if result != -1:
-    print("Pattern found at index:", result)
+# Test the function
+num = 29
+if is_prime(num):
+    print(f"{num} is a prime number.")
 else:
-    print("Pattern not found")
+    print(f"{num} is not a prime number.")
