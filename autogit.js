@@ -1,38 +1,19 @@
-from collections import defaultdict
+def are_anagrams(str1, str2):
+    # Removing spaces and converting strings to lowercase
+    str1 = str1.replace(" ", "").lower()
+    str2 = str2.replace(" ", "").lower()
 
-class Graph:
-    def __init__(self):
-        self.graph = defaultdict(list)
+    # Check if the length of the two strings is the same
+    if len(str1) != len(str2):
+        return False
 
-    def addEdge(self, u, v):
-        self.graph[u].append(v)
+    # Sorting the characters of the string and comparing them
+    return sorted(str1) == sorted(str2)
 
-    def topologicalSortUtil(self, v, visited, stack):
-        visited[v] = True
-
-        for i in self.graph[v]:
-            if visited[i] == False:
-                self.topologicalSortUtil(i, visited, stack)
-
-        stack.append(v)
-
-    def topologicalSort(self):
-        visited = [False] * len(self.graph)
-        stack = []
-
-        for i in range(len(self.graph)):
-            if visited[i] == False:
-                self.topologicalSortUtil(i, visited, stack)
-
-        return stack[::-1]
-
-g = Graph()
-g.addEdge(5, 2)
-g.addEdge(5, 0)
-g.addEdge(4, 0)
-g.addEdge(4, 1)
-g.addEdge(2, 3)
-g.addEdge(3, 1)
-
-print("Topological sorting of the graph:")
-print(g.topologicalSort())
+# Test the function
+string1 = "Listen"
+string2 = "Silent"
+if are_anagrams(string1, string2):
+    print("The strings are anagrams.")
+else:
+    print("The strings are not anagrams.")
