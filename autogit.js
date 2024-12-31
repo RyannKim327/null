@@ -1,75 +1,61 @@
+import random
+import math
+
 class Node:
-    def __init__(self, key):
-        self.key = key
-        self.left = None
-        self.right = None
-        self.height = 1
+    def __init__(self, value, level):
+        self.value = value
+        self.forward = [None] * (level + 1)
 
-class AVLTree:
-    def __init__(self):
-        self.root = None
+class SkipList:
+    def __init__(self, max_level, p):
+        self.max_level = max_level
+        self.p = p
+        self.header = self.create_node(-1, max_level)
+        self.level = 0
 
-    def getHeight(self, node):
-        if node is None:
-            return 0
-        return node.height
+    def create_node(self, value, level):
+        return Node(value, level)
 
-    def getBalanceFactor(self, node):
-        if node is None:
-            return 0
-        return self.getHeight(node.left) - self.getHeight(node.right)
+    def random_level(self):
+        level = 0
+        while random.random() < self.p and level < self.max_level:
+            level += 1
+        return level
 
-    def rotateRight(self, y):
-        x = y.left
-        T = x.right
+    def insert(self, value):
+        update = [None] * (self.max_level + 1)
+        current = self.header
 
-        x.right = y
-        y.left = T
+        for i in range(self.level, -1, -1):
+            while current.forward[i] and current.forward[i].value < value:
+                current = current.forward[i]
+            update[i] = current
 
-        y.height = max(self.getHeight(y.left), self.getHeight(y.right)) + 1
-        x.height = max(self.getHeight(x.left), self.getHeight(x.right)) + 1
+        current = current.forward[0]
 
-        return x
+        if current is None or current.value != value:
+            new_level = self.random_level()
 
-    def rotateLeft(self, x):
-        y = x.right
-        T = y.left
+            if new_level > self.level:
+                for i in range(self.level + 1, new_level + 1):
+                    update[i] = self.header
+                self.level = new_level
 
-        y.left = x
-        x.right = T
+            new_node = self.create_node(value, new_level)
 
-        x.height = max(self.getHeight(x.left), self.getHeight(x.right)) + 1
-        y.height = max(self.getHeight(y.left), self.getHeight(y.right)) + 1
+            for i in range(new_level + 1):
+                new_node.forward[i] = update[i].forward[i]
+                update[i].forward[i] = new_node
 
-        return y
+    def search(self, value):
+        current = self.header
 
-    def insert(self, node, key):
-        if node is None:
-            return Node(key)
-        if key < node.key:
-            node.left = self.insert(node.left, key)
-        else:
-            node.right = self.insert(node.right, key)
+        for i in range(self.level, -1, -1):
+            while current.forward[i] and current.forward[i].value < value:
+                current = current.forward[i]
 
-        node.height = 1 + max(self.getHeight(node.left), self.getHeight(node.right))
+        current = current.forward[0]
 
-        balance = self.getBalanceFactor(node)
-
-        if balance > 1 and key < node.left.key:
-            return self.rotateRight(node)
-
-        if balance < -1 and key > node.right.key:
-            return self.rotateLeft(node)
-
-        if balance > 1 and key > node.left.key:
-            node.left = self.rotateLeft(node.left)
-            return self.rotateRight(node)
-
-        if balance < -1 and key < node.right.key:
-            node.right = self.rotateRight(node.right)
-            return self.rotateLeft(node)
-
-        return node
-
-    def insertKey(self, key):
-        self.root = self.insert(self.root, key)
+        if current and current.value == value:
+            return True
+        return False
