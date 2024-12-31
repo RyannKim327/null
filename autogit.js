@@ -1,22 +1,20 @@
-def binary_search(arr, low, high, target):
-    if high >= low:
-        mid = low + (high - low) // 2
+def are_anagrams(str1, str2):
+    # Remove spaces and convert strings to lowercase
+    str1 = str1.replace(" ", "").lower()
+    str2 = str2.replace(" ", "").lower()
 
-        if arr[mid] == target:
-            return mid
-        elif arr[mid] > target:
-            return binary_search(arr, low, mid - 1, target)
-        else:
-            return binary_search(arr, mid + 1, high, target)
-    else:
-        return -1
+    # Check if the strings have the same length
+    if len(str1) != len(str2):
+        return False
+
+    # Check if the sorted characters in both strings are equal
+    return sorted(str1) == sorted(str2)
 
 # Example usage
-arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-target = 6
-result = binary_search(arr, 0, len(arr) - 1, target)
+str1 = "listen"
+str2 = "silent"
 
-if result != -1:
-    print("Element is present at index", str(result))
+if are_anagrams(str1, str2):
+    print("The strings are anagrams.")
 else:
-    print("Element is not present in array")
+    print("The strings are not anagrams.")
