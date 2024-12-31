@@ -1,10 +1,20 @@
-def find_string_length(input_string):
-    length = 0
-    for char in input_string:
-        length += 1
-    return length
+def shellSort(arr):
+    n = len(arr)
+    gap = n // 2
 
-# Test the function
-input_string = "Hello, World!"
-length = find_string_length(input_string)
-print("Length of the string:", length)
+    while gap > 0:
+        for i in range(gap, n):
+            temp = arr[i]
+            j = i
+            while j >= gap and arr[j - gap] > temp:
+                arr[j] = arr[j - gap]
+                j -= gap
+            arr[j] = temp
+        gap //= 2
+
+    return arr
+
+# Example usage
+arr = [12, 34, 54, 2, 3]
+sorted_arr = shellSort(arr)
+print(sorted_arr)
