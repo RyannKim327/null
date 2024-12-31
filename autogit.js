@@ -1,38 +1,38 @@
-from collections import defaultdict
+def depth_limited_search_iterative(start_state, goal_state, depth_limit):
+    stack = [(start_state, 0)]
+    
+    while stack:
+        current_state, depth = stack.pop()
+        
+        if current_state == goal_state:
+            return True
+        
+        if depth < depth_limit:
+            # Generate child states
+            child_states = generate_child_states(current_state)
+            
+            for child_state in child_states:
+                stack.append((child_state, depth + 1))
+    
+    return False
 
-class Graph:
-    def __init__(self):
-        self.graph = defaultdict(list)
+def generate_child_states(state):
+    # Implement a function to generate child states based on the current state
+    # This function should return a list of child states
+    
+    # Example implementation:
+    # children = []
+    # # Generate child states here
+    # return children
 
-    def add_edge(self, u, v):
-        self.graph[u].append(v)
+# Example usage
+start_state = "A"
+goal_state = "F"
+depth_limit = 3
 
-    def topological_sort_util(self, v, visited, stack):
-        visited[v] = True
+result = depth_limited_search_iterative(start_state, goal_state, depth_limit)
 
-        for i in self.graph[v]:
-            if not visited[i]:
-                self.topological_sort_util(i, visited, stack)
-
-        stack.insert(0, v)
-
-    def topological_sort(self):
-        visited = {node: False for node in self.graph}
-        stack = []
-
-        for node in self.graph:
-            if not visited[node]:
-                self.topological_sort_util(node, visited, stack)
-
-        return stack
-
-# Usage
-g = Graph()
-g.add_edge(5, 2)
-g.add_edge(5, 0)
-g.add_edge(4, 0)
-g.add_edge(4, 1)
-g.add_edge(2, 3)
-g.add_edge(3, 1)
-
-print("Topological Sort:", g.topological_sort())
+if result:
+    print("Goal state found within depth limit.")
+else:
+    print("Goal state not found within depth limit.")
