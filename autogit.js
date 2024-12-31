@@ -1,24 +1,11 @@
-class Node:
-    def __init__(self, key):
-        self.left = None
-        self.right = None
-        self.val = key
+// Array to be reversed
+var originalArray = [1, 2, 3, 4, 5];
 
-def count_leaf_nodes(node):
-    if node is None:
-        return 0
-    if node.left is None and node.right is None:
-        return 1
-    else:
-        return count_leaf_nodes(node.left) + count_leaf_nodes(node.right)
+// Reversing the array
+var reversedArray = [];
+for (var i = originalArray.length - 1; i >= 0; i--) {
+    reversedArray.push(originalArray[i]);
+}
 
-# Example binary tree
-root = Node(1)
-root.left = Node(2)
-root.right = Node(3)
-root.left.left = Node(4)
-root.left.right = Node(5)
-root.right.left = Node(6)
-root.right.right = Node(7)
-
-print("Number of leaf nodes:", count_leaf_nodes(root))
+// Printing the reversed array
+console.log("Reversed Array: " + reversedArray);
