@@ -1,37 +1,30 @@
-def merge_sort(arr):
-    if len(arr) <= 1:
-        return arr
+class Node:
+    def __init__(self, key):
+        self.left = None
+        self.right = None
+        self.val = key
 
-    queue = [[item] for item in arr]
+def insert(root, key):
+    if root is None:
+        return Node(key)
+    else:
+        if root.val < key:
+            root.right = insert(root.right, key)
+        else:
+            root.left = insert(root.left, key)
+    return root
 
-    while len(queue) > 1:
-        first = queue.pop(0)
-        second = queue.pop(0)
+def inorder_traversal(root):
+    if root:
+        inorder_traversal(root.left)
+        print(root.val)
+        inorder_traversal(root.right)
 
-        merged = []
-        i = j = 0
+# Example usage
+root = None
+keys = [20, 10, 30, 15, 25, 5]
 
-        while i < len(first) and j < len(second):
-            if first[i] < second[j]:
-                merged.append(first[i])
-                i += 1
-            else:
-                merged.append(second[j])
-                j += 1
+for key in keys:
+    root = insert(root, key)
 
-        while i < len(first):
-            merged.append(first[i])
-            i += 1
-
-        while j < len(second):
-            merged.append(second[j])
-            j += 1
-
-        queue.append(merged)
-
-    return queue[0]
-
-# Test the merge sort algorithm
-arr = [38, 27, 43, 3, 9, 82, 10]
-sorted_arr = merge_sort(arr)
-print(sorted_arr)
+inorder_traversal(root)
