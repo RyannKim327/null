@@ -1,30 +1,87 @@
-class Node:
-    def __init__(self, key):
-        self.left = None
-        self.right = None
-        self.val = key
-        
-def insert(root, key):
-    if root is None:
-        return Node(key)
-    else:
-        if root.val < key:
-            root.right = insert(root.right, key)
-        else:
-            root.left = insert(root.left, key)
-    return root
-            
-def inorder_traversal(root):
-    if root:
-        inorder_traversal(root.left)
-        print(root.val)
-        inorder_traversal(root.right)
-        
-# Example usage:
-root = Node(5)
-insert(root, 3)
-insert(root, 8)
-insert(root, 1)
-insert(root, 4)
 
-inorder_traversal(root)
+#include <iostream>
+
+class Node {
+public:
+    int data;
+    Node* next;
+    
+    Node(int data) : data(data), next(nullptr) {}
+};
+
+class Queue {
+private:
+    Node* front;
+    Node* rear;
+    
+public:
+    Queue() : front(nullptr), rear(nullptr) {}
+    
+    void enqueue(int data) {
+        Node* newNode = new Node(data);
+        
+        if (rear == nullptr) {
+            front = newNode;
+            rear = newNode;
+        } else {
+            rear->next = newNode;
+            rear = newNode;
+        }
+        
+        std::cout << data << " enqueued to queue." << std::endl;
+    }
+    
+    void dequeue() {
+        if (front == nullptr) {
+            std::cout << "Queue is empty. Cannot dequeue." << std::endl;
+            return;
+        }
+        
+        Node* temp = front;
+        front = front->next;
+        
+        if (front == nullptr) {
+            rear = nullptr;
+        }
+        
+        std::cout << temp->data << " dequeued from queue." << std::endl;
+        delete temp;
+    }
+    
+    void display() {
+        if (front == nullptr) {
+            std::cout << "Queue is empty." << std::endl;
+            return;
+        }
+        
+        Node* current = front;
+        std::cout << "Queue elements: ";
+        
+        while (current != nullptr) {
+            std::cout << current->data << " ";
+            current = current->next;
+        }
+        
+        std::cout << std::endl;
+    }
+};
+
+int main() {
+    Queue q;
+    
+    q.enqueue(10);
+    q.enqueue(20);
+    q.enqueue(30);
+    
+    q.display();
+    
+    q.dequeue();
+    
+    q.display();
+    
+    q.dequeue();
+    q.dequeue();
+    q.dequeue();
+    
+    return 0;
+}
