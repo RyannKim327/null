@@ -1,12 +1,38 @@
-def quicksort(arr):
-    if len(arr) <= 1:
-        return arr
-    pivot = arr[len(arr) // 2]
-    left = [x for x in arr if x < pivot]
-    middle = [x for x in arr if x == pivot]
-    right = [x for x in arr if x > pivot]
-    return quicksort(left) + middle + quicksort(right)
+from collections import defaultdict
 
-# Test the function
-arr = [3, 6, 8, 10, 1, 2, 1]
-print(quicksort(arr))
+class Graph:
+    def __init__(self):
+        self.graph = defaultdict(list)
+
+    def add_edge(self, u, v):
+        self.graph[u].append(v)
+
+    def topological_sort_util(self, v, visited, stack):
+        visited[v] = True
+
+        for i in self.graph[v]:
+            if not visited[i]:
+                self.topological_sort_util(i, visited, stack)
+
+        stack.insert(0, v)
+
+    def topological_sort(self):
+        visited = {node: False for node in self.graph}
+        stack = []
+
+        for node in self.graph:
+            if not visited[node]:
+                self.topological_sort_util(node, visited, stack)
+
+        return stack
+
+# Usage
+g = Graph()
+g.add_edge(5, 2)
+g.add_edge(5, 0)
+g.add_edge(4, 0)
+g.add_edge(4, 1)
+g.add_edge(2, 3)
+g.add_edge(3, 1)
+
+print("Topological Sort:", g.topological_sort())
