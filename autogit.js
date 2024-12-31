@@ -1,19 +1,35 @@
-my_array = [1, 2, 3, 4, 5]
-reversed_array = my_array[::-1]
-print(reversed_array)
-let myArray = [1, 2, 3, 4, 5];
-let reversedArray = myArray.reverse();
-console.log(reversedArray);
-import java.util.Arrays;
-public class ReverseArray {
-    public static void main(String[] args) {
-        int[] myArray = {1, 2, 3, 4, 5};
-        int[] reversedArray = new int[myArray.length];
-        
-        for (int i = 0; i < myArray.length; i++) {
-            reversedArray[i] = myArray[myArray.length - 1 - i];
-        }
-        
-        System.out.println(Arrays.toString(reversedArray));
-    }
-}
+def tarjans_algorithm(graph):
+    index = 0
+    stack = []
+    indices = {}
+    low_links = {}
+    result = []
+
+    def dfs(node):
+        nonlocal index
+        indices[node] = index
+        low_links[node] = index
+        index += 1
+        stack.append(node)
+
+        for neighbor in graph[node]:
+            if neighbor not in indices:
+                dfs(neighbor)
+                low_links[node] = min(low_links[node], low_links[neighbor])
+            elif neighbor in stack:
+                low_links[node] = min(low_links[node], indices[neighbor])
+
+        if indices[node] == low_links[node]:
+            component = []
+            while True:
+                top = stack.pop()
+                component.append(top)
+                if top == node:
+                    break
+            result.append(component)
+
+    for node in graph:
+        if node not in indices:
+            dfs(node)
+
+    return result
