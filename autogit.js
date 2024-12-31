@@ -1,35 +1,50 @@
-def bad_character_table(pattern):
-    table = {}
-    pattern_length = len(pattern)
-    for i in range(pattern_length - 1):
-        table[pattern[i]] = pattern_length - 1 - i
-    return table
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
 
-def boyer_moore_horspool(text, pattern):
-    text_length = len(text)
-    pattern_length = len(pattern)
-    if text_length < pattern_length:
-        return -1
+class Queue:
+    def __init__(self):
+        self.front = None
+        self.rear = None
 
-    bad_char_table = bad_character_table(pattern)
-    
-    i = 0
-    while i <= text_length - pattern_length:
-        j = pattern_length - 1
-        while j >= 0 and pattern[j] == text[i + j]:
-            j -= 1
-        if j == -1:
-            return i
+    def is_empty(self):
+        return self.front is None
+
+    def enqueue(self, data):
+        new_node = Node(data)
+        if self.rear is None:
+            self.front = new_node
+            self.rear = new_node
         else:
-            shift = bad_char_table.get(text[i + j], pattern_length)
-            i += shift
+            self.rear.next = new_node
+            self.rear = new_node
 
-    return -1
+    def dequeue(self):
+        if self.is_empty():
+            return None
+        data = self.front.data
+        self.front = self.front.next
+        if self.front is None:
+            self.rear = None
+        return data
 
-text = "ABAAABCDBBABCDDEBCABC"
-pattern = "BCD"
-result = boyer_moore_horspool(text, pattern)
-if result != -1:
-    print(f"Pattern found at index {result}")
-else:
-    print("Pattern not found")
+    def display(self):
+        current = self.front
+        while current:
+            print(current.data, end=' ')
+            current = current.next
+        print()
+
+# Example Usage
+queue = Queue()
+queue.enqueue(1)
+queue.enqueue(2)
+queue.enqueue(3)
+
+queue.display()  # Output: 1 2 3
+
+print(queue.dequeue())  # Output: 1
+print(queue.dequeue())  # Output: 2
+
+queue.display()  # Output: 3
