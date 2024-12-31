@@ -1,53 +1,24 @@
-def bad_character_table(pattern):
-    table = {}
-    for i in range(len(pattern)-1):
-        table[pattern[i]] = len(pattern) - 1 - i
-    return table
+class Node:
+    def __init__(self, key):
+        self.left = None
+        self.right = None
+        self.val = key
 
-def good_suffix_table(pattern):
-    table = [0] * len(pattern)
-    i = len(pattern)
-    j = len(pattern) + 1
-    suff = [0] * j
-    
-    suff[i] = j
-    while i > 0:
-        while j <= len(pattern) and pattern[i-1] != pattern[j-1]:
-            if table[j] == 0:
-                table[j] = j-i
-            j = suff[j]
-        i -= 1
-        j -= 1
-        suff[i] = j
-    
-    for i in range(0, len(pattern)):
-        if suff[i] == 0:
-            for j in range(i, len(pattern)):
-                if table[j] == 0:
-                    table[j] = len(pattern) - i
-    return table
+def count_leaf_nodes(node):
+    if node is None:
+        return 0
+    if node.left is None and node.right is None:
+        return 1
+    else:
+        return count_leaf_nodes(node.left) + count_leaf_nodes(node.right)
 
-def boyer_moore(text, pattern):
-    bad_char = bad_character_table(pattern)
-    good_suffix = good_suffix_table(pattern)
-    
-    i = 0
-    while i <= len(text) - len(pattern):
-        j = len(pattern) - 1
-        
-        while j >= 0 and pattern[j] == text[i+j]:
-            j -= 1
-        
-        if j < 0:
-            print("Pattern found at index", i)
-            i += good_suffix[0]
-        else:
-            if text[i+j] in bad_char:
-                i += max(good_suffix[j+1], bad_char[text[i+j]] - len(pattern) + 1 + j)
-            else:
-                i += max(good_suffix[j+1], j+1)
-    
-# Example Usage
-text = "ABAAABCD"
-pattern = "ABC"
-boyer_moore(text, pattern)
+# Example binary tree
+root = Node(1)
+root.left = Node(2)
+root.right = Node(3)
+root.left.left = Node(4)
+root.left.right = Node(5)
+root.right.left = Node(6)
+root.right.right = Node(7)
+
+print("Number of leaf nodes:", count_leaf_nodes(root))
