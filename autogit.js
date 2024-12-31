@@ -1,25 +1,47 @@
-def interpolation_search(arr, x):
-    low = 0
-    high = len(arr) - 1
+from queue import PriorityQueue
 
-    while low <= high and x >= arr[low] and x <= arr[high]:
-        pos = low + ((x - arr[low]) * (high - low)) // (arr[high] - arr[low])
+def beam_search(start_node, beam_width, max_depth):
+    frontier = PriorityQueue()
+    frontier.put((0, [start_node]))
 
-        if arr[pos] == x:
-            return pos
-        elif arr[pos] < x:
-            low = pos + 1
-        else:
-            high = pos - 1
+    while not frontier.empty():
+        current_cost, current_path = frontier.get()
 
-    return -1
+        if len(current_path) == max_depth:
+            return current_path
+
+        current_node = current_path[-1]
+        children = expand(current_node)
+
+        for child in children:
+            new_cost = current_cost + cost(current_node, child)
+            new_path = current_path + [child]
+            frontier.put((new_cost, new_path))
+
+        # Keep only the top beam_width paths
+        top_paths = []
+        for _ in range(beam_width):
+            if frontier.empty():
+                break
+            top_paths.append(frontier.get())
+
+        frontier.queue.clear()
+        for path in top_paths:
+            frontier.put(path)
+
+    return None
+
+# Define your expand and cost functions here
+def expand(node):
+    pass
+
+def cost(node1, node2):
+    pass
 
 # Example usage
-arr = [2, 3, 5, 7, 11, 13, 17, 19, 23]
-x = 13
-result = interpolation_search(arr, x)
+start_node = 1
+beam_width = 3
+max_depth = 5
 
-if result != -1:
-    print(f"Element found at index {result}")
-else:
-    print("Element not found")
+result = beam_search(start_node, beam_width, max_depth)
+print(result)
