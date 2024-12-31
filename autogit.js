@@ -1,87 +1,40 @@
+from collections import defaultdict
 
-#include <iostream>
+class Graph:
+    def __init__(self):
+        self.graph = defaultdict(list)
 
-class Node {
-public:
-    int data;
-    Node* next;
-    
-    Node(int data) : data(data), next(nullptr) {}
-};
+    def add_edge(self, u, v):
+        self.graph[u].append(v)
 
-class Queue {
-private:
-    Node* front;
-    Node* rear;
-    
-public:
-    Queue() : front(nullptr), rear(nullptr) {}
-    
-    void enqueue(int data) {
-        Node* newNode = new Node(data);
-        
-        if (rear == nullptr) {
-            front = newNode;
-            rear = newNode;
-        } else {
-            rear->next = newNode;
-            rear = newNode;
-        }
-        
-        std::cout << data << " enqueued to queue." << std::endl;
-    }
-    
-    void dequeue() {
-        if (front == nullptr) {
-            std::cout << "Queue is empty. Cannot dequeue." << std::endl;
-            return;
-        }
-        
-        Node* temp = front;
-        front = front->next;
-        
-        if (front == nullptr) {
-            rear = nullptr;
-        }
-        
-        std::cout << temp->data << " dequeued from queue." << std::endl;
-        delete temp;
-    }
-    
-    void display() {
-        if (front == nullptr) {
-            std::cout << "Queue is empty." << std::endl;
-            return;
-        }
-        
-        Node* current = front;
-        std::cout << "Queue elements: ";
-        
-        while (current != nullptr) {
-            std::cout << current->data << " ";
-            current = current->next;
-        }
-        
-        std::cout << std::endl;
-    }
-};
+    def topological_sort_util(self, v, visited, stack):
+        visited[v] = True
 
-int main() {
-    Queue q;
-    
-    q.enqueue(10);
-    q.enqueue(20);
-    q.enqueue(30);
-    
-    q.display();
-    
-    q.dequeue();
-    
-    q.display();
-    
-    q.dequeue();
-    q.dequeue();
-    q.dequeue();
-    
-    return 0;
-}
+        for i in self.graph[v]:
+            if not visited[i]:
+                self.topological_sort_util(i, visited, stack)
+
+        stack.append(v)
+
+    def topological_sort(self):
+        visited = [False] * len(self.graph)
+        stack = []
+
+        for i in range(len(self.graph)):
+            if not visited[i]:
+                self.topological_sort_util(i, visited, stack)
+
+        return stack[::-1]
+
+# Create a graph
+g = Graph()
+g.add_edge(5, 2)
+g.add_edge(5, 0)
+g.add_edge(4, 0)
+g.add_edge(4, 1)
+g.add_edge(2, 3)
+g.add_edge(3, 1)
+
+# Perform topological sort
+result = g.topological_sort()
+print("Topological sort order:", result)
