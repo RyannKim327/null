@@ -1,19 +1,23 @@
-def find_majority_element(arr):
-    count = 0
-    majority_element = None
-    
-    for num in arr:
-        if count == 0:
-            majority_element = num
-            count = 1
-        elif majority_element == num:
-            count += 1
-        else:
-            count -= 1
-    
-    return majority_element
+def binary_search(arr, target):
+    low = 0
+    high = len(arr) - 1
 
-# Example
-arr = [2, 2, 3, 1, 2, 2, 2]
-result = find_majority_element(arr)
-print("Majority element:", result)
+    while low <= high:
+        mid = (low + high) // 2
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] < target:
+            low = mid + 1
+        else:
+            high = mid - 1
+
+    return -1  # Target not found
+
+# Example usage
+arr = [1, 3, 5, 7, 9, 11, 13]
+target = 7
+result = binary_search(arr, target)
+if result != -1:
+    print("Target found at index:", result)
+else:
+    print("Target not found")
