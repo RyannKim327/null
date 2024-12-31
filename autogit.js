@@ -1,12 +1,10 @@
-# Initialize a string
-my_string = "Hello, World!"
+def find_string_length(input_string):
+    length = 0
+    for char in input_string:
+        length += 1
+    return length
 
-# Define the character you want to count
-character = "o"
-
-# Count the occurrence of the character in the string
-count = my_string.count(character)
-
-# Print the result
-print(f"The character '{character}' occurs {count} times in the string.")
-The character 'o' occurs 2 times in the string.
+# Test the function
+input_string = "Hello, World!"
+length = find_string_length(input_string)
+print("Length of the string:", length)
