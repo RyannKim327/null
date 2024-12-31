@@ -1,26 +1,22 @@
-def is_palindrome(s):
-    # Function to check if a string is a valid palindrome
-    i, j = 0, len(s) - 1
-    
-    while i < j:
-        # Ignore non-alphanumeric characters
-        while i < j and not s[i].isalnum():
-            i += 1
-        while i < j and not s[j].isalnum():
-            j -= 1
-        
-        # Convert characters to lowercase to ignore case sensitivity
-        if s[i].lower() != s[j].lower():
-            return False
-        
-        i += 1
-        j -= 1
-    
-    return True
+def majority_element(arr):
+    counts = {}
+    for num in arr:
+        if num in counts:
+            counts[num] += 1
+        else:
+            counts[num] = 1
 
-# Test the function
-s = "A man, a plan, a canal, Panama"
-if is_palindrome(s):
-    print("The string is a valid palindrome.")
+    majority_count = len(arr) // 2 + 1
+    for num, count in counts.items():
+        if count >= majority_count:
+            return num
+
+    return None
+
+# Example Usage
+arr = [2, 2, 1, 1, 1, 2, 2]
+result = majority_element(arr)
+if result:
+    print(f"The majority element is: {result}")
 else:
-    print("The string is not a valid palindrome.")
+    print("No majority element found.")
