@@ -1,16 +1,40 @@
-def burrows_wheeler_transform(text):
-    text = text + "$"  # Add a special character to the end of the text
-    n = len(text)
-    
-    rotations = [text[i:n] + text[0:i] for i in range(n)]  # Generate all cyclic rotations of the text
-    rotations.sort()  # Sort the rotations
-    
-    transformed_text = ''.join(rotation[-1] for rotation in rotations)  # Extract the last characters of the rotations
-    
-    return transformed_text, rotations.index(text)
+class Stack:
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.stack = [None] * capacity
+        self.top = -1
 
-# Example usage
-text = "banana"
-transformed_text, index = burrows_wheeler_transform(text)
-print("Transformed text:", transformed_text)
-print("Index of original text:", index)
+    def is_empty(self):
+        return self.top == -1
+
+    def is_full(self):
+        return self.top == self.capacity - 1
+
+    def push(self, value):
+        if self.is_full():
+            print("Stack is full")
+            return
+        self.top += 1
+        self.stack[self.top] = value
+
+    def pop(self):
+        if self.is_empty():
+            print("Stack is empty")
+            return
+        value = self.stack[self.top]
+        self.top -= 1
+        return value
+
+    def peek(self):
+        if self.is_empty():
+            print("Stack is empty")
+            return
+        return self.stack[self.top]
+
+# Example Usage
+stack = Stack(5)
+stack.push(1)
+stack.push(2)
+stack.push(3)
+print(stack.pop())  # Output: 3
+print(stack.peek())  # Output: 2
