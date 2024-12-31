@@ -1,19 +1,19 @@
-def longestCommonPrefix(strs):
-    if not strs:
-        return ""
+def find_majority_element(arr):
+    count = 0
+    majority_element = None
     
-    min_len = min(len(s) for s in strs)
-    prefix = ""
-    
-    for i in range(min_len):
-        char = strs[0][i]
-        if all(s[i] == char for s in strs):
-            prefix += char
+    for num in arr:
+        if count == 0:
+            majority_element = num
+            count = 1
+        elif majority_element == num:
+            count += 1
         else:
-            break
+            count -= 1
     
-    return prefix
+    return majority_element
 
-# Example usage
-strs = ["flower", "flow", "flight"]
-print(longestCommonPrefix(strs))  # Output: "fl"
+# Example
+arr = [2, 2, 3, 1, 2, 2, 2]
+result = find_majority_element(arr)
+print("Majority element:", result)
