@@ -1,13 +1,46 @@
-def is_palindrome(s):
-    # Remove spaces and convert string to lowercase
-    s = s.replace(" ", "").lower()
-    
-    # Compare the string with its reverse
-    return s == s[::-1]
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end_of_word = False
 
-# Test the function
-input_string = "A man a plan a canal Panama"
-if is_palindrome(input_string):
-    print("The input string is a palindrome.")
-else:
-    print("The input string is not a palindrome.")
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word):
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.is_end_of_word = True
+
+    def search(self, word):
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+        return node.is_end_of_word
+
+    def starts_with(self, prefix):
+        node = self.root
+        for char in prefix:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+        return True
+
+# Example usage
+trie = Trie()
+trie.insert("apple")
+trie.insert("app")
+trie.insert("banana")
+
+print(trie.search("apple"))  # Output: True
+print(trie.search("app"))    # Output: True
+print(trie.search("banana")) # Output: True
+print(trie.search("orange")) # Output: False
+
+print(trie.starts_with("app")) # Output: True
+print(trie.starts_with("ora")) # Output: False
