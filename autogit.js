@@ -1,63 +1,26 @@
 class Node:
-    def __init__(self, key):
-        self.key = key
+    def __init__(self, value):
+        self.value = value
         self.left = None
         self.right = None
 
-class BinarySearchTree:
-    def __init__(self):
-        self.root = None
+def count_leaf_nodes(node):
+    if node is None:
+        return 0
+    
+    if node.left is None and node.right is None:
+        return 1
+    
+    return count_leaf_nodes(node.left) + count_leaf_nodes(node.right)
 
-    def insert(self, key):
-        if self.root is None:
-            self.root = Node(key)
-        else:
-            self._insert_recursive(self.root, key)
+# Example Usage
+root = Node(1)
+root.left = Node(2)
+root.right = Node(3)
+root.left.left = Node(4)
+root.left.right = Node(5)
+root.right.left = Node(6)
+root.right.right = Node(7)
 
-    def _insert_recursive(self, node, key):
-        if key < node.key:
-            if node.left is None:
-                node.left = Node(key)
-            else:
-                self._insert_recursive(node.left, key)
-        else:
-            if node.right is None:
-                node.right = Node(key)
-            else:
-                self._insert_recursive(node.right, key)
-
-    def search(self, key):
-        return self._search_recursive(self.root, key)
-
-    def _search_recursive(self, node, key):
-        if node is None or node.key == key:
-            return node
-        if key < node.key:
-            return self._search_recursive(node.left, key)
-        return self._search_recursive(node.right, key)
-
-    def delete(self, key):
-        self.root = self._delete_recursive(self.root, key)
-
-    def _delete_recursive(self, node, key):
-        if node is None:
-            return node
-        if key < node.key:
-            node.left = self._delete_recursive(node.left, key)
-        elif key > node.key:
-            node.right = self._delete_recursive(node.right, key)
-        else:
-            if node.left is None:
-                return node.right
-            elif node.right is None:
-                return node.left
-            temp = self._find_min_value_node(node.right)
-            node.key = temp.key
-            node.right = self._delete_recursive(node.right, temp.key)
-        return node
-
-    def _find_min_value_node(self, node):
-        current = node
-        while current.left is not None:
-            current = current.left
-        return current
+num_leaves = count_leaf_nodes(root)
+print("Number of leaf nodes in the binary tree:", num_leaves)
