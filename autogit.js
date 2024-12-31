@@ -1,46 +1,6 @@
-class TrieNode:
-    def __init__(self):
-        self.children = {}
-        self.is_end_of_word = False
+const url = 'https://jsonplaceholder.typicode.com/posts';
 
-class Trie:
-    def __init__(self):
-        self.root = TrieNode()
-
-    def insert(self, word):
-        node = self.root
-        for char in word:
-            if char not in node.children:
-                node.children[char] = TrieNode()
-            node = node.children[char]
-        node.is_end_of_word = True
-
-    def search(self, word):
-        node = self.root
-        for char in word:
-            if char not in node.children:
-                return False
-            node = node.children[char]
-        return node.is_end_of_word
-
-    def starts_with(self, prefix):
-        node = self.root
-        for char in prefix:
-            if char not in node.children:
-                return False
-            node = node.children[char]
-        return True
-
-# Example usage
-trie = Trie()
-trie.insert("apple")
-trie.insert("app")
-trie.insert("banana")
-
-print(trie.search("apple"))  # Output: True
-print(trie.search("app"))    # Output: True
-print(trie.search("banana")) # Output: True
-print(trie.search("orange")) # Output: False
-
-print(trie.starts_with("app")) # Output: True
-print(trie.starts_with("ora")) # Output: False
+fetch(url)
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));
