@@ -1,37 +1,32 @@
-class Graph:
-    def __init__(self, vertices):
-        self.V = vertices
-        self.graph = []
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
 
-    def add_edge(self, u, v, w):
-        self.graph.append([u, v, w])
+def is_palindrome(head):
+    stack = []
+    current = head
 
-    def bellman_ford(self, src):
-        dist = [float("Inf")] * self.V
-        dist[src] = 0
+    while current is not None:
+        stack.append(current.data)
+        current = current.next
 
-        for _ in range(self.V - 1):
-            for u, v, w in self.graph:
-                if dist[u] != float("Inf") and dist[u] + w < dist[v]:
-                    dist[v] = dist[u] + w
+    current = head
+    while current is not None:
+        if current.data != stack.pop():
+            return False
+        current = current.next
 
-        for u, v, w in self.graph:
-            if dist[u] != float("Inf") and dist[u] + w < dist[v]:
-                print("Graph contains negative weight cycle")
-                return
+    return True
 
-        print("Vertex Distance from Source")
-        for i in range(self.V):
-            print("{0}\t\t{1}".format(i, dist[i]))
+# Example linked list
+head = Node(1)
+head.next = Node(2)
+head.next.next = Node(3)
+head.next.next.next = Node(2)
+head.next.next.next.next = Node(1)
 
-g = Graph(5)
-g.add_edge(0, 1, -1)
-g.add_edge(0, 2, 4)
-g.add_edge(1, 2, 3)
-g.add_edge(1, 3, 2)
-g.add_edge(1, 4, 2)
-g.add_edge(3, 2, 5)
-g.add_edge(3, 1, 1)
-g.add_edge(4, 3, -3)
-
-g.bellman_ford(0)
+if is_palindrome(head):
+    print("The linked list is a palindrome.")
+else:
+    print("The linked list is not a palindrome.")
