@@ -1,12 +1,15 @@
-def decimal_to_binary(decimal):
-    if decimal < 0:
-        return "-" + decimal_to_binary(-decimal)
-    elif decimal == 0:
-        return "0"
-    else:
-        return bin(decimal)[2:]
+def are_anagrams(str1, str2):
+    # Remove spaces and convert to lowercase
+    str1 = str1.replace(" ", "").lower()
+    str2 = str2.replace(" ", "").lower()
+
+    # Check if the sorted forms of the strings are equal
+    return sorted(str1) == sorted(str2)
 
 # Test the function
-decimal = 10
-binary = decimal_to_binary(decimal)
-print(f"The binary representation of {decimal} is {binary}")
+str1 = "Listen"
+str2 = "Silent"
+if are_anagrams(str1, str2):
+    print(f"{str1} and {str2} are anagrams.")
+else:
+    print(f"{str1} and {str2} are not anagrams.")
