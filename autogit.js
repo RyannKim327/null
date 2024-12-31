@@ -1,13 +1,26 @@
-def findMedianSortedArrays(nums1, nums2):
-    merged = sorted(nums1 + nums2)
-    n = len(merged)
+def is_palindrome(s):
+    # Function to check if a string is a valid palindrome
+    i, j = 0, len(s) - 1
     
-    if n % 2 == 0:
-        return (merged[n // 2 - 1] + merged[n // 2]) / 2
-    else:
-        return merged[n // 2]
+    while i < j:
+        # Ignore non-alphanumeric characters
+        while i < j and not s[i].isalnum():
+            i += 1
+        while i < j and not s[j].isalnum():
+            j -= 1
+        
+        # Convert characters to lowercase to ignore case sensitivity
+        if s[i].lower() != s[j].lower():
+            return False
+        
+        i += 1
+        j -= 1
+    
+    return True
 
-# Example
-nums1 = [1, 3]
-nums2 = [2]
-print(findMedianSortedArrays(nums1, nums2))  # Output: 2.0
+# Test the function
+s = "A man, a plan, a canal, Panama"
+if is_palindrome(s):
+    print("The string is a valid palindrome.")
+else:
+    print("The string is not a valid palindrome.")
