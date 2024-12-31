@@ -1,32 +1,29 @@
-class Stack:
-    def __init__(self):
-        self.stack = []
+def longest_common_substring(s1, s2):
+    m = len(s1)
+    n = len(s2)
 
-    def isEmpty(self):
-        return len(self.stack) == 0
+    # Create a table to store the length of the longest common suffix
+    # of s1[:i] and s2[:j]
+    table = [[0] * (n + 1) for _ in range(m + 1)]
 
-    def push(self, item):
-        self.stack.append(item)
+    # Variables to keep track of the longest common substring and its length
+    longest_length = 0
+    end_index = 0
 
-    def pop(self):
-        if not self.isEmpty():
-            return self.stack.pop()
-        else:
-            return None
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if s1[i - 1] == s2[j - 1]:
+                table[i][j] = table[i - 1][j - 1] + 1
+                if table[i][j] > longest_length:
+                    longest_length = table[i][j]
+                    end_index = i
+            else:
+                table[i][j] = 0
 
-    def peek(self):
-        if not self.isEmpty():
-            return self.stack[-1]
-        else:
-            return None
+    start_index = end_index - longest_length
+    return s1[start_index:end_index]
 
-    def size(self):
-        return len(self.stack)
-stack = Stack()
-stack.push(1)
-stack.push(2)
-stack.push(3)
-
-print(stack.peek())  # Output: 3
-print(stack.pop())   # Output: 3
-print(stack.size())  # Output: 2
+s1 = "abcdef"
+s2 = "bcde"
+result = longest_common_substring(s1, s2)
+print(result)
