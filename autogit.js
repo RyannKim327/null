@@ -1,14 +1,35 @@
-import math
+#include <iostream>
 
-number = 5
-factorial = math.factorial(number)
-print(f'The factorial of {number} is: {factorial}')
-def factorial(n):
-    if n == 0:
-        return 1
-    else:
-        return n * factorial(n-1)
+struct Node {
+    int data;
+    Node* next;
+    
+    Node(int value) : data(value), next(nullptr) {}
+};
 
-number = 5
-result = factorial(number)
-print(f'The factorial of {number} is: {result}')
+int LinkedListLength(Node* head) {
+    int length = 0;
+    Node* current = head;
+    
+    while (current != nullptr) {
+        length++;
+        current = current->next;
+    }
+    
+    return length;
+}
+
+int main() {
+    // Create a linked list
+    Node* head = new Node(1);
+    head->next = new Node(2);
+    head->next->next = new Node(3);
+    head->next->next->next = new Node(4);
+    
+    // Calculate the length of the linked list
+    int length = LinkedListLength(head);
+    
+    std::cout << "Length of the linked list: " << length << std::endl;
+    
+    return 0;
+}
