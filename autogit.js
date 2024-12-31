@@ -1,13 +1,13 @@
-def burrows_wheeler_transform(text):
-    text += "$"  # Add a unique character not present in the text
-    rotations = [text[i:] + text[:i] for i in range(len(text))]  # Generate rotations of the text
-    rotations.sort()  # Sort the rotations lexicographically
-    transformed_text = "".join(rotation[-1] for rotation in rotations)  # Extract the last character of each rotation
-    index = rotations.index(text)  # Find the index of the original text in the sorted rotations
-    return transformed_text, index
+def insertion_sort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and key < arr[j]:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
 
 # Example usage
-text = "banana"
-transformed_text, index = burrows_wheeler_transform(text)
-print("Transformed text:", transformed_text)
-print("Index of original text:", index)
+arr = [12, 11, 13, 5, 6]
+insertion_sort(arr)
+print("Sorted array is:", arr)
