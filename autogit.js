@@ -1,45 +1,38 @@
-import java.util.LinkedList;
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
 
-public class HashTable {
-    private static final int SIZE = 10;
-    private LinkedList<Integer>[] table;
+class LinkedList:
+    def __init__(self):
+        self.head = None
 
-    public HashTable() {
-        table = new LinkedList[SIZE];
-        for (int i = 0; i < SIZE; i++) {
-            table[i] = new LinkedList<>();
-        }
-    }
+    def reverse(self):
+        prev = None
+        current = self.head
+        while current is not None:
+            next = current.next
+            current.next = prev
+            prev = current
+            current = next
+        self.head = prev
 
-    private int hashFunction(int key) {
-        return key % SIZE;
-    }
+    def printList(self):
+        temp = self.head
+        while temp:
+            print(temp.data, end=" ")
+            temp = temp.next
 
-    public void put(int key, int value) {
-        int index = hashFunction(key);
-        table[index].add(value);
-    }
+# Example usage
+llist = LinkedList()
+llist.head = Node(1)
+llist.head.next = Node(2)
+llist.head.next.next = Node(3)
 
-    public int get(int key) {
-        int index = hashFunction(key);
-        LinkedList<Integer> values = table[index];
-        for (Integer value : values) {
-            if (value == key) {
-                return value;
-            }
-        }
-        return -1;
-    }
+print("Original list:")
+llist.printList()
 
-    public static void main(String[] args) {
-        HashTable ht = new HashTable();
-        ht.put(1, 10);
-        ht.put(2, 20);
-        ht.put(11, 110);
-        
-        System.out.println(ht.get(1)); // Output: 10
-        System.out.println(ht.get(2)); // Output: 20
-        System.out.println(ht.get(11)); // Output: 110
-        System.out.println(ht.get(3)); // Output: -1
-    }
-}
+llist.reverse()
+
+print("\nReversed list:")
+llist.printList()
