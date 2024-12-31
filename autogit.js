@@ -1,22 +1,23 @@
-def bubble_sort(arr):
-    n = len(arr)
+// Definition for singly-linked list
+class ListNode {
+public:
+    int val;
+    ListNode *next;
+    ListNode(int x) : val(x), next(NULL) {}
+};
 
-    for i in range(n):
-        # Flag to check if any swapping is done in this iteration
-        swapped = False
+ListNode* findMiddle(ListNode* head) {
+    if (head == NULL) {
+        return NULL;
+    }
 
-        for j in range(0, n-i-1):
-            if arr[j] > arr[j+1]:
-                arr[j], arr[j+1] = arr[j+1], arr[j]  # Swap the elements
-                swapped = True
+    ListNode *slow = head;
+    ListNode *fast = head;
 
-        # If no swapping is done in this iteration, the array is already sorted
-        if not swapped:
-            break
+    while (fast != NULL && fast->next != NULL) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
 
-    return arr
-
-# Test the bubble sort function
-arr = [64, 34, 25, 12, 22, 11, 90]
-sorted_arr = bubble_sort(arr)
-print("Sorted array is:", sorted_arr)
+    return slow;
+}
