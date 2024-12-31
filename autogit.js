@@ -1,26 +1,44 @@
-class Node:
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
-
-def count_leaf_nodes(node):
-    if node is None:
-        return 0
+def fibonacci_search(arr, x):
+    n = len(arr)
     
-    if node.left is None and node.right is None:
-        return 1
+    # Fibonacci numbers
+    fib_minus_2 = 0
+    fib_minus_1 = 1
+    fib = fib_minus_1 + fib_minus_2
     
-    return count_leaf_nodes(node.left) + count_leaf_nodes(node.right)
+    while fib < n:
+        fib_minus_2 = fib_minus_1
+        fib_minus_1 = fib
+        fib = fib_minus_1 + fib_minus_2
+        
+    offset = -1
+    
+    while fib > 1:
+        i = min(offset + fib_minus_2, n - 1)
+        
+        if arr[i] < x:
+            fib = fib_minus_1
+            fib_minus_1 = fib_minus_2
+            fib_minus_2 = fib - fib_minus_1
+            offset = i
+        elif arr[i] > x:
+            fib = fib_minus_2
+            fib_minus_1 = fib_minus_1 - fib_minus_2
+            fib_minus_2 = fib - fib_minus_1
+        else:
+            return i
+        
+    if fib_minus_1 and arr[offset+1] == x:
+        return offset + 1
+    
+    return -1
 
-# Example Usage
-root = Node(1)
-root.left = Node(2)
-root.right = Node(3)
-root.left.left = Node(4)
-root.left.right = Node(5)
-root.right.left = Node(6)
-root.right.right = Node(7)
+# Example usage
+arr = [10, 22, 30, 44, 56, 58, 60, 70, 100]
+x = 56
+result = fibonacci_search(arr, x)
 
-num_leaves = count_leaf_nodes(root)
-print("Number of leaf nodes in the binary tree:", num_leaves)
+if result != -1:
+    print("Element found at index:", result)
+else:
+    print("Element not found")
