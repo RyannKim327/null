@@ -1,20 +1,40 @@
-def shell_sort(arr):
-    n = len(arr)
-    gap = n // 2
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
 
-    while gap > 0:
-        for i in range(gap, n):
-            temp = arr[i]
-            j = i
-            while j >= gap and arr[j - gap] > temp:
-                arr[j] = arr[j - gap]
-                j -= gap
-            arr[j] = temp
-        gap //= 2
+def is_palindrome(head):
+    stack = []
+    current = head
 
-    return arr
+    while current:
+        stack.append(current.data)
+        current = current.next
 
-# Example usage
-arr = [12, 34, 54, 2, 3]
-sorted_arr = shell_sort(arr)
-print("Sorted array is:", sorted_arr)
+    current = head
+    while current:
+        data = stack.pop()
+        if current.data != data:
+            return False
+        current = current.next
+
+    return True
+
+# Testing the code
+node1 = Node(1)
+node2 = Node(2)
+node3 = Node(3)
+node4 = Node(2)
+node5 = Node(1)
+
+node1.next = node2
+node2.next = node3
+node3.next = node4
+node4.next = node5
+
+head = node1
+
+if is_palindrome(head):
+    print("Linked list is a palindrome")
+else:
+    print("Linked list is not a palindrome")
