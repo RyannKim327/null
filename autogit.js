@@ -1,33 +1,44 @@
-original_array = [1, 2, 3, 1, 2, 4, 5]
-unique_array = list(set(original_array))
-print(unique_array)
-let originalArray = [1, 2, 3, 1, 2, 4, 5];
-let uniqueArray = [...new Set(originalArray)];
-console.log(uniqueArray);
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-
-public class Main {
-    public static void main(String[] args) {
-        Integer[] originalArray = {1, 2, 3, 1, 2, 4, 5};
-        List<Integer> uniqueList = new ArrayList<>(new HashSet<>(Arrays.asList(originalArray)));
-        System.out.println(uniqueList);
-    }
-}
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <unordered_set>
-
-int main() {
-    std::vector<int> originalArray = {1, 2, 3, 1, 2, 4, 5};
-    std::unordered_set<int> uniqueSet(originalArray.begin(), originalArray.end());
-    originalArray.assign(uniqueSet.begin(), uniqueSet.end());
+def fibonacci_search(arr, x):
+    n = len(arr)
     
-    for (int num : originalArray) {
-        std::cout << num << " ";
-    }
+    fib_m_minus_2 = 0
+    fib_m_minus_1 = 1
+    fib_m = fib_m_minus_1 + fib_m_minus_2
     
-    return 0;
-}
+    while fib_m < n:
+        fib_m_minus_2 = fib_m_minus_1
+        fib_m_minus_1 = fib_m
+        fib_m = fib_m_minus_1 + fib_m_minus_2
+    
+    offset = -1
+    
+    while fib_m > 1:
+        i = min(offset + fib_m_minus_2, n - 1)
+        
+        if arr[i] < x:
+            fib_m = fib_m_minus_1
+            fib_m_minus_1 = fib_m_minus_2
+            fib_m_minus_2 = fib_m - fib_m_minus_1
+            offset = i
+        elif arr[i] > x:
+            fib_m = fib_m_minus_2
+            fib_m_minus_1 = fib_m_minus_1 - fib_m_minus_2
+            fib_m_minus_2 = fib_m - fib_m_minus_1
+        else:
+            return i
+    
+    if fib_m_minus_1 and arr[offset+1] == x:
+        return offset+1
+    
+    return -1
+
+# Test the function
+arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100]
+x = 85
+
+result = fibonacci_search(arr, x)
+
+if result != -1:
+    print("Element found at index", result)
+else:
+    print("Element not found")
