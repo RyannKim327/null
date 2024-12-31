@@ -1,13 +1,39 @@
-def findMedianSortedArrays(nums1, nums2):
-    merged = sorted(nums1 + nums2)
-    n = len(merged)
-    
-    if n % 2 == 0:
-        return (merged[n // 2 - 1] + merged[n // 2]) / 2
-    else:
-        return merged[n // 2]
+def build_lps(pattern):
+    m = len(pattern)
+    lps = [0] * m
+    j = 0
 
-# Example usage
-nums1 = [1, 3]
-nums2 = [2]
-print(findMedianSortedArrays(nums1, nums2))  # Output: 2.0
+    for i in range(1, m):
+        while j > 0 and pattern[i] != pattern[j]:
+            j = lps[j - 1]
+        if pattern[i] == pattern[j]:
+            j += 1
+        lps[i] = j
+
+    return lps
+
+def kmp_search(text, pattern):
+    n = len(text)
+    m = len(pattern)
+    lps = build_lps(pattern)
+    j = 0
+
+    for i in range(n):
+        while j > 0 and text[i] != pattern[j]:
+            j = lps[j - 1]
+        if text[i] == pattern[j]:
+            j += 1
+        if j == m:
+            return i - m + 1
+    
+    return -1
+
+# Example
+text = "ABABDABACDABABCABAB"
+pattern = "ABABCABAB"
+result = kmp_search(text, pattern)
+
+if result != -1:
+    print("Pattern found at index:", result)
+else:
+    print("Pattern not found")
