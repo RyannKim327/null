@@ -1,45 +1,30 @@
-class Stack:
-    def __init__(self, size):
-        self.size = size
-        self.top = -1
-        self.stack = [None] * size
+struct Node {
+    int data;
+    Node** forward; // Pointers to the next nodes at different levels
+};
+class SkipList {
+private:
+    int maxLevels; // Maximum number of levels in the skip list
+    int level;
+    Node* header; // Header node of the skip list
 
-    def is_empty(self):
-        return self.top == -1
-
-    def is_full(self):
-        return self.top == self.size - 1
-
-    def push(self, value):
-        if self.is_full():
-            print("Stack is full, cannot push element")
-        else:
-            self.top += 1
-            self.stack[self.top] = value
-
-    def pop(self):
-        if self.is_empty():
-            print("Stack is empty, cannot pop element")
-            return None
-        else:
-            value = self.stack[self.top]
-            self.top -= 1
-            return value
-
-    def peek(self):
-        if self.is_empty():
-            print("Stack is empty")
-            return None
-        else:
-            return self.stack[self.top]
-
-# Example usage
-s = Stack(5)
-s.push(1)
-s.push(2)
-s.push(3)
-print(s.peek())  # Output: 3
-print(s.pop())   # Output: 3
-print(s.pop())   # Output: 2
-print(s.pop())   # Output: 1
-print(s.pop())   # Output: Stack is empty, cannot pop element
+public:
+    SkipList(int maxLevels);
+    Node* createNode(int data, int level);
+    int randomLevel();
+    void insertElement(int data);
+    void deleteElement(int data);
+    void searchElement(int data);
+};
+SkipList::SkipList(int maxLevels) {
+    this->maxLevels = maxLevels;
+    this->level = 0;
+    
+    // Create the header node
+    header = createNode(-1, maxLevels);
+    
+    // Initialize the forward pointers of the header node to NULL
+    for (int i = 0; i < maxLevels; i++) {
+        header->forward[i] = NULL;
+    }
+}
