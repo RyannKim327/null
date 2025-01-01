@@ -1,41 +1,7 @@
-class TrieNode:
-    def __init__(self):
-        self.children = {}
-        self.is_end_of_word = False
+def remove_vowels(input_string):
+    vowels = "AEIOUaeiou"
+    return "".join(char for char in input_string if char not in vowels)
 
-class Trie:
-    def __init__(self):
-        self.root = TrieNode()
-
-    def insert(self, word):
-        node = self.root
-        for char in word:
-            if char not in node.children:
-                node.children[char] = TrieNode()
-            node = node.children[char]
-        node.is_end_of_word = True
-
-    def search(self, word):
-        node = self.root
-        for char in word:
-            if char not in node.children:
-                return False
-            node = node.children[char]
-        return node.is_end_of_word
-
-    def starts_with(self, prefix):
-        node = self.root
-        for char in prefix:
-            if char not in node.children:
-                return False
-            node = node.children[char]
-        return True
-
-# Example usage
-trie = Trie()
-trie.insert("apple")
-trie.insert("app")
-print(trie.search("apple"))  # Output: True
-print(trie.search("app"))    # Output: True
-print(trie.search("banana")) # Output: False
-print(trie.starts_with("ban")) # Output: False
+input_string = "Hello, World!"
+result = remove_vowels(input_string)
+print(result)  # Output: "Hll, Wrld!"
