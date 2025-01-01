@@ -1,27 +1,25 @@
 class Node:
-    def __init__(self, key, value, color):
-        self.key = key
-        self.value = value
-        self.color = color
-        self.parent = None
-        self.left = None
-        self.right = None
+    def __init__(self, data):
+        self.data = data
+        self.next = None
 
-class RedBlackTree:
-    def __init__(self):
-        self.nil = Node(None, None, "BLACK")  # Nil sentinel node
-        self.root = self.nil
+def find_middle_element(head):
+    slow_ptr = head
+    fast_ptr = head
 
-    # Implement insertion, deletion, rotations, and fixing violations methods here
+    while fast_ptr is not None and fast_ptr.next is not None:
+        slow_ptr = slow_ptr.next
+        fast_ptr = fast_ptr.next.next
 
-    # Example method to search for a key in the red-black tree
-    def search(self, key):
-        current = self.root
-        while current != self.nil:
-            if key == current.key:
-                return current
-            elif key < current.key:
-                current = current.left
-            else:
-                current = current.right
-        return None
+    return slow_ptr.data
+
+# Example usage
+# Create a linked list: 1 -> 2 -> 3 -> 4 -> 5
+head = Node(1)
+head.next = Node(2)
+head.next.next = Node(3)
+head.next.next.next = Node(4)
+head.next.next.next.next = Node(5)
+
+middle_element = find_middle_element(head)
+print("Middle element:", middle_element)
