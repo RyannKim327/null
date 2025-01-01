@@ -1,7 +1,11 @@
-def remove_vowels(input_string):
-    vowels = "AEIOUaeiou"
-    return "".join(char for char in input_string if char not in vowels)
-
-input_string = "Hello, World!"
-result = remove_vowels(input_string)
-print(result)  # Output: "Hll, Wrld!"
+int findLength(Node* head) {
+    int length = 0;
+    Node* current = head;
+    
+    while (current != nullptr) {
+        length++;
+        current = current->next;
+    }
+    
+    return length;
+}
