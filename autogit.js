@@ -1,29 +1,41 @@
-procedure A*(start, goal)
-    openList := {start}
-    closedList := {}
-    
-    while openList is not empty
-        current := node in openList with the lowest f_cost
-        
-        if current == goal
-            return reconstruct_path(current)
-        
-        remove current from openList
-        add current to closedList
-        
-        foreach neighbor of current
-            if neighbor in closedList
-                continue
-            
-            tentative_g_cost := current.g_cost + movement_cost(current, neighbor)
-            
-            if neighbor not in openList or tentative_g_cost < neighbor.g_cost
-                neighbor.parent := current
-                neighbor.g_cost := tentative_g_cost
-                neighbor.h_cost := heuristic_cost(neighbor, goal)
-                neighbor.f_cost := neighbor.g_cost + neighbor.h_cost
-                
-                if neighbor not in openList
-                    add neighbor to openList
-    
-    return failure
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end_of_word = False
+
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word):
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.is_end_of_word = True
+
+    def search(self, word):
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+        return node.is_end_of_word
+
+    def starts_with(self, prefix):
+        node = self.root
+        for char in prefix:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+        return True
+
+# Example usage
+trie = Trie()
+trie.insert("apple")
+trie.insert("app")
+print(trie.search("apple"))  # Output: True
+print(trie.search("app"))    # Output: True
+print(trie.search("banana")) # Output: False
+print(trie.starts_with("ban")) # Output: False
