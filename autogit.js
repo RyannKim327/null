@@ -1,28 +1,37 @@
-# Define a node in the binary tree
-class Node:
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
+def boyer_moore(text, pattern):
+    n = len(text)
+    m = len(pattern)
 
-# Function to calculate the sum of all nodes in the binary tree
-def sum_binary_tree(root):
-    if root is None:
-        return 0
-    return root.value + sum_binary_tree(root.left) + sum_binary_tree(root.right)
+    # Preprocessing Phase
+    bad_char = {}
+    for i in range(m):
+        bad_char[pattern[i]] = i
 
-# Example of a binary tree
-#         1
-#        / \
-#       2   3
-#      / \
-#     4   5
-root = Node(1)
-root.left = Node(2)
-root.right = Node(3)
-root.left.left = Node(4)
-root.left.right = Node(5)
+    shift = [m] * (m + 1)
+    for i in range(m):
+        shift[i] = m - i - 1
+    for i in range(m - 1):
+        shift[m - bad_char[pattern[i]] - 1] = m - i - 1
 
-# Calculate the sum of all nodes in the binary tree
-total_sum = sum_binary_tree(root)
-print("Sum of all nodes in the binary tree:", total_sum)
+    # Search Phase
+    i = m - 1
+    while i < n:
+        j = m - 1
+        while j >= 0 and text[i] == pattern[j]:
+            i -= 1
+            j -= 1
+        if j == -1:
+            return i + 1
+
+        i += max(shift[j + 1], j - bad_char.get(text[i], -1))
+
+    return -1
+
+# Test the algorithm
+text = "AABAACAADAABAABA"
+pattern = "AABA"
+result = boyer_moore(text, pattern)
+if result != -1:
+    print(f"Pattern found at index {result}")
+else:
+    print("Pattern not found")
