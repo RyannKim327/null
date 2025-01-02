@@ -1,40 +1,32 @@
-from collections import deque
+def depth_limited_search(node, goal, depth_limit):
+    if node == goal:
+        return [node]
+    if depth_limit == 0:
+        return None
+    if node is None:
+        return None
 
-def breadth_limited_search(graph, start, goal, limit):
-    visited = set()
-    queue = deque([(start, 0)])
-    
-    while queue:
-        node, depth = queue.popleft()
-        
-        if node == goal:
-            return True
+    for child in expand(node):
+        result = depth_limited_search(child, goal, depth_limit - 1)
+        if result is not None:
+            return [node] + result
 
-        if depth < limit:
-            visited.add(node)
-            for neighbor in graph[node]:
-                if neighbor not in visited:
-                    queue.append((neighbor, depth + 1))
-    
-    return False
+    return None
 
-# Example graph
-graph = {
-    'A': ['B', 'C'],
-    'B': ['A', 'D', 'E'],
-    'C': ['A', 'F'],
-    'D': ['B'],
-    'E': ['B', 'F'],
-    'F': ['C', 'E']
-}
+def expand(node):
+    # Function to generate child nodes of a given node
+    # Implement this function according to your specific problem
 
-start_node = 'A'
-goal_node = 'F'
-limit = 2
+    return []
 
-result = breadth_limited_search(graph, start_node, goal_node, limit)
+# Example usage
+start_node = "A"
+goal_node = "D"
+depth_limit = 3
 
-if result:
-    print(f'Goal node {goal_node} found within limit of {limit}.')
+result_path = depth_limited_search(start_node, goal_node, depth_limit)
+
+if result_path is not None:
+    print("Path found:", result_path)
 else:
-    print(f'Goal node {goal_node} not found within limit of {limit}.')
+    print("Path not found within depth limit")
