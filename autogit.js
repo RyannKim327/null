@@ -1,64 +1,40 @@
-#include <iostream>
+from collections import deque
 
-#define MAX_SIZE 100
+def breadth_limited_search(graph, start, goal, limit):
+    visited = set()
+    queue = deque([(start, 0)])
+    
+    while queue:
+        node, depth = queue.popleft()
+        
+        if node == goal:
+            return True
 
-class Stack {
-private:
-    int arr[MAX_SIZE];
-    int top;
+        if depth < limit:
+            visited.add(node)
+            for neighbor in graph[node]:
+                if neighbor not in visited:
+                    queue.append((neighbor, depth + 1))
+    
+    return False
 
-public:
-    Stack() {
-        top = -1;
-    }
-
-    bool isEmpty() {
-        return top == -1;
-    }
-
-    bool isFull() {
-        return top == MAX_SIZE - 1;
-    }
-
-    void push(int value) {
-        if (isFull()) {
-            std::cout << "Stack overflow\n";
-            return;
-        }
-        arr[++top] = value;
-        std::cout << value << " pushed to the stack\n";
-    }
-
-    void pop() {
-        if (isEmpty()) {
-            std::cout << "Stack underflow\n";
-            return;
-        }
-        int value = arr[top--];
-        std::cout << value << " popped from the stack\n";
-    }
-
-    int peek() {
-        if (isEmpty()) {
-            std::cout << "Stack is empty\n";
-            return -1;
-        }
-        return arr[top];
-    }
-};
-
-int main() {
-    Stack stack;
-    stack.push(5);
-    stack.push(10);
-    stack.push(15);
-
-    std::cout << "Top element: " << stack.peek() << "\n";
-
-    stack.pop();
-    stack.pop();
-    stack.pop();
-    stack.pop();
-
-    return 0;
+# Example graph
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
 }
+
+start_node = 'A'
+goal_node = 'F'
+limit = 2
+
+result = breadth_limited_search(graph, start_node, goal_node, limit)
+
+if result:
+    print(f'Goal node {goal_node} found within limit of {limit}.')
+else:
+    print(f'Goal node {goal_node} not found within limit of {limit}.')
