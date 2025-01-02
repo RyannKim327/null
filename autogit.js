@@ -1,35 +1,34 @@
-import heapq
+function computeLPSArray(pattern):
+    length = 0
+    lps[0] = 0
+    i = 1
+    while i < length(pattern):
+        if pattern[i] is equal to pattern[length]:
+            length = length + 1
+            lps[i] = length
+            i = i + 1
+        else:
+            if length is not equal to 0:
+                length = lps[length - 1]
+            else:
+                lps[i] = 0
+                i = i + 1
 
-def dijkstra(graph, start):
-    distances = {node: float('infinity') for node in graph}
-    distances[start] = 0
-    pq = [(0, start)]
-
-    while pq:
-        current_distance, current_node = heapq.heappop(pq)
-
-        if current_distance > distances[current_node]:
-            continue
-
-        for neighbor, weight in graph[current_node].items():
-            distance = current_distance + weight
-
-            if distance < distances[neighbor]:
-                distances[neighbor] = distance
-                heapq.heappush(pq, (distance, neighbor))
-
-    return distances
-
-# Sample Usage
-graph = {
-    'A': {'B': 1, 'C': 4},
-    'B': {'A': 1, 'C': 2, 'D': 5},
-    'C': {'A': 4, 'B': 2, 'D': 1},
-    'D': {'B': 5, 'C': 1}
-}
-
-start_node = 'A'
-distances = dijkstra(graph, start_node)
-
-for node, distance in distances.items():
-    print(f'The shortest distance from {start_node} to {node} is {distance}')
+function KMPSearch(text, pattern):
+    n = length(text)
+    m = length(pattern)
+    lps = computeLPSArray(pattern)
+    i = 0
+    j = 0
+    while i < n:
+        if text[i] is equal to pattern[j]:
+            i = i + 1
+            j = j + 1
+        if j is equal to m:
+            print "Pattern found at index " + str(i - j)
+            j = lps[j - 1]
+        else if i < n and text[i] is not equal to pattern[j]:
+            if j is not equal to 0:
+                j = lps[j - 1]
+            else:
+                i = i + 1
