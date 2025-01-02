@@ -1,18 +1,35 @@
-/* Node structure for the linked list */
-struct Node {
-    int data;
-    struct Node* next;
-};
+import heapq
 
-/* Function to find the length of a linked list */
-int findLinkedListLength(struct Node* head) {
-    int length = 0;
-    struct Node* current = head;
+def dijkstra(graph, start):
+    distances = {node: float('infinity') for node in graph}
+    distances[start] = 0
+    pq = [(0, start)]
 
-    while (current != NULL) {
-        length++;
-        current = current->next;
-    }
+    while pq:
+        current_distance, current_node = heapq.heappop(pq)
 
-    return length;
+        if current_distance > distances[current_node]:
+            continue
+
+        for neighbor, weight in graph[current_node].items():
+            distance = current_distance + weight
+
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                heapq.heappush(pq, (distance, neighbor))
+
+    return distances
+
+# Sample Usage
+graph = {
+    'A': {'B': 1, 'C': 4},
+    'B': {'A': 1, 'C': 2, 'D': 5},
+    'C': {'A': 4, 'B': 2, 'D': 1},
+    'D': {'B': 5, 'C': 1}
 }
+
+start_node = 'A'
+distances = dijkstra(graph, start_node)
+
+for node, distance in distances.items():
+    print(f'The shortest distance from {start_node} to {node} is {distance}')
