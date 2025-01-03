@@ -1,17 +1,34 @@
-def first_repeated_char(input_string):
-    char_set = set()
-    
-    for char in input_string:
-        if char in char_set:
-            return char
-        char_set.add(char)
-    
-    return None
+import heapq
 
-input_string = "abcdefgha"
-repeated_char = first_repeated_char(input_string)
+def dijkstra(graph, start):
+    distances = {node: float('infinity') for node in graph}
+    distances[start] = 0
+    priority_queue = [(0, start)]
 
-if repeated_char:
-    print("First repeated character:", repeated_char)
-else:
-    print("No repeated characters found.")
+    while priority_queue:
+        current_distance, current_node = heapq.heappop(priority_queue)
+
+        if current_distance > distances[current_node]:
+            continue
+
+        for neighbor, weight in graph[current_node].items():
+            distance = current_distance + weight
+
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                heapq.heappush(priority_queue, (distance, neighbor))
+
+    return distances
+
+# Example graph
+graph = {
+    'A': {'B': 1, 'C': 4},
+    'B': {'A': 1, 'C': 2, 'D': 5},
+    'C': {'A': 4, 'B': 2, 'D': 1},
+    'D': {'B': 5, 'C': 1}
+}
+
+start_node = 'A'
+shortest_distances = dijkstra(graph, start_node)
+
+print(shortest_distances)
