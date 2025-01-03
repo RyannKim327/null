@@ -1,35 +1,10 @@
-string = "  Hello, World!  "
-new_string = string.strip()
-print(new_string)
-let string = "  Hello, World!  ";
-let new_string = string.trim();
-console.log(new_string);
-String string = "  Hello, World!  ";
-String newString = string.trim();
-System.out.println(newString);
-#include <iostream>
-#include <algorithm>
-#include <cctype>
-#include <string>
+def count_occurrences(character, string):
+    count = 0
+    for char in string:
+        if char == character:
+            count += 1
+    return count
 
-int main() {
-    std::string str = "  Hello, World!  ";
-    str.erase(std::remove_if(str.begin(), str.end(), ::isspace), str.end());
-    std::cout << str << std::endl;
-    return 0;
-}
-string = "  Hello, World!  "
-new_string = string.strip
-puts new_string
-package main
-
-import (
-	"fmt"
-	"strings"
-)
-
-func main() {
-	str := "  Hello, World!  "
-	newStr := strings.TrimSpace(str)
-	fmt.Println(newStr)
-}
+# Test the function
+char_count = count_occurrences('a', 'banana')
+print(char_count)  # Output will be 3
