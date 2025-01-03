@@ -1,10 +1,17 @@
-def count_occurrences(character, string):
-    count = 0
-    for char in string:
-        if char == character:
-            count += 1
-    return count
+def first_repeated_char(input_string):
+    char_set = set()
+    
+    for char in input_string:
+        if char in char_set:
+            return char
+        char_set.add(char)
+    
+    return None
 
-# Test the function
-char_count = count_occurrences('a', 'banana')
-print(char_count)  # Output will be 3
+input_string = "abcdefgha"
+repeated_char = first_repeated_char(input_string)
+
+if repeated_char:
+    print("First repeated character:", repeated_char)
+else:
+    print("No repeated characters found.")
