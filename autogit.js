@@ -1,34 +1,34 @@
-import android.os.AsyncTask
-import java.io.BufferedInputStream
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
+def merge_sort(arr):
+    if len(arr) <= 1:
+        return arr
+    
+    mid = len(arr) // 2
+    left_half = arr[:mid]
+    right_half = arr[mid:]
+    
+    left_half = merge_sort(left_half)
+    right_half = merge_sort(right_half)
+    
+    return merge(left_half, right_half)
 
-class ConnectAsyncTask : AsyncTask<String, Void, String>() {
+def merge(left, right):
+    result = []
+    left_index = right_index = 0
+    
+    while left_index < len(left) and right_index < len(right):
+        if left[left_index] < right[right_index]:
+            result.append(left[left_index])
+            left_index += 1
+        else:
+            result.append(right[right_index])
+            right_index += 1
+    
+    result.extend(left[left_index:])
+    result.extend(right[right_index:])
+    
+    return result
 
-    override fun doInBackground(vararg urls: String): String {
-        val url = URL(urls[0])
-        val urlConnection = url.openConnection() as HttpURLConnection
-
-        try {
-            val inputStream = BufferedInputStream(urlConnection.inputStream)
-            val bufferedReader = BufferedReader(InputStreamReader(inputStream))
-            val response = StringBuilder()
-            var line: String?
-
-            while (bufferedReader.readLine().also { line = it } != null) {
-                response.append(line)
-            }
-
-            return response.toString()
-        } finally {
-            urlConnection.disconnect()
-        }
-    }
-
-    override fun onPostExecute(result: String) {
-        // Handle the result here
-        // This method runs on the UI thread
-    }
-}
+# Example usage
+arr = [38, 27, 43, 3, 9, 82, 10]
+sorted_arr = merge_sort(arr)
+print(sorted_arr)
