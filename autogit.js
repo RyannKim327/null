@@ -1,10 +1,13 @@
-def check_anagram(str1, str2):
-    return sorted(str1) == sorted(str2)
+def insertion_sort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and key < arr[j]:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
 
-str1 = "listen"
-str2 = "silent"
-
-if check_anagram(str1, str2):
-    print("The strings are anagrams")
-else:
-    print("The strings are not anagrams")
+# Example usage
+arr = [12, 11, 13, 5, 6]
+insertion_sort(arr)
+print("Sorted array:", arr)
