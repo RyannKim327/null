@@ -1,29 +1,21 @@
-def heapify(arr, n, i):
-    largest = i
-    l = 2 * i + 1
-    r = 2 * i + 2
+import heapq
 
-    if l < n and arr[i] < arr[l]:
-        largest = l
+class PriorityQueue:
+    def __init__(self):
+        self._queue = []
+        self._index = 0
 
-    if r < n and arr[largest] < arr[r]:
-        largest = r
+    def push(self, item, priority):
+        heapq.heappush(self._queue, (priority, self._index, item))
+        self._index += 1
 
-    if largest != i:
-        arr[i], arr[largest] = arr[largest], arr[i]
-        heapify(arr, n, largest)
+    def pop(self):
+        return heapq.heappop(self._queue)[-1]
+q = PriorityQueue()
+q.push('task1', 3)
+q.push('task2', 1)
+q.push('task3', 2)
 
-def heap_sort(arr):
-    n = len(arr)
-
-    for i in range(n//2 - 1, -1, -1):
-        heapify(arr, n, i)
-
-    for i in range(n-1, 0, -1):
-        arr[i], arr[0] = arr[0], arr[i]
-        heapify(arr, i, 0)
-
-# Example usage
-arr = [12, 11, 13, 5, 6, 7]
-heap_sort(arr)
-print("Sorted array is:", arr)
+print(q.pop())  # Output: task2
+print(q.pop())  # Output: task3
+print(q.pop())  # Output: task1
