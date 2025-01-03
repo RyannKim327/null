@@ -1,33 +1,29 @@
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.next = None
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
 
-class LinkedList:
-    def __init__(self):
-        self.head = None
+def maxDepth(root):
+    if root is None:
+        return 0
+    
+    left_depth = maxDepth(root.left)
+    right_depth = maxDepth(root.right)
+    
+    return 1 + max(left_depth, right_depth)
 
-    def append(self, data):
-        new_node = Node(data)
-        if self.head is None:
-            self.head = new_node
-            return
-        last_node = self.head
-        while last_node.next:
-            last_node = last_node.next
-        last_node.next = new_node
+# Example of creating a binary tree
+#        1
+#       / \
+#      2   3
+#     / \     
+#    4   5
 
-    def display(self):
-        current = self.head
-        while current:
-            print(current.data, end=" ")
-            current = current.next
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(5)
 
-# Create a linked list
-llist = LinkedList()
-llist.append(1)
-llist.append(2)
-llist.append(3)
-
-# Display the linked list
-llist.display()
+print(maxDepth(root))  # Output: 3
