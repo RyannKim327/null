@@ -1,9 +1,16 @@
-def kth_smallest(arr, k):
-    arr.sort()
-    return arr[k-1]
+import requests
 
-# Example usage
-arr = [3, 7, 1, 5, 9, 2]
-k = 3
-result = kth_smallest(arr, k)
-print(f"The {k}th smallest element in the array is: {result}")
+# API endpoint
+url = 'https://api.example.com/data'
+
+# Make a GET request to the API endpoint
+response = requests.get(url)
+
+# Check if the request was successful
+if response.status_code == 200:
+    data = response.json()
+    
+    # Process the data here
+    print(data)
+else:
+    print('Error: Failed to retrieve data from the API')
