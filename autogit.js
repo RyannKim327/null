@@ -1,9 +1,20 @@
-# Create an example array
-array = [10, 5, 20, 15, 30]
+def shell_sort(arr):
+    n = len(arr)
+    gap = n // 2
 
-# Find the maximum value in the array
-max_value = max(array)
+    while gap > 0:
+        for i in range(gap, n):
+            temp = arr[i]
+            j = i
+            while j >= gap and arr[j - gap] > temp:
+                arr[j] = arr[j - gap]
+                j -= gap
+            arr[j] = temp
+        gap //= 2
 
-# Print the maximum value
-print("Maximum value in the array:", max_value)
-Maximum value in the array: 30
+    return arr
+
+# Example usage
+arr = [12, 34, 54, 2, 3]
+sorted_arr = shell_sort(arr)
+print(sorted_arr)
