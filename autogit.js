@@ -1,11 +1,8 @@
-def count_occurrences(string, char):
-    count = 0
-    for c in string:
-        if c == char:
-            count += 1
-    return count
+# Define a list of numbers
+numbers = [2, 4, 6, 8, 10]
 
-string = "Hello, World!"
-char = "o"
-result = count_occurrences(string, char)
-print(f"The character '{char}' occurs {result} times in the string.")
+# Calculate the mean
+mean = sum(numbers) / len(numbers)
+
+# Print the mean
+print("Mean:", mean)
