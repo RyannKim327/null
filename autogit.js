@@ -1,8 +1,7 @@
-# Define a list of numbers
-numbers = [2, 4, 6, 8, 10]
+# Define an array
+array = [5, 8, 3, 10, 2]
 
-# Calculate the mean
-mean = sum(numbers) / len(numbers)
+# Find the maximum value in the array
+max_value = max(array)
 
-# Print the mean
-print("Mean:", mean)
+print("Maximum value in the array is:", max_value)
