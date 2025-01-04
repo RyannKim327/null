@@ -1,16 +1,16 @@
-import requests
+def reverse_words_in_string(input_string):
+    # split the string into words
+    words = input_string.split()
 
-# API endpoint
-url = 'https://api.example.com/data'
+    # reverse the order of words
+    reversed_words = words[::-1]
 
-# Make a GET request to the API endpoint
-response = requests.get(url)
+    # join the words back together
+    reversed_string = ' '.join(reversed_words)
 
-# Check if the request was successful
-if response.status_code == 200:
-    data = response.json()
-    
-    # Process the data here
-    print(data)
-else:
-    print('Error: Failed to retrieve data from the API')
+    return reversed_string
+
+# Example usage
+input_string = "Hello World Welcome"
+reversed_string = reverse_words_in_string(input_string)
+print(reversed_string)
