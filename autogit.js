@@ -1,33 +1,60 @@
-class Node:
-    def __init__(self, key):
-        self.left = None
-        self.right = None
-        self.val = key
+#include <iostream>
 
-def insert(root, key):
-    if root is None:
-        return Node(key)
-    else:
-        if root.val < key:
-            root.right = insert(root.right, key)
-        else:
-            root.left = insert(root.left, key)
-    return root
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
 
-def inorder_traversal(root):
-    if root:
-        inorder_traversal(root.left)
-        print(root.val)
-        inorder_traversal(root.right)
+    Node(int value) : data(value), left(nullptr), right(nullptr) {}
+};
 
-# Example usage
-root = None
-root = insert(root, 50)
-insert(root, 30)
-insert(root, 20)
-insert(root, 40)
-insert(root, 70)
-insert(root, 60)
-insert(root, 80)
+class BinaryTree {
+public:
+    Node* root;
 
-inorder_traversal(root)
+    BinaryTree() : root(nullptr) {}
+
+    void insert(int value) {
+        root = insertRecursive(root, value);
+    }
+
+    Node* insertRecursive(Node* current, int value) {
+        if (current == nullptr) {
+            return new Node(value);
+        }
+
+        if (value < current->data) {
+            current->left = insertRecursive(current->left, value);
+        } else if (value > current->data) {
+            current->right = insertRecursive(current->right, value);
+        }
+
+        return current;
+    }
+
+    void inorderTraversal(Node* current) {
+        if (current != nullptr) {
+            inorderTraversal(current->left);
+            std::cout << current->data << " ";
+            inorderTraversal(current->right);
+        }
+    }
+
+    void printInorder() {
+        inorderTraversal(root);
+        std::cout << std::endl;
+    }
+};
+
+int main() {
+    BinaryTree tree;
+    tree.insert(5);
+    tree.insert(3);
+    tree.insert(7);
+    tree.insert(1);
+    tree.insert(4);
+
+    tree.printInorder();
+
+    return 0;
+}
