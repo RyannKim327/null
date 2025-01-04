@@ -1,13 +1,9 @@
-def insertion_sort(arr):
-    for i in range(1, len(arr)):
-        key = arr[i]
-        j = i - 1
-        while j >= 0 and key < arr[j]:
-            arr[j + 1] = arr[j]
-            j -= 1
-        arr[j + 1] = key
+# Create an example array
+array = [10, 5, 20, 15, 30]
 
-# Example usage
-arr = [12, 11, 13, 5, 6]
-insertion_sort(arr)
-print("Sorted array:", arr)
+# Find the maximum value in the array
+max_value = max(array)
+
+# Print the maximum value
+print("Maximum value in the array:", max_value)
+Maximum value in the array: 30
