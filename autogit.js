@@ -1,56 +1,47 @@
-#include <iostream>
+def compute_lps_array(pattern):
+    lps = [0] * len(pattern)
+    j = 0
+    i = 1
+    while i < len(pattern):
+        if pattern[i] == pattern[j]:
+            j += 1
+            lps[i] = j
+            i += 1
+        else:
+            if j != 0:
+                j = lps[j - 1]
+            else:
+                lps[i] = 0
+                i += 1
+    return lps
 
-using namespace std;
+def kmp_search(text, pattern):
+    lps = compute_lps_array(pattern)
+    i = 0
+    j = 0
+    matches = []
 
-// Define the structure for a node
-struct Node {
-    int data;
-    Node* next;
-    
-    Node(int value) : data(value), next(nullptr) {}
-};
+    while i < len(text):
+        if text[i] == pattern[j]:
+            i += 1
+            j += 1
+        if j == len(pattern):
+            matches.append(i - j)
+            j = lps[j - 1]
+        elif i < len(text) and text[i] != pattern[j]:
+            if j != 0:
+                j = lps[j - 1]
+            else:
+                i += 1
 
-// Define the Linked List class
-class LinkedList {
-private:
-    Node* head;
-    
-public:
-    LinkedList() : head(nullptr) {}
-    
-    void insert(int value) {
-        Node* newNode = new Node(value);
-        
-        if (head == nullptr) {
-            head = newNode;
-        } else {
-            Node* current = head;
-            while (current->next != nullptr) {
-                current = current->next;
-            }
-            current->next = newNode;
-        }
-    }
-    
-    void display() {
-        Node* current = head;
-        
-        while (current != nullptr) {
-            cout << current->data << " -> ";
-            current = current->next;
-        }
-        cout << "nullptr" << endl;
-    }
-};
+    return matches
 
-int main() {
-    LinkedList ll;
-    
-    ll.insert(1);
-    ll.insert(2);
-    ll.insert(3);
-    
-    ll.display();
-    
-    return 0;
-}
+# Test the KMP search algorithm
+text = "ABABDABACDABABCABAB"
+pattern = "ABABCABAB"
+matches = kmp_search(text, pattern)
+
+if matches:
+    print("Pattern found at index(es):", matches)
+else:
+    print("Pattern not found in the text.")
