@@ -1,26 +1,59 @@
-def binary_search(arr, target):
-    low = 0
-    high = len(arr) - 1
+#include <iostream>
 
-    while low <= high:
-        mid = (low + high) // 2
-        mid_val = arr[mid]
+#define MAX_SIZE 100 // Maximum size of the stack
 
-        if mid_val == target:
-            return mid
-        elif mid_val < target:
-            low = mid + 1
-        else:
-            high = mid - 1
+class Stack {
+private:
+    int top; // Index of the top element
+    int stack[MAX_SIZE]; // Array to store elements
 
-    return -1  # Target not found
+public:
+    Stack() {
+        top = -1; // Initialize top to -1
+    }
 
-# Example usage
-arr = [1, 3, 5, 7, 9, 11, 13]
-target = 7
-result = binary_search(arr, target)
+    void push(int item) {
+        if (top == MAX_SIZE - 1) {
+            std::cout << "Stack overflow\n";
+        } else {
+            stack[++top] = item; // Increment top and add item to the stack
+        }
+    }
 
-if result != -1:
-    print(f"Target {target} found at index {result}")
-else:
-    print(f"Target {target} not found")
+    void pop() {
+        if (top == -1) {
+            std::cout << "Stack underflow\n";
+        } else {
+            std::cout << "Popped element: " << stack[top--] << "\n"; // Decrement top after popping the element
+        }
+    }
+
+    void display() {
+        if (top == -1) {
+            std::cout << "Stack is empty\n";
+        } else {
+            std::cout << "Stack elements: ";
+            for (int i = 0; i <= top; i++) {
+                std::cout << stack[i] << " ";
+            }
+            std::cout << "\n";
+        }
+    }
+};
+
+int main() {
+    Stack stack;
+
+    stack.push(1);
+    stack.push(2);
+    stack.push(3);
+    stack.display();
+
+    stack.pop();
+    stack.display();
+
+    stack.pop();
+    stack.pop();
+
+    return 0;
+}
