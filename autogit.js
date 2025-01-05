@@ -1,37 +1,26 @@
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.next = None
+def binary_search(arr, target):
+    low = 0
+    high = len(arr) - 1
 
-def is_palindrome(head):
-    stack = []
-    current = head
+    while low <= high:
+        mid = (low + high) // 2
+        mid_val = arr[mid]
 
-    while current is not None:
-        stack.append(current.data)
-        current = current.next
+        if mid_val == target:
+            return mid
+        elif mid_val < target:
+            low = mid + 1
+        else:
+            high = mid - 1
 
-    current = head
-    while current is not None:
-        if current.data != stack.pop():
-            return False
-        current = current.next
+    return -1  # Target not found
 
-    return True
+# Example usage
+arr = [1, 3, 5, 7, 9, 11, 13]
+target = 7
+result = binary_search(arr, target)
 
-# Example linked list
-node1 = Node(1)
-node2 = Node(2)
-node3 = Node(3)
-node4 = Node(2)
-node5 = Node(1)
-
-node1.next = node2
-node2.next = node3
-node3.next = node4
-node4.next = node5
-
-if is_palindrome(node1):
-    print("Linked list is a palindrome")
+if result != -1:
+    print(f"Target {target} found at index {result}")
 else:
-    print("Linked list is not a palindrome")
+    print(f"Target {target} not found")
