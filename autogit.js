@@ -1,50 +1,29 @@
-#include <iostream>
+def heapify(arr, n, i):
+    largest = i
+    left = 2*i + 1
+    right = 2*i + 2
 
-// Define the Node structure
-struct Node {
-    int data;
-    Node* next;
-    
-    Node(int data) {
-        this->data = data;
-        this->next = nullptr;
-    }
-};
+    if left < n and arr[i] < arr[left]:
+        largest = left
+    if right < n and arr[largest] < arr[right]:
+        largest = right
 
-// Define the LinkedList class
-class LinkedList {
-private:
-    Node* head;
+    if largest != i:
+        arr[i], arr[largest] = arr[largest], arr[i]
+        heapify(arr, n, largest)
 
-public:
-    LinkedList() : head(nullptr) {}
+def heapsort(arr):
+    n = len(arr)
 
-    // Insert a new node at the beginning of the linked list
-    void insert(int data) {
-        Node* newNode = new Node(data);
-        newNode->next = head;
-        head = newNode;
-    }
+    for i in range(n//2 - 1, -1, -1):
+        heapify(arr, n, i)
 
-    // Print the linked list
-    void print() {
-        Node* current = head;
-        while (current != nullptr) {
-            std::cout << current->data << " ";
-            current = current->next;
-        }
-        std::cout << std::endl;
-    }
-};
+    for i in range(n-1, 0, -1):
+        arr[0], arr[i] = arr[i], arr[0]
+        heapify(arr, i, 0)
 
-int main() {
-    LinkedList list;
-    list.insert(1);
-    list.insert(2);
-    list.insert(3);
-
-    std::cout << "Linked List: ";
-    list.print();
-
-    return 0;
-}
+# Example usage
+arr = [12, 11, 13, 5, 6, 7]
+heapsort(arr)
+print("Sorted array is")
+print(arr)
