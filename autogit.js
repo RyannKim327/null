@@ -1,72 +1,35 @@
-#include <iostream>
-
-// Node class to represent each element in the linked list
-class Node {
-public:
-    int data;
-    Node* next;
-    Node(int data) : data(data), next(nullptr) {}
-};
-
-// Queue class implemented using a linked list
-class Queue {
-private:
-    Node* front;
-    Node* rear;
-public:
-    Queue() : front(nullptr), rear(nullptr) {}
-
-    // Enqueue operation to add an element to the queue
-    void enqueue(int data) {
-        Node* newNode = new Node(data);
-        if (rear == nullptr) {
-            front = newNode;
-            rear = newNode;
-        } else {
-            rear->next = newNode;
-            rear = newNode;
+public class MyAsyncTask extends AsyncTask<String, Void, String> {
+    
+    @Override
+    protected String doInBackground(String... params) {
+        // Your network operations should be performed in this method
+        // Connect to the server here
+        String url = params[0];
+        String response = "";
+        
+        try {
+            URL url = new URL(url);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            // Perform additional setup like setting request method, headers, etc.
+            
+            InputStream inputStream = new BufferedInputStream(connection.getInputStream());
+            response = convertInputStreamToString(inputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        std::cout << data << " enqueued to queue" << std::endl;
+        
+        return response;
     }
-
-    // Dequeue operation to remove an element from the queue
-    int dequeue() {
-        if (front == nullptr) {
-            std::cout << "Queue is empty" << std::endl;
-            return -1;
-        }
-        int data = front->data;
-        Node* temp = front;
-        front = front->next;
-        if (front == nullptr) {
-            rear = nullptr;
-        }
-        delete temp;
-        std::cout << data << " dequeued from queue" << std::endl;
-        return data;
+    
+    @Override
+    protected void onPostExecute(String result) {
+        super.onPostExecute(result);
+        // Process the result here after the async task is completed
     }
-
-    // Function to check if the queue is empty
-    bool isEmpty() {
-        return front == nullptr;
+    
+    private String convertInputStreamToString(InputStream inputStream) {
+        // Convert the input stream to a string
+        // Implement your own logic to do the conversion
+        return null;
     }
-};
-
-int main() {
-    Queue q;
-
-    q.enqueue(10);
-    q.enqueue(20);
-    q.enqueue(30);
-
-    q.dequeue();
-    q.dequeue();
-
-    std::cout << "Is queue empty? " << (q.isEmpty() ? "Yes" : "No") << std::endl;
-
-    q.dequeue();
-
-    std::cout << "Is queue empty? " << (q.isEmpty() ? "Yes" : "No") << std::endl;
-
-    return 0;
 }
