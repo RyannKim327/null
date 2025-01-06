@@ -1,26 +1,28 @@
-def binary_search(arr, target):
-    low = 0
-    high = len(arr) - 1
+def heapify(arr, n, i):
+    largest = i
+    left = 2 * i + 1
+    right = 2 * i + 2
 
-    while low <= high:
-        mid = (low + high) // 2
-        mid_val = arr[mid]
+    if left < n and arr[i] < arr[left]:
+        largest = left
 
-        if mid_val == target:
-            return mid
-        elif mid_val < target:
-            low = mid + 1
-        else:
-            high = mid - 1
+    if right < n and arr[largest] < arr[right]:
+        largest = right
 
-    return -1  # Target not found
+    if largest != i:
+        arr[i], arr[largest] = arr[largest], arr[i]
+        heapify(arr, n, largest)
 
-# Usage
-arr = [1, 3, 5, 7, 9, 11, 13, 15]
-target = 7
-result = binary_search(arr, target)
+def heap_sort(arr):
+    n = len(arr)
 
-if result != -1:
-    print(f"Element found at index: {result}")
-else:
-    print("Element not found")
+    for i in range(n // 2 - 1, -1, -1):
+        heapify(arr, n, i)
+
+    for i in range(n - 1, 0, -1):
+        arr[i], arr[0] = arr[0], arr[i]
+        heapify(arr, i, 0)
+
+arr = [12, 11, 13, 5, 6, 7]
+heap_sort(arr)
+print("Sorted array is", arr)
