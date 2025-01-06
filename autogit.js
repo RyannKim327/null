@@ -1,29 +1,21 @@
-def heapify(arr, n, i):
-    largest = i
-    left = 2*i + 1
-    right = 2*i + 2
-
-    if left < n and arr[i] < arr[left]:
-        largest = left
-    if right < n and arr[largest] < arr[right]:
-        largest = right
-
-    if largest != i:
-        arr[i], arr[largest] = arr[largest], arr[i]
-        heapify(arr, n, largest)
-
-def heapsort(arr):
+def bubble_sort(arr):
     n = len(arr)
+    
+    # Traverse through all array elements
+    for i in range(n):
+        
+        # Last i elements are already in place
+        for j in range(0, n-i-1):
+            
+            # Traverse the array from 0 to n-i-1
+            # Swap if the element found is greater
+            # than the next element
+            if arr[j] > arr[j+1]:
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+    
+    return arr
 
-    for i in range(n//2 - 1, -1, -1):
-        heapify(arr, n, i)
-
-    for i in range(n-1, 0, -1):
-        arr[0], arr[i] = arr[i], arr[0]
-        heapify(arr, i, 0)
-
-# Example usage
-arr = [12, 11, 13, 5, 6, 7]
-heapsort(arr)
-print("Sorted array is")
-print(arr)
+# Test the bubble sort algorithm
+arr = [64, 34, 25, 12, 22, 11, 90]
+sorted_arr = bubble_sort(arr)
+print("Sorted array:", sorted_arr)
