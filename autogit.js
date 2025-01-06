@@ -1,21 +1,10 @@
-def bubble_sort(arr):
-    n = len(arr)
-    
-    # Traverse through all array elements
-    for i in range(n):
-        
-        # Last i elements are already in place
-        for j in range(0, n-i-1):
-            
-            # Traverse the array from 0 to n-i-1
-            # Swap if the element found is greater
-            # than the next element
-            if arr[j] > arr[j+1]:
-                arr[j], arr[j+1] = arr[j+1], arr[j]
-    
-    return arr
+def is_palindrome(s):
+    s = s.lower().replace(' ', '')  # Convert to lowercase and remove spaces
+    return s == s[::-1]  # Check if the string is equal to its reverse
 
-# Test the bubble sort algorithm
-arr = [64, 34, 25, 12, 22, 11, 90]
-sorted_arr = bubble_sort(arr)
-print("Sorted array:", sorted_arr)
+# Test the function
+input_str = "A man a plan a canal Panama"
+if is_palindrome(input_str):
+    print("Palindrome")
+else:
+    print("Not a palindrome")
