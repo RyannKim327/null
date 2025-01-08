@@ -3,7 +3,6 @@ const { exec } = require("child_process");
 const date = require("./date");
 const axios = require("axios");
 let commits = Math.floor(Math.random() * 3) + 1;
-// commits += commits;
 let _commitments = 1;
 console.log(`You send git ${commits} commits`);
 
@@ -49,20 +48,8 @@ let run = async () => {
             setTimeout(() => {
               _commitments++;
               commits--;
-              // if (commits <= 0 || commits % 10 == 0) {
-              // exec(`git push`, (e) => {
-              //   if (e) return console.error(`ERR: ${e}`);
-              //   console.log("Pushing");
-              //   if (commits > 0) {
-              //     run();
-              //   } else {
-              //     console.log("Thankies");
-              //   }
-              // });
-              // } else {
               if (commits > 0) {
                 run();
-                // }
               }
             }, 50);
           });
@@ -70,9 +57,30 @@ let run = async () => {
       });
     });
   } catch (e) {
+    const msg = mm2[Math.floor(Math.random() * mm2.length)];
+    fs.writeFileSync("Auto git.txt", msg, "utf-8");
+    fs.writeFileSync("autogit.js", "May error sa API", "utf-8");
     setTimeout(() => {
-      run();
-    }, 5000);
+      console.log(`-----${_commitments}-----`);
+      console.log("Git add");
+      exec("git add .", (e) => {
+        if (e) console.error(e);
+        setTimeout(() => {
+          console.log("Git Commit");
+          exec(`git commit -m "${m} [${msg}]"`, (e) => {
+            if (e) console.error(e);
+            console.log("Close");
+            setTimeout(() => {
+              _commitments++;
+              commits--;
+              if (commits > 0) {
+                run();
+              }
+            }, 50);
+          });
+        }, 50);
+      });
+    });
   }
 };
 
