@@ -7,7 +7,7 @@ let _commitments = 1;
 console.log(`You send git ${commits} commits`);
 
 let run = async () => {
-  const time = date("Asia/Manila");
+  const time = date("");
   const m = `${time.getMonth() + 1}-${time.getDate()}-${time.getFullYear()} ${time.getHours()}:${time.getMinutes()}`;
   const mm2 = fs.readFileSync("rants.txt", "utf8").split("\n");
   const m2 = fs.readFileSync("questions.txt", "utf8").split("\n");
