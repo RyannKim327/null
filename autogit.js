@@ -1,37 +1,35 @@
-def majority_element(nums):
-  """
-  Finds the majority element in an array.
+my_str = "123"
+my_int = int(my_str)
+#include <iostream>
+#include <sstream>
 
-  A majority element is defined as an element that appears more than
-  half the size of the array.
+int main() {
+  std::string my_str = "123";
+  int my_int;
+  std::stringstream(my_str) >> my_int;
+  return 0;
+}
+String my_str = "123";
+int my_int = Integer.parseInt(my_str);
+const my_str = "123";
+const my_int = parseInt(my_str);
+$my_str = "123";
+$my_int = (int) $my_str;
+let my_str = "123"
+let my_int = Int(my_str)!
+package main
 
-  Parameters:
-    nums: The array to search.
+import (
+	"fmt"
+	"strconv"
+)
 
-  Returns:
-    The majority element, or -1 if no majority element exists.
-  """
-
-  # Initialize a dictionary to store the count of each element.
-  count_dict = {}
-
-  # Iterate over the array and update the count of each element.
-  for num in nums:
-    if num not in count_dict:
-      count_dict[num] = 0
-    count_dict[num] += 1
-
-  # Find the element with the maximum count.
-  max_count = 0
-  majority_element = -1
-  for num, count in count_dict.items():
-    if count > max_count:
-      max_count = count
-      majority_element = num
-
-  # Check if the majority element appears more than half the size of the array.
-  if max_count > len(nums) / 2:
-    return majority_element
-
-  # Otherwise, return -1.
-  return -1
+func main() {
+	my_str := "123"
+	my_int, err := strconv.Atoi(my_str)
+	if err != nil {
+		fmt.Println("Error converting string to integer:", err)
+	}
+}
+my_str = "123"
+my_int = my_str.to_i
