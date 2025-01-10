@@ -1,27 +1,15 @@
-fn quick_sort(arr: &mut [i32]) {
-    if arr.len() <= 1 {
-        return;
-    }
+import re
 
-    let pivot = arr[arr.len() / 2];
-    let mut left = 0;
-    let mut right = arr.len() - 1;
+def validate_email(email):
+    """
+    Validates an email address using a regular expression.
 
-    while left <= right {
-        while arr[left] < pivot {
-            left += 1;
-        }
-        while arr[right] > pivot {
-            right -= 1;
-        }
+    Args:
+        email (str): The email address to validate.
 
-        if left <= right {
-            arr.swap(left, right);
-            left += 1;
-            right -= 1;
-        }
-    }
+    Returns:
+        bool: True if the email address is valid, False otherwise.
+    """
 
-    quick_sort(&mut arr[..left]);
-    quick_sort(&mut arr[left..]);
-}
+    regex = r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$'
+    return bool(re.match(regex, email))
