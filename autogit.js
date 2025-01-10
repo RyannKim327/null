@@ -1,25 +1,37 @@
-var array = [1, 2, 3, 4, 5]
-array.reverse() // [5, 4, 3, 2, 1]
-array = [1, 2, 3, 4, 5]
-array.reverse() # [5, 4, 3, 2, 1]
-int[] array = {1, 2, 3, 4, 5};
-Collections.reverse(Arrays.asList(array)); // [5, 4, 3, 2, 1]
-#include <algorithm>
-#include <vector>
+def majority_element(nums):
+  """
+  Finds the majority element in an array.
 
-int main() {
-  std::vector<int> array = {1, 2, 3, 4, 5};
-  std::reverse(array.begin(), array.end()); // [5, 4, 3, 2, 1]
-  return 0;
-}
-int[] array = {1, 2, 3, 4, 5};
-Array.Reverse(array); // [5, 4, 3, 2, 1]
-// Using reverse() method
-const array = [1, 2, 3, 4, 5];
-array.reverse(); // [5, 4, 3, 2, 1]
+  A majority element is defined as an element that appears more than
+  half the size of the array.
 
-// Using spread operator and slice()
-const array = [1, 2, 3, 4, 5];
-const reversedArray = [...array].reverse(); // [5, 4, 3, 2, 1]
-val array = arrayOf(1, 2, 3, 4, 5)
-array.reverse() // [5, 4, 3, 2, 1]
+  Parameters:
+    nums: The array to search.
+
+  Returns:
+    The majority element, or -1 if no majority element exists.
+  """
+
+  # Initialize a dictionary to store the count of each element.
+  count_dict = {}
+
+  # Iterate over the array and update the count of each element.
+  for num in nums:
+    if num not in count_dict:
+      count_dict[num] = 0
+    count_dict[num] += 1
+
+  # Find the element with the maximum count.
+  max_count = 0
+  majority_element = -1
+  for num, count in count_dict.items():
+    if count > max_count:
+      max_count = count
+      majority_element = num
+
+  # Check if the majority element appears more than half the size of the array.
+  if max_count > len(nums) / 2:
+    return majority_element
+
+  # Otherwise, return -1.
+  return -1
