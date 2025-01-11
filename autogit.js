@@ -1,24 +1,25 @@
-const str = "Hello World";
-const noVowels = str.replace(/[aeiou]/gi, "");
-console.log(noVowels); // "Hll Wrld"
-str = "Hello World"
-no_vowels = "".join([c for c in str if c.lower() not in "aeiou"])
-print(no_vowels)  # "Hll Wrld"
-String str = "Hello World";
-String noVowels = str.replaceAll("[aeiou]", "");
-System.out.println(noVowels);  // "Hll Wrld"
-string str = "Hello World";
-string noVowels = new string(str.Where(c => !"aeiou".Contains(char.ToLower(c))).ToArray());
-Console.WriteLine(noVowels);  // "Hll Wrld"
-str = "Hello World"
-no_vowels = str.delete("aeiou")
-puts no_vowels  # "Hll Wrld"
-let str = "Hello World"
-let noVowels = str.replacingOccurrences(of: "[aeiou]", with: "", options: .regularExpression)
-print(noVowels)  // "Hll Wrld"
-$str = "Hello World";
-$noVowels = preg_replace('/[aeiou]/i', '', $str);
-echo $noVowels;  // "Hll Wrld"
-str := "Hello World"
-noVowels := regexp.MustCompile(`[aeiou]`).ReplaceAllString(str, "")
-fmt.Println(noVowels)  // "Hll Wrld"
+let str1 = "Hello";
+let str2 = "World";
+let result = str1 + str2; // " HelloWorld"
+str1 = "Hello"
+str2 = "World"
+result = str1 + str2  # "HelloWorld"
+String str1 = "Hello";
+String str2 = "World";
+String result = str1 + str2; // "HelloWorld"
+std::string str1 = "Hello";
+std::string str2 = "World";
+std::string result = str1 + str2; // "HelloWorld"
+string str1 = "Hello";
+string str2 = "World";
+string result = str1 + str2; // "HelloWorld"
+str1 = "Hello"
+str2 = "World"
+result = str1 + str2  # "HelloWorld"
+let str1 = "Hello"
+let str2 = "World"
+let result = str1 + str2  // "HelloWorld"
+$str1 = "Hello";
+$str2 = "World";
+$result = $str1 . $str2; // "HelloWorld"
+SELECT CONCAT('Hello', 'World') AS result; // "HelloWorld"
