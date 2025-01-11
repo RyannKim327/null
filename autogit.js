@@ -1,199 +1,120 @@
-#include <stdio.h>
-#include <stdlib.h>
+int fibonacciSearch(int arr[], int x, int n) {
+    int fibMMm2 = 0; /* (m-2)'th Fibonacci No. */
+    int fibMMm1 = 1; /* (m-1)'th Fibonacci No. */
+    int fibM = fibMMm2 + fibMMm1; /* m'th Fibonacci */
 
-typedef struct Node {
-    int data;
-    struct Node* left;
-    struct Node* right;
-} Node;
+    while (fibM < n) {
+        fibMMm2 = fibMMm1;
+        fibMMm1 = fibM;
+        fibM = fibMMm2 + fibMMm1;
+    }
 
-Node* createNode(int data) {
-    Node* node = (Node*)malloc(sizeof(Node));
-    node->data = data;
-    node->left = node->right = NULL;
-    return node;
+    int offset = -1;
+
+    while (fibM > 1) {
+        i = min(offset+fibMMm2, n-1);
+
+        if (arr[i] < x) {
+            fibM = fibMMm1;
+            fibMMm1 = fibMMm2;
+            fibMMm2 = fibM - fibMMm1;
+            offset = i;
+        }
+        else if (arr[i] > x) {
+            fibM = fibMMm2;
+            fibMMm1 = fibMMm1 - fibMMm2;
+            fibMMm2 = fibM - fibMMm1;
+        }
+        else return i;
+    }
+
+    if (fibMMm1 && arr[offset+1] == x) return offset+1;
+
+    return -1;
 }
+public static int fibonacciSearch(int[] arr, int x) {
+    int n = arr.length;
+    int fibMMm2 = 0;
+    int fibMMm1 = 1;
+    int fibM = fibMMm2 + fibMMm1;
 
-Node* insertNode(Node* root, int data) {
-    if (root == NULL) {
-        return createNode(data);
+    while (fibM < n) {
+        fibMMm2 = fibMMm1;
+        fibMMm1 = fibM;
+        fibM = fibMMm2 + fibMMm1;
     }
 
-    if (data < root->data) {
-        root->left = insertNode(root->left, data);
-    } else if (data > root->data) {
-        root->right = insertNode(root->right, data);
+    int offset = -1;
+
+    while (fibM > 1) {
+        int i = Math.min(offset + fibMMm2, n - 1);
+
+        if (arr[i] < x) {
+            fibM = fibMMm1;
+            fibMMm1 = fibMMm2;
+            fibMMm2 = fibM - fibMMm1;
+            offset = i;
+        } else if (arr[i] > x) {
+            fibM = fibMMm2;
+            fibMMm1 = fibMMm1 - fibMMm2;
+            fibMMm2 = fibM - fibMMm1;
+        } else {
+            return i;
+        }
     }
 
-    return root;
+    if (fibMMm1 != 0 && arr[offset + 1] == x) {
+        return offset + 1;
+    }
+
+    return -1;
 }
+def fibonacci_search(arr, x):
+    n = len(arr)
+    fibMMm2 = 0
+    fibMMm1 = 1
+    fibM = fibMMm2 + fibMMm1
 
-void inorderTraversal(Node* root) {
-    if (root == NULL) {
-        return;
+    while fibM < n:
+        fibMMm2 = fibMMm1
+        fibMMm1 = fibM
+        fibM = fibMMm2 + fibMMm1
+
+    offset = -1
+
+    while fibM > 1:
+        i = min(offset + fibMMm2, n - 1)
+
+        if arr[i] < x:
+            fibM = fibMMm1
+            fibMMm1 = fibMMm2
+            fibMMm2 = fibM - fibMMm1
+            offset = i
+        elif arr[i] > x:
+            fibM = fibMMm2
+            fibMMm1 = fibMMm1 - fibMMm2
+            fibMMm2 = fibM - fibMMm1
+        else:
+            return i
+
+    if fibMMm1 != 0 and arr[offset + 1] == x:
+        return offset + 1
+
+    return -1
+int fibonacciSearch(int arr[], int x, int n) {
+    int fibMMm2 = 0;
+    int fibMMm1 = 1;
+    int fibM = fibMMm2 + fibMMm1;
+
+    while (fibM < n) {
+        fibMMm2 = fibMMm1;
+        fibMMm1 = fibM;
+        fibM = fibMMm2 + fibMMm1;
     }
 
-    inorderTraversal(root->left);
-    printf("%d ", root->data);
-    inorderTraversal(root->right);
-}
+    int offset = -1;
 
-int main() {
-    Node* root = NULL;
-    root = insertNode(root, 5);
-    root = insertNode(root, 3);
-    root = insertNode(root, 7);
-    root = insertNode(root, 2);
-    root = insertNode(root, 4);
-    root = insertNode(root, 6);
-    root = insertNode(root, 8);
+    while (fibM > 1) {
+        int i = std::min(offset + fibMMm2, n - 1);
 
-    printf("Inorder traversal: ");
-    inorderTraversal(root);
-    printf("\n");
-
-    return 0;
-}
-#include <iostream>
-
-using namespace std;
-
-class Node {
-public:
-    int data;
-    Node* left;
-    Node* right;
-
-    Node(int data) {
-        this->data = data;
-        this->left = nullptr;
-        this->right = nullptr;
-    }
-};
-
-class BinarySearchTree {
-private:
-    Node* root;
-
-public:
-    BinarySearchTree() {
-        root = nullptr;
-    }
-
-    void insertNode(int data) {
-        root = insertNodeRecursive(root, data);
-    }
-
-    Node* insertNodeRecursive(Node* node, int data) {
-        if (node == nullptr) {
-            return new Node(data);
-        }
-
-        if (data < node->data) {
-            node->left = insertNodeRecursive(node->left, data);
-        } else if (data > node->data) {
-            node->right = insertNodeRecursive(node->right, data);
-        }
-
-        return node;
-    }
-
-    void inorderTraversal() {
-        inorderTraversalRecursive(root);
-    }
-
-    void inorderTraversalRecursive(Node* node) {
-        if (node == nullptr) {
-            return;
-        }
-
-        inorderTraversalRecursive(node->left);
-        cout << node->data << " ";
-        inorderTraversalRecursive(node->right);
-    }
-};
-
-int main() {
-    BinarySearchTree bst;
-
-    bst.insertNode(5);
-    bst.insertNode(3);
-    bst.insertNode(7);
-    bst.insertNode(2);
-    bst.insertNode(4);
-    bst.insertNode(6);
-    bst.insertNode(8);
-
-    cout << "Inorder traversal: ";
-    bst.inorderTraversal();
-    cout << endl;
-
-    return 0;
-}
-public class BinarySearchTree {
-    private Node root;
-
-    public BinarySearchTree() {
-        root = null;
-    }
-
-    public void insertNode(int data) {
-        root = insertNodeRecursive(root, data);
-    }
-
-    private Node insertNodeRecursive(Node node, int data) {
-        if (node == null) {
-            return new Node(data);
-        }
-
-        if (data < node.data) {
-            node.left = insertNodeRecursive(node.left, data);
-        } else if (data > node.data) {
-            node.right = insertNodeRecursive(node.right, data);
-        }
-
-        return node;
-    }
-
-    public void inorderTraversal() {
-        inorderTraversalRecursive(root);
-    }
-
-    private void inorderTraversalRecursive(Node node) {
-        if (node == null) {
-            return;
-        }
-
-        inorderTraversalRecursive(node.left);
-        System.out.print(node.data + " ");
-        inorderTraversalRecursive(node.right);
-    }
-
-    private static class Node {
-        int data;
-        Node left;
-        Node right;
-
-        Node(int data) {
-            this.data = data;
-            this.left = null;
-            this.right = null;
-        }
-    }
-
-    public static void main(String[] args) {
-        BinarySearchTree bst = new BinarySearchTree();
-
-        bst.insertNode(5);
-        bst.insertNode(3);
-        bst.insertNode(7);
-        bst.insertNode(2);
-        bst.insertNode(4);
-        bst.insertNode(6);
-        bst.insertNode(8);
-
-        System.out.print("Inorder traversal: ");
-        bst.inorderTraversal();
-        System.out.println();
-    }
-}
+       
