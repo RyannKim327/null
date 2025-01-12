@@ -1,149 +1,49 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+my_string = "hello"
+reversed_string = my_string[::-1]
+print(reversed_string)  # Output: "olleh"
+let myString = "hello";
+let reversedString = myString.split("").reverse().join("");
+console.log(reversedString);  // Output: "olleh"
+String myString = "hello";
+String reversedString = new StringBuilder(myString).reverse().toString();
+System.out.println(reversedString);  // Output: "olleh"
+#include <string>
+#include <algorithm>
 
-#define HASH_TABLE_SIZE 128
+std::string myString = "hello";
+std::reverse(myString.begin(), myString.end());
+std::cout << myString << std::endl;  // Output: "olleh"
+string myString = "hello";
+char[] arr = myString.ToCharArray();
+Array.Reverse(arr);
+string reversedString = new string(arr);
+Console.WriteLine(reversedString);  // Output: "olleh"
+my_string = "hello"
+reversed_string = my_string.reverse
+puts reversed_string  # Output: "olleh"
+let myString = "hello"
+let reversedString = String(myString.characters.reversed())
+print(reversedString)  // Output: "olleh"
+$myString = "hello";
+$reversedString = strrev($myString);
+echo $reversedString;  // Output: "olleh"
+package main
 
-typedef struct HashTable {
-    int size;
-    int *keys;
-    int *values;
-} HashTable;
+import "fmt"
 
-HashTable *createHashTable() {
-    HashTable *table = malloc(sizeof(HashTable));
-    table->size = HASH_TABLE_SIZE;
-    table->keys = malloc(table->size * sizeof(int));
-    table->values = malloc(table->size * sizeof(int));
-    return table;
+func reverse(s string) string {
+    runes := []rune(s)
+    for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
+        runes[i], runes[j] = runes[j], runes[i]
+    }
+    return string(runes)
 }
 
-int hashFunction(int key) {
-    return key % HASH_TABLE_SIZE;
+func main() {
+    myString := "hello"
+    reversedString := reverse(myString)
+    fmt.Println(reversedString)  // Output: "olleh"
 }
-
-void insert(HashTable *table, int key, int value) {
-    int index = hashFunction(key);
-    while (table->keys[index] != 0) {
-        index = (index + 1) % table->size;
-    }
-    table->keys[index] = key;
-    table->values[index] = value;
-}
-
-int get(HashTable *table, int key) {
-    int index = hashFunction(key);
-    while (table->keys[index] != key) {
-        index = (index + 1) % table->size;
-        if (table->keys[index] == 0) {
-            return -1; // key not found
-        }
-    }
-    return table->values[index];
-}
-
-void freeHashTable(HashTable *table) {
-    free(table->keys);
-    free(table->values);
-    free(table);
-}
-
-int main() {
-    HashTable *table = createHashTable();
-    insert(table, 1, 10);
-    insert(table, 2, 20);
-    insert(table, 3, 30);
-    printf("%d\n", get(table, 1)); // 10
-    printf("%d\n", get(table, 2)); // 20
-    printf("%d\n", get(table, 3)); // 30
-    freeHashTable(table);
-    return 0;
-}
-public class HashTable {
-    private int size;
-    private int[] keys;
-    private int[] values;
-
-    public HashTable(int size) {
-        this.size = size;
-        keys = new int[size];
-        values = new int[size];
-    }
-
-    private int hashFunction(int key) {
-        return key % size;
-    }
-
-    public void insert(int key, int value) {
-        int index = hashFunction(key);
-        while (keys[index] != 0) {
-            index = (index + 1) % size;
-        }
-        keys[index] = key;
-        values[index] = value;
-    }
-
-    public int get(int key) {
-        int index = hashFunction(key);
-        while (keys[index] != key) {
-            index = (index + 1) % size;
-            if (keys[index] == 0) {
-                return -1; // key not found
-            }
-        }
-        return values[index];
-    }
-
-    public static void main(String[] args) {
-        HashTable table = new HashTable(128);
-        table.insert(1, 10);
-        table.insert(2, 20);
-        table.insert(3, 30);
-        System.out.println(table.get(1)); // 10
-        System.out.println(table.get(2)); // 20
-        System.out.println(table.get(3)); // 30
-    }
-}
-class HashTable:
-    def __init__(self, size):
-        self.size = size
-        self.keys = [None] * size
-        self.values = [None] * size
-
-    def hash_function(self, key):
-        return key % self.size
-
-    def insert(self, key, value):
-        index = self.hash_function(key)
-        while self.keys[index] is not None:
-            index = (index + 1) % self.size
-        self.keys[index] = key
-        self.values[index] = value
-
-    def get(self, key):
-        index = self.hash_function(key)
-        while self.keys[index] != key:
-            index = (index + 1) % self.size
-            if self.keys[index] is None:
-                return -1  # key not found
-        return self.values[index]
-
-table = HashTable(128)
-table.insert(1, 10)
-table.insert(2, 20)
-table.insert(3, 30)
-print(table.get(1))  # 10
-print(table.get(2))  # 20
-print(table.get(3))  # 30
-#include <iostream>
-#include <vector>
-
-class HashTable {
-public:
-    HashTable(int size) : size(size), keys(size), values(size) {}
-
-    int hashFunction(int key) {
-        return key % size;
-    }
-
-    void insert(int key, int value)
+my_string <- "hello"
+reversed_string <- paste(rev(strsplit(my_string, "")[[1]]), collapse = "")
+print(reversed_string)  # Output: "olleh"
