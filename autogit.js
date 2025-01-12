@@ -1,84 +1,63 @@
-// Node structure
-struct Node {
-    int data;
-    Node* left;
-    Node* right;
-};
-
-// Function to calculate the height of a tree
-int height(Node* node) {
-    if (node == nullptr) return 0;
-    return 1 + max(height(node->left), height(node->right));
+const str = "Hello World";
+const substr = "World";
+if (str.includes(substr)) {
+  console.log("The string contains the substring.");
+} else {
+  console.log("The string does not contain the substring.");
 }
-
-// Function to calculate the diameter of a tree
-int diameter(Node* node) {
-    if (node == nullptr) return 0;
-    int leftHeight = height(node->left);
-    int rightHeight = height(node->right);
-    int leftDiameter = diameter(node->left);
-    int rightDiameter = diameter(node->right);
-    return max(leftHeight + rightHeight, max(leftDiameter, rightDiameter));
+if (str.indexOf(substr) !== -1) {
+  console.log("The string contains the substring.");
+} else {
+  console.log("The string does not contain the substring.");
 }
-// Node class
-class Node {
-    int data;
-    Node left;
-    Node right;
+str = "Hello World"
+substr = "World"
+if substr in str:
+    print("The string contains the substring.")
+else:
+    print("The string does not contain the substring.")
+String str = "Hello World";
+String substr = "World";
+if (str.contains(substr)) {
+    System.out.println("The string contains the substring.");
+} else {
+    System.out.println("The string does not contain the substring.");
 }
-
-// Function to calculate the height of a tree
-int height(Node node) {
-    if (node == null) return 0;
-    return 1 + Math.max(height(node.left), height(node.right));
+if (str.indexOf(substr) != -1) {
+    System.out.println("The string contains the substring.");
+} else {
+    System.out.println("The string does not contain the substring.");
 }
-
-// Function to calculate the diameter of a tree
-int diameter(Node node) {
-    if (node == null) return 0;
-    int leftHeight = height(node.left);
-    int rightHeight = height(node.right);
-    int leftDiameter = diameter(node.left);
-    int rightDiameter = diameter(node.right);
-    return Math.max(leftHeight + rightHeight, Math.max(leftDiameter, rightDiameter));
+string str = "Hello World";
+string substr = "World";
+if (str.Contains(substr)) {
+    Console.WriteLine("The string contains the substring.");
+} else {
+    Console.WriteLine("The string does not contain the substring.");
 }
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.left = None
-        self.right = None
-
-def height(node):
-    if node is None:
-        return 0
-    return 1 + max(height(node.left), height(node.right))
-
-def diameter(node):
-    if node is None:
-        return 0
-    left_height = height(node.left)
-    right_height = height(node.right)
-    left_diameter = diameter(node.left)
-    right_diameter = diameter(node.right)
-    return max(left_height + right_height, max(left_diameter, right_diameter))
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.left = null;
-        this.right = null;
-    }
+if (str.IndexOf(substr) != -1) {
+    Console.WriteLine("The string contains the substring.");
+} else {
+    Console.WriteLine("The string does not contain the substring.");
 }
-
-function height(node) {
-    if (node === null) return 0;
-    return 1 + Math.max(height(node.left), height(node.right));
+str = "Hello World"
+substr = "World"
+if str.include?(substr)
+    puts "The string contains the substring."
+else
+    puts "The string does not contain the substring."
+end
+let str = "Hello World"
+let substr = "World"
+if str.contains(substr) {
+    print("The string contains the substring.")
+} else {
+    print("The string does not contain the substring.")
 }
-
-function diameter(node) {
-    if (node === null) return 0;
-    const leftHeight = height(node.left);
-    const rightHeight = height(node.right);
-    const leftDiameter = diameter(node.left);
-    const rightDiameter = diameter(node.right);
-    return Math.max(leftHeight + rightHeight, Math.max(leftDiameter, rightDiameter));
+$str = "Hello World";
+$substr = "World";
+if (strpos($str, $substr) !== false) {
+    echo "The string contains the substring.";
+} else {
+    echo "The string does not contain the substring.";
 }
