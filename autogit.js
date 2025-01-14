@@ -1,165 +1,107 @@
-function TopologicalSort(graph):
-    visited = set()
-    ordering = []
+void merge_sort_iterative(int arr[], int n) {
+    int width = 1;
 
-    for node in graph:
-        if node not in visited:
-            DFS(node, visited, ordering)
-
-    return ordering
-
-function DFS(node, visited, ordering):
-    visited.add(node)
-
-    for neighbor in graph[node]:
-        if neighbor not in visited:
-            DFS(neighbor, visited, ordering)
-
-    ordering.insert(0, node)
-def topological_sort(graph):
-    visited = set()
-    ordering = []
-
-    def dfs(node):
-        visited.add(node)
-        for neighbor in graph[node]:
-            if neighbor not in visited:
-                dfs(neighbor)
-        ordering.insert(0, node)
-
-    for node in graph:
-        if node not in visited:
-            dfs(node)
-
-    return ordering
-
-# Example usage:
-graph = {
-    'A': ['B', 'C'],
-    'B': ['D', 'E'],
-    'C': ['F'],
-    'D': [],
-    'E': ['F'],
-    'F': []
+    while (width < n) {
+        int left = 0;
+        while (left < n) {
+            int mid = left + width;
+            int right = mid + width;
+            if (right > n) right = n;
+            merge(arr, left, mid, right);
+            left = left + 2 * width;
+        }
+        width = 2 * width;
+    }
 }
 
-ordering = topological_sort(graph)
-print(ordering)  # Output: ['A', 'C', 'B', 'E', 'F', 'D']
-import java.util.*;
-
-public class TopologicalSort {
-    public static List<String> topologicalSort(Map<String, List<String>> graph) {
-        Set<String> visited = new HashSet<>();
-        List<String> ordering = new ArrayList<>();
-
-        for (String node : graph.keySet()) {
-            if (!visited.contains(node)) {
-                dfs(node, graph, visited, ordering);
-            }
-        }
-
-        return ordering;
+void merge(int arr[], int left, int mid, int right) {
+    int n1 = mid - left;
+    int n2 = right - mid;
+    int L[n1], R[n2];
+    for (int i = 0; i < n1; i++) L[i] = arr[left + i];
+    for (int i = 0; i < n2; i++) R[i] = arr[mid + i];
+    int i = 0, j = 0, k = left;
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) arr[k++] = L[i++];
+        else arr[k++] = R[j++];
     }
+    while (i < n1) arr[k++] = L[i++];
+    while (j < n2) arr[k++] = R[j++];
+}
+void mergeSortIterative(int arr[], int n) {
+    int width = 1;
 
-    private static void dfs(String node, Map<String, List<String>> graph, Set<String> visited, List<String> ordering) {
-        visited.add(node);
-
-        for (String neighbor : graph.get(node)) {
-            if (!visited.contains(neighbor)) {
-                dfs(neighbor, graph, visited, ordering);
-            }
+    while (width < n) {
+        int left = 0;
+        while (left < n) {
+            int mid = left + width;
+            int right = mid + width;
+            if (right > n) right = n;
+            merge(arr, left, mid, right);
+            left = left + 2 * width;
         }
-
-        ordering.add(0, node);
-    }
-
-    public static void main(String[] args) {
-        Map<String, List<String>> graph = new HashMap<>();
-        graph.put("A", Arrays.asList("B", "C"));
-        graph.put("B", Arrays.asList("D", "E"));
-        graph.put("C", Arrays.asList("F"));
-        graph.put("D", new ArrayList<>());
-        graph.put("E", Arrays.asList("F"));
-        graph.put("F", new ArrayList<>());
-
-        List<String> ordering = topologicalSort(graph);
-        System.out.println(ordering);  // Output: [A, C, B, E, F, D]
+        width = 2 * width;
     }
 }
-#include <iostream>
-#include <vector>
-#include <unordered_set>
 
-using namespace std;
-
-vector<string> topologicalSort(const unordered_map<string, vector<string>>& graph) {
-    unordered_set<string> visited;
-    vector<string> ordering;
-
-    function<void(string)> dfs = [&graph, &visited, &ordering, &dfs](string node) {
-        visited.insert(node);
-
-        for (const string& neighbor : graph.at(node)) {
-            if (visited.find(neighbor) == visited.end()) {
-                dfs(neighbor);
-            }
-        }
-
-        ordering.insert(ordering.begin(), node);
-    };
-
-    for (const auto& pair : graph) {
-        if (visited.find(pair.first) == visited.end()) {
-            dfs(pair.first);
-        }
+void merge(int arr[], int left, int mid, int right) {
+    int n1 = mid - left;
+    int n2 = right - mid;
+    vector<int> L(n1), R(n2);
+    for (int i = 0; i < n1; i++) L[i] = arr[left + i];
+    for (int i = 0; i < n2; i++) R[i] = arr[mid + i];
+    int i = 0, j = 0, k = left;
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) arr[k++] = L[i++];
+        else arr[k++] = R[j++];
     }
+    while (i < n1) arr[k++] = L[i++];
+    while (j < n2) arr[k++] = R[j++];
+}
+public static void mergeSortIterative(int[] arr) {
+    int width = 1;
 
-    return ordering;
+    while (width < arr.length) {
+        int left = 0;
+        while (left < arr.length) {
+            int mid = left + width;
+            int right = mid + width;
+            if (right > arr.length) right = arr.length;
+            merge(arr, left, mid, right);
+            left = left + 2 * width;
+        }
+        width = 2 * width;
+    }
 }
 
-int main() {
-    unordered_map<string, vector<string>> graph = {
-        {"A", {"B", "C"}},
-        {"B", {"D", "E"}},
-        {"C", {"F"}},
-        {"D", {}},
-        {"E", {"F"}},
-        {"F", {}}
-    };
-
-    vector<string> ordering = topologicalSort(graph);
-    for (const string& node : ordering) {
-        cout << node << " ";
+public static void merge(int[] arr, int left, int mid, int right) {
+    int n1 = mid - left;
+    int n2 = right - mid;
+    int[] L = new int[n1];
+    int[] R = new int[n2];
+    for (int i = 0; i < n1; i++) L[i] = arr[left + i];
+    for (int i = 0; i < n2; i++) R[i] = arr[mid + i];
+    int i = 0, j = 0, k = left;
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) arr[k++] = L[i++];
+        else arr[k++] = R[j++];
     }
-    cout << endl;  // Output: A C B E F D
-
-    return 0;
+    while (i < n1) arr[k++] = L[i++];
+    while (j < n2) arr[k++] = R[j++];
 }
-function topologicalSort(graph) {
-    const visited = new Set();
-    const ordering = [];
+def merge_sort_iterative(arr):
+    width = 1
 
-    function dfs(node) {
-        visited.add(node);
+    while width < len(arr):
+        left = 0
+        while left < len(arr):
+            mid = left + width
+            right = mid + width
+            if right > len(arr): right = len(arr)
+            merge(arr, left, mid, right)
+            left = left + 2 * width
+        width = 2 * width
 
-        for (const neighbor of graph[node]) {
-            if (!visited.has(neighbor)) {
-                dfs(neighbor);
-            }
-        }
-
-        ordering.unshift(node);
-    }
-
-    for (const node in graph) {
-        if (!visited.has(node)) {
-            dfs(node);
-        }
-    }
-
-    return ordering;
-}
-
-// Example usage:
-const graph = {
-    A: ['B
+def merge(arr, left, mid, right):
+    n1 = mid - left
+    n2
