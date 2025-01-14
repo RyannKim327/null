@@ -1,42 +1,31 @@
-int maxSubArraySum(int arr[], int size) {
-    int max_so_far = arr[0];
-    int curr_max = arr[0];
-
-    for (int i = 1; i < size; i++) {
-        curr_max = max(arr[i], curr_max + arr[i]);
-        max_so_far = max(max_so_far, curr_max);
-    }
-
-    return max_so_far;
+numbers = [1, 2, 3, 4, 5]
+mean = sum(numbers) / len(numbers)
+print(mean)
+import statistics
+numbers = [1, 2, 3, 4, 5]
+mean = statistics.mean(numbers)
+print(mean)
+List<Double> numbers = Arrays.asList(1.0, 2.0, 3.0, 4.0, 5.0);
+double sum = 0;
+for (double num : numbers) {
+    sum += num;
 }
-def max_subarray_sum(arr):
-    max_so_far = arr[0]
-    curr_max = arr[0]
+double mean = sum / numbers.size();
+System.out.println(mean);
+List<Double> numbers = Arrays.asList(1.0, 2.0, 3.0, 4.0, 5.0);
+double mean = numbers.stream().mapToDouble(d -> d).sum() / numbers.size();
+System.out.println(mean);
+const numbers = [1, 2, 3, 4, 5];
+const sum = numbers.reduce((acc, current) => acc + current, 0);
+const mean = sum / numbers.length;
+console.log(mean);
+#include <vector>
+#include <numeric>
 
-    for num in arr[1:]:
-        curr_max = max(num, curr_max + num)
-        max_so_far = max(max_so_far, curr_max)
-
-    return max_so_far
-public int maxSubArraySum(int[] arr) {
-    int maxSoFar = arr[0];
-    int currMax = arr[0];
-
-    for (int i = 1; i < arr.length; i++) {
-        currMax = Math.max(arr[i], currMax + arr[i]);
-        maxSoFar = Math.max(maxSoFar, currMax);
-    }
-
-    return maxSoFar;
-}
-function maxSubarraySum(arr) {
-    let maxSoFar = arr[0];
-    let currMax = arr[0];
-
-    for (let i = 1; i < arr.length; i++) {
-        currMax = Math.max(arr[i], currMax + arr[i]);
-        maxSoFar = Math.max(maxSoFar, currMax);
-    }
-
-    return maxSoFar;
-}
+std::vector<double> numbers = {1.0, 2.0, 3.0, 4.0, 5.0};
+double sum = std::accumulate(numbers.begin(), numbers.end(), 0.0);
+double mean = sum / numbers.size();
+std::cout << mean << std::endl;
+numbers = [1, 2, 3, 4, 5]
+mean = numbers.sum.to_f / numbers.size
+puts mean
