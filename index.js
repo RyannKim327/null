@@ -11,7 +11,7 @@ let run = async () => {
   const m = `${time.getMonth() + 1}-${time.getDate()}-${time.getFullYear()} ${time.getHours()}:${time.getMinutes()}`;
   const mm2 = fs.readFileSync("rants.txt", "utf8").split("\n");
   const m2 = fs.readFileSync("questions.txt", "utf8").split("\n");
-  const m3 = m2[Math.floor(Math.random() * m2.length)];
+  const m3 = m2[Math.floor(Math.random() * m2.length)].replace("__language__", "typescript");
 
   try {
     let { data } = await axios.get(
@@ -22,7 +22,7 @@ let run = async () => {
     let active = false;
 
     for (let i = 0; i < datas.length; i++) {
-      if (datas[i].toLowerCase().startsWith("``` javascript")) {
+      if (datas[i].toLowerCase().startsWith("``` typescript")) {
         active = !active;
       } else if (datas[i].startsWith("```")) {
         active = !active;
@@ -34,7 +34,7 @@ let run = async () => {
     const msg = mm2[Math.floor(Math.random() * mm2.length)];
 
     fs.writeFileSync("Auto git.txt", msg, "utf-8");
-    fs.writeFileSync("autogit.js", result, "utf-8");
+    fs.writeFileSync("autogit.ts", result, "utf-8");
     setTimeout(() => {
       console.log(`-----${_commitments}-----`);
       console.log("Git add");
@@ -59,7 +59,7 @@ let run = async () => {
   } catch (e) {
     const msg = mm2[Math.floor(Math.random() * mm2.length)];
     fs.writeFileSync("Auto git.txt", msg, "utf-8");
-    fs.writeFileSync("autogit.js", "May error sa API", "utf-8");
+    fs.writeFileSync("autogit.ts", "// May error sa API", "utf-8");
     setTimeout(() => {
       console.log(`-----${_commitments}-----`);
       console.log("Git add");
