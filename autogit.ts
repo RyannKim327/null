@@ -1,15 +1,19 @@
-function selectionSort(arr: number[]): number[] {
-  const n = arr.length;
-  for (let i = 0; i < n - 1; i++) {
-    let minIndex = i;
-    for (let j = i + 1; j < n; j++) {
-      if (arr[j] < arr[minIndex]) {
-        minIndex = j;
-      }
-    }
-    [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
-  }
-  return arr;
+const arr = [1, 2, 3, 4, 5];
+const index = arr.indexOf(3); // find the index of the element to remove
+if (index !== -1) {
+  arr.splice(index, 1); // remove the element at the found index
 }
-const arr = [5, 2, 8, 3, 1, 6, 4];
-console.log(selectionSort(arr)); // [1, 2, 3, 4, 5, 6, 8]
+console.log(arr); // [1, 2, 4, 5]
+const arr = [1, 2, 3, 4, 5];
+const newArr = arr.filter(item => item !== 3); // create a new array without the element
+console.log(newArr); // [1, 2, 4, 5]
+const arr = [1, 2, 3, 4, 5];
+const index = arr.indexOf(3); // find the index of the element to remove
+if (index !== -1) {
+  const newArr = arr.slice(0, index).concat(arr.slice(index + 1)); // slice before and after the element and concatenate
+  console.log(newArr); // [1, 2, 4, 5]
+}
+import { without } from 'lodash';
+const arr = [1, 2, 3, 4, 5];
+const newArr = without(arr, 3); // create a new array without the element
+console.log(newArr); // [1, 2, 4, 5]
