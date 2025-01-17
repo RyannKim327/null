@@ -1,53 +1,32 @@
-function computeLPS(pattern: string): number[] {
-  const lps = new Array(pattern.length).fill(0);
-  let length = 0;
-  let i = 1;
-
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[length]) {
-      length++;
-      lps[i] = length;
-      i++;
-    } else if (length !== 0) {
-      length = lps[length - 1];
+function findMajorityElement(arr: number[]): number | undefined {
+  const count: { [key: number]: number } = {};
+  for (const num of arr) {
+    count[num] = (count[num] || 0) + 1;
+  }
+  for (const num in count) {
+    if (count[num] > arr.length / 2) {
+      return parseInt(num, 10);
+    }
+  }
+  return undefined;
+}
+function findMajorityElement(arr: number[]): number | undefined {
+  let candidate: number | undefined;
+  let count = 0;
+  for (const num of arr) {
+    if (count === 0) {
+      candidate = num;
+      count = 1;
+    } else if (candidate === num) {
+      count++;
     } else {
-      lps[i] = 0;
-      i++;
+      count--;
     }
   }
-
-  return lps;
+  return candidate;
 }
-
-function kmpSearch(main: string, pattern: string): number[] {
-  const lps = computeLPS(pattern);
-  const indices: number[] = [];
-  let i = 0;
-  let j = 0;
-
-  while (i < main.length) {
-    if (main[i] === pattern[j]) {
-      i++;
-      j++;
-    }
-
-    if (j === pattern.length) {
-      indices.push(i - j);
-      j = lps[j - 1];
-    } else if (i < main.length && main[i] !== pattern[j]) {
-      if (j !== 0) {
-        j = lps[j - 1];
-      } else {
-        i++;
-      }
-    }
-  }
-
-  return indices;
+function findMajorityElement(arr: number[]): number | undefined {
+  return arr.reduce((a, b) => (a[0] === b ? [a[0], a[1] + 1] : [b, 1]), [arr[0], 1])[0];
 }
-
-// Example usage:
-const main = "banana is a good banana";
-const pattern = "banana";
-const indices = kmpSearch(main, pattern);
-console.log(indices); // [0, 17]
+const arr = [1, 2, 3, 4, 5, 5, 5, 5, 5];
+console.log(findMajorityElement(arr)); // Output: 5
