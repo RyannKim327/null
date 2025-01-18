@@ -1,19 +1,20 @@
-function largestPrimeFactor(n: number): number {
-  let maxFactor = 1;
-  let i = 2;
-  while (i * i <= n) {
-    if (n % i === 0) {
-      maxFactor = i;
-      while (n % i === 0) {
-        n /= i;
-      }
-    }
-    i++;
+function binarySearch(arr: number[], target: number, low: number = 0, high: number = arr.length - 1): number {
+  if (low > high) {
+    return -1; // not found
   }
-  if (n > 1) {
-    maxFactor = n;
+
+  const mid = Math.floor((low + high) / 2);
+
+  if (arr[mid] === target) {
+    return mid;
+  } else if (arr[mid] < target) {
+    return binarySearch(arr, target, mid + 1, high);
+  } else {
+    return binarySearch(arr, target, low, mid - 1);
   }
-  return maxFactor;
 }
-console.log(largestPrimeFactor(13195)); // Output: 29
-console.log(largestPrimeFactor(600851475143)); // Output: 6857
+const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const target = 5;
+
+const result = binarySearch(arr, target);
+console.log(result); // Output: 4
