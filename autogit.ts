@@ -1,62 +1,55 @@
-interface TreeNode {
-  value: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
-}
+function mergeSort(arr: number[]): number[] {
+  const temp = new Array(arr.length);
+  let width = 1;
 
-function sumTreeNodes(node: TreeNode | null): number {
-  if (node === null) {
-    return 0;
+  while (width < arr.length) {
+    let left = 0;
+    while (left < arr.length) {
+      const mid = left + width;
+      const right = Math.min(left + 2 * width, arr.length);
+
+      merge(arr, temp, left, mid, right);
+
+      left = left + 2 * width;
+    }
+
+    width = width * 2;
   }
 
-  return node.value + sumTreeNodes(node.left) + sumTreeNodes(node.right);
+  return arr;
 }
-const tree: TreeNode = {
-  value: 1,
-  left: {
-    value: 2,
-    left: {
-      value: 4,
-      left: null,
-      right: null
-    },
-    right: {
-      value: 5,
-      left: null,
-      right: null
-    }
-  },
-  right: {
-    value: 3,
-    left: {
-      value: 6,
-      left: null,
-      right: null
-    },
-    right: {
-      value: 7,
-      left: null,
-      right: null
-    }
-  }
-};
 
-const sum = sumTreeNodes(tree); // returns 28
-function sumTreeNodesIterative(node: TreeNode | null): number {
-  let sum = 0;
-  const stack: TreeNode[] = [node];
+function merge(arr: number[], temp: number[], left: number, mid: number, right: number) {
+  let i = left;
+  let j = mid;
+  let k = left;
 
-  while (stack.length > 0) {
-    const currentNode = stack.pop()!;
-    sum += currentNode.value;
-
-    if (currentNode.right) {
-      stack.push(currentNode.right);
+  while (i < mid && j < right) {
+    if (arr[i] <= arr[j]) {
+      temp[k] = arr[i];
+      i++;
+    } else {
+      temp[k] = arr[j];
+      j++;
     }
-    if (currentNode.left) {
-      stack.push(currentNode.left);
-    }
+    k++;
   }
 
-  return sum;
+  while (i < mid) {
+    temp[k] = arr[i];
+    i++;
+    k++;
+  }
+
+  while (j < right) {
+    temp[k] = arr[j];
+    j++;
+    k++;
+  }
+
+  for (i = left; i < right; i++) {
+    arr[i] = temp[i];
+  }
 }
+const arr = [5, 2, 8, 3, 1, 6, 4];
+console.log(mergeSort(arr)); // [1, 2, 3, 4, 5, 6, 8]
