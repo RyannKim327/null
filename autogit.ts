@@ -1,57 +1,54 @@
-import * as cron from 'node-cron';
-
-interface Job {
-  id: string;
-  cronExpression: string;
-  task: () => void;
+interface Node<T> {
+  value: T;
+  score: number;
+  children: Node<T>[];
 }
 
-class CronJobManager {
-  private jobs: Job[] = [];
+class BeamSearch<T> {
+  private beamSize: number;
 
-  addJob(job: Job) {
-    this.jobs.push(job);
-    cron.schedule(job.cronExpression, job.task);
-    console.log(`Job ${job.id} added with cron expression ${job.cronExpression}`);
+  constructor(beamSize: number) {
+    this.beamSize = beamSize;
   }
 
-  start() {
-    console.log('Cron job manager started');
-  }
+  search(startNode: Node<T>, maxDepth: number): Node<T>[] {
+    const queue: Node<T>[] = [startNode];
+    const results: Node<T>[] = [];
 
-  stop() {
-    this.jobs.forEach((job) => {
-      cron.cancel(job.id);
-      console.log(`Job ${job.id} stopped`);
-    });
-    console.log('Cron job manager stopped');
+    for (let depth = 0; depth < maxDepth; depth++) {
+      const nextQueue: Node<T>[] = [];
+
+      for (const node of queue) {
+        for (const child of node.children) {
+          child.score = calculateScore(child); // calculate the score of the child node
+          nextQueue.push(child);
+        }
+      }
+
+      // Select the top `beamSize` nodes with the highest scores
+      queue = nextQueue.sort((a, b) => b.score - a.score).slice(0, this.beamSize);
+      results.push(...queue);
+    }
+
+    return results;
   }
 }
 
-const jobManager = new CronJobManager();
+function calculateScore<T>(node: Node<T>): number {
+  // implement your custom scoring function here
+  // for example:
+  return node.value.length; // score based on the length of the value
+}
+const startNode: Node<string> = {
+  value: 'hello',
+  score: 0,
+  children: [
+    { value: 'hello world', score: 0, children: [] },
+    { value: 'hello again', score: 0, children: [] },
+  ],
+};
 
-// Add some sample jobs
-jobManager.addJob({
-  id: 'job1',
-  cronExpression: '0 0 12 * * *', // Run every day at 12:00 PM
-  task: () => {
-    console.log('Running job 1');
-    // Do some task here
-  },
-});
+const beamSearch = new BeamSearch<string>(3);
+const results = beamSearch.search(startNode, 2);
 
-jobManager.addJob({
-  id: 'job2',
-  cronExpression: '0 30 14 * * *', // Run every day at 2:30 PM
-  task: () => {
-    console.log('Running job 2');
-    // Do some task here
-  },
-});
-
-jobManager.start();
-
-// Stop the job manager after 10 minutes
-setTimeout(() => {
-  jobManager.stop();
-}, 600000);
+console.log(results); // output: an array of Node objects with the top 3 scores
