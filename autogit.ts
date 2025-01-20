@@ -1,8 +1,33 @@
-function areAnagrams(str1: string, str2: string): boolean {
-  return str1.split('').sort().join('') === str2.split('').sort().join('');
+interface User {
+  id: number;
+  name: string;
+  email: string;
 }
-console.log(areAnagrams('listen', 'silent')); // true
-console.log(areAnagrams('hello', 'world')); // false
-function areAnagrams(str1: string, str2: string): boolean {
-  return str1.toLowerCase().split('').sort().join('') === str2.toLowerCase().split('').sort().join('');
+
+async function getUser(id: number): Promise<User | null> {
+  try {
+    const response = await fetch(`https://api.example.com/users/${id}`);
+    const userData = await response.json();
+    return userData;
+  } catch (error) {
+    console.error(`Error fetching user: ${error}`);
+    return null;
+  }
+}
+
+async function main() {
+  const userId = 42;
+  const user = await getUser(userId);
+  if (user) {
+    console.log(`User ${user.name} has email ${user.email}`);
+  } else {
+    console.log(`User not found`);
+  }
+}
+
+main();
+{
+  "id": 42,
+  "name": "John Doe",
+  "email": "johndoe@example.com"
 }
