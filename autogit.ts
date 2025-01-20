@@ -1,61 +1,79 @@
-import axios, { AxiosResponse } from 'axios';
+class Node<T> {
+  value: T;
+  next: Node<T> | null;
 
-interface User {
-  id: number;
-  name: string;
-  email: string;
-}
-
-class UserService {
-  private apiUrl = 'https://jsonplaceholder.typicode.com/users';
-
-  async getUsers(): Promise<User[]> {
-    try {
-      const response: AxiosResponse<User[]> = await axios.get(this.apiUrl);
-      return response.data;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  }
-
-  async getUserById(id: number): Promise<User | null> {
-    try {
-      const response: AxiosResponse<User> = await axios.get(`${this.apiUrl}/${id}`);
-      return response.data;
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
+  constructor(value: T) {
+    this.value = value;
+    this.next = null;
   }
 }
 
-const userService = new UserService();
+function isPalindrome(head: Node<string> | null): boolean {
+  if (!head) return true; // empty list is a palindrome
 
-async function main() {
-  const users: User[] = await userService.getUsers();
-  console.log(users);
+  // reverse the linked list
+  let reversed: Node<string> | null = null;
+  let current = head;
+  while (current) {
+    const temp = current.next;
+    current.next = reversed;
+    reversed = current;
+    current = temp;
+  }
 
-  const user: User | null = await userService.getUserById(1);
-  console.log(user);
+  // compare the original list with the reversed list
+  let original = head;
+  let reversedCurrent = reversed;
+  while (original && reversedCurrent) {
+    if (original.value !== reversedCurrent.value) return false;
+    original = original.next;
+    reversedCurrent = reversedCurrent.next;
+  }
+
+  return true;
+}
+class Node<T> {
+  value: T;
+  next: Node<T> | null;
+
+  constructor(value: T) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-main();
-[
-  {
-    "id": 1,
-    "name": "John Doe",
-    "email": "johndoe@example.com"
-  },
-  {
-    "id": 2,
-    "name": "Jane Doe",
-    "email": "janedoe@example.com"
-  },
-  ...
-]
-{
-  "id": 1,
-  "name": "John Doe",
-  "email": "johndoe@example.com"
+function isPalindrome(head: Node<string> | null): boolean {
+  if (!head) return true; // empty list is a palindrome
+
+  const stack: string[] = [];
+  let current = head;
+
+  // push values onto the stack
+  while (current) {
+    stack.push(current.value);
+    current = current.next;
+  }
+
+  // compare values with the stack
+  current = head;
+  while (current) {
+    if (current.value !== stack.pop()) return false;
+    current = current.next;
+  }
+
+  return true;
 }
+const list: Node<string> | null = new Node('a');
+list.next = new Node('b');
+list.next.next = new Node('c');
+list.next.next.next = new Node('b');
+list.next.next.next.next = new Node('a');
+
+console.log(isPalindrome(list)); // true
+
+const notPalindrome: Node<string> | null = new Node('a');
+notPalindrome.next = new Node('b');
+notPalindrome.next.next = new Node('c');
+notPalindrome.next.next.next = new Node('d');
+
+console.log(isPalindrome(notPalindrome)); // false
