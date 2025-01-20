@@ -1,98 +1,89 @@
-interface Node {
-  id: string;
-  x: number;
-  y: number;
-  distance: number;
-  previous: Node | null;
-  neighbors: Node[];
-}
+class Node<T> {
+  value: T;
+  left: Node<T> | null;
+  right: Node<T> | null;
 
-class PriorityQueue<T> {
-  private heap: T[] = [];
-
-  add(item: T, priority: number) {
-    this.heap.push(item);
-    this.heapifyUp(this.heap.length - 1);
-  }
-
-  remove(): T | null {
-    if (this.heap.length === 0) return null;
-    const item = this.heap[0];
-    this.heap[0] = this.heap[this.heap.length - 1];
-    this.heap.pop();
-    this.heapifyDown(0);
-    return item;
-  }
-
-  private heapifyUp(index: number) {
-    if (index === 0) return;
-    const parentIndex = Math.floor((index - 1) / 2);
-    if (this.heap[parentIndex].priority > this.heap[index].priority) {
-      [this.heap[parentIndex], this.heap[index]] = [this.heap[index], this.heap[parentIndex]];
-      this.heapifyUp(parentIndex);
-    }
-  }
-
-  private heapifyDown(index: number) {
-    const leftChildIndex = 2 * index + 1;
-    const rightChildIndex = 2 * index + 2;
-    let smallest = index;
-
-    if (
-      leftChildIndex < this.heap.length &&
-      this.heap[leftChildIndex].priority < this.heap[smallest].priority
-    ) {
-      smallest = leftChildIndex;
-    }
-
-    if (
-      rightChildIndex < this.heap.length &&
-      this.heap[rightChildIndex].priority < this.heap[smallest].priority
-    ) {
-      smallest = rightChildIndex;
-    }
-
-    if (smallest !== index) {
-      [this.heap[smallest], this.heap[index]] = [this.heap[index], this.heap[smallest]];
-      this.heapifyDown(smallest);
-    }
+  constructor(value: T) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
   }
 }
 
-class AStarSearch {
-  private nodes: Node[];
-  private startingNode: Node;
-  private goalNode: Node;
-  private openSet: PriorityQueue<Node>;
+class BinarySearchTree<T> {
+  root: Node<T> | null;
 
-  constructor(nodes: Node[], startingNode: Node, goalNode: Node) {
-    this.nodes = nodes;
-    this.startingNode = startingNode;
-    this.goalNode = goalNode;
-    this.openSet = new PriorityQueue<Node>((node) => node.distance);
+  constructor() {
+    this.root = null;
   }
 
-  search(): Node[] | null {
-    this.openSet.add(this.startingNode, 0);
+  insert(value: T): void {
+    this.root = this._insert(this.root, value);
+  }
 
-    while (this.openSet.heap.length > 0) {
-      const currentNode = this.openSet.remove()!;
-      if (currentNode === this.goalNode) {
-        return this.reconstructPath(currentNode);
-      }
-
-      for (const neighbor of currentNode.neighbors) {
-        const tentativeDistance = currentNode.distance + this.calculateDistance(currentNode, neighbor);
-        if (neighbor.distance > tentativeDistance || neighbor.previous === null) {
-          neighbor.distance = tentativeDistance;
-          neighbor.previous = currentNode;
-          this.openSet.add(neighbor, tentativeDistance + this.heuristic(neighbor, this.goalNode));
-        }
-      }
+  _insert(node: Node<T> | null, value: T): Node<T> {
+    if (node === null) {
+      return new Node(value);
     }
 
-    return null;
+    if (value < node.value) {
+      node.left = this._insert(node.left, value);
+    } else if (value > node.value) {
+      node.right = this._insert(node.right, value);
+    }
+
+    return node;
   }
 
-  private calculateDistance(node1: Node, node2: Node): number {
-    return Math.sqrt(Math.pow(node2.x - node1.x, 2) + Math
+  search(value: T): boolean {
+    return this._search(this.root, value);
+  }
+
+  _search(node: Node<T> | null, value: T): boolean {
+    if (node === null) {
+      return false;
+    }
+
+    if (value === node.value) {
+      return true;
+    }
+
+    if (value < node.value) {
+      return this._search(node.left, value);
+    } else {
+      return this._search(node.right, value);
+    }
+  }
+
+  inOrderTraversal(): T[] {
+    const result: T[] = [];
+    this._inOrderTraversal(this.root, result);
+    return result;
+  }
+
+  _inOrderTraversal(node: Node<T> | null, result: T[]): void {
+    if (node === null) {
+      return;
+    }
+
+    this._inOrderTraversal(node.left, result);
+    result.push(node.value);
+    this._inOrderTraversal(node.right, result);
+  }
+}
+
+// Example usage
+const bst = new BinarySearchTree<number>();
+
+bst.insert(5);
+bst.insert(3);
+bst.insert(7);
+bst.insert(2);
+bst.insert(4);
+bst.insert(6);
+bst.insert(8);
+
+console.log(bst.inOrderTraversal()); // [2, 3, 4, 5, 6, 7, 8]
+
+console.log(bst.search(4)); // true
+console.log(bst.search(9)); // false
