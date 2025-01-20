@@ -1,19 +1,18 @@
-const arr: number[] = [3, 1, 4, 1, 5, 9, 2];
-const max = Math.max(...arr);
-console.log(max); // Output: 9
-const arr: number[] = [3, 1, 4, 1, 5, 9, 2];
-const max = arr.reduce((max, current) => Math.max(max, current), -Infinity);
-console.log(max); // Output: 9
-const arr: number[] = [3, 1, 4, 1, 5, 9, 2];
-let max = -Infinity;
-arr.forEach((value) => {
-  if (value > max) {
-    max = value;
+function countCharOccurrence(str: string, char: string): number {
+  let count = 0;
+  for (let i = 0; i < str.length; i++) {
+    if (str[i] === char) {
+      count++;
+    }
   }
-});
-console.log(max); // Output: 9
-import _ from 'lodash';
-
-const arr: number[] = [3, 1, 4, 1, 5, 9, 2];
-const max = _.max(arr);
-console.log(max); // Output: 9
+  return count;
+}
+function countCharOccurrence(str: string, char: string): number {
+  return str.split(char).length - 1;
+}
+function countCharOccurrence(str: string, char: string): number {
+  return (str.match(new RegExp(char, 'g')) || []).length;
+}
+function countCharOccurrence(str: string, char: string): number {
+  return str.replace(new RegExp(char, 'g'), "").length - str.length;
+}
