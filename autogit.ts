@@ -1,18 +1,10 @@
-function countCharOccurrence(str: string, char: string): number {
-  let count = 0;
-  for (let i = 0; i < str.length; i++) {
-    if (str[i] === char) {
-      count++;
-    }
+function factorial(n: number): number {
+  if (n === 0) {
+    return 1; // base case: 0! = 1
+  } else {
+    return n * factorial(n - 1); // recursive case: n! = n * (n-1)!
   }
-  return count;
 }
-function countCharOccurrence(str: string, char: string): number {
-  return str.split(char).length - 1;
-}
-function countCharOccurrence(str: string, char: string): number {
-  return (str.match(new RegExp(char, 'g')) || []).length;
-}
-function countCharOccurrence(str: string, char: string): number {
-  return str.replace(new RegExp(char, 'g'), "").length - str.length;
-}
+console.log(factorial(5)); // outputs 120
+console.log(factorial(3)); // outputs 6
+console.log(factorial(0)); // outputs 1
