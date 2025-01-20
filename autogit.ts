@@ -1,21 +1,8 @@
-function_strlen(str: string): number {
-  let len = 0;
-  for (let i = 0; str[i] !== undefined; i++) {
-    len++;
-  }
-  return len;
+function areAnagrams(str1: string, str2: string): boolean {
+  return str1.split('').sort().join('') === str2.split('').sort().join('');
 }
-function_strlen(str: string): number {
-  let len = 0;
-  let i = 0;
-  while (str[i] !== undefined) {
-    len++;
-    i++;
-  }
-  return len;
-}
-function_strlen(str: string): number {
-  let len = 0;
-  Array.prototype.forEach.call(str, () => len++);
-  return len;
+console.log(areAnagrams('listen', 'silent')); // true
+console.log(areAnagrams('hello', 'world')); // false
+function areAnagrams(str1: string, str2: string): boolean {
+  return str1.toLowerCase().split('').sort().join('') === str2.toLowerCase().split('').sort().join('');
 }
