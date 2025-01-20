@@ -1,22 +1,43 @@
-function getStringLength(str: string): number {
-  let length = 0;
-  for (let i = 0; str[i] !== undefined; i++) {
-    length++;
-  }
-  return length;
+import * as cron from 'node-cron';
+
+interface Job {
+  id: number;
+  name: string;
+  cronExpression: string;
+  func: () => void;
 }
-function getStringLength(str: string): number {
-  let length = 0;
-  let i = 0;
-  while (str[i] !== undefined) {
-    length++;
-    i++;
+
+const jobs: Job[] = [
+  {
+    id: 1,
+    name: 'Daily Report',
+    cronExpression: '0 0 * * *',
+    func: () => {
+      console.log('Generating daily report...');
+      // generate report logic here
+    }
+  },
+  {
+    id: 2,
+    name: 'Weekly Backup',
+    cronExpression: '0 0 * * 0',
+    func: () => {
+      console.log('Running weekly backup...');
+      // backup logic here
+    }
+  },
+  {
+    id: 3,
+    name: 'Every 5 minutes',
+    cronExpression: '*/5 * * * *',
+    func: () => {
+      console.log('Running every 5 minutes...');
+      // logic here
+    }
   }
-  return length;
-}
-function getStringLength(str: string, index: number = 0): number {
-  if (str[index] === undefined) {
-    return index;
-  }
-  return getStringLength(str, index + 1);
-}
+];
+
+jobs.forEach((job) => {
+  cron.schedule(job.cronExpression, job.func);
+  console.log(`Scheduled job ${job.name} to run on ${job.cronExpression}`);
+});
