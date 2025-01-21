@@ -1,36 +1,16 @@
-class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
+function binarySearch(arr: number[], target: number, low: number = 0, high: number = arr.length - 1): number | undefined {
+  if (low > high) return undefined;
 
-  constructor(val: number) {
-    this.val = val;
-    this.left = null;
-    this.right = null;
+  const mid = Math.floor((low + high) / 2);
+
+  if (arr[mid] === target) return mid;
+
+  if (arr[mid] < target) {
+    return binarySearch(arr, target, mid + 1, high);
+  } else {
+    return binarySearch(arr, target, low, mid - 1);
   }
 }
-
-function diameterOfBinaryTree(root: TreeNode | null): number {
-  let maxDiameter = 0;
-
-  function dfs(node: TreeNode | null): number {
-    if (!node) return 0;
-
-    const leftDepth = dfs(node.left);
-    const rightDepth = dfs(node.right);
-
-    maxDiameter = Math.max(maxDiameter, leftDepth + rightDepth);
-
-    return Math.max(leftDepth, rightDepth) + 1;
-  }
-
-  dfs(root);
-  return maxDiameter;
-}
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(diameterOfBinaryTree(root)); // Output: 4
+const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const index = binarySearch(arr, 5);
+console.log(index); // Output: 4
