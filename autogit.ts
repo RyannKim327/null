@@ -1,6 +1,6 @@
-let str = "hello world this is a test";
-let reversedStr = str.split(" ").reverse().join(" ");
-console.log(reversedStr); // Output: "test a is this world hello"
-let str = "hello world this is a test";
-let reversedStr = [...str.split(" ")].reverse().join(" ");
-console.log(reversedStr); // Output: "test a is this world hello"
+const originalString = "Hello World TypeScript";
+
+const reversedString = originalString.split(" ").reverse().join(" ");
+
+console.log(reversedString); // Output: "TypeScript World Hello"
+const reversedString = [...originalString.split(" ")].reverse().join(" ");
