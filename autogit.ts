@@ -1,43 +1,33 @@
-import * as cron from 'cron';
+class Stack<T> {
+  private arr: T[] = [];
 
-interface ScheduledTask {
-  cronJob: cron.ScheduledTask;
-  taskName: string;
-}
-
-class Scheduler {
-  private scheduledTasks: ScheduledTask[] = [];
-
-  addTask(taskName: string, cronExpression: string, taskFunction: () => void) {
-    const cronJob = new cron.CronJob(cronExpression, () => {
-      console.log(` Running task: ${taskName} `);
-      taskFunction();
-    });
-    this.scheduledTasks.push({ cronJob, taskName });
+  public push(item: T): void {
+    this.arr.push(item);
   }
 
-  start() {
-    this.scheduledTasks.forEach((task) => task.cronJob.start());
+  public pop(): T | undefined {
+    return this.arr.pop();
   }
 
-  stop() {
-    this.scheduledTasks.forEach((task) => task.cronJob.stop());
+  public peek(): T | undefined {
+    return this.arr[this.arr.length - 1];
+  }
+
+  public isEmpty(): boolean {
+    return this.arr.length === 0;
+  }
+
+  public size(): number {
+    return this.arr.length;
   }
 }
+const stack = new Stack<number>();
 
-const scheduler = new Scheduler();
+stack.push(1);
+stack.push(2);
+stack.push(3);
 
-scheduler.addTask('daily-report', '0 0 12 * * *', () => {
-  console.log('Generating daily report...');
-  // Generate daily report logic here
-});
-
-scheduler.addTask('weekly-backup', '0 0 0 * * 0', () => {
-  console.log('Running weekly backup...');
-  // Weekly backup logic here
-});
-
-scheduler.start();
-
-// Stop all tasks after 1 hour
-setTimeout(() => scheduler.stop(), 3600000);
+console.log(stack.pop()); // 3
+console.log(stack.peek()); // 2
+console.log(stack.isEmpty()); // false
+console.log(stack.size()); // 2
