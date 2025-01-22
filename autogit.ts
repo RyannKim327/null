@@ -1,105 +1,88 @@
-class BTreeNode<K, V> {
-  private keys: K[];
-  private values: V[];
-  private children: BTreeNode<K, V>[];
-  private leaf: boolean;
+interface Node {
+  id: string;
+  neighbors: Node[];
+}
 
-  constructor(leaf: boolean = false) {
-    this.keys = [];
-    this.values = [];
-    this.children = [];
-    this.leaf = leaf;
+class BiDirectionalSearch {
+  private forwardQueue: Node[];
+  private backwardQueue: Node[];
+  private forwardVisited: Set<Node>;
+  private backwardVisited: Set<Node>;
+
+  constructor(startNode: Node, goalNode: Node) {
+    this.forwardQueue = [startNode];
+    this.backwardQueue = [goalNode];
+    this.forwardVisited = new Set([startNode]);
+    this.backwardVisited = new Set([goalNode]);
   }
 
-  // Insert a key-value pair into the B-tree
-  insert(key: K, value: V): void {
-    if (this.leaf) {
-      // Leaf node: simply insert the key-value pair
-      this.keys.push(key);
-      this.values.push(value);
-      this.keys.sort((a, b) => (a as any) - (b as any));
-    } else {
-      // Non-leaf node: find the appropriate child node to insert into
-      const index = this.findChildIndex(key);
-      if (this.children[index].keys.length < BTreeOrder) {
-        // Child node has space: insert into child node
-        this.children[index].insert(key, value);
-      } else {
-        // Child node is full: split the child node and insert
-        this.splitChild(index);
-        if (key < this.keys[index]) {
-          this.children[index].insert(key, value);
-        } else {
-          this.children[index + 1].insert(key, value);
+  private forwardSearch(): Node[] | null {
+    while (this.forwardQueue.length > 0) {
+      const node = this.forwardQueue.shift()!;
+      if (this.backwardVisited.has(node)) {
+        return this.reconstructPath(node);
+      }
+      for (const neighbor of node.neighbors) {
+        if (!this.forwardVisited.has(neighbor)) {
+          this.forwardQueue.push(neighbor);
+          this.forwardVisited.add(neighbor);
         }
       }
     }
+    return null;
   }
 
-  // Search for a key in the B-tree
-  search(key: K): V | null {
-    let index = this.findChildIndex(key);
-    if (index >= 0 && this.keys[index] === key) {
-      return this.values[index];
+  private backwardSearch(): Node[] | null {
+    while (this.backwardQueue.length > 0) {
+      const node = this.backwardQueue.shift()!;
+      if (this.forwardVisited.has(node)) {
+        return this.reconstructPath(node);
+      }
+      for (const neighbor of node.neighbors) {
+        if (!this.backwardVisited.has(neighbor)) {
+          this.backwardQueue.push(neighbor);
+          this.backwardVisited.add(neighbor);
+        }
+      }
     }
-    if (this.leaf) {
-      return null;
-    }
-    return this.children[index].search(key);
+    return null;
   }
 
-  // Delete a key from the B-tree
-  delete(key: K): void {
-    const index = this.findChildIndex(key);
-    if (index >= 0 && this.keys[index] === key) {
-      // Key found in this node: remove it
-      this.keys.splice(index, 1);
-      this.values.splice(index, 1);
-    } else if (this.leaf) {
-      // Key not found in this node: return
-      return;
-    } else {
-      // Key not found in this node: recurse into child nodes
-      this.children[index].delete(key);
+  private reconstructPath(meetingPoint: Node): Node[] {
+    const forwardPath = [];
+    let node = meetingPoint;
+    while (node !== this.startNode) {
+      forwardPath.unshift(node);
+      node = node.neighbors.find((n) => this.forwardVisited.has(n));
     }
+    forwardPath.unshift(this.startNode);
+
+    const backwardPath = [];
+    node = meetingPoint;
+    while (node !== this.goalNode) {
+      backwardPath.push(node);
+      node = node.neighbors.find((n) => this.backwardVisited.has(n));
+    }
+    backwardPath.push(this.goalNode);
+
+    return forwardPath.concat(backwardPath.slice(1));
   }
 
-  // Find the index of the child node that should contain the given key
-  private findChildIndex(key: K): number {
-    let index = 0;
-    while (index < this.keys.length && key > this.keys[index]) {
-      index++;
+  public search(): Node[] | null {
+    while (this.forwardQueue.length > 0 && this.backwardQueue.length > 0) {
+      const forwardResult = this.forwardSearch();
+      const backwardResult = this.backwardSearch();
+      if (forwardResult && backwardResult) {
+        return forwardResult;
+      }
     }
-    return index;
-  }
-
-  // Split a child node into two child nodes
-  private splitChild(index: number): void {
-    const child = this.children[index];
-    const mid = Math.floor(child.keys.length / 2);
-    const newChild = new BTreeNode<K, V>(child.leaf);
-    newChild.keys = child.keys.slice(mid);
-    newChild.values = child.values.slice(mid);
-    child.keys = child.keys.slice(0, mid);
-    child.values = child.values.slice(0, mid);
-    this.keys.splice(index, 0, child.keys[mid - 1]);
-    this.values.splice(index, 0, child.values[mid - 1]);
-    this.children.splice(index + 1, 0, newChild);
+    return null;
   }
 }
 
-// B-tree order ( adjustable )
-const BTreeOrder = 3;
-
-// Example usage
-const tree = new BTreeNode<number, string>();
-tree.insert(5, 'five');
-tree.insert(2, 'two');
-tree.insert(8, 'eight');
-tree.insert(3, 'three');
-tree.insert(9, 'nine');
-
-console.log(tree.search(2)); // Output: "two"
-console.log(tree.search(6)); // Output: null
-tree.delete(3);
-console.log(tree.search(3)); // Output: null
+// Example usage:
+const startNode: Node = { id: 'A', neighbors: [{ id: 'B', neighbors: [] }, { id: 'C', neighbors: [] }] };
+const goalNode: Node = { id: 'G', neighbors: [] };
+const biDirectionalSearch = new BiDirectionalSearch(startNode, goalNode);
+const path = biDirectionalSearch.search();
+console.log(path); // [A, B, E, G]
