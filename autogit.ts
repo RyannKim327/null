@@ -1,27 +1,25 @@
-function longestCommonSubstring(s1: string, s2: string): string {
-  const m = s1.length;
-  const n = s2.length;
-  const dp = Array(m + 1).fill(0).map(() => Array(n + 1).fill(0));
-  let maxLength = 0;
-  let endIndex = 0;
+const arr: number[] = [12, 34, 5, 76, 23, 11];
 
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (s1[i - 1] === s2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-        if (dp[i][j] > maxLength) {
-          maxLength = dp[i][j];
-          endIndex = i;
-        }
-      }
-    }
+arr.sort((a, b) => b - a); // sort in descending order
+const secondLargest = arr[1];
+
+console.log(secondLargest); // output: 34
+const arr: number[] = [12, 34, 5, 76, 23, 11];
+let max = -Infinity;
+let secondMax = -Infinity;
+
+for (const num of arr) {
+  if (num > max) {
+    secondMax = max;
+    max = num;
+  } else if (num > secondMax && num !== max) {
+    secondMax = num;
   }
-
-  return s1.substring(endIndex - maxLength, endIndex);
 }
 
-// Example usage:
-const s1 = "banana";
-const s2 = "anana";
-const longestSubstr = longestCommonSubstring(s1, s2);
-console.log(longestSubstr); // Output: "anana"
+console.log(secondMax); // output: 34
+const arr: number[] = [12, 34, 5, 76, 23, 11];
+const max = Math.max(...arr);
+const secondLargest = Math.max(...arr.filter(x => x !== max));
+
+console.log(secondLargest); // output: 34
