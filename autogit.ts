@@ -1,93 +1,44 @@
-function findKthSmallest(arr: number[], k: number): number {
-  arr.sort((a, b) => a - b);
-  return arr[k - 1];
-}
-class MinHeap {
-  private heap: number[];
+function mergeSort(arr: number[]): number[] {
+  const len = arr.length;
+  let width = 1;
 
-  constructor(arr: number[]) {
-    this.heap = arr;
-    this.buildHeap();
+  while (width < len) {
+    let left = 0;
+
+    while (left < len) {
+      const mid = left + width;
+      const right = Math.min(left + 2 * width, len);
+
+      const leftArr = arr.slice(left, mid);
+      const rightArr = arr.slice(mid, right);
+
+      arr.splice(left, right - left, ...merge(leftArr, rightArr));
+
+      left = left + 2 * width;
+    }
+
+    width = 2 * width;
   }
 
-  private buildHeap() {
-    for (let i = Math.floor(this.heap.length / 2) - 1; i >= 0; i--) {
-      this.heapify(i);
-    }
-  }
-
-  private heapify(i: number) {
-    let smallest = i;
-    let left = 2 * i + 1;
-    let right = 2 * i + 2;
-
-    if (left < this.heap.length && this.heap[left] < this.heap[smallest]) {
-      smallest = left;
-    }
-
-    if (right < this.heap.length && this.heap[right] < this.heap[smallest]) {
-      smallest = right;
-    }
-
-    if (smallest !== i) {
-      [this.heap[i], this.heap[smallest]] = [this.heap[smallest], this.heap[i]];
-      this.heapify(smallest);
-    }
-  }
-
-  public extractMin(): number {
-    if (this.heap.length === 0) {
-      throw new Error("Heap is empty");
-    }
-
-    const min = this.heap[0];
-    this.heap[0] = this.heap[this.heap.length - 1];
-    this.heap.pop();
-    this.heapify(0);
-    return min;
-  }
+  return arr;
 }
 
-function findKthSmallest(arr: number[], k: number): number {
-  const minHeap = new MinHeap(arr);
-  for (let i = 0; i < k - 1; i++) {
-    minHeap.extractMin();
-  }
-  return minHeap.extractMin();
-}
-function partition(arr: number[], low: number, high: number): number {
-  const pivot = arr[high];
-  let i = low - 1;
+function merge(left: number[], right: number[]): number[] {
+  const result: number[] = [];
+  let i = 0;
+  let j = 0;
 
-  for (let j = low; j < high; j++) {
-    if (arr[j] < pivot) {
+  while (i < left.length && j < right.length) {
+    if (left[i] <= right[j]) {
+      result.push(left[i]);
       i++;
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-  }
-
-  [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
-  return i + 1;
-}
-
-function quickSelect(arr: number[], k: number): number {
-  let low = 0;
-  let high = arr.length - 1;
-
-  while (low <= high) {
-    const pivotIndex = partition(arr, low, high);
-    if (pivotIndex === k - 1) {
-      return arr[pivotIndex];
-    } else if (pivotIndex < k - 1) {
-      low = pivotIndex + 1;
     } else {
-      high = pivotIndex - 1;
+      result.push(right[j]);
+      j++;
     }
   }
 
-  throw new Error("K is out of range");
+  return result.concat(left.slice(i)).concat(right.slice(j));
 }
-
-function findKthSmallest(arr: number[], k: number): number {
-  return quickSelect(arr, k);
-}
+const arr = [5, 2, 8, 3, 1, 4, 6];
+console.log(mergeSort(arr)); // [1, 2, 3, 4, 5, 6, 8]
