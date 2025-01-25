@@ -1,114 +1,35 @@
-interface Node<T> {
-  key: T;
-  value: T;
-  left: Node<T> | null;
-  right: Node<T> | null;
-  parent: Node<T> | null;
-  color: 'red' | 'black';
-}
-class RedBlackTree<T> {
-  private root: Node<T> | null;
+function longestIncreasingSubsequence(arr: number[]): number[] {
+  const n = arr.length;
+  const dp = new Array(n).fill(1); // dp[i] will store the length of the longest increasing subsequence ending at index i
+  const prev = new Array(n).fill(-1); // prev[i] will store the index of the previous element in the longest increasing subsequence ending at index i
 
-  constructor() {
-    this.root = null;
-  }
-
-  // ...
-}
-private insertNode:key: T, value: T): Node<T> {
-  const newNode = { key, value, left: null, right: null, parent: null, color: 'red' };
-  if (!this.root) {
-    this.root = newNode;
-  } else {
-    let currentNode = this.root;
-    while (currentNode) {
-      if (key < currentNode.key) {
-        if (!currentNode.left) {
-          currentNode.left = newNode;
-          newNode.parent = currentNode;
-          break;
-        }
-        currentNode = currentNode.left;
-      } else {
-        if (!currentNode.right) {
-          currentNode.right = newNode;
-          newNode.parent = currentNode;
-          break;
-        }
-        currentNode = currentNode.right;
+  for (let i = 1; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      if (arr[i] > arr[j] && dp[i] < dp[j] + 1) {
+        dp[i] = dp[j] + 1;
+        prev[i] = j;
       }
     }
   }
-  this.balanceTree(newNode);
-  return newNode;
-}
-private balanceTree(node: Node<T>): void {
-  if (!node.parent) {
-    node.color = 'black';
-    return;
-  }
 
-  if (node.parent.color === 'black') {
-    return;
-  }
-
-  const grandParent = node.parent.parent;
-
-  if (!grandParent) {
-    node.parent.color = 'black';
-    return;
-  }
-
-  if (node.parent === grandParent.left) {
-    const uncle = grandParent.right;
-    if (uncle && uncle.color === 'red') {
-      node.parent.color = 'black';
-      uncle.color = 'black';
-      grandParent.color = 'red';
-      this.balanceTree(grandParent);
-    } else {
-      if (node === node.parent.right) {
-        this.rotateLeft(node.parent);
-        node = node.left;
-      }
-      node.parent.color = 'black';
-      grandParent.color = 'red';
-      this.rotateRight(grandParent);
-    }
-  } else {
-    const uncle = grandParent.left;
-    if (uncle && uncle.color === 'red') {
-      node.parent.color = 'black';
-      uncle.color = 'black';
-      grandParent.color = 'red';
-      this.balanceTree(grandParent);
-    } else {
-      if (node === node.parent.left) {
-        this.rotateRight(node.parent);
-        node = node.right;
-      }
-      node.parent.color = 'black';
-      grandParent.color = 'red';
-      this.rotateLeft(grandParent);
+  let maxLen = 1;
+  let idx = 0;
+  for (let i = 1; i < n; i++) {
+    if (dp[i] > maxLen) {
+      maxLen = dp[i];
+      idx = i;
     }
   }
-}
-private rotateLeft(node: Node<T>): void {
-  const pivot = node.right;
-  node.right = pivot.left;
-  if (pivot.left) {
-    pivot.left.parent = node;
-  }
-  pivot.parent = node.parent;
-  if (!node.parent) {
-    this.root = pivot;
-  } else if (node === node.parent.left) {
-    node.parent.left = pivot;
-  } else {
-    node.parent.right = pivot;
-  }
-  pivot.left = node;
-  node.parent = pivot;
-}
 
-private rotateRight
+  const lis = new Array(maxLen);
+  let k = maxLen - 1;
+  while (idx >= 0) {
+    lis[k--] = arr[idx];
+    idx = prev[idx];
+  }
+
+  return lis;
+}
+const arr = [10, 22, 9, 33, 21, 50, 41, 60];
+const lis = longestIncreasingSubsequence(arr);
+console.log(lis); // [10, 22, 33, 50, 60]
