@@ -1,21 +1,57 @@
-const arr = [1, 2, 3, 4, 5];
-const index = arr.indexOf(3); // find the index of the element to remove
-if (index !== -1) {
-  arr.splice(index, 1); // remove the element at the index
+class Node<T> {
+  value: T;
+  next: Node<T> | null;
+
+  constructor(value: T) {
+    this.value = value;
+    this.next = null;
+  }
 }
-console.log(arr); // [1, 2, 4, 5]
-const arr = [1, 2, 3, 4, 5];
-const newArr = arr.filter(item => item !== 3);
-console.log(newArr); // [1, 2, 4, 5]
-const arr = [1, 2, 3, 4, 5];
-const index = arr.indexOf(3);
-if (index !== -1) {
-  const left = arr.slice(0, index);
-  const right = arr.slice(index + 1);
-  arr = left.concat(right);
+
+function reverseLinkedList<T>(head: Node<T>): Node<T> {
+  let prev: Node<T> | null = null;
+  let current: Node<T> = head;
+  let next: Node<T> | null = null;
+
+  while (current !== null) {
+    next = current.next;
+    current.next = prev;
+    prev = current;
+    current = next;
+  }
+
+  return prev;
 }
-console.log(arr); // [1, 2, 4, 5]
-import { reject } from 'lodash';
-const arr = [1, 2, 3, 4, 5];
-const newArr = reject(arr, item => item === 3);
-console.log(newArr); // [1, 2, 4, 5]
+const head = new Node(1);
+head.next = new Node(2);
+head.next.next = new Node(3);
+head.next.next.next = new Node(4);
+head.next.next.next.next = new Node(5);
+
+console.log("Original List:");
+let current = head;
+while (current !== null) {
+  console.log(current.value);
+  current = current.next;
+}
+
+const reversedHead = reverseLinkedList(head);
+
+console.log("Reversed List:");
+current = reversedHead;
+while (current !== null) {
+  console.log(current.value);
+  current = current.next;
+}
+Original List:
+1
+2
+3
+4
+5
+Reversed List:
+5
+4
+3
+2
+1
