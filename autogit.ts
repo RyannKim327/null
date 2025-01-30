@@ -1,53 +1,61 @@
-function findMajorityElement(arr: number[]): number | null {
-  let count = 0;
-  let candidate: number | null = null;
+class ListNode {
+  val: number;
+  next: ListNode | null;
 
-  for (let i = 0; i < arr.length; i++) {
-    if (count === 0) {
-      candidate = arr[i];
-      count = 1;
-    } else if (arr[i] === candidate) {
-      count++;
-    } else {
-      count--;
-    }
+  constructor(val: number) {
+    this.val = val;
+    this.next = null;
   }
-
-  // Verify that the candidate is indeed the majority element
-  let majorityCount = 0;
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] === candidate) {
-      majorityCount++;
-    }
-  }
-
-  return majorityCount > arr.length / 2 ? candidate : null;
 }
-function findMajorityElement(arr: number[]): number | null {
-  const countMap: { [key: number]: number } = {};
 
-  for (let i = 0; i < arr.length; i++) {
-    if (!countMap[arr[i]]) {
-      countMap[arr[i]] = 1;
-    } else {
-      countMap[arr[i]]++;
+function isPalindrome(head: ListNode | null): boolean {
+  // Reverse the linked list
+  let reversed = reverseList(head);
+  
+  // Compare the original list with the reversed list
+  let current = head;
+  let reversedCurrent = reversed;
+  while (current && reversedCurrent) {
+    if (current.val !== reversedCurrent.val) {
+      return false;
     }
+    current = current.next;
+    reversedCurrent = reversedCurrent.next;
   }
+  
+  // If we reached the end of both lists, the original list is a palindrome
+  return true;
+}
 
-  for (const [key, value] of Object.entries(countMap)) {
-    if (value > arr.length / 2) {
-      return key;
+function reverseList(head: ListNode | null): ListNode | null {
+  let prev = null;
+  let current = head;
+  while (current) {
+    let next = current.next;
+    current.next = prev;
+    prev = current;
+    current = next;
+  }
+  return prev;
+}
+function isPalindrome(head: ListNode | null): boolean {
+  let stack: number[] = [];
+  
+  // Push values onto the stack
+  let current = head;
+  while (current) {
+    stack.push(current.val);
+    current = current.next;
+  }
+  
+  // Check if the list is a palindrome
+  current = head;
+  while (current) {
+    if (current.val !== stack.pop()) {
+      return false;
     }
+    current = current.next;
   }
-
-  return null;
+  
+  return true;
 }
-function findMajorityElement(arr: number[]): number | null {
-  return arr.reduce((acc, current) => {
-    acc.count = acc.count === 0 ? 1 : acc.count + (current === acc.candidate ? 1 : -1);
-    acc.candidate = current;
-    return acc;
-  }, { count: 0, candidate: null }).candidate;
-}
-const arr = [2, 2, 1, 1, 1, 2, 2];
-console.log(findMajorityElement(arr)); // Output: 2
