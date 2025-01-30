@@ -1,47 +1,53 @@
-function binarySearch(arr: number[], target: number): number | -1 {
-  let left = 0;
-  let right = arr.length - 1;
+function findMajorityElement(arr: number[]): number | null {
+  let count = 0;
+  let candidate: number | null = null;
 
-  while (left <= right) {
-    const mid = Math.floor((left + right) / 2);
-
-    if (arr[mid] === target) {
-      return mid;
-    } else if (arr[mid] < target) {
-      left = mid + 1;
+  for (let i = 0; i < arr.length; i++) {
+    if (count === 0) {
+      candidate = arr[i];
+      count = 1;
+    } else if (arr[i] === candidate) {
+      count++;
     } else {
-      right = mid - 1;
+      count--;
     }
   }
 
-  return -1; // not found
-}
-const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-const index = binarySearch(arr, 5);
-console.log(index); // output: 4
-function binarySearch<T>(arr: T[], target: T): number | -1 {
-  if (!Array.isArray(arr) || arr.length === 0) {
-    throw new Error("Input array is empty or not an array");
-  }
-
-  if (typeof target !== typeof arr[0]) {
-    throw new Error("Target type does not match array type");
-  }
-
-  let left = 0;
-  let right = arr.length - 1;
-
-  while (left <= right) {
-    const mid = Math.floor((left + right) / 2);
-
-    if (arr[mid] === target) {
-      return mid;
-    } else if (arr[mid] < target) {
-      left = mid + 1;
-    } else {
-      right = mid - 1;
+  // Verify that the candidate is indeed the majority element
+  let majorityCount = 0;
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === candidate) {
+      majorityCount++;
     }
   }
 
-  return -1; // not found
+  return majorityCount > arr.length / 2 ? candidate : null;
 }
+function findMajorityElement(arr: number[]): number | null {
+  const countMap: { [key: number]: number } = {};
+
+  for (let i = 0; i < arr.length; i++) {
+    if (!countMap[arr[i]]) {
+      countMap[arr[i]] = 1;
+    } else {
+      countMap[arr[i]]++;
+    }
+  }
+
+  for (const [key, value] of Object.entries(countMap)) {
+    if (value > arr.length / 2) {
+      return key;
+    }
+  }
+
+  return null;
+}
+function findMajorityElement(arr: number[]): number | null {
+  return arr.reduce((acc, current) => {
+    acc.count = acc.count === 0 ? 1 : acc.count + (current === acc.candidate ? 1 : -1);
+    acc.candidate = current;
+    return acc;
+  }, { count: 0, candidate: null }).candidate;
+}
+const arr = [2, 2, 1, 1, 1, 2, 2];
+console.log(findMajorityElement(arr)); // Output: 2
