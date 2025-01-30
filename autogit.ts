@@ -1,54 +1,47 @@
-class Node<T> {
-  value: T;
-  next: Node<T> | null;
+function binarySearch(arr: number[], target: number): number | -1 {
+  let left = 0;
+  let right = arr.length - 1;
 
-  constructor(value: T) {
-    this.value = value;
-    this.next = null;
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+
+    if (arr[mid] === target) {
+      return mid;
+    } else if (arr[mid] < target) {
+      left = mid + 1;
+    } else {
+      right = mid - 1;
+    }
   }
+
+  return -1; // not found
 }
-
-function findMiddleElement<T>(head: Node<T>): Node<T> | null {
-  let slow = head;
-  let fast = head;
-
-  while (fast !== null && fast.next !== null) {
-    slow = slow.next; // Move one step at a time
-    fast = fast.next.next; // Move two steps at a time
+const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const index = binarySearch(arr, 5);
+console.log(index); // output: 4
+function binarySearch<T>(arr: T[], target: T): number | -1 {
+  if (!Array.isArray(arr) || arr.length === 0) {
+    throw new Error("Input array is empty or not an array");
   }
 
-  return slow;
-}
-function findMiddleElementRecursive<T>(head: Node<T>, count: number = 0): Node<T> | null {
-  if (head === null) return null;
-
-  if (count === 0) {
-    return head;
+  if (typeof target !== typeof arr[0]) {
+    throw new Error("Target type does not match array type");
   }
 
-  return findMiddleElementRecursive(head.next, count - 1);
-}
+  let left = 0;
+  let right = arr.length - 1;
 
-function middleElement<T>(head: Node<T>): Node<T> | null {
-  let count = 0;
-  let current = head;
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
 
-  while (current !== null) {
-    count++;
-    current = current.next;
+    if (arr[mid] === target) {
+      return mid;
+    } else if (arr[mid] < target) {
+      left = mid + 1;
+    } else {
+      right = mid - 1;
+    }
   }
 
-  return findMiddleElementRecursive(head, Math.floor(count / 2));
-}
-function findMiddleElementStack<T>(head: Node<T>): Node<T> | null {
-  const stack: Node<T>[] = [];
-
-  let current = head;
-  while (current !== null) {
-    stack.push(current);
-    current = current.next;
-  }
-
-  const middleIndex = Math.floor(stack.length / 2);
-  return stack[middleIndex];
+  return -1; // not found
 }
