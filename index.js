@@ -15,7 +15,7 @@ let run = async () => {
 
   try {
     let { data } = await axios.get(
-      `https://hercai.onrender.com/turbo-16k/hercai?question=${m3}`,
+      `${process.env.URL}${m3}`,
     );
     let datas = data.reply.split("\n");
     let result = "";
