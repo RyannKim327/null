@@ -15,7 +15,7 @@ let run = async () => {
 
   try {
     let { data } = await axios.get(
-      `${process.env.URL}${m3}`,
+      `https://we-love-gpt.onrender.com/api/chat/?message=${m3}`,
     );
     let datas = data.reply.split("\n");
     let result = "";
