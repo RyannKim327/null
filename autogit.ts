@@ -1,25 +1,9 @@
-import cron from 'node-cron';
+function decimalToBinary(decimal: number): string {
+    // Use toString method with radix 2
+    return decimal.toString(2);
+}
 
-// Function to be executed
-const task = () => {
-    const now = new Date();
-    console.log(`Task executed at: ${now.toLocaleString()}`);
-};
-
-// Schedule the task to run every minute
-const cronExpression = '* * * * *';  // This pattern means every minute
-const scheduledTask = cron.schedule(cronExpression, task);
-
-// Start the scheduled task
-scheduledTask.start();
-
-console.log('Cron job has been scheduled. It will run every minute.');
-
-// Optional: Add error handling or exit gracefully
-process.on('SIGINT', () => {
-    console.log('Stopping the cron job.');
-    scheduledTask.stop();
-    process.exit();
-});
-tsc cronJob.ts
-node cronJob.js
+// Example usage:
+const decimalNumber = 42;
+const binaryString = decimalToBinary(decimalNumber);
+console.log(`The binary representation of ${decimalNumber} is ${binaryString}`); // Output: The binary representation of 42 is 101010
