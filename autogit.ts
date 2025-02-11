@@ -1,39 +1,28 @@
-function boyerMooreHorspool(text: string, pattern: string): number {
-    const m: number = pattern.length;
-    const n: number = text.length;
+function largestPrimeFactor(n: number): number {
+    let maxPrime = -1;
 
-    // Create the bad character shift table
-    const badCharShift: { [key: string]: number } = {};
-    for (let i = 0; i < m; i++) {
-        badCharShift[pattern[i]] = m - i - 1; // Shift distance based on pattern position
+    // Check for number of 2s that divide n
+    while (n % 2 === 0) {
+        maxPrime = 2;
+        n /= 2;
     }
 
-    let s: number = 0; // s is the shift of the pattern over the text
-    while (s <= n - m) {
-        let j: number = m - 1; // Start from the end of the pattern
-
-        // Keep moving the pattern to the left
-        while (j >= 0 && text[s + j] === pattern[j]) {
-            j--;
-        }
-
-        // If the pattern was found
-        if (j < 0) {
-            return s; // Return the starting index of the match
-        } else {
-            // Calculate the shift
-            const badChar = text[s + j];
-            const shift = badCharShift[badChar] ? badCharShift[badChar] : m; // Default shift if char not found
-            s += shift; // Move the pattern to the right
+    // n must be odd at this point so a skip of 2 (i.e., check only odd numbers) can be used
+    for (let i = 3; i * i <= n; i += 2) {
+        while (n % i === 0) {
+            maxPrime = i;
+            n /= i;
         }
     }
 
-    return -1; // Return -1 if no match was found
+    // This condition is to check if n is a prime number greater than 2
+    if (n > 2) {
+        maxPrime = n;
+    }
+
+    return maxPrime;
 }
 
 // Example usage
-const text = "This is a simple example.";
-const pattern = "example";
-const result = boyerMooreHorspool(text, pattern);
-
-console.log(result); // Output: index of the starting match or -1 if not found
+console.log(largestPrimeFactor(13195)); // Output: 29
+console.log(largestPrimeFactor(600851475143)); // Output: 6857
