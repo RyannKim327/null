@@ -1,76 +1,49 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-function getLength(head: ListNode | null): number {
-    let length = 0;
-    let current = head;
-
-    while (current) {
-        length++;
-        current = current.next;
-    }
-
-    return length;
+function getMax(arr: number[]): number {
+    return arr.reduce((max, val) => (val > max ? val : max), arr[0]);
 }
 
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    if (!headA || !headB) {
-        return null; // If either list is empty, there is no intersection
+function countingSort(arr: number[], exp: number): number[] {
+    const output: number[] = new Array(arr.length); // output array
+    const count: number[] = new Array(10).fill(0); // count array
+
+    // Store count of occurrences in count[]
+    for (let i = 0; i < arr.length; i++) {
+        const index = Math.floor(arr[i] / exp) % 10;
+        count[index]++;
     }
 
-    const lengthA = getLength(headA);
-    const lengthB = getLength(headB);
-
-    let currentA = headA;
-    let currentB = headB;
-
-    // Align both pointers to the same starting point
-    if (lengthA > lengthB) {
-        for (let i = 0; i < lengthA - lengthB; i++) {
-            currentA = currentA.next;
-        }
-    } else {
-        for (let i = 0; i < lengthB - lengthA; i++) {
-            currentB = currentB.next;
-        }
+    // Change count[i] so that it contains actual position of this digit in output[]
+    for (let i = 1; i < 10; i++) {
+        count[i] += count[i - 1];
     }
 
-    // Move both pointers until they either collide or reach the end
-    while (currentA && currentB) {
-        if (currentA === currentB) {
-            return currentA; // Found the intersection
-        }
-        currentA = currentA.next;
-        currentB = currentB.next;
+    // Build the output array
+    for (let i = arr.length - 1; i >= 0; i--) {
+        const index = Math.floor(arr[i] / exp) % 10;
+        output[count[index] - 1] = arr[i];
+        count[index]--;
     }
 
-    return null; // No intersection
+    // Copy the output array to arr[], so that arr[] now contains sorted numbers
+    for (let i = 0; i < arr.length; i++) {
+        arr[i] = output[i];
+    }
+
+    return arr;
 }
-// Create linked list A: 1 -> 2 -> 3 -> 4
-const a1 = new ListNode(1);
-const a2 = new ListNode(2);
-const a3 = new ListNode(3);
-const a4 = new ListNode(4);
-a1.next = a2;
-a2.next = a3;
-a3.next = a4;
 
-// Create linked list B: 6 -> 7 -> 3 -> 4 (intersects at node 3)
-const b1 = new ListNode(6);
-const b2 = new ListNode(7);
-b1.next = b2;
-b2.next = a3; // b1 and b2 point to the same node as a3
+function radixSort(arr: number[]): number[] {
+    const max = getMax(arr);
 
-const intersectionNode = getIntersectionNode(a1, b1);
+    // Apply counting sort to sort elements based on place value
+    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
+        countingSort(arr, exp);
+    }
 
-if (intersectionNode) {
-    console.log(`Intersecting node value: ${intersectionNode.value}`); // Output: 3
-} else {
-    console.log("No intersection found.");
+    return arr;
 }
+
+// Example Usage
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+console.log("Original Array:", arr);
+console.log("Sorted Array:", radixSort(arr));
