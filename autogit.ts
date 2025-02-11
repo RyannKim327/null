@@ -1,53 +1,36 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function longestCommonSubstring(s1: string, s2: string): string {
+    const m = s1.length;
+    const n = s2.length;
+    let maxLength = 0;
+    let endingIndex = 0;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
+    // Create a 2D array to store lengths of longest common suffixes
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-function hasCycle(head: ListNode | null): boolean {
-    if (head === null) return false;
-
-    let slow: ListNode | null = head; // Slow pointer
-    let fast: ListNode | null = head; // Fast pointer
-
-    while (fast !== null && fast.next !== null) {
-        slow = slow.next;           // Move slow by 1 step
-        fast = fast.next.next;     // Move fast by 2 steps
-
-        // If slow and fast meet, there is a cycle
-        if (slow === fast) {
-            return true;
+    // Build the dp table
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (s1[i - 1] === s2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                
+                // Update maxLength and endingIndex if we found a longer substring
+                if (dp[i][j] > maxLength) {
+                    maxLength = dp[i][j];
+                    endingIndex = i; // store the ending index of the substring in s1
+                }
+            }
         }
     }
 
-    // If we reach here, there is no cycle
-    return false;
+    // If no common substring found
+    if (maxLength === 0) return "";
+
+    // Return the longest common substring
+    return s1.substring(endingIndex - maxLength, endingIndex);
 }
 
-// Example usage:
-
-// Creating a linked list with a cycle
-const node1 = new ListNode(1);
-const node2 = new ListNode(2);
-const node3 = new ListNode(3);
-const node4 = new ListNode(4);
-
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2; // Creates a cycle (node4 -> node2)
-
-// Checking for a cycle
-console.log(hasCycle(node1)); // Output: true
-
-// Creating a linked list without a cycle
-const node5 = new ListNode(5);
-const node6 = new ListNode(6);
-node5.next = node6;
-
-// Checking for a cycle
-console.log(hasCycle(node5)); // Output: false
+// Example usage
+const str1 = "abcdxyz";
+const str2 = "xyzabcd";
+const result = longestCommonSubstring(str1, str2);
+console.log(result); // Output: "abcd"
