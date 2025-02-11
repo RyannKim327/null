@@ -1,56 +1,78 @@
-class BoyerMoore {
-    private pattern: string;
-    private badCharTable: Map<string, number>;
+// Define the structure of a LinkedList Node
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    constructor(pattern: string) {
-        this.pattern = pattern;
-        this.badCharTable = this.buildBadCharTable(pattern);
-    }
-
-    private buildBadCharTable(pattern: string): Map<string, number> {
-        const table = new Map<string, number>();
-        const patternLength = pattern.length;
-
-        for (let i = 0; i < patternLength; i++) {
-            table.set(pattern[i], i);
-        }
-
-        return table;
-    }
-
-    public search(text: string): number {
-        const patternLength = this.pattern.length;
-        const textLength = text.length;
-        let skip: number;
-
-        for (let i = 0; i <= textLength - patternLength; i += skip) {
-            skip = 0;
-
-            for (let j = patternLength - 1; j >= 0; j--) {
-                if (this.pattern[j] !== text[i + j]) {
-                    const badCharIndex = this.badCharTable.get(text[i + j]) || -1;
-                    skip = Math.max(1, j - badCharIndex);
-                    break;
-                }
-            }
-
-            if (skip === 0) {
-                // Match found at index i
-                return i; // Return the index of the first match
-            }
-        }
-
-        return -1; // No match found
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
 }
 
-// Example usage:
-const bm = new BoyerMoore("abc");
-const text = "abcpqrabcxyz";
-const index = bm.search(text);
+// Define the LinkedList class
+class LinkedList {
+    head: ListNode | null;
 
-if (index !== -1) {
-    console.log(`Pattern found at index: ${index}`);
-} else {
-    console.log("Pattern not found");
+    constructor() {
+        this.head = null;
+    }
+
+    // Method to insert a new node at the end
+    append(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    // Method to find the middle element
+    findMiddle(): ListNode | null {
+        if (!this.head) {
+            return null;
+        }
+
+        let slow: ListNode | null = this.head;
+        let fast: ListNode | null = this.head;
+
+        while (fast && fast.next) {
+            slow = slow.next;          // Move slow pointer by 1
+            fast = fast.next.next;    // Move fast pointer by 2
+        }
+
+        return slow; // slow is now at the middle
+    }
+}
+
+// Example usage
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+list.append(4);
+list.append(5);
+
+const middleNode = list.findMiddle();
+if (middleNode) {
+    console.log(`The middle element is: ${middleNode.value}`); // Output: The middle element is: 3
+}
+
+// If you create a list with an even number of nodes, the middle will be the second of the two middle elements.
+const evenList = new LinkedList();
+evenList.append(1);
+evenList.append(2);
+evenList.append(3);
+evenList.append(4);
+evenList.append(5);
+evenList.append(6);
+
+const evenMiddleNode = evenList.findMiddle();
+if (evenMiddleNode) {
+    console.log(`The middle element is: ${evenMiddleNode.value}`); // Output: The middle element is: 4
 }
