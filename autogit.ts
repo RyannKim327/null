@@ -1,33 +1,33 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+// Install the types for the Fetch API if using Node.js environment
+// npm install --save-dev @types/node-fetch
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+// Importing the necessary modules
+import fetch from 'node-fetch';
+
+// Define an interface for the expected data structure
+interface Post {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
+}
+
+// Asynchronous function to fetch posts
+async function fetchPosts() {
+    const url = 'https://jsonplaceholder.typicode.com/posts';
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const posts: Post[] = await response.json();
+        console.log(posts); 
+    } catch (error) {
+        console.error('Error fetching posts:', error);
     }
 }
 
-function findMiddle(head: ListNode | null): ListNode | null {
-    if (head === null) return null;
-
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast !== null && fast.next !== null) {
-        slow = slow.next; // move slow by 1
-        fast = fast.next.next; // move fast by 2
-    }
-
-    return slow; // slow is now pointing to the middle node
-}
-
-// Example usage
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-const middle = findMiddle(head);
-console.log(middle ? middle.value : null); // Outputs: 3
+// Call the function to fetch posts
+fetchPosts();
+npm install node-fetch
