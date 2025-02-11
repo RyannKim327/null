@@ -1,26 +1,18 @@
-function quicksort(arr: number[]): number[] {
-    if (arr.length <= 1) {
-        return arr; // Base case: arrays with 0 or 1 element are already sorted
-    }
+function areAnagrams(str1: string, str2: string): boolean {
+    // Normalize the strings: remove whitespace and convert to lowercase
+    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
+    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
 
-    const pivot = arr[arr.length - 1]; // Choosing the last element as the pivot
-    const left: number[] = [];
-    const right: number[] = [];
+    // Sort the characters of each string
+    const sortedStr1 = normalizedStr1.split('').sort().join('');
+    const sortedStr2 = normalizedStr2.split('').sort().join('');
 
-    // Partitioning the array based on the pivot
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]); // Elements less than the pivot go to the left
-        } else {
-            right.push(arr[i]); // Elements greater than or equal to the pivot go to the right
-        }
-    }
-
-    // Recursively sorting the left and right partitions and concatenating the results
-    return [...quicksort(left), pivot, ...quicksort(right)];
+    // Compare the sorted strings
+    return sortedStr1 === sortedStr2;
 }
 
-// Example usage:
-const array = [3, 6, 8, 10, 1, 2, 1];
-const sortedArray = quicksort(array);
-console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
+// Example usage
+const str1 = "listen";
+const str2 = "silent";
+
+console.log(areAnagrams(str1, str2)); // Output: true
