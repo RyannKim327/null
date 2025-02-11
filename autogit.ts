@@ -1,13 +1,14 @@
-function isPalindrome(str: string): boolean {
-    // Normalize the string
-    const normalizedStr = str
-        .replace(/[^0-9a-zA-Z]/g, '') // Remove non-alphanumeric characters
-        .toLowerCase(); // Convert to lowercase
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
 
-    // Compare with its reverse
-    return normalizedStr === normalizedStr.split('').reverse().join('');
+const newArray = array.filter(element => element !== elementToRemove);
+console.log(newArray); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
+const index = array.indexOf(elementToRemove);
+
+if (index !== -1) {
+    array.splice(index, 1);
 }
 
-// Example usage
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car")); // false
+console.log(array); // Output: [1, 2, 4, 5]
