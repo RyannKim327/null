@@ -1,30 +1,52 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+class Graph {
+    private adjList: Map<number, number[]>;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-function sumOfNodes(root: TreeNode | null): number {
-    // Base case: if the node is null, return 0
-    if (root === null) {
-        return 0;
+    constructor() {
+        this.adjList = new Map();
     }
 
-    // Recursive case: sum the value of the current node and the sums of the left and right subtrees
-    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
-}
-// Create a binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+    addEdge(u: number, v: number): void {
+        if (!this.adjList.has(u)) {
+            this.adjList.set(u, []);
+        }
+        this.adjList.get(u)!.push(v);
+    }
 
-// Calculate the sum of all nodes
-const totalSum = sumOfNodes(root);
-console.log(`The sum of all nodes in the binary tree is: ${totalSum}`); // Output: 15
+    topologicalSort(): number[] {
+        const visited = new Set<number>();
+        const stack: number[] = [];
+
+        const dfs = (node: number) => {
+            visited.add(node);
+            const neighbors = this.adjList.get(node) || [];
+            neighbors.forEach((neighbor) => {
+                if (!visited.has(neighbor)) {
+                    dfs(neighbor);
+                }
+            });
+            stack.push(node); // Add node to stack after visiting all its neighbors
+        };
+
+        // Perform DFS from each vertex
+        this.adjList.forEach((_, node) => {
+            if (!visited.has(node)) {
+                dfs(node);
+            }
+        });
+
+        // Return the stack in reverse for topological order
+        return stack.reverse();
+    }
+}
+
+// Example usage
+const g = new Graph();
+g.addEdge(5, 2);
+g.addEdge(5, 0);
+g.addEdge(4, 0);
+g.addEdge(4, 1);
+g.addEdge(2, 3);
+g.addEdge(3, 1);
+
+const sortedOrder = g.topologicalSort();
+console.log('Topological Sort:', sortedOrder);
