@@ -1,59 +1,62 @@
-class Node {
-    value: any;
-    children: Node[];
+A -- B
+|    |
+C -- D
+const graph = {
+    A: ['B', 'C'],
+    B: ['A', 'D'],
+    C: ['A', 'D'],
+    D: ['B', 'C']
+};
+type Graph = { [key: string]: string[] };
 
-    constructor(value: any) {
-        this.value = value;
-        this.children = [];
+function dfsRecursive(graph: Graph, start: string, visited: Set<string> = new Set()): void {
+    if (visited.has(start)) {
+        return; // Already visited
     }
 
-    addChild(child: Node) {
-        this.children.push(child);
+    console.log(start); // Process the node
+    visited.add(start);
+
+    for (let neighbor of graph[start]) {
+        dfsRecursive(graph, neighbor, visited);
     }
 }
 
-function depthLimitedSearch(root: Node, target: any, limit: number): Node | null {
-    const stack: { node: Node; depth: number }[] = [];
-    stack.push({ node: root, depth: 0 });
+// Example usage
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['A', 'D'],
+    C: ['A', 'D'],
+    D: ['B', 'C']
+};
+
+dfsRecursive(graph, 'A');
+type Graph = { [key: string]: string[] };
+
+function dfsIterative(graph: Graph, start: string): void {
+    const stack: string[] = [start];
+    const visited: Set<string> = new Set();
 
     while (stack.length > 0) {
-        const { node, depth } = stack.pop()!;
+        const node = stack.pop()!;
+        if (!visited.has(node)) {
+            console.log(node); // Process the node
+            visited.add(node);
 
-        // Check if the current node is the target
-        if (node.value === target) {
-            return node;
-        }
-
-        // If the current depth is less than the limit, add children to the stack
-        if (depth < limit) {
-            for (let i = node.children.length - 1; i >= 0; i--) {
-                stack.push({ node: node.children[i], depth: depth + 1 });
+            // Add neighbors to the stack (reverse to maintain order)
+            for (let neighbor of graph[node].reverse()) {
+                stack.push(neighbor);
             }
         }
     }
-
-    // Return null if the target is not found within the depth limit
-    return null;
 }
 
-// Example usage:
-const root = new Node(1);
-const child1 = new Node(2);
-const child2 = new Node(3);
-const child3 = new Node(4);
-const child4 = new Node(5);
+// Example usage
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['A', 'D'],
+    C: ['A', 'D'],
+    D: ['B', 'C']
+};
 
-root.addChild(child1);
-root.addChild(child2);
-child1.addChild(child3);
-child1.addChild(child4);
-
-const targetValue = 4;
-const limit = 2;
-
-const result = depthLimitedSearch(root, targetValue, limit);
-if (result) {
-    console.log(`Found node with value: ${result.value}`);
-} else {
-    console.log('Node not found within the depth limit.');
-}
+dfsIterative(graph, 'A');
