@@ -1,72 +1,73 @@
-class Node {
-    value: number;
-    next: Node | null;
+class SuffixTreeNode {
+    children: Map<string, SuffixTreeNode>;
+    start: number;
+    end: number | null;
+    suffixLink: SuffixTreeNode | null;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+    constructor(start: number, end: number | null) {
+        this.children = new Map();
+        this.start = start;
+        this.end = end;
+        this.suffixLink = null;
     }
 }
 
-class LinkedList {
-    head: Node | null;
+class SuffixTree {
+    root: SuffixTreeNode;
+    text: string;
 
-    constructor() {
-        this.head = null;
+    constructor(text: string) {
+        this.root = new SuffixTreeNode(-1, null);
+        this.text = text;
+        this.buildSuffixTree();
     }
 
-    // Helper method to append data to the linked list
-    append(value: number) {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
+    buildSuffixTree() {
+        const n = this.text.length;
+        for (let i = 0; i < n; i++) {
+            this.insertSuffix(i);
         }
-
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
     }
 
-    // Method to reverse the linked list
-    reverse() {
-        let prev: Node | null = null;
-        let current: Node | null = this.head;
-        let next: Node | null = null;
+    insertSuffix(start: number) {
+        let currentNode = this.root;
+        let currentChar = this.text[start];
 
-        while (current) {
-            next = current.next; // Store next node
-            current.next = prev; // Reverse the link
-            prev = current;      // Move prev and current one step forward
-            current = next;
+        for (let i = start; i < this.text.length; i++) {
+            const char = this.text[i];
+            if (!currentNode.children.has(char)) {
+                const newNode = new SuffixTreeNode(start, null);
+                currentNode.children.set(char, newNode);
+                return;
+            }
+            currentNode = currentNode.children.get(char)!;
+            // If we reach the end of the current edge, we can stop
+            if (currentNode.end === null) {
+                currentNode.end = i;
+                return;
+            }
         }
-        this.head = prev; // Reset head to the new front of the list
     }
 
-    // Helper method to print the linked list
-    printList() {
-        let current = this.head;
-        const elements = [];
-        while (current) {
-            elements.push(current.value);
-            current = current.next;
+    search(pattern: string): boolean {
+        let currentNode = this.root;
+        let index = 0;
+
+        while (index < pattern.length) {
+            const char = pattern[index];
+            if (!currentNode.children.has(char)) {
+                return false; // Not found
+            }
+            currentNode = currentNode.children.get(char)!;
+            index++;
         }
-        console.log(elements.join(" -> "));
+        return true; // Found
     }
 }
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
 
-console.log("Original Linked List:");
-list.printList(); // Output: 1 -> 2 -> 3 -> 4 -> 5
-
-list.reverse();
-
-console.log("Reversed Linked List:");
-list.printList(); // Output: 5 -> 4 -> 3 -> 2 -> 1
+// Example usage
+const text = "banana";
+const suffixTree = new SuffixTree(text);
+console.log(suffixTree.search("ana")); // true
+console.log(suffixTree.search("nan")); // true
+console.log(suffixTree.search("xyz")); // false
