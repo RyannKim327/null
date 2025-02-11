@@ -1,33 +1,120 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null = null;
-    right: TreeNode | null = null;
+class Node<T> {
+    value: T;
+    forward: Node<T>[];
 
-    constructor(value: number) {
+    constructor(value: T, level: number) {
         this.value = value;
+        this.forward = new Array(level + 1).fill(null);
     }
 }
+class SkipList<T> {
+    private head: Node<T>;
+    private maxLevel: number;
+    private p: number; // Probability factor
+    private level: number;
 
-function countLeafNodes(node: TreeNode | null): number {
-    if (node === null) {
-        return 0; // If the node is null, return 0
+    constructor(maxLevel: number = 16, p: number = 0.5) {
+        this.maxLevel = maxLevel;
+        this.p = p;
+        this.level = 0;
+        this.head = new Node<T>(null, this.maxLevel);
     }
 
-    // If the node is a leaf node (no children)
-    if (node.left === null && node.right === null) {
-        return 1;
+    private randomLevel(): number {
+        let lvl = 0;
+        while (Math.random() < this.p && lvl < this.maxLevel) {
+            lvl++;
+        }
+        return lvl;
     }
 
-    // Recursively count leaf nodes in left and right subtrees
-    return countLeafNodes(node.left) + countLeafNodes(node.right);
+    insert(value: T): void {
+        const update: Node<T>[] = new Array(this.maxLevel + 1);
+        let current: Node<T> = this.head;
+
+        // Find the position to insert the new value
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+            update[i] = current;
+        }
+
+        current = current.forward[0];
+
+        // If the value is not already present, insert it
+        if (current === null || current.value !== value) {
+            const newLevel = this.randomLevel();
+
+            if (newLevel > this.level) {
+                for (let i = this.level + 1; i <= newLevel; i++) {
+                    update[i] = this.head;
+                }
+                this.level = newLevel;
+            }
+
+            const newNode = new Node(value, newLevel);
+            for (let i = 0; i <= newLevel; i++) {
+                newNode.forward[i] = update[i].forward[i];
+                update[i].forward[i] = newNode;
+            }
+        }
+    }
+
+    search(value: T): boolean {
+        let current: Node<T> = this.head;
+
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+        }
+
+        current = current.forward[0];
+
+        return current !== null && current.value === value;
+    }
+
+    delete(value: T): void {
+        const update: Node<T>[] = new Array(this.maxLevel + 1);
+        let current: Node<T> = this.head;
+
+        // Find the node to delete
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+            update[i] = current;
+        }
+
+        current = current.forward[0];
+
+        // If found, remove it
+        if (current !== null && current.value === value) {
+            for (let i = 0; i <= this.level; i++) {
+                if (update[i].forward[i] !== current) break;
+                update[i].forward[i] = current.forward[i];
+            }
+
+            // Remove levels if necessary
+            while (this.level > 0 && this.head.forward[this.level] === null) {
+                this.level--;
+            }
+        }
+    }
 }
+const skipList = new SkipList<number>();
 
-// Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+skipList.insert(3);
+skipList.insert(6);
+skipList.insert(7);
+skipList.insert(9);
+skipList.insert(12);
+skipList.insert(19);
+skipList.insert(17);
 
-const leafCount = countLeafNodes(root);
-console.log(`Number of leaf nodes: ${leafCount}`); // Output: Number of leaf nodes: 3
+console.log(skipList.search(6)); // true
+console.log(skipList.search(15)); // false
+
+skipList.delete(6);
+console.log(skipList.search(6)); // false
