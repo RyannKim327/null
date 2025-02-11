@@ -1,25 +1,24 @@
-const str: string = "Hello, world!";
-const substring: string = "world";
+const str: string = "Hello, TypeScript!";
+const substring: string = "TypeScript";
 
 if (str.includes(substring)) {
-    console.log("Substring found!");
+    console.log("The substring is found!");
 } else {
-    console.log("Substring not found.");
+    console.log("The substring is not found.");
 }
-const str: string = "Hello, world!";
-const substring: string = "world";
+const str: string = "Hello, TypeScript!";
+const substring: string = "TypeScript";
 
 if (str.indexOf(substring) !== -1) {
-    console.log("Substring found!");
+    console.log("The substring is found!");
 } else {
-    console.log("Substring not found.");
+    console.log("The substring is not found.");
 }
-const str: string = "Hello, world!";
-const substring: string = "world";
-const regex = new RegExp(substring);
+const str: string = "Hello, TypeScript!";
+const substring: string = "TypeScript";
 
-if (regex.test(str)) {
-    console.log("Substring found!");
+if (str.search(substring) !== -1) {
+    console.log("The substring is found!");
 } else {
-    console.log("Substring not found.");
+    console.log("The substring is not found.");
 }
