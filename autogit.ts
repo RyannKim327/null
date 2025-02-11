@@ -1,33 +1,112 @@
-function binarySearch(arr: number[], target: number, left: number = 0, right: number = arr.length - 1): number {
-    // Base case: if the left index exceeds the right index, the target is not found
-    if (left > right) {
-        return -1; // target not found
+type Graph = { [key: string]: string[] };
+
+function topologicalSortKahn(graph: Graph): string[] | null {
+    const indegree: { [key: string]: number } = {};
+    const result: string[] = [];
+    const queue: string[] = [];
+    
+    // Step 1: Calculate indegrees
+    for (const node in graph) {
+        indegree[node] = 0; // Initialize indegree for each node
     }
 
-    // Calculate the middle index
-    const mid: number = Math.floor((left + right) / 2);
-
-    // Check if the middle element is the target
-    if (arr[mid] === target) {
-        return mid; // Target found
+    for (const node in graph) {
+        for (const neighbor of graph[node]) {
+            indegree[neighbor] = (indegree[neighbor] || 0) + 1; // Count the indegrees
+        }
     }
 
-    // If the target is less than the middle element, search in the left half
-    if (target < arr[mid]) {
-        return binarySearch(arr, target, left, mid - 1);
+    // Step 2: Initialize the queue with nodes having indegree of zero
+    for (const node in indegree) {
+        if (indegree[node] === 0) {
+            queue.push(node);
+        }
+    }
+
+    // Step 3: Process the queue
+    while (queue.length > 0) {
+        const currentNode = queue.shift();
+        if (currentNode) {
+            result.push(currentNode); // Add to topological sort
+            for (const neighbor of graph[currentNode]) {
+                indegree[neighbor]--; // Remove the edge from currentNode to neighbor
+                if (indegree[neighbor] === 0) {
+                    queue.push(neighbor); // Add it to the queue if indegree becomes zero
+                }
+            }
+        }
+    }
+
+    // Step 4: Check if topological sort is possible (i.e., no cycle)
+    if (result.length === Object.keys(graph).length) {
+        return result;
     } else {
-        // If the target is greater than the middle element, search in the right half
-        return binarySearch(arr, target, mid + 1, right);
+        return null; // Graph has a cycle
     }
 }
 
-// Example usage:
-const sortedArray: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const target: number = 7;
-const result: number = binarySearch(sortedArray, target);
+// Example usage
+const graph: Graph = {
+    'A': ['B', 'C'],
+    'B': ['D'],
+    'C': ['D'],
+    'D': ['E'],
+    'E': []
+};
 
-if (result !== -1) {
-    console.log(`Target found at index: ${result}`);
-} else {
-    console.log('Target not found');
+const sorted = topologicalSortKahn(graph);
+console.log(sorted); // Output may vary, e.g., ['A', 'B', 'C', 'D', 'E']
+type GraphDFS = { [key: string]: string[] };
+
+function topologicalSortDFS(graph: GraphDFS): string[] | null {
+    const visited: { [key: string]: boolean } = {};
+    const stack: string[] = [];
+    const result: string[] = [];
+    let hasCycle = false;
+
+    function dfs(node: string): void {
+        if (hasCycle) return; // Stop if cycle is detected
+
+        visited[node] = true; // Mark the current node as visited
+
+        if (graph[node]) {
+            for (const neighbor of graph[node]) {
+                if (!visited[neighbor]) {
+                    dfs(neighbor);
+                } else if (result.includes(neighbor) && !stack.includes(neighbor)) {
+                    hasCycle = true; // Cycle detected
+                    return;
+                }
+            }
+        }
+
+        stack.push(node); // Put the node in the stack after exploring its neighbors
+    }
+
+    // Start DFS from each node
+    for (const node in graph) {
+        if (!visited[node]) {
+            dfs(node);
+        }
+    }
+
+    // Reverse stack to get the correct order
+    while (stack.length > 0) {
+        result.push(stack.pop()!);
+    }
+
+    // If cycle detected, return null
+    return hasCycle ? null : result;
 }
+
+// Example usage
+const graphDFS: GraphDFS = {
+    'A': ['B', 'C'],
+    'B': ['D'],
+    'C': ['D'],
+    'D': ['E'],
+    'E': []
+};
+
+const sortedDFS = topologicalSortDFS(graphDFS);
+console.log(sortedDFS); // Output may vary, e.g., ['A', 'C', 'B', 'D', 'E']
