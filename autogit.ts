@@ -1,28 +1,47 @@
-function largestPrimeFactor(n: number): number {
-    let maxPrime = -1;
+type Node<T> = {
+    state: T;
+    cost: number; // cost to reach this node
+};
 
-    // Check for number of 2s that divide n
-    while (n % 2 === 0) {
-        maxPrime = 2;
-        n /= 2;
-    }
-
-    // n must be odd at this point so a skip of 2 (i.e., check only odd numbers) can be used
-    for (let i = 3; i * i <= n; i += 2) {
-        while (n % i === 0) {
-            maxPrime = i;
-            n /= i;
+function beamSearch<T>(
+    initialState: T,
+    goalTest: (state: T) => boolean,
+    getNeighbors: (state: T) => Node<T>[],
+    beamWidth: number
+): T | null {
+    let currentLevel: Node<T>[] = [{ state: initialState, cost: 0 }];
+    
+    while (currentLevel.length > 0) {
+        // Check if any of the current nodes is the goal
+        for (let node of currentLevel) {
+            if (goalTest(node.state)) {
+                return node.state; // Found a solution
+            }
         }
+
+        // Generate the next set of nodes
+        const nextLevel: Node<T>[] = [];
+        for (let node of currentLevel) {
+            const neighbors = getNeighbors(node.state);
+            nextLevel.push(...neighbors);
+        }
+
+        // Sort and select the best nodes according to their cost
+        nextLevel.sort((a, b) => a.cost - b.cost);
+        currentLevel = nextLevel.slice(0, beamWidth); // Keep only the best nodes
     }
 
-    // This condition is to check if n is a prime number greater than 2
-    if (n > 2) {
-        maxPrime = n;
-    }
-
-    return maxPrime;
+    return null; // No solution found
 }
 
-// Example usage
-console.log(largestPrimeFactor(13195)); // Output: 29
-console.log(largestPrimeFactor(600851475143)); // Output: 6857
+// Example usage:
+const initialState = /* your initial state */;
+const goalTest = (state: any) => state === /* your goal state */;
+const getNeighbors = (state: any): Node<any>[] => {
+    // Your logic to generate neighbors
+    return [];
+};
+const beamWidth = 3; // Define the beam width
+
+const solution = beamSearch(initialState, goalTest, getNeighbors, beamWidth);
+console.log(solution);
