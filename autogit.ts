@@ -1,28 +1,33 @@
-function quicksort(arr: number[]): number[] {
-    // Base case: arrays with 0 or 1 element are already sorted
-    if (arr.length <= 1) {
-        return arr;
+function binarySearch(arr: number[], target: number, left: number = 0, right: number = arr.length - 1): number {
+    // Base case: if the left index exceeds the right index, the target is not found
+    if (left > right) {
+        return -1; // target not found
     }
 
-    // Choose a pivot (here we choose the last element)
-    const pivot = arr[arr.length - 1];
-    const left: number[] = [];
-    const right: number[] = [];
+    // Calculate the middle index
+    const mid: number = Math.floor((left + right) / 2);
 
-    // Partition the array into left and right arrays
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
-        }
+    // Check if the middle element is the target
+    if (arr[mid] === target) {
+        return mid; // Target found
     }
 
-    // Recursively sort the left and right arrays, and concatenate with the pivot
-    return [...quicksort(left), pivot, ...quicksort(right)];
+    // If the target is less than the middle element, search in the left half
+    if (target < arr[mid]) {
+        return binarySearch(arr, target, left, mid - 1);
+    } else {
+        // If the target is greater than the middle element, search in the right half
+        return binarySearch(arr, target, mid + 1, right);
+    }
 }
 
-// Example usage
-const array = [3, 6, 8, 10, 1, 2, 1];
-const sortedArray = quicksort(array);
-console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
+// Example usage:
+const sortedArray: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const target: number = 7;
+const result: number = binarySearch(sortedArray, target);
+
+if (result !== -1) {
+    console.log(`Target found at index: ${result}`);
+} else {
+    console.log('Target not found');
+}
