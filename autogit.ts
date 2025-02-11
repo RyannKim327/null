@@ -1,35 +1,40 @@
-function longestIncreasingSubsequence(nums: number[]): number[] {
-    if (nums.length === 0) return [];
+function boyerMooreHorspool(text: string, pattern: string): number[] {
+    const m = pattern.length;
+    const n = text.length;
+    const badCharShift: Record<string, number> = {};
 
-    const dp: number[] = Array(nums.length).fill(1);
-    const prev: number[] = Array(nums.length).fill(-1);
+    // Create the bad character shift table
+    for (let i = 0; i < m; i++) {
+        badCharShift[pattern[i]] = m - 1 - i; // Distance from the end of pattern to the last occurrence
+    }
 
-    let maxLength = 1;
-    let maxIndex = 0;
+    const occurrences: number[] = [];
+    let i = 0;
 
-    for (let i = 1; i < nums.length; i++) {
-        for (let j = 0; j < i; j++) {
-            if (nums[i] > nums[j] && dp[i] < dp[j] + 1) {
-                dp[i] = dp[j] + 1;
-                prev[i] = j;
-            }
+    while (i <= n - m) {
+        let j = m - 1;
+
+        // Compare pattern to the text
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
         }
-        if (dp[i] > maxLength) {
-            maxLength = dp[i];
-            maxIndex = i;
+
+        // If the pattern is found
+        if (j < 0) {
+            occurrences.push(i);
+            i += (badCharShift[text[i + m]] || m); // Shift the pattern
+        } else {
+            // Shift the pattern based on the bad character rule
+            const shift = badCharShift[text[i + j]] || m;
+            i += shift;
         }
     }
 
-    const lis: number[] = [];
-    for (let i = maxIndex; i >= 0; i = prev[i]) {
-        lis.push(nums[i]);
-        if (prev[i] === -1) break;
-    }
-
-    return lis.reverse();
+    return occurrences;
 }
 
-// Example usage:
-const arr = [10, 9, 2, 5, 3, 7, 101, 18];
-const result = longestIncreasingSubsequence(arr);
-console.log(result); // Output: [2, 3, 7, 101]
+// Example usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = boyerMooreHorspool(text, pattern);
+console.log(result); // Output: [10]
