@@ -1,24 +1,20 @@
-function getStringLength(str: string): number {
-    let count = 0;
-    for (let char of str) {
-        count++;
-    }
-    return count;
+function countWordOccurrences(text: string, word: string): number {
+    // Normalize the text and the word to lower case to make the search case-insensitive
+    const normalizedText = text.toLowerCase();
+    const normalizedWord = word.toLowerCase();
+
+    // Split the text into an array of words
+    const wordsArray = normalizedText.split(/\s+/); // Split by whitespace
+
+    // Filter the array to count occurrences of the word
+    const occurrences = wordsArray.filter(w => w === normalizedWord);
+
+    // Return the count of occurrences
+    return occurrences.length;
 }
 
 // Example usage
-const myString = "Hello, world!";
-const length = getStringLength(myString);
-console.log(length); // Output: 13
-function getStringLength(str: string): number {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        count++;
-    }
-    return count;
-}
-
-// Example usage
-const myString = "Hello, world!";
-const length = getStringLength(myString);
-console.log(length); // Output: 13
+const text = "Hello world! This is a test. Hello again, world!";
+const wordToCount = "hello";
+const count = countWordOccurrences(text, wordToCount);
+console.log(`The word "${wordToCount}" occurs ${count} times.`);
