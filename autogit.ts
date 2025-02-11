@@ -1,38 +1,22 @@
-function countCharacter(str: string, char: string): number {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === char) {
-            count++;
+function firstNonRepeatingCharacter(str: string): string | null {
+    const charCount: { [key: string]: number } = {};
+
+    // Count occurrences of each character
+    for (const char of str) {
+        charCount[char] = (charCount[char] || 0) + 1;
+    }
+
+    // Find the first non-repeating character
+    for (const char of str) {
+        if (charCount[char] === 1) {
+            return char; // Return the first non-repeating character
         }
     }
-    return count;
+
+    return null; // Return null if there is no non-repeating character
 }
 
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
-function countCharacter(str: string, char: string): number {
-    return str.split(char).length - 1;
-}
-
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
-function countCharacter(str: string, char: string): number {
-    return str.split('').reduce((count, currentChar) => {
-        return currentChar === char ? count + 1 : count;
-    }, 0);
-}
-
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
-function countCharacter(str: string, char: string): number {
-    const regex = new RegExp(char, 'g');
-    const matches = str.match(regex);
-    return matches ? matches.length : 0;
-}
-
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
+// Example usage
+const input = "swiss";
+const result = firstNonRepeatingCharacter(input);
+console.log(result); // Output: "w"
