@@ -1,18 +1,56 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings: remove whitespace and convert to lowercase
-    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
-    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
+class BoyerMoore {
+    private pattern: string;
+    private badCharTable: Map<string, number>;
 
-    // Sort the characters of each string
-    const sortedStr1 = normalizedStr1.split('').sort().join('');
-    const sortedStr2 = normalizedStr2.split('').sort().join('');
+    constructor(pattern: string) {
+        this.pattern = pattern;
+        this.badCharTable = this.buildBadCharTable(pattern);
+    }
 
-    // Compare the sorted strings
-    return sortedStr1 === sortedStr2;
+    private buildBadCharTable(pattern: string): Map<string, number> {
+        const table = new Map<string, number>();
+        const patternLength = pattern.length;
+
+        for (let i = 0; i < patternLength; i++) {
+            table.set(pattern[i], i);
+        }
+
+        return table;
+    }
+
+    public search(text: string): number {
+        const patternLength = this.pattern.length;
+        const textLength = text.length;
+        let skip: number;
+
+        for (let i = 0; i <= textLength - patternLength; i += skip) {
+            skip = 0;
+
+            for (let j = patternLength - 1; j >= 0; j--) {
+                if (this.pattern[j] !== text[i + j]) {
+                    const badCharIndex = this.badCharTable.get(text[i + j]) || -1;
+                    skip = Math.max(1, j - badCharIndex);
+                    break;
+                }
+            }
+
+            if (skip === 0) {
+                // Match found at index i
+                return i; // Return the index of the first match
+            }
+        }
+
+        return -1; // No match found
+    }
 }
 
-// Example usage
-const str1 = "listen";
-const str2 = "silent";
+// Example usage:
+const bm = new BoyerMoore("abc");
+const text = "abcpqrabcxyz";
+const index = bm.search(text);
 
-console.log(areAnagrams(str1, str2)); // Output: true
+if (index !== -1) {
+    console.log(`Pattern found at index: ${index}`);
+} else {
+    console.log("Pattern not found");
+}
