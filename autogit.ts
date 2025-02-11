@@ -1,109 +1,53 @@
-class TreeNode {
+class ListNode {
     value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+    next: ListNode | null;
 
     constructor(value: number) {
         this.value = value;
-        this.left = null;
-        this.right = null;
+        this.next = null;
     }
 }
-class BinaryTree {
-    root: TreeNode | null;
 
-    constructor() {
-        this.root = null;
-    }
+function hasCycle(head: ListNode | null): boolean {
+    if (head === null) return false;
 
-    // Insert method
-    insert(value: number): void {
-        const newNode = new TreeNode(value);
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
+    let slow: ListNode | null = head; // Slow pointer
+    let fast: ListNode | null = head; // Fast pointer
 
-    private insertNode(node: TreeNode, newNode: TreeNode): void {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next;           // Move slow by 1 step
+        fast = fast.next.next;     // Move fast by 2 steps
 
-    // Traversal methods
-    inOrderTraversal(node: TreeNode | null): void {
-        if (node !== null) {
-            this.inOrderTraversal(node.left);
-            console.log(node.value);
-            this.inOrderTraversal(node.right);
-        }
-    }
-
-    preOrderTraversal(node: TreeNode | null): void {
-        if (node !== null) {
-            console.log(node.value);
-            this.preOrderTraversal(node.left);
-            this.preOrderTraversal(node.right);
-        }
-    }
-
-    postOrderTraversal(node: TreeNode | null): void {
-        if (node !== null) {
-            this.postOrderTraversal(node.left);
-            this.postOrderTraversal(node.right);
-            console.log(node.value);
-        }
-    }
-
-    // Search method
-    search(value: number): boolean {
-        return this.searchNode(this.root, value);
-    }
-
-    private searchNode(node: TreeNode | null, value: number): boolean {
-        if (node === null) {
-            return false;
-        }
-        if (value === node.value) {
+        // If slow and fast meet, there is a cycle
+        if (slow === fast) {
             return true;
-        } else if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else {
-            return this.searchNode(node.right, value);
         }
     }
+
+    // If we reach here, there is no cycle
+    return false;
 }
-const binaryTree = new BinaryTree();
-binaryTree.insert(10);
-binaryTree.insert(5);
-binaryTree.insert(15);
-binaryTree.insert(3);
-binaryTree.insert(7);
-binaryTree.insert(12);
-binaryTree.insert(17);
 
-// Traversal
-console.log("In-Order Traversal:");
-binaryTree.inOrderTraversal(binaryTree.root);
+// Example usage:
 
-console.log("Pre-Order Traversal:");
-binaryTree.preOrderTraversal(binaryTree.root);
+// Creating a linked list with a cycle
+const node1 = new ListNode(1);
+const node2 = new ListNode(2);
+const node3 = new ListNode(3);
+const node4 = new ListNode(4);
 
-console.log("Post-Order Traversal:");
-binaryTree.postOrderTraversal(binaryTree.root);
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node2; // Creates a cycle (node4 -> node2)
 
-// Searching for a value
-console.log("Searching for 7:", binaryTree.search(7)); // true
-console.log("Searching for 20:", binaryTree.search(20)); // false
+// Checking for a cycle
+console.log(hasCycle(node1)); // Output: true
+
+// Creating a linked list without a cycle
+const node5 = new ListNode(5);
+const node6 = new ListNode(6);
+node5.next = node6;
+
+// Checking for a cycle
+console.log(hasCycle(node5)); // Output: false
