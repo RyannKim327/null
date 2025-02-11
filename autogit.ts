@@ -1,26 +1,36 @@
-// A TypeScript function to fetch user data from a placeholder API
-async function fetchUserData(userId: number): Promise<void> {
-    const url = `https://jsonplaceholder.typicode.com/users/${userId}`;
-    
-    try {
-        // Making a GET request to fetch user data
-        const response = await fetch(url);
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-        // Check if the response is ok (status in the range 200-299)
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        // Parse the JSON response
-        const userData = await response.json();
-        console.log('User Data:', userData);  // Logging the user data
-    } catch (error) {
-        // Handle errors here
-        console.error('Error fetching user data:', error);
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
 
-// Call the function to fetch data for user with ID 1
-fetchUserData(1);
-npm install node-fetch
-import fetch from 'node-fetch';
+function countLeafNodes(root: TreeNode | null): number {
+    // Base case: if the node is null, return 0
+    if (root === null) {
+        return 0;
+    }
+
+    // If the node is a leaf node, return 1
+    if (root.left === null && root.right === null) {
+        return 1;
+    }
+
+    // Recursively count the leaf nodes in the left and right subtrees
+    return countLeafNodes(root.left) + countLeafNodes(root.right);
+}
+
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+const leafCount = countLeafNodes(root);
+console.log(`Number of leaf nodes: ${leafCount}`); // Output: Number of leaf nodes: 3
