@@ -1,15 +1,7 @@
-const str: string = "Hello, TypeScript!";
-const substring: string = "Type";
+function reverseWords(input: string): string {
+    return input.split(' ').reverse().join(' ');
+}
 
-const containsSubstring: boolean = str.includes(substring);
-console.log(containsSubstring); // Output: true
-const str: string = "Hello, TypeScript!";
-const substring: string = "Type";
-
-const containsSubstring: boolean = str.indexOf(substring) !== -1;
-console.log(containsSubstring); // Output: true
-const str: string = "Hello, TypeScript!";
-const substring: string = /Type/;
-
-const containsSubstring: boolean = substring.test(str);
-console.log(containsSubstring); // Output: true
+const originalString = "Hello world from TypeScript";
+const reversedString = reverseWords(originalString);
+console.log(reversedString); // Output: "TypeScript from world Hello"
