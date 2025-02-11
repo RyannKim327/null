@@ -1,84 +1,87 @@
-type Graph = {
-    [key: string]: string[];
-};
+class PriorityQueue<T> {
+    private heap: { priority: number; value: T }[] = [];
 
-function bidirectionalSearch(graph: Graph, start: string, goal: string): string[] | null {
-    if (!graph[start] || !graph[goal]) {
-        return null; // start or goal not in graph
+    constructor() {}
+
+    // Insert a new element with a priority
+    enqueue(value: T, priority: number): void {
+        this.heap.push({ value, priority });
+        this.bubbleUp();
     }
 
-    const visitedFromStart = new Set<string>();
-    const visitedFromGoal = new Set<string>();
-    const queueFromStart: string[] = [start];
-    const queueFromGoal: string[] = [goal];
-    const parentFromStart: { [key: string]: string | null } = { [start]: null };
-    const parentFromGoal: { [key: string]: string | null } = { [goal]: null };
+    // Remove and return the element with the highest priority
+    dequeue(): T | undefined {
+        if (this.heap.length === 0) return undefined;
 
-    while (queueFromStart.length > 0 && queueFromGoal.length > 0) {
-        // Search from the start
-        const currentStart = queueFromStart.shift()!;
-        if (visitedFromGoal.has(currentStart)) {
-            return constructPath(currentStart, parentFromStart, parentFromGoal);
+        const top = this.heap[0];
+        const end = this.heap.pop()!;
+        if (this.heap.length > 0) {
+            this.heap[0] = end;
+            this.bubbleDown();
         }
-        
-        visitedFromStart.add(currentStart);
-        for (const neighbor of graph[currentStart]) {
-            if (!visitedFromStart.has(neighbor)) {
-                queueFromStart.push(neighbor);
-                parentFromStart[neighbor] = currentStart;
+
+        return top.value;
+    }
+
+    // Peek at the element with the highest priority without removing it
+    peek(): T | undefined {
+        return this.heap[0]?.value;
+    }
+
+    // Returns the size of the priority queue
+    size(): number {
+        return this.heap.length;
+    }
+
+    // Helper method to maintain heap invariant after insertion
+    private bubbleUp(): void {
+        let index = this.heap.length - 1;
+        while (index > 0) {
+            const parentIndex = Math.floor((index - 1) / 2);
+            if (this.heap[index].priority <= this.heap[parentIndex].priority) break;
+
+            // Swap with parent
+            [this.heap[index], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[index]];
+            index = parentIndex;
+        }
+    }
+
+    // Helper method to maintain heap invariant after removal
+    private bubbleDown(): void {
+        let index = 0;
+        const length = this.heap.length;
+        const element = this.heap[0];
+
+        while (true) {
+            let leftChildIndex = 2 * index + 1;
+            let rightChildIndex = 2 * index + 2;
+            let leftChild: { priority: number; value: T } | undefined = this.heap[leftChildIndex];
+            let rightChild: { priority: number; value: T } | undefined = this.heap[rightChildIndex];
+            let swap: number | null = null;
+
+            if (leftChild && leftChild.priority > element.priority) {
+                swap = leftChildIndex;
             }
-        }
-
-        // Search from the goal
-        const currentGoal = queueFromGoal.shift()!;
-        if (visitedFromStart.has(currentGoal)) {
-            return constructPath(currentGoal, parentFromGoal, parentFromStart);
-        }
-
-        visitedFromGoal.add(currentGoal);
-        for (const neighbor of graph[currentGoal]) {
-            if (!visitedFromGoal.has(neighbor)) {
-                queueFromGoal.push(neighbor);
-                parentFromGoal[neighbor] = currentGoal;
+            if (rightChild && (swap === null ? true : rightChild.priority > leftChild!.priority)) {
+                swap = rightChildIndex;
             }
+
+            if (swap === null) break;
+
+            // Swap with the child
+            this.heap[index] = this.heap[swap];
+            this.heap[swap] = element;
+            index = swap;
         }
     }
-
-    return null; // No path found
 }
+const pq = new PriorityQueue<string>();
 
-function constructPath(meetingPoint: string, parentFromStart: { [key: string]: string | null }, parentFromGoal: { [key: string]: string | null }): string[] {
-    const path = [];
-    
-    // Backtrack from the meeting point to the start
-    let current: string | null = meetingPoint;
-    while (current !== null) {
-        path.push(current);
-        current = parentFromStart[current];
-    }
-    
-    path.reverse(); // Reverse the path to get it from start to meeting point
+pq.enqueue('Task A', 1);
+pq.enqueue('Task B', 5);
+pq.enqueue('Task C', 3);
 
-    // Backtrack from the meeting point to the goal
-    current = parentFromGoal[meetingPoint];
-    while (current !== null) {
-        path.push(current);
-        current = parentFromGoal[current];
-    }
-
-    return path;
-}
-
-// Example graph and usage
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['A', 'D', 'E'],
-    C: ['A', 'F'],
-    D: ['B', 'G'],
-    E: ['B'],
-    F: ['C'],
-    G: ['D']
-};
-
-const path = bidirectionalSearch(graph, 'A', 'G');
-console.log(path); // Example output: [ 'A', 'B', 'D', 'G' ]
+console.log(pq.peek()); // 'Task B'
+console.log(pq.dequeue()); // 'Task B'
+console.log(pq.dequeue()); // 'Task C'
+console.log(pq.size()); // 1
