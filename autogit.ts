@@ -1,6 +1,6 @@
-class Node {
+class ListNode {
     value: number;
-    next: Node | null;
+    next: ListNode | null;
 
     constructor(value: number) {
         this.value = value;
@@ -9,49 +9,39 @@ class Node {
 }
 
 class LinkedList {
-    head: Node | null;
+    head: ListNode | null;
 
     constructor() {
         this.head = null;
     }
 
     // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new Node(value);
-        if (this.head === null) {
+    append(value: number): void {
+        const newNode = new ListNode(value);
+        if (!this.head) {
             this.head = newNode;
             return;
         }
-
         let current = this.head;
-        while (current.next !== null) {
+        while (current.next) {
             current = current.next;
         }
         current.next = newNode;
     }
 
-    // Method to reverse the linked list
-    reverse() {
-        let previous: Node | null = null;
-        let current: Node | null = this.head;
+    // Method to find the middle element
+    findMiddle(): number | null {
+        let slow = this.head;
+        let fast = this.head;
 
-        while (current !== null) {
-            const nextNode = current.next;  // Save next node
-            current.next = previous;         // Reverse the link
-            previous = current;              // Move previous to current
-            current = nextNode;              // Move to next node
-        }
-        this.head = previous;                // Update head to the new first element
-    }
+        if (!this.head) return null; // If the list is empty
 
-    // Method to print the linked list
-    print() {
-        let current = this.head;
-        while (current !== null) {
-            process.stdout.write(current.value.toString() + " -> ");
-            current = current.next;
+        while (fast && fast.next) {
+            slow = slow.next;        // Move slow pointer by 1
+            fast = fast.next.next;  // Move fast pointer by 2
         }
-        console.log("null");
+
+        return slow ? slow.value : null; // Returning the value of the middle node
     }
 }
 
@@ -61,11 +51,6 @@ list.append(1);
 list.append(2);
 list.append(3);
 list.append(4);
+list.append(5);
 
-console.log("Original Linked List:");
-list.print();
-
-list.reverse();
-
-console.log("Reversed Linked List:");
-list.print();
+console.log(list.findMiddle()); // Output: 3
