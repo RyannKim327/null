@@ -1,78 +1,35 @@
-// Define the structure of a LinkedList Node
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function longestIncreasingSubsequence(nums: number[]): number[] {
+    if (nums.length === 0) return [];
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
+    const dp: number[] = Array(nums.length).fill(1);
+    const prev: number[] = Array(nums.length).fill(-1);
 
-// Define the LinkedList class
-class LinkedList {
-    head: ListNode | null;
+    let maxLength = 1;
+    let maxIndex = 0;
 
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to insert a new node at the end
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
+    for (let i = 1; i < nums.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[i] > nums[j] && dp[i] < dp[j] + 1) {
+                dp[i] = dp[j] + 1;
+                prev[i] = j;
+            }
         }
-
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
+        if (dp[i] > maxLength) {
+            maxLength = dp[i];
+            maxIndex = i;
         }
-        current.next = newNode;
     }
 
-    // Method to find the middle element
-    findMiddle(): ListNode | null {
-        if (!this.head) {
-            return null;
-        }
-
-        let slow: ListNode | null = this.head;
-        let fast: ListNode | null = this.head;
-
-        while (fast && fast.next) {
-            slow = slow.next;          // Move slow pointer by 1
-            fast = fast.next.next;    // Move fast pointer by 2
-        }
-
-        return slow; // slow is now at the middle
+    const lis: number[] = [];
+    for (let i = maxIndex; i >= 0; i = prev[i]) {
+        lis.push(nums[i]);
+        if (prev[i] === -1) break;
     }
+
+    return lis.reverse();
 }
 
-// Example usage
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
-
-const middleNode = list.findMiddle();
-if (middleNode) {
-    console.log(`The middle element is: ${middleNode.value}`); // Output: The middle element is: 3
-}
-
-// If you create a list with an even number of nodes, the middle will be the second of the two middle elements.
-const evenList = new LinkedList();
-evenList.append(1);
-evenList.append(2);
-evenList.append(3);
-evenList.append(4);
-evenList.append(5);
-evenList.append(6);
-
-const evenMiddleNode = evenList.findMiddle();
-if (evenMiddleNode) {
-    console.log(`The middle element is: ${evenMiddleNode.value}`); // Output: The middle element is: 4
-}
+// Example usage:
+const arr = [10, 9, 2, 5, 3, 7, 101, 18];
+const result = longestIncreasingSubsequence(arr);
+console.log(result); // Output: [2, 3, 7, 101]
