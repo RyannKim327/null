@@ -1,40 +1,34 @@
-function boyerMooreHorspool(text: string, pattern: string): number | null {
-    const textLength = text.length;
-    const patternLength = pattern.length;
+function areAnagrams(str1: string, str2: string): boolean {
+    // Remove spaces and convert to lowercase
+    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
+    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
 
-    // Edge cases
-    if (patternLength === 0) return 0;
-    if (textLength < patternLength) return null;
-
-    // Create the bad character shift table
-    const badCharShift: { [key: string]: number } = {};
-    for (let i = 0; i < patternLength; i++) {
-        badCharShift[pattern[i]] = patternLength - i - 1;
+    // If lengths are different, they cannot be anagrams
+    if (normalizedStr1.length !== normalizedStr2.length) {
+        return false;
     }
 
-    let i = 0; // Start from the beginning of the text
-    while (i <= textLength - patternLength) {
-        let j = patternLength - 1; // Start from the end of the pattern
-        // Keep decreasing j until characters match or j < 0
-        while (j >= 0 && pattern[j] === text[i + j]) {
-            j--;
+    // Create frequency maps for both strings
+    const frequencyMap: { [key: string]: number } = {};
+
+    for (const char of normalizedStr1) {
+        frequencyMap[char] = (frequencyMap[char] || 0) + 1;
+    }
+
+    for (const char of normalizedStr2) {
+        if (!frequencyMap[char]) {
+            return false;
         }
-        if (j < 0) {
-            // Match found, return the position
-            return i;
-        } else {
-            // Shift the pattern based on the bad character rule
-            const badChar = text[i + j];
-            const shift = badCharShift[badChar] !== undefined ? badCharShift[badChar] : patternLength;
-            i += shift;
+        frequencyMap[char] -= 1;
+        if (frequencyMap[char] < 0) {
+            return false;
         }
     }
-    // No match found
-    return null;
+
+    return true;
 }
 
 // Example usage:
-const text = "ababcababcabc";
-const pattern = "abc";
-const result = boyerMooreHorspool(text, pattern);
-console.log(result); // Output: 2 (index of the first occurrence of "abc")
+console.log(areAnagrams("listen", "silent")); // true
+console.log(areAnagrams("hello", "world"));   // false
+console.log(areAnagrams("Dormitory", "Dirty room")); // true
