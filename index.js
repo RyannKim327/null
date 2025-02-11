@@ -15,16 +15,14 @@ let run = async () => {
 
   try {
     let { data } = await axios.get(
-      `https://we-love-gpt.onrender.com/api/chat/?message=${encodeURI(m3)}`,
+      `https://we-love-gpt.onrender.com/api/chat/?message=${encodeURIComponent(m3)}`,
     );
     let datas = data.reply.split("\n");
     let result = "";
     let active = false;
 
     for (let i = 0; i < datas.length; i++) {
-      if (datas[i].toLowerCase().startsWith("``` typescript")) {
-        active = !active;
-      } else if (datas[i].startsWith("```")) {
+      if (datas[i].toLowerCase().startsWith("```")) {
         active = !active;
       }
       if (active && !datas[i].startsWith("```")) {
