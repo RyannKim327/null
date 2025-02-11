@@ -1,58 +1,25 @@
-function kmpSearch(text: string, pattern: string): number[] {
-    // Step 1: Preprocess the pattern to create the LPS array
-    const lps = buildLPS(pattern);
-    const result: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
+import cron from 'node-cron';
 
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
+// Function to be executed
+const task = () => {
+    const now = new Date();
+    console.log(`Task executed at: ${now.toLocaleString()}`);
+};
 
-        if (j === pattern.length) {
-            // Match found, save the starting index
-            result.push(i - j);
-            j = lps[j - 1]; // Use lps to continue searching
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            // Mismatch occurs
-            if (j !== 0) {
-                j = lps[j - 1]; // Use lps to skip characters of the pattern
-            } else {
-                i++; // Move to the next character in the text
-            }
-        }
-    }
+// Schedule the task to run every minute
+const cronExpression = '* * * * *';  // This pattern means every minute
+const scheduledTask = cron.schedule(cronExpression, task);
 
-    return result;
-}
+// Start the scheduled task
+scheduledTask.start();
 
-function buildLPS(pattern: string): number[] {
-    const lps = new Array(pattern.length).fill(0);
-    let length = 0; // Length of the previous longest prefix suffix
-    let i = 1; // Start from the second character
+console.log('Cron job has been scheduled. It will run every minute.');
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-
-    return lps;
-}
-
-// Example usage
-const text = "ababcabcabababd";
-const pattern = "ababd";
-const matches = kmpSearch(text, pattern);
-console.log(`Pattern found at indices: ${matches.join(', ')}`);
+// Optional: Add error handling or exit gracefully
+process.on('SIGINT', () => {
+    console.log('Stopping the cron job.');
+    scheduledTask.stop();
+    process.exit();
+});
+tsc cronJob.ts
+node cronJob.js
