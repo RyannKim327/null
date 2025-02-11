@@ -1,33 +1,17 @@
-// Install the types for the Fetch API if using Node.js environment
-// npm install --save-dev @types/node-fetch
+function firstRepeatedCharacter(str: string): string | null {
+    const seenCharacters = new Set<string>();
 
-// Importing the necessary modules
-import fetch from 'node-fetch';
-
-// Define an interface for the expected data structure
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-}
-
-// Asynchronous function to fetch posts
-async function fetchPosts() {
-    const url = 'https://jsonplaceholder.typicode.com/posts';
-
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+    for (let char of str) {
+        if (seenCharacters.has(char)) {
+            return char; // Return the first repeated character
         }
-        const posts: Post[] = await response.json();
-        console.log(posts); 
-    } catch (error) {
-        console.error('Error fetching posts:', error);
+        seenCharacters.add(char); // Add character to the set
     }
+
+    return null; // Return null if no repeated character is found
 }
 
-// Call the function to fetch posts
-fetchPosts();
-npm install node-fetch
+// Example usage
+const exampleString = "abca";
+const result = firstRepeatedCharacter(exampleString);
+console.log(result); // Output: "a"
