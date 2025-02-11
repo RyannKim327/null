@@ -1,110 +1,45 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+class Stack<T> {
+    private items: T[] = [];
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    // Push an item onto the stack
+    push(item: T): void {
+        this.items.push(item);
+    }
+
+    // Pop an item from the stack
+    pop(): T | undefined {
+        return this.items.pop();
+    }
+
+    // Peek at the top item of the stack without removing it
+    peek(): T | undefined {
+        return this.items[this.items.length - 1];
+    }
+
+    // Check if the stack is empty
+    isEmpty(): boolean {
+        return this.items.length === 0;
+    }
+
+    // Get the size of the stack
+    size(): number {
+        return this.items.length;
+    }
+
+    // Clear the stack
+    clear(): void {
+        this.items = [];
     }
 }
-class BinaryTree {
-    root: TreeNode | null;
 
-    constructor() {
-        this.root = null;
-    }
+// Example usage
+const stack = new Stack<number>();
 
-    // Insert a new value into the binary tree
-    insert(value: number): void {
-        const newNode = new TreeNode(value);
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    private insertNode(node: TreeNode, newNode: TreeNode): void {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
-
-    // In-order traversal
-    inOrderTraversal(node: TreeNode | null): void {
-        if (node !== null) {
-            this.inOrderTraversal(node.left);
-            console.log(node.value);
-            this.inOrderTraversal(node.right);
-        }
-    }
-
-    // Pre-order traversal
-    preOrderTraversal(node: TreeNode | null): void {
-        if (node !== null) {
-            console.log(node.value);
-            this.preOrderTraversal(node.left);
-            this.preOrderTraversal(node.right);
-        }
-    }
-
-    // Post-order traversal
-    postOrderTraversal(node: TreeNode | null): void {
-        if (node !== null) {
-            this.postOrderTraversal(node.left);
-            this.postOrderTraversal(node.right);
-            console.log(node.value);
-        }
-    }
-
-    // Search for a value in the binary tree
-    search(value: number): boolean {
-        return this.searchNode(this.root, value);
-    }
-
-    private searchNode(node: TreeNode | null, value: number): boolean {
-        if (node === null) {
-            return false;
-        }
-        if (value === node.value) {
-            return true;
-        }
-        return value < node.value
-            ? this.searchNode(node.left, value)
-            : this.searchNode(node.right, value);
-    }
-}
-const tree = new BinaryTree();
-tree.insert(10);
-tree.insert(5);
-tree.insert(15);
-tree.insert(3);
-tree.insert(7);
-tree.insert(12);
-tree.insert(18);
-
-// Traversals
-console.log("In-order Traversal:");
-tree.inOrderTraversal(tree.root);
-
-console.log("Pre-order Traversal:");
-tree.preOrderTraversal(tree.root);
-
-console.log("Post-order Traversal:");
-tree.postOrderTraversal(tree.root);
-
-// Search for a value
-console.log("Search for 7:", tree.search(7)); // true
-console.log("Search for 20:", tree.search(20)); // false
+stack.push(1);
+stack.push(2);
+console.log(stack.peek()); // Output: 2
+console.log(stack.pop());   // Output: 2
+console.log(stack.size());  // Output: 1
+console.log(stack.isEmpty()); // Output: false
+stack.clear();
+console.log(stack.isEmpty()); // Output: true
