@@ -1,27 +1,26 @@
-function bubbleSort(arr: number[]): number[] {
-    const n = arr.length;
-    let swapped: boolean;
+// A TypeScript function to fetch user data from a placeholder API
+async function fetchUserData(userId: number): Promise<void> {
+    const url = `https://jsonplaceholder.typicode.com/users/${userId}`;
+    
+    try {
+        // Making a GET request to fetch user data
+        const response = await fetch(url);
 
-    // Outer loop to traverse through all elements
-    for (let i = 0; i < n - 1; i++) {
-        swapped = false;
-
-        // Inner loop for comparisons
-        for (let j = 0; j < n - 1 - i; j++) {
-            if (arr[j] > arr[j + 1]) {
-                // Swap if the current element is greater than the next element
-                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]; // ES6 destructuring assignment
-                swapped = true;
-            }
+        // Check if the response is ok (status in the range 200-299)
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        // If no two elements were swapped in the inner loop, then break
-        if (!swapped) break;
+        // Parse the JSON response
+        const userData = await response.json();
+        console.log('User Data:', userData);  // Logging the user data
+    } catch (error) {
+        // Handle errors here
+        console.error('Error fetching user data:', error);
     }
-
-    return arr;
 }
 
-// Example usage:
-const exampleArray = [64, 34, 25, 12, 22, 11, 90];
-console.log("Sorted array:", bubbleSort(exampleArray));
+// Call the function to fetch data for user with ID 1
+fetchUserData(1);
+npm install node-fetch
+import fetch from 'node-fetch';
