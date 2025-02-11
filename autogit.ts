@@ -1,24 +1,38 @@
-function binarySearch(arr: number[], target: number, start: number, end: number): number {
-    if (start > end) {
-        return -1; // Target not found
-    }
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    const mid = Math.floor((start + end) / 2); // Calculate middle index
-
-    // Check if the middle element is the target
-    if (arr[mid] === target) {
-        return mid; // Target found
-    } else if (arr[mid] > target) {
-        // Search in the left half
-        return binarySearch(arr, target, start, mid - 1);
-    } else {
-        // Search in the right half
-        return binarySearch(arr, target, mid + 1, end);
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
 
-// Example usage
-const nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const target = 7;
-const index = binarySearch(nums, target, 0, nums.length - 1);
-console.log(index); // Output: 6 (index of the target)
+function countLeafNodes(root: TreeNode | null): number {
+    // Base case: if the current node is null, return 0
+    if (root === null) {
+        return 0;
+    }
+    
+    // If the current node is a leaf node, return 1
+    if (root.left === null && root.right === null) {
+        return 1;
+    }
+    
+    // Recursively count leaf nodes in the left and right subtrees
+    return countLeafNodes(root.left) + countLeafNodes(root.right);
+}
+
+// Example usage:
+// Creating a binary tree
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+// Counting leaf nodes
+const leafCount = countLeafNodes(root);
+console.log(`Number of leaf nodes: ${leafCount}`); // Output: 3
