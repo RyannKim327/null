@@ -1,26 +1,40 @@
-function bubbleSort(arr: number[]): number[] {
-    let n = arr.length;
-    let swapped: boolean;
+function boyerMooreHorspool(text: string, pattern: string): number | null {
+    const textLength = text.length;
+    const patternLength = pattern.length;
 
-    do {
-        swapped = false;
-        for (let i = 0; i < n - 1; i++) {
-            if (arr[i] > arr[i + 1]) {
-                // Swap arr[i] and arr[i + 1]
-                let temp = arr[i];
-                arr[i] = arr[i + 1];
-                arr[i + 1] = temp;
-                swapped = true;
-            }
+    // Edge cases
+    if (patternLength === 0) return 0;
+    if (textLength < patternLength) return null;
+
+    // Create the bad character shift table
+    const badCharShift: { [key: string]: number } = {};
+    for (let i = 0; i < patternLength; i++) {
+        badCharShift[pattern[i]] = patternLength - i - 1;
+    }
+
+    let i = 0; // Start from the beginning of the text
+    while (i <= textLength - patternLength) {
+        let j = patternLength - 1; // Start from the end of the pattern
+        // Keep decreasing j until characters match or j < 0
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
         }
-        n--; // Each pass, the largest element is in place
-    } while (swapped);
-
-    return arr;
+        if (j < 0) {
+            // Match found, return the position
+            return i;
+        } else {
+            // Shift the pattern based on the bad character rule
+            const badChar = text[i + j];
+            const shift = badCharShift[badChar] !== undefined ? badCharShift[badChar] : patternLength;
+            i += shift;
+        }
+    }
+    // No match found
+    return null;
 }
 
-// Example usage
-const randomArray = [64, 34, 25, 12, 22, 11, 90];
-console.log("Original Array:", randomArray);
-const sortedArray = bubbleSort(randomArray);
-console.log("Sorted Array:", sortedArray);
+// Example usage:
+const text = "ababcababcabc";
+const pattern = "abc";
+const result = boyerMooreHorspool(text, pattern);
+console.log(result); // Output: 2 (index of the first occurrence of "abc")
