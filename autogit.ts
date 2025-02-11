@@ -1,55 +1,30 @@
-function KMPSearch(pattern: string, text: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-
-        if (j === pattern.length) {
-            result.push(i - j); // Found a match
-            j = lps[j - 1]; // Continue searching for the next match
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1]; // Use LPS to skip characters
-            } else {
-                i++;
-            }
-        }
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+function sumOfNodes(root: TreeNode | null): number {
+    // Base case: if the node is null, return 0
+    if (root === null) {
+        return 0;
     }
 
-    return result;
+    // Recursive case: sum the value of the current node and the sums of the left and right subtrees
+    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
 }
+// Create a binary tree
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-function computeLPSArray(pattern: string): number[] {
-    const lps = new Array(pattern.length).fill(0);
-    let length = 0; // Length of the previous longest prefix suffix
-    let i = 1;
-
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-
-    return lps;
-}
-
-// Example usage:
-const text = "ababcabcabababd";
-const pattern = "ababd";
-const positions = KMPSearch(pattern, text);
-console.log("Pattern found at positions:", positions);
+// Calculate the sum of all nodes
+const totalSum = sumOfNodes(root);
+console.log(`The sum of all nodes in the binary tree is: ${totalSum}`); // Output: 15
