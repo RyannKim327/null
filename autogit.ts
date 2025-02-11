@@ -1,73 +1,97 @@
-class Tarjan {
-    private index: number = 0;
-    private stack: number[] = [];
-    private indices: number[] = [];
-    private lowLinks: number[] = [];
-    private onStack: boolean[] = [];
-    private sccs: number[][] = [];
+class HashTable<K, V> {
+    private table: Array<Array<[K, V] | null>>;
+    private size: number;
 
-    constructor(private graph: number[][]) {}
-
-    // Main function to find strongly connected components
-    public findSCCs(): number[][] {
-        const numVertices = this.graph.length;
-        this.indices = new Array(numVertices).fill(-1); // use -1 to indicate unvisited nodes
-        this.lowLinks = new Array(numVertices).fill(0);
-        this.onStack = new Array(numVertices).fill(false);
-
-        for (let v = 0; v < numVertices; v++) {
-            if (this.indices[v] === -1) {
-                this.strongConnect(v);
-            }
-        }
-
-        return this.sccs;
+    constructor(size: number) {
+        this.size = size;
+        this.table = new Array(size).fill(null).map(() => []);
     }
 
-    private strongConnect(v: number): void {
-        // Set the depth index for v to the smallest unused index
-        this.indices[v] = this.index;
-        this.lowLinks[v] = this.index;
-        this.index += 1;
-        this.stack.push(v);
-        this.onStack[v] = true;
+    private hash(key: K): number {
+        let hash = 0;
+        const keyString = String(key);
+        for (let i = 0; i < keyString.length; i++) {
+            hash += keyString.charCodeAt(i);
+        }
+        return hash % this.size;
+    }
 
-        // Consider successors of v
-        for (const w of this.graph[v]) {
-            if (this.indices[w] === -1) {
-                // Successor w has not yet been visited; recurse on it
-                this.strongConnect(w);
-                this.lowLinks[v] = Math.min(this.lowLinks[v], this.lowLinks[w]);
-            } else if (this.onStack[w]) {
-                // Successor w is in stack and hence in the current SCC
-                this.lowLinks[v] = Math.min(this.lowLinks[v], this.indices[w]);
+    public set(key: K, value: V): void {
+        const index = this.hash(key);
+        const bucket = this.table[index];
+
+        // Check if the key already exists in the bucket
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                bucket[i][1] = value; // Update the value
+                return;
             }
         }
 
-        // If v is a root node, pop the stack and generate an SCC
-        if (this.lowLinks[v] === this.indices[v]) {
-            const scc: number[] = [];
-            let w: number;
-            do {
-                w = this.stack.pop()!;
-                this.onStack[w] = false;
-                scc.push(w);
-            } while (w !== v);
-            this.sccs.push(scc);
+        // If the key does not exist, add a new key-value pair
+        bucket.push([key, value]);
+    }
+
+    public get(key: K): V | undefined {
+        const index = this.hash(key);
+        const bucket = this.table[index];
+
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                return bucket[i][1]; // Return the value
+            }
         }
+
+        return undefined; // Key not found
+    }
+
+    public remove(key: K): boolean {
+        const index = this.hash(key);
+        const bucket = this.table[index];
+
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                bucket.splice(i, 1); // Remove the key-value pair
+                return true;
+            }
+        }
+
+        return false; // Key not found
+    }
+
+    public keys(): K[] {
+        const keys: K[] = [];
+        for (const bucket of this.table) {
+            for (const entry of bucket) {
+                if (entry) {
+                    keys.push(entry[0]);
+                }
+            }
+        }
+        return keys;
+    }
+
+    public values(): V[] {
+        const values: V[] = [];
+        for (const bucket of this.table) {
+            for (const entry of bucket) {
+                if (entry) {
+                    values.push(entry[1]);
+                }
+            }
+        }
+        return values;
     }
 }
 
-// Example usage:
-const graph = [
-    [1],        // 0 -> 1
-    [2],        // 1 -> 2
-    [0],        // 2 -> 0
-    [1, 4],     // 3 -> 1, 3 -> 4
-    [5],        // 4 -> 5
-    [3],        // 5 -> 3
-];
+// Example usage
+const hashTable = new HashTable<string, number>(10);
+hashTable.set("one", 1);
+hashTable.set("two", 2);
+hashTable.set("three", 3);
 
-const tarjan = new Tarjan(graph);
-const sccs = tarjan.findSCCs();
-console.log(sccs); // Output will show the strongly connected components
+console.log(hashTable.get("two")); // Output: 2
+hashTable.remove("two");
+console.log(hashTable.get("two")); // Output: undefined
+console.log(hashTable.keys()); // Output: ['one', 'three']
+console.log(hashTable.values()); // Output: [1, 3]
