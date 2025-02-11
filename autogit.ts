@@ -1,43 +1,40 @@
-class Node {
-    constructor(public value: any, public children: Node[] = []) {}
-}
+function boyerMooreHorspool(text: string, pattern: string): number[] {
+    const m = pattern.length;
+    const n = text.length;
+    const badCharShift: { [key: string]: number } = {};
 
-function depthLimitedSearch(root: Node, target: any, limit: number): Node | null {
-    const stack: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
-    
-    while (stack.length > 0) {
-        const { node, depth } = stack.pop()!;
-        
-        // Check if the current node is the target
-        if (node.value === target) {
-            return node;
+    // Preprocess the pattern to create the bad character shift table
+    for (let i = 0; i < m; i++) {
+        badCharShift[pattern[i]] = m - i - 1;
+    }
+
+    const result: number[] = [];
+    let s = 0; // s is the shift of the pattern with respect to text
+
+    while (s <= n - m) {
+        let j = m - 1;
+
+        // Keep reducing j while characters of pattern and text are matching
+        while (j >= 0 && pattern[j] === text[s + j]) {
+            j--;
         }
-        
-        // If the depth limit is not reached, add children to the stack
-        if (depth < limit) {
-            for (let i = node.children.length - 1; i >= 0; i--) {
-                stack.push({ node: node.children[i], depth: depth + 1 });
-            }
+
+        // If the pattern is found
+        if (j < 0) {
+            result.push(s);
+            // Shift the pattern to the right
+            s += (s + m < n) ? m - badCharShift[text[s + m]] || m : 1;
+        } else {
+            // Shift the pattern based on the bad character rule
+            s += Math.max(1, j - (badCharShift[text[s + j]] || -1));
         }
     }
-    
-    // Target not found within the depth limit
-    return null;
+
+    return result;
 }
 
-// Example Usage
-const root = new Node(1, [
-    new Node(2, [new Node(5), new Node(6)]),
-    new Node(3, [new Node(7)]),
-    new Node(4)
-]);
-
-const target = 6;
-const limit = 2;
-
-const result = depthLimitedSearch(root, target, limit);
-if (result) {
-    console.log(`Found: ${result.value}`);
-} else {
-    console.log("Target not found within depth limit.");
-}
+// Example usage
+const text = "ababcabcabababd";
+const pattern = "ababd";
+const indices = boyerMooreHorspool(text, pattern);
+console.log(`Pattern found at indices: ${indices}`);
