@@ -1,62 +1,14 @@
-A -- B
-|    |
-C -- D
-const graph = {
-    A: ['B', 'C'],
-    B: ['A', 'D'],
-    C: ['A', 'D'],
-    D: ['B', 'C']
-};
-type Graph = { [key: string]: string[] };
-
-function dfsRecursive(graph: Graph, start: string, visited: Set<string> = new Set()): void {
-    if (visited.has(start)) {
-        return; // Already visited
-    }
-
-    console.log(start); // Process the node
-    visited.add(start);
-
-    for (let neighbor of graph[start]) {
-        dfsRecursive(graph, neighbor, visited);
-    }
+function isPalindrome(str: string): boolean {
+    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
+    const normalizedStr = str.replace(/[^a-z0-9]/gi, '').toLowerCase();
+    
+    // Reverse the normalized string
+    const reversedStr = normalizedStr.split('').reverse().join('');
+    
+    // Compare the normalized string with the reversed string
+    return normalizedStr === reversedStr;
 }
 
-// Example usage
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['A', 'D'],
-    C: ['A', 'D'],
-    D: ['B', 'C']
-};
-
-dfsRecursive(graph, 'A');
-type Graph = { [key: string]: string[] };
-
-function dfsIterative(graph: Graph, start: string): void {
-    const stack: string[] = [start];
-    const visited: Set<string> = new Set();
-
-    while (stack.length > 0) {
-        const node = stack.pop()!;
-        if (!visited.has(node)) {
-            console.log(node); // Process the node
-            visited.add(node);
-
-            // Add neighbors to the stack (reverse to maintain order)
-            for (let neighbor of graph[node].reverse()) {
-                stack.push(neighbor);
-            }
-        }
-    }
-}
-
-// Example usage
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['A', 'D'],
-    C: ['A', 'D'],
-    D: ['B', 'C']
-};
-
-dfsIterative(graph, 'A');
+// Example usage:
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
