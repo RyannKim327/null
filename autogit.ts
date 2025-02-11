@@ -1,120 +1,43 @@
-class Node<T> {
-    value: T;
-    forward: Node<T>[];
+class TreeNode {
+    val: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    constructor(value: T, level: number) {
-        this.value = value;
-        this.forward = new Array(level + 1).fill(null);
+    constructor(val: number) {
+        this.val = val;
+        this.left = null;
+        this.right = null;
     }
 }
-class SkipList<T> {
-    private head: Node<T>;
-    private maxLevel: number;
-    private p: number; // Probability factor
-    private level: number;
 
-    constructor(maxLevel: number = 16, p: number = 0.5) {
-        this.maxLevel = maxLevel;
-        this.p = p;
-        this.level = 0;
-        this.head = new Node<T>(null, this.maxLevel);
+function diameterOfBinaryTree(root: TreeNode | null): number {
+    let maxDiameter = 0;
+
+    function height(node: TreeNode | null): number {
+        if (node === null) {
+            return 0;
+        }
+
+        // Recursively find the height of the left and right subtrees
+        const leftHeight = height(node.left);
+        const rightHeight = height(node.right);
+
+        // Update the maximum diameter found
+        maxDiameter = Math.max(maxDiameter, leftHeight + rightHeight);
+
+        // Return the height of the current node
+        return Math.max(leftHeight, rightHeight) + 1;
     }
 
-    private randomLevel(): number {
-        let lvl = 0;
-        while (Math.random() < this.p && lvl < this.maxLevel) {
-            lvl++;
-        }
-        return lvl;
-    }
-
-    insert(value: T): void {
-        const update: Node<T>[] = new Array(this.maxLevel + 1);
-        let current: Node<T> = this.head;
-
-        // Find the position to insert the new value
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-            update[i] = current;
-        }
-
-        current = current.forward[0];
-
-        // If the value is not already present, insert it
-        if (current === null || current.value !== value) {
-            const newLevel = this.randomLevel();
-
-            if (newLevel > this.level) {
-                for (let i = this.level + 1; i <= newLevel; i++) {
-                    update[i] = this.head;
-                }
-                this.level = newLevel;
-            }
-
-            const newNode = new Node(value, newLevel);
-            for (let i = 0; i <= newLevel; i++) {
-                newNode.forward[i] = update[i].forward[i];
-                update[i].forward[i] = newNode;
-            }
-        }
-    }
-
-    search(value: T): boolean {
-        let current: Node<T> = this.head;
-
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-        }
-
-        current = current.forward[0];
-
-        return current !== null && current.value === value;
-    }
-
-    delete(value: T): void {
-        const update: Node<T>[] = new Array(this.maxLevel + 1);
-        let current: Node<T> = this.head;
-
-        // Find the node to delete
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-            update[i] = current;
-        }
-
-        current = current.forward[0];
-
-        // If found, remove it
-        if (current !== null && current.value === value) {
-            for (let i = 0; i <= this.level; i++) {
-                if (update[i].forward[i] !== current) break;
-                update[i].forward[i] = current.forward[i];
-            }
-
-            // Remove levels if necessary
-            while (this.level > 0 && this.head.forward[this.level] === null) {
-                this.level--;
-            }
-        }
-    }
+    height(root); // Start the recursion
+    return maxDiameter; // Return the maximum diameter found
 }
-const skipList = new SkipList<number>();
 
-skipList.insert(3);
-skipList.insert(6);
-skipList.insert(7);
-skipList.insert(9);
-skipList.insert(12);
-skipList.insert(19);
-skipList.insert(17);
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-console.log(skipList.search(6)); // true
-console.log(skipList.search(15)); // false
-
-skipList.delete(6);
-console.log(skipList.search(6)); // false
+console.log(diameterOfBinaryTree(root)); // Output: 3 (the path is 4 -> 2 -> 1 -> 3)
