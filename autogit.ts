@@ -1,12 +1,35 @@
-function factorial(n: number): number {
-    // Base case: factorial of 0 or 1 is 1
-    if (n === 0 || n === 1) {
-        return 1;
+function isPalindrome(s: string): boolean {
+    let left = 0;
+    let right = s.length - 1;
+
+    while (left < right) {
+        // Move the left pointer to the right as long as the character is not alphanumeric
+        while (left < right && !isAlphanumeric(s[left])) {
+            left++;
+        }
+        // Move the right pointer to the left as long as the character is not alphanumeric
+        while (left < right && !isAlphanumeric(s[right])) {
+            right--;
+        }
+        // Compare characters (case insensitive)
+        if (s[left].toLowerCase() !== s[right].toLowerCase()) {
+            return false;
+        }
+        left++;
+        right--;
     }
-    // Recursive case: n! = n * (n - 1)!
-    return n * factorial(n - 1);
+
+    return true;
+}
+
+function isAlphanumeric(char: string): boolean {
+    const code = char.charCodeAt(0);
+    // Check if the character is a number (0-9) or a letter (a-z, A-Z)
+    return (code >= 48 && code <= 57) || // 0-9
+           (code >= 65 && code <= 90) || // A-Z
+           (code >= 97 && code <= 122);   // a-z
 }
 
 // Example usage:
-const num = 5;
-console.log(`Factorial of ${num} is ${factorial(num)}`); // Output: Factorial of 5 is 120
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
