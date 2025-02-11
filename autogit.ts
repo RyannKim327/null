@@ -1,22 +1,13 @@
-function firstNonRepeatingCharacter(str: string): string | null {
-    const charCount: { [key: string]: number } = {};
+function isPalindrome(str: string): boolean {
+    // Normalize the string
+    const normalizedStr = str
+        .replace(/[^0-9a-zA-Z]/g, '') // Remove non-alphanumeric characters
+        .toLowerCase(); // Convert to lowercase
 
-    // Count occurrences of each character
-    for (const char of str) {
-        charCount[char] = (charCount[char] || 0) + 1;
-    }
-
-    // Find the first non-repeating character
-    for (const char of str) {
-        if (charCount[char] === 1) {
-            return char; // Return the first non-repeating character
-        }
-    }
-
-    return null; // Return null if there is no non-repeating character
+    // Compare with its reverse
+    return normalizedStr === normalizedStr.split('').reverse().join('');
 }
 
 // Example usage
-const input = "swiss";
-const result = firstNonRepeatingCharacter(input);
-console.log(result); // Output: "w"
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
