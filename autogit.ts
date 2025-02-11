@@ -1,29 +1,20 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+function calculateTriangleArea(base: number, height: number): number {
+    return 0.5 * base * height;
 }
-function sumOfNodes(root: TreeNode | null): number {
-    // Base case: if the node is null, return 0
-    if (root === null) {
-        return 0;
-    }
 
-    // Recursive case: sum the value of the current node and the sums of the left and right subtrees
-    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
-}
 // Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+const base = 5;
+const height = 10;
+const area = calculateTriangleArea(base, height);
+console.log(`Area of triangle: ${area}`); // Output: Area of triangle: 25
+function calculateTriangleAreaFromVertices(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number): number {
+    return 0.5 * Math.abs(x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2));
+}
 
-const totalSum = sumOfNodes(root);
-console.log(`The sum of all nodes in the binary tree is: ${totalSum}`); // Output: 15
+// Example usage:
+const x1 = 0, y1 = 0;
+const x2 = 5, y2 = 0;
+const x3 = 0, y3 = 10;
+
+const areaFromVertices = calculateTriangleAreaFromVertices(x1, y1, x2, y2, x3, y3);
+console.log(`Area of triangle from vertices: ${areaFromVertices}`); // Output: Area of triangle from vertices: 25
