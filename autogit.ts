@@ -1,43 +1,50 @@
-class TreeNode {
-    val: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+class Node {
+    value: number;
+    next: Node | null;
 
-    constructor(val: number) {
-        this.val = val;
-        this.left = null;
-        this.right = null;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
 }
 
-function diameterOfBinaryTree(root: TreeNode | null): number {
-    let maxDiameter = 0;
+class LinkedList {
+    head: Node | null;
 
-    function height(node: TreeNode | null): number {
-        if (node === null) {
-            return 0;
+    constructor() {
+        this.head = null;
+    }
+
+    // Add method to append a new node to the list
+    append(value: number): void {
+        const newNode = new Node(value);
+        if (this.head === null) {
+            this.head = newNode;
+            return;
         }
-
-        // Recursively find the height of the left and right subtrees
-        const leftHeight = height(node.left);
-        const rightHeight = height(node.right);
-
-        // Update the maximum diameter found
-        maxDiameter = Math.max(maxDiameter, leftHeight + rightHeight);
-
-        // Return the height of the current node
-        return Math.max(leftHeight, rightHeight) + 1;
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
     }
 
-    height(root); // Start the recursion
-    return maxDiameter; // Return the maximum diameter found
+    // Method to find the length of the linked list
+    length(): number {
+        let count = 0;
+        let current = this.head;
+        while (current !== null) {
+            count++;
+            current = current.next;
+        }
+        return count;
+    }
 }
 
-// Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+// Example usage
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
 
-console.log(diameterOfBinaryTree(root)); // Output: 3 (the path is 4 -> 2 -> 1 -> 3)
+console.log(list.length()); // Output: 3
