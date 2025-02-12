@@ -1,66 +1,37 @@
-class TrieNode {
-    children: Map<string, TrieNode>;
-    isEndOfWord: boolean;
+function interpolationSearch(arr: number[], target: number): number {
+    let low = 0;
+    let high = arr.length - 1;
 
-    constructor() {
-        this.children = new Map<string, TrieNode>();
-        this.isEndOfWord = false;
+    while (low <= high && target >= arr[low] && target <= arr[high]) {
+        // Estimate the position of the target
+        const pos = low + Math.floor(((target - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+
+        // Check if the target is found
+        if (arr[pos] === target) {
+            return pos;
+        }
+
+        // If target is larger, ignore left half
+        if (arr[pos] < target) {
+            low = pos + 1;
+        }
+        // If target is smaller, ignore right half
+        else {
+            high = pos - 1;
+        }
     }
+
+    // Target was not found
+    return -1;
 }
 
-class Trie {
-    root: TrieNode;
+// Example usage:
+const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const targetValue = 70;
+const index = interpolationSearch(sortedArray, targetValue);
 
-    constructor() {
-        this.root = new TrieNode();
-    }
-
-    // Insert a word into the Trie
-    insert(word: string): void {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                currentNode.children.set(char, new TrieNode());
-            }
-            currentNode = currentNode.children.get(char)!; // Non-null assertion
-        }
-        currentNode.isEndOfWord = true; // Mark the end of the word
-    }
-
-    // Search for a word in the Trie
-    search(word: string): boolean {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                return false; // Character not found
-            }
-            currentNode = currentNode.children.get(char)!; // Non-null assertion
-        }
-        return currentNode.isEndOfWord; // Return true if it's the end of a word
-    }
-
-    // Check if there is any word in the Trie that starts with the given prefix
-    startsWith(prefix: string): boolean {
-        let currentNode = this.root;
-
-        for (const char of prefix) {
-            if (!currentNode.children.has(char)) {
-                return false; // Prefix not found
-            }
-            currentNode = currentNode.children.get(char)!; // Non-null assertion
-        }
-        return true; // Prefix found
-    }
+if (index !== -1) {
+    console.log(`Element found at index: ${index}`);
+} else {
+    console.log("Element not found in the array.");
 }
-
-// Example usage
-const trie = new Trie();
-trie.insert("hello");
-trie.insert("world");
-
-console.log(trie.search("hello")); // true
-console.log(trie.search("hell")); // false
-console.log(trie.startsWith("hell")); // true
-console.log(trie.startsWith("worlds")); // false
