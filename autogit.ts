@@ -1,29 +1,43 @@
-function binarySearch(arr: number[], target: number): number {
-    let left = 0;
-    let right = arr.length - 1;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    while (left <= right) {
-        const mid = Math.floor((left + right) / 2);
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
 
-        if (arr[mid] === target) {
-            return mid; // Target found
-        } else if (arr[mid] < target) {
-            left = mid + 1; // Search in the right half
-        } else {
-            right = mid - 1; // Search in the left half
-        }
+function reverseLinkedList(head: ListNode | null): ListNode | null {
+    let prev: ListNode | null = null;
+    let current: ListNode | null = head;
+
+    while (current) {
+        const nextTemp: ListNode | null = current.next; // Store the next node
+        current.next = prev; // Reverse the link
+        prev = current; // Move prev to current
+        current = nextTemp; // Move to the next node
     }
 
-    return -1; // Target not found
+    return prev; // New head of the reversed linked list
 }
 
 // Example usage:
-const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const targetValue = 7;
-const result = binarySearch(sortedArray, targetValue);
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
 
-if (result !== -1) {
-    console.log(`Target found at index: ${result}`);
-} else {
-    console.log(`Target not found in the array.`);
+const reversedHead = reverseLinkedList(head);
+
+// Function to print the linked list
+function printList(head: ListNode | null) {
+    let current = head;
+    while (current) {
+        console.log(current.value);
+        current = current.next;
+    }
 }
+
+// Print the reversed linked list
+printList(reversedHead);
