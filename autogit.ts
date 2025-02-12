@@ -1,47 +1,49 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function rabinKarp(text: string, pattern: string, d: number = 256, q: number = 101): number[] {
+    const n = text.length;
+    const m = pattern.length;
+    const result: number[] = [];
+    
+    const hPattern = computeHash(pattern, m, d, q);
+    const hText = computeHash(text, m, d, q);
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-function hasCycle(head: ListNode | null): boolean {
-    if (head === null) {
-        return false; // No nodes, hence no cycle
+    let h = 1; // The value of d^(m-1) % q
+    for (let i = 0; i < m - 1; i++) {
+        h = (h * d) % q;
     }
 
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
+    for (let i = 0; i <= n - m; i++) {
+        // Check the hash values of pattern and text
+        if (hPattern === hText) {
+            // If the hash values match, check for characters one by one
+            if (text.substring(i, i + m) === pattern) {
+                result.push(i); // Pattern found at index i
+            }
+        }
 
-    while (fast !== null && fast.next !== null) {
-        slow = slow.next; // Move slow by 1 step
-        fast = fast.next.next; // Move fast by 2 steps
+        // Calculate the hash value for the next window of text
+        if (i < n - m) {
+            hText = (d * (hText - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % q;
 
-        if (slow === fast) {
-            return true; // Cycle detected
+            // We might get negative value of hText, convert it to positive
+            if (hText < 0) {
+                hText += q;
+            }
         }
     }
 
-    return false; // No cycle found
+    return result;
+}
+
+function computeHash(str: string, length: number, d: number, q: number): number {
+    let hash = 0;
+    for (let i = 0; i < length; i++) {
+        hash = (d * hash + str.charCodeAt(i)) % q;
+    }
+    return hash;
 }
 
 // Example usage
-const node1 = new ListNode(1);
-const node2 = new ListNode(2);
-const node3 = new ListNode(3);
-const node4 = new ListNode(4);
-
-// Creating a linked list with a cycle
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2; // Cycle here
-
-console.log(hasCycle(node1)); // Output: true
-
-// Creating a linked list without a cycle
-node4.next = null; // Removing the cycle
-console.log(hasCycle(node1)); // Output: false
+const text = "ababcababcabc";
+const pattern = "abc";
+const indices = rabinKarp(text, pattern);
+console.log("Pattern found at indices:", indices);
