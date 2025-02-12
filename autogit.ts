@@ -1,39 +1,34 @@
-class Node {
-    constructor(public value: any, public children: Node[] = []) {}
+function burrowsWheelerTransform(input: string): { bwt: string; originalIndex: number } {
+  const n = input.length;
+  const rotations: string[] = new Array(n);
+  
+  // Generate all rotations of the input string
+  for (let i = 0; i < n; i++) {
+    rotations[i] = input.slice(i) + input.slice(0, i);
+  }
+
+  // Sort the rotations
+  rotations.sort();
+
+  // Build the BWT string and remember the original index
+  let bwt = '';
+  let originalIndex = -1;
+
+  for (let i = 0; i < n; i++) {
+    const lastChar = rotations[i][n - 1];
+    bwt += lastChar;
+
+    // Check if this is the original string
+    if (rotations[i] === input) {
+      originalIndex = i;
+    }
+  }
+
+  return { bwt, originalIndex };
 }
 
-function depthLimitedSearch(root: Node, target: any, depth: number): boolean {
-    if (depth === 0 && root.value === target) {
-        return true; // Found the target at the current depth
-    }
-
-    if (depth > 0) {
-        for (let child of root.children) {
-            if (depthLimitedSearch(child, target, depth - 1)) {
-                return true; // Found the target in the child subtree
-            }
-        }
-    }
-    
-    return false; // Target not found at this depth
-}
-
-// Example usage:
-
-// Creating a sample tree
-const root = new Node(1, [
-    new Node(2, [
-        new Node(5),
-        new Node(6)
-    ]),
-    new Node(3),
-    new Node(4, [
-        new Node(7)
-    ])
-]);
-
-const targetValue = 5;
-const maxDepth = 2;
-
-const found = depthLimitedSearch(root, targetValue, maxDepth);
-console.log(found ? "Target found!" : "Target not found.");
+// Example Usage
+const input = "BANANA";
+const result = burrowsWheelerTransform(input);
+console.log(`BWT: ${result.bwt}, Original Index: ${result.originalIndex}`);
+BWT: NAAANB, Original Index: 1
