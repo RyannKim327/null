@@ -1,52 +1,111 @@
-function computeLPSArray(pattern: string): number[] {
-    const lps = new Array(pattern.length).fill(0);
-    let length = 0;
-    let i = 1;
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+class BinaryTree {
+    root: TreeNode | null;
+
+    constructor() {
+        this.root = null;
+    }
+
+    // Insert a value into the binary tree
+    insert(value: number): void {
+        const newNode = new TreeNode(value);
+        if (this.root === null) {
+            this.root = newNode;
         } else {
-            if (length !== 0) {
-                length = lps[length - 1];
+            this.insertNode(this.root, newNode);
+        }
+    }
+
+    private insertNode(node: TreeNode, newNode: TreeNode): void {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
             } else {
-                lps[i] = 0;
-                i++;
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
             }
         }
     }
 
-    return lps;
-}
-function KMPSearch(text: string, pattern: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
+    // Search for a value in the binary tree
+    search(value: number): boolean {
+        return this.searchNode(this.root, value);
+    }
 
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
+    private searchNode(node: TreeNode | null, value: number): boolean {
+        if (node === null) {
+            return false;
         }
-
-        if (j === pattern.length) {
-            result.push(i - j); // Found a match, add the start index to result
-            j = lps[j - 1]; // Use the LPS array to skip unnecessary comparisons
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
+        if (value < node.value) {
+            return this.searchNode(node.left, value);
+        } else if (value > node.value) {
+            return this.searchNode(node.right, value);
+        } else {
+            return true; // value is found
         }
     }
 
-    return result; // Return all starting indexes where the pattern is found
+    // In-order traversal
+    inOrderTraversal(node: TreeNode | null): void {
+        if (node !== null) {
+            this.inOrderTraversal(node.left);
+            console.log(node.value);
+            this.inOrderTraversal(node.right);
+        }
+    }
+
+    // Pre-order traversal
+    preOrderTraversal(node: TreeNode | null): void {
+        if (node !== null) {
+            console.log(node.value);
+            this.preOrderTraversal(node.left);
+            this.preOrderTraversal(node.right);
+        }
+    }
+
+    // Post-order traversal
+    postOrderTraversal(node: TreeNode | null): void {
+        if (node !== null) {
+            this.postOrderTraversal(node.left);
+            this.postOrderTraversal(node.right);
+            console.log(node.value);
+        }
+    }
 }
-const text = "ababcabcabababd";
-const pattern = "ababd";
-const matches = KMPSearch(text, pattern);
-console.log("Pattern found at indexes:", matches);
+const tree = new BinaryTree();
+tree.insert(10);
+tree.insert(5);
+tree.insert(15);
+tree.insert(3);
+tree.insert(7);
+tree.insert(12);
+tree.insert(18);
+
+// Traversals
+console.log("In-order traversal:");
+tree.inOrderTraversal(tree.root);
+
+console.log("Pre-order traversal:");
+tree.preOrderTraversal(tree.root);
+
+console.log("Post-order traversal:");
+tree.postOrderTraversal(tree.root);
+
+// Search for a value
+console.log("Search for 7:", tree.search(7)); // true
+console.log("Search for 20:", tree.search(20)); // false
