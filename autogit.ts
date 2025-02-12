@@ -1,111 +1,89 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+type Graph = Map<string, string[]>;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-class BinaryTree {
-    root: TreeNode | null;
-
-    constructor() {
-        this.root = null;
+const graph: Graph = new Map([
+    ['A', ['B', 'C']],
+    ['B', ['A', 'D', 'E']],
+    ['C', ['A', 'F']],
+    ['D', ['B']],
+    ['E', ['B', 'F']],
+    ['F', ['C', 'E']],
+]);
+function biDirectionalSearch(graph: Graph, start: string, goal: string): string[] | null {
+    if (!graph.has(start) || !graph.has(goal)) {
+        return null; // Start or goal not in graph
     }
 
-    // Insert a value into the binary tree
-    insert(value: number): void {
-        const newNode = new TreeNode(value);
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
+    const visitedFromStart = new Set<string>();
+    const visitedFromGoal = new Set<string>();
+    const queueFromStart: string[] = [start];
+    const queueFromGoal: string[] = [goal];
+    const parentFromStart: Map<string, string | null> = new Map();
+    const parentFromGoal: Map<string, string | null> = new Map();
+
+    parentFromStart.set(start, null);
+    parentFromGoal.set(goal, null);
+
+    while (queueFromStart.length > 0 && queueFromGoal.length > 0) {
+        // Search from the start
+        const currentFromStart = queueFromStart.shift()!;
+        if (visitedFromGoal.has(currentFromStart)) {
+            return constructPath(currentFromStart, parentFromStart, parentFromGoal);
         }
-    }
+        visitedFromStart.add(currentFromStart);
 
-    private insertNode(node: TreeNode, newNode: TreeNode): void {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
+        for (const neighbor of graph.get(currentFromStart) || []) {
+            if (!visitedFromStart.has(neighbor)) {
+                queueFromStart.push(neighbor);
+                visitedFromStart.add(neighbor);
+                parentFromStart.set(neighbor, currentFromStart);
             }
         }
-    }
 
-    // Search for a value in the binary tree
-    search(value: number): boolean {
-        return this.searchNode(this.root, value);
-    }
-
-    private searchNode(node: TreeNode | null, value: number): boolean {
-        if (node === null) {
-            return false;
+        // Search from the goal
+        const currentFromGoal = queueFromGoal.shift()!;
+        if (visitedFromStart.has(currentFromGoal)) {
+            return constructPath(currentFromGoal, parentFromGoal, parentFromStart);
         }
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true; // value is found
+        visitedFromGoal.add(currentFromGoal);
+
+        for (const neighbor of graph.get(currentFromGoal) || []) {
+            if (!visitedFromGoal.has(neighbor)) {
+                queueFromGoal.push(neighbor);
+                visitedFromGoal.add(neighbor);
+                parentFromGoal.set(neighbor, currentFromGoal);
+            }
         }
     }
 
-    // In-order traversal
-    inOrderTraversal(node: TreeNode | null): void {
-        if (node !== null) {
-            this.inOrderTraversal(node.left);
-            console.log(node.value);
-            this.inOrderTraversal(node.right);
-        }
-    }
-
-    // Pre-order traversal
-    preOrderTraversal(node: TreeNode | null): void {
-        if (node !== null) {
-            console.log(node.value);
-            this.preOrderTraversal(node.left);
-            this.preOrderTraversal(node.right);
-        }
-    }
-
-    // Post-order traversal
-    postOrderTraversal(node: TreeNode | null): void {
-        if (node !== null) {
-            this.postOrderTraversal(node.left);
-            this.postOrderTraversal(node.right);
-            console.log(node.value);
-        }
-    }
+    return null; // No path found
 }
-const tree = new BinaryTree();
-tree.insert(10);
-tree.insert(5);
-tree.insert(15);
-tree.insert(3);
-tree.insert(7);
-tree.insert(12);
-tree.insert(18);
 
-// Traversals
-console.log("In-order traversal:");
-tree.inOrderTraversal(tree.root);
+function constructPath(meetingPoint: string, parentFromStart: Map<string, string | null>, parentFromGoal: Map<string, string | null>): string[] {
+    const path: string[] = [];
+    
+    // Construct path from start to meeting point
+    let current: string | null = meetingPoint;
+    while (current !== null) {
+        path.push(current);
+        current = parentFromStart.get(current) || null;
+    }
+    path.reverse();
 
-console.log("Pre-order traversal:");
-tree.preOrderTraversal(tree.root);
+    // Construct path from meeting point to goal
+    current = parentFromGoal.get(meetingPoint) || null;
+    while (current !== null) {
+        path.push(current);
+        current = parentFromGoal.get(current) || null;
+    }
 
-console.log("Post-order traversal:");
-tree.postOrderTraversal(tree.root);
+    return path;
+}
+const startNode = 'A';
+const goalNode = 'F';
+const path = biDirectionalSearch(graph, startNode, goalNode);
 
-// Search for a value
-console.log("Search for 7:", tree.search(7)); // true
-console.log("Search for 20:", tree.search(20)); // false
+if (path) {
+    console.log(`Path found: ${path.join(' -> ')}`);
+} else {
+    console.log('No path found.');
+}
