@@ -1,55 +1,68 @@
-class Node {
-    value: string;
-    children: Node[];
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    constructor(value: string) {
+    constructor(value: number) {
         this.value = value;
-        this.children = [];
-    }
-
-    addChild(child: Node) {
-        this.children.push(child);
+        this.next = null;
     }
 }
 
-function depthLimitedSearch(root: Node, depthLimit: number, targetValue: string): Node | null {
-    let stack: { node: Node, depth: number }[] = [{ node: root, depth: 0 }];
-    
-    while (stack.length > 0) {
-        const { node, depth } = stack.pop()!;
-        
-        // Check if the current node is the target
-        if (node.value === targetValue) {
-            return node; // Found the target node
+class LinkedList {
+    head: ListNode | null;
+
+    constructor() {
+        this.head = null;
+    }
+
+    // Method to add a new node at the end of the list
+    append(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
         }
-        
-        // If we haven't reached the depth limit, add children to the stack
-        if (depth < depthLimit) {
-            // Reverse the children for stack-like behavior (last child processed first)
-            for (let i = node.children.length - 1; i >= 0; i--) {
-                stack.push({ node: node.children[i], depth: depth + 1 });
-            }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
         }
+        current.next = newNode;
     }
-    
-    return null; // Return null if the target node is not found
+
+    // Method to print the linked list
+    print() {
+        let current = this.head;
+        const values: number[] = [];
+        while (current) {
+            values.push(current.value);
+            current = current.next;
+        }
+        console.log(values.join(' -> '));
+    }
 }
+function reverseLinkedList(head: ListNode | null): ListNode | null {
+    let prev: ListNode | null = null;
+    let current: ListNode | null = head;
 
-// Example usage
-const root = new Node("root");
-const child1 = new Node("child1");
-const child2 = new Node("child2");
-const grandchild1 = new Node("grandchild1");
-const grandchild2 = new Node("grandchild2");
-
-root.addChild(child1);
-root.addChild(child2);
-child1.addChild(grandchild1);
-child2.addChild(grandchild2);
-
-const result = depthLimitedSearch(root, 2, "grandchild2");
-if (result) {
-    console.log(`Found: ${result.value}`);
-} else {
-    console.log("Not found");
+    while (current) {
+        const nextTemp = current.next; // Store the next node
+        current.next = prev;            // Reverse the current node's pointer
+        prev = current;                 // Move prev and current one step forward
+        current = nextTemp;
+    }
+    return prev; // New head of the reversed list
 }
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+list.append(4);
+list.append(5);
+
+console.log("Original Linked List:");
+list.print();
+
+list.head = reverseLinkedList(list.head);
+
+console.log("Reversed Linked List:");
+list.print();
