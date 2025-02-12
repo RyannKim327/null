@@ -1,51 +1,48 @@
-function computeLPSArray(pattern: string): number[] {
-    const lps: number[] = new Array(pattern.length).fill(0);
-    let length = 0; // length of the previous longest prefix suffix
-    let i = 1;
+function preprocessBadCharacter(pattern: string): Map<string, number> {
+    const badCharTable = new Map<string, number>();
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
+    // Populate the bad character table with default shifts
+    for (let i = 0; i < pattern.length; i++) {
+        badCharTable.set(pattern[i], i);
+    }
+
+    return badCharTable;
+}
+
+function boyerMooreSearch(text: string, pattern: string): number[] {
+    const badCharTable = preprocessBadCharacter(pattern);
+    const m = pattern.length;
+    const n = text.length;
+    const occurrences: number[] = [];
+
+    let s = 0; // s is the shift of the pattern with respect to text
+    while (s <= n - m) {
+        let j = m - 1; // index for pattern
+
+        // Keep reducing index j of pattern while characters of pattern and text are
+        // matching at this shift s
+        while (j >= 0 && pattern[j] === text[s + j]) {
+            j--;
+        }
+
+        // A match found
+        if (j < 0) {
+            occurrences.push(s);
+            // Shift the pattern to the right by m, or by the first occurrence of the
+            // bad character in the pattern if found
+            s += (s + m < n) ? m - (badCharTable.get(text[s + m]) || -1) : 1;
         } else {
-            if (length !== 0) {
-                length = lps[length - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
+            // Shift the pattern so that the bad character in text aligns with
+            // the last occurrence of it in the pattern
+            s += Math.max(1, j - (badCharTable.get(text[s + j]) || -1));
         }
     }
-    return lps;
-}
-function KMPSearch(text: string, pattern: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
 
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-
-        if (j === pattern.length) {
-            result.push(i - j); // Match found, add the starting index to result
-            j = lps[j - 1]; // Continue to look for more matches
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1]; // Use the LPS array to skip characters
-            } else {
-                i++;
-            }
-        }
-    }
-    return result; // Return all starting indices of matches
+    return occurrences;
 }
+
+// Example usage:
 const text = "ABABDABACDABABCABAB";
 const pattern = "ABABCABAB";
-const result = KMPSearch(text, pattern);
-
+const result = boyerMooreSearch(text, pattern);
 console.log("Pattern found at indices:", result);
