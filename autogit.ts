@@ -1,15 +1,36 @@
-function isArraySortedAscending(arr: number[]): boolean {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false; // Found an element greater than the next one
+function majorityElement(nums: number[]): number | null {
+    let candidate: number | null = null;
+    let count = 0;
+
+    // Phase 1: Find a candidate for the majority element
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+            count = 1;
+        } else if (num === candidate) {
+            count++;
+        } else {
+            count--;
         }
     }
-    return true; // All elements are in ascending order
+
+    // Phase 2: Verify the candidate
+    count = 0;
+    for (const num of nums) {
+        if (num === candidate) {
+            count++;
+        }
+    }
+
+    // Check if the candidate is indeed the majority element
+    if (count > nums.length / 2) {
+        return candidate;
+    } else {
+        return null; // No majority element found
+    }
 }
 
 // Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [5, 3, 4, 1, 2];
-
-console.log(isArraySortedAscending(array1)); // Output: true
-console.log(isArraySortedAscending(array2)); // Output: false
+const nums = [3, 2, 3];
+const result = majorityElement(nums);
+console.log(result); // Output: 3
