@@ -1,55 +1,58 @@
-function kmpSearch(text: string, pattern: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
+type Edge = {
+    source: number;
+    destination: number;
+    weight: number;
+};
 
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
+class Graph {
+    vertices: number;
+    edges: Edge[];
 
-        if (j === pattern.length) {
-            result.push(i - j); // Match found, add the starting index
-            j = lps[j - 1]; // Get the next position from LPS
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1]; // Use LPS to skip characters
-            } else {
-                i++;
-            }
-        }
+    constructor(vertices: number) {
+        this.vertices = vertices;
+        this.edges = [];
     }
 
-    return result; // Return all starting indices of matches
-}
-
-function computeLPSArray(pattern: string): number[] {
-    const lps = new Array(pattern.length).fill(0);
-    let length = 0; // Length of the previous longest prefix suffix
-    let i = 1;
-
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1]; // Use the previous LPS value
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
+    addEdge(source: number, destination: number, weight: number) {
+        this.edges.push({ source, destination, weight });
     }
 
-    return lps;
+    bellmanFord(source: number): number[] | string {
+        const distance: number[] = new Array(this.vertices).fill(Infinity);
+        distance[source] = 0;
+
+        // Relax edges |V| - 1 times
+        for (let i = 0; i < this.vertices - 1; i++) {
+            for (const edge of this.edges) {
+                if (distance[edge.source] !== Infinity &&
+                    distance[edge.source] + edge.weight < distance[edge.destination]) {
+                    distance[edge.destination] = distance[edge.source] + edge.weight;
+                }
+            }
+        }
+
+        // Check for negative weight cycles
+        for (const edge of this.edges) {
+            if (distance[edge.source] !== Infinity &&
+                distance[edge.source] + edge.weight < distance[edge.destination]) {
+                return "Graph contains a negative weight cycle";
+            }
+        }
+
+        return distance;
+    }
 }
 
 // Example usage:
-const text = "ababcabcabababd";
-const pattern = "ababd";
-const matches = kmpSearch(text, pattern);
-console.log("Pattern found at indices:", matches);
+const sampleGraph = new Graph(5);
+sampleGraph.addEdge(0, 1, -1);
+sampleGraph.addEdge(0, 2, 4);
+sampleGraph.addEdge(1, 2, 3);
+sampleGraph.addEdge(1, 3, 2);
+sampleGraph.addEdge(1, 4, 2);
+sampleGraph.addEdge(3, 2, 5);
+sampleGraph.addEdge(3, 1, 1);
+sampleGraph.addEdge(4, 3, -3);
+
+const result = sampleGraph.bellmanFord(0);
+console.log(result);  // Output the shortest distances from source node 0
