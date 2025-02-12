@@ -1,28 +1,17 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-function sumOfNodes(root: TreeNode | null): number {
-    if (root === null) {
-        return 0; // Base case: If the node is null, return 0
-    }
-    // Recursive case: sum the value of the current node and the sums of left and right subtrees
-    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
+function findCommonElements(arr1: number[], arr2: number[]): number[] {
+    return arr1.filter(element => arr2.includes(element));
 }
 
 // Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
+function findCommonElementsSet(arr1: number[], arr2: number[]): number[] {
+    const set1 = new Set(arr1);
+    return arr2.filter(element => set1.has(element));
+}
 
-console.log(sumOfNodes(root)); // Output will be 15 (1 + 2 + 3 + 4 + 5)
+// Example usage:
+const commonElementsSet = findCommonElementsSet(array1, array2);
+console.log(commonElementsSet); // Output: [4, 5]
