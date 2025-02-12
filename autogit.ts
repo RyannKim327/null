@@ -1,15 +1,12 @@
-function isArraySorted(arr: number[]): boolean {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false; // Not sorted
-        }
-    }
-    return true; // All elements are in ascending order
-}
+const numbers: number[] = [5, 3, 8, 1, 2];
 
-// Example usage
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [5, 3, 4, 2, 1];
+// Sort the array in ascending order
+numbers.sort((a, b) => a - b);
 
-console.log(isArraySorted(array1)); // true
-console.log(isArraySorted(array2)); // false
+console.log(numbers); // Output: [1, 2, 3, 5, 8]
+const numbers: number[] = [5, 3, 8, 1, 2];
+
+// Sort the array in descending order
+numbers.sort((a, b) => b - a);
+
+console.log(numbers); // Output: [8, 5, 3, 2, 1]
