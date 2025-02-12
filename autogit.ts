@@ -1,17 +1,31 @@
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    return arr1.filter(element => arr2.includes(element));
+function bwtTransform(input: string): { output: string, originalIndex: number } {
+    const length = input.length;
+    const rotations: string[] = [];
+
+    // Generate all rotations of the input string
+    for (let i = 0; i < length; i++) {
+        rotations.push(input.slice(i) + input.slice(0, i));
+    }
+
+    // Sort the rotations
+    rotations.sort();
+
+    // Build the BWT output and find the original index
+    let bwtOutput = '';
+    let originalIndex = -1;
+
+    for (let i = 0; i < length; i++) {
+        bwtOutput += rotations[i][length - 1];  // Last column of sorted rotations
+        if (rotations[i] === input) {
+            originalIndex = i; // Find the original index
+        }
+    }
+
+    return { output: bwtOutput, originalIndex };
 }
 
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
-function findCommonElementsSet(arr1: number[], arr2: number[]): number[] {
-    const set1 = new Set(arr1);
-    return arr2.filter(element => set1.has(element));
-}
-
-// Example usage:
-const commonElementsSet = findCommonElementsSet(array1, array2);
-console.log(commonElementsSet); // Output: [4, 5]
+// Example usage
+const input = "banana";
+const { output: bwtResult, originalIndex } = bwtTransform(input);
+console.log(`BWT Result: ${bwtResult}`);
+console.log(`Original Index: ${originalIndex}`);
