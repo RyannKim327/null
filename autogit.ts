@@ -1,51 +1,51 @@
-// Define a class for the Node
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
+class HashTable<K, V> {
+    private table: Array<[K, V] | null>;
+    private size: number;
 
-    constructor(value: T) {
-        this.value = value;
-        this.next = null; // Initially, the next node is null
+    constructor(size: number) {
+        this.size = size;
+        this.table = new Array(size).fill(null);
+    }
+
+    private hash(key: K): number {
+        let hashValue = 0;
+        const keyString = JSON.stringify(key);
+        for (let i = 0; i < keyString.length; i++) {
+            hashValue += keyString.charCodeAt(i);
+        }
+        return hashValue % this.size;
+    }
+
+    set(key: K, value: V): void {
+        const index = this.hash(key);
+        this.table[index] = [key, value];
+    }
+
+    get(key: K): V | null {
+        const index = this.hash(key);
+        const item = this.table[index];
+        return item ? item[1] : null;
+    }
+
+    remove(key: K): void {
+        const index = this.hash(key);
+        this.table[index] = null;
+    }
+
+    printTable(): void {
+        for (const item of this.table) {
+            if (item) {
+                console.log(`${item[0]}: ${item[1]}`);
+            }
+        }
     }
 }
 
-// Define a class for the LinkedList
-class LinkedList<T> {
-    head: Node<T> | null;
+// Example usage:
+const hashTable = new HashTable<string, number>(10);
+hashTable.set("apple", 1);
+hashTable.set("banana", 2);
+hashTable.set("orange", 3);
 
-    constructor() {
-        this.head = null; // Initially, the list is empty
-    }
-
-    // Method to add a new node at the end of the linked list
-    append(value: T) {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Method to find the length of the linked list
-    length(): number {
-        let count = 0;
-        let current = this.head;
-        while (current) {
-            count++;
-            current = current.next;
-        }
-        return count;
-    }
-}
-
-// Example usage
-const list = new LinkedList<number>();
-list.append(1);
-list.append(2);
-list.append(3);
-console.log(list.length()); // Output: 3
+console.log(hashTable.get("banana")); // Output: 2
+hashTable.printTable(); // Output the contents of the hash table
