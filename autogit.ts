@@ -1,60 +1,45 @@
-type Graph = { [key: string]: string[] };
+// Function to perform counting sort based on the digit represented by exp (10^i)
+function countingSort(arr: number[], exp: number): number[] {
+    const n = arr.length;
+    const output: number[] = new Array(n); // Output array
+    const count: number[] = new Array(10).fill(0); // Count array
 
-function dfsRecursive(graph: Graph, node: string, visited: Set<string> = new Set()): void {
-    if (visited.has(node)) {
-        return; // Node has already been visited
+    // Count occurrences of digits
+    for (let i = 0; i < n; i++) {
+        const index = Math.floor(arr[i] / exp) % 10; // Extract the digit
+        count[index]++;
     }
 
-    visited.add(node);
-    console.log(node); // Process the node (e.g., print it)
-
-    for (const neighbor of graph[node]) {
-        dfsRecursive(graph, neighbor, visited);
+    // Update the count array such that count[i] contains
+    // the actual position of this digit in output[]
+    for (let i = 1; i < 10; i++) {
+        count[i] += count[i - 1];
     }
+
+    // Build the output array
+    for (let i = n - 1; i >= 0; i--) {
+        const index = Math.floor(arr[i] / exp) % 10;
+        output[count[index] - 1] = arr[i];
+        count[index]--;
+    }
+
+    return output;
 }
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
+// Function to perform radix sort
+function radixSort(arr: number[]): number[] {
+    // Find the maximum number to know the number of digits
+    const max = Math.max(...arr);
 
-dfsRecursive(graph, 'A');
-type Graph = { [key: string]: string[] };
-
-function dfsIterative(graph: Graph, startNode: string): void {
-    const stack: string[] = [startNode];
-    const visited: Set<string> = new Set();
-
-    while (stack.length > 0) {
-        const node = stack.pop()!;
-        
-        if (visited.has(node)) {
-            continue; // Node has already been visited
-        }
-
-        visited.add(node);
-        console.log(node); // Process the node (e.g., print it)
-
-        // Add neighbors to the stack
-        for (const neighbor of graph[node]) {
-            stack.push(neighbor);
-        }
+    // Do counting sort for every digit (exp represents the current digit's place value)
+    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
+        arr = countingSort(arr, exp);
     }
+
+    return arr;
 }
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
-
-dfsIterative(graph, 'A');
+// Example usage
+const numbers: number[] = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedNumbers = radixSort(numbers);
+console.log(sortedNumbers); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
