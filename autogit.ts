@@ -1,60 +1,50 @@
-type Graph = { [key: string]: string[] };
-
-function dfsRecursive(graph: Graph, node: string, visited: Set<string> = new Set()): void {
-    if (visited.has(node)) {
-        return; // Node has already been visited
-    }
-
-    visited.add(node);
-    console.log(node); // Process the node (e.g., print it)
-
-    for (const neighbor of graph[node]) {
-        dfsRecursive(graph, neighbor, visited);
-    }
-}
-
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
+type Node = {
+    sequence: string;
+    score: number;
 };
 
-dfsRecursive(graph, 'A');
-type Graph = { [key: string]: string[] };
+function beamSearch(initialSequence: string, beamWidth: number, maxSteps: number): string {
+    let beam: Node[] = [{ sequence: initialSequence, score: scoreFunction(initialSequence) }];
 
-function dfsIterative(graph: Graph, startNode: string): void {
-    const stack: string[] = [startNode];
-    const visited: Set<string> = new Set();
+    for (let step = 0; step < maxSteps; step++) {
+        const newBeam: Node[] = [];
 
-    while (stack.length > 0) {
-        const node = stack.pop()!;
-        
-        if (visited.has(node)) {
-            continue; // Node has already been visited
+        // Generate new candidates from the current beam
+        for (const node of beam) {
+            const candidates = generateCandidates(node.sequence);
+            for (const candidate of candidates) {
+                newBeam.push({ sequence: candidate, score: scoreFunction(candidate) });
+            }
         }
 
-        visited.add(node);
-        console.log(node); // Process the node (e.g., print it)
-
-        // Push neighbors onto the stack
-        for (const neighbor of graph[node]) {
-            stack.push(neighbor);
-        }
+        // Sort candidates by score and keep the top `beamWidth` candidates
+        newBeam.sort((a, b) => b.score - a.score);
+        beam = newBeam.slice(0, beamWidth);
     }
+
+    // Return the best sequence found
+    return beam[0].sequence;
 }
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
+// Example scoring function
+function scoreFunction(sequence: string): number {
+    // Implement your scoring logic here
+    return Math.random(); // Placeholder: replace with actual scoring logic
+}
 
-dfsIterative(graph, 'A');
+// Example candidate generation function
+function generateCandidates(sequence: string): string[] {
+    // Implement your candidate generation logic here
+    const candidates: string[] = [];
+    const characters = 'abcdefghijklmnopqrstuvwxyz';
+
+    for (const char of characters) {
+        candidates.push(sequence + char); // Append a character to the sequence
+    }
+
+    return candidates;
+}
+
+// Usage
+const bestSequence = beamSearch('a', 3, 5);
+console.log('Best sequence found:', bestSequence);
