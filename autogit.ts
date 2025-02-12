@@ -1,61 +1,28 @@
-function fibonacciSearch(arr: number[], x: number): number {
-    const n = arr.length;
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    // Initialize Fibonacci numbers
-    let fibM2 = 0; // (m-2)'th Fibonacci number
-    let fibM1 = 1; // (m-1)'th Fibonacci number
-    let fibM = fibM1 + fibM2; // m'th Fibonacci number
-
-    // Find the smallest Fibonacci number greater than or equal to n
-    while (fibM < n) {
-        fibM2 = fibM1;
-        fibM1 = fibM;
-        fibM = fibM1 + fibM2;
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-
-    // Marks the eliminated range from the front
-    let offset = -1;
-
-    // While there are elements to be inspected
-    while (fibM > 1) {
-        // Calculate the index to be compared
-        const i = Math.min(offset + fibM2, n - 1);
-
-        // If x is greater than the value at index i, cut the subarray after i
-        if (arr[i] < x) {
-            fibM = fibM1;
-            fibM1 = fibM2;
-            fibM2 = fibM - fibM1;
-            offset = i;
-        }
-        // If x is less than the value at index i, cut the subarray before i
-        else if (arr[i] > x) {
-            fibM = fibM2;
-            fibM1 = fibM1 - fibM2;
-            fibM2 = fibM - fibM1;
-        }
-        // Element found
-        else {
-            return i;
-        }
-    }
-
-    // Comparing the last element with x
-    if (fibM1 && arr[offset + 1] === x) {
-        return offset + 1;
-    }
-
-    // Element not found
-    return -1;
 }
 
-// Example usage
-const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
-const x = 85;
-const result = fibonacciSearch(arr, x);
-
-if (result !== -1) {
-    console.log(`Element found at index: ${result}`);
-} else {
-    console.log('Element not found in the array.');
+function sumOfNodes(root: TreeNode | null): number {
+    if (root === null) {
+        return 0; // Base case: If the node is null, return 0
+    }
+    // Recursive case: sum the value of the current node and the sums of left and right subtrees
+    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
 }
+
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(sumOfNodes(root)); // Output will be 15 (1 + 2 + 3 + 4 + 5)
