@@ -1,28 +1,14 @@
-npm install axios
-import axios from 'axios';
-
-interface Post {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
+function factorial(n: number): number {
+    if (n < 0) {
+        throw new Error("Factorial is not defined for negative numbers.");
+    }
+    if (n === 0) {
+        return 1; // Base case: 0! is 1
+    }
+    return n * factorial(n - 1); // Recursive case
 }
 
-const fetchPosts = async () => {
-  try {
-    const response = await axios.get<Post[]>('https://jsonplaceholder.typicode.com/posts');
-    const posts = response.data;
-
-    console.log('Posts fetched:', posts);
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error('Error fetching posts:', error.message);
-    } else {
-      console.error('Unexpected error:', error);
-    }
-  }
-};
-
-fetchPosts();
-tsc fetchData.ts
-node fetchData.js
+// Example usage:
+const number = 5;
+const result = factorial(number);
+console.log(`The factorial of ${number} is ${result}`); // Output: The factorial of 5 is 120
