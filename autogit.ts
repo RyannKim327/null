@@ -1,12 +1,19 @@
-const numbers: number[] = [5, 3, 8, 1, 2];
+function longestCommonPrefix(strs: string[]): string {
+    if (strs.length === 0) return "";
+    if (strs.length === 1) return strs[0];
 
-// Sort the array in ascending order
-numbers.sort((a, b) => a - b);
+    let prefix = strs[0];
 
-console.log(numbers); // Output: [1, 2, 3, 5, 8]
-const numbers: number[] = [5, 3, 8, 1, 2];
+    for (let i = 1; i < strs.length; i++) {
+        while (strs[i].indexOf(prefix) !== 0) {
+            prefix = prefix.substring(0, prefix.length - 1);
+            if (prefix === "") return "";
+        }
+    }
 
-// Sort the array in descending order
-numbers.sort((a, b) => b - a);
+    return prefix;
+}
 
-console.log(numbers); // Output: [8, 5, 3, 2, 1]
+// Example usage:
+const strings = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(strings)); // Output: "fl"
