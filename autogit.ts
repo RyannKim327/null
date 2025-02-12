@@ -1,21 +1,34 @@
-function findMajorityElement(nums: number[]): number | null {
-    let count = 0;
-    let candidate: number | null = null;
+npm install axios
+import axios from 'axios';
 
-    // First pass: Find a candidate for majority element
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-        }
-        count += (num === candidate) ? 1 : -1;
-    }
-
-    // Second pass: Verify the candidate
-    count = nums.filter(num => num === candidate).length;
-
-    return count > Math.floor(nums.length / 2) ? candidate : null;
+// Define an interface for the data we expect to receive
+interface Post {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
 }
 
-// Example usage:
-const arr = [3, 2, 3];
-console.log(findMajorityElement(arr)); // Output: 3
+// Function to fetch posts
+const fetchPosts = async (): Promise<Post[]> => {
+  try {
+    const response = await axios.get<Post[]>('https://jsonplaceholder.typicode.com/posts');
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Error fetching posts:', error.message);
+    } else {
+      console.error('Unexpected error:', error);
+    }
+    throw error; // Rethrow the error for further handling if needed
+  }
+};
+
+// Call the function and log the results
+fetchPosts()
+  .then(posts => {
+    console.log('Fetched posts:', posts);
+  })
+  .catch(error => {
+    console.error('Failed to fetch posts:', error);
+  });
