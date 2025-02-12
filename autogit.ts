@@ -1,27 +1,66 @@
-function isSorted(arr: number[]): boolean {
-    for (let i = 1; i < arr.length; i++) {
-        if (arr[i] < arr[i - 1]) {
-            return false;
-        }
+class TrieNode {
+    children: Map<string, TrieNode>;
+    isEndOfWord: boolean;
+
+    constructor() {
+        this.children = new Map<string, TrieNode>();
+        this.isEndOfWord = false;
     }
-    return true;
 }
 
-function randomSort(arr: number[]): number[] {
-    let sortedArr = [...arr];
-    
-    while (!isSorted(sortedArr)) {
-        for (let i = sortedArr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1)); // Random index
-            // Swap sortedArr[i] with the element at random index
-            [sortedArr[i], sortedArr[j]] = [sortedArr[j], sortedArr[i]];
-        }
+class Trie {
+    root: TrieNode;
+
+    constructor() {
+        this.root = new TrieNode();
     }
-    
-    return sortedArr;
+
+    // Insert a word into the Trie
+    insert(word: string): void {
+        let currentNode = this.root;
+
+        for (const char of word) {
+            if (!currentNode.children.has(char)) {
+                currentNode.children.set(char, new TrieNode());
+            }
+            currentNode = currentNode.children.get(char)!; // Non-null assertion
+        }
+        currentNode.isEndOfWord = true; // Mark the end of the word
+    }
+
+    // Search for a word in the Trie
+    search(word: string): boolean {
+        let currentNode = this.root;
+
+        for (const char of word) {
+            if (!currentNode.children.has(char)) {
+                return false; // Character not found
+            }
+            currentNode = currentNode.children.get(char)!; // Non-null assertion
+        }
+        return currentNode.isEndOfWord; // Return true if it's the end of a word
+    }
+
+    // Check if there is any word in the Trie that starts with the given prefix
+    startsWith(prefix: string): boolean {
+        let currentNode = this.root;
+
+        for (const char of prefix) {
+            if (!currentNode.children.has(char)) {
+                return false; // Prefix not found
+            }
+            currentNode = currentNode.children.get(char)!; // Non-null assertion
+        }
+        return true; // Prefix found
+    }
 }
 
-// Example usage:
-const arr = [3, 1, 4, 1, 5, 9, 2, 6, 5];
-const sortedArray = randomSort(arr);
-console.log(sortedArray);
+// Example usage
+const trie = new Trie();
+trie.insert("hello");
+trie.insert("world");
+
+console.log(trie.search("hello")); // true
+console.log(trie.search("hell")); // false
+console.log(trie.startsWith("hell")); // true
+console.log(trie.startsWith("worlds")); // false
