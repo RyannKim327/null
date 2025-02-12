@@ -1,21 +1,15 @@
-function isPalindrome(s: string): boolean {
-    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
-    const normalizedString = s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-    
-    let left = 0;
-    let right = normalizedString.length - 1;
-
-    while (left < right) {
-        if (normalizedString[left] !== normalizedString[right]) {
-            return false; // Not a palindrome
+function isArraySortedAscending(arr: number[]): boolean {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false; // Found an element greater than the next one
         }
-        left++;
-        right--;
     }
-
-    return true; // Is a palindrome
+    return true; // All elements are in ascending order
 }
 
 // Example usage:
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car")); // false
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [5, 3, 4, 1, 2];
+
+console.log(isArraySortedAscending(array1)); // Output: true
+console.log(isArraySortedAscending(array2)); // Output: false
