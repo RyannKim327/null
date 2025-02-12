@@ -1,108 +1,54 @@
-class Node {
-    public x: number;
-    public y: number;
-    public g: number; // Cost from start to current node
-    public h: number; // Heuristic cost to the goal
-    public f: number; // Total cost
-    public parent: Node | null;
-
-    constructor(x: number, y: number, parent: Node | null, g: number = 0, h: number = 0) {
-        this.x = x;
-        this.y = y;
-        this.g = g;
-        this.h = h;
-        this.f = g + h;
-        this.parent = parent;
+function kthSmallest(arr: number[], k: number): number {
+    if (k < 1 || k > arr.length) {
+        throw new Error("k is out of bounds");
     }
+    arr.sort((a, b) => a - b);
+    return arr[k - 1];  // k - 1 because of zero-indexing
 }
 
-function heuristic(nodeA: Node, nodeB: Node): number {
-    // Using Manhattan distance as heuristic
-    return Math.abs(nodeA.x - nodeB.x) + Math.abs(nodeA.y - nodeB.y);
-}
+// Example usage
+const array = [7, 10, 4, 3, 20, 15];
+const k = 3;
+console.log(kthSmallest(array, k));  // Output: 7
+function quickSelect(arr: number[], left: number, right: number, k: number): number {
+    if (left === right) {
+        return arr[left]; // Only one element in array
+    }
 
-function aStar(start: Node, goal: Node, grid: number[][]): Node[] | null {
-    const openSet: Node[] = [];
-    const closedSet: Set<string> = new Set();
+    const pivotIndex = Math.floor((right + left) / 2);
+    const pivot = arr[pivotIndex];
 
-    openSet.push(start);
+    // Move pivot to end
+    [arr[pivotIndex], arr[right]] = [arr[right], arr[pivotIndex]];
+    let storeIndex = left;
 
-    while (openSet.length > 0) {
-        // Sort openSet by f value and pop the lowest
-        openSet.sort((a, b) => a.f - b.f);
-        const current = openSet.shift()!;
-        
-        // Goal check
-        if (current.x === goal.x && current.y === goal.y) {
-            const path: Node[] = [];
-            let temp: Node | null = current;
-
-            while (temp) {
-                path.push(temp);
-                temp = temp.parent;
-            }
-
-            return path.reverse(); // Return reversed path
-        }
-
-        closedSet.add(`${current.x},${current.y}`);
-
-        // Get neighbors
-        const neighbors = getNeighbors(current, grid);
-        
-        for (const neighbor of neighbors) {
-            if (closedSet.has(`${neighbor.x},${neighbor.y}`)) {
-                continue; // Ignore already evaluated neighbor
-            }
-
-            const tentative_g = current.g + 1; // Distance from start to neighbor
-
-            if (!openSet.some(n => n.x === neighbor.x && n.y === neighbor.y)) {
-                openSet.push(neighbor); // Discover new node
-            } else if (tentative_g >= neighbor.g) {
-                continue; // Not a better path
-            }
-
-            neighbor.parent = current;
-            neighbor.g = tentative_g;
-            neighbor.h = heuristic(neighbor, goal);
-            neighbor.f = neighbor.g + neighbor.h;
+    for (let i = left; i < right; i++) {
+        if (arr[i] < pivot) {
+            [arr[storeIndex], arr[i]] = [arr[i], arr[storeIndex]];
+            storeIndex++;
         }
     }
 
-    return null; // No path found
-}
+    // Move pivot to its final place
+    [arr[storeIndex], arr[right]] = [arr[right], arr[storeIndex]];
 
-function getNeighbors(node: Node, grid: number[][]): Node[] {
-    const neighbors: Node[] = [];
-    const directions = [[1, 0], [0, 1], [-1, 0], [0, -1]]; // Right, Down, Left, Up
-
-    for (const [dx, dy] of directions) {
-        const newX = node.x + dx;
-        const newY = node.y + dy;
-
-        if (newX >= 0 && newY >= 0 && newX < grid.length && newY < grid[0].length && grid[newX][newY] === 0) {
-            neighbors.push(new Node(newX, newY, null));
-        }
+    if (k === storeIndex) {
+        return arr[storeIndex];
+    } else if (k < storeIndex) {
+        return quickSelect(arr, left, storeIndex - 1, k);
+    } else {
+        return quickSelect(arr, storeIndex + 1, right, k);
     }
-
-    return neighbors;
 }
 
-// Example usage:
-const grid = [
-    [0, 0, 0, 0, 0],
-    [0, 1, 1, 1, 0],
-    [0, 0, 0, 0, 0],
-    [0, 1, 0, 1, 0],
-    [0, 0, 0, 0, 0],
-];
-const start = new Node(0, 0, null);
-const goal = new Node(4, 4, null);
-const path = aStar(start, goal, grid);
-
-if (path) {
-    console.log("Path found:", path.map(node => `(${node.x}, ${node.y})`));
-} else {
-    console.log("No path found");
+function kthSmallest(arr: number[], k: number): number {
+    if (k < 1 || k > arr.length) {
+        throw new Error("k is out of bounds");
+    }
+    return quickSelect(arr, 0, arr.length - 1, k - 1);
 }
+
+// Example usage
+const array = [7, 10, 4, 3, 20, 15];
+const k = 3;
+console.log(kthSmallest(array, k));  // Output: 7
