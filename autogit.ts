@@ -1,18 +1,27 @@
-function decimalToBinary(decimalNumber: number): string {
-    return decimalNumber.toString(2);
-}
-
-// Example usage:
-const decimalNumber: number = 42;
-const binaryString: string = decimalToBinary(decimalNumber);
-console.log(`The binary representation of ${decimalNumber} is ${binaryString}`);
-The binary representation of 42 is 101010
-function decimalToBinaryWithNegative(decimalNumber: number): string {
-    if (decimalNumber < 0) {
-        return '-' + decimalToBinaryWithNegative(-decimalNumber);
+function isSorted(arr: number[]): boolean {
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] < arr[i - 1]) {
+            return false;
+        }
     }
-    return decimalNumber.toString(2);
+    return true;
+}
+
+function randomSort(arr: number[]): number[] {
+    let sortedArr = [...arr];
+    
+    while (!isSorted(sortedArr)) {
+        for (let i = sortedArr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1)); // Random index
+            // Swap sortedArr[i] with the element at random index
+            [sortedArr[i], sortedArr[j]] = [sortedArr[j], sortedArr[i]];
+        }
+    }
+    
+    return sortedArr;
 }
 
 // Example usage:
-console.log(decimalToBinaryWithNegative(-42)); // Output: -101010
+const arr = [3, 1, 4, 1, 5, 9, 2, 6, 5];
+const sortedArray = randomSort(arr);
+console.log(sortedArray);
