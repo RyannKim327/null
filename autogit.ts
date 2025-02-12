@@ -1,14 +1,8 @@
-function isPalindrome(input: string): boolean {
-    // Normalize the input string
-    const normalized = input.replace(/[\W_]/g, '').toLowerCase();
-    
-    // Reverse the normalized string
-    const reversed = normalized.split('').reverse().join('');
-    
-    // Compare the normalized string with its reversed version
-    return normalized === reversed;
+function removeSpaces(input: string): string {
+    return input.replace(/\s+/g, '');
 }
 
-// Example usage
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("hello")); // false
+const originalString = "This is a string with spaces.";
+const stringWithoutSpaces = removeSpaces(originalString);
+
+console.log(stringWithoutSpaces); // Output: "Thisisastringwithspaces."
