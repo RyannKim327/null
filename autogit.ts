@@ -1,50 +1,40 @@
-type Node = {
-    sequence: string;
-    score: number;
-};
+import * as readline from 'readline';
 
-function beamSearch(initialSequence: string, beamWidth: number, maxSteps: number): string {
-    let beam: Node[] = [{ sequence: initialSequence, score: scoreFunction(initialSequence) }];
+// Create an interface for input and output streams
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
-    for (let step = 0; step < maxSteps; step++) {
-        const newBeam: Node[] = [];
+// Function to ask a question and wait for the user's answer
+function askQuestion(query: string): Promise<string> {
+    return new Promise(resolve => rl.question(query, resolve));
+}
 
-        // Generate new candidates from the current beam
-        for (const node of beam) {
-            const candidates = generateCandidates(node.sequence);
-            for (const candidate of candidates) {
-                newBeam.push({ sequence: candidate, score: scoreFunction(candidate) });
-            }
-        }
+// Main function to execute the program
+async function main() {
+    try {
+        // Ask for the first number
+        const firstNumStr = await askQuestion('Enter the first number: ');
+        const firstNum = parseFloat(firstNumStr);
 
-        // Sort candidates by score and keep the top `beamWidth` candidates
-        newBeam.sort((a, b) => b.score - a.score);
-        beam = newBeam.slice(0, beamWidth);
+        // Ask for the second number
+        const secondNumStr = await askQuestion('Enter the second number: ');
+        const secondNum = parseFloat(secondNumStr);
+
+        // Calculate the sum
+        const sum = firstNum + secondNum;
+
+        // Output the result
+        console.log(`The sum of ${firstNum} and ${secondNum} is ${sum}`);
+
+    } catch (error) {
+        console.error('An error occurred:', error);
+    } finally {
+        // Close the readline interface
+        rl.close();
     }
-
-    // Return the best sequence found
-    return beam[0].sequence;
 }
 
-// Example scoring function
-function scoreFunction(sequence: string): number {
-    // Implement your scoring logic here
-    return Math.random(); // Placeholder: replace with actual scoring logic
-}
-
-// Example candidate generation function
-function generateCandidates(sequence: string): string[] {
-    // Implement your candidate generation logic here
-    const candidates: string[] = [];
-    const characters = 'abcdefghijklmnopqrstuvwxyz';
-
-    for (const char of characters) {
-        candidates.push(sequence + char); // Append a character to the sequence
-    }
-
-    return candidates;
-}
-
-// Usage
-const bestSequence = beamSearch('a', 3, 5);
-console.log('Best sequence found:', bestSequence);
+// Start the program
+main();
