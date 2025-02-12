@@ -1,36 +1,64 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+class ListNode {
+  value: number;
+  next: ListNode | null;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+  constructor(value: number) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-function countLeafNodes(root: TreeNode | null): number {
-    // Base case: if the node is null, return 0
-    if (root === null) {
-        return 0;
+class LinkedList {
+  head: ListNode | null;
+
+  constructor() {
+    this.head = null;
+  }
+
+  append(value: number) {
+    const newNode = new ListNode(value);
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
     }
-    
-    // If the node is a leaf node, return 1
-    if (root.left === null && root.right === null) {
-        return 1;
+  }
+
+  isPalindrome(): boolean {
+    const values: number[] = [];
+    let current = this.head;
+
+    // Convert the linked list to an array
+    while (current) {
+      values.push(current.value);
+      current = current.next;
     }
-    
-    // Recursively count the leaf nodes in the left and right subtree
-    return countLeafNodes(root.left) + countLeafNodes(root.right);
+
+    // Check if the array is a palindrome
+    let left = 0;
+    let right = values.length - 1;
+
+    while (left < right) {
+      if (values[left] !== values[right]) {
+        return false;
+      }
+      left++;
+      right--;
+    }
+
+    return true;
+  }
 }
 
 // Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(2);
+list.append(1);
 
-const leafCount = countLeafNodes(root);
-console.log(`Number of leaf nodes: ${leafCount}`); // Output: Number of leaf nodes: 3
+console.log(list.isPalindrome()); // Output: true
