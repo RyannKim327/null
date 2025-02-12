@@ -1,34 +1,34 @@
-npm install axios
-import axios from 'axios';
-
-// Define an interface for the data we expect to receive
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
+// Define an interface for the expected data structure
+interface Post {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
 }
 
-// Function to fetch users from the API
-const fetchUsers = async (): Promise<void> => {
-  try {
-    const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
-    const users = response.data;
+// Function to fetch posts and log them to the console
+async function fetchPosts(): Promise<void> {
+    const apiUrl = 'https://jsonplaceholder.typicode.com/posts';
 
-    // Log the users to the console
-    users.forEach(user => {
-      console.log(`ID: ${user.id}, Name: ${user.name}, Username: ${user.username}, Email: ${user.email}`);
-    });
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error('Error message:', error.message);
-    } else {
-      console.error('Unexpected error:', error);
+    try {
+        // Fetch data from the API
+        const response = await fetch(apiUrl);
+
+        // Check if the response is ok (status code in the range 200-299)
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        // Parse the JSON from the response
+        const posts: Post[] = await response.json();
+        
+        // Log the posts to the console
+        console.log(posts);
+    } catch (error) {
+        // Log any errors to the console
+        console.error('Error fetching posts:', error);
     }
-  }
-};
+}
 
-// Call the function to fetch users
-fetchUsers();
-tsc fetchData.ts
-node fetchData.js
+// Call the function to fetch posts
+fetchPosts();
