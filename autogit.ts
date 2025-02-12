@@ -1,118 +1,146 @@
-class SkipListNode<T> {
-    value: T;
-    forward: SkipListNode<T>[];
+class TreeNode {
+    key: number;
+    height: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    constructor(value: T, level: number) {
-        this.value = value;
-        // Initialize forward pointers for this node
-        this.forward = new Array(level + 1).fill(null);
+    constructor(key: number) {
+        this.key = key;
+        this.height = 1; // New node is initially added at leaf
+        this.left = null;
+        this.right = null;
     }
 }
-class SkipList<T> {
-    private header: SkipListNode<T>;
-    private maxLevel: number;
-    private levelCount: number;
-    private p: number; // Probability factor
 
-    constructor(maxLevel: number, p: number = 0.5) {
-        this.maxLevel = maxLevel;
-        this.levelCount = 0;
-        this.p = p;
-        this.header = new SkipListNode<T>(null, maxLevel);
+class AVLTree {
+    root: TreeNode | null;
+
+    constructor() {
+        this.root = null;
     }
 
-    private randomLevel(): number {
-        let level = 0;
-        while (Math.random() < this.p && level < this.maxLevel) {
-            level++;
-        }
-        return level;
+    // Get the height of the node
+    getHeight(node: TreeNode | null): number {
+        return node ? node.height : 0;
     }
 
-    public insert(value: T): void {
-        const update: SkipListNode<T>[] = new Array(this.maxLevel + 1);
-        let current: SkipListNode<T> = this.header;
+    // Get the balance factor of the node
+    getBalance(node: TreeNode | null): number {
+        if (!node) return 0;
+        return this.getHeight(node.left) - this.getHeight(node.right);
+    }
 
-        // Find position to insert
-        for (let i = this.levelCount; i >= 0; i--) {
-            while (current.forward[i] && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-            update[i] = current;
+    // Right rotate the subtree rooted with y
+    rightRotate(y: TreeNode): TreeNode {
+        const x = y.left!;
+        const T2 = x.right;
+
+        // Perform rotation
+        x.right = y;
+        y.left = T2;
+
+        // Update heights
+        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
+        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
+
+        // Return the new root
+        return x;
+    }
+
+    // Left rotate the subtree rooted with x
+    leftRotate(x: TreeNode): TreeNode {
+        const y = x.right!;
+        const T2 = y.left;
+
+        // Perform rotation
+        y.left = x;
+        x.right = T2;
+
+        // Update heights
+        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
+        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
+
+        // Return the new root
+        return y;
+    }
+
+    // Insert a node with the given key
+    insert(node: TreeNode | null, key: number): TreeNode {
+        // Perform the normal BST insert
+        if (!node) return new TreeNode(key);
+
+        if (key < node.key) {
+            node.left = this.insert(node.left, key);
+        } else if (key > node.key) {
+            node.right = this.insert(node.right, key);
+        } else {
+            // Duplicate keys are not allowed
+            return node;
         }
 
-        current = current.forward[0];
+        // Update the height of this ancestor node
+        node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right)));
 
-        if (!current || current.value !== value) {
-            const newLevel = this.randomLevel();
+        // Get the balance factor of this ancestor node to check whether
+        // this node became unbalanced
+        const balance = this.getBalance(node);
 
-            if (newLevel > this.levelCount) {
-                for (let i = this.levelCount + 1; i <= newLevel; i++) {
-                    update[i] = this.header;
-                }
-                this.levelCount = newLevel;
-            }
+        // If this node becomes unbalanced, then there are 4 cases
 
-            const newNode = new SkipListNode(value, newLevel);
+        // Left Left Case
+        if (balance > 1 && key < node.left!.key) {
+            return this.rightRotate(node);
+        }
 
-            for (let i = 0; i <= newLevel; i++) {
-                newNode.forward[i] = update[i].forward[i];
-                update[i].forward[i] = newNode;
-            }
+        // Right Right Case
+        if (balance < -1 && key > node.right!.key) {
+            return this.leftRotate(node);
+        }
+
+        // Left Right Case
+        if (balance > 1 && key > node.left!.key) {
+            node.left = this.leftRotate(node.left!);
+            return this.rightRotate(node);
+        }
+
+        // Right Left Case
+        if (balance < -1 && key < node.right!.key) {
+            node.right = this.rightRotate(node.right!);
+            return this.leftRotate(node);
+        }
+
+        // Return the (unchanged) node pointer
+        return node;
+    }
+
+    // Public method to insert a key
+    public insertKey(key: number): void {
+        this.root = this.insert(this.root, key);
+    }
+
+    // Inorder traversal of the tree
+    inorder(node: TreeNode | null): void {
+        if (node) {
+            this.inorder(node.left);
+            console.log(node.key);
+            this.inorder(node.right);
         }
     }
 
-    public search(value: T): boolean {
-        let current = this.header;
-        for (let i = this.levelCount; i >= 0; i--) {
-            while (current.forward[i] && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-        }
-        current = current.forward[0];
-
-        return current && current.value === value;
-    }
-
-    public delete(value: T): void {
-        const update: SkipListNode<T>[] = new Array(this.maxLevel + 1);
-        let current: SkipListNode<T> = this.header;
-
-        // Find the element to delete
-        for (let i = this.levelCount; i >= 0; i--) {
-            while (current.forward[i] && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-            update[i] = current;
-        }
-        
-        current = current.forward[0];
-
-        // If the node is found, remove it
-        if (current && current.value === value) {
-            for (let i = 0; i <= this.levelCount; i++) {
-                if (update[i].forward[i] !== current) break;
-
-                update[i].forward[i] = current.forward[i];
-            }
-
-            // Adjust levelCount if necessary
-            while (this.levelCount > 0 && this.header.forward[this.levelCount] === null) {
-                this.levelCount--;
-            }
-        }
+    // Public method to perform inorder traversal
+    public inorderTraversal(): void {
+        this.inorder(this.root);
     }
 }
-const skipList = new SkipList<number>(4); // Maximum height of the skip list is 4
 
-skipList.insert(10);
-skipList.insert(20);
-skipList.insert(30);
-skipList.insert(40);
-skipList.insert(25);
+// Example usage
+const avl = new AVLTree();
+avl.insertKey(10);
+avl.insertKey(20);
+avl.insertKey(30);
+avl.insertKey(40);
+avl.insertKey(50);
+avl.insertKey(25);
 
-console.log(skipList.search(25)); // true
-console.log(skipList.search(15)); // false
-
-skipList.delete(20);
-console.log(skipList.search(20)); // false
+console.log("Inorder traversal of the constructed AVL tree is:");
+avl.inorderTraversal();
