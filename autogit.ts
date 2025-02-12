@@ -1,34 +1,31 @@
-npm install axios
-import axios from 'axios';
+function shellSort(arr: number[]): number[] {
+    const n = arr.length;
+    let gap = Math.floor(n / 2); // Start with a big gap, then reduce the gap
 
-// Define an interface for the data we expect to receive
-interface Post {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
+    // Start with the largest gap and reduce it
+    while (gap > 0) {
+        // Perform a gapped insertion sort for this gap size
+        for (let i = gap; i < n; i++) {
+            // Add arr[i] to the elements that have been gap sorted
+            const temp = arr[i]; // Store the current element
+            let j = i;
+
+            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
+            }
+            // Put temp (the original arr[i]) in its correct location
+            arr[j] = temp;
+        }
+        // Reduce the gap for the next iteration
+        gap = Math.floor(gap / 2);
+    }
+    
+    return arr;
 }
 
-// Function to fetch posts
-const fetchPosts = async (): Promise<Post[]> => {
-  try {
-    const response = await axios.get<Post[]>('https://jsonplaceholder.typicode.com/posts');
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error('Error fetching posts:', error.message);
-    } else {
-      console.error('Unexpected error:', error);
-    }
-    throw error; // Rethrow the error for further handling if needed
-  }
-};
-
-// Call the function and log the results
-fetchPosts()
-  .then(posts => {
-    console.log('Fetched posts:', posts);
-  })
-  .catch(error => {
-    console.error('Failed to fetch posts:', error);
-  });
+// Example usage:
+const arrayToSort = [5, 2, 9, 1, 5, 6];
+const sortedArray = shellSort(arrayToSort);
+console.log(sortedArray); // Output: [1, 2, 5, 5, 6, 9]
