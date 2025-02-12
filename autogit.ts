@@ -1,8 +1,9 @@
-function reverseString(str: string): string {
-    return str.split('').reverse().join('');
+function findCommonElements(arr1: number[], arr2: number[]): number[] {
+    return arr1.filter(element => arr2.includes(element));
 }
 
 // Example usage:
-const originalString = "Hello, World!";
-const reversedString = reverseString(originalString);
-console.log(reversedString); // Output: "!dlroW ,olleH"
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
