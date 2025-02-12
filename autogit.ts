@@ -1,28 +1,51 @@
-function binarySearch(arr: number[], target: number, low: number = 0, high: number = arr.length - 1): number {
-    // Base case: if the low index exceeds the high index, the target is not found
-    if (low > high) {
-        return -1; // Not found
+function longestIncreasingSubsequence(nums: number[]): number {
+    if (nums.length === 0) return 0;
+
+    const dp: number[] = new Array(nums.length).fill(1);
+    
+    for (let i = 1; i < nums.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[i] > nums[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
+        }
     }
-
-    // Calculate the middle index
-    const mid = Math.floor((low + high) / 2);
-
-    // Check if the middle element is the target
-    if (arr[mid] === target) {
-        return mid; // Target found
-    }
-
-    // If the target is smaller than the middle element, search the left half
-    if (arr[mid] > target) {
-        return binarySearch(arr, target, low, mid - 1);
-    }
-
-    // If the target is larger than the middle element, search the right half
-    return binarySearch(arr, target, mid + 1, high);
+    
+    return Math.max(...dp);
 }
 
-// Example usage:
-const sortedArray = [1, 3, 5, 7, 9, 11];
-const target = 7;
-const index = binarySearch(sortedArray, target);
-console.log(index); // Output: 3
+// Example usage
+const nums = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(longestIncreasingSubsequence(nums)); // Output: 4
+function longestIncreasingSubsequence(nums: number[]): number {
+    const tails: number[] = [];
+
+    for (const num of nums) {
+        let left = 0, right = tails.length;
+
+        // Perform binary search to find the insertion point
+        while (left < right) {
+            const mid = Math.floor((left + right) / 2);
+            if (tails[mid] < num) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        
+        // If left is equal to the length of tails, it means the num is larger than any element in tails
+        if (left === tails.length) {
+            tails.push(num);
+        } else {
+            // Otherwise, replace that element with num
+            tails[left] = num;
+        }
+    }
+
+    // The length of the tails array is the length of the longest increasing subsequence
+    return tails.length;
+}
+
+// Example usage
+const nums = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(longestIncreasingSubsequence(nums)); // Output: 4
