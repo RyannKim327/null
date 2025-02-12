@@ -1,33 +1,60 @@
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    return arr1.filter(value => arr2.includes(value));
+type Graph = { [key: string]: string[] };
+
+function dfsRecursive(graph: Graph, node: string, visited: Set<string> = new Set()): void {
+    if (visited.has(node)) {
+        return; // Node has already been visited
+    }
+
+    visited.add(node);
+    console.log(node); // Process the node (e.g., print it)
+
+    for (const neighbor of graph[node]) {
+        dfsRecursive(graph, neighbor, visited);
+    }
 }
 
 // Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 4, 5, 6, 7];
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [3, 4, 5]
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    const set = new Set(arr2);
-    return arr1.filter(value => set.has(value));
-}
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
 
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 4, 5, 6, 7];
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [3, 4, 5]
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    return arr1.reduce((acc, value) => {
-        if (arr2.includes(value)) {
-            acc.push(value);
+dfsRecursive(graph, 'A');
+type Graph = { [key: string]: string[] };
+
+function dfsIterative(graph: Graph, startNode: string): void {
+    const stack: string[] = [startNode];
+    const visited: Set<string> = new Set();
+
+    while (stack.length > 0) {
+        const node = stack.pop()!;
+        
+        if (visited.has(node)) {
+            continue; // Node has already been visited
         }
-        return acc;
-    }, [] as number[]);
+
+        visited.add(node);
+        console.log(node); // Process the node (e.g., print it)
+
+        // Push neighbors onto the stack
+        for (const neighbor of graph[node]) {
+            stack.push(neighbor);
+        }
+    }
 }
 
 // Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 4, 5, 6, 7];
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [3, 4, 5]
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
+
+dfsIterative(graph, 'A');
