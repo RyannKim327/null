@@ -1,45 +1,52 @@
-// Function to perform counting sort based on the digit represented by exp (10^i)
-function countingSort(arr: number[], exp: number): number[] {
-    const n = arr.length;
-    const output: number[] = new Array(n); // Output array
-    const count: number[] = new Array(10).fill(0); // Count array
+function computeLPSArray(pattern: string): number[] {
+    const lps = new Array(pattern.length).fill(0);
+    let length = 0;
+    let i = 1;
 
-    // Count occurrences of digits
-    for (let i = 0; i < n; i++) {
-        const index = Math.floor(arr[i] / exp) % 10; // Extract the digit
-        count[index]++;
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
     }
 
-    // Update the count array such that count[i] contains
-    // the actual position of this digit in output[]
-    for (let i = 1; i < 10; i++) {
-        count[i] += count[i - 1];
-    }
-
-    // Build the output array
-    for (let i = n - 1; i >= 0; i--) {
-        const index = Math.floor(arr[i] / exp) % 10;
-        output[count[index] - 1] = arr[i];
-        count[index]--;
-    }
-
-    return output;
+    return lps;
 }
+function KMPSearch(text: string, pattern: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
+    let i = 0; // index for text
+    let j = 0; // index for pattern
 
-// Function to perform radix sort
-function radixSort(arr: number[]): number[] {
-    // Find the maximum number to know the number of digits
-    const max = Math.max(...arr);
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
 
-    // Do counting sort for every digit (exp represents the current digit's place value)
-    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
-        arr = countingSort(arr, exp);
+        if (j === pattern.length) {
+            result.push(i - j); // Found a match, add the start index to result
+            j = lps[j - 1]; // Use the LPS array to skip unnecessary comparisons
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
     }
 
-    return arr;
+    return result; // Return all starting indexes where the pattern is found
 }
-
-// Example usage
-const numbers: number[] = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedNumbers = radixSort(numbers);
-console.log(sortedNumbers); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+const text = "ababcabcabababd";
+const pattern = "ababd";
+const matches = KMPSearch(text, pattern);
+console.log("Pattern found at indexes:", matches);
