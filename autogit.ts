@@ -1,155 +1,108 @@
 class Node {
-    data: number;
-    color: 'red' | 'black';
-    left: Node | null;
-    right: Node | null;
-    parent: Node | null;
+    public x: number;
+    public y: number;
+    public g: number; // Cost from start to current node
+    public h: number; // Heuristic cost to the goal
+    public f: number; // Total cost
+    public parent: Node | null;
 
-    constructor(data: number) {
-        this.data = data;
-        this.color = 'red'; // New nodes are red by default
-        this.left = null;
-        this.right = null;
-        this.parent = null;
+    constructor(x: number, y: number, parent: Node | null, g: number = 0, h: number = 0) {
+        this.x = x;
+        this.y = y;
+        this.g = g;
+        this.h = h;
+        this.f = g + h;
+        this.parent = parent;
     }
 }
 
-class RedBlackTree {
-    private root: Node | null = null;
+function heuristic(nodeA: Node, nodeB: Node): number {
+    // Using Manhattan distance as heuristic
+    return Math.abs(nodeA.x - nodeB.x) + Math.abs(nodeA.y - nodeB.y);
+}
 
-    // Helper methods for rotations and fixing properties
-    private rotateLeft(x: Node): void {
-        const y = x.right!;
-        x.right = y.left;
-        if (y.left) {
-            y.left.parent = x;
-        }
-        y.parent = x.parent;
-        if (!x.parent) {
-            this.root = y;
-        } else if (x === x.parent.left) {
-            x.parent.left = y;
-        } else {
-            x.parent.right = y;
-        }
-        y.left = x;
-        x.parent = y;
-    }
+function aStar(start: Node, goal: Node, grid: number[][]): Node[] | null {
+    const openSet: Node[] = [];
+    const closedSet: Set<string> = new Set();
 
-    private rotateRight(y: Node): void {
-        const x = y.left!;
-        y.left = x.right;
-        if (x.right) {
-            x.right.parent = y;
-        }
-        x.parent = y.parent;
-        if (!y.parent) {
-            this.root = x;
-        } else if (y === y.parent.right) {
-            y.parent.right = x;
-        } else {
-            y.parent.left = x;
-        }
-        x.right = y;
-        y.parent = x;
-    }
+    openSet.push(start);
 
-    private fixInsert(z: Node): void {
-        while (z.parent && z.parent.color === 'red') {
-            if (z.parent === z.parent.parent?.left) {
-                const y = z.parent.parent?.right; // y is the uncle node
-                if (y && y.color === 'red') {
-                    // Case 1: Uncle is red
-                    z.parent.color = 'black';
-                    y.color = 'black';
-                    z.parent.parent!.color = 'red';
-                    z = z.parent.parent!;
-                } else {
-                    // Case 2 & 3: Uncle is black
-                    if (z === z.parent.right) {
-                        z = z.parent;
-                        this.rotateLeft(z);
-                    }
-                    z.parent.color = 'black';
-                    z.parent.parent!.color = 'red';
-                    this.rotateRight(z.parent.parent!);
-                }
-            } else {
-                const y = z.parent.parent?.left; // y is the uncle node
-                if (y && y.color === 'red') {
-                    // Case 1: Uncle is red
-                    z.parent.color = 'black';
-                    y.color = 'black';
-                    z.parent.parent!.color = 'red';
-                    z = z.parent.parent!;
-                } else {
-                    // Case 2 & 3: Uncle is black
-                    if (z === z.parent.left) {
-                        z = z.parent;
-                        this.rotateRight(z);
-                    }
-                    z.parent.color = 'black';
-                    z.parent.parent!.color = 'red';
-                    this.rotateLeft(z.parent.parent!);
-                }
+    while (openSet.length > 0) {
+        // Sort openSet by f value and pop the lowest
+        openSet.sort((a, b) => a.f - b.f);
+        const current = openSet.shift()!;
+        
+        // Goal check
+        if (current.x === goal.x && current.y === goal.y) {
+            const path: Node[] = [];
+            let temp: Node | null = current;
+
+            while (temp) {
+                path.push(temp);
+                temp = temp.parent;
             }
-        }
-        this.root!.color = 'black'; // Ensure the root is black
-    }
 
-    insert(data: number): void {
-        const newNode = new Node(data);
-        this.root = this.insertNode(this.root, newNode);
-        this.fixInsert(newNode);
-    }
-
-    private insertNode(root: Node | null, node: Node): Node {
-        if (root === null) {
-            return node;
+            return path.reverse(); // Return reversed path
         }
-        if (node.data < root.data) {
-            root.left = this.insertNode(root.left, node);
-            root.left!.parent = root; // Set parent
-        } else {
-            root.right = this.insertNode(root.right, node);
-            root.right!.parent = root; // Set parent
-        }
-        return root;
-    }
 
-    search(data: number): Node | null {
-        return this.searchNode(this.root, data);
-    }
+        closedSet.add(`${current.x},${current.y}`);
 
-    private searchNode(root: Node | null, data: number): Node | null {
-        if (root === null || root.data === data) {
-            return root;
-        }
-        if (data < root.data) {
-            return this.searchNode(root.left, data);
-        } else {
-            return this.searchNode(root.right, data);
+        // Get neighbors
+        const neighbors = getNeighbors(current, grid);
+        
+        for (const neighbor of neighbors) {
+            if (closedSet.has(`${neighbor.x},${neighbor.y}`)) {
+                continue; // Ignore already evaluated neighbor
+            }
+
+            const tentative_g = current.g + 1; // Distance from start to neighbor
+
+            if (!openSet.some(n => n.x === neighbor.x && n.y === neighbor.y)) {
+                openSet.push(neighbor); // Discover new node
+            } else if (tentative_g >= neighbor.g) {
+                continue; // Not a better path
+            }
+
+            neighbor.parent = current;
+            neighbor.g = tentative_g;
+            neighbor.h = heuristic(neighbor, goal);
+            neighbor.f = neighbor.g + neighbor.h;
         }
     }
 
-    inOrderTraversal(node: Node | null = this.root): void {
-        if (node) {
-            this.inOrderTraversal(node.left);
-            console.log(node.data, node.color);
-            this.inOrderTraversal(node.right);
-        }
-    }
+    return null; // No path found
 }
 
-// Usage Example
-const rbTree = new RedBlackTree();
-rbTree.insert(10);
-rbTree.insert(20);
-rbTree.insert(30);
-rbTree.insert(15);
+function getNeighbors(node: Node, grid: number[][]): Node[] {
+    const neighbors: Node[] = [];
+    const directions = [[1, 0], [0, 1], [-1, 0], [0, -1]]; // Right, Down, Left, Up
 
-console.log('In Order Traversal:');
-rbTree.inOrderTraversal();
+    for (const [dx, dy] of directions) {
+        const newX = node.x + dx;
+        const newY = node.y + dy;
 
-const searchNode = rbTree.search(15);
-console.log('Search for 15:', searchNode ? 'Found' : 'Not found');
+        if (newX >= 0 && newY >= 0 && newX < grid.length && newY < grid[0].length && grid[newX][newY] === 0) {
+            neighbors.push(new Node(newX, newY, null));
+        }
+    }
+
+    return neighbors;
+}
+
+// Example usage:
+const grid = [
+    [0, 0, 0, 0, 0],
+    [0, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0],
+    [0, 1, 0, 1, 0],
+    [0, 0, 0, 0, 0],
+];
+const start = new Node(0, 0, null);
+const goal = new Node(4, 4, null);
+const path = aStar(start, goal, grid);
+
+if (path) {
+    console.log("Path found:", path.map(node => `(${node.x}, ${node.y})`));
+} else {
+    console.log("No path found");
+}
