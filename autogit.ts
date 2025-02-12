@@ -1,61 +1,22 @@
-class RabinKarp {
-    private static readonly d: number = 256; // Number of characters in the input alphabet
-    private static readonly q: number = 101; // A prime number
-
-    public static search(pattern: string, text: string): number[] {
-        const M: number = pattern.length;
-        const N: number = text.length;
-        const result: number[] = [];
-
-        let p: number = 0; // Hash value for pattern
-        let t: number = 0; // Hash value for text
-        let h: number = 1;
-
-        // The value of h would be "pow(d, M-1)%q"
-        for (let i = 0; i < M - 1; i++) {
-            h = (h * RabinKarp.d) % RabinKarp.q;
+function isArraySortedAscending(arr: number[]): boolean {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;  // Not sorted in ascending order
         }
-
-        // Calculate the hash value of pattern and first window of text
-        for (let i = 0; i < M; i++) {
-            p = (RabinKarp.d * p + pattern.charCodeAt(i)) % RabinKarp.q;
-            t = (RabinKarp.d * t + text.charCodeAt(i)) % RabinKarp.q;
-        }
-
-        // Slide the pattern over the text one by one
-        for (let i = 0; i <= N - M; i++) {
-            // Check the hash values of current window of text and pattern
-            if (p === t) {
-                // Check for characters one by one
-                let j: number;
-                for (j = 0; j < M; j++) {
-                    if (text.charAt(i + j) !== pattern.charAt(j)) {
-                        break;
-                    }
-                }
-
-                if (j === M) {
-                    result.push(i); // Match found at index i
-                }
-            }
-
-            // Calculate hash value for next window of text
-            if (i < N - M) {
-                t = (RabinKarp.d * (t - text.charCodeAt(i) * h) + text.charCodeAt(i + M)) % RabinKarp.q;
-
-                // We might get a negative value of t, converting it to positive
-                if (t < 0) {
-                    t = t + RabinKarp.q;
-                }
-            }
-        }
-
-        return result;
     }
+    return true;  // Sorted in ascending order
 }
 
 // Example usage:
-const text = "GEEKS FOR GEEKS";
-const pattern = "GEEK";
-const indices = RabinKarp.search(pattern, text);
-console.log("Pattern found at indices:", indices);
+const arr1 = [1, 2, 3, 4, 5];
+const arr2 = [1, 3, 2, 4, 5];
+
+console.log(isArraySortedAscending(arr1)); // Output: true
+console.log(isArraySortedAscending(arr2)); // Output: false
+function isArraySortedAscending(arr: number[]): boolean {
+    return arr.every((val, index) => index === 0 || val >= arr[index - 1]);
+}
+
+// Example usage:
+console.log(isArraySortedAscending(arr1)); // Output: true
+console.log(isArraySortedAscending(arr2)); // Output: false
