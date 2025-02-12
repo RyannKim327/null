@@ -1,9 +1,17 @@
-function decimalToBinary(decimal: number): string {
-    return decimal.toString(2);
+function reverseWords(input: string): string {
+    // Split the string into an array of words
+    const wordsArray = input.split(' ');
+
+    // Reverse the array of words
+    const reversedArray = wordsArray.reverse();
+
+    // Join the reversed array back into a string
+    const reversedString = reversedArray.join(' ');
+
+    return reversedString;
 }
 
 // Example usage
-const decimalNumber = 42;
-const binaryRepresentation = decimalToBinary(decimalNumber);
-console.log(`The binary representation of ${decimalNumber} is ${binaryRepresentation}`);
-The binary representation of 42 is 101010
+const originalString = "Hello world this is TypeScript";
+const reversedString = reverseWords(originalString);
+console.log(reversedString); // Output: "TypeScript is this world Hello"
