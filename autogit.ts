@@ -1,29 +1,61 @@
-function largestPrimeFactor(n: number): number {
-    let largestFactor = -1;
+function fibonacciSearch(arr: number[], x: number): number {
+    const n = arr.length;
 
-    // Check for number of 2s that divide n
-    while (n % 2 === 0) {
-        largestFactor = 2;
-        n /= 2;
+    // Initialize Fibonacci numbers
+    let fibM2 = 0; // (m-2)'th Fibonacci number
+    let fibM1 = 1; // (m-1)'th Fibonacci number
+    let fibM = fibM1 + fibM2; // m'th Fibonacci number
+
+    // Find the smallest Fibonacci number greater than or equal to n
+    while (fibM < n) {
+        fibM2 = fibM1;
+        fibM1 = fibM;
+        fibM = fibM1 + fibM2;
     }
 
-    // n must be odd at this point, so we can skip even numbers
-    for (let i = 3; i <= Math.sqrt(n); i += 2) {
-        // While i divides n, update n and largestFactor
-        while (n % i === 0) {
-            largestFactor = i;
-            n /= i;
+    // Marks the eliminated range from the front
+    let offset = -1;
+
+    // While there are elements to be inspected
+    while (fibM > 1) {
+        // Calculate the index to be compared
+        const i = Math.min(offset + fibM2, n - 1);
+
+        // If x is greater than the value at index i, cut the subarray after i
+        if (arr[i] < x) {
+            fibM = fibM1;
+            fibM1 = fibM2;
+            fibM2 = fibM - fibM1;
+            offset = i;
+        }
+        // If x is less than the value at index i, cut the subarray before i
+        else if (arr[i] > x) {
+            fibM = fibM2;
+            fibM1 = fibM1 - fibM2;
+            fibM2 = fibM - fibM1;
+        }
+        // Element found
+        else {
+            return i;
         }
     }
 
-    // This condition is to check if n is a prime number greater than 2
-    if (n > 2) {
-        largestFactor = n;
+    // Comparing the last element with x
+    if (fibM1 && arr[offset + 1] === x) {
+        return offset + 1;
     }
 
-    return largestFactor;
+    // Element not found
+    return -1;
 }
 
-// Example usage:
-const number = 13195;
-console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
+// Example usage
+const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
+const x = 85;
+const result = fibonacciSearch(arr, x);
+
+if (result !== -1) {
+    console.log(`Element found at index: ${result}`);
+} else {
+    console.log('Element not found in the array.');
+}
