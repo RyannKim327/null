@@ -1,54 +1,36 @@
-function kthSmallest(arr: number[], k: number): number {
-    if (k < 1 || k > arr.length) {
-        throw new Error("k is out of bounds");
-    }
-    arr.sort((a, b) => a - b);
-    return arr[k - 1];  // k - 1 because of zero-indexing
-}
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-// Example usage
-const array = [7, 10, 4, 3, 20, 15];
-const k = 3;
-console.log(kthSmallest(array, k));  // Output: 7
-function quickSelect(arr: number[], left: number, right: number, k: number): number {
-    if (left === right) {
-        return arr[left]; // Only one element in array
-    }
-
-    const pivotIndex = Math.floor((right + left) / 2);
-    const pivot = arr[pivotIndex];
-
-    // Move pivot to end
-    [arr[pivotIndex], arr[right]] = [arr[right], arr[pivotIndex]];
-    let storeIndex = left;
-
-    for (let i = left; i < right; i++) {
-        if (arr[i] < pivot) {
-            [arr[storeIndex], arr[i]] = [arr[i], arr[storeIndex]];
-            storeIndex++;
-        }
-    }
-
-    // Move pivot to its final place
-    [arr[storeIndex], arr[right]] = [arr[right], arr[storeIndex]];
-
-    if (k === storeIndex) {
-        return arr[storeIndex];
-    } else if (k < storeIndex) {
-        return quickSelect(arr, left, storeIndex - 1, k);
-    } else {
-        return quickSelect(arr, storeIndex + 1, right, k);
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
 
-function kthSmallest(arr: number[], k: number): number {
-    if (k < 1 || k > arr.length) {
-        throw new Error("k is out of bounds");
+function countLeafNodes(root: TreeNode | null): number {
+    // Base case: if the node is null, return 0
+    if (root === null) {
+        return 0;
     }
-    return quickSelect(arr, 0, arr.length - 1, k - 1);
+    
+    // If the node is a leaf node, return 1
+    if (root.left === null && root.right === null) {
+        return 1;
+    }
+    
+    // Recursively count the leaf nodes in the left and right subtree
+    return countLeafNodes(root.left) + countLeafNodes(root.right);
 }
 
-// Example usage
-const array = [7, 10, 4, 3, 20, 15];
-const k = 3;
-console.log(kthSmallest(array, k));  // Output: 7
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+const leafCount = countLeafNodes(root);
+console.log(`Number of leaf nodes: ${leafCount}`); // Output: Number of leaf nodes: 3
