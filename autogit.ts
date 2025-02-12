@@ -1,51 +1,21 @@
-function longestIncreasingSubsequence(nums: number[]): number {
-    if (nums.length === 0) return 0;
+function findMajorityElement(nums: number[]): number | null {
+    let count = 0;
+    let candidate: number | null = null;
 
-    const dp: number[] = new Array(nums.length).fill(1);
-    
-    for (let i = 1; i < nums.length; i++) {
-        for (let j = 0; j < i; j++) {
-            if (nums[i] > nums[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
-            }
-        }
-    }
-    
-    return Math.max(...dp);
-}
-
-// Example usage
-const nums = [10, 9, 2, 5, 3, 7, 101, 18];
-console.log(longestIncreasingSubsequence(nums)); // Output: 4
-function longestIncreasingSubsequence(nums: number[]): number {
-    const tails: number[] = [];
-
+    // First pass: Find a candidate for majority element
     for (const num of nums) {
-        let left = 0, right = tails.length;
-
-        // Perform binary search to find the insertion point
-        while (left < right) {
-            const mid = Math.floor((left + right) / 2);
-            if (tails[mid] < num) {
-                left = mid + 1;
-            } else {
-                right = mid;
-            }
+        if (count === 0) {
+            candidate = num;
         }
-        
-        // If left is equal to the length of tails, it means the num is larger than any element in tails
-        if (left === tails.length) {
-            tails.push(num);
-        } else {
-            // Otherwise, replace that element with num
-            tails[left] = num;
-        }
+        count += (num === candidate) ? 1 : -1;
     }
 
-    // The length of the tails array is the length of the longest increasing subsequence
-    return tails.length;
+    // Second pass: Verify the candidate
+    count = nums.filter(num => num === candidate).length;
+
+    return count > Math.floor(nums.length / 2) ? candidate : null;
 }
 
-// Example usage
-const nums = [10, 9, 2, 5, 3, 7, 101, 18];
-console.log(longestIncreasingSubsequence(nums)); // Output: 4
+// Example usage:
+const arr = [3, 2, 3];
+console.log(findMajorityElement(arr)); // Output: 3
