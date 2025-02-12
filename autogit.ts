@@ -1,22 +1,35 @@
-function isArraySortedAscending(arr: number[]): boolean {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false;  // Not sorted in ascending order
+function secondLargest(arr: number[]): number | null {
+    // Step 1: Remove duplicates
+    const uniqueArr = Array.from(new Set(arr));
+    
+    // Step 2: Sort the array in descending order
+    uniqueArr.sort((a, b) => b - a);
+    
+    // Step 3: Return the second largest or null if it doesn't exist
+    return uniqueArr.length > 1 ? uniqueArr[1] : null;
+}
+
+// Example usage:
+const numbers = [3, 5, 1, 4, 5, 3];
+const secondLargestNumber = secondLargest(numbers);
+console.log(secondLargestNumber); // Output: 4
+function secondLargestEfficient(arr: number[]): number | null {
+    let largest: number | null = null;
+    let secondLargest: number | null = null;
+
+    for (const num of arr) {
+        if (largest === null || num > largest) {
+            secondLargest = largest; // Update second largest before largest
+            largest = num;
+        } else if (num !== largest && (secondLargest === null || num > secondLargest)) {
+            secondLargest = num;
         }
     }
-    return true;  // Sorted in ascending order
+
+    return secondLargest;
 }
 
 // Example usage:
-const arr1 = [1, 2, 3, 4, 5];
-const arr2 = [1, 3, 2, 4, 5];
-
-console.log(isArraySortedAscending(arr1)); // Output: true
-console.log(isArraySortedAscending(arr2)); // Output: false
-function isArraySortedAscending(arr: number[]): boolean {
-    return arr.every((val, index) => index === 0 || val >= arr[index - 1]);
-}
-
-// Example usage:
-console.log(isArraySortedAscending(arr1)); // Output: true
-console.log(isArraySortedAscending(arr2)); // Output: false
+const numbers = [3, 5, 1, 4, 5, 3];
+const secondLargestNumber = secondLargestEfficient(numbers);
+console.log(secondLargestNumber); // Output: 4
