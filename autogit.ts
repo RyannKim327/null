@@ -1,30 +1,38 @@
-function bubbleSort(arr: number[]): number[] {
-    const n = arr.length;
-    let swapped: boolean;
+// Importing necessary modules
+import fetch from 'node-fetch';
 
-    // Outer loop for each element in the array
-    for (let i = 0; i < n - 1; i++) {
-        swapped = false;
-
-        // Inner loop to compare adjacent elements
-        for (let j = 0; j < n - 1 - i; j++) {
-            if (arr[j] > arr[j + 1]) {
-                // Swap if the elements are in the wrong order
-                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-                swapped = true;
-            }
-        }
-
-        // If no elements were swapped, the array is sorted
-        if (!swapped) {
-            break;
-        }
-    }
-
-    return arr;
+// Define an interface for the User
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
 }
 
-// Example usage:
-const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
-const sortedArray = bubbleSort(unsortedArray);
-console.log('Sorted Array:', sortedArray);
+// Function to fetch users
+const fetchUsers = async (): Promise<User[]> => {
+  const url = 'https://jsonplaceholder.typicode.com/users';
+  
+  try {
+    const response = await fetch(url);
+    
+    // Check if response is OK (status in the range 200-299)
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    
+    // Parse JSON response
+    const users: User[] = await response.json();
+    return users;
+    
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    return [];
+  }
+};
+
+// Call the function and log the result
+fetchUsers().then(users => {
+  console.log(users);
+});
+npm install node-fetch
