@@ -1,43 +1,92 @@
-function interpolationSearch(arr: number[], target: number): number {
-    let low = 0;
-    let high = arr.length - 1;
+class Node {
+    value: number;
+    left: Node | null;
+    right: Node | null;
 
-    while (low <= high && target >= arr[low] && target <= arr[high]) {
-        // Avoid division by zero
-        if (arr[high] === arr[low]) {
-            if (arr[low] === target) {
-                return low; // Found at index low
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+class BinarySearchTree {
+    root: Node | null;
+
+    constructor() {
+        this.root = null;
+    }
+
+    // Insert a new value into the BST
+    insert(value: number): void {
+        const newNode = new Node(value);
+        if (this.root === null) {
+            this.root = newNode;
+            return;
+        }
+        this.insertNode(this.root, newNode);
+    }
+
+    private insertNode(node: Node, newNode: Node): void {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
             }
-            return -1; // Not found
-        }
-
-        // Estimate the position of the target value
-        const position = low + Math.floor(((high - low) / (arr[high] - arr[low])) * (target - arr[low]));
-
-        // Check if the target is found
-        if (arr[position] === target) {
-            return position;
-        }
-
-        // If the target is greater, narrow down to the right side
-        if (arr[position] < target) {
-            low = position + 1;
         } else {
-            // If the target is smaller, narrow down to the left side
-            high = position - 1;
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
         }
     }
 
-    return -1; // Not found
-}
+    // Search for a value in the BST
+    search(value: number): boolean {
+        return this.searchNode(this.root, value);
+    }
 
-// Example Usage
-const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-const targetValue = 70;
-const index = interpolationSearch(sortedArray, targetValue);
+    private searchNode(node: Node | null, value: number): boolean {
+        if (node === null) {
+            return false;
+        }
+        if (value < node.value) {
+            return this.searchNode(node.left, value);
+        } else if (value > node.value) {
+            return this.searchNode(node.right, value);
+        } else {
+            return true; // value is found
+        }
+    }
 
-if (index !== -1) {
-    console.log(`Element found at index: ${index}`);
-} else {
-    console.log('Element not found in array.');
+    // In-order traversal of the BST
+    inOrderTraversal(callback: (value: number) => void): void {
+        this.inOrder(this.root, callback);
+    }
+
+    private inOrder(node: Node | null, callback: (value: number) => void): void {
+        if (node !== null) {
+            this.inOrder(node.left, callback);
+            callback(node.value);
+            this.inOrder(node.right, callback);
+        }
+    }
 }
+const bst = new BinarySearchTree();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(3);
+bst.insert(7);
+bst.insert(12);
+bst.insert(18);
+
+// Search for a value
+console.log(bst.search(7));  // true
+console.log(bst.search(20)); // false
+
+// In-order traversal
+bst.inOrderTraversal(value => {
+    console.log(value); // Outputs: 3, 5, 7, 10, 12, 15, 18
+});
