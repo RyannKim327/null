@@ -1,11 +1,55 @@
-function findMaxValue(arr: number[]): number | null {
-    if (arr.length === 0) {
-        return null; // Return null for empty arrays
+function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
+    const n = input.length;
+    const rotations: string[] = [];
+
+    // Generate all rotations of the input string
+    for (let i = 0; i < n; i++) {
+        rotations.push(input.slice(i) + input.slice(0, i));
     }
-    return Math.max(...arr);
+
+    // Sort the rotations
+    rotations.sort();
+
+    // Build the transformed string and find the original index
+    let transformed = '';
+    let originalIndex = 0;
+
+    for (let i = 0; i < n; i++) {
+        transformed += rotations[i][n - 1]; // Take the last character of each sorted rotation
+        if (rotations[i] === input) {
+            originalIndex = i; // Store the index of the original string
+        }
+    }
+
+    return { transformed, index: originalIndex };
 }
 
-// Example usage:
-const numbers = [3, 5, 7, 2, 8];
-const maxValue = findMaxValue(numbers);
-console.log(maxValue); // Output: 8
+function inverseBurrowsWheelerTransform(transformed: string, index: number): string {
+    const n = transformed.length;
+    const table: string[] = new Array(n);
+
+    // Build the table
+    for (let i = 0; i < n; i++) {
+        table[i] = transformed;
+    }
+
+    // Sort the table and build it iteratively
+    for (let i = 0; i < n; i++) {
+        table.sort();
+        for (let j = 0; j < n; j++) {
+            table[j] = transformed[j] + table[j]; // Prepend the transformed character
+        }
+    }
+
+    // The original string is in the row indicated by the original index
+    return table[index].slice(1); // Remove the first character (which is a placeholder)
+}
+
+// Example usage
+const input = "banana";
+const { transformed, index } = burrowsWheelerTransform(input);
+console.log("Transformed:", transformed);
+console.log("Original Index:", index);
+
+const original = inverseBurrowsWheelerTransform(transformed, index);
+console.log("Original:", original);
