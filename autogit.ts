@@ -1,30 +1,54 @@
-function quicksort(arr: number[]): number[] {
-    // Base case: arrays with 0 or 1 element are already sorted
-    if (arr.length <= 1) {
-        return arr;
-    }
-    
-    // Choosing a pivot (here we choose the last element)
-    const pivot = arr[arr.length - 1];
-    
-    // Arrays to hold values less than and greater than the pivot
-    const left: number[] = [];
-    const right: number[] = [];
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
 
-    // Partitioning the array into two parts
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
+    constructor(value: T) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+class LinkedList<T> {
+    head: Node<T> | null;
+
+    constructor() {
+        this.head = null;
+    }
+
+    // Method to add a new node at the end of the linked list
+    append(value: T) {
+        const newNode = new Node(value);
+        if (this.head === null) {
+            this.head = newNode;
+            return;
         }
+        
+        let currentNode = this.head;
+        while (currentNode.next) {
+            currentNode = currentNode.next;
+        }
+        
+        currentNode.next = newNode;
     }
 
-    // Recursively applying quicksort to left and right partitions
-    return [...quicksort(left), pivot, ...quicksort(right)];
+    // Method to find the length of the linked list
+    length(): number {
+        let count = 0;
+        let currentNode = this.head;
+        
+        while (currentNode) {
+            count++;
+            currentNode = currentNode.next;
+        }
+        
+        return count;
+    }
 }
 
 // Example usage:
-const array = [34, 7, 23, 32, 5, 62];
-const sortedArray = quicksort(array);
-console.log(sortedArray); // Output: [5, 7, 23, 32, 34, 62]
+const linkedList = new LinkedList<number>();
+linkedList.append(1);
+linkedList.append(2);
+linkedList.append(3);
+
+console.log("Length of the linked list:", linkedList.length()); // Output: 3
