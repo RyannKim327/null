@@ -1,72 +1,48 @@
-class Node {
-    value: number;
-    next: Node | null;
+// Importing the 'readline' module to handle input/output
+import * as readline from 'readline';
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
+// Creating an interface for input/output
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+// Function to ask a question and return a promise
+function askQuestion(question: string): Promise<string> {
+    return new Promise((resolve) => {
+        rl.question(question, (answer) => {
+            resolve(answer);
+        });
+    });
 }
 
-class LinkedList {
-    head: Node | null;
+// Main function to execute the program
+async function main() {
+    try {
+        // Asking for user's name
+        const name = await askQuestion("What is your name? ");
+        
+        // Asking for user's age
+        const ageInput = await askQuestion("What is your age? ");
+        const age = parseInt(ageInput, 10);
 
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to append a new node to the list
-    append(value: number) {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
+        // Checking if age is a valid number
+        if (isNaN(age)) {
+            console.log("Please enter a valid number for age.");
         } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
+            // Outputting the result
+            console.log(`Hello, ${name}! You are ${age} years old.`);
         }
-    }
-
-    // Method to reverse the linked list
-    reverse() {
-        let prev: Node | null = null;
-        let current: Node | null = this.head;
-        let next: Node | null = null;
-
-        while (current) {
-            next = current.next; // Store the next node
-            current.next = prev; // Reverse the current node's pointer
-            prev = current;      // Move pointers one position forward
-            current = next;
-        }
-        this.head = prev; // Update head to be the new front of the list
-    }
-
-    // Method to print the linked list values
-    print() {
-        let current = this.head;
-        while (current) {
-            process.stdout.write(current.value + " -> ");
-            current = current.next;
-        }
-        console.log("null");
+    } catch (error) {
+        console.error("An error occurred:", error);
+    } finally {
+        // Closing the readline interface
+        rl.close();
     }
 }
 
-// Example usage
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
-
-console.log("Original Linked List:");
-list.print();
-
-list.reverse();
-
-console.log("Reversed Linked List:");
-list.print();
+// Run the main function
+main();
+What is your name? Alice
+What is your age? 25
+Hello, Alice! You are 25 years old.
