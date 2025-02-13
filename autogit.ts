@@ -1,55 +1,47 @@
-function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
-    const n = input.length;
-    const rotations: string[] = [];
+type Graph = Map<number, number[]>; // Define the type for the graph
 
-    // Generate all rotations of the input string
-    for (let i = 0; i < n; i++) {
-        rotations.push(input.slice(i) + input.slice(0, i));
-    }
-
-    // Sort the rotations
-    rotations.sort();
-
-    // Build the transformed string and find the original index
-    let transformed = '';
-    let originalIndex = 0;
-
-    for (let i = 0; i < n; i++) {
-        transformed += rotations[i][n - 1]; // Take the last character of each sorted rotation
-        if (rotations[i] === input) {
-            originalIndex = i; // Store the index of the original string
+function bfs(graph: Graph, startNode: number): number[] {
+    const visited: Set<number> = new Set(); // Keep track of visited nodes
+    const queue: number[] = []; // Initialize an empty queue
+    const result: number[] = []; // To store the order of traversal
+    
+    // Start with the initial node
+    visited.add(startNode);
+    queue.push(startNode);
+    
+    while (queue.length > 0) {
+        const currentNode = queue.shift(); // Dequeue a node
+        
+        if (currentNode !== undefined) {
+            result.push(currentNode); // Process the current node
+            
+            // Get neighbors of the current node
+            const neighbors = graph.get(currentNode);
+            if (neighbors) {
+                for (const neighbor of neighbors) {
+                    if (!visited.has(neighbor)) {
+                        visited.add(neighbor); // Mark neighbor as visited
+                        queue.push(neighbor); // Enqueue the neighbor
+                    }
+                }
+            }
         }
     }
-
-    return { transformed, index: originalIndex };
+    
+    return result; // Return the BFS traversal order
 }
 
-function inverseBurrowsWheelerTransform(transformed: string, index: number): string {
-    const n = transformed.length;
-    const table: string[] = new Array(n);
+// Example usage:
+const graph: Graph = new Map([
+    [0, [1, 2]],
+    [1, [0, 3, 4]],
+    [2, [0, 5]],
+    [3, [1]],
+    [4, [1, 6]],
+    [5, [2]],
+    [6, [4]]
+]);
 
-    // Build the table
-    for (let i = 0; i < n; i++) {
-        table[i] = transformed;
-    }
-
-    // Sort the table and build it iteratively
-    for (let i = 0; i < n; i++) {
-        table.sort();
-        for (let j = 0; j < n; j++) {
-            table[j] = transformed[j] + table[j]; // Prepend the transformed character
-        }
-    }
-
-    // The original string is in the row indicated by the original index
-    return table[index].slice(1); // Remove the first character (which is a placeholder)
-}
-
-// Example usage
-const input = "banana";
-const { transformed, index } = burrowsWheelerTransform(input);
-console.log("Transformed:", transformed);
-console.log("Original Index:", index);
-
-const original = inverseBurrowsWheelerTransform(transformed, index);
-console.log("Original:", original);
+const startNode = 0;
+const bfsResult = bfs(graph, startNode);
+console.log(bfsResult); // Output: [0, 1, 2, 3, 4, 5, 6]
