@@ -1,36 +1,19 @@
-function interpolationSearch(arr: number[], target: number): number {
-    let low = 0;
-    let high = arr.length - 1;
+function maxSubArray(nums: number[]): number {
+    let maxSoFar = nums[0]; // Initialize maxSoFar with the first element
+    let currentMax = nums[0]; // Initialize currentMax with the first element
 
-    while (low <= high && target >= arr[low] && target <= arr[high]) {
-        // Estimate the position of the target
-        const pos = low + Math.floor(((target - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+    for (let i = 1; i < nums.length; i++) {
+        // Update currentMax to include the current element
+        currentMax = Math.max(nums[i], currentMax + nums[i]);
 
-        // Check if the target is found
-        if (arr[pos] === target) {
-            return pos; // Return the index of the target
-        }
-
-        // If the target is greater, ignore the left half
-        if (arr[pos] < target) {
-            low = pos + 1;
-        } else {
-            // If the target is smaller, ignore the right half
-            high = pos - 1;
-        }
+        // Update maxSoFar if the currentMax is greater
+        maxSoFar = Math.max(maxSoFar, currentMax);
     }
 
-    // Target not found
-    return -1;
+    return maxSoFar;
 }
 
 // Example usage:
-const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-const targetValue = 70;
-const index = interpolationSearch(sortedArray, targetValue);
-
-if (index !== -1) {
-    console.log(`Element found at index: ${index}`);
-} else {
-    console.log('Element not found in the array.');
-}
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const result = maxSubArray(array);
+console.log(result); // Output: 6 (subarray [4, -1, 2, 1])
