@@ -1,53 +1,57 @@
-function computeLPSArray(pattern: string): number[] {
-    const lps: number[] = new Array(pattern.length).fill(0);
-    let length = 0; // length of the previous longest prefix suffix
-    let i = 1;
-
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-    return lps;
+function kthSmallest(nums: number[], k: number): number {
+    // Sort the array in ascending order
+    nums.sort((a, b) => a - b);
+    
+    // Return the kth smallest element (k-1 due to 0-based indexing)
+    return nums[k - 1];
 }
 
-function KMPSearch(text: string, pattern: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
-
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-
-        if (j === pattern.length) {
-            result.push(i - j); // Match found, add the starting index to result
-            j = lps[j - 1]; // Use LPS to continue searching
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1]; // Use LPS to skip characters in the pattern
-            } else {
-                i++;
-            }
+// Example usage
+const arr = [7, 10, 4, 3, 20, 15];
+const k = 3;
+console.log(kthSmallest(arr, k)); // Output: 7
+function partition(arr: number[], left: number, right: number, pivotIndex: number): number {
+    const pivotValue = arr[pivotIndex];
+    // Move the pivot to the end
+    [arr[pivotIndex], arr[right]] = [arr[right], arr[pivotIndex]];
+  
+    let storeIndex = left;
+    for (let i = left; i < right; i++) {
+        if (arr[i] < pivotValue) {
+            // Swap elements
+            [arr[storeIndex], arr[i]] = [arr[i], arr[storeIndex]];
+            storeIndex++;
         }
     }
-    return result; // Return all starting indices of matches
+  
+    // Move the pivot to its final place
+    [arr[right], arr[storeIndex]] = [arr[storeIndex], arr[right]];
+    return storeIndex;
 }
 
-// Example usage:
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const result = KMPSearch(text, pattern);
-console.log("Pattern found at indices:", result);
+function quickSelect(arr: number[], left: number, right: number, k: number): number {
+    if (left === right) {
+        return arr[left];
+    }
+
+    // Select a random pivot
+    const pivotIndex = Math.floor(Math.random() * (right - left + 1)) + left;
+    pivotIndex = partition(arr, left, right, pivotIndex);
+
+    if (k === pivotIndex) {
+        return arr[k];
+    } else if (k < pivotIndex) {
+        return quickSelect(arr, left, pivotIndex - 1, k);
+    } else {
+        return quickSelect(arr, pivotIndex + 1, right, k);
+    }
+}
+
+function kthSmallest(nums: number[], k: number): number {
+    return quickSelect(nums, 0, nums.length - 1, k - 1);
+}
+
+// Example usage
+const arr = [7, 10, 4, 3, 20, 15];
+const k = 3;
+console.log(kthSmallest(arr, k)); // Output: 7
