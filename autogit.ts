@@ -1,37 +1,60 @@
-function interpolationSearch(arr: number[], target: number): number {
-    let low = 0;
-    let high = arr.length - 1;
+function kmpSearch(text: string, pattern: string): number[] {
+    const m = pattern.length;
+    const n = text.length;
 
-    while (low <= high && target >= arr[low] && target <= arr[high]) {
-        // Estimate the position
-        const pos = low + Math.floor(((target - arr[low]) / (arr[high] - arr[low])) * (high - low));
+    // Step 1: Create the partial match table
+    const lps = createLpsArray(pattern);
 
-        // Target found
-        if (arr[pos] === target) {
-            return pos;
+    const result: number[] = []; // Store the indices where matches are found
+    let i = 0; // index for text
+    let j = 0; // index for pattern
+
+    // Step 2: Perform the search
+    while (i < n) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
         }
 
-        // If target is greater, ignore left half
-        if (arr[pos] < target) {
-            low = pos + 1;
-        }
-        // If target is smaller, ignore right half
-        else {
-            high = pos - 1;
+        if (j === m) {
+            result.push(i - j); // Match found at index i - j
+            j = lps[j - 1]; // Use the partial match table to skip the next characters
+        } else if (i < n && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1]; // Skip using the lps array
+            } else {
+                i++;
+            }
         }
     }
-
-    // Target not found
-    return -1;
+    return result;
 }
 
-// Example usage:
-const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90];
-const target = 30;
-const index = interpolationSearch(sortedArray, target);
+function createLpsArray(pattern: string): number[] {
+    const length = pattern.length;
+    const lps = Array(length).fill(0);
+    let len = 0; // Length of the previous longest prefix suffix
+    let i = 1;
 
-if (index !== -1) {
-    console.log(`Element found at index: ${index}`);
-} else {
-    console.log(`Element not found in the array.`);
+    while (i < length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+    return lps;
 }
+
+// Example usage
+const text = "ababcabcabababd";
+const pattern = "ababd";
+const matches = kmpSearch(text, pattern);
+console.log("Pattern found at indices:", matches);
