@@ -1,17 +1,11 @@
-function firstRepeatedCharacter(str: string): string | null {
-    const seenCharacters = new Set<string>();
-
-    for (const char of str) {
-        if (seenCharacters.has(char)) {
-            return char; // Return the first repeated character
-        }
-        seenCharacters.add(char); // Add the character to the set
+function findMaxValue(arr: number[]): number | null {
+    if (arr.length === 0) {
+        return null; // Return null for empty arrays
     }
-
-    return null; // Return null if no repeated character is found
+    return Math.max(...arr);
 }
 
 // Example usage:
-const inputString = "abca";
-const result = firstRepeatedCharacter(inputString);
-console.log(result); // Output: "a"
+const numbers = [3, 5, 7, 2, 8];
+const maxValue = findMaxValue(numbers);
+console.log(maxValue); // Output: 8
