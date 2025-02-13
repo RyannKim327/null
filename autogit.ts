@@ -1,55 +1,26 @@
-class Graph {
-    private adjacencyList: Map<string, string[]> = new Map();
+function countingSort(arr: number[], max: number): number[] {
+    // Step 1: Create a count array to store the count of each unique value
+    const count: number[] = new Array(max + 1).fill(0);
 
-    // Add a vertex to the graph
-    addVertex(vertex: string): void {
-        if (!this.adjacencyList.has(vertex)) {
-            this.adjacencyList.set(vertex, []);
+    // Step 2: Store the count of each number in the input array
+    for (const num of arr) {
+        count[num]++;
+    }
+
+    // Step 3: Build the output array
+    const output: number[] = [];
+    for (let i = 0; i < count.length; i++) {
+        while (count[i] > 0) {
+            output.push(i);
+            count[i]--;
         }
     }
-    
-    // Add an edge to the graph
-    addEdge(vertex1: string, vertex2: string): void {
-        this.adjacencyList.get(vertex1)?.push(vertex2);
-        this.adjacencyList.get(vertex2)?.push(vertex1); // For undirected graph
-    }
 
-    // Perform BFS
-    bfs(startVertex: string): string[] {
-        const visited: Set<string> = new Set();
-        const queue: string[] = [];
-        const result: string[] = [];
-
-        visited.add(startVertex);
-        queue.push(startVertex);
-
-        while (queue.length > 0) {
-            const vertex = queue.shift()!;
-            result.push(vertex);
-            
-            const neighbors = this.adjacencyList.get(vertex) || [];
-            for (const neighbor of neighbors) {
-                if (!visited.has(neighbor)) {
-                    visited.add(neighbor);
-                    queue.push(neighbor);
-                }
-            }
-        }
-
-        return result;
-    }
+    return output;
 }
 
 // Example usage:
-const graph = new Graph();
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('C', 'D');
-
-const bfsResult = graph.bfs('A');
-console.log(bfsResult); // Output: [ 'A', 'B', 'C', 'D' ]
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const max = Math.max(...arr); // Find the maximum value in the array
+const sortedArr = countingSort(arr, max);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
