@@ -1,47 +1,32 @@
-type Graph = Map<number, number[]>; // Define the type for the graph
+function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
+    const n = input.length;
+    const table: string[] = [];
 
-function bfs(graph: Graph, startNode: number): number[] {
-    const visited: Set<number> = new Set(); // Keep track of visited nodes
-    const queue: number[] = []; // Initialize an empty queue
-    const result: number[] = []; // To store the order of traversal
-    
-    // Start with the initial node
-    visited.add(startNode);
-    queue.push(startNode);
-    
-    while (queue.length > 0) {
-        const currentNode = queue.shift(); // Dequeue a node
-        
-        if (currentNode !== undefined) {
-            result.push(currentNode); // Process the current node
-            
-            // Get neighbors of the current node
-            const neighbors = graph.get(currentNode);
-            if (neighbors) {
-                for (const neighbor of neighbors) {
-                    if (!visited.has(neighbor)) {
-                        visited.add(neighbor); // Mark neighbor as visited
-                        queue.push(neighbor); // Enqueue the neighbor
-                    }
-                }
-            }
+    // Create the table of cyclic shifts
+    for (let i = 0; i < n; i++) {
+        const shifted = input.slice(i) + input.slice(0, i);
+        table.push(shifted);
+    }
+
+    // Sort the table
+    table.sort();
+
+    // Build the transformed string and find the original index
+    let transformed = '';
+    let originalIndex = 0;
+
+    for (let i = 0; i < n; i++) {
+        transformed += table[i][n - 1]; // Take the last character of each sorted row
+        if (table[i] === input) {
+            originalIndex = i; // Store the index of the original string
         }
     }
-    
-    return result; // Return the BFS traversal order
+
+    return { transformed, index: originalIndex };
 }
 
-// Example usage:
-const graph: Graph = new Map([
-    [0, [1, 2]],
-    [1, [0, 3, 4]],
-    [2, [0, 5]],
-    [3, [1]],
-    [4, [1, 6]],
-    [5, [2]],
-    [6, [4]]
-]);
-
-const startNode = 0;
-const bfsResult = bfs(graph, startNode);
-console.log(bfsResult); // Output: [0, 1, 2, 3, 4, 5, 6]
+// Example usage
+const input = "banana";
+const { transformed, index } = burrowsWheelerTransform(input);
+console.log("Transformed:", transformed);
+console.log("Original Index:", index);
