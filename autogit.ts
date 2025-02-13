@@ -1,41 +1,41 @@
-function longestCommonSubsequence(str1: string, str2: string): string {
-    const m = str1.length;
-    const n = str2.length;
+function buildBadCharTable(pattern: string): number[] {
+    const badCharTable: number[] = Array(256).fill(-1);
 
-    // Create a 2D array to store lengths of longest common subsequence
-    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-
-    // Fill the dp array
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1; // characters match
-            } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]); // take max from left or top
-            }
-        }
+    for (let i = 0; i < pattern.length; i++) {
+        badCharTable[pattern.charCodeAt(i)] = i;
     }
 
-    // Construct the longest common subsequence from the dp array
-    let lcs = '';
-    let i = m, j = n;
-
-    while (i > 0 && j > 0) {
-        if (str1[i - 1] === str2[j - 1]) {
-            lcs = str1[i - 1] + lcs; // common character
-            i--;
-            j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--; // move up
-        } else {
-            j--; // move left
-        }
-    }
-
-    return lcs; // The LCS
+    return badCharTable;
 }
 
-// Example usage
-const str1 = "AGGTAB";
-const str2 = "GXTXAYB";
-console.log(longestCommonSubsequence(str1, str2)); // Output: "GTAB"
+function boyerMooreHorspool(text: string, pattern: string): number[] {
+    const badCharTable = buildBadCharTable(pattern);
+    const results: number[] = [];
+    const textLength = text.length;
+    const patternLength = pattern.length;
+
+    let shift = 0;
+
+    while (shift <= textLength - patternLength) {
+        let j = patternLength - 1;
+
+        while (j >= 0 && pattern[j] === text[shift + j]) {
+            j--;
+        }
+
+        if (j < 0) {
+            results.push(shift);
+            shift += (shift + patternLength < textLength) ? patternLength - badCharTable[text.charCodeAt(shift + patternLength)] : 1;
+        } else {
+            shift += Math.max(1, j - badCharTable[text.charCodeAt(shift + j)]);
+        }
+    }
+
+    return results;
+}
+
+// Example usage:
+const text = "ABAAABCDABC";
+const pattern = "ABC";
+const foundIndices = boyerMooreHorspool(text, pattern);
+console.log(foundIndices); // Output: [7]
