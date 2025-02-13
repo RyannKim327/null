@@ -1,8 +1,14 @@
-const str: string = "abc"; // Example of a non-numeric string
-
-const num: number = parseInt(str, 10);
-if (isNaN(num)) {
-    console.error("The string cannot be converted to an integer.");
-} else {
-    console.log(num);
+function isPalindrome(str: string): boolean {
+    // Normalize the string: lowercase and remove non-alphanumeric characters
+    const normalizedStr = str.toLowerCase().replace(/[^a-z0-9]/gi, '');
+    
+    // Get the reverse of the normalized string
+    const reversedStr = normalizedStr.split('').reverse().join('');
+    
+    // Compare the normalized string with its reverse
+    return normalizedStr === reversedStr;
 }
+
+// Example usage:
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
