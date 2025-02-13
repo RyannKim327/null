@@ -1,57 +1,72 @@
-function kthSmallest(nums: number[], k: number): number {
-    // Sort the array in ascending order
-    nums.sort((a, b) => a - b);
-    
-    // Return the kth smallest element (k-1 due to 0-based indexing)
-    return nums[k - 1];
+class SuffixTreeNode {
+    children: Map<string, SuffixTreeNode>;
+    start: number;
+    end: number | null;
+    suffixLink: SuffixTreeNode | null;
+
+    constructor(start: number, end: number | null) {
+        this.children = new Map();
+        this.start = start;
+        this.end = end;
+        this.suffixLink = null;
+    }
 }
 
-// Example usage
-const arr = [7, 10, 4, 3, 20, 15];
-const k = 3;
-console.log(kthSmallest(arr, k)); // Output: 7
-function partition(arr: number[], left: number, right: number, pivotIndex: number): number {
-    const pivotValue = arr[pivotIndex];
-    // Move the pivot to the end
-    [arr[pivotIndex], arr[right]] = [arr[right], arr[pivotIndex]];
-  
-    let storeIndex = left;
-    for (let i = left; i < right; i++) {
-        if (arr[i] < pivotValue) {
-            // Swap elements
-            [arr[storeIndex], arr[i]] = [arr[i], arr[storeIndex]];
-            storeIndex++;
+class SuffixTree {
+    root: SuffixTreeNode;
+    text: string;
+
+    constructor(text: string) {
+        this.root = new SuffixTreeNode(-1, null);
+        this.text = text;
+        this.buildSuffixTree();
+    }
+
+    buildSuffixTree() {
+        const n = this.text.length;
+        for (let i = 0; i < n; i++) {
+            this.insertSuffix(i);
         }
     }
-  
-    // Move the pivot to its final place
-    [arr[right], arr[storeIndex]] = [arr[storeIndex], arr[right]];
-    return storeIndex;
-}
 
-function quickSelect(arr: number[], left: number, right: number, k: number): number {
-    if (left === right) {
-        return arr[left];
+    insertSuffix(start: number) {
+        let currentNode = this.root;
+        let currentChar = this.text[start];
+
+        for (let i = start; i < this.text.length; i++) {
+            const char = this.text[i];
+
+            if (!currentNode.children.has(char)) {
+                const newNode = new SuffixTreeNode(start, null);
+                currentNode.children.set(char, newNode);
+                return;
+            }
+
+            currentNode = currentNode.children.get(char)!;
+            // If we reach the end of the current edge, we can continue
+            if (currentNode.end === null) {
+                currentNode.end = i;
+                return;
+            }
+
+            // If we need to split the edge
+            const edgeLength = currentNode.end! - currentNode.start + 1;
+            if (i - start < edgeLength) {
+                // Split the edge
+                const splitNode = new SuffixTreeNode(currentNode.start, currentNode.start + i - start - 1);
+                currentNode.start += i - start;
+                splitNode.children.set(this.text[currentNode.start], currentNode);
+                currentNode = splitNode;
+                currentNode.children.set(char, new SuffixTreeNode(start, null));
+                return;
+            }
+        }
     }
 
-    // Select a random pivot
-    const pivotIndex = Math.floor(Math.random() * (right - left + 1)) + left;
-    pivotIndex = partition(arr, left, right, pivotIndex);
-
-    if (k === pivotIndex) {
-        return arr[k];
-    } else if (k < pivotIndex) {
-        return quickSelect(arr, left, pivotIndex - 1, k);
-    } else {
-        return quickSelect(arr, pivotIndex + 1, right, k);
-    }
-}
-
-function kthSmallest(nums: number[], k: number): number {
-    return quickSelect(nums, 0, nums.length - 1, k - 1);
+    // Additional methods can be added for searching, etc.
 }
 
 // Example usage
-const arr = [7, 10, 4, 3, 20, 15];
-const k = 3;
-console.log(kthSmallest(arr, k)); // Output: 7
+const text = "banana";
+const suffixTree = new SuffixTree(text);
+console.log(suffixTree);
