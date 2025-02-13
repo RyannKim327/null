@@ -1,43 +1,41 @@
-type State = {
-    value: any; // Define the value based on your problem
-    score: number; // This is how you will evaluate the state
-    // Add other properties if necessary
-}
+function longestCommonSubsequence(str1: string, str2: string): string {
+    const m = str1.length;
+    const n = str2.length;
 
-// Function to generate child states
-function generateChildStates(state: State): State[] {
-    // Implement your logic to generate child states
-    // For example:
-    return [
-        { value: state.value + 1, score: state.score + 1 }, // Dummy example
-        { value: state.value + 2, score: state.score + 2 }  // Dummy example
-    ];
-}
+    // Create a 2D array to store lengths of longest common subsequence
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-// Beam Search Algorithm
-function beamSearch(initialState: State, beamWidth: number, maxDepth: number) {
-    let currentBeam: State[] = [initialState];
-
-    for (let depth = 0; depth < maxDepth; depth++) {
-        let newBeam: State[] = [];
-
-        for (let state of currentBeam) {
-            let childStates = generateChildStates(state);
-            newBeam.push(...childStates);
+    // Fill the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1; // characters match
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]); // take max from left or top
+            }
         }
-
-        // Sort new states by score
-        newBeam.sort((a, b) => b.score - a.score); // Descending order
-        currentBeam = newBeam.slice(0, beamWidth); // Keep only the top states
     }
 
-    return currentBeam; // The best states after the search
+    // Construct the longest common subsequence from the dp array
+    let lcs = '';
+    let i = m, j = n;
+
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            lcs = str1[i - 1] + lcs; // common character
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--; // move up
+        } else {
+            j--; // move left
+        }
+    }
+
+    return lcs; // The LCS
 }
 
 // Example usage
-const initialState: State = { value: 0, score: 0 };
-const beamWidth = 2;
-const maxDepth = 3;
-const result = beamSearch(initialState, beamWidth, maxDepth);
-
-console.log(result);
+const str1 = "AGGTAB";
+const str2 = "GXTXAYB";
+console.log(longestCommonSubsequence(str1, str2)); // Output: "GTAB"
