@@ -1,28 +1,23 @@
-function quicksort(arr: number[]): number[] {
-    // Base case: arrays with 0 or 1 element are already sorted
-    if (arr.length <= 1) {
-        return arr;
-    }
+function burrowsWheelerTransform(input: string): { transformed: string, last: string[] } {
+    const n = input.length;
+    const suffixArray: number[] = Array.from({ length: n }, (_, i) => i);
+    
+    // Sort suffixes
+    suffixArray.sort((a, b) => {
+        const suffixA = input.substring(a) + input.substring(0, a);
+        const suffixB = input.substring(b) + input.substring(0, b);
+        return suffixA.localeCompare(suffixB);
+    });
 
-    // Choose a pivot (here we choose the last element)
-    const pivot = arr[arr.length - 1];
-    const left: number[] = [];
-    const right: number[] = [];
-
-    // Partition the array into left and right arrays
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
-        }
-    }
-
-    // Recursively sort the left and right arrays, and concatenate with the pivot
-    return [...quicksort(left), pivot, ...quicksort(right)];
+    // Construct transformed string and last column
+    const transformed = suffixArray.map(i => input[(i + n - 1) % n]).join('');
+    const last = suffixArray.map(i => input[i]);
+    
+    return { transformed, last };
 }
 
 // Example usage
-const array = [3, 6, 8, 10, 1, 2, 1];
-const sortedArray = quicksort(array);
-console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
+const inputString = "banana";
+const result = burrowsWheelerTransform(inputString);
+console.log("Transformed:", result.transformed);
+console.log("Last Column:", result.last);
