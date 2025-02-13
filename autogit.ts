@@ -1,72 +1,54 @@
-class SuffixTreeNode {
-    children: Map<string, SuffixTreeNode>;
-    start: number;
-    end: number | null;
-    suffixLink: SuffixTreeNode | null;
+class Graph {
+    private adjacencyList: Map<number, number[]>;
 
-    constructor(start: number, end: number | null) {
-        this.children = new Map();
-        this.start = start;
-        this.end = end;
-        this.suffixLink = null;
-    }
-}
-
-class SuffixTree {
-    root: SuffixTreeNode;
-    text: string;
-
-    constructor(text: string) {
-        this.root = new SuffixTreeNode(-1, null);
-        this.text = text;
-        this.buildSuffixTree();
+    constructor() {
+        this.adjacencyList = new Map();
     }
 
-    buildSuffixTree() {
-        const n = this.text.length;
-        for (let i = 0; i < n; i++) {
-            this.insertSuffix(i);
+    addEdge(v: number, w: number): void {
+        if (!this.adjacencyList.has(v)) {
+            this.adjacencyList.set(v, []);
         }
+        if (!this.adjacencyList.has(w)) {
+            this.adjacencyList.set(w, []);
+        }
+
+        this.adjacencyList.get(v)!.push(w);
+        this.adjacencyList.get(w)!.push(v); // For an undirected graph
     }
 
-    insertSuffix(start: number) {
-        let currentNode = this.root;
-        let currentChar = this.text[start];
+    bfs(start: number): number[] {
+        const visited: Set<number> = new Set();
+        const queue: number[] = [];
+        const result: number[] = [];
 
-        for (let i = start; i < this.text.length; i++) {
-            const char = this.text[i];
+        queue.push(start);
+        visited.add(start);
 
-            if (!currentNode.children.has(char)) {
-                const newNode = new SuffixTreeNode(start, null);
-                currentNode.children.set(char, newNode);
-                return;
-            }
+        while (queue.length > 0) {
+            const node = queue.shift()!;
+            result.push(node);
 
-            currentNode = currentNode.children.get(char)!;
-            // If we reach the end of the current edge, we can continue
-            if (currentNode.end === null) {
-                currentNode.end = i;
-                return;
-            }
-
-            // If we need to split the edge
-            const edgeLength = currentNode.end! - currentNode.start + 1;
-            if (i - start < edgeLength) {
-                // Split the edge
-                const splitNode = new SuffixTreeNode(currentNode.start, currentNode.start + i - start - 1);
-                currentNode.start += i - start;
-                splitNode.children.set(this.text[currentNode.start], currentNode);
-                currentNode = splitNode;
-                currentNode.children.set(char, new SuffixTreeNode(start, null));
-                return;
+            const neighbors = this.adjacencyList.get(node) || [];
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    visited.add(neighbor);
+                    queue.push(neighbor);
+                }
             }
         }
-    }
 
-    // Additional methods can be added for searching, etc.
+        return result;
+    }
 }
 
 // Example usage
-const text = "banana";
-const suffixTree = new SuffixTree(text);
-console.log(suffixTree);
+const graph = new Graph();
+graph.addEdge(1, 2);
+graph.addEdge(1, 3);
+graph.addEdge(2, 4);
+graph.addEdge(2, 5);
+graph.addEdge(3, 6);
+
+const bfsResult = graph.bfs(1);
+console.log(bfsResult); // Output: [1, 2, 3, 4, 5, 6]
