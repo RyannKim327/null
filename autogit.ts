@@ -1,19 +1,25 @@
-function lengthOfLIS(nums: number[]): number {
-    if (nums.length === 0) return 0;
+// Example array
+const fruits = ['apple', 'banana', 'orange', 'grape'];
 
-    const dp: number[] = new Array(nums.length).fill(1);
+// Element to remove
+const elementToRemove = 'banana';
 
-    for (let i = 1; i < nums.length; i++) {
-        for (let j = 0; j < i; j++) {
-            if (nums[i] > nums[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
-            }
-        }
-    }
+// Create a new array without the specified element
+const updatedFruits = fruits.filter(fruit => fruit !== elementToRemove);
 
-    return Math.max(...dp);
+console.log(updatedFruits); // Output: ['apple', 'orange', 'grape']
+// Example array
+const fruits = ['apple', 'banana', 'orange', 'grape'];
+
+// Element to remove
+const elementToRemove = 'banana';
+
+// Find the index of the element
+const index = fruits.indexOf(elementToRemove);
+
+// If the element exists, remove it
+if (index > -1) {
+    fruits.splice(index, 1);
 }
 
-// Example usage:
-const nums = [10, 9, 2, 5, 3, 7, 101, 18];
-console.log(lengthOfLIS(nums)); // Output: 4
+console.log(fruits); // Output: ['apple', 'orange', 'grape']
