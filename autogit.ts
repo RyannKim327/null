@@ -1,44 +1,55 @@
-// Define an interface for the data structure we'll be fetching
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-}
+function KMP(pattern: string, text: string): number[] {
+    const lps = computeLPS(pattern);
+    const results: number[] = [];
+    let i = 0; // index for text
+    let j = 0; // index for pattern
 
-// Function to fetch posts from the API
-async function fetchPosts(): Promise<Post[]> {
-    try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-        
-        // Check if the response is ok (status in the range 200-299)
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
         }
 
-        const posts: Post[] = await response.json();
-        return posts;
-    } catch (error) {
-        console.error('Error fetching posts:', error);
-        return []; // Return an empty array in case of an error
+        if (j === pattern.length) {
+            results.push(i - j); // Match found at index (i - j)
+            j = lps[j - 1]; // Continue searching for next occurrence
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            // Mismatch after j matches
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
     }
+    return results;
 }
 
-// Function to display posts on the console
-function displayPosts(posts: Post[]): void {
-    posts.forEach(post => {
-        console.log(`Post ID: ${post.id}`);
-        console.log(`Title: ${post.title}`);
-        console.log(`Body: ${post.body}`);
-        console.log('--------------------------');
-    });
+function computeLPS(pattern: string): number[] {
+    const lps = new Array(pattern.length).fill(0); // Longest Prefix Suffix
+    let length = 0; // length of the previous longest prefix suffix
+    let i = 1;
+
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            // mismatch after length matches
+            if (length !== 0) {
+                length = lps[length - 1]; // Also note that lps[0] is always 0
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+    return lps;
 }
 
-// Main function to orchestrate fetching and displaying posts
-async function main(): Promise<void> {
-    const posts = await fetchPosts();
-    displayPosts(posts);
-}
-
-// Invoke the main function
-main();
+// Example usage
+const text = "ababcabcabababd";
+const pattern = "ababd";
+const matches = KMP(pattern, text);
+console.log("Pattern found at indices:", matches);
