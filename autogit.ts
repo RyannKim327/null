@@ -1,41 +1,50 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-    
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
+type Graph = { [key: string]: string[] };
 
-function hasCycle(head: ListNode | null): boolean {
-    if (!head) {
-        return false;
-    }
+function dfsRecursive(graph: Graph, node: string, visited: Set<string> = new Set()): void {
+    // Mark the current node as visited
+    visited.add(node);
+    console.log(node);  // Process the node (e.g., print it)
 
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast !== null && fast.next !== null) {
-        slow = slow.next;              // Move slow pointer by 1
-        fast = fast.next.next;        // Move fast pointer by 2
-
-        if (slow === fast) {
-            return true;              // Cycle detected
+    // Recur for all the vertices adjacent to this vertex
+    for (const neighbor of graph[node]) {
+        if (!visited.has(neighbor)) {
+            dfsRecursive(graph, neighbor, visited);
         }
     }
-
-    return false; // No cycle
 }
 
 // Example usage
-const head = new ListNode(3);
-const second = new ListNode(2);
-const third = new ListNode(0);
-const fourth = new ListNode(-4);
+const graph: Graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': ['D'],
+    'F': []
+};
 
-head.next = second;
-second.next = third;
-third.next = second; // Creates a cycle
+console.log("Depth-First Search (Recursive):");
+dfsRecursive(graph, 'A');
+function dfsIterative(graph: Graph, startNode: string): void {
+    const visited = new Set<string>();
+    const stack: string[] = [startNode];
 
-console.log(hasCycle(head)); // Output: true
+    while (stack.length > 0) {
+        const node = stack.pop()!;
+        if (!visited.has(node)) {
+            visited.add(node);
+            console.log(node);  // Process the node (e.g., print it)
+
+            // Push all adjacent unvisited nodes onto the stack
+            for (const neighbor of graph[node]) {
+                if (!visited.has(neighbor)) {
+                    stack.push(neighbor);
+                }
+            }
+        }
+    }
+}
+
+// Example usage
+console.log("Depth-First Search (Iterative):");
+dfsIterative(graph, 'A');
