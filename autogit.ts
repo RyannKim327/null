@@ -1,184 +1,98 @@
-enum Color {
-    RED,
-    BLACK
+interface Node {
+    id: string; // Unique identifier for the node
+    x: number;  // X-coordinate for heuristic calculation
+    y: number;  // Y-coordinate for heuristic calculation
 }
 
-class Node {
-    public color: Color;
-    public left: Node | null;
-    public right: Node | null;
-    public parent: Node | null;
-    public value: number;
-
-    constructor(value: number) {
-        this.value = value;
-        this.color = Color.RED; // New nodes are always red
-        this.left = null;
-        this.right = null;
-        this.parent = null;
-    }
+interface Edge {
+    from: Node;
+    to: Node;
+    cost: number; // Cost to move to this edge
 }
 
-class RedBlackTree {
-    private root: Node | null = null;
+interface PathNode {
+    node: Node;
+    parent?: PathNode; // Reference to previous node in the path
+    g: number; // Cost from start node
+    h: number; // Heuristic cost
+    f: number; // Total cost (g + h)
+}
+function heuristic(nodeA: Node, nodeB: Node): number {
+    // Using Manhattan distance as a heuristic
+    return Math.abs(nodeA.x - nodeB.x) + Math.abs(nodeA.y - nodeB.y);
+}
 
-    private rotateLeft(node: Node) {
-        const rightChild = node.right!;
-        node.right = rightChild.left;
+function aStar(start: Node, goal: Node, edges: Edge[]): Node[] {
+    const openSet: PathNode[] = [];
+    const closedSet: Set<string> = new Set();
 
-        if (rightChild.left !== null) {
-            rightChild.left.parent = node;
+    const startNode: PathNode = { node: start, g: 0, h: heuristic(start, goal), f: heuristic(start, goal) };
+    openSet.push(startNode);
+
+    while (openSet.length > 0) {
+        // Sort openSet by f value and take the lowest
+        openSet.sort((a, b) => a.f - b.f);
+        const current = openSet.shift()!;
+
+        // Check if we reached the goal
+        if (current.node.id === goal.id) {
+            const path: Node[] = [];
+            let temp: PathNode | undefined = current;
+            while (temp) {
+                path.push(temp.node);
+                temp = temp.parent;
+            }
+            return path.reverse(); // Reverse to get the correct order from start to goal
         }
 
-        rightChild.parent = node.parent;
+        closedSet.add(current.node.id);
 
-        if (node.parent === null) {
-            this.root = rightChild; // Updating root
-        } else if (node === node.parent.left) {
-            node.parent.left = rightChild;
-        } else {
-            node.parent.right = rightChild;
-        }
+        // Iterate through edges to find neighbors
+        for (const edge of edges) {
+            if (edge.from.id === current.node.id) {
+                const neighbor = edge.to;
 
-        rightChild.left = node;
-        node.parent = rightChild;
-    }
-
-    private rotateRight(node: Node) {
-        const leftChild = node.left!;
-        node.left = leftChild.right;
-
-        if (leftChild.right !== null) {
-            leftChild.right.parent = node;
-        }
-
-        leftChild.parent = node.parent;
-
-        if (node.parent === null) {
-            this.root = leftChild; // Updating root
-        } else if (node === node.parent.left) {
-            node.parent.left = leftChild;
-        } else {
-            node.parent.right = leftChild;
-        }
-
-        leftChild.right = node;
-        node.parent = leftChild;
-    }
-
-    private fixViolation(newNode: Node) {
-        let parent: Node | null = null;
-        let grandparent: Node | null = null;
-
-        while (newNode !== this.root && newNode.color === Color.RED && newNode.parent?.color === Color.RED) {
-            parent = newNode.parent;
-            grandparent = parent.parent;
-
-            // If parent is a left child of grandparent
-            if (parent === grandparent?.left) {
-                const uncle = grandparent.right;
-
-                if (uncle?.color === Color.RED) { 
-                    // Case 1: uncle is red
-                    grandparent.color = Color.RED;
-                    parent.color = Color.BLACK;
-                    uncle.color = Color.BLACK;
-                    newNode = grandparent;
-                } else {
-                    // Case 2 or 3: uncle is black
-                    if (newNode === parent.right) {
-                        // Case 2: newNode is a right child
-                        this.rotateLeft(parent);
-                        newNode = parent;
-                        parent = newNode.parent;
-                    }
-
-                    // Case 3: newNode is a left child
-                    this.rotateRight(grandparent);
-                    const tempColor = parent.color;
-                    parent.color = grandparent.color;
-                    grandparent.color = tempColor;
-                    newNode = parent;
+                if (closedSet.has(neighbor.id)) {
+                    continue; // Ignore the neighbor which is already evaluated
                 }
-            } else { // If parent is a right child of grandparent
-                const uncle = grandparent.left;
 
-                if (uncle?.color === Color.RED) {
-                    // Case 1: uncle is red
-                    grandparent.color = Color.RED;
-                    parent.color = Color.BLACK;
-                    uncle.color = Color.BLACK;
-                    newNode = grandparent;
-                } else {
-                    // Case 2 or 3: uncle is black
-                    if (newNode === parent.left) {
-                        // Case 2: newNode is a left child
-                        this.rotateRight(parent);
-                        newNode = parent;
-                        parent = newNode.parent;
-                    }
+                const gScore = current.g + edge.cost;
+                const hScore = heuristic(neighbor, goal);
+                const fScore = gScore + hScore;
 
-                    // Case 3: newNode is a right child
-                    this.rotateLeft(grandparent);
-                    const tempColor = parent.color;
-                    parent.color = grandparent.color;
-                    grandparent.color = tempColor;
-                    newNode = parent;
+                const existingNode = openSet.find(n => n.node.id === neighbor.id);
+                if (!existingNode) {
+                    // New node found
+                    openSet.push({ node: neighbor, parent: current, g: gScore, h: hScore, f: fScore });
+                } else if (gScore < existingNode.g) {
+                    // Update the scores if the new path is better
+                    existingNode.g = gScore;
+                    existingNode.f = fScore;
+                    existingNode.parent = current; // Update parent to current
                 }
             }
         }
-
-        this.root.color = Color.BLACK; // Ensure the root is always black
     }
 
-    public insert(value: number) {
-        const newNode = new Node(value);
-        if (this.root === null) {
-            this.root = newNode;
-            this.root.color = Color.BLACK; // Root must be black
-        } else {
-            this.insertNode(this.root, newNode);
-            this.fixViolation(newNode);
-        }
-    }
-
-    private insertNode(root: Node, newNode: Node) {
-        if (newNode.value < root.value) {
-            if (root.left === null) {
-                root.left = newNode;
-                newNode.parent = root;
-            } else {
-                this.insertNode(root.left, newNode);
-            }
-        } else {
-            if (root.right === null) {
-                root.right = newNode;
-                newNode.parent = root;
-            } else {
-                this.insertNode(root.right, newNode);
-            }
-        }
-    }
-
-    public inorderTraversal(): number[] {
-        const result: number[] = [];
-        this.inorderHelper(this.root, result);
-        return result;
-    }
-
-    private inorderHelper(node: Node | null, result: number[]) {
-        if (node !== null) {
-            this.inorderHelper(node.left, result);
-            result.push(node.value);
-            this.inorderHelper(node.right, result);
-        }
-    }
+    return []; // Return an empty array if no path was found
 }
+const nodes: Node[] = [
+    { id: 'A', x: 0, y: 0 },
+    { id: 'B', x: 1, y: 0 },
+    { id: 'C', x: 1, y: 1 },
+    { id: 'D', x: 0, y: 1 },
+];
 
-// Example usage
-const rbTree = new RedBlackTree();
-rbTree.insert(10);
-rbTree.insert(20);
-rbTree.insert(15);
+const edges: Edge[] = [
+    { from: nodes[0], to: nodes[1], cost: 1 },
+    { from: nodes[1], to: nodes[2], cost: 1 },
+    { from: nodes[2], to: nodes[3], cost: 1 },
+    { from: nodes[3], to: nodes[0], cost: 1 },
+    { from: nodes[1], to: nodes[3], cost: 1.5 },
+];
 
-console.log(rbTree.inorderTraversal()); // Output: [10, 15, 20]
+const startNode = nodes[0];
+const goalNode = nodes[2];
+const path = aStar(startNode, goalNode, edges);
+
+console.log('Path from start to goal:', path.map(n => n.id));
