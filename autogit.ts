@@ -1,50 +1,19 @@
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
+function lengthOfLIS(nums: number[]): number {
+    if (nums.length === 0) return 0;
 
-    constructor(value: T) {
-        this.value = value;
-        this.next = null;
+    const dp: number[] = new Array(nums.length).fill(1);
+
+    for (let i = 1; i < nums.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[i] > nums[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
+        }
     }
+
+    return Math.max(...dp);
 }
 
-class LinkedList<T> {
-    head: Node<T> | null;
-
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to add a new node at the end of the linked list
-    append(value: T) {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Method to find the length of the linked list
-    length(): number {
-        let count = 0;
-        let current = this.head;
-
-        while (current) {
-            count++;
-            current = current.next;
-        }
-
-        return count;
-    }
-}
-const list = new LinkedList<number>();
-list.append(1);
-list.append(2);
-list.append(3);
-
-console.log(`Length of the linked list: ${list.length()}`); // Output: Length of the linked list: 3
+// Example usage:
+const nums = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(lengthOfLIS(nums)); // Output: 4
