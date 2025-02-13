@@ -1,96 +1,84 @@
-class Node<T> {
-  data: T;
-  next: Node<T> | null;
+class TreeNode {
+    value: number;
+    left: TreeNode | null = null;
+    right: TreeNode | null = null;
 
-  constructor(data: T) {
-    this.data = data;
-    this.next = null;
-  }
+    constructor(value: number) {
+        this.value = value;
+    }
 }
-class LinkedList<T> {
-  private head: Node<T> | null;
-  private tail: Node<T> | null;
+class BinarySearchTree {
+    root: TreeNode | null = null;
 
-  constructor() {
-    this.head = null;
-    this.tail = null;
-  }
-
-  // Method to add a new node to the end of the list
-  append(data: T): void {
-    const newNode = new Node(data);
-    if (this.tail) {
-      this.tail.next = newNode;
-    }
-    this.tail = newNode;
-    if (!this.head) {
-      this.head = newNode;
-    }
-  }
-
-  // Method to remove a node by value
-  remove(data: T): boolean {
-    if (!this.head) {
-      return false; // List is empty
-    }
-
-    // Handle the head separately
-    if (this.head.data === data) {
-      this.head = this.head.next;
-      if (!this.head) {
-        this.tail = null; // List is now empty
-      }
-      return true;
-    }
-
-    let currentNode: Node<T> | null = this.head;
-    while (currentNode && currentNode.next) {
-      if (currentNode.next.data === data) {
-        currentNode.next = currentNode.next.next;
-        if (!currentNode.next) {
-          this.tail = currentNode; // Update tail if we removed the last node
+    // Insert a new value
+    insert(value: number): void {
+        const newNode = new TreeNode(value);
+        if (this.root === null) {
+            this.root = newNode;
+            return;
         }
-        return true;
-      }
-      currentNode = currentNode.next;
+        this.insertNode(this.root, newNode);
     }
-    return false; // Value not found
-  }
 
-  // Method to print the contents of the list
-  print(): void {
-    let currentNode = this.head;
-    const values: T[] = [];
-    while (currentNode) {
-      values.push(currentNode.data);
-      currentNode = currentNode.next;
+    private insertNode(node: TreeNode, newNode: TreeNode): void {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
+        }
     }
-    console.log(values.join(' -> '));
-  }
 
-  // Method to find a node by value
-  find(data: T): Node<T> | null {
-    let currentNode = this.head;
-    while (currentNode) {
-      if (currentNode.data === data) {
-        return currentNode;
-      }
-      currentNode = currentNode.next;
+    // Search for a value
+    search(value: number): boolean {
+        return this.searchNode(this.root, value);
     }
-    return null; // Value not found
-  }
 
-  // Additional methods (like pre-pend, insert at specific index, etc.) can be added here
+    private searchNode(node: TreeNode | null, value: number): boolean {
+        if (node === null) {
+            return false;
+        }
+        if (node.value === value) {
+            return true;
+        }
+        if (value < node.value) {
+            return this.searchNode(node.left, value);
+        } else {
+            return this.searchNode(node.right, value);
+        }
+    }
+
+    // In-order traversal
+    inOrderTraversal(cb: (value: number) => void): void {
+        this.inOrder(this.root, cb);
+    }
+
+    private inOrder(node: TreeNode | null, cb: (value: number) => void): void {
+        if (node !== null) {
+            this.inOrder(node.left, cb);
+            cb(node.value);
+            this.inOrder(node.right, cb);
+        }
+    }
 }
-const list = new LinkedList<number>();
+const bst = new BinarySearchTree();
+bst.insert(5);
+bst.insert(3);
+bst.insert(7);
+bst.insert(1);
+bst.insert(4);
 
-list.append(10);
-list.append(20);
-list.append(30);
-list.print(); // Output: 10 -> 20 -> 30
+// Searching for values
+console.log(bst.search(3)); // true
+console.log(bst.search(8)); // false
 
-list.remove(20);
-list.print(); // Output: 10 -> 30
-
-const foundNode = list.find(30);
-console.log(foundNode ? foundNode.data : 'Not found'); // Output: 30
+// In-order traversal
+bst.inOrderTraversal(value => console.log(value)); 
+// Output: 1, 3, 4, 5, 7
