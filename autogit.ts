@@ -1,66 +1,113 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+class Node {
+    public x: number;
+    public y: number;
+    public g: number; // Cost from start to this node
+    public h: number; // Heuristic cost to goal
+    public f: number; // Total cost (g + h)
+    public parent: Node | null;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+    constructor(x: number, y: number, g: number = 0, h: number = 0, parent: Node | null = null) {
+        this.x = x;
+        this.y = y;
+        this.g = g;
+        this.h = h;
+        this.f = g + h;
+        this.parent = parent;
     }
 }
+class PriorityQueue {
+    private elements: Node[] = [];
 
-function getLength(head: ListNode | null): number {
-    let length = 0;
-    let current = head;
-    while (current) {
-        length++;
-        current = current.next;
+    public isEmpty(): boolean {
+        return this.elements.length === 0;
     }
-    return length;
+
+    public enqueue(node: Node): void {
+        this.elements.push(node);
+        this.elements.sort((a, b) => a.f - b.f); // Sort by f value
+    }
+
+    public dequeue(): Node | undefined {
+        return this.elements.shift(); // Remove the first element (lowest f value)
+    }
+}
+function heuristic(a: Node, b: Node): number {
+    // Using Manhattan distance as the heuristic
+    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
 }
 
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    if (!headA || !headB) return null;
+function aStar(start: Node, goal: Node, grid: number[][]): Node[] | null {
+    const openSet = new PriorityQueue();
+    const closedSet: Set<string> = new Set();
 
-    const lengthA = getLength(headA);
-    const lengthB = getLength(headB);
+    openSet.enqueue(start);
 
-    let currentA: ListNode | null = headA;
-    let currentB: ListNode | null = headB;
+    while (!openSet.isEmpty()) {
+        const current = openSet.dequeue();
 
-    // Align the starting points
-    if (lengthA > lengthB) {
-        for (let i = 0; i < lengthA - lengthB; i++) {
-            currentA = currentA!.next; // Use non-null assertion since we checked for null
+        if (!current) {
+            break;
         }
-    } else {
-        for (let i = 0; i < lengthB - lengthA; i++) {
-            currentB = currentB!.next;
+
+        // Check if we reached the goal
+        if (current.x === goal.x && current.y === goal.y) {
+            const path: Node[] = [];
+            let temp: Node | null = current;
+            while (temp) {
+                path.push(temp);
+                temp = temp.parent;
+            }
+            return path.reverse(); // Return reversed path
+        }
+
+        closedSet.add(`${current.x},${current.y}`);
+
+        // Get neighbors (4-directional movement)
+        const neighbors = [
+            new Node(current.x + 1, current.y),
+            new Node(current.x - 1, current.y),
+            new Node(current.x, current.y + 1),
+            new Node(current.x, current.y - 1),
+        ];
+
+        for (const neighbor of neighbors) {
+            // Check if neighbor is out of bounds or an obstacle
+            if (neighbor.x < 0 || neighbor.x >= grid.length || neighbor.y < 0 || neighbor.y >= grid[0].length || grid[neighbor.x][neighbor.y] === 1) {
+                continue; // Skip if out of bounds or obstacle
+            }
+
+            if (closedSet.has(`${neighbor.x},${neighbor.y}`)) {
+                continue; // Skip if already evaluated
+            }
+
+            const gScore = current.g + 1; // Assume cost to move to neighbor is 1
+            let gScoreIsBest = false;
+
+            if (!openSet.elements.some(n => n.x === neighbor.x && n.y === neighbor.y)) {
+                gScoreIsBest = true; // New node
+                neighbor.h = heuristic(neighbor, goal);
+                openSet.enqueue(neighbor);
+            } else if (gScore < neighbor.g) {
+                gScoreIsBest = true; // Found a better path
+            }
+
+            if (gScoreIsBest) {
+                neighbor.parent = current;
+                neighbor.g = gScore;
+                neighbor.f = neighbor.g + neighbor.h;
+            }
         }
     }
 
-    // Traverse both lists to find the intersection
-    while (currentA && currentB) {
-        if (currentA === currentB) {
-            return currentA; // Intersection found
-        }
-        currentA = currentA.next;
-        currentB = currentB.next;
-    }
-
-    return null; // No intersection
+    return null; // No path found
 }
+const grid = [
+    [0, 0, 0, 0, 0],
+    [0, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0],
+    [0, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0],
+];
 
-// Example usage:
-const nodeA1 = new ListNode(1);
-const nodeA2 = new ListNode(2);
-const nodeB1 = new ListNode(3);
-const nodeB2 = new ListNode(4);
-const intersectionNode = new ListNode(5);
-
-nodeA1.next = nodeA2;
-nodeA2.next = intersectionNode;
-nodeB1.next = nodeB2;
-nodeB2.next = intersectionNode;
-
-const intersection = getIntersectionNode(nodeA1, nodeB1);
-console.log(intersection ? intersection.value : 'No intersection'); // Output: 5
+const start = new Node(0, 0);
+const goal =
