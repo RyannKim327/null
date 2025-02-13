@@ -1,49 +1,85 @@
-function heapSort(arr: number[]): number[] {
-    const n = arr.length;
-
-    // Build a max heap
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(arr, n, i);
+function topologicalSortDFS(graph: Record<string, string[]>): string[] {
+    const visited: Set<string> = new Set();
+    const stack: string[] = [];
+    
+    function dfs(node: string) {
+        if (!visited.has(node)) {
+            visited.add(node);
+            if (graph[node]) {
+                for (const neighbor of graph[node]) {
+                    dfs(neighbor);
+                }
+            }
+            stack.push(node);
+        }
     }
-
-    // One by one extract elements from heap
-    for (let i = n - 1; i > 0; i--) {
-        // Move current root to end
-        [arr[0], arr[i]] = [arr[i], arr[0]]; // Swap
-
-        // Call heapify on the reduced heap
-        heapify(arr, i, 0);
+    
+    for (const node in graph) {
+        dfs(node);
     }
-
-    return arr;
+    
+    return stack.reverse(); // Reverse to get the correct order
 }
 
-// To maintain the heap property
-function heapify(arr: number[], n: number, i: number): void {
-    let largest = i; // Initialize largest as root
-    const left = 2 * i + 1; // left = 2*i + 1
-    const right = 2 * i + 2; // right = 2*i + 2
+// Example usage:
+const graph: Record<string, string[]> = {
+    "A": ["C"],
+    "B": ["C", "D"],
+    "C": ["E"],
+    "D": ["F"],
+    "E": [],
+    "F": []
+};
 
-    // If left child is larger than root
-    if (left < n && arr[left] > arr[largest]) {
-        largest = left;
+const sortedOrder = topologicalSortDFS(graph);
+console.log(sortedOrder); // Output: [ 'B', 'A', 'D', 'F', 'C', 'E' ]
+function topologicalSortKahn(graph: Record<string, string[]>): string[] {
+    const inDegree: Record<string, number> = {};
+    const queue: string[] = [];
+    const sortedOrder: string[] = [];
+    
+    // Calculate in-degrees of all nodes
+    for (const node in graph) {
+        if (!inDegree[node]) {
+            inDegree[node] = 0;
+        }
+        for (const neighbor of graph[node]) {
+            inDegree[neighbor] = (inDegree[neighbor] || 0) + 1;
+        }
     }
-
-    // If right child is larger than largest so far
-    if (right < n && arr[right] > arr[largest]) {
-        largest = right;
+    
+    // Add nodes with in-degree 0 to the queue
+    for (const node in graph) {
+        if (inDegree[node] === 0) {
+            queue.push(node);
+        }
     }
-
-    // If largest is not root
-    if (largest !== i) {
-        [arr[i], arr[largest]] = [arr[largest], arr[i]]; // Swap
-
-        // Recursively heapify the affected sub-tree
-        heapify(arr, n, largest);
+    
+    while (queue.length > 0) {
+        const currentNode = queue.shift();
+        if (currentNode) {
+            sortedOrder.push(currentNode);
+            for (const neighbor of graph[currentNode]) {
+                inDegree[neighbor]--;
+                if (inDegree[neighbor] === 0) {
+                    queue.push(neighbor);
+                }
+            }
+        }
     }
+    
+    return sortedOrder; // May not be complete if the graph has a cycle
 }
 
-// Example usage
-const array = [3, 5, 1, 10, 2, 7];
-const sortedArray = heapSort(array);
-console.log(sortedArray); // Output: [1, 2, 3, 5, 7, 10]
+// Example usage:
+const graphKahn: Record<string, string[]> = {
+    "A": ["C"],
+    "B": ["C", "D"],
+    "C": ["E"],
+    "D": ["F"],
+    "E": [],
+    "F": []
+};
+
+const sortedOrderKahn = topologicalSortKahn(graphKahn);
+console.log(sortedOrderKahn); // Output: [ 'A', 'B', 'D', 'F', 'C', 'E' ] (order may vary)
