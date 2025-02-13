@@ -1,45 +1,91 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+class TreeNode<T> {
+    value: T;
+    left: TreeNode<T> | null;
+    right: TreeNode<T> | null;
 
-    constructor(value: number) {
+    constructor(value: T) {
         this.value = value;
-        this.next = null;
+        this.left = null;
+        this.right = null;
     }
 }
+class BinaryTree<T> {
+    root: TreeNode<T> | null;
 
-function hasCycle(head: ListNode | null): boolean {
-    if (!head) return false;
+    constructor() {
+        this.root = null;
+    }
 
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
+    // Insert value into the binary tree (this is a simple implementation)
+    insert(value: T): void {
+        const newNode = new TreeNode(value);
+        if (this.root === null) {
+            this.root = newNode;
+            return;
+        }
+        this.insertNode(this.root, newNode);
+    }
 
-    while (fast !== null && fast.next !== null) {
-        slow = slow.next; // Move slow pointer by 1
-        fast = fast.next.next; // Move fast pointer by 2
-
-        if (slow === fast) {
-            return true; // Cycle detected
+    private insertNode(node: TreeNode<T>, newNode: TreeNode<T>): void {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
         }
     }
 
-    return false; // No cycle
+    // In-order traversal
+    inOrderTraversal(node: TreeNode<T> | null, callback: (value: T) => void): void {
+        if (node) {
+            this.inOrderTraversal(node.left, callback);
+            callback(node.value);
+            this.inOrderTraversal(node.right, callback);
+        }
+    }
+
+    // Pre-order traversal
+    preOrderTraversal(node: TreeNode<T> | null, callback: (value: T) => void): void {
+        if (node) {
+            callback(node.value);
+            this.preOrderTraversal(node.left, callback);
+            this.preOrderTraversal(node.right, callback);
+        }
+    }
+
+    // Post-order traversal
+    postOrderTraversal(node: TreeNode<T> | null, callback: (value: T) => void): void {
+        if (node) {
+            this.postOrderTraversal(node.left, callback);
+            this.postOrderTraversal(node.right, callback);
+            callback(node.value);
+        }
+    }
 }
+const tree = new BinaryTree<number>();
+tree.insert(10);
+tree.insert(5);
+tree.insert(15);
+tree.insert(3);
+tree.insert(7);
+tree.insert(12);
+tree.insert(18);
 
-// Example usage:
-const node1 = new ListNode(1);
-const node2 = new ListNode(2);
-const node3 = new ListNode(3);
-const node4 = new ListNode(4);
+// In-order traversal
+console.log("In-order traversal:");
+tree.inOrderTraversal(tree.root, value => console.log(value));
 
-// Creating a cycle for testing
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2; // Creates a cycle
+// Pre-order traversal
+console.log("Pre-order traversal:");
+tree.preOrderTraversal(tree.root, value => console.log(value));
 
-console.log(hasCycle(node1)); // Output: true
-
-// Creating a non-cyclic linked list for testing
-node4.next = null; // Break the cycle
-console.log(hasCycle(node1)); // Output: false
+// Post-order traversal
+console.log("Post-order traversal:");
+tree.postOrderTraversal(tree.root, value => console.log(value));
