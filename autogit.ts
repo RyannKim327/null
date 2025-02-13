@@ -1,24 +1,55 @@
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    return arr1.filter(value => arr2.includes(value));
-}
+class Graph {
+    private adjacencyList: Map<string, string[]> = new Map();
 
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    const set1 = new Set(arr1);
-    const set2 = new Set(arr2);
+    // Add a vertex to the graph
+    addVertex(vertex: string): void {
+        if (!this.adjacencyList.has(vertex)) {
+            this.adjacencyList.set(vertex, []);
+        }
+    }
     
-    const commonElements = [...set1].filter(value => set2.has(value));
-    return commonElements;
+    // Add an edge to the graph
+    addEdge(vertex1: string, vertex2: string): void {
+        this.adjacencyList.get(vertex1)?.push(vertex2);
+        this.adjacencyList.get(vertex2)?.push(vertex1); // For undirected graph
+    }
+
+    // Perform BFS
+    bfs(startVertex: string): string[] {
+        const visited: Set<string> = new Set();
+        const queue: string[] = [];
+        const result: string[] = [];
+
+        visited.add(startVertex);
+        queue.push(startVertex);
+
+        while (queue.length > 0) {
+            const vertex = queue.shift()!;
+            result.push(vertex);
+            
+            const neighbors = this.adjacencyList.get(vertex) || [];
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    visited.add(neighbor);
+                    queue.push(neighbor);
+                }
+            }
+        }
+
+        return result;
+    }
 }
 
 // Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
+const graph = new Graph();
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addEdge('A', 'B');
+graph.addEdge('A', 'C');
+graph.addEdge('B', 'D');
+graph.addEdge('C', 'D');
 
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
+const bfsResult = graph.bfs('A');
+console.log(bfsResult); // Output: [ 'A', 'B', 'C', 'D' ]
