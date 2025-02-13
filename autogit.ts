@@ -1,51 +1,34 @@
-class Stack<T> {
-    private items: T[];
+npm install axios
+import axios from 'axios';
 
-    constructor() {
-        this.items = [];
-    }
-
-    // Add an element to the top of the stack
-    push(item: T): void {
-        this.items.push(item);
-    }
-
-    // Remove and return the top element of the stack
-    pop(): T | undefined {
-        return this.items.pop();
-    }
-
-    // Return the top element without removing it
-    peek(): T | undefined {
-        return this.items[this.items.length - 1];
-    }
-
-    // Check if the stack is empty
-    isEmpty(): boolean {
-        return this.items.length === 0;
-    }
-
-    // Return the size of the stack
-    size(): number {
-        return this.items.length;
-    }
-
-    // Clear the stack
-    clear(): void {
-        this.items = [];
-    }
-
-    // Print the stack (for debugging purposes)
-    print(): void {
-        console.log(this.items);
-    }
+// Define an interface for the data we expect to receive
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
 }
 
-// Example usage
-const stack = new Stack<number>();
-stack.push(10);
-stack.push(20);
-console.log(stack.peek()); // Output: 20
-console.log(stack.pop());   // Output: 20
-console.log(stack.isEmpty()); // Output: false
-stack.print(); // Output: [10]
+// Function to fetch users from the API
+const fetchUsers = async (): Promise<void> => {
+  try {
+    const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
+    const users = response.data;
+
+    // Log the users to the console
+    users.forEach(user => {
+      console.log(`ID: ${user.id}, Name: ${user.name}, Username: ${user.username}, Email: ${user.email}`);
+    });
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Error message:', error.message);
+    } else {
+      console.error('Unexpected error:', error);
+    }
+  }
+};
+
+// Call the function to fetch users
+fetchUsers();
+tsc fetchData.ts
+node fetchData.js
