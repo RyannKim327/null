@@ -1,61 +1,67 @@
-function fibonacciSearch(arr: number[], x: number): number {
-    const n = arr.length;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    // Initialize Fibonacci numbers
-    let fibMMm2 = 0;  // (m-2)th Fibonacci No.
-    let fibMMm1 = 1;  // (m-1)th Fibonacci No.
-    let fibM = fibMMm2 + fibMMm1; // mth Fibonacci No.
-
-    // Find the smallest Fibonacci number greater than or equal to n
-    while (fibM < n) {
-        fibMMm2 = fibMMm1;
-        fibMMm1 = fibM;
-        fibM = fibMMm2 + fibMMm1;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
+}
 
-    // Marks the eliminated range from the front
-    let offset = -1;
+function getLength(head: ListNode | null): number {
+    let length = 0;
+    let current = head;
+    while (current) {
+        length++;
+        current = current.next;
+    }
+    return length;
+}
 
-    // While there are elements to be inspected
-    while (fibM > 1) {
-        // Check if fibMMm2 is a valid location
-        const i = Math.min(offset + fibMMm2, n - 1);
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+    if (!headA || !headB) return null;
 
-        // If x is greater than the value at index i, cut the subarray after i
-        if (arr[i] < x) {
-            fibM = fibMMm1;
-            fibMMm1 = fibMMm2;
-            fibMMm2 = fibM - fibMMm1;
-            offset = i; // Update offset to i
-        } 
-        // If x is less than the value at index i, cut the subarray before i
-        else if (arr[i] > x) {
-            fibM = fibMMm2;
-            fibMMm1 = fibMMm1 - fibMMm2;
-            fibMMm2 = fibM - fibMMm1;
-        } 
-        // Element found
-        else {
-            return i;
+    const lengthA = getLength(headA);
+    const lengthB = getLength(headB);
+
+    let currentA: ListNode | null = headA;
+    let currentB: ListNode | null = headB;
+
+    // Align the starting points
+    if (lengthA > lengthB) {
+        for (let i = 0; i < lengthA - lengthB; i++) {
+            currentA = currentA!.next; // Use non-null assertion since we checked for null
+        }
+    } else {
+        for (let i = 0; i < lengthB - lengthA; i++) {
+            currentB = currentB!.next;
         }
     }
 
-    // Compare the last element with x
-    if (fibMMm1 && offset + 1 < n && arr[offset + 1] === x) {
-        return offset + 1; // Element found
+    // Traverse both lists to find the intersection
+    while (currentA && currentB) {
+        if (currentA === currentB) {
+            return currentA; // Intersection found
+        }
+        currentA = currentA.next;
+        currentB = currentB.next;
     }
 
-    // Element not found
-    return -1;
+    return null; // No intersection
 }
 
-// Example usage
-const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90];
-const x = 85;
-const result = fibonacciSearch(arr, x);
+// Example usage:
+const nodeA1 = new ListNode(1);
+const nodeA2 = new ListNode(2);
+const nodeB1 = new ListNode(3);
+const nodeB2 = new ListNode(4);
+const intersectionNode = new ListNode(5);
 
-if (result >= 0) {
-    console.log(`Element found at index: ${result}`);
-} else {
-    console.log('Element not found');
-}
+nodeA1.next = nodeA2;
+nodeA2.next = intersectionNode;
+
+nodeB1.next = nodeB2;
+nodeB2.next = intersectionNode;
+
+const intersection = getIntersectionNode(nodeA1, nodeB1);
+console.log(intersection ? intersection.value : 'No intersection'); // Output: 5
