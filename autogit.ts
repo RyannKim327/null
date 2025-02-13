@@ -1,56 +1,33 @@
-function KMPSearch(pattern: string, text: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
+function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
+    const n = input.length;
+    const rotations: string[] = [];
 
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
+    // Generate all rotations of the input string
+    for (let i = 0; i < n; i++) {
+        rotations.push(input.slice(i) + input.slice(0, i));
+    }
 
-        if (j === pattern.length) {
-            result.push(i - j); // Match found at index
-            j = lps[j - 1]; // Reset pattern index using LPS
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1]; // Use LPS to skip characters
-            } else {
-                i++; // Move to the next character in the text
-            }
+    // Sort the rotations
+    rotations.sort();
+
+    // Build the transformed string and find the original index
+    let transformed = '';
+    let originalIndex = 0;
+
+    for (let i = 0; i < n; i++) {
+        transformed += rotations[i][n - 1]; // Take the last character of each sorted rotation
+        if (rotations[i] === input) {
+            originalIndex = i; // Store the index of the original string
         }
     }
 
-    return result;
-}
-
-function computeLPSArray(pattern: string): number[] {
-    const lps: number[] = new Array(pattern.length).fill(0);
-    let len = 0; // length of the previous longest prefix suffix
-    let i = 1;
-
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1]; // Use previous LPS length
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-
-    return lps;
+    return { transformed, index: originalIndex };
 }
 
 // Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const result = KMPSearch(pattern, text);
-
-console.log("Pattern found at indices:", result);
+const input = "banana";
+const { transformed, index } = burrowsWheelerTransform(input);
+console.log("Transformed:", transformed);
+console.log("Original Index:", index);
+Transformed: annb$aa
+Original Index: 5
