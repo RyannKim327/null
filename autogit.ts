@@ -1,20 +1,51 @@
-function maxSubArray(nums: number[]): number {
-    if (nums.length === 0) {
-        throw new Error("Array must not be empty");
+class Stack<T> {
+    private items: T[];
+
+    constructor() {
+        this.items = [];
     }
 
-    let maxSoFar = nums[0];  // This keeps track of the overall maximum sum
-    let maxEndingHere = nums[0];  // This keeps track of the maximum sum ending at the current position
-
-    for (let i = 1; i < nums.length; i++) {
-        maxEndingHere = Math.max(nums[i], maxEndingHere + nums[i]); // Update maxEndingHere
-        maxSoFar = Math.max(maxSoFar, maxEndingHere); // Update maxSoFar
+    // Add an element to the top of the stack
+    push(item: T): void {
+        this.items.push(item);
     }
 
-    return maxSoFar;
+    // Remove and return the top element of the stack
+    pop(): T | undefined {
+        return this.items.pop();
+    }
+
+    // Return the top element without removing it
+    peek(): T | undefined {
+        return this.items[this.items.length - 1];
+    }
+
+    // Check if the stack is empty
+    isEmpty(): boolean {
+        return this.items.length === 0;
+    }
+
+    // Return the size of the stack
+    size(): number {
+        return this.items.length;
+    }
+
+    // Clear the stack
+    clear(): void {
+        this.items = [];
+    }
+
+    // Print the stack (for debugging purposes)
+    print(): void {
+        console.log(this.items);
+    }
 }
 
-// Example usage:
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const result = maxSubArray(array);
-console.log(result); // Output: 6, which corresponds to the subarray [4, -1, 2, 1]
+// Example usage
+const stack = new Stack<number>();
+stack.push(10);
+stack.push(20);
+console.log(stack.peek()); // Output: 20
+console.log(stack.pop());   // Output: 20
+console.log(stack.isEmpty()); // Output: false
+stack.print(); // Output: [10]
