@@ -1,68 +1,57 @@
-type Node<T> = {
-    state: T;
-    cost: number; // Cost to reach this node
-    parent?: Node<T>; // Optional parent node for path reconstruction
-};
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-function beamSearch<T>(
-    initialState: T,
-    isGoal: (state: T) => boolean,
-    getSuccessors: (state: T) => Node<T>[],
-    beamWidth: number
-): Node<T> | null {
-    // Initialize the beam with the initial state
-    let beam: Node<T>[] = [{ state: initialState, cost: 0 }];
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
 
-    while (beam.length > 0) {
-        // Expand all nodes in the current beam
-        const newBeam: Node<T>[] = [];
-
-        for (const node of beam) {
-            if (isGoal(node.state)) {
-                return node; // Goal found
-            }
-
-            // Get successors of the current node
-            const successors = getSuccessors(node.state);
-            newBeam.push(...successors);
-        }
-
-        // Sort the new beam by cost and keep only the best candidates
-        newBeam.sort((a, b) => a.cost - b.cost);
-        beam = newBeam.slice(0, beamWidth); // Keep only the top `beamWidth` nodes
+function isPalindrome(head: ListNode | null): boolean {
+    if (!head || !head.next) {
+        return true; // An empty list or a single node is a palindrome
     }
 
-    return null; // No solution found
+    // Step 1: Find the middle of the linked list
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+    
+    while (fast && fast.next) {
+        slow = slow!.next; // Move slow by 1
+        fast = fast.next.next; // Move fast by 2
+    }
+
+    // Step 2: Reverse the second half of the linked list
+    let prev: ListNode | null = null;
+    let current: ListNode | null = slow;
+
+    while (current) {
+        const nextTemp = current.next; // Store next node
+        current.next = prev; // Reverse the link
+        prev = current; // Move prev to current
+        current = nextTemp; // Move to next node
+    }
+
+    // Step 3: Compare the first half and the reversed second half
+    let left: ListNode | null = head;
+    let right: ListNode | null = prev; // This is the head of the reversed second half
+
+    while (right) {
+        if (left!.value !== right.value) {
+            return false; // Not a palindrome
+        }
+        left = left!.next;
+        right = right.next;
+    }
+
+    return true; // It is a palindrome
 }
 
 // Example usage:
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(2);
+head.next.next.next = new ListNode(1);
 
-// Define the state type
-type State = string;
-
-// Define the goal test
-const isGoal = (state: State) => state === "goal";
-
-// Define the successor function
-const getSuccessors = (state: State): Node<State>[] => {
-    // Example successors (this should be replaced with actual logic)
-    const successors: Node<State>[] = [];
-    if (state === "start") {
-        successors.push({ state: "state1", cost: 1 });
-        successors.push({ state: "state2", cost: 2 });
-    } else if (state === "state1") {
-        successors.push({ state: "goal", cost: 3 });
-    }
-    return successors;
-};
-
-// Run the beam search
-const initialState: State = "start";
-const beamWidth = 2;
-const result = beamSearch(initialState, isGoal, getSuccessors, beamWidth);
-
-if (result) {
-    console.log("Goal found:", result.state);
-} else {
-    console.log("No solution found.");
-}
+console.log(isPalindrome(head)); // Output: true
