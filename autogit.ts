@@ -1,55 +1,40 @@
-type Node<T> = {
-  value: T;
-  children: Node<T>[];
-};
+// Define the structure of a binary tree node
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-function depthLimitedSearch<T>(startNode: Node<T>, limit: number): Node<T> | null {
-  const stack: Array<{ node: Node<T>; depth: number }> = [];
-  stack.push({ node: startNode, depth: 0 });
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
 
-  while (stack.length > 0) {
-    const { node, depth } = stack.pop()!;
-
-    // Check if we have reached the goal (or some condition, here just returning the node)
-    // You may want to replace this with your goal condition
-    if (depth === limit) {
-      return node; // Return the node at the limit depth
+// Function to count the number of leaf nodes
+function countLeafNodes(node: TreeNode | null): number {
+    // Base case: if the node is null, there are no leaf nodes
+    if (node === null) {
+        return 0;
     }
 
-    // Check if we have not exceeded the depth limit
-    if (depth < limit) {
-      // Push children onto the stack with incremented depth
-      for (const child of node.children) {
-        stack.push({ node: child, depth: depth + 1 });
-      }
+    // If the node is a leaf node, return 1
+    if (node.left === null && node.right === null) {
+        return 1;
     }
-  }
 
-  // Return null if we did not find anything matching your 'goal'
-  return null;
+    // Recursively count leaf nodes in the left and right subtrees
+    return countLeafNodes(node.left) + countLeafNodes(node.right);
 }
 
 // Example usage:
-const tree: Node<number> = {
-  value: 1,
-  children: [
-    {
-      value: 2,
-      children: [
-        { value: 4, children: [] },
-        { value: 5, children: [] }
-      ]
-    },
-    {
-      value: 3,
-      children: [
-        { value: 6, children: [] },
-        { value: 7, children: [] }
-      ]
-    }
-  ]
-};
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+root.right.left = new TreeNode(6);
+// root.right.right remains null (no right child)
 
-const limit = 2;
-const result = depthLimitedSearch(tree, limit);
-console.log(result); // Output could vary based on the goal
+const numLeafNodes = countLeafNodes(root);
+console.log("Number of leaf nodes:", numLeafNodes);  // Output: Number of leaf nodes: 3
