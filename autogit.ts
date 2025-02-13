@@ -1,31 +1,17 @@
-function isPalindrome(s: string): boolean {
-    let left = 0;
-    let right = s.length - 1;
+function reverseWords(input: string): string {
+    // Step 1: Split the string into an array of words
+    const wordsArray = input.split(' ');
 
-    while (left < right) {
-        // Skip non-alphanumeric characters
-        while (left < right && !isAlphanumeric(s[left])) left++;
-        while (left < right && !isAlphanumeric(s[right])) right--;
+    // Step 2: Reverse the array of words
+    const reversedArray = wordsArray.reverse();
 
-        // Check if characters are the same
-        if (s[left].toLowerCase() !== s[right].toLowerCase()) {
-            return false;
-        }
+    // Step 3: Join the reversed array back into a string
+    const reversedString = reversedArray.join(' ');
 
-        left++;
-        right--;
-    }
-
-    return true;
-}
-
-function isAlphanumeric(char: string): boolean {
-    const code = char.charCodeAt(0);
-    return (code >= 48 && code <= 57) || // 0-9
-           (code >= 65 && code <= 90) || // A-Z
-           (code >= 97 && code <= 122);   // a-z
+    return reversedString;
 }
 
 // Example usage:
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car")); // false
+const originalString = "Hello world from TypeScript";
+const reversedString = reverseWords(originalString);
+console.log(reversedString); // Output: "TypeScript from world Hello"
