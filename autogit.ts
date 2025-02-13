@@ -1,50 +1,59 @@
-type Graph = { [key: string]: string[] };
+function fibonacciSearch(arr: number[], x: number): number {
+    const n = arr.length;
 
-function dfsRecursive(graph: Graph, node: string, visited: Set<string> = new Set()): void {
-    // Mark the current node as visited
-    visited.add(node);
-    console.log(node);  // Process the node (e.g., print it)
+    // Initialize Fibonacci numbers
+    let fibMMm2 = 0; // (m-2)'th Fibonacci No.
+    let fibMMm1 = 1; // (m-1)'th Fibonacci No.
+    let fibM = fibMMm2 + fibMMm1; // m'th Fibonacci No.
 
-    // Recur for all the vertices adjacent to this vertex
-    for (const neighbor of graph[node]) {
-        if (!visited.has(neighbor)) {
-            dfsRecursive(graph, neighbor, visited);
-        }
+    // fibM is the smallest Fibonacci number greater than or equal to n
+    while (fibM < n) {
+        fibMMm2 = fibMMm1;
+        fibMMm1 = fibM;
+        fibM = fibMMm2 + fibMMm1;
     }
+
+    // Marks the eliminated range from front
+    let offset = -1;
+
+    // While there are elements to be inspected
+    while (fibM > 1) {
+        // Check if fibMMm2 is a valid location
+        const i = Math.min(offset + fibMMm2, n - 1);
+
+        // If x is greater than the value at index i
+        if (arr[i] < x) {
+            fibM = fibMMm1; // Move to the next Fibonacci number
+            fibMMm1 = fibMMm2;
+            fibMMm2 = fibM - fibMMm1; // Update the two Fibonacci numbers
+            offset = i; // Update offset
+        }
+        // If x is less than the value at index i
+        else if (arr[i] > x) {
+            fibM = fibMMm2; // Move to the previous Fibonacci number
+            fibMMm1 = fibMMm1 - fibMMm2; // Update the two Fibonacci numbers
+            fibMMm2 = fibM - fibMMm1; // Update the two Fibonacci numbers
+        }
+        // Element found
+        else return i;
+    }
+
+    // Comparing the last element with x
+    if (fibMMm1 && arr[offset + 1] === x) {
+        return offset + 1;
+    }
+
+    // Element not found
+    return -1;
 }
 
-// Example usage
-const graph: Graph = {
-    'A': ['B', 'C'],
-    'B': ['D', 'E'],
-    'C': ['F'],
-    'D': [],
-    'E': ['D'],
-    'F': []
-};
+// Example usage:
+const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
+const x = 85;
+const index = fibonacciSearch(arr, x);
 
-console.log("Depth-First Search (Recursive):");
-dfsRecursive(graph, 'A');
-function dfsIterative(graph: Graph, startNode: string): void {
-    const visited = new Set<string>();
-    const stack: string[] = [startNode];
-
-    while (stack.length > 0) {
-        const node = stack.pop()!;
-        if (!visited.has(node)) {
-            visited.add(node);
-            console.log(node);  // Process the node (e.g., print it)
-
-            // Push all adjacent unvisited nodes onto the stack
-            for (const neighbor of graph[node]) {
-                if (!visited.has(neighbor)) {
-                    stack.push(neighbor);
-                }
-            }
-        }
-    }
+if (index !== -1) {
+    console.log(`Element found at index: ${index}`);
+} else {
+    console.log(`Element not found in the array.`);
 }
-
-// Example usage
-console.log("Depth-First Search (Iterative):");
-dfsIterative(graph, 'A');
