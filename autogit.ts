@@ -1,60 +1,57 @@
-function kmpSearch(text: string, pattern: string): number[] {
-    const m = pattern.length;
-    const n = text.length;
+class SuffixTreeNode {
+    children: Map<string, SuffixTreeNode>;
+    isEndOfWord: boolean;
 
-    // Step 1: Create the partial match table
-    const lps = createLpsArray(pattern);
+    constructor() {
+        this.children = new Map();
+        this.isEndOfWord = false;
+    }
+}
+class SuffixTree {
+    root: SuffixTreeNode;
 
-    const result: number[] = []; // Store the indices where matches are found
-    let i = 0; // index for text
-    let j = 0; // index for pattern
+    constructor() {
+        this.root = new SuffixTreeNode();
+    }
 
-    // Step 2: Perform the search
-    while (i < n) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-
-        if (j === m) {
-            result.push(i - j); // Match found at index i - j
-            j = lps[j - 1]; // Use the partial match table to skip the next characters
-        } else if (i < n && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1]; // Skip using the lps array
-            } else {
-                i++;
-            }
+    insert(word: string) {
+        const length = word.length;
+        for (let i = 0; i < length; i++) {
+            const suffix = word.substring(i);
+            this.insertSuffix(suffix);
         }
     }
-    return result;
-}
 
-function createLpsArray(pattern: string): number[] {
-    const length = pattern.length;
-    const lps = Array(length).fill(0);
-    let len = 0; // Length of the previous longest prefix suffix
-    let i = 1;
+    private insertSuffix(suffix: string) {
+        let currentNode = this.root;
 
-    while (i < length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
+        for (const char of suffix) {
+            if (!currentNode.children.has(char)) {
+                currentNode.children.set(char, new SuffixTreeNode());
             }
+            currentNode = currentNode.children.get(char)!;
         }
+        currentNode.isEndOfWord = true;
     }
-    return lps;
-}
 
-// Example usage
-const text = "ababcabcabababd";
-const pattern = "ababd";
-const matches = kmpSearch(text, pattern);
-console.log("Pattern found at indices:", matches);
+    search(pattern: string): boolean {
+        let currentNode = this.root;
+
+        for (const char of pattern) {
+            if (!currentNode.children.has(char)) {
+                return false;
+            }
+            currentNode = currentNode.children.get(char)!;
+        }
+        return true; // can return `currentNode.isEndOfWord` to check if pattern is exact word
+    }
+}
+const suffixTree = new SuffixTree();
+const text = "banana";
+
+suffixTree.insert(text);
+
+console.log(suffixTree.search("ana")); // true
+console.log(suffixTree.search("bana")); // true
+console.log(suffixTree.search("nan")); // true
+console.log(suffixTree.search("x")); // false
