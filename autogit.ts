@@ -1,75 +1,41 @@
-// Define a Node class
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
+function longestCommonSubsequence(str1: string, str2: string): string {
+    const m = str1.length;
+    const n = str2.length;
 
-    constructor(value: T) {
-        this.value = value;
-        this.next = null;
+    // Create a 2D array to store lengths of longest common subsequence
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+
+    // Fill the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1; // Characters match
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]); // Take the maximum
+            }
+        }
     }
-}
 
-// Define the Queue class
-class Queue<T> {
-    private head: Node<T> | null = null;
-    private tail: Node<T> | null = null;
-    private length: number = 0;
-
-    // Add an element to the end of the queue
-    enqueue(value: T): void {
-        const newNode = new Node(value);
-        if (!this.tail) {
-            // If the queue is empty, set head and tail to the new node
-            this.head = newNode;
-            this.tail = newNode;
+    // Backtrack to find the LCS
+    let lcs = '';
+    let i = m, j = n;
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            lcs = str1[i - 1] + lcs; // Add to LCS
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--; // Move up
         } else {
-            // Otherwise, append the new node to the end and update the tail
-            this.tail.next = newNode;
-            this.tail = newNode;
+            j--; // Move left
         }
-        this.length++;
     }
 
-    // Remove and return the element from the front of the queue
-    dequeue(): T | null {
-        if (!this.head) {
-            return null; // Queue is empty
-        }
-        const value = this.head.value;
-        this.head = this.head.next; // Move the head to the next node
-        if (!this.head) {
-            // If the queue is now empty, reset the tail
-            this.tail = null;
-        }
-        this.length--;
-        return value;
-    }
-
-    // Return the front element of the queue without removing it
-    peek(): T | null {
-        if (!this.head) {
-            return null; // Queue is empty
-        }
-        return this.head.value;
-    }
-
-    // Check if the queue is empty
-    isEmpty(): boolean {
-        return this.length === 0;
-    }
-
-    // Return the size of the queue
-    size(): number {
-        return this.length;
-    }
+    return lcs;
 }
 
-// Example Usage
-const queue = new Queue<number>();
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
-console.log(queue.dequeue()); // Outputs: 1
-console.log(queue.peek());    // Outputs: 2
-console.log(queue.size());     // Outputs: 2
-console.log(queue.isEmpty());  // Outputs: false
+// Example usage
+const str1 = "AGGTAB";
+const str2 = "GXTXAYB";
+const result = longestCommonSubsequence(str1, str2);
+console.log(`The Longest Common Subsequence is: ${result}`); // Output: "GTAB"
