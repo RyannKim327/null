@@ -1,84 +1,35 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null = null;
-    right: TreeNode | null = null;
+function longestCommonSubstring(s1: string, s2: string): string {
+    const m = s1.length;
+    const n = s2.length;
+    let maxLength = 0;
+    let endingIndex = 0;
 
-    constructor(value: number) {
-        this.value = value;
-    }
-}
-class BinarySearchTree {
-    root: TreeNode | null = null;
+    // Create a 2D array to store lengths of longest common suffixes
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-    // Insert a new value
-    insert(value: number): void {
-        const newNode = new TreeNode(value);
-        if (this.root === null) {
-            this.root = newNode;
-            return;
-        }
-        this.insertNode(this.root, newNode);
-    }
-
-    private insertNode(node: TreeNode, newNode: TreeNode): void {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
+    // Build the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (s1[i - 1] === s2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > maxLength) {
+                    maxLength = dp[i][j];
+                    endingIndex = i; // Update ending index of the substring
+                }
             }
         }
     }
 
-    // Search for a value
-    search(value: number): boolean {
-        return this.searchNode(this.root, value);
+    // Extract the longest common substring
+    if (maxLength === 0) {
+        return ""; // No common substring found
     }
 
-    private searchNode(node: TreeNode | null, value: number): boolean {
-        if (node === null) {
-            return false;
-        }
-        if (node.value === value) {
-            return true;
-        }
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else {
-            return this.searchNode(node.right, value);
-        }
-    }
-
-    // In-order traversal
-    inOrderTraversal(cb: (value: number) => void): void {
-        this.inOrder(this.root, cb);
-    }
-
-    private inOrder(node: TreeNode | null, cb: (value: number) => void): void {
-        if (node !== null) {
-            this.inOrder(node.left, cb);
-            cb(node.value);
-            this.inOrder(node.right, cb);
-        }
-    }
+    return s1.substring(endingIndex - maxLength, endingIndex);
 }
-const bst = new BinarySearchTree();
-bst.insert(5);
-bst.insert(3);
-bst.insert(7);
-bst.insert(1);
-bst.insert(4);
 
-// Searching for values
-console.log(bst.search(3)); // true
-console.log(bst.search(8)); // false
-
-// In-order traversal
-bst.inOrderTraversal(value => console.log(value)); 
-// Output: 1, 3, 4, 5, 7
+// Example usage:
+const str1 = "abcdef";
+const str2 = "zcdemf";
+const result = longestCommonSubstring(str1, str2);
+console.log(result); // Output: "cd"
