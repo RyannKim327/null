@@ -1,60 +1,66 @@
-type Graph = { [key: string]: string[] };
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-function dfsRecursive(graph: Graph, node: string, visited: Set<string> = new Set()): void {
-    if (visited.has(node)) {
-        return; // Node has already been visited
-    }
-
-    visited.add(node);
-    console.log(node); // Process the node (e.g., print it)
-
-    for (const neighbor of graph[node]) {
-        dfsRecursive(graph, neighbor, visited);
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
 }
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
+function getLength(head: ListNode | null): number {
+    let length = 0;
+    let current = head;
+    while (current) {
+        length++;
+        current = current.next;
+    }
+    return length;
+}
 
-dfsRecursive(graph, 'A');
-type Graph = { [key: string]: string[] };
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+    if (!headA || !headB) return null;
 
-function dfsIterative(graph: Graph, startNode: string): void {
-    const stack: string[] = [startNode];
-    const visited: Set<string> = new Set();
+    const lengthA = getLength(headA);
+    const lengthB = getLength(headB);
 
-    while (stack.length > 0) {
-        const node = stack.pop()!;
-        
-        if (visited.has(node)) {
-            continue; // Node has already been visited
+    let currentA: ListNode | null = headA;
+    let currentB: ListNode | null = headB;
+
+    // Align the starting points
+    if (lengthA > lengthB) {
+        for (let i = 0; i < lengthA - lengthB; i++) {
+            currentA = currentA!.next; // Use non-null assertion since we checked for null
         }
-
-        visited.add(node);
-        console.log(node); // Process the node (e.g., print it)
-
-        // Push neighbors onto the stack
-        for (const neighbor of graph[node]) {
-            stack.push(neighbor);
+    } else {
+        for (let i = 0; i < lengthB - lengthA; i++) {
+            currentB = currentB!.next;
         }
     }
+
+    // Traverse both lists to find the intersection
+    while (currentA && currentB) {
+        if (currentA === currentB) {
+            return currentA; // Intersection found
+        }
+        currentA = currentA.next;
+        currentB = currentB.next;
+    }
+
+    return null; // No intersection
 }
 
 // Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
+const nodeA1 = new ListNode(1);
+const nodeA2 = new ListNode(2);
+const nodeB1 = new ListNode(3);
+const nodeB2 = new ListNode(4);
+const intersectionNode = new ListNode(5);
 
-dfsIterative(graph, 'A');
+nodeA1.next = nodeA2;
+nodeA2.next = intersectionNode;
+nodeB1.next = nodeB2;
+nodeB2.next = intersectionNode;
+
+const intersection = getIntersectionNode(nodeA1, nodeB1);
+console.log(intersection ? intersection.value : 'No intersection'); // Output: 5
