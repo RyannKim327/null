@@ -1,25 +1,30 @@
-function quicksort(array: number[]): number[] {
-    if (array.length <= 1) {
-        return array; // Base case: an array of zero or one element is already sorted.
+function quicksort(arr: number[]): number[] {
+    // Base case: arrays with 0 or 1 element are already sorted
+    if (arr.length <= 1) {
+        return arr;
     }
+    
+    // Choosing a pivot (here we choose the last element)
+    const pivot = arr[arr.length - 1];
+    
+    // Arrays to hold values less than and greater than the pivot
+    const left: number[] = [];
+    const right: number[] = [];
 
-    const pivot = array[array.length - 1]; // Choose the last element as the pivot.
-    const left: number[] = []; // Elements less than the pivot
-    const right: number[] = []; // Elements greater than the pivot
-
-    for (let i = 0; i < array.length - 1; i++) { // Exclude the pivot
-        if (array[i] < pivot) {
-            left.push(array[i]); // Push smaller elements to the left array
+    // Partitioning the array into two parts
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
         } else {
-            right.push(array[i]); // Push larger elements to the right array
+            right.push(arr[i]);
         }
     }
 
-    // Recursively sort the left and right subarrays and combine them with the pivot
+    // Recursively applying quicksort to left and right partitions
     return [...quicksort(left), pivot, ...quicksort(right)];
 }
 
 // Example usage:
-const array = [3, 6, 8, 10, 1, 2, 1];
+const array = [34, 7, 23, 32, 5, 62];
 const sortedArray = quicksort(array);
-console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
+console.log(sortedArray); // Output: [5, 7, 23, 32, 34, 62]
