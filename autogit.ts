@@ -1,67 +1,49 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
+    const totalLength = nums1.length + nums2.length;
+    const half = Math.floor(totalLength / 2);
+    
+    // Ensure nums1 is the smaller array
+    if (nums1.length > nums2.length) {
+        [nums1, nums2] = [nums2, nums1];
     }
-}
 
-function getLength(head: ListNode | null): number {
-    let length = 0;
-    let current = head;
-    while (current) {
-        length++;
-        current = current.next;
-    }
-    return length;
-}
+    let left = 0;
+    let right = nums1.length;
 
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    if (!headA || !headB) return null;
+    while (left <= right) {
+        const partition1 = Math.floor((left + right) / 2);
+        const partition2 = half - partition1;
 
-    const lengthA = getLength(headA);
-    const lengthB = getLength(headB);
+        const maxLeft1 = partition1 === 0 ? Number.NEGATIVE_INFINITY : nums1[partition1 - 1];
+        const minRight1 = partition1 === nums1.length ? Number.POSITIVE_INFINITY : nums1[partition1];
+        
+        const maxLeft2 = partition2 === 0 ? Number.NEGATIVE_INFINITY : nums2[partition2 - 1];
+        const minRight2 = partition2 === nums2.length ? Number.POSITIVE_INFINITY : nums2[partition2];
 
-    let currentA: ListNode | null = headA;
-    let currentB: ListNode | null = headB;
-
-    // Align the starting points
-    if (lengthA > lengthB) {
-        for (let i = 0; i < lengthA - lengthB; i++) {
-            currentA = currentA!.next; // Use non-null assertion since we checked for null
-        }
-    } else {
-        for (let i = 0; i < lengthB - lengthA; i++) {
-            currentB = currentB!.next;
+        if (maxLeft1 <= minRight2 && maxLeft2 <= minRight1) {
+            // We have partitioned the array correctly
+            if (totalLength % 2 === 0) {
+                return (Math.max(maxLeft1, maxLeft2) + Math.min(minRight1, minRight2)) / 2;
+            } else {
+                return Math.max(maxLeft1, maxLeft2);
+            }
+        } else if (maxLeft1 > minRight2) {
+            // We are too far on right side for partition1. Go on left side.
+            right = partition1 - 1;
+        } else {
+            // We are too far on left side for partition1. Go on right side.
+            left = partition1 + 1;
         }
     }
 
-    // Traverse both lists to find the intersection
-    while (currentA && currentB) {
-        if (currentA === currentB) {
-            return currentA; // Intersection found
-        }
-        currentA = currentA.next;
-        currentB = currentB.next;
-    }
-
-    return null; // No intersection
+    throw new Error("Input arrays are not sorted.");
 }
 
 // Example usage:
-const nodeA1 = new ListNode(1);
-const nodeA2 = new ListNode(2);
-const nodeB1 = new ListNode(3);
-const nodeB2 = new ListNode(4);
-const intersectionNode = new ListNode(5);
+const nums1 = [1, 3];
+const nums2 = [2];
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2
 
-nodeA1.next = nodeA2;
-nodeA2.next = intersectionNode;
-
-nodeB1.next = nodeB2;
-nodeB2.next = intersectionNode;
-
-const intersection = getIntersectionNode(nodeA1, nodeB1);
-console.log(intersection ? intersection.value : 'No intersection'); // Output: 5
+const nums3 = [1, 2];
+const nums4 = [3, 4];
+console.log(findMedianSortedArrays(nums3, nums4)); // Output: 2.5
