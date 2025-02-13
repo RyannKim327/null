@@ -1,13 +1,14 @@
 function maxSubArray(nums: number[]): number {
-    let maxSoFar = nums[0]; // Initialize maxSoFar with the first element
-    let currentMax = nums[0]; // Initialize currentMax with the first element
+    if (nums.length === 0) {
+        throw new Error("Array must not be empty");
+    }
+
+    let maxSoFar = nums[0];  // This keeps track of the overall maximum sum
+    let maxEndingHere = nums[0];  // This keeps track of the maximum sum ending at the current position
 
     for (let i = 1; i < nums.length; i++) {
-        // Update currentMax to include the current element
-        currentMax = Math.max(nums[i], currentMax + nums[i]);
-
-        // Update maxSoFar if the currentMax is greater
-        maxSoFar = Math.max(maxSoFar, currentMax);
+        maxEndingHere = Math.max(nums[i], maxEndingHere + nums[i]); // Update maxEndingHere
+        maxSoFar = Math.max(maxSoFar, maxEndingHere); // Update maxSoFar
     }
 
     return maxSoFar;
@@ -16,4 +17,4 @@ function maxSubArray(nums: number[]): number {
 // Example usage:
 const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
 const result = maxSubArray(array);
-console.log(result); // Output: 6 (subarray [4, -1, 2, 1])
+console.log(result); // Output: 6, which corresponds to the subarray [4, -1, 2, 1]
