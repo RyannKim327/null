@@ -1,77 +1,41 @@
-class Node {
-  value: string;
-  // Assuming each node can have children that are also of type Node
-  constructor(value: string) {
-    this.value = value;
-  }
-}
+function countingSort(arr: number[], exp: number): number[] {
+    const output: number[] = new Array(arr.length); // Output array
+    const count: number[] = new Array(10).fill(0); // Count array for digits (0-9)
 
-class Graph {
-  adjacencyList: { [key: string]: Node[] } = {};
-
-  addNode(value: string) {
-    this.adjacencyList[value] = [];
-  }
-
-  addEdge(node1: string, node2: string) {
-    this.adjacencyList[node1].push(new Node(node2));
-    this.adjacencyList[node2].push(new Node(node1)); // Since this is undirected
-  }
-}
-function biDirectionalSearch(graph: Graph, start: string, goal: string) {
-  if (!graph.adjacencyList[start] || !graph.adjacencyList[goal]) {
-    return null; // Return null if start or goal does not exist in graph
-  }
-
-  const forwardVisited: Set<string> = new Set();
-  const backwardVisited: Set<string> = new Set();
-
-  const forwardQueue: string[] = [start];
-  const backwardQueue: string[] = [goal];
-
-  while (forwardQueue.length && backwardQueue.length) {
-    const forwardNode = forwardQueue.shift();
-    const backwardNode = backwardQueue.shift();
-
-    if (forwardNode && !forwardVisited.has(forwardNode)) {
-      forwardVisited.add(forwardNode);
-      
-      if (backwardVisited.has(forwardNode)) {
-        return `Path found involving node: ${forwardNode}`; // Path is found
-      }
-
-      for (const neighbor of graph.adjacencyList[forwardNode]) {
-        forwardQueue.push(neighbor.value);
-      }
+    // Store count of occurrences in count[]
+    for (let i = 0; i < arr.length; i++) {
+        const index = Math.floor(arr[i] / exp) % 10;
+        count[index]++;
     }
 
-    if (backwardNode && !backwardVisited.has(backwardNode)) {
-      backwardVisited.add(backwardNode);
-      
-      if (forwardVisited.has(backwardNode)) {
-        return `Path found involving node: ${backwardNode}`; // Path is found
-      }
-
-      for (const neighbor of graph.adjacencyList[backwardNode]) {
-        backwardQueue.push(neighbor.value);
-      }
+    // Change count[i] so that it contains the actual position of this digit in output[]
+    for (let i = 1; i < count.length; i++) {
+        count[i] += count[i - 1];
     }
-  }
 
-  return null; // Return null if no path is found
+    // Build the output array
+    for (let i = arr.length - 1; i >= 0; i--) {
+        const index = Math.floor(arr[i] / exp) % 10;
+        output[count[index] - 1] = arr[i];
+        count[index]--;
+    }
+
+    return output;
 }
-const graph = new Graph();
-graph.addNode("A");
-graph.addNode("B");
-graph.addNode("C");
-graph.addNode("D");
-graph.addNode("E");
 
-graph.addEdge("A", "B");
-graph.addEdge("A", "C");
-graph.addEdge("B", "D");
-graph.addEdge("C", "E");
-graph.addEdge("D", "E");
+function radixSort(arr: number[]): number[] {
+    // Find the maximum number to know the number of digits
+    const max = Math.max(...arr);
 
-const result = biDirectionalSearch(graph, "A", "E");
-console.log(result); // Output the result of the search
+    // Apply counting sort to sort elements based on place value
+    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
+        arr = countingSort(arr, exp);
+    }
+
+    return arr;
+}
+
+// Example usage
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArr = radixSort(arr);
+console.log(sortedArr); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
