@@ -1,55 +1,146 @@
-function KMPSearch(pattern: string, text: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
+class TreeNode {
+    key: number;
+    height: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-
-        if (j === pattern.length) {
-            result.push(i - j); // Match found
-            j = lps[j - 1]; // Look for next match
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1]; // Use LPS to avoid unnecessary comparisons
-            } else {
-                i++;
-            }
-        }
+    constructor(key: number) {
+        this.key = key;
+        this.height = 1; // New node is initially added at leaf
+        this.left = null;
+        this.right = null;
     }
-
-    return result;
 }
 
-function computeLPSArray(pattern: string): number[] {
-    const lps = new Array(pattern.length).fill(0);
-    let len = 0; // length of the previous longest prefix suffix
-    let i = 1;
+class AVLTree {
+    root: TreeNode | null;
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
+    constructor() {
+        this.root = null;
+    }
+
+    // Get the height of the node
+    getHeight(node: TreeNode | null): number {
+        return node ? node.height : 0;
+    }
+
+    // Get the balance factor of the node
+    getBalance(node: TreeNode | null): number {
+        if (!node) return 0;
+        return this.getHeight(node.left) - this.getHeight(node.right);
+    }
+
+    // Right rotate the subtree rooted with y
+    rightRotate(y: TreeNode): TreeNode {
+        const x = y.left!;
+        const T2 = x.right;
+
+        // Perform rotation
+        x.right = y;
+        y.left = T2;
+
+        // Update heights
+        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
+        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
+
+        // Return the new root
+        return x;
+    }
+
+    // Left rotate the subtree rooted with x
+    leftRotate(x: TreeNode): TreeNode {
+        const y = x.right!;
+        const T2 = y.left;
+
+        // Perform rotation
+        y.left = x;
+        x.right = T2;
+
+        // Update heights
+        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
+        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
+
+        // Return the new root
+        return y;
+    }
+
+    // Insert a node with the given key
+    insert(node: TreeNode | null, key: number): TreeNode {
+        // Perform the normal BST insert
+        if (!node) return new TreeNode(key);
+
+        if (key < node.key) {
+            node.left = this.insert(node.left, key);
+        } else if (key > node.key) {
+            node.right = this.insert(node.right, key);
         } else {
-            if (len !== 0) {
-                len = lps[len - 1]; // Use LPS array to skip comparisons
-            } else {
-                lps[i] = 0;
-                i++;
-            }
+            // Duplicate keys are not allowed
+            return node;
+        }
+
+        // Update the height of this ancestor node
+        node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
+
+        // Get the balance factor of this ancestor node to check whether
+        // this node became unbalanced
+        const balance = this.getBalance(node);
+
+        // If this node becomes unbalanced, then there are 4 cases
+
+        // Left Left Case
+        if (balance > 1 && key < node.left!.key) {
+            return this.rightRotate(node);
+        }
+
+        // Right Right Case
+        if (balance < -1 && key > node.right!.key) {
+            return this.leftRotate(node);
+        }
+
+        // Left Right Case
+        if (balance > 1 && key > node.left!.key) {
+            node.left = this.leftRotate(node.left!);
+            return this.rightRotate(node);
+        }
+
+        // Right Left Case
+        if (balance < -1 && key < node.right!.key) {
+            node.right = this.rightRotate(node.right!);
+            return this.leftRotate(node);
+        }
+
+        // Return the (unchanged) node pointer
+        return node;
+    }
+
+    // Public method to insert a key
+    public insertKey(key: number): void {
+        this.root = this.insert(this.root, key);
+    }
+
+    // In-order traversal of the tree
+    inOrder(node: TreeNode | null): void {
+        if (node) {
+            this.inOrder(node.left);
+            console.log(node.key);
+            this.inOrder(node.right);
         }
     }
 
-    return lps;
+    // Public method to perform in-order traversal
+    public inOrderTraversal(): void {
+        this.inOrder(this.root);
+    }
 }
 
 // Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const matches = KMPSearch(pattern, text);
-console.log(`Pattern found at indices: ${matches}`);
+const avl = new AVLTree();
+avl.insertKey(10);
+avl.insertKey(20);
+avl.insertKey(30);
+avl.insertKey(40);
+avl.insertKey(50);
+avl.insertKey(25);
+
+console.log("In-order traversal of the AVL tree:");
+avl.inOrderTraversal();
