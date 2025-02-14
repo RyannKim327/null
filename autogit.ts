@@ -1,32 +1,30 @@
-function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
-    const n = input.length;
-    const rotations: string[] = [];
+function shellSort(arr: number[]): number[] {
+    const n = arr.length;
+    let gap = Math.floor(n / 2); // Start with a big gap, then reduce the gap
 
-    // Generate all rotations of the input string
-    for (let i = 0; i < n; i++) {
-        rotations.push(input.slice(i) + input.slice(0, i));
-    }
+    // Start with the largest gap and reduce the gap until it is 0
+    while (gap > 0) {
+        // Perform a gapped insertion sort for this gap size
+        for (let i = gap; i < n; i++) {
+            // Save the current element to be compared
+            const temp = arr[i];
+            let j = i;
 
-    // Sort the rotations
-    rotations.sort();
-
-    // Build the transformed string and find the original index
-    let transformed = '';
-    let originalIndex = -1;
-
-    for (let i = 0; i < n; i++) {
-        const rotation = rotations[i];
-        transformed += rotation[n - 1]; // Last column of the sorted rotations
-        if (rotation === input) {
-            originalIndex = i; // Store the index of the original string
+            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
+            }
+            // Put temp (the original arr[i]) in its correct location
+            arr[j] = temp;
         }
+        gap = Math.floor(gap / 2); // Reduce the gap
     }
 
-    return { transformed, index: originalIndex };
+    return arr;
 }
 
-// Example usage
-const input = "banana";
-const { transformed, index } = burrowsWheelerTransform(input);
-console.log("Transformed:", transformed);
-console.log("Original Index:", index);
+// Example usage:
+const array = [12, 34, 54, 2, 3];
+const sortedArray = shellSort(array);
+console.log(sortedArray); // Output: [2, 3, 12, 34, 54]
