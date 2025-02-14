@@ -1,27 +1,23 @@
-function selectionSort(arr: number[]): number[] {
-    const n = arr.length;
-
-    for (let i = 0; i < n - 1; i++) {
-        // Assume the minimum is the first element of the unsorted part
-        let minIndex = i;
-
-        // Find the index of the minimum element in the unsorted part
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j;
-            }
-        }
-
-        // Swap the found minimum element with the first element of the unsorted part
-        if (minIndex !== i) {
-            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+function isPrime(num: number): boolean {
+    // Check if the number is less than 2
+    if (num < 2) {
+        return false;
+    }
+    
+    // Check for factors from 2 to the square root of num
+    for (let i = 2; i <= Math.sqrt(num); i++) {
+        if (num % i === 0) {
+            return false; // num is divisible by i, so it's not prime
         }
     }
-
-    return arr;
+    
+    return true; // num is prime
 }
 
 // Example usage:
-const array = [64, 25, 12, 22, 11];
-const sortedArray = selectionSort(array);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
+const numberToCheck = 29;
+if (isPrime(numberToCheck)) {
+    console.log(`${numberToCheck} is a prime number.`);
+} else {
+    console.log(`${numberToCheck} is not a prime number.`);
+}
