@@ -1,15 +1,59 @@
-function isArraySortedAscending(arr: number[]): boolean {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false; // Found an element greater than the next one
+class Node {
+    value: any;
+    children: Node[];
+
+    constructor(value: any) {
+        this.value = value;
+        this.children = [];
+    }
+
+    addChild(child: Node) {
+        this.children.push(child);
+    }
+}
+
+function depthLimitedSearch(root: Node, target: any, limit: number): Node | null {
+    const stack: { node: Node; depth: number }[] = [];
+    stack.push({ node: root, depth: 0 });
+
+    while (stack.length > 0) {
+        const { node, depth } = stack.pop()!;
+
+        // Check if the current node is the target
+        if (node.value === target) {
+            return node;
+        }
+
+        // If the current depth is less than the limit, add children to the stack
+        if (depth < limit) {
+            for (let i = node.children.length - 1; i >= 0; i--) {
+                stack.push({ node: node.children[i], depth: depth + 1 });
+            }
         }
     }
-    return true; // No elements were out of order
+
+    // Return null if the target is not found within the depth limit
+    return null;
 }
 
 // Example usage:
-const arr1 = [1, 2, 3, 4, 5];
-const arr2 = [1, 3, 2, 4, 5];
+const root = new Node(1);
+const child1 = new Node(2);
+const child2 = new Node(3);
+const child3 = new Node(4);
+const child4 = new Node(5);
 
-console.log(isArraySortedAscending(arr1)); // true
-console.log(isArraySortedAscending(arr2)); // false
+root.addChild(child1);
+root.addChild(child2);
+child1.addChild(child3);
+child1.addChild(child4);
+
+const target = 4;
+const limit = 2;
+
+const result = depthLimitedSearch(root, target, limit);
+if (result) {
+    console.log(`Found target: ${result.value}`);
+} else {
+    console.log('Target not found within the depth limit.');
+}
