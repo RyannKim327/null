@@ -1,8 +1,12 @@
-function removeVowels(input: string): string {
-    return input.replace(/[aeiouAEIOU]/g, '');
+function getStringLength(str: string): number {
+    let count = 0;
+    for (let char of str) {
+        count++;
+    }
+    return count;
 }
 
 // Example usage:
-const originalString = "Hello, World!";
-const stringWithoutVowels = removeVowels(originalString);
-console.log(stringWithoutVowels); // Hll, Wrld!
+const myString = "Hello, World!";
+const length = getStringLength(myString);
+console.log(length); // Output: 13
