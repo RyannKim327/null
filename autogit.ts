@@ -1,68 +1,65 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+// Define the structure for an edge
+class Edge {
+    constructor(public source: number, public destination: number, public weight: number) {}
+}
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+// Define the Graph class which will hold the edges and the Bellman-Ford Algorithm
+class Graph {
+    edges: Edge[] = [];
+    vertices: number;
+
+    constructor(vertices: number) {
+        this.vertices = vertices;
+    }
+
+    addEdge(source: number, destination: number, weight: number) {
+        this.edges.push(new Edge(source, destination, weight));
+    }
+
+    bellmanFord(start: number): number[] {
+        // Step 1: Initialize distances from the source
+        const distances = new Array(this.vertices).fill(Infinity);
+        distances[start] = 0;
+
+        // Step 2: Relax all edges |V| - 1 times
+        for (let i = 0; i < this.vertices - 1; i++) {
+            for (const edge of this.edges) {
+                const { source, destination, weight } = edge;
+                if (distances[source] !== Infinity && distances[source] + weight < distances[destination]) {
+                    distances[destination] = distances[source] + weight;
+                }
+            }
+        }
+
+        // Step 3: Check for negative-weight cycles
+        for (const edge of this.edges) {
+            const { source, destination, weight } = edge;
+            if (distances[source] !== Infinity && distances[source] + weight < distances[destination]) {
+                throw new Error("Graph contains a negative-weight cycle.");
+            }
+        }
+
+        return distances;
     }
 }
 
-class LinkedList {
-    head: ListNode | null;
+// Example usage
+const graph = new Graph(5); // A graph with 5 vertices
+graph.addEdge(0, 1, -1);
+graph.addEdge(0, 2, 4);
+graph.addEdge(1, 2, 3);
+graph.addEdge(1, 3, 2);
+graph.addEdge(1, 4, 2);
+graph.addEdge(3, 2, 5);
+graph.addEdge(3, 1, 1);
+graph.addEdge(4, 3, -3);
 
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Method to print the list
-    print() {
-        let current = this.head;
-        const values: number[] = [];
-        while (current) {
-            values.push(current.value);
-            current = current.next;
-        }
-        console.log(values.join(' -> '));
-    }
+try {
+    const distances = graph.bellmanFord(0); // Start from vertex 0
+    console.log("Vertex Distance from Source:");
+    distances.forEach((dist, index) => {
+        console.log(`Vertex ${index}: ${dist}`);
+    });
+} catch (error) {
+    console.error(error.message);
 }
-function reverseLinkedList(head: ListNode | null): ListNode | null {
-    let prev: ListNode | null = null;
-    let current: ListNode | null = head;
-
-    while (current) {
-        const nextTemp = current.next; // Store the next node
-        current.next = prev;            // Reverse the current node's pointer
-        prev = current;                 // Move prev and current one step forward
-        current = nextTemp;
-    }
-    return prev; // New head of the reversed list
-}
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
-
-console.log("Original Linked List:");
-list.print();
-
-list.head = reverseLinkedList(list.head);
-
-console.log("Reversed Linked List:");
-list.print();
