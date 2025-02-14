@@ -1,25 +1,51 @@
-function isArraySorted(arr: number[]): boolean {
-    return arr.every((value, index) => index === 0 || value >= arr[index - 1]);
-}
+function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
+    const n = input.length;
+    const rotations: string[] = [];
 
-// Example usage:
-const arr1 = [1, 2, 3, 4, 5];
-const arr2 = [5, 3, 4, 1];
+    // Generate all rotations of the input string
+    for (let i = 0; i < n; i++) {
+        rotations.push(input.slice(i) + input.slice(0, i));
+    }
 
-console.log(isArraySorted(arr1)); // true
-console.log(isArraySorted(arr2)); // false
-function isArraySorted(arr: number[]): boolean {
-    for (let i = 1; i < arr.length; i++) {
-        if (arr[i] < arr[i - 1]) {
-            return false;
+    // Sort the rotations
+    rotations.sort();
+
+    // Build the transformed string and find the original index
+    let transformed = '';
+    let originalIndex = 0;
+
+    for (let i = 0; i < n; i++) {
+        transformed += rotations[i][n - 1]; // Take the last character of each sorted rotation
+        if (rotations[i] === input) {
+            originalIndex = i; // Store the index of the original string
         }
     }
-    return true;
+
+    return { transformed, index: originalIndex };
 }
 
-// Example usage:
-const arr1 = [1, 2, 3, 4, 5];
-const arr2 = [5, 3, 4, 1];
+function inverseBurrowsWheelerTransform(transformed: string, index: number): string {
+    const n = transformed.length;
+    const table: string[] = new Array(n).fill('');
 
-console.log(isArraySorted(arr1)); // true
-console.log(isArraySorted(arr2)); // false
+    // Rebuild the table
+    for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+            table[j] = transformed[j] + table[j];
+        }
+        // Sort the table
+        table.sort();
+    }
+
+    // Return the original string
+    return table[index];
+}
+
+// Example usage
+const input = "banana";
+const { transformed, index } = burrowsWheelerTransform(input);
+console.log("Transformed:", transformed);
+console.log("Original Index:", index);
+
+const original = inverseBurrowsWheelerTransform(transformed, index);
+console.log("Original:", original);
