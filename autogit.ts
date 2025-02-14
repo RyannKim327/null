@@ -1,38 +1,50 @@
-function getDigit(num: number, digitIndex: number): number {
-    return Math.floor(Math.abs(num) / Math.pow(10, digitIndex)) % 10;
-}
+type Node = {
+    state: string; // The current state
+    cost: number;  // The cost to reach this state
+    path: string[]; // The path taken to reach this state
+};
 
-function getDigitCount(num: number): number {
-    if (num === 0) return 1;
-    return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
-
-function getMaxDigitCount(nums: number[]): number {
-    let maxDigitCount = 0;
-    for (const num of nums) {
-        maxDigitCount = Math.max(maxDigitCount, getDigitCount(num));
-    }
-    return maxDigitCount;
-}
-
-function radixSort(nums: number[]): number[] {
-    const maxDigitCount = getMaxDigitCount(nums);
-
-    for (let digitIndex = 0; digitIndex < maxDigitCount; digitIndex++) {
-        const buckets: number[][] = Array.from({ length: 10 }, () => []);
-        
-        for (const num of nums) {
-            const digit = getDigit(num, digitIndex);
-            buckets[digit].push(num);
-        }
-        
-        nums = [].concat(...buckets);
-    }
+function beamSearch(initialState: string, goalState: string, generateSuccessors: (state: string) => Node[], beamWidth: number): string[] | null {
+    let currentLevel: Node[] = [{ state: initialState, cost: 0, path: [initialState] }];
     
-    return nums;
+    while (currentLevel.length > 0) {
+        // Generate successors for all nodes in the current level
+        let successors: Node[] = [];
+        for (const node of currentLevel) {
+            const newSuccessors = generateSuccessors(node.state);
+            successors.push(...newSuccessors);
+        }
+
+        // Check if any successor is the goal state
+        for (const successor of successors) {
+            if (successor.state === goalState) {
+                return successor.path; // Return the path to the goal state
+            }
+        }
+
+        // Sort successors by cost and keep only the best `beamWidth` nodes
+        successors.sort((a, b) => a.cost - b.cost);
+        currentLevel = successors.slice(0, beamWidth);
+    }
+
+    return null; // Return null if the goal state is not found
 }
 
-// Example Usage:
-const numbers = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedNumbers = radixSort(numbers);
-console.log(sortedNumbers); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+// Example usage
+const generateSuccessors = (state: string): Node[] => {
+    // This is a placeholder for generating successors.
+    // Replace this with your actual logic to generate child nodes.
+    const successors: Node[] = [];
+    const nextStates = ['A', 'B', 'C']; // Example next states
+    for (const nextState of nextStates) {
+        successors.push({ state: nextState, cost: Math.random(), path: [state, nextState] });
+    }
+    return successors;
+};
+
+const initialState = 'Start';
+const goalState = 'Goal';
+const beamWidth = 2;
+
+const result = beamSearch(initialState, goalState, generateSuccessors, beamWidth);
+console.log(result);
