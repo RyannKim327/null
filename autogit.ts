@@ -1,27 +1,67 @@
-const numbers: number[] = [1, 2, 3, 4, 5];
-const max = Math.max(...numbers);
-console.log(max); // Output: 5
-const numbers: number[] = [1, 2, 3, 4, 5];
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-let max = numbers[0]; // Assume the first element is the max initially
-for (let i = 1; i < numbers.length; i++) {
-    if (numbers[i] > max) {
-        max = numbers[i];
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
 }
 
-console.log(max); // Output: 5
-const numbers: number[] = [1, 2, 3, 4, 5];
-
-const max = numbers.reduce((acc, curr) => (curr > acc ? curr : acc), numbers[0]);
-console.log(max); // Output: 5
-const numbers: number[] = [1, 2, 3, 4, 5];
-
-let max = numbers[0];
-numbers.forEach(num => {
-    if (num > max) {
-        max = num;
+function getLength(head: ListNode | null): number {
+    let length = 0;
+    let current = head;
+    while (current) {
+        length++;
+        current = current.next;
     }
-});
+    return length;
+}
 
-console.log(max); // Output: 5
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+    if (!headA || !headB) return null;
+
+    const lenA = getLength(headA);
+    const lenB = getLength(headB);
+
+    let currentA: ListNode | null = headA;
+    let currentB: ListNode | null = headB;
+
+    // Align the start of both lists
+    if (lenA > lenB) {
+        for (let i = 0; i < lenA - lenB; i++) {
+            currentA = currentA!.next; // Use non-null assertion since we checked for null
+        }
+    } else {
+        for (let i = 0; i < lenB - lenA; i++) {
+            currentB = currentB!.next;
+        }
+    }
+
+    // Traverse both lists to find the intersection
+    while (currentA && currentB) {
+        if (currentA === currentB) {
+            return currentA; // Intersection found
+        }
+        currentA = currentA.next;
+        currentB = currentB.next;
+    }
+
+    return null; // No intersection
+}
+
+// Example usage:
+const nodeA1 = new ListNode(1);
+const nodeA2 = new ListNode(2);
+const nodeB1 = new ListNode(3);
+const nodeB2 = new ListNode(4);
+const intersectionNode = new ListNode(5);
+
+nodeA1.next = nodeA2;
+nodeA2.next = intersectionNode;
+
+nodeB1.next = nodeB2;
+nodeB2.next = intersectionNode;
+
+const intersection = getIntersectionNode(nodeA1, nodeB1);
+console.log(intersection ? intersection.value : "No intersection");
