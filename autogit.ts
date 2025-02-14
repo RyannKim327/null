@@ -1,9 +1,10 @@
-let str = "   Hello, World!   ";
-let trimmedStr = str.trim();
-console.log(trimmedStr); // Output: "Hello, World!"
-let str = "   Hello,   World!   ";
-let noWhitespaceStr = str.replace(/\s+/g, '');
-console.log(noWhitespaceStr); // Output: "Hello,World!"
-let str = "   Hello,   World!   ";
-let noSpacesStr = str.replace(/ +/g, ''); // This will only remove spaces
-console.log(noSpacesStr); // Output: "Hello,World!"
+let string1: string = "Hello, ";
+let string2: string = "world!";
+let concatenated: string = string1 + string2;
+
+console.log(concatenated); // Output: Hello, world!
+let string1: string = "Hello, ";
+let string2: string = "world!";
+let concatenated: string = `${string1}${string2}`;
+
+console.log(concatenated); // Output: Hello, world!
