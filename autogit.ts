@@ -1,46 +1,40 @@
-class Stack<T> {
-    private items: T[] = [];
-
-    // Push an item onto the stack
-    push(item: T): void {
-        this.items.push(item);
-    }
-
-    // Pop an item off the stack
-    pop(): T | undefined {
-        return this.items.pop();
-    }
-
-    // Peek at the top item of the stack without removing it
-    peek(): T | undefined {
-        return this.items[this.items.length - 1];
-    }
-
-    // Check if the stack is empty
-    isEmpty(): boolean {
-        return this.items.length === 0;
-    }
-
-    // Get the size of the stack
-    size(): number {
-        return this.items.length;
-    }
-
-    // Clear the stack
-    clear(): void {
-        this.items = [];
-    }
+interface Node {
+    value: any;
+    children?: Node[];
 }
 
-// Example usage:
-const stack = new Stack<number>();
-stack.push(1);
-stack.push(2);
-stack.push(3);
+function breadthLimitedSearch(root: Node, target: any, maxDepth: number): boolean {
+    if (maxDepth < 0) return false; // Return false if maximum depth is exceeded
 
-console.log(stack.peek()); // Output: 3
-console.log(stack.pop());   // Output: 3
-console.log(stack.size());  // Output: 2
-console.log(stack.isEmpty()); // Output: false
-stack.clear();
-console.log(stack.isEmpty()); // Output: true
+    let queue: { node: Node; depth: number }[] = [{ node: root, depth: 0 }]; // Initialize queue
+
+    while (queue.length > 0) {
+        const { node, depth } = queue.shift()!; // Get the next node and its depth
+
+        // Check if the current node's value is the target
+        if (node.value === target) {
+            return true;
+        }
+
+        // If we haven't reached the maximum depth, add children to the queue
+        if (depth < maxDepth && node.children) {
+            for (const child of node.children) {
+                queue.push({ node: child, depth: depth + 1 });
+            }
+        }
+    }
+
+    return false; // Target not found within depth limit
+}
+
+// Example usage
+const tree: Node = {
+    value: 1,
+    children: [
+        { value: 2, children: [{ value: 4 }, { value: 5 }] },
+        { value: 3, children: [{ value: 6 }, { value: 7 }] }
+    ]
+};
+
+console.log(breadthLimitedSearch(tree, 5, 2)); // true
+console.log(breadthLimitedSearch(tree, 6, 1)); // false
