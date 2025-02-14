@@ -1,78 +1,21 @@
-class Graph {
-    private vertices: number;
-    private adjList: Map<number, number[]>;
-
-    constructor(vertices: number) {
-        this.vertices = vertices;
-        this.adjList = new Map<number, number[]>();
+function isPrime(num: number): boolean {
+    // Check if the number is less than 2
+    if (num < 2) {
+        return false;
     }
-
-    addEdge(v: number, w: number) {
-        if (!this.adjList.has(v)) {
-            this.adjList.set(v, []);
+    // Check for factors from 2 to the square root of num
+    for (let i = 2; i <= Math.sqrt(num); i++) {
+        if (num % i === 0) {
+            return false; // num is divisible by i, so it's not prime
         }
-        this.adjList.get(v)!.push(w);
     }
-
-    // Tarjan's algorithm to find strongly connected components
-    tarjansAlgorithm(): number[][] {
-        const index: number[] = new Array(this.vertices).fill(-1);
-        const lowlink: number[] = new Array(this.vertices).fill(-1);
-        const onStack: boolean[] = new Array(this.vertices).fill(false);
-        const stack: number[] = [];
-        const result: number[][] = [];
-        let currentIndex = 0;
-
-        const strongConnect = (v: number) => {
-            index[v] = currentIndex;
-            lowlink[v] = currentIndex;
-            currentIndex++;
-            stack.push(v);
-            onStack[v] = true;
-
-            // Consider successors of v
-            const neighbors = this.adjList.get(v) || [];
-            for (const w of neighbors) {
-                if (index[w] === -1) {
-                    // Successor w has not yet been visited; recurse on it
-                    strongConnect(w);
-                    lowlink[v] = Math.min(lowlink[v], lowlink[w]);
-                } else if (onStack[w]) {
-                    // Successor w is in stack and hence in the current SCC
-                    lowlink[v] = Math.min(lowlink[v], index[w]);
-                }
-            }
-
-            // If v is a root node, pop the stack and generate an SCC
-            if (lowlink[v] === index[v]) {
-                const scc: number[] = [];
-                let w: number;
-                do {
-                    w = stack.pop()!;
-                    onStack[w] = false;
-                    scc.push(w);
-                } while (w !== v);
-                result.push(scc);
-            }
-        };
-
-        for (let v = 0; v < this.vertices; v++) {
-            if (index[v] === -1) {
-                strongConnect(v);
-            }
-        }
-
-        return result;
-    }
+    return true; // num is prime
 }
 
 // Example usage:
-const graph = new Graph(5);
-graph.addEdge(0, 1);
-graph.addEdge(1, 2);
-graph.addEdge(2, 0);
-graph.addEdge(1, 3);
-graph.addEdge(3, 4);
-
-const sccs = graph.tarjansAlgorithm();
-console.log("Strongly Connected Components:", sccs);
+const numberToCheck = 29;
+if (isPrime(numberToCheck)) {
+    console.log(`${numberToCheck} is a prime number.`);
+} else {
+    console.log(`${numberToCheck} is not a prime number.`);
+}
