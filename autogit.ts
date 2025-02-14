@@ -1,120 +1,53 @@
-class BTreeNode {
-    keys: number[];
-    children: BTreeNode[];
-    isLeaf: boolean;
-    degree: number;
+function computeLPSArray(pattern: string): number[] {
+    const lps: number[] = new Array(pattern.length).fill(0);
+    let length = 0; // length of the previous longest prefix suffix
+    let i = 1;
 
-    constructor(degree: number, isLeaf: boolean) {
-        this.degree = degree;
-        this.isLeaf = isLeaf;
-        this.keys = [];
-        this.children = [];
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
     }
+    return lps;
 }
 
-class BTree {
-    root: BTreeNode;
-    degree: number;
+function KMPSearch(text: string, pattern: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
+    let i = 0; // index for text
+    let j = 0; // index for pattern
 
-    constructor(degree: number) {
-        this.root = new BTreeNode(degree, true);
-        this.degree = degree;
-    }
-
-    insert(key: number) {
-        const root = this.root;
-        if (root.keys.length === (2 * this.degree) - 1) {
-            const newRoot = new BTreeNode(this.degree, false);
-            newRoot.children.push(root);
-            this.splitChild(newRoot, 0);
-            this.root = newRoot;
-            this.insertNonFull(newRoot, key);
-        } else {
-            this.insertNonFull(root, key);
-        }
-    }
-
-    splitChild(parent: BTreeNode, index: number) {
-        const degree = this.degree;
-        const fullNode = parent.children[index];
-        const newNode = new BTreeNode(degree, fullNode.isLeaf);
-
-        for (let i = 0; i < degree - 1; i++) {
-            newNode.keys.push(fullNode.keys[degree + i]);
-        }
-
-        if (!fullNode.isLeaf) {
-            for (let i = 0; i < degree; i++) {
-                newNode.children.push(fullNode.children[degree + i]);
-            }
-        }
-
-        parent.keys.splice(index, 0, fullNode.keys[degree - 1]);
-        parent.children.splice(index + 1, 0, newNode);
-        fullNode.keys.splice(degree - 1, degree);
-    }
-
-    insertNonFull(node: BTreeNode, key: number) {
-        let i = node.keys.length - 1;
-
-        if (node.isLeaf) {
-            while (i >= 0 && key < node.keys[i]) {
-                i--;
-            }
-            node.keys.splice(i + 1, 0, key);
-        } else {
-            while (i >= 0 && key < node.keys[i]) {
-                i--;
-            }
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
             i++;
-            if (node.children[i].keys.length === (2 * this.degree) - 1) {
-                this.splitChild(node, i);
-                if (key > node.keys[i]) {
-                    i++;
-                }
-            }
-            this.insertNonFull(node.children[i], key);
-        }
-    }
-
-    search(key: number, node: BTreeNode = this.root): BTreeNode | null {
-        let i = 0;
-        while (i < node.keys.length && key > node.keys[i]) {
-            i++;
+            j++;
         }
 
-        if (i < node.keys.length && node.keys[i] === key) {
-            return node;
-        }
-
-        if (node.isLeaf) {
-            return null;
-        }
-
-        return this.search(key, node.children[i]);
-    }
-
-    printTree(node: BTreeNode = this.root, level: number = 0): void {
-        if (node) {
-            console.log("Level " + level + ":", node.keys);
-            level++;
-            for (const child of node.children) {
-                this.printTree(child, level);
+        if (j === pattern.length) {
+            result.push(i - j); // Match found, add the starting index
+            j = lps[j - 1]; // Use LPS to avoid unnecessary comparisons
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1]; // Use LPS to skip characters in the pattern
+            } else {
+                i++;
             }
         }
     }
+    return result; // Return all starting indices of matches
 }
 
-// Usage example
-const bTree = new BTree(3);
-bTree.insert(10);
-bTree.insert(20);
-bTree.insert(5);
-bTree.insert(6);
-bTree.insert(12);
-bTree.insert(30);
-bTree.insert(7);
-bTree.insert(17);
-
-// Print the B-tree
-bTree.printTree();
+// Example usage:
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = KMPSearch(text, pattern);
+console.log("Pattern found at indices:", result);
