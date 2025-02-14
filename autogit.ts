@@ -1,12 +1,27 @@
-function factorial(n: number): number {
-    // Base case: factorial of 0 or 1 is 1
-    if (n === 0 || n === 1) {
-        return 1;
+const numbers: number[] = [1, 2, 3, 4, 5];
+const max = Math.max(...numbers);
+console.log(max); // Output: 5
+const numbers: number[] = [1, 2, 3, 4, 5];
+
+let max = numbers[0]; // Assume the first element is the max initially
+for (let i = 1; i < numbers.length; i++) {
+    if (numbers[i] > max) {
+        max = numbers[i];
     }
-    // Recursive case: n! = n * (n - 1)!
-    return n * factorial(n - 1);
 }
 
-// Example usage:
-const num = 5;
-console.log(`Factorial of ${num} is ${factorial(num)}`); // Output: Factorial of 5 is 120
+console.log(max); // Output: 5
+const numbers: number[] = [1, 2, 3, 4, 5];
+
+const max = numbers.reduce((acc, curr) => (curr > acc ? curr : acc), numbers[0]);
+console.log(max); // Output: 5
+const numbers: number[] = [1, 2, 3, 4, 5];
+
+let max = numbers[0];
+numbers.forEach(num => {
+    if (num > max) {
+        max = num;
+    }
+});
+
+console.log(max); // Output: 5
