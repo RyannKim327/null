@@ -1,50 +1,43 @@
-type Graph = {
-    [key: string]: { node: string; weight: number }[];
-};
-
-function dijkstra(graph: Graph, start: string): { [key: string]: number } {
-    const distances: { [key: string]: number } = {};
-    const priorityQueue: { node: string; distance: number }[] = [];
-    const visited: Set<string> = new Set();
-
-    // Initialize distances
-    for (const node in graph) {
-        distances[node] = Infinity;
-    }
-    distances[start] = 0;
-    priorityQueue.push({ node: start, distance: 0 });
-
-    while (priorityQueue.length > 0) {
-        // Sort the queue by distance
-        priorityQueue.sort((a, b) => a.distance - b.distance);
-        const { node: currentNode } = priorityQueue.shift()!;
-
-        if (visited.has(currentNode)) {
-            continue;
-        }
-        visited.add(currentNode);
-
-        // Explore neighbors
-        for (const neighbor of graph[currentNode]) {
-            const newDistance = distances[currentNode] + neighbor.weight;
-
-            if (newDistance < distances[neighbor.node]) {
-                distances[neighbor.node] = newDistance;
-                priorityQueue.push({ node: neighbor.node, distance: newDistance });
-            }
-        }
+function quickSelect(arr: number[], left: number, right: number, k: number): number {
+    if (left === right) {
+        return arr[left]; // If the list contains only one element
     }
 
-    return distances;
+    const pivotIndex = partition(arr, left, right);
+
+    // The pivot is in its final sorted position
+    if (k === pivotIndex) {
+        return arr[k];
+    } else if (k < pivotIndex) {
+        return quickSelect(arr, left, pivotIndex - 1, k);
+    } else {
+        return quickSelect(arr, pivotIndex + 1, right, k);
+    }
 }
 
-// Example usage
-const graph: Graph = {
-    A: [{ node: 'B', weight: 1 }, { node: 'C', weight: 4 }],
-    B: [{ node: 'A', weight: 1 }, { node: 'C', weight: 2 }, { node: 'D', weight: 5 }],
-    C: [{ node: 'A', weight: 4 }, { node: 'B', weight: 2 }, { node: 'D', weight: 1 }],
-    D: [{ node: 'B', weight: 5 }, { node: 'C', weight: 1 }],
-};
+function partition(arr: number[], left: number, right: number): number {
+    const pivot = arr[right]; // Choose the rightmost element as pivot
+    let i = left;
 
-const shortestPaths = dijkstra(graph, 'A');
-console.log(shortestPaths);
+    for (let j = left; j < right; j++) {
+        if (arr[j] < pivot) {
+            [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap elements
+            i++;
+        }
+    }
+    [arr[i], arr[right]] = [arr[right], arr[i]]; // Swap pivot to its final place
+    return i; // Return the index of the pivot
+}
+
+function findKthSmallest(arr: number[], k: number): number {
+    if (k < 1 || k > arr.length) {
+        throw new Error("k is out of bounds");
+    }
+    return quickSelect(arr, 0, arr.length - 1, k - 1); // k-1 for zero-based index
+}
+
+// Example usage:
+const arr = [3, 2, 1, 5, 6, 4];
+const k = 2;
+const kthSmallest = findKthSmallest(arr, k);
+console.log(`The ${k}th smallest element is ${kthSmallest}`); // Output: The 2th smallest element is 2
