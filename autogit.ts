@@ -1,59 +1,28 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function largestPrimeFactor(n: number): number {
+    let largestFactor = -1;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-class LinkedList {
-    head: ListNode | null;
-
-    constructor() {
-        this.head = null;
+    // Check for number of 2s that divide n
+    while (n % 2 === 0) {
+        largestFactor = 2;
+        n /= 2;
     }
 
-    // Method to add a new node to the linked list
-    add(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
+    // n must be odd at this point, so we can skip even numbers
+    for (let i = 3; i <= Math.sqrt(n); i += 2) {
+        while (n % i === 0) {
+            largestFactor = i;
+            n /= i;
         }
     }
 
-    // Method to find the middle element
-    findMiddle(): ListNode | null {
-        let slowPointer: ListNode | null = this.head;
-        let fastPointer: ListNode | null = this.head;
-
-        while (fastPointer && fastPointer.next) {
-            slowPointer = slowPointer?.next || null; // Move slow pointer by 1
-            fastPointer = fastPointer.next.next; // Move fast pointer by 2
-        }
-
-        return slowPointer; // Slow pointer will be at the middle
+    // This condition is to check if n is a prime number greater than 2
+    if (n > 2) {
+        largestFactor = n;
     }
+
+    return largestFactor;
 }
 
 // Example usage:
-const linkedList = new LinkedList();
-linkedList.add(1);
-linkedList.add(2);
-linkedList.add(3);
-linkedList.add(4);
-linkedList.add(5);
-
-const middleNode = linkedList.findMiddle();
-if (middleNode) {
-    console.log(`The middle element is: ${middleNode.value}`);
-} else {
-    console.log("The linked list is empty.");
-}
+const num = 56;
+console.log(`The largest prime factor of ${num} is ${largestPrimeFactor(num)}`);
