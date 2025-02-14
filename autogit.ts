@@ -1,30 +1,26 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+function countingSort(arr: number[], max: number): number[] {
+    // Step 1: Create a count array with the size of max + 1 (to include max)
+    const count: number[] = new Array(max + 1).fill(0);
+    
+    // Step 2: Store the count of each number in the count array
+    for (const num of arr) {
+        count[num]++;
     }
-}
-function sumOfNodes(root: TreeNode | null): number {
-    // Base case: if the node is null, return 0
-    if (root === null) {
-        return 0;
+    
+    // Step 3: Build the output array
+    const output: number[] = [];
+    for (let i = 0; i <= max; i++) {
+        while (count[i] > 0) {
+            output.push(i);
+            count[i]--;
+        }
     }
-
-    // Recursive case: sum the value of the current node and the sums of the left and right subtrees
-    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
+    
+    return output;
 }
-// Create a binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
 
-// Calculate the sum of all nodes
-const totalSum = sumOfNodes(root);
-console.log(`The sum of all nodes in the binary tree is: ${totalSum}`); // Output: 15
+// Example usage:
+const inputArray = [4, 2, 2, 8, 3, 3, 1];
+const maxValue = Math.max(...inputArray);
+const sortedArray = countingSort(inputArray, maxValue);
+console.log(sortedArray); // Output: [1, 2, 2, 3, 3, 4, 8]
