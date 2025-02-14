@@ -1,19 +1,42 @@
-function longestCommonPrefix(strs: string[]): string {
-    if (strs.length === 0) return "";
-    if (strs.length === 1) return strs[0];
+function longestCommonSubsequence(text1: string, text2: string): string {
+    const m = text1.length;
+    const n = text2.length;
 
-    let prefix = strs[0];
+    // Create a 2D array to store lengths of longest common subsequence.
+    const dp: number[][] = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
 
-    for (let i = 1; i < strs.length; i++) {
-        while (strs[i].indexOf(prefix) !== 0) {
-            prefix = prefix.substring(0, prefix.length - 1);
-            if (prefix === "") return "";
+    // Fill the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (text1[i - 1] === text2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
         }
     }
 
-    return prefix;
+    // Backtrack to find the LCS string
+    let lcs = '';
+    let i = m;
+    let j = n;
+
+    while (i > 0 && j > 0) {
+        if (text1[i - 1] === text2[j - 1]) {
+            lcs = text1[i - 1] + lcs;
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
+        }
+    }
+
+    return lcs;
 }
 
 // Example usage:
-const strings = ["flower", "flow", "flight"];
-console.log(longestCommonPrefix(strings)); // Output: "fl"
+const s1 = "ABCBDAB";
+const s2 = "BDCAB";
+console.log(longestCommonSubsequence(s1, s2));  // Output: "BCAB"
