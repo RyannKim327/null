@@ -1,67 +1,48 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+class Stack<T> {
+    private items: T[] = [];
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+    // Push an item onto the stack
+    push(item: T): void {
+        this.items.push(item);
+    }
+
+    // Pop an item off the stack
+    pop(): T | undefined {
+        return this.items.pop();
+    }
+
+    // Peek at the top item of the stack without removing it
+    peek(): T | undefined {
+        return this.items[this.items.length - 1];
+    }
+
+    // Check if the stack is empty
+    isEmpty(): boolean {
+        return this.items.length === 0;
+    }
+
+    // Get the size of the stack
+    size(): number {
+        return this.items.length;
+    }
+
+    // Clear the stack
+    clear(): void {
+        this.items = [];
+    }
+
+    // Print the stack (for debugging purposes)
+    print(): void {
+        console.log(this.items);
     }
 }
 
-function getLength(head: ListNode | null): number {
-    let length = 0;
-    let current = head;
-    while (current) {
-        length++;
-        current = current.next;
-    }
-    return length;
-}
-
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    if (!headA || !headB) return null;
-
-    const lenA = getLength(headA);
-    const lenB = getLength(headB);
-
-    let currentA: ListNode | null = headA;
-    let currentB: ListNode | null = headB;
-
-    // Align the start of both lists
-    if (lenA > lenB) {
-        for (let i = 0; i < lenA - lenB; i++) {
-            currentA = currentA!.next; // Use non-null assertion since we checked for null
-        }
-    } else {
-        for (let i = 0; i < lenB - lenA; i++) {
-            currentB = currentB!.next;
-        }
-    }
-
-    // Traverse both lists to find the intersection
-    while (currentA && currentB) {
-        if (currentA === currentB) {
-            return currentA; // Intersection found
-        }
-        currentA = currentA.next;
-        currentB = currentB.next;
-    }
-
-    return null; // No intersection
-}
-
-// Example usage:
-const nodeA1 = new ListNode(1);
-const nodeA2 = new ListNode(2);
-const nodeB1 = new ListNode(3);
-const nodeB2 = new ListNode(4);
-const intersectionNode = new ListNode(5);
-
-nodeA1.next = nodeA2;
-nodeA2.next = intersectionNode;
-
-nodeB1.next = nodeB2;
-nodeB2.next = intersectionNode;
-
-const intersection = getIntersectionNode(nodeA1, nodeB1);
-console.log(intersection ? intersection.value : "No intersection");
+// Example usage
+const stack = new Stack<number>();
+stack.push(1);
+stack.push(2);
+stack.push(3);
+console.log(stack.peek()); // Output: 3
+console.log(stack.pop());   // Output: 3
+console.log(stack.size());  // Output: 2
+stack.print();              // Output: [1, 2]
