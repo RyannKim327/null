@@ -1,88 +1,125 @@
 class Node<T> {
     value: T;
-    next: Node<T> | null;
+    forward: Node<T>[];
 
-    constructor(value: T) {
+    constructor(value: T, level: number) {
         this.value = value;
-        this.next = null;
+        this.forward = new Array(level + 1).fill(null);
     }
 }
 
-class LinkedList<T> {
-    head: Node<T> | null;
-    size: number;
+class SkipList<T> {
+    private head: Node<T>;
+    private maxLevel: number;
+    private p: number; // Probability for level generation
+    private level: number;
 
-    constructor() {
-        this.head = null;
-        this.size = 0;
+    constructor(maxLevel: number = 16, p: number = 0.5) {
+        this.maxLevel = maxLevel;
+        this.p = p;
+        this.level = 0;
+        this.head = new Node<T>(null, this.maxLevel);
     }
 
-    add(value: T): void {
-        const newNode = new Node(value);
-
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
+    private randomLevel(): number {
+        let lvl = 0;
+        while (Math.random() < this.p && lvl < this.maxLevel) {
+            lvl++;
         }
-        this.size++;
+        return lvl;
     }
 
-    remove(value: T): boolean {
-        if (!this.head) return false;
+    insert(value: T): void {
+        const update: Node<T>[] = new Array(this.maxLevel + 1);
+        let current: Node<T> = this.head;
 
-        if (this.head.value === value) {
-            this.head = this.head.next;
-            this.size--;
+        // Find the position to insert the new value
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+            update[i] = current;
+        }
+
+        current = current.forward[0];
+
+        // If the value is not already present, insert it
+        if (current === null || current.value !== value) {
+            const newLevel = this.randomLevel();
+
+            if (newLevel > this.level) {
+                for (let i = this.level + 1; i <= newLevel; i++) {
+                    update[i] = this.head;
+                }
+                this.level = newLevel;
+            }
+
+            const newNode = new Node(value, newLevel);
+            for (let i = 0; i <= newLevel; i++) {
+                newNode.forward[i] = update[i].forward[i];
+                update[i].forward[i] = newNode;
+            }
+        }
+    }
+
+    search(value: T): boolean {
+        let current: Node<T> = this.head;
+
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+        }
+
+        current = current.forward[0];
+
+        return current !== null && current.value === value;
+    }
+
+    delete(value: T): boolean {
+        const update: Node<T>[] = new Array(this.maxLevel + 1);
+        let current: Node<T> = this.head;
+
+        // Find the position to delete the value
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+            update[i] = current;
+        }
+
+        current = current.forward[0];
+
+        // If the value is found, delete it
+        if (current !== null && current.value === value) {
+            for (let i = 0; i <= this.level; i++) {
+                if (update[i].forward[i] !== current) break;
+                update[i].forward[i] = current.forward[i];
+            }
+
+            // Remove levels if necessary
+            while (this.level > 0 && this.head.forward[this.level] === null) {
+                this.level--;
+            }
+
             return true;
         }
 
-        let current = this.head;
-        while (current.next) {
-            if (current.next.value === value) {
-                current.next = current.next.next;
-                this.size--;
-                return true;
-            }
-            current = current.next;
-        }
-
         return false;
-    }
-
-    contains(value: T): boolean {
-        let current = this.head;
-        while (current) {
-            if (current.value === value) {
-                return true;
-            }
-            current = current.next;
-        }
-        return false;
-    }
-
-    printList(): void {
-        let current = this.head;
-        const values: T[] = [];
-        while (current) {
-            values.push(current.value);
-            current = current.next;
-        }
-        console.log(values.join(' -> '));
     }
 }
 
 // Example usage
-const list = new LinkedList<number>();
-list.add(1);
-list.add(2);
-list.add(3);
-list.printList(); // Output: 1 -> 2 -> 3
-list.remove(2);
-list.printList(); // Output: 1 -> 3
-console.log(list.contains(1)); // Output: true
-console.log(list.contains(4)); // Output: false
+const skipList = new SkipList<number>();
+skipList.insert(3);
+skipList.insert(6);
+skipList.insert(7);
+skipList.insert(9);
+skipList.insert(12);
+skipList.insert(19);
+
+console.log(skipList.search(7)); // true
+console.log(skipList.search(15)); // false
+
+skipList.delete(3);
+console.log(skipList.search(3)); // false
