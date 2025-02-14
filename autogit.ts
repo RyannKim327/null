@@ -1,44 +1,55 @@
-function buildBadCharTable(pattern: string): { [key: string]: number } {
-    const badCharTable: { [key: string]: number } = {};
-    const patternLength = pattern.length;
+function KMPSearch(pattern: string, text: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
+    let i = 0; // index for text
+    let j = 0; // index for pattern
 
-    for (let i = 0; i < patternLength; i++) {
-        badCharTable[pattern[i]] = i;
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            result.push(i - j); // Match found
+            j = lps[j - 1]; // Look for next match
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1]; // Use LPS to avoid unnecessary comparisons
+            } else {
+                i++;
+            }
+        }
     }
 
-    return badCharTable;
+    return result;
 }
 
-function boyerMooreSearch(text: string, pattern: string): number[] {
-    const badCharTable = buildBadCharTable(pattern);
-    const matches: number[] = [];
-    const textLength = text.length;
-    const patternLength = pattern.length;
-    let shift = 0;
+function computeLPSArray(pattern: string): number[] {
+    const lps = new Array(pattern.length).fill(0);
+    let len = 0; // length of the previous longest prefix suffix
+    let i = 1;
 
-    while (shift <= textLength - patternLength) {
-        let j = patternLength - 1;
-
-        while (j >= 0 && pattern[j] === text[shift + j]) {
-            j--;
-        }
-
-        if (j < 0) {
-            matches.push(shift);
-            shift += (shift + patternLength < textLength) 
-                ? patternLength - badCharTable[text[shift + patternLength]] || patternLength 
-                : 1;
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
         } else {
-            shift += Math.max(1, j - (badCharTable[text[shift + j]] || -1));
+            if (len !== 0) {
+                len = lps[len - 1]; // Use LPS array to skip comparisons
+            } else {
+                lps[i] = 0;
+                i++;
+            }
         }
     }
 
-    return matches;
+    return lps;
 }
 
 // Example usage
 const text = "ABABDABACDABABCABAB";
 const pattern = "ABABCABAB";
-const result = boyerMooreSearch(text, pattern);
-
-console.log("Pattern found at positions: ", result);
+const matches = KMPSearch(pattern, text);
+console.log(`Pattern found at indices: ${matches}`);
