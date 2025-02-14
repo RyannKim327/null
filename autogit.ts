@@ -1,30 +1,45 @@
-// Define an interface for the data structure we expect to receive
-interface User {
-    id: number;
-    name: string;
-    username: string;
-    email: string;
-}
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-async function fetchUsers() {
-    try {
-        // Fetch data from a public API
-        const response = await fetch('https://jsonplaceholder.typicode.com/users');
-        
-        // Check if the response is ok (status in the range 200-299)
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        
-        // Parse the JSON data
-        const users: User[] = await response.json();
-        
-        // Log the users to the console
-        console.log('Fetched Users:', users);
-    } catch (error) {
-        console.error('Fetch error:', error);
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
 }
 
-// Call the function to execute it
-fetchUsers();
+function hasCycle(head: ListNode | null): boolean {
+    if (!head) return false;
+
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next; // Move slow pointer by 1
+        fast = fast.next.next; // Move fast pointer by 2
+
+        if (slow === fast) {
+            return true; // Cycle detected
+        }
+    }
+
+    return false; // No cycle
+}
+
+// Example usage:
+const node1 = new ListNode(1);
+const node2 = new ListNode(2);
+const node3 = new ListNode(3);
+const node4 = new ListNode(4);
+
+// Creating a cycle for testing
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node2; // Creates a cycle
+
+console.log(hasCycle(node1)); // Output: true
+
+// Creating a non-cyclic linked list for testing
+node4.next = null; // Break the cycle
+console.log(hasCycle(node1)); // Output: false
