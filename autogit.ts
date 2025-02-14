@@ -1,24 +1,13 @@
-function findSecondLargest(arr: number[]): number | null {
-    if (arr.length < 2) {
-        return null; // Not enough elements
+function factorial(n: number): number {
+    // Base case: if n is 0, the factorial is 1
+    if (n === 0) {
+        return 1;
+    } else {
+        // Recursive case: n * factorial of (n - 1)
+        return n * factorial(n - 1);
     }
-
-    let largest = -Infinity;
-    let secondLargest = -Infinity;
-
-    for (const num of arr) {
-        if (num > largest) {
-            secondLargest = largest; // Update second largest
-            largest = num;          // Update largest
-        } else if (num > secondLargest && num !== largest) {
-            secondLargest = num;   // Update second largest
-        }
-    }
-
-    return secondLargest === -Infinity ? null : secondLargest; // In case all elements are equal
 }
 
-// Example usage:
-const numbers = [3, 1, 4, 4, 5, 2];
-const secondLargest = findSecondLargest(numbers);
-console.log(secondLargest); // Output: 4
+// Example usage
+const number = 5;
+console.log(`Factorial of ${number} is ${factorial(number)}`);
