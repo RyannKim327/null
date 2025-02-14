@@ -1,58 +1,54 @@
-type State = {
-    id: string;
-    score: number;
+class SuffixTreeNode {
+    children: Map<string, SuffixTreeNode>;
+    endIndices: number[];
+
+    constructor() {
+        this.children = new Map();
+        this.endIndices = [];
+    }
 }
 
-type BeamSearchOptions = {
-    beamWidth: number;
-    maxSteps: number;
-}
+class SuffixTree {
+    root: SuffixTreeNode;
+    text: string;
 
-function beamSearch(
-    initialState: State,
-    generateNextStates: (state: State) => State[],
-    scoreState: (state: State) => number,
-    options: BeamSearchOptions
-): State[] {
-    let beam: State[] = [initialState];
-
-    for (let step = 0; step < options.maxSteps; step++) {
-        const allNextStates: State[] = [];
-
-        // Generate all possible next states
-        for (const state of beam) {
-            const nextStates = generateNextStates(state);
-            allNextStates.push(...nextStates);
-        }
-
-        // Score the next states
-        allNextStates.forEach(state => {
-            state.score = scoreState(state);
-        });
-
-        // Sort states by score and select the top `beamWidth` states
-        beam = allNextStates
-            .sort((a, b) => b.score - a.score) // Sort in descending order of score
-            .slice(0, options.beamWidth); // Keep only top `beamWidth` states
+    constructor(text: string) {
+        this.root = new SuffixTreeNode();
+        this.text = text;
+        this.buildSuffixTree();
     }
 
-    return beam; // return the final states in the beam
-}
-function generateNextStates(state: State): State[] {
-    // Generate next states based on your specific logic
-    return [
-        { id: state.id + 'A', score: 0 },
-        { id: state.id + 'B', score: 0 },
-    ];
+    private buildSuffixTree() {
+        const length = this.text.length;
+        for (let i = 0; i < length; i++) {
+            this.insertSuffix(this.text.substring(i), i);
+        }
+    }
+
+    private insertSuffix(suffix: string, index: number) {
+        let currentNode = this.root;
+        for (let char of suffix) {
+            if (!currentNode.children.has(char)) {
+                currentNode.children.set(char, new SuffixTreeNode());
+            }
+            currentNode = currentNode.children.get(char)!;
+        }
+        currentNode.endIndices.push(index); // Store the starting index of the suffix
+    }
+
+    public search(pattern: string): number[] {
+        let currentNode = this.root;
+        for (let char of pattern) {
+            if (!currentNode.children.has(char)) {
+                return []; // Pattern not found
+            }
+            currentNode = currentNode.children.get(char)!;
+        }
+        return currentNode.endIndices; // Return all starting indices of the pattern
+    }
 }
 
-function scoreState(state: State): number {
-    // Calculate score based on your specific criteria
-    return Math.random(); // Example: random score for demonstration
-}
-const initialState: State = { id: "Start", score: 0 };
-const beamWidth = 2;
-const maxSteps = 5;
-
-const finalStates = beamSearch(initialState, generateNextStates, scoreState, { beamWidth, maxSteps });
-console.log(finalStates);
+// Usage
+const text = "banana";
+const suffixTree = new SuffixTree(text);
+console.log(suffixTree.search("ana")); // Output the starting indices of "ana"
