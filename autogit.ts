@@ -1,28 +1,30 @@
-function largestPrimeFactor(n: number): number {
-    let largestFactor = -1;
-
-    // Check for number of 2s that divide n
-    while (n % 2 === 0) {
-        largestFactor = 2;
-        n /= 2;
-    }
-
-    // n must be odd at this point, so we can skip even numbers
-    for (let i = 3; i <= Math.sqrt(n); i += 2) {
-        while (n % i === 0) {
-            largestFactor = i;
-            n /= i;
-        }
-    }
-
-    // This condition is to check if n is a prime number greater than 2
-    if (n > 2) {
-        largestFactor = n;
-    }
-
-    return largestFactor;
+// Define an interface for the data we expect from the API
+interface Post {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
 }
 
-// Example usage:
-const num = 56;
-console.log(`The largest prime factor of ${num} is ${largestPrimeFactor(num)}`);
+// Function to fetch posts from the API
+async function fetchPosts(): Promise<Post[]> {
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+    
+    // Check if the response is ok (status code 200-299)
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+
+    // Parse the JSON response
+    const data: Post[] = await response.json();
+    return data;
+}
+
+// Call the function and handle the response
+fetchPosts()
+    .then(posts => {
+        console.log('Fetched posts:', posts);
+    })
+    .catch(error => {
+        console.error('Error fetching posts:', error);
+    });
