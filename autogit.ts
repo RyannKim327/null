@@ -1,71 +1,93 @@
-class HashTable<K, V> {
-    private table: Array<Array<[K, V]> | null>;
-    private size: number;
+class BoyerMoore {
+    private pattern: string;
+    private badCharTable: { [key: string]: number };
+    private goodSuffixTable: number[];
 
-    constructor(size: number) {
-        this.size = size;
-        this.table = new Array(size).fill(null);
+    constructor(pattern: string) {
+        this.pattern = pattern;
+        this.badCharTable = this.createBadCharTable(pattern);
+        this.goodSuffixTable = this.createGoodSuffixTable(pattern);
     }
 
-    private hash(key: K): number {
-        // A simple hash function converting the key to a string and calculating a hash index
-        let hashValue = 0;
-        const keyString = key.toString();
-        for (let i = 0; i < keyString.length; i++) {
-            hashValue += keyString.charCodeAt(i);
+    private createBadCharTable(pattern: string): { [key: string]: number } {
+        const table: { [key: string]: number } = {};
+        const m = pattern.length;
+
+        for (let i = 0; i < m; i++) {
+            table[pattern[i]] = i;
         }
-        return hashValue % this.size;
+        return table;
     }
 
-    set(key: K, value: V): void {
-        const index = this.hash(key);
-        if (!this.table[index]) {
-            this.table[index] = [];
+    private createGoodSuffixTable(pattern: string): number[] {
+        const m = pattern.length;
+        const table: number[] = new Array(m).fill(0);
+        const lastPrefixIndex = m; 
+
+        for (let i = m - 1; i >= 0; i--) {
+            if (this.isPrefix(pattern, i + 1)) {
+                lastPrefixIndex = i + 1;
+            }
+            table[m - 1 - i] = lastPrefixIndex - i + (m - 1);
         }
-        // Check for existing key and update its value
-        for (const entry of this.table[index]) {
-            if (entry[0] === key) {
-                entry[1] = value;
-                return;
+        
+        for (let i = 0; i < m - 1; i++) {
+            const len = this.suffixLength(pattern, i);
+            table[len] = m - 1 - i + len;
+        }
+        return table;
+    }
+
+    private isPrefix(pattern: string, p: number): boolean {
+        for (let i = p, j = 0; i < pattern.length; i++, j++) {
+            if (pattern[i] !== pattern[j]) {
+                return false;
             }
         }
-        // Add new key-value pair
-        this.table[index].push([key, value]);
+        return true;
     }
 
-    get(key: K): V | undefined {
-        const index = this.hash(key);
-        if (!this.table[index]) return undefined;
-        for (const entry of this.table[index]) {
-            if (entry[0] === key) {
-                return entry[1];
+    private suffixLength(pattern: string, p: number): number {
+        let len = 0;
+        while (p >= 0 && pattern[p] === pattern[pattern.length - 1 - len]) {
+            len++;
+            p--;
+        }
+        return len;
+    }
+
+    public search(text: string): number[] {
+        const m = this.pattern.length;
+        const n = text.length;
+        const result: number[] = [];
+
+        if (m === 0 || n === 0 || m > n) {
+            return result;
+        }
+
+        let s = 0; // shift of the pattern with respect to the text
+        while (s <= n - m) {
+            let j = m - 1;
+
+            while (j >= 0 && this.pattern[j] === text[s + j]) {
+                j--;
+            }
+
+            if (j < 0) {
+                // Found a match at index s
+                result.push(s);
+                s += (s + m < n) ? m - this.badCharTable[text[s + m]] || m : 1; // shift pattern
+            } else {
+                s += Math.max(1, j - (this.badCharTable[text[s + j]] || -1));
             }
         }
-        return undefined;
-    }
-
-    delete(key: K): boolean {
-        const index = this.hash(key);
-        if (!this.table[index]) return false;
-        for (let i = 0; i < this.table[index].length; i++) {
-            if (this.table[index][i][0] === key) {
-                this.table[index].splice(i, 1);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    has(key: K): boolean {
-        return this.get(key) !== undefined;
+        return result;
     }
 }
 
-// Example usage:
-const hashTable = new HashTable<string, number>(50);
-hashTable.set('apple', 1);
-hashTable.set('banana', 2);
-console.log(hashTable.get('apple')); // Output: 1
-console.log(hashTable.has('banana')); // Output: true
-hashTable.delete('apple');
-console.log(hashTable.get('apple')); // Output: undefined
+// Example usage
+const pattern = "abc";
+const text = "abcpqrabcxyz";
+const bm = new BoyerMoore(pattern);
+const indexes = bm.search(text);
+console.log("Pattern found at indices:", indexes);
