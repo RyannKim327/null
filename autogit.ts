@@ -8,43 +8,52 @@ class ListNode {
     }
 }
 
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    if (!head || n <= 0) {
-        return null; // Return null for invalid input
+class LinkedList {
+    head: ListNode | null;
+
+    constructor() {
+        this.head = null;
     }
 
-    let firstPointer: ListNode | null = head;
-    let secondPointer: ListNode | null = head;
-
-    // Move the first pointer n nodes ahead
-    for (let i = 0; i < n; i++) {
-        if (firstPointer === null) {
-            return null; // n is greater than the length of the list
+    // Method to add a new node to the linked list
+    add(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
         }
-        firstPointer = firstPointer.next;
     }
 
-    // Move both pointers until the first pointer reaches the end
-    while (firstPointer !== null) {
-        firstPointer = firstPointer.next;
-        secondPointer = secondPointer.next;
-    }
+    // Method to find the middle element
+    findMiddle(): ListNode | null {
+        let slowPointer: ListNode | null = this.head;
+        let fastPointer: ListNode | null = this.head;
 
-    // The second pointer is now at the nth node from the end
-    return secondPointer;
+        while (fastPointer && fastPointer.next) {
+            slowPointer = slowPointer?.next || null; // Move slow pointer by 1
+            fastPointer = fastPointer.next.next; // Move fast pointer by 2
+        }
+
+        return slowPointer; // Slow pointer will be at the middle
+    }
 }
 
 // Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
+const linkedList = new LinkedList();
+linkedList.add(1);
+linkedList.add(2);
+linkedList.add(3);
+linkedList.add(4);
+linkedList.add(5);
 
-const n = 2;
-const result = findNthFromEnd(head, n);
-if (result) {
-    console.log(`The ${n}th node from the end is: ${result.value}`);
+const middleNode = linkedList.findMiddle();
+if (middleNode) {
+    console.log(`The middle element is: ${middleNode.value}`);
 } else {
-    console.log(`The list is shorter than ${n} nodes.`);
+    console.log("The linked list is empty.");
 }
