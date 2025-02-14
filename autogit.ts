@@ -1,33 +1,17 @@
-class TreeNode {
-    val: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function reverseWords(input: string): string {
+    // Split the string into an array of words
+    const wordsArray = input.split(' ');
 
-    constructor(val: number) {
-        this.val = val;
-        this.left = null;
-        this.right = null;
-    }
+    // Reverse the array of words
+    const reversedArray = wordsArray.reverse();
+
+    // Join the reversed array back into a string
+    const reversedString = reversedArray.join(' ');
+
+    return reversedString;
 }
 
-function diameterOfBinaryTree(root: TreeNode | null): number {
-    let diameter = 0;
-
-    // Helper function to calculate the height of the tree
-    function height(node: TreeNode | null): number {
-        if (!node) return 0;
-
-        // Recursively find the height of the left and right subtrees
-        const leftHeight = height(node.left);
-        const rightHeight = height(node.right);
-
-        // Update the diameter - longest path seen so far
-        diameter = Math.max(diameter, leftHeight + rightHeight);
-
-        // Return the height of the tree
-        return Math.max(leftHeight, rightHeight) + 1;
-    }
-
-    height(root); // Start the height calculation
-    return diameter; // Return the calculated diameter
-}
+// Example usage
+const originalString = "Hello world this is TypeScript";
+const reversedString = reverseWords(originalString);
+console.log(reversedString); // Output: "TypeScript is this world Hello"
