@@ -1,23 +1,42 @@
-function bubbleSort(arr: number[]): number[] {
-    let n = arr.length;
-    let swapped: boolean;
+function buildBadCharacterTable(pattern: string): { [key: string]: number } {
+    const badCharTable: { [key: string]: number } = {};
+    const patternLength = pattern.length;
 
-    do {
-        swapped = false;
-        for (let i = 0; i < n - 1; i++) {
-            if (arr[i] > arr[i + 1]) {
-                // Swap arr[i] and arr[i + 1]
-                [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
-                swapped = true;
-            }
+    for (let i = 0; i < patternLength; i++) {
+        // Store the last index of each character in the pattern
+        badCharTable[pattern[i]] = i;
+    }
+    
+    return badCharTable;
+}
+
+function boyerMooreSearch(text: string, pattern: string): number[] {
+    const matches: number[] = [];
+    const badCharTable = buildBadCharacterTable(pattern);
+    const textLength = text.length;
+    const patternLength = pattern.length;
+    let skip = 0;
+
+    while (skip <= textLength - patternLength) {
+        let j = patternLength - 1;
+
+        while (j >= 0 && pattern[j] === text[skip + j]) {
+            j--;
         }
-        n--; // Last element is in correct position
-    } while (swapped);
 
-    return arr;
+        if (j < 0) {
+            matches.push(skip); // Match found
+            skip += (skip + patternLength < textLength) ? patternLength - badCharTable[text[skip + patternLength]] || 1 : 1;
+        } else {
+            skip += Math.max(1, j - (badCharTable[text[skip + j]] || -1));
+        }
+    }
+
+    return matches;
 }
 
 // Example usage:
-const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
-const sortedArray = bubbleSort(unsortedArray);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 34, 64, 90]
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = boyerMooreSearch(text, pattern);
+console.log("Pattern found at indices:", result);
