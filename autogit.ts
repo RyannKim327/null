@@ -1,59 +1,44 @@
-class Node {
-    value: any;
-    children: Node[];
+function buildBadCharTable(pattern: string): number[] {
+    const badCharTable = new Array(256).fill(-1); // 256 for extended ASCII
+    const patternLength = pattern.length;
 
-    constructor(value: any) {
-        this.value = value;
-        this.children = [];
+    for (let i = 0; i < patternLength; i++) {
+        badCharTable[pattern.charCodeAt(i)] = i;
     }
 
-    addChild(child: Node) {
-        this.children.push(child);
-    }
+    return badCharTable;
 }
 
-function depthLimitedSearch(root: Node, target: any, limit: number): Node | null {
-    const stack: { node: Node; depth: number }[] = [];
-    stack.push({ node: root, depth: 0 });
+function boyerMooreHorspool(text: string, pattern: string): number[] {
+    const badCharTable = buildBadCharTable(pattern);
+    const textLength = text.length;
+    const patternLength = pattern.length;
+    const occurrences: number[] = [];
 
-    while (stack.length > 0) {
-        const { node, depth } = stack.pop()!;
+    let skip = 0;
+    while (skip <= textLength - patternLength) {
+        let j = patternLength - 1;
 
-        // Check if the current node is the target
-        if (node.value === target) {
-            return node;
+        // Check for the pattern from right to left
+        while (j >= 0 && pattern[j] === text[skip + j]) {
+            j--;
         }
 
-        // If the current depth is less than the limit, add children to the stack
-        if (depth < limit) {
-            for (let i = node.children.length - 1; i >= 0; i--) {
-                stack.push({ node: node.children[i], depth: depth + 1 });
-            }
+        // If the pattern is found
+        if (j < 0) {
+            occurrences.push(skip);
+            skip += (skip + patternLength < textLength) ? patternLength - badCharTable[text.charCodeAt(skip + patternLength)] : 1;
+        } else {
+            // Shift based on the bad character rule
+            skip += Math.max(1, j - badCharTable[text.charCodeAt(skip + j)]);
         }
     }
 
-    // Return null if the target is not found within the depth limit
-    return null;
+    return occurrences;
 }
 
-// Example usage:
-const root = new Node(1);
-const child1 = new Node(2);
-const child2 = new Node(3);
-const child3 = new Node(4);
-const child4 = new Node(5);
-
-root.addChild(child1);
-root.addChild(child2);
-child1.addChild(child3);
-child1.addChild(child4);
-
-const target = 4;
-const limit = 2;
-
-const result = depthLimitedSearch(root, target, limit);
-if (result) {
-    console.log(`Found target: ${result.value}`);
-} else {
-    console.log('Target not found within the depth limit.');
-}
+// Example usage
+const text = "ababcababcabc";
+const pattern = "abc";
+const result = boyerMooreHorspool(text, pattern);
+console.log(result); // Outputs: [2, 7, 12]
