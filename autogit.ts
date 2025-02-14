@@ -1,13 +1,23 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    const normalize = (str: string): string => {
-        return str.replace(/\s+/g, '').toLowerCase().split('').sort().join('');
-    };
+function bubbleSort(arr: number[]): number[] {
+    let n = arr.length;
+    let swapped: boolean;
 
-    return normalize(str1) === normalize(str2);
+    do {
+        swapped = false;
+        for (let i = 0; i < n - 1; i++) {
+            if (arr[i] > arr[i + 1]) {
+                // Swap arr[i] and arr[i + 1]
+                [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
+                swapped = true;
+            }
+        }
+        n--; // Last element is in correct position
+    } while (swapped);
+
+    return arr;
 }
 
 // Example usage:
-const string1 = "listen";
-const string2 = "silent";
-const result = areAnagrams(string1, string2);
-console.log(result); // true
+const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
+const sortedArray = bubbleSort(unsortedArray);
+console.log(sortedArray); // Output: [11, 12, 22, 25, 34, 64, 90]
