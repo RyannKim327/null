@@ -1,12 +1,9 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    const formatString = (str: string): string => {
-        return str.toLowerCase().replace(/[^a-z0-9]/g, '').split('').sort().join('');
-    };
-
-    return formatString(str1) === formatString(str2);
-}
-
-// Example usage:
-const string1 = "listen";
-const string2 = "silent";
-console.log(areAnagrams(string1, string2)); // Output: true
+let str = "   Hello, World!   ";
+let trimmedStr = str.trim();
+console.log(trimmedStr); // Output: "Hello, World!"
+let str = "   Hello,   World!   ";
+let noWhitespaceStr = str.replace(/\s+/g, '');
+console.log(noWhitespaceStr); // Output: "Hello,World!"
+let str = "   Hello,   World!   ";
+let noSpacesStr = str.replace(/ +/g, ''); // This will only remove spaces
+console.log(noSpacesStr); // Output: "Hello,World!"
