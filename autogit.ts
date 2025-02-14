@@ -1,50 +1,24 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    if (!head || n <= 0) {
-        return null; // Return null for invalid input
+function findSecondLargest(arr: number[]): number | null {
+    if (arr.length < 2) {
+        return null; // Not enough elements
     }
 
-    let firstPointer: ListNode | null = head;
-    let secondPointer: ListNode | null = head;
+    let largest = -Infinity;
+    let secondLargest = -Infinity;
 
-    // Move the first pointer n nodes ahead
-    for (let i = 0; i < n; i++) {
-        if (firstPointer === null) {
-            return null; // n is greater than the length of the list
+    for (const num of arr) {
+        if (num > largest) {
+            secondLargest = largest; // Update second largest
+            largest = num;          // Update largest
+        } else if (num > secondLargest && num !== largest) {
+            secondLargest = num;   // Update second largest
         }
-        firstPointer = firstPointer.next;
     }
 
-    // Move both pointers until the first pointer reaches the end
-    while (firstPointer !== null) {
-        firstPointer = firstPointer.next;
-        secondPointer = secondPointer.next;
-    }
-
-    // The second pointer is now at the nth node from the end
-    return secondPointer;
+    return secondLargest === -Infinity ? null : secondLargest; // In case all elements are equal
 }
 
 // Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-const n = 2;
-const result = findNthFromEnd(head, n);
-if (result) {
-    console.log(`The ${n}th node from the end is: ${result.value}`);
-} else {
-    console.log(`The list is shorter than ${n} nodes.`);
-}
+const numbers = [3, 1, 4, 4, 5, 2];
+const secondLargest = findSecondLargest(numbers);
+console.log(secondLargest); // Output: 4
