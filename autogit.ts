@@ -1,48 +1,78 @@
-class Stack<T> {
-    private items: T[] = [];
+class Graph {
+    private vertices: number;
+    private adjList: Map<number, number[]>;
 
-    // Push an item onto the stack
-    push(item: T): void {
-        this.items.push(item);
+    constructor(vertices: number) {
+        this.vertices = vertices;
+        this.adjList = new Map<number, number[]>();
     }
 
-    // Pop an item off the stack
-    pop(): T | undefined {
-        return this.items.pop();
+    addEdge(v: number, w: number) {
+        if (!this.adjList.has(v)) {
+            this.adjList.set(v, []);
+        }
+        this.adjList.get(v)!.push(w);
     }
 
-    // Peek at the top item of the stack without removing it
-    peek(): T | undefined {
-        return this.items[this.items.length - 1];
-    }
+    // Tarjan's algorithm to find strongly connected components
+    tarjansAlgorithm(): number[][] {
+        const index: number[] = new Array(this.vertices).fill(-1);
+        const lowlink: number[] = new Array(this.vertices).fill(-1);
+        const onStack: boolean[] = new Array(this.vertices).fill(false);
+        const stack: number[] = [];
+        const result: number[][] = [];
+        let currentIndex = 0;
 
-    // Check if the stack is empty
-    isEmpty(): boolean {
-        return this.items.length === 0;
-    }
+        const strongConnect = (v: number) => {
+            index[v] = currentIndex;
+            lowlink[v] = currentIndex;
+            currentIndex++;
+            stack.push(v);
+            onStack[v] = true;
 
-    // Get the size of the stack
-    size(): number {
-        return this.items.length;
-    }
+            // Consider successors of v
+            const neighbors = this.adjList.get(v) || [];
+            for (const w of neighbors) {
+                if (index[w] === -1) {
+                    // Successor w has not yet been visited; recurse on it
+                    strongConnect(w);
+                    lowlink[v] = Math.min(lowlink[v], lowlink[w]);
+                } else if (onStack[w]) {
+                    // Successor w is in stack and hence in the current SCC
+                    lowlink[v] = Math.min(lowlink[v], index[w]);
+                }
+            }
 
-    // Clear the stack
-    clear(): void {
-        this.items = [];
-    }
+            // If v is a root node, pop the stack and generate an SCC
+            if (lowlink[v] === index[v]) {
+                const scc: number[] = [];
+                let w: number;
+                do {
+                    w = stack.pop()!;
+                    onStack[w] = false;
+                    scc.push(w);
+                } while (w !== v);
+                result.push(scc);
+            }
+        };
 
-    // Print the stack (for debugging purposes)
-    print(): void {
-        console.log(this.items);
+        for (let v = 0; v < this.vertices; v++) {
+            if (index[v] === -1) {
+                strongConnect(v);
+            }
+        }
+
+        return result;
     }
 }
 
-// Example usage
-const stack = new Stack<number>();
-stack.push(1);
-stack.push(2);
-stack.push(3);
-console.log(stack.peek()); // Output: 3
-console.log(stack.pop());   // Output: 3
-console.log(stack.size());  // Output: 2
-stack.print();              // Output: [1, 2]
+// Example usage:
+const graph = new Graph(5);
+graph.addEdge(0, 1);
+graph.addEdge(1, 2);
+graph.addEdge(2, 0);
+graph.addEdge(1, 3);
+graph.addEdge(3, 4);
+
+const sccs = graph.tarjansAlgorithm();
+console.log("Strongly Connected Components:", sccs);
