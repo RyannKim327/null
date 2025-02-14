@@ -1,19 +1,30 @@
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-const newArray = array.filter(item => item !== elementToRemove);
-console.log(newArray); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const indexToRemove = array.indexOf(3); // Find the index of the element
-if (indexToRemove !== -1) {
-    array.splice(indexToRemove, 1); // Remove one item at the found index
+// Define an interface for the data structure we expect to receive
+interface User {
+    id: number;
+    name: string;
+    username: string;
+    email: string;
 }
-console.log(array); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-const newArray = array.reduce((acc, item) => {
-    if (item !== elementToRemove) {
-        acc.push(item);
+
+async function fetchUsers() {
+    try {
+        // Fetch data from a public API
+        const response = await fetch('https://jsonplaceholder.typicode.com/users');
+        
+        // Check if the response is ok (status in the range 200-299)
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        
+        // Parse the JSON data
+        const users: User[] = await response.json();
+        
+        // Log the users to the console
+        console.log('Fetched Users:', users);
+    } catch (error) {
+        console.error('Fetch error:', error);
     }
-    return acc;
-}, []);
-console.log(newArray); // Output: [1, 2, 4, 5]
+}
+
+// Call the function to execute it
+fetchUsers();
