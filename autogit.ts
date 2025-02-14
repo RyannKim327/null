@@ -1,30 +1,70 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
 
-    constructor(value: number) {
+    constructor(value: T) {
         this.value = value;
-        this.left = null;
-        this.right = null;
+        this.next = null;
     }
 }
-function sumOfNodes(root: TreeNode | null): number {
-    // Base case: if the node is null, return 0
-    if (root === null) {
-        return 0;
+class Queue<T> {
+    private head: Node<T> | null = null; // Points to the front of the queue
+    private tail: Node<T> | null = null; // Points to the end of the queue
+    private length: number = 0; // To keep track of the number of elements in the queue
+
+    // Enqueue: Add an element to the end of the queue
+    enqueue(value: T): void {
+        const newNode = new Node(value);
+        if (this.tail) {
+            this.tail.next = newNode; // Link the old tail to the new node
+        }
+        this.tail = newNode; // Update the tail to the new node
+        if (!this.head) {
+            this.head = newNode; // If the queue was empty, head is also the new node
+        }
+        this.length++;
     }
 
-    // Recursive case: sum the value of the current node and the sums of the left and right subtrees
-    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
-}
-// Create a binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+    // Dequeue: Remove an element from the front of the queue
+    dequeue(): T | null {
+        if (!this.head) {
+            return null; // Queue is empty
+        }
+        const value = this.head.value; // Get the value from the head
+        this.head = this.head.next; // Move the head to the next node
+        if (!this.head) {
+            this.tail = null; // If the queue is now empty, reset the tail
+        }
+        this.length--;
+        return value; // Return the dequeued value
+    }
 
-// Calculate the sum of all nodes
-const totalSum = sumOfNodes(root);
-console.log(`The sum of all nodes in the binary tree is: ${totalSum}`); // Output: 15
+    // Peek: Get the value at the front of the queue without removing it
+    peek(): T | null {
+        return this.head ? this.head.value : null;
+    }
+
+    // Size: Get the number of elements in the queue
+    size(): number {
+        return this.length;
+    }
+
+    // IsEmpty: Check if the queue is empty
+    isEmpty(): boolean {
+        return this.length === 0;
+    }
+}
+const queue = new Queue<number>();
+
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.peek());     // Output: 2
+console.log(queue.size());     // Output: 2
+console.log(queue.isEmpty());  // Output: false
+
+queue.dequeue();
+queue.dequeue();
+console.log(queue.isEmpty());  // Output: true
