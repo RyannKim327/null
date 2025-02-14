@@ -1,95 +1,50 @@
-class HashTable<K, V> {
-    private table: Array<Array<[K, V] | null>>;
-    private size: number;
+type Graph = {
+    [key: string]: { node: string; weight: number }[];
+};
 
-    constructor(size: number) {
-        this.size = size;
-        this.table = new Array(size).fill(null).map(() => []);
+function dijkstra(graph: Graph, start: string): { [key: string]: number } {
+    const distances: { [key: string]: number } = {};
+    const priorityQueue: { node: string; distance: number }[] = [];
+    const visited: Set<string> = new Set();
+
+    // Initialize distances
+    for (const node in graph) {
+        distances[node] = Infinity;
     }
+    distances[start] = 0;
+    priorityQueue.push({ node: start, distance: 0 });
 
-    private hash(key: K): number {
-        let hash = 0;
-        const keyString = String(key);
-        for (let i = 0; i < keyString.length; i++) {
-            hash += keyString.charCodeAt(i);
+    while (priorityQueue.length > 0) {
+        // Sort the queue by distance
+        priorityQueue.sort((a, b) => a.distance - b.distance);
+        const { node: currentNode } = priorityQueue.shift()!;
+
+        if (visited.has(currentNode)) {
+            continue;
         }
-        return hash % this.size;
-    }
+        visited.add(currentNode);
 
-    public set(key: K, value: V): void {
-        const index = this.hash(key);
-        const bucket = this.table[index];
+        // Explore neighbors
+        for (const neighbor of graph[currentNode]) {
+            const newDistance = distances[currentNode] + neighbor.weight;
 
-        // Check if the key already exists in the bucket
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i]![0] === key) {
-                bucket[i]![1] = value; // Update the value
-                return;
+            if (newDistance < distances[neighbor.node]) {
+                distances[neighbor.node] = newDistance;
+                priorityQueue.push({ node: neighbor.node, distance: newDistance });
             }
         }
-
-        // If the key does not exist, add a new key-value pair
-        bucket.push([key, value]);
     }
 
-    public get(key: K): V | undefined {
-        const index = this.hash(key);
-        const bucket = this.table[index];
-
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i]![0] === key) {
-                return bucket[i]![1]; // Return the value
-            }
-        }
-
-        return undefined; // Key not found
-    }
-
-    public remove(key: K): boolean {
-        const index = this.hash(key);
-        const bucket = this.table[index];
-
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i]![0] === key) {
-                bucket.splice(i, 1); // Remove the key-value pair
-                return true;
-            }
-        }
-
-        return false; // Key not found
-    }
-
-    public keys(): K[] {
-        const keys: K[] = [];
-        for (const bucket of this.table) {
-            for (const entry of bucket) {
-                if (entry) {
-                    keys.push(entry[0]); // Push the key
-                }
-            }
-        }
-        return keys;
-    }
-
-    public values(): V[] {
-        const values: V[] = [];
-        for (const bucket of this.table) {
-            for (const entry of bucket) {
-                if (entry) {
-                    values.push(entry[1]); // Push the value
-                }
-            }
-        }
-        return values;
-    }
+    return distances;
 }
 
 // Example usage
-const hashTable = new HashTable<string, number>(10);
-hashTable.set("apple", 1);
-hashTable.set("banana", 2);
-console.log(hashTable.get("apple")); // Output: 1
-console.log(hashTable.get("banana")); // Output: 2
-hashTable.remove("apple");
-console.log(hashTable.get("apple")); // Output: undefined
-console.log(hashTable.keys()); // Output: ['banana']
+const graph: Graph = {
+    A: [{ node: 'B', weight: 1 }, { node: 'C', weight: 4 }],
+    B: [{ node: 'A', weight: 1 }, { node: 'C', weight: 2 }, { node: 'D', weight: 5 }],
+    C: [{ node: 'A', weight: 4 }, { node: 'B', weight: 2 }, { node: 'D', weight: 1 }],
+    D: [{ node: 'B', weight: 5 }, { node: 'C', weight: 1 }],
+};
+
+const shortestPaths = dijkstra(graph, 'A');
+console.log(shortestPaths);
