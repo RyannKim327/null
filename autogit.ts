@@ -8,38 +8,61 @@ class ListNode {
     }
 }
 
-function hasCycle(head: ListNode | null): boolean {
-    if (!head) return false;
+class LinkedList {
+    head: ListNode | null;
 
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast !== null && fast.next !== null) {
-        slow = slow.next; // Move slow pointer by 1
-        fast = fast.next.next; // Move fast pointer by 2
-
-        if (slow === fast) {
-            return true; // Cycle detected
-        }
+    constructor() {
+        this.head = null;
     }
 
-    return false; // No cycle
+    // Method to add a new node at the end of the list
+    append(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    // Method to print the list
+    print() {
+        let current = this.head;
+        const values: number[] = [];
+        while (current) {
+            values.push(current.value);
+            current = current.next;
+        }
+        console.log(values.join(' -> '));
+    }
 }
+function reverseLinkedList(head: ListNode | null): ListNode | null {
+    let prev: ListNode | null = null;
+    let current: ListNode | null = head;
 
-// Example usage:
-const node1 = new ListNode(1);
-const node2 = new ListNode(2);
-const node3 = new ListNode(3);
-const node4 = new ListNode(4);
+    while (current) {
+        const nextTemp = current.next; // Store the next node
+        current.next = prev;            // Reverse the current node's pointer
+        prev = current;                 // Move prev and current one step forward
+        current = nextTemp;
+    }
+    return prev; // New head of the reversed list
+}
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+list.append(4);
+list.append(5);
 
-// Creating a cycle for testing
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2; // Creates a cycle
+console.log("Original Linked List:");
+list.print();
 
-console.log(hasCycle(node1)); // Output: true
+list.head = reverseLinkedList(list.head);
 
-// Creating a non-cyclic linked list for testing
-node4.next = null; // Break the cycle
-console.log(hasCycle(node1)); // Output: false
+console.log("Reversed Linked List:");
+list.print();
