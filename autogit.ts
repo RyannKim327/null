@@ -1,19 +1,20 @@
-npm install node-cron
-npm install typescript @types/node --save-dev
-import cron from 'node-cron';
+function findSecondLargest(arr: number[]): number | null {
+    // Remove duplicates
+    const uniqueArr = Array.from(new Set(arr));
 
-// Schedule a task to run every minute
-const task = cron.schedule('* * * * *', () => {
-    console.log('Task is running every minute:', new Date().toLocaleString());
-});
+    // Check if there are at least two unique elements
+    if (uniqueArr.length < 2) {
+        return null; // or throw an error, depending on your use case
+    }
 
-// Start the task
-task.start();
+    // Sort the array in descending order
+    uniqueArr.sort((a, b) => b - a);
 
-// Optional: Stop the task after 5 minutes
-setTimeout(() => {
-    task.stop();
-    console.log('Task has been stopped.');
-}, 5 * 60 * 1000); // 5 minutes in milliseconds
-npx tsc cronExample.ts
-node cronExample.js
+    // Return the second largest element
+    return uniqueArr[1];
+}
+
+// Example usage:
+const numbers = [3, 5, 1, 4, 5, 2];
+const secondLargest = findSecondLargest(numbers);
+console.log(secondLargest); // Output: 4
