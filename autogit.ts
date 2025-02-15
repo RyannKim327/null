@@ -1,67 +1,89 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+type Node = {
+    value: string;
+    neighbors: Node[];
+};
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+function biDirectionalSearch(start: Node, goal: Node): Node[] | null {
+    if (start === goal) return [start];
+
+    const startQueue: Node[] = [start];
+    const goalQueue: Node[] = [goal];
+    const startVisited = new Set<Node>();
+    const goalVisited = new Set<Node>();
+    const startParentMap = new Map<Node, Node>();
+    const goalParentMap = new Map<Node, Node>();
+
+    startVisited.add(start);
+    goalVisited.add(goal);
+
+    while (startQueue.length > 0 && goalQueue.length > 0) {
+        // Expand from the start
+        const startNode = startQueue.shift()!;
+        for (const neighbor of startNode.neighbors) {
+            if (!startVisited.has(neighbor)) {
+                startVisited.add(neighbor);
+                startParentMap.set(neighbor, startNode);
+                startQueue.push(neighbor);
+
+                // Check if the neighbor is in the goal visited set
+                if (goalVisited.has(neighbor)) {
+                    return reconstructPath(neighbor, startParentMap, goalParentMap);
+                }
+            }
+        }
+
+        // Expand from the goal
+        const goalNode = goalQueue.shift()!;
+        for (const neighbor of goalNode.neighbors) {
+            if (!goalVisited.has(neighbor)) {
+                goalVisited.add(neighbor);
+                goalParentMap.set(neighbor, goalNode);
+                goalQueue.push(neighbor);
+
+                // Check if the neighbor is in the start visited set
+                if (startVisited.has(neighbor)) {
+                    return reconstructPath(neighbor, startParentMap, goalParentMap);
+                }
+            }
+        }
     }
+
+    return null; // No path found
 }
 
-function getLength(head: ListNode | null): number {
-    let length = 0;
-    let current = head;
-    while (current) {
-        length++;
-        current = current.next;
+function reconstructPath(meetingNode: Node, startParentMap: Map<Node, Node>, goalParentMap: Map<Node, Node>): Node[] {
+    const path: Node[] = [];
+    
+    // Reconstruct path from start to meeting node
+    let currentNode: Node | undefined = meetingNode;
+    while (currentNode) {
+        path.unshift(currentNode);
+        currentNode = startParentMap.get(currentNode);
     }
-    return length;
+
+    // Reconstruct path from meeting node to goal
+    currentNode = goalParentMap.get(meetingNode);
+    while (currentNode) {
+        path.push(currentNode);
+        currentNode = goalParentMap.get(currentNode);
+    }
+
+    return path;
 }
 
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    if (!headA || !headB) return null;
+// Example usage
+const nodeA: Node = { value: 'A', neighbors: [] };
+const nodeB: Node = { value: 'B', neighbors: [] };
+const nodeC: Node = { value: 'C', neighbors: [] };
+const nodeD: Node = { value: 'D', neighbors: [] };
 
-    const lengthA = getLength(headA);
-    const lengthB = getLength(headB);
+nodeA.neighbors.push(nodeB, nodeC);
+nodeB.neighbors.push(nodeD);
+nodeC.neighbors.push(nodeD);
 
-    let currentA: ListNode | null = headA;
-    let currentB: ListNode | null = headB;
-
-    // Align the starting points
-    if (lengthA > lengthB) {
-        for (let i = 0; i < lengthA - lengthB; i++) {
-            currentA = currentA!.next; // Use non-null assertion since we checked for null
-        }
-    } else {
-        for (let i = 0; i < lengthB - lengthA; i++) {
-            currentB = currentB!.next;
-        }
-    }
-
-    // Traverse both lists to find the intersection
-    while (currentA && currentB) {
-        if (currentA === currentB) {
-            return currentA; // Intersection found
-        }
-        currentA = currentA.next;
-        currentB = currentB.next;
-    }
-
-    return null; // No intersection
+const path = biDirectionalSearch(nodeA, nodeD);
+if (path) {
+    console.log('Path found:', path.map(node => node.value));
+} else {
+    console.log('No path found');
 }
-
-// Example usage:
-const nodeA1 = new ListNode(1);
-const nodeA2 = new ListNode(2);
-const nodeB1 = new ListNode(3);
-const nodeB2 = new ListNode(4);
-const intersectionNode = new ListNode(5);
-
-nodeA1.next = nodeA2;
-nodeA2.next = intersectionNode;
-
-nodeB1.next = nodeB2;
-nodeB2.next = intersectionNode;
-
-const intersection = getIntersectionNode(nodeA1, nodeB1);
-console.log(intersection ? intersection.value : "No intersection");
