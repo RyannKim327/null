@@ -10,29 +10,77 @@ class TreeNode {
     }
 }
 
-function maxDepth(root: TreeNode | null): number {
-    if (root === null) {
-        return 0; // Base case: the depth of an empty tree is 0
+class BinarySearchTree {
+    root: TreeNode | null;
+
+    constructor() {
+        this.root = null;
     }
 
-    // Recursively find the depth of the left and right subtrees
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
+    insert(value: number): void {
+        const newNode = new TreeNode(value);
+        if (!this.root) {
+            this.root = newNode;
+            return;
+        }
+        this.insertNode(this.root, newNode);
+    }
 
-    // The maximum depth is the greater of the two depths plus one for the current node
-    return Math.max(leftDepth, rightDepth) + 1;
+    private insertNode(node: TreeNode, newNode: TreeNode): void {
+        if (newNode.value < node.value) {
+            if (!node.left) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (!node.right) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
+        }
+    }
+
+    search(value: number): boolean {
+        return this.searchNode(this.root, value);
+    }
+
+    private searchNode(node: TreeNode | null, value: number): boolean {
+        if (!node) {
+            return false;
+        }
+        if (node.value === value) {
+            return true;
+        }
+        return value < node.value ? this.searchNode(node.left, value) : this.searchNode(node.right, value);
+    }
+
+    inOrderTraversal(callback: (value: number) => void): void {
+        this.inOrder(this.root, callback);
+    }
+
+    private inOrder(node: TreeNode | null, callback: (value: number) => void): void {
+        if (node) {
+            this.inOrder(node.left, callback);
+            callback(node.value);
+            this.inOrder(node.right, callback);
+        }
+    }
 }
 
-// Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+// Example Usage
+const bst = new BinarySearchTree();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(3);
+bst.insert(7);
 
-console.log(maxDepth(root)); // Output: 3
-      1
-     / \
-    2   3
-   / \
-  4   5
+console.log(bst.search(7)); // true
+console.log(bst.search(6)); // false
+
+// In-order traversal
+bst.inOrderTraversal((value) => {
+    console.log(value); // 3, 5, 7, 10, 15
+});
