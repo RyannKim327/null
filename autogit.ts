@@ -1,12 +1,20 @@
-function validateEmail(email: string): boolean {
-    // Regular expression for validating an email address
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailRegex.test(email);
+function isPrime(num: number): boolean {
+    if (num <= 1) return false; // Numbers less than or equal to 1 are not prime
+    if (num <= 3) return true;  // 2 and 3 are prime numbers
+
+    // Check for even numbers and multiples of 3
+    if (num % 2 === 0 || num % 3 === 0) return false;
+
+    // Check for factors from 5 to the square root of num
+    for (let i = 5; i * i <= num; i += 6) {
+        if (num % i === 0 || num % (i + 2) === 0) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
-// Example usage
-const email1 = "example@example.com";
-const email2 = "invalid-email@.com";
-
-console.log(validateEmail(email1)); // true
-console.log(validateEmail(email2)); // false
+// Example usage:
+console.log(isPrime(7)); // true
+console.log(isPrime(10)); // false
