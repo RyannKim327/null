@@ -1,28 +1,35 @@
-function bubbleSort(arr: number[]): number[] {
-    const n = arr.length;
-    let swapped: boolean;
+import axios from 'axios';
 
-    for (let i = 0; i < n - 1; i++) {
-        swapped = false;
+// Define an interface for the data you expect from the API
+interface ApiResponse {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
+}
 
-        for (let j = 0; j < n - 1 - i; j++) {
-            if (arr[j] > arr[j + 1]) {
-                // Swap arr[j] and arr[j + 1]
-                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-                swapped = true;
-            }
-        }
+// Function to fetch data from an API
+async function fetchData(url: string): Promise<void> {
+    try {
+        const response = await axios.get<ApiResponse[]>(url);
+        const data = response.data;
 
-        // If no two elements were swapped, the array is sorted
-        if (!swapped) {
-            break;
+        console.log('Fetched ', data);
+
+        // You can process the data here
+        data.forEach(item => {
+            console.log(`Title: ${item.title}`);
+        });
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error('Error message:', error.message);
+        } else {
+            console.error('Unexpected error:', error);
         }
     }
-
-    return arr;
 }
 
 // Example usage
-const array = [64, 34, 25, 12, 22, 11, 90];
-const sortedArray = bubbleSort(array);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 34, 64, 90]
+const API_URL = 'https://jsonplaceholder.typicode.com/posts';
+fetchData(API_URL);
+npm install axios
