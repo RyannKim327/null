@@ -1,51 +1,55 @@
-function computeLPSArray(pattern: string): number[] {
-    const lps: number[] = new Array(pattern.length).fill(0);
-    let length = 0; // length of the previous longest prefix suffix
-    let i = 1;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-    return lps;
 }
-function KMPSearch(text: string, pattern: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
 
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
+function isPalindrome(head: ListNode | null): boolean {
+    if (!head || !head.next) return true;
 
-        if (j === pattern.length) {
-            result.push(i - j); // Found a match
-            j = lps[j - 1]; // Get the next position to continue searching
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1]; // Use the LPS array to skip characters
-            } else {
-                i++;
-            }
-        }
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+    
+    // Find the middle of the linked list
+    while (fast && fast.next) {
+        slow = slow!.next;
+        fast = fast.next.next;
     }
-    return result; // Return the starting indices of matches
-}
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const result = KMPSearch(text, pattern);
 
-console.log("Pattern found at indices:", result);
+    // Reverse the second half of the linked list
+    let prev: ListNode | null = null;
+    let current: ListNode | null = slow;
+    
+    while (current) {
+        const nextNode = current.next;
+        current.next = prev;
+        prev = current;
+        current = nextNode;
+    }
+
+    // Compare the first half and the reversed second half
+    let left: ListNode | null = head;
+    let right: ListNode | null = prev; // The head of the reversed second half
+
+    while (right) {
+        if (left!.value !== right.value) {
+            return false;
+        }
+        left = left!.next;
+        right = right.next;
+    }
+
+    return true;
+}
+
+// Example Usage
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(2);
+head.next.next.next = new ListNode(1);
+
+console.log(isPalindrome(head)); // Output: true
