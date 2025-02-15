@@ -8,60 +8,47 @@ class ListNode {
     }
 }
 
-function getLength(head: ListNode | null): number {
-    let length = 0;
-    let current = head;
-    while (current) {
-        length++;
-        current = current.next;
-    }
-    return length;
-}
+function isPalindrome(head: ListNode | null): boolean {
+    if (head === null) return true;
 
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    if (!headA || !headB) return null;
+    // Step 1: Find the middle of the linked list
+    let slow = head;
+    let fast = head;
 
-    const lengthA = getLength(headA);
-    const lengthB = getLength(headB);
-
-    let currentA: ListNode | null = headA;
-    let currentB: ListNode | null = headB;
-
-    // Align the starting points
-    if (lengthA > lengthB) {
-        for (let i = 0; i < lengthA - lengthB; i++) {
-            currentA = currentA!.next; // Use non-null assertion since we checked for null
-        }
-    } else {
-        for (let i = 0; i < lengthB - lengthA; i++) {
-            currentB = currentB!.next;
-        }
+    while (fast && fast.next) {
+        slow = slow.next!;
+        fast = fast.next.next!;
     }
 
-    // Traverse both lists to find the intersection
-    while (currentA && currentB) {
-        if (currentA === currentB) {
-            return currentA; // Intersection found
-        }
-        currentA = currentA.next;
-        currentB = currentB.next;
+    // Step 2: Reverse the second half of the linked list
+    let prev: ListNode | null = null;
+    while (slow) {
+        let nextTemp = slow.next;
+        slow.next = prev;
+        prev = slow;
+        slow = nextTemp;
     }
 
-    return null; // No intersection
+    // Step 3: Compare both halves
+    let left = head;
+    let right = prev; // This is the head of the reversed second half
+
+    while (right) {
+        if (left.value !== right.value) {
+            return false;
+        }
+        left = left.next!;
+        right = right.next;
+    }
+
+    return true;
 }
 
 // Example usage:
-const nodeA1 = new ListNode(1);
-const nodeA2 = new ListNode(2);
-const nodeB1 = new ListNode(3);
-const nodeB2 = new ListNode(4);
-const intersectionNode = new ListNode(5);
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(2);
+head.next.next.next.next = new ListNode(1);
 
-nodeA1.next = nodeA2;
-nodeA2.next = intersectionNode;
-
-nodeB1.next = nodeB2;
-nodeB2.next = intersectionNode;
-
-const intersection = getIntersectionNode(nodeA1, nodeB1);
-console.log(intersection ? intersection.value : "No intersection");
+console.log(isPalindrome(head)); // Output: true
