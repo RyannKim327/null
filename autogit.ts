@@ -8,52 +8,32 @@ class ListNode {
     }
 }
 
-class LinkedList {
-    head: ListNode | null;
+function hasCycle(head: ListNode | null): boolean {
+    if (!head) return false;
 
-    constructor() {
-        this.head = null;
-    }
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
 
-    // Method to add a new node to the linked list
-    add(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
+    while (fast && fast.next) {
+        slow = slow.next;         // Move slow pointer by 1
+        fast = fast.next.next;   // Move fast pointer by 2
+
+        if (slow === fast) {     // Check if both pointers meet
+            return true;
         }
     }
 
-    // Method to find the middle element
-    findMiddle(): ListNode | null {
-        let slowPointer: ListNode | null = this.head;
-        let fastPointer: ListNode | null = this.head;
-
-        while (fastPointer && fastPointer.next) {
-            slowPointer = slowPointer?.next || null; // Move slow pointer by 1
-            fastPointer = fastPointer.next.next; // Move fast pointer by 2
-        }
-
-        return slowPointer; // Slow pointer will be at the middle
-    }
+    return false;  // No cycle found
 }
 
 // Example usage:
-const linkedList = new LinkedList();
-linkedList.add(1);
-linkedList.add(2);
-linkedList.add(3);
-linkedList.add(4);
-linkedList.add(5);
+// Creating a linked list: 1 -> 2 -> 3 -> 4 -> 5
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+// Creating a cycle: 5 -> 3
+head.next.next.next.next.next = head.next.next;
 
-const middleNode = linkedList.findMiddle();
-if (middleNode) {
-    console.log(`The middle element is: ${middleNode.value}`);
-} else {
-    console.log("The linked list is empty.");
-}
+console.log(hasCycle(head)); // Output: true
