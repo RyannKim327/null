@@ -1,10 +1,37 @@
-function calculateMean(numbers: number[]): number {
-    if (numbers.length === 0) return 0; // Handle empty array case
-    const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    return sum / numbers.length;
+class ListNode {
+    value: number;
+    next: ListNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
 }
 
-// Example usage:
-const numbers = [1, 2, 3, 4, 5];
-const mean = calculateMean(numbers);
-console.log(mean); // Output: 3
+function hasCycle(head: ListNode | null): boolean {
+    if (!head || !head.next) {
+        return false; // Empty list or a single node
+    }
+
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next; // Move slow pointer by 1
+        fast = fast.next.next; // Move fast pointer by 2
+
+        if (slow === fast) {
+            return true; // Cycle detected
+        }
+    }
+
+    return false; // No cycle detected
+}
+const head = new ListNode(1);
+const second = new ListNode(2);
+const third = new ListNode(3);
+head.next = second;
+second.next = third;
+third.next = second; // Creates a cycle
+
+console.log(hasCycle(head)); // Outputs: true
