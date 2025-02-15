@@ -1,29 +1,19 @@
-function largestPrimeFactor(n: number): number {
-    let largestFactor = -1;
-
-    // Check for number of 2s that divide n
-    while (n % 2 === 0) {
-        largestFactor = 2;
-        n /= 2;
+function factorial(n: number): number {
+    if (n <= 1) {
+        return 1; // Base case
     }
-
-    // n must be odd at this point, so we can skip even numbers
-    for (let i = 3; i <= Math.sqrt(n); i += 2) {
-        // While i divides n, update n and largestFactor
-        while (n % i === 0) {
-            largestFactor = i;
-            n /= i;
-        }
-    }
-
-    // This condition is to check if n is a prime number greater than 2
-    if (n > 2) {
-        largestFactor = n;
-    }
-
-    return largestFactor;
+    return n * factorial(n - 1); // Recursive case
 }
 
-// Example usage:
-const number = 13195;
-console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
+const num = 5; // Example number
+console.log(`Factorial of ${num} is ${factorial(num)}`);
+function factorial(n: number): number {
+    let result = 1;
+    for (let i = 2; i <= n; i++) {
+        result *= i; // Multiply the result by each number up to n
+    }
+    return result;
+}
+
+const num = 5; // Example number
+console.log(`Factorial of ${num} is ${factorial(num)}`);
