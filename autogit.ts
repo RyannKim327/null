@@ -1,61 +1,11 @@
-class SuffixTreeNode {
-    children: Map<string, SuffixTreeNode>;
-    isEndOfWord: boolean;
-
-    constructor() {
-        this.children = new Map();
-        this.isEndOfWord = false;
-    }
+function validateEmail(email: string): boolean {
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailPattern.test(email);
 }
 
-class SuffixTree {
-    root: SuffixTreeNode;
-    text: string;
+// Example usage:
+const email1 = "example@example.com";
+const email2 = "invalid-email";
 
-    constructor(text: string) {
-        this.root = new SuffixTreeNode();
-        this.text = text;
-        this.buildSuffixTree();
-    }
-
-    buildSuffixTree() {
-        const n = this.text.length;
-        for (let i = 0; i < n; i++) {
-            this.insertSuffix(this.text.slice(i));
-        }
-    }
-
-    insertSuffix(suffix: string) {
-        let currentNode = this.root;
-
-        for (const char of suffix) {
-            if (!currentNode.children.has(char)) {
-                currentNode.children.set(char, new SuffixTreeNode());
-            }
-            currentNode = currentNode.children.get(char)!;
-        }
-
-        currentNode.isEndOfWord = true;
-    }
-
-    search(pattern: string): boolean {
-        let currentNode = this.root;
-
-        for (const char of pattern) {
-            if (!currentNode.children.has(char)) {
-                return false;
-            }
-            currentNode = currentNode.children.get(char)!;
-        }
-
-        return true; // Found the pattern in the tree
-    }
-}
-
-// Example usage
-const text = "banana";
-const suffixTree = new SuffixTree(text);
-
-console.log(suffixTree.search("ana")); // true
-console.log(suffixTree.search("nan")); // true
-console.log(suffixTree.search("bat")); // false
+console.log(validateEmail(email1)); // true
+console.log(validateEmail(email2)); // false
