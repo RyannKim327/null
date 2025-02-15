@@ -1,33 +1,21 @@
-import axios from 'axios';
+function firstNonRepeatingCharacter(s: string): string | null {
+    const charCount: { [key: string]: number } = {};
 
-// Define an interface for the response data
-interface Post {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
+    // Count the occurrences of each character
+    for (const char of s) {
+        charCount[char] = (charCount[char] || 0) + 1;
+    }
+
+    // Find the first character with a count of 1
+    for (const char of s) {
+        if (charCount[char] === 1) {
+            return char; // Return the first non-repeating character
+        }
+    }
+
+    return null; // Return null if no non-repeating character is found
 }
 
-// Function to fetch posts
-const fetchPosts = async () => {
-  try {
-    const response = await axios.get<Post[]>('https://jsonplaceholder.typicode.com/posts');
-    const posts = response.data;
-
-    // Log the titles of the posts
-    posts.forEach(post => {
-      console.log(`Post ${post.id}: ${post.title}`);
-    });
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error('Error fetching posts:', error.message);
-    } else {
-      console.error('Unexpected error:', error);
-    }
-  }
-};
-
-// Call the function
-fetchPosts();
-npm install axios
-npm install typescript --save-dev
+// Example usage:
+const str = "swiss";
+console.log(firstNonRepeatingCharacter(str)); // Output: "w"
