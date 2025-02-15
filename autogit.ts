@@ -1,11 +1,7 @@
-function removeSpaces(input: string): string {
-    return input.replace(/\s+/g, '');
+function getRandomNumberInRange(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 // Example usage:
-const originalString = "Hello, how are you?";
-const stringWithoutSpaces = removeSpaces(originalString);
-console.log(stringWithoutSpaces); // Output: "Hello,howareyou?"
-function removeSpaces(input: string): string {
-    return input.replace(/ /g, '');
-}
+const randomNum = getRandomNumberInRange(1, 10);
+console.log(randomNum); // This will log a random number between 1 and 10 (inclusive)
