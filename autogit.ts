@@ -1,36 +1,61 @@
-function interpolationSearch(arr: number[], target: number): number {
-    let low = 0;
-    let high = arr.length - 1;
+class SuffixTreeNode {
+    children: Map<string, SuffixTreeNode>;
+    isEndOfWord: boolean;
 
-    while (low <= high && target >= arr[low] && target <= arr[high]) {
-        // Estimate the position using the interpolation formula
-        const pos = low + Math.floor(((high - low) / (arr[high] - arr[low])) * (target - arr[low]));
+    constructor() {
+        this.children = new Map();
+        this.isEndOfWord = false;
+    }
+}
 
-        // Check if the estimated position holds the target value
-        if (arr[pos] === target) {
-            return pos; // Target found
-        }
+class SuffixTree {
+    root: SuffixTreeNode;
+    text: string;
 
-        // If target is larger, adjust the low bound
-        if (arr[pos] < target) {
-            low = pos + 1;
-        }
-        // If target is smaller, adjust the high bound
-        else {
-            high = pos - 1;
+    constructor(text: string) {
+        this.root = new SuffixTreeNode();
+        this.text = text;
+        this.buildSuffixTree();
+    }
+
+    buildSuffixTree() {
+        const n = this.text.length;
+        for (let i = 0; i < n; i++) {
+            this.insertSuffix(this.text.slice(i));
         }
     }
 
-    return -1; // Target not found
+    insertSuffix(suffix: string) {
+        let currentNode = this.root;
+
+        for (const char of suffix) {
+            if (!currentNode.children.has(char)) {
+                currentNode.children.set(char, new SuffixTreeNode());
+            }
+            currentNode = currentNode.children.get(char)!;
+        }
+
+        currentNode.isEndOfWord = true;
+    }
+
+    search(pattern: string): boolean {
+        let currentNode = this.root;
+
+        for (const char of pattern) {
+            if (!currentNode.children.has(char)) {
+                return false;
+            }
+            currentNode = currentNode.children.get(char)!;
+        }
+
+        return true; // Found the pattern in the tree
+    }
 }
 
-// Example usage:
-const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-const targetValue = 70;
-const resultIndex = interpolationSearch(sortedArray, targetValue);
+// Example usage
+const text = "banana";
+const suffixTree = new SuffixTree(text);
 
-if (resultIndex !== -1) {
-    console.log(`Target found at index: ${resultIndex}`);
-} else {
-    console.log('Target not found in the array.');
-}
+console.log(suffixTree.search("ana")); // true
+console.log(suffixTree.search("nan")); // true
+console.log(suffixTree.search("bat")); // false
