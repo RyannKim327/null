@@ -1,17 +1,25 @@
-function firstRepeatedCharacter(str: string): string | null {
-    const seen = new Set<string>();
+function binarySearch(arr: number[], target: number): number {
+    let left = 0;
+    let right = arr.length - 1;
 
-    for (const char of str) {
-        if (seen.has(char)) {
-            return char; // Return the first repeated character
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
+
+        if (arr[mid] === target) {
+            return mid; // Target found, return the index
+        } else if (arr[mid] < target) {
+            left = mid + 1; // Search in the right half
+        } else {
+            right = mid - 1; // Search in the left half
         }
-        seen.add(char);
     }
-
-    return null; // Return null if no character is repeated
+    
+    return -1; // Target not found, return -1
 }
 
 // Example usage:
-const input = "swiss";
-const result = firstRepeatedCharacter(input);
-console.log(result); // Output: 's'
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const targetValue = 5;
+const result = binarySearch(sortedArray, targetValue);
+
+console.log(result); // Output: 4 (the index of the target value)
