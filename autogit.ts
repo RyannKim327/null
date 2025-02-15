@@ -1,9 +1,12 @@
-function removeWhitespace(input: string): string {
-    return input.replace(/\s+/g, '');
+function validateEmail(email: string): boolean {
+    // Regular expression for validating an email address
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
 }
 
-const originalString = "   Hello   World   ";
-const stringWithoutWhitespace = removeWhitespace(originalString);
-console.log(stringWithoutWhitespace); // Output: "HelloWorld"
-const trimmedString = originalString.trim();
-console.log(trimmedString); // Output: "Hello   World"
+// Example usage
+const email1 = "example@example.com";
+const email2 = "invalid-email@.com";
+
+console.log(validateEmail(email1)); // true
+console.log(validateEmail(email2)); // false
