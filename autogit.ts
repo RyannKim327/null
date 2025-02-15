@@ -1,9 +1,15 @@
-function decimalToBinary(decimal: number): string {
-    return decimal.toString(2);
+function isArraySortedAscending(arr: number[]): boolean {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false; // Found an element greater than the next one
+        }
+    }
+    return true; // All elements are in ascending order
 }
 
 // Example usage:
-const decimalNumber = 42;
-const binaryString = decimalToBinary(decimalNumber);
-console.log(`The binary representation of ${decimalNumber} is ${binaryString}`);
-The binary representation of 42 is 101010
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [5, 3, 4, 1, 2];
+
+console.log(isArraySortedAscending(array1)); // Output: true
+console.log(isArraySortedAscending(array2)); // Output: false
