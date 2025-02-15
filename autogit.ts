@@ -1,6 +1,6 @@
-class ListNode {
+class Node {
     value: number;
-    next: ListNode | null;
+    next: Node | null;
 
     constructor(value: number) {
         this.value = value;
@@ -8,53 +8,42 @@ class ListNode {
     }
 }
 
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    if (!headA || !headB) return null;
+class LinkedList {
+    head: Node | null;
 
-    let pointerA: ListNode | null = headA;
-    let pointerB: ListNode | null = headB;
-
-    // Calculate the lengths of both lists
-    let lengthA = 0;
-    let lengthB = 0;
-
-    while (pointerA) {
-        lengthA++;
-        pointerA = pointerA.next;
+    constructor() {
+        this.head = null;
     }
 
-    while (pointerB) {
-        lengthB++;
-        pointerB = pointerB.next;
-    }
-
-    // Reset pointers
-    pointerA = headA;
-    pointerB = headB;
-
-    // Move pointer of the longer list ahead by the difference in lengths
-    if (lengthA > lengthB) {
-        let diff = lengthA - lengthB;
-        while (diff > 0) {
-            pointerA = pointerA!.next;
-            diff--;
-        }
-    } else {
-        let diff = lengthB - lengthA;
-        while (diff > 0) {
-            pointerB = pointerB!.next;
-            diff--;
+    // Method to add a new node at the end of the list
+    add(value: number) {
+        const newNode = new Node(value);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
         }
     }
 
-    // Move both pointers until they find the intersection or reach the end
-    while (pointerA && pointerB) {
-        if (pointerA === pointerB) {
-            return pointerA; // Intersection found
+    // Method to find the length of the linked list
+    getLength(): number {
+        let length = 0;
+        let current = this.head;
+        while (current) {
+            length++;
+            current = current.next;
         }
-        pointerA = pointerA.next;
-        pointerB = pointerB.next;
+        return length;
     }
-
-    return null; // No intersection
 }
+
+// Example usage
+const list = new LinkedList();
+list.add(1);
+list.add(2);
+list.add(3);
+console.log("Length of linked list:", list.getLength()); // Outputs: Length of linked list: 3
