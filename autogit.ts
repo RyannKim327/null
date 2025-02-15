@@ -1,41 +1,35 @@
-function countingSort(arr: number[], exp: number): number[] {
-    const output: number[] = new Array(arr.length); // Output array
-    const count: number[] = new Array(10).fill(0); // Count array for digits (0-9)
+function isPalindrome(s: string): boolean {
+    let left = 0;
+    let right = s.length - 1;
 
-    // Store count of occurrences of each digit
-    for (let i = 0; i < arr.length; i++) {
-        const index = Math.floor(Math.abs(arr[i]) / exp) % 10;
-        count[index]++;
+    while (left < right) {
+        // Skip non-alphanumeric characters
+        while (left < right && !isAlphanumeric(s[left])) {
+            left++;
+        }
+        while (left < right && !isAlphanumeric(s[right])) {
+            right--;
+        }
+
+        // Compare characters
+        if (s[left].toLowerCase() !== s[right].toLowerCase()) {
+            return false;
+        }
+        
+        left++;
+        right--;
     }
 
-    // Change count[i] so that it contains the actual position of this digit in output[]
-    for (let i = 1; i < count.length; i++) {
-        count[i] += count[i - 1];
-    }
-
-    // Build the output array
-    for (let i = arr.length - 1; i >= 0; i--) {
-        const index = Math.floor(Math.abs(arr[i]) / exp) % 10;
-        output[count[index] - 1] = arr[i];
-        count[index]--;
-    }
-
-    return output;
+    return true;
 }
 
-function radixSort(arr: number[]): number[] {
-    // Find the maximum number to know the number of digits
-    const max = Math.max(...arr);
-
-    // Apply counting sort to sort elements based on place value
-    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
-        arr = countingSort(arr, exp);
-    }
-
-    return arr;
+function isAlphanumeric(char: string): boolean {
+    const code = char.charCodeAt(0);
+    return (code >= 48 && code <= 57) || // 0-9
+           (code >= 65 && code <= 90) || // A-Z
+           (code >= 97 && code <= 122);  // a-z
 }
 
 // Example usage
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedArr = radixSort(arr);
-console.log(sortedArr); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+const str = "A man, a plan, a canal: Panama";
+console.log(isPalindrome(str)); // Output: true
