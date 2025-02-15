@@ -1,25 +1,4 @@
-function binarySearch(arr: number[], target: number): number {
-    let left = 0;
-    let right = arr.length - 1;
+let originalString: string = "Hello, World!";
+let lowerCaseString: string = originalString.toLowerCase();
 
-    while (left <= right) {
-        const mid = Math.floor((left + right) / 2);
-
-        if (arr[mid] === target) {
-            return mid; // Target found, return the index
-        } else if (arr[mid] < target) {
-            left = mid + 1; // Search in the right half
-        } else {
-            right = mid - 1; // Search in the left half
-        }
-    }
-    
-    return -1; // Target not found, return -1
-}
-
-// Example usage:
-const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-const targetValue = 5;
-const result = binarySearch(sortedArray, targetValue);
-
-console.log(result); // Output: 4 (the index of the target value)
+console.log(lowerCaseString); // Output: "hello, world!"
