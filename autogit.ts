@@ -1,17 +1,20 @@
-function firstRepeatedCharacter(str: string): string | null {
-    const seenCharacters = new Set<string>();
-
-    for (const char of str) {
-        if (seenCharacters.has(char)) {
-            return char; // Return the first repeated character
+function countCharacter(str: string, char: string): number {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
+            count++;
         }
-        seenCharacters.add(char); // Add the character to the set
     }
-
-    return null; // Return null if no repeated character is found
+    return count;
 }
 
-// Example usage:
-const input = "abca";
-const result = firstRepeatedCharacter(input);
-console.log(result); // Output: "a"
+const myString = "hello world";
+const characterToCount = "o";
+const result = countCharacter(myString, characterToCount);
+console.log(`The character '${characterToCount}' occurs ${result} times in the string.`);
+function countCharacterUsingSplit(str: string, char: string): number {
+    return str.split(char).length - 1;
+}
+
+const resultUsingSplit = countCharacterUsingSplit(myString, characterToCount);
+console.log(`The character '${characterToCount}' occurs ${resultUsingSplit} times when using split.`);
