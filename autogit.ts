@@ -1,49 +1,42 @@
-class Node {
-    value: number;
-    next: Node | null;
+type Graph = { [key: string]: string[] };
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
+function breadthLimitedSearch(graph: Graph, startNode: string, depthLimit: number): string[] {
+    const result: string[] = [];
+    const queue: { node: string; depth: number }[] = [{ node: startNode, depth: 0 }];
+    const visited: Set<string> = new Set();
 
-class LinkedList {
-    head: Node | null;
+    while (queue.length > 0) {
+        const { node, depth } = queue.shift()!;
 
-    constructor() {
-        this.head = null;
-    }
+        // Check if the node has been visited
+        if (!visited.has(node)) {
+            visited.add(node);
+            result.push(node);
 
-    // Method to add a new node at the end of the list
-    add(value: number) {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
+            // If the current depth is less than the depth limit, enqueue the neighbors
+            if (depth < depthLimit) {
+                const neighbors = graph[node] || [];
+                for (const neighbor of neighbors) {
+                    queue.push({ node: neighbor, depth: depth + 1 });
+                }
             }
-            current.next = newNode;
         }
     }
 
-    // Method to find the length of the linked list
-    getLength(): number {
-        let length = 0;
-        let current = this.head;
-        while (current) {
-            length++;
-            current = current.next;
-        }
-        return length;
-    }
+    return result;
 }
 
 // Example usage
-const list = new LinkedList();
-list.add(1);
-list.add(2);
-list.add(3);
-console.log("Length of linked list:", list.getLength()); // Outputs: Length of linked list: 3
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
+
+const startNode = 'A';
+const depthLimit = 2;
+const result = breadthLimitedSearch(graph, startNode, depthLimit);
+console.log(result); // Output: ['A', 'B', 'C', 'D', 'E', 'F']
