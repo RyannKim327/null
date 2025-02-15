@@ -1,92 +1,35 @@
-class TrieNode {
-    public children: { [key: string]: TrieNode };
-    public isEndOfWord: boolean;
+function longestCommonSubstring(s1: string, s2: string): string {
+    const m = s1.length;
+    const n = s2.length;
+    let maxLength = 0;
+    let endingIndex = 0;
 
-    constructor() {
-        this.children = {};
-        this.isEndOfWord = false;
+    // Create a 2D array to store lengths of longest common suffixes
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+
+    // Build the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (s1[i - 1] === s2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > maxLength) {
+                    maxLength = dp[i][j];
+                    endingIndex = i; // Update ending index of the substring
+                }
+            }
+        }
     }
+
+    // Extract the longest common substring
+    if (maxLength === 0) {
+        return ""; // No common substring found
+    }
+
+    return s1.substring(endingIndex - maxLength, endingIndex);
 }
-class Trie {
-    private root: TrieNode;
 
-    constructor() {
-        this.root = new TrieNode();
-    }
-
-    // Insert a word into the trie
-    public insert(word: string): void {
-        let node = this.root;
-        for (const char of word) {
-            if (!node.children[char]) {
-                node.children[char] = new TrieNode();
-            }
-            node = node.children[char];
-        }
-        node.isEndOfWord = true;
-    }
-
-    // Search for a word in the trie
-    public search(word: string): boolean {
-        let node = this.root;
-        for (const char of word) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
-        }
-        return node.isEndOfWord;
-    }
-
-    // Check if there is a word in the trie that starts with the given prefix
-    public startsWith(prefix: string): boolean {
-        let node = this.root;
-        for (const char of prefix) {
-            if (!node.children[char]) {
-                return false;
-            }
-            node = node.children[char];
-        }
-        return true;
-    }
-
-    // Optional: Delete a word from the trie
-    public delete(word: string): boolean {
-        return this.deleteHelper(this.root, word, 0);
-    }
-
-    private deleteHelper(node: TrieNode, word: string, index: number): boolean {
-        if (index === word.length) {
-            if (!node.isEndOfWord) {
-                return false;
-            }
-            node.isEndOfWord = false;
-            return Object.keys(node.children).length === 0; // Return true if no children left
-        }
-
-        const char = word[index];
-        const childNode = node.children[char];
-        if (!childNode) {
-            return false; // Word not found
-        }
-
-        const shouldDeleteChild = this.deleteHelper(childNode, word, index + 1);
-
-        if (shouldDeleteChild) {
-            delete node.children[char];
-            return Object.keys(node.children).length === 0 && !node.isEndOfWord;
-        }
-
-        return false;
-    }
-}
-const trie = new Trie();
-trie.insert("hello");
-trie.insert("world");
-
-console.log(trie.search("hello")); // true
-console.log(trie.search("hell"));  // false
-console.log(trie.startsWith("hell")); // true
-
-trie.delete("hello");
-console.log(trie.search("hello")); // false
+// Example usage:
+const str1 = "abcdef";
+const str2 = "zcdemf";
+const result = longestCommonSubstring(str1, str2);
+console.log(result); // Output: "cd"
