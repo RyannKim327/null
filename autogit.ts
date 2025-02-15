@@ -1,39 +1,30 @@
-class ListNode {
+class TreeNode {
     value: number;
-    next: ListNode | null;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
     constructor(value: number) {
         this.value = value;
-        this.next = null;
+        this.left = null;
+        this.right = null;
     }
 }
 
-function hasCycle(head: ListNode | null): boolean {
-    if (!head) return false;
-
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast && fast.next) {
-        slow = slow.next;         // Move slow pointer by 1
-        fast = fast.next.next;   // Move fast pointer by 2
-
-        if (slow === fast) {     // Check if both pointers meet
-            return true;
-        }
+function sumOfNodes(root: TreeNode | null): number {
+    if (root === null) {
+        return 0; // Base case: if the node is null, return 0
     }
-
-    return false;  // No cycle found
+    
+    // Recursively sum the values of the left and right subtrees
+    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
 }
 
-// Example usage:
-// Creating a linked list: 1 -> 2 -> 3 -> 4 -> 5
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-// Creating a cycle: 5 -> 3
-head.next.next.next.next.next = head.next.next;
+// Example Usage
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-console.log(hasCycle(head)); // Output: true
+const totalSum = sumOfNodes(root);
+console.log(`Total sum of all nodes: ${totalSum}`); // Outputs: Total sum of all nodes: 15
