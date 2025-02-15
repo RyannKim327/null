@@ -1,42 +1,64 @@
-type Graph = { [key: string]: string[] };
+type Edge = {
+    source: number;
+    destination: number;
+    weight: number;
+}
 
-function breadthLimitedSearch(graph: Graph, startNode: string, depthLimit: number): string[] {
-    const result: string[] = [];
-    const queue: { node: string; depth: number }[] = [{ node: startNode, depth: 0 }];
-    const visited: Set<string> = new Set();
+class Graph {
+    vertices: number;
+    edges: Edge[] = [];
 
-    while (queue.length > 0) {
-        const { node, depth } = queue.shift()!;
+    constructor(vertices: number) {
+        this.vertices = vertices;
+    }
 
-        // Check if the node has been visited
-        if (!visited.has(node)) {
-            visited.add(node);
-            result.push(node);
+    addEdge(source: number, destination: number, weight: number) {
+        this.edges.push({ source, destination, weight });
+    }
 
-            // If the current depth is less than the depth limit, enqueue the neighbors
-            if (depth < depthLimit) {
-                const neighbors = graph[node] || [];
-                for (const neighbor of neighbors) {
-                    queue.push({ node: neighbor, depth: depth + 1 });
+    bellmanFord(source: number) {
+        const distance: number[] = Array(this.vertices).fill(Infinity);
+        distance[source] = 0;
+
+        // Relax all edges |V| - 1 times
+        for (let i = 0; i < this.vertices - 1; i++) {
+            for (const edge of this.edges) {
+                if (distance[edge.source] !== Infinity &&
+                    distance[edge.source] + edge.weight < distance[edge.destination]) {
+                    distance[edge.destination] = distance[edge.source] + edge.weight;
                 }
             }
         }
-    }
 
-    return result;
+        // Check for negative-weight cycles
+        for (const edge of this.edges) {
+            if (distance[edge.source] !== Infinity &&
+                distance[edge.source] + edge.weight < distance[edge.destination]) {
+                throw new Error("Graph contains a negative-weight cycle");
+            }
+        }
+
+        return distance;
+    }
 }
 
 // Example usage
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
+const graph = new Graph(5);
+graph.addEdge(0, 1, -1);
+graph.addEdge(0, 2, 4);
+graph.addEdge(1, 2, 3);
+graph.addEdge(1, 3, 2);
+graph.addEdge(1, 4, 2);
+graph.addEdge(3, 2, 5);
+graph.addEdge(3, 1, 1);
+graph.addEdge(4, 3, -3);
 
-const startNode = 'A';
-const depthLimit = 2;
-const result = breadthLimitedSearch(graph, startNode, depthLimit);
-console.log(result); // Output: ['A', 'B', 'C', 'D', 'E', 'F']
+try {
+    const distances = graph.bellmanFord(0);
+    console.log("Vertex Distance from Source");
+    for (let i = 0; i < distances.length; i++) {
+        console.log(`${i}\t\t${distances[i]}`);
+    }
+} catch (error) {
+    console.error(error.message);
+}
