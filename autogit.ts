@@ -1,69 +1,29 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function largestPrimeFactor(n: number): number {
+    let largestFactor = -1;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+    // Check for number of 2s that divide n
+    while (n % 2 === 0) {
+        largestFactor = 2;
+        n /= 2;
     }
+
+    // n must be odd at this point, so we can skip even numbers
+    for (let i = 3; i <= Math.sqrt(n); i += 2) {
+        // While i divides n, update n and largestFactor
+        while (n % i === 0) {
+            largestFactor = i;
+            n /= i;
+        }
+    }
+
+    // This condition is to check if n is a prime number greater than 2
+    if (n > 2) {
+        largestFactor = n;
+    }
+
+    return largestFactor;
 }
 
-class LinkedList {
-    head: ListNode | null;
-
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Method to print the list
-    print() {
-        let current = this.head;
-        const values: number[] = [];
-        while (current) {
-            values.push(current.value);
-            current = current.next;
-        }
-        console.log(values.join(' -> '));
-    }
-}
-function reverseLinkedList(head: ListNode | null): ListNode | null {
-    let prev: ListNode | null = null;
-    let current: ListNode | null = head;
-    let next: ListNode | null = null;
-
-    while (current) {
-        next = current.next; // Store the next node
-        current.next = prev; // Reverse the current node's pointer
-        prev = current;      // Move prev and current one step forward
-        current = next;
-    }
-    return prev; // New head of the reversed list
-}
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
-
-console.log("Original list:");
-list.print();
-
-list.head = reverseLinkedList(list.head);
-
-console.log("Reversed list:");
-list.print();
+// Example usage:
+const number = 13195;
+console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
