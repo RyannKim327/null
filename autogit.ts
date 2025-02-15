@@ -1,35 +1,33 @@
-function isPalindrome(s: string): boolean {
-    let left = 0;
-    let right = s.length - 1;
+import axios from 'axios';
 
-    while (left < right) {
-        // Skip non-alphanumeric characters
-        while (left < right && !isAlphanumeric(s[left])) {
-            left++;
-        }
-        while (left < right && !isAlphanumeric(s[right])) {
-            right--;
-        }
+// Define an interface for the response data
+interface Post {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+}
 
-        // Compare characters
-        if (s[left].toLowerCase() !== s[right].toLowerCase()) {
-            return false;
-        }
-        
-        left++;
-        right--;
+// Function to fetch posts
+const fetchPosts = async () => {
+  try {
+    const response = await axios.get<Post[]>('https://jsonplaceholder.typicode.com/posts');
+    const posts = response.data;
+
+    // Log the titles of the posts
+    posts.forEach(post => {
+      console.log(`Post ${post.id}: ${post.title}`);
+    });
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Error fetching posts:', error.message);
+    } else {
+      console.error('Unexpected error:', error);
     }
+  }
+};
 
-    return true;
-}
-
-function isAlphanumeric(char: string): boolean {
-    const code = char.charCodeAt(0);
-    return (code >= 48 && code <= 57) || // 0-9
-           (code >= 65 && code <= 90) || // A-Z
-           (code >= 97 && code <= 122);  // a-z
-}
-
-// Example usage
-const str = "A man, a plan, a canal: Panama";
-console.log(isPalindrome(str)); // Output: true
+// Call the function
+fetchPosts();
+npm install axios
+npm install typescript --save-dev
