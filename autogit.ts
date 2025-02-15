@@ -1,37 +1,57 @@
-function longestIncreasingSubsequence(nums: number[]): number[] {
-    if (nums.length === 0) return [];
+class Graph {
+    private adjacencyList: Map<number, number[]>;
 
-    const dp: number[] = new Array(nums.length).fill(1);
-    const prev: number[] = new Array(nums.length).fill(-1);
+    constructor() {
+        this.adjacencyList = new Map();
+    }
 
-    let maxLength = 1;
-    let maxIndex = 0;
+    addVertex(vertex: number): void {
+        this.adjacencyList.set(vertex, []);
+    }
 
-    // Fill dp array
-    for (let i = 1; i < nums.length; i++) {
-        for (let j = 0; j < i; j++) {
-            if (nums[i] > nums[j] && dp[i] < dp[j] + 1) {
-                dp[i] = dp[j] + 1;
-                prev[i] = j;
-                if (dp[i] > maxLength) {
-                    maxLength = dp[i];
-                    maxIndex = i;
+    addEdge(vertex1: number, vertex2: number): void {
+        this.adjacencyList.get(vertex1)?.push(vertex2);
+        this.adjacencyList.get(vertex2)?.push(vertex1); // For undirected graph
+    }
+
+    bfs(startVertex: number): number[] {
+        const visited: Set<number> = new Set();
+        const queue: number[] = [];
+        const result: number[] = [];
+
+        visited.add(startVertex);
+        queue.push(startVertex);
+
+        while (queue.length > 0) {
+            const currentVertex = queue.shift()!;
+            result.push(currentVertex);
+
+            const neighbors = this.adjacencyList.get(currentVertex) || [];
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    visited.add(neighbor);
+                    queue.push(neighbor);
                 }
             }
         }
-    }
 
-    // Reconstruct the longest increasing subsequence
-    const lis: number[] = [];
-    let index = maxIndex;
-    while (index !== -1) {
-        lis.unshift(nums[index]);
-        index = prev[index];
+        return result;
     }
-
-    return lis;
 }
 
-// Example usage
-const arr = [10, 9, 2, 5, 3, 7, 101, 18];
-console.log(longestIncreasingSubsequence(arr)); // Output: [2, 3, 7, 101]
+// Example usage:
+const graph = new Graph();
+graph.addVertex(1);
+graph.addVertex(2);
+graph.addVertex(3);
+graph.addVertex(4);
+graph.addVertex(5);
+
+graph.addEdge(1, 2);
+graph.addEdge(1, 3);
+graph.addEdge(2, 4);
+graph.addEdge(2, 5);
+graph.addEdge(3, 5);
+
+const bfsResult = graph.bfs(1);
+console.log(bfsResult); // Output: [1, 2, 3, 4, 5]
