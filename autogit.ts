@@ -1,50 +1,29 @@
-type Graph = {
-    [key: string]: { node: string; weight: number }[];
-};
+function shellSort(arr: number[]): number[] {
+    const n = arr.length;
+    let gap = Math.floor(n / 2); // Start with a big gap, then reduce the gap
 
-function dijkstra(graph: Graph, start: string): { [key: string]: number } {
-    const distances: { [key: string]: number } = {};
-    const priorityQueue: { node: string; distance: number }[] = [];
-    const visited: Set<string> = new Set();
+    // Start with the largest gap and reduce the gap until it becomes 0
+    while (gap > 0) {
+        // Do a gapped insertion sort for this gap size
+        for (let i = gap; i < n; i++) {
+            // Save the current element to be compared
+            const temp = arr[i];
+            let j = i;
 
-    // Initialize distances
-    for (const node in graph) {
-        distances[node] = Infinity;
-    }
-    distances[start] = 0;
-    priorityQueue.push({ node: start, distance: 0 });
-
-    while (priorityQueue.length > 0) {
-        // Sort the queue by distance
-        priorityQueue.sort((a, b) => a.distance - b.distance);
-        const { node: currentNode } = priorityQueue.shift()!;
-
-        if (visited.has(currentNode)) {
-            continue;
-        }
-        visited.add(currentNode);
-
-        // Explore neighbors
-        for (const neighbor of graph[currentNode]) {
-            const newDistance = distances[currentNode] + neighbor.weight;
-
-            if (newDistance < distances[neighbor.node]) {
-                distances[neighbor.node] = newDistance;
-                priorityQueue.push({ node: neighbor.node, distance: newDistance });
+            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
             }
+            // Put temp (the original arr[i]) in its correct location
+            arr[j] = temp;
         }
+        gap = Math.floor(gap / 2); // Reduce the gap
     }
-
-    return distances;
+    return arr;
 }
 
-// Example usage
-const graph: Graph = {
-    A: [{ node: 'B', weight: 1 }, { node: 'C', weight: 4 }],
-    B: [{ node: 'A', weight: 1 }, { node: 'C', weight: 2 }, { node: 'D', weight: 5 }],
-    C: [{ node: 'A', weight: 4 }, { node: 'B', weight: 2 }, { node: 'D', weight: 1 }],
-    D: [{ node: 'B', weight: 5 }, { node: 'C', weight: 1 }],
-};
-
-const shortestPaths = dijkstra(graph, 'A');
-console.log(shortestPaths);
+// Example usage:
+const array = [5, 1, 4, 2, 8];
+const sortedArray = shellSort(array);
+console.log(sortedArray); // Output: [1, 2, 4, 5, 8]
