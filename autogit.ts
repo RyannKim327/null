@@ -1,48 +1,22 @@
-function heapSort(array: number[]): number[] {
-    const n = array.length;
-
-    // Build a max heap.
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(array, n, i);
-    }
-
-    // One by one extract elements from heap.
-    for (let i = n - 1; i > 0; i--) {
-        // Move current root to the end.
-        [array[0], array[i]] = [array[i], array[0]]; // swap
-
-        // Call heapify on the reduced heap.
-        heapify(array, i, 0);
-    }
-
-    return array;
+function countCharacter(str: string, char: string): number {
+    return str.split(char).length - 1;
 }
 
-function heapify(array: number[], n: number, i: number): void {
-    let largest = i; // Initialize largest as root
-    const left = 2 * i + 1; // left = 2*i + 1
-    const right = 2 * i + 2; // right = 2*i + 2
-
-    // If left child is larger than root.
-    if (left < n && array[left] > array[largest]) {
-        largest = left;
+const exampleString = "Hello, how are you?";
+const characterToCount = "o";
+const count = countCharacter(exampleString, characterToCount);
+console.log(`The character '${characterToCount}' appears ${count} times.`);
+function countCharacter(str: string, char: string): number {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
+            count++;
+        }
     }
-
-    // If right child is larger than largest so far.
-    if (right < n && array[right] > array[largest]) {
-        largest = right;
-    }
-
-    // If largest is not root.
-    if (largest !== i) {
-        [array[i], array[largest]] = [array[largest], array[i]]; // swap
-
-        // Recursively heapify the affected sub-tree.
-        heapify(array, n, largest);
-    }
+    return count;
 }
 
-// Example usage:
-const arr = [3, 6, 8, 10, 1, 2, 1];
-const sortedArray = heapSort(arr);
-console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
+const exampleString = "Hello, how are you?";
+const characterToCount = "o";
+const count = countCharacter(exampleString, characterToCount);
+console.log(`The character '${characterToCount}' appears ${count} times.`);
