@@ -1,42 +1,36 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+function interpolationSearch(arr: number[], target: number): number {
+    let low = 0;
+    let high = arr.length - 1;
+
+    while (low <= high && target >= arr[low] && target <= arr[high]) {
+        // Estimate the position using the interpolation formula
+        const pos = low + Math.floor(((high - low) / (arr[high] - arr[low])) * (target - arr[low]));
+
+        // Check if the estimated position holds the target value
+        if (arr[pos] === target) {
+            return pos; // Target found
+        }
+
+        // If target is larger, adjust the low bound
+        if (arr[pos] < target) {
+            low = pos + 1;
+        }
+        // If target is smaller, adjust the high bound
+        else {
+            high = pos - 1;
+        }
     }
+
+    return -1; // Target not found
 }
 
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    let first: ListNode | null = head;
-    let second: ListNode | null = head;
+// Example usage:
+const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const targetValue = 70;
+const resultIndex = interpolationSearch(sortedArray, targetValue);
 
-    // Move first pointer n nodes ahead
-    for (let i = 0; i < n; i++) {
-        if (first === null) return null; // If n is greater than the length of the list
-        first = first.next;
-    }
-
-    // Move both pointers until first reaches the end
-    while (first !== null) {
-        first = first.next;
-        second = second.next;
-    }
-
-    return second; // second now points to the nth node from the end
-}
-
-// Example usage
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-const n = 2;
-const resultNode = findNthFromEnd(head, n);
-if (resultNode) {
-    console.log(resultNode.value); // Output the value of the nth node from the end
+if (resultIndex !== -1) {
+    console.log(`Target found at index: ${resultIndex}`);
 } else {
-    console.log("The list is shorter than n.");
+    console.log('Target not found in the array.');
 }
