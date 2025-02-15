@@ -1,22 +1,17 @@
-// Define a function to fetch data from the API
-async function fetchData(url: string): Promise<void> {
-    try {
-        const response = await fetch(url);
+function firstRepeatedCharacter(str: string): string | null {
+    const seen = new Set<string>();
 
-        // Check if the response is okay (status code 200-299)
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+    for (const char of str) {
+        if (seen.has(char)) {
+            return char; // Return the first repeated character
         }
-
-        // Parse the JSON response
-        const data = await response.json();
-
-        // Log the data to the console
-        console.log(data);
-    } catch (error) {
-        console.error('Error fetching ', error);
+        seen.add(char);
     }
+
+    return null; // Return null if no character is repeated
 }
 
-// Call the function with a sample API URL
-fetchData('https://jsonplaceholder.typicode.com/posts');
+// Example usage:
+const input = "swiss";
+const result = firstRepeatedCharacter(input);
+console.log(result); // Output: 's'
