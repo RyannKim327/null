@@ -1,16 +1,61 @@
-function countOccurrences(inputString: string, word: string): number {
-    // Normalize the string by converting to lower case 
-    const normalizedString = inputString.toLowerCase();
-    const normalizedWord = word.toLowerCase();
-    
-    // Split the string by the word and count the parts
-    const parts = normalizedString.split(normalizedWord);
-    return parts.length - 1; // Subtract 1 to get the count of occurrences
+class SuffixTreeNode {
+    children: Map<string, SuffixTreeNode>;
+    isEndOfWord: boolean;
+
+    constructor() {
+        this.children = new Map();
+        this.isEndOfWord = false;
+    }
 }
 
-// Example usage:
-const str = "The quick brown fox jumps over the lazy dog. The dog was not lazy.";
-const wordToCount = "the";
+class SuffixTree {
+    root: SuffixTreeNode;
 
-const count = countOccurrences(str, wordToCount);
-console.log(`The word "${wordToCount}" occurs ${count} times.`);
+    constructor() {
+        this.root = new SuffixTreeNode();
+    }
+
+    // Insert a suffix into the suffix tree
+    insert(suffix: string) {
+        let currentNode = this.root;
+
+        for (let char of suffix) {
+            if (!currentNode.children.has(char)) {
+                currentNode.children.set(char, new SuffixTreeNode());
+            }
+            currentNode = currentNode.children.get(char)!;
+        }
+
+        currentNode.isEndOfWord = true;
+    }
+
+    // Build the suffix tree from a given string
+    build(text: string) {
+        for (let i = 0; i < text.length; i++) {
+            this.insert(text.slice(i));
+        }
+    }
+
+    // Search for a given pattern in the suffix tree
+    search(pattern: string): boolean {
+        let currentNode = this.root;
+
+        for (let char of pattern) {
+            if (!currentNode.children.has(char)) {
+                return false; // pattern not found
+            }
+            currentNode = currentNode.children.get(char)!;
+        }
+
+        return true; // pattern found
+    }
+}
+
+// Example usage
+const suffixTree = new SuffixTree();
+const text = "bananas";
+suffixTree.build(text);
+
+console.log(suffixTree.search("ana")); // Output: true
+console.log(suffixTree.search("nan")); // Output: true
+console.log(suffixTree.search("xyz")); // Output: false
