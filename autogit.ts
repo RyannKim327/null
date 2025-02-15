@@ -1,28 +1,67 @@
-function quicksort(arr: number[]): number[] {
-    // Base case: arrays with fewer than 2 elements are already sorted
-    if (arr.length < 2) {
-        return arr;
+class ListNode {
+    value: number;
+    next: ListNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
+}
 
-    // Choose a pivot (here we choose the last element)
-    const pivot = arr[arr.length - 1];
-    const left: number[] = [];
-    const right: number[] = [];
+function getLength(head: ListNode | null): number {
+    let length = 0;
+    let current = head;
+    while (current) {
+        length++;
+        current = current.next;
+    }
+    return length;
+}
 
-    // Partition the array into left and right arrays
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+    if (!headA || !headB) return null;
+
+    const lengthA = getLength(headA);
+    const lengthB = getLength(headB);
+
+    let currentA: ListNode | null = headA;
+    let currentB: ListNode | null = headB;
+
+    // Align the starting points
+    if (lengthA > lengthB) {
+        for (let i = 0; i < lengthA - lengthB; i++) {
+            currentA = currentA!.next; // Use non-null assertion since we checked for null
+        }
+    } else {
+        for (let i = 0; i < lengthB - lengthA; i++) {
+            currentB = currentB!.next;
         }
     }
 
-    // Recursively sort the left and right arrays and concatenate with the pivot
-    return [...quicksort(left), pivot, ...quicksort(right)];
+    // Traverse both lists to find the intersection
+    while (currentA && currentB) {
+        if (currentA === currentB) {
+            return currentA; // Intersection found
+        }
+        currentA = currentA.next;
+        currentB = currentB.next;
+    }
+
+    return null; // No intersection
 }
 
 // Example usage:
-const array = [3, 6, 8, 10, 1, 2, 1];
-const sortedArray = quicksort(array);
-console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
+const nodeA1 = new ListNode(1);
+const nodeA2 = new ListNode(2);
+const nodeB1 = new ListNode(3);
+const nodeB2 = new ListNode(4);
+const intersectionNode = new ListNode(5);
+
+nodeA1.next = nodeA2;
+nodeA2.next = intersectionNode;
+
+nodeB1.next = nodeB2;
+nodeB2.next = intersectionNode;
+
+const intersection = getIntersectionNode(nodeA1, nodeB1);
+console.log(intersection ? intersection.value : "No intersection");
