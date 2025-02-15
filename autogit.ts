@@ -1,129 +1,48 @@
-class MinHeap {
-    private heap: number[];
+function createBadCharTable(pattern: string): Record<string, number> {
+    const badCharTable: Record<string, number> = {};
+    const patternLength = pattern.length;
 
-    constructor() {
-        this.heap = [];
+    // Initialize the bad character table
+    for (let i = 0; i < patternLength - 1; i++) {
+        badCharTable[pattern[i]] = patternLength - 1 - i;
     }
 
-    // Get the index of the parent
-    private parentIndex(index: number): number {
-        return Math.floor((index - 1) / 2);
-    }
-
-    // Get the index of the left child
-    private leftChildIndex(index: number): number {
-        return 2 * index + 1;
-    }
-
-    // Get the index of the right child
-    private rightChildIndex(index: number): number {
-        return 2 * index + 2;
-    }
-
-    // Insert a new value into the heap
-    public insert(value: number): void {
-        this.heap.push(value);
-        this.bubbleUp(this.heap.length - 1);
-    }
-
-    // Bubble up the last element to maintain heap property
-    private bubbleUp(index: number): void {
-        while (index > 0) {
-            const parentIndex = this.parentIndex(index);
-            if (this.heap[index] >= this.heap[parentIndex]) break;
-            [this.heap[index], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[index]];
-            index = parentIndex;
-        }
-    }
-
-    // Remove and return the minimum value (root of the heap)
-    public remove(): number | null {
-        if (this.heap.length === 0) return null;
-        const minValue = this.heap[0];
-        const lastValue = this.heap.pop();
-        if (this.heap.length > 0 && lastValue !== undefined) {
-            this.heap[0] = lastValue;
-            this.bubbleDown(0);
-        }
-        return minValue;
-    }
-
-    // Bubble down the root element to maintain heap property
-    private bubbleDown(index: number): void {
-        const length = this.heap.length;
-        let smallest = index;
-
-        const leftIndex = this.leftChildIndex(index);
-        const rightIndex = this.rightChildIndex(index);
-
-        if (leftIndex < length && this.heap[leftIndex] < this.heap[smallest]) {
-            smallest = leftIndex;
-        }
-
-        if (rightIndex < length && this.heap[rightIndex] < this.heap[smallest]) {
-            smallest = rightIndex;
-        }
-
-        if (smallest !== index) {
-            [this.heap[index], this.heap[smallest]] = [this.heap[smallest], this.heap[index]];
-            this.bubbleDown(smallest);
-        }
-    }
-
-    // Peek at the minimum value without removing it
-    public peek(): number | null {
-        return this.heap.length > 0 ? this.heap[0] : null;
-    }
-
-    // Check if the heap is empty
-    public isEmpty(): boolean {
-        return this.heap.length === 0;
-    }
-
-    // Get the size of the heap
-    public size(): number {
-        return this.heap.length;
-    }
+    return badCharTable;
 }
-class PriorityQueue {
-    private heap: MinHeap;
 
-    constructor() {
-        this.heap = new MinHeap();
+function boyerMooreHorspool(text: string, pattern: string): number[] {
+    const badCharTable = createBadCharTable(pattern);
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    const occurrences: number[] = [];
+
+    let i = 0; // Index for text
+
+    while (i <= textLength - patternLength) {
+        let j = patternLength - 1; // Index for pattern
+
+        // Compare the pattern with the text
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
+        }
+
+        if (j < 0) {
+            // A match is found
+            occurrences.push(i);
+            // Shift according to the last character of the pattern
+            i += (i + patternLength < textLength) ? patternLength - badCharTable[text[i + patternLength]] || patternLength : 1;
+        } else {
+            // Shift the index according to the bad character rule
+            const shift = badCharTable[text[i + j]] || patternLength;
+            i += shift;
+        }
     }
 
-    // Insert an element with a given priority
-    public enqueue(priority: number): void {
-        this.heap.insert(priority);
-    }
-
-    // Remove and return the element with the highest priority (lowest number)
-    public dequeue(): number | null {
-        return this.heap.remove();
-    }
-
-    // Peek at the highest priority element
-    public peek(): number | null {
-        return this.heap.peek();
-    }
-
-    // Check if the queue is empty
-    public isEmpty(): boolean {
-        return this.heap.isEmpty();
-    }
-
-    // Get the size of the queue
-    public size(): number {
-        return this.heap.size();
-    }
+    return occurrences;
 }
-const pq = new PriorityQueue();
-pq.enqueue(5);
-pq.enqueue(2);
-pq.enqueue(8);
-pq.enqueue(1);
 
-console.log(pq.peek()); // Output: 1
-console.log(pq.dequeue()); // Output: 1
-console.log(pq.peek()); // Output: 2
-console.log(pq.size()); // Output: 3
+// Example usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABAB";
+const result = boyerMooreHorspool(text, pattern);
+console.log("Pattern found at indices:", result);
