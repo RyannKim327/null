@@ -1,29 +1,36 @@
-function largestPrimeFactor(n: number): number {
-    let largestFactor = -1;
+function interpolationSearch(arr: number[], target: number): number {
+    let low = 0;
+    let high = arr.length - 1;
 
-    // Check for number of 2s that divide n
-    while (n % 2 === 0) {
-        largestFactor = 2;
-        n /= 2;
-    }
+    while (low <= high && target >= arr[low] && target <= arr[high]) {
+        // Estimate the position of the target
+        const pos = low + Math.floor(((target - arr[low]) * (high - low)) / (arr[high] - arr[low]));
 
-    // n must be odd at this point, so we can skip even numbers
-    for (let i = 3; i <= Math.sqrt(n); i += 2) {
-        // While i divides n, update n and largestFactor
-        while (n % i === 0) {
-            largestFactor = i;
-            n /= i;
+        // Check if the target is found
+        if (arr[pos] === target) {
+            return pos; // Target found at index pos
+        }
+
+        // If target is greater, ignore the left half
+        if (arr[pos] < target) {
+            low = pos + 1;
+        } else {
+            // If target is smaller, ignore the right half
+            high = pos - 1;
         }
     }
 
-    // This condition is to check if n is a prime number greater than 2
-    if (n > 2) {
-        largestFactor = n;
-    }
-
-    return largestFactor;
+    // Target not found
+    return -1;
 }
 
 // Example usage:
-const number = 13195;
-console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
+const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const targetValue = 70;
+const resultIndex = interpolationSearch(sortedArray, targetValue);
+
+if (resultIndex !== -1) {
+    console.log(`Element found at index: ${resultIndex}`);
+} else {
+    console.log('Element not found in the array.');
+}
