@@ -1,55 +1,22 @@
-class BoyerMoore {
-    private pattern: string;
-    private patternLength: number;
-    private last: number[];
-
-    constructor(pattern: string) {
-        this.pattern = pattern;
-        this.patternLength = pattern.length;
-        this.last = this.buildLastOccurrence();
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = Array.from(new Set(array));
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = array.filter((value, index, self) => self.indexOf(value) === index);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = array.reduce<number[]>((acc, value) => {
+    if (!acc.includes(value)) {
+        acc.push(value);
     }
-
-    // Preprocess the pattern to create the last occurrence table
-    private buildLastOccurrence(): number[] {
-        const last = new Array(256).fill(-1);
-        for (let i = 0; i < this.patternLength; i++) {
-            last[this.pattern.charCodeAt(i)] = i;
-        }
-        return last;
+    return acc;
+}, []);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray: number[] = [];
+array.forEach(value => {
+    if (!uniqueArray.includes(value)) {
+        uniqueArray.push(value);
     }
-
-    // Boyer-Moore search algorithm
-    public search(text: string): number[] {
-        const textLength = text.length;
-        const result: number[] = [];
-        let i = 0;
-
-        while (i <= textLength - this.patternLength) {
-            let j = this.patternLength - 1;
-
-            // Check right to left
-            while (j >= 0 && this.pattern[j] === text[i + j]) {
-                j--;
-            }
-
-            // If the pattern was found
-            if (j < 0) {
-                result.push(i);
-                i += (i + this.patternLength < textLength) ? 
-                    this.patternLength - this.last[text.charCodeAt(i + this.patternLength)] : 1;
-            } else {
-                const charIndex = text.charCodeAt(i + j);
-                const shift = Math.max(1, j - this.last[charIndex]);
-                i += shift;
-            }
-        }
-
-        return result;
-    }
-}
-
-// Example usage
-const bm = new BoyerMoore("abc");
-const text = "ababcabcabc";
-const occurrences = bm.search(text);
-console.log(occurrences); // Output: [2, 5, 8]
+});
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
