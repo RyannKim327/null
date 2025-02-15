@@ -1,29 +1,79 @@
-function shellSort(arr: number[]): number[] {
-    const n = arr.length;
-    let gap = Math.floor(n / 2); // Start with a big gap, then reduce the gap
+type Graph = { [key: string]: string[] };
 
-    // Start with the largest gap and reduce the gap until it becomes 0
-    while (gap > 0) {
-        // Do a gapped insertion sort for this gap size
-        for (let i = gap; i < n; i++) {
-            // Save the current element to be compared
-            const temp = arr[i];
-            let j = i;
+function biDirectionalSearch(graph: Graph, start: string, goal: string): string[] | null {
+    if (start === goal) return [start];
 
-            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
-            while (j >= gap && arr[j - gap] > temp) {
-                arr[j] = arr[j - gap];
-                j -= gap;
+    const visitedFromStart = new Set<string>();
+    const visitedFromGoal = new Set<string>();
+    const queueFromStart: string[] = [start];
+    const queueFromGoal: string[] = [goal];
+    const parentFromStart: { [key: string]: string | null } = { [start]: null };
+    const parentFromGoal: { [key: string]: string | null } = { [goal]: null };
+
+    while (queueFromStart.length > 0 && queueFromGoal.length > 0) {
+        // Search from the start
+        const currentFromStart = queueFromStart.shift()!;
+        visitedFromStart.add(currentFromStart);
+
+        for (const neighbor of graph[currentFromStart] || []) {
+            if (!visitedFromStart.has(neighbor)) {
+                parentFromStart[neighbor] = currentFromStart;
+                queueFromStart.push(neighbor);
+                if (visitedFromGoal.has(neighbor)) {
+                    return constructPath(neighbor, parentFromStart, parentFromGoal);
+                }
             }
-            // Put temp (the original arr[i]) in its correct location
-            arr[j] = temp;
         }
-        gap = Math.floor(gap / 2); // Reduce the gap
+
+        // Search from the goal
+        const currentFromGoal = queueFromGoal.shift()!;
+        visitedFromGoal.add(currentFromGoal);
+
+        for (const neighbor of graph[currentFromGoal] || []) {
+            if (!visitedFromGoal.has(neighbor)) {
+                parentFromGoal[neighbor] = currentFromGoal;
+                queueFromGoal.push(neighbor);
+                if (visitedFromStart.has(neighbor)) {
+                    return constructPath(neighbor, parentFromStart, parentFromGoal);
+                }
+            }
+        }
     }
-    return arr;
+
+    return null; // No path found
 }
 
-// Example usage:
-const array = [5, 1, 4, 2, 8];
-const sortedArray = shellSort(array);
-console.log(sortedArray); // Output: [1, 2, 4, 5, 8]
+function constructPath(meetingPoint: string, parentFromStart: { [key: string]: string | null }, parentFromGoal: { [key: string]: string | null }): string[] {
+    const path: string[] = [];
+    
+    // Trace back from the meeting point to the start
+    let current: string | null = meetingPoint;
+    while (current !== null) {
+        path.push(current);
+        current = parentFromStart[current];
+    }
+    
+    path.reverse(); // Reverse to get the path from start to meeting point
+
+    // Trace back from the meeting point to the goal
+    current = parentFromGoal[meetingPoint];
+    while (current !== null) {
+        path.push(current);
+        current = parentFromGoal[current];
+    }
+
+    return path;
+}
+
+// Example usage
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['A', 'D', 'E'],
+    C: ['A', 'F'],
+    D: ['B'],
+    E: ['B', 'F'],
+    F: ['C', 'E'],
+};
+
+const path = biDirectionalSearch(graph, 'A', 'F');
+console.log(path); // Output: ['A', 'C', 'F'] or ['A', 'B', 'E', 'F']
