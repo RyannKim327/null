@@ -1,48 +1,38 @@
-function createBadCharTable(pattern: string): Record<string, number> {
-    const badCharTable: Record<string, number> = {};
-    const patternLength = pattern.length;
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    // Initialize the bad character table
-    for (let i = 0; i < patternLength - 1; i++) {
-        badCharTable[pattern[i]] = patternLength - 1 - i;
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-
-    return badCharTable;
 }
 
-function boyerMooreHorspool(text: string, pattern: string): number[] {
-    const badCharTable = createBadCharTable(pattern);
-    const patternLength = pattern.length;
-    const textLength = text.length;
-    const occurrences: number[] = [];
-
-    let i = 0; // Index for text
-
-    while (i <= textLength - patternLength) {
-        let j = patternLength - 1; // Index for pattern
-
-        // Compare the pattern with the text
-        while (j >= 0 && pattern[j] === text[i + j]) {
-            j--;
-        }
-
-        if (j < 0) {
-            // A match is found
-            occurrences.push(i);
-            // Shift according to the last character of the pattern
-            i += (i + patternLength < textLength) ? patternLength - badCharTable[text[i + patternLength]] || patternLength : 1;
-        } else {
-            // Shift the index according to the bad character rule
-            const shift = badCharTable[text[i + j]] || patternLength;
-            i += shift;
-        }
+function maxDepth(root: TreeNode | null): number {
+    if (root === null) {
+        return 0; // Base case: the depth of an empty tree is 0
     }
 
-    return occurrences;
+    // Recursively find the depth of the left and right subtrees
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
+
+    // The maximum depth is the greater of the two depths plus one for the current node
+    return Math.max(leftDepth, rightDepth) + 1;
 }
 
-// Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABAB";
-const result = boyerMooreHorspool(text, pattern);
-console.log("Pattern found at indices:", result);
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(maxDepth(root)); // Output: 3
+      1
+     / \
+    2   3
+   / \
+  4   5
