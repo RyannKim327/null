@@ -1,89 +1,71 @@
-type Node = {
-    value: string;
-    neighbors: Node[];
-};
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
 
-function biDirectionalSearch(start: Node, goal: Node): Node[] | null {
-    if (start === goal) return [start];
+    constructor(value: T) {
+        this.value = value;
+        this.next = null;
+    }
+}
+class Queue<T> {
+    private head: Node<T> | null = null; // Points to the front of the queue
+    private tail: Node<T> | null = null; // Points to the end of the queue
+    private length: number = 0; // To keep track of the number of elements in the queue
 
-    const startQueue: Node[] = [start];
-    const goalQueue: Node[] = [goal];
-    const startVisited = new Set<Node>();
-    const goalVisited = new Set<Node>();
-    const startParentMap = new Map<Node, Node>();
-    const goalParentMap = new Map<Node, Node>();
-
-    startVisited.add(start);
-    goalVisited.add(goal);
-
-    while (startQueue.length > 0 && goalQueue.length > 0) {
-        // Expand from the start
-        const startNode = startQueue.shift()!;
-        for (const neighbor of startNode.neighbors) {
-            if (!startVisited.has(neighbor)) {
-                startVisited.add(neighbor);
-                startParentMap.set(neighbor, startNode);
-                startQueue.push(neighbor);
-
-                // Check if the neighbor is in the goal visited set
-                if (goalVisited.has(neighbor)) {
-                    return reconstructPath(neighbor, startParentMap, goalParentMap);
-                }
-            }
+    // Enqueue operation
+    enqueue(value: T): void {
+        const newNode = new Node(value);
+        if (this.tail) {
+            this.tail.next = newNode; // Link the old tail to the new node
         }
-
-        // Expand from the goal
-        const goalNode = goalQueue.shift()!;
-        for (const neighbor of goalNode.neighbors) {
-            if (!goalVisited.has(neighbor)) {
-                goalVisited.add(neighbor);
-                goalParentMap.set(neighbor, goalNode);
-                goalQueue.push(neighbor);
-
-                // Check if the neighbor is in the start visited set
-                if (startVisited.has(neighbor)) {
-                    return reconstructPath(neighbor, startParentMap, goalParentMap);
-                }
-            }
+        this.tail = newNode; // Update the tail to the new node
+        if (!this.head) {
+            this.head = newNode; // If the queue was empty, head is also the new node
         }
+        this.length++;
     }
 
-    return null; // No path found
-}
-
-function reconstructPath(meetingNode: Node, startParentMap: Map<Node, Node>, goalParentMap: Map<Node, Node>): Node[] {
-    const path: Node[] = [];
-    
-    // Reconstruct path from start to meeting node
-    let currentNode: Node | undefined = meetingNode;
-    while (currentNode) {
-        path.unshift(currentNode);
-        currentNode = startParentMap.get(currentNode);
+    // Dequeue operation
+    dequeue(): T | null {
+        if (!this.head) {
+            return null; // Queue is empty
+        }
+        const dequeuedValue = this.head.value; // Get the value from the head
+        this.head = this.head.next; // Move the head to the next node
+        if (!this.head) {
+            this.tail = null; // If the queue is now empty, set tail to null
+        }
+        this.length--;
+        return dequeuedValue;
     }
 
-    // Reconstruct path from meeting node to goal
-    currentNode = goalParentMap.get(meetingNode);
-    while (currentNode) {
-        path.push(currentNode);
-        currentNode = goalParentMap.get(currentNode);
+    // Peek operation (view the front element without removing it)
+    peek(): T | null {
+        return this.head ? this.head.value : null;
     }
 
-    return path;
+    // Check if the queue is empty
+    isEmpty(): boolean {
+        return this.length === 0;
+    }
+
+    // Get the size of the queue
+    size(): number {
+        return this.length;
+    }
 }
+const queue = new Queue<number>();
 
-// Example usage
-const nodeA: Node = { value: 'A', neighbors: [] };
-const nodeB: Node = { value: 'B', neighbors: [] };
-const nodeC: Node = { value: 'C', neighbors: [] };
-const nodeD: Node = { value: 'D', neighbors: [] };
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
 
-nodeA.neighbors.push(nodeB, nodeC);
-nodeB.neighbors.push(nodeD);
-nodeC.neighbors.push(nodeD);
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.peek());     // Output: 2
+console.log(queue.size());     // Output: 2
+console.log(queue.isEmpty());  // Output: false
 
-const path = biDirectionalSearch(nodeA, nodeD);
-if (path) {
-    console.log('Path found:', path.map(node => node.value));
-} else {
-    console.log('No path found');
-}
+queue.dequeue();
+queue.dequeue();
+
+console.log(queue.isEmpty());  // Output: true
