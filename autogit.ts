@@ -1,40 +1,76 @@
-function getDigit(num: number, place: number): number {
-    return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
-}
+class Graph {
+    private vertices: number;
+    private adjList: Map<number, number[]>;
 
-function digitCount(num: number): number {
-    if (num === 0) return 1;
-    return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
-
-function mostDigits(nums: number[]): number {
-    let maxDigits = 0;
-    for (let num of nums) {
-        maxDigits = Math.max(maxDigits, digitCount(num));
+    constructor(vertices: number) {
+        this.vertices = vertices;
+        this.adjList = new Map<number, number[]>();
     }
-    return maxDigits;
-}
 
-function radixSort(nums: number[]): number[] {
-    const maxDigitCount = mostDigits(nums);
-    
-    for (let k = 0; k < maxDigitCount; k++) {
-        // Create buckets for each digit (0-9)
-        const digitBuckets: number[][] = Array.from({ length: 10 }, () => []);
-        
-        for (let num of nums) {
-            const digit = getDigit(num, k);
-            digitBuckets[digit].push(num);
+    addEdge(v: number, w: number) {
+        if (!this.adjList.has(v)) {
+            this.adjList.set(v, []);
         }
-        
-        // Flatten the buckets back into nums array
-        nums = [].concat(...digitBuckets);
+        this.adjList.get(v)!.push(w);
     }
-    
-    return nums;
+
+    tarjan(): number[][] {
+        const index: number[] = new Array(this.vertices).fill(-1);
+        const lowlink: number[] = new Array(this.vertices).fill(-1);
+        const onStack: boolean[] = new Array(this.vertices).fill(false);
+        const stack: number[] = [];
+        const result: number[][] = [];
+        let currentIndex = 0;
+
+        const strongConnect = (v: number) => {
+            index[v] = currentIndex;
+            lowlink[v] = currentIndex;
+            currentIndex++;
+            stack.push(v);
+            onStack[v] = true;
+
+            const neighbors = this.adjList.get(v) || [];
+            for (const w of neighbors) {
+                if (index[w] === -1) {
+                    // Successor w has not yet been visited; recurse on it
+                    strongConnect(w);
+                    lowlink[v] = Math.min(lowlink[v], lowlink[w]);
+                } else if (onStack[w]) {
+                    // Successor w is in stack and hence in the current SCC
+                    lowlink[v] = Math.min(lowlink[v], index[w]);
+                }
+            }
+
+            // If v is a root node, pop the stack and generate an SCC
+            if (lowlink[v] === index[v]) {
+                const scc: number[] = [];
+                let w: number;
+                do {
+                    w = stack.pop()!;
+                    onStack[w] = false;
+                    scc.push(w);
+                } while (w !== v);
+                result.push(scc);
+            }
+        };
+
+        for (let v = 0; v < this.vertices; v++) {
+            if (index[v] === -1) {
+                strongConnect(v);
+            }
+        }
+
+        return result;
+    }
 }
 
 // Example usage:
-const arrayToSort = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedArray = radixSort(arrayToSort);
-console.log(sortedArray); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+const g = new Graph(5);
+g.addEdge(0, 2);
+g.addEdge(2, 1);
+g.addEdge(1, 0);
+g.addEdge(0, 3);
+g.addEdge(3, 4);
+
+const sccs = g.tarjan();
+console.log("Strongly Connected Components:", sccs);
