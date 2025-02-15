@@ -1,15 +1,9 @@
-function isArraySortedAscending(arr: number[]): boolean {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false; // Found an element greater than the next one
-        }
-    }
-    return true; // All elements are in ascending order
-}
+const originalArray = [1, 2, 3, 4, 5];
+const reversedArray = originalArray.reverse();
 
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [5, 3, 4, 1, 2];
+console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
+const originalArray = [1, 2, 3, 4, 5];
+const reversedArray = [...originalArray].reverse();
 
-console.log(isArraySortedAscending(array1)); // Output: true
-console.log(isArraySortedAscending(array2)); // Output: false
+console.log(originalArray); // Output: [1, 2, 3, 4, 5]
+console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
