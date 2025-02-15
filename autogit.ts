@@ -1,86 +1,36 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function isPalindrome(s: string): boolean {
+    let left = 0;
+    let right = s.length - 1;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-class BinarySearchTree {
-    root: TreeNode | null;
-
-    constructor() {
-        this.root = null;
-    }
-
-    insert(value: number): void {
-        const newNode = new TreeNode(value);
-        if (!this.root) {
-            this.root = newNode;
-            return;
+    while (left < right) {
+        // Move the left pointer until we find a valid character
+        while (left < right && !isAlphanumeric(s[left])) {
+            left++;
         }
-        this.insertNode(this.root, newNode);
-    }
-
-    private insertNode(node: TreeNode, newNode: TreeNode): void {
-        if (newNode.value < node.value) {
-            if (!node.left) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (!node.right) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
+        // Move the right pointer until we find a valid character
+        while (left < right && !isAlphanumeric(s[right])) {
+            right--;
         }
-    }
-
-    search(value: number): boolean {
-        return this.searchNode(this.root, value);
-    }
-
-    private searchNode(node: TreeNode | null, value: number): boolean {
-        if (!node) {
+        // Compare characters at the left and right pointers (case-insensitive)
+        if (s[left].toLowerCase() !== s[right].toLowerCase()) {
             return false;
         }
-        if (node.value === value) {
-            return true;
-        }
-        return value < node.value ? this.searchNode(node.left, value) : this.searchNode(node.right, value);
+        left++;
+        right--;
     }
 
-    inOrderTraversal(callback: (value: number) => void): void {
-        this.inOrder(this.root, callback);
-    }
-
-    private inOrder(node: TreeNode | null, callback: (value: number) => void): void {
-        if (node) {
-            this.inOrder(node.left, callback);
-            callback(node.value);
-            this.inOrder(node.right, callback);
-        }
-    }
+    return true;
 }
 
-// Example Usage
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
-bst.insert(7);
+function isAlphanumeric(char: string): boolean {
+    const code = char.charCodeAt(0);
+    return (
+        (code >= 48 && code <= 57) || // 0-9
+        (code >= 65 && code <= 90) || // A-Z
+        (code >= 97 && code <= 122)   // a-z
+    );
+}
 
-console.log(bst.search(7)); // true
-console.log(bst.search(6)); // false
-
-// In-order traversal
-bst.inOrderTraversal((value) => {
-    console.log(value); // 3, 5, 7, 10, 15
-});
+// Example usage:
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
