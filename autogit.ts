@@ -1,19 +1,27 @@
-function longestCommonPrefix(strs: string[]): string {
-    if (strs.length === 0) return "";
-    if (strs.length === 1) return strs[0];
+function majorityElement(nums: number[]): number {
+    let candidate: number | null = null;
+    let count = 0;
 
-    let prefix = strs[0];
+    // Find candidate
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+        }
+        count += (num === candidate) ? 1 : -1;
+    }
 
-    for (let i = 1; i < strs.length; i++) {
-        while (strs[i].indexOf(prefix) !== 0) {
-            prefix = prefix.substring(0, prefix.length - 1);
-            if (prefix === "") return "";
+    // Verify candidate
+    count = 0;
+    for (const num of nums) {
+        if (num === candidate) {
+            count++;
         }
     }
 
-    return prefix;
+    return count > nums.length / 2 ? candidate : -1; // returns -1 if no majority element
 }
 
 // Example usage:
-const strings = ["flower", "flow", "flight"];
-console.log(longestCommonPrefix(strings)); // Output: "fl"
+const arr = [3, 2, 3];
+const result = majorityElement(arr);
+console.log(result); // Output: 3
