@@ -1,64 +1,114 @@
-type Edge = {
-    source: number;
-    destination: number;
-    weight: number;
+class Node<T> {
+    value: T;
+    forward: Node<T>[];
+
+    constructor(value: T, level: number) {
+        this.value = value;
+        this.forward = new Array(level + 1).fill(null);
+    }
 }
 
-class Graph {
-    vertices: number;
-    edges: Edge[] = [];
+class SkipList<T> {
+    private head: Node<T>;
+    private maxLevel: number;
+    private p: number;
+    private level: number;
 
-    constructor(vertices: number) {
-        this.vertices = vertices;
+    constructor(maxLevel: number, p: number) {
+        this.maxLevel = maxLevel;
+        this.p = p;
+        this.level = 0;
+        this.head = new Node<T>(null, maxLevel);
     }
 
-    addEdge(source: number, destination: number, weight: number) {
-        this.edges.push({ source, destination, weight });
+    private randomLevel(): number {
+        let lvl = 0;
+        while (Math.random() < this.p && lvl < this.maxLevel) {
+            lvl++;
+        }
+        return lvl;
     }
 
-    bellmanFord(source: number) {
-        const distance: number[] = Array(this.vertices).fill(Infinity);
-        distance[source] = 0;
+    insert(value: T): void {
+        const update = new Array(this.maxLevel + 1);
+        let current: Node<T> = this.head;
 
-        // Relax all edges |V| - 1 times
-        for (let i = 0; i < this.vertices - 1; i++) {
-            for (const edge of this.edges) {
-                if (distance[edge.source] !== Infinity &&
-                    distance[edge.source] + edge.weight < distance[edge.destination]) {
-                    distance[edge.destination] = distance[edge.source] + edge.weight;
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+            update[i] = current;
+        }
+
+        current = current.forward[0];
+
+        if (!current || current.value !== value) {
+            const newLevel = this.randomLevel();
+            if (newLevel > this.level) {
+                for (let i = this.level + 1; i <= newLevel; i++) {
+                    update[i] = this.head;
                 }
+                this.level = newLevel;
+            }
+
+            const newNode = new Node(value, newLevel);
+            for (let i = 0; i <= newLevel; i++) {
+                newNode.forward[i] = update[i].forward[i];
+                update[i].forward[i] = newNode;
+            }
+        }
+    }
+
+    search(value: T): boolean {
+        let current: Node<T> = this.head;
+
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] && current.forward[i].value < value) {
+                current = current.forward[i];
             }
         }
 
-        // Check for negative-weight cycles
-        for (const edge of this.edges) {
-            if (distance[edge.source] !== Infinity &&
-                distance[edge.source] + edge.weight < distance[edge.destination]) {
-                throw new Error("Graph contains a negative-weight cycle");
+        current = current.forward[0];
+        return current && current.value === value;
+    }
+
+    delete(value: T): void {
+        const update = new Array(this.maxLevel + 1);
+        let current: Node<T> = this.head;
+
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] && current.forward[i].value < value) {
+                current = current.forward[i];
             }
+            update[i] = current;
         }
 
-        return distance;
+        current = current.forward[0];
+
+        if (current && current.value === value) {
+            for (let i = 0; i <= this.level; i++) {
+                if (update[i].forward[i] !== current) break;
+                update[i].forward[i] = current.forward[i];
+            }
+
+            while (this.level > 0 && this.head.forward[this.level] === null) {
+                this.level--;
+            }
+        }
     }
 }
 
 // Example usage
-const graph = new Graph(5);
-graph.addEdge(0, 1, -1);
-graph.addEdge(0, 2, 4);
-graph.addEdge(1, 2, 3);
-graph.addEdge(1, 3, 2);
-graph.addEdge(1, 4, 2);
-graph.addEdge(3, 2, 5);
-graph.addEdge(3, 1, 1);
-graph.addEdge(4, 3, -3);
+const skipList = new SkipList<number>(3, 0.5);
+skipList.insert(3);
+skipList.insert(6);
+skipList.insert(7);
+skipList.insert(9);
+skipList.insert(12);
+skipList.insert(19);
 
-try {
-    const distances = graph.bellmanFord(0);
-    console.log("Vertex Distance from Source");
-    for (let i = 0; i < distances.length; i++) {
-        console.log(`${i}\t\t${distances[i]}`);
-    }
-} catch (error) {
-    console.error(error.message);
-}
+console.log(skipList.search(7));  // true
+console.log(skipList.search(15)); // false
+
+skipList.delete(6);
+console.log(skipList.search(6));  // false
