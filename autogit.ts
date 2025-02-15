@@ -1,38 +1,35 @@
-class TreeNode {
+class ListNode {
     value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+    next: ListNode | null;
 
     constructor(value: number) {
         this.value = value;
-        this.left = null;
-        this.right = null;
+        this.next = null;
     }
 }
 
-function maxDepth(root: TreeNode | null): number {
-    if (root === null) {
-        return 0; // Base case: the depth of an empty tree is 0
+function findMiddle(head: ListNode | null): ListNode | null {
+    if (!head) return null; // If the linked list is empty, return null.
+
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    while (fast && fast.next) {
+        slow = slow.next;      // Move slow pointer one step
+        fast = fast.next.next; // Move fast pointer two steps
     }
 
-    // Recursively find the depth of the left and right subtrees
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
-
-    // The maximum depth is the greater of the two depths plus one for the current node
-    return Math.max(leftDepth, rightDepth) + 1;
+    return slow; // When fast reaches the end, slow is at the middle
 }
 
 // Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
 
-console.log(maxDepth(root)); // Output: 3
-      1
-     / \
-    2   3
-   / \
-  4   5
+const middleNode = findMiddle(head);
+if (middleNode) {
+    console.log(`The middle element is: ${middleNode.value}`); // Output: The middle element is: 3
+}
