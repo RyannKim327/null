@@ -1,11 +1,19 @@
-function removeSpaces(input: string): string {
-    return input.replace(/\s+/g, '');
-}
+npm install node-cron
+npm install typescript @types/node --save-dev
+import cron from 'node-cron';
 
-const originalString = "This is a test string.";
-const stringWithoutSpaces = removeSpaces(originalString);
+// Schedule a task to run every minute
+const task = cron.schedule('* * * * *', () => {
+    console.log('Task is running every minute:', new Date().toLocaleString());
+});
 
-console.log(stringWithoutSpaces); // Output: "Thisisateststring."
-function removeSpaces(input: string): string {
-    return input.replaceAll(' ', '');
-}
+// Start the task
+task.start();
+
+// Optional: Stop the task after 5 minutes
+setTimeout(() => {
+    task.stop();
+    console.log('Task has been stopped.');
+}, 5 * 60 * 1000); // 5 minutes in milliseconds
+npx tsc cronExample.ts
+node cronExample.js
