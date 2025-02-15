@@ -1,41 +1,163 @@
-function countingSort(arr: number[], exp: number): number[] {
-    const output: number[] = new Array(arr.length); // Output array
-    const count: number[] = new Array(10).fill(0); // Count array for digits (0-9)
-
-    // Store count of occurrences in count[]
-    for (let i = 0; i < arr.length; i++) {
-        const index = Math.floor(arr[i] / exp) % 10;
-        count[index]++;
-    }
-
-    // Change count[i] so that it contains the actual position of this digit in output[]
-    for (let i = 1; i < count.length; i++) {
-        count[i] += count[i - 1];
-    }
-
-    // Build the output array
-    for (let i = arr.length - 1; i >= 0; i--) {
-        const index = Math.floor(arr[i] / exp) % 10;
-        output[count[index] - 1] = arr[i];
-        count[index]--;
-    }
-
-    return output;
+enum Color {
+    RED,
+    BLACK
 }
 
-function radixSort(arr: number[]): number[] {
-    // Find the maximum number to know the number of digits
-    const max = Math.max(...arr);
+class Node<T> {
+    public color: Color;
+    public left: Node<T> | null;
+    public right: Node<T> | null;
+    public parent: Node<T> | null;
+    public value: T;
 
-    // Do counting sort for every digit
-    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
-        arr = countingSort(arr, exp);
+    constructor(value: T) {
+        this.value = value;
+        this.color = Color.RED; // New nodes are red by default
+        this.left = null;
+        this.right = null;
+        this.parent = null;
+    }
+}
+
+class RedBlackTree<T> {
+    private root: Node<T> | null;
+
+    constructor() {
+        this.root = null;
     }
 
-    return arr;
+    private rotateLeft(x: Node<T>): void {
+        const y = x.right!;
+        x.right = y.left;
+
+        if (y.left !== null) {
+            y.left.parent = x;
+        }
+
+        y.parent = x.parent;
+
+        if (x.parent === null) {
+            this.root = y;
+        } else if (x === x.parent.left) {
+            x.parent.left = y;
+        } else {
+            x.parent.right = y;
+        }
+
+        y.left = x;
+        x.parent = y;
+    }
+
+    private rotateRight(y: Node<T>): void {
+        const x = y.left!;
+        y.left = x.right;
+
+        if (x.right !== null) {
+            x.right.parent = y;
+        }
+
+        x.parent = y.parent;
+
+        if (y.parent === null) {
+            this.root = x;
+        } else if (y === y.parent.right) {
+            y.parent.right = x;
+        } else {
+            y.parent.left = x;
+        }
+
+        x.right = y;
+        y.parent = x;
+    }
+
+    private fixInsert(z: Node<T>): void {
+        while (z.parent && z.parent.color === Color.RED) {
+            if (z.parent === z.parent.parent?.left) {
+                const y = z.parent.parent?.right;
+
+                if (y && y.color === Color.RED) {
+                    z.parent.color = Color.BLACK;
+                    y.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    z = z.parent.parent!;
+                } else {
+                    if (z === z.parent.right) {
+                        z = z.parent;
+                        this.rotateLeft(z);
+                    }
+                    z.parent.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    this.rotateRight(z.parent.parent!);
+                }
+            } else {
+                const y = z.parent.parent?.left;
+
+                if (y && y.color === Color.RED) {
+                    z.parent.color = Color.BLACK;
+                    y.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    z = z.parent.parent!;
+                } else {
+                    if (z === z.parent.left) {
+                        z = z.parent;
+                        this.rotateRight(z);
+                    }
+                    z.parent.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    this.rotateLeft(z.parent.parent!);
+                }
+            }
+        }
+        this.root!.color = Color.BLACK;
+    }
+
+    public insert(value: T): void {
+        const newNode = new Node(value);
+        let y: Node<T> | null = null;
+        let x: Node<T> | null = this.root;
+
+        while (x !== null) {
+            y = x;
+            if (newNode.value < x.value) {
+                x = x.left;
+            } else {
+                x = x.right;
+            }
+        }
+
+        newNode.parent = y;
+
+        if (y === null) {
+            this.root = newNode;
+        } else if (newNode.value < y.value) {
+            y.left = newNode;
+        } else {
+            y.right = newNode;
+        }
+
+        this.fixInsert(newNode);
+    }
+
+    public inorderTraversal(node: Node<T> | null = this.root): void {
+        if (node !== null) {
+            this.inorderTraversal(node.left);
+            console.log(node.value);
+            this.inorderTraversal(node.right);
+        }
+    }
+
+    public getRoot(): Node<T> | null {
+        return this.root;
+    }
 }
 
 // Example usage
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedArr = radixSort(arr);
-console.log(sortedArr); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+const rbt = new RedBlackTree<number>();
+rbt.insert(10);
+rbt.insert(20);
+rbt.insert(15);
+rbt.insert(30);
+rbt.insert(25);
+
+console.log("Inorder Traversal:");
+rbt.inorderTraversal();
