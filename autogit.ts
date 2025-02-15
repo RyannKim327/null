@@ -1,4 +1,37 @@
-let originalString: string = "Hello, World!";
-let lowerCaseString: string = originalString.toLowerCase();
+function isPalindrome(s: string): boolean {
+    let left = 0;
+    let right = s.length - 1;
 
-console.log(lowerCaseString); // Output: "hello, world!"
+    while (left < right) {
+        // Skip non-alphanumeric characters
+        while (left < right && !isAlphanumeric(s[left])) {
+            left++;
+        }
+        while (left < right && !isAlphanumeric(s[right])) {
+            right--;
+        }
+
+        // Compare characters
+        if (s[left].toLowerCase() !== s[right].toLowerCase()) {
+            return false;
+        }
+
+        left++;
+        right--;
+    }
+
+    return true;
+}
+
+function isAlphanumeric(char: string): boolean {
+    const code = char.charCodeAt(0);
+    return (
+        (code >= 48 && code <= 57) || // 0-9
+        (code >= 65 && code <= 90) || // A-Z
+        (code >= 97 && code <= 122)   // a-z
+    );
+}
+
+// Example usage
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
