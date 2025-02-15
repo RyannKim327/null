@@ -1,157 +1,129 @@
-enum Color {
-    RED,
-    BLACK
-}
-
-class Node<T> {
-    public color: Color;
-    public left: Node<T> | null;
-    public right: Node<T> | null;
-    public parent: Node<T> | null;
-    public value: T;
-
-    constructor(value: T) {
-        this.value = value;
-        this.color = Color.RED; // New nodes are red by default
-        this.left = null;
-        this.right = null;
-        this.parent = null;
-    }
-}
-
-class RedBlackTree<T> {
-    private root: Node<T> | null;
+class MinHeap {
+    private heap: number[];
 
     constructor() {
-        this.root = null;
+        this.heap = [];
     }
 
-    private rotateLeft(x: Node<T>): void {
-        const y = x.right!;
-        x.right = y.left;
-
-        if (y.left !== null) {
-            y.left.parent = x;
-        }
-
-        y.parent = x.parent;
-
-        if (x.parent === null) {
-            this.root = y;
-        } else if (x === x.parent.left) {
-            x.parent.left = y;
-        } else {
-            x.parent.right = y;
-        }
-
-        y.left = x;
-        x.parent = y;
+    // Get the index of the parent
+    private parentIndex(index: number): number {
+        return Math.floor((index - 1) / 2);
     }
 
-    private rotateRight(y: Node<T>): void {
-        const x = y.left!;
-        y.left = x.right;
-
-        if (x.right !== null) {
-            x.right.parent = y;
-        }
-
-        x.parent = y.parent;
-
-        if (y.parent === null) {
-            this.root = x;
-        } else if (y === y.parent.right) {
-            y.parent.right = x;
-        } else {
-            y.parent.left = x;
-        }
-
-        x.right = y;
-        y.parent = x;
+    // Get the index of the left child
+    private leftChildIndex(index: number): number {
+        return 2 * index + 1;
     }
 
-    private fixInsert(z: Node<T>): void {
-        while (z.parent && z.parent.color === Color.RED) {
-            if (z.parent === z.parent.parent?.left) {
-                const y = z.parent.parent?.right;
-                if (y && y.color === Color.RED) {
-                    z.parent.color = Color.BLACK;
-                    y.color = Color.BLACK;
-                    z.parent.parent!.color = Color.RED;
-                    z = z.parent.parent!;
-                } else {
-                    if (z === z.parent.right) {
-                        z = z.parent;
-                        this.rotateLeft(z);
-                    }
-                    z.parent.color = Color.BLACK;
-                    z.parent.parent!.color = Color.RED;
-                    this.rotateRight(z.parent.parent!);
-                }
-            } else {
-                const y = z.parent.parent?.left;
-                if (y && y.color === Color.RED) {
-                    z.parent.color = Color.BLACK;
-                    y.color = Color.BLACK;
-                    z.parent.parent!.color = Color.RED;
-                    z = z.parent.parent!;
-                } else {
-                    if (z === z.parent.left) {
-                        z = z.parent;
-                        this.rotateRight(z);
-                    }
-                    z.parent.color = Color.BLACK;
-                    z.parent.parent!.color = Color.RED;
-                    this.rotateLeft(z.parent.parent!);
-                }
-            }
-        }
-        this.root!.color = Color.BLACK;
+    // Get the index of the right child
+    private rightChildIndex(index: number): number {
+        return 2 * index + 2;
     }
 
-    public insert(value: T): void {
-        const newNode = new Node(value);
-        let y: Node<T> | null = null;
-        let x: Node<T> | null = this.root;
-
-        while (x !== null) {
-            y = x;
-            if (newNode.value < x.value) {
-                x = x.left;
-            } else {
-                x = x.right;
-            }
-        }
-
-        newNode.parent = y;
-
-        if (y === null) {
-            this.root = newNode;
-        } else if (newNode.value < y.value) {
-            y.left = newNode;
-        } else {
-            y.right = newNode;
-        }
-
-        this.fixInsert(newNode);
+    // Insert a new value into the heap
+    public insert(value: number): void {
+        this.heap.push(value);
+        this.bubbleUp(this.heap.length - 1);
     }
 
-    public inorderTraversal(node: Node<T> | null = this.root): void {
-        if (node !== null) {
-            this.inorderTraversal(node.left);
-            console.log(node.value);
-            this.inorderTraversal(node.right);
+    // Bubble up the last element to maintain heap property
+    private bubbleUp(index: number): void {
+        while (index > 0) {
+            const parentIndex = this.parentIndex(index);
+            if (this.heap[index] >= this.heap[parentIndex]) break;
+            [this.heap[index], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[index]];
+            index = parentIndex;
         }
+    }
+
+    // Remove and return the minimum value (root of the heap)
+    public remove(): number | null {
+        if (this.heap.length === 0) return null;
+        const minValue = this.heap[0];
+        const lastValue = this.heap.pop();
+        if (this.heap.length > 0 && lastValue !== undefined) {
+            this.heap[0] = lastValue;
+            this.bubbleDown(0);
+        }
+        return minValue;
+    }
+
+    // Bubble down the root element to maintain heap property
+    private bubbleDown(index: number): void {
+        const length = this.heap.length;
+        let smallest = index;
+
+        const leftIndex = this.leftChildIndex(index);
+        const rightIndex = this.rightChildIndex(index);
+
+        if (leftIndex < length && this.heap[leftIndex] < this.heap[smallest]) {
+            smallest = leftIndex;
+        }
+
+        if (rightIndex < length && this.heap[rightIndex] < this.heap[smallest]) {
+            smallest = rightIndex;
+        }
+
+        if (smallest !== index) {
+            [this.heap[index], this.heap[smallest]] = [this.heap[smallest], this.heap[index]];
+            this.bubbleDown(smallest);
+        }
+    }
+
+    // Peek at the minimum value without removing it
+    public peek(): number | null {
+        return this.heap.length > 0 ? this.heap[0] : null;
+    }
+
+    // Check if the heap is empty
+    public isEmpty(): boolean {
+        return this.heap.length === 0;
+    }
+
+    // Get the size of the heap
+    public size(): number {
+        return this.heap.length;
     }
 }
+class PriorityQueue {
+    private heap: MinHeap;
 
-// Example usage
-const rbt = new RedBlackTree<number>();
-rbt.insert(10);
-rbt.insert(20);
-rbt.insert(15);
-rbt.insert(30);
-rbt.insert(25);
+    constructor() {
+        this.heap = new MinHeap();
+    }
 
-console.log("Inorder Traversal:");
-rbt.inorderTraversal(); // Output: 10, 15, 20, 25, 30
+    // Insert an element with a given priority
+    public enqueue(priority: number): void {
+        this.heap.insert(priority);
+    }
+
+    // Remove and return the element with the highest priority (lowest number)
+    public dequeue(): number | null {
+        return this.heap.remove();
+    }
+
+    // Peek at the highest priority element
+    public peek(): number | null {
+        return this.heap.peek();
+    }
+
+    // Check if the queue is empty
+    public isEmpty(): boolean {
+        return this.heap.isEmpty();
+    }
+
+    // Get the size of the queue
+    public size(): number {
+        return this.heap.size();
+    }
+}
+const pq = new PriorityQueue();
+pq.enqueue(5);
+pq.enqueue(2);
+pq.enqueue(8);
+pq.enqueue(1);
+
+console.log(pq.peek()); // Output: 1
+console.log(pq.dequeue()); // Output: 1
+console.log(pq.peek()); // Output: 2
+console.log(pq.size()); // Output: 3
