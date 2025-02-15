@@ -1,51 +1,55 @@
-function getMax(arr: number[]): number {
-    let max = arr[0];
-    for (const num of arr) {
-        if (num > max) {
-            max = num;
+class SuffixTreeNode {
+    children: Map<string, SuffixTreeNode>;
+    isEnd: boolean;
+    
+    constructor() {
+        this.children = new Map();
+        this.isEnd = false;
+    }
+}
+class SuffixTree {
+    root: SuffixTreeNode;
+
+    constructor() {
+        this.root = new SuffixTreeNode();
+    }
+
+    // Insert suffixes of the string into the tree
+    insertSuffixes(text: string) {
+        const length = text.length;
+        for (let i = 0; i < length; i++) {
+            this.insert(text.substring(i));
         }
     }
-    return max;
+
+    // Insert a single suffix into the tree
+    private insert(suffix: string) {
+        let node = this.root;
+        for (const char of suffix) {
+            if (!node.children.has(char)) {
+                node.children.set(char, new SuffixTreeNode());
+            }
+            node = node.children.get(char)!;
+        }
+        node.isEnd = true; // Mark the end of the suffix
+    }
+
+    // Search for a substring in the suffix tree
+    search(substring: string): boolean {
+        let node = this.root;
+        for (const char of substring) {
+            if (!node.children.has(char)) {
+                return false; // Not found
+            }
+            node = node.children.get(char)!;
+        }
+        return true; // Found
+    }
 }
+const suffixTree = new SuffixTree();
+const text = "banana";
+suffixTree.insertSuffixes(text);
 
-function countingSort(arr: number[], exp: number): number[] {
-    const output: number[] = new Array(arr.length);
-    const count: number[] = new Array(10).fill(0);
-
-    // Count occurrences of each digit
-    for (const num of arr) {
-        const index = Math.floor(num / exp) % 10;
-        count[index]++;
-    }
-
-    // Update count[i] so it contains actual position of this digit in output[]
-    for (let i = 1; i < 10; i++) {
-        count[i] += count[i - 1];
-    }
-
-    // Build the output array
-    for (let i = arr.length - 1; i >= 0; i--) {
-        const index = Math.floor(arr[i] / exp) % 10;
-        output[count[index] - 1] = arr[i];
-        count[index]--;
-    }
-
-    return output;
-}
-
-function radixSort(arr: number[]): number[] {
-    // Find the maximum number to know the number of digits
-    const max = getMax(arr);
-
-    // Do counting sort for every digit
-    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
-        arr = countingSort(arr, exp);
-    }
-
-    return arr;
-}
-
-// Usage
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedArr = radixSort(arr);
-console.log(sortedArr);
+console.log(suffixTree.search("ana")); // true
+console.log(suffixTree.search("nan")); // true
+console.log(suffixTree.search("bat")); // false
