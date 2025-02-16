@@ -1,9 +1,12 @@
-let str: string = "123";
-let num: number = parseInt(str, 10); // The second argument (10) is the radix (base)
-console.log(num); // Output: 123
-let str: string = "123";
-let num: number = Number(str);
-console.log(num); // Output: 123
-let str: string = "123";
-let num: number = +str; // Unary plus converts string to number
-console.log(num); // Output: 123
+function factorial(n: number): number {
+    // Base case: if n is 0 or 1, the factorial is 1
+    if (n <= 1) {
+        return 1;
+    }
+    // Recursive case: n * factorial(n - 1)
+    return n * factorial(n - 1);
+}
+
+// Example usage
+const num = 5;
+console.log(`Factorial of ${num} is ${factorial(num)}`); // Output: Factorial of 5 is 120
