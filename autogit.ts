@@ -1,52 +1,45 @@
-// Define a Node class
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
+// Define a graph using an adjacency list
+type Graph = {
+  [key: string]: string[];
+};
 
-    constructor(value: T) {
-        this.value = value;
-        this.next = null;
-    }
-}
+// BFS function
+function bfs(graph: Graph, start: string): string[] {
+  const visited: Set<string> = new Set(); // To keep track of visited nodes
+  const queue: string[] = []; // Create a queue to manage exploration order
+  const result: string[] = []; // To store the order of visit
 
-// Define a LinkedList class
-class LinkedList<T> {
-    head: Node<T> | null;
+  // Start with the initial node
+  queue.push(start);
+  visited.add(start);
 
-    constructor() {
-        this.head = null;
-    }
+  while (queue.length > 0) {
+    const node = queue.shift(); // Get the first node in the queue
+    if (node) {
+      result.push(node); // Process the current node
 
-    // Method to add a new node to the list
-    add(value: T) {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
+      // Queue neighbors that haven't been visited
+      for (const neighbor of graph[node]) {
+        if (!visited.has(neighbor)) {
+          visited.add(neighbor); // Mark as visited
+          queue.push(neighbor); // Add the neighbor to the queue
         }
+      }
     }
+  }
 
-    // Method to find the length of the linked list
-    length(): number {
-        let count = 0;
-        let current = this.head;
-        while (current) {
-            count++;
-            current = current.next;
-        }
-        return count;
-    }
+  return result; // Return the order of visited nodes
 }
 
 // Example usage
-const list = new LinkedList<number>();
-list.add(1);
-list.add(2);
-list.add(3);
+const graph: Graph = {
+  A: ['B', 'C'],
+  B: ['A', 'D', 'E'],
+  C: ['A', 'F'],
+  D: ['B'],
+  E: ['B', 'F'],
+  F: ['C', 'E'],
+};
 
-console.log("Length of the linked list:", list.length()); // Output: Length of the linked list: 3
+const result = bfs(graph, 'A');
+console.log(result); // Output: [ 'A', 'B', 'C', 'D', 'E', 'F' ]
