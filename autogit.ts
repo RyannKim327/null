@@ -1,23 +1,22 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+class Node {
+    value: any;
+    next: Node | null;
 
-    constructor(value: number) {
+    constructor(value: any) {
         this.value = value;
         this.next = null;
     }
 }
 
 class LinkedList {
-    head: ListNode | null;
+    head: Node | null;
 
     constructor() {
         this.head = null;
     }
 
-    // Method to add a new node to the end of the list
-    add(value: number) {
-        const newNode = new ListNode(value);
+    append(value: any) {
+        const newNode = new Node(value);
         if (!this.head) {
             this.head = newNode;
             return;
@@ -29,29 +28,21 @@ class LinkedList {
         current.next = newNode;
     }
 
-    // Method to find the middle element of the linked list
-    findMiddle(): ListNode | null {
-        let slow: ListNode | null = this.head;
-        let fast: ListNode | null = this.head;
-
-        while (fast && fast.next) {
-            slow = slow?.next || null; // Move slow by 1
-            fast = fast.next.next; // Move fast by 2
+    length(): number {
+        let count = 0;
+        let current = this.head;
+        while (current) {
+            count++;
+            current = current.next;
         }
-
-        return slow; // slow is now at the middle
+        return count;
     }
 }
 
 // Example usage:
 const list = new LinkedList();
-list.add(1);
-list.add(2);
-list.add(3);
-list.add(4);
-list.add(5);
+list.append(1);
+list.append(2);
+list.append(3);
 
-const middleNode = list.findMiddle();
-if (middleNode) {
-    console.log(`The middle element is: ${middleNode.value}`); // Output: The middle element is: 3
-}
+console.log(list.length()); // Output: 3
