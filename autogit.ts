@@ -1,24 +1,75 @@
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    return arr1.filter(value => arr2.includes(value));
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
+
+    constructor(value: T) {
+        this.value = value;
+        this.next = null;
+    }
 }
+class Queue<T> {
+    private head: Node<T> | null = null; // The first node in the queue
+    private tail: Node<T> | null = null; // The last node in the queue
+    private length: number = 0;           // Size of the queue
 
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
+    // Enqueue a new element
+    enqueue(value: T): void {
+        const newNode = new Node(value);
+        if (this.tail) {
+            this.tail.next = newNode; // Link the new node to the last node
+        }
+        this.tail = newNode; // Update the tail to the new node
 
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    const set1 = new Set(arr1);
-    const set2 = new Set(arr2);
-    
-    const commonElements = [...set1].filter(value => set2.has(value));
-    return commonElements;
+        if (!this.head) {
+            this.head = newNode; // If the queue was empty, head is also the new node
+        }
+
+        this.length++; // Increment the size of the queue
+    }
+
+    // Dequeue an element
+    dequeue(): T | null {
+        if (!this.head) {
+            return null; // Return null if the queue is empty
+        }
+
+        const dequeuedValue = this.head.value; // Store the value to return
+        this.head = this.head.next; // Move the head to the next node
+
+        if (!this.head) {
+            this.tail = null; // If the queue is now empty, reset tail
+        }
+
+        this.length--; // Decrement the size of the queue
+        return dequeuedValue; // Return the dequeued value
+    }
+
+    // Return the size of the queue
+    size(): number {
+        return this.length;
+    }
+
+    // Check if the queue is empty
+    isEmpty(): boolean {
+        return this.length === 0;
+    }
+
+    // Peek at the front element of the queue without removing it
+    peek(): T | null {
+        return this.head ? this.head.value : null;
+    }
 }
+const queue = new Queue<number>();
 
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
 
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
+console.log(queue.dequeue()); // Outputs: 1
+console.log(queue.peek());     // Outputs: 2
+console.log(queue.size());     // Outputs: 2
+console.log(queue.isEmpty());  // Outputs: false
+
+queue.dequeue();
+queue.dequeue();
+console.log(queue.isEmpty());  // Outputs: true
