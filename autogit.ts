@@ -1,20 +1,60 @@
-function insertionSort(arr: number[]): number[] {
-    for (let i = 1; i < arr.length; i++) {
-        let key = arr[i];
-        let j = i - 1;
+type Graph = { [key: string]: string[] };
 
-        // Move elements of arr[0..i-1] that are greater than key
-        // to one position ahead of their current position
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
-        arr[j + 1] = key;
+function dfsRecursive(graph: Graph, node: string, visited: Set<string> = new Set()): void {
+    if (visited.has(node)) {
+        return; // Node has already been visited
     }
-    return arr;
+
+    visited.add(node);
+    console.log(node); // Process the node (e.g., print it)
+
+    for (const neighbor of graph[node]) {
+        dfsRecursive(graph, neighbor, visited);
+    }
 }
 
-// Example usage
-const array = [12, 11, 13, 5, 6];
-const sortedArray = insertionSort(array);
-console.log(sortedArray); // Output: [5, 6, 11, 12, 13]
+// Example usage:
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
+
+dfsRecursive(graph, 'A');
+type Graph = { [key: string]: string[] };
+
+function dfsIterative(graph: Graph, startNode: string): void {
+    const stack: string[] = [startNode];
+    const visited: Set<string> = new Set();
+
+    while (stack.length > 0) {
+        const node = stack.pop()!;
+        
+        if (visited.has(node)) {
+            continue; // Node has already been visited
+        }
+
+        visited.add(node);
+        console.log(node); // Process the node (e.g., print it)
+
+        // Add neighbors to the stack
+        for (const neighbor of graph[node]) {
+            stack.push(neighbor);
+        }
+    }
+}
+
+// Example usage:
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
+
+dfsIterative(graph, 'A');
