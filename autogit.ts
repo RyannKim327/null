@@ -1,23 +1,36 @@
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-const newArray = array.filter(item => item !== elementToRemove);
-console.log(newArray); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const indexToRemove = array.indexOf(3); // Find the index of the element
-
-if (indexToRemove !== -1) {
-    array.splice(indexToRemove, 1); // Remove 1 element at the found index
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
 }
 
-console.log(array); // Output: [1, 2, 4, 5]
-const array = [{ id: 1 }, { id: 2 }, { id: 3 }];
-const idToRemove = 2;
+function countLeafNodes(root: TreeNode | null): number {
+    // Base case: if the node is null, return 0
+    if (root === null) {
+        return 0;
+    }
 
-const indexToRemove = array.findIndex(item => item.id === idToRemove);
+    // If the node is a leaf node, return 1
+    if (root.left === null && root.right === null) {
+        return 1;
+    }
 
-if (indexToRemove !== -1) {
-    array.splice(indexToRemove, 1);
+    // Recursively count the leaf nodes in the left and right subtrees
+    return countLeafNodes(root.left) + countLeafNodes(root.right);
 }
 
-console.log(array); // Output: [{ id: 1 }, { id: 3 }]
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+const leafCount = countLeafNodes(root);
+console.log(`Number of leaf nodes: ${leafCount}`); // Output: Number of leaf nodes: 3
