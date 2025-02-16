@@ -1,45 +1,40 @@
-// Define a graph using an adjacency list
-type Graph = {
-  [key: string]: string[];
-};
-
-// BFS function
-function bfs(graph: Graph, start: string): string[] {
-  const visited: Set<string> = new Set(); // To keep track of visited nodes
-  const queue: string[] = []; // Create a queue to manage exploration order
-  const result: string[] = []; // To store the order of visit
-
-  // Start with the initial node
-  queue.push(start);
-  visited.add(start);
-
-  while (queue.length > 0) {
-    const node = queue.shift(); // Get the first node in the queue
-    if (node) {
-      result.push(node); // Process the current node
-
-      // Queue neighbors that haven't been visited
-      for (const neighbor of graph[node]) {
-        if (!visited.has(neighbor)) {
-          visited.add(neighbor); // Mark as visited
-          queue.push(neighbor); // Add the neighbor to the queue
-        }
-      }
-    }
-  }
-
-  return result; // Return the order of visited nodes
+interface Node {
+    state: string; // You can replace this with other types based on your problem
+    score: number; // Score used to rank nodes
 }
 
-// Example usage
-const graph: Graph = {
-  A: ['B', 'C'],
-  B: ['A', 'D', 'E'],
-  C: ['A', 'F'],
-  D: ['B'],
-  E: ['B', 'F'],
-  F: ['C', 'E'],
-};
+function getChildren(node: Node): Node[] {
+    // Implement your logic to generate child nodes based on the current node's state
+    // This is just a placeholder
+    return [
+        { state: node.state + "A", score: node.score + Math.random() },
+        { state: node.state + "B", score: node.score + Math.random() },
+    ];
+}
 
-const result = bfs(graph, 'A');
-console.log(result); // Output: [ 'A', 'B', 'C', 'D', 'E', 'F' ]
+function beamSearch(initialNode: Node, beamWidth: number, maxIterations: number): Node | null {
+    let currentNodes: Node[] = [initialNode];
+
+    for (let i = 0; i < maxIterations; i++) {
+        let allChildren: Node[] = [];
+
+        // Generate children for all current nodes
+        for (let node of currentNodes) {
+            const children = getChildren(node);
+            allChildren.push(...children);
+        }
+
+        // Sort children by score and select top `beamWidth` nodes
+        allChildren.sort((a, b) => b.score - a.score); // Sort in descending order
+        currentNodes = allChildren.slice(0, beamWidth); // Select top beamWidth nodes
+    }
+
+    // Return the best node found
+    return currentNodes.length > 0 ? currentNodes[0] : null;
+}
+
+// Example usage:
+const initialNode: Node = { state: "Start", score: 0 };
+const result = beamSearch(initialNode, 3, 10);
+
+console.log(result);
