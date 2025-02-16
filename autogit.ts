@@ -1,56 +1,21 @@
-class Node {
-    value: string;
-    children: Node[];
-
-    constructor(value: string) {
-        this.value = value;
-        this.children = [];
+function isPrime(num: number): boolean {
+    // Check if the number is less than 2
+    if (num <= 1) {
+        return false;
     }
-
-    addChild(child: Node) {
-        this.children.push(child);
-    }
-}
-
-function depthLimitedSearch(root: Node, goal: string, limit: number): Node | null {
-    const stack: { node: Node; depth: number }[] = [];
-    stack.push({ node: root, depth: 0 });
-
-    while (stack.length > 0) {
-        const { node, depth } = stack.pop()!;
-
-        // Check if the current node is the goal
-        if (node.value === goal) {
-            return node;
-        }
-
-        // If the current depth is less than the limit, push children onto the stack
-        if (depth < limit) {
-            for (let i = node.children.length - 1; i >= 0; i--) {
-                stack.push({ node: node.children[i], depth: depth + 1 });
-            }
+    // Check for factors from 2 to the square root of num
+    for (let i = 2; i <= Math.sqrt(num); i++) {
+        if (num % i === 0) {
+            return false; // num is divisible by i, so it's not prime
         }
     }
-
-    // Return null if the goal was not found within the depth limit
-    return null;
+    return true; // num is prime
 }
 
 // Example usage
-const root = new Node("A");
-const b = new Node("B");
-const c = new Node("C");
-const d = new Node("D");
-const e = new Node("E");
-
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-b.addChild(e);
-
-const goalNode = depthLimitedSearch(root, "E", 2);
-if (goalNode) {
-    console.log(`Found node: ${goalNode.value}`);
+const numberToCheck = 29;
+if (isPrime(numberToCheck)) {
+    console.log(`${numberToCheck} is a prime number.`);
 } else {
-    console.log("Node not found within the depth limit.");
+    console.log(`${numberToCheck} is not a prime number.`);
 }
