@@ -1,54 +1,55 @@
 class SuffixTreeNode {
-    children: Map<string, SuffixTreeNode>;
-    isEndOfWord: boolean;
+    children: { [key: string]: SuffixTreeNode } = {};
+    isEndOfWord: boolean = false;
 
-    constructor() {
-        this.children = new Map();
-        this.isEndOfWord = false;
-    }
+    constructor() {}
 }
+
 class SuffixTree {
     root: SuffixTreeNode;
+    text: string;
 
-    constructor() {
+    constructor(text: string) {
         this.root = new SuffixTreeNode();
+        this.text = text;
+        this.buildSuffixTree();
     }
 
-    insert(text: string): void {
-        for (let i = 0; i < text.length; i++) {
-            this.insertSuffix(text.substring(i));
+    private buildSuffixTree() {
+        const n = this.text.length;
+        for (let i = 0; i < n; i++) {
+            this.insertSuffix(this.text.slice(i), i);
         }
     }
 
-    private insertSuffix(suffix: string): void {
+    private insertSuffix(suffix: string, index: number) {
         let currentNode = this.root;
-
         for (const char of suffix) {
-            if (!currentNode.children.has(char)) {
-                currentNode.children.set(char, new SuffixTreeNode());
+            if (!currentNode.children[char]) {
+                currentNode.children[char] = new SuffixTreeNode();
             }
-            currentNode = currentNode.children.get(char)!;
+            currentNode = currentNode.children[char];
         }
         currentNode.isEndOfWord = true;
+        currentNode.children['$'] = new SuffixTreeNode(); // Unique end marker
     }
 
-    containsPattern(pattern: string): boolean {
+    search(pattern: string): boolean {
         let currentNode = this.root;
-
         for (const char of pattern) {
-            if (!currentNode.children.has(char)) {
-                return false;
+            if (!currentNode.children[char]) {
+                return false; // Pattern not found
             }
-            currentNode = currentNode.children.get(char)!;
+            currentNode = currentNode.children[char];
         }
-        
-        return true; // pattern exists in the tree
+        return currentNode.isEndOfWord; // Check if it's an end of a suffix
     }
 }
-const suffixTree = new SuffixTree();
-const text = "banana";
-suffixTree.insert(text);
 
-console.log(suffixTree.containsPattern("ana")); // Output: true
-console.log(suffixTree.containsPattern("na"));  // Output: true
-console.log(suffixTree.containsPattern("xyz")); // Output: false
+// Example usage:
+const text = "banana";
+const suffixTree = new SuffixTree(text);
+
+console.log(suffixTree.search("ana")); // true
+console.log(suffixTree.search("nan")); // true
+console.log(suffixTree.search("bat")); // false
