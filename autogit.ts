@@ -1,22 +1,56 @@
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = Array.from(new Set(array));
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = array.filter((value, index, self) => self.indexOf(value) === index);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = array.reduce<number[]>((acc, value) => {
-    if (!acc.includes(value)) {
-        acc.push(value);
+class Node {
+    value: string;
+    children: Node[];
+
+    constructor(value: string) {
+        this.value = value;
+        this.children = [];
     }
-    return acc;
-}, []);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray: number[] = [];
-array.forEach(value => {
-    if (!uniqueArray.includes(value)) {
-        uniqueArray.push(value);
+
+    addChild(child: Node) {
+        this.children.push(child);
     }
-});
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+}
+
+function depthLimitedSearch(root: Node, goal: string, limit: number): Node | null {
+    const stack: { node: Node; depth: number }[] = [];
+    stack.push({ node: root, depth: 0 });
+
+    while (stack.length > 0) {
+        const { node, depth } = stack.pop()!;
+
+        // Check if the current node is the goal
+        if (node.value === goal) {
+            return node;
+        }
+
+        // If the current depth is less than the limit, push children onto the stack
+        if (depth < limit) {
+            for (let i = node.children.length - 1; i >= 0; i--) {
+                stack.push({ node: node.children[i], depth: depth + 1 });
+            }
+        }
+    }
+
+    // Return null if the goal was not found within the depth limit
+    return null;
+}
+
+// Example usage
+const root = new Node("A");
+const b = new Node("B");
+const c = new Node("C");
+const d = new Node("D");
+const e = new Node("E");
+
+root.addChild(b);
+root.addChild(c);
+b.addChild(d);
+b.addChild(e);
+
+const goalNode = depthLimitedSearch(root, "E", 2);
+if (goalNode) {
+    console.log(`Found node: ${goalNode.value}`);
+} else {
+    console.log("Node not found within the depth limit.");
+}
