@@ -1,8 +1,6 @@
-function removeVowels(input: string): string {
-    return input.replace(/[aeiouAEIOU]/g, '');
-}
+const mainString: string = "Hello, welcome to TypeScript!";
+const substring: string = "welcome";
 
-// Example usage:
-const originalString = "Hello, World!";
-const stringWithoutVowels = removeVowels(originalString);
-console.log(stringWithoutVowels); // Hll, Wrld!
+const containsSubstring: boolean = mainString.includes(substring);
+
+console.log(containsSubstring); // Output: true
