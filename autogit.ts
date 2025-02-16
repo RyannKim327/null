@@ -1,55 +1,22 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
+function bubbleSort(arr: number[]): number[] {
+    const n = arr.length;
+    let swapped: boolean;
 
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    if (!headA || !headB) return null;
-
-    let lengthA = 0;
-    let lengthB = 0;
-    let currentA: ListNode | null = headA;
-    let currentB: ListNode | null = headB;
-
-    // Calculate lengths of both lists
-    while (currentA) {
-        lengthA++;
-        currentA = currentA.next;
-    }
-    while (currentB) {
-        lengthB++;
-        currentB = currentB.next;
-    }
-
-    // Reset pointers
-    currentA = headA;
-    currentB = headB;
-
-    // Align the start points
-    while (lengthA > lengthB) {
-        currentA = currentA!.next; // Move A forward
-        lengthA--;
-    }
-    while (lengthB > lengthA) {
-        currentB = currentB!.next; // Move B forward
-        lengthB--;
-    }
-
-    // Find intersection
-    while (currentA && currentB) {
-        if (currentA === currentB) {
-            return currentA; // Intersection found
+    do {
+        swapped = false;
+        for (let i = 0; i < n - 1; i++) {
+            if (arr[i] > arr[i + 1]) {
+                // Swap arr[i] and arr[i + 1]
+                [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
+                swapped = true;
+            }
         }
-        currentA = currentA.next;
-        currentB = currentB.next;
-    }
+    } while (swapped);
 
-    return null; // No intersection
+    return arr;
 }
 
-// Example usage:
-// Create linked lists and call the function to find intersection
+// Example usage
+const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
+const sortedArray = bubbleSort(unsortedArray);
+console.log("Sorted array:", sortedArray);
