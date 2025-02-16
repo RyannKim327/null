@@ -1,22 +1,24 @@
-function firstNonRepeatingChar(str: string): string | null {
-    const charCount = new Map<string, number>();
-
-    // First pass: count the occurrences of each character
-    for (const char of str) {
-        charCount.set(char, (charCount.get(char) || 0) + 1);
-    }
-
-    // Second pass: find the first character that occurs only once
-    for (const char of str) {
-        if (charCount.get(char) === 1) {
-            return char;
-        }
-    }
-
-    // If there is no non-repeating character, return null
-    return null;
+function findCommonElements(arr1: number[], arr2: number[]): number[] {
+    return arr1.filter(value => arr2.includes(value));
 }
 
-// Example usage
-const str = "swiss";
-console.log(firstNonRepeatingChar(str)); // Output: "w"
+// Example usage:
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
+function findCommonElements(arr1: number[], arr2: number[]): number[] {
+    const set1 = new Set(arr1);
+    const set2 = new Set(arr2);
+    
+    const commonElements = [...set1].filter(value => set2.has(value));
+    return commonElements;
+}
+
+// Example usage:
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
