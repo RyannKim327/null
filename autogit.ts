@@ -1,47 +1,31 @@
-type Graph = {
-    [key: string]: string[];
-};
-function dfsRecursive(graph: Graph, node: string, visited: Set<string> = new Set()): void {
-    if (visited.has(node)) {
-        return;
-    }
-    
-    console.log(node); // Process the node
-    visited.add(node); // Mark the node as visited
+npm install axios
+import axios from 'axios';
 
-    for (const neighbor of graph[node] || []) {
-        dfsRecursive(graph, neighbor, visited);
-    }
+// Define an interface for the response data
+interface Post {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
 }
 
-// Example Usage
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
+// Function to fetch posts from the JSONPlaceholder API
+const fetchPosts = async () => {
+    try {
+        const response = await axios.get<Post[]>('https://jsonplaceholder.typicode.com/posts');
+        const posts = response.data;
+
+        // Log the fetched posts
+        posts.forEach(post => {
+            console.log(`Post ID: ${post.id}`);
+            console.log(`Title: ${post.title}`);
+            console.log(`Body: ${post.body}`);
+            console.log('-------------------------');
+        });
+    } catch (error) {
+        console.error('Error fetching posts:', error);
+    }
 };
 
-dfsRecursive(graph, 'A');
-function dfsIterative(graph: Graph, start: string): void {
-    const stack: string[] = [start];
-    const visited = new Set<string>();
-
-    while (stack.length) {
-        const node = stack.pop()!;
-        if (!visited.has(node)) {
-            console.log(node); // Process the node
-            visited.add(node);
-
-            // Push neighbors onto the stack
-            for (const neighbor of graph[node] || []) {
-                stack.push(neighbor);
-            }
-        }
-    }
-}
-
-// Example Usage
-dfsIterative(graph, 'A');
+// Call the function to fetch posts
+fetchPosts();
