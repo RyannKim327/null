@@ -1,69 +1,51 @@
-interface Node {
-    id: string; // Unique identifier for the node
-    g: number; // Cost from start node to current node
-    h: number; // Heuristic cost from current node to goal node
-    f: number; // Total cost (g + h)
-    parent?: Node; // Parent node in the search path
-}
-function heuristic(node: Node, goal: Node): number {
-    // Example: Use Manhattan distance or Euclidean distance depending on your use case
-    return Math.abs(Number(node.id) - Number(goal.id)); // Adjust accordingly
-}
+function computeLPSArray(pattern: string): number[] {
+    const lps: number[] = new Array(pattern.length).fill(0);
+    let length = 0; // length of the previous longest prefix suffix
+    let i = 1;
 
-function aStarSearch(start: Node, goal: Node, getNeighbors: (node: Node) => Node[]): Node | null {
-    const openSet: Node[] = [start];
-    const closedSet: Node[] = [];
-
-    while (openSet.length > 0) {
-        // Get node with the lowest f value
-        openSet.sort((a, b) => a.f - b.f);
-        const currentNode = openSet.shift()!;
-
-        // Check if we reached the goal
-        if (currentNode.id === goal.id) {
-            return currentNode; // Goal found
-        }
-
-        closedSet.push(currentNode);
-
-        // Explore neighbors
-        const neighbors = getNeighbors(currentNode);
-        for (const neighbor of neighbors) {
-            if (closedSet.some(node => node.id === neighbor.id)) {
-                continue; // Already evaluated
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1];
+            } else {
+                lps[i] = 0;
+                i++;
             }
-
-            const tentativeG = currentNode.g + 1; // Assuming uniform cost for simplicity
-
-            if (!openSet.some(node => node.id === neighbor.id)) {
-                openSet.push(neighbor); // New node discovered
-            } else if (tentativeG >= neighbor.g) {
-                continue; // Not a better path
-            }
-
-            // Update costs
-            neighbor.g = tentativeG;
-            neighbor.h = heuristic(neighbor, goal);
-            neighbor.f = neighbor.g + neighbor.h;
-            neighbor.parent = currentNode; // Set current as parent
         }
     }
-
-    return null; // No path found
+    return lps;
 }
-function getNeighbors(node: Node): Node[] {
-    // Example implementation: return neighbors based on your specific use case
-    const neighbors: Node[] = [];
-    // Add logic to get actual neighboring nodes
-    return neighbors;
-}
-const start: Node = { id: '0', g: 0, h: 0, f: 0 };
-const goal: Node = { id: '10', g: Infinity, h: 0, f: Infinity };
+function KMPSearch(text: string, pattern: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
+    let i = 0; // index for text
+    let j = 0; // index for pattern
 
-const result = aStarSearch(start, goal, getNeighbors);
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
 
-if (result) {
-    console.log('Path found:', result);
-} else {
-    console.log('No path found.');
+        if (j === pattern.length) {
+            result.push(i - j); // Match found, add the starting index to result
+            j = lps[j - 1]; // Get the next position to continue searching
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1]; // Use the LPS array to skip characters
+            } else {
+                i++;
+            }
+        }
+    }
+    return result; // Return all starting indices of matches
 }
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = KMPSearch(text, pattern);
+
+console.log("Pattern found at indices:", result);
