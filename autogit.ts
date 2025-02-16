@@ -1,111 +1,52 @@
 class Node {
     value: number;
-    forward: Node[];
+    next: Node | null;
 
-    constructor(value: number, level: number) {
+    constructor(value: number) {
         this.value = value;
-        this.forward = new Array(level + 1).fill(null);
+        this.next = null;
     }
 }
 
-class SkipList {
-    private maxLevel: number;
-    private header: Node;
-    private level: number;
+class LinkedList {
+    head: Node | null;
 
-    constructor(maxLevel: number) {
-        this.maxLevel = maxLevel;
-        this.level = 0;
-        this.header = new Node(-Infinity, maxLevel);
+    constructor() {
+        this.head = null;
     }
 
-    private getRandomLevel(): number {
-        let level = 0;
-        while (Math.random() < 0.5 && level < this.maxLevel) {
-            level++;
-        }
-        return level;
-    }
-
-    insert(value: number): void {
-        const update: Node[] = new Array(this.maxLevel + 1);
-        let current: Node = this.header;
-
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
+    // Method to add a new node to the list
+    add(value: number) {
+        const newNode = new Node(value);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
             }
-            update[i] = current;
-        }
-
-        current = current.forward[0];
-
-        if (current === null || current.value !== value) {
-            const newLevel = this.getRandomLevel();
-
-            if (newLevel > this.level) {
-                for (let i = this.level + 1; i <= newLevel; i++) {
-                    update[i] = this.header;
-                }
-                this.level = newLevel;
-            }
-
-            const newNode = new Node(value, newLevel);
-            for (let i = 0; i <= newLevel; i++) {
-                newNode.forward[i] = update[i].forward[i];
-                update[i].forward[i] = newNode;
-            }
+            current.next = newNode;
         }
     }
 
-    search(value: number): boolean {
-        let current: Node = this.header;
+    // Method to find the length of the linked list
+    length(): number {
+        let count = 0;
+        let current = this.head;
 
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
+        while (current) {
+            count++;
+            current = current.next;
         }
 
-        current = current.forward[0];
-        return current !== null && current.value === value;
-    }
-
-    delete(value: number): void {
-        const update: Node[] = new Array(this.maxLevel + 1);
-        let current: Node = this.header;
-
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-            update[i] = current;
-        }
-
-        current = current.forward[0];
-
-        if (current !== null && current.value === value) {
-            for (let i = 0; i <= this.level; i++) {
-                if (update[i].forward[i] !== current) break;
-                update[i].forward[i] = current.forward[i];
-            }
-
-            while (this.level > 0 && this.header.forward[this.level] === null) {
-                this.level--;
-            }
-        }
+        return count;
     }
 }
 
-// Usage:
-const skipList = new SkipList(3);
-skipList.insert(3);
-skipList.insert(6);
-skipList.insert(7);
-skipList.insert(9);
-skipList.insert(12);
-skipList.insert(19);
-console.log(skipList.search(6)); // true
-console.log(skipList.search(15)); // false
-skipList.delete(3);
-console.log(skipList.search(3)); // false
+// Example usage:
+const list = new LinkedList();
+list.add(1);
+list.add(2);
+list.add(3);
+
+console.log(list.length()); // Output: 3
