@@ -1,60 +1,31 @@
-type Graph = { [key: string]: string[] };
+function bubbleSort(arr: number[]): number[] {
+    const n = arr.length;
+    let swapped: boolean;
 
-function dfsRecursive(graph: Graph, node: string, visited: Set<string> = new Set()): void {
-    if (visited.has(node)) {
-        return; // Node has already been visited
+    // Loop through all elements in the array
+    for (let i = 0; i < n - 1; i++) {
+        swapped = false;
+
+        // Last i elements are already sorted
+        for (let j = 0; j < n - 1 - i; j++) {
+            // Compare adjacent elements
+            if (arr[j] > arr[j + 1]) {
+                // Swap if they are in the wrong order
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                swapped = true;
+            }
+        }
+
+        // If no two elements were swapped in the inner loop, then the array is sorted
+        if (!swapped) {
+            break;
+        }
     }
 
-    visited.add(node);
-    console.log(node); // Process the node (e.g., print it)
-
-    for (const neighbor of graph[node]) {
-        dfsRecursive(graph, neighbor, visited);
-    }
+    return arr;
 }
 
 // Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
-
-dfsRecursive(graph, 'A');
-type Graph = { [key: string]: string[] };
-
-function dfsIterative(graph: Graph, startNode: string): void {
-    const stack: string[] = [startNode];
-    const visited: Set<string> = new Set();
-
-    while (stack.length > 0) {
-        const node = stack.pop()!;
-        
-        if (visited.has(node)) {
-            continue; // Node has already been visited
-        }
-
-        visited.add(node);
-        console.log(node); // Process the node (e.g., print it)
-
-        // Add neighbors to the stack
-        for (const neighbor of graph[node]) {
-            stack.push(neighbor);
-        }
-    }
-}
-
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
-
-dfsIterative(graph, 'A');
+const array = [64, 34, 25, 12, 22, 11, 90];
+const sortedArray = bubbleSort(array);
+console.log(sortedArray); // Output: [11, 12, 22, 25, 34, 64, 90]
