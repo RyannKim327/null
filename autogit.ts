@@ -1,7 +1,6 @@
-function getRandomNumberInRange(min: number, max: number): number {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-// Example usage:
-const randomNum = getRandomNumberInRange(1, 10);
-console.log(randomNum); // This will log a random number between 1 and 10 (inclusive).
+const originalString = "  Hello   World!  \n";
+const stringWithoutWhitespace = originalString.replace(/\s+/g, '');
+console.log(stringWithoutWhitespace); // Outputs: "HelloWorld!"
+const originalString = "  Hello World!  ";
+const trimmedString = originalString.trim();
+console.log(trimmedString); // Outputs: "Hello World!"
