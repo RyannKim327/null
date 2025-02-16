@@ -1,31 +1,12 @@
-function bubbleSort(arr: number[]): number[] {
-    const n = arr.length;
-    let swapped: boolean;
-
-    // Loop through all elements in the array
-    for (let i = 0; i < n - 1; i++) {
-        swapped = false;
-
-        // Last i elements are already sorted
-        for (let j = 0; j < n - 1 - i; j++) {
-            // Compare adjacent elements
-            if (arr[j] > arr[j + 1]) {
-                // Swap if they are in the wrong order
-                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-                swapped = true;
-            }
-        }
-
-        // If no two elements were swapped in the inner loop, then the array is sorted
-        if (!swapped) {
-            break;
-        }
+function factorial(n: number): number {
+    // Base case: factorial of 0 or 1 is 1
+    if (n === 0 || n === 1) {
+        return 1;
     }
-
-    return arr;
+    // Recursive case: n! = n * (n - 1)!
+    return n * factorial(n - 1);
 }
 
 // Example usage:
-const array = [64, 34, 25, 12, 22, 11, 90];
-const sortedArray = bubbleSort(array);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 34, 64, 90]
+const num = 5;
+console.log(`Factorial of ${num} is ${factorial(num)}`); // Output: Factorial of 5 is 120
