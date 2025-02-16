@@ -1,30 +1,15 @@
-// Define an interface for the joke response structure
-interface Joke {
-    id: number;
-    type: string;
-    setup: string;
-    punchline: string;
-}
-
-// Function to fetch a random joke
-async function fetchRandomJoke(): Promise<void> {
-    try {
-        const response = await fetch('https://official-joke-api.appspot.com/random_joke');
-        
-        // Check if the response is okay (status code 200)
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+function isArraySortedAscending(arr: number[]): boolean {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false; // Found an element greater than the next one
         }
-
-        // Parse the JSON response
-        const joke: Joke = await response.json();
-        
-        // Log the joke
-        console.log(`${joke.setup} - ${joke.punchline}`);
-    } catch (error) {
-        console.error('Error fetching joke:', error);
     }
+    return true; // The array is sorted in ascending order
 }
 
-// Call the function to fetch a joke
-fetchRandomJoke();
+// Example usage:
+const arr1 = [1, 2, 3, 4, 5];
+const arr2 = [5, 3, 4, 1, 2];
+
+console.log(isArraySortedAscending(arr1)); // Output: true
+console.log(isArraySortedAscending(arr2)); // Output: false
