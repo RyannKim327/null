@@ -8,28 +8,38 @@ class ListNode {
     }
 }
 
-function findMiddle(head: ListNode | null): ListNode | null {
-    if (!head) return null; // Empty list
+function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
+    let firstPointer: ListNode | null = head;
+    let secondPointer: ListNode | null = head;
 
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast && fast.next) {
-        slow = slow.next;       // Move slow by one step
-        fast = fast.next.next;  // Move fast by two steps
+    // Move firstPointer n nodes ahead
+    for (let i = 0; i < n; i++) {
+        if (firstPointer === null) {
+            return null; // n is greater than the length of the list
+        }
+        firstPointer = firstPointer.next;
     }
 
-    return slow; // slow is now pointing at the middle node
+    // Move both pointers until firstPointer reaches the end
+    while (firstPointer !== null) {
+        firstPointer = firstPointer.next;
+        secondPointer = secondPointer.next;
+    }
+
+    // secondPointer is now at the nth node from the end
+    return secondPointer;
 }
 
-// Example Usage:
+// Example usage
 const head = new ListNode(1);
 head.next = new ListNode(2);
 head.next.next = new ListNode(3);
 head.next.next.next = new ListNode(4);
 head.next.next.next.next = new ListNode(5);
 
-const middleNode = findMiddle(head);
-if (middleNode) {
-    console.log(middleNode.value); // Output: 3
+const nthNode = findNthFromEnd(head, 2); // Should return the node with value 4
+if (nthNode) {
+    console.log(nthNode.value); // Output: 4
+} else {
+    console.log("Node not found");
 }
