@@ -1,40 +1,45 @@
-function isPrime(num: number): boolean {
-    if (num <= 1) return false;
-    if (num <= 3) return true;
-    
-    if (num % 2 === 0 || num % 3 === 0) return false;
-    
-    for (let i = 5; i * i <= num; i += 6) {
-        if (num % i === 0 || num % (i + 2) === 0) return false;
+class ListNode {
+    value: number;
+    next: ListNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-    return true;
 }
 
-function largestPrimeFactor(n: number): number {
-    let largestPrime = -1;
+function hasCycle(head: ListNode | null): boolean {
+    if (!head) return false;
 
-    // Check for number of 2s that divide n
-    while (n % 2 === 0) {
-        largestPrime = 2;
-        n /= 2;
-    }
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
 
-    // n must be odd at this point, so check for odd factors
-    for (let i = 3; i * i <= n; i += 2) {
-        while (n % i === 0) {
-            largestPrime = i;
-            n /= i;
+    while (fast !== null && fast.next !== null) {
+        slow = slow!.next; // Move slow pointer by 1
+        fast = fast.next.next; // Move fast pointer by 2
+
+        if (slow === fast) {
+            return true; // Cycle detected
         }
     }
 
-    // This condition is to check if n is a prime number greater than 2
-    if (n > 2) {
-        largestPrime = n;
-    }
-
-    return largestPrime;
+    return false; // No cycle
 }
 
-// Example usage
-const number = 13195;
-console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}.`);
+// Example usage:
+const node1 = new ListNode(1);
+const node2 = new ListNode(2);
+const node3 = new ListNode(3);
+const node4 = new ListNode(4);
+
+// Creating a cycle for testing
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node2; // Creates a cycle
+
+console.log(hasCycle(node1)); // Output: true
+
+// Creating a non-cyclic linked list for testing
+node4.next = null; // Break the cycle
+console.log(hasCycle(node1)); // Output: false
