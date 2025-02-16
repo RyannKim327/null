@@ -1,19 +1,25 @@
-function countWordOccurrences(text: string, word: string): number {
-    // Normalize the text and the word to lower case to make the search case-insensitive
-    const normalizedText = text.toLowerCase();
-    const normalizedWord = word.toLowerCase();
+function bubbleSort(arr: number[]): number[] {
+  let n = arr.length;
+  let swapped: boolean;
 
-    // Split the text into an array of words
-    const wordsArray = normalizedText.split(/\s+/); // Split by whitespace
+  do {
+    swapped = false;
+    for (let i = 0; i < n - 1; i++) {
+      if (arr[i] > arr[i + 1]) {
+        // Swap arr[i] and arr[i + 1]
+        [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
+        swapped = true;
+      }
+    }
+    // Reduce n because the last element is already in place
+    n--;
+  } while (swapped);
 
-    // Filter the array to count occurrences of the word
-    const count = wordsArray.filter(w => w === normalizedWord).length;
-
-    return count;
+  return arr;
 }
 
-// Example usage
-const text = "Hello world! This is a test. Hello again, world!";
-const wordToCount = "hello";
-const occurrences = countWordOccurrences(text, wordToCount);
-console.log(`The word "${wordToCount}" occurs ${occurrences} times.`);
+// Example usage:
+const array = [64, 34, 25, 12, 22, 11, 90];
+console.log("Unsorted array:", array);
+const sortedArray = bubbleSort(array);
+console.log("Sorted array:", sortedArray);
