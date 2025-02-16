@@ -1,49 +1,50 @@
-function heapSort(arr: number[]): number[] {
-    const n = arr.length;
+class Node {
+    value: number;
+    next: Node | null;
 
-    // Build a max heap
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(arr, n, i);
-    }
-
-    // One by one extract elements from heap
-    for (let i = n - 1; i > 0; i--) {
-        // Move current root to end
-        [arr[0], arr[i]] = [arr[i], arr[0]]; // Swap
-
-        // Call heapify on the reduced heap
-        heapify(arr, i, 0);
-    }
-
-    return arr;
-}
-
-// To maintain the heap property
-function heapify(arr: number[], n: number, i: number) {
-    let largest = i; // Initialize largest as root
-    const left = 2 * i + 1; // left = 2*i + 1
-    const right = 2 * i + 2; // right = 2*i + 2
-
-    // If left child is larger than root
-    if (left < n && arr[left] > arr[largest]) {
-        largest = left;
-    }
-
-    // If right child is larger than largest so far
-    if (right < n && arr[right] > arr[largest]) {
-        largest = right;
-    }
-
-    // If largest is not root
-    if (largest !== i) {
-        [arr[i], arr[largest]] = [arr[largest], arr[i]]; // Swap
-
-        // Recursively heapify the affected sub-tree
-        heapify(arr, n, largest);
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
 }
 
-// Example usage
-const array = [3, 5, 1, 10, 2, 7];
-const sortedArray = heapSort(array);
-console.log(sortedArray); // Output: [1, 2, 3, 5, 7, 10]
+class LinkedList {
+    head: Node | null;
+
+    constructor() {
+        this.head = null;
+    }
+
+    // Method to add a new node to the list (for testing purposes)
+    append(value: number) {
+        const newNode = new Node(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    // Method to find the length of the linked list
+    length(): number {
+        let count = 0;
+        let current = this.head;
+        while (current) {
+            count++;
+            current = current.next;
+        }
+        return count;
+    }
+}
+
+// Example Usage
+const list = new LinkedList();
+list.append(10);
+list.append(20);
+list.append(30);
+
+console.log(list.length()); // Output: 3
