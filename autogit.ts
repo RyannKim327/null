@@ -1,12 +1,26 @@
-function findMaxValue(arr: number[]): number | null {
-    // Check if the array is empty
-    if (arr.length === 0) {
-        return null; // or throw an error depending on your use case
-    }
-    return Math.max(...arr);
-}
+const removeDuplicates = (array: any[]): any[] => {
+    return Array.from(new Set(array));
+};
 
-// Example usage
-const numbers = [5, 3, 9, 1, 6];
-const maxValue = findMaxValue(numbers);
-console.log(maxValue); // Output: 9
+const myArray = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = removeDuplicates(myArray);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const removeDuplicates = (array: any[]): any[] => {
+    return array.filter((item, index) => array.indexOf(item) === index);
+};
+
+const myArray = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = removeDuplicates(myArray);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const removeDuplicates = (array: any[]): any[] => {
+    return array.reduce((accumulator: any[], current) => {
+        if (!accumulator.includes(current)) {
+            accumulator.push(current);
+        }
+        return accumulator;
+    }, []);
+};
+
+const myArray = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = removeDuplicates(myArray);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
