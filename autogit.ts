@@ -1,40 +1,57 @@
-interface Node {
-    state: string; // You can replace this with other types based on your problem
-    score: number; // Score used to rank nodes
+class ListNode {
+    value: number;
+    next: ListNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
 }
 
-function getChildren(node: Node): Node[] {
-    // Implement your logic to generate child nodes based on the current node's state
-    // This is just a placeholder
-    return [
-        { state: node.state + "A", score: node.score + Math.random() },
-        { state: node.state + "B", score: node.score + Math.random() },
-    ];
-}
+class LinkedList {
+    head: ListNode | null;
 
-function beamSearch(initialNode: Node, beamWidth: number, maxIterations: number): Node | null {
-    let currentNodes: Node[] = [initialNode];
-
-    for (let i = 0; i < maxIterations; i++) {
-        let allChildren: Node[] = [];
-
-        // Generate children for all current nodes
-        for (let node of currentNodes) {
-            const children = getChildren(node);
-            allChildren.push(...children);
-        }
-
-        // Sort children by score and select top `beamWidth` nodes
-        allChildren.sort((a, b) => b.score - a.score); // Sort in descending order
-        currentNodes = allChildren.slice(0, beamWidth); // Select top beamWidth nodes
+    constructor() {
+        this.head = null;
     }
 
-    // Return the best node found
-    return currentNodes.length > 0 ? currentNodes[0] : null;
+    // Method to add a new node to the end of the list
+    add(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    // Method to find the middle element of the linked list
+    findMiddle(): ListNode | null {
+        let slow: ListNode | null = this.head;
+        let fast: ListNode | null = this.head;
+
+        while (fast && fast.next) {
+            slow = slow?.next || null; // Move slow by 1
+            fast = fast.next.next; // Move fast by 2
+        }
+
+        return slow; // slow is now at the middle
+    }
 }
 
 // Example usage:
-const initialNode: Node = { state: "Start", score: 0 };
-const result = beamSearch(initialNode, 3, 10);
+const list = new LinkedList();
+list.add(1);
+list.add(2);
+list.add(3);
+list.add(4);
+list.add(5);
 
-console.log(result);
+const middleNode = list.findMiddle();
+if (middleNode) {
+    console.log(`The middle element is: ${middleNode.value}`); // Output: The middle element is: 3
+}
