@@ -1,49 +1,9 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+const str: string = "Hello, world!";
+const substring: string = "world";
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
+const containsSubstring: boolean = str.includes(substring);
 
-class LinkedList {
-    head: ListNode | null;
+console.log(containsSubstring); // Output: true
+const containsSubstringCaseInsensitive: boolean = str.toLowerCase().includes(substring.toLowerCase());
 
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to add a new node to the list
-    add(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Method to find the length of the linked list
-    length(): number {
-        let count = 0;
-        let current = this.head;
-        while (current) {
-            count++;
-            current = current.next;
-        }
-        return count;
-    }
-}
-
-// Example usage:
-const list = new LinkedList();
-list.add(1);
-list.add(2);
-list.add(3);
-console.log(list.length()); // Output: 3
+console.log(containsSubstringCaseInsensitive); // Output: true
