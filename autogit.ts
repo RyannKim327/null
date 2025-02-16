@@ -1,59 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
+function isPrime(num: number): boolean {
+    if (num <= 1) return false; // Numbers less than 2 are not prime
+    if (num <= 3) return true; // 2 and 3 are prime numbers
 
-const App: React.FC = () => {
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+    // Check for divisibility by 2 and 3
+    if (num % 2 === 0 || num % 3 === 0) return false;
 
-  // Async function to fetch data
-  const fetchData = async () => {
-    try {
-      const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const jsonData = await response.json();
-      setData(jsonData);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+    // Check for factors from 5 to the square root of num
+    for (let i = 5; i * i <= num; i += 6) {
+        if (num % i === 0 || num % (i + 2) === 0) return false;
     }
-  };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+    return true; // If no factors found, num is prime
+}
 
-  if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
-  }
-
-  if (error) {
-    return (
-      <View style={styles.container}>
-        <Text>Error: {error}</Text>
-      </View>
-    );
-  }
-
-  return (
-    <View style={styles.container}>
-      {data.map((item: any) => (
-        <Text key={item.id}>{item.title}</Text>
-      ))}
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
-  },
-});
-
-export default App;
+// Example usage:
+const numberToCheck = 29;
+console.log(`${numberToCheck} is prime: ${isPrime(numberToCheck)}`);
