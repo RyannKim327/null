@@ -1,57 +1,40 @@
-class Node {
-    value: string;
-    children: Node[];
-
-    constructor(value: string) {
-        this.value = value;
-        this.children = [];
-    }
+function isPrime(num: number): boolean {
+    if (num <= 1) return false;
+    if (num <= 3) return true;
     
-    addChild(child: Node) {
-        this.children.push(child);
+    if (num % 2 === 0 || num % 3 === 0) return false;
+    
+    for (let i = 5; i * i <= num; i += 6) {
+        if (num % i === 0 || num % (i + 2) === 0) return false;
     }
+    return true;
 }
 
-function depthLimitedSearch(node: Node, target: string, depth: number): Node | null {
-    // If the node is the target, return it
-    if (node.value === target) {
-        return node;
-    }
-    
-    // If the depth limit is reached, return null
-    if (depth <= 0) {
-        return null;
+function largestPrimeFactor(n: number): number {
+    let largestPrime = -1;
+
+    // Check for number of 2s that divide n
+    while (n % 2 === 0) {
+        largestPrime = 2;
+        n /= 2;
     }
 
-    // Recur for each child
-    for (const child of node.children) {
-        const result = depthLimitedSearch(child, target, depth - 1);
-        if (result !== null) {
-            return result; // If found in the subtree, return it
+    // n must be odd at this point, so check for odd factors
+    for (let i = 3; i * i <= n; i += 2) {
+        while (n % i === 0) {
+            largestPrime = i;
+            n /= i;
         }
     }
 
-    return null; // Target not found in this path
+    // This condition is to check if n is a prime number greater than 2
+    if (n > 2) {
+        largestPrime = n;
+    }
+
+    return largestPrime;
 }
 
 // Example usage
-const root = new Node("A");
-const b = new Node("B");
-const c = new Node("C");
-const d = new Node("D");
-const e = new Node("E");
-
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-b.addChild(e);
-
-const target = "E";
-const depthLimit = 2;
-const result = depthLimitedSearch(root, target, depthLimit);
-
-if (result) {
-    console.log(`Found node: ${result.value}`);
-} else {
-    console.log("Node not found within the depth limit.");
-}
+const number = 13195;
+console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}.`);
