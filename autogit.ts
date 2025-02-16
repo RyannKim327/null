@@ -1,31 +1,19 @@
-npm install axios
-import axios from 'axios';
+// Import the 'readline' module to handle input from the command line
+import * as readline from 'readline';
 
-// Define an interface for the response data
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-}
+// Create an interface for the input stream
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
-// Function to fetch posts from the JSONPlaceholder API
-const fetchPosts = async () => {
-    try {
-        const response = await axios.get<Post[]>('https://jsonplaceholder.typicode.com/posts');
-        const posts = response.data;
-
-        // Log the fetched posts
-        posts.forEach(post => {
-            console.log(`Post ID: ${post.id}`);
-            console.log(`Title: ${post.title}`);
-            console.log(`Body: ${post.body}`);
-            console.log('-------------------------');
-        });
-    } catch (error) {
-        console.error('Error fetching posts:', error);
-    }
+// Function to prompt user for their name
+const askForName = () => {
+    rl.question("What's your name? ", (name) => {
+        console.log(`Hello, ${name}!`);
+        rl.close();
+    });
 };
 
-// Call the function to fetch posts
-fetchPosts();
+// Call the function to start the input process
+askForName();
