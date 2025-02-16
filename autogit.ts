@@ -1,10 +1,7 @@
-let string1: string = "Hello, ";
-let string2: string = "world!";
-let concatenated: string = string1 + string2;
-
-console.log(concatenated); // Output: Hello, world!
-let string1: string = "Hello, ";
-let string2: string = "world!";
-let concatenated: string = `${string1}${string2}`;
-
-console.log(concatenated); // Output: Hello, world!
+const arr: number[] = [1, 2, 3, 4, 5];
+arr.reverse();
+console.log(arr); // Output: [5, 4, 3, 2, 1]
+const arr: number[] = [1, 2, 3, 4, 5];
+const reversedArr: number[] = [...arr].reverse();
+console.log(reversedArr); // Output: [5, 4, 3, 2, 1]
+console.log(arr); // Output: [1, 2, 3, 4, 5] (original array remains unchanged)
