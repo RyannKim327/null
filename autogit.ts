@@ -1,47 +1,56 @@
-function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
-    const totalLength = nums1.length + nums2.length;
-    const half = Math.floor(totalLength / 2);
+function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
+    const n = input.length;
+    const rotations: string[] = [];
 
-    // Ensure nums1 is the smaller array
-    if (nums1.length > nums2.length) {
-        [nums1, nums2] = [nums2, nums1];
+    // Generate all rotations of the input string
+    for (let i = 0; i < n; i++) {
+        rotations.push(input.slice(i) + input.slice(0, i));
     }
 
-    let left = 0;
-    let right = nums1.length;
+    // Sort the rotations
+    rotations.sort();
 
-    while (left <= right) {
-        const partitionX = left + Math.floor((right - left) / 2);
-        const partitionY = half - partitionX;
+    // Build the transformed string and find the original index
+    let transformed = '';
+    let originalIndex = -1;
 
-        const maxX = partitionX === 0 ? -Infinity : nums1[partitionX - 1];
-        const minX = partitionX === nums1.length ? Infinity : nums1[partitionX];
-
-        const maxY = partitionY === 0 ? -Infinity : nums2[partitionY - 1];
-        const minY = partitionY === nums2.length ? Infinity : nums2[partitionY];
-
-        if (maxX <= minY && maxY <= minX) {
-            // Found the correct partition
-            if (totalLength % 2 === 0) {
-                return (Math.max(maxX, maxY) + Math.min(minX, minY)) / 2;
-            } else {
-                return Math.max(maxX, maxY);
-            }
-        } else if (maxX > minY) {
-            right = partitionX - 1; // Move towards left side of nums1
-        } else {
-            left = partitionX + 1; // Move towards right side of nums1
+    for (let i = 0; i < n; i++) {
+        const rotation = rotations[i];
+        transformed += rotation[n - 1]; // Last column of the sorted rotations
+        if (rotation === input) {
+            originalIndex = i; // Store the index of the original string
         }
     }
 
-    throw new Error("Input arrays are not sorted.");
+    return { transformed, index: originalIndex };
 }
 
-// Example usage:
-const nums1 = [1, 3];
-const nums2 = [2];
-console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2
+function inverseBurrowsWheelerTransform(transformed: string, index: number): string {
+    const n = transformed.length;
+    const table: string[] = new Array(n);
 
-const nums3 = [1, 2];
-const nums4 = [3, 4];
-console.log(findMedianSortedArrays(nums3, nums4)); // Output: 2.5
+    // Build the table
+    for (let i = 0; i < n; i++) {
+        table[i] = transformed[i];
+    }
+
+    // Sort the table and build the next column
+    for (let i = 0; i < n; i++) {
+        table.sort();
+        for (let j = 0; j < n; j++) {
+            table[j] = transformed[j] + table[j];
+        }
+    }
+
+    // The original string is in the row indicated by the original index
+    return table[index].slice(1); // Remove the added character
+}
+
+// Example usage
+const input = "banana";
+const { transformed, index } = burrowsWheelerTransform(input);
+console.log("Transformed:", transformed);
+console.log("Original Index:", index);
+
+const original = inverseBurrowsWheelerTransform(transformed, index);
+console.log("Original:", original);
