@@ -1,11 +1,19 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    const normalize = (str: string) => 
-        str.toLowerCase().replace(/[^a-z0-9]/g, '').split('').sort().join('');
+// Import the 'readline' module to handle input
+import * as readline from 'readline';
 
-    return normalize(str1) === normalize(str2);
-}
+// Create an interface for input and output streams
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
-// Example usage
-const string1 = "Listen";
-const string2 = "Silent";
-console.log(areAnagrams(string1, string2)); // Output: true
+// Function to ask for user input
+const askForName = () => {
+    rl.question('Please enter your name: ', (name: string) => {
+        console.log(`Hello, ${name}!`);
+        rl.close(); // Close the readline interface
+    });
+};
+
+// Call the function to start the input process
+askForName();
