@@ -1,61 +1,50 @@
-class PriorityQueue {
-    private elements: { node: string, distance: number }[] = [];
-
-    isEmpty() {
-        return this.elements.length === 0;
+function mergeSort(arr: number[]): number[] {
+    // Base case: an array of zero or one element is sorted
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    enqueue(node: string, distance: number) {
-        this.elements.push({ node, distance });
-        this.elements.sort((a, b) => a.distance - b.distance);
-    }
+    // Split the array in half
+    const mid = Math.floor(arr.length / 2);
+    const left = mergeSort(arr.slice(0, mid));
+    const right = mergeSort(arr.slice(mid));
 
-    dequeue() {
-        return this.elements.shift();
-    }
+    // Merge the sorted halves
+    return merge(left, right);
 }
 
-function dijkstra(graph: { [key: string]: { neighbor: string, weight: number }[] }, start: string) {
-    const distances: { [key: string]: number } = {};
-    const previous: { [key: string]: string | null } = {};
-    const priorityQueue = new PriorityQueue();
+function merge(left: number[], right: number[]): number[] {
+    const result: number[] = [];
+    let i = 0; // Pointer for left array
+    let j = 0; // Pointer for right array
 
-    // Initialize distances and priority queue
-    for (const node in graph) {
-        distances[node] = Infinity; 
-        previous[node] = null;
-    }
-    distances[start] = 0;
-    priorityQueue.enqueue(start, 0);
-
-    while (!priorityQueue.isEmpty()) {
-        const { node } = priorityQueue.dequeue()!;
-
-        // Explore neighbors
-        for (const { neighbor, weight } of graph[node]) {
-            const newDistance = distances[node] + weight;
-
-            // Only consider this new path if it's better
-            if (newDistance < distances[neighbor]) {
-                distances[neighbor] = newDistance;
-                previous[neighbor] = node;
-                priorityQueue.enqueue(neighbor, newDistance);
-            }
+    // Merge values until one array is exhausted
+    while (i < left.length && j < right.length) {
+        if (left[i] < right[j]) {
+            result.push(left[i]);
+            i++;
+        } else {
+            result.push(right[j]);
+            j++;
         }
     }
 
-    return { distances, previous };
+    // If there are remaining elements in the left array
+    while (i < left.length) {
+        result.push(left[i]);
+        i++;
+    }
+
+    // If there are remaining elements in the right array
+    while (j < right.length) {
+        result.push(right[j]);
+        j++;
+    }
+
+    return result;
 }
 
 // Example usage
-const graph = {
-    A: [{ neighbor: "B", weight: 1 }, { neighbor: "C", weight: 4 }],
-    B: [{ neighbor: "C", weight: 2 }, { neighbor: "D", weight: 5 }],
-    C: [{ neighbor: "D", weight: 1 }],
-    D: []
-};
-
-const result = dijkstra(graph, "A");
-
-console.log("Distances:", result.distances);
-console.log("Previous Nodes:", result.previous);
+const array = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
