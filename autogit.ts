@@ -1,57 +1,49 @@
-type Node = {
-    value: any;
-    children: Node[];
-};
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-function depthLimitedSearch(node: Node, depth: number, target: any): Node | null {
-    // Check if the current node is the target
-    if (node.value === target) {
-        return node;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+class LinkedList {
+    head: ListNode | null;
+
+    constructor() {
+        this.head = null;
     }
 
-    // If the depth limit is reached, return null
-    if (depth === 0) {
-        return null;
-    }
-
-    // Explore each child node
-    for (const child of node.children) {
-        const result = depthLimitedSearch(child, depth - 1, target);
-        if (result) {
-            return result; // Return the found node
+    // Method to add a new node to the list
+    add(value: number): void {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
         }
     }
 
-    return null; // Target not found in this path
+    // Method to find the length of the linked list
+    length(): number {
+        let count = 0;
+        let current = this.head;
+        while (current) {
+            count++;
+            current = current.next;
+        }
+        return count;
+    }
 }
 
 // Example usage
-const tree: Node = {
-    value: 1,
-    children: [
-        {
-            value: 2,
-            children: [
-                { value: 4, children: [] },
-                { value: 5, children: [] }
-            ]
-        },
-        {
-            value: 3,
-            children: [
-                { value: 6, children: [] },
-                { value: 7, children: [] }
-            ]
-        }
-    ]
-};
-
-const targetValue = 5;
-const depthLimit = 2;
-const result = depthLimitedSearch(tree, depthLimit, targetValue);
-
-if (result) {
-    console.log(`Found node with value: ${result.value}`);
-} else {
-    console.log('Node not found within the depth limit.');
-}
+const list = new LinkedList();
+list.add(1);
+list.add(2);
+list.add(3);
+console.log(`Length of the linked list: ${list.length()}`); // Output: Length of the linked list: 3
