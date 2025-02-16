@@ -1,47 +1,57 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+class Node {
+    value: string;
+    children: Node[];
 
-    constructor(value: number) {
+    constructor(value: string) {
         this.value = value;
-        this.next = null;
+        this.children = [];
+    }
+    
+    addChild(child: Node) {
+        this.children.push(child);
     }
 }
 
-function reverseLinkedList(head: ListNode | null): ListNode | null {
-    let prev: ListNode | null = null;
-    let current: ListNode | null = head;
-    let next: ListNode | null = null;
-
-    while (current) {
-        // Store the next node
-        next = current.next;
-        // Reverse the current node's pointer
-        current.next = prev;
-        // Move pointers one position forward
-        prev = current;
-        current = next;
+function depthLimitedSearch(node: Node, target: string, depth: number): Node | null {
+    // If the node is the target, return it
+    if (node.value === target) {
+        return node;
+    }
+    
+    // If the depth limit is reached, return null
+    if (depth <= 0) {
+        return null;
     }
 
-    return prev; // The new head of the reversed list
+    // Recur for each child
+    for (const child of node.children) {
+        const result = depthLimitedSearch(child, target, depth - 1);
+        if (result !== null) {
+            return result; // If found in the subtree, return it
+        }
+    }
+
+    return null; // Target not found in this path
 }
 
 // Example usage
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
+const root = new Node("A");
+const b = new Node("B");
+const c = new Node("C");
+const d = new Node("D");
+const e = new Node("E");
 
-let reversedHead = reverseLinkedList(head);
+root.addChild(b);
+root.addChild(c);
+b.addChild(d);
+b.addChild(e);
 
-// Function to print the list
-function printList(head: ListNode | null): void {
-    let current = head;
-    while (current) {
-        process.stdout.write(current.value.toString() + " -> ");
-        current = current.next;
-    }
-    console.log("null");
+const target = "E";
+const depthLimit = 2;
+const result = depthLimitedSearch(root, target, depthLimit);
+
+if (result) {
+    console.log(`Found node: ${result.value}`);
+} else {
+    console.log("Node not found within the depth limit.");
 }
-
-printList(reversedHead);
