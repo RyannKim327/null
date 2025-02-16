@@ -1,35 +1,97 @@
-function interpolationSearch(arr: number[], target: number): number {
-    let low = 0;
-    let high = arr.length - 1;
+class SuffixTreeNode {
+    children: Map<string, SuffixTreeNode>;
+    start: number;
+    end: number | null;
+    suffixLink: SuffixTreeNode | null;
 
-    while (low <= high && target >= arr[low] && target <= arr[high]) {
-        // Estimate the position of the target value
-        const pos = low + Math.floor(((target - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+    constructor(start: number, end: number | null) {
+        this.children = new Map();
+        this.start = start;
+        this.end = end;
+        this.suffixLink = null;
+    }
+}
 
-        // Check if the estimated position is the target
-        if (arr[pos] === target) {
-            return pos; // Target found
-        }
+class SuffixTree {
+    root: SuffixTreeNode;
+    text: string;
 
-        // If the target is greater, ignore the left half
-        if (arr[pos] < target) {
-            low = pos + 1;
-        } else {
-            // If the target is smaller, ignore the right half
-            high = pos - 1;
+    constructor(text: string) {
+        this.root = new SuffixTreeNode(-1, null);
+        this.text = text;
+        this.buildSuffixTree();
+    }
+
+    buildSuffixTree() {
+        const n = this.text.length;
+        for (let i = 0; i < n; i++) {
+            this.insertSuffix(i);
         }
     }
 
-    return -1; // Target not found
+    insertSuffix(start: number) {
+        let currentNode = this.root;
+        let currentChar = this.text[start];
+
+        for (let i = start; i < this.text.length; i++) {
+            const char = this.text[i];
+
+            if (!currentNode.children.has(char)) {
+                const newNode = new SuffixTreeNode(start, null);
+                currentNode.children.set(char, newNode);
+                return;
+            }
+
+            currentNode = currentNode.children.get(char)!;
+            // If we reach the end of the current edge, we can continue
+            if (currentNode.end === null) {
+                currentNode.end = i;
+                return;
+            }
+
+            // If we need to split the edge
+            const edgeLength = currentNode.end! - currentNode.start + 1;
+            if (i - start < edgeLength) {
+                // Split the edge
+                const splitNode = new SuffixTreeNode(currentNode.start, currentNode.start + i - start - 1);
+                currentNode.start += i - start;
+                splitNode.children.set(this.text[currentNode.start], currentNode);
+                currentNode = splitNode;
+                currentNode.children.set(char, new SuffixTreeNode(start, null));
+                return;
+            }
+        }
+    }
+
+    // Function to search for a substring
+    search(substring: string): boolean {
+        let currentNode = this.root;
+        let index = 0;
+
+        while (index < substring.length) {
+            const char = substring[index];
+
+            if (!currentNode.children.has(char)) {
+                return false; // Not found
+            }
+
+            currentNode = currentNode.children.get(char)!;
+            const edgeLength = currentNode.end === null ? this.text.length - currentNode.start : currentNode.end - currentNode.start + 1;
+
+            for (let i = 0; i < edgeLength; i++) {
+                if (index >= substring.length || this.text[currentNode.start + i] !== substring[index]) {
+                    return false; // Not found
+                }
+                index++;
+            }
+        }
+
+        return true; // Found
+    }
 }
 
-// Example usage:
-const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-const targetValue = 70;
-const resultIndex = interpolationSearch(sortedArray, targetValue);
-
-if (resultIndex !== -1) {
-    console.log(`Element found at index: ${resultIndex}`);
-} else {
-    console.log('Element not found in the array.');
-}
+// Example usage
+const text = "banana";
+const suffixTree = new SuffixTree(text);
+console.log(suffixTree.search("ana")); // true
+console.log(suffixTree.search("nan")); // false
