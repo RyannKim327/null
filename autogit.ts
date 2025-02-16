@@ -1,17 +1,10 @@
-function firstRepeatedCharacter(str: string): string | null {
-    const seenCharacters = new Set<string>();
+let string1: string = "Hello, ";
+let string2: string = "World!";
+let concatenated: string = string1 + string2;
 
-    for (let char of str) {
-        if (seenCharacters.has(char)) {
-            return char; // Return the first repeated character
-        }
-        seenCharacters.add(char);
-    }
+console.log(concatenated); // Output: Hello, World!
+let string1: string = "Hello, ";
+let string2: string = "World!";
+let concatenated: string = `${string1}${string2}`;
 
-    return null; // Return null if there are no repeated characters
-}
-
-// Example usage
-const inputString = "abca";
-const result = firstRepeatedCharacter(inputString);
-console.log(result); // Output: 'a'
+console.log(concatenated); // Output: Hello, World!
