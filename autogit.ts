@@ -1,50 +1,20 @@
-function mergeSort(arr: number[]): number[] {
-    // Base case: an array of zero or one element is sorted
-    if (arr.length <= 1) {
-        return arr;
-    }
+function insertionSort(arr: number[]): number[] {
+    for (let i = 1; i < arr.length; i++) {
+        let key = arr[i];
+        let j = i - 1;
 
-    // Split the array in half
-    const mid = Math.floor(arr.length / 2);
-    const left = mergeSort(arr.slice(0, mid));
-    const right = mergeSort(arr.slice(mid));
-
-    // Merge the sorted halves
-    return merge(left, right);
-}
-
-function merge(left: number[], right: number[]): number[] {
-    const result: number[] = [];
-    let i = 0; // Pointer for left array
-    let j = 0; // Pointer for right array
-
-    // Merge values until one array is exhausted
-    while (i < left.length && j < right.length) {
-        if (left[i] < right[j]) {
-            result.push(left[i]);
-            i++;
-        } else {
-            result.push(right[j]);
-            j++;
+        // Move elements of arr[0..i-1] that are greater than key
+        // to one position ahead of their current position
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
         }
+        arr[j + 1] = key;
     }
-
-    // If there are remaining elements in the left array
-    while (i < left.length) {
-        result.push(left[i]);
-        i++;
-    }
-
-    // If there are remaining elements in the right array
-    while (j < right.length) {
-        result.push(right[j]);
-        j++;
-    }
-
-    return result;
+    return arr;
 }
 
 // Example usage
-const array = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(array);
-console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
+const array = [12, 11, 13, 5, 6];
+const sortedArray = insertionSort(array);
+console.log(sortedArray); // Output: [5, 6, 11, 12, 13]
