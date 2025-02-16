@@ -1,54 +1,29 @@
-function mergeSort(arr: number[]): number[] {
-    // Base case: if the array is of length 1 or empty, it's already sorted
-    if (arr.length <= 1) {
-        return arr;
-    }
+function shellSort(arr: number[]): number[] {
+    const n = arr.length;
+    let gap = Math.floor(n / 2); // Start with a large gap
 
-    // Split the array into two halves
-    const mid = Math.floor(arr.length / 2);
-    const leftHalf = arr.slice(0, mid);
-    const rightHalf = arr.slice(mid);
+    // Start with the largest gap and reduce it
+    while (gap > 0) {
+        // Perform a gapped insertion sort for this gap size
+        for (let i = gap; i < n; i++) {
+            const temp = arr[i];
+            let j = i;
 
-    // Recursively sort both halves
-    const leftSorted = mergeSort(leftHalf);
-    const rightSorted = mergeSort(rightHalf);
+            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
+            }
 
-    // Merge the sorted halves and return
-    return merge(leftSorted, rightSorted);
-}
-
-function merge(left: number[], right: number[]): number[] {
-    const result: number[] = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
-
-    // Merge the two arrays while there are elements in both
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            result.push(left[leftIndex]);
-            leftIndex++;
-        } else {
-            result.push(right[rightIndex]);
-            rightIndex++;
+            // Put temp (the original arr[i]) in its correct location
+            arr[j] = temp;
         }
+        gap = Math.floor(gap / 2); // Reduce the gap for the next iteration
     }
-
-    // If there are remaining elements in left, add them
-    while (leftIndex < left.length) {
-        result.push(left[leftIndex]);
-        leftIndex++;
-    }
-
-    // If there are remaining elements in right, add them
-    while (rightIndex < right.length) {
-        result.push(right[rightIndex]);
-        rightIndex++;
-    }
-
-    return result;
+    return arr;
 }
 
-// Example usage
-const array = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(array);
-console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
+// Example usage:
+const unsortedArray = [12, 34, 54, 2, 3];
+const sortedArray = shellSort(unsortedArray);
+console.log(sortedArray); // Output: [2, 3, 12, 34, 54]
