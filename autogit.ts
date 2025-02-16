@@ -1,54 +1,55 @@
-class Node {
-    value: number;
-    children: Node[];
+function fibonacciSearch(arr: number[], x: number): number {
+    const n = arr.length;
+    let fibM2 = 0; // (m-2)'th Fibonacci number
+    let fibM1 = 1; // (m-1)'th Fibonacci number
+    let fibM = fibM1 + fibM2; // m'th Fibonacci number
 
-    constructor(value: number) {
-        this.value = value;
-        this.children = [];
+    // Find the smallest Fibonacci number greater than or equal to n
+    while (fibM < n) {
+        fibM2 = fibM1; // Update (m-2)'th Fibonacci
+        fibM1 = fibM;  // Update (m-1)'th Fibonacci
+        fibM = fibM1 + fibM2; // Update m'th Fibonacci
     }
 
-    addChild(child: Node) {
-        this.children.push(child);
+    let offset = -1; // Marks the eliminated range from front
+
+    // While there are elements to be inspected
+    while (fibM > 1) {
+        // Calculate the index to compare
+        const i = Math.min(offset + fibM2, n - 1);
+
+        // If x is greater than the value at index i
+        if (arr[i] < x) {
+            // Move the three Fibonacci indexes back
+            fibM = fibM1;
+            fibM1 = fibM2;
+            fibM2 = fibM - fibM1;
+            offset = i; // Update the offset
+        } else if (arr[i] > x) {
+            // Move the three Fibonacci indexes back
+            fibM = fibM2;
+            fibM1 = fibM1 - fibM2;
+            fibM2 = fibM - fibM1;
+        } else {
+            return i; // Found the element at index i
+        }
     }
+
+    // Compare the last element
+    if (fibM1 && arr[offset + 1] === x) {
+        return offset + 1; // Found element at index offset + 1
+    }
+
+    return -1; // Element not found
 }
 
-function depthLimitedSearch(root: Node, target: number, limit: number): Node | null {
-    const stack: { node: Node, depth: number }[] = [];
-    stack.push({ node: root, depth: 0 });
+// Example Usage
+const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
+const x = 85;
 
-    while (stack.length > 0) {
-        const { node, depth } = stack.pop()!;
-
-        if (node.value === target) {
-            return node; // target found
-        }
-
-        if (depth < limit) {
-            // Push children onto the stack with incremented depth
-            for (let i = node.children.length - 1; i >= 0; i--) { // reverse to maintain order
-                stack.push({ node: node.children[i], depth: depth + 1 });
-            }
-        }
-    }
-
-    return null; // target not found within depth limit
-}
-
-// Usage example
-const root = new Node(1);
-const child1 = new Node(2);
-const child2 = new Node(3);
-const grandChild1 = new Node(4);
-const grandChild2 = new Node(5);
-
-root.addChild(child1);
-root.addChild(child2);
-child1.addChild(grandChild1);
-child1.addChild(grandChild2);
-
-const targetNode = depthLimitedSearch(root, 4, 2); // Searching for node with value 4 within depth limit of 2
-if (targetNode) {
-    console.log(`Found node with value: ${targetNode.value}`);
+const index = fibonacciSearch(arr, x);
+if (index >= 0) {
+    console.log(`Element found at index: ${index}`);
 } else {
-    console.log('Node not found within the depth limit.');
+    console.log('Element not found in array');
 }
