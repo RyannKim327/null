@@ -1,53 +1,20 @@
-type Node = {
-    value: string;
-    children?: Node[];
-};
+function countWordOccurrences(text: string, word: string): number {
+    // Normalize the text and the word to lower case to make the search case-insensitive
+    const normalizedText = text.toLowerCase();
+    const normalizedWord = word.toLowerCase();
 
-function depthLimitedSearch(node: Node, goal: string, depth: number, limit: number): Node | null {
-    // Check if the current node is the goal
-    if (node.value === goal) {
-        return node;
-    }
+    // Split the text into an array of words
+    const wordsArray = normalizedText.split(/\s+/); // Split by whitespace
 
-    // Check if the depth limit has been reached
-    if (depth >= limit) {
-        return null;
-    }
+    // Filter the array to count occurrences of the word
+    const occurrences = wordsArray.filter(w => w === normalizedWord);
 
-    // Recursively search through each child
-    if (node.children) {
-        for (const child of node.children) {
-            const result = depthLimitedSearch(child, goal, depth + 1, limit);
-            if (result) {
-                return result; // Return the result if found
-            }
-        }
-    }
-
-    return null; // Return null if goal is not found
+    // Return the count of occurrences
+    return occurrences.length;
 }
 
-// Example usage:
-const root: Node = {
-    value: 'A',
-    children: [
-        {
-            value: 'B',
-            children: [
-                { value: 'D' },
-                { value: 'E' }
-            ]
-        },
-        {
-            value: 'C',
-            children: [
-                { value: 'F' },
-                { value: 'G' }
-            ]
-        }
-    ]
-};
-
-const depthLimit = 2;
-const goalNode = depthLimitedSearch(root, 'E', 0, depthLimit);
-console.log(goalNode ? `Found: ${goalNode.value}` : 'Not found');
+// Example usage
+const text = "Hello world! This is a test. Hello again, world!";
+const word = "hello";
+const count = countWordOccurrences(text, word);
+console.log(`The word "${word}" occurs ${count} times.`); // Output: The word "hello" occurs 2 times.
