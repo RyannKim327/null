@@ -1,21 +1,61 @@
-function insertionSort(arr: number[]): number[] {
+function fibonacciSearch(arr: number[], x: number): number {
     const n = arr.length;
-    for (let i = 1; i < n; i++) {
-        const key = arr[i];
-        let j = i - 1;
 
-        // Move elements of arr[0..i-1], that are greater than key,
-        // to one position ahead of their current position
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
-        arr[j + 1] = key;
+    // Initialize Fibonacci numbers
+    let fibM2 = 0; // (m-2)'th Fibonacci No.
+    let fibM1 = 1; // (m-1)'th Fibonacci No.
+    let fibM = fibM1 + fibM2; // m'th Fibonacci No.
+
+    // Find the smallest Fibonacci number that is greater than or equal to n
+    while (fibM < n) {
+        fibM2 = fibM1;
+        fibM1 = fibM;
+        fibM = fibM1 + fibM2;
     }
-    return arr;
+
+    // Marks the eliminated range from the front
+    let offset = -1;
+
+    // While there are elements to be inspected
+    while (fibM > 1) {
+        // Calculate the index to be compared
+        const i = Math.min(offset + fibM2, n - 1);
+
+        // If x is greater than the value at index i, cut the subarray after i
+        if (arr[i] < x) {
+            fibM = fibM1;
+            fibM1 = fibM2;
+            fibM2 = fibM - fibM1;
+            offset = i; // update the offset
+        }
+        // If x is less than the value at index i, cut the subarray before i
+        else if (arr[i] > x) {
+            fibM = fibM2;
+            fibM1 = fibM1 - fibM2;
+            fibM2 = fibM - fibM1;
+        }
+        // Element found
+        else {
+            return i;
+        }
+    }
+
+    // Comparing the last element
+    if (fibM1 && arr[offset + 1] === x) {
+        return offset + 1;
+    }
+
+    // Element not found
+    return -1;
 }
 
 // Example usage
-const array = [12, 11, 13, 5, 6];
-const sortedArray = insertionSort(array);
-console.log(sortedArray); // Output: [5, 6, 11, 12, 13]
+const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
+const x = 85;
+const result = fibonacciSearch(arr, x);
+
+if (result === -1) {
+    console.log("Element is not present in the array.");
+} else {
+    console.log(`Element found at index ${result}.`);
+}
