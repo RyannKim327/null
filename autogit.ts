@@ -1,19 +1,23 @@
-// Import the required modules
-import * as readline from 'readline';
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
 
-// Create an interface for reading input
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
+const newArray = array.filter(item => item !== elementToRemove);
+console.log(newArray); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 4, 5];
+const indexToRemove = array.indexOf(3); // Find the index of the element
 
-// Function to ask for user input
-const askForName = () => {
-  rl.question('Please enter your name: ', (name: string) => {
-    console.log(`Hello, ${name}! Welcome to TypeScript!`);
-    rl.close(); // Close the readline interface
-  });
-};
+if (indexToRemove !== -1) {
+    array.splice(indexToRemove, 1); // Remove 1 element at the found index
+}
 
-// Call the function to start the input process
-askForName();
+console.log(array); // Output: [1, 2, 4, 5]
+const array = [{ id: 1 }, { id: 2 }, { id: 3 }];
+const idToRemove = 2;
+
+const indexToRemove = array.findIndex(item => item.id === idToRemove);
+
+if (indexToRemove !== -1) {
+    array.splice(indexToRemove, 1);
+}
+
+console.log(array); // Output: [{ id: 1 }, { id: 3 }]
