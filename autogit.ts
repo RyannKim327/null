@@ -1,38 +1,77 @@
-function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
-    const merged = mergeSortedArrays(nums1, nums2);
-    const len = merged.length;
+class Graph {
+    private vertices: number;
+    private adjList: Map<number, number[]>;
 
-    if (len % 2 === 0) {
-        // If even, average the two middle numbers
-        return (merged[len / 2 - 1] + merged[len / 2]) / 2;
-    } else {
-        // If odd, return the middle number
-        return merged[Math.floor(len / 2)];
+    constructor(vertices: number) {
+        this.vertices = vertices;
+        this.adjList = new Map<number, number[]>();
     }
-}
 
-function mergeSortedArrays(arr1: number[], arr2: number[]): number[] {
-    let i = 0, j = 0;
-    const merged = [];
-
-    while (i < arr1.length || j < arr2.length) {
-        if (i < arr1.length && (j >= arr2.length || arr1[i] < arr2[j])) {
-            merged.push(arr1[i]);
-            i++;
-        } else {
-            merged.push(arr2[j]);
-            j++;
+    addEdge(v: number, w: number) {
+        if (!this.adjList.has(v)) {
+            this.adjList.set(v, []);
         }
+        this.adjList.get(v)!.push(w);
     }
-    
-    return merged;
+
+    tarjan(): number[][] {
+        const index: number[] = new Array(this.vertices).fill(-1);
+        const lowlink: number[] = new Array(this.vertices).fill(-1);
+        const onStack: boolean[] = new Array(this.vertices).fill(false);
+        const stack: number[] = [];
+        const result: number[][] = [];
+        let currentIndex = 0;
+
+        const strongConnect = (v: number) => {
+            index[v] = currentIndex;
+            lowlink[v] = currentIndex;
+            currentIndex++;
+            stack.push(v);
+            onStack[v] = true;
+
+            // Consider successors of v
+            const neighbors = this.adjList.get(v) || [];
+            for (const w of neighbors) {
+                if (index[w] === -1) {
+                    // Successor w has not yet been visited; recurse on it
+                    strongConnect(w);
+                    lowlink[v] = Math.min(lowlink[v], lowlink[w]);
+                } else if (onStack[w]) {
+                    // Successor w is in stack and hence in the current SCC
+                    lowlink[v] = Math.min(lowlink[v], index[w]);
+                }
+            }
+
+            // If v is a root node, pop the stack and generate an SCC
+            if (lowlink[v] === index[v]) {
+                const scc: number[] = [];
+                let w: number;
+                do {
+                    w = stack.pop()!;
+                    onStack[w] = false;
+                    scc.push(w);
+                } while (w !== v);
+                result.push(scc);
+            }
+        };
+
+        for (let v = 0; v < this.vertices; v++) {
+            if (index[v] === -1) {
+                strongConnect(v);
+            }
+        }
+
+        return result;
+    }
 }
 
 // Example usage:
-const nums1 = [1, 3];
-const nums2 = [2];
-console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2
+const g = new Graph(5);
+g.addEdge(0, 2);
+g.addEdge(2, 1);
+g.addEdge(1, 0);
+g.addEdge(0, 3);
+g.addEdge(3, 4);
 
-const nums3 = [1, 2];
-const nums4 = [3, 4];
-console.log(findMedianSortedArrays(nums3, nums4)); // Output: 2.5
+const sccs = g.tarjan();
+console.log(sccs); // Output: [[0, 1, 2], [3], [4]]
