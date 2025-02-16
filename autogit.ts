@@ -1,8 +1,7 @@
-let string1: string = "Hello, ";
-let string2: string = "World!";
-let result: string = string1 + string2;
-console.log(result); // Output: Hello, World!
-let string1: string = "Hello, ";
-let string2: string = "World!";
-let result: string = string1.concat(string2);
-console.log(result); // Output: Hello, World!
+function findMaxValue(arr: number[]): number | undefined {
+    return arr.length > 0 ? Math.max(...arr) : undefined;
+}
+
+const numbers = [1, 3, 5, 2, 4];
+const maxValue = findMaxValue(numbers);
+console.log(maxValue); // Output: 5
