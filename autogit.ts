@@ -1,58 +1,94 @@
-function KMPSearch(pattern: string, text: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const occurrences: number[] = [];
-    
-    let i = 0; // index for text
-    let j = 0; // index for pattern
-    const M = pattern.length;
-    const N = text.length;
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
 
-    while (i < N) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
+    constructor(value: T) {
+        this.value = value;
+        this.next = null;
+    }
+}
+class LinkedList<T> {
+    head: Node<T> | null;
+    tail: Node<T> | null;
+    length: number;
 
-        if (j === M) {
-            occurrences.push(i - j); // Found a match
-            j = lps[j - 1]; // Continue search
-        } else if (i < N && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1]; // Use LPS array for skipping
-            } else {
-                i++;
-            }
-        }
+    constructor() {
+        this.head = null;
+        this.tail = null;
+        this.length = 0;
     }
 
-    return occurrences;
-}
-
-function computeLPSArray(pattern: string): number[] {
-    const lps = new Array(pattern.length).fill(0);
-    let length = 0; // length of the previous longest prefix suffix
-    let i = 1; // start from the second character
-    
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
+    // Add a new node to the end of the list
+    append(value: T): void {
+        const newNode = new Node(value);
+        if (!this.head) {
+            this.head = newNode;
+            this.tail = newNode;
         } else {
-            if (length !== 0) {
-                length = lps[length - 1]; // Use the previous lps value
-            } else {
-                lps[i] = 0;
-                i++;
+            if (this.tail) {
+                this.tail.next = newNode;
             }
+            this.tail = newNode;
         }
+        this.length++;
     }
 
-    return lps;
-}
+    // Remove a node by value
+    remove(value: T): boolean {
+        if (!this.head) return false;
 
-// Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const occurrences = KMPSearch(pattern, text);
-console.log("Pattern found at indices:", occurrences);
+        if (this.head.value === value) {
+            this.head = this.head.next;
+            this.length--;
+            return true;
+        }
+
+        let current = this.head;
+        while (current.next) {
+            if (current.next.value === value) {
+                current.next = current.next.next;
+                if (current.next === null) {
+                    this.tail = current; // Update tail if needed
+                }
+                this.length--;
+                return true;
+            }
+            current = current.next;
+        }
+        return false;
+    }
+
+    // Find a node by value
+    find(value: T): Node<T> | null {
+        let current = this.head;
+        while (current) {
+            if (current.value === value) {
+                return current;
+            }
+            current = current.next;
+        }
+        return null;
+    }
+
+    // Print the list
+    print(): void {
+        let current = this.head;
+        const values: T[] = [];
+        while (current) {
+            values.push(current.value);
+            current = current.next;
+        }
+        console.log(values.join(' -> '));
+    }
+}
+const list = new LinkedList<number>();
+list.append(1);
+list.append(2);
+list.append(3);
+list.print(); // Output: 1 -> 2 -> 3
+
+list.remove(2);
+list.print(); // Output: 1 -> 3
+
+const foundNode = list.find(3);
+console.log(foundNode ? foundNode.value : 'Not found'); // Output: 3
