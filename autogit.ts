@@ -1,21 +1,38 @@
-function isPrime(num: number): boolean {
-    // Check if the number is less than 2
-    if (num <= 1) {
-        return false;
+function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
+    const merged = mergeSortedArrays(nums1, nums2);
+    const len = merged.length;
+
+    if (len % 2 === 0) {
+        // If even, average the two middle numbers
+        return (merged[len / 2 - 1] + merged[len / 2]) / 2;
+    } else {
+        // If odd, return the middle number
+        return merged[Math.floor(len / 2)];
     }
-    // Check for factors from 2 to the square root of num
-    for (let i = 2; i <= Math.sqrt(num); i++) {
-        if (num % i === 0) {
-            return false; // num is divisible by i, so it's not prime
-        }
-    }
-    return true; // num is prime
 }
 
-// Example usage
-const numberToCheck = 29;
-if (isPrime(numberToCheck)) {
-    console.log(`${numberToCheck} is a prime number.`);
-} else {
-    console.log(`${numberToCheck} is not a prime number.`);
+function mergeSortedArrays(arr1: number[], arr2: number[]): number[] {
+    let i = 0, j = 0;
+    const merged = [];
+
+    while (i < arr1.length || j < arr2.length) {
+        if (i < arr1.length && (j >= arr2.length || arr1[i] < arr2[j])) {
+            merged.push(arr1[i]);
+            i++;
+        } else {
+            merged.push(arr2[j]);
+            j++;
+        }
+    }
+    
+    return merged;
 }
+
+// Example usage:
+const nums1 = [1, 3];
+const nums2 = [2];
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2
+
+const nums3 = [1, 2];
+const nums4 = [3, 4];
+console.log(findMedianSortedArrays(nums3, nums4)); // Output: 2.5
