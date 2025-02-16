@@ -1,66 +1,43 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    if (!headA || !headB) return null;
-
-    let pointerA: ListNode | null = headA;
-    let pointerB: ListNode | null = headB;
-
-    // Calculate the lengths of both lists
-    let lenA = 0, lenB = 0;
-    while (pointerA) {
-        lenA++;
-        pointerA = pointerA.next;
-    }
-    while (pointerB) {
-        lenB++;
-        pointerB = pointerB.next;
+function quickSelect(arr: number[], left: number, right: number, k: number): number {
+    if (left === right) {
+        return arr[left]; // If the list contains only one element
     }
 
-    // Reset pointers to the heads
-    pointerA = headA;
-    pointerB = headB;
+    const pivotIndex = partition(arr, left, right);
 
-    // Advance the pointer of the longer list by the difference in lengths
-    if (lenA > lenB) {
-        for (let i = 0; i < lenA - lenB; i++) {
-            pointerA = pointerA!.next; // use non-null assertion operator ! safely
-        }
+    // The pivot is in its final sorted position
+    if (k === pivotIndex) {
+        return arr[k];
+    } else if (k < pivotIndex) {
+        return quickSelect(arr, left, pivotIndex - 1, k);
     } else {
-        for (let i = 0; i < lenB - lenA; i++) {
-            pointerB = pointerB!.next; // use non-null assertion operator ! safely
-        }
+        return quickSelect(arr, pivotIndex + 1, right, k);
     }
-
-    // Move both pointers until an intersection is found
-    while (pointerA && pointerB) {
-        if (pointerA === pointerB) {
-            return pointerA; // Intersection point
-        }
-        pointerA = pointerA.next;
-        pointerB = pointerB.next;
-    }
-
-    return null; // No intersection
 }
 
-// Example usage
-let intersection = new ListNode(8);
-let listA = new ListNode(3);
-listA.next = new ListNode(7);
-listA.next.next = intersection;
+function partition(arr: number[], left: number, right: number): number {
+    const pivot = arr[right]; // Choose the rightmost element as pivot
+    let i = left;
 
-let listB = new ListNode(5);
-listB.next = new ListNode(10);
-listB.next.next = intersection;
+    for (let j = left; j < right; j++) {
+        if (arr[j] < pivot) {
+            [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap elements
+            i++;
+        }
+    }
+    [arr[i], arr[right]] = [arr[right], arr[i]]; // Swap pivot to its final place
+    return i; // Return the index of the pivot
+}
 
-let intersectNode = getIntersectionNode(listA, listB);
-console.log(intersectNode ? intersectNode.value : null); // Output: 8
+function findKthSmallest(arr: number[], k: number): number {
+    if (k < 1 || k > arr.length) {
+        throw new Error("k is out of bounds");
+    }
+    return quickSelect(arr, 0, arr.length - 1, k - 1); // k-1 for zero-based index
+}
+
+// Example usage:
+const arr = [3, 2, 1, 5, 6, 4];
+const k = 2;
+const kthSmallest = findKthSmallest(arr, k);
+console.log(`The ${k}th smallest element is ${kthSmallest}`); // Output: The 2th smallest element is 2
