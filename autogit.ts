@@ -8,42 +8,40 @@ class ListNode {
     }
 }
 
-class LinkedList {
-    head: ListNode | null;
+function reverseLinkedList(head: ListNode | null): ListNode | null {
+    let prev: ListNode | null = null;
+    let current: ListNode | null = head;
+    let next: ListNode | null = null;
 
-    constructor() {
-        this.head = null;
+    while (current) {
+        // Store the next node
+        next = current.next;
+        // Reverse the current node's pointer
+        current.next = prev;
+        // Move pointers one position forward
+        prev = current;
+        current = next;
     }
 
-    // Method to add a new node to the list
-    add(value: number): void {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
-        }
-    }
-
-    // Method to find the length of the linked list
-    length(): number {
-        let count = 0;
-        let current = this.head;
-        while (current) {
-            count++;
-            current = current.next;
-        }
-        return count;
-    }
+    return prev; // The new head of the reversed list
 }
 
 // Example usage
-const list = new LinkedList();
-list.add(1);
-list.add(2);
-list.add(3);
-console.log(`Length of the linked list: ${list.length()}`); // Output: Length of the linked list: 3
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+
+let reversedHead = reverseLinkedList(head);
+
+// Function to print the list
+function printList(head: ListNode | null): void {
+    let current = head;
+    while (current) {
+        process.stdout.write(current.value.toString() + " -> ");
+        current = current.next;
+    }
+    console.log("null");
+}
+
+printList(reversedHead);
