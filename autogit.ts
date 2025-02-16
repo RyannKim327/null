@@ -1,12 +1,19 @@
-const numbers: number[] = [5, 3, 8, 1, 2];
+// Import the required modules
+import * as readline from 'readline';
 
-// Sort the array in ascending order
-numbers.sort((a, b) => a - b);
+// Create an interface for reading input
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
 
-console.log(numbers); // Output: [1, 2, 3, 5, 8]
-const numbers: number[] = [5, 3, 8, 1, 2];
+// Function to ask for user input
+const askForName = () => {
+  rl.question('Please enter your name: ', (name: string) => {
+    console.log(`Hello, ${name}! Welcome to TypeScript!`);
+    rl.close(); // Close the readline interface
+  });
+};
 
-// Sort the array in descending order
-numbers.sort((a, b) => b - a);
-
-console.log(numbers); // Output: [8, 5, 3, 2, 1]
+// Call the function to start the input process
+askForName();
