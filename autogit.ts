@@ -1,25 +1,21 @@
-function bubbleSort(arr: number[]): number[] {
-  let n = arr.length;
-  let swapped: boolean;
+function isPalindrome(s: string): boolean {
+    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
+    const normalizedString = s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+    
+    let left = 0;
+    let right = normalizedString.length - 1;
 
-  do {
-    swapped = false;
-    for (let i = 0; i < n - 1; i++) {
-      if (arr[i] > arr[i + 1]) {
-        // Swap arr[i] and arr[i + 1]
-        [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
-        swapped = true;
-      }
+    while (left < right) {
+        if (normalizedString[left] !== normalizedString[right]) {
+            return false; // Not a palindrome
+        }
+        left++;
+        right--;
     }
-    // Reduce n because the last element is already in place
-    n--;
-  } while (swapped);
 
-  return arr;
+    return true; // Is a palindrome
 }
 
 // Example usage:
-const array = [64, 34, 25, 12, 22, 11, 90];
-console.log("Unsorted array:", array);
-const sortedArray = bubbleSort(array);
-console.log("Sorted array:", sortedArray);
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
