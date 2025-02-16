@@ -8,38 +8,42 @@ class ListNode {
     }
 }
 
-function hasCycle(head: ListNode | null): boolean {
-    if (!head) return false;
+class LinkedList {
+    head: ListNode | null;
 
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast !== null && fast.next !== null) {
-        slow = slow!.next; // Move slow pointer by 1
-        fast = fast.next.next; // Move fast pointer by 2
-
-        if (slow === fast) {
-            return true; // Cycle detected
-        }
+    constructor() {
+        this.head = null;
     }
 
-    return false; // No cycle
+    // Method to add a new node to the list
+    add(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    // Method to find the length of the linked list
+    length(): number {
+        let count = 0;
+        let current = this.head;
+        while (current) {
+            count++;
+            current = current.next;
+        }
+        return count;
+    }
 }
 
 // Example usage:
-const node1 = new ListNode(1);
-const node2 = new ListNode(2);
-const node3 = new ListNode(3);
-const node4 = new ListNode(4);
-
-// Creating a cycle for testing
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2; // Creates a cycle
-
-console.log(hasCycle(node1)); // Output: true
-
-// Creating a non-cyclic linked list for testing
-node4.next = null; // Break the cycle
-console.log(hasCycle(node1)); // Output: false
+const list = new LinkedList();
+list.add(1);
+list.add(2);
+list.add(3);
+console.log(list.length()); // Output: 3
