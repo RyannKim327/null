@@ -1,26 +1,57 @@
-const removeDuplicates = (array: any[]): any[] => {
-    return Array.from(new Set(array));
+type Node = {
+    value: any;
+    children: Node[];
 };
 
-const myArray = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = removeDuplicates(myArray);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const removeDuplicates = (array: any[]): any[] => {
-    return array.filter((item, index) => array.indexOf(item) === index);
-};
+function depthLimitedSearch(node: Node, depth: number, target: any): Node | null {
+    // Check if the current node is the target
+    if (node.value === target) {
+        return node;
+    }
 
-const myArray = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = removeDuplicates(myArray);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const removeDuplicates = (array: any[]): any[] => {
-    return array.reduce((accumulator: any[], current) => {
-        if (!accumulator.includes(current)) {
-            accumulator.push(current);
+    // If the depth limit is reached, return null
+    if (depth === 0) {
+        return null;
+    }
+
+    // Explore each child node
+    for (const child of node.children) {
+        const result = depthLimitedSearch(child, depth - 1, target);
+        if (result) {
+            return result; // Return the found node
         }
-        return accumulator;
-    }, []);
+    }
+
+    return null; // Target not found in this path
+}
+
+// Example usage
+const tree: Node = {
+    value: 1,
+    children: [
+        {
+            value: 2,
+            children: [
+                { value: 4, children: [] },
+                { value: 5, children: [] }
+            ]
+        },
+        {
+            value: 3,
+            children: [
+                { value: 6, children: [] },
+                { value: 7, children: [] }
+            ]
+        }
+    ]
 };
 
-const myArray = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = removeDuplicates(myArray);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const targetValue = 5;
+const depthLimit = 2;
+const result = depthLimitedSearch(tree, depthLimit, targetValue);
+
+if (result) {
+    console.log(`Found node with value: ${result.value}`);
+} else {
+    console.log('Node not found within the depth limit.');
+}
