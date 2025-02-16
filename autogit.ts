@@ -1,29 +1,53 @@
-function shellSort(arr: number[]): number[] {
-    const n = arr.length;
-    let gap = Math.floor(n / 2); // Start with a large gap
+type Node = {
+    value: string;
+    children?: Node[];
+};
 
-    // Start with the largest gap and reduce it
-    while (gap > 0) {
-        // Perform a gapped insertion sort for this gap size
-        for (let i = gap; i < n; i++) {
-            const temp = arr[i];
-            let j = i;
-
-            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
-            while (j >= gap && arr[j - gap] > temp) {
-                arr[j] = arr[j - gap];
-                j -= gap;
-            }
-
-            // Put temp (the original arr[i]) in its correct location
-            arr[j] = temp;
-        }
-        gap = Math.floor(gap / 2); // Reduce the gap for the next iteration
+function depthLimitedSearch(node: Node, goal: string, depth: number, limit: number): Node | null {
+    // Check if the current node is the goal
+    if (node.value === goal) {
+        return node;
     }
-    return arr;
+
+    // Check if the depth limit has been reached
+    if (depth >= limit) {
+        return null;
+    }
+
+    // Recursively search through each child
+    if (node.children) {
+        for (const child of node.children) {
+            const result = depthLimitedSearch(child, goal, depth + 1, limit);
+            if (result) {
+                return result; // Return the result if found
+            }
+        }
+    }
+
+    return null; // Return null if goal is not found
 }
 
 // Example usage:
-const unsortedArray = [12, 34, 54, 2, 3];
-const sortedArray = shellSort(unsortedArray);
-console.log(sortedArray); // Output: [2, 3, 12, 34, 54]
+const root: Node = {
+    value: 'A',
+    children: [
+        {
+            value: 'B',
+            children: [
+                { value: 'D' },
+                { value: 'E' }
+            ]
+        },
+        {
+            value: 'C',
+            children: [
+                { value: 'F' },
+                { value: 'G' }
+            ]
+        }
+    ]
+};
+
+const depthLimit = 2;
+const goalNode = depthLimitedSearch(root, 'E', 0, depthLimit);
+console.log(goalNode ? `Found: ${goalNode.value}` : 'Not found');
