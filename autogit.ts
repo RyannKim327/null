@@ -1,24 +1,21 @@
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    return arr1.filter(value => arr2.includes(value));
+function insertionSort(arr: number[]): number[] {
+    const n = arr.length;
+    for (let i = 1; i < n; i++) {
+        const key = arr[i];
+        let j = i - 1;
+
+        // Move elements of arr[0..i-1], that are greater than key,
+        // to one position ahead of their current position
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;
+    }
+    return arr;
 }
 
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    const set1 = new Set(arr1);
-    const set2 = new Set(arr2);
-    
-    const commonElements = [...set1].filter(value => set2.has(value));
-    return commonElements;
-}
-
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
+// Example usage
+const array = [12, 11, 13, 5, 6];
+const sortedArray = insertionSort(array);
+console.log(sortedArray); // Output: [5, 6, 11, 12, 13]
