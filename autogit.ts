@@ -1,37 +1,54 @@
-// Define the structure of a node
-type Node = {
-    value: number; // or string based on your logic
-    children: Node[];
-};
+class SuffixTreeNode {
+    children: Map<string, SuffixTreeNode>;
+    isEndOfWord: boolean;
 
-function depthLimitedSearch(root: Node, limit: number, target: number): Node | null {
-    const stack: [Node, number][] = [[root, 0]]; // Stack holds tuples of (Node, currentDepth)
+    constructor() {
+        this.children = new Map();
+        this.isEndOfWord = false;
+    }
+}
+class SuffixTree {
+    root: SuffixTreeNode;
 
-    while (stack.length > 0) {
-        const [node, depth] = stack.pop()!; // Get the last added node and its depth
+    constructor() {
+        this.root = new SuffixTreeNode();
+    }
 
-        // Check if we have found the target
-        if (node.value === target) {
-            return node; // Return the found node
-        }
-        
-        // If current depth is less than the limit
-        if (depth < limit) {
-            // Add children to the stack with increased depth
-            for (let i = node.children.length - 1; i >= 0; i--) { // Reverse for stack behavior
-                stack.push([node.children[i], depth + 1]);
-            }
+    insert(text: string): void {
+        for (let i = 0; i < text.length; i++) {
+            this.insertSuffix(text.substring(i));
         }
     }
 
-    return null; // If target is not found
+    private insertSuffix(suffix: string): void {
+        let currentNode = this.root;
+
+        for (const char of suffix) {
+            if (!currentNode.children.has(char)) {
+                currentNode.children.set(char, new SuffixTreeNode());
+            }
+            currentNode = currentNode.children.get(char)!;
+        }
+        currentNode.isEndOfWord = true;
+    }
+
+    containsPattern(pattern: string): boolean {
+        let currentNode = this.root;
+
+        for (const char of pattern) {
+            if (!currentNode.children.has(char)) {
+                return false;
+            }
+            currentNode = currentNode.children.get(char)!;
+        }
+        
+        return true; // pattern exists in the tree
+    }
 }
+const suffixTree = new SuffixTree();
+const text = "banana";
+suffixTree.insert(text);
 
-// Example Usage
-const node3 = { value: 3, children: [] };
-const node4 = { value: 4, children: [] };
-const node2 = { value: 2, children: [node3, node4] };
-const root = { value: 1, children: [node2] };
-
-const result = depthLimitedSearch(root, 2, 3);
-console.log(result); // Should output the node with value 3 or null if not found
+console.log(suffixTree.containsPattern("ana")); // Output: true
+console.log(suffixTree.containsPattern("na"));  // Output: true
+console.log(suffixTree.containsPattern("xyz")); // Output: false
