@@ -1,90 +1,20 @@
-type Node = {
-    value: string;
-    neighbors: Node[];
-};
+function longestCommonPrefix(strs: string[]): string {
+    if (strs.length === 0) return '';
 
-function biDirectionalSearch(start: Node, goal: Node): Node[] | null {
-    if (start === goal) return [start];
+    // Start with the first string as a reference
+    let prefix = strs[0];
 
-    const startQueue: Node[] = [start];
-    const goalQueue: Node[] = [goal];
-    const startVisited = new Set<Node>();
-    const goalVisited = new Set<Node>();
-    const startParentMap = new Map<Node, Node>();
-    const goalParentMap = new Map<Node, Node>();
-
-    startVisited.add(start);
-    goalVisited.add(goal);
-
-    while (startQueue.length > 0 && goalQueue.length > 0) {
-        // Expand from the start
-        const startNode = startQueue.shift()!;
-        for (const neighbor of startNode.neighbors) {
-            if (!startVisited.has(neighbor)) {
-                startVisited.add(neighbor);
-                startParentMap.set(neighbor, startNode);
-                startQueue.push(neighbor);
-
-                // Check if the neighbor is in the goal visited set
-                if (goalVisited.has(neighbor)) {
-                    return reconstructPath(neighbor, startParentMap, goalParentMap);
-                }
-            }
-        }
-
-        // Expand from the goal
-        const goalNode = goalQueue.shift()!;
-        for (const neighbor of goalNode.neighbors) {
-            if (!goalVisited.has(neighbor)) {
-                goalVisited.add(neighbor);
-                goalParentMap.set(neighbor, goalNode);
-                goalQueue.push(neighbor);
-
-                // Check if the neighbor is in the start visited set
-                if (startVisited.has(neighbor)) {
-                    return reconstructPath(neighbor, startParentMap, goalParentMap);
-                }
-            }
+    for (let i = 1; i < strs.length; i++) {
+        // Compare prefix with each string
+        while (strs[i].indexOf(prefix) !== 0) {
+            // Remove the last character of prefix until we find a match
+            prefix = prefix.slice(0, prefix.length - 1);
+            if (prefix === '') return '';
         }
     }
-
-    return null; // No path found
+    return prefix;
 }
 
-function reconstructPath(meetingNode: Node, startParentMap: Map<Node, Node>, goalParentMap: Map<Node, Node>): Node[] {
-    const path: Node[] = [];
-    
-    // Reconstruct path from start to meeting node
-    let currentNode: Node | undefined = meetingNode;
-    while (currentNode) {
-        path.push(currentNode);
-        currentNode = startParentMap.get(currentNode);
-    }
-    path.reverse(); // Reverse to get the correct order
-
-    // Reconstruct path from meeting node to goal
-    currentNode = goalParentMap.get(meetingNode);
-    while (currentNode) {
-        path.push(currentNode);
-        currentNode = goalParentMap.get(currentNode);
-    }
-
-    return path;
-}
-
-// Example usage
-const nodeA: Node = { value: 'A', neighbors: [] };
-const nodeB: Node = { value: 'B', neighbors: [] };
-const nodeC: Node = { value: 'C', neighbors: [] };
-const nodeD: Node = { value: 'D', neighbors: [] };
-
-nodeA.neighbors.push(nodeB, nodeC);
-nodeB.neighbors.push(nodeD);
-nodeC.neighbors.push(nodeD);
-
-const path = biDirectionalSearch(nodeA, nodeD);
-if (path) {
-    console.log('Path found:', path.map(node => node.value));
-} else {
-    console.log('No path found');
-}
+// Example usage:
+const strings = ['flower', 'flow', 'flight'];
+console.log(longestCommonPrefix(strings)); // Output: "fl"
