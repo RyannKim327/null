@@ -1,43 +1,32 @@
-function boyerMooreHorspool(text: string, pattern: string): number {
-    const m = pattern.length;
-    const n = text.length;
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    if (m === 0 || n === 0 || m > n) {
-        return -1; // Pattern not found
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
+}
 
-    // Create the shift table
-    const shift: number[] = new Array(256).fill(m);
-    for (let i = 0; i < m - 1; i++) {
-        shift[pattern.charCodeAt(i)] = m - 1 - i;
+function maxDepth(root: TreeNode | null): number {
+    if (root === null) {
+        return 0;  // The depth of a null node is 0
     }
+    
+    // Recursively find the depth of the left and right subtrees
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
 
-    let i = 0; // Index for text
-    while (i <= n - m) {
-        let j = m - 1; // Index for pattern
-
-        // Compare pattern with text
-        while (j >= 0 && pattern[j] === text[i + j]) {
-            j--;
-        }
-
-        if (j < 0) {
-            return i; // Pattern found at index i
-        } else {
-            // Shift the pattern right according to the shift table
-            i += shift[text.charCodeAt(i + m - 1)] || m; 
-        }
-    }
-
-    return -1; // Pattern not found
+    // The maximum depth is the greater of the two depths plus one for the current node
+    return Math.max(leftDepth, rightDepth) + 1;
 }
 
 // Example usage:
-const text = "ababcabcabababd";
-const pattern = "ababd";
-const result = boyerMooreHorspool(text, pattern);
-if (result !== -1) {
-    console.log(`Pattern found at index: ${result}`);
-} else {
-    console.log("Pattern not found");
-}
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+
+console.log(maxDepth(root));  // Output: 3
