@@ -1,30 +1,62 @@
-// Define an interface for the data we expect from the API
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-}
+function createBadCharacterTable(pattern: string): { [key: string]: number } {
+    const table: { [key: string]: number } = {};
+    const patternLength = pattern.length;
 
-// Function to fetch posts from the API
-async function fetchPosts(): Promise<Post[]> {
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-    
-    // Check if the response is ok (status code 200-299)
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
+    // Initialize the table with the length of the pattern
+    for (let i = 0; i < patternLength - 1; i++) {
+        table[pattern[i]] = patternLength - 1 - i;
     }
 
-    // Parse the JSON response
-    const data: Post[] = await response.json();
-    return data;
+    // Fill in the default value for characters not in the pattern
+    for (let i = 0; i < 256; i++) {
+        const char = String.fromCharCode(i);
+        if (!(char in table)) {
+            table[char] = patternLength;
+        }
+    }
+
+    return table;
 }
 
-// Call the function and handle the response
-fetchPosts()
-    .then(posts => {
-        console.log('Fetched Posts:', posts);
-    })
-    .catch(error => {
-        console.error('Error fetching posts:', error);
-    });
+function boyerMooreHorspool(text: string, pattern: string): number {
+    const textLength = text.length;
+    const patternLength = pattern.length;
+
+    if (patternLength === 0 || textLength < patternLength) {
+        return -1; // Pattern not found
+    }
+
+    const badCharTable = createBadCharacterTable(pattern);
+    let i = 0; // Index for text
+
+    while (i <= textLength - patternLength) {
+        let j = patternLength - 1; // Index for pattern
+
+        // Compare the pattern with the text from the end
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
+        }
+
+        // If the pattern is found
+        if (j < 0) {
+            return i; // Return the starting index of the match
+        } else {
+            // Shift the pattern based on the bad character table
+            const shift = badCharTable[text[i + j]] || patternLength;
+            i += shift;
+        }
+    }
+
+    return -1; // Pattern not found
+}
+
+// Example usage
+const text = "ababcababcabc";
+const pattern = "abc";
+const index = boyerMooreHorspool(text, pattern);
+
+if (index !== -1) {
+    console.log(`Pattern found at index: ${index}`);
+} else {
+    console.log("Pattern not found");
+}
