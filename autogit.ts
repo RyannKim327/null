@@ -1,10 +1,33 @@
-const mainString: string = "Hello, welcome to TypeScript!";
-const substring: string = "welcome";
+// Definition of a binary tree node
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-const containsSubstring: boolean = mainString.includes(substring);
-
-if (containsSubstring) {
-    console.log(`The string contains the substring: "${substring}"`);
-} else {
-    console.log(`The string does not contain the substring: "${substring}"`);
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
 }
+
+// Function to calculate the sum of all nodes in the binary tree
+function sumOfNodes(root: TreeNode | null): number {
+    // Base case: if the node is null, return 0
+    if (root === null) {
+        return 0;
+    }
+
+    // Recursive case: return the value of the current node plus the sum of left and right subtrees
+    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
+}
+
+// Example usage
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+const totalSum = sumOfNodes(root);
+console.log(totalSum); // Output: 15 (1 + 2 + 3 + 4 + 5)
