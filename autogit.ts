@@ -1,66 +1,61 @@
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
+function fibonacciSearch(arr: number[], x: number): number {
+    const n = arr.length;
 
-    constructor(value: T) {
-        this.value = value;
-        this.next = null;
+    // Initialize Fibonacci numbers
+    let fibM2 = 0; // (m-2)'th Fibonacci number
+    let fibM1 = 1; // (m-1)'th Fibonacci number
+    let fibM = fibM1 + fibM2; // m'th Fibonacci number
+
+    // Find the smallest Fibonacci number greater than or equal to n
+    while (fibM < n) {
+        fibM2 = fibM1;
+        fibM1 = fibM;
+        fibM = fibM1 + fibM2;
     }
+
+    // Marks the eliminated range from front
+    let offset = -1;
+
+    // While there are elements to be inspected
+    while (fibM > 1) {
+        // Calculate the index to be compared
+        const i = Math.min(offset + fibM2, n - 1);
+
+        // If x is greater than the value at index i, cut the subarray after i
+        if (arr[i] < x) {
+            fibM = fibM1;
+            fibM1 = fibM2;
+            fibM2 = fibM - fibM1;
+            offset = i;
+        }
+        // If x is less than the value at index i, cut the subarray before i
+        else if (arr[i] > x) {
+            fibM = fibM2;
+            fibM1 = fibM1 - fibM2;
+            fibM2 = fibM - fibM1;
+        }
+        // Element found
+        else {
+            return i;
+        }
+    }
+
+    // Comparing the last element with x
+    if (fibM1 && arr[offset + 1] === x) {
+        return offset + 1;
+    }
+
+    // Element not found
+    return -1;
 }
 
-class Queue<T> {
-    private front: Node<T> | null = null;
-    private rear: Node<T> | null = null;
-    private length: number = 0;
+// Example usage
+const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
+const x = 85;
+const result = fibonacciSearch(arr, x);
 
-    // Add an element to the end of the queue
-    enqueue(value: T): void {
-        const newNode = new Node(value);
-        if (this.rear) {
-            this.rear.next = newNode;
-        }
-        this.rear = newNode;
-        if (!this.front) {
-            this.front = newNode;
-        }
-        this.length++;
-    }
-
-    // Remove and return the front element of the queue
-    dequeue(): T | null {
-        if (!this.front) {
-            return null; // Queue is empty
-        }
-        const dequeuedValue = this.front.value;
-        this.front = this.front.next;
-        if (!this.front) {
-            this.rear = null; // Queue is now empty
-        }
-        this.length--;
-        return dequeuedValue;
-    }
-
-    // Peek at the front element without removing it
-    peek(): T | null {
-        return this.front ? this.front.value : null;
-    }
-
-    // Check if the queue is empty
-    isEmpty(): boolean {
-        return this.length === 0;
-    }
-
-    // Get the size of the queue
-    size(): number {
-        return this.length;
-    }
+if (result !== -1) {
+    console.log(`Element found at index: ${result}`);
+} else {
+    console.log('Element not found in the array.');
 }
-
-// Example usage:
-const queue = new Queue<number>();
-queue.enqueue(10);
-queue.enqueue(20);
-console.log(queue.dequeue()); // Outputs: 10
-console.log(queue.peek());     // Outputs: 20
-console.log(queue.isEmpty());  // Outputs: false
-console.log(queue.size());      // Outputs: 1
