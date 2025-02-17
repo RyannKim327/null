@@ -1,8 +1,9 @@
-function getRandomNumberInRange(min: number, max: number): number {
-    // Ensure the min and max are inclusive
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+function calculateTriangleArea(base: number, height: number): number {
+    return 0.5 * base * height;
 }
 
 // Example usage:
-const randomNum = getRandomNumberInRange(1, 10);
-console.log(randomNum); // This will log a random number between 1 and 10 (inclusive)
+const base = 5;
+const height = 10;
+const area = calculateTriangleArea(base, height);
+console.log(`The area of the triangle is: ${area}`);
