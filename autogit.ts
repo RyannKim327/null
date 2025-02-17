@@ -1,42 +1,66 @@
-class Node {
-    constructor(public state: string, public score: number) {}
+class ListNode {
+    value: number;
+    next: ListNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
 }
 
-function beamSearch(initialState: string, beamWidth: number, maxDepth: number, scoreFn: (state: string) => number): Node[] {
-    let beam: Node[] = [new Node(initialState, scoreFn(initialState))];
+function getLength(head: ListNode | null): number {
+    let length = 0;
+    let current = head;
+    while (current) {
+        length++;
+        current = current.next;
+    }
+    return length;
+}
 
-    for (let depth = 0; depth < maxDepth; depth++) {
-        let newBeam: Node[] = [];
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+    if (!headA || !headB) return null;
 
-        for (let node of beam) {
-            // Generate children nodes based on the current node's state
-            // Here just for demonstration, replace it with your actual generation logic
-            const childrenStates = generateChildren(node.state);
-            
-            for (let childState of childrenStates) {
-                const childScore = scoreFn(childState);
-                newBeam.push(new Node(childState, childScore));
-            }
+    const lengthA = getLength(headA);
+    const lengthB = getLength(headB);
+
+    let currentA: ListNode | null = headA;
+    let currentB: ListNode | null = headB;
+
+    // Align the start of both lists
+    if (lengthA > lengthB) {
+        for (let i = 0; i < lengthA - lengthB; i++) {
+            currentA = currentA!.next; // Use non-null assertion since we checked for null
         }
-
-        // Sort the new beam by score and take the top `beamWidth` nodes
-        newBeam.sort((a, b) => b.score - a.score);
-        beam = newBeam.slice(0, beamWidth);
+    } else {
+        for (let i = 0; i < lengthB - lengthA; i++) {
+            currentB = currentB!.next;
+        }
     }
 
-    return beam;
+    // Traverse both lists to find the intersection
+    while (currentA && currentB) {
+        if (currentA === currentB) {
+            return currentA; // Intersection found
+        }
+        currentA = currentA.next;
+        currentB = currentB.next;
+    }
+
+    return null; // No intersection
 }
 
-// Example function to generate children nodes. Replace this with real logic.
-function generateChildren(state: string): string[] {
-    return [state + '0', state + '1', state + '2'];
-}
+// Example usage:
+const nodeA1 = new ListNode(1);
+const nodeA2 = new ListNode(2);
+const nodeB1 = new ListNode(3);
+const nodeB2 = new ListNode(4);
+const intersectionNode = new ListNode(5);
 
-// Example scoring function.
-function scoreFunction(state: string): number {
-    return state.length; // Example scoring: longer states are scored higher
-}
+nodeA1.next = nodeA2;
+nodeA2.next = intersectionNode;
+nodeB1.next = nodeB2;
+nodeB2.next = intersectionNode;
 
-// Example usage
-const result = beamSearch('start', 3, 5, scoreFunction);
-console.log(result);
+const intersection = getIntersectionNode(nodeA1, nodeB1);
+console.log(intersection ? intersection.value : "No intersection");
