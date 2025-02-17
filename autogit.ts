@@ -1,51 +1,73 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+class Graph {
+    private vertices: number;
+    private adj: number[][];
+    private index: number;
+    private stack: number[];
+    private indices: number[];
+    private lowLink: number[];
+    private onStack: boolean[];
+    private sccs: number[][];
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-function isPalindrome(head: ListNode | null): boolean {
-    if (!head) return true;
-
-    // Step 1: Find the middle of the linked list
-    let slow = head;
-    let fast = head;
-    while (fast && fast.next) {
-        slow = slow.next!;
-        fast = fast.next.next!;
-    }
-
-    // Step 2: Reverse the second half of the linked list
-    let prev = null;
-    while (slow) {
-        const nextNode = slow.next;
-        slow.next = prev;
-        prev = slow;
-        slow = nextNode;
+    constructor(vertices: number) {
+        this.vertices = vertices;
+        this.adj = Array.from({ length: vertices }, () => []);
+        this.index = 0;
+        this.stack = [];
+        this.indices = Array(vertices).fill(-1);
+        this.lowLink = Array(vertices).fill(-1);
+        this.onStack = Array(vertices).fill(false);
+        this.sccs = [];
     }
 
-    // Step 3: Compare the two halves
-    let left = head;
-    let right = prev; // The reversed second half
-    while (right) {
-        if (left.value !== right.value) {
-            return false;
+    addEdge(from: number, to: number) {
+        this.adj[from].push(to);
+    }
+
+    private strongConnect(v: number) {
+        this.indices[v] = this.index;
+        this.lowLink[v] = this.index;
+        this.index++;
+        this.stack.push(v);
+        this.onStack[v] = true;
+
+        for (const w of this.adj[v]) {
+            if (this.indices[w] === -1) {
+                this.strongConnect(w);
+                this.lowLink[v] = Math.min(this.lowLink[v], this.lowLink[w]);
+            } else if (this.onStack[w]) {
+                this.lowLink[v] = Math.min(this.lowLink[v], this.indices[w]);
+            }
         }
-        left = left.next!;
-        right = right.next;
+
+        if (this.lowLink[v] === this.indices[v]) {
+            const component: number[] = [];
+            let w: number;
+            do {
+                w = this.stack.pop()!;
+                this.onStack[w] = false;
+                component.push(w);
+            } while (w !== v);
+            this.sccs.push(component);
+        }
     }
 
-    return true;
+    findSCCs() {
+        for (let i = 0; i < this.vertices; i++) {
+            if (this.indices[i] === -1) {
+                this.strongConnect(i);
+            }
+        }
+        return this.sccs;
+    }
 }
 
 // Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(2);
-head.next.next.next = new ListNode(1);
+const g = new Graph(5);
+g.addEdge(0, 2);
+g.addEdge(2, 1);
+g.addEdge(1, 0);
+g.addEdge(0, 3);
+g.addEdge(3, 4);
 
-console.log(isPalindrome(head)); // Output: true
+const sccs = g.findSCCs();
+console.log('Strongly Connected Components:', sccs);
