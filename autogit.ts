@@ -1,12 +1,19 @@
-function factorial(n: number): number {
-    // Base case: factorial of 0 or 1 is 1
-    if (n === 0 || n === 1) {
-        return 1;
-    }
-    // Recursive case: n! = n * (n - 1)!
-    return n * factorial(n - 1);
+function countWordOccurrences(text: string, word: string): number {
+    // Normalize the text and the word to lower case to make the search case-insensitive
+    const normalizedText = text.toLowerCase();
+    const normalizedWord = word.toLowerCase();
+
+    // Split the text into an array of words
+    const wordsArray = normalizedText.split(/\s+/); // Split by whitespace
+
+    // Filter the array to count occurrences of the word
+    const count = wordsArray.filter(w => w === normalizedWord).length;
+
+    return count;
 }
 
-// Example usage:
-const num = 5;
-console.log(`Factorial of ${num} is ${factorial(num)}`); // Output: Factorial of 5 is 120
+// Example usage
+const text = "Hello world! This is a test. Hello again, world!";
+const wordToCount = "hello";
+const occurrences = countWordOccurrences(text, wordToCount);
+console.log(`The word "${wordToCount}" occurs ${occurrences} times.`);
