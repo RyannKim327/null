@@ -1,28 +1,129 @@
-function largestPrimeFactor(n: number): number {
-    let largestFactor = 1;
+class MinHeap {
+    private heap: number[];
 
-    // Check for number of 2s that divide n
-    while (n % 2 === 0) {
-        largestFactor = 2;
-        n /= 2;
+    constructor() {
+        this.heap = [];
     }
 
-    // n must be odd at this point, thus we can skip even numbers
-    for (let i = 3; i <= Math.sqrt(n); i += 2) {
-        while (n % i === 0) {
-            largestFactor = i;
-            n /= i;
+    private getParentIndex(index: number): number {
+        return Math.floor((index - 1) / 2);
+    }
+
+    private getLeftChildIndex(index: number): number {
+        return index * 2 + 1;
+    }
+
+    private getRightChildIndex(index: number): number {
+        return index * 2 + 2;
+    }
+
+    private hasParent(index: number): boolean {
+        return this.getParentIndex(index) >= 0;
+    }
+
+    private hasLeftChild(index: number): boolean {
+        return this.getLeftChildIndex(index) < this.heap.length;
+    }
+
+    private hasRightChild(index: number): boolean {
+        return this.getRightChildIndex(index) < this.heap.length;
+    }
+
+    private parent(index: number): number {
+        return this.heap[this.getParentIndex(index)];
+    }
+
+    private leftChild(index: number): number {
+        return this.heap[this.getLeftChildIndex(index)];
+    }
+
+    private rightChild(index: number): number {
+        return this.heap[this.getRightChildIndex(index)];
+    }
+
+    private swap(indexOne: number, indexTwo: number): void {
+        const temp = this.heap[indexOne];
+        this.heap[indexOne] = this.heap[indexTwo];
+        this.heap[indexTwo] = temp;
+    }
+
+    public insert(value: number): void {
+        this.heap.push(value);
+        this.heapifyUp();
+    }
+
+    private heapifyUp(): void {
+        let index = this.heap.length - 1;
+        while (this.hasParent(index) && this.parent(index) > this.heap[index]) {
+            this.swap(this.getParentIndex(index), index);
+            index = this.getParentIndex(index);
         }
     }
 
-    // If n is still greater than 2, then n is prime
-    if (n > 2) {
-        largestFactor = n;
+    public remove(): number | null {
+        if (this.heap.length === 0) {
+            return null;
+        }
+        const item = this.heap[0];
+        this.heap[0] = this.heap[this.heap.length - 1];
+        this.heap.pop();
+        this.heapifyDown();
+        return item;
     }
 
-    return largestFactor;
-}
+    private heapifyDown(): void {
+        let index = 0;
+        while (this.hasLeftChild(index)) {
+            let smallerChildIndex = this.getLeftChildIndex(index);
+            if (this.hasRightChild(index) && this.rightChild(index) < this.leftChild(index)) {
+                smallerChildIndex = this.getRightChildIndex(index);
+            }
+            if (this.heap[index] < this.heap[smallerChildIndex]) {
+                break;
+            } else {
+                this.swap(index, smallerChildIndex);
+            }
+            index = smallerChildIndex;
+        }
+    }
 
-// Example usage:
-const number = 13195;
-console.log(`Largest prime factor of ${number} is ${largestPrimeFactor(number)}.`);
+    public peek(): number | null {
+        return this.heap.length > 0 ? this.heap[0] : null;
+    }
+
+    public isEmpty(): boolean {
+        return this.heap.length === 0;
+    }
+}
+class PriorityQueue {
+    private heap: MinHeap;
+
+    constructor() {
+        this.heap = new MinHeap();
+    }
+
+    public enqueue(value: number): void {
+        this.heap.insert(value);
+    }
+
+    public dequeue(): number | null {
+        return this.heap.remove();
+    }
+
+    public peek(): number | null {
+        return this.heap.peek();
+    }
+
+    public isEmpty(): boolean {
+        return this.heap.isEmpty();
+    }
+}
+const pq = new PriorityQueue();
+pq.enqueue(5);
+pq.enqueue(3);
+pq.enqueue(8);
+pq.enqueue(1);
+
+console.log(pq.peek()); // Output: 1
+console.log(pq.dequeue()); // Output: 1
+console.log(pq.peek()); // Output: 3
