@@ -1,45 +1,43 @@
-function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
-    const totalLength = nums1.length + nums2.length;
-    const half = Math.floor(totalLength / 2);
-    
-    // Ensure nums1 is the smaller array
-    if (nums1.length > nums2.length) {
-        [nums1, nums2] = [nums2, nums1];
+class Node<T> {
+    value: T;
+    children: Node<T>[];
+
+    constructor(value: T) {
+        this.value = value;
+        this.children = [];
     }
-    
-    let left = 0, right = nums1.length;
-    
-    while (left <= right) {
-        const partition1 = Math.floor((left + right) / 2);
-        const partition2 = half - partition1;
-        
-        const maxLeft1 = partition1 === 0 ? -Infinity : nums1[partition1 - 1];
-        const minRight1 = partition1 === nums1.length ? Infinity : nums1[partition1];
-        
-        const maxLeft2 = partition2 === 0 ? -Infinity : nums2[partition2 - 1];
-        const minRight2 = partition2 === nums2.length ? Infinity : nums2[partition2];
-        
-        if (maxLeft1 <= minRight2 && maxLeft2 <= minRight1) {
-            if (totalLength % 2 === 0) {
-                return (Math.max(maxLeft1, maxLeft2) + Math.min(minRight1, minRight2)) / 2;
-            } else {
-                return Math.max(maxLeft1, maxLeft2);
-            }
-        } else if (maxLeft1 > minRight2) {
-            right = partition1 - 1;
-        } else {
-            left = partition1 + 1;
+}
+
+function depthLimitedSearch<T>(startNode: Node<T>, goal: T, limit: number): boolean {
+    if (limit < 0) {
+        return false; // Limit reached, cut off search
+    }
+    if (startNode.value === goal) {
+        return true; // Goal found
+    }
+    for (const child of startNode.children) {
+        // Recursively call DLS on child nodes with a reduced limit
+        if (depthLimitedSearch(child, goal, limit - 1)) {
+            return true; // If goal is found in child's subtree
         }
     }
-    
-    throw new Error("Input arrays are not sorted.");
+    return false; // Goal not found within this branch
 }
 
 // Example usage:
-const nums1 = [1, 3];
-const nums2 = [2];
-console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2
 
-const nums3 = [1, 2];
-const nums4 = [3, 4];
-console.log(findMedianSortedArrays(nums3, nums4)); // Output: 2.5
+// Creating a simple tree
+const root = new Node<number>(1);
+const child1 = new Node<number>(2);
+const child2 = new Node<number>(3);
+const grandChild1 = new Node<number>(4);
+const grandChild2 = new Node<number>(5);
+const grandChild3 = new Node<number>(6);
+
+root.children.push(child1, child2);
+child1.children.push(grandChild1, grandChild2);
+child2.children.push(grandChild3);
+
+// Searching for a value
+const found = depthLimitedSearch(root, 5, 2);
+console.log(found); // Outputs: true
