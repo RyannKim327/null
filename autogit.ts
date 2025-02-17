@@ -1,25 +1,43 @@
-function bwt(input: string): { transformed: string, suffixArray: number[] } {
-    // Step 1: Create the suffix array
-    const suffixes = Array.from({ length: input.length }, (_, i) => {
-        return { index: i, suffix: input.slice(i) };
-    });
+function quickSelect(arr: number[], left: number, right: number, k: number): number {
+    if (left === right) {
+        return arr[left]; // If the list contains only one element
+    }
 
-    // Step 2: Sort the suffixes
-    suffixes.sort((a, b) => a.suffix.localeCompare(b.suffix));
+    const pivotIndex = partition(arr, left, right);
 
-    // Step 3: Build the BWT result and the suffix array
-    const bwtResult = suffixes.map(suffix => {
-        const lastCharIndex = suffix.index + input.length - 1;
-        return input[lastCharIndex % input.length]; 
-    }).join('');
+    // The pivot is in its final sorted position
+    if (k === pivotIndex) {
+        return arr[k];
+    } else if (k < pivotIndex) {
+        return quickSelect(arr, left, pivotIndex - 1, k);
+    } else {
+        return quickSelect(arr, pivotIndex + 1, right, k);
+    }
+}
 
-    const suffixArray = suffixes.map(suffix => suffix.index);
+function partition(arr: number[], left: number, right: number): number {
+    const pivot = arr[right]; // Choose the rightmost element as pivot
+    let i = left;
 
-    return { transformed: bwtResult, suffixArray: suffixArray };
+    for (let j = left; j < right; j++) {
+        if (arr[j] < pivot) {
+            [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap elements
+            i++;
+        }
+    }
+    [arr[i], arr[right]] = [arr[right], arr[i]]; // Swap pivot to its final place
+    return i; // Return the index of the pivot
+}
+
+function findKthSmallest(arr: number[], k: number): number {
+    if (k < 1 || k > arr.length) {
+        throw new Error("k is out of bounds");
+    }
+    return quickSelect(arr, 0, arr.length - 1, k - 1); // k-1 for zero-based index
 }
 
 // Example usage:
-const input = "bananana";
-const result = bwt(input);
-console.log("Transformed:", result.transformed);
-console.log("Suffix Array:", result.suffixArray);
+const arr = [3, 2, 1, 5, 6, 4];
+const k = 2;
+const result = findKthSmallest(arr, k);
+console.log(`The ${k}th smallest element is ${result}`); // Output: The 2th smallest element is 2
