@@ -1,19 +1,10 @@
-npm install node-cron
-npm install typescript @types/node --save-dev
-import cron from 'node-cron';
+const mainString: string = "Hello, welcome to TypeScript!";
+const substring: string = "welcome";
 
-// Schedule a task to run every minute
-const task = cron.schedule('* * * * *', () => {
-    console.log('Task is running every minute:', new Date().toLocaleString());
-});
+const containsSubstring: boolean = mainString.includes(substring);
 
-// Start the task
-task.start();
-
-// Optional: Stop the task after 5 minutes
-setTimeout(() => {
-    task.stop();
-    console.log('Task has been stopped.');
-}, 5 * 60 * 1000); // 5 minutes in milliseconds
-npx tsc cronExample.ts
-node cronExample.js
+if (containsSubstring) {
+    console.log(`The string contains the substring: "${substring}"`);
+} else {
+    console.log(`The string does not contain the substring: "${substring}"`);
+}
