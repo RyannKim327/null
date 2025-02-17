@@ -1,43 +1,90 @@
-class Node<T> {
-    value: T;
-    children: Node<T>[];
+type Node = {
+    value: string;
+    neighbors: Node[];
+};
 
-    constructor(value: T) {
-        this.value = value;
-        this.children = [];
-    }
-}
+function biDirectionalSearch(start: Node, goal: Node): Node[] | null {
+    if (start === goal) return [start];
 
-function depthLimitedSearch<T>(startNode: Node<T>, goal: T, limit: number): boolean {
-    if (limit < 0) {
-        return false; // Limit reached, cut off search
-    }
-    if (startNode.value === goal) {
-        return true; // Goal found
-    }
-    for (const child of startNode.children) {
-        // Recursively call DLS on child nodes with a reduced limit
-        if (depthLimitedSearch(child, goal, limit - 1)) {
-            return true; // If goal is found in child's subtree
+    const startQueue: Node[] = [start];
+    const goalQueue: Node[] = [goal];
+    const startVisited = new Set<Node>();
+    const goalVisited = new Set<Node>();
+    const startParentMap = new Map<Node, Node>();
+    const goalParentMap = new Map<Node, Node>();
+
+    startVisited.add(start);
+    goalVisited.add(goal);
+
+    while (startQueue.length > 0 && goalQueue.length > 0) {
+        // Expand from the start
+        const startNode = startQueue.shift()!;
+        for (const neighbor of startNode.neighbors) {
+            if (!startVisited.has(neighbor)) {
+                startVisited.add(neighbor);
+                startParentMap.set(neighbor, startNode);
+                startQueue.push(neighbor);
+
+                // Check if the neighbor is in the goal visited set
+                if (goalVisited.has(neighbor)) {
+                    return reconstructPath(neighbor, startParentMap, goalParentMap);
+                }
+            }
+        }
+
+        // Expand from the goal
+        const goalNode = goalQueue.shift()!;
+        for (const neighbor of goalNode.neighbors) {
+            if (!goalVisited.has(neighbor)) {
+                goalVisited.add(neighbor);
+                goalParentMap.set(neighbor, goalNode);
+                goalQueue.push(neighbor);
+
+                // Check if the neighbor is in the start visited set
+                if (startVisited.has(neighbor)) {
+                    return reconstructPath(neighbor, startParentMap, goalParentMap);
+                }
+            }
         }
     }
-    return false; // Goal not found within this branch
+
+    return null; // No path found
 }
 
-// Example usage:
+function reconstructPath(meetingNode: Node, startParentMap: Map<Node, Node>, goalParentMap: Map<Node, Node>): Node[] {
+    const path: Node[] = [];
+    
+    // Reconstruct path from start to meeting node
+    let currentNode: Node | undefined = meetingNode;
+    while (currentNode) {
+        path.push(currentNode);
+        currentNode = startParentMap.get(currentNode);
+    }
+    path.reverse(); // Reverse to get the correct order
 
-// Creating a simple tree
-const root = new Node<number>(1);
-const child1 = new Node<number>(2);
-const child2 = new Node<number>(3);
-const grandChild1 = new Node<number>(4);
-const grandChild2 = new Node<number>(5);
-const grandChild3 = new Node<number>(6);
+    // Reconstruct path from meeting node to goal
+    currentNode = goalParentMap.get(meetingNode);
+    while (currentNode) {
+        path.push(currentNode);
+        currentNode = goalParentMap.get(currentNode);
+    }
 
-root.children.push(child1, child2);
-child1.children.push(grandChild1, grandChild2);
-child2.children.push(grandChild3);
+    return path;
+}
 
-// Searching for a value
-const found = depthLimitedSearch(root, 5, 2);
-console.log(found); // Outputs: true
+// Example usage
+const nodeA: Node = { value: 'A', neighbors: [] };
+const nodeB: Node = { value: 'B', neighbors: [] };
+const nodeC: Node = { value: 'C', neighbors: [] };
+const nodeD: Node = { value: 'D', neighbors: [] };
+
+nodeA.neighbors.push(nodeB, nodeC);
+nodeB.neighbors.push(nodeD);
+nodeC.neighbors.push(nodeD);
+
+const path = biDirectionalSearch(nodeA, nodeD);
+if (path) {
+    console.log('Path found:', path.map(node => node.value));
+} else {
+    console.log('No path found');
+}
