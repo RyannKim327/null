@@ -10,17 +10,19 @@ class TreeNode {
     }
 }
 
-function maxDepth(root: TreeNode | null): number {
+function countLeafNodes(root: TreeNode | null): number {
+    // Base case: if the node is null, return 0
     if (root === null) {
-        return 0; // Base case: the depth of an empty tree is 0
+        return 0;
     }
 
-    // Recursively find the depth of the left and right subtrees
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
+    // If the current node is a leaf node, return 1
+    if (root.left === null && root.right === null) {
+        return 1;
+    }
 
-    // The maximum depth is the greater of the two depths plus one for the current node
-    return Math.max(leftDepth, rightDepth) + 1;
+    // Recursive case: count leaf nodes in both subtrees
+    return countLeafNodes(root.left) + countLeafNodes(root.right);
 }
 
 // Example usage:
@@ -30,9 +32,5 @@ root.right = new TreeNode(3);
 root.left.left = new TreeNode(4);
 root.left.right = new TreeNode(5);
 
-console.log(maxDepth(root)); // Output: 3
-      1
-     / \
-    2   3
-   / \
-  4   5
+const leafCount = countLeafNodes(root);
+console.log(`Number of leaf nodes: ${leafCount}`); // Output: Number of leaf nodes: 3
