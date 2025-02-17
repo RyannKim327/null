@@ -1,15 +1,22 @@
-function isArraySortedAscending(arr: number[]): boolean {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false; // Found an element greater than the next one
+function firstNonRepeatingCharacter(str: string): string | null {
+    const charCount: { [key: string]: number } = {};
+
+    // Count occurrences of each character
+    for (const char of str) {
+        charCount[char] = (charCount[char] || 0) + 1;
+    }
+
+    // Find the first non-repeating character
+    for (const char of str) {
+        if (charCount[char] === 1) {
+            return char; // Return the first non-repeating character
         }
     }
-    return true; // The array is sorted in ascending order
+
+    return null; // Return null if there are no non-repeating characters
 }
 
-// Example usage:
-const arr1 = [1, 2, 3, 4, 5];
-const arr2 = [1, 3, 2, 4, 5];
-
-console.log(isArraySortedAscending(arr1)); // Output: true
-console.log(isArraySortedAscending(arr2)); // Output: false
+// Example usage
+const input = "swiss";
+const result = firstNonRepeatingCharacter(input);
+console.log(result); // Output: "w"
