@@ -1,20 +1,43 @@
-function longestCommonPrefix(strs: string[]): string {
-    if (strs.length === 0) return '';
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    // Start with the first string as a reference
-    let prefix = strs[0];
-
-    for (let i = 1; i < strs.length; i++) {
-        // Compare prefix with each string
-        while (strs[i].indexOf(prefix) !== 0) {
-            // Remove the last character of prefix until we find a match
-            prefix = prefix.slice(0, prefix.length - 1);
-            if (prefix === '') return '';
-        }
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-    return prefix;
+}
+
+function diameterOfBinaryTree(root: TreeNode | null): number {
+    let diameter = 0;
+
+    function height(node: TreeNode | null): number {
+        if (node === null) {
+            return 0;
+        }
+
+        // Recursively find the height of the left and right subtrees
+        const leftHeight = height(node.left);
+        const rightHeight = height(node.right);
+
+        // Update the diameter if the path through the current node is larger
+        diameter = Math.max(diameter, leftHeight + rightHeight);
+
+        // Return the height of the current node
+        return Math.max(leftHeight, rightHeight) + 1;
+    }
+
+    height(root);
+    return diameter;
 }
 
 // Example usage:
-const strings = ['flower', 'flow', 'flight'];
-console.log(longestCommonPrefix(strings)); // Output: "fl"
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(diameterOfBinaryTree(root)); // Output: 3 (the path is 4 -> 2 -> 1 -> 3)
