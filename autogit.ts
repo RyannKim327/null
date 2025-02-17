@@ -1,129 +1,53 @@
-class MinHeap {
-    private heap: number[];
+function KMPSearch(text: string, pattern: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const matches: number[] = [];
+    let i = 0; // index for text
+    let j = 0; // index for pattern
 
-    constructor() {
-        this.heap = [];
-    }
-
-    private getParentIndex(index: number): number {
-        return Math.floor((index - 1) / 2);
-    }
-
-    private getLeftChildIndex(index: number): number {
-        return index * 2 + 1;
-    }
-
-    private getRightChildIndex(index: number): number {
-        return index * 2 + 2;
-    }
-
-    private hasParent(index: number): boolean {
-        return this.getParentIndex(index) >= 0;
-    }
-
-    private hasLeftChild(index: number): boolean {
-        return this.getLeftChildIndex(index) < this.heap.length;
-    }
-
-    private hasRightChild(index: number): boolean {
-        return this.getRightChildIndex(index) < this.heap.length;
-    }
-
-    private parent(index: number): number {
-        return this.heap[this.getParentIndex(index)];
-    }
-
-    private leftChild(index: number): number {
-        return this.heap[this.getLeftChildIndex(index)];
-    }
-
-    private rightChild(index: number): number {
-        return this.heap[this.getRightChildIndex(index)];
-    }
-
-    private swap(indexOne: number, indexTwo: number): void {
-        const temp = this.heap[indexOne];
-        this.heap[indexOne] = this.heap[indexTwo];
-        this.heap[indexTwo] = temp;
-    }
-
-    public insert(value: number): void {
-        this.heap.push(value);
-        this.heapifyUp();
-    }
-
-    private heapifyUp(): void {
-        let index = this.heap.length - 1;
-        while (this.hasParent(index) && this.parent(index) > this.heap[index]) {
-            this.swap(this.getParentIndex(index), index);
-            index = this.getParentIndex(index);
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
         }
-    }
 
-    public remove(): number | null {
-        if (this.heap.length === 0) {
-            return null;
-        }
-        const item = this.heap[0];
-        this.heap[0] = this.heap[this.heap.length - 1];
-        this.heap.pop();
-        this.heapifyDown();
-        return item;
-    }
-
-    private heapifyDown(): void {
-        let index = 0;
-        while (this.hasLeftChild(index)) {
-            let smallerChildIndex = this.getLeftChildIndex(index);
-            if (this.hasRightChild(index) && this.rightChild(index) < this.leftChild(index)) {
-                smallerChildIndex = this.getRightChildIndex(index);
-            }
-            if (this.heap[index] < this.heap[smallerChildIndex]) {
-                break;
+        if (j === pattern.length) {
+            matches.push(i - j); // Match found, add start index to matches
+            j = lps[j - 1]; // Get the next position to match in the pattern
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1]; // Use LPS to skip unnecessary comparisons
             } else {
-                this.swap(index, smallerChildIndex);
+                i++;
             }
-            index = smallerChildIndex;
         }
     }
-
-    public peek(): number | null {
-        return this.heap.length > 0 ? this.heap[0] : null;
-    }
-
-    public isEmpty(): boolean {
-        return this.heap.length === 0;
-    }
+    return matches;
 }
-class PriorityQueue {
-    private heap: MinHeap;
 
-    constructor() {
-        this.heap = new MinHeap();
-    }
+function computeLPSArray(pattern: string): number[] {
+    const lps = new Array(pattern.length).fill(0);
+    let length = 0; // length of the previous longest prefix suffix
+    let i = 1;
 
-    public enqueue(value: number): void {
-        this.heap.insert(value);
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1]; // use the previous LPS value
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
     }
-
-    public dequeue(): number | null {
-        return this.heap.remove();
-    }
-
-    public peek(): number | null {
-        return this.heap.peek();
-    }
-
-    public isEmpty(): boolean {
-        return this.heap.isEmpty();
-    }
+    return lps;
 }
-const pq = new PriorityQueue();
-pq.enqueue(5);
-pq.enqueue(3);
-pq.enqueue(8);
-pq.enqueue(1);
 
-console.log(pq.peek()); // Output: 1
-console.log(pq.dequeue()); // Output: 1
-console.log(pq.peek()); // Output: 3
+// Example usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const matchIndices = KMPSearch(text, pattern);
+console.log(matchIndices); // Outputs indices where pattern is found
