@@ -1,20 +1,25 @@
-function isPrime(num: number): boolean {
-    // Check if the number is less than 2
-    if (num < 2) return false;
-
-    // Check for factors from 2 to the square root of num
-    for (let i = 2; i <= Math.sqrt(num); i++) {
-        if (num % i === 0) {
-            return false; // num is divisible by i, so it's not prime
-        }
+function burrowsWheelerTransform(input: string): string {
+    const n = input.length;
+    
+    // Step 1: Generate all rotations of the input
+    const rotations: string[] = [];
+    for (let i = 0; i < n; i++) {
+        rotations.push(input.slice(i) + input.slice(0, i));
     }
-    return true; // num is prime
+
+    // Step 2: Sort the rotations
+    rotations.sort();
+
+    // Step 3: Extract the last column
+    let bwtResult = '';
+    for (const rotation of rotations) {
+        bwtResult += rotation[n - 1]; // last character of each rotation
+    }
+
+    return bwtResult;
 }
 
-// Example usage:
-const numberToCheck = 29;
-if (isPrime(numberToCheck)) {
-    console.log(`${numberToCheck} is a prime number.`);
-} else {
-    console.log(`${numberToCheck} is not a prime number.`);
-}
+// Example Usage:
+const input = "banana";
+const result = burrowsWheelerTransform(input);
+console.log(result); // Results in "annb$aa"
