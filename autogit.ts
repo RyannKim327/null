@@ -1,84 +1,97 @@
-class PriorityQueue<T> {
-    private heap: { value: T; priority: number }[] = [];
+type Position = {
+    x: number;
+    y: number;
+};
 
-    insert(value: T, priority: number): void {
-        const node = { value, priority };
-        this.heap.push(node);
-        this.bubbleUp();
-    }
+class Node {
+    position: Position;
+    g: number; // Cost from start to this node
+    h: number; // Heuristic cost from this node to end
+    f: number; // Total cost
+    parent: Node | null;
 
-    extractMax(): T | undefined {
-        if (this.heap.length === 0) return undefined;
-        if (this.heap.length === 1) return this.heap.pop()!.value;
-
-        const maxNode = this.heap[0];
-        this.heap[0] = this.heap.pop()!;
-        this.sinkDown(0);
-        return maxNode.value;
-    }
-
-    private bubbleUp(): void {
-        let index = this.heap.length - 1;
-        const element = this.heap[index];
-
-        while (index > 0) {
-            const parentIndex = Math.floor((index - 1) / 2);
-            const parent = this.heap[parentIndex];
-
-            if (element.priority <= parent.priority) break;
-
-            this.heap[index] = parent;
-            index = parentIndex;
-        }
-        this.heap[index] = element;
-    }
-
-    private sinkDown(index: number): void {
-        const length = this.heap.length;
-        const element = this.heap[index];
-
-        while (true) {
-            let leftChildIndex = 2 * index + 1;
-            let rightChildIndex = 2 * index + 2;
-            let leftChild: { value: T; priority: number } | undefined;
-            let rightChild: { value: T; priority: number } | undefined;
-            let swapIndex: number | null = null;
-
-            if (leftChildIndex < length) {
-                leftChild = this.heap[leftChildIndex];
-                if (leftChild.priority > element.priority) {
-                    swapIndex = leftChildIndex;
-                }
-            }
-
-            if (rightChildIndex < length) {
-                rightChild = this.heap[rightChildIndex];
-                if (
-                    (swapIndex === null && rightChild.priority > element.priority) ||
-                    (swapIndex !== null && rightChild.priority > leftChild!.priority)
-                ) {
-                    swapIndex = rightChildIndex;
-                }
-            }
-
-            if (swapIndex === null) break;
-
-            this.heap[index] = this.heap[swapIndex];
-            this.heap[swapIndex] = element;
-            index = swapIndex;
-        }
-    }
-
-    peek(): T | undefined {
-        return this.heap[0]?.value;
+    constructor(position: Position, parent: Node | null, g = 0, h = 0) {
+        this.position = position;
+        this.parent = parent;
+        this.g = g; 
+        this.h = h;
+        this.f = g + h; 
     }
 }
 
-// Example usage
-const priorityQueue = new PriorityQueue<string>();
-priorityQueue.insert("task1", 1);
-priorityQueue.insert("task2", 3);
-priorityQueue.insert("task3", 2);
+function heuristic(a: Position, b: Position): number {
+    // Use Manhattan distance as the heuristic
+    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+}
 
-console.log(priorityQueue.extractMax()); // Outputs: "task2"
-console.log(priorityQueue.peek()); // Outputs: "task3"
+function getNeighbors(position: Position): Position[] {
+    // Returns adjacent cells (4-way movement)
+    return [
+        { x: position.x + 1, y: position.y },
+        { x: position.x - 1, y: position.y },
+        { x: position.x, y: position.y + 1 },
+        { x: position.x, y: position.y - 1 },
+    ];
+}
+
+function aStar(start: Position, goal: Position, grid: boolean[][]): Position[] | null {
+    const openList: Node[] = [];
+    const closedList: Node[] = [];
+    
+    const startNode = new Node(start, null, 0, heuristic(start, goal));
+    openList.push(startNode);
+
+    while (openList.length > 0) {
+        // Sort by f value and get the node with the lowest f value
+        openList.sort((a, b) => a.f - b.f);
+        const currentNode = openList.shift()!; // Get the node
+
+        // Check if we reached the goal
+        if (currentNode.position.x === goal.x && currentNode.position.y === goal.y) {
+            const path: Position[] = [];
+            let temp: Node | null = currentNode;
+            while (temp) {
+                path.push(temp.position);
+                temp = temp.parent;
+            }
+            return path.reverse(); // Return reversed path
+        }
+
+        closedList.push(currentNode);
+        
+        for (const neighborPos of getNeighbors(currentNode.position)) {
+            // Ensure the neighbor is within bounds and walkable
+            if (neighborPos.x < 0 || neighborPos.x >= grid.length || 
+                neighborPos.y < 0 || neighborPos.y >= grid[0].length || 
+                !grid[neighborPos.x][neighborPos.y]) {
+                continue;
+            }
+
+            const neighborNode = new Node(neighborPos, currentNode, 
+                currentNode.g + 1, heuristic(neighborPos, goal));
+
+            // Check if neighbor is in closed list
+            if (closedList.some(node => node.position.x === neighborPos.x && node.position.y === neighborPos.y)) {
+                continue;
+            }
+
+            // If neighbor is not in open list, add it
+            if (!openList.some(node => node.position.x === neighborPos.x && node.position.y === neighborPos.y)) {
+                openList.push(neighborNode);
+            }
+        }
+    }
+
+    return null; // No path found
+}
+const grid = [
+    [true, true, true, true],
+    [true, false, true, true],
+    [true, true, true, true],
+];
+
+const start: Position = { x: 0, y: 0 };
+const goal: Position = { x: 2, y: 2 };
+
+const path = aStar(start, goal, grid);
+console.log(path); // Output the path from start to goal
