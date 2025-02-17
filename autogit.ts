@@ -1,11 +1,11 @@
-function isPalindrome(str: string): boolean {
-    // Normalize the string
-    const normalizedStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
-    // Check if the normalized string is equal to its reverse
-    const reversedStr = normalizedStr.split('').reverse().join('');
-    return normalizedStr === reversedStr;
-}
+import * as readline from 'readline';
 
-// Example usage:
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car")); // false
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+rl.question('Please enter something: ', (input) => {
+    console.log(`You entered: ${input}`);
+    rl.close();
+});
