@@ -1,92 +1,55 @@
-class Node {
-    value: number;
-    left: Node | null;
-    right: Node | null;
+function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
+    const n = input.length;
+    const rotations: string[] = [];
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    // Generate all rotations of the input string
+    for (let i = 0; i < n; i++) {
+        rotations.push(input.slice(i) + input.slice(0, i));
     }
+
+    // Sort the rotations
+    rotations.sort();
+
+    // Build the transformed string and find the original index
+    let transformed = '';
+    let originalIndex = 0;
+
+    for (let i = 0; i < n; i++) {
+        transformed += rotations[i][n - 1]; // Take the last character of each sorted rotation
+        if (rotations[i] === input) {
+            originalIndex = i; // Store the index of the original string
+        }
+    }
+
+    return { transformed, index: originalIndex };
 }
-class BinarySearchTree {
-    root: Node | null;
 
-    constructor() {
-        this.root = null;
+function inverseBurrowsWheelerTransform(transformed: string, index: number): string {
+    const n = transformed.length;
+    const table: string[] = new Array(n);
+
+    // Build the table
+    for (let i = 0; i < n; i++) {
+        table[i] = transformed[i];
     }
 
-    // Insert a new value into the BST
-    insert(value: number): void {
-        const newNode = new Node(value);
-        if (this.root === null) {
-            this.root = newNode;
-            return;
-        }
-        this.insertNode(this.root, newNode);
-    }
-
-    private insertNode(node: Node, newNode: Node): void {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
+    // Sort the table and build the next column
+    for (let i = 0; i < n; i++) {
+        table.sort();
+        for (let j = 0; j < n; j++) {
+            table[j] = transformed[j] + table[j]; // Prepend the transformed character
         }
     }
 
-    // Search for a value in the BST
-    search(value: number): boolean {
-        return this.searchNode(this.root, value);
-    }
-
-    private searchNode(node: Node | null, value: number): boolean {
-        if (node === null) {
-            return false;
-        }
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true; // value is found
-        }
-    }
-
-    // In-order traversal of the BST
-    inOrderTraversal(callback: (value: number) => void): void {
-        this.inOrder(this.root, callback);
-    }
-
-    private inOrder(node: Node | null, callback: (value: number) => void): void {
-        if (node !== null) {
-            this.inOrder(node.left, callback);
-            callback(node.value);
-            this.inOrder(node.right, callback);
-        }
-    }
+    // The original string is in the row indicated by the original index
+    return table[index].slice(1); // Remove the first character (which is a placeholder)
 }
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
-bst.insert(7);
-bst.insert(12);
-bst.insert(18);
 
-// Search for a value
-console.log(bst.search(7)); // true
-console.log(bst.search(20)); // false
+// Example usage
+const input = "banana";
+const { transformed, index } = burrowsWheelerTransform(input);
+console.log("Transformed:", transformed);
+console.log("Original Index:", index);
 
-// In-order traversal
-bst.inOrderTraversal(value => {
-    console.log(value); // Outputs: 3, 5, 7, 10, 12, 15, 18
-});
+const original = inverseBurrowsWheelerTransform(transformed, index);
+console.log("Original:", original);
