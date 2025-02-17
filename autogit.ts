@@ -1,97 +1,117 @@
-class MinHeap {
-    private heap: number[];
+class BTreeNode {
+    keys: number[];
+    children: BTreeNode[];
+    isLeaf: boolean;
+    degree: number;
 
-    constructor() {
-        this.heap = [];
-    }
-
-    // Get the index of the parent of a node
-    private parentIndex(index: number): number {
-        return Math.floor((index - 1) / 2);
-    }
-
-    // Get the index of the left child of a node
-    private leftChildIndex(index: number): number {
-        return 2 * index + 1;
-    }
-
-    // Get the index of the right child of a node
-    private rightChildIndex(index: number): number {
-        return 2 * index + 2;
-    }
-
-    // Insert a new value into the heap
-    public insert(value: number): void {
-        this.heap.push(value);
-        this.bubbleUp(this.heap.length - 1);
-    }
-
-    // Bubble up the last element to maintain the heap property
-    private bubbleUp(index: number): void {
-        while (index > 0) {
-            const parentIndex = this.parentIndex(index);
-            if (this.heap[index] >= this.heap[parentIndex]) break;
-            [this.heap[index], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[index]];
-            index = parentIndex;
-        }
-    }
-
-    // Remove and return the minimum value (root of the heap)
-    public remove(): number | null {
-        if (this.heap.length === 0) return null;
-        const minValue = this.heap[0];
-        const lastValue = this.heap.pop();
-        if (this.heap.length > 0 && lastValue !== undefined) {
-            this.heap[0] = lastValue;
-            this.bubbleDown(0);
-        }
-        return minValue;
-    }
-
-    // Bubble down the root element to maintain the heap property
-    private bubbleDown(index: number): void {
-        const length = this.heap.length;
-        let smallest = index;
-
-        const leftIndex = this.leftChildIndex(index);
-        if (leftIndex < length && this.heap[leftIndex] < this.heap[smallest]) {
-            smallest = leftIndex;
-        }
-
-        const rightIndex = this.rightChildIndex(index);
-        if (rightIndex < length && this.heap[rightIndex] < this.heap[smallest]) {
-            smallest = rightIndex;
-        }
-
-        if (smallest !== index) {
-            [this.heap[index], this.heap[smallest]] = [this.heap[smallest], this.heap[index]];
-            this.bubbleDown(smallest);
-        }
-    }
-
-    // Peek at the minimum value without removing it
-    public peek(): number | null {
-        return this.heap.length > 0 ? this.heap[0] : null;
-    }
-
-    // Check if the heap is empty
-    public isEmpty(): boolean {
-        return this.heap.length === 0;
-    }
-
-    // Get the size of the heap
-    public size(): number {
-        return this.heap.length;
+    constructor(degree: number, isLeaf: boolean) {
+        this.degree = degree;
+        this.isLeaf = isLeaf;
+        this.keys = [];
+        this.children = [];
     }
 }
-const priorityQueue = new MinHeap();
 
-priorityQueue.insert(5);
-priorityQueue.insert(3);
-priorityQueue.insert(8);
-priorityQueue.insert(1);
+class BTree {
+    root: BTreeNode | null;
+    degree: number;
 
-console.log(priorityQueue.peek()); // Output: 1
-console.log(priorityQueue.remove()); // Output: 1
-console.log(priorityQueue.peek()); // Output: 3
-console.log(priorityQueue.size()); // Output: 3
+    constructor(degree: number) {
+        this.root = null;
+        this.degree = degree;
+    }
+
+    insert(key: number) {
+        if (this.root === null) {
+            this.root = new BTreeNode(this.degree, true);
+            this.root.keys.push(key);
+        } else {
+            if (this.root.keys.length === 2 * this.degree - 1) {
+                const newRoot = new BTreeNode(this.degree, false);
+                newRoot.children.push(this.root);
+                newRoot.splitChild(0);
+                const index = newRoot.keys.findIndex(k => key < k);
+                if (index === -1) newRoot.children[newRoot.children.length - 1].insertNonFull(key);
+                else newRoot.children[index].insertNonFull(key);
+                this.root = newRoot;
+            } else {
+                this.root.insertNonFull(key);
+            }
+        }
+    }
+
+    // Method for searching the key in the B-tree
+    search(key: number, node: BTreeNode | null = this.root): BTreeNode | null {
+        if (node === null) return null;
+
+        let i = 0;
+        while (i < node.keys.length && key > node.keys[i]) {
+            i++;
+        }
+
+        if (i < node.keys.length && node.keys[i] === key) return node;
+
+        return node.isLeaf ? null : this.search(key, node.children[i]);
+    }
+}
+
+BTreeNode.prototype.insertNonFull = function (this: BTreeNode, key: number) {
+    let i = this.keys.length - 1;
+
+    if (this.isLeaf) {
+        while (i >= 0 && key < this.keys[i]) {
+            i--;
+        }
+        this.keys.splice(i + 1, 0, key);
+    } else {
+        while (i >= 0 && key < this.keys[i]) {
+            i--;
+        }
+        const childIndex = i + 1;
+        if (this.children[childIndex].keys.length === 2 * this.degree - 1) {
+            this.splitChild(childIndex);
+            if (key > this.keys[childIndex]) {
+                this.children[childIndex + 1].insertNonFull(key);
+            } else {
+                this.children[childIndex].insertNonFull(key);
+            }
+        } else {
+            this.children[childIndex].insertNonFull(key);
+        }
+    }
+};
+
+BTreeNode.prototype.splitChild = function (this: BTreeNode, index: number) {
+    const t = this.degree;
+    const y = this.children[index];
+    const z = new BTreeNode(t, y.isLeaf);
+
+    this.keys.splice(index, 0, y.keys[t - 1]);
+    this.children.splice(index + 1, 0, z);
+
+    for (let j = 0; j < t - 1; j++) {
+        z.keys.push(y.keys[j + t]);
+    }
+
+    if (!y.isLeaf) {
+        for (let j = 0; j < t; j++) {
+            z.children.push(y.children[j + t]);
+        }
+    }
+
+    y.keys.splice(t - 1);
+    y.children.splice(t);
+};
+
+const bTree = new BTree(3);  // Create a B-tree with minimum degree 3 (t=3)
+bTree.insert(10);
+bTree.insert(20);
+bTree.insert(5);
+bTree.insert(6);
+bTree.insert(12);
+bTree.insert(30);
+bTree.insert(7);
+bTree.insert(17);
+
+const found = bTree.search(10); // Should return the node containing 10
+console.log(found);
