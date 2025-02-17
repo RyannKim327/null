@@ -1,59 +1,40 @@
-function KMPSearch(pattern: string, text: string): number[] {
-    const m = pattern.length;
-    const n = text.length;
+function longestCommonSubsequence(str1: string, str2: string): string {
+    const m = str1.length;
+    const n = str2.length;
 
-    // Create the LPS array
-    const lps = new Array(m).fill(0);
-    computeLPSArray(pattern, m, lps);
+    // Create a 2D array to store lengths of longest common subsequence
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-    const result: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
-
-    while (i < n) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-
-        if (j === m) {
-            result.push(i - j); // Match found
-            j = lps[j - 1]; // Set j based on lps
-        } else if (i < n && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1]; // Use LPS to avoid unnecessary comparisons
+    // Fill the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1; // Characters match
             } else {
-                i++;
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]); // Take the maximum
             }
         }
     }
 
-    return result;
-}
-
-function computeLPSArray(pattern: string, m: number, lps: number[]): void {
-    let len = 0; // Length of previous longest prefix suffix
-    lps[0] = 0; // LPS[0] is always 0
-
-    let i = 1;
-    while (i < m) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
+    // Backtrack to find the LCS
+    let lcs = '';
+    let i = m, j = n;
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            lcs = str1[i - 1] + lcs; // Add to LCS
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--; // Move up
         } else {
-            if (len !== 0) {
-                len = lps[len - 1]; // Use the previous LPS value
-            } else {
-                lps[i] = 0;
-                i++;
-            }
+            j--; // Move left
         }
     }
+
+    return lcs; // Return the longest common subsequence
 }
 
 // Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const matches = KMPSearch(pattern, text);
-console.log(`Pattern found at indices: ${matches}`);
+const str1 = "AGGTAB";
+const str2 = "GXTXAYB";
+console.log(longestCommonSubsequence(str1, str2)); // Output: "GTAB"
