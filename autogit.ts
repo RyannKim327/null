@@ -1,23 +1,14 @@
-function factorialRecursive(n: number): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers.");
-    }
-    if (n === 0 || n === 1) {
-        return 1; // Base case
-    }
-    return n * factorialRecursive(n - 1); // Recursive case
+function isPalindrome(str: string): boolean {
+    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
+    const normalizedStr = str.replace(/[^a-z0-9]/gi, '').toLowerCase();
+    
+    // Get the reversed string
+    const reversedStr = normalizedStr.split('').reverse().join('');
+    
+    // Check if the normalized string is equal to its reversed version
+    return normalizedStr === reversedStr;
 }
 
-console.log(factorialRecursive(5)); // Output: 120
-function factorialIterative(n: number): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers.");
-    }
-    let result = 1;
-    for (let i = 2; i <= n; i++) {
-        result *= i; // Multiply result by i
-    }
-    return result;
-}
-
-console.log(factorialIterative(5)); // Output: 120
+// Example usage:
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
