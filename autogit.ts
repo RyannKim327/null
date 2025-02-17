@@ -1,19 +1,52 @@
-function isPrime(num: number): boolean {
-    // Check if the number is less than 2
-    if (num < 2) {
-        return false;
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-    // Check for factors from 2 to the square root of num
-    for (let i = 2; i <= Math.sqrt(num); i++) {
-        if (num % i === 0) {
-            return false; // num is divisible by i, so it's not prime
-        }
-    }
-    return true; // num is prime
 }
 
-// Example usage:
-console.log(isPrime(11)); // true
-console.log(isPrime(4));  // false
-console.log(isPrime(1));  // false
-console.log(isPrime(17)); // true
+class BinaryTree {
+    root: TreeNode | null;
+
+    constructor() {
+        this.root = null;
+    }
+
+    diameter(): number {
+        let maxDiameter = 0;
+
+        const calculateDepth = (node: TreeNode | null): number => {
+            if (!node) {
+                return 0;
+            }
+
+            // Recursively compute the depth of the left and right subtree
+            const leftDepth = calculateDepth(node.left);
+            const rightDepth = calculateDepth(node.right);
+
+            // Update the maximum diameter
+            maxDiameter = Math.max(maxDiameter, leftDepth + rightDepth);
+
+            // Return the depth of the current node
+            return 1 + Math.max(leftDepth, rightDepth);
+        };
+
+        calculateDepth(this.root);
+        return maxDiameter;
+    }
+}
+
+// Example usage
+const tree = new BinaryTree();
+tree.root = new TreeNode(1);
+tree.root.left = new TreeNode(2);
+tree.root.right = new TreeNode(3);
+tree.root.left.left = new TreeNode(4);
+tree.root.left.right = new TreeNode(5);
+
+console.log(tree.diameter()); // Output will be the diameter of the binary tree
