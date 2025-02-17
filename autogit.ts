@@ -1,20 +1,48 @@
-function insertionSort(arr: number[]): number[] {
-    // Loop through each element in the array starting from index 1
-    for (let i = 1; i < arr.length; i++) {
-        let key = arr[i]; // The current element to be inserted
-        let j = i - 1; // Index of the last element in the sorted portion
+class HashTable<K, V> {
+    private table: Array<[K, V] | undefined>;
+    private size: number;
 
-        // Move elements that are greater than the key ahead by one position
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
-        // Insert the key into its correct position
-        arr[j + 1] = key;
+    constructor(size: number) {
+        this.size = size;
+        this.table = new Array(size);
     }
-    return arr; // Return the sorted array
+
+    private hash(key: K): number {
+        let hash = 0;
+        const keyString = String(key);
+        for (let i = 0; i < keyString.length; i++) {
+            hash += keyString.charCodeAt(i);
+        }
+        return hash % this.size;
+    }
+
+    public set(key: K, value: V): void {
+        const index = this.hash(key);
+        this.table[index] = [key, value];
+    }
+
+    public get(key: K): V | undefined {
+        const index = this.hash(key);
+        const entry = this.table[index];
+        return entry ? entry[1] : undefined;
+    }
+
+    public remove(key: K): void {
+        const index = this.hash(key);
+        this.table[index] = undefined;
+    }
+
+    public has(key: K): boolean {
+        const index = this.hash(key);
+        return this.table[index] !== undefined;
+    }
 }
 
 // Example usage:
-const array = [5, 2, 9, 1, 5, 6];
-console.log(insertionSort(array)); // Output: [1, 2, 5, 5, 6, 9]
+const hashTable = new HashTable<string, number>(10);
+hashTable.set("apple", 1);
+hashTable.set("banana", 2);
+console.log(hashTable.get("apple")); // Output: 1
+console.log(hashTable.has("banana")); // Output: true
+hashTable.remove("apple");
+console.log(hashTable.get("apple")); // Output: undefined
