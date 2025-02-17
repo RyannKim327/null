@@ -1,73 +1,58 @@
-class Graph {
-    private vertices: number;
-    private adj: number[][];
-    private index: number;
-    private stack: number[];
-    private indices: number[];
-    private lowLink: number[];
-    private onStack: boolean[];
-    private sccs: number[][];
+class Node {
+    value: string;
+    children: Node[];
 
-    constructor(vertices: number) {
-        this.vertices = vertices;
-        this.adj = Array.from({ length: vertices }, () => []);
-        this.index = 0;
-        this.stack = [];
-        this.indices = Array(vertices).fill(-1);
-        this.lowLink = Array(vertices).fill(-1);
-        this.onStack = Array(vertices).fill(false);
-        this.sccs = [];
+    constructor(value: string) {
+        this.value = value;
+        this.children = [];
     }
 
-    addEdge(from: number, to: number) {
-        this.adj[from].push(to);
-    }
-
-    private strongConnect(v: number) {
-        this.indices[v] = this.index;
-        this.lowLink[v] = this.index;
-        this.index++;
-        this.stack.push(v);
-        this.onStack[v] = true;
-
-        for (const w of this.adj[v]) {
-            if (this.indices[w] === -1) {
-                this.strongConnect(w);
-                this.lowLink[v] = Math.min(this.lowLink[v], this.lowLink[w]);
-            } else if (this.onStack[w]) {
-                this.lowLink[v] = Math.min(this.lowLink[v], this.indices[w]);
-            }
-        }
-
-        if (this.lowLink[v] === this.indices[v]) {
-            const component: number[] = [];
-            let w: number;
-            do {
-                w = this.stack.pop()!;
-                this.onStack[w] = false;
-                component.push(w);
-            } while (w !== v);
-            this.sccs.push(component);
-        }
-    }
-
-    findSCCs() {
-        for (let i = 0; i < this.vertices; i++) {
-            if (this.indices[i] === -1) {
-                this.strongConnect(i);
-            }
-        }
-        return this.sccs;
+    addChild(child: Node) {
+        this.children.push(child);
     }
 }
 
-// Example usage:
-const g = new Graph(5);
-g.addEdge(0, 2);
-g.addEdge(2, 1);
-g.addEdge(1, 0);
-g.addEdge(0, 3);
-g.addEdge(3, 4);
+function depthLimitedSearch(root: Node, target: string, limit: number): Node | null {
+    const stack: { node: Node; depth: number }[] = [];
+    stack.push({ node: root, depth: 0 });
 
-const sccs = g.findSCCs();
-console.log('Strongly Connected Components:', sccs);
+    while (stack.length > 0) {
+        const { node, depth } = stack.pop()!;
+
+        // Check if the current node is the target
+        if (node.value === target) {
+            return node;
+        }
+
+        // If the current depth is less than the limit, add children to the stack
+        if (depth < limit) {
+            for (let i = node.children.length - 1; i >= 0; i--) {
+                stack.push({ node: node.children[i], depth: depth + 1 });
+            }
+        }
+    }
+
+    // Return null if the target is not found within the depth limit
+    return null;
+}
+
+// Example usage:
+const root = new Node("A");
+const b = new Node("B");
+const c = new Node("C");
+const d = new Node("D");
+const e = new Node("E");
+const f = new Node("F");
+
+root.addChild(b);
+root.addChild(c);
+b.addChild(d);
+b.addChild(e);
+c.addChild(f);
+
+const targetNode = depthLimitedSearch(root, "E", 2);
+if (targetNode) {
+    console.log(`Found node: ${targetNode.value}`);
+} else {
+    console.log("Node not found within the depth limit.");
+}
