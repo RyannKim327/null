@@ -1,68 +1,52 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+class Node {
+    state: any;
+    cost: number;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+    constructor(state: any, cost: number) {
+        this.state = state;
+        this.cost = cost;
     }
 }
 
-class LinkedList {
-    head: ListNode | null;
+function beamSearch(initialState: any, isGoal: (state: any) => boolean, getSuccessors: (state: any) => Node[], beamWidth: number): Node | null {
+    let frontier: Node[] = [new Node(initialState, 0)];
 
-    constructor() {
-        this.head = null;
+    while (frontier.length > 0) {
+        // Check all nodes for goal state
+        for (const node of frontier) {
+            if (isGoal(node.state)) {
+                return node; // Return the goal node
+            }
+        }
+
+        // Expand nodes and get successors
+        let nextFrontier: Node[] = [];
+        for (const node of frontier) {
+            nextFrontier = nextFrontier.concat(getSuccessors(node.state));
+        }
+
+        // Sort successors by cost and keep only the top 'beamWidth' nodes
+        nextFrontier.sort((a, b) => a.cost - b.cost);
+        frontier = nextFrontier.slice(0, beamWidth);
     }
 
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Method to print the list
-    print() {
-        let current = this.head;
-        const values: number[] = [];
-        while (current) {
-            values.push(current.value);
-            current = current.next;
-        }
-        console.log(values.join(' -> '));
-    }
+    return null; // Goal not found
 }
-function reverseLinkedList(head: ListNode | null): ListNode | null {
-    let prev: ListNode | null = null;
-    let current: ListNode | null = head;
 
-    while (current) {
-        const nextTemp = current.next; // Store the next node
-        current.next = prev;            // Reverse the current node's pointer
-        prev = current;                 // Move prev and current one step forward
-        current = nextTemp;
-    }
-    return prev; // New head of the reversed list
+// Example usage:
+
+// Define the isGoal function
+function isGoal(state: any): boolean {
+    // Implement logic to determine if the state is a goal state
+    return state === 'goal'; // Example goal state
 }
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
 
-console.log("Original Linked List:");
-list.print();
+// Define the getSuccessors function
+function getSuccessors(state: any): Node[] {
+    // Implement logic to return successor nodes
+    return [new Node('successor1', 1), new Node('goal', 2), new Node('successor2', 3)]; // Example successors
+}
 
-list.head = reverseLinkedList(list.head);
-
-console.log("Reversed Linked List:");
-list.print();
+// Call beam search
+const result = beamSearch('initialState', isGoal, getSuccessors, 2);
+console.log(result);
