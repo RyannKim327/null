@@ -1,53 +1,38 @@
-function KMPSearch(text: string, pattern: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const matches: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-
-        if (j === pattern.length) {
-            matches.push(i - j); // Match found, add start index to matches
-            j = lps[j - 1]; // Get the next position to match in the pattern
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1]; // Use LPS to skip unnecessary comparisons
-            } else {
-                i++;
-            }
-        }
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-    return matches;
 }
 
-function computeLPSArray(pattern: string): number[] {
-    const lps = new Array(pattern.length).fill(0);
-    let length = 0; // length of the previous longest prefix suffix
-    let i = 1;
-
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1]; // use the previous LPS value
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
+function maxDepth(root: TreeNode | null): number {
+    if (root === null) {
+        return 0; // Base case: the depth of an empty tree is 0
     }
-    return lps;
+
+    // Recursively find the depth of the left and right subtrees
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
+
+    // The maximum depth is the greater of the two depths plus one for the current node
+    return Math.max(leftDepth, rightDepth) + 1;
 }
 
-// Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const matchIndices = KMPSearch(text, pattern);
-console.log(matchIndices); // Outputs indices where pattern is found
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(maxDepth(root)); // Output: 3
+      1
+     / \
+    2   3
+   / \
+  4   5
