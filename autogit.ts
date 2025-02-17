@@ -1,8 +1,28 @@
-function validateEmail(email: string): boolean {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailPattern.test(email);
+function largestPrimeFactor(n: number): number {
+    let largestFactor = 1;
+
+    // Check for number of 2s that divide n
+    while (n % 2 === 0) {
+        largestFactor = 2;
+        n /= 2;
+    }
+
+    // n must be odd at this point, thus we can skip even numbers
+    for (let i = 3; i <= Math.sqrt(n); i += 2) {
+        while (n % i === 0) {
+            largestFactor = i;
+            n /= i;
+        }
+    }
+
+    // If n is still greater than 2, then n is prime
+    if (n > 2) {
+        largestFactor = n;
+    }
+
+    return largestFactor;
 }
 
 // Example usage:
-const email = "example@example.com";
-console.log(validateEmail(email)); // Output: true or false
+const number = 13195;
+console.log(`Largest prime factor of ${number} is ${largestPrimeFactor(number)}.`);
