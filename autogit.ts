@@ -1,20 +1,19 @@
-function findSecondLargest(arr: number[]): number | null {
-    // Remove duplicates by converting the array to a Set and back to an array
-    const uniqueArr = Array.from(new Set(arr));
-
-    // If there are less than 2 unique elements, return null
-    if (uniqueArr.length < 2) {
-        return null;
+function isPrime(num: number): boolean {
+    // Check if the number is less than 2
+    if (num < 2) {
+        return false;
     }
-
-    // Sort the array in descending order
-    uniqueArr.sort((a, b) => b - a);
-
-    // Return the second largest element
-    return uniqueArr[1];
+    // Check for factors from 2 to the square root of num
+    for (let i = 2; i <= Math.sqrt(num); i++) {
+        if (num % i === 0) {
+            return false; // num is divisible by i, so it's not prime
+        }
+    }
+    return true; // num is prime
 }
 
 // Example usage:
-const numbers = [3, 5, 1, 4, 5, 2];
-const secondLargest = findSecondLargest(numbers);
-console.log(secondLargest); // Output: 4
+console.log(isPrime(11)); // true
+console.log(isPrime(4));  // false
+console.log(isPrime(1));  // false
+console.log(isPrime(17)); // true
