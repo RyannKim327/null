@@ -1,97 +1,79 @@
-type Position = {
-    x: number;
-    y: number;
-};
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-class Node {
-    position: Position;
-    g: number; // Cost from start to this node
-    h: number; // Heuristic cost from this node to end
-    f: number; // Total cost
-    parent: Node | null;
-
-    constructor(position: Position, parent: Node | null, g = 0, h = 0) {
-        this.position = position;
-        this.parent = parent;
-        this.g = g; 
-        this.h = h;
-        this.f = g + h; 
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
 
-function heuristic(a: Position, b: Position): number {
-    // Use Manhattan distance as the heuristic
-    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
-}
+class BinarySearchTree {
+    root: TreeNode | null;
 
-function getNeighbors(position: Position): Position[] {
-    // Returns adjacent cells (4-way movement)
-    return [
-        { x: position.x + 1, y: position.y },
-        { x: position.x - 1, y: position.y },
-        { x: position.x, y: position.y + 1 },
-        { x: position.x, y: position.y - 1 },
-    ];
-}
+    constructor() {
+        this.root = null;
+    }
 
-function aStar(start: Position, goal: Position, grid: boolean[][]): Position[] | null {
-    const openList: Node[] = [];
-    const closedList: Node[] = [];
-    
-    const startNode = new Node(start, null, 0, heuristic(start, goal));
-    openList.push(startNode);
-
-    while (openList.length > 0) {
-        // Sort by f value and get the node with the lowest f value
-        openList.sort((a, b) => a.f - b.f);
-        const currentNode = openList.shift()!; // Get the node
-
-        // Check if we reached the goal
-        if (currentNode.position.x === goal.x && currentNode.position.y === goal.y) {
-            const path: Position[] = [];
-            let temp: Node | null = currentNode;
-            while (temp) {
-                path.push(temp.position);
-                temp = temp.parent;
-            }
-            return path.reverse(); // Return reversed path
+    insert(value: number): void {
+        const newNode = new TreeNode(value);
+        if (this.root === null) {
+            this.root = newNode;
+        } else {
+            this.insertNode(this.root, newNode);
         }
+    }
 
-        closedList.push(currentNode);
-        
-        for (const neighborPos of getNeighbors(currentNode.position)) {
-            // Ensure the neighbor is within bounds and walkable
-            if (neighborPos.x < 0 || neighborPos.x >= grid.length || 
-                neighborPos.y < 0 || neighborPos.y >= grid[0].length || 
-                !grid[neighborPos.x][neighborPos.y]) {
-                continue;
+    private insertNode(node: TreeNode, newNode: TreeNode): void {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
             }
-
-            const neighborNode = new Node(neighborPos, currentNode, 
-                currentNode.g + 1, heuristic(neighborPos, goal));
-
-            // Check if neighbor is in closed list
-            if (closedList.some(node => node.position.x === neighborPos.x && node.position.y === neighborPos.y)) {
-                continue;
-            }
-
-            // If neighbor is not in open list, add it
-            if (!openList.some(node => node.position.x === neighborPos.x && node.position.y === neighborPos.y)) {
-                openList.push(neighborNode);
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
             }
         }
     }
 
-    return null; // No path found
+    search(value: number): boolean {
+        return this.searchNode(this.root, value);
+    }
+
+    private searchNode(node: TreeNode | null, value: number): boolean {
+        if (node === null) {
+            return false;
+        }
+        if (node.value === value) {
+            return true;
+        }
+        return value < node.value 
+            ? this.searchNode(node.left, value) 
+            : this.searchNode(node.right, value);
+    }
+
+    inOrderTraversal(node: TreeNode | null, result: number[] = []): number[] {
+        if (node !== null) {
+            this.inOrderTraversal(node.left, result);
+            result.push(node.value);
+            this.inOrderTraversal(node.right, result);
+        }
+        return result;
+    }
 }
-const grid = [
-    [true, true, true, true],
-    [true, false, true, true],
-    [true, true, true, true],
-];
 
-const start: Position = { x: 0, y: 0 };
-const goal: Position = { x: 2, y: 2 };
-
-const path = aStar(start, goal, grid);
-console.log(path); // Output the path from start to goal
+// Example usage
+const bst = new BinarySearchTree();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(3);
+console.log(bst.search(5)); // true
+console.log(bst.search(8)); // false
+console.log(bst.inOrderTraversal(bst.root)); // [3, 5, 10, 15]
