@@ -1,21 +1,17 @@
-const numbers: number[] = [1, 5, 3, 9, 2];
-const maxValue: number = Math.max(...numbers);
-console.log(maxValue); // Output: 9
-const numbers: number[] = [1, 5, 3, 9, 2];
+function firstRepeatedCharacter(str: string): string | null {
+    const seenCharacters = new Set<string>();
 
-let maxValue: number = numbers[0]; // Assume the first element is the max initially
-
-for (let i = 1; i < numbers.length; i++) {
-    if (numbers[i] > maxValue) {
-        maxValue = numbers[i];
+    for (const char of str) {
+        if (seenCharacters.has(char)) {
+            return char; // Return the first repeated character
+        }
+        seenCharacters.add(char); // Add the character to the set
     }
+
+    return null; // Return null if no repeated character is found
 }
 
-console.log(maxValue); // Output: 9
-const numbers: number[] = [1, 5, 3, 9, 2];
-
-const maxValue: number = numbers.reduce((max, current) => {
-    return current > max ? current : max;
-}, numbers[0]);
-
-console.log(maxValue); // Output: 9
+// Example usage:
+const inputString = "abca";
+const result = firstRepeatedCharacter(inputString);
+console.log(result); // Output: "a"
