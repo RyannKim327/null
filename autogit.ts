@@ -1,58 +1,59 @@
-class Node {
-    value: string;
-    children: Node[];
+function KMPSearch(pattern: string, text: string): number[] {
+    const m = pattern.length;
+    const n = text.length;
 
-    constructor(value: string) {
-        this.value = value;
-        this.children = [];
-    }
+    // Create the LPS array
+    const lps = new Array(m).fill(0);
+    computeLPSArray(pattern, m, lps);
 
-    addChild(child: Node) {
-        this.children.push(child);
-    }
-}
+    const result: number[] = [];
+    let i = 0; // index for text
+    let j = 0; // index for pattern
 
-function depthLimitedSearch(root: Node, target: string, limit: number): Node | null {
-    const stack: { node: Node; depth: number }[] = [];
-    stack.push({ node: root, depth: 0 });
-
-    while (stack.length > 0) {
-        const { node, depth } = stack.pop()!;
-
-        // Check if the current node is the target
-        if (node.value === target) {
-            return node;
+    while (i < n) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
         }
 
-        // If the current depth is less than the limit, add children to the stack
-        if (depth < limit) {
-            for (let i = node.children.length - 1; i >= 0; i--) {
-                stack.push({ node: node.children[i], depth: depth + 1 });
+        if (j === m) {
+            result.push(i - j); // Match found
+            j = lps[j - 1]; // Set j based on lps
+        } else if (i < n && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1]; // Use LPS to avoid unnecessary comparisons
+            } else {
+                i++;
             }
         }
     }
 
-    // Return null if the target is not found within the depth limit
-    return null;
+    return result;
 }
 
-// Example usage:
-const root = new Node("A");
-const b = new Node("B");
-const c = new Node("C");
-const d = new Node("D");
-const e = new Node("E");
-const f = new Node("F");
+function computeLPSArray(pattern: string, m: number, lps: number[]): void {
+    let len = 0; // Length of previous longest prefix suffix
+    lps[0] = 0; // LPS[0] is always 0
 
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-b.addChild(e);
-c.addChild(f);
-
-const targetNode = depthLimitedSearch(root, "E", 2);
-if (targetNode) {
-    console.log(`Found node: ${targetNode.value}`);
-} else {
-    console.log("Node not found within the depth limit.");
+    let i = 1;
+    while (i < m) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1]; // Use the previous LPS value
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
 }
+
+// Example usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const matches = KMPSearch(pattern, text);
+console.log(`Pattern found at indices: ${matches}`);
