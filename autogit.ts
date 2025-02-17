@@ -1,48 +1,84 @@
-class HashTable<K, V> {
-    private table: Array<[K, V] | undefined>;
-    private size: number;
+class PriorityQueue<T> {
+    private heap: { value: T; priority: number }[] = [];
 
-    constructor(size: number) {
-        this.size = size;
-        this.table = new Array(size);
+    insert(value: T, priority: number): void {
+        const node = { value, priority };
+        this.heap.push(node);
+        this.bubbleUp();
     }
 
-    private hash(key: K): number {
-        let hash = 0;
-        const keyString = String(key);
-        for (let i = 0; i < keyString.length; i++) {
-            hash += keyString.charCodeAt(i);
+    extractMax(): T | undefined {
+        if (this.heap.length === 0) return undefined;
+        if (this.heap.length === 1) return this.heap.pop()!.value;
+
+        const maxNode = this.heap[0];
+        this.heap[0] = this.heap.pop()!;
+        this.sinkDown(0);
+        return maxNode.value;
+    }
+
+    private bubbleUp(): void {
+        let index = this.heap.length - 1;
+        const element = this.heap[index];
+
+        while (index > 0) {
+            const parentIndex = Math.floor((index - 1) / 2);
+            const parent = this.heap[parentIndex];
+
+            if (element.priority <= parent.priority) break;
+
+            this.heap[index] = parent;
+            index = parentIndex;
         }
-        return hash % this.size;
+        this.heap[index] = element;
     }
 
-    public set(key: K, value: V): void {
-        const index = this.hash(key);
-        this.table[index] = [key, value];
+    private sinkDown(index: number): void {
+        const length = this.heap.length;
+        const element = this.heap[index];
+
+        while (true) {
+            let leftChildIndex = 2 * index + 1;
+            let rightChildIndex = 2 * index + 2;
+            let leftChild: { value: T; priority: number } | undefined;
+            let rightChild: { value: T; priority: number } | undefined;
+            let swapIndex: number | null = null;
+
+            if (leftChildIndex < length) {
+                leftChild = this.heap[leftChildIndex];
+                if (leftChild.priority > element.priority) {
+                    swapIndex = leftChildIndex;
+                }
+            }
+
+            if (rightChildIndex < length) {
+                rightChild = this.heap[rightChildIndex];
+                if (
+                    (swapIndex === null && rightChild.priority > element.priority) ||
+                    (swapIndex !== null && rightChild.priority > leftChild!.priority)
+                ) {
+                    swapIndex = rightChildIndex;
+                }
+            }
+
+            if (swapIndex === null) break;
+
+            this.heap[index] = this.heap[swapIndex];
+            this.heap[swapIndex] = element;
+            index = swapIndex;
+        }
     }
 
-    public get(key: K): V | undefined {
-        const index = this.hash(key);
-        const entry = this.table[index];
-        return entry ? entry[1] : undefined;
-    }
-
-    public remove(key: K): void {
-        const index = this.hash(key);
-        this.table[index] = undefined;
-    }
-
-    public has(key: K): boolean {
-        const index = this.hash(key);
-        return this.table[index] !== undefined;
+    peek(): T | undefined {
+        return this.heap[0]?.value;
     }
 }
 
-// Example usage:
-const hashTable = new HashTable<string, number>(10);
-hashTable.set("apple", 1);
-hashTable.set("banana", 2);
-console.log(hashTable.get("apple")); // Output: 1
-console.log(hashTable.has("banana")); // Output: true
-hashTable.remove("apple");
-console.log(hashTable.get("apple")); // Output: undefined
+// Example usage
+const priorityQueue = new PriorityQueue<string>();
+priorityQueue.insert("task1", 1);
+priorityQueue.insert("task2", 3);
+priorityQueue.insert("task3", 2);
+
+console.log(priorityQueue.extractMax()); // Outputs: "task2"
+console.log(priorityQueue.peek()); // Outputs: "task3"
