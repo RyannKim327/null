@@ -1,8 +1,11 @@
-function reverseString(str: string): string {
-    return str.split('').reverse().join('');
+function removeSpaces(input: string): string {
+    return input.replace(/\s+/g, '');
 }
 
 // Example usage:
-const original = "Hello, World!";
-const reversed = reverseString(original);
-console.log(reversed); // Output: "!dlroW ,olleH"
+const originalString = "Hello, how are you?";
+const stringWithoutSpaces = removeSpaces(originalString);
+console.log(stringWithoutSpaces); // Output: "Hello,howareyou?"
+function removeSpaces(input: string): string {
+    return input.replace(/ /g, '');
+}
