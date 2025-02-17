@@ -1,65 +1,22 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function bubbleSort(arr: number[]): number[] {
+    const n = arr.length;
+    let swapped: boolean;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-class BinaryTree {
-    root: TreeNode | null;
-
-    constructor() {
-        this.root = null;
-    }
-
-    insert(value: number): void {
-        const newNode = new TreeNode(value);
-        if (this.root === null) {
-            this.root = newNode;
-            return;
-        }
-
-        this.insertNode(this.root, newNode);
-    }
-
-    private insertNode(node: TreeNode, newNode: TreeNode): void {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
+    do {
+        swapped = false;
+        for (let i = 0; i < n - 1; i++) {
+            if (arr[i] > arr[i + 1]) {
+                // Swap the elements
+                [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
+                swapped = true;
             }
         }
-    }
-
-    inorderTraversal(node: TreeNode | null = this.root): number[] {
-        const result: number[] = [];
-        if (node !== null) {
-            result.push(...this.inorderTraversal(node.left));
-            result.push(node.value);
-            result.push(...this.inorderTraversal(node.right));
-        }
-        return result;
-    }
+    } while (swapped);
+    
+    return arr;
 }
 
 // Example usage:
-const tree = new BinaryTree();
-tree.insert(5);
-tree.insert(3);
-tree.insert(7);
-tree.insert(2);
-tree.insert(4);
-
-console.log(tree.inorderTraversal()); // Output: [2, 3, 4, 5, 7]
+const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
+const sortedArray = bubbleSort(unsortedArray);
+console.log(sortedArray); // Output: [ 11, 12, 22, 25, 34, 64, 90 ]
