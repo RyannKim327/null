@@ -1,21 +1,30 @@
-function insertionSort(arr: number[]): number[] {
-    // Loop through the array starting from the second element
-    for (let i = 1; i < arr.length; i++) {
-        const key = arr[i]; // The element to be positioned
-        let j = i - 1; // The index of the last sorted element
-
-        // Move elements of arr[0..i-1], that are greater than key,
-        // to one position ahead of their current position
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
-        arr[j + 1] = key; // Place the key in its correct position
-    }
-    return arr; // Return the sorted array
+// Define an interface for the data we expect to receive
+interface Post {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
 }
 
-// Example usage:
-const array = [5, 2, 9, 1, 5, 6];
-const sortedArray = insertionSort(array);
-console.log(sortedArray); // Output: [1, 2, 5, 5, 6, 9]
+// Function to fetch posts
+async function fetchPosts(): Promise<void> {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+
+        // Check if the response is ok (status code 200-299)
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Parse the JSON response
+        const posts: Post[] = await response.json();
+
+        // Log the posts to the console
+        console.log(posts);
+    } catch (error) {
+        console.error('Error fetching posts:', error);
+    }
+}
+
+// Call the function to fetch posts
+fetchPosts();
