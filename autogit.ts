@@ -1,43 +1,74 @@
-function quickSelect(arr: number[], left: number, right: number, k: number): number {
-    if (left === right) {
-        return arr[left]; // If the list contains only one element
+class Graph {
+    private vertices: number;
+    private adjacencyList: Map<number, number[]>;
+
+    constructor(vertices: number) {
+        this.vertices = vertices;
+        this.adjacencyList = new Map<number, number[]>();
     }
 
-    const pivotIndex = partition(arr, left, right);
-
-    // The pivot is in its final sorted position
-    if (k === pivotIndex) {
-        return arr[k];
-    } else if (k < pivotIndex) {
-        return quickSelect(arr, left, pivotIndex - 1, k);
-    } else {
-        return quickSelect(arr, pivotIndex + 1, right, k);
-    }
-}
-
-function partition(arr: number[], left: number, right: number): number {
-    const pivot = arr[right]; // Choose the rightmost element as pivot
-    let i = left;
-
-    for (let j = left; j < right; j++) {
-        if (arr[j] < pivot) {
-            [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap elements
-            i++;
+    addEdge(v: number, w: number) {
+        if (!this.adjacencyList.has(v)) {
+            this.adjacencyList.set(v, []);
         }
+        this.adjacencyList.get(v)!.push(w);
     }
-    [arr[i], arr[right]] = [arr[right], arr[i]]; // Swap pivot to its final place
-    return i; // Return the index of the pivot
-}
 
-function findKthSmallest(arr: number[], k: number): number {
-    if (k < 1 || k > arr.length) {
-        throw new Error("k is out of bounds");
+    tarjan() {
+        const index: number[] = Array(this.vertices).fill(-1);
+        const lowlink: number[] = Array(this.vertices).fill(-1);
+        const onStack: boolean[] = Array(this.vertices).fill(false);
+        const stack: number[] = [];
+        const result: number[][] = [];
+        let currentIndex = 0;
+
+        const strongConnect = (v: number) => {
+            index[v] = currentIndex;
+            lowlink[v] = currentIndex;
+            currentIndex++;
+            stack.push(v);
+            onStack[v] = true;
+
+            const neighbors = this.adjacencyList.get(v) || [];
+
+            for (const w of neighbors) {
+                if (index[w] === -1) {
+                    strongConnect(w);
+                    lowlink[v] = Math.min(lowlink[v], lowlink[w]);
+                } else if (onStack[w]) {
+                    lowlink[v] = Math.min(lowlink[v], index[w]);
+                }
+            }
+
+            if (lowlink[v] === index[v]) {
+                const scc: number[] = [];
+                let w: number;
+                do {
+                    w = stack.pop()!;
+                    onStack[w] = false;
+                    scc.push(w);
+                } while (w !== v);
+                result.push(scc);
+            }
+        };
+
+        for (let v = 0; v < this.vertices; v++) {
+            if (index[v] === -1) {
+                strongConnect(v);
+            }
+        }
+
+        return result;
     }
-    return quickSelect(arr, 0, arr.length - 1, k - 1); // k-1 for zero-based index
 }
 
 // Example usage:
-const arr = [3, 2, 1, 5, 6, 4];
-const k = 2;
-const result = findKthSmallest(arr, k);
-console.log(`The ${k}th smallest element is ${result}`); // Output: The 2th smallest element is 2
+const graph = new Graph(5);
+graph.addEdge(0, 2);
+graph.addEdge(1, 0);
+graph.addEdge(2, 1);
+graph.addEdge(0, 3);
+graph.addEdge(3, 4);
+
+const sccs = graph.tarjan();
+console.log(sccs);  // Output: Strongly connected components
