@@ -1,52 +1,76 @@
-class Node {
-    state: any;
-    cost: number;
+class Graph {
+    private vertices: number;
+    private adjList: number[][];
+    private index: number;
+    private stack: number[];
+    private indices: number[];
+    private lowLink: number[];
+    private onStack: boolean[];
+    private sccs: number[][];
 
-    constructor(state: any, cost: number) {
-        this.state = state;
-        this.cost = cost;
+    constructor(vertices: number) {
+        this.vertices = vertices;
+        this.adjList = Array.from({ length: vertices }, () => []);
+        this.index = 0;
+        this.stack = [];
+        this.indices = Array(vertices).fill(-1);
+        this.lowLink = Array(vertices).fill(0);
+        this.onStack = Array(vertices).fill(false);
+        this.sccs = [];
     }
-}
 
-function beamSearch(initialState: any, isGoal: (state: any) => boolean, getSuccessors: (state: any) => Node[], beamWidth: number): Node | null {
-    let frontier: Node[] = [new Node(initialState, 0)];
+    addEdge(v: number, w: number) {
+        this.adjList[v].push(w);
+    }
 
-    while (frontier.length > 0) {
-        // Check all nodes for goal state
-        for (const node of frontier) {
-            if (isGoal(node.state)) {
-                return node; // Return the goal node
+    private strongConnect(v: number) {
+        this.indices[v] = this.index;
+        this.lowLink[v] = this.index;
+        this.index++;
+        this.stack.push(v);
+        this.onStack[v] = true;
+
+        for (const w of this.adjList[v]) {
+            if (this.indices[w] === -1) {
+                // Successor w has not yet been visited; recurse on it
+                this.strongConnect(w);
+                this.lowLink[v] = Math.min(this.lowLink[v], this.lowLink[w]);
+            } else if (this.onStack[w]) {
+                // Successor w is in stack and hence in the current SCC
+                this.lowLink[v] = Math.min(this.lowLink[v], this.indices[w]);
             }
         }
 
-        // Expand nodes and get successors
-        let nextFrontier: Node[] = [];
-        for (const node of frontier) {
-            nextFrontier = nextFrontier.concat(getSuccessors(node.state));
+        // If v is a root node, pop the stack and generate an SCC
+        if (this.lowLink[v] === this.indices[v]) {
+            const scc: number[] = [];
+            let w: number;
+            do {
+                w = this.stack.pop()!;
+                this.onStack[w] = false;
+                scc.push(w);
+            } while (w !== v);
+            this.sccs.push(scc);
         }
-
-        // Sort successors by cost and keep only the top 'beamWidth' nodes
-        nextFrontier.sort((a, b) => a.cost - b.cost);
-        frontier = nextFrontier.slice(0, beamWidth);
     }
 
-    return null; // Goal not found
+    findSCCs() {
+        for (let v = 0; v < this.vertices; v++) {
+            if (this.indices[v] === -1) {
+                this.strongConnect(v);
+            }
+        }
+        return this.sccs;
+    }
 }
 
 // Example usage:
+const graph = new Graph(5);
+graph.addEdge(0, 2);
+graph.addEdge(2, 1);
+graph.addEdge(1, 0);
+graph.addEdge(0, 3);
+graph.addEdge(3, 4);
 
-// Define the isGoal function
-function isGoal(state: any): boolean {
-    // Implement logic to determine if the state is a goal state
-    return state === 'goal'; // Example goal state
-}
-
-// Define the getSuccessors function
-function getSuccessors(state: any): Node[] {
-    // Implement logic to return successor nodes
-    return [new Node('successor1', 1), new Node('goal', 2), new Node('successor2', 3)]; // Example successors
-}
-
-// Call beam search
-const result = beamSearch('initialState', isGoal, getSuccessors, 2);
-console.log(result);
+const sccs = graph.findSCCs();
+console.log("Strongly Connected Components:", sccs);
