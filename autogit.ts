@@ -10,27 +10,38 @@ class TreeNode {
     }
 }
 
-function countLeafNodes(root: TreeNode | null): number {
-    // Base case: if the node is null, return 0
-    if (root === null) {
-        return 0;
+function diameterOfBinaryTree(root: TreeNode | null): number {
+    let maxDiameter = 0;
+
+    function depth(node: TreeNode | null): number {
+        if (!node) return 0;
+
+        // Recursively find the depths of the left and right subtrees.
+        const leftDepth = depth(node.left);
+        const rightDepth = depth(node.right);
+
+        // Update the maximum diameter found so far.
+        maxDiameter = Math.max(maxDiameter, leftDepth + rightDepth);
+
+        // Return the depth of the current node.
+        return Math.max(leftDepth, rightDepth) + 1;
     }
 
-    // If the current node is a leaf node, return 1
-    if (root.left === null && root.right === null) {
-        return 1;
-    }
-
-    // Recursive case: count leaf nodes in both subtrees
-    return countLeafNodes(root.left) + countLeafNodes(root.right);
+    depth(root);
+    return maxDiameter;
 }
 
 // Example usage:
+// Creating a simple binary tree:
+//         1
+//        / \
+//       2   3
+//      / \
+//     4   5
 const root = new TreeNode(1);
 root.left = new TreeNode(2);
 root.right = new TreeNode(3);
 root.left.left = new TreeNode(4);
 root.left.right = new TreeNode(5);
 
-const leafCount = countLeafNodes(root);
-console.log(`Number of leaf nodes: ${leafCount}`); // Output: Number of leaf nodes: 3
+console.log(diameterOfBinaryTree(root)); // Output: 3 (for the path 4 -> 2 -> 1 -> 3)
