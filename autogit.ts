@@ -1,48 +1,28 @@
-type Node = {
-    value: any;
-    children: Node[];
-};
+function selectionSort(arr: number[]): number[] {
+    const n = arr.length;
 
-function depthLimitedSearch(node: Node, depth: number, target: any): Node | null {
-    // Check if the current node is the target
-    if (node.value === target) {
-        return node;
-    }
-    
-    // If we've reached the depth limit, return null
-    if (depth === 0) {
-        return null;
-    }
-
-    // Recursively search the children
-    for (let child of node.children) {
-        const result = depthLimitedSearch(child, depth - 1, target);
-        if (result !== null) {
-            return result; // Return the found node
+    // Traverse through all array elements
+    for (let i = 0; i < n - 1; i++) {
+        // Find the minimum element in the unsorted portion
+        let minIndex = i;
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+        
+        // Swap the found minimum element with the first element
+        if (minIndex !== i) {
+            const temp = arr[i];
+            arr[i] = arr[minIndex];
+            arr[minIndex] = temp;
         }
     }
-
-    return null; // Target not found
+    
+    return arr;
 }
 
 // Example usage:
-const rootNode: Node = {
-    value: 'A',
-    children: [
-        { value: 'B', children: [] },
-        { value: 'C', children: [
-            { value: 'D', children: [] },
-            { value: 'E', children: [] }
-        ]}
-    ]
-};
-
-const targetValue = 'D';
-const depthLimit = 2;
-
-const foundNode = depthLimitedSearch(rootNode, depthLimit, targetValue);
-if (foundNode) {
-    console.log(`Found node: ${foundNode.value}`);
-} else {
-    console.log(`Node not found within depth limit.`);
-}
+const array = [64, 25, 12, 22, 11];
+const sortedArray = selectionSort(array);
+console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
