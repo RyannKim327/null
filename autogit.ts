@@ -1,38 +1,43 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function boyerMooreHorspool(text: string, pattern: string): number {
+    const m = pattern.length;
+    const n = text.length;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-function maxDepth(root: TreeNode | null): number {
-    if (root === null) {
-        return 0; // Base case: the depth of an empty tree is 0
+    if (m === 0 || n === 0 || m > n) {
+        return -1; // Pattern not found
     }
 
-    // Recursively find the depth of the left and right subtrees
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
+    // Create the shift table
+    const shift: number[] = new Array(256).fill(m);
+    for (let i = 0; i < m - 1; i++) {
+        shift[pattern.charCodeAt(i)] = m - 1 - i;
+    }
 
-    // The maximum depth is the greater of the two depths plus one for the current node
-    return Math.max(leftDepth, rightDepth) + 1;
+    let i = 0; // Index for text
+    while (i <= n - m) {
+        let j = m - 1; // Index for pattern
+
+        // Compare pattern with text
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
+        }
+
+        if (j < 0) {
+            return i; // Pattern found at index i
+        } else {
+            // Shift the pattern right according to the shift table
+            i += shift[text.charCodeAt(i + m - 1)] || m; 
+        }
+    }
+
+    return -1; // Pattern not found
 }
 
 // Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(maxDepth(root)); // Output: 3
-      1
-     / \
-    2   3
-   / \
-  4   5
+const text = "ababcabcabababd";
+const pattern = "ababd";
+const result = boyerMooreHorspool(text, pattern);
+if (result !== -1) {
+    console.log(`Pattern found at index: ${result}`);
+} else {
+    console.log("Pattern not found");
+}
