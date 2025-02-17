@@ -1,17 +1,12 @@
-function findMaxValue(arr: number[]): number {
-    return Math.max(...arr);
+function stringLength(str: string): number {
+    let count = 0;
+    for (let char of str) {
+        count++;
+    }
+    return count;
 }
 
 // Example usage
-const numbers = [1, 5, 3, 7, 2];
-const maxValue = findMaxValue(numbers);
-console.log(maxValue); // Output: 7
-function findMaxValue(arr: number[]): number | null {
-    if (arr.length === 0) return null; // Return null for empty array
-    return Math.max(...arr);
-}
-
-// Example usage
-const numbers = [];
-const maxValue = findMaxValue(numbers);
-console.log(maxValue); // Output: null
+const myString = "Hello, World!";
+const length = stringLength(myString);
+console.log(length); // Output: 13
