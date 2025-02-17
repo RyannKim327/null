@@ -1,61 +1,74 @@
-function fibonacciSearch(arr: number[], x: number): number {
-    const n = arr.length;
+class TarjanSCC {
+  private index: number = 0;
+  private stack: number[] = [];
+  private onStack: boolean[];
+  private indices: number[];
+  private lowLinks: number[];
+  private sccs: number[][] = [];
 
-    // Initialize Fibonacci numbers
-    let fibM2 = 0; // (m-2)'th Fibonacci number
-    let fibM1 = 1; // (m-1)'th Fibonacci number
-    let fibM = fibM1 + fibM2; // m'th Fibonacci number
+  constructor(private graph: number[][]) {
+    const n = graph.length;
+    this.onStack = new Array(n).fill(false);
+    this.indices = new Array(n).fill(-1);
+    this.lowLinks = new Array(n).fill(-1);
+  }
 
-    // Find the smallest Fibonacci number greater than or equal to n
-    while (fibM < n) {
-        fibM2 = fibM1;
-        fibM1 = fibM;
-        fibM = fibM1 + fibM2;
+  public findSCCs(): number[][] {
+    for (let v = 0; v < this.graph.length; v++) {
+      if (this.indices[v] === -1) {
+        this.strongConnect(v);
+      }
+    }
+    return this.sccs;
+  }
+
+  private strongConnect(v: number): void {
+    // Set the depth index for v to the smallest unused index
+    this.indices[v] = this.index;
+    this.lowLinks[v] = this.index;
+    this.index++;
+    this.stack.push(v);
+    this.onStack[v] = true;
+
+    // Consider successors of v
+    for (const w of this.graph[v]) {
+      if (this.indices[w] === -1) {
+        // Successor w has not yet been visited; recurse on it
+        this.strongConnect(w);
+        this.lowLinks[v] = Math.min(this.lowLinks[v], this.lowLinks[w]);
+      } else if (this.onStack[w]) {
+        // Successor w is in stack and hence in the current SCC
+        this.lowLinks[v] = Math.min(this.lowLinks[v], this.indices[w]);
+      }
     }
 
-    // Marks the eliminated range from front
-    let offset = -1;
+    // If v is a root node, pop the stack and generate an SCC
+    if (this.lowLinks[v] === this.indices[v]) {
+      const scc: number[] = [];
+      let w: number;
 
-    // While there are elements to be inspected
-    while (fibM > 1) {
-        // Calculate the index to be compared
-        const i = Math.min(offset + fibM2, n - 1);
+      do {
+        w = this.stack.pop()!;
+        this.onStack[w] = false;
+        scc.push(w);
+      } while (w !== v);
 
-        // If x is greater than the value at index i, cut the subarray after i
-        if (arr[i] < x) {
-            fibM = fibM1;
-            fibM1 = fibM2;
-            fibM2 = fibM - fibM1;
-            offset = i;
-        }
-        // If x is less than the value at index i, cut the subarray before i
-        else if (arr[i] > x) {
-            fibM = fibM2;
-            fibM1 = fibM1 - fibM2;
-            fibM2 = fibM - fibM1;
-        }
-        // Element found
-        else {
-            return i;
-        }
+      // Add the found SCC to the list
+      this.sccs.push(scc);
     }
-
-    // Comparing the last element with x
-    if (fibM1 && arr[offset + 1] === x) {
-        return offset + 1;
-    }
-
-    // Element not found
-    return -1;
+  }
 }
 
 // Example usage
-const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
-const x = 85;
-const result = fibonacciSearch(arr, x);
+const graph = [
+  [1],
+  [2],
+  [0],
+  [1, 4],
+  [5],
+  [4]
+];
 
-if (result !== -1) {
-    console.log(`Element found at index: ${result}`);
-} else {
-    console.log('Element not found in the array.');
-}
+const tarjan = new TarjanSCC(graph);
+const sccs = tarjan.findSCCs();
+console.log(sccs); // Output the strongly connected components
