@@ -1,49 +1,152 @@
-function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
-    const totalLength = nums1.length + nums2.length;
-    const half = Math.floor(totalLength / 2);
-
-    // Ensure nums1 is the smaller array
-    if (nums1.length > nums2.length) {
-        [nums1, nums2] = [nums2, nums1];
-    }
-
-    let left = 0;
-    let right = nums1.length;
-
-    while (left <= right) {
-        const partition1 = Math.floor((left + right) / 2);
-        const partition2 = half - partition1;
-
-        const left1 = partition1 === 0 ? -Infinity : nums1[partition1 - 1];
-        const right1 = partition1 === nums1.length ? Infinity : nums1[partition1];
-        const left2 = partition2 === 0 ? -Infinity : nums2[partition2 - 1];
-        const right2 = partition2 === nums2.length ? Infinity : nums2[partition2];
-
-        // Check if we have partitioned correctly
-        if (left1 <= right2 && left2 <= right1) {
-            // We have a correct partition
-            if (totalLength % 2 === 0) {
-                return (Math.max(left1, left2) + Math.min(right1, right2)) / 2;
-            } else {
-                return Math.max(left1, left2);
-            }
-        } else if (left1 > right2) {
-            // Move towards left in nums1
-            right = partition1 - 1;
-        } else {
-            // Move towards right in nums1
-            left = partition1 + 1;
-        }
-    }
-
-    throw new Error("Input arrays were not sorted.");
+enum Color {
+    RED,
+    BLACK,
 }
 
-// Example usage:
-const nums1 = [1, 3];
-const nums2 = [2];
-console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2
+class Node {
+    key: number;
+    color: Color;
+    left: Node | null;
+    right: Node | null;
+    parent: Node | null;
 
-const nums3 = [1, 2];
-const nums4 = [3, 4];
-console.log(findMedianSortedArrays(nums3, nums4)); // Output: 2.5
+    constructor(key: number) {
+        this.key = key;
+        this.color = Color.RED; // New nodes are red by default
+        this.left = null;
+        this.right = null;
+        this.parent = null;
+    }
+}
+
+class RedBlackTree {
+    private root: Node | null;
+
+    constructor() {
+        this.root = null;
+    }
+
+    // Helper method to perform left rotation
+    private leftRotate(x: Node) {
+        const y = x.right!;
+        x.right = y.left;
+        if (y.left !== null) {
+            y.left.parent = x;
+        }
+        y.parent = x.parent;
+        if (x.parent === null) {
+            this.root = y;
+        } else if (x === x.parent.left) {
+            x.parent.left = y;
+        } else {
+            x.parent.right = y;
+        }
+        y.left = x;
+        x.parent = y;
+    }
+
+    // Helper method to perform right rotation
+    private rightRotate(y: Node) {
+        const x = y.left!;
+        y.left = x.right;
+        if (x.right !== null) {
+            x.right.parent = y;
+        }
+        x.parent = y.parent;
+        if (y.parent === null) {
+            this.root = x;
+        } else if (y === y.parent.right) {
+            y.parent.right = x;
+        } else {
+            y.parent.left = x;
+        }
+        x.right = y;
+        y.parent = x;
+    }
+
+    // Insert a new key
+    public insert(key: number) {
+        const newNode = new Node(key);
+        let y: Node | null = null;
+        let x: Node | null = this.root;
+
+        while (x !== null) {
+            y = x;
+            if (newNode.key < x.key) {
+                x = x.left;
+            } else {
+                x = x.right;
+            }
+        }
+
+        newNode.parent = y;
+        if (y === null) {
+            this.root = newNode; // Tree was empty
+        } else if (newNode.key < y.key) {
+            y.left = newNode;
+        } else {
+            y.right = newNode;
+        }
+
+        this.insertFixUp(newNode);
+    }
+
+    // Fixing the tree after insertion
+    private insertFixUp(z: Node) {
+        while (z.parent && z.parent.color === Color.RED) {
+            if (z.parent === z.parent.parent?.left) {
+                const y = z.parent.parent?.right;
+                if (y?.color === Color.RED) {
+                    z.parent.color = Color.BLACK;
+                    y.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    z = z.parent.parent!;
+                } else {
+                    if (z === z.parent.right) {
+                        z = z.parent;
+                        this.leftRotate(z);
+                    }
+                    z.parent.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    this.rightRotate(z.parent.parent!);
+                }
+            } else {
+                const y = z.parent.parent?.left;
+                if (y?.color === Color.RED) {
+                    z.parent.color = Color.BLACK;
+                    y.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    z = z.parent.parent!;
+                } else {
+                    if (z === z.parent.left) {
+                        z = z.parent;
+                        this.rightRotate(z);
+                    }
+                    z.parent.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    this.leftRotate(z.parent.parent!);
+                }
+            }
+        }
+        this.root!.color = Color.BLACK; // Ensure root is always black
+    }
+
+    // Utility function to display the tree (for testing/debugging)
+    public print() {
+        const printHelper = (node: Node | null, depth: number) => {
+            if (node === null) return;
+            printHelper(node.right, depth + 1);
+            console.log(' '.repeat(depth * 4) + node.key + (node.color === Color.RED ? " (R)" : " (B)"));
+            printHelper(node.left, depth + 1);
+        };
+        printHelper(this.root, 0);
+    }
+}
+
+// Sample usage
+const rbt = new RedBlackTree();
+rbt.insert(10);
+rbt.insert(20);
+rbt.insert(30);
+rbt.insert(15);
+rbt.print();
