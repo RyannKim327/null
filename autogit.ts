@@ -1,28 +1,22 @@
-// Define an interface for the data structure
-interface ApiResponse {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-}
-
-// Create an async function to fetch data
-async function fetchData(url: string) {
-    try {
-        const response = await fetch(url);
-        
-        // Check if the response is okay (status in the range 200-299)
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const  ApiResponse[] = await response.json();
-        console.log(data);
-    } catch (error) {
-        console.error('Error fetching ', error);
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = Array.from(new Set(array));
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = array.filter((value, index, self) => self.indexOf(value) === index);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = array.reduce<number[]>((acc, value) => {
+    if (!acc.includes(value)) {
+        acc.push(value);
     }
-}
-
-// Call the function with a random API endpoint
-const apiURL = 'https://jsonplaceholder.typicode.com/posts';
-fetchData(apiURL);
+    return acc;
+}, []);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray: number[] = [];
+array.forEach(value => {
+    if (!uniqueArray.includes(value)) {
+        uniqueArray.push(value);
+    }
+});
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
