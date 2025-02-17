@@ -1,43 +1,50 @@
-function longestCommonSubsequence(str1: string, str2: string): string {
-    const m = str1.length;
-    const n = str2.length;
-
-    // Create a 2D array to store lengths of longest common subsequence
-    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-
-    // Fill the dp array
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1; // Characters match
-            } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]); // Take the maximum
-            }
-        }
+function mergeSort(arr: number[]): number[] {
+    // Base case: if the array has 1 or 0 elements, it is already sorted
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    // Backtrack to find the LCS
-    let lcs = '';
-    let i = m;
-    let j = n;
+    // Split the array into two halves
+    const mid = Math.floor(arr.length / 2);
+    const left = mergeSort(arr.slice(0, mid));
+    const right = mergeSort(arr.slice(mid));
 
-    while (i > 0 && j > 0) {
-        if (str1[i - 1] === str2[j - 1]) {
-            lcs = str1[i - 1] + lcs; // Add to LCS
-            i--;
-            j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--; // Move up
+    // Merge the sorted halves
+    return merge(left, right);
+}
+
+function merge(left: number[], right: number[]): number[] {
+    const result: number[] = [];
+    let i = 0; // Pointer for left array
+    let j = 0; // Pointer for right array
+
+    // Merge the two arrays while there are elements in both
+    while (i < left.length && j < right.length) {
+        if (left[i] < right[j]) {
+            result.push(left[i]);
+            i++;
         } else {
-            j--; // Move left
+            result.push(right[j]);
+            j++;
         }
     }
 
-    return lcs;
+    // If there are remaining elements in the left array, add them
+    while (i < left.length) {
+        result.push(left[i]);
+        i++;
+    }
+
+    // If there are remaining elements in the right array, add them
+    while (j < right.length) {
+        result.push(right[j]);
+        j++;
+    }
+
+    return result;
 }
 
 // Example usage
-const str1 = "AGGTAB";
-const str2 = "GXTXAYB";
-const result = longestCommonSubsequence(str1, str2);
-console.log(`The Longest Common Subsequence is: ${result}`); // Output: "GTAB"
+const array = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
