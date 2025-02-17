@@ -1,52 +1,19 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+npm install node-cron
+npm install typescript @types/node --save-dev
+import cron from 'node-cron';
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
+// Schedule a task to run every minute
+const task = cron.schedule('* * * * *', () => {
+    console.log('Task is running every minute:', new Date().toLocaleString());
+});
 
-class BinaryTree {
-    root: TreeNode | null;
+// Start the task
+task.start();
 
-    constructor() {
-        this.root = null;
-    }
-
-    diameter(): number {
-        let maxDiameter = 0;
-
-        const calculateDepth = (node: TreeNode | null): number => {
-            if (!node) {
-                return 0;
-            }
-
-            // Recursively compute the depth of the left and right subtree
-            const leftDepth = calculateDepth(node.left);
-            const rightDepth = calculateDepth(node.right);
-
-            // Update the maximum diameter
-            maxDiameter = Math.max(maxDiameter, leftDepth + rightDepth);
-
-            // Return the depth of the current node
-            return 1 + Math.max(leftDepth, rightDepth);
-        };
-
-        calculateDepth(this.root);
-        return maxDiameter;
-    }
-}
-
-// Example usage
-const tree = new BinaryTree();
-tree.root = new TreeNode(1);
-tree.root.left = new TreeNode(2);
-tree.root.right = new TreeNode(3);
-tree.root.left.left = new TreeNode(4);
-tree.root.left.right = new TreeNode(5);
-
-console.log(tree.diameter()); // Output will be the diameter of the binary tree
+// Optional: Stop the task after 5 minutes
+setTimeout(() => {
+    task.stop();
+    console.log('Task has been stopped.');
+}, 5 * 60 * 1000); // 5 minutes in milliseconds
+npx tsc cronExample.ts
+node cronExample.js
