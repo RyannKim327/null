@@ -1,62 +1,35 @@
-function createBadCharacterTable(pattern: string): { [key: string]: number } {
-    const table: { [key: string]: number } = {};
-    const patternLength = pattern.length;
+function binarySearch(arr: number[], target: number): number {
+    let left = 0;
+    let right = arr.length - 1;
 
-    // Initialize the table with the length of the pattern
-    for (let i = 0; i < patternLength - 1; i++) {
-        table[pattern[i]] = patternLength - 1 - i;
-    }
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
 
-    // Fill in the default value for characters not in the pattern
-    for (let i = 0; i < 256; i++) {
-        const char = String.fromCharCode(i);
-        if (!(char in table)) {
-            table[char] = patternLength;
-        }
-    }
-
-    return table;
-}
-
-function boyerMooreHorspool(text: string, pattern: string): number {
-    const textLength = text.length;
-    const patternLength = pattern.length;
-
-    if (patternLength === 0 || textLength < patternLength) {
-        return -1; // Pattern not found
-    }
-
-    const badCharTable = createBadCharacterTable(pattern);
-    let i = 0; // Index for text
-
-    while (i <= textLength - patternLength) {
-        let j = patternLength - 1; // Index for pattern
-
-        // Compare the pattern with the text from the end
-        while (j >= 0 && pattern[j] === text[i + j]) {
-            j--;
+        // Check if the target is present at mid
+        if (arr[mid] === target) {
+            return mid; // Target found, return the index
         }
 
-        // If the pattern is found
-        if (j < 0) {
-            return i; // Return the starting index of the match
+        // If target is greater, ignore the left half
+        if (arr[mid] < target) {
+            left = mid + 1;
         } else {
-            // Shift the pattern based on the bad character table
-            const shift = badCharTable[text[i + j]] || patternLength;
-            i += shift;
+            // If target is smaller, ignore the right half
+            right = mid - 1;
         }
     }
 
-    return -1; // Pattern not found
+    // Target was not found in the array
+    return -1;
 }
 
-// Example usage
-const text = "ababcababcabc";
-const pattern = "abc";
-const index = boyerMooreHorspool(text, pattern);
+// Example usage:
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const target = 7;
+const result = binarySearch(sortedArray, target);
 
-if (index !== -1) {
-    console.log(`Pattern found at index: ${index}`);
+if (result !== -1) {
+    console.log(`Target found at index: ${result}`);
 } else {
-    console.log("Pattern not found");
+    console.log('Target not found in the array.');
 }
