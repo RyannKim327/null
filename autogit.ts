@@ -1,35 +1,77 @@
-function binarySearch(arr: number[], target: number): number {
-    let left = 0;
-    let right = arr.length - 1;
+class Graph {
+    private vertices: number;
+    private adjList: Map<number, number[]>;
 
-    while (left <= right) {
-        const mid = Math.floor((left + right) / 2);
-
-        // Check if the target is present at mid
-        if (arr[mid] === target) {
-            return mid; // Target found, return the index
-        }
-
-        // If target is greater, ignore the left half
-        if (arr[mid] < target) {
-            left = mid + 1;
-        } else {
-            // If target is smaller, ignore the right half
-            right = mid - 1;
-        }
+    constructor(vertices: number) {
+        this.vertices = vertices;
+        this.adjList = new Map<number, number[]>();
     }
 
-    // Target was not found in the array
-    return -1;
+    addEdge(v: number, w: number) {
+        if (!this.adjList.has(v)) {
+            this.adjList.set(v, []);
+        }
+        this.adjList.get(v)!.push(w);
+    }
+
+    tarjan(): number[][] {
+        const index: number[] = new Array(this.vertices).fill(-1);
+        const lowlink: number[] = new Array(this.vertices).fill(-1);
+        const onStack: boolean[] = new Array(this.vertices).fill(false);
+        const stack: number[] = [];
+        const result: number[][] = [];
+        let currentIndex = 0;
+
+        const strongConnect = (v: number) => {
+            index[v] = currentIndex;
+            lowlink[v] = currentIndex;
+            currentIndex++;
+            stack.push(v);
+            onStack[v] = true;
+
+            // Consider successors of v
+            const neighbors = this.adjList.get(v) || [];
+            for (const w of neighbors) {
+                if (index[w] === -1) {
+                    // Successor w has not yet been visited; recurse on it
+                    strongConnect(w);
+                    lowlink[v] = Math.min(lowlink[v], lowlink[w]);
+                } else if (onStack[w]) {
+                    // Successor w is in stack and hence in the current SCC
+                    lowlink[v] = Math.min(lowlink[v], index[w]);
+                }
+            }
+
+            // If v is a root node, pop the stack and generate an SCC
+            if (lowlink[v] === index[v]) {
+                const scc: number[] = [];
+                let w: number;
+                do {
+                    w = stack.pop()!;
+                    onStack[w] = false;
+                    scc.push(w);
+                } while (w !== v);
+                result.push(scc);
+            }
+        };
+
+        for (let v = 0; v < this.vertices; v++) {
+            if (index[v] === -1) {
+                strongConnect(v);
+            }
+        }
+
+        return result;
+    }
 }
 
 // Example usage:
-const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const target = 7;
-const result = binarySearch(sortedArray, target);
+const graph = new Graph(5);
+graph.addEdge(0, 2);
+graph.addEdge(2, 1);
+graph.addEdge(1, 0);
+graph.addEdge(0, 3);
+graph.addEdge(3, 4);
 
-if (result !== -1) {
-    console.log(`Target found at index: ${result}`);
-} else {
-    console.log('Target not found in the array.');
-}
+const sccs = graph.tarjan();
+console.log(sccs); // Output: [[0, 1, 2], [3], [4]]
