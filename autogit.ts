@@ -1,106 +1,42 @@
-class SuffixTreeNode {
-    children: Map<string, SuffixTreeNode>;
-    start: number;
-    end: number | null;
-    suffixLink: SuffixTreeNode | null;
-
-    constructor(start: number, end: number | null) {
-        this.children = new Map();
-        this.start = start;
-        this.end = end;
-        this.suffixLink = null;
-    }
+class Node {
+    constructor(public state: string, public score: number) {}
 }
 
-class SuffixTree {
-    root: SuffixTreeNode;
-    text: string;
+function beamSearch(initialState: string, beamWidth: number, maxDepth: number, scoreFn: (state: string) => number): Node[] {
+    let beam: Node[] = [new Node(initialState, scoreFn(initialState))];
 
-    constructor(text: string) {
-        this.text = text;
-        this.root = new SuffixTreeNode(-1, null);
-        this.buildSuffixTree();
-    }
+    for (let depth = 0; depth < maxDepth; depth++) {
+        let newBeam: Node[] = [];
 
-    buildSuffixTree() {
-        const n = this.text.length;
-        for (let i = 0; i < n; i++) {
-            this.addSuffix(i);
-        }
-    }
-
-    addSuffix(start: number) {
-        let currentNode = this.root;
-        let currentChar = this.text[start];
-
-        while (true) {
-            if (!currentNode.children.has(currentChar)) {
-                // Create a new leaf node
-                currentNode.children.set(currentChar, new SuffixTreeNode(start, null));
-                break;
-            } else {
-                // There is an edge starting with currentChar
-                let childNode = currentNode.children.get(currentChar)!;
-                let edgeLength = (childNode.end === null ? this.text.length : childNode.end) - childNode.start;
-
-                // Check how much of the edge we can match
-                let matchLength = 0;
-                while (matchLength < edgeLength && this.text[childNode.start + matchLength] === this.text[start + matchLength]) {
-                    matchLength++;
-                }
-
-                if (matchLength === edgeLength) {
-                    // We can go down the edge
-                    currentNode = childNode;
-                    currentChar = this.text[start + matchLength];
-                    start += matchLength;
-                } else {
-                    // We need to split the edge
-                    const splitNode = new SuffixTreeNode(childNode.start, childNode.start + matchLength);
-                    currentNode.children.set(currentChar, splitNode);
-                    splitNode.children.set(this.text[childNode.start + matchLength], childNode);
-                    childNode.start += matchLength;
-                    childNode.end = childNode.start + (childNode.end === null ? this.text.length : childNode.end);
-                    splitNode.children.set(this.text[start + matchLength], new SuffixTreeNode(start + matchLength, null));
-                    break;
-                }
+        for (let node of beam) {
+            // Generate children nodes based on the current node's state
+            // Here just for demonstration, replace it with your actual generation logic
+            const childrenStates = generateChildren(node.state);
+            
+            for (let childState of childrenStates) {
+                const childScore = scoreFn(childState);
+                newBeam.push(new Node(childState, childScore));
             }
         }
+
+        // Sort the new beam by score and take the top `beamWidth` nodes
+        newBeam.sort((a, b) => b.score - a.score);
+        beam = newBeam.slice(0, beamWidth);
     }
 
-    // Function to search for a substring in the suffix tree
-    search(substring: string): boolean {
-        let currentNode = this.root;
-        let index = 0;
+    return beam;
+}
 
-        while (index < substring.length) {
-            const char = substring[index];
-            if (!currentNode.children.has(char)) {
-                return false; // Not found
-            }
-            const childNode = currentNode.children.get(char)!;
-            const edgeLength = (childNode.end === null ? this.text.length : childNode.end) - childNode.start;
+// Example function to generate children nodes. Replace this with real logic.
+function generateChildren(state: string): string[] {
+    return [state + '0', state + '1', state + '2'];
+}
 
-            let matchLength = 0;
-            while (matchLength < edgeLength && index < substring.length && this.text[childNode.start + matchLength] === substring[index]) {
-                matchLength++;
-                index++;
-            }
-
-            if (matchLength < edgeLength) {
-                return false; // Not found
-            }
-
-            currentNode = childNode;
-        }
-
-        return true; // Found
-    }
+// Example scoring function.
+function scoreFunction(state: string): number {
+    return state.length; // Example scoring: longer states are scored higher
 }
 
 // Example usage
-const text = "banana";
-const suffixTree = new SuffixTree(text);
-console.log(suffixTree.search("ana")); // true
-console.log(suffixTree.search("nan")); // true
-console.log(suffixTree.search("band")); // false
+const result = beamSearch('start', 3, 5, scoreFunction);
+console.log(result);
