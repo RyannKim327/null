@@ -1,67 +1,20 @@
-class TrieNode {
-    children: Map<string, TrieNode>;
-    isEndOfWord: boolean;
+function insertionSort(arr: number[]): number[] {
+    for (let i = 1; i < arr.length; i++) {
+        let key = arr[i];
+        let j = i - 1;
 
-    constructor() {
-        this.children = new Map<string, TrieNode>();
-        this.isEndOfWord = false;
-    }
-}
-
-class Trie {
-    root: TrieNode;
-
-    constructor() {
-        this.root = new TrieNode();
-    }
-
-    // Method to insert a word into the trie
-    insert(word: string): void {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                currentNode.children.set(char, new TrieNode());
-            }
-            currentNode = currentNode.children.get(char)!;
+        // Move elements of arr[0..i-1], that are
+        // greater than key, to one position ahead
+        // of their current position
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j = j - 1;
         }
-        currentNode.isEndOfWord = true;
+        arr[j + 1] = key;
     }
-
-    // Method to search for a word in the trie
-    search(word: string): boolean {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                return false;
-            }
-            currentNode = currentNode.children.get(char)!;
-        }
-        return currentNode.isEndOfWord;
-    }
-
-    // Method to check if there is any word in the trie that starts with the given prefix
-    startsWith(prefix: string): boolean {
-        let currentNode = this.root;
-
-        for (const char of prefix) {
-            if (!currentNode.children.has(char)) {
-                return false;
-            }
-            currentNode = currentNode.children.get(char)!;
-        }
-        return true;
-    }
+    return arr;
 }
 
 // Example usage:
-const trie = new Trie();
-trie.insert("hello");
-trie.insert("world");
-
-console.log(trie.search("hello")); // true
-console.log(trie.search("hell")); // false
-console.log(trie.startsWith("wor")); // true
-console.log(trie.startsWith("worl")); // true
-console.log(trie.startsWith("hellow")); // false
+const array = [12, 11, 13, 5, 6];
+console.log(insertionSort(array)); // Output: [5, 6, 11, 12, 13]
