@@ -1,60 +1,30 @@
-function computeLPSArray(pattern: string): number[] {
-    const m = pattern.length;
-    const lps = new Array(m).fill(0);
+// Define an interface for the data we expect from the API
+interface Post {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
+}
+
+// Function to fetch posts from the API
+async function fetchPosts(): Promise<Post[]> {
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
     
-    let len = 0; // Length of the previous longest prefix suffix
-    let i = 1;
-
-    while (i < m) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
+    // Check if the response is ok (status code 200-299)
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
     }
 
-    return lps;
+    // Parse the JSON response
+    const data: Post[] = await response.json();
+    return data;
 }
 
-function kmpSearch(text: string, pattern: string): number[] {
-    const n = text.length;
-    const m = pattern.length;
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
-
-    let i = 0; // text index
-    let j = 0; // pattern index
-
-    while (i < n) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-
-        if (j === m) {
-            result.push(i - j); // Match found, record the starting index
-            j = lps[j - 1]; // Look for the next match
-        } else if (i < n && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
-    }
-
-    return result; // Return the list of starting indices of matches
-}
-
-// Example usage:
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const indices = kmpSearch(text, pattern);
-console.log(`Pattern found at indices: ${indices}`);
+// Call the fetchPosts function and handle the response
+fetchPosts()
+    .then(posts => {
+        console.log('Fetched posts:', posts);
+    })
+    .catch(error => {
+        console.error('Error fetching posts:', error);
+    });
