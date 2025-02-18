@@ -1,8 +1,13 @@
-function findMaxValue(array: number[]): number {
-    return Math.max(...array);
+function countCharacter(str: string, char: string): number {
+    // Split the string by the character and get the length of the resulting array
+    return str.split(char).length - 1;
 }
 
 // Example usage:
-const numbers = [10, 20, 5, 30, 15];
-const maxValue = findMaxValue(numbers);
-console.log(maxValue); // Output: 30
+const myString = "hello world";
+const charToCount = "o";
+const count = countCharacter(myString, charToCount);
+console.log(`The character '${charToCount}' occurs ${count} times in the string.`);
+function countCharacterCaseInsensitive(str: string, char: string): number {
+    return str.toLowerCase().split(char.toLowerCase()).length - 1;
+}
