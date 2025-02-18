@@ -1,39 +1,60 @@
-class ListNode {
-    val: number;
-    next: ListNode | null;
+function computeLPSArray(pattern: string): number[] {
+    const m = pattern.length;
+    const lps = new Array(m).fill(0);
+    
+    let len = 0; // Length of the previous longest prefix suffix
+    let i = 1;
 
-    constructor(val: number) {
-        this.val = val;
-        this.next = null;
-    }
-}
-
-function hasCycle(head: ListNode | null): boolean {
-    if (!head) return false;
-
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast !== null && fast.next !== null) {
-        slow = slow.next;          // Move slow pointer by 1
-        fast = fast.next.next;    // Move fast pointer by 2
-
-        if (slow === fast) {
-            return true;           // Cycle detected
+    while (i < m) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
         }
     }
-    
-    return false; // No cycle detected
+
+    return lps;
 }
-const node1 = new ListNode(3);
-const node2 = new ListNode(2);
-const node3 = new ListNode(0);
-const node4 = new ListNode(-4);
 
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-// Uncomment the following line to create a cycle
-// node4.next = node2;
+function kmpSearch(text: string, pattern: string): number[] {
+    const n = text.length;
+    const m = pattern.length;
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
 
-console.log(hasCycle(node1)); // Outputs: true or false depending on cycle
+    let i = 0; // text index
+    let j = 0; // pattern index
+
+    while (i < n) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j === m) {
+            result.push(i - j); // Match found, record the starting index
+            j = lps[j - 1]; // Look for the next match
+        } else if (i < n && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+
+    return result; // Return the list of starting indices of matches
+}
+
+// Example usage:
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const indices = kmpSearch(text, pattern);
+console.log(`Pattern found at indices: ${indices}`);
