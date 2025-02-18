@@ -1,58 +1,41 @@
-class Node {
-    value: string;
-    children: Node[];
-
-    constructor(value: string) {
-        this.value = value;
-        this.children = [];
-    }
-
-    addChild(child: Node) {
-        this.children.push(child);
-    }
-}
-
-function breadthLimitedSearch(root: Node, target: string, depthLimit: number): Node | null {
-    if (depthLimit < 0) {
-        return null; // Depth limit exceeded
-    }
-
-    const queue: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
+class TreeNode {
+    val: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
     
-    while (queue.length > 0) {
-        const { node, depth } = queue.shift()!; // Get the first element in the queue
+    constructor(val: number) {
+        this.val = val;
+        this.left = null;
+        this.right = null;
+    }
+}
 
-        // Check if the current node is the target
-        if (node.value === target) {
-            return node; // Target found
+function diameterOfBinaryTree(root: TreeNode | null): number {
+    let diameter = 0;
+
+    function depth(node: TreeNode | null): number {
+        if (!node) {
+            return 0;
         }
 
-        // If we haven't reached the depth limit, add children to the queue
-        if (depth < depthLimit) {
-            for (const child of node.children) {
-                queue.push({ node: child, depth: depth + 1 });
-            }
-        }
+        // Recursively find the depth of the left and right subtrees
+        const leftDepth = depth(node.left);
+        const rightDepth = depth(node.right);
+
+        // Update the global diameter (longest path found so far)
+        diameter = Math.max(diameter, leftDepth + rightDepth);
+
+        // Return the depth of the current node
+        return Math.max(leftDepth, rightDepth) + 1;
     }
 
-    return null; // Target not found within the depth limit
+    depth(root);
+    return diameter;
 }
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-// Example usage
-const root = new Node("A");
-const b = new Node("B");
-const c = new Node("C");
-const d = new Node("D");
-const e = new Node("E");
-
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-b.addChild(e);
-
-const targetNode = breadthLimitedSearch(root, "D", 2);
-if (targetNode) {
-    console.log(`Found node: ${targetNode.value}`);
-} else {
-    console.log("Node not found within the depth limit.");
-}
+console.log(diameterOfBinaryTree(root)); // Output: 3
