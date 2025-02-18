@@ -1,19 +1,14 @@
-npm install node-cron
-npm install typescript @types/node --save-dev
-import cron from 'node-cron';
+function countWordOccurrences(sentence: string, word: string): number {
+    // Use a regular expression to match all occurrences of the word (case-insensitive)
+    const regex = new RegExp(`\\b${word}\\b`, 'gi');
+    const matches = sentence.match(regex);
+    
+    // Return the number of matches or 0 if there were none
+    return matches ? matches.length : 0;
+}
 
-// Schedule a task to run every minute
-const task = cron.schedule('* * * * *', () => {
-    console.log('Task is running every minute:', new Date().toLocaleString());
-});
-
-// Start the task
-task.start();
-
-// Optional: Stop the task after 5 minutes
-setTimeout(() => {
-    task.stop();
-    console.log('Task has been stopped.');
-}, 5 * 60 * 1000); // 5 minutes in milliseconds
-npx tsc cronExample.ts
-node cronExample.js
+// Example usage:
+const text = "Hello world! This is a test. Hello again, world!";
+const wordToCount = "hello";
+const count = countWordOccurrences(text, wordToCount);
+console.log(`The word "${wordToCount}" occurs ${count} times.`);
