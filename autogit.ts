@@ -1,96 +1,56 @@
-class Node {
-    constructor(
-        public position: [number, number],
-        public g: number, // Cost from start to current node
-        public h: number, // Heuristic cost to goal
-        public parent: Node | null = null
-    ) {}
+class BoyerMoore {
+    private pattern: string;
+    private badCharTable: Map<string, number>;
 
-    get f(): number {
-        return this.g + this.h;
+    constructor(pattern: string) {
+        this.pattern = pattern;
+        this.badCharTable = this.buildBadCharTable(pattern);
+    }
+
+    private buildBadCharTable(pattern: string): Map<string, number> {
+        const table = new Map<string, number>();
+        const patternLength = pattern.length;
+
+        for (let i = 0; i < patternLength; i++) {
+            table.set(pattern[i], i);
+        }
+
+        return table;
+    }
+
+    public search(text: string): number {
+        const patternLength = this.pattern.length;
+        const textLength = text.length;
+        let skip: number;
+
+        for (let i = 0; i <= textLength - patternLength; i += skip) {
+            skip = 0;
+
+            for (let j = patternLength - 1; j >= 0; j--) {
+                if (this.pattern[j] !== text[i + j]) {
+                    const badCharIndex = this.badCharTable.get(text[i + j]) || -1;
+                    skip = Math.max(1, j - badCharIndex);
+                    break;
+                }
+            }
+
+            if (skip === 0) {
+                // Match found at index i
+                return i; // Return the index of the first match
+            }
+        }
+
+        return -1; // No match found
     }
 }
 
-function heuristic(a: [number, number], b: [number, number]): number {
-    // Use Manhattan distance as heuristic
-    return Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]);
+// Example usage:
+const bm = new BoyerMoore("abc");
+const text = "abcpqrabcxyz";
+const index = bm.search(text);
+
+if (index !== -1) {
+    console.log(`Pattern found at index: ${index}`);
+} else {
+    console.log("Pattern not found");
 }
-
-function AStar(start: [number, number], goal: [number, number], grid: number[][]) {
-    const openList: Node[] = [];
-    const closedList: Set<string> = new Set();
-
-    openList.push(new Node(start, 0, heuristic(start, goal)));
-
-    while (openList.length > 0) {
-        // Sort by lowest f value and select the node
-        openList.sort((a, b) => a.f - b.f);
-        const currentNode = openList.shift()!;
-
-        // Check if we reached the goal
-        if (currentNode.position[0] === goal[0] && currentNode.position[1] === goal[1]) {
-            const path: [number, number][] = [];
-            let curr: Node | null = currentNode;
-            while (curr) {
-                path.unshift(curr.position);
-                curr = curr.parent;
-            }
-            return path; // Return the path from start to goal
-        }
-
-        closedList.add(currentNode.position.toString());
-
-        // Get neighbors
-        const neighbors = getNeighbors(currentNode.position, grid);
-
-        for (const neighbor of neighbors) {
-            if (closedList.has(neighbor.toString())) {
-                continue; // Already evaluated
-            }
-
-            const gCost = currentNode.g + 1; // Assuming cost of 1 for moving to neighbor
-            const hCost = heuristic(neighbor, goal);
-            const neighborNode = new Node(neighbor, gCost, hCost, currentNode);
-
-            // Check if this path to the neighbor is better
-            const existingNode = openList.find(n => n.position.toString() === neighborNode.position.toString());
-            if (!existingNode || gCost < existingNode.g) {
-                openList.push(neighborNode);
-            }
-        }
-    }
-
-    return []; // No path found
-}
-
-function getNeighbors(position: [number, number], grid: number[][]): [number, number][] {
-    const neighbors: [number, number][] = [];
-    const directions = [
-        [0, 1],  // Right
-        [1, 0],  // Down
-        [0, -1], // Left
-        [-1, 0], // Up
-    ];
-
-    for (const [dx, dy] of directions) {
-        const newX = position[0] + dx;
-        const newY = position[1] + dy;
-        if (newX >= 0 && newX < grid.length && newY >= 0 && newY < grid[0].length && grid[newX][newY] === 0) {
-            neighbors.push([newX, newY]);
-        }
-    }
-
-    return neighbors;
-}
-
-// Example usage
-const grid = [
-    [0, 0, 0, 0],
-    [0, 1, 1, 0],
-    [0, 0, 0, 0],
-    [0, 1, 0, 0],
-    [0, 0, 0, 0],
-];
-
-const path = AStar([0, 0], [4, 3], grid);
-console.log('Path from start to goal:', path);
