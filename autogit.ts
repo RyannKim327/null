@@ -1,101 +1,55 @@
-class Node {
-    pos: [number, number];
-    g: number; // Cost from start node
-    h: number; // Heuristic cost to goal node
-    f: number; // Total cost
-    parent: Node | null;
+function kmpSearch(text: string, pattern: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
+    let i = 0; // index for text
+    let j = 0; // index for pattern
 
-    constructor(pos: [number, number], parent: Node | null = null) {
-        this.pos = pos;
-        this.g = 0;
-        this.h = 0;
-        this.f = 0;
-        this.parent = parent;
-    }
-}
-
-function heuristic(a: [number, number], b: [number, number]): number {
-    // Use Manhattan distance as heuristic
-    return Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]);
-}
-
-function astar(start: [number, number], goal: [number, number], grid: number[][]): Node[] | null {
-    const openSet: Node[] = [];
-    const closedSet: Node[] = [];
-    
-    const startNode = new Node(start);
-    const goalNode = new Node(goal);
-
-    openSet.push(startNode);
-
-    while (openSet.length > 0) {
-        // Get the node with the lowest f value
-        openSet.sort((a, b) => a.f - b.f);
-        const currentNode = openSet.shift()!; // Take the first (the lowest f value)
-
-        // Check if we've reached the goal
-        if (currentNode.pos[0] === goalNode.pos[0] && currentNode.pos[1] === goalNode.pos[1]) {
-            const path: Node[] = [];
-            let temp: Node | null = currentNode;
-            while (temp) {
-                path.push(temp);
-                temp = temp.parent;
-            }
-            return path.reverse(); // Return reversed path
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
         }
 
-        closedSet.push(currentNode);
-
-        // Get neighbors (4-directional movement)
-        const neighbors = [
-            [currentNode.pos[0] + 1, currentNode.pos[1]],
-            [currentNode.pos[0] - 1, currentNode.pos[1]],
-            [currentNode.pos[0], currentNode.pos[1] + 1],
-            [currentNode.pos[0], currentNode.pos[1] - 1],
-        ];
-
-        for (const neighborPos of neighbors) {
-            const [x, y] = neighborPos;
-
-            // Check grid boundaries and obstacles
-            if (x < 0 || y < 0 || x >= grid.length || y >= grid[0].length || grid[x][y] === 1) {
-                continue; // Skip out of bounds or obstacles
+        if (j === pattern.length) {
+            result.push(i - j); // Match found
+            j = lps[j - 1];
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
             }
-
-            const neighborNode = new Node(neighborPos, currentNode);
-            if (closedSet.find(node => node.pos[0] === x && node.pos[1] === y)) {
-                continue; // Ignore the neighbor which is already evaluated
-            }
-
-            // Calculate g, h, f values
-            neighborNode.g = currentNode.g + 1; // Assuming cost to move to neighbor is 1
-            neighborNode.h = heuristic(neighborNode.pos, goalNode.pos);
-            neighborNode.f = neighborNode.g + neighborNode.h;
-
-            // Check if it's already in the open set and compare f values
-            const existingNode = openSet.find(node => node.pos[0] === x && node.pos[1] === y);
-            if (existingNode && neighborNode.g >= existingNode.g) {
-                continue; // Skip if this path is worse
-            }
-
-            openSet.push(neighborNode); // Add neighbor node to open set if it's not there
         }
     }
 
-    return null; // Return null if there is no path
+    return result;
+}
+
+function computeLPSArray(pattern: string): number[] {
+    const lps = new Array(pattern.length).fill(0);
+    let length = 0; // length of the previous longest prefix suffix
+    let i = 1; // we start with pattern[1]
+
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+
+    return lps;
 }
 
 // Example usage
-const grid = [
-    [0, 0, 0, 0, 0],
-    [0, 1, 1, 1, 0],
-    [0, 0, 0, 0, 0],
-    [0, 1, 1, 1, 0],
-    [0, 0, 0, 0, 0]
-];
-
-const start = [0, 0];
-const goal = [4, 4];
-const path = astar(start, goal, grid);
-
-console.log(path?.map(node => node.pos)); // Outputs the path from start to goal
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = kmpSearch(text, pattern);
+console.log("Pattern found at indices: ", result);
