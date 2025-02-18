@@ -1,30 +1,28 @@
-// Define an interface for the data we expect from the API
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-}
+function countingSort(arr: number[], max: number): number[] {
+    // Create an array to store the count of each number
+    const count: number[] = new Array(max + 1).fill(0);
 
-// Function to fetch posts from the API
-async function fetchPosts(): Promise<Post[]> {
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-    
-    // Check if the response is ok (status code 200-299)
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
+    // Count the occurrences of each number in the input array
+    for (const num of arr) {
+        count[num]++;
     }
 
-    // Parse the JSON response
-    const data: Post[] = await response.json();
-    return data;
+    // Create an array for the sorted result
+    const sortedArr: number[] = [];
+    
+    // Build the sorted array based on the counts
+    for (let i = 0; i < count.length; i++) {
+        while (count[i] > 0) {
+            sortedArr.push(i);
+            count[i]--;
+        }
+    }
+
+    return sortedArr;
 }
 
-// Call the function and handle the response
-fetchPosts()
-    .then(posts => {
-        console.log('Fetched posts:', posts);
-    })
-    .catch(error => {
-        console.error('Error fetching posts:', error);
-    });
+// Example usage
+const inputArray = [4, 2, 2, 8, 3, 3, 1];
+const maxValue = Math.max(...inputArray);
+const sortedArray = countingSort(inputArray, maxValue);
+console.log(sortedArray); // Output: [1, 2, 2, 3, 3, 4, 8]
