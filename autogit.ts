@@ -1,12 +1,8 @@
-function factorial(n: number): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers.");
-    }
-    if (n === 0 || n === 1) {
-        return 1; // Base case: factorial of 0 and 1 is 1
-    }
-    return n * factorial(n - 1); // Recursive case
+function findMaxValue(array: number[]): number {
+    return Math.max(...array);
 }
 
 // Example usage:
-console.log(factorial(5)); // Output: 120
+const numbers = [10, 20, 5, 30, 15];
+const maxValue = findMaxValue(numbers);
+console.log(maxValue); // Output: 30
