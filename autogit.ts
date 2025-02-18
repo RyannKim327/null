@@ -1,68 +1,39 @@
 class ListNode {
-    value: number;
+    val: number;
     next: ListNode | null;
 
-    constructor(value: number) {
-        this.value = value;
+    constructor(val: number) {
+        this.val = val;
         this.next = null;
     }
 }
 
-class LinkedList {
-    head: ListNode | null;
+function hasCycle(head: ListNode | null): boolean {
+    if (!head) return false;
 
-    constructor() {
-        this.head = null;
-    }
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
 
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next;          // Move slow pointer by 1
+        fast = fast.next.next;    // Move fast pointer by 2
 
-    // Method to print the list
-    print() {
-        let current = this.head;
-        const values: number[] = [];
-        while (current) {
-            values.push(current.value);
-            current = current.next;
+        if (slow === fast) {
+            return true;           // Cycle detected
         }
-        console.log(values.join(' -> '));
     }
+    
+    return false; // No cycle detected
 }
-function reverseLinkedList(head: ListNode | null): ListNode | null {
-    let prev: ListNode | null = null;
-    let current: ListNode | null = head;
+const node1 = new ListNode(3);
+const node2 = new ListNode(2);
+const node3 = new ListNode(0);
+const node4 = new ListNode(-4);
 
-    while (current) {
-        const nextTemp = current.next; // Store the next node
-        current.next = prev;            // Reverse the current node's pointer
-        prev = current;                 // Move prev and current one step forward
-        current = nextTemp;
-    }
-    return prev; // New head of the reversed list
-}
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+// Uncomment the following line to create a cycle
+// node4.next = node2;
 
-console.log("Original Linked List:");
-list.print();
-
-list.head = reverseLinkedList(list.head);
-
-console.log("Reversed Linked List:");
-list.print();
+console.log(hasCycle(node1)); // Outputs: true or false depending on cycle
