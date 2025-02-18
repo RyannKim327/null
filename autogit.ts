@@ -1,129 +1,68 @@
-class BTreeNode {
-    keys: number[];
-    children: BTreeNode[];
-    isLeaf: boolean;
-    t: number; // Minimum degree (defines the range for number of keys)
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    constructor(t: number, isLeaf: boolean) {
-        this.t = t;
-        this.isLeaf = isLeaf;
-        this.keys = [];
-        this.children = [];
-    }
-
-    // Function to traverse all nodes in a subtree rooted with this node
-    traverse() {
-        let i: number;
-        for (i = 0; i < this.keys.length; i++) {
-            // If this is not a leaf, then before the key, traverse the child
-            if (!this.isLeaf) {
-                this.children[i].traverse();
-            }
-            console.log(this.keys[i]);
-        }
-
-        // Finally, traverse the last child
-        if (!this.isLeaf) {
-            this.children[i].traverse();
-        }
-    }
-
-    // Function to insert a new key in this node
-    insertNonFull(key: number) {
-        let i = this.keys.length - 1;
-
-        // If this is a leaf node
-        if (this.isLeaf) {
-            // Find the location of the new key to be inserted
-            while (i >= 0 && key < this.keys[i]) {
-                i--;
-            }
-            // Insert the new key at found location
-            this.keys.splice(i + 1, 0, key);
-        } else {
-            // Find the child which is going to have the new key
-            while (i >= 0 && key < this.keys[i]) {
-                i--;
-            }
-            // Check if the found child is full
-            if (this.children[i + 1].keys.length === 2 * this.t - 1) {
-                // If the child is full, then split it
-                this.splitChild(i + 1);
-                // After split, the middle key of child goes up and this
-                // node will have two children. Decide which of the two
-                // children to recurse on
-                if (key > this.keys[i + 1]) {
-                    i++;
-                }
-            }
-            this.children[i + 1].insertNonFull(key);
-        }
-    }
-
-    // Function to split the child of this node. `i` is index of the child
-    // to be split. The child will be split into two nodes and a key
-    // will be moved up to this node.
-    splitChild(i: number) {
-        const t = this.t;
-        const y = this.children[i];
-        const z = new BTreeNode(t, y.isLeaf);
-
-        // Copy the last t-1 keys of y to z
-        for (let j = 0; j < t - 1; j++) {
-            z.keys.push(y.keys[j + t]);
-        }
-
-        // Copy the last t children of y to z
-        if (!y.isLeaf) {
-            for (let j = 0; j < t; j++) {
-                z.children.push(y.children[j + t]);
-            }
-        }
-
-        // Reduce the number of keys in y
-        y.keys.length = t - 1;
-
-        // Since this node is going to have a new child,
-        // create space for the new child
-        this.children.splice(i + 1, 0, z);
-
-        // A key of y will move to this node. Find location of
-        // new key and move all greater keys one space ahead
-        this.keys.splice(i, 0, y.keys.pop()!);
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
 }
 
-class BTree {
-    root: BTreeNode;
-    t: number; // Minimum degree
+class LinkedList {
+    head: ListNode | null;
 
-    constructor(t: number) {
-        this.root = new BTreeNode(t, true);
-        this.t = t;
+    constructor() {
+        this.head = null;
     }
 
-    // Function to traverse the tree
-    traverse() {
-        this.root.traverse();
-    }
-
-    // Function to insert a new key
-    insert(key: number) {
-        const root = this.root;
-
-        // If root is full, then tree grows in height
-        if (root.keys.length === 2 * this.t - 1) {
-            const newRoot = new BTreeNode(this.t, false);
-            newRoot.children.push(root);
-            newRoot.splitChild(0);
-            newRoot.insertNonFull(key);
-            this.root = newRoot;
-        } else {
-            root.insertNonFull(key);
+    // Method to add a new node at the end of the list
+    append(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
         }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    // Method to print the list
+    print() {
+        let current = this.head;
+        const values: number[] = [];
+        while (current) {
+            values.push(current.value);
+            current = current.next;
+        }
+        console.log(values.join(' -> '));
     }
 }
+function reverseLinkedList(head: ListNode | null): ListNode | null {
+    let prev: ListNode | null = null;
+    let current: ListNode | null = head;
 
-// Example usage
-const bTree = new BTree(3); // A B-tree with minimum degree 3
+    while (current) {
+        const nextTemp = current.next; // Store the next node
+        current.next = prev;            // Reverse the current node's pointer
+        prev = current;                 // Move prev and current one step forward
+        current = nextTemp;
+    }
+    return prev; // New head of the reversed list
+}
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+list.append(4);
+list.append(5);
 
+console.log("Original Linked List:");
+list.print();
+
+list.head = reverseLinkedList(list.head);
+
+console.log("Reversed Linked List:");
+list.print();
