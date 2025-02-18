@@ -1,30 +1,19 @@
-// Define an interface for the data we expect from the API
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
+function countWordOccurrences(text: string, word: string): number {
+    // Normalize the text and the word to lower case to make the search case-insensitive
+    const normalizedText = text.toLowerCase();
+    const normalizedWord = word.toLowerCase();
+
+    // Split the text into an array of words
+    const wordsArray = normalizedText.split(/\s+/); // Split by whitespace
+
+    // Filter the array to count occurrences of the word
+    const count = wordsArray.filter(w => w === normalizedWord).length;
+
+    return count;
 }
 
-// Function to fetch posts from the API
-async function fetchPosts(): Promise<Post[]> {
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-    
-    // Check if the response is ok (status code 200-299)
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
-    }
-
-    // Parse the JSON response
-    const data: Post[] = await response.json();
-    return data;
-}
-
-// Call the function and handle the response
-fetchPosts()
-    .then(posts => {
-        console.log('Fetched posts:', posts);
-    })
-    .catch(error => {
-        console.error('Error fetching posts:', error);
-    });
+// Example usage
+const text = "Hello world! This is a test. Hello again, world!";
+const wordToCount = "hello";
+const occurrences = countWordOccurrences(text, wordToCount);
+console.log(`The word "${wordToCount}" occurs ${occurrences} times.`);
