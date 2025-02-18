@@ -1,59 +1,42 @@
-type Edge = {
-    source: number;
-    destination: number;
-    weight: number;
-};
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-class Graph {
-    private edges: Edge[];
-    private numVertices: number;
-
-    constructor(numVertices: number) {
-        this.numVertices = numVertices;
-        this.edges = [];
-    }
-
-    addEdge(source: number, destination: number, weight: number) {
-        this.edges.push({ source, destination, weight });
-    }
-
-    bellmanFord(source: number): number[] | string {
-        // Step 1: Initialize distances from source to all vertices as infinite
-        const distances: number[] = new Array(this.numVertices).fill(Infinity);
-        distances[source] = 0;
-
-        // Step 2: Relax all edges |V| - 1 times
-        for (let i = 0; i < this.numVertices - 1; i++) {
-            for (const edge of this.edges) {
-                const { source, destination, weight } = edge;
-                if (distances[source] !== Infinity && distances[source] + weight < distances[destination]) {
-                    distances[destination] = distances[source] + weight;
-                }
-            }
-        }
-
-        // Step 3: Check for negative-weight cycles
-        for (const edge of this.edges) {
-            const { source, destination, weight } = edge;
-            if (distances[source] !== Infinity && distances[source] + weight < distances[destination]) {
-                return "Graph contains negative weight cycle";
-            }
-        }
-
-        return distances;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
 }
 
-// Example usage:
-const graph = new Graph(5);
-graph.addEdge(0, 1, -1);
-graph.addEdge(0, 2, 4);
-graph.addEdge(1, 2, 3);
-graph.addEdge(1, 3, 2);
-graph.addEdge(1, 4, 2);
-graph.addEdge(3, 2, 5);
-graph.addEdge(3, 1, 1);
-graph.addEdge(4, 3, -3);
+function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
+    let first: ListNode | null = head;
+    let second: ListNode | null = head;
 
-const distances = graph.bellmanFord(0);
-console.log(distances);
+    // Move first n nodes ahead
+    for (let i = 0; i < n; i++) {
+        if (first === null) return null; // If n is greater than the length of the list
+        first = first.next;
+    }
+
+    // Move both pointers until first reaches the end
+    while (first !== null) {
+        first = first.next;
+        second = second.next;
+    }
+
+    return second; // second is now pointing to the nth node from the end
+}
+
+// Example usage
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+const nthNode = findNthFromEnd(head, 2);
+if (nthNode) {
+    console.log(`The nth node from the end has the value: ${nthNode.value}`); // Output: 4
+} else {
+    console.log('The list is shorter than n.');
+}
