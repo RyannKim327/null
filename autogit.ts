@@ -1,53 +1,40 @@
-class Node {
-    value: string;
-    children: Node[];
+function boyerMooreHorspool(text: string, pattern: string): number[] {
+    const m = pattern.length;
+    const n = text.length;
+    const badCharShift: { [key: string]: number } = {};
 
-    constructor(value: string) {
-        this.value = value;
-        this.children = [];
+    // Preprocess the pattern to create the bad character shift table
+    for (let i = 0; i < m; i++) {
+        badCharShift[pattern[i]] = m - i - 1;
     }
 
-    addChild(child: Node) {
-        this.children.push(child);
-    }
-}
+    const result: number[] = [];
+    let s = 0; // s is the shift of the pattern with respect to text
 
-function depthLimitedSearch(node: Node, depth: number, target: string): boolean {
-    // Check if the current node is the target
-    if (node.value === target) {
-        return true;
-    }
+    while (s <= n - m) {
+        let j = m - 1;
 
-    // If the depth limit is reached, return false
-    if (depth === 0) {
-        return false;
-    }
+        // Keep reducing j while characters of pattern and text are matching
+        while (j >= 0 && pattern[j] === text[s + j]) {
+            j--;
+        }
 
-    // Recursively search in the children
-    for (const child of node.children) {
-        if (depthLimitedSearch(child, depth - 1, target)) {
-            return true;
+        // If the pattern is found
+        if (j < 0) {
+            result.push(s);
+            // Shift the pattern to the right
+            s += (s + m < n) ? m - badCharShift[text[s + m]] || m : 1;
+        } else {
+            // Shift the pattern based on the bad character rule
+            s += Math.max(1, j - (badCharShift[text[s + j]] || -1));
         }
     }
 
-    // If the target is not found in this path, return false
-    return false;
+    return result;
 }
 
-// Example usage:
-const root = new Node("A");
-const b = new Node("B");
-const c = new Node("C");
-const d = new Node("D");
-const e = new Node("E");
-
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-b.addChild(e);
-
-const target = "E";
-const depthLimit = 2;
-
-const found = depthLimitedSearch(root, depthLimit, target);
-console.log(`Target ${target} found: ${found}`);
+// Example usage
+const text = "ababcabcabababd";
+const pattern = "ababd";
+const indices = boyerMooreHorspool(text, pattern);
+console.log(`Pattern found at indices: ${indices}`);
