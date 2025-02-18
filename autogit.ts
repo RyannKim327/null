@@ -1,20 +1,15 @@
-function insertionSort(arr: number[]): number[] {
-    for (let i = 1; i < arr.length; i++) {
-        let key = arr[i];
-        let j = i - 1;
-
-        // Move elements of arr[0..i-1], that are greater than key,
-        // to one position ahead of their current position
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
-        arr[j + 1] = key;
+function calculateMean(numbers: number[]): number {
+    if (numbers.length === 0) {
+        throw new Error("The list of numbers is empty.");
     }
-    return arr;
+
+    const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    const mean = sum / numbers.length;
+
+    return mean;
 }
 
-// Example usage
-const array = [12, 11, 13, 5, 6];
-const sortedArray = insertionSort(array);
-console.log(sortedArray); // Output: [5, 6, 11, 12, 13]
+// Example usage:
+const numbers = [10, 20, 30, 40, 50];
+const mean = calculateMean(numbers);
+console.log(`The mean is: ${mean}`);
