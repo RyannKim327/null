@@ -1,18 +1,20 @@
-import axios from 'axios';
+function insertionSort(arr: number[]): number[] {
+    for (let i = 1; i < arr.length; i++) {
+        let key = arr[i];
+        let j = i - 1;
 
-const fetchData = async (url: string) => {
-    try {
-        const response = await axios.get(url);
-        console.log('Data:', response.data);
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            console.error('Error message:', error.message);
-        } else {
-            console.error('Unexpected error:', error);
+        // Move elements of arr[0..i-1], that are greater than key,
+        // to one position ahead of their current position
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
         }
+        arr[j + 1] = key;
     }
-};
+    return arr;
+}
 
-const API_URL = 'https://jsonplaceholder.typicode.com/posts/1';
-fetchData(API_URL);
-npm install axios
+// Example usage
+const unsortedArray = [5, 2, 4, 6, 1, 3];
+const sortedArray = insertionSort(unsortedArray);
+console.log(sortedArray); // Output: [1, 2, 3, 4, 5, 6]
