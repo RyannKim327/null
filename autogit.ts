@@ -1,54 +1,32 @@
-class ListNode {
+// Definition for a binary tree node.
+class TreeNode {
     value: number;
-    next: ListNode | null;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
     constructor(value: number) {
         this.value = value;
-        this.next = null;
+        this.left = null;
+        this.right = null;
     }
 }
 
-class LinkedList {
-    head: ListNode | null;
-
-    constructor() {
-        this.head = null;
+// Function to calculate the sum of all nodes in the binary tree.
+function sumOfNodes(root: TreeNode | null): number {
+    if (root === null) {
+        return 0;  // Base case: If the node is null, return 0.
     }
 
-    // Method to add a new node to the list
-    add(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
-        }
-    }
-
-    // Method to find the middle element
-    findMiddle(): number | null {
-        let slowPointer: ListNode | null = this.head;
-        let fastPointer: ListNode | null = this.head;
-
-        while (fastPointer && fastPointer.next) {
-            slowPointer = slowPointer ? slowPointer.next : null; // Move slow pointer by 1
-            fastPointer = fastPointer.next.next; // Move fast pointer by 2
-        }
-
-        return slowPointer ? slowPointer.value : null; // Return the value of the middle node
-    }
+    // Recursively calculate the sums of left and right subtrees, and add the current node's value.
+    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
 }
 
-// Example usage
-const linkedList = new LinkedList();
-linkedList.add(1);
-linkedList.add(2);
-linkedList.add(3);
-linkedList.add(4);
-linkedList.add(5);
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-console.log(linkedList.findMiddle()); // Output: 3
+const totalSum = sumOfNodes(root);
+console.log(totalSum);  // Output: 15
