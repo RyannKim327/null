@@ -1,41 +1,22 @@
-class TreeNode {
-    val: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function longestCommonPrefix(strs: string[]): string {
+    if (strs.length === 0) return "";
+    if (strs.length === 1) return strs[0];
 
-    constructor(val: number) {
-        this.val = val;
-        this.left = null;
-        this.right = null;
+    // Sort strings
+    strs.sort();
+    const first = strs[0];
+    const last = strs[strs.length - 1];
+    let i = 0;
+
+    // Compare characters of first and last string
+    while (i < first.length && first[i] === last[i]) {
+        i++;
     }
+
+    // Return the longest common prefix
+    return first.slice(0, i);
 }
 
-function diameterOfBinaryTree(root: TreeNode | null): number {
-    let maxDiameter = 0;
-
-    const dfs = (node: TreeNode | null): number => {
-        if (!node) return 0;
-
-        // Recursively find the height of left and right subtrees
-        const leftHeight = dfs(node.left);
-        const rightHeight = dfs(node.right);
-
-        // The diameter at this node is leftHeight + rightHeight
-        maxDiameter = Math.max(maxDiameter, leftHeight + rightHeight);
-
-        // Return the height of the current node
-        return Math.max(leftHeight, rightHeight) + 1;
-    };
-
-    dfs(root);
-    return maxDiameter;
-}
-
-// Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(diameterOfBinaryTree(root)); // Output: 3
+// Example usage
+const strings = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(strings)); // Output: "fl"
