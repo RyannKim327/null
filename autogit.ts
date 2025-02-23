@@ -1,48 +1,56 @@
-function createBadCharacterTable(pattern: string): { [key: string]: number } {
-    const table: { [key: string]: number } = {};
-    const patternLength = pattern.length;
+function fibonacciSearch(arr: number[], x: number): number {
+    const n = arr.length;
+    // Initialize Fibonacci numbers
+    let fibM2 = 0; // (m-2)'th Fibonacci number
+    let fibM1 = 1; // (m-1)'th Fibonacci number
+    let fibM = fibM2 + fibM1; // m'th Fibonacci number
 
-    for (let i = 0; i < patternLength - 1; i++) {
-        table[pattern[i]] = patternLength - 1 - i;
+    // fibM is going to store the smallest Fibonacci number greater than or equal to n
+    while (fibM < n) {
+        fibM2 = fibM1;
+        fibM1 = fibM;
+        fibM = fibM1 + fibM2;
     }
 
-    return table;
-}
+    // Marks the eliminated range from the front
+    let offset = -1;
 
-function boyerMooreHorspool(text: string, pattern: string): number[] {
-    const badCharTable = createBadCharacterTable(pattern);
-    const patternLength = pattern.length;
-    const textLength = text.length;
-    const results: number[] = [];
+    // While there are elements to be inspected
+    while (fibM > 1) {
+        // Calculate the index for the comparison
+        const i = Math.min(offset + fibM2, n - 1);
 
-    let s = 0; // Shift of the pattern with respect to text
-
-    while (s <= textLength - patternLength) {
-        let j = patternLength - 1;
-
-        // Keep reducing j while characters of pattern and text are matching
-        while (j >= 0 && pattern[j] === text[s + j]) {
-            j--;
+        // If x is greater than the value at index i, cut the subarray after i
+        if (arr[i] < x) {
+            fibM = fibM1;
+            fibM1 = fibM2;
+            fibM2 = fibM - fibM1;
+            offset = i;
         }
-
-        // If the pattern is found
-        if (j < 0) {
-            results.push(s);
-            // Shift the pattern so that the next character in text aligns with
-            // the last occurrence of pattern in text
-            s += (s + patternLength < textLength) ? (patternLength - badCharTable[text[s + patternLength]] || patternLength) : 1;
-        } else {
-            // Shift the pattern based on the bad character heuristic
-            const shift = badCharTable[text[s + j]] || patternLength;
-            s += Math.max(1, shift - (patternLength - 1 - j));
+        // If x is less than the value at index i, cut the subarray before i
+        else if (arr[i] > x) {
+            fibM = fibM2;
+            fibM1 -= fibM2;
+            fibM2 = fibM - fibM1;
+        }
+        // Element found
+        else {
+            return i;
         }
     }
 
-    return results;
+    // Comparing the last element with x
+    if (fibM1 && arr[offset + 1] === x) {
+        return offset + 1;
+    }
+
+    // Element not found
+    return -1;
 }
 
 // Example usage
-const text = "ababcabcababcabc";
-const pattern = "abc";
-const result = boyerMooreHorspool(text, pattern);
-console.log("Pattern found at indices:", result);
+const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
+const x = 85;
+const index = fibonacciSearch(arr, x);
+
+console.log(index !== -1 ? `Element found at index: ${index}` : 'Element not found');
