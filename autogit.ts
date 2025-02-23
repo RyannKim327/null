@@ -1,20 +1,59 @@
-function maximumSumSubarray(arr: number[]): number {
-    if (arr.length === 0) return 0; // Handle empty array case
+// Define a Node class
+class Node {
+    value: string;
+    children: Node[];
 
-    let maxSoFar = arr[0]; // Initialize max sum to the first element
-    let maxEndingHere = arr[0]; // Initialize current maximum sum
-
-    for (let i = 1; i < arr.length; i++) {
-        // Update maxEndingHere
-        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
-        
-        // Update maxSoFar
-        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+    constructor(value: string) {
+        this.value = value;
+        this.children = [];
     }
 
-    return maxSoFar;
+    addChild(child: Node) {
+        this.children.push(child);
+    }
+}
+
+// Breadth-Limited Search function
+function breadthLimitedSearch(root: Node, target: string, limit: number): Node | null {
+    if (limit < 0) return null;
+
+    const queue: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
+
+    while (queue.length > 0) {
+        const { node, depth } = queue.shift()!;
+
+        // Check if the current node is the target
+        if (node.value === target) {
+            return node;
+        }
+
+        // If we haven't reached the depth limit, add children to the queue
+        if (depth < limit) {
+            for (const child of node.children) {
+                queue.push({ node: child, depth: depth + 1 });
+            }
+        }
+    }
+
+    // Return null if the target is not found within the depth limit
+    return null;
 }
 
 // Example usage
-const nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-console.log(maximumSumSubarray(nums)); // Output: 6 (subarray: [4, -1, 2, 1])
+const root = new Node("A");
+const b = new Node("B");
+const c = new Node("C");
+const d = new Node("D");
+const e = new Node("E");
+
+root.addChild(b);
+root.addChild(c);
+b.addChild(d);
+b.addChild(e);
+
+const targetNode = breadthLimitedSearch(root, "D", 2);
+if (targetNode) {
+    console.log(`Found node: ${targetNode.value}`);
+} else {
+    console.log("Node not found within the depth limit.");
+}
