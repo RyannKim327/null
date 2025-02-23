@@ -1,32 +1,20 @@
-// Definition for a binary tree node.
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function maximumSumSubarray(arr: number[]): number {
+    if (arr.length === 0) return 0; // Handle empty array case
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
+    let maxSoFar = arr[0]; // Initialize max sum to the first element
+    let maxEndingHere = arr[0]; // Initialize current maximum sum
 
-// Function to calculate the sum of all nodes in the binary tree.
-function sumOfNodes(root: TreeNode | null): number {
-    if (root === null) {
-        return 0;  // Base case: If the node is null, return 0.
+    for (let i = 1; i < arr.length; i++) {
+        // Update maxEndingHere
+        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
+        
+        // Update maxSoFar
+        maxSoFar = Math.max(maxSoFar, maxEndingHere);
     }
 
-    // Recursively calculate the sums of left and right subtrees, and add the current node's value.
-    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
+    return maxSoFar;
 }
 
-// Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-const totalSum = sumOfNodes(root);
-console.log(totalSum);  // Output: 15
+// Example usage
+const nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+console.log(maximumSumSubarray(nums)); // Output: 6 (subarray: [4, -1, 2, 1])
