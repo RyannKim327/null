@@ -1,58 +1,45 @@
-function merge(left: number[], right: number[]): number[] {
-    let result: number[] = [];
-    let i = 0, j = 0;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    while (i < left.length && j < right.length) {
-        if (left[i] < right[j]) {
-            result.push(left[i]);
-            i++;
-        } else {
-            result.push(right[j]);
-            j++;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+function hasCycle(head: ListNode | null): boolean {
+    if (!head) return false;
+
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next; // Move slow pointer by 1
+        fast = fast.next.next; // Move fast pointer by 2
+
+        if (slow === fast) {
+            return true; // Cycle detected
         }
     }
 
-    // Collect remaining elements
-    while (i < left.length) {
-        result.push(left[i]);
-        i++;
-    }
-
-    while (j < right.length) {
-        result.push(right[j]);
-        j++;
-    }
-
-    return result;
+    return false; // No cycle
 }
 
-function mergeSort(arr: number[]): number[] {
-    let n = arr.length;
-    if (n < 2) return arr;
+// Example usage:
+const node1 = new ListNode(1);
+const node2 = new ListNode(2);
+const node3 = new ListNode(3);
+const node4 = new ListNode(4);
 
-    // Each element is considered a sorted subarray of size 1
-    let sortedSubArrays: number[][] = arr.map(val => [val]);
+// Creating a cycle for testing
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node2; // Creates a cycle
 
-    // Iteratively merge subarrays
-    while (sortedSubArrays.length > 1) {
-        let mergedArrays: number[][] = [];
+console.log(hasCycle(node1)); // Output: true
 
-        for (let i = 0; i < sortedSubArrays.length; i += 2) {
-            if (i + 1 < sortedSubArrays.length) {
-                mergedArrays.push(merge(sortedSubArrays[i], sortedSubArrays[i + 1]));
-            } else {
-                // If odd number of subarrays, just push the last one
-                mergedArrays.push(sortedSubArrays[i]);
-            }
-        }
-
-        sortedSubArrays = mergedArrays;
-    }
-
-    return sortedSubArrays[0];
-}
-
-// Example usage
-const arrayToSort = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(arrayToSort);
-console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
+// Creating a non-cyclic linked list for testing
+node4.next = null; // Break the cycle
+console.log(hasCycle(node1)); // Output: false
