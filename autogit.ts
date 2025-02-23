@@ -1,7 +1,56 @@
-let array: number[] = [1, 2, 3, 4, 5];
-array.reverse();
-console.log(array); // Output: [5, 4, 3, 2, 1]
-let originalArray: number[] = [1, 2, 3, 4, 5];
-let reversedArray: number[] = originalArray.slice().reverse();
-console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
-console.log(originalArray); // Output: [1, 2, 3, 4, 5] (original array remains unchanged)
+function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
+    const n = input.length;
+    const rotations: string[] = [];
+
+    // Generate all rotations of the input string
+    for (let i = 0; i < n; i++) {
+        rotations.push(input.slice(i) + input.slice(0, i));
+    }
+
+    // Sort the rotations
+    rotations.sort();
+
+    // Build the transformed string and find the original index
+    let transformed = '';
+    let originalIndex = 0;
+
+    for (let i = 0; i < n; i++) {
+        transformed += rotations[i][n - 1]; // Take the last character of each sorted rotation
+        if (rotations[i] === input) {
+            originalIndex = i; // Store the index of the original string
+        }
+    }
+
+    return { transformed, index: originalIndex };
+}
+
+function inverseBurrowsWheelerTransform(transformed: string, index: number): string {
+    const n = transformed.length;
+    const table: string[] = new Array(n);
+
+    // Initialize the table with empty strings
+    for (let i = 0; i < n; i++) {
+        table[i] = '';
+    }
+
+    // Rebuild the table
+    for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+            table[j] = transformed[j] + table[j];
+        }
+        // Sort the table
+        table.sort();
+    }
+
+    // Return the original string
+    return table[index];
+}
+
+// Example usage
+const input = "banana";
+const { transformed, index } = burrowsWheelerTransform(input);
+console.log("Transformed:", transformed);
+console.log("Original Index:", index);
+
+const original = inverseBurrowsWheelerTransform(transformed, index);
+console.log("Original String:", original);
