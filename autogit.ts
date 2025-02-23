@@ -1,9 +1,13 @@
-function decimalToBinary(decimal: number): string {
-    return decimal.toString(2);
-}
+let array: number[] = [1, 2, 3, 4, 5];
+console.log("Original array:", array);
 
-// Example usage:
-const decimalNumber = 42;
-const binaryString = decimalToBinary(decimalNumber);
-console.log(`The binary representation of ${decimalNumber} is ${binaryString}`);
-The binary representation of 42 is 101010
+// Reverse the array
+array.reverse();
+console.log("Reversed array:", array);
+let originalArray: number[] = [1, 2, 3, 4, 5];
+console.log("Original array:", originalArray);
+
+// Create a new reversed array
+let reversedArray: number[] = originalArray.slice().reverse();
+console.log("Reversed array:", reversedArray);
+console.log("Original array after reversing:", originalArray); // remains unchanged
