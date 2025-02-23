@@ -1,49 +1,75 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+class Node<T> {
+    value: T;
+    next: Node<T> | null = null; // Pointer to the next node
 
-    constructor(value: number) {
+    constructor(value: T) {
         this.value = value;
-        this.next = null;
     }
 }
 
-class LinkedList {
-    head: ListNode | null;
+class LinkedList<T> {
+    head: Node<T> | null = null; // Pointer to the first node
+    tail: Node<T> | null = null; // Pointer to the last node
+    length: number = 0; // Length of the linked list
 
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
+    // Add a new node to the end of the list
+    append(value: T): void {
+        const newNode = new Node(value);
         if (!this.head) {
             this.head = newNode;
-            return;
+            this.tail = newNode;
+        } else {
+            if (this.tail) {
+                this.tail.next = newNode;
+            }
+            this.tail = newNode;
         }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
+        this.length++;
     }
 
-    // Method to find the length of the linked list
-    length(): number {
-        let count = 0;
-        let current = this.head;
-        while (current) {
-            count++;
-            current = current.next;
+    // Remove a node by value
+    remove(value: T): void {
+        if (!this.head) return;
+
+        if (this.head.value === value) {
+            this.head = this.head.next;
+            this.length--;
+            return;
         }
-        return count;
+
+        let currentNode = this.head;
+        while (currentNode.next) {
+            if (currentNode.next.value === value) {
+                currentNode.next = currentNode.next.next;
+                if (!currentNode.next) {
+                    this.tail = currentNode; // Update tail if needed
+                }
+                this.length--;
+                return;
+            }
+            currentNode = currentNode.next;
+        }
+    }
+
+    // Print the linked list
+    print(): void {
+        let currentNode = this.head;
+        let listStr = '';
+
+        while (currentNode) {
+            listStr += `${currentNode.value} -> `;
+            currentNode = currentNode.next;
+        }
+        listStr += 'null';
+        console.log(listStr);
     }
 }
 
 // Example usage:
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-console.log("Length of the linked list:", list.length()); // Output: Length of the linked list: 3
+const linkedList = new LinkedList<number>();
+linkedList.append(1);
+linkedList.append(2);
+linkedList.append(3);
+linkedList.print(); // Output: 1 -> 2 -> 3 -> null
+linkedList.remove(2);
+linkedList.print(); // Output: 1 -> 3 -> null
