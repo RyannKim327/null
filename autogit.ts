@@ -1,22 +1,12 @@
-function bubbleSort(arr: number[]): number[] {
-    const n = arr.length;
-    let swapped: boolean;
+const numbers: number[] = [5, 3, 8, 1, 2];
 
-    do {
-        swapped = false;
-        for (let i = 0; i < n - 1; i++) {
-            if (arr[i] > arr[i + 1]) {
-                // Swap arr[i] and arr[i + 1]
-                [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
-                swapped = true;
-            }
-        }
-    } while (swapped);
+// Sort the array in ascending order
+numbers.sort((a, b) => a - b);
 
-    return arr;
-}
+console.log(numbers); // Output: [1, 2, 3, 5, 8]
+const numbers: number[] = [5, 3, 8, 1, 2];
 
-// Example usage
-const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
-const sortedArray = bubbleSort(unsortedArray);
-console.log("Sorted Array:", sortedArray);
+// Sort the array in descending order
+numbers.sort((a, b) => b - a);
+
+console.log(numbers); // Output: [8, 5, 3, 2, 1]
