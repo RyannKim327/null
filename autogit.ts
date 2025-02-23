@@ -1,16 +1,94 @@
-function maxSubArray(arr: number[]): number {
-    let maxSoFar = arr[0];
-    let maxEndingHere = arr[0];
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
 
-    for (let i = 1; i < arr.length; i++) {
-        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
-        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+    constructor(value: T) {
+        this.value = value;
+        this.next = null;
+    }
+}
+class LinkedList<T> {
+    head: Node<T> | null;
+    tail: Node<T> | null;
+    length: number;
+
+    constructor() {
+        this.head = null;
+        this.tail = null;
+        this.length = 0;
     }
 
-    return maxSoFar;
-}
+    // Add a new node to the end of the list
+    append(value: T): void {
+        const newNode = new Node(value);
+        if (!this.head) {
+            this.head = newNode;
+            this.tail = newNode;
+        } else {
+            if (this.tail) {
+                this.tail.next = newNode;
+            }
+            this.tail = newNode;
+        }
+        this.length++;
+    }
 
-// Example usage:
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const maxSum = maxSubArray(array);
-console.log(maxSum);  // Output: 6
+    // Remove a node by value
+    remove(value: T): boolean {
+        if (!this.head) return false;
+
+        if (this.head.value === value) {
+            this.head = this.head.next;
+            this.length--;
+            return true;
+        }
+
+        let current = this.head;
+        while (current.next) {
+            if (current.next.value === value) {
+                current.next = current.next.next;
+                if (current.next === null) {
+                    this.tail = current; // Update tail if needed
+                }
+                this.length--;
+                return true;
+            }
+            current = current.next;
+        }
+        return false;
+    }
+
+    // Find a node by value
+    find(value: T): Node<T> | null {
+        let current = this.head;
+        while (current) {
+            if (current.value === value) {
+                return current;
+            }
+            current = current.next;
+        }
+        return null;
+    }
+
+    // Print the list
+    print(): void {
+        let current = this.head;
+        const values: T[] = [];
+        while (current) {
+            values.push(current.value);
+            current = current.next;
+        }
+        console.log(values.join(' -> '));
+    }
+}
+const list = new LinkedList<number>();
+list.append(1);
+list.append(2);
+list.append(3);
+list.print(); // Output: 1 -> 2 -> 3
+
+list.remove(2);
+list.print(); // Output: 1 -> 3
+
+const foundNode = list.find(3);
+console.log(foundNode ? foundNode.value : 'Not found'); // Output: 3
