@@ -1,10 +1,16 @@
-function reverseWords(input: string): string {
-    return input.split(' ') // Split the string into an array of words
-                .reverse()   // Reverse the array
-                .join(' ');  // Join the array back into a string
+function firstRepeatedCharacter(str: string): string | null {
+    const seenChars = new Set<string>();
+
+    for (const char of str) {
+        if (seenChars.has(char)) {
+            return char; // Return the first repeated character
+        }
+        seenChars.add(char); // Add the character to the set if it's not seen yet
+    }
+
+    return null; // Return null if there's no repeated character
 }
 
 // Example usage:
-const originalString = "Hello world this is TypeScript";
-const reversedString = reverseWords(originalString);
-console.log(reversedString); // Output: "TypeScript is this world Hello"
+const result = firstRepeatedCharacter("swiss");
+console.log(result); // Output: "s"
