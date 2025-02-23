@@ -1,19 +1,40 @@
-function maxSubArray(nums: number[]): number {
-    let maxSoFar = nums[0]; // Initialize maxSoFar with the first element
-    let maxEndingHere = nums[0]; // Initialize maxEndingHere with the first element
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    for (let i = 1; i < nums.length; i++) {
-        // Update maxEndingHere to include the current element
-        maxEndingHere = Math.max(nums[i], maxEndingHere + nums[i]);
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+function diameterOfBinaryTree(root: TreeNode | null): number {
+    let maxDiameter = 0;
+
+    function height(node: TreeNode | null): number {
+        if (!node) return 0;
+
+        const leftHeight = height(node.left);
+        const rightHeight = height(node.right);
         
-        // Update maxSoFar if maxEndingHere is greater
-        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+        // Update the maximum diameter found so far
+        maxDiameter = Math.max(maxDiameter, leftHeight + rightHeight);
+
+        // Return the height of the tree rooted at this node
+        return Math.max(leftHeight, rightHeight) + 1;
     }
 
-    return maxSoFar;
+    height(root);
+    return maxDiameter;
 }
 
 // Example usage:
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const result = maxSubArray(array);
-console.log(result); // Output: 6 (subarray [4, -1, 2, 1])
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(diameterOfBinaryTree(root)); // Output the diameter
