@@ -2,65 +2,50 @@ class ListNode {
     value: number;
     next: ListNode | null;
 
-    constructor(value: number) {
+    constructor(value: number, next: ListNode | null = null) {
         this.value = value;
-        this.next = null;
+        this.next = next;
     }
 }
 
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    if (!headA || !headB) return null;
+function isPalindrome(head: ListNode | null): boolean {
+    if (!head || !head.next) return true;
 
-    let currA: ListNode | null = headA;
-    let currB: ListNode | null = headB;
-
-    // Calculate lengths of both lists
-    let lenA = 0;
-    let lenB = 0;
-
-    while (currA) {
-        lenA++;
-        currA = currA.next;
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+    
+    // Find the middle of the linked list
+    while (fast && fast.next) {
+        slow = slow?.next || null;
+        fast = fast.next.next;
     }
 
-    while (currB) {
-        lenB++;
-        currB = currB.next;
+    // Reverse the second half of the linked list
+    let prev: ListNode | null = null;
+    let curr: ListNode | null = slow;
+
+    while (curr) {
+        const nextTemp = curr.next;
+        curr.next = prev;
+        prev = curr;
+        curr = nextTemp;
     }
 
-    // Reset pointers
-    currA = headA;
-    currB = headB;
-
-    // Skip the extra nodes in the longer list
-    while (lenA > lenB) {
-        currA = currA?.next || null;
-        lenA--;
-    }
-
-    while (lenB > lenA) {
-        currB = currB?.next || null;
-        lenB--;
-    }
-
-    // Traverse both lists to find the intersection
-    while (currA && currB) {
-        if (currA === currB) {
-            return currA; // Intersection found
+    // Compare the first half and the reversed second half
+    let left: ListNode | null = head;
+    let right: ListNode | null = prev; // Where prev is the head of reversed second half
+    
+    while (right) {
+        if (left?.value !== right.value) {
+            return false; // Not a palindrome
         }
-        currA = currA.next;
-        currB = currB.next;
+        left = left.next;
+        right = right.next;
     }
 
-    return null; // No intersection
+    return true; // Is a palindrome
 }
-const listA = new ListNode(1);
-const listB = new ListNode(2);
-const intersection = new ListNode(3);
-listA.next = new ListNode(4);
-listA.next.next = intersection;
-listB.next = intersection;
-intersection.next = new ListNode(5);
 
-const result = getIntersectionNode(listA, listB);
-console.log(result?.value); // Output: 3
+// Example usage
+const head = new ListNode(1, new ListNode(2, new ListNode(1)));
+console.log(isPalindrome(head)); // Output: true
