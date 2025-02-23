@@ -1,51 +1,61 @@
-// Define the structure of a Node
-class Node {
-    value: number;
-    next: Node | null;
+function fibonacciSearch(arr: number[], x: number): number {
+    const n = arr.length;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+    // Initialize Fibonacci numbers
+    let fibM2 = 0; // (m-2)'th Fibonacci number
+    let fibM1 = 1; // (m-1)'th Fibonacci number
+    let fibM = fibM1 + fibM2; // m'th Fibonacci number
+
+    // Find the smallest Fibonacci number greater than or equal to n
+    while (fibM < n) {
+        fibM2 = fibM1;
+        fibM1 = fibM;
+        fibM = fibM1 + fibM2;
     }
+
+    // Marks the eliminated range from front
+    let offset = -1;
+
+    // While there are elements to be inspected
+    while (fibM > 1) {
+        // Calculate the index to be compared
+        const i = Math.min(offset + fibM2, n - 1);
+
+        // If x is greater than the value at index i, cut the subarray after i
+        if (arr[i] < x) {
+            fibM = fibM1;
+            fibM1 = fibM2;
+            fibM2 = fibM - fibM1;
+            offset = i;
+        }
+        // If x is less than the value at index i, cut the subarray before i
+        else if (arr[i] > x) {
+            fibM = fibM2;
+            fibM1 = fibM1 - fibM2;
+            fibM2 = fibM - fibM1;
+        }
+        // Element found
+        else {
+            return i;
+        }
+    }
+
+    // Comparing the last element with x
+    if (fibM1 && arr[offset + 1] === x) {
+        return offset + 1;
+    }
+
+    // Element not found
+    return -1;
 }
 
-// Define the structure of the LinkedList
-class LinkedList {
-    head: Node | null;
+// Example usage
+const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
+const x = 85;
+const result = fibonacciSearch(arr, x);
 
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to add a new node to the linked list
-    add(value: number) {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Method to find the length of the linked list
-    length(): number {
-        let count = 0;
-        let current = this.head;
-        while (current) {
-            count++;
-            current = current.next;
-        }
-        return count;
-    }
+if (result !== -1) {
+    console.log(`Element found at index: ${result}`);
+} else {
+    console.log('Element not found in the array.');
 }
-
-// Example usage:
-const list = new LinkedList();
-list.add(1);
-list.add(2);
-list.add(3);
-console.log(list.length()); // Output: 3
