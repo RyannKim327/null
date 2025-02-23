@@ -1,28 +1,91 @@
-function majorityElement(nums: number[]): number | null {
-    let candidate: number | null = null;
-    let count = 0;
+type Node = {
+    value: string;
+    neighbors: Node[];
+};
 
-    // Phase 1: Find a candidate for the majority element
-    for (let num of nums) {
-        if (count === 0) {
-            candidate = num;
+function biDirectionalSearch(start: Node, goal: Node): Node[] | null {
+    if (start === goal) return [start];
+
+    const startQueue: Node[] = [start];
+    const goalQueue: Node[] = [goal];
+    const startVisited = new Set<Node>();
+    const goalVisited = new Set<Node>();
+    const startParentMap = new Map<Node, Node>();
+    const goalParentMap = new Map<Node, Node>();
+
+    startVisited.add(start);
+    goalVisited.add(goal);
+
+    while (startQueue.length > 0 && goalQueue.length > 0) {
+        // Expand from the start
+        const startNode = startQueue.shift()!;
+        for (const neighbor of startNode.neighbors) {
+            if (!startVisited.has(neighbor)) {
+                startVisited.add(neighbor);
+                startParentMap.set(neighbor, startNode);
+                startQueue.push(neighbor);
+
+                // Check if this node has been visited from the goal
+                if (goalVisited.has(neighbor)) {
+                    return reconstructPath(neighbor, startParentMap, goalParentMap);
+                }
+            }
         }
-        count += (num === candidate) ? 1 : -1;
+
+        // Expand from the goal
+        const goalNode = goalQueue.shift()!;
+        for (const neighbor of goalNode.neighbors) {
+            if (!goalVisited.has(neighbor)) {
+                goalVisited.add(neighbor);
+                goalParentMap.set(neighbor, goalNode);
+                goalQueue.push(neighbor);
+
+                // Check if this node has been visited from the start
+                if (startVisited.has(neighbor)) {
+                    return reconstructPath(neighbor, startParentMap, goalParentMap);
+                }
+            }
+        }
     }
 
-    // Phase 2: Validate the candidate
-    count = 0;
-    for (let num of nums) {
-        if (num === candidate) {
-            count++;
-        }
-    }
-
-    // Check if the candidate is indeed the majority element
-    return (count > nums.length / 2) ? candidate : null;
+    return null; // No path found
 }
 
-// Example usage:
-const nums = [3, 2, 3];
-const result = majorityElement(nums);
-console.log(result); // Output: 3
+function reconstructPath(meetingNode: Node, startParentMap: Map<Node, Node>, goalParentMap: Map<Node, Node>): Node[] {
+    const path: Node[] = [];
+    
+    // Reconstruct path from start to meeting node
+    let currentNode: Node | undefined = meetingNode;
+    while (currentNode) {
+        path.unshift(currentNode);
+        currentNode = startParentMap.get(currentNode);
+    }
+
+    // Reconstruct path from meeting node to goal
+    currentNode = goalParentMap.get(meetingNode);
+    while (currentNode) {
+        path.push(currentNode);
+        currentNode = goalParentMap.get(currentNode);
+    }
+
+    return path;
+}
+
+// Example usage
+const nodeA: Node = { value: 'A', neighbors: [] };
+const nodeB: Node = { value: 'B', neighbors: [] };
+const nodeC: Node = { value: 'C', neighbors: [] };
+const nodeD: Node = { value: 'D', neighbors: [] };
+const nodeE: Node = { value: 'E', neighbors: [] };
+
+nodeA.neighbors.push(nodeB, nodeC);
+nodeB.neighbors.push(nodeD);
+nodeC.neighbors.push(nodeD);
+nodeD.neighbors.push(nodeE);
+
+const path = biDirectionalSearch(nodeA, nodeE);
+if (path) {
+    console.log('Path found:', path.map(node => node.value));
+} else {
+    console.log('No path found');
+}
