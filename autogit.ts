@@ -1,57 +1,26 @@
-function computeLPSArray(pattern: string): number[] {
-    const lps: number[] = new Array(pattern.length).fill(0);
-    let length = 0; // length of the previous longest prefix suffix
-    let i = 1;
-
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1]; // Use the previous LPS value
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-    return lps;
-}
-
-function KMPSearch(text: string, pattern: string): number[] {
-    const M = pattern.length;
-    const N = text.length;
-    const lps = computeLPSArray(pattern);
-    const resultIndices: number[] = [];
-
-    let i = 0; // index for text
-    let j = 0; // index for pattern
-
-    while (i < N) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-
-        if (j === M) {
-            resultIndices.push(i - j); // Found a match
-            j = lps[j - 1]; // Move to the next character in the pattern
-        } else if (i < N && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1]; // Move to the previous matched character
-            } else {
-                i++;
-            }
-        }
+function binarySearch(arr: number[], target: number, start: number, end: number): number {
+    if (start > end) {
+        return -1; // Target not found
     }
 
-    return resultIndices;
+    const mid = Math.floor((start + end) / 2);
+
+    if (arr[mid] === target) {
+        return mid; // Target found
+    } else if (arr[mid] > target) {
+        return binarySearch(arr, target, start, mid - 1); // Search in the left half
+    } else {
+        return binarySearch(arr, target, mid + 1, end); // Search in the right half
+    }
 }
 
-// Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const result = KMPSearch(text, pattern);
-console.log("Pattern found at indices:", result);
+// Usage
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const target = 5;
+const result = binarySearch(sortedArray, target, 0, sortedArray.length - 1);
+
+if (result !== -1) {
+    console.log(`Target found at index: ${result}`);
+} else {
+    console.log("Target not found in the array.");
+}
