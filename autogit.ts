@@ -1,40 +1,55 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+class Node {
+    value: string;
+    children: Node[];
 
-    constructor(value: number) {
+    constructor(value: string) {
         this.value = value;
-        this.left = null;
-        this.right = null;
+        this.children = [];
+    }
+
+    addChild(child: Node) {
+        this.children.push(child);
     }
 }
 
-function diameterOfBinaryTree(root: TreeNode | null): number {
-    let maxDiameter = 0;
+function depthLimitedSearch(root: Node, target: string, limit: number): boolean {
+    const stack: { node: Node; depth: number }[] = [];
+    stack.push({ node: root, depth: 0 });
 
-    function height(node: TreeNode | null): number {
-        if (!node) return 0;
+    while (stack.length > 0) {
+        const { node, depth } = stack.pop()!;
 
-        const leftHeight = height(node.left);
-        const rightHeight = height(node.right);
-        
-        // Update the maximum diameter found so far
-        maxDiameter = Math.max(maxDiameter, leftHeight + rightHeight);
+        // Check if the current node is the target
+        if (node.value === target) {
+            return true;
+        }
 
-        // Return the height of the tree rooted at this node
-        return Math.max(leftHeight, rightHeight) + 1;
+        // If the current depth is less than the limit, add children to the stack
+        if (depth < limit) {
+            for (let i = node.children.length - 1; i >= 0; i--) {
+                stack.push({ node: node.children[i], depth: depth + 1 });
+            }
+        }
     }
 
-    height(root);
-    return maxDiameter;
+    // Target not found within the depth limit
+    return false;
 }
 
 // Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+const root = new Node("A");
+const b = new Node("B");
+const c = new Node("C");
+const d = new Node("D");
+const e = new Node("E");
 
-console.log(diameterOfBinaryTree(root)); // Output the diameter
+root.addChild(b);
+root.addChild(c);
+b.addChild(d);
+b.addChild(e);
+
+const target = "E";
+const limit = 2;
+
+const found = depthLimitedSearch(root, target, limit);
+console.log(`Target ${target} found: ${found}`);
