@@ -1,22 +1,66 @@
-function longestCommonPrefix(strs: string[]): string {
-    if (strs.length === 0) return "";
-    if (strs.length === 1) return strs[0];
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    // Sort strings
-    strs.sort();
-    const first = strs[0];
-    const last = strs[strs.length - 1];
-    let i = 0;
-
-    // Compare characters of first and last string
-    while (i < first.length && first[i] === last[i]) {
-        i++;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-
-    // Return the longest common prefix
-    return first.slice(0, i);
 }
 
-// Example usage
-const strings = ["flower", "flow", "flight"];
-console.log(longestCommonPrefix(strings)); // Output: "fl"
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+    if (!headA || !headB) return null;
+
+    let currA: ListNode | null = headA;
+    let currB: ListNode | null = headB;
+
+    // Calculate lengths of both lists
+    let lenA = 0;
+    let lenB = 0;
+
+    while (currA) {
+        lenA++;
+        currA = currA.next;
+    }
+
+    while (currB) {
+        lenB++;
+        currB = currB.next;
+    }
+
+    // Reset pointers
+    currA = headA;
+    currB = headB;
+
+    // Skip the extra nodes in the longer list
+    while (lenA > lenB) {
+        currA = currA?.next || null;
+        lenA--;
+    }
+
+    while (lenB > lenA) {
+        currB = currB?.next || null;
+        lenB--;
+    }
+
+    // Traverse both lists to find the intersection
+    while (currA && currB) {
+        if (currA === currB) {
+            return currA; // Intersection found
+        }
+        currA = currA.next;
+        currB = currB.next;
+    }
+
+    return null; // No intersection
+}
+const listA = new ListNode(1);
+const listB = new ListNode(2);
+const intersection = new ListNode(3);
+listA.next = new ListNode(4);
+listA.next.next = intersection;
+listB.next = intersection;
+intersection.next = new ListNode(5);
+
+const result = getIntersectionNode(listA, listB);
+console.log(result?.value); // Output: 3
