@@ -1,21 +1,56 @@
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    return arr1.filter(value => arr2.includes(value));
+class ListNode {
+    value: number;
+    next: ListNode | null;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
 }
 
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
+function isPalindrome(head: ListNode | null): boolean {
+    if (!head || !head.next) {
+        return true;
+    }
 
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    const set1 = new Set(arr1);
-    const set2 = new Set(arr2);
+    // Step 1: Find the middle of the linked list
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+    
+    while (fast && fast.next) {
+        slow = slow!.next; // move slow by 1
+        fast = fast.next.next; // move fast by 2
+    }
 
-    return [...set1].filter(value => set2.has(value));
+    // Step 2: Reverse the second half of the linked list
+    let prev: ListNode | null = null;
+    let curr: ListNode | null = slow;
+
+    while (curr) {
+        const nextTemp = curr.next;
+        curr.next = prev;
+        prev = curr;
+        curr = nextTemp;
+    }
+
+    // Step 3: Compare the two halves
+    let firstHalf: ListNode | null = head;
+    let secondHalf: ListNode | null = prev; // this is now the head of the reversed second half
+
+    while (secondHalf) {
+        if (firstHalf!.value !== secondHalf.value) {
+            return false;
+        }
+        firstHalf = firstHalf!.next;
+        secondHalf = secondHalf.next;
+    }
+
+    return true; // If all nodes matched
 }
 
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
+// Example usage:
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(2);
+head.next.next.next = new ListNode(1);
 
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
+console.log(isPalindrome(head)); // Output: true
