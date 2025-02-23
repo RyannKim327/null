@@ -1,46 +1,57 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Button, ActivityIndicator } from 'react-native';
+function computeLPSArray(pattern: string): number[] {
+    const lps: number[] = new Array(pattern.length).fill(0);
+    let length = 0; // length of the previous longest prefix suffix
+    let i = 1;
 
-const App: React.FC = () => {
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchData = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const jsonData = await response.json();
-      setData(jsonData);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1]; // Use the previous LPS value
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
     }
-  };
+    return lps;
+}
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+function KMPSearch(text: string, pattern: string): number[] {
+    const M = pattern.length;
+    const N = text.length;
+    const lps = computeLPSArray(pattern);
+    const resultIndices: number[] = [];
 
-  return (
-    <View style={{ padding: 20 }}>
-      {loading && <ActivityIndicator size="large" color="#0000ff" />}
-      {error && <Text style={{ color: 'red' }}>{error}</Text>}
-      {data && (
-        <View>
-          {data.map((item: any) => (
-            <Text key={item.id}>{item.title}</Text>
-          ))}
-        </View>
-      )}
-      <Button title="Refresh Data" onPress={fetchData} />
-    </View>
-  );
-};
+    let i = 0; // index for text
+    let j = 0; // index for pattern
 
-export default App;
+    while (i < N) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j === M) {
+            resultIndices.push(i - j); // Found a match
+            j = lps[j - 1]; // Move to the next character in the pattern
+        } else if (i < N && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1]; // Move to the previous matched character
+            } else {
+                i++;
+            }
+        }
+    }
+
+    return resultIndices;
+}
+
+// Example usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = KMPSearch(text, pattern);
+console.log("Pattern found at indices:", result);
