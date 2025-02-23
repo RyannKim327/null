@@ -1,96 +1,54 @@
-function topologicalSortKahn(graph: Map<number, number[]>): number[] {
-    const inDegree: Map<number, number> = new Map();
-    const result: number[] = [];
-    const queue: number[] = [];
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    // Initialize in-degrees
-    for (const [node, neighbors] of graph.entries()) {
-        if (!inDegree.has(node)) {
-            inDegree.set(node, 0);
-        }
-        for (const neighbor of neighbors) {
-            inDegree.set(neighbor, (inDegree.get(neighbor) || 0) + 1);
-        }
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+class LinkedList {
+    head: ListNode | null;
+
+    constructor() {
+        this.head = null;
     }
 
-    // Collect nodes with zero in-degree
-    for (const [node, degree] of inDegree.entries()) {
-        if (degree === 0) {
-            queue.push(node);
-        }
-    }
-
-    // Process nodes
-    while (queue.length > 0) {
-        const current = queue.shift()!;
-        result.push(current);
-
-        for (const neighbor of graph.get(current) || []) {
-            inDegree.set(neighbor, inDegree.get(neighbor)! - 1);
-            if (inDegree.get(neighbor) === 0) {
-                queue.push(neighbor);
+    // Method to add a new node to the list
+    add(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
             }
+            current.next = newNode;
         }
     }
 
-    // Check for cycles
-    if (result.length !== graph.size) {
-        throw new Error("Graph has at least one cycle");
-    }
+    // Method to find the middle element
+    findMiddle(): number | null {
+        let slowPointer: ListNode | null = this.head;
+        let fastPointer: ListNode | null = this.head;
 
-    return result;
+        while (fastPointer && fastPointer.next) {
+            slowPointer = slowPointer ? slowPointer.next : null; // Move slow pointer by 1
+            fastPointer = fastPointer.next.next; // Move fast pointer by 2
+        }
+
+        return slowPointer ? slowPointer.value : null; // Return the value of the middle node
+    }
 }
 
 // Example usage
-const graph = new Map<number, number[]>([
-    [5, [2, 0]],
-    [4, [0, 1]],
-    [3, [1]],
-    [2, [3]],
-    [0, []],
-    [1, []],
-]);
+const linkedList = new LinkedList();
+linkedList.add(1);
+linkedList.add(2);
+linkedList.add(3);
+linkedList.add(4);
+linkedList.add(5);
 
-console.log(topologicalSortKahn(graph)); // Output: A valid topological order
-function topologicalSortDFS(graph: Map<number, number[]>): number[] {
-    const visited: Set<number> = new Set();
-    const result: number[] = [];
-    const tempMark: Set<number> = new Set(); // To detect cycles
-
-    const dfs = (node: number) => {
-        if (tempMark.has(node)) {
-            throw new Error("Graph has at least one cycle");
-        }
-        if (visited.has(node)) {
-            return;
-        }
-
-        tempMark.add(node);
-        for (const neighbor of graph.get(node) || []) {
-            dfs(neighbor);
-        }
-        tempMark.delete(node);
-        visited.add(node);
-        result.push(node);
-    };
-
-    for (const node of graph.keys()) {
-        if (!visited.has(node)) {
-            dfs(node);
-        }
-    }
-
-    return result.reverse(); // Reverse to get the correct order
-}
-
-// Example usage
-const graphDFS = new Map<number, number[]>([
-    [5, [2, 0]],
-    [4, [0, 1]],
-    [3, [1]],
-    [2, [3]],
-    [0, []],
-    [1, []],
-]);
-
-console.log(topologicalSortDFS(graphDFS)); // Output: A valid topological order
+console.log(linkedList.findMiddle()); // Output: 3
