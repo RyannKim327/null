@@ -1,94 +1,56 @@
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
+class BoyerMoore {
+    private pattern: string;
+    private badCharTable: Map<string, number>;
 
-    constructor(value: T) {
-        this.value = value;
-        this.next = null;
-    }
-}
-class LinkedList<T> {
-    head: Node<T> | null;
-    tail: Node<T> | null;
-    length: number;
-
-    constructor() {
-        this.head = null;
-        this.tail = null;
-        this.length = 0;
+    constructor(pattern: string) {
+        this.pattern = pattern;
+        this.badCharTable = this.buildBadCharTable(pattern);
     }
 
-    // Add a new node to the end of the list
-    append(value: T): void {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-            this.tail = newNode;
-        } else {
-            if (this.tail) {
-                this.tail.next = newNode;
-            }
-            this.tail = newNode;
-        }
-        this.length++;
-    }
+    private buildBadCharTable(pattern: string): Map<string, number> {
+        const table = new Map<string, number>();
+        const patternLength = pattern.length;
 
-    // Remove a node by value
-    remove(value: T): boolean {
-        if (!this.head) return false;
-
-        if (this.head.value === value) {
-            this.head = this.head.next;
-            this.length--;
-            return true;
+        for (let i = 0; i < patternLength; i++) {
+            table.set(pattern[i], i);
         }
 
-        let current = this.head;
-        while (current.next) {
-            if (current.next.value === value) {
-                current.next = current.next.next;
-                if (current.next === null) {
-                    this.tail = current; // Update tail if needed
+        return table;
+    }
+
+    public search(text: string): number {
+        const patternLength = this.pattern.length;
+        const textLength = text.length;
+        let skip: number;
+
+        for (let i = 0; i <= textLength - patternLength; i += skip) {
+            skip = 0;
+
+            for (let j = patternLength - 1; j >= 0; j--) {
+                if (this.pattern[j] !== text[i + j]) {
+                    const badCharIndex = this.badCharTable.get(text[i + j]) || -1;
+                    skip = Math.max(1, j - badCharIndex);
+                    break;
                 }
-                this.length--;
-                return true;
             }
-            current = current.next;
-        }
-        return false;
-    }
 
-    // Find a node by value
-    find(value: T): Node<T> | null {
-        let current = this.head;
-        while (current) {
-            if (current.value === value) {
-                return current;
+            if (skip === 0) {
+                // Match found at index i
+                return i; // Return the index of the first match
             }
-            current = current.next;
         }
-        return null;
-    }
 
-    // Print the list
-    print(): void {
-        let current = this.head;
-        const values: T[] = [];
-        while (current) {
-            values.push(current.value);
-            current = current.next;
-        }
-        console.log(values.join(' -> '));
+        return -1; // No match found
     }
 }
-const list = new LinkedList<number>();
-list.append(1);
-list.append(2);
-list.append(3);
-list.print(); // Output: 1 -> 2 -> 3
 
-list.remove(2);
-list.print(); // Output: 1 -> 3
+// Example usage:
+const bm = new BoyerMoore("abc");
+const text = "abcpqrabcxyz";
+const index = bm.search(text);
 
-const foundNode = list.find(3);
-console.log(foundNode ? foundNode.value : 'Not found'); // Output: 3
+if (index !== -1) {
+    console.log(`Pattern found at index: ${index}`);
+} else {
+    console.log("Pattern not found");
+}
