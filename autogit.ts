@@ -1,21 +1,89 @@
-const numbers: number[] = [1, 5, 3, 9, 2];
-const maxValue: number = Math.max(...numbers);
-console.log(maxValue); // Output: 9
-const numbers: number[] = [1, 5, 3, 9, 2];
+class Graph {
+    private adjacencyList: { [key: string]: string[] } = {};
 
-let maxValue: number = numbers[0]; // Assume the first element is the max initially
+    addVertex(vertex: string) {
+        if (!this.adjacencyList[vertex]) {
+            this.adjacencyList[vertex] = [];
+        }
+    }
 
-for (let i = 1; i < numbers.length; i++) {
-    if (numbers[i] > maxValue) {
-        maxValue = numbers[i];
+    addEdge(v1: string, v2: string) {
+        this.adjacencyList[v1].push(v2);
+        this.adjacencyList[v2].push(v1); // for undirected graph
+    }
+
+    dfsRecursive(start: string) {
+        const visited: { [key: string]: boolean } = {};
+        const result: string[] = [];
+        
+        const explore = (vertex: string) => {
+            if (!vertex) return;
+            visited[vertex] = true;
+            result.push(vertex);
+
+            this.adjacencyList[vertex].forEach(neighbor => {
+                if (!visited[neighbor]) {
+                    explore(neighbor);
+                }
+            });
+        };
+
+        explore(start);
+        return result;
     }
 }
 
-console.log(maxValue); // Output: 9
-const numbers: number[] = [1, 5, 3, 9, 2];
+// Example usage
+const graph = new Graph();
+graph.addVertex("A");
+graph.addVertex("B");
+graph.addVertex("C");
+graph.addEdge("A", "B");
+graph.addEdge("A", "C");
 
-const maxValue: number = numbers.reduce((acc, curr) => {
-    return curr > acc ? curr : acc;
-}, numbers[0]);
+console.log(graph.dfsRecursive("A")); // Output: ['A', 'B', 'C'] (or similar)
+class Graph {
+    private adjacencyList: { [key: string]: string[] } = {};
 
-console.log(maxValue); // Output: 9
+    addVertex(vertex: string) {
+        if (!this.adjacencyList[vertex]) {
+            this.adjacencyList[vertex] = [];
+        }
+    }
+
+    addEdge(v1: string, v2: string) {
+        this.adjacencyList[v1].push(v2);
+        this.adjacencyList[v2].push(v1); // for undirected graph
+    }
+
+    dfsIterative(start: string) {
+        const stack: string[] = [start];
+        const visited: { [key: string]: boolean } = {};
+        const result: string[] = [];
+
+        while (stack.length > 0) {
+            const vertex = stack.pop()!;
+            if (!visited[vertex]) {
+                visited[vertex] = true;
+                result.push(vertex);
+                // Push all unvisited neighbors onto the stack
+                this.adjacencyList[vertex].forEach(neighbor => {
+                    if (!visited[neighbor]) {
+                        stack.push(neighbor);
+                    }
+                });
+            }
+        }
+        return result;
+    }
+}
+
+// Example usage
+const graph = new Graph();
+graph.addVertex("A");
+graph.addVertex("B");
+graph.addVertex("C");
+graph.addEdge("A", "B");
+graph.addEdge("A", "C");
+
+console.log(graph.dfsIterative("A")); // Output: ['A', 'C', 'B'] (or similar)
