@@ -1,59 +1,32 @@
-class SuffixTreeNode {
-    children: Map<string, SuffixTreeNode>;
-    isEndOfWord: boolean;
+function shellSort(arr: number[]): number[] {
+    const n = arr.length;
+    let gap = Math.floor(n / 2); // Start with a big gap, then reduce the gap
 
-    constructor() {
-        this.children = new Map();
-        this.isEndOfWord = false;
+    // Start with the largest gap and reduce the gap until it is 0
+    while (gap > 0) {
+        // Do a gapped insertion sort for this gap size
+        for (let i = gap; i < n; i++) {
+            // Save the current element to be compared
+            const temp = arr[i];
+            let j = i;
+
+            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
+            }
+
+            // Put temp (the original arr[i]) in its correct location
+            arr[j] = temp;
+        }
+        gap = Math.floor(gap / 2); // Reduce the gap
     }
+
+    return arr;
 }
 
-class SuffixTree {
-    root: SuffixTreeNode;
-
-    constructor() {
-        this.root = new SuffixTreeNode();
-    }
-
-    // Insert a suffix into the suffix tree
-    insert(suffix: string) {
-        let currentNode = this.root;
-
-        for (let char of suffix) {
-            if (!currentNode.children.has(char)) {
-                currentNode.children.set(char, new SuffixTreeNode());
-            }
-            currentNode = currentNode.children.get(char)!;
-        }
-        currentNode.isEndOfWord = true;
-    }
-
-    // Build the suffix tree from a given string
-    build(text: string) {
-        for (let i = 0; i < text.length; i++) {
-            this.insert(text.substring(i));
-        }
-    }
-
-    // Search for a pattern in the suffix tree
-    search(pattern: string): boolean {
-        let currentNode = this.root;
-
-        for (let char of pattern) {
-            if (!currentNode.children.has(char)) {
-                return false; // Pattern not found
-            }
-            currentNode = currentNode.children.get(char)!;
-        }
-        return true; // Pattern found
-    }
-}
-
-// Example usage
-const suffixTree = new SuffixTree();
-const text = "banana";
-suffixTree.build(text);
-
-console.log(suffixTree.search("ana")); // true
-console.log(suffixTree.search("nan")); // true
-console.log(suffixTree.search("bat")); // false
+// Example usage:
+const array = [12, 34, 54, 2, 3];
+console.log("Original array:", array);
+const sortedArray = shellSort(array);
+console.log("Sorted array:", sortedArray);
