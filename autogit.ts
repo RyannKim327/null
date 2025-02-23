@@ -1,91 +1,53 @@
-type Node = {
-    value: string;
-    neighbors: Node[];
-};
+function kmpSearch(text: string, pattern: string): number[] {
+    const lps = buildLPS(pattern);
+    const result: number[] = [];
+    let i = 0; // index for text
+    let j = 0; // index for pattern
 
-function biDirectionalSearch(start: Node, goal: Node): Node[] | null {
-    if (start === goal) return [start];
-
-    const startQueue: Node[] = [start];
-    const goalQueue: Node[] = [goal];
-    const startVisited = new Set<Node>();
-    const goalVisited = new Set<Node>();
-    const startParentMap = new Map<Node, Node>();
-    const goalParentMap = new Map<Node, Node>();
-
-    startVisited.add(start);
-    goalVisited.add(goal);
-
-    while (startQueue.length > 0 && goalQueue.length > 0) {
-        // Expand from the start
-        const startNode = startQueue.shift()!;
-        for (const neighbor of startNode.neighbors) {
-            if (!startVisited.has(neighbor)) {
-                startVisited.add(neighbor);
-                startParentMap.set(neighbor, startNode);
-                startQueue.push(neighbor);
-
-                // Check if this node has been visited from the goal
-                if (goalVisited.has(neighbor)) {
-                    return reconstructPath(neighbor, startParentMap, goalParentMap);
-                }
-            }
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
         }
 
-        // Expand from the goal
-        const goalNode = goalQueue.shift()!;
-        for (const neighbor of goalNode.neighbors) {
-            if (!goalVisited.has(neighbor)) {
-                goalVisited.add(neighbor);
-                goalParentMap.set(neighbor, goalNode);
-                goalQueue.push(neighbor);
-
-                // Check if this node has been visited from the start
-                if (startVisited.has(neighbor)) {
-                    return reconstructPath(neighbor, startParentMap, goalParentMap);
-                }
+        if (j === pattern.length) {
+            result.push(i - j); // Match found, add the starting index to results
+            j = lps[j - 1]; // Get the next pattern index
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1]; // Use the LPS array to skip characters in pattern
+            } else {
+                i++;
             }
         }
     }
-
-    return null; // No path found
+    return result; // Return all starting indices of matches
 }
 
-function reconstructPath(meetingNode: Node, startParentMap: Map<Node, Node>, goalParentMap: Map<Node, Node>): Node[] {
-    const path: Node[] = [];
-    
-    // Reconstruct path from start to meeting node
-    let currentNode: Node | undefined = meetingNode;
-    while (currentNode) {
-        path.unshift(currentNode);
-        currentNode = startParentMap.get(currentNode);
-    }
+function buildLPS(pattern: string): number[] {
+    const lps = new Array(pattern.length).fill(0);
+    let len = 0; // Length of the previous longest prefix suffix
+    let i = 1;   // Start comparing from the second character
 
-    // Reconstruct path from meeting node to goal
-    currentNode = goalParentMap.get(meetingNode);
-    while (currentNode) {
-        path.push(currentNode);
-        currentNode = goalParentMap.get(currentNode);
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1]; // Use the LPS to avoid unnecessary comparisons
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
     }
-
-    return path;
+    return lps;
 }
 
 // Example usage
-const nodeA: Node = { value: 'A', neighbors: [] };
-const nodeB: Node = { value: 'B', neighbors: [] };
-const nodeC: Node = { value: 'C', neighbors: [] };
-const nodeD: Node = { value: 'D', neighbors: [] };
-const nodeE: Node = { value: 'E', neighbors: [] };
-
-nodeA.neighbors.push(nodeB, nodeC);
-nodeB.neighbors.push(nodeD);
-nodeC.neighbors.push(nodeD);
-nodeD.neighbors.push(nodeE);
-
-const path = biDirectionalSearch(nodeA, nodeE);
-if (path) {
-    console.log('Path found:', path.map(node => node.value));
-} else {
-    console.log('No path found');
-}
+const text = "ababcabcabababd";
+const pattern = "ababd";
+const matches = kmpSearch(text, pattern);
+console.log("Pattern found at indices:", matches); // Output: Pattern found at indices: [ 10 ]
