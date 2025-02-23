@@ -1,51 +1,24 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number, next: ListNode | null = null) {
-        this.value = value;
-        this.next = next;
-    }
+function findCommonElements(arr1: number[], arr2: number[]): number[] {
+    return arr1.filter(value => arr2.includes(value));
 }
 
-function isPalindrome(head: ListNode | null): boolean {
-    if (!head || !head.next) return true;
+// Example usage:
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
 
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
+function findCommonElements(arr1: number[], arr2: number[]): number[] {
+    const set1 = new Set(arr1);
+    const set2 = new Set(arr2);
     
-    // Find the middle of the linked list
-    while (fast && fast.next) {
-        slow = slow?.next || null;
-        fast = fast.next.next;
-    }
-
-    // Reverse the second half of the linked list
-    let prev: ListNode | null = null;
-    let curr: ListNode | null = slow;
-
-    while (curr) {
-        const nextTemp = curr.next;
-        curr.next = prev;
-        prev = curr;
-        curr = nextTemp;
-    }
-
-    // Compare the first half and the reversed second half
-    let left: ListNode | null = head;
-    let right: ListNode | null = prev; // Where prev is the head of reversed second half
-    
-    while (right) {
-        if (left?.value !== right.value) {
-            return false; // Not a palindrome
-        }
-        left = left.next;
-        right = right.next;
-    }
-
-    return true; // Is a palindrome
+    const commonElements = [...set1].filter(value => set2.has(value));
+    return commonElements;
 }
 
-// Example usage
-const head = new ListNode(1, new ListNode(2, new ListNode(1)));
-console.log(isPalindrome(head)); // Output: true
+// Example usage:
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
