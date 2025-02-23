@@ -1,32 +1,34 @@
-function shellSort(arr: number[]): number[] {
-    const n = arr.length;
-    let gap = Math.floor(n / 2); // Start with a big gap, then reduce the gap
+function interpolationSearch(arr: number[], target: number): number {
+    let low = 0;
+    let high = arr.length - 1;
 
-    // Start with the largest gap and reduce the gap until it is 0
-    while (gap > 0) {
-        // Do a gapped insertion sort for this gap size
-        for (let i = gap; i < n; i++) {
-            // Save the current element to be compared
-            const temp = arr[i];
-            let j = i;
+    while (low <= high && target >= arr[low] && target <= arr[high]) {
+        // Estimate the position of the target
+        const pos = low + Math.floor(((target - arr[low]) / (arr[high] - arr[low])) * (high - low));
 
-            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
-            while (j >= gap && arr[j - gap] > temp) {
-                arr[j] = arr[j - gap];
-                j -= gap;
-            }
-
-            // Put temp (the original arr[i]) in its correct location
-            arr[j] = temp;
+        // Check if the target is found
+        if (arr[pos] === target) {
+            return pos; // Return the index of the target
         }
-        gap = Math.floor(gap / 2); // Reduce the gap
+
+        // If the target is greater, ignore the left half
+        if (arr[pos] < target) {
+            low = pos + 1;
+        } else { // If the target is smaller, ignore the right half
+            high = pos - 1;
+        }
     }
 
-    return arr;
+    return -1; // Target not found
 }
 
 // Example usage:
-const array = [12, 34, 54, 2, 3];
-console.log("Original array:", array);
-const sortedArray = shellSort(array);
-console.log("Sorted array:", sortedArray);
+const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const targetValue = 70;
+const index = interpolationSearch(sortedArray, targetValue);
+
+if (index !== -1) {
+    console.log(`Element found at index: ${index}`);
+} else {
+    console.log('Element not found in the array.');
+}
