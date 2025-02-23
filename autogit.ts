@@ -1,31 +1,80 @@
-// Define an interface for the expected response data
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-}
+class Graph {
+    private vertices: number;
+    private adjList: Map<number, number[]>;
+    private index: number;
+    private indices: number[];
+    private lowlink: number[];
+    private onStack: boolean[];
+    private stack: number[];
+    private sccs: number[][];
 
-// Function to fetch posts
-async function fetchPosts() {
-    try {
-        // Make the fetch call to the API
-        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-        
-        // Check if the response is ok (status code 200-299)
-        if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
+    constructor(vertices: number) {
+        this.vertices = vertices;
+        this.adjList = new Map<number, number[]>();
+        this.index = 0;
+        this.indices = Array(vertices).fill(-1);
+        this.lowlink = Array(vertices).fill(-1);
+        this.onStack = Array(vertices).fill(false);
+        this.stack = [];
+        this.sccs = [];
+    }
+
+    addEdge(v: number, w: number): void {
+        if (!this.adjList.has(v)) {
+            this.adjList.set(v, []);
+        }
+        this.adjList.get(v)!.push(w);
+    }
+
+    private strongConnect(v: number): void {
+        this.indices[v] = this.index;
+        this.lowlink[v] = this.index;
+        this.index++;
+        this.stack.push(v);
+        this.onStack[v] = true;
+
+        const neighbors = this.adjList.get(v) || [];
+        for (let w of neighbors) {
+            if (this.indices[w] === -1) {
+                // Successor w has not yet been visited; recurse on it
+                this.strongConnect(w);
+                this.lowlink[v] = Math.min(this.lowlink[v], this.lowlink[w]);
+            } else if (this.onStack[w]) {
+                // Successor w is in the stack and hence in the current SCC
+                this.lowlink[v] = Math.min(this.lowlink[v], this.indices[w]);
+            }
         }
 
-        // Parse the JSON response
-        const posts: Post[] = await response.json();
+        // If v is a root node, pop the stack and generate an SCC
+        if (this.lowlink[v] === this.indices[v]) {
+            const component: number[] = [];
+            let w: number;
+            do {
+                w = this.stack.pop()!;
+                this.onStack[w] = false;
+                component.push(w);
+            } while (w !== v);
+            this.sccs.push(component);
+        }
+    }
 
-        // Log the posts to the console
-        console.log(posts);
-    } catch (error) {
-        console.error('There has been a problem with your fetch operation:', error);
+    findSCCs(): number[][] {
+        for (let v = 0; v < this.vertices; v++) {
+            if (this.indices[v] === -1) {
+                this.strongConnect(v);
+            }
+        }
+        return this.sccs;
     }
 }
 
-// Call the function to fetch posts
-fetchPosts();
+// Example usage
+const graph = new Graph(5);
+graph.addEdge(0, 2);
+graph.addEdge(2, 1);
+graph.addEdge(1, 0);
+graph.addEdge(0, 3);
+graph.addEdge(3, 4);
+
+const sccs = graph.findSCCs();
+console.log(sccs);
