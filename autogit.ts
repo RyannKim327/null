@@ -1,45 +1,76 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+class Node<T> {
+     T;
+    next: Node<T> | null;
 
-    constructor(value: number) {
-        this.value = value;
+    constructor( T) {
+        this.data = data;
         this.next = null;
     }
 }
+class LinkedList<T> {
+    head: Node<T> | null;
 
-function hasCycle(head: ListNode | null): boolean {
-    if (!head) return false;
+    constructor() {
+        this.head = null;
+    }
 
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
+    // Add a node at the end of the list
+    add( T): void {
+        const newNode = new Node(data);
 
-    while (fast !== null && fast.next !== null) {
-        slow = slow.next; // Move slow pointer by 1
-        fast = fast.next.next; // Move fast pointer by 2
+        if (this.head === null) {
+            this.head = newNode;
+            return;
+        }
 
-        if (slow === fast) {
-            return true; // Cycle detected
+        let current = this.head;
+        while (current.next !== null) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    // Remove a node by value
+    remove( T): void {
+        if (this.head === null) return;
+
+        if (this.head.data === data) {
+            this.head = this.head.next;
+            return;
+        }
+
+        let current = this.head;
+        while (current.next !== null) {
+            if (current.next.data === data) {
+                current.next = current.next.next; // Bypass the node
+                return;
+            }
+            current = current.next;
         }
     }
 
-    return false; // No cycle
+    // Display the list
+    display(): void {
+        let current = this.head;
+        while (current !== null) {
+            process.stdout.write(`${current.data} -> `);
+            current = current.next;
+        }
+        console.log('null');
+    }
 }
+const list = new LinkedList<number>();
 
-// Example usage:
-const node1 = new ListNode(1);
-const node2 = new ListNode(2);
-const node3 = new ListNode(3);
-const node4 = new ListNode(4);
+// Adding nodes
+list.add(1);
+list.add(2);
+list.add(3);
 
-// Creating a cycle for testing
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2; // Creates a cycle
+// Displaying the list
+list.display(); // Output: 1 -> 2 -> 3 -> null
 
-console.log(hasCycle(node1)); // Output: true
+// Removing a node
+list.remove(2);
 
-// Creating a non-cyclic linked list for testing
-node4.next = null; // Break the cycle
-console.log(hasCycle(node1)); // Output: false
+// Displaying the list again
+list.display(); // Output: 1 -> 3 -> null
