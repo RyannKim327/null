@@ -1,15 +1,28 @@
-function calculateMean(numbers: number[]): number {
-    if (numbers.length === 0) {
-        throw new Error("The list of numbers is empty.");
+function majorityElement(nums: number[]): number | null {
+    let candidate: number | null = null;
+    let count = 0;
+
+    // Phase 1: Find a candidate for the majority element
+    for (let num of nums) {
+        if (count === 0) {
+            candidate = num;
+        }
+        count += (num === candidate) ? 1 : -1;
     }
 
-    const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    const mean = sum / numbers.length;
+    // Phase 2: Validate the candidate
+    count = 0;
+    for (let num of nums) {
+        if (num === candidate) {
+            count++;
+        }
+    }
 
-    return mean;
+    // Check if the candidate is indeed the majority element
+    return (count > nums.length / 2) ? candidate : null;
 }
 
 // Example usage:
-const numbers = [10, 20, 30, 40, 50];
-const mean = calculateMean(numbers);
-console.log(`The mean is: ${mean}`);
+const nums = [3, 2, 3];
+const result = majorityElement(nums);
+console.log(result); // Output: 3
