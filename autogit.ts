@@ -1,49 +1,46 @@
-function rabinKarp(text: string, pattern: string, d: number = 256, q: number = 101): number[] {
+function createBadCharTable(pattern: string): { [key: string]: number } {
+    const badCharTable: { [key: string]: number } = {};
+    const m = pattern.length;
+
+    for (let i = 0; i < m; i++) {
+        badCharTable[pattern[i]] = i;
+    }
+    
+    return badCharTable;
+}
+
+function searchBoyerMoore(text: string, pattern: string): number[] {
     const m = pattern.length;
     const n = text.length;
     const result: number[] = [];
-    const hPattern = 0; // Hash value for pattern
-    const hText = 0;    // Hash value for text
-    const h = Math.pow(d, m - 1) % q; // The value of d^(m-1) % q
+    
+    const badCharTable = createBadCharTable(pattern);
 
-    // Calculate the hash value of the pattern and the first window of text
-    for (let i = 0; i < m; i++) {
-        hPattern = (d * hPattern + pattern.charCodeAt(i)) % q;
-        hText = (d * hText + text.charCodeAt(i)) % q;
-    }
+    let s = 0; // Shift of the pattern
+    while (s <= n - m) {
+        let j = m - 1; // Index of the last character in the pattern
 
-    // Slide the pattern over text one by one
-    for (let i = 0; i <= n - m; i++) {
-        // Check the hash values of the current window of text and pattern
-        if (hPattern === hText) {
-            // If the hash values match, check for characters one by one
-            let j;
-            for (j = 0; j < m; j++) {
-                if (text[i + j] !== pattern[j]) {
-                    break;
-                }
-            }
-            if (j === m) {
-                result.push(i); // Pattern found at index i
-            }
+        // Keep reducing j while characters of pattern and text are matching
+        while (j >= 0 && pattern[j] === text[s + j]) {
+            j--;
         }
 
-        // Calculate hash value for the next window of text
-        if (i < n - m) {
-            hText = (d * (hText - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % q;
-
-            // We might get negative value of hText, converting it to positive
-            if (hText < 0) {
-                hText += q;
-            }
+        // If the pattern is found
+        if (j < 0) {
+            result.push(s);
+            // Shift the pattern based on the last character of the pattern
+            s += (s + m < n) ? m - badCharTable[text[s + m]] || m : 1;
+        } else {
+            // Shift the pattern based on the bad character table
+            s += Math.max(1, j - (badCharTable[text[s + j]] || -1));
         }
     }
 
-    return result; // Return the list of starting indices where pattern is found
+    return result;
 }
 
-// Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const indices = rabinKarp(text, pattern);
+// Example usage:
+const text = "ABAAABCDABABCDABCA";
+const pattern = "ABABC";
+const indices = searchBoyerMoore(text, pattern);
 console.log("Pattern found at indices:", indices);
