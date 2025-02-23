@@ -1,31 +1,57 @@
-function burrowsWheelerTransform(input: string): { bwt: string, index: number } {
-    const n = input.length;
-    const rotations = new Array<string>(n);
+function rabinKarp(text: string, pattern: string, prime: number = 101): number[] {
+    const M = pattern.length;
+    const N = text.length;
+    const d = 256; // Number of characters in the input alphabet
+    const result: number[] = [];
 
-    // Generate all rotations of the input string
-    for (let i = 0; i < n; i++) {
-        rotations[i] = input.slice(i) + input.slice(0, i);
+    // Calculate hash values for the pattern and the first window of text
+    let p = 0; // hash value for pattern
+    let t = 0; // hash value for text
+    let h = 1;
+
+    // The value of h would be "pow(d, M-1)%prime"
+    for (let i = 0; i < M - 1; i++) {
+        h = (h * d) % prime;
     }
 
-    // Sort the rotations
-    rotations.sort();
+    // Calculate the hash value of pattern and first window of text
+    for (let i = 0; i < M; i++) {
+        p = (d * p + pattern.charCodeAt(i)) % prime;
+        t = (d * t + text.charCodeAt(i)) % prime;
+    }
 
-    // Build the BWT string and keep track of the original index
-    let bwt = '';
-    let originalIndex = -1;
+    // Slide the pattern over text one by one
+    for (let i = 0; i <= N - M; i++) {
+        // Check the hash values of current window of text and pattern
+        if (p === t) {
+            // Check for characters one by one
+            let j;
+            for (j = 0; j < M; j++) {
+                if (text[i + j] !== pattern[j]) {
+                    break;
+                }
+            }
+            if (j === M) {
+                result.push(i); // Pattern found at index i
+            }
+        }
 
-    for (let i = 0; i < n; i++) {
-        bwt += rotations[i][n - 1];
-        // Find the original index of the first character
-        if (rotations[i] === input) {
-            originalIndex = i;
+        // Calculate hash value for next window of text
+        if (i < N - M) {
+            t = (d * (t - text.charCodeAt(i) * h) + text.charCodeAt(i + M)) % prime;
+
+            // We might get negative value of t, converting it to positive
+            if (t < 0) {
+                t = t + prime;
+            }
         }
     }
 
-    return { bwt, index: originalIndex };
+    return result;
 }
 
 // Example usage
-const inputString = "banana";
-const { bwt, index } = burrowsWheelerTransform(inputString);
-console.log(`BWT: ${bwt}, Original Index: ${index}`);
+const text = "GEEKS FOR GEEKS";
+const pattern = "GEEK";
+const indices = rabinKarp(text, pattern);
+console.log("Pattern found at indices: ", indices);
