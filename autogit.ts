@@ -1,26 +1,49 @@
-function binarySearch(arr: number[], target: number, start: number, end: number): number {
-    if (start > end) {
-        return -1; // Target not found
-    }
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    const mid = Math.floor((start + end) / 2);
-
-    if (arr[mid] === target) {
-        return mid; // Target found
-    } else if (arr[mid] > target) {
-        return binarySearch(arr, target, start, mid - 1); // Search in the left half
-    } else {
-        return binarySearch(arr, target, mid + 1, end); // Search in the right half
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
 }
 
-// Usage
-const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-const target = 5;
-const result = binarySearch(sortedArray, target, 0, sortedArray.length - 1);
+class LinkedList {
+    head: ListNode | null;
 
-if (result !== -1) {
-    console.log(`Target found at index: ${result}`);
-} else {
-    console.log("Target not found in the array.");
+    constructor() {
+        this.head = null;
+    }
+
+    // Method to add a new node at the end of the list
+    append(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    // Method to find the length of the linked list
+    length(): number {
+        let count = 0;
+        let current = this.head;
+        while (current) {
+            count++;
+            current = current.next;
+        }
+        return count;
+    }
 }
+
+// Example usage:
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+console.log("Length of the linked list:", list.length()); // Output: Length of the linked list: 3
