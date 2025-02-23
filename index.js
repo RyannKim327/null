@@ -15,7 +15,7 @@ let run = async () => {
 
   try {
     let { data } = await axios.get(
-      `https://we-love-gpt.onrender.com/api/chat/?message=${encodeURIComponent(m3)}`,
+      `https://api-freegpt.onrender.com/api/chat/?message=${encodeURIComponent(m3)}`,
     );
     let datas = data.response.split("\n");
     let result = "";
