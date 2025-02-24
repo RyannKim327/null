@@ -1,29 +1,50 @@
-function binarySearch(arr: number[], target: number): number {
-    let left = 0;
-    let right = arr.length - 1;
+function heapSort(arr: number[]): number[] {
+    const n = arr.length;
 
-    while (left <= right) {
-        const mid = Math.floor((left + right) / 2);
-        
-        if (arr[mid] === target) {
-            return mid; // Target found, return the index
-        } else if (arr[mid] < target) {
-            left = mid + 1; // Search the right half
-        } else {
-            right = mid - 1; // Search the left half
-        }
+    // Build a max heap
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        heapify(arr, n, i);
     }
 
-    return -1; // Target not found
+    // One by one extract elements from the heap
+    for (let i = n - 1; i > 0; i--) {
+        // Move current root to end
+        [arr[0], arr[i]] = [arr[i], arr[0]]; // Swap
+
+        // Call heapify on the reduced heap
+        heapify(arr, i, 0);
+    }
+
+    return arr;
 }
 
-// Example usage:
-const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const targetNumber = 6;
-const result = binarySearch(sortedArray, targetNumber);
+// To heapify a subtree rooted with node i which is an index in arr[].
+// n is the size of the heap
+function heapify(arr: number[], n: number, i: number) {
+    let largest = i; // Initialize largest as root
+    const left = 2 * i + 1; // left = 2*i + 1
+    const right = 2 * i + 2; // right = 2*i + 2
 
-if (result !== -1) {
-    console.log(`Target found at index: ${result}`);
-} else {
-    console.log(`Target not found`);
+    // If left child is larger than root
+    if (left < n && arr[left] > arr[largest]) {
+        largest = left;
+    }
+
+    // If right child is larger than largest so far
+    if (right < n && arr[right] > arr[largest]) {
+        largest = right;
+    }
+
+    // If largest is not root
+    if (largest !== i) {
+        [arr[i], arr[largest]] = [arr[largest], arr[i]]; // Swap
+
+        // Recursively heapify the affected subtree
+        heapify(arr, n, largest);
+    }
 }
+
+// Example usage
+const array = [3, 5, 1, 10, 2, 7];
+const sortedArray = heapSort(array);
+console.log(sortedArray); // Output: [1, 2, 3, 5, 7, 10]
