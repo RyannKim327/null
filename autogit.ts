@@ -1,60 +1,49 @@
-type Graph = { [key: string]: string[] };
+function rabinKarp(text: string, pattern: string, d: number = 256, q: number = 101): number[] {
+    const m = pattern.length;
+    const n = text.length;
+    const result: number[] = [];
+    const hPattern = 0; // Hash value for pattern
+    const hText = 0; // Hash value for text
+    const h = Math.pow(d, m - 1) % q; // The value of d^(m-1) % q
 
-function depthFirstSearch(graph: Graph, start: string, visited: Set<string> = new Set()): void {
-    // Mark the current node as visited
-    visited.add(start);
-    console.log(start); // Process the current node
-
-    // Recur for all the vertices adjacent to this vertex
-    for (const neighbor of graph[start]) {
-        if (!visited.has(neighbor)) {
-            depthFirstSearch(graph, neighbor, visited);
-        }
+    // Calculate the hash value of the pattern and the first window of text
+    for (let i = 0; i < m; i++) {
+        hPattern = (d * hPattern + pattern.charCodeAt(i)) % q;
+        hText = (d * hText + text.charCodeAt(i)) % q;
     }
-}
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: ['F'],
-    F: []
-};
-
-depthFirstSearch(graph, 'A');
-type Graph = { [key: string]: string[] };
-
-function depthFirstSearchIterative(graph: Graph, start: string): void {
-    const stack: string[] = [start];
-    const visited: Set<string> = new Set();
-
-    while (stack.length > 0) {
-        const node = stack.pop()!;
-        
-        if (!visited.has(node)) {
-            visited.add(node);
-            console.log(node); // Process the current node
-
-            // Add all unvisited neighbors to the stack
-            for (const neighbor of graph[node]) {
-                if (!visited.has(neighbor)) {
-                    stack.push(neighbor);
+    // Slide the pattern over text one by one
+    for (let i = 0; i <= n - m; i++) {
+        // Check the hash values of the current window of text and pattern
+        if (hPattern === hText) {
+            // If the hash values match, check for characters one by one
+            let j;
+            for (j = 0; j < m; j++) {
+                if (text[i + j] !== pattern[j]) {
+                    break;
                 }
+            }
+            if (j === m) {
+                result.push(i); // Pattern found at index i
+            }
+        }
+
+        // Calculate the hash value for the next window of text
+        if (i < n - m) {
+            hText = (d * (hText - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % q;
+
+            // We might get negative value of hText, converting it to positive
+            if (hText < 0) {
+                hText += q;
             }
         }
     }
+
+    return result; // Return the list of starting indices where pattern is found
 }
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: ['F'],
-    F: []
-};
-
-depthFirstSearchIterative(graph, 'A');
+// Example usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const indices = rabinKarp(text, pattern);
+console.log("Pattern found at indices:", indices);
