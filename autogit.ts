@@ -1,97 +1,117 @@
-class HashTable<K, V> {
-    private table: Array<Array<[K, V] | null>>;
-    private size: number;
+class Node<T> {
+    value: T;
+    forward: Node<T>[];
 
-    constructor(size: number) {
-        this.size = size;
-        this.table = new Array(size).fill(null).map(() => []);
-    }
-
-    private hash(key: K): number {
-        let hash = 0;
-        const keyString = String(key);
-        for (let i = 0; i < keyString.length; i++) {
-            hash += keyString.charCodeAt(i);
-        }
-        return hash % this.size;
-    }
-
-    public set(key: K, value: V): void {
-        const index = this.hash(key);
-        const bucket = this.table[index];
-
-        // Check if the key already exists in the bucket
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i][0] === key) {
-                bucket[i][1] = value; // Update the value
-                return;
-            }
-        }
-
-        // If the key does not exist, add a new key-value pair
-        bucket.push([key, value]);
-    }
-
-    public get(key: K): V | undefined {
-        const index = this.hash(key);
-        const bucket = this.table[index];
-
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i][0] === key) {
-                return bucket[i][1]; // Return the value
-            }
-        }
-
-        return undefined; // Key not found
-    }
-
-    public remove(key: K): boolean {
-        const index = this.hash(key);
-        const bucket = this.table[index];
-
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i][0] === key) {
-                bucket.splice(i, 1); // Remove the key-value pair
-                return true;
-            }
-        }
-
-        return false; // Key not found
-    }
-
-    public keys(): K[] {
-        const keys: K[] = [];
-        for (const bucket of this.table) {
-            for (const entry of bucket) {
-                if (entry) {
-                    keys.push(entry[0]);
-                }
-            }
-        }
-        return keys;
-    }
-
-    public values(): V[] {
-        const values: V[] = [];
-        for (const bucket of this.table) {
-            for (const entry of bucket) {
-                if (entry) {
-                    values.push(entry[1]);
-                }
-            }
-        }
-        return values;
+    constructor(value: T, level: number) {
+        this.value = value;
+        this.forward = new Array(level + 1).fill(null);
     }
 }
+class SkipList<T> {
+    private head: Node<T>;
+    private maxLevel: number;
+    private p: number; // Probability factor
+    private level: number;
 
-// Example usage
-const hashTable = new HashTable<string, number>(10);
-hashTable.set("one", 1);
-hashTable.set("two", 2);
-hashTable.set("three", 3);
+    constructor(maxLevel: number = 16, p: number = 0.5) {
+        this.maxLevel = maxLevel;
+        this.p = p;
+        this.level = 0;
+        this.head = new Node<T>(null, this.maxLevel);
+    }
 
-console.log(hashTable.get("two")); // Output: 2
-hashTable.remove("two");
-console.log(hashTable.get("two")); // Output: undefined
-console.log(hashTable.keys()); // Output: ['one', 'three']
-console.log(hashTable.values()); // Output: [1, 3]
+    private randomLevel(): number {
+        let level = 0;
+        while (Math.random() < this.p && level < this.maxLevel) {
+            level++;
+        }
+        return level;
+    }
+
+    insert(value: T): void {
+        const update: Node<T>[] = new Array(this.maxLevel + 1);
+        let current: Node<T> = this.head;
+
+        // Find the position to insert the new value
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+            update[i] = current;
+        }
+
+        current = current.forward[0];
+
+        // If the value is not already present, insert it
+        if (current === null || current.value !== value) {
+            const newLevel = this.randomLevel();
+            if (newLevel > this.level) {
+                for (let i = this.level + 1; i <= newLevel; i++) {
+                    update[i] = this.head;
+                }
+                this.level = newLevel;
+            }
+
+            const newNode = new Node(value, newLevel);
+            for (let i = 0; i <= newLevel; i++) {
+                newNode.forward[i] = update[i].forward[i];
+                update[i].forward[i] = newNode;
+            }
+        }
+    }
+
+    search(value: T): boolean {
+        let current: Node<T> = this.head;
+
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+        }
+
+        current = current.forward[0];
+        return current !== null && current.value === value;
+    }
+
+    delete(value: T): void {
+        const update: Node<T>[] = new Array(this.maxLevel + 1);
+        let current: Node<T> = this.head;
+
+        // Find the position to delete the value
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+            update[i] = current;
+        }
+
+        current = current.forward[0];
+
+        // If the value is found, delete it
+        if (current !== null && current.value === value) {
+            for (let i = 0; i <= this.level; i++) {
+                if (update[i].forward[i] !== current) break;
+                update[i].forward[i] = current.forward[i];
+            }
+
+            // Remove levels if necessary
+            while (this.level > 0 && this.head.forward[this.level] === null) {
+                this.level--;
+            }
+        }
+    }
+}
+const skipList = new SkipList<number>();
+
+skipList.insert(3);
+skipList.insert(6);
+skipList.insert(7);
+skipList.insert(9);
+skipList.insert(12);
+skipList.insert(19);
+
+console.log(skipList.search(7)); // true
+console.log(skipList.search(15)); // false
+
+skipList.delete(3);
+console.log(skipList.search(3)); // false
