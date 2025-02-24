@@ -1,26 +1,47 @@
-import * as readline from 'readline';
+type Node = {
+    sequence: string;
+    score: number;
+};
 
-// Create an interface for input and output streams
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
+function beamSearch(initialSequence: string, beamWidth: number, maxSteps: number): string {
+    let beam: Node[] = [{ sequence: initialSequence, score: scoreFunction(initialSequence) }];
 
-// Function to ask a question and handle the response
-function askQuestion(query: string): Promise<string> {
-    return new Promise(resolve => rl.question(query, resolve));
+    for (let step = 0; step < maxSteps; step++) {
+        const newBeam: Node[] = [];
+
+        // Generate new candidates from the current beam
+        for (const node of beam) {
+            const candidates = generateCandidates(node.sequence);
+            for (const candidate of candidates) {
+                newBeam.push({ sequence: candidate, score: scoreFunction(candidate) });
+            }
+        }
+
+        // Sort candidates by score and keep the top `beamWidth` candidates
+        newBeam.sort((a, b) => b.score - a.score);
+        beam = newBeam.slice(0, beamWidth);
+    }
+
+    // Return the best sequence found
+    return beam[0].sequence;
 }
 
-// Main function to run the program
-async function main() {
-    const name = await askQuestion("What is your name? ");
-    console.log(`Hello, ${name}!`);
-
-    const age = await askQuestion("How old are you? ");
-    console.log(`You are ${age} years old.`);
-
-    rl.close();
+// Example scoring function
+function scoreFunction(sequence: string): number {
+    // Implement your scoring logic here
+    return Math.random(); // Placeholder: replace with actual scoring logic
 }
 
-// Run the main function
-main().catch(err => console.error(err));
+// Example candidate generation function
+function generateCandidates(sequence: string): string[] {
+    // Implement your candidate generation logic here
+    return [
+        sequence + 'A',
+        sequence + 'B',
+        sequence + 'C',
+    ]; // Placeholder: replace with actual candidate generation logic
+}
+
+// Usage
+const bestSequence = beamSearch("Start", 3, 5);
+console.log("Best sequence found:", bestSequence);
