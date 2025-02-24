@@ -1,30 +1,80 @@
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
+class HashTable<K, V> {
+    private table: Array<Array<[K, V] | undefined>>; // Using an array of arrays for collision resolution
+    private size: number;
 
-const newArray = array.filter(item => item !== elementToRemove);
-console.log(newArray); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
+    constructor(size: number) {
+        this.size = size;
+        this.table = new Array(size).fill(undefined).map(() => []);
+    }
 
-const index = array.indexOf(elementToRemove);
-if (index !== -1) {
-    array.splice(index, 1);
+    // Hash function to compute the index for a given key
+    private hash(key: K): number {
+        let hashValue = 0;
+        const keyString = key.toString();
+        for (let i = 0; i < keyString.length; i++) {
+            hashValue += keyString.charCodeAt(i);
+        }
+        return hashValue % this.size;
+    }
+
+    // Add or update a key-value pair
+    public set(key: K, value: V): void {
+        const index = this.hash(key);
+        const bucket = this.table[index];
+
+        // Check if the key already exists
+        const existingEntryIndex = bucket.findIndex(entry => entry && entry[0] === key);
+        
+        if (existingEntryIndex !== -1) {
+            // Update the existing entry
+            bucket[existingEntryIndex] = [key, value];
+        } else {
+            // Add a new entry
+            bucket.push([key, value]);
+        }
+    }
+
+    // Retrieve a value by key
+    public get(key: K): V | undefined {
+        const index = this.hash(key);
+        const bucket = this.table[index];
+
+        const entry = bucket.find(entry => entry && entry[0] === key);
+        return entry ? entry[1] : undefined;
+    }
+
+    // Delete a key-value pair
+    public delete(key: K): boolean {
+        const index = this.hash(key);
+        const bucket = this.table[index];
+
+        const entryIndex = bucket.findIndex(entry => entry && entry[0] === key);
+        if (entryIndex !== -1) {
+            bucket.splice(entryIndex, 1);
+            return true;
+        }
+        return false;
+    }
+
+    // Show all key-value pairs in the hash table
+    public show(): Array<[K, V]> {
+        const entries: Array<[K, V]> = [];
+        for (const bucket of this.table) {
+            for (const entry of bucket) {
+                if (entry) {
+                    entries.push(entry);
+                }
+            }
+        }
+        return entries;
+    }
 }
-console.log(array); // Output: [1, 2, 4, 5]
-interface Item {
-    id: number;
-    name: string;
-}
 
-const array: Item[] = [
-    { id: 1, name: 'Item 1' },
-    { id: 2, name: 'Item 2' },
-    { id: 3, name: 'Item 3' },
-];
-
-const idToRemove = 2;
-const index = array.findIndex(item => item.id === idToRemove);
-if (index !== -1) {
-    array.splice(index, 1);
-}
-console.log(array); // Output: [{ id: 1, name: 'Item 1' }, { id: 3, name: 'Item 3' }]
+// Example Usage
+const hashTable = new HashTable<string, number>(50);
+hashTable.set("apple", 1);
+hashTable.set("banana", 2);
+hashTable.set("orange", 3);
+console.log(hashTable.get("banana")); // Output: 2
+hashTable.delete("apple");
+console.log(hashTable.show()); // Output: [ [ 'banana', 2 ], [ 'orange', 3 ] ]
