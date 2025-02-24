@@ -1,15 +1,13 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Remove spaces and convert to lowercase
-    const cleanStr1 = str1.replace(/\s+/g, '').toLowerCase();
-    const cleanStr2 = str2.replace(/\s+/g, '').toLowerCase();
-
-    // Sort the characters of both strings and compare
-    const sortedStr1 = cleanStr1.split('').sort().join('');
-    const sortedStr2 = cleanStr2.split('').sort().join('');
-
-    return sortedStr1 === sortedStr2;
+function getCommonElements(array1: number[], array2: number[]): number[] {
+    // Create a set from the first array
+    const set = new Set(array1);
+    
+    // Filter the second array to get common elements
+    return array2.filter(item => set.has(item));
 }
 
 // Example usage:
-console.log(areAnagrams("listen", "silent")); // true
-console.log(areAnagrams("hello", "world"));   // false
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+const commonElements = getCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
