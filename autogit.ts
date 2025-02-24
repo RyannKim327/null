@@ -1,56 +1,96 @@
-class BoyerMoore {
-    private pattern: string;
-    private badCharTable: Map<string, number>;
+function topologicalSortKahn(graph: Map<number, number[]>): number[] {
+    const inDegree: Map<number, number> = new Map();
+    const result: number[] = [];
+    const queue: number[] = [];
 
-    constructor(pattern: string) {
-        this.pattern = pattern;
-        this.badCharTable = this.buildBadCharTable(pattern);
-    }
-
-    private buildBadCharTable(pattern: string): Map<string, number> {
-        const table = new Map<string, number>();
-        const patternLength = pattern.length;
-
-        for (let i = 0; i < patternLength; i++) {
-            table.set(pattern[i], i);
+    // Initialize in-degrees
+    for (const [node, neighbors] of graph.entries()) {
+        if (!inDegree.has(node)) {
+            inDegree.set(node, 0);
         }
-
-        return table;
+        for (const neighbor of neighbors) {
+            inDegree.set(neighbor, (inDegree.get(neighbor) || 0) + 1);
+        }
     }
 
-    public search(text: string): number {
-        const patternLength = this.pattern.length;
-        const textLength = text.length;
-        let skip: number;
+    // Collect nodes with zero in-degree
+    for (const [node, degree] of inDegree.entries()) {
+        if (degree === 0) {
+            queue.push(node);
+        }
+    }
 
-        for (let i = 0; i <= textLength - patternLength; i += skip) {
-            skip = 0;
+    // Process nodes
+    while (queue.length > 0) {
+        const current = queue.shift()!;
+        result.push(current);
 
-            for (let j = patternLength - 1; j >= 0; j--) {
-                if (this.pattern[j] !== text[i + j]) {
-                    const badCharIndex = this.badCharTable.get(text[i + j]) || -1;
-                    skip = Math.max(1, j - badCharIndex);
-                    break;
-                }
-            }
-
-            if (skip === 0) {
-                // Match found at index i
-                return i; // Return the index of the first match
+        for (const neighbor of graph.get(current) || []) {
+            inDegree.set(neighbor, inDegree.get(neighbor)! - 1);
+            if (inDegree.get(neighbor) === 0) {
+                queue.push(neighbor);
             }
         }
-
-        return -1; // No match found
     }
+
+    // Check for cycles
+    if (result.length !== graph.size) {
+        throw new Error("Graph has at least one cycle, topological sort not possible.");
+    }
+
+    return result;
 }
 
-// Example usage:
-const bm = new BoyerMoore("abc");
-const text = "abcpqrabcxyz";
-const index = bm.search(text);
+// Example usage
+const graph = new Map<number, number[]>([
+    [5, [2, 0]],
+    [4, [0, 1]],
+    [3, [1]],
+    [2, [3]],
+    [0, []],
+    [1, []]
+]);
 
-if (index !== -1) {
-    console.log(`Pattern found at index: ${index}`);
-} else {
-    console.log("Pattern not found");
+console.log(topologicalSortKahn(graph)); // Output: A valid topological order
+function topologicalSortDFS(graph: Map<number, number[]>): number[] {
+    const visited: Set<number> = new Set();
+    const result: number[] = [];
+    const tempMark: Set<number> = new Set(); // To detect cycles
+
+    const dfs = (node: number) => {
+        if (tempMark.has(node)) {
+            throw new Error("Graph has at least one cycle, topological sort not possible.");
+        }
+        if (visited.has(node)) {
+            return;
+        }
+
+        tempMark.add(node);
+        for (const neighbor of graph.get(node) || []) {
+            dfs(neighbor);
+        }
+        tempMark.delete(node);
+        visited.add(node);
+        result.push(node);
+    };
+
+    for (const node of graph.keys()) {
+        if (!visited.has(node)) {
+            dfs(node);
+        }
+    }
+
+    return result.reverse(); // Reverse to get the correct order
 }
+
+// Example usage
+const graphDFS = new Map<number, number[]>([
+    [5, [2, 0]],
+    [4, [0, 1]],
+    [3, [1]],
+    [2, [3]],
+    [0, []],
+    [1, []]
+]);
+
+console.log(topologicalSortDFS(graphDFS)); // Output: A valid topological order
