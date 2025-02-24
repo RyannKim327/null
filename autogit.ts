@@ -1,46 +1,12 @@
-class Stack<T> {
-    private items: T[] = [];
-
-    // Push an item onto the stack
-    push(item: T): void {
-        this.items.push(item);
+function factorial(n: number): number {
+    // Base case: factorial of 0 or 1 is 1
+    if (n === 0 || n === 1) {
+        return 1;
     }
-
-    // Pop an item off the stack
-    pop(): T | undefined {
-        return this.items.pop();
-    }
-
-    // Peek at the top item of the stack without removing it
-    peek(): T | undefined {
-        return this.items[this.items.length - 1];
-    }
-
-    // Check if the stack is empty
-    isEmpty(): boolean {
-        return this.items.length === 0;
-    }
-
-    // Get the size of the stack
-    size(): number {
-        return this.items.length;
-    }
-
-    // Clear the stack
-    clear(): void {
-        this.items = [];
-    }
+    // Recursive case: n! = n * (n - 1)!
+    return n * factorial(n - 1);
 }
 
 // Example usage:
-const stack = new Stack<number>();
-stack.push(1);
-stack.push(2);
-stack.push(3);
-
-console.log(stack.peek()); // Output: 3
-console.log(stack.pop());   // Output: 3
-console.log(stack.size());  // Output: 2
-console.log(stack.isEmpty()); // Output: false
-stack.clear();
-console.log(stack.isEmpty()); // Output: true
+const num = 5;
+console.log(`Factorial of ${num} is ${factorial(num)}`); // Output: Factorial of 5 is 120
