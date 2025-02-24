@@ -1,54 +1,46 @@
-function fibonacciSearch(arr: number[], x: number): number {
-    let fibM2 = 0;  // (m-2)'th Fibonacci
-    let fibM1 = 1;  // (m-1)'th Fibonacci
-    let fibM = fibM1 + fibM2; // m'th Fibonacci
+class Stack<T> {
+    private items: T[] = [];
 
-    const n = arr.length;
-
-    // Finding the smallest Fibonacci number greater than or equal to n
-    while (fibM < n) {
-        fibM2 = fibM1;
-        fibM1 = fibM;
-        fibM = fibM1 + fibM2;
+    // Push an item onto the stack
+    push(item: T): void {
+        this.items.push(item);
     }
 
-    // Marks the eliminated range from the front
-    let offset = -1;
-
-    // While there are still elements to be inspected
-    while (fibM > 1) {
-        // Check if fibM2 is a valid location
-        const i = Math.min(offset + fibM2, n - 1);
-
-        // If x is greater than the value at index i,
-        // cut the subarray after i
-        if (arr[i] < x) {
-            fibM = fibM1;
-            fibM1 = fibM2;
-            fibM2 = fibM - fibM1;
-            offset = i;
-        }
-        // If x is less than the value at index i,
-        // cut the subarray before i
-        else if (arr[i] > x) {
-            fibM = fibM2;
-            fibM1 = fibM1 - fibM2;
-            fibM2 = fibM - fibM1;
-        }
-        // Element found
-        else return i;
+    // Pop an item off the stack
+    pop(): T | undefined {
+        return this.items.pop();
     }
 
-    // Comparing the last element
-    if (fibM1 && arr[offset + 1] === x) return offset + 1;
+    // Peek at the top item of the stack without removing it
+    peek(): T | undefined {
+        return this.items[this.items.length - 1];
+    }
 
-    // Element not found
-    return -1;
+    // Check if the stack is empty
+    isEmpty(): boolean {
+        return this.items.length === 0;
+    }
+
+    // Get the size of the stack
+    size(): number {
+        return this.items.length;
+    }
+
+    // Clear the stack
+    clear(): void {
+        this.items = [];
+    }
 }
 
-// Example usage
-const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
-const x = 85;
-const result = fibonacciSearch(arr, x);
+// Example usage:
+const stack = new Stack<number>();
+stack.push(1);
+stack.push(2);
+stack.push(3);
 
-console.log(result !== -1 ? `Element found at index ${result}` : "Element not found");
+console.log(stack.peek()); // Output: 3
+console.log(stack.pop());   // Output: 3
+console.log(stack.size());  // Output: 2
+console.log(stack.isEmpty()); // Output: false
+stack.clear();
+console.log(stack.isEmpty()); // Output: true
