@@ -1,40 +1,51 @@
-interface State {
+// Define a Node interface
+interface Node {
     value: string;
-    score: number;
+    children: Node[];
 }
 
-function beamSearch(start: State, expand: (state: State) => State[], beamWidth: number): State[] {
-    let currentStates: State[] = [start];
-
-    while (currentStates.length > 0) {
-        let nextStates: State[] = [];
-
-        // Expand each current state and generate next states
-        for (const state of currentStates) {
-            const expandedStates = expand(state);
-            nextStates.push(...expandedStates);
-        }
-
-        // Sort the next states by score and keep only the best ones
-        nextStates.sort((a, b) => b.score - a.score); // Sort in descending order
-        currentStates = nextStates.slice(0, beamWidth); // Keep top `beamWidth` states
+// Breadth-Limited Search function
+function breadthLimitedSearch(root: Node, target: string, limit: number): Node | null {
+    if (limit < 0) {
+        return null; // If the limit is negative, return null
     }
 
-    return currentStates; // Return the best states found
-}
+    const queue: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
 
-// Function to expand the current state
-function expandState(state: State): State[] {
-    // Example logic to expand current state
-    return [
-        { value: state.value + 'A', score: state.score + Math.random() },
-        { value: state.value + 'B', score: state.score + Math.random() },
-        { value: state.value + 'C', score: state.score + Math.random() },
-    ];
+    while (queue.length > 0) {
+        const { node, depth } = queue.shift()!; // Get the first node in the queue
+
+        // Check if the current node is the target
+        if (node.value === target) {
+            return node; // Return the found node
+        }
+
+        // If the current depth is less than the limit, add children to the queue
+        if (depth < limit) {
+            for (const child of node.children) {
+                queue.push({ node: child, depth: depth + 1 });
+            }
+        }
+    }
+
+    return null; // Return null if the target is not found within the limit
 }
 
 // Example usage
-const initialState: State = { value: 'Start', score: 0 };
-const bestStates = beamSearch(initialState, expandState, 3);
+const rootNode: Node = {
+    value: 'A',
+    children: [
+        { value: 'B', children: [] },
+        { value: 'C', children: [
+            { value: 'D', children: [] },
+            { value: 'E', children: [] }
+        ] }
+    ]
+};
 
-console.log("Best States:", bestStates);
+const targetNode = breadthLimitedSearch(rootNode, 'D', 2);
+if (targetNode) {
+    console.log(`Found node: ${targetNode.value}`);
+} else {
+    console.log('Node not found within the depth limit.');
+}
