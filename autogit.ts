@@ -1,17 +1,10 @@
-function reverseWords(input: string): string {
-    // Split the string into words
-    const wordsArray = input.split(' ');
+let string1: string = "Hello, ";
+let string2: string = "world!";
+let concatenated: string = string1 + string2;
 
-    // Reverse the array of words
-    const reversedArray = wordsArray.reverse();
+console.log(concatenated); // Output: Hello, world!
+let string1: string = "Hello, ";
+let string2: string = "world!";
+let concatenated: string = `${string1}${string2}`;
 
-    // Join the reversed array back into a string
-    const reversedString = reversedArray.join(' ');
-
-    return reversedString;
-}
-
-// Example usage
-const originalString = "Hello world this is TypeScript";
-const reversedString = reverseWords(originalString);
-console.log(reversedString); // Output: "TypeScript is this world Hello"
+console.log(concatenated); // Output: Hello, world!
