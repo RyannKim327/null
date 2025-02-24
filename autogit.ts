@@ -1,34 +1,54 @@
-function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
-    const n = input.length;
-    const rotations: string[] = [];
+function fibonacciSearch(arr: number[], x: number): number {
+    let fibM2 = 0;  // (m-2)'th Fibonacci
+    let fibM1 = 1;  // (m-1)'th Fibonacci
+    let fibM = fibM1 + fibM2; // m'th Fibonacci
 
-    // Generate all rotations of the input string
-    for (let i = 0; i < n; i++) {
-        rotations.push(input.slice(i) + input.slice(0, i));
+    const n = arr.length;
+
+    // Finding the smallest Fibonacci number greater than or equal to n
+    while (fibM < n) {
+        fibM2 = fibM1;
+        fibM1 = fibM;
+        fibM = fibM1 + fibM2;
     }
 
-    // Sort the rotations
-    rotations.sort();
+    // Marks the eliminated range from the front
+    let offset = -1;
 
-    // Build the transformed string and find the original index
-    let transformed = '';
-    let originalIndex = -1;
+    // While there are still elements to be inspected
+    while (fibM > 1) {
+        // Check if fibM2 is a valid location
+        const i = Math.min(offset + fibM2, n - 1);
 
-    for (let i = 0; i < n; i++) {
-        const rotation = rotations[i];
-        transformed += rotation[n - 1]; // Last column of the sorted rotations
-        if (rotation === input) {
-            originalIndex = i; // Store the index of the original string
+        // If x is greater than the value at index i,
+        // cut the subarray after i
+        if (arr[i] < x) {
+            fibM = fibM1;
+            fibM1 = fibM2;
+            fibM2 = fibM - fibM1;
+            offset = i;
         }
+        // If x is less than the value at index i,
+        // cut the subarray before i
+        else if (arr[i] > x) {
+            fibM = fibM2;
+            fibM1 = fibM1 - fibM2;
+            fibM2 = fibM - fibM1;
+        }
+        // Element found
+        else return i;
     }
 
-    return { transformed, index: originalIndex };
+    // Comparing the last element
+    if (fibM1 && arr[offset + 1] === x) return offset + 1;
+
+    // Element not found
+    return -1;
 }
 
 // Example usage
-const input = "banana";
-const { transformed, index } = burrowsWheelerTransform(input);
-console.log("Transformed:", transformed);
-console.log("Original Index:", index);
-Transformed: annb$aa
-Original Index: 5
+const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
+const x = 85;
+const result = fibonacciSearch(arr, x);
+
+console.log(result !== -1 ? `Element found at index ${result}` : "Element not found");
