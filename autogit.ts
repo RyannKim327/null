@@ -1,20 +1,34 @@
-function longestIncreasingSubsequence(nums: number[]): number {
-    if (nums.length === 0) return 0;
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    const dp: number[] = new Array(nums.length).fill(1); // Initialize dp array
-
-    for (let i = 1; i < nums.length; i++) {
-        for (let j = 0; j < i; j++) {
-            if (nums[i] > nums[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
-            }
-        }
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-
-    return Math.max(...dp); // The length of the longest increasing subsequence
 }
 
-// Example usage:
-const nums = [10, 9, 2, 5, 3, 7, 101, 18];
-const length = longestIncreasingSubsequence(nums);
-console.log(length); // Output: 4
+function countLeafNodes(root: TreeNode | null): number {
+    if (root === null) {
+        return 0; // Base case: if the node is null, return 0
+    }
+    
+    // Check if it's a leaf node
+    if (root.left === null && root.right === null) {
+        return 1; // It's a leaf node
+    }
+    
+    // Recursively count the leaf nodes in both subtrees
+    return countLeafNodes(root.left) + countLeafNodes(root.right);
+}
+
+// Example usage
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(countLeafNodes(root)); // Output: 3 (Node 4, 5, and 3 are leaf nodes)
