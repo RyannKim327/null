@@ -1,96 +1,57 @@
-function topologicalSortKahn(graph: Map<number, number[]>): number[] {
-    const inDegree: Map<number, number> = new Map();
-    const result: number[] = [];
-    const queue: number[] = [];
+class Graph {
+    private adjacencyList: Map<number, number[]>;
 
-    // Initialize in-degrees
-    for (const [node, neighbors] of graph.entries()) {
-        if (!inDegree.has(node)) {
-            inDegree.set(node, 0);
-        }
-        for (const neighbor of neighbors) {
-            inDegree.set(neighbor, (inDegree.get(neighbor) || 0) + 1);
-        }
+    constructor() {
+        this.adjacencyList = new Map();
     }
 
-    // Collect nodes with zero in-degree
-    for (const [node, degree] of inDegree.entries()) {
-        if (degree === 0) {
-            queue.push(node);
-        }
+    addVertex(vertex: number): void {
+        this.adjacencyList.set(vertex, []);
     }
 
-    // Process nodes
-    while (queue.length > 0) {
-        const current = queue.shift()!;
-        result.push(current);
+    addEdge(vertex1: number, vertex2: number): void {
+        this.adjacencyList.get(vertex1)?.push(vertex2);
+        this.adjacencyList.get(vertex2)?.push(vertex1); // For undirected graph
+    }
 
-        for (const neighbor of graph.get(current) || []) {
-            inDegree.set(neighbor, inDegree.get(neighbor)! - 1);
-            if (inDegree.get(neighbor) === 0) {
-                queue.push(neighbor);
+    bfs(startVertex: number): number[] {
+        const visited: Set<number> = new Set();
+        const queue: number[] = [];
+        const result: number[] = [];
+
+        visited.add(startVertex);
+        queue.push(startVertex);
+
+        while (queue.length > 0) {
+            const currentVertex = queue.shift()!;
+            result.push(currentVertex);
+
+            const neighbors = this.adjacencyList.get(currentVertex) || [];
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    visited.add(neighbor);
+                    queue.push(neighbor);
+                }
             }
         }
-    }
 
-    // Check for cycles
-    if (result.length !== graph.size) {
-        throw new Error("Graph has at least one cycle, topological sort not possible.");
+        return result;
     }
-
-    return result;
 }
 
-// Example usage
-const graph = new Map<number, number[]>([
-    [5, [2, 0]],
-    [4, [0, 1]],
-    [3, [1]],
-    [2, [3]],
-    [0, []],
-    [1, []]
-]);
+// Example usage:
+const graph = new Graph();
+graph.addVertex(1);
+graph.addVertex(2);
+graph.addVertex(3);
+graph.addVertex(4);
+graph.addVertex(5);
 
-console.log(topologicalSortKahn(graph)); // Output: A valid topological order
-function topologicalSortDFS(graph: Map<number, number[]>): number[] {
-    const visited: Set<number> = new Set();
-    const result: number[] = [];
-    const tempMark: Set<number> = new Set(); // To detect cycles
+graph.addEdge(1, 2);
+graph.addEdge(1, 3);
+graph.addEdge(2, 4);
+graph.addEdge(2, 5);
+graph.addEdge(3, 5);
 
-    const dfs = (node: number) => {
-        if (tempMark.has(node)) {
-            throw new Error("Graph has at least one cycle, topological sort not possible.");
-        }
-        if (visited.has(node)) {
-            return;
-        }
-
-        tempMark.add(node);
-        for (const neighbor of graph.get(node) || []) {
-            dfs(neighbor);
-        }
-        tempMark.delete(node);
-        visited.add(node);
-        result.push(node);
-    };
-
-    for (const node of graph.keys()) {
-        if (!visited.has(node)) {
-            dfs(node);
-        }
-    }
-
-    return result.reverse(); // Reverse to get the correct order
-}
-
-// Example usage
-const graphDFS = new Map<number, number[]>([
-    [5, [2, 0]],
-    [4, [0, 1]],
-    [3, [1]],
-    [2, [3]],
-    [0, []],
-    [1, []]
-]);
-
-console.log(topologicalSortDFS(graphDFS)); // Output: A valid topological order
+const bfsResult = graph.bfs(1);
+console.log(bfsResult); // Output: [1, 2, 3, 4, 5]
