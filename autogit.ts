@@ -1,53 +1,74 @@
-function computeLPSArray(pattern: string): number[] {
-    const lps: number[] = new Array(pattern.length).fill(0);
-    let length = 0; // length of the previous longest prefix suffix
-    let i = 1;
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
+    constructor(value: T) {
+        this.value = value;
+        this.next = null;
     }
-    return lps;
 }
 
-function KMPSearch(text: string, pattern: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
+class Queue<T> {
+    private head: Node<T> | null;
+    private tail: Node<T> | null;
+    private length: number;
 
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-
-        if (j === pattern.length) {
-            result.push(i - j); // Match found, add the starting index
-            j = lps[j - 1]; // Get the next position to compare in the pattern
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1]; // Use the LPS array to skip characters
-            } else {
-                i++;
-            }
-        }
+    constructor() {
+        this.head = null;
+        this.tail = null;
+        this.length = 0;
     }
-    return result; // Return all starting indices of matches
+
+    // Add an item to the end of the queue
+    enqueue(value: T): void {
+        const newNode = new Node(value);
+        if (this.tail) {
+            this.tail.next = newNode;
+        }
+        this.tail = newNode;
+        if (!this.head) {
+            this.head = newNode;
+        }
+        this.length++;
+    }
+
+    // Remove and return the item at the front of the queue
+    dequeue(): T | null {
+        if (!this.head) {
+            return null; // Queue is empty
+        }
+        const dequeuedValue = this.head.value;
+        this.head = this.head.next;
+        if (!this.head) {
+            this.tail = null; // Queue is empty after dequeue
+        }
+        this.length--;
+        return dequeuedValue;
+    }
+
+    // View the front item of the queue without removing it
+    peek(): T | null {
+        return this.head ? this.head.value : null;
+    }
+
+    // Check if the queue is empty
+    isEmpty(): boolean {
+        return this.length === 0;
+    }
+
+    // Get the number of items in the queue
+    size(): number {
+        return this.length;
+    }
 }
 
-// Example usage:
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const result = KMPSearch(text, pattern);
-console.log("Pattern found at indices:", result);
+// Example usage
+const queue = new Queue<number>();
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+
+console.log(queue.dequeue()); // 1
+console.log(queue.peek());    // 2
+console.log(queue.isEmpty());  // false
+console.log(queue.size());     // 2
