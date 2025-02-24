@@ -1,57 +1,69 @@
-// Define a Node interface
-interface Node {
-    value: any;
-    children: Node[];
+class ListNode {
+    value: number;
+    next: ListNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
 }
 
-// Breadth-Limited Search function
-function breadthLimitedSearch(root: Node, target: any, maxDepth: number): Node | null {
-    // Use a queue to keep track of nodes to explore
-    const queue: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
+function getLength(head: ListNode | null): number {
+    let length = 0;
+    let current = head;
+    while (current) {
+        length++;
+        current = current.next;
+    }
+    return length;
+}
 
-    while (queue.length > 0) {
-        const { node, depth } = queue.shift()!; // Get the first node in the queue
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+    if (!headA || !headB) return null;
 
-        // Check if the current node is the target
-        if (node.value === target) {
-            return node; // Return the found node
+    const lengthA = getLength(headA);
+    const lengthB = getLength(headB);
+
+    let currentA: ListNode | null = headA;
+    let currentB: ListNode | null = headB;
+
+    // Align the starting points
+    if (lengthA > lengthB) {
+        for (let i = 0; i < lengthA - lengthB; i++) {
+            currentA = currentA!.next; // Use non-null assertion since we checked for null
         }
-
-        // If we haven't reached the maximum depth, add children to the queue
-        if (depth < maxDepth) {
-            for (const child of node.children) {
-                queue.push({ node: child, depth: depth + 1 });
-            }
+    } else {
+        for (let i = 0; i < lengthB - lengthA; i++) {
+            currentB = currentB!.next;
         }
     }
 
-    // Return null if the target is not found within the depth limit
-    return null;
+    // Traverse both lists to find the intersection
+    while (currentA && currentB) {
+        if (currentA === currentB) {
+            return currentA; // Intersection found
+        }
+        currentA = currentA.next;
+        currentB = currentB.next;
+    }
+
+    return null; // No intersection
 }
 
-// Example usage
-const rootNode: Node = {
-    value: 1,
-    children: [
-        {
-            value: 2,
-            children: [
-                { value: 4, children: [] },
-                { value: 5, children: [] }
-            ]
-        },
-        {
-            value: 3,
-            children: [
-                { value: 6, children: [] },
-                { value: 7, children: [] }
-            ]
-        }
-    ]
-};
+// Example usage:
+const nodeA1 = new ListNode(1);
+const nodeA2 = new ListNode(2);
+const nodeB1 = new ListNode(3);
+const intersectionNode = new ListNode(4);
+const nodeA3 = new ListNode(5);
+const nodeB2 = new ListNode(6);
 
-const targetValue = 5;
-const maxDepth = 2;
+nodeA1.next = nodeA2;
+nodeA2.next = nodeA3;
+nodeA3.next = intersectionNode;
 
-const result = breadthLimitedSearch(rootNode, targetValue, maxDepth);
-console.log(result ? `Found: ${result.value}` : 'Not found');
+nodeB1.next = intersectionNode;
+nodeB2.next = nodeB1;
+
+const intersection = getIntersectionNode(nodeA1, nodeB2);
+console.log(intersection ? intersection.value : "No intersection");
