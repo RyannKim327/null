@@ -1,26 +1,81 @@
-function countOccurrences(text: string, word: string): number {
-    // Convert both the text and word to lowercase for case-insensitive comparison
-    const lowerText = text.toLowerCase();
-    const lowerWord = word.toLowerCase();
+type Graph = {
+    [key: string]: string[];
+};
 
-    // Split the text into words using space as a delimiter
-    const words = lowerText.split(/\s+/); // This will handle multiple spaces
+function biDirectionalSearch(graph: Graph, start: string, goal: string): string[] | null {
+    if (start === goal) return [start];
 
-    // Initialize a count variable
-    let count = 0;
+    const visitedFromStart = new Set<string>();
+    const visitedFromGoal = new Set<string>();
+    const queueFromStart: string[] = [start];
+    const queueFromGoal: string[] = [goal];
+    const parentFromStart: { [key: string]: string | null } = { [start]: null };
+    const parentFromGoal: { [key: string]: string | null } = { [goal]: null };
 
-    // Loop through the words and increase the count for each match
-    for (const w of words) {
-        if (w === lowerWord) {
-            count++;
+    while (queueFromStart.length > 0 && queueFromGoal.length > 0) {
+        // Expand from the start
+        const currentFromStart = queueFromStart.shift()!;
+        visitedFromStart.add(currentFromStart);
+
+        for (const neighbor of graph[currentFromStart] || []) {
+            if (!visitedFromStart.has(neighbor)) {
+                parentFromStart[neighbor] = currentFromStart;
+                queueFromStart.push(neighbor);
+                if (visitedFromGoal.has(neighbor)) {
+                    return constructPath(neighbor, parentFromStart, parentFromGoal);
+                }
+            }
+        }
+
+        // Expand from the goal
+        const currentFromGoal = queueFromGoal.shift()!;
+        visitedFromGoal.add(currentFromGoal);
+
+        for (const neighbor of graph[currentFromGoal] || []) {
+            if (!visitedFromGoal.has(neighbor)) {
+                parentFromGoal[neighbor] = currentFromGoal;
+                queueFromGoal.push(neighbor);
+                if (visitedFromStart.has(neighbor)) {
+                    return constructPath(neighbor, parentFromStart, parentFromGoal);
+                }
+            }
         }
     }
 
-    return count;
+    return null; // No path found
 }
 
-// Example usage:
-const text = "Hello world, hello everyone. Hello!";
-const wordToCount = "hello";
-const occurrences = countOccurrences(text, wordToCount);
-console.log(`The word "${wordToCount}" occurs ${occurrences} times.`);
+function constructPath(meetingPoint: string, parentFromStart: { [key: string]: string | null }, parentFromGoal: { [key: string]: string | null }): string[] {
+    const path: string[] = [];
+    
+    // Construct path from start to meeting point
+    let current: string | null = meetingPoint;
+    while (current !== null) {
+        path.push(current);
+        current = parentFromStart[current];
+    }
+    path.reverse(); // Reverse to get the correct order
+
+    // Construct path from meeting point to goal
+    current = parentFromGoal[meetingPoint];
+    while (current !== null) {
+        path.push(current);
+        current = parentFromGoal[current];
+    }
+
+    return path;
+}
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['A', 'D', 'E'],
+    C: ['A', 'F'],
+    D: ['B'],
+    E: ['B', 'F'],
+    F: ['C', 'E'],
+};
+
+const start = 'A';
+const goal = 'F';
+const path = biDirectionalSearch(graph, start, goal);
+
+console.log(path); // Output: ['A', 'C', 'F'] or ['A', 'B', 'E', 'F']
