@@ -1,17 +1,54 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings: remove spaces and convert to lowercase
-    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
-    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
+class Edge {
+    constructor(public from: number, public to: number, public weight: number) {}
+}
 
-    // Sort the characters of both strings
-    const sortedStr1 = normalizedStr1.split('').sort().join('');
-    const sortedStr2 = normalizedStr2.split('').sort().join('');
+class Graph {
+    private edges: Edge[] = [];
+    private vertexCount: number;
 
-    // Compare the sorted strings
-    return sortedStr1 === sortedStr2;
+    constructor(vertexCount: number) {
+        this.vertexCount = vertexCount;
+    }
+
+    addEdge(from: number, to: number, weight: number) {
+        this.edges.push(new Edge(from, to, weight));
+    }
+
+    bellmanFord(source: number): number[] | string {
+        // Step 1: Initialize distances from source to all vertices as infinite
+        const distances: number[] = new Array(this.vertexCount).fill(Infinity);
+        distances[source] = 0;
+
+        // Step 2: Relax all edges |V| - 1 times
+        for (let i = 0; i < this.vertexCount - 1; i++) {
+            for (const edge of this.edges) {
+                if (distances[edge.from] !== Infinity && distances[edge.from] + edge.weight < distances[edge.to]) {
+                    distances[edge.to] = distances[edge.from] + edge.weight;
+                }
+            }
+        }
+
+        // Step 3: Check for negative-weight cycles
+        for (const edge of this.edges) {
+            if (distances[edge.from] !== Infinity && distances[edge.from] + edge.weight < distances[edge.to]) {
+                return "Graph contains a negative-weight cycle";
+            }
+        }
+
+        return distances;
+    }
 }
 
 // Example usage:
-const string1 = "listen";
-const string2 = "silent";
-console.log(areAnagrams(string1, string2)); // Output: true
+const graph = new Graph(5);
+graph.addEdge(0, 1, -1);
+graph.addEdge(0, 2, 4);
+graph.addEdge(1, 2, 3);
+graph.addEdge(1, 3, 2);
+graph.addEdge(1, 4, 2);
+graph.addEdge(3, 1, 1);
+graph.addEdge(3, 2, 5);
+graph.addEdge(4, 3, -3);
+
+const distances = graph.bellmanFord(0);
+console.log(distances);
