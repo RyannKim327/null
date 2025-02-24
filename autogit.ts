@@ -1,25 +1,3 @@
-function heapSort(arr: number[]): number[] {
-    const n = arr.length;
-
-    // Build a max heap
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(arr, n, i);
-    }
-
-    // One by one extract elements from the heap
-    for (let i = n - 1; i > 0; i--) {
-        // Move current root to end
-        [arr[0], arr[i]] = [arr[i], arr[0]]; // Swap
-
-        // Call heapify on the reduced heap
-        heapify(arr, i, 0);
-    }
-
-    return arr;
-}
-
-// To heapify a subtree rooted with node i which is an index in arr[].
-// n is the size of the heap
 function heapify(arr: number[], n: number, i: number) {
     let largest = i; // Initialize largest as root
     const left = 2 * i + 1; // left = 2*i + 1
@@ -39,12 +17,33 @@ function heapify(arr: number[], n: number, i: number) {
     if (largest !== i) {
         [arr[i], arr[largest]] = [arr[largest], arr[i]]; // Swap
 
-        // Recursively heapify the affected subtree
+        // Recursively heapify the affected sub-tree
         heapify(arr, n, largest);
     }
 }
 
-// Example usage
-const array = [3, 5, 1, 10, 2, 7];
-const sortedArray = heapSort(array);
-console.log(sortedArray); // Output: [1, 2, 3, 5, 7, 10]
+function heapSort(arr: number[]): number[] {
+    const n = arr.length;
+
+    // Build heap (rearrange array)
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        heapify(arr, n, i);
+    }
+
+    // One by one extract elements from heap
+    for (let i = n - 1; i > 0; i--) {
+        // Move current root to end
+        [arr[0], arr[i]] = [arr[i], arr[0]]; // Swap
+
+        // Call heapify on the reduced heap
+        heapify(arr, i, 0);
+    }
+
+    return arr;
+}
+
+// Example usage:
+const arr = [12, 11, 13, 5, 6, 7];
+console.log("Unsorted array:", arr);
+const sortedArr = heapSort(arr);
+console.log("Sorted array:", sortedArr);
