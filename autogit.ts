@@ -1,42 +1,29 @@
-type Graph = { [key: string]: string[] };
+function longestCommonSubstring(str1: string, str2: string): string {
+    const m = str1.length, n = str2.length;
+    let maxLength = 0;
+    let endingIndex = 0;
 
-function bfs(graph: Graph, startNode: string): string[] {
-    const visited: Set<string> = new Set();
-    const queue: string[] = [];
-    const result: string[] = [];
+    // Create a 2D array to store lengths of common substrings
+    const dp: number[][] = Array(m + 1).fill(0).map(() => Array(n + 1).fill(0));
 
-    // Start with the starting node
-    queue.push(startNode);
-    visited.add(startNode);
-
-    while (queue.length > 0) {
-        const currentNode = queue.shift(); // Dequeue the first node
-
-        if (currentNode !== undefined) {
-            result.push(currentNode); // Process the current node
-
-            // Explore all unvisited neighbors
-            for (const neighbor of graph[currentNode]) {
-                if (!visited.has(neighbor)) {
-                    visited.add(neighbor); // Mark neighbor as visited
-                    queue.push(neighbor); // Enqueue the neighbor
+    // Build the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > maxLength) {
+                    maxLength = dp[i][j];
+                    endingIndex = i; // track the ending index of the substring
                 }
             }
         }
     }
 
-    return result; // Return the order of visited nodes
+    // Return the longest common substring using the ending index and max length
+    return str1.substring(endingIndex - maxLength, endingIndex);
 }
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: ['F'],
-    F: []
-};
-
-const bfsResult = bfs(graph, 'A');
-console.log(bfsResult); // Output: ["A", "B", "C", "D", "E", "F"]
+// Example usage
+const str1 = "abcdxyz";
+const str2 = "xyzabcd";
+console.log(longestCommonSubstring(str1, str2)); // Output: "abcd"
