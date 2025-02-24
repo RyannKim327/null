@@ -1,35 +1,9 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+function calculateTriangleArea(base: number, height: number): number {
+    return 0.5 * base * height;
 }
 
-function countLeafNodes(root: TreeNode | null): number {
-    if (root === null) {
-        return 0; // Base case: if the node is null, return 0
-    }
-    
-    // Check if the node is a leaf node
-    if (root.left === null && root.right === null) {
-        return 1; // Found a leaf node
-    }
-    
-    // Recurse on left and right subtrees
-    return countLeafNodes(root.left) + countLeafNodes(root.right);
-}
-
-// Example usage
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-const leafCount = countLeafNodes(root);
-console.log(`Number of leaf nodes: ${leafCount}`);
+// Example usage:
+const base = 5;
+const height = 10;
+const area = calculateTriangleArea(base, height);
+console.log(`The area of the triangle is: ${area}`);
