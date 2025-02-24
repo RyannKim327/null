@@ -1,28 +1,18 @@
-function bubbleSort(arr: number[]): number[] {
-    const n = arr.length;
-    let swapped: boolean;
+function areAnagrams(str1: string, str2: string): boolean {
+    // Normalize the strings: remove spaces and convert to lowercase
+    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
+    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
 
-    // Iterate over the array
-    for (let i = 0; i < n; i++) {
-        swapped = false; // Reset swapped flag each iteration
-        // Last i elements are already sorted, no need to check them
-        for (let j = 0; j < n - i - 1; j++) {
-            // Compare adjacent elements
-            if (arr[j] > arr[j + 1]) {
-                // Swap if they are in the wrong order
-                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-                swapped = true; // Mark as swapped
-            }
-        }
-        // If no elements were swapped, the array is sorted
-        if (!swapped) {
-            break;
-        }
-    }
-    return arr;
+    // Sort the characters of both strings
+    const sortedStr1 = normalizedStr1.split('').sort().join('');
+    const sortedStr2 = normalizedStr2.split('').sort().join('');
+
+    // Compare the sorted strings
+    return sortedStr1 === sortedStr2;
 }
 
-// Example usage
-const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
-const sortedArray = bubbleSort(unsortedArray);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 34, 64, 90]
+// Example usage:
+const string1 = "listen";
+const string2 = "silent";
+
+console.log(areAnagrams(string1, string2)); // Output: true
