@@ -1,33 +1,97 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function topologicalSortKahn(graph: { [key: string]: string[] }): string[] {
+    const inDegree: { [key: string]: number } = {};
+    const queue: string[] = [];
+    const result: string[] = [];
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    // Initialize in-degree of each node
+    for (const node in graph) {
+        inDegree[node] = 0;
     }
+
+    // Calculate in-degrees
+    for (const node in graph) {
+        for (const neighbor of graph[node]) {
+            inDegree[neighbor] = (inDegree[neighbor] || 0) + 1;
+        }
+    }
+
+    // Enqueue nodes with in-degree of 0
+    for (const node in inDegree) {
+        if (inDegree[node] === 0) {
+            queue.push(node);
+        }
+    }
+
+    // Process nodes
+    while (queue.length > 0) {
+        const current = queue.shift()!;
+        result.push(current);
+
+        for (const neighbor of graph[current]) {
+            inDegree[neighbor]--;
+            if (inDegree[neighbor] === 0) {
+                queue.push(neighbor);
+            }
+        }
+    }
+
+    // Check for cycles
+    if (result.length !== Object.keys(graph).length) {
+        throw new Error("Graph has at least one cycle");
+    }
+
+    return result;
 }
 
-function countLeafNodes(node: TreeNode | null): number {
-    if (node === null) {
-        return 0;
+// Example usage
+const graph = {
+    A: ['B', 'C'],
+    B: ['D'],
+    C: ['D'],
+    D: []
+};
+
+console.log(topologicalSortKahn(graph)); // Output: [ 'A', 'B', 'C', 'D' ] or similar
+function topologicalSortDFS(graph: { [key: string]: string[] }): string[] {
+    const visited: { [key: string]: boolean } = {};
+    const result: string[] = [];
+    let hasCycle = false;
+
+    function dfs(node: string) {
+        if (hasCycle) return; // Stop if a cycle is detected
+        if (visited[node] === undefined) {
+            visited[node] = true; // Mark the node as visited
+            for (const neighbor of graph[node]) {
+                if (visited[neighbor] === undefined) {
+                    dfs(neighbor);
+                } else if (visited[neighbor] === true) {
+                    hasCycle = true; // Cycle detected
+                }
+            }
+            visited[node] = false; // Mark the node as processed
+            result.push(node); // Add to result stack
+        }
     }
-    // Check if the node is a leaf node
-    if (node.left === null && node.right === null) {
-        return 1; // This is a leaf node
+
+    for (const node in graph) {
+        if (visited[node] === undefined) {
+            dfs(node);
+        }
     }
-    // Recursively count leaf nodes in left and right subtree
-    return countLeafNodes(node.left) + countLeafNodes(node.right);
+
+    if (hasCycle) {
+        throw new Error("Graph has at least one cycle");
+    }
+
+    return result.reverse(); // Reverse to get the correct order
 }
 
-// Example Usage
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+// Example usage
+const graphDFS = {
+    A: ['B', 'C'],
+    B: ['D'],
+    C: ['D'],
+    D: []
+};
 
-const leafCount = countLeafNodes(root);
-console.log(`Number of leaf nodes: ${leafCount}`);
+console.log(topologicalSortDFS(graphDFS)); // Output: [ 'A', 'C', 'B', 'D' ] or similar
