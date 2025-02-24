@@ -1,68 +1,56 @@
-function burrowsWheelerTransform(input: string): { bwt: string, index: number } {
-    const len = input.length;
-    const rotations: string[] = new Array(len);
+class BoyerMoore {
+    private pattern: string;
+    private badCharTable: Map<string, number>;
 
-    // Generating all rotations
-    for (let i = 0; i < len; i++) {
-        rotations[i] = input.slice(i) + input.slice(0, i);
+    constructor(pattern: string) {
+        this.pattern = pattern;
+        this.badCharTable = this.buildBadCharTable(pattern);
     }
 
-    // Sort rotations
-    rotations.sort();
+    private buildBadCharTable(pattern: string): Map<string, number> {
+        const table = new Map<string, number>();
+        const patternLength = pattern.length;
 
-    // Create BWT result and remember the original index
-    let bwt = '';
-    let originalIndex = 0;
-
-    for (let i = 0; i < len; i++) {
-        bwt += rotations[i][len - 1]; // Last characters of sorted rotations
-        if (rotations[i] === input) {
-            originalIndex = i; // Find the original index
+        for (let i = 0; i < patternLength; i++) {
+            table.set(pattern[i], i);
         }
+
+        return table;
     }
 
-    return { bwt, index: originalIndex };
+    public search(text: string): number {
+        const patternLength = this.pattern.length;
+        const textLength = text.length;
+        let skip: number;
+
+        for (let i = 0; i <= textLength - patternLength; i += skip) {
+            skip = 0;
+
+            for (let j = patternLength - 1; j >= 0; j--) {
+                if (this.pattern[j] !== text[i + j]) {
+                    const badCharIndex = this.badCharTable.get(text[i + j]) || -1;
+                    skip = Math.max(1, j - badCharIndex);
+                    break;
+                }
+            }
+
+            if (skip === 0) {
+                // Match found at index i
+                return i; // Return the index of the first match
+            }
+        }
+
+        return -1; // No match found
+    }
 }
 
-function inverseBurrowsWheelerTransform(bwt: string, index: number): string {
-    const len = bwt.length;
-    const sorted = Array.from(bwt).sort().join('');
-    const next: number[] = new Array(len);
+// Example usage:
+const bm = new BoyerMoore("abc");
+const text = "abcpqrabcxyz";
+const index = bm.search(text);
 
-    const count: Record<string, number> = {};
-    for (const char of bwt) count[char] = (count[char] || 0) + 1;
-
-    const cumulativeCount: Record<string, number> = {};
-    let total = 0;
-    for (const char of sorted) {
-        if (!cumulativeCount[char]) {
-            cumulativeCount[char] = total;
-            total += count[char];
-        }
-    }
-
-    const occurrenceCount: Record<string, number> = {};
-    for (let i = 0; i < len; i++) {
-        const char = bwt[i];
-        next[i] = cumulativeCount[char] + (occurrenceCount[char] || 0);
-        occurrenceCount[char] = (occurrenceCount[char] || 0) + 1;
-    }
-
-    // Reconstruct the original string
-    let result = '';
-    for (let i = 0; i < len; i++) {
-        result += bwt[index];
-        index = next[index];
-    }
-
-    return result.split('').reverse().join('');
+if (index !== -1) {
+    console.log(`Pattern found at index: ${index}`);
+} else {
+    console.log("Pattern not found");
 }
-
-// Example Usage
-const inputString = "banana";
-const { bwt, index } = burrowsWheelerTransform(inputString);
-console.log("BWT:", bwt);
-console.log("Original Index:", index);
-
-const originalString = inverseBurrowsWheelerTransform(bwt, index);
-console.log("Original String:", originalString);
