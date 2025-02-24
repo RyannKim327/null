@@ -1,53 +1,57 @@
-function computeLPSArray(pattern: string): number[] {
-    const lps: number[] = new Array(pattern.length).fill(0);
-    let length = 0; // length of the previous longest prefix suffix
-    let i = 1;
+// Define a Node interface
+interface Node {
+    value: any;
+    children: Node[];
+}
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1];
-            } else {
-                lps[i] = 0;
-                i++;
+// Breadth-Limited Search function
+function breadthLimitedSearch(root: Node, target: any, maxDepth: number): Node | null {
+    // Use a queue to keep track of nodes to explore
+    const queue: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
+
+    while (queue.length > 0) {
+        const { node, depth } = queue.shift()!; // Get the first node in the queue
+
+        // Check if the current node is the target
+        if (node.value === target) {
+            return node; // Return the found node
+        }
+
+        // If we haven't reached the maximum depth, add children to the queue
+        if (depth < maxDepth) {
+            for (const child of node.children) {
+                queue.push({ node: child, depth: depth + 1 });
             }
         }
     }
-    return lps;
+
+    // Return null if the target is not found within the depth limit
+    return null;
 }
 
-function KMPSearch(text: string, pattern: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
-
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
+// Example usage
+const rootNode: Node = {
+    value: 1,
+    children: [
+        {
+            value: 2,
+            children: [
+                { value: 4, children: [] },
+                { value: 5, children: [] }
+            ]
+        },
+        {
+            value: 3,
+            children: [
+                { value: 6, children: [] },
+                { value: 7, children: [] }
+            ]
         }
+    ]
+};
 
-        if (j === pattern.length) {
-            result.push(i - j); // Found a match
-            j = lps[j - 1]; // Get the next position to check
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1]; // Use the LPS array to skip characters
-            } else {
-                i++;
-            }
-        }
-    }
-    return result; // Return the starting indices of matches
-}
+const targetValue = 5;
+const maxDepth = 2;
 
-// Example usage:
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const matches = KMPSearch(text, pattern);
-console.log("Pattern found at indices:", matches);
+const result = breadthLimitedSearch(rootNode, targetValue, maxDepth);
+console.log(result ? `Found: ${result.value}` : 'Not found');
