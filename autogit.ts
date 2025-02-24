@@ -1,17 +1,17 @@
-function quicksort(arr: number[]): number[] {
-    if (arr.length <= 1) {
-        return arr; // Base case: arrays with 0 or 1 element are sorted
-    }
+function reverseWords(input: string): string {
+    // Split the string into words
+    const wordsArray = input.split(' ');
 
-    const pivot = arr[Math.floor(arr.length / 2)]; // Choosing the pivot
-    const left = arr.filter(x => x < pivot); // Elements less than pivot
-    const middle = arr.filter(x => x === pivot); // Elements equal to pivot
-    const right = arr.filter(x => x > pivot); // Elements greater than pivot
+    // Reverse the array of words
+    const reversedArray = wordsArray.reverse();
 
-    return [...quicksort(left), ...middle, ...quicksort(right)]; // Combine results
+    // Join the reversed array back into a string
+    const reversedString = reversedArray.join(' ');
+
+    return reversedString;
 }
 
 // Example usage
-const array = [3, 6, 8, 10, 1, 2, 1];
-const sortedArray = quicksort(array);
-console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
+const originalString = "Hello world this is TypeScript";
+const reversedString = reverseWords(originalString);
+console.log(reversedString); // Output: "TypeScript is this world Hello"
