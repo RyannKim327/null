@@ -1,9 +1,12 @@
-function calculateTriangleArea(base: number, height: number): number {
-    return 0.5 * base * height;
+function validateEmail(email: string): boolean {
+    // Regular expression for validating an email address
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
 }
 
-// Example usage:
-const base = 5;
-const height = 10;
-const area = calculateTriangleArea(base, height);
-console.log(`The area of the triangle is: ${area}`);
+// Example usage
+const email1 = "example@example.com";
+const email2 = "invalid-email@.com";
+
+console.log(validateEmail(email1)); // true
+console.log(validateEmail(email2)); // false
