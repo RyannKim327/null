@@ -1,54 +1,40 @@
-type Edge = {
-    node: string;
-    weight: number;
-};
+interface State {
+    value: string;
+    score: number;
+}
 
-type Graph = {
-    [key: string]: Edge[];
-};
+function beamSearch(start: State, expand: (state: State) => State[], beamWidth: number): State[] {
+    let currentStates: State[] = [start];
 
-function dijkstra(graph: Graph, startNode: string): { [key: string]: number } {
-    const distances: { [key: string]: number } = {};
-    const visited: Set<string> = new Set();
-    const priorityQueue: [string, number][] = [[startNode, 0]];
+    while (currentStates.length > 0) {
+        let nextStates: State[] = [];
 
-    // Initialize distances
-    for (const node in graph) {
-        distances[node] = Infinity;
-    }
-    distances[startNode] = 0;
-
-    while (priorityQueue.length) {
-        // Sort the queue based on the distance
-        priorityQueue.sort((a, b) => a[1] - b[1]);
-        const [currentNode, currentDistance] = priorityQueue.shift()!;
-
-        // If the node has been visited, skip it
-        if (visited.has(currentNode)) continue;
-        visited.add(currentNode);
-
-        // Explore neighbors
-        for (const edge of graph[currentNode]) {
-            const distance = currentDistance + edge.weight;
-
-            // If the calculated distance is less, update it
-            if (distance < distances[edge.node]) {
-                distances[edge.node] = distance;
-                priorityQueue.push([edge.node, distance]);
-            }
+        // Expand each current state and generate next states
+        for (const state of currentStates) {
+            const expandedStates = expand(state);
+            nextStates.push(...expandedStates);
         }
+
+        // Sort the next states by score and keep only the best ones
+        nextStates.sort((a, b) => b.score - a.score); // Sort in descending order
+        currentStates = nextStates.slice(0, beamWidth); // Keep top `beamWidth` states
     }
 
-    return distances;
+    return currentStates; // Return the best states found
+}
+
+// Function to expand the current state
+function expandState(state: State): State[] {
+    // Example logic to expand current state
+    return [
+        { value: state.value + 'A', score: state.score + Math.random() },
+        { value: state.value + 'B', score: state.score + Math.random() },
+        { value: state.value + 'C', score: state.score + Math.random() },
+    ];
 }
 
 // Example usage
-const graph: Graph = {
-    A: [{node: 'B', weight: 1}, {node: 'C', weight: 4}],
-    B: [{node: 'C', weight: 2}, {node: 'D', weight: 5}],
-    C: [{node: 'D', weight: 1}],
-    D: [],
-};
+const initialState: State = { value: 'Start', score: 0 };
+const bestStates = beamSearch(initialState, expandState, 3);
 
-const shortestPaths = dijkstra(graph, 'A');
-console.log(shortestPaths);
+console.log("Best States:", bestStates);
