@@ -1,19 +1,54 @@
-function countWordOccurrences(text: string, word: string): number {
-    // Normalize the text and the word to lower case to make the search case-insensitive
-    const normalizedText = text.toLowerCase();
-    const normalizedWord = word.toLowerCase();
+type Edge = {
+    node: string;
+    weight: number;
+};
 
-    // Split the text into an array of words
-    const wordsArray = normalizedText.split(/\s+/); // Split by whitespace
+type Graph = {
+    [key: string]: Edge[];
+};
 
-    // Filter the array to count occurrences of the word
-    const occurrences = wordsArray.filter(w => w === normalizedWord).length;
+function dijkstra(graph: Graph, startNode: string): { [key: string]: number } {
+    const distances: { [key: string]: number } = {};
+    const visited: Set<string> = new Set();
+    const priorityQueue: [string, number][] = [[startNode, 0]];
 
-    return occurrences;
+    // Initialize distances
+    for (const node in graph) {
+        distances[node] = Infinity;
+    }
+    distances[startNode] = 0;
+
+    while (priorityQueue.length) {
+        // Sort the queue based on the distance
+        priorityQueue.sort((a, b) => a[1] - b[1]);
+        const [currentNode, currentDistance] = priorityQueue.shift()!;
+
+        // If the node has been visited, skip it
+        if (visited.has(currentNode)) continue;
+        visited.add(currentNode);
+
+        // Explore neighbors
+        for (const edge of graph[currentNode]) {
+            const distance = currentDistance + edge.weight;
+
+            // If the calculated distance is less, update it
+            if (distance < distances[edge.node]) {
+                distances[edge.node] = distance;
+                priorityQueue.push([edge.node, distance]);
+            }
+        }
+    }
+
+    return distances;
 }
 
 // Example usage
-const text = "Hello world! This is a test. Hello again, world!";
-const wordToCount = "hello";
-const count = countWordOccurrences(text, wordToCount);
-console.log(`The word "${wordToCount}" occurs ${count} times.`);
+const graph: Graph = {
+    A: [{node: 'B', weight: 1}, {node: 'C', weight: 4}],
+    B: [{node: 'C', weight: 2}, {node: 'D', weight: 5}],
+    C: [{node: 'D', weight: 1}],
+    D: [],
+};
+
+const shortestPaths = dijkstra(graph, 'A');
+console.log(shortestPaths);
