@@ -1,113 +1,41 @@
-class Node {
-    value: any;
-    forward: Node[];
+function countingSort(arr: number[], place: number): number[] {
+    const output: number[] = new Array(arr.length);
+    const count: number[] = new Array(10).fill(0);
 
-    constructor(value: any, level: number) {
-        this.value = value;
-        this.forward = new Array(level + 1).fill(null); // Create the forward array with null
+    // Count occurrences of each digit
+    for (let i = 0; i < arr.length; i++) {
+        const digit = Math.floor(Math.abs(arr[i]) / place) % 10;
+        count[digit]++;
     }
+
+    // Change count[i] so that it contains the position of this digit in output[]
+    for (let i = 1; i < count.length; i++) {
+        count[i] += count[i - 1];
+    }
+
+    // Build the output array
+    for (let i = arr.length - 1; i >= 0; i--) {
+        const digit = Math.floor(Math.abs(arr[i]) / place) % 10;
+        output[count[digit] - 1] = arr[i];
+        count[digit]--;
+    }
+
+    return output;
 }
 
-class SkipList {
-    private head: Node;
-    private maxLevel: number;
-    private level: number;
+function radixSort(arr: number[]): number[] {
+    // Find the maximum number to figure out the number of digits
+    const max = Math.max(...arr);
 
-    constructor(maxLevel: number) {
-        this.maxLevel = maxLevel;
-        this.level = 0; // Start at level 0
-        this.head = new Node(null, maxLevel); // Sentinel head node
+    // Perform counting sort for every digit
+    for (let place = 1; Math.floor(max / place) > 0; place *= 10) {
+        arr = countingSort(arr, place);
     }
 
-    private randomLevel(): number {
-        let level = 0;
-        while (Math.random() < 0.5 && level < this.maxLevel) {
-            level++;
-        }
-        return level;
-    }
-
-    insert(value: any): void {
-        const updates: Node[] = new Array(this.maxLevel + 1);
-        let current: Node = this.head;
-
-        // Find insertion point and update the update array
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-            updates[i] = current; // Record the last node at each level
-        }
-
-        current = current.forward[0]; // Move to the next node
-
-        // If the value is not present, insert a new node
-        if (current === null || current.value !== value) {
-            const newLevel = this.randomLevel();
-            if (newLevel > this.level) {
-                for (let i = this.level + 1; i <= newLevel; i++) {
-                    updates[i] = this.head; // Update the head at new levels
-                }
-                this.level = newLevel; // Raise the current level
-            }
-
-            const newNode = new Node(value, newLevel);
-            for (let i = 0; i <= newLevel; i++) {
-                newNode.forward[i] = updates[i].forward[i];
-                updates[i].forward[i] = newNode; // Insert the new node at level i
-            }
-        }
-    }
-
-    search(value: any): boolean {
-        let current: Node = this.head;
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-        }
-        current = current.forward[0];
-        return current !== null && current.value === value; // Check if found
-    }
-
-    delete(value: any): void {
-        const updates: Node[] = new Array(this.maxLevel + 1);
-        let current: Node = this.head;
-
-        // Find the position to delete and update the update array
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-            updates[i] = current; // Record the last node at each level
-        }
-
-        current = current.forward[0]; // Move to the next node
-
-        // If the value is found
-        if (current !== null && current.value === value) {
-            for (let i = 0; i <= this.level; i++) {
-                if (updates[i].forward[i] !== current) break; // Stop if the node is not at the level
-                updates[i].forward[i] = current.forward[i]; // Remove the node by bypassing it
-            }
-
-            // Reduce the level if necessary
-            while (this.level > 0 && this.head.forward[this.level] === null) {
-                this.level--;
-            }
-        }
-    }
+    return arr;
 }
 
-// Example Usage
-const skipList = new SkipList(4);
-skipList.insert(3);
-skipList.insert(6);
-skipList.insert(7);
-skipList.insert(9);
-skipList.insert(12);
-skipList.insert(19);
-console.log(skipList.search(7));  // true
-console.log(skipList.search(15)); // false
-skipList.delete(3);
-console.log(skipList.search(3));  // false
+// Example usage:
+const array = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArray = radixSort(array);
+console.log("Sorted Array:", sortedArray);
