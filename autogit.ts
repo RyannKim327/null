@@ -1,22 +1,17 @@
-function bubbleSort(arr: number[]): number[] {
-    const n = arr.length;
-    let swapped: boolean;
+function areAnagrams(str1: string, str2: string): boolean {
+    // Normalize the strings: remove spaces and convert to lowercase
+    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
+    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
 
-    do {
-        swapped = false;
-        for (let i = 0; i < n - 1; i++) {
-            if (arr[i] > arr[i + 1]) {
-                // Swap arr[i] and arr[i + 1]
-                [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
-                swapped = true;
-            }
-        }
-    } while (swapped);
+    // Sort the characters of both strings
+    const sortedStr1 = normalizedStr1.split('').sort().join('');
+    const sortedStr2 = normalizedStr2.split('').sort().join('');
 
-    return arr;
+    // Compare the sorted strings
+    return sortedStr1 === sortedStr2;
 }
 
 // Example usage:
-const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
-const sortedArray = bubbleSort(unsortedArray);
-console.log("Sorted array:", sortedArray);
+const string1 = "listen";
+const string2 = "silent";
+console.log(areAnagrams(string1, string2)); // Output: true
