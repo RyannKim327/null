@@ -1,41 +1,46 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
-    
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
+class Stack<T> {
+    private items: T[] = [];
 
-function diameterOfBinaryTree(root: TreeNode | null): number {
-    let diameter = 0;
-
-    function depth(node: TreeNode | null): number {
-        if (!node) return 0;
-
-        // Recursively find the depth of the left and right subtrees
-        const leftDepth = depth(node.left);
-        const rightDepth = depth(node.right);
-
-        // Update the diameter if the path through the root is larger
-        diameter = Math.max(diameter, leftDepth + rightDepth);
-
-        // Return the depth of this node
-        return Math.max(leftDepth, rightDepth) + 1;
+    // Push an item onto the stack
+    push(item: T): void {
+        this.items.push(item);
     }
 
-    depth(root); // Start DFS from the root
-    return diameter;
+    // Pop an item off the stack
+    pop(): T | undefined {
+        return this.items.pop();
+    }
+
+    // Peek at the top item of the stack without removing it
+    peek(): T | undefined {
+        return this.items[this.items.length - 1];
+    }
+
+    // Check if the stack is empty
+    isEmpty(): boolean {
+        return this.items.length === 0;
+    }
+
+    // Get the size of the stack
+    size(): number {
+        return this.items.length;
+    }
+
+    // Clear the stack
+    clear(): void {
+        this.items = [];
+    }
 }
 
 // Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+const stack = new Stack<number>();
+stack.push(1);
+stack.push(2);
+stack.push(3);
 
-console.log(diameterOfBinaryTree(root)); // Output: 3
+console.log(stack.peek()); // Output: 3
+console.log(stack.pop());   // Output: 3
+console.log(stack.size());  // Output: 2
+console.log(stack.isEmpty()); // Output: false
+stack.clear();
+console.log(stack.isEmpty()); // Output: true
