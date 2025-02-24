@@ -1,32 +1,26 @@
-function shellSort(arr: number[]): number[] {
-    const n = arr.length;
-    let gap = Math.floor(n / 2); // Start with a big gap, then reduce the gap
+import * as readline from 'readline';
 
-    // Start with the largest gap and reduce the gap until it becomes 0
-    while (gap > 0) {
-        // Do a gapped insertion sort for this gap size
-        for (let i = gap; i < n; i++) {
-            // Save the current element to be compared
-            const temp = arr[i];
-            let j = i;
+// Create an interface for input and output streams
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
-            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
-            while (j >= gap && arr[j - gap] > temp) {
-                arr[j] = arr[j - gap];
-                j -= gap;
-            }
-
-            // Put temp (the original arr[i]) in its correct location
-            arr[j] = temp;
-        }
-        gap = Math.floor(gap / 2); // Reduce the gap
-    }
-
-    return arr;
+// Function to ask a question and handle the response
+function askQuestion(query: string): Promise<string> {
+    return new Promise(resolve => rl.question(query, resolve));
 }
 
-// Example usage:
-const array = [12, 34, 54, 2, 3];
-console.log("Original array:", array);
-const sortedArray = shellSort(array);
-console.log("Sorted array:", sortedArray);
+// Main function to run the program
+async function main() {
+    const name = await askQuestion("What is your name? ");
+    console.log(`Hello, ${name}!`);
+
+    const age = await askQuestion("How old are you? ");
+    console.log(`You are ${age} years old.`);
+
+    rl.close();
+}
+
+// Run the main function
+main().catch(err => console.error(err));
