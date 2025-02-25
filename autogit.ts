@@ -1,44 +1,38 @@
-function boyerMooreHorspool(text: string, pattern: string): number[] {
-    const m = pattern.length;
-    const n = text.length;
-
-    if (m === 0 || n === 0 || m > n) {
-        return [];  // Invalid cases
-    }
-
-    // Create the skip table
-    const skip: { [char: string]: number } = {};
-    for (let i = 0; i < 256; i++) {
-        skip[String.fromCharCode(i)] = m; // Default shift is m
-    }
-
-    for (let i = 0; i < m - 1; i++) {
-        skip[pattern[i]] = m - 1 - i; // Update for characters in the pattern
-    }
-
-    const occurrences: number[] = [];
-    let i = 0;
-
-    while (i <= n - m) {
-        let j = m - 1;
-
-        while (j >= 0 && text[i + j] === pattern[j]) {
-            j--;
-        }
-
-        if (j < 0) {
-            occurrences.push(i);  // Found a match
-            i += skip[text[i + m]] || m; // Shift by the character after the matched position
-        } else {
-            i += skip[text[i + j]]; // Shift according to the skip table
-        }
-    }
-
-    return occurrences; // Return all occurrences
+function getDigit(num: number, place: number): number {
+    return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
 }
 
-// Example usage:
-const text = "ababcabcababc";
-const pattern = "abc";
-const result = boyerMooreHorspool(text, pattern);
-console.log(result); // Output: positions of matches
+function digitCount(num: number): number {
+    if (num === 0) return 1;
+    return Math.floor(Math.log10(Math.abs(num))) + 1;
+}
+
+function mostDigits(nums: number[]): number {
+    let maxDigits = 0;
+    for (let num of nums) {
+        maxDigits = Math.max(maxDigits, digitCount(num));
+    }
+    return maxDigits;
+}
+
+function radixSort(nums: number[]): number[] {
+    const maxDigitCount = mostDigits(nums);
+    
+    for (let k = 0; k < maxDigitCount; k++) {
+        const buckets: number[][] = Array.from({ length: 10 }, () => []);
+        
+        for (let num of nums) {
+            const digit = getDigit(num, k);
+            buckets[digit].push(num);
+        }
+        
+        nums = [].concat(...buckets);
+    }
+    
+    return nums;
+}
+
+// Example Usage
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArr = radixSort(arr);
+console.log(sortedArr); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
