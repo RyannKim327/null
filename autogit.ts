@@ -1,47 +1,32 @@
-class Node {
-    value: string;
-    children: Node[];
-
-    constructor(value: string) {
-        this.value = value;
-        this.children = [];
-    }
-
-    addChild(child: Node) {
-        this.children.push(child);
-    }
+// Define an interface to describe the data structure we expect
+interface Post {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
 }
 
-function depthLimitedSearch(node: Node, target: string, depth: number): boolean {
-    if (depth === 0 && node.value === target) return true;
-    if (depth > 0) {
-        for (const child of node.children) {
-            if (depthLimitedSearch(child, target, depth - 1)) {
-                return true;
-            }
+// Function to fetch posts from a public API
+async function fetchPosts(): Promise<void> {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+        
+        // Check if the response is ok (status in the range 200-299)
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
         }
+        
+        // Parse the JSON data
+        const posts: Post[] = await response.json();
+        
+        // Log each post title
+        posts.forEach(post => {
+            console.log(`Title: ${post.title}`);
+        });
+    } catch (error) {
+        console.error('Error fetching posts:', error);
     }
-    return false;
 }
 
-function breadthLimitedSearch(root: Node, target: string, maxDepth: number): boolean {
-    for (let depth = 0; depth <= maxDepth; depth++) {
-        if (depthLimitedSearch(root, target, depth)) {
-            return true;  // Target found within the depth limit
-        }
-    }
-    return false;  // Target not found within the given depth
-}
-
-// Example usage:
-const root = new Node("A");
-const childB = new Node("B");
-const childC = new Node("C");
-const childD = new Node("D");
-
-root.addChild(childB);
-root.addChild(childC);
-childB.addChild(childD);
-
-const result = breadthLimitedSearch(root, "D", 2);
-console.log(`Target found: ${result}`); // Output: Target found: true
+// Call the function to fetch posts
+fetchPosts();
