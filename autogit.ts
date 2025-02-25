@@ -1,64 +1,22 @@
-type Graph = { [key: string]: string[] };
+function bubbleSort(arr: number[]): number[] {
+    const n = arr.length;
+    let swapped: boolean;
 
-function dfsRecursive(graph: Graph, start: string, visited: Set<string> = new Set()): void {
-    if (visited.has(start)) {
-        return;
-    }
-
-    // Mark the current node as visited
-    visited.add(start);
-    console.log(start); // Process the node (e.g., print it)
-
-    // Recur for all the vertices adjacent to this vertex
-    for (const neighbor of graph[start]) {
-        dfsRecursive(graph, neighbor, visited);
-    }
-}
-
-// Example usage
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
-
-dfsRecursive(graph, 'A');
-type Graph = { [key: string]: string[] };
-
-function dfsIterative(graph: Graph, start: string): void {
-    const stack: string[] = [start];
-    const visited: Set<string> = new Set();
-
-    while (stack.length > 0) {
-        const node = stack.pop();
-        if (node === undefined || visited.has(node)) {
-            continue;
-        }
-
-        // Mark the current node as visited
-        visited.add(node);
-        console.log(node); // Process the node (e.g., print it)
-
-        // Push all unvisited neighbors onto the stack
-        for (const neighbor of graph[node]) {
-            if (!visited.has(neighbor)) {
-                stack.push(neighbor);
+    do {
+        swapped = false;
+        for (let i = 0; i < n - 1; i++) {
+            if (arr[i] > arr[i + 1]) {
+                // Swap arr[i] and arr[i + 1]
+                [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
+                swapped = true;
             }
         }
-    }
+    } while (swapped);
+
+    return arr;
 }
 
 // Example usage
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
-
-dfsIterative(graph, 'A');
+const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
+const sortedArray = bubbleSort(unsortedArray);
+console.log("Sorted Array:", sortedArray);
