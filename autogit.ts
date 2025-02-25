@@ -1,22 +1,38 @@
-function bubbleSort(arr: number[]): number[] {
-    const n = arr.length;
-    let swapped: boolean;
-
-    do {
-        swapped = false;
-        for (let i = 0; i < n - 1; i++) {
-            if (arr[i] > arr[i + 1]) {
-                // Swap arr[i] and arr[i + 1]
-                [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
-                swapped = true;
-            }
+function countCharacter(str: string, char: string): number {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
+            count++;
         }
-    } while (swapped);
-
-    return arr;
+    }
+    return count;
 }
 
-// Example usage
-const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
-const sortedArray = bubbleSort(unsortedArray);
-console.log("Sorted Array:", sortedArray);
+// Example usage:
+const result = countCharacter("hello world", "o");
+console.log(result); // Output: 2
+function countCharacter(str: string, char: string): number {
+    return str.split(char).length - 1;
+}
+
+// Example usage:
+const result = countCharacter("hello world", "o");
+console.log(result); // Output: 2
+function countCharacter(str: string, char: string): number {
+    return Array.from(str).reduce((count, currentChar) => {
+        return currentChar === char ? count + 1 : count;
+    }, 0);
+}
+
+// Example usage:
+const result = countCharacter("hello world", "o");
+console.log(result); // Output: 2
+function countCharacter(str: string, char: string): number {
+    const regex = new RegExp(char, 'g');
+    const matches = str.match(regex);
+    return matches ? matches.length : 0;
+}
+
+// Example usage:
+const result = countCharacter("hello world", "o");
+console.log(result); // Output: 2
