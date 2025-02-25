@@ -1,28 +1,44 @@
-function burrowsWheelerTransform(input: string): { bwt: string; suffixArray: number[] } {
-    const length = input.length;
-    const rotations: string[] = [];
-    
-    // Generate all rotations of the input string
-    for (let i = 0; i < length; i++) {
-        rotations.push(input.slice(i) + input.slice(0, i));
+function boyerMooreHorspool(text: string, pattern: string): number[] {
+    const m = pattern.length;
+    const n = text.length;
+
+    if (m === 0 || n === 0 || m > n) {
+        return [];  // Invalid cases
     }
 
-    // Sort the rotations lexicographically
-    rotations.sort();
-
-    // Build BWT and the suffix array
-    let bwt = "";
-    const suffixArray: number[] = [];
-    
-    for (let i = 0; i < length; i++) {
-        bwt += rotations[i][length - 1];
-        suffixArray.push(input.length - rotations[i].indexOf(rotations[i]));
+    // Create the skip table
+    const skip: { [char: string]: number } = {};
+    for (let i = 0; i < 256; i++) {
+        skip[String.fromCharCode(i)] = m; // Default shift is m
     }
 
-    return { bwt, suffixArray };
+    for (let i = 0; i < m - 1; i++) {
+        skip[pattern[i]] = m - 1 - i; // Update for characters in the pattern
+    }
+
+    const occurrences: number[] = [];
+    let i = 0;
+
+    while (i <= n - m) {
+        let j = m - 1;
+
+        while (j >= 0 && text[i + j] === pattern[j]) {
+            j--;
+        }
+
+        if (j < 0) {
+            occurrences.push(i);  // Found a match
+            i += skip[text[i + m]] || m; // Shift by the character after the matched position
+        } else {
+            i += skip[text[i + j]]; // Shift according to the skip table
+        }
+    }
+
+    return occurrences; // Return all occurrences
 }
 
-// Example usage
-const result = burrowsWheelerTransform("banana");
-console.log("BWT:", result.bwt); // Output: BWT: annb$aa
-console.log("Suffix Array:", result.suffixArray); // Output: Suffix Array: [5, 3, 1, 0, 4, 2]
+// Example usage:
+const text = "ababcabcababc";
+const pattern = "abc";
+const result = boyerMooreHorspool(text, pattern);
+console.log(result); // Output: positions of matches
