@@ -1,56 +1,70 @@
-class Node {
-    value: string;
-    children: Node[];
+class Tarjan {
+    private index: number;
+    private indices: number[];
+    private lowLinks: number[];
+    private onStack: boolean[];
+    private stack: number[];
+    private sccs: number[][];
 
-    constructor(value: string) {
-        this.value = value;
-        this.children = [];
+    constructor(private graph: number[][]) {
+        this.index = 0;
+        this.indices = new Array(graph.length).fill(-1);
+        this.lowLinks = new Array(graph.length).fill(0);
+        this.onStack = new Array(graph.length).fill(false);
+        this.stack = [];
+        this.sccs = [];
     }
 
-    addChild(child: Node) {
-        this.children.push(child);
-    }
-}
-
-function depthLimitedSearch(root: Node, target: string, limit: number): Node | null {
-    const stack: { node: Node; depth: number }[] = [];
-    stack.push({ node: root, depth: 0 });
-
-    while (stack.length > 0) {
-        const { node, depth } = stack.pop()!;
-
-        // Check if the current node is the target
-        if (node.value === target) {
-            return node;
-        }
-
-        // If the current depth is less than the limit, add children to the stack
-        if (depth < limit) {
-            for (let i = node.children.length - 1; i >= 0; i--) {
-                stack.push({ node: node.children[i], depth: depth + 1 });
+    public findSCCs(): number[][] {
+        for (let v = 0; v < this.graph.length; v++) {
+            if (this.indices[v] === -1) {
+                this.strongConnect(v);
             }
         }
+        return this.sccs;
     }
 
-    // Return null if the target is not found within the depth limit
-    return null;
+    private strongConnect(v: number): void {
+        this.indices[v] = this.index;
+        this.lowLinks[v] = this.index;
+        this.index++;
+        this.stack.push(v);
+        this.onStack[v] = true;
+
+        for (const w of this.graph[v]) {
+            if (this.indices[w] === -1) {
+                // Successor w has not yet been visited; recurse on it
+                this.strongConnect(w);
+                this.lowLinks[v] = Math.min(this.lowLinks[v], this.lowLinks[w]);
+            } else if (this.onStack[w]) {
+                // Successor w is in the stack and hence in the current SCC
+                this.lowLinks[v] = Math.min(this.lowLinks[v], this.indices[w]);
+            }
+        }
+
+        // If v is a root node, pop the stack and generate an SCC
+        if (this.lowLinks[v] === this.indices[v]) {
+            const scc: number[] = [];
+            let w: number;
+            do {
+                w = this.stack.pop()!;
+                this.onStack[w] = false;
+                scc.push(w);
+            } while (w !== v);
+            this.sccs.push(scc);
+        }
+    }
 }
 
 // Example usage:
-const root = new Node("A");
-const b = new Node("B");
-const c = new Node("C");
-const d = new Node("D");
-const e = new Node("E");
+const graph = [
+    [1], // 0 -> 1
+    [2], // 1 -> 2
+    [0], // 2 -> 0
+    [1], // 3 -> 1
+    [3]  // 4 -> 3
+];
 
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-b.addChild(e);
-
-const targetNode = depthLimitedSearch(root, "E", 2);
-if (targetNode) {
-    console.log(`Found node: ${targetNode.value}`);
-} else {
-    console.log("Node not found within the depth limit.");
-}
+const tarjans = new Tarjan(graph);
+const sccs = tarjans.findSCCs();
+console.log(sccs);
