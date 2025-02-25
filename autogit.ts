@@ -1,56 +1,40 @@
-function getMax(arr: number[]): number {
-    let max = arr[0];
-    for (let i = 1; i < arr.length; i++) {
-        if (arr[i] > max) {
-            max = arr[i];
-        }
+class ListNode {
+    value: number;
+    next: ListNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-    return max;
 }
 
-function countingSort(arr: number[], exp: number): number[] {
-    const output: number[] = new Array(arr.length); // Output array
-    const count: number[] = new Array(10).fill(0); // Count array for digits (0-9)
+function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
+    if (!head || n <= 0) return null;
 
-    // Store count of occurrences in count[]
-    for (let i = 0; i < arr.length; i++) {
-        const index = Math.floor(arr[i] / exp) % 10;
-        count[index]++;
+    let first: ListNode | null = head;
+    let second: ListNode | null = head;
+
+    // Move `first` n steps ahead
+    for (let i = 0; i < n; i++) {
+        if (first === null) return null; // If n is greater than the length of the list
+        first = first.next;
     }
 
-    // Change count[i] so that it contains the actual position of this digit in output[]
-    for (let i = 1; i < count.length; i++) {
-        count[i] += count[i - 1];
+    // Move both pointers until `first` reaches the end
+    while (first !== null) {
+        first = first.next;
+        second = second.next;
     }
 
-    // Build the output array
-    for (let i = arr.length - 1; i >= 0; i--) {
-        const index = Math.floor(arr[i] / exp) % 10;
-        output[count[index] - 1] = arr[i];
-        count[index]--;
-    }
-
-    // Copy the output array to arr[], so that arr[] now contains sorted numbers
-    for (let i = 0; i < arr.length; i++) {
-        arr[i] = output[i];
-    }
-
-    return arr;
-}
-
-function radixSort(arr: number[]): number[] {
-    const max = getMax(arr);
-
-    // Do counting sort for every digit
-    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
-        countingSort(arr, exp);
-    }
-
-    return arr;
+    return second; // `second` is now at the nth node from the end
 }
 
 // Example usage
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log("Unsorted array:", arr);
-const sortedArr = radixSort(arr);
-console.log("Sorted array:", sortedArr);
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+const nthNode = findNthFromEnd(head, 2);
+console.log(nthNode ? nthNode.value : "Node not found");
