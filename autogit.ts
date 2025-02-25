@@ -1,32 +1,56 @@
-// Define an interface to describe the data structure we expect
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-}
+function fibonacciSearch(arr: number[], x: number): number {
+    const n = arr.length;
+    
+    // Initialize Fibonacci numbers
+    let fibM2 = 0; // (m-2)'th Fibonacci number
+    let fibM1 = 1; // (m-1)'th Fibonacci number
+    let fibM = fibM1 + fibM2; // m'th Fibonacci number
 
-// Function to fetch posts from a public API
-async function fetchPosts(): Promise<void> {
-    try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-        
-        // Check if the response is ok (status in the range 200-299)
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        
-        // Parse the JSON data
-        const posts: Post[] = await response.json();
-        
-        // Log each post title
-        posts.forEach(post => {
-            console.log(`Title: ${post.title}`);
-        });
-    } catch (error) {
-        console.error('Error fetching posts:', error);
+    // Find the smallest Fibonacci number greater than or equal to n
+    while (fibM < n) {
+        fibM2 = fibM1;
+        fibM1 = fibM;
+        fibM = fibM1 + fibM2;
     }
+
+    // Marks the eliminated range from the front
+    let offset = -1;
+
+    // While there are elements to be inspected
+    while (fibM > 1) {
+        // Calculate the index to be compared
+        const i = Math.min(offset + fibM2, n - 1);
+
+        // If x is greater than the value at index i, cut the subarray after i
+        if (arr[i] < x) {
+            fibM = fibM1;
+            fibM1 = fibM2;
+            fibM2 = fibM - fibM1;
+            offset = i;
+        } 
+        // If x is less than the value at index i, cut the subarray before i
+        else if (arr[i] > x) {
+            fibM = fibM2;
+            fibM1 = fibM1 - fibM2;
+            fibM2 = fibM - fibM1;
+        } 
+        // Element found
+        else {
+            return i;
+        }
+    }
+
+    // Comparing the last element
+    if (fibM1 && arr[offset + 1] === x) {
+        return offset + 1;
+    }
+
+    // Element not found
+    return -1;
 }
 
-// Call the function to fetch posts
-fetchPosts();
+// Example usage:
+const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
+const x = 85;
+const index = fibonacciSearch(arr, x);
+console.log(`Element found at index: ${index}`); // Outputs: Element found at index: 8
