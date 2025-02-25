@@ -1,36 +1,15 @@
-function majorityElement(nums: number[]): number | null {
-    let candidate: number | null = null;
-    let count = 0;
-
-    // Phase 1: Find a candidate for the majority element
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-            count = 1;
-        } else if (num === candidate) {
-            count++;
-        } else {
-            count--;
-        }
+function getStringLength(str: string): number {
+    let length = 0;
+    
+    // Iterate through each character in the string
+    for (let i = 0; str[i] !== undefined; i++) {
+        length++;
     }
-
-    // Phase 2: Verify the candidate
-    count = 0;
-    for (const num of nums) {
-        if (num === candidate) {
-            count++;
-        }
-    }
-
-    // Check if the candidate is indeed the majority element
-    if (count > nums.length / 2) {
-        return candidate;
-    } else {
-        return null; // No majority element found
-    }
+    
+    return length;
 }
 
-// Example usage:
-const nums = [3, 2, 3];
-const result = majorityElement(nums);
-console.log(result); // Output: 3
+// Example usage
+const myString = "Hello, World!";
+const length = getStringLength(myString);
+console.log(`The length of the string is: ${length}`);  // Output: 13
