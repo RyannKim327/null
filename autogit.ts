@@ -1,47 +1,129 @@
-class HashTable<K, V> {
-    private table: { [key: string]: V } = {};
-    
-    // Hash function to generate a hash from the key
-    private hash(key: K): string {
-        let hash = 0;
-        const keyString = JSON.stringify(key);
-        for (const char of keyString) {
-            hash += char.charCodeAt(0);
+class MinHeap {
+    private heap: number[];
+
+    constructor() {
+        this.heap = [];
+    }
+
+    private getParentIndex(index: number): number {
+        return Math.floor((index - 1) / 2);
+    }
+
+    private getLeftChildIndex(index: number): number {
+        return 2 * index + 1;
+    }
+
+    private getRightChildIndex(index: number): number {
+        return 2 * index + 2;
+    }
+
+    private hasParent(index: number): boolean {
+        return this.getParentIndex(index) >= 0;
+    }
+
+    private hasLeftChild(index: number): boolean {
+        return this.getLeftChildIndex(index) < this.heap.length;
+    }
+
+    private hasRightChild(index: number): boolean {
+        return this.getRightChildIndex(index) < this.heap.length;
+    }
+
+    private parent(index: number): number {
+        return this.heap[this.getParentIndex(index)];
+    }
+
+    private leftChild(index: number): number {
+        return this.heap[this.getLeftChildIndex(index)];
+    }
+
+    private rightChild(index: number): number {
+        return this.heap[this.getRightChildIndex(index)];
+    }
+
+    private swap(indexOne: number, indexTwo: number): void {
+        const temp = this.heap[indexOne];
+        this.heap[indexOne] = this.heap[indexTwo];
+        this.heap[indexTwo] = temp;
+    }
+
+    public insert(value: number): void {
+        this.heap.push(value);
+        this.heapifyUp();
+    }
+
+    private heapifyUp(): void {
+        let index = this.heap.length - 1;
+        while (this.hasParent(index) && this.parent(index) > this.heap[index]) {
+            this.swap(this.getParentIndex(index), index);
+            index = this.getParentIndex(index);
         }
-        return String(hash);
     }
 
-    // Method to set a value in the hash table
-    set(key: K, value: V): void {
-        const hashKey = this.hash(key);
-        this.table[hashKey] = value;
+    public remove(): number | null {
+        if (this.heap.length === 0) {
+            return null;
+        }
+        const item = this.heap[0];
+        this.heap[0] = this.heap[this.heap.length - 1];
+        this.heap.pop();
+        this.heapifyDown();
+        return item;
     }
 
-    // Method to get a value from the hash table
-    get(key: K): V | undefined {
-        const hashKey = this.hash(key);
-        return this.table[hashKey];
+    private heapifyDown(): void {
+        let index = 0;
+        while (this.hasLeftChild(index)) {
+            let smallerChildIndex = this.getLeftChildIndex(index);
+            if (this.hasRightChild(index) && this.rightChild(index) < this.leftChild(index)) {
+                smallerChildIndex = this.getRightChildIndex(index);
+            }
+            if (this.heap[index] < this.heap[smallerChildIndex]) {
+                break;
+            } else {
+                this.swap(index, smallerChildIndex);
+            }
+            index = smallerChildIndex;
+        }
     }
 
-    // Method to check if a key exists in the hash table
-    has(key: K): boolean {
-        const hashKey = this.hash(key);
-        return hashKey in this.table;
+    public peek(): number | null {
+        return this.heap.length > 0 ? this.heap[0] : null;
     }
 
-    // Method to remove a value from the hash table
-    delete(key: K): void {
-        const hashKey = this.hash(key);
-        delete this.table[hashKey];
+    public isEmpty(): boolean {
+        return this.heap.length === 0;
     }
 }
+class PriorityQueue {
+    private heap: MinHeap;
 
-// Usage example
-const hashTable = new HashTable<string, number>();
-hashTable.set("apple", 5);
-hashTable.set("banana", 10);
+    constructor() {
+        this.heap = new MinHeap();
+    }
 
-console.log(hashTable.get("apple")); // Output: 5
-console.log(hashTable.has("banana")); // Output: true
-hashTable.delete("apple");
-console.log(hashTable.get("apple")); // Output: undefined
+    public enqueue(value: number): void {
+        this.heap.insert(value);
+    }
+
+    public dequeue(): number | null {
+        return this.heap.remove();
+    }
+
+    public peek(): number | null {
+        return this.heap.peek();
+    }
+
+    public isEmpty(): boolean {
+        return this.heap.isEmpty();
+    }
+}
+const pq = new PriorityQueue();
+pq.enqueue(5);
+pq.enqueue(3);
+pq.enqueue(8);
+pq.enqueue(1);
+
+console.log(pq.peek()); // Output: 1
+console.log(pq.dequeue()); // Output: 1
+console.log(pq.peek()); // Output: 3
