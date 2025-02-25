@@ -1,51 +1,55 @@
-class Node<T> {
-     T;
-    next: Node<T> | null;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    constructor( T) {
-        this.data = data;
+    constructor(value: number) {
+        this.value = value;
         this.next = null;
     }
 }
 
-class LinkedList<T> {
-    head: Node<T> | null;
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+    if (!headA || !headB) return null;
 
-    constructor() {
-        this.head = null;
+    // Get the lengths of both lists
+    let lenA = 0;
+    let lenB = 0;
+    let currentA = headA;
+    let currentB = headB;
+
+    while (currentA) {
+        lenA++;
+        currentA = currentA.next;
     }
 
-    // Function to add a node to the linked list (for testing purposes)
-    add( T) {
-        const newNode = new Node(data);
-        if (this.head === null) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next !== null) {
-                current = current.next;
-            }
-            current.next = newNode;
+    while (currentB) {
+        lenB++;
+        currentB = currentB.next;
+    }
+
+    // Align the starting points
+    currentA = headA;
+    currentB = headB;
+
+    const diff = Math.abs(lenA - lenB);
+    if (lenA > lenB) {
+        for (let i = 0; i < diff; i++) {
+            currentA = currentA!.next; // TypeScript non-null assertion
+        }
+    } else {
+        for (let i = 0; i < diff; i++) {
+            currentB = currentB!.next;
         }
     }
 
-    // Function to find the length of the linked list
-    length(): number {
-        let current = this.head;
-        let count = 0;
-
-        while (current !== null) {
-            count++;
-            current = current.next;
+    // Traverse together to find the intersection
+    while (currentA && currentB) {
+        if (currentA === currentB) {
+            return currentA; // Intersection found
         }
-
-        return count;
+        currentA = currentA.next;
+        currentB = currentB.next;
     }
+
+    return null; // No intersection
 }
-
-// Example usage
-const list = new LinkedList<number>();
-list.add(1);
-list.add(2);
-list.add(3);
-console.log("Length of the linked list is:", list.length()); // Output: Length of the linked list is: 3
