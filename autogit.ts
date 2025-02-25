@@ -1,66 +1,82 @@
-type Node = {
-    state: string; // The current state
-    cost: number;  // The cost to reach this state
-    parent?: Node; // The parent node
+type Edge = {
+    node: string;
+    weight: number;
 };
 
-type SearchResult = {
-    path: string[];
-    cost: number;
-};
+class Graph {
+    private adjList: Map<string, Edge[]>;
 
-function beamSearch(initialState: string, goalState: string, generateSuccessors: (state: string) => Node[], beamWidth: number): SearchResult | null {
-    let currentLevel: Node[] = [{ state: initialState, cost: 0 }];
-    
-    while (currentLevel.length > 0) {
-        const nextLevel: Node[] = [];
+    constructor() {
+        this.adjList = new Map();
+    }
 
-        // Generate successors for each node in the current level
-        for (const node of currentLevel) {
-            const successors = generateSuccessors(node.state);
-            for (const successor of successors) {
-                // Check if we reached the goal
-                if (successor.state === goalState) {
-                    return constructPath(successor);
+    addNode(node: string) {
+        this.adjList.set(node, []);
+    }
+
+    addEdge(from: string, to: string, weight: number) {
+        this.adjList.get(from)?.push({ node: to, weight });
+        this.adjList.get(to)?.push({ node: from, weight }); // for undirected graph
+    }
+
+    dijkstra(start: string): Map<string, number> {
+        const distances = new Map<string, number>();
+        const pq = new MinPriorityQueue();
+        const visited = new Set<string>();
+
+        // Initialize distances
+        for (const node of this.adjList.keys()) {
+            distances.set(node, Infinity);
+        }
+        distances.set(start, 0);
+        pq.enqueue(start, 0);
+
+        while (!pq.isEmpty()) {
+            let { value: current } = pq.dequeue();
+            if (visited.has(current)) continue;
+            visited.add(current);
+
+            for (const neighbor of this.adjList.get(current)!) {
+                const newDist = distances.get(current)! + neighbor.weight;
+                if (newDist < distances.get(neighbor.node)!) {
+                    distances.set(neighbor.node, newDist);
+                    pq.enqueue(neighbor.node, newDist);
                 }
-                nextLevel.push(successor);
             }
         }
+        return distances;
+    }
+}
 
-        // Sort the next level nodes by cost and keep only the best ones
-        nextLevel.sort((a, b) => a.cost - b.cost);
-        currentLevel = nextLevel.slice(0, beamWidth);
+class MinPriorityQueue {
+    private elements: { value: string; priority: number }[];
+
+    constructor() {
+        this.elements = [];
     }
 
-    return null; // No solution found
-}
-
-function constructPath(node: Node): SearchResult {
-    const path: string[] = [];
-    let currentNode: Node | undefined = node;
-
-    while (currentNode) {
-        path.unshift(currentNode.state);
-        currentNode = currentNode.parent;
+    enqueue(value: string, priority: number) {
+        this.elements.push({ value, priority });
+        this.elements.sort((a, b) => a.priority - b.priority);
     }
 
-    return { path, cost: node.cost };
+    dequeue() {
+        return this.elements.shift()!;
+    }
+
+    isEmpty() {
+        return this.elements.length === 0;
+    }
 }
 
-// Example usage
-const generateSuccessors = (state: string): Node[] => {
-    // This function should generate successor nodes based on the current state
-    // For demonstration, let's assume we can move to states "A", "B", and "C" from any state
-    return [
-        { state: 'A', cost: Math.random() }, // Random cost for demonstration
-        { state: 'B', cost: Math.random() },
-        { state: 'C', cost: Math.random() }
-    ];
-};
+// Usage
+const graph = new Graph();
+graph.addNode("A");
+graph.addNode("B");
+graph.addNode("C");
+graph.addEdge("A", "B", 1);
+graph.addEdge("A", "C", 4);
+graph.addEdge("B", "C", 2);
 
-const result = beamSearch('START', 'GOAL', generateSuccessors, 2);
-if (result) {
-    console.log(`Path to goal: ${result.path.join(' -> ')}, Cost: ${result.cost}`);
-} else {
-    console.log('No solution found.');
-}
+const shortestPaths = graph.dijkstra("A");
+console.log(shortestPaths); // Outputs shortest distances from node A to all other nodes.
