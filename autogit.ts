@@ -1,38 +1,44 @@
-function countCharacter(str: string, char: string): number {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === char) {
-            count++;
-        }
+class ListNode {
+    value: number;
+    next: ListNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-    return count;
+}
+
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+    if (!headA || !headB) return null;
+
+    let pointerA: ListNode | null = headA;
+    let pointerB: ListNode | null = headB;
+
+    while (pointerA !== pointerB) {
+        // When reaching the end of one list, redirect it to the head of the other
+        // This helps in getting to the intersection point if they intersect
+        pointerA = pointerA ? pointerA.next : headB;
+        pointerB = pointerB ? pointerB.next : headA;
+    }
+    
+    // Either pointerA or pointerB can be the intersection node or null
+    return pointerA; 
 }
 
 // Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
-function countCharacter(str: string, char: string): number {
-    return str.split(char).length - 1;
-}
+// Create two linked lists that intersect
+const intersectingNode = new ListNode(8);
+intersectingNode.next = new ListNode(4);
+intersectingNode.next.next = new ListNode(5);
 
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
-function countCharacter(str: string, char: string): number {
-    return Array.from(str).reduce((count, currentChar) => {
-        return currentChar === char ? count + 1 : count;
-    }, 0);
-}
+const listA = new ListNode(4);
+listA.next = new ListNode(1);
+listA.next.next = intersectingNode;
 
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
-function countCharacter(str: string, char: string): number {
-    const regex = new RegExp(char, 'g');
-    const matches = str.match(regex);
-    return matches ? matches.length : 0;
-}
+const listB = new ListNode(5);
+listB.next = new ListNode(0);
+listB.next.next = new ListNode(1);
+listB.next.next.next = intersectingNode;
 
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
+const intersection = getIntersectionNode(listA, listB);
+console.log(intersection ? intersection.value : 'No intersection');
