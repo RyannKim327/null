@@ -1,30 +1,13 @@
-// Define an interface for the data we expect to receive
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
+function isValidEmail(email: string): boolean {
+    // Regular expression for validating an Email
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    
+    return emailPattern.test(email);
 }
 
-// Function to fetch posts
-async function fetchPosts(): Promise<void> {
-    try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+// Example usage:
+const email1 = "example@test.com";
+const email2 = "invalid-email.com";
 
-        // Check if the response is ok (status in the range 200-299)
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        // Parse the JSON response
-        const posts: Post[] = await response.json();
-
-        // Log the posts to the console
-        console.log(posts);
-    } catch (error) {
-        console.error('Error fetching posts:', error);
-    }
-}
-
-// Call the function to fetch posts
-fetchPosts();
+console.log(isValidEmail(email1)); // Output: true
+console.log(isValidEmail(email2)); // Output: false
