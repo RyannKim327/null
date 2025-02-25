@@ -1,53 +1,34 @@
-class Node {
-    value: string;
-    children: Node[];
+npm install axios
+import axios from 'axios';
 
-    constructor(value: string) {
-        this.value = value;
-        this.children = [];
-    }
-
-    addChild(child: Node) {
-        this.children.push(child);
-    }
+// Define an interface for the data we expect to receive
+interface User {
+    id: number;
+    name: string;
+    username: string;
+    email: string;
 }
 
-function depthLimitedSearch(node: Node, depth: number, target: string): Node | null {
-    if (depth === 0) {
-        if (node.value === target) {
-            return node;
+// Function to fetch users from the API
+const fetchUsers = async (): Promise<void> => {
+    try {
+        const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
+        const users = response.data;
+
+        // Log the users to the console
+        users.forEach(user => {
+            console.log(`ID: ${user.id}, Name: ${user.name}, Username: ${user.username}, Email: ${user.email}`);
+        });
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error('Error message:', error.message);
         } else {
-            return null;
-        }
-    } else if (depth > 0) {
-        for (const child of node.children) {
-            const result = depthLimitedSearch(child, depth - 1, target);
-            if (result) {
-                return result;
-            }
+            console.error('Unexpected error:', error);
         }
     }
-    return null;
-}
+};
 
-// Example usage:
-const root = new Node('A');
-const b = new Node('B');
-const c = new Node('C');
-const d = new Node('D');
-const e = new Node('E');
-
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-c.addChild(e);
-
-const target = 'E';
-const depthLimit = 2;
-const result = depthLimitedSearch(root, depthLimit, target);
-
-if (result) {
-    console.log(`Found target: ${result.value}`);
-} else {
-    console.log('Target not found within depth limit.');
-}
+// Call the function to fetch users
+fetchUsers();
+tsc fetchData.ts
+node fetchData.js
