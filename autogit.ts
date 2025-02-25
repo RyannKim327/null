@@ -1,12 +1,10 @@
-function getStringLength(str: string): number {
-    let count = 0;
-    for (let char of str) {
-        count++;
-    }
-    return count;
-}
+let string1: string = "Hello, ";
+let string2: string = "world!";
+let concatenated: string = string1 + string2;
 
-// Example usage:
-const myString = "Hello, World!";
-const length = getStringLength(myString);
-console.log(length); // Output: 13
+console.log(concatenated); // Output: Hello, world!
+let string1: string = "Hello, ";
+let string2: string = "world!";
+let concatenated: string = `${string1}${string2}`;
+
+console.log(concatenated); // Output: Hello, world!
