@@ -1,20 +1,48 @@
-function longestIncreasingSubsequence(nums: number[]): number {
-    if (nums.length === 0) return 0;
+type Node = {
+    state: string; // The current state
+    cost: number;  // The cost to reach this state
+    path: string[]; // The path taken to reach this state
+};
 
-    const dp: number[] = new Array(nums.length).fill(1);
+function beamSearch(initialState: string, goalState: string, generateSuccessors: (state: string) => Node[], beamWidth: number): string[] | null {
+    let currentLevel: Node[] = [{ state: initialState, cost: 0, path: [initialState] }];
+    
+    while (currentLevel.length > 0) {
+        // Generate successors for all nodes in the current level
+        let successors: Node[] = [];
+        for (const node of currentLevel) {
+            const newSuccessors = generateSuccessors(node.state);
+            successors.push(...newSuccessors);
+        }
 
-    for (let i = 1; i < nums.length; i++) {
-        for (let j = 0; j < i; j++) {
-            if (nums[i] > nums[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
+        // Check for goal state in successors
+        for (const successor of successors) {
+            if (successor.state === goalState) {
+                return successor.path; // Return the path to the goal state
             }
         }
+
+        // Sort successors by cost (or any other heuristic) and select the top `beamWidth` nodes
+        successors.sort((a, b) => a.cost - b.cost);
+        currentLevel = successors.slice(0, beamWidth);
     }
 
-    return Math.max(...dp);
+    return null; // Return null if the goal state is not found
 }
 
-// Example usage:
-const nums = [10, 9, 2, 5, 3, 7, 101, 18];
-const lengthOfLIS = longestIncreasingSubsequence(nums);
-console.log(lengthOfLIS); // Output: 4
+// Example usage
+const generateSuccessors = (state: string): Node[] => {
+    // This function should generate successor nodes based on the current state
+    // For demonstration, let's assume each state can lead to two new states
+    return [
+        { state: state + 'A', cost: Math.random(), path: [] }, // Random cost for demonstration
+        { state: state + 'B', cost: Math.random(), path: [] }
+    ];
+};
+
+const initialState = 'Start';
+const goalState = 'StartAB'; // Example goal state
+const beamWidth = 2;
+
+const result = beamSearch(initialState, goalState, generateSuccessors, beamWidth);
+console.log(result);
