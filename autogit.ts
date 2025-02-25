@@ -1,70 +1,33 @@
-class Tarjan {
-    private index: number;
-    private indices: number[];
-    private lowLinks: number[];
-    private onStack: boolean[];
-    private stack: number[];
-    private sccs: number[][];
+function longestCommonSubstring(s1: string, s2: string): string {
+    const m = s1.length;
+    const n = s2.length;
+    let longest = 0;
+    let endingIndex = 0;
+    
+    // Create a 2D array to store lengths of longest common suffixes
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-    constructor(private graph: number[][]) {
-        this.index = 0;
-        this.indices = new Array(graph.length).fill(-1);
-        this.lowLinks = new Array(graph.length).fill(0);
-        this.onStack = new Array(graph.length).fill(false);
-        this.stack = [];
-        this.sccs = [];
-    }
-
-    public findSCCs(): number[][] {
-        for (let v = 0; v < this.graph.length; v++) {
-            if (this.indices[v] === -1) {
-                this.strongConnect(v);
+    // Build the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (s1[i - 1] === s2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > longest) {
+                    longest = dp[i][j];
+                    endingIndex = i; // Track the end index in the first string
+                }
             }
         }
-        return this.sccs;
     }
 
-    private strongConnect(v: number): void {
-        this.indices[v] = this.index;
-        this.lowLinks[v] = this.index;
-        this.index++;
-        this.stack.push(v);
-        this.onStack[v] = true;
+    // If no common substring found
+    if (longest === 0) return '';
 
-        for (const w of this.graph[v]) {
-            if (this.indices[w] === -1) {
-                // Successor w has not yet been visited; recurse on it
-                this.strongConnect(w);
-                this.lowLinks[v] = Math.min(this.lowLinks[v], this.lowLinks[w]);
-            } else if (this.onStack[w]) {
-                // Successor w is in the stack and hence in the current SCC
-                this.lowLinks[v] = Math.min(this.lowLinks[v], this.indices[w]);
-            }
-        }
-
-        // If v is a root node, pop the stack and generate an SCC
-        if (this.lowLinks[v] === this.indices[v]) {
-            const scc: number[] = [];
-            let w: number;
-            do {
-                w = this.stack.pop()!;
-                this.onStack[w] = false;
-                scc.push(w);
-            } while (w !== v);
-            this.sccs.push(scc);
-        }
-    }
+    // Extract the longest common substring from the first string
+    return s1.substring(endingIndex - longest, endingIndex);
 }
 
-// Example usage:
-const graph = [
-    [1], // 0 -> 1
-    [2], // 1 -> 2
-    [0], // 2 -> 0
-    [1], // 3 -> 1
-    [3]  // 4 -> 3
-];
-
-const tarjans = new Tarjan(graph);
-const sccs = tarjans.findSCCs();
-console.log(sccs);
+// Example usage
+const string1 = "abcde";
+const string2 = "abfce";
+console.log(longestCommonSubstring(string1, string2)); // Output: "ab"
