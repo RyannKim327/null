@@ -1,55 +1,47 @@
-class SuffixTreeNode {
-    children: Map<string, SuffixTreeNode>;
-    isEndOfWord: boolean;
+class Node {
+    value: string;
+    children: Node[];
 
-    constructor() {
-        this.children = new Map();
-        this.isEndOfWord = false;
+    constructor(value: string) {
+        this.value = value;
+        this.children = [];
+    }
+
+    addChild(child: Node) {
+        this.children.push(child);
     }
 }
-class SuffixTree {
-    private root: SuffixTreeNode;
 
-    constructor() {
-        this.root = new SuffixTreeNode();
-    }
-
-    public insertSuffix(suffix: string): void {
-        let currentNode = this.root;
-        
-        for (let char of suffix) {
-            if (!currentNode.children.has(char)) {
-                currentNode.children.set(char, new SuffixTreeNode());
+function depthLimitedSearch(node: Node, target: string, depth: number): boolean {
+    if (depth === 0 && node.value === target) return true;
+    if (depth > 0) {
+        for (const child of node.children) {
+            if (depthLimitedSearch(child, target, depth - 1)) {
+                return true;
             }
-            currentNode = currentNode.children.get(char)!;
-        }
-        
-        currentNode.isEndOfWord = true;
-    }
-
-    public buildTree(text: string): void {
-        for (let i = 0; i < text.length; i++) {
-            this.insertSuffix(text.substring(i));
         }
     }
-
-    public containSuffix(suffix: string): boolean {
-        let currentNode = this.root;
-
-        for (let char of suffix) {
-            if (!currentNode.children.has(char)) {
-                return false;
-            }
-            currentNode = currentNode.children.get(char)!;
-        }
-
-        return true; // Suffix exists in the tree
-    }
+    return false;
 }
-const tree = new SuffixTree();
-const text = "banana";
-tree.buildTree(text);
 
-console.log(tree.containSuffix("ana")); // true
-console.log(tree.containSuffix("nana")); // true
-console.log(tree.containSuffix("band")); // false
+function breadthLimitedSearch(root: Node, target: string, maxDepth: number): boolean {
+    for (let depth = 0; depth <= maxDepth; depth++) {
+        if (depthLimitedSearch(root, target, depth)) {
+            return true;  // Target found within the depth limit
+        }
+    }
+    return false;  // Target not found within the given depth
+}
+
+// Example usage:
+const root = new Node("A");
+const childB = new Node("B");
+const childC = new Node("C");
+const childD = new Node("D");
+
+root.addChild(childB);
+root.addChild(childC);
+childB.addChild(childD);
+
+const result = breadthLimitedSearch(root, "D", 2);
+console.log(`Target found: ${result}`); // Output: Target found: true
