@@ -1,54 +1,93 @@
-class Edge {
-    constructor(public from: number, public to: number, public weight: number) {}
+class SuffixTreeNode {
+    children: Map<string, SuffixTreeNode>;
+    start: number;
+    end: number | null;
+    suffixLink: SuffixTreeNode | null;
+
+    constructor(start: number, end: number | null) {
+        this.children = new Map();
+        this.start = start;
+        this.end = end;
+        this.suffixLink = null;
+    }
 }
 
-class Graph {
-    private edges: Edge[] = [];
-    private vertexCount: number;
+class SuffixTree {
+    root: SuffixTreeNode;
+    text: string;
 
-    constructor(vertexCount: number) {
-        this.vertexCount = vertexCount;
+    constructor(text: string) {
+        this.root = new SuffixTreeNode(-1, null);
+        this.text = text;
+        this.buildSuffixTree();
     }
 
-    addEdge(from: number, to: number, weight: number) {
-        this.edges.push(new Edge(from, to, weight));
+    buildSuffixTree() {
+        const n = this.text.length;
+        for (let i = 0; i < n; i++) {
+            this.insertSuffix(i);
+        }
     }
 
-    bellmanFord(source: number): number[] | string {
-        // Step 1: Initialize distances from source to all vertices as infinite
-        const distances: number[] = new Array(this.vertexCount).fill(Infinity);
-        distances[source] = 0;
+    insertSuffix(start: number) {
+        let currentNode = this.root;
+        let currentChar = this.text[start];
 
-        // Step 2: Relax all edges |V| - 1 times
-        for (let i = 0; i < this.vertexCount - 1; i++) {
-            for (const edge of this.edges) {
-                if (distances[edge.from] !== Infinity && distances[edge.from] + edge.weight < distances[edge.to]) {
-                    distances[edge.to] = distances[edge.from] + edge.weight;
+        for (let i = start; i < this.text.length; i++) {
+            const char = this.text[i];
+
+            if (!currentNode.children.has(char)) {
+                const newNode = new SuffixTreeNode(start, null);
+                currentNode.children.set(char, newNode);
+                return;
+            }
+
+            currentNode = currentNode.children.get(char)!;
+            // If the current node has an end, we need to split it
+            if (currentNode.end !== null) {
+                const edgeLength = currentNode.end - currentNode.start + 1;
+                if (i - start < edgeLength) {
+                    return; // The suffix is already in the tree
                 }
+                // Split the edge
+                const newNode = new SuffixTreeNode(currentNode.start, currentNode.start + edgeLength - 1);
+                currentNode.start += edgeLength;
+                newNode.children.set(this.text[currentNode.start], currentNode);
+                currentNode = newNode;
+                this.root.children.set(this.text[start], newNode);
+            }
+        }
+    }
+
+    // Function to search for a substring
+    search(substring: string): boolean {
+        let currentNode = this.root;
+        let index = 0;
+
+        while (index < substring.length) {
+            const char = substring[index];
+
+            if (!currentNode.children.has(char)) {
+                return false; // Not found
+            }
+
+            currentNode = currentNode.children.get(char)!;
+            const edgeLength = currentNode.end !== null ? currentNode.end - currentNode.start + 1 : 0;
+
+            for (let i = 0; i < edgeLength; i++) {
+                if (index >= substring.length || this.text[currentNode.start + i] !== substring[index]) {
+                    return false; // Not found
+                }
+                index++;
             }
         }
 
-        // Step 3: Check for negative-weight cycles
-        for (const edge of this.edges) {
-            if (distances[edge.from] !== Infinity && distances[edge.from] + edge.weight < distances[edge.to]) {
-                return "Graph contains a negative-weight cycle";
-            }
-        }
-
-        return distances;
+        return true; // Found
     }
 }
 
-// Example usage:
-const graph = new Graph(5);
-graph.addEdge(0, 1, -1);
-graph.addEdge(0, 2, 4);
-graph.addEdge(1, 2, 3);
-graph.addEdge(1, 3, 2);
-graph.addEdge(1, 4, 2);
-graph.addEdge(3, 2, 5);
-graph.addEdge(3, 1, 1);
-graph.addEdge(4, 3, -3);
-
-const distances = graph.bellmanFord(0);
-console.log(distances);
+// Example usage
+const text = "banana";
+const suffixTree = new SuffixTree(text);
+console.log(suffixTree.search("ana")); // true
+console.log(suffixTree.search("nan")); // false
