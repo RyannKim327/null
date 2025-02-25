@@ -1,121 +1,37 @@
-class Graph {
-    private adjList: Map<number, number[]>;
+function boyerMooreSearch(text: string, pattern: string): number[] {
+    const patternLength = pattern.length;
+    const textLength = text.length;
 
-    constructor() {
-        this.adjList = new Map();
+    // Create the bad character table
+    const badChar = new Map<string, number>();
+    for (let i = 0; i < patternLength; i++) {
+        badChar.set(pattern[i], i);
     }
 
-    addEdge(v: number, w: number) {
-        if (!this.adjList.has(v)) {
-            this.adjList.set(v, []);
-        }
-        this.adjList.get(v)!.push(w);
-    }
+    const result: number[] = [];
 
-    topologicalSortUtil(v: number, visited: Set<number>, stack: number[]) {
-        visited.add(v);
+    let shift = 0;
+    while (shift <= (textLength - patternLength)) {
+        let j = patternLength - 1;
 
-        const neighbors = this.adjList.get(v) || [];
-        for (const neighbor of neighbors) {
-            if (!visited.has(neighbor)) {
-                this.topologicalSortUtil(neighbor, visited, stack);
-            }
+        while (j >= 0 && pattern[j] === text[shift + j]) {
+            j--;
         }
 
-        stack.push(v);
-    }
-
-    topologicalSort(): number[] {
-        const visited = new Set<number>();
-        const stack: number[] = [];
-
-        for (const vertex of this.adjList.keys()) {
-            if (!visited.has(vertex)) {
-                this.topologicalSortUtil(vertex, visited, stack);
-            }
+        if (j < 0) {
+            result.push(shift); // Pattern found at shift index
+            shift += (shift + patternLength < textLength) ? patternLength - badChar.get(text[shift + patternLength]) || patternLength : 1;
+        } else {
+            const charShift = badChar.get(text[shift + j]) || -1;
+            shift += Math.max(1, j - charShift);
         }
-
-        return stack.reverse(); // Return in reverse order
     }
+
+    return result;
 }
 
 // Example usage:
-const graph = new Graph();
-graph.addEdge(5, 2);
-graph.addEdge(5, 0);
-graph.addEdge(4, 0);
-graph.addEdge(4, 1);
-graph.addEdge(2, 3);
-graph.addEdge(3, 1);
-
-const result = graph.topologicalSort();
-console.log(result); // Output: A valid topological order
-class GraphKahn {
-    private adjList: Map<number, number[]>;
-
-    constructor() {
-        this.adjList = new Map();
-    }
-
-    addEdge(v: number, w: number) {
-        if (!this.adjList.has(v)) {
-            this.adjList.set(v, []);
-        }
-        this.adjList.get(v)!.push(w);
-    }
-
-    topologicalSort(): number[] {
-        const inDegree: Map<number, number> = new Map();
-        const queue: number[] = [];
-        const result: number[] = [];
-
-        // Initialize in-degree of each vertex
-        for (const [vertex, neighbors] of this.adjList.entries()) {
-            if (!inDegree.has(vertex)) {
-                inDegree.set(vertex, 0);
-            }
-            for (const neighbor of neighbors) {
-                inDegree.set(neighbor, (inDegree.get(neighbor) || 0) + 1);
-            }
-        }
-
-        // Collect all vertices with in-degree 0
-        for (const [vertex, degree] of inDegree.entries()) {
-            if (degree === 0) {
-                queue.push(vertex);
-            }
-        }
-
-        while (queue.length > 0) {
-            const current = queue.shift()!;
-            result.push(current);
-
-            const neighbors = this.adjList.get(current) || [];
-            for (const neighbor of neighbors) {
-                inDegree.set(neighbor, inDegree.get(neighbor)! - 1);
-                if (inDegree.get(neighbor) === 0) {
-                    queue.push(neighbor);
-                }
-            }
-        }
-
-        // Check if there was a cycle
-        if (result.length !== inDegree.size) {
-            throw new Error("Graph has at least one cycle, topological sort not possible.");
-        }
-
-        return result;
-    }
-}
-
-// Example usage:
-const graphKahn = new GraphKahn();
-graphKahn.addEdge(5, 2);
-graphKahn.addEdge(5, 0);
-graphKahn.addEdge(4, 0);
-graphKahn.addEdge(4, 1);
-graphKahn.addEdge(2, 3);
-graphKahn.addEdge(3, 1);
-
-const resultKahn = graphKahn.topologicalSort();
-console.log(resultKahn); // Output: A valid topological order
+const text = "ABAAABCDABAAABCDAB";
+const pattern = "ABCD";
+const matches = boyerMooreSearch(text, pattern);
+console.log(matches); // Output: indices where pattern is found
