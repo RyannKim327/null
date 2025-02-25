@@ -1,19 +1,18 @@
-function countWordOccurrences(text: string, word: string): number {
-    // Normalize the text and the word to lower case to make the search case-insensitive
-    const normalizedText = text.toLowerCase();
-    const normalizedWord = word.toLowerCase();
+function findSecondLargest(arr: number[]): number | null {
+    if (arr.length < 2) {
+        return null; // Not enough elements
+    }
 
-    // Split the text into an array of words
-    const wordsArray = normalizedText.split(/\s+/); // Split by whitespace
+    // Remove duplicates by converting to a Set and back to an array
+    const uniqueArr = Array.from(new Set(arr));
 
-    // Filter the array to count occurrences of the word
-    const count = wordsArray.filter(w => w === normalizedWord).length;
+    // Sort in descending order
+    uniqueArr.sort((a, b) => b - a);
 
-    return count;
+    // Return the second largest element
+    return uniqueArr[1] ?? null; // If there is no second largest, return null
 }
 
-// Example usage
-const text = "Hello world! This is a test. Hello again, world!";
-const wordToCount = "hello";
-const occurrences = countWordOccurrences(text, wordToCount);
-console.log(`The word "${wordToCount}" occurs ${occurrences} times.`);
+// Example usage:
+const numbers = [3, 5, 2, 5, 1, 7];
+console.log(findSecondLargest(numbers)); // Output: 5
