@@ -1,15 +1,9 @@
-function isArraySortedAscending(arr: number[]): boolean {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false; // Found an element greater than the next one
-        }
-    }
-    return true; // All elements are in ascending order
+function findMaxValue(arr: number[]): number | undefined {
+    if (arr.length === 0) return undefined; // Return undefined if the array is empty
+    return Math.max(...arr); // Use Math.max with the spread operator to find the max
 }
 
 // Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [1, 3, 2, 4, 5];
-
-console.log(isArraySortedAscending(array1)); // Output: true
-console.log(isArraySortedAscending(array2)); // Output: false
+const numbers = [3, 5, 7, 2, 8];
+const maxValue = findMaxValue(numbers);
+console.log(maxValue); // Outputs: 8
