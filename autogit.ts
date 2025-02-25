@@ -1,17 +1,6 @@
-function firstRepeatedCharacter(str: string): string | null {
-    const seenCharacters = new Set<string>();
+const mainString: string = "Hello, world!";
+const substring: string = "world";
 
-    for (const char of str) {
-        if (seenCharacters.has(char)) {
-            return char; // Return the first repeated character
-        }
-        seenCharacters.add(char); // Add the character to the set
-    }
+const containsSubstring: boolean = mainString.includes(substring);
 
-    return null; // Return null if no repeated character is found
-}
-
-// Example usage:
-const inputString = "abca";
-const result = firstRepeatedCharacter(inputString);
-console.log(result); // Output: "a"
+console.log(containsSubstring); // Output: true
