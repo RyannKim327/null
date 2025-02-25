@@ -1,30 +1,68 @@
-// Define an interface for the data we expect to receive
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-}
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-// Function to fetch posts
-async function fetchPosts(): Promise<void> {
-    try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-        
-        // Check if the response is ok (status in the range 200-299)
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        // Parse the JSON response
-        const posts: Post[] = await response.json();
-
-        // Log the posts to the console
-        console.log(posts);
-    } catch (error) {
-        console.error('Error fetching posts:', error);
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
 }
 
-// Call the function to fetch posts
-fetchPosts();
+class LinkedList {
+    head: ListNode | null;
+
+    constructor() {
+        this.head = null;
+    }
+
+    // Method to add a new node at the end of the list
+    append(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    // Method to print the list
+    printList() {
+        let current = this.head;
+        while (current) {
+            process.stdout.write(current.value + " -> ");
+            current = current.next;
+        }
+        console.log("null");
+    }
+}
+function reverseLinkedList(head: ListNode | null): ListNode | null {
+    let prev: ListNode | null = null;
+    let current: ListNode | null = head;
+    let next: ListNode | null = null;
+
+    while (current) {
+        next = current.next; // Store the next node
+        current.next = prev; // Reverse the current node's pointer
+        prev = current;      // Move prev and current one step forward
+        current = next;
+    }
+    return prev; // New head of the reversed list
+}
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+list.append(4);
+list.append(5);
+
+console.log("Original list:");
+list.printList();
+
+list.head = reverseLinkedList(list.head);
+
+console.log("Reversed list:");
+list.printList();
