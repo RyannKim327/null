@@ -1,18 +1,15 @@
-function findSecondLargest(arr: number[]): number | null {
-    if (arr.length < 2) {
-        return null; // Not enough elements
+function calculateMean(numbers: number[]): number {
+    if (numbers.length === 0) {
+        throw new Error("The list of numbers is empty.");
     }
 
-    // Remove duplicates by converting to a Set and back to an array
-    const uniqueArr = Array.from(new Set(arr));
+    const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    const mean = sum / numbers.length;
 
-    // Sort in descending order
-    uniqueArr.sort((a, b) => b - a);
-
-    // Return the second largest element
-    return uniqueArr[1] ?? null; // If there is no second largest, return null
+    return mean;
 }
 
 // Example usage:
-const numbers = [3, 5, 2, 5, 1, 7];
-console.log(findSecondLargest(numbers)); // Output: 5
+const numbers = [10, 20, 30, 40, 50];
+const mean = calculateMean(numbers);
+console.log(`The mean is: ${mean}`);
