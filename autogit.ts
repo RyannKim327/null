@@ -1,20 +1,15 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings: convert to lower case and remove spaces
-    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
-    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
-
-    // If lengths are not the same, they can't be anagrams
-    if (normalizedStr1.length !== normalizedStr2.length) {
-        return false;
+function calculateMean(numbers: number[]): number {
+    if (numbers.length === 0) {
+        throw new Error("The list of numbers is empty.");
     }
 
-    // Sort the characters and compare
-    const sortedStr1 = normalizedStr1.split('').sort().join('');
-    const sortedStr2 = normalizedStr2.split('').sort().join('');
+    const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    const mean = sum / numbers.length;
 
-    return sortedStr1 === sortedStr2;
+    return mean;
 }
 
-// Example usage
-console.log(areAnagrams("listen", "silent")); // true
-console.log(areAnagrams("hello", "world")); // false
+// Example usage:
+const numbers = [10, 20, 30, 40, 50];
+const mean = calculateMean(numbers);
+console.log(`The mean is: ${mean}`);
