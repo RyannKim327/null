@@ -1,52 +1,63 @@
-class Node {
-    value: any;
-    children: Node[];
+class TrieNode {
+    children: Map<string, TrieNode>;
+    isEndOfWord: boolean;
 
-    constructor(value: any) {
-        this.value = value;
-        this.children = [];
-    }
-
-    addChild(child: Node) {
-        this.children.push(child);
+    constructor() {
+        this.children = new Map<string, TrieNode>();
+        this.isEndOfWord = false;
     }
 }
 
-function depthLimitedSearch(node: Node, target: any, depthLimit: number): boolean {
-    // Check if we have reached the depth limit
-    if (depthLimit < 0) {
-        return false;
+class Trie {
+    root: TrieNode;
+
+    constructor() {
+        this.root = new TrieNode();
     }
 
-    // Check if the current node is the target
-    if (node.value === target) {
-        return true;
-    }
+    // Insert a word into the trie
+    insert(word: string): void {
+        let node = this.root;
 
-    // Explore each child node
-    for (const child of node.children) {
-        if (depthLimitedSearch(child, target, depthLimit - 1)) {
-            return true;
+        for (const char of word) {
+            if (!node.children.has(char)) {
+                node.children.set(char, new TrieNode());
+            }
+            node = node.children.get(char)!;
         }
+        node.isEndOfWord = true;
     }
 
-    return false;
+    // Search if a word exists in the trie
+    search(word: string): boolean {
+        const node = this.findNode(word);
+        return node !== null && node.isEndOfWord;
+    }
+
+    // Check if there is any word in the trie that starts with the given prefix
+    startsWith(prefix: string): boolean {
+        return this.findNode(prefix) !== null;
+    }
+
+    // Helper function to find the node corresponding to the last character of the prefix/word
+    private findNode(word: string): TrieNode | null {
+        let node = this.root;
+
+        for (const char of word) {
+            if (!node.children.has(char)) {
+                return null; // Not found
+            }
+            node = node.children.get(char)!;
+        }
+        return node; // Found
+    }
 }
 
-// Example Usage
-const root = new Node(1);
-const child1 = new Node(2);
-const child2 = new Node(3);
-const grandchild1 = new Node(4);
-const grandchild2 = new Node(5);
-
-root.addChild(child1);
-root.addChild(child2);
-child1.addChild(grandchild1);
-child1.addChild(grandchild2);
-
-const targetValue = 5;
-const depthLimit = 2;
-
-const found = depthLimitedSearch(root, targetValue, depthLimit);
-console.log(`Target ${targetValue} found: ${found}`);
+// Example Usage:
+const trie = new Trie();
+trie.insert("hello");
+trie.insert("hi");
+console.log(trie.search("hello")); // true
+console.log(trie.search("hell")); // false
+console.log(trie.startsWith("he")); // true
+console.log(trie.startsWith("ho")); // false
