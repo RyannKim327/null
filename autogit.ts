@@ -1,38 +1,22 @@
-function getDigit(num: number, place: number): number {
-    return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
-}
+function areAnagrams(str1: string, str2: string): boolean {
+    // Normalize the strings: remove spaces and convert to lowercase
+    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
+    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
 
-function digitCount(num: number): number {
-    if (num === 0) return 1;
-    return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
-
-function mostDigits(nums: number[]): number {
-    let maxDigits = 0;
-    for (let num of nums) {
-        maxDigits = Math.max(maxDigits, digitCount(num));
+    // If lengths are different, they cannot be anagrams
+    if (normalizedStr1.length !== normalizedStr2.length) {
+        return false;
     }
-    return maxDigits;
+
+    // Sort the characters of both strings
+    const sortedStr1 = normalizedStr1.split('').sort().join('');
+    const sortedStr2 = normalizedStr2.split('').sort().join('');
+
+    // Compare the sorted strings
+    return sortedStr1 === sortedStr2;
 }
 
-function radixSort(nums: number[]): number[] {
-    const maxDigitCount = mostDigits(nums);
-    
-    for (let k = 0; k < maxDigitCount; k++) {
-        const buckets: number[][] = Array.from({ length: 10 }, () => []);
-        
-        for (let num of nums) {
-            const digit = getDigit(num, k);
-            buckets[digit].push(num);
-        }
-        
-        nums = [].concat(...buckets);
-    }
-    
-    return nums;
-}
-
-// Example Usage
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedArr = radixSort(arr);
-console.log(sortedArr); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+// Example usage:
+console.log(areAnagrams("listen", "silent")); // true
+console.log(areAnagrams("hello", "world"));   // false
+console.log(areAnagrams("anagram", "nagaram")); // true
