@@ -1,44 +1,17 @@
-function rabinKarp(text: string, pattern: string, d: number = 256, q: number = 101): number[] {
-    const result: number[] = [];
-    const M = pattern.length;
-    const N = text.length;
-    const patternHash = hash(pattern, M, d, q);
-    let textHash = hash(text, M, d, q);
+function isPrime(num: number): boolean {
+    // Check if the number is less than 2
+    if (num < 2) return false;
     
-    for (let i = 0; i <= N - M; i++) {
-        // Check if the hash values are equal
-        if (patternHash === textHash) {
-            // Further check for actual characters to avoid false positive
-            if (text.substring(i, i + M) === pattern) {
-                result.push(i); // Store the start index
-            }
-        }
-
-        // Calculate hash value for the next window
-        // Remove leading digit and add trailing digit if not at the end
-        if (i < N - M) {
-            textHash = (d * (textHash - text.charCodeAt(i) * Math.pow(d, M - 1)) + text.charCodeAt(i + M)) % q;
-            // Make sure to have a positive hash value
-            if (textHash < 0) {
-                textHash += q;
-            }
+    // Check for factors from 2 to the square root of num
+    for (let i = 2; i <= Math.sqrt(num); i++) {
+        if (num % i === 0) {
+            return false; // Not a prime number
         }
     }
     
-    return result;
+    return true; // Is a prime number
 }
 
-// Helper function to compute initial hash
-function hash(string: string, length: number, d: number, q: number): number {
-    let h = 0;
-    for (let i = 0; i < length; i++) {
-        h = (d * h + string.charCodeAt(i)) % q;
-    }
-    return h;
-}
-
-// Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const indices = rabinKarp(text, pattern);
-console.log(indices); // Output the starting indices where the pattern is found
+// Example Usage
+console.log(isPrime(11)); // true
+console.log(isPrime(4));  // false
