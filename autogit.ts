@@ -1,22 +1,20 @@
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = Array.from(new Set(array));
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = array.filter((value, index, self) => self.indexOf(value) === index);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = array.reduce<number[]>((acc, value) => {
-    if (!acc.includes(value)) {
-        acc.push(value);
+function isPrime(num: number): boolean {
+    if (num <= 1) return false; // 0 and 1 are not prime numbers
+    if (num <= 3) return true;  // 2 and 3 are prime numbers
+
+    // Check for even numbers and multiples of 3
+    if (num % 2 === 0 || num % 3 === 0) return false;
+
+    // Check for factors from 5 to the square root of num
+    for (let i = 5; i * i <= num; i += 6) {
+        if (num % i === 0 || num % (i + 2) === 0) {
+            return false;
+        }
     }
-    return acc;
-}, []);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray: number[] = [];
-array.forEach(value => {
-    if (!uniqueArray.includes(value)) {
-        uniqueArray.push(value);
-    }
-});
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+
+    return true;
+}
+
+// Example usage
+console.log(isPrime(7));  // Output: true
+console.log(isPrime(10)); // Output: false
