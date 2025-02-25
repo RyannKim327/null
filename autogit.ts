@@ -1,15 +1,30 @@
-function calculateMean(numbers: number[]): number {
-    if (numbers.length === 0) {
-        throw new Error("The list of numbers is empty.");
-    }
+import axios from 'axios';
 
-    const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    const mean = sum / numbers.length;
-
-    return mean;
+// Define an interface for the response data
+interface ApiResponse {
+    id: number;
+    title: string;
+    body: string;
 }
 
-// Example usage:
-const numbers = [10, 20, 30, 40, 50];
-const mean = calculateMean(numbers);
-console.log(`The mean is: ${mean}`);
+async function fetchData(url: string) {
+    try {
+        // Make a GET request to the specified URL
+        const response = await axios.get<ApiResponse[]>(url);
+        
+        // Log the response data
+        console.log('Response Data:', response.data);
+    } catch (error) {
+        // Handle any errors
+        if (axios.isAxiosError(error)) {
+            console.error('Error message:', error.message);
+        } else {
+            console.error('Unexpected error:', error);
+        }
+    }
+}
+
+// Call the fetchData function with a sample URL
+const apiUrl = 'https://jsonplaceholder.typicode.com/posts';
+fetchData(apiUrl);
+npm install axios
