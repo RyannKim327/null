@@ -1,31 +1,19 @@
-function shellSort(arr: number[]): number[] {
-    const n = arr.length;
-    let gap = Math.floor(n / 2); // Start with a big gap, then reduce the gap
+function countWordOccurrences(text: string, word: string): number {
+    // Normalize the text and the word to lower case to make the search case-insensitive
+    const normalizedText = text.toLowerCase();
+    const normalizedWord = word.toLowerCase();
 
-    // Start with the largest gap and reduce the gap until it is 0
-    while (gap > 0) {
-        // Do a gapped insertion sort for this gap size
-        for (let i = gap; i < n; i++) {
-            // Save the current element to be compared
-            const temp = arr[i];
-            let j = i;
+    // Split the text into an array of words
+    const wordsArray = normalizedText.split(/\s+/); // Split by whitespace
 
-            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
-            while (j >= gap && arr[j - gap] > temp) {
-                arr[j] = arr[j - gap];
-                j -= gap;
-            }
-            // Put temp (the original arr[i]) in its correct location
-            arr[j] = temp;
-        }
-        gap = Math.floor(gap / 2); // Reduce the gap
-    }
+    // Filter the array to count occurrences of the word
+    const count = wordsArray.filter(w => w === normalizedWord).length;
 
-    return arr;
+    return count;
 }
 
-// Example usage:
-const array = [12, 34, 54, 2, 3];
-console.log("Original array:", array);
-const sortedArray = shellSort(array);
-console.log("Sorted array:", sortedArray);
+// Example usage
+const text = "Hello world! This is a test. Hello again, world!";
+const wordToCount = "hello";
+const occurrences = countWordOccurrences(text, wordToCount);
+console.log(`The word "${wordToCount}" occurs ${occurrences} times.`);
