@@ -1,34 +1,40 @@
-function binarySearch(arr: number[], target: number): number {
-    let left = 0;
-    let right = arr.length - 1;
+function longestCommonSubsequence(str1: string, str2: string): string {
+    const m = str1.length;
+    const n = str2.length;
 
-    while (left <= right) {
-        const mid = Math.floor((left + right) / 2);
+    // Create a 2D array to store lengths of longest common subsequence
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-        // Check if target is present at mid
-        if (arr[mid] === target) {
-            return mid; // Target found
-        }
-
-        // If target is greater, ignore left half
-        if (arr[mid] < target) {
-            left = mid + 1;
-        } else {
-            // If target is smaller, ignore right half
-            right = mid - 1;
+    // Fill the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1; // Characters match
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]); // Take the max from left or top
+            }
         }
     }
 
-    return -1; // Target not found
+    // Backtrack to find the LCS
+    let lcs = '';
+    let i = m, j = n;
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            lcs = str1[i - 1] + lcs; // Append character to LCS
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--; // Move up
+        } else {
+            j--; // Move left
+        }
+    }
+
+    return lcs; // Return the longest common subsequence
 }
 
-// Example usage:
-const arr = [1, 3, 5, 7, 9, 11];
-const target = 7;
-const result = binarySearch(arr, target);
-
-if (result !== -1) {
-    console.log(`Target found at index: ${result}`);
-} else {
-    console.log("Target not found");
-}
+// Example usage
+const str1 = "AGGTAB";
+const str2 = "GXTXAYB";
+console.log(longestCommonSubsequence(str1, str2)); // Output: "GTAB"
