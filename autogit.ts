@@ -1,62 +1,57 @@
-class Node {
-    state: any;
-    cost: number;
-    // You can add more properties for specific use cases
+function mergeSort(arr: number[]): number[] {
+    const n = arr.length;
+    let currentSize; // Size of subarrays to be merged
+    let leftStart; // Starting index of left subarray
 
-    constructor(state: any, cost: number) {
-        this.state = state;
-        this.cost = cost;
+    // Create a temporary array to help with merging
+    const tempArray = new Array(n);
+
+    // Current size ranges from 1 to n/2
+    for (currentSize = 1; currentSize < n; currentSize *= 2) {
+        for (leftStart = 0; leftStart < n - currentSize; leftStart += 2 * currentSize) {
+            // Find the end of the left subarray
+            const mid = Math.min(leftStart + currentSize - 1, n - 1);
+            // Find the end of the right subarray
+            const rightEnd = Math.min(leftStart + 2 * currentSize - 1, n - 1);
+            
+            // Merge the two subarrays
+            merge(arr, tempArray, leftStart, mid, rightEnd);
+        }
+    }
+    return arr;
+}
+
+function merge(arr: number[], tempArray: number[], leftStart: number, mid: number, rightEnd: number) {
+    let i = leftStart; // Starting index for left subarray
+    let j = mid + 1; // Starting index for right subarray
+    let k = leftStart; // Starting index to be merged
+
+    // Merge the two subarrays into tempArray
+    while (i <= mid && j <= rightEnd) {
+        if (arr[i] <= arr[j]) {
+            tempArray[k++] = arr[i++];
+        } else {
+            tempArray[k++] = arr[j++];
+        }
+    }
+
+    // Copy remaining elements of left subarray if any
+    while (i <= mid) {
+        tempArray[k++] = arr[i++];
+    }
+
+    // Copy remaining elements of right subarray if any
+    while (j <= rightEnd) {
+        tempArray[k++] = arr[j++];
+    }
+
+    // Copy the merged subarray back into original array
+    for (let i = leftStart; i <= rightEnd; i++) {
+        arr[i] = tempArray[i];
     }
 }
 
-function beamSearch(root: Node, beamWidth: number, maxDepth: number): Node | null {
-    let currentLevelNodes: Node[] = [root];
-
-    for (let depth = 0; depth < maxDepth; depth++) {
-        let nextLevelNodes: Node[] = [];
-
-        // Expand current nodes
-        for (const node of currentLevelNodes) {
-            const children = expandNode(node); // Replace with actual expansion logic
-            nextLevelNodes.push(...children);
-        }
-
-        // Sort and select top nodes by cost/heuristic
-        nextLevelNodes.sort((a, b) => a.cost - b.cost);
-        currentLevelNodes = nextLevelNodes.slice(0, beamWidth);
-
-        // Check if we found a goal state
-        const goalNode = currentLevelNodes.find(isGoalNode);
-        if (goalNode) {
-            return goalNode;
-        }
-    }
-    return null; // Return null if no goal is found within maxDepth
-}
-
-// Placeholder function to expand nodes
-function expandNode(node: Node): Node[] {
-    // Implement your own logic to create children of the node.
-    // This could involve applying certain actions to the node to generate new states.
-    return [
-        new Node(/* new state */, node.cost + 1), // Replace with actual logic
-        new Node(/* new state */, node.cost + 2), // Replace with actual logic
-        // Add more child nodes as necessary
-    ];
-}
-
-// Placeholder function to check if a node is a goal
-function isGoalNode(node: Node): boolean {
-    // Implement the logic to determine if the node represents a goal state
-    return false; // Replace with actual condition
-}
-
-// Example usage:
-const initialNode = new Node(/* initial state */, 0);
-const result = beamSearch(initialNode, 3, 10); // 3 is the beam width, 10 is max depth
-
-if (result) {
-    console.log("Goal node found:", result);
-} else {
-    console.log("Goal node not found within the given depth.");
-}
+// Example usage
+const array = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
