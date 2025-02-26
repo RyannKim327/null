@@ -1,59 +1,34 @@
-// Define a Graph class
-class Graph {
-    private adjacencyList: Map<string, string[]>;
+function binarySearch(arr: number[], target: number): number {
+    let left = 0;
+    let right = arr.length - 1;
 
-    constructor() {
-        this.adjacencyList = new Map();
-    }
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
 
-    // Add a vertex to the graph
-    addVertex(vertex: string) {
-        if (!this.adjacencyList.has(vertex)) {
-            this.adjacencyList.set(vertex, []);
+        // Check if target is present at mid
+        if (arr[mid] === target) {
+            return mid; // Target found
+        }
+
+        // If target is greater, ignore left half
+        if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            // If target is smaller, ignore right half
+            right = mid - 1;
         }
     }
 
-    // Add an edge to the graph
-    addEdge(vertex1: string, vertex2: string) {
-        this.addVertex(vertex1);
-        this.addVertex(vertex2);
-        this.adjacencyList.get(vertex1)?.push(vertex2);
-        this.adjacencyList.get(vertex2)?.push(vertex1); // For undirected graph
-    }
-
-    // Implement BFS
-    bfs(start: string): string[] {
-        const visited: Set<string> = new Set();
-        const queue: string[] = [];
-        const result: string[] = [];
-
-        queue.push(start);
-        visited.add(start);
-
-        while (queue.length > 0) {
-            const vertex = queue.shift()!;
-            result.push(vertex);
-
-            const neighbors = this.adjacencyList.get(vertex) || [];
-            for (const neighbor of neighbors) {
-                if (!visited.has(neighbor)) {
-                    visited.add(neighbor);
-                    queue.push(neighbor);
-                }
-            }
-        }
-
-        return result;
-    }
+    return -1; // Target not found
 }
 
-// Example usage
-const graph = new Graph();
-graph.addEdge("A", "B");
-graph.addEdge("A", "C");
-graph.addEdge("B", "D");
-graph.addEdge("C", "E");
-graph.addEdge("D", "F");
+// Example usage:
+const arr = [1, 3, 5, 7, 9, 11];
+const target = 7;
+const result = binarySearch(arr, target);
 
-const bfsResult = graph.bfs("A");
-console.log(bfsResult); // Output: [ 'A', 'B', 'C', 'D', 'E', 'F' ]
+if (result !== -1) {
+    console.log(`Target found at index: ${result}`);
+} else {
+    console.log("Target not found");
+}
