@@ -1,140 +1,122 @@
-class BinaryHeap<T> {
-    private heap: T[] = [];
-    private compare: (a: T, b: T) => number;
+class Node<T> {
+    value: T;
+    forward: Node<T>[];
 
-    constructor(compare: (a: T, b: T) => number) {
-        this.compare = compare;
-    }
-
-    private getParentIndex(index: number): number {
-        return Math.floor((index - 1) / 2);
-    }
-
-    private getLeftChildIndex(index: number): number {
-        return index * 2 + 1;
-    }
-
-    private getRightChildIndex(index: number): number {
-        return index * 2 + 2;
-    }
-
-    private hasParent(index: number): boolean {
-        return this.getParentIndex(index) >= 0;
-    }
-
-    private hasLeftChild(index: number): boolean {
-        return this.getLeftChildIndex(index) < this.heap.length;
-    }
-
-    private hasRightChild(index: number): boolean {
-        return this.getRightChildIndex(index) < this.heap.length;
-    }
-
-    private parent(index: number): T {
-        return this.heap[this.getParentIndex(index)];
-    }
-
-    private leftChild(index: number): T {
-        return this.heap[this.getLeftChildIndex(index)];
-    }
-
-    private rightChild(index: number): T {
-        return this.heap[this.getRightChildIndex(index)];
-    }
-
-    private swap(indexOne: number, indexTwo: number): void {
-        const temp = this.heap[indexOne];
-        this.heap[indexOne] = this.heap[indexTwo];
-        this.heap[indexTwo] = temp;
-    }
-
-    private bubbleUp(): void {
-        let index = this.heap.length - 1;
-        while (this.hasParent(index) && this.compare(this.parent(index), this.heap[index]) > 0) {
-            this.swap(this.getParentIndex(index), index);
-            index = this.getParentIndex(index);
-        }
-    }
-
-    private bubbleDown(): void {
-        let index = 0;
-        while (this.hasLeftChild(index)) {
-            let smallerChildIndex = this.getLeftChildIndex(index);
-            if (this.hasRightChild(index) && this.compare(this.rightChild(index), this.leftChild(index)) < 0) {
-                smallerChildIndex = this.getRightChildIndex(index);
-            }
-
-            if (this.compare(this.heap[index], this.heap[smallerChildIndex]) < 0) {
-                break;
-            } else {
-                this.swap(index, smallerChildIndex);
-            }
-            index = smallerChildIndex;
-        }
-    }
-
-    public insert(item: T): void {
-        this.heap.push(item);
-        this.bubbleUp();
-    }
-
-    public remove(): T | undefined {
-        if (this.heap.length === 0) {
-            return undefined;
-        }
-        const item = this.heap[0];
-        this.heap[0] = this.heap[this.heap.length - 1];
-        this.heap.pop();
-        this.bubbleDown();
-        return item;
-    }
-
-    public peek(): T | undefined {
-        return this.heap[0];
-    }
-
-    public isEmpty(): boolean {
-        return this.heap.length === 0;
-    }
-
-    public size(): number {
-        return this.heap.length;
+    constructor(value: T, level: number) {
+        this.value = value;
+        this.forward = new Array(level + 1).fill(null);
     }
 }
-class PriorityQueue<T> {
-    private heap: BinaryHeap<T>;
 
-    constructor(compare: (a: T, b: T) => number) {
-        this.heap = new BinaryHeap(compare);
+class SkipList<T> {
+    private head: Node<T>;
+    private maxLevel: number;
+    private p: number; // Probability for random level generation
+    private level: number; // Current highest level
+
+    constructor(maxLevel: number = 16, p: number = 0.5) {
+        this.maxLevel = maxLevel;
+        this.p = p;
+        this.level = 0;
+        this.head = new Node<T>(null, this.maxLevel);
     }
 
-    public enqueue(item: T): void {
-        this.heap.insert(item);
+    private randomLevel(): number {
+        let lvl = 0;
+        while (Math.random() < this.p && lvl < this.maxLevel) {
+            lvl++;
+        }
+        return lvl;
     }
 
-    public dequeue(): T | undefined {
-        return this.heap.remove();
+    insert(value: T): void {
+        const update: Node<T>[] = new Array(this.maxLevel + 1);
+        let current: Node<T> = this.head;
+
+        // Find the position to insert the new value
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+            update[i] = current;
+        }
+
+        current = current.forward[0];
+
+        // If the value is not already present, insert it
+        if (current === null || current.value !== value) {
+            const newLevel = this.randomLevel();
+
+            if (newLevel > this.level) {
+                for (let i = this.level + 1; i <= newLevel; i++) {
+                    update[i] = this.head;
+                }
+                this.level = newLevel;
+            }
+
+            const newNode = new Node(value, newLevel);
+            for (let i = 0; i <= newLevel; i++) {
+                newNode.forward[i] = update[i].forward[i];
+                update[i].forward[i] = newNode;
+            }
+        }
     }
 
-    public peek(): T | undefined {
-        return this.heap.peek();
+    search(value: T): boolean {
+        let current: Node<T> = this.head;
+
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+        }
+
+        current = current.forward[0];
+
+        return current !== null && current.value === value;
     }
 
-    public isEmpty(): boolean {
-        return this.heap.isEmpty();
-    }
+    delete(value: T): void {
+        const update: Node<T>[] = new Array(this.maxLevel + 1);
+        let current: Node<T> = this.head;
 
-    public size(): number {
-        return this.heap.size();
+        // Find the node to delete
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+            update[i] = current;
+        }
+
+        current = current.forward[0];
+
+        // If found, remove it
+        if (current !== null && current.value === value) {
+            for (let i = 0; i <= this.level; i++) {
+                if (update[i].forward[i] !== current) break;
+                update[i].forward[i] = current.forward[i];
+            }
+
+            // Remove levels if necessary
+            while (this.level > 0 && this.head.forward[this.level] === null) {
+                this.level--;
+            }
+        }
     }
 }
+
 // Example usage
-const priorityQueue = new PriorityQueue<number>((a, b) => a - b);
+const skipList = new SkipList<number>();
+skipList.insert(3);
+skipList.insert(6);
+skipList.insert(7);
+skipList.insert(9);
+skipList.insert(12);
+skipList.insert(19);
+skipList.insert(17);
 
-priorityQueue.enqueue(5);
-priorityQueue.enqueue(1);
-priorityQueue.enqueue(3);
+console.log(skipList.search(6)); // true
+console.log(skipList.search(15)); // false
 
-console.log(priorityQueue.peek()); // Output: 1
-console.log(priorityQueue.dequeue()); // Output: 1
-console.log(priorityQueue.peek()); // Output: 3
+skipList.delete(6);
+console.log(skipList.search(6)); // false
