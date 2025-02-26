@@ -1,15 +1,58 @@
-function calculateMean(numbers: number[]): number {
-    if (numbers.length === 0) {
-        throw new Error("The array should not be empty.");
-    }
+function KMPSearch(pattern: string, text: string): number[] {
+    const lps = createLPS(pattern);
+    const result: number[] = [];
     
-    const totalSum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    const mean = totalSum / numbers.length;
+    let i = 0; // index for text
+    let j = 0; // index for pattern
+    const m = pattern.length;
+    const n = text.length;
 
-    return mean;
+    while (i < n) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j === m) {
+            result.push(i - j); // Found a match
+            j = lps[j - 1]; // Continue to search for next match
+        } else if (i < n && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1]; // Use LPS to skip unnecessary comparisons
+            } else {
+                i++;
+            }
+        }
+    }
+
+    return result; // Returning all match starting indices
 }
 
-// Example usage:
-const numbers = [1, 2, 3, 4, 5];
-const mean = calculateMean(numbers);
-console.log(`The mean is: ${mean}`); // Output: The mean is: 3
+function createLPS(pattern: string): number[] {
+    const lps = new Array(pattern.length).fill(0);
+    let length = 0; // Length of the previous longest prefix suffix
+    let i = 1;
+
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1]; // Use previously computed LPS
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+    
+    return lps;
+}
+
+// Example usage
+const text = "ababcababcabcabc";
+const pattern = "abc";
+const matches = KMPSearch(pattern, text);
+console.log("Pattern found at indices:", matches); // Output: [2, 7, 12]
