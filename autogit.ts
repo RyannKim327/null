@@ -1,12 +1,17 @@
-function factorial(n: number): number {
-    // Base case: if n is 0 or 1, return 1
-    if (n <= 1) {
-        return 1;
-    }
-    // Recursive case: n * factorial of (n - 1)
-    return n * factorial(n - 1);
+function countOccurrences(sentence: string, word: string): number {
+    // Create a regular expression to match the word
+    const regex = new RegExp(`\\b${word}\\b`, 'gi');
+    
+    // Use the match method to find all occurrences
+    const matches = sentence.match(regex);
+    
+    // Return the count of matches or 0 if there are none
+    return matches ? matches.length : 0;
 }
 
 // Example usage
-const number = 5;
-console.log(`Factorial of ${number} is ${factorial(number)}`); // Output: Factorial of 5 is 120
+const text = "Hello world! Welcome to the world of TypeScript.";
+const wordToCount = "world";
+const count = countOccurrences(text, wordToCount);
+
+console.log(`The word "${wordToCount}" occurs ${count} times.`);
