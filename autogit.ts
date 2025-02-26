@@ -1,33 +1,41 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function countingSort(array: number[], place: number): number[] {
+    const output: number[] = new Array(array.length);
+    const count: number[] = new Array(10).fill(0);
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    // Count occurrences of digits
+    for (const num of array) {
+        const digit = Math.floor(Math.abs(num) / place) % 10;
+        count[digit]++;
     }
+
+    // Change count[i] so that it contains the actual position of this digit in output[]
+    for (let i = 1; i < 10; i++) {
+        count[i] += count[i - 1];
+    }
+
+    // Build the output array
+    for (let i = array.length - 1; i >= 0; i--) {
+        const digit = Math.floor(Math.abs(array[i]) / place) % 10;
+        output[count[digit] - 1] = array[i];
+        count[digit]--;
+    }
+
+    return output;
 }
 
-function countLeafNodes(root: TreeNode | null): number {
-    if (root === null) {
-        return 0;
+function radixSort(array: number[]): number[] {
+    // Get the maximum number to figure out the number of digits
+    const max = Math.max(...array);
+
+    // Apply counting sort to sort elements by each digit
+    for (let place = 1; Math.floor(max / place) > 0; place *= 10) {
+        array = countingSort(array, place);
     }
-    // Check if the current node is a leaf
-    if (root.left === null && root.right === null) {
-        return 1;
-    }
-    // Recur for left and right children
-    return countLeafNodes(root.left) + countLeafNodes(root.right);
+
+    return array;
 }
 
-// Example usage
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-const leafCount = countLeafNodes(root);
-console.log(`Number of leaf nodes: ${leafCount}`); // Output: Number of leaf nodes: 3
+// Example usage:
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArr = radixSort(arr);
+console.log(sortedArr);
