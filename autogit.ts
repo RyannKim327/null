@@ -1,25 +1,12 @@
-function factorialRecursive(n: number): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers.");
-    }
-    if (n === 0 || n === 1) {
-        return 1;
-    }
-    return n * factorialRecursive(n - 1);
+function areAnagrams(str1: string, str2: string): boolean {
+    // Normalize the strings
+    const normalize = (str: string): string => 
+        str.replace(/\s+/g, '').toLowerCase().split('').sort().join('');
+
+    return normalize(str1) === normalize(str2);
 }
 
-// Example usage:
-console.log(factorialRecursive(5)); // Output: 120
-function factorialIterative(n: number): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers.");
-    }
-    let result = 1;
-    for (let i = 2; i <= n; i++) {
-        result *= i;
-    }
-    return result;
-}
-
-// Example usage:
-console.log(factorialIterative(5)); // Output: 120
+// Example usage
+const string1 = "Listen";
+const string2 = "Silent";
+console.log(areAnagrams(string1, string2)); // Output: true
