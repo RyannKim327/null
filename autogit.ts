@@ -1,10 +1,29 @@
-function isArraySortedAsc(arr: number[]): boolean {
-    return arr.every((value, index) => index === 0 || value >= arr[index - 1]);
+function removeDuplicates(arr: number[]): number[] {
+    return Array.from(new Set(arr));
 }
 
 // Example usage:
-const sortedArray = [1, 2, 3, 4, 5];
-const unsortedArray = [1, 3, 2, 4, 5];
+const nums = [1, 2, 2, 3, 4, 4, 5];
+const uniqueNums = removeDuplicates(nums);
+console.log(uniqueNums); // Output: [1, 2, 3, 4, 5]
+function removeDuplicates(arr: number[]): number[] {
+    return arr.filter((value, index) => arr.indexOf(value) === index);
+}
 
-console.log(isArraySortedAsc(sortedArray)); // Output: true
-console.log(isArraySortedAsc(unsortedArray)); // Output: false
+// Example usage:
+const nums = [1, 2, 2, 3, 4, 4, 5];
+const uniqueNums = removeDuplicates(nums);
+console.log(uniqueNums); // Output: [1, 2, 3, 4, 5]
+function removeDuplicates(arr: number[]): number[] {
+    return arr.reduce((accumulator, current) => {
+        if (!accumulator.includes(current)) {
+            accumulator.push(current);
+        }
+        return accumulator;
+    }, [] as number[]);
+}
+
+// Example usage:
+const nums = [1, 2, 2, 3, 4, 4, 5];
+const uniqueNums = removeDuplicates(nums);
+console.log(uniqueNums); // Output: [1, 2, 3, 4, 5]
