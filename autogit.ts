@@ -1,7 +1,42 @@
-let arr: number[] = [1, 2, 3, 4, 5];
-arr.reverse();
-console.log(arr); // Output: [5, 4, 3, 2, 1]
-let originalArr: number[] = [1, 2, 3, 4, 5];
-let reversedArr: number[] = originalArr.slice().reverse();
-console.log(reversedArr); // Output: [5, 4, 3, 2, 1]
-console.log(originalArr); // Output: [1, 2, 3, 4, 5] (original array is unchanged)
+class ListNode {
+    value: number;
+    next: ListNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
+function reverseLinkedList(head: ListNode | null): ListNode | null {
+    let prev: ListNode | null = null;
+    let current: ListNode | null = head;
+
+    while (current !== null) {
+        const next: ListNode | null = current.next; // store the next node
+        current.next = prev; // reverse the link
+        prev = current; // move prev to current node
+        current = next; // move to the next node
+    }
+
+    return prev; // return the new head of the reversed list
+}
+// Creating a linked list: 1 -> 2 -> 3 -> null
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+
+// Reversing the linked list
+const reversedHead = reverseLinkedList(head);
+
+// Function to print the linked list
+function printList(node: ListNode | null) {
+    let current = node;
+    while (current) {
+        process.stdout.write(`${current.value} -> `);
+        current = current.next;
+    }
+    console.log('null');
+}
+
+// Output the reversed list
+printList(reversedHead); // Should print: 3 -> 2 -> 1 -> null
