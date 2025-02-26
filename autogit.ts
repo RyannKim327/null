@@ -1,38 +1,57 @@
-function countCharacter(str: string, char: string): number {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === char) {
-            count++;
+function getMax(arr: number[]): number {
+    let max = arr[0];
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] > max) {
+            max = arr[i];
         }
     }
-    return count;
+    return max;
 }
 
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
-function countCharacter(str: string, char: string): number {
-    return str.split(char).length - 1;
+function countingSort(arr: number[], exp: number): number[] {
+    const output: number[] = new Array(arr.length); // Output array
+    const count: number[] = new Array(10).fill(0); // Count array for digits (0-9)
+
+    // Store count of occurrences in count[]
+    for (let i = 0; i < arr.length; i++) {
+        const index = Math.floor(arr[i] / exp) % 10;
+        count[index]++;
+    }
+
+    // Change count[i] so that it contains the actual position of this digit in output[]
+    for (let i = 1; i < count.length; i++) {
+        count[i] += count[i - 1];
+    }
+
+    // Build the output array
+    for (let i = arr.length - 1; i >= 0; i--) {
+        const index = Math.floor(arr[i] / exp) % 10;
+        output[count[index] - 1] = arr[i];
+        count[index]--;
+    }
+
+    // Copy the output array to arr[], so that arr[] now contains sorted numbers
+    for (let i = 0; i < arr.length; i++) {
+        arr[i] = output[i];
+    }
+
+    return arr;
 }
 
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
-function countCharacter(str: string, char: string): number {
-    return Array.from(str).reduce((count, currentChar) => {
-        return currentChar === char ? count + 1 : count;
-    }, 0);
+function radixSort(arr: number[]): number[] {
+    // Find the maximum number to know the number of digits
+    const max = getMax(arr);
+
+    // Do counting sort for every digit
+    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
+        countingSort(arr, exp);
+    }
+
+    return arr;
 }
 
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
-function countCharacter(str: string, char: string): number {
-    const regex = new RegExp(char, 'g');
-    const matches = str.match(regex);
-    return matches ? matches.length : 0;
-}
-
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
+// Example usage
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+console.log("Unsorted array:", arr);
+const sortedArr = radixSort(arr);
+console.log("Sorted array:", sortedArr);
