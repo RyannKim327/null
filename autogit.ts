@@ -1,19 +1,23 @@
-function maxSubArray(nums: number[]): number {
-    let maxSoFar = nums[0]; // Initialize maxSoFar with the first element
-    let currentMax = nums[0]; // Initialize currentMax with the first element
+function longestCommonPrefix(strs: string[]): string {
+    if (strs.length === 0) return "";
 
-    for (let i = 1; i < nums.length; i++) {
-        // Update currentMax to be the maximum of the current element or the currentMax plus the current element
-        currentMax = Math.max(nums[i], currentMax + nums[i]);
-        
-        // Update maxSoFar if currentMax is greater
-        maxSoFar = Math.max(maxSoFar, currentMax);
+    // Start with the first string as the prefix
+    let prefix = strs[0];
+
+    // Compare the prefix with each string in the array
+    for (let i = 1; i < strs.length; i++) {
+        // While the current string does not start with the prefix
+        while (strs[i].indexOf(prefix) !== 0) {
+            // Reduce the prefix by one character from the end
+            prefix = prefix.substring(0, prefix.length - 1);
+            // If there's no common prefix
+            if (prefix === "") return "";
+        }
     }
 
-    return maxSoFar; // Return the maximum sum found
+    return prefix;
 }
 
 // Example usage:
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const result = maxSubArray(array);
-console.log(result); // Output: 6 (the subarray [4, -1, 2, 1] has the maximum sum)
+const strings = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(strings)); // Output: "fl"
