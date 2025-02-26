@@ -1,49 +1,12 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
+function validateEmail(email: string): boolean {
+    // Regular expression for validating an email address
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailPattern.test(email);
 }
 
-class LinkedList {
-    head: ListNode | null;
+// Example usage
+const email1 = "example@example.com";
+const email2 = "invalid-email@.com";
 
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Method to find the length of the linked list
-    length(): number {
-        let count = 0;
-        let current = this.head;
-        while (current) {
-            count++;
-            current = current.next;
-        }
-        return count;
-    }
-}
-
-// Example usage:
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-console.log("Length of linked list:", list.length()); // Output: Length of linked list: 3
+console.log(validateEmail(email1)); // true
+console.log(validateEmail(email2)); // false
