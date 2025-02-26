@@ -1,36 +1,73 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+class SuffixTreeNode {
+    children: Map<string, SuffixTreeNode>;
+    start: number;
+    end: number | null;
+    suffixLink: SuffixTreeNode | null;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    constructor(start: number, end: number | null) {
+        this.children = new Map();
+        this.start = start;
+        this.end = end;
+        this.suffixLink = null;
     }
 }
+class SuffixTree {
+    root: SuffixTreeNode;
+    text: string;
 
-function countLeafNodes(node: TreeNode | null): number {
-    // If the node is null, return 0
-    if (node === null) {
-        return 0;
+    constructor(text: string) {
+        this.root = new SuffixTreeNode(-1, null);
+        this.text = text;
+        this.buildSuffixTree();
     }
 
-    // If the node is a leaf node, return 1
-    if (node.left === null && node.right === null) {
-        return 1;
+    buildSuffixTree() {
+        const n = this.text.length;
+        for (let i = 0; i < n; i++) {
+            this.insertSuffix(i);
+        }
     }
 
-    // Recursively count the leaf nodes in both subtrees
-    return countLeafNodes(node.left) + countLeafNodes(node.right);
+    insertSuffix(start: number) {
+        let currentNode = this.root;
+        let currentChar = this.text[start];
+
+        for (let i = start; i < this.text.length; i++) {
+            const char = this.text[i];
+
+            if (!currentNode.children.has(char)) {
+                const newNode = new SuffixTreeNode(start, null);
+                currentNode.children.set(char, newNode);
+                return;
+            }
+
+            currentNode = currentNode.children.get(char)!;
+            if (currentNode.end === null) {
+                currentNode.end = i;
+                return;
+            }
+
+            // If we reach here, we need to split the edge
+            const edgeLength = currentNode.end! - currentNode.start + 1;
+            if (edgeLength <= i - start) {
+                continue; // Move down the tree
+            }
+
+            // Split the edge
+            const splitNode = new SuffixTreeNode(currentNode.start, currentNode.start + (i - start));
+            currentNode.start += (i - start);
+            currentNode.end = currentNode.start + edgeLength - 1;
+
+            splitNode.children.set(this.text[currentNode.start], currentNode);
+            currentNode = splitNode;
+            currentNode.children.set(char, new SuffixTreeNode(start, null));
+            return;
+        }
+    }
+
+    // Additional methods can be added here (e.g., search, display, etc.)
 }
+const text = "banana";
+const suffixTree = new SuffixTree(text);
 
-// Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-const numberOfLeafNodes = countLeafNodes(root);
-console.log(`Number of leaf nodes: ${numberOfLeafNodes}`);
+// You can add methods to search for substrings, display the tree, etc.
