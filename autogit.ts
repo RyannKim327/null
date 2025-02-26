@@ -1,8 +1,7 @@
-function removeVowels(input: string): string {
-    return input.replace(/[aeiouAEIOU]/g, '');
+function getRandomNumberInRange(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 // Example usage:
-const originalString = "Hello, World!";
-const stringWithoutVowels = removeVowels(originalString);
-console.log(stringWithoutVowels); // Hll, Wrld!
+const randomNum = getRandomNumberInRange(1, 10);
+console.log(randomNum); // This will log a random number between 1 and 10 (inclusive)
