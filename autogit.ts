@@ -1,10 +1,14 @@
-let str1: string = "Hello, ";
-let str2: string = "World!";
-let result: string = str1 + str2;
+function isPalindrome(str: string): boolean {
+    // Normalize the string: lowercase and remove non-alphanumeric characters
+    const normalizedStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-console.log(result); // Output: "Hello, World!"
-let str1: string = "Hello, ";
-let str2: string = "World!";
-let result: string = `${str1}${str2}`;
+    // Create a reversed version of the normalized string
+    const reversedStr = normalizedStr.split('').reverse().join('');
 
-console.log(result); // Output: "Hello, World!"
+    // Compare the normalized string with the reversed string
+    return normalizedStr === reversedStr;
+}
+
+// Example usage:
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
