@@ -1,57 +1,34 @@
-class Graph {
-    private adjacencyList: Map<number, number[]>;
+function longestCommonSubstring(s1: string, s2: string): string {
+    const m = s1.length;
+    const n = s2.length;
+    let maxLength = 0;
+    let endingIndex = 0;
 
-    constructor() {
-        this.adjacencyList = new Map();
-    }
+    // Create a 2D array to store lengths of longest common suffixes
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-    // Add a vertex to the graph
-    addVertex(vertex: number) {
-        if (!this.adjacencyList.has(vertex)) {
-            this.adjacencyList.set(vertex, []);
-        }
-    }
-
-    // Add an edge to the graph
-    addEdge(vertex1: number, vertex2: number) {
-        this.adjacencyList.get(vertex1)?.push(vertex2);
-        this.adjacencyList.get(vertex2)?.push(vertex1); // For undirected graph
-    }
-
-    // Perform BFS
-    bfs(startVertex: number) {
-        const visited: Set<number> = new Set();
-        const queue: number[] = [];
-        
-        visited.add(startVertex);
-        queue.push(startVertex);
-
-        while (queue.length > 0) {
-            const currentVertex = queue.shift()!;
-            console.log(currentVertex); // Process the current vertex
-
-            const neighbors = this.adjacencyList.get(currentVertex);
-            if (neighbors) {
-                for (const neighbor of neighbors) {
-                    if (!visited.has(neighbor)) {
-                        visited.add(neighbor);
-                        queue.push(neighbor);
-                    }
+    // Build the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (s1[i - 1] === s2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > maxLength) {
+                    maxLength = dp[i][j];
+                    endingIndex = i; // Update the ending index of the substring
                 }
             }
         }
     }
+
+    // Extract the longest common substring
+    if (maxLength === 0) {
+        return ""; // No common substring found
+    }
+    return s1.substring(endingIndex - maxLength, endingIndex);
 }
 
 // Example usage:
-const graph = new Graph();
-graph.addVertex(1);
-graph.addVertex(2);
-graph.addVertex(3);
-graph.addVertex(4);
-graph.addEdge(1, 2);
-graph.addEdge(1, 3);
-graph.addEdge(2, 4);
-graph.addEdge(3, 4);
-
-graph.bfs(1); // Output: 1, 2, 3, 4
+const str1 = "abcde";
+const str2 = "abfce";
+const result = longestCommonSubstring(str1, str2);
+console.log(result); // Output: "ab"
