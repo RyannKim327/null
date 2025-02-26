@@ -1,34 +1,70 @@
-function longestCommonSubstring(s1: string, s2: string): string {
-    const m = s1.length;
-    const n = s2.length;
-    let maxLength = 0;
-    let endingIndex = 0;
+class HashTable<K, V> {
+    private table: Array<Array<[K, V] | null>>;
+    private size: number;
 
-    // Create a 2D array to store lengths of longest common suffixes
-    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+    constructor(size: number) {
+        this.size = size;
+        this.table = new Array(size).fill(null).map(() => []);
+    }
 
-    // Build the dp array
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (s1[i - 1] === s2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-                if (dp[i][j] > maxLength) {
-                    maxLength = dp[i][j];
-                    endingIndex = i; // Update the ending index of the substring
-                }
+    private hash(key: K): number {
+        let hash = 0;
+        const keyString = String(key);
+        for (let i = 0; i < keyString.length; i++) {
+            hash += keyString.charCodeAt(i);
+        }
+        return hash % this.size;
+    }
+
+    public set(key: K, value: V): void {
+        const index = this.hash(key);
+        const bucket = this.table[index];
+
+        // Check if the key already exists in the bucket
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                bucket[i][1] = value; // Update the value
+                return;
             }
         }
+
+        // If the key does not exist, add a new key-value pair
+        bucket.push([key, value]);
     }
 
-    // Extract the longest common substring
-    if (maxLength === 0) {
-        return ""; // No common substring found
+    public get(key: K): V | undefined {
+        const index = this.hash(key);
+        const bucket = this.table[index];
+
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                return bucket[i][1]; // Return the value
+            }
+        }
+
+        return undefined; // Key not found
     }
-    return s1.substring(endingIndex - maxLength, endingIndex);
+
+    public remove(key: K): boolean {
+        const index = this.hash(key);
+        const bucket = this.table[index];
+
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                bucket.splice(i, 1); // Remove the key-value pair
+                return true;
+            }
+        }
+
+        return false; // Key not found
+    }
 }
 
-// Example usage:
-const str1 = "abcde";
-const str2 = "abfce";
-const result = longestCommonSubstring(str1, str2);
-console.log(result); // Output: "ab"
+// Example usage
+const hashTable = new HashTable<string, number>(10);
+hashTable.set("apple", 1);
+hashTable.set("banana", 2);
+console.log(hashTable.get("apple")); // Output: 1
+console.log(hashTable.get("banana")); // Output: 2
+hashTable.remove("apple");
+console.log(hashTable.get("apple")); // Output: undefined
