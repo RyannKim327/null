@@ -1,51 +1,56 @@
-class BoyerMoore {
-    private pattern: string;
-    private badCharTable: { [key: string]: number };
+class Node {
+    value: string;
+    children: Node[]; // assume it's a tree structure
     
-    constructor(pattern: string) {
-        this.pattern = pattern;
-        this.badCharTable = this.buildBadCharTable(pattern);
+    constructor(value: string) {
+        this.value = value;
+        this.children = [];
     }
 
-    private buildBadCharTable(pattern: string): { [key: string]: number } {
-        const badCharTable: { [key: string]: number } = {};
-        const m = pattern.length;
-
-        for (let i = 0; i < m; i++) {
-            badCharTable[pattern[i]] = i;
-        }
-
-        return badCharTable;
-    }
-
-    public search(text: string): number {
-        const n = text.length;
-        const m = this.pattern.length;
-        let s = 0;
-
-        while (s <= n - m) {
-            let j = m - 1;
-
-            while (j >= 0 && this.pattern[j] === text[s + j]) {
-                j--;
-            }
-
-            if (j < 0) {
-                // Match found at index s
-                console.log(`Pattern found at index ${s}`);
-                // Move the pattern so that the next character in the text aligns with the last character of the pattern
-                s += (s + m < n) ? m - this.badCharTable[text[s + m]] || 1 : 1;
-            } else {
-                // Shift the pattern to the right
-                s += Math.max(1, j - (this.badCharTable[text[s + j]] || -1));
-            }
-        }
-
-        return -1; // Return -1 if the pattern is not found
+    addChild(child: Node) {
+        this.children.push(child);
     }
 }
 
-// Example usage
-const bm = new BoyerMoore("pattern");
-const text = "This is a simple text where we search for a pattern";
-bm.search(text);
+function depthLimitedSearch(startNode: Node, depthLimit: number, target: string): Node | null {
+    const stack: { node: Node, depth: number }[] = [];
+    stack.push({ node: startNode, depth: 0 });
+
+    while (stack.length > 0) {
+        const { node, depth } = stack.pop()!; // non-null assertion, stack is not empty
+
+        // Check if we found the target
+        if (node.value === target) {
+            return node;
+        }
+
+        // If current depth is less than the limit, explore children
+        if (depth < depthLimit) {
+            for (let i = node.children.length - 1; i >= 0; i--) { // reverse to maintain order
+                stack.push({ node: node.children[i], depth: depth + 1 });
+            }
+        }
+    }
+
+    return null; // target not found
+}
+
+// Example usage:
+const rootNode = new Node("A");
+const childB = new Node("B");
+const childC = new Node("C");
+const childD = new Node("D");
+const childE = new Node("E");
+
+rootNode.addChild(childB);
+rootNode.addChild(childC);
+childB.addChild(childD);
+childB.addChild(childE);
+
+const result = depthLimitedSearch(rootNode, 2, "E");
+
+if (result) {
+    console.log(`Found: ${result.value}`);
+} else {
+    console.log("Target not found.");
+}
