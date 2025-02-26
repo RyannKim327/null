@@ -1,55 +1,19 @@
-type Node = {
-    state: string; // The current state
-    cost: number;  // The cost to reach this state
-    path: string[]; // The path taken to reach this state
-};
+function countWordOccurrences(text: string, word: string): number {
+    // Normalize the text and word to lower case for a case-insensitive count
+    const normalizedText = text.toLowerCase();
+    const normalizedWord = word.toLowerCase();
 
-function beamSearch(initialState: string, goalState: string, generateSuccessors: (state: string) => Node[], beamWidth: number): string[] | null {
-    let currentLevel: Node[] = [{ state: initialState, cost: 0, path: [initialState] }];
-    
-    while (currentLevel.length > 0) {
-        // Generate successors for all nodes in the current level
-        let successors: Node[] = [];
-        for (const node of currentLevel) {
-            const newSuccessors = generateSuccessors(node.state);
-            successors.push(...newSuccessors);
-        }
+    // Split the text into words
+    const words = normalizedText.split(/\s+/);
 
-        // Check for goal states
-        for (const successor of successors) {
-            if (successor.state === goalState) {
-                return successor.path; // Return the path to the goal state
-            }
-        }
+    // Filter and count occurrences of the specified word
+    const count = words.filter(w => w === normalizedWord).length;
 
-        // Sort successors by cost and keep only the best ones (beam width)
-        successors.sort((a, b) => a.cost - b.cost);
-        currentLevel = successors.slice(0, beamWidth);
-    }
-
-    return null; // Return null if no solution is found
-}
-
-// Example of a successor function
-function generateSuccessors(state: string): Node[] {
-    // This is a placeholder for generating successors.
-    // Replace this with your actual logic to generate new states.
-    const successors: Node[] = [];
-    const possibleStates = ['A', 'B', 'C', 'D']; // Example states
-
-    for (const s of possibleStates) {
-        if (s !== state) {
-            successors.push({ state: s, cost: Math.random(), path: [state, s] }); // Random cost for demonstration
-        }
-    }
-
-    return successors;
+    return count;
 }
 
 // Example usage
-const initialState = 'A';
-const goalState = 'C';
-const beamWidth = 2;
-
-const result = beamSearch(initialState, goalState, generateSuccessors, beamWidth);
-console.log(result);
+const text = "Hello world! This world is beautiful. World is full of wonders.";
+const wordToCount = "world";
+const occurrences = countWordOccurrences(text, wordToCount);
+console.log(`The word "${wordToCount}" appears ${occurrences} times.`);
