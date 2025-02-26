@@ -1,117 +1,62 @@
-class Graph {
-    private adjList: Map<number, number[]>;
+class Node {
+    state: any;
+    cost: number;
+    // You can add more properties for specific use cases
 
-    constructor() {
-        this.adjList = new Map();
-    }
-
-    addEdge(v: number, w: number) {
-        if (!this.adjList.has(v)) {
-            this.adjList.set(v, []);
-        }
-        this.adjList.get(v)!.push(w);
-    }
-
-    topologicalSort(): number[] {
-        const visited = new Set<number>();
-        const stack: number[] = [];
-
-        const dfs = (node: number) => {
-            visited.add(node);
-            const neighbors = this.adjList.get(node) || [];
-            for (const neighbor of neighbors) {
-                if (!visited.has(neighbor)) {
-                    dfs(neighbor);
-                }
-            }
-            stack.push(node);
-        };
-
-        for (const node of this.adjList.keys()) {
-            if (!visited.has(node)) {
-                dfs(node);
-            }
-        }
-
-        return stack.reverse(); // Return in reverse order
+    constructor(state: any, cost: number) {
+        this.state = state;
+        this.cost = cost;
     }
 }
 
-// Example usage:
-const graph = new Graph();
-graph.addEdge(5, 2);
-graph.addEdge(5, 0);
-graph.addEdge(4, 0);
-graph.addEdge(4, 1);
-graph.addEdge(2, 3);
-graph.addEdge(3, 1);
+function beamSearch(root: Node, beamWidth: number, maxDepth: number): Node | null {
+    let currentLevelNodes: Node[] = [root];
 
-const sortedOrder = graph.topologicalSort();
-console.log(sortedOrder); // Output: A valid topological order
-class Graph {
-    private adjList: Map<number, number[]>;
-    private inDegree: Map<number, number>;
+    for (let depth = 0; depth < maxDepth; depth++) {
+        let nextLevelNodes: Node[] = [];
 
-    constructor() {
-        this.adjList = new Map();
-        this.inDegree = new Map();
-    }
-
-    addEdge(v: number, w: number) {
-        if (!this.adjList.has(v)) {
-            this.adjList.set(v, []);
+        // Expand current nodes
+        for (const node of currentLevelNodes) {
+            const children = expandNode(node); // Replace with actual expansion logic
+            nextLevelNodes.push(...children);
         }
-        this.adjList.get(v)!.push(w);
 
-        // Update in-degree of the destination node
-        this.inDegree.set(w, (this.inDegree.get(w) || 0) + 1);
-        // Ensure the source node is in the in-degree map
-        if (!this.inDegree.has(v)) {
-            this.inDegree.set(v, 0);
+        // Sort and select top nodes by cost/heuristic
+        nextLevelNodes.sort((a, b) => a.cost - b.cost);
+        currentLevelNodes = nextLevelNodes.slice(0, beamWidth);
+
+        // Check if we found a goal state
+        const goalNode = currentLevelNodes.find(isGoalNode);
+        if (goalNode) {
+            return goalNode;
         }
     }
+    return null; // Return null if no goal is found within maxDepth
+}
 
-    topologicalSort(): number[] {
-        const zeroInDegreeQueue: number[] = [];
-        const sortedOrder: number[] = [];
+// Placeholder function to expand nodes
+function expandNode(node: Node): Node[] {
+    // Implement your own logic to create children of the node.
+    // This could involve applying certain actions to the node to generate new states.
+    return [
+        new Node(/* new state */, node.cost + 1), // Replace with actual logic
+        new Node(/* new state */, node.cost + 2), // Replace with actual logic
+        // Add more child nodes as necessary
+    ];
+}
 
-        // Initialize the queue with nodes having zero in-degree
-        for (const [node, degree] of this.inDegree.entries()) {
-            if (degree === 0) {
-                zeroInDegreeQueue.push(node);
-            }
-        }
-
-        while (zeroInDegreeQueue.length > 0) {
-            const current = zeroInDegreeQueue.shift()!;
-            sortedOrder.push(current);
-
-            const neighbors = this.adjList.get(current) || [];
-            for (const neighbor of neighbors) {
-                this.inDegree.set(neighbor, this.inDegree.get(neighbor)! - 1);
-                if (this.inDegree.get(neighbor) === 0) {
-                    zeroInDegreeQueue.push(neighbor);
-                }
-            }
-        }
-
-        // Check if there was a cycle
-        if (sortedOrder.length !== this.inDegree.size) {
-            throw new Error("Graph has at least one cycle, topological sort not possible.");
-        }
-
-        return sortedOrder;
-    }
+// Placeholder function to check if a node is a goal
+function isGoalNode(node: Node): boolean {
+    // Implement the logic to determine if the node represents a goal state
+    return false; // Replace with actual condition
 }
 
 // Example usage:
-const graph = new Graph();
-graph.addEdge(5, 2);
-graph.addEdge(5, 0);
-graph.addEdge(4, 0);
-graph.addEdge(4, 1);
-graph.addEdge(2, 3);
-graph.addEdge(3, 1);
+const initialNode = new Node(/* initial state */, 0);
+const result = beamSearch(initialNode, 3, 10); // 3 is the beam width, 10 is max depth
 
-const sortedOrder = graph.topologicalSort();
-console.log(sortedOrder); // Output: A valid topological order
+if (result) {
+    console.log("Goal node found:", result);
+} else {
+    console.log("Goal node not found within the given depth.");
+}
